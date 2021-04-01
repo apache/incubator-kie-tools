@@ -1,5 +1,0 @@
-package org.kiegroup.function;
-
-function String hello(String name) {
-    return "Hello " + name + "!";
-}

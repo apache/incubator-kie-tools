@@ -16,7 +16,6 @@
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
 import org.drools.workbench.screens.scenariosimulation.client.popup.CustomBusyPopup;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
@@ -29,7 +28,7 @@ public class ScenarioSimulationHasBusyIndicatorDefaultErrorCallback extends HasB
 
 
     @Override
-    public boolean error(final Message message,
+    public boolean error(final Object message,
                          final Throwable throwable) {
         CustomBusyPopup.close();
         return errorLocal(message,
@@ -42,7 +41,7 @@ public class ScenarioSimulationHasBusyIndicatorDefaultErrorCallback extends HasB
     }
 
     // Indirection add for testing purpose
-    protected boolean errorLocal(final Message message,
+    protected boolean errorLocal(final Object message,
                                  final Throwable throwable) {
         return super.error(message,
                            throwable);

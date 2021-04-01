@@ -17,12 +17,10 @@ package org.drools.workbench.screens.scenariosimulation.service;
 
 import org.drools.scenariosimulation.api.model.AbstractScesimData;
 import org.drools.scenariosimulation.api.model.AbstractScesimModel;
-import org.jboss.errai.bus.server.annotations.Remote;
 
 /**
  * This interface define the service to export and import data from a <code>AbstractScesimModel</code>
  */
-@Remote
 public interface ImportExportService {
 
     /**

@@ -17,12 +17,10 @@ package org.drools.workbench.screens.scenariosimulation.service;
 
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
-import org.jboss.errai.bus.server.annotations.Remote;
 
 /**
  * This interface define the service to download a report with the <b>audit messages</b> of a given <code>Simulation</code>
  */
-@Remote
 public interface RunnerReportService {
 
     /**

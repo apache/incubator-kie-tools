@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-wb-screens</artifactId>
-    <version>7.49.0-SNAPSHOT</version>
+    <version>7.53.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-wb-scenario-simulation-editor</artifactId>
@@ -34,8 +34,6 @@
   <modules>
     <module>drools-wb-scenario-simulation-editor-api</module>
     <module>drools-wb-scenario-simulation-editor-client</module>
-    <module>drools-wb-scenario-simulation-editor-backend</module>
-    <module>drools-wb-scenario-simulation-editor-businesscentral-client</module>
     <module>drools-wb-scenario-simulation-editor-kogito-marshaller</module>
     <module>drools-wb-scenario-simulation-editor-kogito-client</module>
     <module>drools-wb-scenario-simulation-editor-kogito-webapp-common</module>

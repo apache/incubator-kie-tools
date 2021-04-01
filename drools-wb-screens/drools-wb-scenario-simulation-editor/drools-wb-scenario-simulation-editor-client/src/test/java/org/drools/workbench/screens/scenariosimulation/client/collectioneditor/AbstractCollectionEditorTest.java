@@ -26,7 +26,7 @@ import org.mockito.Mock;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
-public class AbstractCollectionEditorTest {
+public abstract class AbstractCollectionEditorTest {
 
     @Mock
     protected ViewsProvider viewsProviderMock;
@@ -56,11 +56,13 @@ public class AbstractCollectionEditorTest {
     protected LIElement itemSeparatorMock;
 
     @Mock
+    protected SpanElement itemSeparatorTextMock;
+
+    @Mock
     protected LIElement editingPropertyFieldsMock;
 
     @Mock
     protected ClickEvent clickEventMock;
-
 
     protected void setup() {
         when(saveChangeMock.getStyle()).thenReturn(styleMock);

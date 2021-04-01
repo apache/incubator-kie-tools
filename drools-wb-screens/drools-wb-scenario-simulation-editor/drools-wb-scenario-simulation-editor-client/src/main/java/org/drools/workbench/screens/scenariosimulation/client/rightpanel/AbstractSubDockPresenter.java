@@ -20,18 +20,18 @@ import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.client.annotations.DefaultPosition;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.mvp.AbstractActivity;
+import org.uberfire.security.ResourceType;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
-public abstract class AbstractSubDockPresenter<T extends SubDockView> implements SubDockView.Presenter {
+public abstract class AbstractSubDockPresenter<T extends SubDockView> extends AbstractActivity implements SubDockView.Presenter {
 
     public static final int DEFAULT_PREFERRED_WIDHT = 300;
-
 
     protected String title;
     protected T view;
@@ -49,17 +49,19 @@ public abstract class AbstractSubDockPresenter<T extends SubDockView> implements
         view.init(this);
     }
 
-    @DefaultPosition
     public Position getDefaultPosition() {
         return CompassPosition.EAST;
     }
 
-    @WorkbenchPartTitle
     public String getTitle() {
         return title;
     }
 
-    @WorkbenchPartView
+    @Override
+    public IsWidget getWidget() {
+        return asWidget();
+    }
+
     public Widget asWidget() {
         return view.asWidget();
     }
@@ -72,5 +74,14 @@ public abstract class AbstractSubDockPresenter<T extends SubDockView> implements
     @Override
     public boolean isCurrentlyShow(ObservablePath path) {
         return Objects.equals(currentPath, path);
+    }
+
+   @Override
+   public ResourceType getResourceType() {
+        return ActivityResourceType.DOCK;
+   }
+
+    public boolean isOpen() {
+        return open;
     }
 }

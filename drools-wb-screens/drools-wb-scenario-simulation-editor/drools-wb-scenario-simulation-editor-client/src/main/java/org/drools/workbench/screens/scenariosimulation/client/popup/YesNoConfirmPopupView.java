@@ -27,7 +27,6 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.client.views.pfly.resources.i18n.Constants;
 import org.uberfire.client.views.pfly.widgets.Button;
 import org.uberfire.client.views.pfly.widgets.InlineNotification;
 import org.uberfire.client.views.pfly.widgets.Modal;
@@ -80,7 +79,7 @@ public class YesNoConfirmPopupView implements YesNoConfirmPopup {
 
     @PostConstruct
     public void init() {
-        cancelButton.setText(translationService.getTranslation(Constants.ConfirmPopup_Cancel));
+        cancelButton.setText("Cancel");
     }
 
     @Override

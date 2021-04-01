@@ -1,4 +1,0 @@
-'Car.color' : ['a', 'b']
-'Car.price' : [1, 2]
-'Car.price[color=a]' : [3, 4]
-'Car.price[color=b]' : [5, 6]

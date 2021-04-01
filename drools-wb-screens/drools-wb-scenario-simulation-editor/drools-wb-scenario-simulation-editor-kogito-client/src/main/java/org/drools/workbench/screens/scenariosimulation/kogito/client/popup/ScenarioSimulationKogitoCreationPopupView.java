@@ -76,6 +76,7 @@ public class ScenarioSimulationKogitoCreationPopupView extends AbstractScenarioP
     }
 
     protected void initialize() {
+        cancelButton.getElement().remove();
         okButton.setEnabled(false);
         cancelButton.setText(ScenarioSimulationEditorConstants.INSTANCE.cancelButton());
         dmnAssetsDivElement.setAttribute(ConstantHolder.HIDDEN, "");
@@ -129,8 +130,6 @@ public class ScenarioSimulationKogitoCreationPopupView extends AbstractScenarioP
     }
 
     protected void enableCreateButtonForDMNScenario() {
-        if (selectedPath != null && !selectedPath.isEmpty()) {
-            okButton.setEnabled(true);
-        }
+        okButton.setEnabled(selectedPath != null && !selectedPath.isEmpty());
     }
 }

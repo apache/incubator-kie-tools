@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.TreeMap;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.scenariosimulation.api.model.FactMappingValueType;
@@ -33,13 +35,9 @@ import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetPropertyHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
-import org.uberfire.client.annotations.WorkbenchScreen;
-
-import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter.DEFAULT_PREFERRED_WIDHT;
-import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter.IDENTIFIER;
 
 @ApplicationScoped
-@WorkbenchScreen(identifier = IDENTIFIER, preferredWidth = DEFAULT_PREFERRED_WIDHT)
+@Named(TestToolsPresenter.IDENTIFIER)
 public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> implements TestToolsView.Presenter {
 
     public static final String IDENTIFIER = "org.drools.scenariosimulation.TestTools";
@@ -66,6 +64,11 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
         this.listGroupItemPresenter = listGroupItemPresenter;
         this.listGroupItemPresenter.init(this);
         title = ScenarioSimulationEditorConstants.INSTANCE.testTools();
+    }
+
+    @Override
+    public String getIdentifier() {
+        return IDENTIFIER;
     }
 
     @Override
@@ -335,7 +338,7 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
     public void setSelectedElement(FieldItemView selected) {
         selectedFieldItemView = selected;
         selectedListGroupItemView = null;
-        String factName = selectedFieldItemView.getFullPath().split("\\.")[0];
+        String factName = selectedFieldItemView.getFullPath().get(0);
         boolean isFactNameAssigned = listGroupItemPresenter.isInstanceAssigned(factName);
         /* If the check is not shown, the item was not selected by an user but automatically. If it's shown,
            then it checks if the related instance is already assigned or not. */
@@ -362,30 +365,43 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
         if (editingColumnEnabled) {
             if (selectedListGroupItemView != null) {
                 String className = selectedListGroupItemView.getActualClassName();
-                getFullPackage(className).ifPresent(fullPackage -> eventBus.fireEvent(
-                            new SetPropertyHeaderEvent(gridWidget,
-                                                       fullPackage,
-                                                       Arrays.asList(className),
-                                                       fullPackage + "." + className,
-                                                       FactMappingValueType.EXPRESSION)));
+                getFactModelTreeFromMaps(className).ifPresent(factModelTree -> eventBus.fireEvent(
+                    new SetPropertyHeaderEvent(gridWidget,
+                                               factModelTree.getFullPackage(),
+                                               factModelTree.getTypeName(),
+                                               Collections.unmodifiableList(Arrays.asList(className)),
+                                               factModelTree.getFullTypeName(),
+                                               FactMappingValueType.EXPRESSION)));
             } else if (selectedFieldItemView != null) {
-                String baseClass = selectedFieldItemView.getFullPath().split("\\.")[0];
-                String value = isSimple(baseClass) ?
-                        selectedFieldItemView.getFullPath() :
-                        selectedFieldItemView.getFullPath() + "." + selectedFieldItemView.getFieldName();
-                List<String> propertyNameElements = Collections.unmodifiableList(Arrays.asList(value.split("\\.")));
-                getFullPackage(baseClass).ifPresent(fullPackage -> eventBus.fireEvent(new SetPropertyHeaderEvent(gridWidget, fullPackage,
-                                                                                                                 propertyNameElements,
-                                                                                                                 selectedFieldItemView.getClassName(),
-                                                                                                                 FactMappingValueType.NOT_EXPRESSION)));
+                String baseClass = selectedFieldItemView.getFullPath().get(0);
+                List<String> propertyNameElements = new ArrayList<>(selectedFieldItemView.getFullPath());
+                if (!isSimple(baseClass)) {
+                    propertyNameElements.add(selectedFieldItemView.getFieldName());
+                }
+                getFactModelTreeFromMaps(baseClass).ifPresent(factModelTree -> eventBus.fireEvent(
+                    new SetPropertyHeaderEvent(gridWidget,
+                                               factModelTree.getFullPackage(),
+                                               factModelTree.getTypeName(),
+                                               Collections.unmodifiableList(propertyNameElements),
+                                               selectedFieldItemView.getClassName(),
+                                               FactMappingValueType.NOT_EXPRESSION)));
             }
         }
     }
 
     @Override
     public void reset() {
+        clearFieldsMaps();
         listGroupItemPresenter.reset();
         view.reset();
+    }
+
+    protected void clearFieldsMaps() {
+        dataObjectFieldsMap = new TreeMap<>();
+        simpleJavaTypeFieldsMap = new TreeMap<>();
+        instanceFieldsMap = new TreeMap<>();
+        simpleJavaInstanceFieldsMap = new TreeMap<>();
+        hiddenFieldsMap = new TreeMap<>();
     }
 
     /**
@@ -426,9 +442,9 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
     }
 
     protected boolean isSimple(String key) {
-        return Optional.ofNullable(getFactModelTreeFromSimpleJavaTypeMap(key))
-                .orElseGet(() -> getFactModelTreeFromSimpleJavaInstanceMap(key))
-                .isPresent();
+        return Optional.ofNullable(getFactModelTreeFromSimpleJavaTypeMap(key)
+                                           .orElseGet(() -> getFactModelTreeFromSimpleJavaInstanceMap(key)
+                                                   .orElse(null))).isPresent();
     }
 
     protected void clearLists() {

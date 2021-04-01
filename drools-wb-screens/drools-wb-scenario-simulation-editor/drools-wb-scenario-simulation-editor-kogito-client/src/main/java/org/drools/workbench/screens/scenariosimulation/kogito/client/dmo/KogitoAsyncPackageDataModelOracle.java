@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.kie.soup.project.datamodel.oracle.ModelField;
-import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -115,15 +114,6 @@ public abstract class KogitoAsyncPackageDataModelOracle {
     public String getParametricFieldType(String factType, String fieldName) {
         String key = factType + "." + fieldName;
         return parametricFieldMap.get(key);
-    }
-
-    public PackageDataModelOracleBaselinePayload getPackageDataModelOracleBaselinePayload() {
-        PackageDataModelOracleBaselinePayload toReturn = new PackageDataModelOracleBaselinePayload();
-        toReturn.setModelFields(modelFieldsMap);
-        toReturn.setPackageName(packageNames.get(0));
-        toReturn.setCollectionTypes(collectionTypes);
-        toReturn.setFieldParametersType(parametricFieldMap);
-        return toReturn;
     }
 
     private ModelField getModelField(String factName, String fieldName) {

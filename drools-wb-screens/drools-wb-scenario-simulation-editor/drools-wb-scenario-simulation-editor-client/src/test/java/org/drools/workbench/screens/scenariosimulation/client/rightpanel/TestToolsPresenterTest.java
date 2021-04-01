@@ -95,7 +95,7 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
 
         when(selectedListGroupItemViewMock.getActualClassName()).thenReturn(firstKey);
 
-        when(selectedFieldItemViewMock.getFullPath()).thenReturn(firstKey);
+        when(selectedFieldItemViewMock.getFullPath()).thenReturn(Arrays.asList(firstKey));
         when(selectedFieldItemViewMock.getFieldName()).thenReturn(firstPropertyKey);
         when(selectedFieldItemViewMock.getClassName()).thenReturn(firstPropertyClass.getTypeName());
 
@@ -221,7 +221,6 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
 
     @Test
     public void populateTestTools() {
-
         SortedMap<String, FactModelTree> dataObjects = new TreeMap<>();
         SortedMap<String, FactModelTree> simpleJava = new TreeMap<>();
         SortedMap<String, FactModelTree> instanceField = new TreeMap<>();
@@ -455,7 +454,7 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     public void setSelectedElementProperty_InstanceAssigned() {
         when(selectedFieldItemViewMock.isCheckShown()).thenReturn(true);
         when(listGroupItemPresenterMock.isInstanceAssigned(FACT_NAME)).thenReturn(true);
-        when(selectedFieldItemViewMock.getFullPath()).thenReturn(FACT_NAME);
+        when(selectedFieldItemViewMock.getFullPath()).thenReturn(Arrays.asList(FACT_NAME));
         when(listGroupItemPresenterMock.getFilterTerm()).thenReturn(FILTER_TERM);
         testToolsPresenterSpy.setSelectedElement(selectedFieldItemViewMock);
         verify(listGroupItemPresenterMock, times(1)).isInstanceAssigned(eq(FACT_NAME));
@@ -469,7 +468,7 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     public void setSelectedElementProperty_CheckNotShown() {
         when(selectedFieldItemViewMock.isCheckShown()).thenReturn(false);
         when(listGroupItemPresenterMock.isInstanceAssigned(FACT_NAME)).thenReturn(true);
-        when(selectedFieldItemViewMock.getFullPath()).thenReturn(FACT_NAME);
+        when(selectedFieldItemViewMock.getFullPath()).thenReturn(Arrays.asList(FACT_NAME));
         when(listGroupItemPresenterMock.getFilterTerm()).thenReturn(FILTER_TERM);
         testToolsPresenterSpy.setSelectedElement(selectedFieldItemViewMock);
         verify(listGroupItemPresenterMock, times(1)).isInstanceAssigned(eq(FACT_NAME));
@@ -483,7 +482,7 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     public void setSelectedElementProperty_InstanceNotAssignedFactNameAlreadyAssigned() {
         when(selectedFieldItemViewMock.isCheckShown()).thenReturn(true);
         when(listGroupItemPresenterMock.isInstanceAssigned(FACT_NAME)).thenReturn(false);
-        when(selectedFieldItemViewMock.getFullPath()).thenReturn(FACT_NAME);
+        when(selectedFieldItemViewMock.getFullPath()).thenReturn(Arrays.asList(FACT_NAME));
         when(listGroupItemPresenterMock.getFilterTerm()).thenReturn(FILTER_TERM);
         testToolsPresenterSpy.setSelectedElement(selectedFieldItemViewMock);
         verify(listGroupItemPresenterMock, times(1)).isInstanceAssigned(eq(FACT_NAME));
@@ -497,7 +496,7 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     public void setSelectedElementProperty_InstanceNotAssignedFactNameAlreadyAssigned_NestedProperties() {
         when(selectedFieldItemViewMock.isCheckShown()).thenReturn(true);
         when(listGroupItemPresenterMock.isInstanceAssigned(FACT_NAME)).thenReturn(false);
-        when(selectedFieldItemViewMock.getFullPath()).thenReturn(FACT_NAME + "." + PROPERTY_NAME);
+        when(selectedFieldItemViewMock.getFullPath()).thenReturn(Arrays.asList(FACT_NAME, PROPERTY_NAME));
         when(listGroupItemPresenterMock.getFilterTerm()).thenReturn(FILTER_TERM);
         testToolsPresenterSpy.setSelectedElement(selectedFieldItemViewMock);
         verify(listGroupItemPresenterMock, times(1)).isInstanceAssigned(eq(FACT_NAME));
@@ -511,7 +510,7 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     public void setSelectedElementProperty_InstanceNotAssignedFactNameNotAssigned() {
         when(selectedFieldItemViewMock.isCheckShown()).thenReturn(true);
         when(listGroupItemPresenterMock.isInstanceAssigned(FACT_NAME_2)).thenReturn(false);
-        when(selectedFieldItemViewMock.getFullPath()).thenReturn(FACT_NAME_2);
+        when(selectedFieldItemViewMock.getFullPath()).thenReturn(Arrays.asList(FACT_NAME_2));
         when(listGroupItemPresenterMock.getFilterTerm()).thenReturn(FILTER_TERM);
         testToolsPresenterSpy.setSelectedElement(selectedFieldItemViewMock);
         verify(listGroupItemPresenterMock, times(1)).isInstanceAssigned(eq(FACT_NAME_2));
@@ -594,6 +593,21 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
         testToolsPresenterSpy.reset();
         verify(testToolsViewMock, times(1)).reset();
         verify(listGroupItemPresenterMock, times(1)).reset();
+        verify(testToolsPresenterSpy, times(1)).clearFieldsMaps();
+    }
+
+    @Test
+    public void clearFieldsMaps() {
+        testToolsPresenterSpy.setDataObjectFieldsMap(getDataObjectFactTreeMap());
+        testToolsPresenterSpy.setSimpleJavaTypeFieldsMap(getSimpleJavaTypeFieldsMap());
+        testToolsPresenterSpy.setInstanceFieldsMap(getDataObjectFactTreeMap());
+        testToolsPresenterSpy.setSimpleJavaInstanceFieldsMap(getSimpleJavaTypeFieldsMap());
+        testToolsPresenterSpy.clearFieldsMaps();
+        assertTrue(testToolsPresenterSpy.dataObjectFieldsMap.isEmpty());
+        assertTrue(testToolsPresenterSpy.simpleJavaTypeFieldsMap.isEmpty());
+        assertTrue(testToolsPresenterSpy.instanceFieldsMap.isEmpty());
+        assertTrue(testToolsPresenterSpy.simpleJavaInstanceFieldsMap.isEmpty());
+        assertTrue(testToolsPresenterSpy.hiddenFieldsMap.isEmpty());
     }
 
     @Test
@@ -643,5 +657,11 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
         testToolsPresenterSpy.clearSelection();
         verify(selectedFieldItemViewMock, times(1)).showCheck(eq(false));
         verify(testToolsViewMock, times(1)).disableAddButton();
+    }
+
+    @Test
+    public void isSimple() {
+        assertTrue(testToolsPresenterSpy.isSimple("String"));
+        assertFalse(testToolsPresenterSpy.isSimple("Test"));
     }
 }

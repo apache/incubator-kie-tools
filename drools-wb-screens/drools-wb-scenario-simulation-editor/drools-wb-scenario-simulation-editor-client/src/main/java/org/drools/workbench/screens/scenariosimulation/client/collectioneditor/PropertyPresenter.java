@@ -50,14 +50,16 @@ public class PropertyPresenter implements PropertyView.Presenter {
         if (propertySpanElementMap.containsKey(propertyName)) {
             return propertySpanElementMap.get(propertyName).getInnerText();
         } else {
-            throw new Exception(propertyName + " not found");
+            throw new IllegalStateException(propertyName + " not found");
         }
     }
 
     @Override
     public void editProperties(String itemId) {
-        propertyViewMap.get(itemId)
-                .forEach(this::startEditPropertyView);
+        if (propertyViewMap.containsKey(itemId)) {
+            propertyViewMap.get(itemId)
+                    .forEach(this::startEditPropertyView);
+        }
     }
 
     @Override
@@ -73,12 +75,14 @@ public class PropertyPresenter implements PropertyView.Presenter {
     @Override
     public Map<String, String> getSimpleProperties(String itemId) {
         Map<String, String> toReturn = new HashMap<>();
-        propertyViewMap.get(itemId)
-                .forEach(propertyEditorView -> {
-                    String propertyName = propertyEditorView.getPropertyName().getInnerText();
-                    propertyName = propertyName.substring(propertyName.lastIndexOf("#") + 1);
-                    toReturn.put(propertyName, propertyEditorView.getPropertyValueSpan().getInnerText());
-                });
+        if (propertyViewMap.containsKey(itemId)) {
+            propertyViewMap.get(itemId)
+                    .forEach(propertyEditorView -> {
+                        String propertyName = propertyEditorView.getPropertyName().getInnerText();
+                        propertyName = propertyName.substring(propertyName.lastIndexOf('#') + 1);
+                        toReturn.put(propertyName, propertyEditorView.getPropertyValueSpan().getInnerText());
+                    });
+        }
         return toReturn;
     }
 
@@ -117,23 +121,28 @@ public class PropertyPresenter implements PropertyView.Presenter {
 
     @Override
     public void onToggleRowExpansion(String itemId, boolean isShown) {
-        propertyViewMap.get(itemId)
-                .forEach(propertyEditorView -> CollectionEditorUtils.toggleRowExpansion(propertyEditorView.getPropertyFields(), isShown));
+        if (propertyViewMap.containsKey(itemId)) {
+            propertyViewMap.get(itemId)
+                    .forEach(propertyEditorView -> CollectionEditorUtils.toggleRowExpansion(
+                            propertyEditorView.getPropertyFields(), isShown));
+        }
     }
 
     @Override
     public void deleteProperties(String itemId) {
-        propertyViewMap.get(itemId)
-                .forEach(this::deletePropertyView);
-        propertyViewMap.remove(itemId);
+        if (propertyViewMap.containsKey(itemId)) {
+            propertyViewMap.get(itemId)
+                    .forEach(this::deletePropertyView);
+            propertyViewMap.remove(itemId);
+        }
     }
 
     protected Map<String, String> stopEdit(String itemId, boolean toUpdate) {
         Map<String, String> toReturn = new HashMap<>();
-        propertyViewMap.get(itemId)
-                .forEach(propertyEditorView -> {
-                    stopEditPropertyView(toReturn, propertyEditorView, toUpdate);
-                });
+        if (propertyViewMap.containsKey(itemId)) {
+            propertyViewMap.get(itemId)
+                    .forEach(propertyEditorView -> stopEditPropertyView(toReturn, propertyEditorView, toUpdate));
+        }
         return toReturn;
     }
 
@@ -162,7 +171,7 @@ public class PropertyPresenter implements PropertyView.Presenter {
         toStopEdit.getPropertyValueInput().getStyle().setDisplay(Style.Display.NONE);
         toStopEdit.getPropertyValueInput().setDisabled(true);
         String propertyName = toStopEdit.getPropertyName().getInnerText();
-        propertyName = propertyName.substring(propertyName.lastIndexOf("#") + 1);
+        propertyName = propertyName.substring(propertyName.lastIndexOf('#') + 1);
         toPopulate.put(propertyName, toStopEdit.getPropertyValueSpan().getInnerText());
     }
 
@@ -170,6 +179,5 @@ public class PropertyPresenter implements PropertyView.Presenter {
         String propertyName = toDelete.getPropertyName().getAttribute("data-i18n-key");
         toDelete.getPropertyFields().removeFromParent();
         propertySpanElementMap.remove(propertyName);
-
     }
 }

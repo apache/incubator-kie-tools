@@ -1,5 +1,0 @@
-package guvnor.feature.dtables;
-
-function int myfunc() {
-    return 0;
-}

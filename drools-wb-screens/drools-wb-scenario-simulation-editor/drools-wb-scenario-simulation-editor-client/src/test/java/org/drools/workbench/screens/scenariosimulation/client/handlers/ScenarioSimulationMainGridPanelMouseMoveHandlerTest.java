@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
@@ -53,11 +55,12 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.SCROLL_TOP;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.SMALLEST_LAYER;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TINY_LAYER;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
@@ -71,6 +74,8 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
 
     private final int ABSOLUTE_LEFT = 0;
     private final int CELL_HEIGHT = 30;
+    private static final String BR = "<br>";
+
     private ScenarioSimulationMainGridPanelMouseMoveHandler mouseMoveHandler;
     @Mock
     private ErrorReportPopoverPresenter errorReportPopupPresenterMock;
@@ -149,7 +154,7 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
         verify(simulationDescriptorMock, never()).getFactMappingByIndex(isA(Integer.class));
         verify(scenarioMock, never()).getFactMappingValue(any());
         verify(mouseMoveHandler, never()).retrieveCellMiddleXYPosition(any(), isA(Integer.class));
-        verify(errorReportPopupPresenterMock, never()).setup(any(), any(), any(), any(), any(), isA(Integer.class), isA(Integer.class), any());
+        verify(errorReportPopupPresenterMock, never()).setup(any(), any(), any(), any(), any(), anyInt(), anyInt(), any());
         assertFalse(inGrid);
     }
 
@@ -294,36 +299,24 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
     }
 
     @Test
-    public void setupPopupPresenterFailedWithoutValues() {
-        when(factMappingValueMock.getRawValue()).thenReturn(null);
-        when(factMappingValueMock.getErrorValue()).thenReturn(null);
-        mouseMoveHandler.setupPopupPresenter(factMappingValueMock, ROW_INDEX, COLUMN_INDEX, DX, DY, PopoverView.Position.RIGHT);
-        verify(errorReportPopupPresenterMock, times(1)).setup(
-                eq(ScenarioSimulationEditorConstants.INSTANCE.errorReason()),
-                eq(ScenarioSimulationEditorConstants.INSTANCE.errorPopoverMessageFailedWithError(NULL, NULL)),
-                eq(ScenarioSimulationEditorConstants.INSTANCE.keep()),
-                eq(ScenarioSimulationEditorConstants.INSTANCE.apply()),
-                isA(Command.class),
-                eq(DX),
-                eq(DY),
-                eq(PopoverView.Position.RIGHT));
-    }
-
-    @Test
-    public void setupPopupPresenterWithScrollFailedWithError() {
+    public void setupPopupPresenterWithScrollFailedWithError_NullPath() {
         when(elementMock.getScrollTop()).thenReturn(SCROLL_TOP);
         when(elementMock.getScrollLeft()).thenReturn(SCROLL_LEFT);
         when(factMappingValueMock.getStatus()).thenReturn(FactMappingValueStatus.FAILED_WITH_ERROR);
+        when(factMappingValueMock.getCollectionPathToValue()).thenReturn(null);
         mouseMoveHandler.setupPopupPresenter(factMappingValueMock, ROW_INDEX, COLUMN_INDEX, DX, DY, PopoverView.Position.RIGHT);
-        verify(errorReportPopupPresenterMock, times(1)).setup(
-                eq(ScenarioSimulationEditorConstants.INSTANCE.errorReason()),
-                eq(ScenarioSimulationEditorConstants.INSTANCE.errorPopoverMessageFailedWithError(RAW_VALUE, ERROR_VALUE)),
-                eq(ScenarioSimulationEditorConstants.INSTANCE.keep()),
-                eq(ScenarioSimulationEditorConstants.INSTANCE.apply()),
-                isA(Command.class),
-                eq(DX),
-                eq(DY),
-                eq(PopoverView.Position.RIGHT));
+        verify(mouseMoveHandler, times(1)).showErrorPopoverWithSuggestion(eq(RAW_VALUE), eq(ERROR_VALUE), eq(ROW_INDEX), eq(COLUMN_INDEX), eq(DX), eq(DY), eq(PopoverView.Position.RIGHT));
+    }
+
+    @Test
+    public void setupPopupPresenterWithScrollFailedWithError_WithPath() {
+        when(elementMock.getScrollTop()).thenReturn(SCROLL_TOP);
+        when(elementMock.getScrollLeft()).thenReturn(SCROLL_LEFT);
+        when(factMappingValueMock.getStatus()).thenReturn(FactMappingValueStatus.FAILED_WITH_ERROR);
+        when(factMappingValueMock.getCollectionPathToValue()).thenReturn(Arrays.asList("field1"));
+        mouseMoveHandler.setupPopupPresenter(factMappingValueMock, ROW_INDEX, COLUMN_INDEX, DX, DY, PopoverView.Position.RIGHT);
+        String errorMessage = mouseMoveHandler.getCollectionHTMLErrorMessage(ERROR_VALUE, Arrays.asList("field1"));
+        verify(mouseMoveHandler, times(1)).showErrorPopoverWithoutSuggestion(eq(errorMessage), eq(DX), eq(DY), eq(PopoverView.Position.RIGHT));
     }
 
     @Test
@@ -333,12 +326,118 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
         when(factMappingValueMock.getStatus()).thenReturn(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
         when(factMappingValueMock.getExceptionMessage()).thenReturn(EXCEPTION);
         mouseMoveHandler.setupPopupPresenter(factMappingValueMock, ROW_INDEX, COLUMN_INDEX, DX, DY, PopoverView.Position.RIGHT);
+        verify(mouseMoveHandler, times(1)).showErrorPopoverWithoutSuggestion(eq(EXCEPTION), eq(DX), eq(DY), eq(PopoverView.Position.RIGHT));
+    }
+
+    @Test
+    public void showErrorPopoverWithoutSuggestion() {
+        mouseMoveHandler.showErrorPopoverWithoutSuggestion(ERROR_VALUE, DX, DY, PopoverView.Position.RIGHT);
         verify(errorReportPopupPresenterMock, times(1)).setup(
                 eq(ScenarioSimulationEditorConstants.INSTANCE.errorReason()),
-                eq(ScenarioSimulationEditorConstants.INSTANCE.errorPopoverMessageFailedWithException(EXCEPTION)),
+                eq(ERROR_VALUE),
                 eq(ScenarioSimulationEditorConstants.INSTANCE.close()),
                 eq(DX),
                 eq(DY),
                 eq(PopoverView.Position.RIGHT));
     }
+
+    @Test
+    public void showErrorPopoverWithSuggestion() {
+        when(elementMock.getScrollTop()).thenReturn(SCROLL_TOP);
+        when(elementMock.getScrollLeft()).thenReturn(SCROLL_LEFT);
+        when(factMappingValueMock.getStatus()).thenReturn(FactMappingValueStatus.FAILED_WITH_ERROR);
+        mouseMoveHandler.showErrorPopoverWithSuggestion(RAW_VALUE, ERROR_VALUE, ROW_INDEX, COLUMN_INDEX, DX, DY, PopoverView.Position.RIGHT);
+        String expectedValue = mouseMoveHandler.decorateWithStrongHTMLTag(RAW_VALUE);
+        String wrongValue = mouseMoveHandler.decorateWithStrongHTMLTag(ERROR_VALUE);
+        verify(errorReportPopupPresenterMock, times(1)).setup(
+                eq(ScenarioSimulationEditorConstants.INSTANCE.errorReason()),
+                eq(ScenarioSimulationEditorConstants.INSTANCE.errorPopoverMessageFailedWithError(expectedValue, wrongValue)),
+                eq(ScenarioSimulationEditorConstants.INSTANCE.keep()),
+                eq(ScenarioSimulationEditorConstants.INSTANCE.apply()),
+                isA(Command.class),
+                eq(DX),
+                eq(DY),
+                eq(PopoverView.Position.RIGHT));
+    }
+
+    @Test
+    public void showErrorPopoverWithSuggestion_NULLValues() {
+        when(elementMock.getScrollTop()).thenReturn(SCROLL_TOP);
+        when(elementMock.getScrollLeft()).thenReturn(SCROLL_LEFT);
+        when(factMappingValueMock.getStatus()).thenReturn(FactMappingValueStatus.FAILED_WITH_ERROR);
+        mouseMoveHandler.showErrorPopoverWithSuggestion(null, null, ROW_INDEX, COLUMN_INDEX, DX, DY, PopoverView.Position.RIGHT);
+        String expectedValue = mouseMoveHandler.decorateWithStrongHTMLTag(NULL);
+        String wrongValue = mouseMoveHandler.decorateWithStrongHTMLTag(NULL);
+        verify(errorReportPopupPresenterMock, times(1)).setup(
+                eq(ScenarioSimulationEditorConstants.INSTANCE.errorReason()),
+                eq(ScenarioSimulationEditorConstants.INSTANCE.errorPopoverMessageFailedWithError(expectedValue, wrongValue)),
+                eq(ScenarioSimulationEditorConstants.INSTANCE.keep()),
+                eq(ScenarioSimulationEditorConstants.INSTANCE.apply()),
+                isA(Command.class),
+                eq(DX),
+                eq(DY),
+                eq(PopoverView.Position.RIGHT));
+    }
+
+    @Test
+    public void getCollectionHTMLErrorMessage_EmptyPath() {
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.errorPopoverGenericCollectionErrorMessage(),
+                     mouseMoveHandler.getCollectionHTMLErrorMessage(ERROR_VALUE, Collections.emptyList()));
+    }
+
+    @Test
+    public void getCollectionHTMLErrorMessage_OnePathItemWithWrongValue() {
+        String field1 = "Field1";
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.errorPopoverCollectionHTMLFailureMessage(mouseMoveHandler.decorateWithEMHTMLTag(field1))
+                             + BR
+                             + ScenarioSimulationEditorConstants.INSTANCE.errorPopoverCollectionHTMLValue(mouseMoveHandler.decorateWithStrongHTMLTag(ERROR_VALUE)),
+                     mouseMoveHandler.getCollectionHTMLErrorMessage(ERROR_VALUE, Arrays.asList(field1)));
+    }
+
+    @Test
+    public void getCollectionHTMLErrorMessage_OnePathItemWithoutWrongValue() {
+        String field1 = "Field1";
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.errorPopoverCollectionHTMLFailureMessage(mouseMoveHandler.decorateWithEMHTMLTag(field1)),
+                     mouseMoveHandler.getCollectionHTMLErrorMessage(null, Arrays.asList(field1)));
+    }
+
+    @Test
+    public void getCollectionHTMLErrorMessage_PathItemsWithWrongValue() {
+        String field1 = "Field1";
+        String field2 = "Field2";
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.errorPopoverCollectionHTMLFailureMessage(mouseMoveHandler.decorateWithEMHTMLTag(field1))
+                             + BR
+                             + ScenarioSimulationEditorConstants.INSTANCE.errorPopoverCollectionHTMLField(mouseMoveHandler.decorateWithEMHTMLTag(mouseMoveHandler.generateFieldsHierarchy(Arrays.asList(field2))))
+                             + ScenarioSimulationEditorConstants.INSTANCE.errorPopoverCollectionHTMLValue(mouseMoveHandler.decorateWithStrongHTMLTag(ERROR_VALUE)),
+                     mouseMoveHandler.getCollectionHTMLErrorMessage(ERROR_VALUE, Arrays.asList(field1, field2)));
+    }
+
+    @Test
+    public void getCollectionHTMLErrorMessage_PathItemsWithoutWrongValue() {
+        String field1 = "Field1";
+        String field2 = "Field2";
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.errorPopoverCollectionHTMLFailureMessage(mouseMoveHandler.decorateWithEMHTMLTag(field1))
+                             + BR
+                             + ScenarioSimulationEditorConstants.INSTANCE.errorPopoverCollectionHTMLField(mouseMoveHandler.decorateWithEMHTMLTag(mouseMoveHandler.generateFieldsHierarchy(Arrays.asList(field2)))),
+                     mouseMoveHandler.getCollectionHTMLErrorMessage(null, Arrays.asList(field1, field2))
+        );
+    }
+
+    @Test
+    public void decorateWithStrongHTMLTag() {
+        assertEquals("<strong>\"" + RAW_VALUE + "\"</strong>", mouseMoveHandler.decorateWithStrongHTMLTag(RAW_VALUE));
+    }
+
+    @Test
+    public void decorateWithEMHTMLTag() {
+        assertEquals("<em>" + RAW_VALUE + "</em>", mouseMoveHandler.decorateWithEMHTMLTag(RAW_VALUE));
+    }
+
+    @Test
+    public void generateFieldsHierarchy() {
+        assertEquals("Field1<br>", mouseMoveHandler.generateFieldsHierarchy(Arrays.asList("Field1")));
+        assertEquals("<ul><li>Field1<ul><li>Field2<ul><li>Field3</li></ul></li></ul></li></ul>",
+                     mouseMoveHandler.generateFieldsHierarchy(Arrays.asList("Field1", "Field2", "Field3")));
+    }
+
 }

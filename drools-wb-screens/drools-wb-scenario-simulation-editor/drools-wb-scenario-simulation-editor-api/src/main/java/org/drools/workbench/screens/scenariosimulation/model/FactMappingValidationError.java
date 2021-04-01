@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.model;
 
 import org.drools.scenariosimulation.api.model.FactMapping;
+import org.drools.workbench.screens.scenariosimulation.utils.ScenarioSimulationI18nServerMessage;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -24,18 +25,33 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class FactMappingValidationError {
 
-    protected String errorId;
-
-    protected String errorMessage;
+    private String errorId;
+    private String errorMessage;
+    private ScenarioSimulationI18nServerMessage serverMessage;
+    private String[] parameters;
 
     public static FactMappingValidationError createFieldChangedError(FactMapping factMapping, String newType) {
         return new FactMappingValidationError(extractFactMappingId(factMapping),
-                                              "Field type has changed: old '" + factMapping.getClassName() + "', current '" + newType + "'");
+                                              ScenarioSimulationI18nServerMessage.SCENARIO_VALIDATION_FIELD_CHANGED_ERROR,
+                                              factMapping.getClassName(),
+                                              newType);
     }
 
     public static FactMappingValidationError createNodeChangedError(FactMapping factMapping, String newType) {
         return new FactMappingValidationError(extractFactMappingId(factMapping),
-                                              "Node type has changed: old '" + factMapping.getFactIdentifier().getClassName() + "', current '" + newType + "'");
+                                              ScenarioSimulationI18nServerMessage.SCENARIO_VALIDATION_NODE_CHANGED_ERROR,
+                                              factMapping.getFactIdentifier().getClassName(),
+                                              newType);
+    }
+
+    public static FactMappingValidationError createFieldAddedConstraintError(FactMapping factMapping) {
+        return new FactMappingValidationError(extractFactMappingId(factMapping),
+                                              ScenarioSimulationI18nServerMessage.SCENARIO_VALIDATION_FIELD_ADDED_CONSTRAINT_ERROR);
+    }
+
+    public static FactMappingValidationError createFieldRemovedConstraintError(FactMapping factMapping) {
+        return new FactMappingValidationError(extractFactMappingId(factMapping),
+                                              ScenarioSimulationI18nServerMessage.SCENARIO_VALIDATION_FIELD_REMOVED_CONSTRAINT_ERROR);
     }
 
     public static FactMappingValidationError createGenericError(FactMapping factMapping, String genericError) {
@@ -55,11 +71,27 @@ public class FactMappingValidationError {
         this.errorMessage = errorMessage;
     }
 
+    public FactMappingValidationError(String errorId,
+                                      ScenarioSimulationI18nServerMessage serverMessage,
+                                      String ... parameters) {
+        this.errorId = errorId;
+        this.serverMessage = serverMessage;
+        this.parameters = parameters;
+    }
+
     public String getErrorId() {
         return errorId;
     }
 
     public String getErrorMessage() {
         return errorMessage;
+    }
+
+    public ScenarioSimulationI18nServerMessage getServerMessage() {
+        return serverMessage;
+    }
+
+    public String[] getParameters() {
+        return parameters;
     }
 }

@@ -1,9 +1,0 @@
-package org.kiegroup;
-
-rule "Apply for car driving license"
-dialect "mvel"
-when
-    $p : Person(age > 18, dummy == false)
-then
-    insert(new DrivingLicenseApplication("car", $p));
-end

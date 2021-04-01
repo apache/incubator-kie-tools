@@ -39,10 +39,10 @@ public class ErrorReportPopoverView extends AbstractPopoverView implements Error
     protected Command applyCommand;
 
     @DataField("keepButton")
-    protected ButtonElement keepButton = Document.get().createButtonElement();
+    protected ButtonElement keepButton = Document.get().createPushButtonElement();
 
     @DataField("applyButton")
-    protected ButtonElement applyButton = Document.get().createButtonElement();
+    protected ButtonElement applyButton = Document.get().createPushButtonElement();
 
     @DataField("errorContent")
     protected Div errorContent;
@@ -74,7 +74,7 @@ public class ErrorReportPopoverView extends AbstractPopoverView implements Error
                       final int my,
                       final Position position) {
         this.applyCommand = applyCommand;
-        errorContent.setTextContent(errorContentText);
+        errorContent.setInnerHTML(errorContentText);
         keepButton.setInnerText(keepText);
         applyButton.setInnerText(applyText);
         applyButton.getStyle().setDisplay(Style.Display.INLINE);
@@ -88,7 +88,7 @@ public class ErrorReportPopoverView extends AbstractPopoverView implements Error
                       final int mx,
                       final int my,
                       final Position position) {
-        errorContent.setTextContent(errorContentText);
+        errorContent.setInnerHTML(errorContentText);
         keepButton.setInnerText(keepText);
         applyButton.getStyle().setDisplay(Style.Display.NONE);
         applyCommand = () -> {throw new UnsupportedOperationException();};

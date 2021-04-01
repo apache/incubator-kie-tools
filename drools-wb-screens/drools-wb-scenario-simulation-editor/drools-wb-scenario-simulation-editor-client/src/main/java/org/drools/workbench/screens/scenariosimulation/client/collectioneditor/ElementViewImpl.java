@@ -89,6 +89,11 @@ public abstract class ElementViewImpl<T extends ElementView.Presenter> implement
     }
 
     @Override
+    public void setItemSeparatorText(String itemSeparatorText) {
+        this.itemSeparatorText.setInnerText(itemSeparatorText);
+    }
+
+    @Override
     public LIElement getItemContainer() {
         return itemContainer;
     }

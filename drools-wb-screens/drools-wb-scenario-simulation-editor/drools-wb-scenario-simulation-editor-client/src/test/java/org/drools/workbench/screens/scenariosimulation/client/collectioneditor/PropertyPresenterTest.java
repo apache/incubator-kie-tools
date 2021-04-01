@@ -40,8 +40,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -129,6 +132,17 @@ public class PropertyPresenterTest extends AbstractCollectionEditorTest {
     }
 
     @Test
+    public void editPropertiesNoSimpleProperties() {
+        propertyEditorPresenter.editProperties("missing-item");
+        verify(spanElementMock, never()).getStyle();
+        verify(styleMock, never()).setDisplay(any());
+        verify(propertyValueInputMock, never()).setValue(anyString());
+        verify(propertyValueInputMock, never()).getStyle();
+        verify(styleMock, never()).setDisplay(any());
+        verify(propertyValueInputMock, never()).setDisabled(anyBoolean());
+    }
+
+    @Test
     public void stopEditProperties() {
         propertyEditorPresenter.stopEditProperties(ITEM_ID);
         verify(propertyEditorPresenter, times(1)).stopEdit(eq(ITEM_ID), eq(false));
@@ -142,7 +156,8 @@ public class PropertyPresenterTest extends AbstractCollectionEditorTest {
 
     @Test
     public void getProperties() {
-        assertNotNull(propertyEditorPresenter.getSimpleProperties(ITEM_ID));
+        assertFalse(propertyEditorPresenter.getSimpleProperties(ITEM_ID).isEmpty());
+        assertTrue(propertyEditorPresenter.getSimpleProperties("missing-item").isEmpty());
     }
 
     @Test
@@ -178,11 +193,24 @@ public class PropertyPresenterTest extends AbstractCollectionEditorTest {
     }
 
     @Test
+    public void onToggleRowExpansionNoSimpleProperties() {
+        propertyEditorPresenter.onToggleRowExpansion(eq("missing-item"), anyBoolean());
+        verify(propertyFieldsMock, never()).addClassName(anyString());
+        verify(styleMock, never()).setDisplay(any());
+    }
+
+    @Test
     public void deleteProperties() {
         propertyEditorPresenter.deleteProperties(ITEM_ID);
         verify(propertyFieldsMock, times(1)).removeFromParent();
         assertFalse(propertySpanElementMapLocal.containsKey(TEST_PROPERTYNAME));
         assertFalse(propertyViewMapLocal.containsKey(ITEM_ID));
+    }
+
+    @Test
+    public void deletePropertiesNoSimpleProperties() {
+        propertyEditorPresenter.deleteProperties("missing-item");
+        verify(propertyFieldsMock, never()).removeFromParent();
     }
 
     @Test
@@ -195,16 +223,26 @@ public class PropertyPresenterTest extends AbstractCollectionEditorTest {
         commonStopEdit(false);
     }
 
-    private void commonStopEdit(boolean toUdate) {
-        final Map<String, String> retrieved = propertyEditorPresenter.stopEdit(ITEM_ID, toUdate);
+    private void commonStopEdit(boolean toUpdate) {
+        final Map<String, String> retrieved = propertyEditorPresenter.stopEdit(ITEM_ID, toUpdate);
         assertNotNull(retrieved);
         assertTrue(retrieved.containsKey(INNER_TEXT));
-        if (toUdate) {
+        if (toUpdate) {
             verify(spanElementMock, times(1)).setInnerText(eq(TEST_NEWVALUE));
         }
         assertEquals(INNER_TEXT, retrieved.get(INNER_TEXT));
         verify(styleMock, times(1)).setDisplay(Style.Display.INLINE);
         verify(styleMock, times(1)).setDisplay(Style.Display.NONE);
         verify(propertyValueInputMock, times(1)).setDisabled(eq(true));
+    }
+
+    @Test
+    public void stopEditNoSimpleProperties() {
+        final Map<String, String> retrieved = propertyEditorPresenter.stopEdit(eq(ITEM_ID), anyBoolean());
+        assertTrue(retrieved.isEmpty());
+        verify(spanElementMock, never()).setInnerText(anyString());
+        verify(styleMock, never()).setDisplay(any());
+        verify(styleMock, never()).setDisplay(any());
+        verify(propertyValueInputMock, never()).setDisabled(anyBoolean());
     }
 }

@@ -19,7 +19,6 @@ package org.drools.workbench.screens.scenariosimulation.client.editor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -45,10 +44,10 @@ import org.drools.workbench.screens.scenariosimulation.client.events.ImportEvent
 import org.drools.workbench.screens.scenariosimulation.client.events.RedoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.UndoEvent;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.AbstractScenarioSimulationDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationHasBusyIndicatorDefaultErrorCallback;
 import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.producers.AbstractScenarioSimulationProducer;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
@@ -56,6 +55,7 @@ import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToo
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValidationError;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
+import org.drools.workbench.screens.scenariosimulation.utils.ScenarioSimulationI18nServerMessage;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -165,8 +165,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         when(testToolsActivityMock.getWidget()).thenReturn(testToolsViewMock);
         when(placeRequestMock.getPath()).thenReturn(pathMock);
         when(simulationMock.getUnmodifiableData()).thenReturn(Arrays.asList(new Scenario()));
-        when(abstractScenarioSimulationDocksHandlerMock.getTestToolsPresenter()).thenReturn(Optional.ofNullable(testToolsPresenterMock));
-        when(abstractScenarioSimulationDocksHandlerMock.getSettingsPresenter()).thenReturn(Optional.ofNullable(settingsPresenterMock));
+        when(abstractScenarioSimulationDocksHandlerMock.getTestToolsPresenter()).thenReturn(testToolsPresenterMock);
+        when(abstractScenarioSimulationDocksHandlerMock.getSettingsPresenter()).thenReturn(settingsPresenterMock);
 
         this.presenterSpy = spy(new ScenarioSimulationEditorPresenter(abstractScenarioSimulationProducerMock,
                                                                       mock(ScenarioSimulationResourceType.class),
@@ -188,11 +188,6 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
                 this.exportToCSVMenuItem = exportToCsvMenuItemMock;
                 this.importMenuItem = importMenuItemMock;
                 this.scenarioSimulationEditorWrapper = scenarioSimulationEditorWrapperMock;
-            }
-
-            @Override
-            protected void clearTestToolsStatus() {
-
             }
 
             @Override
@@ -269,6 +264,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         presenterSpy.reloadTestTools(false);
         verify(presenterSpy, times(1)).populateRightDocks(eq(TestToolsPresenter.IDENTIFIER));
         verify(abstractScenarioSimulationDocksHandlerMock, never()).getTestToolsPresenter();
+        verify(testToolsPresenterMock, never()).onDisableEditorTab();
     }
 
     @Test
@@ -276,6 +272,14 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         presenterSpy.reloadTestTools(true);
         verify(presenterSpy, times(1)).populateRightDocks(eq(TestToolsPresenter.IDENTIFIER));
         verify(abstractScenarioSimulationDocksHandlerMock, times(1)).getTestToolsPresenter();
+        verify(testToolsPresenterMock, times(1)).onDisableEditorTab();
+    }
+
+    @Test
+    public void clearTestTools() {
+        presenterSpy.clearTestToolsStatus();
+        verify(abstractScenarioSimulationDocksHandlerMock, times(1)).getTestToolsPresenter();
+        verify(testToolsPresenterMock, times(1)).onClearStatus();
     }
 
     @Test
@@ -695,10 +699,14 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
         String errorMessage = "errorMessage";
         String errorId = "errorId";
+        String errorId2 = "errorId2";
         validationErrors.add(new FactMappingValidationError(errorId, errorMessage));
+        validationErrors.add(new FactMappingValidationError("errorId2", ScenarioSimulationI18nServerMessage.SCENARIO_VALIDATION_NODE_CHANGED_ERROR, "p1", "p2"));
         presenterSpy.getValidationCallback().callback(validationErrors);
         verify(confirmPopupPresenterMock, times(1)).show(anyString(), contains(errorId));
         verify(confirmPopupPresenterMock, times(1)).show(anyString(), contains(errorMessage));
+        verify(confirmPopupPresenterMock, times(1)).show(anyString(), contains(errorId2));
+        verify(confirmPopupPresenterMock, times(1)).show(anyString(), contains(ScenarioSimulationEditorConstants.INSTANCE.scenarioValidationNodeChangedError("p1", "p2")));
     }
 
     @Test
@@ -747,5 +755,17 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         presenterSpy.reloadSettingsDock();
         verify(abstractScenarioSimulationDocksHandlerMock, times(1)).getSettingsPresenter();
         verify(presenterSpy, times(1)).updateSettings(settingsPresenterMock);
+    }
+
+    @Test
+    public void unpublishTestResultsAlerts(){
+        presenterSpy.unpublishTestResultsAlerts();
+        verify(scenarioSimulationEditorWrapperMock, times(1)).unpublishTestResultsAlerts();
+    }
+
+    @Test
+    public void getUpdateDMNMetadataCommand() {
+        presenterSpy.getUpdateDMNMetadataCommand().execute();
+        verify(scenarioSimulationEditorWrapperMock, times(1)).getDMNMetadata();
     }
 }

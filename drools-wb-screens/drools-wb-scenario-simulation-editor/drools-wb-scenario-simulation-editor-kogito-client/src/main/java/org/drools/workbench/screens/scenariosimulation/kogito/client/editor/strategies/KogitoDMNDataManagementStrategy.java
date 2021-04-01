@@ -49,8 +49,7 @@ public class KogitoDMNDataManagementStrategy extends AbstractDMNDataManagementSt
     @Override
     protected void retrieveFactModelTuple(final TestToolsView.Presenter testToolsPresenter,
                                           final ScenarioSimulationContext context,
-                                          final GridWidget gridWidget,
-                                          final String dmnFilePath) {
+                                          final GridWidget gridWidget) {
         String dmnFileName = dmnFilePath.substring(dmnFilePath.lastIndexOf('/') + 1);
         final Path dmnPath = PathFactory.newPath(dmnFileName, dmnFilePath);
         dmnMarshallerService.getDMNContent(dmnPath,

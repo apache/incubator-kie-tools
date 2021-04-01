@@ -312,7 +312,7 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
      * @param lastLevelClassName
      * @param keepData
      */
-    public void updateColumnProperty(int columnIndex, final GridColumn<?> column, List<String> propertyNameElements, String lastLevelClassName, boolean keepData, FactMappingValueType valueType) {
+    public void updateColumnProperty(int columnIndex, final GridColumn<?> column, List<String> propertyNameElements, String lastLevelClassName, boolean keepData, FactMappingValueType valueType, ScenarioSimulationModel.Type type) {
         checkSimulation();
         List<GridCellValue<?>> originalValues = new ArrayList<>();
         if (keepData) {
@@ -322,7 +322,9 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
         replaceColumn(columnIndex, column);
         final FactMapping factMappingByIndex = abstractScesimModel.getScesimModelDescriptor().getFactMappingByIndex(columnIndex);
         factMappingByIndex.setFactMappingValueType(valueType);
-        List<String> propertyNameElementsClone = getPropertyNameElementsWithoutAlias(propertyNameElements, factMappingByIndex.getFactIdentifier());
+        List<String> propertyNameElementsClone = getPropertyNameElementsWithoutAlias(propertyNameElements,
+                                                                                     factMappingByIndex.getFactIdentifier(),
+                                                                                     type);
         // This is because the value starts with the alias of the fact; i.e. it may be Book.name but also Bookkk.name,
         // while the first element of ExpressionElements is always the class name
         IntStream.range(0, propertyNameElementsClone.size())
@@ -696,7 +698,8 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
         String propertyName = String.join(".", propertyNameElements);
         ScesimModelDescriptor simulationDescriptor = abstractScesimModel.getScesimModelDescriptor();
         final FactMapping factMappingByIndex = simulationDescriptor.getFactMappingByIndex(columnIndex);
-        return factMappingByIndex.getExpressionAlias().equals(propertyName);
+        String expressionElement = factMappingByIndex.getExpressionElements().stream().map(ExpressionElement::getStep).collect(Collectors.joining("."));
+        return Objects.equals(expressionElement, propertyName);
     }
 
     /**

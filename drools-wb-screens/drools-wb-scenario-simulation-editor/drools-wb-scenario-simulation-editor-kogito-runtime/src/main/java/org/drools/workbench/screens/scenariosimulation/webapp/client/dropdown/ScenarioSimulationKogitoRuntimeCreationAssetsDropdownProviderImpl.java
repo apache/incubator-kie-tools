@@ -25,11 +25,11 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dropdown.ScenarioSimulationKogitoCreationAssetsDropdownProvider;
+import org.drools.workbench.screens.scenariosimulation.webapp.client.popup.ErrorPopupPresenter;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.kogito.webapp.base.client.workarounds.KogitoResourceContentService;
 import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 
 @Dependent
 public class ScenarioSimulationKogitoRuntimeCreationAssetsDropdownProviderImpl implements ScenarioSimulationKogitoCreationAssetsDropdownProvider {

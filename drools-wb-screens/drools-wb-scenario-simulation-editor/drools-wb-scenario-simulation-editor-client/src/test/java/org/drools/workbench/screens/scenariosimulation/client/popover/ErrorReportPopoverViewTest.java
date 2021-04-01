@@ -135,7 +135,7 @@ public class ErrorReportPopoverViewTest {
         verify(styleMock, times(1)).setProperty(eq(TOP),eq(TOP_PX));
         verify(styleMock, times(1)).setProperty(eq(LEFT), eq(LEFT_PX));
         verify(styleMock, times(1)).setProperty(eq(POSITION),eq(ABSOLUTE));
-        verify(errorContentMock, times(1)).setTextContent(eq(ERROR_CONTENT_TEXT));
+        verify(errorContentMock, times(1)).setInnerHTML(eq(ERROR_CONTENT_TEXT));
         verify(keepButtonMock, times(1)).setInnerText(eq(KEEP_TEXT));
         verify(applyButtonMock, times(1)).setInnerText(eq(APPLY_TEXT));
         verify(applyButtonMock.getStyle(), times(1)).setDisplay(eq(Style.Display.INLINE));
@@ -151,7 +151,7 @@ public class ErrorReportPopoverViewTest {
         verify(styleMock, times(1)).setProperty(eq(TOP),eq(TOP_PX));
         verify(styleMock, times(1)).setProperty(eq(LEFT), eq(LEFT_PX));
         verify(styleMock, times(1)).setProperty(eq(POSITION),eq(ABSOLUTE));
-        verify(errorContentMock, times(1)).setTextContent(eq(ERROR_CONTENT_TEXT));
+        verify(errorContentMock, times(1)).setInnerHTML(eq(ERROR_CONTENT_TEXT));
         verify(keepButtonMock, times(1)).setInnerText(eq(KEEP_TEXT));
         verify(applyButtonMock.getStyle(), times(1)).setDisplay(eq(Style.Display.NONE));
     }

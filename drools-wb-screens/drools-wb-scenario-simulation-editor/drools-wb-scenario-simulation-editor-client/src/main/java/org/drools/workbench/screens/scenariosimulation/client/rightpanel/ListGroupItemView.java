@@ -39,7 +39,7 @@ public interface ListGroupItemView extends IsWidget,
     /**
      * @param parentPath the <b>parent</b>' path
      */
-    void setParentPath(String parentPath);
+    void setParentPath(List<String> parentPath);
 
     /**
      * @param factName the property' name
@@ -47,7 +47,7 @@ public interface ListGroupItemView extends IsWidget,
      */
     void setFactNameAndType(String factName, String factType);
 
-    String getParentPath();
+    List<String> getParentPath();
 
     String getFactName();
 
@@ -111,7 +111,7 @@ public interface ListGroupItemView extends IsWidget,
          * @param factName the property' name
          * @param factModelTreeClass the property' type
          */
-        DivElement getDivElement(String parentPath, String factName, String factModelTreeClass);
+        DivElement getDivElement(List<String> parentPath, String factName, String factModelTreeClass);
 
         void onToggleRowExpansion(ListGroupItemView listGroupItemView, boolean currentlyShown);
 

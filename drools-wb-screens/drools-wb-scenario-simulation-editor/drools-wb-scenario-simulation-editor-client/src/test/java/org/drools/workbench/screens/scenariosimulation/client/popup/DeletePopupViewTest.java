@@ -29,7 +29,6 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEXT1_TEXT;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEXT_DANGER_TEXT;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEXT_QUESTION_TEXT;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -71,7 +70,7 @@ public class DeletePopupViewTest extends AbstractScenarioConfirmationPopupViewTe
                    MAIN_QUESTION_TEXT,
                    TEXT1_TEXT,
                    TEXT_QUESTION_TEXT);
-        verify(textDangerMock, times(1)).setInnerText(eq(TEXT_DANGER_TEXT));
+        verify(((DeletePopupView) popupView), times(1)).conditionalShow(textDangerMock, TEXT_DANGER_TEXT);
     }
 
 }

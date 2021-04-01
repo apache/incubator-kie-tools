@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.List;
+
 import com.google.gwt.dom.client.LIElement;
 
 public interface FieldItemView {
@@ -30,7 +32,7 @@ public interface FieldItemView {
          * @param classTypeName
          * @return
          */
-        LIElement getLIElement(String parentPath, String factName, String fieldName, String className, String classTypeName);
+        LIElement getLIElement(List<String> parentPath, String factName, String fieldName, String className, String classTypeName);
 
         void onFieldElementClick(FieldItemView selected);
 
@@ -43,7 +45,7 @@ public interface FieldItemView {
         void reset();
     }
 
-    String getFullPath();
+    List<String> getFullPath();
 
     String getFactName();
 
@@ -67,7 +69,7 @@ public interface FieldItemView {
      * @param className
      * @param classTypeName
      */
-    void setFieldData(String fullPath, String factName, String fieldName, String className, String classTypeName);
+    void setFieldData(List<String> fullPath, String factName, String fieldName, String className, String classTypeName);
 
     LIElement getLIElement();
 

@@ -219,11 +219,11 @@ public class ScenarioSimulationContext {
     }
 
     public void setUndoButtonEnabledStatus(boolean enabled) {
-        scenarioSimulationEditorPresenter.setUndoButtonEnabledStatus(enabled);
+        //scenarioSimulationEditorPresenter.setUndoButtonEnabledStatus(enabled);
     }
 
     public void setRedoButtonEnabledStatus(boolean enabled) {
-        scenarioSimulationEditorPresenter.setRedoButtonEnabledStatus(enabled);
+        //scenarioSimulationEditorPresenter.setRedoButtonEnabledStatus(enabled);
     }
 
     /**
@@ -348,7 +348,7 @@ public class ScenarioSimulationContext {
         }
 
         public String getFullPackage() {
-            return fullPackage;
+            return fullPackage == null ? "" : fullPackage;
         }
 
         public void setFullPackage(String fullPackage) {

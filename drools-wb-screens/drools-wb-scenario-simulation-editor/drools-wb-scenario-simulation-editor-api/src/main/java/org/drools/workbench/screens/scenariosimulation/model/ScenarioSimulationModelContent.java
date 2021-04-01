@@ -20,7 +20,7 @@ import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.widgets.client.datamodel.copied.PackageDataModelOracleBaselinePayload;
 
 @Portable
 public class ScenarioSimulationModelContent {

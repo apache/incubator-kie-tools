@@ -32,9 +32,12 @@ import org.kie.workbench.common.command.client.impl.CommandResultImpl;
 public class UpdateSettingsDataCommand extends AbstractScenarioSimulationUndoableCommand<Settings> {
 
     private final Consumer<Settings> settingsConsumer;
+    private final boolean dmnPathChanged;
 
-    public UpdateSettingsDataCommand(Consumer<Settings> settingsConsumer) {
+    public UpdateSettingsDataCommand(final Consumer<Settings> settingsConsumer, 
+                                     final boolean dmnPathChanged) {
         this.settingsConsumer = settingsConsumer;
+        this.dmnPathChanged = dmnPathChanged;
     }
 
     @Override
@@ -56,6 +59,10 @@ public class UpdateSettingsDataCommand extends AbstractScenarioSimulationUndoabl
             final Settings originalSettings = context.getScenarioSimulationModel().getSettings().cloneSettings();
             context.getScenarioSimulationEditorPresenter().getModel().setSettings(restorableStatus);
             restorableStatus = originalSettings;
+            if (dmnPathChanged) {
+                context.getScenarioSimulationEditorPresenter().getPopulateTestToolsCommand().execute();
+                context.getScenarioSimulationEditorPresenter().validateSimulation();
+            }
             context.getScenarioSimulationEditorPresenter().reloadSettingsDock();
             return commonExecution(context);
         } catch (Exception e) {
@@ -66,7 +73,12 @@ public class UpdateSettingsDataCommand extends AbstractScenarioSimulationUndoabl
     @Override
     protected void internalExecute(ScenarioSimulationContext context)  {
         settingsConsumer.accept(context.getScenarioSimulationModel().getSettings());
-        context.getScenarioSimulationEditorPresenter().reloadSettingsDock();
+        if (dmnPathChanged) {
+            context.getScenarioSimulationEditorPresenter().getPopulateTestToolsCommand().execute();
+            context.getScenarioSimulationEditorPresenter().getUpdateDMNMetadataCommand().execute();
+        } else {
+            context.getScenarioSimulationEditorPresenter().reloadSettingsDock();
+        }
     }
 
 }

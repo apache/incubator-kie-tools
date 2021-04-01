@@ -27,7 +27,6 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.ForEvent;
-import org.uberfire.client.views.pfly.resources.i18n.Constants;
 import org.uberfire.client.views.pfly.widgets.Button;
 import org.uberfire.client.views.pfly.widgets.Modal;
 import org.uberfire.mvp.Command;
@@ -56,7 +55,7 @@ public abstract class AbstractScenarioPopupView implements AbstractScenarioPopup
 
     @PostConstruct
     public void init() {
-        cancelButton.setText(translationService.getTranslation(Constants.ConfirmPopup_Cancel));
+        cancelButton.setText("Cancel");
     }
 
     @Override

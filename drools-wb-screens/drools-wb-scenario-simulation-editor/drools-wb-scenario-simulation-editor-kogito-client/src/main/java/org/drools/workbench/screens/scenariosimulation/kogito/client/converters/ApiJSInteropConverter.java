@@ -67,7 +67,7 @@ public class ApiJSInteropConverter {
     }
 
     public static JSIScenarioSimulationModelType getJSIScenarioSimulationModelType(ScenarioSimulationModel source) {
-        JSIScenarioSimulationModelType toReturn = new JSIScenarioSimulationModelType();
+        JSIScenarioSimulationModelType toReturn = JSIScenarioSimulationModelType.newInstance();
         toReturn.setVersion(source.getVersion());
         toReturn.setSettings(getSettings(source.getSettings()));
         toReturn.setImports(getImports(source.getImports()));
@@ -77,7 +77,7 @@ public class ApiJSInteropConverter {
     }
 
     protected static JSISettingsType getSettings(Settings source) {
-        JSISettingsType toReturn = new JSISettingsType();
+        JSISettingsType toReturn = JSISettingsType.newInstance();
         toReturn.setDmoSession(source.getDmoSession());
         toReturn.setType(source.getType().name());
         toReturn.setFileName(source.getFileName());
@@ -93,9 +93,9 @@ public class ApiJSInteropConverter {
     }
 
     protected static JSIImportsType getImports(Imports source) {
-        JSIImportsType toReturn = new JSIImportsType();
+        JSIImportsType toReturn = JSIImportsType.newInstance();
         final List<Import> imports = source.getImports();
-        JSIWrappedImportsType jsiWrappedImportsType = new JSIWrappedImportsType();
+        JSIWrappedImportsType jsiWrappedImportsType = JSIWrappedImportsType.newInstance();
         toReturn.setImports(jsiWrappedImportsType);
         if (imports != null) {
             List<JSIImportType> toSet = imports.stream().map(ApiJSInteropConverter::getImport).collect(Collectors.toList());
@@ -105,17 +105,17 @@ public class ApiJSInteropConverter {
     }
 
     protected static JSIImportType getImport(Import source) {
-        JSIImportType toReturn = new JSIImportType();
+        JSIImportType toReturn = JSIImportType.newInstance();
         toReturn.setType(source.getType());
         return toReturn;
     }
 
     protected static JSISimulationType getSimulation(Simulation source) {
-        JSISimulationType toReturn = new JSISimulationType();
+        JSISimulationType toReturn = JSISimulationType.newInstance();
         JSIScesimModelDescriptorType jsiScesimModelDescriptorType = getScesimModelDescriptor(source.getScesimModelDescriptor());
         toReturn.setScesimModelDescriptor(jsiScesimModelDescriptorType);
         final List<Scenario> unmodifiableScenarios = source.getUnmodifiableData();
-        JSIScenariosType jsiScenariosType = new JSIScenariosType();
+        JSIScenariosType jsiScenariosType = JSIScenariosType.newInstance();
         toReturn.setScesimData(jsiScenariosType);
         List<JSIScenarioType> toSet = unmodifiableScenarios.stream()
                 .map(ApiJSInteropConverter::getScenario).collect(Collectors.toList());
@@ -124,8 +124,8 @@ public class ApiJSInteropConverter {
     }
 
     protected static JSIScenarioType getScenario(Scenario source) {
-        JSIScenarioType toReturn = new JSIScenarioType();
-        JSIFactMappingValuesType factMappingValuesType = new JSIFactMappingValuesType();
+        JSIScenarioType toReturn = JSIScenarioType.newInstance();
+        JSIFactMappingValuesType factMappingValuesType = JSIFactMappingValuesType.newInstance();
         toReturn.setFactMappingValues(factMappingValuesType);
         final List<FactMappingValue> unmodifiableFactMappingValues = source.getUnmodifiableFactMappingValues();
         List<JSIFactMappingValueType> toSet = populateJSIFactMappingValuesType(unmodifiableFactMappingValues);
@@ -134,11 +134,11 @@ public class ApiJSInteropConverter {
     }
 
     protected static JSIBackgroundType getBackground(Background source) {
-        JSIBackgroundType toReturn = new JSIBackgroundType();
+        JSIBackgroundType toReturn = JSIBackgroundType.newInstance();
         JSIScesimModelDescriptorType jsiScesimModelDescriptorType = getScesimModelDescriptor(source.getScesimModelDescriptor());
         toReturn.setScesimModelDescriptor(jsiScesimModelDescriptorType);
         final List<BackgroundData> unmodifiableBackgroundDatas = source.getUnmodifiableData();
-        JSIBackgroundDatasType jsiBackgroundDatasType = new JSIBackgroundDatasType();
+        JSIBackgroundDatasType jsiBackgroundDatasType = JSIBackgroundDatasType.newInstance();
         toReturn.setScesimData(jsiBackgroundDatasType);
         List<JSIBackgroundDataType> toSet = unmodifiableBackgroundDatas.stream()
                 .map(ApiJSInteropConverter::getBackgroundData).collect(Collectors.toList());
@@ -147,8 +147,8 @@ public class ApiJSInteropConverter {
     }
 
     protected static JSIBackgroundDataType getBackgroundData(BackgroundData source) {
-        JSIBackgroundDataType toReturn = new JSIBackgroundDataType();
-        JSIFactMappingValuesType factMappingValuesType = new JSIFactMappingValuesType();
+        JSIBackgroundDataType toReturn = JSIBackgroundDataType.newInstance();
+        JSIFactMappingValuesType factMappingValuesType = JSIFactMappingValuesType.newInstance();
         toReturn.setFactMappingValues(factMappingValuesType);
         final List<FactMappingValue> unmodifiableFactMappingValues = source.getUnmodifiableFactMappingValues();
         List<JSIFactMappingValueType> toSet = populateJSIFactMappingValuesType(unmodifiableFactMappingValues);
@@ -166,9 +166,9 @@ public class ApiJSInteropConverter {
     }
 
     protected static JSIScesimModelDescriptorType getScesimModelDescriptor(ScesimModelDescriptor source) {
-        JSIScesimModelDescriptorType toReturn = new JSIScesimModelDescriptorType();
+        JSIScesimModelDescriptorType toReturn = JSIScesimModelDescriptorType.newInstance();
         final List<FactMapping> factMappings = source.getFactMappings();
-        JSIFactMappingsType jsiFactMappingsType = new JSIFactMappingsType();
+        JSIFactMappingsType jsiFactMappingsType = JSIFactMappingsType.newInstance();
         toReturn.setFactMappings(jsiFactMappingsType);
         List<JSIFactMappingType> toSet = factMappings.stream()
                 .map(ApiJSInteropConverter::getFactMapping).collect(Collectors.toList());
@@ -177,7 +177,7 @@ public class ApiJSInteropConverter {
     }
 
     protected static JSIFactMappingValueType getFactMappingValue(FactMappingValue source) {
-        JSIFactMappingValueType toReturn = new JSIFactMappingValueType();
+        JSIFactMappingValueType toReturn = JSIFactMappingValueType.newInstance();
         final JSIExpressionIdentifierType expressionIdentifierType = Js.uncheckedCast(getExpressionIdentifier(source.getExpressionIdentifier()));
         toReturn.setExpressionIdentifier(expressionIdentifierType);
         final JSIFactIdentifierType jsiFactIdentifierReferenceType = Js.uncheckedCast(getFactIdentifier(source.getFactIdentifier()));
@@ -191,14 +191,14 @@ public class ApiJSInteropConverter {
     }
 
     protected static JSIRawValueType getRawValueReference(Object rawValue) {
-        JSIRawValueType toReturn = new JSIRawValueType();
+        JSIRawValueType toReturn = JSIRawValueType.newInstance();
         toReturn.setClazz("string");
         toReturn.setValue(rawValue.toString());
         return toReturn;
     }
 
     protected static JSIFactMappingType getFactMapping(FactMapping source) {
-        JSIFactMappingType toReturn = new JSIFactMappingType();
+        JSIFactMappingType toReturn = JSIFactMappingType.newInstance();
         toReturn.setClassName(source.getClassName());
         toReturn.setExpressionAlias(source.getExpressionAlias());
         JSIExpressionElementsType jsiExpressionElementsType = Js.uncheckedCast(getExpressionElements(source.getExpressionElements()));
@@ -212,7 +212,7 @@ public class ApiJSInteropConverter {
         toReturn.setColumnWidth(source.getColumnWidth());
         List<String> genericTypes = source.getGenericTypes();
         if (genericTypes != null) {
-            JSIGenericTypes toSet = new JSIGenericTypes();
+            JSIGenericTypes toSet = JSIGenericTypes.newInstance();
             toSet.setString(genericTypes);
             toReturn.setGenericTypes(toSet);
         }
@@ -220,7 +220,7 @@ public class ApiJSInteropConverter {
     }
 
     protected static JSIExpressionElementsType getExpressionElements(List<ExpressionElement> expressionElements) {
-        JSIExpressionElementsType toReturn = new JSIExpressionElementsType();
+        JSIExpressionElementsType toReturn = JSIExpressionElementsType.newInstance();
         List<JSIExpressionElementType> toSet = expressionElements.stream()
                 .map(ApiJSInteropConverter::getExpressionElement).collect(Collectors.toList());
         toReturn.setExpressionElement(toSet);
@@ -228,20 +228,20 @@ public class ApiJSInteropConverter {
     }
 
     protected static JSIExpressionElementType getExpressionElement(ExpressionElement expressionElement) {
-        JSIExpressionElementType toReturn = new JSIExpressionElementType();
+        JSIExpressionElementType toReturn = JSIExpressionElementType.newInstance();
         toReturn.setStep(expressionElement.getStep());
         return toReturn;
     }
 
     protected static JSIExpressionIdentifierType getExpressionIdentifier(ExpressionIdentifier source) {
-        JSIExpressionIdentifierType toReturn = new JSIExpressionIdentifierType();
+        JSIExpressionIdentifierType toReturn = JSIExpressionIdentifierType.newInstance();
         toReturn.setName(source.getName());
         toReturn.setType(source.getType().name());
         return toReturn;
     }
 
     protected static JSIFactIdentifierType getFactIdentifier(FactIdentifier factIdentifier) {
-        JSIFactIdentifierType toReturn = new JSIFactIdentifierType();
+        JSIFactIdentifierType toReturn = JSIFactIdentifierType.newInstance();
         toReturn.setName(factIdentifier.getName());
         toReturn.setClassName(factIdentifier.getClassName());
         return toReturn;

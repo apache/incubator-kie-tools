@@ -22,7 +22,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
 import org.kie.workbench.common.widgets.client.docks.WorkbenchDocksHandler;
@@ -69,17 +68,15 @@ public class KogitoEditorDock implements AuthoringEditorDock {
 
     @Override
     public void show() {
-        GWT.log(this + " show");
     }
 
     @Override
     public void hide() {
-        GWT.log(this + " hide");
     }
 
     @Override
     public void expandAuthoringDock(UberfireDock dockToOpen) {
-        uberfireDocks.show(UberfireDockPosition.EAST, authoringPerspectiveIdentifier);
+        uberfireDocks.show(UberfireDockPosition.EAST);
         if (dockToOpen != null) {
             uberfireDocks.open(dockToOpen);
         }
@@ -96,8 +93,6 @@ public class KogitoEditorDock implements AuthoringEditorDock {
 
         if (activeHandler.shouldDisableDocks()) {
             // disable docks
-            uberfireDocks.hide(UberfireDockPosition.EAST,
-                               authoringPerspectiveIdentifier);
         } else {
             // first remove the existing docks
             if (activeDocks != null) {
@@ -108,8 +103,7 @@ public class KogitoEditorDock implements AuthoringEditorDock {
             Collection<UberfireDock> docks = activeHandler.provideDocks(authoringPerspectiveIdentifier);
             activeDocks = docks.toArray(new UberfireDock[docks.size()]);
             uberfireDocks.add(activeDocks);
-            uberfireDocks.show(UberfireDockPosition.EAST,
-                               authoringPerspectiveIdentifier);
+            uberfireDocks.show(UberfireDockPosition.EAST);
         }
     }
 }

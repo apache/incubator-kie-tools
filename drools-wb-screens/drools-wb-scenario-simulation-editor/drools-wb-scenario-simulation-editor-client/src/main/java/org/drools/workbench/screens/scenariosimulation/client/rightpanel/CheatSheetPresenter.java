@@ -18,16 +18,13 @@ package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
-import org.uberfire.client.annotations.WorkbenchScreen;
-
-import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetPresenter.DEFAULT_PREFERRED_WIDHT;
-import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetPresenter.IDENTIFIER;
 
 @ApplicationScoped
-@WorkbenchScreen(identifier = IDENTIFIER, preferredWidth = DEFAULT_PREFERRED_WIDHT)
+@Named(CheatSheetPresenter.IDENTIFIER)
 public class CheatSheetPresenter extends AbstractSubDockPresenter<CheatSheetView> implements CheatSheetView.Presenter {
 
     public static final String IDENTIFIER = "org.drools.scenariosimulation.CheatSheet";
@@ -41,6 +38,11 @@ public class CheatSheetPresenter extends AbstractSubDockPresenter<CheatSheetView
     public CheatSheetPresenter(CheatSheetView view) {
         super(view);
         title = ScenarioSimulationEditorConstants.INSTANCE.scenarioCheatSheet();
+    }
+
+    @Override
+    public String getIdentifier() {
+        return IDENTIFIER;
     }
 
     @Override

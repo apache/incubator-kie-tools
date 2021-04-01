@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.editor.strategies;
 
+import java.util.Objects;
+
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
@@ -22,17 +24,15 @@ import org.drools.workbench.screens.scenariosimulation.client.events.Unsupported
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
-import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 public abstract class AbstractDMNDataManagementStrategy extends AbstractDataManagementStrategy {
 
     protected final EventBus eventBus;
     protected Path currentPath;
+    protected String dmnFilePath;
 
     public AbstractDMNDataManagementStrategy(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -40,17 +40,17 @@ public abstract class AbstractDMNDataManagementStrategy extends AbstractDataMana
 
     protected abstract void retrieveFactModelTuple(final TestToolsView.Presenter testToolsPresenter,
                                                    final ScenarioSimulationContext context,
-                                                   final GridWidget gridWidget,
-                                                   String dmnFilePath);
+                                                   final GridWidget gridWidget);
 
     @Override
     public void populateTestTools(final TestToolsView.Presenter testToolsPresenter,
-                                  final ScenarioSimulationContext context, final GridWidget gridWidget) {
-        if (factModelTreeHolder.getFactModelTuple() != null) {
+                                  final ScenarioSimulationContext context,
+                                  final GridWidget gridWidget) {
+        if (factModelTreeHolder.getFactModelTuple() != null && Objects.equals(dmnFilePath, model.getSettings().getDmnFilePath())) {
             getSuccessCallback(testToolsPresenter, context, gridWidget).callback(factModelTreeHolder.getFactModelTuple());
         } else {
-            String dmnFilePath = model.getSettings().getDmnFilePath();
-            retrieveFactModelTuple(testToolsPresenter, context, gridWidget, dmnFilePath);
+            dmnFilePath = model.getSettings().getDmnFilePath();
+            retrieveFactModelTuple(testToolsPresenter, context, gridWidget);
         }
     }
 
@@ -102,10 +102,4 @@ public abstract class AbstractDMNDataManagementStrategy extends AbstractDataMana
         }
     }
 
-    protected ErrorCallback<Message> getErrorCallback() {
-        return (error, exception) -> {
-            ErrorPopup.showMessage(exception.getMessage());
-            return false;
-        };
-    }
 }

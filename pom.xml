@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-parent</artifactId>
-    <version>7.49.0-SNAPSHOT</version>
+    <version>7.53.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.drools</groupId>
@@ -66,10 +66,7 @@
   </repositories>
 
   <modules>
-    <module>drools-wb-services</module>
     <module>drools-wb-screens</module>
-    <module>drools-wb-webapp</module>
-    <module>drools-wb-extensions</module>
   </modules>
 
   <dependencyManagement>
@@ -122,6 +119,12 @@
         <version>${version.org.kie}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.elemental2</groupId>
+        <artifactId>elemental2-webstorage</artifactId>
+        <version>${version.com.google.elemental2}</version>
       </dependency>
 
       <dependency>
@@ -246,9 +249,6 @@
                   org.slf4j:*
                 </dependency>
                 <dependency>
-                  org.uberfire:uberfire-nio2-model
-                </dependency>
-                <dependency>
                   org.jboss.errai:*
                 </dependency>
                 <dependency>
@@ -279,7 +279,7 @@
                 *:*
               </dependency>
               </ignoredUnusedDeclaredDependencies>
-              <failOnWarning>true</failOnWarning>
+              <failOnWarning>false</failOnWarning>
               <!-- other configurations here -->
             </configuration>
           </execution>

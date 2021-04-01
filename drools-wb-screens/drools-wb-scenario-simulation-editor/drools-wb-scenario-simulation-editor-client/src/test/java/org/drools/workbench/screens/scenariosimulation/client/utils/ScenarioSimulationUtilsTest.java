@@ -24,6 +24,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMappingValueType;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.junit.Test;
@@ -106,22 +107,21 @@ public class ScenarioSimulationUtilsTest extends AbstractUtilsTest {
     @Test
     public void getPropertyNameElementsWithoutAlias() {
         FactIdentifier factIdentifierMock = mock(FactIdentifier.class);
-        String packageName = "com.package";
+        String packageName = "com";
         String className = "ClassName";
+        String fullClassName = packageName + "." + className;
         String propertyName = "propertyName";
         String aliasName = "AliasName";
-        when(factIdentifierMock.getClassName()).thenReturn(className);
-        List<String> retrieved = ScenarioSimulationUtils.getPropertyNameElementsWithoutAlias(Collections.singletonList(propertyName), factIdentifierMock);
+        when(factIdentifierMock.getClassName()).thenReturn(fullClassName);
+        when(factIdentifierMock.getClassNameWithoutPackage()).thenReturn(className);
+        List<String> retrieved = ScenarioSimulationUtils.getPropertyNameElementsWithoutAlias(Collections.singletonList(propertyName), factIdentifierMock, ScenarioSimulationModel.Type.RULE);
         assertEquals(Collections.singletonList(propertyName), retrieved);
-        when(factIdentifierMock.getClassName()).thenReturn(packageName + "." + className);
-        retrieved = ScenarioSimulationUtils.getPropertyNameElementsWithoutAlias(Collections.singletonList(propertyName), factIdentifierMock);
+        retrieved = ScenarioSimulationUtils.getPropertyNameElementsWithoutAlias(Collections.singletonList(propertyName), factIdentifierMock, ScenarioSimulationModel.Type.DMN);
         assertEquals(Collections.singletonList(propertyName), retrieved);
-        when(factIdentifierMock.getClassName()).thenReturn(className);
-        retrieved = ScenarioSimulationUtils.getPropertyNameElementsWithoutAlias(Arrays.asList(className, propertyName), factIdentifierMock);
+        retrieved = ScenarioSimulationUtils.getPropertyNameElementsWithoutAlias(Arrays.asList(aliasName, propertyName), factIdentifierMock, ScenarioSimulationModel.Type.RULE);
         assertEquals(Arrays.asList(className, propertyName), retrieved);
-        when(factIdentifierMock.getClassName()).thenReturn(packageName + "." + className);
-        retrieved = ScenarioSimulationUtils.getPropertyNameElementsWithoutAlias(Arrays.asList(aliasName, propertyName), factIdentifierMock);
-        assertEquals(Arrays.asList(className, propertyName), retrieved);
+        retrieved = ScenarioSimulationUtils.getPropertyNameElementsWithoutAlias(Arrays.asList(aliasName, propertyName), factIdentifierMock, ScenarioSimulationModel.Type.DMN);
+        assertEquals(Arrays.asList(fullClassName, propertyName), retrieved);
     }
 
     @Test

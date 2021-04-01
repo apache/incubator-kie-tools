@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,13 +128,14 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
 
     @Override
     public DivElement getDivElement(String factName, FactModelTree factModelTree) {
-        final ListGroupItemView listGroupItemView = commonGetListGroupItemView("", factName, false);
-        populateListGroupItemView(listGroupItemView, "", factName, factModelTree);
+        List<String> parentPath = new ArrayList<>();
+        final ListGroupItemView listGroupItemView = commonGetListGroupItemView(parentPath, factName, false);
+        populateListGroupItemView(listGroupItemView, parentPath, factName, factModelTree);
         return listGroupItemView.getListGroupItem();
     }
 
     @Override
-    public DivElement getDivElement(String fullPath, String factName, String factModelTreeClass) {
+    public DivElement getDivElement(List<String> fullPath, String factName, String factModelTreeClass) {
         final ListGroupItemView listGroupItemView = commonGetListGroupItemView(fullPath, factName, true);
         populateListGroupItemView(listGroupItemView, factName, factModelTreeClass);
         return listGroupItemView.getListGroupExpansion();
@@ -191,13 +193,14 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
      * @param factName
      * @param factModelTree the <code>FactModelTree</code> with all properties of a given type
      */
-    protected void populateListGroupItemView(ListGroupItemView toPopulate, String parentPath, String factName, FactModelTree factModelTree) {
+    protected void populateListGroupItemView(ListGroupItemView toPopulate, List<String> parentPath, String factName, FactModelTree factModelTree) {
         if (factName.equals(factModelTree.getFactName())) {  // the name of the property equals the type of the factModelTree: this means that we are populating the "root" of the class
             toPopulate.setFactName(factName);
         } else {
             toPopulate.setFactNameAndType(factName, factModelTree.getFactName()); // the name of the property differ from the type of the factModelTree: this means that we are populating children of the class
         }
-        String fullPath = parentPath.isEmpty() ? factName : parentPath + "." + factName;
+        List<String> fullPath = new ArrayList<>(parentPath);
+        fullPath.add(factName);
         factModelTree.getSimpleProperties().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(entry ->
                 toPopulate.addFactField(fieldItemPresenter.getLIElement(fullPath, factName, entry.getKey(), entry.getValue().getTypeName(), entry.getValue().getPropertyTypeNameToVisualize())));
         factModelTree.getExpandableProperties().entrySet().stream().sorted(Map.Entry.comparingByValue()).forEach(entry ->
@@ -220,8 +223,8 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
      * @param toExpand If <code>true</code>, on {@link #onToggleRowExpansion(ListGroupItemView, boolean)} inner properties will be populated
      * @return
      */
-    protected ListGroupItemView commonGetListGroupItemView(String parentPath, String factName, boolean toExpand) {
-        String key = parentPath.isEmpty() ? factName : parentPath + "." + factName;
+    protected ListGroupItemView commonGetListGroupItemView(List<String> parentPath, String factName, boolean toExpand) {
+        String key = parentPath.isEmpty() ? factName : String.join(".", parentPath) + "." + factName;
         ListGroupItemView toReturn = viewsProvider.getListGroupItemView();
         toReturn.init(this);
         toReturn.setToExpand(toExpand);

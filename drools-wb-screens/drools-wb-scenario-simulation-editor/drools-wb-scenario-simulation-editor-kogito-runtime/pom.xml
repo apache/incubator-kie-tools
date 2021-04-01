@@ -5,7 +5,7 @@
   <parent>
     <artifactId>drools-wb-scenario-simulation-editor</artifactId>
     <groupId>org.drools</groupId>
-    <version>7.49.0-SNAPSHOT</version>
+    <version>7.53.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -46,11 +46,6 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ui</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -61,38 +56,12 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-marshalling</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-security-server</artifactId>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.spec.javax.annotation</groupId>
-          <artifactId>jboss-annotations-api_1.3_spec</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-server</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-client</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-shared</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-jboss</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -128,22 +97,10 @@
       <classifier>sources</classifier>
     </dependency>
 
-    <!-- UberFire JS exporter -->
-    <!-- Needed by uberfire-runtime-plugins-client -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-js</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <!-- Core UberFire dependencies -->
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>appformer-client-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>appformer-js-bridge</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -153,54 +110,12 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-client-all</artifactId>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>log4j</groupId>
-          <artifactId>log4j</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-api</artifactId>
-      <scope>provided</scope>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-services-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-client-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-security-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-security-client</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -220,17 +135,7 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-properties-editor-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-preferences-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -241,65 +146,11 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- UberFire IO -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-io</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-model</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Needed by org.uberfire.java.nio.file.spi.FileSystemProvider -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-jgit</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-fs</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <!-- END PROVIDERS -->
-    <!-- Uberfire Experimentals -->
-    <!-- Required by uberfire-workbench-client -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-experimental-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-experimental-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Core utility classes -->
     <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-commons</artifactId>
       <scope>provided</scope>
-    </dependency>
-
-    <!-- Required for workbench startup -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons</artifactId>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.activemq</groupId>
-          <artifactId>artemis-jms-client</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jboss.spec.javax.jms</groupId>
-          <artifactId>jboss-jms-api_2.0_spec</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <!-- Generic ui components -->
@@ -317,36 +168,6 @@
       <groupId>org.kie.workbench.widgets</groupId>
       <artifactId>kie-wb-common-ui</artifactId>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-security-management-client</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-services-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-datamodel-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Required by uberfire-project -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-structure-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!--     Required by uberfire-project-client-->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-preferences-ui-client</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- GWT and extensions -->
@@ -360,6 +181,11 @@
           <artifactId>javax.servlet-api</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.gwtbootstrap3</groupId>
@@ -414,34 +240,8 @@
 
     <!-- Transient dependencies -->
     <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-project-datamodel-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-message-console-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-service-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-workbench-models-datamodel-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.profile</groupId>
-      <artifactId>kie-wb-common-profile-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.profile</groupId>
-      <artifactId>kie-wb-common-profile-api</artifactId>
-      <classifier>sources</classifier>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -464,16 +264,7 @@
       <artifactId>uberfire-commons-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-preferences-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
+
     <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
@@ -516,32 +307,7 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-message-console-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-wires-core-grids</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench</groupId>
-      <artifactId>kie-wb-common-command-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.widgets</groupId>
-      <artifactId>kie-wb-config-resource-widget</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.widgets</groupId>
-      <artifactId>kie-wb-metadata-widget</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-jaxrs-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -585,7 +351,7 @@
             <fileset>
               <directory>${basedir}</directory>
               <includes>
-                <include>src/main/webapp/org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationEditorShowcase/</include>
+                <include>src/main/webapp/org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime/</include>
                 <include>src/main/webapp/WEB-INF/deploy/</include>
                 <include>src/main/webapp/WEB-INF/classes/</include>
                 <include>src/main/webapp/WEB-INF/lib/</include>
@@ -633,6 +399,127 @@
         </executions>
       </plugin>
 
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>gwt-maven-plugin</artifactId>
+        <configuration>
+          <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
+          <localWorkers>4</localWorkers>
+          <module>org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime</module>
+          <extraJvmArgs>-Xmx4096m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
+          <optimizationLevel>9</optimizationLevel>
+          <style>OBFUSCATED</style>
+          <logLevel>INFO</logLevel>
+          <noServer>false</noServer>
+          <runTarget>index.html</runTarget>
+          <strict>true</strict>
+          <printJavaCommandOnError>false</printJavaCommandOnError>
+          <productionMode>true</productionMode>
+          <hostedWebapp>src/main/webapp</hostedWebapp>
+
+          <compileSourcesArtifacts>
+            <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
+
+            <!-- UberFire -->
+            <compileSourcesArtifact>org.uberfire:uberfire-client-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-workbench-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>
+
+            <!-- Errai, Drools etc -->
+            <compileSourcesArtifact>org.jboss.errai:errai-data-binding</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-common-ui</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench:kie-wb-common-kogito-client</compileSourcesArtifact>
+
+            <!-- UF-ext -->
+            <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-widgets-table</compileSourcesArtifact>
+
+            <!-- Uberfire Experimentals -->
+            <compileSourcesArtifact>org.uberfire:uberfire-wires-core-grids</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-wb-scenario-simulation-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-wb-scenario-simulation-editor-api</compileSourcesArtifact>
+
+            <!-- Appformer -->
+            <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:appformer-client-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:appformer-kogito-bridge</compileSourcesArtifact>
+
+            <!-- drools-wb -->
+            <compileSourcesArtifact>org.drools:drools-wb-scenario-simulation-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-scenario-simulation-api</compileSourcesArtifact>
+            <!-- DMN Marshaller -->
+            <compileSourcesArtifact>org.kie.workbench:kie-wb-common-dmn-webapp-kogito-marshaller</compileSourcesArtifact>
+          </compileSourcesArtifacts>
+        </configuration>
+        <executions>
+          <execution>
+            <id>gwt-clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>gwt-compile</id>
+            <goals>
+              <!-- Do not use 'resources' goal as it does not play well with filtered resources. -->
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <!-- Removing unused inherited modules like ace and monaco-editor-->
+          <packagingExcludes>
+            **/javax/**/*.*,
+            **/client/**/*.class,
+            **/*.symbolMap,
+            WEB-INF/classes/**,
+            **/ace/**,
+            **/monaco-editor/dev/vs/*.*,
+            **/monaco-editor/dev/vs/base/**,
+            **/monaco-editor/dev/vs/basic-languages/**,
+            **/monaco-editor/dev/vs/editor/*.js,
+            **/monaco-editor/dev/vs/language/**,
+          </packagingExcludes>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>Unpack External Marshaller JS from dependency</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.kie.workbench</groupId>
+                  <artifactId>kie-wb-common-dmn-webapp-kogito-marshaller</artifactId>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/Marshaller</outputDirectory>
+                  <includes>**/*.js</includes>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
 
   </build>
@@ -653,174 +540,6 @@
         </plugins>
       </build>
     </profile>
-
-    <!-- Profile to build GWT code and package WAR for Community builds -->
-    <profile>
-      <id>kogito</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-
-      <build>
-        <plugins>
-
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-            <configuration>
-              <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
-              <localWorkers>4</localWorkers>
-              <module>org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime</module>
-              <extraJvmArgs>-Xmx4096m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
-              <optimizationLevel>9</optimizationLevel>
-              <style>OBFUSCATED</style>
-              <logLevel>INFO</logLevel>
-              <noServer>false</noServer>
-              <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server>
-              <disableCastChecking>true</disableCastChecking>
-              <runTarget>index.html</runTarget>
-              <strict>true</strict>
-              <style>PRETTY</style>
-              <printJavaCommandOnError>false</printJavaCommandOnError>
-              <productionMode>true</productionMode>
-              <hostedWebapp>src/main/webapp</hostedWebapp>
-
-              <compileSourcesArtifacts>
-                <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
-
-                <!-- UberFire -->
-                <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-io</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-js</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-security-client</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-client-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-workbench-client</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-project-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-project-client</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-services-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-structure-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-message-console-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-message-console-client</compileSourcesArtifact>
-
-                <!-- Errai, Drools etc -->
-                <compileSourcesArtifact>org.jboss.errai:errai-data-binding</compileSourcesArtifact>
-                <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-common-ui</compileSourcesArtifact>
-                <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-datamodel-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-services-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.kie.workbench:kie-wb-common-kogito-client</compileSourcesArtifact>
-
-                <!-- UF-ext -->
-                <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-client</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-widgets-table</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-client</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-widgets-service-api</compileSourcesArtifact>
-
-                <!-- Uberfire Preferences -->
-                <compileSourcesArtifact>org.uberfire:uberfire-preferences-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-preferences-client</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-preferences-ui-client</compileSourcesArtifact>
-
-                <!-- Uberfire Experimentals -->
-                <compileSourcesArtifact>org.uberfire:uberfire-experimental-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-experimental-client</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:uberfire-wires-core-grids</compileSourcesArtifact>
-
-                <!-- Appformer -->
-                <compileSourcesArtifact>org.uberfire:appformer-client-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:appformer-js-bridge</compileSourcesArtifact>
-                <compileSourcesArtifact>org.uberfire:appformer-kogito-bridge</compileSourcesArtifact>
-
-                <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-metadata-widget</compileSourcesArtifact>
-                <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-config-resource-widget</compileSourcesArtifact>
-                <compileSourcesArtifact>org.kie.workbench:kie-wb-common-command-api</compileSourcesArtifact>
-                <!-- drools-wb -->
-                <compileSourcesArtifact>org.drools:drools-wb-scenario-simulation-editor-api</compileSourcesArtifact>
-                <compileSourcesArtifact>org.drools:drools-scenario-simulation-api</compileSourcesArtifact>
-                <!-- DMN Marshaller -->
-                <compileSourcesArtifact>org.kie.workbench:kie-wb-common-dmn-webapp-kogito-marshaller</compileSourcesArtifact>
-              </compileSourcesArtifacts>
-            </configuration>
-            <executions>
-              <execution>
-                <id>gwt-clean</id>
-                <phase>clean</phase>
-                <goals>
-                  <goal>clean</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>gwt-compile</id>
-                <goals>
-                  <!-- Do not use 'resources' goal as it does not play well with filtered resources. -->
-                  <goal>compile</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <artifactId>maven-war-plugin</artifactId>
-            <configuration>
-              <!-- Removing unused inherited modules like ace and monaco-editor-->
-              <packagingExcludes>
-                **/javax/**/*.*,
-                **/client/**/*.class,
-                **/*.symbolMap,
-                WEB-INF/classes/**,
-                **/ace/**,
-                **/monaco-editor/dev/vs/*.*,
-                **/monaco-editor/dev/vs/base/**,
-                **/monaco-editor/dev/vs/basic-languages/**,
-                **/monaco-editor/dev/vs/editor/*.js,
-                **/monaco-editor/dev/vs/language/**,
-              </packagingExcludes>
-              <archive>
-                <addMavenDescriptor>false</addMavenDescriptor>
-              </archive>
-            </configuration>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>Unpack External Marshaller JS from dependency</id>
-                <phase>process-sources</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>org.kie.workbench</groupId>
-                      <artifactId>kie-wb-common-dmn-webapp-kogito-marshaller</artifactId>
-                      <type>jar</type>
-                      <overWrite>true</overWrite>
-                      <outputDirectory>${project.build.directory}/Marshaller</outputDirectory>
-                      <includes>**/*.js</includes>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+ </profiles>
 
 </project>

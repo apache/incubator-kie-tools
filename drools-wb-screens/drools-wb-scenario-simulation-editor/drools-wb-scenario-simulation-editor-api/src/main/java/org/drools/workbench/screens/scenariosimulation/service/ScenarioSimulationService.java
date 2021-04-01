@@ -28,7 +28,6 @@ import org.drools.workbench.screens.scenariosimulation.model.FactMappingValidati
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsCreate;
@@ -36,7 +35,6 @@ import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRead;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 
-@Remote
 public interface ScenarioSimulationService
         extends
         SupportsCreate<ScenarioSimulationModel>,

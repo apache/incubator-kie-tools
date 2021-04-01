@@ -17,7 +17,6 @@
 package org.drools.workbench.screens.scenariosimulation.kogito.client.editor;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
@@ -60,28 +59,22 @@ import org.drools.workbench.screens.scenariosimulation.kogito.client.handlers.Sc
 import org.drools.workbench.screens.scenariosimulation.kogito.client.popup.ScenarioSimulationKogitoCreationPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.services.ScenarioSimulationKogitoDMNMarshallerService;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
-import org.gwtbootstrap3.client.ui.TabListItem;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.MainJs;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDefinitions;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
-import org.kie.workbench.common.kogito.client.resources.i18n.KogitoClientConstants;
 import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.impl.ObservablePathImpl;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.PlaceStatus;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.promise.Promises;
-import org.uberfire.client.views.pfly.multipage.MultiPageEditorViewImpl;
 import org.uberfire.client.views.pfly.multipage.PageImpl;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
-import org.uberfire.workbench.model.menu.Menus;
 
 import static org.drools.workbench.screens.scenariosimulation.kogito.client.converters.ApiJSInteropConverter.getJSIScenarioSimulationModelType;
 import static org.drools.workbench.screens.scenariosimulation.kogito.client.converters.JSInteropApiConverter.getScenarioSimulationModel;
@@ -98,7 +91,6 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     protected static final String SCESIM = "scesim";
 
     protected ScenarioSimulationEditorPresenter scenarioSimulationEditorPresenter;
-    protected FileMenuBuilder fileMenuBuilder;
     protected AuthoringEditorDock authoringWorkbenchDocks;
     protected SCESIM scesimContainer;
     protected Promises promises;
@@ -118,8 +110,6 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     @Inject
     public ScenarioSimulationEditorKogitoWrapper(
             final ScenarioSimulationEditorPresenter scenarioSimulationEditorPresenter,
-            final FileMenuBuilder fileMenuBuilder,
-            final PlaceManager placeManager,
             final MultiPageEditorContainerView multiPageEditorContainerView,
             final AuthoringEditorDock authoringWorkbenchDocks,
             final Promises promises,
@@ -130,9 +120,8 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
             final KogitoScenarioSimulationBuilder scenarioSimulationBuilder,
             final ScenarioSimulationKogitoDocksHandler scenarioSimulationKogitoDocksHandler,
             final ScenarioSimulationKogitoDMNMarshallerService scenarioSimulationKogitoDMNMarshallerService) {
-        super(scenarioSimulationEditorPresenter.getView(), placeManager, multiPageEditorContainerView);
+        super(scenarioSimulationEditorPresenter.getView(), multiPageEditorContainerView);
         this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenter;
-        this.fileMenuBuilder = fileMenuBuilder;
         this.authoringWorkbenchDocks = authoringWorkbenchDocks;
         this.promises = promises;
         this.dmnDataManager = dmnDataManager;
@@ -145,18 +134,12 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     }
 
     @Override
-    protected void buildMenuBar() {
-        setMenus(fileMenuBuilder.build());
-        getMenus().getItems().forEach(menuItem -> menuItem.setEnabled(true));
-    }
-
-    @Override
     public Promise<String> getContent() {
         return promises.create(this::prepareContent);
     }
 
     @Override
-    public Promise setContent(String fullPath, String content) {
+    public Promise<Void> setContent(String fullPath, String content) {
         return promises.create((success, failure) -> manageContent(fullPath, content, success, failure));
     }
 
@@ -169,7 +152,7 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
      */
     protected void manageContent(String fullPath,
                                  String content,
-                                 Promise.PromiseExecutorCallbackFn.ResolveCallbackFn<Object> success,
+                                 Promise.PromiseExecutorCallbackFn.ResolveCallbackFn<Void> success,
                                  Promise.PromiseExecutorCallbackFn.RejectCallbackFn failure) {
         try {
             /* Retrieving file name and its relative path */
@@ -181,7 +164,6 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
                 pathString = idx >= 0 ? fullPath.substring(0, idx + 1) : pathString;
             }
             final Path path = PathFactory.newPath(finalName, pathString);
-
             /* If given content is null, a new file has to be created. */
             /* Otherwise, the content is un-marshalled and shown in the editor */
             if (content == null || content.isEmpty()) {
@@ -190,7 +172,7 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
                 gotoPath(path);
                 unmarshallContent(content);
             }
-            success.onInvoke((Object) null);
+            success.onInvoke((Void) null);
         } catch (Exception e) {
             /* If any exception occurs, promise returns a failure */
             scenarioSimulationEditorPresenter.sendNotification(e.getMessage(), NotificationEvent.NotificationType.ERROR);
@@ -244,24 +226,18 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     /**
      * This method is called when the main grid tab (Model) is focused
      */
-    @Override
     public void onEditTabSelected() {
-        super.onEditTabSelected();
         scenarioSimulationEditorPresenter.onEditTabSelected();
     }
 
     /**
      * This method adds specifically the Background grid and its related onFocus behavior
-     * @param scenarioGridWidget
+     * @param backgroundGridWidget
      */
     @Override
-    public void addBackgroundPage(final ScenarioGridWidget scenarioGridWidget) {
-        final MultiPageEditorViewImpl editorMultiPageView = (MultiPageEditorViewImpl) getWidget().getMultiPage().getView();
-        final String mainPageTitle = translationService.getTranslation(KogitoClientConstants.KieEditorWrapperView_EditTabTitle);
+    public void addBackgroundPage(final ScenarioGridWidget backgroundGridWidget) {
         final String backgroundPageTitle = ScenarioSimulationEditorConstants.INSTANCE.backgroundTabTitle();
-        final int mainPageIndex = editorMultiPageView.getPageIndex(mainPageTitle);
-        final int backgroundPageIndex = mainPageIndex + 1;
-        editorMultiPageView.addPage(backgroundPageIndex, new PageImpl(scenarioGridWidget, backgroundPageTitle) {
+        getWidget().getMultiPage().addPage(new PageImpl(backgroundGridWidget, backgroundPageTitle) {
             @Override
             public void onFocus() {
                 super.onFocus();
@@ -272,22 +248,34 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
 
     @Override
     public void selectSimulationTab() {
-        final MultiPageEditorViewImpl editorMultiPageView = (MultiPageEditorViewImpl) getWidget().getMultiPage().getView();
-        final int pageIndex = editorMultiPageView.getPageIndex(translationService.getTranslation(KogitoClientConstants.KieEditorWrapperView_EditTabTitle));
-        final TabListItem item = (TabListItem) editorMultiPageView.getTabBar().getWidget(pageIndex);
-        if (item != null) {
-            item.showTab(false);
-        }
     }
 
     @Override
     public void selectBackgroundTab() {
-        final MultiPageEditorViewImpl editorMultiPageView = (MultiPageEditorViewImpl) getWidget().getMultiPage().getView();
-        final int pageIndex = editorMultiPageView.getPageIndex(ScenarioSimulationEditorConstants.INSTANCE.backgroundTabTitle());
-        final TabListItem item = (TabListItem) editorMultiPageView.getTabBar().getWidget(pageIndex);
-        if (item != null) {
-            item.showTab(false);
-        }
+    }
+
+    @Override
+    public void unpublishTestResultsAlerts() {
+        // Not used in Kogito
+    }
+
+    @Override
+    public void getDMNMetadata() {
+        final String dmnFilePath = getScenarioSimulationEditorPresenter().getModel().getSettings().getDmnFilePath();
+        final String dmnFileName = dmnFilePath.substring(dmnFilePath.lastIndexOf('/') + 1);
+        final Path dmnPath = PathFactory.newPath(dmnFileName, dmnFilePath);
+        scenarioSimulationKogitoDMNMarshallerService.getDMNContent(
+                dmnPath,
+                getUpdateDMNMetadataCallback(),
+                getDMNContentErrorCallback(dmnFilePath));
+    }
+
+    private Callback<JSITDefinitions> getUpdateDMNMetadataCallback() {
+        return jsitDefinitions -> {
+            getScenarioSimulationEditorPresenter().getModel().getSettings().setDmnName(jsitDefinitions.getName());
+            getScenarioSimulationEditorPresenter().getModel().getSettings().setDmnNamespace(jsitDefinitions.getNamespace());
+            getScenarioSimulationEditorPresenter().reloadSettingsDock();
+        };
     }
 
     @Override
@@ -300,7 +288,6 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
         return scenarioSimulationEditorPresenter;
     }
 
-    @Override
     public void resetContentHash() {
         //
     }
@@ -309,13 +296,10 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
         super.init(place);
         resetEditorPages();
         authoringWorkbenchDocks.setup("AuthoringPerspective", place);
-        SCESIMMainJs.initializeJsInteropConstructors(SCESIMMainJs.getConstructorsMap());
-        MainJs.initializeJsInteropConstructors(MainJs.getConstructorsMap());
         scenarioSimulationEditorPresenter.setWrapper(this);
     }
 
     public void gotoPath(Path path) {
-        resetEditorPages();
         kogitoOracle.init(path);
         currentPath = path;
         scenarioSimulationEditorPresenter.setPath(new ObservablePathImpl().wrap(path));
@@ -325,27 +309,13 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
         return currentPath;
     }
 
-    @Override
     public boolean mayClose() {
         return !scenarioSimulationEditorPresenter.isDirty();
     }
 
     @Override
-    public IsWidget getTitle() {
-        return super.getTitle();
-    }
-
-    @Override
     public MultiPageEditorContainerView getWidget() {
         return super.getWidget();
-    }
-
-    public FileMenuBuilder getFileMenuBuilder() {
-        return fileMenuBuilder;
-    }
-
-    public void setMenus(final Consumer<Menus> menusConsumer) {
-        menusConsumer.accept(getMenus());
     }
 
     @Override
@@ -356,18 +326,9 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
 
     @Override
     public Integer getOriginalHash() {
-        return super.getOriginalContentHash();
+        return -1;
     }
 
-    /**
-     * If you want to customize the menu override this method.
-     */
-    @Override
-    protected void makeMenuBar() {
-        scenarioSimulationEditorPresenter.makeMenuBar(fileMenuBuilder);
-    }
-
-    @Override
     protected Supplier<ScenarioSimulationModel> getContentSupplier() {
         return () -> scenarioSimulationEditorPresenter.getModel();
     }
@@ -423,9 +384,8 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
                                                                          scenarioSimulationKogitoDMNMarshallerService);
         }
         dataManagementStrategy.setModel(model);
-        setOriginalContentHash(scenarioSimulationEditorPresenter.getJsonModel(model).hashCode());
         scenarioSimulationEditorPresenter.getModelSuccessCallbackMethod(dataManagementStrategy, model);
-        scenarioSimulationEditorPresenter.showDocks(PlaceStatus.CLOSE);
+        scenarioSimulationEditorPresenter.showDocks();
     }
 
     protected void onBackgroundTabSelected() {

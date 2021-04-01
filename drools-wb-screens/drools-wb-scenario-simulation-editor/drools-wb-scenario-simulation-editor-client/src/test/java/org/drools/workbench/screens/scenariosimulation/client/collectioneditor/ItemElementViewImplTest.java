@@ -32,6 +32,7 @@ public class ItemElementViewImplTest extends ElementViewImplTest<ItemElementView
             {
                 this.presenter = elementPresenterMock;
                 this.faAngleRight = faAngleRightMock;
+                this.itemSeparatorText = itemSeparatorTextMock;
             }
         });
     }

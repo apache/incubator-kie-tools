@@ -103,7 +103,7 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
         verify(elementPresenter, never()).onToggleRowExpansion(eq(elementView1Mock), eq((false)));
         verify(propertyPresenterMock, times(1)).editProperties(eq(elementView1Mock.getItemId()));
         for (String expandableProperty : EXPANDABLE_PROPERTIES) {
-            verify(propertyPresenterMock, times(1)).editProperties(eq(expandableProperty));
+            verify(propertyPresenterMock, times(1)).editProperties(eq(ELEMENT1_ID + "." + expandableProperty));
         }
         verify(styleMock, times(1)).setDisplay(Style.Display.INLINE);
         verify(collectionPresenterMock, times(1)).toggleEditingStatus(eq(true));
@@ -116,7 +116,7 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
         verify(elementPresenter, times(1)).onToggleRowExpansion(eq(elementView1Mock), eq((false)));
         verify(propertyPresenterMock, times(1)).editProperties(eq(elementView1Mock.getItemId()));
         for (String expandableProperty : EXPANDABLE_PROPERTIES) {
-            verify(propertyPresenterMock, times(1)).editProperties(eq(expandableProperty));
+            verify(propertyPresenterMock, times(1)).editProperties(eq(ELEMENT1_ID + "." + expandableProperty));
         }
         verify(styleMock, times(1)).setDisplay(Style.Display.INLINE);
         verify(collectionPresenterMock, times(1)).toggleEditingStatus(eq(true));
@@ -145,7 +145,7 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
         elementPresenter.updateItem(elementView1Mock);
         verify(propertyPresenterMock, times(1)).updateProperties(eq(elementView1Mock.getItemId()));
         for (String expandableProperty : EXPANDABLE_PROPERTIES) {
-            verify(propertyPresenterMock, times(1)).updateProperties(eq(expandableProperty));
+            verify(propertyPresenterMock, times(1)).updateProperties(eq(ELEMENT1_ID + "." + expandableProperty));
         }
         verify(styleMock, times(1)).setDisplay(Style.Display.NONE);
         verify(collectionPresenterMock, times(1)).toggleEditingStatus(eq(false));

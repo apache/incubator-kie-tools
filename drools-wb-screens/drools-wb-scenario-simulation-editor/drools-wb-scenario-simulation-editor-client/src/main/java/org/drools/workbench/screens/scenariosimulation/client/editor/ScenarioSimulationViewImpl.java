@@ -15,8 +15,9 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.editor;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
@@ -26,14 +27,14 @@ import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
  * <p>
  * This class acts as a wrapper class which holds the main <code>ScenarioGridWidget</code>
  */
-@Dependent
+@ApplicationScoped
 public class ScenarioSimulationViewImpl extends KieEditorViewImpl implements ScenarioSimulationView {
 
     protected ScenarioGridWidget scenarioGridWidget;
 
     @Override
     public void init() {
-        initWidget(scenarioGridWidget);
+        initWidget(new SimplePanel(scenarioGridWidget));
     }
 
     @Override

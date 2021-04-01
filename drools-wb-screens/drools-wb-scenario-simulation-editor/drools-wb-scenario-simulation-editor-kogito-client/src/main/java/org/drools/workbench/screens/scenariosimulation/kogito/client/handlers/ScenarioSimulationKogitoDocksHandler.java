@@ -30,7 +30,6 @@ public class ScenarioSimulationKogitoDocksHandler extends AbstractScenarioSimula
      * Test result dock is not implemented in Kogito version, then an <code>UnsupportedOperationException</code> is
      * thrown if method is called in this context.
      */
-    @Override
     public void expandTestResultsDock() {
         throw new UnsupportedOperationException();
     }

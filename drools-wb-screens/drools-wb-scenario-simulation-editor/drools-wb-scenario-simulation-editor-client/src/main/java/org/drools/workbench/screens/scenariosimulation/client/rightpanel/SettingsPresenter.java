@@ -34,16 +34,13 @@ import org.drools.workbench.screens.scenariosimulation.client.events.UpdateSetti
 import org.drools.workbench.screens.scenariosimulation.client.events.ValidateSimulationEvent;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
-import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.mvp.Command;
 
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type.DMN;
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type.RULE;
-import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter.DEFAULT_PREFERRED_WIDHT;
-import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter.IDENTIFIER;
 
 @ApplicationScoped
-@WorkbenchScreen(identifier = IDENTIFIER, preferredWidth = DEFAULT_PREFERRED_WIDHT)
+@Named(SettingsPresenter.IDENTIFIER)
 public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> implements SettingsView.Presenter {
 
     public static final int DEFAULT_PREFERRED_WIDHT = 300;
@@ -74,6 +71,11 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
         view.getSkipFromBuildLabel().setInnerText(ScenarioSimulationEditorConstants.INSTANCE.skipSimulation());
         view.setupDropdown(settingsScenarioSimulationDropdown.asWidget().asWidget().getElement());
         settingsScenarioSimulationDropdown.init();
+    }
+
+    @Override
+    public String getIdentifier() {
+        return IDENTIFIER;
     }
 
     @Override
@@ -160,7 +162,8 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
     public void syncDmnFilePath() {
         String dmnFilePath = getCleanValue(() -> settingsScenarioSimulationDropdown.getValue().map(KieAssetsDropdownItem::getValue).orElse(""));
         eventBus.fireEvent(new UpdateSettingsDataEvent(settingsToUpdate -> settingsToUpdate.setDmnFilePath(dmnFilePath),
-                                                       settingsToCheck -> !Objects.equals(settingsToCheck.getDmnFilePath(), dmnFilePath)));
+                                                       settingsToCheck -> !Objects.equals(settingsToCheck.getDmnFilePath(), dmnFilePath),
+                                                       true));
     }
 
     @Override

@@ -49,6 +49,8 @@ public class TestProperties {
 
     public static final String FULL_PACKAGE = "test.scesim";
 
+    public static final List<String> FULL_PACKAGE_ELEMENTS = Arrays.asList(FULL_PACKAGE);
+
     public static final String LOWER_CASE_VALUE = VALUE;
 
     public static final String MULTIPART_VALUE = "MULTIPART.VALUE";

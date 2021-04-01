@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.enterprise.context.Dependent;
@@ -73,7 +75,7 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
 
     protected Presenter presenter;
 
-    protected String parentPath = "";
+    protected List<String> parentPath = new ArrayList<>();
 
     protected String factName;
 
@@ -90,7 +92,7 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
 
     @Override
     public String getActualClassName() {
-        return parentPath.isEmpty() ? factName : parentPath + "." + factName;
+        return parentPath.isEmpty() ? factName : String.join(".", parentPath) + "." + factName;
     }
 
     @EventHandler("listGroupElement")
@@ -163,13 +165,18 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
         fullClassName.setInnerHTML(innerHtml);
         fullClassName.setAttribute("factName", factName);
         fullClassName.setAttribute("factType", factType);
-        fullClassName.setAttribute("parentPath", parentPath);
+        fullClassName.setAttribute("parentPath", String.join(".", parentPath));
         listGroupItem.setAttribute("id", "listGroupItem-" + factName);
     }
 
     @Override
-    public void setParentPath(String parentPath) {
-        this.parentPath = this.parentPath.isEmpty() ? parentPath : this.parentPath + "." + parentPath;
+    public void setParentPath(List<String> parentPath) {
+        if (this.parentPath.isEmpty()) {
+            this.parentPath = parentPath;
+        } else {
+            this.parentPath.addAll(parentPath);
+        }
+
         if (this.parentPath.isEmpty()) {
             listGroupElement.removeClassName(ConstantHolder.DISABLED);
         } else {
@@ -178,7 +185,7 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
     }
 
     @Override
-    public String getParentPath() {
+    public List<String> getParentPath() {
         return parentPath;
     }
 

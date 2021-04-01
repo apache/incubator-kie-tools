@@ -17,13 +17,11 @@
 package org.drools.workbench.screens.scenariosimulation.client.popup;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class ConfirmPopupPresenter implements ConfirmPopup.Presenter {
 
-    @Inject
-    protected ConfirmPopup confirmPopupView;
+    protected ConfirmPopup confirmPopupView = new ConfirmPopupView();
 
     @Override
     public void show(String mainTitleText, String mainText) {

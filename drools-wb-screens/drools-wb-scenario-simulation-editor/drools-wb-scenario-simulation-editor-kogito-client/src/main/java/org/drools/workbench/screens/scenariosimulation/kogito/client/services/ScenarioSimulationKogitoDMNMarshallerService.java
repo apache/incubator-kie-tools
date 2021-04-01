@@ -52,7 +52,8 @@ public class ScenarioSimulationKogitoDMNMarshallerService {
     private RemoteCallback<String> getDMNFileContentCallback(final Path dmnFilePath,
                                                              final Callback<JSITDefinitions> callback,
                                                              final ErrorCallback<Object> errorCallback) {
-       return dmnContent -> unmarshallDMN(dmnContent, getDMN12UnmarshallCallback(dmnFilePath, callback, errorCallback));
+
+        return dmnContent -> unmarshallDMN(dmnContent, getDMN12UnmarshallCallback(dmnFilePath, callback, errorCallback));
     }
 
     protected DMN12UnmarshallCallback getDMN12UnmarshallCallback(final Path dmnFilePath,

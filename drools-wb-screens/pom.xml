@@ -5,7 +5,7 @@
   <parent>
     <artifactId>drools-wb</artifactId>
     <groupId>org.drools</groupId>
-    <version>7.49.0-SNAPSHOT</version>
+    <version>7.53.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -16,22 +16,7 @@
   <description>Drools Workbench - Screens</description>
 
   <modules>
-    <module>drools-wb-drl-text-editor</module>
-    <module>drools-wb-dsl-text-editor</module>
-    <module>drools-wb-dtable-xls-editor</module>
-    <module>drools-wb-enum-editor</module>
-    <module>drools-wb-factmodel-editor</module>
-    <module>drools-wb-globals-editor</module>
-    <module>drools-wb-guided-dtable-editor</module>
-    <module>drools-wb-guided-dtree-editor</module>
-    <module>drools-wb-guided-rule-editor</module>
-    <module>drools-wb-guided-scorecard-editor</module>
-    <module>drools-wb-guided-template-editor</module>
-    <module>drools-wb-scorecard-xls-editor</module>
-    <module>drools-wb-test-scenario-editor</module>
-    <module>drools-wb-workitems-editor</module>
     <module>drools-wb-scenario-simulation-editor</module>
-    <module>drools-wb-pmml-text-editor</module>
   </modules>
 
 </project>
