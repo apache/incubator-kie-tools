@@ -85,7 +85,7 @@ public class ScenarioSimulationEditorActivity extends AbstractActivity implement
 
     @Override
     public Promise<List<Notification>> validate() {
-        return Promise.resolve(Collections.emptyList());;
+        return Promise.resolve(Collections.emptyList());
     }
 
     @Override
