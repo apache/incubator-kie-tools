@@ -124,7 +124,7 @@ public class DecisionConverter implements NodeConverter<JSITDecision, Decision> 
     public JSITDecision dmnFromNode(final Node<View<Decision>, ?> node,
                                     final Consumer<JSITComponentWidths> componentWidthsConsumer) {
         final Decision source = (Decision) DefinitionUtils.getElementDefinition(node);
-        final JSITDecision d = new JSITDecision();
+        final JSITDecision d = JSITDecision.newInstance();
         d.setId(source.getId().getValue());
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         description.ifPresent(d::setDescription);
@@ -164,30 +164,30 @@ public class DecisionConverter implements NodeConverter<JSITDecision, Decision> 
                 if (view.getDefinition() instanceof DRGElement) {
                     final DRGElement drgElement = (DRGElement) view.getDefinition();
                     if (drgElement instanceof Decision) {
-                        final JSITInformationRequirement iReq = new JSITInformationRequirement();
+                        final JSITInformationRequirement iReq = JSITInformationRequirement.newInstance();
                         iReq.setId(getRawId(e.getUUID()));
-                        final JSITDMNElementReference ri = new JSITDMNElementReference();
+                        final JSITDMNElementReference ri = JSITDMNElementReference.newInstance();
                         ri.setHref(getHref(drgElement));
                         iReq.setRequiredDecision(ri);
                         d.addInformationRequirement(iReq);
                     } else if (drgElement instanceof BusinessKnowledgeModel) {
-                        final JSITKnowledgeRequirement iReq = new JSITKnowledgeRequirement();
+                        final JSITKnowledgeRequirement iReq = JSITKnowledgeRequirement.newInstance();
                         iReq.setId(getRawId(e.getUUID()));
-                        final JSITDMNElementReference ri = new JSITDMNElementReference();
+                        final JSITDMNElementReference ri = JSITDMNElementReference.newInstance();
                         ri.setHref(getHref(drgElement));
                         iReq.setRequiredKnowledge(ri);
                         d.addKnowledgeRequirement(iReq);
                     } else if (drgElement instanceof KnowledgeSource) {
-                        final JSITAuthorityRequirement iReq = new JSITAuthorityRequirement();
+                        final JSITAuthorityRequirement iReq = JSITAuthorityRequirement.newInstance();
                         iReq.setId(getRawId(e.getUUID()));
-                        final JSITDMNElementReference ri = new JSITDMNElementReference();
+                        final JSITDMNElementReference ri = JSITDMNElementReference.newInstance();
                         ri.setHref(getHref(drgElement));
                         iReq.setRequiredAuthority(ri);
                         d.addAuthorityRequirement(iReq);
                     } else if (drgElement instanceof InputData) {
-                        final JSITInformationRequirement iReq = new JSITInformationRequirement();
+                        final JSITInformationRequirement iReq = JSITInformationRequirement.newInstance();
                         iReq.setId(getRawId(e.getUUID()));
-                        final JSITDMNElementReference ri = new JSITDMNElementReference();
+                        final JSITDMNElementReference ri = JSITDMNElementReference.newInstance();
                         ri.setHref(getHref(drgElement));
                         iReq.setRequiredInput(ri);
                         d.addInformationRequirement(iReq);
@@ -195,9 +195,9 @@ public class DecisionConverter implements NodeConverter<JSITDecision, Decision> 
                         if (e.getContent() instanceof Child) {
                             // Stunner relationship of this Decision be encapsulated by the DecisionService, not managed here.
                         } else if (e.getContent() instanceof View && ((View) e.getContent()).getDefinition() instanceof KnowledgeRequirement) {
-                            final JSITKnowledgeRequirement iReq = new JSITKnowledgeRequirement();
+                            final JSITKnowledgeRequirement iReq = JSITKnowledgeRequirement.newInstance();
                             iReq.setId(getRawId(e.getUUID()));
-                            final JSITDMNElementReference ri = new JSITDMNElementReference();
+                            final JSITDMNElementReference ri = JSITDMNElementReference.newInstance();
                             ri.setHref(getHref(drgElement));
                             iReq.setRequiredKnowledge(ri);
                             d.addKnowledgeRequirement(iReq);

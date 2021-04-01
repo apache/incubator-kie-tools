@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -48,7 +47,6 @@ import org.kie.workbench.common.dmn.client.marshaller.converters.dd.PointUtils;
 import org.kie.workbench.common.dmn.client.marshaller.included.DMNMarshallerImportsClientHelper;
 import org.kie.workbench.common.dmn.client.marshaller.unmarshall.nodes.NodeEntriesFactory;
 import org.kie.workbench.common.dmn.client.marshaller.unmarshall.nodes.NodeEntry;
-import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.MainJs;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.di.JSIDiagramElement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDMNElementReference;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDecisionService;
@@ -104,11 +102,6 @@ public class DMNUnmarshaller {
         this.modelToStunnerConverter = modelToStunnerConverter;
         this.dmnDiagramElementsUtils = dmnDiagramElementsUtils;
         this.dmnDiagramsSession = dmnDiagramsSession;
-    }
-
-    @PostConstruct
-    public void init() {
-        MainJs.initializeJsInteropConstructors(MainJs.getConstructorsMap());
     }
 
     public Promise<Graph> unmarshall(final Metadata metadata,

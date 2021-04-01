@@ -365,7 +365,7 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
 
         getInformationItem(drgElement).ifPresent(informationItem -> {
 
-            final JSITInformationItem tInformationItem = new JSITInformationItem();
+            final JSITInformationItem tInformationItem = JSITInformationItem.newInstance();
             final String typeRef = informationItem.getTypeRef();
 
             if (!isEmpty(typeRef) && !isBuiltInType(typeRef)) {

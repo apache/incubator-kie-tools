@@ -75,7 +75,7 @@ public class TextAnnotationConverter implements NodeConverter<JSITTextAnnotation
     public JSITTextAnnotation dmnFromNode(final Node<View<TextAnnotation>, ?> node,
                                           final Consumer<JSITComponentWidths> componentWidthsConsumer) {
         final TextAnnotation source = (TextAnnotation) DefinitionUtils.getElementDefinition(node);
-        final JSITTextAnnotation result = new JSITTextAnnotation();
+        final JSITTextAnnotation result = JSITTextAnnotation.newInstance();
         result.setId(source.getId().getValue());
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         description.ifPresent(result::setDescription);

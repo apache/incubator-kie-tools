@@ -63,13 +63,13 @@ public class ContextEntryPropertyConverter {
 
     public static JSITContextEntry dmnFromWB(final ContextEntry wb,
                                              final Consumer<JSITComponentWidths> componentWidthsConsumer) {
-        final JSITContextEntry result = new JSITContextEntry();
+        final JSITContextEntry result = JSITContextEntry.newInstance();
 
         final JSITInformationItem variable = InformationItemPropertyConverter.dmnFromWB(wb.getVariable());
         JSITExpression expression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression(),
                                                                           componentWidthsConsumer);
         if (Objects.isNull(expression)) {
-            final JSITLiteralExpression mockLiteralExpression = new JSITLiteralExpression();
+            final JSITLiteralExpression mockLiteralExpression = JSITLiteralExpression.newInstance();
             mockLiteralExpression.setText(ContextEntry.DEFAULT_EXPRESSION_VALUE);
             expression = getWrappedJSITLiteralExpression(mockLiteralExpression, "dmn", "literalExpression");
         }

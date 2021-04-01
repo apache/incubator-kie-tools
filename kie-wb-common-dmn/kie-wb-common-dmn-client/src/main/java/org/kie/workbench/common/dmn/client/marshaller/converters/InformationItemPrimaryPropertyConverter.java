@@ -51,7 +51,7 @@ public class InformationItemPrimaryPropertyConverter {
         if (Objects.isNull(wb)) {
             return null;
         }
-        final JSITInformationItem result = new JSITInformationItem();
+        final JSITInformationItem result = JSITInformationItem.newInstance();
         result.setId(wb.getId().getValue());
         result.setName(getParentName(parent));
 

@@ -158,7 +158,7 @@ public class DMNDiagramElementsUtils {
 
     private List<JSIDMNDiagram> getDmnDiagram(final JSITDefinitions dmnDefinitions) {
         if (dmnDefinitions.getDMNDI() == null) {
-            dmnDefinitions.setDMNDI(new JSIDMNDI());
+            dmnDefinitions.setDMNDI(JSIDMNDI.newInstance());
         }
         return dmnDefinitions.getDMNDI().getDMNDiagram();
     }

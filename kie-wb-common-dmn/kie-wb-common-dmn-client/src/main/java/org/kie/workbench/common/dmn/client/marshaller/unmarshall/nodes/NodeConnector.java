@@ -416,8 +416,8 @@ public class NodeConnector {
     }
 
     JSIDMNEdge newEdge() {
-        final JSIDMNEdge dmnEdge = new JSIDMNEdge();
-        final JSIPoint point = new JSIPoint();
+        final JSIDMNEdge dmnEdge = JSIDMNEdge.newInstance();
+        final JSIPoint point = JSIPoint.newInstance();
         point.setX(0);
         point.setY(0);
         dmnEdge.addAllWaypoint(point, point);

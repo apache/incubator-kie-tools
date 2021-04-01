@@ -38,7 +38,7 @@ public class DRGDiagramUtils {
     }
 
     public static JSIDMNDiagram newJSIDRGInstance() {
-        final JSIDMNDiagram diagram = new JSIDMNDiagram();
+        final JSIDMNDiagram diagram = JSIDMNDiagram.newInstance();
         diagram.setId(new Id().getValue());
         diagram.setName(DRG);
         return diagram;

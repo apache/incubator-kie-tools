@@ -114,7 +114,7 @@ public class ExpressionPropertyConverter {
 
         final String uuid = wb.getId().getValue();
         if (Objects.nonNull(uuid)) {
-            final JSITComponentWidths componentWidths = new JSITComponentWidths();
+            final JSITComponentWidths componentWidths = JSITComponentWidths.newInstance();
             componentWidths.setDmnElementRef(uuid);
             wb.getComponentWidths()
                     .stream()

@@ -53,7 +53,7 @@ public class ImportedValuesConverter {
         if (Objects.isNull(wb)) {
             return null;
         }
-        final JSITImportedValues dmn = new JSITImportedValues();
+        final JSITImportedValues dmn = JSITImportedValues.newInstance();
         dmn.setNamespace(wb.getNamespace());
         dmn.setLocationURI(wb.getLocationURI().getValue());
         dmn.setImportType(wb.getImportType());

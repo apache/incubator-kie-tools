@@ -85,7 +85,7 @@ public class InputDataConverter implements NodeConverter<JSITInputData, InputDat
     public JSITInputData dmnFromNode(final Node<View<InputData>, ?> node,
                                      final Consumer<JSITComponentWidths> componentWidthsConsumer) {
         final InputData source = (InputData) DefinitionUtils.getElementDefinition(node);
-        final JSITInputData result = new JSITInputData();
+        final JSITInputData result = JSITInputData.newInstance();
         result.setId(source.getId().getValue());
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         description.ifPresent(result::setDescription);

@@ -85,7 +85,7 @@ public class LiteralExpressionPropertyConverter {
     static class JSITLiteralExpressionFactory {
 
         JSITLiteralExpression make() {
-            return new JSITLiteralExpression();
+            return JSITLiteralExpression.newInstance();
         }
     }
 }

@@ -64,7 +64,7 @@ class DMNExternalLinksToExtensionElements {
         removeAllExistingLinks(elements);
 
         for (final DMNExternalLink link : links.getLinks()) {
-            final JSITAttachment attachment = new JSITAttachment();
+            final JSITAttachment attachment = JSITAttachment.newInstance();
             attachment.setName(link.getDescription());
             attachment.setUrl(link.getUrl());
 
@@ -75,7 +75,7 @@ class DMNExternalLinksToExtensionElements {
     }
 
     private static void removeAllExistingLinks(final JSITDMNElement.JSIExtensionElements elements) {
-        final JSITDMNElement.JSIExtensionElements others = new JSITDMNElement.JSIExtensionElements();
+        final JSITDMNElement.JSIExtensionElements others = JSITDMNElement.JSIExtensionElements.newInstance();
         // Add because it is present in the original JSON when unmarshalling
         others.setAny(new ArrayList<>());
         final List<Object> any = elements.getAny();
@@ -91,7 +91,7 @@ class DMNExternalLinksToExtensionElements {
     private static JSITDMNElement.JSIExtensionElements getOrCreateExtensionElements(final JSITDRGElement target) {
         // Add because it is present in the original JSON when unmarshalling
         JSITDMNElement.JSIExtensionElements toReturn = Objects.isNull(target.getExtensionElements())
-                ? new JSITDMNElement.JSIExtensionElements()
+                ? JSITDMNElement.JSIExtensionElements.newInstance()
                 : target.getExtensionElements();
         if (!Objects.isNull(toReturn) && Objects.isNull(toReturn.getAny())) {
             toReturn.setAny(new ArrayList<>());

@@ -81,7 +81,7 @@ public final class ImportConverter {
     }
 
     static JSITImport dmnFromWb(final Import wb) {
-        final JSITImport result = new JSITImport();
+        final JSITImport result = JSITImport.newInstance();
         result.setImportType(wb.getImportType());
         result.setLocationURI(wb.getLocationURI().getValue());
         result.setNamespace(wb.getNamespace());

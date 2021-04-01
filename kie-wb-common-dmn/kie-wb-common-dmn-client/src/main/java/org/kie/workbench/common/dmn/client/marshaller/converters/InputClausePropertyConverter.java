@@ -53,7 +53,7 @@ public class InputClausePropertyConverter {
     }
 
     public static JSITInputClause dmnFromWB(final InputClause wb) {
-        final JSITInputClause result = new JSITInputClause();
+        final JSITInputClause result = JSITInputClause.newInstance();
         result.setId(wb.getId().getValue());
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         description.ifPresent(result::setDescription);

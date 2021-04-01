@@ -116,7 +116,7 @@ public class ItemDefinitionPropertyConverter {
         if (Objects.isNull(wb)) {
             return null;
         }
-        final JSITItemDefinition result = new JSITItemDefinition();
+        final JSITItemDefinition result = JSITItemDefinition.newInstance();
         result.setId(wb.getId().getValue());
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         description.ifPresent(result::setDescription);

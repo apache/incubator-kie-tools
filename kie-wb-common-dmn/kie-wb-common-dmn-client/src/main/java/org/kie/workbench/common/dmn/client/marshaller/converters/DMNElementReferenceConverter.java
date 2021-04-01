@@ -28,7 +28,7 @@ public class DMNElementReferenceConverter {
     }
 
     public static JSITDMNElementReference dmnFromWB(final DMNElementReference wb) {
-        final JSITDMNElementReference result = new JSITDMNElementReference();
+        final JSITDMNElementReference result = JSITDMNElementReference.newInstance();
         result.setHref(wb.getHref());
 
         return result;

@@ -23,7 +23,7 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSIT
 public class RuleAnnotationClauseTextPropertyConverter {
 
     public static JSITRuleAnnotation dmnFromWB(final RuleAnnotationClauseText wb) {
-        final JSITRuleAnnotation result = new JSITRuleAnnotation();
+        final JSITRuleAnnotation result = JSITRuleAnnotation.newInstance();
         result.setText(wb.getText().getValue());
         return result;
     }

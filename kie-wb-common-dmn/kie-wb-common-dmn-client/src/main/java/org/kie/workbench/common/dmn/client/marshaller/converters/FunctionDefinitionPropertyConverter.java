@@ -158,7 +158,7 @@ public class FunctionDefinitionPropertyConverter {
         if (Objects.isNull(wb)) {
             return null;
         }
-        final JSITFunctionDefinition result = new JSITFunctionDefinition();
+        final JSITFunctionDefinition result = JSITFunctionDefinition.newInstance();
         result.setId(wb.getId().getValue());
         // TODO {gcardosi} add because  present in original json
         if (Objects.isNull(result.getFormalParameter())) {

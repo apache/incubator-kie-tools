@@ -168,8 +168,8 @@ class NodeEntriesBuilder {
     }
 
     private JSIDMNShape makeStandardShape() {
-        final JSIDMNShape jsidmnShape = new JSIDMNShape();
-        final JSIBounds boundsParam = new JSIBounds();
+        final JSIDMNShape jsidmnShape = JSIDMNShape.newInstance();
+        final JSIBounds boundsParam = JSIBounds.newInstance();
         boundsParam.setX(0);
         boundsParam.setY(0);
         boundsParam.setWidth(100);

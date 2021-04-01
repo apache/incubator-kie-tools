@@ -66,7 +66,7 @@ public class ListPropertyConverter {
 
     public static JSITList dmnFromWB(final List wb,
                                      final Consumer<JSITComponentWidths> componentWidthsConsumer) {
-        final JSITList result = new JSITList();
+        final JSITList result = JSITList.newInstance();
         result.setId(wb.getId().getValue());
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         description.ifPresent(result::setDescription);

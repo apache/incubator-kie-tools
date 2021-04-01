@@ -58,7 +58,7 @@ public class OutputClausePropertyConverter {
     }
 
     public static JSITOutputClause dmnFromWB(final OutputClause wb) {
-        final JSITOutputClause result = new JSITOutputClause();
+        final JSITOutputClause result = JSITOutputClause.newInstance();
         result.setId(wb.getId().getValue());
         result.setName(wb.getName());
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));

@@ -80,7 +80,7 @@ public class ContextPropertyConverter {
 
     public static JSITContext dmnFromWB(final Context wb,
                                         final Consumer<JSITComponentWidths> componentWidthsConsumer) {
-        final JSITContext result = new JSITContext();
+        final JSITContext result = JSITContext.newInstance();
         result.setId(wb.getId().getValue());
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         description.ifPresent(result::setDescription);

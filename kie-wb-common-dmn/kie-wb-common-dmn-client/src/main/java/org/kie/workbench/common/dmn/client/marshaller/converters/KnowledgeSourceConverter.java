@@ -92,7 +92,7 @@ public class KnowledgeSourceConverter implements NodeConverter<JSITKnowledgeSour
     public JSITKnowledgeSource dmnFromNode(final Node<View<KnowledgeSource>, ?> node,
                                            final Consumer<JSITComponentWidths> componentWidthsConsumer) {
         final KnowledgeSource source = (KnowledgeSource) DefinitionUtils.getElementDefinition(node);
-        final JSITKnowledgeSource result = new JSITKnowledgeSource();
+        final JSITKnowledgeSource result = JSITKnowledgeSource.newInstance();
         result.setId(source.getId().getValue());
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         description.ifPresent(result::setDescription);
@@ -111,23 +111,23 @@ public class KnowledgeSourceConverter implements NodeConverter<JSITKnowledgeSour
                 if (view.getDefinition() instanceof DRGElement) {
                     final DRGElement drgElement = (DRGElement) view.getDefinition();
                     if (drgElement instanceof Decision) {
-                        final JSITAuthorityRequirement iReq = new JSITAuthorityRequirement();
+                        final JSITAuthorityRequirement iReq = JSITAuthorityRequirement.newInstance();
                         iReq.setId(getRawId(e.getUUID()));
-                        final JSITDMNElementReference ri = new JSITDMNElementReference();
+                        final JSITDMNElementReference ri = JSITDMNElementReference.newInstance();
                         ri.setHref(getHref(drgElement));
                         iReq.setRequiredDecision(ri);
                         result.addAuthorityRequirement(iReq);
                     } else if (drgElement instanceof KnowledgeSource) {
-                        final JSITAuthorityRequirement iReq = new JSITAuthorityRequirement();
+                        final JSITAuthorityRequirement iReq = JSITAuthorityRequirement.newInstance();
                         iReq.setId(getRawId(e.getUUID()));
-                        final JSITDMNElementReference ri = new JSITDMNElementReference();
+                        final JSITDMNElementReference ri = JSITDMNElementReference.newInstance();
                         ri.setHref(getHref(drgElement));
                         iReq.setRequiredAuthority(ri);
                         result.addAuthorityRequirement(iReq);
                     } else if (drgElement instanceof InputData) {
-                        final JSITAuthorityRequirement iReq = new JSITAuthorityRequirement();
+                        final JSITAuthorityRequirement iReq = JSITAuthorityRequirement.newInstance();
                         iReq.setId(getRawId(e.getUUID()));
-                        final JSITDMNElementReference ri = new JSITDMNElementReference();
+                        final JSITDMNElementReference ri = JSITDMNElementReference.newInstance();
                         ri.setHref(getHref(drgElement));
                         iReq.setRequiredInput(ri);
                         result.addAuthorityRequirement(iReq);

@@ -29,7 +29,7 @@ public class RuleAnnotationClausePropertyConverter {
     }
 
     public static JSITRuleAnnotationClause dmnFromWB(final RuleAnnotationClause wb) {
-        final JSITRuleAnnotationClause result = new JSITRuleAnnotationClause();
+        final JSITRuleAnnotationClause result = JSITRuleAnnotationClause.newInstance();
         result.setName(wb.getName().getValue());
         return result;
     }

@@ -128,7 +128,7 @@ public class DecisionTablePropertyConverter {
     }
 
     public static JSITDecisionTable dmnFromWB(final DecisionTable wb) {
-        final JSITDecisionTable result = new JSITDecisionTable();
+        final JSITDecisionTable result = JSITDecisionTable.newInstance();
         result.setId(wb.getId().getValue());
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         description.ifPresent(result::setDescription);

@@ -98,7 +98,7 @@ public class UnaryTestsPropertyConverter {
     static class UnaryTestsFactory {
 
         JSITUnaryTests make() {
-            return new JSITUnaryTests();
+            return JSITUnaryTests.newInstance();
         }
     }
 

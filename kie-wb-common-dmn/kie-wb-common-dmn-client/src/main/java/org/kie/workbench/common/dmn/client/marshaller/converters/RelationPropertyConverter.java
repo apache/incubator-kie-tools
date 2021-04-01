@@ -73,7 +73,7 @@ public class RelationPropertyConverter {
 
     public static JSITRelation dmnFromWB(final Relation wb,
                                          final Consumer<JSITComponentWidths> componentWidthsConsumer) {
-        final JSITRelation result = new JSITRelation();
+        final JSITRelation result = JSITRelation.newInstance();
         result.setId(wb.getId().getValue());
         final Optional<String> description = Optional.ofNullable(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         description.ifPresent(result::setDescription);
