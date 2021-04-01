@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { DecisionResult, EvaluationStatus, Result } from "./DmnRunnerService";
+import { DecisionResult, DecisionResultMessage, EvaluationStatus, Result } from "./DmnRunnerService";
 import { AutoForm } from "uniforms-patternfly";
 import {
   Card,
@@ -55,6 +55,7 @@ import { StateControl } from "@kogito-tooling/editor/dist/channel";
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import { usePrevious } from "../../common/Hooks";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
+import { Notification } from "@kogito-tooling/notifications/dist/api";
 
 enum ButtonPosition {
   INPUT,
@@ -147,15 +148,30 @@ export function DmnRunnerDrawer(props: Props) {
           const content = await props.editor.getContent();
           const result = await dmnRunner.service.result({ context: data, model: content });
           if (result && result.messages.length > 0) {
-            result.messages.forEach(message => {
-              notificationsPanel.getTabRef("Execution")?.setNotifications("somewhere", [
-                {
-                  type: "PROBLEM",
-                  path: "somewhere",
-                  severity: message.severity,
-                  message: message.message
-                }
-              ]);
+            const decisionNameByDecisionId = result.decisionResults?.reduce(
+              (acc, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
+              new Map<string, string>()
+            );
+
+            const messagesBySourceId = result.messages.reduce((acc, message) => {
+              const messageEntry = acc.get(message.sourceId);
+              if (!messageEntry) {
+                acc.set(message.sourceId, [message]);
+              } else {
+                acc.set(message.sourceId, [...messageEntry, message]);
+              }
+              return acc;
+            }, new Map<string, DecisionResultMessage[]>());
+
+            [...messagesBySourceId.entries()].forEach(([sourceId, messages]) => {
+              const path = decisionNameByDecisionId?.get(sourceId) ?? "Model";
+              const notifications: Notification[] = messages.map(message => ({
+                type: "PROBLEM",
+                path,
+                severity: message.severity,
+                message: `${message.messageType}: ${message.message}`
+              }));
+              notificationsPanel.getTabRef("Execution")?.setNotifications(path, notifications);
             });
           }
           if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {

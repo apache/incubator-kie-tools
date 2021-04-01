@@ -1,6 +1,20 @@
 import * as React from "react";
-import { Notification, NotificationsApi } from "@kogito-tooling/notifications/dist/api";
-import { useCallback, useImperativeHandle, useState } from "react";
+import { Notification, NotificationsApi, NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import {
+  Dropdown,
+  NotificationDrawer,
+  NotificationDrawerBody,
+  NotificationDrawerHeader,
+  NotificationDrawerGroup,
+  NotificationDrawerGroupList,
+  NotificationDrawerList,
+  NotificationDrawerListItem,
+  NotificationDrawerListItemBody,
+  NotificationDrawerListItemHeader,
+  TreeView,
+  TreeViewDataItem
+} from "@patternfly/react-core";
 
 interface Props {
   name: string;
@@ -20,13 +34,22 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
     [tabNotifications]
   );
 
-  const setNotifications = useCallback((path: string, notifications: Notification[]) => {
-    props.onNotificationsLengthChange(props.name, notifications.length);
-    setTabNotifications(notifications);
-  }, [props.onNotificationsLengthChange, props.name]);
+  const setNotifications = useCallback(
+    (path: string, notifications: Notification[]) => {
+      props.onNotificationsLengthChange(props.name, notifications.length);
+      setTabNotifications(notifications);
+    },
+    [props.onNotificationsLengthChange, props.name]
+  );
 
   const removeNotifications = useCallback((path: string) => {
-    return;
+    setTabNotifications(previousTabNotifications => {
+      return previousTabNotifications.filter(tabNotification => tabNotification.path === path);
+    });
+  }, []);
+
+  const clearNotifications = useCallback(() => {
+    setTabNotifications([]);
   }, []);
 
   useImperativeHandle(forwardingRef, () => {
@@ -37,13 +60,77 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
     };
   });
 
+  const notificationsMap: Map<string, Notification[]> = useMemo(() => {
+    return tabNotifications.reduce((acc, notification) => {
+      const notificationEntry = acc.get(notification.path);
+      if (!notificationEntry) {
+        acc.set(notification.path, [notification]);
+      } else {
+        acc.set(notification.path, [...notificationEntry, notification]);
+      }
+      return acc;
+    }, new Map());
+  }, [tabNotifications]);
+
   return (
-    <div>
-      {tabNotifications.map(notification => (
-        <p>{notification.message}</p>
-      ))}
-    </div>
+    <>
+      {tabNotifications.length > 0 && (
+        <NotificationDrawer>
+          <NotificationDrawerBody>
+            <NotificationDrawerGroupList>
+              {[...notificationsMap.entries()].map(([path, notifications]) => (
+                <NotificationTabDrawerGroup path={path} notifications={notifications} />
+              ))}
+            </NotificationDrawerGroupList>
+          </NotificationDrawerBody>
+        </NotificationDrawer>
+      )}
+    </>
   );
 };
 
 export const NotificationPanelTabContent = React.forwardRef(RefForwardingNotificationPanelTabContent);
+
+interface NotificationDrawerGroupProps {
+  path: string;
+  notifications: Notification[];
+}
+
+function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const onExpand = useCallback(() => {
+    setIsExpanded(prevExpanded => !prevExpanded);
+  }, []);
+
+  const variant = useCallback((severity: NotificationSeverity) => {
+    switch (severity) {
+      case "ERROR":
+        return "danger";
+      case "HINT":
+        return "default";
+      case "SUCCESS":
+        return "success";
+      case "WARNING":
+        return "warning";
+      default:
+        return "info";
+    }
+  }, []);
+
+  return (
+    <NotificationDrawerGroup
+      title={props.path}
+      isExpanded={isExpanded}
+      count={props.notifications.length}
+      onExpand={onExpand}
+    >
+      {props.notifications.map(notification => (
+        <NotificationDrawerList isHidden={!isExpanded}>
+          <NotificationDrawerListItem variant={variant(notification.severity)}>
+            <NotificationDrawerListItemHeader title={notification.message} variant={variant(notification.severity)} />
+          </NotificationDrawerListItem>
+        </NotificationDrawerList>
+      ))}
+    </NotificationDrawerGroup>
+  );
+}

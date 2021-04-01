@@ -22,8 +22,7 @@ import { useNotificationsPanel } from "./NotificationsPanelContext";
 import { NotificationPanelTabContent } from "./NotificationsPanelTabContent";
 import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
 
-// add resizable feature;
-// add qtt of messages on the tabs title
+// TODO: add resizable feature;
 
 interface Props {
   tabNames: string[];
@@ -90,41 +89,35 @@ export function NotificationsPanel(props: Props) {
       >
         <ExclamationCircleIcon />
       </div>
-      {notificationsPanel.isOpen && (
-        <div
-          style={{
-            height: "200px",
-            width: "100%",
-            borderTop: "solid 1px #ddd"
-          }}
-        >
-          {/* auto generate the tabs based on something... */}
-          <Tabs activeKey={activeTab} onSelect={onSelectTab}>
-            {[...tabsMap.entries()].map(([tabName, tabRef], index) => {
-              return (
-                <Tab
-                  key={`tab-${index}`}
-                  eventKey={tabName}
-                  title={
-                    <TabTitleText>
-                      {tabName}{" "}
-                      <Badge isRead={tabsProps.get(tabName)?.wasRead}>
-                        {tabsProps.get(tabName)?.qttOfNotifications}
-                      </Badge>
-                    </TabTitleText>
-                  }
-                >
-                  <NotificationPanelTabContent
-                    name={tabName}
-                    ref={tabRef}
-                    onNotificationsLengthChange={onNotificationsLengthChange}
-                  />
-                </Tab>
-              );
-            })}
-          </Tabs>
-        </div>
-      )}
+      <div
+        style={{
+          height: "350px",
+          width: "100%",
+          borderTop: "solid 1px #ddd",
+          display: notificationsPanel.isOpen ? "block" : "none"
+        }}
+      >
+        <Tabs activeKey={activeTab} onSelect={onSelectTab}>
+          {[...tabsMap.entries()].map(([tabName, tabRef], index) => (
+            <Tab
+              key={`tab-${index}`}
+              eventKey={tabName}
+              title={
+                <TabTitleText>
+                  {tabName}{" "}
+                  <Badge isRead={tabsProps.get(tabName)?.wasRead}>{tabsProps.get(tabName)?.qttOfNotifications}</Badge>
+                </TabTitleText>
+              }
+            >
+              <NotificationPanelTabContent
+                name={tabName}
+                ref={tabRef}
+                onNotificationsLengthChange={onNotificationsLengthChange}
+              />
+            </Tab>
+          ))}
+        </Tabs>
+      </div>
     </>
   );
 }
