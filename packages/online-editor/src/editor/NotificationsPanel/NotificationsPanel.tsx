@@ -109,11 +109,13 @@ export function NotificationsPanel(props: Props) {
                 </TabTitleText>
               }
             >
-              <NotificationPanelTabContent
-                name={tabName}
-                ref={tabRef}
-                onNotificationsLengthChange={onNotificationsLengthChange}
-              />
+              <div style={{ height: "309px" }}>
+                <NotificationPanelTabContent
+                  name={tabName}
+                  ref={tabRef}
+                  onNotificationsLengthChange={onNotificationsLengthChange}
+                />
+              </div>
             </Tab>
           ))}
         </Tabs>

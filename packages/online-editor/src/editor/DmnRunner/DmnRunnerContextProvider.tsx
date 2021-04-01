@@ -131,6 +131,38 @@ export function DmnRunnerContextProvider(props: Props) {
     setCookie(DMN_RUNNER_PORT_COOKIE_NAME, newPort);
   }, []);
 
+  const notificaionsPanel = useNotificationsPanel();
+  // Subscribe to any change on the DMN Editor and validate
+  useEffect(() => {
+    if (!props.editor || status === DmnRunnerStatus.UNAVAILABLE) {
+      return;
+    }
+
+    let timeout: number | undefined;
+    const subscription = props.editor.getStateControl().subscribe(() => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = window.setTimeout(() => {
+        props.editor
+          ?.getContent()
+          .then(content => service.validate(content ?? ""))
+          .then(validationResults => {
+            return validationResults.map((validationResult: any) => ({
+              type: "PROBLEM",
+              path: "Model",
+              severity: validationResult.severity,
+              message: `${validationResult.messageType}: ${validationResult.message}`
+            }));
+          })
+          .then(notifications => {
+            notificaionsPanel.getTabRef("Validation")?.setNotifications("", notifications);
+          });
+      }, 200);
+    });
+    return () => props.editor?.getStateControl().unsubscribe(subscription);
+  }, [props.editor, status]);
+
   return (
     <DmnRunnerContext.Provider
       value={{

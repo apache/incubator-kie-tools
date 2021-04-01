@@ -1,19 +1,14 @@
 import * as React from "react";
+import { useCallback, useImperativeHandle, useMemo, useState } from "react";
 import { Notification, NotificationsApi, NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import {
-  Dropdown,
   NotificationDrawer,
   NotificationDrawerBody,
-  NotificationDrawerHeader,
   NotificationDrawerGroup,
   NotificationDrawerGroupList,
   NotificationDrawerList,
   NotificationDrawerListItem,
-  NotificationDrawerListItemBody,
-  NotificationDrawerListItemHeader,
-  TreeView,
-  TreeViewDataItem
+  NotificationDrawerListItemHeader
 } from "@patternfly/react-core";
 
 interface Props {
@@ -46,10 +41,6 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
     setTabNotifications(previousTabNotifications => {
       return previousTabNotifications.filter(tabNotification => tabNotification.path === path);
     });
-  }, []);
-
-  const clearNotifications = useCallback(() => {
-    setTabNotifications([]);
   }, []);
 
   useImperativeHandle(forwardingRef, () => {
@@ -97,7 +88,7 @@ interface NotificationDrawerGroupProps {
 }
 
 function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const onExpand = useCallback(() => {
     setIsExpanded(prevExpanded => !prevExpanded);
   }, []);

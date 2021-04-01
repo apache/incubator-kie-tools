@@ -163,16 +163,16 @@ export function DmnRunnerDrawer(props: Props) {
               return acc;
             }, new Map<string, DecisionResultMessage[]>());
 
-            [...messagesBySourceId.entries()].forEach(([sourceId, messages]) => {
+            const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(([sourceId, messages]) => {
               const path = decisionNameByDecisionId?.get(sourceId) ?? "Model";
-              const notifications: Notification[] = messages.map(message => ({
+              return messages.map(message => ({
                 type: "PROBLEM",
                 path,
                 severity: message.severity,
                 message: `${message.messageType}: ${message.message}`
               }));
-              notificationsPanel.getTabRef("Execution")?.setNotifications(path, notifications);
             });
+            notificationsPanel.getTabRef("Execution")?.setNotifications("", notifications);
           }
           if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
             // DMN Runner Error
