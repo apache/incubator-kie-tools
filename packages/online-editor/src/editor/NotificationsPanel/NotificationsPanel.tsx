@@ -15,41 +15,72 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Badge, Tab, Tabs, TabTitleText } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { useNotificationsPanel } from "./NotificationsPanelContext";
-import { DmnRunnerNotificationsTab } from "../DmnRunner/DmnRunnerContextProvider";
+import { NotificationPanelTabContent } from "./NotificationsPanelTabContent";
+import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
 
 // add resizable feature;
 // add qtt of messages on the tabs title
 
-export function NotificationsPanel(props: {}) {
+interface Props {
+  tabNames: string[];
+}
+
+interface NotificationTabProps {
+  qttOfNotifications: number;
+  wasRead: boolean;
+}
+
+export function NotificationsPanel(props: Props) {
   const notificationsPanel = useNotificationsPanel();
-  const [activeTab, setActiveTab] = useState(DmnRunnerNotificationsTab.EXECUTION);
+  const [activeTab, setActiveTab] = useState(props.tabNames[0]);
+  const [tabsProps, setTabsProps] = useState<Map<string, NotificationTabProps>>(new Map());
+
+  useEffect(() => {
+    setTabsProps(previousTabsProps => {
+      const keptTabProps = [...previousTabsProps.entries()].filter(([tabName]) => props.tabNames.indexOf(tabName) >= 0);
+      const newTabsProps: Array<[string, NotificationTabProps]> = props.tabNames
+        .filter(tabName => !previousTabsProps.has(tabName))
+        .map(tabName => [tabName, { qttOfNotifications: 0, wasRead: false }]);
+      return new Map([...keptTabProps, ...newTabsProps]);
+    });
+  }, [props.tabNames]);
+
+  const tabsMap: Map<string, React.RefObject<NotificationsApi>> = useMemo(
+    () => new Map(props.tabNames.map(tabName => [tabName, React.createRef<NotificationsApi>()])),
+    [props.tabNames]
+  );
+
+  useEffect(() => {
+    notificationsPanel.setTabsMap([...tabsMap.entries()]);
+  }, [tabsMap]);
 
   const onNotificationsPanelButtonClick = useCallback(() => {
     notificationsPanel.setIsOpen(!notificationsPanel.isOpen);
   }, [notificationsPanel.isOpen, notificationsPanel.setIsOpen]);
 
-  const onSelectTab = useCallback((event, tabIndex) => {
-    setActiveTab(tabIndex);
+  const onNotificationsLengthChange = useCallback((name: string, newQtt: number) => {
+    setTabsProps(previousTabsProps => {
+      const newTabsProps = new Map(previousTabsProps);
+      newTabsProps.set(name, { qttOfNotifications: newQtt, wasRead: false });
+      return newTabsProps;
+    });
   }, []);
 
-  const tabs = useMemo(() => {
-    return (
-      <Tab
-        eventKey={DmnRunnerNotificationsTab.EXECUTION}
-        title={
-          <TabTitleText>
-            {DmnRunnerNotificationsTab.EXECUTION} <Badge>0</Badge>
-          </TabTitleText>
-        }
-      >
-        {notificationsPanel.getTabComponent(DmnRunnerNotificationsTab.EXECUTION)}
-      </Tab>
-    );
-  }, [notificationsPanel.getTabComponent]);
+  const onSelectTab = useCallback((event, tabName) => {
+    setActiveTab(tabName);
+    setTabsProps(previousTabsProps => {
+      const newTabsProps = new Map(previousTabsProps);
+      newTabsProps.set(tabName, {
+        qttOfNotifications: previousTabsProps.get(tabName)!.qttOfNotifications,
+        wasRead: true
+      });
+      return newTabsProps;
+    });
+  }, []);
 
   return (
     <>
@@ -69,7 +100,28 @@ export function NotificationsPanel(props: {}) {
         >
           {/* auto generate the tabs based on something... */}
           <Tabs activeKey={activeTab} onSelect={onSelectTab}>
-            {tabs}
+            {[...tabsMap.entries()].map(([tabName, tabRef], index) => {
+              return (
+                <Tab
+                  key={`tab-${index}`}
+                  eventKey={tabName}
+                  title={
+                    <TabTitleText>
+                      {tabName}{" "}
+                      <Badge isRead={tabsProps.get(tabName)?.wasRead}>
+                        {tabsProps.get(tabName)?.qttOfNotifications}
+                      </Badge>
+                    </TabTitleText>
+                  }
+                >
+                  <NotificationPanelTabContent
+                    name={tabName}
+                    ref={tabRef}
+                    onNotificationsLengthChange={onNotificationsLengthChange}
+                  />
+                </Tab>
+              );
+            })}
           </Tabs>
         </div>
       )}

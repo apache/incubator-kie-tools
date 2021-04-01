@@ -18,17 +18,13 @@ import * as React from "react";
 import { useContext } from "react";
 import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
 
-export interface Something {
-  tabComponent: React.ReactNode;
-  tabRef: React.RefObject<NotificationsApi>;
-}
-
 export interface NotificationsPanelContextType {
   isOpen: boolean;
   setIsOpen: React.Dispatch<boolean>;
-  createTabs: (tabs: string[]) => void;
+  setTabsMap: (tabsMap: Array<[string, React.RefObject<NotificationsApi>]>) => void;
   getTabRef: (name: string) => NotificationsApi | null | undefined;
-  getTabComponent: (name: string) => React.ReactNode | undefined;
+  getTabContent: (name: string) => React.ReactNode | undefined;
+  getTabNames: () => string[];
 }
 
 export const NotificationsPanelContext = React.createContext<NotificationsPanelContextType>({} as any);

@@ -38,26 +38,16 @@ interface Props {
   isEditorReady: boolean;
 }
 
-export enum DmnRunnerNotificationsTab {
-  VALIDATION = "Validation",
-  EXECUTION = "Execution"
-}
-
 export function DmnRunnerContextProvider(props: Props) {
-  const notificationsPanel = useNotificationsPanel();
   const [isDrawerExpanded, setDrawerExpanded] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState();
   const globalContext = useContext(GlobalContext);
-  const [status, setStatus] = useState(DmnRunnerStatus.UNAVAILABLE);
+  const [status, setStatus] = useState(() =>
+    globalContext.file.fileExtension === "dmn" ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE
+  );
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<JSONSchemaBridge>();
-  const [port, setPort] = useState(() => {
-    const savedPort = getCookie(DMN_RUNNER_PORT_COOKIE_NAME);
-    if (savedPort) {
-      return savedPort;
-    }
-    return DMN_RUNNER_DEFAULT_PORT;
-  });
+  const [port, setPort] = useState(() => getCookie(DMN_RUNNER_PORT_COOKIE_NAME) ?? DMN_RUNNER_DEFAULT_PORT);
   const service = useMemo(() => new DmnRunnerService(port), [port]);
 
   const updateJsonSchemaBridge = useCallback(() => {
@@ -76,12 +66,6 @@ export function DmnRunnerContextProvider(props: Props) {
         setJsonSchemaBridge(newJsonSchemaBridge);
       });
   }, [props.editor, service, formData]);
-
-  useEffect(() => {
-    if (globalContext.file.fileExtension === "dmn") {
-      setStatus(DmnRunnerStatus.AVAILABLE);
-    }
-  }, [globalContext.file.fileExtension]);
 
   // Pooling to detect either if DMN Runner is running or has stopped
   useEffect(() => {
@@ -145,11 +129,6 @@ export function DmnRunnerContextProvider(props: Props) {
   const saveNewPort = useCallback((newPort: string) => {
     setPort(newPort);
     setCookie(DMN_RUNNER_PORT_COOKIE_NAME, newPort);
-  }, []);
-
-  // notifications initialization;
-  useEffect(() => {
-    notificationsPanel.createTabs([DmnRunnerNotificationsTab.EXECUTION]);
   }, []);
 
   return (

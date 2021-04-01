@@ -16,8 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { NotificationsPanelContext, Something } from "./NotificationsPanelContext";
-import { NotificationPanelTab } from "./NotificationsPanelTab";
+import { NotificationsPanelContext } from "./NotificationsPanelContext";
 import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
 
 interface Props {
@@ -26,15 +25,12 @@ interface Props {
 
 export function NotificationsPanelContextProvider(props: Props) {
   const [isOpen, setIsOpen] = useState(false);
-  const tabs: Map<string, Something> = useMemo(() => new Map(), []);
+  const tabs: Map<string, React.RefObject<NotificationsApi>> = useMemo(() => new Map(), []);
 
   // create tabs
-  const createTabs = useCallback(
-    (names: string[]) => {
-      names.forEach(name => {
-        const tabRef = React.createRef<NotificationsApi>();
-        tabs.set(name, { tabComponent: <NotificationPanelTab name={name} ref={tabRef} />, tabRef });
-      });
+  const setTabsMap = useCallback(
+    (tabsMap: Array<[string, React.RefObject<NotificationsApi>]>) => {
+      tabsMap.forEach(([tabName, tabRef]) => tabs.set(tabName, tabRef));
     },
     [tabs]
   );
@@ -42,27 +38,32 @@ export function NotificationsPanelContextProvider(props: Props) {
   // return a tab a ref
   const getTabRef = useCallback(
     (name: string) => {
-      return tabs.get(name)?.tabRef?.current;
+      return tabs.get(name)?.current;
     },
     [tabs]
   );
 
   // return a tab content
-  const getTabComponent = useCallback(
+  const getTabContent = useCallback(
     (name: string) => {
-      return tabs.get(name)?.tabComponent;
+      return tabs.get(name);
     },
     [tabs]
   );
+
+  const getTabNames = useCallback(() => {
+    return [...tabs.keys()].map(tab => tab);
+  }, [tabs]);
 
   return (
     <NotificationsPanelContext.Provider
       value={{
         isOpen,
         setIsOpen,
-        createTabs,
+        setTabsMap,
         getTabRef,
-        getTabComponent
+        getTabContent,
+        getTabNames
       }}
     >
       {props.children}

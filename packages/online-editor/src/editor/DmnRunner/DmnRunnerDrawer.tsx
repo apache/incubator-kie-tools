@@ -49,7 +49,7 @@ import {
 import { diff } from "deep-object-diff";
 import { ErrorBoundary } from "../../common/ErrorBoundry";
 import { useDmnRunner } from "./DmnRunnerContext";
-import { DmnRunnerNotificationsTab, THROTTLING_TIME } from "./DmnRunnerContextProvider";
+import { THROTTLING_TIME } from "./DmnRunnerContextProvider";
 import { EditorApi, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
 import { StateControl } from "@kogito-tooling/editor/dist/channel";
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
@@ -148,12 +148,14 @@ export function DmnRunnerDrawer(props: Props) {
           const result = await dmnRunner.service.result({ context: data, model: content });
           if (result && result.messages.length > 0) {
             result.messages.forEach(message => {
-              notificationsPanel.getTabRef(DmnRunnerNotificationsTab.EXECUTION)?.createNotification({
-                type: "PROBLEM",
-                path: "somewhere",
-                severity: message.severity,
-                message: message.message
-              });
+              notificationsPanel.getTabRef("Execution")?.setNotifications("somewhere", [
+                {
+                  type: "PROBLEM",
+                  path: "somewhere",
+                  severity: message.severity,
+                  message: message.message
+                }
+              ]);
             });
           }
           if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
