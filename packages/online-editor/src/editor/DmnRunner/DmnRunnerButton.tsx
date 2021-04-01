@@ -41,33 +41,37 @@ export function DmnRunnerButton() {
   }, [dmnRunner.status, dmnRunner.isDrawerExpanded]);
 
   return (
-    <Button
-      data-testid="run-button"
-      variant={"tertiary"}
-      onClick={onDmnRunner}
-      aria-label={"Run"}
-      className={"kogito--editor__toolbar"}
-      icon={
-        dmnRunner.status === DmnRunnerStatus.RUNNING ? (
-          <Tooltip
-            key={"connected"}
-            content={"The DMN Runner is connected"}
-            flipBehavior={["left"]}
-            distance={20}
-            children={<ConnectedIcon className={shouldBlinkDmnRunnerConnectedIcon ? "blink-opacity" : ""} />}
-          />
-        ) : (
-          <Tooltip
-            key={"disconnected"}
-            content={"The DMN Runner is not connected"}
-            flipBehavior={["left"]}
-            distance={20}
-            children={<DisconnectedIcon />}
-          />
-        )
-      }
-    >
-      DMN Runner
-    </Button>
+    <>
+      {window.chrome && (
+        <Button
+          data-testid="run-button"
+          variant={"tertiary"}
+          onClick={onDmnRunner}
+          aria-label={"Run"}
+          className={"kogito--editor__toolbar"}
+          icon={
+            dmnRunner.status === DmnRunnerStatus.RUNNING ? (
+              <Tooltip
+                key={"connected"}
+                content={"The DMN Runner is connected"}
+                flipBehavior={["left"]}
+                distance={20}
+                children={<ConnectedIcon className={shouldBlinkDmnRunnerConnectedIcon ? "blink-opacity" : ""} />}
+              />
+            ) : (
+              <Tooltip
+                key={"disconnected"}
+                content={"The DMN Runner is not connected"}
+                flipBehavior={["left"]}
+                distance={20}
+                children={<DisconnectedIcon />}
+              />
+            )
+          }
+        >
+          DMN Runner
+        </Button>
+      )}
+    </>
   );
 }
