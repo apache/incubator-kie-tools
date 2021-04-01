@@ -3,9 +3,12 @@
 
 review:
   - paths:
-      - anything/**
+      - Jenkinsfile*
+      - .jenkins
+      - .github
     reviewers:
-      - Kaitou786
+      - radtriste
+      - msmagnanijr
 default:
-  - Kaitou786
   - spolti
+  - vaibhavjainwiz
