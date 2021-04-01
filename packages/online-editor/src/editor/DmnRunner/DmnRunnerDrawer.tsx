@@ -164,7 +164,7 @@ export function DmnRunnerDrawer(props: Props) {
             }, new Map<string, DecisionResultMessage[]>());
 
             const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(([sourceId, messages]) => {
-              const path = decisionNameByDecisionId?.get(sourceId) ?? "Model";
+              const path = decisionNameByDecisionId?.get(sourceId) ?? "";
               return messages.map(message => ({
                 type: "PROBLEM",
                 path,

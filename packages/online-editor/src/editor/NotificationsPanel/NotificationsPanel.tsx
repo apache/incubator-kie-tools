@@ -84,7 +84,11 @@ export function NotificationsPanel(props: Props) {
   return (
     <>
       <div
-        className={"kogito--editor__dmn-runner-notifications-panel-button"}
+        className={
+          notificationsPanel.isOpen
+            ? "kogito--editor__notifications-panel-button open"
+            : "kogito--editor__notifications-panel-button"
+        }
         onClick={onNotificationsPanelButtonClick}
       >
         <ExclamationCircleIcon />

@@ -16,6 +16,21 @@ interface Props {
   onNotificationsLengthChange: (name: string, newQtt: number) => void;
 }
 
+function variant(severity: NotificationSeverity) {
+  switch (severity) {
+    case "ERROR":
+      return "danger";
+    case "HINT":
+      return "default";
+    case "SUCCESS":
+      return "success";
+    case "WARNING":
+      return "warning";
+    default:
+      return "info";
+  }
+}
+
 export const RefForwardingNotificationPanelTabContent: React.RefForwardingComponent<NotificationsApi, Props> = (
   props,
   forwardingRef
@@ -69,9 +84,26 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
         <NotificationDrawer>
           <NotificationDrawerBody>
             <NotificationDrawerGroupList>
-              {[...notificationsMap.entries()].map(([path, notifications]) => (
-                <NotificationTabDrawerGroup path={path} notifications={notifications} />
-              ))}
+              {[...notificationsMap.entries()]
+                .sort(([a], [b]) => (a < b ? -1 : 1))
+                .map(([path, notifications]) => (
+                  <>
+                    {path === "" ? (
+                      <NotificationDrawerList isHidden={false}>
+                        {notifications.map(notification => (
+                          <NotificationDrawerListItem variant={variant(notification.severity)}>
+                            <NotificationDrawerListItemHeader
+                              title={notification.message}
+                              variant={variant(notification.severity)}
+                            />
+                          </NotificationDrawerListItem>
+                        ))}
+                      </NotificationDrawerList>
+                    ) : (
+                      <NotificationTabDrawerGroup path={path} notifications={notifications} />
+                    )}
+                  </>
+                ))}
             </NotificationDrawerGroupList>
           </NotificationDrawerBody>
         </NotificationDrawer>
@@ -88,24 +120,9 @@ interface NotificationDrawerGroupProps {
 }
 
 function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const onExpand = useCallback(() => {
     setIsExpanded(prevExpanded => !prevExpanded);
-  }, []);
-
-  const variant = useCallback((severity: NotificationSeverity) => {
-    switch (severity) {
-      case "ERROR":
-        return "danger";
-      case "HINT":
-        return "default";
-      case "SUCCESS":
-        return "success";
-      case "WARNING":
-        return "warning";
-      default:
-        return "info";
-    }
   }, []);
 
   return (

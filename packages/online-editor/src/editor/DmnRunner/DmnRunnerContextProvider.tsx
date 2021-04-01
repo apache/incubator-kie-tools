@@ -39,6 +39,7 @@ interface Props {
 }
 
 export function DmnRunnerContextProvider(props: Props) {
+  const notificationsPanel = useNotificationsPanel();
   const [isDrawerExpanded, setDrawerExpanded] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState();
@@ -131,37 +132,40 @@ export function DmnRunnerContextProvider(props: Props) {
     setCookie(DMN_RUNNER_PORT_COOKIE_NAME, newPort);
   }, []);
 
-  const notificaionsPanel = useNotificationsPanel();
   // Subscribe to any change on the DMN Editor and validate
   useEffect(() => {
     if (!props.editor || status === DmnRunnerStatus.UNAVAILABLE) {
       return;
     }
 
+    const validate = () => {
+      props.editor
+        ?.getContent()
+        .then(content => service.validate(content ?? ""))
+        .then(validationResults => {
+          return validationResults.map((validationResult: any) => ({
+            type: "PROBLEM",
+            path: "",
+            severity: validationResult.severity,
+            message: `${validationResult.messageType}: ${validationResult.message}`
+          }));
+        })
+        .then(notifications => {
+          notificationsPanel.getTabRef("Validation")?.setNotifications("", notifications);
+        });
+    };
+
     let timeout: number | undefined;
     const subscription = props.editor.getStateControl().subscribe(() => {
       if (timeout) {
         clearTimeout(timeout);
       }
-      timeout = window.setTimeout(() => {
-        props.editor
-          ?.getContent()
-          .then(content => service.validate(content ?? ""))
-          .then(validationResults => {
-            return validationResults.map((validationResult: any) => ({
-              type: "PROBLEM",
-              path: "Model",
-              severity: validationResult.severity,
-              message: `${validationResult.messageType}: ${validationResult.message}`
-            }));
-          })
-          .then(notifications => {
-            notificaionsPanel.getTabRef("Validation")?.setNotifications("", notifications);
-          });
-      }, 200);
+      timeout = window.setTimeout(validate, 200);
     });
+    validate();
+
     return () => props.editor?.getStateControl().unsubscribe(subscription);
-  }, [props.editor, status]);
+  }, [props.editor, status, props.isEditorReady]);
 
   return (
     <DmnRunnerContext.Provider

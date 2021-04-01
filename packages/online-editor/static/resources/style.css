@@ -367,7 +367,7 @@
   animation: flickerAnimation 2s infinite cubic-bezier(0.7, 0, 0.3, 1);
 }
 
-.kogito--editor__dmn-runner-notifications-panel-button {
+.kogito--editor__notifications-panel-button {
   user-select: none;
   z-index: 999;
   right: 0;
@@ -382,4 +382,8 @@
   font-size: var(--pf-global--FontSize--md);
   cursor: pointer;
   color: var(--pf-global--Color--dark-100) !important;
+}
+
+.kogito--editor__notifications-panel-button.open {
+  bottom: 355px;
 }
