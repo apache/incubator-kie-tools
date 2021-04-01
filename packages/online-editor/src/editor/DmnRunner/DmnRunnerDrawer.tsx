@@ -371,6 +371,8 @@ interface DmnRunnerResponseProps {
 }
 
 function DmnRunnerResult(props: DmnRunnerResponseProps) {
+  const notificationsPanel = useNotificationsPanel();
+
   useEffect(() => {
     props.differences?.forEach((difference, index) => {
       if (Object.keys(difference).length === 0) {
@@ -390,6 +392,11 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
     updatedResult?.classList.remove("kogito--editor__dmn-runner-drawer-output-leaf-updated");
   }, []);
 
+  const openExecutionTab = useCallback(() => {
+    notificationsPanel.setIsOpen(true);
+    notificationsPanel.setActiveTab("Execution");
+  }, [notificationsPanel]);
+
   const resultStatus = useCallback((evaluationStatus: EvaluationStatus) => {
     switch (evaluationStatus) {
       case EvaluationStatus.SUCCEEDED:
@@ -397,7 +404,9 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
           <>
             <div style={{ display: "flex", alignItems: "center" }}>
               <CheckCircleIcon />
-              <p style={{ paddingLeft: "5px" }}>Evaluated with success</p>
+              <a onClick={openExecutionTab} style={{ paddingLeft: "5px" }}>
+                Evaluated with success
+              </a>
             </div>
           </>
         );
@@ -406,7 +415,9 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
           <>
             <div style={{ display: "flex", alignItems: "center" }}>
               <InfoCircleIcon />
-              <p style={{ paddingLeft: "5px" }}>Evaluation skipped</p>
+              <a onClick={openExecutionTab} style={{ paddingLeft: "5px" }}>
+                Evaluation skipped
+              </a>
             </div>
           </>
         );
@@ -415,7 +426,9 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
           <>
             <div style={{ display: "flex", alignItems: "center" }}>
               <ExclamationCircleIcon />
-              <p style={{ paddingLeft: "5px" }}>Evaluation failed</p>
+              <a onClick={openExecutionTab} style={{ paddingLeft: "5px" }}>
+                Evaluation failed
+              </a>
             </div>
           </>
         );

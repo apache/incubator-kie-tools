@@ -25,6 +25,7 @@ interface Props {
 
 export function NotificationsPanelContextProvider(props: Props) {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>("");
   const tabs: Map<string, React.RefObject<NotificationsApi>> = useMemo(() => new Map(), []);
 
   // create tabs
@@ -63,7 +64,9 @@ export function NotificationsPanelContextProvider(props: Props) {
         setTabsMap,
         getTabRef,
         getTabContent,
-        getTabNames
+        getTabNames,
+        activeTab,
+        setActiveTab
       }}
     >
       {props.children}

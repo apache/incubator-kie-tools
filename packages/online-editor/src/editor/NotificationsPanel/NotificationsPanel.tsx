@@ -35,7 +35,6 @@ interface NotificationTabProps {
 
 export function NotificationsPanel(props: Props) {
   const notificationsPanel = useNotificationsPanel();
-  const [activeTab, setActiveTab] = useState(props.tabNames[0]);
   const [tabsProps, setTabsProps] = useState<Map<string, NotificationTabProps>>(new Map());
 
   useEffect(() => {
@@ -70,7 +69,7 @@ export function NotificationsPanel(props: Props) {
   }, []);
 
   const onSelectTab = useCallback((event, tabName) => {
-    setActiveTab(tabName);
+    notificationsPanel.setActiveTab(tabName);
     setTabsProps(previousTabsProps => {
       const newTabsProps = new Map(previousTabsProps);
       newTabsProps.set(tabName, {
@@ -79,6 +78,10 @@ export function NotificationsPanel(props: Props) {
       });
       return newTabsProps;
     });
+  }, []);
+
+  useEffect(() => {
+    notificationsPanel.setActiveTab(props.tabNames[0]);
   }, []);
 
   return (
@@ -101,7 +104,7 @@ export function NotificationsPanel(props: Props) {
           display: notificationsPanel.isOpen ? "block" : "none"
         }}
       >
-        <Tabs activeKey={activeTab} onSelect={onSelectTab}>
+        <Tabs activeKey={notificationsPanel.activeTab} onSelect={onSelectTab}>
           {[...tabsMap.entries()].map(([tabName, tabRef], index) => (
             <Tab
               key={`tab-${index}`}

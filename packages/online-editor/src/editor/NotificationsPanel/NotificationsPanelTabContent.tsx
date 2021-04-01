@@ -91,7 +91,7 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
                     {path === "" ? (
                       <NotificationDrawerList isHidden={false}>
                         {notifications.map(notification => (
-                          <NotificationDrawerListItem variant={variant(notification.severity)}>
+                          <NotificationDrawerListItem isRead={true} variant={variant(notification.severity)}>
                             <NotificationDrawerListItemHeader
                               title={notification.message}
                               variant={variant(notification.severity)}
@@ -127,6 +127,7 @@ function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
 
   return (
     <NotificationDrawerGroup
+      isRead={true}
       title={props.path}
       isExpanded={isExpanded}
       count={props.notifications.length}
@@ -134,7 +135,7 @@ function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
     >
       {props.notifications.map(notification => (
         <NotificationDrawerList isHidden={!isExpanded}>
-          <NotificationDrawerListItem variant={variant(notification.severity)}>
+          <NotificationDrawerListItem isRead={true} variant={variant(notification.severity)}>
             <NotificationDrawerListItemHeader title={notification.message} variant={variant(notification.severity)} />
           </NotificationDrawerListItem>
         </NotificationDrawerList>

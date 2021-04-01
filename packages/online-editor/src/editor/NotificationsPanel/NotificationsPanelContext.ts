@@ -25,6 +25,8 @@ export interface NotificationsPanelContextType {
   getTabRef: (name: string) => NotificationsApi | null | undefined;
   getTabContent: (name: string) => React.ReactNode | undefined;
   getTabNames: () => string[];
+  activeTab: string,
+  setActiveTab: React.Dispatch<string>;
 }
 
 export const NotificationsPanelContext = React.createContext<NotificationsPanelContextType>({} as any);
