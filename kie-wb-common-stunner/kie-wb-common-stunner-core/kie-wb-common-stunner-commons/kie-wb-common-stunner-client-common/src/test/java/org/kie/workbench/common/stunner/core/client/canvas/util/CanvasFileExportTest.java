@@ -37,13 +37,11 @@ import org.uberfire.ext.editor.commons.client.file.exports.svg.SvgFileExport;
 import org.uberfire.ext.editor.commons.file.exports.FileExportsPreferences;
 import org.uberfire.ext.editor.commons.file.exports.PdfExportPreferences;
 import org.uberfire.mocks.EventSourceMock;
-import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -101,15 +99,6 @@ public class CanvasFileExportTest {
                         PdfExportPreferences.Unit.MM,
                         PdfExportPreferences.Format.A4);
         when(preferences.getPdfPreferences()).thenReturn(defaultPdfPrefs);
-        doAnswer(invocationOnMock -> {
-            final ParameterizedCommand<FileExportsPreferences> callback =
-                    (ParameterizedCommand<FileExportsPreferences>) invocationOnMock.getArguments()[0];
-            callback.execute(preferences);
-            return null;
-        })
-                .when(preferences)
-                .load(any(ParameterizedCommand.class),
-                      any(ParameterizedCommand.class));
         this.tested = spy(new CanvasFileExport(canvasExport,
                                                imageFileExport,
                                                pdfFileExport,

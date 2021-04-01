@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.jgroups.util.Util.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.core.util.SafeComparator.TO_STRING_COMPARATOR;
 import static org.kie.workbench.common.stunner.core.util.SafeComparator.TO_STRING_REVERSE_COMPARATOR;
 import static org.mockito.ArgumentMatchers.any;

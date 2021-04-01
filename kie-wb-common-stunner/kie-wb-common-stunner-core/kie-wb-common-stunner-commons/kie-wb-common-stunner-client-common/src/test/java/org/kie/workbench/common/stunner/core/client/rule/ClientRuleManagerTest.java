@@ -20,7 +20,6 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.registry.rule.RuleHandlerRegistry;
 import org.kie.workbench.common.stunner.core.rule.CachedRuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
@@ -28,8 +27,9 @@ import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.uberfire.stubs.ManagedInstanceStub;
 
-import static org.jgroups.util.Util.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;

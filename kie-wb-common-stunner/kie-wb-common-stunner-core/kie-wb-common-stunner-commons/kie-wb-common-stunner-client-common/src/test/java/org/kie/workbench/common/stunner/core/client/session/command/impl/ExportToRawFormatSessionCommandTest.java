@@ -26,12 +26,11 @@ import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.uberfire.client.workbench.widgets.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.exports.TextContent;
 import org.uberfire.ext.editor.commons.client.file.exports.TextFileExport;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -48,9 +47,6 @@ public class ExportToRawFormatSessionCommandTest extends AbstractExportSessionCo
     private ClientDiagramService clientDiagramService;
 
     @Mock
-    private ErrorPopupPresenter errorPopupPresenter;
-
-    @Mock
     private TextFileExport textFileExport;
 
     private ExportToRawFormatSessionCommand command;
@@ -65,7 +61,6 @@ public class ExportToRawFormatSessionCommandTest extends AbstractExportSessionCo
         callbackCaptor = ArgumentCaptor.forClass(ServiceCallback.class);
         textContentCaptor = ArgumentCaptor.forClass(TextContent.class);
         command = new ExportToRawFormatSessionCommand(clientDiagramService,
-                                                      errorPopupPresenter,
                                                       textFileExport);
         command.bind(session);
     }
@@ -98,10 +93,8 @@ public class ExportToRawFormatSessionCommandTest extends AbstractExportSessionCo
         callbackCaptor.getValue().onError(new ClientRuntimeError(ERROR));
 
         verify(textFileExport,
-               never()).export(anyObject(),
-                               anyObject());
-        verify(errorPopupPresenter,
-               times(1)).showMessage(ERROR);
+               never()).export(any(),
+                               any());
     }
 
     @Override

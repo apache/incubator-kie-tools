@@ -39,8 +39,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventT
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
-import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2;
-import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
@@ -58,17 +56,17 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
-import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL0_END_NODE;
-import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL0_NODE1;
-import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL0_NODE2;
-import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL0_START_NODE;
-import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL1_NODE1;
-import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL1_NODE2;
-import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL1_SUB_PROCESS1;
-import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL2_NODE1;
-import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL2_NODE2;
-import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL2_SUB_PROCESS1;
-import static org.mockito.ArgumentMatchers.anyObject;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.processes.TestingGraphInstanceBuilder2.NODES.LEVEL0_END_NODE;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.processes.TestingGraphInstanceBuilder2.NODES.LEVEL0_NODE1;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.processes.TestingGraphInstanceBuilder2.NODES.LEVEL0_NODE2;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.processes.TestingGraphInstanceBuilder2.NODES.LEVEL0_START_NODE;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.processes.TestingGraphInstanceBuilder2.NODES.LEVEL1_NODE1;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.processes.TestingGraphInstanceBuilder2.NODES.LEVEL1_NODE2;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.processes.TestingGraphInstanceBuilder2.NODES.LEVEL1_SUB_PROCESS1;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.processes.TestingGraphInstanceBuilder2.NODES.LEVEL2_NODE1;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.processes.TestingGraphInstanceBuilder2.NODES.LEVEL2_NODE2;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.processes.TestingGraphInstanceBuilder2.NODES.LEVEL2_SUB_PROCESS1;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -163,7 +161,7 @@ public class ProcessConverterDelegateTest {
 
         abstractProcessConverter.postConvertChildNodes(processWriter, ctx);
 
-        verify(flowElementPostConverter, times(10)).postConvert(anyObject(), anyObject(), nodeCaptor.capture());
+        verify(flowElementPostConverter, times(10)).postConvert(any(), any(), nodeCaptor.capture());
         Map<String, BPMNViewDefinition> nodes = new HashMap<>();
         nodes.put(LEVEL0_START_NODE.uuid(), level0StartNode);
         nodes.put(LEVEL0_NODE1.uuid(), level0Node1);

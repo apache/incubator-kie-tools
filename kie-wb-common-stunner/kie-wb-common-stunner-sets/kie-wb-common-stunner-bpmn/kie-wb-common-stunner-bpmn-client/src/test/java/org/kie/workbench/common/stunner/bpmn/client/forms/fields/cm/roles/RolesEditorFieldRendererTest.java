@@ -32,9 +32,9 @@ import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.KeyValueRow;
 import org.kie.workbench.common.stunner.bpmn.forms.model.cm.RolesEditorFieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.serializer.cm.CaseRoleSerializer;
-import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.uberfire.stubs.ManagedInstanceStub;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

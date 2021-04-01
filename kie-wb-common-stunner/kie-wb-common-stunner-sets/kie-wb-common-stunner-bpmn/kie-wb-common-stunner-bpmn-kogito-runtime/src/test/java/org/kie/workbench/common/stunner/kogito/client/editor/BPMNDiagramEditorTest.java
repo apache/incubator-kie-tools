@@ -22,6 +22,7 @@ import elemental2.promise.Promise;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.widgets.editor.EditorSessionCommands;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
@@ -38,19 +39,15 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.forms.client.widgets.FormsFlushManager;
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPreviewAndExplorerDock;
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropertiesDock;
-import org.kie.workbench.common.stunner.kogito.client.menus.BPMNStandaloneEditorSessionCommands;
-import org.kie.workbench.common.stunner.kogito.client.perspectives.AuthoringPerspective;
 import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.promise.Promises;
-import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.promise.SyncPromises;
 
-import static org.jgroups.util.Util.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
@@ -58,7 +55,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -84,7 +80,7 @@ public class BPMNDiagramEditorTest {
     @Mock
     private FormsFlushManager formsFlushManager;
     @Mock
-    private BPMNStandaloneEditorSessionCommands commands;
+    private EditorSessionCommands commands;
     @Mock
     private ClientSession session;
     @Mock
@@ -144,28 +140,8 @@ public class BPMNDiagramEditorTest {
     }
 
     private void verifyDocksAreInit() {
-        verify(diagramPropertiesDock, times(1)).init(eq(AuthoringPerspective.PERSPECTIVE_ID));
-        verify(diagramPreviewAndExplorerDock, times(1)).init(eq(AuthoringPerspective.PERSPECTIVE_ID));
-    }
-
-    @Test
-    public void testOnFocus() {
-        tested.onFocus();
-        verify(stunnerEditor, times(1)).focus();
-        verify(stunnerEditor, never()).lostFocus();
-    }
-
-    @Test
-    public void testOnLostFocus() {
-        tested.onLostFocus();
-        verify(stunnerEditor, times(1)).lostFocus();
-        verify(stunnerEditor, never()).focus();
-    }
-
-    @Test
-    public void testIsDirty() {
-        when(stunnerEditor.isDirty()).thenReturn(true);
-        assertTrue(tested.isDirty());
+        verify(diagramPropertiesDock, times(1)).init();
+        verify(diagramPreviewAndExplorerDock, times(1)).init();
     }
 
     @Test
@@ -189,24 +165,8 @@ public class BPMNDiagramEditorTest {
     public void testGetContentFromDiagram() {
         Promise rawValue = mock(Promise.class);
         when(diagramServices.transform(eq(diagram))).thenReturn(rawValue);
-        when(stunnerEditor.isXmlEditorEnabled()).thenReturn(false);
         assertEquals(rawValue, tested.getContent());
         verify(formsFlushManager, times(1)).flush(eq(session));
-    }
-
-    @Test
-    public void testGetContentFromXmlEditor() {
-        when(stunnerEditor.isXmlEditorEnabled()).thenReturn(true);
-        TextEditorView textEditorView = mock(TextEditorView.class);
-        when(stunnerEditor.getXmlEditorView()).thenReturn(textEditorView);
-        when(textEditorView.getContent()).thenReturn("xmlTestContent");
-        Promise content = tested.getContent();
-        final String[] result = {""};
-        content.then(c -> {
-            result[0] = c.toString();
-            return null;
-        });
-        assertEquals("xmlTestContent", result[0]);
     }
 
     @Test
@@ -259,8 +219,8 @@ public class BPMNDiagramEditorTest {
     public void testDocksAndOrdering() {
         tested.docksInit();
         InOrder initOrder = inOrder(diagramPropertiesDock, diagramPreviewAndExplorerDock);
-        initOrder.verify(diagramPropertiesDock).init(eq(AuthoringPerspective.PERSPECTIVE_ID));
-        initOrder.verify(diagramPreviewAndExplorerDock).init(eq(AuthoringPerspective.PERSPECTIVE_ID));
+        initOrder.verify(diagramPropertiesDock).init();
+        initOrder.verify(diagramPreviewAndExplorerDock).init();
         tested.docksOpen();
         initOrder.verify(diagramPropertiesDock).open();
         initOrder.verify(diagramPreviewAndExplorerDock).open();

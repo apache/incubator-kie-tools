@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.client.widgets.editor;
 
 import java.util.function.Consumer;
 
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
@@ -38,16 +37,13 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.mockito.Mock;
-import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
-import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
+import org.uberfire.stubs.ManagedInstanceStub;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -70,15 +66,6 @@ public class StunnerEditorTest {
 
     @Mock
     private ClientTranslationService translationService;
-
-    @Mock
-    private TextEditorView xmlEditorView;
-    private ManagedInstance<TextEditorView> xmlEditorViews;
-    @Mock
-    private Widget xmlEditorViewWidget;
-
-    @Mock
-    private ErrorPopupPresenter errorPopupPresenter;
 
     @Mock
     private StunnerEditorView view;
@@ -107,8 +94,6 @@ public class StunnerEditorTest {
         when(sessionViewerPresenter.getInstance()).thenReturn(viewerSession);
         when(sessionEditorPresenter.getHandler()).thenReturn(canvasHandler);
         when(sessionViewerPresenter.getHandler()).thenReturn(canvasHandler);
-        xmlEditorViews = spy(new ManagedInstanceStub<>(xmlEditorView));
-        when(xmlEditorView.asWidget()).thenReturn(xmlEditorViewWidget);
         Metadata metadata = new MetadataImpl.MetadataImplBuilder("testSet").build();
         diagram = new DiagramImpl("testDiagram", mock(Graph.class), metadata);
         when(editorSession.getCanvasHandler()).thenReturn(canvasHandler);
@@ -117,8 +102,6 @@ public class StunnerEditorTest {
         tested = new StunnerEditor(sessionEditorPresenters,
                                    sessionViewerPresenters,
                                    translationService,
-                                   xmlEditorViews,
-                                   errorPopupPresenter,
                                    view);
     }
 
@@ -152,32 +135,6 @@ public class StunnerEditorTest {
     }
 
     @Test
-    public void testDirtyState() {
-        openSuccess();
-        assertFalse(tested.isDirty());
-        diagram.setGraph(mock(Graph.class));
-        assertTrue(tested.isDirty());
-        tested.resetContentHash();
-        assertFalse(tested.isDirty());
-    }
-
-    @Test
-    public void testFocus() {
-        openSuccess();
-        tested.focus();
-        verify(sessionEditorPresenter, times(1)).focus();
-        verify(sessionEditorPresenter, never()).lostFocus();
-    }
-
-    @Test
-    public void testLostFocus() {
-        openSuccess();
-        tested.lostFocus();
-        verify(sessionEditorPresenter, times(1)).lostFocus();
-        verify(sessionEditorPresenter, never()).focus();
-    }
-
-    @Test
     public void testClose() {
         openSuccess();
         tested.close();
@@ -197,34 +154,15 @@ public class StunnerEditorTest {
     }
 
     @Test
-    public void testShowError() {
-        tested.showError("someError");
-        verify(errorPopupPresenter, times(1)).showMessage(eq("someError"));
-    }
-
-    @Test
-    public void testShowMessage() {
-        tested.showError("someMessage");
-        verify(errorPopupPresenter, times(1)).showMessage(eq("someMessage"));
-    }
-
-    @Test
     @SuppressWarnings("all")
     public void testHandleParsingError() {
         Consumer<Throwable> exceptionConsumer = mock(Consumer.class);
         tested.setExceptionProcessor(exceptionConsumer);
         Consumer<DiagramParsingException> parsingExceptionConsumer = mock(Consumer.class);
         tested.setParsingExceptionProcessor(parsingExceptionConsumer);
-        when(xmlEditorView.getContent()).thenReturn("testXml");
         DiagramParsingException dpe = new DiagramParsingException(mock(Metadata.class), "testXml");
         ClientRuntimeError error = new ClientRuntimeError(dpe);
         tested.handleError(error);
-        verify(xmlEditorViews, times(1)).get();
-        verify(xmlEditorView, times(1)).setReadOnly(eq(false));
-        verify(xmlEditorView, times(1)).setContent(eq("testXml"), eq(AceEditorMode.XML));
-        verify(view, times(1)).setWidget(eq(xmlEditorViewWidget));
-        verify(errorPopupPresenter, never()).showMessage(anyString());
-        assertEquals("testXml".hashCode(), tested.getCurrentContentHash());
         verify(parsingExceptionConsumer, times(1)).accept(eq(dpe));
         verify(exceptionConsumer, never()).accept(any());
     }
@@ -239,11 +177,6 @@ public class StunnerEditorTest {
         Throwable e = new Throwable("someErrorMessage");
         ClientRuntimeError error = new ClientRuntimeError(e);
         tested.handleError(error);
-        verify(xmlEditorViews, never()).get();
-        verify(xmlEditorView, never()).setReadOnly(anyBoolean());
-        verify(xmlEditorView, never()).setContent(any(), any());
-        verify(view, never()).setWidget(eq(xmlEditorViewWidget));
-        verify(errorPopupPresenter, times(1)).showMessage(anyString());
         verify(parsingExceptionConsumer, never()).accept(any());
         verify(exceptionConsumer, times(1)).accept(eq(e));
     }
@@ -267,8 +200,5 @@ public class StunnerEditorTest {
         assertEquals(canvasHandler, tested.getCanvasHandler());
         assertEquals(diagram, tested.getDiagram());
         assertEquals(diagram.hashCode(), tested.getCurrentContentHash());
-        assertFalse(tested.isDirty());
-        assertFalse(tested.isXmlEditorEnabled());
-        verify(hashConsumer, times(1)).accept(diagram.hashCode());
     }
 }

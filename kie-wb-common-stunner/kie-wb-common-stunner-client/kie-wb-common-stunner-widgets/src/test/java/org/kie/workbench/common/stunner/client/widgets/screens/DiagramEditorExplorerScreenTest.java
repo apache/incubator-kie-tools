@@ -25,7 +25,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.explorer.tree.TreeExplorer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
-import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenPreMaximizedStateEvent;
@@ -33,15 +32,13 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.widgets.ErrorPopupPresenter;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.stubs.ManagedInstanceStub;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,9 +56,6 @@ public class DiagramEditorExplorerScreenTest {
     @Mock
     private SessionDiagramPreview<AbstractSession> sessionPreview;
     private ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews;
-
-    @Mock
-    private EventSourceMock<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
 
     @Mock
     private EventSourceMock<ScreenPreMaximizedStateEvent> screenStateEvent;
@@ -85,9 +79,6 @@ public class DiagramEditorExplorerScreenTest {
     private Metadata metadata;
 
     @Mock
-    private ErrorPopupPresenter errorPopupPresenter;
-
-    @Mock
     private DiagramEditorExplorerScreen.View view;
 
     private DiagramEditorExplorerScreen tested;
@@ -107,9 +98,7 @@ public class DiagramEditorExplorerScreenTest {
         sessionPreviews = new ManagedInstanceStub<>(sessionPreview);
         this.tested = new DiagramEditorExplorerScreen(clientSessionManager,
                                                       treeExplorers,
-                                                      changeTitleNotificationEvent,
                                                       sessionPreviews,
-                                                      errorPopupPresenter,
                                                       view,
                                                       screenStateEvent);
     }
@@ -131,14 +120,10 @@ public class DiagramEditorExplorerScreenTest {
                               any(SessionViewer.SessionViewerCallback.class));
         verify(treeExplorer,
                times(1)).show(eq(canvasHandler));
-        verify(changeTitleNotificationEvent,
-               times(1)).fire(any(ChangeTitleWidgetEvent.class));
         verify(treeExplorer,
                times(0)).clear();
         verify(sessionPreview,
                times(0)).clear();
-        verify(errorPopupPresenter,
-               times(0)).showMessage(anyString());
         verify(view,
                times(0)).setPreviewWidget(any(IsWidget.class));
         verify(view,

@@ -42,9 +42,7 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -139,51 +137,6 @@ public class FieldLayoutComponentTest {
         component.destroy();
 
         verify(content).clear();
-    }
-
-    @Test
-    public void testGetDragComponentTitle() {
-
-        String result = component.getDragComponentTitle();
-
-        verify(renderer, never()).getName();
-        verify(translationService, never()).getTranslation(Mockito.<String>any());
-
-        Assertions.assertThat(result)
-                .isEqualTo(NAME);
-    }
-
-    @Test
-    public void testUnBoundGetDragComponentTitleWithTranslation() {
-
-        field.setBinding(null);
-
-        component.getDragComponentTitle();
-
-        verify(renderer, times(2)).getName();
-        verify(translationService).getTranslation(Mockito.<String>any());
-    }
-
-    @Test
-    public void testUnBoundGetDragComponentTitleWithoutTranslation() {
-
-        when(translationService.getTranslation(Mockito.<String>any())).thenReturn(NAME);
-        field.setBinding(null);
-
-        component.getDragComponentTitle();
-
-        verify(renderer).getName();
-        verify(translationService).getTranslation(Mockito.<String>any());
-    }
-
-    @Test
-    public void testGetPreviewWidget() {
-
-        component.getPreviewWidget(mock(RenderingContext.class));
-
-        verify(renderer).renderWidget();
-        verify(content).clear();
-        verify(content).add(any(IsWidget.class));
     }
 
     @Test

@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.kogito.client.services.util.impl.WorkIte
 import org.uberfire.client.promise.Promises;
 import org.uberfire.promise.SyncPromises;
 
-import static org.jgroups.util.Util.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

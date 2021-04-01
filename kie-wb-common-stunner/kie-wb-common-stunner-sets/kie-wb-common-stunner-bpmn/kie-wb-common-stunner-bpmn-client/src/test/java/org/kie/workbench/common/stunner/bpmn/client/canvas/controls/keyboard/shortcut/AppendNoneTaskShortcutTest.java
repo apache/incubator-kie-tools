@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.shortcut.AbstractAppendNodeShortcut;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.shortcut.BaseAppendNodeShortcutTest;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.mockito.junit.MockitoJUnitRunner;

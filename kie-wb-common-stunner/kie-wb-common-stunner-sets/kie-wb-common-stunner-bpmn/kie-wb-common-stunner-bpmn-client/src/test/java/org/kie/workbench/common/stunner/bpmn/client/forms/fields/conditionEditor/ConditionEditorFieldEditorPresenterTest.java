@@ -22,12 +22,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.scriptEditor.ScriptTypeFieldEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenter;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.PromiseMock;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.Condition;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.GenerateConditionResult;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.ParseConditionResult;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode;
-import org.kie.workbench.common.stunner.core.client.PromiseMock;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.mockito.ArgumentCaptor;
@@ -35,7 +35,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
-import org.uberfire.client.workbench.widgets.ErrorPopupPresenter;
 import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.assertEquals;
@@ -81,9 +80,6 @@ public class ConditionEditorFieldEditorPresenterTest {
     private HTMLElement scriptEditorElement;
 
     @Mock
-    private ErrorPopupPresenter errorPopup;
-
-    @Mock
     private ConditionEditorParsingService conditionEditorParsingService;
 
     @Mock
@@ -115,7 +111,6 @@ public class ConditionEditorFieldEditorPresenterTest {
         presenter = spy(new ConditionEditorFieldEditorPresenter(view,
                                                                 simpleConditionEditor,
                                                                 scriptEditor,
-                                                                errorPopup,
                                                                 conditionEditorParsingService,
                                                                 conditionEditorGeneratorService,
                                                                 translationService));
@@ -265,19 +260,6 @@ public class ConditionEditorFieldEditorPresenterTest {
     }
 
     @Test
-    public void testOnSimpleConditionSelectedWithServiceError() {
-        ScriptTypeValue value = new ScriptTypeValue("java", SCRIPT_VALUE);
-        //at some point the script has changed
-        presenter.onScriptChange(mock(ScriptTypeValue.class), value);
-        //and the user wants to go to the condition editor.
-        when(translationService.getValue(UNEXPECTED_SCRIPT_PARSING_ERROR, ERROR)).thenReturn(TRANSLATED_MESSAGE);
-        when(conditionEditorParsingService.call(any())).thenReturn(promises.reject(new Throwable(ERROR)));
-        presenter.onSimpleConditionSelected();
-
-        verify(errorPopup).showMessage(TRANSLATED_MESSAGE);
-    }
-
-    @Test
     public void testOnSimpleConditionSelectedAndNoServiceAvailable() {
         when(conditionEditorGeneratorService.isAvailable()).thenReturn(true);
 
@@ -349,7 +331,6 @@ public class ConditionEditorFieldEditorPresenterTest {
         when(conditionEditorGeneratorService.call(any())).thenReturn(promises.reject(new Throwable(ERROR)));
         when(simpleConditionEditor.isValid()).thenReturn(true);
         presenter.onSimpleConditionChange(mock(Condition.class), mock(Condition.class));
-        verify(errorPopup).showMessage(TRANSLATED_MESSAGE);
         verify(changeHandler, never()).onValueChange(any(), any());
     }
 
@@ -359,7 +340,6 @@ public class ConditionEditorFieldEditorPresenterTest {
         presenter = spy(new ConditionEditorFieldEditorPresenter(view,
                                                                 simpleConditionEditor,
                                                                 scriptEditor,
-                                                                errorPopup,
                                                                 conditionEditorParsingService,
                                                                 conditionEditorGeneratorService,
                                                                 translationService));
@@ -374,7 +354,6 @@ public class ConditionEditorFieldEditorPresenterTest {
         presenter = spy(new ConditionEditorFieldEditorPresenter(view,
                                                                 simpleConditionEditor,
                                                                 scriptEditor,
-                                                                errorPopup,
                                                                 conditionEditorParsingService,
                                                                 conditionEditorGeneratorService,
                                                                 translationService));

@@ -22,20 +22,17 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.stubs.ManagedInstanceStub;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -85,18 +82,12 @@ public class StunnerPreferencesRegistryLoaderTest {
         final ParameterizedCommand<StunnerPreferences> loadCompleteCallback = mock(ParameterizedCommand.class);
         final ParameterizedCommand<Throwable> errorCallback = mock(ParameterizedCommand.class);
         final StunnerPreferences pre = mock(StunnerPreferences.class);
-        doAnswer(invocation -> {
-            ((ParameterizedCommand<StunnerPreferences>) invocation.getArguments()[0]).execute(pre);
-            return null;
-        }).when(preferences).load(any(ParameterizedCommand.class),
-                                  any(ParameterizedCommand.class));
+
         tested.load(metadata,
                     loadCompleteCallback,
                     errorCallback);
         verify(preferencesHolders, times(1)).select(eq(qualifier));
-        verify(loadCompleteCallback, times(1)).execute(eq(pre));
         verify(errorCallback, never()).execute(any(Throwable.class));
-        verify(preferencesHolder, times(1)).set(eq(pre), eq(StunnerPreferences.class));
         verify(preferencesHolder, times(1)).set(eq(textPreferences), eq(StunnerTextPreferences.class));
     }
 
@@ -106,22 +97,11 @@ public class StunnerPreferencesRegistryLoaderTest {
         final ParameterizedCommand<StunnerPreferences> loadCompleteCallback = mock(ParameterizedCommand.class);
         final ParameterizedCommand<Throwable> errorCallback = mock(ParameterizedCommand.class);
         final Throwable errorInstance = mock(Throwable.class);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                ((ParameterizedCommand<Throwable>) invocation.getArguments()[1]).execute(errorInstance);
-                return null;
-            }
-        }).when(preferences).load(any(ParameterizedCommand.class),
-                                  any(ParameterizedCommand.class));
+
         tested.load(metadata,
                     loadCompleteCallback,
                     errorCallback);
         verify(preferencesHolders, times(1)).select(eq(qualifier));
-        verify(errorCallback, times(1)).execute(eq(errorInstance));
-        verify(loadCompleteCallback, never()).execute(any(StunnerPreferences.class));
-        verify(preferencesHolder, never()).set(any(StunnerPreferences.class), eq(StunnerPreferences.class));
-        verify(preferencesHolder, never()).set(any(StunnerTextPreferences.class), eq(StunnerTextPreferences.class));
     }
 
     @Test

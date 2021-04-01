@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
-public final class MetadataImpl extends AbstractMetadata {
+public class MetadataImpl extends AbstractMetadata {
 
     public MetadataImpl() {
     }

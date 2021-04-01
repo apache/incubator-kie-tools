@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.date;
 
 import java.text.DateFormatSymbols;
+import java.util.Locale;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
@@ -34,7 +35,7 @@ public class DateValueFormatterTest {
     @Before
     public void setup() {
         dateValueFormatter = new DateValueFormatter();
-        localizedShortMonths = new DateFormatSymbols().getShortMonths();
+        localizedShortMonths = new DateFormatSymbols(new Locale("en")).getShortMonths();
     }
 
     @Test

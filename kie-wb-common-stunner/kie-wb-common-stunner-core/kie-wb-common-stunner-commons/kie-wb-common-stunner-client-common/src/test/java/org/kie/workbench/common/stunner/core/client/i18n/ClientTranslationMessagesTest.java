@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
-import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessagesTest;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
@@ -41,6 +40,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class ClientTranslationMessagesTest {
+
+    private static final String HTML_NEW_LINE = "<br>";
 
     @Mock
     StunnerTranslationService translationService;
@@ -69,9 +70,9 @@ public class ClientTranslationMessagesTest {
                                                                                     "aKey",
                                                                                     violations);
         message = new SafeHtmlBuilder().appendEscapedLines(message).toSafeHtml().asString();
-        assertEquals("aValue." + CoreTranslationMessagesTest.HTML_NEW_LINE + "R" + COLON +
-                             CoreTranslationMessagesTest.HTML_NEW_LINE + OPEN_BRA + "1" + CLOSE_BRA +
-                             "cv1" + CoreTranslationMessagesTest.HTML_NEW_LINE,
+        assertEquals("aValue." + HTML_NEW_LINE + "R" + COLON +
+                             HTML_NEW_LINE + OPEN_BRA + "1" + CLOSE_BRA +
+                             "cv1" + HTML_NEW_LINE,
                      message);
     }
 }

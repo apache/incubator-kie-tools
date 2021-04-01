@@ -37,7 +37,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class SetChildrenCommandTest extends org.kie.workbench.common.stunner.core.graph.command.impl.SetChildrenCommandTest {
+public class SetChildrenCommandTest extends org.kie.workbench.common.dmn.client.commands.factory.graph.stunner.SetChildrenCommandTest {
 
     @Mock
     private View parentContent;

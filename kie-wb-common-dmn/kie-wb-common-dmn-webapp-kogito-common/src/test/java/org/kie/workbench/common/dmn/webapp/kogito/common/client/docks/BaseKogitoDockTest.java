@@ -39,8 +39,6 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public abstract class BaseKogitoDockTest<DOCK extends DiagramEditorDock> {
 
-    protected static final String PERSPECTIVE_ID = "perspectiveId";
-
     @Mock
     protected UberfireDocks uberfireDocks;
 
@@ -59,7 +57,7 @@ public abstract class BaseKogitoDockTest<DOCK extends DiagramEditorDock> {
     public void setup() {
         this.dock = makeDock();
 
-        dock.init(PERSPECTIVE_ID);
+        dock.init();
     }
 
     protected abstract DOCK makeDock();
@@ -71,7 +69,7 @@ public abstract class BaseKogitoDockTest<DOCK extends DiagramEditorDock> {
     @Test
     public void testInit() {
         verify(uberfireDocks).add(dockArgumentCaptor.capture());
-        verify(uberfireDocks).show(eq(position()), eq(PERSPECTIVE_ID));
+        verify(uberfireDocks).show(eq(position()));
 
         assertEquals(screen(), dockArgumentCaptor.getValue().getIdentifier());
     }

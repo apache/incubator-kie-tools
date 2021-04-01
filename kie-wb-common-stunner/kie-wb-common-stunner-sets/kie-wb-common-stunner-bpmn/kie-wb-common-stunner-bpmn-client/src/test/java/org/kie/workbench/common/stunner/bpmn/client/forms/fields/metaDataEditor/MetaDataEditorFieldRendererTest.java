@@ -36,7 +36,6 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.ErrorPopupPresenter;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -85,9 +84,6 @@ public class MetaDataEditorFieldRendererTest {
     private EditorSession clientFullSession;
 
     @Mock
-    private ErrorPopupPresenter errorPopupPresenter;
-
-    @Mock
     private EventSourceMock<NotificationEvent> notification;
 
     @Mock
@@ -103,7 +99,6 @@ public class MetaDataEditorFieldRendererTest {
         when(formGroupsInstanceMock.get()).thenReturn(formGroup);
         metaDataEditor = new MetaDataEditorFieldRenderer(metaDataEditorWidgetView,
                                                          abstractClientSessionManager,
-                                                         errorPopupPresenter,
                                                          notification) {
             {
                 formGroupsInstance = formGroupsInstanceMock;

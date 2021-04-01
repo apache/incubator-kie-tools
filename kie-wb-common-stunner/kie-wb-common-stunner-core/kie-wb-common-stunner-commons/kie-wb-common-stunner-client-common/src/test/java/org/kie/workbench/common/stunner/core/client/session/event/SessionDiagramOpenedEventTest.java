@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.core.client.session.event;
 
 import org.junit.Test;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils;
+import org.kie.workbench.common.stunner.core.client.util.EqualsAndHashCodeTestUtils;
 
 import static org.mockito.Mockito.mock;
 

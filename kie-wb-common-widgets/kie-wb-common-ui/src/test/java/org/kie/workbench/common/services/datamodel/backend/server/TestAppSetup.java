@@ -22,19 +22,11 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.ServletContext;
 
-import org.kie.workbench.common.services.shared.kmodule.KModuleService;
-
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 @Singleton
 @Alternative
 public class TestAppSetup {
-
-    @Produces
-    @Alternative
-    public KModuleService kModuleService() {
-        return mock( KModuleService.class );
-    }
 
     @Produces
     @Alternative

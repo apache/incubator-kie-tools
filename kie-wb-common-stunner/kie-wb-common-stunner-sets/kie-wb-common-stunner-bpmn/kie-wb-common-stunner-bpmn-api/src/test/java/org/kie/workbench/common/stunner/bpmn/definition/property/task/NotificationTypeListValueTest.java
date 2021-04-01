@@ -23,7 +23,7 @@ import java.util.List;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationTypeListValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationValue;
-import org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils;
+import org.kie.workbench.common.stunner.bpmn.util.EqualsAndHashCodeTestUtils;
 
 public class NotificationTypeListValueTest {
 

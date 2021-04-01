@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.dmn.api.resource;
 
-import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;

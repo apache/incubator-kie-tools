@@ -26,6 +26,8 @@ import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
+import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -38,8 +40,6 @@ import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.util.UUID;
-import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
-import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -65,7 +65,7 @@ public class DMNDiagramUtilsTest {
     private Definitions definitions;
 
     @Mock
-    private ProjectMetadata metadata;
+    private MetadataImpl metadata;
 
     @Mock
     private Bounds bounds;
@@ -73,7 +73,7 @@ public class DMNDiagramUtilsTest {
     @Mock
     private Node node;
 
-    private ProjectDiagramImpl diagram;
+    private DiagramImpl diagram;
 
     private GraphImpl<DefinitionSet> graph;
 
@@ -86,7 +86,7 @@ public class DMNDiagramUtilsTest {
 
         utils = new DMNDiagramUtils();
         graph = new GraphImpl<>(UUID.uuid(), new GraphNodeStoreImpl());
-        diagram = new ProjectDiagramImpl(NAME, graph, metadata);
+        diagram = new DiagramImpl(NAME, graph, metadata);
 
         graph.addNode(node);
 

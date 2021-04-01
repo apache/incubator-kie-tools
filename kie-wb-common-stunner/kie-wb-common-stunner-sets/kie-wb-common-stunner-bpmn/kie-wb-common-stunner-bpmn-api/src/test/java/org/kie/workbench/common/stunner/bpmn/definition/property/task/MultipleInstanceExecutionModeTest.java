@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils;
+import org.kie.workbench.common.stunner.bpmn.util.EqualsAndHashCodeTestUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

@@ -38,9 +38,9 @@ import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.session.DMNEditorSessionCommands;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
+import org.kie.workbench.common.stunner.client.widgets.editor.EditorSessionCommands;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -68,7 +68,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.mocks.EventSourceMock;
@@ -77,7 +76,6 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor.DATA_TYPES_PAGE_INDEX;
-import static org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor.PERSPECTIVE_ID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
@@ -85,7 +83,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -100,9 +97,6 @@ public abstract class AbstractDMNDiagramEditorTest {
 
     @Mock
     protected AbstractCanvasHandler canvasHandler;
-
-    @Mock
-    protected PlaceManager placeManager;
 
     @Mock
     protected MultiPageEditorContainerView multiPageEditorContainerView;
@@ -141,7 +135,7 @@ public abstract class AbstractDMNDiagramEditorTest {
     protected PreviewDiagramDock diagramPreviewDock;
 
     @Mock
-    protected DMNEditorSessionCommands sessionCommands;
+    protected EditorSessionCommands sessionCommands;
 
     @Mock
     protected LayoutHelper layoutHelper;
@@ -291,9 +285,9 @@ public abstract class AbstractDMNDiagramEditorTest {
     public void testOnStartup() {
         editor.onStartup(place);
         verify(stunnerEditor).setReadOnly(eq(false));
-        verify(decisionNavigatorDock).init(PERSPECTIVE_ID);
-        verify(diagramPreviewDock).init(PERSPECTIVE_ID);
-        verify(diagramPropertiesDock).init(PERSPECTIVE_ID);
+        verify(decisionNavigatorDock).init();
+        verify(diagramPreviewDock).init();
+        verify(diagramPropertiesDock).init();
         verify(multiPageEditorContainerView).init(eq(editor));
         verify(guidedTourBridgeInitializer).init();
     }
@@ -350,25 +344,6 @@ public abstract class AbstractDMNDiagramEditorTest {
     }
 
     @Test
-    public void testOnFocus() {
-        openDiagram();
-        //Setting focus activates the diagram identically to opening a diagram; so reset applicable mocks.
-        reset(decisionNavigatorDock, diagramPropertiesDock, diagramPreviewDock, dataTypesPage);
-        editor.onFocus();
-        verify(stunnerEditor).focus();
-        verify(dataTypesPage).onFocus();
-        verify(dataTypesPage).enableShortcuts();
-    }
-
-    @Test
-    public void testOnLostFocus() {
-        openDiagram();
-        editor.onLostFocus();
-        verify(stunnerEditor).lostFocus();
-        verify(dataTypesPage).onLostFocus();
-    }
-
-    @Test
     public void testGetContent() {
         openDiagram();
         editor.getContent();
@@ -400,19 +375,6 @@ public abstract class AbstractDMNDiagramEditorTest {
         verify(feelInitializer, never()).initializeFEELEditor();
         verify(multiPageEditorContainerView, times(1)).clear();
         verify(multiPageEditorContainerView, times(1)).setEditorWidget(eq(view));
-    }
-
-    @Test
-    public void testResetContentHash() {
-        openDiagram();
-
-        editor.setOriginalContentHash(diagram.hashCode() + 1);
-
-        assertThat(editor.isDirty()).isTrue();
-
-        editor.resetContentHash();
-
-        assertThat(editor.isDirty()).isFalse();
     }
 
     protected void openDiagram() {

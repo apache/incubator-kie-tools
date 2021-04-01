@@ -122,7 +122,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils.TestCaseBuilder;
+import static org.kie.workbench.common.stunner.bpmn.util.EqualsAndHashCodeTestUtils.TestCaseBuilder;
 
 public class HashCodeAndEqualityTest {
 

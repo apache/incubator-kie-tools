@@ -32,12 +32,9 @@ import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModel
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.CompassPosition;
-import org.uberfire.workbench.model.Position;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter.DEFER_DELAY;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionNavigatorPresenter_DecisionNavigator;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -145,26 +142,6 @@ public class DecisionNavigatorPresenterTest {
     @Test
     public void testGetView() {
         assertEquals(view, presenter.getView());
-    }
-
-    @Test
-    public void testGetTitle() {
-
-        final String expectedTitle = "Decision Navigator";
-        when(translationService.format(DecisionNavigatorPresenter_DecisionNavigator)).thenReturn(expectedTitle);
-
-        final String actualTitle = presenter.getTitle();
-
-        assertEquals(expectedTitle, actualTitle);
-    }
-
-    @Test
-    public void testGetDefaultPosition() {
-
-        final CompassPosition expected = CompassPosition.WEST;
-        final Position actual = presenter.getDefaultPosition();
-
-        assertEquals(expected, actual);
     }
 
     @Test

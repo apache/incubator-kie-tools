@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentTypeListValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentsInfo;
-import org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils;
+import org.kie.workbench.common.stunner.bpmn.util.EqualsAndHashCodeTestUtils;
 
 public class ReassignmentsInfoTest {
 

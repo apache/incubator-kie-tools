@@ -56,7 +56,6 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTe
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.client.workbench.widgets.ErrorPopupPresenter;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -137,9 +136,6 @@ public class VariableListItemWidgetViewImplTest {
     @Mock
     private VariablesEditorFieldRenderer parent;
 
-    @Mock
-    private ErrorPopupPresenter errorPopupPresenter;
-
     @Before
     public void setUp() throws Exception {
         parent = mock(VariablesEditorFieldRenderer.class);
@@ -162,7 +158,6 @@ public class VariableListItemWidgetViewImplTest {
         view.dataType = dataType;
         view.dataTypeComboBox = dataTypeComboBox;
         view.notification = notification;
-        view.errorPopupPresenter = errorPopupPresenter;
         view.variableTagsSettings = variableTagsSettings;
         view.tagCount = tagCount;
         view.customTagName = customTagName;
@@ -402,7 +397,6 @@ public class VariableListItemWidgetViewImplTest {
         verify(parent).isDuplicateName(VARIABLE_NEW_NAME);
         verify(parent).isBoundToNodes(VARIABLE_NAME);
         verify(name).setValue(VARIABLE_NAME);
-        verify(errorPopupPresenter).showMessage(StunnerFormsClientFieldsConstants.CONSTANTS.RenameDiagramVariableError());
     }
 
     private void prepareNameChange(String newName, String newToString) {

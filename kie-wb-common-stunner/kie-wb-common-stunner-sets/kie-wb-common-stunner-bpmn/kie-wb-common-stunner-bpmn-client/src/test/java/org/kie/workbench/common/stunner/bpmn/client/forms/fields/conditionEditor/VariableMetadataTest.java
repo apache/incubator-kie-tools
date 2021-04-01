@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEdito
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.TypeMetadata;
 
-import static org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils.TestCaseBuilder;
+import static org.kie.workbench.common.stunner.bpmn.client.util.EqualsAndHashCodeTestUtils.TestCaseBuilder;
 import static org.mockito.Mockito.mock;
 
 public class VariableMetadataTest {

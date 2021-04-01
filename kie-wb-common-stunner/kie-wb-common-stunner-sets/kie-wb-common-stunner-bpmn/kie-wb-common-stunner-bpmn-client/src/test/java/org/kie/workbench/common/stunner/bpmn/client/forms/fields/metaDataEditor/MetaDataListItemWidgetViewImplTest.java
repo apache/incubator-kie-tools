@@ -37,7 +37,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.uberfire.client.workbench.widgets.ErrorPopupPresenter;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -89,9 +88,6 @@ public class MetaDataListItemWidgetViewImplTest {
 
     @Mock
     private MetaDataEditorWidgetView.Presenter parent;
-
-    @Mock
-    private ErrorPopupPresenter errorPopupPresenter;
 
     @Before
     public void setUp() throws Exception {

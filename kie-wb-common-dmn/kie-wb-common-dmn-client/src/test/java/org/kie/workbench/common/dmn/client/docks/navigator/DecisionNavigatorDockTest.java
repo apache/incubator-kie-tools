@@ -63,18 +63,14 @@ public class DecisionNavigatorDockTest {
 
     @Test
     public void testInit() {
-
-        final String expectedPerspective = "perspective";
         final UberfireDock expectedUberfireDock = mock(UberfireDock.class);
 
         doReturn(expectedUberfireDock).when(dock).makeUberfireDock();
 
-        dock.init(expectedPerspective);
+        dock.init();
 
-        final String actualPerspective = dock.perspective();
         final UberfireDock actualUberfireDock = dock.getUberfireDock();
 
-        assertEquals(expectedPerspective, actualPerspective);
         assertEquals(expectedUberfireDock, actualUberfireDock);
     }
 
@@ -96,17 +92,15 @@ public class DecisionNavigatorDockTest {
     public void testOpenWhenItIsOpened() {
 
         final UberfireDockPosition position = UberfireDockPosition.WEST;
-        final String perspective = "perspective";
 
         dock.setOpened(true);
         doReturn(position).when(dock).position();
-        doReturn(perspective).when(dock).perspective();
 
         dock.open();
 
         assertTrue(dock.isOpened());
         verify(uberfireDocks, never()).add(any());
-        verify(uberfireDocks, never()).show(any(), any());
+        verify(uberfireDocks, never()).show(any());
         verify(uberfireDocks, never()).open(any());
     }
 
@@ -115,17 +109,15 @@ public class DecisionNavigatorDockTest {
 
         final UberfireDock uberfireDock = mock(UberfireDock.class);
         final UberfireDockPosition position = UberfireDockPosition.WEST;
-        final String perspective = "perspective";
 
         dock.setOpened(false);
         doReturn(uberfireDock).when(dock).getUberfireDock();
-        doReturn(perspective).when(dock).perspective();
 
         dock.open();
 
         assertTrue(dock.isOpened());
         verify(uberfireDocks).add(uberfireDock);
-        verify(uberfireDocks).show(position, perspective);
+        verify(uberfireDocks).show(position);
         verify(uberfireDocks).open(uberfireDock);
     }
 
@@ -176,26 +168,22 @@ public class DecisionNavigatorDockTest {
         final UberfireDockPosition expectedPosition = UberfireDockPosition.WEST;
         final String expectedIcon = IconType.MAP.toString();
         final String expectedPlaceRequestIdentifier = DecisionNavigatorPresenter.IDENTIFIER;
-        final String expectedPerspective = "perspective";
         final Double expectedSize = DOCK_SIZE;
         final String expectedLabel = "DecisionNavigator";
 
         when(translationService.format(DecisionNavigatorPresenter_DecisionNavigator)).thenReturn(expectedLabel);
-        doReturn(expectedPerspective).when(dock).perspective();
 
         final UberfireDock uberfireDock = dock.makeUberfireDock();
 
         final UberfireDockPosition actualPosition = uberfireDock.getDockPosition();
         final String actualIcon = uberfireDock.getIconType();
         final String actualPlaceRequestIdentifier = uberfireDock.getPlaceRequest().getIdentifier();
-        final String actualPerspective = uberfireDock.getAssociatedPerspective();
         final Double actualSize = uberfireDock.getSize();
         final String actualLabel = uberfireDock.getLabel();
 
         assertEquals(expectedPosition, actualPosition);
         assertEquals(expectedIcon, actualIcon);
         assertEquals(expectedPlaceRequestIdentifier, actualPlaceRequestIdentifier);
-        assertEquals(expectedPerspective, actualPerspective);
         assertEquals(expectedSize, actualSize);
         assertEquals(expectedLabel, actualLabel);
     }

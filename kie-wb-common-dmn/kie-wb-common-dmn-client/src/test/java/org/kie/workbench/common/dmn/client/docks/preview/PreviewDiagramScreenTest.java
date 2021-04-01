@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
-import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDestroyedEvent;
@@ -36,6 +35,8 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.stubs.ManagedInstanceStub;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -103,6 +104,7 @@ public class PreviewDiagramScreenTest {
 
     @Test
     public void testOnOpen() {
+        tested.onStartup(mock(PlaceRequest.class));
         tested.onOpen();
 
         verify(tested).showPreview(any());
@@ -110,6 +112,8 @@ public class PreviewDiagramScreenTest {
 
     @Test
     public void testOnClose() {
+        tested.onStartup(mock(PlaceRequest.class));
+        tested.onOpen();
         tested.onClose();
 
         verify(tested).closePreview();

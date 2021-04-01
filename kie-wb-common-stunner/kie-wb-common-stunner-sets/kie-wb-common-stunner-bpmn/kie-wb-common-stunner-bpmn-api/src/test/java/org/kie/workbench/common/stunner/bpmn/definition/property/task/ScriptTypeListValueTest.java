@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 import java.util.ArrayList;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils;
+import org.kie.workbench.common.stunner.bpmn.util.EqualsAndHashCodeTestUtils;
 
 public class ScriptTypeListValueTest {
 

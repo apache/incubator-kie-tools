@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
-import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
@@ -52,7 +51,6 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.ErrorPopupPresenter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -101,9 +99,6 @@ public class VariablesEditorFieldRendererTest {
     private Iterable nodes;
 
     @Mock
-    private ErrorPopupPresenter errorPopupPresenter;
-
-    @Mock
     private ManagedInstance<DefaultFormGroup> formGroupsInstanceMock;
 
     @Mock
@@ -115,8 +110,7 @@ public class VariablesEditorFieldRendererTest {
     public void setup() {
         when(formGroupsInstanceMock.get()).thenReturn(formGroup);
         variablesEditor = new VariablesEditorFieldRenderer(variablesEditorWidgetView,
-                                                           abstractClientSessionManager,
-                                                           errorPopupPresenter) {
+                                                           abstractClientSessionManager) {
             {
                 formGroupsInstance = formGroupsInstanceMock;
             }
@@ -146,7 +140,6 @@ public class VariablesEditorFieldRendererTest {
     public void testRemoveVariableWhenBoundToNodes() {
         prepareRemoveVariableTest(true);
         variablesEditor.removeVariable(variableRow);
-        verify(errorPopupPresenter).showMessage(StunnerFormsClientFieldsConstants.CONSTANTS.DeleteDiagramVariableError());
         verify(variablesEditorWidgetView).getVariableRows();
         verify(variablesEditorWidgetView, never()).doSave();
     }
@@ -155,7 +148,6 @@ public class VariablesEditorFieldRendererTest {
     public void testRemoveVariableWhenNotBoundToNodes() {
         prepareRemoveVariableTest(false);
         variablesEditor.removeVariable(variableRow);
-        verify(errorPopupPresenter, never()).showMessage(StunnerFormsClientFieldsConstants.CONSTANTS.DeleteDiagramVariableError());
         verify(variablesEditorWidgetView, times(2)).getVariableRows();
         verify(variablesEditorWidgetView).doSave();
     }

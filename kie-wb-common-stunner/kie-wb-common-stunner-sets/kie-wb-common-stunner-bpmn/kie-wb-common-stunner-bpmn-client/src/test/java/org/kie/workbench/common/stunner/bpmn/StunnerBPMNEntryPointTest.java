@@ -29,11 +29,11 @@ import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediate
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
-import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.forms.client.formFilters.FormFiltersProviderFactory;
 import org.kie.workbench.common.stunner.forms.client.formFilters.StunnerFormElementFilterProvider;
 import org.mockito.Mock;
+import org.uberfire.stubs.ManagedInstanceStub;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -76,9 +76,9 @@ public class StunnerBPMNEntryPointTest {
         startEventDef = new StartNoneEvent();
         when(startEventFilterProvider.getDefinitionType()).thenReturn((Class) StartNoneEvent.class);
 
-        managedFilters = new ManagedInstanceStub(bpmnDiagramFilterProvider,
-                                                 startEventFilterProvider,
-                                                 catchingIntermediateEventFilterProvider);
+        managedFilters = new ManagedInstanceStub<>(bpmnDiagramFilterProvider,
+                                                   startEventFilterProvider,
+                                                   catchingIntermediateEventFilterProvider);
         tested = new StunnerBPMNEntryPoint(sessionManager, managedFilters);
     }
 

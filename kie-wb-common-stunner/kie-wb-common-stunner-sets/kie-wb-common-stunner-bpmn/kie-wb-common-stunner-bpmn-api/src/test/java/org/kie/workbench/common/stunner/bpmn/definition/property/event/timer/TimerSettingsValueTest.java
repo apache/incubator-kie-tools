@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.event.timer;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils;
+import org.kie.workbench.common.stunner.bpmn.util.EqualsAndHashCodeTestUtils;
 
 public class TimerSettingsValueTest {
 
