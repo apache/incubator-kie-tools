@@ -37,7 +37,6 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -133,25 +132,6 @@ public class ScenarioCommandRegistryManagerTest extends AbstractScenarioSimulati
         verify(scenarioCommandRegistryManagerSpy, times(1)).commonUndoRedoOperation(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock), eq(false));
         verify(scenarioCommandRegistryManagerSpy, times(1)).setUndoRedoButtonStatus(eq(scenarioSimulationContextLocal));
         assertTrue(undoneCommandsRegistrySpy.isEmpty());
-    }
-
-    @Test
-    public void setUndoRedoButtonStatus() {
-        scenarioCommandRegistryManagerSpy.setUndoRedoButtonStatus(scenarioSimulationContextLocal);
-        verify(scenarioSimulationEditorPresenterMock, times(1)).setUndoButtonEnabledStatus(eq(false));
-        verify(scenarioSimulationEditorPresenterMock, times(1)).setRedoButtonEnabledStatus(eq(false));
-        //
-        reset(scenarioSimulationEditorPresenterMock);
-        doneCommandsRegistrySpy.register(appendRowCommandMock);
-        scenarioCommandRegistryManagerSpy.setUndoRedoButtonStatus(scenarioSimulationContextLocal);
-        verify(scenarioSimulationEditorPresenterMock, times(1)).setUndoButtonEnabledStatus(eq(true));
-        verify(scenarioSimulationEditorPresenterMock, times(1)).setRedoButtonEnabledStatus(eq(false));
-        //
-        reset(scenarioSimulationEditorPresenterMock);
-        undoneCommandsRegistrySpy.register(appendRowCommandMock);
-        scenarioCommandRegistryManagerSpy.setUndoRedoButtonStatus(scenarioSimulationContextLocal);
-        verify(scenarioSimulationEditorPresenterMock, times(1)).setUndoButtonEnabledStatus(eq(true));
-        verify(scenarioSimulationEditorPresenterMock, times(1)).setRedoButtonEnabledStatus(eq(true));
     }
 
     @Test

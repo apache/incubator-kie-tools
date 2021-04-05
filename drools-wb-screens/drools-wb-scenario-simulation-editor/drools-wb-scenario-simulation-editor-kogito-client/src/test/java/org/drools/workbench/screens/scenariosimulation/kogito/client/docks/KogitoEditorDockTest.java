@@ -92,7 +92,7 @@ public class KogitoEditorDockTest {
     public void expandAuthoringDockEmpty() {
         kogitoEditorDockSpy.expandAuthoringDock(null);
 
-        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST), eq(AUTHORING_PERSPECTIVE));
+        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST));
         verify(uberfireDocks, never()).open(any());
     }
 
@@ -101,7 +101,7 @@ public class KogitoEditorDockTest {
         final UberfireDock dockToOpen = mock(UberfireDock.class);
         kogitoEditorDockSpy.expandAuthoringDock(dockToOpen);
 
-        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST), eq(AUTHORING_PERSPECTIVE));
+        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST));
         verify(uberfireDocks, times(1)).open(eq(dockToOpen));
     }
 
@@ -113,8 +113,7 @@ public class KogitoEditorDockTest {
         assertTrue(kogitoEditorDockSpy.activeDocks.length == 2);
         verify(uberfireDocks, never()).remove(any());
         verify(uberfireDocks, times(1)).add(isA(UberfireDock.class), isA(UberfireDock.class));
-        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST), eq(AUTHORING_PERSPECTIVE));
-        verify(uberfireDocks, never()).hide(any(), any());
+        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST));
     }
 
     @Test
@@ -127,8 +126,7 @@ public class KogitoEditorDockTest {
         assertTrue(kogitoEditorDockSpy.activeDocks.length == 2);
         verify(uberfireDocks, atLeastOnce()).remove(any());
         verify(uberfireDocks, atLeastOnce()).add(isA(UberfireDock.class), isA(UberfireDock.class));
-        verify(uberfireDocks, atLeastOnce()).show(eq(UberfireDockPosition.EAST), eq(AUTHORING_PERSPECTIVE));
-        verify(uberfireDocks, never()).hide(any(), any());
+        verify(uberfireDocks, atLeastOnce()).show(eq(UberfireDockPosition.EAST));
     }
 
     @Test
@@ -139,8 +137,7 @@ public class KogitoEditorDockTest {
         verify(handler, never()).provideDocks(any());
         verify(uberfireDocks, never()).remove(any());
         verify(uberfireDocks, never()).add(any());
-        verify(uberfireDocks, never()).show(any(), any());
-        verify(uberfireDocks, never()).hide(any(), any());
+        verify(uberfireDocks, never()).show(any());
     }
 
     @Test
@@ -154,8 +151,7 @@ public class KogitoEditorDockTest {
         assertTrue(kogitoEditorDockSpy.activeDocks.length == 2);
         verify(uberfireDocks, times(1)).remove(eq(activeDock));
         verify(uberfireDocks, times(1)).add(isA(UberfireDock.class), isA(UberfireDock.class));
-        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST), eq(AUTHORING_PERSPECTIVE));
-        verify(uberfireDocks, never()).hide(any(), any());
+        verify(uberfireDocks, times(1)).show(eq(UberfireDockPosition.EAST));
     }
 
     @Test
@@ -165,8 +161,7 @@ public class KogitoEditorDockTest {
         assertSame(kogitoEditorDockSpy.activeHandler, handler);
         verify(handler, never()).provideDocks(any());
         verify(uberfireDocks, never()).add(any(), any());
-        verify(uberfireDocks, never()).show(any(), any());
-        verify(uberfireDocks, times(1)).hide(eq(UberfireDockPosition.EAST), eq(AUTHORING_PERSPECTIVE));
+        verify(uberfireDocks, never()).show(any());
     }
 
     private TestWorkbenchDocksHandler createNewWorkbenchDocksHandler() {
@@ -174,12 +169,10 @@ public class KogitoEditorDockTest {
 
         docks.add(new UberfireDock(UberfireDockPosition.EAST,
                                    "RANDOM",
-                                   placeRequest,
-                                   AUTHORING_PERSPECTIVE));
+                                   placeRequest));
         docks.add(new UberfireDock(UberfireDockPosition.EAST,
                                    "RANDOM",
-                                   placeRequest,
-                                   AUTHORING_PERSPECTIVE));
+                                   placeRequest));
 
         return new TestWorkbenchDocksHandler(docks);
     }

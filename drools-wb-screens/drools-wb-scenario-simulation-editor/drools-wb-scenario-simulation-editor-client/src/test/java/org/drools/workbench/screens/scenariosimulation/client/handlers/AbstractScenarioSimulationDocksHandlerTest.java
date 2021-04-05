@@ -36,11 +36,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class AbstractScenarioSimulationDocksHandlerTest {
@@ -107,7 +107,6 @@ public class AbstractScenarioSimulationDocksHandlerTest {
     public void expandToolsDockClose() {
         final Collection<UberfireDock> docks = abstractScenarioSimulationDocksHandlerSpy.provideDocks("id");
         final UberfireDock toolsDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.TOOLS.ordinal()];
-        when(placeManagerMock.getStatus(eq(abstractScenarioSimulationDocksHandlerSpy.getTestToolsPlaceManager()))).thenReturn(PlaceStatus.CLOSE);
 
         abstractScenarioSimulationDocksHandlerSpy.expandToolsDock();
 
@@ -118,7 +117,8 @@ public class AbstractScenarioSimulationDocksHandlerTest {
     public void expandToolsDockOpen() {
         final Collection<UberfireDock> docks = abstractScenarioSimulationDocksHandlerSpy.provideDocks("id");
         final UberfireDock toolsDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.TOOLS.ordinal()];
-        when(placeManagerMock.getStatus(eq(abstractScenarioSimulationDocksHandlerSpy.getTestToolsPlaceManager()))).thenReturn(PlaceStatus.OPEN);
+
+        doReturn(true).when(testToolsPresenterMock).isOpen();
 
         abstractScenarioSimulationDocksHandlerSpy.expandToolsDock();
 
@@ -129,7 +129,6 @@ public class AbstractScenarioSimulationDocksHandlerTest {
     public void expandSettingsDockClose() {
         final Collection<UberfireDock> docks = abstractScenarioSimulationDocksHandlerSpy.provideDocks("id");
         final UberfireDock settingsDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.SETTINGS.ordinal()];
-        when(placeManagerMock.getStatus(eq(abstractScenarioSimulationDocksHandlerSpy.getSettingsPlaceManager()))).thenReturn(PlaceStatus.CLOSE);
 
         abstractScenarioSimulationDocksHandlerSpy.expandSettingsDock();
 
@@ -140,7 +139,8 @@ public class AbstractScenarioSimulationDocksHandlerTest {
     public void expandSettingsDockOpen() {
         final Collection<UberfireDock> docks = abstractScenarioSimulationDocksHandlerSpy.provideDocks("id");
         final UberfireDock settingsDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.SETTINGS.ordinal()];
-        when(placeManagerMock.getStatus(eq(abstractScenarioSimulationDocksHandlerSpy.getSettingsPlaceManager()))).thenReturn(PlaceStatus.OPEN);
+
+        doReturn(true).when(settingsPresenterMock).isOpen();
 
         abstractScenarioSimulationDocksHandlerSpy.expandSettingsDock();
 

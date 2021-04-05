@@ -15,16 +15,17 @@
  */
 package org.drools.workbench.screens.scenariosimulation.webapp.client.editor;
 
-import java.util.function.Consumer;
+import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.promise.Promise;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.editor.ScenarioSimulationEditorKogitoWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.model.bridge.Notification;
 
 import static org.drools.workbench.screens.scenariosimulation.webapp.client.editor.AbstractScenarioSimulationEditorKogitoScreen.TITLE;
 import static org.junit.Assert.assertEquals;
@@ -40,23 +41,30 @@ public class AbstractScenarioSimulationEditorKogitoScreenTest {
     private ScenarioSimulationEditorKogitoWrapper scenarioSimulationEditorKogitoWrapperMock;
     @Mock
     private PlaceRequest placeRequestMock;
-    @Mock
-    private Consumer<Menus> menusConsumerMock;
 
     private AbstractScenarioSimulationEditorKogitoScreen abstractScenarioSimulationEditorKogitoScreenSpy;
 
     @Before
     public void setup() {
         abstractScenarioSimulationEditorKogitoScreenSpy = spy(new AbstractScenarioSimulationEditorKogitoScreen() {
-            {
-                scenarioSimulationEditorKogitoWrapper = scenarioSimulationEditorKogitoWrapperMock;
-            }
-
             @Override
-            public PlaceRequest getPlaceRequest() {
+            public String getIdentifier() {
                 return null;
             }
 
+            @Override
+            public Promise<String> getPreview() {
+                return null;
+            }
+
+            @Override
+            public Promise<List<Notification>> validate() {
+                return null;
+            }
+
+            {
+                scenarioSimulationEditorKogitoWrapper = scenarioSimulationEditorKogitoWrapperMock;
+            }
         });
     }
 
@@ -78,21 +86,9 @@ public class AbstractScenarioSimulationEditorKogitoScreenTest {
     }
 
     @Test
-    public void getTitle() {
-        abstractScenarioSimulationEditorKogitoScreenSpy.getTitle();
-        verify(scenarioSimulationEditorKogitoWrapperMock, times(1)).getTitle();
-    }
-
-    @Test
     public void getWidget() {
         abstractScenarioSimulationEditorKogitoScreenSpy.getWidget();
         verify(scenarioSimulationEditorKogitoWrapperMock, times(1)).getWidget();
-    }
-
-    @Test
-    public void setMenus() {
-        abstractScenarioSimulationEditorKogitoScreenSpy.setMenus(menusConsumerMock);
-        verify(scenarioSimulationEditorKogitoWrapperMock, times(1)).setMenus(eq(menusConsumerMock));
     }
 
     @Test
@@ -106,11 +102,5 @@ public class AbstractScenarioSimulationEditorKogitoScreenTest {
         abstractScenarioSimulationEditorKogitoScreenSpy.setContent("fullPath", "content");
         verify(scenarioSimulationEditorKogitoWrapperMock, times(1)).setContent(eq("fullPath"),
                                                                                                     eq("content"));
-    }
-
-    @Test
-    public void isDirty() {
-        abstractScenarioSimulationEditorKogitoScreenSpy.isDirty();
-        verify(scenarioSimulationEditorKogitoWrapperMock, times(1)).isDirty();
     }
 }

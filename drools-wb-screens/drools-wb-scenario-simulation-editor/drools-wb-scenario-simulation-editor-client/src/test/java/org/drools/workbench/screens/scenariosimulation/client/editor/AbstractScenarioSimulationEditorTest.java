@@ -16,8 +16,6 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.editor;
 
-import java.util.Optional;
-
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
@@ -38,32 +36,17 @@ import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationM
 import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportService;
 import org.drools.workbench.screens.scenariosimulation.service.RunnerReportService;
-import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
-import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
-import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.datamodel.copied.PackageDataModelOracleBaselinePayload;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
-import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
-import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.menu.MenuItem;
 
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractScenarioSimulationEditorTest extends AbstractScenarioSimulationTest {
 
     protected static final String SCENARIO_PACKAGE = "scenario.package";
 
-    @Mock
-    protected VersionRecordManager versionRecordManagerMock;
-    @Mock
-    protected FileMenuBuilder fileMenuBuilderMock;
-    @Mock
-    protected ScenarioSimulationService scenarioSimulationServiceMock;
     @Mock
     protected DMNTypeService dmnTypeServiceMock;
     @Mock
@@ -73,8 +56,6 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
     @Mock
     protected ObservablePath observablePathMock;
     @Mock
-    protected Overview overviewMock;
-    @Mock
     protected GridContextMenu gridContextMenuMock;
     @Mock
     protected HeaderGivenContextMenu headerGivenContextMenuMock;
@@ -82,8 +63,6 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
     protected BaseMenuView gridContextMenuViewMock;
     @Mock
     protected BaseMenuView headerContextMenuViewMock;
-    @Mock
-    protected WorkspaceProjectContext workbenchContextMock;
     @Mock
     protected TestToolsPresenter testToolsPresenterMock;
     @Mock
@@ -100,16 +79,6 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
 
     public void setup() {
         super.setup();
-        // Mock FileMenuBuilder usage since we cannot use FileMenuBuilderImpl either
-        when(fileMenuBuilderMock.addSave(any(MenuItem.class))).thenReturn(fileMenuBuilderMock);
-        when(fileMenuBuilderMock.addCopy(any(ObservablePath.class), any(DefaultFileNameValidator.class))).thenReturn(fileMenuBuilderMock);
-        when(fileMenuBuilderMock.addRename(any(Command.class))).thenReturn(fileMenuBuilderMock);
-        when(fileMenuBuilderMock.addDelete(any(ObservablePath.class))).thenReturn(fileMenuBuilderMock);
-        when(fileMenuBuilderMock.addValidate(any(Command.class))).thenReturn(fileMenuBuilderMock);
-        when(fileMenuBuilderMock.addNewTopLevelMenu(any(MenuItem.class))).thenReturn(fileMenuBuilderMock);
-        when(versionRecordManagerMock.getCurrentPath()).thenReturn(observablePathMock);
-        when(versionRecordManagerMock.getPathToLatest()).thenReturn(observablePathMock);
-        when(workbenchContextMock.getActiveWorkspaceProject()).thenReturn(Optional.empty());
         when(gridContextMenuMock.getView()).thenReturn(gridContextMenuViewMock);
         when(headerGivenContextMenuMock.getView()).thenReturn(headerContextMenuViewMock);
         this.modelLocal = new ScenarioSimulationModel();
@@ -119,10 +88,8 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
         settingsLocal.setDmoSession(null);
         modelLocal.setBackground(backgroundLocal);
         this.content = new ScenarioSimulationModelContent(modelLocal,
-                                                          overviewMock,
                                                           packageDataModelOracleBaselinePayload);
         when(packageDataModelOracleBaselinePayload.getPackageName()).thenReturn(TestProperties.FACT_PACKAGE);
-        when(scenarioSimulationServiceMock.loadContent(observablePathMock)).thenReturn(content);
     }
 
     protected Simulation getSimulation() {

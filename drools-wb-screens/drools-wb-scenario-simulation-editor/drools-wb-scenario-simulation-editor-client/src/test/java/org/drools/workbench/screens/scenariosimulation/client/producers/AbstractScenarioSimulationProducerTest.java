@@ -46,7 +46,6 @@ public class AbstractScenarioSimulationProducerTest extends AbstractProducerTest
                 this.fileUploadPopupPresenter = fileUploadPopupPresenterMock;
                 this.eventBusProducer = eventBusProducerMock;
                 this.scenarioGridPanelProducer = scenarioGridPanelProducerMock;
-                this.notificationEvent = notificationEventNew;
                 this.scenarioCommandManager = scenarioCommandManagerMock;
                 this.scenarioCommandRegistryManager = scenarioCommandRegistryManagerMock;
             }
@@ -62,7 +61,6 @@ public class AbstractScenarioSimulationProducerTest extends AbstractProducerTest
         verify(scenarioSimulationEventHandlerMock, times(1)).setPreserveDeletePopupPresenter(eq(preserveDeletePopupPresenterMock));
         verify(scenarioSimulationEventHandlerMock, times(1)).setConfirmPopupPresenter(eq(confirmPopupPresenterMock));
         verify(scenarioSimulationEventHandlerMock, times(1)).setFileUploadPopupPresenter(eq(fileUploadPopupPresenterMock));
-        verify(scenarioSimulationEventHandlerMock, times(1)).setNotificationEvent(eq(notificationEventNew));
         verify(scenarioSimulationEventHandlerMock, times(1)).setScenarioCommandManager(eq(scenarioCommandManagerMock));
         verify(scenarioSimulationEventHandlerMock, times(1)).setScenarioCommandRegistryManager(eq(scenarioCommandRegistryManagerMock));
     }

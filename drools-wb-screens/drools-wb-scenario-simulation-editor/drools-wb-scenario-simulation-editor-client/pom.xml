@@ -21,6 +21,10 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
@@ -64,10 +68,22 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ioc</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.errai</groupId>
+          <artifactId>errai-javax-enterprise</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ui</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.errai</groupId>
+          <artifactId>errai-javax-enterprise</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>

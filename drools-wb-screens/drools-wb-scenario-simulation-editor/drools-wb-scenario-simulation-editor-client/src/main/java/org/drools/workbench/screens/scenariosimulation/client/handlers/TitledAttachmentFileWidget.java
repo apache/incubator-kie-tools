@@ -25,14 +25,12 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.drools.workbench.screens.scenariosimulation.client.dropdown.ScenarioSimulationDropdown;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
-import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.constants.ElementTags;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.html.Div;
 import org.gwtbootstrap3.client.ui.html.Span;
-import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
 
 public class TitledAttachmentFileWidget extends Composite {
@@ -42,12 +40,10 @@ public class TitledAttachmentFileWidget extends Composite {
     protected FormLabel titleLabel = GWT.create(FormLabel.class);
     protected Span errorLabel = GWT.create(Span.class);
     protected ScenarioSimulationDropdown scenarioSimulationDropdown;
-    protected Caller<ScenarioSimulationService> scenarioSimulationService;
     protected String selectedPath;
 
     public TitledAttachmentFileWidget(String title,
-                                      Caller<ScenarioSimulationService> scenarioSimulationService, ScenarioSimulationDropdown scenarioSimulationDropdown) {
-        this.scenarioSimulationService = scenarioSimulationService;
+                                      ScenarioSimulationDropdown scenarioSimulationDropdown) {
         this.scenarioSimulationDropdown = scenarioSimulationDropdown;
         titleLabel.setStyleName("control-label");
         titleLabel.setText(title);

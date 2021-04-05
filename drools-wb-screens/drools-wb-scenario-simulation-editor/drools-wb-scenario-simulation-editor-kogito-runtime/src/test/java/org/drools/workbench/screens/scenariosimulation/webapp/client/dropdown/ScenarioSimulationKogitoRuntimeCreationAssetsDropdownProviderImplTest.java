@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.screens.scenariosimulation.webapp.client.popup.ErrorPopupPresenter;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
@@ -32,7 +33,6 @@ import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdown
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

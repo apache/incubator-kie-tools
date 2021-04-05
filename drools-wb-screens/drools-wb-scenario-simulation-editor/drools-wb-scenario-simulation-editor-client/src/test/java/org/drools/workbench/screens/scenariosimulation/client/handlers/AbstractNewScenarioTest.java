@@ -17,15 +17,10 @@
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
 import org.drools.workbench.screens.scenariosimulation.client.dropdown.ScenarioSimulationDropdown;
-import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
-import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.mockito.Mock;
 
 public abstract class AbstractNewScenarioTest {
-
-    @Mock
-    protected Caller<ScenarioSimulationService> scenarioSimulationServiceMock;
 
     @Mock
     protected ScenarioSimulationDropdown scenarioSimulationDropdownMock;

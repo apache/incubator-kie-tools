@@ -51,7 +51,6 @@ public class TitledAttachmentFileWidgetTest extends AbstractNewScenarioTest {
     public void setup() throws Exception {
         super.setup();
         titledAttachmentFileWidget = spy(new TitledAttachmentFileWidget(ScenarioSimulationEditorConstants.INSTANCE.chooseDMN(),
-                                                                        scenarioSimulationServiceMock,
                                                                         scenarioSimulationDropdownMock) {
             {
                 this.fields = fieldsMock;
