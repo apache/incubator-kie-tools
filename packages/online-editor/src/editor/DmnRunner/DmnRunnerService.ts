@@ -21,7 +21,7 @@ import { NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
 
 export interface DmnRunnerPayload {
   model: string;
-  context: Map<string, object>;
+  context: object;
 }
 
 export enum EvaluationStatus {

@@ -140,64 +140,80 @@ export function DmnRunnerDrawer(props: Props) {
     }
   }, []);
 
-  const onSubmit = useCallback(
-    async data => {
-      dmnRunner.setFormData(data);
-      if (props.editor) {
-        try {
-          const content = await props.editor.getContent();
-          const result = await dmnRunner.service.result({ context: data, model: content });
-          if (result) {
-            const decisionNameByDecisionId = result.decisionResults?.reduce(
-              (acc, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
-              new Map<string, string>()
-            );
-
-            const messagesBySourceId = result.messages.reduce((acc, message) => {
-              const messageEntry = acc.get(message.sourceId);
-              if (!messageEntry) {
-                acc.set(message.sourceId, [message]);
-              } else {
-                acc.set(message.sourceId, [...messageEntry, message]);
-              }
-              return acc;
-            }, new Map<string, DecisionResultMessage[]>());
-
-            const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(([sourceId, messages]) => {
-              const path = decisionNameByDecisionId?.get(sourceId) ?? "";
-              return messages.map(message => ({
-                type: "PROBLEM",
-                path,
-                severity: message.severity,
-                message: `${message.messageType}: ${message.message}`
-              }));
-            });
-            notificationsPanel.getTabRef("Execution")?.setNotifications("", notifications);
-          }
-          if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
-            // DMN Runner Error
-            return;
-          }
-          const differences = result?.decisionResults?.map((decisionResult, index) =>
-            diff(dmnRunnerResults?.[index] ?? {}, decisionResult ?? {})
-          );
-          if (differences?.length !== 0) {
-            setDmnRunnerResponseDiffs(differences);
-          }
-
-          setDmnRunnerResults(result?.decisionResults);
-        } catch (err) {
-          setDmnRunnerResults(undefined);
-        }
+  const updateDmnRunnerResults = useCallback(
+    (formData: object) => {
+      if (!props.editor) {
+        return;
       }
+      props.editor
+        .getContent()
+        .then(content => {
+          dmnRunner.service.result({ context: formData, model: content }).then(result => {
+            if (result) {
+              const decisionNameByDecisionId = result.decisionResults?.reduce(
+                (acc, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
+                new Map<string, string>()
+              );
+
+              const messagesBySourceId = result.messages.reduce((acc, message) => {
+                const messageEntry = acc.get(message.sourceId);
+                if (!messageEntry) {
+                  acc.set(message.sourceId, [message]);
+                } else {
+                  acc.set(message.sourceId, [...messageEntry, message]);
+                }
+                return acc;
+              }, new Map<string, DecisionResultMessage[]>());
+
+              const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(
+                ([sourceId, messages]) => {
+                  const path = decisionNameByDecisionId?.get(sourceId) ?? "";
+                  return messages.map(message => ({
+                    type: "PROBLEM",
+                    path,
+                    severity: message.severity,
+                    message: `${message.messageType}: ${message.message}`
+                  }));
+                }
+              );
+              notificationsPanel.getTabRef("Execution")?.setNotifications("", notifications);
+            }
+            if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
+              // DMN Runner Error
+              return;
+            }
+
+            setDmnRunnerResults(previousDmnRunnerResult => {
+              const differences = result?.decisionResults?.map((decisionResult, index) =>
+                diff(previousDmnRunnerResult?.[index] ?? {}, decisionResult ?? {})
+              );
+              if (differences?.length !== 0) {
+                setDmnRunnerResponseDiffs(differences);
+              }
+              return result?.decisionResults;
+            });
+          });
+        })
+        .catch(() => {
+          setDmnRunnerResults(undefined);
+        });
     },
-    [props.editor, dmnRunnerResults, dmnRunner.service, notificationsPanel.getTabRef]
+    [props.editor, dmnRunner.service, notificationsPanel.getTabRef]
   );
 
+  // Update outputs column on form data change
+  useEffect(() => {
+    updateDmnRunnerResults(dmnRunner.formData);
+  }, [dmnRunner.formData, updateDmnRunnerResults]);
+
+  const onSubmit = useCallback(data => {
+    dmnRunner.setFormData(data);
+  }, []);
+
   const onValidate = useCallback((model, error: any) => {
-    // if the form has an error, the response should be empty;
+    // if the form has an error, the error should be displayed and the outputs column should be updated anyway
     if (error) {
-      setDmnRunnerResults(undefined);
+      dmnRunner.setFormData(model);
     }
     return error;
   }, []);
@@ -222,12 +238,13 @@ export function DmnRunnerDrawer(props: Props) {
     errorBoundaryRef.current?.reset();
   }, [dmnRunner.jsonSchemaBridge]);
 
-  const [hasError, setHasError] = useState<boolean>(false);
+  const [errorGeneratingForm, setErrorGeneratingForm] = useState<boolean>(false);
   useEffect(() => {
-    if (hasError) {
-      setDmnRunnerResults(undefined);
+    if (errorGeneratingForm) {
+      // if there is an error generating the form, the last form data is submitted
+      updateDmnRunnerResults(dmnRunner.formData);
     }
-  }, [hasError]);
+  }, [errorGeneratingForm, dmnRunner.formData, updateDmnRunnerResults]);
 
   // Subscribe to any change on the DMN Editor and submit the form
   useEffect(() => {
@@ -239,7 +256,7 @@ export function DmnRunnerDrawer(props: Props) {
         }
 
         timeout = window.setTimeout(() => {
-          autoFormRef.current?.submit();
+          updateDmnRunnerResults(dmnRunner.formData);
         }, THROTTLING_TIME);
       });
 
@@ -247,7 +264,7 @@ export function DmnRunnerDrawer(props: Props) {
         props.editor?.getStateControl().unsubscribe(subscription);
       };
     }
-  }, [props.editor]);
+  }, [props.editor, dmnRunner.formData, updateDmnRunnerResults]);
 
   const shouldRenderForm = useMemo(() => {
     return dmnRunner.jsonSchemaBridge && Object.keys(dmnRunner.jsonSchemaBridge?.schema.properties ?? {}).length !== 0;
@@ -286,7 +303,7 @@ export function DmnRunnerDrawer(props: Props) {
                 {shouldRenderForm ? (
                   <ErrorBoundary
                     ref={errorBoundaryRef}
-                    setHasError={setHasError}
+                    setHasError={setErrorGeneratingForm}
                     error={
                       <div>
                         <EmptyState>

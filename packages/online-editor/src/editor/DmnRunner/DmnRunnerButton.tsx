@@ -48,6 +48,7 @@ export function DmnRunnerButton() {
         <Button
           variant={"plain"}
           component={"a"}
+          target={"_blank"}
           href={
             "https://docs.google.com/forms/d/e/1FAIpQLScxNLViA-_4OKCQKhxqt8CK5la0JZkNjTs67-YWCrOg5aFt0w/viewform?gxids=7628"
           }

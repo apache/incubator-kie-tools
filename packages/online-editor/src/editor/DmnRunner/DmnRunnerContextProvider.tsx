@@ -42,7 +42,7 @@ export function DmnRunnerContextProvider(props: Props) {
   const notificationsPanel = useNotificationsPanel();
   const [isDrawerExpanded, setDrawerExpanded] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [formData, setFormData] = useState();
+  const [formData, setFormData] = useState({});
   const globalContext = useContext(GlobalContext);
   const [status, setStatus] = useState(() =>
     globalContext.file.fileExtension === "dmn" ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE
@@ -60,13 +60,19 @@ export function DmnRunnerContextProvider(props: Props) {
           jsonSchemaBridge?.schema.definitions.InputSet.properties ?? {},
           newJsonSchemaBridge?.schema.definitions.InputSet.properties ?? {}
         );
-        Object.keys(propertiesDifference).forEach(property => {
-          // Remove an formData property that has been changed;
-          delete formData?.[property];
+
+        // Remove an formData property that has been deleted;
+        setFormData(previousFormData => {
+          const newFormData = { ...previousFormData };
+          Object.keys(propertiesDifference).forEach(property => {
+            delete (newFormData as any)?.[property];
+          });
+          return newFormData;
         });
+
         setJsonSchemaBridge(newJsonSchemaBridge);
       });
-  }, [props.editor, service, formData]);
+  }, [props.editor, service, jsonSchemaBridge]);
 
   // Pooling to detect either if DMN Runner is running or has stopped
   useEffect(() => {
