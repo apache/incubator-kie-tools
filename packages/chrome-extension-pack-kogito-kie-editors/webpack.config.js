@@ -79,7 +79,9 @@ module.exports = async (env, argv) => {
       "content_scripts/github": "./src/github-content-script.ts",
       "content_scripts/online-editor": "./src/online-editor-content-script.ts",
       background: "./src/background.ts",
-      "envelope/index": "./src/envelope/index.ts"
+      "envelope/bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
+      "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
+      "envelope/scesim-envelope": "./src/envelope/SceSimEditorEnvelopeApp.ts"
     },
     devServer: {
       contentBase: ["dist"],

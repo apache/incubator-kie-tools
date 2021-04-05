@@ -24,15 +24,15 @@ interface Props {
   setLocale: React.Dispatch<string>;
 }
 
-export interface EditorEnvelopeViewApi {
-  getEditor: () => Editor | undefined;
-  setEditor: (editor: Editor) => void;
+export interface EditorEnvelopeViewApi<E extends Editor> {
+  getEditor: () => E | undefined;
+  setEditor: (editor: E) => void;
   setLoading: () => void;
   setLoadingFinished: () => void;
   setLocale: (locale: string) => void;
 }
 
-export const EditorEnvelopeViewRef: React.RefForwardingComponent<EditorEnvelopeViewApi, Props> = (
+export const EditorEnvelopeViewRef: React.RefForwardingComponent<EditorEnvelopeViewApi<Editor>, Props> = (
   props: Props,
   forwardingRef
 ) => {

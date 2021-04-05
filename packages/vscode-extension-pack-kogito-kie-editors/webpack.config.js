@@ -48,7 +48,9 @@ module.exports = async (argv, env) => [
     },
     target: "web",
     entry: {
-      "webview/GwtEditorsEnvelopeApp": "./src/webview/GwtEditorsEnvelopeApp.ts"
+      "webview/BpmnEditorEnvelopeApp": "./src/webview/BpmnEditorEnvelopeApp.ts",
+      "webview/DmnEditorEnvelopeApp": "./src/webview/DmnEditorEnvelopeApp.ts",
+      "webview/SceSimEditorEnvelopeApp": "./src/webview/SceSimEditorEnvelopeApp.ts"
     },
     module: {
       rules: [...pfWebpackOptions.patternflyRules]

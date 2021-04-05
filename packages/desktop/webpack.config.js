@@ -39,7 +39,8 @@ module.exports = async (argv, env) => [
     target: "web",
     entry: {
       "webview/index": "./src/webview/index.tsx",
-      envelope: "./src/envelope/GwtEditorsEnvelopeApp.ts"
+      "envelope/bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
+      "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts"
     },
     externals: {
       electron: "commonjs electron"
@@ -50,8 +51,8 @@ module.exports = async (argv, env) => [
         { from: "./static/samples", to: "./samples" },
         { from: "./static/resources", to: "./resources" },
         { from: "./static/images", to: "./images" },
+        { from: "./static/envelope", to: "./envelope" },
         { from: "./static/index.html", to: "./index.html" },
-        { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist" },
         { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
         { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] }
       ])

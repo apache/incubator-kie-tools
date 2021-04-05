@@ -113,44 +113,34 @@ exports[`EditorEnvelopeView first open 1`] = `
         data-testid="loading-screen-div"
       >
         <div
-          class="pf-c-page"
-          tabindex="-1"
+          class="pf-l-bullseye"
         >
-          <main
-            class="pf-c-page__main"
-            tabindex="-1"
+          <div
+            class="kogito-tooling--loading-screen-spinner"
           >
-            <div
-              class="pf-l-bullseye"
-            >
-              <div
-                class="kogito-tooling--loading-screen-spinner"
+            <div>
+              <span
+                aria-valuetext="Loading..."
+                class="pf-c-spinner pf-m-xl"
+                role="progressbar"
               >
-                <div>
-                  <span
-                    aria-valuetext="Loading..."
-                    class="pf-c-spinner pf-m-xl"
-                    role="progressbar"
-                  >
-                    <span
-                      class="pf-c-spinner__clipper"
-                    />
-                    <span
-                      class="pf-c-spinner__lead-ball"
-                    />
-                    <span
-                      class="pf-c-spinner__tail-ball"
-                    />
-                  </span>
-                </div>
-                <h5
-                  class="pf-c-title pf-m-md"
-                >
-                  Loading...
-                </h5>
-              </div>
+                <span
+                  class="pf-c-spinner__clipper"
+                />
+                <span
+                  class="pf-c-spinner__lead-ball"
+                />
+                <span
+                  class="pf-c-spinner__tail-ball"
+                />
+              </span>
             </div>
-          </main>
+            <h5
+              class="pf-c-title pf-m-md"
+            >
+              Loading...
+            </h5>
+          </div>
         </div>
       </div>
     </div>

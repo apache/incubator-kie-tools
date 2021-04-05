@@ -33,7 +33,8 @@ module.exports = [
   }),
   merge(common, {
     entry: {
-      "envelope/index": "./src/envelope/index.ts"
+      "envelope/bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
+      "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts"
     },
     module: {
       rules: [...pfWebpackOptions.patternflyRules]

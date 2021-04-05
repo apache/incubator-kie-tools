@@ -65,9 +65,9 @@ export function App() {
     () => ({
       targetOrigin: window.location.origin,
       mapping: new Map([
-        ["bpmn", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "envelope.html" }],
-        ["bpmn2", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "envelope.html" }],
-        ["dmn", { resourcesPathPrefix: "gwt-editors/dmn", envelopePath: "envelope.html" }]
+        ["bpmn", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/bpmn-envelope.html" }],
+        ["bpmn2", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/bpmn-envelope.html" }],
+        ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/dmn-envelope.html" }]
       ])
     }),
     []

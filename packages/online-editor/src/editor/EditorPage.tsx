@@ -32,6 +32,7 @@ import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/reac
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
+
 const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kiegroup/monaco-editor");
 
 export enum AlertTypes {

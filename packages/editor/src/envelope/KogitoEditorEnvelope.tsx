@@ -15,6 +15,7 @@
  */
 
 import {
+  Editor,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContext,
@@ -25,25 +26,34 @@ import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/envelope";
 import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
-import { Envelope } from "@kogito-tooling/envelope";
-import { KogitoEditorEnvelopeApiFactory } from "./KogitoEditorEnvelopeApiImpl";
+import { Envelope, EnvelopeApiFactory } from "@kogito-tooling/envelope";
 import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 import { EditorEnvelopeI18nContext, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
 import { getOperatingSystem } from "@kogito-tooling/channel-common-api";
+import { ApiDefinition } from "@kogito-tooling/envelope-bus/dist/api";
 
-export class KogitoEditorEnvelope {
+export class KogitoEditorEnvelope<
+  E extends Editor,
+  EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi>,
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>
+> {
   constructor(
-    private readonly kogitoEditorEnvelopeApiFactory: KogitoEditorEnvelopeApiFactory,
+    private readonly kogitoEditorEnvelopeApiFactory: EnvelopeApiFactory<
+      EnvelopeApi,
+      ChannelApi,
+      EditorEnvelopeViewApi<E>,
+      KogitoEditorEnvelopeContextType<ChannelApi>
+    >,
     private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService,
     private readonly i18nService: I18nService,
     private readonly envelope: Envelope<
-      KogitoEditorEnvelopeApi,
-      KogitoEditorChannelApi,
-      EditorEnvelopeViewApi,
-      KogitoEditorEnvelopeContextType
+      EnvelopeApi,
+      ChannelApi,
+      EditorEnvelopeViewApi<E>,
+      KogitoEditorEnvelopeContextType<ChannelApi>
     >,
-    private readonly context: KogitoEditorEnvelopeContextType = {
+    private readonly context: KogitoEditorEnvelopeContextType<ChannelApi> = {
       channelApi: envelope.channelApi,
       operatingSystem: getOperatingSystem(),
       services: {
@@ -59,7 +69,7 @@ export class KogitoEditorEnvelope {
   }
 
   private renderView(container: HTMLElement) {
-    const editorEnvelopeViewRef = React.createRef<EditorEnvelopeViewApi>();
+    const editorEnvelopeViewRef = React.createRef<EditorEnvelopeViewApi<E>>();
 
     const app = (
       <KogitoEditorEnvelopeContext.Provider value={this.context}>
@@ -76,7 +86,7 @@ export class KogitoEditorEnvelope {
       </KogitoEditorEnvelopeContext.Provider>
     );
 
-    return new Promise<() => EditorEnvelopeViewApi>(res => {
+    return new Promise<() => EditorEnvelopeViewApi<E>>(res => {
       setTimeout(() => {
         ReactDOM.render(app, container, () => {
           res(() => editorEnvelopeViewRef.current!);

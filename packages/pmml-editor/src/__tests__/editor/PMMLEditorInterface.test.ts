@@ -25,7 +25,7 @@ import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 
 const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
-const envelopeContext: KogitoEditorEnvelopeContextType = {
+const envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi> = {
   channelApi: channelApi,
   operatingSystem: OperatingSystem.LINUX,
   services: {

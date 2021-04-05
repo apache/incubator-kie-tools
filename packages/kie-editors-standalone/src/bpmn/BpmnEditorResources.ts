@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-import { GwtEditorMapping } from "@kogito-tooling/kie-bc-editors";
 import * as fs from "fs";
 import { BaseEditorResources, EditorResources } from "../common/EditorResources";
 import * as externalAssets from "@kogito-tooling/external-assets-base";
-import { ChannelType } from "@kogito-tooling/editor/dist/api";
+import { getBpmnLanguageData } from "@kogito-tooling/kie-bc-editors/dist/bpmn/api";
 
 export class BpmnEditorResources extends BaseEditorResources {
   public get(args: { resourcesPathPrefix: string }) {
-    const bpmnLanguageData = new GwtEditorMapping().getLanguageData({
-      resourcesPathPrefix: args.resourcesPathPrefix,
-      fileExtension: "bpmn",
-      initialLocale: "",
-      isReadOnly: false,
-      channel: ChannelType.EMBEDDED
-    })!;
+    const bpmnLanguageData = getBpmnLanguageData(args.resourcesPathPrefix);
 
     const bpmnEditorResources: EditorResources = {
-      envelopeJsResource: this.createResource({ path: `dist/envelope/index.js` }),
+      envelopeJsResource: this.createResource({ path: `dist/envelope/bpmn-envelope.js` }),
       baseJsResources: bpmnLanguageData?.resources
         .filter(r => r.type === "js")
         .pop()

@@ -15,12 +15,11 @@
  */
 
 import * as React from "react";
-import { Page } from "@patternfly/react-core/dist/js/components/Page"
-import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner"
-import { Title } from "@patternfly/react-core/dist/js/components/Title"
-import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye"
-import { useEditorEnvelopeI18nContext } from "../i18n";
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { useEditorEnvelopeI18nContext } from "../i18n";
 
 export function LoadingScreen(props: { loading: boolean }) {
   const [mustRender, setMustRender] = useState(true);
@@ -53,16 +52,14 @@ export function LoadingScreen(props: { loading: boolean }) {
           onAnimationEnd={onAnimationEnd}
           data-testid={"loading-screen-div"}
         >
-          <Page tabIndex={-1}>
-            <Bullseye>
-              <div className={"kogito-tooling--loading-screen-spinner"}>
-                <div>
-                  <Spinner />
-                </div>
-                <Title headingLevel={"h5"}>{i18n.loadingScreen.loading}</Title>
+          <Bullseye>
+            <div className={"kogito-tooling--loading-screen-spinner"}>
+              <div>
+                <Spinner />
               </div>
-            </Bullseye>
-          </Page>
+              <Title headingLevel={"h5"}>{i18n.loadingScreen.loading}</Title>
+            </div>
+          </Bullseye>
         </div>
       </div>
     )) || <></>

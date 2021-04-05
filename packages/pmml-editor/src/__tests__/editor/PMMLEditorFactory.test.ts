@@ -28,7 +28,7 @@ import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 
 const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
-const envelopeContext: KogitoEditorEnvelopeContextType = {
+const envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi> = {
   channelApi: channelApi,
   operatingSystem: OperatingSystem.LINUX,
   services: {
@@ -39,23 +39,13 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
 };
 
 describe("PMMLEditorFactory", () => {
-  test("Unsupported LanguageData type", () => {
-    const factory: PMMLEditorFactory = new PMMLEditorFactory();
-    expect(factory.supports("unsupported")).toBeFalsy();
-  });
-
-  test("Supported LanguageData type", () => {
-    const factory: PMMLEditorFactory = new PMMLEditorFactory();
-    expect(factory.supports(FACTORY_TYPE)).toBeTruthy();
-  });
-
   test("Supported type::CreateEditor", () => {
     const factory: PMMLEditorFactory = new PMMLEditorFactory();
 
     jest.spyOn(factory, "createEditor");
 
     const created: Promise<Editor> = factory.createEditor(envelopeContext, {
-      fileExtension: FACTORY_TYPE,
+      fileExtension: "pmml",
       resourcesPathPrefix: "",
       initialLocale: "en",
       isReadOnly: false,

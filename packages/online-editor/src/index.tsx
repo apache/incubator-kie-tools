@@ -45,9 +45,9 @@ const onlineI18n = new I18n<OnlineI18n>(onlineI18nDefaults, onlineI18nDictionari
 const editorEnvelopeLocator: EditorEnvelopeLocator = {
   targetOrigin: window.location.origin,
   mapping: new Map([
-    ["bpmn", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "gwt-envelope.html" }],
-    ["bpmn2", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "gwt-envelope.html" }],
-    ["dmn", { resourcesPathPrefix: "gwt-editors/dmn", envelopePath: "gwt-envelope.html" }],
+    ["bpmn", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "bpmn-envelope.html" }],
+    ["bpmn2", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "bpmn-envelope.html" }],
+    ["dmn", { resourcesPathPrefix: "gwt-editors/dmn", envelopePath: "dmn-envelope.html" }],
     ["pmml", { resourcesPathPrefix: "", envelopePath: "pmml-envelope.html" }]
   ])
 };

@@ -17,21 +17,20 @@
 import { EditorInitArgs } from "./KogitoEditorEnvelopeApi";
 import { Editor } from "./Editor";
 import { KogitoEditorEnvelopeContextType } from "./KogitoEditorEnvelopeContext";
+import { ApiDefinition } from "@kogito-tooling/envelope-bus/dist/api";
+import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
 
 /**
  * Factory of Editors to be created inside the envelope.
  */
-export interface EditorFactory {
-  /**
-   * Returns true if the factory supports a language.
-   * @param fileExtension The extension of a file (e.g. "txt").
-   */
-  supports(fileExtension: string): boolean;
-
+export interface EditorFactory<
+  E extends Editor,
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>
+> {
   /**
    * Returns an Editor instance.
    * @param envelopeContext The context to be used by Editor implementation.
    * @param initArgs Initial arguments required for the Editor to initialize itself properly.
    */
-  createEditor(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs): Promise<Editor>;
+  createEditor(envelopeContext: KogitoEditorEnvelopeContextType<ChannelApi>, initArgs: EditorInitArgs): Promise<E>;
 }

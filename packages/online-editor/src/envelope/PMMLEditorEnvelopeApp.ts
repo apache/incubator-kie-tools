@@ -16,14 +16,9 @@
 
 import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
 import { PMMLEditorFactory } from "@kogito-tooling/pmml-editor";
-import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
 
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
-  bus: {
-    postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, _?: any) {
-      window.parent.postMessage(message, "*", _);
-    }
-  },
+  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
   editorFactory: new PMMLEditorFactory()
 });

@@ -61,7 +61,8 @@ module.exports = async (env, argv) => {
   return merge(common, {
     entry: {
       index: "./src/index.tsx",
-      "gwt-envelope": "./src/envelope/GwtEditorsEnvelopeApp.ts",
+      "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
+      "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
       "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts"
     },
     plugins: [
@@ -74,7 +75,8 @@ module.exports = async (env, argv) => {
         { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
         { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] },
         { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
-        { from: "./static/envelope/gwt-envelope.html", to: "./gwt-envelope.html" },
+        { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
+        { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
         { from: "../../node_modules/@kogito-tooling/pmml-editor/dist/images", to: "./images" }
       ])
     ],
@@ -107,10 +109,6 @@ module.exports = async (env, argv) => {
               }
             ]
           }
-        },
-        {
-          test: /\.ttf$/,
-          use: ["file-loader"]
         },
         ...pfWebpackOptions.patternflyRules
       ]

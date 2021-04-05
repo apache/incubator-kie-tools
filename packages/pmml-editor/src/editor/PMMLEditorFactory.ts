@@ -18,17 +18,14 @@ import {
   Editor,
   EditorFactory,
   EditorInitArgs,
-  KogitoEditorEnvelopeContextType
+  KogitoEditorEnvelopeContextType,
+  KogitoEditorChannelApi
 } from "@kogito-tooling/editor/dist/api";
 
 export const FACTORY_TYPE = "pmml";
 
-export class PMMLEditorFactory implements EditorFactory {
-  public supports(fileExtension: string) {
-    return fileExtension === FACTORY_TYPE;
-  }
-
-  public createEditor(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs): Promise<Editor> {
+export class PMMLEditorFactory implements EditorFactory<Editor, KogitoEditorChannelApi> {
+  public createEditor(envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>, initArgs: EditorInitArgs): Promise<Editor> {
     return Promise.resolve(new PMMLEditorInterface(envelopeContext));
   }
 }

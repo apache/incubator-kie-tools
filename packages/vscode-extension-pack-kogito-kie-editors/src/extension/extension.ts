@@ -55,28 +55,28 @@ export async function activate(context: vscode.ExtensionContext) {
           "bpmn",
           {
             resourcesPathPrefix: "dist/webview/editors/bpmn",
-            envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js"
+            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js"
           }
         ],
         [
           "bpmn2",
           {
             resourcesPathPrefix: "dist/webview/editors/bpmn",
-            envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js"
+            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js"
           }
         ],
         [
           "dmn",
           {
             resourcesPathPrefix: "dist/webview/editors/dmn",
-            envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js"
+            envelopePath: "dist/webview/DmnEditorEnvelopeApp.js"
           }
         ],
         [
           "scesim",
           {
             resourcesPathPrefix: "dist/webview/editors/scesim",
-            envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js"
+            envelopePath: "dist/webview/SceSimEditorEnvelopeApp.js"
           }
         ],
         [
