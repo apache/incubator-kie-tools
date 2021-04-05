@@ -22,6 +22,13 @@ exports[`FormRenderer test Form change & reset 1`] = `
           >
             Name
           </span>
+          <span
+            aria-hidden="true"
+            class="pf-c-form__label-required"
+          >
+             
+            *
+          </span>
         </label>
          
       </div>
@@ -54,6 +61,13 @@ exports[`FormRenderer test Form change & reset 1`] = `
             class="pf-c-form__label-text"
           >
             Last name
+          </span>
+          <span
+            aria-hidden="true"
+            class="pf-c-form__label-required"
+          >
+             
+            *
           </span>
         </label>
          
@@ -135,6 +149,13 @@ exports[`FormRenderer test Form change & reset 2`] = `
           >
             Name
           </span>
+          <span
+            aria-hidden="true"
+            class="pf-c-form__label-required"
+          >
+             
+            *
+          </span>
         </label>
          
       </div>
@@ -167,6 +188,13 @@ exports[`FormRenderer test Form change & reset 2`] = `
             class="pf-c-form__label-text"
           >
             Last name
+          </span>
+          <span
+            aria-hidden="true"
+            class="pf-c-form__label-required"
+          >
+             
+            *
           </span>
         </label>
          
@@ -248,6 +276,13 @@ exports[`FormRenderer test Form change & reset 3`] = `
           >
             Name
           </span>
+          <span
+            aria-hidden="true"
+            class="pf-c-form__label-required"
+          >
+             
+            *
+          </span>
         </label>
          
       </div>
@@ -280,6 +315,13 @@ exports[`FormRenderer test Form change & reset 3`] = `
             class="pf-c-form__label-text"
           >
             Last name
+          </span>
+          <span
+            aria-hidden="true"
+            class="pf-c-form__label-required"
+          >
+             
+            *
           </span>
         </label>
          
@@ -361,6 +403,13 @@ exports[`FormRenderer test Form submit 1`] = `
           >
             Name
           </span>
+          <span
+            aria-hidden="true"
+            class="pf-c-form__label-required"
+          >
+             
+            *
+          </span>
         </label>
          
       </div>
@@ -393,6 +442,13 @@ exports[`FormRenderer test Form submit 1`] = `
             class="pf-c-form__label-text"
           >
             Last name
+          </span>
+          <span
+            aria-hidden="true"
+            class="pf-c-form__label-required"
+          >
+             
+            *
           </span>
         </label>
          
@@ -474,6 +530,13 @@ exports[`FormRenderer test Form validation error 1`] = `
           >
             Name
           </span>
+          <span
+            aria-hidden="true"
+            class="pf-c-form__label-required"
+          >
+             
+            *
+          </span>
         </label>
          
       </div>
@@ -506,6 +569,13 @@ exports[`FormRenderer test Form validation error 1`] = `
             class="pf-c-form__label-text"
           >
             Last name
+          </span>
+          <span
+            aria-hidden="true"
+            class="pf-c-form__label-required"
+          >
+             
+            *
           </span>
         </label>
          
@@ -603,6 +673,13 @@ exports[`FormRenderer test Form validation error 2`] = `
           >
             Name
           </span>
+          <span
+            aria-hidden="true"
+            class="pf-c-form__label-required"
+          >
+             
+            *
+          </span>
         </label>
          
       </div>
@@ -641,6 +718,13 @@ exports[`FormRenderer test Form validation error 2`] = `
             class="pf-c-form__label-text"
           >
             Last name
+          </span>
+          <span
+            aria-hidden="true"
+            class="pf-c-form__label-required"
+          >
+             
+            *
           </span>
         </label>
          
@@ -728,6 +812,13 @@ exports[`FormRenderer test Snapshot 1`] = `
           >
             Name
           </span>
+          <span
+            aria-hidden="true"
+            class="pf-c-form__label-required"
+          >
+             
+            *
+          </span>
         </label>
          
       </div>
@@ -760,6 +851,13 @@ exports[`FormRenderer test Snapshot 1`] = `
             class="pf-c-form__label-text"
           >
             Last name
+          </span>
+          <span
+            aria-hidden="true"
+            class="pf-c-form__label-required"
+          >
+             
+            *
           </span>
         </label>
          
