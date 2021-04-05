@@ -144,6 +144,11 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
       explanation: string;
       createNew: string;
     };
+    pmmlCard: {
+      title: string;
+      explanation: string;
+      createNew: string;
+    };
     trySample: string;
     chooseLocalFile: string;
   };

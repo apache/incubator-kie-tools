@@ -16,7 +16,7 @@
 
 import { KogitoEdit } from "@kogito-tooling/channel-common-api";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
-import { VsCodeNotificationsApi } from "@kogito-tooling/notifications/src/vscode";
+import { VsCodeNotificationsApi } from "@kogito-tooling/notifications/dist/vscode";
 import * as vscode from "vscode";
 import {
   CancellationToken,

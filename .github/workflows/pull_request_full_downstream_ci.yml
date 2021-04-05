@@ -353,6 +353,7 @@ jobs:
           git push origin gh-pages
 
       - name: Rebuild Chrome Extension to use servers running on localhost and run integration tests
+        if: github.event_name != 'issue_comment'
         env:
           EXTERNAL_RESOURCE_PATH__dmnEditor: "${{ github.workspace }}/kie-wb-common/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime"
           EXTERNAL_RESOURCE_PATH__bpmnEditor: "${{ github.workspace }}/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime"
@@ -370,14 +371,14 @@ jobs:
           cd ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run test:it
 
       - name: Archive Chrome Extension integration tests screenshots
-        if: success() || failure()
+        if: github.event_name != 'issue_comment' && (success() || failure())
         uses: actions/upload-artifact@v1
         with:
           name: chrome-extension-it-tests-screenshots-${{ matrix.os }}
           path: ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/screenshots
 
       - name: Archive Chrome Extension integration tests logs
-        if: success() || failure()
+        if: github.event_name != 'issue_comment' && (success() || failure())
         uses: actions/upload-artifact@v1
         with:
           name: chrome-extension-it-tests-logs-${{ matrix.os }}

@@ -113,8 +113,8 @@ export const en: OnlineI18n = {
   homePage: {
     uploadFile: {
       header: "Edit existing file",
-      body: `Upload your ${en_common.names.bpmn} or ${en_common.names.dmn} file here to start making new edits!`,
-      helperText: "Upload a .bpmn, .bpmn2 or .dmn file",
+      body: `Upload your ${en_common.names.bpmn}, ${en_common.names.dmn} or ${en_common.names.pmml} file here to start making new edits!`,
+      helperText: `Upload a .${en_common.names.bpmn}, .${en_common.names.bpmn}2, .${en_common.names.dmn} or .${en_common.names.pmml} file`,
       helperInvalidText: "File extension is not supported",
       placeholder: "Drag a file or browse for it."
     },
@@ -135,7 +135,7 @@ export const en: OnlineI18n = {
     },
     header: {
       title: `Asset Editor for ${en_common.names.kogito} and Process Automation`,
-      welcomeText: `Welcome to ${en_common.names.businessModeler.name}! These simple ${en_common.names.bpmn} and ${en_common.names.dmn} editors are here to allow you to collaborate quickly\n and to help introduce you to the new tools and capabilities of Process Automation. Feel free to get in touch\n in the forum or review the documentation for more information.`
+      welcomeText: `Welcome to ${en_common.names.businessModeler.name}! These simple ${en_common.names.bpmn}, ${en_common.names.dmn} and ${en_common.names.pmml} editors are here to allow you to collaborate quickly\n and to help introduce you to the new tools and capabilities of Process Automation. Feel free to get in touch\n in the forum or review the documentation for more information.`
     },
     bpmnCard: {
       title: `Workflow (.${en_common.names.bpmn})`,
@@ -146,6 +146,11 @@ export const en: OnlineI18n = {
       title: `Decision model (.${en_common.names.dmn})`,
       explanation: `${en_common.names.dmn} files are used to generate decision models`,
       createNew: "Create new decision model"
+    },
+    pmmlCard: {
+      title: `Scorecard model (.${en_common.names.pmml})`,
+      explanation: `${en_common.names.pmml} files are used to generate scorecards`,
+      createNew: "Create new Scorecard"
     },
     trySample: "Try Sample",
     chooseLocalFile: "Choose a local file"

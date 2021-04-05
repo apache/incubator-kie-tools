@@ -116,6 +116,14 @@ export function EditorToolbar(props: Props) {
     [i18n, context, props]
   );
 
+  const includeDownloadSVGDropdownItem = useMemo(() => {
+    return fileExtension.toLowerCase() !== "pmml";
+  }, [fileExtension]);
+
+  const includeEmbedDropdownItem = useMemo(() => {
+    return includeDownloadSVGDropdownItem;
+  }, [includeDownloadSVGDropdownItem]);
+
   const shareItems = useCallback(
     (dropdownId: string) => [
       <DropdownItem
@@ -133,14 +141,32 @@ export function EditorToolbar(props: Props) {
       >
         {i18n.editorToolbar.copySource}
       </DropdownItem>,
-      <DropdownItem key={`dropdown-${dropdownId}-download-svg`} component="button" onClick={props.onPreview}>
-        {i18n.editorToolbar.downloadSVG}
-      </DropdownItem>,
-      <DropdownItem key={`dropdown-${dropdownId}-embed`} component="button" onClick={props.onEmbed}>
-        {i18n.editorToolbar.embed}
-      </DropdownItem>,
+      <React.Fragment key={`dropdown-${dropdownId}-fragment-download-svg`}>
+        {includeDownloadSVGDropdownItem && (
+          <DropdownItem
+            key={`dropdown-${dropdownId}-download-svg`}
+            data-testid="dropdown-download-svg"
+            component="button"
+            onClick={props.onPreview}
+          >
+            {i18n.editorToolbar.downloadSVG}
+          </DropdownItem>
+        )}
+      </React.Fragment>,
+      <React.Fragment key={`dropdown-${dropdownId}-fragment-embed`}>
+        {includeEmbedDropdownItem && (
+          <DropdownItem
+            key={`dropdown-${dropdownId}-embed`}
+            data-testid="dropdown-embed"
+            component="button"
+            onClick={props.onEmbed}
+          >
+            {i18n.editorToolbar.embed}
+          </DropdownItem>
+        )}
+      </React.Fragment>,
       <DropdownGroup key={"github-group"} label={i18n.names.github}>
-        <React.Fragment key={`dropdown-${dropdownId}-fragment`}>
+        <React.Fragment key={`dropdown-${dropdownId}-fragment-export-gist`}>
           <Tooltip
             data-testid={"gist-it-tooltip"}
             key={`dropdown-${dropdownId}-export-gist`}

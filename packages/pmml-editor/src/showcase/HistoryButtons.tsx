@@ -16,16 +16,25 @@
 
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
-import { Button, Modal, ModalVariant, Split, SplitItem } from "@patternfly/react-core";
+import { Button, Modal, ModalVariant, Split, SplitItem, Switch } from "@patternfly/react-core";
 import "./HistoryButtons.scss";
+
+export enum Theme {
+  LIGHT,
+  DARK
+}
 
 interface HistoryButtonsProps {
   undo: () => void;
   redo: () => void;
   get: () => Promise<string>;
+  setTheme: (theme: Theme) => void;
+  validate: () => void;
 }
 
 export const HistoryButtons = (props: HistoryButtonsProps) => {
+  const [theme, setTheme] = useState<Theme>(Theme.LIGHT);
+
   return (
     <div className="history-buttons ignore-onclickoutside">
       <Split hasGutter={true}>
@@ -41,6 +50,23 @@ export const HistoryButtons = (props: HistoryButtonsProps) => {
         </SplitItem>
         <SplitItem>
           <PMMLModal get={props.get} />
+        </SplitItem>
+        <SplitItem>
+          <Button variant="secondary" onClick={props.validate}>
+            Validate
+          </Button>
+        </SplitItem>
+        <SplitItem className="history-buttons__theme-switch">
+          <Switch
+            id="theme"
+            label="Dark"
+            labelOff="Light"
+            checked={theme === Theme.DARK}
+            onChange={checked => {
+              setTheme(checked ? Theme.DARK : Theme.LIGHT);
+              props.setTheme(checked ? Theme.DARK : Theme.LIGHT);
+            }}
+          />
         </SplitItem>
       </Split>
       <hr className="history-buttons__divider" />

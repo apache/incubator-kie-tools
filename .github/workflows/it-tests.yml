@@ -116,6 +116,48 @@ jobs:
           name: online-editor-it-tests-videos-${{ matrix.os }}
           path: packages/online-editor/it-tests/videos
 
+  desktop-tests-it:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [12.16.3]
+        yarn: [1.19.1]
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Setup Yarn
+        run: |
+          npm install -g yarn@${{ matrix.yarn }}
+          yarn config set network-timeout 1000000
+
+      - name: Start Xvfb (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+
+      - name: Download dependencies
+        run: yarn run init
+
+      - name: Increase inotify watches
+        if: matrix.os == 'ubuntu-latest'
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
+      - name: Build desktop package
+        run: npx lerna run build:prod --scope '@kogito-tooling/desktop' --include-dependencies
+
+      - name: Run integration tests
+        env:
+          DISPLAY: ":99.0"
+        run: npx lerna run test:it --scope '@kogito-tooling/desktop' --stream
+
   kie-editors-standalone-tests-it:
     runs-on: ${{ matrix.os }}
     strategy:

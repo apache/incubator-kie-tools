@@ -31,7 +31,7 @@ import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
-import { VsCodeNotificationsApi } from "@kogito-tooling/notifications/src/vscode";
+import { VsCodeNotificationsApi } from "@kogito-tooling/notifications/dist/vscode";
 
 export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoEditableDocument> {
   private readonly _onDidChangeCustomDocument = new EventEmitter<CustomDocumentEditEvent<KogitoEditableDocument>>();

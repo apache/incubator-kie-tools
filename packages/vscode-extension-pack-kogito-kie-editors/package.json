@@ -1,8 +1,8 @@
 {
   "name": "vscode-extension-pack-kogito-kie-editors",
-  "displayName": "BPMN, DMN and Test Scenario Editors",
+  "displayName": "BPMN, DMN, Test Scenario and (PMML) Scorecard Editors",
   "description": "",
-  "version": "0.8.4",
+  "version": "0.8.6",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.46.0"
@@ -27,7 +27,7 @@
         "displayName": "KIE Kogito Editors",
         "selector": [
           {
-            "filenamePattern": "*.{dmn,bpmn,bpmn2,scesim}"
+            "filenamePattern": "*.{dmn,bpmn,bpmn2,scesim,pmml}"
           }
         ]
       }
@@ -102,6 +102,16 @@
           "scesim",
           "Test Scenario"
         ]
+      },
+      {
+        "id": "pmml",
+        "extensions": [
+          ".pmml"
+        ],
+        "aliases": [
+          "pmml",
+          "Predictive Model Markup Language"
+        ]
       }
     ]
   },
@@ -110,7 +120,7 @@
     "compile": "webpack",
     "watch": "webpack",
     "test": "echo 'No tests to run.'",
-    "test:it": "yarn run compile && rm -rf ./out && tsc --skipLibCheck --sourceMap true && extest setup-and-run --yarn -u -e ./test-resources -o src/ui-test/settings.json \"out/ui-test/*.test.js\"",
+    "test:it": "rm -rf ./test-resource && rm -rf ./out && tsc --skipLibCheck --sourceMap true && extest setup-and-run --yarn -u -e ./test-resources -o src/ui-test/settings.json \"out/ui-test/*.test.js\"",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run build:fast",
     "build:prod:linux:darwin": "yarn run build --mode production --devtool none && yarn run test && yarn run package:prod",
@@ -118,13 +128,14 @@
     "build:prod": "run-script-os"
   },
   "dependencies": {
-    "@kogito-tooling/backend": "0.8.4",
-    "@kogito-tooling/editor": "0.8.4",
-    "@kogito-tooling/external-assets-base": "0.8.4",
-    "@kogito-tooling/i18n": "0.8.4",
-    "@kogito-tooling/kie-bc-editors": "0.8.4",
-    "@kogito-tooling/patternfly-base": "0.8.4",
-    "@kogito-tooling/vscode-extension": "0.8.4",
-    "@kogito-tooling/workspace": "0.8.4"
+    "@kogito-tooling/backend": "0.8.6",
+    "@kogito-tooling/editor": "0.8.6",
+    "@kogito-tooling/external-assets-base": "0.8.6",
+    "@kogito-tooling/i18n": "0.8.6",
+    "@kogito-tooling/kie-bc-editors": "0.8.6",
+    "@kogito-tooling/patternfly-base": "0.8.6",
+    "@kogito-tooling/pmml-editor": "0.8.6",
+    "@kogito-tooling/vscode-extension": "0.8.6",
+    "@kogito-tooling/workspace": "0.8.6"
   }
 }
