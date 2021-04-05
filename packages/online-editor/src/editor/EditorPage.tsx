@@ -300,7 +300,7 @@ export function EditorPage(props: Props) {
 
     const validate = () => {
       editor.validate().then(notifications => {
-        if (typeof notifications === "object") {
+        if (!Array.isArray(notifications)) {
           notifications = [];
         }
         notificationsPanelRef.current?.getTabRef("Validation")?.setNotifications("", notifications);
