@@ -95,12 +95,12 @@ export function HomePage(props: Props) {
   );
 
   const navigation = (
-    <Nav onSelect={onNavSelect} theme={"dark"}>
+    <Nav onSelect={onNavSelect} theme={"dark"} ouiaId="nav-buttons">
       <NavList>
-        <NavItem itemId={NavItems.FILES} isActive={activeNavItem === NavItems.FILES}>
+        <NavItem itemId={NavItems.FILES} isActive={activeNavItem === NavItems.FILES} ouiaId="files-nav">
           {i18n.terms.files}
         </NavItem>
-        <NavItem itemId={NavItems.LEARN_MORE} isActive={activeNavItem === NavItems.LEARN_MORE}>
+        <NavItem itemId={NavItems.LEARN_MORE} isActive={activeNavItem === NavItems.LEARN_MORE} ouiaId="learn-more-nav">
           {i18n.homePage.learnMore}
         </NavItem>
       </NavList>

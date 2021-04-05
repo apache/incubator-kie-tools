@@ -78,6 +78,7 @@ export function EditorToolbar(props: Props) {
             onClick={props.onSave}
             className={"pf-u-display-flex-on-lg"}
             aria-label={"Save file"}
+            ouiaId="save-button"
           >
             {i18n.terms.save}
           </Button>
@@ -88,6 +89,7 @@ export function EditorToolbar(props: Props) {
             onClick={props.onClose}
             aria-label={"Go to homepage"}
             data-testid="close-editor-button"
+            ouiaId="close-button"
           >
             <CloseIcon />
           </Button>

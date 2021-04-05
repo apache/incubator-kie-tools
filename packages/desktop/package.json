@@ -16,7 +16,7 @@
     "@kogito-tooling/i18n-common-dictionary": "0.8.7",
     "@kogito-tooling/kie-bc-editors": "0.8.7",
     "@kogito-tooling/patternfly-base": "0.8.7",
-    "electron": "^9.4.0",
+    "electron": "^11.4.1",
     "react-router": "5.1.1",
     "react-router-dom": "5.1.1"
   },
@@ -39,7 +39,8 @@
     "build:prod:darwin": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:darwin",
     "build:prod:win32": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:win32",
     "build:prod:all": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:linux && yarn run package:prod:darwin && yarn run package:prod:win32",
-    "build:prod": "run-script-os"
+    "build:prod": "run-script-os",
+    "test:it": "jest --config it-tests/jest.config.json --runInBand --forceExit"
   },
   "babel": {
     "presets": [
