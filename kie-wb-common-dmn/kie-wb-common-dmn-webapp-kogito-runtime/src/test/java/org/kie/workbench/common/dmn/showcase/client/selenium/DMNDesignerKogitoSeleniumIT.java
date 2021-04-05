@@ -78,15 +78,6 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
     }
 
     @Test
-    public void testAceEditorForInvalidContent() {
-        setContent("<!!!invalid!!!>");
-
-        waitUtils.waitUntilElementIsVisible(
-                EditorXPathLocator.aceEditor(),
-                "If invalid dmn is loaded, ace editor needs to be shown");
-    }
-
-    @Test
     public void testBasicModel() throws Exception {
         final String expected = loadResource("basic-model.xml");
         setContent(expected);

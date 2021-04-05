@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.definition.model.Import;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dc.JSIPoint;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITAuthorityRequirement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITBusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDRGElement;
@@ -42,6 +43,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.mockito.invocation.InvocationOnMock;
@@ -53,6 +55,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -77,15 +80,15 @@ public class DMNMarshallerTest {
         final JSITKnowledgeSource node5 = makeKnowledgeSource("id5");
 
         final DMNMarshaller dmnMarshaller = spy(new DMNMarshaller());
-        final JSITDefinitions definitions = spy(new JSITDefinitions());
+        final JSITDefinitions definitions = mock(JSITDefinitions.class);
         final List<JSITDRGElement> definitionsDRGElements = new ArrayList<>(asList(existingNode1, existingNode2, existingNode3));
 
-        final JSITAuthorityRequirement node1AuthorityRequirement = new JSITAuthorityRequirement();
-        final JSITInformationRequirement node1InformationRequirement = new JSITInformationRequirement();
-        final JSITKnowledgeRequirement node1KnowledgeRequirement = new JSITKnowledgeRequirement();
-        final JSITAuthorityRequirement node2AuthorityRequirement = new JSITAuthorityRequirement();
-        final JSITKnowledgeRequirement node2KnowledgeRequirement = new JSITKnowledgeRequirement();
-        final JSITAuthorityRequirement node3AuthorityRequirement = new JSITAuthorityRequirement();
+        final JSITAuthorityRequirement node1AuthorityRequirement = mock(JSITAuthorityRequirement.class);
+        final JSITInformationRequirement node1InformationRequirement = mock(JSITInformationRequirement.class);
+        final JSITKnowledgeRequirement node1KnowledgeRequirement = mock(JSITKnowledgeRequirement.class);
+        final JSITAuthorityRequirement node2AuthorityRequirement = mock(JSITAuthorityRequirement.class);
+        final JSITKnowledgeRequirement node2KnowledgeRequirement = mock(JSITKnowledgeRequirement.class);
+        final JSITAuthorityRequirement node3AuthorityRequirement = mock(JSITAuthorityRequirement.class);
 
         final List<JSITAuthorityRequirement> node1ExistingAuthorityRequirement = new ArrayList<>();
         final List<JSITInformationRequirement> node1ExistingInformationRequirement = new ArrayList<>();
@@ -182,7 +185,7 @@ public class DMNMarshallerTest {
         final JSITDecision definitionsDRGElement3 = makeDecision("id3");
         final DMNMarshaller dmnMarshaller = new DMNMarshaller();
 
-        final JSITDefinitions definitions = spy(new JSITDefinitions());
+        final JSITDefinitions definitions = mock(JSITDefinitions.class);
         final List<JSITDRGElement> definitionsDRGElements = new ArrayList<>(asList(definitionsDRGElement1, definitionsDRGElement2, definitionsDRGElement3));
 
         doReturn(definitionsDRGElements).when(definitions).getDrgElement();
@@ -280,11 +283,12 @@ public class DMNMarshallerTest {
 
     @Test
     public void testConnect() {
-        final DMNMarshaller dmnMarshaller = new DMNMarshaller();
+        final DMNMarshaller dmnMarshaller = spy(new DMNMarshaller());
         final JSIDMNDiagram diagram = mock(JSIDMNDiagram.class);
         final List<String> dmnDiagramElementIds = mock(List.class);
         final Definitions definitionsStunnerPojo = mock(Definitions.class);
-        final List<JSIDMNEdge> dmnEdges = new ArrayList<>();
+        final List<JSIDMNEdge> dmnEdges = mock(List.class);
+        final JSIDMNEdge jsiEdge = mock(JSIDMNEdge.class);
 
         final Node<?, ?> node = mock(Node.class);
         final List inEdges = new ArrayList<>();
@@ -299,6 +303,10 @@ public class DMNMarshallerTest {
         inEdges.add(edge);
         when(edge.getSourceNode()).thenReturn(sourceNode);
         when(sourceNode.getContent()).thenReturn(sourceView);
+
+        doReturn(jsiEdge).when(dmnMarshaller).newJSIDMNEdgeInstance();
+        doReturn(mock(JSIPoint.class)).when(dmnMarshaller).point2dToDMNDIPoint(any(Point2D.class));
+        doNothing().when(jsiEdge).addWaypoint(any());
 
         when(node.getInEdges()).thenReturn(inEdges);
         when(edge.getContent()).thenReturn(viewConnector);
@@ -340,19 +348,19 @@ public class DMNMarshallerTest {
     }
 
     private JSITDecision makeDecision(final String id) {
-        final JSITDecision decision = spy(new JSITDecision());
+        final JSITDecision decision = mock(JSITDecision.class);
         doReturn(id).when(decision).getId();
         return decision;
     }
 
     private JSITBusinessKnowledgeModel makeBusinessKnowledgeModel(final String id) {
-        final JSITBusinessKnowledgeModel businessKnowledgeModel = spy(new JSITBusinessKnowledgeModel());
+        final JSITBusinessKnowledgeModel businessKnowledgeModel = mock(JSITBusinessKnowledgeModel.class);
         doReturn(id).when(businessKnowledgeModel).getId();
         return businessKnowledgeModel;
     }
 
     private JSITKnowledgeSource makeKnowledgeSource(final String id) {
-        final JSITKnowledgeSource knowledgeSource = spy(new JSITKnowledgeSource());
+        final JSITKnowledgeSource knowledgeSource = mock(JSITKnowledgeSource.class);
         doReturn(id).when(knowledgeSource).getId();
         return knowledgeSource;
     }

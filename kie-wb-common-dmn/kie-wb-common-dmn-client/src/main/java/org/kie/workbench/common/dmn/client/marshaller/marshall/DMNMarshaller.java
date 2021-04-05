@@ -59,6 +59,7 @@ import org.kie.workbench.common.dmn.client.marshaller.converters.InputDataConver
 import org.kie.workbench.common.dmn.client.marshaller.converters.KnowledgeSourceConverter;
 import org.kie.workbench.common.dmn.client.marshaller.converters.TextAnnotationConverter;
 import org.kie.workbench.common.dmn.client.marshaller.converters.dd.PointUtils;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dc.JSIPoint;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.di.JSIDiagramElement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITAssociation;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITBusinessKnowledgeModel;
@@ -488,7 +489,7 @@ public class DMNMarshaller {
                         targetPoint = Point2D.create(xTarget + targetPoint.getX(), yTarget + targetPoint.getY());
                     }
 
-                    final JSIDMNEdge dmnEdge = JSIDMNEdge.newInstance();
+                    final JSIDMNEdge dmnEdge = newJSIDMNEdgeInstance();
                     // DMNDI edge elementRef is uuid of Stunner edge,
                     // with the only exception when edge contains as content a DMN Association (Association is an edge)
                     final String uuid = getRawId(getUUID(e));
@@ -503,15 +504,23 @@ public class DMNMarshaller {
                     dmnEdge.setDmnElementRef(new QName(namespaceURI,
                                                        uuid,
                                                        XMLConstants.DEFAULT_NS_PREFIX));
-                    dmnEdge.addWaypoint(PointUtils.point2dToDMNDIPoint(sourcePoint));
+                    dmnEdge.addWaypoint(point2dToDMNDIPoint(sourcePoint));
                     for (ControlPoint cp : connectionContent.getControlPoints()) {
-                        dmnEdge.addWaypoint(PointUtils.point2dToDMNDIPoint(cp.getLocation()));
+                        dmnEdge.addWaypoint(point2dToDMNDIPoint(cp.getLocation()));
                     }
-                    dmnEdge.addWaypoint(PointUtils.point2dToDMNDIPoint(targetPoint));
+                    dmnEdge.addWaypoint(point2dToDMNDIPoint(targetPoint));
                     dmnEdges.add(dmnEdge);
                 }
             }
         }
+    }
+
+    JSIDMNEdge newJSIDMNEdgeInstance() {
+        return JSIDMNEdge.newInstance();
+    }
+
+    JSIPoint point2dToDMNDIPoint(final Point2D point) {
+        return PointUtils.point2dToDMNDIPoint(point);
     }
 
     private String getUUID(final Edge<?, ?> edge) {
