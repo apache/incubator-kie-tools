@@ -46,11 +46,23 @@ export function NotificationsPanel(props: Props) {
   }, [notificationsPanel.isOpen, notificationsPanel.setIsOpen]);
 
   const onNotificationsLengthChange = useCallback((name: string, newQtt: number) => {
-    setTabsNotifications(previousTabsProps => {
-      const newTabsProps = new Map(previousTabsProps);
-      newTabsProps.set(name, newQtt);
-      return newTabsProps;
+    setTabsNotifications(previousTabsNotifications => {
+      const newTabsNotifications = new Map(previousTabsNotifications);
+      if (previousTabsNotifications.get(name) !== newQtt) {
+        const updatedResult = document.getElementById(`dmn-runner-errors`);
+        updatedResult?.classList.add("kogito--editor__notifications-panel-error-count-updated");
+      }
+      newTabsNotifications.set(name, newQtt);
+      return newTabsNotifications;
     });
+  }, []);
+
+  const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const updatedResult = document.getElementById(`dmn-runner-errors`);
+    updatedResult?.classList.remove("kogito--editor__notifications-panel-error-count-updated");
   }, []);
 
   const onSelectTab = useCallback((event, tabName) => {
@@ -79,7 +91,7 @@ export function NotificationsPanel(props: Props) {
           <ExclamationCircleIcon />
         ) : (
           <>
-            <span>{totalNotifications}</span>
+            <span id={"dmn-runner-errors"} onAnimationEnd={onAnimationEnd}>{totalNotifications}</span>
             <ExclamationCircleIcon style={{ marginTop: "1px" }} />
           </>
         )}

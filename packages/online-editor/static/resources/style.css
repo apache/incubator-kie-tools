@@ -387,3 +387,17 @@
 .kogito--editor__notifications-panel-button.open {
   bottom: 355px;
 }
+
+.kogito--editor__notifications-panel-error-count-updated {
+  animation-name: highlight;
+  animation-duration: 1s;
+}
+
+@keyframes highlight {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

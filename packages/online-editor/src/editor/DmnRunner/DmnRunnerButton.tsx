@@ -62,7 +62,7 @@ export function DmnRunnerButton() {
         key={"is-chrome"}
         flipBehavior={["left"]}
         trigger={!isChrome ? "mouseenter focus" : ""}
-        content={<p>To use the DMN Runner use the Chrome Browser</p>}
+        content={<p>This is only available in Chrome at the moment</p>}
       >
         <Button
           data-testid="run-button"
@@ -79,6 +79,7 @@ export function DmnRunnerButton() {
                 flipBehavior={["left"]}
                 distance={20}
                 children={<ConnectedIcon className={shouldBlinkDmnRunnerConnectedIcon ? "blink-opacity" : ""} />}
+                trigger={isChrome ? "mouseenter focus" : ""}
               />
             ) : (
               <Tooltip
