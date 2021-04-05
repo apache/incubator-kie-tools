@@ -17,7 +17,7 @@
 import { Button, Tooltip } from "@patternfly/react-core";
 import { ConnectedIcon, DisconnectedIcon } from "@patternfly/react-icons";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useDmnRunner } from "./DmnRunnerContext";
 
@@ -40,15 +40,37 @@ export function DmnRunnerButton() {
     return dmnRunner.status === DmnRunnerStatus.RUNNING && !dmnRunner.isDrawerExpanded;
   }, [dmnRunner.status, dmnRunner.isDrawerExpanded]);
 
+  const isChrome = useMemo(() => {
+    return !!window.chrome;
+  }, []);
+
   return (
     <>
-      {window.chrome && (
+      {isChrome && (
+        <Button
+          variant={"plain"}
+          component={"a"}
+          href={
+            "https://docs.google.com/forms/d/e/1FAIpQLScxNLViA-_4OKCQKhxqt8CK5la0JZkNjTs67-YWCrOg5aFt0w/viewform?gxids=7628"
+          }
+          style={{ marginRight: "5px" }}
+        >
+          Feedback
+        </Button>
+      )}
+      <Tooltip
+        key={"is-chrome"}
+        flipBehavior={["left"]}
+        trigger={!isChrome ? "mouseenter focus" : ""}
+        content={<p>To use the DMN Runner use the Chrome Browser</p>}
+      >
         <Button
           data-testid="run-button"
           variant={"tertiary"}
           onClick={onDmnRunner}
           aria-label={"Run"}
           className={"kogito--editor__toolbar"}
+          isAriaDisabled={!isChrome}
           icon={
             dmnRunner.status === DmnRunnerStatus.RUNNING ? (
               <Tooltip
@@ -65,13 +87,14 @@ export function DmnRunnerButton() {
                 flipBehavior={["left"]}
                 distance={20}
                 children={<DisconnectedIcon />}
+                trigger={isChrome ? "mouseenter focus" : ""}
               />
             )
           }
         >
           DMN Runner
         </Button>
-      )}
+      </Tooltip>
     </>
   );
 }

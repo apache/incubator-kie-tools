@@ -28,24 +28,9 @@ interface Props {
   tabNames: string[];
 }
 
-interface NotificationTabProps {
-  qttOfNotifications: number;
-  wasRead: boolean;
-}
-
 export function NotificationsPanel(props: Props) {
   const notificationsPanel = useNotificationsPanel();
-  const [tabsProps, setTabsProps] = useState<Map<string, NotificationTabProps>>(new Map());
-
-  useEffect(() => {
-    setTabsProps(previousTabsProps => {
-      const keptTabProps = [...previousTabsProps.entries()].filter(([tabName]) => props.tabNames.indexOf(tabName) >= 0);
-      const newTabsProps: Array<[string, NotificationTabProps]> = props.tabNames
-        .filter(tabName => !previousTabsProps.has(tabName))
-        .map(tabName => [tabName, { qttOfNotifications: 0, wasRead: false }]);
-      return new Map([...keptTabProps, ...newTabsProps]);
-    });
-  }, [props.tabNames]);
+  const [tabsNotifications, setTabsNotifications] = useState<Map<string, number>>(new Map());
 
   const tabsMap: Map<string, React.RefObject<NotificationsApi>> = useMemo(
     () => new Map(props.tabNames.map(tabName => [tabName, React.createRef<NotificationsApi>()])),
@@ -61,28 +46,24 @@ export function NotificationsPanel(props: Props) {
   }, [notificationsPanel.isOpen, notificationsPanel.setIsOpen]);
 
   const onNotificationsLengthChange = useCallback((name: string, newQtt: number) => {
-    setTabsProps(previousTabsProps => {
+    setTabsNotifications(previousTabsProps => {
       const newTabsProps = new Map(previousTabsProps);
-      newTabsProps.set(name, { qttOfNotifications: newQtt, wasRead: false });
+      newTabsProps.set(name, newQtt);
       return newTabsProps;
     });
   }, []);
 
   const onSelectTab = useCallback((event, tabName) => {
     notificationsPanel.setActiveTab(tabName);
-    setTabsProps(previousTabsProps => {
-      const newTabsProps = new Map(previousTabsProps);
-      newTabsProps.set(tabName, {
-        qttOfNotifications: previousTabsProps.get(tabName)!.qttOfNotifications,
-        wasRead: true
-      });
-      return newTabsProps;
-    });
   }, []);
 
   useEffect(() => {
     notificationsPanel.setActiveTab(props.tabNames[0]);
   }, []);
+
+  const totalNotifications = useMemo(() => [...tabsNotifications.values()].reduce((acc, value) => acc + value, 0), [
+    tabsNotifications
+  ]);
 
   return (
     <>
@@ -94,7 +75,14 @@ export function NotificationsPanel(props: Props) {
         }
         onClick={onNotificationsPanelButtonClick}
       >
-        <ExclamationCircleIcon />
+        {totalNotifications === 0 ? (
+          <ExclamationCircleIcon />
+        ) : (
+          <>
+            <span>{totalNotifications}</span>
+            <ExclamationCircleIcon style={{ marginTop: "1px" }} />
+          </>
+        )}
       </div>
       <div
         style={{
@@ -111,8 +99,7 @@ export function NotificationsPanel(props: Props) {
               eventKey={tabName}
               title={
                 <TabTitleText>
-                  {tabName}{" "}
-                  <Badge isRead={tabsProps.get(tabName)?.wasRead}>{tabsProps.get(tabName)?.qttOfNotifications}</Badge>
+                  {tabName} <Badge isRead={true}>{tabsNotifications.get(tabName)}</Badge>
                 </TabTitleText>
               }
             >

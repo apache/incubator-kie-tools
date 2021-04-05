@@ -86,12 +86,16 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
             <NotificationDrawerGroupList>
               {[...notificationsMap.entries()]
                 .sort(([a], [b]) => (a < b ? -1 : 1))
-                .map(([path, notifications]) => (
+                .map(([path, notifications], groupIndex) => (
                   <>
                     {path === "" ? (
                       <NotificationDrawerList isHidden={false}>
-                        {notifications.map(notification => (
-                          <NotificationDrawerListItem isRead={true} variant={variant(notification.severity)}>
+                        {notifications.map((notification, notificationIndex) => (
+                          <NotificationDrawerListItem
+                            key={`validation-notification-${notificationIndex}`}
+                            isRead={true}
+                            variant={variant(notification.severity)}
+                          >
                             <NotificationDrawerListItemHeader
                               title={notification.message}
                               variant={variant(notification.severity)}
@@ -100,7 +104,11 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
                         ))}
                       </NotificationDrawerList>
                     ) : (
-                      <NotificationTabDrawerGroup path={path} notifications={notifications} />
+                      <NotificationTabDrawerGroup
+                        key={`execution-notification-group-${groupIndex}`}
+                        path={path}
+                        notifications={notifications}
+                      />
                     )}
                   </>
                 ))}
@@ -133,8 +141,8 @@ function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
       count={props.notifications.length}
       onExpand={onExpand}
     >
-      {props.notifications.map(notification => (
-        <NotificationDrawerList isHidden={!isExpanded}>
+      {props.notifications.map((notification, index) => (
+        <NotificationDrawerList key={`execution-notification-item-${props.path}-${index}`} isHidden={!isExpanded}>
           <NotificationDrawerListItem isRead={true} variant={variant(notification.severity)}>
             <NotificationDrawerListItemHeader title={notification.message} variant={variant(notification.severity)} />
           </NotificationDrawerListItem>
