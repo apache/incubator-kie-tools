@@ -15,10 +15,10 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { GlobalContext } from "../../common/GlobalContext";
-import { DmnRunnerContext, DmnRunnerContextType } from "./DmnRunnerContext";
-import JSONSchemaBridge from "../../common/Bridge";
+import { DmnRunnerContext } from "./DmnRunnerContext";
+import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerModal } from "./DmnRunnerModal";
 import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";

@@ -20,15 +20,13 @@
     "@octokit/rest": "16.35.0",
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",
-    "@types/invariant": "^2.2.34",
-    "invariant": "^2.2.4",
     "ajv": "^6.12.6",
     "ajv-errors": "^1.0.1",
     "deep-object-diff": "^1.1.0",
     "react-router": "5.1.1",
     "react-router-dom": "5.1.1",
-    "uniforms": "^3.0.0",
-    "uniforms-bridge-json-schema": "^3.0.0",
+    "uniforms": "^3.3.0",
+    "uniforms-bridge-json-schema": "^3.3.0",
     "uniforms-patternfly": "^4.2.1"
   },
   "scripts": {

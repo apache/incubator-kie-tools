@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useContext } from "react";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
-import JSONSchemaBridge from "../../common/Bridge";
+import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { DmnRunnerService } from "./DmnRunnerService";
 
 export interface DmnRunnerContextType {

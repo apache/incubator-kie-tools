@@ -16,7 +16,7 @@
 
 import Ajv from "ajv";
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
-import JSONSchemaBridge from "../../common/Bridge";
+import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
 
 export interface DmnRunnerPayload {
