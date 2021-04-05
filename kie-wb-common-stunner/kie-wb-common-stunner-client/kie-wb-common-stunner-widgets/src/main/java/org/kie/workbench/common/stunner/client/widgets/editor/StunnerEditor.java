@@ -23,12 +23,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.client.widgets.views.ErrorPage;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -47,6 +47,7 @@ public class StunnerEditor {
     private final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances;
     private final ClientTranslationService translationService;
     private final StunnerEditorView view;
+    private final ErrorPage errorPage;
 
     private SessionDiagramPresenter diagramPresenter;
     private boolean isReadOnly;
@@ -56,19 +57,21 @@ public class StunnerEditor {
 
     // CDI proxy.
     public StunnerEditor() {
-        this(null, null, null, null);
+        this(null, null, null, null, null);
     }
 
     @Inject
     public StunnerEditor(ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                          ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
                          ClientTranslationService translationService,
-                         StunnerEditorView view) {
+                         StunnerEditorView view,
+                         ErrorPage errorPage) {
         this.editorSessionPresenterInstances = editorSessionPresenterInstances;
         this.viewerSessionPresenterInstances = viewerSessionPresenterInstances;
         this.translationService = translationService;
         this.isReadOnly = false;
         this.view = view;
+        this.errorPage = errorPage;
         this.parsingExceptionProcessor = e -> {
         };
         this.exceptionProcessor = e -> {
@@ -151,9 +154,7 @@ public class StunnerEditor {
             final DiagramParsingException dpe = (DiagramParsingException) e;
             close();
             parsingExceptionProcessor.accept(dpe);
-            // FIXME: tiago
-            view.setWidget(new Label("Error opening the file")); //TODO: Put a nice error screen/empty state here.
-            //Scheduler.get().scheduleDeferred(xmlEditorView::onResize);
+            view.setWidget(errorPage);
         } else {
             String message = null;
             if (e instanceof DefinitionNotFoundException) {

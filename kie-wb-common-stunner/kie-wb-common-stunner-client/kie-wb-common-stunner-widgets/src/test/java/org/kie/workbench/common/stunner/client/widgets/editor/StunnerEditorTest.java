@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.client.widgets.views.ErrorPage;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -71,6 +72,9 @@ public class StunnerEditorTest {
     private StunnerEditorView view;
 
     @Mock
+    private ErrorPage errorPage;
+
+    @Mock
     private SessionPresenter.View sessionPresenterView;
 
     @Mock
@@ -102,7 +106,8 @@ public class StunnerEditorTest {
         tested = new StunnerEditor(sessionEditorPresenters,
                                    sessionViewerPresenters,
                                    translationService,
-                                   view);
+                                   view,
+                                   errorPage);
     }
 
     @Test
