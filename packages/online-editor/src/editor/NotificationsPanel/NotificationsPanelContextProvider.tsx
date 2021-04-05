@@ -15,15 +15,18 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
-import { NotificationsPanelContext } from "./NotificationsPanelContext";
+import { useCallback, useImperativeHandle, useMemo, useState } from "react";
+import { NotificationsPanelContext, NotificationsPanelContextType } from "./NotificationsPanelContext";
 import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
 
 interface Props {
   children: React.ReactNode;
 }
 
-export function NotificationsPanelContextProvider(props: Props) {
+const NotificationsPanelContextProviderRefForwarding: React.RefForwardingComponent<
+  NotificationsPanelContextType,
+  Props
+> = (props, forwardingRef) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string>("");
   const tabs: Map<string, React.RefObject<NotificationsApi>> = useMemo(() => new Map(), []);
@@ -56,6 +59,17 @@ export function NotificationsPanelContextProvider(props: Props) {
     return [...tabs.keys()].map(tab => tab);
   }, [tabs]);
 
+  useImperativeHandle(forwardingRef, () => ({
+    isOpen,
+    setIsOpen,
+    setTabsMap,
+    getTabRef,
+    getTabContent,
+    getTabNames,
+    activeTab,
+    setActiveTab
+  }));
+
   return (
     <NotificationsPanelContext.Provider
       value={{
@@ -72,4 +86,6 @@ export function NotificationsPanelContextProvider(props: Props) {
       {props.children}
     </NotificationsPanelContext.Provider>
   );
-}
+};
+
+export const NotificationsPanelContextProvider = React.forwardRef(NotificationsPanelContextProviderRefForwarding);

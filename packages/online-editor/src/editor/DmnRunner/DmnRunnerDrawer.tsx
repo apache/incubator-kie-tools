@@ -147,7 +147,7 @@ export function DmnRunnerDrawer(props: Props) {
         try {
           const content = await props.editor.getContent();
           const result = await dmnRunner.service.result({ context: data, model: content });
-          if (result && result.messages.length > 0) {
+          if (result) {
             const decisionNameByDecisionId = result.decisionResults?.reduce(
               (acc, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
               new Map<string, string>()

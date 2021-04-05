@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { GlobalContext } from "../../common/GlobalContext";
-import { DmnRunnerContext } from "./DmnRunnerContext";
+import { DmnRunnerContext, DmnRunnerContextType } from "./DmnRunnerContext";
 import JSONSchemaBridge from "../../common/Bridge";
 import { DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerModal } from "./DmnRunnerModal";

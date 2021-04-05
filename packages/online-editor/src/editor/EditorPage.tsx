@@ -39,11 +39,12 @@ import {
   PageSection
 } from "@patternfly/react-core";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
-import { DmnRunnerContext } from "./DmnRunner/DmnRunnerContext";
+import { DmnRunnerContext, DmnRunnerContextType } from "./DmnRunner/DmnRunnerContext";
 import { DmnRunnerContextProvider } from "./DmnRunner/DmnRunnerContextProvider";
 import { NotificationsPanel } from "./NotificationsPanel/NotificationsPanel";
 import { DmnRunnerStatus } from "./DmnRunner/DmnRunnerStatus";
 import { NotificationsPanelContextProvider } from "./NotificationsPanel/NotificationsPanelContextProvider";
+import { NotificationsPanelContextType } from "./NotificationsPanel/NotificationsPanelContext";
 
 export enum Alerts {
   NONE,
@@ -277,6 +278,8 @@ export function EditorPage(props: Props) {
 
   const closeAlert = useCallback(() => setAlert(Alerts.NONE), []);
 
+  const notificationsPanelRef = useRef<NotificationsPanelContextType>(null);
+
   const notificationPanelTabNames = useCallback(
     (dmnRunnerStatus: DmnRunnerStatus) => {
       if (
@@ -290,8 +293,34 @@ export function EditorPage(props: Props) {
     [context.file.fileExtension, context.isChrome]
   );
 
+  useEffect(() => {
+    if (!editor) {
+      return;
+    }
+
+    const validate = () => {
+      editor.validate().then(notifications => {
+        if (typeof notifications === "object") {
+          notifications = [];
+        }
+        notificationsPanelRef.current?.getTabRef("Validation")?.setNotifications("", notifications);
+      });
+    };
+
+    let timeout: number | undefined;
+    const subscription = editor.getStateControl().subscribe(() => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = window.setTimeout(validate, 200);
+    });
+    validate();
+
+    return () => editor.getStateControl().unsubscribe(subscription);
+  }, [editor, isEditorReady]);
+
   return (
-    <NotificationsPanelContextProvider>
+    <NotificationsPanelContextProvider ref={notificationsPanelRef}>
       <DmnRunnerContextProvider editor={editor} isEditorReady={isEditorReady}>
         <DmnRunnerContext.Consumer>
           {dmnRunner => (
