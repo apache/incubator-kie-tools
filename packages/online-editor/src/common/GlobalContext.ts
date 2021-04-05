@@ -28,6 +28,7 @@ export interface GlobalContextType {
   external: boolean;
   senderTabId?: string;
   githubService: GithubService;
+  isChrome: boolean;
 }
 
 export const GlobalContext = React.createContext<GlobalContextType>({} as any);

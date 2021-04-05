@@ -17,12 +17,14 @@
 import { Button, Tooltip } from "@patternfly/react-core";
 import { ConnectedIcon, DisconnectedIcon } from "@patternfly/react-icons";
 import * as React from "react";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useDmnRunner } from "./DmnRunnerContext";
+import { GlobalContext } from "../../common/GlobalContext";
 
 export function DmnRunnerButton() {
   const dmnRunner = useDmnRunner();
+  const context = useContext(GlobalContext);
 
   const onDmnRunner = useCallback(() => {
     if (dmnRunner.status !== DmnRunnerStatus.RUNNING) {
@@ -40,13 +42,9 @@ export function DmnRunnerButton() {
     return dmnRunner.status === DmnRunnerStatus.RUNNING && !dmnRunner.isDrawerExpanded;
   }, [dmnRunner.status, dmnRunner.isDrawerExpanded]);
 
-  const isChrome = useMemo(() => {
-    return !!window.chrome;
-  }, []);
-
   return (
     <>
-      {isChrome && (
+      {context.isChrome && (
         <Button
           variant={"plain"}
           component={"a"}
@@ -61,7 +59,7 @@ export function DmnRunnerButton() {
       <Tooltip
         key={"is-chrome"}
         flipBehavior={["left"]}
-        trigger={!isChrome ? "mouseenter focus" : ""}
+        trigger={!context.isChrome ? "mouseenter focus" : ""}
         content={<p>This is only available in Chrome at the moment</p>}
       >
         <Button
@@ -70,7 +68,7 @@ export function DmnRunnerButton() {
           onClick={onDmnRunner}
           aria-label={"Run"}
           className={"kogito--editor__toolbar"}
-          isAriaDisabled={!isChrome}
+          isAriaDisabled={!context.isChrome}
           icon={
             dmnRunner.status === DmnRunnerStatus.RUNNING ? (
               <Tooltip
@@ -79,7 +77,7 @@ export function DmnRunnerButton() {
                 flipBehavior={["left"]}
                 distance={20}
                 children={<ConnectedIcon className={shouldBlinkDmnRunnerConnectedIcon ? "blink-opacity" : ""} />}
-                trigger={isChrome ? "mouseenter focus" : ""}
+                trigger={context.isChrome ? "mouseenter focus" : ""}
               />
             ) : (
               <Tooltip
@@ -88,7 +86,7 @@ export function DmnRunnerButton() {
                 flipBehavior={["left"]}
                 distance={20}
                 children={<DisconnectedIcon />}
-                trigger={isChrome ? "mouseenter focus" : ""}
+                trigger={context.isChrome ? "mouseenter focus" : ""}
               />
             )
           }

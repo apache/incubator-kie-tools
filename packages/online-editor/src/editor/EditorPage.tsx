@@ -277,15 +277,18 @@ export function EditorPage(props: Props) {
 
   const closeAlert = useCallback(() => setAlert(Alerts.NONE), []);
 
-  const notificationPanelTabNames = useCallback((dmnRunnerStatus: DmnRunnerStatus) => {
-    if (
-      (context.file.fileExtension === "dmn" && dmnRunnerStatus === DmnRunnerStatus.RUNNING) ||
-      dmnRunnerStatus === DmnRunnerStatus.STOPPED
-    ) {
-      return ["Validation", "Execution"];
-    }
-    return ["Validation"];
-  }, []);
+  const notificationPanelTabNames = useCallback(
+    (dmnRunnerStatus: DmnRunnerStatus) => {
+      if (
+        (context.file.fileExtension === "dmn" && context.isChrome && dmnRunnerStatus === DmnRunnerStatus.RUNNING) ||
+        dmnRunnerStatus === DmnRunnerStatus.STOPPED
+      ) {
+        return ["Validation", "Execution"];
+      }
+      return ["Validation"];
+    },
+    [context.file.fileExtension, context.isChrome]
+  );
 
   return (
     <NotificationsPanelContextProvider>

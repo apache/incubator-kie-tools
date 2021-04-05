@@ -76,7 +76,8 @@ export function App(props: Props) {
           readonly: props.readonly,
           external: props.external,
           senderTabId: props.senderTabId,
-          githubService: props.githubService
+          githubService: props.githubService,
+          isChrome: !!window.chrome
         }}
       >
         <ModalContextProvider>
