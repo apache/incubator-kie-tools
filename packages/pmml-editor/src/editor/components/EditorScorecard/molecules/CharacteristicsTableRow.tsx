@@ -127,6 +127,7 @@ const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) 
           <AttributeLabels
             modelIndex={modelIndex}
             characteristicIndex={characteristicIndex}
+            characteristic={characteristic}
             activeAttributeIndex={index}
             activeAttribute={item}
             areReasonCodesUsed={areReasonCodesUsed}
