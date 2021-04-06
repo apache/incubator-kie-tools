@@ -70,7 +70,6 @@ Feature: Deploy Kogito Build
 
 #####
 
-  @cli
   Scenario Outline: Build <runtime> binary build from local example service target folder with native <native> using KogitoBuild
     Given Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven with configuration:
@@ -82,11 +81,13 @@ Feature: Deploy Kogito Build
     Then Kogito Runtime "<example-service>" has 1 pods running within 5 minutes
     And Service "<example-service>" with process name "orders" is available within 2 minutes
 
+    @rhpam
     @springboot
     Examples:
       | runtime    | example-service            | native   |
       | springboot | process-springboot-example | disabled |
 
+    @rhpam
     @smoke
     @quarkus
     Examples:

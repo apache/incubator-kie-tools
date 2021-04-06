@@ -80,7 +80,21 @@ func (data *Data) buildBinaryLocalExampleServiceFromTargetFolderWithConfiguratio
 	buildHolder.KogitoBuild.GetSpec().SetType(api.BinaryBuildType)
 	buildHolder.BuiltBinaryFolder = fmt.Sprintf(`%s/%s/target`, data.KogitoExamplesLocation, serviceName)
 
-	return framework.DeployKogitoBuild(data.Namespace, framework.CLIInstallerType, buildHolder)
+	err = framework.DeployKogitoBuild(data.Namespace, framework.GetDefaultInstallerType(), buildHolder)
+	if err != nil {
+		return err
+	}
+
+	// If we don't use Kogito CLI then upload target folder using OC client
+	if config.IsCrDeploymentOnly() {
+		return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("Build '%s' to start", serviceName), defaultTimeoutToStartBuildInMin,
+			func() (bool, error) {
+				_, err := framework.CreateCommand("oc", "start-build", serviceName, "--from-dir="+buildHolder.BuiltBinaryFolder, "-n", data.Namespace).WithLoggerContext(data.Namespace).Execute()
+				return err == nil, err
+			})
+	}
+
+	return nil
 }
 
 // Misc methods

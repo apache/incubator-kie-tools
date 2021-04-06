@@ -20,6 +20,7 @@ import (
 	"github.com/kiegroup/kogito-operator/api"
 
 	"github.com/cucumber/godog"
+	"github.com/kiegroup/kogito-operator/test/config"
 	"github.com/kiegroup/kogito-operator/test/framework"
 )
 
@@ -54,5 +55,19 @@ func deploySourceFilesFromPath(namespace, runtimeType, serviceName, path string)
 	buildHolder.KogitoBuild.GetSpec().SetType(api.LocalSourceBuildType)
 	buildHolder.KogitoBuild.GetSpec().GetGitSource().SetURI(path)
 
-	return framework.DeployKogitoBuild(namespace, framework.CLIInstallerType, buildHolder)
+	err = framework.DeployKogitoBuild(namespace, framework.GetDefaultInstallerType(), buildHolder)
+	if err != nil {
+		return err
+	}
+
+	// If we don't use Kogito CLI then upload target folder using OC client
+	if config.IsCrDeploymentOnly() {
+		return framework.WaitForOnOpenshift(namespace, fmt.Sprintf("Build '%s-builder' to start", serviceName), defaultTimeoutToStartBuildInMin,
+			func() (bool, error) {
+				_, err := framework.CreateCommand("oc", "start-build", serviceName+"-builder", "--from-file="+path, "-n", namespace).WithLoggerContext(namespace).Execute()
+				return err == nil, err
+			})
+	}
+
+	return nil
 }
