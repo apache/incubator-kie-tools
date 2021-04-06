@@ -37,6 +37,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.jboss.errai.marshalling.client.Marshalling;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -361,12 +362,11 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
                                                isSingleOutputVar);
 
         ActivityDataIOEditor.GetDataCallback callback = assignmentDataJson -> {
-//            FIXME: tiago ???
-//            AssignmentData assignmentData1 = Marshalling.fromJSON(assignmentDataJson,
-//                                                                  AssignmentData.class);
-//            String assignmentsInfoString = createAssignmentsInfoString(assignmentData1);
-//            setValue(assignmentsInfoString,
-//                     true);
+            AssignmentData assignmentData1 = Marshalling.fromJSON(assignmentDataJson,
+                                                                  AssignmentData.class);
+            String assignmentsInfoString = createAssignmentsInfoString(assignmentData1);
+            setValue(assignmentsInfoString,
+                     true);
         };
 
         activityDataIOEditor.setCallback(callback);
