@@ -39,7 +39,7 @@ import {
   PageSection
 } from "@patternfly/react-core";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
-import { DmnRunnerContext, DmnRunnerContextType } from "./DmnRunner/DmnRunnerContext";
+import { DmnRunnerContext } from "./DmnRunner/DmnRunnerContext";
 import { DmnRunnerContextProvider } from "./DmnRunner/DmnRunnerContextProvider";
 import { NotificationsPanel } from "./NotificationsPanel/NotificationsPanel";
 import { DmnRunnerStatus } from "./DmnRunner/DmnRunnerStatus";

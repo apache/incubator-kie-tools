@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Badge, Tab, Tabs, TabTitleText } from "@patternfly/react-core";
+import { Badge, Tab, Tabs, TabTitleText, Tooltip } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { useNotificationsPanel } from "./NotificationsPanelContext";
 import { NotificationPanelTabContent } from "./NotificationsPanelTabContent";
@@ -88,12 +88,28 @@ export function NotificationsPanel(props: Props) {
         onClick={onNotificationsPanelButtonClick}
       >
         {totalNotifications === 0 ? (
-          <ExclamationCircleIcon />
+          <Tooltip
+            key={"without-notifications"}
+            content={"Notifications Panel"}
+            flipBehavior={["left"]}
+            distance={20}
+            children={<ExclamationCircleIcon />}
+          />
         ) : (
-          <>
-            <span id={"dmn-runner-errors"} onAnimationEnd={onAnimationEnd}>{totalNotifications}</span>
-            <ExclamationCircleIcon style={{ marginTop: "1px" }} />
-          </>
+          <Tooltip
+            key={"with-notifications"}
+            content={"Notifications Panel"}
+            flipBehavior={["left"]}
+            distance={20}
+            children={
+              <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+                <span id={"dmn-runner-errors"} onAnimationEnd={onAnimationEnd}>
+                  {totalNotifications}
+                </span>
+                <ExclamationCircleIcon style={{ marginTop: "1px" }} />
+              </div>
+            }
+          />
         )}
       </div>
       <div
