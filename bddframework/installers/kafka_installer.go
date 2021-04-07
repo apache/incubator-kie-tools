@@ -16,7 +16,7 @@ package installers
 
 import (
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	kafkabetav1 "github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta1"
+	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	"github.com/kiegroup/kogito-operator/test/framework"
 )
 
@@ -43,7 +43,7 @@ func GetKafkaInstaller() ServiceInstaller {
 func getKafkaCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, error) {
 	crs := []kubernetes.ResourceObject{}
 
-	kafkas := &kafkabetav1.KafkaList{}
+	kafkas := &v1beta2.KafkaList{}
 	if err := framework.GetObjectsInNamespace(namespace, kafkas); err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func getKafkaCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, erro
 		crs = append(crs, &kafkas.Items[i])
 	}
 
-	kafkaTopics := &kafkabetav1.KafkaTopicList{}
+	kafkaTopics := &v1beta2.KafkaTopicList{}
 	if err := framework.GetObjectsInNamespace(namespace, kafkaTopics); err != nil {
 		return nil, err
 	}

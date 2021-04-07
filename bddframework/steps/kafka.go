@@ -17,7 +17,7 @@ package steps
 import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
-	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta1"
+	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	"github.com/kiegroup/kogito-operator/test/framework"
 	"github.com/kiegroup/kogito-operator/test/installers"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -62,22 +62,33 @@ func (data *Data) kafkaTopicIsDeployed(name string) error {
 	return framework.DeployKafkaTopic(data.Namespace, name, infrastructure.KafkaInstanceName)
 }
 
-func getKafkaDefaultResource(name, namespace string) *v1beta1.Kafka {
-	return &v1beta1.Kafka{
+func getKafkaDefaultResource(name, namespace string) *v1beta2.Kafka {
+	return &v1beta2.Kafka{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
 		},
-		Spec: v1beta1.KafkaSpec{
-			EntityOperator: v1beta1.EntityOperatorSpec{
-				TopicOperator: v1beta1.EntityTopicOperatorSpec{},
-				UserOperator:  v1beta1.EntityUserOperatorSpec{},
+		Spec: v1beta2.KafkaSpec{
+			EntityOperator: v1beta2.EntityOperatorSpec{
+				TopicOperator: v1beta2.EntityTopicOperatorSpec{},
+				UserOperator:  v1beta2.EntityUserOperatorSpec{},
 			},
-			Kafka: v1beta1.KafkaClusterSpec{
+			Kafka: v1beta2.KafkaClusterSpec{
 				Replicas: 1,
-				Storage:  v1beta1.KafkaStorage{StorageType: v1beta1.KafkaEphemeralStorage},
-				Listeners: v1beta1.KafkaListeners{
-					Plain: v1beta1.KafkaListenerPlain{},
+				Storage:  v1beta2.KafkaStorage{StorageType: v1beta2.KafkaEphemeralStorage},
+				Listeners: []v1beta2.GenericKafkaListener{
+					{
+						Name:         "plain",
+						Port:         9092,
+						TLS:          false,
+						ListenerType: "internal",
+					},
+					{
+						Name:         "tls",
+						Port:         9093,
+						TLS:          true,
+						ListenerType: "internal",
+					},
 				},
 				JvmOptions: map[string]interface{}{"gcLoggingEnabled": false},
 				Config: map[string]interface{}{
@@ -88,9 +99,9 @@ func getKafkaDefaultResource(name, namespace string) *v1beta1.Kafka {
 					"auto.create.topics.enable":                true,
 				},
 			},
-			Zookeeper: v1beta1.ZookeeperClusterSpec{
+			Zookeeper: v1beta2.ZookeeperClusterSpec{
 				Replicas: 1,
-				Storage:  v1beta1.KafkaStorage{StorageType: v1beta1.KafkaEphemeralStorage},
+				Storage:  v1beta2.KafkaStorage{StorageType: v1beta2.KafkaEphemeralStorage},
 			},
 		},
 	}

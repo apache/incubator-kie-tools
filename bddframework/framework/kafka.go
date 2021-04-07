@@ -16,15 +16,15 @@ package framework
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 
-	kafkabetav1 "github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // DeployKafkaInstance deploys an instance of Kafka
-func DeployKafkaInstance(namespace string, kafka *kafkabetav1.Kafka) error {
+func DeployKafkaInstance(namespace string, kafka *v1beta2.Kafka) error {
 	GetLogger(namespace).Info("Creating Kafka instance %s.", "name", kafka.Name)
 
 	if err := kubernetes.ResourceC(kubeClient).Create(kafka); err != nil {
@@ -38,13 +38,13 @@ func DeployKafkaInstance(namespace string, kafka *kafkabetav1.Kafka) error {
 func DeployKafkaTopic(namespace, kafkaTopicName, kafkaInstanceName string) error {
 	GetLogger(namespace).Info("Creating Kafka", "topic", kafkaTopicName, "instanceName", kafkaInstanceName)
 
-	kafkaTopic := &kafkabetav1.KafkaTopic{
+	kafkaTopic := &v1beta2.KafkaTopic{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: namespace,
 			Name:      kafkaTopicName,
 			Labels:    map[string]string{"strimzi.io/cluster": kafkaInstanceName},
 		},
-		Spec: kafkabetav1.KafkaTopicSpec{
+		Spec: v1beta2.KafkaTopicSpec{
 			Replicas:   1,
 			Partitions: 1,
 		},
