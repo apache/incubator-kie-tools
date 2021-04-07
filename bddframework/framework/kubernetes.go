@@ -21,6 +21,7 @@ import (
 	"time"
 
 	"github.com/kiegroup/kogito-operator/api"
+	rbac "k8s.io/api/rbac/v1"
 
 	"github.com/kiegroup/kogito-operator/core/client"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
@@ -511,4 +512,34 @@ func GetService(namespace, name string) (*corev1.Service, error) {
 		return nil, fmt.Errorf("Service with name %s doesn't exist in given namespace %s", name, namespace)
 	}
 	return service, nil
+}
+
+// GetClusterRole return ClusterRole based on name
+func GetClusterRole(name string) (*rbac.ClusterRole, error) {
+	clusterRole := &rbac.ClusterRole{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+	}
+	if exits, err := kubernetes.ResourceC(kubeClient).Fetch(clusterRole); err != nil {
+		return nil, err
+	} else if !exits {
+		return nil, fmt.Errorf("ClusterRole with name %s doesn't exist", name)
+	}
+	return clusterRole, nil
+}
+
+// GetClusterRoleBinding return ClusterRoleBinding based on name
+func GetClusterRoleBinding(name string) (*rbac.ClusterRoleBinding, error) {
+	clusterRoleBinding := &rbac.ClusterRoleBinding{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+	}
+	if exits, err := kubernetes.ResourceC(kubeClient).Fetch(clusterRoleBinding); err != nil {
+		return nil, err
+	} else if !exits {
+		return nil, fmt.Errorf("ClusterRoleBinding with name %s doesn't exist", name)
+	}
+	return clusterRoleBinding, nil
 }

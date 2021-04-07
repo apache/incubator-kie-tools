@@ -16,7 +16,11 @@ package framework
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
+	"github.com/kiegroup/kogito-operator/core/logger"
+	"github.com/kiegroup/kogito-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/meta"
 
 	"gopkg.in/yaml.v2"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -130,4 +134,14 @@ func getInfinispan(namespace, name string) (*infinispan.Infinispan, error) {
 		return nil, nil
 	}
 	return infinispan, nil
+}
+
+// IsInfinispanAvailable checks if Infinispan CRD is available in the cluster
+func IsInfinispanAvailable(namespace string) bool {
+	context := &operator.Context{
+		Client: kubeClient,
+		Log:    logger.GetLogger(namespace),
+		Scheme: meta.GetRegisteredSchema(),
+	}
+	return infrastructure.NewInfinispanHandler(context).IsInfinispanAvailable()
 }

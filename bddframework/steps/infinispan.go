@@ -48,7 +48,11 @@ func registerInfinispanSteps(ctx *godog.ScenarioContext, data *Data) {
 }
 
 func (data *Data) infinispanOperatorIsDeployed() error {
-	return installers.GetInfinispanInstaller().Install(data.Namespace)
+	installer, err := installers.GetInfinispanInstaller()
+	if err != nil {
+		return err
+	}
+	return installer.Install(data.Namespace)
 }
 
 func (data *Data) infinispanInstanceHasPodsRunningWithinMinutes(name string, numberOfPods, timeOutInMin int) error {

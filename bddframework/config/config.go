@@ -83,6 +83,9 @@ type TestConfig struct {
 	examplesRepositoryURI string
 	examplesRepositoryRef string
 
+	// Infinispan
+	infinispanInstallationSource string
+
 	// dev options
 	showScenarios bool
 	showSteps     bool
@@ -178,6 +181,9 @@ func BindFlags(set *flag.FlagSet) {
 	// examples repository
 	set.StringVar(&env.examplesRepositoryURI, prefix+"examples-uri", defaultKogitoExamplesURI, "Set the URI for the kogito-examples repository")
 	set.StringVar(&env.examplesRepositoryRef, prefix+"examples-ref", "", "Set the branch for the kogito-examples repository")
+
+	// Infinispan
+	set.StringVar(&env.infinispanInstallationSource, prefix+"infinispan-installation-source", installationSourceOlm, "Infinispan operator installation source")
 
 	// dev options
 	set.BoolVar(&env.showScenarios, prefix+"show-scenarios", false, "Show all scenarios which will be executed.")
@@ -438,6 +444,18 @@ func GetExamplesRepositoryURI() string {
 // GetExamplesRepositoryRef return the branch for the examples repository
 func GetExamplesRepositoryRef() string {
 	return env.examplesRepositoryRef
+}
+
+// Infinispan
+
+// IsInfinispanInstalledByOlm return true if Infinispan operator is installed using OLM
+func IsInfinispanInstalledByOlm() bool {
+	return env.infinispanInstallationSource == installationSourceOlm
+}
+
+// IsInfinispanInstalledByYaml return true if Infinispan operator is installed using YAML files
+func IsInfinispanInstalledByYaml() bool {
+	return env.infinispanInstallationSource == installationSourceYaml
 }
 
 // dev options

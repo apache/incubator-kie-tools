@@ -57,6 +57,8 @@ disable_maven_native_build_container=false
 # examples repository
 examples_uri=
 examples_ref=
+# Infinispan
+infinispan_installation_source=
 # dev options
 show_scenarios=false
 show_steps=false
@@ -129,6 +131,7 @@ run-tests:
 		--olm_namespace ${olm_namespace} \
 		--operator_installation_source ${operator_installation_source} \
 		--operator_catalog_image ${operator_catalog_image} \
+		--infinispan_installation_source ${infinispan_installation_source} \
 		$${opts_str}
 
 .PHONY: run-smoke-tests

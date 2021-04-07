@@ -15,9 +15,17 @@
 package installers
 
 import (
+	"errors"
+	"fmt"
+
 	ispn "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/test/config"
 	"github.com/kiegroup/kogito-operator/test/framework"
+	coreapps "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
+	rbac "k8s.io/api/rbac/v1"
+	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 )
 
 var (
@@ -29,14 +37,159 @@ var (
 		InstallationTimeoutInMinutes:      10,
 		GetAllNamespacedOlmCrsInNamespace: getInfinispanCrsInNamespace,
 	}
+	// infinispanYamlNamespacedInstaller installs Infinispan namespaced using YAMLs
+	infinispanYamlNamespacedInstaller = YamlNamespacedServiceInstaller{
+		InstallNamespacedYaml:           installInfinispanUsingYaml,
+		WaitForNamespacedServiceRunning: waitForInfinispanUsingYamlRunning,
+		GetAllNamespaceYamlCrs:          getInfinispanCrsInNamespace,
+		UninstallNamespaceYaml:          uninstallInfinispanUsingYaml,
+		NamespacedYamlServiceName:       infinispanOperatorServiceName,
+	}
 
 	infinispanOperatorSubscriptionName    = "infinispan"
 	infinispanOperatorSubscriptionChannel = "2.0.x"
+	infinispanOperatorGitHubBranch        = "2.0.x"
+	infinispanOperatorDeployFilesURI      = fmt.Sprintf("https://raw.githubusercontent.com/infinispan/infinispan-operator/%s/deploy/", infinispanOperatorGitHubBranch)
+	infinispanOperatorServiceName         = "Infinispan"
 )
 
 // GetInfinispanInstaller returns Infinispan installer
-func GetInfinispanInstaller() ServiceInstaller {
-	return &infinispanOlmNamespacedInstaller
+func GetInfinispanInstaller() (ServiceInstaller, error) {
+	if config.IsInfinispanInstalledByYaml() {
+		return &infinispanYamlNamespacedInstaller, nil
+	}
+
+	if config.IsInfinispanInstalledByOlm() {
+		return &infinispanOlmNamespacedInstaller, nil
+	}
+
+	return nil, errors.New("No Infinispan operator installer available for provided configuration")
+}
+
+func installInfinispanUsingYaml(namespace string) error {
+	framework.GetLogger(namespace).Info("Deploy Infinispan from yaml files", "file uri", infinispanOperatorDeployFilesURI)
+	infinispanClusterResourceName := getInfinispanClusterResourceName(namespace)
+
+	if !framework.IsInfinispanAvailable(namespace) {
+		if err := framework.LoadResource(namespace, infinispanOperatorDeployFilesURI+"crds/infinispan.org_caches_crd.yaml", &apiextensionsv1beta1.CustomResourceDefinition{}, nil); err != nil {
+			return err
+		}
+		if err := framework.LoadResource(namespace, infinispanOperatorDeployFilesURI+"crds/infinispan.org_infinispans_crd.yaml", &apiextensionsv1beta1.CustomResourceDefinition{}, nil); err != nil {
+			return err
+		}
+	}
+
+	err := framework.LoadResource(namespace, infinispanOperatorDeployFilesURI+"clusterrole.yaml", &rbac.ClusterRole{}, func(object interface{}) {
+		// Prefix name to be unique to allow concurrent installations
+		object.(*rbac.ClusterRole).Name = infinispanClusterResourceName
+	})
+	if err != nil {
+		return err
+	}
+
+	err = framework.LoadResource(namespace, infinispanOperatorDeployFilesURI+"clusterrole_binding.yaml", &rbac.ClusterRoleBinding{}, func(object interface{}) {
+		// Prefix name to be unique to allow concurrent installations
+		object.(*rbac.ClusterRoleBinding).Name = infinispanClusterResourceName
+		// Set proper namespace for binding to service account
+		object.(*rbac.ClusterRoleBinding).Subjects[0].Namespace = namespace
+	})
+	if err != nil {
+		return err
+	}
+
+	if err := framework.LoadResource(namespace, infinispanOperatorDeployFilesURI+"service_account.yaml", &corev1.ServiceAccount{}, nil); err != nil {
+		return err
+	}
+	if err := framework.LoadResource(namespace, infinispanOperatorDeployFilesURI+"role.yaml", &rbac.Role{}, nil); err != nil {
+		return err
+	}
+	if err := framework.LoadResource(namespace, infinispanOperatorDeployFilesURI+"role_binding.yaml", &rbac.RoleBinding{}, nil); err != nil {
+		return err
+	}
+	if err := framework.LoadResource(namespace, infinispanOperatorDeployFilesURI+"operator.yaml", &coreapps.Deployment{}, nil); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func waitForInfinispanUsingYamlRunning(namespace string) error {
+	return framework.WaitForPodsWithLabel(namespace, "name", "infinispan-operator", 1, 3)
+}
+
+func uninstallInfinispanUsingYaml(namespace string) error {
+	framework.GetLogger(namespace).Info("Uninstalling Infinispan")
+	infinispanClusterResourceName := getInfinispanClusterResourceName(namespace)
+
+	var originalError error
+
+	output, err := framework.CreateCommand("oc", "delete", "-f", infinispanOperatorDeployFilesURI+"operator.yaml", "-n", namespace).WithLoggerContext(namespace).Execute()
+	if err != nil {
+		framework.GetLogger(namespace).Error(err, fmt.Sprintf("Deleting Infinispan operator failed, output: %s", output))
+		if originalError == nil {
+			originalError = err
+		}
+	}
+
+	output, err = framework.CreateCommand("oc", "delete", "-f", infinispanOperatorDeployFilesURI+"role_binding.yaml", "-n", namespace).WithLoggerContext(namespace).Execute()
+	if err != nil {
+		framework.GetLogger(namespace).Error(err, fmt.Sprintf("Deleting Infinispan role binding failed, output: %s", output))
+		if originalError == nil {
+			originalError = err
+		}
+	}
+
+	output, err = framework.CreateCommand("oc", "delete", "-f", infinispanOperatorDeployFilesURI+"role.yaml", "-n", namespace).WithLoggerContext(namespace).Execute()
+	if err != nil {
+		framework.GetLogger(namespace).Error(err, fmt.Sprintf("Deleting Infinispan role failed, output: %s", output))
+		if originalError == nil {
+			originalError = err
+		}
+	}
+
+	output, err = framework.CreateCommand("oc", "delete", "-f", infinispanOperatorDeployFilesURI+"service_account.yaml", "-n", namespace).WithLoggerContext(namespace).Execute()
+	if err != nil {
+		framework.GetLogger(namespace).Error(err, fmt.Sprintf("Deleting Infinispan service account failed, output: %s", output))
+		if originalError == nil {
+			originalError = err
+		}
+	}
+
+	crb, err := framework.GetClusterRoleBinding(infinispanClusterResourceName)
+	if err != nil {
+		framework.GetLogger(namespace).Error(err, fmt.Sprintf("Cannot retrieve ClusterRoleBinding %s", infinispanClusterResourceName))
+		if originalError == nil {
+			originalError = err
+		}
+	} else {
+		if err = framework.DeleteObject(crb); err != nil {
+			framework.GetLogger(namespace).Error(err, fmt.Sprintf("Cannot delete ClusterRoleBinding %s", infinispanClusterResourceName))
+			if originalError == nil {
+				originalError = err
+			}
+		}
+	}
+
+	cr, err := framework.GetClusterRole(infinispanClusterResourceName)
+	if err != nil {
+		framework.GetLogger(namespace).Error(err, fmt.Sprintf("Cannot retrieve ClusterRole %s", infinispanClusterResourceName))
+		if originalError == nil {
+			originalError = err
+		}
+	} else {
+		if err = framework.DeleteObject(cr); err != nil {
+			framework.GetLogger(namespace).Error(err, fmt.Sprintf("Cannot delete ClusterRole %s", infinispanClusterResourceName))
+			if originalError == nil {
+				originalError = err
+			}
+		}
+	}
+
+	return originalError
+}
+
+func getInfinispanClusterResourceName(namespace string) string {
+	return "infinispan-" + namespace
 }
 
 func getInfinispanCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, error) {
