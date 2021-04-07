@@ -24,6 +24,10 @@ export interface DmnRunnerPayload {
   context: object;
 }
 
+export interface DmnRunnerVersion {
+  version: string;
+}
+
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
   SKIPPED = "SKIPPED",
@@ -58,6 +62,7 @@ export interface DmnResult {
 export class DmnRunnerService {
   private readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
   private readonly DMN_RUNNER_SERVER_URL: string;
+  private readonly DMN_RUNNER_PING: string;
   private readonly DMN_RUNNER_VALIDATE_URL: string;
   private readonly DMN_RUNNER_DMN_RESULT_URL: string;
   private readonly DMN_RUNNER_FORM_URL: string;
@@ -66,6 +71,7 @@ export class DmnRunnerService {
   constructor(private port: string) {
     this.ajv.addMetaSchema(metaSchemaDraft04);
     this.DMN_RUNNER_SERVER_URL = `http://localhost:${port}`;
+    this.DMN_RUNNER_PING = `${this.DMN_RUNNER_SERVER_URL}/ping`;
     this.DMN_RUNNER_VALIDATE_URL = `${this.DMN_RUNNER_SERVER_URL}/jitdmn/validate`;
     this.DMN_RUNNER_DMN_RESULT_URL = `${this.DMN_RUNNER_SERVER_URL}/jitdmn/dmnresult`;
     this.DMN_RUNNER_FORM_URL = `${this.DMN_RUNNER_SERVER_URL}/jitdmn/schema/form`;
@@ -93,6 +99,16 @@ export class DmnRunnerService {
   public async checkServer(): Promise<boolean> {
     const response = await fetch(this.DMN_RUNNER_SERVER_URL, { method: "OPTIONS" });
     return response.status < 300;
+  }
+
+  public async version(): Promise<DmnRunnerVersion | undefined> {
+    try {
+      // const response = await fetch(this.DMN_RUNNER_PING, { method: "GET" });
+      // return await response.json();
+      return await Promise.resolve().then(() => ({ version: "0.0.1" }));
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   public async result(payload: DmnRunnerPayload): Promise<DmnResult | undefined> {

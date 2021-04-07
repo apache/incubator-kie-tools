@@ -33,6 +33,7 @@ export interface DmnRunnerContextType {
   port: string;
   saveNewPort: (value: string) => void;
   service: DmnRunnerService;
+  version: string;
 }
 
 export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({

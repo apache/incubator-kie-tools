@@ -50,6 +50,7 @@ export function DmnRunnerContextProvider(props: Props) {
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<JSONSchemaBridge>();
   const [port, setPort] = useState(() => getCookie(DMN_RUNNER_PORT_COOKIE_NAME) ?? DMN_RUNNER_DEFAULT_PORT);
   const service = useMemo(() => new DmnRunnerService(port), [port]);
+  const version = useMemo(() => "$_{WEBPACK_REPLACE__dmnRunnerVersion}", []);
 
   const updateJsonSchemaBridge = useCallback(() => {
     return props.editor
@@ -84,11 +85,18 @@ export function DmnRunnerContextProvider(props: Props) {
     if (status !== DmnRunnerStatus.RUNNING) {
       detectDmnRunner = window.setInterval(() => {
         service.checkServer().then(() => {
-          setStatus(DmnRunnerStatus.RUNNING);
-          if (isModalOpen) {
-            setDrawerExpanded(true);
-          }
-          window.clearInterval(detectDmnRunner);
+          // Check the running version of the DMN Runner, if outdated cancel polling and change status.
+          service.version().then(data => {
+            window.clearInterval(detectCrashesOrStops);
+            if (data?.version !== version) {
+              setStatus(DmnRunnerStatus.OUTDATED);
+            } else {
+              if (isModalOpen) {
+                setDrawerExpanded(true);
+              }
+              setStatus(DmnRunnerStatus.RUNNING);
+            }
+          });
         });
       }, DMN_RUNNER_POLLING_TIME);
 
@@ -128,7 +136,7 @@ export function DmnRunnerContextProvider(props: Props) {
       }
       timeout = window.setTimeout(() => {
         updateJsonSchemaBridge();
-      }, 200);
+      }, THROTTLING_TIME);
     });
     return () => props.editor?.getStateControl().unsubscribe(subscription);
   }, [props.editor, status, updateJsonSchemaBridge]);
@@ -138,7 +146,7 @@ export function DmnRunnerContextProvider(props: Props) {
     setCookie(DMN_RUNNER_PORT_COOKIE_NAME, newPort);
   }, []);
 
-  // Subscribe to any change on the DMN Editor and validate
+  // Subscribe to any change on the DMN Editor and validate the model
   useEffect(() => {
     if (!props.editor || status === DmnRunnerStatus.UNAVAILABLE) {
       return;
@@ -166,7 +174,7 @@ export function DmnRunnerContextProvider(props: Props) {
       if (timeout) {
         clearTimeout(timeout);
       }
-      timeout = window.setTimeout(validate, 200);
+      timeout = window.setTimeout(validate, THROTTLING_TIME);
     });
     validate();
 
@@ -187,7 +195,8 @@ export function DmnRunnerContextProvider(props: Props) {
         setFormData,
         port,
         saveNewPort,
-        service
+        service,
+        version
       }}
     >
       {props.children}

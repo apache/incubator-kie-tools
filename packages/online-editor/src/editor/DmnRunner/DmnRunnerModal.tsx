@@ -65,6 +65,15 @@ export function DmnRunnerModal() {
         name: "Install",
         component: (
           <List>
+            {dmnRunner.status === DmnRunnerStatus.OUTDATED && (
+              <div>
+                <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner is outdated!"}>
+                  It looks like you're using a outdated version of the DMN Runner, please follow the instructions again
+                  to have the latest version.
+                </Alert>
+                <br />
+              </div>
+            )}
             <ListItem>
               <TextContent>
                 <Text component={TextVariants.p}>
@@ -189,7 +198,7 @@ export function DmnRunnerModal() {
 
   const onClose = useCallback(() => {
     dmnRunner.setModalOpen(false);
-    if (dmnRunner.status === DmnRunnerStatus.STOPPED) {
+    if (dmnRunner.status === DmnRunnerStatus.STOPPED || dmnRunner.status === DmnRunnerStatus.OUTDATED) {
       dmnRunner.setStatus(DmnRunnerStatus.NOT_RUNNING);
     }
   }, [dmnRunner.status]);

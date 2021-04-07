@@ -64,6 +64,7 @@ jobs:
           DOWNLOAD_DMN_RUNNER_linuxUrl: "kiegroup.github.io/kogito-tooling-go/jit-executor/latest"
           DOWNLOAD_DMN_RUNNER_macOsUrl: "kiegroup.github.io/kogito-tooling-go/jit-executor/latest"
           DOWNLOAD_DMN_RUNNER_windowsUrl: "kiegroup.github.io/kogito-tooling-go/jit-executor/latest"
+          DMN_RUNNER_VERSION: "0.0.1"
           DISPLAY: ":99.0"
         run: |
           cd kogito-tooling

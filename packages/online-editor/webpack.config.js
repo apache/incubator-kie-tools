@@ -79,6 +79,7 @@ module.exports = async (env, argv) => {
     downloadDmnRunner_macOsUrl,
     downloadDmnRunner_windowsUrl
   ] = getDownloadDmnRunnerArgs(argv);
+  const dmnRunnerVersion = argv["DMN_RUNNER_VERSION" || process.env["DMN_RUNNER_VERSION"]] || "0.0.1";
 
   return merge(common, {
     entry: {
@@ -140,6 +141,18 @@ module.exports = async (env, argv) => {
                 search: "$_{WEBPACK_REPLACE__dmnRunnerWindowsUrl}",
                 replace: downloadDmnRunner_windowsUrl
               }
+            ]
+          }
+        },
+        {
+          test: /DmnRunnerContextProvider\.tsx$/,
+          loader: "string-replace-loader",
+          options: {
+            multiple: [
+              {
+                search: "$_{WEBPACK_REPLACE__dmnRunnerVersion}",
+                replace: dmnRunnerVersion
+              },
             ]
           }
         },

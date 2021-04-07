@@ -20,5 +20,6 @@ export enum DmnRunnerStatus {
     AVAILABLE,
     RUNNING,
     NOT_RUNNING,
-    STOPPED
+    OUTDATED,
+    STOPPED,
 }
