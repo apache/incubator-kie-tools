@@ -101,6 +101,9 @@ function usage(){
   printf "\n--examples_uri {URI}\n\tSet the URI for the kogito-examples repository. Default is https://github.com/kiegroup/kogito-examples."
   printf "\n--examples_ref {REF}\n\tSet the branch for the kogito-examples repository. Default is none."
 
+  # Infinispan
+  printf "\n--infinispan_installation_source {TAG}\n\tDefines installation source for the Infinispan operator. Options are 'olm' and 'yaml'. Default is olm."
+
   # dev options
   printf "\n--show_scenarios\n\tDisplay scenarios which will be executed."
   printf "\n--show_steps\n\tDisplay scenarios and their steps which will be executed."
@@ -390,6 +393,12 @@ case $1 in
   --examples_ref)
     shift
     if addParamKeyValueIfAccepted "--tests.examples-ref" ${1}; then shift; fi
+  ;;
+
+  # Infinispan
+  --infinispan_installation_source)
+    shift
+    if addParamKeyValueIfAccepted "--tests.infinispan-installation-source" ${1}; then shift; fi
   ;;
 
   # dev options

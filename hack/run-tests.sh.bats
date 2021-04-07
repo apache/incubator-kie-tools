@@ -931,6 +931,26 @@ setup() {
     [[ "${output}" != *"--tests.examples-ref"* ]]
 }
 
+# Infinispan
+
+@test "invoke run-tests with infinispan_installation_source" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --infinispan_installation_source yaml --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.infinispan-installation-source=yaml" ]]
+}
+
+@test "invoke run-tests with infinispan_installation_source missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --infinispan_installation_source --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.infinispan-installation-source"* ]]
+}
+
+@test "invoke run-tests with infinispan_installation_source empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --infinispan_installation_source "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.infinispan-installation-source"* ]]
+}
+
 # dev options
 
 @test "invoke run-tests with show_scenarios" {
