@@ -15,27 +15,38 @@
 package test
 
 import (
-	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta1"
+	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // CreateFakeKafka creates a Kafka resource with default configuration
-func CreateFakeKafka(name, namespace string) *v1beta1.Kafka {
-	return &v1beta1.Kafka{
+func CreateFakeKafka(name, namespace string) *v1beta2.Kafka {
+	return &v1beta2.Kafka{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
 		},
-		Spec: v1beta1.KafkaSpec{
-			EntityOperator: v1beta1.EntityOperatorSpec{
-				TopicOperator: v1beta1.EntityTopicOperatorSpec{},
-				UserOperator:  v1beta1.EntityUserOperatorSpec{},
+		Spec: v1beta2.KafkaSpec{
+			EntityOperator: v1beta2.EntityOperatorSpec{
+				TopicOperator: v1beta2.EntityTopicOperatorSpec{},
+				UserOperator:  v1beta2.EntityUserOperatorSpec{},
 			},
-			Kafka: v1beta1.KafkaClusterSpec{
+			Kafka: v1beta2.KafkaClusterSpec{
 				Replicas: 1,
-				Storage:  v1beta1.KafkaStorage{StorageType: v1beta1.KafkaEphemeralStorage},
-				Listeners: v1beta1.KafkaListeners{
-					Plain: v1beta1.KafkaListenerPlain{},
+				Storage:  v1beta2.KafkaStorage{StorageType: v1beta2.KafkaEphemeralStorage},
+				Listeners: []v1beta2.GenericKafkaListener{
+					{
+						Name:         "plain",
+						Port:         9092,
+						TLS:          false,
+						ListenerType: "internal",
+					},
+					{
+						Name:         "tls",
+						Port:         9093,
+						TLS:          true,
+						ListenerType: "internal",
+					},
 				},
 				JvmOptions: map[string]interface{}{"gcLoggingEnabled": false},
 				Config: map[string]interface{}{
@@ -46,9 +57,9 @@ func CreateFakeKafka(name, namespace string) *v1beta1.Kafka {
 					"auto.create.topics.enable":                true,
 				},
 			},
-			Zookeeper: v1beta1.ZookeeperClusterSpec{
+			Zookeeper: v1beta2.ZookeeperClusterSpec{
 				Replicas: 1,
-				Storage:  v1beta1.KafkaStorage{StorageType: v1beta1.KafkaEphemeralStorage},
+				Storage:  v1beta2.KafkaStorage{StorageType: v1beta2.KafkaEphemeralStorage},
 			},
 		},
 	}

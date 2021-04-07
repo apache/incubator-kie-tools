@@ -31,7 +31,7 @@ func CreateFakeKogitoKafka(namespace string) api.KogitoInfraInterface {
 		Spec: v1beta1.KogitoInfraSpec{
 			Resource: v1beta1.Resource{
 				Kind:       "Kafka",
-				APIVersion: "kafka.strimzi.io/v1beta1",
+				APIVersion: "kafka.strimzi.io/v1beta2",
 			},
 		},
 		Status: v1beta1.KogitoInfraStatus{

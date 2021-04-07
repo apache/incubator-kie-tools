@@ -123,7 +123,7 @@ func (f *fakeClientStruct) createFakeDiscoveryClient() discovery.DiscoveryInterf
 		Fake: &clienttesting.Fake{
 			Resources: []*metav1.APIResourceList{
 				{GroupVersion: "infinispan.org/v1"},
-				{GroupVersion: "kafka.strimzi.io/v1beta1"},
+				{GroupVersion: "kafka.strimzi.io/v1beta2"},
 				{GroupVersion: "keycloak.org/v1alpha1"},
 				{GroupVersion: "app.kiegroup.org/v1beta1"},
 			},

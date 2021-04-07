@@ -35,7 +35,7 @@ func TestUpdateBaseStatus(t *testing.T) {
 		Spec: v1beta1.KogitoInfraSpec{
 			Resource: v1beta1.Resource{
 				Kind:       "Kafka",
-				APIVersion: "kafka.strimzi.io/v1beta1",
+				APIVersion: "kafka.strimzi.io/v1beta2",
 			},
 		},
 	}

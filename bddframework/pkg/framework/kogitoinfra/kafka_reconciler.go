@@ -19,13 +19,13 @@ import (
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
+	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sort"
 	"strings"
 	"time"
 
 	"github.com/kiegroup/kogito-operator/core/framework"
-	kafkabetav1 "github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 )
@@ -58,7 +58,7 @@ type kafkaInfraReconciler struct {
 
 // Reconcile reconcile Kogito infra object
 func (k *kafkaInfraReconciler) Reconcile() (requeue bool, resultErr error) {
-	var kafkaInstance *kafkabetav1.Kafka
+	var kafkaInstance *v1beta2.Kafka
 
 	// Verify kafka
 	kafkaHandler := infrastructure.NewKafkaHandler(k.Context)
@@ -84,7 +84,7 @@ func (k *kafkaInfraReconciler) Reconcile() (requeue bool, resultErr error) {
 	}
 
 	kafkaStatus := k.getLatestKafkaCondition(kafkaInstance)
-	if kafkaStatus == nil || kafkaStatus.Type != kafkabetav1.KafkaConditionTypeReady {
+	if kafkaStatus == nil || kafkaStatus.Type != v1beta2.KafkaConditionTypeReady {
 		return false, errorForResourceNotReadyError(fmt.Errorf("kafka instance %s not ready yet. Waiting for Condition status Ready", kafkaInstance.Name))
 	}
 	if resultErr = k.updateKafkaRuntimePropsInStatus(kafkaInstance, api.QuarkusRuntimeType); resultErr != nil {
@@ -96,7 +96,7 @@ func (k *kafkaInfraReconciler) Reconcile() (requeue bool, resultErr error) {
 	return false, nil
 }
 
-func (k *kafkaInfraReconciler) getLatestKafkaCondition(kafka *kafkabetav1.Kafka) *kafkabetav1.KafkaCondition {
+func (k *kafkaInfraReconciler) getLatestKafkaCondition(kafka *v1beta2.Kafka) *v1beta2.KafkaCondition {
 	if len(kafka.Status.Conditions) == 0 {
 		return nil
 	}
@@ -123,7 +123,7 @@ func (k *kafkaInfraReconciler) mustParseKafkaTransition(transitionTime string) (
 	if !strings.Contains(transitionTime, "Z") {
 		transitionTime = transitionTime + "Z"
 	}
-	parsedTime, err := time.Parse(kafkabetav1.KafkaLastTransitionTimeLayout, transitionTime)
+	parsedTime, err := time.Parse(v1beta2.KafkaLastTransitionTimeLayout, transitionTime)
 	if err != nil {
 		k.Log.Error(err, "Impossible to parse", "Kafka time condition", transitionTime)
 		return nil, false
@@ -131,7 +131,7 @@ func (k *kafkaInfraReconciler) mustParseKafkaTransition(transitionTime string) (
 	return &parsedTime, true
 }
 
-func (k *kafkaInfraReconciler) updateKafkaRuntimePropsInStatus(kafkaInstance *kafkabetav1.Kafka, runtime api.RuntimeType) error {
+func (k *kafkaInfraReconciler) updateKafkaRuntimePropsInStatus(kafkaInstance *v1beta2.Kafka, runtime api.RuntimeType) error {
 	k.Log.Debug("going to Update Kafka runtime properties in kogito infra instance status", "runtime", runtime)
 	runtimeProps, err := k.getKafkaRuntimeProps(kafkaInstance, runtime)
 	if err != nil {
@@ -142,7 +142,7 @@ func (k *kafkaInfraReconciler) updateKafkaRuntimePropsInStatus(kafkaInstance *ka
 	return nil
 }
 
-func (k *kafkaInfraReconciler) getKafkaEnvVars(kafkaInstance *kafkabetav1.Kafka) ([]corev1.EnvVar, error) {
+func (k *kafkaInfraReconciler) getKafkaEnvVars(kafkaInstance *v1beta2.Kafka) ([]corev1.EnvVar, error) {
 	kafkaHandler := infrastructure.NewKafkaHandler(k.Context)
 	kafkaURI, err := kafkaHandler.ResolveKafkaServerURI(kafkaInstance)
 	if err != nil {
@@ -157,7 +157,7 @@ func (k *kafkaInfraReconciler) getKafkaEnvVars(kafkaInstance *kafkabetav1.Kafka)
 	return envProps, nil
 }
 
-func (k *kafkaInfraReconciler) getKafkaRuntimeAppProps(kafkaInstance *kafkabetav1.Kafka, runtime api.RuntimeType) (map[string]string, error) {
+func (k *kafkaInfraReconciler) getKafkaRuntimeAppProps(kafkaInstance *v1beta2.Kafka, runtime api.RuntimeType) (map[string]string, error) {
 	kafkaHandler := infrastructure.NewKafkaHandler(k.Context)
 	kafkaURI, err := kafkaHandler.ResolveKafkaServerURI(kafkaInstance)
 	if err != nil {
@@ -174,7 +174,7 @@ func (k *kafkaInfraReconciler) getKafkaRuntimeAppProps(kafkaInstance *kafkabetav
 	return appProps, nil
 }
 
-func (k *kafkaInfraReconciler) getKafkaRuntimeProps(kafkaInstance *kafkabetav1.Kafka, runtime api.RuntimeType) (api.RuntimePropertiesInterface, error) {
+func (k *kafkaInfraReconciler) getKafkaRuntimeProps(kafkaInstance *v1beta2.Kafka, runtime api.RuntimeType) (api.RuntimePropertiesInterface, error) {
 	runtimeProps := v1beta1.RuntimeProperties{}
 	appProps, err := k.getKafkaRuntimeAppProps(kafkaInstance, runtime)
 	if err != nil {

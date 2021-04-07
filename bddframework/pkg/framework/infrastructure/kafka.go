@@ -17,7 +17,7 @@ package infrastructure
 import (
 	"fmt"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta1"
+	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -39,16 +39,16 @@ const (
 
 var (
 	// KafkaAPIVersion refers to kafka APIVersion
-	KafkaAPIVersion = v1beta1.SchemeGroupVersion.String()
+	KafkaAPIVersion = v1beta2.SchemeGroupVersion.String()
 )
 
 // KafkaHandler ...
 type KafkaHandler interface {
 	IsStrimziAvailable() bool
-	FetchKafkaInstance(key types.NamespacedName) (*v1beta1.Kafka, error)
-	FetchKafkaTopic(key types.NamespacedName) (*v1beta1.KafkaTopic, error)
-	CreateKafkaTopic(topicName, kafkaName, kafkaNamespace string) (*v1beta1.KafkaTopic, error)
-	ResolveKafkaServerURI(kafka *v1beta1.Kafka) (string, error)
+	FetchKafkaInstance(key types.NamespacedName) (*v1beta2.Kafka, error)
+	FetchKafkaTopic(key types.NamespacedName) (*v1beta2.KafkaTopic, error)
+	CreateKafkaTopic(topicName, kafkaName, kafkaNamespace string) (*v1beta2.KafkaTopic, error)
+	ResolveKafkaServerURI(kafka *v1beta2.Kafka) (string, error)
 }
 
 type kafkaHandler struct {
@@ -67,9 +67,9 @@ func (k *kafkaHandler) IsStrimziAvailable() bool {
 	return k.Client.HasServerGroup(strimziServerGroup)
 }
 
-func (k *kafkaHandler) FetchKafkaInstance(key types.NamespacedName) (*v1beta1.Kafka, error) {
+func (k *kafkaHandler) FetchKafkaInstance(key types.NamespacedName) (*v1beta2.Kafka, error) {
 	k.Log.Debug("fetching deployed kafka instance")
-	kafkaInstance := &v1beta1.Kafka{}
+	kafkaInstance := &v1beta2.Kafka{}
 	if exists, err := kubernetes.ResourceC(k.Client).FetchWithKey(key, kafkaInstance); err != nil {
 		k.Log.Error(err, "Error occurs while fetching kogito kafka instance")
 		return nil, err
@@ -82,9 +82,9 @@ func (k *kafkaHandler) FetchKafkaInstance(key types.NamespacedName) (*v1beta1.Ka
 	}
 }
 
-func (k *kafkaHandler) FetchKafkaTopic(key types.NamespacedName) (*v1beta1.KafkaTopic, error) {
+func (k *kafkaHandler) FetchKafkaTopic(key types.NamespacedName) (*v1beta2.KafkaTopic, error) {
 	k.Log.Debug("Going to load deployed kafka topic", "topicName", key.Name)
-	kafkaTopic := &v1beta1.KafkaTopic{}
+	kafkaTopic := &v1beta2.KafkaTopic{}
 	if exits, err := kubernetes.ResourceC(k.Client).FetchWithKey(key, kafkaTopic); err != nil {
 		k.Log.Error(err, "Error occurs while fetching kogito kafka topic", "topicName", key.Name)
 		return nil, err
@@ -96,7 +96,7 @@ func (k *kafkaHandler) FetchKafkaTopic(key types.NamespacedName) (*v1beta1.Kafka
 	return nil, nil
 }
 
-func (k *kafkaHandler) CreateKafkaTopic(topicName, kafkaName, kafkaNamespace string) (*v1beta1.KafkaTopic, error) {
+func (k *kafkaHandler) CreateKafkaTopic(topicName, kafkaName, kafkaNamespace string) (*v1beta2.KafkaTopic, error) {
 	k.Log.Debug("Going to create kafka topic", "topicName", topicName)
 	kafkaTopic := getKafkaTopic(topicName, kafkaNamespace, kafkaName)
 	if err := kubernetes.ResourceC(k.Client).Create(kafkaTopic); err != nil {
@@ -108,18 +108,18 @@ func (k *kafkaHandler) CreateKafkaTopic(topicName, kafkaName, kafkaNamespace str
 }
 
 // getKafkaTopic returns a Kafka topic resource with default configuration
-func getKafkaTopic(name, namespace, kafkaBroker string) *v1beta1.KafkaTopic {
+func getKafkaTopic(name, namespace, kafkaBroker string) *v1beta2.KafkaTopic {
 
 	labels := make(map[string]string)
 	labels[strimziBrokerLabel] = kafkaBroker
 
-	return &v1beta1.KafkaTopic{
+	return &v1beta2.KafkaTopic{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
 			Labels:    labels,
 		},
-		Spec: v1beta1.KafkaTopicSpec{
+		Spec: v1beta2.KafkaTopicSpec{
 			Partitions: defaultKafkaTopicPartition,
 			Replicas:   defaultKafkaTopicReplicas,
 			TopicName:  name,
@@ -128,7 +128,7 @@ func getKafkaTopic(name, namespace, kafkaBroker string) *v1beta1.KafkaTopic {
 }
 
 // ResolveKafkaServerURI returns the uri of the kafka instance
-func (k *kafkaHandler) ResolveKafkaServerURI(kafka *v1beta1.Kafka) (string, error) {
+func (k *kafkaHandler) ResolveKafkaServerURI(kafka *v1beta2.Kafka) (string, error) {
 	k.Log.Debug("Resolving kafka URI", "kafka instance", kafka.Name)
 	if len(kafka.Status.Listeners) > 0 {
 		for _, listenerStatus := range kafka.Status.Listeners {

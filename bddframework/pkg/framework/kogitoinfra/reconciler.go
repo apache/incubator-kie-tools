@@ -19,7 +19,6 @@ import (
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
-	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"strings"
 	"time"
@@ -39,7 +38,7 @@ type infraContext struct {
 
 // ReconcilerHandler ...
 type ReconcilerHandler interface {
-	GetInfraReconciler(instance api.KogitoInfraInterface, scheme *runtime.Scheme) (Reconciler, error)
+	GetInfraReconciler(instance api.KogitoInfraInterface) (Reconciler, error)
 	GetReconcileResultFor(err error, requeue bool) (reconcile.Result, error)
 }
 
@@ -55,7 +54,7 @@ func NewReconcilerHandler(context *operator.Context) ReconcilerHandler {
 }
 
 // getKogitoInfraReconciler identify and return request kogito infra reconciliation logic on bases of information provided in kogitoInfra value
-func (k *reconcilerHandler) GetInfraReconciler(instance api.KogitoInfraInterface, scheme *runtime.Scheme) (Reconciler, error) {
+func (k *reconcilerHandler) GetInfraReconciler(instance api.KogitoInfraInterface) (Reconciler, error) {
 	k.Log.Debug("going to fetch related kogito infra resource")
 	context := infraContext{
 		Context:  k.Context,
@@ -64,7 +63,7 @@ func (k *reconcilerHandler) GetInfraReconciler(instance api.KogitoInfraInterface
 	if infraRes, ok := getSupportedInfraResources(context)[resourceClassForInstance(instance)]; ok {
 		return infraRes, nil
 	}
-	return nil, errorForUnsupportedAPI(instance)
+	return nil, errorForUnsupportedAPI(context)
 }
 
 func resourceClassForInstance(instance api.KogitoInfraInterface) string {

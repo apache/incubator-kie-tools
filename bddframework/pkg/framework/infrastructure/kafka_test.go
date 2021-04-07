@@ -16,7 +16,7 @@ package infrastructure
 
 import (
 	"github.com/kiegroup/kogito-operator/core/client"
-	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta1"
+	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/meta"
@@ -29,15 +29,29 @@ import (
 func Test_getKafkaInstanceWithName(t *testing.T) {
 	ns := t.Name()
 
-	kafka := &v1beta1.Kafka{
-		TypeMeta: v1.TypeMeta{Kind: "Kafka", APIVersion: "kafka.strimzi.io/v1beta1"},
+	kafka := &v1beta2.Kafka{
+		TypeMeta: v1.TypeMeta{Kind: "Kafka", APIVersion: "kafka.strimzi.io/v1beta2"},
 		ObjectMeta: v1.ObjectMeta{
 			Name:      "kafka",
 			Namespace: ns,
 		},
-		Spec: v1beta1.KafkaSpec{
-			Kafka: v1beta1.KafkaClusterSpec{
+		Spec: v1beta2.KafkaSpec{
+			Kafka: v1beta2.KafkaClusterSpec{
 				Replicas: 1,
+				Listeners: []v1beta2.GenericKafkaListener{
+					{
+						Name:         "plain",
+						Port:         9092,
+						TLS:          false,
+						ListenerType: "internal",
+					},
+					{
+						Name:         "tls",
+						Port:         9093,
+						TLS:          true,
+						ListenerType: "internal",
+					},
+				},
 			},
 		},
 	}
@@ -52,7 +66,7 @@ func Test_getKafkaInstanceWithName(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *v1beta1.Kafka
+		want    *v1beta2.Kafka
 		wantErr bool
 	}{
 		{
@@ -98,7 +112,7 @@ func Test_getKafkaInstanceWithName(t *testing.T) {
 
 func Test_resolveKafkaServerURI(t *testing.T) {
 	type args struct {
-		kafka *v1beta1.Kafka
+		kafka *v1beta2.Kafka
 	}
 	tests := []struct {
 		name string
@@ -108,12 +122,12 @@ func Test_resolveKafkaServerURI(t *testing.T) {
 		{
 			"ResolveKafkaServerURI",
 			args{
-				&v1beta1.Kafka{
-					Status: v1beta1.KafkaStatus{
-						Listeners: []v1beta1.ListenerStatus{
+				&v1beta2.Kafka{
+					Status: v1beta2.KafkaStatus{
+						Listeners: []v1beta2.ListenerStatus{
 							{
 								Type: "tls",
-								Addresses: []v1beta1.ListenerAddress{
+								Addresses: []v1beta2.ListenerAddress{
 									{
 										Host: "kafka1",
 										Port: 9093,
@@ -122,7 +136,7 @@ func Test_resolveKafkaServerURI(t *testing.T) {
 							},
 							{
 								Type: "plain",
-								Addresses: []v1beta1.ListenerAddress{
+								Addresses: []v1beta2.ListenerAddress{
 									{
 										Host: "kafka",
 										Port: 9092,

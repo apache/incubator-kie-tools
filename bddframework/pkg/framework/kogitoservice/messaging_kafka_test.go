@@ -15,6 +15,7 @@
 package kogitoservice
 
 import (
+	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	"github.com/kiegroup/kogito-operator/core/kogitoinfra"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
@@ -23,7 +24,6 @@ import (
 	"testing"
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	kafkav1beta1 "github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta1"
 	"github.com/stretchr/testify/assert"
 	"k8s.io/apimachinery/pkg/types"
 )
@@ -57,7 +57,7 @@ func Test_createKafkaTopics(t *testing.T) {
 	err := k.CreateRequiredResources(service)
 	assert.NoError(t, err)
 
-	kafkaTopic := &kafkav1beta1.KafkaTopic{}
+	kafkaTopic := &v1beta2.KafkaTopic{}
 	exists, err := kubernetes.ResourceC(client).FetchWithKey(types.NamespacedName{Namespace: t.Name(), Name: "kogito-processinstances-events"}, kafkaTopic)
 	assert.NoError(t, err)
 	assert.True(t, exists)

@@ -16,6 +16,7 @@ package kogitoservice
 
 import (
 	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/internal"
@@ -25,7 +26,6 @@ import (
 	"time"
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	kafkav1beta1 "github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta1"
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -114,7 +114,7 @@ func Test_serviceDeployer_DataIndex(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, time.Duration(0), reconcileAfter)
 
-	topic := &kafkav1beta1.KafkaTopic{
+	topic := &v1beta2.KafkaTopic{
 		ObjectMeta: v1.ObjectMeta{
 			Name:      requiredTopic,
 			Namespace: t.Name(),

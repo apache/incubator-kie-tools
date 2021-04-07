@@ -15,7 +15,7 @@
 package kogitoinfra
 
 import (
-	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta1"
+	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
@@ -23,9 +23,9 @@ import (
 )
 
 func Test_mustParseKafkaTransition(t *testing.T) {
-	timeOk, err := time.Parse(v1beta1.KafkaLastTransitionTimeLayout, "2020-10-14T19:07:20.459925Z")
+	timeOk, err := time.Parse(v1beta2.KafkaLastTransitionTimeLayout, "2020-10-14T19:07:20.459925Z")
 	assert.NoError(t, err)
-	timeUnsafe, err := time.Parse(v1beta1.KafkaLastTransitionTimeLayout, "2020-10-14T19:08:05Z")
+	timeUnsafe, err := time.Parse(v1beta2.KafkaLastTransitionTimeLayout, "2020-10-14T19:08:05Z")
 	assert.NoError(t, err)
 	type args struct {
 		transitionTime string
