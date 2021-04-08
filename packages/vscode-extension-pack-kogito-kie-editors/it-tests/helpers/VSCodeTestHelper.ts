@@ -21,6 +21,7 @@ import {
   InputBox,
   SideBarView,
   until,
+  TitleBar,
   ViewControl,
   ViewSection,
   VSBrowser,
@@ -29,6 +30,7 @@ import {
   Workbench,
 } from "vscode-extension-tester";
 import { kogitoLoadingSpinner } from "./CommonLocators";
+import { assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
 
 /**
  * Common test helper class for VSCode extension testing.
@@ -221,6 +223,21 @@ export default class VSCodeTestHelper {
     await sleep(2000);
 
     await driver.switchTo().frame(null);
+  };
+
+  /**
+   * Invokes the Edit -> Undo from the VS Code Title Bar
+   */
+  public undo = async (): Promise<void> => {
+    const edit = await new TitleBar().getItem("Edit");
+    if (typeof edit !== "undefined") {
+      const editContextMenu = await edit.select();
+      assertWebElementIsDisplayedEnabled(editContextMenu);
+      const undo = await editContextMenu.getItem("Undo");
+      if (typeof undo !== "undefined") {
+        await undo.select();
+      }
+    }
   };
 }
 

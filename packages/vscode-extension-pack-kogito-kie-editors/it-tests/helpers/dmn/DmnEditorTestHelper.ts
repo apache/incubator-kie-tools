@@ -16,9 +16,11 @@
 
 import { expect } from "chai";
 import { By, until, WebElement, WebView } from "vscode-extension-tester";
-import { assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
-import { expandedDocksBarE, h3ComponentWithText, tabWithTitle } from "./CommonLocators";
-import { EditorTabs } from "./EditorTabs";
+import { assertWebElementIsDisplayedEnabled } from "../CommonAsserts";
+import { expandedDocksBarE, h3ComponentWithText, tabWithTitle } from "../CommonLocators";
+import { EditorTabs } from "../EditorTabs";
+import PropertiesPanelHelper from "./PropertiesPanelHelper";
+import DecisionNavigatorHelper from "./DecisionNavigatorHelper";
 
 /**
  * Helper class to easen work with DMN editor inside of a webview.
@@ -152,14 +154,14 @@ export default class DmnEditorTestHelper {
    *
    * @returns a promise resolving to WebElement of openned panel.
    */
-  public openDiagramProperties = async (): Promise<WebElement> => {
+  public openDiagramProperties = async (): Promise<PropertiesPanelHelper> => {
     const properties = await this.getDiagramProperties();
     await assertWebElementIsDisplayedEnabled(properties);
     await properties.click();
     const expandedPropertiesPanel = await this.webview.findWebElement(expandedDocksBarE());
     await assertWebElementIsDisplayedEnabled(await properties.findElement(By.xpath(h3ComponentWithText("Properties"))));
     await assertWebElementIsDisplayedEnabled(expandedPropertiesPanel);
-    return expandedPropertiesPanel;
+    return new PropertiesPanelHelper(expandedPropertiesPanel);
   };
 
   /**
@@ -192,7 +194,7 @@ export default class DmnEditorTestHelper {
    *
    * @returns a promise resolving to WebElement of openned panel.
    */
-  public openDecisionNavigator = async (): Promise<WebElement> => {
+  public openDecisionNavigator = async (): Promise<DecisionNavigatorHelper> => {
     const navigator = await this.getDecisionNavigator();
     await assertWebElementIsDisplayedEnabled(navigator);
     await navigator.click();
@@ -201,6 +203,6 @@ export default class DmnEditorTestHelper {
       await navigator.findElement(By.xpath(h3ComponentWithText("Decision Navigator")))
     );
     await assertWebElementIsDisplayedEnabled(expandedNavigatorPanel);
-    return expandedNavigatorPanel;
+    return new DecisionNavigatorHelper(expandedNavigatorPanel);
   };
 }

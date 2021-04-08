@@ -26,12 +26,20 @@ export const aComponentWithText = (text: string): By => {
 };
 
 /**
- * Creates a XPATH string that locates <span> element with specific text.
+ * Creates a XPATH locator that locates <span> element with specific text.
  *
  * @param text string to match
  */
 export const spanComponentWithText = (text: string): By => {
   return By.xpath(`//span[text() = '${text}']`);
+};
+
+/**
+ * Creates a XPATH locator that locates <input> element with specified label.
+ * @param label label of the input field
+ */
+export const labeledInputElementInPropertiesPanel = (label: string): By => {
+  return By.xpath(`//label[contains(.,\'${label}\')]/following-sibling::div[@data-field='fieldContainer']/input`);
 };
 
 /**
