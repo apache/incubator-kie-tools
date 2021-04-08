@@ -69,6 +69,9 @@ test(TEST_NAME, async () => {
     const nodeProps: Properties = await sideBar.openProperties();
     expect(await nodeProps.getNameFromTextArea()).toEqual(TASK_NODE_NAME);
 
+    // check pallete is not visible
+    expect(await bpmnEditor.isPaletteVisible()).toEqual(false);
+
     await bpmnEditor.leave();
 
     // open and check source/editor
