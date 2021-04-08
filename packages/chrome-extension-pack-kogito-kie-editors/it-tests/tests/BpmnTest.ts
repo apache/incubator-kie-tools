@@ -48,11 +48,8 @@ test(TEST_NAME, async () => {
     const editorPage: GitHubEditorPage = await gitHubFile.open();
     const bpmnEditor: BpmnEditor = await editorPage.getBpmnEditor();
 
-    // move startEvent to canvas
-    await bpmnEditor.enter();
-    await bpmnEditor.dragAndDropStartEventToCanvas();
-
     // check process properties
+    await bpmnEditor.enter();
     const sideBar: SideBar = await bpmnEditor.getSideBar();
     const processProps: Properties = await sideBar.openProperties();
     expect(await processProps.getProcessNameFromInput()).toEqual(PROCESS_NAME);
@@ -61,7 +58,6 @@ test(TEST_NAME, async () => {
     const explorer: Explorer = await sideBar.openExplorer();
     expect((await explorer.getNodeNames()).sort())
         .toEqual([
-            "Start",
             "MyStart",
             "MyTask",
             "MyEnd"
