@@ -42,6 +42,13 @@ import { AnimatedTripleDotLabel } from "../../common/AnimatedTripleDotLabel";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useDmnRunner } from "./DmnRunnerContext";
 import { DMN_RUNNER_DEFAULT_PORT } from "./DmnRunnerContextProvider";
+import { ExclamationCircleIcon } from "@patternfly/react-icons";
+
+enum ModalPage {
+  INITIAL,
+  WIZARD,
+  USE
+}
 
 export function DmnRunnerModal() {
   const [operationalSystem, setOperationalSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
@@ -167,34 +174,21 @@ export function DmnRunnerModal() {
             </List>
           </>
         )
-      },
-      {
-        name: "Use",
-        component: (
-          <div>
-            <List>
-              <ListItem>
-                <TextContent>
-                  <Text component={TextVariants.p}>All set! 🎉</Text>
-                </TextContent>
-              </ListItem>
-            </List>
-            <br />
-            <List>
-              <ListItem>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    Fill the Form on the Inputs column and see the results on the Outputs column.
-                  </Text>
-                </TextContent>
-              </ListItem>
-            </List>
-          </div>
-        )
       }
     ],
     [dmnRunner.status, dmnRunner.port, dmnRunner.saveNewPort]
   );
+
+  const [modalPage, setModalPage] = useState<ModalPage>(ModalPage.INITIAL);
+  useEffect(() => {
+    if (dmnRunner.status === DmnRunnerStatus.NOT_RUNNING) {
+      setModalPage(ModalPage.INITIAL);
+    } else if (dmnRunner.status === DmnRunnerStatus.STOPPED) {
+      setModalPage(ModalPage.WIZARD);
+    } else if (dmnRunner.status === DmnRunnerStatus.RUNNING) {
+      setModalPage(ModalPage.USE);
+    }
+  }, [dmnRunner.status]);
 
   const onClose = useCallback(() => {
     dmnRunner.setModalOpen(false);
@@ -203,75 +197,158 @@ export function DmnRunnerModal() {
     }
   }, [dmnRunner.status]);
 
+  const modalTitle = useMemo(() => {
+    switch (modalPage) {
+      case ModalPage.INITIAL:
+      case ModalPage.USE:
+        return "";
+      case ModalPage.WIZARD:
+        return "DMN Runner Setup";
+    }
+  }, [modalPage]);
+
+  const modalVariant = useMemo(() => {
+    switch (modalPage) {
+      case ModalPage.INITIAL:
+      case ModalPage.USE:
+        return ModalVariant.medium;
+      case ModalPage.WIZARD:
+        return ModalVariant.large;
+    }
+  }, [modalPage]);
+
   return (
     <Modal
       isOpen={dmnRunner.isModalOpen}
       onClose={onClose}
-      variant={ModalVariant.large}
+      variant={modalVariant}
       aria-label={"Steps to enable the DMN Runner"}
-      title={"DMN Runner setup"}
+      title={modalTitle}
       description={
-        <>
-          {"Choose your Operating System and follow the instructions to install and start the DMN Runner."}
-          <br />
-          {" This will enable you to run your DMN models and see live results."}
-        </>
+        modalPage === ModalPage.WIZARD && (
+          <p>Choose your Operating System and follow the instructions to install and start the DMN Runner.</p>
+        )
       }
       footer={
         <>
-          {dmnRunner.status === DmnRunnerStatus.RUNNING ? (
-            <>
-              <div className={"kogito--editor__dmn-runner-modal-footer"}>
-                <Alert
-                  variant={"success"}
-                  isInline={true}
-                  className={"kogito--editor__dmn-runner-modal-footer-alert"}
-                  title={
-                    <div className={"kogito--editor__dmn-runner-modal-footer-alert-success"}>
-                      <span>Connected to DMN Runner</span>
-                    </div>
-                  }
-                />
-              </div>
-            </>
-          ) : (
-            <Alert
-              variant={"default"}
-              isInline={true}
-              className={"kogito--editor__dmn-runner-modal-footer-alert"}
-              title={<AnimatedTripleDotLabel label={"Waiting to connect to DMN Runner"} interval={750} />}
-            />
+          {modalPage === ModalPage.INITIAL && <></>}
+          {modalPage === ModalPage.WIZARD && (
+            <div className={"kogito--editor__dmn-runner-modal-footer"}>
+              <Alert
+                variant={"default"}
+                isInline={true}
+                className={"kogito--editor__dmn-runner-modal-footer-alert"}
+                title={<AnimatedTripleDotLabel label={"Waiting to connect to DMN Runner"} interval={750} />}
+              />
+            </div>
           )}
+          {modalPage === ModalPage.USE && <></>}
         </>
       }
     >
-      <Form isHorizontal={true}>
-        <FormGroup fieldId={"select-os"} label={"Operating system"}>
-          <SelectOs selected={operationalSystem} onSelect={setOperationalSystem} direction={SelectDirection.down} />
-        </FormGroup>
-      </Form>
-      <br />
-      <Wizard
-        steps={steps}
-        height={400}
-        footer={
-          <DmnRunnerWizardFooter
-            onClose={onClose}
-            shouldGoToStep={dmnRunner.status === DmnRunnerStatus.RUNNING}
-            hasStopped={dmnRunner.status === DmnRunnerStatus.STOPPED}
+      {modalPage === ModalPage.INITIAL && (
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            marginLeft: "20px"
+          }}
+        >
+          <div>
+            <TextContent>
+              <Text component={TextVariants.h1}>DMN Runner</Text>
+            </TextContent>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column"
+            }}
+          >
+            <div style={{ margin: "10px" }}>
+              <TextContent>
+                <Text component={TextVariants.p}>
+                  The DMN Runner will enable you to run your DMN models and see live results.
+                </Text>
+              </TextContent>
+            </div>
+            <div>
+              <img src={"./images/dmn-runner2.gif"} alt={"DMN Runner usage"} width={700} />
+            </div>
+            <div style={{ margin: "10px" }}>
+              <Button onClick={() => setModalPage(ModalPage.WIZARD)}>Setup</Button>
+            </div>
+          </div>
+        </div>
+      )}
+      {modalPage === ModalPage.WIZARD && (
+        <div>
+          <Form isHorizontal={true}>
+            <FormGroup fieldId={"select-os"} label={"Operating system"}>
+              <SelectOs selected={operationalSystem} onSelect={setOperationalSystem} direction={SelectDirection.down} />
+            </FormGroup>
+          </Form>
+          <br />
+          <Wizard
             steps={steps}
+            height={400}
+            footer={<DmnRunnerWizardFooter onClose={onClose} steps={steps} setModalPage={setModalPage} />}
           />
-        }
-      />
+        </div>
+      )}
+      {modalPage === ModalPage.USE && (
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column"
+          }}
+        >
+          <div style={{ margin: "20px" }}>
+            <TextContent>
+              <Text component={TextVariants.h1}>All set! You're connected to the DMN Runner! 🎉</Text>
+            </TextContent>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column"
+            }}
+          >
+            <TextContent style={{ margin: "10px" }}>
+              <Text component={TextVariants.h3} style={{ textAlign: "center" }}>
+                Now, you can start using the DMN Runner to run your models.
+              </Text>
+              <Text component={TextVariants.p} style={{ textAlign: "center" }}>
+                Fill the Form on the Inputs column and automatically see the results on the Outputs column.
+                <br />
+                You can also use the Notifications Panel <ExclamationCircleIcon /> to check for any Validation or
+                Execution error.
+              </Text>
+            </TextContent>
+            <Button variant="primary" type="submit" onClick={onClose} style={{ margin: "10px" }}>
+              Back to Editor
+            </Button>
+          </div>
+        </div>
+      )}
     </Modal>
   );
 }
 
 interface WizardImperativeControlProps {
   onClose: () => void;
-  shouldGoToStep: boolean;
-  hasStopped: boolean;
   steps: Array<{ component: JSX.Element; name: string }>;
+  setModalPage: React.Dispatch<ModalPage>;
 }
 
 function DmnRunnerWizardFooter(props: WizardImperativeControlProps) {
@@ -279,18 +356,16 @@ function DmnRunnerWizardFooter(props: WizardImperativeControlProps) {
   const { status } = useDmnRunner();
 
   useEffect(() => {
-    if (props.hasStopped) {
+    if (status === DmnRunnerStatus.STOPPED) {
       wizardContext.goToStepByName(props.steps[1].name);
-    } else if (props.shouldGoToStep) {
-      wizardContext.goToStepByName(props.steps[props.steps.length - 1].name);
     }
-  }, [props.shouldGoToStep, props.hasStopped]);
+  }, [status, props.setModalPage]);
 
   return (
     <WizardFooter>
       <WizardContextConsumer>
         {({ activeStep, goToStepByName, goToStepById, onNext, onBack }) => {
-          if (activeStep.name !== "Use") {
+          if (activeStep.name !== "Start") {
             return (
               <>
                 <Button variant="primary" type="submit" onClick={onNext}>
@@ -301,13 +376,8 @@ function DmnRunnerWizardFooter(props: WizardImperativeControlProps) {
           } else {
             return (
               <>
-                <Button
-                  isDisabled={status !== DmnRunnerStatus.RUNNING}
-                  variant="primary"
-                  type="submit"
-                  onClick={props.onClose}
-                >
-                  Back to Editor
+                <Button variant="primary" type="submit" onClick={onBack}>
+                  Back
                 </Button>
               </>
             );
