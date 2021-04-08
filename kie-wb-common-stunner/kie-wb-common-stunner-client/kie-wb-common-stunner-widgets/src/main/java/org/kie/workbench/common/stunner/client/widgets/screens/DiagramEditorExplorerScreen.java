@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.screens;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
@@ -53,7 +53,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
  * and displays a preview and and a diagram element's explorer (using a tree visual hierarchy) for the one being edited.
  * TODO: I18n.
  */
-@ApplicationScoped
+@Dependent
 @Named(DiagramEditorExplorerScreen.SCREEN_ID)
 public class DiagramEditorExplorerScreen extends AbstractActivity {
 

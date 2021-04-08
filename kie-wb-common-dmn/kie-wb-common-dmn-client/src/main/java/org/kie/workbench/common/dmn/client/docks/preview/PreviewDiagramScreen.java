@@ -21,7 +21,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
@@ -50,7 +50,7 @@ import org.uberfire.workbench.model.ActivityResourceType;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-@ApplicationScoped
+@Dependent
 @Named(PreviewDiagramScreen.SCREEN_ID)
 public class PreviewDiagramScreen extends AbstractActivity {
 
