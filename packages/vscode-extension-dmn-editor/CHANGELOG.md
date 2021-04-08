@@ -1,3 +1,21 @@
+# 0.9.0 (alpha)
+
+## New features:
+Infrastructure
+* [KOGITO-4349](https://issues.redhat.com/browse/KOGITO-4349) - Publish VS Code Extensions to OpenVSX registry
+
+Editors
+* [KOGITO-4190](https://issues.redhat.com/browse/KOGITO-4190) - SceSim runner does not display reason for failure
+
+## Fixed issues:
+
+Infrastructure
+
+--
+
+Editors
+* [KOGITO-4266](https://issues.redhat.com/browse/KOGITO-4266) - [DMN Designer] Decision Service is missing inputData element in model with multiple DRDs
+
 # 0.8.6 (alpha)
 
 --
@@ -18,7 +36,7 @@ Editors
 
 Infrastructure
 
--- 
+--
 
 Editors
 * [KOGITO-4257](https://issues.redhat.com/browse/KOGITO-4257) - Importing and modeling decision models is too slow for productive modeling

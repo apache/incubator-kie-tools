@@ -1,3 +1,24 @@
+# 0.9.0 (alpha)
+
+## New features:
+Infrastructure
+* [KOGITO-4349](https://issues.redhat.com/browse/KOGITO-4349) - Publish VS Code Extensions to OpenVSX registry
+
+Editors
+* [KOGITO-540](https://issues.redhat.com/browse/KOGITO-540) - BPMN Editor - Read Only mode
+* [KOGITO-4190](https://issues.redhat.com/browse/KOGITO-4190) - SceSim runner does not display reason for failure
+* [KOGITO-3525](https://issues.redhat.com/browse/KOGITO-3525) - Enhance compatibility of BPMN VS Code Extensions with V7
+
+## Fixed issues:
+
+Infrastructure
+
+--
+
+Editors
+* [KOGITO-4266](https://issues.redhat.com/browse/KOGITO-4266) - [DMN Designer] Decision Service is missing inputData element in model with multiple DRDs
+
+
 # 0.8.6 (alpha)
 
 --

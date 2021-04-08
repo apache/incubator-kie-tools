@@ -1,3 +1,9 @@
+# 0.9.0 (alpha)
+
+## New features:
+Infrastructure
+* [KOGITO-4349](https://issues.redhat.com/browse/KOGITO-4349) - Publish VS Code Extensions to OpenVSX registry
+
 # 0.8.6 (alpha)
 
 ## New features:
