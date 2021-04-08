@@ -245,6 +245,7 @@ public class ScenarioSimulationContext {
 
         protected String fullPackage;
         protected String className;
+        protected String importPrefix;
 
         protected String value;
         protected String valueClassName;
@@ -467,6 +468,14 @@ public class ScenarioSimulationContext {
             this.currentGrid = currentGrid;
         }
 
+        public String getImportPrefix() {
+            return importPrefix;
+        }
+
+        public void setImportPrefix(String importPrefix) {
+            this.importPrefix = importPrefix;
+        }
+
         public Status cloneStatus() {
             Status toReturn = new Status();
             toReturn.columnId = this.columnId;
@@ -484,7 +493,9 @@ public class ScenarioSimulationContext {
             toReturn.simulation = this.simulation.cloneModel();
             toReturn.background = this.background.cloneModel();
             toReturn.currentGrid = this.currentGrid;
+            toReturn.importPrefix = this.importPrefix;
             return toReturn;
         }
+
     }
 }

@@ -271,7 +271,7 @@ public class KogitoScenarioSimulationBuilder {
             int inputFirstOrder = FactModelTree.Type.INPUT.equals(aType) ? -1 : 1;
             return aType.equals(bType) ? 0 : inputFirstOrder;
         }).forEach(factModelTree -> {
-            FactIdentifier factIdentifier = new FactIdentifier(factModelTree.getFactName(), factModelTree.getFactName());
+            FactIdentifier factIdentifier = FactIdentifier.create(factModelTree.getFactName(), factModelTree.getFactName());
             FactMappingExtractor factMappingExtractor = new FactMappingExtractor(factIdentifier,
                                                                                  scenarioWithIndex.getIndex(),
                                                                                  id,

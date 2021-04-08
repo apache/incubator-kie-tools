@@ -158,8 +158,10 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
     protected FactIdentifier setEditableHeadersAndGetFactIdentifier(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, String aliasName, String canonicalClassName) {
         final ScenarioSimulationModel.Type simulationModelType = context.getScenarioSimulationModel().getSettings().getType();
         selectedColumn.setEditableHeaders(!(simulationModelType.equals(ScenarioSimulationModel.Type.DMN) || GridWidget.BACKGROUND.equals(gridWidget)));
-        String nameToUseForCreation = simulationModelType.equals(ScenarioSimulationModel.Type.DMN) ? aliasName : selectedColumn.getInformationHeaderMetaData().getColumnId();
-        return getFactIdentifierByColumnTitle(aliasName, context).orElseGet(() -> FactIdentifier.create(nameToUseForCreation, canonicalClassName));
+        String factIdentifierName = simulationModelType.equals(ScenarioSimulationModel.Type.DMN) ? aliasName : selectedColumn.getInformationHeaderMetaData().getColumnId();
+        String factIdentifierClassName = simulationModelType.equals(ScenarioSimulationModel.Type.DMN) ? aliasName : canonicalClassName;
+        String importPrefix = context.getStatus().getImportPrefix();
+        return getFactIdentifierByColumnTitle(aliasName, context).orElseGet(() -> FactIdentifier.create(factIdentifierName, factIdentifierClassName, importPrefix));
     }
 
     /**
@@ -212,6 +214,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
      * @param propertyTitle The title to assign to this property.
      */
     protected void setPropertyHeader(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, FactIdentifier factIdentifier, List<String> propertyNameElements, String propertyClass, String propertyTitle) {
+        final ScenarioSimulationModel.Type simulationModelType = context.getScenarioSimulationModel().getSettings().getType();
         if (propertyTitle == null) {
             throw new IllegalArgumentException("Property title can not be null");
         }
@@ -220,7 +223,9 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
         if (selectedColumn.isInstanceAssigned() && !instanceAliasName.equals(selectedColumn.getInformationHeaderMetaData().getTitle())) {
             throw new IllegalArgumentException("It's not possible to assign this property");
         }
-        String className = factIdentifier.getClassName();
+        String factName = simulationModelType.equals(ScenarioSimulationModel.Type.DMN) ?
+                factIdentifier.getName() :
+                factIdentifier.getClassNameWithoutPackage();
         final GridData.Range instanceLimits = context.getAbstractScesimGridModelByGridWidget(gridWidget).getInstanceLimits(columnIndex);
         IntStream.range(instanceLimits.getMinRowIndex(), instanceLimits.getMaxRowIndex() + 1)
                 .forEach(index -> {
@@ -247,7 +252,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
                                                                                         factMappingValueType,
                                                                                         context.getScenarioSimulationModel().getSettings().getType());
         if (ScenarioSimulationSharedUtils.isCollection(propertyClass) && factMappingValueType.equals(FactMappingValueType.NOT_EXPRESSION)) {
-            manageCollectionProperty(context, selectedColumn, className, columnIndex, propertyNameElements);
+            manageCollectionProperty(context, selectedColumn, factName, columnIndex, propertyNameElements);
         } else {
             selectedColumn.setFactory(context.getAbstractScesimGridModelByGridWidget(gridWidget).getDOMElementFactory(propertyClass,
                                                                                                                       context.getScenarioSimulationModel().getSettings().getType(),
@@ -275,16 +280,13 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
     /**
      * @param context
      * @param selectedColumn
-     * @param className The name of the class to be used to retrieve the corresponding <code>FactModelTree</code>, i.e. without the <b>package</b>
+     * @param factName The name of the class to be used to retrieve the corresponding <code>FactModelTree</code>, i.e. without the <b>package</b>
      * @param columnIndex
      * @param fullPropertyPathElements This is the <code>List</code> of all the elements pointing to the final property (ex. Book.author.books)
      */
-    protected void manageCollectionProperty(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, String className, int columnIndex, List<String> fullPropertyPathElements) {
+    protected void manageCollectionProperty(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, String factName, int columnIndex, List<String> fullPropertyPathElements) {
         final SortedMap<String, FactModelTree> dataObjectFieldsMap = context.getDataObjectFieldsMap();
-        if (className.contains(".")) {
-            className = className.substring(className.lastIndexOf('.') + 1);
-        }
-        final FactModelTree factModelTree = dataObjectFieldsMap.get(className);
+        final FactModelTree factModelTree = dataObjectFieldsMap.get(factName);
         final Optional<AbstractScesimModel> selectedScenarioGridModel = context.getAbstractScesimGridModelByGridWidget(gridWidget).getAbstractScesimModel();
         if (!selectedScenarioGridModel.isPresent()) {
             throw new IllegalArgumentException("SelectedGrid not found");

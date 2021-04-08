@@ -153,6 +153,6 @@ public class JSInteropApiConverter {
     }
 
     protected static FactIdentifier getFactIdentifier(JSIFactIdentifierType source) {
-        return new FactIdentifier(source.getName(), source.getClassName());
+        return FactIdentifier.create(source.getName(), source.getClassName(), source.getImportPrefix());
     }
 }

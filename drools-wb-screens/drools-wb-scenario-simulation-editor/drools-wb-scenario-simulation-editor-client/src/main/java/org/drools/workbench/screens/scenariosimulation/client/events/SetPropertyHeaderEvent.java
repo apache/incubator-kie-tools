@@ -35,6 +35,7 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
     private final List<String> propertyNameElements;
     private final String valueClassName;
     private final FactMappingValueType factMappingValueType;
+    private final String importPrefix;
 
     /**
      * Use this constructor to modify the <i>property</i> level header
@@ -45,13 +46,20 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
      * @param valueClassName
      * @param factMappingValueType
      */
-    public SetPropertyHeaderEvent(GridWidget gridWidget, String fullPackage, String factType, List<String> propertyNameElements, String valueClassName, FactMappingValueType factMappingValueType) {
+    public SetPropertyHeaderEvent(GridWidget gridWidget,
+                                  String fullPackage,
+                                  String factType,
+                                  List<String> propertyNameElements,
+                                  String valueClassName,
+                                  FactMappingValueType factMappingValueType,
+                                  String importPrefix) {
         this.gridWidget = gridWidget;
         this.fullPackage = fullPackage;
         this.factType = factType;
         this.propertyNameElements = propertyNameElements;
         this.valueClassName = valueClassName;
         this.factMappingValueType = factMappingValueType;
+        this.importPrefix = importPrefix;
     }
 
     @Override
@@ -81,6 +89,10 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
 
     public FactMappingValueType getFactMappingValueType() {
         return factMappingValueType;
+    }
+
+    public String getImportPrefix() {
+        return importPrefix;
     }
 
     @Override

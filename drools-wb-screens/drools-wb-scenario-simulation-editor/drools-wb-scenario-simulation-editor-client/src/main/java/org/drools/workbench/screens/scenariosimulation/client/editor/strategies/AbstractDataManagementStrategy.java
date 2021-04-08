@@ -57,14 +57,16 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
         this.model = model;
     }
 
-    public static FactModelTree getSimpleClassFactModelTree(String simpleClass, String canonicalName) {
-        Map<String, FactModelTree.PropertyTypeName> simpleProperties = new HashMap<>();
-        simpleProperties.put(VALUE, new FactModelTree.PropertyTypeName(canonicalName));
-        String packageName = canonicalName.substring(0, canonicalName.lastIndexOf('.'));
-        String factClassName = canonicalName.substring(canonicalName.lastIndexOf('.') + 1);
-        FactModelTree toReturn = FactModelTree.ofDMO(simpleClass, packageName, simpleProperties, new HashMap<>(), factClassName);
-        toReturn.setSimple(true);
-        return toReturn;
+    /**
+     * It creates a FactModelTree for a Simple Class Fact.
+     * @param classSimpleName The class simple name (eg. for 'com.Test' is 'Test'. For 'com.Test.Nested' is 'Test.Nested')
+     * @param fullClassName The class simple name (eg. for 'com.Test' or 'com.Test$Nested')
+     * @return
+     */
+    public static FactModelTree getSimpleClassFactModelTree(String classSimpleName, String fullClassName) {
+        String packageName = fullClassName.substring(0, fullClassName.lastIndexOf('.'));
+        String factClassName = fullClassName.substring(fullClassName.lastIndexOf('.') + 1);
+        return FactModelTree.ofSimpleDMO(classSimpleName, packageName, fullClassName, factClassName);
     }
 
     /**

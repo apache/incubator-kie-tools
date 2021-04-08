@@ -100,6 +100,13 @@ public abstract class AbstractDMNTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnModelLocal.getMessages()), dmnModelLocal.hasErrors(), is(false));
     }
 
+    protected void setDmnModelLocal(String resourceName, String namespace, String modelName, String imported) {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(resourceName, AbstractDMNTest.class, imported);
+        dmnModelLocal = runtime.getModel(namespace, modelName);
+        assertThat(dmnModelLocal, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModelLocal.getMessages()), dmnModelLocal.hasErrors(), is(false));
+    }
+
     protected InputDataNode getInputDataNode(DMNType dmnType, String name) {
         TInputData inputData = new TInputData();
         inputData.setName(name);
