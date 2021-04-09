@@ -59,6 +59,23 @@ export interface DmnResult {
   messages: DecisionResultMessage[];
 }
 
+interface DmnRunnerForm {
+  definitions: DmnRunnerFormDefinitions;
+}
+
+interface DmnRunnerFormDefinitions {
+  InputSet?: {
+    required: string[];
+    properties: object;
+    type: string;
+  };
+}
+
+interface DmnRunnerDeepProperty {
+  $ref?: string;
+  type?: string;
+}
+
 export class DmnRunnerService {
   private readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
   private readonly DMN_RUNNER_SERVER_URL: string;
@@ -142,6 +159,30 @@ export class DmnRunnerService {
     }
   }
 
+  private addMissingTypesToDeepProperties(form: DmnRunnerForm, value: DmnRunnerDeepProperty) {
+    if (Object.hasOwnProperty.call(value, "$ref")) {
+      const property = value.$ref!.split("/").pop()! as keyof DmnRunnerFormDefinitions;
+      if (form.definitions[property] && Object.hasOwnProperty.call(form.definitions[property], "properties")) {
+        Object.values(form.definitions[property]!.properties).forEach((deepValue: DmnRunnerDeepProperty) => {
+          this.addMissingTypesToDeepProperties(form, deepValue);
+        });
+      } else if (!Object.hasOwnProperty.call(form.definitions[property], "type")) {
+        form.definitions[property]!.type = "string";
+      }
+    } else if (!Object.hasOwnProperty.call(value, "type")) {
+      value.type = "string";
+    }
+  }
+
+  private removeRequirementAndAddMissingTypes(form: DmnRunnerForm) {
+    delete form.definitions.InputSet?.required;
+    if (Object.hasOwnProperty.call(form.definitions.InputSet, "properties")) {
+      Object.values(form.definitions.InputSet?.properties!).forEach((value: DmnRunnerDeepProperty) => {
+        this.addMissingTypesToDeepProperties(form, value);
+      });
+    }
+  }
+
   public async getJsonSchemaBridge(model: string) {
     try {
       const response = await fetch(this.DMN_RUNNER_FORM_URL, {
@@ -151,7 +192,8 @@ export class DmnRunnerService {
         },
         body: model
       });
-      const form = await response.json();
+      const form = (await response.json()) as DmnRunnerForm;
+      this.removeRequirementAndAddMissingTypes(form);
       const formDraft4 = { ...form, $schema: this.SCHEMA_DRAFT4 };
       return new JSONSchemaBridge(formDraft4, this.createValidator(formDraft4));
     } catch (err) {
