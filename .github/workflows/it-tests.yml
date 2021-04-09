@@ -116,7 +116,7 @@ jobs:
           name: online-editor-it-tests-videos-${{ matrix.os }}
           path: packages/online-editor/it-tests/videos
 
-pmml-editor-tests-it:
+  pmml-editor-tests-it:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
