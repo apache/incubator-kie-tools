@@ -29,6 +29,7 @@ function usage(){
   printf "\n-h | --help\n\tPrint the usage of this script."
   
   # tests configuration
+  printf "\n--test_main_dir {TEST_MAIN_DIR}\n\tWhere to find the `main_test.go` file. Default to `{kogito_operator}/test/`."
   printf "\n--feature {FEATURE_PATH}\n\tRun a specific feature file."
   printf "\n--tags {TAGS}\n\tFilter scenarios by tags."
     printf "\n\tExpressions can be:"
@@ -151,12 +152,22 @@ TIMEOUT=240
 DEBUG=false
 KEEP_NAMESPACE=false
 LOAD_DEFAULT_CONFIG=false
+TEST_MAIN_DIR=${SCRIPT_DIR}/../test
 
 while (( $# ))
 do
 case $1 in
 
   # tests configuration
+  --test_main_dir)
+    shift
+    if isValueNotOption ${1}; then
+      if isValueNotEmpty ${1}; then
+        TEST_MAIN_DIR=${1}
+      fi
+      shift
+    fi
+  ;;
   --feature)
     shift
     if isValueNotOption ${1}; then
@@ -454,8 +465,8 @@ if [ "${LOAD_DEFAULT_CONFIG}" = "true" ]; then
 fi
 
 echo "-------- Running BDD tests"
-echo "DEBUG=${DEBUG} go test ${SCRIPT_DIR}/../test -v -timeout \"${TIMEOUT}m\" --godog.tags=\"${TAGS}\" ${PARAMS} ${FEATURE}"
-DEBUG=${DEBUG} go test ${SCRIPT_DIR}/../test -v -timeout "${TIMEOUT}m" --godog.tags="${TAGS}" ${PARAMS} ${FEATURE}
+echo "DEBUG=${DEBUG} go test ${TEST_MAIN_DIR} -v -timeout \"${TIMEOUT}m\" --godog.tags=\"${TAGS}\" ${PARAMS} ${FEATURE}"
+DEBUG=${DEBUG} go test ${TEST_MAIN_DIR} -v -timeout "${TIMEOUT}m" --godog.tags="${TAGS}" ${PARAMS} ${FEATURE}
 exit_code=$?
 echo "Tests finished with code ${exit_code}"
 

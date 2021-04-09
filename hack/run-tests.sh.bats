@@ -22,6 +22,24 @@ setup() {
 
 # tests configuration
 
+@test "invoke run-tests with test_main_dir" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --test_main_dir ${BATS_TEST_DIRNAME}/../test/scripts/examples --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ " ${BATS_TEST_DIRNAME}/../test/scripts/examples" ]]
+}
+
+@test "invoke run-tests with test_main_dir missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --test_main_dir --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ " ${BATS_TEST_DIRNAME}/../test" ]]
+}
+
+@test "invoke run-tests with test_main_dir empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --test_main_dir "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ " ${BATS_TEST_DIRNAME}/../test" ]]
+}
+
 @test "invoke run-tests with feature" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --feature ${BATS_TEST_DIRNAME}/../test/features --dry_run
     [ "$status" -eq 0 ]
