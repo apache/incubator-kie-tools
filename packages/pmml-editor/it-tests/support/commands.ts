@@ -68,11 +68,11 @@ declare namespace Cypress {
 }
 
 Cypress.Commands.add("newButtonPMML", () => {
-    return cy.get("[data-ouia-component-id='OUIA-Generated-Button-link-1']");
+    return cy.get("[data-ouia-component-id='new-button']");
 });
 
 Cypress.Commands.add("uploadButtonPMML", () => {
-    return cy.get("label.pf-c-button");
+    return cy.get("[data-ouia-component-id='upload-button']");
 });
 
 Cypress.Commands.add("buttonDataDictionary", () => {
@@ -88,17 +88,17 @@ Cypress.Commands.add("buttonOutputs", () => {
 });
 
 Cypress.Commands.add("buttonUndo", () => {
-    return cy.get("[data-ouia-component-id='OUIA-Generated-Button-primary-1']");
+    return cy.get("[data-ouia-component-id='undo-button']");
 });
 
 Cypress.Commands.add("buttonRedo", () => {
-    return cy.get("[data-ouia-component-id='OUIA-Generated-Button-secondary-1']");
+    return cy.get("[data-ouia-component-id='redo-button']");
 });
 
 Cypress.Commands.add("buttonPMML", () => {
-    return cy.get("[data-ouia-component-id='OUIA-Generated-Button-secondary-2']");
+    return cy.get("[data-ouia-component-id='pmml-button']");
 });
 
 Cypress.Commands.add("buttonValidation", () => {
-    return cy.get("[data-ouia-component-id='OUIA-Generated-Button-secondary-3']");
+    return cy.get("[data-ouia-component-id='validate-button']");
 });
