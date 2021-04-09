@@ -210,12 +210,40 @@ export function DmnRunnerDrawer(props: Props) {
     dmnRunner.setFormData(data);
   }, []);
 
+  function pathToName(path: string) {
+    path = path.startsWith("/")
+      ? path
+          .replace(/\//g, ".")
+          .replace(/~0/g, "~")
+          .replace(/~1/g, "/")
+      : path
+          .replace(/\[('|")(.+?)\1\]/g, ".$2")
+          .replace(/\[(.+?)\]/g, ".$1")
+          .replace(/\\'/g, "'");
+    return path.slice(1);
+  }
+
   const onValidate = useCallback((model, error: any) => {
     // if the form has an error, the error should be displayed and the outputs column should be updated anyway
     if (error) {
-      dmnRunner.setFormData(model);
+      const errors = error.details.reduce((acc: any, detail: any) => {
+        if (detail.keyword === "type") {
+          const formField = pathToName(detail.dataPath);
+          if (detail.params.type === "number") {
+            
+          } else if (detail.params.type === "string") {
+
+          }
+          autoFormRef.current?.change(formField, undefined);
+          return acc;
+        }
+        return { ...acc, detail };
+      }, {});
+      if (Object.keys(errors).length > 0) {
+        dmnRunner.setFormData(model);
+        return errors;
+      }
     }
-    return error;
   }, []);
 
   // Fill the form with the previous data
@@ -231,7 +259,7 @@ export function DmnRunnerDrawer(props: Props) {
         });
       }, 0);
     }
-  }, [dmnRunner.isDrawerExpanded, previousIsDrawerOpen]);
+  }, [dmnRunner.isDrawerExpanded, previousIsDrawerOpen, dmnRunner.formData]);
 
   // Resets the ErrorBoundary everytime the JsonSchemaBridge is updated
   useEffect(() => {
@@ -319,6 +347,7 @@ export function DmnRunnerDrawer(props: Props) {
                     }
                   >
                     <AutoForm
+                      validate={"onChange"}
                       id={"form"}
                       ref={autoFormRef}
                       showInlineError={true}

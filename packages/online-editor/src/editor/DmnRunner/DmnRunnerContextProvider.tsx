@@ -64,11 +64,15 @@ export function DmnRunnerContextProvider(props: Props) {
 
         // Remove an formData property that has been deleted;
         setFormData(previousFormData => {
-          const newFormData = { ...previousFormData };
-          Object.keys(propertiesDifference).forEach(property => {
-            delete (newFormData as any)?.[property];
-          });
-          return newFormData;
+          return Object.entries(propertiesDifference).reduce(
+            (newFormData, [property, value]) => {
+              if (!value || value.type) {
+                delete (newFormData as any)[property];
+              }
+              return newFormData;
+            },
+            { ...previousFormData }
+          );
         });
 
         setJsonSchemaBridge(newJsonSchemaBridge);
