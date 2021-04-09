@@ -20,6 +20,7 @@ import { DmnEditorComponent } from "../components/DmnEditorComponent";
 import { BpmnEditorComponent } from "../components/BpmnEditorComponent";
 import { ContentType } from "@kogito-tooling/channel-common-api";
 import { customWorkItemWid } from "./widDefinitions";
+import { processWithWidDefinition } from "./processWithWidDefinition.js"
 
 export const EditorPage: React.FC<{}> = () => {
   return (
@@ -87,14 +88,15 @@ export const EditorPage: React.FC<{}> = () => {
                 key="bpmn-workitem"
                 id="bpmn-workitem"
                 readOnly={false}
-                initialContent={Promise.resolve("")}
+                initialContent={Promise.resolve(processWithWidDefinition)}
                 resources={
                   new Map([
                     [
                       "custom-workitem.wid",
                       {
-                        contentType: ContentType.TEXT,
-                        content: Promise.resolve(customWorkItemWid)
+                        type: ContentType.TEXT,
+                        content: customWorkItemWid,
+                        path: "custom-workitem.wid"
                       }
                     ]
                   ])

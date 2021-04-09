@@ -34,7 +34,7 @@ declare namespace Cypress {
     ouiaType(type: string, opts?: Record<string, any>): Chainable<Element>;
 
     /**
-     * Make sure the ditor is loaded.
+     * Make sure the editor is loaded.
      * @param editorIds string ids of the editor elements
      * @param options config object
      */

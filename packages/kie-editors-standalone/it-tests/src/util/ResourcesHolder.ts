@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-import { ContentType } from "@kogito-tooling/channel-common-api/dist";
+import { ContentType, ResourceContent } from "@kogito-tooling/channel-common-api/dist";
 
 export interface ResourcesHolderItem {
   name: string;
-  value: Resource;
+  value: ResourceContent;
 }
-
-export interface Resource {
-  contentType: ContentType;
-  content: Promise<string>;
-}
-
 export class ResourcesHolder {
-  public resources: Map<string, Resource>;
-  constructor(res?: Map<string, Resource>) {
+  public resources: Map<string, ResourceContent>;
+  constructor(res?: Map<string, ResourceContent>) {
     if (res) {
       this.resources = res;
     } else {
@@ -51,8 +45,16 @@ export class ResourcesHolder {
   };
   public loadFile(file: File, onResourceChanged?: () => void): ResourcesHolder {
     const name: string = file.name;
+    let fileContent;
+    this.readUploadedFileAsText(file).then((result) => {
+      fileContent = result;
+      this.addFile(
+            { name, value: { path: name, type: ContentType.TEXT, content: result} },
+            onResourceChanged
+      );
+    });
     this.addFile(
-      { name, value: { contentType: ContentType.TEXT, content: this.readUploadedFileAsText(file) } },
+      { name, value: { path: name, type: ContentType.TEXT, content: fileContent } },
       onResourceChanged
     );
     return this;

@@ -161,7 +161,7 @@
         </bpsim:Scenario>
       </bpsim:BPSimData>
     </bpmn2:extensionElements>
-    <bpmn2:source>_kGuj4BujEDmrLJYIynz9hA</bpmn2:source>
-    <bpmn2:target>_kGuj4BujEDmrLJYIynz9hA</bpmn2:target>
+    <bpmn2:source>_wfZckHQ-EDmoD5SBglSh9A</bpmn2:source>
+    <bpmn2:target>_wfZckHQ-EDmoD5SBglSh9A</bpmn2:target>
   </bpmn2:relationship>
 </bpmn2:definitions>
