@@ -94,6 +94,7 @@ import org.kie.workbench.common.command.client.CommandResultBuilder;
 import org.kie.workbench.common.command.client.impl.CommandResultImpl;
 import org.mockito.Mock;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.IMPORTED_PREFIX;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.CLASS_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_GROUP;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_INDEX;
@@ -429,7 +430,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
 
     @Test
     public void onSetPropertyHeaderEvent() {
-        SetPropertyHeaderEvent event = new SetPropertyHeaderEvent(GridWidget.SIMULATION, FULL_PACKAGE, CLASS_NAME, MULTIPART_VALUE_ELEMENTS, VALUE_CLASS_NAME, FactMappingValueType.NOT_EXPRESSION);
+        SetPropertyHeaderEvent event = new SetPropertyHeaderEvent(GridWidget.SIMULATION, FULL_PACKAGE, CLASS_NAME, MULTIPART_VALUE_ELEMENTS, VALUE_CLASS_NAME, FactMappingValueType.NOT_EXPRESSION, IMPORTED_PREFIX);
         when(scenarioGridModelMock.getSelectedColumn()).thenReturn(null);
         scenarioSimulationEventHandler.onEvent(event);
         verify(scenarioSimulationEventHandler, never()).onEvent(isA(ScenarioNotificationEvent.class));
