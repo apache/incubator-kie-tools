@@ -21,6 +21,7 @@
       <xs:element type="xs:string" name="name" minOccurs="0"/>
       <xs:element type="xs:string" name="className" minOccurs="0"/>
     </xs:sequence>
+    <xs:attribute name="importPrefix" type="xs:string"/>
   </xs:complexType>
   <xs:complexType name="genericTypes">
     <xs:sequence>

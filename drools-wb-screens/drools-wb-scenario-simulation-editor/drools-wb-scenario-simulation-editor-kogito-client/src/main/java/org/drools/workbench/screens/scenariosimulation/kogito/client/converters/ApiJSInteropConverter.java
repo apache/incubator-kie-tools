@@ -244,6 +244,7 @@ public class ApiJSInteropConverter {
         JSIFactIdentifierType toReturn = JSIFactIdentifierType.newInstance();
         toReturn.setName(factIdentifier.getName());
         toReturn.setClassName(factIdentifier.getClassName());
+        toReturn.setImportPrefix(factIdentifier.getImportPrefix());
         return toReturn;
     }
 }
