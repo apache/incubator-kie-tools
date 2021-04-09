@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.tasks;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.eclipse.bpmn2.ManualTask;
@@ -156,7 +155,7 @@ public abstract class BaseTaskConverterTest {
         when(factoryManager.newNode(anyString(), eq(CustomTask.class))).thenReturn(serviceTaskNode);
         when(serviceTaskNode.getContent()).thenReturn(serviceTaskContent);
         when(serviceTaskContent.getDefinition()).thenReturn(definition);
-        when(propertyReaderFactory.ofCustom(task)).thenReturn(Optional.of(serviceTaskPropertyReader));
+        when(propertyReaderFactory.ofCustom(task)).thenReturn(serviceTaskPropertyReader);
 
         when(task.getAnyAttribute()).thenReturn(attributes);
         when(attributes.stream()).thenReturn(Stream.of(ruleAttr));

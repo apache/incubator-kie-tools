@@ -29,6 +29,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -93,6 +94,21 @@ public class CustomTaskFactoryTest {
         assertEquals(WID_DOC, customTask.getGeneral().getDocumentation().getValue());
         assertEquals(WID_DESC, customTask.getDescription());
         assertEquals(WID_PARAMS + WID_RESULTS, customTask.getDataIOSet().getAssignmentsinfo().getValue());
+    }
+
+    @Test
+    public void testBuildItemNullWID() {
+        final CustomTask customTask = tested.buildItem("Non Existent Wid Name");
+        // Check for default custom task values
+        assertTrue(customTask.getName().equals("Custom Task"));
+        assertNull(customTask.getTaskType().getRawType());
+        assertTrue(customTask.getExecutionSet().getTaskName().getValue().equals("Service Task"));
+        assertTrue(customTask.getCategory().equals("CustomTasks"));
+        assertTrue(customTask.getDefaultHandler().isEmpty());
+        assertTrue(customTask.getGeneral().getName().getValue().equals("Custom Task"));
+        assertTrue(customTask.getGeneral().getDocumentation().getValue().isEmpty());
+        assertTrue(customTask.getDescription().equals("Custom Task"));
+        assertTrue(customTask.getDataIOSet().getAssignmentsinfo().getValue().isEmpty());
     }
 
     private static String getWorkItemDefinitionName() {

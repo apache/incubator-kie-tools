@@ -64,11 +64,8 @@ public class CustomTaskFactory
 
     public CustomTask buildItem(final String workItemName) {
         final WorkItemDefinition workItemDefinition = getRegistry().get(workItemName);
-        if (null != workItemDefinition) {
-            return new CustomTaskBuilder(workItemDefinition)
-                    .build();
-        }
-        throw new RuntimeException("No service task builder found for [" + workItemName + "]");
+
+        return new CustomTaskBuilder(workItemDefinition).build();
     }
 
     @SuppressWarnings("all")
@@ -91,16 +88,20 @@ public class CustomTaskFactory
         @Override
         public CustomTask build() {
             final CustomTask customTask = newInstance();
-            final String name = workItemDefinition.getName();
-            setProperties(workItemDefinition,
-                          customTask);
-            customTask.getExecutionSet().getTaskName().setValue(name);
-            customTask.getGeneral().getName().setValue(workItemDefinition.getDisplayName());
-            customTask.getGeneral().getDocumentation().setValue(workItemDefinition.getDocumentation());
-            customTask.setDescription(workItemDefinition.getDescription());
-            customTask.getDataIOSet()
-                    .getAssignmentsinfo()
-                    .setValue(workItemDefinition.getParameters() + workItemDefinition.getResults());
+
+            if (null != workItemDefinition) {
+                final String name = workItemDefinition.getName();
+                setProperties(workItemDefinition,
+                              customTask);
+                customTask.getExecutionSet().getTaskName().setValue(name);
+                customTask.getGeneral().getName().setValue(workItemDefinition.getDisplayName());
+                customTask.getGeneral().getDocumentation().setValue(workItemDefinition.getDocumentation());
+                customTask.setDescription(workItemDefinition.getDescription());
+                customTask.getDataIOSet()
+                        .getAssignmentsinfo()
+                        .setValue(workItemDefinition.getParameters() + workItemDefinition.getResults());
+            }
+
             return customTask;
         }
 

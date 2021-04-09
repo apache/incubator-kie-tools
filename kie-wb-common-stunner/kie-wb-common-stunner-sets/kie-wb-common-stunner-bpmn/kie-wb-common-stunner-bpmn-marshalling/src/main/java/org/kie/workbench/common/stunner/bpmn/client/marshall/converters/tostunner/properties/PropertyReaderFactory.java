@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.Association;
@@ -42,6 +41,7 @@ import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientParser;
 
 public class PropertyReaderFactory {
 
@@ -97,14 +97,18 @@ public class PropertyReaderFactory {
         return new BusinessRuleTaskPropertyReader(el, diagram, definitionResolver);
     }
 
-    public Optional<ServiceTaskPropertyReader> ofCustom(Task el) {
+    public ServiceTaskPropertyReader ofCustom(Task el) {
         String serviceTaskName = CustomAttribute.serviceTaskName.of(el).get();
         return definitionResolver
                 .getWorkItemDefinitions()
                 .stream()
                 .filter(wid -> Objects.equals(wid.getName(), serviceTaskName))
                 .findFirst()
-                .map(def -> new ServiceTaskPropertyReader(el, def, diagram, definitionResolver));
+                .map(def -> new ServiceTaskPropertyReader(el, def, diagram, definitionResolver))
+                .orElseGet(() -> new ServiceTaskPropertyReader(el,
+                                                               WorkItemDefinitionClientParser.emptyWid().setName(serviceTaskName),
+                                                               diagram,
+                                                               definitionResolver));
     }
 
     public CallActivityPropertyReader of(CallActivity el) {
