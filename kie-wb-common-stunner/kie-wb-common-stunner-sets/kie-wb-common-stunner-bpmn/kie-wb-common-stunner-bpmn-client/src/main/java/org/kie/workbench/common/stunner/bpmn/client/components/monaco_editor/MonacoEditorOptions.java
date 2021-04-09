@@ -88,7 +88,7 @@ public class MonacoEditorOptions {
         properties.setUseTabStops(false);
         properties.setContextmenu(false);
         properties.setFolding(false);
-        properties.setMiniMapEnabled(true);
+        properties.setMiniMapEnabled(false);
         properties.setScrollbarUseShadows(false);
         properties.setAutomaticLayout(false);
         properties.setRenderWhitespace(true);

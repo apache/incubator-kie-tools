@@ -51,7 +51,7 @@ public class ScriptTypeFieldEditorPresenter
         @Override
         public void init(ScriptTypeFieldEditorPresenter presenter) {
             monacoEditor.setOnChangeCallback(presenter::onChange);
-            monacoEditor.setWidthPx(326);
+            monacoEditor.setWidthPx(311);
             monacoEditor.setHeightPx(200);
         }
 

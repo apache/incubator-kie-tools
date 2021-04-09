@@ -39,7 +39,7 @@ public class MonacoEditorOptionsTest {
         options.setLineDecorationsWidth(5);
         options.setLineNumbers("off");
         options.setLineNumbersMinChars(3);
-        options.setMiniMapEnabled(true);
+        options.setMiniMapEnabled(false);
         options.setOverviewRulerBorder(true);
         options.setRenderLineHighlight("off");
         options.setRenderWhitespace(true);
@@ -61,7 +61,7 @@ public class MonacoEditorOptionsTest {
         assertEquals(5, options.getLineDecorationsWidth());
         assertEquals("off", options.getLineNumbers());
         assertEquals(3, options.getLineNumbersMinChars());
-        assertTrue(options.isMiniMapEnabled());
+        assertEquals(false, options.isMiniMapEnabled());
         assertTrue(options.isOverviewRulerBorder());
         assertEquals("off", options.getRenderLineHighlight());
         assertTrue(options.isRenderWhitespace());
@@ -88,7 +88,7 @@ public class MonacoEditorOptionsTest {
         options.setLineDecorationsWidth(5);
         options.setLineNumbers("off");
         options.setLineNumbersMinChars(3);
-        options.setMiniMapEnabled(true);
+        options.setMiniMapEnabled(false);
         options.setOverviewRulerBorder(true);
         options.setRenderLineHighlight("off");
         options.setRenderWhitespace(true);
@@ -111,7 +111,7 @@ public class MonacoEditorOptionsTest {
         assertEquals(5, options1.getLineDecorationsWidth());
         assertEquals("off", options1.getLineNumbers());
         assertEquals(3, options1.getLineNumbersMinChars());
-        assertTrue(options1.isMiniMapEnabled());
+        assertEquals(false, options1.isMiniMapEnabled());
         assertTrue(options1.isOverviewRulerBorder());
         assertEquals("off", options1.getRenderLineHighlight());
         assertTrue(options1.isRenderWhitespace());
