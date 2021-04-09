@@ -83,10 +83,7 @@ public interface StunnerWidgetsConstants {
     @TranslationKey(defaultValue = "Data Object-Name")
     String MarshallingResponsePopup_dataObjectWithName = "MarshallingMessage.dataObjectWithName";
 
-    @TranslationKey(defaultValue = "contains Illegal Chars ([space], #, :, [quotes]), will be replaced with (-)")
-    String MarshallingResponsePopup_dataObjectWithIllegalCharacters = "MarshallingMessage.dataObjectWithIllegalCharacters";
-
-    @TranslationKey(defaultValue = "Data Object with Invalid Name Exists")
+    @TranslationKey(defaultValue = "Data Object with Invalid Name Exists. Illegal chars will be replaced by -")
     String MarshallingResponsePopup_dataObjectWithInvalidName = "MarshallingMessage.dataObjectWithInvalidName";
 
     @TranslationKey(defaultValue = "Info")

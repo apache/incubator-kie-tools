@@ -31,6 +31,7 @@ public class StringUtilsTest {
     private final String ENCODED_VALUE = "&lt; Valid &quot;&amp;&quot; Symbols &gt;";
     private final String DECODED_VALUE = "< Valid \"&\" Symbols >";
     private final String DECODED_VALUE_DATA_OBJECT_NEWLINE = "DATA\nOBJECT";
+    private final String DECODED_VALUE_DATA_OBJECT_ILLEGAL_CHARS = "~!@#$%^&*()_+`10-={}[]:\"|;'\\<>?,./°ľščťžýáíéúä!ô§ň";
 
     private final String EMPTY_STRING = "";
 
@@ -174,4 +175,8 @@ public class StringUtilsTest {
         assertEquals("DATAOBJECT", replaceIllegalCharsForDataObjects(DECODED_VALUE_DATA_OBJECT_NEWLINE));
     }
 
+    @Test
+    public void testReplaceIllegalCharsDataObjectName() {
+        assertEquals("--------*--_+-10----------'---?--/----------------", replaceIllegalCharsForDataObjects(DECODED_VALUE_DATA_OBJECT_ILLEGAL_CHARS));
+    }
 }

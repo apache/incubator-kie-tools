@@ -44,11 +44,6 @@ public class BPMNDataObjectClientValidator extends BPMNDataObjectValidator {
     }
 
     @Override
-    public String getMessageDataObjectWithIllegalCharacters() {
-        return translationService.getValue(StunnerWidgetsConstants.MarshallingResponsePopup_dataObjectWithIllegalCharacters);
-    }
-
-    @Override
     public String getMessageDataObjectIllegalName() {
         return translationService.getValue(StunnerWidgetsConstants.MarshallingResponsePopup_dataObjectWithInvalidName);
     }
