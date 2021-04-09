@@ -18,7 +18,8 @@ import (
 	"testing"
 
 	"github.com/kiegroup/kogito-operator/meta"
-	"github.com/kiegroup/kogito-operator/test/framework"
+	"github.com/kiegroup/kogito-operator/test/pkg/executor"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 )
 
 func TestMain(m *testing.M) {
@@ -26,5 +27,5 @@ func TestMain(m *testing.M) {
 	if err := framework.InitKubeClient(meta.GetRegisteredSchema()); err != nil {
 		panic(err)
 	}
-	ExecuteTests()
+	executor.ExecuteBDDTests(nil)
 }

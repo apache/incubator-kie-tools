@@ -1,4 +1,5 @@
 # tests configuration
+test_main_dir=
 feature=
 tags=
 concurrent=1
@@ -87,6 +88,7 @@ run-tests:
 	&& if [ "${operator_namespaced}" = "true" ]; then opts+=("--operator_namespaced"); fi \
 	&& opts_str=$$(IFS=' ' ; echo "$${opts[*]}") \
 	&& ../hack/run-tests.sh \
+		--test_main_dir ${test_main_dir} \
 		--feature ${feature} \
 		--tags "${tags}" \
 		--concurrent ${concurrent} \
@@ -134,14 +136,22 @@ run-tests:
 		--infinispan_installation_source ${infinispan_installation_source} \
 		$${opts_str}
 
+.PHONY: build-examples-images
+build-examples-images:
+	make run-tests test_main_dir=./examples feature=../features cr_deployment_only=true
+
 .PHONY: run-smoke-tests
 run-smoke-tests:
 	make run-tests smoke=true
+
+.PHONY: build-smoke-examples-images
+build-smoke-examples-images:
+	make build-examples-images smoke=true
 
 .PHONY: run-performance-tests
 run-performance-tests:
 	make run-tests performance=true
 
-.PHONY: build-examples-images
-build-examples-images:
-	make run-tests feature=scripts/examples cr_deployment_only=true
+.PHONY: build-performance-examples-images
+build-performance-examples-images:
+	make build-examples-images performance=true

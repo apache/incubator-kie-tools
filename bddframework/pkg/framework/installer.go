@@ -12,28 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package framework
 
 import (
-	"github.com/kiegroup/kogito-operator/meta"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework"
+	"github.com/kiegroup/kogito-operator/test/pkg/config"
 )
 
-func main() {
-	// Create kube client
-	if err := framework.InitKubeClient(meta.GetRegisteredSchema()); err != nil {
-		panic(err)
-	}
+// InstallerType defines the type of installer for services
+type InstallerType string
 
-	namespaces := framework.GetNamespacesInHistory()
-	for _, namespace := range namespaces {
-		if len(namespace) > 0 {
-			err := framework.DeleteNamespace(namespace)
-			if err != nil {
-				framework.GetMainLogger().Error(err, "Error in deleting namespace")
-			}
-		}
-	}
+const (
+	cliInstallerKey = "cli"
+	crInstallerKey  = "cr"
+)
 
-	framework.ClearNamespaceHistory()
+var (
+	// CLIInstallerType defines the CLI installer
+	CLIInstallerType InstallerType = cliInstallerKey
+	// CRInstallerType defines the CR installer
+	CRInstallerType InstallerType = crInstallerKey
+)
+
+// GetDefaultInstallerType returns the default installer type for the tests
+func GetDefaultInstallerType() InstallerType {
+	if config.IsCrDeploymentOnly() {
+		return CRInstallerType
+	}
+	return CLIInstallerType
 }

@@ -12,28 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package gherkin
 
-import (
-	"github.com/kiegroup/kogito-operator/meta"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework"
-)
+import "github.com/cucumber/godog"
 
-func main() {
-	// Create kube client
-	if err := framework.InitKubeClient(meta.GetRegisteredSchema()); err != nil {
-		panic(err)
-	}
-
-	namespaces := framework.GetNamespacesInHistory()
-	for _, namespace := range namespaces {
-		if len(namespace) > 0 {
-			err := framework.DeleteNamespace(namespace)
-			if err != nil {
-				framework.GetMainLogger().Error(err, "Error in deleting namespace")
-			}
+// MatchingFeatureWithTags checks whether any scenario in the feature has the given tags
+func MatchingFeatureWithTags(filterTags string, features []*Feature) bool {
+	for _, ft := range features {
+		if MatchesScenariosWithTags(filterTags, ft.Scenarios) {
+			return true
 		}
 	}
+	return false
+}
 
-	framework.ClearNamespaceHistory()
+// MatchesScenariosWithTags checks whether the given scenarioin has the given tags
+func MatchesScenariosWithTags(filterTags string, scenarios []*godog.Scenario) bool {
+	for _, scenario := range scenarios {
+		if matchesTags(filterTags, scenario.Tags) {
+			return true
+		}
+	}
+	return false
 }
