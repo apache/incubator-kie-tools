@@ -43,6 +43,8 @@ public abstract class EditorSession
 
     public abstract Registry<Command<AbstractCanvasHandler, CanvasViolation>> getCommandRegistry();
 
+    public abstract Registry<Command<AbstractCanvasHandler, CanvasViolation>> getRedoCommandRegistry();
+
     public abstract MediatorsControl<AbstractCanvas> getMediatorsControl();
 
     public abstract KeyboardControl<AbstractCanvas, ClientSession> getKeyboardControl();

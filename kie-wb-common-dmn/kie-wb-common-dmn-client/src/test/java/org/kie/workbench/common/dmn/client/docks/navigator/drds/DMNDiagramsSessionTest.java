@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.dmn.client.docks.navigator.drds;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.appformer.client.stateControl.registry.Registry;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,12 +35,19 @@ import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionDiagramOpenedEvent;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.EventSourceMock;
@@ -49,8 +58,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -85,6 +97,9 @@ public class DMNDiagramsSessionTest {
     @Mock
     private EventSourceMock locker;
 
+    @Mock
+    private EventSourceMock currentRegistryChangedEvent;
+
     private String uri = "://cyber/v.dmn";
 
     private Map<String, Diagram> diagramsByDiagramElementId = new HashMap<>();
@@ -99,7 +114,7 @@ public class DMNDiagramsSessionTest {
     public void setup() {
 
         dmnDiagramsSessionState = spy(new DMNDiagramsSessionState(dmnDiagramUtils));
-        dmnDiagramsSession = spy(new DMNDiagramsSession(dmnDiagramsSessionStates, sessionManager, dmnDiagramUtils, locker));
+        dmnDiagramsSession = spy(new DMNDiagramsSession(dmnDiagramsSessionStates, sessionManager, dmnDiagramUtils, locker, currentRegistryChangedEvent));
 
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(clientSession.getCanvasHandler()).thenReturn(canvasHandler);
@@ -384,6 +399,200 @@ public class DMNDiagramsSessionTest {
         assertEquals(drgElement, actual);
     }
 
+    @Test
+    public void testOnSessionDiagramOpenedEvent() {
+        final SessionDiagramOpenedEvent sessionDiagramOpenedEvent = mock(SessionDiagramOpenedEvent.class);
+        dmnDiagramsSession.onSessionDiagramOpenedEvent(sessionDiagramOpenedEvent);
+
+        verify(dmnDiagramsSession).loadHistoryForTheCurrentDiagram();
+    }
+
+    @Test
+    public void testLoadHistoryForTheCurrentDiagram() {
+
+        final Map<String, List<Command<AbstractCanvasHandler, CanvasViolation>>> storedRedoHistory = mock(Map.class);
+        final Map<String, List<Command<AbstractCanvasHandler, CanvasViolation>>> storedUndoHistory = mock(Map.class);
+        final String diagramId = "diagramId";
+        final EditorSession editorSession = mock(EditorSession.class);
+        final Optional<EditorSession> optionalEditorSession = Optional.of(editorSession);
+        final Registry<Command<AbstractCanvasHandler, CanvasViolation>> undoCommandRegistry = mock(Registry.class);
+        final Registry<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandRegistry = mock(Registry.class);
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> redoHistory = mock(List.class);
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> undoHistory = mock(List.class);
+
+        doReturn(storedRedoHistory).when(dmnDiagramsSession).getStoredRedoHistories();
+        doReturn(storedUndoHistory).when(dmnDiagramsSession).getStoredUndoHistories();
+        doReturn(diagramId).when(dmnDiagramsSession).getCurrentDiagramId();
+        doReturn(optionalEditorSession).when(dmnDiagramsSession).getCurrentSession();
+
+        when(storedRedoHistory.containsKey(diagramId)).thenReturn(true);
+        when(storedUndoHistory.containsKey(diagramId)).thenReturn(true);
+        when(editorSession.getCommandRegistry()).thenReturn(undoCommandRegistry);
+        when(editorSession.getRedoCommandRegistry()).thenReturn(redoCommandRegistry);
+        when(storedRedoHistory.get(diagramId)).thenReturn(redoHistory);
+        when(storedUndoHistory.get(diagramId)).thenReturn(undoHistory);
+
+        doNothing().when(dmnDiagramsSession).loadHistoryToTheRegistry(redoHistory, redoCommandRegistry);
+        doNothing().when(dmnDiagramsSession).loadHistoryToTheRegistry(undoHistory, undoCommandRegistry);
+
+        dmnDiagramsSession.loadHistoryForTheCurrentDiagram();
+
+        verify(dmnDiagramsSession).loadHistoryToTheRegistry(redoHistory, redoCommandRegistry);
+        verify(dmnDiagramsSession).loadHistoryToTheRegistry(undoHistory, undoCommandRegistry);
+        verify(dmnDiagramsSession).notifyRegistryChanged();
+        verify(undoCommandRegistry, never()).clear();
+        verify(redoCommandRegistry, never()).clear();
+    }
+
+    @Test
+    public void testLoadHistoryForTheCurrentDiagram_WhenItIsNotEditorSession() {
+
+        final Map<String, List<Command<AbstractCanvasHandler, CanvasViolation>>> storedRedoHistory = mock(Map.class);
+        final Map<String, List<Command<AbstractCanvasHandler, CanvasViolation>>> storedUndoHistory = mock(Map.class);
+        final String diagramId = "diagramId";
+        final ViewerSession viewerSession = mock(ViewerSession.class);
+        final Optional<ClientSession> optionalViewerSession = Optional.of(viewerSession);
+        final Registry<Command<AbstractCanvasHandler, CanvasViolation>> undoCommandRegistry = mock(Registry.class);
+        final Registry<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandRegistry = mock(Registry.class);
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> redoHistory = mock(List.class);
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> undoHistory = mock(List.class);
+
+        doReturn(storedRedoHistory).when(dmnDiagramsSession).getStoredRedoHistories();
+        doReturn(storedUndoHistory).when(dmnDiagramsSession).getStoredUndoHistories();
+        doReturn(diagramId).when(dmnDiagramsSession).getCurrentDiagramId();
+        doReturn(optionalViewerSession).when(dmnDiagramsSession).getCurrentSession();
+
+        when(storedRedoHistory.containsKey(diagramId)).thenReturn(true);
+        when(storedUndoHistory.containsKey(diagramId)).thenReturn(true);
+        when(storedRedoHistory.get(diagramId)).thenReturn(redoHistory);
+        when(storedUndoHistory.get(diagramId)).thenReturn(undoHistory);
+
+        doNothing().when(dmnDiagramsSession).loadHistoryToTheRegistry(redoHistory, redoCommandRegistry);
+        doNothing().when(dmnDiagramsSession).loadHistoryToTheRegistry(undoHistory, undoCommandRegistry);
+
+        dmnDiagramsSession.loadHistoryForTheCurrentDiagram();
+
+        verify(dmnDiagramsSession, never()).loadHistoryToTheRegistry(redoHistory, redoCommandRegistry);
+        verify(dmnDiagramsSession, never()).loadHistoryToTheRegistry(undoHistory, undoCommandRegistry);
+        verify(dmnDiagramsSession, never()).notifyRegistryChanged();
+        verify(undoCommandRegistry, never()).clear();
+        verify(redoCommandRegistry, never()).clear();
+    }
+
+    @Test
+    public void testLoadHistoryForTheCurrentDiagram_WhenThereIsNotHistoryStored() {
+
+        final Map<String, List<Command<AbstractCanvasHandler, CanvasViolation>>> storedRedoHistory = mock(Map.class);
+        final Map<String, List<Command<AbstractCanvasHandler, CanvasViolation>>> storedUndoHistory = mock(Map.class);
+        final String diagramId = "diagramId";
+        final EditorSession editorSession = mock(EditorSession.class);
+        final Optional<EditorSession> optionalEditorSession = Optional.of(editorSession);
+        final Registry<Command<AbstractCanvasHandler, CanvasViolation>> undoCommandRegistry = mock(Registry.class);
+        final Registry<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandRegistry = mock(Registry.class);
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> redoHistory = mock(List.class);
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> undoHistory = mock(List.class);
+
+        doReturn(storedRedoHistory).when(dmnDiagramsSession).getStoredRedoHistories();
+        doReturn(storedUndoHistory).when(dmnDiagramsSession).getStoredUndoHistories();
+        doReturn(diagramId).when(dmnDiagramsSession).getCurrentDiagramId();
+        doReturn(optionalEditorSession).when(dmnDiagramsSession).getCurrentSession();
+
+        when(storedRedoHistory.containsKey(diagramId)).thenReturn(false);
+        when(storedUndoHistory.containsKey(diagramId)).thenReturn(false);
+        when(editorSession.getCommandRegistry()).thenReturn(undoCommandRegistry);
+        when(editorSession.getRedoCommandRegistry()).thenReturn(redoCommandRegistry);
+        when(storedRedoHistory.get(diagramId)).thenReturn(redoHistory);
+        when(storedUndoHistory.get(diagramId)).thenReturn(undoHistory);
+
+        doNothing().when(dmnDiagramsSession).loadHistoryToTheRegistry(redoHistory, redoCommandRegistry);
+        doNothing().when(dmnDiagramsSession).loadHistoryToTheRegistry(undoHistory, undoCommandRegistry);
+
+        dmnDiagramsSession.loadHistoryForTheCurrentDiagram();
+
+        verify(dmnDiagramsSession, never()).loadHistoryToTheRegistry(redoHistory, redoCommandRegistry);
+        verify(dmnDiagramsSession, never()).loadHistoryToTheRegistry(undoHistory, undoCommandRegistry);
+        verify(dmnDiagramsSession).notifyRegistryChanged();
+        verify(undoCommandRegistry).clear();
+        verify(redoCommandRegistry).clear();
+    }
+
+    @Test
+    public void testLoadHistoryToTheRegistry() {
+
+        final Command<AbstractCanvasHandler, CanvasViolation> command1 = mock(Command.class);
+        final Command<AbstractCanvasHandler, CanvasViolation> command2 = mock(Command.class);
+        final Command<AbstractCanvasHandler, CanvasViolation> command3 = mock(Command.class);
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> history = Arrays.asList(command1, command2, command3);
+        final Registry<Command<AbstractCanvasHandler, CanvasViolation>> registry = mock(Registry.class);
+        final InOrder inOrder = inOrder(registry);
+
+        dmnDiagramsSession.loadHistoryToTheRegistry(history, registry);
+
+        inOrder.verify(registry).clear();
+        inOrder.verify(registry).register(command1);
+        inOrder.verify(registry).register(command2);
+        inOrder.verify(registry).register(command3);
+    }
+
+    @Test
+    public void testStoreCurrentRegistryHistory() {
+
+        final Map<String, List<Command<AbstractCanvasHandler, CanvasViolation>>> storedRedoHistory = mock(Map.class);
+        final Map<String, List<Command<AbstractCanvasHandler, CanvasViolation>>> storedUndoHistory = mock(Map.class);
+        final String diagramId = "diagramId";
+        final EditorSession editorSession = mock(EditorSession.class);
+        final Optional<EditorSession> optionalEditorSession = Optional.of(editorSession);
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> undoHistory = mock(List.class);
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> redoHistory = mock(List.class);
+        final Registry<Command<AbstractCanvasHandler, CanvasViolation>> undoCommandRegistry = mock(Registry.class);
+        final Registry<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandRegistry = mock(Registry.class);
+
+        doReturn(storedRedoHistory).when(dmnDiagramsSession).getStoredRedoHistories();
+        doReturn(storedUndoHistory).when(dmnDiagramsSession).getStoredUndoHistories();
+        doReturn(diagramId).when(dmnDiagramsSession).getCurrentDiagramId();
+        doReturn(optionalEditorSession).when(dmnDiagramsSession).getCurrentSession();
+
+        when(editorSession.getCommandRegistry()).thenReturn(undoCommandRegistry);
+        when(editorSession.getRedoCommandRegistry()).thenReturn(redoCommandRegistry);
+        when(undoCommandRegistry.getHistory()).thenReturn(undoHistory);
+        when(redoCommandRegistry.getHistory()).thenReturn(redoHistory);
+
+        dmnDiagramsSession.storeCurrentRegistryHistory();
+
+        verify(storedUndoHistory).put(diagramId, undoHistory);
+        verify(storedRedoHistory).put(diagramId, redoHistory);
+    }
+
+    @Test
+    public void testOnDMNDiagramSelected_WhenBelongsToCurrentSessionState() {
+
+        final DMNDiagramElement selectedDiagramElement = mock(DMNDiagramElement.class);
+        final DMNDiagramSelected dmnDiagramSelected = new DMNDiagramSelected(selectedDiagramElement);
+
+        doNothing().when(dmnDiagramsSession).storeCurrentRegistryHistory();
+        doReturn(true).when(dmnDiagramsSession).belongsToCurrentSessionState(selectedDiagramElement);
+
+        dmnDiagramsSession.onDMNDiagramSelected(dmnDiagramSelected);
+
+        verify(dmnDiagramsSessionState).setCurrentDMNDiagramElement(selectedDiagramElement);
+        verify(dmnDiagramsSession).storeCurrentRegistryHistory();
+    }
+
+    @Test
+    public void testOnDMNDiagramSelected_WhenDopesNotBelongsToCurrentSessionState() {
+
+        final DMNDiagramElement selectedDiagramElement = mock(DMNDiagramElement.class);
+        final DMNDiagramSelected dmnDiagramSelected = new DMNDiagramSelected(selectedDiagramElement);
+
+        doNothing().when(dmnDiagramsSession).storeCurrentRegistryHistory();
+        doReturn(false).when(dmnDiagramsSession).belongsToCurrentSessionState(selectedDiagramElement);
+
+        dmnDiagramsSession.onDMNDiagramSelected(dmnDiagramSelected);
+
+        verify(dmnDiagramsSessionState, never()).setCurrentDMNDiagramElement(selectedDiagramElement);
+        verify(dmnDiagramsSession).storeCurrentRegistryHistory();
+    }
+
     private Node createNodeWithContentDefinitionId(final String contentDefinitionId) {
 
         final Node node = mock(Node.class);
@@ -395,3 +604,4 @@ public class DMNDiagramsSessionTest {
         return node;
     }
 }
+

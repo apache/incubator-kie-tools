@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.appformer.client.stateControl.registry.DefaultRegistry;
 import org.appformer.client.stateControl.registry.Registry;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.canvas.controls.inlineeditor.DMNCanvasInlineTextEditorControl;
@@ -64,27 +65,19 @@ import org.uberfire.mvp.Command;
 @DMNEditor
 public class DMNEditorSession extends DefaultEditorSession implements DMNSession {
 
-    private final RegistryProvider registryProvider;
-
     @Inject
     public DMNEditorSession(final ManagedSession session,
                             final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                             final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                             final Registry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry,
-                            final Event<RegisterChangedEvent> registerChangedEvent,
-                            final RegistryProvider registryProvider) {
+                            final DefaultRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> redoCommandRegistry,
+                            final Event<RegisterChangedEvent> registerChangedEvent) {
         super(session,
               canvasCommandManager,
               sessionCommandManager,
               commandRegistry,
+              redoCommandRegistry,
               registerChangedEvent);
-        this.registryProvider = registryProvider;
-        this.registryProvider.setRegistryChangeListener(() -> fireRegistryChangedEvent());
-    }
-
-    @Override
-    public Registry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> getCommandRegistry() {
-        return registryProvider.getCurrentCommandRegistry();
     }
 
     @Override

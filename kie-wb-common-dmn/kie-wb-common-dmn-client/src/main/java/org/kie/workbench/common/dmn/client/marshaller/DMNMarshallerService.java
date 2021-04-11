@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.xml.namespace.QName;
@@ -50,7 +49,6 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSIT
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.JSIName;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.JsUtils;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CurrentRegistryChangedEvent;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
@@ -83,8 +81,6 @@ public class DMNMarshallerService {
 
     private final DMNDiagramsSession dmnDiagramsSession;
 
-    private final Event<CurrentRegistryChangedEvent> currentRegistryChangedEvent;
-
     private ServiceCallback<Diagram> onDiagramLoad = emptyService();
 
     private Metadata metadata;
@@ -95,15 +91,13 @@ public class DMNMarshallerService {
                                 final DMNDiagramFactory dmnDiagramFactory,
                                 final DefinitionManager definitionManager,
                                 final Promises promises,
-                                final DMNDiagramsSession dmnDiagramsSession,
-                                final Event<CurrentRegistryChangedEvent> currentRegistryChangedEvent) {
+                                final DMNDiagramsSession dmnDiagramsSession) {
         this.dmnUnmarshaller = dmnUnmarshaller;
         this.dmnMarshaller = dmnMarshaller;
         this.dmnDiagramFactory = dmnDiagramFactory;
         this.definitionManager = definitionManager;
         this.promises = promises;
         this.dmnDiagramsSession = dmnDiagramsSession;
-        this.currentRegistryChangedEvent = currentRegistryChangedEvent;
     }
 
     public void unmarshall(final Path path,
@@ -249,15 +243,8 @@ public class DMNMarshallerService {
     }
 
     private Path getRoot() {
-//  FIXME: Tiago
-//        final WorkspaceProject workspaceProject = getWorkspaceProject();
-//        return workspaceProject == null ? PathFactory.newPath(".", ROOT) : workspaceProject.getRootPath();
         return PathFactory.newPath(".", ROOT);
     }
-// //FIXME: tiago
-//    private WorkspaceProject getWorkspaceProject() {
-//        return null;  //FIXME: tiago
-//    }
 
     private void updateClientShapeSetId(final Diagram diagram) {
         if (Objects.nonNull(diagram)) {
@@ -295,11 +282,6 @@ public class DMNMarshallerService {
     private void onDiagramLoad(final Diagram diagram) {
         updateClientShapeSetId(diagram);
         onDiagramLoad.onSuccess(diagram);
-        notifyRegistryChanged();
-    }
-
-    private void notifyRegistryChanged() {
-        currentRegistryChangedEvent.fire(new CurrentRegistryChangedEvent());
     }
 
     private ServiceCallback<Diagram> emptyService() {

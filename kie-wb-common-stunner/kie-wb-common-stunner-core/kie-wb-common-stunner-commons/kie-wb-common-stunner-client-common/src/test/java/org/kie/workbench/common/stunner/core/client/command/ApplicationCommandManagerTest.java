@@ -65,7 +65,6 @@ public class ApplicationCommandManagerTest {
         commandManagerInstances = spy(new ManagedInstanceStub<>(commandManager));
         when(session.getSessionUUID()).thenReturn(SESSION_ID);
         when(sessionManager.getCurrentSession()).thenReturn(session);
-        when(commandManager.init(eq(session))).thenReturn(commandManager);
 
         tested = new ApplicationCommandManager(sessionManager,
                                                lifecycle,
@@ -84,7 +83,6 @@ public class ApplicationCommandManagerTest {
     @Test
     public void testStart() {
         tested.start();
-        verify(commandManager, times(1)).init(eq(session));
         verify(commandManager, times(1)).start();
         verify(commandManager, never()).rollback();
         verify(commandManager, never()).complete();

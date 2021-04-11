@@ -85,7 +85,7 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
 
     @Override
     protected AbstractClientSessionCommand<EditorSession> getCommand() {
-        return new UndoSessionCommand(sessionCommandManager);
+        return new UndoSessionCommand(sessionCommandManager, sessionManager);
     }
 
     @Override
@@ -172,8 +172,8 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
     @Test
     public void testOnCurrentRegistryChanged() {
         final CurrentRegistryChangedEvent event = mock(CurrentRegistryChangedEvent.class);
-        ((UndoSessionCommand)command).onCurrentRegistryChanged(event);
+        ((UndoSessionCommand) command).onCurrentRegistryChanged(event);
 
-        verify((UndoSessionCommand)command).checkState();
+        verify((UndoSessionCommand) command).checkState();
     }
 }

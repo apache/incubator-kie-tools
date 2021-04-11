@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.appformer.kogito.bridge.client.interop.WindowRef;
 import org.appformer.kogito.bridge.client.stateControl.interop.StateControl;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
@@ -36,14 +37,16 @@ public class KogitoUndoSessionCommand extends UndoSessionCommand {
     private final Supplier<StateControl> stateControlSupplier;
 
     @Inject
-    public KogitoUndoSessionCommand(final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager) {
-        this(sessionCommandManager, WindowRef::isEnvelopeAvailable, StateControl::get);
+    public KogitoUndoSessionCommand(final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                    final SessionManager sessionManager) {
+        this(sessionCommandManager, WindowRef::isEnvelopeAvailable, StateControl::get, sessionManager);
     }
 
     KogitoUndoSessionCommand(final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                              final Supplier<Boolean> envelopeAvailableSupplier,
-                             final Supplier<StateControl> stateControlSupplier) {
-        super(sessionCommandManager);
+                             final Supplier<StateControl> stateControlSupplier,
+                             final SessionManager sessionManager) {
+        super(sessionCommandManager, sessionManager);
         this.envelopeAvailableSupplier = envelopeAvailableSupplier;
         this.stateControlSupplier = stateControlSupplier;
     }

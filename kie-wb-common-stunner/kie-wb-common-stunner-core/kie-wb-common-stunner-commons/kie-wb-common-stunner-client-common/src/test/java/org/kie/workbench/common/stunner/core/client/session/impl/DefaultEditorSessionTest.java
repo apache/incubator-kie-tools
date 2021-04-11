@@ -20,6 +20,7 @@ import java.util.function.Consumer;
 
 import javax.enterprise.event.Event;
 
+import org.appformer.client.stateControl.registry.DefaultRegistry;
 import org.appformer.client.stateControl.registry.Registry;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,6 +75,9 @@ public class DefaultEditorSessionTest {
     private Registry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
 
     @Mock
+    private DefaultRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> redoCommandRegistry;
+
+    @Mock
     private Event<RegisterChangedEvent> registerChangedEvent;
 
     private DefaultEditorSession tested;
@@ -95,6 +99,7 @@ public class DefaultEditorSessionTest {
                                           canvasCommandManager,
                                           sessionCommandManager,
                                           commandRegistry,
+                                          redoCommandRegistry,
                                           registerChangedEvent);
     }
 
