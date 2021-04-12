@@ -70,7 +70,7 @@ test(TEST_NAME, async () => {
     expect(await nodeProps.getNameFromTextArea()).toEqual(TASK_NODE_NAME);
 
     // check pallete is not visible
-    expect(await bpmnEditor.isPaletteVisible()).toEqual(false);
+    expect(await bpmnEditor.isPalettePresent()).toEqual(false);
 
     await bpmnEditor.leave();
 

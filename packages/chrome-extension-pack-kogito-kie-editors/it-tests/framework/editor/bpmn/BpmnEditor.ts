@@ -33,8 +33,8 @@ export default class BpmnEditor extends Editor {
         return await this.clickToCanvas();
     }
 
-    public async isPaletteVisible(): Promise<boolean> {
-        return await this.tools.by(BpmnEditor.PALETTE_LOCATOR).wait(1000).isVisible();
+    public async isPalettePresent(): Promise<boolean> {
+        return await this.tools.by(BpmnEditor.PALETTE_LOCATOR).wait(1000).isPresent();
     }
 
     private async getBpmnPalette(): Promise<BpmnPalette> {
