@@ -36,6 +36,6 @@ Cypress.Commands.add("getEditor", () => {
 Cypress.Commands.add("loadEditor", () => {
     cy.getEditor().within(() => {
         cy.get("[data-testid='loading-screen-div']", { timeout: 15000 }).should("be.visible");
-        cy.get("[data-testid='loading-screen-div']", { timeout: 60000 }).should("not.exist");
+        cy.get("[data-testid='loading-screen-div']", { timeout: 600000 }).should("not.exist");
     });
 });
