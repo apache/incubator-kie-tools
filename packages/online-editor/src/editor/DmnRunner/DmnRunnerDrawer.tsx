@@ -145,7 +145,7 @@ export function DmnRunnerDrawer(props: Props) {
       if (!props.editor) {
         return;
       }
-      props.editor
+      return props.editor
         .getContent()
         .then(content => {
           dmnRunner.service.result({ context: formData, model: content }).then(result => {
@@ -210,7 +210,8 @@ export function DmnRunnerDrawer(props: Props) {
     dmnRunner.setFormData(data);
   }, []);
 
-  function pathToName(path: string) {
+  // Get form field path
+  function dataPathToFormFieldPath(path: string) {
     path = path.startsWith("/")
       ? path
           .replace(/\//g, ".")
@@ -223,28 +224,45 @@ export function DmnRunnerDrawer(props: Props) {
     return path.slice(1);
   }
 
-  const onValidate = useCallback((model, error: any) => {
-    // if the form has an error, the error should be displayed and the outputs column should be updated anyway
-    if (error) {
-      const errors = error.details.reduce((acc: any, detail: any) => {
-        if (detail.keyword === "type") {
-          const formField = pathToName(detail.dataPath);
-          if (detail.params.type === "number") {
-            
-          } else if (detail.params.type === "string") {
-
-          }
-          autoFormRef.current?.change(formField, undefined);
-          return acc;
-        }
-        return { ...acc, detail };
-      }, {});
-      if (Object.keys(errors).length > 0) {
+  // Validation occurs on submit
+  const onValidate = useCallback(
+    (model, error: any) => {
+      // if the form has an error, the error should be displayed and the outputs column should be updated anyway
+      if (error) {
+        const something = error.details.reduce(
+          (infos: any, detail: any) => {
+            if (detail.keyword === "type") {
+              // If it's a type error, it's handled by replacing the current value with a undefined value.
+              const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
+              autoFormRef.current?.change(formFieldPath, undefined);
+              infos.changes = [...infos.changes, [formFieldPath, undefined]];
+              return infos;
+            } else if (detail.keyword === "enum") {
+              const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
+              autoFormRef.current?.change(formFieldPath, undefined);
+              return infos;
+            }
+            infos.details = [...infos.details, detail];
+            return infos;
+          },
+          { details: [], changes: [[]] }
+        );
+        // Update formData with the current change.
+        something.changes.forEach(([formFieldPath, fieldValue]: [string, string | number | undefined]) => {
+          formFieldPath?.split(".")?.reduce((deeper, field, index, array) => {
+            if (index === array.length - 1) {
+              deeper[field] = fieldValue;
+            } else {
+              return deeper[field];
+            }
+          }, model);
+        });
         dmnRunner.setFormData(model);
-        return errors;
+        return { details: something.details };
       }
-    }
-  }, []);
+    },
+    [dmnRunner.setFormData]
+  );
 
   // Fill the form with the previous data
   const previousIsDrawerOpen = usePrevious(dmnRunner.isDrawerExpanded);
@@ -347,7 +365,6 @@ export function DmnRunnerDrawer(props: Props) {
                     }
                   >
                     <AutoForm
-                      validate={"onChange"}
                       id={"form"}
                       ref={autoFormRef}
                       showInlineError={true}
