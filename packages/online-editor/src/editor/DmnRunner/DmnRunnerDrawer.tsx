@@ -210,7 +210,6 @@ export function DmnRunnerDrawer(props: Props) {
     dmnRunner.setFormData(data);
   }, []);
 
-  // Get form field path
   function dataPathToFormFieldPath(path: string) {
     path = path.startsWith("/")
       ? path
@@ -224,42 +223,47 @@ export function DmnRunnerDrawer(props: Props) {
     return path.slice(1);
   }
 
-  // Validation occurs on submit
+  // Validation occurs on every change and submit.
   const onValidate = useCallback(
     (model, error: any) => {
-      // if the form has an error, the error should be displayed and the outputs column should be updated anyway
-      if (error) {
-        const something = error.details.reduce(
-          (infos: any, detail: any) => {
-            if (detail.keyword === "type") {
-              // If it's a type error, it's handled by replacing the current value with a undefined value.
-              const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
-              autoFormRef.current?.change(formFieldPath, undefined);
-              infos.changes = [...infos.changes, [formFieldPath, undefined]];
-              return infos;
-            } else if (detail.keyword === "enum") {
-              const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
-              autoFormRef.current?.change(formFieldPath, undefined);
-              return infos;
-            }
-            infos.details = [...infos.details, detail];
-            return infos;
-          },
-          { details: [], changes: [[]] }
-        );
-        // Update formData with the current change.
-        something.changes.forEach(([formFieldPath, fieldValue]: [string, string | number | undefined]) => {
-          formFieldPath?.split(".")?.reduce((deeper, field, index, array) => {
-            if (index === array.length - 1) {
-              deeper[field] = fieldValue;
-            } else {
-              return deeper[field];
-            }
-          }, model);
-        });
-        dmnRunner.setFormData(model);
-        return { details: something.details };
+      if (!error) {
+        return;
       }
+      // if the form has an error, the error should be displayed and the outputs column should be updated anyway.
+      const {
+        details,
+        changes
+      }: { details: object[]; changes: Array<[string, string | number | undefined]> } = error.details.reduce(
+        (infos: any, detail: any) => {
+          if (detail.keyword === "type") {
+            // If it's a type error, it's handled by replacing the current value with a undefined value.
+            const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
+            autoFormRef.current?.change(formFieldPath, undefined);
+            infos.changes = [...infos.changes, [formFieldPath, undefined]];
+            return infos;
+          } else if (detail.keyword === "enum") {
+            // A enum error is caused by a type error.
+            const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
+            autoFormRef.current?.change(formFieldPath, undefined);
+            return infos;
+          }
+          infos.details = [...infos.details, detail];
+          return infos;
+        },
+        { details: [], changes: [] }
+      );
+      // Update formData with the current change.
+      changes.forEach(([formFieldPath, fieldValue]) => {
+        formFieldPath?.split(".")?.reduce((deeper, field, index, array) => {
+          if (index === array.length - 1) {
+            deeper[field] = fieldValue;
+          } else {
+            return deeper[field];
+          }
+        }, model);
+      });
+      dmnRunner.setFormData(model);
+      return { details };
     },
     [dmnRunner.setFormData]
   );
