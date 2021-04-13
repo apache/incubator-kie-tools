@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.client.widgets.canvas;
 
 import com.ait.lienzo.client.widget.panel.scrollbars.ScrollablePanel;
 import elemental2.dom.DomGlobal;
-import org.jboss.errai.enterprise.client.cdi.api.CDI;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyEventHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 
@@ -59,6 +58,6 @@ public class ScrollableLienzoPanelView
     }
 
     boolean isRemoteCommunicationEnabled() {
-        return CDI.isRemoteCommunicationEnabled();
+        return false;
     }
 }
