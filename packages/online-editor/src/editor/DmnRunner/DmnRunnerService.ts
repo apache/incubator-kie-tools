@@ -68,12 +68,14 @@ interface DmnRunnerFormDefinitions {
     required: string[];
     properties: object;
     type: string;
+    placeholder?: string;
   };
 }
 
 interface DmnRunnerDeepProperty {
   $ref?: string;
   type?: string;
+  placeholder?: string;
 }
 
 export class DmnRunnerService {
@@ -168,6 +170,8 @@ export class DmnRunnerService {
         });
       } else if (!Object.hasOwnProperty.call(form.definitions[property], "type")) {
         form.definitions[property]!.type = "string";
+      } else if (Object.hasOwnProperty.call(form.definitions[property], "enum")) {
+        form.definitions[property]!.placeholder = "Select...";
       }
     } else if (!Object.hasOwnProperty.call(value, "type")) {
       value.type = "string";

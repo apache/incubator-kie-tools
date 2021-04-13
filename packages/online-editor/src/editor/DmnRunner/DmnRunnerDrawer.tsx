@@ -376,6 +376,7 @@ export function DmnRunnerDrawer(props: Props) {
                       autosaveDelay={AUTO_SAVE_DELAY}
                       schema={dmnRunner.jsonSchemaBridge}
                       onSubmit={onSubmit}
+                      placeholder={true}
                       errorsField={() => <></>}
                       submitField={() => <></>}
                       onValidate={onValidate}
