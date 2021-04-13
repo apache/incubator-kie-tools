@@ -15,14 +15,14 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Badge, Tab, Tabs, TabTitleText, Tooltip } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { useNotificationsPanel } from "./NotificationsPanelContext";
 import { NotificationPanelTabContent } from "./NotificationsPanelTabContent";
 import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
 
-// TODO: add resizable feature;
+const NOTIFICATIONS_PANEL_INITIAL_SIZE = 350;
 
 interface Props {
   tabNames: string[];
@@ -77,9 +77,49 @@ export function NotificationsPanel(props: Props) {
     tabsNotifications
   ]);
 
+  const notificationsPanelDivRef = useRef<HTMLDivElement>(null);
+  const [notificationsPanelIconPlace, setNotificationsPanelIconPlace] = useState<number>();
+  const notificationsPanelIconRef = useRef<HTMLDivElement>(null);
+
+  const onMouseMove = useCallback((e: MouseEvent) => {
+    const iframe = document.getElementById("kogito-iframe");
+    if (iframe) {
+      iframe.style.pointerEvents = "none";
+    }
+
+    const notificationsPanelDiv = notificationsPanelDivRef.current?.getBoundingClientRect();
+    const newNotificationsPanelSize = notificationsPanelDiv!.bottom - e.clientY;
+    notificationsPanelDivRef.current?.style?.setProperty("height", `${newNotificationsPanelSize}px`);
+    setNotificationsPanelIconPlace(newNotificationsPanelSize + 12);
+  }, []);
+
+  const onMouseUp = useCallback((e: MouseEvent) => {
+    const iframe = document.getElementById("kogito-iframe");
+    if (iframe) {
+      iframe.style.pointerEvents = "visible";
+    }
+
+    document.removeEventListener("mousemove", onMouseMove);
+    document.removeEventListener("mouseup", onMouseUp);
+  }, []);
+
+  const onMouseDown = useCallback(() => {
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  }, []);
+
+  useEffect(() => {
+    if (notificationsPanel.isOpen) {
+      notificationsPanelIconRef.current?.style?.setProperty("bottom", `${notificationsPanelIconPlace ?? 360}px`);
+    } else {
+      notificationsPanelIconRef.current?.style?.setProperty("bottom", `5px`);
+    }
+  }, [notificationsPanel.isOpen, notificationsPanelIconPlace]);
+
   return (
     <>
       <div
+        ref={notificationsPanelIconRef}
         className={
           notificationsPanel.isOpen
             ? "kogito--editor__notifications-panel-button open"
@@ -114,33 +154,44 @@ export function NotificationsPanel(props: Props) {
       </div>
       <div
         style={{
-          height: "350px",
-          width: "100%",
-          borderTop: "solid 1px #ddd",
-          display: notificationsPanel.isOpen ? "block" : "none"
+          display: notificationsPanel.isOpen ? "flex" : "none",
+          flexDirection: "column",
+          borderTop: "solid 1px #ddd"
         }}
       >
-        <Tabs activeKey={notificationsPanel.activeTab} onSelect={onSelectTab}>
-          {[...tabsMap.entries()].map(([tabName, tabRef], index) => (
-            <Tab
-              key={`tab-${index}`}
-              eventKey={tabName}
-              title={
-                <TabTitleText>
-                  {tabName} <Badge isRead={true}>{tabsNotifications.get(tabName)}</Badge>
-                </TabTitleText>
-              }
-            >
-              <div style={{ height: "309px" }}>
-                <NotificationPanelTabContent
-                  name={tabName}
-                  ref={tabRef}
-                  onNotificationsLengthChange={onNotificationsLengthChange}
-                />
-              </div>
-            </Tab>
-          ))}
-        </Tabs>
+        <div
+          onMouseDown={onMouseDown}
+          style={{ height: "10px", borderBottom: "solid 1px #ddd", cursor: "row-resize" }}
+        />
+        <div
+          ref={notificationsPanelDivRef}
+          style={{
+            height: "350px",
+            width: "100%"
+          }}
+        >
+          <Tabs activeKey={notificationsPanel.activeTab} onSelect={onSelectTab}>
+            {[...tabsMap.entries()].map(([tabName, tabRef], index) => (
+              <Tab
+                key={`tab-${index}`}
+                eventKey={tabName}
+                title={
+                  <TabTitleText>
+                    {tabName} <Badge isRead={true}>{tabsNotifications.get(tabName)}</Badge>
+                  </TabTitleText>
+                }
+              >
+                <div>
+                  <NotificationPanelTabContent
+                    name={tabName}
+                    ref={tabRef}
+                    onNotificationsLengthChange={onNotificationsLengthChange}
+                  />
+                </div>
+              </Tab>
+            ))}
+          </Tabs>
+        </div>
       </div>
     </>
   );

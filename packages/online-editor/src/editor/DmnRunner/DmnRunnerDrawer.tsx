@@ -98,11 +98,6 @@ export function DmnRunnerDrawer(props: Props) {
   });
 
   const onResize = useCallback((width: number) => {
-    const iframe = document.getElementById("kogito-iframe");
-    if (iframe) {
-      iframe.style.pointerEvents = "visible";
-    }
-
     // FIXME: Patternfly bug. The first interaction without resizing the splitter will result in width === 0.
     if (width === 0) {
       return;
@@ -126,18 +121,28 @@ export function DmnRunnerDrawer(props: Props) {
   }, []);
 
   // Remove iframe pointer event to enable resize
-  useEffect(() => {
+  const onMouseMove = useCallback((e: MouseEvent) => {
     const iframe = document.getElementById("kogito-iframe");
-    const drawerResizableSplitter = document.querySelector(".pf-c-drawer__splitter");
-
-    if (iframe && drawerResizableSplitter) {
-      const removePointerEvents = () => (iframe.style.pointerEvents = "none");
-      drawerResizableSplitter.addEventListener("mousedown", removePointerEvents);
-
-      return () => {
-        drawerResizableSplitter.removeEventListener("mousedown", removePointerEvents);
-      };
+    if (iframe) {
+      iframe.style.pointerEvents = "none";
     }
+  }, []);
+
+  // Add iframe pointer event
+  const onMouseUp = useCallback(() => {
+    const iframe = document.getElementById("kogito-iframe");
+    if (iframe) {
+      iframe.style.pointerEvents = "visible";
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+    return () => {
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+    };
   }, []);
 
   const updateDmnRunnerResults = useCallback(
@@ -327,6 +332,7 @@ export function DmnRunnerDrawer(props: Props) {
       defaultSize={`${DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION}px`}
       onResize={onResize}
       isResizable={true}
+      minSize={"361px"}
     >
       <div
         className={"kogito--editor__dmn-runner"}

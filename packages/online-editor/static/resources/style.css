@@ -238,7 +238,6 @@
 }
 
 .kogito--editor__drawer-content-panel {
-  min-width: 361px;
   position: relative;
   overflow: hidden;
 }
@@ -385,7 +384,7 @@
 }
 
 .kogito--editor__notifications-panel-button.open {
-  bottom: 355px;
+  bottom: 360px;
 }
 
 .kogito--editor__notifications-panel-error-count-updated {
