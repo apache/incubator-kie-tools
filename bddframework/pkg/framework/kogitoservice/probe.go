@@ -40,6 +40,13 @@ type healthCheckProbe struct {
 	liveness  *corev1.Probe
 }
 
+var defaultProbeValues = corev1.Probe{
+	TimeoutSeconds:   int32(1),
+	PeriodSeconds:    int32(10),
+	SuccessThreshold: int32(1),
+	FailureThreshold: int32(3),
+}
+
 // getProbeForKogitoService gets the appropriate liveness (index 0) and readiness (index 1) probes based on the given service definition
 func getProbeForKogitoService(serviceDefinition ServiceDefinition, service api.KogitoService) healthCheckProbe {
 	switch serviceDefinition.HealthCheckProbe {
@@ -67,6 +74,7 @@ func getTCPHealthCheckProbe(probe corev1.Probe) *corev1.Probe {
 			TCPSocket: &corev1.TCPSocketAction{Port: intstr.IntOrString{IntVal: int32(framework.DefaultExposedPort)}},
 		}
 	}
+	setDefaultProbeValues(&probe)
 	return &probe
 }
 
@@ -79,7 +87,12 @@ func getQuarkusHealthCheckLiveness(probe corev1.Probe) *corev1.Probe {
 				Scheme: corev1.URISchemeHTTP,
 			},
 		}
+	} else {
+		setDefaultHTTPGetValues(&probe, quarkusProbeLivenessPath)
 	}
+	setDefaultProbeValues(&probe)
+	// Must be 1 for liveness and startup.
+	probe.SuccessThreshold = 1
 	return &probe
 }
 
@@ -92,8 +105,38 @@ func getQuarkusHealthCheckReadiness(probe corev1.Probe) *corev1.Probe {
 				Scheme: corev1.URISchemeHTTP,
 			},
 		}
+	} else {
+		setDefaultHTTPGetValues(&probe, quarkusProbeReadinessPath)
 	}
+	setDefaultProbeValues(&probe)
 	return &probe
+}
+
+// setDefaultHTTPGetValues sets default HTTPGetAction values for the handler if not set already. This prevents reconciliation loops.
+func setDefaultHTTPGetValues(probe *corev1.Probe, defaultPath string) {
+	if probe.Handler.HTTPGet.Path == "" {
+		probe.Handler.HTTPGet.Path = defaultPath
+	}
+	// port not needed to be set since it is a mandatory field for HTTPGetAction enforced at YAML level
+	if probe.Handler.HTTPGet.Scheme == "" {
+		probe.Handler.HTTPGet.Scheme = corev1.URISchemeHTTP
+	}
+}
+
+// setDefaultProbeValues sets default probe values if not set already. This prevents reconciliation loops.
+func setDefaultProbeValues(probe *corev1.Probe) {
+	if probe.TimeoutSeconds == 0 {
+		probe.TimeoutSeconds = defaultProbeValues.TimeoutSeconds
+	}
+	if probe.PeriodSeconds == 0 {
+		probe.PeriodSeconds = defaultProbeValues.PeriodSeconds
+	}
+	if probe.SuccessThreshold == 0 {
+		probe.SuccessThreshold = defaultProbeValues.SuccessThreshold
+	}
+	if probe.FailureThreshold == 0 {
+		probe.FailureThreshold = defaultProbeValues.FailureThreshold
+	}
 }
 
 // isProbeHandlerEmpty ...
