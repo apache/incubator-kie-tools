@@ -120,31 +120,6 @@ export function DmnRunnerDrawer(props: Props) {
     }
   }, []);
 
-  // Remove iframe pointer event to enable resize
-  const onMouseMove = useCallback((e: MouseEvent) => {
-    const iframe = document.getElementById("kogito-iframe");
-    if (iframe) {
-      iframe.style.pointerEvents = "none";
-    }
-  }, []);
-
-  // Add iframe pointer event
-  const onMouseUp = useCallback(() => {
-    const iframe = document.getElementById("kogito-iframe");
-    if (iframe) {
-      iframe.style.pointerEvents = "visible";
-    }
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseup", onMouseUp);
-    return () => {
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
-    };
-  }, []);
-
   const updateDmnRunnerResults = useCallback(
     (formData: object) => {
       if (!props.editor) {

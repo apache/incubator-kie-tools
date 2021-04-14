@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Badge, Tab, Tabs, TabTitleText, Tooltip } from "@patternfly/react-core";
-import { AngleRightIcon, ExclamationCircleIcon } from "@patternfly/react-icons";
+import { AngleDownIcon, AngleUpIcon, ExclamationCircleIcon } from "@patternfly/react-icons";
 import { useNotificationsPanel } from "./NotificationsPanelContext";
 import { NotificationPanelTabContent } from "./NotificationsPanelTabContent";
 import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
@@ -192,11 +192,13 @@ export function NotificationsPanel(props: Props) {
               zIndex: 999,
               userSelect: "none"
             }}
-            onClick={() => (expandAll ? onRetractAll() : onExpandAll())}
           >
-            <span style={{ transition: ".2s ease-in 0s", transform: expandAll ? "rotate(90deg)" : undefined }}>
-              <AngleRightIcon />
-            </span>
+            <div onClick={() => onRetractAll()}>
+              <Tooltip content={"Retract All"} children={<AngleUpIcon />} />
+            </div>
+            <div onClick={() => onExpandAll()}>
+              <Tooltip content={"Expand All"} children={<AngleDownIcon />} />
+            </div>
           </div>
           <Tabs activeKey={notificationsPanel.activeTab} onSelect={onSelectTab}>
             {[...tabsMap.entries()].map(([tabName, tabRef], index) => (
