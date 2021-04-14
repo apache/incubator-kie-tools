@@ -15,6 +15,11 @@
  */
 
 describe("Bpmn Workitem E2E Test.", () => {
+
+  const NAME_INPUT_LOCATOR: string = "input[data-field='name']";
+  const DATATYPE_SELECT_LOCATOR: string = "select[data-field='dataType']"
+
+
   before("Visit page", () => {
     cy.visit("localhost:9001/bpmn-workitem");
     cy.loadEditor("bpmn-workitem");
@@ -161,11 +166,11 @@ describe("Bpmn Workitem E2E Test.", () => {
           .click();
       })
 
-      it("Custom workitem has expected size of data assignments when opened for edit",() => {
+      it("Custom workitem has expected size of data assignments when opened for edit", () => {
         cy.wrap(propertyItems)
-              .find("button[id='assignmentsButton']")
-              .should("not.be", "disabled")
-              .click();
+          .find("button[id='assignmentsButton']")
+          .should("not.be", "disabled")
+          .click();
 
         cy.editor("bpmn-workitem")
           .find('.modal-content')
@@ -185,83 +190,75 @@ describe("Bpmn Workitem E2E Test.", () => {
       });
 
       it("Custom workitem has correct in_customer_id data input assignments",() => {
-        cy.wrap(dataAssignments.eq(0))
-              .find("input[data-field='name']")
-              .should("have.value", "in_customer_id");
-
-        cy.wrap(dataAssignments.eq(0))
-              .find("select[data-field='dataType']")
-              .should("have.value", "String");
+        cy.wrap(dataAssignments.eq(0)).within(() => {
+          cy.get(NAME_INPUT_LOCATOR)
+            .should("have.value", "in_customer_id")
+            .get(DATATYPE_SELECT_LOCATOR)
+            .should("have.value", "String");
+        });
       });
 
       it("Custom workitem has correct in_customer_initial_balance data input assignment",() => {
-        cy.wrap(dataAssignments.eq(1))
-              .find("input[data-field='name']")
-              .should("have.value", "in_customer_initial_balance");
-
-        cy.wrap(dataAssignments.eq(1))
-              .find("select[data-field='dataType']")
-              .should("have.value", "Float");
+        cy.wrap(dataAssignments.eq(1)).within(() => {
+          cy.get(NAME_INPUT_LOCATOR)
+            .should("have.value", "in_customer_initial_balance")
+            .get(DATATYPE_SELECT_LOCATOR)
+            .should("have.value", "Float");
+        });
       });
 
       it("Custom workitem has correct in_customer_level_id data input assignments",() => {
-        cy.wrap(dataAssignments.eq(2))
-              .find("input[data-field='name']")
-              .should("have.value", "in_customer_level_id");
-
-        cy.wrap(dataAssignments.eq(2))
-              .find("select[data-field='dataType']")
-              .should("have.value", "Integer");
+        cy.wrap(dataAssignments.eq(2)).within(() => {
+          cy.get(NAME_INPUT_LOCATOR)
+            .should("have.value", "in_customer_level_id")
+            .get(DATATYPE_SELECT_LOCATOR)
+            .should("have.value", "Integer");
+        });
       });
 
       it("Custom workitem has correct in_customer_level_label data input assignment",() => {
-        cy.wrap(dataAssignments.eq(3))
-              .find("input[data-field='name']")
-              .should("have.value", "in_customer_level_label");
-
-        cy.wrap(dataAssignments.eq(3))
-              .find("select[data-field='dataType']")
-              .should("have.value", "java.lang.Object");
+        cy.wrap(dataAssignments.eq(3)).within(() => {
+          cy.get(NAME_INPUT_LOCATOR)
+            .should("have.value", "in_customer_level_label")
+            .get(DATATYPE_SELECT_LOCATOR)
+            .should("have.value", "java.lang.Object");
+        });
       });
 
       it("Custom workitem has correct in_customer_roles data input assignment",() => {
-        cy.wrap(dataAssignments.eq(4))
-              .find("input[data-field='name']")
-              .should("have.value", "in_customer_roles");
-
-        cy.wrap(dataAssignments.eq(4))
-              .find("select[data-field='dataType']")
-              .should("have.value", "java.util.List");
+        cy.wrap(dataAssignments.eq(4)).within(() => {
+          cy.get(NAME_INPUT_LOCATOR)
+            .should("have.value", "in_customer_roles")
+            .get(DATATYPE_SELECT_LOCATOR)
+            .should("have.value", "java.util.List");
+        });
       });
 
       it("Custom workitem has correct in_message data input assignment",() => {
-        cy.wrap(dataAssignments.eq(5))
-              .find("input[data-field='name']")
-              .should("have.value", "in_message");
-
-        cy.wrap(dataAssignments.eq(5))
-              .find("select[data-field='dataType']")
-              .should("have.value", "java.lang.Object");
+        cy.wrap(dataAssignments.eq(5)).within(() => {
+          cy.get(NAME_INPUT_LOCATOR)
+            .should("have.value", "in_message")
+            .get(DATATYPE_SELECT_LOCATOR)
+            .should("have.value", "java.lang.Object");
+        });
       });
 
       it("Custom workitem has correct in_security_token data input assignment",() => {
-        cy.wrap(dataAssignments.eq(6))
-              .find("input[data-field='name']")
-              .should("have.value", "in_security_token");
-
-        cy.wrap(dataAssignments.eq(6))
-              .find("select[data-field='dataType']")
-              .should("have.value", "java.lang.Object");
+        cy.wrap(dataAssignments.eq(6)).within(() => {
+          cy.get(NAME_INPUT_LOCATOR)
+            .should("have.value", "in_security_token")
+            .get(DATATYPE_SELECT_LOCATOR)
+            .should("have.value", "java.lang.Object");
+        });
       });
 
       it("Custom workitem has correct out_operation_success data output assignment",() => {
-        cy.wrap(dataAssignments.eq(7))
-              .find("input[data-field='name']")
-              .should("have.value", "out_operation_success");
-
-        cy.wrap(dataAssignments.eq(7))
-              .find("select[data-field='dataType']")
-              .should("have.value", "Boolean");
+        cy.wrap(dataAssignments.eq(7)).within(() => {
+          cy.get(NAME_INPUT_LOCATOR)
+            .should("have.value", "out_operation_success")
+            .get(DATATYPE_SELECT_LOCATOR)
+            .should("have.value", "Boolean");
+        });
       });
     });
   }); 

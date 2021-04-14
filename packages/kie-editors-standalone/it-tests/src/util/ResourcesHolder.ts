@@ -53,10 +53,6 @@ export class ResourcesHolder {
             onResourceChanged
       );
     });
-    this.addFile(
-      { name, value: { path: name, type: ContentType.TEXT, content: fileContent } },
-      onResourceChanged
-    );
     return this;
   }
   public addFile(resource: ResourcesHolderItem, onResourceChanged?: () => void): ResourcesHolder {
