@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useImperativeHandle, useMemo, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { Notification, NotificationsApi, NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
 import {
   NotificationDrawer,
@@ -14,6 +14,7 @@ import {
 interface Props {
   name: string;
   onNotificationsLengthChange: (name: string, newQtt: number) => void;
+  expandAll: boolean;
 }
 
 function variant(severity: NotificationSeverity) {
@@ -106,6 +107,7 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
                         key={`execution-notification-group-${groupIndex}`}
                         path={path}
                         notifications={notifications}
+                        isExpanded={props.expandAll}
                       />
                     )}
                   </>
@@ -123,6 +125,7 @@ export const NotificationPanelTabContent = React.forwardRef(RefForwardingNotific
 interface NotificationDrawerGroupProps {
   path: string;
   notifications: Notification[];
+  isExpanded: boolean;
 }
 
 function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
@@ -130,6 +133,10 @@ function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
   const onExpand = useCallback(() => {
     setIsExpanded(prevExpanded => !prevExpanded);
   }, []);
+
+  useEffect(() => {
+    setIsExpanded(props.isExpanded);
+  }, [props.isExpanded]);
 
   return (
     <NotificationDrawerGroup

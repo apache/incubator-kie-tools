@@ -17,12 +17,10 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Badge, Tab, Tabs, TabTitleText, Tooltip } from "@patternfly/react-core";
-import { ExclamationCircleIcon } from "@patternfly/react-icons";
+import { AngleRightIcon, ExclamationCircleIcon } from "@patternfly/react-icons";
 import { useNotificationsPanel } from "./NotificationsPanelContext";
 import { NotificationPanelTabContent } from "./NotificationsPanelTabContent";
 import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
-
-const NOTIFICATIONS_PANEL_INITIAL_SIZE = 350;
 
 interface Props {
   tabNames: string[];
@@ -107,6 +105,15 @@ export function NotificationsPanel(props: Props) {
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", onMouseUp);
   }, []);
+  const [expandAll, setExpandAll] = useState(false);
+
+  const onExpandAll = useCallback(() => {
+    setExpandAll(true);
+  }, []);
+
+  const onRetractAll = useCallback(() => {
+    setExpandAll(false);
+  }, []);
 
   useEffect(() => {
     if (notificationsPanel.isOpen) {
@@ -167,9 +174,30 @@ export function NotificationsPanel(props: Props) {
           ref={notificationsPanelDivRef}
           style={{
             height: "350px",
-            width: "100%"
+            width: "100%",
+            position: "relative"
           }}
         >
+          <div
+            style={{
+              right: 0,
+              top: 0,
+              position: "absolute",
+              display: "flex",
+              width: "50px",
+              height: "40px",
+              justifyContent: "space-around",
+              alignItems: "center",
+              padding: "7px",
+              zIndex: 999,
+              userSelect: "none"
+            }}
+            onClick={() => (expandAll ? onRetractAll() : onExpandAll())}
+          >
+            <span style={{ transition: ".2s ease-in 0s", transform: expandAll ? "rotate(90deg)" : undefined }}>
+              <AngleRightIcon />
+            </span>
+          </div>
           <Tabs activeKey={notificationsPanel.activeTab} onSelect={onSelectTab}>
             {[...tabsMap.entries()].map(([tabName, tabRef], index) => (
               <Tab
@@ -186,6 +214,7 @@ export function NotificationsPanel(props: Props) {
                     name={tabName}
                     ref={tabRef}
                     onNotificationsLengthChange={onNotificationsLengthChange}
+                    expandAll={expandAll}
                   />
                 </div>
               </Tab>
