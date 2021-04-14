@@ -17,6 +17,19 @@
 import { By, WebElement, WebView } from "vscode-extension-tester";
 import { assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
 import { expandedDocksBarE, h3ComponentWithText } from "./CommonLocators";
+import { assert } from "chai";
+
+export enum PaletteCategories {
+  START_EVENTS = "Start Events",
+  INTERMEDIATE_EVENTS = "Intermediate Events",
+  END_EVENTS = "End Events",
+  ACTIVITIES = "Activities",
+  SUBPROCESSES = "SubProcesses",
+  GATEWAYS = "Gateways",
+  CONTAINERS = "Containers",
+  ARTIFACTS = "Artifacts",
+  CUSTOM_TASKS = "Custom Tasks",
+}
 
 /**
  * Helper class to easen work with BPMN editor inside of a webview.
@@ -99,5 +112,36 @@ export default class BpmnEditorTestHelper {
     );
     await assertWebElementIsDisplayedEnabled(expandedExplorerPanel);
     return expandedExplorerPanel;
+  };
+
+  /**
+   * Opens the palette of BPMN editor with category specified in argument.
+   * Categories are listed in {@see PaletteCategories}
+   * Function will always check if there is expected number of categories before clicking the target one.
+   *
+   * @param categoryToOpen use one of PaletteCategories values
+   * @returns root WebElement of openned palette flyout, can be used to query offered nodes and click them
+   */
+  public openDiagramPalette = async (categoryToOpen: PaletteCategories): Promise<WebElement> => {
+    const palette = await this.getPalette();
+    await assertWebElementIsDisplayedEnabled(palette);
+    const paletteElements = await palette.findElements(By.xpath("//button[@data-field='categoryIcon' and @title]"));
+    assert.lengthOf(paletteElements, 9); // there should always be 9 categories
+
+    let categories = Object.values(PaletteCategories);
+    let title: string;
+    for (let i = 0; i < paletteElements.length; i++) {
+      title = await paletteElements[i].getAttribute("title");
+      assert.equal(
+        title,
+        categories[i],
+        "Unexpected palette category on index: [" + i + "]. Expected [" + categories[i] + "], but got [" + title + "]."
+      );
+      if (title == categoryToOpen) {
+        paletteElements[i].click();
+      }
+    }
+
+    return await palette.findElement(By.className("kie-palette-flyout"));
   };
 }
