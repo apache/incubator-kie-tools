@@ -142,7 +142,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorRedo()),
         getContent: () => envelopeServer.envelopeApi.requests.receive_contentRequest().then(c => c.content),
         getPreview: () => envelopeServer.envelopeApi.requests.receive_previewRequest(),
-        setContent: (path, content) => envelopeServer.envelopeApi.requests.receive_contentChanged({ path, content }),
+        setContent: (path, content) => envelopeServer.envelopeApi.notifications.receive_contentChanged({ path, content }),
         validate: () => envelopeServer.envelopeApi.requests.validate()
       };
     },
