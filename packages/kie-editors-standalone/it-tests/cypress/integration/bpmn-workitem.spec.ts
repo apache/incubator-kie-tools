@@ -175,13 +175,11 @@ describe("Bpmn Workitem E2E Test.", () => {
         cy.editor("bpmn-workitem")
           .find('.modal-content')
           .should("be.visible")
-          .then($dataAssignmentsModal => {
-            cy.wrap($dataAssignmentsModal)
-              .find(".modal-title")
+          .within(() => {
+            cy.get(".modal-title")
               .should("have.text", "Create Customer Internal Service Data I/O");
 
-            cy.wrap($dataAssignmentsModal)
-              .find("tr[id='assignment']")
+            cy.get("tr[id='assignment']")
               .should("have.length", 8)
               .then($assignments => {
                 dataAssignments = $assignments;
