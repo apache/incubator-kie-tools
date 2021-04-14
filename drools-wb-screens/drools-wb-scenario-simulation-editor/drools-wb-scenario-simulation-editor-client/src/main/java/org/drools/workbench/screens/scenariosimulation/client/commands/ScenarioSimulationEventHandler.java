@@ -520,6 +520,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
             commonNotifyError(status, operation);
         } else if (Objects.equals(CommandResultBuilder.SUCCESS, status) && (command instanceof AbstractScenarioSimulationUndoableCommand)) {
             scenarioCommandRegistryManager.register(context, (AbstractScenarioSimulationUndoableCommand) command);
+            scenarioSimulationEditorPresenter.getView().onResize();
             if (focusGridAfterExecution && gridWidget.isPresent()) {
                 context.getScenarioGridPanelByGridWidget(gridWidget.get()).setFocus(true);
             }
