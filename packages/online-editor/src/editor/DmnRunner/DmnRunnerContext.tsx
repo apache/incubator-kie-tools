@@ -34,6 +34,8 @@ export interface DmnRunnerContextType {
   saveNewPort: (value: string) => void;
   service: DmnRunnerService;
   version: string;
+  formError: boolean;
+  setFormError: React.Dispatch<boolean>;
 }
 
 export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({

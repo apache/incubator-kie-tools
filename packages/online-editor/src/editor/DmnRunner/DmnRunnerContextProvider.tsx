@@ -51,6 +51,7 @@ export function DmnRunnerContextProvider(props: Props) {
   const [port, setPort] = useState(() => getCookie(DMN_RUNNER_PORT_COOKIE_NAME) ?? DMN_RUNNER_DEFAULT_PORT);
   const service = useMemo(() => new DmnRunnerService(port), [port]);
   const version = useMemo(() => "$_{WEBPACK_REPLACE__dmnRunnerVersion}", []);
+  const [formError, setFormError] = useState(false);
 
   const updateJsonSchemaBridge = useCallback(() => {
     return props.editor
@@ -63,19 +64,27 @@ export function DmnRunnerContextProvider(props: Props) {
         );
 
         // Remove an formData property that has been deleted;
-        setFormData(previousFormData => {
-          return Object.entries(propertiesDifference).reduce(
-            (newFormData, [property, value]) => {
-              if (!value || value.type) {
-                delete (newFormData as any)[property];
-              }
-              return newFormData;
-            },
-            { ...previousFormData }
-          );
+        setFormError(previous => {
+          if (!previous) {
+            setFormData(previousFormData => {
+              return Object.entries(propertiesDifference).reduce(
+                (newFormData, [property, value]) => {
+                  if (!value || value.type) {
+                    delete (newFormData as any)[property];
+                  }
+                  return newFormData;
+                },
+                { ...previousFormData }
+              );
+            });
+            return false;
+          }
+          return false;
         });
-
         setJsonSchemaBridge(newJsonSchemaBridge);
+      })
+      .catch(() => {
+        setFormError(true);
       });
   }, [props.editor, service, jsonSchemaBridge]);
 
@@ -200,7 +209,9 @@ export function DmnRunnerContextProvider(props: Props) {
         port,
         saveNewPort,
         service,
-        version
+        version,
+        formError,
+        setFormError
       }}
     >
       {props.children}

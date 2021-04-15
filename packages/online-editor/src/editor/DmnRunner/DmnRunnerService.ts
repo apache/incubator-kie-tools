@@ -188,20 +188,16 @@ export class DmnRunnerService {
   }
 
   public async getJsonSchemaBridge(model: string) {
-    try {
-      const response = await fetch(this.DMN_RUNNER_FORM_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/xml;"
-        },
-        body: model
-      });
-      const form = (await response.json()) as DmnRunnerForm;
-      this.removeRequirementAndAddMissingTypes(form);
-      const formDraft4 = { ...form, $schema: this.SCHEMA_DRAFT4 };
-      return new JSONSchemaBridge(formDraft4, this.createValidator(formDraft4));
-    } catch (err) {
-      console.error(err);
-    }
+    const response = await fetch(this.DMN_RUNNER_FORM_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/xml;"
+      },
+      body: model
+    });
+    const form = (await response.json()) as DmnRunnerForm;
+    this.removeRequirementAndAddMissingTypes(form);
+    const formDraft4 = { ...form, $schema: this.SCHEMA_DRAFT4 };
+    return new JSONSchemaBridge(formDraft4, this.createValidator(formDraft4));
   }
 }

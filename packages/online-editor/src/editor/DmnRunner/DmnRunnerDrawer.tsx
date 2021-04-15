@@ -181,7 +181,7 @@ export function DmnRunnerDrawer(props: Props) {
     [props.editor, dmnRunner.service, notificationsPanel.getTabRef]
   );
 
-  // Update outputs column on form data change
+  // Update outputs column on form change
   useEffect(() => {
     updateDmnRunnerResults(dmnRunner.formData);
   }, [dmnRunner.formData, updateDmnRunnerResults]);
@@ -190,7 +190,7 @@ export function DmnRunnerDrawer(props: Props) {
     dmnRunner.setFormData(data);
   }, []);
 
-  function dataPathToFormFieldPath(path: string) {
+  const dataPathToFormFieldPath = useCallback((path: string) => {
     path = path.startsWith("/")
       ? path
           .replace(/\//g, ".")
@@ -201,7 +201,7 @@ export function DmnRunnerDrawer(props: Props) {
           .replace(/\[(.+?)\]/g, ".$1")
           .replace(/\\'/g, "'");
     return path.slice(1);
-  }
+  }, []);
 
   // Validation occurs on every change and submit.
   const onValidate = useCallback(
@@ -263,19 +263,6 @@ export function DmnRunnerDrawer(props: Props) {
     }
   }, [dmnRunner.isDrawerExpanded, previousIsDrawerOpen, dmnRunner.formData]);
 
-  // Resets the ErrorBoundary everytime the JsonSchemaBridge is updated
-  useEffect(() => {
-    errorBoundaryRef.current?.reset();
-  }, [dmnRunner.jsonSchemaBridge]);
-
-  const [errorGeneratingForm, setErrorGeneratingForm] = useState<boolean>(false);
-  useEffect(() => {
-    if (errorGeneratingForm) {
-      // if there is an error generating the form, the last form data is submitted
-      updateDmnRunnerResults(dmnRunner.formData);
-    }
-  }, [errorGeneratingForm, dmnRunner.formData, updateDmnRunnerResults]);
-
   // Subscribe to any change on the DMN Editor and submit the form
   useEffect(() => {
     if (props.editor) {
@@ -297,8 +284,58 @@ export function DmnRunnerDrawer(props: Props) {
   }, [props.editor, dmnRunner.formData, updateDmnRunnerResults]);
 
   const shouldRenderForm = useMemo(() => {
-    return dmnRunner.jsonSchemaBridge && Object.keys(dmnRunner.jsonSchemaBridge?.schema.properties ?? {}).length !== 0;
+    return (
+      !dmnRunner.formError &&
+      dmnRunner.jsonSchemaBridge &&
+      Object.keys(dmnRunner.jsonSchemaBridge?.schema.properties ?? {}).length !== 0
+    );
+  }, [dmnRunner.formError, dmnRunner.jsonSchemaBridge]);
+
+  // Resets the ErrorBoundary everytime the JsonSchemaBridge is updated
+  useEffect(() => {
+    errorBoundaryRef.current?.reset();
   }, [dmnRunner.jsonSchemaBridge]);
+
+  const previousFormError = usePrevious(dmnRunner.formError);
+  useEffect(() => {
+    if (dmnRunner.formError) {
+      // if there is an error generating the form, the last form data is submitted
+      updateDmnRunnerResults(dmnRunner.formData);
+    } else if (previousFormError) {
+      setTimeout(() => {
+        autoFormRef.current?.submit();
+        Object.keys(dmnRunner.formData ?? {}).forEach(propertyName => {
+          autoFormRef.current?.change(propertyName, dmnRunner.formData?.[propertyName]);
+        });
+      }, 0);
+    }
+  }, [dmnRunner.formError, dmnRunner.formData, updateDmnRunnerResults]);
+
+  const openValidationTab = useCallback(() => {
+    notificationsPanel.setIsOpen(true);
+    notificationsPanel.setActiveTab("Validation");
+  }, []);
+
+  const formErrorMessage = useMemo(
+    () => (
+      <div>
+        <EmptyState>
+          <EmptyStateIcon icon={ExclamationIcon} />
+          <TextContent>
+            <Text component={"h2"}>Oops!</Text>
+          </TextContent>
+          <EmptyStateBody>
+            <TextContent>Form cannot be rendered because of an error.</TextContent>
+            <br />
+            <TextContent>
+              Check for <a onClick={openValidationTab}>Validation</a> errors on the Notifications Panel.
+            </TextContent>
+          </EmptyStateBody>
+        </EmptyState>
+      </div>
+    ),
+    [openValidationTab]
+  );
 
   return (
     <DrawerPanelContent
@@ -332,23 +369,7 @@ export function DmnRunnerDrawer(props: Props) {
             <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
               <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
                 {shouldRenderForm ? (
-                  <ErrorBoundary
-                    ref={errorBoundaryRef}
-                    setHasError={setErrorGeneratingForm}
-                    error={
-                      <div>
-                        <EmptyState>
-                          <EmptyStateIcon icon={ExclamationIcon} />
-                          <TextContent>
-                            <Text component={"h2"}>Oops!</Text>
-                          </TextContent>
-                          <EmptyStateBody>
-                            <TextContent>Form cannot be rendered because of an error.</TextContent>
-                          </EmptyStateBody>
-                        </EmptyState>
-                      </div>
-                    }
-                  >
+                  <ErrorBoundary ref={errorBoundaryRef} setHasError={dmnRunner.setFormError} error={formErrorMessage}>
                     <AutoForm
                       id={"form"}
                       ref={autoFormRef}
@@ -363,6 +384,8 @@ export function DmnRunnerDrawer(props: Props) {
                       onValidate={onValidate}
                     />
                   </ErrorBoundary>
+                ) : dmnRunner.formError ? (
+                  formErrorMessage
                 ) : (
                   <div>
                     <EmptyState>
