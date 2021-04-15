@@ -36,6 +36,7 @@ func TestGetProbeForKogitoService_DefaultConfiguration(t *testing.T) {
 	healthCheckProbe := getProbeForKogitoService(serviceDefinition, service)
 	livenessProbe := healthCheckProbe.liveness
 	readinessProbe := healthCheckProbe.readiness
+	startupProbe := healthCheckProbe.startup
 
 	assert.Equal(t, quarkusProbeReadinessPath, readinessProbe.Handler.HTTPGet.Path)
 	assert.Equal(t, intstr.IntOrString{IntVal: int32(framework.DefaultExposedPort)}, readinessProbe.Handler.HTTPGet.Port)
@@ -52,6 +53,14 @@ func TestGetProbeForKogitoService_DefaultConfiguration(t *testing.T) {
 	assert.Equal(t, int32(10), livenessProbe.PeriodSeconds)
 	assert.Equal(t, int32(1), livenessProbe.SuccessThreshold)
 	assert.Equal(t, int32(3), livenessProbe.FailureThreshold)
+
+	assert.Equal(t, quarkusProbeLivenessPath, startupProbe.Handler.HTTPGet.Path)
+	assert.Equal(t, intstr.IntOrString{IntVal: int32(framework.DefaultExposedPort)}, startupProbe.Handler.HTTPGet.Port)
+	assert.Equal(t, corev1.URISchemeHTTP, startupProbe.Handler.HTTPGet.Scheme)
+	assert.Equal(t, int32(1), startupProbe.TimeoutSeconds)
+	assert.Equal(t, int32(10), startupProbe.PeriodSeconds)
+	assert.Equal(t, int32(1), startupProbe.SuccessThreshold)
+	assert.Equal(t, int32(3), startupProbe.FailureThreshold)
 }
 
 func TestGetProbeForKogitoService_CustomConfiguration(t *testing.T) {
@@ -91,10 +100,25 @@ func TestGetProbeForKogitoService_CustomConfiguration(t *testing.T) {
 			SuccessThreshold:    22,
 			FailureThreshold:    25,
 		},
+		StartupProbe: corev1.Probe{
+			Handler: corev1.Handler{
+				HTTPGet: &corev1.HTTPGetAction{
+					Path:   customLivenessProbePath,
+					Port:   intstr.IntOrString{IntVal: customProbePort},
+					Scheme: corev1.URISchemeHTTPS,
+				},
+			},
+			InitialDelaySeconds: 0,
+			TimeoutSeconds:      30,
+			PeriodSeconds:       30,
+			SuccessThreshold:    1,
+			FailureThreshold:    10,
+		},
 	})
 	healthCheckProbe := getProbeForKogitoService(serviceDefinition, service)
 	livenessProbe := healthCheckProbe.liveness
 	readinessProbe := healthCheckProbe.readiness
+	startupProbe := healthCheckProbe.startup
 
 	assert.Equal(t, customLivenessProbePath, livenessProbe.Handler.HTTPGet.Path)
 	assert.Equal(t, intstr.IntOrString{IntVal: customProbePort}, livenessProbe.Handler.HTTPGet.Port)
@@ -113,6 +137,15 @@ func TestGetProbeForKogitoService_CustomConfiguration(t *testing.T) {
 	assert.Equal(t, int32(25), readinessProbe.PeriodSeconds)
 	assert.Equal(t, int32(22), readinessProbe.SuccessThreshold)
 	assert.Equal(t, int32(25), readinessProbe.FailureThreshold)
+
+	assert.Equal(t, customLivenessProbePath, startupProbe.Handler.HTTPGet.Path)
+	assert.Equal(t, intstr.IntOrString{IntVal: customProbePort}, startupProbe.Handler.HTTPGet.Port)
+	assert.Equal(t, corev1.URISchemeHTTPS, startupProbe.Handler.HTTPGet.Scheme)
+	assert.Equal(t, int32(0), startupProbe.InitialDelaySeconds)
+	assert.Equal(t, int32(30), startupProbe.TimeoutSeconds)
+	assert.Equal(t, int32(30), startupProbe.PeriodSeconds)
+	assert.Equal(t, int32(1), startupProbe.SuccessThreshold)
+	assert.Equal(t, int32(10), startupProbe.FailureThreshold)
 }
 
 func TestGetProbeForKogitoService_CustomConfigurationWithoutDefaultFields(t *testing.T) {
@@ -136,10 +169,18 @@ func TestGetProbeForKogitoService_CustomConfigurationWithoutDefaultFields(t *tes
 				},
 			},
 		},
+		StartupProbe: corev1.Probe{
+			Handler: corev1.Handler{
+				HTTPGet: &corev1.HTTPGetAction{
+					Port: intstr.IntOrString{IntVal: customProbePort},
+				},
+			},
+		},
 	})
 	healthCheckProbe := getProbeForKogitoService(serviceDefinition, service)
 	livenessProbe := healthCheckProbe.liveness
 	readinessProbe := healthCheckProbe.readiness
+	startupProbe := healthCheckProbe.startup
 
 	assert.Equal(t, quarkusProbeLivenessPath, livenessProbe.Handler.HTTPGet.Path)
 	assert.Equal(t, intstr.IntOrString{IntVal: customProbePort}, livenessProbe.Handler.HTTPGet.Port)
@@ -158,4 +199,13 @@ func TestGetProbeForKogitoService_CustomConfigurationWithoutDefaultFields(t *tes
 	assert.Equal(t, int32(10), readinessProbe.PeriodSeconds)
 	assert.Equal(t, int32(1), readinessProbe.SuccessThreshold)
 	assert.Equal(t, int32(3), readinessProbe.FailureThreshold)
+
+	assert.Equal(t, quarkusProbeLivenessPath, startupProbe.Handler.HTTPGet.Path)
+	assert.Equal(t, intstr.IntOrString{IntVal: customProbePort}, startupProbe.Handler.HTTPGet.Port)
+	assert.Equal(t, corev1.URISchemeHTTP, startupProbe.Handler.HTTPGet.Scheme)
+	assert.Equal(t, int32(0), startupProbe.InitialDelaySeconds)
+	assert.Equal(t, int32(1), startupProbe.TimeoutSeconds)
+	assert.Equal(t, int32(10), startupProbe.PeriodSeconds)
+	assert.Equal(t, int32(1), startupProbe.SuccessThreshold)
+	assert.Equal(t, int32(3), startupProbe.FailureThreshold)
 }

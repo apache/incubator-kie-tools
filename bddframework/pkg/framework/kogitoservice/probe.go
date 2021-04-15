@@ -38,6 +38,7 @@ const (
 type healthCheckProbe struct {
 	readiness *corev1.Probe
 	liveness  *corev1.Probe
+	startup   *corev1.Probe
 }
 
 var defaultProbeValues = corev1.Probe{
@@ -54,16 +55,19 @@ func getProbeForKogitoService(serviceDefinition ServiceDefinition, service api.K
 		return healthCheckProbe{
 			readiness: getQuarkusHealthCheckReadiness(service.GetSpec().GetProbes().GetReadinessProbe()),
 			liveness:  getQuarkusHealthCheckLiveness(service.GetSpec().GetProbes().GetLivenessProbe()),
+			startup:   getQuarkusHealthCheckLiveness(service.GetSpec().GetProbes().GetStartupProbe()),
 		}
 	case TCPHealthCheckProbe:
 		return healthCheckProbe{
 			readiness: getTCPHealthCheckProbe(service.GetSpec().GetProbes().GetReadinessProbe()),
 			liveness:  getTCPHealthCheckProbe(service.GetSpec().GetProbes().GetLivenessProbe()),
+			startup:   getTCPHealthCheckProbe(service.GetSpec().GetProbes().GetStartupProbe()),
 		}
 	default:
 		return healthCheckProbe{
 			readiness: getTCPHealthCheckProbe(service.GetSpec().GetProbes().GetReadinessProbe()),
 			liveness:  getTCPHealthCheckProbe(service.GetSpec().GetProbes().GetLivenessProbe()),
+			startup:   getTCPHealthCheckProbe(service.GetSpec().GetProbes().GetStartupProbe()),
 		}
 	}
 }

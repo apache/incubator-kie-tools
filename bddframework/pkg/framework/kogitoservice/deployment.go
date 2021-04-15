@@ -23,11 +23,14 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"strconv"
+	"strings"
 )
 
 const (
-	portName      = "http"
-	singleReplica = int32(1)
+	portName                 = "http"
+	singleReplica            = int32(1)
+	startupProbeMinorVersion = 18
 )
 
 // DeploymentHandler ...
@@ -99,8 +102,24 @@ func (d *deploymentHandler) CreateRequiredDeployment(service api.KogitoService, 
 			Strategy: appsv1.DeploymentStrategy{Type: appsv1.RollingUpdateDeploymentStrategyType},
 		},
 	}
+	addStartupProbe(d, deployment, probes.startup)
 
 	return deployment
+}
+
+// addStartupProbe adds a startup probe to deployment if the Kubernetes version is >= 1.18 when the feature is enabled by default
+func addStartupProbe(d *deploymentHandler, deployment *appsv1.Deployment, startupProbe *corev1.Probe) {
+	versionInfo, err := d.Client.Discovery.ServerVersion()
+	if err != nil {
+		d.Log.Warn("Could not access Kubernetes server version. Startup probes will not be added.")
+	}
+	d.Log.Debug("K8s version", "major version", versionInfo.Major, "minor version", versionInfo.Minor)
+	minorVersion := strings.TrimSuffix(versionInfo.Minor, "+")
+	if minorVersionInt, err := strconv.Atoi(minorVersion); err != nil {
+		d.Log.Warn("Could not parse Kubernetes server minor version. Startup probes will not be added.")
+	} else if minorVersionInt >= startupProbeMinorVersion {
+		deployment.Spec.Template.Spec.Containers[0].StartupProbe = startupProbe
+	}
 }
 
 // IsDeploymentAvailable verifies if the Deployment resource from the given KogitoService has replicas available
