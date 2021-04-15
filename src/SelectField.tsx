@@ -126,6 +126,7 @@ function RenderSelect(props: SelectInputProps) {
       selection: string | SelectOptionObject
     ) => {
       if (selection === props.placeholder) {
+        props.onChange(undefined);
         setSelected([]);
         setExpanded(false);
       } else {
