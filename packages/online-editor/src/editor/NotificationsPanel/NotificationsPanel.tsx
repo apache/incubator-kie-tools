@@ -88,15 +88,17 @@ export function NotificationsPanel(props: Props) {
     const notificationsPanelDiv = notificationsPanelDivRef.current?.getBoundingClientRect();
     const newNotificationsPanelSize = notificationsPanelDiv!.bottom - e.clientY;
     notificationsPanelDivRef.current?.style?.setProperty("height", `${newNotificationsPanelSize}px`);
+    notificationsPanelDivRef.current?.style?.setProperty("user-select", "none");
     setNotificationsPanelIconPlace(newNotificationsPanelSize + 12);
   }, []);
 
   const onMouseUp = useCallback((e: MouseEvent) => {
     const iframe = document.getElementById("kogito-iframe");
     if (iframe) {
-      iframe.style.pointerEvents = "visible";
+      iframe.style.pointerEvents = "";
     }
 
+    notificationsPanelDivRef.current?.style?.setProperty("user-select", "");
     document.removeEventListener("mousemove", onMouseMove);
     document.removeEventListener("mouseup", onMouseUp);
   }, []);
@@ -105,8 +107,8 @@ export function NotificationsPanel(props: Props) {
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", onMouseUp);
   }, []);
-  const [expandAll, setExpandAll] = useState(false);
 
+  const [expandAll, setExpandAll] = useState<boolean>();
   const onExpandAll = useCallback(() => {
     setExpandAll(true);
   }, []);
@@ -175,7 +177,8 @@ export function NotificationsPanel(props: Props) {
           style={{
             height: "350px",
             width: "100%",
-            position: "relative"
+            position: "relative",
+            overflow: "auto",
           }}
         >
           <div
@@ -217,6 +220,7 @@ export function NotificationsPanel(props: Props) {
                     ref={tabRef}
                     onNotificationsLengthChange={onNotificationsLengthChange}
                     expandAll={expandAll}
+                    setExpandAll={setExpandAll}
                   />
                 </div>
               </Tab>

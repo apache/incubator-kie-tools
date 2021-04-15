@@ -14,7 +14,8 @@ import {
 interface Props {
   name: string;
   onNotificationsLengthChange: (name: string, newQtt: number) => void;
-  expandAll: boolean;
+  expandAll: boolean | undefined;
+  setExpandAll: React.Dispatch<boolean | undefined>;
 }
 
 function variant(severity: NotificationSeverity) {
@@ -107,7 +108,8 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
                         key={`execution-notification-group-${groupIndex}`}
                         path={path}
                         notifications={notifications}
-                        isExpanded={props.expandAll}
+                        allExpanded={props.expandAll}
+                        setAllExpanded={props.setExpandAll}
                       />
                     )}
                   </>
@@ -125,18 +127,22 @@ export const NotificationPanelTabContent = React.forwardRef(RefForwardingNotific
 interface NotificationDrawerGroupProps {
   path: string;
   notifications: Notification[];
-  isExpanded: boolean;
+  allExpanded: boolean | undefined;
+  setAllExpanded: React.Dispatch<boolean | undefined>;
 }
 
 function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const onExpand = useCallback(() => {
     setIsExpanded(prevExpanded => !prevExpanded);
+    props.setAllExpanded(undefined);
   }, []);
 
   useEffect(() => {
-    setIsExpanded(props.isExpanded);
-  }, [props.isExpanded]);
+    if (props.allExpanded !== undefined) {
+      setIsExpanded(props.allExpanded);
+    }
+  }, [props.allExpanded]);
 
   return (
     <NotificationDrawerGroup
