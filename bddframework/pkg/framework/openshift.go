@@ -20,10 +20,12 @@ import (
 
 	"github.com/kiegroup/kogito-operator/api"
 
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	ocapps "github.com/openshift/api/apps/v1"
 	buildv1 "github.com/openshift/api/build/v1"
+	imagev1 "github.com/openshift/api/image/v1"
 	routev1 "github.com/openshift/api/route/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
@@ -31,6 +33,10 @@ import (
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/client/openshift"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
+)
+
+const (
+	dockerImageKind = "DockerImage"
 )
 
 // WaitForBuildComplete waits for a build to be completed
@@ -205,6 +211,39 @@ func GetRouteURI(namespace, serviceName string) (string, error) {
 
 	uri := protocol + "://" + host + ":" + port
 	return uri, nil
+}
+
+// CreateInsecureImageStream creates insecure ImageStream pointing to the passed image tag
+func CreateInsecureImageStream(namespace, imageStreamName, imageTagName, imageTag string) error {
+	GetLogger(namespace).Info("Creating insecure ImageStream", "name", imageStreamName, "imageTagName", imageTagName, "imageTag", imageTag)
+
+	imageStream := &imagev1.ImageStream{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      imageStreamName,
+			Namespace: namespace,
+		},
+		Spec: imagev1.ImageStreamSpec{
+			Tags: []imagev1.TagReference{
+				{
+					Name: imageTagName,
+					ImportPolicy: imagev1.TagImportPolicy{
+						Insecure: true,
+					},
+					ReferencePolicy: imagev1.TagReferencePolicy{
+						Type: imagev1.LocalTagReferencePolicy,
+					},
+					From: &corev1.ObjectReference{
+						Kind: dockerImageKind,
+						Name: imageTag,
+					},
+				},
+			},
+		},
+	}
+	if err := kubernetes.ResourceC(kubeClient).Create(imageStream); err != nil {
+		return err
+	}
+	return nil
 }
 
 // WaitForOnOpenshift waits for a specification condition
