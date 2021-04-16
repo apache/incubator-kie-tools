@@ -24,6 +24,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.appformer.client.stateControl.registry.DefaultRegistry;
 import org.appformer.client.stateControl.registry.Registry;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -65,18 +66,21 @@ public class DefaultEditorSession
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final Registry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
     private final Event<RegisterChangedEvent> registerChangedEvent;
+    private final DefaultRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> redoCommandRegistry;
 
     @Inject
     public DefaultEditorSession(final ManagedSession session,
                                 final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                                 final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                 final Registry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry,
+                                final DefaultRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> redoCommandRegistry,
                                 final Event<RegisterChangedEvent> registerChangedEvent) {
         this.session = session;
         this.commandRegistry = commandRegistry;
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandManager = canvasCommandManager;
         this.registerChangedEvent = registerChangedEvent;
+        this.redoCommandRegistry = redoCommandRegistry;
     }
 
     @PostConstruct
@@ -133,6 +137,11 @@ public class DefaultEditorSession
     }
 
     @Override
+    public void close() {
+        session.close();
+    }
+
+    @Override
     public void destroy() {
         commandRegistry.clear();
         session.destroy();
@@ -165,6 +174,11 @@ public class DefaultEditorSession
     @Override
     public Registry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> getCommandRegistry() {
         return commandRegistry;
+    }
+
+    @Override
+    public Registry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> getRedoCommandRegistry() {
+        return redoCommandRegistry;
     }
 
     @Override

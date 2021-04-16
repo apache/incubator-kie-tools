@@ -24,6 +24,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.appformer.client.stateControl.registry.Registry;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CurrentRegistryChangedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
@@ -45,11 +46,14 @@ import static org.kie.workbench.common.stunner.core.client.canvas.controls.keybo
 public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSession> {
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    private final SessionManager sessionManager;
 
     @Inject
-    public UndoSessionCommand(final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager) {
+    public UndoSessionCommand(final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                              final SessionManager sessionManager) {
         super(false);
         this.sessionCommandManager = sessionCommandManager;
+        this.sessionManager = sessionManager;
     }
 
     @Override
@@ -121,5 +125,10 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
             setEnabled(!getSession().getCommandRegistry().getHistory().isEmpty());
             fire();
         }
+    }
+
+    @Override
+    protected EditorSession getSession() {
+        return sessionManager.getCurrentSession();
     }
 }

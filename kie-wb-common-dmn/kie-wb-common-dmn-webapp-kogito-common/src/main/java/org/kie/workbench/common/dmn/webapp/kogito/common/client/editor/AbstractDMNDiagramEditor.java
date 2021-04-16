@@ -60,6 +60,7 @@ import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationServic
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationPage;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
@@ -216,8 +217,10 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         getWidget().getMultiPage().selectPage(DATA_TYPES_PAGE_INDEX);
     }
 
+    @SuppressWarnings("all")
     public void open(final Diagram diagram,
                      final SessionPresenter.SessionPresenterCallback callback) {
+        final AbstractSession currentSession = !stunnerEditor.isClosed() ? (AbstractSession) stunnerEditor.getSession() : null;
         this.layoutHelper.applyLayout(diagram, openDiagramLayoutExecutor);
         feelInitializer.initializeFEELEditor();
         stunnerEditor.open(diagram, new SessionPresenter.SessionPresenterCallback() {
@@ -241,6 +244,9 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
                 initialiseKieEditorForSession(diagram);
                 setupSessionHeaderContainer();
                 callback.onSuccess();
+                if (null != currentSession) {
+                    currentSession.close();
+                }
             }
 
             @Override

@@ -20,6 +20,7 @@ import java.util.function.Consumer;
 
 import javax.enterprise.event.Event;
 
+import org.appformer.client.stateControl.registry.DefaultRegistry;
 import org.appformer.client.stateControl.registry.Registry;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,6 +55,7 @@ import org.uberfire.mvp.Command;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -72,6 +74,9 @@ public class DefaultEditorSessionTest {
 
     @Mock
     private Registry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
+
+    @Mock
+    private DefaultRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> redoCommandRegistry;
 
     @Mock
     private Event<RegisterChangedEvent> registerChangedEvent;
@@ -95,6 +100,7 @@ public class DefaultEditorSessionTest {
                                           canvasCommandManager,
                                           sessionCommandManager,
                                           commandRegistry,
+                                          redoCommandRegistry,
                                           registerChangedEvent);
     }
 
@@ -140,6 +146,13 @@ public class DefaultEditorSessionTest {
     public void testOpen() {
         tested.open();
         verify(managedSession, times(1)).open();
+    }
+
+    @Test
+    public void testClose() {
+        tested.close();
+        verify(commandRegistry, never()).clear();
+        verify(managedSession, times(1)).close();
     }
 
     @Test

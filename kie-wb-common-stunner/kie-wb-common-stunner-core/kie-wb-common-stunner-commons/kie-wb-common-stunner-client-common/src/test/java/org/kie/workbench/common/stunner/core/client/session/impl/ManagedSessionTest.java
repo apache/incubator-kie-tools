@@ -39,12 +39,14 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.stubs.ManagedInstanceStub;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -160,6 +162,30 @@ public class ManagedSessionTest {
         verify(canvasHandler, times(1)).addRegistrationListener(any(CanvasElementListener.class));
         verify(canvasControl, times(1)).init(eq(canvas));
         verify(canvasHandlerControl, times(1)).init(eq(canvasHandler));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testClose() {
+        tested.registerCanvasControl(SomeTestControl.class)
+                .registerCanvasHandlerControl(SomeTestControl.class)
+                .init(metadata,
+                      mock(Command.class));
+        tested.open();
+        tested.close();
+        assertNotNull(tested.getCanvas());
+        assertNotNull(tested.getCanvasHandler());
+        assertTrue(tested.getCanvasControls().isEmpty());
+        assertTrue(tested.getCanvasHandlerControls().isEmpty());
+        verify(canvasHandler, never()).destroy();
+        verify(canvas, times(1)).removeRegistrationListener(any(CanvasShapeListener.class));
+        verify(canvasHandler, times(1)).removeRegistrationListener(any(CanvasElementListener.class));
+        verify(canvasControl, times(1)).destroy();
+        verify(canvasHandlerControl, times(1)).destroy();
+        verify(canvasControlInstances, times(1)).destroyAll();
+        verify(canvasHandlerControlInstances, times(1)).destroyAll();
+        verify(canvasControlInstances, times(1)).destroyAll();
+        verify(canvasHandlerControlInstances, times(1)).destroyAll();
     }
 
     @Test

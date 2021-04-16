@@ -34,6 +34,8 @@ public abstract class AbstractSession<C extends AbstractCanvas, H extends Abstra
 
     public abstract void destroy();
 
+    public abstract void close();
+
     protected void onControlRegistered(final CanvasControl control) {
         onControlRegistered(control, this);
     }

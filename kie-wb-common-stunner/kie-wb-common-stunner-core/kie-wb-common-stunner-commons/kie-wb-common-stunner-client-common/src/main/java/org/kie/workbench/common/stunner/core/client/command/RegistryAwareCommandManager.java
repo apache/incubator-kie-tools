@@ -21,9 +21,10 @@ import java.util.Optional;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Typed;
+import javax.inject.Inject;
 
 import org.appformer.client.stateControl.registry.Registry;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -49,21 +50,17 @@ public class RegistryAwareCommandManager
         implements SessionCommandManager<AbstractCanvasHandler> {
 
     private final RequestCommands commands;
-    private ClientSession<AbstractCanvas, AbstractCanvasHandler> session;
-    private CanvasCommandManager<AbstractCanvasHandler> commandManager;
 
-    public RegistryAwareCommandManager() {
+    private final SessionManager sessionManager;
+
+    @Inject
+    public RegistryAwareCommandManager(final SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
         this.commands =
                 new RequestCommands.Builder()
                         .onComplete(command -> getCommandRegistry().ifPresent(r -> r.register(command)))
                         .onRollback(command -> undo(getCanvasHandler(), command))
                         .build();
-    }
-
-    @SuppressWarnings("unchecked")
-    public RegistryAwareCommandManager init(final ClientSession session) {
-        this.session = session;
-        return this;
     }
 
     public CommandResult<CanvasViolation> allow(final Command<AbstractCanvasHandler, CanvasViolation> command) {
@@ -136,13 +133,11 @@ public class RegistryAwareCommandManager
     @PreDestroy
     public void destroy() {
         commands.clear();
-        session = null;
-        commandManager = null;
     }
 
     private Optional<EditorSession> ifEditorSession() {
-        if (session instanceof EditorSession) {
-            return Optional.of((EditorSession) session);
+        if (sessionManager.getCurrentSession() instanceof EditorSession) {
+            return Optional.of(sessionManager.getCurrentSession());
         }
         return Optional.empty();
     }
@@ -152,17 +147,15 @@ public class RegistryAwareCommandManager
     }
 
     private CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
-        if (null == commandManager) {
-            if (session instanceof EditorSession) {
-                commandManager = ((EditorSession) session).getCommandManager();
-            } else {
-                commandManager = ((ViewerSession) session).getCommandManager();
-            }
+        final ClientSession session = sessionManager.getCurrentSession();
+        if (session instanceof EditorSession) {
+            return ((EditorSession) session).getCommandManager();
+        } else {
+            return ((ViewerSession) session).getCommandManager();
         }
-        return commandManager;
     }
 
     private AbstractCanvasHandler getCanvasHandler() {
-        return session.getCanvasHandler();
+        return (AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler();
     }
 }

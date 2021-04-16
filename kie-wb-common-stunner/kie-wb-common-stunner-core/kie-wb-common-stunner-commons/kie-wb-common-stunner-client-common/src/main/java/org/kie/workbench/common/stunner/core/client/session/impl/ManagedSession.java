@@ -202,19 +202,7 @@ public class ManagedSession
 
     @Override
     public void destroy() {
-        sessionLoader.destroy();
-        // Destroy listeners.
-        removeListeners();
-        // Destroy controls.
-        canvasControls.forEach(this::destroyCanvasControl);
-        canvasControls.clear();
-        canvasControlTypes.clear();
-        canvasHandlerControls.forEach(this::destroyCanvasHandlerControl);
-        canvasHandlerControls.clear();
-        canvasHandlerControlTypes.clear();
-        canvasControlInstances.destroyAll();
-        canvasHandlerControlInstances.destroyAll();
-        // Destroy canvas.
+        close();
         canvasHandler.destroy();
         canvasInstances.destroyAll();
         canvasHandlerInstances.destroyAll();
@@ -226,6 +214,20 @@ public class ManagedSession
         canvasControlDestroyed = null;
         canvasHandlerControlRegistered = null;
         canvasHandlerControlDestroyed = null;
+    }
+
+    @Override
+    public void close() {
+        sessionLoader.destroy();
+        removeListeners();
+        canvasControls.forEach(this::destroyCanvasControl);
+        canvasControls.clear();
+        canvasControlTypes.clear();
+        canvasHandlerControls.forEach(this::destroyCanvasHandlerControl);
+        canvasHandlerControls.clear();
+        canvasHandlerControlTypes.clear();
+        canvasControlInstances.destroyAll();
+        canvasHandlerControlInstances.destroyAll();
     }
 
     @Override

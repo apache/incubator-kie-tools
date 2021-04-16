@@ -20,6 +20,7 @@ import org.appformer.kogito.bridge.client.stateControl.interop.StateControl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
@@ -49,6 +50,9 @@ public class KogitoUndoSessionCommandTest {
     @Mock
     protected EditorSession session;
 
+    @Mock
+    protected SessionManager sessionManager;
+
     private boolean envelopeAvailable = false;
 
     private KogitoUndoSessionCommand undoSessionCommand;
@@ -56,8 +60,9 @@ public class KogitoUndoSessionCommandTest {
     @Before
     public void setup() {
         when(session.getKeyboardControl()).thenReturn(keyboardControl);
+        when(sessionManager.getCurrentSession()).thenReturn(session);
 
-        undoSessionCommand = new KogitoUndoSessionCommand(sessionCommandManager, () -> envelopeAvailable, () -> stateControl);
+        undoSessionCommand = new KogitoUndoSessionCommand(sessionCommandManager, () -> envelopeAvailable, () -> stateControl, sessionManager);
     }
 
     @Test

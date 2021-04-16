@@ -22,8 +22,10 @@ import org.appformer.client.stateControl.registry.impl.DefaultRegistryImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -56,6 +58,12 @@ public class RedoCommandHandlerTest {
     @Mock
     private Event<RegisterChangedEvent> registerChangedEvent;
 
+    @Mock
+    private SessionManager sessionManager;
+
+    @Mock
+    private EditorSession session;
+
     private DefaultRegistry commandRegistry;
 
     private RedoCommandHandler tested;
@@ -64,7 +72,9 @@ public class RedoCommandHandlerTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         commandRegistry = spy(new DefaultRegistryImpl<>());
-        this.tested = new RedoCommandHandler(commandRegistry, registerChangedEvent);
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getRedoCommandRegistry()).thenReturn(commandRegistry);
+        this.tested = new RedoCommandHandler(sessionManager, registerChangedEvent);
     }
 
     @Test
@@ -101,11 +111,11 @@ public class RedoCommandHandlerTest {
         CommandManager manager = mock(CommandManager.class);
         when(commandRegistry.isEmpty()).thenReturn(true);
 
-        RedoCommandHandler tested = new RedoCommandHandler(commandRegistry, registerChangedEvent);
+        RedoCommandHandler tested = new RedoCommandHandler(sessionManager, registerChangedEvent);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      tested.execute(obj, manager));
-        verify(manager, never()).execute(anyObject(), any(Command.class));
+        verify(manager, never()).execute(any(), any(Command.class));
     }
 
     @Test

@@ -74,7 +74,6 @@ public class DefaultViewerSessionTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testInit() {
         Metadata metadata = mock(Metadata.class);
         Command command = mock(Command.class);
@@ -88,14 +87,18 @@ public class DefaultViewerSessionTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testOpen() {
         tested.open();
         verify(managedSession, times(1)).open();
     }
 
     @Test
-    @SuppressWarnings("unchecked")
+    public void testClose() {
+        tested.close();
+        verify(managedSession, times(1)).close();
+    }
+
+    @Test
     public void testDestroy() {
         tested.destroy();
         verify(managedSession, times(1)).destroy();

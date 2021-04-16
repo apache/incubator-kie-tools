@@ -168,7 +168,7 @@ public class ApplicationCommandManager
         final String sessionUUID = session.getSessionUUID();
         RegistryAwareCommandManager commandManager = getCommandManagers().get(sessionUUID);
         if (null == commandManager) {
-            commandManager = commandManagerInstances.get().init(session);
+            commandManager = commandManagerInstances.get();
             getCommandManagers().put(sessionUUID, commandManager);
         }
         return commandManager;

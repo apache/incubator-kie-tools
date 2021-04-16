@@ -37,7 +37,6 @@ import org.kie.workbench.common.stunner.core.validation.Violation;
 public abstract class BPMNDataObjectValidator implements DomainValidator {
 
     private static final String ALLOWED_CHARS = "^[a-zA-Z0-9\\-\\_\\ \\+\\/\\*\\?\\'\\.]*$";
-    private static final String ILLEGAL_CHARS = ".*[#:\" ]+.*";
 
     @Override
     public String getDefinitionSetId() {
@@ -65,11 +64,6 @@ public abstract class BPMNDataObjectValidator implements DomainValidator {
                     dataObjectsMap.put(name, type);
                 }
 
-                if (name.matches(ILLEGAL_CHARS)) {
-                    BPMNViolation bpmnViolation = new BPMNViolation(getMessageDataObjectWithName() + ": " + name + " " + getMessageDataObjectWithIllegalCharacters(), Violation.Type.WARNING, element.getUUID());
-                    violations.add(bpmnViolation);
-                }
-
                 if (!name.matches(ALLOWED_CHARS)) {
                     BPMNViolation bpmnViolation = new BPMNViolation(getMessageDataObjectIllegalName() + " : " + name, Violation.Type.WARNING, element.getUUID());
                     violations.add(bpmnViolation);
@@ -82,8 +76,6 @@ public abstract class BPMNDataObjectValidator implements DomainValidator {
     public abstract String getMessageDataObjectWithTypeSameName();
 
     public abstract String getMessageDataObjectWithName();
-
-    public abstract String getMessageDataObjectWithIllegalCharacters();
 
     public abstract String getMessageDataObjectIllegalName();
 }

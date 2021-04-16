@@ -38,6 +38,7 @@ import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.PromiseMock;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.widgets.editor.EditorSessionCommands;
@@ -362,6 +363,17 @@ public abstract class AbstractDMNDiagramEditorTest {
         serviceCallback.onSuccess(diagram);
 
         assertOnDiagramLoad();
+    }
+
+    @Test
+    @SuppressWarnings("all")
+    public void testCloseExistingSessionIfAny() {
+        final PromiseMock promise = new PromiseMock();
+        doReturn(promise.asPromise()).when(editor).getContent();
+        promise.then(() -> CONTENT);
+        when(stunnerEditor.getSession()).thenReturn(session);
+        openDiagram();
+        verify(session, times(1)).close();
     }
 
     @Test

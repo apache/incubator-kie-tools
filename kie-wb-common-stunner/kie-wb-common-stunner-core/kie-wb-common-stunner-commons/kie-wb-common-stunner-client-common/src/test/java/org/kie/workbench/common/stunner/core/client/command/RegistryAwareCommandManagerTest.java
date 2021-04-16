@@ -21,6 +21,7 @@ import org.appformer.client.stateControl.registry.impl.DefaultRegistryImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -52,6 +53,8 @@ public class RegistryAwareCommandManagerTest {
     @Mock
     private AbstractCanvasHandler canvasHandler;
 
+    @Mock
+    private SessionManager sessionManager;
     private RegistryAwareCommandManager tested;
     private Registry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
     private CanvasCommandManager<AbstractCanvasHandler> commandManager;
@@ -63,8 +66,8 @@ public class RegistryAwareCommandManagerTest {
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getCommandManager()).thenReturn(commandManager);
         when(session.getCommandRegistry()).thenReturn(commandRegistry);
-        tested = new RegistryAwareCommandManager();
-        tested.init(session);
+        tested = new RegistryAwareCommandManager(sessionManager);
+        when(sessionManager.getCurrentSession()).thenReturn(session);
     }
 
     @Test
