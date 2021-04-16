@@ -48,11 +48,8 @@ test(TEST_NAME, async () => {
     const editorPage: GitHubEditorPage = await gitHubFile.open();
     const bpmnEditor: BpmnEditor = await editorPage.getBpmnEditor();
 
-    // move startEvent to canvas
-    await bpmnEditor.enter();
-    await bpmnEditor.dragAndDropStartEventToCanvas();
-
     // check process properties
+    await bpmnEditor.enter();
     const sideBar: SideBar = await bpmnEditor.getSideBar();
     const processProps: Properties = await sideBar.openProperties();
     expect(await processProps.getProcessNameFromInput()).toEqual(PROCESS_NAME);
@@ -61,7 +58,6 @@ test(TEST_NAME, async () => {
     const explorer: Explorer = await sideBar.openExplorer();
     expect((await explorer.getNodeNames()).sort())
         .toEqual([
-            "Start",
             "MyStart",
             "MyTask",
             "MyEnd"
@@ -72,6 +68,9 @@ test(TEST_NAME, async () => {
     await explorer.selectNode(TASK_NODE_NAME);
     const nodeProps: Properties = await sideBar.openProperties();
     expect(await nodeProps.getNameFromTextArea()).toEqual(TASK_NODE_NAME);
+
+    // check pallete is not visible
+    expect(await bpmnEditor.isPalettePresent()).toEqual(false);
 
     await bpmnEditor.leave();
 

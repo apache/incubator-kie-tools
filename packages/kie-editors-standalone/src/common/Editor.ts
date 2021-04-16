@@ -58,7 +58,11 @@ export const createEditor = (
     },
     getContent: () => envelopeServer.envelopeApi.requests.receive_contentRequest().then(c => c.content),
     getPreview: () => envelopeServer.envelopeApi.requests.receive_previewRequest(),
-    setContent: (content: string) => envelopeServer.envelopeApi.requests.receive_contentChanged({ content: content }),
+    setContent: (path: string, content: string) =>
+      Promise.resolve(envelopeServer.envelopeApi.requests.receive_contentChanged({
+        path: path,
+        content: content
+      })),
     subscribeToContentChanges: (callback: (isDirty: boolean) => void) => stateControl.subscribe(callback),
     unsubscribeToContentChanges: (callback: (isDirty: boolean) => void) => stateControl.unsubscribe(callback),
     markAsSaved: () => stateControl.setSavedCommand(),
