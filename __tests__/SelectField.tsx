@@ -182,10 +182,10 @@ test('<SelectField> - renders a select which correctly reacts on change (array)'
   expect(onChange).toHaveBeenLastCalledWith('x', ['b']);
 });
 
-test('<SelectField> - renders a select which correctly reacts on change (empty)', () => {
+test('<SelectField> - renders a select which correctly reacts on change (placeholder)', () => {
   const onChange = jest.fn();
 
-  const element = <SelectField name="x" />;
+  const element = <SelectField name="x" placeholder={"test"}/>;
   const wrapper = mount(
     element,
     createContext(
@@ -195,12 +195,12 @@ test('<SelectField> - renders a select which correctly reacts on change (empty)'
   );
 
   act(() => {
-    const changeEvent = wrapper.find(Select).prop('onSelect')('event', '');
-    expect(changeEvent).toBeFalsy();
+    const changeEvent = wrapper.find(Select).prop('onSelect')('event', 'test')
+    expect(changeEvent).toBeUndefined();
   });
 
   expect(wrapper.find(Select)).toHaveLength(1);
-  expect(onChange).not.toHaveBeenCalled()
+  expect(onChange).toHaveBeenCalled()
 });
 
 test('<SelectField> - renders a select which correctly reacts on change (same value)', () => {
