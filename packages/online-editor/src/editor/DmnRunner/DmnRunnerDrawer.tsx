@@ -120,33 +120,51 @@ export function DmnRunnerDrawer(props: Props) {
     }
   }, []);
 
-  const setExecutionNotifications = useCallback((result: DmnResult) => {
-    const decisionNameByDecisionId = result.decisionResults?.reduce(
-      (acc, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
-      new Map<string, string>()
-    );
-
-    const messagesBySourceId = result.messages.reduce((acc, message) => {
-      const messageEntry = acc.get(message.sourceId);
-      if (!messageEntry) {
-        acc.set(message.sourceId, [message]);
-      } else {
-        acc.set(message.sourceId, [...messageEntry, message]);
+  // Default values of the form
+  const defaultFormValues = useMemo(() => {
+    return Object.keys(dmnRunner.jsonSchemaBridge?.schema?.properties ?? {}).reduce((acc, property) => {
+      if (Object.hasOwnProperty.call(dmnRunner.jsonSchemaBridge?.schema?.properties[property], "$ref")) {
+        const refPath = dmnRunner.jsonSchemaBridge?.schema?.properties[property].$ref!.split("/").pop()!;
+        if (dmnRunner.jsonSchemaBridge?.schema?.definitions[refPath].type === "object") {
+          acc[`${property}`] = {};
+          return acc;
+        }
       }
+      acc[`${property}`] = undefined;
       return acc;
-    }, new Map<string, DecisionResultMessage[]>());
+    }, {} as { [x: string]: any });
+  }, [dmnRunner.jsonSchemaBridge]);
 
-    const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(([sourceId, messages]) => {
-      const path = decisionNameByDecisionId?.get(sourceId) ?? "";
-      return messages.map(message => ({
-        type: "PROBLEM",
-        path,
-        severity: message.severity,
-        message: `${message.messageType}: ${message.message}`
-      }));
-    });
-    notificationsPanel.getTabRef("Execution")?.setNotifications("", notifications);
-  }, [notificationsPanel.getTabRef]);
+  const setExecutionNotifications = useCallback(
+    (result: DmnResult) => {
+      const decisionNameByDecisionId = result.decisionResults?.reduce(
+        (acc, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
+        new Map<string, string>()
+      );
+
+      const messagesBySourceId = result.messages.reduce((acc, message) => {
+        const messageEntry = acc.get(message.sourceId);
+        if (!messageEntry) {
+          acc.set(message.sourceId, [message]);
+        } else {
+          acc.set(message.sourceId, [...messageEntry, message]);
+        }
+        return acc;
+      }, new Map<string, DecisionResultMessage[]>());
+
+      const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(([sourceId, messages]) => {
+        const path = decisionNameByDecisionId?.get(sourceId) ?? "";
+        return messages.map(message => ({
+          type: "PROBLEM",
+          path,
+          severity: message.severity,
+          message: `${message.messageType}: ${message.message}`
+        }));
+      });
+      notificationsPanel.getTabRef("Execution")?.setNotifications("", notifications);
+    },
+    [notificationsPanel.getTabRef]
+  );
 
   const updateDmnRunnerResults = useCallback(
     (formData: object) => {
@@ -156,7 +174,7 @@ export function DmnRunnerDrawer(props: Props) {
       return props.editor
         .getContent()
         .then(content => {
-          dmnRunner.service.result({ context: formData, model: content }).then(result => {
+          dmnRunner.service.result({ context: { ...defaultFormValues, ...formData }, model: content }).then(result => {
             if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
               dmnRunner.setFormError(true);
               return;
@@ -182,7 +200,7 @@ export function DmnRunnerDrawer(props: Props) {
           setDmnRunnerResults(undefined);
         });
     },
-    [props.editor, dmnRunner.service, setExecutionNotifications]
+    [props.editor, dmnRunner.service, defaultFormValues, setExecutionNotifications]
   );
 
   // Update outputs column on form change
@@ -259,7 +277,6 @@ export function DmnRunnerDrawer(props: Props) {
       // The autoFormRef is not available on the useEffect render cycle.
       // Adding this setTimout will make the ref available.
       setTimeout(() => {
-        autoFormRef.current?.submit();
         Object.keys(dmnRunner.formData ?? {}).forEach(propertyName => {
           autoFormRef.current?.change(propertyName, dmnRunner.formData?.[propertyName]);
         });
