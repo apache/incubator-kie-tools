@@ -137,6 +137,11 @@ public class DefaultEditorSession
     }
 
     @Override
+    public void close() {
+        session.close();
+    }
+
+    @Override
     public void destroy() {
         commandRegistry.clear();
         session.destroy();

@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.client.widgets.editor.EditorSessionComma
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
+import org.kie.workbench.common.stunner.core.client.PromiseMock;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -362,6 +363,17 @@ public abstract class AbstractDMNDiagramEditorTest {
         serviceCallback.onSuccess(diagram);
 
         assertOnDiagramLoad();
+    }
+
+    @Test
+    @SuppressWarnings("all")
+    public void testCloseExistingSessionIfAny() {
+        final PromiseMock promise = new PromiseMock();
+        doReturn(promise.asPromise()).when(editor).getContent();
+        promise.then(() -> CONTENT);
+        when(stunnerEditor.getSession()).thenReturn(session);
+        openDiagram();
+        verify(session, times(1)).close();
     }
 
     @Test

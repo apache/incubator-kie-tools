@@ -78,6 +78,11 @@ public class DefaultViewerSession
     }
 
     @Override
+    public void close() {
+        session.close();
+    }
+
+    @Override
     public void destroy() {
         session.destroy();
     }
