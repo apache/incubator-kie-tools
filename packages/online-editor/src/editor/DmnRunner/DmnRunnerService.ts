@@ -69,6 +69,7 @@ interface DmnRunnerFormDefinitions {
     properties: object;
     type: string;
     placeholder?: string;
+    title: string;
   };
 }
 
@@ -76,6 +77,7 @@ interface DmnRunnerDeepProperty {
   $ref?: string;
   type?: string;
   placeholder?: string;
+  title?: string;
 }
 
 export class DmnRunnerService {
@@ -149,28 +151,35 @@ export class DmnRunnerService {
     return await response.json();
   }
 
-  private addMissingTypesToDeepProperties(form: DmnRunnerForm, value: DmnRunnerDeepProperty) {
+  // Add title, missing types and placeholders
+  private formDeepPreprocessing(form: DmnRunnerForm, value: DmnRunnerDeepProperty, title = "") {
     if (Object.hasOwnProperty.call(value, "$ref")) {
       const property = value.$ref!.split("/").pop()! as keyof DmnRunnerFormDefinitions;
       if (form.definitions[property] && Object.hasOwnProperty.call(form.definitions[property], "properties")) {
-        Object.values(form.definitions[property]!.properties).forEach((deepValue: DmnRunnerDeepProperty) => {
-          this.addMissingTypesToDeepProperties(form, deepValue);
-        });
+        Object.entries(form.definitions[property]!.properties).forEach(
+          ([key, deepValue]: [string, DmnRunnerDeepProperty]) => {
+            this.formDeepPreprocessing(form, deepValue, key);
+          }
+        );
       } else if (!Object.hasOwnProperty.call(form.definitions[property], "type")) {
         form.definitions[property]!.type = "string";
       } else if (Object.hasOwnProperty.call(form.definitions[property], "enum")) {
         form.definitions[property]!.placeholder = "Select...";
       }
+      form.definitions[property]!.title = title;
     } else if (!Object.hasOwnProperty.call(value, "type")) {
       value.type = "string";
+    } else {
+      value.title = title;
     }
   }
 
-  private removeRequirementAndAddMissingTypes(form: DmnRunnerForm) {
+  // Remove required property
+  private formPreprocessing(form: DmnRunnerForm) {
     delete form.definitions.InputSet?.required;
     if (Object.hasOwnProperty.call(form.definitions.InputSet, "properties")) {
       Object.values(form.definitions.InputSet?.properties!).forEach((value: DmnRunnerDeepProperty) => {
-        this.addMissingTypesToDeepProperties(form, value);
+        this.formDeepPreprocessing(form, value);
       });
     }
   }
@@ -184,7 +193,7 @@ export class DmnRunnerService {
       body: model
     });
     const form = (await response.json()) as DmnRunnerForm;
-    this.removeRequirementAndAddMissingTypes(form);
+    this.formPreprocessing(form);
     const formDraft4 = { ...form, $schema: this.SCHEMA_DRAFT4 };
     return new JSONSchemaBridge(formDraft4, this.createValidator(formDraft4));
   }

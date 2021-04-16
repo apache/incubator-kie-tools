@@ -83,7 +83,8 @@ export function DmnRunnerContextProvider(props: Props) {
         });
         setJsonSchemaBridge(newJsonSchemaBridge);
       })
-      .catch(() => {
+      .catch(err => {
+        console.error(err);
         setFormError(true);
       });
   }, [props.editor, service, jsonSchemaBridge]);
@@ -92,28 +93,6 @@ export function DmnRunnerContextProvider(props: Props) {
   useEffect(() => {
     if (status === DmnRunnerStatus.UNAVAILABLE) {
       return;
-    }
-
-    let detectDmnRunner: number | undefined;
-    if (status !== DmnRunnerStatus.RUNNING) {
-      detectDmnRunner = window.setInterval(() => {
-        service.checkServer().then(() => {
-          // Check the running version of the DMN Runner, if outdated cancel polling and change status.
-          service.version().then(data => {
-            window.clearInterval(detectCrashesOrStops);
-            if (data?.version !== version) {
-              setStatus(DmnRunnerStatus.OUTDATED);
-            } else {
-              if (isModalOpen) {
-                setDrawerExpanded(true);
-              }
-              setStatus(DmnRunnerStatus.RUNNING);
-            }
-          });
-        });
-      }, DMN_RUNNER_POLLING_TIME);
-
-      return () => window.clearInterval(detectDmnRunner);
     }
 
     let detectCrashesOrStops: number | undefined;
@@ -134,6 +113,26 @@ export function DmnRunnerContextProvider(props: Props) {
 
       return () => window.clearInterval(detectCrashesOrStops);
     }
+
+    let detectDmnRunner: number | undefined;
+    detectDmnRunner = window.setInterval(() => {
+      service.checkServer().then(() => {
+        // Check the running version of the DMN Runner, if outdated cancel polling and change status.
+        service.version().then(data => {
+          window.clearInterval(detectDmnRunner);
+          if (data?.version !== version) {
+            setStatus(DmnRunnerStatus.OUTDATED);
+          } else {
+            if (isModalOpen) {
+              setDrawerExpanded(true);
+            }
+            setStatus(DmnRunnerStatus.RUNNING);
+          }
+        });
+      });
+    }, DMN_RUNNER_POLLING_TIME);
+
+    return () => window.clearInterval(detectDmnRunner);
   }, [props.editor, props.isEditorReady, isModalOpen, status, service]);
 
   // Subscribe to any change on the DMN Editor and update the JsonSchemaBridge
