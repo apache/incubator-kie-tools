@@ -120,45 +120,33 @@ export class DmnRunnerService {
     return response.status < 300;
   }
 
-  public async version(): Promise<DmnRunnerVersion | undefined> {
-    try {
-      // const response = await fetch(this.DMN_RUNNER_PING, { method: "GET" });
-      // return await response.json();
-      return await Promise.resolve().then(() => ({ version: "0.0.1" }));
-    } catch (err) {
-      console.error(err);
-    }
+  public async version(): Promise<DmnRunnerVersion> {
+    // const response = await fetch(this.DMN_RUNNER_PING, { method: "GET" });
+    // return await response.json();
+    return await Promise.resolve().then(() => ({ version: "0.0.1" }));
   }
 
-  public async result(payload: DmnRunnerPayload): Promise<DmnResult | undefined> {
-    try {
-      const response = await fetch(this.DMN_RUNNER_DMN_RESULT_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json, text/plain, */*"
-        },
-        body: JSON.stringify(payload)
-      });
-      return await response.json();
-    } catch (err) {
-      console.error(err);
-    }
+  public async result(payload: DmnRunnerPayload): Promise<DmnResult> {
+    const response = await fetch(this.DMN_RUNNER_DMN_RESULT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json, text/plain, */*"
+      },
+      body: JSON.stringify(payload)
+    });
+    return await response.json();
   }
 
   public async validate(model: string) {
-    try {
-      const response = await fetch(this.DMN_RUNNER_VALIDATE_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/xml;"
-        },
-        body: model
-      });
-      return await response.json();
-    } catch (err) {
-      console.error(err);
-    }
+    const response = await fetch(this.DMN_RUNNER_VALIDATE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/xml;"
+      },
+      body: model
+    });
+    return await response.json();
   }
 
   private addMissingTypesToDeepProperties(form: DmnRunnerForm, value: DmnRunnerDeepProperty) {

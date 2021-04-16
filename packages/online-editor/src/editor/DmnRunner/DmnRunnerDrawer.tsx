@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { DecisionResult, DecisionResultMessage, EvaluationStatus, Result } from "./DmnRunnerService";
+import { DecisionResult, DecisionResultMessage, DmnResult, EvaluationStatus, Result } from "./DmnRunnerService";
 import { AutoForm } from "uniforms-patternfly";
 import {
   Card,
@@ -120,6 +120,34 @@ export function DmnRunnerDrawer(props: Props) {
     }
   }, []);
 
+  const setExecutionNotifications = useCallback((result: DmnResult) => {
+    const decisionNameByDecisionId = result.decisionResults?.reduce(
+      (acc, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
+      new Map<string, string>()
+    );
+
+    const messagesBySourceId = result.messages.reduce((acc, message) => {
+      const messageEntry = acc.get(message.sourceId);
+      if (!messageEntry) {
+        acc.set(message.sourceId, [message]);
+      } else {
+        acc.set(message.sourceId, [...messageEntry, message]);
+      }
+      return acc;
+    }, new Map<string, DecisionResultMessage[]>());
+
+    const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(([sourceId, messages]) => {
+      const path = decisionNameByDecisionId?.get(sourceId) ?? "";
+      return messages.map(message => ({
+        type: "PROBLEM",
+        path,
+        severity: message.severity,
+        message: `${message.messageType}: ${message.message}`
+      }));
+    });
+    notificationsPanel.getTabRef("Execution")?.setNotifications("", notifications);
+  }, [notificationsPanel.getTabRef]);
+
   const updateDmnRunnerResults = useCallback(
     (formData: object) => {
       if (!props.editor) {
@@ -129,44 +157,20 @@ export function DmnRunnerDrawer(props: Props) {
         .getContent()
         .then(content => {
           dmnRunner.service.result({ context: formData, model: content }).then(result => {
-            if (result) {
-              const decisionNameByDecisionId = result.decisionResults?.reduce(
-                (acc, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
-                new Map<string, string>()
-              );
-
-              const messagesBySourceId = result.messages.reduce((acc, message) => {
-                const messageEntry = acc.get(message.sourceId);
-                if (!messageEntry) {
-                  acc.set(message.sourceId, [message]);
-                } else {
-                  acc.set(message.sourceId, [...messageEntry, message]);
-                }
-                return acc;
-              }, new Map<string, DecisionResultMessage[]>());
-
-              const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(
-                ([sourceId, messages]) => {
-                  const path = decisionNameByDecisionId?.get(sourceId) ?? "";
-                  return messages.map(message => ({
-                    type: "PROBLEM",
-                    path,
-                    severity: message.severity,
-                    message: `${message.messageType}: ${message.message}`
-                  }));
-                }
-              );
-              notificationsPanel.getTabRef("Execution")?.setNotifications("", notifications);
-            }
             if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
-              // DMN Runner Error
+              dmnRunner.setFormError(true);
               return;
             }
 
+            setExecutionNotifications(result);
+
             setDmnRunnerResults(previousDmnRunnerResult => {
-              const differences = result?.decisionResults?.map((decisionResult, index) =>
-                diff(previousDmnRunnerResult?.[index] ?? {}, decisionResult ?? {})
-              );
+              const differences = result?.decisionResults
+                ?.map((decisionResult, index) => diff(previousDmnRunnerResult?.[index] ?? {}, decisionResult ?? {}))
+                .map(difference => {
+                  delete (difference as any).messages;
+                  return difference;
+                });
               if (differences?.length !== 0) {
                 setDmnRunnerResponseDiffs(differences);
               }
@@ -178,7 +182,7 @@ export function DmnRunnerDrawer(props: Props) {
           setDmnRunnerResults(undefined);
         });
     },
-    [props.editor, dmnRunner.service, notificationsPanel.getTabRef]
+    [props.editor, dmnRunner.service, setExecutionNotifications]
   );
 
   // Update outputs column on form change
