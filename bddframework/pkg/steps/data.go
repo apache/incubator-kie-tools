@@ -26,11 +26,14 @@ import (
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	imgv1 "github.com/openshift/api/image/v1"
 	olmapiv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
+	"k8s.io/apimachinery/pkg/runtime"
 )
 
 var (
 	// Map of created namespaces
 	namespacesCreated sync.Map
+
+	logsKubernetesObjects = []runtime.Object{&imgv1.ImageStreamList{}, &v1beta1.KogitoRuntimeList{}, &v1beta1.KogitoBuildList{}, &v1beta1.KogitoSupportingService{}, &v1beta1.KogitoInfraList{}, &olmapiv1alpha1.ClusterServiceVersionList{}}
 )
 
 // Data contains all data needed by Gherkin steps to run
@@ -72,6 +75,11 @@ func (data *Data) RegisterAllSteps(ctx *godog.ScenarioContext) {
 	registerTaskSteps(ctx, data)
 	registerKogitoDeployFilesSteps(ctx, data)
 	registerKeycloakSteps(ctx, data)
+}
+
+// RegisterLogsKubernetesObjects allows to change which kubernetes objects logs should be saved
+func (data *Data) RegisterLogsKubernetesObjects(objects ...runtime.Object) {
+	logsKubernetesObjects = objects
 }
 
 // BeforeScenario configure the data before a scenario is launched
@@ -135,7 +143,7 @@ func (data *Data) AfterScenario(scenario *godog.Scenario, err error) error {
 		if err := framework.BumpEvents(data.Namespace); err != nil {
 			framework.GetMainLogger().Error(err, "Error bumping events", "namespace", namespace)
 		}
-		if err := framework.LogKubernetesObjects(data.Namespace, &imgv1.ImageStreamList{}, &v1beta1.KogitoRuntimeList{}, &v1beta1.KogitoBuildList{}, &v1beta1.KogitoSupportingService{}, &v1beta1.KogitoInfraList{}, &olmapiv1alpha1.ClusterServiceVersionList{}); err != nil {
+		if err := framework.LogKubernetesObjects(data.Namespace, logsKubernetesObjects...); err != nil {
 			framework.GetMainLogger().Error(err, "Error logging Kubernetes objects", "namespace", namespace)
 		}
 		return nil
