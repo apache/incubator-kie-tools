@@ -49,15 +49,14 @@ describe("createEditor", () => {
     );
 
     const spyOnContentChangedNotification = jest.spyOn(
-      envelopeServer.envelopeApi.notifications,
+      envelopeServer.envelopeApi.requests,
       "receive_contentChanged"
     );
 
-    return editor.setContent("my-path", "my-content").then(() => {
-      expect(spyOnContentChangedNotification).toHaveBeenCalledWith({
-        path: "my-path",
-        content: "my-content"
-      });
+    editor.setContent("my-path", "my-content");
+    expect(spyOnContentChangedNotification).toHaveBeenCalledWith({
+      path: "my-path",
+      content: "my-content"
     });
   });
 });
