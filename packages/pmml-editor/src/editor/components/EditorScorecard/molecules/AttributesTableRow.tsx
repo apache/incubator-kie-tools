@@ -28,6 +28,7 @@ import { toText } from "../organisms";
 interface AttributesTableRowProps {
   modelIndex: number;
   characteristicIndex: number;
+  characteristic: Characteristic;
   attributeIndex: number;
   attribute: Attribute;
   areReasonCodesUsed: boolean;
@@ -43,6 +44,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
   const {
     modelIndex,
     characteristicIndex,
+    characteristic,
     attributeIndex,
     attribute,
     areReasonCodesUsed,
@@ -117,6 +119,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
           <AttributeLabels
             modelIndex={modelIndex}
             characteristicIndex={characteristicIndex}
+            characteristic={characteristic}
             activeAttributeIndex={attributeIndex}
             activeAttribute={attribute}
             areReasonCodesUsed={areReasonCodesUsed}
