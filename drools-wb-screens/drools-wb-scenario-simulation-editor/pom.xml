@@ -36,7 +36,6 @@
     <module>drools-wb-scenario-simulation-editor-client</module>
     <module>drools-wb-scenario-simulation-editor-kogito-marshaller</module>
     <module>drools-wb-scenario-simulation-editor-kogito-client</module>
-    <module>drools-wb-scenario-simulation-editor-kogito-webapp-common</module>
     <module>drools-wb-scenario-simulation-editor-kogito-runtime</module>
     <module>drools-wb-scenario-simulation-editor-kogito-testing</module>
   </modules>

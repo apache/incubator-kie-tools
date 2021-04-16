@@ -20,13 +20,22 @@
 <module>
 
   <inherits name="org.uberfire.UberfireAPI" />
+  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
+
   <inherits name="elemental2.webstorage.WebStorage"/>
+
+  <!-- Errai, Drools etc -->
+  <inherits name="org.kie.workbench.common.kogito.KogitoClient"/>
+  <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
+
+  <inherits name="org.kie.workbench.common.kogito.webapp.base.KogitoWebappBase" />
+  <inherits name='org.drools.workbench.screens.scenariosimulation.kogito.DroolsWorkbenchScenarioSimulationKogitoEditor'/>
+
 
   <inherits name="org.guvnor.common.services.GuvnorCommonServices" />
   <inherits name="org.drools.workbench.screens.scenariosimulation.DroolsWorkbenchScenarioSimulationEditorAPI"/>
   <inherits name='org.drools.workbench.screens.scenariosimulation.DroolsWorkbenchScenarioSimulationEditorClient'/>
 
-  <inherits name="org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoWebappBase" />
   <inherits name="org.kie.workbench.common.command.KieWorkbenchCommonCommand" />
   <inherits name="org.kie.workbench.common.KieWorkbenchCommonWidgets" />
 
