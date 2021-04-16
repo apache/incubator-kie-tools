@@ -97,7 +97,7 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @ClientBundle.Source("images/icons/task/task-business-rule.png")
     ImageResource taskBusinessRule();
 
-    @ClientBundle.Source("images/icons/default-service-node-icon.png")
+    @ClientBundle.Source("images/icons/defaultservicenodeicon.png")
     ImageResource serviceNodeIcon();
 
     //This is a hack for OOME related to SVG, or image/svg+xml;base64 URLs
