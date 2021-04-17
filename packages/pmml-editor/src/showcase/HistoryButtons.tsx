@@ -39,12 +39,12 @@ export const HistoryButtons = (props: HistoryButtonsProps) => {
     <div className="history-buttons ignore-onclickoutside">
       <Split hasGutter={true}>
         <SplitItem>
-          <Button variant="primary" onClick={props.undo}>
+          <Button variant="primary" onClick={props.undo} ouiaId="undo-button">
             Undo
           </Button>
         </SplitItem>
         <SplitItem>
-          <Button variant="secondary" onClick={props.redo}>
+          <Button variant="secondary" onClick={props.redo} ouiaId="redo-button">
             Redo
           </Button>
         </SplitItem>
@@ -52,7 +52,7 @@ export const HistoryButtons = (props: HistoryButtonsProps) => {
           <PMMLModal get={props.get} />
         </SplitItem>
         <SplitItem>
-          <Button variant="secondary" onClick={props.validate}>
+          <Button variant="secondary" onClick={props.validate} ouiaId="validate-button">
             Validate
           </Button>
         </SplitItem>
@@ -95,7 +95,7 @@ const PMMLModal = (props: { get: () => Promise<string> }) => {
 
   return (
     <React.Fragment>
-      <Button variant="secondary" onClick={handleModalToggle}>
+      <Button variant="secondary" onClick={handleModalToggle} ouiaId="pmml-button">
         PMML
       </Button>
       <Modal

@@ -48,7 +48,7 @@ export const PMMLEmptyState = (props: AllProps) => (
     </EmptyStateBody>
     <FileChooser setContent={props.setContent} />
     <EmptyStateSecondaryActions>
-      <Button variant="link" onClick={e => props.newContent()}>
+      <Button variant="link" onClick={e => props.newContent()} ouiaId="new-button">
         New
       </Button>
     </EmptyStateSecondaryActions>
@@ -76,7 +76,7 @@ const FileChooser = (props: UploadProps) => {
 
   return (
     <div style={{ marginTop: "var(--pf-c-empty-state__primary--MarginTop)" }}>
-      <label htmlFor="file-upload" className="pf-c-button pf-m-primary">
+      <label htmlFor="file-upload" className="pf-c-button pf-m-primary" data-ouia-component-id="upload-button">
         <i className="fa fa-cloud-upload" />
         Upload
       </label>
