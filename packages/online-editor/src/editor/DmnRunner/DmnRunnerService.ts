@@ -169,6 +169,7 @@ export class DmnRunnerService {
       form.definitions[property]!.title = title;
     } else if (!Object.hasOwnProperty.call(value, "type")) {
       value.type = "string";
+      value.title = title;
     } else {
       value.title = title;
     }
@@ -178,9 +179,11 @@ export class DmnRunnerService {
   private formPreprocessing(form: DmnRunnerForm) {
     delete form.definitions.InputSet?.required;
     if (Object.hasOwnProperty.call(form.definitions.InputSet, "properties")) {
-      Object.values(form.definitions.InputSet?.properties!).forEach((value: DmnRunnerDeepProperty) => {
-        this.formDeepPreprocessing(form, value);
-      });
+      Object.entries(form.definitions.InputSet?.properties!).forEach(
+        ([key, value]: [string, DmnRunnerDeepProperty]) => {
+          this.formDeepPreprocessing(form, value, key);
+        }
+      );
     }
   }
 

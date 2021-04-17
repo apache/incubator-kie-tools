@@ -267,22 +267,8 @@ export function DmnRunnerDrawer(props: Props) {
       dmnRunner.setFormData(model);
       return { details };
     },
-    [dmnRunner.setFormData]
+    []
   );
-
-  // Fill the form with the previous data
-  const previousIsDrawerOpen = usePrevious(dmnRunner.isDrawerExpanded);
-  useEffect(() => {
-    if (dmnRunner.isDrawerExpanded && !previousIsDrawerOpen) {
-      // The autoFormRef is not available on the useEffect render cycle.
-      // Adding this setTimout will make the ref available.
-      setTimeout(() => {
-        Object.keys(dmnRunner.formData ?? {}).forEach(propertyName => {
-          autoFormRef.current?.change(propertyName, dmnRunner.formData?.[propertyName]);
-        });
-      }, 0);
-    }
-  }, [dmnRunner.isDrawerExpanded, previousIsDrawerOpen, dmnRunner.formData]);
 
   // Subscribe to any change on the DMN Editor and submit the form
   useEffect(() => {
@@ -393,6 +379,7 @@ export function DmnRunnerDrawer(props: Props) {
                   <ErrorBoundary ref={errorBoundaryRef} setHasError={dmnRunner.setFormError} error={formErrorMessage}>
                     <AutoForm
                       id={"form"}
+                      model={dmnRunner.formData}
                       ref={autoFormRef}
                       showInlineError={true}
                       autosave={true}
