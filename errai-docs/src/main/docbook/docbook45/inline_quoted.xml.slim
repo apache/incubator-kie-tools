@@ -1,0 +1,48 @@
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+- if attr? :role
+  - if ['productname', 'acronym', 'application', 'guibutton', 'guilabel'].include?(attr('role'))
+    - text = "<#{attr('role')}>#@text</#{attr('role')}>"
+  - else
+    - text = "<phrase role=\"#{attr :role}\">#@text</phrase>"
+- else
+  - text = @text
+- case @type
+- when :emphasis
+  emphasis=text
+- when :strong
+  emphasis role='strong' =text
+- when :monospaced
+  literal=text
+- when :superscript
+  superscript=text
+- when :subscript
+  subscript=text
+- when :double
+  ', ' &#8220;#{text}&#8221;
+- when :single
+  ', ' &#8216;#{text}&#8217;
+- else
+  =text

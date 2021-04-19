@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<authorgroup>
+   <author>
+      <firstname>Max</firstname>
+      <surname>Barkley</surname>
+      <email>mbarkley@redhat.com</email>
+   </author>
+   <author>
+     <firstname>Divya</firstname>
+     <surname>Dadlani</surname>
+     <email>ddadlani@redhat.com</email>
+   </author>
+   <author>
+      <firstname>Lincoln</firstname>
+      <surname>Baxter III</surname>
+      <email>lincolnbaxter@gmail.com</email>
+   </author>
+   <author>
+      <firstname>Mike</firstname>
+      <surname>Brock</surname>
+      <email>cbrock@redhat.com</email>
+   </author>
+   <author>
+      <firstname>Jonathan</firstname>
+      <surname>Fuerth</surname>
+      <email>jfuerth@redhat.com</email>
+   </author>
+   <author>
+      <firstname>Paal</firstname>
+      <surname>Gyula</surname>
+      <email>paalgyula@gmail.com</email>
+   </author>
+   <author>
+      <firstname>David</firstname>
+      <surname>Hahn</surname>
+      <email>ddhahn@de.hellmann.net</email>
+   </author>
+   <author>
+      <firstname>Erik</firstname>
+      <surname>Jan de Wit</surname>
+      <email>erikjan.dewit@gmail.com</email>
+   </author>
+   <author>
+      <firstname>Piotr</firstname>
+      <surname>Kosmowski</surname>
+      <email>kospiotr@tlen.pl</email>
+   </author>
+   <author>
+      <firstname>Christian</firstname>
+      <surname>Sadilek</surname>
+      <email>csadilek@redhat.com</email>
+   </author>
+   <author>
+      <firstname>Maciej</firstname>
+      <surname>Swiderski</surname>
+      <email>swiderski.maciej@gmail.com</email>
+   </author>
+   <author>
+      <firstname>Eric</firstname>
+      <surname>Wittmann</surname>
+      <email>eric.wittmann@redhat.com</email>
+   </author>
+</authorgroup>

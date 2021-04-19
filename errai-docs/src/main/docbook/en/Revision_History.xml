@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<appendix id="app-Revision_History-Reference_Guide">
+   <title>Revision History</title>
+   <simpara>
+      <revhistory>
+         <revision>
+            <revnumber/>
+            <date/>
+            <author>
+               <firstname/>
+               <surname/>
+               <email/>
+            </author>
+            <revdescription>
+               <simplelist type="vert">
+                  <member/>
+               </simplelist>
+            </revdescription>
+         </revision>
+      </revhistory>
+  </simpara>
+</appendix>

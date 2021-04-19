@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jboss</groupId>
+    <artifactId>jboss-parent</artifactId>
+    <version>31</version>
+    <relativePath/>
+  </parent>
+
+  <name>Errai</name>
+  <groupId>org.jboss.errai</groupId>
+  <artifactId>errai-parent</artifactId>
+  <version>5.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <url>http://erraiframework.org</url>
+  <inceptionYear>2009</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <description>
+    Errai is a GWT-based framework for building rich web applications using next-generation web technologies.
+  </description>
+
+  <developers>
+    <developer>
+      <name>Mike Brock</name>
+    </developer>
+    <developer>
+      <name>Christian Sadilek</name>
+    </developer>
+    <developer>
+      <name>Jonathan Fuerth</name>
+    </developer>
+    <developer>
+      <name>Lincoln Baxter, III</name>
+    </developer>
+    <developer>
+      <name>Heiko Braun</name>
+    </developer>
+    <developer>
+      <name>Erik Jan de Wit</name>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:errai/errai.git</connection>
+    <developerConnection>scm:git:git@github.com:errai/errai.git</developerConnection>
+    <url>scm:git:git@github.com:errai/errai.git</url>
+  </scm>
+
+  <organization>
+    <name>JBoss, a division of Red Hat</name>
+    <url>http://www.jboss.org</url>
+  </organization>
+
+  <!-- IssueManagement -->
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.jboss.org/jira/browse/ERRAI</url>
+  </issueManagement>
+
+  <properties>
+    <gwtArgs></gwtArgs>
+    <argLine>-Dgwt.args="${gwtArgs}"</argLine>
+    <illegaltransitivereportonly>false</illegaltransitivereportonly>
+  </properties>
+
+  <modules>
+    <module>errai-internal-bom</module>
+    <module>errai-bom</module>
+    <module>errai-common</module>
+    <module>errai-javax-enterprise</module>
+    <module>errai-ioc</module>
+    <module>errai-codegen</module>
+    <module>errai-cdi</module>
+    <module>errai-ui</module>
+    <module>errai-data-binding</module>
+    <module>errai-validation</module>
+    <module>errai-reflections</module>
+    <module>errai-config</module>
+    <module>errai-codegen-gwt</module>
+    <module>errai-jboss-as-support</module>
+    <module>errai-api</module>
+    <module>errai-marshalling</module>
+  </modules>
+
+  <repositories>
+    <repository>
+      <id>jboss</id>
+      <name>JBoss Public Repo</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public</url>
+    </repository>
+    <repository>
+      <id>sonatype-public</id>
+      <name>Sonatype Public Snapshots Repo</name>
+      <url>https://oss.sonatype.org/content/repositories/public</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>jboss</id>
+      <name>JBoss Public Repo</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>public-snapshots-repo</id>
+      <url>https://oss.sonatype.org/content/repositories/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  
+  <dependencyManagement>
+    <dependencies>
+      <!-- All Errai module and third-party versions are defined in this POM -->
+      <dependency>
+        <groupId>org.jboss.errai.bom</groupId>
+        <artifactId>errai-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <!-- include module descriptors from src/main/java in order not to break the Intellij GWT plugin -->
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>    
+
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>www-test/**</include>
+                <include>.gwt/**</include>
+                <include>.errai/**</include>
+                <include>war/WEB-INF/deploy/**</include>
+                <include>war/WEB-INF/lib/**</include>
+                <include>war/WEB-INF/classes/**</include>
+                <include>src/main/webapp/WEB-INF/deploy/**</include>
+                <include>src/main/webapp/WEB-INF/lib/**</include>
+                <include>src/main/webapp/WEB-INF/classes/**</include>
+                <include>**/*.JUnit/**</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
+      <!-- http://maven.apache.org/plugins/maven-enforcer-plugin/plugin-info.html -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+        <executions>
+          <execution>
+            <id>enforce-sane-versions</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requirePluginVersions />
+                <DependencyConvergence />
+              </rules>              
+            </configuration>            
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.2.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.gmaven</groupId>
+          <artifactId>gmaven-plugin</artifactId>
+          <version>1.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>gwt-maven-plugin</artifactId>              
+          <version>2.9.0</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>resources</goal>
+                <goal>compile</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>clean</id>
+              <phase>clean</phase>
+              <goals>
+                <goal>clean</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.jboss.maven.plugins</groupId>
+          <artifactId>maven-jdocbook-plugin</artifactId>
+          <version>2.3.5</version>
+          <extensions>true</extensions>
+          <dependencies>
+            <dependency>
+              <groupId>org.jboss.pressgang</groupId>
+              <artifactId>pressgang-jdocbook-style</artifactId>
+              <type>jdocbook-style</type>
+              <version>2.0.0</version>
+            </dependency>
+            <dependency>
+              <groupId>org.jboss.pressgang</groupId>
+              <!--Non-namespaced version for DocBook 4.5 compatibility. For XSD namespaced version, use pressgang-xslt-ns -->
+              <artifactId>pressgang-xslt</artifactId>
+              <version>2.0.0</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>jarjar-maven-plugin</artifactId>
+          <version>1.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <versionRange>[1.3,)</versionRange>
+                    <goals>
+                      <goal>run</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <versionRange>[1.0,)</versionRange>
+                    <goals>
+                      <goal>copy-dependencies</goal>
+                      <goal>unpack</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <versionRange>[1.2.1,)</versionRange>
+                    <goals>
+                      <goal>java</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>gwt-maven-plugin</artifactId>
+                    <versionRange>[2.6.0,)</versionRange>
+                    <goals>
+                      <goal>resources</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <execute/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>xml-maven-plugin</artifactId>
+                    <versionRange>[1.0,)</versionRange>
+                    <goals>
+                      <goal>transform</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.jboss.maven.plugins</groupId>
+                    <artifactId>maven-jdocbook-plugin</artifactId>
+                    <versionRange>[2.3.5,)</versionRange>
+                    <goals>
+                      <goal>generate</goal>
+                      <goal>resources</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <versionRange>[0.0.0,)</versionRange>
+                    <goals>
+                      <goal>enforce</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.gmaven</groupId>
+                    <artifactId>gmaven-plugin</artifactId>
+                    <versionRange>[1.5,)</versionRange>
+                    <goals>
+                      <goal>testCompile</goal>
+                      <goal>generateStubs</goal>
+                      <goal>compile</goal>
+                      <goal>generateTestStubs</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>selenium-maven-plugin</artifactId>
+          <version>2.3</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+  </build>
+
+  <!-- Reporting -->
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.8.1</version>
+        <configuration>
+          <aggregate>true</aggregate>
+          <show>public</show>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </reporting>
+
+  <!-- Profiles -->
+  <profiles>
+    <profile>
+      <id>macJvm6Settings</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <!-- If we could limit this profile to JDK <=6 on Mac, we'd include -d32 in argLine. But we can't, because profile activation settings are ORed rather than ANDed together. See http://jira.codehaus.org/browse/MNG-4565 -->
+      <properties>
+        <argLine>-XX:CompileThreshold=1000 -Djava.awt.headless=true</argLine>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>firefox-test</id>
+      <properties>
+        <gwtArgs>-prod -userAgents gecko1_8 -runStyle Selenium:127.0.0.1:4444/*firefox</gwtArgs>
+        <argLine>-Dgwt.args="${gwtArgs}"</argLine>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>selenium-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>start</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start-server</goal>
+                </goals>
+                <configuration>
+                  <background>true</background>
+                </configuration>
+              </execution>
+                
+              <execution>
+                <id>stop</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop-server</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency>
+          <groupId>org.seleniumhq.selenium</groupId>
+          <artifactId>selenium-firefox-driver</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.seleniumhq.selenium</groupId>
+          <artifactId>selenium-java</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>integration-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <skipTests>false</skipTests>
+              <useSystemClassLoader>false</useSystemClassLoader>
+              <useManifestOnlyJar>false</useManifestOnlyJar>
+<!--               <forkMode>pertest</forkMode> this is the same as below -->
+<!-- http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html#Migrating_the_Deprecated_forkMode_Parameter_to_forkCount_and_reuseForks -->
+              <forkCount>1</forkCount>
+              <reuseForks>false</reuseForks>
+              <argLine>${argLine}</argLine>
+              <additionalClasspathElements>
+                <additionalClasspathElement>${basedir}/target/classes/</additionalClasspathElement>
+                <additionalClasspathElement>${basedir}/test-classes/</additionalClasspathElement>
+                <additionalClasspathElement>${basedir}/src/main/java/</additionalClasspathElement>
+                <additionalClasspathElement>${basedir}/src/test/java/</additionalClasspathElement>
+              </additionalClasspathElements>
+              <systemProperties>
+                <!-- Must disable long polling for automated tests to succeed -->
+                <property>
+                  <name>errai.hosted_mode_testing</name>
+                  <value>true</value>
+                </property>
+              </systemProperties>
+              <includes>
+                <include>**/*Test.java</include>
+                <include>**/*Tests.java</include>
+              </includes>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>quick-hosted-mode</id>
+      <activation>
+        <property>
+          <name>hosted</name>
+        </property>
+      </activation>
+      <properties>
+        <google.webtoolkit.compileSkip>true</google.webtoolkit.compileSkip>
+        <o>true</o>
+        <!-- offline -->
+      </properties>
+    </profile>
+
+    <profile>
+      <id>community-release</id>
+      <activation>
+        <property>
+          <name>!wfk</name>
+        </property>
+      </activation>
+      <distributionManagement>
+        <repository>
+          <id>jboss-releases-repository</id>
+          <name>JBoss Releases Repository</name>
+          <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
+        </repository>
+
+        <snapshotRepository>
+          <id>jboss-snapshots-repository</id>
+          <name>JBoss Snapshots Repository</name>
+          <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+      </distributionManagement>
+    </profile>
+
+    <profile>
+      <id>distro</id>
+      <modules>
+        <module>errai-docs</module>
+        <module>dist</module>
+      </modules>
+      <repositories>
+        <repository>
+          <id>jboss-public-repository-group</id>
+          <name>JBoss Public Maven Repository Group</name>
+          <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+          <layout>default</layout>
+          <releases>
+            <updatePolicy>always</updatePolicy>
+          </releases>
+        </repository>
+      </repositories>
+    </profile>
+
+    <profile>
+      <id>updateDocs</id>
+      <!-- the download will fail unless jboss-credentials.properties contains jboss.username and jboss.password entries -->
+      <activation>
+        <file>
+          <exists>jboss-credentials.properties</exists>
+        </file>
+      </activation>
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>9.4.0.6</version>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+    </profile>
+
+    <profile>
+      <id>jboss7</id>
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.0.b2</version>
+          </dependency>         
+        </dependencies>
+      </dependencyManagement>
+    </profile>
+
+    <profile>
+      <id>javadoc</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-all</id>
+                <phase>package</phase>
+                <configuration>
+                  <excludePackageNames>*.demo:*.example:*.samples:*.test:com.google:java.lang:*.bootstrap:org.jboss.servlet</excludePackageNames>
+                  <groups>
+                    <group>
+                      <title>Errai CDI</title>
+                      <packages>org.jboss.errai.common.client.api.annotation:org.jboss.errai.enterprise.client.cdi.api:org.jboss.errai.enterprise.client.cdi.events</packages>
+                    </group>
+                    <group>
+                      <title>Errai UI, Navigation, and Databinding</title>
+                      <packages>org.jboss.errai.databinding.client.api:org.jboss.errai.ui.client.widget:org.jboss.errai.ui.nav.client.local:org.jboss.errai.ui.rebind.less:org.jboss.errai.ui.shared.api*</packages>
+                    </group>
+                    <group>
+                      <title>Errai IOC</title>
+                      <packages>org.jboss.errai.ioc.client.api:javax.inject</packages>
+                    </group>
+                  </groups>
+                </configuration>
+                <goals>
+                  <goal>aggregate-jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>
