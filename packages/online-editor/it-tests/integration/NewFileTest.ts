@@ -87,7 +87,7 @@ describe("New file test", () => {
       cy.get("[data-title='Properties']").click();
 
       // open Data Types tab and check there is no item
-      cy.get("a:contains('Data Types')").click();
+      cy.get("[data-ouia-component-id='Data Types'] a").click();
       cy.get("[data-i18n-key='NoCustomDataTitle']").should("be.visible");
     });
   });

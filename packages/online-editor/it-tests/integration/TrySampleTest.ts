@@ -114,7 +114,7 @@ describe("Try sample test", () => {
       cy.get("[data-title='Properties']").click();
 
       // open Data Types tab and check values
-      cy.get("a:contains('Data Types')").click();
+      cy.get("[data-ouia-component-id='Data Types'] a").click();
       cy.get(".kie-dnd-draggable:not(.hidden) .name-text").should($dataTypes => {
         expect($dataTypes).length(16);
         expect($dataTypes.eq(0)).text("Requested_Product");
