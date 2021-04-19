@@ -94,11 +94,6 @@
       <artifactId>errai-cdi-shared</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-jboss-as-support</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
     <!-- Stunner -->
     <dependency>
