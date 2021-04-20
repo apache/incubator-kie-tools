@@ -6,5 +6,6 @@
   "videosFolder": "videos",
   "supportFile": "support/index.ts",
   "baseUrl": "http://localhost:8080",
-  "chromeWebSecurity": false
+  "chromeWebSecurity": false,
+  "video": false
 }
