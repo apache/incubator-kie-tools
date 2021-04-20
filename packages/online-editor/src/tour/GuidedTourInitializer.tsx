@@ -64,10 +64,10 @@ function getOnlineEditorTutorial(i18n: OnlineI18n) {
             {i18n.guidedTour.init.skipTour}
           </Button>
         </div>
-      )
+      ),
     },
     {
-      mode: new SubTutorialMode("DMN 101 Tutorial")
+      mode: new SubTutorialMode("DMN 101 Tutorial"),
     },
     {
       position: "center",
@@ -108,7 +108,7 @@ function getOnlineEditorTutorial(i18n: OnlineI18n) {
             {i18n.guidedTour.end.finish}
           </Button>
         </div>
-      )
-    }
+      ),
+    },
   ]);
 }

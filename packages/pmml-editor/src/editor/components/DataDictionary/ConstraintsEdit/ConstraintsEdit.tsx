@@ -44,7 +44,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   );
 
   const rangeConstraintLimit = useMemo(() => (dataType.optype === "continuous" && dataType.isCyclic ? 1 : undefined), [
-    dataType
+    dataType,
   ]);
 
   const handleTypeChange = (event: React.MouseEvent | React.ChangeEvent, value: string) => {
@@ -58,28 +58,28 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
               {
                 start: {
                   value: "",
-                  included: true
+                  included: true,
                 },
                 end: {
                   value: "",
-                  included: true
-                }
-              }
-            ]
-          }
+                  included: true,
+                },
+              },
+            ],
+          },
         });
       }
       if (value === ConstraintType.ENUMERATION) {
         onSave({
           constraints: {
             type: ConstraintType.ENUMERATION,
-            value: [""]
-          }
+            value: [""],
+          },
         });
       }
       if (value === "") {
         onSave({
-          constraints: undefined
+          constraints: undefined,
         });
       }
     }
@@ -94,8 +94,8 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     onSave({
       constraints: {
         type: ConstraintType.RANGE,
-        value: updatedRanges
-      }
+        value: updatedRanges,
+      },
     });
   };
 
@@ -104,18 +104,18 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     updatedRanges.push({
       start: {
         value: "",
-        included: true
+        included: true,
       },
       end: {
         value: "",
-        included: true
-      }
+        included: true,
+      },
     });
     onSave({
       constraints: {
         type: ConstraintType.RANGE,
-        value: updatedRanges
-      }
+        value: updatedRanges,
+      },
     });
   };
 
@@ -125,8 +125,8 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     onSave({
       constraints: {
         type: ConstraintType.RANGE,
-        value: updatedRanges
-      }
+        value: updatedRanges,
+      },
     });
   };
 
@@ -136,8 +136,8 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     onSave({
       constraints: {
         type: ConstraintType.ENUMERATION,
-        value: updatedEnums
-      }
+        value: updatedEnums,
+      },
     });
   };
 
@@ -147,8 +147,8 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     onSave({
       constraints: {
         type: ConstraintType.ENUMERATION,
-        value: updatedEnums
-      }
+        value: updatedEnums,
+      },
     });
   };
 
@@ -157,8 +157,8 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     onSave({
       constraints: {
         type: ConstraintType.ENUMERATION,
-        value: updatedEnums
-      }
+        value: updatedEnums,
+      },
     });
   };
 
@@ -168,8 +168,8 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
       onSave({
         constraints: {
           type: ConstraintType.ENUMERATION,
-          value: updatedEnums
-        }
+          value: updatedEnums,
+        },
       });
     }
   };
@@ -197,7 +197,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
             <Tooltip content={typeDescription}>
               <button
                 aria-label="More info for Constraints Type"
-                onClick={e => e.preventDefault()}
+                onClick={(e) => e.preventDefault()}
                 aria-describedby="constraints-type"
                 className="pf-c-form__group-label-help"
               >
@@ -276,7 +276,7 @@ const getConstraintsTypeOptions = (dataType: DDDataField) => {
   const typeOptions = [
     { value: ConstraintType.NONE, label: "Select a type", disabled: false },
     { value: ConstraintType.RANGE, label: "Interval", disabled: false },
-    { value: ConstraintType.ENUMERATION, label: "Value", disabled: false }
+    { value: ConstraintType.ENUMERATION, label: "Value", disabled: false },
   ];
   if (dataType.type === "string" && dataType.optype === "ordinal") {
     typeOptions[0].disabled = true;
@@ -288,7 +288,7 @@ const getConstraintsTypeOptions = (dataType: DDDataField) => {
   if (dataType.isCyclic) {
     typeOptions[0].disabled = true;
   }
-  const enabledTypeOptionsCount = typeOptions.filter(option => !option.disabled).length;
+  const enabledTypeOptionsCount = typeOptions.filter((option) => !option.disabled).length;
   return { typeOptions, enabledTypeOptionsCount };
 };
 

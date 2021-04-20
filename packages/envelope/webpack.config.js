@@ -22,10 +22,10 @@ module.exports = merge(common, {
   entry: {
     index: "./src/index.ts",
     "embedded/index": "./src/embedded/index.ts",
-    "api/index": "./src/api/index.ts"
+    "api/index": "./src/api/index.ts",
   },
   output: {
-    libraryTarget: "commonjs2"
+    libraryTarget: "commonjs2",
   },
   externals: [nodeExternals({ modulesDir: "../../node_modules" })],
 });

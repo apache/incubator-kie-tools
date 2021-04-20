@@ -34,7 +34,7 @@ import { File } from "@kogito-tooling/editor/dist/channel";
 
 enum Pages {
   HOME,
-  EDITOR
+  EDITOR,
 }
 
 const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
@@ -45,7 +45,7 @@ export function App() {
     fileName: "",
     fileExtension: "",
     getFileContents: () => Promise.resolve(""),
-    isReadOnly: false
+    isReadOnly: false,
   });
   const [invalidFileTypeErrorVisible, setInvalidFileTypeErrorVisible] = useState(false);
 
@@ -55,7 +55,7 @@ export function App() {
         fileName: filePath,
         fileExtension: file.fileExtension,
         getFileContents: file.getFileContents,
-        isReadOnly: false
+        isReadOnly: false,
       });
     },
     [file]
@@ -67,8 +67,8 @@ export function App() {
       mapping: new Map([
         ["bpmn", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
         ["bpmn2", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
-        ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/envelope.html" }]
-      ])
+        ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/envelope.html" }],
+      ]),
     }),
     []
   );
@@ -87,7 +87,7 @@ export function App() {
         fileName: fileToOpen.filePath,
         fileExtension: fileToOpen.fileType,
         getFileContents: () => Promise.resolve(fileToOpen.fileContent),
-        isReadOnly: false
+        isReadOnly: false,
       });
     },
     [closeInvalidFileTypeErrorAlert]
@@ -103,7 +103,7 @@ export function App() {
   }, []);
 
   const dragAndDropFileEvent = useCallback(
-    ev => {
+    (ev) => {
       ev.preventDefault();
       if (ev.dataTransfer) {
         openFileByPath(ev.dataTransfer.files[0].path);
@@ -141,13 +141,13 @@ export function App() {
   }, [page, editorEnvelopeLocator, openFile]);
 
   useEffect(() => {
-    document.addEventListener("dragover", e => e.preventDefault());
-    document.addEventListener("drop", e => e.preventDefault());
+    document.addEventListener("dragover", (e) => e.preventDefault());
+    document.addEventListener("drop", (e) => e.preventDefault());
     document.body.addEventListener("drop", dragAndDropFileEvent);
 
     return () => {
-      document.removeEventListener("dragover", e => e.preventDefault());
-      document.removeEventListener("drop", e => e.preventDefault());
+      document.removeEventListener("dragover", (e) => e.preventDefault());
+      document.removeEventListener("drop", (e) => e.preventDefault());
       document.body.removeEventListener("drop", dragAndDropFileEvent);
     };
   }, [dragAndDropFileEvent]);
@@ -175,7 +175,7 @@ export function App() {
           <GlobalContext.Provider
             value={{
               file,
-              editorEnvelopeLocator
+              editorEnvelopeLocator,
             }}
           >
             {invalidFileTypeErrorVisible && (
@@ -183,7 +183,12 @@ export function App() {
                 <Alert
                   variant={AlertVariant.danger}
                   title={i18n.app.title}
-                  actionClose={<AlertActionCloseButton onClose={closeInvalidFileTypeErrorAlert} ouiaId="close-danger-alert-button" />}
+                  actionClose={
+                    <AlertActionCloseButton
+                      onClose={closeInvalidFileTypeErrorAlert}
+                      ouiaId="close-danger-alert-button"
+                    />
+                  }
                   ouiaId="danger-alert"
                 />
               </div>

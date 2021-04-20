@@ -46,7 +46,7 @@ import {
   TextListItem,
   TextListVariants,
   TextVariants,
-  Title
+  Title,
 } from "@patternfly/react-core";
 import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
@@ -58,7 +58,7 @@ enum ExtensionStatus {
   UNKNOWN,
   NOT_INSTALLED,
   INSTALLED,
-  UNINSTALLING
+  UNINSTALLING,
 }
 
 function useElectronIpcResponse<T>(msgKey: string, callback: (data: T) => void, dependencies: any[]) {
@@ -83,7 +83,7 @@ export function App() {
 
   const removeAlert = useCallback(
     (time: number) => {
-      setAlerts(alerts.filter(a => a.time !== time));
+      setAlerts(alerts.filter((a) => a.time !== time));
     },
     [alerts]
   );
@@ -92,7 +92,7 @@ export function App() {
     (alert: AlertProps) => {
       const newAlert = {
         ...alert,
-        time: new Date().getMilliseconds()
+        time: new Date().getMilliseconds(),
       };
 
       setAlerts([...alerts, newAlert]);
@@ -238,7 +238,7 @@ export function App() {
               <p>{i18n.alert.launching.directory}</p>
               <ClipboardCopy isReadOnly={true}>{`chmod -R u+x "Business Modeler Hub Preview.app" `}</ClipboardCopy>
             </>
-          )
+          ),
         });
       }
     },
@@ -254,7 +254,7 @@ export function App() {
     >
       <PageSection isFilled={true}>
         <div className={"kogito--alert-container"}>
-          {alerts.map(alert => (
+          {alerts.map((alert) => (
             <React.Fragment key={alert.time}>
               <Alert
                 style={{ marginBottom: "10px", width: alert.width ?? "500px" }}
@@ -286,7 +286,7 @@ export function App() {
                     isDisabled={vscode_status !== ExtensionStatus.INSTALLED}
                   >
                     {i18n.terms.uninstall}
-                  </DropdownItem>
+                  </DropdownItem>,
                 ]}
               />
             </CardHeader>
@@ -342,7 +342,7 @@ export function App() {
             actions={[
               <Button key="cancel" variant="link" onClick={chrome_toggleModal}>
                 {i18n.terms.done}
-              </Button>
+              </Button>,
             ]}
           >
             <TextContent>
@@ -388,7 +388,7 @@ export function App() {
                 dropdownItems={[
                   <DropdownItem key="action" component="button" isDisabled={true}>
                     {i18n.noUpdates}
-                  </DropdownItem>
+                  </DropdownItem>,
                 ]}
               />
             </CardHeader>

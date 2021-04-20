@@ -26,36 +26,33 @@ const TEST_NAME = "DmnFullScreenTest";
 let tools: Tools;
 
 beforeEach(async () => {
-    tools = await Tools.init(TEST_NAME);
+  tools = await Tools.init(TEST_NAME);
 });
 
 test(TEST_NAME, async () => {
-    const dmnUrl: string = "https://github.com/kiegroup/kogito-tooling/" +
-        "blob/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn";
-    let dmnPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, dmnUrl);
-    // open and check full screen editor
-    const fullScreenPage: FullScreenPage = await dmnPage.fullScreen();
-    const fullScreenEditor: DmnEditor = await fullScreenPage.getDmnEditor();
-    await fullScreenEditor.enter();
-    const fullScreenSideBar: DmnSideBar = await fullScreenEditor.getSideBar();
-    const fullScreenExplorer: DecisionNavigator = await fullScreenSideBar.openDecisionNavigator();
-    expect((await fullScreenExplorer.getNodeNames()).sort())
-        .toEqual([
-            "MyDecision",
-            "MyInputData",
-            "MyModel",
-            "Function"
-        ].sort());
-    await fullScreenEditor.leave();
+  const dmnUrl: string =
+    "https://github.com/kiegroup/kogito-tooling/" +
+    "blob/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn";
+  let dmnPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, dmnUrl);
+  // open and check full screen editor
+  const fullScreenPage: FullScreenPage = await dmnPage.fullScreen();
+  const fullScreenEditor: DmnEditor = await fullScreenPage.getDmnEditor();
+  await fullScreenEditor.enter();
+  const fullScreenSideBar: DmnSideBar = await fullScreenEditor.getSideBar();
+  const fullScreenExplorer: DecisionNavigator = await fullScreenSideBar.openDecisionNavigator();
+  expect((await fullScreenExplorer.getNodeNames()).sort()).toEqual(
+    ["MyDecision", "MyInputData", "MyModel", "Function"].sort()
+  );
+  await fullScreenEditor.leave();
 
-    expect(await fullScreenPage.getExitFullScreenUrl()).toBe(dmnUrl + "#");
+  expect(await fullScreenPage.getExitFullScreenUrl()).toBe(dmnUrl + "#");
 
-    await fullScreenPage.scrollToTop();
-    dmnPage = await fullScreenPage.exitFullScreen();
-    expect(await dmnPage.isEditorVisible()).toBe(true);
-    expect(await dmnPage.isSourceVisible()).toBe(false);
+  await fullScreenPage.scrollToTop();
+  dmnPage = await fullScreenPage.exitFullScreen();
+  expect(await dmnPage.isEditorVisible()).toBe(true);
+  expect(await dmnPage.isSourceVisible()).toBe(false);
 });
 
 afterEach(async () => {
-    await tools.finishTest();
+  await tools.finishTest();
 });

@@ -24,7 +24,7 @@ jest.mock("react", () => {
   const ActualReact = require.requireActual("react");
   return {
     ...ActualReact,
-    useContext: () => contextMock
+    useContext: () => contextMock,
   };
 });
 

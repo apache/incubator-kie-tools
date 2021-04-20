@@ -24,31 +24,31 @@ module.exports = [
       "api/index": "./src/api/index.ts",
       "channel-api/index": "./src/channel-api/index.ts",
       "http-bridge/index": "./src/http-bridge/index.ts",
-      "i18n/index": "./src/i18n/index.ts"
+      "i18n/index": "./src/i18n/index.ts",
     },
     output: {
-      libraryTarget: "commonjs2"
+      libraryTarget: "commonjs2",
     },
-    externals: [nodeExternals({ modulesDir: "../../node_modules" })]
+    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   }),
   merge(common, {
     entry: {
-      "node/index": "./src/node/index.ts"
+      "node/index": "./src/node/index.ts",
     },
     target: "node",
     output: {
-      libraryTarget: "commonjs2"
+      libraryTarget: "commonjs2",
     },
-    externals: [nodeExternals({ modulesDir: "../../node_modules" })]
+    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   }),
   merge(common, {
     entry: {
-      "vscode/index": "./src/vscode/index.ts"
+      "vscode/index": "./src/vscode/index.ts",
     },
     target: "node",
     output: {
-      libraryTarget: "commonjs2"
+      libraryTarget: "commonjs2",
     },
-    externals: [{ vscode: "commonjs vscode" }, nodeExternals({ modulesDir: "../../node_modules" })]
-  })
+    externals: [{ vscode: "commonjs vscode" }, nodeExternals({ modulesDir: "../../node_modules" })],
+  }),
 ];

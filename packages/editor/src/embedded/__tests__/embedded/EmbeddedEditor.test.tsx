@@ -28,12 +28,12 @@ describe("EmbeddedEditor::ONLINE", () => {
     fileName: "test",
     fileExtension: "dmn",
     getFileContents: () => Promise.resolve(""),
-    isReadOnly: false
+    isReadOnly: false,
   };
 
   const editorEnvelopeLocator: EditorEnvelopeLocator = {
     targetOrigin: "localhost:8888",
-    mapping: new Map([["dmn", { envelopePath: "envelope/envelope.html", resourcesPathPrefix: "envelope" }]])
+    mapping: new Map([["dmn", { envelopePath: "envelope/envelope.html", resourcesPathPrefix: "envelope" }]]),
   };
 
   const channelType = ChannelType.ONLINE;
@@ -140,7 +140,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "receive_setContentError",
-      data: []
+      data: [],
     });
 
     expect(onSetContentError).toBeCalled();
@@ -165,7 +165,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "receive_ready",
-      data: []
+      data: [],
     });
 
     expect(onReady).toBeCalled();
@@ -191,7 +191,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceContentRequest",
-      data: [{ path: "" }]
+      data: [{ path: "" }],
     });
 
     expect(onResourceContentRequest).toBeCalled();
@@ -217,7 +217,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceListRequest",
-      data: [{ pattern: "", paths: [] }]
+      data: [{ pattern: "", paths: [] }],
     });
 
     expect(onResourceListRequest).toBeCalled();
@@ -242,7 +242,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "receive_newEdit",
-      data: [new KogitoEdit("1")]
+      data: [new KogitoEdit("1")],
     });
 
     expect(editorRef.current?.getStateControl().getCommandStack()).toEqual(["1"]);

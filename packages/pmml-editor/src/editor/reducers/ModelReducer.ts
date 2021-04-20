@@ -43,14 +43,14 @@ export const ModelReducer: HistoryAwareValidatingReducer<Model[], AllActions> = 
 ): Reducer<Model[], AllActions> => {
   const scorecardReducer = mergeReducers(ScorecardReducer(historyService, validationRegistry), {
     MiningSchema: mergeReducers(MiningSchemaReducer(historyService, validationRegistry), {
-      MiningField: MiningSchemaFieldReducer(historyService, validationRegistry)
+      MiningField: MiningSchemaFieldReducer(historyService, validationRegistry),
     }),
     Output: mergeReducers(OutputReducer(historyService, validationRegistry), {
-      OutputField: OutputFieldReducer(historyService, validationRegistry)
+      OutputField: OutputFieldReducer(historyService, validationRegistry),
     }),
     Characteristics: mergeReducers(CharacteristicsReducer(historyService), {
-      Characteristic: CharacteristicReducer(historyService)
-    })
+      Characteristic: CharacteristicReducer(historyService),
+    }),
   });
 
   const delegate = DelegatingModelReducer(
@@ -65,29 +65,23 @@ export const ModelReducer: HistoryAwareValidatingReducer<Model[], AllActions> = 
             //TODO {manstis} This is vitally important to ensure marshalling to XML works OK!
             (model as any)._type = "Scorecard";
             return model;
-          }
-        }
-      ]
+          },
+        },
+      ],
     ])
   );
 
   return (state: Model[], action: AllActions) => {
     switch (action.type) {
       case Actions.DeleteModel:
-        historyService.batch(
-          state,
-          Builder()
-            .forModel()
-            .build(),
-          draft => {
-            if (draft !== undefined) {
-              const modelIndex: number = action.payload.modelIndex;
-              if (modelIndex >= 0 && modelIndex < draft.length) {
-                draft.splice(modelIndex, 1);
-              }
+        historyService.batch(state, Builder().forModel().build(), (draft) => {
+          if (draft !== undefined) {
+            const modelIndex: number = action.payload.modelIndex;
+            if (modelIndex >= 0 && modelIndex < draft.length) {
+              draft.splice(modelIndex, 1);
             }
           }
-        );
+        });
         return state;
     }
 

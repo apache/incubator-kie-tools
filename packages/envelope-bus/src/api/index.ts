@@ -80,7 +80,7 @@ export enum EnvelopeBusMessagePurpose {
   RESPONSE = "response",
   SUBSCRIPTION = "subscription",
   UNSUBSCRIPTION = "unsubscription",
-  NOTIFICATION = "notification"
+  NOTIFICATION = "notification",
 }
 
 export interface EnvelopeBus {

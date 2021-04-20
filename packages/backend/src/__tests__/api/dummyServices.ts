@@ -48,6 +48,6 @@ export function createMockedService(id: string, reqSatisfied: boolean = true): j
     identify: jest.fn(() => id),
     satisfyRequirements: jest.fn(async () => reqSatisfied),
     start: jest.fn(),
-    stop: jest.fn()
+    stop: jest.fn(),
   };
 }

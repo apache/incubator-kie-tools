@@ -19,7 +19,7 @@ import {
   KogitoEdit,
   ResourceContentRequest,
   ResourceContentService,
-  ResourceListRequest
+  ResourceListRequest,
 } from "@kogito-tooling/channel-common-api";
 import { KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor/dist/api";
 import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
@@ -52,7 +52,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   }
 
   public async receive_contentRequest() {
-    return vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri).then(contentArray => {
+    return vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri).then((contentArray) => {
       this.initialBackup = undefined;
       return { content: this.decoder.decode(contentArray), path: this.editor.document.relativePath };
     });

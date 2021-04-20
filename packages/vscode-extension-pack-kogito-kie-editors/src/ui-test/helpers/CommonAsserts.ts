@@ -19,9 +19,9 @@ import { WebElement } from "vscode-extension-tester";
 
 /**
  * Asserts that a provided WebElement is displayed and enabled.
- * 
+ *
  * @param tested WebElement to test
  */
 export const assertWebElementIsDisplayedEnabled = async (tested: WebElement): Promise<void> => {
-    assert.isTrue(await tested.isDisplayed() && await tested.isEnabled());
-}
+  assert.isTrue((await tested.isDisplayed()) && (await tested.isEnabled()));
+};

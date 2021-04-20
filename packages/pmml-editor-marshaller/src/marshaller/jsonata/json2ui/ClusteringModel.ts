@@ -54,6 +54,6 @@ export function clusteringModelFactory(): ClusteringModel {
     Cluster: [],
     functionName: "regression",
     modelClass: "centerBased",
-    numberOfClusters: 0
+    numberOfClusters: 0,
   });
 }

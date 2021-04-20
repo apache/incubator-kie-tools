@@ -31,7 +31,7 @@ import {
   Predicate,
   Scorecard,
   SimplePredicate,
-  True
+  True,
 } from "../../marshaller/model/pmml4_4";
 import {
   SCORE_CARD_BASIC_COMPLEX_PARTIAL_SCORE,
@@ -40,7 +40,7 @@ import {
   SCORE_CARD_NESTED_COMPOUND_PREDICATE,
   SCORE_CARD_PROTOTYPES,
   SCORE_CARD_SIMPLE_PREDICATE,
-  SCORE_CARD_SIMPLE_PREDICATE_SINGLE
+  SCORE_CARD_SIMPLE_PREDICATE_SINGLE,
 } from "./TestData_ScoreCards";
 
 describe("Scorecard tests", () => {
@@ -196,22 +196,22 @@ describe("Scorecard tests", () => {
     assertSimplePredicate(characteristic0Attributes[0].predicate, {
       field: "input1" as FieldName,
       operator: "lessOrEqual",
-      value: "10"
+      value: "10",
     });
     assertSimplePredicate(characteristic0Attributes[1].predicate, {
       field: "input1" as FieldName,
       operator: "greaterThan",
-      value: "10"
+      value: "10",
     });
     assertSimplePredicate(characteristic1Attributes[0].predicate, {
       field: "input2" as FieldName,
       operator: "lessOrEqual",
-      value: "-5"
+      value: "-5",
     });
     assertSimplePredicate(characteristic1Attributes[1].predicate, {
       field: "input2" as FieldName,
       operator: "greaterThan",
-      value: "-5"
+      value: "-5",
     });
   });
 
@@ -225,7 +225,7 @@ describe("Scorecard tests", () => {
     assertSimplePredicate(characteristic0Attributes[0].predicate, {
       field: "input1" as FieldName,
       operator: "lessOrEqual",
-      value: "10"
+      value: "10",
     });
 
     //Check round-trip
@@ -278,16 +278,16 @@ describe("Scorecard tests", () => {
         assertSimplePredicate(predicate, {
           field: "input1" as FieldName,
           operator: "lessOrEqual",
-          value: "-5"
+          value: "-5",
         });
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
           field: "input2" as FieldName,
           operator: "lessOrEqual",
-          value: "-5"
+          value: "-5",
         });
-      }
+      },
     ]);
 
     //Characteristic 0, Attribute 1
@@ -296,16 +296,16 @@ describe("Scorecard tests", () => {
         assertSimplePredicate(predicate, {
           field: "input1" as FieldName,
           operator: "greaterThan",
-          value: "-5"
+          value: "-5",
         });
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
           field: "input2" as FieldName,
           operator: "greaterThan",
-          value: "-5"
+          value: "-5",
         });
-      }
+      },
     ]);
 
     //Characteristic 1, Attributes
@@ -319,16 +319,16 @@ describe("Scorecard tests", () => {
         assertSimplePredicate(predicate, {
           field: "input3" as FieldName,
           operator: "equal",
-          value: "classA"
+          value: "classA",
         });
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
           field: "input4" as FieldName,
           operator: "equal",
-          value: "classA"
+          value: "classA",
         });
-      }
+      },
     ]);
 
     //Characteristic 1, Attribute 1
@@ -337,16 +337,16 @@ describe("Scorecard tests", () => {
         assertSimplePredicate(predicate, {
           field: "input3" as FieldName,
           operator: "equal",
-          value: "classB"
+          value: "classB",
         });
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
           field: "input4" as FieldName,
           operator: "equal",
-          value: "classB"
+          value: "classB",
         });
-      }
+      },
     ]);
 
     //Characteristic 2, Attributes
@@ -359,16 +359,16 @@ describe("Scorecard tests", () => {
         assertSimplePredicate(predicate, {
           field: "input3" as FieldName,
           operator: "equal",
-          value: "classA"
+          value: "classA",
         });
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
           field: "input4" as FieldName,
           operator: "equal",
-          value: "classA"
+          value: "classA",
         });
-      }
+      },
     ]);
   });
 
@@ -413,25 +413,25 @@ describe("Scorecard tests", () => {
             assertSimplePredicate(cp, {
               field: "input1" as FieldName,
               operator: "greaterThan",
-              value: "-15"
+              value: "-15",
             });
           },
           (cp: Predicate) => {
             assertSimplePredicate(cp, {
               field: "input1" as FieldName,
               operator: "lessOrEqual",
-              value: "25.4"
+              value: "25.4",
             });
-          }
+          },
         ]);
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
           field: "input2" as FieldName,
           operator: "notEqual",
-          value: "classA"
+          value: "classA",
         });
-      }
+      },
     ]);
 
     //Characteristic 1, Attributes
@@ -444,16 +444,16 @@ describe("Scorecard tests", () => {
         assertSimplePredicate(predicate, {
           field: "input1" as FieldName,
           operator: "lessOrEqual",
-          value: "-20"
+          value: "-20",
         });
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
           field: "input2" as FieldName,
           operator: "equal",
-          value: "classA"
+          value: "classA",
         });
-      }
+      },
     ]);
 
     //Characteristic 1, Attribute 1
@@ -466,34 +466,34 @@ describe("Scorecard tests", () => {
                 assertSimplePredicate(cp2, {
                   field: "input1" as FieldName,
                   operator: "greaterOrEqual",
-                  value: "5"
+                  value: "5",
                 });
               },
               (cp2: Predicate) => {
                 assertSimplePredicate(cp2, {
                   field: "input1" as FieldName,
                   operator: "lessThan",
-                  value: "12"
+                  value: "12",
                 });
-              }
+              },
             ]);
           },
           (cp: Predicate) => {
             assertSimplePredicate(cp, {
               field: "input2" as FieldName,
               operator: "equal",
-              value: "classB"
+              value: "classB",
             });
-          }
+          },
         ]);
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
           field: "input2" as FieldName,
           operator: "equal",
-          value: "classC"
+          value: "classC",
         });
-      }
+      },
     ]);
   });
 

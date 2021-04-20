@@ -24,6 +24,6 @@ EditorEnvelope.init({
   editorFactory: new PMMLEditorFactory(),
   editorContext: {
     channel: ChannelType.VSCODE,
-    operatingSystem: getOperatingSystem()
-  }
+    operatingSystem: getOperatingSystem(),
+  },
 });

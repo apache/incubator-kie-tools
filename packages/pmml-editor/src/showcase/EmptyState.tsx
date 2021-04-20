@@ -23,7 +23,7 @@ import {
   EmptyStateIcon,
   EmptyStateSecondaryActions,
   EmptyStateVariant,
-  Title
+  Title,
 } from "@patternfly/react-core";
 import { CubesIcon } from "@patternfly/react-icons";
 
@@ -48,7 +48,7 @@ export const PMMLEmptyState = (props: AllProps) => (
     </EmptyStateBody>
     <FileChooser setContent={props.setContent} />
     <EmptyStateSecondaryActions>
-      <Button variant="link" onClick={e => props.newContent()} ouiaId="new-button">
+      <Button variant="link" onClick={(e) => props.newContent()} ouiaId="new-button">
         New
       </Button>
     </EmptyStateSecondaryActions>
@@ -80,7 +80,7 @@ const FileChooser = (props: UploadProps) => {
         <i className="fa fa-cloud-upload" />
         Upload
       </label>
-      <input id="file-upload" style={{ display: "none" }} type="file" accept={".pmml"} onChange={e => showFile(e)} />
+      <input id="file-upload" style={{ display: "none" }} type="file" accept={".pmml"} onChange={(e) => showFile(e)} />
     </div>
   );
 };

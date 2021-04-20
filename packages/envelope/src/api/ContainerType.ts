@@ -15,5 +15,6 @@
  */
 
 export enum ContainerType {
-  DIV = "div", IFRAME = "iframe"
+  DIV = "div",
+  IFRAME = "iframe",
 }

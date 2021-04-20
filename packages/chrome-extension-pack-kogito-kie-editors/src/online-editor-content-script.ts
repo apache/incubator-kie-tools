@@ -22,8 +22,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           fileName: request.filePath,
           fileContent: request.fileContent,
           readonly: request.readonly,
-          senderTabId: request.senderTabId
-        }
+          senderTabId: request.senderTabId,
+        },
       })
     );
   }
@@ -36,9 +36,9 @@ window.addEventListener("saveOnlineEditor", (e: CustomEvent) => {
       messageId: "RETURN_FROM_EXTERNAL_EDITOR",
       fileName: e.detail.fileName,
       fileContent: e.detail.fileContent,
-      senderTabId: e.detail.senderTabId
+      senderTabId: e.detail.senderTabId,
     },
-    response => {
+    (response) => {
       if (!response?.success) {
         console.debug("Error during online editor saving.");
       }

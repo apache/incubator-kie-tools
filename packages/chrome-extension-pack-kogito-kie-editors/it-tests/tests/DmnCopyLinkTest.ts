@@ -51,14 +51,9 @@ test(TEST_NAME, async () => {
   const onlineProperties: Properties = await dmnSideBar.openProperties();
   expect(await onlineProperties.getDmnNameFromInput()).toEqual("myDmn");
 
-
   const decisionNavigator: DecisionNavigator = await onlineEditor.openLeftSideBar();
-  expect((await decisionNavigator.getNodeNames()).sort())
-    .toEqual([
-      "MyDecision",
-      "MyInputData",
-      "MyModel",
-      "Function"
-    ].sort());
+  expect((await decisionNavigator.getNodeNames()).sort()).toEqual(
+    ["MyDecision", "MyInputData", "MyModel", "Function"].sort()
+  );
   expect(await decisionNavigator.getDmnName()).toEqual("myDmn");
 });

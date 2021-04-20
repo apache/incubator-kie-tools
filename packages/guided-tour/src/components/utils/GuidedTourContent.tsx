@@ -26,7 +26,7 @@ import {
   EmptyStateVariant,
   ModalBoxCloseButton,
   Text,
-  Title
+  Title,
 } from "@patternfly/react-core";
 import { TimesCircleIcon, BookIcon } from "@patternfly/react-icons";
 

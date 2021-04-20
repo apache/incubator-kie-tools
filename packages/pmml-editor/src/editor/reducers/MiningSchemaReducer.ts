@@ -45,14 +45,11 @@ export const MiningSchemaReducer: HistoryAwareValidatingReducer<MiningSchema, Al
       case Actions.AddMiningSchemaFields:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .forMiningSchema()
-            .build(),
-          draft => {
-            action.payload.names.forEach(name => {
+          Builder().forModel(action.payload.modelIndex).forMiningSchema().build(),
+          (draft) => {
+            action.payload.names.forEach((name) => {
               draft.MiningField.push({
-                name: name
+                name: name,
               });
             });
           }
@@ -62,26 +59,18 @@ export const MiningSchemaReducer: HistoryAwareValidatingReducer<MiningSchema, Al
       case Actions.DeleteMiningSchemaField:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .forMiningSchema()
-            .build(),
-          draft => {
+          Builder().forModel(action.payload.modelIndex).forMiningSchema().build(),
+          (draft) => {
             const miningSchemaIndex = action.payload.miningSchemaIndex;
             if (miningSchemaIndex >= 0 && miningSchemaIndex < draft.MiningField.length) {
               draft.MiningField.splice(miningSchemaIndex, 1);
             }
           },
-          pmml => {
+          (pmml) => {
             const modelIndex = action.payload.modelIndex;
             const miningSchema = getMiningSchema(pmml, modelIndex);
             if (miningSchema !== undefined) {
-              validationRegistry.clear(
-                Builder()
-                  .forModel(modelIndex)
-                  .forMiningSchema()
-                  .build()
-              );
+              validationRegistry.clear(Builder().forModel(modelIndex).forMiningSchema().build());
               validateMiningFields(modelIndex, miningSchema.MiningField, validationRegistry);
             }
           }

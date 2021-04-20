@@ -32,5 +32,5 @@ export class Step {
 }
 
 export const NONE: Step = {
-  mode: new DemoMode()
+  mode: new DemoMode(),
 };

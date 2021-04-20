@@ -21,7 +21,7 @@ import "./HistoryButtons.scss";
 
 export enum Theme {
   LIGHT,
-  DARK
+  DARK,
 }
 
 interface HistoryButtonsProps {
@@ -62,7 +62,7 @@ export const HistoryButtons = (props: HistoryButtonsProps) => {
             label="Dark"
             labelOff="Light"
             checked={theme === Theme.DARK}
-            onChange={checked => {
+            onChange={(checked) => {
               setTheme(checked ? Theme.DARK : Theme.LIGHT);
               props.setTheme(checked ? Theme.DARK : Theme.LIGHT);
             }}
@@ -106,7 +106,7 @@ const PMMLModal = (props: { get: () => Promise<string> }) => {
         actions={[
           <Button key="ok" variant="primary" onClick={handleModalToggle}>
             OK
-          </Button>
+          </Button>,
         ]}
         style={{ overflowX: "scroll" }}
         appendTo={() => document.querySelector(".history-buttons") as HTMLElement}

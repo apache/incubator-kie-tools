@@ -20,18 +20,18 @@ const common = require("../../webpack.common.config");
 
 module.exports = merge(common, {
   entry: {
-    index: "./src/index.ts"
+    index: "./src/index.ts",
   },
   output: {
-    libraryTarget: "commonjs2"
+    libraryTarget: "commonjs2",
   },
   externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   module: {
     rules: [
       {
         test: /\.css$/i,
-        use: ["style-loader", "css-loader"]
-      }
-    ]
-  }
+        use: ["style-loader", "css-loader"],
+      },
+    ],
+  },
 });

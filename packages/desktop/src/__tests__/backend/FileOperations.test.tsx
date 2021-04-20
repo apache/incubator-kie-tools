@@ -30,13 +30,13 @@ beforeEach(() => {
 
 jest.mock("../../backend/DesktopUserData", () => {
   return {
-    DesktopUserData: jest.fn().mockImplementation()
+    DesktopUserData: jest.fn().mockImplementation(),
   };
 });
 
 jest.mock("../../backend/Menu", () => {
   return {
-    Menu: jest.fn().mockImplementation()
+    Menu: jest.fn().mockImplementation(),
   };
 });
 
@@ -53,8 +53,8 @@ describe("saveFile ipc event", () => {
         action: FileSaveActions.SAVE_AS,
         file: {
           fileType: "dmn",
-          fileContent: "content"
-        }
+          fileContent: "content",
+        },
       })
     );
 

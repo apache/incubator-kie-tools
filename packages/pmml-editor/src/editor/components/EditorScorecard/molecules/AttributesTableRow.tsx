@@ -52,7 +52,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
     miningFields,
     onEdit,
     onDelete,
-    onCommit
+    onCommit,
   } = props;
 
   const { validationRegistry } = useValidationRegistry();
@@ -75,7 +75,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
       className={`attribute-item attribute-item-n${attributeIndex} editable-item`}
       tabIndex={0}
       onClick={() => onEdit()}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
@@ -103,7 +103,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
               <Label
                 tabIndex={0}
                 color="blue"
-                onClose={e => {
+                onClose={(e) => {
                   e.nativeEvent.stopImmediatePropagation();
                   e.stopPropagation();
                   onCommit({ predicate: undefined });

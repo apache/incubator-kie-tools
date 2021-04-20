@@ -45,7 +45,7 @@ export class StateControl {
 
   public setSavedCommand() {
     this.savedCommand = this.currentCommand;
-    this.registeredCallbacks.forEach(setIsDirty => setIsDirty(this.isDirty()));
+    this.registeredCallbacks.forEach((setIsDirty) => setIsDirty(this.isDirty()));
   }
 
   public getCurrentCommand() {
@@ -54,7 +54,7 @@ export class StateControl {
 
   public setCurrentCommand(command: Command) {
     this.currentCommand = command;
-    this.registeredCallbacks.forEach(setIsDirty => setIsDirty(this.isDirty()));
+    this.registeredCallbacks.forEach((setIsDirty) => setIsDirty(this.isDirty()));
   }
 
   public getCommandStack() {

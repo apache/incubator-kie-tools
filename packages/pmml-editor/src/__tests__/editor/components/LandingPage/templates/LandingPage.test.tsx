@@ -25,8 +25,8 @@ const PATH: string = "path";
 jest.mock("react-router", () => ({
   ...jest.requireActual("react-router"),
   useHistory: () => ({
-    push: jest.fn()
-  })
+    push: jest.fn(),
+  }),
 }));
 
 describe("LandingPage", () => {
@@ -52,9 +52,9 @@ describe("LandingPage", () => {
         new Scorecard({
           functionName: "regression",
           MiningSchema: { MiningField: [] },
-          Characteristics: { Characteristic: [] }
-        })
-      ]
+          Characteristics: { Characteristic: [] },
+        }),
+      ],
     };
     const store: Store = createStore((state, action) => state, pmml);
 
@@ -80,9 +80,9 @@ describe("LandingPage", () => {
           modelName: "cheese",
           functionName: "regression",
           MiningSchema: { MiningField: [] },
-          Characteristics: { Characteristic: [] }
-        })
-      ]
+          Characteristics: { Characteristic: [] },
+        }),
+      ],
     };
     const store: Store = createStore((state, action) => state, pmml);
 
@@ -117,9 +117,9 @@ describe("LandingPage", () => {
           missingValueStrategy: "none",
           functionName: "regression",
           MiningSchema: { MiningField: [] },
-          Node: {}
-        })
-      ]
+          Node: {},
+        }),
+      ],
     };
     const store: Store = createStore((state, action) => state, pmml);
 

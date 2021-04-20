@@ -32,7 +32,7 @@ import {
   Switch,
   TextInput,
   Title,
-  Tooltip
+  Tooltip,
 } from "@patternfly/react-core";
 import "./CorePropertiesTable.scss";
 import { Operation } from "../Operation";
@@ -99,7 +99,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
 
   const ref = useOnclickOutside(() => onCommitAndClose(), {
     disabled: activeOperation !== Operation.UPDATE_CORE,
-    eventTypes: ["click"]
+    eventTypes: ["click"],
   });
 
   const toNumber = (_value: string): number | undefined => {
@@ -129,7 +129,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
 
   const onCommit = (partial: Partial<CoreProperties>) => {
     const existingPartial: Partial<CoreProperties> = {};
-    Object.keys(partial).forEach(key => set(existingPartial, key, get(props, key)));
+    Object.keys(partial).forEach((key) => set(existingPartial, key, get(props, key)));
 
     if (!isEqual(partial, existingPartial)) {
       props.commit({ ...props, ...partial });
@@ -143,15 +143,12 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
 
   const isEditModeEnabled = useMemo(() => isEditing && activeOperation === Operation.UPDATE_CORE, [
     isEditing,
-    activeOperation
+    activeOperation,
   ]);
 
   const { validationRegistry } = useValidationRegistry();
   const baselineScoreValidation = validationRegistry.get(
-    Builder()
-      .forModel(props.modelIndex)
-      .forBaselineScore()
-      .build()
+    Builder().forModel(props.modelIndex).forBaselineScore().build()
   );
 
   return (
@@ -159,7 +156,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
       ref={ref}
       onClick={onEdit}
       tabIndex={0}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
@@ -207,7 +204,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
           {isEditModeEnabled && (
             <StackItem>
               <Form
-                onSubmit={e => {
+                onSubmit={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
                 }}
@@ -219,7 +216,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                       <Switch
                         id="core-isScorable"
                         isChecked={isScorable === true}
-                        onChange={checked => {
+                        onChange={(checked) => {
                           setScorable(checked);
                           onCommit({ isScorable: checked });
                         }}
@@ -237,10 +234,10 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           "regression",
                           "clustering",
                           "timeSeries",
-                          "mixed"
+                          "mixed",
                         ],
                         functionName,
-                        _selection => {
+                        (_selection) => {
                           setFunctionName(_selection as MiningFunction);
                           onCommit({ functionName: _selection as MiningFunction });
                         },
@@ -258,7 +255,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                         name="core-algorithmName"
                         aria-describedby="core-algorithmName"
                         value={algorithmName ?? ""}
-                        onChange={e => setAlgorithmName(e)}
+                        onChange={(e) => setAlgorithmName(e)}
                         onBlur={() => {
                           onCommit({ algorithmName: algorithmName });
                         }}
@@ -270,7 +267,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                       <TextInput
                         id="core-initialScore"
                         value={initialScore}
-                        onChange={e => setInitialScore(toNumber(e))}
+                        onChange={(e) => setInitialScore(toNumber(e))}
                         onBlur={() => {
                           onCommit({ initialScore: initialScore });
                         }}
@@ -283,7 +280,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                       <Switch
                         id="core-useReasonCodes"
                         isChecked={areReasonCodesUsed}
-                        onChange={checked => {
+                        onChange={(checked) => {
                           setAreReasonCodesUsed(checked);
                           onCommit({ areReasonCodesUsed: checked });
                         }}
@@ -296,7 +293,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                         "core-reasonCodeAlgorithm",
                         ["pointsAbove", "pointsBelow"],
                         reasonCodeAlgorithm,
-                        _selection => {
+                        (_selection) => {
                           setReasonCodeAlgorithm(_selection as ReasonCodeAlgorithm);
                           onCommit({ reasonCodeAlgorithm: _selection as ReasonCodeAlgorithm });
                         },
@@ -325,7 +322,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                         >
                           <button
                             aria-label="More information for Baseline score"
-                            onClick={e => e.preventDefault()}
+                            onClick={(e) => e.preventDefault()}
                             className="pf-c-form__group-label-help"
                           >
                             <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
@@ -336,7 +333,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                       <TextInput
                         id="core-baselineScore"
                         value={baselineScore ?? ""}
-                        onChange={e => setBaselineScore(toNumber(e))}
+                        onChange={(e) => setBaselineScore(toNumber(e))}
                         onBlur={() => {
                           onCommit({ baselineScore: baselineScore });
                         }}
@@ -352,7 +349,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                         "core-baselineMethod",
                         ["max", "min", "mean", "neutral", "other"],
                         baselineMethod,
-                        _selection => {
+                        (_selection) => {
                           setBaselineMethod(_selection as BaselineMethod);
                           onCommit({ baselineMethod: _selection as BaselineMethod });
                         },

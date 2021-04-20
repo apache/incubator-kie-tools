@@ -91,7 +91,7 @@ export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T>
   }
 
   public getCommands(): T[] {
-    return this.commands.map(command => command.get());
+    return this.commands.map((command) => command.get());
   }
 
   public clear(): void {

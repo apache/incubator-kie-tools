@@ -52,9 +52,9 @@ export class FileOperations {
         .showSaveDialog(this.window, {
           defaultPath: "model." + data.file.fileType,
           title: this.i18n.fileOperations.dialog.saveFile,
-          filters: [{ name: data.file.fileType.toUpperCase(), extensions: [data.file.fileType] }]
+          filters: [{ name: data.file.fileType.toUpperCase(), extensions: [data.file.fileType] }],
         })
-        .then(result => {
+        .then((result) => {
           if (!result.canceled) {
             this.writeFile(result.filePath!, data.file.fileContent);
           }
@@ -69,9 +69,9 @@ export class FileOperations {
           .showSaveDialog(this.window, {
             defaultPath: removeFileExtension(data.filePath) + "." + data.fileType,
             title: this.i18n.fileOperations.dialog.savePreview,
-            filters: [{ name: data.fileType.toUpperCase(), extensions: [data.fileType] }]
+            filters: [{ name: data.fileType.toUpperCase(), extensions: [data.fileType] }],
           })
-          .then(result => {
+          .then((result) => {
             if (!result.canceled) {
               this.savePreview(result.filePath!, data.fileContent);
             }
@@ -89,9 +89,9 @@ export class FileOperations {
     );
 
     ipcMain.on("requestLastOpenedFiles", () => {
-      this.userData.getLastOpenedFiles().then(lastOpenedFiles => {
+      this.userData.getLastOpenedFiles().then((lastOpenedFiles) => {
         this.window.webContents.send("returnLastOpenedFiles", {
-          lastOpenedFiles: lastOpenedFiles
+          lastOpenedFiles: lastOpenedFiles,
         });
       });
     });
@@ -120,61 +120,61 @@ export class FileOperations {
       file: {
         filePath: UNSAVED_FILE_NAME,
         fileType: type,
-        fileContent: ""
-      }
+        fileContent: "",
+      },
     });
     this.menu.setFileMenusEnabled(true);
   }
 
   public openFile(filePath: string) {
     Files.read(FS.newFile(filePath))
-      .then(content => {
+      .then((content) => {
         this.window.webContents.send("openFile", {
           file: {
             filePath: filePath,
             fileType: extractFileExtension(filePath),
-            fileContent: content
-          }
+            fileContent: content,
+          },
         });
         this.menu.setFileMenusEnabled(true);
         this.userData.registerFile(filePath);
         console.info("File " + filePath + " opened.");
       })
-      .catch(error => {
+      .catch((error) => {
         console.info("Failed to open file" + filePath + ":" + error);
         this.window.webContents.send("returnLastOpenedFiles", {
-          lastOpenedFiles: this.userData.getLastOpenedFiles()
+          lastOpenedFiles: this.userData.getLastOpenedFiles(),
         });
       });
   }
 
   public openSample(filePath: string) {
     Files.read(FS.newFile(filePath))
-      .then(content => {
+      .then((content) => {
         this.window.webContents.send("openFile", {
           file: {
             filePath: SAMPLE,
             fileType: extractFileExtension(filePath),
-            fileContent: content
-          }
+            fileContent: content,
+          },
         });
         this.menu.setFileMenusEnabled(true);
         console.info("Sample " + filePath + " opened.");
       })
-      .catch(error => {
+      .catch((error) => {
         console.info("Failed to open sample" + filePath + ":" + error);
       });
   }
 
   public saveFile() {
     this.window.webContents.send("requestOpenedFile", {
-      action: FileSaveActions.SAVE
+      action: FileSaveActions.SAVE,
     });
   }
 
   public saveFileAs() {
     this.window.webContents.send("requestOpenedFile", {
-      action: FileSaveActions.SAVE_AS
+      action: FileSaveActions.SAVE_AS,
     });
   }
 
@@ -185,7 +185,7 @@ export class FileOperations {
         console.info("File " + filePath + " saved.");
         this.window.webContents.send("saveFileSuccess", { filePath });
       })
-      .catch(error => {
+      .catch((error) => {
         console.info("Failed to save file" + filePath + ":" + error);
       });
   }
@@ -196,10 +196,10 @@ export class FileOperations {
         console.info("Preview " + filePath + " saved.");
 
         this.window.webContents.send("savePreviewSuccess", {
-          filePath: filePath
+          filePath: filePath,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.info("Failed to save preview" + filePath + ":" + error);
       });
   }

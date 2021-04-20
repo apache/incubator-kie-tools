@@ -21,19 +21,19 @@ import { StateControl } from "@kogito-tooling/editor/dist/channel";
 
 jest.mock("@kogito-tooling/editor/dist/api", () => {
   return {
-    KogitoEditorEnvelopeApi: jest.fn().mockImplementation()
+    KogitoEditorEnvelopeApi: jest.fn().mockImplementation(),
   };
 });
 
 describe("createEditor", () => {
   const envelopeServer = new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
     {
-      postMessage: message => {
+      postMessage: (message) => {
         /**/
-      }
+      },
     },
     "",
-    self => Promise.resolve()
+    (self) => Promise.resolve()
   );
 
   const stateControl = new StateControl();
@@ -42,7 +42,7 @@ describe("createEditor", () => {
     const editor = createEditor(
       envelopeServer,
       stateControl,
-      message => {
+      (message) => {
         /**/
       },
       document.createElement("iframe")
@@ -56,7 +56,7 @@ describe("createEditor", () => {
     return editor.setContent("my-path", "my-content").then(() => {
       expect(spyOnContentChangedNotification).toHaveBeenCalledWith({
         path: "my-path",
-        content: "my-content"
+        content: "my-content",
       });
     });
   });

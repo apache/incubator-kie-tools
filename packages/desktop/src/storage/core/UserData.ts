@@ -49,7 +49,7 @@ export class UserData {
       .then(() => {
         console.info("User resource " + resourcePath + " saved.");
       })
-      .catch(error => {
+      .catch((error) => {
         console.info("Failed to save user resource" + resourcePath + ":" + error);
       });
   }
@@ -62,11 +62,11 @@ export class UserData {
 
   public listResources(type: string): string[] {
     this.createResourceFolderIfNecessary(type);
-    return Files.list(FS.newFile(path.join(this.basePath, type))).map(file => file.fullName);
+    return Files.list(FS.newFile(path.join(this.basePath, type))).map((file) => file.fullName);
   }
 
   public deleteResources(files: string[]) {
-    files.forEach(file => {
+    files.forEach((file) => {
       Files.delete(FS.newFile(file));
     });
   }
@@ -77,7 +77,7 @@ export class UserData {
   }
 
   public clearResources(...resourceTypes: string[]) {
-    resourceTypes.forEach(resourceType => {
+    resourceTypes.forEach((resourceType) => {
       this.createResourceFolderIfNecessary(resourceType);
       const resourceTypeDir = path.join(this.basePath, resourceType);
       Files.delete(FS.newFile(resourceTypeDir));

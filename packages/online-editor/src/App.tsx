@@ -43,7 +43,7 @@ export function App(props: Props) {
   const [file, setFile] = useState(props.file);
   const routes = useMemo(() => new Routes(), []);
 
-  const onFileOpened = useCallback(fileOpened => {
+  const onFileOpened = useCallback((fileOpened) => {
     setFile(fileOpened);
   }, []);
 
@@ -53,7 +53,7 @@ export function App(props: Props) {
         isReadOnly: false,
         fileExtension,
         fileName,
-        getFileContents: file.getFileContents
+        getFileContents: file.getFileContents,
       });
     },
     [file]
@@ -74,7 +74,7 @@ export function App(props: Props) {
           readonly: props.readonly,
           external: props.external,
           senderTabId: props.senderTabId,
-          githubService: props.githubService
+          githubService: props.githubService,
         }}
       >
         <HashRouter>

@@ -70,7 +70,7 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
     onDelete,
     onPropertyDelete,
     onEdit,
-    onCancel
+    onCancel,
   } = props;
   const editing = useContext(MiningSchemaContext);
 
@@ -80,7 +80,7 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
     },
     {
       disabled: editing !== index,
-      eventTypes: ["click"]
+      eventTypes: ["click"],
     }
   );
 
@@ -104,14 +104,7 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
 
   const { validationRegistry } = useValidationRegistry();
   const validations = useMemo(
-    () =>
-      validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .forMiningField(index)
-          .build()
-      ),
+    () => validationRegistry.get(Builder().forModel(modelIndex).forMiningSchema().forMiningField(index).build()),
     [index, modelIndex, dataDictionary, field]
   );
 
@@ -122,7 +115,7 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
       onClick={handleEdit}
       ref={ref}
       tabIndex={0}
-      onKeyDown={event => {
+      onKeyDown={(event) => {
         if (event.key === "Enter") {
           event.preventDefault();
           event.stopPropagation();

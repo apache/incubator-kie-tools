@@ -62,7 +62,7 @@ jest.mock("react", () => {
     ...ActualReact,
     useContext: () => ctx,
     useEffect: (fn: any) => fn(),
-    useMemo: (fn: any, _deps: any) => fn()
+    useMemo: (fn: any, _deps: any) => fn(),
   };
 });
 
@@ -76,11 +76,11 @@ const ctx: any = {
   currentTutorial: {
     steps: [
       {
-        selector: ""
-      }
-    ]
+        selector: "",
+      },
+    ],
   },
-  setCurrentRefElementPosition: (rect: Rect) => (ctx.currentRefElementPosition = rect)
+  setCurrentRefElementPosition: (rect: Rect) => (ctx.currentRefElementPosition = rect),
 };
 
 const elementPosition: Rect = {
@@ -91,7 +91,7 @@ const elementPosition: Rect = {
   top: 10,
   width: 100,
   x: 10,
-  y: 10
+  y: 10,
 };
 
 const realQuerySelector = document.querySelector;
@@ -99,6 +99,6 @@ const mockQuerySelector = (selector: string) => {
   return {
     getBoundingClientRect: () => {
       return selector === "div#my-element" ? elementPosition : DEFAULT_RECT;
-    }
+    },
   };
 };

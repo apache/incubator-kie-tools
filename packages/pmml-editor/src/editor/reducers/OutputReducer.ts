@@ -48,11 +48,8 @@ export const OutputReducer: HistoryAwareValidatingReducer<Output, AllActions> = 
       case Actions.AddOutput:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .forOutput()
-            .build(),
-          draft => {
+          Builder().forModel(action.payload.modelIndex).forOutput().build(),
+          (draft) => {
             draft.OutputField.push({
               name: action.payload.outputField.name,
               dataType: action.payload.outputField.dataType,
@@ -63,21 +60,16 @@ export const OutputReducer: HistoryAwareValidatingReducer<Output, AllActions> = 
               rank: action.payload.outputField.rank,
               rankOrder: action.payload.outputField.rankOrder,
               segmentId: action.payload.outputField.segmentId,
-              isFinalResult: action.payload.outputField.isFinalResult
+              isFinalResult: action.payload.outputField.isFinalResult,
             });
           },
-          pmml => {
+          (pmml) => {
             const modelIndex = action.payload.modelIndex;
             const outputField = action.payload.outputField;
             const miningSchema = getMiningSchema(pmml, modelIndex);
             const outputs = getOutputs(pmml, modelIndex);
             if (outputs !== undefined && miningSchema !== undefined) {
-              validationRegistry.clear(
-                Builder()
-                  .forModel(modelIndex)
-                  .forOutput()
-                  .build()
-              );
+              validationRegistry.clear(Builder().forModel(modelIndex).forOutput().build());
               validateOutputs(
                 action.payload.modelIndex,
                 outputs.OutputField,
@@ -87,12 +79,7 @@ export const OutputReducer: HistoryAwareValidatingReducer<Output, AllActions> = 
               if (isOutputsTargetFieldRequired(miningSchema.MiningField)) {
                 const outputFieldIndex = outputs.OutputField.length;
                 validationRegistry.set(
-                  Builder()
-                    .forModel(modelIndex)
-                    .forOutput()
-                    .forOutputField(outputFieldIndex)
-                    .forTargetField()
-                    .build(),
+                  Builder().forModel(modelIndex).forOutput().forOutputField(outputFieldIndex).forTargetField().build(),
                   new ValidationEntry(
                     ValidationLevel.WARNING,
                     `"${outputField.name}" output field, target field is required if Mining Schema has multiple target fields.`
@@ -107,27 +94,19 @@ export const OutputReducer: HistoryAwareValidatingReducer<Output, AllActions> = 
       case Actions.DeleteOutput:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .forOutput()
-            .build(),
-          draft => {
+          Builder().forModel(action.payload.modelIndex).forOutput().build(),
+          (draft) => {
             const outputIndex = action.payload.outputIndex;
             if (outputIndex >= 0 && outputIndex < draft.OutputField.length) {
               draft.OutputField.splice(outputIndex, 1);
             }
           },
-          pmml => {
+          (pmml) => {
             const modelIndex = action.payload.modelIndex;
             const miningSchema = getMiningSchema(pmml, modelIndex);
             const outputs = getOutputs(pmml, modelIndex);
             if (miningSchema !== undefined && outputs !== undefined) {
-              validationRegistry.clear(
-                Builder()
-                  .forModel(modelIndex)
-                  .forOutput()
-                  .build()
-              );
+              validationRegistry.clear(Builder().forModel(modelIndex).forOutput().build());
               validateOutputs(modelIndex, outputs.OutputField, miningSchema.MiningField, validationRegistry);
             }
           }
@@ -137,29 +116,21 @@ export const OutputReducer: HistoryAwareValidatingReducer<Output, AllActions> = 
       case Actions.AddBatchOutputs:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .forOutput()
-            .build(),
-          draft => {
-            action.payload.outputFields.forEach(name => {
+          Builder().forModel(action.payload.modelIndex).forOutput().build(),
+          (draft) => {
+            action.payload.outputFields.forEach((name) => {
               draft.OutputField.push({
                 name: name,
-                dataType: "string"
+                dataType: "string",
               });
             });
           },
-          pmml => {
+          (pmml) => {
             const modelIndex = action.payload.modelIndex;
             const miningSchema = getMiningSchema(pmml, modelIndex);
             const outputs = getOutputs(pmml, modelIndex);
             if (outputs !== undefined && miningSchema !== undefined) {
-              validationRegistry.clear(
-                Builder()
-                  .forModel(modelIndex)
-                  .forOutput()
-                  .build()
-              );
+              validationRegistry.clear(Builder().forModel(modelIndex).forOutput().build());
               validateOutputs(
                 action.payload.modelIndex,
                 outputs.OutputField,
@@ -192,30 +163,22 @@ export const OutputReducer: HistoryAwareValidatingReducer<Output, AllActions> = 
           const modelIndex = action.payload.modelIndex;
           historyService.batch(
             state,
-            Builder()
-              .forModel(modelIndex)
-              .forOutput()
-              .build(),
-            draft => {
+            Builder().forModel(modelIndex).forOutput().build(),
+            (draft) => {
               state.OutputField.forEach((outputField, outputFieldIndex) => {
                 if (outputField.targetField === action.payload.name) {
                   draft!.OutputField[outputFieldIndex] = {
                     ...draft!.OutputField[outputFieldIndex],
-                    targetField: undefined
+                    targetField: undefined,
                   };
                 }
               });
             },
-            pmml => {
+            (pmml) => {
               const miningSchema = getMiningSchema(pmml, modelIndex);
               const outputs = getOutputs(pmml, modelIndex);
               if (miningSchema !== undefined && outputs !== undefined) {
-                validationRegistry.clear(
-                  Builder()
-                    .forModel(modelIndex)
-                    .forOutput()
-                    .build()
-                );
+                validationRegistry.clear(Builder().forModel(modelIndex).forOutput().build());
                 validateOutputs(modelIndex, outputs.OutputField, miningSchema.MiningField, validationRegistry);
               }
             }
@@ -228,33 +191,25 @@ export const OutputReducer: HistoryAwareValidatingReducer<Output, AllActions> = 
           const modelIndex = action.payload.modelIndex;
           historyService.batch(
             state,
-            Builder()
-              .forModel(modelIndex)
-              .forOutput()
-              .build(),
-            draft => {
+            Builder().forModel(modelIndex).forOutput().build(),
+            (draft) => {
               if (action.payload.usageType !== "target") {
                 state.OutputField.forEach((outputField, outputFieldIndex) => {
                   if (outputField.targetField === action.payload.name) {
                     draft!.OutputField[outputFieldIndex] = {
                       ...draft!.OutputField[outputFieldIndex],
-                      targetField: undefined
+                      targetField: undefined,
                     };
                   }
                 });
               }
             },
-            pmml => {
+            (pmml) => {
               const miningSchema = getMiningSchema(pmml, modelIndex);
               const outputs = getOutputs(pmml, modelIndex);
               const characteristics = getCharacteristics(pmml, modelIndex);
               if (miningSchema !== undefined && outputs !== undefined && characteristics !== undefined) {
-                validationRegistry.clear(
-                  Builder()
-                    .forModel(modelIndex)
-                    .forOutput()
-                    .build()
-                );
+                validationRegistry.clear(Builder().forModel(modelIndex).forOutput().build());
                 validateOutputs(modelIndex, outputs.OutputField, miningSchema.MiningField, validationRegistry);
               }
             }

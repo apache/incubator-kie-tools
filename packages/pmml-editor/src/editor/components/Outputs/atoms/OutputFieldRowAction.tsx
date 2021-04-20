@@ -34,7 +34,7 @@ export const OutputFieldRowAction = (props: OutputsTableActionProps) => {
         <Button
           variant="plain"
           onClick={onDelete}
-          onKeyDown={e => {
+          onKeyDown={(e) => {
             if (e.key === "Enter") {
               onDelete(e);
             }

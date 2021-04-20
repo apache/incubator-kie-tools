@@ -97,6 +97,6 @@ export function regressionModelFactory(): RegressionModel {
   return new RegressionModel({
     MiningSchema: new MiningSchema({ MiningField: [] }),
     RegressionTable: [new RegressionTable({ intercept: 0.0 })],
-    functionName: "regression"
+    functionName: "regression",
   });
 }

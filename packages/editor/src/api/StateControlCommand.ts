@@ -16,5 +16,5 @@
 
 export enum StateControlCommand {
   UNDO,
-  REDO
+  REDO,
 }

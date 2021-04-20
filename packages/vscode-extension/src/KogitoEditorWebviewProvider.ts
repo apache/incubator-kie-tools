@@ -23,7 +23,7 @@ import {
   CustomEditorProvider,
   EventEmitter,
   Uri,
-  WebviewPanel
+  WebviewPanel,
 } from "vscode";
 import * as fs from "fs";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
@@ -49,8 +49,8 @@ export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoE
   public register() {
     return vscode.window.registerCustomEditorProvider(this.viewType, this, {
       webviewOptions: {
-        retainContextWhenHidden: true
-      }
+        retainContextWhenHidden: true,
+      },
     });
   }
 
@@ -104,8 +104,8 @@ export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoE
   }
 
   private setupListeners(document: KogitoEditableDocument) {
-    const listeners = [document.onDidChange(e => this._onDidChangeCustomDocument.fire({ document, ...e }))];
-    document.onDidDispose(() => listeners.forEach(listener => listener.dispose()));
+    const listeners = [document.onDidChange((e) => this._onDidChangeCustomDocument.fire({ document, ...e }))];
+    document.onDidDispose(() => listeners.forEach((listener) => listener.dispose()));
   }
 
   private resolveBackup(backupId: string | undefined): Uri | undefined {

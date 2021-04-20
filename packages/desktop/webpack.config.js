@@ -24,24 +24,24 @@ module.exports = async (argv, env) => [
   merge(common, {
     target: "electron-main",
     entry: {
-      index: "./src/backend/index.ts"
+      index: "./src/backend/index.ts",
     },
     externals: {
-      electron: "commonjs electron"
+      electron: "commonjs electron",
     },
     plugins: [new CopyPlugin([{ from: "./build", to: "./build" }])],
     node: {
       __dirname: false,
-      __filename: false
-    }
+      __filename: false,
+    },
   }),
   merge(common, {
     target: "web",
     entry: {
-      "webview/index": "./src/webview/index.tsx"
+      "webview/index": "./src/webview/index.tsx",
     },
     externals: {
-      electron: "commonjs electron"
+      electron: "commonjs electron",
     },
     module: { rules: [...pfWebpackOptions.patternflyRules] },
     plugins: [
@@ -52,8 +52,8 @@ module.exports = async (argv, env) => [
         { from: "./static/index.html", to: "./index.html" },
         { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist", to: "./envelope" },
         { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] }
-      ])
-    ]
-  })
+        { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] },
+      ]),
+    ],
+  }),
 ];

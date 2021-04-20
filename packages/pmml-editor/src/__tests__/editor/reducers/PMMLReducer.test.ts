@@ -29,8 +29,8 @@ describe("PMMLReducer::Valid actions", () => {
     reducer(pmml, {
       type: Actions.SetVersion,
       payload: {
-        version: "1.0"
-      }
+        version: "1.0",
+      },
     });
 
     const updated: PMML = historyService.commit(pmml) as PMML;
@@ -45,8 +45,8 @@ describe("PMMLReducer::Invalid actions", () => {
     const updated: PMML = reducer(pmml, {
       type: Actions.SetHeaderDescription,
       payload: {
-        description: "description"
-      }
+        description: "description",
+      },
     });
     expect(updated).toEqual(pmml);
   });

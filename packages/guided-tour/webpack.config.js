@@ -23,15 +23,15 @@ module.exports = merge(common, {
   entry: {
     "api/index": "./src/api/index.ts",
     "channel/index": "./src/channel/index.ts",
-    "envelope/index": "./src/envelope/index.ts"
+    "envelope/index": "./src/envelope/index.ts",
   },
   target: "node",
   output: {
-    libraryTarget: "umd"
+    libraryTarget: "umd",
   },
   externals: ["react", "react-dom", /^@patternfly\/.+$/],
   plugins: [new CopyPlugin([{ from: "./static/css", to: "./css" }])],
   module: {
-    rules: [...pfWebpackOptions.patternflyRules]
-  }
+    rules: [...pfWebpackOptions.patternflyRules],
+  },
 });

@@ -53,13 +53,13 @@ function red(str) {
 
 Promise.resolve()
   .then(() => updatePackages(lernaVersionArg))
-  .then(version => updateChromeExtensionManifest(version, CHROME_EXTENSION_MANIFEST_DEV_JSON))
-  .then(version => updateChromeExtensionManifest(version, CHROME_EXTENSION_MANIFEST_PROD_JSON))
-  .then(version => {
+  .then((version) => updateChromeExtensionManifest(version, CHROME_EXTENSION_MANIFEST_DEV_JSON))
+  .then((version) => updateChromeExtensionManifest(version, CHROME_EXTENSION_MANIFEST_PROD_JSON))
+  .then((version) => {
     console.error("");
     console.info(`Updated to '${version}'.`);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error(error);
     console.error("");
     console.error(...red("Error updating versions. There might be undesired changes."));

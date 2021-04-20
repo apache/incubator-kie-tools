@@ -25,10 +25,10 @@ EditorEnvelope.init({
   bus: {
     postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, _?: any) {
       window.parent.postMessage(message, "*", _);
-    }
+    },
   },
   editorFactory: new CompositeEditorFactory([new GwtEditorWrapperFactory()]),
-  editorContext: { channel: getChannelType(), operatingSystem: getOperatingSystem() }
+  editorContext: { channel: getChannelType(), operatingSystem: getOperatingSystem() },
 });
 
 export function getChannelType(): ChannelType {

@@ -23,11 +23,11 @@ module.exports = merge(common, {
     path: path.join(__dirname, "dist"),
     filename: "[name]/index.js",
     library: ["[name]", "Editor"],
-    libraryTarget: 'umd',
+    libraryTarget: "umd",
   },
   entry: {
-    "dmn": "./src/dmn/index.ts",
-    "bpmn": "./src/bpmn/index.ts"
+    dmn: "./src/dmn/index.ts",
+    bpmn: "./src/bpmn/index.ts",
   },
   devServer: {
     historyApiFallback: false,
@@ -35,6 +35,6 @@ module.exports = merge(common, {
     watchContentBase: true,
     contentBase: [path.join(__dirname, "./dist")],
     compress: true,
-    port: 9001
-  }
+    port: 9001,
+  },
 });

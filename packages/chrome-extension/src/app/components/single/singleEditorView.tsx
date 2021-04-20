@@ -19,7 +19,7 @@ import {
   createAndGetMainContainer,
   extractOpenFileExtension,
   iframeFullscreenContainer,
-  removeAllChildren
+  removeAllChildren,
 } from "../../utils";
 import * as ReactDOM from "react-dom";
 import { Globals, Main } from "../common/Main";

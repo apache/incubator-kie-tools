@@ -64,7 +64,7 @@ export class Files {
         provider
           .list(fileOrDir)
           .reverse()
-          .forEach(file => provider.remove(file));
+          .forEach((file) => provider.remove(file));
       } else {
         provider.remove(fileOrDir);
       }

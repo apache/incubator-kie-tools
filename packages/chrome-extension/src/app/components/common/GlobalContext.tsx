@@ -24,7 +24,7 @@ import { Dependencies } from "../../Dependencies";
 export interface GlobalContextType {
   id: string;
   githubAuthTokenCookieName: string;
-  envelopeLocator: EditorEnvelopeLocator,
+  envelopeLocator: EditorEnvelopeLocator;
   logger: Logger;
   dependencies: Dependencies;
   extensionIconUrl: string;

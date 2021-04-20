@@ -23,7 +23,7 @@ export interface ActiveOperation {
 
 export const OperationContext = React.createContext<ActiveOperation>({
   activeOperation: Operation.NONE,
-  setActiveOperation: (operation: Operation) => null
+  setActiveOperation: (operation: Operation) => null,
 });
 
 export function useOperation() {

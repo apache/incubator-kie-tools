@@ -24,13 +24,13 @@ import { DesktopI18n } from "../webview/common/i18n";
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const dmnEnvelopeMapping: EnvelopeMapping = {
     envelopePath: "envelope/envelope.html",
-    resourcesPathPrefix: ""
+    resourcesPathPrefix: "",
   };
 
   const usedCtx = {
     editorEnvelopeLocator: { targetOrigin: window.location.origin, mapping: new Map([["dmn", dmnEnvelopeMapping]]) },
     file: { fileName: "test.dmn", fileExtension: "dmn", getFileContents: () => Promise.resolve(""), isReadOnly: false },
-    ...ctx
+    ...ctx,
   };
   return {
     ctx: usedCtx,
@@ -38,7 +38,7 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
       <GlobalContext.Provider key={""} value={usedCtx}>
         {children}
       </GlobalContext.Provider>
-    )
+    ),
   };
 }
 
@@ -51,7 +51,7 @@ export function usingTestingDesktopI18nContext(
     dictionaries: desktopI18nDictionaries,
     ctx: DesktopI18nContext,
     children,
-    ...ctx
+    ...ctx,
   };
   return {
     ctx: usedCtx,
@@ -59,6 +59,6 @@ export function usingTestingDesktopI18nContext(
       <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
         {usedCtx.children}
       </I18nDictionariesProvider>
-    )
+    ),
   };
 }

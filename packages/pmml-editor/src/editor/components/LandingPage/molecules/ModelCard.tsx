@@ -21,7 +21,7 @@ import {
   CardHeader,
   CardHeaderMain,
   CardTitle,
-  Tooltip
+  Tooltip,
 } from "@patternfly/react-core";
 import { ModelType } from "../../..";
 import * as React from "react";

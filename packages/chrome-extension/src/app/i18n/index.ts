@@ -15,4 +15,4 @@
  */
 
 export * from "./ChromeExtensionI18n";
-export * from "./setup"
+export * from "./setup";

@@ -25,28 +25,28 @@ export class DmnEditorResources extends BaseEditorResources {
       resourcesPathPrefix: args.resourcesPathPrefix,
       fileExtension: "dmn",
       initialLocale: "",
-      isReadOnly: false
+      isReadOnly: false,
     })!;
 
     const dmnEditorResources: EditorResources = {
       envelopeJsResource: this.createResource({ path: `dist/envelope/index.js` }),
       baseJsResources: dmnLanguageData?.resources
-        .filter(r => r.type === "js")
+        .filter((r) => r.type === "js")
         .pop()
-        ?.paths.map(p => this.createResource({ path: p }, ["\\", "`", "$"]))!,
+        ?.paths.map((p) => this.createResource({ path: p }, ["\\", "`", "$"]))!,
       referencedJsResources: this.getReferencedJSPaths(
         args.resourcesPathPrefix,
         dmnLanguageData.gwtModuleName
-      ).map(rp => this.createResource(rp, ["\\", "`", "$"])),
+      ).map((rp) => this.createResource(rp, ["\\", "`", "$"])),
       baseCssResources: dmnLanguageData?.resources
-        .filter(r => r.type === "css")
+        .filter((r) => r.type === "css")
         .pop()
-        ?.paths.map(p => this.createResource({ path: p }))!,
+        ?.paths.map((p) => this.createResource({ path: p }))!,
       referencedCssResources: this.getReferencedCSSPaths(
         args.resourcesPathPrefix,
         dmnLanguageData.gwtModuleName
-      ).map(rp => this.createResource(rp)),
-      fontResources: this.getFontResources(args.resourcesPathPrefix, dmnLanguageData.gwtModuleName)
+      ).map((rp) => this.createResource(rp)),
+      fontResources: this.getFontResources(args.resourcesPathPrefix, dmnLanguageData.gwtModuleName),
     };
 
     return dmnEditorResources;
@@ -54,7 +54,7 @@ export class DmnEditorResources extends BaseEditorResources {
 
   public getReferencedJSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
     const editorDir = fs.readdirSync(`${resourcesPathPrefix}/${gwtModuleName}`);
-    const gwtJSFile = editorDir.filter(file => file.indexOf(".cache.js") >= 0).pop();
+    const gwtJSFile = editorDir.filter((file) => file.indexOf(".cache.js") >= 0).pop();
     return [{ path: `${resourcesPathPrefix}/${gwtModuleName}/${gwtJSFile?.split("/").pop()}` }];
   }
 
@@ -73,7 +73,7 @@ export class DmnEditorResources extends BaseEditorResources {
       { path: `${resourcesPathPrefix}/${gwtModuleName}/css/bootstrap-slider-9.2.0.min.cache.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/css/bootstrap-switch-3.3.2.min.cache.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/css/bootstrap-datetimepicker-2.4.4.min.cache.css` },
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/css/typeahead-0.10.5.min.cache.css` }
+      { path: `${resourcesPathPrefix}/${gwtModuleName}/css/typeahead-0.10.5.min.cache.css` },
     ];
   }
 
@@ -82,49 +82,51 @@ export class DmnEditorResources extends BaseEditorResources {
       {
         family: "FontAwesome",
         additionalStyle: "font-weight:normal;font-style:normal;",
-        sources: [this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/fontawesome-webfont.ttf`)]
+        sources: [this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/fontawesome-webfont.ttf`)],
       },
       {
         family: "PatternFlyIcons-webfont",
         additionalStyle: "font-weight:normal;font-style:normal;",
-        sources: [this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/PatternFlyIcons-webfont.ttf`)]
+        sources: [this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/PatternFlyIcons-webfont.ttf`)],
       },
       {
         family: "Glyphicons Halflings",
         sources: [
-          this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/glyphicons-halflings-regular.ttf`)
-        ]
+          this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/glyphicons-halflings-regular.ttf`),
+        ],
       },
       {
         family: "Open Sans",
         additionalStyle: "font-weight:300;font-style:normal;",
-        sources: [this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/OpenSans-Light-webfont.ttf`)]
+        sources: [this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/OpenSans-Light-webfont.ttf`)],
       },
       {
         family: "Open Sans",
         additionalStyle: "font-weight:400;font-style:normal;",
-        sources: [this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/OpenSans-Regular-webfont.ttf`)]
+        sources: [this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/OpenSans-Regular-webfont.ttf`)],
       },
       {
         family: "Open Sans",
         additionalStyle: "font-weight:600;font-style:normal;",
-        sources: [this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/OpenSans-Semibold-webfont.ttf`)]
+        sources: [this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/OpenSans-Semibold-webfont.ttf`)],
       },
       {
         family: "Open Sans",
         additionalStyle: "font-weight:700;font-style:normal;",
-        sources: [this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/OpenSans-Bold-webfont.ttf`)]
+        sources: [this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/OpenSans-Bold-webfont.ttf`)],
       },
       {
         family: "Open Sans",
         additionalStyle: "font-weight:800;font-style:normal;",
-        sources: [this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/OpenSans-ExtraBold-webfont.ttf`)]
+        sources: [
+          this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/OpenSans-ExtraBold-webfont.ttf`),
+        ],
       },
       {
         family: "Font Awesome 5 Free",
         additionalStyle: "font-weight:900;font-style:normal;",
-        sources: [this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/fontawesome-webfont.ttf`)]
-      }
+        sources: [this.createFontSource(`${resourcesPathPrefix}/${gwtModuleName}/fonts/fontawesome-webfont.ttf`)],
+      },
     ];
   }
 

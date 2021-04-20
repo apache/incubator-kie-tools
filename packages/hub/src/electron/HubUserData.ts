@@ -22,7 +22,7 @@ export class HubUserData {
   constructor() {
     this.userData = new UserData({
       configName: "kogito-tooling-hub",
-      defaults: {}
+      defaults: {},
     });
   }
 

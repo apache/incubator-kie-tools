@@ -47,6 +47,6 @@ export function sequenceModelFactory(): SequenceModel {
     numberOfRules: 0,
     numberOfSequences: 0,
     numberOfSets: 0,
-    functionName: "regression"
+    functionName: "regression",
   });
 }

@@ -79,7 +79,7 @@ export class GwtEditorWrapper implements Editor {
   }
 
   public getContent() {
-    return this.gwtEditor.getContent().then(content => this.xmlFormatter.format(content));
+    return this.gwtEditor.getContent().then((content) => this.xmlFormatter.format(content));
   }
 
   public getElementPosition(selector: string) {

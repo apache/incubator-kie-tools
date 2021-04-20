@@ -24,7 +24,7 @@ import {
   PageHeaderToolsGroup,
   PageHeaderToolsItem,
   Button,
-  Title
+  Title,
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
 import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/components/Tooltip/Tooltip";

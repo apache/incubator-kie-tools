@@ -32,19 +32,19 @@ const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boolean, ori
   const defaultOrigin = window.location.protocol === "file:" ? "*" : window.location.origin;
 
   return new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
-    { postMessage: message => iframe.contentWindow?.postMessage(message, "*") },
+    { postMessage: (message) => iframe.contentWindow?.postMessage(message, "*") },
     origin ?? defaultOrigin,
-    self => {
+    (self) => {
       return self.envelopeApi.requests.receive_initRequest(
         {
           origin: self.origin,
-          envelopeServerId: self.id
+          envelopeServerId: self.id,
         },
         {
           resourcesPathPrefix: "",
           fileExtension: "bpmn",
           initialLocale: "en-US",
-          isReadOnly: readOnly ?? true
+          isReadOnly: readOnly ?? true,
         }
       );
     }
@@ -77,7 +77,7 @@ export function open(args: {
           fileName: "",
           fileExtension: "bpmn",
           getFileContents: () => Promise.resolve(args.initialContent),
-          isReadOnly: args.readOnly ?? false
+          isReadOnly: args.readOnly ?? false,
         },
         "en-US",
         {},

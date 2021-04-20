@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 const nodePath = require("path");
 const nodeFs = require("fs");
 const glob = require("glob");
@@ -28,7 +28,7 @@ const glob = require("glob");
 const nodeModulesDir = "../.." + (__dirname.includes("node_modules") ? "" : "/node_modules");
 
 module.exports = {
-  dmnEditorPath: argv => {
+  dmnEditorPath: (argv) => {
     const path =
       (argv && argv["EXTERNAL_RESOURCE_PATH__dmnEditor"]) ||
       process.env["EXTERNAL_RESOURCE_PATH__dmnEditor"] ||
@@ -43,7 +43,7 @@ module.exports = {
     return path;
   },
 
-  bpmnEditorPath: argv => {
+  bpmnEditorPath: (argv) => {
     const path =
       (argv && argv["EXTERNAL_RESOURCE_PATH__bpmnEditor"]) ||
       process.env["EXTERNAL_RESOURCE_PATH__bpmnEditor"] ||
@@ -58,7 +58,7 @@ module.exports = {
     return path;
   },
 
-  scesimEditorPath: argv => {
+  scesimEditorPath: (argv) => {
     const path =
       (argv && argv["EXTERNAL_RESOURCE_PATH__scesimEditor"]) ||
       process.env["EXTERNAL_RESOURCE_PATH__scesimEditor"] ||
@@ -73,7 +73,7 @@ module.exports = {
     return path;
   },
 
-  quarkusRunnerPath: argv => {
+  quarkusRunnerPath: (argv) => {
     const path =
       (argv && argv["EXTERNAL_RESOURCE_PATH__quarkusRunner"]) ||
       process.env["EXTERNAL_RESOURCE_PATH__quarkusRunner"] ||
@@ -96,5 +96,5 @@ module.exports = {
     console.info(`External asset :: Quarkus Runner path: ${matches[0]}`);
 
     return path;
-  }
+  },
 };

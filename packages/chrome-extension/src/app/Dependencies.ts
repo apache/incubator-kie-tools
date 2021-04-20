@@ -24,7 +24,7 @@ export class Dependencies {
     },
     githubTextEditorToReplaceElement: () => {
       return document.querySelector(".js-code-editor") as HTMLElement | null;
-    }
+    },
   };
 
   public readonly singleView = {
@@ -36,7 +36,7 @@ export class Dependencies {
     },
     githubTextEditorToReplaceElement: () => {
       return document.querySelector(".Box-body.p-0.blob-wrapper.data") as HTMLElement | null;
-    }
+    },
   };
 
   public readonly prView = {
@@ -48,7 +48,7 @@ export class Dependencies {
     },
     githubTextEditorToReplaceElement: (container: HTMLElement) => {
       return container.querySelector(".js-file-content") as HTMLElement | null;
-    }
+    },
   };
 
   public readonly treeView = {
@@ -60,7 +60,7 @@ export class Dependencies {
       return Array.from(
         document.querySelectorAll('div[role="grid"] > div[role="row"] > div[role="rowheader"] > span > a[href*=blob]')
       ) as HTMLAnchorElement[];
-    }
+    },
   };
 
   public readonly all = {
@@ -92,7 +92,7 @@ export class Dependencies {
     array: {
       pr__supportedPrFileContainers: () => {
         const elements = Array.from(document.querySelectorAll(".file.js-file.js-details-container")).map(
-          e => e as HTMLElement
+          (e) => e as HTMLElement
         );
         return elements.length > 0 ? (elements as HTMLElement[]) : null;
       },
@@ -100,7 +100,7 @@ export class Dependencies {
       pr__prInfoContainer: () => {
         const elements = Array.from(document.querySelectorAll(".gh-header-meta .css-truncate-target"));
         return elements.length > 0 ? (elements as HTMLElement[]) : null;
-      }
-    }
+      },
+    },
   };
 }

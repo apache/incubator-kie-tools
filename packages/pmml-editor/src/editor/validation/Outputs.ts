@@ -26,10 +26,7 @@ export const validateOutputs = (
 ): void => {
   if (outputFields.length === 0) {
     validationRegistry.set(
-      Builder()
-        .forModel(modelIndex)
-        .forOutput()
-        .build(),
+      Builder().forModel(modelIndex).forOutput().build(),
       new ValidationEntry(ValidationLevel.WARNING, `At least one Output Field is required.`)
     );
   }
@@ -47,12 +44,7 @@ export const validateOutput = (
 ): void => {
   if (isOutputsTargetFieldRequired(miningFields) && outputField.targetField === undefined) {
     validationRegistry.set(
-      Builder()
-        .forModel(modelIndex)
-        .forOutput()
-        .forOutputField(outputFieldIndex)
-        .forTargetField()
-        .build(),
+      Builder().forModel(modelIndex).forOutput().forOutputField(outputFieldIndex).forTargetField().build(),
       new ValidationEntry(
         ValidationLevel.WARNING,
         `"${outputField.name}": target field is required if Mining Schema has multiple target fields.`
@@ -62,5 +54,5 @@ export const validateOutput = (
 };
 
 export const isOutputsTargetFieldRequired = (miningFields: MiningField[]) => {
-  return miningFields.filter(field => field.usageType === "target").length > 1;
+  return miningFields.filter((field) => field.usageType === "target").length > 1;
 };

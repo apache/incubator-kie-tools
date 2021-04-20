@@ -24,7 +24,7 @@ import {
   SplitItem,
   Stack,
   StackItem,
-  TextInput
+  TextInput,
 } from "@patternfly/react-core";
 import "./OutputFieldRow.scss";
 import {
@@ -33,7 +33,7 @@ import {
   OpType,
   OutputField,
   RankOrder,
-  ResultFeature
+  ResultFeature,
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputLabelsEditMode } from "../atoms";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
@@ -71,7 +71,7 @@ const dataTypes = [
   "dateTimeSecondsSince[0]",
   "dateTimeSecondsSince[1960]",
   "dateTimeSecondsSince[1970]",
-  "dateTimeSecondsSince[1980]"
+  "dateTimeSecondsSince[1980]",
 ];
 
 const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
@@ -83,7 +83,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
     viewExtendedProperties,
     onCommitAndClose,
     onCommit,
-    onCancel
+    onCancel,
   } = props;
 
   const { activeOperation } = useOperation();
@@ -105,7 +105,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
     }
     setName({
       value: outputField.name,
-      valid: validateOutputName(outputField.name)
+      valid: validateOutputName(outputField.name),
     });
     setDataType(outputField.dataType);
     setOptype(outputField.optype);
@@ -133,7 +133,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
     },
     {
       disabled: activeOperation !== Operation.UPDATE_OUTPUT,
-      eventTypes: ["click"]
+      eventTypes: ["click"],
     }
   );
 
@@ -141,12 +141,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
   const targetFieldValidation = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forOutput()
-          .forOutputField(outputFieldIndex)
-          .forTargetField()
-          .build()
+        Builder().forModel(modelIndex).forOutput().forOutputField(outputFieldIndex).forTargetField().build()
       ),
     [outputFieldIndex, modelIndex, outputField]
   );
@@ -155,7 +150,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
       className={"editable-item__inner"}
       ref={ref}
       tabIndex={0}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === "Escape") {
           onCancel();
         }
@@ -182,21 +177,21 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   placeholder="Name"
                   validated={name?.valid ? "default" : "error"}
                   autoFocus={true}
-                  onChange={e => {
+                  onChange={(e) => {
                     setName({
                       value: e as FieldName,
-                      valid: validateOutputName(e as FieldName)
+                      valid: validateOutputName(e as FieldName),
                     });
                   }}
-                  onBlur={e => {
+                  onBlur={(e) => {
                     if (name?.valid) {
                       onCommit({
-                        name: name.value as FieldName
+                        name: name.value as FieldName,
                       });
                     } else {
                       setName({
                         value: outputField?.name,
-                        valid: validateOutputName(outputField.name)
+                        valid: validateOutputName(outputField.name),
                       });
                     }
                   }}
@@ -217,7 +212,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                     setIsTypeSelectOpen(false);
                     setDataType(isPlaceholder ? undefined : selection);
                     onCommit({
-                      dataType: isPlaceholder ? undefined : selection
+                      dataType: isPlaceholder ? undefined : selection,
                     });
                   }}
                   selections={dataType}

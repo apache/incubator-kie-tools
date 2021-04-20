@@ -63,15 +63,15 @@ export class Menu {
           label: this.i18n.names.bpmn,
           click: () => {
             this.fileOperations.newFile("bpmn");
-          }
+          },
         },
         {
           label: this.i18n.names.dmn,
           click: () => {
             this.fileOperations.newFile("dmn");
-          }
-        }
-      ]
+          },
+        },
+      ],
     };
 
     this.openMenu = {
@@ -87,16 +87,16 @@ export class Menu {
                 filters: [
                   {
                     name: this.i18n.menu.open.submenu.file.supported,
-                    extensions: ["bpmn", "bpmn2", "dmn"]
-                  }
-                ]
+                    extensions: ["bpmn", "bpmn2", "dmn"],
+                  },
+                ],
               })
-              .then(result => {
+              .then((result) => {
                 if (!result.canceled) {
                   this.fileOperations.openFile(result.filePaths[0]);
                 }
               });
-          }
+          },
         },
         {
           label: this.i18n.menu.open.submenu.sample,
@@ -105,17 +105,17 @@ export class Menu {
               label: this.i18n.names.bpmn,
               click: () => {
                 this.fileOperations.openSample(path.join(__dirname, "samples/sample.bpmn"));
-              }
+              },
             },
             {
               label: this.i18n.names.dmn,
               click: () => {
                 this.fileOperations.openSample(path.join(__dirname, "samples/sample.dmn"));
-              }
-            }
-          ]
-        }
-      ]
+              },
+            },
+          ],
+        },
+      ],
     };
 
     this.saveMenu = {
@@ -124,7 +124,7 @@ export class Menu {
       click: () => {
         this.fileOperations.saveFile();
       },
-      enabled: false
+      enabled: false,
     };
 
     this.saveAsMenu = {
@@ -133,7 +133,7 @@ export class Menu {
       click: () => {
         this.fileOperations.saveFileAs();
       },
-      enabled: false
+      enabled: false,
     };
 
     this.savePreviewAsMenu = {
@@ -141,7 +141,7 @@ export class Menu {
       click: () => {
         this.window.webContents.send("savePreview");
       },
-      enabled: false
+      enabled: false,
     };
 
     this.closeWindowMenu = {
@@ -149,7 +149,7 @@ export class Menu {
       accelerator: "Command+W",
       click: () => {
         this.window.close();
-      }
+      },
     };
 
     this.quitMenu = {
@@ -157,7 +157,7 @@ export class Menu {
       accelerator: "CmdOrCtrl+Q",
       click: () => {
         app.quit();
-      }
+      },
     };
 
     this.fileMenu = {
@@ -169,10 +169,10 @@ export class Menu {
         this.saveAsMenu,
         this.savePreviewAsMenu,
         {
-          type: "separator"
+          type: "separator",
         },
-        this.quitMenu
-      ]
+        this.quitMenu,
+      ],
     };
 
     this.macOsFileMenu = {
@@ -184,10 +184,10 @@ export class Menu {
         this.saveAsMenu,
         this.savePreviewAsMenu,
         {
-          type: "separator"
+          type: "separator",
         },
-        this.closeWindowMenu
-      ]
+        this.closeWindowMenu,
+      ],
     };
 
     this.macOsAppMenu = {
@@ -195,42 +195,42 @@ export class Menu {
       submenu: [
         {
           label: this.i18n.menu.macOsAppMenu.submenu.about,
-          role: "about"
+          role: "about",
         },
         {
-          type: "separator"
+          type: "separator",
         },
         {
           label: this.i18n.menu.macOsAppMenu.submenu.services,
           role: "services",
-          submenu: []
+          submenu: [],
         },
         {
-          type: "separator"
+          type: "separator",
         },
         {
           label: this.i18n.menu.macOsAppMenu.submenu.hide,
           accelerator: "Command+H",
-          role: "hide"
+          role: "hide",
         },
         {
           label: this.i18n.menu.macOsAppMenu.submenu.hideOthers,
           accelerator: "Command+Alt+H",
-          role: "hideOthers"
+          role: "hideOthers",
         },
         {
           label: this.i18n.menu.macOsAppMenu.submenu.showAll,
-          role: "unhide"
+          role: "unhide",
         },
         {
-          type: "separator"
+          type: "separator",
         },
         {
           label: this.i18n.terms.quit,
           accelerator: "Command+Q",
-          click: () => app.quit()
-        }
-      ]
+          click: () => app.quit(),
+        },
+      ],
     };
 
     this.editMenu = {
@@ -240,15 +240,15 @@ export class Menu {
           label: this.i18n.menu.edit.submenu.label,
           click: () => {
             this.window.webContents.send("copyContentToClipboard");
-          }
+          },
         },
         { label: this.i18n.terms.undo, accelerator: "CmdOrCtrl+Z", selector: "undo:" },
         { label: this.i18n.terms.redo, accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
         { label: this.i18n.terms.cut, accelerator: "CmdOrCtrl+X", selector: "cut:" },
         { label: this.i18n.terms.copy, accelerator: "CmdOrCtrl+C", selector: "copy:" },
         { label: this.i18n.terms.paste, accelerator: "CmdOrCtrl+V", selector: "paste:" },
-        { label: this.i18n.menu.edit.submenu.selectAll, accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
-      ] as MenuItemConstructorOptions[]
+        { label: this.i18n.menu.edit.submenu.selectAll, accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
+      ] as MenuItemConstructorOptions[],
     };
 
     this.devMenu = {
@@ -258,15 +258,15 @@ export class Menu {
           label: this.i18n.menu.devMenu.submenu.showDevTools,
           click: () => {
             this.window.webContents.openDevTools();
-          }
+          },
         },
         {
           label: this.i18n.menu.devMenu.submenu.clearUserData,
           click: () => {
             this.userData.clear();
-          }
-        }
-      ]
+          },
+        },
+      ],
     };
   }
 
@@ -295,7 +295,7 @@ export class Menu {
   public setup() {
     const template: Array<MenuItemConstructorOptions | MenuItem> = [
       process.platform === "darwin" ? this.macOsFileMenu : this.fileMenu,
-      this.editMenu
+      this.editMenu,
     ];
 
     if (process.platform === "darwin") {

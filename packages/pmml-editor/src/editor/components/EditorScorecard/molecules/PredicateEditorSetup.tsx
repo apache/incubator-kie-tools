@@ -28,50 +28,50 @@ export const bootstrapMonaco = () => {
       {
         token: "sc-boolean",
         foreground: "26268D",
-        fontStyle: "bold"
+        fontStyle: "bold",
       },
       {
         token: "sc-string",
         foreground: "2A9343",
-        fontStyle: "bold"
+        fontStyle: "bold",
       },
       {
         token: "sc-operator",
-        foreground: "3232E8"
+        foreground: "3232E8",
       },
       {
         token: "sc-keyword",
         foreground: "0000ff",
-        fontStyle: "bold"
-      }
+        fontStyle: "bold",
+      },
     ],
-    colors: { "editorLineNumber.foreground": "00ff00" }
+    colors: { "editorLineNumber.foreground": "00ff00" },
   };
   const tokens: languages.IMonarchLanguage = {
     tokenizer: {
       root: [
         {
           regex: "[0-9]+",
-          action: "sc-numeric"
+          action: "sc-numeric",
         },
         {
           regex: "(?:(\\btrue\\b)|(\\bfalse\\b))",
-          action: "sc-boolean"
+          action: "sc-boolean",
         },
         {
           regex: "True|False",
-          action: "sc-keyword"
+          action: "sc-keyword",
         },
         {
           regex: '(?:\\"(?:.*?)\\")',
-          action: "sc-string"
+          action: "sc-string",
         },
         {
           regex: "==|!=|<|<=|>|>=|isMissing|isNotMissing",
-          action: "sc-operator"
-        }
-      ]
-    }
+          action: "sc-operator",
+        },
+      ],
+    },
   };
   const provider: languages.CompletionItemProvider = {
     provideCompletionItems(
@@ -87,18 +87,18 @@ export const bootstrapMonaco = () => {
             insertText: "True",
             kind: CompletionItemKind.Keyword,
             insertTextRules: CompletionItemInsertTextRule.InsertAsSnippet,
-            range: { startLineNumber: 1, endLineNumber: 1, startColumn: 1, endColumn: 1 }
+            range: { startLineNumber: 1, endLineNumber: 1, startColumn: 1, endColumn: 1 },
           },
           {
             label: "False",
             insertText: "False",
             kind: CompletionItemKind.Keyword,
             insertTextRules: CompletionItemInsertTextRule.InsertAsSnippet,
-            range: { startLineNumber: 1, endLineNumber: 1, startColumn: 1, endColumn: 1 }
-          }
-        ]
+            range: { startLineNumber: 1, endLineNumber: 1, startColumn: 1, endColumn: 1 },
+          },
+        ],
       };
-    }
+    },
   };
   monaco.editor.defineTheme("scorecards", theme);
   monaco.languages.register({ id: "scorecards" });

@@ -63,7 +63,7 @@ export class FS implements Provider {
     const result: FileMetadata[] = [];
 
     if (directory.storage.valueOf() === StorageTypes.FS.valueOf()) {
-      fs.readdirSync(directory.fullName).forEach(currentFile => {
+      fs.readdirSync(directory.fullName).forEach((currentFile) => {
         const currentFileFullPath = path.join(directory.fullName, currentFile);
         const currentFileObj: FileMetadata = FS.newFile(currentFileFullPath);
 

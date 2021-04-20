@@ -25,7 +25,7 @@ function mockFunctions() {
   const original = require.requireActual("@kogito-tooling/editor/dist/embedded");
   return {
     ...original,
-    useDirtyState: jest.fn(() => true).mockImplementationOnce(() => false)
+    useDirtyState: jest.fn(() => true).mockImplementationOnce(() => false),
   };
 }
 jest.mock("@kogito-tooling/editor/dist/embedded", () => mockFunctions());

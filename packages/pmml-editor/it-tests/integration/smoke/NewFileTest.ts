@@ -21,44 +21,26 @@ describe("New File basic user's interaction", () => {
   });
 
   it("Menu is visible", () => {
-    cy.buttonUndo()
-      .contains("Undo")
-      .should("be.visible");
+    cy.buttonUndo().contains("Undo").should("be.visible");
 
-    cy.buttonRedo()
-      .contains("Redo")
-      .should("be.visible");
+    cy.buttonRedo().contains("Redo").should("be.visible");
 
-    cy.buttonPMML()
-      .contains("PMML")
-      .should("be.visible");
+    cy.buttonPMML().contains("PMML").should("be.visible");
 
-    cy.buttonValidation()
-      .contains("Validate")
-      .should("be.visible");
+    cy.buttonValidation().contains("Validate").should("be.visible");
   });
 
   it("Definition of DataSet is visible", () => {
-    cy.buttonDataDictionary()
-      .contains("Set Data Dictionary")
-      .should("be.visible");
+    cy.buttonDataDictionary().contains("Set Data Dictionary").should("be.visible");
 
-    cy.buttonMiningSchema()
-      .contains("Set Mining Schema")
-      .should("be.visible");
+    cy.buttonMiningSchema().contains("Set Mining Schema").should("be.visible");
 
-    cy.buttonOutputs()
-      .contains("Set Outputs")
-      .should("be.visible");
+    cy.buttonOutputs().contains("Set Outputs").should("be.visible");
   });
 
   it("Validation is visible", () => {
-    cy.buttonOutputs()
-      .get("span.pf-c-button__icon")
-      .should("be.visible");
+    cy.buttonOutputs().get("span.pf-c-button__icon").should("be.visible");
 
-    cy.get("span.pf-m-orange>span.pf-c-label__content")
-      .get("span.pf-c-label__icon")
-      .should("be.visible");
+    cy.get("span.pf-m-orange>span.pf-c-label__content").get("span.pf-c-label__icon").should("be.visible");
   });
 });

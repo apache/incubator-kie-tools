@@ -28,9 +28,7 @@ describe("Both BPMN DMN.", () => {
     cy.viewFile("process-string.bpmn", "both-bpmn");
 
     // Check dmn file loaded correctly
-    cy.editor("both-dmn")
-      .find("[data-field='kie-palette']")
-      .should("be.visible");
+    cy.editor("both-dmn").find("[data-field='kie-palette']").should("be.visible");
 
     cy.editor("both-dmn")
       .ouiaId("collapsed-docks-bar", "collapsed-docks-bar-W", { timeout: 10000 })
@@ -46,12 +44,12 @@ describe("Both BPMN DMN.", () => {
     cy.editor("both-dmn")
       .ouiaId("expanded-docks-bar", "expanded-docks-bar-W")
       .should("be.visible")
-      .within($navigator => {
+      .within(($navigator) => {
         cy.get("[data-field='item'][title='DRG']")
           .should("be.visible")
           .siblings("[data-field='item']")
           .should("have.length", 4)
-          .then($items => {
+          .then(($items) => {
             expect($items.eq(0)).to.have.attr("title", "call centre drd");
             expect($items.eq(0)).not.to.have.class("editable");
             expect($items.eq(1)).to.have.attr("title", "DRDs");
@@ -64,10 +62,7 @@ describe("Both BPMN DMN.", () => {
       });
 
     // Check BPMN loaded correctly
-    cy.editor("both-bpmn")
-      .find("[data-title='Explore Diagram']")
-      .should("be.visible")
-      .click({ force: true });
+    cy.editor("both-bpmn").find("[data-title='Explore Diagram']").should("be.visible").click({ force: true });
 
     cy.editor("both-bpmn")
       .find("[data-field='explorerPanelBody']")
@@ -75,7 +70,7 @@ describe("Both BPMN DMN.", () => {
       .should("be.visible")
       .find("a.gwt-Anchor")
       .should("have.length", 7)
-      .then($links => {
+      .then(($links) => {
         expect($links.eq(0)).to.contain.text("Process string");
         expect($links.eq(1)).to.contain.text("Start");
         expect($links.eq(2)).to.contain.text("Exclusive");

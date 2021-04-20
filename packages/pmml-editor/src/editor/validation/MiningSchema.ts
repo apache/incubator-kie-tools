@@ -18,7 +18,7 @@ import {
   InvalidValueTreatmentMethod,
   MiningField,
   MissingValueTreatmentMethod,
-  OutlierTreatmentMethod
+  OutlierTreatmentMethod,
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
@@ -44,12 +44,7 @@ export const validateMiningField = (
   const importance = miningField.importance;
   if (importance !== undefined && (importance < 0 || importance > 1)) {
     validationRegistry.set(
-      Builder()
-        .forModel(modelIndex)
-        .forMiningSchema()
-        .forMiningField(miningFieldIndex)
-        .forImportance()
-        .build(),
+      Builder().forModel(modelIndex).forMiningSchema().forMiningField(miningFieldIndex).forImportance().build(),
       new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Importance must be between 0 and 1.`)
     );
   }
@@ -59,44 +54,24 @@ export const validateMiningField = (
   if (areLowHighValuesRequired(outliers)) {
     if (lowValue === undefined && highValue === undefined) {
       validationRegistry.set(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .forMiningField(miningFieldIndex)
-          .forLowValue()
-          .build(),
+        Builder().forModel(modelIndex).forMiningSchema().forMiningField(miningFieldIndex).forLowValue().build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Low and/or High Value must be set.`)
       );
       validationRegistry.set(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .forMiningField(miningFieldIndex)
-          .forHighValue()
-          .build(),
+        Builder().forModel(modelIndex).forMiningSchema().forMiningField(miningFieldIndex).forHighValue().build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Low and/or High Value must be set.`)
       );
     }
   } else {
     if (lowValue !== undefined) {
       validationRegistry.set(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .forMiningField(miningFieldIndex)
-          .forLowValue()
-          .build(),
+        Builder().forModel(modelIndex).forMiningSchema().forMiningField(miningFieldIndex).forLowValue().build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" Low Value is not needed.`)
       );
     }
     if (highValue !== undefined) {
       validationRegistry.set(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .forMiningField(miningFieldIndex)
-          .forHighValue()
-          .build(),
+        Builder().forModel(modelIndex).forMiningSchema().forMiningField(miningFieldIndex).forHighValue().build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" High Value is not needed.`)
       );
     }
@@ -177,14 +152,9 @@ export const validateMiningFieldDataFieldReference = (
   miningField: MiningField,
   validationRegistry: ValidationRegistry
 ): void => {
-  if (dataFields.filter(dataField => dataField.name === miningField.name).length === 0) {
+  if (dataFields.filter((dataField) => dataField.name === miningField.name).length === 0) {
     validationRegistry.set(
-      Builder()
-        .forModel(modelIndex)
-        .forMiningSchema()
-        .forMiningField(miningFieldIndex)
-        .forDataFieldMissing()
-        .build(),
+      Builder().forModel(modelIndex).forMiningSchema().forMiningField(miningFieldIndex).forDataFieldMissing().build(),
       new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" cannot be not found in the Data Dictionary.`)
     );
   }

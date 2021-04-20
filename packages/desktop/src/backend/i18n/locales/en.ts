@@ -22,18 +22,18 @@ export const en: DesktopI18n = {
   fileOperations: {
     dialog: {
       savePreview: "Save preview",
-      saveFile: "Save file"
-    }
+      saveFile: "Save file",
+    },
   },
   menu: {
     open: {
       submenu: {
         file: {
           title: "Open file",
-          supported: "Supported file extensions (*.bpmn, *.bpmn2, *.dmn)"
+          supported: "Supported file extensions (*.bpmn, *.bpmn2, *.dmn)",
         },
-        sample: "Sample"
-      }
+        sample: "Sample",
+      },
     },
     saveAs: `${en_common.terms.save} As...`,
     savePreviewAs: `${en_common.terms.save} Preview As...`,
@@ -41,15 +41,15 @@ export const en: DesktopI18n = {
     edit: {
       submenu: {
         label: "Copy source",
-        selectAll: "Select All"
-      }
+        selectAll: "Select All",
+      },
     },
     devMenu: {
       label: "Development Menu",
       submenu: {
         showDevTools: "Show Developer Tools",
-        clearUserData: "Clear User Data"
-      }
+        clearUserData: "Clear User Data",
+      },
     },
     macOsAppMenu: {
       submenu: {
@@ -57,8 +57,8 @@ export const en: DesktopI18n = {
         services: "Services",
         hide: `Hide ${en_common.names.businessModeler}`,
         hideOthers: "Hide Others",
-        showAll: "Show All"
-      }
-    }
-  }
+        showAll: "Show All",
+      },
+    },
+  },
 };

@@ -21,7 +21,7 @@ export interface Validation {
 }
 
 export const ValidationContext = React.createContext<Validation>({
-  validationRegistry: new ValidationRegistry()
+  validationRegistry: new ValidationRegistry(),
 });
 
 export function useValidationRegistry() {

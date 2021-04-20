@@ -29,5 +29,5 @@ EditorEnvelope.init({
   editorContext: {
     channel: ChannelType.VSCODE,
     operatingSystem: getOperatingSystem(),
-  }
+  },
 });

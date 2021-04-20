@@ -58,7 +58,7 @@ export function startExtension(args: {
       extensionIconUrl: args.extensionIconUrl,
       editorEnvelopeLocator: args.editorEnvelopeLocator,
       resourceContentServiceFactory: resourceContentServiceFactory,
-      externalEditorManager: args.externalEditorManager
+      externalEditorManager: args.externalEditorManager,
     });
 
   runAfterUriChange(logger, () => setTimeout(runInit, 0));
@@ -89,7 +89,7 @@ function init(args: Globals) {
       extensionIconUrl: args.extensionIconUrl,
       externalEditorManager: args.externalEditorManager,
       resourceContentServiceFactory: args.resourceContentServiceFactory,
-      fileInfo: fileInfo
+      fileInfo: fileInfo,
     });
   } else if (pageType === GitHubPageType.VIEW) {
     renderSingleEditorReadonlyApp({
@@ -101,7 +101,7 @@ function init(args: Globals) {
       extensionIconUrl: args.extensionIconUrl,
       fileInfo: fileInfo,
       resourceContentServiceFactory: args.resourceContentServiceFactory,
-      externalEditorManager: args.externalEditorManager
+      externalEditorManager: args.externalEditorManager,
     });
   } else if (pageType === GitHubPageType.PR) {
     renderPrEditorsApp({
@@ -113,7 +113,7 @@ function init(args: Globals) {
       extensionIconUrl: args.extensionIconUrl,
       resourceContentServiceFactory: args.resourceContentServiceFactory,
       externalEditorManager: args.externalEditorManager,
-      contentPath: fileInfo.path
+      contentPath: fileInfo.path,
     });
   } else if (pageType === GitHubPageType.TREE) {
     addExternalEditorLinks({
@@ -124,7 +124,7 @@ function init(args: Globals) {
       extensionIconUrl: args.extensionIconUrl,
       resourceContentServiceFactory: args.resourceContentServiceFactory,
       externalEditorManager: args.externalEditorManager,
-      dependencies: args.dependencies
+      dependencies: args.dependencies,
     });
     return;
   } else {
@@ -138,7 +138,7 @@ export function extractFileInfoFromUrl() {
     gitRef: split[4],
     repo: split[2],
     org: split[1],
-    path: split.slice(5).join("/")
+    path: split.slice(5).join("/"),
   };
 }
 

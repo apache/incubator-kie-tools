@@ -19,5 +19,5 @@ export enum ChannelType {
   ONLINE = "ONLINE",
   GITHUB = "GITHUB",
   DESKTOP = "DESKTOP",
-  EMBEDDED = "EMBEDDED"
+  EMBEDDED = "EMBEDDED",
 }

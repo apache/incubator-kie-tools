@@ -41,12 +41,8 @@ export const OutputFieldReducer: HistoryAwareValidatingReducer<OutputField[], Al
       case Actions.UpdateOutput:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .forOutput()
-            .forOutputField()
-            .build(),
-          draft => {
+          Builder().forModel(action.payload.modelIndex).forOutput().forOutputField().build(),
+          (draft) => {
             const outputIndex = action.payload.outputIndex;
             if (outputIndex >= 0 && outputIndex < draft.length) {
               draft[outputIndex] = {
@@ -60,23 +56,18 @@ export const OutputFieldReducer: HistoryAwareValidatingReducer<OutputField[], Al
                 rank: action.payload.outputField.rank,
                 rankOrder: action.payload.outputField.rankOrder,
                 segmentId: action.payload.outputField.segmentId,
-                isFinalResult: action.payload.outputField.isFinalResult
+                isFinalResult: action.payload.outputField.isFinalResult,
               };
             }
           },
-          pmml => {
+          (pmml) => {
             const modelIndex = action.payload.modelIndex;
             const outputField = action.payload.outputField;
             const outputFieldIndex = action.payload.outputIndex;
             const miningSchema = getMiningSchema(pmml, modelIndex);
             if (miningSchema !== undefined) {
               validationRegistry.clear(
-                Builder()
-                  .forModel(modelIndex)
-                  .forOutput()
-                  .forOutputField(outputFieldIndex)
-                  .forTargetField()
-                  .build()
+                Builder().forModel(modelIndex).forOutput().forOutputField(outputFieldIndex).forTargetField().build()
               );
               validateOutput(modelIndex, outputField, outputFieldIndex, miningSchema.MiningField, validationRegistry);
             }
@@ -89,15 +80,11 @@ export const OutputFieldReducer: HistoryAwareValidatingReducer<OutputField[], Al
           if (outputField.targetField === action.payload.originalName) {
             historyService.batch(
               state,
-              Builder()
-                .forModel(action.payload.modelIndex)
-                .forOutput()
-                .forOutputField()
-                .build(),
-              draft => {
+              Builder().forModel(action.payload.modelIndex).forOutput().forOutputField().build(),
+              (draft) => {
                 draft[index] = {
                   ...draft[index],
-                  targetField: action.payload.dataField.name
+                  targetField: action.payload.dataField.name,
                 };
               }
             );

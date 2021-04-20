@@ -27,14 +27,14 @@ describe("PositionCalculator", () => {
       top: 10,
       width: 200,
       x: 20,
-      y: 10
+      y: 10,
     };
 
     it("returns position for when the position is 'right'", () => {
       expect(calculatePositionStyle("right", rect)).toEqual({
         left: 240,
         top: 10,
-        transform: "rotate3d(0, 0, 0, 0deg)"
+        transform: "rotate3d(0, 0, 0, 0deg)",
       });
     });
 
@@ -42,7 +42,7 @@ describe("PositionCalculator", () => {
       expect(calculatePositionStyle("left", rect)).toEqual({
         left: 0,
         top: 10,
-        transform: "translate(-100%, 0%)"
+        transform: "translate(-100%, 0%)",
       });
     });
 
@@ -50,7 +50,7 @@ describe("PositionCalculator", () => {
       expect(calculatePositionStyle("bottom", rect)).toEqual({
         left: 20,
         top: 80,
-        transform: "rotate3d(0, 0, 0, 0deg)"
+        transform: "rotate3d(0, 0, 0, 0deg)",
       });
     });
 
@@ -58,7 +58,7 @@ describe("PositionCalculator", () => {
       expect(calculatePositionStyle("center", rect)).toEqual({
         left: "",
         top: "",
-        transform: "translate(-50%, -50%)"
+        transform: "translate(-50%, -50%)",
       });
     });
 
@@ -66,7 +66,7 @@ describe("PositionCalculator", () => {
       expect(calculatePositionStyle("center", undefined)).toEqual({
         left: "",
         top: "",
-        transform: "translate(-50%, -50%)"
+        transform: "translate(-50%, -50%)",
       });
     });
   });

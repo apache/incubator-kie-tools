@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./DefaultKeyboardShortcutsService"
-export * from "./KeyboardShortcutRegisterOpts"
+export * from "./DefaultKeyboardShortcutsService";
+export * from "./KeyboardShortcutRegisterOpts";

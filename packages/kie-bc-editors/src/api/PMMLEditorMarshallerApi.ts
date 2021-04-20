@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-
 import { PMMLDocumentData } from "@kogito-tooling/pmml-editor-marshaller";
 
 /**
  * PUBLIC ENVELOPE API
  */
 export interface PMMLEditorMarshallerApi {
-
-    /**
-     * It performs the marshall of a xmlContent retrieved from a PMML file returning a PMMLDocumentData
-     * * @param xmlContent
-     */
-    getPMMLDocumentData(xmlContent: string): PMMLDocumentData;
+  /**
+   * It performs the marshall of a xmlContent retrieved from a PMML file returning a PMMLDocumentData
+   * * @param xmlContent
+   */
+  getPMMLDocumentData(xmlContent: string): PMMLDocumentData;
 }
-

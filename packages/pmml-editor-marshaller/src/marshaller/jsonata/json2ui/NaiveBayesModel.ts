@@ -54,6 +54,6 @@ export function naiveBayesModelFactory(): NaiveBayesModel {
     BayesInputs: { BayesInput: [] },
     BayesOutput: { TargetValueCounts: { TargetValueCount: [] }, fieldName: {} },
     threshold: 0,
-    functionName: "regression"
+    functionName: "regression",
   });
 }

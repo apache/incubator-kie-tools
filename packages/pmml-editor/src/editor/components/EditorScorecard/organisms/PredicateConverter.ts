@@ -24,7 +24,7 @@ import {
   SimplePredicate,
   SimplePredicateOperator,
   SimpleSetPredicate,
-  True
+  True,
 } from "@kogito-tooling/pmml-editor-marshaller";
 
 const SimplePredicateOperatorMap: Map<SimplePredicateOperator, string> = new Map<SimplePredicateOperator, string>([
@@ -35,11 +35,11 @@ const SimplePredicateOperatorMap: Map<SimplePredicateOperator, string> = new Map
   ["greaterThan", ">"],
   ["greaterOrEqual", ">="],
   ["isMissing", "isMissing"],
-  ["isNotMissing", "isNotMissing"]
+  ["isNotMissing", "isNotMissing"],
 ]);
 
 export const toText = (predicate: Predicate | undefined, fields: DataField[]): string => {
-  const fieldToDataType: Map<FieldName, DataType> = new Map(fields.map(field => [field.name, field.dataType]));
+  const fieldToDataType: Map<FieldName, DataType> = new Map(fields.map((field) => [field.name, field.dataType]));
   return _toText(predicate, fieldToDataType, 0);
 };
 
@@ -67,7 +67,7 @@ const _toText = (
     let text: string = "";
     const children: string[] = [];
     // TODO {manstis} If parenthesis are needed: text = text + (nesting > 0 ? "( " : "");
-    cp.predicates?.forEach(p => children.push(_toText(p, fieldToDataType, nesting + 1)));
+    cp.predicates?.forEach((p) => children.push(_toText(p, fieldToDataType, nesting + 1)));
     text = text + children.join(" " + cp.booleanOperator + " ");
     // TODO {manstis} If parenthesis are needed: text = text + (nesting > 0 ? ")" : "");
     return text;

@@ -21,17 +21,17 @@ import { EventLabel } from "../../core";
 
 export const useStartTutorialListener = (onStartTutorial: (tutorialLabel: string) => void) => {
   const type = "GuidedTour.startTutorial";
-  useGuidedTourBusEffect(type, event => onStartTutorial(event.detail));
+  useGuidedTourBusEffect(type, (event) => onStartTutorial(event.detail));
 };
 
 export const useUserInteractionListener = (onUserInteraction: (userInteraction: UserInteraction) => void) => {
   const type = "GuidedTour.userInteraction";
-  useGuidedTourBusEffect(type, event => onUserInteraction(event.detail));
+  useGuidedTourBusEffect(type, (event) => onUserInteraction(event.detail));
 };
 
 export const usePositionListener = (onPositionReceived: (rect: Rect) => void) => {
   const type = "GuidedTour.newPosition";
-  useGuidedTourBusEffect(type, event => onPositionReceived(event.detail));
+  useGuidedTourBusEffect(type, (event) => onPositionReceived(event.detail));
 };
 
 function useGuidedTourBusEffect(eventLabel: EventLabel, consumer: (customEvent: CustomEvent) => void) {

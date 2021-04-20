@@ -20,7 +20,7 @@ import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 interface DesktopDictionary extends ReferenceDictionary<DesktopDictionary> {
   app: {
     title: string;
-  }
+  };
   editorPage: {
     alerts: {
       copy: string;
@@ -37,7 +37,7 @@ interface DesktopDictionary extends ReferenceDictionary<DesktopDictionary> {
     alerts: {
       errorFetchingFile: string;
       unexpectedErrorFetchingFile: string;
-    }
+    };
     errorDetails: string;
     files: {
       title: string;
@@ -49,7 +49,7 @@ interface DesktopDictionary extends ReferenceDictionary<DesktopDictionary> {
         blank: string;
         sample: string;
       };
-    }
+    };
     openUrl: {
       initial: string;
       invalidExtension: string;
@@ -61,9 +61,8 @@ interface DesktopDictionary extends ReferenceDictionary<DesktopDictionary> {
     recent: {
       title: string;
       noFilesYet: string;
-
-    }
-  }
+    };
+  };
   homePage: {
     learnMore: string;
   };

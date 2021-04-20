@@ -36,15 +36,15 @@ const en: MyDictionary = {
   myWord: "My word",
   myCurrentLocale: (locale: string) => `My current locale is: ${locale}`,
   myNestedObject: {
-    myNestedWord: `My ${"Nested".bold()} word`
-  }
+    myNestedWord: `My ${"Nested".bold()} word`,
+  },
 };
 ```
 
 - Create a dictionary that use the `TranslatedDictionary<MyDictionary>` type.
 
-*The `TranslatedDictionary<D>` has the same keys of the `MyDictionary`, but they're optionals.
-The `TransletedDictionary` values override the default values on the `MyDictionary`, which prevents any missing translation.*
+_The `TranslatedDictionary<D>` has the same keys of the `MyDictionary`, but they're optionals.
+The `TransletedDictionary` values override the default values on the `MyDictionary`, which prevents any missing translation._
 
 ```tsx
 "./i18n/locales/pt_BR.ts";
@@ -65,7 +65,7 @@ export const myAppI18nDefaults: I18nDefaults<MyDictionary> = { locale: "en", dic
 // It's reccomended that the key follows the BCP-47 standard to be compatible with the browser locale
 export const myAppI18nDictionaries: I18nDictionaries<MyDictionary> = new Map([
   ["en", en],
-  ["pt-BR", pt_BR]
+  ["pt-BR", pt_BR],
 ]);
 
 export const MyAppI18nContext = React.createContext<I18nContextType<MyDictionary>>({} as any);

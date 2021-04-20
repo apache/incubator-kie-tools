@@ -25,7 +25,7 @@ import {
   Title,
   InputGroup,
   TextInput,
-  InputGroupText
+  InputGroupText,
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, CheckIcon } from "@patternfly/react-icons";
 import { GITHUB_OAUTH_TOKEN_SIZE, GITHUB_TOKENS_URL, GITHUB_TOKENS_HOW_TO_URL } from "./GithubService";
@@ -49,10 +49,10 @@ export function GithubTokenModal(props: Props) {
     return obfuscate(context.githubService.resolveToken() || potentialToken);
   }, [context.githubService, potentialToken]);
 
-  const onPasteHandler = useCallback(e => {
+  const onPasteHandler = useCallback((e) => {
     const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
     setPotentialToken(token);
-    context.githubService.authenticate(token).then(isAuthenticated => {
+    context.githubService.authenticate(token).then((isAuthenticated) => {
       setAuthenticated(isAuthenticated);
       setIsTokenInvalid(!isAuthenticated);
     });
@@ -68,9 +68,9 @@ export function GithubTokenModal(props: Props) {
   const validated = useMemo(() => (isTokenInvalid ? "error" : "default"), [isTokenInvalid]);
 
   useEffect(() => {
-    context.githubService.authenticate().then(isAuthenticated => {
+    context.githubService.authenticate().then((isAuthenticated) => {
       setAuthenticated(isAuthenticated);
-      potentialToken.length === 0 ? setIsTokenInvalid(false) : setIsTokenInvalid(!isAuthenticated)
+      potentialToken.length === 0 ? setIsTokenInvalid(false) : setIsTokenInvalid(!isAuthenticated);
     });
   }, []);
 

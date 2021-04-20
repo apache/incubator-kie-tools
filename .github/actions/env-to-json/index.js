@@ -20,7 +20,7 @@ const fs = require("fs");
 
 function filterObjectProperties(object, prefix) {
   return Object.keys(object)
-    .filter(key => key.startsWith(prefix))
+    .filter((key) => key.startsWith(prefix))
     .reduce((obj, key) => {
       const keyToSave = key.replace(prefix, "");
       obj[keyToSave] = object[key];
@@ -34,7 +34,7 @@ try {
 
   console.log(JSON.stringify(json, null, 4));
 
-  fs.writeFile(path, JSON.stringify(json), "utf8", function(err) {
+  fs.writeFile(path, JSON.stringify(json), "utf8", function (err) {
     if (err) {
       console.log("An error occurred while writing JSON Object to File.");
       return console.log(err);
