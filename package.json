@@ -56,7 +56,7 @@
     "cross-var": "1.1.0",
     "css-loader": "3.2.0",
     "cypress": "6.6.0",
-    "cypress-file-upload": "^5.0.2",
+    "cypress-file-upload": "^5.0.5",
     "cypress-iframe": "^1.0.1",
     "decompress": "^4.2.1",
     "electron-packager": "14.2.0",

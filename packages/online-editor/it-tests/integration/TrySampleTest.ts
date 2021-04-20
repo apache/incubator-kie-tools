@@ -20,25 +20,31 @@ describe("Try sample test", () => {
   });
 
   it("should create BPMN sample", () => {
-    // clicks BPMN Try sample
+    // click BPMN Try sample
     cy.get("[data-ouia-component-id='try-bpmn-sample-button']").click();
 
-    // checks editor title name
-    cy.get("[aria-label='Edit file name']").should("have.value", "sample");
-
-    // waits until loading dialog disappears
+    // wait until loading dialog disappears
     cy.loadEditor();
 
-    cy.getEditor().within($bpmnEditor => {
-      // opens properties panel and checks values
+    // check editor logo
+    cy.get("[class='pf-c-brand']").within($logo => {
+      expect($logo.attr("src")).contain("bpmn");
+      expect($logo.attr("alt")).contain("bpmn");
+    });
+
+    // check editor title name
+    cy.get("[aria-label='Edit file name']").should("have.value", "sample");
+
+    cy.getEditor().within(() => {
+      // open properties panel and check values
       cy.get("[data-title='Properties']").click();
       cy.get("[name$='diagramSet.name']").should("have.value", "Process travelers");
       cy.get("[name$='diagramSet.packageProperty']").should("have.value", "org.kie.kogito.test");
       cy.get("[name$='diagramSet.id']").should("have.value", "Travelers");
 
-      // opens diagram panel and checks nodes
+      // open diagram panel and check nodes
       cy.get("[data-title='Explore Diagram']").click();
-      cy.get("a.gwt-Anchor").then($nodes => {
+      cy.get("a.gwt-Anchor").should($nodes => {
         expect($nodes).length(8);
         expect($nodes.eq(0)).text("Process travelers");
         expect($nodes.eq(1)).text("processedtraveler");
@@ -53,22 +59,28 @@ describe("Try sample test", () => {
   });
 
   it("should create DMN sample", () => {
-    // clicks DMN Try Sample
+    // click DMN Try Sample
     cy.get("[data-ouia-component-id='try-dmn-sample-button']").click();
 
-    // checks editor title name
-    cy.get("[aria-label='Edit file name']").should("have.value", "sample");
-
-    // waits until loading dialog disappears
+    // wait until loading dialog disappears
     cy.loadEditor();
 
-    // closes DMN guided tour dialog
+    // check editor logo
+    cy.get("[class='pf-c-brand']").within($logo => {
+      expect($logo.attr("src")).contain("dmn");
+      expect($logo.attr("alt")).contain("dmn");
+    });
+
+    // check editor title name
+    cy.get("[aria-label='Edit file name']").should("have.value", "sample");
+
+    // close DMN guided tour dialog
     cy.get("[data-kgt-close='true']").click();
 
     cy.getEditor().within(() => {
-      // opens Decision navigator and checks nodes
+      // open Decision navigator and check nodes
       cy.get("[data-ouia-component-id='collapsed-docks-bar-W'] > button").click();
-      cy.get("[data-i18n-prefix='DecisionNavigatorTreeView.']").then($nodes => {
+      cy.get("[data-i18n-prefix='DecisionNavigatorTreeView.']").should($nodes => {
         expect($nodes).length(21);
         expect($nodes.eq(0)).not.attr("title");
         expect($nodes.eq(1)).attr("title", "loan_pre_qualification");
@@ -93,17 +105,17 @@ describe("Try sample test", () => {
         expect($nodes.eq(20)).attr("title", "Requested Product");
       });
 
-      // closes Decision navigator
+      // close Decision navigator
       cy.get("[data-ouia-component-id='expanded-docks-bar-W'] > div > button ").click();
 
-      // opens properties panel, checks values and closes panel
+      // open properties panel, check values and close panel
       cy.get("[data-title='Properties']").click();
       cy.get("[name$='definitions.nameHolder']").should("have.value", "loan_pre_qualification");
       cy.get("[data-title='Properties']").click();
 
-      // opens Data Types tab and checks values
-      cy.get("a:contains('Data Types')").click();
-      cy.get(".kie-dnd-draggable:not(.hidden) .name-text").then($dataTypes => {
+      // open Data Types tab and check values
+      cy.get("[data-ouia-component-id='Data Types'] a").click();
+      cy.get(".kie-dnd-draggable:not(.hidden) .name-text").should($dataTypes => {
         expect($dataTypes).length(16);
         expect($dataTypes.eq(0)).text("Requested_Product");
         expect($dataTypes.eq(1)).text("Marital_Status");
@@ -126,26 +138,35 @@ describe("Try sample test", () => {
   });
 
   it("should create PMML sample", () => {
-    // clicks PMML Try Sample
+    // click PMML Try Sample
     cy.get("[data-ouia-component-id='try-pmml-sample-button']").click();
 
-    // checks editor title name
+    // load pmml editor
+    cy.getEditor().within(() => {
+      cy.get("[data-testid='editor-page']", { timeout: 60000 }).should("be.visible");
+    });
+
+    // check editor logo
+    cy.get("[class='pf-c-brand']").within($logo => {
+      expect($logo.attr("src")).contain("pmml");
+      expect($logo.attr("alt")).contain("pmml");
+    });
+
+    // check editor title name
     cy.get("[aria-label='Edit file name']").should("have.value", "sample");
 
-    // waits until loading dialog disappears
-    cy.loadEditor();
-
     cy.getEditor().within(() => {
-      cy.get(".characteristics-container div > strong").then($dataTypes => {
+      // check characteristics
+      cy.get(".characteristics-container div > strong").should($dataTypes => {
         expect($dataTypes).length(3);
         expect($dataTypes.eq(0)).text("departmentScore");
         expect($dataTypes.eq(1)).text("ageScore");
         expect($dataTypes.eq(2)).text("incomeScore");
       });
 
-      // Open and close PMML DataDictionary modal
+      // open and close PMML DataDictionary modal
       cy.get("[data-title='DataDictionary']").click();
-      cy.get(".data-type-item__name").then($dataTypes => {
+      cy.get(".data-type-item__name").should($dataTypes => {
         expect($dataTypes).length(4);
         expect($dataTypes.eq(0)).text("department");
         expect($dataTypes.eq(1)).text("age");
@@ -154,9 +175,9 @@ describe("Try sample test", () => {
       });
       cy.get("[data-title='DataDictionaryModalClose']").click();
 
-      // Open and close PMML MiningSchema modal
+      // open and close PMML MiningSchema modal
       cy.get("[data-title='MiningSchema']").click();
-      cy.get(".mining-schema-list__item__name").then($miningSchema => {
+      cy.get(".mining-schema-list__item__name").should($miningSchema => {
         expect($miningSchema).length(4);
         expect($miningSchema.eq(0)).text("department");
         expect($miningSchema.eq(1)).text("age");
@@ -165,9 +186,9 @@ describe("Try sample test", () => {
       });
       cy.get("[data-title='MiningSchemaModalClose']").click();
 
-      // Open and close PMML Outputs modal
+      // open and close PMML Outputs modal
       cy.get("[data-title='Outputs']").click();
-      cy.get(".outputs-container div > strong").then($outputs => {
+      cy.get(".outputs-container div > strong").should($outputs => {
         expect($outputs).length(4);
         expect($outputs.eq(0)).text("Final Score");
         expect($outputs.eq(1)).text("Reason Code 1");

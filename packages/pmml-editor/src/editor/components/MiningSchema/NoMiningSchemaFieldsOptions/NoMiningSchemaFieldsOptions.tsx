@@ -6,7 +6,7 @@ const NoMiningSchemaFieldsOptions = () => {
   return (
     <EmptyState variant={EmptyStateVariant.large}>
       <EmptyStateIcon icon={BoxesIcon} />
-      <Title headingLevel="h4" size="lg">
+      <Title headingLevel="h4" size="lg" data-ouia-component-id="mining-schema-no-data-fields-title">
         No Data Fields defined
       </Title>
       <EmptyStateBody>

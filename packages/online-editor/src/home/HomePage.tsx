@@ -460,7 +460,7 @@ export function HomePage(props: Props) {
               </Button>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={createEmptyBpmnFile}>
+              <Button variant="secondary" onClick={createEmptyBpmnFile} ouiaId="new-bpmn-button">
                 {i18n.homePage.bpmnCard.createNew}
               </Button>
             </CardFooter>
@@ -478,7 +478,7 @@ export function HomePage(props: Props) {
               </Button>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={createEmptyDmnFile}>
+              <Button variant="secondary" onClick={createEmptyDmnFile} ouiaId="new-dmn-button">
                 {i18n.homePage.dmnCard.createNew}
               </Button>
             </CardFooter>
@@ -496,7 +496,7 @@ export function HomePage(props: Props) {
               </Button>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={createEmptyPmmlFile}>
+              <Button variant="secondary" onClick={createEmptyPmmlFile} ouiaId="new-pmml-button">
                 {i18n.homePage.pmmlCard.createNew}
               </Button>
             </CardFooter>

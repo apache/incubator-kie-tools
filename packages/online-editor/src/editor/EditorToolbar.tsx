@@ -99,6 +99,7 @@ export function EditorToolbar(props: Props) {
             onClick={props.onClose}
             aria-label={"Close"}
             data-testid={"close-editor-button"}
+            ouiaId="close-editor-button"
           >
             {i18n.editorToolbar.closeAndReturnHome}
           </DropdownItem>
@@ -126,6 +127,7 @@ export function EditorToolbar(props: Props) {
         component={"button"}
         onClick={props.onDownload}
         className={"pf-u-display-none-on-xl"}
+        ouiaId="save-and-download-dropdown-button"
       >
         {i18n.editorToolbar.saveAndDownload}
       </DropdownItem>,
@@ -223,6 +225,7 @@ export function EditorToolbar(props: Props) {
                 onClick={props.onDownload}
                 aria-label={"Save and Download button"}
                 className={"kogito--editor__toolbar button"}
+                ouiaId="save-and-download-button"
               >
                 {i18n.editorToolbar.saveAndDownload}
               </Button>
@@ -278,6 +281,7 @@ export function EditorToolbar(props: Props) {
                     id={"view-id-lg"}
                     toggleIndicator={null}
                     onToggle={isOpen => setViewKebabOpen(isOpen)}
+                    ouiaId="toolbar-button"
                   >
                     <EllipsisVIcon />
                   </DropdownToggle>
@@ -307,6 +311,7 @@ export function EditorToolbar(props: Props) {
                     id={"kebab-id-sm"}
                     toggleIndicator={null}
                     onToggle={isOpen => setKebabOpen(isOpen)}
+                    ouiaId="small-toolbar-button"
                   >
                     <EllipsisVIcon />
                   </DropdownToggle>

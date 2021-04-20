@@ -1,5 +1,5 @@
 {
-  "fixturesFolder": false,
+  "fixturesFolder": "fixtures",
   "integrationFolder": "integration",
   "pluginsFile": "plugins/index.ts",
   "screenshotsFolder": "screenshots",
@@ -7,5 +7,6 @@
   "supportFile": "support/index.ts",
   "baseUrl": "http://localhost:9001",
   "chromeWebSecurity": false,
-  "video": false
+  "video": false,
+  "downloadsFolder": "downloads"
 }
