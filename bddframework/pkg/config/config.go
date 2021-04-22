@@ -44,6 +44,11 @@ type TestConfig struct {
 	operatorInstallationSource string
 	operatorCatalogImage       string
 
+	// profiling
+	operatorProfiling                  bool
+	operatorProfilingDataAccessYamlURI string
+	operatorProfilingOutputFileURI     string
+
 	// files/binaries
 	operatorYamlURI string
 	cliPath         string
@@ -101,6 +106,9 @@ const (
 	defaultOperatorYamlURI = "../kogito-operator.yaml"
 	defaultCliPath         = "../build/_output/bin/kogito"
 
+	defaultOperatorProfilingDataAccessYamlURI = "../profiling/kogito-operator-profiling-data-access.yaml"
+	defaultOperatorProfilingOutputFileURI     = "./bdd-cover.out"
+
 	defaultKogitoExamplesURI = "https://github.com/kiegroup/kogito-examples"
 
 	defaultLoadFactor      = 1
@@ -142,6 +150,11 @@ func BindFlags(set *flag.FlagSet) {
 	set.BoolVar(&env.operatorNamespaced, prefix+"operator-namespaced", false, "Set to true to deploy Kogito operator into namespace used for scenario execution, false for cluster wide deployment. Default is false.")
 	set.StringVar(&env.operatorInstallationSource, prefix+"operator-installation-source", installationSourceYaml, "Operator installation source")
 	set.StringVar(&env.operatorCatalogImage, prefix+"operator-catalog-image", "", "Operator catalog image")
+
+	// operator profiling
+	set.BoolVar(&env.operatorProfiling, prefix+"operator-profiling", false, "Enable the profiling of the operator. If enabled, operator will be automatically deployed with yaml files.")
+	set.StringVar(&env.operatorProfilingDataAccessYamlURI, prefix+"operator-profiling-data-access-yaml-uri", defaultOperatorProfilingDataAccessYamlURI, "Url or Path to kogito-operator-profiling-data-access.yaml file.")
+	set.StringVar(&env.operatorProfilingOutputFileURI, prefix+"operator-profiling-output-file-uri", defaultOperatorProfilingOutputFileURI, "Url or Path where to store the profiling outputs.")
 
 	// files/binaries
 	set.StringVar(&env.operatorYamlURI, prefix+"operator-yaml-uri", defaultOperatorYamlURI, "Url or Path to kogito-operator.yaml file")
@@ -281,6 +294,23 @@ func IsOperatorInstalledByYaml() bool {
 // GetOperatorCatalogImage return the image tag for the Kogito operator catalog
 func GetOperatorCatalogImage() string {
 	return env.operatorCatalogImage
+}
+
+// operator profiling
+
+// IsOperatorProfiling returns whether the operator profiling is activated
+func IsOperatorProfiling() bool {
+	return env.operatorProfiling
+}
+
+// GetOperatorProfilingDataAccessYamlURI return the uri for kogito-operator-profiling-data-access.yaml file
+func GetOperatorProfilingDataAccessYamlURI() string {
+	return env.operatorProfilingDataAccessYamlURI
+}
+
+// GetOperatorProfilingOutputFileURI return the uri for the profiling data output file
+func GetOperatorProfilingOutputFileURI() string {
+	return env.operatorProfilingOutputFileURI
 }
 
 // files/binaries

@@ -23,6 +23,10 @@ operator_tag=
 operator_namespaced=false
 operator_installation_source=
 operator_catalog_image=
+# operator profiling
+operator_profiling=false
+operator_profiling_data_access_yaml_uri=
+operator_profiling_output_file_uri=
 # files/binaries
 operator_yaml_uri=
 cli_path=
@@ -86,6 +90,7 @@ run-tests:
 	&& if [ "${disable_maven_native_build_container}" = "true" ]; then opts+=("--disable_maven_native_build_container"); fi \
 	&& if [ "${custom_maven_repo_replace_default}" = "true" ]; then opts+=("--custom_maven_repo_replace_default"); fi \
 	&& if [ "${operator_namespaced}" = "true" ]; then opts+=("--operator_namespaced"); fi \
+	&& if [ "${operator_profiling}" = "true" ]; then opts+=("--operator_profiling"); fi \
 	&& opts_str=$$(IFS=' ' ; echo "$${opts[*]}") \
 	&& ../hack/run-tests.sh \
 		--test_main_dir ${test_main_dir} \
@@ -97,6 +102,8 @@ run-tests:
 		--operator_image $(operator_image) \
 		--operator_tag $(operator_tag) \
 		--operator_yaml_uri ${operator_yaml_uri} \
+		--operator_profiling_data_access_yaml_uri ${operator_profiling_data_access_yaml_uri} \
+		--operator_profiling_output_file_uri ${operator_profiling_output_file_uri} \
 		--cli_path ${cli_path} \
 		--services_image_registry ${services_image_registry} \
 		--services_image_namespace ${services_image_namespace} \

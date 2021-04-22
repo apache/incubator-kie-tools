@@ -17,7 +17,7 @@ package installers
 import (
 	"errors"
 	"fmt"
-	"strings"
+	"regexp"
 
 	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
@@ -30,7 +30,7 @@ var (
 	// kogitoYamlClusterInstaller installs Kogito operator cluster wide using YAMLs
 	kogitoYamlClusterInstaller = YamlClusterWideServiceInstaller{
 		InstallClusterYaml:               installKogitoUsingYaml,
-		InstallationNamespace:            kogitoNamespace,
+		InstallationNamespace:            KogitoNamespace,
 		WaitForClusterYamlServiceRunning: waitForKogitoOperatorUsingYamlRunning,
 		GetAllClusterYamlCrsInNamespace:  getKogitoCrsInNamespace,
 		UninstallClusterYaml:             uninstallKogitoUsingYaml,
@@ -58,7 +58,8 @@ var (
 		CleanupClusterWideOlmCrsInNamespace: cleanupKogitoCrsInNamespace,
 	}
 
-	kogitoNamespace   = "kogito-operator-system"
+	// KogitoNamespace is the kogito namespace for yaml cluster-wide deployment
+	KogitoNamespace   = "kogito-operator-system"
 	kogitoServiceName = "Kogito operator"
 
 	kogitoOperatorSubscriptionName    = "kogito-operator"
@@ -67,7 +68,7 @@ var (
 
 // GetKogitoInstaller returns Kogito installer
 func GetKogitoInstaller() (ServiceInstaller, error) {
-	if config.IsOperatorInstalledByYaml() {
+	if config.IsOperatorInstalledByYaml() || config.IsOperatorProfiling() {
 		if config.IsOperatorNamespaced() {
 			return nil, errors.New("Installing namespace scoped Kogito operator using YAML files is not supported")
 		}
@@ -93,7 +94,11 @@ func installKogitoUsingYaml() error {
 		return err
 	}
 
-	yamlContent = strings.ReplaceAll(yamlContent, "quay.io/kiegroup/kogito-operator:"+version.Version, framework.GetOperatorImageNameAndTag())
+	regexp, err := regexp.Compile("quay.io/kiegroup/kogito-operator.*" + ":" + version.Version)
+	if err != nil {
+		return err
+	}
+	yamlContent = regexp.ReplaceAllString(yamlContent, framework.GetOperatorImageNameAndTag())
 
 	tempFilePath, err := framework.CreateTemporaryFile("kogito-operator*.yaml", yamlContent)
 	if err != nil {
@@ -111,13 +116,13 @@ func installKogitoUsingYaml() error {
 }
 
 func waitForKogitoOperatorUsingYamlRunning() error {
-	return framework.WaitForKogitoOperatorRunning(kogitoNamespace)
+	return framework.WaitForKogitoOperatorRunning(KogitoNamespace)
 }
 
 func uninstallKogitoUsingYaml() error {
 	framework.GetMainLogger().Info("Uninstalling Kogito operator")
 
-	output, err := framework.CreateCommand("oc", "delete", "-f", config.GetOperatorYamlURI(), "--timeout=30s").Execute()
+	output, err := framework.CreateCommand("oc", "delete", "-f", config.GetOperatorYamlURI(), "--timeout=30s", "--ignore-not-found=true").Execute()
 	if err != nil {
 		framework.GetMainLogger().Error(err, fmt.Sprintf("Deleting Kogito operator failed, output: %s", output))
 		return err

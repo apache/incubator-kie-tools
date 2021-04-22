@@ -156,6 +156,28 @@ func WaitForKogitoOperatorRunning(namespace string) error {
 		})
 }
 
+// RemoveKogitoOperatorDeployment remove the Kogito operator deployment in the given namespace
+func RemoveKogitoOperatorDeployment(namespace string) error {
+	GetLogger(namespace).Debug("Removing Operator deployment", "Deployment", kogitoOperatorDeploymentName, "Namespace", namespace)
+
+	operatorDeployment := &v1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      kogitoOperatorDeploymentName,
+			Namespace: namespace,
+		},
+	}
+	if exists, err := kubernetes.ResourceC(kubeClient).Fetch(operatorDeployment); err != nil {
+		return fmt.Errorf("Error while trying to look for Deploment %s: %v ", kogitoOperatorDeploymentName, err)
+	} else if exists {
+		if err := kubernetes.ResourceC(kubeClient).Delete(operatorDeployment); err != nil {
+			return fmt.Errorf("Error while trying to remove Deploment %s: %v ", kogitoOperatorDeploymentName, err)
+		}
+	} else {
+		GetLogger(namespace).Warn("No operator deployment to delete", "Deployment", kogitoOperatorDeploymentName)
+	}
+	return nil
+}
+
 // InstallOperator installs an operator via subscrition
 func InstallOperator(namespace, subscriptionName, channel string, catalog OperatorCatalog) error {
 	GetLogger(namespace).Info("Subscribing to operator", "subscriptionName", subscriptionName, "catalogSource", catalog.source, "channel", channel)

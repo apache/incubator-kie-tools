@@ -152,6 +152,10 @@ func initializeTestSuite(ctx *godog.TestSuiteContext) {
 
 	// Initialization of cluster wide resources
 	ctx.BeforeSuite(func() {
+		if config.IsOperatorProfiling() {
+			framework.GetMainLogger().Info("Running testing with profiling")
+		}
+
 		monitorOlmNamespace()
 
 		if config.IsOperatorInstalledByOlm() {
@@ -163,6 +167,10 @@ func initializeTestSuite(ctx *godog.TestSuiteContext) {
 
 	// Final cleanup once test suite finishes
 	ctx.AfterSuite(func() {
+		if config.IsOperatorProfiling() {
+			retrieveProfilingData()
+		}
+
 		if !config.IsKeepNamespace() {
 			// Delete all operators created by test suite
 			if success := installers.UninstallServicesFromCluster(); !success {
@@ -304,5 +312,33 @@ func installKogitoOperatorCatalogSource() error {
 func deleteKogitoOperatorCatalogSource() {
 	if err := framework.DeleteKogitoOperatorCatalogSource(); err != nil {
 		framework.GetMainLogger().Error(err, "Error deleting Kogito operator CatalogSource")
+	}
+}
+
+func retrieveProfilingData() {
+	framework.GetMainLogger().Info("Retrieve Profiling Data")
+
+	if err := framework.RemoveKogitoOperatorDeployment(installers.KogitoNamespace); err != nil {
+		framework.GetMainLogger().Error(err, "Unable to delete Kogito Operator Deployment")
+		return
+	}
+
+	// Apply dataaccess
+	if _, err := framework.CreateCommand("oc", "apply", "-f", config.GetOperatorProfilingDataAccessYamlURI()).Execute(); err != nil {
+		framework.GetMainLogger().Error(err, "Error while installing Kogito operator from YAML file")
+		return
+	}
+
+	// Wait for dataaccess pod
+	if err := framework.WaitForPodsWithLabel(installers.KogitoNamespace, "name", "profiling-data-access", 1, 2); err != nil {
+		framework.GetMainLogger().Error(err, "Error while waiting for profiling data access pod")
+		return
+	}
+
+	// Copy coverage data
+	dataFileInContainer := fmt.Sprintf("%s:/data/cover.out", "kogito-operator-profiling-data-access")
+	if _, err := framework.CreateCommand("oc", "cp", dataFileInContainer, config.GetOperatorProfilingOutputFileURI(), "-n", installers.KogitoNamespace).Execute(); err != nil {
+		framework.GetMainLogger().Error(err, "Error while installing Kogito operator from YAML file")
+		return
 	}
 }
