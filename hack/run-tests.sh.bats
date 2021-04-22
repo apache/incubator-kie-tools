@@ -402,6 +402,56 @@ setup() {
     [[ "${output}" != *"--tests.operator-catalog-image"* ]]
 }
 
+# operator profiling
+
+@test "invoke run-tests with operator_profiling" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_profiling --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.operator-profiling" ]]
+}
+
+@test "invoke run-tests without operator_profiling" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.operator-profiling"* ]]
+}
+
+@test "invoke run-tests with operator_profiling_data_access_yaml_uri" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_profiling_data_access_yaml_uri uri --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.operator-profiling-data-access-yaml-uri=uri" ]]
+}
+
+@test "invoke run-tests with operator_profiling_data_access_yaml_uri missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_profiling_data_access_yaml_uri --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.operator-profiling-data-access-yaml-uri"* ]]
+}
+
+@test "invoke run-tests with operator_profiling_data_access_yaml_uri empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_profiling_data_access_yaml_uri "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.operator-profiling-data-access-yaml-uri"* ]]
+}
+
+@test "invoke run-tests with operator_profiling_output_file_uri" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_profiling_output_file_uri uri --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.operator-profiling-output-file-uri=uri" ]]
+}
+
+@test "invoke run-tests with operator_profiling_output_file_uri missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_profiling_output_file_uri --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.operator-profiling-output-file-uri"* ]]
+}
+
+@test "invoke run-tests with operator_profiling_output_file_uri empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_profiling_output_file_uri "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.operator-profiling-output-file-uri"* ]]
+}
+
 # files/binaries
 
 @test "invoke run-tests with operator_yaml_uri" {

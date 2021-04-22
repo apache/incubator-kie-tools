@@ -61,6 +61,11 @@ function usage(){
   printf "\n--operator_installation_source {TAG}\n\tDefines installation source for the Kogito operator. Options are 'olm' and 'yaml'. Default is yaml."
   printf "\n--operator_catalog_image {TAG}\n\tDefines image containing operator catalog. Needs to be specified only when operator_installation_source is 'olm'."
 
+  # operator profiling
+  printf "\n--operator_profiling\n\tEnable the profiling of the operator. If enabled, operator will be automatically deployed with yaml files."
+  printf "\n--operator_profiling_data_access_yaml_uri\n\tUrl or Path to kogito-operator-profiling-data-access.yaml file."
+  printf "\n--operator_profiling_output_file_uri\n\tUrl or Path where to store the profiling outputs."
+
   # files/binaries
   printf "\n--operator_yaml_uri {URI}\n\tUrl or Path to kogito-operator.yaml file."
   printf "\n--cli_path {PATH}\n\tPath to built CLI to test. Default is local built one."
@@ -272,6 +277,20 @@ case $1 in
   --operator_catalog_image)
     shift
     if addParamKeyValueIfAccepted "--tests.operator-catalog-image" ${1}; then shift; fi
+  ;;
+
+  # operator profiling
+  --operator_profiling)
+    addParam "--tests.operator-profiling"
+    shift
+  ;;
+  --operator_profiling_data_access_yaml_uri)
+    shift
+    if addParamKeyValueIfAccepted "--tests.operator-profiling-data-access-yaml-uri" ${1}; then shift; fi
+  ;;
+  --operator_profiling_output_file_uri)
+    shift
+    if addParamKeyValueIfAccepted "--tests.operator-profiling-output-file-uri" ${1}; then shift; fi
   ;;
 
   # files/binaries
