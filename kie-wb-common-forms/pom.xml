@@ -4,13 +4,12 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kie-wb-common</artifactId>
-    <groupId>org.kie.workbench</groupId>
+    <artifactId>kogito-editors-java</artifactId>
+    <groupId>org.kie.kogito</groupId>
     <version>7.53.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.kie.workbench.forms</groupId>
   <artifactId>kie-wb-common-forms</artifactId>
   <packaging>pom</packaging>
 

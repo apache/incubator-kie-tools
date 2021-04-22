@@ -9,7 +9,7 @@ kie-wb-common-dmn-webapp-kogito-common
 add:
 
     <dependency>
-         <groupId>org.kie.workbench</groupId>
+         <groupId>org.kie.kogito</groupId>
          <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
          <scope>provided</scope>
     </dependency>
@@ -44,12 +44,12 @@ kie-wb-common-dmn-webapp-kogito-runtime
 add:
 
      <dependency>
-      <groupId>org.kie.workbench</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
       <classifier>sources</classifier>
     </dependency>  

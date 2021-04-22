@@ -21,7 +21,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>kie-wb-common-stunner-svg</artifactId>
-    <groupId>org.kie.workbench.stunner</groupId>
+    <groupId>org.kie.kogito</groupId>
     <version>7.53.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -40,27 +40,27 @@
     <!-- Stunner. -->
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-core-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-client-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-client-common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-lienzo</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-svg-client</artifactId>
     </dependency>
 
@@ -74,7 +74,7 @@
 
     <!-- Annot. processing. -->
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-workbench-processors</artifactId>
     </dependency>
 

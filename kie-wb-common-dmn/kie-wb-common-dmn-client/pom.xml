@@ -18,7 +18,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <groupId>org.kie.workbench</groupId>
+    <groupId>org.kie.kogito</groupId>
     <artifactId>kie-wb-common-dmn</artifactId>
     <version>7.53.0-SNAPSHOT</version>
   </parent>
@@ -46,105 +46,123 @@
 
     <!-- Stunner -->
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-core-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-client-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-core-common</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-client-common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-lienzo</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-widgets</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-shapes-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-shapes-client</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-svg-client</artifactId>
     </dependency>
 
     <!-- Required to generate SVG factories -->
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-svg-gen</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-forms-client</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-forms-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-forms-fields</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-forms-adf-base</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-forms-adf-processors</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-dynamic-forms-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-dynamic-forms-client</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.widgets</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-ui</artifactId>
     </dependency>
 
     <!-- DMN Editor -->
     <dependency>
-      <groupId>org.kie.workbench</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-dmn-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-dmn-webapp-kogito-marshaller</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -170,54 +188,72 @@
 
     <!-- Uberfire & Errai -->
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-commons</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-client-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons-editor-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-common</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-ioc</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-javax-enterprise</artifactId>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.errai</groupId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>uberfire-client-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>uberfire-commons-editor-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>errai-common</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>errai-ioc</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.annotation</groupId>
+          <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-data-binding</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.errai</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-ui</artifactId>
       <exclusions>
         <exclusion>
@@ -225,14 +261,14 @@
           <artifactId>jboss-annotations-api_1.3_spec</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.jboss.errai</groupId>
+          <groupId>org.kie.kogito</groupId>
           <artifactId>errai-javax-enterprise</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>appformer-kogito-bridge</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -254,7 +290,7 @@
 
     <!--Wires Grids dependencies-->
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-wires-core-grids</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -278,16 +314,42 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel-gwt-functions</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.antlr</groupId>
+          <artifactId>antlr4-runtime</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel-gwt</artifactId>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.dominokit</groupId>
+          <artifactId>domino-slf4j-logger</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel-gwt</artifactId>
       <classifier>sources</classifier>
+      <exclusions>
+        <exclusion>
+          <groupId>org.dominokit</groupId>
+          <artifactId>domino-slf4j-logger</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.rikkola.gwt</groupId>
@@ -298,6 +360,16 @@
       <groupId>org.antlr</groupId>
       <artifactId>antlr4gwt-runtime</artifactId>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.antlr</groupId>
+          <artifactId>antlr4gwt-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.abego.treelayout</groupId>
+          <artifactId>org.abego.treelayout.core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Test -->
@@ -311,12 +383,32 @@
       <groupId>com.google.gwt.gwtmockito</groupId>
       <artifactId>gwtmockito</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.ibm.icu</groupId>
+          <artifactId>icu4j</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-api-mockito2</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.objenesis</groupId>
+          <artifactId>objenesis</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>net.bytebuddy</groupId>
+          <artifactId>byte-buddy-agent</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

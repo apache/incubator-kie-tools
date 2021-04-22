@@ -20,7 +20,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>kie-wb-common-stunner-forms</artifactId>
-    <groupId>org.kie.workbench.stunner</groupId>
+    <groupId>org.kie.kogito</groupId>
     <version>7.53.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -35,19 +35,19 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.errai</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
 
 
 
     <dependency>
-      <groupId>org.jboss.errai</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-data-binding</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>
 
@@ -57,22 +57,22 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-forms-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-forms-fields</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-dynamic-forms-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-core-api</artifactId>
     </dependency>
 

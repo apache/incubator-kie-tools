@@ -1,3 +1,5 @@
+*.ipr
+*.iws
 *.iml
 .idea/*
 */.idea/*
@@ -9,6 +11,10 @@
 target/
 bin/
 classes/
+local/
+repository/
+repositories/
+nbproject/
 data
 deploy/
 .errai/
@@ -37,3 +43,8 @@ class_list.txt
 .factorypath
 dependency-reduced-pom.xml
 .vscode
+
+# Created by Zanata
+/org.kie.workbench.screens
+/org.kie.workbench.widgets
+/org.kie.workbench.forms

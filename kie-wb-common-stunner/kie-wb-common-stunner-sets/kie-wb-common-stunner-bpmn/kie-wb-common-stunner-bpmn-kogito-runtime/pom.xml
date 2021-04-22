@@ -20,7 +20,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>kie-wb-common-stunner-bpmn</artifactId>
-    <groupId>org.kie.workbench.stunner</groupId>
+    <groupId>org.kie.kogito</groupId>
     <version>7.53.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -66,7 +66,7 @@
 
     <!-- Errai -->
     <dependency>
-      <groupId>org.jboss.errai</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-marshalling</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -85,113 +85,113 @@
 
     <!-- Stunner -->
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-core-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-client-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-backend-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-core-common</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-processors</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-client-common</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-lienzo</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.uberfire</groupId>
+          <groupId>org.kie.kogito</groupId>
           <artifactId>uberfire-all</artifactId>
         </exclusion>
       </exclusions>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-shapes-api</artifactId>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.uberfire</groupId>
+          <groupId>org.kie.kogito</groupId>
           <artifactId>uberfire-all</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-shapes-client</artifactId>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.uberfire</groupId>
+          <groupId>org.kie.kogito</groupId>
           <artifactId>uberfire-all</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-lienzo-extensions</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-svg-client</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-svg-gen</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-widgets</artifactId>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.uberfire</groupId>
+          <groupId>org.kie.kogito</groupId>
           <artifactId>uberfire-all</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-forms-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-forms-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-bpmn-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-bpmn-emf</artifactId>
       <scope>provided</scope>
       <exclusions>
@@ -202,12 +202,12 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-bpmn-marshalling</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-bpmn-client</artifactId>
       <scope>provided</scope>
       <exclusions>
@@ -238,57 +238,57 @@
     <!-- Form modeler -->
     <!-- Needed by stunner -->
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-forms-crud-component</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-forms-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-forms-fields</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-forms-processing-engine</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-forms-adf-base</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-forms-adf-engine-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-forms-adf-engine-client</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-dynamic-forms-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-dynamic-forms-client</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-forms-common-rendering-shared</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.forms</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-forms-common-rendering-client</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -320,7 +320,7 @@
     <!-- Layout Editor API -->
     <!-- Needed by kie-wb-common-dynamic-forms that is needed by stunner -->
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-layout-editor-api</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -328,44 +328,44 @@
     <!-- UberFire Commons Editor -->
     <!-- Basics for uberfire's generic editor support -->
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-commons-editor-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-commons-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <!-- Core UberFire dependencies -->
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-client-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-simple-docks-client</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-workbench-processors</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -386,17 +386,17 @@
 
     <!-- Generic ui components -->
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-widgets-commons</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-widgets-table</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.widgets</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-ui</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -440,30 +440,34 @@
           <groupId>xml-apis</groupId>
           <artifactId>xml-apis</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-annotations</artifactId>
+        </exclusion>
       </exclusions>
       <scope>provided</scope>
     </dependency>
 
     <!-- Kogito -->
     <dependency>
-      <groupId>org.kie.workbench</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-kogito-client</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-stunner-kogito-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <!--  Appformer Kogito -->
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>appformer-client-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>appformer-kogito-bridge</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -482,6 +486,10 @@
         <exclusion>
           <groupId>commons-logging</groupId>
           <artifactId>commons-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.squareup.okio</groupId>
+          <artifactId>okio</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -583,60 +591,60 @@
             <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
 
             <!-- UberFire -->
-            <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-client-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-workbench-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:uberfire-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:uberfire-client-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:uberfire-workbench-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:uberfire-simple-docks-client</compileSourcesArtifact>
 
             <!-- Errai, Drools etc -->
-            <compileSourcesArtifact>org.jboss.errai:errai-data-binding</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-common-ui</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench:kie-wb-common-kogito-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:errai-data-binding</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-ui</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-kogito-client</compileSourcesArtifact>
 
             <!-- UF-ext -->
-            <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-widgets-table</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:uberfire-commons-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:uberfire-commons-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:uberfire-widgets-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:uberfire-widgets-table</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:uberfire-widgets-core-client</compileSourcesArtifact>
 
             <!-- Forms -->
-            <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-forms-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-forms-adf-base</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-forms-adf-engine-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-forms-adf-engine-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-forms-fields</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-forms-processing-engine</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-forms-common-rendering-shared</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-forms-common-rendering-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-forms-crud-component</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-dynamic-forms-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.forms:kie-wb-common-dynamic-forms-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-forms-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-forms-adf-base</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-forms-adf-engine-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-forms-adf-engine-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-forms-fields</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-forms-processing-engine</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-forms-common-rendering-shared</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-forms-common-rendering-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-forms-crud-component</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-dynamic-forms-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-dynamic-forms-client</compileSourcesArtifact>
 
             <!-- Stunner -->
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-core-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-backend-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-client-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-core-common</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-client-common</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-lienzo</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-shapes-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-shapes-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-lienzo-extensions</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-svg-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-widgets</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-bpmn-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-bpmn-emf</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-bpmn-marshalling</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-bpmn-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-kogito-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-core-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-backend-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-client-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-core-common</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-client-common</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-lienzo</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-shapes-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-shapes-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-lienzo-extensions</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-svg-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-widgets</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-bpmn-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-bpmn-emf</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-bpmn-marshalling</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-bpmn-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-forms-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-forms-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:kie-wb-common-stunner-kogito-client</compileSourcesArtifact>
 
             <!-- Appformer -->
-            <compileSourcesArtifact>org.uberfire:appformer-client-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:appformer-kogito-bridge</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:appformer-client-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.kogito:appformer-kogito-bridge</compileSourcesArtifact>
 
           </compileSourcesArtifacts>
         </configuration>
