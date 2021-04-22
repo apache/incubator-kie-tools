@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions exporter="DMN Modeler" exporterVersion="6.1.3" namespace="http://www.trisotech.com/definitions/Definitions_11jk5op" name="DRD" triso:logoChoice="Default" id="Definitions_11jk5op" xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <extensionElements/>
+    <decision name="Salary" id="salary">
+        <variable typeRef="number" name="Salary" id="_d885e484-7fd1-4c6b-8398-13c22eed672f"/>
+        <informationRequirement id="e35499b0-b47b-420a-a45b-1aac87a5380e">
+            <requiredInput href="#inputData_input_1"/>
+        </informationRequirement>
+        <decisionTable aggregation="COUNT" hitPolicy="COLLECT" outputLabel="Salary" typeRef="number" id="decisionTable_1">
+            <input id="input_1">
+                <inputExpression typeRef="number">
+                    <text>NumOfYears</text>
+                </inputExpression>
+            </input>
+            <output id="output_1"/>
+            <rule id="DecisionRule_07toq2m">
+                <inputEntry id="UnaryTests_1ykf8dp">
+                    <text>&gt;1</text>
+                </inputEntry>
+                <outputEntry id="LiteralExpression_11o18h7">
+                    <text>100</text>
+                </outputEntry>
+            </rule>
+            <rule id="DecisionRule_1q56imi">
+                <inputEntry id="UnaryTests_0cxr8yx">
+                    <text>&gt;2</text>
+                </inputEntry>
+                <outputEntry id="LiteralExpression_15h3amx">
+                    <text>200</text>
+                </outputEntry>
+            </rule>
+            <rule id="DecisionRule_1rwxbuf">
+                <inputEntry id="UnaryTests_1ej7vqk">
+                    <text>&gt;3</text>
+                </inputEntry>
+                <outputEntry id="LiteralExpression_1iy5alu">
+                    <text>300</text>
+                </outputEntry>
+            </rule>
+            <rule id="DecisionRule_1lwr317">
+                <inputEntry id="UnaryTests_0pe8562">
+                    <text>&gt;5</text>
+                </inputEntry>
+                <outputEntry id="LiteralExpression_19xhxqe">
+                    <text>500</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <inputData name="NumOfYears" id="inputData_input_1">
+        <variable typeRef="number" name="NumOfYears" id="_1e4986a7-eb73-45c8-b47e-a29734468e6b"/>
+    </inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="Definitions_11jk5op_D1">
+            <dmndi:Size height="650.0" width="650.0"/>
+            <dmndi:DMNShape dmnElementRef="salary" id="Definitions_11jk5op_s1">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="inputData_input_1" id="Definitions_11jk5op_s2">
+                <dc:Bounds height="60.0" width="153.0" x="151.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="e35499b0-b47b-420a-a45b-1aac87a5380e" id="Definitions_11jk5op_e1">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

@@ -1,0 +1,71 @@
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BPMN Editor Test</title>
+
+    <script>
+        function loadDiagram(diagram) {
+            var path = "somePath";
+            window.frames.editorFrame.contentWindow.gwtEditorBeans.get("BPMNDiagramEditor").get().setContent(path, diagram);
+            document.getElementById("download_btn").disabled = false;
+        }
+
+        function download() {
+                window.frames.editorFrame.contentWindow.gwtEditorBeans.get("BPMNDiagramEditor").get().getContent().then(
+                    function(process) {
+                        var d = document.createElement('a');
+                        d.setAttribute('href', 'data:text/xml;charset=utf-8,' + encodeURIComponent(process));
+                        d.setAttribute('download', "process.bpmn");
+                        d.style.display = 'none';
+
+                        document.body.appendChild(d);
+                        d.click();
+                        document.body.removeChild(d);
+                    }
+                );
+        }
+
+        var openFile = function (event) {
+            var input = event.target;
+            var reader = new FileReader();
+            reader.onload = function () {
+                var diagram = reader.result;
+                loadDiagram(diagram)
+            };
+
+            reader.readAsText(input.files[0]);
+        };
+    </script>
+
+</head>
+<body>
+
+<div id="editor">
+    Wait until the editor is loaded to open a BPMN file:<br>
+    <input type="button" onclick="loadDiagram('')" value="Create new Diagram"/>
+    or
+    <input type="file" onchange="openFile(event)" value="Choose BPMN2 file" accept="bpmn,bpmn2,txt"/>
+    When you are ready you can
+    <input type="button" id="download_btn" value="Download the process" onclick="download()" disabled/>
+</div>
+
+<iframe id="editorFrame" src="index.html" width="100%" height="880px" frameBorder="0" scrolling="no"></iframe>
+</body>
+</html>

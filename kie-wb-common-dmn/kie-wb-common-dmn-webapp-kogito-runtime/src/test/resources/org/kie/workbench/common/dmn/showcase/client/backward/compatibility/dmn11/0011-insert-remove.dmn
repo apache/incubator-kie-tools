@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tns="http://www.trisotech.com/definitions/_6029a6d3-d2f1-484b-a99d-4bedb5858a3e" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.1.1; 1.0" id="_6029a6d3-d2f1-484b-a99d-4bedb5858a3e" name="insert-remove" namespace="http://www.trisotech.com/definitions/_6029a6d3-d2f1-484b-a99d-4bedb5858a3e" triso:logoChoice="Default">
+	<itemDefinition isCollection="true" label="tStringList" name="tStringList">
+		<typeRef>feel:string</typeRef>
+	</itemDefinition>
+	<itemDefinition isCollection="true" label="tNestedList" name="tNestedList">
+		<typeRef>tns:tStringList</typeRef>
+	</itemDefinition>
+	<inputData id="_8713a7d7-bae7-484e-b1d5-788b3979d659" name="simpleList">
+		<variable name="simpleList" typeRef="tns:tStringList"/>
+	</inputData>
+	<inputData id="_722095a4-3116-4d71-b225-58795b3ec654" name="nestedList">
+		<variable name="nestedList" typeRef="tns:tNestedList"/>
+	</inputData>
+	<inputData id="_4688d5d9-3a03-4377-89e3-9ccd50e1624e" name="position">
+		<variable name="position" typeRef="feel:number"/>
+	</inputData>
+	<decision id="_7a7f2263-5d9b-4a18-aee8-43783f417b07" name="literalNestedList">
+		<variable name="literalNestedList" typeRef="tns:tNestedList"/>
+		<literalExpression>
+			<text>[["a","b"],["b","c"]]</text>
+		</literalExpression>
+	</decision>
+	<decision id="_c169428e-2a57-42d2-a26d-cf22039da762" name="remove1">
+		<variable name="remove1" typeRef="tns:tStringList"/>
+		<informationRequirement>
+			<requiredInput href="#_8713a7d7-bae7-484e-b1d5-788b3979d659"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_4688d5d9-3a03-4377-89e3-9ccd50e1624e"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>remove(simpleList,position)</text>
+		</literalExpression>
+	</decision>
+	<decision id="_12fdd98a-00da-47af-80e6-f70906e359c0" name="insert2">
+		<variable name="insert2" typeRef="tns:tNestedList"/>
+		<informationRequirement>
+			<requiredDecision href="#_7a7f2263-5d9b-4a18-aee8-43783f417b07"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_4688d5d9-3a03-4377-89e3-9ccd50e1624e"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_8713a7d7-bae7-484e-b1d5-788b3979d659"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>insert before(literalNestedList,position,simpleList)</text>
+		</literalExpression>
+	</decision>
+	<decision id="_93786c60-d986-4c40-b836-4b2f0bc218ce" name="remove2">
+		<variable name="remove2" typeRef="tns:tNestedList"/>
+		<informationRequirement>
+			<requiredInput href="#_4688d5d9-3a03-4377-89e3-9ccd50e1624e"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredDecision href="#_7a7f2263-5d9b-4a18-aee8-43783f417b07"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>remove(literalNestedList,position)</text>
+		</literalExpression>
+	</decision>
+	<decision id="_d1465880-49ca-4182-ae74-7670fc834f2c" name="insert1">
+		<variable name="insert1" typeRef="tns:tStringList"/>
+		<informationRequirement>
+			<requiredInput href="#_8713a7d7-bae7-484e-b1d5-788b3979d659"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_4688d5d9-3a03-4377-89e3-9ccd50e1624e"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>insert before(simpleList,position,"x")</text>
+		</literalExpression>
+	</decision>
+	<decision id="_d6beae1e-c23f-4fdb-8c63-6c9835337eff" name="insert3">
+		<variable name="insert3" typeRef="tns:tNestedList"/>
+		<informationRequirement>
+			<requiredInput href="#_722095a4-3116-4d71-b225-58795b3ec654"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_4688d5d9-3a03-4377-89e3-9ccd50e1624e"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_8713a7d7-bae7-484e-b1d5-788b3979d659"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>insert before(nestedList,position,simpleList)</text>
+		</literalExpression>
+	</decision>
+</definitions>

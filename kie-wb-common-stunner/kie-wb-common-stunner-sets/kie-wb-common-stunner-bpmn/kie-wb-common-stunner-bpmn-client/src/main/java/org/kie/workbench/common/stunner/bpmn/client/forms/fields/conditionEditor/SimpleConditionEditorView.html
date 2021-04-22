@@ -1,0 +1,48 @@
+<!--
+  ~ Copyright 2018 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div id="simpleConditionEditorWidget" class="row">
+    <div class="col-md-12">
+
+        <div class="form-group" data-field="variable-selector-form">
+            <label class="control-label" for="variable-selector" data-i18n-key="ProcessVariable">Process Variable</label>
+            <a data-field="variable-selector-help" role="button" data-toggle="popover" data-trigger="hover"
+               data-html="true" title="" data-placement="bottom" data-container="body">
+                <i class="fa fa-info-circle"></i>
+            </a>
+            <div>
+                <div class="form-control" id="variable-selector" data-field="variable-selector"></div>
+            </div>
+            <span class="help-block" data-field="variable-selector-error"></span>
+        </div>
+
+        <div class="form-group" data-field="condition-selector-form">
+            <label class="control-label" for="condition-selector" data-i18n-key="Condition">Condition</label>
+            <a data-field="condition-selector-help" role="button" data-toggle="popover" data-trigger="hover"
+               data-html="true" title="" data-placement="bottom" data-container="body">
+                <i class="fa fa-info-circle"></i>
+            </a>
+            <div>
+                <div class="form-control" id="condition-selector" data-field="condition-selector"></div>
+            </div>
+            <span class="help-block" data-field="condition-selector-error"></span>
+        </div>
+
+        <div data-field="condition-params">
+        </div>
+
+    </div>
+</div>
