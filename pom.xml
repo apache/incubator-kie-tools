@@ -88,7 +88,6 @@
     <module>errai-reflections</module>
     <module>errai-config</module>
     <module>errai-codegen-gwt</module>
-    <module>errai-jboss-as-support</module>
     <module>errai-api</module>
     <module>errai-marshalling</module>
   </modules>
