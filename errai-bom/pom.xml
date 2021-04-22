@@ -252,12 +252,6 @@
 
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>errai-jboss-as-support</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
         <artifactId>errai-ui</artifactId>
         <version>${project.version}</version>
       </dependency>
