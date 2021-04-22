@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>errai-parent</artifactId>
-    <groupId>org.jboss.errai</groupId>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-editors-java</artifactId>
     <version>7.53.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -33,20 +33,20 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.errai</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-ioc</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.errai</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-ioc</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.errai</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-cdi-client</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
@@ -63,6 +63,12 @@
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-annotations</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -88,10 +94,10 @@
       <classifier>sources</classifier>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>errai-javax-enterprise</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -121,7 +127,7 @@
       </build>
       <dependencies>
         <dependency>
-          <groupId>org.jboss.errai</groupId>
+          <groupId>org.kie.kogito</groupId>
           <artifactId>errai-codegen</artifactId>
           <exclusions>
             <exclusion>

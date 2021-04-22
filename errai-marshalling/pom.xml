@@ -7,27 +7,27 @@
   <packaging>jar</packaging>
 
   <parent>
-    <groupId>org.jboss.errai</groupId>
-    <artifactId>errai-parent</artifactId>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-editors-java</artifactId>
     <version>7.53.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.errai</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.errai</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-config</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.errai</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-codegen</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.errai</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-codegen-gwt</artifactId>
     </dependency>
     <dependency>
@@ -67,6 +67,12 @@
       <!-- This should not be packaged with the Errai Distro. There are no 
         runtime dependencies on it and it breaks deployment on JBoss AS and Tomcat -->
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-annotations</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
   </dependencies>

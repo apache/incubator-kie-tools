@@ -7,8 +7,8 @@
 
   <!-- Parent -->
   <parent>
-    <groupId>org.jboss.errai</groupId>
-    <artifactId>errai-parent</artifactId>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-editors-java</artifactId>
     <version>7.53.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
@@ -24,12 +24,28 @@
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>javax.servlet-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>javax.servlet-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-annotations</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -44,7 +60,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.errai.reflections</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>reflections</artifactId>
       <exclusions>
         <exclusion>
@@ -99,6 +115,16 @@
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-junit4</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.objenesis</groupId>
+          <artifactId>objenesis</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>net.bytebuddy</groupId>
+          <artifactId>byte-buddy-agent</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

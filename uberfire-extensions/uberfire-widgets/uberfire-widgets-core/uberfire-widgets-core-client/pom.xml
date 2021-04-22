@@ -21,7 +21,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.uberfire</groupId>
+    <groupId>org.kie.kogito</groupId>
     <artifactId>uberfire-widgets-core</artifactId>
     <version>7.53.0-SNAPSHOT</version>
   </parent>
@@ -39,22 +39,22 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.errai</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-widgets-commons</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-client-api</artifactId>
     </dependency>
 
@@ -71,7 +71,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.errai</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-cdi-client</artifactId>
       <exclusions>
         <exclusion>
@@ -83,11 +83,15 @@
 
     <!-- Errai Core -->
     <dependency>
-      <groupId>org.jboss.errai</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-ioc</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.annotation</groupId>
+          <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-
-
 
     <!-- GWT and GWT Extensions -->
     <dependency>
@@ -100,6 +104,12 @@
       <groupId>com.google.gwt.gwtmockito</groupId>
       <artifactId>gwtmockito</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-annotations</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
   </dependencies>
