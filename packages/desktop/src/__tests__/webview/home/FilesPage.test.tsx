@@ -54,8 +54,8 @@ describe("FilesPage", () => {
         lastOpenedFiles: [
           { filePath: "/a/b.dmn", preview: "" },
           { filePath: "/b/a.dmn", preview: "" },
-          { filePath: "/c/c.dmn", preview: "" }
-        ]
+          { filePath: "/c/c.dmn", preview: "" },
+        ],
       })
     );
     expect(component.asFragment()).toMatchSnapshot();
@@ -76,8 +76,8 @@ describe("FilesPage", () => {
         lastOpenedFiles: [
           { filePath: "/a/b.dmn", preview: "" },
           { filePath: "/b/a.dmn", preview: "" },
-          { filePath: "/c/c.dmn", preview: "" }
-        ]
+          { filePath: "/c/c.dmn", preview: "" },
+        ],
       })
     );
 
@@ -102,8 +102,8 @@ describe("FilesPage", () => {
           { filePath: "/a/a.dmn", preview: "" },
           { filePath: "/a/b.dmn", preview: "" },
           { filePath: "/a/b.bpmn", preview: "" },
-          { filePath: "/a/c.bpmn", preview: "" }
-        ]
+          { filePath: "/a/c.bpmn", preview: "" },
+        ],
       })
     );
 
@@ -127,8 +127,8 @@ describe("FilesPage", () => {
         lastOpenedFiles: [
           { filePath: "/a/b.dmn", preview: "" },
           { filePath: "/b/a.dmn", preview: "" },
-          { filePath: "/c/c.dmn", preview: "" }
-        ]
+          { filePath: "/c/c.dmn", preview: "" },
+        ],
       })
     );
 

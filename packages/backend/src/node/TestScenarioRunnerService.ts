@@ -93,7 +93,7 @@ export class TestScenarioRunnerService implements Service, TestScenarioRunnerCap
           ignoreNameSpace: true,
           ignoreAttributes: false,
           parseAttributeValue: true,
-          trimValues: true
+          trimValues: true,
         }).child.testsuite[0].attrsMap;
 
         resolve(
@@ -102,7 +102,7 @@ export class TestScenarioRunnerService implements Service, TestScenarioRunnerCap
             tests: attrsMap.tests,
             errors: attrsMap.errors,
             failures: attrsMap.failures,
-            skipped: attrsMap.skipped
+            skipped: attrsMap.skipped,
           })
         );
       });

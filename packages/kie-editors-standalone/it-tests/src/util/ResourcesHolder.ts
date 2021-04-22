@@ -48,10 +48,7 @@ export class ResourcesHolder {
     let fileContent;
     this.readUploadedFileAsText(file).then((result) => {
       fileContent = result;
-      this.addFile(
-            { name, value: { path: name, type: ContentType.TEXT, content: result} },
-            onResourceChanged
-      );
+      this.addFile({ name, value: { path: name, type: ContentType.TEXT, content: result } }, onResourceChanged);
     });
     return this;
   }

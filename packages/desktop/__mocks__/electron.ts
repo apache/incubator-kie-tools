@@ -32,7 +32,7 @@ export const ipcRenderer = {
   },
   removeAllListeners(channel: string) {
     mockIpcRendererEvents.delete(channel);
-  }
+  },
 };
 
 export const ipcMain = {
@@ -41,17 +41,19 @@ export const ipcMain = {
   },
   removeAllListeners(channel: string) {
     mockIpcMainEvents.delete(channel);
-  }
+  },
 };
 
 export class BrowserWindow {
-  constructor(options?: electron.BrowserWindowConstructorOptions) { /**/ }
-};
+  constructor(options?: electron.BrowserWindowConstructorOptions) {
+    /**/
+  }
+}
 
 export const showSaveDialogMock = jest.fn((browserWindow: BrowserWindow, options: electron.SaveDialogOptions) => {
   return Promise.resolve();
 });
 
 export const dialog = {
-  showSaveDialog: showSaveDialogMock
+  showSaveDialog: showSaveDialogMock,
 };

@@ -28,7 +28,7 @@ const KOGITO_NOTIFICATION_TO_VS_CODE_DIAGNOSTIC_SEVERITY_CONVERTION_MAP: Notific
   WARNING: vscode.DiagnosticSeverity.Warning,
   ERROR: vscode.DiagnosticSeverity.Error,
   HINT: vscode.DiagnosticSeverity.Hint,
-  SUCCESS: vscode.DiagnosticSeverity.Information
+  SUCCESS: vscode.DiagnosticSeverity.Information,
 };
 
 export class ProblemsTabNotificationHandler implements NotificationsApi {
@@ -36,14 +36,14 @@ export class ProblemsTabNotificationHandler implements NotificationsApi {
 
   public createNotification(notification: Notification): void {
     const uri = vscode.Uri.file(notification.path);
-    const diagnostics: vscode.Diagnostic[] = this.diagnosticCollection.get(uri)?.map(elem => elem) || [];
+    const diagnostics: vscode.Diagnostic[] = this.diagnosticCollection.get(uri)?.map((elem) => elem) || [];
     diagnostics.push(this.buildDiagnostic(notification));
     this.diagnosticCollection.set(uri, diagnostics);
   }
 
   public setNotifications(path: string, notifications: Notification[]): void {
     const uri = vscode.Uri.file(path);
-    const diagnostics = notifications.map(notification => this.buildDiagnostic(notification));
+    const diagnostics = notifications.map((notification) => this.buildDiagnostic(notification));
     this.diagnosticCollection.set(uri, diagnostics);
   }
 
@@ -55,7 +55,7 @@ export class ProblemsTabNotificationHandler implements NotificationsApi {
     return {
       message: notification.message,
       range: new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0)),
-      severity: this.getSeverity(notification.severity)
+      severity: this.getSeverity(notification.severity),
     };
   }
 

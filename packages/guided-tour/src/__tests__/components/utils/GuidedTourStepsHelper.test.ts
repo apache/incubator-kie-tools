@@ -27,7 +27,7 @@ describe("GuidedTourStepsHelper", () => {
   const step3: Step = makeStep("#selector-3");
   const tutorial1 = {
     label: "tutorial 1",
-    steps: [step0, step1, step2, step3]
+    steps: [step0, step1, step2, step3],
   };
   const step2_0: Step = makeStep("#selector-2_0");
   const step2_1: Step = makeStep("#selector-2_1");
@@ -35,7 +35,7 @@ describe("GuidedTourStepsHelper", () => {
   const step2_3: Step = makeStep("#selector-2_3");
   const tutorial2 = {
     label: "tutorial 2",
-    steps: [step2_0, step2_1, step2_2, step2_3]
+    steps: [step2_0, step2_1, step2_2, step2_3],
   };
 
   guidedTour.registerTutorial(tutorial1);

@@ -23,10 +23,7 @@ const externalAssets = require("@kogito-tooling/external-assets-base");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 function getLatestGitTag() {
-  const tagName = require("child_process")
-    .execSync("git rev-list --tags --max-count=1")
-    .toString()
-    .trim();
+  const tagName = require("child_process").execSync("git rev-list --tags --max-count=1").toString().trim();
 
   return require("child_process")
     .execSync("git describe --tags " + tagName)
@@ -62,7 +59,7 @@ module.exports = async (env, argv) => {
   return merge(common, {
     entry: {
       index: "./src/index.tsx",
-      "envelope/pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts"
+      "envelope/pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
     },
     plugins: [
       new CopyPlugin([
@@ -75,9 +72,9 @@ module.exports = async (env, argv) => {
         { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
         { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] },
         { from: "./static/envelope", to: "./envelope/" },
-        { from: "../../node_modules/@kogito-tooling/pmml-editor/dist/images", to: "./envelope/images" }
+        { from: "../../node_modules/@kogito-tooling/pmml-editor/dist/images", to: "./envelope/images" },
       ]),
-      new MonacoWebpackPlugin()
+      new MonacoWebpackPlugin(),
     ],
     module: {
       rules: [
@@ -88,25 +85,25 @@ module.exports = async (env, argv) => {
             multiple: [
               {
                 search: "$_{WEBPACK_REPLACE__hubLinuxUrl}",
-                replace: downloadHub_linuxUrl
+                replace: downloadHub_linuxUrl,
               },
               {
                 search: "$_{WEBPACK_REPLACE__hubMacOsUrl}",
-                replace: downloadHub_macOsUrl
+                replace: downloadHub_macOsUrl,
               },
               {
                 search: "$_{WEBPACK_REPLACE__hubWindowsUrl}",
-                replace: downloadHub_windowsUrl
-              }
-            ]
-          }
+                replace: downloadHub_windowsUrl,
+              },
+            ],
+          },
         },
         {
           test: /\.ttf$/,
-          use: ["file-loader"]
+          use: ["file-loader"],
         },
-        ...pfWebpackOptions.patternflyRules
-      ]
+        ...pfWebpackOptions.patternflyRules,
+      ],
     },
     devServer: {
       historyApiFallback: false,
@@ -114,7 +111,7 @@ module.exports = async (env, argv) => {
       watchContentBase: true,
       contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
       compress: true,
-      port: 9001
-    }
+      port: 9001,
+    },
   });
 };

@@ -55,6 +55,6 @@ export function generalRegressionModelFactory(): GeneralRegressionModel {
     ParamMatrix: {},
     ParameterList: {},
     modelType: "generalLinear",
-    functionName: "regression"
+    functionName: "regression",
   });
 }

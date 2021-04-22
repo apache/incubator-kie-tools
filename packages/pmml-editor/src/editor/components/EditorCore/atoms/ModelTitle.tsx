@@ -36,9 +36,9 @@ export const ModelTitle = (props: ModelTitleProps) => {
 
   const { activeOperation, setActiveOperation } = useOperation();
 
-  const ref = useOnclickOutside(event => onCommitAndClose(), {
+  const ref = useOnclickOutside((event) => onCommitAndClose(), {
     disabled: activeOperation !== Operation.UPDATE_NAME,
-    eventTypes: ["click"]
+    eventTypes: ["click"],
   });
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
 
   const isEditModeEnabled = useMemo(() => isEditing && activeOperation === Operation.UPDATE_NAME, [
     isEditing,
-    activeOperation
+    activeOperation,
   ]);
 
   const modelTitleClassNames = useMemo(
@@ -84,7 +84,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
   return (
     <div
       ref={ref}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === "Enter") {
           onEdit();
         } else if (e.key === "Escape") {
@@ -96,7 +96,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
       <div className={"modelTitle--full-width"}>
         <Form
           id={"modelTitle-form"}
-          onSubmit={e => {
+          onSubmit={(e) => {
             e.stopPropagation();
             e.preventDefault();
           }}
@@ -106,7 +106,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
               <Tooltip content={"The Model Name will be generated at runtime if not set."}>
                 <button
                   aria-label="More info about Model Name"
-                  onClick={e => e.preventDefault()}
+                  onClick={(e) => e.preventDefault()}
                   className="pf-c-form__group-label-help modelTitle__icon"
                 >
                   <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />

@@ -69,7 +69,7 @@ describe("utility to check whether maven is available or not", () => {
       { major: 2, minor: 15, patch: 15 },
       { major: 2, minor: 0, patch: 0 },
       { major: 3, minor: 6, patch: 0 },
-      { major: 3, minor: 0, patch: 10 }
+      { major: 3, minor: 0, patch: 10 },
     ];
 
     for (const v of versions) {
@@ -144,7 +144,7 @@ describe("utility to check whether java|openjdk is available or not", () => {
       { major: 9, minor: 15, patch: 15 },
       { major: 9, minor: 0, patch: 0 },
       { major: 10, minor: 10, patch: 0 },
-      { major: 10, minor: 0, patch: 15 }
+      { major: 10, minor: 0, patch: 15 },
     ];
 
     for (const v of versions) {

@@ -46,16 +46,13 @@ export const CharacteristicsReducer: HistoryAwareReducer<Characteristics, AllAct
       case Actions.Scorecard_AddCharacteristic:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .forCharacteristics()
-            .build(),
-          draft => {
+          Builder().forModel(action.payload.modelIndex).forCharacteristics().build(),
+          (draft) => {
             draft.Characteristic.push({
               name: action.payload.name,
               reasonCode: action.payload.reasonCode,
               baselineScore: action.payload.baselineScore,
-              Attribute: []
+              Attribute: [],
             });
           }
         );
@@ -64,11 +61,8 @@ export const CharacteristicsReducer: HistoryAwareReducer<Characteristics, AllAct
       case Actions.Scorecard_DeleteCharacteristic:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .forCharacteristics()
-            .build(),
-          draft => {
+          Builder().forModel(action.payload.modelIndex).forCharacteristics().build(),
+          (draft) => {
             const characteristicIndex = action.payload.characteristicIndex;
             if (characteristicIndex >= 0 && characteristicIndex < draft.Characteristic.length) {
               draft.Characteristic.splice(characteristicIndex, 1);

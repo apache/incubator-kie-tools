@@ -36,16 +36,16 @@ beforeEach(() => {
   sentMessages = [];
   api = {
     setText: jest.fn(),
-    someRequest: jest.fn(() => Promise.resolve("a string"))
+    someRequest: jest.fn(() => Promise.resolve("a string")),
   };
 
-  envelopeServer = new EnvelopeServer({ postMessage: (msg: any) => sentMessages.push(msg) }, "tests", self =>
+  envelopeServer = new EnvelopeServer({ postMessage: (msg: any) => sentMessages.push(msg) }, "tests", (self) =>
     self.envelopeApi.requests.init()
   );
 });
 
 const delay = (ms: number) => {
-  return new Promise(res => Promise.resolve().then(() => setTimeout(res, ms)));
+  return new Promise((res) => Promise.resolve().then(() => setTimeout(res, ms)));
 };
 
 describe("new instance", () => {
@@ -71,7 +71,7 @@ describe("startInitPolling", () => {
       requestId: "EnvelopeServer_0",
       type: "init",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
-      data: undefined
+      data: undefined,
     });
 
     expect(envelopeServer.stopInitPolling).toHaveBeenCalled();
@@ -106,7 +106,7 @@ describe("receive", () => {
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "any",
         type: "someRequest",
-        data: []
+        data: [],
       },
       api
     );
@@ -123,7 +123,7 @@ describe("receive", () => {
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "any",
         type: "someRequest",
-        data: []
+        data: [],
       },
       api
     );
@@ -138,7 +138,7 @@ describe("receive", () => {
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "any",
         type: "someRequest",
-        data: ["param1"]
+        data: ["param1"],
       },
       api
     );
@@ -155,7 +155,7 @@ describe("receive", () => {
         targetEnvelopeServerId: "not-mine",
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "setText",
-        data: ["some text"]
+        data: ["some text"],
       },
       api
     );
@@ -169,7 +169,7 @@ describe("receive", () => {
         targetEnvelopeServerId: envelopeServer.id,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "setText",
-        data: ["some text"]
+        data: ["some text"],
       },
       api
     );

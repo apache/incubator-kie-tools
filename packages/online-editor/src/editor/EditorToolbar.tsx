@@ -28,7 +28,7 @@ import {
   PageHeaderToolsItem,
   TextInput,
   Title,
-  Tooltip
+  Tooltip,
 } from "@patternfly/react-core";
 import { EllipsisVIcon } from "@patternfly/react-icons";
 import * as React from "react";
@@ -107,7 +107,7 @@ export function EditorToolbar(props: Props) {
       </React.Fragment>,
       <DropdownItem key={`dropdown-${dropdownId}-fullscreen`} component={"button"} onClick={props.onFullScreen}>
         {i18n.editorToolbar.enterFullScreenView}
-      </DropdownItem>
+      </DropdownItem>,
     ],
     [i18n, context, props.onClose, props.onFullScreen]
   );
@@ -197,7 +197,7 @@ export function EditorToolbar(props: Props) {
         >
           {i18n.editorToolbar.setGitHubToken}
         </DropdownItem>
-      </DropdownGroup>
+      </DropdownGroup>,
     ],
     [i18n, context, props.onSave, props.onDownload, props.onCopyContentToClipboard, props.onGistIt]
   );
@@ -216,7 +216,7 @@ export function EditorToolbar(props: Props) {
                 xl: "visible",
                 lg: "hidden",
                 md: "hidden",
-                sm: "hidden"
+                sm: "hidden",
               }}
             >
               <Button
@@ -239,7 +239,7 @@ export function EditorToolbar(props: Props) {
                 xl: "visible",
                 lg: "hidden",
                 md: "hidden",
-                sm: "hidden"
+                sm: "hidden",
               }}
             >
               <Dropdown
@@ -248,7 +248,7 @@ export function EditorToolbar(props: Props) {
                   <DropdownToggle
                     id={"share-id-lg"}
                     data-testid={"share-menu"}
-                    onToggle={isOpen => setShareMenuOpen(isOpen)}
+                    onToggle={(isOpen) => setShareMenuOpen(isOpen)}
                   >
                     {i18n.editorToolbar.share}
                   </DropdownToggle>
@@ -269,7 +269,7 @@ export function EditorToolbar(props: Props) {
                 xl: "visible",
                 lg: "hidden",
                 md: "hidden",
-                sm: "hidden"
+                sm: "hidden",
               }}
             >
               <Dropdown
@@ -280,7 +280,7 @@ export function EditorToolbar(props: Props) {
                     className={"kogito--editor__toolbar-icon-button"}
                     id={"view-id-lg"}
                     toggleIndicator={null}
-                    onToggle={isOpen => setViewKebabOpen(isOpen)}
+                    onToggle={(isOpen) => setViewKebabOpen(isOpen)}
                     ouiaId="toolbar-button"
                   >
                     <EllipsisVIcon />
@@ -299,7 +299,7 @@ export function EditorToolbar(props: Props) {
                 xl: "hidden",
                 lg: "visible",
                 md: "visible",
-                sm: "visible"
+                sm: "visible",
               }}
             >
               <Dropdown
@@ -310,7 +310,7 @@ export function EditorToolbar(props: Props) {
                     className={"kogito--editor__toolbar-icon-button"}
                     id={"kebab-id-sm"}
                     toggleIndicator={null}
-                    onToggle={isOpen => setKebabOpen(isOpen)}
+                    onToggle={(isOpen) => setKebabOpen(isOpen)}
                     ouiaId="small-toolbar-button"
                   >
                     <EllipsisVIcon />
@@ -322,7 +322,7 @@ export function EditorToolbar(props: Props) {
                   ...viewItems("sm"),
                   <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
                     {...shareItems("sm")}
-                  </DropdownGroup>
+                  </DropdownGroup>,
                 ]}
                 position={DropdownPosition.right}
               />

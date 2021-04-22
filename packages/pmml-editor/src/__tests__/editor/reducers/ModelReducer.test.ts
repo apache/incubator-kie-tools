@@ -28,12 +28,12 @@ describe("ModelReducer::Valid actions", () => {
     const scorecard1: Scorecard = new Scorecard({
       MiningSchema: { MiningField: [] },
       functionName: "regression",
-      Characteristics: { Characteristic: [] }
+      Characteristics: { Characteristic: [] },
     });
     const scorecard2: Scorecard = new Scorecard({
       MiningSchema: { MiningField: [] },
       functionName: "classification",
-      Characteristics: { Characteristic: [] }
+      Characteristics: { Characteristic: [] },
     });
     const models = [scorecard1, scorecard2];
     const pmml = { version: "1.0", DataDictionary: { DataField: [] }, Header: {}, models: models };
@@ -41,8 +41,8 @@ describe("ModelReducer::Valid actions", () => {
     reducer(models, {
       type: Actions.DeleteModel,
       payload: {
-        modelIndex: 0
-      }
+        modelIndex: 0,
+      },
     });
 
     const updated: Model[] = historyService.commit(pmml)?.models as Model[];
@@ -59,7 +59,7 @@ describe("ModelReducer::Valid actions", () => {
     const scorecard1: Scorecard = new Scorecard({
       MiningSchema: { MiningField: [] },
       functionName: "regression",
-      Characteristics: { Characteristic: [] }
+      Characteristics: { Characteristic: [] },
     });
     const models = [scorecard1];
     const pmml = { version: "1.0", DataDictionary: { DataField: [] }, Header: {}, models: models };
@@ -67,8 +67,8 @@ describe("ModelReducer::Valid actions", () => {
     reducer(models, {
       type: Actions.DeleteModel,
       payload: {
-        modelIndex: 1
-      }
+        modelIndex: 1,
+      },
     });
 
     const updated: Model[] = historyService.commit(pmml)?.models as Model[];
@@ -83,8 +83,8 @@ describe("ModelReducer::Invalid actions", () => {
     const updated: Model[] = reducer(models, {
       type: Actions.SetHeaderDescription,
       payload: {
-        description: "description"
-      }
+        description: "description",
+      },
     });
     expect(updated).toEqual(models);
   });

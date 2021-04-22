@@ -68,7 +68,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
     setIsFinalResult,
     commit,
     viewExtendedProperties,
-    isDisabled
+    isDisabled,
   } = props;
 
   return (
@@ -77,7 +77,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
         OutputFieldLabel("OpType", optype, () => {
           setOptype(undefined);
           commit({
-            optype: undefined
+            optype: undefined,
           });
         })}
       {targetFieldValidation.length > 0 ? (
@@ -90,7 +90,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
         OutputFieldLabel("TargetField", targetField, () => {
           setTargetField(undefined);
           commit({
-            targetField: undefined
+            targetField: undefined,
           });
         })
       )}
@@ -98,42 +98,42 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
         OutputFieldLabel("Feature", feature, () => {
           setFeature(undefined);
           commit({
-            feature: undefined
+            feature: undefined,
           });
         })}
       {value &&
         OutputFieldLabel("Value", value, () => {
           setValue(undefined);
           commit({
-            value: undefined
+            value: undefined,
           });
         })}
       {rank !== undefined &&
         OutputFieldLabel("Rank", rank, () => {
           setRank(undefined);
           commit({
-            rank: undefined
+            rank: undefined,
           });
         })}
       {rankOrder &&
         OutputFieldLabel("RankOrder", rankOrder, () => {
           setRankOrder(undefined);
           commit({
-            rankOrder: undefined
+            rankOrder: undefined,
           });
         })}
       {segmentId &&
         OutputFieldLabel("SegmentId", segmentId, () => {
           setSegmentId(undefined);
           commit({
-            segmentId: undefined
+            segmentId: undefined,
           });
         })}
       {isFinalResult &&
         OutputFieldLabel("FinalResult", isFinalResult.toString(), () => {
           setIsFinalResult(undefined);
           commit({
-            isFinalResult: undefined
+            isFinalResult: undefined,
           });
         })}
       {isDisabled && (
@@ -148,7 +148,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
           color="cyan"
           href="#outline"
           icon={<ArrowAltCircleRightIcon />}
-          onClick={e => {
+          onClick={(e) => {
             e.preventDefault();
             viewExtendedProperties();
           }}

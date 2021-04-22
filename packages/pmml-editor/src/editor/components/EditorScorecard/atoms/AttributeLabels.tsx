@@ -41,7 +41,7 @@ export const AttributeLabels = (props: AttributeLabelsProps) => {
     activeAttribute,
     areReasonCodesUsed,
     characteristicReasonCode,
-    commit
+    commit,
   } = props;
 
   const { validationRegistry } = useValidationRegistry();
@@ -62,7 +62,7 @@ export const AttributeLabels = (props: AttributeLabelsProps) => {
       areReasonCodesUsed,
       activeAttribute,
       activeAttributeIndex,
-      characteristicReasonCode
+      characteristicReasonCode,
     ]
   );
   const partialScoreValidation = useMemo(

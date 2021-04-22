@@ -23,7 +23,7 @@ import {
   Split,
   SplitItem,
   Title,
-  TitleSizes
+  TitleSizes,
 } from "@patternfly/react-core";
 import { CloseIcon, WarningTriangleIcon } from "@patternfly/react-icons";
 import { FieldName, MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
@@ -50,16 +50,11 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
   const { setActiveOperation } = useOperation();
 
   const { validationRegistry } = useValidationRegistry();
-  const validations = useMemo(
-    () =>
-      validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forOutput()
-          .build()
-      ),
-    [modelIndex, output, miningSchema]
-  );
+  const validations = useMemo(() => validationRegistry.get(Builder().forModel(modelIndex).forOutput().build()), [
+    modelIndex,
+    output,
+    miningSchema,
+  ]);
 
   const toggleModal = () => {
     setActiveOperation(Operation.NONE);

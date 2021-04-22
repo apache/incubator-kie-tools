@@ -16,5 +16,5 @@
 
 export enum SearchType {
   TRAVERSAL = "traversal",
-  ASSET_FOLDER = "asset-folder"
+  ASSET_FOLDER = "asset-folder",
 }

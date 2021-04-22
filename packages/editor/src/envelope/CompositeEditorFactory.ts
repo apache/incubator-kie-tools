@@ -24,13 +24,13 @@ export class CompositeEditorFactory implements EditorFactory {
   constructor(private readonly factories: EditorFactory[]) {}
 
   public supports(fileExtension: string) {
-    const candidates = this.factories.filter(f => f.supports(fileExtension));
+    const candidates = this.factories.filter((f) => f.supports(fileExtension));
     this.assertSingleEditorFactory(candidates, fileExtension);
     return true;
   }
 
   public createEditor(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs): Promise<Editor> {
-    const candidates = this.factories.filter(f => f.supports(initArgs.fileExtension));
+    const candidates = this.factories.filter((f) => f.supports(initArgs.fileExtension));
     this.assertSingleEditorFactory(candidates, initArgs.fileExtension);
     return candidates[0].createEditor(envelopeContext, initArgs);
   }

@@ -13,7 +13,7 @@ async function executeCommand(command) {
     execution.stdout.pipe(process.stdout);
     execution.stderr.pipe(process.stderr);
 
-    execution.on("close", code => {
+    execution.on("close", (code) => {
       if (code === 0) {
         resolve();
       }
@@ -54,21 +54,21 @@ function start() {
     case "--dependencies-only": {
       updateDependencies()
         .then(() => console.log("Success"))
-        .catch(err => console.error("Error", err));
+        .catch((err) => console.error("Error", err));
       break;
     }
     case "-s":
     case "--test-snapshots-only": {
       updateSnapshots()
         .then(() => console.log("Success"))
-        .catch(err => console.error("Error", err));
+        .catch((err) => console.error("Error", err));
       break;
     }
     case undefined: {
       updateDependencies()
         .then(() => updateSnapshots())
         .then(() => console.log("Success"))
-        .catch(err => console.error("Error", err));
+        .catch((err) => console.error("Error", err));
       break;
     }
     default: {

@@ -26,11 +26,7 @@ import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
-import {
-  chromeExtensionI18nDictionaries,
-  chromeExtensionI18nDefaults,
-  ChromeExtensionI18nContext
-} from "../../i18n";
+import { chromeExtensionI18nDictionaries, chromeExtensionI18nDefaults, ChromeExtensionI18nContext } from "../../i18n";
 
 export interface Globals {
   id: string;
@@ -58,7 +54,7 @@ function KogitoMenuPortal(props: { id: string }) {
   );
 }
 
-export const Main: React.FunctionComponent<Globals> = props => {
+export const Main: React.FunctionComponent<Globals> = (props) => {
   return (
     <I18nDictionariesProvider
       defaults={chromeExtensionI18nDefaults}
@@ -75,7 +71,7 @@ export const Main: React.FunctionComponent<Globals> = props => {
           githubAuthTokenCookieName: props.githubAuthTokenCookieName,
           extensionIconUrl: props.extensionIconUrl,
           resourceContentServiceFactory: props.resourceContentServiceFactory,
-          externalEditorManager: props.externalEditorManager
+          externalEditorManager: props.externalEditorManager,
         }}
       >
         <GitHubContextProvider>

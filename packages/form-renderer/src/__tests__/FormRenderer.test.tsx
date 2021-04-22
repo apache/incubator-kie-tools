@@ -24,46 +24,45 @@ const schema = {
   properties: {
     name: { type: "string" },
     lastName: { type: "string" },
-    age: { type: "integer", minimum: 18 }
+    age: { type: "integer", minimum: 18 },
   },
-  required: ["name", "lastName"]
+  required: ["name", "lastName"],
 };
 
 const person: any = {
   name: "Jon",
   lastName: "Snow",
-  age: 18
+  age: 18,
 };
 
 let props: Props;
 
 describe("FormRenderer test", () => {
-
   beforeEach(() => {
     props = {
       formSchema: schema,
       model: cloneDeep(person),
       onSubmit: jest.fn(),
-      showErrorsHeader: true
+      showErrorsHeader: true,
     };
   });
 
   it("Snapshot", () => {
-    const { container } = render(<FormRenderer {...props}/>);
+    const { container } = render(<FormRenderer {...props} />);
 
     expect(container.firstChild).toMatchSnapshot();
 
     expect(screen.getByRole("form")).toHaveFormValues({
       name: "Jon",
       lastName: "Snow",
-      age: 18
+      age: 18,
     });
   });
 
   it("Form submit", async () => {
     const formApi = React.createRef<FormApi>();
 
-    const { container } = render(<FormRenderer {...props} ref={formApi}/>);
+    const { container } = render(<FormRenderer {...props} ref={formApi} />);
 
     expect(container.firstChild).toMatchSnapshot();
 
@@ -77,14 +76,14 @@ describe("FormRenderer test", () => {
   it("Form change & reset", async () => {
     const formApi = React.createRef<FormApi>();
 
-    const { container } = render(<FormRenderer {...props} ref={formApi}/>);
+    const { container } = render(<FormRenderer {...props} ref={formApi} />);
 
     expect(container.firstChild).toMatchSnapshot();
 
     expect(screen.getByRole("form")).toHaveFormValues({
       name: "Jon",
       lastName: "Snow",
-      age: 18
+      age: 18,
     });
 
     await act(async () => {
@@ -98,7 +97,7 @@ describe("FormRenderer test", () => {
     expect(screen.getByRole("form")).toHaveFormValues({
       name: "Harry",
       lastName: "Potter",
-      age: 8
+      age: 8,
     });
 
     await act(async () => {
@@ -110,21 +109,21 @@ describe("FormRenderer test", () => {
     expect(screen.getByRole("form")).toHaveFormValues({
       name: "Jon",
       lastName: "Snow",
-      age: 18
+      age: 18,
     });
   });
 
   it("Form validation error", async () => {
     const formApi = React.createRef<FormApi>();
 
-    const { container } = render(<FormRenderer {...props} ref={formApi}/>);
+    const { container } = render(<FormRenderer {...props} ref={formApi} />);
 
     expect(container.firstChild).toMatchSnapshot();
 
     expect(screen.getByRole("form")).toHaveFormValues({
       name: "Jon",
       lastName: "Snow",
-      age: 18
+      age: 18,
     });
 
     await act(async () => {

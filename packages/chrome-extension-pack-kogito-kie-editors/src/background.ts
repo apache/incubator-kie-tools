@@ -31,7 +31,7 @@ function removeHeader(headers: HttpHeader[], name: string) {
 }
 
 chrome.webRequest.onHeadersReceived.addListener(
-  details => {
+  (details) => {
     removeHeader(details.responseHeaders!, "content-security-policy");
     removeHeader(details.responseHeaders!, "x-frame-options");
     return { responseHeaders: details.responseHeaders };
@@ -44,18 +44,18 @@ chrome.webRequest.onHeadersReceived.addListener(
 
 let activeTabId: number;
 
-chrome.tabs.onActivated.addListener(activeInfo => {
+chrome.tabs.onActivated.addListener((activeInfo) => {
   activeTabId = activeInfo.tabId;
 });
 
 function getActiveTab(callback: (tab: any) => void) {
-  chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     const activeTab = tabs[0];
 
     if (activeTab) {
       callback(activeTab);
     } else {
-      chrome.tabs.get(activeTabId, tab => {
+      chrome.tabs.get(activeTabId, (tab) => {
         if (tab) {
           callback(tab);
         } else {
@@ -78,7 +78,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 function openOnlineEditor(request: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) {
   chrome.tabs.create(
     { url: "$_{WEBPACK_REPLACE__onlineEditor_url}/?ext#/editor/" + extractFileExtension(request.filePath) },
-    tab => {
+    (tab) => {
       let newTabReady = () => {
         newTabReady = () => {
           /**/
@@ -89,11 +89,11 @@ function openOnlineEditor(request: any, sender: chrome.runtime.MessageSender, se
           filePath: removeDirectories(request.filePath),
           fileContent: request.fileContent,
           readonly: request.readonly,
-          senderTabId: sender.tab!.id!
+          senderTabId: sender.tab!.id!,
         });
       };
 
-      chrome.tabs.get(tab.id!, newTab => {
+      chrome.tabs.get(tab.id!, (newTab) => {
         if (newTab.status === "complete") {
           newTabReady();
         }
@@ -117,9 +117,9 @@ function updateGitHub(request: any, sender: chrome.runtime.MessageSender) {
     {
       messageId: "RETURN_FROM_EXTERNAL_EDITOR",
       fileName: request.fileName,
-      fileContent: request.fileContent
+      fileContent: request.fileContent,
     },
-    response => {
+    (response) => {
       if (response?.success) {
         chrome.tabs.remove(sender.tab!.id!, () => {
           chrome.tabs.update(request.senderTabId, { active: true, selected: true });

@@ -16,7 +16,7 @@ import {
   SplitItem,
   Stack,
   StackItem,
-  TextInput
+  TextInput,
 } from "@patternfly/react-core";
 import { ArrowAltCircleRightIcon, ExclamationCircleIcon, TrashIcon } from "@patternfly/react-icons";
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
@@ -52,7 +52,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     onConstraintsEdit,
     onConstraintsSave,
     onValidate,
-    onOutsideClick
+    onOutsideClick,
   } = props;
   const [name, setName] = useState(dataType.name);
   const [typeSelection, setTypeSelection] = useState<DDDataField["type"]>(dataType.type);
@@ -62,7 +62,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     { value: "integer" },
     { value: "float" },
     { value: "double" },
-    { value: "boolean" }
+    { value: "boolean" },
   ];
   const [optypeSelection, setOptypeSelection] = useState(dataType.optype);
   const [isOptypeSelectOpen, setIsOptypeSelectOpen] = useState(false);
@@ -167,16 +167,10 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   }, [dataType]);
 
   const { validationRegistry } = useValidationRegistry();
-  const validations = useMemo(
-    () =>
-      validationRegistry.get(
-        Builder()
-          .forDataDictionary()
-          .forDataField(index)
-          .build()
-      ),
-    [index, dataType]
-  );
+  const validations = useMemo(() => validationRegistry.get(Builder().forDataDictionary().forDataField(index).build()), [
+    index,
+    dataType,
+  ]);
 
   return (
     <article
@@ -187,14 +181,14 @@ const DataTypeItem = (props: DataTypeItemProps) => {
           className={"editable-item__inner"}
           ref={ref}
           tabIndex={0}
-          onKeyDown={event => {
+          onKeyDown={(event) => {
             if (event.key === "Escape") {
               onOutsideClick();
             }
           }}
         >
           <Form
-            onSubmit={e => {
+            onSubmit={(e) => {
               e.stopPropagation();
               e.preventDefault();
             }}
@@ -297,7 +291,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                           color="cyan"
                           href="#"
                           icon={<ArrowAltCircleRightIcon />}
-                          onClick={event => {
+                          onClick={(event) => {
                             event.preventDefault();
                             handleConstraints();
                           }}
@@ -318,7 +312,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
           className={"editable-item__inner"}
           tabIndex={0}
           onClick={handleEditStatus}
-          onKeyDown={event => {
+          onKeyDown={(event) => {
             if (event.key === "Enter") {
               event.preventDefault();
               event.stopPropagation();

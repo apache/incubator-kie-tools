@@ -25,5 +25,5 @@ export interface ElectronFile {
 
 export enum FileSaveActions {
   SAVE,
-  SAVE_AS
+  SAVE_AS,
 }

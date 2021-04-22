@@ -65,6 +65,6 @@ jest.mock("react", () => {
   const ActualReact = require.requireActual("react");
   return {
     ...ActualReact,
-    useLayoutEffect: (fn: any) => fn()()
+    useLayoutEffect: (fn: any) => fn()(),
   };
 });

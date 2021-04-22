@@ -45,7 +45,7 @@ export class GwtStateControlService {
       },
       setRedoCommand(redoCommand: () => void) {
         stateControl.redoCommand = redoCommand;
-      }
+      },
     };
   }
 }

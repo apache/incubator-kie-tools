@@ -14,46 +14,46 @@
  * limitations under the License.
  */
 
-import { By } from "vscode-extension-tester"
+import { By } from "vscode-extension-tester";
 
 /**
  * Creates a XPATH string that locates <a> element with specific text.
- * 
+ *
  * @param text string to match
  */
 export const aComponentWithText = (text: string): string => {
-    return `//a[text() = \'${text}\']`
-}
+  return `//a[text() = \'${text}\']`;
+};
 
 /**
  * Creates a XPATH string that locates <span> element with specific text.
- * 
+ *
  * @param text string to match
  */
 export const spanComponentWithText = (text: string): string => {
-    return `//span[text() = \'${text}\']`
-}
+  return `//span[text() = \'${text}\']`;
+};
 
 /**
  * Creates a XPATH string that locates <h3> element with specific text.
- * 
+ *
  * @param text string to match
  */
 export const h3ComponentWithText = (text: string): string => {
-    return `//h3[text() = \'${text}\']`
-}
+  return `//h3[text() = \'${text}\']`;
+};
 
 /**
  * Creates a classname locator for 'expanded-docks-bar-E'
  */
 export const expandedDocksBarE = (): By => {
-    return By.className('expanded-docks-bar-E')
-}
+  return By.className("expanded-docks-bar-E");
+};
 
 /** Creates a XPATH locator that locates an editor tab element.
-* 
-* @param title title of the tab to match
-*/
+ *
+ * @param title title of the tab to match
+ */
 export const tabWithTitle = (title: string): By => {
-    return By.xpath(`//ul/li[@data-ouia-component-type='editor-nav-tab' and @data-ouia-component-id=\'${title}\']/a`);
-}
+  return By.xpath(`//ul/li[@data-ouia-component-type='editor-nav-tab' and @data-ouia-component-id=\'${title}\']/a`);
+};

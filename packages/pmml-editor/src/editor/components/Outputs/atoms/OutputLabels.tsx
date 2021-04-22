@@ -41,7 +41,7 @@ export const OutputLabels = (props: OutputLabelsProps) => {
     rank,
     rankOrder,
     segmentId,
-    isFinalResult
+    isFinalResult,
   } = props;
 
   return (

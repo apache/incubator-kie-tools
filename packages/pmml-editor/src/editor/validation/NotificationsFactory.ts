@@ -28,12 +28,12 @@ export const toNotifications = (path: string, validationEntries: ValidationEntry
     }
   };
 
-  return validationEntries.map<Notification>(validationEntry => {
+  return validationEntries.map<Notification>((validationEntry) => {
     return {
       path: path,
       message: validationEntry.message ?? "",
       type: "PROBLEM",
-      severity: mapValidationLevel(validationEntry.level)
+      severity: mapValidationLevel(validationEntry.level),
     };
   });
 };

@@ -22,7 +22,6 @@
   justify-content: stretch;
 
   &__header {
-
     &__container {
       background-color: var(--pf-c-page__main-section--m-light--BackgroundColor);
     }
@@ -31,11 +30,9 @@
       margin: 0 auto;
       max-width: 1920px;
     }
-
   }
 
   &__body {
-
     &__container {
       background-color: var(--pf-c-page__main-section--BackgroundColor);
       flex-grow: 1;
@@ -49,7 +46,6 @@
       flex-direction: column;
       justify-content: stretch;
     }
-
   }
 }
 
@@ -105,6 +101,4 @@
   &:last-child {
     margin-bottom: 0 !important;
   }
-
 }
-

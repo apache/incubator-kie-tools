@@ -21,6 +21,6 @@ module.exports = {
   testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
   transform: {
     "^.+\\.jsx?$": "babel-jest",
-    "^.+\\.tsx?$": "ts-jest"
-  }
+    "^.+\\.tsx?$": "ts-jest",
+  },
 };

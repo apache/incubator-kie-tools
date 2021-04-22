@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export * from "../index"
+export * from "../index";

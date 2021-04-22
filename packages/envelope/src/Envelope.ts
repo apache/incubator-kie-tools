@@ -28,18 +28,20 @@ export interface EnvelopeIFrameConfig {
   containerType: ContainerType.IFRAME;
 }
 
-export class Envelope<ApiToProvide extends ApiDefinition<ApiToProvide>,
+export class Envelope<
+  ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>,
   ViewType,
-  ContextType> {
+  ContextType
+> {
   constructor(
     bus: EnvelopeBus,
     config: EnvelopeDivConfig | EnvelopeIFrameConfig = { containerType: ContainerType.IFRAME },
     private readonly envelopeBusController = new EnvelopeBusController<ApiToProvide, ApiToConsume>(
       bus,
-      config.containerType === ContainerType.DIV ? config.envelopeId : undefined)
-  ) {
-  }
+      config.containerType === ContainerType.DIV ? config.envelopeId : undefined
+    )
+  ) {}
 
   public get channelApi() {
     return this.envelopeBusController.channelApi;
@@ -55,7 +57,7 @@ export class Envelope<ApiToProvide extends ApiDefinition<ApiToProvide>,
     const api = apiFactory.create({
       view: view,
       envelopeContext: context,
-      envelopeBusController: this.envelopeBusController
+      envelopeBusController: this.envelopeBusController,
     });
 
     this.envelopeBusController.startListening(api);

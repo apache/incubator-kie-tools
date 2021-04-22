@@ -31,7 +31,7 @@ export const EMPTY_FILE_DMN = {
   fileName: "new-file",
   fileExtension: "dmn",
   getFileContents: () => Promise.resolve(""),
-  isReadOnly: false
+  isReadOnly: false,
 };
 
 /**
@@ -41,7 +41,7 @@ export const EMPTY_FILE_BPMN = {
   fileName: "new-file",
   fileExtension: "bpmn",
   getFileContents: () => Promise.resolve(""),
-  isReadOnly: false
+  isReadOnly: false,
 };
 
 /**
@@ -51,7 +51,7 @@ export const EMPTY_FILE_SCESIM = {
   fileName: "new-file",
   fileExtension: "scesim",
   getFileContents: () => Promise.resolve(""),
-  isReadOnly: false
+  isReadOnly: false,
 };
 
 /**
@@ -61,7 +61,7 @@ export const EMPTY_FILE_PMML = {
   fileName: "new-file",
   fileExtension: "pmml",
   getFileContents: () => Promise.resolve(""),
-  isReadOnly: false
+  isReadOnly: false,
 };
 
 /**
@@ -73,6 +73,6 @@ export function newFile(fileExtension: string): File {
     fileName: "new-file",
     fileExtension: fileExtension,
     getFileContents: () => Promise.resolve(""),
-    isReadOnly: false
+    isReadOnly: false,
   };
 }

@@ -50,6 +50,6 @@ export function baselineModelFactory(): BaselineModel {
   return new BaselineModel({
     MiningSchema: new MiningSchema({ MiningField: [] }),
     TestDistributions: new TestDistributions({ Baseline: {}, field: {}, testStatistic: "CUSUM" }),
-    functionName: "regression"
+    functionName: "regression",
   });
 }

@@ -20,7 +20,7 @@ import {
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
-  ResourcesList
+  ResourcesList,
 } from "@kogito-tooling/channel-common-api";
 import { KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor/dist/api";
 import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
@@ -98,7 +98,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     }
 
     const matcher = new Minimatch(request.pattern);
-    const matches = Array.from(this.resources.keys()).filter(path => matcher.match(path));
+    const matches = Array.from(this.resources.keys()).filter((path) => matcher.match(path));
     return new ResourcesList(request.pattern, matches);
   }
 

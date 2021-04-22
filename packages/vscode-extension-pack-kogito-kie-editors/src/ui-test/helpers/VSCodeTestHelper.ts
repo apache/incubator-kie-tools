@@ -15,7 +15,17 @@
  */
 
 import { assert } from "chai";
-import { ActivityBar, By, EditorView, InputBox, SideBarView, WebView, Workbench, Notification, ViewControl } from "vscode-extension-tester";
+import {
+  ActivityBar,
+  By,
+  EditorView,
+  InputBox,
+  SideBarView,
+  WebView,
+  Workbench,
+  Notification,
+  ViewControl,
+} from "vscode-extension-tester";
 import { DefaultWait } from "vscode-uitests-tooling";
 
 /**
@@ -25,79 +35,78 @@ import { DefaultWait } from "vscode-uitests-tooling";
  * Aquire notifications, input CLI commands etc.
  */
 export default class VSCodeTestHelper {
+  /**
+   * Handle for VSCode workbench.
+   * Initialized in constructor.
+   */
+  private workbench: Workbench;
 
-    /**
-     * Handle for VSCode workbench.
-     * Initialized in constructor.
-     */
-    private workbench: Workbench;
+  /**
+   * Handle for sidebarview. Usually used to work with
+   * open folder.
+   * When you open folder sidebarview is initialized.
+   */
+  private sidebarView: SideBarView;
 
-    /**
-     * Handle for sidebarview. Usually used to work with
-     * open folder.
-     * When you open folder sidebarview is initialized.
-     */
-    private sidebarView: SideBarView;
+  constructor() {
+    this.workbench = new Workbench() as Workbench;
+  }
 
-    constructor() {
-        this.workbench = new Workbench() as Workbench;
-    }
+  /**
+   * Opens folder using commmand suplied by vscode-extension-tester
+   * and open the dedicated SideBarView with the folder.
+   *
+   * @param absolutePath absolute path to the folder that needs to be openned
+   * @returns a promise that resolves to a SideBarView of the openned folder
+   */
+  public openFolder = async (absolutePath: string): Promise<SideBarView> => {
+    await this.workbench.executeCommand("Extest: Open Folder");
+    const inputBox = await InputBox.create();
+    await inputBox.setText(absolutePath);
+    await inputBox.confirm();
 
-    /**
-     * Opens folder using commmand suplied by vscode-extension-tester
-     * and open the dedicated SideBarView with the folder.
-     *
-     * @param absolutePath absolute path to the folder that needs to be openned
-     * @returns a promise that resolves to a SideBarView of the openned folder
-     */
-    public openFolder = async (absolutePath: string): Promise<SideBarView> => {
-        await this.workbench.executeCommand("Extest: Open Folder");
-        const inputBox = await InputBox.create();
-        await inputBox.setText(absolutePath);
-        await inputBox.confirm();
+    const control = (await new ActivityBar().getViewControl("Explorer")) as ViewControl;
+    this.sidebarView = await control.openView();
+    assert.isTrue(await this.sidebarView.isDisplayed(), "Explorer side bar view was not opened");
 
-        const control = await new ActivityBar().getViewControl('Explorer') as ViewControl;
-        this.sidebarView = await control.openView();
-        assert.isTrue(await this.sidebarView.isDisplayed(), 'Explorer side bar view was not opened');
+    return this.sidebarView;
+  };
 
-        return this.sidebarView;
-    }
+  /**
+   * Opens file from a sidebarview. Expects that the sidebarview will be defined and open.
+   * Once the file is openned, it wait for the WebView to load and the returns it.
+   *
+   * @param fileName name of the file to open
+   * @returns promise that resolves to WebView of the openned file.
+   */
+  public openFileFromSidebar = async (fileName: string): Promise<WebView> => {
+    const workspace = await this.sidebarView.getContent().getSection("Untitled (Workspace)");
+    assert.isTrue(await workspace.isExpanded(), "Workspace section was not expanded");
 
-    /**
-     * Opens file from a sidebarview. Expects that the sidebarview will be defined and open.
-     * Once the file is openned, it wait for the WebView to load and the returns it.
-     *
-     * @param fileName name of the file to open
-     * @returns promise that resolves to WebView of the openned file.
-     */
-    public openFileFromSidebar = async (fileName: string): Promise<WebView> => {
-        const workspace = await this.sidebarView.getContent().getSection('Untitled (Workspace)');
-        assert.isTrue(await workspace.isExpanded(), 'Workspace section was not expanded');
+    await workspace.openItem("resources", fileName);
 
-        await workspace.openItem('resources', fileName);
+    // In cases where you have multiple KIE editors installed in VSCode
+    // uncomment this to run locally without issues.
+    // const input = await InputBox.create();
+    // await input.selectQuickPick('KIE Kogito Editors');
+    const webview = new WebView(new EditorView(), By.linkText(fileName));
+    await DefaultWait.sleep(10000);
+    return webview;
+  };
 
-        // In cases where you have multiple KIE editors installed in VSCode
-        // uncomment this to run locally without issues.
-        // const input = await InputBox.create();
-        // await input.selectQuickPick('KIE Kogito Editors');
-        const webview = new WebView(new EditorView(), By.linkText(fileName));
-        await DefaultWait.sleep(10000);
-        return webview;
-    }
+  /**
+   * Close all editor views that are open.
+   */
+  public closeAllEditors = async (): Promise<void> => {
+    await new EditorView().closeAllEditors();
+  };
 
-    /**
-     * Close all editor views that are open.
-     */
-    public closeAllEditors = async (): Promise<void> => {
-        await new EditorView().closeAllEditors();
-    }
-
-    /**
-     * Gets all currently displayed notifications.
-     *
-     * @returns a promise that resolves to array of notifications.
-     */
-    public getNotifications = async (): Promise<Notification[]> => {
-        return await this.workbench.getNotifications();
-    }
+  /**
+   * Gets all currently displayed notifications.
+   *
+   * @returns a promise that resolves to array of notifications.
+   */
+  public getNotifications = async (): Promise<Notification[]> => {
+    return await this.workbench.getNotifications();
+  };
 }

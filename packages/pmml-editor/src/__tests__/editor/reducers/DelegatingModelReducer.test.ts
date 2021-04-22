@@ -25,19 +25,19 @@ const models: Model[] = [
   new Scorecard({
     MiningSchema: { MiningField: miningFields },
     functionName: "regression",
-    Characteristics: { Characteristic: [] }
+    Characteristics: { Characteristic: [] },
   }),
   new Scorecard({
     MiningSchema: { MiningField: miningFields },
     functionName: "regression",
-    Characteristics: { Characteristic: [] }
-  })
+    Characteristics: { Characteristic: [] },
+  }),
 ];
 const pmml: PMML = {
   version: "1.0",
   DataDictionary: { DataField: [{ name: "field1" as FieldName, dataType: "boolean", optype: "categorical" }] },
   Header: {},
-  models: models
+  models: models,
 };
 
 const mockReducer: any = jest.fn();
@@ -49,9 +49,9 @@ const reducer: Reducer<Model[], AllActions> = DelegatingModelReducer(
       "Scorecard",
       {
         reducer: mockReducer,
-        factory: jest.fn()
-      }
-    ]
+        factory: jest.fn(),
+      },
+    ],
   ])
 );
 
@@ -64,8 +64,8 @@ describe("DelegatingModelReducer::Valid actions", () => {
       payload: {
         dataDictionaryIndex: 0,
         dataField: { name: "updated" as FieldName, dataType: "string", optype: "ordinal" },
-        originalName: "field1" as FieldName
-      }
+        originalName: "field1" as FieldName,
+      },
     });
     service.commit(pmml);
 
@@ -93,8 +93,8 @@ describe("DelegatingModelReducer::Valid actions", () => {
         missingValueReplacement: undefined,
         missingValueTreatment: undefined,
         invalidValueTreatment: undefined,
-        invalidValueReplacement: undefined
-      }
+        invalidValueReplacement: undefined,
+      },
     });
     service.commit(pmml);
 

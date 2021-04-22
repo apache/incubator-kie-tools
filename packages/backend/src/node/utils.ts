@@ -30,7 +30,7 @@ interface Version {
  * @returns Whether Maven is installed or not.
  */
 export function isMavenAvailable(version?: Version): Promise<boolean> {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     cp.exec("mvn -version", (error, stdout, _) => {
       if (error) {
         resolve(false);
@@ -68,7 +68,7 @@ export function isMavenAvailable(version?: Version): Promise<boolean> {
  * @returns Whether Java is installed or not.
  */
 export function isJavaAvailable(version?: Version): Promise<boolean> {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     cp.exec("java -version", (error, _, stderr) => {
       if (error) {
         resolve(false);

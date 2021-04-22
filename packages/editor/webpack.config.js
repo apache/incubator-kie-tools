@@ -22,42 +22,42 @@ const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebp
 module.exports = [
   merge(common, {
     entry: {
-      "api/index": "./src/api/index.ts"
+      "api/index": "./src/api/index.ts",
     },
     output: {
       libraryTarget: "umd",
-      globalObject: "this"
-    },
-    externals: [nodeExternals({ modulesDir: "../../node_modules" })]
-  }),
-  merge(common, {
-    entry: {
-      "envelope/index": "./src/envelope/index.ts"
-    },
-    output: {
-      libraryTarget: "commonjs2"
+      globalObject: "this",
     },
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
-    module: { rules: [...pfWebpackOptions.patternflyRules] }
   }),
   merge(common, {
     entry: {
-      "embedded/index": "./src/embedded/index.ts"
+      "envelope/index": "./src/envelope/index.ts",
+    },
+    output: {
+      libraryTarget: "commonjs2",
+    },
+    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
+    module: { rules: [...pfWebpackOptions.patternflyRules] },
+  }),
+  merge(common, {
+    entry: {
+      "embedded/index": "./src/embedded/index.ts",
     },
     output: {
       libraryTarget: "umd",
-      globalObject: "this"
+      globalObject: "this",
     },
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
-    module: { rules: [...pfWebpackOptions.patternflyRules] }
+    module: { rules: [...pfWebpackOptions.patternflyRules] },
   }),
   merge(common, {
     entry: {
-      "channel/index": "./src/channel/index.ts"
+      "channel/index": "./src/channel/index.ts",
     },
     output: {
-      libraryTarget: "commonjs2"
+      libraryTarget: "commonjs2",
     },
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
-  })
+  }),
 ];

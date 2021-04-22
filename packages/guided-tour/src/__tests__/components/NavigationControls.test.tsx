@@ -32,7 +32,7 @@ describe("NavigationControls", () => {
       setCurrentStep: (index: number) => {
         ctx.currentStep = index;
       },
-      currentTutorial: { steps: [{}, {}, {}, {}] }
+      currentTutorial: { steps: [{}, {}, {}, {}] },
     };
 
     act(() => {
@@ -52,7 +52,7 @@ describe("NavigationControls", () => {
       setCurrentStep: (index: number) => {
         ctx.currentStep = index;
       },
-      currentTutorial: { steps: [{}, {}, {}, {}] }
+      currentTutorial: { steps: [{}, {}, {}, {}] },
     };
 
     act(() => {
@@ -71,8 +71,8 @@ describe("NavigationControls", () => {
       useContextMock({
         currentStep: 2,
         currentTutorial: {
-          steps: [{}, {}, {}]
-        }
+          steps: [{}, {}, {}],
+        },
       });
       render(<NavigationControls />);
     });
@@ -106,10 +106,10 @@ describe("NavigationControls", () => {
         steps: [
           {
             mode: new DemoMode(),
-            navigatorEnabled: true
-          }
-        ]
-      }
+            navigatorEnabled: true,
+          },
+        ],
+      },
     };
 
     act(() => {

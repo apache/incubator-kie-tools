@@ -27,7 +27,7 @@ describe("Upload file test", () => {
     cy.loadEditor();
 
     // check editor logo
-    cy.get("[class='pf-c-brand']").within($logo => {
+    cy.get("[class='pf-c-brand']").within(($logo) => {
       expect($logo.attr("src")).contain("bpmn");
       expect($logo.attr("alt")).contain("bpmn");
     });
@@ -44,7 +44,7 @@ describe("Upload file test", () => {
 
       // open diagram panel and check nodes
       cy.get("[data-title='Explore Diagram']").click();
-      cy.get("a.gwt-Anchor").should($nodes => {
+      cy.get("a.gwt-Anchor").should(($nodes) => {
         expect($nodes).length(2);
         expect($nodes.eq(0)).text("Test process");
         expect($nodes.eq(1)).text("Start test node");
@@ -65,7 +65,7 @@ describe("Upload file test", () => {
       cy.get("[data-title='Explore Diagram']").click();
 
       // check nodes are added
-      cy.get("a.gwt-Anchor").should($nodes => {
+      cy.get("a.gwt-Anchor").should(($nodes) => {
         expect($nodes).length(6);
         expect($nodes.eq(0)).text("Test process");
         expect($nodes.eq(1)).text("Start test node");
@@ -77,17 +77,14 @@ describe("Upload file test", () => {
     });
 
     // rename process
-    cy.get("[aria-label='Edit file name']")
-      .focus()
-      .clear()
-      .type("testProcessEdited");
+    cy.get("[aria-label='Edit file name']").focus().clear().type("testProcessEdited");
 
     // save and download process
     cy.get("[data-ouia-component-id='small-toolbar-button']").click();
     cy.get("[data-ouia-component-id='save-and-download-dropdown-button']").click();
 
     // check process content
-    cy.readFile("downloads/testProcessEdited.bpmn").should($text => {
+    cy.readFile("downloads/testProcessEdited.bpmn").should(($text) => {
       expect($text).match(/<bpmn2:endEvent id="[A-Z0-9_-]*" name="End test node">/);
       expect($text).match(/<bpmn2:startEvent id="[A-Z0-9_-]*" name="Start test node">/);
     });
@@ -97,9 +94,7 @@ describe("Upload file test", () => {
     cy.get("[data-ouia-component-id='close-editor-button']").click();
 
     // check home page is visible
-    cy.get("#app p")
-      .should("be.visible")
-      .should("contain.text", "Welcome to Business Modeler!");
+    cy.get("#app p").should("be.visible").should("contain.text", "Welcome to Business Modeler!");
   });
 
   it("should upload DMN file", () => {
@@ -110,7 +105,7 @@ describe("Upload file test", () => {
     cy.loadEditor();
 
     // check editor logo
-    cy.get("[class='pf-c-brand']").within($logo => {
+    cy.get("[class='pf-c-brand']").within(($logo) => {
       expect($logo.attr("src")).contain("dmn");
       expect($logo.attr("alt")).contain("dmn");
     });
@@ -130,27 +125,21 @@ describe("Upload file test", () => {
 
       // open decision navigator and check nodes
       cy.get("[data-ouia-component-id='collapsed-docks-bar-W'] > button").click();
-      cy.get("li[data-i18n-prefix='DecisionNavigatorTreeView.']").should($nodes => {
+      cy.get("li[data-i18n-prefix='DecisionNavigatorTreeView.']").should(($nodes) => {
         expect($nodes).length(2);
         expect($nodes.eq(0)).attr("title", "Test model");
         expect($nodes.eq(1)).attr("title", "Test input data");
       });
 
       // mark input data node and add node by shortcuts (d - decision)
-      cy.get("[title='Test input data'] > div")
-        .click()
-        .type("d");
+      cy.get("[title='Test input data'] > div").click().type("d");
 
       // rename decision node
       cy.get("[data-title='Properties']").click();
-      cy.get("[name$='nameHolder']")
-        .focus()
-        .clear()
-        .type("Test decision node")
-        .type("{enter}");
+      cy.get("[name$='nameHolder']").focus().clear().type("Test decision node").type("{enter}");
 
       // check nodes are added
-      cy.get("li[data-i18n-prefix='DecisionNavigatorTreeView.']").should($nodes => {
+      cy.get("li[data-i18n-prefix='DecisionNavigatorTreeView.']").should(($nodes) => {
         expect($nodes).length(3);
         expect($nodes.eq(0)).attr("title", "Test model");
         expect($nodes.eq(1)).attr("title", "Test decision node");
@@ -159,17 +148,14 @@ describe("Upload file test", () => {
     });
 
     // rename model
-    cy.get("[aria-label='Edit file name']")
-      .focus()
-      .clear()
-      .type("testModelEdited");
+    cy.get("[aria-label='Edit file name']").focus().clear().type("testModelEdited");
 
     // save and download model
     cy.get("[data-ouia-component-id='small-toolbar-button']").click();
     cy.get("[data-ouia-component-id='save-and-download-dropdown-button']").click();
 
     // check model content
-    cy.readFile("downloads/testModelEdited.dmn").should($text => {
+    cy.readFile("downloads/testModelEdited.dmn").should(($text) => {
       expect($text).match(/<dmn:inputData id="[A-Z0-9_-]*" name="Test input data">/);
       expect($text).match(/<dmn:decision id="[A-Z0-9_-]*" name="Test decision node">/);
     });
@@ -179,9 +165,7 @@ describe("Upload file test", () => {
     cy.get("[data-ouia-component-id='close-editor-button']").click();
 
     // check home page is visible
-    cy.get("#app p")
-      .should("be.visible")
-      .should("contain.text", "Welcome to Business Modeler!");
+    cy.get("#app p").should("be.visible").should("contain.text", "Welcome to Business Modeler!");
   });
 
   it("should upload PMML file", () => {
@@ -194,7 +178,7 @@ describe("Upload file test", () => {
     });
 
     // check editor logo
-    cy.get("[class='pf-c-brand']").within($logo => {
+    cy.get("[class='pf-c-brand']").within(($logo) => {
       expect($logo.attr("src")).contain("pmml");
       expect($logo.attr("alt")).contain("pmml");
     });
@@ -207,14 +191,14 @@ describe("Upload file test", () => {
       cy.get(".modelTitle__truncate").should("have.text", "Test model");
 
       // check characteristics
-      cy.get(".characteristics-container div > strong").should($characteristics => {
+      cy.get(".characteristics-container div > strong").should(($characteristics) => {
         expect($characteristics).length(1);
         expect($characteristics.eq(0)).text("Test Characteristic");
       });
 
       // open, check and close PMML DataDictionary modal
       cy.get("[data-title='DataDictionary']").click();
-      cy.get(".data-type-item__name").should($dataTypes => {
+      cy.get(".data-type-item__name").should(($dataTypes) => {
         expect($dataTypes).length(1);
         expect($dataTypes.eq(0)).text("Test Data Type");
       });
@@ -222,7 +206,7 @@ describe("Upload file test", () => {
 
       // open and close PMML MiningSchema modal
       cy.get("[data-title='MiningSchema']").click();
-      cy.get(".mining-schema-list__item__name").should($miningSchema => {
+      cy.get(".mining-schema-list__item__name").should(($miningSchema) => {
         expect($miningSchema).length(1);
         expect($miningSchema.eq(0)).text("Test Data Type");
       });
@@ -230,7 +214,7 @@ describe("Upload file test", () => {
 
       // open and close PMML Outputs modal
       cy.get("[data-title='Outputs']").click();
-      cy.get(".outputs-container div > strong").should($outputs => {
+      cy.get(".outputs-container div > strong").should(($outputs) => {
         expect($outputs).length(1);
         expect($outputs.eq(0)).text("Test Output");
       });
@@ -238,22 +222,13 @@ describe("Upload file test", () => {
 
       // add characteristic
       cy.get("#add-characteristic-button").click();
-      cy.get("#characteristic-name")
-        .focus()
-        .clear()
-        .type("Second Test Characteristic");
-      cy.get("#characteristic-reason-code")
-        .focus()
-        .clear()
-        .type("4");
-      cy.get("#characteristic-baseline-score")
-        .focus()
-        .clear()
-        .type("47");
+      cy.get("#characteristic-name").focus().clear().type("Second Test Characteristic");
+      cy.get("#characteristic-reason-code").focus().clear().type("4");
+      cy.get("#characteristic-baseline-score").focus().clear().type("47");
       cy.get("#characteristics-toolbar").click();
 
       // check characteristic is added
-      cy.get(".characteristics-container div > strong").should($characteristics => {
+      cy.get(".characteristics-container div > strong").should(($characteristics) => {
         expect($characteristics).length(2);
         expect($characteristics.eq(0)).text("Test Characteristic");
         expect($characteristics.eq(1)).text("Second Test Characteristic");
@@ -261,17 +236,14 @@ describe("Upload file test", () => {
     });
 
     // rename score card
-    cy.get("[aria-label='Edit file name']")
-      .focus()
-      .clear()
-      .type("testScoreCardEdited");
+    cy.get("[aria-label='Edit file name']").focus().clear().type("testScoreCardEdited");
 
     // save and download score card
     cy.get("[data-ouia-component-id='small-toolbar-button']").click();
     cy.get("[data-ouia-component-id='save-and-download-dropdown-button']").click();
 
     // check score card content
-    cy.readFile("downloads/testScoreCardEdited.pmml").should($text => {
+    cy.readFile("downloads/testScoreCardEdited.pmml").should(($text) => {
       expect($text).contains('<Characteristic name="Test Characteristic" reasonCode="3" baselineScore="22"/>');
       expect($text).contains('<Characteristic name="Second Test Characteristic" reasonCode="4" baselineScore="47"/>');
     });
@@ -281,8 +253,6 @@ describe("Upload file test", () => {
     cy.get("[data-ouia-component-id='close-editor-button']").click();
 
     // check home page is visible
-    cy.get("#app p")
-      .should("be.visible")
-      .should("contain.text", "Welcome to Business Modeler!");
+    cy.get("#app p").should("be.visible").should("contain.text", "Welcome to Business Modeler!");
   });
 });

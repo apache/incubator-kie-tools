@@ -50,7 +50,7 @@ test("navigation", async () => {
 
   // check Learn more cards
   const learnMoreCards = await client.$$("[data-ouia-component-type='PF4/Card'] > div > h2");
-  const learMoreCardsTitles = await Promise.all(await learnMoreCards.map(async card => await card.getText()));
+  const learMoreCardsTitles = await Promise.all(await learnMoreCards.map(async (card) => await card.getText()));
   expect(learMoreCardsTitles).toEqual(["Why BPMN?", "Why DMN?", "About Business Modeler Preview"]);
 
   // open Files page
@@ -59,13 +59,13 @@ test("navigation", async () => {
 
   // check New files cards
   const newFileCards = await client.$$("[data-ouia-component-type='PF4/Card'] > div > h3");
-  const newFileCardTitles = await Promise.all(newFileCards.map(async card => await card.getText()));
+  const newFileCardTitles = await Promise.all(newFileCards.map(async (card) => await card.getText()));
   expect(newFileCardTitles).toEqual([
     "Blank Workflow (.BPMN)",
     "Blank Decision Model (.DMN)",
     "Sample Workflow (.BPMN)",
     "Sample Decision Model (.DMN)",
-    "Open from source"
+    "Open from source",
   ]);
 
   // check Recent Files section

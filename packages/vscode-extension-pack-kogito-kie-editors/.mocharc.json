@@ -1,7 +1,7 @@
 {
-    "retries": 1,
-    "reporter":  "xunit",
-    "reporterOptions": {
-        "output": "./it-tests/results/junit.xml"
-    }
+  "retries": 1,
+  "reporter": "xunit",
+  "reporterOptions": {
+    "output": "./it-tests/results/junit.xml"
+  }
 }

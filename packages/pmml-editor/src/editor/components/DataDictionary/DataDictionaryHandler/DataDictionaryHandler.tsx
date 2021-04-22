@@ -9,7 +9,7 @@ import {
   Split,
   SplitItem,
   Title,
-  TitleSizes
+  TitleSizes,
 } from "@patternfly/react-core";
 import { CloseIcon, WarningTriangleIcon } from "@patternfly/react-icons";
 import { DataDictionary, FieldName, PMML } from "@kogito-tooling/pmml-editor-marshaller";
@@ -42,8 +42,8 @@ const DataDictionaryHandler = () => {
       payload: {
         name: name,
         type: type,
-        optype: optype
-      }
+        optype: optype,
+      },
     });
   };
 
@@ -51,8 +51,8 @@ const DataDictionaryHandler = () => {
     dispatch({
       type: Actions.AddBatchDataDictionaryFields,
       payload: {
-        dataDictionaryFields: fields
-      }
+        dataDictionaryFields: fields,
+      },
     });
   };
 
@@ -62,8 +62,8 @@ const DataDictionaryHandler = () => {
     dispatch({
       type: Actions.DeleteDataDictionaryField,
       payload: {
-        index
-      }
+        index,
+      },
     });
     // }
   };
@@ -73,8 +73,8 @@ const DataDictionaryHandler = () => {
       type: Actions.ReorderDataDictionaryFields,
       payload: {
         oldIndex,
-        newIndex
-      }
+        newIndex,
+      },
     });
   };
 
@@ -84,8 +84,8 @@ const DataDictionaryHandler = () => {
       payload: {
         dataDictionaryIndex: index,
         dataField: convertToDataField(field),
-        originalName: originalName as FieldName
-      }
+        originalName: originalName as FieldName,
+      },
     });
   };
 
@@ -94,15 +94,7 @@ const DataDictionaryHandler = () => {
   };
 
   const { validationRegistry } = useValidationRegistry();
-  const validations = useMemo(
-    () =>
-      validationRegistry.get(
-        Builder()
-          .forDataDictionary()
-          .build()
-      ),
-    [dictionary]
-  );
+  const validations = useMemo(() => validationRegistry.get(Builder().forDataDictionary().build()), [dictionary]);
 
   const header = (
     <Split hasGutter={true}>

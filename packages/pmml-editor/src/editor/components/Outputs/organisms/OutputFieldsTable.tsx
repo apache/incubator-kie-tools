@@ -49,7 +49,7 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
     onDeleteOutputField,
     onCommitAndClose,
     onCommit,
-    onCancel
+    onCancel,
   } = props;
 
   const addOutputRowRef = useRef<HTMLDivElement | null>(null);
@@ -87,7 +87,7 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
 
   return (
     <Form
-      onSubmit={e => {
+      onSubmit={(e) => {
         e.stopPropagation();
         e.preventDefault();
       }}
@@ -106,7 +106,7 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
                     modelIndex={modelIndex}
                     outputField={o}
                     outputFieldIndex={index}
-                    validateOutputName={_name => onValidateOutputFieldName(index, _name)}
+                    validateOutputName={(_name) => onValidateOutputFieldName(index, _name)}
                     viewExtendedProperties={viewExtendedProperties}
                     onCommitAndClose={onCommitAndClose}
                     onCommit={onCommit}

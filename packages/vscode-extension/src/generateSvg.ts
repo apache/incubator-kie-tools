@@ -46,7 +46,7 @@ export async function generateSvg(
   const svgAbsoluteFilePath = __path.join(parsedPath.dir, svgFileName);
   fs.writeFileSync(svgAbsoluteFilePath, previewSvg);
 
-  vscode.window.showInformationMessage(i18n.savedSvg(svgFileName), i18n.openSvg).then(selection => {
+  vscode.window.showInformationMessage(i18n.savedSvg(svgFileName), i18n.openSvg).then((selection) => {
     if (selection !== i18n.openSvg) {
       return;
     }

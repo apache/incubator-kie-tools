@@ -24,8 +24,8 @@ EditorEnvelope.init({
   bus: {
     postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, _?: any) {
       window.parent.postMessage(message, "*", _);
-    }
+    },
   },
   editorFactory: new PMMLEditorFactory(),
-  editorContext: { channel: ChannelType.ONLINE, operatingSystem: getOperatingSystem() }
+  editorContext: { channel: ChannelType.ONLINE, operatingSystem: getOperatingSystem() },
 });

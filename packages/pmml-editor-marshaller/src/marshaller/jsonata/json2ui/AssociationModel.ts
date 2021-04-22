@@ -53,6 +53,6 @@ export function associationModelFactory(): AssociationModel {
     minimumConfidence: 0,
     numberOfItems: 0,
     numberOfItemsets: 0,
-    numberOfRules: 0
+    numberOfRules: 0,
   });
 }

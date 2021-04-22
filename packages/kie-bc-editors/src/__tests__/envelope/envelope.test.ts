@@ -27,10 +27,10 @@ Object.defineProperty(global, "frameElement", {
       attributes: {
         getNamedItem: (key: string) => {
           return { value: key === "data-envelope-channel" ? channelType : undefined };
-        }
-      }
+        },
+      },
     };
-  })
+  }),
 });
 
 //Lazy load module as it executes once loaded and, if import'ed, it's before the mocks are setup.

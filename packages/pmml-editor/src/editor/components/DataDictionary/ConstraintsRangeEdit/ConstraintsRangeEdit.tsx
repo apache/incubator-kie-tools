@@ -29,7 +29,7 @@ import {
   Text,
   TextContent,
   TextInput,
-  TextVariants
+  TextVariants,
 } from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons";
 import { RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
@@ -171,14 +171,7 @@ const RangeEdit = (props: RangeEditProps) => {
 
   const { validationRegistry } = useValidationRegistry();
   const validations = useMemo(
-    () =>
-      validationRegistry.get(
-        Builder()
-          .forDataDictionary()
-          .forDataField(dataFieldIndex)
-          .forInterval(index)
-          .build()
-      ),
+    () => validationRegistry.get(Builder().forDataDictionary().forDataField(dataFieldIndex).forInterval(index).build()),
     [range]
   );
 

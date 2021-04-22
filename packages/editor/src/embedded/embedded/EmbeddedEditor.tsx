@@ -64,7 +64,7 @@ const containerStyles: CSS.Properties = {
   border: "none",
   margin: 0,
   padding: 0,
-  overflow: "hidden"
+  overflow: "hidden",
 };
 
 const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRef, Props> = (
@@ -76,7 +76,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
   const envelopeMapping = useMemo(() => props.editorEnvelopeLocator.mapping.get(props.file.fileExtension), [
     props.editorEnvelopeLocator,
-    props.file
+    props.file,
   ]);
 
   //Setup envelope bus communication
@@ -86,16 +86,16 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
   const envelopeServer = useMemo(() => {
     return new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
-      { postMessage: message => iframeRef.current?.contentWindow?.postMessage(message, "*") },
+      { postMessage: (message) => iframeRef.current?.contentWindow?.postMessage(message, "*") },
       props.editorEnvelopeLocator.targetOrigin,
-      self =>
+      (self) =>
         self.envelopeApi.requests.receive_initRequest(
           { origin: self.origin, envelopeServerId: self.id },
           {
             fileExtension: props.file.fileExtension,
             resourcesPathPrefix: envelopeMapping?.resourcesPathPrefix ?? "",
             initialLocale: props.locale,
-            isReadOnly: props.file.isReadOnly
+            isReadOnly: props.file.isReadOnly,
           }
         )
     );
@@ -108,7 +108,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   }, [props.locale]);
 
   useEffectAfterFirstRender(() => {
-    props.file.getFileContents().then(content => {
+    props.file.getFileContents().then((content) => {
       envelopeServer.envelopeApi.notifications.receive_contentChanged({ content: content! });
     });
   }, [props.file.getFileContents]);
@@ -130,15 +130,15 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       return {
         getStateControl: () => stateControl,
         getEnvelopeServer: () => envelopeServer,
-        getElementPosition: selector =>
+        getElementPosition: (selector) =>
           envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(selector),
         undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorUndo()),
         redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorRedo()),
-        getContent: () => envelopeServer.envelopeApi.requests.receive_contentRequest().then(c => c.content),
+        getContent: () => envelopeServer.envelopeApi.requests.receive_contentRequest().then((c) => c.content),
         getPreview: () => envelopeServer.envelopeApi.requests.receive_previewRequest(),
-        setContent: async content =>
+        setContent: async (content) =>
           envelopeServer.envelopeApi.notifications.receive_contentChanged({ content: content }),
-        validate: () => envelopeServer.envelopeApi.requests.validate()
+        validate: () => envelopeServer.envelopeApi.requests.validate(),
       };
     },
     [envelopeServer, stateControl]

@@ -22,19 +22,11 @@ describe("Dmn Editable Data Type.", () => {
 
   // Currently skipped due to https://issues.redhat.com/browse/KOGITO-3909
   it.skip("Test Add New Data Type And Check Dirty Indicator", () => {
-    cy.editor("dmn-editable")
-      .find("[data-field='kie-palette']")
-      .should("be.visible");
+    cy.editor("dmn-editable").find("[data-field='kie-palette']").should("be.visible");
 
-    cy.editor("dmn-editable")
-      .ouiaId("editor-nav-tab", "Data Types", { timeout: 10000 })
-      .should("be.visible")
-      .click()
+    cy.editor("dmn-editable").ouiaId("editor-nav-tab", "Data Types", { timeout: 10000 }).should("be.visible").click();
 
-    cy.editor("dmn-editable")
-      .ouiaId("add-data-type-button", "first")
-      .should("be.visible")
-      .click();
+    cy.editor("dmn-editable").ouiaId("add-data-type-button", "first").should("be.visible").click();
 
     cy.editor("dmn-editable")
       .ouiaId("dmn-data-type-item", "Insert a name")
@@ -42,7 +34,6 @@ describe("Dmn Editable Data Type.", () => {
       .find("[data-type-field='save-button']")
       .click();
 
-    cy.ouiaType("content-dirty")
-      .should("be.visible");
-  })
+    cy.ouiaType("content-dirty").should("be.visible");
+  });
 });

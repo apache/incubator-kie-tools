@@ -20,7 +20,7 @@ import {
   ResourcesList,
   ResourceContentOptions,
   ResourceListOptions,
-  ContentType
+  ContentType,
 } from "@kogito-tooling/channel-common-api";
 import { fetchFile } from "../../github/api";
 import * as minimatch from "minimatch";
@@ -57,8 +57,8 @@ class ChromeResourceContentService implements ResourceContentService {
   public get(path: string, opts?: ResourceContentOptions): Promise<ResourceContent | undefined> {
     opts = opts ?? { type: ContentType.TEXT };
     return fetchFile(this.octokit, this.repoInfo.owner, this.repoInfo.repo, this.repoInfo.gitref, path, opts!.type)
-      .then(resourceContent => new ResourceContent(path, resourceContent, opts!.type))
-      .catch(e => {
+      .then((resourceContent) => new ResourceContent(path, resourceContent, opts!.type))
+      .catch((e) => {
         console.debug(e);
         console.debug(`Error retrieving content from URI ${path}`);
         return undefined;
@@ -70,14 +70,14 @@ class ChromeResourceContentService implements ResourceContentService {
       .getTree({
         recursive: "1",
         tree_sha: this.repoInfo.gitref,
-        ...this.repoInfo
+        ...this.repoInfo,
       })
       .then((v: OctokitResponse) => {
-        const filteredPaths = v.data.tree.filter(file => file.type === "blob").map(file => file.path);
+        const filteredPaths = v.data.tree.filter((file) => file.type === "blob").map((file) => file.path);
         const result = minimatch.match(filteredPaths, pattern);
         return new ResourcesList(pattern, result);
       })
-      .catch(e => {
+      .catch((e) => {
         console.debug(`Error retrieving file list for pattern ${pattern}`);
         return new ResourcesList(pattern, []);
       });

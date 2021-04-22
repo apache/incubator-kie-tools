@@ -27,7 +27,7 @@ describe("New file test", () => {
     cy.loadEditor();
 
     // check editor logo
-    cy.get("[class='pf-c-brand']").within($logo => {
+    cy.get("[class='pf-c-brand']").within(($logo) => {
       expect($logo.attr("src")).contain("bpmn");
       expect($logo.attr("alt")).contain("bpmn");
     });
@@ -44,7 +44,7 @@ describe("New file test", () => {
 
       // open diagram panel and check nodes
       cy.get("[data-title='Explore Diagram']").click();
-      cy.get("a.gwt-Anchor").should($nodes => {
+      cy.get("a.gwt-Anchor").should(($nodes) => {
         expect($nodes).length(1);
         expect($nodes.eq(0)).text("new-file");
       });
@@ -59,7 +59,7 @@ describe("New file test", () => {
     cy.loadEditor();
 
     // check editor logo
-    cy.get("[class='pf-c-brand']").within($logo => {
+    cy.get("[class='pf-c-brand']").within(($logo) => {
       expect($logo.attr("src")).contain("dmn");
       expect($logo.attr("alt")).contain("dmn");
     });
@@ -73,7 +73,7 @@ describe("New file test", () => {
     cy.getEditor().within(() => {
       // open Decision navigator and check nodes
       cy.get("[data-ouia-component-id='collapsed-docks-bar-W'] > button").click();
-      cy.get("li[data-i18n-prefix='DecisionNavigatorTreeView.']").should($nodes => {
+      cy.get("li[data-i18n-prefix='DecisionNavigatorTreeView.']").should(($nodes) => {
         expect($nodes).length(1);
         expect($nodes.eq(0)).attr("title", "new-file");
       });
@@ -102,7 +102,7 @@ describe("New file test", () => {
     });
 
     // check editor logo
-    cy.get("[class='pf-c-brand']").within($logo => {
+    cy.get("[class='pf-c-brand']").within(($logo) => {
       expect($logo.attr("src")).contain("pmml");
       expect($logo.attr("alt")).contain("pmml");
     });

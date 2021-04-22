@@ -27,7 +27,7 @@ describe("Try sample test", () => {
     cy.loadEditor();
 
     // check editor logo
-    cy.get("[class='pf-c-brand']").within($logo => {
+    cy.get("[class='pf-c-brand']").within(($logo) => {
       expect($logo.attr("src")).contain("bpmn");
       expect($logo.attr("alt")).contain("bpmn");
     });
@@ -44,7 +44,7 @@ describe("Try sample test", () => {
 
       // open diagram panel and check nodes
       cy.get("[data-title='Explore Diagram']").click();
-      cy.get("a.gwt-Anchor").should($nodes => {
+      cy.get("a.gwt-Anchor").should(($nodes) => {
         expect($nodes).length(8);
         expect($nodes.eq(0)).text("Process travelers");
         expect($nodes.eq(1)).text("processedtraveler");
@@ -66,7 +66,7 @@ describe("Try sample test", () => {
     cy.loadEditor();
 
     // check editor logo
-    cy.get("[class='pf-c-brand']").within($logo => {
+    cy.get("[class='pf-c-brand']").within(($logo) => {
       expect($logo.attr("src")).contain("dmn");
       expect($logo.attr("alt")).contain("dmn");
     });
@@ -80,7 +80,7 @@ describe("Try sample test", () => {
     cy.getEditor().within(() => {
       // open Decision navigator and check nodes
       cy.get("[data-ouia-component-id='collapsed-docks-bar-W'] > button").click();
-      cy.get("[data-i18n-prefix='DecisionNavigatorTreeView.']").should($nodes => {
+      cy.get("[data-i18n-prefix='DecisionNavigatorTreeView.']").should(($nodes) => {
         expect($nodes).length(21);
         expect($nodes.eq(0)).not.attr("title");
         expect($nodes.eq(1)).attr("title", "loan_pre_qualification");
@@ -115,7 +115,7 @@ describe("Try sample test", () => {
 
       // open Data Types tab and check values
       cy.get("[data-ouia-component-id='Data Types'] a").click();
-      cy.get(".kie-dnd-draggable:not(.hidden) .name-text").should($dataTypes => {
+      cy.get(".kie-dnd-draggable:not(.hidden) .name-text").should(($dataTypes) => {
         expect($dataTypes).length(16);
         expect($dataTypes.eq(0)).text("Requested_Product");
         expect($dataTypes.eq(1)).text("Marital_Status");
@@ -147,7 +147,7 @@ describe("Try sample test", () => {
     });
 
     // check editor logo
-    cy.get("[class='pf-c-brand']").within($logo => {
+    cy.get("[class='pf-c-brand']").within(($logo) => {
       expect($logo.attr("src")).contain("pmml");
       expect($logo.attr("alt")).contain("pmml");
     });
@@ -157,7 +157,7 @@ describe("Try sample test", () => {
 
     cy.getEditor().within(() => {
       // check characteristics
-      cy.get(".characteristics-container div > strong").should($dataTypes => {
+      cy.get(".characteristics-container div > strong").should(($dataTypes) => {
         expect($dataTypes).length(3);
         expect($dataTypes.eq(0)).text("departmentScore");
         expect($dataTypes.eq(1)).text("ageScore");
@@ -166,7 +166,7 @@ describe("Try sample test", () => {
 
       // open and close PMML DataDictionary modal
       cy.get("[data-title='DataDictionary']").click();
-      cy.get(".data-type-item__name").should($dataTypes => {
+      cy.get(".data-type-item__name").should(($dataTypes) => {
         expect($dataTypes).length(4);
         expect($dataTypes.eq(0)).text("department");
         expect($dataTypes.eq(1)).text("age");
@@ -177,7 +177,7 @@ describe("Try sample test", () => {
 
       // open and close PMML MiningSchema modal
       cy.get("[data-title='MiningSchema']").click();
-      cy.get(".mining-schema-list__item__name").should($miningSchema => {
+      cy.get(".mining-schema-list__item__name").should(($miningSchema) => {
         expect($miningSchema).length(4);
         expect($miningSchema.eq(0)).text("department");
         expect($miningSchema.eq(1)).text("age");
@@ -188,7 +188,7 @@ describe("Try sample test", () => {
 
       // open and close PMML Outputs modal
       cy.get("[data-title='Outputs']").click();
-      cy.get(".outputs-container div > strong").should($outputs => {
+      cy.get(".outputs-container div > strong").should(($outputs) => {
         expect($outputs).length(4);
         expect($outputs.eq(0)).text("Final Score");
         expect($outputs.eq(1)).text("Reason Code 1");

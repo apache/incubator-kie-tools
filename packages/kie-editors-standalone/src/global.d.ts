@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-declare module '*.html'
+declare module "*.html";

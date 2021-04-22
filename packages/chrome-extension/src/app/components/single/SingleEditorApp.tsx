@@ -82,7 +82,7 @@ export function SingleEditorApp(props: {
   const goFullScreen = useCallback(() => setFullscreen(true), []);
 
   const openExternalEditor = useCallback(() => {
-    props.getFileContents().then(fileContent => {
+    props.getFileContents().then((fileContent) => {
       globals.externalEditorManager?.open(props.getFileName(), fileContent!, props.readonly);
     });
   }, [globals.externalEditorManager]);
@@ -94,7 +94,7 @@ export function SingleEditorApp(props: {
   }, [globals.externalEditorManager]);
 
   useEffect(() => {
-    const listener = globals.externalEditorManager?.listenToComeBack(fileName => {
+    const listener = globals.externalEditorManager?.listenToComeBack((fileName) => {
       globals.dependencies.all.edit__githubFileNameInput()!.value = fileName;
     }, isolatedEditor?.setContent!);
 
@@ -111,7 +111,7 @@ export function SingleEditorApp(props: {
     return {
       gitref: props.fileInfo.gitRef,
       owner: props.fileInfo.org,
-      repo: props.fileInfo.repo
+      repo: props.fileInfo.repo,
     };
   }, []);
 
@@ -122,7 +122,7 @@ export function SingleEditorApp(props: {
           onEditorReady: onEditorReady,
           fullscreen: fullscreen,
           textMode: textMode,
-          repoInfo: repoInfo
+          repoInfo: repoInfo,
         }}
       >
         {!fullscreen && (

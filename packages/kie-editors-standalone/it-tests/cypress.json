@@ -11,7 +11,7 @@
     "testsuitesTitle": "@kogito-tooling",
     "testCaseSwitchClassnameAndName": true,
     "suiteTitleSeparatedBy": ".",
-    "useFullSuiteTitle":true,
+    "useFullSuiteTitle": true,
     "rootSuiteTitle": "@kogito-tooling/kie-editors-standalone"
   },
   "video": false

@@ -31,10 +31,13 @@ interface EditorOpenProps {
   resources?: InternalEditorOpenResources;
 }
 
-export type InternalEditorOpenResources = Map<string, {
-  contentType: ContentType;
-  content: Promise<string>;
-}>
+export type InternalEditorOpenResources = Map<
+  string,
+  {
+    contentType: ContentType;
+    content: Promise<string>;
+  }
+>;
 
 export interface Props {
   id: string;
@@ -54,12 +57,12 @@ interface InternalProps {
   defaultModelName?: string;
 }
 const divstyle = {
-  flex: "1 1 auto"
+  flex: "1 1 auto",
 };
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
-  return () => setValue(val => ++val); // update the state to force render
+  return () => setValue((val) => ++val); // update the state to force render
 };
 
 export const EditorComponent: React.FC<InternalProps> = ({
@@ -69,7 +72,7 @@ export const EditorComponent: React.FC<InternalProps> = ({
   origin,
   defaultModelName,
   openEditor,
-  resources
+  resources,
 }) => {
   const container = useRef<HTMLDivElement>(null);
   const [logs] = useState<string[]>([]);
@@ -85,9 +88,9 @@ export const EditorComponent: React.FC<InternalProps> = ({
       initialContent,
       readOnly,
       origin,
-      resources: createResourceContentCompatibleResources(filesHolder.resources)
+      resources: createResourceContentCompatibleResources(filesHolder.resources),
     });
-    ed.subscribeToContentChanges(isDirty => {
+    ed.subscribeToContentChanges((isDirty) => {
       setDirty(isDirty);
     });
     setEditor(ed);
@@ -101,13 +104,15 @@ export const EditorComponent: React.FC<InternalProps> = ({
     setModelName(resource.name);
   };
 
-  const createResourceContentCompatibleResources = (resources: Map<string, ResourceContent>): InternalEditorOpenResources => {
+  const createResourceContentCompatibleResources = (
+    resources: Map<string, ResourceContent>
+  ): InternalEditorOpenResources => {
     let compatibleResources: InternalEditorOpenResources = new Map();
     resources.forEach((value, key) => {
-      compatibleResources.set(key, {content: Promise.resolve(value.content), contentType: value.type})
+      compatibleResources.set(key, { content: Promise.resolve(value.content), contentType: value.type });
     });
     return compatibleResources;
-  }
+  };
 
   const appendLog = (message: string) => {
     logs.push(message);
@@ -129,7 +134,7 @@ export const EditorComponent: React.FC<InternalProps> = ({
     });
   };
   const editorSvg = () => {
-    editor!.getPreview().then(content => {
+    editor!.getPreview().then((content) => {
       const elem = window.document.createElement("a");
       elem.href = "data:text/svg+xml;charset=utf-8," + encodeURIComponent(content!);
       elem.download = modelName + ".svg";
@@ -139,7 +144,7 @@ export const EditorComponent: React.FC<InternalProps> = ({
     });
   };
   const editorXml = () => {
-    editor!.getContent().then(content => {
+    editor!.getContent().then((content) => {
       const elem = window.document.createElement("a");
       elem.href = "data:text/plain;charset=utf-8," + encodeURIComponent(content);
       elem.download = modelName;

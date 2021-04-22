@@ -48,7 +48,7 @@ describe("PMMLModelHelper::getModelType", () => {
           Characteristics: { Characteristic: [] },
           MiningSchema: { MiningField: [] },
           functionName: "regression",
-          baselineMethod: "max"
+          baselineMethod: "max",
         })
       )
     ).toBe("Scorecard");
@@ -61,7 +61,7 @@ describe("PMMLModelHelper::getModelType", () => {
           MiningSchema: { MiningField: [] },
           functionName: "regression",
           missingValueStrategy: "none",
-          Node: {}
+          Node: {},
         })
       )
     ).toBe("Tree Model");
@@ -94,7 +94,7 @@ describe("PMMLModelHelper::isSupportedModelType", () => {
           Characteristics: { Characteristic: [] },
           MiningSchema: { MiningField: [] },
           functionName: "regression",
-          baselineMethod: "max"
+          baselineMethod: "max",
         })
       )
     ).toBeTruthy();
@@ -107,7 +107,7 @@ describe("PMMLModelHelper::isSupportedModelType", () => {
           MiningSchema: { MiningField: [] },
           functionName: "regression",
           missingValueStrategy: "none",
-          Node: {}
+          Node: {},
         })
       )
     ).toBeFalsy();

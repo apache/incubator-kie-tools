@@ -26,7 +26,7 @@ export class EnvelopeBusMessageBroadcaster {
       return;
     }
 
-    this.subscriptions.forEach(callback => callback(message));
+    this.subscriptions.forEach((callback) => callback(message));
   }
 
   public subscribe(callback: (msg: EnvelopeBusMessage<unknown, any>) => void) {

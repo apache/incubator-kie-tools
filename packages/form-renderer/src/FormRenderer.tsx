@@ -27,14 +27,13 @@ export interface Props {
   showErrorsHeader?: boolean;
   onSubmit?: (model: object) => void;
   autoSave?: boolean;
-  autoSaveDelay?: number
+  autoSaveDelay?: number;
 }
 
 /**
  * Api to expose the forms methods
  */
 export interface FormApi {
-
   /**
    * Submits the current form
    */
@@ -53,72 +52,68 @@ export interface FormApi {
   change: (key: string, value: any) => void;
 }
 
-const FormRenderer = React.forwardRef<FormApi, Props>(({
-                                                         formSchema,
-                                                         model,
-                                                         readOnly,
-                                                         showErrorsHeader: showErrorsHeader,
-                                                         onSubmit,
-                                                         autoSave,
-                                                         autoSaveDelay= 0
-                                                       }, forwardedRef) => {
-  const [formRef, setFormRef] = useState<FormApi>();
+const FormRenderer = React.forwardRef<FormApi, Props>(
+  (
+    { formSchema, model, readOnly, showErrorsHeader: showErrorsHeader, onSubmit, autoSave, autoSaveDelay = 0 },
+    forwardedRef
+  ) => {
+    const [formRef, setFormRef] = useState<FormApi>();
 
-  // Converting Dates that are in string format into JS Dates so they can be correctly bound to the uniforms DateField
-  const [formData] = useState<object>(ModelConversionTool.convertStringToDate(model, formSchema));
+    // Converting Dates that are in string format into JS Dates so they can be correctly bound to the uniforms DateField
+    const [formData] = useState<object>(ModelConversionTool.convertStringToDate(model, formSchema));
 
-  const [validator] = useState<FormValidator>(new DefaultFormValidator(formSchema));
+    const [validator] = useState<FormValidator>(new DefaultFormValidator(formSchema));
 
-  const [bridge] = useState(new JSONSchemaBridge(formSchema, formModel => {
-    // Converting back all the JS Dates into String before validating the model
-    const newModel = ModelConversionTool.convertDateToString(
-      formModel,
-      formSchema
+    const [bridge] = useState(
+      new JSONSchemaBridge(formSchema, (formModel) => {
+        // Converting back all the JS Dates into String before validating the model
+        const newModel = ModelConversionTool.convertDateToString(formModel, formSchema);
+        return validator.validate(newModel);
+      })
     );
-    return validator.validate(newModel);
-  }));
 
-  useImperativeHandle(
-    forwardedRef,
-    () => {
-      return {
-        submit: () => {
-          formRef?.submit();
-        },
+    useImperativeHandle(
+      forwardedRef,
+      () => {
+        return {
+          submit: () => {
+            formRef?.submit();
+          },
 
-        reset: () => {
-          formRef?.reset();
-        },
+          reset: () => {
+            formRef?.reset();
+          },
 
-        change: (key, value) => {
-          formRef?.change(key, value);
-        }
-      };
+          change: (key, value) => {
+            formRef?.change(key, value);
+          },
+        };
+      },
+      [formRef]
+    );
 
-    }, [formRef]);
-
-  return (
-    <AutoForm
-      placeholder={true}
-      ref={setFormRef}
-      model={formData}
-      disabled={readOnly}
-      schema={bridge}
-      showInlineError={true}
-      autosave={autoSave}
-      autosaveDelay={autoSaveDelay}
-      onSubmit={(submitData: object) => {
-        if (onSubmit) {
-          onSubmit(submitData);
-        }
-      }}
-      role={"form"}
-    >
-      {showErrorsHeader && <ErrorsField/>}
-      <AutoFields/>
-    </AutoForm>
-  );
-
-});
+    return (
+      <AutoForm
+        placeholder={true}
+        ref={setFormRef}
+        model={formData}
+        disabled={readOnly}
+        schema={bridge}
+        showInlineError={true}
+        autosave={autoSave}
+        autosaveDelay={autoSaveDelay}
+        onSubmit={(submitData: object) => {
+          if (onSubmit) {
+            onSubmit(submitData);
+          }
+        }}
+        role={"form"}
+      >
+        {showErrorsHeader && <ErrorsField />}
+        <AutoFields />
+      </AutoForm>
+    );
+  }
+);
 
 export default FormRenderer;

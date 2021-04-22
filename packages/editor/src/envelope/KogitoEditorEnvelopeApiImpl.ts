@@ -23,7 +23,7 @@ import {
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType,
-  StateControlCommand
+  StateControlCommand,
 } from "../api";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { EnvelopeApiFactory, EnvelopeApiFactoryArgs } from "@kogito-tooling/envelope";
@@ -125,15 +125,15 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
   }
 
   public receive_contentRequest() {
-    return this.editor.getContent().then(content => ({ content: content }));
+    return this.editor.getContent().then((content) => ({ content: content }));
   }
 
   public receive_previewRequest() {
-    return this.editor.getPreview().then(previewSvg => previewSvg ?? "");
+    return this.editor.getPreview().then((previewSvg) => previewSvg ?? "");
   }
 
   public receive_guidedTourElementPositionRequest = async (selector: string) => {
-    return this.editor.getElementPosition(selector).then(rect => rect ?? DEFAULT_RECT);
+    return this.editor.getElementPosition(selector).then((rect) => rect ?? DEFAULT_RECT);
   };
 
   public receive_channelKeyboardEvent = (channelKeyboardEvent: ChannelKeyboardEvent) => {
@@ -150,7 +150,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
 
   private setupI18n(initArgs: EditorInitArgs) {
     this.i18n.setLocale(initArgs.initialLocale);
-    this.args.envelopeContext.services.i18n.subscribeToLocaleChange(locale => {
+    this.args.envelopeContext.services.i18n.subscribeToLocaleChange((locale) => {
       this.i18n.setLocale(locale);
       this.args.view().setLocale(locale);
     });
@@ -179,7 +179,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
       }
     );
 
-    const subscription = this.args.envelopeContext.services.i18n.subscribeToLocaleChange(locale => {
+    const subscription = this.args.envelopeContext.services.i18n.subscribeToLocaleChange((locale) => {
       this.args.envelopeContext.services.keyboardShortcuts.deregister(redoId);
       this.args.envelopeContext.services.keyboardShortcuts.deregister(undoId);
       this.args.envelopeContext.services.i18n.unsubscribeToLocaleChange(subscription);

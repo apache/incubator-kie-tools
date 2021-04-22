@@ -53,6 +53,6 @@ export function textModelFactory(): TextModel {
     TextDictionary: {},
     functionName: "regression",
     numberOfDocuments: 0,
-    numberOfTerms: 0
+    numberOfTerms: 0,
   });
 }

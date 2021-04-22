@@ -68,11 +68,11 @@ export const AttributesReducer: HistoryAwareReducer<Attribute[], AllActions> = (
             .forCharacteristic(action.payload.characteristicIndex)
             .forAttribute()
             .build(),
-          draft => {
+          (draft) => {
             draft.push({
               predicate: action.payload.predicate,
               partialScore: action.payload.partialScore,
-              reasonCode: action.payload.reasonCode
+              reasonCode: action.payload.reasonCode,
             });
           }
         );
@@ -87,7 +87,7 @@ export const AttributesReducer: HistoryAwareReducer<Attribute[], AllActions> = (
             .forCharacteristic(action.payload.characteristicIndex)
             .forAttribute()
             .build(),
-          draft => {
+          (draft) => {
             const attributeIndex = action.payload.attributeIndex;
             if (attributeIndex >= 0 && attributeIndex < draft.length) {
               draft.splice(attributeIndex, 1);
@@ -105,14 +105,14 @@ export const AttributesReducer: HistoryAwareReducer<Attribute[], AllActions> = (
             .forCharacteristic(action.payload.characteristicIndex)
             .forAttribute()
             .build(),
-          draft => {
+          (draft) => {
             const attributeIndex: number = action.payload.attributeIndex;
             if (attributeIndex >= 0 && attributeIndex < draft.length) {
               draft[attributeIndex] = {
                 ...draft[attributeIndex],
                 predicate: action.payload.predicate,
                 partialScore: action.payload.partialScore,
-                reasonCode: action.payload.reasonCode
+                reasonCode: action.payload.reasonCode,
               };
             }
           }

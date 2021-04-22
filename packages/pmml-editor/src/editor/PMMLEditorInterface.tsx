@@ -46,9 +46,9 @@ export class PMMLEditorInterface implements Editor {
   public af_componentRoot() {
     return (
       <PMMLEditor
-        exposing={s => (this.self = s)}
+        exposing={(s) => (this.self = s)}
         ready={() => this.envelopeContext.channelApi.notifications.receive_ready()}
-        newEdit={edit => this.envelopeContext.channelApi.notifications.receive_newEdit(edit)}
+        newEdit={(edit) => this.envelopeContext.channelApi.notifications.receive_newEdit(edit)}
         setNotifications={(path, notifications) =>
           this.envelopeContext.channelApi.notifications.setNotifications(path, notifications)
         }

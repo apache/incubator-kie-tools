@@ -25,20 +25,20 @@ const nodeExternals = require("webpack-node-externals");
 module.exports = [
   merge(common, {
     entry: {
-      "editor/index": "./src/editor/index.ts"
+      "editor/index": "./src/editor/index.ts",
     },
     output: {
-      libraryTarget: "commonjs2"
+      libraryTarget: "commonjs2",
     },
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
     plugins: [new MonacoWebpackPlugin()],
     module: {
-      rules: [...pfWebpackOptions.patternflyRules]
-    }
+      rules: [...pfWebpackOptions.patternflyRules],
+    },
   }),
   merge(common, {
     entry: {
-      index: "./src/showcase/index.tsx"
+      index: "./src/showcase/index.tsx",
     },
     plugins: [
       new MonacoWebpackPlugin(),
@@ -46,17 +46,17 @@ module.exports = [
         { from: "./src/showcase/static/resources", to: "./resources" },
         { from: "./src/showcase/static/index.html", to: "./index.html" },
         { from: "./src/showcase/static/favicon.ico", to: "./favicon.ico" },
-        { from: "./static/images", to: "./images" }
-      ])
+        { from: "./static/images", to: "./images" },
+      ]),
     ],
     module: {
       rules: [
         {
           test: /\.ttf$/,
-          use: ["file-loader"]
+          use: ["file-loader"],
         },
-        ...pfWebpackOptions.patternflyRules
-      ]
+        ...pfWebpackOptions.patternflyRules,
+      ],
     },
     devServer: {
       historyApiFallback: true,
@@ -68,7 +68,7 @@ module.exports = [
       open: true,
       inline: true,
       hot: true,
-      overlay: true
-    }
-  })
+      overlay: true,
+    },
+  }),
 ];

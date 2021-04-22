@@ -22,23 +22,25 @@ import Page from "../Page";
 import Locator from "../Locator";
 
 export default abstract class EditorPage extends Page {
-    protected static readonly FRAME_LOCATOR = By.xpath("//iframe[contains(@class,'kogito-iframe') or contains(@id,'kogito-iframe')]");
+  protected static readonly FRAME_LOCATOR = By.xpath(
+    "//iframe[contains(@class,'kogito-iframe') or contains(@id,'kogito-iframe')]"
+  );
 
-    private async getEditor(): Promise<Element> {
-        const frameLocator: Locator = this.tools.by(EditorPage.FRAME_LOCATOR);
-        await frameLocator.wait(2000).untilPresent();
-        const frame: Element = await frameLocator.getElement();
-        await frame.scroll();
-        return frame;
-    }
+  private async getEditor(): Promise<Element> {
+    const frameLocator: Locator = this.tools.by(EditorPage.FRAME_LOCATOR);
+    await frameLocator.wait(2000).untilPresent();
+    const frame: Element = await frameLocator.getElement();
+    await frame.scroll();
+    return frame;
+  }
 
-    public async getDmnEditor(): Promise<DmnEditor> {
-        const editor: Element = await this.getEditor();
-        return await this.tools.createPageFragment(DmnEditor, editor);
-    }
+  public async getDmnEditor(): Promise<DmnEditor> {
+    const editor: Element = await this.getEditor();
+    return await this.tools.createPageFragment(DmnEditor, editor);
+  }
 
-    public async getBpmnEditor(): Promise<BpmnEditor> {
-        const editor: Element = await this.getEditor();
-        return await this.tools.createPageFragment(BpmnEditor, editor);
-    }
+  public async getBpmnEditor(): Promise<BpmnEditor> {
+    const editor: Element = await this.getEditor();
+    return await this.tools.createPageFragment(BpmnEditor, editor);
+  }
 }

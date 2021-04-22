@@ -19,7 +19,7 @@ import { DEFAULT_RECT, Rect } from "../../api";
 const DEFAULT_STYLE = {
   left: "",
   top: "",
-  transform: "translate(-50%, -50%)"
+  transform: "translate(-50%, -50%)",
 };
 
 export const calculatePositionStyle = (position: string, rect?: Rect) => {
@@ -36,19 +36,19 @@ export const calculatePositionStyle = (position: string, rect?: Rect) => {
       return {
         left: left + width + MARGIN,
         top: top,
-        transform: "rotate3d(0, 0, 0, 0deg)"
+        transform: "rotate3d(0, 0, 0, 0deg)",
       };
     case "left":
       return {
         left: left - MARGIN,
         top: top,
-        transform: "translate(-100%, 0%)"
+        transform: "translate(-100%, 0%)",
       };
     case "bottom":
       return {
         left: left,
         top: top + height + MARGIN,
-        transform: "rotate3d(0, 0, 0, 0deg)"
+        transform: "rotate3d(0, 0, 0, 0deg)",
       };
     default:
       return DEFAULT_STYLE;

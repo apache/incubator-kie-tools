@@ -40,7 +40,7 @@ describe("useSyncedKeyboardEvents", () => {
       metaKey: false,
       code: "",
       type: "keydown",
-      channelOriginalTargetTagName: undefined
+      channelOriginalTargetTagName: undefined,
     });
   });
 
@@ -55,7 +55,7 @@ describe("useSyncedKeyboardEvents", () => {
       metaKey: false,
       code: "",
       type: "keyup",
-      channelOriginalTargetTagName: undefined
+      channelOriginalTargetTagName: undefined,
     });
   });
 
@@ -70,7 +70,7 @@ describe("useSyncedKeyboardEvents", () => {
       metaKey: false,
       code: "",
       type: "keypress",
-      channelOriginalTargetTagName: undefined
+      channelOriginalTargetTagName: undefined,
     });
   });
 
@@ -85,7 +85,7 @@ describe("useSyncedKeyboardEvents", () => {
       metaKey: true,
       code: "KeyA",
       type: "keydown",
-      channelOriginalTargetTagName: "BODY"
+      channelOriginalTargetTagName: "BODY",
     });
   });
 });

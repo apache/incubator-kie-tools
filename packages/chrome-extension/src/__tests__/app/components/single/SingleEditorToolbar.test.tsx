@@ -20,7 +20,7 @@ import { SingleEditorToolbar } from "../../../../app/components/single/SingleEdi
 import {
   usingTestingChromeExtensionI18nContext,
   usingTestingGitHubContext,
-  usingTestingGlobalContext
+  usingTestingGlobalContext,
 } from "../../../testing_utils";
 
 beforeEach(() => {

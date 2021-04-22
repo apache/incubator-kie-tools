@@ -18,7 +18,7 @@ import {
   Editor,
   EditorContext,
   KogitoEditorChannelApi,
-  KogitoEditorEnvelopeContextType
+  KogitoEditorEnvelopeContextType,
 } from "@kogito-tooling/editor/dist/api";
 import { FACTORY_TYPE, PMMLEditorFactory, PMMLEditorInterface } from "../../editor";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
@@ -30,7 +30,7 @@ const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
 const editorContext: EditorContext = {
   channel: ChannelType.EMBEDDED,
-  operatingSystem: OperatingSystem.LINUX
+  operatingSystem: OperatingSystem.LINUX,
 };
 
 const envelopeContext: KogitoEditorEnvelopeContextType = {
@@ -39,8 +39,8 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
   services: {
     guidedTour: { isEnabled: () => false },
     keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: editorContext.operatingSystem }),
-    i18n: new I18nService()
-  }
+    i18n: new I18nService(),
+  },
 };
 
 describe("PMMLEditorFactory", () => {
@@ -63,7 +63,7 @@ describe("PMMLEditorFactory", () => {
       fileExtension: FACTORY_TYPE,
       resourcesPathPrefix: "",
       initialLocale: "en",
-      isReadOnly: false
+      isReadOnly: false,
     });
     expect(created).resolves.toBeInstanceOf(PMMLEditorInterface);
   });

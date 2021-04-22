@@ -20,7 +20,7 @@ import { DmnEditorComponent } from "../components/DmnEditorComponent";
 import { BpmnEditorComponent } from "../components/BpmnEditorComponent";
 import { ContentType } from "@kogito-tooling/channel-common-api";
 import { customWorkItemWid } from "./widDefinitions";
-import { processWithWidDefinition } from "./processWithWidDefinition.js"
+import { processWithWidDefinition } from "./processWithWidDefinition.js";
 
 export const EditorPage: React.FC<{}> = () => {
   return (
@@ -111,9 +111,9 @@ export const EditorPage: React.FC<{}> = () => {
                       {
                         type: ContentType.TEXT,
                         content: customWorkItemWid,
-                        path: "custom-workitem.wid"
-                      }
-                    ]
+                        path: "custom-workitem.wid",
+                      },
+                    ],
                   ])
                 }
               />

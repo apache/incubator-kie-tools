@@ -20,11 +20,11 @@ const nodeExternals = require("webpack-node-externals");
 
 module.exports = merge(common, {
   entry: {
-    index: "./src/index.ts"
+    index: "./src/index.ts",
   },
   output: {
     libraryTarget: "umd",
-    globalObject: "this"
+    globalObject: "this",
   },
-  externals: [nodeExternals({ modulesDir: "../../node_modules" })]
+  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
 });

@@ -25,7 +25,7 @@ import {
   Text,
   TextArea,
   TextContent,
-  TextVariants
+  TextVariants,
 } from "@patternfly/react-core";
 import "./OutputsBatchAdd.scss";
 

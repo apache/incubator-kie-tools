@@ -34,19 +34,19 @@ export class QuarkusLocalServer extends LocalHttpServer {
   public async start(): Promise<void> {
     this.activeProcess = cp.spawn("java", [`-Dquarkus.http.port=${this.port}`, "-jar", this.jarFilePath]);
 
-    const timeoutPromise = new Promise(resolve => {
+    const timeoutPromise = new Promise((resolve) => {
       setTimeout(() => {
         resolve(false);
       }, 5000);
     });
 
-    const checkServerPromise = new Promise(resolve => {
+    const checkServerPromise = new Promise((resolve) => {
       if (!this.activeProcess || !this.activeProcess.stdout) {
         resolve(false);
         return;
       }
 
-      this.activeProcess.stdout.on("data", data => {
+      this.activeProcess.stdout.on("data", (data) => {
         if (data.toString().includes("Listening on")) {
           resolve(true);
         }

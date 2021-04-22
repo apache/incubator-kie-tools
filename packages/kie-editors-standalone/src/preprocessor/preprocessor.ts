@@ -23,12 +23,12 @@ import { BaseEditorResources } from "../common/EditorResources";
 function main() {
   const editorsResources: BaseEditorResources[] = [new DmnEditorResources(), new BpmnEditorResources()];
 
-  editorsResources.forEach(editorResources => {
+  editorsResources.forEach((editorResources) => {
     const template = _.template(fs.readFileSync(editorResources.getTemplatePath()).toString());
     const result = template({
       editorResources: editorResources.get({
-        resourcesPathPrefix: editorResources.getEditorResourcesPath()
-      })
+        resourcesPathPrefix: editorResources.getEditorResourcesPath(),
+      }),
     });
 
     fs.writeFileSync(editorResources.getHtmlOutputPath(), result);

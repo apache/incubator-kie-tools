@@ -48,7 +48,7 @@ describe("StateControl", () => {
     });
 
     test("should be the last added command on the stack", () => {
-      ["1", "2", "3", "4"].forEach(command => {
+      ["1", "2", "3", "4"].forEach((command) => {
         stateControl.updateCommandStack(command);
         expect(stateControl.getCurrentCommand()).toEqual(command);
       });
@@ -61,14 +61,14 @@ describe("StateControl", () => {
       stateControl.getSavedCommand();
       expect(stateControl.getSavedCommand()).toBeUndefined();
 
-      ["1", "2", "3", "4"].forEach(command => {
+      ["1", "2", "3", "4"].forEach((command) => {
         stateControl.updateCommandStack(command);
         expect(stateControl.getSavedCommand()).toBeUndefined();
       });
     });
 
     test("should be the last command added", () => {
-      ["1", "2", "3", "4"].forEach(command => {
+      ["1", "2", "3", "4"].forEach((command) => {
         stateControl.updateCommandStack(command);
         stateControl.setSavedCommand();
         expect(stateControl.getSavedCommand()).toEqual(command);
@@ -80,7 +80,7 @@ describe("StateControl", () => {
       stateControl.updateCommandStack(specialCommand);
       stateControl.setSavedCommand();
 
-      ["1", "2", "3", "4"].forEach(command => {
+      ["1", "2", "3", "4"].forEach((command) => {
         stateControl.updateCommandStack(command);
         expect(stateControl.getSavedCommand()).toEqual(specialCommand);
       });
@@ -91,7 +91,7 @@ describe("StateControl", () => {
     test("should be false", () => {
       expect(stateControl.isDirty()).toBeFalsy();
 
-      ["1", "2", "3", "4"].forEach(command => {
+      ["1", "2", "3", "4"].forEach((command) => {
         stateControl.updateCommandStack(command);
         stateControl.setSavedCommand();
         expect(stateControl.isDirty()).toBeFalsy();
@@ -99,7 +99,7 @@ describe("StateControl", () => {
     });
 
     test("should be true", () => {
-      ["1", "2", "3", "4"].forEach(command => {
+      ["1", "2", "3", "4"].forEach((command) => {
         stateControl.updateCommandStack(command);
         expect(stateControl.isDirty()).toBeTruthy();
       });
@@ -111,7 +111,7 @@ describe("StateControl", () => {
       stateControl.setSavedCommand();
       expect(stateControl.isDirty()).toBeFalsy();
 
-      ["1", "2", "3", "4"].forEach(command => {
+      ["1", "2", "3", "4"].forEach((command) => {
         stateControl.updateCommandStack(command);
         expect(stateControl.isDirty()).toBeTruthy();
       });
@@ -126,14 +126,14 @@ describe("StateControl", () => {
       expect(stateControl.getCommandStack()).toEqual(["1"]);
 
       const commands = ["1", "2", "3", "4"];
-      commands.forEach(command => stateControl.updateCommandStack(command));
+      commands.forEach((command) => stateControl.updateCommandStack(command));
 
       expect(stateControl.getCommandStack()).toEqual(commands);
     });
 
     test("should erase", () => {
       const commands = ["1", "2", "3", "4"];
-      commands.forEach(command => stateControl.updateCommandStack(command));
+      commands.forEach((command) => stateControl.updateCommandStack(command));
       stateControl.setCurrentCommand("2");
       stateControl.updateCommandStack("5");
 
@@ -149,9 +149,9 @@ describe("StateControl", () => {
 
     test("should undo to previous command and maintain command stack", () => {
       const commands = ["1", "2", "3", "4"];
-      commands.forEach(command => stateControl.updateCommandStack(command));
+      commands.forEach((command) => stateControl.updateCommandStack(command));
 
-      ["4", "3", "2", "1"].forEach(command => {
+      ["4", "3", "2", "1"].forEach((command) => {
         expect(stateControl.getCurrentCommand()).toEqual(command);
         stateControl.undo();
       });
@@ -168,12 +168,12 @@ describe("StateControl", () => {
 
     test("should redo to the next possible command on the command stack", () => {
       const commands = ["1", "2", "3", "4"];
-      commands.forEach(command => stateControl.updateCommandStack(command));
+      commands.forEach((command) => stateControl.updateCommandStack(command));
 
-      commands.forEach(command => stateControl.undo());
+      commands.forEach((command) => stateControl.undo());
       expect(stateControl.getCurrentCommand()).toBeUndefined();
 
-      commands.forEach(command => {
+      commands.forEach((command) => {
         stateControl.redo();
         expect(stateControl.getCurrentCommand()).toEqual(command);
       });

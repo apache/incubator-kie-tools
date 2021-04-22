@@ -21,17 +21,12 @@ describe("Bpmn Editable.", () => {
   });
 
   it("Test Load File And View", () => {
-    cy.editor("bpmn-editable")
-      .find("[data-field='kie-palette']")
-      .should("be.visible");
+    cy.editor("bpmn-editable").find("[data-field='kie-palette']").should("be.visible");
 
     cy.uploadFile("process-string.bpmn");
     cy.viewFile("process-string.bpmn");
 
-    cy.editor("bpmn-editable")
-      .find("[data-title='Explore Diagram']")
-      .should("be.visible")
-      .click({ force: true });
+    cy.editor("bpmn-editable").find("[data-title='Explore Diagram']").should("be.visible").click({ force: true });
 
     cy.editor("bpmn-editable")
       .find("[data-field='explorerPanelBody']")
@@ -39,7 +34,7 @@ describe("Bpmn Editable.", () => {
       .should("be.visible")
       .find("a.gwt-Anchor")
       .should("have.length", 7)
-      .then($links => {
+      .then(($links) => {
         expect($links.eq(0)).to.contain.text("Process string");
         expect($links.eq(1)).to.contain.text("Start");
         expect($links.eq(2)).to.contain.text("Exclusive");

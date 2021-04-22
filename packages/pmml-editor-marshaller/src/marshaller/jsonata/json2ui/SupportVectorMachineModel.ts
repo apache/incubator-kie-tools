@@ -50,6 +50,6 @@ export function supportVectorMachineModelFactory(): SupportVectorMachineModel {
     MiningSchema: new MiningSchema({ MiningField: [] }),
     SupportVectorMachine: [],
     VectorDictionary: { VectorFields: {} },
-    functionName: "regression"
+    functionName: "regression",
   });
 }

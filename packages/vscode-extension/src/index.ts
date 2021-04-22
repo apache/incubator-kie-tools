@@ -72,7 +72,7 @@ export async function startExtension(args: {
 
   args.context.subscriptions.push(
     vscode.window.registerCustomEditorProvider(args.viewType, editorWebviewProvider, {
-      webviewOptions: { retainContextWhenHidden: true }
+      webviewOptions: { retainContextWhenHidden: true },
     })
   );
 

@@ -24,7 +24,7 @@ import {
   TextListItem,
   TextListItemVariants,
   TextListVariants,
-  TextVariants
+  TextVariants,
 } from "@patternfly/react-core";
 import { KeyboardIcon } from "@patternfly/react-icons";
 import { EditorContext, useKogitoEditorEnvelopeContext } from "../../api";
@@ -42,12 +42,12 @@ export function KeyBindingsHelpOverlay() {
 
   const keyBindings = useMemo(() => {
     return removeDuplicatesByAttr(envelopeContext.services.keyboardShortcuts.registered(), "combination")
-      .filter(k => !k.opts?.hidden)
-      .map(k => {
+      .filter((k) => !k.opts?.hidden)
+      .map((k) => {
         return {
           combination: handleMacOsCombination(k.combination, envelopeContext.context),
           category: k.label.split("|")[0]?.trim(),
-          label: k.label.split("|")[1]?.trim()
+          label: k.label.split("|")[1]?.trim(),
         };
       })
       .reduce((lhs, rhs) => {
@@ -73,7 +73,7 @@ export function KeyBindingsHelpOverlay() {
   useEffect(() => {
     if (showing) {
       const id = envelopeContext.services.keyboardShortcuts.registerKeyPressOnce("esc", async () => setShowing(false), {
-        element: window
+        element: window,
       });
       return () => envelopeContext.services.keyboardShortcuts.deregister(id);
     }
@@ -100,10 +100,10 @@ export function KeyBindingsHelpOverlay() {
       >
         <TextContent>
           <TextList component={TextListVariants.dl}>
-            {Array.from(keyBindings.keys()).map(category => (
+            {Array.from(keyBindings.keys()).map((category) => (
               <React.Fragment key={category}>
                 <Text component={TextVariants.h2}>{category}</Text>
-                {Array.from(keyBindings.get(category)!).map(keyBinding => (
+                {Array.from(keyBindings.get(category)!).map((keyBinding) => (
                   <React.Fragment key={keyBinding.combination}>
                     <TextListItem component={TextListItemVariants.dt}>
                       {formatKeyBindingCombination(keyBinding.combination)}
@@ -130,13 +130,13 @@ function handleMacOsCombination(combination: string, context: EditorContext) {
 
 function removeDuplicatesByAttr<T>(myArr: T[], prop: keyof T) {
   return myArr.filter((obj, pos, arr) => {
-    return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
+    return arr.map((mapObj) => mapObj[prop]).indexOf(obj[prop]) === pos;
   });
 }
 
 function formatKeyBindingCombination(combination: string) {
   return combination
     .split("+")
-    .map(w => w.replace(/^\w/, c => c.toUpperCase()))
+    .map((w) => w.replace(/^\w/, (c) => c.toUpperCase()))
     .join(" + ");
 }

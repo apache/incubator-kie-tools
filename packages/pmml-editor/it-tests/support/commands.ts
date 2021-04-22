@@ -15,90 +15,89 @@
  */
 
 declare namespace Cypress {
-    interface Chainable {
+  interface Chainable {
+    /**
+     * Returns DOM Element for button which open new file.
+     */
+    newButtonPMML(): Chainable<JQuery<HTMLBodyElement>>;
 
-        /**
-         * Returns DOM Element for button which open new file.
-         */
-         newButtonPMML(): Chainable<JQuery<HTMLBodyElement>>;
+    /**
+     * Return DOM Element for button which upload new file.
+     */
+    uploadButtonPMML(): Chainable<JQuery<HTMLBodyElement>>;
 
-         /**
-          * Return DOM Element for button which upload new file.
-          */
-         uploadButtonPMML(): Chainable<JQuery<HTMLBodyElement>>;
+    /**
+     * Return DOM Element for button which open Data Dictionary Editor.
+     */
+    buttonDataDictionary(): Chainable<JQuery<HTMLBodyElement>>;
 
-         /**
-          * Return DOM Element for button which open Data Dictionary Editor.
-          */
-         buttonDataDictionary(): Chainable<JQuery<HTMLBodyElement>>;
+    /**
+     * Return DOM Element for button which open Mining Schema Editor.
+     */
 
-         /**
-          * Return DOM Element for button which open Mining Schema Editor.
-          */
+    buttonMiningSchema(): Chainable<JQuery<HTMLBodyElement>>;
 
-         buttonMiningSchema(): Chainable<JQuery<HTMLBodyElement>>;
+    /**
+     * Return DOM Element for button which open Outputs Editor.
+     */
 
-         /**
-          * Return DOM Element for button which open Outputs Editor.
-          */
+    buttonOutputs(): Chainable<JQuery<HTMLBodyElement>>;
 
-         buttonOutputs(): Chainable<JQuery<HTMLBodyElement>>;
+    /**
+     * Return DOM Element for button which invoke Undo operation.
+     */
+    buttonUndo(): Chainable<JQuery<HTMLBodyElement>>;
 
-         /**
-          * Return DOM Element for button which invoke Undo operation.
-          */
-         buttonUndo(): Chainable<JQuery<HTMLBodyElement>>;
+    /**
+     * Return DOM Element for button which invoke Redo operation.
+     */
 
-         /**
-          * Return DOM Element for button which invoke Redo operation.
-          */
+    buttonRedo(): Chainable<JQuery<HTMLBodyElement>>;
 
-         buttonRedo(): Chainable<JQuery<HTMLBodyElement>>;
+    /**
+     * Return DOM Element for button which open PMML Source Editor.
+     */
+    buttonPMML(): Chainable<JQuery<HTMLBodyElement>>;
 
-         /**
-          * Return DOM Element for button which open PMML Source Editor.
-          */
-         buttonPMML(): Chainable<JQuery<HTMLBodyElement>>;
-
-         /**
-          * Return DOM Element for button which validate PMML.
-          */
-         buttonValidation(): Chainable<JQuery<HTMLBodyElement>>;
-    }
+    /**
+     * Return DOM Element for button which validate PMML.
+     */
+    buttonValidation(): Chainable<JQuery<HTMLBodyElement>>;
+  }
 }
 
 Cypress.Commands.add("newButtonPMML", () => {
-    return cy.get("[data-ouia-component-id='new-button']");
+  return cy.get("[data-ouia-component-id='new-button']");
 });
 
 Cypress.Commands.add("uploadButtonPMML", () => {
-    return cy.get("[data-ouia-component-id='upload-button']");
+  return cy.get("[data-ouia-component-id='upload-button']");
 });
 
 Cypress.Commands.add("buttonDataDictionary", () => {
-    return cy.get("[data-title='DataDictionary']");
+  return cy.get("[data-title='DataDictionary']");
 });
 
 Cypress.Commands.add("buttonMiningSchema", () => {
-    return cy.get("[data-title='MiningSchema']");
+  return cy.get("[data-title='MiningSchema']");
 });
 
 Cypress.Commands.add("buttonOutputs", () => {
-    return cy.get("[data-title='Outputs']");
+  return cy.get("[data-title='Outputs']");
 });
 
 Cypress.Commands.add("buttonUndo", () => {
-    return cy.get("[data-ouia-component-id='undo-button']");
+  return cy.get("[data-ouia-component-id='undo-button']");
 });
 
 Cypress.Commands.add("buttonRedo", () => {
-    return cy.get("[data-ouia-component-id='redo-button']");
+  return cy.get("[data-ouia-component-id='redo-button']");
 });
 
 Cypress.Commands.add("buttonPMML", () => {
-    return cy.get("[data-ouia-component-id='pmml-button']");
+  return cy.get("[data-ouia-component-id='pmml-button']");
 });
 
 Cypress.Commands.add("buttonValidation", () => {
-    return cy.get("[data-ouia-component-id='validate-button']");
+  return cy.get("[data-ouia-component-id='validate-button']");
 });

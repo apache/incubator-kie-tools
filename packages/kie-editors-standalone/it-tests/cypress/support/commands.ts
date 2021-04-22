@@ -41,7 +41,7 @@ const loadEditorInternal = (options: Record<string, any>, editorIds: string[]) =
   const opts: Record<string, any> = { log: false, ...options };
   cy.get("div#root", opts)
     .should("exist")
-    .within(opts, $root => {
+    .within(opts, ($root) => {
       cy.ouiaType("editor", opts).should("have.length", editorIds.length);
       for (var i in editorIds) {
         cy.ouiaId("editor", editorIds[i], opts).should("exist");
@@ -51,7 +51,7 @@ const loadEditorInternal = (options: Record<string, any>, editorIds: string[]) =
         cy.iframe("div#" + editorIds[i] + " iframe", opts)
           .find("[data-testid='loading-screen-div']", {
             timeout: 100,
-            ...opts
+            ...opts,
           })
           .should("be.visible");
       }
@@ -59,7 +59,7 @@ const loadEditorInternal = (options: Record<string, any>, editorIds: string[]) =
         cy.iframe("div#" + editorIds[i] + " iframe", opts)
           .find("[data-testid='loading-screen-div']", {
             timeout: 120000,
-            ...opts
+            ...opts,
           })
           .should("not.exist");
       }
@@ -78,8 +78,8 @@ Cypress.Commands.add("editor", (editorId: string, options?: Record<string, any>)
 
 Cypress.Commands.add("uploadFile", (fileName: string, componentId: string) => {
   const noLogOpts = { log: false };
-  cy.ouiaId("file-loader", componentId, noLogOpts).within(noLogOpts, $loader => {
-    cy.ouiaType("file-upload-form", noLogOpts).within(noLogOpts, $form => {
+  cy.ouiaId("file-loader", componentId, noLogOpts).within(noLogOpts, ($loader) => {
+    cy.ouiaType("file-upload-form", noLogOpts).within(noLogOpts, ($form) => {
       cy.get("input[type='file']", noLogOpts).attachFile(fileName);
       cy.get("button", noLogOpts).click();
     });

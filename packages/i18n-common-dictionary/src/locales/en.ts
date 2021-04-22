@@ -44,7 +44,7 @@ export const en: CommonI18n = {
     open: "Open",
     os: {
       initials: "OS",
-      full: "Operation System"
+      full: "Operation System",
     },
     paste: "Paste",
     poweredBy: "Powered by",
@@ -54,6 +54,6 @@ export const en: CommonI18n = {
     save: "Save",
     token: "Token",
     undo: "Undo",
-    uninstall: "Uninstall"
-  }
+    uninstall: "Uninstall",
+  },
 };

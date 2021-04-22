@@ -95,7 +95,11 @@ export function SingleEditorToolbar(props: {
           </button>
         )}
         {props.textMode && (
-          <button data-testid={"see-as-diagram-button"} className={"btn d-md-inline-block kogito-button"} onClick={seeAsDiagram}>
+          <button
+            data-testid={"see-as-diagram-button"}
+            className={"btn d-md-inline-block kogito-button"}
+            onClick={seeAsDiagram}
+          >
             {i18n.seeAsDiagram}
           </button>
         )}
@@ -132,7 +136,11 @@ export function SingleEditorToolbar(props: {
           </div>
         )}
         {!props.textMode && (
-          <button data-testid={"go-fullscreen-button"} className={"btn d-md-inline-block kogito-button"} onClick={goFullScreen}>
+          <button
+            data-testid={"go-fullscreen-button"}
+            className={"btn d-md-inline-block kogito-button"}
+            onClick={goFullScreen}
+          >
             {i18n.terms.fullScreen}
           </button>
         )}

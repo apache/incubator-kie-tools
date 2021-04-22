@@ -20,14 +20,10 @@ describe("Basic user's interaction", () => {
   });
 
   it("new button exists", () => {
-    cy.newButtonPMML()
-      .contains("New")
-      .should("be.visible");
+    cy.newButtonPMML().contains("New").should("be.visible");
   });
 
   it("upload button exists", () => {
-    cy.uploadButtonPMML()
-      .contains("Upload")
-      .should("be.visible");
+    cy.uploadButtonPMML().contains("Upload").should("be.visible");
   });
 });
