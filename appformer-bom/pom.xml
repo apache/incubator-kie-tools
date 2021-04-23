@@ -311,22 +311,6 @@
         <version>${version.org.keycloak}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-catalina</artifactId>
-        <version>${version.org.apache.tomcat}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-coyote</artifactId>
-        <version>${version.org.apache.tomcat}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-util</artifactId>
-        <version>${version.org.apache.tomcat}</version>
-      </dependency>
-
       <!-- GWT and GWT Extensions -->
       <dependency>
         <groupId>com.google.gwt</groupId>
@@ -424,41 +408,6 @@
         <scope>test</scope>
       </dependency>
 
-
-      <!-- INDEXING -->
-      <dependency>
-        <groupId>org.elasticsearch.client</groupId>
-        <artifactId>transport</artifactId>
-        <version>${version.org.elasticsearch}</version>
-        <exclusions>
-          <exclusion>
-            <artifactId>commons-logging</artifactId>
-            <groupId>commons-logging</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.elasticsearch</groupId>
-        <artifactId>elasticsearch</artifactId>
-        <version>${version.org.elasticsearch}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.elasticsearch.client</groupId>
-        <artifactId>elasticsearch-rest-client</artifactId>
-        <version>${version.org.elasticsearch}</version>
-        <exclusions>
-          <exclusion>
-            <artifactId>commons-logging</artifactId>
-            <groupId>commons-logging</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty</artifactId>
-        <version>${version.io.netty.old}</version>
-      </dependency>
-
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-client-hotrod</artifactId>
@@ -486,11 +435,6 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.infinispan.protostream</groupId>
-        <artifactId>protostream</artifactId>
-        <version>${version.org.infinispan.protostream}</version>
-      </dependency>
-      <dependency>
         <groupId>org.wildfly.security</groupId>
         <artifactId>wildfly-elytron</artifactId>
         <version>${version.org.wildfly.security}</version>
@@ -512,38 +456,8 @@
       </dependency>
       <dependency>
         <groupId>io.netty</groupId>
-        <artifactId>netty-transport-native-epoll</artifactId>
-        <version>${version.io.netty}</version>
-        <classifier>${netty-transport-native-epoll-classifier}</classifier>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-transport-native-kqueue</artifactId>
-        <version>${version.io.netty}</version>
-        <classifier>${netty-transport-native-kqueue-classifier}</classifier>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
         <artifactId>netty-codec-http</artifactId>
         <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.github.tdomzal</groupId>
-        <artifactId>junit-docker-rule</artifactId>
-        <version>${version.jnuit.docker.rule}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>com.spotify</groupId>
-        <artifactId>docker-client</artifactId>
-        <version>${version.com.spotify.docker}</version>
-        <scope>test</scope>
-        <exclusions>
-          <exclusion>
-            <artifactId>commons-logging</artifactId>
-            <groupId>commons-logging</groupId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -615,12 +529,6 @@
         <groupId>com.googlecode.jtype</groupId>
         <artifactId>jtype</artifactId>
         <version>${version.com.googlecode.jtype}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.msc</groupId>
-        <artifactId>jboss-msc</artifactId>
-        <version>${version.org.jboss.jboss-msc}</version>
       </dependency>
 
       <!-- Test deps -->
