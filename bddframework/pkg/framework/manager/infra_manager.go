@@ -16,6 +16,7 @@ package manager
 
 import (
 	"fmt"
+
 	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
@@ -107,8 +108,11 @@ func (k *kogitoInfraManager) IsKogitoInfraReady(key types.NamespacedName) (bool,
 	if err != nil {
 		return false, err
 	}
-	conditions := *infra.GetStatus().GetConditions()
-	return meta.IsStatusConditionTrue(conditions, string(api.KogitoInfraConfigured)), nil
+	conditions := infra.GetStatus().GetConditions()
+	if conditions == nil {
+		return false, nil
+	}
+	return meta.IsStatusConditionTrue(*conditions, string(api.KogitoInfraConfigured)), nil
 }
 
 func (k *kogitoInfraManager) GetKogitoInfraFailureConditionReason(key types.NamespacedName) (string, error) {
@@ -116,8 +120,11 @@ func (k *kogitoInfraManager) GetKogitoInfraFailureConditionReason(key types.Name
 	if err != nil {
 		return "", err
 	}
-	conditions := *infra.GetStatus().GetConditions()
-	failureCondition := meta.FindStatusCondition(conditions, string(api.KogitoInfraConfigured))
+	conditions := infra.GetStatus().GetConditions()
+	if conditions == nil {
+		return "", nil
+	}
+	failureCondition := meta.FindStatusCondition(*conditions, string(api.KogitoInfraConfigured))
 	if failureCondition != nil && failureCondition.Status == v1.ConditionFalse {
 		return failureCondition.Reason, nil
 	}

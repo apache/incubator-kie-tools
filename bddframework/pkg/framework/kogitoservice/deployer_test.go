@@ -15,6 +15,9 @@
 package kogitoservice
 
 import (
+	"testing"
+	"time"
+
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	"github.com/kiegroup/kogito-operator/core/operator"
@@ -22,8 +25,6 @@ import (
 	"github.com/kiegroup/kogito-operator/internal"
 	"github.com/kiegroup/kogito-operator/meta"
 	appsv1 "k8s.io/api/apps/v1"
-	"testing"
-	"time"
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/stretchr/testify/assert"
@@ -74,6 +75,50 @@ func Test_serviceDeployer_DataIndex_InfraNotReady(t *testing.T) {
 			Type:    string(api.KogitoInfraConfigured),
 		},
 	}
+	infraInfinispan.GetStatus().SetConditions(infraCondition)
+
+	test.AssertCreate(t, cli, infraInfinispan)
+	test.AssertCreate(t, cli, infraKafka)
+
+	reconcileAfter, err = deployer.Deploy()
+	assert.NoError(t, err)
+	assert.Equal(t, reconcileAfter, reconciliationAfterOneMinute)
+	test.AssertFetchMustExist(t, cli, dataIndex)
+	assert.NotNil(t, dataIndex.GetStatus())
+	assert.Len(t, *dataIndex.GetStatus().GetConditions(), 3)
+}
+
+func Test_serviceDeployer_DataIndex_InfraNotReconciled(t *testing.T) {
+	infraKafka := test.CreateFakeKogitoKafka(t.Name())
+	infraInfinispan := test.CreateFakeKogitoInfinispan(t.Name())
+	dataIndex := test.CreateFakeDataIndex(t.Name())
+	dataIndex.GetSpec().AddInfra(infraKafka.GetName())
+	dataIndex.GetSpec().AddInfra(infraInfinispan.GetName())
+
+	cli := test.NewFakeClientBuilder().AddK8sObjects(dataIndex).Build()
+	definition := ServiceDefinition{
+		DefaultImageName: "kogito-data-index-infinispan",
+		Request:          newReconcileRequest(t.Name()),
+		KafkaTopics:      []string{"mytopic"},
+	}
+
+	context := &operator.Context{
+		Client: cli,
+		Log:    test.TestLogger,
+		Scheme: meta.GetRegisteredSchema(),
+	}
+	infraHandler := internal.NewKogitoInfraHandler(context)
+	deployer := NewServiceDeployer(context, definition, dataIndex, infraHandler)
+	reconcileAfter, err := deployer.Deploy()
+	assert.Error(t, err)
+	assert.Equal(t, time.Duration(0), reconcileAfter)
+
+	test.AssertFetchMustExist(t, cli, dataIndex)
+	assert.NotNil(t, dataIndex.GetStatus())
+	assert.Len(t, *dataIndex.GetStatus().GetConditions(), 3)
+
+	// Infinispan is not reconciled yet, conditions are empty
+	var infraCondition *[]v1.Condition
 	infraInfinispan.GetStatus().SetConditions(infraCondition)
 
 	test.AssertCreate(t, cli, infraInfinispan)
