@@ -368,10 +368,6 @@
           <groupId>xml-apis</groupId>
           <artifactId>xml-apis</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>org.eclipse.jetty</groupId>
-          <artifactId>jetty-annotations</artifactId>
-        </exclusion>
       </exclusions>
     </dependency>
 
@@ -435,10 +431,6 @@
         <exclusion>
           <groupId>commons-logging</groupId>
           <artifactId>commons-logging</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.squareup.okio</groupId>
-          <artifactId>okio</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -582,7 +574,6 @@
                 <include>**/gwt-unitCache/**</include>
                 <include>.gwt/**</include>
                 <include>.errai/</include>
-                <include>.index/**</include>
                 <include>**/*.JUnit/**</include>
               </includes>
             </fileset>

@@ -66,13 +66,8 @@
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
+      <classifier>no_aop</classifier>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>>com.google.errorprone</groupId>
-          <artifactId>error_prone_annotations</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -83,21 +78,15 @@
           <groupId>org.jboss.spec.javax.annotation</groupId>
           <artifactId>jboss-annotations-api_1.2_spec</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.google.inject</groupId>
+          <artifactId>guice</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>errai-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
       <artifactId>errai-ui</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>errai-data-binding</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -128,7 +117,7 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>javax.annotation:</groupId>
+          <groupId>javax.annotation</groupId>
           <artifactId>javax.annotation-api</artifactId>
         </exclusion>
       </exclusions>
@@ -263,22 +252,12 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>uberfire-client-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-simple-docks-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>uberfire-workbench-processors</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -294,20 +273,12 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Needed for the ACE XML Editor -->
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>uberfire-widgets-core-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Generic ui components -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kie-wb-common-ui</artifactId>
       <scope>provided</scope>
     </dependency>
-
 
     <dependency>
       <groupId>org.jboss.spec.javax.xml.bind</groupId>
@@ -349,10 +320,6 @@
           <groupId>com.ibm.icu</groupId>
           <artifactId>icu4j</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>org.eclipse.jetty</groupId>
-          <artifactId>jetty-annotations</artifactId>
-        </exclusion>
       </exclusions>
     </dependency>
 
@@ -377,11 +344,6 @@
     <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-project-datamodel-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-project-datamodel-commons</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -470,9 +432,6 @@
                 <include>**/gwt-unitCache/**</include>
                 <include>.gwt/**</include>
                 <include>.errai/</include>
-                <include>.security/</include>
-                <include>.niogit/**</include>
-                <include>.index/**</include>
                 <include>**/*.JUnit/**</include>
                 <include>repositories/</include>
               </includes>

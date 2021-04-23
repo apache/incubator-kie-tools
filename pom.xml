@@ -305,6 +305,13 @@
     <resources>
       <resource>
         <directory>src/main/java</directory>
+        <filtering>true</filtering>
+        <excludes>
+          <!-- Only errai needs to include java sources -->
+          <exclude>org/appformer/**/*.java</exclude>
+          <exclude>org/uberfire/**/*.java</exclude>
+          <exclude>org/kie/workbench/**/*.java</exclude>
+        </excludes>
       </resource>
       <resource>
         <directory>src/main/resources</directory>
@@ -666,18 +673,6 @@
             </dependency>
           </dependencies>
           <executions>
-            <execution>
-              <id>enforce-sane-versions</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <rules>
-                  <requirePluginVersions/>
-                  <DependencyConvergence/>
-                </rules>
-              </configuration>
-            </execution>
             <execution>
               <id>ban-unwanted-deps</id>
               <goals>

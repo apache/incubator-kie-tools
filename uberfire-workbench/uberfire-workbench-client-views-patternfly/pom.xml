@@ -286,7 +286,7 @@
                 <artifactItem>
                   <groupId>org.kie.kogito</groupId>
                   <artifactId>appformer-js-monaco</artifactId>
-                  <version>${uberfire.version}</version>
+                  <version>${project.version}</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/appformer-js-monaco</outputDirectory>
@@ -406,7 +406,7 @@
               <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/appformer-js-monaco/</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/appformer-js-monaco/META-INF/resources/webjars/appformer-js-monaco/${uberfire.version}/monaco-editor</directory>
+                  <directory>${project.build.directory}/appformer-js-monaco/META-INF/resources/webjars/appformer-js-monaco/${project.version}/monaco-editor</directory>
                   <includes>
                     <include>monaco.min.js</include>
                   </includes>

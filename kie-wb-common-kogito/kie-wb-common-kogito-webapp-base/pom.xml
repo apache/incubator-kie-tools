@@ -93,7 +93,7 @@
       <scope>test</scope>
       <exclusions>
         <exclusion>
-          <groupId>javax.servlet:</groupId>
+          <groupId>javax.servlet</groupId>
           <artifactId>javax.servlet-api</artifactId>
         </exclusion>
         <exclusion>
