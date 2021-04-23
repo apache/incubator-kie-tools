@@ -26,11 +26,9 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.Factory;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 
 @Dependent
@@ -77,28 +75,6 @@ public class LayoutDragComponentHelper {
 
     Predicate<SyncBeanDef<LayoutDragComponent>> syncBeanDefBeanClassNamePredicate(String dragTypeClassName) {
         return beanDef -> beanDef.getBeanClass().getName().equals(dragTypeClassName);
-    }
-
-    public String getRealBeanClass(LayoutDragComponent instance) {
-        return Factory.maybeUnwrapProxy(instance).getClass().getName();
-    }
-
-    public LayoutComponent getLayoutComponentFromDrop(String dropData) {
-        LayoutDragComponent component = extractComponent(dropData);
-        LayoutComponent layoutComponent = getLayoutComponent(component);
-        return layoutComponent;
-    }
-
-    public LayoutComponent getLayoutComponent(LayoutDragComponent dragComponent) {
-        return new LayoutComponent(getRealBeanClass(dragComponent));
-    }
-
-    private LayoutDragComponent extractComponent(String dropData) {
-        return null; //FIXME: tiago
-    }
-
-    private boolean hasComponent(LayoutComponent component) {
-        return component != null;
     }
 
     protected void destroy(Object o) {

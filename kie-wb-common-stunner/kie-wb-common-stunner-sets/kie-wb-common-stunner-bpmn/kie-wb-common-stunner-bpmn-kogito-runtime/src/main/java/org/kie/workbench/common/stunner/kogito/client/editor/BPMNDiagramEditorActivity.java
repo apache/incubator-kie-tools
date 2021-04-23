@@ -28,7 +28,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
 
-// TODO: [CAPONETTO] Remove this class and transfer the logic to BPMNDiagramEditor.
 @ApplicationScoped
 @Named(BPMNDiagramEditor.EDITOR_ID)
 public class BPMNDiagramEditorActivity extends AbstractActivity implements EditorActivity {

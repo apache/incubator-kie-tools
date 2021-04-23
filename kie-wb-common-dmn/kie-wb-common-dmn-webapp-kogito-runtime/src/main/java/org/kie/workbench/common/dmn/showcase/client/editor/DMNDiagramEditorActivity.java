@@ -33,7 +33,6 @@ import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.bridge.Notification;
 
-// TODO: [CAPONETTO] Remove this class and transfer the logic to DMNDiagramEditor.
 @ApplicationScoped
 @Named(AbstractDMNDiagramEditor.EDITOR_ID)
 public class DMNDiagramEditorActivity extends AbstractActivity implements EditorActivity {
