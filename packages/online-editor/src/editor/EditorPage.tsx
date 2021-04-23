@@ -21,7 +21,6 @@ import { GithubTokenModal } from "../common/GithubTokenModal";
 import { GlobalContext } from "../common/GlobalContext";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
-import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
 import { UpdateGistErrors } from "../common/GithubService";
 import { EmbedModal } from "./EmbedModal";
@@ -273,8 +272,6 @@ export function EditorPage(props: Props) {
       }
     })();
   });
-
-  useDmnTour(isEditorReady, context.file);
 
   const closeAlert = useCallback(() => setAlert(Alerts.NONE), []);
 
