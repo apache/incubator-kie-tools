@@ -112,6 +112,10 @@
     <module>kie-wb-common-stunner</module>
     <module>kie-wb-common-dmn</module>
     <module>kie-wb-common-kogito</module>
+
+    <!-- DROOLS-WB -->
+    <module>drools-wb-bom</module>
+    <module>drools-wb-screens</module>
   </modules>
 
   <pluginRepositories>
@@ -203,6 +207,15 @@
 \*\/$
 ]]>
     </checkstyle.header.template>
+
+    <!-- Properties from DROOLS-WB parent POM -->
+    <!-- TODO: Enable this flag after fixing all checkstyle issues -->
+    <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
+    <checkstyle.logViolationsToConsole>false</checkstyle.logViolationsToConsole>
+
+    <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
+    <code.coverage.disabled>false</code.coverage.disabled>
+    <version.org.kogito.gwt-jsonix-schema-compiler>1.3.0</version.org.kogito.gwt-jsonix-schema-compiler>
   </properties>
 
   <dependencyManagement>
@@ -291,6 +304,15 @@
         <scope>import</scope>
       </dependency>
 
+      <!-- All drools-wb's modules and third-party versions are defined in this POM -->
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>drools-wb-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
       <!-- log4j-to-slf4j -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -311,6 +333,7 @@
           <exclude>org/appformer/**/*.java</exclude>
           <exclude>org/uberfire/**/*.java</exclude>
           <exclude>org/kie/workbench/**/*.java</exclude>
+          <exclude>org/drools/workbench/**/*.java</exclude>
         </excludes>
       </resource>
       <resource>
@@ -512,11 +535,14 @@
           <configuration>
             <includes>
               <!-- Include integration tests from appformer and uberfire -->
-              <include>*appformer*/**/*IntegrationTest.java</include>
-              <include>*uberfire*/**/*IntegrationTest.java</include>
+              <include>org/appformer/**/*IntegrationTest.java</include>
+              <include>org/uberfire/**/*IntegrationTest.java</include>
               <!-- Include integration tests from kie-wb-common -->
-              <include>*kie-wb-common*/**/*IntegrationTest.java</include>
-              <include>*kie-wb-common*/**/*IT.java</include>
+              <include>org/kie/workbench/**/*IntegrationTest.java</include>
+              <include>org/kie/workbench/**/*IT.java</include>
+              <!-- Include integration tests from drools-wb -->
+              <include>org/drools/workbench/**/*IntegrationTest.java</include>
+              <include>org/drools/workbench/**/*IT.java</include>
             </includes>
             <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
           </configuration>
@@ -859,20 +885,25 @@
           <configuration>
             <includes>
               <!-- Include all from appformer and uberfire -->
-              <include>*appformer*/**/*Test.java</include>
-              <include>*uberfire*/**/*Test.java</include>
+              <include>org/appformer/**/*Test.java</include>
+              <include>org/uberfire/**/*Test.java</include>
               <!-- Include all from kie-wb-common -->
-              <include>*kie.workbench*/**/*Test.java</include>
+              <include>org/kie/workbench/**/*Test.java</include>
+              <!-- Include all from drools-wb -->
+              <include>org/drools/workbench/**/*Test.java</include>
             </includes>
             <excludes>
               <!-- Exclude all from errai as each module has its own configuration -->
-              <exclude>*errai*/**/*.java</exclude>
+              <exclude>org/jboss/errai/**/*.java</exclude>
               <!-- Exclude integration tests from appformer and uberfire -->
-              <exclude>*appformer*/**/*IntegrationTest.java</exclude>
-              <exclude>*uberfire*/**/*IntegrationTest.java</exclude>
+              <exclude>org/appformer/**/*IntegrationTest.java</exclude>
+              <exclude>org/uberfire/**/*IntegrationTest.java</exclude>
               <!-- Exclude integration tests from kie-wb-common -->
-              <exclude>*kie.workbench*/**/*IntegrationTest.java</exclude>
-              <exclude>*kie.workbench*/**/*IT.java</exclude>
+              <exclude>org/kie/workbench/**/*IntegrationTest.java</exclude>
+              <exclude>org/kie/workbench/**/*IT.java</exclude>
+              <!-- Exclude integration tests from drools-wb -->
+              <exclude>org/drools/workbench/**/*IntegrationTest.java</exclude>
+              <exclude>org/drools/workbench/**/*IT.java</exclude>
             </excludes>
             <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
           </configuration>

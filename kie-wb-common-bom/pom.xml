@@ -527,22 +527,6 @@
 
       <!-- 3rd-party dependencies -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>errai-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>appformer-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
         <groupId>org.powermock</groupId>
         <artifactId>powermock-api-mockito2</artifactId>
         <version>${version.powermock.api.mockito2}</version>

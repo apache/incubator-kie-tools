@@ -250,13 +250,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>errai-jaxrs-client</artifactId>
-        <type>test-jar</type>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
         <groupId>javax.enterprise</groupId>
         <artifactId>cdi-api</artifactId>
         <version>${version.javax.enterprise}</version>

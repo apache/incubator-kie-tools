@@ -674,7 +674,7 @@
                     <artifactItem>
                       <groupId>org.kie.kogito</groupId>
                       <artifactId>kie-wb-common-dmn-webapp-kogito-marshaller</artifactId>
-                      <version>${version.org.kie}</version>
+                      <version>${project.version}</version>
                       <type>jar</type>
                       <overWrite>true</overWrite>
                       <outputDirectory>${project.build.directory}/DMNMarshaller</outputDirectory>
@@ -694,7 +694,7 @@
                     <artifactItem>
                       <groupId>org.kie.kogito</groupId>
                       <artifactId>kie-wb-common-dmn-webapp-kogito-common</artifactId>
-                      <version>${version.org.kie}</version>
+                      <version>${project.version}</version>
                       <type>jar</type>
                       <overWrite>true</overWrite>
                       <outputDirectory>${project.build.directory}/DMNMarshaller</outputDirectory>
