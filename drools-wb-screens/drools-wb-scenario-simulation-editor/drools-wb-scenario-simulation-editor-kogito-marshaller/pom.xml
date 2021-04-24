@@ -146,28 +146,6 @@
           </execution>
         </executions>
       </plugin>
-      <!-- GWT Maven Plugin-->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>gwt-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>compile</goal>
-              <goal>generateAsync</goal>
-              <goal>test</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <module>org.drools.workbench.scenariosimulation.kogito.marshaller.ScesimMarshaller</module>
-          <style>PRETTY</style>
-          <compileReport>true</compileReport>
-          <soycDetailed>true</soycDetailed>
-          <logLevel>TRACE</logLevel>
-          <noServer>false</noServer>
-        </configuration>
-      </plugin>
       <!-- Exclude generated code from checkstyle validation -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
