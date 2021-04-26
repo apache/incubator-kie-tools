@@ -150,7 +150,7 @@
   </dependencies>
 
   <properties>
-    <version.org.kie>7.53.0-SNAPSHOT</version.org.kie>
+    <version.org.kie>7.53.0.Final</version.org.kie>
 
     <!-- Properties from ERRAI parent POM -->
     <!-- The version from kie-parent is not compatible with errai-validation -->
@@ -209,7 +209,7 @@
     </checkstyle.header.template>
 
     <!-- Properties from DROOLS-WB parent POM -->
-    <!-- TODO: Enable this flag after fixing all checkstyle issues -->
+    <!-- TODO: Enable these flags after fixing all checkstyle issues -->
     <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
     <checkstyle.logViolationsToConsole>false</checkstyle.logViolationsToConsole>
 
