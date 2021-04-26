@@ -270,14 +270,6 @@ jobs:
           cd ${{ github.workspace }}/kogito-tooling
           yarn run init
 
-      - name: Check yarn.lock
-        id: check-yarn-lock
-        run: |
-          cd ${{ github.workspace }}/kogito-tooling
-          git diff yarn.lock;
-          [ "0" == "$(git diff yarn.lock | wc -l)" ]
-        shell: bash
-
       - name: Build kogito-tooling
         env:
           EXTERNAL_RESOURCE_PATH__dmnEditor: "${{ github.workspace }}/kie-wb-common/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime"
