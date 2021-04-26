@@ -150,7 +150,11 @@
   </dependencies>
 
   <properties>
+    <!-- For modules in kie-bom, kie-soup-bom, drools-bom, jbpm-bom and kie-dmn-bom -->
     <version.org.kie>7.53.0.Final</version.org.kie>
+
+    <!-- 3.18+ breaks GWT compilation -->
+    <version.org.eclipse.jdt>3.17.0</version.org.eclipse.jdt>
 
     <!-- Properties from ERRAI parent POM -->
     <!-- The version from kie-parent is not compatible with errai-validation -->
@@ -232,14 +236,6 @@
       <dependency>
         <groupId>org.kie.soup</groupId>
         <artifactId>kie-soup-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-bom</artifactId>
         <version>${version.org.kie}</version>
         <type>pom</type>
         <scope>import</scope>
