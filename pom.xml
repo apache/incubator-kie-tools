@@ -20,13 +20,13 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-parent</artifactId>
-    <version>7.53.0-SNAPSHOT</version>
+    <version>7.53.0.Final</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito</groupId>
   <artifactId>kogito-editors-java</artifactId>
-  <version>7.53.0-SNAPSHOT</version>
+  <version>7.54.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Kogito Editors Java - Parent</name>
@@ -150,7 +150,7 @@
   </dependencies>
 
   <properties>
-    <!-- For modules in kie-bom, kie-soup-bom, drools-bom, jbpm-bom and kie-dmn-bom -->
+    <!-- For kie-parent and modules in kie-bom, kie-soup-bom, drools-bom, jbpm-bom and kie-dmn-bom -->
     <version.org.kie>7.53.0.Final</version.org.kie>
 
     <!-- 3.18+ breaks GWT compilation -->

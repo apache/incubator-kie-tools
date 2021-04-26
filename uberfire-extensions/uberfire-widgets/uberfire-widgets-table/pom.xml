@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.kie.kogito</groupId>
     <artifactId>uberfire-widgets</artifactId>
-    <version>7.53.0-SNAPSHOT</version>
+    <version>7.54.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>uberfire-widgets-table</artifactId>
