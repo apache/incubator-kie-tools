@@ -55,6 +55,10 @@ jobs:
           [ "0" == "$(git diff yarn.lock | wc -l)" ]
         shell: bash
 
+      - name: Check kogito-tooling format (format:check)
+        run: |
+          yarn format:check
+
       - name: "Build :: prod and pack"
         run: yarn run build:prod
         env:
