@@ -26,21 +26,18 @@ jobs:
         run: mvn clean install
 
       - name: Upload kie-wb-common-dmn-webapp-kogito-runtime
-        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v2
         with:
           name: kie-wb-common-dmn-webapp-kogito-runtime
           path: "kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime.war"
 
       - name: Upload kie-wb-common-stunner-bpmn-kogito-runtime
-        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v2
         with:
           name: kie-wb-common-stunner-bpmn-kogito-runtime
           path: "kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime.war"
 
       - name: Upload drools-wb-scenario-simulation-editor-kogito-runtime.war
-        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v2
         with:
           name: drools-wb-scenario-simulation-editor-kogito-runtime
