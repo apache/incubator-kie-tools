@@ -25,7 +25,7 @@ import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts/dist
 import { useGuidedTourPositionProvider } from "@kogito-tooling/guided-tour/dist/channel";
 import * as CSS from "csstype";
 import * as React from "react";
-import { useImperativeHandle, useMemo, useRef } from "react";
+import { useImperativeHandle, useMemo, useRef, useState } from "react";
 import { File, StateControl } from "../../channel";
 import { useEffectAfterFirstRender } from "../common";
 import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
@@ -55,6 +55,7 @@ export type Props = EmbeddedEditorChannelApiOverrides & {
  */
 export type EmbeddedEditorRef =
   | (EditorApi & {
+      isReady: boolean;
       getStateControl(): StateControl;
       getEnvelopeServer(): EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
     })
@@ -78,6 +79,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 ) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const stateControl = useMemo(() => new StateControl(), [props.file.getFileContents]);
+  const [isReady, setReady] = useState(false);
 
   const envelopeMapping = useMemo(() => props.editorEnvelopeLocator.mapping.get(props.file.fileExtension), [
     props.editorEnvelopeLocator,
@@ -86,7 +88,13 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
   //Setup envelope bus communication
   const kogitoEditorChannelApiImpl = useMemo(() => {
-    return new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, props);
+    return new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, {
+      ...props,
+      receive_ready: () => {
+        setReady(true);
+        props.receive_ready?.();
+      }
+    });
   }, [stateControl, props.file, props]);
 
   const envelopeServer = useMemo(() => {
@@ -134,10 +142,10 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       }
 
       return {
+        isReady: isReady,
         getStateControl: () => stateControl,
         getEnvelopeServer: () => envelopeServer,
-        getElementPosition: selector =>
-          envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(selector),
+        getElementPosition: s => envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(s),
         undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorUndo()),
         redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorRedo()),
         getContent: () => envelopeServer.envelopeApi.requests.receive_contentRequest().then(c => c.content),
@@ -146,7 +154,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         validate: () => envelopeServer.envelopeApi.requests.validate()
       };
     },
-    [envelopeServer, stateControl]
+    [envelopeServer, stateControl, isReady]
   );
 
   return (

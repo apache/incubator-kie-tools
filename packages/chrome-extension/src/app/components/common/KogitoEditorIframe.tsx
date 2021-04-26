@@ -45,8 +45,8 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   const { envelopeLocator, resourceContentServiceFactory } = useGlobals();
   const { repoInfo, textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
   const { locale } = useChromeExtensionI18n();
+  const wasOnTextMode = usePrevious(textMode);
 
-  //Lookup ResourceContentService
   const resourceContentService = useMemo(() => {
     return resourceContentServiceFactory.createNew(githubApi.octokit(), repoInfo);
   }, [repoInfo]);
@@ -71,46 +71,29 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
     };
   }, [props.contentPath, props.openFileExtension, props.getFileContents, props.readonly]);
 
-  const updateGitHubsTextEditor = useCallback(() => {
-    editor?.getContent().then(content => {
-      runScriptOnPage(
-        `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}")
+  // When changing from textMode to !textMode, we should update the diagram content
+  useEffect(() => {
+    if (!textMode && wasOnTextMode) {
+      props.getFileContents().then(content => editor?.setContent(props.contentPath, content ?? ""));
+    }
+  }, [textMode, wasOnTextMode, editor]);
+
+  // When !textMode, we should listen for changes on the diagram to update GitHub's default text editor.
+  useEffect(() => {
+    if (props.readonly || textMode || !editor) {
+      return;
+    }
+
+    const stateControlSubscription = editor.getStateControl().subscribe(() => {
+      editor.getContent().then(content => {
+        runScriptOnPage(
+          `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}")
             .CodeMirror
             .setValue('${content.split("\n").join("\\n")}')` //keep line breaks
-      );
-    });
-  }, [editor]);
-
-  useEffect(() => {
-    if (textMode) {
-      return;
-    }
-
-    if (props.readonly) {
-      return;
-    }
-
-    let stateControlSubscription: ((isDirty: boolean) => void) | undefined;
-
-    Promise.resolve()
-      .then(props.getFileContents)
-      .then(content => editor?.setContent(props.contentPath, content ?? ""))
-      .then(() => {
-        // Update GitHub's default text editor right away.
-        updateGitHubsTextEditor();
-
-        // Subscribe to changes on the Diagram to update GitHub's default text editor.
-        stateControlSubscription = editor?.getStateControl().subscribe(updateGitHubsTextEditor);
-      })
-      .catch(e => {
-        console.error("Error setting content.", e);
+        );
       });
-
-    return () => {
-      if (stateControlSubscription) {
-        editor?.getStateControl().unsubscribe(stateControlSubscription);
-      }
-    };
+    });
+    return () => editor.getStateControl().unsubscribe(stateControlSubscription);
   }, [textMode, editor]);
 
   // Forward reference methods to set content programmatically vs property
@@ -122,7 +105,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
       }
 
       return {
-        setContent: (content: string) => editor?.setContent(props.contentPath, content)
+        setContent: (content: string) => editor.setContent(props.contentPath, content)
       };
     },
     [editor]
@@ -148,3 +131,13 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
 };
 
 export const KogitoEditorIframe = React.forwardRef(RefForwardingKogitoEditorIframe);
+
+function usePrevious<T>(value: T): T | undefined {
+  const ref = React.useRef<T>();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+}
