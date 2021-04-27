@@ -1,9 +1,5 @@
 export const processWithWidDefinition =`
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_gvwSQX5iEDmJieen26XgGQ" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
-  <bpmn2:itemDefinition id="__E89E3811-EC9B-4788-A12A-9B8218FAEA34_BodyInputXItem" structureRef="String"/>
-  <bpmn2:itemDefinition id="__E89E3811-EC9B-4788-A12A-9B8218FAEA34_FromInputXItem" structureRef="String"/>
-  <bpmn2:itemDefinition id="__E89E3811-EC9B-4788-A12A-9B8218FAEA34_SubjectInputXItem" structureRef="String"/>
-  <bpmn2:itemDefinition id="__E89E3811-EC9B-4788-A12A-9B8218FAEA34_ToInputXItem" structureRef="String"/>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_nCB7kIl5EDmizbwd8_oqEQ" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
   <bpmn2:itemDefinition id="__5A0F59BB-0760-40A9-A889-528D95DEA503_in_customer_idInputXItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__5A0F59BB-0760-40A9-A889-528D95DEA503_in_customer_initial_balanceInputXItem" structureRef="Float"/>
   <bpmn2:itemDefinition id="__5A0F59BB-0760-40A9-A889-528D95DEA503_in_customer_level_idInputXItem" structureRef="Integer"/>
@@ -13,17 +9,7 @@ export const processWithWidDefinition =`
   <bpmn2:itemDefinition id="__5A0F59BB-0760-40A9-A889-528D95DEA503_in_security_tokenInputXItem" structureRef="java.lang.Object"/>
   <bpmn2:itemDefinition id="__5A0F59BB-0760-40A9-A889-528D95DEA503_out_operation_successOutputXItem" structureRef="Boolean"/>
   <bpmn2:process id="process_wid" drools:packageName="com.example" drools:version="1.0" drools:adHoc="false" name="process-wid" isExecutable="true" processType="Public">
-    <bpmn2:sequenceFlow id="_6CC98A73-B72F-46BF-91AE-2EDDD510159F" sourceRef="_E89E3811-EC9B-4788-A12A-9B8218FAEA34" targetRef="_98609158-4B3D-4A94-B74B-B7F1A3A5BEA0">
-      <bpmn2:extensionElements>
-        <drools:metaData name="isAutoConnection.source">
-          <drools:metaValue><![CDATA[true]]></drools:metaValue>
-        </drools:metaData>
-        <drools:metaData name="isAutoConnection.target">
-          <drools:metaValue><![CDATA[true]]></drools:metaValue>
-        </drools:metaData>
-      </bpmn2:extensionElements>
-    </bpmn2:sequenceFlow>
-    <bpmn2:sequenceFlow id="_A4CA7B8A-5F99-4DEE-A703-5F606FCFAA97" sourceRef="_5A0F59BB-0760-40A9-A889-528D95DEA503" targetRef="_E89E3811-EC9B-4788-A12A-9B8218FAEA34"/>
+    <bpmn2:sequenceFlow id="_A4CA7B8A-5F99-4DEE-A703-5F606FCFAA97" sourceRef="_5A0F59BB-0760-40A9-A889-528D95DEA503" targetRef="_98609158-4B3D-4A94-B74B-B7F1A3A5BEA0"/>
     <bpmn2:sequenceFlow id="_1A053C7C-BD89-447E-9FC1-9B9A88F1ED96" sourceRef="_CCEC3FEE-9967-427C-B62C-E1C6584F6F6B" targetRef="_5A0F59BB-0760-40A9-A889-528D95DEA503"/>
     <bpmn2:task id="_5A0F59BB-0760-40A9-A889-528D95DEA503" drools:taskName="CreateCustomer" name="Create Customer Internal Service">
       <bpmn2:documentation><![CDATA[Calls internal service that creates the customer in database server.]]></bpmn2:documentation>
@@ -67,38 +53,8 @@ export const processWithWidDefinition =`
       </bpmn2:dataInputAssociation>
     </bpmn2:task>
     <bpmn2:endEvent id="_98609158-4B3D-4A94-B74B-B7F1A3A5BEA0">
-      <bpmn2:incoming>_6CC98A73-B72F-46BF-91AE-2EDDD510159F</bpmn2:incoming>
-    </bpmn2:endEvent>
-    <bpmn2:task id="_E89E3811-EC9B-4788-A12A-9B8218FAEA34" drools:taskName="Email" name="Email">
-      <bpmn2:extensionElements>
-        <drools:metaData name="elementname">
-          <drools:metaValue><![CDATA[Email]]></drools:metaValue>
-        </drools:metaData>
-      </bpmn2:extensionElements>
       <bpmn2:incoming>_A4CA7B8A-5F99-4DEE-A703-5F606FCFAA97</bpmn2:incoming>
-      <bpmn2:outgoing>_6CC98A73-B72F-46BF-91AE-2EDDD510159F</bpmn2:outgoing>
-      <bpmn2:ioSpecification>
-        <bpmn2:dataInput id="_E89E3811-EC9B-4788-A12A-9B8218FAEA34_BodyInputX" drools:dtype="String" itemSubjectRef="__E89E3811-EC9B-4788-A12A-9B8218FAEA34_BodyInputXItem" name="Body"/>
-        <bpmn2:dataInput id="_E89E3811-EC9B-4788-A12A-9B8218FAEA34_FromInputX" drools:dtype="String" itemSubjectRef="__E89E3811-EC9B-4788-A12A-9B8218FAEA34_FromInputXItem" name="From"/>
-        <bpmn2:dataInput id="_E89E3811-EC9B-4788-A12A-9B8218FAEA34_SubjectInputX" drools:dtype="String" itemSubjectRef="__E89E3811-EC9B-4788-A12A-9B8218FAEA34_SubjectInputXItem" name="Subject"/>
-        <bpmn2:dataInput id="_E89E3811-EC9B-4788-A12A-9B8218FAEA34_ToInputX" drools:dtype="String" itemSubjectRef="__E89E3811-EC9B-4788-A12A-9B8218FAEA34_ToInputXItem" name="To"/>
-        <bpmn2:dataInput id="_E89E3811-EC9B-4788-A12A-9B8218FAEA34_TaskNameInputX" drools:dtype="Object" name="TaskName"/>
-        <bpmn2:inputSet>
-          <bpmn2:dataInputRefs>_E89E3811-EC9B-4788-A12A-9B8218FAEA34_BodyInputX</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_E89E3811-EC9B-4788-A12A-9B8218FAEA34_FromInputX</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_E89E3811-EC9B-4788-A12A-9B8218FAEA34_SubjectInputX</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_E89E3811-EC9B-4788-A12A-9B8218FAEA34_ToInputX</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_E89E3811-EC9B-4788-A12A-9B8218FAEA34_TaskNameInputX</bpmn2:dataInputRefs>
-        </bpmn2:inputSet>
-      </bpmn2:ioSpecification>
-      <bpmn2:dataInputAssociation>
-        <bpmn2:targetRef>_E89E3811-EC9B-4788-A12A-9B8218FAEA34_TaskNameInputX</bpmn2:targetRef>
-        <bpmn2:assignment>
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[Email]]></bpmn2:from>
-          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_E89E3811-EC9B-4788-A12A-9B8218FAEA34_TaskNameInputX]]></bpmn2:to>
-        </bpmn2:assignment>
-      </bpmn2:dataInputAssociation>
-    </bpmn2:task>
+    </bpmn2:endEvent>
     <bpmn2:startEvent id="_CCEC3FEE-9967-427C-B62C-E1C6584F6F6B">
       <bpmn2:outgoing>_1A053C7C-BD89-447E-9FC1-9B9A88F1ED96</bpmn2:outgoing>
     </bpmn2:startEvent>
@@ -107,9 +63,6 @@ export const processWithWidDefinition =`
     <bpmndi:BPMNPlane bpmnElement="process_wid">
       <bpmndi:BPMNShape id="shape__CCEC3FEE-9967-427C-B62C-E1C6584F6F6B" bpmnElement="_CCEC3FEE-9967-427C-B62C-E1C6584F6F6B">
         <dc:Bounds height="56" width="56" x="364" y="219"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape__E89E3811-EC9B-4788-A12A-9B8218FAEA34" bpmnElement="_E89E3811-EC9B-4788-A12A-9B8218FAEA34">
-        <dc:Bounds height="102" width="154" x="766" y="196"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape__98609158-4B3D-4A94-B74B-B7F1A3A5BEA0" bpmnElement="_98609158-4B3D-4A94-B74B-B7F1A3A5BEA0">
         <dc:Bounds height="56" width="56" x="1000" y="219"/>
@@ -121,13 +74,9 @@ export const processWithWidDefinition =`
         <di:waypoint x="392" y="247"/>
         <di:waypoint x="593" y="247"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="edge_shape__5A0F59BB-0760-40A9-A889-528D95DEA503_to_shape__E89E3811-EC9B-4788-A12A-9B8218FAEA34" bpmnElement="_A4CA7B8A-5F99-4DEE-A703-5F606FCFAA97">
+      <bpmndi:BPMNEdge id="edge_shape__5A0F59BB-0760-40A9-A889-528D95DEA503_to_shape__98609158-4B3D-4A94-B74B-B7F1A3A5BEA0" bpmnElement="_A4CA7B8A-5F99-4DEE-A703-5F606FCFAA97">
         <di:waypoint x="593" y="247"/>
-        <di:waypoint x="843" y="247"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="edge_shape__E89E3811-EC9B-4788-A12A-9B8218FAEA34_to_shape__98609158-4B3D-4A94-B74B-B7F1A3A5BEA0" bpmnElement="_6CC98A73-B72F-46BF-91AE-2EDDD510159F">
-        <di:waypoint x="920" y="247"/>
-        <di:waypoint x="1000" y="247"/>
+        <di:waypoint x="1028" y="247"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
@@ -142,26 +91,6 @@ export const processWithWidDefinition =`
                 <bpsim:NormalDistribution mean="0" standardDeviation="0"/>
               </bpsim:ProcessingTime>
             </bpsim:TimeParameters>
-          </bpsim:ElementParameters>
-          <bpsim:ElementParameters elementRef="_E89E3811-EC9B-4788-A12A-9B8218FAEA34">
-            <bpsim:TimeParameters>
-              <bpsim:ProcessingTime>
-                <bpsim:NormalDistribution mean="0" standardDeviation="0"/>
-              </bpsim:ProcessingTime>
-            </bpsim:TimeParameters>
-            <bpsim:ResourceParameters>
-              <bpsim:Availability>
-                <bpsim:FloatingParameter value="0"/>
-              </bpsim:Availability>
-              <bpsim:Quantity>
-                <bpsim:FloatingParameter value="0"/>
-              </bpsim:Quantity>
-            </bpsim:ResourceParameters>
-            <bpsim:CostParameters>
-              <bpsim:UnitCost>
-                <bpsim:FloatingParameter value="0"/>
-              </bpsim:UnitCost>
-            </bpsim:CostParameters>
           </bpsim:ElementParameters>
           <bpsim:ElementParameters elementRef="_5A0F59BB-0760-40A9-A889-528D95DEA503">
             <bpsim:TimeParameters>
@@ -186,8 +115,8 @@ export const processWithWidDefinition =`
         </bpsim:Scenario>
       </bpsim:BPSimData>
     </bpmn2:extensionElements>
-    <bpmn2:source>_gvwSQX5iEDmJieen26XgGQ</bpmn2:source>
-    <bpmn2:target>_gvwSQX5iEDmJieen26XgGQ</bpmn2:target>
+    <bpmn2:source>_nCB7kIl5EDmizbwd8_oqEQ</bpmn2:source>
+    <bpmn2:target>_nCB7kIl5EDmizbwd8_oqEQ</bpmn2:target>
   </bpmn2:relationship>
 </bpmn2:definitions>
 `
