@@ -97,7 +97,7 @@ export const EditorComponent: React.FC<InternalProps> = ({
   }, [id]);
 
   const setEditorContents = (resource: ResourcesHolderItem) => {
-    editor!.setContent(resource.value.path, resource.value.content);
+    editor!.setContent(resource.value.content, resource.value.content);
     setModelName(resource.name);
   };
 
