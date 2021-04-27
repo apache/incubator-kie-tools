@@ -1,0 +1,37 @@
+/target
+/local
+
+/src/main/gwt-unitCache/
+
+# Generated files
+/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/mapper/JSIName.java
+/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/mapper/JsUtils.java
+/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/MainJs.java
+/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/callbacks/
+/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/dc/
+/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/di/
+/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/dmn12/
+/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/dmndi12/
+/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/kie/
+/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/DC.js
+/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/DI.js
+/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/DMNDI12.js
+/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/DMN12.js
+/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/KIE.js
+
+# Copied from dependencies when packaged
+/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/Jsonix-all.js
+
+# Eclipse, Netbeans and IntelliJ files
+/.*
+/**/.*
+!.gitignore
+/nbproject
+*.ipr
+*.iws
+*.iml
+**/gwt-unitCache/
+
+# Repository wide ignore mac DS_Store files
+.DS_Store
+

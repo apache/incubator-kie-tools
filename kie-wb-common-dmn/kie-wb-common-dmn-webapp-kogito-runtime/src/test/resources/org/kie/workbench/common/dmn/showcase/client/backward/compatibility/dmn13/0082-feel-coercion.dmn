@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0082-feel-coercion" name="0082-feel-coercion" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <description>FEEL type conformance of DT and BKM results</description>
+
+    <itemDefinition name="tNumberList" isCollection="true">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+
+    <itemDefinition name="tStringList" isCollection="true">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+
+    <itemDefinition name="tDS_001">
+        <itemComponent name="decision_ds_001">
+            <typeRef>string</typeRef>
+        </itemComponent>
+    </itemDefinition>
+
+    <itemDefinition name="tNameAndAge">
+        <itemComponent name="name">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent name="age">
+            <typeRef>number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+
+    <decision name="decision_001" id="_decision_001">
+        <variable typeRef="string" name="decision_001"/>
+        <literalExpression>
+            <text>1+1</text>
+        </literalExpression>
+    </decision>
+
+<!--    <decision name="decision_002" id="_decision_002">
+        <variable typeRef="list" name="decision_002"/>
+        <literalExpression>
+            <text>[1,2,"foo"]</text>
+        </literalExpression>
+    </decision>-->
+
+    <decision name="decision_003" id="_decision_003">
+        <variable typeRef="tNumberList" name="decision_003"/>
+        <literalExpression>
+            <text>[1,2,"foo"]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_004" id="_decision_004">
+        <variable typeRef="tNameAndAge" name="decision_004"/>
+        <literalExpression>
+            <text>{name: "foo", surname: "bar", age: 10}</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_005" id="_decision_005">
+        <variable typeRef="tNameAndAge" name="decision_005"/>
+        <literalExpression>
+            <text>{name: "foo"}</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_006" id="_decision_006">
+        <variable typeRef="tStringList" name="decision_006"/>
+        <literalExpression>
+            <text>"foo"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_006_a" id="_decision_006_a">
+        <variable typeRef="tNumberList" name="decision_006_a"/>
+        <literalExpression>
+            <text>"foo"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_007" id="_decision_007">
+        <variable typeRef="string" name="decision_007"/>
+        <literalExpression>
+            <text>["foo"]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_007_a" id="_decision_007_a">
+        <variable typeRef="string" name="decision_007_a"/>
+        <literalExpression>
+            <text>[1]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_008" id="_decision_008">
+        <variable typeRef="list" name="decision_008"/>
+        <literalExpression>
+            <text>null</text>
+        </literalExpression>
+    </decision>
+
+    <businessKnowledgeModel name="bkm_001" id="_bkm_001">
+        <variable name="bkm_001"/>
+        <encapsulatedLogic>
+            <formalParameter name="nameAndAge" typeRef="tNameAndAge"/>
+            <literalExpression>
+                <text>nameAndAge != null</text>
+            </literalExpression>
+        </encapsulatedLogic>
+    </businessKnowledgeModel>
+
+    <decision name="decision_bkm_001" id="_decision_bkm_001">
+        <variable name="decision_bkm_001"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_bkm_001"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>bkm_001({name: "foo", surname: "bar", age: 10})</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_bkm_002" id="_decision_bkm_002">
+        <variable name="decision_bkm_002"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_bkm_001"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>bkm_001({name: "foo"})</text>
+        </literalExpression>
+    </decision>
+
+    <!-- has an explicit context return type but return boolean -->
+    <businessKnowledgeModel name="bkm_002" id="_bkm_002">
+        <variable typeRef="tNameAndAge" name="bkm_002"/>
+        <encapsulatedLogic>
+            <formalParameter name="nameAndAge" typeRef="tNameAndAge"/>
+            <literalExpression>
+                <text>nameAndAge != null</text>
+            </literalExpression>
+        </encapsulatedLogic>
+    </businessKnowledgeModel>
+
+    <decision name="decision_bkm_003" id="_decision_bkm_003">
+        <variable name="decision_bkm_003"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_bkm_002"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>bkm_002({name: "foo"})</text>
+        </literalExpression>
+    </decision>
+
+    <businessKnowledgeModel name="bkm_004" id="_bkm_004">
+        <variable typeRef="tNumberList" name="bkm_004"/>
+        <encapsulatedLogic>
+            <formalParameter name="arg"/>
+            <literalExpression>
+                <text>arg</text>
+            </literalExpression>
+        </encapsulatedLogic>
+    </businessKnowledgeModel>
+
+    <businessKnowledgeModel name="bkm_005" id="_bkm_005">
+        <variable typeRef="number" name="bkm_005"/>
+        <encapsulatedLogic>
+            <formalParameter name="arg"/>
+            <literalExpression>
+                <text>[arg]</text>
+            </literalExpression>
+        </encapsulatedLogic>
+    </businessKnowledgeModel>
+
+    <decision name="decision_bkm_004" id="_decision_bkm_004">
+        <variable name="decision_bkm_004"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_bkm_004"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>bkm_004(10)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_bkm_004_a" id="_decision_bkm_004_a">
+        <variable name="decision_bkm_004_a"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_bkm_004"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>bkm_004("foo")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_bkm_004_b" id="_decision_bkm_004_b">
+        <variable name="decision_bkm_004_b"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_bkm_004"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>bkm_004(null)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_bkm_005" id="_decision_bkm_005">
+        <variable name="decision_bkm_005"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_bkm_005"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>bkm_005(10)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_bkm_005_a" id="_decision_bkm_005_a">
+        <variable name="decision_bkm_005_a"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_bkm_005"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>bkm_005("foo")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="invoke_001" id="_invoke_001">
+        <variable name="invoke_001"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_bkm_001"/>
+        </knowledgeRequirement>
+        <invocation>
+            <literalExpression>
+                <text>bkm_001</text>
+            </literalExpression>
+            <binding>
+                <parameter name="nameAndAge"/>
+                <!-- passed incorrect param to bkm -->
+                <literalExpression>
+                    <text>{name: "foo"}</text>
+                </literalExpression>
+            </binding>
+        </invocation>
+    </decision>
+
+    <decision name="invoke_002" id="_invoke_002">
+        <variable name="invoke_002" typeRef="string"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_bkm_001"/>
+        </knowledgeRequirement>
+        <invocation typeRef="string"> <!-- list type will cause null-coercion -->
+            <literalExpression>
+                <text>bkm_001</text>
+            </literalExpression>
+            <binding>
+                <parameter name="nameAndAge"/>
+                <!-- pass correct param to bkm, but the invocation has an explicit typeref-->
+                <literalExpression>
+                    <text>{name: "foo", age: 10}</text>
+                </literalExpression>
+            </binding>
+        </invocation>
+    </decision>
+
+    <decision name="invoke_003" id="_invoke_003">
+        <variable name="invoke_003" typeRef="tNumberList"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_bkm_005"/>
+        </knowledgeRequirement>
+        <invocation typeRef="tNumberList"> <!-- bkm returns number but invocation is a number list type -->
+            <literalExpression>
+                <text>bkm_005</text>
+            </literalExpression>
+            <binding>
+                <parameter name="arg"/>
+                <literalExpression>
+                    <text>10</text>
+                </literalExpression>
+            </binding>
+        </invocation>
+    </decision>
+
+    <decision name="invoke_004" id="_invoke_004">
+        <variable name="invoke_004" typeRef="tNumberList"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_bkm_005"/>
+        </knowledgeRequirement>
+        <invocation typeRef="tNumberList"> <!-- bkm returns string but invocation is a number list type -->
+            <literalExpression>
+                <text>bkm_005</text>
+            </literalExpression>
+            <binding>
+                <parameter name="arg"/>
+                <literalExpression>
+                    <text>"foo"</text>
+                </literalExpression>
+            </binding>
+        </invocation>
+    </decision>
+
+
+    <decision name="invoke_005" id="_invoke_005">
+        <variable name="invoke_005" typeRef="number"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_bkm_005"/>
+        </knowledgeRequirement>
+        <invocation typeRef="number"> <!-- bkm returns number array but invocation type is a number -->
+            <literalExpression>
+                <text>bkm_005</text>
+            </literalExpression>
+            <binding>
+                <parameter name="arg"/>
+                <literalExpression>
+                    <text>[10]</text>
+                </literalExpression>
+            </binding>
+        </invocation>
+    </decision>
+
+    <decision name="invoke_006" id="_invoke_006">
+        <variable name="invoke_006" typeRef="number"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_bkm_005"/>
+        </knowledgeRequirement>
+        <invocation typeRef="number"> <!-- bkm returns string array but invocation type is a number -->
+            <literalExpression>
+                <text>bkm_005</text>
+            </literalExpression>
+            <binding>
+                <parameter name="arg"/>
+                <literalExpression>
+                    <text>["foo"]</text>
+                </literalExpression>
+            </binding>
+        </invocation>
+    </decision>
+
+    <decision name="fd_001" id="_fd_001">
+        <variable name="fd_001"/>
+        <context>
+            <contextEntry>
+                <variable name="fn"/>
+                <literalExpression>
+                    <text>function(arg: number) arg</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>fn(10)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <decision name="fd_002" id="_fd_002">
+        <variable name="fd_002"/>
+        <context>
+            <contextEntry>
+                <variable name="fn"/>
+                <literalExpression>
+                    <text>function(arg: number) arg</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression>
+                    <text>fn("foo")</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+
+    </decision>
+
+    <decision name="literal_001" id="_literal_001">
+        <variable name="literal_001" typeRef="number"/>
+        <literalExpression typeRef="number">
+            <text>5+5</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="literal_002" id="_literal_002">
+        <variable name="literal_002" typeRef="number"/>
+        <literalExpression typeRef="number">
+            <text>"foo"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="literal_003" id="_literal_003">
+        <variable name="literal_003" typeRef="tNumberList"/>
+        <literalExpression typeRef="tNumberList">
+            <text>10</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="literal_004" id="_literal_004">
+        <variable name="literal_004" typeRef="tNumberList"/>
+        <literalExpression typeRef="tNumberList">
+            <text>"foo"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="literal_005" id="_literal_005">
+        <variable name="literal_005" typeRef="number"/>
+        <literalExpression typeRef="number">
+            <text>[10]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="literal_006" id="_literal_006">
+        <variable name="literal_006" typeRef="number"/>
+        <literalExpression typeRef="number">
+            <text>["foo"]</text>
+        </literalExpression>
+    </decision>
+
+
+    <!-- **************** -->
+
+    <decisionService name="decisionService_001" id="_decisionService_001">
+        <variable name="decisionService_001" typeRef="tDS_001"/>
+        <!-- decision returns number, type expects string -->
+        <outputDecision href="#_decision_ds_001"/>
+    </decisionService>
+
+    <decision name="decision_ds_001" id="_decision_ds_001">
+        <variable name="decision_ds_001"/>
+        <literalExpression>
+            <text>1000</text>
+        </literalExpression>
+    </decision>
+
+    <!-- **************** -->
+
+    <decisionService name="decisionService_002" id="_decisionService_002">
+        <!-- no output type defined so we can narrow assertion on the input coercion -->
+        <variable name="decisionService_002"/>
+        <outputDecision href="#_decision_ds_002"/>
+        <inputData href="#_decisionService_002_input_1"/>
+    </decisionService>
+
+    <decision name="decision_ds_002" id="_decision_ds_002">
+        <variable name="decision_ds_002"/>
+        <informationRequirement>
+            <requiredInput href="#_decisionService_002_input_1"/>
+        </informationRequirement>
+        <literalExpression>
+            <!-- echo the input value -->
+            <text>decisionService_002_input_1</text>
+        </literalExpression>
+    </decision>
+
+    <inputData name="decisionService_002_input_1" id="_decisionService_002_input_1">
+        <variable name="decisionService_002_input_1" typeRef="string"/>
+    </inputData>
+
+    <!-- invoke DS from decision passing incorrect input type -->
+    <decision name="ds_invoke_002_with_number" id="_ds_invoke_002_with_number">
+        <variable name="ds_invoke_002_with_number"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_decisionService_002"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>decisionService_002(10)</text>
+        </literalExpression>
+    </decision>
+
+    <!-- invoke DS from decision passing singleton string list -->
+    <decision name="ds_invoke_002_with_singleton_list" id="_ds_invoke_002_with_singleton_list">
+        <variable name="ds_invoke_002_with_singleton_list"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_decisionService_002"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>decisionService_002(["foo"])</text>
+        </literalExpression>
+    </decision>
+
+    <!-- **************** -->
+
+    <decisionService name="decisionService_003" id="_decisionService_003">
+        <!-- no output type defined so we can narrow assertion on the input coercion -->
+        <variable name="decisionService_003"/>
+        <outputDecision href="#_decision_ds_003"/>
+        <inputData href="#_decisionService_003_input_1"/>
+    </decisionService>
+
+    <decision name="decision_ds_003" id="_decision_ds_003">
+        <variable name="decision_ds_003"/>
+        <informationRequirement>
+            <requiredInput href="#_decisionService_003_input_1"/>
+        </informationRequirement>
+        <literalExpression>
+            <!-- echo the input value -->
+            <text>decisionService_003_input_1</text>
+        </literalExpression>
+    </decision>
+
+    <inputData name="decisionService_003_input_1" id="_decisionService_003_input_1">
+        <variable name="decisionService_003_input_1" typeRef="tStringList"/>
+    </inputData>
+
+    <!-- invoke DS from decision passing singleton string list -->
+    <decision name="ds_invoke_003_with_string" id="_ds_invoke_003_with_string">
+        <variable name="ds_invoke_003_with_string"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_decisionService_003"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>decisionService_003("foo")</text>
+        </literalExpression>
+    </decision>
+
+
+</definitions>

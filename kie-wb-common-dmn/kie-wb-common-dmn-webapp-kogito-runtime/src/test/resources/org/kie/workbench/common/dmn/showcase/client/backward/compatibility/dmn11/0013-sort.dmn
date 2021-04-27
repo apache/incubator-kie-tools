@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tns="http://www.trisotech.com/definitions/_ac1acfdd-6baa-4f30-9cac-5d23957b4217" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.35; 1.0" id="_ac1acfdd-6baa-4f30-9cac-5d23957b4217" name="sort" namespace="http://www.trisotech.com/definitions/_ac1acfdd-6baa-4f30-9cac-5d23957b4217" triso:logoChoice="Default">
+	<itemDefinition id="tNumList" isCollection="true" name="tNumList">
+		<typeRef>feel:number</typeRef>
+	</itemDefinition>
+	<itemDefinition id="tRow" name="tRow">
+		<itemComponent id="_bed80fb2-293a-4db0-b261-e58a1311dfd0" name="col1">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_88c1de9d-6c23-4ea2-9bf9-f7cb06d43ebe" name="col2">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_a63e8581-e650-47e5-bd6a-b8cb0f5b3fb7" name="col3">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_fed04cbf-6aee-43ed-b218-d0fffca51693" name="col4">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<itemDefinition id="tTable" isCollection="true" name="tTable">
+		<typeRef>tns:tRow</typeRef>
+	</itemDefinition>
+	<itemDefinition id="tStringList" isCollection="true" name="tStringList">
+		<typeRef>feel:string</typeRef>
+	</itemDefinition>
+	<inputData id="_d8747cda-26be-46c8-98ee-78f64efbf730" name="listA">
+		<variable name="listA" typeRef="tns:tNumList"/>
+	</inputData>
+	<inputData id="_f8197899-44af-4ec5-9453-26da073a2be3" name="tableB">
+		<variable name="tableB" typeRef="tns:tTable"/>
+	</inputData>
+	<decision id="_c6416c42-328a-410c-a083-859b82771690" name="sort1">
+		<variable name="sort1" typeRef="tns:tNumList"/>
+		<informationRequirement>
+			<requiredInput href="#_d8747cda-26be-46c8-98ee-78f64efbf730"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>sort(listA, function(x,y) x&gt;y)</text>
+		</literalExpression>
+	</decision>
+	<decision id="_d8ef1de9-9387-4389-ab83-cbf9dafc419b" name="sort2">
+		<variable name="sort2" typeRef="tns:tTable"/>
+		<informationRequirement>
+			<requiredInput href="#_f8197899-44af-4ec5-9453-26da073a2be3"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>sort(tableB, function(x,y) x.col2&lt;y.col2)</text>
+		</literalExpression>
+	</decision>
+	<inputData id="_7471008b-e8c7-4205-8e17-586ff41e7205" name="stringList">
+		<variable name="stringList" typeRef="tns:tStringList"/>
+	</inputData>
+	<decision id="_4ff4b8ff-4379-477a-a016-f7d1741d2036" name="sort3">
+		<variable name="sort3" typeRef="tns:tStringList"/>
+		<informationRequirement>
+			<requiredInput href="#_7471008b-e8c7-4205-8e17-586ff41e7205"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>sort(stringList, function(x,y) x&lt;y)</text>
+		</literalExpression>
+	</decision>
+</definitions>

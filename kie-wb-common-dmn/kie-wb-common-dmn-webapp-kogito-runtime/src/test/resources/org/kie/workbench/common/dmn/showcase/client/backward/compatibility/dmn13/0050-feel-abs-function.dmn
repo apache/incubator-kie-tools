@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0050-feel-abs-function" name="0050-feel-abs-function" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>FEEL built-in function 'abs(number)' in category numeric functions</description>
+    <decision name="decision001" id="_decision001">
+        <description>Tests FEEL expression: 'abs(1)' and expects result: '1 (number)'</description>
+        <question>Result of FEEL expression 'abs(1)'?</question>
+        <allowedAnswers>1 (number)</allowedAnswers>
+        <variable typeRef="number" name="decision001"/>
+        <literalExpression>
+            <text>abs(1)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision002" id="_decision002">
+        <description>Tests FEEL expression: 'abs(-1)' and expects result: '1 (number)'</description>
+        <question>Result of FEEL expression 'abs(-1)'?</question>
+        <allowedAnswers>1 (number)</allowedAnswers>
+        <variable typeRef="number" name="decision002"/>
+        <literalExpression>
+            <text>abs(-1)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision003" id="_decision003">
+        <description>Tests FEEL expression: 'abs(0)' and expects result: '0 (number)'</description>
+        <question>Result of FEEL expression 'abs(0)'?</question>
+        <allowedAnswers>0 (number)</allowedAnswers>
+        <variable typeRef="number" name="decision003"/>
+        <literalExpression>
+            <text>abs(0)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision004" id="_decision004">
+        <description>Tests FEEL expression: 'abs()' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'abs()'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision004"/>
+        <literalExpression>
+            <text>abs()</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision005" id="_decision005">
+        <description>Tests FEEL expression: 'abs(1,1)' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'abs(1,1)'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision005"/>
+        <literalExpression>
+            <text>abs(1,1)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision006" id="_decision006">
+        <description>Tests FEEL expression: 'abs(n:-1)' and expects result: '1 (number)'</description>
+        <question>Result of FEEL expression 'abs(n:-1)'?</question>
+        <allowedAnswers>1 (number)</allowedAnswers>
+        <variable typeRef="number" name="decision006"/>
+        <literalExpression>
+            <text>abs(n:-1)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision007" id="_decision007">
+        <description>Tests FEEL expression: 'abs(number:-1)' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'abs(number:-1)'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision007"/>
+        <literalExpression>
+            <text>abs(number:-1)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision008" id="_decision008">
+        <description>Tests FEEL expression: 'abs(null)' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'abs(null)'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision008"/>
+        <literalExpression>
+            <text>abs(null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision009" id="_decision009">
+        <description>Tests FEEL expression: 'abs("-1")' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'abs("-1")'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision009"/>
+        <literalExpression>
+            <text>abs("-1")</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision010" id="_decision010">
+        <description>Tests FEEL expression: 'abs(true)' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'abs(true)'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision010"/>
+        <literalExpression>
+            <text>abs(true)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision011" id="_decision011">
+        <description>Tests FEEL expression: 'abs(duration("-P1D"))' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'abs(duration("-P1D"))'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision011"/>
+        <literalExpression>
+            <text>abs(duration("-P1D"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision012" id="_decision012">
+        <description>Tests FEEL expression: 'abs(duration("-P1Y"))' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'abs(duration("-P1Y"))'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision012"/>
+        <literalExpression>
+            <text>abs(duration("-P1Y"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision013" id="_decision013">
+        <description>Tests FEEL expression: 'abs(date("-2018-12-06"))' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'abs(date("-2018-12-06"))'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision013"/>
+        <literalExpression>
+            <text>abs(date("-2018-12-06"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision014" id="_decision014">
+        <description>Tests FEEL expression: 'abs(time("00:00:00"))' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'abs(time("00:00:00"))'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision014"/>
+        <literalExpression>
+            <text>abs(time("00:00:00"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision015" id="_decision015">
+        <description>Tests FEEL expression: 'abs(date and time("2018-12-06T00:00:00"))' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'abs(date and time("2018-12-06T00:00:00"))'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision015"/>
+        <literalExpression>
+            <text>abs(date and time("2018-12-06T00:00:00"))</text>
+        </literalExpression>
+    </decision>
+</definitions>
+

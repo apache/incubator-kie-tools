@@ -1,0 +1,35 @@
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div data-field="popover" data-placement="top" data-toggle="popover" data-trigger="manual" data-container="#popover-container" data-close="true">
+    <div id="popover-container"></div>
+    <div id="popover-content">
+        <div class="kie-dmn-name-and-url-type-container">
+            <div id="#NameAndUrlTypeForm">
+                <label for="attachmentName"><span data-field="nameLabel"></span></label>
+                <input id="attachmentNameInput" class="form-control pf-c-form-control" type="text" aria-label="Name text input" id="attachmentName">
+                <br/>
+                <label for="kieUrl"><span data-field="urlLabel"></span></label>
+                <input id="urlInput" class="form-control pf-c-form-control" type="text" aria-label="URL text input" id="kieUrl">
+                <span id="attachmentTip" class="attachment-tip"></span>
+                <div class="buttons-container">
+                    <button id="okButton" class="btn btn-sm btn-primary" data-placement="bottom"></button>
+                    <button id="cancelButton" class="btn btn-sm btn-default" data-placement="bottom"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0061-feel-median-function" name="0061-feel-median-function" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>FEEL built-in function 'median(list)' in category list functions</description>
+
+    <decision name="decision001" id="_decision001">
+        <description>Tests FEEL expression: 'median([8, 2, 5, 3, 4])' and expects result: '4 (number)'</description>
+        <question>Result of FEEL expression 'median([8, 2, 5, 3, 4])'?</question>
+        <allowedAnswers>4 (number)</allowedAnswers>
+        <variable typeRef="number" name="decision001"/>
+        <literalExpression>
+            <text>median([8, 2, 5, 3, 4])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision002" id="_decision002">
+        <description>Tests FEEL expression: 'median([8, 2, 5, 7])' and expects result: '6 (number)'</description>
+        <question>Result of FEEL expression 'median([8, 2, 5, 7])'?</question>
+        <allowedAnswers>6 (number)</allowedAnswers>
+        <variable typeRef="number" name="decision002"/>
+        <literalExpression>
+            <text>median([8, 2, 5, 7])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision003" id="_decision003">
+        <description>Tests FEEL expression: 'median()' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'median()'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision003"/>
+        <literalExpression>
+            <text>median()</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision003_a" id="_decision003_a">
+        <description>Tests FEEL expression: 'median(null)' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'median(null)'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision003_a"/>
+        <literalExpression>
+            <text>median(null)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision004" id="_decision004">
+        <description>Tests FEEL expression: 'median([1,2,null,4])' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'median([1,2,null,4])'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision004"/>
+        <literalExpression>
+            <text>median()</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision005" id="_decision005">
+        <description>Tests FEEL expression: 'median([1,2,"foo",4])' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'median([1,2,"foo",4])'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision005"/>
+        <literalExpression>
+            <text>median([1,2,"foo",4])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision006" id="_decision006">
+        <description>Tests FEEL expression: 'median([6, 1, 2, 3])' and expects result: '2.5 (number)'</description>
+        <question>Result of FEEL expression 'median([6, 1, 2, 3])'?</question>
+        <allowedAnswers>2.5 (number)</allowedAnswers>
+        <variable typeRef="number" name="decision006"/>
+        <literalExpression>
+            <text>median([6, 1, 2, 3])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision007" id="_decision007">
+        <description>Tests FEEL expression: 'median([])' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'median([])'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision007"/>
+        <literalExpression>
+            <text>median([])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision008" id="_decision008">
+        <description>Tests FEEL expression: 'median(4)' and expects result: '4 (number)'</description>
+        <question>Result of FEEL expression 'median(4)'?</question>
+        <allowedAnswers>4 (number)</allowedAnswers>
+        <variable typeRef="number" name="decision008"/>
+        <literalExpression>
+            <text>median(4)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision009" id="_decision009">
+        <description>Tests FEEL expression: 'median(8, 2, 5, 3, 4)' and expects result: '4 (number)'</description>
+        <question>Result of FEEL expression 'median(8, 2, 5, 3, 4)'?</question>
+        <allowedAnswers>4 (number)</allowedAnswers>
+        <variable typeRef="number" name="decision009"/>
+        <literalExpression>
+            <text>median(8, 2, 5, 3, 4)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision010" id="_decision010">
+        <description>Tests FEEL expression: 'median(8, 2, 5, 7)' and expects result: '6 (number)'</description>
+        <question>Result of FEEL expression 'median(8, 2, 5, 7)'?</question>
+        <allowedAnswers>6 (number)</allowedAnswers>
+        <variable typeRef="number" name="decision010"/>
+        <literalExpression>
+            <text>median(8, 2, 5, 7)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision011" id="_decision011">
+        <description>Tests FEEL expression: 'median(list:[8, 2, 5, 7])' and expects result: '6 (number)'</description>
+        <question>Result of FEEL expression 'median(list:[8, 2, 5, 7])'?</question>
+        <allowedAnswers>6 (number)</allowedAnswers>
+        <variable typeRef="number" name="decision011"/>
+        <literalExpression>
+            <text>median(list:[8, 2, 5, 7])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision012" id="_decision012">
+        <description>Tests FEEL expression: 'median(list:null)' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'median(list:null)'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision012"/>
+        <literalExpression>
+            <text>median(list:null)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision013" id="_decision013">
+        <description>Tests FEEL expression: 'median(l:[2, 4, 7, 5])' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'median(l:[2, 4, 7, 5])'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="number" name="decision013"/>
+        <literalExpression>
+            <text>median(l:[2, 4, 7, 5])</text>
+        </literalExpression>
+    </decision>
+
+</definitions>
+

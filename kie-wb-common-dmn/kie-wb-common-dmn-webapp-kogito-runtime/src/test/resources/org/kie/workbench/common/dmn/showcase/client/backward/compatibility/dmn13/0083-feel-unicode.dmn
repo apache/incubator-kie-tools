@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0083-feel-unicode" name="0083-feel-unicode" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>FEEL unicode tests</description>
+
+    <decision name="decision_001" id="_decision_001">
+        <variable name="decision_001"/>
+        <literalExpression>
+            <text>string length("\u0009")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_002" id="_decision_002">
+        <variable name="decision_002"/>
+        <literalExpression>
+            <text>string length("\\u0009")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_003" id="_decision_003">
+        <variable name="decision_003"/>
+        <literalExpression>
+            <!-- horse emoji -->
+            <text>string length("\uD83D\uDCA9")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_003_a" id="_decision_003_a">
+        <variable name="decision_003_a"/>
+        <literalExpression>
+            <!-- horse emoji lowercase -->
+            <text>string length("\ud83d\udca9")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_004" id="_decision_004">
+        <variable name="decision_004"/>
+        <literalExpression>
+            <!-- horse + grinning face emoji -->
+            <text>string length("\ud83d\udc0e\uD83D\uDE00")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_004_a" id="_decision_004_a">
+        <variable name="decision_004_a"/>
+        <literalExpression>
+            <!-- horse + grinning face emoji -->
+            <text>string length("🐎😀")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_005" id="_decision_005">
+        <variable name="decision_005"/>
+        <literalExpression>
+            <!-- horse + grinning face emoji -->
+            <text>contains("\ud83d\udc0e\uD83D\uDE00", "\uD83D\uDE00")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_005_a" id="_decision_005_a">
+        <variable name="decision_005_a"/>
+        <literalExpression>
+            <!-- horse + grinning face emoji -->
+            <text>contains("\ud83d\udc0e\uD83D\uDE00", "😀")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_006" id="_decision_006">
+        <variable name="decision_006"/>
+        <literalExpression>
+            <text>{🐎: "bar"}</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_007" id="_decision_007">
+        <variable name="decision_007"/>
+        <literalExpression>
+            <text>{🐎: "😀"}</text>
+        </literalExpression>
+    </decision>
+
+    <!--
+        <decision name="decision_006" id="_decision_006">
+            <variable name="decision_006"/>
+            <literalExpression>
+                &lt;!&ndash; horse + poop emoji contains poop &ndash;&gt;
+                <text>contains("\ud83d\udc0e\uD83D\uDE00", "\uD83D\uDE00")</text>
+            </literalExpression>
+        </decision>
+    -->
+
+    <decision name="endswith_001" id="_endswith_001">
+        <variable name="endswith_001"/>
+        <literalExpression>
+            <!-- horse + grinning face emoji -->
+            <text>ends with("\ud83d\udc0e\uD83D\uDE00", "\uD83D\uDE00")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="endswith_002" id="_endswith_002">
+        <variable name="endswith_002"/>
+        <literalExpression>
+            <!-- horse + grinning face emoji -->
+            <text>ends with("\ud83d\udc0e\uD83D\uDE00", "😀")</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="substring_001" id="_substring_001">
+        <variable name="substring_001"/>
+        <literalExpression>
+            horse + grinning face emoji
+            <text>substring("foo\ud83d\udc0ebar\uD83D\uDE00", 8)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="substring_002" id="_substring_002">
+        <variable name="substring_002"/>
+        <literalExpression>
+            horse + grinning face emoji
+            <text>substring("foo\ud83d\udc0ebar\uD83D\uDE00", 4, 1)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="substring_003" id="_substring_003">
+        <variable name="substring_003"/>
+        <literalExpression>
+            horse + grinning face emoji
+            <text>substring("foo\ud83d\udc0ebar\uD83D\uDE00", 4, 4)</text>
+        </literalExpression>
+    </decision> -->
+
+
+</definitions>
+

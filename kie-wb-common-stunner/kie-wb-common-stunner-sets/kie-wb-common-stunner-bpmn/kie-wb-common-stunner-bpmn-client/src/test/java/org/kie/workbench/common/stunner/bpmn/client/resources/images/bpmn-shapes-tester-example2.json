@@ -1,0 +1,92 @@
+{
+  "name": "Example 2",
+  "id": "example2",
+  "width": "1200",
+  "height": "800",
+  "nodes": [
+      {
+        "id": "lane1",
+        "stencilId": "lane",
+        "x": "90",
+        "y": "10"
+      },
+      {
+        "id": "event1",
+        "stencilId": "startNoneEvent",
+        "x": "10",
+        "y": "90"
+      },
+    {
+      "id": "task1",
+      "stencilId": "userTask",
+      "x": "110",
+      "y": "93"
+    },
+    {
+      "id": "gateway1",
+      "stencilId": "parallelMultipleGateway",
+      "x": "310",
+      "y": "90"
+    },
+    {
+      "id": "task2",
+      "stencilId": "scriptTask",
+      "x": "410",
+      "y": "93"
+    },
+    {
+      "id": "gateway2",
+      "stencilId": "exclusiveGateway",
+      "x": "610",
+      "y": "90"
+    },
+    {
+      "id": "subprocess1",
+      "stencilId": "reusableSubProcess",
+      "x": "410",
+      "y": "300"
+    },
+    {
+      "id": "event2",
+      "stencilId": "endTerminateEvent",
+      "x": "810",
+      "y": "90"
+    },
+    {
+      "id": "event3",
+      "stencilId": "endNoneEvent",
+      "x": "810",
+      "y": "297"
+    }
+  ],
+  "edges": [
+    {
+      "from": "event1",
+      "to": "task1"
+    },
+    {
+      "from": "task1",
+      "to": "gateway1"
+    },
+    {
+      "from": "gateway1",
+      "to": "task2"
+    },
+    {
+      "from": "task2",
+      "to": "gateway2"
+    },
+    {
+      "from": "gateway2",
+      "to": "event2"
+    },
+    {
+      "from": "gateway1",
+      "to": "subprocess1"
+    },
+    {
+      "from": "subprocess1",
+      "to": "event3"
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+[data-i18n-prefix="CardFrameComponentView."] {
+  h2 {
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  h2.read-only {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  [data-field="title-text"] {
+    height: 25px;
+  }
+
+  [data-field="edit-mode"] {
+    text-align: center;
+    margin-top: 15px;
+    height: 25px;
+    position: relative;
+
+    [data-field="input-close-button"] {
+      background: none;
+      border: none;
+      color: #ADADAD;
+      position: absolute;
+      right: 62px;
+      top: 0;
+
+      i {
+        font-size: 1.3em;
+      }
+    }
+
+    label,
+    button {
+      display: inline-block;
+      vertical-align: middle;
+      outline: none;
+    }
+
+    label {
+      margin: 0;
+      width: ~"calc(100% - 65px)";
+    }
+
+    button {
+      height: 26px;
+      width: 26px;
+      padding: 1px 0 0;
+
+      i {
+        font-size: 1.25em;
+      }
+
+      &:hover {
+        outline: none;
+      }
+    }
+
+    [data-field="title-input"] {
+      width: 100%;
+      padding: 2px 25px 2px 5px;
+      outline: none;
+      border: 1px solid #DDD;
+    }
+  }
+
+  .card-pf-view {
+    overflow: hidden;
+    min-width: 130px;
+
+    &.card-pf-view-select:hover {
+      box-shadow: 0 1px 5px rgba(70, 159, 204, .75);
+    }
+
+    .card-pf-top-element {
+      span {
+        &.card-pf-icon-circle {
+          font-size: 35px;
+          line-height: 55px;
+          width: 60px;
+          height: 60px;
+        }
+      }
+    }
+  }
+
+  .col-xs-12.col-lg-3 {
+    width: 100%;
+
+    @media (min-width: 1250px) {
+      width: 50%;
+    }
+
+    @media (min-width: 1500px) {
+      width: 33.3%;
+    }
+
+    @media (min-width: 1700px) {
+      width: 25%;
+    }
+  }
+}
