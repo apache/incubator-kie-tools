@@ -17,26 +17,31 @@
 import * as React from "react";
 import { useRef, useEffect, useState } from "react";
 
-import { ContentType } from "@kogito-tooling/channel-common-api/dist";
+import { ContentType, ResourceContent } from "@kogito-tooling/channel-common-api/dist";
 import { StandaloneEditorApi } from "@kogito-tooling/kie-editors-standalone/dist/common/Editor";
 
 import { FileLoader } from "./FileLoader";
-import { ResourcesHolder, ResourcesHolderItem, Resource } from "../util/ResourcesHolder";
+import { ResourcesHolder, ResourcesHolderItem } from "../util/ResourcesHolder";
 
 interface EditorOpenProps {
   container: Element;
   initialContent?: Promise<string>;
   readOnly?: boolean;
   origin?: string;
-  resources?: Map<string, Resource>;
+  resources?: InternalEditorOpenResources;
 }
+
+export type InternalEditorOpenResources = Map<string, {
+  contentType: ContentType;
+  content: Promise<string>;
+}>
 
 export interface Props {
   id: string;
   initialContent?: Promise<string>;
   readOnly?: boolean;
   origin?: string;
-  resources?: Map<string, Resource>;
+  resources?: Map<string, ResourceContent>;
 }
 
 interface InternalProps {
@@ -45,7 +50,7 @@ interface InternalProps {
   initialContent?: Promise<string>;
   readOnly?: boolean;
   origin?: string;
-  resources?: Map<string, Resource>;
+  resources?: Map<string, ResourceContent>;
   defaultModelName?: string;
 }
 const divstyle = {
@@ -80,7 +85,7 @@ export const EditorComponent: React.FC<InternalProps> = ({
       initialContent,
       readOnly,
       origin,
-      resources: filesHolder.resources
+      resources: createResourceContentCompatibleResources(filesHolder.resources)
     });
     ed.subscribeToContentChanges(isDirty => {
       setDirty(isDirty);
@@ -92,11 +97,17 @@ export const EditorComponent: React.FC<InternalProps> = ({
   }, [id]);
 
   const setEditorContents = (resource: ResourcesHolderItem) => {
-    return resource.value.content.then((value: string) => {
-      editor!.setContent(value, value);
-      setModelName(resource.name);
-    });
+    editor!.setContent(resource.value.content, resource.value.content);
+    setModelName(resource.name);
   };
+
+  const createResourceContentCompatibleResources = (resources: Map<string, ResourceContent>): InternalEditorOpenResources => {
+    let compatibleResources: InternalEditorOpenResources = new Map();
+    resources.forEach((value, key) => {
+      compatibleResources.set(key, {content: Promise.resolve(value.content), contentType: value.type})
+    });
+    return compatibleResources;
+  }
 
   const appendLog = (message: string) => {
     logs.push(message);
@@ -109,11 +120,13 @@ export const EditorComponent: React.FC<InternalProps> = ({
     editor!.redo();
   };
   const editorSave = () => {
-    filesHolder.addFile(
-      { name: modelName, value: { contentType: ContentType.TEXT, content: editor!.getContent() } },
-      forceUpdate
-    );
-    editor?.markAsSaved();
+    editor!.getContent().then((result) => {
+      filesHolder.addFile(
+        { name: modelName, value: { path: modelName, type: ContentType.TEXT, content: result } },
+        forceUpdate
+      );
+      editor?.markAsSaved();
+    });
   };
   const editorSvg = () => {
     editor!.getPreview().then(content => {
