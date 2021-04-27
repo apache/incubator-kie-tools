@@ -20,6 +20,13 @@ jobs:
         yarn: [1.19.1]
 
     steps:
+      # https://github.com/prettier/prettier/issues/7825
+      # https://github.com/actions/checkout/issues/135
+      - name: Set git to use LF. Needed due to running action on widnows machines.
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
       - uses: actions/checkout@v2
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
