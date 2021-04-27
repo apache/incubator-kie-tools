@@ -313,7 +313,7 @@ export function DmnRunnerModal() {
         >
           <div style={{ margin: "20px" }}>
             <TextContent>
-              <Text component={TextVariants.h1}>All set! You're connected to the DMN Runner! 🎉</Text>
+              <Text component={TextVariants.h1}>All set! You're connected to the DMN Runner 🎉</Text>
             </TextContent>
           </div>
           <div
@@ -326,13 +326,10 @@ export function DmnRunnerModal() {
           >
             <TextContent style={{ margin: "10px" }}>
               <Text component={TextVariants.h3} style={{ textAlign: "center" }}>
-                Now, you can start using the DMN Runner to run your models.
+                Now you can start using the DMN Runner to run your models.
               </Text>
               <Text component={TextVariants.p} style={{ textAlign: "center" }}>
                 Fill the Form on the Inputs column and automatically see the results on the Outputs column.
-                <br />
-                You can also use the Notifications Panel <ExclamationCircleIcon /> to check for any Validation or
-                Execution error.
               </Text>
             </TextContent>
             <Button variant="primary" type="submit" onClick={onClose} style={{ margin: "10px" }}>
