@@ -58,32 +58,30 @@ describe("Bpmn Workitem E2E Test.", () => {
       .scrollIntoView()
       .should("be.visible")
       .click({ force: true });
-  
-      cy.editor("bpmn-workitem")
-        .find("[data-field='explorerPanelBody']")
-        .scrollIntoView()
-        .should("be.visible")
-        .find("a.gwt-Anchor")
-        .should("have.length", 4)
-        .then($links => {
-          expect($links.eq(0)).to.contain.text("process-wid");
-          expect($links.eq(1)).to.contain.text("Start");
-          expect($links.eq(2)).to.contain.text("End");
-          expect($links.eq(3)).to.contain.text("Create Customer Internal Service");
-  
-          cy.wrap($links.eq(3)).click();
-          
-          cy.editor("bpmn-workitem")
-            .ouiaId("docks-item", "docks-item-DiagramEditorPropertiesScreen")
-            .find("button")
-            .first()
-            .should("be.visible")
-            .click(); // open Properties
-      
-          cy.editor("bpmn-workitem")
-            .ouiaId("expanded-docks-bar", "expanded-docks-bar-E")
-            .should("be.visible");  
-    });
+
+    cy.editor("bpmn-workitem")
+      .find("[data-field='explorerPanelBody']")
+      .scrollIntoView()
+      .should("be.visible")
+      .find("a.gwt-Anchor")
+      .should("have.length", 4)
+      .then(($links) => {
+        expect($links.eq(0)).to.contain.text("process-wid");
+        expect($links.eq(1)).to.contain.text("Start");
+        expect($links.eq(2)).to.contain.text("End");
+        expect($links.eq(3)).to.contain.text("Create Customer Internal Service");
+
+        cy.wrap($links.eq(3)).click();
+
+        cy.editor("bpmn-workitem")
+          .ouiaId("docks-item", "docks-item-DiagramEditorPropertiesScreen")
+          .find("button")
+          .first()
+          .should("be.visible")
+          .click(); // open Properties
+
+        cy.editor("bpmn-workitem").ouiaId("expanded-docks-bar", "expanded-docks-bar-E").should("be.visible");
+      });
   });
 
   describe("Custom workitem task has expected properties.", () => {
@@ -246,8 +244,8 @@ describe("Bpmn Workitem E2E Test.", () => {
         });
       });
     });
-  }); 
-  
+  });
+
   describe.skip("Unknown custom workitem task has expected properties.", () => {
     let unknownCustomWorkitemProperties: JQuery<HTMLElement>;
 
