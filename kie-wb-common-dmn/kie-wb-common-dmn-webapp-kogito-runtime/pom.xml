@@ -627,7 +627,7 @@
           <localWorkers>4</localWorkers>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <module>org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp</module>
-          <extraJvmArgs>-Xmx12g -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
+          <extraJvmArgs>-Xmx4G -Xms1G -Xss1M -XX:CompileThreshold=7000 -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
           <optimizationLevel>9</optimizationLevel>
           <style>OBFUSCATED</style>
 

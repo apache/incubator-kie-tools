@@ -8,6 +8,9 @@ on:
   pull_request:
     branches: "**"
 
+env:
+  MAVEN_OPTS: -Xmx6000m -Xms1000m
+
 jobs:
   build:
     if: github.repository == 'kiegroup/kogito-editors-java' || github.event_name != 'schedule'
@@ -23,8 +26,15 @@ jobs:
         with:
           java-version: 11
 
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
       - name: Build with Maven
-        run: mvn clean install
+        run: mvn clean install -B --file pom.xml
 
       - name: Upload kie-wb-common-dmn-webapp-kogito-runtime
         uses: actions/upload-artifact@v2

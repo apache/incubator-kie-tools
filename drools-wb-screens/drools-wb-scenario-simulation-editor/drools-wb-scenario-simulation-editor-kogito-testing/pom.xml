@@ -419,7 +419,7 @@
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <localWorkers>4</localWorkers>
           <module>org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoTesting</module>
-          <extraJvmArgs>-Xmx4096m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
+          <extraJvmArgs>-Xmx4G -Xms1G -Xss1M -XX:CompileThreshold=7000 -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
           <optimizationLevel>9</optimizationLevel>
           <style>OBFUSCATED</style>
           <logLevel>INFO</logLevel>
