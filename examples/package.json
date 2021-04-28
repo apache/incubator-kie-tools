@@ -7,8 +7,8 @@
     "start": "parcel serve  --no-cache index.html"
   },
   "dependencies": {
-    "@patternfly/react-core": "4.45.1",
-    "@patternfly/react-icons": "4.7.2",
+    "@patternfly/react-core": "4.115.2",
+    "@patternfly/react-icons": "4.10.2",
     "ajv": "6.10.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
@@ -22,7 +22,7 @@
     "uniforms-patternfly": "4.0.0"
   },
   "devDependencies": {
-    "parcel-bundler": "1.12.4",
+    "parcel-bundler": "^1.12.5",
     "tslib": "1.12.0"
   }
 }
