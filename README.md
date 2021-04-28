@@ -23,6 +23,7 @@ npm install uniforms@3.0.0-rc.3 // or latest
 npm install uniforms-bridge-simple-schema2@3.0.0-rc.3 // or latest
 npm install simpl-schema
 npm install uniforms-patternfly
+npm install @patternfly/react-core @patternfly/react-icons
 ```
 
 <!-- **Note**: When using a themed package, remember to include correct styles! If you are willing to run this example by yourself,
