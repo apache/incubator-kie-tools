@@ -34,6 +34,12 @@ To contribute, use GitHub Pull Requests, from your **own** fork.
 - The description of your PR should describe the code you wrote. The issue that is solved should be at least described properly in the corresponding JIRA ticket.
 - If your contribution spans across multiple repositories, make sure to list all the related PRs.
 
+### Java Coding Guidelines
+
+We decided to disallow `@author` tags in the Javadoc: they are hard to maintain, especially in a very active project, and we use the Git history to track authorship. GitHub also has [this nice page with your contributions](https://github.com/kiegroup/kogito-editors-java/graphs/contributors).
+
+It is strongly recommended that you import [our code style](https://github.com/kiegroup/droolsjbpm-build-bootstrap/tree/master/ide-configuration) if you use IntelliJ or Eclipse.
+
 ### Requirements for Dependencies
 
 Any dependency used in any KIE project must fulfill these hard requirements:
