@@ -22,5 +22,5 @@ function configure_explainability_jar {
     fi
 
     log_info "Explainability communication is set to ${communication}"
-    EXPLAINABILITY_SERVICE_JAR="kogito-explainability-${communication,,}-runner.jar"
+    EXPLAINABILITY_SERVICE_JAR="explainability-service-${communication,,}-runner.jar"
 }

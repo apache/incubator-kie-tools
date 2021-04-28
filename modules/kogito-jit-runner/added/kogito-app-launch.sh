@@ -24,4 +24,4 @@ exec java ${SHOW_JVM_SETTINGS} ${JAVA_OPTIONS} ${KOGITO_JIT_RUNNER_PROPS} ${CUST
         -Djava.library.path="${KOGITO_HOME}"/lib \
         -Dquarkus.http.host=0.0.0.0 \
         -Dquarkus.http.port=8080 \
-        -jar "${KOGITO_HOME}"/bin/kogito-jit-runner.jar
+        -jar "${KOGITO_HOME}"/bin/jitexecutor-runner.jar

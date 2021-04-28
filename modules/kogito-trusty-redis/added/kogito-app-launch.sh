@@ -25,4 +25,4 @@ exec java ${SHOW_JVM_SETTINGS} ${JAVA_OPTIONS} ${KOGITO_TRUSTY_PROPS} ${CUSTOM_T
         -Djava.library.path="${KOGITO_HOME}"/lib \
         -Dquarkus.http.host=0.0.0.0 \
         -Dquarkus.http.port=8080 \
-        -jar "${KOGITO_HOME}"/bin/trusty-service-redis.jar
+        -jar "${KOGITO_HOME}"/bin/trusty-service-redis-runner.jar

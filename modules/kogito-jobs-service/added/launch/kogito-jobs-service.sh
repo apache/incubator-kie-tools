@@ -11,11 +11,14 @@ function configure() {
 
 
 function configure_jobs_service() {
+    local persistence='common'
     if [ "${ENABLE_PERSISTENCE^^}" == "TRUE" ]; then
-       KOGITO_JOBS_PROPS="${KOGITO_JOBS_PROPS} -Dkogito.jobs-service.persistence=infinispan"
+        persistence='infinispan'
     fi
 
     if [ "${ENABLE_EVENTS^^}" == "TRUE" ]; then
         KOGITO_JOBS_PROPS="${KOGITO_JOBS_PROPS} -Dquarkus.profile=events-support"
     fi
+
+    JOBS_SERVICE_JAR="jobs-service-${persistence}-runner.jar"
 }

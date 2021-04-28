@@ -13,7 +13,7 @@ Feature: Kogito-trusty redis feature.
 
   Scenario: verify if the indexing service binaries are available on /home/kogito/bin
     When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/trusty-service-redis.jar' in container and immediately check its output for /home/kogito/bin/trusty-service-redis.jar
+    Then run sh -c 'ls /home/kogito/bin/trusty-service-redis-runner.jar' in container and immediately check its output for /home/kogito/bin/trusty-service-redis-runner.jar
 
   Scenario: verify if all parameters are correctly set
     When container is started with env

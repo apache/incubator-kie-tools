@@ -13,7 +13,7 @@ Feature: Kogito-data-index infinispan feature.
 
   Scenario: verify if the indexing service binaries are available on /home/kogito/bin
     When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/data-index-service-infinispan.jar' in container and immediately check its output for /home/kogito/bin/data-index-service-infinispan.jar
+    Then run sh -c 'ls /home/kogito/bin/data-index-service-infinispan-runner.jar' in container and immediately check its output for /home/kogito/bin/data-index-service-infinispan-runner.jar
 
   Scenario: verify if all parameters are correctly set
     When container is started with env

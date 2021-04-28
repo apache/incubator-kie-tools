@@ -13,18 +13,28 @@ teardown() {
     rm -rf "${KOGITO_HOME}"
 }
 
-@test "check if the persistence is correctly configured with auth" {
-    export ENABLE_PERSISTENCE="true"
+@test "check default jobs service" {
     configure_jobs_service
 
-    result="${KOGITO_JOBS_PROPS}"
-    expected=" -Dkogito.jobs-service.persistence=infinispan"
+    result="${JOBS_SERVICE_JAR}"
+    expected="jobs-service-common-runner.jar"
 
     echo "Result is ${result} and expected is ${expected}"
     [ "${result}" = "${expected}" ]
 }
 
-@test "check if the event is correctly set" {
+@test "check if the persistence is correctly configured on jobs service" {
+    export ENABLE_PERSISTENCE="true"
+    configure_jobs_service
+
+    result="${JOBS_SERVICE_JAR}"
+    expected="jobs-service-infinispan-runner.jar"
+
+    echo "Result is ${result} and expected is ${expected}"
+    [ "${result}" = "${expected}" ]
+}
+
+@test "check if the event is correctly set on jobs service" {
     export ENABLE_EVENTS="true"
     configure_jobs_service
 
