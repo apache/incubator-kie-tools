@@ -57,16 +57,21 @@ describe("Bpmn Workitem E2E Test.", () => {
       .find("[data-field='explorerPanelBody']")
       .scrollIntoView()
       .should("be.visible")
+      .click({ force: true });
+
+    cy.editor("bpmn-workitem")
+      .find("[data-field='explorerPanelBody']")
+      .scrollIntoView()
+      .should("be.visible")
       .find("a.gwt-Anchor")
-      .should("have.length", 5)
+      .should("have.length", 4)
       .then(($links) => {
         expect($links.eq(0)).to.contain.text("process-wid");
         expect($links.eq(1)).to.contain.text("Start");
-        expect($links.eq(2)).to.contain.text("Email");
-        expect($links.eq(3)).to.contain.text("End");
-        expect($links.eq(4)).to.contain.text("Create Customer Internal Service");
+        expect($links.eq(2)).to.contain.text("End");
+        expect($links.eq(3)).to.contain.text("Create Customer Internal Service");
 
-        cy.wrap($links.eq(4)).click();
+        cy.wrap($links.eq(3)).click();
 
         cy.editor("bpmn-workitem")
           .ouiaId("docks-item", "docks-item-DiagramEditorPropertiesScreen")
@@ -241,7 +246,7 @@ describe("Bpmn Workitem E2E Test.", () => {
     });
   });
 
-  describe("Unknown custom workitem task has expected properties.", () => {
+  describe.skip("Unknown custom workitem task has expected properties.", () => {
     let unknownCustomWorkitemProperties: JQuery<HTMLElement>;
 
     it("Loads the unkown custom workitem in diagram explorer", () => {
