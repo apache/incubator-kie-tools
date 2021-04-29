@@ -15,8 +15,8 @@
     "coverage": "jest --runInBand --coverage",
     "lint": "eslint --ext js,ts,tsx src",
     "reset": "rimraf tsconfig.tsbuildinfo dist node_modules",
-    "release:prep": "./scripts/prepareRelease.sh",
     "release:validate": "./scripts/validateRelease.sh TAG=1.2.3",
+    "release:publish": "./scripts/publishRelease.sh",
     "test": "jest --runInBand"
   },
   "devDependencies": {
