@@ -1,3 +1,19 @@
+# 0.9.1 (alpha)
+
+## New features:
+
+Infrastructure
+* [KOGITO-4914](https://issues.redhat.com/browse/KOGITO-4914) - The SVG icon is broken on vscode-insiders
+
+Editors
+* [KOGITO-2528](https://issues.redhat.com/browse/KOGITO-2528) - [BPMN] Reuse Data Types across the process
+
+## Fixed issues:
+
+Editors
+* [KOGITO-4892](https://issues.redhat.com/browse/KOGITO-4892) - Unable to view service tasks in VS Code on Windows
+
+
 # 0.9.0 (alpha)
 
 ## New features:

@@ -1,3 +1,22 @@
+# 0.9.1 (alpha)
+
+## New features:
+
+Infrastructure
+* [KOGITO-4914](https://issues.redhat.com/browse/KOGITO-4914) - The SVG icon is broken on vscode-insiders
+
+Editors
+* [KOGITO-2528](https://issues.redhat.com/browse/KOGITO-2528) - [BPMN] Reuse Data Types across the process
+
+## Fixed issues:
+
+Editors
+* [KOGITO-2197](https://issues.redhat.com/browse/KOGITO-2197) - [Scesim Editor] Bottom scroll bar getting hide
+* [KOGITO-3192](https://issues.redhat.com/browse/KOGITO-3192) - [DMN Designer] Multiple DRDs support - The undo/redo are lost when user changes between diagrams
+* [KOGITO-4892](https://issues.redhat.com/browse/KOGITO-4892) - Unable to view service tasks in VS Code on Windows
+* [KOGITO-4916](https://issues.redhat.com/browse/KOGITO-4916) - [DMN Designer] Error during the save/marshaller of specific diagrams
+
+
 # 0.9.0 (alpha)
 
 ## New features:
