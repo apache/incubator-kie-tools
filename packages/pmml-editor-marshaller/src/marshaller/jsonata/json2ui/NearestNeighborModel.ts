@@ -55,6 +55,6 @@ export function nearestNeighborModelFactory(): NearestNeighborModel {
     KNNInputs: { KNNInput: [] },
     TrainingInstances: { InstanceFields: { InstanceField: [] } },
     functionName: "regression",
-    numberOfNeighbors: 0
+    numberOfNeighbors: 0,
   });
 }

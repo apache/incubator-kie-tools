@@ -23,7 +23,7 @@ import {
   Predicate,
   SimplePredicate,
   SimpleSetPredicate,
-  True
+  True,
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
@@ -74,7 +74,7 @@ export const validateAttribute = (
   }
 
   //Predicates
-  const fieldNames = miningFields.map(miningField => miningField.name);
+  const fieldNames = miningFields.map((miningField) => miningField.name);
   validatePredicate(
     modelIndex,
     characteristicIndex,
@@ -98,7 +98,7 @@ export const validateAttributes = (
   validationRegistry: ValidationRegistry
 ): void => {
   const isPartialScoreRequired =
-    characteristic.Attribute.filter(attribute => attribute.partialScore !== undefined).length > 0;
+    characteristic.Attribute.filter((attribute) => attribute.partialScore !== undefined).length > 0;
 
   characteristic.Attribute.forEach((attribute, attributeIndex) =>
     validateAttribute(
@@ -141,7 +141,7 @@ const validatePredicate = (
   } else if (predicate instanceof False) {
     return;
   } else if (predicate instanceof SimpleSetPredicate) {
-    if (fieldNames.filter(fieldName => fieldName === predicate.field).length === 0) {
+    if (fieldNames.filter((fieldName) => fieldName === predicate.field).length === 0) {
       validationRegistry.set(
         Builder()
           .forModel(modelIndex)
@@ -155,7 +155,7 @@ const validatePredicate = (
       );
     }
   } else if (predicate instanceof SimplePredicate) {
-    if (fieldNames.filter(fieldName => fieldName === predicate.field).length === 0) {
+    if (fieldNames.filter((fieldName) => fieldName === predicate.field).length === 0) {
       validationRegistry.set(
         Builder()
           .forModel(modelIndex)
@@ -169,7 +169,7 @@ const validatePredicate = (
       );
     }
   } else if (predicate instanceof CompoundPredicate) {
-    predicate.predicates?.forEach(p =>
+    predicate.predicates?.forEach((p) =>
       validatePredicate(modelIndex, characteristicIndex, attributeIndex, p, fieldNames, validationRegistry, nesting + 1)
     );
   }
@@ -179,5 +179,5 @@ export const areAttributesReasonCodesMissing = (attributes: Attribute[]) => {
   if (attributes.length === 0) {
     return true;
   }
-  return !attributes.every(attribute => attribute.reasonCode !== undefined);
+  return !attributes.every((attribute) => attribute.reasonCode !== undefined);
 };

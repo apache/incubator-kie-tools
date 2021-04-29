@@ -15,4 +15,3 @@
  */
 
 export { en } from "./en";
-

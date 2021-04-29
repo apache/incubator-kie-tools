@@ -18,7 +18,7 @@ import {
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
-  ResourcesList
+  ResourcesList,
 } from "@kogito-tooling/channel-common-api";
 
 export interface WorkspaceApi {

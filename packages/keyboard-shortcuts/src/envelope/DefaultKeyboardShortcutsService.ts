@@ -29,7 +29,7 @@ export enum ModKeys {
   CTRL = "ctrl",
   META = "meta",
   ALT = "alt",
-  SHIFT = "shift"
+  SHIFT = "shift",
 }
 
 const MODIFIER_KEY_NAMES = new Map<string, string>([
@@ -40,7 +40,7 @@ const MODIFIER_KEY_NAMES = new Map<string, string>([
   ["MetaLeft", "meta"],
   ["MetaRight", "meta"],
   ["ShiftLeft", "shift"],
-  ["ShiftRight", "shift"]
+  ["ShiftRight", "shift"],
 ]);
 
 const KEY_CODES = new Map<string, string>([
@@ -77,7 +77,7 @@ const KEY_CODES = new Map<string, string>([
   ["w", "KeyW"],
   ["x", "KeyX"],
   ["y", "KeyY"],
-  ["z", "KeyZ"]
+  ["z", "KeyZ"],
 ]);
 
 const IGNORED_TAGS = ["INPUT", "TEXTAREA", "SELECT", "OPTION"];
@@ -126,7 +126,7 @@ export class DefaultKeyboardShortcutsService {
 
         return true;
       },
-      opts
+      opts,
     };
 
     this.keyBindings.set(this.eventIdentifiers, keyBinding);
@@ -162,7 +162,7 @@ export class DefaultKeyboardShortcutsService {
 
         return true;
       },
-      opts
+      opts,
     };
 
     this.keyBindings.set(this.eventIdentifiers, keyBinding);
@@ -180,7 +180,7 @@ export class DefaultKeyboardShortcutsService {
     const id = this.registerKeyPress(
       combination,
       "",
-      async target => {
+      async (target) => {
         onKeyPress(target);
         this.deregister(id);
       },
@@ -205,11 +205,11 @@ export class DefaultKeyboardShortcutsService {
   private combinationKeySet(combination: string) {
     const keys = combination
       .split("+")
-      .map(k => k.toLowerCase())
-      .map(k => KEY_CODES.get(k) ?? k);
+      .map((k) => k.toLowerCase())
+      .map((k) => KEY_CODES.get(k) ?? k);
 
     if (this.args.os === OperatingSystem.MACOS) {
-      return new Set(keys.map(k => (k === ModKeys.CTRL ? ModKeys.META : k)));
+      return new Set(keys.map((k) => (k === ModKeys.CTRL ? ModKeys.META : k)));
     } else {
       return new Set(keys);
     }

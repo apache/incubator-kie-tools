@@ -24,7 +24,7 @@ import {
   DataDictionaryReducer,
   HeaderReducer,
   ModelReducer,
-  PMMLReducer
+  PMMLReducer,
 } from "./reducers";
 import { Model, PMML, PMML2XML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Provider } from "react-redux";
@@ -91,7 +91,7 @@ export class PMMLEditor extends React.Component<Props, State> {
     },
     () => {
       this.props.setNotifications(this.state.path, this.validate());
-    }
+    },
   ]);
   private readonly validationRegistry: ValidationRegistry = new ValidationRegistry();
   private readonly reducer: Reducer<PMML, AllActions>;
@@ -103,7 +103,7 @@ export class PMMLEditor extends React.Component<Props, State> {
       path: "",
       content: "",
       originalContent: "",
-      activeOperation: Operation.NONE
+      activeOperation: Operation.NONE,
     };
 
     enableAllPlugins();
@@ -111,9 +111,9 @@ export class PMMLEditor extends React.Component<Props, State> {
     this.reducer = mergeReducers(PMMLReducer(this.history, this.validationRegistry), {
       Header: HeaderReducer(this.history),
       DataDictionary: mergeReducers(DataDictionaryReducer(this.history, this.validationRegistry), {
-        DataField: DataDictionaryFieldReducer(this.history, this.validationRegistry)
+        DataField: DataDictionaryFieldReducer(this.history, this.validationRegistry),
       }),
-      models: ModelReducer(this.history, this.validationRegistry)
+      models: ModelReducer(this.history, this.validationRegistry),
     });
   }
 
@@ -137,7 +137,7 @@ export class PMMLEditor extends React.Component<Props, State> {
 
       //If there is only one supported type of model then create a default entry
       const supportedEditorTypes: Array<PMMLModelMapping<any>> = PMMLModels.filter(
-        m => m.capability === SupportedCapability.EDITOR
+        (m) => m.capability === SupportedCapability.EDITOR
       );
       if (content === "" && supportedEditorTypes.length === 1) {
         const factory = supportedEditorTypes[0].factory;
@@ -153,7 +153,7 @@ export class PMMLEditor extends React.Component<Props, State> {
     this.store = createStore(this.reducer, pmml);
     this.store?.dispatch({
       type: Actions.Validate,
-      payload: {}
+      payload: {},
     });
 
     this.setState({ path: path, content: _content, originalContent: _content, activeOperation: Operation.NONE });
@@ -177,11 +177,11 @@ export class PMMLEditor extends React.Component<Props, State> {
     if (pmml !== undefined) {
       this.store?.dispatch({
         type: Actions.Undo,
-        payload: undefined
+        payload: undefined,
       });
       this.store?.dispatch({
         type: Actions.Validate,
-        payload: {}
+        payload: {},
       });
       this.props.setNotifications(this.state.path, this.validate());
     }
@@ -196,11 +196,11 @@ export class PMMLEditor extends React.Component<Props, State> {
     if (pmml !== undefined) {
       this.store?.dispatch({
         type: Actions.Redo,
-        payload: undefined
+        payload: undefined,
       });
       this.store?.dispatch({
         type: Actions.Validate,
-        payload: {}
+        payload: {},
       });
       this.props.setNotifications(this.state.path, this.validate());
     }
@@ -236,7 +236,7 @@ export class PMMLEditor extends React.Component<Props, State> {
                 <HistoryContext.Provider
                   value={{
                     service: this.history,
-                    getCurrentState: () => this.store?.getState()
+                    getCurrentState: () => this.store?.getState(),
                   }}
                 >
                   <Switch>
@@ -248,11 +248,11 @@ export class PMMLEditor extends React.Component<Props, State> {
                       <OperationContext.Provider
                         value={{
                           activeOperation: this.state.activeOperation,
-                          setActiveOperation: operation =>
+                          setActiveOperation: (operation) =>
                             this.setState({
                               ...this.state,
-                              activeOperation: operation
-                            })
+                              activeOperation: operation,
+                            }),
                         }}
                       >
                         <SingleEditorRouter path={path} />

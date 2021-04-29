@@ -38,19 +38,19 @@ describe("Editors are loading properly", () => {
   let webview: WebView;
   let folderView: SideBarView;
 
-  before(async function() {
+  before(async function () {
     this.timeout(60000);
     testHelper = new VSCodeTestHelper();
     await testHelper.closeAllEditors();
     folderView = await testHelper.openFolder(RESOURCES);
   });
 
-  afterEach(async function() {
+  afterEach(async function () {
     this.timeout(15000);
     await testHelper.closeAllEditors();
   });
 
-  it("Opens demo.bpmn file in BPMN Editor and loads correct diagram", async function() {
+  it("Opens demo.bpmn file in BPMN Editor and loads correct diagram", async function () {
     this.timeout(20000);
     webview = await testHelper.openFileFromSidebar(DEMO_BPMN);
     await webview.switchToFrame();
@@ -72,7 +72,7 @@ describe("Editors are loading properly", () => {
     await webview.switchBack();
   });
 
-  it("Opens demo.dmn file in DMN Editor", async function() {
+  it("Opens demo.dmn file in DMN Editor", async function () {
     this.timeout(20000);
     webview = await testHelper.openFileFromSidebar(DEMO_DMN);
     await webview.switchToFrame();
@@ -88,7 +88,7 @@ describe("Editors are loading properly", () => {
     await webview.switchBack();
   });
 
-  it("Include reusable-model in DMN Editor", async function() {
+  it("Include reusable-model in DMN Editor", async function () {
     this.timeout(20000);
     webview = await testHelper.openFileFromSidebar(DEMO_DMN);
     await webview.switchToFrame();
@@ -108,7 +108,7 @@ describe("Editors are loading properly", () => {
     await webview.switchBack();
   });
 
-  it("Opens demo.scesim file in SCESIM Editor", async function() {
+  it("Opens demo.scesim file in SCESIM Editor", async function () {
     this.timeout(20000);
 
     webview = await testHelper.openFileFromSidebar(DEMO_SCESIM);
@@ -125,7 +125,7 @@ describe("Editors are loading properly", () => {
     await webview.switchBack();
   });
 
-  it("Opens demo.pmml file in PMML Editor", async function() {
+  it("Opens demo.pmml file in PMML Editor", async function () {
     this.timeout(20000);
     webview = await testHelper.openFileFromSidebar(DEMO_PMML);
     await webview.switchToFrame();

@@ -28,7 +28,7 @@ import {
   KOGITO_IFRAME_CONTAINER_PR_CLASS,
   KOGITO_OPEN_WITH_ONLINE_EDITOR_LINK_CONTAINER_PR_CLASS,
   KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
-  KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS
+  KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS,
 } from "../../constants";
 import * as Octokit from "@octokit/rest";
 import { fetchFile } from "../../github/api";
@@ -96,7 +96,7 @@ export function IsolatedPrEditor(props: {
   }, [fileStatusOnPr]);
 
   const openExternalEditor = useCallback(() => {
-    getFileContents().then(fileContent => globals.externalEditorManager?.open(filePath, fileContent!, true));
+    getFileContents().then((fileContent) => globals.externalEditorManager?.open(filePath, fileContent!, true));
   }, [globals.externalEditorManager, filePath, getFileContents]);
 
   const repoInfo = useMemo(() => {
@@ -104,12 +104,12 @@ export function IsolatedPrEditor(props: {
       ? {
           owner: props.prInfo.targetOrg,
           gitref: props.prInfo.targetGitRef,
-          repo: props.prInfo.repo
+          repo: props.prInfo.repo,
         }
       : {
           owner: props.prInfo.org,
           gitref: props.prInfo.gitRef,
-          repo: props.prInfo.repo
+          repo: props.prInfo.repo,
         };
   }, [showOriginal]);
 
@@ -131,7 +131,7 @@ export function IsolatedPrEditor(props: {
         textMode: textMode,
         fullscreen: false,
         repoInfo: repoInfo,
-        onEditorReady: onEditorReady
+        onEditorReady: onEditorReady,
       }}
     >
       {shouldAddLinkToOriginalFile &&

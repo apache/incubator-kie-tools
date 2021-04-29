@@ -66,7 +66,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
       fileName: props.contentPath,
       fileExtension: props.openFileExtension,
       getFileContents: props.getFileContents,
-      isReadOnly: props.readonly
+      isReadOnly: props.readonly,
     };
   }, [props.contentPath, props.openFileExtension, props.getFileContents, props.readonly]);
 
@@ -83,11 +83,11 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
     let task: number;
     Promise.resolve()
       .then(() => props.getFileContents())
-      .then(c => editor?.setContent(c ?? "", props.contentPath))
+      .then((c) => editor?.setContent(c ?? "", props.contentPath))
       .then(() => {
         task = window.setInterval(
           () =>
-            editor?.getContent().then(c => {
+            editor?.getContent().then((c) => {
               if (props.readonly) {
                 return;
               }
@@ -118,7 +118,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
         setContent: (content: string) => {
           editor?.setContent(content, props.contentPath);
           return Promise.resolve();
-        }
+        },
       };
     },
     [editor]

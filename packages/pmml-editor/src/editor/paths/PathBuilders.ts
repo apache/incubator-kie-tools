@@ -33,8 +33,8 @@ abstract class BaseBuilder {
 
   public build(): Path {
     const path = this.builders.builders
-      .map(builder => builder.segment())
-      .filter(segment => segment !== "")
+      .map((builder) => builder.segment())
+      .filter((segment) => segment !== "")
       .join(".");
     return { path: path };
   }

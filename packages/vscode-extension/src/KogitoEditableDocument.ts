@@ -24,7 +24,7 @@ import {
   CustomDocumentBackup,
   CustomDocumentEditEvent,
   EventEmitter,
-  Uri
+  Uri,
 } from "vscode";
 import { VsCodeI18n } from "./i18n";
 import * as nodePath from "path";
@@ -61,7 +61,7 @@ export class KogitoEditableDocument implements CustomDocument {
   get relativePath() {
     // For some reason, `asRelativePath` always returns paths with the '/' separator,
     // so on Windows, we need to replace it to the correct one, which is '\'.
-    return vscode.workspace.asRelativePath(this.uri).replace("/", nodePath.sep);
+    return vscode.workspace.asRelativePath(this.uri).replace(/\//g, nodePath.sep);
   }
 
   get fileExtension() {
@@ -105,7 +105,7 @@ export class KogitoEditableDocument implements CustomDocument {
 
     const customDocumentBackup = {
       id: destination.fsPath,
-      delete: () => vscode.workspace.fs.delete(destination)
+      delete: () => vscode.workspace.fs.delete(destination),
     };
 
     if (cancellation.isCancellationRequested) {
@@ -132,7 +132,7 @@ export class KogitoEditableDocument implements CustomDocument {
       label: "edit",
       document: this,
       undo: async () => editor.undo(),
-      redo: async () => editor.redo()
+      redo: async () => editor.redo(),
     });
   }
 }

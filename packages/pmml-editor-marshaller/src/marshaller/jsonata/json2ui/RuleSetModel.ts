@@ -49,6 +49,6 @@ export function ruleSetModelFactory(): RuleSetModel {
   return new RuleSetModel({
     MiningSchema: new MiningSchema({ MiningField: [] }),
     RuleSet: { RuleSelectionMethod: [] },
-    functionName: "regression"
+    functionName: "regression",
   });
 }

@@ -23,15 +23,15 @@ const common = require("../../webpack.common.config");
 module.exports = [
   merge(common, {
     externals: {
-      electron: "commonjs electron"
+      electron: "commonjs electron",
     },
     target: "electron-main",
     entry: {
-      index: "./src/electron/index.ts"
+      index: "./src/electron/index.ts",
     },
     node: {
       __dirname: false,
-      __filename: false
+      __filename: false,
     },
     plugins: [
       new CopyPlugin([
@@ -40,23 +40,23 @@ module.exports = [
         { from: "./static/index.html", to: "./index.html" },
         {
           from: "../desktop/out/Business Modeler Preview-" + os.platform() + "-x64",
-          to: "./lib/Business Modeler Preview-" + os.platform() + "-x64"
+          to: "./lib/Business Modeler Preview-" + os.platform() + "-x64",
         },
-        { from: "./build", to: "./build" }
-      ])
-    ]
+        { from: "./build", to: "./build" },
+      ]),
+    ],
   }),
   merge(common, {
     externals: {
-      electron: "commonjs electron"
+      electron: "commonjs electron",
     },
     target: "web",
     entry: {
-      "webview/index": "./src/webview/index.tsx"
+      "webview/index": "./src/webview/index.tsx",
     },
     module: {
-      rules: [...pfWebpackOptions.patternflyRules]
+      rules: [...pfWebpackOptions.patternflyRules],
     },
-    plugins: [new CopyPlugin([{ from: "static/index.html" }])]
-  })
+    plugins: [new CopyPlugin([{ from: "static/index.html" }])],
+  }),
 ];

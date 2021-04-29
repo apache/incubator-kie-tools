@@ -20,7 +20,7 @@ import {
   AttributeLabels,
   CharacteristicLabels,
   CharacteristicPredicateLabel,
-  CharacteristicsTableAction
+  CharacteristicsTableAction,
 } from "../atoms";
 import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
 import { IndexedCharacteristic } from "../organisms";
@@ -48,7 +48,7 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
     scorecardBaselineScore,
     dataFields,
     onEdit,
-    onDelete
+    onDelete,
   } = props;
 
   return (
@@ -56,7 +56,7 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
       className={"editable-item__inner"}
       tabIndex={0}
       onClick={onEdit}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
@@ -106,7 +106,7 @@ const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) 
   const { validationRegistry } = useValidationRegistry();
 
   const validations = useCallback(
-    attributeIndex =>
+    (attributeIndex) =>
       validationRegistry.get(
         Builder()
           .forModel(modelIndex)
@@ -127,6 +127,7 @@ const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) 
           <AttributeLabels
             modelIndex={modelIndex}
             characteristicIndex={characteristicIndex}
+            characteristic={characteristic}
             activeAttributeIndex={index}
             activeAttribute={item}
             areReasonCodesUsed={areReasonCodesUsed}

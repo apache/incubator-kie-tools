@@ -16,7 +16,7 @@
 
 import { EditorEnvelopeLocator } from "../../../api";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
-import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel"
+import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import * as React from "react";
 import { File } from "../../../channel";
 import { EmbeddedViewer } from "../../embedded";
@@ -29,12 +29,12 @@ describe("EmbeddedViewer::ONLINE", () => {
     fileName: "test",
     fileExtension: "dmn",
     getFileContents: () => Promise.resolve(""),
-    isReadOnly: false
+    isReadOnly: false,
   };
 
   const editorEnvelopeLocator: EditorEnvelopeLocator = {
     targetOrigin: "localhost:8888",
-    mapping: new Map([["dmn", { envelopePath: "envelope/envelope.html", resourcesPathPrefix: "envelope" }]])
+    mapping: new Map([["dmn", { envelopePath: "envelope/envelope.html", resourcesPathPrefix: "envelope" }]]),
   };
 
   const channelType = ChannelType.ONLINE;
@@ -46,7 +46,12 @@ describe("EmbeddedViewer::ONLINE", () => {
 
   test("EmbeddedViewer::defaults", () => {
     const { getByTestId, container } = render(
-      <EmbeddedViewer file={file} editorEnvelopeLocator={editorEnvelopeLocator} channelType={channelType} locale={"en"}/>
+      <EmbeddedViewer
+        file={file}
+        editorEnvelopeLocator={editorEnvelopeLocator}
+        channelType={channelType}
+        locale={"en"}
+      />
     );
 
     expect(getByTestId("kogito-iframe")).toBeVisible();
@@ -74,7 +79,7 @@ describe("EmbeddedViewer::ONLINE", () => {
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceContentRequest",
-      data: [{ path: "" }]
+      data: [{ path: "" }],
     });
 
     expect(onResourceContentRequest).toBeCalled();
@@ -99,7 +104,7 @@ describe("EmbeddedViewer::ONLINE", () => {
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceListRequest",
-      data: [{ pattern: "", paths: [] }]
+      data: [{ pattern: "", paths: [] }],
     });
 
     expect(onResourceListRequest).toBeCalled();

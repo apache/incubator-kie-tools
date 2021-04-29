@@ -30,9 +30,9 @@ const externalEditorManager = {
   ): { stopListening: () => void } {
     console.log("listen to come back");
     return {
-      stopListening: () => console.log("stopListening")
+      stopListening: () => console.log("stopListening"),
     };
-  }
+  },
 };
 
 describe("FileTreeWithExternalLink", () => {

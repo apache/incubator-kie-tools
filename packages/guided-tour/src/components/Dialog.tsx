@@ -27,7 +27,7 @@ import {
   useSelectorHandler,
   useStartTutorialListener,
   useUserInteractionListener,
-  useUserInteractions
+  useUserInteractions,
 } from "./utils";
 import { KogitoGuidedTour } from "..";
 import { CurrentTutorialContext } from "../contexts";
@@ -55,7 +55,7 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
     setCurrentRefElementPosition,
     setLatestUserInteraction,
     setIsNegativeReinforcementStateEnabled,
-    setIsHighlightLayerEnabled
+    setIsHighlightLayerEnabled,
   } = useContext(CurrentTutorialContext);
   const guidedTour = KogitoGuidedTour.getInstance();
   const registeredTutorials = guidedTour.getRegisteredTutorials();
@@ -75,17 +75,17 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
     currentStep,
     currentTutorial,
     registeredTutorials,
-    isNegativeReinforcementStateEnabled
+    isNegativeReinforcementStateEnabled,
   ]);
   const negativeReinforcementTemplate = useMemo(NegativeReinforcementDialog(dialogStep, closeDialog), [
     currentStep,
     isHighlightLayerEnabled,
-    isNegativeReinforcementStateEnabled
+    isNegativeReinforcementStateEnabled,
   ]);
 
-  useStartTutorialListener(tutorialLabel => setCurrentTutorialLabel(tutorialLabel));
-  usePositionListener(rect => setCurrentRefElementPosition(rect));
-  useUserInteractionListener(userInteraction => setLatestUserInteraction(userInteraction));
+  useStartTutorialListener((tutorialLabel) => setCurrentTutorialLabel(tutorialLabel));
+  usePositionListener((rect) => setCurrentRefElementPosition(rect));
+  useUserInteractionListener((userInteraction) => setLatestUserInteraction(userInteraction));
   useUserInteractions();
   useSelectorHandler();
 
@@ -118,7 +118,7 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
   }, [currentStep]);
 
   useEffect(() => {
-    const newCurrentTutorial = registeredTutorials.find(tutorial => tutorial.label === currentTutorialLabel);
+    const newCurrentTutorial = registeredTutorials.find((tutorial) => tutorial.label === currentTutorialLabel);
 
     if (newCurrentTutorial) {
       setCurrentTutorial(newCurrentTutorial);

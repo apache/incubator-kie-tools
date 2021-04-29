@@ -45,7 +45,7 @@ export function App(props: Props) {
   const [file, setFile] = useState(props.file);
   const routes = useMemo(() => new Routes(), []);
 
-  const onFileOpened = useCallback(fileOpened => {
+  const onFileOpened = useCallback((fileOpened) => {
     setFile(fileOpened);
   }, []);
 
@@ -55,7 +55,7 @@ export function App(props: Props) {
         isReadOnly: false,
         fileExtension,
         fileName,
-        getFileContents: file.getFileContents
+        getFileContents: file.getFileContents,
       });
     },
     [file]

@@ -25,12 +25,7 @@ export function extractFileExtension(fileName: string) {
 }
 
 export function extractEditorFileExtensionFromUrl(supportedFileExtensions: string[]): string | undefined {
-  const typeFromUrl = window.location.href
-    .split("?")[0]
-    .split("#")
-    ?.pop()
-    ?.split("/")
-    ?.pop();
+  const typeFromUrl = window.location.href.split("?")[0].split("#")?.pop()?.split("/")?.pop();
 
   return supportedFileExtensions.indexOf(typeFromUrl!) !== -1 ? typeFromUrl : undefined;
 }
@@ -53,7 +48,7 @@ export function removeDirectories(filePath: string) {
 export enum OperatingSystem {
   MACOS = "MACOS",
   WINDOWS = "WINDOWS",
-  LINUX = "LINUX"
+  LINUX = "LINUX",
 }
 
 export function getOperatingSystem() {
@@ -81,10 +76,7 @@ export function getCookie(name: string) {
   const parts = value.split("; " + name + "=");
 
   if (parts.length === 2) {
-    return parts
-      .pop()!
-      .split(";")
-      .shift();
+    return parts.pop()!.split(";").shift();
   }
 }
 

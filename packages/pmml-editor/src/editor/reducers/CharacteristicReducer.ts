@@ -59,23 +59,19 @@ export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], AllAct
       case Actions.Scorecard_UpdateCharacteristic:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .forCharacteristics()
-            .forCharacteristic()
-            .build(),
-          draft => {
+          Builder().forModel(action.payload.modelIndex).forCharacteristics().forCharacteristic().build(),
+          (draft) => {
             const characteristicIndex: number = action.payload.characteristicIndex;
             if (characteristicIndex >= 0 && characteristicIndex < draft.length) {
               draft[characteristicIndex] = {
                 ...draft[characteristicIndex],
                 name: action.payload.name,
                 reasonCode: action.payload.reasonCode,
-                baselineScore: action.payload.baselineScore
+                baselineScore: action.payload.baselineScore,
               };
             }
             if (action.payload.reasonCode !== undefined) {
-              draft[characteristicIndex].Attribute.forEach(attribute => (attribute.reasonCode = undefined));
+              draft[characteristicIndex].Attribute.forEach((attribute) => (attribute.reasonCode = undefined));
             }
           }
         );

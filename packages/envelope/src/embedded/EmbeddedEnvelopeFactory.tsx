@@ -31,7 +31,7 @@ const containerStyles: CSS.Properties = {
   border: "none",
   margin: 0,
   padding: 0,
-  overflow: "hidden"
+  overflow: "hidden",
 };
 
 export interface EnvelopeDivConfig {
@@ -75,14 +75,14 @@ export function EmbeddedEnvelopeFactory<
           } else {
             iframeRef.current?.contentWindow?.postMessage(message, "*");
           }
-        }
+        },
       }),
       []
     );
 
     const envelopeServer = useMemo(
       () =>
-        new EnvelopeServer<ApiToProvide, ApiToConsume>(bus, props.origin, self =>
+        new EnvelopeServer<ApiToProvide, ApiToConsume>(bus, props.origin, (self) =>
           props.pollInit(self, () =>
             props.config.containerType === ContainerType.DIV ? divRef.current! : iframeRef.current!
           )

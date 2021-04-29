@@ -23,6 +23,7 @@ import { Builder } from "../../../paths";
 
 interface AttributeLabelsProps {
   modelIndex: number;
+  characteristic: Characteristic;
   characteristicIndex: number;
   activeAttributeIndex: number;
   activeAttribute: Attribute;
@@ -34,12 +35,13 @@ interface AttributeLabelsProps {
 export const AttributeLabels = (props: AttributeLabelsProps) => {
   const {
     modelIndex,
+    characteristic,
     characteristicIndex,
     activeAttributeIndex,
     activeAttribute,
     areReasonCodesUsed,
     characteristicReasonCode,
-    commit
+    commit,
   } = props;
 
   const { validationRegistry } = useValidationRegistry();
@@ -60,7 +62,7 @@ export const AttributeLabels = (props: AttributeLabelsProps) => {
       areReasonCodesUsed,
       activeAttribute,
       activeAttributeIndex,
-      characteristicReasonCode
+      characteristicReasonCode,
     ]
   );
   const partialScoreValidation = useMemo(
@@ -74,7 +76,7 @@ export const AttributeLabels = (props: AttributeLabelsProps) => {
           .forPartialScore()
           .build()
       ),
-    [modelIndex, characteristicIndex, activeAttribute, activeAttributeIndex]
+    [modelIndex, characteristicIndex, characteristic, activeAttribute, activeAttributeIndex]
   );
 
   return (

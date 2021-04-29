@@ -22,19 +22,19 @@ const pmml: PMML = {
   version: "1.0",
   Header: {},
   DataDictionary: {
-    DataField: []
-  }
+    DataField: [],
+  },
 };
 
 const header1: Header = {
   copyright: "copyright",
   modelVersion: "1.0",
-  description: "description"
+  description: "description",
 };
 
 describe("HistoryProvider", () => {
   test("Mutation applied", () => {
-    service.batch(pmml, null, draft => {
+    service.batch(pmml, null, (draft) => {
       draft.Header = header1;
     });
 
@@ -44,7 +44,7 @@ describe("HistoryProvider", () => {
   });
 
   test("Mutation undo", () => {
-    service.batch(pmml, null, draft => {
+    service.batch(pmml, null, (draft) => {
       draft.Header = header1;
     });
 
@@ -57,7 +57,7 @@ describe("HistoryProvider", () => {
   });
 
   test("Mutation redo", () => {
-    service.batch(pmml, null, draft => {
+    service.batch(pmml, null, (draft) => {
       draft.Header = header1;
     });
 
@@ -73,7 +73,7 @@ describe("HistoryProvider", () => {
   });
 
   test("Mutation undo beyond start", () => {
-    service.batch(pmml, null, draft => {
+    service.batch(pmml, null, (draft) => {
       draft.Header = header1;
     });
 
@@ -89,7 +89,7 @@ describe("HistoryProvider", () => {
   });
 
   test("Mutation redo beyond end", () => {
-    service.batch(pmml, null, draft => {
+    service.batch(pmml, null, (draft) => {
       draft.Header = header1;
     });
 
@@ -112,7 +112,7 @@ describe("HistoryProvider", () => {
     service.batch(
       pmml,
       null,
-      draft => {
+      (draft) => {
         draft.Header = header1;
       },
       validator

@@ -21,7 +21,7 @@ import {
   EditorFactory,
   EditorInitArgs,
   KogitoEditorChannelApi,
-  KogitoEditorEnvelopeContextType
+  KogitoEditorEnvelopeContextType,
 } from "../../api";
 import { DummyEditor } from "./DummyEditor";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
@@ -35,7 +35,7 @@ const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
 const editorContext: EditorContext = {
   channel: ChannelType.EMBEDDED,
-  operatingSystem: OperatingSystem.LINUX
+  operatingSystem: OperatingSystem.LINUX,
 };
 
 const envelopeContext: KogitoEditorEnvelopeContextType = {
@@ -44,8 +44,8 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
   services: {
     guidedTour: { isEnabled: () => false },
     keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: editorContext.operatingSystem }),
-    i18n: new I18nService()
-  }
+    i18n: new I18nService(),
+  },
 };
 
 describe("CompositeEditorFactory", () => {
@@ -105,7 +105,7 @@ describe("CompositeEditorFactory", () => {
   function makeEditorFactory(supported: boolean): EditorFactory {
     return {
       supports: () => supported,
-      createEditor: (_1: KogitoEditorEnvelopeContextType, _2: EditorInitArgs) => Promise.resolve(dummyEditor)
+      createEditor: (_1: KogitoEditorEnvelopeContextType, _2: EditorInitArgs) => Promise.resolve(dummyEditor),
     };
   }
 });

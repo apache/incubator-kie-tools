@@ -24,10 +24,7 @@ const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 
 function getLatestGitTag() {
-  const tagName = require("child_process")
-    .execSync("git rev-list --tags --max-count=1")
-    .toString()
-    .trim();
+  const tagName = require("child_process").execSync("git rev-list --tags --max-count=1").toString().trim();
 
   return require("child_process")
     .execSync("git describe --tags " + tagName)
@@ -79,14 +76,14 @@ module.exports = async (env, argv) => {
       "content_scripts/github": "./src/github-content-script.ts",
       "content_scripts/online-editor": "./src/online-editor-content-script.ts",
       background: "./src/background.ts",
-      "envelope/index": "./src/envelope/index.ts"
+      "envelope/index": "./src/envelope/index.ts",
     },
     devServer: {
       contentBase: ["dist"],
       compress: true,
       watchContentBase: true,
       https: true,
-      port: 9000
+      port: 9000,
     },
     plugins: [
       new CopyPlugin([
@@ -96,7 +93,7 @@ module.exports = async (env, argv) => {
         // These are used for development only.
         { from: externalAssets.dmnEditorPath(argv), to: "dmn", ignore: ["WEB-INF/**/*"] },
         { from: externalAssets.bpmnEditorPath(argv), to: "bpmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.scesimEditorPath(argv), to: "scesim", ignore: ["WEB-INF/**/*"] }
+        { from: externalAssets.scesimEditorPath(argv), to: "scesim", ignore: ["WEB-INF/**/*"] },
       ]),
       new ZipPlugin({
         filename: "chrome_extension_kogito_kie_editors_" + packageJson.version + ".zip",
@@ -104,8 +101,8 @@ module.exports = async (env, argv) => {
 
         // These are used for development only,
         // therefore should not be included in the ZIP file.
-        exclude: ["dmn", "bpmn", "scesim"]
-      })
+        exclude: ["dmn", "bpmn", "scesim"],
+      }),
     ],
     module: {
       rules: [
@@ -116,14 +113,14 @@ module.exports = async (env, argv) => {
             multiple: [
               {
                 search: "$_{WEBPACK_REPLACE__targetOrigin}",
-                replace: router_targetOrigin
+                replace: router_targetOrigin,
               },
               {
                 search: "$_{WEBPACK_REPLACE__relativePath}",
-                replace: router_relativePath
-              }
-            ]
-          }
+                replace: router_relativePath,
+              },
+            ],
+          },
         },
         {
           test: /background\.ts|OnlineEditorManager\.ts$/,
@@ -132,13 +129,13 @@ module.exports = async (env, argv) => {
             multiple: [
               {
                 search: "$_{WEBPACK_REPLACE__onlineEditor_url}",
-                replace: onlineEditor_url
-              }
-            ]
-          }
+                replace: onlineEditor_url,
+              },
+            ],
+          },
         },
-        ...pfWebpackOptions.patternflyRules
-      ]
-    }
+        ...pfWebpackOptions.patternflyRules,
+      ],
+    },
   });
 };

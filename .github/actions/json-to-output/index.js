@@ -24,7 +24,7 @@ try {
   const jsonString = fs.readFileSync(path);
   const json = JSON.parse(jsonString);
 
-  Object.keys(json).forEach(key => {
+  Object.keys(json).forEach((key) => {
     core.setOutput(key, json[key]);
     console.log("Set output '" + key + "' to '" + json[key] + "'");
   });

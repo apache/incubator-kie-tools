@@ -23,7 +23,7 @@ import {
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
-  ResourcesList
+  ResourcesList,
 } from "@kogito-tooling/channel-common-api";
 import { File } from "../../channel";
 import { Notification } from "@kogito-tooling/notifications/dist/api";

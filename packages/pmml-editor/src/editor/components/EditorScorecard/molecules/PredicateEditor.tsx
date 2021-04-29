@@ -44,10 +44,10 @@ export const PredicateEditor = (props: PredicateEditorProps) => {
       theme="scorecards"
       options={{
         glyphMargin: false,
-        scrollBeyondLastLine: false
+        scrollBeyondLastLine: false,
       }}
       value={text ?? ""}
-      onChange={e => setText(e)}
+      onChange={(e) => setText(e)}
       editorDidMount={editorDidMount}
     />
   );

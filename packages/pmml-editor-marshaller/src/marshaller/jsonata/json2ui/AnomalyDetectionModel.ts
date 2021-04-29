@@ -46,6 +46,6 @@ export function anomalyDetectionModelFactory(): AnomalyDetectionModel {
   return new AnomalyDetectionModel({
     MiningSchema: new MiningSchema({ MiningField: [] }),
     functionName: "regression",
-    algorithmType: "other"
+    algorithmType: "other",
   });
 }

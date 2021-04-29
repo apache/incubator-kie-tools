@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/setup-java@v1
         with:
-          java-version: '8'
+          java-version: "8"
 
       - name: Increase inotify watches
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
@@ -270,14 +270,6 @@ jobs:
           cd ${{ github.workspace }}/kogito-tooling
           yarn run init
 
-      - name: Check yarn.lock
-        id: check-yarn-lock
-        run: |
-          cd ${{ github.workspace }}/kogito-tooling
-          git diff yarn.lock;
-          [ "0" == "$(git diff yarn.lock | wc -l)" ]
-        shell: bash
-
       - name: Build kogito-tooling
         env:
           EXTERNAL_RESOURCE_PATH__dmnEditor: "${{ github.workspace }}/kie-wb-common/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime"
@@ -327,7 +319,7 @@ jobs:
           name: hub-app-linux-fdb
           path: ${{ github.workspace }}/kogito-tooling/packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
 
-      - name: 'Checkout kogito-online-ci'
+      - name: "Checkout kogito-online-ci"
         if: github.repository == 'kiegroup/kogito-tooling'
         uses: actions/checkout@v2
         with:
@@ -337,7 +329,7 @@ jobs:
           ref: gh-pages
 
       # For this step to work properly, you have to add the owner of KOGITO_TOOLING_BOT_TOKEN as collaborator on 'kogito-online-ci'.
-      - name: 'Update kogito-online-ci resources'
+      - name: "Update kogito-online-ci resources"
         if: github.repository == 'kiegroup/kogito-tooling'
         run: |
           cd ${{ github.workspace }}/kogito-online-ci

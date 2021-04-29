@@ -30,9 +30,9 @@ const initEnvelope = () => {
 
   // The MutationObserver below replaces every <a href="#" /> with <a href="javascript:void(0);" />,
   // because the former will cause the iframe to reload.
-  const mutationObserver = new MutationObserver(mutations => {
-    mutations.forEach(mutation => {
-      mutation.addedNodes.forEach(node => {
+  const mutationObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
         if (node instanceof HTMLAnchorElement) {
           removeHrefIfNecessary(node);
         } else if (node instanceof Element) {
@@ -48,12 +48,12 @@ const initEnvelope = () => {
     bus: {
       postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, _?: any) {
         window.parent.postMessage(message, targetOrigin!, _);
-      }
+      },
     },
     // The Editor's scripts are proactively loaded in this distribution, thus
     // it should not be loaded again by the Editor wrapper.
     editorFactory: new GwtEditorWrapperFactory({ shouldLoadResourcesDynamically: false }),
-    editorContext: { channel: ChannelType.EMBEDDED, operatingSystem: getOperatingSystem() }
+    editorContext: { channel: ChannelType.EMBEDDED, operatingSystem: getOperatingSystem() },
   });
 };
 

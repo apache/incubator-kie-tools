@@ -23,7 +23,7 @@ import {
   Page,
   PageSection,
   Stack,
-  StackItem
+  StackItem,
 } from "@patternfly/react-core";
 import * as electron from "electron";
 import * as React from "react";
@@ -68,14 +68,14 @@ export function EditorPage(props: Props) {
   const requestSaveFile = useCallback(
     (action: FileSaveActions) => {
       setShowUnsavedAlert(false);
-      editor?.getContent().then(content => {
+      editor?.getContent().then((content) => {
         electron.ipcRenderer.send("saveFile", {
           file: {
             filePath: context.file.fileName,
             fileType: context.file.fileExtension,
-            fileContent: content
+            fileContent: content,
           },
-          action
+          action,
         });
       });
     },
@@ -83,7 +83,7 @@ export function EditorPage(props: Props) {
   );
 
   const requestCopyContentToClipboard = useCallback(() => {
-    editor?.getContent().then(content => {
+    editor?.getContent().then((content) => {
       if (copyContentTextArea.current) {
         copyContentTextArea.current.value = content;
         copyContentTextArea.current.select();
@@ -95,11 +95,11 @@ export function EditorPage(props: Props) {
   }, [editor]);
 
   const requestSavePreview = useCallback(() => {
-    editor?.getPreview().then(previewSvg => {
+    editor?.getPreview().then((previewSvg) => {
       electron.ipcRenderer.send("savePreview", {
         filePath: context.file!.fileName,
         fileType: "svg",
-        fileContent: previewSvg
+        fileContent: previewSvg,
       });
     });
   }, [editor, context.file]);
@@ -179,17 +179,17 @@ export function EditorPage(props: Props) {
     electron.ipcRenderer.on("saveFileSuccess", (event: IpcRendererEvent, data: { filePath: string }): void => {
       editor
         ?.getPreview()
-        .then(previewSvg => {
+        .then((previewSvg) => {
           electron.ipcRenderer.send("saveThumbnail", {
             filePath: data.filePath,
             fileType: "svg",
-            fileContent: previewSvg
+            fileContent: previewSvg,
           });
           editor?.getStateControl().setSavedCommand();
           setSaveFileSuccessAlertVisible(true);
           props.onFilenameChange(data.filePath);
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     });
 
     return () => {
@@ -202,7 +202,7 @@ export function EditorPage(props: Props) {
     electron.ipcRenderer.send("saveThumbnail", {
       filePath: context.file!.fileName,
       fileType: "svg",
-      fileContent: previewSvg
+      fileContent: previewSvg,
     });
   }, [editor, context.file]);
 
@@ -238,7 +238,11 @@ export function EditorPage(props: Props) {
                   }
                   actionLinks={
                     <React.Fragment>
-                      <AlertActionLink data-testid="unsaved-alert-save-button" onClick={onSave} ouiaId="unsaved-alert-save-button">
+                      <AlertActionLink
+                        data-testid="unsaved-alert-save-button"
+                        onClick={onSave}
+                        ouiaId="unsaved-alert-save-button"
+                      >
                         {i18n.terms.save}
                       </AlertActionLink>
                       <AlertActionLink

@@ -26,7 +26,7 @@ describe("invalid file type alert", () => {
 
     act(() => {
       electron.ipcRenderer.send("openFile", {
-        file: { filePath: "/a/a.invalid", fileType: "invalid", fileContent: "" }
+        file: { filePath: "/a/a.invalid", fileType: "invalid", fileContent: "" },
       });
     });
 
@@ -39,7 +39,7 @@ describe("invalid file type alert", () => {
 
     act(() => {
       electron.ipcRenderer.send("openFile", {
-        file: { filePath: "/a/a.invalid", fileType: "invalid", fileContent: "" }
+        file: { filePath: "/a/a.invalid", fileType: "invalid", fileContent: "" },
       });
     });
 
@@ -47,7 +47,7 @@ describe("invalid file type alert", () => {
 
     act(() => {
       electron.ipcRenderer.send("openFile", {
-        file: { filePath: "/a/a.dmn", fileType: "dmn", fileContent: "" }
+        file: { filePath: "/a/a.dmn", fileType: "dmn", fileContent: "" },
       });
     });
 

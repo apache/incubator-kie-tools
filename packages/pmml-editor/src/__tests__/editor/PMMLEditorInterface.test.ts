@@ -17,7 +17,7 @@
 import {
   EditorContext,
   KogitoEditorChannelApi,
-  KogitoEditorEnvelopeContextType
+  KogitoEditorEnvelopeContextType,
 } from "@kogito-tooling/editor/dist/api";
 import { render } from "@testing-library/react";
 import { ReactElement } from "react";
@@ -31,7 +31,7 @@ const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
 const editorContext: EditorContext = {
   channel: ChannelType.EMBEDDED,
-  operatingSystem: OperatingSystem.LINUX
+  operatingSystem: OperatingSystem.LINUX,
 };
 
 const envelopeContext: KogitoEditorEnvelopeContextType = {
@@ -40,8 +40,8 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
   services: {
     guidedTour: { isEnabled: () => false },
     keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: editorContext.operatingSystem }),
-    i18n: new I18nService()
-  }
+    i18n: new I18nService(),
+  },
 };
 
 const editorInterface: PMMLEditorInterface = new PMMLEditorInterface(envelopeContext);

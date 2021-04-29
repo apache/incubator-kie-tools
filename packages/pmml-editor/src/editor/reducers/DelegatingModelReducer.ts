@@ -41,7 +41,7 @@ export const DelegatingModelReducer: HistoryAwareModelReducer<AllActions> = (
     //to be correctly detected.
     let changed = false;
     const newState: Model[] = [];
-    state.forEach(m => newState.push(m));
+    state.forEach((m) => newState.push(m));
     const modelIndex: number = get(action.payload, "modelIndex");
 
     //Delegate Model agnostic actions to all Model reducers

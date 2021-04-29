@@ -67,10 +67,10 @@ export const EditorEnvelopeViewRef: React.RefForwardingComponent<EditorEnvelopeV
     () => {
       return {
         getEditor: () => getEditor(),
-        setEditor: newEditor => setNewEditor(newEditor),
+        setEditor: (newEditor) => setNewEditor(newEditor),
         setLoading: () => setLoadingInit(),
         setLoadingFinished: () => setLoadingFinished(),
-        setLocale: locale => setLocale(locale)
+        setLocale: (locale) => setLocale(locale),
       };
     },
     []

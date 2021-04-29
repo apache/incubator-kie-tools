@@ -26,9 +26,9 @@ export const HistoryContext = React.createContext<History>({
   service: new HistoryService([
     () => {
       /*NOP*/
-    }
+    },
   ]),
-  getCurrentState: () => undefined
+  getCurrentState: () => undefined,
 });
 
 export function useHistoryService() {

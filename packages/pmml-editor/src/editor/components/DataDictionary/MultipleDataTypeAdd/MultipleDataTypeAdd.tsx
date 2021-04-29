@@ -10,7 +10,7 @@ import {
   Text,
   TextArea,
   TextContent,
-  TextVariants
+  TextVariants,
 } from "@patternfly/react-core";
 import "./MultipleDataTypesAdd.scss";
 

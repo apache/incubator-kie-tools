@@ -21,7 +21,7 @@ import {
   ResourceContentService,
   ResourceListOptions,
   ResourcesList,
-  SearchType
+  SearchType,
 } from "@kogito-tooling/channel-common-api";
 
 import * as fs from "fs";
@@ -32,7 +32,6 @@ import * as minimatch from "minimatch";
  * asset is not part the opened workspace.
  */
 export class VsCodeNodeResourceContentService implements ResourceContentService {
-
   private readonly rootFolder: string;
 
   constructor(rootFolder: string) {
@@ -45,15 +44,17 @@ export class VsCodeNodeResourceContentService implements ResourceContentService 
         if (err) {
           resolve(new ResourcesList(pattern, []));
         } else {
-          const paths = files.filter(file => {
-            let fileName;
-            if (opts?.type === SearchType.TRAVERSAL) {
-              fileName = this.rootFolder + file.name;
-            } else {
-              fileName = file.name;
-            }
-            return file.isFile() && minimatch(fileName, pattern);
-          }).map(file => this.rootFolder + file.name);
+          const paths = files
+            .filter((file) => {
+              let fileName;
+              if (opts?.type === SearchType.TRAVERSAL) {
+                fileName = this.rootFolder + file.name;
+              } else {
+                fileName = file.name;
+              }
+              return file.isFile() && minimatch(fileName, pattern);
+            })
+            .map((file) => this.rootFolder + file.name);
           resolve(new ResourcesList(pattern, paths));
         }
       });

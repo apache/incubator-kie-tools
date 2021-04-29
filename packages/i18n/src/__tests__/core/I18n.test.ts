@@ -21,17 +21,17 @@ interface TestI18n extends ReferenceDictionary<TestI18n> {
 }
 
 const english: TestI18n = {
-  test: "this is a test"
+  test: "this is a test",
 };
 
 const portuguese: TranslatedDictionary<ReferenceDictionary<TestI18n>> = {
-  test: "isso é um teste"
+  test: "isso é um teste",
 };
 
 const defaults = { locale: "en", dictionary: english };
 const dictionaries = new Map([
   ["en", english],
-  ["pt", portuguese]
+  ["pt", portuguese],
 ]);
 
 describe("I18n", () => {

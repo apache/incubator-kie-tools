@@ -29,7 +29,7 @@ import { OnlineI18n } from "../common/i18n";
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const envelopeMapping: EnvelopeMapping = {
     envelopePath: "envelope/envelope.html",
-    resourcesPathPrefix: ""
+    resourcesPathPrefix: "",
   };
 
   const usedCtx = {
@@ -40,8 +40,8 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
       mapping: new Map([
         ["dmn", envelopeMapping],
         ["bpmn", envelopeMapping],
-        ["bpmn2", envelopeMapping]
-      ])
+        ["bpmn2", envelopeMapping],
+      ]),
     },
     readonly: false,
     external: false,
@@ -62,7 +62,7 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
           </Switch>
         </HashRouter>
       </GlobalContext.Provider>
-    )
+    ),
   };
 }
 
@@ -75,7 +75,7 @@ export function usingTestingOnlineI18nContext(
     dictionaries: onlineI18nDictionaries,
     ctx: OnlineI18nContext,
     children,
-    ...ctx
+    ...ctx,
   };
   return {
     ctx: usedCtx,
@@ -83,6 +83,6 @@ export function usingTestingOnlineI18nContext(
       <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
         {usedCtx.children}
       </I18nDictionariesProvider>
-    )
+    ),
   };
 }

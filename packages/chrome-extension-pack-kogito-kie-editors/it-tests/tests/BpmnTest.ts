@@ -28,64 +28,60 @@ const TEST_NAME = "BpmnTest";
 let tools: Tools;
 
 beforeEach(async () => {
-    tools = await Tools.init(TEST_NAME);
+  tools = await Tools.init(TEST_NAME);
 });
 
 test(TEST_NAME, async () => {
-    const WEB_PAGE = "https://github.com/kiegroup/kogito-tooling/tree/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples";
-    const EXPECTED_LINK = "kiegroup/kogito-tooling/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn";
-    const PROCESS_NAME = "myProcess";
-    const FILE_NAME = "test.bpmn";
-    const TASK_NODE_NAME = "MyTask";
+  const WEB_PAGE =
+    "https://github.com/kiegroup/kogito-tooling/tree/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples";
+  const EXPECTED_LINK =
+    "kiegroup/kogito-tooling/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn";
+  const PROCESS_NAME = "myProcess";
+  const FILE_NAME = "test.bpmn";
+  const TASK_NODE_NAME = "MyTask";
 
-    // check link to online editor in the list
-    const gitHubListPage: GitHubListPage = await tools.openPage(GitHubListPage, WEB_PAGE);
-    const gitHubFile: GitHubListItem = await gitHubListPage.getFile(FILE_NAME);
-    const linkText: string = await gitHubFile.getLinkToOnlineEditor();
-    expect(linkText).toContain(EXPECTED_LINK);
+  // check link to online editor in the list
+  const gitHubListPage: GitHubListPage = await tools.openPage(GitHubListPage, WEB_PAGE);
+  const gitHubFile: GitHubListItem = await gitHubListPage.getFile(FILE_NAME);
+  const linkText: string = await gitHubFile.getLinkToOnlineEditor();
+  expect(linkText).toContain(EXPECTED_LINK);
 
-    // open BPMN editor
-    const editorPage: GitHubEditorPage = await gitHubFile.open();
-    const bpmnEditor: BpmnEditor = await editorPage.getBpmnEditor();
+  // open BPMN editor
+  const editorPage: GitHubEditorPage = await gitHubFile.open();
+  const bpmnEditor: BpmnEditor = await editorPage.getBpmnEditor();
 
-    // move startEvent to canvas
-    await bpmnEditor.enter();
-    await bpmnEditor.dragAndDropStartEventToCanvas();
+  // check process properties
+  await bpmnEditor.enter();
+  const sideBar: SideBar = await bpmnEditor.getSideBar();
+  const processProps: Properties = await sideBar.openProperties();
+  expect(await processProps.getProcessNameFromInput()).toEqual(PROCESS_NAME);
 
-    // check process properties
-    const sideBar: SideBar = await bpmnEditor.getSideBar();
-    const processProps: Properties = await sideBar.openProperties();
-    expect(await processProps.getProcessNameFromInput()).toEqual(PROCESS_NAME);
+  // check process nodes in explorer
+  const explorer: Explorer = await sideBar.openExplorer();
+  expect((await explorer.getNodeNames()).sort()).toEqual(["MyStart", "MyTask", "MyEnd"].sort());
+  expect(await explorer.getProcessName()).toEqual(PROCESS_NAME);
 
-    // check process nodes in explorer
-    const explorer: Explorer = await sideBar.openExplorer();
-    expect((await explorer.getNodeNames()).sort())
-        .toEqual([
-            "Start",
-            "MyStart",
-            "MyTask",
-            "MyEnd"
-        ].sort());
-    expect(await explorer.getProcessName()).toEqual(PROCESS_NAME);
+  // check task properties
+  await explorer.selectNode(TASK_NODE_NAME);
+  const nodeProps: Properties = await sideBar.openProperties();
+  expect(await nodeProps.getNameFromTextArea()).toEqual(TASK_NODE_NAME);
 
-    // check task properties
-    await explorer.selectNode(TASK_NODE_NAME);
-    const nodeProps: Properties = await sideBar.openProperties();
-    expect(await nodeProps.getNameFromTextArea()).toEqual(TASK_NODE_NAME);
+  // check pallete is not visible
+  expect(await bpmnEditor.isPalettePresent()).toEqual(false);
 
-    await bpmnEditor.leave();
+  await bpmnEditor.leave();
 
-    // open and check source/editor
-    expect(await editorPage.isSourceVisible()).toBe(false);
-    expect(await editorPage.isEditorVisible()).toBe(true);
-    await editorPage.seeAsSource();
-    expect(await editorPage.isSourceVisible()).toBe(true);
-    expect(await editorPage.isEditorVisible()).toBe(false);
-    await editorPage.seeAsDiagram();
-    expect(await editorPage.isSourceVisible()).toBe(false);
-    expect(await editorPage.isEditorVisible()).toBe(true);
+  // open and check source/editor
+  expect(await editorPage.isSourceVisible()).toBe(false);
+  expect(await editorPage.isEditorVisible()).toBe(true);
+  await editorPage.seeAsSource();
+  expect(await editorPage.isSourceVisible()).toBe(true);
+  expect(await editorPage.isEditorVisible()).toBe(false);
+  await editorPage.seeAsDiagram();
+  expect(await editorPage.isSourceVisible()).toBe(false);
+  expect(await editorPage.isEditorVisible()).toBe(true);
 });
 
 afterEach(async () => {
-    await tools.finishTest();
+  await tools.finishTest();
 });

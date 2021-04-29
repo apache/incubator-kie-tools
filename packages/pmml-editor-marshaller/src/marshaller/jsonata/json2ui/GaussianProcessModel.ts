@@ -52,6 +52,6 @@ export function gaussianProcessModelFactory(): GaussianProcessModel {
   return new GaussianProcessModel({
     MiningSchema: new MiningSchema({ MiningField: [] }),
     TrainingInstances: { InstanceFields: { InstanceField: [] } },
-    functionName: "regression"
+    functionName: "regression",
   });
 }

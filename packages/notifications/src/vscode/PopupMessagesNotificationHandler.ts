@@ -35,8 +35,8 @@ export class PopupMessagesNotificationHandler implements NotificationsApi {
     if (notifications.length === 0) {
       return;
     }
-    const errors = notifications.filter(n => n.severity === "ERROR");
-    const others = notifications.filter(n => n.severity !== "ERROR");
+    const errors = notifications.filter((n) => n.severity === "ERROR");
+    const others = notifications.filter((n) => n.severity !== "ERROR");
 
     const errorsMessage = this.consolidateMessages(errors);
     const othersMessage = this.consolidateMessages(others);
@@ -64,7 +64,7 @@ export class PopupMessagesNotificationHandler implements NotificationsApi {
     return (message: string, path: string) =>
       path.length === 0
         ? showFunction(message)
-        : showFunction(message, this.currentI18n.terms.open).then(selected => {
+        : showFunction(message, this.currentI18n.terms.open).then((selected) => {
             if (!selected) {
               return;
             }
@@ -73,7 +73,7 @@ export class PopupMessagesNotificationHandler implements NotificationsApi {
   }
 
   private consolidateMessages(notifications: Notification[]): string {
-    const messages = notifications.map(n => n.message);
+    const messages = notifications.map((n) => n.message);
     if (messages.length > 0) {
       return messages.reduce((accum, current) => `${accum}\n${current}`);
     } else {

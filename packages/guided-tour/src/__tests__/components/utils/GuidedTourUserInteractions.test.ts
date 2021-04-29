@@ -23,7 +23,7 @@ describe("GuidedTourUserInteractions", () => {
   describe("useUserInteractions", () => {
     it("enables negative reinforcement when it's allowed", () => {
       useContext({
-        latestUserInteraction: new UserInteraction("CLICK", ".data-types-tab")
+        latestUserInteraction: new UserInteraction("CLICK", ".data-types-tab"),
       });
 
       act(() => useUserInteractions());
@@ -36,7 +36,7 @@ describe("GuidedTourUserInteractions", () => {
     it("does not enable negative reinforcement when user already performed the required action", () => {
       useContext({
         completedStep: 1, // the user has already explored the next step
-        latestUserInteraction: new UserInteraction("CLICK", ".data-types-tab")
+        latestUserInteraction: new UserInteraction("CLICK", ".data-types-tab"),
       });
 
       act(() => useUserInteractions());
@@ -53,10 +53,10 @@ describe("GuidedTourUserInteractions", () => {
           steps: [
             {
               negativeReinforcementMessage: null,
-              mode: new BlockMode({ action: "CREATED", target: "Node" }, [".palette", "canvas"])
-            }
-          ]
-        }
+              mode: new BlockMode({ action: "CREATED", target: "Node" }, [".palette", "canvas"]),
+            },
+          ],
+        },
       });
 
       act(() => useUserInteractions());
@@ -70,7 +70,7 @@ describe("GuidedTourUserInteractions", () => {
       useContext({
         isNegativeReinforcementStateEnabled: true,
         isHighlightLayerEnabled: false,
-        latestUserInteraction: new UserInteraction("CLICK", ".data-types-tab")
+        latestUserInteraction: new UserInteraction("CLICK", ".data-types-tab"),
       });
 
       act(() => useUserInteractions());
@@ -84,8 +84,8 @@ describe("GuidedTourUserInteractions", () => {
       useContext({
         latestUserInteraction: new UserInteraction("CLICK", ".data-types-tab"),
         currentTutorial: {
-          steps: [{ mode: new DemoMode() }]
-        }
+          steps: [{ mode: new DemoMode() }],
+        },
       });
 
       act(() => useUserInteractions());
@@ -97,7 +97,7 @@ describe("GuidedTourUserInteractions", () => {
 
     it("goes to the next step when the latest user interaction matches with the current step user interaction", () => {
       useContext({
-        latestUserInteraction: new UserInteraction("CREATED", "Node")
+        latestUserInteraction: new UserInteraction("CREATED", "Node"),
       });
 
       act(() => useUserInteractions());
@@ -115,14 +115,14 @@ jest.mock("react", () => {
     ...ActualReact,
     useContext: () => ctx,
     useEffect: (fn: any) => fn(),
-    useMemo: (fn: any, _deps: any) => fn()
+    useMemo: (fn: any, _deps: any) => fn(),
   };
 });
 
 const ctx: any = {
   setCurrentStep: (currentStepIndex: number) => (ctx.currentStep = currentStepIndex),
   setIsNegativeReinforcementStateEnabled: (isEnabled: boolean) => (ctx.isNegativeReinforcementStateEnabled = isEnabled),
-  setIsHighlightLayerEnabled: (isEnabled: boolean) => (ctx.isHighlightLayerEnabled = isEnabled)
+  setIsHighlightLayerEnabled: (isEnabled: boolean) => (ctx.isHighlightLayerEnabled = isEnabled),
 };
 
 function useContext(currentCtx: any) {
@@ -132,9 +132,9 @@ function useContext(currentCtx: any) {
     steps: [
       {
         negativeReinforcementMessage: "Click on 'Node' to continue...",
-        mode: new BlockMode({ action: "CREATED", target: "Node" }, [".palette", "canvas"])
-      }
-    ]
+        mode: new BlockMode({ action: "CREATED", target: "Node" }, [".palette", "canvas"]),
+      },
+    ],
   };
   ctx.isHighlightLayerEnabled = currentCtx.isHighlightLayerEnabled ?? false;
   ctx.isNegativeReinforcementStateEnabled = currentCtx.isNegativeReinforcementStateEnabled ?? false;

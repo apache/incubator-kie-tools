@@ -33,5 +33,5 @@ export const DEFAULT_RECT: Rect = {
   top: 0,
   width: 0,
   x: 0,
-  y: 0
+  y: 0,
 };

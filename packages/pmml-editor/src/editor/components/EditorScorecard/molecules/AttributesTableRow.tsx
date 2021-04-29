@@ -27,6 +27,7 @@ import { toText } from "../organisms";
 interface AttributesTableRowProps {
   modelIndex: number;
   characteristicIndex: number;
+  characteristic: Characteristic;
   attributeIndex: number;
   attribute: Attribute;
   areReasonCodesUsed: boolean;
@@ -42,6 +43,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
   const {
     modelIndex,
     characteristicIndex,
+    characteristic,
     attributeIndex,
     attribute,
     areReasonCodesUsed,
@@ -50,7 +52,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
     miningFields,
     onEdit,
     onDelete,
-    onCommit
+    onCommit,
   } = props;
 
   const { validationRegistry } = useValidationRegistry();
@@ -73,7 +75,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
       className={`attribute-item attribute-item-n${attributeIndex} editable-item`}
       tabIndex={0}
       onClick={() => onEdit()}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
@@ -101,7 +103,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
               <Label
                 tabIndex={0}
                 color="blue"
-                onClose={e => {
+                onClose={(e) => {
                   e.nativeEvent.stopImmediatePropagation();
                   e.stopPropagation();
                   onCommit({ predicate: undefined });
@@ -116,6 +118,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
           <AttributeLabels
             modelIndex={modelIndex}
             characteristicIndex={characteristicIndex}
+            characteristic={characteristic}
             activeAttributeIndex={attributeIndex}
             activeAttribute={attribute}
             areReasonCodesUsed={areReasonCodesUsed}

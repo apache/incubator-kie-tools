@@ -39,9 +39,9 @@ export interface FontResource {
 }
 
 export interface ReferencedResource {
-  path: string,
-  prefix?: string,
-  suffix?: string
+  path: string;
+  prefix?: string;
+  suffix?: string;
 }
 
 export interface EditorResources {
@@ -63,7 +63,7 @@ export const FONT_ATTRIBUTES = new Map<string, FontSourceTypeAttributes>([
   ["woff", { mimeType: "font/woff", format: "woff" }],
   ["woff2", { mimeType: "font/woff2", format: "woff2" }],
   ["eot", { mimeType: "application/vnd.ms-fontobject", format: "embedded-opentype" }],
-  ["svg", { mimeType: "image/svg+xml", format: "svg" }]
+  ["svg", { mimeType: "image/svg+xml", format: "svg" }],
 ]);
 
 export abstract class BaseEditorResources {
@@ -78,9 +78,9 @@ export abstract class BaseEditorResources {
   public createResource(resource: ReferencedResource, escapeCharacters?: string[]) {
     let content = fs.readFileSync(resource.path).toString();
     if (escapeCharacters) {
-      escapeCharacters.forEach(character => {
+      escapeCharacters.forEach((character) => {
         content = content.replace(new RegExp("[" + character.replace(/[\\]/g, "\\\\") + "]", "gi"), "\\" + character);
-      })
+      });
     }
 
     return { path: resource.path, content: (resource.prefix ?? "") + content + (resource.suffix ?? "") };
@@ -91,7 +91,7 @@ export abstract class BaseEditorResources {
     return {
       mimeType: fontAttributes.mimeType,
       content: this.getBase64FromFile(path),
-      format: fontAttributes.format
+      format: fontAttributes.format,
     };
   }
 

@@ -57,12 +57,12 @@ describe("I18nDictionariesProvider", () => {
 
     it("should use the `en` dictionary due to the `en-US` doesn't exist and 'en' is the location prefix", () => {
       const dummyOptional: TranslatedDictionary<DummyDictionary> = {
-        welcome: "Welcome!!!"
+        welcome: "Welcome!!!",
       };
 
       const dictionaries = new Map([
         ["en", dummyOptional],
-        ["en-UK", dummyDefault]
+        ["en-UK", dummyDefault],
       ]);
 
       const { getByTestId } = render(
@@ -84,7 +84,7 @@ describe("I18nDictionariesProvider", () => {
   describe("I18nDictionariesProvider::mergeSelectedDictionaryWithDefault", () => {
     it("should override the welcome property on dummyDefault and create a new object", () => {
       const dummyOptional: TranslatedDictionary<DummyDictionary> = {
-        welcome: "Bienvenido"
+        welcome: "Bienvenido",
       };
 
       const merged = immutableDeepMerge(dummyDefault, dummyOptional);
@@ -94,25 +94,25 @@ describe("I18nDictionariesProvider", () => {
         welcome: "Bienvenido",
         modal: {
           title: "My title",
-          text: "My text"
-        }
+          text: "My text",
+        },
       });
       expect(dummyDefault).toEqual({
         greeting: interpolationFunction,
         welcome: "Welcome",
         modal: {
           title: "My title",
-          text: "My text"
-        }
+          text: "My text",
+        },
       });
       expect(dummyOptional).toEqual({
-        welcome: "Bienvenido"
+        welcome: "Bienvenido",
       });
     });
 
     it("shouldn't override the welcome property on dummyDefault", () => {
       const dummyOptional: TranslatedDictionary<DummyDictionary> = {
-        welcome: undefined
+        welcome: undefined,
       };
 
       const merged = immutableDeepMerge(dummyDefault, dummyOptional);
@@ -122,26 +122,26 @@ describe("I18nDictionariesProvider", () => {
         welcome: "Welcome",
         modal: {
           title: "My title",
-          text: "My text"
-        }
+          text: "My text",
+        },
       });
       expect(dummyDefault).toEqual({
         greeting: interpolationFunction,
         welcome: "Welcome",
         modal: {
           title: "My title",
-          text: "My text"
-        }
+          text: "My text",
+        },
       });
       expect(dummyOptional).toEqual({
-        welcome: undefined
+        welcome: undefined,
       });
     });
 
     it("should override the interpolation function", () => {
       const dummyInterpolationFunction = (name: string, lastLogin: number) => `Hi ${name}. Last login: ${lastLogin}`;
       const dummyOptional: TranslatedDictionary<DummyDictionary> = {
-        greeting: dummyInterpolationFunction
+        greeting: dummyInterpolationFunction,
       };
 
       const merged = immutableDeepMerge(dummyDefault, dummyOptional);
@@ -151,19 +151,19 @@ describe("I18nDictionariesProvider", () => {
         welcome: "Welcome",
         modal: {
           title: "My title",
-          text: "My text"
-        }
+          text: "My text",
+        },
       });
       expect(dummyDefault).toEqual({
         greeting: interpolationFunction,
         welcome: "Welcome",
         modal: {
           title: "My title",
-          text: "My text"
-        }
+          text: "My text",
+        },
       });
       expect(dummyOptional).toEqual({
-        greeting: dummyInterpolationFunction
+        greeting: dummyInterpolationFunction,
       });
     });
 
@@ -171,8 +171,8 @@ describe("I18nDictionariesProvider", () => {
       const dummyOptional: TranslatedDictionary<DummyDictionary> = {
         welcome: "Bienvenido",
         modal: {
-          title: "Mi título"
-        }
+          title: "Mi título",
+        },
       };
 
       const merged = immutableDeepMerge(dummyDefault, dummyOptional);
@@ -182,30 +182,30 @@ describe("I18nDictionariesProvider", () => {
         welcome: "Bienvenido",
         modal: {
           title: "Mi título",
-          text: "My text"
-        }
+          text: "My text",
+        },
       });
       expect(dummyDefault).toEqual({
         greeting: interpolationFunction,
         welcome: "Welcome",
         modal: {
           title: "My title",
-          text: "My text"
-        }
+          text: "My text",
+        },
       });
       expect(dummyOptional).toEqual({
         welcome: "Bienvenido",
         modal: {
-          title: "Mi título"
-        }
+          title: "Mi título",
+        },
       });
     });
 
     it("shouldn't override the nested object with a undefined value", () => {
       const dummyOptional: TranslatedDictionary<DummyDictionary> = {
         modal: {
-          title: undefined
-        }
+          title: undefined,
+        },
       };
 
       const merged = immutableDeepMerge(dummyDefault, dummyOptional);
@@ -215,21 +215,21 @@ describe("I18nDictionariesProvider", () => {
         welcome: "Welcome",
         modal: {
           title: "My title",
-          text: "My text"
-        }
+          text: "My text",
+        },
       });
       expect(dummyDefault).toEqual({
         greeting: interpolationFunction,
         welcome: "Welcome",
         modal: {
           title: "My title",
-          text: "My text"
-        }
+          text: "My text",
+        },
       });
       expect(dummyOptional).toEqual({
         modal: {
-          title: undefined
-        }
+          title: undefined,
+        },
       });
     });
   });

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from "lodash";
 import { ModelConversionTool } from "../ModelConversionTool";
 
 const schema = {
@@ -26,16 +26,16 @@ const schema = {
     age: { type: "integer" },
     date: {
       type: "string",
-      format: "date-time"
+      format: "date-time",
     },
     nested: {
       type: "object",
       properties: {
         date: {
           type: "string",
-          format: "date-time"
-        }
-      }
+          format: "date-time",
+        },
+      },
     },
     children: {
       type: "array",
@@ -44,12 +44,12 @@ const schema = {
         properties: {
           date: {
             type: "string",
-            format: "date-time"
-          }
-        }
-      }
-    }
-  }
+            format: "date-time",
+          },
+        },
+      },
+    },
+  },
 };
 
 const currentDate = new Date();
@@ -64,19 +64,19 @@ function getModel(dateValue: Date | string): any {
     age: 27,
     date: dateValue,
     nested: {
-      date: dateValue
+      date: dateValue,
     },
     children: [
       {
-        date: dateValue
+        date: dateValue,
       },
       {
-        date: dateValue
+        date: dateValue,
       },
       {
-        date: dateValue
-      }
-    ]
+        date: dateValue,
+      },
+    ],
   };
 }
 
@@ -101,7 +101,7 @@ function testModel(
 
   expect(convertedModel.children).not.toBeNull();
   expect(convertedModel.children).toHaveLength(3);
-  convertedModel.children.forEach((child: { date: any; }) => {
+  convertedModel.children.forEach((child: { date: any }) => {
     expect(child).not.toBeNull();
     expect(child.date).toStrictEqual(convertedDateValue);
   });
@@ -120,7 +120,7 @@ describe("Model Conversion  tests", () => {
     );
   });
 
-  it('Empty schema conversion', () => {
+  it("Empty schema conversion", () => {
     const model = getModel(currentDate);
     const formSchema = cloneDeep(schema);
     delete formSchema.properties;

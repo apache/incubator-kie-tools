@@ -1,13 +1,44 @@
-node_modules/
-dist/
-coverage/
+**/node_modules/
+**/dist/
+**/coverage/
 **/target/
-out/
-.idea
+**/out/
+**/.idea/
 **/.DS_Store
 *.log
-.vscode/
+**/.vscode/
 .classpath
 .project
-.settings/
+**/.settings/
 package-lock.json
+
+## chrome-extension-pack-kogito-kie-editors
+**/logs/
+**/screenshots/
+
+## guided-tour
+# builds
+**/build
+**/.rpt2_cache
+
+# misc
+**/.DS_Store
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+
+## kie-editors-standalone
+**/it-tests/**/videos
+**/it-tests/**/screenshots
+**/it-tests/**/results
+
+## online-editor
+**/videos/
+
+## vscode-*
+**/.vscode-test/
+*.vsix
+*.dockerimage
+**/test-resources/

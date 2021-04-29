@@ -23,18 +23,18 @@ const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebp
 module.exports = [
   merge(common, {
     entry: {
-      index: "./src/index.ts"
+      index: "./src/index.ts",
     },
     output: {
-      libraryTarget: "commonjs2"
+      libraryTarget: "commonjs2",
     },
-    externals: [nodeExternals({ modulesDir: "../../node_modules" })]
+    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   }),
   merge(common, {
     entry: {
-      "envelope-dist/envelope": "./src/envelope/envelope.ts"
+      "envelope-dist/envelope": "./src/envelope/envelope.ts",
     },
     plugins: [new CopyPlugin([{ from: "./static/envelope", to: "./envelope-dist" }])],
-    module: { rules: [...pfWebpackOptions.patternflyRules] }
-  })
+    module: { rules: [...pfWebpackOptions.patternflyRules] },
+  }),
 ];

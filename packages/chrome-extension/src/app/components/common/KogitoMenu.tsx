@@ -54,7 +54,7 @@ export function KogitoMenu() {
     });
   }, []);
 
-  const onPaste = useCallback(e => {
+  const onPaste = useCallback((e) => {
     const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
     setPotentialToken(token);
     setTimeout(async () => {

@@ -22,13 +22,13 @@ export function messageBusClientApiMock<T extends ApiDefinition<T>>(): MessageBu
   const proxyMock = new Proxy({} as any, {
     get: (target, name) => {
       return mocks.get(name) ?? mocks.set(name, jest.fn()).get(name);
-    }
+    },
   });
 
   return {
     notifications: proxyMock,
     requests: proxyMock,
     subscribe: jest.fn(),
-    unsubscribe: jest.fn()
+    unsubscribe: jest.fn(),
   };
 }

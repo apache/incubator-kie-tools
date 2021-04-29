@@ -97,14 +97,14 @@ export function EditorPage(props: Props) {
   }, []);
 
   const requestSave = useCallback(() => {
-    editor?.getContent().then(content => {
+    editor?.getContent().then((content) => {
       window.dispatchEvent(
         new CustomEvent("saveOnlineEditor", {
           detail: {
             fileName: `${context.file.fileName}.${context.file.fileExtension}`,
             fileContent: content,
-            senderTabId: context.senderTabId!
-          }
+            senderTabId: context.senderTabId!,
+          },
         })
       );
     });
@@ -113,7 +113,7 @@ export function EditorPage(props: Props) {
   const requestDownload = useCallback(() => {
     editor?.getStateControl().setSavedCommand();
     setAlert(Alerts.NONE);
-    editor?.getContent().then(content => {
+    editor?.getContent().then((content) => {
       if (downloadRef.current) {
         const fileBlob = new Blob([content], { type: "text/plain" });
         downloadRef.current.href = URL.createObjectURL(fileBlob);
@@ -123,7 +123,7 @@ export function EditorPage(props: Props) {
   }, [editor]);
 
   const requestPreview = useCallback(() => {
-    editor?.getPreview().then(previewSvg => {
+    editor?.getPreview().then((previewSvg) => {
       if (downloadPreviewRef.current && previewSvg) {
         const fileBlob = new Blob([previewSvg], { type: "image/svg+xml" });
         downloadPreviewRef.current.href = URL.createObjectURL(fileBlob);
@@ -182,7 +182,7 @@ export function EditorPage(props: Props) {
           filename: `${context.file.fileName}.${context.file.fileExtension}`,
           content: content,
           description: `${context.file.fileName}.${context.file.fileExtension}`,
-          isPublic: true
+          isPublic: true,
         });
 
         setAlert(Alerts.NONE);
@@ -214,7 +214,7 @@ export function EditorPage(props: Props) {
   }, []);
 
   const requestCopyContentToClipboard = useCallback(() => {
-    editor?.getContent().then(content => {
+    editor?.getContent().then((content) => {
       if (copyContentTextArea.current) {
         copyContentTextArea.current.value = content;
         copyContentTextArea.current.select();

@@ -57,7 +57,7 @@ test("BPMN from source", async () => {
 
   // check node names
   const nodes = await client.$$("[data-ouia-component-type='tree-item'] a");
-  const nodeNames = await Promise.all(nodes.map(async n => await n.getText()));
+  const nodeNames = await Promise.all(nodes.map(async (n) => await n.getText()));
   expect(nodeNames).toEqual(["myProcess", "MyStart", "MyTask", "MyEnd"]);
 
   // open properties panel
@@ -126,7 +126,7 @@ test("DMN from source", async () => {
   const dmnNodes = await client.$$(
     "[data-i18n-prefix='DecisionNavigatorTreeView.'] > div > span[data-field='text-content']"
   );
-  const nodeNames = await Promise.all(dmnNodes.map(async i => await i.getText()));
+  const nodeNames = await Promise.all(dmnNodes.map(async (i) => await i.getText()));
   expect(nodeNames).toEqual(["myDmn", "MyDecision", "MyInputData", "MyModel", "Function"]);
 
   // open properties panel

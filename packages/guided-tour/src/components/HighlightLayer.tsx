@@ -28,7 +28,7 @@ export const HighlightLayer = () => {
     currentStep,
     currentRefElementPosition,
     isHighlightLayerEnabled,
-    isNegativeReinforcementStateEnabled
+    isNegativeReinforcementStateEnabled,
   } = useContext(CurrentTutorialContext);
 
   const step = useMemo(() => getCurrentStep(currentStep, currentTutorial), [currentStep, currentTutorial]);

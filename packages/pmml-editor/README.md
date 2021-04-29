@@ -11,4 +11,3 @@ Nothing should be considered concrete at this point.
 In order to run:
 
 `yarn run start`
-

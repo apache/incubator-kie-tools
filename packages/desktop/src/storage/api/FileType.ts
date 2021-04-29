@@ -16,5 +16,5 @@
 
 export enum FileType {
   FOLDER = "folder",
-  FILE = "file"
+  FILE = "file",
 }

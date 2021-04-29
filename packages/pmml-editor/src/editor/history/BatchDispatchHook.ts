@@ -29,8 +29,8 @@ export const useBatchDispatch = (service: HistoryService, getCurrentState: () =>
     dispatch({
       type: Actions.Refresh,
       payload: {
-        pmml: service.commit(getCurrentState())
-      }
+        pmml: service.commit(getCurrentState()),
+      },
     });
 
     return result;

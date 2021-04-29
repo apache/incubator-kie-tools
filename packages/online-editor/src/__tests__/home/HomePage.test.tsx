@@ -28,8 +28,8 @@ jest.mock("react-router", () => {
   return {
     ...ActualReactRouter,
     useHistory: () => ({
-      push: mockHistoryPush
-    })
+      push: mockHistoryPush,
+    }),
   };
 });
 
@@ -53,7 +53,7 @@ describe("HomePage", () => {
 
         const invalidUrls = [".", "something", "something.com"];
 
-        invalidUrls.forEach(url => {
+        invalidUrls.forEach((url) => {
           fireEvent.change(getByTestId("url-text-input"), { target: { value: url } });
           expect(getByText(`This URL is not valid (don't forget "https://"!).`)).toBeTruthy();
         });
@@ -69,10 +69,10 @@ describe("HomePage", () => {
         const urlsInvalidFileExtension = [
           "https://github.com/something.test",
           "https://github.com/test/test/blob/test/README.md",
-          "https://dropbox.com/test.png"
+          "https://dropbox.com/test.png",
         ];
 
-        urlsInvalidFileExtension.forEach(url => {
+        urlsInvalidFileExtension.forEach((url) => {
           fireEvent.change(getByTestId("url-text-input"), { target: { value: url } });
           expect(getByText(`File type on the provided URL is not supported.`)).toBeTruthy();
         });
@@ -91,7 +91,7 @@ describe("HomePage", () => {
         const urlsNotFound = [
           "https://github.com/test/test/test.dmn",
           "https://github.com/test/test/test.bpmn",
-          "https://github.com/test/test/test.bpmn2"
+          "https://github.com/test/test/test.bpmn2",
         ];
 
         for (const url of urlsNotFound) {
@@ -113,7 +113,7 @@ describe("HomePage", () => {
         const urlsNotFound = [
           "https://dl.dropboxusercontent.com/s/teste/teste.dmn",
           "https://dl.dropboxusercontent.com/s/teste/teste.bpmn",
-          "https://dl.dropboxusercontent.com/s/teste/teste.bpmn2"
+          "https://dl.dropboxusercontent.com/s/teste/teste.bpmn2",
         ];
 
         for (const url of urlsNotFound) {
@@ -157,7 +157,11 @@ describe("HomePage", () => {
         );
 
         fireEvent.change(getByTestId("url-text-input"), { target: { value: "https://gist.github.com/test/aaaa" } });
-        expect(await findByText(`Enter a valid gist URL. If you're using a specific gist URL remember its name can't have whitespaces and upper-case letters.`)).toBeTruthy();
+        expect(
+          await findByText(
+            `Enter a valid gist URL. If you're using a specific gist URL remember its name can't have whitespaces and upper-case letters.`
+          )
+        ).toBeTruthy();
       });
 
       test("should show an invalid gist error - file type", async () => {
@@ -223,7 +227,7 @@ describe("HomePage", () => {
         );
 
         fireEvent.change(getByTestId("url-text-input"), {
-          target: { value: "https://dl.dropboxusercontent.com/s/teste/teste.dmn" }
+          target: { value: "https://dl.dropboxusercontent.com/s/teste/teste.dmn" },
         });
         await waitFor(() => expect(getByTestId("open-url-button")).not.toHaveAttribute("disable"));
 

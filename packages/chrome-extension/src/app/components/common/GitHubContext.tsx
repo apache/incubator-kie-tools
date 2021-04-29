@@ -46,16 +46,13 @@ export function getCookie(name: string) {
   const parts = value.split("; " + name + "=");
 
   if (parts.length === 2) {
-    return parts
-      .pop()!
-      .split(";")
-      .shift();
+    return parts.pop()!.split(";").shift();
   }
 }
 
 let octokitInstance: Octokit;
 
-export const GitHubContextProvider: React.FC<{}> = props => {
+export const GitHubContextProvider: React.FC<{}> = (props) => {
   const globals = useGlobals();
   const [ready, setReady] = useState(false);
   const [token, setToken] = useState(getCookie(globals.githubAuthTokenCookieName));

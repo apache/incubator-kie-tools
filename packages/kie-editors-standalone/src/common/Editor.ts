@@ -56,10 +56,15 @@ export const createEditor = (
       stateControl.redo();
       return Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorRedo());
     },
-    getContent: () => envelopeServer.envelopeApi.requests.receive_contentRequest().then(c => c.content),
+    getContent: () => envelopeServer.envelopeApi.requests.receive_contentRequest().then((c) => c.content),
     getPreview: () => envelopeServer.envelopeApi.requests.receive_previewRequest(),
-    setContent: async (content: string) =>
-      envelopeServer.envelopeApi.notifications.receive_contentChanged({ content: content }),
+    setContent: (path: string, content: string) =>
+      Promise.resolve(
+        envelopeServer.envelopeApi.notifications.receive_contentChanged({
+          path: path,
+          content: content,
+        })
+      ),
     subscribeToContentChanges: (callback: (isDirty: boolean) => void) => stateControl.subscribe(callback),
     unsubscribeToContentChanges: (callback: (isDirty: boolean) => void) => stateControl.unsubscribe(callback),
     markAsSaved: () => stateControl.setSavedCommand(),
@@ -70,6 +75,6 @@ export const createEditor = (
     },
     validate: () => {
       return envelopeServer.envelopeApi.requests.validate();
-    }
+    },
   };
 };

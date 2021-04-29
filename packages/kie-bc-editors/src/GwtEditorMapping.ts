@@ -20,16 +20,16 @@ import { GwtLanguageData } from "./GwtLanguageData";
 export const editors = {
   dmn: {
     id: "DMNDiagramEditor",
-    name: "org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp"
+    name: "org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp",
   },
   bpmn: {
     id: "BPMNDiagramEditor",
-    name: "org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor"
+    name: "org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor",
   },
   scesim: {
     id: "ScenarioSimulationEditor",
-    name: "org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime"
-  }
+    name: "org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime",
+  },
 };
 
 export class GwtEditorMapping {
@@ -41,7 +41,7 @@ export class GwtEditorMapping {
       resources: [
         {
           type: "css",
-          paths: [`${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/css/patternfly.min.css`]
+          paths: [`${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/css/patternfly.min.css`],
         },
         {
           type: "js",
@@ -49,10 +49,10 @@ export class GwtEditorMapping {
             `${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/ace/ace.js`,
             `${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/ace/mode-xml.js`,
             `${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/ace/theme-chrome.js`,
-            `${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/${editors.bpmn.name}.nocache.js`
-          ]
-        }
-      ]
+            `${editorInitArgs.resourcesPathPrefix}/${editors.bpmn.name}/${editors.bpmn.name}.nocache.js`,
+          ],
+        },
+      ],
     };
     const dmnLanguageData: GwtLanguageData = {
       type: "gwt",
@@ -61,7 +61,7 @@ export class GwtEditorMapping {
       resources: [
         {
           type: "css",
-          paths: [`${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/css/patternfly.min.css`]
+          paths: [`${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/css/patternfly.min.css`],
         },
         {
           type: "js",
@@ -76,10 +76,10 @@ export class GwtEditorMapping {
             `${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/ace/ace.js`,
             `${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/ace/mode-xml.js`,
             `${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/ace/theme-chrome.js`,
-            `${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/${editors.dmn.name}.nocache.js`
-          ]
-        }
-      ]
+            `${editorInitArgs.resourcesPathPrefix}/${editors.dmn.name}/${editors.dmn.name}.nocache.js`,
+          ],
+        },
+      ],
     };
     const scesimLanguageData: GwtLanguageData = {
       type: "gwt",
@@ -88,7 +88,7 @@ export class GwtEditorMapping {
       resources: [
         {
           type: "css",
-          paths: [`${editorInitArgs.resourcesPathPrefix}/${editors.scesim.name}/css/patternfly.min.css`]
+          paths: [`${editorInitArgs.resourcesPathPrefix}/${editors.scesim.name}/css/patternfly.min.css`],
         },
         {
           type: "js",
@@ -102,17 +102,17 @@ export class GwtEditorMapping {
             `${editorInitArgs.resourcesPathPrefix}/model/MainJs.js`,
             `${editorInitArgs.resourcesPathPrefix}/model/SCESIM.js`,
             `${editorInitArgs.resourcesPathPrefix}/model/SCESIMMainJs.js`,
-            `${editorInitArgs.resourcesPathPrefix}/${editors.scesim.name}/${editors.scesim.name}.nocache.js`
-          ]
-        }
-      ]
+            `${editorInitArgs.resourcesPathPrefix}/${editors.scesim.name}/${editors.scesim.name}.nocache.js`,
+          ],
+        },
+      ],
     };
 
     return new Map<string, GwtLanguageData>([
       ["dmn", dmnLanguageData],
       ["bpmn", bpmnLanguageData],
       ["bpmn2", bpmnLanguageData],
-      ["scesim", scesimLanguageData]
+      ["scesim", scesimLanguageData],
     ]).get(editorInitArgs.fileExtension);
   }
 }

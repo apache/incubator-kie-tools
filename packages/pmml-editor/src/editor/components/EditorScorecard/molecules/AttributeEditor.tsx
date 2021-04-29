@@ -23,7 +23,7 @@ import {
   Model,
   PMML,
   Predicate,
-  Scorecard
+  Scorecard,
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { HelpIcon } from "@patternfly/react-icons";
 import { PredicateEditor } from "./PredicateEditor";
@@ -84,7 +84,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
 
   const commit = (partial: Partial<AttributeEditorContent>) => {
     const existingPartial: Partial<AttributeEditorContent> = {};
-    Object.keys(partial).forEach(key => set(existingPartial, key, get(attribute, key)));
+    Object.keys(partial).forEach((key) => set(existingPartial, key, get(attribute, key)));
 
     if (!isEqual(partial, existingPartial)) {
       onCommit(attributeIndex, { ...attribute, ...partial });
@@ -103,7 +103,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
     },
     {
       disabled: activeOperation !== Operation.UPDATE_ATTRIBUTE,
-      eventTypes: ["mousedown"]
+      eventTypes: ["mousedown"],
     }
   );
 
@@ -221,7 +221,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     >
                       <button
                         aria-label="More information for Partial Score"
-                        onClick={e => e.preventDefault()}
+                        onClick={(e) => e.preventDefault()}
                         className="pf-c-form__group-label-help"
                       >
                         <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
@@ -235,7 +235,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     name="attribute-reason-code"
                     aria-describedby="attribute-reason-code-helper"
                     value={reasonCode ?? ""}
-                    onChange={e => setReasonCode(e)}
+                    onChange={(e) => setReasonCode(e)}
                     onBlur={() => {
                       commit({ reasonCode: reasonCode !== "" ? reasonCode : undefined });
                     }}
@@ -262,7 +262,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     >
                       <button
                         aria-label="More information for Partial Score"
-                        onClick={e => e.preventDefault()}
+                        onClick={(e) => e.preventDefault()}
                         className="pf-c-form__group-label-help"
                       >
                         <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
@@ -276,10 +276,10 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     name="attribute-partial-score"
                     aria-describedby="attribute-partial-score-helper"
                     value={partialScore ?? ""}
-                    onChange={e => setPartialScore(toNumber(e))}
+                    onChange={(e) => setPartialScore(toNumber(e))}
                     onBlur={() => {
                       commit({
-                        partialScore: partialScore
+                        partialScore: partialScore,
                       });
                     }}
                     validated={partialScoreValidation.length > 0 ? "warning" : "default"}

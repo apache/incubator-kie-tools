@@ -53,7 +53,7 @@ export const SingleEditorRouter = (props: SingleEditorRouterProps) => {
   return (
     <div
       tabIndex={-1}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === "Escape") {
           setActiveOperation(Operation.NONE);
         }

@@ -21,9 +21,9 @@ const schema = {
   properties: {
     name: { type: "string" },
     lastName: { type: "string" },
-    age: { type: "integer", minimum: 18 }
+    age: { type: "integer", minimum: 18 },
   },
-  required: ["name", "lastName"]
+  required: ["name", "lastName"],
 };
 
 const validator = new DefaultFormValidator(schema);
@@ -33,14 +33,14 @@ describe("Model Conversion  tests", () => {
     const model = {
       name: "John",
       lastName: "Doe",
-      age: 27
+      age: 27,
     };
     expect(validator.validate(model)).toBeUndefined();
   });
 
   test("Test model validation with errors", () => {
     const model = {
-      age: 10
+      age: 10,
     };
     expect(validator.validate(model)).not.toBeUndefined();
   });

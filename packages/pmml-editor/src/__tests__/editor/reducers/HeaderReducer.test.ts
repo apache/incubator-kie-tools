@@ -28,8 +28,8 @@ describe("HeaderReducer::Valid actions", () => {
     reducer(header, {
       type: Actions.SetHeaderDescription,
       payload: {
-        description: "description"
-      }
+        description: "description",
+      },
     });
 
     const updated: Header = service.commit(pmml)?.Header as Header;
@@ -44,8 +44,8 @@ describe("HeaderReducer::Invalid actions", () => {
     const updated: Header = reducer(header, {
       type: Actions.SetVersion,
       payload: {
-        version: "1.0"
-      }
+        version: "1.0",
+      },
     });
     expect(updated).toEqual(header);
   });

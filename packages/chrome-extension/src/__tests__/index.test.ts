@@ -31,7 +31,7 @@ describe("extractFileInfoFromUrl", () => {
       gitRef: "my-branch",
       repo: "repo",
       org: "org",
-      path: "this/is/a/foo.test"
+      path: "this/is/a/foo.test",
     });
   });
 });

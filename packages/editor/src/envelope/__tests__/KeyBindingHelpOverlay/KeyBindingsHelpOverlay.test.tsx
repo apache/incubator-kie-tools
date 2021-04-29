@@ -33,8 +33,8 @@ describe("KeyBindingsHelpOverlay", () => {
           context: context,
           services: {
             ...DEFAULT_TESTING_ENVELOPE_CONTEXT.services,
-            keyboardShortcuts: keyboardShortcutsService
-          }
+            keyboardShortcuts: keyboardShortcutsService,
+          },
         }).wrapper
       ).wrapper
     );

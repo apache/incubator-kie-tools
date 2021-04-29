@@ -36,15 +36,15 @@ const en: MyDictionary = {
   myWord: "My word",
   myCurrentLocale: (locale: string) => `My current locale is: ${locale}`,
   myNestedObject: {
-    myNestedWord: `My ${"Nested".bold()} word`
-  }
+    myNestedWord: `My ${"Nested".bold()} word`,
+  },
 };
 ```
 
 - Create a dictionary that use the `TranslatedDictionary<MyDictionary>` type.
 
-*The `TranslatedDictionary<D>` has the same keys of the `MyDictionary`, but they're optionals.
-The `TransletedDictionary` values override the default values on the `MyDictionary`, which prevents any missing translation.*
+_The `TranslatedDictionary<D>` has the same keys of the `MyDictionary`, but they're optionals.
+The `TransletedDictionary` values override the default values on the `MyDictionary`, which prevents any missing translation._
 
 ```tsx
 "./i18n/locales/pt_BR.ts";
@@ -65,14 +65,14 @@ export const myI18nDefaults: I18nDefaults<MyDictionary> = { locale: "en", dictio
 // It's reccomended that the key follows the BCP-47 standard to be compatible with the browser locale
 export const myI18nDictionaries: I18nDictionaries<MyDictionary> = new Map([
   ["en", en],
-  ["pt-BR", pt_BR]
+  ["pt-BR", pt_BR],
 ]);
 ```
 
 - Use `I18n` on the top-level of your application and pass it down to your functions which uses i18n.
 
 ```ts
-const my18n = new I18n(myI18nDefaults, myI18nDictionaries)
+const my18n = new I18n(myI18nDefaults, myI18nDictionaries);
 
 // Using the custom hook created on ./i18n/locales/index.ts
 function myFunction(myI18n: I18n) {

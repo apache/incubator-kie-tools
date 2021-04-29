@@ -29,14 +29,14 @@ interface Props {
 
 enum NavItems {
   FILES,
-  LEARN_MORE
+  LEARN_MORE,
 }
 
 enum NavState {
   MANUAL_OPEN,
   MANUAL_CLOSE,
   RESIZED_OPEN,
-  RESIZED_CLOSE
+  RESIZED_CLOSE,
 }
 
 export function HomePage(props: Props) {
@@ -44,21 +44,15 @@ export function HomePage(props: Props) {
   const [navState, setNavState] = useState(NavState.RESIZED_OPEN);
   const { i18n } = useDesktopI18n();
 
-  const onNavSelect = useCallback(selectedItem => {
+  const onNavSelect = useCallback((selectedItem) => {
     setActiveNavItem(selectedItem.itemId);
   }, []);
 
   const onPageResize = useCallback(
     ({ mobileView }) => {
-      if (
-        mobileView &&
-        ((navState !== NavState.MANUAL_OPEN && navState !== NavState.MANUAL_CLOSE))
-      ) {
+      if (mobileView && navState !== NavState.MANUAL_OPEN && navState !== NavState.MANUAL_CLOSE) {
         setNavState(NavState.RESIZED_CLOSE);
-      } else if (
-        !mobileView &&
-        ((navState !== NavState.MANUAL_CLOSE && navState !== NavState.MANUAL_OPEN))
-      ) {
+      } else if (!mobileView && navState !== NavState.MANUAL_CLOSE && navState !== NavState.MANUAL_OPEN) {
         setNavState(NavState.RESIZED_OPEN);
       }
     },

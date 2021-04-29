@@ -33,18 +33,18 @@ interface StandaloneConfigs {
 const editorStandaloneClassMapping = new Map<SupportedStandaloneEditorFileExtensions, StandaloneConfigs>([
   [
     "bpmn",
-    { libraryName: "BpmnEditor", scriptUrl: "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js" }
+    { libraryName: "BpmnEditor", scriptUrl: "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js" },
   ],
   [
     "bpmn2",
-    { libraryName: "BpmnEditor", scriptUrl: "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js" }
+    { libraryName: "BpmnEditor", scriptUrl: "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js" },
   ],
-  ["dmn", { libraryName: "DmnEditor", scriptUrl: "https://kiegroup.github.io/kogito-online/standalone/dmn/index.js" }]
+  ["dmn", { libraryName: "DmnEditor", scriptUrl: "https://kiegroup.github.io/kogito-online/standalone/dmn/index.js" }],
 ]);
 
 enum ContentSource {
   CURRENT_CONTENT,
-  GIST
+  GIST,
 }
 
 interface Props {
@@ -141,11 +141,11 @@ export function EmbedModal(props: Props) {
     getGithubGistScript,
     getCurrentContentScript,
     getStandaloneEditorIframeSrcdoc,
-    isSupportedStandaloneEditorFileExtensions
+    isSupportedStandaloneEditorFileExtensions,
   ]);
 
   useEffect(() => {
-    getStandaloneEditorIframeOuterHtml().then(outerHtml => setEmbedCode(outerHtml));
+    getStandaloneEditorIframeOuterHtml().then((outerHtml) => setEmbedCode(outerHtml));
   }, [getStandaloneEditorIframeOuterHtml]);
 
   return (
@@ -159,7 +159,7 @@ export function EmbedModal(props: Props) {
       actions={[
         <Button key="cancel" variant="link" onClick={props.onClose}>
           {i18n.terms.close}
-        </Button>
+        </Button>,
       ]}
     >
       <Radio

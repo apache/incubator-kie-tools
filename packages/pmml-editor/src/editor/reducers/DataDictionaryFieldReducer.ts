@@ -23,7 +23,7 @@ import {
   shouldConstraintsBeCleared,
   validateDataField,
   validateDataFields,
-  ValidationRegistry
+  ValidationRegistry,
 } from "../validation";
 import { Builder } from "../paths";
 
@@ -36,9 +36,7 @@ interface DataDictionaryFieldPayload {
   };
 }
 
-export type DataDictionaryFieldActions = ActionMap<DataDictionaryFieldPayload>[keyof ActionMap<
-  DataDictionaryFieldPayload
->];
+export type DataDictionaryFieldActions = ActionMap<DataDictionaryFieldPayload>[keyof ActionMap<DataDictionaryFieldPayload>];
 
 export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField[], DataDictionaryFieldActions> = (
   historyService: HistoryService,
@@ -52,11 +50,8 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
 
         historyService.batch(
           state,
-          Builder()
-            .forDataDictionary()
-            .forDataField()
-            .build(),
-          draft => {
+          Builder().forDataDictionary().forDataField().build(),
+          (draft) => {
             if (dataDictionaryIndex >= 0 && dataDictionaryIndex < draft.length) {
               if (
                 shouldConstraintsBeCleared(
@@ -70,7 +65,7 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
                 // for non cyclic data types or for types different from ordinal strings)
                 delete dataField.Interval;
                 dataField.Value = dataField.Value?.filter(
-                  value => value.property === "invalid" || value.property === "missing"
+                  (value) => value.property === "invalid" || value.property === "missing"
                 );
               }
 
@@ -96,24 +91,14 @@ export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField
             }
           },
           () => {
-            validationRegistry.clear(
-              Builder()
-                .forDataDictionary()
-                .forDataField(dataDictionaryIndex)
-                .build()
-            );
+            validationRegistry.clear(Builder().forDataDictionary().forDataField(dataDictionaryIndex).build());
             validateDataField(dataField, dataDictionaryIndex, validationRegistry);
           }
         );
         break;
 
       case Actions.Validate:
-        validationRegistry.clear(
-          Builder()
-            .forDataDictionary()
-            .forDataField()
-            .build()
-        );
+        validationRegistry.clear(Builder().forDataDictionary().forDataField().build());
         validateDataFields(state, validationRegistry);
     }
 

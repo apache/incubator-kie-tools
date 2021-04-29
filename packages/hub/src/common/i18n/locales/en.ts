@@ -23,14 +23,14 @@ export const en: HubI18n = {
     launching: {
       title: `Error while launching ${en_common.names.businessModeler.hub}. This is a known issue on ${en_common.names.macos}.`,
       try: "Try again after executing the command below on a Terminal window.",
-      directory: `You have to be at the same directory as '${en_common.names.businessModeler.hub}.app'.`
-    }
+      directory: `You have to be at the same directory as '${en_common.names.businessModeler.hub}.app'.`,
+    },
   },
   vscode: {
     title: `${en_common.names.kogito} Bundle ${en_common.names.vscode} extension`,
     description: `Launches ${en_common.names.vscode} ready to use with ${en_common.names.kogito} ${en_common.names.bpmn}, ${en_common.names.dmn} and ${en_common.names.testScenario} Editors`,
     installed: "Installed",
-    uninstalling: "Uninstalling"
+    uninstalling: "Uninstalling",
   },
   chromeExtension: {
     title: `${en_common.names.bpmn}, ${en_common.names.dmn} and ${en_common.names.testScenario} Editors for ${en_common.names.github}`,
@@ -43,23 +43,23 @@ export const en: HubI18n = {
       alreadyHaveChrome: `If you already have the ${en_common.names.chrome} browser or have just downloaded it, follow this steps`,
       firstStep: {
         firstPart: `Open the ${en_common.names.chromeExtensionName} on the`,
-        secondPart: `using your ${en_common.names.chrome} browser`
+        secondPart: `using your ${en_common.names.chrome} browser`,
       },
       secondStep: `Click on "Add to ${en_common.names.chrome}".`,
       thirdStep: "Read the permissions and in case you agree, click on “Add Extension”",
       done: {
         firstPart: "Done! You can go to",
-        secondPart: "now and start using it."
-      }
-    }
+        secondPart: "now and start using it.",
+      },
+    },
   },
   desktop: {
     title: `${en_common.names.businessModeler.desktop}`,
-    description: `Launches the desktop version of ${en_common.names.businessModeler.online}`
+    description: `Launches the desktop version of ${en_common.names.businessModeler.online}`,
   },
   online: {
     title: `${en_common.names.businessModeler.online}`,
-    description: `Navigates to the Online Modeler Preview site`
+    description: `Navigates to the Online Modeler Preview site`,
   },
-  noUpdates: "No updates available"
+  noUpdates: "No updates available",
 };

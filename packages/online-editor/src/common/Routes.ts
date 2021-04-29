@@ -54,7 +54,11 @@ export class EditorRoute implements Route<EditorRouteArgs> {
   }
 
   private getFileExtension(url: string) {
-    return url.split("/").pop()?.match(/[\w\d]+/)?.pop();
+    return url
+      .split("/")
+      .pop()
+      ?.match(/[\w\d]+/)
+      ?.pop();
   }
 }
 

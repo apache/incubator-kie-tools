@@ -97,7 +97,7 @@ export class VsCodeBackendProxy extends BackendProxy {
 
     vscode.window
       .showInformationMessage(i18n.installBackendExtensionMessage, i18n.installExtension, i18n.dontShowAgain)
-      .then(async selection => {
+      .then(async (selection) => {
         if (!selection) {
           return;
         }
@@ -122,7 +122,7 @@ export class VsCodeBackendProxy extends BackendProxy {
 
     vscode.window
       .showInformationMessage(i18n.installBackendExtensionMessage, i18n.installExtension)
-      .then(async selection => {
+      .then(async (selection) => {
         if (!selection) {
           return;
         }

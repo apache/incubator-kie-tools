@@ -34,7 +34,7 @@ export const I18nDictionariesProvider = <D extends ReferenceDictionary<D>>(props
 
   const setNewLocale = useCallback((newLocale: string) => {
     i18n.setLocale(newLocale);
-    setLocale(newLocale)
+    setLocale(newLocale);
   }, []);
 
   return (

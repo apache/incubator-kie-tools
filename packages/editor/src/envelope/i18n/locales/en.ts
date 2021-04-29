@@ -23,15 +23,15 @@ export const en: EditorEnvelopeI18n = {
     title: "Keyboard shortcuts",
     categories: {
       edit: "Edit",
-      help: "Help"
+      help: "Help",
     },
     commands: {
       undo: "Undo last edit",
       redo: "Redo last edit",
-      showKeyboardOverlay: "Show keyboard shortcuts"
-    }
+      showKeyboardOverlay: "Show keyboard shortcuts",
+    },
   },
   loadingScreen: {
-    loading: "Loading..."
-  }
+    loading: "Loading...",
+  },
 };

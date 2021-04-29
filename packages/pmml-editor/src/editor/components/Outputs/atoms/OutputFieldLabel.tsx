@@ -32,7 +32,7 @@ export const OutputFieldLabel = (name: string, value: any, onClose?: () => void)
         <Label
           color="cyan"
           className="output-fields-list__item__label"
-          onClose={e => {
+          onClose={(e) => {
             e.nativeEvent.stopImmediatePropagation();
             onClose();
           }}

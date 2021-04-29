@@ -17,9 +17,9 @@
 import { PMMLModelData } from "./PMMLModelData";
 
 export class PMMLDocumentData {
-    public readonly models: PMMLModelData[];
+  public readonly models: PMMLModelData[];
 
-    constructor(models: PMMLModelData[]) {
-        this.models = models;
-    }
+  constructor(models: PMMLModelData[]) {
+    this.models = models;
+  }
 }

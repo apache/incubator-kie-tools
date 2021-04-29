@@ -21,7 +21,7 @@ import {
   MiningField,
   Model,
   PMML,
-  Scorecard
+  Scorecard,
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { AttributesTableRow } from "../molecules";
 import "./AttributesTable.scss";
@@ -47,7 +47,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
     areReasonCodesUsed,
     viewAttribute,
     deleteAttribute,
-    onCommit
+    onCommit,
   } = props;
 
   const { setActiveOperation } = useOperation();
@@ -82,6 +82,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
             key={index}
             modelIndex={modelIndex}
             characteristicIndex={characteristicIndex}
+            characteristic={characteristic}
             attributeIndex={index}
             attribute={attribute}
             areReasonCodesUsed={areReasonCodesUsed}
@@ -90,7 +91,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
             miningFields={miningFields}
             onEdit={() => onEdit(index)}
             onDelete={() => onDelete(index)}
-            onCommit={partial => onCommit(index, partial)}
+            onCommit={(partial) => onCommit(index, partial)}
           />
         );
       })}

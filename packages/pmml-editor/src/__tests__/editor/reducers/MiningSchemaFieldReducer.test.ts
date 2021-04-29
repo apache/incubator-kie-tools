@@ -27,14 +27,14 @@ const models: Model[] = [
   new Scorecard({
     MiningSchema: { MiningField: miningFields },
     functionName: "regression",
-    Characteristics: { Characteristic: [] }
-  })
+    Characteristics: { Characteristic: [] },
+  }),
 ];
 const pmml: PMML = {
   version: "1.0",
   DataDictionary: { DataField: [{ name: "field1" as FieldName, dataType: "boolean", optype: "categorical" }] },
   Header: {},
-  models: models
+  models: models,
 };
 const reducer: Reducer<MiningField[], AllActions> = MiningSchemaFieldReducer(historyService, validationRegistry);
 
@@ -46,8 +46,8 @@ describe("MiningSchemaFieldReducer::Valid actions", () => {
         modelIndex: 0,
         dataDictionaryIndex: 0,
         dataField: { name: "updated" as FieldName, dataType: "string", optype: "ordinal" },
-        originalName: "field1" as FieldName
-      }
+        originalName: "field1" as FieldName,
+      },
     });
     const updated = historyService.commit(pmml)?.models as Model[];
     const miningSchema = (updated[0] as Scorecard).MiningSchema;
@@ -74,8 +74,8 @@ describe("MiningSchemaFieldReducer::Valid actions", () => {
         missingValueTreatment: "asMean",
         missingValueReplacement: "a",
         invalidValueTreatment: "asValue",
-        invalidValueReplacement: "b"
-      }
+        invalidValueReplacement: "b",
+      },
     });
     const updated = historyService.commit(pmml)?.models as Model[];
     const miningSchema = (updated[0] as Scorecard).MiningSchema;
@@ -100,8 +100,8 @@ describe("DataFieldReducer::Invalid actions", () => {
     const updated: MiningField[] = reducer(miningFields, {
       type: Actions.SetHeaderDescription,
       payload: {
-        description: "description"
-      }
+        description: "description",
+      },
     });
     expect(updated).toEqual(miningFields);
   });

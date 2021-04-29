@@ -88,7 +88,7 @@ async function testEmptyBpmn() {
 
   // check there is no node, just the process
   const nodes = await client.$$("[data-ouia-component-type='tree-item'] a");
-  const nodeNames = await Promise.all(nodes.map(async n => await n.getText()));
+  const nodeNames = await Promise.all(nodes.map(async (n) => await n.getText()));
   expect(nodeNames).toEqual(["unsaved file"]);
 
   // switch context back

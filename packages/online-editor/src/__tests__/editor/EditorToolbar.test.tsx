@@ -37,7 +37,7 @@ function mockFunctions() {
   const original = require.requireActual("../../common/Hooks");
   return {
     ...original,
-    useFileUrl: jest.fn().mockImplementation(() => "gist.githubusercontent.com/?file=something")
+    useFileUrl: jest.fn().mockImplementation(() => "gist.githubusercontent.com/?file=something"),
   };
 }
 

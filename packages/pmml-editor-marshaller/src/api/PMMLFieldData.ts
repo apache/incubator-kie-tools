@@ -15,11 +15,11 @@
  */
 
 export class PMMLFieldData {
-    public readonly fieldName: string;
-    public readonly usageType: string | undefined;
+  public readonly fieldName: string;
+  public readonly usageType: string | undefined;
 
-    constructor(fieldName: string, usageType: string | undefined) {
-        this.fieldName = fieldName;
-        this.usageType = usageType;
-    }
+  constructor(fieldName: string, usageType: string | undefined) {
+    this.fieldName = fieldName;
+    this.usageType = usageType;
+  }
 }

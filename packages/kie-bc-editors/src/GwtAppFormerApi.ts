@@ -43,7 +43,7 @@ export interface GwtEditor {
   getContent(): Promise<string>;
   setContent(path: string, content: string): Promise<void>;
   getPreview(): Promise<string | undefined>;
-  validate(): Promise<Notification[]>
+  validate(): Promise<Notification[]>;
 }
 
 export class GwtAppFormerApi {

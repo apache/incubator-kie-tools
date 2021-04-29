@@ -26,64 +26,64 @@ module.exports = async (argv, env) => [
     output: {
       library: "AppFormer.VsCodePack",
       libraryTarget: "umd",
-      umdNamedDefine: true
+      umdNamedDefine: true,
     },
     externals: {
-      vscode: "commonjs vscode"
+      vscode: "commonjs vscode",
     },
     target: "node",
     entry: {
-      "extension/extension": "./src/extension/extension.ts"
+      "extension/extension": "./src/extension/extension.ts",
     },
-    plugins: []
+    plugins: [],
   }),
   merge(common, {
     output: {
       library: "AppFormer.VsCodePackWebview",
       libraryTarget: "umd",
-      umdNamedDefine: true
+      umdNamedDefine: true,
     },
     externals: {
-      vscode: "commonjs vscode"
+      vscode: "commonjs vscode",
     },
     target: "web",
     entry: {
-      "webview/GwtEditorsEnvelopeApp": "./src/webview/GwtEditorsEnvelopeApp.ts"
+      "webview/GwtEditorsEnvelopeApp": "./src/webview/GwtEditorsEnvelopeApp.ts",
     },
     module: {
-      rules: [...pfWebpackOptions.patternflyRules]
+      rules: [...pfWebpackOptions.patternflyRules],
     },
     plugins: [
       new CopyWebpackPlugin([
         { from: "./static", to: "static" },
         { from: externalAssets.dmnEditorPath(argv), to: "webview/editors/dmn", ignore: ["WEB-INF/**/*"] },
         { from: externalAssets.bpmnEditorPath(argv), to: "webview/editors/bpmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.scesimEditorPath(argv), to: "webview/editors/scesim", ignore: ["WEB-INF/**/*"] }
-      ])
-    ]
+        { from: externalAssets.scesimEditorPath(argv), to: "webview/editors/scesim", ignore: ["WEB-INF/**/*"] },
+      ]),
+    ],
   }),
   merge(common, {
     output: {
       library: "AppFormer.VsCodePackWebview",
       libraryTarget: "umd",
-      umdNamedDefine: true
+      umdNamedDefine: true,
     },
     externals: {
-      vscode: "commonjs vscode"
+      vscode: "commonjs vscode",
     },
     target: "web",
     entry: {
-      "webview/PMMLEditorEnvelopeApp": "./src/webview/PMMLEditorEnvelopeApp.ts"
+      "webview/PMMLEditorEnvelopeApp": "./src/webview/PMMLEditorEnvelopeApp.ts",
     },
     module: {
       rules: [
         {
           test: /\.ttf$/,
-          use: ["file-loader"]
+          use: ["file-loader"],
         },
-        ...pfWebpackOptions.patternflyRules
-      ]
+        ...pfWebpackOptions.patternflyRules,
+      ],
     },
-    plugins: [new MonacoWebpackPlugin()]
-  })
+    plugins: [new MonacoWebpackPlugin()],
+  }),
 ];
