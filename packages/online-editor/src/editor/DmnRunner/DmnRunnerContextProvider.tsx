@@ -18,7 +18,7 @@ import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { GlobalContext } from "../../common/GlobalContext";
 import { DmnRunnerContext } from "./DmnRunnerContext";
-import JSONSchemaBridge from "uniforms-bridge-json-schema";
+import { DmnRunnerJsonSchemaBridge } from "./uniforms/DmnRunnerJsonSchemaBridge";
 import { DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerModal } from "./DmnRunnerModal";
 import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
@@ -47,7 +47,7 @@ export function DmnRunnerContextProvider(props: Props) {
   const [status, setStatus] = useState(() =>
     globalContext.file.fileExtension === "dmn" ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE
   );
-  const [jsonSchemaBridge, setJsonSchemaBridge] = useState<JSONSchemaBridge>();
+  const [jsonSchemaBridge, setJsonSchemaBridge] = useState<DmnRunnerJsonSchemaBridge>();
   const [port, setPort] = useState(() => getCookie(DMN_RUNNER_PORT_COOKIE_NAME) ?? DMN_RUNNER_DEFAULT_PORT);
   const service = useMemo(() => new DmnRunnerService(port), [port]);
   const version = useMemo(() => "$_{WEBPACK_REPLACE__dmnRunnerVersion}", []);

@@ -16,7 +16,7 @@
 
 import Ajv from "ajv";
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
-import JSONSchemaBridge from "uniforms-bridge-json-schema";
+import { DmnRunnerJsonSchemaBridge } from "./uniforms/DmnRunnerJsonSchemaBridge";
 import { NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
 
 export interface DmnRunnerPayload {
@@ -70,6 +70,7 @@ interface DmnRunnerFormDefinitions {
     type: string;
     placeholder?: string;
     title: string;
+    format?: string;
   };
 }
 
@@ -78,6 +79,7 @@ interface DmnRunnerDeepProperty {
   type?: string;
   placeholder?: string;
   title?: string;
+  format?: string;
 }
 
 export class DmnRunnerService {
@@ -90,7 +92,7 @@ export class DmnRunnerService {
   private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
 
   constructor(private port: string) {
-    this.ajv.addMetaSchema(metaSchemaDraft04);
+    this.setupAjv();
     this.DMN_RUNNER_SERVER_URL = `http://localhost:${port}`;
     this.DMN_RUNNER_PING = `${this.DMN_RUNNER_SERVER_URL}/ping`;
     this.DMN_RUNNER_VALIDATE_URL = `${this.DMN_RUNNER_SERVER_URL}/jitdmn/validate`;
@@ -98,17 +100,35 @@ export class DmnRunnerService {
     this.DMN_RUNNER_FORM_URL = `${this.DMN_RUNNER_SERVER_URL}/jitdmn/schema/form`;
   }
 
+  private setupAjv() {
+    this.ajv.addMetaSchema(metaSchemaDraft04);
+    this.ajv.addFormat("days and time duration", {
+      type: "string",
+      validate: (data: string) => !!data.match(/(P[1-9][0-9]*D[1-9][0-9]*T)|(P([1-9][0-9]*)[D|T])\b/)
+    });
+
+    this.ajv.addFormat("years and months duration", {
+      type: "string",
+      validate: (data: string) => !!data.match(/(P[1-9][0-9]*Y[1-9][0-9]*M)|(P([1-9][0-9]*)[Y|M])\b/)
+    });
+  }
+
   public createValidator(jsonSchema: any) {
     const validator = this.ajv.compile(jsonSchema);
 
     return (model: any) => {
-      validator(model);
+      validator(JSON.parse(JSON.stringify(model)));
 
       return validator.errors?.length
         ? {
             details: validator.errors?.map(error => {
-              if (error.keyword === "required") {
-                return { ...error, message: "" };
+              if (error.keyword === "format") {
+                if ((error.params as any).format === "days and time duration") {
+                  return { ...error, message: "should match format P1D(ays)2T(ime)" };
+                }
+                if ((error.params as any).format === "years and months duration") {
+                  return { ...error, message: "should match format P1Y(ers)2M(onths)" };
+                }
               }
               return error;
             })
@@ -165,13 +185,28 @@ export class DmnRunnerService {
         form.definitions[property]!.type = "string";
       } else if (Object.hasOwnProperty.call(form.definitions[property], "enum")) {
         form.definitions[property]!.placeholder = "Select...";
+      } else if (Object.hasOwnProperty.call(form.definitions[property], "format")) {
+        this.setCustomPlaceholders(form.definitions[property]!);
       }
       form.definitions[property]!.title = title;
-    } else if (!Object.hasOwnProperty.call(value, "type")) {
+      return;
+    }
+    value.title = title;
+    if (!Object.hasOwnProperty.call(value, "type")) {
       value.type = "string";
-      value.title = title;
-    } else {
-      value.title = title;
+      return;
+    }
+    if (Object.hasOwnProperty.call(value, "format")) {
+      this.setCustomPlaceholders(value);
+    }
+  }
+
+  private setCustomPlaceholders(value: DmnRunnerDeepProperty) {
+    if (value?.format === "days and time duration") {
+      value!.placeholder = "P1D5T or P2D or P1T";
+    }
+    if (value?.format === "years and months duration") {
+      value!.placeholder = "P1Y5M or P2Y or P1M";
     }
   }
 
@@ -198,6 +233,6 @@ export class DmnRunnerService {
     const form = (await response.json()) as DmnRunnerForm;
     this.formPreprocessing(form);
     const formDraft4 = { ...form, $schema: this.SCHEMA_DRAFT4 };
-    return new JSONSchemaBridge(formDraft4, this.createValidator(formDraft4));
+    return new DmnRunnerJsonSchemaBridge(formDraft4, this.createValidator(formDraft4));
   }
 }

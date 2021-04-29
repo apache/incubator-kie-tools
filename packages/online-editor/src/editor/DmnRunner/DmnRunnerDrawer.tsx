@@ -226,49 +226,51 @@ export function DmnRunnerDrawer(props: Props) {
   }, []);
 
   // Validation occurs on every change and submit.
-  const onValidate = useCallback(
-    (model, error: any) => {
-      if (!error) {
-        return;
-      }
-      // if the form has an error, the error should be displayed and the outputs column should be updated anyway.
-      const {
-        details,
-        changes
-      }: { details: object[]; changes: Array<[string, string | number | undefined]> } = error.details.reduce(
-        (infos: any, detail: any) => {
-          if (detail.keyword === "type") {
-            // If it's a type error, it's handled by replacing the current value with a undefined value.
-            const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
-            autoFormRef.current?.change(formFieldPath, undefined);
-            infos.changes = [...infos.changes, [formFieldPath, undefined]];
-            return infos;
-          } else if (detail.keyword === "enum") {
-            // A enum error is caused by a type error.
-            const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
-            autoFormRef.current?.change(formFieldPath, undefined);
-            return infos;
-          }
-          infos.details = [...infos.details, detail];
+  const onValidate = useCallback((model, error: any) => {
+    if (!error) {
+      return;
+    }
+    // if the form has an error, the error should be displayed and the outputs column should be updated anyway.
+    const something: {
+      details: object[];
+      changes: Array<[string, string | number | undefined]>;
+    } = error.details.reduce(
+      (infos: any, detail: any) => {
+        if (detail.keyword === "type") {
+          // If it's a type error, it's handled by replacing the current value with a undefined value.
+          const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
+          autoFormRef.current?.change(formFieldPath, undefined);
+          infos.changes = [...infos.changes, [formFieldPath, undefined]];
           return infos;
-        },
-        { details: [], changes: [] }
-      );
-      // Update formData with the current change.
-      changes.forEach(([formFieldPath, fieldValue]) => {
-        formFieldPath?.split(".")?.reduce((deeper, field, index, array) => {
-          if (index === array.length - 1) {
-            deeper[field] = fieldValue;
-          } else {
-            return deeper[field];
-          }
-        }, model);
-      });
-      dmnRunner.setFormData(model);
-      return { details };
-    },
-    []
-  );
+        } else if (detail.keyword === "enum") {
+          // A enum error is caused by a type error.
+          const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
+          autoFormRef.current?.change(formFieldPath, undefined);
+          return infos;
+        } else if (detail.keyword === "format") {
+          // const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
+          // autoFormRef.current?.change(formFieldPath, undefined);
+          // infos.changes = [...infos.changes, [formFieldPath, undefined]];
+          // return infos;
+        }
+        infos.details = [...infos.details, detail];
+        return infos;
+      },
+      { details: [], changes: [] }
+    );
+    // Update formData with the current change.
+    something.changes.forEach(([formFieldPath, fieldValue]) => {
+      formFieldPath?.split(".")?.reduce((deeper, field, index, array) => {
+        if (index === array.length - 1) {
+          deeper[field] = fieldValue;
+        } else {
+          return deeper[field];
+        }
+      }, model);
+    });
+    dmnRunner.setFormData(model);
+    return { details: something.details };
+  }, []);
 
   // Subscribe to any change on the DMN Editor and submit the form
   useEffect(() => {
