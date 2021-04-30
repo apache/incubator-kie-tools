@@ -55,13 +55,13 @@ type URLHandler interface {
 }
 
 type urlHandler struct {
-	*operator.Context
+	operator.Context
 	runtimeHandler           manager.KogitoRuntimeHandler
 	supportingServiceHandler manager.KogitoSupportingServiceHandler
 }
 
 // NewURLHandler ...
-func NewURLHandler(context *operator.Context, runtimeHandler manager.KogitoRuntimeHandler, supportingServiceHandler manager.KogitoSupportingServiceHandler) URLHandler {
+func NewURLHandler(context operator.Context, runtimeHandler manager.KogitoRuntimeHandler, supportingServiceHandler manager.KogitoSupportingServiceHandler) URLHandler {
 	return &urlHandler{
 		Context:                  context,
 		runtimeHandler:           runtimeHandler,

@@ -31,7 +31,7 @@ import (
 func TestReconciliation_ErrorOccur(t *testing.T) {
 	instance := test.CreateFakeDataIndex(t.Name())
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -61,7 +61,7 @@ func TestReconciliation_ErrorOccur(t *testing.T) {
 func TestReconciliation_RecoverableErrorOccur(t *testing.T) {
 	instance := test.CreateFakeDataIndex(t.Name())
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -112,7 +112,7 @@ func TestReconciliation_RecoveredAfterError(t *testing.T) {
 	}
 	instance.GetStatus().SetConditions(existingConditions)
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -144,7 +144,7 @@ func TestReconciliation_RecoveredAfterError(t *testing.T) {
 func TestReconciliation(t *testing.T) {
 	instance := test.CreateFakeDataIndex(t.Name())
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -181,7 +181,7 @@ func TestReconciliation_PodAlreadyRunning(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance, deployment).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

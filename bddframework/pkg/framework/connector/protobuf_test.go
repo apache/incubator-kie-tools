@@ -63,7 +63,7 @@ func TestMountProtoBufConfigMapsOnDeployment(t *testing.T) {
 			},
 		},
 	}
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -139,7 +139,7 @@ func TestMountProtoBufConfigMapOnDataIndex(t *testing.T) {
 		},
 	}
 
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -180,7 +180,7 @@ func Test_getProtoBufConfigMapsForAllRuntimeServices(t *testing.T) {
 		Data: map[string]string{"mydomain2.proto": "This is a protobuf file"},
 	}
 	cli := test.NewFakeClientBuilder().AddK8sObjects(cm1, cm2).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -225,7 +225,7 @@ func Test_getProtoBufConfigMapsForSpecificRuntimeService(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().AddK8sObjects(cm1, cm2).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

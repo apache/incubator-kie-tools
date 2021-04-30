@@ -29,11 +29,11 @@ type ServiceHandler interface {
 }
 
 type serviceHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewServiceHandler ...
-func NewServiceHandler(context *operator.Context) ServiceHandler {
+func NewServiceHandler(context operator.Context) ServiceHandler {
 	return &serviceHandler{
 		context,
 	}

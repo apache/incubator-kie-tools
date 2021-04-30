@@ -214,7 +214,7 @@ func TestGetAppPropConfigMapContentHash(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			context := &operator.Context{
+			context := operator.Context{
 				Client: tt.args.cli,
 				Log:    test.TestLogger,
 				Scheme: meta.GetRegisteredSchema(),

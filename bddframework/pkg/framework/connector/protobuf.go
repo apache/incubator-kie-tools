@@ -43,12 +43,12 @@ type ProtoBufHandler interface {
 }
 
 type protoBufHandler struct {
-	*operator.Context
+	operator.Context
 	supportingServiceHandler manager.KogitoSupportingServiceHandler
 }
 
 // NewProtoBufHandler ...
-func NewProtoBufHandler(context *operator.Context, supportingServiceHandler manager.KogitoSupportingServiceHandler) ProtoBufHandler {
+func NewProtoBufHandler(context operator.Context, supportingServiceHandler manager.KogitoSupportingServiceHandler) ProtoBufHandler {
 	return &protoBufHandler{
 		Context:                  context,
 		supportingServiceHandler: supportingServiceHandler,

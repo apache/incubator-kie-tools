@@ -28,7 +28,7 @@ func Test_imageHandler_resolveImageOnOpenShiftWithImageStreamCreated(t *testing.
 	ns := t.Name()
 	is, tag := test.CreateImageStreams("jobs-service", ns, "my-data-index", GetKogitoImageVersion())
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(is).AddImageObjects(tag).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -43,7 +43,7 @@ func Test_imageHandler_resolveImageOnOpenShiftWithImageStreamCreated(t *testing.
 func Test_imageHandler_resolveImageOnOpenShiftNoImageStreamCreated(t *testing.T) {
 	ns := t.Name()
 	cli := test.NewFakeClientBuilder().OnOpenShift().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -58,7 +58,7 @@ func Test_imageHandler_resolveImageOnOpenShiftNoImageStreamCreated(t *testing.T)
 func Test_imageHandler_resolveImageOnKubernetes(t *testing.T) {
 	ns := t.Name()
 	cli := test.NewFakeClientBuilder().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -73,7 +73,7 @@ func Test_imageHandler_resolveImageOnKubernetes(t *testing.T) {
 func Test_imageHandler_newImageHandlerInsecureImageRegistry(t *testing.T) {
 	ns := t.Name()
 	cli := test.NewFakeClientBuilder().OnOpenShift().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

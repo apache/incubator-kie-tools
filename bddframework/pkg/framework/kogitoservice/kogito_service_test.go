@@ -26,7 +26,7 @@ import (
 func Test_GetKogitoServiceEndpoint(t *testing.T) {
 	service := test.CreateFakeDataIndex(t.Name())
 	cli := test.NewFakeClientBuilder().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

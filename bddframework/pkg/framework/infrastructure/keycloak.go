@@ -37,11 +37,11 @@ type KeycloakHandler interface {
 }
 
 type keycloakHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewKeycloakHandler ...
-func NewKeycloakHandler(context *operator.Context) KeycloakHandler {
+func NewKeycloakHandler(context operator.Context) KeycloakHandler {
 	return &keycloakHandler{
 		context,
 	}

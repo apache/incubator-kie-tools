@@ -28,7 +28,7 @@ func Test_createServiceMonitor_defaultConfiguration(t *testing.T) {
 	ns := t.Name()
 	cli := test.NewFakeClientBuilder().Build()
 	kogitoService := test.CreateFakeKogitoRuntime(ns)
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -48,7 +48,7 @@ func Test_createServiceMonitor_customConfiguration(t *testing.T) {
 		Path:   "/testPath",
 		Scheme: "https",
 	})
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

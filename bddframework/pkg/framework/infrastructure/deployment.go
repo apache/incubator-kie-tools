@@ -32,11 +32,11 @@ type DeploymentHandler interface {
 }
 
 type deploymentHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewDeploymentHandler ...
-func NewDeploymentHandler(context *operator.Context) DeploymentHandler {
+func NewDeploymentHandler(context operator.Context) DeploymentHandler {
 	return &deploymentHandler{
 		context,
 	}

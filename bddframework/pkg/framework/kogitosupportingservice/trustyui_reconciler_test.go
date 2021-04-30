@@ -30,7 +30,7 @@ func TestReconcileKogitoSupportingServiceTrustyUI_Reconcile(t *testing.T) {
 	ns := t.Name()
 	instance := test.CreateFakeTrustyUIService(ns)
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).OnOpenShift().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -64,7 +64,7 @@ func TestReconcileKogitoTrustyUI_CustomImage(t *testing.T) {
 	instance := test.CreateFakeTrustyUIService(ns)
 	instance.GetSpec().SetImage("quay.io/mynamespace/awesome-trusty-ui:0.1.3")
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).OnOpenShift().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

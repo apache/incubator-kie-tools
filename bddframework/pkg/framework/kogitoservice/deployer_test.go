@@ -51,7 +51,7 @@ func Test_serviceDeployer_DataIndex_InfraNotReady(t *testing.T) {
 		KafkaTopics:      []string{"mytopic"},
 	}
 
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -102,7 +102,7 @@ func Test_serviceDeployer_DataIndex_InfraNotReconciled(t *testing.T) {
 		KafkaTopics:      []string{"mytopic"},
 	}
 
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -148,7 +148,7 @@ func Test_serviceDeployer_DataIndex(t *testing.T) {
 		Request:          newReconcileRequest(t.Name()),
 		KafkaTopics:      []string{requiredTopic},
 	}
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -186,7 +186,7 @@ func Test_serviceDeployer_Deploy(t *testing.T) {
 		DefaultImageName: "kogito-jobs-service",
 		Request:          newReconcileRequest(t.Name()),
 	}
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

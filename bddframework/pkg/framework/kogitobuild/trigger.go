@@ -39,11 +39,11 @@ type TriggerHandler interface {
 }
 
 type triggerHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewTriggerHandler ...
-func NewTriggerHandler(context *operator.Context) TriggerHandler {
+func NewTriggerHandler(context operator.Context) TriggerHandler {
 	return &triggerHandler{
 		context,
 	}

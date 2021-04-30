@@ -78,7 +78,7 @@ type ServiceDeployer interface {
 }
 
 type serviceDeployer struct {
-	*operator.Context
+	operator.Context
 	definition   ServiceDefinition
 	instance     api.KogitoService
 	recorder     record.EventRecorder
@@ -86,7 +86,7 @@ type serviceDeployer struct {
 }
 
 // NewServiceDeployer creates a new ServiceDeployer to handle a custom Kogito Service instance to be handled by Operator SDK controller.
-func NewServiceDeployer(context *operator.Context, definition ServiceDefinition, serviceType api.KogitoService, infraHandler manager.KogitoInfraHandler) ServiceDeployer {
+func NewServiceDeployer(context operator.Context, definition ServiceDefinition, serviceType api.KogitoService, infraHandler manager.KogitoInfraHandler) ServiceDeployer {
 	if len(definition.Request.NamespacedName.Namespace) == 0 && len(definition.Request.NamespacedName.Name) == 0 {
 		panic("No Request provided for the Service Deployer")
 	}

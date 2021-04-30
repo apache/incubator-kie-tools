@@ -57,11 +57,11 @@ type DecoratorHandler interface {
 }
 
 type decoratorHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewDecoratorHandler ...
-func NewDecoratorHandler(context *operator.Context) DecoratorHandler {
+func NewDecoratorHandler(context operator.Context) DecoratorHandler {
 	return &decoratorHandler{
 		context,
 	}

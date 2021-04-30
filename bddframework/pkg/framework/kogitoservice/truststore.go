@@ -39,14 +39,14 @@ type TrustStoreHandler interface {
 }
 
 // NewTrustStoreHandler creates a new TrustStoreHandler with the given context
-func NewTrustStoreHandler(context *operator.Context) TrustStoreHandler {
+func NewTrustStoreHandler(context operator.Context) TrustStoreHandler {
 	return &trustStoreHandler{
 		context: context,
 	}
 }
 
 type trustStoreHandler struct {
-	context *operator.Context
+	context operator.Context
 }
 
 // MountTrustStore mounts the given custom TrustStoreSecret based on api.KogitoService

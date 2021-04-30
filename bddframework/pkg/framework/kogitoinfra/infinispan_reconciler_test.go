@@ -95,7 +95,7 @@ func Test_Reconcile_Infinispan(t *testing.T) {
 		AddK8sObjects(kogitoInfra, deployedInfinispan, deployedCustomSecret, infinispanService, tlsSecret).
 		Build()
 
-	context := &operator.Context{
+	context := operator.Context{
 		Client: client,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

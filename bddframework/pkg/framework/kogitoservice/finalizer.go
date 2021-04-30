@@ -29,12 +29,12 @@ type FinalizerHandler interface {
 }
 
 type finalizerHandler struct {
-	*operator.Context
+	operator.Context
 	infraHandler manager.KogitoInfraHandler
 }
 
 // NewFinalizerHandler ...
-func NewFinalizerHandler(context *operator.Context, infraHandler manager.KogitoInfraHandler) FinalizerHandler {
+func NewFinalizerHandler(context operator.Context, infraHandler manager.KogitoInfraHandler) FinalizerHandler {
 	return &finalizerHandler{
 		Context:      context,
 		infraHandler: infraHandler,

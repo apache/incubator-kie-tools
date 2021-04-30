@@ -45,11 +45,11 @@ type StatusHandler interface {
 }
 
 type statusHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewStatusHandler ...
-func NewStatusHandler(context *operator.Context) StatusHandler {
+func NewStatusHandler(context operator.Context) StatusHandler {
 	return &statusHandler{
 		Context: context,
 	}

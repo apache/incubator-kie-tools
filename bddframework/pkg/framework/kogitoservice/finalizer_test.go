@@ -28,7 +28,7 @@ func TestAddFinalizer(t *testing.T) {
 	ns := t.Name()
 	dataIndex := test.CreateFakeDataIndex(ns)
 	cli := test.NewFakeClientBuilder().AddK8sObjects(dataIndex).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -48,7 +48,7 @@ func TestHandleFinalization(t *testing.T) {
 	dataIndex := test.CreateFakeDataIndex(ns)
 	dataIndex.SetFinalizers([]string{"delete.kogitoInfra.ownership.finalizer"})
 	cli := test.NewFakeClientBuilder().AddK8sObjects(dataIndex).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

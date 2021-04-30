@@ -45,7 +45,7 @@ func TestStartNewBuild(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddBuildObjects(bc, runningBuild).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

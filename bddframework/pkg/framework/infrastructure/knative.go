@@ -39,11 +39,11 @@ type KnativeHandler interface {
 }
 
 type knativeHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewKnativeHandler ...
-func NewKnativeHandler(context *operator.Context) KnativeHandler {
+func NewKnativeHandler(context operator.Context) KnativeHandler {
 	return &knativeHandler{
 		context,
 	}

@@ -34,11 +34,11 @@ type PrometheusManager interface {
 }
 
 type prometheusManager struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewPrometheusManager ...
-func NewPrometheusManager(context *operator.Context) PrometheusManager {
+func NewPrometheusManager(context operator.Context) PrometheusManager {
 	return &prometheusManager{
 		context,
 	}

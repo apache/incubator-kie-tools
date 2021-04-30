@@ -48,11 +48,11 @@ type ImageStreamHandler interface {
 }
 
 type imageStreamHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewImageStreamHandler ...
-func NewImageStreamHandler(context *operator.Context) ImageStreamHandler {
+func NewImageStreamHandler(context operator.Context) ImageStreamHandler {
 	return &imageStreamHandler{
 		context,
 	}

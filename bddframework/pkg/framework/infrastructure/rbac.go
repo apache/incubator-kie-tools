@@ -40,11 +40,11 @@ type RBACHandler interface {
 }
 
 type rbacHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewRBACHandler ...
-func NewRBACHandler(context *operator.Context) RBACHandler {
+func NewRBACHandler(context operator.Context) RBACHandler {
 	return &rbacHandler{
 		context,
 	}

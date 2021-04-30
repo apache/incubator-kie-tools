@@ -41,7 +41,7 @@ func TestUpdateBaseStatus(t *testing.T) {
 	}
 
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Log:    test.TestLogger,
 		Client: cli,
 		Scheme: meta.GetRegisteredSchema(),

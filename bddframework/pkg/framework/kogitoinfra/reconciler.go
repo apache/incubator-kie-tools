@@ -32,7 +32,7 @@ type Reconciler interface {
 }
 
 type infraContext struct {
-	*operator.Context
+	operator.Context
 	instance api.KogitoInfraInterface
 }
 
@@ -43,11 +43,11 @@ type ReconcilerHandler interface {
 }
 
 type reconcilerHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewReconcilerHandler ...
-func NewReconcilerHandler(context *operator.Context) ReconcilerHandler {
+func NewReconcilerHandler(context operator.Context) ReconcilerHandler {
 	return &reconcilerHandler{
 		context,
 	}

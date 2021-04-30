@@ -31,11 +31,11 @@ type ServiceHandler interface {
 }
 
 type kogitoServiceHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewKogitoServiceHandler ...
-func NewKogitoServiceHandler(context *operator.Context) ServiceHandler {
+func NewKogitoServiceHandler(context operator.Context) ServiceHandler {
 	return &kogitoServiceHandler{
 		context,
 	}

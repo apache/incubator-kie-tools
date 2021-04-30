@@ -37,12 +37,12 @@ type KogitoSupportingServiceHandler interface {
 }
 
 type kogitoSupportingServiceManager struct {
-	*operator.Context
+	operator.Context
 	supportingServiceHandler KogitoSupportingServiceHandler
 }
 
 // NewKogitoSupportingServiceManager ...
-func NewKogitoSupportingServiceManager(context *operator.Context, supportingServiceHandler KogitoSupportingServiceHandler) KogitoSupportingServiceManager {
+func NewKogitoSupportingServiceManager(context operator.Context, supportingServiceHandler KogitoSupportingServiceHandler) KogitoSupportingServiceManager {
 	return &kogitoSupportingServiceManager{
 		Context:                  context,
 		supportingServiceHandler: supportingServiceHandler,

@@ -34,12 +34,12 @@ type KogitoRuntimeHandler interface {
 }
 
 type kogitoRuntimeManager struct {
-	*operator.Context
+	operator.Context
 	runtimeHandler KogitoRuntimeHandler
 }
 
 // NewKogitoRuntimeManager ...
-func NewKogitoRuntimeManager(context *operator.Context, runtimeHandler KogitoRuntimeHandler) KogitoRuntimeManager {
+func NewKogitoRuntimeManager(context operator.Context, runtimeHandler KogitoRuntimeHandler) KogitoRuntimeManager {
 	return &kogitoRuntimeManager{
 		Context:        context,
 		runtimeHandler: runtimeHandler,

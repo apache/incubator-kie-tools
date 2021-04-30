@@ -30,7 +30,7 @@ func TestReconcileKogitoSupportingServiceMgmtConsole_Reconcile(t *testing.T) {
 	ns := t.Name()
 	instance := test.CreateFakeMgmtConsole(ns)
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).OnOpenShift().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -63,7 +63,7 @@ func TestReconcileKogitoSupportingServiceMgmtConsole_CustomImage(t *testing.T) {
 	instance := test.CreateFakeMgmtConsole(ns)
 	instance.GetSpec().SetImage("quay.io/mynamespace/super-mgmt-console:0.1.3")
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).OnOpenShift().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

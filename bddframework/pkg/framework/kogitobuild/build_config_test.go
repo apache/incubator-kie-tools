@@ -43,7 +43,7 @@ func Test_decoratorForSourceBuilder_enableIncrementalBuild_Test(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -70,7 +70,7 @@ func Test_decoratorForSourceBuilder_disableIncrementalBuild_Test(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -93,7 +93,7 @@ func Test_decoratorForRemoteSourceBuilder_specSource(t *testing.T) {
 	}
 	bc := &buildv1.BuildConfig{}
 	cli := test.NewFakeClientBuilder().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -120,7 +120,7 @@ func Test_decoratorForRemoteSourceBuilder_githubWebHook(t *testing.T) {
 	}
 	bc := &buildv1.BuildConfig{}
 	cli := test.NewFakeClientBuilder().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -147,7 +147,7 @@ func Test_decoratorForRemoteSourceBuilder_genericWebHook(t *testing.T) {
 	}
 	bc := &buildv1.BuildConfig{}
 	cli := test.NewFakeClientBuilder().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

@@ -53,7 +53,7 @@ type InfinispanHandler interface {
 }
 
 type infinispanHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 var (
@@ -73,7 +73,7 @@ type InfinispanCredential struct {
 }
 
 // NewInfinispanHandler ...
-func NewInfinispanHandler(context *operator.Context) InfinispanHandler {
+func NewInfinispanHandler(context operator.Context) InfinispanHandler {
 	return &infinispanHandler{
 		context,
 	}

@@ -90,7 +90,7 @@ func Test_getKafkaInstanceWithName(t *testing.T) {
 			false,
 		},
 	}
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -151,7 +151,7 @@ func Test_resolveKafkaServerURI(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

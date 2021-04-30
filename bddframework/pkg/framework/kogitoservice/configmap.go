@@ -43,11 +43,11 @@ type AppPropsConfigMapHandler interface {
 }
 
 type appPropsConfigMapHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewAppPropsConfigMapHandler ...
-func NewAppPropsConfigMapHandler(context *operator.Context) AppPropsConfigMapHandler {
+func NewAppPropsConfigMapHandler(context operator.Context) AppPropsConfigMapHandler {
 	return &appPropsConfigMapHandler{
 		context,
 	}

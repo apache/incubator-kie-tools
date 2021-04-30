@@ -32,7 +32,7 @@ func Test_fetchDashboardNames(t *testing.T) {
 	defer server.Close()
 
 	cli := test.NewFakeClientBuilder().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -68,7 +68,7 @@ func Test_fetchDashboards(t *testing.T) {
 	server := mockKogitoSvcReplies(t, handlers...)
 	defer server.Close()
 	cli := test.NewFakeClientBuilder().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -98,7 +98,7 @@ func Test_serviceDeployer_DeployGrafanaDashboards(t *testing.T) {
 			RawJSONDashboard: "[]",
 		},
 	}
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

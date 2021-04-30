@@ -32,11 +32,11 @@ type RouteHandler interface {
 }
 
 type routeHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewRouteHandler ...
-func NewRouteHandler(context *operator.Context) RouteHandler {
+func NewRouteHandler(context operator.Context) RouteHandler {
 	return &routeHandler{
 		context,
 	}

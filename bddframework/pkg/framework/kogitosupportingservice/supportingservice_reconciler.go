@@ -27,7 +27,7 @@ type Reconciler interface {
 }
 
 type supportingServiceContext struct {
-	*operator.Context
+	operator.Context
 	instance                 api.KogitoSupportingServiceInterface
 	infraHandler             manager.KogitoInfraHandler
 	supportingServiceHandler manager.KogitoSupportingServiceHandler
@@ -40,14 +40,14 @@ type ReconcilerHandler interface {
 }
 
 type reconcilerHandler struct {
-	*operator.Context
+	operator.Context
 	infraHandler             manager.KogitoInfraHandler
 	supportingServiceHandler manager.KogitoSupportingServiceHandler
 	runtimeHandler           manager.KogitoRuntimeHandler
 }
 
 // NewReconcilerHandler ...
-func NewReconcilerHandler(context *operator.Context, infraHandler manager.KogitoInfraHandler, supportingServiceHandler manager.KogitoSupportingServiceHandler, runtimeHandler manager.KogitoRuntimeHandler) ReconcilerHandler {
+func NewReconcilerHandler(context operator.Context, infraHandler manager.KogitoInfraHandler, supportingServiceHandler manager.KogitoSupportingServiceHandler, runtimeHandler manager.KogitoRuntimeHandler) ReconcilerHandler {
 	return &reconcilerHandler{
 		Context:                  context,
 		infraHandler:             infraHandler,

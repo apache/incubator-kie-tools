@@ -52,11 +52,11 @@ type KafkaHandler interface {
 }
 
 type kafkaHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewKafkaHandler ...
-func NewKafkaHandler(context *operator.Context) KafkaHandler {
+func NewKafkaHandler(context operator.Context) KafkaHandler {
 	return &kafkaHandler{
 		context,
 	}

@@ -28,7 +28,7 @@ func TestReconcileKogitoJobsService_Reconcile(t *testing.T) {
 	ns := t.Name()
 	jobsService := test.CreateFakeJobsService(ns)
 	cli := test.NewFakeClientBuilder().AddK8sObjects(jobsService).OnOpenShift().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

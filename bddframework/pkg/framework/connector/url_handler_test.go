@@ -67,7 +67,7 @@ func TestInjectDataIndexURLIntoKogitoRuntime(t *testing.T) {
 	}
 
 	cli := test.NewFakeClientBuilder().AddK8sObjects(dc, kogitoRuntime, dataIndex).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -117,7 +117,7 @@ func TestInjectJobsServicesURLIntoKogitoRuntime(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().AddK8sObjects(app, dc, jobs).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -168,7 +168,7 @@ func TestInjectJobsServicesURLIntoKogitoRuntimeCleanUp(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().AddK8sObjects(dc, app, jobs).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -221,7 +221,7 @@ func TestInjectTrustyURLIntoKogitoApps(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().AddK8sObjects(kogitoRuntime, dc, trustyService).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -269,12 +269,12 @@ func Test_getKogitoDataIndexURLs(t *testing.T) {
 
 	cliInsecure := test.NewFakeClientBuilder().AddK8sObjects(insecureDI).Build()
 	cliSecure := test.NewFakeClientBuilder().AddK8sObjects(secureDI).Build()
-	inSecureContext := &operator.Context{
+	inSecureContext := operator.Context{
 		Client: cliInsecure,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	secureContext := &operator.Context{
+	secureContext := operator.Context{
 		Client: cliSecure,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -320,7 +320,7 @@ func Test_getKogitoDataIndexURLs(t *testing.T) {
 			args: args{
 				client:                   test.NewFakeClientBuilder().Build(),
 				namespace:                ns,
-				supportingServiceHandler: internal.NewKogitoSupportingServiceHandler(&operator.Context{Client: test.NewFakeClientBuilder().Build(), Log: test.TestLogger}),
+				supportingServiceHandler: internal.NewKogitoSupportingServiceHandler(operator.Context{Client: test.NewFakeClientBuilder().Build(), Log: test.TestLogger}),
 			},
 			wantHTTPURL: "",
 			wantWSURL:   "",
@@ -329,9 +329,9 @@ func Test_getKogitoDataIndexURLs(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			runtimeHandler := internal.NewKogitoRuntimeHandler(&operator.Context{Client: tt.args.client, Log: test.TestLogger})
+			runtimeHandler := internal.NewKogitoRuntimeHandler(operator.Context{Client: tt.args.client, Log: test.TestLogger})
 			urlHandler := &urlHandler{
-				Context: &operator.Context{
+				Context: operator.Context{
 					Client: tt.args.client,
 					Log:    test.TestLogger,
 					Scheme: meta.GetRegisteredSchema(),

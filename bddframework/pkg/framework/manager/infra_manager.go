@@ -42,12 +42,12 @@ type KogitoInfraHandler interface {
 }
 
 type kogitoInfraManager struct {
-	*operator.Context
+	operator.Context
 	infraHandler KogitoInfraHandler
 }
 
 // NewKogitoInfraManager ...
-func NewKogitoInfraManager(context *operator.Context, infraHandler KogitoInfraHandler) KogitoInfraManager {
+func NewKogitoInfraManager(context operator.Context, infraHandler KogitoInfraHandler) KogitoInfraManager {
 	if infraHandler == nil {
 		panic("InfraHandler can't be nil when creating a new KogitoInfraManager")
 	}

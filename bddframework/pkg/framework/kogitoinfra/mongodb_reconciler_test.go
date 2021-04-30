@@ -90,7 +90,7 @@ func TestRetrieveMongoDBCredentialsFromInstance(t *testing.T) {
 			cli := test.NewFakeClientBuilder().AddK8sObjects(mongoDBInstance, secret).Build()
 			reconciler := mongoDBInfraReconciler{
 				infraContext: infraContext{
-					Context: &operator.Context{
+					Context: operator.Context{
 						Client: cli,
 						Log:    test.TestLogger,
 						Scheme: meta.GetRegisteredSchema(),

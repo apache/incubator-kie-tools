@@ -42,7 +42,7 @@ func TestNewWhenBuildingFromRemoteSource(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().AddK8sObjects(build).OnOpenShift().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -91,7 +91,7 @@ func TestNewWhenBuildingFromLocalSource(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(build).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -141,7 +141,7 @@ func TestNewWhenBuildingFromBinary(t *testing.T) {
 	}
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(build).Build()
 
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -179,7 +179,7 @@ func TestNewWhenSanityCheckComplainAboutType(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(build).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -201,7 +201,7 @@ func TestNewWhenSanityCheckComplainAboutGit(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(build).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

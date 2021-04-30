@@ -41,7 +41,7 @@ type GrafanaDashboardManager interface {
 }
 
 type grafanaDashboardManager struct {
-	*operator.Context
+	operator.Context
 }
 
 // GrafanaDashboard is a structure that contains the fetched dashboards
@@ -51,7 +51,7 @@ type GrafanaDashboard struct {
 }
 
 // NewGrafanaDashboardManager ...
-func NewGrafanaDashboardManager(context *operator.Context) GrafanaDashboardManager {
+func NewGrafanaDashboardManager(context operator.Context) GrafanaDashboardManager {
 	return &grafanaDashboardManager{
 		context,
 	}

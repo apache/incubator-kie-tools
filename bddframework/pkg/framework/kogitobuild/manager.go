@@ -40,12 +40,12 @@ type DeltaProcessor interface {
 }
 
 type deltaProcessor struct {
-	*operator.Context
+	operator.Context
 	build api.KogitoBuildInterface
 }
 
 // NewDeltaProcessor creates a new DeltaProcessor instance for the given KogitoBuild
-func NewDeltaProcessor(context *operator.Context, build api.KogitoBuildInterface) (DeltaProcessor, error) {
+func NewDeltaProcessor(context operator.Context, build api.KogitoBuildInterface) (DeltaProcessor, error) {
 	setDefaults(build)
 	if err := sanityCheck(build); err != nil {
 		return nil, err
@@ -77,7 +77,7 @@ func sanityCheck(build api.KogitoBuildInterface) error {
 
 type manager struct {
 	build api.KogitoBuildInterface
-	*operator.Context
+	operator.Context
 }
 
 type buildManager interface {

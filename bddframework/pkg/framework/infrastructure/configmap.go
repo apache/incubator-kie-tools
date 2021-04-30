@@ -30,12 +30,12 @@ type ConfigMapHandler interface {
 }
 
 type configMapHandler struct {
-	*operator.Context
+	operator.Context
 	recorder record.EventRecorder
 }
 
 // NewConfigMapHandler ...
-func NewConfigMapHandler(context *operator.Context, recorder record.EventRecorder) ConfigMapHandler {
+func NewConfigMapHandler(context operator.Context, recorder record.EventRecorder) ConfigMapHandler {
 	return &configMapHandler{
 		Context:  context,
 		recorder: recorder,

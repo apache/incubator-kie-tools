@@ -30,7 +30,7 @@ func Test_createRequiredDeployment_CheckQuarkusProbe(t *testing.T) {
 	dataIndex := test.CreateFakeDataIndex(t.Name())
 	serviceDef := ServiceDefinition{HealthCheckProbe: QuarkusHealthCheckProbe}
 	cli := test.NewFakeClientBuilder().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -50,7 +50,7 @@ func Test_createRequiredDeployment_CheckDefaultProbe(t *testing.T) {
 	dataIndex := test.CreateFakeDataIndex(t.Name())
 	serviceDef := ServiceDefinition{}
 	cli := test.NewFakeClientBuilder().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -70,7 +70,7 @@ func Test_createRequiredDeployment_CheckNilEnvs(t *testing.T) {
 	dataIndex := test.CreateFakeDataIndex(t.Name())
 	serviceDef := ServiceDefinition{}
 	cli := test.NewFakeClientBuilder().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

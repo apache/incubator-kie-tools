@@ -102,11 +102,11 @@ type ImageStreamHandler interface {
 }
 
 type imageStreamHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewImageSteamHandler ...
-func NewImageSteamHandler(context *operator.Context) ImageStreamHandler {
+func NewImageSteamHandler(context operator.Context) ImageStreamHandler {
 	return &imageStreamHandler{
 		context,
 	}
@@ -370,7 +370,7 @@ func newOutputImageStreamForBuilder(bc *buildv1.BuildConfig) imgv1.ImageStream {
 
 // newOutputImageStreamForRuntime creates a new image stream for the Runtime
 // if one image stream is found in the namespace managed by other resources such as KogitoRuntime or other KogitoBuild, we add ourselves in the owner references
-func newOutputImageStreamForRuntime(context *operator.Context, bc *buildv1.BuildConfig, build api.KogitoBuildInterface) (*imgv1.ImageStream, error) {
+func newOutputImageStreamForRuntime(context operator.Context, bc *buildv1.BuildConfig, build api.KogitoBuildInterface) (*imgv1.ImageStream, error) {
 	isName, tag := getOutputImageStreamNameTag(bc)
 	imageHandler := newImageHandlerForBuiltServices(context, isName, tag, build.GetNamespace())
 	imageStream, err := imageHandler.CreateImageStreamIfNotExists()
@@ -381,7 +381,7 @@ func newOutputImageStreamForRuntime(context *operator.Context, bc *buildv1.Build
 }
 
 // NewImageHandlerForBuiltServices creates a new handler for Kogito Services being built
-func newImageHandlerForBuiltServices(context *operator.Context, isName, tag, namespace string) infrastructure.ImageHandler {
+func newImageHandlerForBuiltServices(context operator.Context, isName, tag, namespace string) infrastructure.ImageHandler {
 	image := &api.Image{
 		Name: isName,
 		Tag:  tag,

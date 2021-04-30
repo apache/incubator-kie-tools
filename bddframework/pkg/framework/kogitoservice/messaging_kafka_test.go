@@ -39,7 +39,7 @@ func Test_createKafkaTopics(t *testing.T) {
 	service := test.CreateFakeDataIndex(t.Name())
 	service.GetSpec().AddInfra(infraKafka.GetName())
 	client := test.NewFakeClientBuilder().AddK8sObjects(infraKafka, service, kafka).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: client,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

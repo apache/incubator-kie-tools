@@ -45,7 +45,7 @@ func TestStatusChangeWhenConsecutiveErrorsOccur(t *testing.T) {
 	}
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).Build()
 	err := errors.New("error")
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -85,7 +85,7 @@ func TestStatusChangeWhenBuildsAreRunning(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(instance).Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -153,7 +153,7 @@ func TestStatusChangeWhenBuildsAreRunning(t *testing.T) {
 	// recreating the Client with our objects to make sure that the BCs will be there
 	cli = test.NewFakeClientBuilder().AddK8sObjects(k8sObjs...).AddBuildObjects(buildObjs...).Build()
 	err = nil
-	context1 := &operator.Context{
+	context1 := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

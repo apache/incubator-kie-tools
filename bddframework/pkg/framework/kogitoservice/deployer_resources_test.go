@@ -249,7 +249,7 @@ func assertDeployerNoErrorAndCreateResources(t *testing.T, deployer serviceDeplo
 }
 
 func newTestSupServiceDeployer(cli *client.Client, instance api.KogitoService, imageName string) serviceDeployer {
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -268,7 +268,7 @@ func newTestSupServiceDeployer(cli *client.Client, instance api.KogitoService, i
 }
 
 func newTestServiceDeployer(cli *client.Client, instance api.KogitoService) serviceDeployer {
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),

@@ -56,7 +56,7 @@ type ImageHandler interface {
 
 // imageHandler defines the base structure for images in either OpenShift or Kubernetes clusters
 type imageHandler struct {
-	*operator.Context
+	operator.Context
 	// image is the CR structure attribute given by the user
 	image *api.Image
 	// defaultImageName is the default image name for this service. Used to resolve the image from the Kogito Team registry when no custom image is given.
@@ -70,7 +70,7 @@ type imageHandler struct {
 }
 
 // NewImageHandler ...
-func NewImageHandler(context *operator.Context, image *api.Image, defaultImageName, imageStreamName, namespace string, addFromReference, insecureImageRegistry bool) ImageHandler {
+func NewImageHandler(context operator.Context, image *api.Image, defaultImageName, imageStreamName, namespace string, addFromReference, insecureImageRegistry bool) ImageHandler {
 	return &imageHandler{
 		Context:               context,
 		image:                 image,

@@ -58,11 +58,11 @@ type MongoDBHandler interface {
 }
 
 type mongoDBHandler struct {
-	*operator.Context
+	operator.Context
 }
 
 // NewMongoDBHandler ...
-func NewMongoDBHandler(context *operator.Context) MongoDBHandler {
+func NewMongoDBHandler(context operator.Context) MongoDBHandler {
 	return &mongoDBHandler{
 		context,
 	}

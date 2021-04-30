@@ -30,7 +30,7 @@ func TestReconcileKogitoSupportingServiceTaskConsole_Reconcile(t *testing.T) {
 	ns := t.Name()
 	instance := test.CreateFakeTaskConsole(ns)
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).OnOpenShift().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
@@ -62,7 +62,7 @@ func TestReconcileKogitoSupportingServiceTaskConsole_CustomImage(t *testing.T) {
 	instance := test.CreateFakeTaskConsole(ns)
 	instance.GetSpec().SetImage("quay.io/mynamespace/super-task-console:0.1.3")
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).OnOpenShift().Build()
-	context := &operator.Context{
+	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
