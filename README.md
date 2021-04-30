@@ -84,7 +84,7 @@ const schema = new SimpleSchema({
 export default new SimpleSchema2Bridge(schema);
 ```
 
-### 4. Finally, use it in a form!
+### 4. Finally, use it in a form! 🎉
 
 Uniforms theme packages provide the `AutoForm` component, which is able to generate the form based on the given schema.
 All we have to do now is to pass the previously created GuestSchema to the `AutoForm`:
