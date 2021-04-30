@@ -62,7 +62,7 @@ describe("useDirtyState", () => {
       const { result } = renderHook(() => useDirtyState(editorRef));
 
       act(() => {
-        stateControl.updateCommandStack({id: "1"});
+        stateControl.updateCommandStack({ id: "1" });
         stateControl.setSavedCommand();
       });
 
@@ -73,7 +73,7 @@ describe("useDirtyState", () => {
       const { result } = renderHook(() => useDirtyState(editorRef));
 
       act(() => {
-        stateControl.updateCommandStack({id: "1"});
+        stateControl.updateCommandStack({ id: "1" });
         stateControl.undo();
       });
 
@@ -84,7 +84,7 @@ describe("useDirtyState", () => {
       const { result } = renderHook(() => useDirtyState(editorRef));
 
       act(() => {
-        stateControl.updateCommandStack({id: "1"});
+        stateControl.updateCommandStack({ id: "1" });
         stateControl.setSavedCommand();
         stateControl.undo();
         stateControl.redo();
@@ -99,7 +99,7 @@ describe("useDirtyState", () => {
       const { result } = renderHook(() => useDirtyState(editorRef));
 
       act(() => {
-        stateControl.updateCommandStack({id: "1"});
+        stateControl.updateCommandStack({ id: "1" });
       });
 
       expect(result.current).toBeTruthy();
@@ -109,7 +109,7 @@ describe("useDirtyState", () => {
       const { result } = renderHook(() => useDirtyState(editorRef));
 
       act(() => {
-        stateControl.updateCommandStack({id: "1"});
+        stateControl.updateCommandStack({ id: "1" });
         stateControl.undo();
         stateControl.redo();
       });
@@ -121,10 +121,10 @@ describe("useDirtyState", () => {
       const { result } = renderHook(() => useDirtyState(editorRef));
 
       act(() => {
-        stateControl.updateCommandStack({id: "1"});
+        stateControl.updateCommandStack({ id: "1" });
         stateControl.setSavedCommand();
         stateControl.undo();
-        stateControl.updateCommandStack({id: "2"});
+        stateControl.updateCommandStack({ id: "2" });
       });
 
       expect(result.current).toBeTruthy();

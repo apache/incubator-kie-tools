@@ -19,7 +19,7 @@ import {
   EditorApi,
   EditorEnvelopeLocator,
   KogitoEditorChannelApi,
-  KogitoEditorEnvelopeApi
+  KogitoEditorEnvelopeApi,
 } from "../../api";
 import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts/dist/channel";
 import { useGuidedTourPositionProvider } from "@kogito-tooling/guided-tour/dist/channel";
@@ -93,7 +93,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       receive_ready: () => {
         setReady(true);
         props.receive_ready?.();
-      }
+      },
     });
   }, [stateControl, props.file, props]);
 
@@ -109,7 +109,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
             resourcesPathPrefix: envelopeMapping?.resourcesPathPrefix ?? "",
             initialLocale: props.locale,
             isReadOnly: props.file.isReadOnly,
-            channel: props.channelType
+            channel: props.channelType,
           }
         )
     );
@@ -145,13 +145,13 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         isReady: isReady,
         getStateControl: () => stateControl,
         getEnvelopeServer: () => envelopeServer,
-        getElementPosition: s => envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(s),
+        getElementPosition: (s) => envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(s),
         undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorUndo()),
         redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorRedo()),
         getContent: () => envelopeServer.envelopeApi.requests.receive_contentRequest().then((c) => c.content),
         getPreview: () => envelopeServer.envelopeApi.requests.receive_previewRequest(),
         setContent: (path, content) => envelopeServer.envelopeApi.requests.receive_contentChanged({ path, content }),
-        validate: () => envelopeServer.envelopeApi.requests.validate()
+        validate: () => envelopeServer.envelopeApi.requests.validate(),
       };
     },
     [envelopeServer, stateControl, isReady]

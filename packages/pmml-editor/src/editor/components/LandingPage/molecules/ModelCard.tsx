@@ -21,7 +21,7 @@ import {
   CardFooter,
   CardHeader,
   CardHeaderMain,
-  CardTitle
+  CardTitle,
 } from "@patternfly/react-core/dist/js/components/Card";
 import { ModelType } from "../../..";
 import * as React from "react";

@@ -20,7 +20,7 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateVariant
+  EmptyStateVariant,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { BoxesIcon } from "@patternfly/react-icons/dist/js/icons/boxes-icon";
 

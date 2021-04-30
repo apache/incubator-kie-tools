@@ -11,7 +11,7 @@ import {
   Select,
   SelectOption,
   SelectOptionObject,
-  SelectVariant
+  SelectVariant,
 } from "@patternfly/react-core/dist/js/components/Select";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";

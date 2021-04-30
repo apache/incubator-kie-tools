@@ -23,13 +23,13 @@ interface DesktopDictionary extends ReferenceDictionary<DesktopDictionary> {
   };
   editorPage: {
     textEditorModal: {
-      title: (fileName: string) => string
-    },
+      title: (fileName: string) => string;
+    };
     alerts: {
       setContentError: {
         action: string;
         title: string;
-      }
+      };
       copy: string;
       unsaved: {
         title: string;

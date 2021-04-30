@@ -6,7 +6,7 @@ import {
   Select,
   SelectOption,
   SelectOptionObject,
-  SelectVariant
+  SelectVariant,
 } from "@patternfly/react-core/dist/js/components/Select";
 import { MiningSchemaOption } from "../MiningSchemaContainer/MiningSchemaContainer";
 

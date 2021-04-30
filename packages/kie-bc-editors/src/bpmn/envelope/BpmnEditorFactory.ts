@@ -29,7 +29,7 @@ export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorCh
     const languageData = getBpmnLanguageData(initArgs.resourcesPathPrefix);
     const factory = new GwtEditorWrapperFactory<BpmnEditor>(
       languageData,
-      self =>
+      (self) =>
         new BpmnEditorImpl(
           languageData.editorId,
           self.gwtAppFormerApi.getEditor(languageData.editorId),

@@ -45,7 +45,7 @@ const initEnvelope = () => {
   EditorEnvelope.initCustom<DmnEditor, DmnEditorEnvelopeApi, DmnEditorChannelApi>({
     container: container,
     bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
-    apiImplFactory: { create: args => new DmnEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: false }) }
+    apiImplFactory: { create: (args) => new DmnEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: false }) },
   });
 };
 

@@ -31,7 +31,7 @@ import {
   Alert,
   AlertActionCloseButton,
   AlertActionLink,
-  AlertVariant
+  AlertVariant,
 } from "@patternfly/react-core/dist/js/components/Alert";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";

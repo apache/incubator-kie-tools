@@ -19,7 +19,7 @@ import { cleanup, fireEvent, getByTestId, render, act } from "@testing-library/r
 import { EditorEnvelopeView, EditorEnvelopeViewApi } from "../EditorEnvelopeView";
 import { DummyEditor } from "./DummyEditor";
 import { usingEditorEnvelopeI18nContext, usingEnvelopeContext } from "./utils";
-import {Editor} from "../../api";
+import { Editor } from "../../api";
 
 function renderEditorEnvelopeView(): EditorEnvelopeViewApi<Editor> {
   const editorEnvelopeRef = React.createRef<EditorEnvelopeViewApi<Editor>>();

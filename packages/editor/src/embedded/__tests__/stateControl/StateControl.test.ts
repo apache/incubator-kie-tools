@@ -29,16 +29,16 @@ describe("StateControl", () => {
     });
 
     test("should set new commands on the stack", () => {
-      const commands = ["1", "2", "3", "4"].map(id => ({ id }));
+      const commands = ["1", "2", "3", "4"].map((id) => ({ id }));
 
-      commands.forEach(command => stateControl.updateCommandStack(command));
+      commands.forEach((command) => stateControl.updateCommandStack(command));
 
       expect(stateControl.getCommandStack()).toEqual(commands);
     });
 
     test("should set new commands on the stack", () => {
       ["1", "2", "3", "4"]
-        .map(id => ({ id }))
+        .map((id) => ({ id }))
         .forEach((command, index, commands) => {
           stateControl.updateCommandStack(command);
           expect(stateControl.getCommandStack()).toEqual(commands.slice(0, index + 1));
@@ -53,7 +53,7 @@ describe("StateControl", () => {
 
     test("should be the last added command on the stack", () => {
       ["1", "2", "3", "4"]
-        .map(id => ({ id }))
+        .map((id) => ({ id }))
         .forEach((command) => {
           stateControl.updateCommandStack(command);
           expect(stateControl.getCurrentCommand()).toEqual(command);
@@ -68,7 +68,7 @@ describe("StateControl", () => {
       expect(stateControl.getSavedCommand()).toBeUndefined();
 
       ["1", "2", "3", "4"]
-        .map(id => ({ id }))
+        .map((id) => ({ id }))
         .forEach((command) => {
           stateControl.updateCommandStack(command);
           expect(stateControl.getSavedCommand()).toBeUndefined();
@@ -77,7 +77,7 @@ describe("StateControl", () => {
 
     test("should be the last command added", () => {
       ["1", "2", "3", "4"]
-        .map(id => ({ id }))
+        .map((id) => ({ id }))
         .forEach((command) => {
           stateControl.updateCommandStack(command);
           stateControl.setSavedCommand();
@@ -91,7 +91,7 @@ describe("StateControl", () => {
       stateControl.setSavedCommand();
 
       ["1", "2", "3", "4"]
-        .map(id => ({ id }))
+        .map((id) => ({ id }))
         .forEach((command) => {
           stateControl.updateCommandStack(command);
           expect(stateControl.getSavedCommand()).toEqual(specialCommand);
@@ -104,7 +104,7 @@ describe("StateControl", () => {
       expect(stateControl.isDirty()).toBeFalsy();
 
       ["1", "2", "3", "4"]
-        .map(id => ({ id }))
+        .map((id) => ({ id }))
         .forEach((command) => {
           stateControl.updateCommandStack(command);
           stateControl.setSavedCommand();
@@ -114,7 +114,7 @@ describe("StateControl", () => {
 
     test("should be true", () => {
       ["1", "2", "3", "4"]
-        .map(id => ({ id }))
+        .map((id) => ({ id }))
         .forEach((command) => {
           stateControl.updateCommandStack(command);
           expect(stateControl.isDirty()).toBeTruthy();
@@ -128,7 +128,7 @@ describe("StateControl", () => {
       expect(stateControl.isDirty()).toBeFalsy();
 
       ["1", "2", "3", "4"]
-        .map(id => ({ id }))
+        .map((id) => ({ id }))
         .forEach((command) => {
           stateControl.updateCommandStack(command);
           expect(stateControl.isDirty()).toBeTruthy();
@@ -140,7 +140,7 @@ describe("StateControl", () => {
 
   describe("updateCommandStack::StateControl", () => {
     test("shouldn't erase commands", () => {
-      const commands = ["1", "2", "3", "4"].map(id => ({ id }));
+      const commands = ["1", "2", "3", "4"].map((id) => ({ id }));
 
       stateControl.updateCommandStack({ id: "1" });
       expect(stateControl.getCommandStack()).toEqual([{ id: "1" }]);
@@ -151,7 +151,7 @@ describe("StateControl", () => {
     });
 
     test("should erase", () => {
-      const commands = ["1", "2", "3", "4"].map(id => ({ id }));
+      const commands = ["1", "2", "3", "4"].map((id) => ({ id }));
       commands.forEach((command) => stateControl.updateCommandStack(command));
       stateControl.undo();
       stateControl.undo();
@@ -168,11 +168,11 @@ describe("StateControl", () => {
     });
 
     test("should undo to previous command and maintain command stack", () => {
-      const commands = ["1", "2", "3", "4"].map(id => ({ id }));
+      const commands = ["1", "2", "3", "4"].map((id) => ({ id }));
       commands.forEach((command) => stateControl.updateCommandStack(command));
 
       ["4", "3", "2", "1"]
-        .map(id => ({ id }))
+        .map((id) => ({ id }))
         .forEach((command) => {
           expect(stateControl.getCurrentCommand()).toEqual(command);
           stateControl.undo();
@@ -189,7 +189,7 @@ describe("StateControl", () => {
     });
 
     test("should redo to the next possible command on the command stack", () => {
-      const commands = ["1", "2", "3", "4"].map(id => ({ id }));
+      const commands = ["1", "2", "3", "4"].map((id) => ({ id }));
       commands.forEach((command) => stateControl.updateCommandStack(command));
 
       commands.forEach((command) => stateControl.undo());

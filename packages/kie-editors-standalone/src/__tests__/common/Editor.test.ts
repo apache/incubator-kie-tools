@@ -48,15 +48,12 @@ describe("createEditor", () => {
       document.createElement("iframe")
     );
 
-    const spyOnContentChangedNotification = jest.spyOn(
-      envelopeServer.envelopeApi.requests,
-      "receive_contentChanged"
-    );
+    const spyOnContentChangedNotification = jest.spyOn(envelopeServer.envelopeApi.requests, "receive_contentChanged");
 
     editor.setContent("my-path", "my-content");
     expect(spyOnContentChangedNotification).toHaveBeenCalledWith({
       path: "my-path",
-      content: "my-content"
+      content: "my-content",
     });
   });
 });

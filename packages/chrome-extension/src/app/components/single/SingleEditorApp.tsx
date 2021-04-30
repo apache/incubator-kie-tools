@@ -85,7 +85,7 @@ export function SingleEditorApp(props: {
 
   const deactivateTextMode = useCallback(() => {
     setTextMode(false);
-    setErrorOpeningFile(prev => props.readonly ? prev : false);
+    setErrorOpeningFile((prev) => (props.readonly ? prev : false));
   }, [props.readonly]);
 
   const activateTextMode = useCallback(() => {

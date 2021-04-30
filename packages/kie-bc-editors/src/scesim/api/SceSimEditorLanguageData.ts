@@ -24,7 +24,7 @@ export function getSceSimLanguageData(resourcesPathPrefix: string): GwtLanguageD
     resources: [
       {
         type: "css",
-        paths: [`${resourcesPathPrefix}/${editors.scesim.name}/css/patternfly.min.css`]
+        paths: [`${resourcesPathPrefix}/${editors.scesim.name}/css/patternfly.min.css`],
       },
       {
         type: "js",
@@ -38,9 +38,9 @@ export function getSceSimLanguageData(resourcesPathPrefix: string): GwtLanguageD
           `${resourcesPathPrefix}/model/MainJs.js`,
           `${resourcesPathPrefix}/model/SCESIM.js`,
           `${resourcesPathPrefix}/model/SCESIMMainJs.js`,
-          `${resourcesPathPrefix}/${editors.scesim.name}/${editors.scesim.name}.nocache.js`
-        ]
-      }
-    ]
+          `${resourcesPathPrefix}/${editors.scesim.name}/${editors.scesim.name}.nocache.js`,
+        ],
+      },
+    ],
   };
 }

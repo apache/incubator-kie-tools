@@ -40,7 +40,7 @@ module.exports = async (argv, env) => [
     entry: {
       "webview/index": "./src/webview/index.tsx",
       "envelope/bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
-      "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts"
+      "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
     },
     externals: {
       electron: "commonjs electron",

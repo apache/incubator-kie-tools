@@ -84,7 +84,7 @@ describe("GwtEditorWrapperFactory", () => {
 
     const gwtEditorWrapperFactory: GwtEditorWrapperFactory<GwtEditorWrapper> = new GwtEditorWrapperFactory(
       testLanguageData,
-      self => {
+      (self) => {
         return new GwtEditorWrapper(
           testLanguageData.editorId,
           self.gwtAppFormerApi.getEditor(testLanguageData.editorId),
@@ -114,7 +114,7 @@ describe("GwtEditorWrapperFactory", () => {
         fileExtension: "txt",
         initialLocale: "en",
         isReadOnly: false,
-        channel: ChannelType.ONLINE
+        channel: ChannelType.ONLINE,
       }
     );
 

@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApi, KogitoEditorEnvelopeContextType ,
-} from "@kogito-tooling/editor/dist/api";
+import { KogitoEditorChannelApi, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
 import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import { PMMLEditor, PMMLEditorInterface } from "../../editor";

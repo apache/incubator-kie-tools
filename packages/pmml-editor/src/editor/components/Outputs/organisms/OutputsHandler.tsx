@@ -18,8 +18,7 @@ import { useMemo, useState } from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { Title, TitleSizes ,
-} from "@patternfly/react-core/dist/js/components/Title";
+import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
 import { CloseIcon } from "@patternfly/react-icons/dist/js/icons/close-icon";
 import { WarningTriangleIcon } from "@patternfly/react-icons/dist/js/icons/warning-triangle-icon";
 import { FieldName, MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";

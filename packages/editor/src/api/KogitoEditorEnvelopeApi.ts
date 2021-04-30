@@ -31,7 +31,7 @@ export enum ChannelType {
   GITHUB = "GITHUB",
   DESKTOP = "DESKTOP",
   EMBEDDED = "EMBEDDED",
-  OTHER = "OTHER"
+  OTHER = "OTHER",
 }
 
 export interface EditorInitArgs {

@@ -126,7 +126,7 @@ export class PMMLEditor extends React.Component<Props, State> {
       this.doSetContent(path, content);
       this.props.setNotifications(this.state.path, this.validate());
       return Promise.resolve();
-    } catch(e) {
+    } catch (e) {
       console.error(e);
       return Promise.reject();
     }

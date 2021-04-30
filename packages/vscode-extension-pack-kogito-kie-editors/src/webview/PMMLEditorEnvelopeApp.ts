@@ -20,5 +20,5 @@ import { PMMLEditorFactory } from "@kogito-tooling/pmml-editor";
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
-  editorFactory: new PMMLEditorFactory()
+  editorFactory: new PMMLEditorFactory(),
 });

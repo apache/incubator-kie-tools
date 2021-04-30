@@ -62,13 +62,13 @@ export class StateControl {
   public setSavedCommand() {
     this.savedCommand = this.currentCommand;
     const isDirty = this.isDirty();
-    this.registeredCallbacks.forEach(callback => callback(isDirty));
+    this.registeredCallbacks.forEach((callback) => callback(isDirty));
   }
 
   private setCurrentCommand(command: Command | undefined) {
     this.currentCommand = command;
     const isDirty = this.isDirty();
-    this.registeredCallbacks.forEach(callback => callback(isDirty));
+    this.registeredCallbacks.forEach((callback) => callback(isDirty));
   }
 
   public isDirty() {

@@ -29,9 +29,9 @@ const initEnvelope = () => {
 
   // The MutationObserver below replaces every <a href="#" /> with <a href="javascript:void(0);" />,
   // because the former will cause the iframe to reload.
-  const mutationObserver = new MutationObserver(mutations => {
-    mutations.forEach(mutation => {
-      mutation.addedNodes.forEach(node => {
+  const mutationObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
         if (node instanceof HTMLAnchorElement) {
           removeHrefIfNecessary(node);
         } else if (node instanceof Element) {
@@ -45,7 +45,9 @@ const initEnvelope = () => {
   EditorEnvelope.initCustom<BpmnEditor, BpmnEditorEnvelopeApi, BpmnEditorChannelApi>({
     container: container,
     bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
-    apiImplFactory: { create: args => new BpmnEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: false }) }
+    apiImplFactory: {
+      create: (args) => new BpmnEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: false }),
+    },
   });
 };
 

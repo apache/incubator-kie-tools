@@ -49,7 +49,7 @@ describe("PMMLEditorFactory", () => {
       resourcesPathPrefix: "",
       initialLocale: "en",
       isReadOnly: false,
-      channel: ChannelType.EMBEDDED
+      channel: ChannelType.EMBEDDED,
     });
     expect(created).resolves.toBeInstanceOf(PMMLEditorInterface);
   });

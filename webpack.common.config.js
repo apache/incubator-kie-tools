@@ -22,7 +22,7 @@ module.exports = {
   output: {
     path: path.resolve("./dist"),
     filename: "[name].js",
-    chunkFilename: "[name].bundle.js"
+    chunkFilename: "[name].bundle.js",
   },
   stats: {
     excludeAssets: [
@@ -31,7 +31,7 @@ module.exports = {
       /.*KogitoBPMNEditor.*/,
       /.*DroolsWorkbenchScenarioSimulationKogitoRuntime.*/,
       /gwt-editors\/.*/,
-      /editors\/.*/
+      /editors\/.*/,
     ],
     excludeModules: true,
   },

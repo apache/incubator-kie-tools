@@ -17,7 +17,7 @@
 @import "../../../../node_modules/@patternfly/patternfly/sass-utilities/all";
 @import "../../../../node_modules/@patternfly/patternfly/base/variables";
 
-:not(.vscode-dark)  {
+:not(.vscode-dark) {
   .kogito-tooling--loading-screen .pf-l-bullseye {
     color: var(--pf-global--Color--dark-100);
     background-color: var(--pf-global--BackgroundColor--light-100);

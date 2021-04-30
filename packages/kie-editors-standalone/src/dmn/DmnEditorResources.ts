@@ -50,7 +50,7 @@ export class DmnEditorResources extends BaseEditorResources {
   public getReferencedJSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
     const editorDir = fs.readdirSync(`${resourcesPathPrefix}/${gwtModuleName}`);
     const gwtJsFiles = editorDir.filter((file) => file.indexOf(".cache.js") >= 0);
-    return gwtJsFiles.map(file => ({ path: `${resourcesPathPrefix}/${gwtModuleName}/${file?.split("/").pop()}` }));
+    return gwtJsFiles.map((file) => ({ path: `${resourcesPathPrefix}/${gwtModuleName}/${file?.split("/").pop()}` }));
   }
 
   public getReferencedCSSPaths(resourcesPathPrefix: string, gwtModuleName: string) {

@@ -21,5 +21,5 @@ import { SceSimEditor, SceSimEditorEnvelopeApiImpl } from "@kogito-tooling/kie-b
 EditorEnvelope.initCustom<SceSimEditor, SceSimEditorEnvelopeApi, SceSimEditorChannelApi>({
   container: document.getElementById("envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
-  apiImplFactory: { create: args => new SceSimEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }) }
+  apiImplFactory: { create: (args) => new SceSimEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }) },
 });

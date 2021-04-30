@@ -284,7 +284,7 @@ export function EditorPage(props: Props) {
   const [textEditorContent, setTextEditorContext] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    context.file.getFileContents().then(content => {
+    context.file.getFileContents().then((content) => {
       setTextEditorContext(content);
     });
   }, [context.file]);
@@ -296,11 +296,11 @@ export function EditorPage(props: Props) {
 
     let monacoInstance: any;
 
-    importMonacoEditor().then(monaco => {
+    importMonacoEditor().then((monaco) => {
       monacoInstance = monaco.editor.create(textEditorContainerRef.current!, {
         value: textEditorContent!,
         language: "xml", //FIXME: Not all editors will be XML when converted to text
-        scrollBeyondLastLine: false
+        scrollBeyondLastLine: false,
       });
     });
 
@@ -322,7 +322,7 @@ export function EditorPage(props: Props) {
             },
             redo: () => {
               editor?.setContent(context.file.fileName, contentAfterFix).then(() => setOpenAlert(AlertTypes.NONE));
-            }
+            },
           });
         })
         .catch(() => {
@@ -480,7 +480,7 @@ export function EditorPage(props: Props) {
           actions={[
             <Button key="confirm" variant="primary" onClick={refreshDiagramEditor}>
               {i18n.terms.done}
-            </Button>
+            </Button>,
           ]}
         >
           <div style={{ width: "100%", minHeight: "calc(100vh - 210px)" }} ref={textEditorContainerRef} />

@@ -70,13 +70,13 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
         i18n.errorOpeningFileText(this.editor.document.uri.fsPath.split("/").pop()!),
         i18n.openAsTextButton
       )
-      .then(s1 => {
+      .then((s1) => {
         if (s1 !== i18n.openAsTextButton) {
           return;
         }
 
         vscode.commands.executeCommand("vscode.openWith", this.editor.document.uri, "default");
-        vscode.window.showInformationMessage(i18n.reopenAsDiagramText, i18n.reopenAsDiagramButton).then(s2 => {
+        vscode.window.showInformationMessage(i18n.reopenAsDiagramText, i18n.reopenAsDiagramButton).then((s2) => {
           if (s2 !== i18n.reopenAsDiagramButton) {
             return;
           }

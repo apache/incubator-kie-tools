@@ -17,14 +17,14 @@
 export const editors = {
   dmn: {
     id: "DMNDiagramEditor",
-    name: "org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp"
+    name: "org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp",
   },
   bpmn: {
     id: "BPMNDiagramEditor",
-    name: "org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor"
+    name: "org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor",
   },
   scesim: {
     id: "ScenarioSimulationEditor",
-    name: "org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime"
-  }
+    name: "org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime",
+  },
 };

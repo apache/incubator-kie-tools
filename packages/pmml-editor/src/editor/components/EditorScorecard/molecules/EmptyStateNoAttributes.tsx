@@ -19,7 +19,7 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateVariant
+  EmptyStateVariant,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { DiceSixIcon } from "@patternfly/react-icons/dist/js/icons/dice-six-icon";
 

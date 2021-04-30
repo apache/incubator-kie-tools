@@ -155,7 +155,6 @@ export function SingleEditorToolbar(props: {
         <div
           style={{ height: "32px", padding: "5px 15px 5px 15px", whiteSpace: "nowrap" }}
           className={"flash flash-info"}
-
         >
           {/* TODO: Add "info" icon with hint explaining how to edit the file */}
           <h5>{i18n.single.editorToolbar.readOnly}</h5>

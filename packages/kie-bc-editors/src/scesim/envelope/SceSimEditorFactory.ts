@@ -29,7 +29,7 @@ export class SceSimEditorFactory implements EditorFactory<SceSimEditor, SceSimEd
     const languageData = getSceSimLanguageData(initArgs.resourcesPathPrefix);
     const factory = new GwtEditorWrapperFactory<SceSimEditor>(
       languageData,
-      self =>
+      (self) =>
         new SceSimEditorImpl(
           languageData.editorId,
           self.gwtAppFormerApi.getEditor(languageData.editorId),

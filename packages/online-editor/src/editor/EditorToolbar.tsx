@@ -20,7 +20,7 @@ import {
   DropdownGroup,
   DropdownItem,
   DropdownPosition,
-  DropdownToggle
+  DropdownToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -30,7 +30,7 @@ import {
   PageHeader,
   PageHeaderTools,
   PageHeaderToolsGroup,
-  PageHeaderToolsItem
+  PageHeaderToolsItem,
 } from "@patternfly/react-core/dist/js/components/Page";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import * as React from "react";

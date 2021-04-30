@@ -23,7 +23,7 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateSecondaryActions,
-  EmptyStateVariant
+  EmptyStateVariant,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 

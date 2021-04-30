@@ -45,7 +45,7 @@ const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boolean, ori
           fileExtension: "bpmn",
           initialLocale: "en-US",
           isReadOnly: readOnly ?? true,
-          channel: ChannelType.EMBEDDED
+          channel: ChannelType.EMBEDDED,
         }
       );
     }
@@ -90,7 +90,7 @@ export function open(args: {
               args.onError?.();
               receivedSetContentError = true;
             }
-          }
+          },
         },
         args.resources
       )

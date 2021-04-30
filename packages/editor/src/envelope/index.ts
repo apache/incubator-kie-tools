@@ -47,8 +47,8 @@ export function init(args: {
     container: args.container,
     bus: args.bus,
     apiImplFactory: {
-      create: createArgs => new KogitoEditorEnvelopeApiImpl(createArgs, args.editorFactory)
-    }
+      create: (createArgs) => new KogitoEditorEnvelopeApiImpl(createArgs, args.editorFactory),
+    },
   });
 }
 

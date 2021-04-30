@@ -24,7 +24,7 @@ export function getDmnLanguageData(resourcesPathPrefix: string): GwtLanguageData
     resources: [
       {
         type: "css",
-        paths: [`${resourcesPathPrefix}/${editors.dmn.name}/css/patternfly.min.css`]
+        paths: [`${resourcesPathPrefix}/${editors.dmn.name}/css/patternfly.min.css`],
       },
       {
         type: "js",
@@ -36,9 +36,9 @@ export function getDmnLanguageData(resourcesPathPrefix: string): GwtLanguageData
           `${resourcesPathPrefix}/model/DMN12.js`,
           `${resourcesPathPrefix}/model/KIE.js`,
           `${resourcesPathPrefix}/model/MainJs.js`,
-          `${resourcesPathPrefix}/${editors.dmn.name}/${editors.dmn.name}.nocache.js`
-        ]
-      }
-    ]
+          `${resourcesPathPrefix}/${editors.dmn.name}/${editors.dmn.name}.nocache.js`,
+        ],
+      },
+    ],
   };
 }

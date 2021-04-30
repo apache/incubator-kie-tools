@@ -82,8 +82,8 @@ module.exports = async (argv, env) => [
         // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
         // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
         // `@kiegroup/monaco-editor`. This way, everything works as expected.
-        "monaco-editor/esm/vs/editor/editor.api": path.resolve(__dirname, "../../node_modules/@kiegroup/monaco-editor")
-      }
+        "monaco-editor/esm/vs/editor/editor.api": path.resolve(__dirname, "../../node_modules/@kiegroup/monaco-editor"),
+      },
     },
     module: {
       rules: [
@@ -91,8 +91,8 @@ module.exports = async (argv, env) => [
           test: /\.ttf$/,
           use: ["file-loader"],
         },
-        ...pfWebpackOptions.patternflyRules
-      ]
-    }
-  })
+        ...pfWebpackOptions.patternflyRules,
+      ],
+    },
+  }),
 ];

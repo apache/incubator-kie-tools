@@ -21,5 +21,5 @@ import { BpmnEditor, BpmnEditorEnvelopeApiImpl } from "@kogito-tooling/kie-bc-ed
 EditorEnvelope.initCustom<BpmnEditor, BpmnEditorEnvelopeApi, BpmnEditorChannelApi>({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
-  apiImplFactory: { create: args => new BpmnEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }) }
+  apiImplFactory: { create: (args) => new BpmnEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }) },
 });

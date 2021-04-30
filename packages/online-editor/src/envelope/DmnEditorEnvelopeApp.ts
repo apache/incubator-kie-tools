@@ -21,5 +21,5 @@ import { DmnEditor, DmnEditorEnvelopeApiImpl } from "@kogito-tooling/kie-bc-edit
 EditorEnvelope.initCustom<DmnEditor, DmnEditorEnvelopeApi, DmnEditorChannelApi>({
   container: document.getElementById("envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
-  apiImplFactory: { create: args => new DmnEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }) }
+  apiImplFactory: { create: (args) => new DmnEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }) },
 });

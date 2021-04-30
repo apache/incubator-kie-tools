@@ -22,7 +22,7 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateSecondaryActions,
-  EmptyStateVariant
+  EmptyStateVariant,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";

@@ -24,12 +24,12 @@ export function getBpmnLanguageData(resourcesPathPrefix: string): GwtLanguageDat
     resources: [
       {
         type: "css",
-        paths: [`${resourcesPathPrefix}/${editors.bpmn.name}/css/patternfly.min.css`]
+        paths: [`${resourcesPathPrefix}/${editors.bpmn.name}/css/patternfly.min.css`],
       },
       {
         type: "js",
-        paths: [`${resourcesPathPrefix}/${editors.bpmn.name}/${editors.bpmn.name}.nocache.js`]
-      }
-    ]
+        paths: [`${resourcesPathPrefix}/${editors.bpmn.name}/${editors.bpmn.name}.nocache.js`],
+      },
+    ],
   };
 }

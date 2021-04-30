@@ -7,7 +7,7 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { SortIcon } from "@patternfly/react-icons/dist/js/icons/sort-icon";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { BoltIcon} from "@patternfly/react-icons/dist/js/icons/bolt-icon";
+import { BoltIcon } from "@patternfly/react-icons/dist/js/icons/bolt-icon";
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
 import MultipleDataTypeAdd from "../MultipleDataTypeAdd/MultipleDataTypeAdd";
 import DataTypesSort from "../DataTypesSort/DataTypesSort";

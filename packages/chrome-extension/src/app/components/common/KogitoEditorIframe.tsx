@@ -74,7 +74,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   // When changing from textMode to !textMode, we should update the diagram content
   useEffect(() => {
     if (!textMode && wasOnTextMode) {
-      props.getFileContents().then(content => editor?.setContent(props.contentPath, content ?? ""));
+      props.getFileContents().then((content) => editor?.setContent(props.contentPath, content ?? ""));
     }
   }, [textMode, wasOnTextMode, editor]);
 
@@ -85,7 +85,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
     }
 
     const stateControlSubscription = editor.getStateControl().subscribe(() => {
-      editor.getContent().then(content => {
+      editor.getContent().then((content) => {
         runScriptOnPage(
           `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}")
             .CodeMirror
@@ -105,7 +105,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
       }
 
       return {
-        setContent: (content: string) => editor.setContent(props.contentPath, content)
+        setContent: (content: string) => editor.setContent(props.contentPath, content),
       };
     },
     [editor]

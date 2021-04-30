@@ -88,7 +88,7 @@ export class KogitoEditorEnvelopeApiImpl<
 
     await this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
-      .catch(e => this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent))
+      .catch((e) => this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent))
       .finally(() => this.args.view().setLoadingFinished());
 
     this.registerDefaultShortcuts(initArgs);
@@ -100,7 +100,7 @@ export class KogitoEditorEnvelopeApiImpl<
     this.args.view().setLoading();
     return this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
-      .catch(e => {
+      .catch((e) => {
         this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent);
         throw e;
       })

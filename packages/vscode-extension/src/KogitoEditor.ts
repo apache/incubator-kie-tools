@@ -59,7 +59,7 @@ export class KogitoEditor implements EditorApi {
             resourcesPathPrefix: envelopeMapping.resourcesPathPrefix,
             initialLocale: vscode.env.language,
             isReadOnly: false,
-            channel: ChannelType.VSCODE
+            channel: ChannelType.VSCODE,
           }
         )
     )

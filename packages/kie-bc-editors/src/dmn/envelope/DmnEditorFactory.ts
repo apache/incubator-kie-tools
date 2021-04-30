@@ -38,13 +38,13 @@ export class DmnEditorFactory implements EditorFactory<DmnEditor, DmnEditorChann
   ): Promise<DmnEditor> {
     window.envelope = {
       ...(window.envelope ?? {}),
-      ...{ pmmlEditorMarshallerService: new PMMLEditorMarshallerService() }
+      ...{ pmmlEditorMarshallerService: new PMMLEditorMarshallerService() },
     };
 
     const languageData = getDmnLanguageData(initArgs.resourcesPathPrefix);
     const factory = new GwtEditorWrapperFactory<DmnEditor>(
       languageData,
-      self =>
+      (self) =>
         new DmnEditorImpl(
           languageData.editorId,
           self.gwtAppFormerApi.getEditor(languageData.editorId),

@@ -31,6 +31,6 @@ module.exports = [
     output: {
       libraryTarget: "commonjs2",
     },
-    externals: [nodeExternals({ modulesDir: "../../node_modules" })]
-  })
+    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
+  }),
 ];
