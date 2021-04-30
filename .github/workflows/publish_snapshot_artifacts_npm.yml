@@ -16,7 +16,7 @@ jobs:
           java-version: 11
 
       - name: Build with Maven
-        run: mvn clean install -B -ntp --file pom.xml
+        run: mvn clean install -B -ntp --file pom.xml -DskipTests
 
       - name: Output version for NPM packages
         id: editors_version_npm
