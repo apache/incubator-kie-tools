@@ -20,10 +20,10 @@
     "publish:productization": "npx lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/online-editor --ignore @kogito-tooling/desktop --ignore @kogito-tooling/hub --ignore @kogito-tooling/pmml-editor -- npm publish --access public"
   },
   "dependencies": {
-    "@kogito-tooling/bpmn-editor-unpacked": "7.52.0-Final",
-    "@kogito-tooling/dmn-editor-unpacked": "7.52.0-Final",
+    "@kogito-tooling/bpmn-editor-unpacked": "8.0.0-SNAPSHOT-20210430.130828",
+    "@kogito-tooling/dmn-editor-unpacked": "8.0.0-SNAPSHOT-20210430.130828",
     "@kogito-tooling/quarkus-runner-unpacked": "0.7.0-SNAPSHOT",
-    "@kogito-tooling/scesim-editor-unpacked": "7.52.0-Final",
+    "@kogito-tooling/scesim-editor-unpacked": "8.0.0-SNAPSHOT-20210430.130828",
     "monaco-editor": "^0.23.0",
     "react": "16.12.0",
     "react-dom": "16.12.0"
