@@ -1,0 +1,53 @@
+name: "Publish :: NPM :: Snapshots"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_and_publish:
+    if: github.repository == 'kiegroup/kogito-editors-java'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Build with Maven
+        run: mvn clean install -B -ntp --file pom.xml
+
+      - name: Output version for NPM packages
+        id: editors_version_npm
+        run: |
+          MVN_VERSION=`mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec`
+          DATE=`date +"%Y%m%d"`
+          TIME=`date +"%H%M%S"`
+          NPM_VERSION=`echo $MVN_VERSION-$DATE.$TIME`
+          echo $NPM_VERSION
+          echo ::set-output name=version::$NPM_VERSION
+
+      - name: Publish BPMN Editor SNAPSHOT
+        run: |
+          cd ${{ github.workspace }}/.github/supporting-files/publish-artifacts-npm/bpmn-editor-unpacked
+          cp -r ${{ github.workspace }}/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime ./target/bpmn
+          npm version ${{ steps.editors_version_npm.outputs.version }}
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.KIEGROUP_NPM_TOKEN }}" > ~/.npmrc
+          npm publish --access public --tag snapshot
+
+      - name: Publish DMN Editor SNAPSHOT
+        run: |
+          cd ${{ github.workspace }}/.github/supporting-files/publish-artifacts-npm/dmn-editor-unpacked
+          cp -r ${{ github.workspace }}/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime ./target/dmn
+          npm version ${{ steps.editors_version_npm.outputs.version }}
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.KIEGROUP_NPM_TOKEN }}" > ~/.npmrc
+          npm publish --access public --tag snapshot
+
+      - name: Publish SceSim Editor SNAPSHOT
+        run: |
+          cd ${{ github.workspace }}/.github/supporting-files/publish-artifacts-npm/scesim-editor-unpacked
+          cp -r ${{ github.workspace }}/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime ./target/scesim
+          npm version ${{ steps.editors_version_npm.outputs.version }}
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.KIEGROUP_NPM_TOKEN }}" > ~/.npmrc
+          npm publish --access public --tag snapshot
