@@ -138,7 +138,7 @@ func getInfinispan(namespace, name string) (*infinispan.Infinispan, error) {
 
 // IsInfinispanAvailable checks if Infinispan CRD is available in the cluster
 func IsInfinispanAvailable(namespace string) bool {
-	context := &operator.Context{
+	context := operator.Context{
 		Client: kubeClient,
 		Log:    logger.GetLogger(namespace),
 		Scheme: meta.GetRegisteredSchema(),

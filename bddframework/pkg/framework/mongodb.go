@@ -176,7 +176,7 @@ func GetMongoDBStub(openshift bool, namespace, name string, users []MongoDBUserC
 
 // IsMongoDBAvailable checks if MongoDB CRD is available in the cluster
 func IsMongoDBAvailable(namespace string) bool {
-	context := &operator.Context{
+	context := operator.Context{
 		Client: kubeClient,
 		Log:    logger.GetLogger(namespace),
 		Scheme: meta.GetRegisteredSchema(),

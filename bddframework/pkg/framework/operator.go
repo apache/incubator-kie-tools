@@ -371,7 +371,7 @@ func WaitForMongoDBOperatorRunning(namespace string) error {
 }
 
 func isMongoDBOperatorRunning(namespace string) (bool, error) {
-	context := &operator.Context{
+	context := operator.Context{
 		Client: kubeClient,
 		Log:    logger.GetLogger(namespace),
 		Scheme: meta.GetRegisteredSchema(),
