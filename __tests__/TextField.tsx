@@ -3,6 +3,7 @@ import { TextField } from 'uniforms-patternfly';
 
 import createContext from './_createContext';
 import mount from './_mount';
+import { act } from 'react-dom/test-utils';
 
 test('<TextField> - renders an input', () => {
   const element = <TextField name="x" />;
@@ -71,7 +72,7 @@ test('<TextField> - renders an input with correct value (model)', () => {
   const element = <TextField name="x" />;
   const wrapper = mount(
     element,
-    createContext({ x: { type: String } }, { model: { x: 'y' } }),
+    createContext({ x: { type: String } }, { model: { x: 'y' } })
   );
 
   expect(wrapper.find('input')).toHaveLength(1);
@@ -92,12 +93,12 @@ test('<TextField> - renders an input which correctly reacts on change', () => {
   const element = <TextField name="x" />;
   const wrapper = mount(
     element,
-    createContext({ x: { type: String } }, { onChange }),
+    createContext({ x: { type: String } }, { onChange })
   );
 
   expect(wrapper.find('input')).toHaveLength(1);
   expect(
-    wrapper.find('input').simulate('change', { target: { value: 'y' } }),
+    wrapper.find('input').simulate('change', { target: { value: 'y' } })
   ).toBeTruthy();
   expect(onChange).toHaveBeenLastCalledWith('x', 'y');
 });
@@ -108,12 +109,12 @@ test('<TextField> - renders an input which correctly reacts on change (empty)', 
   const element = <TextField name="x" />;
   const wrapper = mount(
     element,
-    createContext({ x: { type: String } }, { onChange }),
+    createContext({ x: { type: String } }, { onChange })
   );
 
   expect(wrapper.find('input')).toHaveLength(1);
   expect(
-    wrapper.find('input').simulate('change', { target: { value: '' } }),
+    wrapper.find('input').simulate('change', { target: { value: '' } })
   ).toBeTruthy();
   expect(onChange).toHaveBeenLastCalledWith('x', '');
 });
@@ -124,12 +125,12 @@ test('<TextField> - renders an input which correctly reacts on change (same valu
   const element = <TextField name="x" />;
   const wrapper = mount(
     element,
-    createContext({ x: { type: String } }, { model: { x: 'y' }, onChange }),
+    createContext({ x: { type: String } }, { model: { x: 'y' }, onChange })
   );
 
   expect(wrapper.find('input')).toHaveLength(1);
   expect(
-    wrapper.find('input').simulate('change', { target: { value: 'y' } }),
+    wrapper.find('input').simulate('change', { target: { value: 'y' } })
   ).toBeTruthy();
   expect(onChange).toHaveBeenLastCalledWith('x', 'y');
 });
@@ -141,7 +142,7 @@ test('<TextField> - renders a label', () => {
   expect(wrapper.find('label')).toHaveLength(1);
   expect(wrapper.find('label').text()).toBe('y');
   expect(wrapper.find('label').prop('htmlFor')).toBe(
-    wrapper.find('input').prop('id'),
+    wrapper.find('input').prop('id')
   );
 });
 
@@ -152,7 +153,7 @@ test('<TextField> - renders a label', () => {
   expect(wrapper.find('label')).toHaveLength(1);
   expect(wrapper.find('label').text()).toBe('y *');
   expect(wrapper.find('label').prop('htmlFor')).toBe(
-    wrapper.find('input').prop('id'),
+    wrapper.find('input').prop('id')
   );
 });
 
@@ -160,22 +161,85 @@ test('<TextField> - renders a wrapper with unknown props', () => {
   const element = <TextField name="x" data-x="x" data-y="y" data-z="z" />;
   const wrapper = mount(element, createContext({ x: { type: String } }));
 
-  expect(
-    wrapper
-      .find('div')
-      .at(0)
-      .prop('data-x'),
-  ).toBe('x');
-  expect(
-    wrapper
-      .find('div')
-      .at(0)
-      .prop('data-y'),
-  ).toBe('y');
-  expect(
-    wrapper
-      .find('div')
-      .at(0)
-      .prop('data-z'),
-  ).toBe('z');
+  expect(wrapper.find('div').at(0).prop('data-x')).toBe('x');
+  expect(wrapper.find('div').at(0).prop('data-y')).toBe('y');
+  expect(wrapper.find('div').at(0).prop('data-z')).toBe('z');
+});
+
+test('<TextField> - renders a initial value on date field (DatePicker)', () => {
+  const date = '2000-04-04';
+  const element = (
+    <TextField required={true} name="x" label="y" type={'date'} />
+  );
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: String } }, { model: { x: date } })
+  );
+
+  expect(wrapper.find('input')).toHaveLength(1);
+  expect(wrapper.find('input').prop('value')).toBe(date);
+});
+
+test('<TextField> - renders a disabled date field (DatePicker)', () => {
+  const element = (
+    <TextField
+      required={true}
+      name="x"
+      label="y"
+      type={'date'}
+      disabled={true}
+    />
+  );
+  const wrapper = mount(element, createContext({ x: { type: String } }));
+
+  expect(wrapper.find('input')).toHaveLength(1);
+  expect(wrapper.find('input').prop('disabled')).toBe(true);
+});
+
+test('<TextField> - renders a input which correctly reacts on change (DatePicker)', () => {
+  const onChange = jest.fn();
+
+  const date = '2000-04-04';
+  const element = (
+    <TextField required={true} name="x" label="y" type={'date'} />
+  );
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: String } }, { onChange })
+  );
+
+  expect(wrapper.find('label')).toHaveLength(1);
+  expect(wrapper.find('label').text()).toBe('y *');
+
+  act(() => {
+    wrapper.find('DatePicker').find('input').prop('onChange')!({
+      currentTarget: { value: date },
+    } as any);
+  });
+
+  expect(onChange).toHaveBeenLastCalledWith('x', date);
+});
+
+test('<TextField> - renders a input which correctly reacts on change (DatePicker - empty)', () => {
+  const onChange = jest.fn();
+
+  const date = '';
+  const element = (
+    <TextField required={true} name="x" label="y" type={'date'} />
+  );
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: String } }, { onChange })
+  );
+
+  expect(wrapper.find('label')).toHaveLength(1);
+  expect(wrapper.find('label').text()).toBe('y *');
+
+  act(() => {
+    wrapper.find('DatePicker').find('input').prop('onChange')!({
+      currentTarget: { value: date },
+    } as any);
+  });
+
+  expect(onChange).toHaveBeenLastCalledWith('x', date);
 });
