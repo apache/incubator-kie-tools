@@ -28,6 +28,7 @@ describe("useDirtyState", () => {
   beforeEach(() => {
     stateControl = new StateControl();
     editorRef = {
+      isReady: true,
       getStateControl: () => stateControl,
       getEnvelopeServer: () => ({} as any),
       undo: jest.fn(),
