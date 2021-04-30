@@ -24,6 +24,10 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({PatternFlyBootstrapper.class})
 public class DMNKogitoCommonEntryPointTest {
@@ -32,7 +36,8 @@ public class DMNKogitoCommonEntryPointTest {
 
     @Before
     public void setup() {
-        entryPoint = new DMNKogitoCommonEntryPoint();
+        entryPoint = spy(new DMNKogitoCommonEntryPoint());
+        doNothing().when(entryPoint).initializeLienzoCore();
     }
 
     @Test
@@ -47,5 +52,8 @@ public class DMNKogitoCommonEntryPointTest {
 
         PowerMockito.verifyStatic(PatternFlyBootstrapper.class);
         PatternFlyBootstrapper.ensureMomentTimeZoneIsAvailable();
+
+        // LienzoCore is final, thus it's not possible to verify LienzoCore#setHidpiEnabled.
+        verify(entryPoint).initializeLienzoCore();
     }
 }
