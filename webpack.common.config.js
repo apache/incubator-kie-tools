@@ -26,29 +26,29 @@ module.exports = {
   },
   stats: {
     excludeAssets: [
-      name => !name.endsWith(".js"),
+      (name) => !name.endsWith(".js"),
       /.*DMNKogitoRuntimeWebapp.*/,
       /.*KogitoBPMNEditor.*/,
       /.*DroolsWorkbenchScenarioSimulationKogitoRuntime.*/,
       /gwt-editors\/.*/,
       /editors\/.*/
     ],
-    excludeModules: true
+    excludeModules: true,
   },
   performance: {
     maxAssetSize: 30000000,
-    maxEntrypointSize: 30000000
+    maxEntrypointSize: 30000000,
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
+    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")],
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader"
-      }
-    ]
-  }
+        loader: "ts-loader",
+      },
+    ],
+  },
 };

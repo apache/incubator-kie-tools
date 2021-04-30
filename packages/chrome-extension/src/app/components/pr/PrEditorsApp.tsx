@@ -32,7 +32,7 @@ export function PrEditorsApp(props: { prInfo: PrInfo; contentPath: string }) {
   }, []);
 
   useEffect(() => {
-    const observer = new MutationObserver(mutations => {
+    const observer = new MutationObserver((mutations) => {
       const addedNodes = mutations.reduce((l, r) => [...l, ...Array.from(r.addedNodes)], []);
       if (addedNodes.length <= 0) {
         return;
@@ -50,7 +50,7 @@ export function PrEditorsApp(props: { prInfo: PrInfo; contentPath: string }) {
 
     observer.observe(globals.dependencies.all.pr__mutationObserverTarget()!, {
       childList: true,
-      subtree: true
+      subtree: true,
     });
 
     return () => {
@@ -60,7 +60,7 @@ export function PrEditorsApp(props: { prInfo: PrInfo; contentPath: string }) {
 
   return (
     <>
-      {prFileContainers.map(container => (
+      {prFileContainers.map((container) => (
         <IsolatedPrEditor
           key={getUnprocessedFilePath(container, globals.dependencies)}
           prInfo={props.prInfo}
@@ -78,7 +78,7 @@ export function PrEditorsApp(props: { prInfo: PrInfo; contentPath: string }) {
 }
 
 function supportedPrFileElements(logger: Logger, envelopeLocator: EditorEnvelopeLocator, dependencies: Dependencies) {
-  return prFileElements(logger, dependencies).filter(container =>
+  return prFileElements(logger, dependencies).filter((container) =>
     envelopeLocator.mapping.has(getFileExtension(container, dependencies))
   );
 }
@@ -95,9 +95,7 @@ function prFileElements(logger: Logger, dependencies: Dependencies) {
 
 function getFileExtension(prFileContainer: HTMLElement, dependencies: Dependencies) {
   const unprocessedFilePath = getUnprocessedFilePath(prFileContainer, dependencies);
-  return getOriginalFilePath(unprocessedFilePath)
-    .split(".")
-    .pop()!;
+  return getOriginalFilePath(unprocessedFilePath).split(".").pop()!;
 }
 
 export function getUnprocessedFilePath(prFileContainer: HTMLElement, dependencies: Dependencies) {

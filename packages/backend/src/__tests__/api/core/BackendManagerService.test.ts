@@ -34,7 +34,7 @@ describe("stop the backend manager service", () => {
     const manager = new BackendManagerService({
       localHttpServer: localHttpServer,
       bootstrapServices: [serviceA, serviceB],
-      lazyServices: [serviceC]
+      lazyServices: [serviceC],
     });
     const localServerStopFn = jest.spyOn(localHttpServer, "stop");
     await manager.start();
@@ -79,7 +79,7 @@ describe("start the backend manager service", () => {
     const serviceB = createMockedService("Service B");
     const manager = new BackendManagerService({
       localHttpServer: localHttpServer,
-      bootstrapServices: [serviceA, serviceB]
+      bootstrapServices: [serviceA, serviceB],
     });
     const registerServiceFn = jest.spyOn(manager, "registerService");
     await manager.start();
@@ -134,7 +134,7 @@ describe("register a new service", () => {
   const httpService = new DummyHttpService();
   const localHttpService = new DummyLocalHttpService();
   const httpBridge: jest.Mocked<HttpBridge> = {
-    request: jest.fn()
+    request: jest.fn(),
   };
 
   test("should return TRUE when the service is already registered", async () => {

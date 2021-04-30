@@ -35,7 +35,7 @@ export const CharacteristicsTableAction = (props: CharacteristicsTableActionProp
         <Button
           variant="plain"
           onClick={onDelete}
-          onKeyDown={e => {
+          onKeyDown={(e) => {
             if (e.key === "Enter") {
               onDelete(e);
             }

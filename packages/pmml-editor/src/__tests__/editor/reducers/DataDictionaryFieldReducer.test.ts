@@ -32,8 +32,8 @@ describe("DataDictionaryFieldReducer::Valid actions", () => {
       payload: {
         dataDictionaryIndex: 0,
         dataField: { name: "updated" as FieldName, dataType: "string", optype: "ordinal" },
-        originalName: "field1" as FieldName
-      }
+        originalName: "field1" as FieldName,
+      },
     });
     const updated = historyService.commit(pmml)?.DataDictionary.DataField as DataField[];
 
@@ -50,8 +50,8 @@ describe("DataDictionaryFieldReducer::Valid actions", () => {
       payload: {
         dataDictionaryIndex: -1,
         dataField: { name: "updated" as FieldName, dataType: "boolean", optype: "categorical" },
-        originalName: "field1" as FieldName
-      }
+        originalName: "field1" as FieldName,
+      },
     });
     const updated = historyService.commit(pmml)?.DataDictionary.DataField as DataField[];
 
@@ -64,8 +64,8 @@ describe("DataDictionaryFieldReducer::Valid actions", () => {
       payload: {
         dataDictionaryIndex: 1,
         dataField: { name: "updated" as FieldName, dataType: "boolean", optype: "categorical" },
-        originalName: "field1" as FieldName
-      }
+        originalName: "field1" as FieldName,
+      },
     });
     const updated = historyService.commit(pmml)?.DataDictionary.DataField as DataField[];
 
@@ -78,8 +78,8 @@ describe("DataFieldReducer::Invalid actions", () => {
     const updated: DataField[] = reducer(dataFields, {
       type: Actions.SetHeaderDescription,
       payload: {
-        description: "description"
-      }
+        description: "description",
+      },
     });
     expect(updated).toEqual(dataFields);
   });

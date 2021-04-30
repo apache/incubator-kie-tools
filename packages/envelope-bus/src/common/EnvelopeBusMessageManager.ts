@@ -26,7 +26,7 @@ import {
   MessageBusServer,
   NotificationCallback,
   NotificationPropertyNames,
-  RequestPropertyNames
+  RequestPropertyNames,
 } from "../api";
 
 export class EnvelopeBusMessageManager<
@@ -64,7 +64,7 @@ export class EnvelopeBusMessageManager<
           requestsCache.get(method) ??
           requestsCache.set(method, (...args) => this.request(method, ...args) as Promise<any>).get(method)
         );
-      }
+      },
     });
 
     const notifications = new Proxy<ApiNotifications<ApiToConsume>>({} as ApiNotifications<ApiToConsume>, {
@@ -78,14 +78,14 @@ export class EnvelopeBusMessageManager<
           notificationsCache.get(method) ??
           notificationsCache.set(method, (...args) => this.notify(method, ...args)).get(method)
         );
-      }
+      },
     });
 
     const clientApi: MessageBusClientApi<ApiToConsume> = {
       requests,
       notifications,
       subscribe: (m, a) => this.subscribe(m, a),
-      unsubscribe: (m, a) => this.unsubscribe(m, a)
+      unsubscribe: (m, a) => this.unsubscribe(m, a),
     };
 
     return clientApi;
@@ -93,7 +93,7 @@ export class EnvelopeBusMessageManager<
 
   public get server(): MessageBusServer<ApiToProvide, ApiToConsume> {
     return {
-      receive: (m, apiImpl) => this.receive(m, apiImpl)
+      receive: (m, apiImpl) => this.receive(m, apiImpl),
     };
   }
 
@@ -116,7 +116,7 @@ export class EnvelopeBusMessageManager<
     this.send({
       type: method,
       purpose: EnvelopeBusMessagePurpose.SUBSCRIPTION,
-      data: []
+      data: [],
     });
     return callback;
   }
@@ -139,7 +139,7 @@ export class EnvelopeBusMessageManager<
     this.send({
       type: method,
       purpose: EnvelopeBusMessagePurpose.UNSUBSCRIPTION,
-      data: []
+      data: [],
     });
   }
 
@@ -150,7 +150,7 @@ export class EnvelopeBusMessageManager<
       requestId: requestId,
       type: method,
       data: args,
-      purpose: EnvelopeBusMessagePurpose.REQUEST
+      purpose: EnvelopeBusMessagePurpose.REQUEST,
     });
 
     return new Promise<any>((resolve, reject) => {
@@ -164,7 +164,7 @@ export class EnvelopeBusMessageManager<
     this.send({
       type: method,
       data: args,
-      purpose: EnvelopeBusMessagePurpose.NOTIFICATION
+      purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
     });
   }
 
@@ -186,7 +186,7 @@ export class EnvelopeBusMessageManager<
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       type: request.type as FunctionPropertyNames<ApiToProvide>,
       data: data,
-      error: error
+      error: error,
     });
   }
 
@@ -239,7 +239,7 @@ export class EnvelopeBusMessageManager<
         throw new Error(`Cannot make a request to '${request.type}' because it does not return a Promise`);
       }
 
-      response.then(data => this.respond(request, data)).catch(err => this.respond(request, undefined, err));
+      response.then((data) => this.respond(request, data)).catch((err) => this.respond(request, undefined, err));
       return;
     }
 
@@ -252,13 +252,13 @@ export class EnvelopeBusMessageManager<
         this.send({
           type: method,
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-          data: message.data
+          data: message.data,
         });
       }
 
       // We can only receive notifications from subscriptions of the API we consume.
       const localSubscriptionMethod = message.type as NotificationPropertyNames<ApiToConsume>;
-      (this.localSubscriptions.get(localSubscriptionMethod) ?? []).forEach(callback => {
+      (this.localSubscriptions.get(localSubscriptionMethod) ?? []).forEach((callback) => {
         callback(...(message.data as any[]));
       });
 

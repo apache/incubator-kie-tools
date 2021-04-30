@@ -27,7 +27,7 @@ import { Select, SelectDirection, SelectOption, SelectVariant } from "@patternfl
 enum ModalState {
   SELECT_OS,
   DOWNLOADED,
-  CLOSE
+  CLOSE,
 }
 
 export function DownloadHubModal(props: {}) {
@@ -47,7 +47,7 @@ export function DownloadHubModal(props: {}) {
     setModalState(ModalState.CLOSE);
   }, []);
 
-  const onSelectOsToggle = useCallback(isExpanded => {
+  const onSelectOsToggle = useCallback((isExpanded) => {
     setSelectIsExpanded(isExpanded);
   }, []);
 
@@ -61,7 +61,7 @@ export function DownloadHubModal(props: {}) {
       new Map<OperatingSystem, string>([
         [OperatingSystem.LINUX, i18n.names.linux],
         [OperatingSystem.MACOS, i18n.names.macos],
-        [OperatingSystem.WINDOWS, i18n.names.windows]
+        [OperatingSystem.WINDOWS, i18n.names.windows],
       ]),
     []
   );
@@ -95,7 +95,7 @@ export function DownloadHubModal(props: {}) {
             </a>,
             <Button key="cancel" variant="link" onClick={onClose}>
               {i18n.terms.cancel}
-            </Button>
+            </Button>,
           ]}
         >
           <p>
@@ -149,7 +149,7 @@ export function DownloadHubModal(props: {}) {
           actions={[
             <Button key="close" variant="link" onClick={onClose}>
               {i18n.terms.close}
-            </Button>
+            </Button>,
           ]}
         >
           <p>

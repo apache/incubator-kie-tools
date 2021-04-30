@@ -35,7 +35,7 @@ export const CharacteristicLabelsEditMode = (props: CharacteristicLabelsEditMode
         color="cyan"
         href="#outline"
         icon={<ArrowAltCircleRightIcon />}
-        onClick={e => {
+        onClick={(e) => {
           e.nativeEvent.stopImmediatePropagation();
           e.preventDefault();
           viewAttributes();

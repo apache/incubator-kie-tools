@@ -1,0 +1,17 @@
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
+  <Header/>
+  <DataDictionary numberOfFields="1">
+    <DataField name="Test Data Type" optype="categorical" dataType="string"/>
+  </DataDictionary>
+  <Scorecard modelName="Test model" functionName="regression">
+    <MiningSchema>
+      <MiningField name="Test Data Type"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Test Output" dataType="string"/>
+    </Output>
+    <Characteristics>
+      <Characteristic name="Test Characteristic" reasonCode="3" baselineScore="22"/>
+    </Characteristics>
+  </Scorecard>
+</PMML>

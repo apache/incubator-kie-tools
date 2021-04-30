@@ -15,7 +15,7 @@
  */
 
 export enum EditorTabs {
-    DataTypes = "Data Types",
-    IncludedModels = "Included Models",
-    Editor = "Editor"
+  DataTypes = "Data Types",
+  IncludedModels = "Included Models",
+  Editor = "Editor",
 }

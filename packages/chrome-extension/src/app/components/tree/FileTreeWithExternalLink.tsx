@@ -37,7 +37,7 @@ export function FileTreeWithExternalLink() {
   }, []);
 
   useEffect(() => {
-    const observer = new MutationObserver(mutations => {
+    const observer = new MutationObserver((mutations) => {
       const addedNodes = mutations.reduce((l, r) => [...l, ...Array.from(r.addedNodes)], []);
       if (addedNodes.length <= 0) {
         return;
@@ -54,7 +54,7 @@ export function FileTreeWithExternalLink() {
 
     observer.observe(dependencies.treeView.repositoryContainer()!, {
       childList: true,
-      subtree: true
+      subtree: true,
     });
 
     return () => {
@@ -64,7 +64,7 @@ export function FileTreeWithExternalLink() {
 
   return (
     <>
-      {links.map(link =>
+      {links.map((link) =>
         ReactDOM.createPortal(
           <OpenExternalEditorButton
             id={externalLinkId(link)}
@@ -79,7 +79,7 @@ export function FileTreeWithExternalLink() {
 }
 
 function filterLinksForSupportedFileExtensions(links: HTMLAnchorElement[], envelopeLocator: EditorEnvelopeLocator) {
-  return links.filter(fileLink => {
+  return links.filter((fileLink) => {
     const fileExtension = extractOpenFileExtension(fileLink.href);
     const isSupportedLanguage = fileExtension && envelopeLocator.mapping.has(fileExtension);
     return isSupportedLanguage && !document.getElementById(externalLinkId(fileLink));

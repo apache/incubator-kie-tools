@@ -44,7 +44,7 @@ export class HistoryService {
 
   private readonly history: HistoryStore = {
     changes: [],
-    index: 0
+    index: 0,
   };
 
   constructor(private readonly listeners: Listener[]) {}
@@ -64,22 +64,22 @@ export class HistoryService {
     }
 
     //Commit changes
-    const newState = this.mutate(state, null, draft => {
-      this.pending.forEach(be => {
+    const newState = this.mutate(state, null, (draft) => {
+      this.pending.forEach((be) => {
         const segment = be.path === null ? draft : get(draft, be.path.path);
         be.recipe(segment as WritableDraft<any>);
       });
     });
 
     //Validate changes
-    this.pending.forEach(be => {
+    this.pending.forEach((be) => {
       if (be.validate !== undefined) {
         be.validate(newState);
       }
     });
 
     //Signal commit to listeners
-    this.listeners.forEach(listener => listener(`Command${this.history.index}`));
+    this.listeners.forEach((listener) => listener(`Command${this.history.index}`));
 
     this.pending = new Array<BatchEntry<any>>();
 

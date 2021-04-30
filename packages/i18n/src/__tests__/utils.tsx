@@ -34,8 +34,8 @@ export const dummyDefault: DummyDictionary = {
   welcome: "Welcome",
   modal: {
     title: "My title",
-    text: "My text"
-  }
+    text: "My text",
+  },
 };
 
 export const DummyContext = React.createContext<I18nContextType<DummyDictionary>>({} as any);

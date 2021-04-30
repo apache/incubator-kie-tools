@@ -44,10 +44,10 @@ describe("Dialog", () => {
               steps: [
                 {
                   mode: new DemoMode(),
-                  content: <div>Something as JSX</div>
-                }
-              ]
-            })
+                  content: <div>Something as JSX</div>,
+                },
+              ],
+            }),
           }).wrapper
         ).wrapper
       );
@@ -63,10 +63,10 @@ describe("Dialog", () => {
               steps: [
                 {
                   mode: new DemoMode(),
-                  content: () => <div>Something as JSX-function</div>
-                }
-              ]
-            })
+                  content: () => <div>Something as JSX-function</div>,
+                },
+              ],
+            }),
           }).wrapper
         ).wrapper
       );
@@ -82,10 +82,10 @@ describe("Dialog", () => {
               steps: [
                 {
                   mode: new DemoMode(),
-                  content: "<div>Something as string</div>"
-                }
-              ]
-            })
+                  content: "<div>Something as string</div>",
+                },
+              ],
+            }),
           }).wrapper
         ).wrapper
       );
@@ -101,10 +101,10 @@ describe("Dialog", () => {
               steps: [
                 {
                   mode: new AutoMode(1000),
-                  content: "<div>Something as string</div>"
-                }
-              ]
-            })
+                  content: "<div>Something as string</div>",
+                },
+              ],
+            }),
           }).wrapper
         ).wrapper
       );
@@ -121,10 +121,10 @@ describe("Dialog", () => {
               steps: [
                 {
                   mode: new DemoMode(),
-                  content: <div>Something</div>
-                }
-              ]
-            })
+                  content: <div>Something</div>,
+                },
+              ],
+            }),
           }).wrapper
         ).wrapper
       );
@@ -142,8 +142,8 @@ describe("Dialog", () => {
             currentStep: 1,
             currentTutorial: registeredTutorial({
               label: tutorialLabel,
-              steps: []
-            })
+              steps: [],
+            }),
           }).wrapper
         ).wrapper
       );
@@ -159,10 +159,10 @@ describe("Dialog", () => {
         steps: [
           {
             mode: new DemoMode(),
-            negativeReinforcementMessage: "Try to click there!"
-          }
-        ]
-      })
+            negativeReinforcementMessage: "Try to click there!",
+          },
+        ],
+      }),
     };
 
     it("renders negative reinforcement message", () => {
@@ -170,7 +170,7 @@ describe("Dialog", () => {
         usingTestingGuidedTourI18nContext(
           usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
             ...negativeReinforcementCtx,
-            isHighlightLayerEnabled: true
+            isHighlightLayerEnabled: true,
           }).wrapper
         ).wrapper
       );
@@ -182,7 +182,7 @@ describe("Dialog", () => {
         usingTestingGuidedTourI18nContext(
           usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
             ...negativeReinforcementCtx,
-            isHighlightLayerEnabled: false
+            isHighlightLayerEnabled: false,
           }).wrapper
         ).wrapper
       );
@@ -194,7 +194,7 @@ describe("Dialog", () => {
         usingTestingGuidedTourI18nContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />).wrapper,
         {
           ...negativeReinforcementCtx,
-          isHighlightLayerEnabled: true
+          isHighlightLayerEnabled: true,
         }
       );
 

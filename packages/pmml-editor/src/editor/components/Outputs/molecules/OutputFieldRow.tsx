@@ -24,7 +24,7 @@ import {
   OpType,
   OutputField,
   RankOrder,
-  ResultFeature
+  ResultFeature,
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputFieldRowAction, OutputLabels } from "../atoms";
 import "./OutputFieldRow.scss";
@@ -56,9 +56,18 @@ interface Values {
 const OutputFieldRow = (props: OutputFieldRowProps) => {
   const { modelIndex, outputFieldIndex, outputField, onEditOutputField, onDeleteOutputField } = props;
 
-  const { name, dataType, optype, targetField, feature, value, rank, rankOrder, segmentId, isFinalResult } = useMemo<
-    Values
-  >(() => {
+  const {
+    name,
+    dataType,
+    optype,
+    targetField,
+    feature,
+    value,
+    rank,
+    rankOrder,
+    segmentId,
+    isFinalResult,
+  } = useMemo<Values>(() => {
     return {
       name: outputField?.name,
       dataType: outputField?.dataType,
@@ -69,31 +78,19 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
       rank: outputField?.rank,
       rankOrder: outputField?.rankOrder,
       segmentId: outputField?.segmentId,
-      isFinalResult: outputField?.isFinalResult
+      isFinalResult: outputField?.isFinalResult,
     };
   }, [outputField]);
 
   const { validationRegistry } = useValidationRegistry();
   const validations = useMemo(
-    () =>
-      validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forOutput()
-          .forOutputField(outputFieldIndex)
-          .build()
-      ),
+    () => validationRegistry.get(Builder().forModel(modelIndex).forOutput().forOutputField(outputFieldIndex).build()),
     [outputFieldIndex, modelIndex, outputField]
   );
   const targetFieldValidation = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forOutput()
-          .forOutputField(outputFieldIndex)
-          .forTargetField()
-          .build()
+        Builder().forModel(modelIndex).forOutput().forOutputField(outputFieldIndex).forTargetField().build()
       ),
     [outputFieldIndex, modelIndex, outputField]
   );
@@ -103,7 +100,7 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
       className={"editable-item__inner"}
       onClick={onEditOutputField}
       tabIndex={0}
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         if (e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();

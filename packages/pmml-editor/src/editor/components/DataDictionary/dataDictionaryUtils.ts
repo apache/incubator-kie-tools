@@ -5,7 +5,7 @@ export const convertPMML2DD = (PMMLDataDictionary: DataDictionary | undefined): 
   if (PMMLDataDictionary === undefined) {
     return [];
   } else {
-    return PMMLDataDictionary.DataField.filter(item => item.dataType !== undefined).map(item => {
+    return PMMLDataDictionary.DataField.filter((item) => item.dataType !== undefined).map((item) => {
       return convertFromDataField(item);
     });
   }
@@ -15,7 +15,7 @@ export const convertToDataField = (item: DDDataField): DataField => {
   const convertedField: DataField = {
     name: item.name as FieldName,
     dataType: item.type,
-    optype: item.optype
+    optype: item.optype,
   };
 
   convertedField.displayName = item.displayName;
@@ -26,22 +26,24 @@ export const convertToDataField = (item: DDDataField): DataField => {
     convertedField.Value = convertedField.Value || [];
     convertedField.Value.push({
       property: "missing",
-      value: item.missingValue
+      value: item.missingValue,
     });
   }
   if (item.invalidValue) {
     convertedField.Value = convertedField.Value || [];
     convertedField.Value.push({
       property: "invalid",
-      value: item.invalidValue
+      value: item.invalidValue,
     });
   }
 
   if (item.constraints) {
     if (item.constraints.type === ConstraintType.RANGE && item.constraints.value.length > 0) {
-      convertedField.Interval = item.constraints.value.map(range => {
+      convertedField.Interval = item.constraints.value.map((range) => {
         const interval: Interval = {
-          closure: `${range?.start?.included ? "closed" : "open"}${range?.end?.included ? "Closed" : "Open"}` as Closure
+          closure: `${range?.start?.included ? "closed" : "open"}${
+            range?.end?.included ? "Closed" : "Open"
+          }` as Closure,
         };
         if (range.start && range.start.value) {
           interval.leftMargin = Number(range.start.value);
@@ -54,7 +56,7 @@ export const convertToDataField = (item: DDDataField): DataField => {
     }
     if (item.constraints.type === ConstraintType.ENUMERATION && item.constraints.value.length > 0) {
       convertedField.Value = (convertedField.Value || []).concat(
-        item.constraints.value.map(value => {
+        item.constraints.value.map((value) => {
           return { value };
         })
       );
@@ -81,7 +83,7 @@ export const convertFromDataField = (item: DataField) => {
   const convertedField: DDDataField = {
     name: item.name as string,
     type: type,
-    optype: item.optype
+    optype: item.optype,
   };
   if (item.displayName) {
     convertedField.displayName = item.displayName;
@@ -90,7 +92,7 @@ export const convertFromDataField = (item: DataField) => {
     convertedField.isCyclic = item.isCyclic === "1";
   }
   if (item.Value) {
-    item.Value.forEach(value => {
+    item.Value.forEach((value) => {
       if (value.property === "missing") {
         convertedField.missingValue = value.value;
       }
@@ -101,7 +103,7 @@ export const convertFromDataField = (item: DataField) => {
       if (value.property === "valid" || value.property === undefined) {
         convertedField.constraints = convertedField.constraints || {
           type: ConstraintType.ENUMERATION,
-          value: []
+          value: [],
         };
         convertedField.constraints.value.push(value.value);
       }
@@ -110,7 +112,7 @@ export const convertFromDataField = (item: DataField) => {
   if (item.Interval && item.Interval.length > 0) {
     convertedField.constraints = {
       type: ConstraintType.RANGE,
-      value: item.Interval.map(interval => {
+      value: item.Interval.map((interval) => {
         /* A note about the included value and how it's calculated.
         PMML presents a single property to handle the inclusion of both interval limits called Closure.
         Closure combines both inclusion values in camel case, i.e. "openClosed", meaning that the left margin is open
@@ -120,14 +122,14 @@ export const convertFromDataField = (item: DataField) => {
         return {
           start: {
             value: interval.leftMargin?.toString() ?? "",
-            included: interval.closure.startsWith("closed")
+            included: interval.closure.startsWith("closed"),
           },
           end: {
             value: interval.rightMargin?.toString() ?? "",
-            included: interval.closure.endsWith("Closed")
-          }
+            included: interval.closure.endsWith("Closed"),
+          },
         };
-      })
+      }),
     };
   }
   return convertedField;

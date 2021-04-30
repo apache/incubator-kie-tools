@@ -164,14 +164,7 @@ const RangeEdit = (props: RangeEditProps) => {
 
   const { validationRegistry } = useValidationRegistry();
   const validations = useMemo(
-    () =>
-      validationRegistry.get(
-        Builder()
-          .forDataDictionary()
-          .forDataField(dataFieldIndex)
-          .forInterval(index)
-          .build()
-      ),
+    () => validationRegistry.get(Builder().forDataDictionary().forDataField(dataFieldIndex).forInterval(index).build()),
     [range]
   );
 

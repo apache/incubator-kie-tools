@@ -1,2 +1,1 @@
-Kogito Tooling GitHub Chrome extension library
---
+## Kogito Tooling GitHub Chrome extension library

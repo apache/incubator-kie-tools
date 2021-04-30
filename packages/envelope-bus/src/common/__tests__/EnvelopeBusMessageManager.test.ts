@@ -36,7 +36,7 @@ let apiImpl: ApiToProvide;
 
 beforeEach(() => {
   sentMessages = [];
-  manager = new EnvelopeBusMessageManager(msg => sentMessages.push(msg), "my-manager");
+  manager = new EnvelopeBusMessageManager((msg) => sentMessages.push(msg), "my-manager");
   apiImpl = {
     setText: jest.fn((text: string) => {
       console.info(`Setting text: ${text}`);
@@ -46,7 +46,7 @@ beforeEach(() => {
     }),
     getFooBar: jest.fn(async (foo: string, bar: string) => {
       return foo + bar;
-    })
+    }),
   };
 });
 
@@ -58,8 +58,8 @@ describe("request", () => {
         type: "getText",
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "my-manager_0",
-        data: []
-      }
+        data: [],
+      },
     ]);
 
     await manager.server.receive(
@@ -67,7 +67,7 @@ describe("request", () => {
         type: "getText",
         purpose: EnvelopeBusMessagePurpose.RESPONSE,
         requestId: "my-manager_0",
-        data: "foo"
+        data: "foo",
       },
       apiImpl
     );
@@ -82,8 +82,8 @@ describe("request", () => {
         type: "getSomething",
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "my-manager_0",
-        data: ["a", 1]
-      }
+        data: ["a", 1],
+      },
     ]);
 
     await manager.server.receive(
@@ -91,7 +91,7 @@ describe("request", () => {
         type: "getSomething",
         purpose: EnvelopeBusMessagePurpose.RESPONSE,
         requestId: "my-manager_0",
-        data: 8
+        data: 8,
       },
       apiImpl
     );
@@ -107,14 +107,14 @@ describe("request", () => {
         type: "getText",
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "my-manager_0",
-        data: []
+        data: [],
       },
       {
         type: "getSomething",
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "my-manager_1",
-        data: ["b", 2]
-      }
+        data: ["b", 2],
+      },
     ]);
   });
 });
@@ -126,8 +126,8 @@ describe("notify", () => {
       {
         type: "setSomething",
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-        data: ["something"]
-      }
+        data: ["something"],
+      },
     ]);
   });
 });
@@ -145,15 +145,15 @@ describe("subscribe", () => {
       {
         type: "setSomethings",
         purpose: EnvelopeBusMessagePurpose.SUBSCRIPTION,
-        data: []
-      }
+        data: [],
+      },
     ]);
 
     await manager.server.receive(
       {
         type: "setSomethings",
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-        data: ["foo", "bar"]
+        data: ["foo", "bar"],
       },
       apiImpl
     );
@@ -168,7 +168,7 @@ describe("unsubscribe", () => {
       {
         type: "setSomething",
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-        data: ["something"]
+        data: ["something"],
       },
       apiImpl
     );
@@ -181,20 +181,20 @@ describe("unsubscribe", () => {
       {
         type: "setSomething",
         purpose: EnvelopeBusMessagePurpose.SUBSCRIPTION,
-        data: []
+        data: [],
       },
       {
         type: "setSomething",
         purpose: EnvelopeBusMessagePurpose.UNSUBSCRIPTION,
-        data: []
-      }
+        data: [],
+      },
     ]);
 
     await manager.server.receive(
       {
         type: "setSomething",
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-        data: ["something2"]
+        data: ["something2"],
       },
       apiImpl
     );
@@ -204,7 +204,7 @@ describe("unsubscribe", () => {
 });
 
 const delay = (ms: number) => {
-  return new Promise(res => setTimeout(res, ms));
+  return new Promise((res) => setTimeout(res, ms));
 };
 
 describe("receive", () => {
@@ -214,7 +214,7 @@ describe("receive", () => {
         type: "getEnvelopeText",
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "my-req-1",
-        data: []
+        data: [],
       },
       apiImpl
     );
@@ -227,8 +227,8 @@ describe("receive", () => {
         type: "getEnvelopeText",
         purpose: EnvelopeBusMessagePurpose.RESPONSE,
         requestId: "my-req-1",
-        data: "a text"
-      }
+        data: "a text",
+      },
     ]);
   });
   test("request with parameters", async () => {
@@ -237,7 +237,7 @@ describe("receive", () => {
         type: "getFooBar",
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "my-req-1",
-        data: ["foo", "bar"]
+        data: ["foo", "bar"],
       },
       apiImpl
     );
@@ -252,8 +252,8 @@ describe("receive", () => {
         type: "getFooBar",
         purpose: EnvelopeBusMessagePurpose.RESPONSE,
         requestId: "my-req-1",
-        data: "foobar"
-      }
+        data: "foobar",
+      },
     ]);
   });
 
@@ -263,7 +263,7 @@ describe("receive", () => {
         {
           type: "getEnvelopeText",
           purpose: EnvelopeBusMessagePurpose.RESPONSE,
-          data: []
+          data: [],
         },
         apiImpl
       );
@@ -277,7 +277,7 @@ describe("receive", () => {
           type: "getEnvelopeText",
           purpose: EnvelopeBusMessagePurpose.RESPONSE,
           requestId: "my-req-1",
-          data: []
+          data: [],
         },
         apiImpl
       );
@@ -289,7 +289,7 @@ describe("receive", () => {
       {
         type: "setText",
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-        data: ["the text"]
+        data: ["the text"],
       },
       apiImpl
     );
@@ -302,7 +302,7 @@ describe("receive", () => {
       {
         type: "setText",
         purpose: EnvelopeBusMessagePurpose.SUBSCRIPTION,
-        data: []
+        data: [],
       },
       apiImpl
     );
@@ -311,7 +311,7 @@ describe("receive", () => {
       {
         type: "setText",
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-        data: ["the text"]
+        data: ["the text"],
       },
       apiImpl
     );
@@ -321,8 +321,8 @@ describe("receive", () => {
       {
         type: "setText",
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-        data: ["the text"]
-      }
+        data: ["the text"],
+      },
     ]);
   });
 
@@ -331,7 +331,7 @@ describe("receive", () => {
       {
         type: "setText",
         purpose: EnvelopeBusMessagePurpose.SUBSCRIPTION,
-        data: []
+        data: [],
       },
       apiImpl
     );
@@ -340,7 +340,7 @@ describe("receive", () => {
       {
         type: "setText",
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-        data: ["the text"]
+        data: ["the text"],
       },
       {} as ApiToProvide
     );
@@ -351,8 +351,8 @@ describe("receive", () => {
       {
         type: "setText",
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-        data: ["the text"]
-      }
+        data: ["the text"],
+      },
     ]);
   });
 
@@ -361,7 +361,7 @@ describe("receive", () => {
       {
         type: "setText",
         purpose: EnvelopeBusMessagePurpose.SUBSCRIPTION,
-        data: []
+        data: [],
       },
       apiImpl
     );
@@ -370,7 +370,7 @@ describe("receive", () => {
       {
         type: "setText",
         purpose: EnvelopeBusMessagePurpose.UNSUBSCRIPTION,
-        data: []
+        data: [],
       },
       apiImpl
     );
@@ -379,7 +379,7 @@ describe("receive", () => {
       {
         type: "setText",
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-        data: ["the text"]
+        data: ["the text"],
       },
       {} as ApiToProvide
     );

@@ -22,10 +22,7 @@ const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 
 function getLatestGitTag() {
-  const tagName = require("child_process")
-    .execSync("git rev-list --tags --max-count=1")
-    .toString()
-    .trim();
+  const tagName = require("child_process").execSync("git rev-list --tags --max-count=1").toString().trim();
 
   return require("child_process")
     .execSync("git describe --tags " + tagName)
@@ -63,7 +60,7 @@ module.exports = async (env, argv) => {
       index: "./src/index.tsx",
       "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
       "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
-      "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts"
+      "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
     },
     plugins: [
       new CopyPlugin([
@@ -97,18 +94,18 @@ module.exports = async (env, argv) => {
             multiple: [
               {
                 search: "$_{WEBPACK_REPLACE__hubLinuxUrl}",
-                replace: downloadHub_linuxUrl
+                replace: downloadHub_linuxUrl,
               },
               {
                 search: "$_{WEBPACK_REPLACE__hubMacOsUrl}",
-                replace: downloadHub_macOsUrl
+                replace: downloadHub_macOsUrl,
               },
               {
                 search: "$_{WEBPACK_REPLACE__hubWindowsUrl}",
-                replace: downloadHub_windowsUrl
-              }
-            ]
-          }
+                replace: downloadHub_windowsUrl,
+              },
+            ],
+          },
         },
         ...pfWebpackOptions.patternflyRules
       ]
@@ -119,7 +116,7 @@ module.exports = async (env, argv) => {
       watchContentBase: true,
       contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
       compress: true,
-      port: 9001
-    }
+      port: 9001,
+    },
   });
 };

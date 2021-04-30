@@ -30,13 +30,10 @@ export const validateBaselineScore = (
     (useReasonCodes === undefined || useReasonCodes) &&
     baselineScore === undefined &&
     (characteristics.length === 0 ||
-      characteristics.filter(characteristic => characteristic.baselineScore === undefined).length > 0)
+      characteristics.filter((characteristic) => characteristic.baselineScore === undefined).length > 0)
   ) {
     validationRegistry.set(
-      Builder()
-        .forModel(modelIndex)
-        .forBaselineScore()
-        .build(),
+      Builder().forModel(modelIndex).forBaselineScore().build(),
       new ValidationEntry(ValidationLevel.WARNING, `Baseline score is required`)
     );
   }

@@ -20,7 +20,8 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
-import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
+import { Toolbar, ToolbarContent, ToolbarItem ,
+} from "@patternfly/react-core/dist/js/components/Toolbar";
 import { SearchIcon } from "@patternfly/react-icons/dist/js/icons/search-icon";
 import "./CharacteristicsToolbar.scss";
 
@@ -49,7 +50,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
           <SplitItem>
             <ToolbarItem>
               <InputGroup>
-                <form onSubmit={e => e.preventDefault()}>
+                <form onSubmit={(e) => e.preventDefault()}>
                   <span style={{ display: "flex" }}>
                     <TextInput
                       id="characteristics-filter-input"
@@ -59,7 +60,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                       aria-label="filter characteristics"
                       placeholder="Filter by name"
                       value={filter}
-                      onChange={e => setFilter(e)}
+                      onChange={(e) => setFilter(e)}
                     />
                     <Button
                       id="characteristics-filter"

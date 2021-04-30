@@ -90,7 +90,7 @@ async function testEmptyDmn() {
   const dmnNodes = await client.$$(
     "[data-i18n-prefix='DecisionNavigatorTreeView.'] > div > span[data-field='text-content']"
   );
-  const nodeNames = await Promise.all(dmnNodes.map(async i => await i.getText()));
+  const nodeNames = await Promise.all(dmnNodes.map(async (i) => await i.getText()));
   expect(nodeNames).toEqual(["unsaved file"]);
 
   // open data types tab

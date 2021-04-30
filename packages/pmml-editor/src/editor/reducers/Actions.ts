@@ -66,7 +66,7 @@ export enum Actions {
   Scorecard_UpdateCharacteristic = "SCORECARD_UPDATE_CHARACTERISTIC",
   Scorecard_AddAttribute = "SCORECARD_ADD_ATTRIBUTE",
   Scorecard_DeleteAttribute = "SCORECARD_DELETE_ATTRIBUTE",
-  Scorecard_UpdateAttribute = "SCORECARD_UPDATE_ATTRIBUTE"
+  Scorecard_UpdateAttribute = "SCORECARD_UPDATE_ATTRIBUTE",
 }
 
 export type AllActions =

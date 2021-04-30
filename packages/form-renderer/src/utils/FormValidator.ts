@@ -42,9 +42,7 @@ export class DefaultFormValidator implements FormValidator {
   constructor(schema: any) {
     this.schema = schema;
 
-    this.validator = new Ajv({ allErrors: true, useDefaults: true }).compile(
-      schema
-    );
+    this.validator = new Ajv({ allErrors: true, useDefaults: true }).compile(schema);
   }
 
   public validate(model: any): any | undefined {

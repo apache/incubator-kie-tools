@@ -26,7 +26,7 @@ import {
   AttributeToolbar,
   CharacteristicsToolbar,
   EmptyStateNoCharacteristics,
-  EmptyStateNoMatchingCharacteristics
+  EmptyStateNoMatchingCharacteristics,
 } from "../molecules";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { isEqual } from "lodash";
@@ -70,7 +70,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
       ?.map<IndexedCharacteristic>(
         (_characteristic, index) => ({ index: index, characteristic: _characteristic } as IndexedCharacteristic)
       )
-      .filter(ic => {
+      .filter((ic) => {
         const _characteristicName = ic.characteristic.name;
         return _characteristicName?.toLowerCase().includes(filter);
       });
@@ -115,7 +115,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
       //Index of the new row is equal to the number of existing rows
       setSelectedCharacteristicIndex(numberOfCharacteristics);
 
-      const existingNames: string[] = characteristics.map(c => c.name ?? "");
+      const existingNames: string[] = characteristics.map((c) => c.name ?? "");
       const newCharacteristicName = findIncrementalName("New characteristic", existingNames, 1);
 
       dispatch({
@@ -125,8 +125,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
           name: newCharacteristicName,
           baselineScore: undefined,
           reasonCode: undefined,
-          Attribute: []
-        }
+          Attribute: [],
+        },
       });
 
       setActiveOperation(Operation.UPDATE_CHARACTERISTIC);
@@ -144,8 +144,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
         type: Actions.Scorecard_DeleteCharacteristic,
         payload: {
           modelIndex: modelIndex,
-          characteristicIndex: characteristicIndex
-        }
+          characteristicIndex: characteristicIndex,
+        },
       });
       // }
     },
@@ -166,8 +166,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
         characteristicIndex: selectedCharacteristicIndex,
         predicate: fromText("True"),
         partialScore: undefined,
-        reasonCode: undefined
-      }
+        reasonCode: undefined,
+      },
     });
     setActiveOperation(Operation.UPDATE_ATTRIBUTE);
     setViewSection("attribute");
@@ -185,7 +185,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
       }
       const characteristic = characteristics[selectedCharacteristicIndex];
       const existingPartial: Partial<Characteristic> = {};
-      Object.keys(partial).forEach(key => set(existingPartial, key, get(characteristic, key)));
+      Object.keys(partial).forEach((key) => set(existingPartial, key, get(characteristic, key)));
 
       if (!isEqual(partial, existingPartial)) {
         dispatch({
@@ -194,8 +194,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
             modelIndex: modelIndex,
             characteristicIndex: selectedCharacteristicIndex,
             ...characteristic,
-            ...partial
-          }
+            ...partial,
+          },
         });
       }
     },
@@ -217,8 +217,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
             characteristicIndex: selectedCharacteristicIndex,
             predicate: _content.predicate,
             partialScore: _content.partialScore,
-            reasonCode: _content.reasonCode
-          }
+            reasonCode: _content.reasonCode,
+          },
         });
       } else {
         dispatch({
@@ -229,8 +229,8 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
             attributeIndex: selectedAttributeIndex,
             predicate: _content.predicate,
             partialScore: _content.partialScore,
-            reasonCode: _content.reasonCode
-          }
+            reasonCode: _content.reasonCode,
+          },
         });
       }
     },
@@ -265,7 +265,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
           <CSSTransition
             timeout={{
               enter: 230,
-              exit: 100
+              exit: 100,
             }}
             classNames={getTransition(viewSection)}
             key={viewSection}

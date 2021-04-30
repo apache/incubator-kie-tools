@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       mvnVersion:
-        description: 'Maven version'
+        description: "Maven version"
         required: true
       npmVersion:
-        description: 'NPM version'
+        description: "NPM version"
         required: true
 
 jobs:

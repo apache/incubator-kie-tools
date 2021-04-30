@@ -20,7 +20,7 @@ import { SingleEditorApp } from "../../../../app/components/single/SingleEditorA
 import {
   usingTestingChromeExtensionI18nContext,
   usingTestingGitHubContext,
-  usingTestingGlobalContext
+  usingTestingGlobalContext,
 } from "../../../testing_utils";
 import { removeAllChildren } from "../../../../app/utils";
 
@@ -28,7 +28,7 @@ beforeAll(() => {
   chrome.extension = {
     getURL: jest.fn((path: string) => {
       return `chrome-testing://${path}`;
-    })
+    }),
   } as any;
 });
 
@@ -40,7 +40,7 @@ const testFileInfo = {
   repo: "test-repo",
   org: "test-org",
   path: "test/path/to/file.txt",
-  gitRef: "test-branch"
+  gitRef: "test-branch",
 };
 
 function newDivOnBody() {

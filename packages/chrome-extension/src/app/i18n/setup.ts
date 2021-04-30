@@ -23,7 +23,7 @@ import { I18nDefaults, I18nDictionaries } from "@kogito-tooling/i18n/dist/core";
 
 export const chromeExtensionI18nDefaults: I18nDefaults<ChromeExtensionI18n> = {
   locale: navigator.language,
-  dictionary: en
+  dictionary: en,
 };
 
 export const chromeExtensionI18nDictionaries: I18nDictionaries<ChromeExtensionI18n> = new Map([["en", en]]);

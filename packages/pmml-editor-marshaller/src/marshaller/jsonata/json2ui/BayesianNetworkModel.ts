@@ -50,6 +50,6 @@ export function bayesianNetworkModelFactory(): BayesianNetworkModel {
   return new BayesianNetworkModel({
     MiningSchema: new MiningSchema({ MiningField: [] }),
     BayesianNetworkNodes: {},
-    functionName: "regression"
+    functionName: "regression",
   });
 }

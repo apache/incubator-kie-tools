@@ -24,16 +24,16 @@ module.exports = async (argv, env) => [
   merge(common, {
     target: "electron-main",
     entry: {
-      index: "./src/backend/index.ts"
+      index: "./src/backend/index.ts",
     },
     externals: {
-      electron: "commonjs electron"
+      electron: "commonjs electron",
     },
     plugins: [new CopyPlugin([{ from: "./build", to: "./build" }])],
     node: {
       __dirname: false,
-      __filename: false
-    }
+      __filename: false,
+    },
   }),
   merge(common, {
     target: "web",
@@ -43,7 +43,7 @@ module.exports = async (argv, env) => [
       "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts"
     },
     externals: {
-      electron: "commonjs electron"
+      electron: "commonjs electron",
     },
     module: { rules: [...pfWebpackOptions.patternflyRules] },
     plugins: [
@@ -54,8 +54,8 @@ module.exports = async (argv, env) => [
         { from: "./static/envelope", to: "./envelope" },
         { from: "./static/index.html", to: "./index.html" },
         { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] }
-      ])
-    ]
-  })
+        { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] },
+      ]),
+    ],
+  }),
 ];

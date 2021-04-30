@@ -55,10 +55,10 @@ const ConstraintsEnumEdit = (props: ConstraintsEnumEditProps) => {
     <EnumConstraintsContext.Provider
       value={{
         addedEnum: addedEnum,
-        updateAddedEnum: position => {
+        updateAddedEnum: (position) => {
           setAddedEnum(position);
         },
-        dataFieldIndex: dataFieldIndex
+        dataFieldIndex: dataFieldIndex,
       }}
     >
       <section className="constraints-enum">
@@ -99,7 +99,7 @@ const EnumsList = SortableContainer(
     items,
     onUpdate,
     onTab,
-    onDelete
+    onDelete,
   }: {
     items: string[];
     onUpdate: (value: string, index: number) => void;
@@ -157,21 +157,11 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
 
   const { validationRegistry } = useValidationRegistry();
   const validations = useRef(
-    validationRegistry.get(
-      Builder()
-        .forDataDictionary()
-        .forDataField(dataFieldIndex)
-        .forValue(position)
-        .build()
-    )
+    validationRegistry.get(Builder().forDataDictionary().forDataField(dataFieldIndex).forValue(position).build())
   );
   useEffect(() => {
     validations.current = validationRegistry.get(
-      Builder()
-        .forDataDictionary()
-        .forDataField(dataFieldIndex)
-        .forValue(position)
-        .build()
+      Builder().forDataDictionary().forDataField(dataFieldIndex).forValue(position).build()
     );
   }, [position, enumValue]);
 
@@ -230,5 +220,5 @@ interface AddedEnumConstraints {
 const EnumConstraintsContext = React.createContext<AddedEnumConstraints>({
   addedEnum: undefined,
   updateAddedEnum: () => null,
-  dataFieldIndex: undefined
+  dataFieldIndex: undefined,
 });

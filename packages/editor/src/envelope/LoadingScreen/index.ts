@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export * from './LoadingScreen';
+export * from "./LoadingScreen";

@@ -21,21 +21,21 @@ const common = require("../../webpack.common.config");
 module.exports = [
   merge(common, {
     entry: {
-      "api/index": "./src/api/index.ts"
+      "api/index": "./src/api/index.ts",
     },
     output: {
-      libraryTarget: "commonjs2"
+      libraryTarget: "commonjs2",
     },
-    externals: [nodeExternals({ modulesDir: "../../node_modules" })]
+    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   }),
   merge(common, {
     entry: {
-      "vscode/index": "./src/vscode/index.ts"
+      "vscode/index": "./src/vscode/index.ts",
     },
     target: "node",
     output: {
-      libraryTarget: "commonjs2"
+      libraryTarget: "commonjs2",
     },
-    externals: [{ vscode: "commonjs vscode" }, nodeExternals({ modulesDir: "../../node_modules" })]
-  })
+    externals: [{ vscode: "commonjs vscode" }, nodeExternals({ modulesDir: "../../node_modules" })],
+  }),
 ];

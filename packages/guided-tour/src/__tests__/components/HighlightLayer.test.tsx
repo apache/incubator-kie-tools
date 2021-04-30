@@ -28,7 +28,7 @@ describe("HighlightLayer", () => {
     const ctx = {
       isHighlightLayerEnabled: false,
       currentStep: 0,
-      currentTutorial: { steps: [{ highlightEnabled: false }] }
+      currentTutorial: { steps: [{ highlightEnabled: false }] },
     };
 
     act(() => {
@@ -42,7 +42,7 @@ describe("HighlightLayer", () => {
     const ctx = {
       isHighlightLayerEnabled: false,
       currentStep: 0,
-      currentTutorial: { steps: [{ highlightEnabled: true }] }
+      currentTutorial: { steps: [{ highlightEnabled: true }] },
     };
 
     act(() => {
@@ -56,7 +56,7 @@ describe("HighlightLayer", () => {
     const ctx = {
       isHighlightLayerEnabled: true,
       currentStep: 0,
-      currentTutorial: { steps: [{ highlightEnabled: false }] }
+      currentTutorial: { steps: [{ highlightEnabled: false }] },
     };
 
     act(() => {
@@ -84,8 +84,8 @@ describe("HighlightLayer", () => {
         top: 100,
         left: 100,
         height: 200,
-        width: 200
-      }
+        width: 200,
+      },
     };
 
     act(() => {

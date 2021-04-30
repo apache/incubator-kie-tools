@@ -25,7 +25,7 @@ import {
   Output,
   OutputField,
   PMML,
-  Scorecard
+  Scorecard,
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicsContainer, CorePropertiesTable } from "../organisms";
 import { getModelName } from "../../..";
@@ -76,20 +76,20 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     return (
       characteristics?.Characteristic !== undefined &&
       characteristics.Characteristic.length > 0 &&
-      characteristics.Characteristic.every(characteristic => characteristic.baselineScore !== undefined)
+      characteristics.Characteristic.every((characteristic) => characteristic.baselineScore !== undefined)
     );
   }, [characteristics]);
 
   const onDeleteOutputField = useCallback(
-    _index => {
+    (_index) => {
       //See https://issues.redhat.com/browse/FAI-443
       //if (window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)) {
       dispatch({
         type: Actions.DeleteOutput,
         payload: {
           modelIndex: modelIndex,
-          outputIndex: _index
-        }
+          outputIndex: _index,
+        },
       });
       //}
     },
@@ -103,8 +103,8 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
           type: Actions.AddOutput,
           payload: {
             modelIndex: modelIndex,
-            outputField: _outputField
-          }
+            outputField: _outputField,
+          },
         });
       } else {
         dispatch({
@@ -112,8 +112,8 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
           payload: {
             modelIndex: modelIndex,
             outputIndex: _index,
-            outputField: _outputField
-          }
+            outputField: _outputField,
+          },
         });
       }
     },
@@ -127,8 +127,8 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
           type: Actions.Scorecard_SetModelName,
           payload: {
             modelIndex: modelIndex,
-            modelName: _modelName === "" ? undefined : _modelName
-          }
+            modelName: _modelName === "" ? undefined : _modelName,
+          },
         });
       }
     },
@@ -136,7 +136,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   );
 
   const onUpdateCoreProperty = useCallback(
-    _props => {
+    (_props) => {
       dispatch({
         type: Actions.Scorecard_SetCoreProperties,
         payload: {
@@ -148,8 +148,8 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
           baselineMethod: _props.baselineMethod,
           initialScore: _props.initialScore,
           useReasonCodes: _props.areReasonCodesUsed,
-          reasonCodeAlgorithm: _props.reasonCodeAlgorithm
-        }
+          reasonCodeAlgorithm: _props.reasonCodeAlgorithm,
+        },
       });
     },
     [modelIndex]

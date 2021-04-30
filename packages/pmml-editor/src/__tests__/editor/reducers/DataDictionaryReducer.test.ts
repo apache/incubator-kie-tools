@@ -32,8 +32,8 @@ describe("DataDictionaryReducer::Valid actions", () => {
       payload: {
         name: "field1",
         type: "string",
-        optype: "categorical"
-      }
+        optype: "categorical",
+      },
     });
 
     const updated = historyService.commit(pmml)?.DataDictionary as DataDictionary;
@@ -52,15 +52,15 @@ describe("DataDictionaryReducer::Valid actions", () => {
           {
             name: "field1" as FieldName,
             dataType: "string",
-            optype: "categorical"
-          }
-        ]
+            optype: "categorical",
+          },
+        ],
       },
       {
         type: Actions.DeleteDataDictionaryField,
         payload: {
-          index: 0
-        }
+          index: 0,
+        },
       }
     );
 
@@ -74,8 +74,8 @@ describe("DataDictionaryReducer::Valid actions", () => {
     const updated: DataDictionary = reducer(dataDictionary, {
       type: Actions.DeleteDataDictionaryField,
       payload: {
-        index: -1
-      }
+        index: -1,
+      },
     });
     expect(updated).toEqual(dataDictionary);
   });
@@ -84,8 +84,8 @@ describe("DataDictionaryReducer::Valid actions", () => {
     const updated: DataDictionary = reducer(dataDictionary, {
       type: Actions.DeleteDataDictionaryField,
       payload: {
-        index: 0
-      }
+        index: 0,
+      },
     });
     expect(updated).toEqual(dataDictionary);
   });
@@ -96,8 +96,8 @@ describe("DataDictionaryReducer::Invalid actions", () => {
     const updated: DataDictionary = reducer(dataDictionary, {
       type: Actions.SetHeaderDescription,
       payload: {
-        description: "description"
-      }
+        description: "description",
+      },
     });
     expect(updated).toEqual(dataDictionary);
   });

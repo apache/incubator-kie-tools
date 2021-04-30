@@ -39,7 +39,7 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  Tooltip
+  Tooltip,
 } from "@patternfly/react-core";
 import { SortAlphaDownIcon } from "@patternfly/react-icons";
 import * as electron from "electron";
@@ -61,13 +61,13 @@ enum InputFileUrlState {
   INITIAL,
   INVALID_URL,
   NO_FILE_URL,
-  INVALID_EXTENSION
+  INVALID_EXTENSION,
 }
 
 enum ImportFileErrorType {
   NONE,
   FETCH,
-  RESPONSE
+  RESPONSE,
 }
 
 const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
@@ -75,13 +75,13 @@ const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 enum FileTypeFilter {
   ALL = "All",
   BPMN = "BPMN",
-  DMN = "DMN"
+  DMN = "DMN",
 }
 
 const typeFilterOptions = [
   { value: FileTypeFilter.ALL },
   { value: FileTypeFilter.BPMN },
-  { value: FileTypeFilter.DMN }
+  { value: FileTypeFilter.DMN },
 ];
 
 export function FilesPage(props: Props) {
@@ -134,12 +134,8 @@ export function FilesPage(props: Props) {
     }
 
     const filteredFiles = lastOpenedFiles
-      .filter(file =>
-        removeDirectories(file.filePath)
-          ?.toUpperCase()
-          .includes(searchFilter.toUpperCase())
-      )
-      .filter(file => {
+      .filter((file) => removeDirectories(file.filePath)?.toUpperCase().includes(searchFilter.toUpperCase()))
+      .filter((file) => {
         const fileExtension = extractFileExtension(file.filePath)!;
         return (
           typeFilterSelect.value === FileTypeFilter.ALL ||
@@ -168,21 +164,21 @@ export function FilesPage(props: Props) {
   const onSelectTypeFilter = useCallback((event, selection) => {
     setTypeFilterSelect({
       isExpanded: false,
-      value: selection
+      value: selection,
     });
   }, []);
 
   const onToggleTypeFilter = useCallback(
-    isExpanded => {
+    (isExpanded) => {
       setTypeFilterSelect({
         isExpanded: isExpanded,
-        value: typeFilterSelect.value
+        value: typeFilterSelect.value,
       });
     },
     [typeFilterSelect]
   );
 
-  const onChangeSearchFilter = useCallback(newValue => {
+  const onChangeSearchFilter = useCallback((newValue) => {
     setSearchFilter(newValue);
   }, []);
 
@@ -212,13 +208,13 @@ export function FilesPage(props: Props) {
   const importFileByUrl = useCallback(() => {
     if (isInputUrlValid && inputFileUrlState !== InputFileUrlState.INITIAL) {
       fetch(url)
-        .then(response => {
+        .then((response) => {
           if (response.ok) {
-            response.text().then(content => {
+            response.text().then((content) => {
               const file = {
                 filePath: UNSAVED_FILE_NAME,
                 fileType: extractFileExtension(url)!,
-                fileContent: content
+                fileContent: content,
               };
 
               electron.ipcRenderer.send("setFileMenusEnabled", { enabled: true });
@@ -228,18 +224,18 @@ export function FilesPage(props: Props) {
             setImportFileErrorDetails({
               type: ImportFileErrorType.RESPONSE,
               statusCode: response.status,
-              description: response.statusText
+              description: response.statusText,
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           setImportFileErrorDetails({ type: ImportFileErrorType.FETCH, description: error.toString() });
         });
     }
   }, [isInputUrlValid, inputFileUrlState, url, props.openFile]);
 
   const importFileByUrlFormSubmit = useCallback(
-    e => {
+    (e) => {
       e.preventDefault();
       e.stopPropagation();
       importFileByUrl();
@@ -315,7 +311,11 @@ export function FilesPage(props: Props) {
             <Title headingLevel={"h1"}>{i18n.filesPage.files.title}</Title>
           </TextContent>
         </div>
-        <Gallery hasGutter={true} className="kogito--desktop__actions-gallery" data-ouia-component-id="new-file-gallery">
+        <Gallery
+          hasGutter={true}
+          className="kogito--desktop__actions-gallery"
+          data-ouia-component-id="new-file-gallery"
+        >
           <Card
             className={"kogito--desktop__actions-card"}
             component={"article"}
@@ -445,7 +445,7 @@ export function FilesPage(props: Props) {
           </Card>
         </Gallery>
       </PageSection>
-      <PageSection variant="light" >
+      <PageSection variant="light">
         <Title size={"2xl"} headingLevel={"h3"} data-ouia-component-id="recent-files-section-title">
           {i18n.filesPage.recent.title}
         </Title>
@@ -512,7 +512,7 @@ export function FilesPage(props: Props) {
 
         {filteredLastOpenedFiles.length > 0 && (
           <Gallery hasGutter={true} className="kogito-desktop__file-gallery">
-            {filteredLastOpenedFiles.map(file => (
+            {filteredLastOpenedFiles.map((file) => (
               <Tooltip content={<div>{file.filePath}</div>} key={file.filePath}>
                 <Card
                   isCompact={true}
@@ -525,7 +525,7 @@ export function FilesPage(props: Props) {
                       <div
                         className={"kogito--desktop__file-img"}
                         style={{
-                          backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(file.preview)}")`
+                          backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(file.preview)}")`,
                         }}
                       />
                     </Bullseye>

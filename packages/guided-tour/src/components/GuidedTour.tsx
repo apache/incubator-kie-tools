@@ -53,7 +53,7 @@ export const GuidedTour = () => {
           setCurrentRefElementPosition,
           setIsNegativeReinforcementStateEnabled,
           setIsHighlightLayerEnabled,
-          setLatestUserInteraction
+          setLatestUserInteraction,
         }}
       >
         <HighlightLayer />

@@ -20,6 +20,7 @@ import { DmnEditorComponent } from "../components/DmnEditorComponent";
 import { BpmnEditorComponent } from "../components/BpmnEditorComponent";
 import { ContentType } from "@kogito-tooling/channel-common-api";
 import { customWorkItemWid } from "./widDefinitions";
+import { processWithWidDefinition } from "./processWithWidDefinition.js";
 
 export const EditorPage: React.FC<{}> = () => {
   return (
@@ -34,6 +35,9 @@ export const EditorPage: React.FC<{}> = () => {
           </li>
           <li>
             <Link to="/bpmn-editable">BPMN Editable</Link>
+          </li>
+          <li>
+            <Link to="/bpmn-read-only">BPMN Read Only</Link>
           </li>
           <li>
             <Link to="/bpmn-workitem">BPMN Workitem</Link>
@@ -81,22 +85,35 @@ export const EditorPage: React.FC<{}> = () => {
           />
           <Route
             exact={true}
+            path="/bpmn-read-only"
+            render={() => (
+              <BpmnEditorComponent
+                key="bpmn-read-only"
+                id="bpmn-read-only"
+                readOnly={true}
+                initialContent={Promise.resolve("")}
+              />
+            )}
+          />
+          <Route
+            exact={true}
             path="/bpmn-workitem"
             render={() => (
               <BpmnEditorComponent
                 key="bpmn-workitem"
                 id="bpmn-workitem"
                 readOnly={false}
-                initialContent={Promise.resolve("")}
+                initialContent={Promise.resolve(processWithWidDefinition)}
                 resources={
                   new Map([
                     [
                       "custom-workitem.wid",
                       {
-                        contentType: ContentType.TEXT,
-                        content: Promise.resolve(customWorkItemWid)
-                      }
-                    ]
+                        type: ContentType.TEXT,
+                        content: customWorkItemWid,
+                        path: "custom-workitem.wid",
+                      },
+                    ],
                   ])
                 }
               />

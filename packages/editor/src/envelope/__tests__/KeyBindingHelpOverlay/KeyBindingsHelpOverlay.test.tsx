@@ -32,8 +32,8 @@ describe("KeyBindingsHelpOverlay", () => {
           operatingSystem: OperatingSystem.WINDOWS,
           services: {
             ...DEFAULT_TESTING_ENVELOPE_CONTEXT.services,
-            keyboardShortcuts: keyboardShortcutsService
-          }
+            keyboardShortcuts: keyboardShortcutsService,
+          },
         }).wrapper
       ).wrapper
     );

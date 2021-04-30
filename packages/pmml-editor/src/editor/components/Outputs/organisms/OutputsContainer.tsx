@@ -93,7 +93,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   const addOutputField = () => {
     const numberOfOutputFields = output?.OutputField.length;
     if (numberOfOutputFields !== undefined) {
-      const existingNames: string[] = output?.OutputField.map(of => of.name.toString()) ?? [];
+      const existingNames: string[] = output?.OutputField.map((of) => of.name.toString()) ?? [];
       const newOutputFieldName: FieldName = findIncrementalName("New output", existingNames, 1) as FieldName;
       const newOutputField: OutputField = {
         name: newOutputFieldName,
@@ -105,7 +105,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
         rank: undefined,
         rankOrder: undefined,
         segmentId: undefined,
-        isFinalResult: undefined
+        isFinalResult: undefined,
       };
 
       setSelectedOutputIndex(numberOfOutputFields);
@@ -116,13 +116,13 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   };
 
   const addBatchOutputs = (outputs: string) => {
-    const outputsNames = outputs.split("\n").filter(item => item.trim().length > 0);
+    const outputsNames = outputs.split("\n").filter((item) => item.trim().length > 0);
     dispatch({
       type: Actions.AddBatchOutputs,
       payload: {
         modelIndex: modelIndex,
-        outputFields: outputsNames
-      }
+        outputFields: outputsNames,
+      },
     });
     setViewSection("overview");
   };
@@ -136,7 +136,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
     if (output !== undefined && selectedOutputIndex !== undefined) {
       const outputField = output.OutputField[selectedOutputIndex];
       const existingPartial: Partial<OutputField> = {};
-      Object.keys(partial).forEach(key => set(existingPartial, key, get(outputField, key)));
+      Object.keys(partial).forEach((key) => set(existingPartial, key, get(outputField, key)));
 
       if (!isEqual(partial, existingPartial)) {
         commitOutputField(selectedOutputIndex, { ...outputField, ...partial });
@@ -150,16 +150,10 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   };
 
   const { validationRegistry } = useValidationRegistry();
-  const validations = useMemo(
-    () =>
-      validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forOutput()
-          .build()
-      ),
-    [modelIndex, output?.OutputField]
-  );
+  const validations = useMemo(() => validationRegistry.get(Builder().forModel(modelIndex).forOutput().build()), [
+    modelIndex,
+    output?.OutputField,
+  ]);
 
   return (
     <div className="outputs-container">
@@ -167,7 +161,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
         <CSSTransition
           timeout={{
             enter: 230,
-            exit: 100
+            exit: 100,
           }}
           classNames={getTransition(viewSection)}
           key={viewSection}
@@ -272,5 +266,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
 };
 
 const getMiningSchemaTargetFields = (miningSchema?: MiningSchema) => {
-  return miningSchema?.MiningField.filter(field => field.usageType === "target").map(field => field.name) as string[];
+  return miningSchema?.MiningField.filter((field) => field.usageType === "target").map(
+    (field) => field.name
+  ) as string[];
 };

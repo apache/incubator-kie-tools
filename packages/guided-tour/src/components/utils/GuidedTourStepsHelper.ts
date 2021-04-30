@@ -29,7 +29,7 @@ export const getSteps = (currentTutorial?: Tutorial) => {
   const registeredTutorials = guidedTour.getRegisteredTutorials();
   const steps = currentTutorial?.steps ?? [];
 
-  return flatMap(step => {
+  return flatMap((step) => {
     const stepMode = step.mode ?? new DemoMode();
 
     if (!("label" in stepMode)) {
@@ -37,7 +37,7 @@ export const getSteps = (currentTutorial?: Tutorial) => {
     }
 
     const stepTutorialLabel = (stepMode as SubTutorialMode).label;
-    const stepTutorial = registeredTutorials.find(tutorial => {
+    const stepTutorial = registeredTutorials.find((tutorial) => {
       return tutorial.label === stepTutorialLabel;
     });
 

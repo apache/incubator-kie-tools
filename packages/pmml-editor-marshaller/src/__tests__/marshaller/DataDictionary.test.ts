@@ -49,7 +49,7 @@ describe("DataDictionary tests", () => {
     const dataField: DataField = new DataField({
       name: "field1" as FieldName,
       dataType: "string",
-      optype: "categorical"
+      optype: "categorical",
     });
 
     dataDictionary.DataField.push(dataField);

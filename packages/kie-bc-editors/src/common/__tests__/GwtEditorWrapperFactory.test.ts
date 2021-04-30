@@ -25,7 +25,7 @@ import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 
 const cssResource: Resource = {
   type: "css",
-  paths: ["resource1.css", "resource2.css"]
+  paths: ["resource1.css", "resource2.css"],
 };
 
 const jsResource: Resource = {
@@ -45,8 +45,8 @@ const jsResource: Resource = {
     "resource2.js",
     "resource3.js",
     "resource4.js",
-    "resource5.js"
-  ]
+    "resource5.js",
+  ],
 };
 
 const xmlFormatter = { format: (c: string) => c };
@@ -54,7 +54,7 @@ const xmlFormatter = { format: (c: string) => c };
 const gwtAppFormerApi = {
   onFinishedLoading: (callback: () => Promise<any>) => (window.appFormerGwtFinishedLoading = callback),
   getEditor: jest.fn(),
-  setClientSideOnly: jest.fn()
+  setClientSideOnly: jest.fn(),
 };
 
 function waitForNScriptsToLoad(remaining: number) {
@@ -63,7 +63,7 @@ function waitForNScriptsToLoad(remaining: number) {
   }
 
   const script = Array.from(document.getElementsByTagName("script")).pop()!;
-  return new Promise<void>(res => {
+  return new Promise<void>((res) => {
     script.addEventListener("load", () => {
       waitForNScriptsToLoad(remaining - 1).then(res);
     });
@@ -77,7 +77,7 @@ describe("GwtEditorWrapperFactory", () => {
       type: "gwt",
       editorId: "editorID",
       gwtModuleName: "moduleName",
-      resources: [cssResource, jsResource]
+      resources: [cssResource, jsResource],
     };
 
     const channelApiMock: MessageBusClientApi<KogitoEditorChannelApi> = messageBusClientApiMock();
@@ -106,8 +106,8 @@ describe("GwtEditorWrapperFactory", () => {
         services: {
           keyboardShortcuts: {} as any,
           guidedTour: {} as any,
-          i18n: new I18nService()
-        }
+          i18n: new I18nService(),
+        },
       },
       {
         resourcesPathPrefix: "",

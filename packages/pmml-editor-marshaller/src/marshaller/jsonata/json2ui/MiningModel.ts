@@ -51,6 +51,6 @@ elements.elements[(name = "MiningModel")] ~> $map(function($v, $i) {
 export function miningModelFactory(): MiningModel {
   return new MiningModel({
     MiningSchema: new MiningSchema({ MiningField: [] }),
-    functionName: "regression"
+    functionName: "regression",
   });
 }

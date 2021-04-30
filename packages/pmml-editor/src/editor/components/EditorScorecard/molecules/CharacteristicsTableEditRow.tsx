@@ -64,7 +64,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
     onAddAttribute,
     onCommitAndClose,
     onCommit,
-    onCancel
+    onCancel,
   } = props;
 
   const characteristicIndex = characteristic.index;
@@ -75,7 +75,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
 
   const [name, setName] = useState<ValidatedType<string | undefined>>({
     value: undefined,
-    valid: true
+    valid: true,
   });
   const [reasonCode, setReasonCode] = useState<string | undefined>();
   const [baselineScore, setBaselineScore] = useState<number | undefined>();
@@ -93,7 +93,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   });
 
   const isReasonCodeProvidedByAttributes = useMemo(() => {
-    return attributes.length > 0 && attributes.every(attribute => attribute.reasonCode !== undefined);
+    return attributes.length > 0 && attributes.every((attribute) => attribute.reasonCode !== undefined);
   }, [attributes]);
 
   const ref = useOnclickOutside(
@@ -106,14 +106,14 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
     },
     {
       disabled: activeOperation !== Operation.UPDATE_CHARACTERISTIC,
-      eventTypes: ["click"]
+      eventTypes: ["click"],
     }
   );
 
   useEffect(() => {
     setName({
       value: characteristic?.characteristic.name,
-      valid: true
+      valid: true,
     });
     setReasonCode(characteristic?.characteristic.reasonCode);
     setBaselineScore(characteristic?.characteristic.baselineScore);
@@ -157,7 +157,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   };
 
   const onDeleteAttribute = useCallback(
-    attributeIndex => {
+    (attributeIndex) => {
       //See https://issues.redhat.com/browse/FAI-443
       //if (window.confirm(`Delete Attribute?`)) {
       dispatch({
@@ -165,8 +165,8 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
         payload: {
           modelIndex: modelIndex,
           characteristicIndex: characteristicIndex,
-          attributeIndex: attributeIndex
-        }
+          attributeIndex: attributeIndex,
+        },
       });
       //}
     },
@@ -177,7 +177,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
     (attributeIndex, partial) => {
       const attribute = attributes[attributeIndex];
       const existingPartial: Partial<Attribute> = {};
-      Object.keys(partial).forEach(key => set(existingPartial, key, get(attribute, key)));
+      Object.keys(partial).forEach((key) => set(existingPartial, key, get(attribute, key)));
 
       if (!isEqual(partial, existingPartial)) {
         dispatch({
@@ -187,8 +187,8 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
             characteristicIndex: characteristicIndex,
             attributeIndex: attributeIndex,
             ...attribute,
-            ...partial
-          }
+            ...partial,
+          },
         });
       }
     },
@@ -219,21 +219,21 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   placeholder="Name"
                   validated={name.valid ? "default" : "error"}
                   autoFocus={true}
-                  onChange={e =>
+                  onChange={(e) =>
                     setName({
                       value: e,
-                      valid: validateCharacteristicName(e)
+                      valid: validateCharacteristicName(e),
                     })
                   }
                   onBlur={() => {
                     if (name?.valid) {
                       onCommit({
-                        name: name.value
+                        name: name.value,
                       });
                     } else {
                       setName({
                         value: characteristic.characteristic.name,
-                        valid: validateCharacteristicName(characteristic.characteristic.name)
+                        valid: validateCharacteristicName(characteristic.characteristic.name),
                       });
                     }
                   }}
@@ -258,7 +258,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   >
                     <button
                       aria-label="More information for Reason code"
-                      onClick={e => e.preventDefault()}
+                      onClick={(e) => e.preventDefault()}
                       className="pf-c-form__group-label-help"
                     >
                       <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
@@ -274,10 +274,10 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   name="characteristic-reason-code"
                   aria-describedby="characteristic-reason-code-helper"
                   value={reasonCode ?? ""}
-                  onChange={e => setReasonCode(e)}
+                  onChange={(e) => setReasonCode(e)}
                   onBlur={() => {
                     onCommit({
-                      reasonCode: reasonCode === "" ? undefined : reasonCode
+                      reasonCode: reasonCode === "" ? undefined : reasonCode,
                     });
                   }}
                   validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
@@ -302,7 +302,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   >
                     <button
                       aria-label="More information for Baseline score"
-                      onClick={e => e.preventDefault()}
+                      onClick={(e) => e.preventDefault()}
                       className="pf-c-form__group-label-help"
                     >
                       <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
@@ -320,10 +320,10 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   aria-describedby="characteristic-baseline-score-helper"
                   value={baselineScore ?? ""}
                   validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
-                  onChange={e => setBaselineScore(toNumber(e))}
+                  onChange={(e) => setBaselineScore(toNumber(e))}
                   onBlur={() => {
                     onCommit({
-                      baselineScore: baselineScore
+                      baselineScore: baselineScore,
                     });
                   }}
                   isDisabled={scorecardBaselineScore !== undefined}

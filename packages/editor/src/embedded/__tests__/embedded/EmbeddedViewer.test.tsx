@@ -28,12 +28,12 @@ describe("EmbeddedViewer::ONLINE", () => {
     fileName: "test",
     fileExtension: "dmn",
     getFileContents: () => Promise.resolve(""),
-    isReadOnly: false
+    isReadOnly: false,
   };
 
   const editorEnvelopeLocator: EditorEnvelopeLocator = {
     targetOrigin: "localhost:8888",
-    mapping: new Map([["dmn", { envelopePath: "envelope/envelope.html", resourcesPathPrefix: "envelope" }]])
+    mapping: new Map([["dmn", { envelopePath: "envelope/envelope.html", resourcesPathPrefix: "envelope" }]]),
   };
 
   const channelType = ChannelType.ONLINE;
@@ -78,7 +78,7 @@ describe("EmbeddedViewer::ONLINE", () => {
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceContentRequest",
-      data: [{ path: "" }]
+      data: [{ path: "" }],
     });
 
     expect(onResourceContentRequest).toBeCalled();
@@ -103,7 +103,7 @@ describe("EmbeddedViewer::ONLINE", () => {
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceListRequest",
-      data: [{ pattern: "", paths: [] }]
+      data: [{ pattern: "", paths: [] }],
     });
 
     expect(onResourceListRequest).toBeCalled();

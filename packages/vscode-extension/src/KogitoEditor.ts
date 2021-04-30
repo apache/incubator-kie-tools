@@ -21,7 +21,7 @@ import {
   EditorEnvelopeLocator,
   EnvelopeMapping,
   KogitoEditorChannelApi,
-  KogitoEditorEnvelopeApi
+  KogitoEditorEnvelopeApi,
 } from "@kogito-tooling/editor/dist/api";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
@@ -42,16 +42,16 @@ export class KogitoEditor implements EditorApi {
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
     private readonly envelopeServer = new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
       {
-        postMessage: msg => {
+        postMessage: (msg) => {
           try {
             this.panel.webview.postMessage(msg);
           } catch (e) {
             /* The webview has been disposed, thus cannot receive messages anymore. */
           }
-        }
+        },
       },
       envelopeLocator.targetOrigin,
-      self =>
+      (self) =>
         self.envelopeApi.requests.receive_initRequest(
           { origin: self.origin, envelopeServerId: self.id },
           {
@@ -70,7 +70,7 @@ export class KogitoEditor implements EditorApi {
   }
 
   public getContent() {
-    return this.envelopeServer.envelopeApi.requests.receive_contentRequest().then(c => c.content);
+    return this.envelopeServer.envelopeApi.requests.receive_contentRequest().then((c) => c.content);
   }
 
   public setContent(path: string, content: string) {
@@ -98,13 +98,13 @@ export class KogitoEditor implements EditorApi {
   }
 
   public startListening(editorChannelApi: KogitoEditorChannelApi) {
-    this.broadcastSubscription = this.messageBroadcaster.subscribe(msg => {
+    this.broadcastSubscription = this.messageBroadcaster.subscribe((msg) => {
       this.envelopeServer.receive(msg, editorChannelApi);
     });
 
     this.context.subscriptions.push(
       this.panel.webview.onDidReceiveMessage(
-        msg => this.messageBroadcaster.broadcast(msg),
+        (msg) => this.messageBroadcaster.broadcast(msg),
         this,
         this.context.subscriptions
       )

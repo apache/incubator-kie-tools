@@ -34,14 +34,14 @@ export const FileLoader: React.FC<Props> = ({
   resourcesHolder,
   onResourceChange,
   ouiaId,
-  ouiaSafe
+  ouiaSafe,
 }) => {
   const fileInput = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
     if (fileInput!.current!.files!.length > 0) {
-      Array.from(fileInput!.current!.files!).forEach(f => {
+      Array.from(fileInput!.current!.files!).forEach((f) => {
         resourcesHolder.loadFile(f, onResourceChange);
       });
       fileInput.current!.value = "";
@@ -82,7 +82,7 @@ export const FileLoader: React.FC<Props> = ({
               <button
                 data-ouia-component-type="file-list-item-button"
                 data-ouia-component-id="view"
-                onClick={it => view(item)}
+                onClick={(it) => view(item)}
               >
                 view
               </button>
@@ -90,7 +90,7 @@ export const FileLoader: React.FC<Props> = ({
                 <button
                   data-ouia-component-type="file-list-item-button"
                   data-ouia-component-id="download"
-                  onClick={it => download(item)}
+                  onClick={(it) => download(item)}
                 >
                   download
                 </button>
@@ -98,7 +98,7 @@ export const FileLoader: React.FC<Props> = ({
               <button
                 data-ouia-component-type="file-list-item-button"
                 data-ouia-component-id="remove"
-                onClick={it => remove(item)}
+                onClick={(it) => remove(item)}
               >
                 remove
               </button>

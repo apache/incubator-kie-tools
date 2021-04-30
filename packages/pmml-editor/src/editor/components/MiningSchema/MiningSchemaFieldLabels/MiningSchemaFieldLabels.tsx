@@ -10,7 +10,7 @@ import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import {
   areLowHighValuesRequired,
   isInvalidValueReplacementRequired,
-  isMissingValueReplacementRequired
+  isMissingValueReplacementRequired,
 } from "../../../validation/MiningSchema";
 
 interface MiningSchemaFieldLabelsProps {
@@ -79,12 +79,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
   const validationsImportance = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .forMiningField(index)
-          .forImportance()
-          .build()
+        Builder().forModel(modelIndex).forMiningSchema().forMiningField(index).forImportance().build()
       ),
     [modelIndex, index, field]
   );
@@ -92,24 +87,14 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
   const validationsLowValue = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .forMiningField(index)
-          .forLowValue()
-          .build()
+        Builder().forModel(modelIndex).forMiningSchema().forMiningField(index).forLowValue().build()
       ),
     [modelIndex, index, field]
   );
   const validationsHighValue = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .forMiningField(index)
-          .forHighValue()
-          .build()
+        Builder().forModel(modelIndex).forMiningSchema().forMiningField(index).forHighValue().build()
       ),
     [modelIndex, index, field]
   );
@@ -118,12 +103,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
   const validationsMissingValueReplacement = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .forMiningField(index)
-          .forMissingValueReplacement()
-          .build()
+        Builder().forModel(modelIndex).forMiningSchema().forMiningField(index).forMissingValueReplacement().build()
       ),
     [modelIndex, index, field]
   );
@@ -135,12 +115,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
   const validationsInvalidValueReplacement = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .forMiningField(index)
-          .forInvalidValueReplacement()
-          .build()
+        Builder().forModel(modelIndex).forMiningSchema().forMiningField(index).forInvalidValueReplacement().build()
       ),
     [modelIndex, index, field]
   );
@@ -155,7 +130,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
         BasicMiningLabel("Usage Type", field.usageType, () =>
           onDelete({
             ...field,
-            usageType: undefined
+            usageType: undefined,
           })
         )}
 
@@ -163,7 +138,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
         BasicMiningLabel("Op Type", field.optype, () =>
           onDelete({
             ...field,
-            optype: undefined
+            optype: undefined,
           })
         )}
 
@@ -173,7 +148,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
             BasicMiningLabel("Importance", field.importance, () =>
               onDelete({
                 ...field,
-                importance: undefined
+                importance: undefined,
               })
             )}
           {validationsImportance.length > 0 &&
@@ -190,14 +165,14 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
         BasicMiningLabel("Outliers", field.outliers, () =>
           onDelete({
             ...field,
-            outliers: undefined
+            outliers: undefined,
           })
         )}
 
       {MissingValueAwareMiningLabel("Low Value", field.lowValue, _areLowHighValuesRequired, validationsLowValue, () =>
         onDelete({
           ...field,
-          lowValue: undefined
+          lowValue: undefined,
         })
       )}
 
@@ -209,7 +184,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
         () =>
           onDelete({
             ...field,
-            highValue: undefined
+            highValue: undefined,
           })
       )}
 
@@ -217,7 +192,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
         BasicMiningLabel("Missing Value Treatment", field.missingValueTreatment, () =>
           onDelete({
             ...field,
-            missingValueTreatment: undefined
+            missingValueTreatment: undefined,
           })
         )}
 
@@ -229,7 +204,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
         () =>
           onDelete({
             ...field,
-            missingValueReplacement: undefined
+            missingValueReplacement: undefined,
           })
       )}
 
@@ -237,7 +212,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
         BasicMiningLabel("Invalid Value Treatment", field.invalidValueTreatment, () =>
           onDelete({
             ...field,
-            invalidValueTreatment: undefined
+            invalidValueTreatment: undefined,
           })
         )}
 
@@ -249,7 +224,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
         () =>
           onDelete({
             ...field,
-            invalidValueReplacement: undefined
+            invalidValueReplacement: undefined,
           })
       )}
 
@@ -260,7 +235,7 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
           color="cyan"
           href="#"
           icon={<ArrowAltCircleRightIcon />}
-          onClick={event => {
+          onClick={(event) => {
             event.preventDefault();
             onEdit();
           }}

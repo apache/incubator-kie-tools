@@ -18,7 +18,7 @@ import {
   ChannelType,
   Editor,
   KogitoEditorChannelApi,
-  KogitoEditorEnvelopeContextType
+  KogitoEditorEnvelopeContextType,
 } from "@kogito-tooling/editor/dist/api";
 import { FACTORY_TYPE, PMMLEditorFactory, PMMLEditorInterface } from "../../editor";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
@@ -34,8 +34,8 @@ const envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi> =
   services: {
     guidedTour: { isEnabled: () => false },
     keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: OperatingSystem.LINUX }),
-    i18n: new I18nService()
-  }
+    i18n: new I18nService(),
+  },
 };
 
 describe("PMMLEditorFactory", () => {

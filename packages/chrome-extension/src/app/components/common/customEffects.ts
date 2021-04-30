@@ -46,7 +46,7 @@ export function useIsolatedEditorTogglingEffect(
 export function useInitialAsyncCallEffect<T>(promise: () => Promise<T>, callback: (a: T) => void) {
   useEffect(() => {
     let canceled = false;
-    promise().then(arg => {
+    promise().then((arg) => {
       if (canceled) {
         return;
       }

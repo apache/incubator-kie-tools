@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApi, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
+import { KogitoEditorChannelApi, KogitoEditorEnvelopeContextType ,
+} from "@kogito-tooling/editor/dist/api";
 import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import { PMMLEditor, PMMLEditorInterface } from "../../editor";
@@ -31,8 +32,8 @@ const envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi> =
   services: {
     guidedTour: { isEnabled: () => false },
     keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: OperatingSystem.LINUX }),
-    i18n: new I18nService()
-  }
+    i18n: new I18nService(),
+  },
 };
 
 const editorInterface: PMMLEditorInterface = new PMMLEditorInterface(envelopeContext);

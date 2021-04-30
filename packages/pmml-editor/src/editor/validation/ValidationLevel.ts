@@ -16,5 +16,5 @@
 
 export enum ValidationLevel {
   WARNING,
-  ERROR
+  ERROR,
 }

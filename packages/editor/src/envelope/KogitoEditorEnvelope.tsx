@@ -19,7 +19,7 @@ import {
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContext,
-  KogitoEditorEnvelopeContextType
+  KogitoEditorEnvelopeContextType,
 } from "../api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/envelope";
@@ -59,8 +59,8 @@ export class KogitoEditorEnvelope<
       services: {
         keyboardShortcuts: keyboardShortcutsService,
         guidedTour: { isEnabled: () => KogitoGuidedTour.getInstance().isEnabled() },
-        i18n: i18nService
-      }
+        i18n: i18nService,
+      },
     }
   ) {}
 
@@ -86,7 +86,7 @@ export class KogitoEditorEnvelope<
       </KogitoEditorEnvelopeContext.Provider>
     );
 
-    return new Promise<() => EditorEnvelopeViewApi<E>>(res => {
+    return new Promise<() => EditorEnvelopeViewApi<E>>((res) => {
       setTimeout(() => {
         ReactDOM.render(app, container, () => {
           res(() => editorEnvelopeViewRef.current!);

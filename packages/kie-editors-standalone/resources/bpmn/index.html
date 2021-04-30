@@ -53,7 +53,7 @@
       const editor = BpmnEditor.open({
         container: document.getElementById("bpmn-editor-container"),
         initialContent: Promise.resolve(""),
-        readOnly: false
+        readOnly: false,
       });
 
       document.getElementById("undo").addEventListener("click", () => {
@@ -65,7 +65,7 @@
       });
 
       document.getElementById("download").addEventListener("click", () => {
-        editor.getContent().then(content => {
+        editor.getContent().then((content) => {
           const elem = window.document.createElement("a");
           elem.href = "data:text/plain;charset=utf-8," + encodeURIComponent(content);
           elem.download = "model.bpmn";
@@ -77,7 +77,7 @@
       });
 
       document.getElementById("downloadSvg").addEventListener("click", () => {
-        editor.getPreview().then(svgContent => {
+        editor.getPreview().then((svgContent) => {
           const elem = window.document.createElement("a");
           elem.href = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgContent);
           elem.download = "model.svg";
@@ -87,7 +87,7 @@
         });
       });
 
-      editor.subscribeToContentChanges(isDirty => {
+      editor.subscribeToContentChanges((isDirty) => {
         if (isDirty) {
           document.getElementById("unsavedChanges").classList.remove("hidden");
         } else {

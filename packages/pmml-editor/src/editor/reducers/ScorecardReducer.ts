@@ -26,7 +26,7 @@ import {
   Scorecard,
   SimplePredicate,
   SimpleSetPredicate,
-  True
+  True,
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
@@ -73,24 +73,16 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
   return (state: Scorecard, action: AllActions) => {
     switch (action.type) {
       case Actions.Scorecard_SetModelName:
-        historyService.batch(
-          state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .build(),
-          draft => {
-            draft.modelName = action.payload.modelName;
-          }
-        );
+        historyService.batch(state, Builder().forModel(action.payload.modelIndex).build(), (draft) => {
+          draft.modelName = action.payload.modelName;
+        });
         break;
 
       case Actions.Scorecard_SetCoreProperties:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .build(),
-          draft => {
+          Builder().forModel(action.payload.modelIndex).build(),
+          (draft) => {
             draft.isScorable = action.payload.isScorable;
             draft.functionName = action.payload.functionName;
             draft.algorithmName = action.payload.algorithmName;
@@ -100,30 +92,25 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             draft.useReasonCodes = action.payload.useReasonCodes;
             draft.reasonCodeAlgorithm = action.payload.reasonCodeAlgorithm;
             if (!(action.payload.useReasonCodes === undefined || action.payload.useReasonCodes)) {
-              draft.Characteristics.Characteristic.forEach(characteristic => {
+              draft.Characteristics.Characteristic.forEach((characteristic) => {
                 characteristic.reasonCode = undefined;
-                characteristic.Attribute.forEach(attribute => (attribute.reasonCode = undefined));
+                characteristic.Attribute.forEach((attribute) => (attribute.reasonCode = undefined));
               });
             }
             if (action.payload.baselineScore !== undefined) {
-              draft.Characteristics.Characteristic.forEach(characteristic => {
+              draft.Characteristics.Characteristic.forEach((characteristic) => {
                 characteristic.baselineScore = undefined;
               });
             }
           },
-          pmml => {
+          (pmml) => {
             const modelIndex = action.payload.modelIndex;
             const miningSchema = getMiningSchema(pmml, modelIndex);
             const characteristics = getCharacteristics(pmml, modelIndex);
             const baselineScore = getBaselineScore(pmml, modelIndex);
             const useReasonCodes = getUseReasonCodes(pmml, modelIndex);
             if (miningSchema !== undefined && characteristics !== undefined) {
-              validationRegistry.clear(
-                Builder()
-                  .forModel(modelIndex)
-                  .forBaselineScore()
-                  .build()
-              );
+              validationRegistry.clear(Builder().forModel(modelIndex).forBaselineScore().build());
               validateBaselineScore(
                 modelIndex,
                 useReasonCodes,
@@ -131,17 +118,12 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
                 characteristics.Characteristic,
                 validationRegistry
               );
-              validationRegistry.clear(
-                Builder()
-                  .forModel(modelIndex)
-                  .forCharacteristics()
-                  .build()
-              );
+              validationRegistry.clear(Builder().forModel(modelIndex).forCharacteristics().build());
               validateCharacteristics(
                 modelIndex,
                 {
                   baselineScore: baselineScore,
-                  useReasonCodes: useReasonCodes
+                  useReasonCodes: useReasonCodes,
                 },
                 characteristics.Characteristic,
                 miningSchema.MiningField,
@@ -155,25 +137,18 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
       case Actions.Scorecard_AddCharacteristic:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .build(),
+          Builder().forModel(action.payload.modelIndex).build(),
           () => {
             // No changes to model. Only validation is required.
           },
-          pmml => {
+          (pmml) => {
             const modelIndex = action.payload.modelIndex;
             const miningSchema = getMiningSchema(pmml, modelIndex);
             const characteristics = getCharacteristics(pmml, modelIndex);
             const baselineScore = getBaselineScore(pmml, modelIndex);
             const useReasonCodes = getUseReasonCodes(pmml, modelIndex);
             if (miningSchema !== undefined && characteristics !== undefined) {
-              validationRegistry.clear(
-                Builder()
-                  .forModel(action.payload.modelIndex)
-                  .forBaselineScore()
-                  .build()
-              );
+              validationRegistry.clear(Builder().forModel(action.payload.modelIndex).forBaselineScore().build());
               validateBaselineScore(
                 modelIndex,
                 useReasonCodes,
@@ -181,12 +156,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
                 characteristics.Characteristic,
                 validationRegistry
               );
-              validationRegistry.clear(
-                Builder()
-                  .forModel(modelIndex)
-                  .forCharacteristics()
-                  .build()
-              );
+              validationRegistry.clear(Builder().forModel(modelIndex).forCharacteristics().build());
               validateCharacteristics(
                 modelIndex,
                 { baselineScore: baselineScore, useReasonCodes: useReasonCodes },
@@ -202,24 +172,17 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
       case Actions.Scorecard_DeleteCharacteristic:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .build(),
+          Builder().forModel(action.payload.modelIndex).build(),
           () => {
             // No changes to model. Only validation is required.
           },
-          pmml => {
+          (pmml) => {
             const modelIndex = action.payload.modelIndex;
             const characteristics = getCharacteristics(pmml, modelIndex);
             const baselineScore = getBaselineScore(pmml, modelIndex);
             const useReasonCodes = getUseReasonCodes(pmml, modelIndex);
             if (characteristics !== undefined) {
-              validationRegistry.clear(
-                Builder()
-                  .forModel(modelIndex)
-                  .forBaselineScore()
-                  .build()
-              );
+              validationRegistry.clear(Builder().forModel(modelIndex).forBaselineScore().build());
               validateBaselineScore(
                 modelIndex,
                 useReasonCodes,
@@ -235,25 +198,18 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
       case Actions.Scorecard_UpdateCharacteristic:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .build(),
+          Builder().forModel(action.payload.modelIndex).build(),
           () => {
             // No changes to model. Only validation is required.
           },
-          pmml => {
+          (pmml) => {
             const modelIndex = action.payload.modelIndex;
             const miningSchema = getMiningSchema(pmml, modelIndex);
             const characteristics = getCharacteristics(pmml, modelIndex);
             const baselineScore = getBaselineScore(pmml, modelIndex);
             const useReasonCodes = getUseReasonCodes(pmml, modelIndex);
             if (miningSchema !== undefined && characteristics !== undefined) {
-              validationRegistry.clear(
-                Builder()
-                  .forModel(modelIndex)
-                  .forBaselineScore()
-                  .build()
-              );
+              validationRegistry.clear(Builder().forModel(modelIndex).forBaselineScore().build());
               validateBaselineScore(
                 modelIndex,
                 useReasonCodes,
@@ -261,12 +217,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
                 characteristics.Characteristic,
                 validationRegistry
               );
-              validationRegistry.clear(
-                Builder()
-                  .forModel(modelIndex)
-                  .forCharacteristics()
-                  .build()
-              );
+              validationRegistry.clear(Builder().forModel(modelIndex).forCharacteristics().build());
               validateCharacteristics(
                 modelIndex,
                 { baselineScore: baselineScore, useReasonCodes: useReasonCodes },
@@ -283,13 +234,11 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
       case Actions.Scorecard_DeleteAttribute:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .build(),
+          Builder().forModel(action.payload.modelIndex).build(),
           () => {
             // No changes to model. Only validation is required.
           },
-          pmml => {
+          (pmml) => {
             const modelIndex = action.payload.modelIndex;
             const characteristicIndex = action.payload.characteristicIndex;
             const miningSchema = getMiningSchema(pmml, modelIndex);
@@ -298,11 +247,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             const useReasonCodes = getUseReasonCodes(pmml, modelIndex);
             if (miningSchema !== undefined && characteristics !== undefined) {
               validationRegistry.clear(
-                Builder()
-                  .forModel(modelIndex)
-                  .forCharacteristics()
-                  .forCharacteristic(characteristicIndex)
-                  .build()
+                Builder().forModel(modelIndex).forCharacteristics().forCharacteristic(characteristicIndex).build()
               );
               validateCharacteristic(
                 modelIndex,
@@ -342,25 +287,18 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
       case Actions.Scorecard_UpdateAttribute:
         historyService.batch(
           state,
-          Builder()
-            .forModel(action.payload.modelIndex)
-            .build(),
+          Builder().forModel(action.payload.modelIndex).build(),
           () => {
             // No changes to model. Only validation is required.
           },
-          pmml => {
+          (pmml) => {
             const modelIndex = action.payload.modelIndex;
             const miningSchema = getMiningSchema(pmml, modelIndex);
             const characteristics = getCharacteristics(pmml, modelIndex);
             const baselineScore = getBaselineScore(pmml, modelIndex);
             const useReasonCodes = getUseReasonCodes(pmml, modelIndex);
             if (miningSchema !== undefined && characteristics !== undefined) {
-              validationRegistry.clear(
-                Builder()
-                  .forModel(modelIndex)
-                  .forCharacteristics()
-                  .build()
-              );
+              validationRegistry.clear(Builder().forModel(modelIndex).forCharacteristics().build());
               validateCharacteristics(
                 action.payload.modelIndex,
                 { baselineScore: baselineScore, useReasonCodes: useReasonCodes },
@@ -378,24 +316,17 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
           const modelIndex = action.payload.modelIndex;
           historyService.batch(
             state,
-            Builder()
-              .forModel(modelIndex)
-              .build(),
-            draft => {
+            Builder().forModel(modelIndex).build(),
+            (draft) => {
               // No changes to model. Only validation is required.
             },
-            pmml => {
+            (pmml) => {
               const miningSchema = getMiningSchema(pmml, modelIndex);
               const characteristics = getCharacteristics(pmml, modelIndex);
               const baselineScore = getBaselineScore(pmml, modelIndex);
               const useReasonCodes = getUseReasonCodes(pmml, modelIndex);
               if (miningSchema !== undefined && characteristics !== undefined) {
-                validationRegistry.clear(
-                  Builder()
-                    .forModel(modelIndex)
-                    .forCharacteristics()
-                    .build()
-                );
+                validationRegistry.clear(Builder().forModel(modelIndex).forCharacteristics().build());
                 validateCharacteristics(
                   modelIndex,
                   { baselineScore: baselineScore, useReasonCodes: useReasonCodes },
@@ -412,12 +343,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
       case Actions.Validate:
         if (action.payload.modelIndex !== undefined) {
           const modelIndex = action.payload.modelIndex;
-          validationRegistry.clear(
-            Builder()
-              .forModel(modelIndex)
-              .forOutput()
-              .build()
-          );
+          validationRegistry.clear(Builder().forModel(modelIndex).forOutput().build());
           validateOutputs(
             modelIndex,
             state.Output?.OutputField ?? [],
@@ -425,12 +351,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             validationRegistry
           );
 
-          validationRegistry.clear(
-            Builder()
-              .forModel(modelIndex)
-              .forBaselineScore()
-              .build()
-          );
+          validationRegistry.clear(Builder().forModel(modelIndex).forBaselineScore().build());
           validateBaselineScore(
             modelIndex,
             state.useReasonCodes,
@@ -439,12 +360,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
             validationRegistry
           );
 
-          validationRegistry.clear(
-            Builder()
-              .forModel(modelIndex)
-              .forCharacteristics()
-              .build()
-          );
+          validationRegistry.clear(Builder().forModel(modelIndex).forCharacteristics().build());
           validateCharacteristics(
             modelIndex,
             { baselineScore: state.baselineScore, useReasonCodes: state.useReasonCodes },
@@ -485,7 +401,7 @@ const updatePredicateFieldName = (
           .forAttribute(attributeIndex)
           .forPredicate()
           .build(),
-        draft => {
+        (draft) => {
           draft.field = name;
         }
       );
@@ -501,14 +417,14 @@ const updatePredicateFieldName = (
           .forAttribute(attributeIndex)
           .forPredicate()
           .build(),
-        draft => {
+        (draft) => {
           draft.field = name;
         }
       );
     }
   } else if (predicate instanceof CompoundPredicate) {
     const cp: CompoundPredicate = predicate as CompoundPredicate;
-    cp.predicates?.forEach(p =>
+    cp.predicates?.forEach((p) =>
       updatePredicateFieldName(modelIndex, characteristicIndex, attributeIndex, p, name, originalName, service)
     );
   }

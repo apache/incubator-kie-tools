@@ -22,7 +22,7 @@ export const en: ChromeExtensionI18n = {
   openIn: (name: string) => `Open in ${name}`,
   seeAsDiagram: "See as diagram",
   tree: {
-    openInOnlineEditor: "Open in Online Editor"
+    openInOnlineEditor: "Open in Online Editor",
   },
   single: {
     exitFullScreen: `${en_common.terms.exit} ${en_common.terms.fullScreen}`,
@@ -32,18 +32,18 @@ export const en: ChromeExtensionI18n = {
       seeAsSource: "See as source",
       copyLinkTo: (name: string) => `Copy link to ${name}`,
       linkCopied: "Link copied to clipboard",
-      readOnly: "This is a read-only visualization."
-    }
+      readOnly: "This is a read-only visualization.",
+    },
   },
   pr: {
     isolated: {
-      viewOriginal: "View original file"
+      viewOriginal: "View original file",
     },
     toolbar: {
       closeDiagram: "Close diagram",
       original: "Original",
-      changes: "Changes"
-    }
+      changes: "Changes",
+    },
   },
   common: {
     menu: {
@@ -54,8 +54,8 @@ export const en: ChromeExtensionI18n = {
         disclaimer: "We never store or share your token with anyone.",
         explanation: `We use your GitHub OAuth Token to provide a better experience while using custom editors. The official ${en_common.names.github} API has a throttling mechanism with a fairly low threshold for unauthenticated requests.`,
         whichPermissionUserGive: `By authenticating with your ${en_common.names.oauth} Token we are able to avoid delays when fetching recently updated files and also provide features that need to read from your repositories, like Work Item Definitions on ${en_common.names.bpmn} diagrams.`,
-        permission: `${"For public repositories, no special permissions are required".bold()}. In fact, you can generate a Token without ticking any checkbox. For private repositories, however, you should provide a Token with the ${"'repo'".bold()} permission.`
-      }
-    }
-  }
+        permission: `${"For public repositories, no special permissions are required".bold()}. In fact, you can generate a Token without ticking any checkbox. For private repositories, however, you should provide a Token with the ${"'repo'".bold()} permission.`,
+      },
+    },
+  },
 };

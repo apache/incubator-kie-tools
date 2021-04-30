@@ -30,9 +30,9 @@ export class Menu {
         label: "Show Developer Tools",
         click: () => {
           this.window.webContents.openDevTools();
-        }
-      }
-    ]
+        },
+      },
+    ],
   };
 
   constructor(window: BrowserWindow) {
@@ -43,42 +43,42 @@ export class Menu {
         submenu: [
           {
             label: "About Business Modeler Hub Preview",
-            role: "about"
+            role: "about",
           },
           {
-            type: "separator"
+            type: "separator",
           },
           {
             label: "Services",
             role: "services",
-            submenu: []
+            submenu: [],
           },
           {
-            type: "separator"
+            type: "separator",
           },
           {
             label: "Hide Business Modeler Hub Preview",
             accelerator: "Command+H",
-            role: "hide"
+            role: "hide",
           },
           {
             label: "Hide Others",
             accelerator: "Command+Alt+H",
-            role: "hideothers"
+            role: "hideothers",
           },
           {
             label: "Show All",
-            role: "unhide"
+            role: "unhide",
           },
           {
-            type: "separator"
+            type: "separator",
           },
           {
             label: "Quit",
             accelerator: "Command+Q",
-            click: () => app.quit()
-          }
-        ]
+            click: () => app.quit(),
+          },
+        ],
       },
       {
         label: "Edit",
@@ -88,9 +88,9 @@ export class Menu {
           { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
           { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
           { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
-          { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
-        ]
-      }
+          { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
+        ],
+      },
     ];
   }
 

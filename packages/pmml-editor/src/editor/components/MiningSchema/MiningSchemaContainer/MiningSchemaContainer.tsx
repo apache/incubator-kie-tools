@@ -59,7 +59,7 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
     if (
       !isEqual(
         field,
-        pickBy(miningSchema?.MiningField[editingField], value => value !== undefined)
+        pickBy(miningSchema?.MiningField[editingField], (value) => value !== undefined)
       )
     ) {
       onUpdateField(editingField, miningSchema?.MiningField[editingField].name, field);
@@ -87,16 +87,10 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
   }, [dataDictionary, miningSchema]);
 
   const { validationRegistry } = useValidationRegistry();
-  const validations = useMemo(
-    () =>
-      validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .build()
-      ),
-    [dataDictionary, miningSchema]
-  );
+  const validations = useMemo(() => validationRegistry.get(Builder().forModel(modelIndex).forMiningSchema().build()), [
+    dataDictionary,
+    miningSchema,
+  ]);
 
   return (
     <section className="mining-schema">
@@ -105,7 +99,7 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
           <CSSTransition
             timeout={{
               enter: 230,
-              exit: 100
+              exit: 100,
             }}
             classNames={getTransition(viewSection)}
             key={viewSection}
@@ -184,11 +178,11 @@ export const MiningSchemaContext = React.createContext<number>(-1);
 
 const prepareFieldOptions = (dictionary: DataDictionary | undefined, miningSchema: MiningSchema | undefined) => {
   if (dictionary) {
-    return dictionary.DataField.filter(field => field.name !== undefined).map(field => ({
+    return dictionary.DataField.filter((field) => field.name !== undefined).map((field) => ({
       name: field.name as string,
       isSelected: miningSchema
-        ? miningSchema?.MiningField.findIndex(miningField => miningField.name === field.name) > -1
-        : false
+        ? miningSchema?.MiningField.findIndex((miningField) => miningField.name === field.name) > -1
+        : false,
     }));
   } else {
     return [];

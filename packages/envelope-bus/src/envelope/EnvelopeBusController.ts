@@ -19,7 +19,7 @@ import {
   EnvelopeBus,
   EnvelopeBusMessage,
   EnvelopeBusMessagePurpose,
-  FunctionPropertyNames
+  FunctionPropertyNames,
 } from "../api";
 import { EnvelopeBusMessageManager } from "../common";
 
@@ -36,11 +36,8 @@ export class EnvelopeBusController<
     return this.manager.clientApi;
   }
 
-  constructor(
-    private readonly bus: EnvelopeBus,
-    private readonly envelopeId?: string
-  ) {
-    this.manager = new EnvelopeBusMessageManager(message => this.send(message), "KogitoEnvelopeBus");
+  constructor(private readonly bus: EnvelopeBus, private readonly envelopeId?: string) {
+    this.manager = new EnvelopeBusMessageManager((message) => this.send(message), "KogitoEnvelopeBus");
   }
 
   public associate(origin: string, envelopeServerId: string) {

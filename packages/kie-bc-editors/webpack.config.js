@@ -26,10 +26,10 @@ module.exports = [
       "dmn/envelope/index": "./src/dmn/envelope/index.ts",
       "dmn/api/index": "./src/dmn/api/index.ts",
       "scesim/envelope/index": "./src/scesim/envelope/index.ts",
-      "scesim/api/index": "./src/scesim/api/index.ts"
+      "scesim/api/index": "./src/scesim/api/index.ts",
     },
     output: {
-      libraryTarget: "commonjs2"
+      libraryTarget: "commonjs2",
     },
     externals: [nodeExternals({ modulesDir: "../../node_modules" })]
   })

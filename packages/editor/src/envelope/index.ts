@@ -21,7 +21,7 @@ import {
   EditorFactory,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
-  KogitoEditorEnvelopeContextType
+  KogitoEditorEnvelopeContextType,
 } from "../api";
 import { KogitoEditorEnvelope } from "./KogitoEditorEnvelope";
 import { ApiDefinition, EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";

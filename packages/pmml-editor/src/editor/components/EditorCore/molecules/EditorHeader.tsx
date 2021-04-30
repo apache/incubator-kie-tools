@@ -52,7 +52,7 @@ export const EditorHeader = (props: EditorHeaderProps) => {
       validateOutputFieldName,
       deleteOutputField,
       commitOutputField,
-      commitModelName
+      commitModelName,
     } = props;
 
     return (

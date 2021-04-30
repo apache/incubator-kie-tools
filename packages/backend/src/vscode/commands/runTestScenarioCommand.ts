@@ -75,7 +75,7 @@ async function run(
         message: response.message!,
         severity: "WARNING",
         type: "ALERT",
-        path: ""
+        path: "",
       });
       return;
     }
@@ -90,14 +90,14 @@ async function run(
       message: i18n.testScenarioSummary(testResult.tests, testResult.errors, testResult.skipped, testResult.failures),
       severity: "INFO",
       type: "ALERT",
-      path: testResult.filePath
+      path: testResult.filePath,
     });
   } catch (e) {
     notificationsApi.createNotification({
       message: e,
       severity: "ERROR",
       type: "ALERT",
-      path: ""
+      path: "",
     });
   }
 }

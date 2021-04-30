@@ -57,7 +57,7 @@ export class BackendManagerService implements Service {
   }
 
   public stop(): void {
-    this.serviceRegistry.forEach(service => service.stop());
+    this.serviceRegistry.forEach((service) => service.stop());
     this.serviceRegistry.clear();
   }
 
@@ -125,7 +125,7 @@ export class BackendManagerService implements Service {
       return;
     }
 
-    const lazyService = this.args.lazyServices.find(s => s.identify() === id);
+    const lazyService = this.args.lazyServices.find((s) => s.identify() === id);
 
     if (!lazyService || !(await this.registerService(lazyService))) {
       return;

@@ -25,12 +25,7 @@
   "browser_action": { "default_icon": "resources/icon_16.png" },
   "background": { "scripts": ["background.js"], "persistent": true },
   "web_accessible_resources": ["resources/*"],
-  "permissions": [
-    "https://*.github.com/*",
-    "http://*.github.com/*",
-    "webRequest",
-    "webRequestBlocking"
-  ],
+  "permissions": ["https://*.github.com/*", "http://*.github.com/*", "webRequest", "webRequestBlocking"],
   "content_security_policy": "script-src 'self' https://raw.githubusercontent.com; object-src 'self'",
   "externally_connectable": {
     "matches": [

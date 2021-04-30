@@ -16,24 +16,14 @@
 
 export class ModelConversionTool {
   public static convertDateToString = (model: any, schema: any): any => {
-    return ModelConversionTool.convertDates(model, schema, value =>
-      value.toISOString()
-    );
+    return ModelConversionTool.convertDates(model, schema, (value) => value.toISOString());
   };
 
   public static convertStringToDate = (model: any, schema: any): any => {
-    return ModelConversionTool.convertDates(
-      model,
-      schema,
-      value => new Date(value)
-    );
+    return ModelConversionTool.convertDates(model, schema, (value) => new Date(value));
   };
 
-  private static convertDates = (
-    model: any,
-    schema: any,
-    conversion: (value: any) => any
-  ): object => {
+  private static convertDates = (model: any, schema: any, conversion: (value: any) => any): object => {
     const obj: any = {};
 
     if (!model) {
@@ -44,7 +34,7 @@ export class ModelConversionTool {
       return obj;
     }
 
-    Object.keys(model).forEach(property => {
+    Object.keys(model).forEach((property) => {
       const properties = schema.properties[property];
 
       const value = model[property];
@@ -60,20 +50,12 @@ export class ModelConversionTool {
 
       switch (properties.type) {
         case "object":
-          obj[property] = ModelConversionTool.convertDates(
-            value,
-            properties,
-            conversion
-          );
+          obj[property] = ModelConversionTool.convertDates(value, properties, conversion);
           break;
         case "array":
           if (properties.items && properties.items.type === "object") {
             obj[property] = value.map((item: any) =>
-              ModelConversionTool.convertDates(
-                item,
-                properties.items,
-                conversion
-              )
+              ModelConversionTool.convertDates(item, properties.items, conversion)
             );
           } else {
             obj[property] = value;

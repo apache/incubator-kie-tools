@@ -40,9 +40,10 @@ export const LandingPage = (props: LandingPageProps) => {
   const [showUnsupportedModels, setShowUnsupportedModels] = useState(true);
 
   const models: Model[] | undefined = useSelector<PMML, Model[] | undefined>((state: PMML) => state.models);
-  const hasUnsupportedModels = useMemo(() => (models ?? []).find(model => !isSupportedModelType(model)) !== undefined, [
-    models
-  ]);
+  const hasUnsupportedModels = useMemo(
+    () => (models ?? []).find((model) => !isSupportedModelType(model)) !== undefined,
+    [models]
+  );
 
   const filterModels = useCallback((): Model[] => {
     const _lowerCaseFilter = filter.toLowerCase();
@@ -61,7 +62,7 @@ export const LandingPage = (props: LandingPageProps) => {
   const goToModel = useCallback(
     (index: number) => {
       history.push({
-        pathname: "editor/" + index
+        pathname: "editor/" + index,
       });
     },
     [history]
@@ -73,8 +74,8 @@ export const LandingPage = (props: LandingPageProps) => {
     dispatch({
       type: Actions.DeleteModel,
       payload: {
-        modelIndex: index
-      }
+        modelIndex: index,
+      },
     });
     //}
   }, []);
@@ -95,7 +96,7 @@ export const LandingPage = (props: LandingPageProps) => {
         <section>
           {filteredModels.length > 0 && (
             <Gallery hasGutter={true}>
-              {filteredModels.map(model => {
+              {filteredModels.map((model) => {
                 //model should always be a member of models at this point.
                 const index: number | undefined = models?.indexOf(model);
                 const modelName: string = getModelName(model);
@@ -108,7 +109,7 @@ export const LandingPage = (props: LandingPageProps) => {
                       modelName={modelName}
                       modelType={modelType}
                       onClick={goToModel}
-                      onDelete={_index => onDelete(_index, modelName)}
+                      onDelete={(_index) => onDelete(_index, modelName)}
                     />
                   </GalleryItem>
                 );

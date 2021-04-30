@@ -21,7 +21,7 @@ import {
   ResourceContentService,
   ResourceListOptions,
   ResourcesList,
-  SearchType
+  SearchType,
 } from "@kogito-tooling/channel-common-api";
 
 import * as vscode from "vscode";
@@ -40,10 +40,11 @@ export class VsCodeResourceContentService implements ResourceContentService {
 
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
     const workspaceFolderPath = vscode.workspace!.workspaceFolders![0].uri.fsPath + nodePath.sep;
-    const basePath = opts?.type === SearchType.ASSET_FOLDER ? workspaceFolderPath + this.currentAssetFolder : workspaceFolderPath;
+    const basePath =
+      opts?.type === SearchType.ASSET_FOLDER ? workspaceFolderPath + this.currentAssetFolder : workspaceFolderPath;
     const relativePattern = new RelativePattern(basePath, pattern);
     const files = await vscode.workspace.findFiles(relativePattern);
-    const paths = files.map(f => vscode.workspace.asRelativePath(f.path));
+    const paths = files.map((f) => vscode.workspace.asRelativePath(f.path));
     return new ResourcesList(pattern, paths);
   }
 
@@ -80,11 +81,11 @@ export class VsCodeResourceContentService implements ResourceContentService {
     if (type === ContentType.BINARY) {
       return vscode.workspace.fs
         .readFile(vscode.Uri.parse(contentPath))
-        .then(content => new ResourceContent(path, Buffer.from(content).toString("base64"), ContentType.BINARY));
+        .then((content) => new ResourceContent(path, Buffer.from(content).toString("base64"), ContentType.BINARY));
     } else {
       return vscode.workspace
         .openTextDocument(contentPath)
-        .then(textDoc => new ResourceContent(path, textDoc.getText(), ContentType.TEXT));
+        .then((textDoc) => new ResourceContent(path, textDoc.getText(), ContentType.TEXT));
     }
   }
 }

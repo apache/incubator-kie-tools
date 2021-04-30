@@ -17,7 +17,7 @@
 export enum OperatingSystem {
   MACOS = "MACOS",
   WINDOWS = "WINDOWS",
-  LINUX = "LINUX"
+  LINUX = "LINUX",
 }
 
 export function getOperatingSystem() {

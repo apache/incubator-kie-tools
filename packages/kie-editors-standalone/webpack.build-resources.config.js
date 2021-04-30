@@ -22,22 +22,22 @@ const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebp
 module.exports = [
   merge(common, {
     entry: {
-      "preprocessor/preprocessor": "./src/preprocessor/preprocessor.ts"
+      "preprocessor/preprocessor": "./src/preprocessor/preprocessor.ts",
     },
     plugins: [new CopyPlugin([{ from: "./resources", to: "./resources" }])],
     target: "node",
     node: {
       __dirname: true, //Uses current working dir
       __filename: true, //Uses current working dir
-    }
+    },
   }),
   merge(common, {
     entry: {
       "envelope/bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
-      "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts"
+      "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
     },
     module: {
-      rules: [...pfWebpackOptions.patternflyRules]
-    }
-  })
+      rules: [...pfWebpackOptions.patternflyRules],
+    },
+  }),
 ];

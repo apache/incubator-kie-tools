@@ -17,11 +17,11 @@
 import { PMMLFieldData } from "./PMMLFieldData";
 
 export class PMMLModelData {
-    public readonly modelName: string;
-    public readonly fields: PMMLFieldData[];
+  public readonly modelName: string;
+  public readonly fields: PMMLFieldData[];
 
-    constructor(modelName: string, fields: PMMLFieldData[]) {
-        this.modelName = modelName;
-        this.fields = fields;
-    }
+  constructor(modelName: string, fields: PMMLFieldData[]) {
+    this.modelName = modelName;
+    this.fields = fields;
+  }
 }

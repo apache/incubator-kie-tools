@@ -49,7 +49,7 @@ export class KogitoEditorFactory {
     webviewPanel.webview.options = {
       enableCommandUris: true,
       enableScripts: true,
-      localResourceRoots: [vscode.Uri.file(this.context.extensionPath)]
+      localResourceRoots: [vscode.Uri.file(this.context.extensionPath)],
     };
 
     const editorEnvelopeLocator = this.getEditorEnvelopeLocatorForWebview(webviewPanel.webview);
@@ -94,10 +94,10 @@ export class KogitoEditorFactory {
       mapping: [...this.editorEnvelopeLocator.mapping.entries()].reduce((mapping, [fileExtension, m]) => {
         mapping.set(fileExtension, {
           envelopePath: this.getWebviewPath(webview, m.envelopePath),
-          resourcesPathPrefix: this.getWebviewPath(webview, m.resourcesPathPrefix)
+          resourcesPathPrefix: this.getWebviewPath(webview, m.resourcesPathPrefix),
         });
         return mapping;
-      }, new Map<string, EnvelopeMapping>())
+      }, new Map<string, EnvelopeMapping>()),
     };
   }
 
@@ -114,7 +114,7 @@ export class KogitoEditorFactory {
   }
 
   private isAssetInWorkspace(path: string): boolean {
-    return vscode.workspace.workspaceFolders?.map(f => f.uri.fsPath).find(p => path.startsWith(p)) !== undefined;
+    return vscode.workspace.workspaceFolders?.map((f) => f.uri.fsPath).find((p) => path.startsWith(p)) !== undefined;
   }
 
   private getParentFolder(assetPath: string) {

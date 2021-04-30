@@ -87,6 +87,6 @@ export function scorecardFactory(): Scorecard {
   return new Scorecard({
     MiningSchema: new MiningSchema({ MiningField: [] }),
     Characteristics: new Characteristics({ Characteristic: [] }),
-    functionName: "regression"
+    functionName: "regression",
   });
 }

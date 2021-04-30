@@ -31,10 +31,10 @@ export const AttributesTableEditModeAction = (props: AttributesTableEditModeActi
   return (
     <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
       <FlexItem>
-        <Button variant="plain" onClick={e => onCommit()} isDisabled={disableCommit}>
+        <Button variant="plain" onClick={(e) => onCommit()} isDisabled={disableCommit}>
           <CheckIcon />
         </Button>
-        <Button variant="plain" onClick={e => onCancel()}>
+        <Button variant="plain" onClick={(e) => onCancel()}>
           <TimesIcon />
         </Button>
       </FlexItem>

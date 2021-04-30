@@ -40,7 +40,7 @@ export async function activate(context: vscode.ExtensionContext) {
     backendProxy: backendProxy,
     backendI18n: backendI18n,
     workspaceApi: workspaceApi,
-    notificationsApi: notificationsApi
+    notificationsApi: notificationsApi,
   });
 
   KogitoVsCode.startExtension({
@@ -55,40 +55,40 @@ export async function activate(context: vscode.ExtensionContext) {
           "bpmn",
           {
             resourcesPathPrefix: "dist/webview/editors/bpmn",
-            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js"
-          }
+            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
+          },
         ],
         [
           "bpmn2",
           {
             resourcesPathPrefix: "dist/webview/editors/bpmn",
-            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js"
-          }
+            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
+          },
         ],
         [
           "dmn",
           {
             resourcesPathPrefix: "dist/webview/editors/dmn",
-            envelopePath: "dist/webview/DmnEditorEnvelopeApp.js"
-          }
+            envelopePath: "dist/webview/DmnEditorEnvelopeApp.js",
+          },
         ],
         [
           "scesim",
           {
             resourcesPathPrefix: "dist/webview/editors/scesim",
-            envelopePath: "dist/webview/SceSimEditorEnvelopeApp.js"
-          }
+            envelopePath: "dist/webview/SceSimEditorEnvelopeApp.js",
+          },
         ],
         [
           "pmml",
           {
             resourcesPathPrefix: "dist/webview/editors/pmml",
-            envelopePath: "dist/webview/PMMLEditorEnvelopeApp.js"
-          }
-        ]
-      ])
+            envelopePath: "dist/webview/PMMLEditorEnvelopeApp.js",
+          },
+        ],
+      ]),
     },
-    backendProxy: backendProxy
+    backendProxy: backendProxy,
   });
 
   console.info("Extension is successfully setup.");

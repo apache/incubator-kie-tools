@@ -47,6 +47,6 @@ export function timeSeriesModelFactory(): TimeSeriesModel {
   return new TimeSeriesModel({
     MiningSchema: new MiningSchema({ MiningField: [] }),
     functionName: "regression",
-    bestFit: "ARIMA"
+    bestFit: "ARIMA",
   });
 }

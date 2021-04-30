@@ -25,7 +25,7 @@ import {
   NumericPredictor,
   PMML,
   RegressionModel,
-  RegressionTable
+  RegressionTable,
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { Line, LinearRegressionView, Range } from "./LinearRegressionView";
 import { useSelector } from "react-redux";
@@ -51,7 +51,7 @@ export const LinearRegressionViewAdaptor = (props: LinearRegressionViewAdaptorPr
 
   const modelName: string | undefined = model.modelName;
   const miningSchema: MiningSchema = model.MiningSchema;
-  const dependentAxisTitle = miningSchema.MiningField.filter(mf => mf.usageType === "target")[0].name;
+  const dependentAxisTitle = miningSchema.MiningField.filter((mf) => mf.usageType === "target")[0].name;
   const lines: Line[] = getLines(table, numericPredictor);
 
   //Get Ranges from DataDictionary or use reasonable defaults
@@ -105,7 +105,7 @@ const getLines = (table: RegressionTable, numericPredictor: NumericPredictor): L
     return lines;
   }
 
-  categoricalPredictors.forEach(cp => {
+  categoricalPredictors.forEach((cp) => {
     lines.push({ m: line.m, c: line.c + cp.coefficient, title: `${line.title} (${cp.value})` });
   });
 
@@ -122,7 +122,7 @@ const getYRange = (dataDictionary: DataDictionary, model: RegressionModel): Rang
 };
 
 const getTargetMiningField = (model: RegressionModel): MiningField | undefined => {
-  const targetFields: MiningField[] = model.MiningSchema.MiningField.filter(mf => mf.usageType === "target");
+  const targetFields: MiningField[] = model.MiningSchema.MiningField.filter((mf) => mf.usageType === "target");
   if (targetFields === undefined || targetFields.length !== 1) {
     return undefined;
   }
@@ -139,7 +139,7 @@ const getXRange = (dataDictionary: DataDictionary, numericPredictor: NumericPred
 
 const getMiningFieldIntervals = (dataDictionary: DataDictionary, fieldName: FieldName): Interval[] => {
   const dataFields: DataField[] = dataDictionary.DataField.filter(
-    df => df.name === fieldName && df.optype === "continuous"
+    (df) => df.name === fieldName && df.optype === "continuous"
   );
   if (dataFields === undefined || dataFields.length !== 1) {
     return [];
@@ -156,21 +156,21 @@ const getIntervalsMaximumRange = (intervals: Interval[]): Range | undefined => {
   if (intervals.length === 0) {
     return undefined;
   }
-  const min: number = intervals.map(interval => interval.leftMargin ?? 0).reduce((pv, cv) => Math.min(pv, cv));
-  const max: number = intervals.map(interval => interval.rightMargin ?? 0).reduce((pv, cv) => Math.max(pv, cv));
+  const min: number = intervals.map((interval) => interval.leftMargin ?? 0).reduce((pv, cv) => Math.min(pv, cv));
+  const max: number = intervals.map((interval) => interval.rightMargin ?? 0).reduce((pv, cv) => Math.max(pv, cv));
   return new Range(min, max);
 };
 
 const getDefaultYRange = (lines: Line[]): Range => {
-  const maxIntersect: number = Math.max(...lines.map(line => line.c));
+  const maxIntersect: number = Math.max(...lines.map((line) => line.c));
   const defaultMaxY: number = maxIntersect * 2;
   const defaultMinY: number = -defaultMaxY;
   return new Range(defaultMinY, defaultMaxY);
 };
 
 const getDefaultXRange = (lines: Line[], rangeY: Range): Range => {
-  const minGradient: number = Math.min(...lines.map(line => line.m));
-  const maxIntersect: number = Math.max(...lines.map(line => line.c));
+  const minGradient: number = Math.min(...lines.map((line) => line.m));
+  const maxIntersect: number = Math.max(...lines.map((line) => line.c));
   const defaultMaxX: number = (rangeY.max - maxIntersect) / minGradient;
   const defaultMinX: number = -defaultMaxX;
   return new Range(defaultMinX, defaultMaxX);

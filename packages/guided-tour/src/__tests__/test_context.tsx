@@ -21,7 +21,7 @@ export function usingCurrentTutorialContext(children: React.ReactElement, ctx?: 
     setIsNegativeReinforcementStateEnabled: (isEnabled: boolean) =>
       (currentTutorialContext.isNegativeReinforcementStateEnabled = isEnabled),
     setLatestUserInteraction: () => null,
-    ...ctx
+    ...ctx,
   };
 
   return {
@@ -30,7 +30,7 @@ export function usingCurrentTutorialContext(children: React.ReactElement, ctx?: 
       <CurrentTutorialContext.Provider key={""} value={currentTutorialContext}>
         {children}
       </CurrentTutorialContext.Provider>
-    )
+    ),
   };
 }
 
@@ -43,7 +43,7 @@ export function usingTestingGuidedTourI18nContext(
     dictionaries: guidedTourI18nDictionaries,
     ctx: GuidedTourI18nContext,
     children,
-    ...ctx
+    ...ctx,
   };
   return {
     ctx: usedCtx,
@@ -51,6 +51,6 @@ export function usingTestingGuidedTourI18nContext(
       <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
         {usedCtx.children}
       </I18nDictionariesProvider>
-    )
+    ),
   };
 }

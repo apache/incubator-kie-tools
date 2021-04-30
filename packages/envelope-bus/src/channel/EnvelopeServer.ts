@@ -19,7 +19,7 @@ import {
   EnvelopeBus,
   EnvelopeBusMessage,
   EnvelopeBusMessagePurpose,
-  FunctionPropertyNames
+  FunctionPropertyNames,
 } from "../api";
 import { EnvelopeBusMessageManager } from "../common";
 
@@ -44,7 +44,7 @@ export class EnvelopeServer<
     public readonly origin: string,
     public readonly pollInit: (self: EnvelopeServer<ApiToProvide, ApiToConsume>) => Promise<any>,
     public readonly manager = new EnvelopeBusMessageManager<ApiToProvide, ApiToConsume>(
-      message => bus.postMessage({ ...message, targetEnvelopeId: this.id }),
+      (message) => bus.postMessage({ ...message, targetEnvelopeId: this.id }),
       "EnvelopeServer"
     )
   ) {
@@ -89,9 +89,7 @@ export class EnvelopeServer<
   }
 
   public generateRandomId() {
-    const randomPart = Math.random()
-      .toString(36)
-      .substr(2, 9);
+    const randomPart = Math.random().toString(36).substr(2, 9);
 
     const milliseconds = new Date().getMilliseconds();
 

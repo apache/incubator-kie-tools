@@ -68,7 +68,7 @@ export const App = () => {
           undo={undo}
           redo={redo}
           get={() => editor.getContent()}
-          setTheme={theme => {
+          setTheme={(theme) => {
             if (container.current) {
               if (theme === Theme.DARK) {
                 container.current?.classList.add("vscode-dark");

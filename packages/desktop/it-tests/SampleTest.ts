@@ -53,7 +53,7 @@ test("BPMN example", async () => {
 
   // check node names
   const nodes = await client.$$("[data-ouia-component-type='tree-item'] a");
-  const nodeNames = await Promise.all(nodes.map(async n => await n.getText()));
+  const nodeNames = await Promise.all(nodes.map(async (n) => await n.getText()));
   expect(nodeNames).toEqual([
     "Process travelers",
     "processedtraveler",
@@ -62,7 +62,7 @@ test("BPMN example", async () => {
     "Process Traveler",
     "travelers",
     "Log Traveler",
-    "Skip Traveler"
+    "Skip Traveler",
   ]);
 
   // open properties panel
@@ -127,7 +127,7 @@ test("DMN example", async () => {
   const dmnNodes = await client.$$(
     "[data-i18n-prefix='DecisionNavigatorTreeView.'] > div > span[data-field='text-content']"
   );
-  const nodeNames = await Promise.all(dmnNodes.map(async i => await i.getText()));
+  const nodeNames = await Promise.all(dmnNodes.map(async (i) => await i.getText()));
   expect(nodeNames).toEqual([
     "loan_pre_qualification",
     "Applicant Data",
@@ -148,7 +148,7 @@ test("DMN example", async () => {
     "Decision Table",
     "PITI",
     "Function",
-    "Requested Product"
+    "Requested Product",
   ]);
 
   // open properties panel
@@ -165,7 +165,7 @@ test("DMN example", async () => {
 
   // check data types
   const dataTypes = await client.$$(".kie-dnd-draggable:not(.hidden) .name-text");
-  const dataTypeNames = await Promise.all(dataTypes.map(async d => await d.getText()));
+  const dataTypeNames = await Promise.all(dataTypes.map(async (d) => await d.getText()));
   expect(dataTypeNames).toEqual([
     "Requested_Product",
     "Marital_Status",
@@ -182,7 +182,7 @@ test("DMN example", async () => {
     "Front_End_Ratio",
     "Qualification",
     "Credit_Score",
-    "Loan_Qualification"
+    "Loan_Qualification",
   ]);
 
   // switch context back

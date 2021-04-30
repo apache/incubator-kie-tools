@@ -50,39 +50,27 @@ export const DataDictionaryReducer: HistoryAwareValidatingReducer<DataDictionary
   return (state: DataDictionary, action: AllActions) => {
     switch (action.type) {
       case Actions.AddDataDictionaryField:
-        historyService.batch(
-          state,
-          Builder()
-            .forDataDictionary()
-            .build(),
-          draft => {
-            draft.DataField.push({
-              name: action.payload.name as FieldName,
-              dataType: action.payload.type,
-              optype: action.payload.optype
-            });
-          }
-        );
+        historyService.batch(state, Builder().forDataDictionary().build(), (draft) => {
+          draft.DataField.push({
+            name: action.payload.name as FieldName,
+            dataType: action.payload.type,
+            optype: action.payload.optype,
+          });
+        });
         break;
 
       case Actions.DeleteDataDictionaryField:
         historyService.batch(
           state,
-          Builder()
-            .forDataDictionary()
-            .build(),
-          draft => {
+          Builder().forDataDictionary().build(),
+          (draft) => {
             const index = action.payload.index;
             if (index >= 0 && index < draft.DataField.length) {
               draft.DataField.splice(index, 1);
             }
           },
-          pmml => {
-            validationRegistry.clear(
-              Builder()
-                .forDataDictionary()
-                .build()
-            );
+          (pmml) => {
+            validationRegistry.clear(Builder().forDataDictionary().build());
             validateDataFields(pmml.DataDictionary.DataField, validationRegistry);
           }
         );
@@ -91,40 +79,28 @@ export const DataDictionaryReducer: HistoryAwareValidatingReducer<DataDictionary
       case Actions.ReorderDataDictionaryFields:
         historyService.batch(
           state,
-          Builder()
-            .forDataDictionary()
-            .build(),
-          draft => {
+          Builder().forDataDictionary().build(),
+          (draft) => {
             const [removed] = draft.DataField.splice(action.payload.oldIndex, 1);
             draft.DataField.splice(action.payload.newIndex, 0, removed);
           },
-          pmml => {
-            validationRegistry.clear(
-              Builder()
-                .forDataDictionary()
-                .build()
-            );
+          (pmml) => {
+            validationRegistry.clear(Builder().forDataDictionary().build());
             validateDataFields(pmml.DataDictionary.DataField, validationRegistry);
           }
         );
         break;
 
       case Actions.AddBatchDataDictionaryFields:
-        historyService.batch(
-          state,
-          Builder()
-            .forDataDictionary()
-            .build(),
-          draft => {
-            action.payload.dataDictionaryFields.forEach(name => {
-              draft.DataField.push({
-                name,
-                dataType: "string",
-                optype: "categorical"
-              });
+        historyService.batch(state, Builder().forDataDictionary().build(), (draft) => {
+          action.payload.dataDictionaryFields.forEach((name) => {
+            draft.DataField.push({
+              name,
+              dataType: "string",
+              optype: "categorical",
             });
-          }
-        );
+          });
+        });
     }
 
     return state;

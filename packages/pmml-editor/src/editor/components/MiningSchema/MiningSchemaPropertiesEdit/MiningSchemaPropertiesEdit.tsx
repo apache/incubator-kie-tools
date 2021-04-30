@@ -16,7 +16,7 @@ import {
   MissingValueTreatmentMethod,
   OpType,
   OutlierTreatmentMethod,
-  UsageType
+  UsageType,
 } from "@kogito-tooling/pmml-editor-marshaller";
 import "./MiningSchemaPropertiesEdit.scss";
 import { useValidationRegistry } from "../../../validation";
@@ -24,7 +24,7 @@ import { Builder } from "../../../paths";
 import {
   areLowHighValuesRequired,
   isInvalidValueReplacementRequired,
-  isMissingValueReplacementRequired
+  isMissingValueReplacementRequired,
 } from "../../../validation/MiningSchema";
 
 interface MiningSchemaPropertiesEditProps {
@@ -40,7 +40,7 @@ const MiningSchemaPropertiesEdit = ({
   miningFieldIndex,
   field,
   onSave,
-  onClose
+  onClose,
 }: MiningSchemaPropertiesEditProps) => {
   const [usageType, setUsageType] = useState(field.usageType ?? "");
   const [opType, setOpType] = useState(field.optype ?? "");
@@ -113,36 +113,21 @@ const MiningSchemaPropertiesEdit = ({
   const validationsImportance = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .forMiningField(miningFieldIndex)
-          .forImportance()
-          .build()
+        Builder().forModel(modelIndex).forMiningSchema().forMiningField(miningFieldIndex).forImportance().build()
       ),
     [modelIndex, miningFieldIndex, field]
   );
   const validationsLowValue = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .forMiningField(miningFieldIndex)
-          .forLowValue()
-          .build()
+        Builder().forModel(modelIndex).forMiningSchema().forMiningField(miningFieldIndex).forLowValue().build()
       ),
     [modelIndex, miningFieldIndex, field]
   );
   const validationsHighValue = useMemo(
     () =>
       validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .forMiningField(miningFieldIndex)
-          .forHighValue()
-          .build()
+        Builder().forModel(modelIndex).forMiningSchema().forMiningField(miningFieldIndex).forHighValue().build()
       ),
     [modelIndex, miningFieldIndex, field]
   );
@@ -226,9 +211,9 @@ const MiningSchemaPropertiesEdit = ({
                           "group",
                           "order",
                           "frequencyWeight",
-                          "analysisWeight"
+                          "analysisWeight",
                         ]}
-                        onSelect={selection => {
+                        onSelect={(selection) => {
                           setUsageType(selection as UsageType);
                           setSubmitChanges(true);
                         }}
@@ -241,7 +226,7 @@ const MiningSchemaPropertiesEdit = ({
                       <GenericSelector
                         id="opType"
                         items={["", "categorical", "ordinal", "continuous"]}
-                        onSelect={selection => {
+                        onSelect={(selection) => {
                           setOpType(selection as OpType);
                           setSubmitChanges(true);
                         }}
@@ -268,7 +253,7 @@ const MiningSchemaPropertiesEdit = ({
                     aria-describedby="Importance"
                     value={importance ?? ""}
                     validated={validationsImportance.length === 0 ? "default" : "warning"}
-                    onChange={value => setImportance(toNumberOrUndefined(value))}
+                    onChange={(value) => setImportance(toNumberOrUndefined(value))}
                     onBlur={() => {
                       if (importance !== undefined) {
                         let _importance = importance;
@@ -296,7 +281,7 @@ const MiningSchemaPropertiesEdit = ({
                       <GenericSelector
                         id="outliers"
                         items={["", "asIs", "asMissingValues", "asExtremeValues"]}
-                        onSelect={selection => {
+                        onSelect={(selection) => {
                           setOutliers(selection as OutlierTreatmentMethod);
                           setSubmitChanges(true);
                         }}
@@ -317,7 +302,7 @@ const MiningSchemaPropertiesEdit = ({
                         >
                           <button
                             aria-label="More information for Low Value field"
-                            onClick={e => e.preventDefault()}
+                            onClick={(e) => e.preventDefault()}
                             className="pf-c-form__group-label-help"
                           >
                             <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
@@ -335,7 +320,7 @@ const MiningSchemaPropertiesEdit = ({
                         isDisabled={!enableLowValueComponent}
                         placeholder={!enableLowValueComponent ? "<Not needed>" : ""}
                         className={!enableLowValueComponent ? "mining-schema__edit__form__disabled" : ""}
-                        onChange={value => setLowValue(toNumberOrUndefined(value))}
+                        onChange={(value) => setLowValue(toNumberOrUndefined(value))}
                         onBlur={handleSave}
                       />
                     </FormGroup>
@@ -353,7 +338,7 @@ const MiningSchemaPropertiesEdit = ({
                         >
                           <button
                             aria-label="More information for High Value field"
-                            onClick={e => e.preventDefault()}
+                            onClick={(e) => e.preventDefault()}
                             className="pf-c-form__group-label-help"
                           >
                             <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
@@ -371,7 +356,7 @@ const MiningSchemaPropertiesEdit = ({
                         isDisabled={!enableHighValueComponent}
                         placeholder={!enableHighValueComponent ? "<Not needed>" : ""}
                         className={!enableHighValueComponent ? "mining-schema__edit__form__disabled" : ""}
-                        onChange={value => setHighValue(toNumberOrUndefined(value))}
+                        onChange={(value) => setHighValue(toNumberOrUndefined(value))}
                         onBlur={handleSave}
                       />
                     </FormGroup>
@@ -385,7 +370,7 @@ const MiningSchemaPropertiesEdit = ({
                       <GenericSelector
                         id="missingValueTreatment"
                         items={["", "asIs", "asMean", "asMode", "asMedian", "asValue", "returnInvalid"]}
-                        onSelect={selection => {
+                        onSelect={(selection) => {
                           setMissingValueTreatment(selection as MissingValueTreatmentMethod);
                           setSubmitChanges(true);
                         }}
@@ -407,7 +392,7 @@ const MiningSchemaPropertiesEdit = ({
                         >
                           <button
                             aria-label="More information for Missing Value Replacement field"
-                            onClick={e => e.preventDefault()}
+                            onClick={(e) => e.preventDefault()}
                             className="pf-c-form__group-label-help"
                           >
                             <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
@@ -425,7 +410,7 @@ const MiningSchemaPropertiesEdit = ({
                         isDisabled={!enableMissingValueComponent}
                         placeholder={!enableMissingValueComponent ? "<Not needed>" : ""}
                         className={!enableMissingValueComponent ? "mining-schema__edit__form__disabled" : ""}
-                        onChange={value => setMissingValueReplacement(value)}
+                        onChange={(value) => setMissingValueReplacement(value)}
                         onBlur={handleSave}
                       />
                     </FormGroup>
@@ -439,7 +424,7 @@ const MiningSchemaPropertiesEdit = ({
                       <GenericSelector
                         id="invalidValueTreatment"
                         items={["", "returnInvalid", "asIs", "asMissing", "asValue"]}
-                        onSelect={selection => {
+                        onSelect={(selection) => {
                           setInvalidValueTreatment(selection as InvalidValueTreatmentMethod);
                           setSubmitChanges(true);
                         }}
@@ -461,7 +446,7 @@ const MiningSchemaPropertiesEdit = ({
                         >
                           <button
                             aria-label="More information for Invalid Value Replacement field"
-                            onClick={e => e.preventDefault()}
+                            onClick={(e) => e.preventDefault()}
                             className="pf-c-form__group-label-help"
                           >
                             <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
@@ -479,7 +464,7 @@ const MiningSchemaPropertiesEdit = ({
                         isDisabled={!enableInvalidValueComponent}
                         placeholder={!enableInvalidValueComponent ? "<Not needed>" : ""}
                         className={!enableInvalidValueComponent ? "mining-schema__edit__form__disabled" : ""}
-                        onChange={value => setInvalidValueReplacement(value)}
+                        onChange={(value) => setInvalidValueReplacement(value)}
                         onBlur={handleSave}
                       />
                     </FormGroup>

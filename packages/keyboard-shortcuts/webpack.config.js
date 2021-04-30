@@ -22,13 +22,13 @@ const common = require("../../webpack.common.config");
 module.exports = merge(common, {
   entry: {
     "envelope/index": "./src/envelope/index.ts",
-    "channel/index": "./src/channel/index.ts"
+    "channel/index": "./src/channel/index.ts",
   },
   output: {
-    libraryTarget: "commonjs2"
+    libraryTarget: "commonjs2",
   },
   externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   module: {
-    rules: [...pfWebpackOptions.patternflyRules]
-  }
+    rules: [...pfWebpackOptions.patternflyRules],
+  },
 });

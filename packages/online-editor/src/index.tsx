@@ -24,7 +24,7 @@ import {
   extractEditorFileExtensionFromUrl,
   extractFileExtension,
   removeDirectories,
-  removeFileExtension
+  removeFileExtension,
 } from "./common/utils";
 import { GithubService } from "./common/GithubService";
 import {
@@ -49,8 +49,8 @@ const editorEnvelopeLocator: EditorEnvelopeLocator = {
     ["bpmn", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "bpmn-envelope.html" }],
     ["bpmn2", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "bpmn-envelope.html" }],
     ["dmn", { resourcesPathPrefix: "gwt-editors/dmn", envelopePath: "dmn-envelope.html" }],
-    ["pmml", { resourcesPathPrefix: "", envelopePath: "pmml-envelope.html" }]
-  ])
+    ["pmml", { resourcesPathPrefix: "", envelopePath: "pmml-envelope.html" }],
+  ]),
 };
 
 if (urlParams.has("ext")) {
@@ -80,7 +80,7 @@ function waitForEventWithFileData() {
       isReadOnly: false,
       fileExtension: extractFileExtension(e.detail.fileName)!,
       fileName: removeFileExtension(e.detail.fileName),
-      getFileContents: () => Promise.resolve(e.detail.fileContent)
+      getFileContents: () => Promise.resolve(e.detail.fileContent),
     };
     ReactDOM.render(
       <App
@@ -98,37 +98,34 @@ function waitForEventWithFileData() {
 
 function openFileByUrl() {
   const i18n = onlineI18n.getCurrent();
-  const filePath = urlParams
-    .get("file")!
-    .split("?")
-    .shift()!;
+  const filePath = urlParams.get("file")!.split("?").shift()!;
 
   if (githubService.isGist(filePath)) {
     githubService
       .fetchGistFile(filePath)
-      .then(content => openFile(filePath, Promise.resolve(content)))
-      .catch(error => {
+      .then((content) => openFile(filePath, Promise.resolve(content)))
+      .catch((error) => {
         showFetchError(i18n.alerts.gistError);
       });
   } else if (githubService.isGithub(filePath) || githubService.isGithubRaw(filePath)) {
     githubService
       .fetchGithubFile(filePath)
-      .then(response => {
+      .then((response) => {
         openFile(filePath, Promise.resolve(response));
       })
-      .catch(error => {
+      .catch((error) => {
         showFetchError(error.toString());
       });
   } else {
     fetch(filePath)
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           openFile(filePath, response.text());
         } else {
           showResponseError(response.status, response.statusText);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         showFetchError(error.toString());
       });
   }
@@ -139,7 +136,7 @@ function openFile(filePath: string, getFileContent: Promise<string>) {
     isReadOnly: false,
     fileExtension: extractFileExtension(removeDirectories(filePath) ?? "")!,
     fileName: removeFileExtension(removeDirectories(filePath) ?? ""),
-    getFileContents: () => getFileContent
+    getFileContents: () => getFileContent,
   };
   ReactDOM.render(
     <App

@@ -25,7 +25,8 @@ import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { Page, PageHeader, PageHeaderTools, PageHeaderToolsGroup, PageSection, PageHeaderToolsItem } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Title ,
+} from "@patternfly/react-core/dist/js/components/Title";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon";
 import * as React from "react";
@@ -50,7 +51,7 @@ enum InputFileUrlState {
   INVALID_GIST,
   INVALID_GIST_EXTENSION,
   VALIDATING,
-  VALID
+  VALID,
 }
 
 interface InputFileUrlStateType {
@@ -69,7 +70,7 @@ export function HomePage(props: Props) {
   const [inputFileUrl, setInputFileUrl] = useState("");
   const [inputFileUrlState, setInputFileUrlState] = useState<InputFileUrlStateType>({
     urlValidation: InputFileUrlState.INITIAL,
-    urlToOpen: undefined
+    urlToOpen: undefined,
   });
 
   const onFileUpload = useCallback(
@@ -97,11 +98,11 @@ export function HomePage(props: Props) {
         fileExtension,
         fileName: removeFileExtension(fileName),
         getFileContents: () =>
-          new Promise<string | undefined>(resolve => {
+          new Promise<string | undefined>((resolve) => {
             const reader = new FileReader();
             reader.onload = (event: any) => resolve(event.target.result as string);
             reader.readAsText(file);
-          })
+          }),
       });
       history.replace(context.routes.editor.url({ type: fileExtension }));
     },
@@ -138,7 +139,7 @@ export function HomePage(props: Props) {
         isReadOnly: false,
         fileExtension: fileExtension,
         fileName: fileName,
-        getFileContents: () => fetch(filePath).then(response => response.text())
+        getFileContents: () => fetch(filePath).then((response) => response.text()),
       });
       history.replace(context.routes.editor.url({ type: fileExtension }));
     },
@@ -161,7 +162,7 @@ export function HomePage(props: Props) {
     if (inputFileUrl.trim() === "") {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.INITIAL,
-        urlToOpen: undefined
+        urlToOpen: undefined,
       });
       return;
     }
@@ -172,7 +173,7 @@ export function HomePage(props: Props) {
     } catch (e) {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.INVALID_URL,
-        urlToOpen: undefined
+        urlToOpen: undefined,
       });
       return;
     }
@@ -180,7 +181,7 @@ export function HomePage(props: Props) {
     if (context.githubService.isGist(inputFileUrl)) {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.VALIDATING,
-        urlToOpen: undefined
+        urlToOpen: undefined,
       });
 
       const gistId = context.githubService.isGistDefault(inputFileUrl)
@@ -197,7 +198,7 @@ export function HomePage(props: Props) {
       } catch (e) {
         setInputFileUrlState({
           urlValidation: InputFileUrlState.INVALID_GIST,
-          urlToOpen: undefined
+          urlToOpen: undefined,
         });
         return;
       }
@@ -206,14 +207,14 @@ export function HomePage(props: Props) {
       if (gistExtension && context.editorEnvelopeLocator.mapping.has(gistExtension)) {
         setInputFileUrlState({
           urlValidation: InputFileUrlState.VALID,
-          urlToOpen: rawUrl
+          urlToOpen: rawUrl,
         });
         return;
       }
 
       setInputFileUrlState({
         urlValidation: InputFileUrlState.INVALID_GIST_EXTENSION,
-        urlToOpen: undefined
+        urlToOpen: undefined,
       });
       return;
     }
@@ -222,27 +223,27 @@ export function HomePage(props: Props) {
     if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.INVALID_EXTENSION,
-        urlToOpen: undefined
+        urlToOpen: undefined,
       });
       return;
     }
 
     setInputFileUrlState({
       urlValidation: InputFileUrlState.VALIDATING,
-      urlToOpen: undefined
+      urlToOpen: undefined,
     });
     if (context.githubService.isGithub(inputFileUrl)) {
       try {
         const rawUrl = await context.githubService.getGithubRawUrl(inputFileUrl);
         setInputFileUrlState({
           urlValidation: InputFileUrlState.VALID,
-          urlToOpen: rawUrl
+          urlToOpen: rawUrl,
         });
         return;
       } catch (err) {
         setInputFileUrlState({
           urlValidation: InputFileUrlState.NOT_FOUND_URL,
-          urlToOpen: undefined
+          urlToOpen: undefined,
         });
         return;
       }
@@ -252,19 +253,19 @@ export function HomePage(props: Props) {
       if ((await fetch(inputFileUrl)).ok) {
         setInputFileUrlState({
           urlValidation: InputFileUrlState.VALID,
-          urlToOpen: inputFileUrl
+          urlToOpen: inputFileUrl,
         });
         return;
       }
 
       setInputFileUrlState({
         urlValidation: InputFileUrlState.NOT_FOUND_URL,
-        urlToOpen: undefined
+        urlToOpen: undefined,
       });
     } catch (e) {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.CORS_NOT_AVAILABLE,
-        urlToOpen: undefined
+        urlToOpen: undefined,
       });
     }
   }, [inputFileUrl]);
@@ -291,7 +292,7 @@ export function HomePage(props: Props) {
     if (inputFileUrl.trim() === "") {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.INITIAL,
-        urlToOpen: undefined
+        urlToOpen: undefined,
       });
     }
   }, [inputFileUrl]);
@@ -342,13 +343,13 @@ export function HomePage(props: Props) {
   );
 
   const logoProps = {
-    href: window.location.href.split("?")[0].split("#")[0]
+    href: window.location.href.split("?")[0].split("#")[0],
   };
 
   const linkDropdownItems = [
     <DropdownItem key="github-chrome-extension-dropdown-link">
       <Link to={context.routes.downloadHub.url({})}>{i18n.homePage.dropdown.getHub}</Link>
-    </DropdownItem>
+    </DropdownItem>,
   ];
 
   const userDropdownItems = [
@@ -357,7 +358,7 @@ export function HomePage(props: Props) {
         {i18n.homePage.dropdown.onlineForum}
         <ExternalLinkAltIcon className="pf-u-mx-sm" />
       </a>
-    </DropdownItem>
+    </DropdownItem>,
   ];
 
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -446,7 +447,7 @@ export function HomePage(props: Props) {
               </Button>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={createEmptyBpmnFile}>
+              <Button variant="secondary" onClick={createEmptyBpmnFile} ouiaId="new-bpmn-button">
                 {i18n.homePage.bpmnCard.createNew}
               </Button>
             </CardFooter>
@@ -464,7 +465,7 @@ export function HomePage(props: Props) {
               </Button>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={createEmptyDmnFile}>
+              <Button variant="secondary" onClick={createEmptyDmnFile} ouiaId="new-dmn-button">
                 {i18n.homePage.dmnCard.createNew}
               </Button>
             </CardFooter>
@@ -482,7 +483,7 @@ export function HomePage(props: Props) {
               </Button>
             </CardBody>
             <CardFooter>
-              <Button variant="secondary" onClick={createEmptyPmmlFile}>
+              <Button variant="secondary" onClick={createEmptyPmmlFile} ouiaId="new-pmml-button">
                 {i18n.homePage.pmmlCard.createNew}
               </Button>
             </CardFooter>
@@ -508,8 +509,8 @@ export function HomePage(props: Props) {
                     filename={uploadedFileName}
                     onChange={onFileUpload}
                     dropzoneProps={{
-                      accept: [...context.editorEnvelopeLocator.mapping.keys()].map(ext => "." + ext).join(", "),
-                      onDropRejected
+                      accept: [...context.editorEnvelopeLocator.mapping.keys()].map((ext) => "." + ext).join(", "),
+                      onDropRejected,
                     }}
                     validated={isUploadRejected ? "error" : "default"}
                   />

@@ -23,7 +23,7 @@ import {
   EditorEnvelopeI18n,
   EditorEnvelopeI18nContext,
   editorEnvelopeI18nDefaults,
-  editorEnvelopeI18nDictionaries
+  editorEnvelopeI18nDictionaries,
 } from "../i18n";
 
 export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi> = {
@@ -31,10 +31,10 @@ export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType<K
   services: {
     keyboardShortcuts: new DefaultKeyboardShortcutsService({} as any),
     guidedTour: {
-      isEnabled: () => false
+      isEnabled: () => false,
     },
-    i18n: new I18nService()
-  }
+    i18n: new I18nService(),
+  },
 };
 
 export function usingEnvelopeContext(
@@ -48,7 +48,7 @@ export function usingEnvelopeContext(
       <KogitoEditorEnvelopeContext.Provider key={""} value={usedCtx}>
         {children}
       </KogitoEditorEnvelopeContext.Provider>
-    )
+    ),
   };
 }
 
@@ -61,7 +61,7 @@ export function usingEditorEnvelopeI18nContext(
     dictionaries: editorEnvelopeI18nDictionaries,
     ctx: EditorEnvelopeI18nContext,
     children,
-    ...ctx
+    ...ctx,
   };
   return {
     ctx: usedCtx,
@@ -69,6 +69,6 @@ export function usingEditorEnvelopeI18nContext(
       <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
         {usedCtx.children}
       </I18nDictionariesProvider>
-    )
+    ),
   };
 }

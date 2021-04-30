@@ -36,7 +36,7 @@ const ConstraintsLabel = (props: ConstraintsLabelProps) => {
       switch (dataType.constraints.type) {
         case ConstraintType.RANGE:
           return dataType.constraints.value
-            .map(range => {
+            .map((range) => {
               return (
                 `${range.start.included ? "[" : "("}` +
                 `${range.start.value || `${String.fromCharCode(8722, 8734)}`}, ` +
@@ -47,10 +47,10 @@ const ConstraintsLabel = (props: ConstraintsLabelProps) => {
             .join(" ");
 
         case ConstraintType.ENUMERATION:
-          if (every(dataType.constraints.value, value => value === "")) {
+          if (every(dataType.constraints.value, (value) => value === "")) {
             return <em>No values</em>;
           }
-          return dataType.constraints.value.map(item => `"${item}"`).join(", ");
+          return dataType.constraints.value.map((item) => `"${item}"`).join(", ");
         default:
           return "";
       }
@@ -60,13 +60,7 @@ const ConstraintsLabel = (props: ConstraintsLabelProps) => {
 
   const { validationRegistry } = useValidationRegistry();
   const validations = useMemo(
-    () =>
-      validationRegistry.get(
-        Builder()
-          .forDataDictionary()
-          .forDataField(dataTypeIndex)
-          .build()
-      ),
+    () => validationRegistry.get(Builder().forDataDictionary().forDataField(dataTypeIndex).build()),
     [dataTypeIndex, dataType]
   );
 

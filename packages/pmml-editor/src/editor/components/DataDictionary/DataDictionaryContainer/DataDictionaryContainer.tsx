@@ -62,7 +62,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
     onAdd(
       findIncrementalName(
         "New Data Type",
-        dataTypes.map(dt => dt.name),
+        dataTypes.map((dt) => dt.name),
         1
       ),
       "string",
@@ -90,7 +90,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   };
 
   const handleMultipleAdd = (fields: string) => {
-    const fieldsNames = fields.split("\n").filter(item => item.trim().length > 0);
+    const fieldsNames = fields.split("\n").filter((item) => item.trim().length > 0);
     onBatchAdd(fieldsNames);
     setViewSection("main");
   };
@@ -113,7 +113,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
     if (editing !== undefined) {
       const dataType = dataTypes[editing];
       const existingPartial = {};
-      Object.keys(payload).forEach(key => Reflect.set(existingPartial, key, Reflect.get(dataType, key)));
+      Object.keys(payload).forEach((key) => Reflect.set(existingPartial, key, Reflect.get(dataType, key)));
 
       if (!isEqual(payload, existingPartial)) {
         onEdit(editing, dataType.name, Object.assign(dataType, payload));
@@ -153,20 +153,10 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   };
 
   const { validationRegistry } = useValidationRegistry();
-  const validations = useRef(
-    validationRegistry.get(
-      Builder()
-        .forDataDictionary()
-        .build()
-    )
-  );
+  const validations = useRef(validationRegistry.get(Builder().forDataDictionary().build()));
   useEffect(() => {
     if (editing === undefined) {
-      validations.current = validationRegistry.get(
-        Builder()
-          .forDataDictionary()
-          .build()
-      );
+      validations.current = validationRegistry.get(Builder().forDataDictionary().build());
     }
   }, [dataDictionary, editing]);
 
@@ -176,7 +166,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
         <CSSTransition
           timeout={{
             enter: 230,
-            exit: 100
+            exit: 100,
           }}
           classNames={getTransition(viewSection)}
           key={viewSection}
@@ -311,5 +301,5 @@ export interface RangeConstraint {
 export enum ConstraintType {
   RANGE = "Range",
   ENUMERATION = "Enumeration",
-  NONE = ""
+  NONE = "",
 }

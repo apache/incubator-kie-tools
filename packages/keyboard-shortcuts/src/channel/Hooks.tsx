@@ -26,7 +26,7 @@ function getChannelKeyboardEvent(keyboardEvent: KeyboardEvent): ChannelKeyboardE
     metaKey: keyboardEvent.metaKey,
     code: keyboardEvent.code,
     type: keyboardEvent.type,
-    channelOriginalTargetTagName: (keyboardEvent.target as HTMLElement)?.tagName
+    channelOriginalTargetTagName: (keyboardEvent.target as HTMLElement)?.tagName,
   };
 }
 

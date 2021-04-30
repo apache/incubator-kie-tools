@@ -17,9 +17,7 @@
 @import "../../../../../../../node_modules/@patternfly/patternfly/base/variables";
 
 .attributes {
-
   &__header {
-
     border-top: none;
     font-weight: bold;
     outline: none;
@@ -35,7 +33,6 @@
   }
 
   &__body {
-
     height: calc(100vh - 604px);
     overflow-y: scroll;
   }
@@ -43,5 +40,4 @@
   &__list-item {
     outline: none;
   }
-
 }

@@ -55,7 +55,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
   const saveCyclicProperty = (value: DDDataField["isCyclic"]) => {
     setIsCyclic(value);
     onSave({
-      isCyclic: value
+      isCyclic: value,
     });
   };
 
@@ -103,11 +103,11 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       name="display-name"
                       aria-describedby="Display Name"
                       value={displayName}
-                      onChange={value => setDisplayName(value)}
+                      onChange={(value) => setDisplayName(value)}
                       autoComplete="off"
                       onBlur={() =>
                         onSave({
-                          displayName: displayName === "" ? undefined : displayName
+                          displayName: displayName === "" ? undefined : displayName,
                         })
                       }
                     />
@@ -124,7 +124,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                         <Tooltip content={"Categorical fields cannot be cyclic"}>
                           <button
                             aria-label="More info for Cyclic Type"
-                            onClick={e => e.preventDefault()}
+                            onClick={(e) => e.preventDefault()}
                             className="pf-c-form__group-label-help"
                           >
                             <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
@@ -183,11 +183,11 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       name="missing-value"
                       aria-describedby="Missing Value"
                       value={missingValue}
-                      onChange={value => setMissingValue(value)}
+                      onChange={(value) => setMissingValue(value)}
                       autoComplete="off"
                       onBlur={() =>
                         onSave({
-                          missingValue: missingValue === "" ? undefined : missingValue
+                          missingValue: missingValue === "" ? undefined : missingValue,
                         })
                       }
                     />
@@ -206,11 +206,11 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       name="invalid-value"
                       aria-describedby="Invalid Value"
                       value={invalidValue}
-                      onChange={value => setInvalidValue(value)}
+                      onChange={(value) => setInvalidValue(value)}
                       autoComplete="off"
                       onBlur={() =>
                         onSave({
-                          invalidValue: invalidValue === "" ? undefined : invalidValue
+                          invalidValue: invalidValue === "" ? undefined : invalidValue,
                         })
                       }
                     />

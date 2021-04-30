@@ -26,7 +26,7 @@ const MiningSchemaAddFields = ({ options, onAdd }: MiningSchemaAddFieldsProps) =
 
   const onSelect = (event: React.MouseEvent | React.ChangeEvent, selection: SelectOptionObject) => {
     if (selected.includes(selection.toString())) {
-      const newSelections = selected.filter(item => item !== selection);
+      const newSelections = selected.filter((item) => item !== selection);
       setSelected(newSelections);
     } else {
       setSelected([...selected, selection.toString()]);
@@ -39,9 +39,9 @@ const MiningSchemaAddFields = ({ options, onAdd }: MiningSchemaAddFieldsProps) =
   };
 
   const addAllFields = () => {
-    const availableOptions = selectOptions.filter(item => !item.disabled);
+    const availableOptions = selectOptions.filter((item) => !item.disabled);
     if (availableOptions.length) {
-      onAdd(availableOptions.map(item => item.value));
+      onAdd(availableOptions.map((item) => item.value));
     }
   };
 
@@ -52,9 +52,9 @@ const MiningSchemaAddFields = ({ options, onAdd }: MiningSchemaAddFieldsProps) =
 
   useEffect(() => {
     setSelectOptions(
-      options.map(option => ({
+      options.map((option) => ({
         value: option.name,
-        disabled: option.isSelected
+        disabled: option.isSelected,
       }))
     );
   }, [options]);

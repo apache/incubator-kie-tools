@@ -40,7 +40,7 @@ import {
   SupportVectorMachineModel,
   TextModel,
   TimeSeriesModel,
-  TreeModel
+  TreeModel,
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { Builder } from "./paths";
 import { get } from "lodash";
@@ -74,7 +74,7 @@ export type ModelType =
 export enum SupportedCapability {
   NONE,
   VIEWER,
-  EDITOR
+  EDITOR,
 }
 
 export interface PMMLModelMapping<M> {
@@ -91,98 +91,98 @@ export const PMMLModels: Array<PMMLModelMapping<any>> = new Array<PMMLModelMappi
     type: "Anomaly Detection Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: AssociationModel,
     type: "Association Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: BayesianNetworkModel,
     type: "Bayesian Network Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: BaselineModel,
     type: "Baseline Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: ClusteringModel,
     type: "Clustering Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: GaussianProcessModel,
     type: "Gaussian Process Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: GeneralRegressionModel,
     type: "General Regression Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: MiningModel,
     type: "Mining Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: NaiveBayesModel,
     type: "Naive Bayes Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: NearestNeighborModel,
     type: "Nearest Neighbor Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: NeuralNetwork,
     type: "Neural Network",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: RegressionModel,
     type: "Regression Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.VIEWER,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: RuleSetModel,
     type: "RuleSet Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: SequenceModel,
     type: "Sequence Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: Scorecard,
@@ -195,39 +195,39 @@ export const PMMLModels: Array<PMMLModelMapping<any>> = new Array<PMMLModelMappi
         MiningSchema: { MiningField: [] },
         Characteristics: { Characteristic: [] },
         Output: { OutputField: [] },
-        functionName: "regression"
+        functionName: "regression",
       });
       (model as any)._type = "Scorecard";
       return model;
-    }
+    },
   },
   {
     model: SupportVectorMachineModel,
     type: "Support Vector Machine Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: TextModel,
     type: "Text Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: TimeSeriesModel,
     type: "Time Series Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   },
   {
     model: TreeModel,
     type: "Tree Model",
     iconUrl: "card-icon-default.svg",
     capability: SupportedCapability.NONE,
-    factory: undefined
+    factory: undefined,
   }
 );
 
@@ -274,7 +274,7 @@ export const findIncrementalName = (name: string, existingNames: string[], start
   let counter = startsFrom;
   do {
     const potentialName = `${name}${counter !== 1 ? ` ${counter}` : ""}`;
-    const found = existingNames.filter(existingName => existingName === potentialName);
+    const found = existingNames.filter((existingName) => existingName === potentialName);
     if (found.length === 0) {
       newName = potentialName;
     }
@@ -284,71 +284,29 @@ export const findIncrementalName = (name: string, existingNames: string[], start
 };
 
 export const getDataDictionary = (pmml: PMML): DataDictionary | undefined => {
-  return get(
-    pmml,
-    Builder()
-      .forDataDictionary()
-      .build().path
-  );
+  return get(pmml, Builder().forDataDictionary().build().path);
 };
 
 export const getMiningSchema = (pmml: PMML, modelIndex: number): MiningSchema | undefined => {
-  return get(
-    pmml,
-    Builder()
-      .forModel(modelIndex)
-      .forMiningSchema()
-      .build().path
-  );
+  return get(pmml, Builder().forModel(modelIndex).forMiningSchema().build().path);
 };
 
 export const getMiningField = (pmml: PMML, modelIndex: number, miningFieldIndex: number): MiningField | undefined => {
-  return get(
-    pmml,
-    Builder()
-      .forModel(modelIndex)
-      .forMiningSchema()
-      .forMiningField(miningFieldIndex)
-      .build().path
-  );
+  return get(pmml, Builder().forModel(modelIndex).forMiningSchema().forMiningField(miningFieldIndex).build().path);
 };
 
 export const getOutputs = (pmml: PMML, modelIndex: number): Output | undefined => {
-  return get(
-    pmml,
-    Builder()
-      .forModel(modelIndex)
-      .forOutput()
-      .build().path
-  );
+  return get(pmml, Builder().forModel(modelIndex).forOutput().build().path);
 };
 
 export const getCharacteristics = (pmml: PMML, modelIndex: number): Characteristics | undefined => {
-  return get(
-    pmml,
-    Builder()
-      .forModel(modelIndex)
-      .forCharacteristics()
-      .build().path
-  );
+  return get(pmml, Builder().forModel(modelIndex).forCharacteristics().build().path);
 };
 
 export const getBaselineScore = (pmml: PMML, modelIndex: number): number | undefined => {
-  return get(
-    pmml,
-    Builder()
-      .forModel(modelIndex)
-      .forBaselineScore()
-      .build().path
-  );
+  return get(pmml, Builder().forModel(modelIndex).forBaselineScore().build().path);
 };
 
 export const getUseReasonCodes = (pmml: PMML, modelIndex: number): boolean | undefined => {
-  return get(
-    pmml,
-    Builder()
-      .forModel(modelIndex)
-      .forUseReasonCodes()
-      .build().path
-  );
+  return get(pmml, Builder().forModel(modelIndex).forUseReasonCodes().build().path);
 };

@@ -131,7 +131,7 @@ describe("GuidedTourEventBus", () => {
 let dispatchedEvents: CustomEvent[] = [];
 
 const realDispatchEvent = document.dispatchEvent;
-const mockedDispatchEvent = jest.fn(event => {
+const mockedDispatchEvent = jest.fn((event) => {
   dispatchedEvents = [...dispatchedEvents, event];
   return true;
 });

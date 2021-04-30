@@ -54,6 +54,6 @@ export function neuralNetworkFactory(): NeuralNetwork {
     NeuralInputs: { NeuralInput: [] },
     NeuralLayer: [],
     functionName: "regression",
-    activationFunction: "identity"
+    activationFunction: "identity",
   });
 }

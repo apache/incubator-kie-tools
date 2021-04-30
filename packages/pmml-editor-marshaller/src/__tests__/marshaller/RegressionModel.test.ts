@@ -22,12 +22,12 @@ import {
   NumericPredictor,
   PMML,
   RegressionModel,
-  RegressionTable
+  RegressionTable,
 } from "../../marshaller/model/pmml4_4";
 import {
   LINEAR_REGRESSION_MODEL_1,
   LINEAR_REGRESSION_MODEL_2,
-  LINEAR_REGRESSION_MODEL_3
+  LINEAR_REGRESSION_MODEL_3,
 } from "./TestData_LinearRegressions";
 
 describe("RegressionModel tests", () => {

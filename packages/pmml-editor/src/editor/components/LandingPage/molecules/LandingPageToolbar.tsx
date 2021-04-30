@@ -38,7 +38,7 @@ export const LandingPageToolbar = (props: LandingPageToolbarProps) => {
       <ToolbarContent>
         <ToolbarItem>
           <InputGroup>
-            <form onSubmit={e => e.preventDefault()}>
+            <form onSubmit={(e) => e.preventDefault()}>
               <span style={{ display: "flex" }}>
                 <TextInput
                   id="model-filter-input"
@@ -47,7 +47,7 @@ export const LandingPageToolbar = (props: LandingPageToolbarProps) => {
                   type="search"
                   aria-label="filter models"
                   placeholder="Filter models by name"
-                  onChange={e => setFilter(e)}
+                  onChange={(e) => setFilter(e)}
                 />
                 <Button
                   id="models-filter"
@@ -55,7 +55,7 @@ export const LandingPageToolbar = (props: LandingPageToolbarProps) => {
                   data-testid="landing-page-toolbar__submit"
                   variant={ButtonVariant.control}
                   aria-label="filter button for filter input"
-                  onClick={e => onFilter(filter)}
+                  onClick={(e) => onFilter(filter)}
                 >
                   <SearchIcon />
                 </Button>

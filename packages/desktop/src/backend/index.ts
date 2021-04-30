@@ -46,20 +46,20 @@ const createWindow = () => {
     webPreferences: {
       enableRemoteModule: true,
       nodeIntegrationInWorker: true,
-      nodeIntegration: true // https://github.com/electron/electron/issues/9920#issuecomment-575839738
-    }
+      nodeIntegration: true, // https://github.com/electron/electron/issues/9920#issuecomment-575839738
+    },
   });
 
   mainWindow
     .loadFile(path.join(__dirname, "index.html"))
-    .catch(e => console.error("Error while loading webview index.html"));
+    .catch((e) => console.error("Error while loading webview index.html"));
 
   mainWindow.once("ready-to-show", () => {
     mainWindow?.show();
   });
 
   if (process.platform === "darwin") {
-    mainWindow.on("close", e => {
+    mainWindow.on("close", (e) => {
       if (!forceQuit) {
         e.preventDefault();
         mainWindow?.hide();

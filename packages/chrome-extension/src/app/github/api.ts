@@ -30,12 +30,12 @@ export function fetchFile(
       repo: repo,
       owner: org,
       ref: ref,
-      path: path
+      path: path,
     })
-    .then(res => (contentType === ContentType.BINARY ? (res.data as any).content : atob((res.data as any).content)))
-    .catch(e => {
+    .then((res) => (contentType === ContentType.BINARY ? (res.data as any).content : atob((res.data as any).content)))
+    .catch((e) => {
       console.debug(`Error fetching ${path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
-      return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${ref}/${path}`).then(res =>
+      return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${ref}/${path}`).then((res) =>
         res.ok ? res.text() : Promise.resolve(undefined)
       );
     });

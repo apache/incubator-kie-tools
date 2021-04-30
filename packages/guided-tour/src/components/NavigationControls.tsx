@@ -27,7 +27,7 @@ export const NavigationControls = () => {
   const { currentTutorial, currentStep, setCurrentStep } = useContext(CurrentTutorialContext);
   const isButtonsHidden = useMemo(() => getCurrentStep(currentStep, currentTutorial)?.navigatorEnabled !== true, [
     currentStep,
-    currentTutorial
+    currentTutorial,
   ]);
   const numberOfSteps = useMemo(() => getSteps(currentTutorial).length, [currentTutorial]);
   const currentStepNumber = (currentStep ?? 0) + 1;
@@ -35,7 +35,7 @@ export const NavigationControls = () => {
   const prev = useCallback(() => setCurrentStep(currentStep - 1), [currentStep]);
   const next = useCallback(() => setCurrentStep(currentStep + 1), [currentStep]);
   const stepBullets = useCallback(() => {
-    const bullets = [...Array(numberOfSteps).keys()].map(stepNumber => {
+    const bullets = [...Array(numberOfSteps).keys()].map((stepNumber) => {
       const baseClassName = "kgt-nav-controls__bullet";
       const isCurrentStep = currentStepNumber === stepNumber + 1;
       const className = `${baseClassName} ${isCurrentStep ? `${baseClassName}--current` : ""}`;

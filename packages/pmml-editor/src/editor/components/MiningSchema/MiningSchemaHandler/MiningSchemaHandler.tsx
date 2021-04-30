@@ -3,7 +3,8 @@ import { useMemo, useState } from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
+import { Title, TitleSizes ,
+} from "@patternfly/react-core/dist/js/components/Title";
 import { CloseIcon } from "@patternfly/react-icons/dist/js/icons/close-icon";
 import { WarningTriangleIcon } from "@patternfly/react-icons/dist/js/icons/warning-triangle-icon";
 import MiningSchemaContainer from "../MiningSchemaContainer/MiningSchemaContainer";
@@ -33,8 +34,8 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
       type: Actions.AddMiningSchemaFields,
       payload: {
         modelIndex: modelIndex,
-        names: names
-      }
+        names: names,
+      },
     });
   };
 
@@ -46,8 +47,8 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
       payload: {
         modelIndex: modelIndex,
         miningSchemaIndex: index,
-        name: miningSchema?.MiningField[index].name
-      }
+        name: miningSchema?.MiningField[index].name,
+      },
     });
     // }
   };
@@ -59,8 +60,8 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
         modelIndex: modelIndex,
         miningSchemaIndex: index,
         ...field,
-        originalName
-      }
+        originalName,
+      },
     });
   };
 
@@ -69,16 +70,11 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
   };
 
   const { validationRegistry } = useValidationRegistry();
-  const validations = useMemo(
-    () =>
-      validationRegistry.get(
-        Builder()
-          .forModel(modelIndex)
-          .forMiningSchema()
-          .build()
-      ),
-    [modelIndex, miningSchema, dataDictionary]
-  );
+  const validations = useMemo(() => validationRegistry.get(Builder().forModel(modelIndex).forMiningSchema().build()), [
+    modelIndex,
+    miningSchema,
+    dataDictionary,
+  ]);
 
   const header = (
     <Split hasGutter={true}>

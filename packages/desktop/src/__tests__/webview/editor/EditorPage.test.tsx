@@ -21,13 +21,13 @@ import { usingTestingDesktopI18nContext, usingTestingGlobalContext } from "../..
 
 const fileExtension = "";
 const onClose = jest.fn(() => null);
-const onFilenameChange = jest.fn((filePath: string) => null)
+const onFilenameChange = jest.fn((filePath: string) => null);
 
 function mockFunctions() {
   const original = require.requireActual("@kogito-tooling/editor/dist/embedded");
   return {
     ...original,
-    useDirtyState: jest.fn(() => true).mockImplementationOnce(() => false)
+    useDirtyState: jest.fn(() => true).mockImplementationOnce(() => false),
   };
 }
 jest.mock("@kogito-tooling/editor/dist/embedded", () => mockFunctions());
@@ -37,7 +37,7 @@ describe("EditorPage", () => {
     test("should not appear by default with isDirty equal to false", () => {
       const { queryByTestId } = render(
         usingTestingDesktopI18nContext(
-          usingTestingGlobalContext(<EditorPage onFilenameChange={onFilenameChange} onClose={onClose}  />).wrapper
+          usingTestingGlobalContext(<EditorPage onFilenameChange={onFilenameChange} onClose={onClose} />).wrapper
         ).wrapper
       );
 

@@ -21,7 +21,7 @@ import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
  * @param ms
  */
 export const delay = (ms: number) => {
-  return Promise.resolve().then(() => new Promise(res => setTimeout(res, ms)));
+  return Promise.resolve().then(() => new Promise((res) => setTimeout(res, ms)));
 };
 
 /**

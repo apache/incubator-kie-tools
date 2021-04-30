@@ -30,7 +30,7 @@ export const useUserInteractions = () => {
     latestUserInteraction,
     setCurrentStep,
     setIsNegativeReinforcementStateEnabled,
-    setIsHighlightLayerEnabled
+    setIsHighlightLayerEnabled,
   } = useContext(CurrentTutorialContext);
 
   // Aliases

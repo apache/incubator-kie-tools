@@ -51,10 +51,10 @@ describe("KogitoGuidedTour", () => {
 
       mockInstance(GuidedTourCookie, {
         isDisabled: () => false,
-        markAsDisabled: markAsDisabled
+        markAsDisabled: markAsDisabled,
       });
       mockInstance(GuidedTourDomUtils, {
-        removeGuidedTourHTMLElement: removeGuidedTourHTMLElement
+        removeGuidedTourHTMLElement: removeGuidedTourHTMLElement,
       });
 
       KogitoGuidedTour.getInstance().teardown();
@@ -69,10 +69,10 @@ describe("KogitoGuidedTour", () => {
 
       mockInstance(GuidedTourCookie, {
         isDisabled: () => true,
-        markAsDisabled: markAsDisabled
+        markAsDisabled: markAsDisabled,
       });
       mockInstance(GuidedTourDomUtils, {
-        removeGuidedTourHTMLElement: removeGuidedTourHTMLElement
+        removeGuidedTourHTMLElement: removeGuidedTourHTMLElement,
       });
 
       KogitoGuidedTour.getInstance().teardown();
@@ -151,7 +151,7 @@ describe("KogitoGuidedTour", () => {
         top: 3,
         width: 1,
         x: 1,
-        y: 1
+        y: 1,
       });
     });
   });
@@ -173,12 +173,12 @@ describe("KogitoGuidedTour", () => {
 jest.mock("../components");
 jest.mock("../core");
 jest.mock("react-dom", () => ({
-  render: jest.fn()
+  render: jest.fn(),
 }));
 
 function mockInstance(obj: any, methods: any) {
   const methodNames = Object.keys(methods);
-  methodNames.forEach(methodName => {
+  methodNames.forEach((methodName) => {
     const methodImpl = methods[methodName];
     obj.prototype[methodName].mockImplementation(methodImpl);
   });

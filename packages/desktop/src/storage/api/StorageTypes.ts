@@ -15,5 +15,5 @@
  */
 
 export enum StorageTypes {
-  FS = "fs"
+  FS = "fs",
 }

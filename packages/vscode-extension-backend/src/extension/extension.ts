@@ -31,7 +31,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<Backen
     bridge: new DefaultHttpBridge(),
     localHttpServer: new QuarkusLocalServer(context.asAbsolutePath(path.join("dist", "server", "quarkus-runner.jar"))),
     bootstrapServices: [],
-    lazyServices: [new VsCodeTestScenarioRunnerService()]
+    lazyServices: [new VsCodeTestScenarioRunnerService()],
   });
 
   await backendManager.start();

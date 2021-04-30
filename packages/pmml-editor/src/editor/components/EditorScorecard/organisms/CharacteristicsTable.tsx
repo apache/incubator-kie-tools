@@ -59,7 +59,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     onAddAttribute,
     onCommitAndClose,
     onCommit,
-    onCancel
+    onCancel,
   } = props;
 
   const addCharacteristicRowRef = useRef<HTMLDivElement | null>(null);
@@ -102,13 +102,13 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   return (
     <Form
-      onSubmit={e => {
+      onSubmit={(e) => {
         e.stopPropagation();
         e.preventDefault();
       }}
       className="characteristics-container__overview__form"
     >
-      {characteristics.map(ic => {
+      {characteristics.map((ic) => {
         const isRowInEditMode =
           selectedCharacteristicIndex === ic.index && activeOperation === Operation.UPDATE_CHARACTERISTIC;
         return (
@@ -125,7 +125,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                   areReasonCodesUsed={areReasonCodesUsed}
                   scorecardBaselineScore={scorecardBaselineScore}
                   characteristic={ic}
-                  validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
+                  validateCharacteristicName={(_name) => onValidateCharacteristicName(ic.index, _name)}
                   viewAttribute={viewAttribute}
                   onAddAttribute={onAddAttribute}
                   onCommitAndClose={onCommitAndClose}

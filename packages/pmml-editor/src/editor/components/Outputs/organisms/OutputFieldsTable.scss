@@ -17,9 +17,7 @@
 @import "../../../../../../../node_modules/@patternfly/patternfly/base/variables";
 
 .outputs {
-
   &__header {
-
     border-top: none;
     font-weight: bold;
     outline: none;
@@ -36,5 +34,4 @@
       color: var(--pf-global--info-color--100);
     }
   }
-
 }

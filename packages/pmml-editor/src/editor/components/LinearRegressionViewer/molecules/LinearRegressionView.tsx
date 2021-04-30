@@ -73,7 +73,7 @@ const getTicks = (range: Range, count: number): number[] => {
 
 export const LinearRegressionView = (props: LinearRegressionViewProps) => {
   const legendData: any = [];
-  props.lines.forEach(line => {
+  props.lines.forEach((line) => {
     legendData.push({ name: line.title });
   });
 
@@ -96,7 +96,7 @@ export const LinearRegressionView = (props: LinearRegressionViewProps) => {
           bottom: 100,
           left: 50,
           right: 50,
-          top: 50
+          top: 50,
         }}
         height={height}
         width={width}
@@ -106,24 +106,24 @@ export const LinearRegressionView = (props: LinearRegressionViewProps) => {
           label={props.independentAxisTitle}
           showGrid={true}
           tickValues={getTicks(props.rangeX, 8)}
-          tickFormat={x => roundedToFixed(x, 2)}
+          tickFormat={(x) => roundedToFixed(x, 2)}
         />
         <ChartAxis
           label={props.dependentAxisTitle}
           dependentAxis={true}
           showGrid={true}
           tickValues={getTicks(props.rangeY, 8)}
-          tickFormat={x => roundedToFixed(x, 2)}
+          tickFormat={(x) => roundedToFixed(x, 2)}
         />
         <ChartGroup>
-          {props.lines.map(line => {
+          {props.lines.map((line) => {
             return (
               <ChartLine
                 key={line.title}
                 samples={100}
                 domain={{
                   x: [props.rangeX.min, props.rangeX.max],
-                  y: [props.rangeY.min, props.rangeY.max]
+                  y: [props.rangeY.min, props.rangeY.max],
                 }}
                 y={(datum: any) => line.m * datum.x + line.c}
               />

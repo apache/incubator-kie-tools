@@ -31,7 +31,7 @@ export const AttributeToolbar = (props: AttributeToolbarProps) => {
       <SplitItem isFilled={true}>
         <Title size="lg" headingLevel="h1">
           <a
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault();
               viewOverview();
             }}
@@ -44,7 +44,7 @@ export const AttributeToolbar = (props: AttributeToolbarProps) => {
       <SplitItem>
         <Button
           variant="primary"
-          onClick={e => {
+          onClick={(e) => {
             e.preventDefault();
             viewOverview();
           }}

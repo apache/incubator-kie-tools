@@ -10,39 +10,44 @@ Can be installed with `yarn` or `npm`:
 - `npm install @kogito-tooling/i18n`
 
 ## Usage
+
 The library is separated into two submodules:
- - core
-    
-    All core functionalities, which includes the types, and the I18n class.
-    
-    to use the core:
-    `import * as I18nCore from "@kogito-tooling/i18n/dist/core"`
- - react-components
- 
-    All components and types necessaries to integrate on your React project.
-    
-    to use the React components:
-     `import * as I18nReact from "@kogito-tooling/i18n/dist/react-components"`
- 
- 
+
+- core
+  All core functionalities, which includes the types, and the I18n class.
+  to use the core:
+  `import * as I18nCore from "@kogito-tooling/i18n/dist/core"`
+- react-components
+
+  All components and types necessaries to integrate on your React project.
+
+  to use the React components:
+  `import * as I18nReact from "@kogito-tooling/i18n/dist/react-components"`
+
 ## Examples
- - [Typescript](examples/typescript.md)
- - [React](examples/react.md)
- 
+
+- [Typescript](examples/typescript.md)
+- [React](examples/react.md)
+
 ## Core
+
 ### Class
+
 The core class `I18n` is under the `core` submodule "@kogito-tooling/i18n/dist/core".
 
- - Constructor
+- Constructor
+
 ```
 defaults: I18nDefaults<D>
 dictionaries: I18nDictionaries<D>
 initialLocale?: string
 ```
-*If no `initialLocale` is provide the default locale will be used as `initialLocale`* 
 
- - Available Methods
- ```
+_If no `initialLocale` is provide the default locale will be used as `initialLocale`_
+
+- Available Methods
+
+```
 // Get the current locale
 getLocale(): string
 
@@ -63,6 +68,7 @@ setLocale(locale: string): void
 
 - `I18nDefaults<D>`
   The type of the default configs to be used on the `I18nDictionariesProvider` component or `I18n` class.
+
 ```ts
 interface I18nDefaults<D extends ReferenceDictionary<D>> {
   locale: string; // current locale
@@ -72,11 +78,13 @@ interface I18nDefaults<D extends ReferenceDictionary<D>> {
 
 - `I18nDictionaries<D>`
   The type of the dictionaries to be used on the `I18nDictionariesProvider` component or `I18n` class.
+
 ```ts
-type I18nDictionaries<D extends ReferenceDictionary<D>> = Map<string, TranslatedDictionary<D>>
+type I18nDictionaries<D extends ReferenceDictionary<D>> = Map<string, TranslatedDictionary<D>>;
 ```
 
 ## React
+
 ### Components
 
 - `<I18nDictionariesProvider>`
@@ -86,8 +94,8 @@ type I18nDictionaries<D extends ReferenceDictionary<D>> = Map<string, Translated
 
 _Be aware: the `<I18nHtml>` component uses the `dangerouslySetInnerHTML` prop._
 
-
 ### Types
+
 - `I18nContextType<D>`
   The context type use by `<I18nDictionaryProvider>`, provides an object with the following properties:
 

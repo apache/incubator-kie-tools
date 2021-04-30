@@ -49,6 +49,6 @@ export function treeModelFactory(): TreeModel {
   return new TreeModel({
     MiningSchema: new MiningSchema({ MiningField: [] }),
     Node: [],
-    functionName: "regression"
+    functionName: "regression",
   });
 }

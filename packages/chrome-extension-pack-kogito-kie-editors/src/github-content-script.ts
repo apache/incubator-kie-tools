@@ -32,30 +32,30 @@ startExtension({
         "bpmn",
         {
           resourcesPathPrefix: `${resourcesPathPrefix}/bpmn`,
-          envelopePath: `${resourcesPathPrefix}/envelope/bpmn-envelope.html`
-        }
+          envelopePath: `${resourcesPathPrefix}/envelope/bpmn-envelope.html`,
+        },
       ],
       [
         "bpmn2",
         {
           resourcesPathPrefix: `${resourcesPathPrefix}/bpmn`,
-          envelopePath: `${resourcesPathPrefix}/envelope/bpmn-envelope.html`
-        }
+          envelopePath: `${resourcesPathPrefix}/envelope/bpmn-envelope.html`,
+        },
       ],
       [
         "dmn",
         {
           resourcesPathPrefix: `${resourcesPathPrefix}/dmn`,
-          envelopePath: `${resourcesPathPrefix}/envelope/dmn-envelope.html`
-        }
+          envelopePath: `${resourcesPathPrefix}/envelope/dmn-envelope.html`,
+        },
       ],
       [
         "scesim",
         {
           resourcesPathPrefix: `${resourcesPathPrefix}/scesim`,
-          envelopePath: `${resourcesPathPrefix}/envelope/scesim-envelope.html`
-        }
-      ]
-    ])
-  }
+          envelopePath: `${resourcesPathPrefix}/envelope/scesim-envelope.html`,
+        },
+      ],
+    ]),
+  },
 });

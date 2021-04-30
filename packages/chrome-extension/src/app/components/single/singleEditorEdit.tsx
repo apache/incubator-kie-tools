@@ -21,7 +21,7 @@ import {
   createAndGetMainContainer,
   extractOpenFileExtension,
   iframeFullscreenContainer,
-  removeAllChildren
+  removeAllChildren,
 } from "../../utils";
 import { SingleEditorApp } from "./SingleEditorApp";
 import { Globals, Main } from "../common/Main";
