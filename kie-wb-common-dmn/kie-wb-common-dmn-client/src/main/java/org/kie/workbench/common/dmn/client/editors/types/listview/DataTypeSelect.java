@@ -44,8 +44,6 @@ public class DataTypeSelect {
 
     private DataTypeListItem listItem;
 
-    private List<DataType> subDataTypes;
-
     @Inject
     public DataTypeSelect(final View view,
                           final DataTypeUtils dataTypeUtils,
@@ -64,12 +62,11 @@ public class DataTypeSelect {
         return view.getElement();
     }
 
-    public void init(final DataTypeListItem gridItem,
+    public void init(final DataTypeListItem listItem,
                      final DataType dataType) {
-        this.listItem = gridItem;
+        this.listItem = listItem;
         this.dataType = dataType;
         this.view.setDataType(dataType);
-        this.subDataTypes = dataType.getSubDataTypes();
     }
 
     void refresh() {
@@ -89,6 +86,10 @@ public class DataTypeSelect {
         view.disableEditMode();
     }
 
+    String structure() {
+        return dataTypeManager.structure();
+    }
+
     List<DataType> getDefaultDataTypes() {
         return dataTypeUtils.defaultDataTypes();
     }
@@ -101,20 +102,13 @@ public class DataTypeSelect {
                 .collect(Collectors.toList());
     }
 
-    void refreshView(final String typeName) {
-        subDataTypes = dataTypeManager.from(getDataType()).makeExternalDataTypes(typeName);
-        listItem.refreshSubItems(subDataTypes, false);
+    void clearDataTypesList() {
+        listItem.cleanSubDataTypes();
         listItem.refreshConstraintComponent();
-        listItem.expand();
-        subDataTypes.forEach(listItem::highlightLevel);
     }
 
     public String getValue() {
         return view.getValue();
-    }
-
-    List<DataType> getSubDataTypes() {
-        return subDataTypes;
     }
 
     public interface View extends UberElemental<DataTypeSelect>,

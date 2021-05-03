@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
@@ -38,7 +39,9 @@ import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeUtils;
+import org.kie.workbench.common.dmn.client.editors.types.listview.tooltip.StructureTypesTooltip;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
+import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
@@ -49,9 +52,11 @@ import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerTarget;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeSelectView.IS_BUILT_IN_TYPE_ATTR;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeSelectView_CustomTitle;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeSelectView_DefaultTitle;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -92,6 +97,12 @@ public class DataTypeSelectViewTest {
     @Mock
     private DataTypeManager dataTypeManager;
 
+    @Mock
+    private DMNGraphUtils dmnGraphUtils;
+
+    @Mock
+    private StructureTypesTooltip structureTypesTooltip;
+
     @Captor
     private ArgumentCaptor<DataType> dataTypeCaptor;
 
@@ -101,8 +112,8 @@ public class DataTypeSelectViewTest {
 
     @Before
     public void setup() {
-        view = spy(new DataTypeSelectView(typeText, typeSelect, typeSelectOptGroup, typeSelectOption, null, translationService));
-        dataTypeUtils = new DataTypeUtils(dataTypeStore, dataTypeManager);
+        view = spy(new DataTypeSelectView(typeText, typeSelect, typeSelectOptGroup, typeSelectOption, null, translationService, structureTypesTooltip));
+        dataTypeUtils = new DataTypeUtils(dataTypeStore, dataTypeManager, dmnGraphUtils);
 
         view.init(presenter);
     }
@@ -245,11 +256,10 @@ public class DataTypeSelectViewTest {
     }
 
     @Test
-    public void testSetDataType() {
+    public void testSetDataTypeWhenItsNotBuiltInType() {
 
         final String expectedType = "type";
         final DataType dataType = makeDataType(expectedType);
-        final String expectedTypeText = "(type)";
 
         view.setDataType(dataType);
 
@@ -257,7 +267,60 @@ public class DataTypeSelectViewTest {
         final String actualTypeText = typeText.textContent;
 
         assertEquals(expectedType, actualType);
-        assertEquals(expectedTypeText, actualTypeText);
+        assertEquals(expectedType, actualTypeText);
+        verify(typeText).setAttribute(IS_BUILT_IN_TYPE_ATTR, false);
+    }
+
+    @Test
+    public void testSetDataTypeWhenItsBuiltInType() {
+
+        final String expectedType = "string";
+        final DataType dataType = makeDataType(expectedType);
+
+        view.setDataType(dataType);
+
+        final String actualType = view.getValue();
+        final String actualTypeText = typeText.textContent;
+
+        assertEquals(expectedType, actualType);
+        assertEquals(expectedType, actualTypeText);
+        verify(typeText).setAttribute(IS_BUILT_IN_TYPE_ATTR, true);
+    }
+
+    @Test
+    public void testOnTypeTextClickWhenItsNotBuiltInType() {
+
+        final ClickEvent event = mock(ClickEvent.class);
+        final String type = "tPerson";
+        final DataType dataType = makeDataType(type);
+        final HTMLElement element = mock(HTMLElement.class);
+
+        when(presenter.getDataType()).thenReturn(dataType);
+        doReturn(element).when(view).getElement();
+
+        view.onTypeTextClick(event);
+
+        verify(structureTypesTooltip).show(element, type);
+        verify(event).preventDefault();
+        verify(event).stopPropagation();
+    }
+
+    @Test
+    public void testOnTypeTextClickWhenItsBuiltInType() {
+
+        final ClickEvent event = mock(ClickEvent.class);
+        final String type = "string";
+        final DataType dataType = makeDataType(type);
+        final HTMLElement element = mock(HTMLElement.class);
+
+        when(presenter.getDataType()).thenReturn(dataType);
+        doReturn(element).when(view).getElement();
+
+        view.onTypeTextClick(event);
+
+        verify(structureTypesTooltip, never()).show(any(), anyString());
+        verify(event).preventDefault();
+        verify(event).stopPropagation();
     }
 
     @Test
@@ -277,7 +340,7 @@ public class DataTypeSelectViewTest {
         view.onSelectChange(event);
 
         verify(view).setPickerValue(newValue);
-        verify(presenter).refreshView(newValue);
+        verify(presenter).clearDataTypesList();
     }
 
     @Test
@@ -297,7 +360,7 @@ public class DataTypeSelectViewTest {
         view.onSelectChange(event);
 
         verify(view, never()).setPickerValue(newValue);
-        verify(presenter, never()).refreshView(newValue);
+        verify(presenter, never()).clearDataTypesList();
     }
 
     @Test
@@ -393,9 +456,8 @@ public class DataTypeSelectViewTest {
     @Test
     public void testDisableEditMode() {
 
-        final String type = "type";
-        final String expectedTypeText = "(type)";
-        final DataType dataType = makeDataType(type);
+        final String expectedTypeText = "type";
+        final DataType dataType = makeDataType(expectedTypeText);
 
         doNothing().when(view).hideSelectPicker();
         when(presenter.getDataType()).thenReturn(dataType);

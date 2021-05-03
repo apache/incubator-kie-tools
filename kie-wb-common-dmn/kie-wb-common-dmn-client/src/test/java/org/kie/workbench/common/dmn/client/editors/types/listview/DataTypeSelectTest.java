@@ -30,7 +30,6 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeUtils;
 import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
@@ -42,6 +41,8 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class DataTypeSelectTest {
 
+    private static final String STRUCTURE = "Structure";
+
     @Mock
     private DataTypeSelect.View view;
 
@@ -49,32 +50,27 @@ public class DataTypeSelectTest {
     private DataTypeUtils dataTypeUtils;
 
     @Mock
-    private DataTypeListItem listItem;
+    private DataTypeManager dataTypeManager;
 
     @Mock
-    private DataTypeManager dataTypeManager;
+    private DataTypeListItem listItem;
 
     private DataTypeSelect dataTypeSelect;
 
     @Before
     public void setup() {
         dataTypeSelect = spy(new DataTypeSelect(view, dataTypeUtils, dataTypeManager));
-        when(dataTypeManager.structure()).thenReturn("Structure");
+        when(dataTypeManager.structure()).thenReturn(STRUCTURE);
     }
 
     @Test
     public void testInit() {
 
         final DataType dataType = mock(DataType.class);
-        final List<DataType> expectedDataTypes = new ArrayList<DataType>() {{
-            add(mock(DataType.class));
-        }};
-        when(dataType.getSubDataTypes()).thenReturn(expectedDataTypes);
 
         dataTypeSelect.init(listItem, dataType);
 
         assertEquals(dataType, dataTypeSelect.getDataType());
-        assertEquals(expectedDataTypes, dataTypeSelect.getSubDataTypes());
         verify(view).setDataType(dataType);
     }
 
@@ -153,28 +149,6 @@ public class DataTypeSelectTest {
     }
 
     @Test
-    public void testRefreshView() {
-
-        final String typeName = "typeName";
-        final DataType parent = mock(DataType.class);
-        final DataType subDataType = mock(DataType.class);
-        final List<DataType> expectedDataTypes = singletonList(subDataType);
-
-        doReturn(parent).when(dataTypeSelect).getDataType();
-        when(dataTypeManager.from(parent)).thenReturn(dataTypeManager);
-        when(dataTypeManager.makeExternalDataTypes(typeName)).thenReturn(expectedDataTypes);
-
-        dataTypeSelect.init(listItem, parent);
-        dataTypeSelect.refreshView(typeName);
-
-        assertEquals(expectedDataTypes, dataTypeSelect.getSubDataTypes());
-        verify(listItem).refreshSubItems(expectedDataTypes, false);
-        verify(listItem).refreshConstraintComponent();
-        verify(listItem).expand();
-        verify(listItem).highlightLevel(subDataType);
-    }
-
-    @Test
     public void testGetValue() {
 
         final String expectedValue = "typeName";
@@ -184,5 +158,24 @@ public class DataTypeSelectTest {
         final String actualValue = dataTypeSelect.getValue();
 
         assertEquals(expectedValue, actualValue);
+    }
+
+    @Test
+    public void testClearDataTypesList() {
+
+        final DataType parent = mock(DataType.class);
+        doReturn(parent).when(dataTypeSelect).getDataType();
+        when(dataTypeManager.from(parent)).thenReturn(dataTypeManager);
+
+        dataTypeSelect.init(listItem, parent);
+        dataTypeSelect.clearDataTypesList();
+
+        verify(listItem).cleanSubDataTypes();
+        verify(listItem).refreshConstraintComponent();
+    }
+
+    @Test
+    public void testStructure() {
+        assertEquals(STRUCTURE, dataTypeSelect.structure());
     }
 }

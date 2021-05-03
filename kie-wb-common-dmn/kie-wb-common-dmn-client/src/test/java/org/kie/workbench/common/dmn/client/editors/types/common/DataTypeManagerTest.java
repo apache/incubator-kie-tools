@@ -193,20 +193,6 @@ public class DataTypeManagerTest {
     }
 
     @Test
-    public void testWithRefreshedSubDataTypes() {
-
-        final String newType = "newType";
-        final List<DataType> expectedDataTypes = asList(mock(DataType.class), mock(DataType.class));
-
-        doReturn(expectedDataTypes).when(manager).makeExternalDataTypes(newType);
-
-        final DataType dataType = manager.from(makeDataType("uuid")).withRefreshedSubDataTypes(newType).get();
-        final List<DataType> actualDataTypes = dataType.getSubDataTypes();
-
-        assertEquals(expectedDataTypes, actualDataTypes);
-    }
-
-    @Test
     public void testWithSubDataTypes() {
         final DataType topLevelDataType = mock(DataType.class);
         final DataType subLevelDataType = mock(DataType.class);
@@ -289,7 +275,6 @@ public class DataTypeManagerTest {
          * - tPerson (null)                  # ItemDefinition with 'null' indicates that it has one or more sub DataType(s).
          *   - name (Text)                   #
          *   - address (tAddress)            # Since 'tAddress' is an existing custom DataType, we need to fetch its fields
-         *     * street (Text)               # 'street' is a fetched field from 'tAddress'
          *   - employee (null)               # (again) ItemDefinition with 'null' indicates that it has one or more sub DataType(s).
          *     - company (Text)              #
          * -------------------------------------------------------------------------------------------------------------
@@ -309,19 +294,16 @@ public class DataTypeManagerTest {
 
         final DataType name = tPerson.getSubDataTypes().get(0);
         final DataType address = tPerson.getSubDataTypes().get(1);
-        final DataType street = address.getSubDataTypes().get(0);
         final DataType employee = tPerson.getSubDataTypes().get(2);
         final DataType company = employee.getSubDataTypes().get(0);
 
         verify(itemDefinitionStore).index(tPerson.getUUID(), mainItemDefinition);
         verify(itemDefinitionStore).index(address.getUUID(), existingItemDefinition);
-        verify(itemDefinitionStore).index(street.getUUID(), simpleItemDefinitionFromExistingItemDefinition);
         verify(itemDefinitionStore).index(employee.getUUID(), structureItemDefinition);
         verify(itemDefinitionStore).index(company.getUUID(), simpleItemDefinitionFromStructureItemDefinition);
 
         verify(dataTypeStore).index(tPerson.getUUID(), tPerson);
         verify(dataTypeStore).index(address.getUUID(), address);
-        verify(dataTypeStore).index(street.getUUID(), street);
         verify(dataTypeStore).index(employee.getUUID(), employee);
         verify(dataTypeStore).index(company.getUUID(), company);
 
@@ -340,20 +322,10 @@ public class DataTypeManagerTest {
         assertEquals("tAddress", address.getType());
         assertEquals("", address.getConstraint());
         assertSame(tPerson.getUUID(), address.getParentUUID());
-        assertEquals(1, address.getSubDataTypes().size());
-        assertTrue(address.hasSubDataTypes());
+        assertEquals(0, address.getSubDataTypes().size());
+        assertFalse(address.hasSubDataTypes());
         assertFalse(address.isList());
         assertFalse(address.isReadOnly());
-
-        assertFalse(street.getUUID().isEmpty());
-        assertEquals("street", street.getName());
-        assertEquals("Text", street.getType());
-        assertEquals("", street.getConstraint());
-        assertSame(address.getUUID(), street.getParentUUID());
-        assertEquals(0, street.getSubDataTypes().size());
-        assertFalse(street.hasSubDataTypes());
-        assertFalse(street.isList());
-        assertFalse(street.isReadOnly());
 
         assertFalse(employee.getUUID().isEmpty());
         assertEquals("employee", employee.getName());

@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypeChangedEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
+import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.confirmation.DataTypeConfirmation;
@@ -39,6 +40,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.Dat
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.validation.DataTypeNameFormatValidator;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
+import org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeShortcuts;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
@@ -60,7 +62,6 @@ import static org.kie.workbench.common.dmn.client.editors.types.persistence.Crea
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.BELOW;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.NESTED;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -107,6 +108,12 @@ public class DataTypeListItemTest {
     @Mock
     private EventSourceMock<DataTypeChangedEvent> dataTypeChangedEvent;
 
+    @Mock
+    private DataTypeShortcuts dataTypeShortcuts;
+
+    @Mock
+    private ScrollHelper scrollHelper;
+
     @Captor
     private ArgumentCaptor<DataTypeEditModeToggleEvent> eventArgumentCaptor;
 
@@ -122,7 +129,7 @@ public class DataTypeListItemTest {
         dataTypeManager = spy(new DataTypeManager(null, null, itemDefinitionStore, null, null, null, null, null));
         doReturn(structure).when(dataTypeManager).structure();
 
-        listItem = spy(new DataTypeListItem(view, dataTypeSelectComponent, dataTypeConstraintComponent, dataTypeListComponent, dataTypeManager, confirmation, nameFormatValidator, editModeToggleEvent, dataTypeChangedEvent));
+        listItem = spy(new DataTypeListItem(view, dataTypeSelectComponent, dataTypeConstraintComponent, dataTypeListComponent, dataTypeManager, confirmation, nameFormatValidator, editModeToggleEvent, dataTypeChangedEvent, dataTypeShortcuts, scrollHelper));
         listItem.setup();
         listItem.init(dataTypeList);
     }
@@ -300,36 +307,6 @@ public class DataTypeListItemTest {
 
         verify(view).expand();
         verify(dataTypeList).highlightLevel(dragAndDropElement);
-    }
-
-    @Test
-    public void testRefreshSubItems() {
-
-        final DataType dataType = mock(DataType.class);
-        final List<DataType> dataTypes = singletonList(dataType);
-
-        listItem.refreshSubItems(dataTypes, true);
-
-        verify(dataTypeList).refreshSubItemsFromListItem(listItem, dataTypes);
-        verify(listItem, never()).expandOrCollapseSubTypes();
-        verify(view).enableFocusMode();
-        verify(view).toggleArrow(anyBoolean());
-        verify(dataTypeList).highlightLevel(dataType);
-    }
-
-    @Test
-    public void testRefreshSubItemsNotSetFocus() {
-
-        final DataType dataType = mock(DataType.class);
-        final List<DataType> dataTypes = singletonList(dataType);
-
-        listItem.refreshSubItems(dataTypes, false);
-
-        verify(dataTypeList).refreshSubItemsFromListItem(listItem, dataTypes);
-        verify(listItem, never()).expandOrCollapseSubTypes();
-        verify(view, never()).enableFocusMode();
-        verify(view).toggleArrow(anyBoolean());
-        verify(dataTypeList).highlightLevel(dataType);
     }
 
     @Test
@@ -552,11 +529,9 @@ public class DataTypeListItemTest {
         final String uuid = "uuid";
         final DataType dataType = spy(makeDataType());
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
-        final List<DataType> subDataTypes = singletonList(makeDataType());
         final List<DataType> affectedDataTypes = emptyList();
 
         when(itemDefinitionStore.get(uuid)).thenReturn(itemDefinition);
-        when(dataTypeSelectComponent.getSubDataTypes()).thenReturn(subDataTypes);
         doReturn(uuid).when(dataType).getUUID();
         doReturn(affectedDataTypes).when(dataType).update();
 
@@ -565,7 +540,6 @@ public class DataTypeListItemTest {
         final InOrder inOrder = inOrder(dataTypeManager, dataType);
 
         inOrder.verify(dataTypeManager).from(dataType);
-        inOrder.verify(dataTypeManager).withSubDataTypes(subDataTypes);
         inOrder.verify(dataTypeManager).get();
         inOrder.verify(dataType).update();
     }
@@ -579,7 +553,7 @@ public class DataTypeListItemTest {
         doNothing().when(listItem).setupSelectComponent();
         doNothing().when(listItem).setupListComponent();
         doNothing().when(listItem).setupIndentationLevel();
-        doNothing().when(listItem).refreshSubItems(subDataTypes, true);
+        doNothing().when(listItem).refreshSubDataTypes();
         doReturn(subDataTypes).when(dataType).getSubDataTypes();
         doReturn(dataType).when(listItem).discardDataTypeProperties();
 
@@ -589,8 +563,8 @@ public class DataTypeListItemTest {
         verify(listItem).setupListComponent();
         verify(listItem).setupSelectComponent();
         verify(listItem).setupConstraintComponent();
-        verify(listItem).refreshSubItems(subDataTypes, true);
         verify(listItem).setupIndentationLevel();
+        verify(listItem).refreshSubDataTypes();
     }
 
     @Test
@@ -1411,6 +1385,45 @@ public class DataTypeListItemTest {
         final DataType dataType = mock(DataType.class);
         listItem.highlightLevel(dataType);
         verify(dataTypeList).highlightLevel(dataType);
+    }
+
+    @Test
+    public void testEnableShortcutsHighlight() {
+
+        final HTMLElement target = mock(HTMLElement.class);
+        final HTMLElement container = mock(HTMLElement.class);
+
+        doReturn(target).when(listItem).getDragAndDropElement();
+        doReturn(dataTypeList).when(listItem).getDataTypeList();
+        when(dataTypeList.getListItems()).thenReturn(container);
+
+        listItem.enableShortcutsHighlight();
+
+        verify(scrollHelper).scrollTo(target, container);
+        verify(dataTypeList).highlightLevel(target);
+        verify(dataTypeShortcuts).highlight(target);
+    }
+
+    @Test
+    public void testCleanSubDataTypes() {
+        listItem.cleanSubDataTypes();
+
+        verify(dataTypeList).refreshSubItemsFromListItem(listItem, new ArrayList<>());
+        verify(dataTypeList).refreshDragAndDropList();
+    }
+
+    @Test
+    public void testRefreshSubDataTypesWithOldSubDataTypes() {
+
+        final List<DataType> dataTypes = asList(mock(DataType.class), mock(DataType.class));
+
+        when(dataType.getSubDataTypes()).thenReturn(dataTypes);
+        doReturn(dataType).when(listItem).getDataType();
+
+        listItem.refreshSubDataTypes();
+
+        verify(dataTypeList).refreshSubItemsFromListItem(listItem, dataTypes);
+        verify(dataTypeList).refreshDragAndDropList();
     }
 
     private DataType makeDataType() {

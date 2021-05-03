@@ -29,20 +29,15 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionRecordEngine;
-import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -183,39 +178,6 @@ public class DataTypeHandlerTest {
 
         assertEquals(expectedDataTypes, actualDataTypes);
         assertEquals(expectedDataTypes, forEachSubDataTypesByType);
-    }
-
-    @Test
-    public void testRefreshSubDataTypes() {
-
-        final DataTypeManager dataTypeManagerWithDataType = mock(DataTypeManager.class);
-        final DataType dataType = makeDataType();
-        final String type = "type";
-
-        doNothing().when(handler).refreshSubDataTypes(any(), Mockito.<String>any());
-        when(dataTypeManager.withDataType(dataType)).thenReturn(dataTypeManagerWithDataType);
-        when(dataTypeManagerWithDataType.getTypeName()).thenReturn(type);
-
-        handler.refreshSubDataTypes(dataType);
-
-        verify(handler).refreshSubDataTypes(dataType, type);
-    }
-
-    @Test
-    public void testRefreshSubDataTypesWithNewType() {
-
-        final DataType dataType = makeDataType();
-        final String newType = "newType";
-
-        when(dataTypeManager.from(any(DataType.class))).thenReturn(dataTypeManager);
-        when(dataTypeManager.withRefreshedSubDataTypes(Mockito.<String>any())).thenReturn(dataTypeManager);
-
-        handler.refreshSubDataTypes(dataType, newType);
-
-        final InOrder inOrder = Mockito.inOrder(dataTypeManager);
-
-        inOrder.verify(dataTypeManager).from(dataType);
-        inOrder.verify(dataTypeManager).withRefreshedSubDataTypes(newType);
     }
 
     @Test

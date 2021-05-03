@@ -28,13 +28,11 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionRecordEngine;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -181,17 +179,9 @@ public class DataTypeDestroyHandlerTest {
         doReturn(dataTypeParent3).when(handler).parent(dataType3);
         doReturn(Optional.of(topLevelDataType)).when(handler).getClosestTopLevelDataType(dataType);
         doReturn(false).when(handler).isStructure(topLevelDataType);
-        doNothing().when(handler).refreshSubDataTypes(any(), Mockito.<String>any());
-        doNothing().when(handler).refreshSubDataTypes(any());
 
-        final List<DataType> expectedDependentDataTypes = asList(topLevelDataType, dataType3, dataTypeParent0, dataTypeParent1, dataTypeParent2);
+        final List<DataType> expectedDependentDataTypes = asList(topLevelDataType, dataType3, dataType0, dataType1, dataType2);
         final List<DataType> actualDependentDataTypes = handler.handleNestedDataTypes(dataType);
-
-        verify(handler).refreshSubDataTypes(topLevelDataType, topLevelName);
-        verify(handler).refreshSubDataTypes(dataTypeParent0);
-        verify(handler).refreshSubDataTypes(dataType3);
-        verify(handler).refreshSubDataTypes(dataTypeParent1);
-        verify(handler).refreshSubDataTypes(dataTypeParent2);
 
         assertEquals(expectedDependentDataTypes, actualDependentDataTypes);
     }

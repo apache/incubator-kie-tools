@@ -198,10 +198,6 @@ public class DataTypeManager {
         return withType(type);
     }
 
-    public DataTypeManager withRefreshedSubDataTypes(final String newType) {
-        return withSubDataTypes(makeExternalDataTypes(newType));
-    }
-
     public DataTypeManager withSubDataTypes(final List<DataType> dataTypes) {
         if (!isReadOnly(dataType)) {
             dataType.getSubDataTypes().forEach(dataType -> {
@@ -272,7 +268,7 @@ public class DataTypeManager {
     }
 
     public DataTypeManager withItemDefinitionSubDataTypes() {
-        return withSubDataTypes(createSubDataTypesFromItemDefinition());
+        return withSubDataTypes(createSubDataTypes(itemDefinition.getItemComponent()));
     }
 
     public DataTypeManager withIndexedItemDefinition() {
@@ -300,24 +296,6 @@ public class DataTypeManager {
     private ItemDefinition getItemDefinition(final DataType dataType) {
         final Optional<ItemDefinition> itemDefinition = Optional.ofNullable(itemDefinitionStore.get(dataType.getUUID()));
         return itemDefinition.orElseThrow(() -> new UnsupportedOperationException("The data type must have an indexed ItemDefinition."));
-    }
-
-    private List<DataType> createSubDataTypesFromItemDefinition() {
-
-        final List<ItemDefinition> itemComponent = itemDefinition.getItemComponent();
-        final String type = itemDefinitionType(itemDefinition);
-        final Optional<ItemDefinition> existingItemDefinition = itemDefinitionUtils.findByName(type);
-        final boolean existingDataType = existingItemDefinition.isPresent();
-
-        if (isTypeAlreadyRepresented(type)) {
-            return new ArrayList<>();
-        }
-
-        if (itemComponent.isEmpty()) {
-            return createSubDataTypes(existingDataType ? existingItemDefinition.get().getItemComponent() : new ArrayList<>());
-        } else {
-            return createSubDataTypes(itemComponent);
-        }
     }
 
     public List<DataType> makeExternalDataTypes(final String typeName) {

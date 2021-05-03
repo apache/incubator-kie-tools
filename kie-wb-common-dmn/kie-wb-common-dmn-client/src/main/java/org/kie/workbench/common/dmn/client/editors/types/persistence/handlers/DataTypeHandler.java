@@ -77,18 +77,6 @@ public class DataTypeHandler {
                 .collect();
     }
 
-    void refreshSubDataTypes(final DataType dataType) {
-        final String type = dataTypeManager.withDataType(dataType).getTypeName();
-        refreshSubDataTypes(dataType, type);
-    }
-
-    void refreshSubDataTypes(final DataType dataType,
-                             final String newType) {
-        dataTypeManager
-                .from(dataType)
-                .withRefreshedSubDataTypes(newType);
-    }
-
     DataType parent(final DataType dataType) {
         return dataTypeStore.get(dataType.getParentUUID());
     }

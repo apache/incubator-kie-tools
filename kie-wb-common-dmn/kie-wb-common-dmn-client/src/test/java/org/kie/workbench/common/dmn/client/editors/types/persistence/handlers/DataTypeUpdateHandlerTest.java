@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
-import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
@@ -73,36 +72,29 @@ public class DataTypeUpdateHandlerTest {
     }
 
     @Test
-    public void testUpdateWhenDataTypeIsDefault() {
+    public void testUpdateWhenDataTypeIsStructure() {
 
         final DataType dataType = mock(DataType.class);
 
-        when(dataType.getType()).thenReturn(BuiltInType.STRING.getName());
+        doReturn(true).when(handler).isStructure(dataType);
+        when(dataTypeManager.from(dataType)).thenReturn(dataTypeManager);
 
         handler.update(dataType);
 
-        verify(dataTypeManager, never()).from(any(DataType.class));
-        verify(dataTypeManager, never()).withRefreshedSubDataTypes(Mockito.<String>any());
+        verify(dataTypeManager, never()).withSubDataTypes(emptyList());
     }
 
     @Test
-    public void testUpdateWhenDataTypeIsNotDefault() {
+    public void testUpdateWhenDataTypeIsNotStructure() {
 
         final DataType dataType = mock(DataType.class);
-        final String name = "city";
-        final String type = "tCity";
 
-        when(dataType.getName()).thenReturn(name);
-        when(dataType.getType()).thenReturn(type);
-        when(dataTypeManager.from(any(DataType.class))).thenReturn(dataTypeManager);
-        when(dataTypeManager.withRefreshedSubDataTypes(Mockito.<String>any())).thenReturn(dataTypeManager);
+        doReturn(false).when(handler).isStructure(dataType);
+        when(dataTypeManager.from(dataType)).thenReturn(dataTypeManager);
 
         handler.update(dataType);
 
-        final InOrder inOrder = Mockito.inOrder(dataTypeManager);
-
-        inOrder.verify(dataTypeManager).from(dataType);
-        inOrder.verify(dataTypeManager).withRefreshedSubDataTypes(type);
+        verify(dataTypeManager).withSubDataTypes(emptyList());
     }
 
     @Test
@@ -155,12 +147,10 @@ public class DataTypeUpdateHandlerTest {
         doReturn(Optional.of(topLevelDataType)).when(handler).getClosestTopLevelDataType(dataType);
         doReturn(dependentDataTypes).when(handler).handleTopLevelDataTypeUpdate(topLevelDataType, name);
         doReturn(true).when(handler).isStructure(dataType);
-        doNothing().when(handler).refreshSubDataTypes(any(), Mockito.<String>any());
 
         final List<DataType> expectedDataTypes = asList(dataType0, dataType1, dataType2, topLevelDataType);
         final List<DataType> actualDataTypes = handler.handleNestedDataTypeFieldUpdate(dataType);
 
-        verify(handler).refreshSubDataTypes(topLevelDataType, name);
         assertEquals(expectedDataTypes, actualDataTypes);
     }
 
@@ -183,14 +173,10 @@ public class DataTypeUpdateHandlerTest {
         when(dataTypeStore.getTopLevelDataTypes()).thenReturn(asList(dataType0, dataType1, dataType2));
         doReturn(Optional.of(topLevelDataType)).when(handler).getClosestTopLevelDataType(dataType);
         doReturn(false).when(handler).isStructure(dataType);
-        doNothing().when(handler).refreshSubDataTypes(any(), Mockito.<String>any());
 
         final List<DataType> expectedDataTypes = asList(dataType1, dataType2, topLevelDataType);
         final List<DataType> actualDataTypes = handler.handleNestedDataTypeFieldUpdate(dataType);
 
-        verify(handler).refreshSubDataTypes(topLevelDataType, name);
-        verify(handler).refreshSubDataTypes(dataType1, type);
-        verify(handler).refreshSubDataTypes(dataType2, type);
         assertEquals(expectedDataTypes, actualDataTypes);
     }
 
@@ -205,7 +191,6 @@ public class DataTypeUpdateHandlerTest {
         final List<DataType> expectedDependentDataTypes = emptyList();
         final List<DataType> actualDependentDataTypes = handler.updateAllChildrenWithTheNewTypeName(topLevelDataType, oldItemDefinitionName);
 
-        verify(handler, never()).refreshSubDataTypes(any(), Mockito.<String>any());
         verify(handler, never()).refreshSubDataType(any(), Mockito.<String>any());
 
         assertEquals(expectedDependentDataTypes, actualDependentDataTypes);
@@ -229,13 +214,11 @@ public class DataTypeUpdateHandlerTest {
         when(dataType2.getType()).thenReturn(oldItemDefinitionName);
         when(dataType3.getType()).thenReturn(oldItemDefinitionName);
         when(topLevelDataType.isTopLevel()).thenReturn(true);
-        doNothing().when(handler).refreshSubDataTypes(any(), Mockito.<String>any());
         doNothing().when(handler).refreshSubDataType(any(), Mockito.<String>any());
 
         final List<DataType> expectedDependentDataTypes = asList(dataType0, dataType1, dataType2, dataType3, topLevelDataType);
         final List<DataType> actualDependentDataTypes = handler.updateAllChildrenWithTheNewTypeName(topLevelDataType, oldItemDefinitionName);
 
-        verify(handler).refreshSubDataTypes(topLevelDataType, topLevelName);
         verify(handler).refreshSubDataType(dataType0, topLevelName);
         verify(handler).refreshSubDataType(dataType1, topLevelName);
         verify(handler).refreshSubDataType(dataType2, topLevelName);
@@ -266,6 +249,5 @@ public class DataTypeUpdateHandlerTest {
         inOrder.verify(dataTypeManager).from(dataType);
         inOrder.verify(dataTypeManager).withType(newType);
         inOrder.verify(recordEngine).doUpdate(dataType, itemDefinition);
-        inOrder.verify(handler).refreshSubDataTypes(dataType, type);
     }
 }

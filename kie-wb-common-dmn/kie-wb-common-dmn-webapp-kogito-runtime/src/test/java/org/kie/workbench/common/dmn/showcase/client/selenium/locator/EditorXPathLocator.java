@@ -61,6 +61,10 @@ public class EditorXPathLocator implements XPathLocator {
         return new EditorXPathLocator("//div[contains(text(), 'The diagram had no layout information')]//button");
     }
 
+    public static EditorXPathLocator dataTypesTab() {
+        return new EditorXPathLocator("//li[@data-ouia-component-type='editor-nav-tab'][@data-ouia-component-id='Data Types']/a");
+    }
+
     @Override
     public String getXPathLocator() {
         return xPathLocator;

@@ -36,16 +36,19 @@ import org.kie.workbench.common.dmn.client.editors.expressions.util.NameUtils;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypeChangedEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
+import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.confirmation.DataTypeConfirmation;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraint;
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.validation.DataTypeNameFormatValidator;
+import org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeShortcuts;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.client.views.pfly.selectpicker.ElementHelper;
 import org.uberfire.mvp.Command;
 
+import static java.util.Collections.emptyList;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BOOLEAN;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.CONTEXT;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.ABOVE;
@@ -94,6 +97,10 @@ public class DataTypeListItem {
 
     private HTMLElement dragAndDropElement;
 
+    private final DataTypeShortcuts dataTypeShortcuts;
+
+    private final ScrollHelper scrollHelper;
+
     @Inject
     public DataTypeListItem(final View view,
                             final DataTypeSelect dataTypeSelectComponent,
@@ -103,7 +110,9 @@ public class DataTypeListItem {
                             final DataTypeConfirmation confirmation,
                             final DataTypeNameFormatValidator nameFormatValidator,
                             final Event<DataTypeEditModeToggleEvent> editModeToggleEvent,
-                            final Event<DataTypeChangedEvent> dataTypeChangedEvent) {
+                            final Event<DataTypeChangedEvent> dataTypeChangedEvent,
+                            final DataTypeShortcuts dataTypeShortcuts,
+                            final ScrollHelper scrollHelper) {
         this.view = view;
         this.dataTypeSelectComponent = dataTypeSelectComponent;
         this.dataTypeConstraintComponent = dataTypeConstraintComponent;
@@ -113,6 +122,8 @@ public class DataTypeListItem {
         this.nameFormatValidator = nameFormatValidator;
         this.editModeToggleEvent = editModeToggleEvent;
         this.dataTypeChangedEvent = dataTypeChangedEvent;
+        this.dataTypeShortcuts = dataTypeShortcuts;
+        this.scrollHelper = scrollHelper;
         this.dataTypeListComponent.setOnValueChanged(value -> refreshConstraintComponent());
     }
 
@@ -183,6 +194,20 @@ public class DataTypeListItem {
         hideTooltips();
     }
 
+    void cleanSubDataTypes() {
+        refreshDataTypeList(emptyList());
+    }
+
+    void refreshSubDataTypes() {
+        refreshDataTypeList(getDataType().getSubDataTypes());
+        view.enableFocusMode();
+    }
+
+    private void refreshDataTypeList(final List<DataType> subDataTypes) {
+        dataTypeList.refreshSubItemsFromListItem(this, subDataTypes);
+        dataTypeList.refreshDragAndDropList();
+    }
+
     public DataType getDataType() {
         return dataType;
     }
@@ -219,20 +244,6 @@ public class DataTypeListItem {
     public void collapse() {
         view.collapse();
         dataTypeList.highlightLevel(getDragAndDropElement());
-    }
-
-    void refreshSubItems(final List<DataType> dataTypes,
-                         final boolean enableFocusMode) {
-
-        dataTypeList.refreshSubItemsFromListItem(this, dataTypes);
-
-        dataTypeList.refreshDragAndDropList();
-
-        if (enableFocusMode) {
-            view.enableFocusMode();
-        }
-        view.toggleArrow(!dataTypes.isEmpty());
-        dataTypes.forEach(dataTypeList::highlightLevel);
     }
 
     public void enableEditMode() {
@@ -326,7 +337,6 @@ public class DataTypeListItem {
     List<DataType> persist(final DataType dataType) {
         return dataTypeManager
                 .from(dataType)
-                .withSubDataTypes(dataTypeSelectComponent.getSubDataTypes())
                 .get()
                 .update();
     }
@@ -341,7 +351,7 @@ public class DataTypeListItem {
         setupSelectComponent();
         setupConstraintComponent();
         setupIndentationLevel();
-        refreshSubItems(oldDataType.getSubDataTypes(), true);
+        refreshSubDataTypes();
     }
 
     DataType discardDataTypeProperties() {
@@ -676,6 +686,14 @@ public class DataTypeListItem {
 
     public void highlightLevel(final DataType dataType) {
         dataTypeList.highlightLevel(dataType);
+    }
+
+    public void enableShortcutsHighlight() {
+        final HTMLElement target = getDragAndDropElement();
+        final HTMLElement container = getDataTypeList().getListItems();
+        scrollHelper.scrollTo(target, container);
+        dataTypeList.highlightLevel(target);
+        dataTypeShortcuts.highlight(target);
     }
 
     void addDataTypeRow() {

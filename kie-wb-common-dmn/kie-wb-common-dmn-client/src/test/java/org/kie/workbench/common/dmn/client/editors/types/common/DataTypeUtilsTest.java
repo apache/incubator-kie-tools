@@ -18,25 +18,31 @@ package org.kie.workbench.common.dmn.client.editors.types.common;
 
 import java.util.List;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.model.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.Import;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionRecordEngine;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.DataTypeNameValidator;
+import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class DataTypeUtilsTest {
 
     @Mock
@@ -63,6 +69,15 @@ public class DataTypeUtilsTest {
     @Mock
     private DataTypeManagerStackStore typeStack;
 
+    @Mock
+    private DMNGraphUtils dmnGraphUtils;
+
+    private Definitions definitions = makeModelDefinitions();
+
+    private final String STRUCTURE = "STRUCTURE";
+
+    private final String IMPORT_NAME = "MYMODEL";
+
     private DataTypeManager dataTypeManager;
 
     private DataTypeUtils utils;
@@ -70,7 +85,10 @@ public class DataTypeUtilsTest {
     @Before
     public void setup() {
         dataTypeManager = spy(new DataTypeManager(translationService, recordEngine, itemDefinitionStore, dataTypeStore, itemDefinitionUtils, dataTypeManagers, dataTypeNameValidator, typeStack));
-        utils = spy(new DataTypeUtils(dataTypeStore, dataTypeManager));
+        utils = spy(new DataTypeUtils(dataTypeStore, dataTypeManager, dmnGraphUtils));
+
+        when(dataTypeManager.structure()).thenReturn(STRUCTURE);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
     }
 
     @Test
@@ -133,5 +151,76 @@ public class DataTypeUtilsTest {
         final DataType topLevelParent = utils.getTopLevelParent(dataType3);
 
         assertEquals(dataType1, topLevelParent);
+    }
+
+    @Test
+    public void testGetDataTypeKindWhenItsBuiltIn() {
+
+        when(dataTypeStore.getTopLevelDataTypes()).thenReturn(emptyList());
+
+        final DataTypeKind expectedKind = DataTypeKind.BUILT_IN;
+        final DataTypeKind actualKind = utils.getDataTypeKind("number");
+
+        assertEquals(expectedKind, actualKind);
+    }
+
+    @Test
+    public void testGetDataTypeKindWhenItsCustom() {
+
+        final DataType dataType = mock(DataType.class);
+
+        when(dataTypeStore.getTopLevelDataTypes()).thenReturn(singletonList(dataType));
+        when(dataType.getName()).thenReturn("tUUID");
+        when(dataType.getType()).thenReturn("string");
+
+        final DataTypeKind expectedKind = DataTypeKind.CUSTOM;
+        final DataTypeKind actualKind = utils.getDataTypeKind("tUUID");
+
+        assertEquals(expectedKind, actualKind);
+    }
+
+    @Test
+    public void testGetDataTypeKindWhenItsStructure() {
+
+        final DataType dataType = mock(DataType.class);
+
+        when(dataTypeStore.getTopLevelDataTypes()).thenReturn(singletonList(dataType));
+        when(dataType.getName()).thenReturn("tPerson");
+        when(dataType.getType()).thenReturn(STRUCTURE);
+
+        final DataTypeKind expectedKind = DataTypeKind.STRUCTURE;
+        final DataTypeKind actualKind = utils.getDataTypeKind("tPerson");
+
+        assertEquals(expectedKind, actualKind);
+    }
+
+    @Test
+    public void testGetDataTypeKindWhenItsIncluded() {
+
+        final DataType dataType = mock(DataType.class);
+        final String typeName = IMPORT_NAME + "tPerson";
+
+        when(dataType.getName()).thenReturn(typeName);
+        when(dataType.getType()).thenReturn(STRUCTURE);
+        when(dataTypeStore.getTopLevelDataTypes()).thenReturn(singletonList(dataType));
+
+        final DataTypeKind expectedKind = DataTypeKind.INCLUDED;
+        final DataTypeKind actualKind = utils.getDataTypeKind(typeName);
+
+        assertEquals(expectedKind, actualKind);
+    }
+
+    private Definitions makeModelDefinitions() {
+        final Definitions definitions = mock(Definitions.class);
+        final List<Import> imports = singletonList(makeImport());
+        when(definitions.getImport()).thenReturn(imports);
+        return definitions;
+    }
+
+    private Import makeImport() {
+        final Import anImport = mock(Import.class);
+        final Name myModelName = new Name(IMPORT_NAME);
+        when(anImport.getName()).thenReturn(myModelName);
+        return anImport;
     }
 }

@@ -20,6 +20,31 @@
   .dropdown-menu {
     font-style: normal;
   }
+
+  [data-field="type-text"] {
+    border-radius: 20px;
+    background-color: #E9F0FA;
+    padding: 0 9px 2px;
+    margin-left: 10px;
+    color: #3E557B;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+
+  [data-field="type-text"][data-is-built-in-type="true"] {
+    background-color: transparent;
+    cursor: default;
+    border-color: #DDDDDD;
+    color: #444444;
+  }
+
+  [data-field="type-text"]:hover {
+    border-color: #afbcd2;
+  }
+
+  [data-field="type-text"][data-is-built-in-type="true"]:hover {
+    border-color: #cdcdcd;
+  }
 }
 
 .dropdown-menu.open {

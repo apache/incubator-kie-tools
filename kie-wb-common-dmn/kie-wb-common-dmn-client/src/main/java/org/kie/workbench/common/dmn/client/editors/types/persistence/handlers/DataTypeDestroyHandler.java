@@ -84,30 +84,15 @@ public class DataTypeDestroyHandler extends DataTypeHandler {
         final List<DataType> affectedDataTypes = new ArrayList<>();
 
         getClosestTopLevelDataType(dataType).ifPresent(topLevel -> {
-
             final String type = topLevel.getName();
-
             affectedDataTypes.add(topLevel);
-            refreshSubDataTypes(topLevel, type);
-
             if (!isStructure(topLevel)) {
-                forEachSubDataTypesByTypeOrName(topLevel.getType(), subDataType -> {
-                    affectedDataTypes.add(refreshSubDataType(subDataType));
-                });
+                forEachSubDataTypesByTypeOrName(topLevel.getType(), affectedDataTypes::add);
             }
-
-            forEachSubDataTypesByType(type, subDataType -> {
-                affectedDataTypes.add(refreshSubDataType(subDataType));
-            });
+            forEachSubDataTypesByType(type, affectedDataTypes::add);
         });
 
         return affectedDataTypes;
-    }
-
-    private DataType refreshSubDataType(final DataType subDataType) {
-        final DataType refreshed = subDataType.isTopLevel() ? subDataType : parent(subDataType);
-        refreshSubDataTypes(refreshed);
-        return refreshed;
     }
 
     private void unIndex(final DataType dataType) {
