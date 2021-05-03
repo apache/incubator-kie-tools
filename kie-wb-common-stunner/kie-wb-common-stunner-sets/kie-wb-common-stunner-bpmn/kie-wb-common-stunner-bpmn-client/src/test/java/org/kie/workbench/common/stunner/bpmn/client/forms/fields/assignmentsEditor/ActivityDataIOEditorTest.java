@@ -24,7 +24,6 @@ import java.util.Set;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentData;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.mockito.ArgumentCaptor;
@@ -35,6 +34,7 @@ import org.mockito.Spy;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -59,12 +59,7 @@ public class ActivityDataIOEditorTest {
 
     @Spy
     @InjectMocks
-    private ActivityDataIOEditor ioEditor = new ActivityDataIOEditor() {
-        @Override
-        protected String marshallToJson(AssignmentData data) {
-            return "{}";
-        }
-    };
+    private ActivityDataIOEditor ioEditor;
 
     @Test
     public void testInitIoEditor() {
@@ -97,7 +92,7 @@ public class ActivityDataIOEditorTest {
         verify(ioEditorView).getInputAssignmentData();
         verify(ioEditorView).getOutputAssignmentData();
         verify(ioEditorView).hideView();
-        verify((ioEditor.callback)).getData(anyString());
+        verify((ioEditor.callback)).getData(any());
     }
 
     @Test
@@ -113,7 +108,7 @@ public class ActivityDataIOEditorTest {
         ioEditor.handleCancelClick();
         verify(ioEditorView).hideView();
         verify(mockCallback,
-               never()).getData(anyString());
+               never()).getData(any());
     }
 
     @Test

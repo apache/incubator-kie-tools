@@ -239,11 +239,6 @@
 
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>errai-marshalling</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
       <artifactId>uberfire-commons-editor-client</artifactId>
     </dependency>
 

@@ -66,12 +66,6 @@
 
     <!-- Errai -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>errai-marshalling</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
       <scope>provided</scope>

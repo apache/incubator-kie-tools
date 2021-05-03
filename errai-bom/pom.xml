@@ -275,12 +275,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>errai-marshalling</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
       <!-- 3rd-party dependencies -->
       <dependency>
         <groupId>com.google.code.gson</groupId>

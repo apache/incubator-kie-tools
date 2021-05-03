@@ -19,8 +19,6 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.8.2/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name="org.jboss.errai.marshalling.ErraiMarshalling" />
-
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireAPI"/>
   <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
