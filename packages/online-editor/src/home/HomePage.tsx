@@ -560,6 +560,7 @@ export function HomePage(props: Props) {
                     id="url-text-input"
                     name="urlText"
                     aria-describedby="url-text-input-helper"
+                    data-ouia-component-id="url-input"
                   />
                 </FormGroup>
               </Form>
@@ -570,6 +571,7 @@ export function HomePage(props: Props) {
                 onClick={openFileFromUrl}
                 isDisabled={!urlCanBeOpen}
                 data-testid="open-url-button"
+                ouiaId="open-from-source-button"
               >
                 {i18n.homePage.openUrl.openFromSource}
               </Button>
