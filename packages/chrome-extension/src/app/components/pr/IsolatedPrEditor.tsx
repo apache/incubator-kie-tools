@@ -184,8 +184,8 @@ export function IsolatedPrEditor(props: {
           readonly={true}
           keepRenderedEditorInTextMode={false}
           onSetContentError={() => {
-            /**/
-          }} //FIXME: Tiago
+            /* No error handling here as this is a read-only editor */
+          }}
         />,
         iframeContainer(
           globals.id,
