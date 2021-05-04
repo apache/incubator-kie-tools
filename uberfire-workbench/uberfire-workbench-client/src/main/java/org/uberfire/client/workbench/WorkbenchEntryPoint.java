@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import elemental2.dom.DomGlobal;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -65,7 +66,10 @@ public class WorkbenchEntryPoint {
 
         setupRootContainer();
 
-        Window.addResizeHandler(event -> resizeTo(event.getWidth(), event.getHeight()));
+        DomGlobal.window.addEventListener("resize", evt -> {
+            resizeTo(DomGlobal.window.innerWidth, DomGlobal.window.innerHeight);
+        });
+
         Scheduler.get().scheduleDeferred(this::resize);
 
         JSFunctions.notifyJSReady();
