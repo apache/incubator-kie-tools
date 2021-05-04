@@ -208,6 +208,7 @@ export class EnvelopeBusMessageManager<
     if (!response.error) {
       callback.resolve(response.data);
     } else {
+      console.error(response.error);
       callback.reject(response.error);
     }
   }

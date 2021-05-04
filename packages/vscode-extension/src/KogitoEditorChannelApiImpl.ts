@@ -56,6 +56,11 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   }
 
   public async receive_contentRequest() {
+
+    if (!this.initialBackup && this.editor.document.uri.scheme === "untitled") {
+      return { content: "", path: "" };
+    }
+
     return vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri).then((contentArray) => {
       this.initialBackup = undefined;
       return { content: this.decoder.decode(contentArray), path: this.editor.document.relativePath };

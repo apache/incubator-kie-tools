@@ -53,7 +53,10 @@ export class EnvelopeServer<
 
   public startInitPolling() {
     this.initPolling = setInterval(() => {
-      this.pollInit(this).then(() => this.stopInitPolling());
+      this.pollInit(this).then(() => this.stopInitPolling()).catch(e => {
+        console.error("Envelope init polling failed", e);
+        throw e;
+      });
     }, EnvelopeServer.INIT_POLLING_INTERVAL_IN_MS);
 
     this.initPollingTimeout = setTimeout(() => {
