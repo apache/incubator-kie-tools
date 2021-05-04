@@ -49,14 +49,11 @@ public class IdUtils {
 
         final String[] parts = prefixedId.split(SEPARATOR_DELIMITER);
 
-        switch (parts.length) {
-            case 1:
-                return parts[0];
-            case 2:
-                return parts[1];
-            default:
-                return "";
+        if (parts.length > 0) {
+            return parts[parts.length - 1];
         }
+
+        return "";
     }
 
     public static String getComposedId(final String... parts) {

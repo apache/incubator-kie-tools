@@ -47,6 +47,7 @@ public class IdUtilsTest {
 
     @Test
     public void testGetRawId() {
+        assertEquals("2222", getRawId("0000#1111#2222"));
         assertEquals("2222", getRawId("1111#2222"));
         assertEquals("2222", getRawId("#2222"));
         assertEquals("2222", getRawId("2222"));

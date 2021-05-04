@@ -2315,6 +2315,31 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
         assertDecisionServiceParametersOrder(actual, zInputHref, xInputHref, yInputHref);
     }
 
+    @Test
+    public void testKogito_4916() throws Exception {
+        final String expected = loadResource("call-center.xml");
+        setContent(expected);
+
+        final String actual = getContent();
+        assertThat(actual).isNotBlank();
+
+        // inputs
+        decisionNavigator.assertItemIsPresent(DecisionNavigatorXPathLocator.node("call"));
+        decisionNavigator.assertItemIsPresent(DecisionNavigatorXPathLocator.node("employees"));
+        decisionNavigator.assertItemIsPresent(DecisionNavigatorXPathLocator.node("incoming call"));
+        decisionNavigator.assertItemIsPresent(DecisionNavigatorXPathLocator.node("office"));
+
+        // decisions
+        decisionNavigator.assertItemIsPresent(DecisionNavigatorXPathLocator.node("Accept Call"));
+        decisionNavigator.assertItemIsPresent(DecisionNavigatorXPathLocator.node("Banned Phone Numbers"));
+        decisionNavigator.assertItemIsPresent(DecisionNavigatorXPathLocator.node("Call Can Be Handled"));
+        decisionNavigator.assertItemIsPresent(DecisionNavigatorXPathLocator.node("Call Purpose Accepted"));
+        decisionNavigator.assertItemIsPresent(DecisionNavigatorXPathLocator.node("Is Banned"));
+
+        // decision service
+        decisionNavigator.assertItemIsPresent(DecisionNavigatorXPathLocator.node("Can Handle Call"));
+    }
+
     private void assertDecisionServiceParametersOrder(final String dmnModelXml, final String... inputHrefs) {
         XmlAssert.assertThat(dmnModelXml)
                 .withNamespaceContext(NAMESPACES)
