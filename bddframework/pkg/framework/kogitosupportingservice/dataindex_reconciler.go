@@ -63,7 +63,6 @@ func (d *dataIndexSupportingServiceResource) Reconcile() (reconcileAfter time.Du
 		OnDeploymentCreate: d.dataIndexOnDeploymentCreate,
 		KafkaTopics:        dataIndexKafkaTopics,
 		Request:            controller1.Request{NamespacedName: types.NamespacedName{Name: d.instance.GetName(), Namespace: d.instance.GetNamespace()}},
-		HealthCheckProbe:   kogitoservice.QuarkusHealthCheckProbe,
 	}
 	return kogitoservice.NewServiceDeployer(d.Context, definition, d.instance, d.infraHandler).Deploy()
 }

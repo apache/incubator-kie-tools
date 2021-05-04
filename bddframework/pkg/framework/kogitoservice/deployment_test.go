@@ -28,7 +28,7 @@ var defaultKogitoImageFullTag = infrastructure.GetKogitoImageVersion() + ":lates
 
 func Test_createRequiredDeployment_CheckQuarkusProbe(t *testing.T) {
 	dataIndex := test.CreateFakeDataIndex(t.Name())
-	serviceDef := ServiceDefinition{HealthCheckProbe: QuarkusHealthCheckProbe}
+	serviceDef := ServiceDefinition{}
 	cli := test.NewFakeClientBuilder().Build()
 	context := operator.Context{
 		Client: cli,
@@ -59,11 +59,11 @@ func Test_createRequiredDeployment_CheckDefaultProbe(t *testing.T) {
 	deployment := deploymentHandler.CreateRequiredDeployment(dataIndex, defaultKogitoImageFullTag, serviceDef)
 	assert.NotNil(t, deployment)
 	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].ReadinessProbe)
-	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].ReadinessProbe.TCPSocket)
 	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].LivenessProbe)
-	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].LivenessProbe.TCPSocket)
-	assert.Nil(t, deployment.Spec.Template.Spec.Containers[0].LivenessProbe.HTTPGet)
-	assert.Nil(t, deployment.Spec.Template.Spec.Containers[0].ReadinessProbe.HTTPGet)
+	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].LivenessProbe.HTTPGet)
+	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].ReadinessProbe.HTTPGet)
+	assert.Nil(t, deployment.Spec.Template.Spec.Containers[0].ReadinessProbe.TCPSocket)
+	assert.Nil(t, deployment.Spec.Template.Spec.Containers[0].LivenessProbe.TCPSocket)
 }
 
 func Test_createRequiredDeployment_CheckNilEnvs(t *testing.T) {

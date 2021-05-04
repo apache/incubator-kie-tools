@@ -58,8 +58,6 @@ type ServiceDefinition struct {
 	SingleReplica bool
 	// KafkaTopics is a collection of Kafka Topics to be created within the service
 	KafkaTopics []string
-	// HealthCheckProbe is the probe that needs to be configured in the service. Defaults to TCPHealthCheckProbe
-	HealthCheckProbe HealthCheckProbeType
 	// CustomService indicates that the service can be built within the cluster
 	// A custom service means that could be built by a third party, not being provided by the Kogito Team Services catalog (such as Data Index, Management Console and etc.).
 	CustomService bool

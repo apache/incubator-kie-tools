@@ -53,7 +53,6 @@ func (t *trustyAISupportingServiceResource) Reconcile() (reconcileAfter time.Dur
 		DefaultImageName: DefaultTrustyImageName,
 		Request:          controller.Request{NamespacedName: types.NamespacedName{Name: t.instance.GetName(), Namespace: t.instance.GetNamespace()}},
 		KafkaTopics:      trustyAiKafkaTopics,
-		HealthCheckProbe: kogitoservice.QuarkusHealthCheckProbe,
 	}
 	return kogitoservice.NewServiceDeployer(t.Context, definition, t.instance, t.infraHandler).Deploy()
 }

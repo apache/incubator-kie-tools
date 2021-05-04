@@ -54,7 +54,6 @@ func (j *jobsServiceSupportingServiceResource) Reconcile() (reconcileAfter time.
 		DefaultImageName: DefaultJobsServiceImageName,
 		Request:          controller.Request{NamespacedName: types.NamespacedName{Name: j.instance.GetName(), Namespace: j.instance.GetNamespace()}},
 		SingleReplica:    true,
-		HealthCheckProbe: kogitoservice.QuarkusHealthCheckProbe,
 		KafkaTopics:      jobsServicekafkaTopics,
 	}
 	return kogitoservice.NewServiceDeployer(j.Context, definition, j.instance, j.infraHandler).Deploy()

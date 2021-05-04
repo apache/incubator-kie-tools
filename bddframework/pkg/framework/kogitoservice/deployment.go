@@ -56,7 +56,7 @@ func (d *deploymentHandler) CreateRequiredDeployment(service api.KogitoService, 
 		d.Log.Warn("Service can't scale vertically, only one replica is allowed.", "service", service.GetName())
 	}
 	replicas := service.GetSpec().GetReplicas()
-	probes := getProbeForKogitoService(definition, service)
+	probes := getProbeForKogitoService(service)
 	labels := service.GetSpec().GetDeploymentLabels()
 	if labels == nil {
 		labels = make(map[string]string)

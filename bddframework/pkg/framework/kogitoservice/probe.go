@@ -21,24 +21,30 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-// HealthCheckProbeType defines the supported probes for the ServiceDefinition
-type HealthCheckProbeType string
+// ProbeType defines the types of probes supported by K8s
+type ProbeType string
 
 const (
-	// QuarkusHealthCheckProbe probe implemented with Quarkus Microprofile Health. See: https://quarkus.io/guides/microprofile-health.
-	// the operator will set the probe to the default path /health/live and /health/ready for liveness and readiness probes, respectively.
-	QuarkusHealthCheckProbe HealthCheckProbeType = "quarkus"
-	// TCPHealthCheckProbe default health check probe that binds to port 8080
-	TCPHealthCheckProbe HealthCheckProbeType = "TCP"
+	livenessProbeType  ProbeType = "liveness"
+	readinessProbeType ProbeType = "readiness"
+	startupProbeType   ProbeType = "startup"
 
 	quarkusProbeLivenessPath  = "/q/health/live"
 	quarkusProbeReadinessPath = "/q/health/ready"
+
+	springBootProbeLivenessPath  = "/actuator/health/liveness"
+	springBootProbeReadinessPath = "/actuator/health/readiness"
 )
 
 type healthCheckProbe struct {
 	readiness *corev1.Probe
 	liveness  *corev1.Probe
 	startup   *corev1.Probe
+}
+
+var defaultHTTPGetAction = corev1.HTTPGetAction{
+	Port:   intstr.IntOrString{IntVal: int32(framework.DefaultExposedPort)},
+	Scheme: corev1.URISchemeHTTP,
 }
 
 var defaultProbeValues = corev1.Probe{
@@ -48,83 +54,63 @@ var defaultProbeValues = corev1.Probe{
 	FailureThreshold: int32(3),
 }
 
-// getProbeForKogitoService gets the appropriate liveness (index 0) and readiness (index 1) probes based on the given service definition
-func getProbeForKogitoService(serviceDefinition ServiceDefinition, service api.KogitoService) healthCheckProbe {
-	switch serviceDefinition.HealthCheckProbe {
-	case QuarkusHealthCheckProbe:
-		return healthCheckProbe{
-			readiness: getQuarkusHealthCheckReadiness(service.GetSpec().GetProbes().GetReadinessProbe()),
-			liveness:  getQuarkusHealthCheckLiveness(service.GetSpec().GetProbes().GetLivenessProbe()),
-			startup:   getQuarkusHealthCheckLiveness(service.GetSpec().GetProbes().GetStartupProbe()),
-		}
-	case TCPHealthCheckProbe:
-		return healthCheckProbe{
-			readiness: getTCPHealthCheckProbe(service.GetSpec().GetProbes().GetReadinessProbe()),
-			liveness:  getTCPHealthCheckProbe(service.GetSpec().GetProbes().GetLivenessProbe()),
-			startup:   getTCPHealthCheckProbe(service.GetSpec().GetProbes().GetStartupProbe()),
-		}
-	default:
-		return healthCheckProbe{
-			readiness: getTCPHealthCheckProbe(service.GetSpec().GetProbes().GetReadinessProbe()),
-			liveness:  getTCPHealthCheckProbe(service.GetSpec().GetProbes().GetLivenessProbe()),
-			startup:   getTCPHealthCheckProbe(service.GetSpec().GetProbes().GetStartupProbe()),
-		}
+func getProbeForKogitoService(service api.KogitoService) healthCheckProbe {
+	runtimeType := service.GetSpec().GetRuntime()
+	return healthCheckProbe{
+		readiness: getProbe(service.GetSpec().GetProbes().GetReadinessProbe(), runtimeType, readinessProbeType),
+		liveness:  getProbe(service.GetSpec().GetProbes().GetLivenessProbe(), runtimeType, livenessProbeType),
+		startup:   getProbe(service.GetSpec().GetProbes().GetStartupProbe(), runtimeType, startupProbeType),
 	}
 }
 
-func getTCPHealthCheckProbe(probe corev1.Probe) *corev1.Probe {
+// getProbe is a catch-all function that sets default values for all missing values
+// that have not been set by the user for all the various probe types.
+func getProbe(probe corev1.Probe, runtimeType api.RuntimeType, probeType ProbeType) *corev1.Probe {
 	if isProbeHandlerEmpty(probe.Handler) {
-		probe.Handler = corev1.Handler{
-			TCPSocket: &corev1.TCPSocketAction{Port: intstr.IntOrString{IntVal: int32(framework.DefaultExposedPort)}},
-		}
+		probe.Handler = corev1.Handler{HTTPGet: getDefaultHTTPGetAction(runtimeType, probeType)}
+	} else if probe.Handler.HTTPGet != nil {
+		setDefaultHTTPGetValues(&probe, runtimeType, probeType)
 	}
+	// Remaining case is where probe handler is set to TCP by user.
+	// Port is required in YAML so need further values need to be set.
 	setDefaultProbeValues(&probe)
-	return &probe
-}
-
-func getQuarkusHealthCheckLiveness(probe corev1.Probe) *corev1.Probe {
-	if isProbeHandlerEmpty(probe.Handler) {
-		probe.Handler = corev1.Handler{
-			HTTPGet: &corev1.HTTPGetAction{
-				Path:   quarkusProbeLivenessPath,
-				Port:   intstr.IntOrString{IntVal: int32(framework.DefaultExposedPort)},
-				Scheme: corev1.URISchemeHTTP,
-			},
-		}
-	} else {
-		setDefaultHTTPGetValues(&probe, quarkusProbeLivenessPath)
+	if probeType == livenessProbeType || probeType == startupProbeType {
+		// Must be 1 for liveness and startup.
+		probe.SuccessThreshold = 1
 	}
-	setDefaultProbeValues(&probe)
-	// Must be 1 for liveness and startup.
-	probe.SuccessThreshold = 1
-	return &probe
-}
-
-func getQuarkusHealthCheckReadiness(probe corev1.Probe) *corev1.Probe {
-	if isProbeHandlerEmpty(probe.Handler) {
-		probe.Handler = corev1.Handler{
-			HTTPGet: &corev1.HTTPGetAction{
-				Path:   quarkusProbeReadinessPath,
-				Port:   intstr.IntOrString{IntVal: int32(framework.DefaultExposedPort)},
-				Scheme: corev1.URISchemeHTTP,
-			},
-		}
-	} else {
-		setDefaultHTTPGetValues(&probe, quarkusProbeReadinessPath)
-	}
-	setDefaultProbeValues(&probe)
 	return &probe
 }
 
 // setDefaultHTTPGetValues sets default HTTPGetAction values for the handler if not set already. This prevents reconciliation loops.
-func setDefaultHTTPGetValues(probe *corev1.Probe, defaultPath string) {
+func setDefaultHTTPGetValues(probe *corev1.Probe, runtimeType api.RuntimeType, probeType ProbeType) {
 	if probe.Handler.HTTPGet.Path == "" {
-		probe.Handler.HTTPGet.Path = defaultPath
+		probe.Handler.HTTPGet.Path = getDefaultHTTPPath(runtimeType, probeType)
 	}
 	// port not needed to be set since it is a mandatory field for HTTPGetAction enforced at YAML level
 	if probe.Handler.HTTPGet.Scheme == "" {
 		probe.Handler.HTTPGet.Scheme = corev1.URISchemeHTTP
 	}
+}
+
+func getDefaultHTTPPath(runtimeType api.RuntimeType, probeType ProbeType) string {
+	if runtimeType == api.SpringBootRuntimeType {
+		if probeType == livenessProbeType || probeType == startupProbeType {
+			return springBootProbeLivenessPath
+		}
+		// must be readiness probe based on available probe types
+		return springBootProbeReadinessPath
+	}
+	// default to Quarkus runtime. also must be Quarkus based on available runtimes
+	if probeType == livenessProbeType || probeType == startupProbeType {
+		return quarkusProbeLivenessPath
+	}
+	return quarkusProbeReadinessPath
+}
+
+func getDefaultHTTPGetAction(runtimeType api.RuntimeType, probeType ProbeType) *corev1.HTTPGetAction {
+	httpGetAction := defaultHTTPGetAction.DeepCopy()
+	httpGetAction.Path = getDefaultHTTPPath(runtimeType, probeType)
+	return httpGetAction
 }
 
 // setDefaultProbeValues sets default probe values if not set already. This prevents reconciliation loops.

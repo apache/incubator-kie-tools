@@ -47,7 +47,6 @@ func (e *explainabilitySupportingServiceResource) Reconcile() (reconcileAfter ti
 		DefaultImageName: DefaultExplainabilityImageName,
 		Request:          controller.Request{NamespacedName: types.NamespacedName{Name: e.instance.GetName(), Namespace: e.instance.GetNamespace()}},
 		KafkaTopics:      explainabilitykafkaTopics,
-		HealthCheckProbe: kogitoservice.QuarkusHealthCheckProbe,
 	}
 	return kogitoservice.NewServiceDeployer(e.Context, definition, e.instance, e.infraHandler).Deploy()
 }
