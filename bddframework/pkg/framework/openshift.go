@@ -246,6 +246,15 @@ func CreateInsecureImageStream(namespace, imageStreamName, imageTagName, imageTa
 	return nil
 }
 
+// GetImageStreams returns ImageStreams in the namespace
+func GetImageStreams(namespace string) (*imagev1.ImageStreamList, error) {
+	imageStreams := &imagev1.ImageStreamList{}
+	if err := GetObjectsInNamespace(namespace, imageStreams); err != nil {
+		return nil, err
+	}
+	return imageStreams, nil
+}
+
 // WaitForOnOpenshift waits for a specification condition
 func WaitForOnOpenshift(namespace, display string, timeoutInMin int, condition func() (bool, error), errorConditions ...func() (bool, error)) error {
 	return WaitFor(namespace, display, GetOpenshiftDurationFromTimeInMin(timeoutInMin), condition, errorConditions...)
