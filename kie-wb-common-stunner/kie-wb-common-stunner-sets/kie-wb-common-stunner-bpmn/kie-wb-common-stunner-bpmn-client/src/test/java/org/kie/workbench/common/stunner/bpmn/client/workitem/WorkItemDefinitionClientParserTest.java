@@ -44,9 +44,10 @@ public class WorkItemDefinitionClientParserTest {
     private static final String QUOTAS_WID_FILE = "org/kie/workbench/common/stunner/bpmn/client/workitem/quotas.wid";
     private static final String INVALID_START_WID_FILE = "org/kie/workbench/common/stunner/bpmn/client/workitem/invalidWidStart.wid";
     private static final String SECOND_WID_IS_INCORRECT_WID_FILE = "org/kie/workbench/common/stunner/bpmn/client/workitem/secondWidIsIncorrect.wid";
+    private static final String MVEL_LIST_IN_WID_FILE = "org/kie/workbench/common/stunner/bpmn/client/workitem/listParameters.wid";
 
     final static String EMAIL_WID_EXTRACTED_PARAMETERS = "|Body:String,From:String,Subject:String,To:String|";
-    final static String EMAIL_WID_RETURN_EXTRACTED_PARAMETERS = "|Result:java.lang.Object|";
+    final static String RESULT_WID_RETURN_EXTRACTED_PARAMETERS = "|Result:java.lang.Object|";
 
     final static String INCIDENT_WID_EXTRACTED_PARAMETERS = "|Incident:java.lang.Object|";
 
@@ -54,8 +55,6 @@ public class WorkItemDefinitionClientParserTest {
 
     final static String REST_WID_EXTRACTED_PARAMETERS = "|ConnectTimeout:String,ContentData:String,Method:String," +
             "Password:String,ReadTimeout:String,Url:String,Username:String|";
-
-    final static String REST_WID_RETURN_EXTRACTED_PARAMETERS = "|Result:java.lang.Object|";
 
     final static private String ICON_64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAYK0lEQVR4nO3de9z1+Vzv8dcMcxCjDMMwjHMOUw5D52ypFMmmaJuaKFTa6YBSm+hgt4lIOmt33nJKg8gWiYrHVDpK2zk1coxhNDOYw93+Y/VoYua+5z5c1/VZa/2ez8fj9b+xfuv9Xfd1rev3KwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA23rWrU6qTqxOr42f/5wAAR+rY6ubV3apvrn6o+uXqFdWbqwuqf7uCLqk+VL21em31gurp1fdUX13dojp67/4zAIBPdUx1p+ph1dOq367+rHpvta8rPuB3oo9Vf1E9s/qW6jbVUbv83woAi3WL6huqn6rObnUQ79Yhf6h9oHpuq582XHeX/vsBYOud1OpH7k+oXt7qx/LTh/zBdmn1J9V35cMAABzQcdW9Wv2e/p3NH+I71cXVi//9v813BwCgukb1gFY";
 
@@ -137,7 +136,7 @@ public class WorkItemDefinitionClientParserTest {
         assertEquals(BPMNCategories.CUSTOM_TASKS, wid.getCategory());
         assertEquals("Some documentation", wid.getDocumentation());
         assertEquals(EMAIL_WID_EXTRACTED_PARAMETERS, wid.getParameters());
-        assertEquals(EMAIL_WID_RETURN_EXTRACTED_PARAMETERS, wid.getResults());
+        assertEquals(RESULT_WID_RETURN_EXTRACTED_PARAMETERS, wid.getResults());
     }
 
     @Test
@@ -154,7 +153,7 @@ public class WorkItemDefinitionClientParserTest {
         assertEquals(BPMNCategories.CUSTOM_TASKS, wid.getCategory());
         assertEquals("Some \'documentation\'", wid.getDocumentation());
         assertEquals(EMAIL_WID_EXTRACTED_PARAMETERS, wid.getParameters());
-        assertEquals(EMAIL_WID_RETURN_EXTRACTED_PARAMETERS, wid.getResults());
+        assertEquals(RESULT_WID_RETURN_EXTRACTED_PARAMETERS, wid.getResults());
     }
 
     @Test
@@ -215,6 +214,24 @@ public class WorkItemDefinitionClientParserTest {
         assertEquals("Some documentation", wid1.getDocumentation());
     }
 
+    @Test
+    public void testMvelLists() {
+        String widFile = loadTestFile(MVEL_LIST_IN_WID_FILE);
+        List<WorkItemDefinition> defs = WorkItemDefinitionClientParser.parse(widFile);
+        assertEquals(3, defs.size());
+
+        WorkItemDefinition wid1 = defs.get(0);
+        assertEquals("firstWID", wid1.getName());
+        assertEquals(INCIDENT_WID_EXTRACTED_PARAMETERS, wid1.getParameters());
+
+        WorkItemDefinition wid2 = defs.get(1);
+        assertEquals("secondWID", wid2.getName());
+        assertEquals(RESULT_WID_RETURN_EXTRACTED_PARAMETERS, wid2.getResults());
+
+        WorkItemDefinition wid3 = defs.get(2);
+        assertEquals("thirdWID", wid3.getName());
+    }
+
     private void testWidParse(final String wid) {
         List<WorkItemDefinition> defs = WorkItemDefinitionClientParser.parse(wid);
         assertEquals(4, defs.size());
@@ -239,7 +256,7 @@ public class WorkItemDefinitionClientParserTest {
         assertEquals("Rest", wid3.getName());
         assertEquals("REST", wid3.getDisplayName());
         assertEquals("defaultservicenodeicon.png", wid3.getIconDefinition().getUri());
-        assertEquals(REST_WID_RETURN_EXTRACTED_PARAMETERS, wid3.getResults());
+        assertEquals(RESULT_WID_RETURN_EXTRACTED_PARAMETERS, wid3.getResults());
         assertEquals(REST_WID_EXTRACTED_PARAMETERS, wid3.getParameters());
 
         WorkItemDefinition wid4 = defs.get(3);

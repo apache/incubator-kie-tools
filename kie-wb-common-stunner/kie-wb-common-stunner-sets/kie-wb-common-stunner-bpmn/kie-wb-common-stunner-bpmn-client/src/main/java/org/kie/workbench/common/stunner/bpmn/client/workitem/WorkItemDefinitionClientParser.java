@@ -204,6 +204,12 @@ public class WorkItemDefinitionClientParser {
     private static Map.Entry<String, Object> getEntry() {
         skipWhitespace();
         String name = parseString();
+        if (isObjectEnd(skipWhitespace())) {
+            return new SimpleEntry<>(name, null);
+        }
+        if (isElementSeparator(skipWhitespace())) {
+            return new SimpleEntry<>(name, null);
+        }
         if (notParameterDivider(skipWhitespace())) {
             throw new IllegalArgumentException("Invalid parameter");
         }
