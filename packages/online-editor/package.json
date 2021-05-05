@@ -10,7 +10,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kiegroup/monaco-editor": "^2.2.0",
+    "@kiegroup/monaco-editor": "^2.3.0",
     "@kogito-tooling/editor": "0.9.1",
     "@kogito-tooling/external-assets-base": "0.9.1",
     "@kogito-tooling/i18n": "0.9.1",

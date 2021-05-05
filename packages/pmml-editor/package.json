@@ -14,7 +14,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kiegroup/monaco-editor": "^2.2.0",
+    "@kiegroup/monaco-editor": "^2.3.0",
     "@kogito-tooling/editor": "0.9.1",
     "@kogito-tooling/notifications": "0.9.1",
     "@kogito-tooling/patternfly-base": "0.9.1",
