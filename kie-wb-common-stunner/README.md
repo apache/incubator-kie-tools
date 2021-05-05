@@ -13,35 +13,33 @@ Building Stunner Source Code
 
 To compile all Stunner components and install to your local Maven repository, issue the following commands:
 
-    cd kie-wb-common/kie-wb-common-stunner/
+    cd kogito-editors-java/kie-wb-common-stunner/
 	mvn clean install -DskipTests
 
 Running the Application
 -----------------------
 
-Execution and demonstration of the various Stunner-based components can be achieved using any of the following showcases:
+Execution and demonstration of the various Stunner-based components can be achieved using any of the following showcase:
 
-  - [**Stunner BPMN Kogito Showcase**](./kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/README.md) The lightest and fastest one. Just packaged as a client side standalone application, no backend services at all 
-  
-  - [**Stunner BPMN Business Central Showcase**](./kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-project-showcase/README.md) is built atop the KIE Workbench, Commons, Guvnor and Library components. This more complex showcase demonstrates integration with different KIE Workbench assets and editors. However, for day-to-day development, it is strongly suggested that the Kogito Standalone Showcase be utilized over this more complex showcase when working with Stunner components.
+  - [**Stunner BPMN Kogito Showcase**](./kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/README.md)
 
 PR process
 -----------
 - It is a good practice to use the git branch with actual Jira issue ID, for example, `JBPM-1`. This technique also will help you to eliminate issues with multi-repository PRs (see below).
-- During commit add appropriate jira issue ID (JBPM, RHPAM or RHDM only) at the beginning of the commit message.
+- During commit add appropriate jira issue ID (KOGITO, JBPM) at the beginning of the commit message.
 - Before pushing to Github execute `mvn clean package -Dfull` to execute checkstyle and spotbug plugins locally.
 - When creating multi-repository PR ensure that all repositories have the same branch name otherwise our Jenkins will build PRs separately.
 - Create [Draft PR](https://github.blog/2019-02-14-introducing-draft-pull-requests/) instead of regular.
 - If you need to check some particular points (on the code or runtime level) to finish the task or ensure that everything is fine, ask a particular person in the PR comments before you will perform final runtime tests.
 - When PR is created and if you are a part of the [kiegroup](https://github.com/orgs/kiegroup/people) put a comment with content `Jenkins execute full downstream build`.
-  - Wait for the results of project Jenkins and full downstream build Jenkins results.
+  - Wait for the results of project Jenkins and Full/Compile downstream build Jenkins results.
   - If Jenkins results are not green, check the results and if the issues are related to your changes, fix them and re-trigger builds.
-    - Repository build will be triggered automatically when you push your changes, but Full downstream build should be re-triggered manually.
-  - If Jenkins builds are not green but you are sure it is not related to your changes, find the author of the failing tests and ping him/her in the PR comments.
-  - Ensure that your PR passed Sonar Cloud gates as well. If you do not agree with the issues reported by Sonar or your tests are running but not measured correctly, put a comment to your PR.
-  - If Jenkins builds are green or you are sure that failed tests are not related to your changes and Sonar Cloud gates are passed, download Business Central from Full downstream build and test it locally against Acceptance Criteria / Steps to reproduce. Sometimes the issue is fixed in the showcase but still reproducible in the product.
+    - Repository build will be triggered automatically when you push your changes, but Full/Compile downstream build should be re-triggered manually.
+  - If Jenkins builds are not green, but you are sure it is not related to your changes, find the author of the failing tests and ping him/her in the PR comments.
+  - Ensure that your PR passed Sonar Cloud gates as well. If you do not agree with the issues reported by Sonar, or your tests are running but not measured correctly, put a comment to your PR.
+  - If Jenkins builds are green, or you are sure that failed tests are not related to your changes and Sonar Cloud gates are passed, download Business Central from Full downstream build and test it locally against Acceptance Criteria / Steps to reproduce. Sometimes the issue is fixed in the showcase but still reproducible in the product.
   - When everything is done, mark PR as ready for review and ask another developer AND QE to do the review.
-- When PR is merged move Jira issue to state `Status: Resolved`, `Resolution: Done`, set next closest release as `Fix version`.
+- When PR is merged move Jira issues to state `Status: Resolved`, `Resolution: Done`, set next closest release as `Fix version`.
 
 IDE Environment setup
 ---------------------
@@ -83,9 +81,9 @@ __[WARNING]__ Showcase applications only work in Windows 10 Anniversary Update a
 
 **Before Working with the IDE**
 
-Prior to importing the project into the IDE, assuming [kie-wb-common](../) has already been cloned locally, navigate to that directory and issue the following command:
+Prior to importing the project into the IDE, assuming [kogito-editors-java](../) has already been cloned locally, navigate to that directory and issue the following command:
 
-        cd kie-wb-common/
+        cd kogito-editors-java/
         mvn clean install -DskipTests
 
 **IDEA Environment Setup**
@@ -94,7 +92,7 @@ If you have not run the step from **Before Working with the IDE** above, do so b
 
 ***Importing the project into IDEA***
 1. From the header menu, select **File** --> **New** --> **Project from Existing Sources...**
-2. Using the directory tree, navigate to and select the **pom.xml** file within the **kie-wb-common/kie-wb-commmon-stunner** directory and hit **OK**.
+2. Using the directory tree, navigate to and select the **pom.xml** file within the **kogito-editors-java/kie-wb-common-stunner** directory and hit **OK**.
 3. At the bottom of the new dialog box, click the **Environment Settings...** button.
 4. Use the '**...**' button next to the **Maven home directory** field to locate and select your local Maven (3.3.9+) installation, rather than the "Bundled" prefilled value.
 5. Select **OK** to close the Maven environment popup dialog.
@@ -166,7 +164,7 @@ The following assumes that the Standalone Showcase will be utilized. Some eviden
 1. From the menu, click *Run*, then select *Edit Configurations...*
 2. Click the plus (+) sign in the upper left-hand corner, then select *GWT Configuration*.
 3. Change *Name* to '*Standalone Showcase*'.
-4. Use the *Module:* dropdown to select '*kie-wb-common-stunner-showcase-standalone*'.
+4. Use the *Module:* dropdown to select '*kie-wb-common-stunner-bpmn-kogito-runtime*'.
 5. Click the *Use Super Dev Mode* checkbox to enable if not already checked.
 6. Change *GWT Modules to load* to '*org.kie...standalone.FastCompiledStunnerStandaloneShowcase*'.
 7. Paste the following into the *VM Options* field **after** editing the directory to match the location of your cloned code directory.
@@ -179,8 +177,8 @@ The following assumes that the Standalone Showcase will be utilized. Some eviden
         -XX:CompileThreshold=7000
         -Djava.util.prefs.syncInterval=200000
         -Dorg.uberfire.nio.git.dir=/tmp/project/dir
-        -Derrai.jboss.home=/[YOUR_DIR_LOCATION]/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-standalone/target/wildfly-14.0.1.Final
-        
+        -Derrai.jboss.home=/[YOUR_DIR_LOCATION]/kogito-editors-java/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/wildfly-14.0.1.Final
+
 
 8. Change *Dev Mode parameters* to the following:
 
@@ -189,7 +187,7 @@ The following assumes that the Standalone Showcase will be utilized. Some eviden
 10. Ensure that the *with JavaScript debugger* checkbox is **NOT** checked, as Chrome debugger will be used instead.
 11. Under *Before launch*, click the plus (+) sign.
 12. Select *Run Maven Goal*.
-13. Change the working directory to /[YOUR_DIR_LOCATION]/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-standalone/.
+13. Change the working directory to /[YOUR_DIR_LOCATION]/kogito-editors-java/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/.
 14. Change *Command line* value to 'clean process-resources', then hit *OK*.
 15. Select the newly added Maven entry in the *Before launch* section, then click the UP arrow underneath so that it moves **above** the *Make* entry.
 16. Click *Apply* and/or *OK*.
@@ -230,13 +228,13 @@ Additional information on debugging with Chrome Dev Tools can be found [here](ht
 
 Once your Stunner project is setup correctly, you can also import external modules into it, for example some lienzo one, in order to be able to run the application and have all the sources served by the GWT code-server (SDM).
 
-1.- [RECOMMENDED] Build the external module from command line before importing into the project
+1. [RECOMMENDED] Build the external module from command line before importing into the project
 
-2.- File -> New -> Module from existing sources -> choose the module's root path
+2. File -> New -> Module from existing sources -> choose the module's root path
 
-3.- Wait until import/indexing completes
+3. Wait until import/indexing completes
 
-4.- File -> Project Structure
-  - Modules tab -> Add a new GWT module for the new external asset imported (eg: lienzo-core) -> just select it, click on the `+` button and add a new GWT module type
-  - [TIP] -> Close project preferences and reopen it, there a bug on IDEA15...
-  - Artifacts tab ->  click on the "exploded WAR" artifact that exists for showcase you want to use. Then on the right panel, expand the module (eg: lienzo-core) and double click on both "compiled" and "GWT" artifacts that appear as child elements for it, they'll automatically be included in the "exploded WAR" artifact structure to generate
+4. - File -> Project Structure
+   - Modules tab -> Add a new GWT module for the new external asset imported (eg: lienzo-core) -> just select it, click on the `+` button and add a new GWT module type
+   - [TIP] -> Close project preferences and reopen it, there a bug on IDEA15...
+   - Artifacts tab ->  click on the "exploded WAR" artifact that exists for showcase you want to use. Then on the right panel, expand the module (eg: lienzo-core) and double-click on both "compiled" and "GWT" artifacts that appear as child elements for it, they'll automatically be included in the "exploded WAR" artifact structure to generate

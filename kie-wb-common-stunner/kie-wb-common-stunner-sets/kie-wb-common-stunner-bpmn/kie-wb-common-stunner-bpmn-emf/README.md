@@ -78,7 +78,7 @@ NOTE: Do NOT refactor/style generated code
     2.6 - Update licenses/copy-rights
 
 NOTE: Manage properly the GIT changes
-    
+
 **3.- Build & run & test app**
 
 **4.- Commit updates**

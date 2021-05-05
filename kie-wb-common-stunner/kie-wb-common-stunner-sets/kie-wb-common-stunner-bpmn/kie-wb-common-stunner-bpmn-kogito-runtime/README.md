@@ -8,7 +8,7 @@ Building
 --------
  
 * Before building this webapp, you should build the whole of the Stunner project before
-  * change to the `kie-wb-common/kie-wb-common-stunner` root folder
+  * change to the `kogito-editors-java/kie-wb-common-stunner` root folder
   * run `mvn clean install -DskipTests -Dgwt.compiler.skip=true`
 * Build the webapp:
   * Production: `mvn -T 8C clean install -DskipTests=true`
@@ -43,9 +43,9 @@ VM Options:
         -Xss1M
         -Derrai.dynamic_validation.enabled=true
         -Derrai.ioc.jsinterop.support=true
-    
+
 [OPTIONAL] Dev Mode Parameters:
-        
+
         -style PRETTY
         -generateJsInteropExports
         -logLevel [ERROR, WARN, INFO, TRACE, DEBUG, SPAM, or ALL]
@@ -60,11 +60,11 @@ Navigate to the context path root (eg: `http://localhost:8080`)
 
 It provides buttons for creating new processes, opening an existing process and exporting the actual process
 
-* Also the editor can be used using Javascript API:
+* Also, the editor can be used using Javascript API:
 
         // For creating a process
         window.frames.editorFrame.contentWindow.gwtEditorBeans.get("BPMNDiagramEditor").get().setContent("", "")      
-  
+
         // For loading a process (the raw xml)
         window.frames.editorFrame.contentWindow.gwtEditorBeans.get("BPMNDiagramEditor").get().setContent("", raw)      
 
