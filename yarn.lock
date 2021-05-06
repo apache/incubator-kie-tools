@@ -5950,21 +5950,21 @@ unicode-property-aliases-ecmascript@^1.0.4:
   resolved "https://registry.yarnpkg.com/unicode-property-aliases-ecmascript/-/unicode-property-aliases-ecmascript-1.1.0.tgz#dd57a99f6207bedff4628abefb94c50db941c8f4"
   integrity sha512-PqSoPh/pWetQ2phoj5RLiaqIk4kCNwoV3CI+LfGmWLKI3rE3kl1h59XpX2BjgDrmbxD9ARtQobPGU1SguCYuQg==
 
-uniforms-bridge-simple-schema-2@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/uniforms-bridge-simple-schema-2/-/uniforms-bridge-simple-schema-2-3.0.0.tgz#6622fb9448cca4fda371c9e346bb13b0c3edb80b"
-  integrity sha512-WqClg4E12XVEHxhIFin0SKd/kPWuo73Bf0NIpfGaPctSxV7stOI1+6dPVU8AzJdLKhk0NKa72y1uQGbTLht8RQ==
+uniforms-bridge-simple-schema-2@3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/uniforms-bridge-simple-schema-2/-/uniforms-bridge-simple-schema-2-3.4.0.tgz#c4206d4172ef2b820a902352f7c94852c95bf0ae"
+  integrity sha512-J3t2HmG7Jymod1uQI9K0tCESU3EG/PuN9Ij5qQayrlsLm4rVnp8TW4BSOqC8nKcy653FY7PDFbVG3r8VHrtXPA==
   dependencies:
     invariant "^2.0.0"
     lodash "^4.0.0"
     simpl-schema "^1.0.0 || ^0.0.4"
     tslib "^1.10.0"
-    uniforms "^3.0.0"
+    uniforms "^3.4.0"
 
-uniforms@3.0.0, uniforms@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/uniforms/-/uniforms-3.0.0.tgz#30414fedf951eb11625d49330166a05f8a6be54b"
-  integrity sha512-D8Dzx86t+79wGQ9chOrtBAqQ/sRuN4OdSuv52PnkYvtwERGkjX6PUIzJiExNokwhr39i5GiM1RtEu8KQS4xgzw==
+uniforms@3.4.0, uniforms@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/uniforms/-/uniforms-3.4.0.tgz#3c3c59a1c644a80a7539d1af9e21ac7029ed8a0a"
+  integrity sha512-eCbUYPkVVUWUDXweTeVFZqipkj5Sna42GMvjvcutyw+s5iP18o6QfPZsOTHwLXThPyObqehL5spPJvsznKlPaw==
   dependencies:
     invariant "^2.0.0"
     lodash "^4.0.0"

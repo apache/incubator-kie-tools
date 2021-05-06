@@ -65,8 +65,8 @@
     "ts-node": "8.10.2",
     "tslib": "1.14.1",
     "typescript": "3.8.3",
-    "uniforms": "3.0.0",
-    "uniforms-bridge-simple-schema-2": "3.0.0"
+    "uniforms": "3.4.0",
+    "uniforms-bridge-simple-schema-2": "3.4.0"
   },
   "peerDependencies": {
     "@patternfly/react-core": "^4.115.2",
