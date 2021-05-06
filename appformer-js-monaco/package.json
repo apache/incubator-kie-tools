@@ -6,7 +6,7 @@
     "locktt": "locktt"
   },
   "dependencies": {
-    "@kiegroup/monaco-editor": "2.1.0"
+    "@kiegroup/monaco-editor": "2.3.0"
   },
   "keywords": ["monaco"]
 }
