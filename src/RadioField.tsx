@@ -1,16 +1,20 @@
 import React from 'react';
 import { Radio as RadioField, RadioProps } from '@patternfly/react-core';
-import { connectField, filterDOMProps } from 'uniforms/es5';
+import { connectField, filterDOMProps, HTMLFieldProps } from 'uniforms/es5';
 
 import wrapField from './wrapField';
 
-export type RadioFieldProps = {
-  transform?: (string?: string) => string;
-  allowedValues: string[];
-  onChange: (value: string) => void;
-  value?: string;
-  disabled: boolean;
-} & Omit<RadioProps, 'isDisabled'>;
+export type RadioFieldProps = HTMLFieldProps<
+  string,
+  HTMLDivElement,
+  {
+    transform?: (string?: string) => string;
+    allowedValues: string[];
+    onChange: (value: string) => void;
+    value?: string;
+    disabled: boolean;
+  }
+>;
 
 const Radio = (props: RadioFieldProps) => {
   filterDOMProps.register('checkboxes', 'decimal');

@@ -1,6 +1,5 @@
-// import { Override, connectField, useField } from 'uniforms/es5';
 import invariant from 'invariant';
-import { createAutoField } from 'uniforms';
+import { createAutoField } from 'uniforms/es5';
 
 import BoolField from './BoolField';
 import DateField from './DateField';

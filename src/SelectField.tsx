@@ -10,7 +10,7 @@ import {
   SelectVariant,
   SelectOptionObject,
 } from '@patternfly/react-core';
-import { connectField, filterDOMProps } from 'uniforms/es5';
+import { connectField, FieldProps, filterDOMProps } from 'uniforms/es5';
 
 import wrapField from './wrapField';
 
@@ -23,14 +23,18 @@ function xor<T>(item: T, array: T[]) {
   return array.slice(0, index).concat(array.slice(index + 1));
 }
 
-type CheckboxesProps = {
-  fieldType?: typeof Array | any;
-  onChange: (value?: string | string[]) => void;
-  transform?: (value?: string) => string;
-  allowedValues: string[];
-  id: string;
-  disabled?: boolean;
-} & (Omit<CheckboxProps, 'isDisabled'> | Omit<RadioProps, 'isDisabled'>);
+type CheckboxesProps = FieldProps<
+  string | string[],
+  CheckboxProps | RadioProps,
+  {
+    fieldType?: typeof Array | any;
+    onChange: (value?: string | string[]) => void;
+    transform?: (value?: string) => string;
+    allowedValues: string[];
+    id: string;
+    disabled?: boolean;
+  }
+>;
 
 filterDOMProps.register('autoValue');
 
@@ -74,17 +78,21 @@ function RenderCheckboxes(props: CheckboxesProps) {
   );
 }
 
-type SelectInputProps = {
-  required?: boolean;
-  id: string;
-  fieldType?: typeof Array | any;
-  onChange: (value?: string | string[]) => void;
-  placeholder: string;
-  allowedValues?: string[];
-  disabled?: boolean;
-  error?: boolean;
-  transform?: (value?: string) => string;
-} & Omit<SelectProps, 'isDisabled'>;
+type SelectInputProps = FieldProps<
+  string | string[],
+  SelectProps,
+  {
+    required?: boolean;
+    id: string;
+    fieldType?: typeof Array | any;
+    onChange: (value?: string | string[]) => void;
+    placeholder: string;
+    allowedValues?: string[];
+    disabled?: boolean;
+    error?: boolean;
+    transform?: (value?: string) => string;
+  }
+>;
 
 function isSelectOptionObject(
   toBeDetermined: string | SelectOptionObject
