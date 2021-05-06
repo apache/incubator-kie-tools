@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import Octokit from "@octokit/rest";
+import { Octokit } from "@octokit/rest";
 import { getCookie, setCookie } from "./utils";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
@@ -210,7 +210,7 @@ export class GithubService {
   }
 
   private octokitGet(fileInfo: FileInfo) {
-    return this.octokit.repos.getContents({
+    return this.octokit.repos.getContent({
       repo: fileInfo.repo,
       owner: fileInfo.org,
       ref: fileInfo.gitRef,

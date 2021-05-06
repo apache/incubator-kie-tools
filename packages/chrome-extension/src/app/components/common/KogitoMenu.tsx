@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useGitHubApi } from "./GitHubContext";
-import * as Octokit from "@octokit/rest";
+import { Octokit } from "@octokit/rest";
 import { useGlobals } from "./GlobalContext";
 import { useChromeExtensionI18n } from "../../i18n";
 import { I18nHtml } from "@kogito-tooling/i18n/dist/react-components";

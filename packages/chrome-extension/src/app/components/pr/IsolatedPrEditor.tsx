@@ -30,7 +30,7 @@ import {
   KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS,
 } from "../../constants";
-import * as Octokit from "@octokit/rest";
+import { Octokit } from "@octokit/rest";
 import { fetchFile } from "../../github/api";
 import { useGitHubApi } from "../common/GitHubContext";
 import { useGlobals } from "../common/GlobalContext";

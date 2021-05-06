@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as Octokit from "@octokit/rest";
+import { Octokit } from "@octokit/rest";
 import { ContentType } from "@kogito-tooling/channel-common-api";
 
 export function fetchFile(
@@ -26,7 +26,7 @@ export function fetchFile(
   contentType?: ContentType
 ) {
   return octokit.repos
-    .getContents({
+    .getContent({
       repo: repo,
       owner: org,
       ref: ref,

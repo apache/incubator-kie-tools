@@ -65,8 +65,8 @@
     "test:it": "echo 'No tests to run.'",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run build:fast",
-    "build:prod:linux:darwin": "yarn run build --mode production --devtool none && yarn run test && yarn run test:it && yarn run package:prod",
-    "build:prod:windows": "yarn run build --mode production --devtool none && yarn run test && yarn run package:prod",
+    "build:prod:linux:darwin": "yarn run build && yarn run test && yarn run test:it && yarn run package:prod",
+    "build:prod:windows": "yarn run build && yarn run test && yarn run package:prod",
     "build:prod": "run-script-os"
   },
   "dependencies": {

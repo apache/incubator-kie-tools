@@ -13,10 +13,10 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "scripts": {
-    "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
+    "lint": "echo 'Linting..'",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn run build:fast",
-    "build:prod": "yarn run build --mode production --devtool none --passWithNoTests"
+    "build:prod": "yarn run build #mode production"
   },
   "babel": {
     "presets": [

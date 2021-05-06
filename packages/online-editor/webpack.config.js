@@ -63,19 +63,29 @@ module.exports = async (env, argv) => {
       "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
     },
     plugins: [
-      new CopyPlugin([
-        { from: "./static/resources", to: "./resources" },
-        { from: "./static/images", to: "./images" },
-        { from: "./static/samples", to: "./samples" },
-        { from: "./static/index.html", to: "./index.html" },
-        { from: "./static/favicon.ico", to: "./favicon.ico" },
-        { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] },
-        { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
-        { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
-        { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
-        { from: "../../node_modules/@kogito-tooling/pmml-editor/dist/images", to: "./images" },
-      ]),
+      new CopyPlugin({
+        patterns: [
+          { from: "./static/resources", to: "./resources" },
+          { from: "./static/images", to: "./images" },
+          { from: "./static/samples", to: "./samples" },
+          { from: "./static/index.html", to: "./index.html" },
+          { from: "./static/favicon.ico", to: "./favicon.ico" },
+          {
+            from: externalAssets.dmnEditorPath(argv),
+            to: "./gwt-editors/dmn",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+          {
+            from: externalAssets.bpmnEditorPath(argv),
+            to: "./gwt-editors/bpmn",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+          { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
+          { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
+          { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
+          { from: "../../node_modules/@kogito-tooling/pmml-editor/dist/images", to: "./images" },
+        ],
+      }),
     ],
     resolve: {
       alias: {

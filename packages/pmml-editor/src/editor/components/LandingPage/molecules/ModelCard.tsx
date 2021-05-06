@@ -25,7 +25,7 @@ import {
 } from "@patternfly/react-core/dist/js/components/Card";
 import { ModelType } from "../../..";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, MouseEvent } from "react";
 import "./ModelCard.scss";
 import { ModelCardIcon } from "../atoms";
 import { MODEL_NAME_NOT_SET } from "../../EditorCore/atoms";
@@ -42,7 +42,7 @@ export const ModelCard = (props: ModelCardProps) => {
   const { index, modelName, modelType } = props;
 
   const onClickModel = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    (e: any) => { //FIXME: tiago MouseEvent
       if (index !== undefined) {
         e.stopPropagation();
         props.onClick(index);
@@ -52,7 +52,7 @@ export const ModelCard = (props: ModelCardProps) => {
   );
 
   const onDeleteModel = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    (e: any) => { //FIXME: tiago MouseEvent
       if (index !== undefined) {
         e.stopPropagation();
         props.onDelete(index);

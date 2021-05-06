@@ -40,6 +40,7 @@ module.exports = {
     maxEntrypointSize: 30000000,
   },
   resolve: {
+    fallback: { path: require.resolve("path-browserify") }, // Required for `minimatch`, as Webpack 5 doesn't add polyfills automatically anymore.
     extensions: [".tsx", ".ts", ".js", ".jsx"],
     modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")],
   },

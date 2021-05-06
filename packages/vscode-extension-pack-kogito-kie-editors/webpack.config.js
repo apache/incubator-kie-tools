@@ -56,12 +56,12 @@ module.exports = async (argv, env) => [
       rules: [...pfWebpackOptions.patternflyRules],
     },
     plugins: [
-      new CopyWebpackPlugin([
+      new CopyWebpackPlugin({patterns: [
         { from: "./static", to: "static" },
-        { from: externalAssets.dmnEditorPath(argv), to: "webview/editors/dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.bpmnEditorPath(argv), to: "webview/editors/bpmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.scesimEditorPath(argv), to: "webview/editors/scesim", ignore: ["WEB-INF/**/*"] },
-      ]),
+        { from: externalAssets.dmnEditorPath(argv), to: "webview/editors/dmn", globOptions: { ignore: ["WEB-INF/**/*"] }},
+        { from: externalAssets.bpmnEditorPath(argv), to: "webview/editors/bpmn", globOptions: { ignore: ["WEB-INF/**/*"] }},
+        { from: externalAssets.scesimEditorPath(argv), to: "webview/editors/scesim", globOptions: { ignore: ["WEB-INF/**/*"] }},
+      ]}),
     ],
   }),
   merge(common, {

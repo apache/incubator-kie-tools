@@ -24,7 +24,7 @@ import { GithubService } from "../../common/GithubService";
 const mockHistoryPush = jest.fn();
 
 jest.mock("react-router", () => {
-  const ActualReactRouter = require.requireActual("react-router");
+  const ActualReactRouter = jest.requireActual("react-router");
   return {
     ...ActualReactRouter,
     useHistory: () => ({

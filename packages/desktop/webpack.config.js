@@ -29,7 +29,7 @@ module.exports = async (argv, env) => [
     externals: {
       electron: "commonjs electron",
     },
-    plugins: [new CopyPlugin([{ from: "./build", to: "./build" }])],
+    plugins: [new CopyPlugin({ patterns: [{ from: "./build", to: "./build" }] })],
     node: {
       __dirname: false,
       __filename: false,
@@ -47,15 +47,25 @@ module.exports = async (argv, env) => [
     },
     module: { rules: [...pfWebpackOptions.patternflyRules] },
     plugins: [
-      new CopyPlugin([
-        { from: "./static/samples", to: "./samples" },
-        { from: "./static/resources", to: "./resources" },
-        { from: "./static/images", to: "./images" },
-        { from: "./static/envelope", to: "./envelope" },
-        { from: "./static/index.html", to: "./index.html" },
-        { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] },
-      ]),
+      new CopyPlugin({
+        patterns: [
+          { from: "./static/samples", to: "./samples" },
+          { from: "./static/resources", to: "./resources" },
+          { from: "./static/images", to: "./images" },
+          { from: "./static/envelope", to: "./envelope" },
+          { from: "./static/index.html", to: "./index.html" },
+          {
+            from: externalAssets.dmnEditorPath(argv),
+            to: "./gwt-editors/dmn",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+          {
+            from: externalAssets.bpmnEditorPath(argv),
+            to: "./gwt-editors/bpmn",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+        ],
+      }),
     ],
   }),
 ];

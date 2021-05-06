@@ -27,7 +27,7 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
     resourcesPathPrefix: "",
   };
 
-  const usedCtx = {
+  const usedCtx: GlobalContextType = {
     editorEnvelopeLocator: { targetOrigin: window.location.origin, mapping: new Map([["dmn", dmnEnvelopeMapping]]) },
     file: { fileName: "test.dmn", fileExtension: "dmn", getFileContents: () => Promise.resolve(""), isReadOnly: false },
     ...ctx,

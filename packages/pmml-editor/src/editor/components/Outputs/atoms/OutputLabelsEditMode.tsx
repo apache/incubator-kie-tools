@@ -45,7 +45,7 @@ interface OutputLabelsEditModeProps {
   isDisabled: boolean;
 }
 
-const PADDING: CSSProperties = { marginRight: "4px" };
+const PADDING: any = { marginRight: "4px" }; //FIXME: tiago CSSProperties
 
 export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
   const {

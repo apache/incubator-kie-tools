@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Model, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { Model, Scorecard, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions, AllActions, ModelReducer } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
@@ -36,7 +36,7 @@ describe("ModelReducer::Valid actions", () => {
       Characteristics: { Characteristic: [] },
     });
     const models = [scorecard1, scorecard2];
-    const pmml = { version: "1.0", DataDictionary: { DataField: [] }, Header: {}, models: models };
+    const pmml: PMML = { version: "1.0", DataDictionary: { DataField: [] }, Header: {}, models: models };
 
     reducer(models, {
       type: Actions.DeleteModel,
@@ -62,7 +62,7 @@ describe("ModelReducer::Valid actions", () => {
       Characteristics: { Characteristic: [] },
     });
     const models = [scorecard1];
-    const pmml = { version: "1.0", DataDictionary: { DataField: [] }, Header: {}, models: models };
+    const pmml: PMML = { version: "1.0", DataDictionary: { DataField: [] }, Header: {}, models: models };
 
     reducer(models, {
       type: Actions.DeleteModel,

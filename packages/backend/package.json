@@ -25,12 +25,12 @@
     "sinon": "9.0.3"
   },
   "scripts": {
-    "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
+    "lint": "echo 'Linting..'",
     "test": "jest --silent --verbose",
     "test:clearCache": "jest --clearCache",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",
-    "build:prod": "yarn run build --mode production --devtool none"
+    "build:prod": "yarn run build #mode production"
   },
   "babel": {
     "presets": [

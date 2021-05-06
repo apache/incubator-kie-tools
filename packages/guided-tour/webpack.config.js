@@ -30,7 +30,7 @@ module.exports = merge(common, {
     libraryTarget: "umd",
   },
   externals: ["react", "react-dom", /^@patternfly\/.+$/],
-  plugins: [new CopyPlugin([{ from: "./static/css", to: "./css" }])],
+  plugins: [new CopyPlugin({patterns: [{ from: "./static/css", to: "./css" }]})],
   module: {
     rules: [...pfWebpackOptions.patternflyRules],
   },

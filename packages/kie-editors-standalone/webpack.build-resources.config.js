@@ -24,7 +24,7 @@ module.exports = [
     entry: {
       "preprocessor/preprocessor": "./src/preprocessor/preprocessor.ts",
     },
-    plugins: [new CopyPlugin([{ from: "./resources", to: "./resources" }])],
+    plugins: [new CopyPlugin({ patterns: [{ from: "./resources", to: "./resources" }] })],
     target: "node",
     node: {
       __dirname: true, //Uses current working dir
@@ -32,6 +32,9 @@ module.exports = [
     },
   }),
   merge(common, {
+    output: {
+      publicPath: "",
+    },
     entry: {
       "envelope/bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
       "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",

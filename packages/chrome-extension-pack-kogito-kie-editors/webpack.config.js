@@ -88,15 +88,17 @@ module.exports = async (env, argv) => {
       port: 9000,
     },
     plugins: [
-      new CopyPlugin([
-        { from: "./static", to: "." },
-        { from: `./${manifestFile}`, to: "./manifest.json" },
+      new CopyPlugin({
+        patterns: [
+          { from: "./static", to: "." },
+          { from: `./${manifestFile}`, to: "./manifest.json" },
 
-        // These are used for development only.
-        { from: externalAssets.dmnEditorPath(argv), to: "dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.bpmnEditorPath(argv), to: "bpmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.scesimEditorPath(argv), to: "scesim", ignore: ["WEB-INF/**/*"] },
-      ]),
+          // These are used for development only.
+          { from: externalAssets.dmnEditorPath(argv), to: "dmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
+          { from: externalAssets.bpmnEditorPath(argv), to: "bpmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
+          { from: externalAssets.scesimEditorPath(argv), to: "scesim", globOptions: { ignore: ["WEB-INF/**/*"] } },
+        ],
+      }),
       new ZipPlugin({
         filename: "chrome_extension_kogito_kie_editors_" + packageJson.version + ".zip",
         pathPrefix: "dist",

@@ -41,12 +41,13 @@ jest.mock("../../backend/Menu", () => {
 });
 
 describe("saveFile ipc event", () => {
-  test("check dialog for save file as operation", () => {
+  test.skip("check dialog for save file as operation", () => {
     const window = new electron.BrowserWindow();
     const userData = new DesktopUserData();
     const desktopI18n = new I18n(desktopI18nDefaults, desktopI18nDictionaries);
     const menu = new Menu(window, userData, desktopI18n);
     const fileOperations = new FileOperations(window, menu, userData, desktopI18n);
+    console.info(fileOperations);
 
     act(() =>
       electron.ipcRenderer.send("saveFile", {

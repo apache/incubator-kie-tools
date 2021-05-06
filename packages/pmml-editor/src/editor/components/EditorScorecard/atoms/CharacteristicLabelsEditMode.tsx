@@ -22,7 +22,7 @@ interface CharacteristicLabelsEditModeProps {
   viewAttributes: () => void;
 }
 
-const PADDING: CSSProperties = { marginRight: "4px" };
+const PADDING: any = { marginRight: "4px" }; //FIXME: tiago CSSProperties
 
 export const CharacteristicLabelsEditMode = (props: CharacteristicLabelsEditModeProps) => {
   const { viewAttributes } = props;

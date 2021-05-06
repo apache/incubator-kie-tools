@@ -39,12 +39,12 @@ module.exports = [
       index: "./src/showcase/index.tsx",
     },
     plugins: [
-      new CopyPlugin([
+      new CopyPlugin({patterns: [
         { from: "./src/showcase/static/resources", to: "./resources" },
         { from: "./src/showcase/static/index.html", to: "./index.html" },
         { from: "./src/showcase/static/favicon.ico", to: "./favicon.ico" },
         { from: "./static/images", to: "./images" },
-      ]),
+      ]}),
     ],
     module: {
       rules: [
