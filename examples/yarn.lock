@@ -10897,47 +10897,47 @@ unicode-trie@^0.3.1:
     pako "^0.2.5"
     tiny-inflate "^1.0.0"
 
-uniforms-bridge-graphql@3.0.0-rc.3:
-  version "3.0.0-rc.3"
-  resolved "https://registry.yarnpkg.com/uniforms-bridge-graphql/-/uniforms-bridge-graphql-3.0.0-rc.3.tgz#22e6e1f9fc22638cb9582bc8afff9ecc3dc48f08"
-  integrity sha512-pTovkPsDyqhyKo/6UuHGOInpRBdPqQKUbIE6d8Nnxp4S5tQsQAocNFFiebN/VpswPyt70clo4ilEx8DXgvBgIA==
+uniforms-bridge-graphql@3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/uniforms-bridge-graphql/-/uniforms-bridge-graphql-3.4.0.tgz#6cea957615cd3b6fb2d4ab230a6a18d799374716"
+  integrity sha512-yVGg8FxsNcKsLWAdel7xGojhj4ThFY8o5tYu0nXv7cE9jkWNj9Jq/+s9bna0H6iR00hTluBcvJxAXXbhewyEgA==
   dependencies:
     graphql "^15.0.0"
     invariant "^2.0.0"
     lodash "^4.0.0"
     tslib "^1.10.0"
-    uniforms "^3.0.0-rc.3"
+    uniforms "^3.4.0"
 
-uniforms-bridge-json-schema@3.0.0-rc.3:
-  version "3.0.0-rc.3"
-  resolved "https://registry.yarnpkg.com/uniforms-bridge-json-schema/-/uniforms-bridge-json-schema-3.0.0-rc.3.tgz#0723cddae947f0744b56d1b9e4b2439b58f2e202"
-  integrity sha512-idNiMFu2tM8mdy5F0lW35fscDkRas2e0AwSpiQGoJ5kID2CVdWu0ZEDn11eXenrzoUfAXDaiFvFLqmHVJBbUtw==
+uniforms-bridge-json-schema@3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/uniforms-bridge-json-schema/-/uniforms-bridge-json-schema-3.4.0.tgz#33e726b7b90a304d4fd8d9fdcdcc35d232902b2f"
+  integrity sha512-vdK02/Hy8HFcNaPQnAUtQJCsy2iDR0JiVViXMq9iPtpuoseZfSFcqDU4RxVcM2K2WpMam+0Fwv2NRMOqQAvXLw==
   dependencies:
     invariant "^2.0.0"
     lodash "^4.0.0"
     tslib "^1.10.0"
-    uniforms "^3.0.0-rc.3"
+    uniforms "^3.4.0"
 
-uniforms-bridge-simple-schema-2@3.0.0-rc.3:
-  version "3.0.0-rc.3"
-  resolved "https://registry.yarnpkg.com/uniforms-bridge-simple-schema-2/-/uniforms-bridge-simple-schema-2-3.0.0-rc.3.tgz#6778816609841ee8214099b08f44b662487b41d6"
-  integrity sha512-U5QSZE1RwVoQw9GNT+EpnwEzY5InQTgxqc7zZObM8NmG/1Urr0OcvGGJ9JST6wqX+kDXrvoYdwjS5hSusgMKgA==
+uniforms-bridge-simple-schema-2@3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/uniforms-bridge-simple-schema-2/-/uniforms-bridge-simple-schema-2-3.4.0.tgz#c4206d4172ef2b820a902352f7c94852c95bf0ae"
+  integrity sha512-J3t2HmG7Jymod1uQI9K0tCESU3EG/PuN9Ij5qQayrlsLm4rVnp8TW4BSOqC8nKcy653FY7PDFbVG3r8VHrtXPA==
   dependencies:
     invariant "^2.0.0"
     lodash "^4.0.0"
     simpl-schema "^1.0.0 || ^0.0.4"
     tslib "^1.10.0"
-    uniforms "^3.0.0-rc.3"
+    uniforms "^3.4.0"
 
-uniforms-bridge-simple-schema@3.0.0-rc.3:
-  version "3.0.0-rc.3"
-  resolved "https://registry.yarnpkg.com/uniforms-bridge-simple-schema/-/uniforms-bridge-simple-schema-3.0.0-rc.3.tgz#862f6e251e529059c39dcf3dedbaa16e45bb2914"
-  integrity sha512-qa4of2Z2pKp4HIAG3GeazeLMACBWklCOfTilBc5dqtZcnlpzJhJFILF88AjZdkXCHKVPYDjXU5GeU3h/keOdQA==
+uniforms-bridge-simple-schema@3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/uniforms-bridge-simple-schema/-/uniforms-bridge-simple-schema-3.4.0.tgz#1af1e5698ffd244a114019e8d3442bbd0d13e40c"
+  integrity sha512-qsB4SPNNyIBu4k3TlXnJbxK+QBc+nyIecnG5l5pKdruCve6AUGCYcDl/XH9Wo3qbBDCRWh9KZJ+tVre5QuPJng==
   dependencies:
     invariant "^2.0.0"
     lodash "^4.0.0"
     tslib "^1.10.0"
-    uniforms "^3.0.0-rc.3"
+    uniforms "^3.4.0"
 
 uniforms-patternfly@4.0.0:
   version "4.0.0"
@@ -10947,16 +10947,7 @@ uniforms-patternfly@4.0.0:
     "@patternfly/react-core" "4.45.1"
     "@patternfly/react-icons" "4.7.2"
 
-uniforms@3.0.0-rc.3:
-  version "3.0.0-rc.3"
-  resolved "https://registry.yarnpkg.com/uniforms/-/uniforms-3.0.0-rc.3.tgz#8f1608d08070c3a6d9127162a21885661323ccaf"
-  integrity sha512-UlmXox4YuSa5x/FqTxw7EtLIWYmnuW0QIBGh2RrkXWAssUYxu/XVlLfoW23MOGgT2fP8rdYWTeGlRy8MIEA6IQ==
-  dependencies:
-    invariant "^2.0.0"
-    lodash "^4.0.0"
-    tslib "^1.10.0"
-
-uniforms@^3.0.0-rc.3:
+uniforms@3.4.0, uniforms@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uniforms/-/uniforms-3.4.0.tgz#3c3c59a1c644a80a7539d1af9e21ac7029ed8a0a"
   integrity sha512-eCbUYPkVVUWUDXweTeVFZqipkj5Sna42GMvjvcutyw+s5iP18o6QfPZsOTHwLXThPyObqehL5spPJvsznKlPaw==

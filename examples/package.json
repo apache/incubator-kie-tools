@@ -14,11 +14,11 @@
     "react-dom": "16.13.1",
     "react-scripts": "3.1.1",
     "simpl-schema": "1.5.7",
-    "uniforms": "3.0.0-rc.3",
-    "uniforms-bridge-graphql": "3.0.0-rc.3",
-    "uniforms-bridge-json-schema": "3.0.0-rc.3",
-    "uniforms-bridge-simple-schema": "3.0.0-rc.3",
-    "uniforms-bridge-simple-schema-2": "3.0.0-rc.3",
+    "uniforms": "3.4.0",
+    "uniforms-bridge-graphql": "3.4.0",
+    "uniforms-bridge-json-schema": "3.4.0",
+    "uniforms-bridge-simple-schema": "3.4.0",
+    "uniforms-bridge-simple-schema-2": "3.4.0",
     "uniforms-patternfly": "4.0.0"
   },
   "devDependencies": {
