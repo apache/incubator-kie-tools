@@ -33,6 +33,8 @@ public interface ActivityDataIOEditorView {
         ListBoxValues.ValueTester dataTypesTester();
 
         ListBoxValues.ValueTester processVarTester();
+
+        void addDataType(String dataType, String oldType);
     }
 
     void init(final Presenter presenter);
@@ -72,4 +74,6 @@ public interface ActivityDataIOEditorView {
     void setInputAssignmentsDisallowedNames(final Set<String> names);
 
     void setReadOnly(final boolean readOnly);
+
+    void addDataType(String dataType, String oldType);
 }

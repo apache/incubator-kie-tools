@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Document;
@@ -48,6 +50,8 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFor
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
@@ -75,7 +79,7 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
     protected TableCellElement datatypeth = Document.get().createTHElement();
 
     @Inject
-    private DataTypeNamesService clientDataTypesService;
+    protected DataTypeNamesService clientDataTypesService;
 
     @DataField
     private TableCellElement tagsth = Document.get().createTHElement();
@@ -85,6 +89,18 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
     boolean readOnly = false;
 
     private boolean tagsDisabled = false;
+
+    private final SessionManager sessionManager;
+
+    protected Event<RefreshFormPropertiesEvent> refreshFormsEvent;
+
+    protected RefreshFormPropertiesEvent refreshFormPropertiesEvent = null;
+
+    @Inject
+    public VariablesEditorWidgetViewImpl(final SessionManager sessionManager, final Event<RefreshFormPropertiesEvent> refreshFormsEvent) {
+        this.sessionManager = sessionManager;
+        this.refreshFormsEvent = refreshFormsEvent;
+    }
 
     /**
      * The list of variableRows that currently exist.
@@ -129,6 +145,14 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
         }
     }
 
+    void onRefreshFormPropertiesEvent(@Observes RefreshFormPropertiesEvent event) {
+        if (!event.equals(refreshFormPropertiesEvent)) {
+            String value = getValue();
+            getDataTypes(value,
+                         false);
+        }
+    }
+
     protected void doSetValue(final String value,
                               final boolean fireEvents,
                               final boolean initializeView) {
@@ -166,12 +190,14 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
                                                                                             "Object",
                                                                                             "String"));
 
+        Set<String> types = StringUtils.getSetDataTypes(value);
+
         clientDataTypesService
                 .call(presenter.getDiagramPath())
                 .then(serverDataTypes -> {
                     List<List<String>> mergedDataTypes = mergeDataTypes(simpleDataTypes,
                                                                         simpleDataTypeDisplayNames,
-                                                                        serverDataTypes);
+                                                                        serverDataTypes, types);
                     setDataTypes(mergedDataTypes.get(0),
                                  mergedDataTypes.get(1));
                     doSetValue(value,
@@ -193,7 +219,8 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
 
     private List<List<String>> mergeDataTypes(final List<String> simpleDataTypes,
                                               final List<String> simpleDataTypeDisplayNames,
-                                              final List<String> serverDataTypes) {
+                                              final List<String> serverDataTypes,
+                                              final Set<String> excludeValues) {
         List<List<String>> results = new ArrayList<List<String>>(2);
         List<String> allDataTypes = new ArrayList<String>();
         List<String> allDataTypeDisplayNames = new ArrayList<String>();
@@ -202,7 +229,17 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
 
         // Create sorted map with DataTypeDisplayNames as the keys
         Map<String, String> mapServerDataTypeDisplayNames = new TreeMap<String, String>();
+
         for (String serverDataType : serverDataTypes) {
+            boolean isAsset = false;
+            if (serverDataType.contains("Asset-")) {
+                serverDataType = serverDataType.substring(6);
+                isAsset = true;
+            }
+
+            if (!isAsset && excludeValues.contains(serverDataType)) {
+                continue;
+            }
             mapServerDataTypeDisplayNames.put(StringUtils.createDataTypeDisplayName(serverDataType),
                                               serverDataType);
         }
@@ -322,6 +359,17 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
     public void setTagsNotEnabled() {
         tagsDisabled = true;
         checkTagsNotEnabled();
+    }
+
+    @Override
+    public void addDataType(String dataType, String oldType) {
+        if (dataType != null && !dataType.isEmpty()) {
+            doAddDataType(dataType, oldType);
+        }
+    }
+
+    protected void doAddDataType(String dataType, String oldType) {
+      clientDataTypesService.add(dataType, oldType);
     }
 
     protected void checkTagsNotEnabled() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.client.forms;
+package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEditor;
 
-import java.util.List;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 
-import elemental2.promise.Promise;
-import org.uberfire.backend.vfs.Path;
+public interface NotifyAddDataType {
 
-public interface DataTypeNamesService {
-    void add(String value, String oldValue);
-    Promise<List<String>> call(Path input);
-    default void reset(){}
+    void notifyAdd(String dataType, String oldType, final ListBoxValues dataTypeListBoxValues);
 }

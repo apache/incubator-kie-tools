@@ -51,7 +51,6 @@ public interface DiagramMarshaller<G extends Graph, M extends Metadata, D extend
      * @return
      */
     default MarshallingResponse<G> unmarshallWithValidation(final MarshallingRequest<InputStream, M> request) {
-
         try {
             final G result = unmarshall(request.getMetadata(), request.getInput());
             return MarshallingResponse.builder()

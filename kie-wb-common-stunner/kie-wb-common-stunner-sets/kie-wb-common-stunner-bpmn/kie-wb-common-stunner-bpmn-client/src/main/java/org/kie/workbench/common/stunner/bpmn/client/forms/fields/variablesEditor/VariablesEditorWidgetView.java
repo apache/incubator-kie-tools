@@ -56,6 +56,9 @@ public interface VariablesEditorWidgetView extends IsWidget {
         void closeLastOverlay();
 
         Button getLastOverlayOpened();
+
+        void addDataType(String dataType, String oldType);
+
     }
 
     void init(final Presenter presenter);
@@ -85,4 +88,6 @@ public interface VariablesEditorWidgetView extends IsWidget {
     void setReadOnly(final boolean readOnly);
 
     void setTagsNotEnabled();
+
+    void addDataType(String dataType, String oldType);
 }

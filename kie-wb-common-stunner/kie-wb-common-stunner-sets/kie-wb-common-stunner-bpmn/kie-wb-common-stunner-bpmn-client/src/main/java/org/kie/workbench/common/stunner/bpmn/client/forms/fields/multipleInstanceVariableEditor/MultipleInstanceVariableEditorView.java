@@ -17,6 +17,8 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.multipleInstanceVariableEditor;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -50,8 +52,8 @@ import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.multiple
 @Templated
 public class MultipleInstanceVariableEditorView
         implements IsElement,
-        MultipleInstanceVariableEditorPresenter.View,
-        ComboBoxView.ModelPresenter {
+                   MultipleInstanceVariableEditorPresenter.View,
+                   ComboBoxView.ModelPresenter {
 
     @Inject
     @DataField("variableName")
@@ -62,8 +64,10 @@ public class MultipleInstanceVariableEditorView
     @Inject
     protected ComboBox dataTypeComboBox;
 
+    protected static Set<ComboBox> comboBoxes = new HashSet<ComboBox>();
+
     @Inject
-    private DataTypeNamesService clientDataTypesService;
+    protected DataTypeNamesService clientDataTypesService;
 
     @Inject
     @DataField
@@ -89,20 +93,19 @@ public class MultipleInstanceVariableEditorView
         this.presenter = presenter;
 
         dataTypeComboBox.init(this,
-                true,
-                dataType,
-                customDataType,
-                false,
-                true,
-                CUSTOM_PROMPT,
-                ENTER_TYPE_PROMPT);
+                              true,
+                              dataType,
+                              customDataType,
+                              false,
+                              true,
+                              CUSTOM_PROMPT,
+                              ENTER_TYPE_PROMPT);
 
         customDataType.setRegExp(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_REGEXP,
                                  StunnerFormsClientFieldsConstants.CONSTANTS.Removed_invalid_characters_from_name(),
                                  StunnerFormsClientFieldsConstants.CONSTANTS.Invalid_character_in_name());
 
         ListBoxValues dataTypeListBoxValues = new ListBoxValues(VariableListItemWidgetView.CUSTOM_PROMPT, "Edit ", null);
-
         clientDataTypesService
                 .call(presenter.getDiagramPath())
                 .then(getListObjectThenOnFulfilledCallbackFn(presenter.getSimpleDataTypes(), dataTypeListBoxValues))
@@ -114,6 +117,7 @@ public class MultipleInstanceVariableEditorView
         dataTypeComboBox.setCurrentTextValue("");
         dataTypeComboBox.setListBoxValues(dataTypeListBoxValues);
         dataTypeComboBox.setShowCustomValues(true);
+        comboBoxes.add(dataTypeComboBox);
     }
 
     @Override
@@ -159,6 +163,13 @@ public class MultipleInstanceVariableEditorView
 
     @Override
     public void setTextBoxModelValue(TextBox textBox, String value) {
+        if (value != null && !value.isEmpty()) {
+            clientDataTypesService.add(value, null);
+            final ListBoxValues listBoxValues = dataTypeComboBox.getListBoxValues();
+            comboBoxes.forEach(item -> {
+                item.setListBoxValues(listBoxValues);
+            });
+        }
     }
 
     @Override

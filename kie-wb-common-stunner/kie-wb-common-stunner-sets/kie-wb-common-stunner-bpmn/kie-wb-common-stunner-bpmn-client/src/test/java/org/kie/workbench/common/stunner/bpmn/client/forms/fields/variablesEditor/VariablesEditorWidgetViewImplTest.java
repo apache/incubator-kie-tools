@@ -23,7 +23,6 @@ import java.util.List;
 import javax.enterprise.event.Event;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMock;
@@ -36,6 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -49,6 +49,7 @@ import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyListOf;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -88,12 +89,16 @@ public class VariablesEditorWidgetViewImplTest {
     @Mock
     private TableCellElement datatypeth;
 
+    @Mock
+    private RefreshFormPropertiesEvent refreshFormsEvent;
+
     @GwtMock
     private ListWidget<VariableRow, VariableListItemWidgetViewImpl> variableRows;
 
     @GwtMock
     private TableCellElement tagsth;
 
+    @GwtMock
     private VariablesEditorWidgetViewImpl view;
 
     @Captor
@@ -109,7 +114,6 @@ public class VariablesEditorWidgetViewImplTest {
     @Before
     public void setUp() {
         GwtMockito.initMocks(this);
-        view = GWT.create(VariablesEditorWidgetViewImpl.class);
         view.variableRows = variableRows;
         view.addVarButton = button;
         view.nameth = nameth;
@@ -134,6 +138,8 @@ public class VariablesEditorWidgetViewImplTest {
 
         doCallRealMethod().when(view).setTagsth(any());
         doCallRealMethod().when(view).setTagsDisabled(anyBoolean());
+        doCallRealMethod().when(view).addDataType(anyString(), anyString());
+        doNothing().when(view).doAddDataType(anyString(), anyString());
 
         view.setTagsth(tagsth);
 
@@ -223,6 +229,32 @@ public class VariablesEditorWidgetViewImplTest {
                         true);
         verify(view,
                times(1)).initView();
+
+        view.doSetValue(VARIABLES,
+                        false,
+                        true);
+        verify(view,
+               times(2)).initView();
+    }
+
+    @Test
+    public void testSetValueNull() {
+        view.setValue("MyValue", false);
+        verify(view,
+               times(0)).initView();
+    }
+
+    @Test
+    public void testOnFormRefresh() {
+        doCallRealMethod().when(view).onRefreshFormPropertiesEvent(any());
+        view.onRefreshFormPropertiesEvent(refreshFormsEvent);
+        verify(view,
+               times(0)).initView();
+
+        view.refreshFormPropertiesEvent = refreshFormsEvent;
+        view.onRefreshFormPropertiesEvent(refreshFormsEvent);
+        verify(view,
+               times(0)).initView();
     }
 
     @Test
@@ -258,4 +290,15 @@ public class VariablesEditorWidgetViewImplTest {
         verify(tagsth, times(1)).removeFromParent();
     }
 
+    @Test
+    public void testAddDataType() {
+        view.addDataType(null, "oldType");
+        verify(view, times(0)).doAddDataType(anyString(), anyString());
+
+        view.addDataType("", "oldType");
+        verify(view, times(0)).doAddDataType(anyString(), anyString());
+
+        view.addDataType("newType", "oldType");
+        verify(view, times(1)).doAddDataType(anyString(), anyString());
+    }
 }

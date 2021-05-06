@@ -61,6 +61,7 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P, F>,
     }
 
     public Result<BpmnNode> convertProcess() {
+
         Process process = delegate.definitionResolver.getProcess();
         String definitionsId = delegate.definitionResolver.getDefinitions().getId();
         BpmnNode processRoot = convertProcessNode(definitionsId, process);
@@ -76,7 +77,6 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P, F>,
                                                             nodes);
 
         Result<BpmnNode> postConvertResult = delegate.postConvert(processRoot);
-
         return ResultComposer.compose(processRoot, nodesResult, edgesResult, postConvertResult);
     }
 

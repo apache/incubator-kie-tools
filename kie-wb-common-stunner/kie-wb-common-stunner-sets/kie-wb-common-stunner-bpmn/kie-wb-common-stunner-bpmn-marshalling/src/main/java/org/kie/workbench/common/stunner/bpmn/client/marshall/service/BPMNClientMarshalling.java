@@ -41,6 +41,7 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunne
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.BpmnNode;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.GraphBuilder;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.processes.DataTypeCache;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
@@ -67,6 +68,7 @@ public class BPMNClientMarshalling {
     private final GraphCommandFactory commandFactory;
     private final GraphCommandManager commandManager;
     private final ManagedInstance<WorkItemDefinitionRegistry> widRegistries;
+    private final DataTypeCache dataTypeCache;
 
     @Inject
     public BPMNClientMarshalling(final DefinitionManager definitionManager,
@@ -74,13 +76,15 @@ public class BPMNClientMarshalling {
                                  final FactoryManager factoryManager,
                                  final GraphCommandFactory commandFactory,
                                  final GraphCommandManager commandManager,
-                                 final ManagedInstance<WorkItemDefinitionRegistry> widRegistries) {
+                                 final ManagedInstance<WorkItemDefinitionRegistry> widRegistries,
+                                 final DataTypeCache dataTypeCache) {
         this.definitionManager = definitionManager;
         this.ruleManager = ruleManager;
         this.typedFactoryManager = new TypedFactoryManager(factoryManager);
         this.commandFactory = commandFactory;
         this.commandManager = commandManager;
         this.widRegistries = widRegistries;
+        this.dataTypeCache = dataTypeCache;
     }
 
     @PostConstruct
@@ -125,6 +129,7 @@ public class BPMNClientMarshalling {
         // perform actual conversion. Process is the root of the diagram
         final Result<BpmnNode> result = converterFactory.rootProcessConverter().convertProcess();
         final BpmnNode diagramRoot = result.value();
+        dataTypeCache.initCache(diagramRoot);
 
         // the root node contains all of the information
         // needed to build the entire graph (including parent/child relationships)
@@ -145,6 +150,7 @@ public class BPMNClientMarshalling {
                         commandFactory,
                         commandManager);
         graphBuilder.render(diagramRoot);
+
         return graph;
     }
 

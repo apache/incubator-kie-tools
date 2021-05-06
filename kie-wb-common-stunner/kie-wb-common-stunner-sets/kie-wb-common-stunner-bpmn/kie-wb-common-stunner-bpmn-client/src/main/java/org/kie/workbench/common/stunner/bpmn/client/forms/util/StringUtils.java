@@ -17,7 +17,9 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.regexp.shared.RegExp;
 import org.kie.workbench.common.stunner.core.util.Patterns;
@@ -155,8 +157,29 @@ public class StringUtils {
         int i = dataType.lastIndexOf('.');
         StringBuilder formattedDataType = new StringBuilder();
         formattedDataType.append(dataType.substring(i + 1));
-        formattedDataType.append(" [").append(dataType, 0, i).append("]");
+        if (i != -1) {
+            formattedDataType.append(" [").append(dataType, 0, i).append("]");
+        }
         return formattedDataType.toString();
+    }
+
+    /**
+     * returns set of Data Types"
+     * @param value
+     * @return
+     */
+    public static Set<String> getSetDataTypes(String value) {
+        Set<String> types = new HashSet<>();
+        if (value == null) {
+            return types;
+        }
+        final String[] split = value.split(",");
+        for (String string : split) {
+            String type = string.substring(string.indexOf(':') + 1, string.lastIndexOf(':'));
+            types.add(type);
+        }
+
+        return types;
     }
 
     /**

@@ -61,6 +61,8 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
     private Set<String> disallowedNames = new HashSet<>();
     private String disallowedNameErrorMessage = "";
 
+    private NotifyAddDataType notifier;
+
     // List of rows that won't be shown in the UI
     List<AssignmentRow> hiddenPropertyRows = new ArrayList<>();
 
@@ -208,6 +210,11 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
         }
     }
 
+    @Override
+    public void addDataType(String dataType, String oldType) {
+        notifier.notifyAdd(dataType, oldType, dataTypeListBoxValues);
+    }
+
     /**
      * Tests whether a Row name occurs more than once in the list of rows
      * @param name
@@ -252,5 +259,9 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
 
     public void setReadOnly(final boolean readOnly) {
         view.setReadOnly(readOnly);
+    }
+
+    public void setNotifier(NotifyAddDataType notifier) {
+        this.notifier = notifier;
     }
 }

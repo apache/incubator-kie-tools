@@ -322,6 +322,20 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         return diagram.getMetadata().getPath();
     }
 
+    private Set<String> getSetDataTypes() {
+
+        Map<String, String> assignmentsProperties = AssignmentParser.parseAssignmentsInfo(assignmentsInfo);
+
+        String datainputset = assignmentsProperties.get(AssignmentParser.DATAINPUTSET);
+        String dataoutputset = assignmentsProperties.get(AssignmentParser.DATAOUTPUTSET);
+
+        Set<String> set = new HashSet<>();
+        set.addAll(StringUtils.getSetDataTypes(datainputset));
+        set.addAll(StringUtils.getSetDataTypes(dataoutputset));
+
+        return set;
+    }
+
     public void showDataIOEditor(final String datatypes) {
         String taskName = getTaskName();
         String processvars = getProcessVariables();
@@ -360,10 +374,20 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
                                                hasOutputVars,
                                                isSingleOutputVar);
 
-        ActivityDataIOEditor.GetDataCallback callback = data -> {
-            String assignmentsInfoString = createAssignmentsInfoString(data);
-            setValue(assignmentsInfoString,
-                     true);
+        ActivityDataIOEditor.GetDataCallback callback = new ActivityDataIOEditor.GetDataCallback() {
+            @Override
+            public void getData(AssignmentData data) {
+                String assignmentsInfoString = createAssignmentsInfoString(data);
+                setValue(assignmentsInfoString,
+                         true);
+            }
+
+            @Override
+            public void addDataType(String dataType, String oldType) {
+                if (dataType != null && !dataType.isEmpty()) {
+                    clientDataTypesService.add(dataType, oldType);
+                }
+            }
         };
 
         activityDataIOEditor.setCallback(callback);
@@ -401,6 +425,8 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
     }
 
     protected String formatDataTypes(final List<String> dataTypes) {
+
+        Set<String> set = getSetDataTypes();
         StringBuilder sb = new StringBuilder();
         if (dataTypes != null && !dataTypes.isEmpty()) {
             List<String> formattedDataTypes = new ArrayList<>(dataTypes.size());

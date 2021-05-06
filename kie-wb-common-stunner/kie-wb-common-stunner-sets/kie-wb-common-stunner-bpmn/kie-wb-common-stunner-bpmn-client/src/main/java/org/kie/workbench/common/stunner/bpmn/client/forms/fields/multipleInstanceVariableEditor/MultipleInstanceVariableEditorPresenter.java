@@ -128,9 +128,13 @@ public class MultipleInstanceVariableEditorPresenter extends FieldEditorPresente
 
     static IThenable.ThenOnFulfilledCallbackFn<List<String>, Object> getListObjectThenOnFulfilledCallbackFn(List<String> simpleDataTypes, ListBoxValues dataTypeListBoxValues) {
         return serverDataTypes -> {
+
             List<String> mergedList = new ArrayList<>(simpleDataTypes);
 
             for (String type : serverDataTypes) {
+                if (type.contains("Asset-")) {
+                    type = type.substring(6);
+                }
                 String displayType = createDataTypeDisplayName(type);
                 getMapDataTypeNamesToDisplayNames().put(
                         displayType,

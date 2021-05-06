@@ -43,6 +43,11 @@ public class ImportsEditor implements ImportsEditorView.Presenter {
     }
 
     @Override
+    public ImportsValue getImports() {
+        return new ImportsValue(view.getDefaultImports(), view.getWSDLImports());
+    }
+
+    @Override
     public void cancel() {
         view.hideView();
     }

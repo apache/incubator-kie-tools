@@ -210,7 +210,11 @@ public class AssignmentListItemWidgetViewImplTest {
 
     @Test
     public void testSetTextBoxModelValueCustomDataType() {
+        ActivityDataIOEditorWidget parent = mock(ActivityDataIOEditorWidget.class);
+        when(parent.isDuplicateName(anyString())).thenReturn(true);
+
         assertNull(view.getModel().getCustomDataType());
+        view.setParentWidget(parent);
         view.setTextBoxModelValue(customDataType, "abc");
 
         assertEquals("abc", view.getModel().getCustomDataType());

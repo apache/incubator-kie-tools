@@ -195,6 +195,8 @@ public class VariableListItemWidgetTest {
 
     @Test
     public void testSetTextBoxModelValue() {
+        VariablesEditorWidgetView.Presenter presenter = mock(VariablesEditorWidgetView.Presenter.class);
+        widget.setParentWidget(presenter);
         widget.setTextBoxModelValue(customDataType,
                                     "com.test.Pencil");
         verify(widget,
@@ -237,6 +239,9 @@ public class VariableListItemWidgetTest {
     @Test
     public void testSetGetCustomDataType() {
         String customDataType = "com.test.MyType";
+        VariablesEditorWidgetView.Presenter presenter = mock(VariablesEditorWidgetView.Presenter.class);
+        widget.setParentWidget(presenter);
+
         widget.setTextBoxModelValue(widget.customDataType,
                                     customDataType);
         String returnedCustomDataType1 = widget.getCustomDataType();

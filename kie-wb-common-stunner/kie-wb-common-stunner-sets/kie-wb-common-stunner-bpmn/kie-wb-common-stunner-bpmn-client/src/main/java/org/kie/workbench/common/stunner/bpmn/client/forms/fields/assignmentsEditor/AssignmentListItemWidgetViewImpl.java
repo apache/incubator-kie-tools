@@ -146,11 +146,15 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
         this.parentWidget = parentWidget;
     }
 
+    private String oldType = null;
+
     @Override
     public void setTextBoxModelValue(final TextBox textBox,
                                      final String value) {
         if (textBox == customDataType) {
+            parentWidget.addDataType(value, oldType);
             setCustomDataType(value);
+            oldType = value;
         } else if (textBox == expression) {
             setExpression(value);
         }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.artifacts;
 
 import java.io.IOException;
@@ -22,11 +21,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -59,7 +60,6 @@ public class DataObjectTypeWidget extends Composite implements HasValue<DataObje
 
     String CUSTOM_PROMPT = "Custom" + ListBoxValues.EDIT_SUFFIX;
     String ENTER_TYPE_PROMPT = "Enter type" + ListBoxValues.EDIT_SUFFIX;
-
     static final List<String> simpleDataTypes = Arrays.asList("Boolean", "Float", "Integer", "Object", "String");
 
     private final SessionManager sessionManager;
@@ -83,7 +83,6 @@ public class DataObjectTypeWidget extends Composite implements HasValue<DataObje
 
     @PostConstruct
     public void init() {
-
         dataTypeComboBox.init(this,
                               true,
                               dataType,
@@ -98,15 +97,15 @@ public class DataObjectTypeWidget extends Composite implements HasValue<DataObje
                                  StunnerFormsClientFieldsConstants.CONSTANTS.Invalid_character_in_name());
 
         ListBoxValues dataTypeListBoxValues = new ListBoxValues(CUSTOM_PROMPT, "Edit ", null);
-
+        doneLoading = false;
         clientDataTypesService
                 .call(getDiagramPath())
                 .then(getListObjectThenOnFulfilledCallbackFn(simpleDataTypes, dataTypeListBoxValues))
                 .catch_(exception -> {
                     dataTypeListBoxValues.addValues(simpleDataTypes);
+                    doneLoading = true;
                     return null;
                 });
-
         dataTypeComboBox.setCurrentTextValue("");
         dataTypeComboBox.setListBoxValues(dataTypeListBoxValues);
         dataTypeComboBox.setShowCustomValues(true);
@@ -125,11 +124,16 @@ public class DataObjectTypeWidget extends Composite implements HasValue<DataObje
         return simpleDataTypes.stream().collect(toMap(x -> x, x -> x));
     }
 
+    static boolean doneLoading = false;
+
     static IThenable.ThenOnFulfilledCallbackFn<List<String>, Object> getListObjectThenOnFulfilledCallbackFn(List<String> simpleDataTypes, ListBoxValues dataTypeListBoxValues) {
         return serverDataTypes -> {
             List<String> mergedList = new ArrayList<>(simpleDataTypes);
-
             for (String type : serverDataTypes) {
+                if (type.contains("Asset-")) {
+                    type = type.substring(6);
+                }
+
                 String displayType = StringUtils.createDataTypeDisplayName(type);
                 getMapDataTypeNamesToDisplayNames().put(
                         displayType,
@@ -139,6 +143,7 @@ public class DataObjectTypeWidget extends Composite implements HasValue<DataObje
             }
 
             dataTypeListBoxValues.addValues(mergedList);
+            doneLoading = true;
             return null;
         };
     }
@@ -161,6 +166,18 @@ public class DataObjectTypeWidget extends Composite implements HasValue<DataObje
 
     @Override
     public void setValue(DataObjectTypeValue value, boolean fireEvents) {
+
+        if (doneLoading) {
+            performSetValue(value, fireEvents);
+        } else {
+            Scheduler.get().scheduleDeferred(() -> {
+                performSetValue(value, fireEvents);
+            });
+        }
+    }
+
+    private void performSetValue(DataObjectTypeValue value, boolean fireEvents) {
+        value.setType(getRealType(value.getType()));
         if (value != null) {
             DataObjectTypeValue oldValue = current;
             current = value;
@@ -204,6 +221,10 @@ public class DataObjectTypeWidget extends Composite implements HasValue<DataObje
 
     @Override
     public void setTextBoxModelValue(TextBox textBox, String value) {
+        String oldValue = current.getType();
+        if (value != null && !value.isEmpty()) {
+            clientDataTypesService.add(value, oldValue);
+        }
     }
 
     @Override
@@ -227,6 +248,19 @@ public class DataObjectTypeWidget extends Composite implements HasValue<DataObje
         oldValue = currentValue;
     }
 
+    static String getRealType(String value) {
+        if (isNullOrEmpty(value)) {
+            return "";
+        }
+
+        for (Map.Entry<String, String> entry : getMapDataTypeNamesToDisplayNames().entrySet()) {
+            if (Objects.equals(value, entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return value;
+    }
+
     static String getDisplayName(String realType) {
         if (getMapDataTypeNamesToDisplayNames().containsKey(realType)) {
             return getMapDataTypeNamesToDisplayNames().get(realType);
@@ -247,3 +281,4 @@ public class DataObjectTypeWidget extends Composite implements HasValue<DataObje
         return isNullOrEmpty(first) ? second : first;
     }
 }
+

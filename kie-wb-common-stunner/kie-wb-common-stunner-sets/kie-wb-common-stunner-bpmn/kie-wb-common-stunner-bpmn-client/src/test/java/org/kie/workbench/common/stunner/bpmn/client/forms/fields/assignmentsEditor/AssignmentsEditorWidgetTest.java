@@ -305,7 +305,16 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
 
     @Test
     public void testFormatDataTypes() {
-        String formattedDataTypes = widget.formatDataTypes(DATATYPES);
+        String formattedDataTypes = widget.formatDataTypes(null);
+        assertEquals(null,
+                     formattedDataTypes);
+
+        List<String> list = new ArrayList<>();
+        formattedDataTypes = widget.formatDataTypes(list);
+        assertEquals("",
+                     formattedDataTypes);
+
+        formattedDataTypes = widget.formatDataTypes(DATATYPES);
         assertEquals(FORMATTED_DATATYPES,
                      formattedDataTypes);
     }

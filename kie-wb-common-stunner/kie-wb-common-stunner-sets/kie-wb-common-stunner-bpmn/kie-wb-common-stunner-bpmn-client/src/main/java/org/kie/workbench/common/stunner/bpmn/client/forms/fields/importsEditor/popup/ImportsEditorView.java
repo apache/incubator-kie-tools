@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.importsEditor.
 import java.util.List;
 
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.ImportsValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.WSDLImport;
 
 public interface ImportsEditorView {
@@ -46,5 +47,7 @@ public interface ImportsEditorView {
         void setCallback(final ImportsEditor.GetDataCallback callback);
 
         void show();
+
+        ImportsValue getImports();
     }
 }

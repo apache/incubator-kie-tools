@@ -27,15 +27,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.DataTypeNamesService;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.PromiseMock;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.ImportsValue;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
@@ -45,7 +49,9 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -74,12 +80,18 @@ public class DefaultImportsEditorWidgetTest {
     private Path path;
 
     @Mock
+    private Promises promises;
+
+    @Mock
     private DataTypeNamesService dataTypeNamesService = mock(DataTypeNamesService.class);
 
     @Mock
     private Event<NotificationEvent> notification = mock(Event.class);
 
     private DefaultImportsEditorWidget tested;
+
+    @Mock
+    private Event<RefreshFormPropertiesEvent> refreshFormsEvent;
 
     @Before
     public void setUp() throws Exception {
@@ -95,9 +107,9 @@ public class DefaultImportsEditorWidgetTest {
         doCallRealMethod().when(tested).loadDefaultDataTypes();
         doCallRealMethod().when(tested).loadServerDataTypes();
         doCallRealMethod().when(tested).addDataTypes(any(List.class), anyBoolean());
+        doCallRealMethod().when(tested).addDataTypes(any());
 
         when(dataTypeNamesService.call(any(Path.class))).thenReturn(null);
-
         when(sessionManager.getCurrentSession()).thenReturn(session);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
@@ -109,7 +121,7 @@ public class DefaultImportsEditorWidgetTest {
     public void testConstructor() {
         DefaultImportsEditorWidget widget = spy(new DefaultImportsEditorWidget(sessionManager,
                                                                                dataTypeNamesService,
-                                                                               notification));
+                                                                               notification, refreshFormsEvent));
         verify(widget, times(1)).loadDefaultDataTypes();
         verify(widget, times(1)).loadServerDataTypes();
     }
@@ -192,5 +204,60 @@ public class DefaultImportsEditorWidgetTest {
         assertTrue(tested.dataTypes.containsKey("org.test.test2"));
         assertTrue(tested.dataTypes.containsValue("test1"));
         assertTrue(tested.dataTypes.containsValue("test2 [org.test]"));
+    }
+
+    @Test
+    public void testLoadServerTypes() {
+
+        final List<String> list = new ArrayList<>();
+        list.add("com.myspace.DataTypeOfTypes1");
+        list.add("com.myspace.DataTypeOfTypes2");
+
+        doReturn(PromiseMock.success(list))
+                .when(dataTypeNamesService)
+                .call(any());
+
+        tested.loadServerDataTypes();
+
+        assertEquals("DataTypeOfTypes1 [com.myspace]", tested.dataTypes.get("com.myspace.DataTypeOfTypes1"));
+        assertEquals("DataTypeOfTypes2 [com.myspace]", tested.dataTypes.get("com.myspace.DataTypeOfTypes2"));
+    }
+
+    @Test
+    public void testAddDataTypesFromImports() {
+        ImportsValue value = new ImportsValue();
+
+        DefaultImport defaultImport = new DefaultImport();
+        tested.refreshFormsEvent = refreshFormsEvent;
+
+        defaultImport.setClassName("MyString");
+        value.addImport(defaultImport);
+
+        tested.addDataTypes(value);
+
+        verify(dataTypeNamesService,
+               times(1)).add(eq("MyString"), any());
+
+        value = new ImportsValue();
+        defaultImport = new DefaultImport();
+
+        defaultImport.setClassName("String");
+        value.addImport(defaultImport);
+
+        tested.addDataTypes(value);
+
+        verify(dataTypeNamesService,
+               times(0)).add(eq("String"), anyString());
+
+        value = new ImportsValue();
+        defaultImport = new DefaultImport();
+
+        defaultImport.setClassName("Object");
+        value.addImport(defaultImport);
+
+        tested.addDataTypes(value);
+
+        verify(dataTypeNamesService,
+               times(0)).add(eq("Object"), anyString());
     }
 }

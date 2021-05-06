@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -201,5 +202,21 @@ public class StringUtilsTest {
         assertFalse(StringUtils.nonEmpty(list));
         list.add("hello");
         assertTrue(StringUtils.nonEmpty(list));
+    }
+
+    @Test
+    public void testDataTypeDisplayName() {
+        assertEquals("MyObject", StringUtils.createDataTypeDisplayName("MyObject"));
+        assertEquals("MyClass [com.test]", StringUtils.createDataTypeDisplayName("com.test.MyClass"));
+        assertEquals("Applicant [mortages.mortages]", StringUtils.createDataTypeDisplayName("mortages.mortages.Applicant"));
+    }
+
+    @Test
+    public void testGetDataTypes() {
+        Set<String> setDataTypes = StringUtils.getSetDataTypes("var:com.var:");
+        assertTrue("Data Type not the same", setDataTypes.contains("com.var"));
+
+        setDataTypes = StringUtils.getSetDataTypes(null);
+        assertTrue("Data Types must be empty", setDataTypes.size() == 0);
     }
 }

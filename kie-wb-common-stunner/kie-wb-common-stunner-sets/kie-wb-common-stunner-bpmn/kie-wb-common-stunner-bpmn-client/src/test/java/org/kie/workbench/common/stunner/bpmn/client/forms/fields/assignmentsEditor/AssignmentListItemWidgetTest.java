@@ -90,6 +90,9 @@ public class AssignmentListItemWidgetTest {
     //@InjectMocks // - cannot InjectMocks because of GWT error
     private AssignmentListItemWidgetViewImpl widget;
 
+    @GwtMock
+    private ActivityDataIOEditorWidget activityWidget;
+
     @Before
     public void initTestCase() {
         GwtMockito.initMocks(this);
@@ -126,6 +129,7 @@ public class AssignmentListItemWidgetTest {
         Mockito.doCallRealMethod().when(widget).setDataTypes(any(ListBoxValues.class));
         Mockito.doCallRealMethod().when(widget).setProcessVariables(any(ListBoxValues.class));
         Mockito.doCallRealMethod().when(widget).init();
+        Mockito.doCallRealMethod().when(widget).setParentWidget(any());
         Mockito.doCallRealMethod().when(widget).setModel(any(AssignmentRow.class));
         Mockito.doCallRealMethod().when(processVarComboBox).setAddCustomValues(any(Boolean.class));
         Mockito.doCallRealMethod().when(processVarComboBox).addCustomValueToListBoxValues(any(String.class),
@@ -178,6 +182,7 @@ public class AssignmentListItemWidgetTest {
 
     @Test
     public void testSetTextBoxModelValue() {
+        widget.setParentWidget(activityWidget);
         widget.setTextBoxModelValue(customDataType,
                                     "abc");
         verify(widget,
@@ -186,6 +191,7 @@ public class AssignmentListItemWidgetTest {
                                     "abc");
         verify(widget,
                times(1)).setExpression("abc");
+        verify(activityWidget, times(1)).addDataType(anyString(), any());
     }
 
     @Test
@@ -248,6 +254,7 @@ public class AssignmentListItemWidgetTest {
     @Test
     public void testSetGetCustomDataType() {
         String customDataType = "com.test.MyType";
+        widget.setParentWidget(activityWidget);
         widget.setTextBoxModelValue(widget.customDataType,
                                     customDataType);
         String returnedCustomDataType1 = widget.getCustomDataType();
@@ -256,6 +263,7 @@ public class AssignmentListItemWidgetTest {
         String returnedCustomDataType2 = widget.getModelValue(widget.dataType);
         assertEquals(customDataType,
                      returnedCustomDataType2);
+        verify(activityWidget, times(1)).addDataType(anyString(), any());
     }
 
     @Test

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.importsEditor.popup.editor.defaultImport;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -167,6 +168,11 @@ public class DefaultImportListItemWidgetViewTest {
 
         defaultImport = tested.getModel();
         defaultImport.setClassName("randomValue");
+        Map<String, String> map = new HashMap<>();
+        map.put("randomValue", "randomValue");
+        map.put("Boolean", "Boolean");
+
+        when(parent.getDataTypes()).thenReturn(map);
         tested.initListItem();
 
         defaultImport = tested.getModel();

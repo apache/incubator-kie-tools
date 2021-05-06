@@ -38,7 +38,8 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
 @Dependent
-public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityDataIOEditorView {
+public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityDataIOEditorView,
+                                                                       NotifyAddDataType {
 
     protected Presenter presenter;
 
@@ -71,10 +72,12 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         row.add(column);
         setTitle(StunnerFormsClientFieldsConstants.CONSTANTS.Data_IO());
         inputAssignmentsWidget.setVariableType(Variable.VariableType.INPUT);
+        inputAssignmentsWidget.setNotifier(this);
         inputAssignmentsWidget.setAllowDuplicateNames(false,
                                                       StunnerFormsClientFieldsConstants.CONSTANTS.A_Data_Input_with_this_name_already_exists());
         column.add(inputAssignmentsWidget.getWidget());
         outputAssignmentsWidget.setVariableType(Variable.VariableType.OUTPUT);
+        outputAssignmentsWidget.setNotifier(this);
         outputAssignmentsWidget.setAllowDuplicateNames(true,
                                                        "");
         column.add(outputAssignmentsWidget.getWidget());
@@ -210,5 +213,15 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         btnOk.setEnabled(!readOnly);
         inputAssignmentsWidget.setReadOnly(readOnly);
         outputAssignmentsWidget.setReadOnly(readOnly);
+    }
+
+    @Override
+    public void addDataType(String dataType, String oldType) {
+        presenter.addDataType(dataType, oldType);
+    }
+
+    @Override
+    public void notifyAdd(String dataType, String oldType, final ListBoxValues dataTypeListBoxValues) {
+        presenter.addDataType(dataType, oldType);
     }
 }

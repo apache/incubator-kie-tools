@@ -25,6 +25,8 @@ public interface ActivityDataIOEditorWidgetView {
     interface Presenter {
 
         void handleAddClick();
+
+        void addDataType(String dataType, String oldType);
     }
 
     void init(final Presenter presenter);

@@ -75,7 +75,12 @@ public class ImportsEditorViewImpl extends BaseModal implements ImportsEditorVie
         btnOk.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
         btnOk.setType(ButtonType.PRIMARY);
         btnOk.setPull(Pull.RIGHT);
-        btnOk.addClickHandler(clickEvent -> presenter.ok());
+        btnOk.addClickHandler(clickEvent -> {
+            presenter.ok();
+            defaultImportsEditorWidget.addDataTypes(presenter.getImports());
+        }
+        );
+
         btnColumn.add(btnOk);
 
         btnCancel = new Button(StunnerFormsClientFieldsConstants.CONSTANTS.Cancel());
