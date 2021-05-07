@@ -13,8 +13,8 @@
   "scripts": {
     "lint": "echo 'Linting..'",
     "test": "jest --silent --verbose --passWithNoTests",
-    "build:fast": "rm -rf dist && webpack",
-    "build": "yarn run lint && yarn test && yarn run build:fast",
+    "build:dev": "rm -rf dist && webpack",
+    "build": "yarn run lint && yarn test && yarn run build:dev",
     "build:prod": "yarn run build #mode production"
   },
   "babel": {

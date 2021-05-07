@@ -28,10 +28,10 @@
     "lint": "echo 'Linting..'",
     "test": "jest --silent --verbose",
     "test:clearCache": "jest --clearCache",
-    "build:fast": "rm -rf dist && webpack",
-    "build": "yarn run lint && yarn test && yarn run build:fast",
+    "build:dev": "rm -rf dist && webpack",
+    "build": "yarn run lint && yarn test && yarn run build:dev",
     "build:prod": "yarn run build --mode production",
-    "start": "webpack-dev-server -d --host 0.0.0.0",
+    "start": "webpack serve --host 0.0.0.0",
     "cy:open": "yarn run cypress open --project it-tests",
     "cy:run": "yarn run cypress run -b chrome --project it-tests",
     "test:it": "yarn run start-server-and-test start http://0.0.0.0:9001 cy:run"

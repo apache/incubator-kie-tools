@@ -122,8 +122,8 @@
     "test": "echo 'No tests to run.'",
     "test:it": "rm -rf ./test-resource && rm -rf ./out && tsc --skipLibCheck --sourceMap true && extest setup-and-run --yarn -u -e ./test-resources -o src/ui-test/settings.json \"out/ui-test/*.test.js\"",
     "test:it:insider": "rm -rf ./test-resource && rm -rf ./out && tsc --skipLibCheck --sourceMap true && extest setup-and-run -t insider --yarn -u -e ./test-resources -o src/ui-test/settings.json \"out/ui-test/*.test.js\"",
-    "build:fast": "rm -rf dist && webpack",
-    "build": "yarn run build:fast",
+    "build:dev": "rm -rf dist && webpack",
+    "build": "yarn run build:dev",
     "build:prod:linux:darwin": "yarn run build && yarn run test && yarn run package:prod",
     "build:prod:windows": "yarn run build && yarn run test && yarn run package:prod",
     "build:prod": "run-script-os"

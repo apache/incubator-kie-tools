@@ -52,7 +52,7 @@ jobs:
         run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 
       - name: Download dependencies
-        run: yarn run init
+        run: yarn bootstrap
 
       - name: Check yarn.lock md5
         id: check-yarn-lock-md5

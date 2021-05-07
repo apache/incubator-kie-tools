@@ -45,7 +45,7 @@ jobs:
           DOWNLOAD_HUB_macOsUrl: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ steps.release-tag.outputs.tag }}/business_modeler_hub_preview_macos_${{ steps.release-tag.outputs.tag }}.zip"
           DOWNLOAD_HUB_windowsUrl: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ steps.release-tag.outputs.tag }}/business_modeler_hub_preview_windows_${{ steps.release-tag.outputs.tag }}.zip"
           DISPLAY: ":99.0"
-        run: cd kogito-tooling && yarn run init && yarn run build:prod && cd -
+        run: cd kogito-tooling && yarn bootstrap && yarn run build:prod && cd -
 
       - name: Checkout "kogito-online"
         uses: actions/checkout@v2

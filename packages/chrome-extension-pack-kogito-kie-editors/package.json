@@ -17,10 +17,10 @@
   "scripts": {
     "lint": "echo 'Linting...'",
     "test": "echo 'No tests to run.'",
-    "build:fast": "rm -rf dist && webpack",
-    "build": "yarn run lint && yarn test && yarn run build:fast",
+    "build:dev": "rm -rf dist && webpack",
+    "build": "yarn run lint && yarn test && yarn run build:dev",
     "build:prod": "yarn run build #mode production",
-    "serve-envelope": "webpack-dev-server",
+    "serve-envelope": "webpack serve",
     "test:it": "jest --runInBand"
   },
   "babel": {

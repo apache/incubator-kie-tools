@@ -104,7 +104,7 @@ jobs:
           DOWNLOAD_HUB_macOsUrl: "${{ steps.release_json_ext.outputs.download_url }}/business_modeler_hub_preview_macos_${{ steps.release_json.outputs.tag }}.zip"
           DOWNLOAD_HUB_windowsUrl: "${{ steps.release_json_ext.outputs.download_url }}/business_modeler_hub_preview_windows_${{ steps.release_json.outputs.tag }}.zip"
           DISPLAY: ":99.0"
-        run: cd kogito-tooling && yarn run init && yarn run build:prod && cd -
+        run: cd kogito-tooling && yarn bootstrap && yarn run build:prod && cd -
 
       - name: Upload VSCode Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'

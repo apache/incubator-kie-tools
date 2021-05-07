@@ -15,8 +15,8 @@
   },
   "publisher": "kie-group",
   "scripts": {
-    "build": "yarn test && yarn run build:fast",
-    "build:fast": "rm -rf dist && webpack",
+    "build": "yarn test && yarn run build:dev",
+    "build:dev": "rm -rf dist && webpack",
     "compile": "webpack",
     "watch": "webpack",
     "test": "jest --silent --verbose",

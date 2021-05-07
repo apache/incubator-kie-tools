@@ -8,8 +8,8 @@
     "lint": "echo 'Linting..'",
     "test": "jest --silent --verbose",
     "test:clearCache": "jest --clearCache",
-    "build:fast": "rm -rf dist && webpack",
-    "build": "yarn run lint && yarn test && yarn run build:fast",
+    "build:dev": "rm -rf dist && webpack",
+    "build": "yarn run lint && yarn test && yarn run build:dev",
     "build:prod": "yarn run build #mode production",
     "start": "rm -rf dist && webpack --watch"
   },

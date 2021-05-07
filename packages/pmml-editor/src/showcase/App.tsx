@@ -18,7 +18,7 @@ import { PMMLEditor } from "../editor";
 import * as React from "react";
 import { useRef, useState } from "react";
 import { PMMLEmptyState } from "./EmptyState";
-import { DisplayProperty } from "csstype";
+import { Property } from "csstype";
 import { HistoryButtons, Theme } from "./HistoryButtons";
 import { Notification } from "@kogito-tooling/notifications/dist/api";
 import "./App.scss";
@@ -30,7 +30,7 @@ type State = string | undefined;
 export const App = () => {
   const [content, setContent] = useState<State>(undefined);
 
-  const displayPMMLEditor = (): DisplayProperty => {
+  const displayPMMLEditor = (): Property.Display => {
     return content === undefined ? "none" : "block";
   };
 

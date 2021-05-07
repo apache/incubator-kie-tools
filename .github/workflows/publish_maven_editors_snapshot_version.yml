@@ -166,7 +166,7 @@ jobs:
           git clean -fd
           git diff
           git checkout ${{ github.event.inputs.kogitoToolingBranchToUpdate }}
-          yarn run init
+          yarn bootstrap
           #
           yarn add -W @kogito-tooling/bpmn-editor-unpacked@${{ steps.newEditorsVersionOnNpm.outputs.version }} --non-interactive || true
           while [ -z `git diff | grep 'bpmn-editor-unpacked": "${{ steps.newEditorsVersionOnNpm.outputs.version }}"'` ]; do !!; done # Retry until last command succeeds

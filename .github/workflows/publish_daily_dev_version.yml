@@ -52,7 +52,7 @@ jobs:
       - name: Download dependencies
         run: |
           cd kogito-tooling
-          yarn run init
+          yarn bootstrap
 
       - name: Build kogito-tooling
         env:

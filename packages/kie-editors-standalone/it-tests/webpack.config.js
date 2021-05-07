@@ -18,8 +18,6 @@ const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  mode: "development",
-  devtool: "",
   entry: {
     app: path.resolve(__dirname, "src", "index.tsx"),
   },
