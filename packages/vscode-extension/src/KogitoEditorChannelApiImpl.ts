@@ -56,7 +56,6 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   }
 
   public async receive_contentRequest() {
-
     if (!this.initialBackup && this.editor.document.uri.scheme === "untitled") {
       return { content: "", path: "" };
     }
