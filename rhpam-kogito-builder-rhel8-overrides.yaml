@@ -7,7 +7,7 @@ description: "RHPAM Platform for building Kogito based on Quarkus or SpringBoot"
 
 labels:
   - name: "com.redhat.component"
-    value: "rhpam-7-kogito-runtime-jvm-rhel8-container"
+    value: "rhpam-7-kogito-builder-rhel8-container"
   - name: "io.k8s.description"
     value: "RHPAM Platform for building Kogito based on Quarkus or Spring Boot"
   - name: "io.k8s.display-name"
