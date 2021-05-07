@@ -59,10 +59,16 @@ function getDmnRunnerArgs(argv) {
   let windowsUrl = argv["DMN_RUNNER__windowsUrl"] || process.env["DMN_RUNNER__windowsUrl"];
   let version = argv["DMN_RUNNER__version"] || process.env["DMN_RUNNER__version"];
 
-  linuxUrl = linuxUrl || `files/dmn-runner.zip`;
-  macOsUrl = macOsUrl || `files/dmn-runner.zip`;
-  windowsUrl = windowsUrl || `files/dmn-runner.zip`;
-  windowsUrl = windowsUrl || `0.0.0`;
+  version = version || `0.0.0`;
+  macOsUrl =
+    macOsUrl ||
+    `https://github.com/adrielparedes/kogito-local-server/releases/latest/download/dmn_runner_macos_v${version}.dmg`;
+  windowsUrl =
+    windowsUrl ||
+    `https://github.com/adrielparedes/kogito-local-server/releases/latest/download/dmn_runner_windows_v${version}.exe`;
+  linuxUrl =
+    linuxUrl ||
+    `https://github.com/adrielparedes/kogito-local-server/releases/latest/download/dmn_runner_linux_v${version}.tar.gz`;
 
   console.info("DMN Runner :: Linux URL: " + linuxUrl);
   console.info("DMN Runner :: macOs URL: " + macOsUrl);
