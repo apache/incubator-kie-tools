@@ -15,7 +15,8 @@
  */
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { Gallery, GalleryItem, PageSection, PageSectionVariants } from "@patternfly/react-core";
+import { PageSection, PageSectionVariants } from "@patternfly/react-core/dist/js/components/Page";
+import { Gallery, GalleryItem } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { EmptyStateNoModels } from "../organisms";
 import { v4 as uuid } from "uuid";
 import { Model, PMML } from "@kogito-tooling/pmml-editor-marshaller";

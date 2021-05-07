@@ -44,7 +44,14 @@ export const en: OnlineI18n = {
   },
   editorFullScreenToolbar: "Exit full screen",
   editorPage: {
+    textEditorModal: {
+      title: (fileName: string) => `Editing ${fileName}`,
+    },
     alerts: {
+      setContentError: {
+        title: "Error opening file. You can edit it as text and reopen the diagram after you've fixed it.",
+        action: "Open as text",
+      },
       copy: "Content copied to clipboard",
       updateGist: "Your gist was updated.",
       updateGistFilename: {

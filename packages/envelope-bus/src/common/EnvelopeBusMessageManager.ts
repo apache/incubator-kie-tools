@@ -208,10 +208,10 @@ export class EnvelopeBusMessageManager<
     if (!response.error) {
       callback.resolve(response.data);
     } else {
-      console.error(JSON.stringify(response.error));
       callback.reject(response.error);
     }
   }
+
   private receive(
     // We can receive messages from both the APIs we provide and consume.
     message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume> | FunctionPropertyNames<ApiToProvide>>,
@@ -227,7 +227,14 @@ export class EnvelopeBusMessageManager<
       // We can only receive requests for the API we provide.
       const request = message as EnvelopeBusMessage<unknown, RequestPropertyNames<ApiToProvide>>;
 
-      const response = apiImpl[request.type].apply(apiImpl, request.data);
+      let response;
+      try {
+        response = apiImpl[request.type].apply(apiImpl, request.data);
+      } catch (err) {
+        this.respond(request, undefined, err);
+        return;
+      }
+
       if (!(response instanceof Promise)) {
         throw new Error(`Cannot make a request to '${request.type}' because it does not return a Promise`);
       }

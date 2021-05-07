@@ -17,7 +17,14 @@
 @import "../../../../node_modules/@patternfly/patternfly/sass-utilities/all";
 @import "../../../../node_modules/@patternfly/patternfly/base/variables";
 
-.vscode-dark .kogito-tooling--loading-screen .pf-c-page {
+:not(.vscode-dark) {
+  .kogito-tooling--loading-screen .pf-l-bullseye {
+    color: var(--pf-global--Color--dark-100);
+    background-color: var(--pf-global--BackgroundColor--light-100);
+  }
+}
+
+.vscode-dark .kogito-tooling--loading-screen .pf-l-bullseye {
   color: var(--pf-global--Color--light-100);
   background-color: var(--pf-global--BackgroundColor--dark-100);
 }
@@ -62,9 +69,9 @@
   justify-content: center;
   width: 35px;
   height: 35px;
-  font-size: var(--pf-global--FontSize--md);
+  font-size: 15px;
   cursor: pointer;
-  color: var(--pf-global--Color--dark-100) !important;
+  line-height: 22px;
 }
 
 /* PF3 -> PF4 overrides */

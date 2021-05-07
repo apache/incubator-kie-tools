@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kogito-tooling/channel-common-api";
+import { ChannelType } from "@kogito-tooling/editor/dist/api";
 import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import {
   Alert,
   AlertActionCloseButton,
   AlertActionLink,
+  Button,
+  Modal,
   Page,
   PageSection,
   Stack,
@@ -31,8 +33,9 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { FileSaveActions } from "../../common/ElectronFile";
 import { GlobalContext } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
-import IpcRendererEvent = Electron.IpcRendererEvent;
 import { useDesktopI18n } from "../common/i18n";
+import * as monaco from "@kiegroup/monaco-editor";
+import IpcRendererEvent = Electron.IpcRendererEvent;
 
 interface Props {
   onClose: () => void;
@@ -50,7 +53,10 @@ export function EditorPage(props: Props) {
   const [savePreviewSuccessAlertVisible, setSavePreviewSuccessAlertVisible] = useState(false);
   const isDirty = useDirtyState(editor);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
+  const [setContentError, setSetContentError] = useState(false);
+  const [fileOpenedAsText, setFileOpenedAsText] = useState(false);
   const { locale, i18n } = useDesktopI18n();
+  const textEditorContainerRef = useRef<HTMLDivElement>(null);
 
   const onClose = useCallback(() => {
     if (!isDirty) {
@@ -216,6 +222,64 @@ export function EditorPage(props: Props) {
     };
   }, []);
 
+  const onSetContentError = useCallback(() => {
+    setSetContentError(true);
+  }, []);
+
+  const openFileAsText = useCallback(() => {
+    setFileOpenedAsText(true);
+  }, []);
+
+  const refreshDiagramEditor = useCallback(() => {
+    setFileOpenedAsText(false);
+    setSetContentError(false);
+  }, []);
+
+  const [textEditorContent, setTextEditorContext] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    context.file.getFileContents().then((content) => {
+      setTextEditorContext(content);
+    });
+  }, [context.file]);
+
+  useEffect(() => {
+    if (!fileOpenedAsText) {
+      return;
+    }
+
+    const monacoInstance = monaco.editor.create(textEditorContainerRef.current!, {
+      value: textEditorContent,
+      language: "xml", //FIXME: Not all editors will be XML when converted to text
+      scrollBeyondLastLine: false,
+    });
+
+    return () => {
+      const contentAfterFix = monacoInstance.getValue();
+      monacoInstance.dispose();
+
+      editor
+        ?.setContent(context.file.fileName, contentAfterFix)
+        .then(() => {
+          editor?.getStateControl().updateCommandStack({
+            id: "fix-from-text-editor",
+            undo: () => {
+              editor?.setContent(context.file.fileName, textEditorContent!);
+            },
+            redo: () => {
+              editor?.setContent(context.file.fileName, contentAfterFix).then(() => {
+                setFileOpenedAsText(false);
+                setSetContentError(false);
+              });
+            },
+          });
+        })
+        .catch(() => {
+          setTextEditorContext(contentAfterFix);
+        });
+    };
+  }, [fileOpenedAsText, editor, context.file, textEditorContent]);
+
   return (
     <Page className={"kogito--editor-page"}>
       <PageSection variant="dark" padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
@@ -269,6 +333,21 @@ export function EditorPage(props: Props) {
                 />
               </div>
             )}
+            {setContentError && !fileOpenedAsText && (
+              <div className={"kogito--alert-container"}>
+                <Alert
+                  variant="danger"
+                  title={i18n.editorPage.alerts.setContentError.title}
+                  actionLinks={
+                    <>
+                      <AlertActionLink data-testid="unsaved-alert-save-button" onClick={openFileAsText}>
+                        {i18n.editorPage.alerts.setContentError.action}
+                      </AlertActionLink>
+                    </>
+                  }
+                />
+              </div>
+            )}
             {saveFileSuccessAlertVisible && (
               <div className={"kogito--alert-container"}>
                 <Alert
@@ -291,10 +370,25 @@ export function EditorPage(props: Props) {
               ref={editorRef}
               file={context.file}
               receive_ready={saveOpenedFileThumbnail}
+              receive_setContentError={onSetContentError}
               editorEnvelopeLocator={context.editorEnvelopeLocator}
               channelType={ChannelType.DESKTOP}
               locale={locale}
             />
+            <Modal
+              showClose={false}
+              width={"100%"}
+              height={"100%"}
+              title={i18n.editorPage.textEditorModal.title(context.file.fileName.split("/").pop()!)}
+              isOpen={fileOpenedAsText}
+              actions={[
+                <Button key="confirm" variant="primary" onClick={refreshDiagramEditor}>
+                  {i18n.terms.done}
+                </Button>,
+              ]}
+            >
+              <div style={{ width: "100%", minHeight: "calc(100vh - 210px)" }} ref={textEditorContainerRef} />
+            </Modal>
           </StackItem>
         </Stack>
         <textarea ref={copyContentTextArea} style={{ opacity: 0, width: 0, height: 0 }} />

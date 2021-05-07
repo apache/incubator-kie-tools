@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-import { GwtEditorMapping } from "@kogito-tooling/kie-bc-editors";
 import * as fs from "fs";
 import { BaseEditorResources, EditorResources } from "../common/EditorResources";
 import * as externalAssets from "@kogito-tooling/external-assets-base";
+import { getBpmnLanguageData } from "@kogito-tooling/kie-bc-editors/dist/bpmn/api";
 
 export class BpmnEditorResources extends BaseEditorResources {
   public get(args: { resourcesPathPrefix: string }) {
-    const bpmnLanguageData = new GwtEditorMapping().getLanguageData({
-      resourcesPathPrefix: args.resourcesPathPrefix,
-      fileExtension: "bpmn",
-      initialLocale: "",
-      isReadOnly: false,
-    })!;
+    const bpmnLanguageData = getBpmnLanguageData(args.resourcesPathPrefix);
 
     const bpmnEditorResources: EditorResources = {
-      envelopeJsResource: this.createResource({ path: `dist/envelope/index.js` }),
+      envelopeJsResource: this.createResource({ path: `dist/envelope/bpmn-envelope.js` }),
       baseJsResources: bpmnLanguageData?.resources
         .filter((r) => r.type === "js")
         .pop()
@@ -54,8 +49,8 @@ export class BpmnEditorResources extends BaseEditorResources {
 
   public getReferencedJSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
     const editorDir = fs.readdirSync(`${resourcesPathPrefix}/${gwtModuleName}`);
-    const gwtJSFile = editorDir.filter((file) => file.indexOf(".cache.js") >= 0).pop();
-    return [{ path: `${resourcesPathPrefix}/${gwtModuleName}/${gwtJSFile?.split("/").pop()}` }];
+    const gwtJsFiles = editorDir.filter((file) => file.indexOf(".cache.js") >= 0);
+    return gwtJsFiles.map((file) => ({ path: `${resourcesPathPrefix}/${gwtModuleName}/${file?.split("/").pop()}` }));
   }
 
   public getReferencedCSSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
@@ -63,7 +58,6 @@ export class BpmnEditorResources extends BaseEditorResources {
       { path: `${resourcesPathPrefix}/${gwtModuleName}/jquery-ui/jquery-ui.min.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/bootstrap-daterangepicker/daterangepicker.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/bootstrap-select/css/bootstrap-select.min.css` },
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/prettify/bin/prettify.min.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/uberfire-patternfly.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/css/patternfly-additions.min.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/css/bootstrap-datepicker3-1.6.4.min.cache.css` },
@@ -71,7 +65,6 @@ export class BpmnEditorResources extends BaseEditorResources {
       { path: `${resourcesPathPrefix}/${gwtModuleName}/css/bootstrap-notify-custom.min.cache.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/css/card-1.0.1.cache.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/css/bootstrap-slider-9.2.0.min.cache.css` },
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/css/bootstrap-switch-3.3.2.min.cache.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/css/bootstrap-datetimepicker-2.4.4.min.cache.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/css/typeahead-0.10.5.min.cache.css` },
     ];

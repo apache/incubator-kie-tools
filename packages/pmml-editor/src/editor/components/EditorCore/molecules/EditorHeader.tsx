@@ -15,7 +15,7 @@
  */
 import { ModelTitle } from "../atoms";
 import * as React from "react";
-import { Split, SplitItem } from "@patternfly/react-core";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
 import { OutputsHandler } from "../../Outputs/organisms";
 import { FieldName, MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";

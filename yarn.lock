@@ -1295,25 +1295,30 @@
     eol "^0.9.1"
     glob "^7.1.6"
 
-"@kogito-tooling/bpmn-editor-unpacked@7.53.0-Final":
-  version "7.53.0-Final"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-7.53.0-Final.tgz#67fadb13a04dccc9213cedfded4d676a098d4afc"
-  integrity sha512-QCUbi8NqzwSEr0Fs9cF9iuAYMUhFV8XfnMSw7gXsGbps5VXipu8ZOzhBIcyliLn2/ytajKdDwUynmbhbgXCK0A==
+"@kiegroup/monaco-editor@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@kiegroup/monaco-editor/-/monaco-editor-2.3.0.tgz#6a3480fff8c3e8e19beb29368b07da2f3f1c13a1"
+  integrity sha512-Q5cQZzENImglp4XygBDkUhQeWIQ5EtKCqX9yEzuxQCqOsdU4Ghi1v8qhWPtasnRmPcF9JMJp/qjzR9rgyTpFZg==
 
-"@kogito-tooling/dmn-editor-unpacked@7.53.0-Final":
-  version "7.53.0-Final"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-7.53.0-Final.tgz#cc075047f876e99d91f577ec2eba73fffcae0566"
-  integrity sha512-WNe0tVU5DVHRYFYNI+Y4yVWmywaGAgL3cqHTvqFBctCME1VXZdaM5VrNEZ+8RII6a6gOx3eLhx5W+DwxMSNYng==
+"@kogito-tooling/bpmn-editor-unpacked@8.0.0-SNAPSHOT-20210430.130828":
+  version "8.0.0-SNAPSHOT-20210430.130828"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-8.0.0-SNAPSHOT-20210430.130828.tgz#a70f84f8e9bfa53bd96fbfd77c005887d5aed78a"
+  integrity sha512-g6kNywG2BgpmghPDnfgUHEQyix3qHh6a55SCETHOciblqKflqQGkfaqolFe0XXKES2YvyS+x1G4adsc2u9bp6w==
+
+"@kogito-tooling/dmn-editor-unpacked@8.0.0-SNAPSHOT-20210430.130828":
+  version "8.0.0-SNAPSHOT-20210430.130828"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-8.0.0-SNAPSHOT-20210430.130828.tgz#f6b11a58db50985742f1646288835884a9ed85c6"
+  integrity sha512-W/LPk0AUwuCl1IIfNHoeJjRvoFa9JO5F6dkW+kv8UhMS8eeIeJGhrilR5/Php3PalCBzrV4A3J5xQqSQ7f60Cw==
 
 "@kogito-tooling/quarkus-runner-unpacked@0.7.0-SNAPSHOT":
   version "0.7.0-SNAPSHOT"
   resolved "https://registry.yarnpkg.com/@kogito-tooling/quarkus-runner-unpacked/-/quarkus-runner-unpacked-0.7.0-SNAPSHOT.tgz#5f84c2657347f82f1cab0f08cc9b430b32c9d222"
   integrity sha512-nlfngzKGZrI+P6+4dZr76FDGUoXuNsRWckNs7QS8iLTvEChi3azgFz4CBIqNB5sJjPUF4P+TAxsFlQMidIBzyA==
 
-"@kogito-tooling/scesim-editor-unpacked@7.53.0-Final":
-  version "7.53.0-Final"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-7.53.0-Final.tgz#20fb77c625a6910ffb2c87cc1832607ef36aee44"
-  integrity sha512-NBMNWWBBAVAMJSDDfgZpM8bV2WWinVqe+19ccwCV1yKCcwqEW3OCC1SXoVPPh0IBKA7zYDYYoln6qe9Y6r9CQQ==
+"@kogito-tooling/scesim-editor-unpacked@8.0.0-SNAPSHOT-20210430.130828":
+  version "8.0.0-SNAPSHOT-20210430.130828"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.0.0-SNAPSHOT-20210430.130828.tgz#ca90fb9e33ecb1a9eb8cd8d758fd406964db4b8a"
+  integrity sha512-QNGXFkVK7ztS0Sx7UUvSG92LyzGONnL0ENzqz+viY/ogoGZnUGOYafN9uLNw6805G3SB6exESxcdjePvCfSjIQ==
 
 "@lerna/add@3.18.0":
   version "3.18.0"
@@ -10967,17 +10972,10 @@ moment@^2.29.1:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
-monaco-editor-webpack-plugin@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/monaco-editor-webpack-plugin/-/monaco-editor-webpack-plugin-2.0.0.tgz#196052f23678285deca7a7baf4d7aebe9d1ff9e1"
-  integrity sha512-z3nUGhnNis8eHcPepqrxyt3XwrnHD76E4KwV2ozWlBwYM6B3R5YYqzy40ECfJWqRFcwT4DhaLYaXOk5ym4MZhA==
-  dependencies:
-    loader-utils "^2.0.0"
-
-monaco-editor@*:
-  version "0.21.2"
-  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.21.2.tgz#37054e63e480d51a2dd17d609dcfb192304d5605"
-  integrity sha512-jS51RLuzMaoJpYbu7F6TPuWpnWTLD4kjRW0+AZzcryvbxrTwhNy1KC9yboyKpgMTahpUbDUsuQULoo0GV1EPqg==
+monaco-editor@*, monaco-editor@^0.23.0:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.23.0.tgz#24844ba5640c7adb3a2a3ff3b520cf2d7170a6f0"
+  integrity sha512-q+CP5zMR/aFiMTE9QlIavGyGicKnG2v/H8qVvybLzeFsARM8f6G9fL0sMST2tyVYCwDKkGamZUI6647A0jR/Lg==
 
 monaco-page-objects@^1.5.1:
   version "1.5.1"

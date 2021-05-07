@@ -15,7 +15,8 @@
  */
 import * as React from "react";
 import { useEffect, useRef } from "react";
-import { Bullseye, Form } from "@patternfly/react-core";
+import { Form } from "@patternfly/react-core/dist/js/components/Form";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";

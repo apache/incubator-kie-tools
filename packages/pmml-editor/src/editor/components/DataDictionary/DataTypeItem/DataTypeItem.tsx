@@ -1,24 +1,22 @@
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
 import useOnclickOutside from "react-cool-onclickoutside";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import {
-  Button,
-  Flex,
-  FlexItem,
-  Form,
-  FormGroup,
-  Label,
   Select,
   SelectOption,
   SelectOptionObject,
   SelectVariant,
-  Split,
-  SplitItem,
-  Stack,
-  StackItem,
-  TextInput,
-} from "@patternfly/react-core";
-import { ArrowAltCircleRightIcon, ExclamationCircleIcon, TrashIcon } from "@patternfly/react-icons";
+} from "@patternfly/react-core/dist/js/components/Select";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { ArrowAltCircleRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-alt-circle-right-icon";
+import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";

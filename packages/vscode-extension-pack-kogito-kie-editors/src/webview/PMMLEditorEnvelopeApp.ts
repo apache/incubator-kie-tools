@@ -15,15 +15,10 @@
  */
 
 import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
-import { ChannelType, getOperatingSystem } from "@kogito-tooling/channel-common-api";
 import { PMMLEditorFactory } from "@kogito-tooling/pmml-editor";
 
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
   editorFactory: new PMMLEditorFactory(),
-  editorContext: {
-    channel: ChannelType.VSCODE,
-    operatingSystem: getOperatingSystem(),
-  },
 });

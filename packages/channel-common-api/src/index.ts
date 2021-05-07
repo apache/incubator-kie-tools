@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./ChannelType";
 export * from "./ResourceContentOptions";
 export * from "./ResourceListOptions";
 export * from "./SearchType";

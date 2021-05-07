@@ -1,17 +1,10 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import {
-  ActionGroup,
-  Button,
-  Form,
-  FormGroup,
-  Stack,
-  StackItem,
-  Text,
-  TextArea,
-  TextContent,
-  TextVariants,
-} from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import "./MultipleDataTypesAdd.scss";
 
 interface MultipleDataTypeAddProps {

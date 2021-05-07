@@ -15,7 +15,9 @@
  */
 import * as React from "react";
 import { useMemo } from "react";
-import { Flex, FlexItem, Label, Split, SplitItem } from "@patternfly/react-core";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import {
   DataType,
   FieldName,

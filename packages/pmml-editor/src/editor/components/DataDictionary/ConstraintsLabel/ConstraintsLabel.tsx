@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useMemo } from "react";
-import { Label } from "@patternfly/react-core";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { every } from "lodash";
 import { ConstraintType, DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";

@@ -15,55 +15,41 @@
  */
 
 import {
+  ChannelType,
   Editor,
-  EditorContext,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType,
 } from "@kogito-tooling/editor/dist/api";
 import { FACTORY_TYPE, PMMLEditorFactory, PMMLEditorInterface } from "../../editor";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
-import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
+import { OperatingSystem } from "@kogito-tooling/channel-common-api";
 import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
 import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 
 const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
-const editorContext: EditorContext = {
-  channel: ChannelType.EMBEDDED,
-  operatingSystem: OperatingSystem.LINUX,
-};
-
-const envelopeContext: KogitoEditorEnvelopeContextType = {
+const envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi> = {
   channelApi: channelApi,
-  context: editorContext,
+  operatingSystem: OperatingSystem.LINUX,
   services: {
     guidedTour: { isEnabled: () => false },
-    keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: editorContext.operatingSystem }),
+    keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: OperatingSystem.LINUX }),
     i18n: new I18nService(),
   },
 };
 
 describe("PMMLEditorFactory", () => {
-  test("Unsupported LanguageData type", () => {
-    const factory: PMMLEditorFactory = new PMMLEditorFactory();
-    expect(factory.supports("unsupported")).toBeFalsy();
-  });
-
-  test("Supported LanguageData type", () => {
-    const factory: PMMLEditorFactory = new PMMLEditorFactory();
-    expect(factory.supports(FACTORY_TYPE)).toBeTruthy();
-  });
-
   test("Supported type::CreateEditor", () => {
     const factory: PMMLEditorFactory = new PMMLEditorFactory();
 
     jest.spyOn(factory, "createEditor");
 
     const created: Promise<Editor> = factory.createEditor(envelopeContext, {
-      fileExtension: FACTORY_TYPE,
+      fileExtension: "pmml",
       resourcesPathPrefix: "",
       initialLocale: "en",
       isReadOnly: false,
+      channel: ChannelType.EMBEDDED,
     });
     expect(created).resolves.toBeInstanceOf(PMMLEditorInterface);
   });

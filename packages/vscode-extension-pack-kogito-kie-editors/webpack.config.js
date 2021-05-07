@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
-const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 module.exports = async (argv, env) => [
   merge(common, {
@@ -48,7 +48,9 @@ module.exports = async (argv, env) => [
     },
     target: "web",
     entry: {
-      "webview/GwtEditorsEnvelopeApp": "./src/webview/GwtEditorsEnvelopeApp.ts",
+      "webview/BpmnEditorEnvelopeApp": "./src/webview/BpmnEditorEnvelopeApp.ts",
+      "webview/DmnEditorEnvelopeApp": "./src/webview/DmnEditorEnvelopeApp.ts",
+      "webview/SceSimEditorEnvelopeApp": "./src/webview/SceSimEditorEnvelopeApp.ts",
     },
     module: {
       rules: [...pfWebpackOptions.patternflyRules],
@@ -75,6 +77,14 @@ module.exports = async (argv, env) => [
     entry: {
       "webview/PMMLEditorEnvelopeApp": "./src/webview/PMMLEditorEnvelopeApp.ts",
     },
+    resolve: {
+      alias: {
+        // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
+        // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
+        // `@kiegroup/monaco-editor`. This way, everything works as expected.
+        "monaco-editor/esm/vs/editor/editor.api": path.resolve(__dirname, "../../node_modules/@kiegroup/monaco-editor"),
+      },
+    },
     module: {
       rules: [
         {
@@ -84,6 +94,5 @@ module.exports = async (argv, env) => [
         ...pfWebpackOptions.patternflyRules,
       ],
     },
-    plugins: [new MonacoWebpackPlugin()],
   }),
 ];

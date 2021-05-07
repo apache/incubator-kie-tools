@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from "@patternfly/react-core";
-import { DiceSixIcon } from "@patternfly/react-icons";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import { DiceSixIcon } from "@patternfly/react-icons/dist/js/icons/dice-six-icon";
 
 export const EmptyStateNoAttributes = () => (
   <EmptyState data-testid="empty-state-no-attributes" variant={EmptyStateVariant.small}>

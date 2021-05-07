@@ -16,8 +16,13 @@
 
 import * as React from "react";
 import { useEffect } from "react";
-import { Button, Divider, List, ListItem, Text, Title } from "@patternfly/react-core";
-import { BookOpenIcon, TrophyIcon } from "@patternfly/react-icons";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
+import { Text } from "@patternfly/react-core/dist/js/components/Text";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { BookOpenIcon } from "@patternfly/react-icons/dist/js/icons/book-open-icon";
+import { TrophyIcon } from "@patternfly/react-icons/dist/js/icons/trophy-icon";
 import { File } from "@kogito-tooling/editor/dist/channel";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/channel";
 import { DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/guided-tour/dist/api";

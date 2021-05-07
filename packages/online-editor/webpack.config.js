@@ -20,7 +20,6 @@ const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebp
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
-const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 function getLatestGitTag() {
   const tagName = require("child_process").execSync("git rev-list --tags --max-count=1").toString().trim();
@@ -59,7 +58,9 @@ module.exports = async (env, argv) => {
   return merge(common, {
     entry: {
       index: "./src/index.tsx",
-      "envelope/pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
+      "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
+      "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
+      "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
     },
     plugins: [
       new CopyPlugin([
@@ -68,14 +69,22 @@ module.exports = async (env, argv) => {
         { from: "./static/samples", to: "./samples" },
         { from: "./static/index.html", to: "./index.html" },
         { from: "./static/favicon.ico", to: "./favicon.ico" },
-        { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist", to: "./envelope" },
         { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
         { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] },
-        { from: "./static/envelope", to: "./envelope/" },
-        { from: "../../node_modules/@kogito-tooling/pmml-editor/dist/images", to: "./envelope/images" },
+        { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
+        { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
+        { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
+        { from: "../../node_modules/@kogito-tooling/pmml-editor/dist/images", to: "./images" },
       ]),
-      new MonacoWebpackPlugin(),
     ],
+    resolve: {
+      alias: {
+        // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
+        // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
+        // `@kiegroup/monaco-editor`. This way, everything works as expected.
+        "monaco-editor/esm/vs/editor/editor.api": path.resolve(__dirname, "../../node_modules/@kiegroup/monaco-editor"),
+      },
+    },
     module: {
       rules: [
         {
@@ -97,10 +106,6 @@ module.exports = async (env, argv) => {
               },
             ],
           },
-        },
-        {
-          test: /\.ttf$/,
-          use: ["file-loader"],
         },
         ...pfWebpackOptions.patternflyRules,
       ],

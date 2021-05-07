@@ -14,55 +14,70 @@
  * limitations under the License.
  */
 
+import "@patternfly/react-core/dist/styles/base.css";
+import "./styles.scss";
 import {
+  Editor,
   EditorFactory,
-  EditorContext,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType,
 } from "../api";
 import { KogitoEditorEnvelope } from "./KogitoEditorEnvelope";
-import { EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
-import { KogitoEditorEnvelopeApiFactory } from "./KogitoEditorEnvelopeApiImpl";
+import { ApiDefinition, EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
+import { KogitoEditorEnvelopeApiImpl } from "./KogitoEditorEnvelopeApiImpl";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
-import { Envelope } from "@kogito-tooling/envelope";
+import { Envelope, EnvelopeApiFactory } from "@kogito-tooling/envelope";
 import { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
-import { EditorEnvelopeI18n, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
-import "./styles.scss";
+import { getOperatingSystem } from "@kogito-tooling/channel-common-api";
 
 /**
  * Starts the Editor envelope at a given container. Uses `bus` to send messages out of the Envelope and creates Editors based on the editorFactory provided.
  * @param args.container The DOM element where the envelope should be rendered.
  * @param args.bus The implementation of EnvelopeBus to send messages out of the envelope.
  * @param args.editorFactory The factory of Editors provided by this EditorEnvelope.
- * @param args.editorContext The context for Editors with information about the running channel.
  */
 export function init(args: {
   container: HTMLElement;
   bus: EnvelopeBus;
-  editorFactory: EditorFactory;
-  editorContext: EditorContext;
+  editorFactory: EditorFactory<Editor, KogitoEditorChannelApi>;
 }) {
-  const i18n = new I18n<EditorEnvelopeI18n>(editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries);
-  const kogitoEditorFactory = new KogitoEditorEnvelopeApiFactory(args.editorFactory, i18n);
-  const defaultKeyboardShortcuts = new DefaultKeyboardShortcutsService({ os: args.editorContext.operatingSystem });
-  const i18nService = new I18nService();
-  const envelope = new Envelope<
-    KogitoEditorEnvelopeApi,
-    KogitoEditorChannelApi,
-    EditorEnvelopeViewApi,
-    KogitoEditorEnvelopeContextType
-  >(args.bus);
-
-  return new KogitoEditorEnvelope(
-    args.editorContext,
-    kogitoEditorFactory,
-    defaultKeyboardShortcuts,
-    i18nService,
-    envelope
-  ).start(args.container);
+  initCustom({
+    container: args.container,
+    bus: args.bus,
+    apiImplFactory: {
+      create: (createArgs) => new KogitoEditorEnvelopeApiImpl(createArgs, args.editorFactory),
+    },
+  });
 }
 
-export * from "./CompositeEditorFactory";
+export function initCustom<
+  E extends Editor,
+  EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi>,
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>
+>(args: {
+  container: HTMLElement;
+  bus: EnvelopeBus;
+  apiImplFactory: EnvelopeApiFactory<
+    EnvelopeApi,
+    ChannelApi,
+    EditorEnvelopeViewApi<E>,
+    KogitoEditorEnvelopeContextType<ChannelApi>
+  >;
+}) {
+  const defaultKeyboardShortcuts = new DefaultKeyboardShortcutsService({ os: getOperatingSystem() });
+  const i18nService = new I18nService();
+  const envelope = new Envelope<
+    EnvelopeApi,
+    ChannelApi,
+    EditorEnvelopeViewApi<E>,
+    KogitoEditorEnvelopeContextType<ChannelApi>
+  >(args.bus);
+
+  return new KogitoEditorEnvelope(args.apiImplFactory, defaultKeyboardShortcuts, i18nService, envelope).start(
+    args.container
+  );
+}
+export { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
+export * from "./KogitoEditorEnvelopeApiImpl";

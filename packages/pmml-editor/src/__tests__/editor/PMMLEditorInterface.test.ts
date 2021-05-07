@@ -14,32 +14,23 @@
  * limitations under the License.
  */
 
-import {
-  EditorContext,
-  KogitoEditorChannelApi,
-  KogitoEditorEnvelopeContextType,
-} from "@kogito-tooling/editor/dist/api";
+import { KogitoEditorChannelApi, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
 import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import { PMMLEditor, PMMLEditorInterface } from "../../editor";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
-import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
+import { OperatingSystem } from "@kogito-tooling/channel-common-api";
 import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
 import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 
 const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
-const editorContext: EditorContext = {
-  channel: ChannelType.EMBEDDED,
-  operatingSystem: OperatingSystem.LINUX,
-};
-
-const envelopeContext: KogitoEditorEnvelopeContextType = {
+const envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi> = {
   channelApi: channelApi,
-  context: editorContext,
+  operatingSystem: OperatingSystem.LINUX,
   services: {
     guidedTour: { isEnabled: () => false },
-    keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: editorContext.operatingSystem }),
+    keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: OperatingSystem.LINUX }),
     i18n: new I18nService(),
   },
 };

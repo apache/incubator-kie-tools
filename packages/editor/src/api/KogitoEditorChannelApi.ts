@@ -30,7 +30,7 @@ export interface KogitoEditorChannelApi
     CapabilityChannelApi,
     WorkspaceApi,
     NotificationsApi {
-  receive_setContentError(errorMessage: string): void;
+  receive_setContentError(content: EditorContent): void;
   receive_stateControlCommandUpdate(command: StateControlCommand): void;
   receive_contentRequest(): Promise<EditorContent>;
 }

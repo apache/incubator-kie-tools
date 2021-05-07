@@ -16,6 +16,7 @@
 
 import {
   Association,
+  ChannelType,
   Editor,
   EditorContent,
   EditorFactory,
@@ -25,49 +26,34 @@ import {
   KogitoEditorEnvelopeContextType,
   StateControlCommand,
 } from "../api";
-import { ChannelType } from "@kogito-tooling/channel-common-api";
-import { EnvelopeApiFactory, EnvelopeApiFactoryArgs } from "@kogito-tooling/envelope";
-import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
+import { EnvelopeApiFactoryArgs } from "@kogito-tooling/envelope";
+import { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts/dist/api";
 import { DEFAULT_RECT } from "@kogito-tooling/guided-tour/dist/api";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
-import { EditorEnvelopeI18n } from "./i18n";
+import { EditorEnvelopeI18n, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
+import { ApiDefinition } from "@kogito-tooling/envelope-bus/dist/api";
 
-export class KogitoEditorEnvelopeApiFactory
-  implements
-    EnvelopeApiFactory<
-      KogitoEditorEnvelopeApi,
-      KogitoEditorChannelApi,
-      EditorEnvelopeViewApi,
-      KogitoEditorEnvelopeContextType
-    > {
-  constructor(private readonly editorFactory: EditorFactory, private readonly i18n: I18n<EditorEnvelopeI18n>) {}
-
-  public create(
-    args: EnvelopeApiFactoryArgs<
-      KogitoEditorEnvelopeApi,
-      KogitoEditorChannelApi,
-      EditorEnvelopeViewApi,
-      KogitoEditorEnvelopeContextType
-    >
-  ) {
-    return new KogitoEditorEnvelopeApiImpl(args, this.editorFactory, this.i18n);
-  }
-}
-
-export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
+export class KogitoEditorEnvelopeApiImpl<
+  E extends Editor,
+  EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi> = KogitoEditorEnvelopeApi,
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi> = KogitoEditorChannelApi
+> implements KogitoEditorEnvelopeApi {
   private capturedInitRequestYet = false;
-  private editor: Editor;
+  private editor: E;
 
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<
-      KogitoEditorEnvelopeApi,
-      KogitoEditorChannelApi,
-      EditorEnvelopeViewApi,
-      KogitoEditorEnvelopeContextType
+      EnvelopeApi,
+      ChannelApi,
+      EditorEnvelopeViewApi<E>,
+      KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>
     >,
-    private readonly editorFactory: EditorFactory,
-    private readonly i18n: I18n<EditorEnvelopeI18n>
+    private readonly editorFactory: EditorFactory<E, KogitoEditorChannelApi>,
+    private readonly i18n: I18n<EditorEnvelopeI18n> = new I18n<EditorEnvelopeI18n>(
+      editorEnvelopeI18nDefaults,
+      editorEnvelopeI18nDictionaries
+    )
   ) {}
 
   private hasCapturedInitRequestYet() {
@@ -96,23 +82,28 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     this.editor.af_onStartup?.();
     this.editor.af_onOpen?.();
 
-    this.registerDefaultShortcuts(initArgs);
-
     this.args.view().setLoading();
 
-    const content = await this.args.envelopeContext.channelApi.requests.receive_contentRequest();
+    const editorContent = await this.args.envelopeContext.channelApi.requests.receive_contentRequest();
 
     await this.editor
-      .setContent(content.path ?? "", content.content)
+      .setContent(editorContent.path ?? "", editorContent.content)
+      .catch((e) => this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent))
       .finally(() => this.args.view().setLoadingFinished());
+
+    this.registerDefaultShortcuts(initArgs);
 
     this.args.envelopeContext.channelApi.notifications.receive_ready();
   };
 
   public receive_contentChanged = (editorContent: EditorContent) => {
     this.args.view().setLoading();
-    this.editor
+    return this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
+      .catch((e) => {
+        this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent);
+        throw e;
+      })
       .finally(() => this.args.view().setLoadingFinished());
   };
 
@@ -157,7 +148,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
   }
 
   private registerDefaultShortcuts(initArgs: EditorInitArgs) {
-    if (this.args.envelopeContext.context.channel === ChannelType.VSCODE || initArgs.isReadOnly) {
+    if (initArgs.channel === ChannelType.VSCODE || initArgs.isReadOnly) {
       return;
     }
 

@@ -110,7 +110,7 @@ function toolbarContainer(id: string, dependencies: Dependencies) {
       .toolbarContainerTarget()!
       .insertAdjacentHTML(
         "beforeend",
-        `<div class="${KOGITO_TOOLBAR_CONTAINER_CLASS} ${id} edit d-flex flex-column flex-items-start flex-md-row"></div>`
+        `<div style="width:100%; padding-top: 20px;" class="${KOGITO_TOOLBAR_CONTAINER_CLASS} ${id} edit d-flex flex-column flex-items-start flex-md-row"></div>`
       );
   }
 

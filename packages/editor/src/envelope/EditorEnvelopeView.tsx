@@ -17,9 +17,6 @@
 import * as React from "react";
 import { Editor } from "../api";
 import { LoadingScreen } from "./LoadingScreen";
-import "@patternfly/patternfly/base/patternfly-variables.css";
-import "@patternfly/patternfly/patternfly-addons.scss";
-import "@patternfly/patternfly/patternfly.scss";
 import { KeyBindingsHelpOverlay } from "./KeyBindingsHelpOverlay";
 import { useCallback, useImperativeHandle, useState } from "react";
 
@@ -27,15 +24,15 @@ interface Props {
   setLocale: React.Dispatch<string>;
 }
 
-export interface EditorEnvelopeViewApi {
-  getEditor: () => Editor | undefined;
-  setEditor: (editor: Editor) => void;
+export interface EditorEnvelopeViewApi<E extends Editor> {
+  getEditor: () => E | undefined;
+  setEditor: (editor: E) => void;
   setLoading: () => void;
   setLoadingFinished: () => void;
   setLocale: (locale: string) => void;
 }
 
-export const EditorEnvelopeViewRef: React.RefForwardingComponent<EditorEnvelopeViewApi, Props> = (
+export const EditorEnvelopeViewRef: React.RefForwardingComponent<EditorEnvelopeViewApi<Editor>, Props> = (
   props: Props,
   forwardingRef
 ) => {

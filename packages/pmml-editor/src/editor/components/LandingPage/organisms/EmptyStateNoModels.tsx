@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Button, EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from "@patternfly/react-core";
-import { BoxesIcon } from "@patternfly/react-icons";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import { BoxesIcon } from "@patternfly/react-icons/dist/js/icons/boxes-icon";
 
 interface EmptyStateNoModelsProps {
   createModel: () => void;

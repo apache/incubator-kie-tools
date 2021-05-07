@@ -15,13 +15,13 @@
  */
 
 import * as vscode from "vscode";
+import { Uri, Webview } from "vscode";
 import * as nodePath from "path";
 import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
 import { BackendProxy } from "@kogito-tooling/backend/dist/api";
 import { ResourceContentService } from "@kogito-tooling/channel-common-api";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
 import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
-import { Uri, Webview } from "vscode";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { KogitoEditor } from "./KogitoEditor";
@@ -29,6 +29,8 @@ import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { VsCodeI18n } from "./i18n";
 
 export class KogitoEditorFactory {
   constructor(
@@ -38,7 +40,9 @@ export class KogitoEditorFactory {
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
     private readonly workspaceApi: WorkspaceApi,
     private readonly backendProxy: BackendProxy,
-    private readonly notificationsApi: NotificationsApi
+    private readonly notificationsApi: NotificationsApi,
+    private readonly viewType: string,
+    private readonly i18n: I18n<VsCodeI18n>
   ) {}
 
   public configureNew(webviewPanel: vscode.WebviewPanel, document: KogitoEditableDocument) {
@@ -71,7 +75,9 @@ export class KogitoEditorFactory {
       resourceContentService,
       this.workspaceApi,
       this.backendProxy,
-      this.notificationsApi
+      this.notificationsApi,
+      this.viewType,
+      this.i18n
     );
 
     this.editorStore.addAsActive(editor);

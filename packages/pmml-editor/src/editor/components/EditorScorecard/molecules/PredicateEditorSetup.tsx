@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 import * as React from "react";
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
-import { CancellationToken, editor, languages, Position } from "monaco-editor/esm/vs/editor/editor.api";
-import CompletionItemKind = languages.CompletionItemKind;
-import CompletionItemInsertTextRule = languages.CompletionItemInsertTextRule;
+import * as monaco from "@kiegroup/monaco-editor";
+import CompletionItemKind = monaco.languages.CompletionItemKind;
+import CompletionItemInsertTextRule = monaco.languages.CompletionItemInsertTextRule;
 
 export const bootstrapMonaco = () => {
-  const theme: editor.IStandaloneThemeData = {
+  const theme: monaco.editor.IStandaloneThemeData = {
     base: "vs",
     inherit: false,
     rules: [
@@ -47,7 +46,7 @@ export const bootstrapMonaco = () => {
     ],
     colors: { "editorLineNumber.foreground": "00ff00" },
   };
-  const tokens: languages.IMonarchLanguage = {
+  const tokens: monaco.languages.IMonarchLanguage = {
     tokenizer: {
       root: [
         {
@@ -73,13 +72,13 @@ export const bootstrapMonaco = () => {
       ],
     },
   };
-  const provider: languages.CompletionItemProvider = {
+  const provider: monaco.languages.CompletionItemProvider = {
     provideCompletionItems(
-      model: editor.ITextModel,
-      position: Position,
-      context: languages.CompletionContext,
-      token: CancellationToken
-    ): languages.ProviderResult<languages.CompletionList> {
+      model: monaco.editor.ITextModel,
+      position: monaco.Position,
+      context: monaco.languages.CompletionContext,
+      token: monaco.CancellationToken
+    ): monaco.languages.ProviderResult<monaco.languages.CompletionList> {
       return {
         suggestions: [
           {

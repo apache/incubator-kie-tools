@@ -17,23 +17,16 @@ import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { GenericSelector } from "../atoms";
 import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kogito-tooling/pmml-editor-marshaller";
-import {
-  Form,
-  FormGroup,
-  Label,
-  Level,
-  LevelItem,
-  PageSection,
-  PageSectionVariants,
-  Split,
-  SplitItem,
-  Stack,
-  StackItem,
-  Switch,
-  TextInput,
-  Title,
-  Tooltip,
-} from "@patternfly/react-core";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { PageSection, PageSectionVariants } from "@patternfly/react-core/dist/js/components/Page";
+import { Level, LevelItem } from "@patternfly/react-core/dist/js/layouts/Level";
+import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
 import "./CorePropertiesTable.scss";
 import { Operation } from "../Operation";
 import useOnclickOutside from "react-cool-onclickoutside";
@@ -41,7 +34,7 @@ import { isEqual } from "lodash";
 import { useOperation } from "../OperationContext";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
-import { HelpIcon } from "@patternfly/react-icons";
+import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import set = Reflect.set;
 import get = Reflect.get;

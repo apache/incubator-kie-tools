@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-type Command = undefined | string;
+interface Command {
+  id: string;
+  undo?: () => void;
+  redo?: () => void;
+}
 
 export class StateControl {
-  private commandStack: string[];
-  private currentCommand: Command;
-  private savedCommand: Command;
+  private commandStack: Command[];
+  private currentCommand?: Command;
+  private savedCommand?: Command;
   private registeredCallbacks: Array<(isDirty: boolean) => void>;
 
   constructor() {
@@ -43,30 +47,28 @@ export class StateControl {
     return this.savedCommand;
   }
 
-  public setSavedCommand() {
-    this.savedCommand = this.currentCommand;
-    this.registeredCallbacks.forEach((setIsDirty) => setIsDirty(this.isDirty()));
-  }
-
   public getCurrentCommand() {
     return this.currentCommand;
-  }
-
-  public setCurrentCommand(command: Command) {
-    this.currentCommand = command;
-    this.registeredCallbacks.forEach((setIsDirty) => setIsDirty(this.isDirty()));
   }
 
   public getCommandStack() {
     return this.commandStack;
   }
 
-  public setCommandStack(commandStack: string[]) {
-    this.commandStack = commandStack;
-  }
-
   public getRegisteredCallbacks() {
     return this.registeredCallbacks;
+  }
+
+  public setSavedCommand() {
+    this.savedCommand = this.currentCommand;
+    const isDirty = this.isDirty();
+    this.registeredCallbacks.forEach((callback) => callback(isDirty));
+  }
+
+  private setCurrentCommand(command: Command | undefined) {
+    this.currentCommand = command;
+    const isDirty = this.isDirty();
+    this.registeredCallbacks.forEach((callback) => callback(isDirty));
   }
 
   public isDirty() {
@@ -74,19 +76,22 @@ export class StateControl {
   }
 
   public undo() {
-    const indexOfCurrentCommand = this.commandStack.indexOf(this.currentCommand!);
+    const indexOfCommandToUndo = this.commandStack.indexOf(this.currentCommand!);
 
-    let commandUndone: Command;
-    if (this.commandStack[indexOfCurrentCommand - 1]) {
-      commandUndone = this.commandStack[indexOfCurrentCommand - 1];
+    let nextCurrentCommandAfterUndo: Command | undefined;
+    if (this.commandStack[indexOfCommandToUndo - 1]) {
+      nextCurrentCommandAfterUndo = this.commandStack[indexOfCommandToUndo - 1];
     }
-    this.setCurrentCommand(commandUndone);
+
+    this.currentCommand?.undo?.();
+    this.setCurrentCommand(nextCurrentCommandAfterUndo);
   }
 
   public redo() {
     const indexOfCurrentCommand = this.commandStack.indexOf(this.currentCommand!);
     if (this.commandStack[indexOfCurrentCommand + 1]) {
       const commandRedone = this.commandStack[indexOfCurrentCommand + 1];
+      commandRedone?.redo?.();
       this.setCurrentCommand(commandRedone);
     }
   }
@@ -95,8 +100,12 @@ export class StateControl {
     return this.commandStack.slice(0, this.commandStack.indexOf(this.currentCommand!) + 1);
   }
 
-  public updateCommandStack(command: string) {
-    this.commandStack = this.eraseRedoCommands().concat(command);
-    this.setCurrentCommand(command);
+  public updateCommandStack(command: Command) {
+    this.commandStack = this.eraseRedoCommands();
+
+    if (command.id !== this.currentCommand?.id) {
+      this.setCurrentCommand(command);
+      this.commandStack = this.commandStack.concat(command);
+    }
   }
 }

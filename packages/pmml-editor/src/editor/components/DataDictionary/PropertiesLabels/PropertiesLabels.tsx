@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
-import { Label } from "@patternfly/react-core";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import "./PropertiesLabels.scss";
 
 interface PropertiesLabelsProps {

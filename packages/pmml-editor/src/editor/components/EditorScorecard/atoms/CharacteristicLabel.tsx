@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Label, Tooltip, TooltipPosition } from "@patternfly/react-core";
+import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import "./CharacteristicLabel.scss";
 import { ValidationEntry } from "../../../validation";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";

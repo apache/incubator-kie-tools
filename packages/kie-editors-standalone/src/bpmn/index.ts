@@ -16,10 +16,10 @@
 
 import bpmnEnvelopeIndex from "!!raw-loader!../../dist/resources/bpmn/bpmnEnvelopeIndex.html";
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
-import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
+import { ChannelType, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
 import { KogitoEditorChannelApiImpl } from "../envelope/KogitoEditorChannelApiImpl";
 import { StateControl } from "@kogito-tooling/editor/dist/channel";
-import { ContentType } from "@kogito-tooling/channel-common-api/dist";
+import { ContentType } from "@kogito-tooling/channel-common-api";
 import { createEditor, Editor, StandaloneEditorApi } from "../common/Editor";
 
 declare global {
@@ -45,6 +45,7 @@ const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boolean, ori
           fileExtension: "bpmn",
           initialLocale: "en-US",
           isReadOnly: readOnly ?? true,
+          channel: ChannelType.EMBEDDED,
         }
       );
     }
@@ -56,6 +57,7 @@ export function open(args: {
   initialContent: Promise<string>;
   readOnly?: boolean;
   origin?: string;
+  onError?: () => any;
   resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
 }): StandaloneEditorApi {
   const iframe = document.createElement("iframe");
@@ -67,6 +69,8 @@ export function open(args: {
   const envelopeServer = createEnvelopeServer(iframe, args.readOnly, args.origin);
 
   const stateControl = new StateControl();
+
+  let receivedSetContentError = false;
 
   const listener = (message: MessageEvent) => {
     envelopeServer.receive(
@@ -80,7 +84,14 @@ export function open(args: {
           isReadOnly: args.readOnly ?? false,
         },
         "en-US",
-        {},
+        {
+          receive_setContentError() {
+            if (!receivedSetContentError) {
+              args.onError?.();
+              receivedSetContentError = true;
+            }
+          },
+        },
         args.resources
       )
     );

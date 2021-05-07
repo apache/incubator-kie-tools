@@ -1,6 +1,12 @@
 import * as React from "react";
-import { EmptyState, EmptyStateVariant, EmptyStateIcon, EmptyStateBody, Title } from "@patternfly/react-core";
-import { BoxesIcon } from "@patternfly/react-icons";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import { BoxesIcon } from "@patternfly/react-icons/dist/js/icons/boxes-icon";
 
 const EmptyDataDictionary = () => {
   return (

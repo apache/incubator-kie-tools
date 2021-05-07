@@ -15,7 +15,12 @@
  */
 import * as React from "react";
 import { useState } from "react";
-import { Select, SelectOption, SelectOptionObject, SelectVariant } from "@patternfly/react-core";
+import {
+  Select,
+  SelectOption,
+  SelectOptionObject,
+  SelectVariant,
+} from "@patternfly/react-core/dist/js/components/Select";
 
 interface GenericSelectorProps {
   id: string;

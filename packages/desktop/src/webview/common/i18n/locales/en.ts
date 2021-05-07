@@ -23,7 +23,14 @@ export const en: DesktopI18n = {
     title: "This file extension is not supported.",
   },
   editorPage: {
+    textEditorModal: {
+      title: (fileName: string) => `Editing ${fileName}`,
+    },
     alerts: {
+      setContentError: {
+        title: "Error opening file. You can edit it as text and reopen the diagram after you've fixed it.",
+        action: "Open as text",
+      },
       copy: "Content copied to clipboard",
       unsaved: {
         title: "Unsaved changes will be lost",

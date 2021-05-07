@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { TextContent, Title } from "@patternfly/react-core";
+import { TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 interface HeaderTitleProps {
   title: string;

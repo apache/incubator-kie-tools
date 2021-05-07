@@ -15,8 +15,8 @@
  */
 import * as React from "react";
 import { CSSProperties } from "react";
-import { Label } from "@patternfly/react-core";
-import { ArrowAltCircleRightIcon } from "@patternfly/react-icons";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { ArrowAltCircleRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-alt-circle-right-icon";
 
 interface CharacteristicLabelsEditModeProps {
   viewAttributes: () => void;

@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { ArrowIcon } from "@patternfly/react-icons";
+import { ArrowIcon } from "@patternfly/react-icons/dist/js/icons/arrow-icon";
 import { useChromeExtensionI18n } from "../../i18n";
 
 export function OpenExternalEditorButton(props: { id: string; href: string }) {

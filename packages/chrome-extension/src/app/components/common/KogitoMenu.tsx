@@ -30,7 +30,7 @@ export function KogitoMenu() {
   const { i18n } = useChromeExtensionI18n();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [isWholeMenuOpen, setWholeMenuOpen] = useState(!isAuthenticated);
+  const [isWholeMenuOpen, setWholeMenuOpen] = useState(false);
   const [isInfoPopOverOpen, setInfoPopOverOpen] = useState(false);
   const [potentialToken, setPotentialToken] = useState("");
 
@@ -42,7 +42,6 @@ export function KogitoMenu() {
       setPotentialToken("");
     } else {
       gitHubApi.setToken("");
-      setWholeMenuOpen(true);
     }
 
     return validToken;

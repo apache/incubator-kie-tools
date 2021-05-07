@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@import "../../../../../../../node_modules/@patternfly/patternfly/sass-utilities/all";
+@import "../../../../../../../node_modules/@patternfly/patternfly/base/variables";
+
 .attributes {
   &__header {
     border-top: none;
