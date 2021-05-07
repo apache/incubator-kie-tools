@@ -8,7 +8,7 @@ import {
   NotificationDrawerGroupList,
   NotificationDrawerList,
   NotificationDrawerListItem,
-  NotificationDrawerListItemHeader
+  NotificationDrawerListItemHeader,
 } from "@patternfly/react-core";
 
 interface Props {
@@ -55,15 +55,15 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
   );
 
   const removeNotifications = useCallback((path: string) => {
-    setTabNotifications(previousTabNotifications => {
-      return previousTabNotifications.filter(tabNotification => tabNotification.path === path);
+    setTabNotifications((previousTabNotifications) => {
+      return previousTabNotifications.filter((tabNotification) => tabNotification.path === path);
     });
   }, []);
 
   useImperativeHandle(forwardingRef, () => ({
     createNotification,
     setNotifications,
-    removeNotifications
+    removeNotifications,
   }));
 
   const notificationsMap: Map<string, Notification[]> = useMemo(() => {
@@ -134,7 +134,7 @@ interface NotificationDrawerGroupProps {
 function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const onExpand = useCallback(() => {
-    setIsExpanded(prevExpanded => !prevExpanded);
+    setIsExpanded((prevExpanded) => !prevExpanded);
     props.setAllExpanded(undefined);
   }, []);
 

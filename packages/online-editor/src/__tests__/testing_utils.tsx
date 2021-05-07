@@ -48,7 +48,7 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
     senderTabId: undefined,
     githubService: new GithubService(),
     isChrome: true,
-    ...ctx
+    ...ctx,
   };
   return {
     ctx: usedCtx,

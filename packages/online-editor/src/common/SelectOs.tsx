@@ -38,7 +38,7 @@ const WINDOWS = "Windows";
 export function SelectOs(props: Props) {
   const [isSelectExpanded, setSelectIsExpanded] = useState(false);
 
-  const onSelectOsToggle = useCallback(isExpanded => {
+  const onSelectOsToggle = useCallback((isExpanded) => {
     setSelectIsExpanded(isExpanded);
   }, []);
 
@@ -52,7 +52,7 @@ export function SelectOs(props: Props) {
       new Map<OperatingSystem, string>([
         [OperatingSystem.LINUX, props.i18n?.names.linux ?? LINUX],
         [OperatingSystem.MACOS, props.i18n?.names.macos ?? MACOS],
-        [OperatingSystem.WINDOWS, props.i18n?.names.windows ?? WINDOWS]
+        [OperatingSystem.WINDOWS, props.i18n?.names.windows ?? WINDOWS],
       ]),
     []
   );

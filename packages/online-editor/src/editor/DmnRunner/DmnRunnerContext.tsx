@@ -35,13 +35,14 @@ export interface DmnRunnerContextType {
   service: DmnRunnerService;
   version: string;
   formError: boolean;
+  outdated: boolean;
   setFormError: React.Dispatch<boolean>;
 }
 
 export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({
   status: DmnRunnerStatus.UNAVAILABLE,
   isDrawerOpen: false,
-  isModalOpen: false
+  isModalOpen: false,
 } as any);
 
 export function useDmnRunner() {

@@ -35,7 +35,7 @@ import {
   DrawerContent,
   DrawerContentBody,
   Page,
-  PageSection
+  PageSection,
 } from "@patternfly/react-core";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
 import { DmnRunnerContext } from "./DmnRunner/DmnRunnerContext";
@@ -54,14 +54,14 @@ export enum Alerts {
   INVALID_GIST_FILENAME,
   UNSAVED,
   SUCCESS_DMN_RUNNER,
-  ERROR
+  ERROR,
 }
 
 export enum OpenedModal {
   NONE,
   GITHUB_TOKEN,
   EMBED,
-  DMN_RUNNER_HELPER
+  DMN_RUNNER_HELPER,
 }
 
 interface Props {
@@ -296,7 +296,7 @@ export function EditorPage(props: Props) {
     }
 
     const validate = () => {
-      editor.validate().then(notifications => {
+      editor.validate().then((notifications) => {
         if (!Array.isArray(notifications)) {
           notifications = [];
         }
@@ -320,7 +320,7 @@ export function EditorPage(props: Props) {
     <NotificationsPanelContextProvider ref={notificationsPanelRef}>
       <DmnRunnerContextProvider editor={editor} isEditorReady={isEditorReady}>
         <DmnRunnerContext.Consumer>
-          {dmnRunner => (
+          {(dmnRunner) => (
             <Page
               header={
                 <EditorToolbar

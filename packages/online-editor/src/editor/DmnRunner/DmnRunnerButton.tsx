@@ -15,7 +15,7 @@
  */
 
 import { Button, Tooltip } from "@patternfly/react-core";
-import { ConnectedIcon, DisconnectedIcon } from "@patternfly/react-icons";
+import { ConnectedIcon, DisconnectedIcon, ExclamationTriangleIcon } from "@patternfly/react-icons";
 import * as React from "react";
 import { useCallback, useContext, useMemo } from "react";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
@@ -57,6 +57,7 @@ export function DmnRunnerButton() {
           Feedback
         </Button>
       )}
+
       <Tooltip
         key={"is-chrome"}
         flipBehavior={["left"]}
@@ -71,25 +72,41 @@ export function DmnRunnerButton() {
           className={"kogito--editor__toolbar"}
           isAriaDisabled={!context.isChrome}
           icon={
-            dmnRunner.status === DmnRunnerStatus.RUNNING ? (
-              <Tooltip
-                key={"connected"}
-                content={"The DMN Runner is connected"}
-                flipBehavior={["left"]}
-                distance={20}
-                children={<ConnectedIcon className={shouldBlinkDmnRunnerConnectedIcon ? "blink-opacity" : ""} />}
-                trigger={context.isChrome ? "mouseenter focus" : ""}
-              />
-            ) : (
-              <Tooltip
-                key={"disconnected"}
-                content={"The DMN Runner is not connected"}
-                flipBehavior={["left"]}
-                distance={20}
-                children={<DisconnectedIcon />}
-                trigger={context.isChrome ? "mouseenter focus" : ""}
-              />
-            )
+            <>
+              {dmnRunner.outdated && (
+                <Tooltip
+                  key={"outdated"}
+                  content={"The DMN Runner is outdated"}
+                  flipBehavior={["left"]}
+                  distance={20}
+                  children={<ExclamationTriangleIcon />}
+                  trigger={context.isChrome ? "mouseenter focus" : ""}
+                />
+              )}
+              {!dmnRunner.outdated && (
+                <>
+                  {dmnRunner.status === DmnRunnerStatus.RUNNING ? (
+                    <Tooltip
+                      key={"connected"}
+                      content={"The DMN Runner is connected"}
+                      flipBehavior={["left"]}
+                      distance={20}
+                      children={<ConnectedIcon className={shouldBlinkDmnRunnerConnectedIcon ? "blink-opacity" : ""} />}
+                      trigger={context.isChrome ? "mouseenter focus" : ""}
+                    />
+                  ) : (
+                    <Tooltip
+                      key={"disconnected"}
+                      content={"The DMN Runner is not connected"}
+                      flipBehavior={["left"]}
+                      distance={20}
+                      children={<DisconnectedIcon />}
+                      trigger={context.isChrome ? "mouseenter focus" : ""}
+                    />
+                  )}
+                </>
+              )}
+            </>
           }
         >
           DMN Runner

@@ -56,7 +56,7 @@ const NotificationsPanelContextProviderRefForwarding: React.RefForwardingCompone
   );
 
   const getTabNames = useCallback(() => {
-    return [...tabs.keys()].map(tab => tab);
+    return [...tabs.keys()].map((tab) => tab);
   }, [tabs]);
 
   useImperativeHandle(forwardingRef, () => ({
@@ -67,7 +67,7 @@ const NotificationsPanelContextProviderRefForwarding: React.RefForwardingCompone
     getTabContent,
     getTabNames,
     activeTab,
-    setActiveTab
+    setActiveTab,
   }));
 
   return (
@@ -80,7 +80,7 @@ const NotificationsPanelContextProviderRefForwarding: React.RefForwardingCompone
         getTabContent,
         getTabNames,
         activeTab,
-        setActiveTab
+        setActiveTab,
       }}
     >
       {props.children}

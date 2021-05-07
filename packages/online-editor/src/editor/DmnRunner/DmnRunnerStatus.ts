@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
@@ -16,10 +15,10 @@
  */
 
 export enum DmnRunnerStatus {
-    UNAVAILABLE,
-    AVAILABLE,
-    RUNNING,
-    NOT_RUNNING,
-    OUTDATED,
-    STOPPED,
+  UNAVAILABLE,
+  AVAILABLE,
+  RUNNING,
+  NOT_RUNNING,
+  OUTDATED,
+  STOPPED,
 }

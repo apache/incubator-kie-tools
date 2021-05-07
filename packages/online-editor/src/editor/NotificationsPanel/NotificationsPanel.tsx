@@ -31,7 +31,7 @@ export function NotificationsPanel(props: Props) {
   const [tabsNotifications, setTabsNotifications] = useState<Map<string, number>>(new Map());
 
   const tabsMap: Map<string, React.RefObject<NotificationsApi>> = useMemo(
-    () => new Map(props.tabNames.map(tabName => [tabName, React.createRef<NotificationsApi>()])),
+    () => new Map(props.tabNames.map((tabName) => [tabName, React.createRef<NotificationsApi>()])),
     [props.tabNames]
   );
 
@@ -44,7 +44,7 @@ export function NotificationsPanel(props: Props) {
   }, [notificationsPanel.isOpen, notificationsPanel.setIsOpen]);
 
   const onNotificationsLengthChange = useCallback((name: string, newQtt: number) => {
-    setTabsNotifications(previousTabsNotifications => {
+    setTabsNotifications((previousTabsNotifications) => {
       const newTabsNotifications = new Map(previousTabsNotifications);
       if (previousTabsNotifications.get(name) !== newQtt) {
         const updatedResult = document.getElementById(`dmn-runner-errors`);
@@ -72,7 +72,7 @@ export function NotificationsPanel(props: Props) {
   }, []);
 
   const totalNotifications = useMemo(() => [...tabsNotifications.values()].reduce((acc, value) => acc + value, 0), [
-    tabsNotifications
+    tabsNotifications,
   ]);
 
   const notificationsPanelDivRef = useRef<HTMLDivElement>(null);
@@ -165,7 +165,7 @@ export function NotificationsPanel(props: Props) {
         style={{
           display: notificationsPanel.isOpen ? "flex" : "none",
           flexDirection: "column",
-          borderTop: "solid 1px #ddd"
+          borderTop: "solid 1px #ddd",
         }}
       >
         <div
@@ -193,7 +193,7 @@ export function NotificationsPanel(props: Props) {
               alignItems: "center",
               padding: "7px",
               zIndex: 999,
-              userSelect: "none"
+              userSelect: "none",
             }}
           >
             <div onClick={() => onRetractAll()}>

@@ -222,7 +222,7 @@ export function EditorToolbar(props: Props) {
                   xl: "visible",
                   lg: "hidden",
                   md: "hidden",
-                  sm: "hidden"
+                  sm: "hidden",
                 }}
               >
                 <DmnRunnerButton />
@@ -345,10 +345,8 @@ export function EditorToolbar(props: Props) {
                     {...shareItems("sm")}
                   </DropdownGroup>,
                   <React.Fragment key={"dmn-runner-group"}>
-                    {dmnRunner.status !== DmnRunnerStatus.UNAVAILABLE && (
-                      <DmnRunnerDropdownGroup />
-                    )}
-                  </React.Fragment>
+                    {dmnRunner.status !== DmnRunnerStatus.UNAVAILABLE && <DmnRunnerDropdownGroup />}
+                  </React.Fragment>,
                 ]}
                 position={DropdownPosition.right}
               />

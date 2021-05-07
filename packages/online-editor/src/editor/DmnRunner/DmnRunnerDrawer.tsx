@@ -37,14 +37,14 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title
+  Title,
 } from "@patternfly/react-core";
 import {
   CheckCircleIcon,
   CubesIcon,
   ExclamationCircleIcon,
   ExclamationIcon,
-  InfoCircleIcon
+  InfoCircleIcon,
 } from "@patternfly/react-icons";
 import { diff } from "deep-object-diff";
 import { ErrorBoundary } from "../../common/ErrorBoundry";
@@ -59,7 +59,7 @@ import { Notification } from "@kogito-tooling/notifications/dist/api";
 
 enum ButtonPosition {
   INPUT,
-  OUTPUT
+  OUTPUT,
 }
 
 type Editor =
@@ -94,7 +94,7 @@ export function DmnRunnerDrawer(props: Props) {
     contentWidth: "50%",
     contentHeight: "100%",
     contentFlexDirection: "row",
-    buttonPosition: ButtonPosition.OUTPUT
+    buttonPosition: ButtonPosition.OUTPUT,
   });
 
   const onResize = useCallback((width: number) => {
@@ -108,14 +108,14 @@ export function DmnRunnerDrawer(props: Props) {
         buttonPosition: ButtonPosition.OUTPUT,
         contentWidth: "50%",
         contentHeight: "100%",
-        contentFlexDirection: "row"
+        contentFlexDirection: "row",
       });
     } else {
       setDmnRunnerStylesConfig({
         buttonPosition: ButtonPosition.INPUT,
         contentWidth: "100%",
         contentHeight: "50%",
-        contentFlexDirection: "column"
+        contentFlexDirection: "column",
       });
     }
   }, []);
@@ -154,11 +154,11 @@ export function DmnRunnerDrawer(props: Props) {
 
       const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(([sourceId, messages]) => {
         const path = decisionNameByDecisionId?.get(sourceId) ?? "";
-        return messages.map(message => ({
+        return messages.map((message) => ({
           type: "PROBLEM",
           path,
           severity: message.severity,
-          message: `${message.messageType}: ${message.message}`
+          message: `${message.messageType}: ${message.message}`,
         }));
       });
       notificationsPanel.getTabRef("Execution")?.setNotifications("", notifications);
@@ -173,28 +173,30 @@ export function DmnRunnerDrawer(props: Props) {
       }
       return props.editor
         .getContent()
-        .then(content => {
-          dmnRunner.service.result({ context: { ...defaultFormValues, ...formData }, model: content }).then(result => {
-            if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
-              dmnRunner.setFormError(true);
-              return;
-            }
-
-            setExecutionNotifications(result);
-
-            setDmnRunnerResults(previousDmnRunnerResult => {
-              const differences = result?.decisionResults
-                ?.map((decisionResult, index) => diff(previousDmnRunnerResult?.[index] ?? {}, decisionResult ?? {}))
-                .map(difference => {
-                  delete (difference as any).messages;
-                  return difference;
-                });
-              if (differences?.length !== 0) {
-                setDmnRunnerResponseDiffs(differences);
+        .then((content) => {
+          dmnRunner.service
+            .result({ context: { ...defaultFormValues, ...formData }, model: content })
+            .then((result) => {
+              if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
+                dmnRunner.setFormError(true);
+                return;
               }
-              return result?.decisionResults;
+
+              setExecutionNotifications(result);
+
+              setDmnRunnerResults((previousDmnRunnerResult) => {
+                const differences = result?.decisionResults
+                  ?.map((decisionResult, index) => diff(previousDmnRunnerResult?.[index] ?? {}, decisionResult ?? {}))
+                  .map((difference) => {
+                    delete (difference as any).messages;
+                    return difference;
+                  });
+                if (differences?.length !== 0) {
+                  setDmnRunnerResponseDiffs(differences);
+                }
+                return result?.decisionResults;
+              });
             });
-          });
         })
         .catch(() => {
           setDmnRunnerResults(undefined);
@@ -208,16 +210,13 @@ export function DmnRunnerDrawer(props: Props) {
     updateDmnRunnerResults(dmnRunner.formData);
   }, [dmnRunner.formData, updateDmnRunnerResults]);
 
-  const onSubmit = useCallback(data => {
+  const onSubmit = useCallback((data) => {
     dmnRunner.setFormData(data);
   }, []);
 
   const dataPathToFormFieldPath = useCallback((path: string) => {
     path = path.startsWith("/")
-      ? path
-          .replace(/\//g, ".")
-          .replace(/~0/g, "~")
-          .replace(/~1/g, "/")
+      ? path.replace(/\//g, ".").replace(/~0/g, "~").replace(/~1/g, "/")
       : path
           .replace(/\[('|")(.+?)\1\]/g, ".$2")
           .replace(/\[(.+?)\]/g, ".$1")
@@ -313,7 +312,7 @@ export function DmnRunnerDrawer(props: Props) {
     } else if (previousFormError) {
       setTimeout(() => {
         autoFormRef.current?.submit();
-        Object.keys(dmnRunner.formData ?? {}).forEach(propertyName => {
+        Object.keys(dmnRunner.formData ?? {}).forEach((propertyName) => {
           autoFormRef.current?.change(propertyName, dmnRunner.formData?.[propertyName]);
         });
       }, 0);
@@ -363,7 +362,7 @@ export function DmnRunnerDrawer(props: Props) {
           className={"kogito--editor__dmn-runner-content"}
           style={{
             width: dmnRunnerStylesConfig.contentWidth,
-            height: dmnRunnerStylesConfig.contentHeight
+            height: dmnRunnerStylesConfig.contentHeight,
           }}
         >
           <Page className={"kogito--editor__dmn-runner-content-page"}>
@@ -419,7 +418,7 @@ export function DmnRunnerDrawer(props: Props) {
           className={"kogito--editor__dmn-runner-content"}
           style={{
             width: dmnRunnerStylesConfig.contentWidth,
-            height: dmnRunnerStylesConfig.contentHeight
+            height: dmnRunnerStylesConfig.contentHeight,
           }}
         >
           <Page className={"kogito--editor__dmn-runner-content-page"}>
@@ -574,7 +573,7 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
             id={`${index}-dmn-runner-result`}
             isFlat={true}
             className={"kogito--editor__dmn-runner-drawer-content-body-output-card"}
-            onAnimationEnd={e => onAnimationEnd(e, index)}
+            onAnimationEnd={(e) => onAnimationEnd(e, index)}
           >
             <CardTitle>
               <Title headingLevel={"h2"}>{dmnRunnerResult.decisionName}</Title>

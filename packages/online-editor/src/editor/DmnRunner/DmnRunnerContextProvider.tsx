@@ -30,7 +30,7 @@ import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelC
 const DMN_RUNNER_POLLING_TIME = 1000;
 export const THROTTLING_TIME = 200;
 const DMN_RUNNER_PORT_COOKIE_NAME = "dmn-runner-port";
-export const DMN_RUNNER_DEFAULT_PORT = "8080";
+export const DMN_RUNNER_DEFAULT_PORT = "21345";
 
 interface Props {
   children: React.ReactNode;
@@ -43,6 +43,7 @@ export function DmnRunnerContextProvider(props: Props) {
   const [isDrawerExpanded, setDrawerExpanded] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState({});
+  const [outdated, setOutdated] = useState(false);
   const globalContext = useContext(GlobalContext);
   const [status, setStatus] = useState(() =>
     globalContext.file.fileExtension === "dmn" ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE
@@ -56,17 +57,17 @@ export function DmnRunnerContextProvider(props: Props) {
   const updateJsonSchemaBridge = useCallback(() => {
     return props.editor
       ?.getContent()
-      .then(content => service.getJsonSchemaBridge(content ?? ""))
-      .then(newJsonSchemaBridge => {
+      .then((content) => service.getJsonSchemaBridge(content ?? ""))
+      .then((newJsonSchemaBridge) => {
         const propertiesDifference = diff(
           jsonSchemaBridge?.schema.definitions.InputSet.properties ?? {},
           newJsonSchemaBridge?.schema.definitions.InputSet.properties ?? {}
         );
 
         // Remove an formData property that has been deleted;
-        setFormError(previous => {
+        setFormError((previous) => {
           if (!previous) {
-            setFormData(previousFormData => {
+            setFormData((previousFormData) => {
               return Object.entries(propertiesDifference).reduce(
                 (newFormData, [property, value]) => {
                   if (!value || value.type) {
@@ -83,7 +84,7 @@ export function DmnRunnerContextProvider(props: Props) {
         });
         setJsonSchemaBridge(newJsonSchemaBridge);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         setFormError(true);
       });
@@ -118,11 +119,12 @@ export function DmnRunnerContextProvider(props: Props) {
     detectDmnRunner = window.setInterval(() => {
       service.checkServer().then(() => {
         // Check the running version of the DMN Runner, if outdated cancel polling and change status.
-        service.version().then(data => {
+        service.version().then((data) => {
           window.clearInterval(detectDmnRunner);
           if (data?.version !== version) {
-            setStatus(DmnRunnerStatus.OUTDATED);
+            setOutdated(true);
           } else {
+            setOutdated(false);
             if (isModalOpen) {
               setDrawerExpanded(true);
             }
@@ -167,16 +169,16 @@ export function DmnRunnerContextProvider(props: Props) {
     const validate = () => {
       props.editor
         ?.getContent()
-        .then(content => service.validate(content ?? ""))
-        .then(validationResults => {
+        .then((content) => service.validate(content ?? ""))
+        .then((validationResults) => {
           return validationResults.map((validationResult: any) => ({
             type: "PROBLEM",
             path: "",
             severity: validationResult.severity,
-            message: `${validationResult.messageType}: ${validationResult.message}`
+            message: `${validationResult.messageType}: ${validationResult.message}`,
           }));
         })
-        .then(notifications => {
+        .then((notifications) => {
           notificationsPanel.getTabRef("Validation")?.setNotifications("", notifications);
         });
     };
@@ -210,7 +212,8 @@ export function DmnRunnerContextProvider(props: Props) {
         service,
         version,
         formError,
-        setFormError
+        setFormError,
+        outdated,
       }}
     >
       {props.children}

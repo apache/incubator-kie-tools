@@ -31,7 +31,7 @@ export interface DmnRunnerVersion {
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
   SKIPPED = "SKIPPED",
-  FAILED = "FAILED"
+  FAILED = "FAILED",
 }
 
 export interface DecisionResultMessage {
@@ -104,12 +104,12 @@ export class DmnRunnerService {
     this.ajv.addMetaSchema(metaSchemaDraft04);
     this.ajv.addFormat("days and time duration", {
       type: "string",
-      validate: (data: string) => !!data.match(/(P[1-9][0-9]*D[1-9][0-9]*T)|(P([1-9][0-9]*)[D|T])\b/)
+      validate: (data: string) => !!data.match(/(P[1-9][0-9]*D[1-9][0-9]*T)|(P([1-9][0-9]*)[D|T])\b/),
     });
 
     this.ajv.addFormat("years and months duration", {
       type: "string",
-      validate: (data: string) => !!data.match(/(P[1-9][0-9]*Y[1-9][0-9]*M)|(P([1-9][0-9]*)[Y|M])\b/)
+      validate: (data: string) => !!data.match(/(P[1-9][0-9]*Y[1-9][0-9]*M)|(P([1-9][0-9]*)[Y|M])\b/),
     });
   }
 
@@ -121,7 +121,7 @@ export class DmnRunnerService {
 
       return validator.errors?.length
         ? {
-            details: validator.errors?.map(error => {
+            details: validator.errors?.map((error) => {
               if (error.keyword === "format") {
                 if ((error.params as any).format === "days and time duration") {
                   return { ...error, message: "should match format P1D(ays)2T(ime)" };
@@ -131,7 +131,7 @@ export class DmnRunnerService {
                 }
               }
               return error;
-            })
+            }),
           }
         : null;
     };
@@ -153,9 +153,9 @@ export class DmnRunnerService {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json, text/plain, */*"
+        Accept: "application/json, text/plain, */*",
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
     return await response.json();
   }
@@ -164,9 +164,9 @@ export class DmnRunnerService {
     const response = await fetch(this.DMN_RUNNER_VALIDATE_URL, {
       method: "POST",
       headers: {
-        "Content-Type": "application/xml;"
+        "Content-Type": "application/xml;",
       },
-      body: model
+      body: model,
     });
     return await response.json();
   }
@@ -226,9 +226,9 @@ export class DmnRunnerService {
     const response = await fetch(this.DMN_RUNNER_FORM_URL, {
       method: "POST",
       headers: {
-        "Content-Type": "application/xml;"
+        "Content-Type": "application/xml;",
       },
-      body: model
+      body: model,
     });
     const form = (await response.json()) as DmnRunnerForm;
     this.formPreprocessing(form);

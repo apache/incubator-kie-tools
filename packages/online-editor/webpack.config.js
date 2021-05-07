@@ -74,9 +74,9 @@ module.exports = async (env, argv) => {
   const [
     downloadDmnRunner_linuxUrl,
     downloadDmnRunner_macOsUrl,
-    downloadDmnRunner_windowsUrl
+    downloadDmnRunner_windowsUrl,
   ] = getDownloadDmnRunnerArgs(argv);
-  const dmnRunnerVersion = argv["DMN_RUNNER_VERSION" || process.env["DMN_RUNNER_VERSION"]] || "0.0.1";
+  const dmnRunnerVersion = argv["DMN_RUNNER_VERSION" || process.env["DMN_RUNNER_VERSION"]] || "0.0.0";
 
   return merge(common, {
     entry: {
@@ -128,18 +128,18 @@ module.exports = async (env, argv) => {
             multiple: [
               {
                 search: "$_{WEBPACK_REPLACE__dmnRunnerLinuxUrl}",
-                replace: downloadDmnRunner_linuxUrl
+                replace: downloadDmnRunner_linuxUrl,
               },
               {
                 search: "$_{WEBPACK_REPLACE__dmnRunnerMacOsUrl}",
-                replace: downloadDmnRunner_macOsUrl
+                replace: downloadDmnRunner_macOsUrl,
               },
               {
                 search: "$_{WEBPACK_REPLACE__dmnRunnerWindowsUrl}",
-                replace: downloadDmnRunner_windowsUrl
-              }
-            ]
-          }
+                replace: downloadDmnRunner_windowsUrl,
+              },
+            ],
+          },
         },
         {
           test: /DmnRunnerContextProvider\.tsx$/,
@@ -148,15 +148,15 @@ module.exports = async (env, argv) => {
             multiple: [
               {
                 search: "$_{WEBPACK_REPLACE__dmnRunnerVersion}",
-                replace: dmnRunnerVersion
+                replace: dmnRunnerVersion,
               },
-            ]
-          }
+            ],
+          },
         },
         {
           test: /\.js$/,
           enforce: "pre",
-          use: ["source-map-loader"]
+          use: ["source-map-loader"],
         },
         {
           test: /\.ttf$/,
