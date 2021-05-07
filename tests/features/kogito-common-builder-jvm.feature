@@ -147,7 +147,7 @@ Feature: kogito-builder image JVM build tests
       | RUNTIME_TYPE   | quarkus        |
       | NATIVE         | false          |
       | KOGITO_VERSION | 2.0.0-SNAPSHOT |  
-    Then file /home/kogito/bin/project-1.0-SNAPSHOT-runner.jar should exist
+    Then file /home/kogito/bin/quarkus-run.jar should exist
     And check that page is served
       | property        | value                                                                                            |
       | port            | 8080                                                                                             |
@@ -167,7 +167,7 @@ Feature: kogito-builder image JVM build tests
       | PROJECT_GROUP_ID    | com.mycompany  |
       | PROJECT_ARTIFACT_ID | myproject      |
       | PROJECT_VERSION     | 2.0-SNAPSHOT   |
-    Then file /home/kogito/bin/myproject-2.0-SNAPSHOT-runner.jar should exist
+    Then file /home/kogito/bin/quarkus-run.jar should exist
     And check that page is served
       | property        | value                                                                                            |
       | port            | 8080                                                                                             |
