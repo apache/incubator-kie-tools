@@ -5,11 +5,13 @@
     "target": "es5",
     "declaration": true,
     "sourceMap": true,
+    "declarationMap": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
+    "removeComments": true,
     //    "strictNullChecks": true,
     "experimentalDecorators": true,
     "downlevelIteration": true,
-    "jsx": "react"
+    "jsx": "react-jsx"
   }
 }
