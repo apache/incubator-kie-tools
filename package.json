@@ -98,7 +98,7 @@
     "underscore": "1.11.0",
     "url-loader": "4.1.0",
     "vsce": "1.59.0",
-    "vscode-extension-tester": "^4.0.2",
+    "vscode-extension-tester": "^4.0.3",
     "vscode-extension-tester-native": "^3.0.0",
     "vscode-test": "1.0.0",
     "vscode-uitests-tooling": "^2.0.1",
