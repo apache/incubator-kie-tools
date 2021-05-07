@@ -119,9 +119,9 @@ export function DmnRunnerContextProvider(props: Props) {
     detectDmnRunner = window.setInterval(() => {
       service.checkServer().then(() => {
         // Check the running version of the DMN Runner, if outdated cancel polling and change status.
-        service.version().then((data) => {
+        service.version().then((runnerVersion) => {
           window.clearInterval(detectDmnRunner);
-          if (data?.version !== version) {
+          if (runnerVersion !== version) {
             setOutdated(true);
           } else {
             setOutdated(false);

@@ -24,10 +24,6 @@ export interface DmnRunnerPayload {
   context: object;
 }
 
-export interface DmnRunnerVersion {
-  version: string;
-}
-
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
   SKIPPED = "SKIPPED",
@@ -142,7 +138,7 @@ export class DmnRunnerService {
     return response.status < 300;
   }
 
-  public async version(): Promise<DmnRunnerVersion> {
+  public async version(): Promise<string> {
     const response = await fetch(this.DMN_RUNNER_PING, {
       method: "GET"
     });
