@@ -333,6 +333,7 @@ export function DmnRunnerModal() {
     ],
     [dmnRunner.status, dmnRunner.port, dmnRunner.saveNewPort, dmnRunner.outdated]
   );
+
   const linuxWizardSteps = useMemo(
     () => [
       {
@@ -476,7 +477,7 @@ export function DmnRunnerModal() {
       default:
         return linuxWizardSteps;
     }
-  }, [operatingSystem]);
+  }, [operatingSystem, macOsWizardSteps, windowsWizardSteps, linuxWizardSteps]);
 
   useEffect(() => {
     if (dmnRunner.status === DmnRunnerStatus.NOT_RUNNING) {
