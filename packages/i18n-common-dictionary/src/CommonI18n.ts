@@ -56,7 +56,7 @@ export type CommonDictionary = {
   uninstall: string;
 };
 
-export interface CommonI18n extends ReferenceDictionary<CommonI18n> {
+export interface CommonI18n extends ReferenceDictionary {
   names: typeof names;
   terms: CommonDictionary;
 }

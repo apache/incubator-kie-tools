@@ -15,20 +15,20 @@
  */
 
 // tslint:disable-next-line:interface-name
-export interface I18nDefaults<D extends ReferenceDictionary<D>> {
+export interface I18nDefaults<D extends ReferenceDictionary> {
   locale: string;
   dictionary: D;
 }
 
-export type I18nDictionaries<D extends ReferenceDictionary<D>> = Map<string, TranslatedDictionary<D>>;
+export type I18nDictionaries<D extends ReferenceDictionary> = Map<string, TranslatedDictionary<D>>;
 
 export type DictionaryInterpolation = (...args: Array<string | number>) => string;
 
-export type ReferenceDictionary<D> = {
-  [K in keyof D]: string | DictionaryInterpolation | ReferenceDictionary<any>;
+export type ReferenceDictionary = {
+  [k: string]: string | DictionaryInterpolation | ReferenceDictionary;
 };
 
 // Locales that aren't the default should implement this interface
-export type TranslatedDictionary<D extends ReferenceDictionary<D>> = DeepOptional<D>;
+export type TranslatedDictionary<D extends ReferenceDictionary> = DeepOptional<D>;
 
 type DeepOptional<D> = { [K in keyof D]?: DeepOptional<D[K]> };

@@ -17,7 +17,7 @@
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
 
-interface VsCodeDictionary extends ReferenceDictionary<VsCodeDictionary> {
+interface VsCodeDictionary extends ReferenceDictionary {
   savedSvg: (fileName: string) => string;
   openSvg: string;
   savedSuccessfully: string;

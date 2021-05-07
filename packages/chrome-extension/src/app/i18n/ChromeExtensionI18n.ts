@@ -17,7 +17,7 @@
 import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
-interface ChromeExtensionDictionary extends ReferenceDictionary<ChromeExtensionDictionary> {
+interface ChromeExtensionDictionary extends ReferenceDictionary {
   openIn: (text: string) => string;
   seeAsDiagram: string;
   tree: {

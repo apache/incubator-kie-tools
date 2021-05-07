@@ -17,7 +17,7 @@
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
 
-interface BackendDictionary extends ReferenceDictionary<BackendDictionary> {
+interface BackendDictionary extends ReferenceDictionary {
   dontShowAgain: string;
   installExtension: string;
   installBackendExtensionMessage: string;

@@ -16,7 +16,7 @@
 
 import { DictionaryInterpolation, ReferenceDictionary, TranslatedDictionary } from "./Dictionary";
 
-function deepMerge<D>(target: ReferenceDictionary<D>, source: TranslatedDictionary<ReferenceDictionary<D>>) {
+function deepMerge<D>(target: ReferenceDictionary, source: TranslatedDictionary<ReferenceDictionary>) {
   Object.keys(source).forEach((key: Extract<keyof D, string>) => {
     const sourceValue = source[key];
 
@@ -27,17 +27,17 @@ function deepMerge<D>(target: ReferenceDictionary<D>, source: TranslatedDictiona
       target[key] = sourceValue as string | DictionaryInterpolation;
     } else {
       target[key] = deepMerge(
-        createObjectCopy(target[key] as ReferenceDictionary<any>),
-        sourceValue as ReferenceDictionary<any>
+        createObjectCopy(target[key] as ReferenceDictionary),
+        sourceValue as ReferenceDictionary
       );
     }
   });
   return target;
 }
 
-export function immutableDeepMerge<D extends ReferenceDictionary<D>>(
-  target: ReferenceDictionary<D>,
-  source: TranslatedDictionary<ReferenceDictionary<D>>
+export function immutableDeepMerge<D extends ReferenceDictionary>(
+  target: ReferenceDictionary,
+  source: TranslatedDictionary<ReferenceDictionary>
 ) {
   const targetCopy = createObjectCopy(target);
   return deepMerge(targetCopy, source);
