@@ -7,7 +7,7 @@
     "sourceMap": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
-//    "strictNullChecks": true,
+    //    "strictNullChecks": true,
     "experimentalDecorators": true,
     "downlevelIteration": true,
     "jsx": "react"

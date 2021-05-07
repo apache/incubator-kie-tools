@@ -34,16 +34,18 @@ module.exports = [
       __filename: false,
     },
     plugins: [
-      new CopyPlugin({patterns: [
-        { from: "./static/resources", to: "./resources" },
-        { from: "./static/images", to: "./images" },
-        { from: "./static/index.html", to: "./index.html" },
-        {
-          from: "../desktop/out/Business Modeler Preview-" + os.platform() + "-x64",
-          to: "./lib/Business Modeler Preview-" + os.platform() + "-x64",
-        },
-        { from: "./build", to: "./build" },
-      ]}),
+      new CopyPlugin({
+        patterns: [
+          { from: "./static/resources", to: "./resources" },
+          { from: "./static/images", to: "./images" },
+          { from: "./static/index.html", to: "./index.html" },
+          {
+            from: "../desktop/out/Business Modeler Preview-" + os.platform() + "-x64",
+            to: "./lib/Business Modeler Preview-" + os.platform() + "-x64",
+          },
+          { from: "./build", to: "./build" },
+        ],
+      }),
     ],
   }),
   merge(common, {
@@ -57,6 +59,6 @@ module.exports = [
     module: {
       rules: [...pfWebpackOptions.patternflyRules],
     },
-    plugins: [new CopyPlugin({patterns: [{ from: "static/index.html" }]})],
+    plugins: [new CopyPlugin({ patterns: [{ from: "static/index.html" }] })],
   }),
 ];

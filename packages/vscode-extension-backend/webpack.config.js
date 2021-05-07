@@ -34,12 +34,14 @@ module.exports = async (argv, env) => [
       "extension/extension": "./src/extension/extension.ts",
     },
     plugins: [
-      new CopyWebpackPlugin({patterns: [
-        {
-          from: externalAssets.quarkusRunnerPath(argv),
-          to: "server/quarkus-runner.jar",
-        },
-      ]}),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: externalAssets.quarkusRunnerPath(argv),
+            to: "server/quarkus-runner.jar",
+          },
+        ],
+      }),
     ],
   }),
 ];
