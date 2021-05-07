@@ -143,9 +143,11 @@ export class DmnRunnerService {
   }
 
   public async version(): Promise<DmnRunnerVersion> {
-    // const response = await fetch(this.DMN_RUNNER_PING, { method: "GET" });
-    // return await response.json();
-    return await Promise.resolve().then(() => ({ version: "0.0.1" }));
+    const response = await fetch(this.DMN_RUNNER_PING, {
+      method: "GET"
+    });
+    const json = await response.json();
+    return json.App.Version
   }
 
   public async result(payload: DmnRunnerPayload): Promise<DmnResult> {
