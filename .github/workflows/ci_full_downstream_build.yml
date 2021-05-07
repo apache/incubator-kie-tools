@@ -1,0 +1,235 @@
+name: "CI :: Full Downstream Build"
+
+on:
+  schedule:
+    - cron: "0 1 * * *"
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: "**"
+
+env:
+  EXTERNAL_RESOURCE_PATH__dmnEditor: "${{ github.workspace }}/kogito-editors-java/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime"
+  EXTERNAL_RESOURCE_PATH__bpmnEditor: "${{ github.workspace }}/kogito-editors-java/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime"
+  EXTERNAL_RESOURCE_PATH__scesimEditor: "${{ github.workspace }}/kogito-editors-java/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "General :: Fetch user membership to kiegroup"
+        if: github.repository == 'kiegroup/kogito-editors-java'
+        uses: octokit/request-action@v2.x
+        id: checkUserMembership
+        with:
+          route: GET /orgs/kiegroup/members/:username
+          username: ${{ github.actor }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+
+      - name: "General :: Check user membership to kiegroup"
+        if: github.repository == 'kiegroup/kogito-editors-java'
+        run: |
+          [ "204" == "${{ steps.checkUserMembership.outputs.status }}" ]
+
+      - name: "kogito-tooling :: Resolve <user>/<branch>"
+        id: buildInfo
+        run: |
+          if [ -n "${{ github.event.pull_request }}" ]; then
+            user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
+            ref=${{ github.head_ref }}
+          else
+            user="kiegroup"
+            ref="master"
+          fi
+          echo ::set-output name=user::$user
+          echo ::set-output name=ref::$ref
+
+      - name: "kogito-editors-java :: Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          path: ${{ github.workspace }}/kogito-editors-java
+
+      - name: "kogito-editors-java :: Setup JDK 11"
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: "kogito-editors-java :: Cache Maven Packages"
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: "kogito-editors-java :: Build"
+        env:
+          MAVEN_OPTS: -Xmx6000m -Xms1000m
+        run: |
+          cd ${{ github.workspace }}/kogito-editors-java
+          mvn clean install -B -ntp --file pom.xml
+
+      - name: "kogito-tooling :: Checkout"
+        uses: actions/checkout@v2
+        with:
+          path: ${{ github.workspace }}/kogito-tooling
+          repository: kiegroup/kogito-tooling
+          fetch-depth: 0
+
+      - name: "kogito-tooling :: Setup Node"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.16.3
+
+      - name: "kogito-tooling :: Setup Yarn"
+        run: |
+          npm install -g yarn@1.19.1
+          yarn config set network-timeout 1000000
+
+      - name: "kogito-tooling :: Start Xvfb"
+        run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+
+      - name: "kogito-tooling :: Build"
+        env:
+          DISPLAY: ":99.0"
+        run: |
+          cd ${{ github.workspace }}/kogito-tooling
+          git config --global user.email "kietooling@gmail.com"
+          git config --global user.name "Kogito Tooling Bot"
+          git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/kogito-tooling.git
+          git fetch --all || true
+          if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
+            echo "ATTENTION: A merge attempt is being made to get your changes. If a conflict happens, please do a rebase/merge manually in your branch to get the latest commits."
+            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+          fi
+          yarn run init && yarn run build:prod
+
+      - name: "kogito-tooling :: Upload VS Code Extension"
+        uses: actions/upload-artifact@v2
+        with:
+          name: vscode-extension
+          path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_*.vsix
+
+      - name: "kogito-tooling :: Increase inotify watches"
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
+      - name: "kogito-tooling :: Integration Tests :: Online Editor :: Run"
+        run: |
+          cd ${{ github.workspace }}/kogito-tooling
+          npx lerna run test:it --scope '@kogito-tooling/online-editor' --stream
+
+      - name: "kogito-tooling :: Integration Tests :: Online Editor :: Archive Screenshots"
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: online-editor-it-tests-screenshots
+          path: ${{ github.workspace }}/kogito-tooling/packages/online-editor/it-tests/screenshots
+
+      - name: "kogito-tooling :: Integration Tests :: Online Editor :: Archive Videos"
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: online-editor-it-tests-videos
+          path: ${{ github.workspace }}/kogito-tooling/packages/online-editor/it-tests/videos
+
+      - name: "kogito-tooling :: Integration Tests :: PMML Editor :: Run"
+        run: |
+          cd ${{ github.workspace }}/kogito-tooling
+          npx lerna run test:it --scope '@kogito-tooling/pmml-editor' --stream
+
+      - name: "kogito-tooling :: Integration Tests :: PMML Editor :: Archive Screenshots"
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: pmml-editor-it-tests-screenshots
+          path: ${{ github.workspace }}/kogito-tooling/packages/pmml-editor/it-tests/screenshots
+
+      - name: "kogito-tooling :: Integration Tests :: PMML Editor :: Archive Videos"
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: pmml-editor-it-tests-videos
+          path: ${{ github.workspace }}/kogito-tooling/packages/pmml-editor/it-tests/videos
+
+      - name: "kogito-tooling :: Integration Tests :: Desktop :: Run"
+        env:
+          DISPLAY: ":99.0"
+        run: |
+          cd ${{ github.workspace }}/kogito-tooling
+          npx lerna run test:it --scope '@kogito-tooling/desktop' --stream
+
+      - name: "kogito-tooling :: Integration Tests :: VS Code Extension :: Run"
+        env:
+          DISPLAY: ":99.0"
+        run: |
+          cd ${{ github.workspace }}/kogito-tooling
+          npx lerna run test:it --scope 'vscode-extension-pack-kogito-kie-editors'
+
+      - name: "kogito-tooling :: Integration Tests :: VS Code Extension :: Archive Results"
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: junit-kie-editors-vscode.xml
+          path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/it-tests/results/junit.xml
+
+      - name: "kogito-tooling :: Integration Tests :: KIE Standalone Editors :: Build Testing App"
+        run: |
+          cd ${{ github.workspace }}/kogito-tooling
+          npx lerna run build:it --scope '@kogito-tooling/kie-editors-standalone'
+
+      - name: "kogito-tooling :: Integration Tests :: KIE Standalone Editors :: Run"
+        run: |
+          cd ${{ github.workspace }}/kogito-tooling
+          npx lerna run test:it --scope '@kogito-tooling/kie-editors-standalone'
+
+      - name: "kogito-tooling :: Integration Tests :: KIE Standalone Editors :: Archive Results"
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: junit-kie-editors-standalone.xml
+          path: ${{ github.workspace }}/kogito-tooling/packages/kie-editors-standalone/it-tests/results/junit.xml
+
+      - name: "kogito-tooling :: Integration Tests :: KIE Standalone Editors :: Archive Screenshots"
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: kie-editors-standalone-it-tests-screenshots
+          path: ${{ github.workspace }}/kogito-tooling/packages/kie-editors-standalone/it-tests/cypress/screenshots
+
+      - name: "kogito-tooling :: Integration Tests :: KIE Standalone Editors :: Archive Videos"
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: kie-editors-standalone-it-tests-videos
+          path: ${{ github.workspace }}/kogito-tooling/packages/kie-editors-standalone/it-tests/cypress/videos
+
+      # Chrome extension must be the last one due to the need to run `build:fast`
+      - name: "kogito-tooling :: Integration Tests :: Chrome Extension :: Build"
+        run: |
+          cd ${{ github.workspace }}/kogito-tooling
+          yarn run build:fast
+
+      - name: "kogito-tooling :: Integration Tests :: Chrome Extension :: Run"
+        env:
+          DISPLAY: ":99.0"
+        run: |
+          cd ${{ github.workspace }}/kogito-tooling/packages/online-editor && yarn run start &
+          cd ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run serve-envelope &
+          sleep 20
+          cd ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run test:it
+
+      - name: "kogito-tooling :: Integration Tests :: Chrome Extension :: Archive Screenshots"
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: chrome-extension-it-tests-screenshots
+          path: ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/screenshots
+
+      - name: "kogito-tooling :: Integration Tests :: Chrome Extension :: Archive Logs"
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: chrome-extension-it-tests-logs
+          path: ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/logs
