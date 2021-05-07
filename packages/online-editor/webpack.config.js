@@ -53,30 +53,28 @@ function getDownloadHubArgs(argv) {
   return [linuxUrl, macOsUrl, windowsUrl];
 }
 
-function getDownloadDmnRunnerArgs(argv) {
-  let linuxUrl = argv["DOWNLOAD_DMN_RUNNER_linuxUrl" || process.env["DOWNLOAD_DMN_RUNNER_linuxUrl"]];
-  let macOsUrl = argv["DOWNLOAD_DMN_RUNNER_macOsUrl" || process.env["DOWNLOAD_DMN_RUNNER_macOsUrl"]];
-  let windowsUrl = argv["DOWNLOAD_DMN_RUNNER_windowsUrl" || process.env["DOWNLOAD_DMN_RUNNER_windowsUrl"]];
+function getDmnRunnerArgs(argv) {
+  let linuxUrl = argv["DMN_RUNNER__linuxUrl"] || process.env["DMN_RUNNER__linuxUrl"];
+  let macOsUrl = argv["DMN_RUNNER__macOsUrl"] || process.env["DMN_RUNNER__macOsUrl"];
+  let windowsUrl = argv["DMN_RUNNER__windowsUrl"] || process.env["DMN_RUNNER__windowsUrl"];
+  let version = argv["DMN_RUNNER__version"] || process.env["DMN_RUNNER__version"];
 
   linuxUrl = linuxUrl || `files/dmn-runner.zip`;
   macOsUrl = macOsUrl || `files/dmn-runner.zip`;
   windowsUrl = windowsUrl || `files/dmn-runner.zip`;
+  windowsUrl = windowsUrl || `0.0.0`;
 
-  console.info("Download DMN Runner :: Linux URL: " + linuxUrl);
-  console.info("Download DMN Runner :: macOs URL: " + macOsUrl);
-  console.info("Download DMN Runner :: Windows URL: " + windowsUrl);
+  console.info("DMN Runner :: Linux URL: " + linuxUrl);
+  console.info("DMN Runner :: macOs URL: " + macOsUrl);
+  console.info("DMN Runner :: Windows URL: " + windowsUrl);
+  console.info("DMN Runner :: Version: " + version);
 
-  return [linuxUrl, macOsUrl, windowsUrl];
+  return [linuxUrl, macOsUrl, windowsUrl, version];
 }
 
 module.exports = async (env, argv) => {
   const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs(argv);
-  const [
-    downloadDmnRunner_linuxUrl,
-    downloadDmnRunner_macOsUrl,
-    downloadDmnRunner_windowsUrl,
-  ] = getDownloadDmnRunnerArgs(argv);
-  const dmnRunnerVersion = argv["DMN_RUNNER_VERSION" || process.env["DMN_RUNNER_VERSION"]] || "0.0.0";
+  const [dmnRunner_linuxUrl, dmnRunner_macOsUrl, dmnRunner_windowsUrl, dmnRunner_version] = getDmnRunnerArgs(argv);
 
   return merge(common, {
     entry: {
@@ -128,15 +126,15 @@ module.exports = async (env, argv) => {
             multiple: [
               {
                 search: "$_{WEBPACK_REPLACE__dmnRunnerLinuxUrl}",
-                replace: downloadDmnRunner_linuxUrl,
+                replace: dmnRunner_linuxUrl,
               },
               {
                 search: "$_{WEBPACK_REPLACE__dmnRunnerMacOsUrl}",
-                replace: downloadDmnRunner_macOsUrl,
+                replace: dmnRunner_macOsUrl,
               },
               {
                 search: "$_{WEBPACK_REPLACE__dmnRunnerWindowsUrl}",
-                replace: downloadDmnRunner_windowsUrl,
+                replace: dmnRunner_windowsUrl,
               },
             ],
           },
@@ -148,7 +146,7 @@ module.exports = async (env, argv) => {
             multiple: [
               {
                 search: "$_{WEBPACK_REPLACE__dmnRunnerVersion}",
-                replace: dmnRunnerVersion,
+                replace: dmnRunner_version,
               },
             ],
           },
