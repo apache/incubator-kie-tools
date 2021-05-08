@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { useState } from "react";
-import { TextInput } from "@patternfly/react-core";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Validated } from "../../../types";
 
 interface GenericNumericInputProps {

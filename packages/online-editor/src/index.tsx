@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
 import "@patternfly/react-core/dist/styles/base.css";
 import "@patternfly/patternfly/patternfly-addons.scss";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 import { App } from "./App";
 import { newFile } from "@kogito-tooling/editor/dist/channel";
 import {
@@ -27,11 +27,17 @@ import {
   removeFileExtension,
 } from "./common/utils";
 import { GithubService } from "./common/GithubService";
-import { Alert, AlertActionLink, AlertActionCloseButton, AlertVariant, List, ListItem } from "@patternfly/react-core";
+import {
+  Alert,
+  AlertActionCloseButton,
+  AlertActionLink,
+  AlertVariant,
+} from "@patternfly/react-core/dist/js/components/Alert";
+import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
-import "../static/resources/style.css";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
 import { OnlineI18n, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
+import "../static/resources/style.css";
 
 const urlParams = new URLSearchParams(window.location.search);
 const githubService = new GithubService();
@@ -40,10 +46,10 @@ const onlineI18n = new I18n<OnlineI18n>(onlineI18nDefaults, onlineI18nDictionari
 const editorEnvelopeLocator: EditorEnvelopeLocator = {
   targetOrigin: window.location.origin,
   mapping: new Map([
-    ["bpmn", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
-    ["bpmn2", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
-    ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/envelope.html" }],
-    ["pmml", { resourcesPathPrefix: "../editors/pmml", envelopePath: "envelope/pmml-envelope.html" }],
+    ["bpmn", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "bpmn-envelope.html" }],
+    ["bpmn2", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "bpmn-envelope.html" }],
+    ["dmn", { resourcesPathPrefix: "gwt-editors/dmn", envelopePath: "dmn-envelope.html" }],
+    ["pmml", { resourcesPathPrefix: "", envelopePath: "pmml-envelope.html" }],
   ]),
 };
 

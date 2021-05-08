@@ -16,7 +16,10 @@
 
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
-import { Button, Modal, ModalVariant, Split, SplitItem, Switch } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
 import "./HistoryButtons.scss";
 
 export enum Theme {

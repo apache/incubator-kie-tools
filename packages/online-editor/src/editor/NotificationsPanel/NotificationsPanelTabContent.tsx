@@ -9,7 +9,7 @@ import {
   NotificationDrawerList,
   NotificationDrawerListItem,
   NotificationDrawerListItemHeader,
-} from "@patternfly/react-core";
+} from "@patternfly/react-core/dist/js/components/NotificationDrawer";
 
 interface Props {
   name: string;
@@ -87,7 +87,7 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
               {[...notificationsMap.entries()]
                 .sort(([a], [b]) => (a < b ? -1 : 1))
                 .map(([path, notifications], groupIndex) => (
-                  <>
+                  <React.Fragment key={path}>
                     {path === "" ? (
                       <NotificationDrawerList isHidden={false}>
                         {notifications.map((notification, notificationIndex) => (
@@ -112,7 +112,7 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
                         setAllExpanded={props.setExpandAll}
                       />
                     )}
-                  </>
+                  </React.Fragment>
                 ))}
             </NotificationDrawerGroupList>
           </NotificationDrawerBody>

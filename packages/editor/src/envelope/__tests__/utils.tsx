@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoEditorEnvelopeContext, KogitoEditorEnvelopeContextType } from "../../api";
+import { KogitoEditorChannelApi, KogitoEditorEnvelopeContext, KogitoEditorEnvelopeContextType } from "../../api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import * as React from "react";
 import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
@@ -26,9 +26,8 @@ import {
   editorEnvelopeI18nDictionaries,
 } from "../i18n";
 
-export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType = {
+export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi> = {
   channelApi: {} as any,
-  context: {} as any,
   services: {
     keyboardShortcuts: new DefaultKeyboardShortcutsService({} as any),
     guidedTour: {
@@ -38,7 +37,10 @@ export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType =
   },
 };
 
-export function usingEnvelopeContext(children: React.ReactElement, ctx?: Partial<KogitoEditorEnvelopeContextType>) {
+export function usingEnvelopeContext(
+  children: React.ReactElement,
+  ctx?: Partial<KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>>
+) {
   const usedCtx = { ...DEFAULT_TESTING_ENVELOPE_CONTEXT, ...ctx };
   return {
     ctx: usedCtx,

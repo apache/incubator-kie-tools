@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { PageSection, PageSectionVariants } from "@patternfly/react-core";
+import { PageSection, PageSectionVariants } from "@patternfly/react-core/dist/js/components/Page";
 import { EditorHeader } from "../../EditorCore/molecules";
 import { Model, PMML, RegressionModel } from "@kogito-tooling/pmml-editor-marshaller";
 import { getModelName } from "../../..";

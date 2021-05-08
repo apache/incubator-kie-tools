@@ -26,6 +26,7 @@ interface Props {
   readonly: boolean;
   textMode: boolean;
   keepRenderedEditorInTextMode: boolean;
+  onSetContentError: () => void;
 }
 
 const RefForwardingIsolatedEditor: React.RefForwardingComponent<IsolatedEditorRef, Props> = (props, forwardedRef) => {
@@ -42,6 +43,7 @@ const RefForwardingIsolatedEditor: React.RefForwardingComponent<IsolatedEditorRe
           openFileExtension={props.openFileExtension}
           getFileContents={props.getFileContents}
           readonly={props.readonly}
+          onSetContentError={props.onSetContentError}
         />
       )}
     </>

@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { PageSection, PageSectionVariants } from "@patternfly/react-core";
+import { PageSection, PageSectionVariants } from "@patternfly/react-core/dist/js/components/Page";
 import { EditorHeader } from "../../EditorCore/molecules";
 import {
   Characteristics,

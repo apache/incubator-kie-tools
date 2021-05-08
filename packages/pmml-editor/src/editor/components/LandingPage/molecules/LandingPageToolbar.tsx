@@ -15,17 +15,12 @@
  */
 import * as React from "react";
 import { useState } from "react";
-import {
-  Button,
-  ButtonVariant,
-  InputGroup,
-  Switch,
-  TextInput,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem,
-} from "@patternfly/react-core";
-import { SearchIcon } from "@patternfly/react-icons";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
+import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
+import { SearchIcon } from "@patternfly/react-icons/dist/js/icons/search-icon";
 
 interface LandingPageToolbarProps {
   onFilter: (filter: string) => void;

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Button, Flex, FlexItem } from "@patternfly/react-core";
-import { TrashIcon } from "@patternfly/react-icons";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 
 interface CharacteristicsTableActionProps {
   onDelete: () => void;

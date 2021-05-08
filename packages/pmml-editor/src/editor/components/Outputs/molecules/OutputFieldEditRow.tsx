@@ -15,17 +15,11 @@
  */
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import {
-  FormGroup,
-  Select,
-  SelectOption,
-  SelectVariant,
-  Split,
-  SplitItem,
-  Stack,
-  StackItem,
-  TextInput,
-} from "@patternfly/react-core";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import "./OutputFieldRow.scss";
 import {
   DataType,
@@ -36,7 +30,7 @@ import {
   ResultFeature,
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputLabelsEditMode } from "../atoms";
-import { ExclamationCircleIcon } from "@patternfly/react-icons";
+import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { ValidatedType } from "../../../types";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation, useOperation } from "../../EditorScorecard";

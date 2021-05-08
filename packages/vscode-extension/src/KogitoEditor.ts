@@ -16,6 +16,7 @@
 
 import * as vscode from "vscode";
 import {
+  ChannelType,
   EditorApi,
   EditorEnvelopeLocator,
   EnvelopeMapping,
@@ -58,6 +59,7 @@ export class KogitoEditor implements EditorApi {
             resourcesPathPrefix: envelopeMapping.resourcesPathPrefix,
             initialLocale: vscode.env.language,
             isReadOnly: false,
+            channel: ChannelType.VSCODE,
           }
         )
     )
@@ -71,8 +73,8 @@ export class KogitoEditor implements EditorApi {
     return this.envelopeServer.envelopeApi.requests.receive_contentRequest().then((c) => c.content);
   }
 
-  public async setContent(path: string, content: string) {
-    this.envelopeServer.envelopeApi.notifications.receive_contentChanged({ path: path, content: content });
+  public setContent(path: string, content: string) {
+    return this.envelopeServer.envelopeApi.requests.receive_contentChanged({ path: path, content: content });
   }
 
   public async undo() {

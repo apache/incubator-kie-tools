@@ -1,6 +1,9 @@
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Alert, Bullseye, Stack, StackItem, Title, TitleSizes } from "@patternfly/react-core";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
+import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { isEqual, pickBy } from "lodash";
 import EmptyMiningSchema from "../EmptyMiningSchema/EmptyMiningSchema";

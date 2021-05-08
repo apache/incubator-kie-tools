@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from "@patternfly/react-core";
-import { ExclamationTriangleIcon } from "@patternfly/react-icons";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 
 export const EmptyStateModelNotFound = () => (
   <EmptyState data-testid="empty-state-model-not-found" variant={EmptyStateVariant.small}>

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { EditorEnvelopeLocator } from "../../../api";
-import { ChannelType, KogitoEdit } from "@kogito-tooling/channel-common-api";
+import { EditorEnvelopeLocator, ChannelType } from "../../../api";
+import { KogitoEdit } from "@kogito-tooling/channel-common-api";
 import * as React from "react";
 import { File } from "../../../channel";
 import { EmbeddedEditor, EmbeddedEditorRef } from "../../embedded";
@@ -73,13 +73,13 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     const spyOnContentChangedNotification = jest.spyOn(
-      editorRef.current!.getEnvelopeServer().envelopeApi.notifications,
+      editorRef.current!.getEnvelopeServer().envelopeApi.requests,
       "receive_contentChanged"
     );
 
-    editorRef.current?.setContent("content", "");
+    editorRef.current?.setContent("path", "content");
 
-    expect(spyOnContentChangedNotification).toBeCalledWith({ content: "content" });
+    expect(spyOnContentChangedNotification).toBeCalledWith({ content: "content", path: "path" });
   });
 
   test("EmbeddedEditor::requestContent", () => {
@@ -245,7 +245,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       data: [new KogitoEdit("1")],
     });
 
-    expect(editorRef.current?.getStateControl().getCommandStack()).toEqual(["1"]);
+    expect(editorRef.current?.getStateControl().getCommandStack()).toEqual([{ id: "1" }]);
     expect(onNewEdit).toBeCalled();
     expect(container.firstChild).toMatchSnapshot();
   });

@@ -16,7 +16,8 @@
 import * as React from "react";
 import { Model } from "@kogito-tooling/pmml-editor-marshaller";
 import { LandingPageHeader } from "../../LandingPage/molecules";
-import { Level, PageSection, PageSectionVariants } from "@patternfly/react-core";
+import { PageSection, PageSectionVariants } from "@patternfly/react-core/dist/js/components/Page";
+import { Level } from "@patternfly/react-core/dist/js/layouts/Level";
 
 interface UnsupportedModelPageProps {
   path: string;

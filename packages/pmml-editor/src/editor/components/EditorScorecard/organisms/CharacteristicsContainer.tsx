@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Stack, StackItem } from "@patternfly/react-core";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Operation } from "../Operation";
 import { CharacteristicsTable, IndexedCharacteristic } from "./CharacteristicsTable";
 import "./CharacteristicsContainer.scss";

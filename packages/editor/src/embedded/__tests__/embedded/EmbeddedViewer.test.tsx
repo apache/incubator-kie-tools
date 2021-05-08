@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorEnvelopeLocator } from "../../../api";
-import { ChannelType } from "@kogito-tooling/channel-common-api";
+import { EditorEnvelopeLocator, ChannelType } from "../../../api";
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import * as React from "react";
 import { File } from "../../../channel";

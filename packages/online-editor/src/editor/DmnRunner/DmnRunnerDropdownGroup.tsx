@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DropdownGroup, DropdownItem } from "@patternfly/react-core";
+import { DropdownGroup, DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 
 import React from "react";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";

@@ -15,11 +15,15 @@
  */
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Form, FormGroup, Split, SplitItem, Text, TextInput, Tooltip } from "@patternfly/react-core";
+import { Text } from "@patternfly/react-core/dist/js/components/Text";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import "./ModelTitle.scss";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation, useOperation } from "../../EditorScorecard";
-import { HelpIcon } from "@patternfly/react-icons";
+import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 
 interface ModelTitleProps {
   modelName: string;

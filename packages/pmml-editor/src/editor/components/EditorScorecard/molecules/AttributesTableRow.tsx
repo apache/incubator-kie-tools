@@ -15,7 +15,8 @@
  */
 import * as React from "react";
 import { useMemo } from "react";
-import { Label, Split, SplitItem } from "@patternfly/react-core";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Attribute, Characteristic, DataField, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import "./AttributesTableRow.scss";
 import { AttributeLabels, AttributesTableAction } from "../atoms";

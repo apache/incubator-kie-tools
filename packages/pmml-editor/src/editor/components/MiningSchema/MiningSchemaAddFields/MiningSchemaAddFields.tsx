@@ -1,14 +1,13 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import {
-  Button,
   Select,
   SelectOption,
   SelectOptionObject,
   SelectVariant,
-  Split,
-  SplitItem,
-} from "@patternfly/react-core";
+} from "@patternfly/react-core/dist/js/components/Select";
 import { MiningSchemaOption } from "../MiningSchemaContainer/MiningSchemaContainer";
 
 interface MiningSchemaAddFieldsProps {

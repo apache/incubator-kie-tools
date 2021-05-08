@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import {
-  Brand,
-  Button,
   Dropdown,
   DropdownGroup,
   DropdownItem,
   DropdownPosition,
   DropdownToggle,
+} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
   PageHeader,
   PageHeaderTools,
   PageHeaderToolsGroup,
   PageHeaderToolsItem,
-  TextInput,
-  Title,
-  Tooltip,
-} from "@patternfly/react-core";
-import { EllipsisVIcon } from "@patternfly/react-icons";
+} from "@patternfly/react-core/dist/js/components/Page";
+import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";

@@ -27,10 +27,12 @@ export const en: ChromeExtensionI18n = {
   single: {
     exitFullScreen: `${en_common.terms.exit} ${en_common.terms.fullScreen}`,
     editorToolbar: {
+      fixAndSeeAsDiagram: "Fix your file and try reopening it.",
+      errorOpeningFile: `Can't open Editor for this file.`,
       seeAsSource: "See as source",
       copyLinkTo: (name: string) => `Copy link to ${name}`,
       linkCopied: "Link copied to clipboard",
-      readOnly: "🔸️ This is a readonly visualization",
+      readOnly: "This is a read-only visualization.",
     },
   },
   pr: {

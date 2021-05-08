@@ -16,8 +16,12 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Badge, Tab, Tabs, TabTitleText, Tooltip } from "@patternfly/react-core";
-import { AngleDownIcon, AngleUpIcon, ExclamationCircleIcon } from "@patternfly/react-icons";
+import { Badge } from "@patternfly/react-core/dist/js/components/Badge";
+import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+import { AngleUpIcon } from "@patternfly/react-icons/dist/js/icons/angle-up-icon";
+import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { useNotificationsPanel } from "./NotificationsPanelContext";
 import { NotificationPanelTabContent } from "./NotificationsPanelTabContent";
 import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";

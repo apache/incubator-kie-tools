@@ -19,7 +19,6 @@ export * from "./EditorFactory";
 export * from "./KogitoEditorEnvelopeContext";
 export * from "./KogitoEditorChannelApi";
 export * from "./KogitoEditorEnvelopeApi";
-export * from "./EditorContext";
 export * from "./StateControlCommand";
 export * from "./EditorContent";
 export * from "./EditorEnvelopeLocator";

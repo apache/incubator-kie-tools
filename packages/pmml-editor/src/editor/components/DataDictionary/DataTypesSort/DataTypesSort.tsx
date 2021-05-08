@@ -1,8 +1,10 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
-import { Button, Flex, FlexItem, Label } from "@patternfly/react-core";
-import { GripVerticalIcon } from "@patternfly/react-icons";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { GripVerticalIcon } from "@patternfly/react-icons/dist/js/icons/grip-vertical-icon";
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypesSort.scss";
 

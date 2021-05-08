@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Select, SelectDirection, SelectOption, SelectVariant } from "@patternfly/react-core";
+import { Select, SelectDirection, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useState } from "react";
 import { getOperatingSystem, OperatingSystem } from "./utils";

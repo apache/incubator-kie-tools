@@ -5,15 +5,26 @@ exports[`SingleEditorToolbar button actions 1`] = `
   <div
     style="display: flex;"
   >
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
+      data-testid="go-fullscreen-button"
+    >
+      Full Screen
+    </button>
+    <button
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="see-as-source-button"
       disabled=""
     >
       See as source
     </button>
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="open-ext-editor-button"
     >
       Open in Test Online Editor
@@ -22,7 +33,7 @@ exports[`SingleEditorToolbar button actions 1`] = `
       class="position-relative"
     >
       <button
-        class="btn d-md-inline-block kogito-button"
+        class="btn d-none d-md-inline-block kogito-button"
         data-testid="copy-link-button"
       >
         Copy link to Test Online Editor
@@ -41,17 +52,6 @@ exports[`SingleEditorToolbar button actions 1`] = `
         </div>
       </div>
     </div>
-    <button
-      class="btn d-md-inline-block kogito-button"
-      data-testid="go-fullscreen-button"
-    >
-      Full Screen
-    </button>
-    <textarea
-      style="opacity: 0; width: 0px; height: 0px;"
-    >
-      test.com/editor
-    </textarea>
   </div>
 </DocumentFragment>
 `;
@@ -61,15 +61,26 @@ exports[`SingleEditorToolbar copied to clipboard message 1`] = `
   <div
     style="display: flex;"
   >
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
+      data-testid="go-fullscreen-button"
+    >
+      Full Screen
+    </button>
+    <button
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="see-as-source-button"
       disabled=""
     >
       See as source
     </button>
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="open-ext-editor-button"
     >
       Open in Test Online Editor
@@ -78,41 +89,41 @@ exports[`SingleEditorToolbar copied to clipboard message 1`] = `
       class="position-relative"
     >
       <button
-        class="btn d-md-inline-block kogito-button"
+        class="btn d-none d-md-inline-block kogito-button"
         data-testid="copy-link-button"
       >
         Copy link to Test Online Editor
       </button>
     </div>
-    <button
-      class="btn d-md-inline-block kogito-button"
-      data-testid="go-fullscreen-button"
-    >
-      Full Screen
-    </button>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`SingleEditorToolbar readonly false | textMode false | textModeAvailable false 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
     <textarea
       style="opacity: 0; width: 0px; height: 0px;"
     >
       test.com/editor
     </textarea>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`SingleEditorToolbar readonly false | textMode false | textModeEnabled false 1`] = `
-<DocumentFragment>
-  <div
-    style="display: flex;"
-  >
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
+      data-testid="go-fullscreen-button"
+    >
+      Full Screen
+    </button>
+    <button
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="see-as-source-button"
       disabled=""
     >
       See as source
     </button>
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="open-ext-editor-button"
     >
       Open in Test Online Editor
@@ -121,40 +132,40 @@ exports[`SingleEditorToolbar readonly false | textMode false | textModeEnabled f
       class="position-relative"
     >
       <button
-        class="btn d-md-inline-block kogito-button"
+        class="btn d-none d-md-inline-block kogito-button"
         data-testid="copy-link-button"
       >
         Copy link to Test Online Editor
       </button>
     </div>
-    <button
-      class="btn d-md-inline-block kogito-button"
-      data-testid="go-fullscreen-button"
-    >
-      Full Screen
-    </button>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`SingleEditorToolbar readonly false | textMode false | textModeAvailable true 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
     <textarea
       style="opacity: 0; width: 0px; height: 0px;"
     >
       test.com/editor
     </textarea>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`SingleEditorToolbar readonly false | textMode false | textModeEnabled true 1`] = `
-<DocumentFragment>
-  <div
-    style="display: flex;"
-  >
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
+      data-testid="go-fullscreen-button"
+    >
+      Full Screen
+    </button>
+    <button
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="see-as-source-button"
     >
       See as source
     </button>
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="open-ext-editor-button"
     >
       Open in Test Online Editor
@@ -163,116 +174,121 @@ exports[`SingleEditorToolbar readonly false | textMode false | textModeEnabled t
       class="position-relative"
     >
       <button
-        class="btn d-md-inline-block kogito-button"
+        class="btn d-none d-md-inline-block kogito-button"
         data-testid="copy-link-button"
       >
         Copy link to Test Online Editor
       </button>
     </div>
+  </div>
+  <div
+    class="flash flash-info"
+    style="height: 32px; padding: 5px 15px 5px 15px; white-space: nowrap;"
+  >
+    <h5>
+      This is a read-only visualization.
+    </h5>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`SingleEditorToolbar readonly false | textMode true | textModeAvailable false 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
+      data-testid="see-as-diagram-button"
+    >
+      See as diagram
+    </button>
+    <button
+      class="btn d-none d-md-inline-block kogito-button"
+      data-testid="open-ext-editor-button"
+    >
+      Open in Test Online Editor
+    </button>
+    <div
+      class="position-relative"
+    >
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="copy-link-button"
+      >
+        Copy link to Test Online Editor
+      </button>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`SingleEditorToolbar readonly false | textMode true | textModeAvailable true 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
+    <button
+      class="btn d-none d-md-inline-block kogito-button"
+      data-testid="see-as-diagram-button"
+    >
+      See as diagram
+    </button>
+    <button
+      class="btn d-none d-md-inline-block kogito-button"
+      data-testid="open-ext-editor-button"
+    >
+      Open in Test Online Editor
+    </button>
+    <div
+      class="position-relative"
+    >
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="copy-link-button"
+      >
+        Copy link to Test Online Editor
+      </button>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`SingleEditorToolbar readonly true | textMode false | textModeAvailable false 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
+    <button
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="go-fullscreen-button"
     >
       Full Screen
     </button>
-    <textarea
-      style="opacity: 0; width: 0px; height: 0px;"
-    >
-      test.com/editor
-    </textarea>
-  </div>
-  <h4>
-    🔸️ This is a readonly visualization
-  </h4>
-</DocumentFragment>
-`;
-
-exports[`SingleEditorToolbar readonly false | textMode true | textModeEnabled false 1`] = `
-<DocumentFragment>
-  <div
-    style="display: flex;"
-  >
     <button
-      class="btn d-md-inline-block kogito-button"
-      data-testid="see-as-diagram-button"
-    >
-      See as diagram
-    </button>
-    <button
-      class="btn d-md-inline-block kogito-button"
-      data-testid="open-ext-editor-button"
-    >
-      Open in Test Online Editor
-    </button>
-    <div
-      class="position-relative"
-    >
-      <button
-        class="btn d-md-inline-block kogito-button"
-        data-testid="copy-link-button"
-      >
-        Copy link to Test Online Editor
-      </button>
-    </div>
-    <textarea
-      style="opacity: 0; width: 0px; height: 0px;"
-    >
-      test.com/editor
-    </textarea>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`SingleEditorToolbar readonly false | textMode true | textModeEnabled true 1`] = `
-<DocumentFragment>
-  <div
-    style="display: flex;"
-  >
-    <button
-      class="btn d-md-inline-block kogito-button"
-      data-testid="see-as-diagram-button"
-    >
-      See as diagram
-    </button>
-    <button
-      class="btn d-md-inline-block kogito-button"
-      data-testid="open-ext-editor-button"
-    >
-      Open in Test Online Editor
-    </button>
-    <div
-      class="position-relative"
-    >
-      <button
-        class="btn d-md-inline-block kogito-button"
-        data-testid="copy-link-button"
-      >
-        Copy link to Test Online Editor
-      </button>
-    </div>
-    <textarea
-      style="opacity: 0; width: 0px; height: 0px;"
-    >
-      test.com/editor
-    </textarea>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`SingleEditorToolbar readonly true | textMode false | textModeEnabled false 1`] = `
-<DocumentFragment>
-  <div
-    style="display: flex;"
-  >
-    <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="see-as-source-button"
       disabled=""
     >
       See as source
     </button>
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="open-ext-editor-button"
     >
       Open in Test Online Editor
@@ -281,43 +297,42 @@ exports[`SingleEditorToolbar readonly true | textMode false | textModeEnabled fa
       class="position-relative"
     >
       <button
-        class="btn d-md-inline-block kogito-button"
+        class="btn d-none d-md-inline-block kogito-button"
         data-testid="copy-link-button"
       >
         Copy link to Test Online Editor
       </button>
     </div>
-    <button
-      class="btn d-md-inline-block kogito-button"
-      data-testid="go-fullscreen-button"
-    >
-      Full Screen
-    </button>
+  </div>
+  <div
+    class="flash flash-info"
+    style="height: 32px; padding: 5px 15px 5px 15px; white-space: nowrap;"
+  >
+    <h5>
+      This is a read-only visualization.
+    </h5>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`SingleEditorToolbar readonly true | textMode true | textModeAvailable false 1`] = `
+<DocumentFragment>
+  <div
+    style="display: flex;"
+  >
     <textarea
       style="opacity: 0; width: 0px; height: 0px;"
     >
       test.com/editor
     </textarea>
-  </div>
-  <h4>
-    🔸️ This is a readonly visualization
-  </h4>
-</DocumentFragment>
-`;
-
-exports[`SingleEditorToolbar readonly true | textMode true | textModeEnabled false 1`] = `
-<DocumentFragment>
-  <div
-    style="display: flex;"
-  >
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="see-as-diagram-button"
     >
       See as diagram
     </button>
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="open-ext-editor-button"
     >
       Open in Test Online Editor
@@ -326,17 +341,12 @@ exports[`SingleEditorToolbar readonly true | textMode true | textModeEnabled fal
       class="position-relative"
     >
       <button
-        class="btn d-md-inline-block kogito-button"
+        class="btn d-none d-md-inline-block kogito-button"
         data-testid="copy-link-button"
       >
         Copy link to Test Online Editor
       </button>
     </div>
-    <textarea
-      style="opacity: 0; width: 0px; height: 0px;"
-    >
-      test.com/editor
-    </textarea>
   </div>
 </DocumentFragment>
 `;
@@ -346,14 +356,19 @@ exports[`SingleEditorToolbar see as diagram 1`] = `
   <div
     style="display: flex;"
   >
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="see-as-diagram-button"
     >
       See as diagram
     </button>
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="open-ext-editor-button"
     >
       Open in Test Online Editor
@@ -362,17 +377,12 @@ exports[`SingleEditorToolbar see as diagram 1`] = `
       class="position-relative"
     >
       <button
-        class="btn d-md-inline-block kogito-button"
+        class="btn d-none d-md-inline-block kogito-button"
         data-testid="copy-link-button"
       >
         Copy link to Test Online Editor
       </button>
     </div>
-    <textarea
-      style="opacity: 0; width: 0px; height: 0px;"
-    >
-      test.com/editor
-    </textarea>
   </div>
 </DocumentFragment>
 `;
@@ -382,14 +392,25 @@ exports[`SingleEditorToolbar see as source 1`] = `
   <div
     style="display: flex;"
   >
+    <textarea
+      style="opacity: 0; width: 0px; height: 0px;"
+    >
+      test.com/editor
+    </textarea>
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
+      data-testid="go-fullscreen-button"
+    >
+      Full Screen
+    </button>
+    <button
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="see-as-source-button"
     >
       See as source
     </button>
     <button
-      class="btn d-md-inline-block kogito-button"
+      class="btn d-none d-md-inline-block kogito-button"
       data-testid="open-ext-editor-button"
     >
       Open in Test Online Editor
@@ -398,23 +419,12 @@ exports[`SingleEditorToolbar see as source 1`] = `
       class="position-relative"
     >
       <button
-        class="btn d-md-inline-block kogito-button"
+        class="btn d-none d-md-inline-block kogito-button"
         data-testid="copy-link-button"
       >
         Copy link to Test Online Editor
       </button>
     </div>
-    <button
-      class="btn d-md-inline-block kogito-button"
-      data-testid="go-fullscreen-button"
-    >
-      Full Screen
-    </button>
-    <textarea
-      style="opacity: 0; width: 0px; height: 0px;"
-    >
-      test.com/editor
-    </textarea>
   </div>
 </DocumentFragment>
 `;

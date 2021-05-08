@@ -18,34 +18,23 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DecisionResult, DecisionResultMessage, DmnResult, EvaluationStatus, Result } from "./DmnRunnerService";
 import { AutoForm } from "uniforms-patternfly";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
+import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import {
-  Card,
-  CardBody,
-  CardFooter,
-  CardTitle,
   DescriptionList,
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
-  DrawerCloseButton,
-  DrawerPanelContent,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  Page,
-  PageSection,
-  Text,
-  TextContent,
-  TextVariants,
-  Title,
-} from "@patternfly/react-core";
-import {
-  CheckCircleIcon,
-  CubesIcon,
-  ExclamationCircleIcon,
-  ExclamationIcon,
-  InfoCircleIcon,
-} from "@patternfly/react-icons";
+} from "@patternfly/react-core/dist/js/components/DescriptionList";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
+import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
 import { diff } from "deep-object-diff";
 import { ErrorBoundary } from "../../common/ErrorBoundry";
 import { useDmnRunner } from "./DmnRunnerContext";

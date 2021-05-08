@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Label } from "@patternfly/react-core";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 
 import "./OutputFieldLabel.scss";
 

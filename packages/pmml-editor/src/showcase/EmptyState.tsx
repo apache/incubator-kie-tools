@@ -16,16 +16,16 @@
 import * as React from "react";
 import { ChangeEvent } from "react";
 
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import {
-  Button,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateSecondaryActions,
   EmptyStateVariant,
-  Title,
-} from "@patternfly/react-core";
-import { CubesIcon } from "@patternfly/react-icons";
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 
 interface NewProps {
   newContent: () => void;

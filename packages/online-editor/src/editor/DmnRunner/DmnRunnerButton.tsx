@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-import { Button, Tooltip } from "@patternfly/react-core";
-import { ConnectedIcon, DisconnectedIcon, ExclamationTriangleIcon } from "@patternfly/react-icons";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { ConnectedIcon } from "@patternfly/react-icons/dist/js/icons/connected-icon";
+import { DisconnectedIcon } from "@patternfly/react-icons/dist/js/icons/disconnected-icon";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import * as React from "react";
 import { useCallback, useContext, useMemo } from "react";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";

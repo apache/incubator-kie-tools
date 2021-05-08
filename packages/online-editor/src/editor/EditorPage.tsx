@@ -25,18 +25,10 @@ import { useOnlineI18n } from "../common/i18n";
 import { UpdateGistErrors } from "../common/GithubService";
 import { EmbedModal } from "./EmbedModal";
 import { useFileUrl } from "../common/Hooks";
-import { ChannelType } from "@kogito-tooling/channel-common-api";
+import { useDmnTour } from "../tour";
+import { ChannelType } from "@kogito-tooling/editor/dist/api";
 import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
-import {
-  Alert,
-  AlertActionCloseButton,
-  AlertActionLink,
-  Drawer,
-  DrawerContent,
-  DrawerContentBody,
-  Page,
-  PageSection,
-} from "@patternfly/react-core";
+import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
 import { DmnRunnerContext } from "./DmnRunner/DmnRunnerContext";
 import { DmnRunnerContextProvider } from "./DmnRunner/DmnRunnerContextProvider";
@@ -44,22 +36,30 @@ import { NotificationsPanel } from "./NotificationsPanel/NotificationsPanel";
 import { DmnRunnerStatus } from "./DmnRunner/DmnRunnerStatus";
 import { NotificationsPanelContextProvider } from "./NotificationsPanel/NotificationsPanelContextProvider";
 import { NotificationsPanelContextType } from "./NotificationsPanel/NotificationsPanelContext";
+import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 
-export enum Alerts {
+const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kiegroup/monaco-editor");
+
+export enum AlertTypes {
   NONE,
   COPY,
   SUCCESS_UPDATE_GIST,
   SUCCESS_UPDATE_GIST_FILENAME,
   INVALID_CURRENT_GIST,
   INVALID_GIST_FILENAME,
+  SET_CONTENT_ERROR,
   UNSAVED,
   SUCCESS_DMN_RUNNER,
   ERROR,
 }
 
-export enum OpenedModal {
+export enum ModalType {
   NONE,
   GITHUB_TOKEN,
+  TEXT_EDITOR,
   EMBED,
   DMN_RUNNER_HELPER,
 }
@@ -78,21 +78,22 @@ export function EditorPage(props: Props) {
   const [isEditorReady, setIsEditorReady] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [updateGistFilenameUrl, setUpdateGistFilenameUrl] = useState("");
-  const [alert, setAlert] = useState(Alerts.NONE);
-  const [modal, setModal] = useState(OpenedModal.NONE);
+  const [openAlert, setOpenAlert] = useState(AlertTypes.NONE);
+  const [openModalType, setOpenModalType] = useState(ModalType.NONE);
   const isDirty = useDirtyState(editor);
   const { locale, i18n } = useOnlineI18n();
+  const textEditorContainerRef = useRef<HTMLDivElement>(null);
 
   const close = useCallback(() => {
     if (!isDirty) {
       window.location.href = window.location.href.split("?")[0].split("#")[0];
     } else {
-      setAlert(Alerts.UNSAVED);
+      setOpenAlert(AlertTypes.UNSAVED);
     }
   }, [isDirty]);
 
   const closeWithoutSaving = useCallback(() => {
-    setAlert(Alerts.NONE);
+    setOpenAlert(AlertTypes.NONE);
     window.location.href = window.location.href.split("?")[0].split("#")[0];
   }, []);
 
@@ -112,7 +113,7 @@ export function EditorPage(props: Props) {
 
   const requestDownload = useCallback(() => {
     editor?.getStateControl().setSavedCommand();
-    setAlert(Alerts.NONE);
+    setOpenAlert(AlertTypes.NONE);
     editor?.getContent().then((content) => {
       if (downloadRef.current) {
         const fileBlob = new Blob([content], { type: "text/plain" });
@@ -147,12 +148,12 @@ export function EditorPage(props: Props) {
             const updateResponse = await context.githubService.updateGist({ filename, content });
 
             if (updateResponse === UpdateGistErrors.INVALID_CURRENT_GIST) {
-              setAlert(Alerts.INVALID_CURRENT_GIST);
+              setOpenAlert(AlertTypes.INVALID_CURRENT_GIST);
               return;
             }
 
             if (updateResponse === UpdateGistErrors.INVALID_GIST_FILENAME) {
-              setAlert(Alerts.INVALID_GIST_FILENAME);
+              setOpenAlert(AlertTypes.INVALID_GIST_FILENAME);
               return;
             }
 
@@ -162,15 +163,15 @@ export function EditorPage(props: Props) {
               setUpdateGistFilenameUrl(
                 `${window.location.origin}${window.location.pathname}?file=${updateResponse}#/editor/${fileExtension}`
               );
-              setAlert(Alerts.SUCCESS_UPDATE_GIST_FILENAME);
+              setOpenAlert(AlertTypes.SUCCESS_UPDATE_GIST_FILENAME);
               return;
             }
 
-            setAlert(Alerts.SUCCESS_UPDATE_GIST);
+            setOpenAlert(AlertTypes.SUCCESS_UPDATE_GIST);
             return;
           } catch (err) {
             console.error(err);
-            setAlert(Alerts.ERROR);
+            setOpenAlert(AlertTypes.ERROR);
             return;
           }
         }
@@ -185,13 +186,13 @@ export function EditorPage(props: Props) {
           isPublic: true,
         });
 
-        setAlert(Alerts.NONE);
+        setOpenAlert(AlertTypes.NONE);
         // FIXME: KOGITO-1202
         window.location.href = `?file=${newGistUrl}#/editor/${fileExtension}`;
         return;
       } catch (err) {
         console.error(err);
-        setAlert(Alerts.ERROR);
+        setOpenAlert(AlertTypes.ERROR);
         return;
       }
     }
@@ -202,15 +203,15 @@ export function EditorPage(props: Props) {
   }, [location.pathname]);
 
   const requestSetGitHubToken = useCallback(() => {
-    setModal(OpenedModal.GITHUB_TOKEN);
+    setOpenModalType(ModalType.GITHUB_TOKEN);
   }, []);
 
   const requestEmbed = useCallback(() => {
-    setModal(OpenedModal.EMBED);
+    setOpenModalType(ModalType.EMBED);
   }, []);
 
   const closeModal = useCallback(() => {
-    setModal(OpenedModal.NONE);
+    setOpenModalType(ModalType.NONE);
   }, []);
 
   const requestCopyContentToClipboard = useCallback(() => {
@@ -219,7 +220,7 @@ export function EditorPage(props: Props) {
         copyContentTextArea.current.value = content;
         copyContentTextArea.current.select();
         if (document.execCommand("copy")) {
-          setAlert(Alerts.COPY);
+          setOpenAlert(AlertTypes.COPY);
         }
       }
     });
@@ -273,7 +274,72 @@ export function EditorPage(props: Props) {
     })();
   });
 
-  const closeAlert = useCallback(() => setAlert(Alerts.NONE), []);
+  useDmnTour(isEditorReady, context.file);
+
+  const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
+
+  const onSetContentError = useCallback(() => {
+    setOpenAlert(AlertTypes.SET_CONTENT_ERROR);
+  }, []);
+
+  const openFileAsText = useCallback(() => {
+    setOpenModalType(ModalType.TEXT_EDITOR);
+  }, []);
+
+  const refreshDiagramEditor = useCallback(() => {
+    setOpenModalType(ModalType.NONE);
+    setOpenAlert(AlertTypes.NONE);
+  }, [editor]);
+
+  const [textEditorContent, setTextEditorContext] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    context.file.getFileContents().then((content) => {
+      setTextEditorContext(content);
+    });
+  }, [context.file]);
+
+  useEffect(() => {
+    if (openModalType !== ModalType.TEXT_EDITOR) {
+      return;
+    }
+
+    let monacoInstance: any;
+
+    importMonacoEditor().then((monaco) => {
+      monacoInstance = monaco.editor.create(textEditorContainerRef.current!, {
+        value: textEditorContent!,
+        language: "xml", //FIXME: Not all editors will be XML when converted to text
+        scrollBeyondLastLine: false,
+      });
+    });
+
+    return () => {
+      if (!monacoInstance) {
+        return;
+      }
+
+      const contentAfterFix = monacoInstance.getValue();
+      monacoInstance.dispose();
+
+      editor
+        ?.setContent(context.file.fileName, contentAfterFix)
+        .then(() => {
+          editor?.getStateControl().updateCommandStack({
+            id: "fix-from-text-editor",
+            undo: () => {
+              editor?.setContent(context.file.fileName, textEditorContent!);
+            },
+            redo: () => {
+              editor?.setContent(context.file.fileName, contentAfterFix).then(() => setOpenAlert(AlertTypes.NONE));
+            },
+          });
+        })
+        .catch(() => {
+          setTextEditorContext(contentAfterFix);
+        });
+    };
+  }, [openModalType, editor, context.file, textEditorContent]);
 
   const notificationsPanelRef = useRef<NotificationsPanelContextType>(null);
 
@@ -354,7 +420,21 @@ export function EditorPage(props: Props) {
                     panelContent={<DmnRunnerDrawer editor={editor} />}
                   >
                     <DrawerContentBody className={"kogito--editor__drawer-content-body"}>
-                      {!fullscreen && alert === Alerts.COPY && (
+                      {!fullscreen && openAlert === AlertTypes.SET_CONTENT_ERROR && (
+                        <div className={"kogito--alert-container"}>
+                          <Alert
+                            className={"kogito--alert"}
+                            variant="danger"
+                            title={i18n.editorPage.alerts.setContentError.title}
+                            actionLinks={
+                              <AlertActionLink data-testid="unsaved-alert-save-button" onClick={openFileAsText}>
+                                {i18n.editorPage.alerts.setContentError.action}
+                              </AlertActionLink>
+                            }
+                          />
+                        </div>
+                      )}
+                      {!fullscreen && openAlert === AlertTypes.COPY && (
                         <div className={"kogito--alert-container"}>
                           <Alert
                             className={"kogito--alert"}
@@ -364,7 +444,7 @@ export function EditorPage(props: Props) {
                           />
                         </div>
                       )}
-                      {!fullscreen && alert === Alerts.SUCCESS_UPDATE_GIST && (
+                      {!fullscreen && openAlert === AlertTypes.SUCCESS_UPDATE_GIST && (
                         <div className={"kogito--alert-container"}>
                           <Alert
                             className={"kogito--alert"}
@@ -374,7 +454,7 @@ export function EditorPage(props: Props) {
                           />
                         </div>
                       )}
-                      {!fullscreen && alert === Alerts.SUCCESS_UPDATE_GIST_FILENAME && (
+                      {!fullscreen && openAlert === AlertTypes.SUCCESS_UPDATE_GIST_FILENAME && (
                         <div className={"kogito--alert-container"}>
                           <Alert
                             className={"kogito--alert"}
@@ -388,7 +468,7 @@ export function EditorPage(props: Props) {
                           </Alert>
                         </div>
                       )}
-                      {!fullscreen && alert === Alerts.SUCCESS_DMN_RUNNER && (
+                      {!fullscreen && openAlert === AlertTypes.SUCCESS_DMN_RUNNER && (
                         <div className={"kogito--alert-container"}>
                           <Alert
                             className={"kogito--alert"}
@@ -398,7 +478,7 @@ export function EditorPage(props: Props) {
                           />
                         </div>
                       )}
-                      {!fullscreen && alert === Alerts.INVALID_CURRENT_GIST && (
+                      {!fullscreen && openAlert === AlertTypes.INVALID_CURRENT_GIST && (
                         <div className={"kogito--alert-container"}>
                           <Alert
                             className={"kogito--alert"}
@@ -408,7 +488,7 @@ export function EditorPage(props: Props) {
                           />
                         </div>
                       )}
-                      {!fullscreen && alert === Alerts.INVALID_GIST_FILENAME && (
+                      {!fullscreen && openAlert === AlertTypes.INVALID_GIST_FILENAME && (
                         <div className={"kogito--alert-container"}>
                           <Alert
                             className={"kogito--alert"}
@@ -418,7 +498,7 @@ export function EditorPage(props: Props) {
                           />
                         </div>
                       )}
-                      {!fullscreen && alert === Alerts.ERROR && (
+                      {!fullscreen && openAlert === AlertTypes.ERROR && (
                         <div className={"kogito--alert-container"}>
                           <Alert
                             className={"kogito--alert"}
@@ -428,7 +508,7 @@ export function EditorPage(props: Props) {
                           />
                         </div>
                       )}
-                      {!fullscreen && alert === Alerts.UNSAVED && (
+                      {!fullscreen && openAlert === AlertTypes.UNSAVED && (
                         <div className={"kogito--alert-container-unsaved"} data-testid="unsaved-alert">
                           <Alert
                             className={"kogito--alert"}
@@ -456,11 +536,11 @@ export function EditorPage(props: Props) {
                         </div>
                       )}
                       {!fullscreen && (
-                        <GithubTokenModal isOpen={modal === OpenedModal.GITHUB_TOKEN} onClose={closeModal} />
+                        <GithubTokenModal isOpen={openModalType === ModalType.GITHUB_TOKEN} onClose={closeModal} />
                       )}
                       {!fullscreen && (
                         <EmbedModal
-                          isOpen={modal === OpenedModal.EMBED}
+                          isOpen={openModalType === ModalType.EMBED}
                           onClose={closeModal}
                           editor={editor}
                           fileExtension={fileExtension}
@@ -471,10 +551,25 @@ export function EditorPage(props: Props) {
                         ref={editorRef}
                         file={context.file}
                         editorEnvelopeLocator={context.editorEnvelopeLocator}
+                        receive_setContentError={onSetContentError}
                         receive_ready={onReady}
                         channelType={ChannelType.ONLINE}
                         locale={locale}
                       />
+                      <Modal
+                        showClose={false}
+                        width={"100%"}
+                        height={"100%"}
+                        title={i18n.editorPage.textEditorModal.title(context.file.fileName.split("/").pop()!)}
+                        isOpen={openModalType === ModalType.TEXT_EDITOR}
+                        actions={[
+                          <Button key="confirm" variant="primary" onClick={refreshDiagramEditor}>
+                            {i18n.terms.done}
+                          </Button>,
+                        ]}
+                      >
+                        <div style={{ width: "100%", minHeight: "calc(100vh - 210px)" }} ref={textEditorContainerRef} />
+                      </Modal>
                       <NotificationsPanel tabNames={notificationPanelTabNames(dmnRunner.status)} />
                     </DrawerContentBody>
                   </DrawerContent>

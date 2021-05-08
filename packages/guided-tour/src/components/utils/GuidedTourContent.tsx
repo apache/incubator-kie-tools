@@ -15,21 +15,20 @@
  */
 
 import * as React from "react";
-import { useContext, useCallback } from "react";
-
+import { useCallback, useContext } from "react";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import {
-  Button,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateSecondaryActions,
   EmptyStateVariant,
-  ModalBoxCloseButton,
-  Text,
-  Title,
-} from "@patternfly/react-core";
-import { TimesCircleIcon, BookIcon } from "@patternfly/react-icons";
-
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Text } from "@patternfly/react-core/dist/js/components/Text";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { ModalBoxCloseButton } from "@patternfly/react-core/dist/js/components/Modal";
+import { BookIcon } from "@patternfly/react-icons/dist/js/icons/book-icon";
+import { TimesCircleIcon } from "@patternfly/react-icons/dist/js/icons/times-circle-icon";
 import { NavigationControls } from "..";
 import { CurrentTutorialContext } from "../../contexts";
 import { Step } from "../../api";

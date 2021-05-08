@@ -17,33 +17,27 @@
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import {
-  Alert,
-  AlertVariant,
-  Button,
-  ExpandableSection,
-  Form,
-  FormGroup,
-  Label,
-  List,
-  ListItem,
-  Modal,
-  ModalVariant,
-  SelectDirection,
-  Text,
-  TextContent,
-  TextInput,
-  TextVariants,
   Wizard,
   WizardContext,
   WizardContextConsumer,
   WizardFooter,
-} from "@patternfly/react-core";
+} from "@patternfly/react-core/dist/js/components/Wizard";
 import { getOperatingSystem, OperatingSystem } from "../../common/utils";
 import { SelectOs } from "../../common/SelectOs";
 import { AnimatedTripleDotLabel } from "../../common/AnimatedTripleDotLabel";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useDmnRunner } from "./DmnRunnerContext";
 import { DMN_RUNNER_DEFAULT_PORT } from "./DmnRunnerContextProvider";
+import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
+import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
+import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { SelectDirection } from "@patternfly/react-core/dist/js/components/Select";
 
 enum ModalPage {
   INITIAL,

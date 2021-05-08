@@ -22,7 +22,7 @@ import {
   ResourceListRequest,
   ResourcesList,
 } from "@kogito-tooling/channel-common-api";
-import { KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor/dist/api";
+import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor/dist/api";
 import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
 import { File, StateControl } from "@kogito-tooling/editor/dist/channel";
 import { Minimatch } from "minimatch";
@@ -38,7 +38,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   ) {}
 
   public receive_newEdit(edit: KogitoEdit) {
-    this.stateControl.updateCommandStack(edit.id);
+    this.stateControl.updateCommandStack({ id: edit.id });
     this.overrides.receive_newEdit?.(edit);
   }
 
@@ -110,8 +110,8 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     this.overrides.receive_ready?.();
   }
 
-  public receive_setContentError(errorMessage: string): void {
-    this.overrides.receive_setContentError?.(errorMessage);
+  public receive_setContentError(editorContent: EditorContent): void {
+    this.overrides.receive_setContentError?.(editorContent);
   }
 
   public receive_getLocale(): Promise<string> {
@@ -121,9 +121,11 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   public createNotification(notification: Notification): void {
     this.overrides.createNotification?.(notification);
   }
+
   public setNotifications(path: string, notifications: Notification[]): void {
     this.overrides.setNotifications?.(path, notifications);
   }
+
   public removeNotifications(path: string): void {
     this.overrides.removeNotifications?.(path);
   }
