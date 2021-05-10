@@ -139,6 +139,10 @@ export class KogitoEditor implements EditorApi {
     );
   }
 
+  public close() {
+    this.panel.dispose();
+  }
+
   public hasUri(uri: vscode.Uri) {
     return this.document.uri === uri;
   }
@@ -167,7 +171,7 @@ export class KogitoEditor implements EditorApi {
                     background-color: #fff !important
                 }
             </style>
-        
+
             <title></title>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
