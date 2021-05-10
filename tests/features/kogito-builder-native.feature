@@ -1,4 +1,4 @@
-@quay.io/kiegroup/kogito-builder @rhpam-7/rhpam-kogito-builder-rhel8
+@quay.io/kiegroup/kogito-builder
 Feature: kogito-builder image native build tests
 
   Scenario: verify java cacerts and libsunec are available in the given kogito builder container.

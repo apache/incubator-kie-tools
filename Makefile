@@ -3,11 +3,12 @@ SHORTENED_LATEST_VERSION := $(shell echo $(IMAGE_VERSION) | awk -F. '{print $$1"
 BUILD_ENGINE := docker
 .DEFAULT_GOAL := build
 CEKIT_CMD := cekit -v ${cekit_option}
+NATIVE := true
 
 clone-repos:
 # if the NO_TEST env defined, proceed with the tests, as first step prepare the repo to be used
 ifneq ($(ignore_test),true)
-	cd tests/test-apps && sh clone-repo.sh
+	cd tests/test-apps && sh clone-repo.sh $(NATIVE)
 endif
 
 .PHONY: list

@@ -24,7 +24,7 @@ Feature: kogito-runtime-jvm feature.
       | expected_phrase | ["hello","world"]        |
     And file /home/kogito/bin/quarkus-run.jar should exist
 
-  Scenario: Verify if the binary build (forcing) is finished as expected and if it is listening on the expected port
+  Scenario: Verify if the binary build (forcing) is finished as expected and if it is listening on the expected port with quarkus
     Given s2i build /tmp/kogito-examples/rules-quarkus-helloworld from target
       | variable            | value                     |
       | RUNTIME_TYPE        | quarkus                   |
@@ -60,7 +60,7 @@ Feature: kogito-runtime-jvm feature.
     And container log should contain DEBUG 1 --- [           main] o.s.boot.SpringApplication
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
 
-  Scenario: Verify if the (forcing) binary build is finished as expected and if it is listening on the expected port
+  Scenario: Verify if the binary build (forcing) is finished as expected and if it is listening on the expected port with springboot
     Given s2i build /tmp/kogito-examples/process-springboot-example from target
       | variable            | value        |
       | JAVA_OPTIONS        | -Ddebug=true |

@@ -31,8 +31,11 @@ ARTIFACTS_VERSION_ENV_KEY = "KOGITO_VERSION"
 
 # behave tests that needs to be updated
 BEHAVE_BASE_DIR = 'tests/features'
-BEHAVE_TESTS = {"kogito-builder-native.feature", "kogito-common-builder-jvm.feature",
-                "kogito-common-runtime-jvm.feature", "kogito-runtime-native.feature"}
+BEHAVE_TESTS = {"kogito-builder.feature",
+                "kogito-builder-native.feature", 
+                "kogito-common-builder-jvm.feature",
+                "kogito-common-runtime-jvm.feature", 
+                "kogito-runtime-native.feature"}
 
 CLONE_REPO_SCRIPT = 'tests/test-apps/clone-repo.sh'
 
@@ -235,8 +238,20 @@ def update_artifacts_version_in_behave_tests(artifacts_version):
     """
     print("Set artifacts_version {} in behave tests".format(artifacts_version))
     # pattern to change the KOGITO_VERSION
-    pattern = re.compile('\|[\s]*KOGITO_VERSION[\s]*\|[\s]*(([\d.]+.x)|([\d.]+)[\s]*|([\d.]+-SNAPSHOT))[\s]*\|')
+    pattern = re.compile('\|[\s]*KOGITO_VERSION[\s]*\|[\s]*(([\d.]+.x)|([\d.]+)[\s]*|([\d.]+-SNAPSHOT)|([\d.]+.Final))[\s]*\|')
     replacement = '| KOGITO_VERSION | {} | '.format(artifacts_version)
+    update_in_behave_tests(pattern, replacement)
+
+def update_runtime_image_in_behave_tests(runtime_image_name, image_suffix):
+    """
+    Update a runtime image into behave tests
+    :param runtime_image_name: new full tag name of the runtime image
+    :param image_suffix: suffix of the runtime image to update
+    """
+    print("Set {0} runtime image to {1} in behave tests".format(image_suffix, runtime_image_name))
+    # pattern to change the KOGITO_VERSION
+    pattern = re.compile(r'(runtime-image quay.io/kiegroup/kogito-runtime-{}:latest)'.format(image_suffix))
+    replacement = 'runtime-image {}'.format(runtime_image_name)
     update_in_behave_tests(pattern, replacement)
 
 

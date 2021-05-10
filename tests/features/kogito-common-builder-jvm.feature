@@ -77,16 +77,6 @@ Feature: kogito-builder image JVM build tests
       | expected_phrase | ["hello","world"]     |
     And file /home/kogito/bin/quarkus-run.jar should exist
 
-  Scenario: Verify if the s2i build is finished as expected performing a non native build with persistence enabled
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from process-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
-      | variable          | value         |
-      | NATIVE            | false         |
-      | RUNTIME_TYPE      | quarkus       |
-      | MAVEN_ARGS_APPEND | -Ppersistence |
-    Then file /home/kogito/bin/quarkus-run.jar should exist
-    And s2i build log should contain '/home/kogito/bin/demo.orders.proto' -> '/home/kogito/data/protobufs/demo.orders.proto'
-    And s2i build log should contain '/home/kogito/bin/persons.proto' -> '/home/kogito/data/protobufs/persons.proto'
-
   Scenario: Verify if the multi-module s2i build is finished as expected performing a non native build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from . using master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable          | value                            |
@@ -232,15 +222,6 @@ Feature: kogito-builder image JVM build tests
       | expected_status_code | 201                                                                           |
     And file /home/kogito/bin/process-springboot-example.jar should exist
     And container log should contain Tomcat initialized with port(s): 8080 (http)
-
-  Scenario: Verify if the s2i build is finished as expected with persistence enabled
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from process-springboot-example using master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
-      | variable          | value         |
-      | MAVEN_ARGS_APPEND | -Ppersistence |
-      | RUNTIME_TYPE      | springboot    |
-    Then file /home/kogito/bin/process-springboot-example.jar should exist
-    And s2i build log should contain '/home/kogito/bin/demo.orders.proto' -> '/home/kogito/data/protobufs/demo.orders.proto'
-    And s2i build log should contain '/home/kogito/bin/persons.proto' -> '/home/kogito/data/protobufs/persons.proto'
   
   Scenario: Verify if the s2i build is finished as expected using multi-module build with debug enabled
     Given s2i build https://github.com/kiegroup/kogito-examples.git from . using master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
