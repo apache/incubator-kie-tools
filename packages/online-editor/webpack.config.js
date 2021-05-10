@@ -53,33 +53,38 @@ function getDownloadHubArgs(argv) {
 }
 
 function getDmnRunnerArgs(argv) {
-  let linuxUrl = argv["DMN_RUNNER__linuxUrl"] || process.env["DMN_RUNNER__linuxUrl"];
-  let macOsUrl = argv["DMN_RUNNER__macOsUrl"] || process.env["DMN_RUNNER__macOsUrl"];
-  let windowsUrl = argv["DMN_RUNNER__windowsUrl"] || process.env["DMN_RUNNER__windowsUrl"];
-  let version = argv["DMN_RUNNER__version"] || process.env["DMN_RUNNER__version"];
+  let linuxDownloadUrl = argv["DMN_RUNNER__linuxDownloadUrl"] || process.env["DMN_RUNNER__linuxDownloadUrl"];
+  let macOsDownloadUrl = argv["DMN_RUNNER__macOsDownloadUrl"] || process.env["DMN_RUNNER__macOsDownloadUrl"];
+  let windowsDownloadUrl = argv["DMN_RUNNER__windowsDownloadUrl"] || process.env["DMN_RUNNER__windowsDownloadUrl"];
+  let compatibleVersion = argv["DMN_RUNNER__compatibleVersion"] || process.env["DMN_RUNNER__compatibleVersion"];
 
-  version = version || `0.0.0`;
-  macOsUrl =
-    macOsUrl ||
-    `https://github.com/adrielparedes/kogito-local-server/releases/latest/download/dmn_runner_macos_v${version}.dmg`;
-  windowsUrl =
-    windowsUrl ||
-    `https://github.com/adrielparedes/kogito-local-server/releases/latest/download/dmn_runner_windows_v${version}.exe`;
-  linuxUrl =
-    linuxUrl ||
-    `https://github.com/adrielparedes/kogito-local-server/releases/latest/download/dmn_runner_linux_v${version}.tar.gz`;
+  compatibleVersion = compatibleVersion || `0.0.0`;
+  macOsDownloadUrl =
+    macOsDownloadUrl ||
+    `https://github.com/kiegroup/kogito-tooling-go/releases/latest/download/dmn_runner_macos_v${compatibleVersion}.dmg`;
+  windowsDownloadUrl =
+    windowsDownloadUrl ||
+    `https://github.com/kiegroup/kogito-tooling-go/releases/latest/download/dmn_runner_windows_v${compatibleVersion}.exe`;
+  linuxDownloadUrl =
+    linuxDownloadUrl ||
+    `https://github.com/kiegroup/kogito-tooling-go/releases/latest/download/dmn_runner_linux_v${compatibleVersion}.tar.gz`;
 
-  console.info("DMN Runner :: Linux URL: " + linuxUrl);
-  console.info("DMN Runner :: macOs URL: " + macOsUrl);
-  console.info("DMN Runner :: Windows URL: " + windowsUrl);
-  console.info("DMN Runner :: Version: " + version);
+  console.info("DMN Runner :: Linux download URL: " + linuxDownloadUrl);
+  console.info("DMN Runner :: macOS download URL: " + macOsDownloadUrl);
+  console.info("DMN Runner :: Windows download URL: " + windowsDownloadUrl);
+  console.info("DMN Runner :: Compatible version: " + compatibleVersion);
 
-  return [linuxUrl, macOsUrl, windowsUrl, version];
+  return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
 }
 
 module.exports = async (env, argv) => {
   const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs(argv);
-  const [dmnRunner_linuxUrl, dmnRunner_macOsUrl, dmnRunner_windowsUrl, dmnRunner_version] = getDmnRunnerArgs(argv);
+  const [
+    dmnRunner_linuxDownloadUrl,
+    dmnRunner_macOsDownloadUrl,
+    dmnRunner_windowsDownloadUrl,
+    dmnRunner_compatibleVersion,
+  ] = getDmnRunnerArgs(argv);
 
   return merge(common, {
     entry: {
@@ -95,7 +100,6 @@ module.exports = async (env, argv) => {
         { from: "./static/samples", to: "./samples" },
         { from: "./static/index.html", to: "./index.html" },
         { from: "./static/favicon.ico", to: "./favicon.ico" },
-        { from: "./static/files", to: "./files" },
         { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
         { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] },
         { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
@@ -140,16 +144,16 @@ module.exports = async (env, argv) => {
           options: {
             multiple: [
               {
-                search: "$_{WEBPACK_REPLACE__dmnRunnerLinuxUrl}",
-                replace: dmnRunner_linuxUrl,
+                search: "$_{WEBPACK_REPLACE__dmnRunnerLinuxDownloadUrl}",
+                replace: dmnRunner_linuxDownloadUrl,
               },
               {
-                search: "$_{WEBPACK_REPLACE__dmnRunnerMacOsUrl}",
-                replace: dmnRunner_macOsUrl,
+                search: "$_{WEBPACK_REPLACE__dmnRunnerMacOsDownloadUrl}",
+                replace: dmnRunner_macOsDownloadUrl,
               },
               {
-                search: "$_{WEBPACK_REPLACE__dmnRunnerWindowsUrl}",
-                replace: dmnRunner_windowsUrl,
+                search: "$_{WEBPACK_REPLACE__dmnRunnerWindowsDownloadUrl}",
+                replace: dmnRunner_windowsDownloadUrl,
               },
             ],
           },
@@ -160,8 +164,8 @@ module.exports = async (env, argv) => {
           options: {
             multiple: [
               {
-                search: "$_{WEBPACK_REPLACE__dmnRunnerVersion}",
-                replace: dmnRunner_version,
+                search: "$_{WEBPACK_REPLACE__dmnRunnerCompatibleVersion}",
+                replace: dmnRunner_compatibleVersion,
               },
             ],
           },

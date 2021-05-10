@@ -53,12 +53,12 @@ export function DmnRunnerModal() {
   const downloadDmnRunner = useMemo(() => {
     switch (operatingSystem) {
       case OperatingSystem.MACOS:
-        return "$_{WEBPACK_REPLACE__dmnRunnerMacOsUrl}";
+        return "$_{WEBPACK_REPLACE__dmnRunnerMacOsDownloadUrl}";
       case OperatingSystem.WINDOWS:
-        return "$_{WEBPACK_REPLACE__dmnRunnerWindowsUrl}";
+        return "$_{WEBPACK_REPLACE__dmnRunnerWindowsDownloadUrl}";
       case OperatingSystem.LINUX:
       default:
-        return "$_{WEBPACK_REPLACE__dmnRunnerLinuxUrl}";
+        return "$_{WEBPACK_REPLACE__dmnRunnerLinuxDownloadUrl}";
     }
   }, [operatingSystem]);
 
