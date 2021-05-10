@@ -16,6 +16,7 @@
 
 package org.jboss.errai.common.client.dom;
 
+import elemental2.dom.DataTransfer;
 import org.jboss.errai.common.client.api.annotations.BrowserEvent;
 
 import jsinterop.annotations.JsProperty;
@@ -41,6 +42,7 @@ import jsinterop.annotations.JsType;
 @Deprecated
 public interface DragEvent extends Event {
 
-  @JsProperty DataTransfer getDataTransfer();
+  @JsProperty
+  DataTransfer getDataTransfer();
 
 }

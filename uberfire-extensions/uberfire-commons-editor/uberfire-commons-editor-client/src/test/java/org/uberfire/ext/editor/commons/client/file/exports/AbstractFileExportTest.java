@@ -18,7 +18,7 @@ package org.uberfire.ext.editor.commons.client.file.exports;
 
 import java.util.function.BiConsumer;
 
-import org.jboss.errai.common.client.dom.Blob;
+import elemental2.dom.Blob;
 import org.mockito.Mock;
 
 public abstract class AbstractFileExportTest {

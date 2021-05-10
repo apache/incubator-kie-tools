@@ -106,14 +106,14 @@ public interface HTMLElement extends Element, GlobalEventHandlers {
 
   @JsProperty CSSStyleDeclaration getStyle();
 
-  @JsProperty EventListener<ClipboardEvent> getOncopy();
-  @JsProperty void setOncopy(EventListener<ClipboardEvent> oncopy);
+  @JsProperty elemental2.dom.EventListener getOncopy();
+  @JsProperty void setOncopy(elemental2.dom.EventListener oncopy);
 
-  @JsProperty EventListener<ClipboardEvent> getOncut();
-  @JsProperty void setOncut(EventListener<ClipboardEvent> oncut);
+  @JsProperty elemental2.dom.EventListener getOncut();
+  @JsProperty void setOncut(elemental2.dom.EventListener oncut);
 
-  @JsProperty EventListener<ClipboardEvent> getOnpaste();
-  @JsProperty void setOnpaste(EventListener<ClipboardEvent> onpaste);
+  @JsProperty elemental2.dom.EventListener getOnpaste();
+  @JsProperty void setOnpaste(elemental2.dom.EventListener onpaste);
 
   DOMClientRect getBoundingClientRect();
 

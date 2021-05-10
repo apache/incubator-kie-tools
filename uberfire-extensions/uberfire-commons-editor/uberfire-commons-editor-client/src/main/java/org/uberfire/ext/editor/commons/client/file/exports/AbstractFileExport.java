@@ -19,7 +19,7 @@ package org.uberfire.ext.editor.commons.client.file.exports;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
-import org.jboss.errai.common.client.dom.Blob;
+import elemental2.dom.Blob;
 import org.uberfire.ext.editor.commons.client.file.exports.jso.JsFileSaver;
 
 public abstract class AbstractFileExport<T> implements FileExport<T> {

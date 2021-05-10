@@ -16,10 +16,10 @@
 
 package org.uberfire.ext.editor.commons.client.file.exports.jso;
 
+import elemental2.dom.Blob;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import org.jboss.errai.common.client.dom.Blob;
 
 /**
  * Provides the JsInterop API for FileSaver js.

@@ -19,8 +19,8 @@ package org.uberfire.ext.editor.commons.client.file.exports;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
-import org.jboss.errai.common.client.dom.Blob;
-import org.jboss.errai.common.client.dom.BlobImpl;
+import elemental2.dom.Blob;
+import elemental2.dom.BlobPropertyBag;
 
 public class TextFileExport extends AbstractFileExport<TextContent> {
 
@@ -33,7 +33,7 @@ public class TextFileExport extends AbstractFileExport<TextContent> {
 
     @Override
     protected Optional<Blob> getContent(final TextContent entity) {
-        final Blob blob = BlobImpl.create(entity.getText());
+        final Blob blob = new Blob(new Blob.ConstructorBlobPartsArrayUnionType[]{Blob.ConstructorBlobPartsArrayUnionType.of(entity.getText())}, BlobPropertyBag.create());
         return Optional.of(blob);
     }
 }

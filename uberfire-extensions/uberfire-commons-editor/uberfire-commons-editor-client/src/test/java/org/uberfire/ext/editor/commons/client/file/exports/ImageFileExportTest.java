@@ -16,26 +16,43 @@
 
 package org.uberfire.ext.editor.commons.client.file.exports;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.common.client.dom.Blob;
+import elemental2.dom.Blob;
+import elemental2.dom.BlobPropertyBag;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
+@PrepareForTest({BlobPropertyBag.class, ImageFileExport.class })
+@RunWith(PowerMockRunner.class)
 public class ImageFileExportTest extends AbstractFileExportTest {
 
     private ImageFileExport tested;
 
     @Before
     public void setup() {
-        tested = new ImageFileExport(fileSaver);
+        tested = spy(new ImageFileExport(fileSaver));
+
+        BlobPropertyBag bag = mock(BlobPropertyBag.class);
+        Blob blob = mock(Blob.class);
+
+        PowerMockito.mockStatic(BlobPropertyBag.class);
+        PowerMockito.mockStatic(ImageFileExport.class);
+
+        when(BlobPropertyBag.create()).thenReturn(bag);
+        when(ImageFileExport.dataImageAsBlob(anyString(), anyString())).thenReturn(blob);
     }
 
     @Test

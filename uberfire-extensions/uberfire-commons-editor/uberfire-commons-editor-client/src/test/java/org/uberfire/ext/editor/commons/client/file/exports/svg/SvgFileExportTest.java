@@ -16,20 +16,26 @@
 
 package org.uberfire.ext.editor.commons.client.file.exports.svg;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.common.client.dom.Blob;
+import elemental2.dom.Blob;
+import elemental2.dom.BlobPropertyBag;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.uberfire.ext.editor.commons.client.file.exports.AbstractFileExportTest;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
+@PrepareForTest({BlobPropertyBag.class, Blob.ConstructorBlobPartsArrayUnionType.class})
+@RunWith(PowerMockRunner.class)
 public class SvgFileExportTest extends AbstractFileExportTest{
 
     private static final String SVG = "svg content";
@@ -42,6 +48,16 @@ public class SvgFileExportTest extends AbstractFileExportTest{
     public void setUp() throws Exception {
         Mockito.when(context.getSerializedSvg()).thenReturn(SVG);
         this.svgFileExport = new SvgFileExport(fileSaver);
+
+        BlobPropertyBag bag = mock(BlobPropertyBag.class);
+        Blob.ConstructorBlobPartsArrayUnionType constructorBlobPartsArrayUnionType = mock(Blob.ConstructorBlobPartsArrayUnionType.class);
+
+        PowerMockito.mockStatic(BlobPropertyBag.class);
+        PowerMockito.mockStatic(Blob.ConstructorBlobPartsArrayUnionType.class);
+
+        when(BlobPropertyBag.create()).thenReturn(bag);
+        when(Blob.ConstructorBlobPartsArrayUnionType.of(any())).thenReturn(constructorBlobPartsArrayUnionType);
+
     }
 
     @Test
