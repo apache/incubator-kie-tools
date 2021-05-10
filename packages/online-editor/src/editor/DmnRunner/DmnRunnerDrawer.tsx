@@ -39,27 +39,19 @@ import { diff } from "deep-object-diff";
 import { ErrorBoundary } from "../../common/ErrorBoundry";
 import { useDmnRunner } from "./DmnRunnerContext";
 import { THROTTLING_TIME } from "./DmnRunnerContextProvider";
-import { EditorApi, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
-import { StateControl } from "@kogito-tooling/editor/dist/channel";
-import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import { usePrevious } from "../../common/Hooks";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 import { Notification } from "@kogito-tooling/notifications/dist/api";
+import { DmnRunnerStatus } from "./DmnRunnerStatus";
+import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
 
 enum ButtonPosition {
   INPUT,
   OUTPUT,
 }
 
-type Editor =
-  | (EditorApi & {
-      getStateControl(): StateControl;
-      getEnvelopeServer(): EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
-    })
-  | null;
-
 interface Props {
-  editor?: Editor;
+  editor?: EmbeddedEditorRef;
 }
 
 const DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION = 711;
@@ -157,9 +149,10 @@ export function DmnRunnerDrawer(props: Props) {
 
   const updateDmnRunnerResults = useCallback(
     (formData: object) => {
-      if (!props.editor) {
+      if (!props.editor?.isReady || dmnRunner.status !== DmnRunnerStatus.RUNNING) {
         return;
       }
+
       return props.editor
         .getContent()
         .then((content) => {

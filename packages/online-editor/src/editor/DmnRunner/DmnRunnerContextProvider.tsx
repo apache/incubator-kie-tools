@@ -139,7 +139,7 @@ export function DmnRunnerContextProvider(props: Props) {
 
   // Subscribe to any change on the DMN Editor and update the JsonSchemaBridge
   useEffect(() => {
-    if (!props.editor || status === DmnRunnerStatus.UNAVAILABLE) {
+    if (!props.editor?.isReady || status !== DmnRunnerStatus.RUNNING) {
       return;
     }
 
@@ -162,7 +162,7 @@ export function DmnRunnerContextProvider(props: Props) {
 
   // Subscribe to any change on the DMN Editor and validate the model
   useEffect(() => {
-    if (!props.editor || status === DmnRunnerStatus.UNAVAILABLE) {
+    if (!props.editor?.isReady || status !== DmnRunnerStatus.RUNNING) {
       return;
     }
 
