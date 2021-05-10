@@ -175,48 +175,48 @@
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
       <dmndi:DMNEdge id="dmnedge-drg-_6486B965-86B8-4E00-8170-8FAC4E9B235D" dmnElementRef="_6486B965-86B8-4E00-8170-8FAC4E9B235D">
-        <di:waypoint x="137" y="400"/>
-        <di:waypoint x="50" y="50"/>
+        <di:waypoint x="187" y="425"/>
+        <di:waypoint x="100" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_8B3EFA94-D611-4E3E-9A93-1FA67E02DFCB" dmnElementRef="_8B3EFA94-D611-4E3E-9A93-1FA67E02DFCB">
-        <di:waypoint x="312" y="400"/>
-        <di:waypoint x="50" y="50"/>
+        <di:waypoint x="362" y="425"/>
+        <di:waypoint x="100" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_DB37385A-2322-4D50-8402-CC8B9162951F" dmnElementRef="_DB37385A-2322-4D50-8402-CC8B9162951F">
-        <di:waypoint x="487" y="400"/>
-        <di:waypoint x="50" y="50"/>
+        <di:waypoint x="537" y="425"/>
+        <di:waypoint x="100" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_221D6962-1175-4F00-9A7A-C799BB291AA9" dmnElementRef="_221D6962-1175-4F00-9A7A-C799BB291AA9">
-        <di:waypoint x="312" y="225"/>
-        <di:waypoint x="225" y="50"/>
+        <di:waypoint x="362" y="250"/>
+        <di:waypoint x="275" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_C027248F-BB76-4D69-B677-F4341EE018F8" dmnElementRef="_C027248F-BB76-4D69-B677-F4341EE018F8">
-        <di:waypoint x="137" y="400"/>
-        <di:waypoint x="400" y="50"/>
+        <di:waypoint x="187" y="425"/>
+        <di:waypoint x="450" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_930A457B-8313-4553-BEBD-8CBFE69F0ADF" dmnElementRef="_930A457B-8313-4553-BEBD-8CBFE69F0ADF">
-        <di:waypoint x="312" y="400"/>
-        <di:waypoint x="400" y="50"/>
+        <di:waypoint x="362" y="425"/>
+        <di:waypoint x="450" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_CF568108-11D7-4CF0-BB25-2346ABC3CB48" dmnElementRef="_CF568108-11D7-4CF0-BB25-2346ABC3CB48">
-        <di:waypoint x="487" y="400"/>
-        <di:waypoint x="400" y="50"/>
+        <di:waypoint x="537" y="425"/>
+        <di:waypoint x="450" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_F0ECBE06-AE77-4FFD-8F40-8827112B97D8" dmnElementRef="_F0ECBE06-AE77-4FFD-8F40-8827112B97D8">
-        <di:waypoint x="312" y="225"/>
-        <di:waypoint x="575" y="50"/>
+        <di:waypoint x="362" y="250"/>
+        <di:waypoint x="625" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_89449474-A844-423A-858E-EFDEC2CE300B" dmnElementRef="_89449474-A844-423A-858E-EFDEC2CE300B">
-        <di:waypoint x="137" y="400"/>
-        <di:waypoint x="312" y="225"/>
+        <di:waypoint x="187" y="425"/>
+        <di:waypoint x="362" y="250"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_C97D00A0-79E0-4867-8A3E-D73E17205245" dmnElementRef="_C97D00A0-79E0-4867-8A3E-D73E17205245">
-        <di:waypoint x="312" y="400"/>
-        <di:waypoint x="312" y="225"/>
+        <di:waypoint x="362" y="425"/>
+        <di:waypoint x="362" y="250"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_2BBFDEB0-FC15-43A1-920A-43FD27DD770F" dmnElementRef="_2BBFDEB0-FC15-43A1-920A-43FD27DD770F">
-        <di:waypoint x="487" y="400"/>
-        <di:waypoint x="312" y="225"/>
+        <di:waypoint x="537" y="425"/>
+        <di:waypoint x="362" y="250"/>
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>

@@ -299,32 +299,32 @@
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
       <dmndi:DMNEdge id="dmnedge-drg-_4E115516-5903-4555-B62D-8CE03B90C1C5" dmnElementRef="_4E115516-5903-4555-B62D-8CE03B90C1C5">
-        <di:waypoint x="400" y="225"/>
-        <di:waypoint x="313" y="50"/>
+        <di:waypoint x="450" y="250"/>
+        <di:waypoint x="363" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_AA2E31C1-82F9-496F-BA37-FEA3EA421CA6" dmnElementRef="_AA2E31C1-82F9-496F-BA37-FEA3EA421CA6">
-        <di:waypoint x="50" y="225"/>
-        <di:waypoint x="138" y="50"/>
+        <di:waypoint x="100" y="250"/>
+        <di:waypoint x="188" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_11B7F784-A6EE-4756-9369-F434FA50948A" dmnElementRef="_11B7F784-A6EE-4756-9369-F434FA50948A">
-        <di:waypoint x="225" y="225"/>
-        <di:waypoint x="138" y="50"/>
+        <di:waypoint x="275" y="250"/>
+        <di:waypoint x="188" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_AEDADB70-6D75-4170-893B-CCC62481F956" dmnElementRef="_AEDADB70-6D75-4170-893B-CCC62481F956">
-        <di:waypoint x="400" y="225"/>
-        <di:waypoint x="138" y="50"/>
+        <di:waypoint x="450" y="250"/>
+        <di:waypoint x="188" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_0B68BC6B-7D82-43D5-8AF0-292080197316" dmnElementRef="_0B68BC6B-7D82-43D5-8AF0-292080197316">
-        <di:waypoint x="750" y="225"/>
-        <di:waypoint x="663" y="50"/>
+        <di:waypoint x="800" y="250"/>
+        <di:waypoint x="713" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_DFA8D6EB-8E5D-4D6C-8168-EAB25B825006" dmnElementRef="_DFA8D6EB-8E5D-4D6C-8168-EAB25B825006">
-        <di:waypoint x="750" y="225"/>
-        <di:waypoint x="488" y="50"/>
+        <di:waypoint x="800" y="250"/>
+        <di:waypoint x="538" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_C9363E39-465B-48CE-A105-7B8DE005136D" dmnElementRef="_C9363E39-465B-48CE-A105-7B8DE005136D">
-        <di:waypoint x="575" y="225"/>
-        <di:waypoint x="488" y="50"/>
+        <di:waypoint x="625" y="250"/>
+        <di:waypoint x="538" y="75"/>
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>

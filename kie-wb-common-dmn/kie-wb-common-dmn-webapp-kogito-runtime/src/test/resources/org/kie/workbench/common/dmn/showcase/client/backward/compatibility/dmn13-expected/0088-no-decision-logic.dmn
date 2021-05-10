@@ -210,32 +210,32 @@
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
       <dmndi:DMNEdge id="dmnedge-drg-_84729018-9BDD-4607-B235-1806B18C89BB" dmnElementRef="_84729018-9BDD-4607-B235-1806B18C89BB">
-        <di:waypoint x="400" y="400"/>
-        <di:waypoint x="313" y="225"/>
+        <di:waypoint x="450" y="425"/>
+        <di:waypoint x="363" y="250"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_92B8883D-CEFA-4379-90F9-3C0F42E0569F" dmnElementRef="_92B8883D-CEFA-4379-90F9-3C0F42E0569F">
-        <di:waypoint x="313" y="225"/>
-        <di:waypoint x="138" y="50"/>
+        <di:waypoint x="363" y="250"/>
+        <di:waypoint x="188" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_8DF42B20-5ECD-4A58-BF5B-5BF8765A5A76" dmnElementRef="_8DF42B20-5ECD-4A58-BF5B-5BF8765A5A76">
-        <di:waypoint x="225" y="400"/>
-        <di:waypoint x="138" y="50"/>
+        <di:waypoint x="275" y="425"/>
+        <di:waypoint x="188" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_E7DA2900-46F8-4DC1-BCF7-2E928619926A" dmnElementRef="_E7DA2900-46F8-4DC1-BCF7-2E928619926A">
-        <di:waypoint x="400" y="400"/>
-        <di:waypoint x="138" y="50"/>
+        <di:waypoint x="450" y="425"/>
+        <di:waypoint x="188" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_92B4D37C-3DCB-4BD2-A4E8-28465566C79E" dmnElementRef="_92B4D37C-3DCB-4BD2-A4E8-28465566C79E">
-        <di:waypoint x="138" y="225"/>
-        <di:waypoint x="138" y="50"/>
+        <di:waypoint x="188" y="250"/>
+        <di:waypoint x="188" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_E7C0F865-D014-4005-B313-6FA55BD4203C" dmnElementRef="_E7C0F865-D014-4005-B313-6FA55BD4203C">
-        <di:waypoint x="225" y="400"/>
-        <di:waypoint x="138" y="225"/>
+        <di:waypoint x="275" y="425"/>
+        <di:waypoint x="188" y="250"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_C0A26CA4-7328-4DB0-B626-BEB3D9BF2249" dmnElementRef="_C0A26CA4-7328-4DB0-B626-BEB3D9BF2249">
-        <di:waypoint x="50" y="400"/>
-        <di:waypoint x="138" y="225"/>
+        <di:waypoint x="100" y="425"/>
+        <di:waypoint x="188" y="250"/>
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>

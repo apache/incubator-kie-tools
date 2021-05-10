@@ -371,12 +371,15 @@ public class NodeConnector {
             // Generate new a edge and connect it
             final NodeEntry nodeEntry = nodeEntries.get(0);
             final Node requiredNode = nodeEntry.getNode();
+            final View<?> view = (View<?>)requiredNode.getContent();
+            final double viewWidth = view.getBounds().getWidth();
+            final double viewHeight = view.getBounds().getHeight();
 
             connectWbEdge(connectorTypeId,
                           diagramId,
                           currentNode,
                           requiredNode,
-                          newEdge(),
+                          newEdge(viewWidth/2, viewHeight/2),
                           uuid());
         } else if (existingEdge.isPresent()) {
             // Connect existing edge
@@ -415,11 +418,11 @@ public class NodeConnector {
         setConnectionMagnets(wbEdge, connectionContent, dmnEdge);
     }
 
-    JSIDMNEdge newEdge() {
+    JSIDMNEdge newEdge(double x, double y) {
         final JSIDMNEdge dmnEdge = JSIDMNEdge.newInstance();
         final JSIPoint point = JSIPoint.newInstance();
-        point.setX(0);
-        point.setY(0);
+        point.setX(x);
+        point.setY(y);
         dmnEdge.addAllWaypoint(point, point);
         return dmnEdge;
     }

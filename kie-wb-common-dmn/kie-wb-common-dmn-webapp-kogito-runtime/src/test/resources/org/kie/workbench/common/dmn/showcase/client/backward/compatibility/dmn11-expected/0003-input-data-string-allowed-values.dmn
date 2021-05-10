@@ -53,8 +53,8 @@
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
       <dmndi:DMNEdge id="dmnedge-drg-_0232CB3B-18B3-4E4E-9EE6-59AC1963B44A" dmnElementRef="_0232CB3B-18B3-4E4E-9EE6-59AC1963B44A">
-        <di:waypoint x="50" y="225"/>
-        <di:waypoint x="50" y="50"/>
+		<di:waypoint x="100" y="250"/>
+		<di:waypoint x="100" y="75"/>
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>

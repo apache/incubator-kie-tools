@@ -87,12 +87,12 @@
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
       <dmndi:DMNEdge id="dmnedge-drg-_F5229939-6759-47E1-BCC4-7D98D590CD8E" dmnElementRef="_F5229939-6759-47E1-BCC4-7D98D590CD8E">
-        <di:waypoint x="225" y="225"/>
-        <di:waypoint x="137" y="50"/>
+		<di:waypoint x="275" y="250"/>
+		<di:waypoint x="187" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_AB4D9418-D21C-4FA4-9C1C-82775846D6C0" dmnElementRef="_AB4D9418-D21C-4FA4-9C1C-82775846D6C0">
-        <di:waypoint x="50" y="225"/>
-        <di:waypoint x="137" y="50"/>
+		<di:waypoint x="100" y="250"/>
+		<di:waypoint x="187" y="75"/>
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>

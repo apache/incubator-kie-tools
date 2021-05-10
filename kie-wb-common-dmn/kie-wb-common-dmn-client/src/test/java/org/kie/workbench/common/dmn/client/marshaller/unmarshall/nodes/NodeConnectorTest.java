@@ -104,8 +104,17 @@ public class NodeConnectorTest {
         when(jsiDMNElementReference.getHref()).thenReturn("#123");
         when(jsiDMNElement.getId()).thenReturn("789");
         when(nodeEntry.getNode()).thenReturn(requiredNode);
+
+        final View<?> view = mock(View.class);
+        final Bounds bounds = mock(Bounds.class);
+
+        when(bounds.getHeight()).thenReturn(50d);
+        when(bounds.getWidth()).thenReturn(100d);
+        when(view.getBounds()).thenReturn(bounds);
+
+        when(requiredNode.getContent()).thenReturn(view);
         doReturn("456").when(nodeConnector).uuid();
-        doReturn(newEdge).when(nodeConnector).newEdge();
+        doReturn(newEdge).when(nodeConnector).newEdge(50, 25);
         doNothing().when(nodeConnector).connectWbEdge(any(), any(), any(), any(), any(), any());
 
         entriesById.put("123", singletonList(nodeEntry));

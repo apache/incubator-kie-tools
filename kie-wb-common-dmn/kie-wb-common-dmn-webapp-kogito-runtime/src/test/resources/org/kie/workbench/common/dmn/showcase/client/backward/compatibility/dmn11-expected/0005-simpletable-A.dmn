@@ -172,16 +172,16 @@
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
       <dmndi:DMNEdge id="dmnedge-drg-_0D92E037-76AF-4224-B01D-792F707BD782" dmnElementRef="_0D92E037-76AF-4224-B01D-792F707BD782">
-        <di:waypoint x="225" y="225"/>
-        <di:waypoint x="225" y="50"/>
+        <di:waypoint x="275" y="250"/>
+        <di:waypoint x="275" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_5623E3A1-9F87-4F6F-9ED7-B7D807B75ADE" dmnElementRef="_5623E3A1-9F87-4F6F-9ED7-B7D807B75ADE">
-        <di:waypoint x="50" y="225"/>
-        <di:waypoint x="225" y="50"/>
+        <di:waypoint x="100" y="250"/>
+        <di:waypoint x="275" y="75"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_DB80BA13-2097-47F8-BB99-B383D983F3B8" dmnElementRef="_DB80BA13-2097-47F8-BB99-B383D983F3B8">
-        <di:waypoint x="400" y="225"/>
-        <di:waypoint x="225" y="50"/>
+        <di:waypoint x="450" y="250"/>
+        <di:waypoint x="275" y="75"/>
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
