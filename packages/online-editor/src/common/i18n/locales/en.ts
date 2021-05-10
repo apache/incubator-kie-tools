@@ -164,20 +164,23 @@ export const en: OnlineI18n = {
   },
   guidedTour: {
     init: {
-      title: "Welcome to this 5-minute tour",
-      learnMore: `Learn more about the DMN online editor by taking this brief and interactive tour.`,
-      letsGo: "Let's go",
+      title: `Welcome to the ${en_common.names.dmn} Editor`,
+      learnMore: `Take this 5-minute tour to learn more about the ${en_common.names.dmn} Editor in a brief and interactive way.`,
+      dmnRunnerIntro: `If you already know your way around the ${en_common.names.dmn} Editor, you can skip this tour and start executing your models with the ${en_common.names.dmn} Runner.`,
+      takeTour: "Take tour",
       skipTour: "Skip tour",
+      skipTourAndUseDmnRunner: `Skip tour and start ${en_common.names.dmn} Runner`,
     },
     end: {
       title: "Congratulations",
-      motivational: `Now you know how each part of the ${en_common.names.dmn} editor works, and you're empowered to go ahead and explore!`,
+      motivational: `Now you know how each part of the ${en_common.names.dmn} Editor works, and you're empowered to go ahead and explore!`,
       nextSteps: {
         title: "As next steps, you can try to",
         firstStep: `Connect the ${"Age".bold()} input with the ${"Can drive?".bold()} decision;`,
         secondStep: `Define the decision logic in the ${"Can drive?".bold()} node to return ${"true".bold()} when ${"Age".bold()} is
               greater than ${"21".bold()}, otherwise ${"false".bold()};`,
         thirdStep: "Execute the model.",
+        startDmnRunner: `Start ${en_common.names.dmn} Runner`,
       },
       findUsefulInfo: "You can find useful information in the",
       learnDMN: `Learn ${en_common.names.dmn} in 15 minutes`,

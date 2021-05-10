@@ -72,7 +72,7 @@ export function DmnRunnerButton() {
           variant={"tertiary"}
           onClick={onDmnRunner}
           aria-label={"Run"}
-          className={"kogito--editor__toolbar"}
+          className={"kogito--dmn-runner-button kogito--editor__toolbar"}
           isAriaDisabled={!context.isChrome}
           icon={
             <>

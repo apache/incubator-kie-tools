@@ -50,6 +50,11 @@ export function useDmnTour(isEditorReady: boolean, file: File) {
 }
 
 function getOnlineEditorTutorial(i18n: OnlineI18n) {
+  function dismissAndStartDmnRunner(props: any) {
+    props.dismiss();
+    (document.getElementsByClassName("kogito--dmn-runner-button") as HTMLCollectionOf<HTMLButtonElement>)?.[0]?.click();
+  }
+
   return new Tutorial("DMN Online Editor Tutorial", [
     {
       position: "center",
@@ -61,12 +66,19 @@ function getOnlineEditorTutorial(i18n: OnlineI18n) {
             {i18n.guidedTour.init.title}
           </Title>
           <Text>{i18n.guidedTour.init.learnMore}</Text>
-          <Button onClick={props.nextStep} variant="primary">
-            {i18n.guidedTour.init.letsGo}
-          </Button>
+          <Text>{i18n.guidedTour.init.dmnRunnerIntro}</Text>
+
           <Text>{"  "}</Text>
+          <Button onClick={() => dismissAndStartDmnRunner(props)} variant="link">
+            {i18n.guidedTour.init.skipTourAndUseDmnRunner}
+          </Button>
+          <br />
           <Button onClick={props.dismiss} variant="link">
             {i18n.guidedTour.init.skipTour}
+          </Button>
+          <Text>{"  "}</Text>
+          <Button onClick={props.nextStep} variant="primary">
+            {i18n.guidedTour.init.takeTour}
           </Button>
         </div>
       ),
@@ -93,7 +105,12 @@ function getOnlineEditorTutorial(i18n: OnlineI18n) {
             <ListItem>
               <I18nHtml>{i18n.guidedTour.end.nextSteps.secondStep}</I18nHtml>
             </ListItem>
-            <ListItem>{i18n.guidedTour.end.nextSteps.thirdStep}</ListItem>
+            <ListItem>
+              {i18n.guidedTour.end.nextSteps.thirdStep}{" "}
+              <Button isInline={true} onClick={() => dismissAndStartDmnRunner(props)} variant="link">
+                {i18n.guidedTour.end.nextSteps.startDmnRunner}
+              </Button>
+            </ListItem>
           </List>
           <Text className="pf-c-content--align-left">
             {`${i18n.guidedTour.end.findUsefulInfo} `}

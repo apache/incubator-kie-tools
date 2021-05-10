@@ -163,8 +163,10 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
     init: {
       title: string;
       learnMore: string;
-      letsGo: string;
+      dmnRunnerIntro: string;
+      takeTour: string;
       skipTour: string;
+      skipTourAndUseDmnRunner: string;
     };
     end: {
       title: string;
@@ -174,6 +176,7 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
         firstStep: string;
         secondStep: string;
         thirdStep: string;
+        startDmnRunner: string;
       };
       findUsefulInfo: string;
       learnDMN: string;
