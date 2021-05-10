@@ -12,6 +12,7 @@ env:
   EXTERNAL_RESOURCE_PATH__dmnEditor: "${{ github.workspace }}/kogito-editors-java/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime"
   EXTERNAL_RESOURCE_PATH__bpmnEditor: "${{ github.workspace }}/kogito-editors-java/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime"
   EXTERNAL_RESOURCE_PATH__scesimEditor: "${{ github.workspace }}/kogito-editors-java/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime"
+  MERGE_WARNING_MESSAGE: "ATTENTION: A merge attempt is being made to get your changes. If a conflict happens, please do a rebase/merge manually in your branch to get the latest commits."
 
 jobs:
   build:
@@ -33,18 +34,16 @@ jobs:
         run: |
           [ "204" == "${{ steps.checkUserMembership.outputs.status }}" ]
 
-      - name: "kogito-tooling :: Resolve <user>/<branch>"
+      - name: "General :: Resolve <user>/<branch>"
         id: buildInfo
         run: |
           if [ -n "${{ github.event.pull_request }}" ]; then
             user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
-            ref=${{ github.head_ref }}
           else
             user="kiegroup"
-            ref="master"
           fi
           echo ::set-output name=user::$user
-          echo ::set-output name=ref::$ref
+          echo ::set-output name=ref::${{ github.head_ref }}
 
       - name: "kogito-editors-java :: Checkout"
         uses: actions/checkout@v2
@@ -63,6 +62,19 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
+      - name: "kogito-editors-java :: Merge Changes"
+        if: ${{ github.event.pull_request }}
+        run: |
+          cd ${{ github.workspace }}/kogito-editors-java
+          git config --global user.email "kietooling@gmail.com"
+          git config --global user.name "Kogito Tooling Bot"
+          git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/kogito-editors-java.git
+          git fetch --all || true
+          if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
+            echo $MERGE_WARNING_MESSAGE
+            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+          fi
 
       - name: "kogito-editors-java :: Build"
         env:
@@ -91,9 +103,8 @@ jobs:
       - name: "kogito-tooling :: Start Xvfb"
         run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 
-      - name: "kogito-tooling :: Build"
-        env:
-          DISPLAY: ":99.0"
+      - name: "kogito-tooling :: Merge Changes"
+        if: ${{ github.event.pull_request }}
         run: |
           cd ${{ github.workspace }}/kogito-tooling
           git config --global user.email "kietooling@gmail.com"
@@ -101,9 +112,15 @@ jobs:
           git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/kogito-tooling.git
           git fetch --all || true
           if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
-            echo "ATTENTION: A merge attempt is being made to get your changes. If a conflict happens, please do a rebase/merge manually in your branch to get the latest commits."
+            echo $MERGE_WARNING_MESSAGE
             git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
           fi
+
+      - name: "kogito-tooling :: Build"
+        env:
+          DISPLAY: ":99.0"
+        run: |
+          cd ${{ github.workspace }}/kogito-tooling
           yarn run init && yarn run build:prod
 
       - name: "kogito-tooling :: Upload VS Code Extension"
