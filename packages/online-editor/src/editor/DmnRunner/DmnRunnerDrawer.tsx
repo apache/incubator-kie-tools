@@ -220,13 +220,19 @@ export function DmnRunnerDrawer(props: Props) {
         if (detail.keyword === "type") {
           // If it's a type error, it's handled by replacing the current value with a undefined value.
           const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
-          autoFormRef.current?.change(formFieldPath, undefined);
+
+          // FIXME: tiago commented this code because of KOGITO-5111. Need to investigate.
+          // autoFormRef.current?.change(formFieldPath, undefined);
+
           infos.changes = [...infos.changes, [formFieldPath, undefined]];
           return infos;
         } else if (detail.keyword === "enum") {
+          // FIXME: tiago commented this code because of KOGITO-5111. Need to investigate.
+          //
           // A enum error is caused by a type error.
-          const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
-          autoFormRef.current?.change(formFieldPath, undefined);
+          // const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
+          // autoFormRef.current?.change(formFieldPath, undefined);
+
           return infos;
         } else if (detail.keyword === "format") {
           // const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
@@ -506,17 +512,13 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
       case "string":
         return dmnRunnerResult;
       case "object":
-        return dmnRunnerResult !== null ? (
+        return !!dmnRunnerResult ? (
           Array.isArray(dmnRunnerResult) ? (
             <DescriptionList>
               {dmnRunnerResult.map((dmnResult, index) => (
                 <DescriptionListGroup key={`array-result-${index}`}>
-                  {Object.entries(dmnResult).map(([key, value]) => (
-                    <>
-                      <DescriptionListTerm>{key}</DescriptionListTerm>
-                      <DescriptionListDescription>{value}</DescriptionListDescription>
-                    </>
-                  ))}
+                  <DescriptionListTerm>{index}</DescriptionListTerm>
+                  <DescriptionListDescription>{dmnResult}</DescriptionListDescription>
                 </DescriptionListGroup>
               ))}
             </DescriptionList>
@@ -525,7 +527,7 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
               {Object.entries(dmnRunnerResult).map(([key, value]) => (
                 <DescriptionListGroup key={`object-result-${key}-${value}`}>
                   <DescriptionListTerm>{key}</DescriptionListTerm>
-                  {typeof value === "object" && value !== null ? (
+                  {typeof value === "object" && !!value ? (
                     Object.entries(value).map(([key2, value2]: [string, any]) => (
                       <DescriptionListGroup key={`object2-result-${key2}-${value2}`}>
                         <DescriptionListTerm>{key2}</DescriptionListTerm>
