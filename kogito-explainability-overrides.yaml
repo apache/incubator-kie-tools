@@ -4,6 +4,8 @@ name: "quay.io/kiegroup/kogito-explainability"
 description: "Runtime image for Kogito Explainability Service"
 
 labels:
+- name: "maintainer"
+  value: "kogito <bsig-cloud@redhat.com>"
 - name: "io.k8s.description"
   value: "Runtime image for Kogito Explainability Service"
 - name: "io.k8s.display-name"

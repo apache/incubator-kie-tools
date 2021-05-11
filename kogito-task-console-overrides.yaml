@@ -4,6 +4,8 @@ name: "quay.io/kiegroup/kogito-task-console"
 description: "Runtime image for Kogito Task Console"
 
 labels:
+- name: "maintainer"
+  value: "kogito <bsig-cloud@redhat.com>"
 - name: "io.k8s.description"
   value: "Runtime image for Kogito Task Console, manage your Business Process easily."
 - name: "io.k8s.display-name"

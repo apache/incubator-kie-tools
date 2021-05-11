@@ -8,8 +8,6 @@ version: "2.0.0-snapshot"
 from: "registry.access.redhat.com/ubi8/ubi-minimal:8.0"
 
 labels:
-  - name: "maintainer"
-    value: "kogito <kogito@kiegroup.com>"
   - name: "io.openshift.s2i.scripts-url"
     value: "image:///usr/local/s2i"
   - name: "io.openshift.s2i.destination"

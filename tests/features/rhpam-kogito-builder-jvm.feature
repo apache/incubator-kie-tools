@@ -3,8 +3,8 @@ Feature: rhpam-kogito-builder-rhel8 feature.
 
   Scenario: verify if all labels are correctly set on rhpam-kogito-builder-rhel8 image
     Given image is built
-    Then the image should contain label maintainer with value kogito <kogito@kiegroup.com>
-    And the image should contain label io.openshift.s2i.scripts-url with value image:///usr/local/s2i
+    # Then the image should not contain label maintainer TODO add support to this sentence on cekit behave steps
+    Then the image should contain label io.openshift.s2i.scripts-url with value image:///usr/local/s2i
     And the image should contain label io.openshift.s2i.destination with value /tmp
     And the image should contain label io.openshift.expose-services with value 8080:http
     And the image should contain label io.k8s.description with value RHPAM Platform for building Kogito based on Quarkus or Spring Boot

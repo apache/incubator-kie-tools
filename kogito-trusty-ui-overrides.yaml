@@ -4,6 +4,8 @@ name: "quay.io/kiegroup/kogito-trusty-ui"
 description: "Runtime image for Kogito Trusty UI"
 
 labels:
+- name: "maintainer"
+  value: "kogito <bsig-cloud@redhat.com>"
 - name: "io.k8s.description"
   value: "Runtime image for Kogito Trusty UI, manage your Business Process easily."
 - name: "io.k8s.display-name"

@@ -4,6 +4,8 @@ name: "quay.io/kiegroup/kogito-builder"
 description: "Platform for building Kogito based on Quarkus or Springboot"
 
 labels:
+- name: "maintainer"
+  value: "kogito <bsig-cloud@redhat.com>"
 - name: "io.k8s.description"
   value: "Platform for building Kogito based on Quarkus or Spring Boot"
 - name: "io.k8s.display-name"
