@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 
+	"runtime"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -154,7 +155,13 @@ func (self *Proxy) createJitExecutor(jitexecutor []byte) string {
 		os.Mkdir(cachePath, os.ModePerm)
 	}
 
-	jitexecutorPath := filepath.Join(cachePath, "runner")
+	var jitexecutorPath string;
+
+	if runtime.GOOS == "windows" {
+		jitexecutorPath = filepath.Join(cachePath, "runner.exe")
+	} else {	
+		jitexecutorPath = filepath.Join(cachePath, "runner")
+	}
 
 	if _, err := os.Stat(jitexecutorPath); err == nil {
 		os.Remove(jitexecutorPath)
