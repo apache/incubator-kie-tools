@@ -13,18 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.client.resources;
+package org.uberfire.client.views.pfly.notifications.animations;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * All GWT managed resources for Workbench
+ * A linear animation to fade a Widget from 0.0 to 1.0 opacity
  */
-public interface WorkbenchResources extends ClientBundle {
+public class LinearFadeInAnimation extends SequencedAnimation {
 
-    WorkbenchResources INSTANCE = GWT.create(WorkbenchResources.class);
+    private final Widget widget;
 
-    @Source("css/workbench.css")
-    WorkbenchCss CSS();
+    public LinearFadeInAnimation(final Widget widget) {
+        this.widget = widget;
+    }
+
+    @Override
+    public void onUpdate(double progress) {
+        this.widget.getElement().getStyle().setOpacity(progress);
+    }
+
+    @Override
+    public double interpolate(double progress) {
+        return progress;
+    }
 }

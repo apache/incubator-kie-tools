@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+.notification {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    z-index: 100000;
+}
+
 .uf-scroll-panel {
     height: 100%;
     width: 100%;

@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.client.resources;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
+package org.uberfire.client.views.pfly.notifications.animations;
 
 /**
- * All GWT managed resources for Workbench
+ * A pause (in between animations). Does nothing.
  */
-public interface WorkbenchResources extends ClientBundle {
+public class Pause extends SequencedAnimation {
 
-    WorkbenchResources INSTANCE = GWT.create(WorkbenchResources.class);
-
-    @Source("css/workbench.css")
-    WorkbenchCss CSS();
+    @Override
+    public void onUpdate(double progress) {
+        //Do nothing. This animation simply acts as a delay
+    }
 }
