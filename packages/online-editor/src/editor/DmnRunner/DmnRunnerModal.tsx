@@ -38,6 +38,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { SelectDirection } from "@patternfly/react-core/dist/js/components/Select";
+import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 
 enum ModalPage {
   INITIAL,
@@ -50,7 +51,7 @@ export function DmnRunnerModal() {
   const [modalPage, setModalPage] = useState<ModalPage>(ModalPage.INITIAL);
   const dmnRunner = useDmnRunner();
 
-  const downloadDmnRunner = useMemo(() => {
+  const downloadDmnRunnerUrl = useMemo(() => {
     switch (operatingSystem) {
       case OperatingSystem.MACOS:
         return "$_{WEBPACK_REPLACE__dmnRunnerMacOsDownloadUrl}";
@@ -81,14 +82,13 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <Text component={TextVariants.a} href={downloadDmnRunner}>
+                    <Text component={TextVariants.a} href={downloadDmnRunnerUrl}>
                       Download
                     </Text>{" "}
                     DMN Runner.
                   </Text>
                 </TextContent>
               </ListItem>
-              <br />
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
@@ -96,7 +96,6 @@ export function DmnRunnerModal() {
                   </Text>
                 </TextContent>
               </ListItem>
-              <br />
               <ListItem>
                 <TextContent>
                   <Text>
@@ -112,71 +111,85 @@ export function DmnRunnerModal() {
         name: "Start",
         component: (
           <>
-            {dmnRunner.status === DmnRunnerStatus.STOPPED && (
-              <div>
+            {dmnRunner.status === DmnRunnerStatus.STOPPED ? (
+              <>
                 <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner has stopped!"}>
-                  It looks like the DMN Runner has suddenly stopped, please follow these instructions to get it up start
-                  it again.
+                  It looks like the DMN Runner has suddenly stopped, please follow these instructions to start it again.
                 </Alert>
                 <br />
-              </div>
-            )}
-            <List>
-              <ListItem>
+                <List>
+                  <ListItem>
+                    <TextContent>
+                      <Text component={TextVariants.p}>
+                        If you see the DMN Runner icon on your system bar, simply click it and select "Start".
+                      </Text>
+                    </TextContent>
+                  </ListItem>
+                  <ListItem>
+                    <TextContent>
+                      <Text component={TextVariants.p}>
+                        If not, start the DMN Runner app by launching <Label>Kogito DMN Runner.app</Label>.
+                      </Text>
+                    </TextContent>
+                  </ListItem>
+                </List>
+              </>
+            ) : (
+              <>
                 <TextContent>
-                  <Text component={TextVariants.p}>
-                    Open the <Label>Applications</Label> folder.
-                  </Text>
+                  <Text component={TextVariants.p}>If you just installed DMN Runner:</Text>
                 </TextContent>
-              </ListItem>
-              <br />
-              <ListItem>
+                <br />
+                <List>
+                  <ListItem>
+                    <TextContent>
+                      <Text component={TextVariants.p}>
+                        Open the <Label>Applications</Label> folder.
+                      </Text>
+                    </TextContent>
+                  </ListItem>
+                  <ListItem>
+                    <TextContent>
+                      <Text component={TextVariants.p}>
+                        Right-click on <Label>Kogito DMN Runner.app</Label>, select "Open" and then "Cancel".
+                      </Text>
+                    </TextContent>
+                  </ListItem>
+                  <ListItem>
+                    <TextContent>
+                      <Text component={TextVariants.p}>
+                        Right-click on <Label>Kogito DMN Runner.app</Label> <b>again</b> and then select "Open".
+                      </Text>
+                    </TextContent>
+                  </ListItem>
+                </List>
+
+                <br />
+
                 <TextContent>
-                  <Text component={TextVariants.p}>
-                    Right-click on <Label>Kogito DMN Runner.app</Label>, select "Open" and then "Cancel".
-                  </Text>
+                  <Text component={TextVariants.p}>If you already installed and ran the DMN Runner before:</Text>
                 </TextContent>
-              </ListItem>
-              <br />
-              <ListItem>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    Right-click on <Label>Kogito DMN Runner.app</Label> <b>again</b> and then select "Open".
-                  </Text>
-                </TextContent>
-              </ListItem>
-              <br />
-              <hr />
-              <br />
-              <ExpandableSection toggleTextExpanded="Advanced Settings" toggleTextCollapsed="Advanced Settings">
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    The default DMN Runner port is {DMN_RUNNER_DEFAULT_PORT}. If you are already using this port for
-                    other application, you can run the DMN Runner app from the CLI and use a special parameter.
-                  </Text>
-                  <Form isHorizontal={true}>
-                    <FormGroup
-                      fieldId={"dmn-runner-port"}
-                      label={"Port"}
-                      validated={
-                        dmnRunner.port === "" ||
-                        parseInt(dmnRunner.port, 10) < 0 ||
-                        parseInt(dmnRunner.port, 10) > 65353
-                          ? "error"
-                          : "success"
-                      }
-                      helperTextInvalid={"Invalid port. Valid ports: 0 <= port <= 65353"}
-                    >
-                      <TextInput
-                        value={dmnRunner.port}
-                        type={"number"}
-                        onChange={(value) => dmnRunner.saveNewPort(value)}
-                      />
-                    </FormGroup>
-                  </Form>
+                <br />
+                <List>
+                  <ListItem>
+                    <TextContent>
+                      <Text component={TextVariants.p}>
+                        Launch the <Label>Kogito DMN Runner.app</Label>.
+                      </Text>
+                    </TextContent>
+                  </ListItem>
+                </List>
+                <br />
+                <br />
+                <hr />
+                <br />
+                <ExpandableSection toggleTextExpanded="Advanced Settings" toggleTextCollapsed="Advanced Settings">
+                  <DmnRunnerPortForm />
                   <br />
                   <TextContent>
-                    <Text component={TextVariants.p}>Run the following command on a Terminal tab:</Text>
+                    <Text component={TextVariants.p}>
+                      Run the following command on a Terminal tab to start DMN Runner on a different port:
+                    </Text>
                   </TextContent>
                   <br />
                   <TextContent>
@@ -184,10 +197,10 @@ export function DmnRunnerModal() {
                       /Applications/Kogito\ DMN\ Runner.app/Contents/MacOs/kogito -p {dmnRunner.port}
                     </Text>
                   </TextContent>
-                </TextContent>
-                <br />
-              </ExpandableSection>
-            </List>
+                  <br />
+                </ExpandableSection>
+              </>
+            )}
           </>
         ),
       },
@@ -214,7 +227,7 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <Text component={TextVariants.a} href={downloadDmnRunner}>
+                    <Text component={TextVariants.a} href={downloadDmnRunnerUrl}>
                       Download
                     </Text>{" "}
                     DMN Runner.
@@ -248,8 +261,7 @@ export function DmnRunnerModal() {
             {dmnRunner.status === DmnRunnerStatus.STOPPED && (
               <div>
                 <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner has stopped!"}>
-                  It looks like the DMN Runner has suddenly stopped, please follow these instructions to get it up start
-                  it again.
+                  It looks like the DMN Runner has suddenly stopped, please follow these instructions to start it again.
                 </Alert>
                 <br />
               </div>
@@ -282,41 +294,16 @@ export function DmnRunnerModal() {
               <hr />
               <br />
               <ExpandableSection toggleTextExpanded="Advanced Settings" toggleTextCollapsed="Advanced Settings">
+                <DmnRunnerPortForm />
+                <br />
                 <TextContent>
-                  <Text component={TextVariants.p}>
-                    The default DMN Runner port is {DMN_RUNNER_DEFAULT_PORT}. If you are already using this port for
-                    other application, you can run the DMN Runner app from the CLI and use a special parameter.
+                  <Text component={TextVariants.p}>Run the following command on a Terminal tab:</Text>
+                </TextContent>
+                <br />
+                <TextContent>
+                  <Text component={TextVariants.p} className={"kogito--code"}>
+                    /Applications/Kogito\ DMN\ Runner.app/Contents/MacOs/kogito -p {dmnRunner.port}
                   </Text>
-                  <Form isHorizontal={true}>
-                    <FormGroup
-                      fieldId={"dmn-runner-port"}
-                      label={"Port"}
-                      validated={
-                        dmnRunner.port === "" ||
-                        parseInt(dmnRunner.port, 10) < 0 ||
-                        parseInt(dmnRunner.port, 10) > 65353
-                          ? "error"
-                          : "success"
-                      }
-                      helperTextInvalid={"Invalid port. Valid ports: 0 <= port <= 65353"}
-                    >
-                      <TextInput
-                        value={dmnRunner.port}
-                        type={"number"}
-                        onChange={(value) => dmnRunner.saveNewPort(value)}
-                      />
-                    </FormGroup>
-                  </Form>
-                  <br />
-                  <TextContent>
-                    <Text component={TextVariants.p}>Run the following command on a Terminal tab:</Text>
-                  </TextContent>
-                  <br />
-                  <TextContent>
-                    <Text component={TextVariants.p} className={"kogito--code"}>
-                      /Applications/Kogito\ DMN\ Runner.app/Contents/MacOs/kogito -p {dmnRunner.port}
-                    </Text>
-                  </TextContent>
                 </TextContent>
                 <br />
               </ExpandableSection>
@@ -347,30 +334,29 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <Text component={TextVariants.a} href={downloadDmnRunner}>
+                    <Text component={TextVariants.a} href={downloadDmnRunnerUrl}>
                       Download
                     </Text>{" "}
                     DMN Runner.
                   </Text>
                 </TextContent>
               </ListItem>
-              <br />
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Open the <Label>dmn-runner-macos-v{dmnRunner.version}.tar.gz</Label> file.
-                  </Text>
-                </TextContent>
-              </ListItem>
-              <br />
-              <ListItem>
-                <TextContent>
-                  <Text>
-                    Drag <Label>Kogito DMN Runner.app</Label> to the <Label>Applications</Label> folder.
+                    Extract the contents of <Label>dmn-runner-linux-v{dmnRunner.version}.tar.gz</Label> to your location
+                    of choice.
                   </Text>
                 </TextContent>
               </ListItem>
             </List>
+            <br />
+            <TextContent>
+              <Text component={TextVariants.p}>
+                The DMN Runner binary, <Label>dmn-runner</Label>, is a single binary file, which means you can add it to
+                your PATH or even configure it to execute when your computer starts.
+              </Text>
+            </TextContent>
           </>
         ),
       },
@@ -381,8 +367,7 @@ export function DmnRunnerModal() {
             {dmnRunner.status === DmnRunnerStatus.STOPPED && (
               <div>
                 <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner has stopped!"}>
-                  It looks like the DMN Runner has suddenly stopped, please follow these instructions to get it up start
-                  it again.
+                  It looks like the DMN Runner has suddenly stopped, please follow these instructions to start it again.
                 </Alert>
                 <br />
               </div>
@@ -390,24 +375,23 @@ export function DmnRunnerModal() {
             <List>
               <ListItem>
                 <TextContent>
-                  <Text component={TextVariants.p}>
-                    Open the <Label>Applications</Label> folder.
-                  </Text>
+                  <Text component={TextVariants.p}>Open a Terminal window.</Text>
                 </TextContent>
               </ListItem>
-              <br />
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Right-click on <Label>Kogito DMN Runner.app</Label>, select "Open" and then "Cancel".
+                    Go to the folder where you placed the <Label>dmn-runner</Label> binary.
                   </Text>
                 </TextContent>
               </ListItem>
-              <br />
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Right-click on <Label>Kogito DMN Runner.app</Label> <b>again</b> and then select "Open".
+                    Run{" "}
+                    <Text component={TextVariants.p} className={"kogito--code"}>
+                      ./dmn-runner
+                    </Text>
                   </Text>
                 </TextContent>
               </ListItem>
@@ -415,41 +399,19 @@ export function DmnRunnerModal() {
               <hr />
               <br />
               <ExpandableSection toggleTextExpanded="Advanced Settings" toggleTextCollapsed="Advanced Settings">
+                <DmnRunnerPortForm />
+                <br />
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    The default DMN Runner port is {DMN_RUNNER_DEFAULT_PORT}. If you are already using this port for
-                    other application, you can run the DMN Runner app from the CLI and use a special parameter.
+                    Open a Terminal window and run the following command on the directory where you placed the{" "}
+                    <Label>dmn-runner</Label> binary:
                   </Text>
-                  <Form isHorizontal={true}>
-                    <FormGroup
-                      fieldId={"dmn-runner-port"}
-                      label={"Port"}
-                      validated={
-                        dmnRunner.port === "" ||
-                        parseInt(dmnRunner.port, 10) < 0 ||
-                        parseInt(dmnRunner.port, 10) > 65353
-                          ? "error"
-                          : "success"
-                      }
-                      helperTextInvalid={"Invalid port. Valid ports: 0 <= port <= 65353"}
-                    >
-                      <TextInput
-                        value={dmnRunner.port}
-                        type={"number"}
-                        onChange={(value) => dmnRunner.saveNewPort(value)}
-                      />
-                    </FormGroup>
-                  </Form>
-                  <br />
-                  <TextContent>
-                    <Text component={TextVariants.p}>Run the following command on a Terminal tab:</Text>
-                  </TextContent>
-                  <br />
-                  <TextContent>
-                    <Text component={TextVariants.p} className={"kogito--code"}>
-                      /Applications/Kogito\ DMN\ Runner.app/Contents/MacOs/kogito -p {dmnRunner.port}
-                    </Text>
-                  </TextContent>
+                </TextContent>
+                <br />
+                <TextContent>
+                  <Text component={TextVariants.p} className={"kogito--code"}>
+                    ./dmn-runner -p {dmnRunner.port}
+                  </Text>
                 </TextContent>
                 <br />
               </ExpandableSection>
@@ -554,7 +516,7 @@ export function DmnRunnerModal() {
             marginLeft: "20px",
           }}
         >
-          <div>
+          <div style={{ margin: "20px" }}>
             <TextContent>
               <Text component={TextVariants.h1}>DMN Runner</Text>
             </TextContent>
@@ -569,14 +531,33 @@ export function DmnRunnerModal() {
           >
             <div style={{ margin: "10px" }}>
               <TextContent>
+                <Text component={TextVariants.p}>Run your DMN models and see live forms and results as you edit.</Text>
+              </TextContent>
+            </div>
+            <br />
+            <div>
+              <img src={"./images/dmn-runner2.gif"} alt={"DMN Runner usage"} width={"100%"} />
+            </div>
+            <br />
+            <div>
+              <TextContent>
                 <Text component={TextVariants.p}>
-                  The DMN Runner will enable you to run your DMN models and see live results.
+                  With its validation and execution capabilities, DMN Runner helps you create assertive DMN decisions.
+                  Input nodes become interactive fields on an auto-generated form, and the results are displayed as
+                  easy-to-read cards.
                 </Text>
               </TextContent>
             </div>
+            <br />
             <div>
-              <img src={"./images/dmn-runner2.gif"} alt={"DMN Runner usage"} width={700} />
+              <TextContent>
+                <Text component={TextVariants.p}>
+                  The Notifications Panel <ExclamationCircleIcon />, at the right-bottom side of the Editor, displays
+                  live Execution messages to assist during the modeling stage of your decisions.
+                </Text>
+              </TextContent>
             </div>
+            <br />
             <div style={{ margin: "10px" }}>
               <Button onClick={() => setModalPage(ModalPage.WIZARD)}>Setup</Button>
             </div>
@@ -610,7 +591,7 @@ export function DmnRunnerModal() {
         >
           <div style={{ margin: "20px" }}>
             <TextContent>
-              <Text component={TextVariants.h1}>All set! You're connected to the DMN Runner 🎉</Text>
+              <Text component={TextVariants.h1}>All set! 🎉</Text>
             </TextContent>
           </div>
           <div
@@ -623,12 +604,13 @@ export function DmnRunnerModal() {
           >
             <TextContent style={{ margin: "10px" }}>
               <Text component={TextVariants.h3} style={{ textAlign: "center" }}>
-                Now you can start using the DMN Runner to run your models.
+                You're connected to the DMN Runner.
               </Text>
               <Text component={TextVariants.p} style={{ textAlign: "center" }}>
                 Fill the Form on the Inputs column and automatically see the results on the Outputs column.
               </Text>
             </TextContent>
+            <br />
             <Button variant="primary" type="submit" onClick={onClose} style={{ margin: "10px" }}>
               Back to Editor
             </Button>
@@ -679,5 +661,33 @@ function DmnRunnerWizardFooter(props: WizardImperativeControlProps) {
         }}
       </WizardContextConsumer>
     </WizardFooter>
+  );
+}
+
+function DmnRunnerPortForm() {
+  const dmnRunner = useDmnRunner();
+
+  return (
+    <>
+      <Text component={TextVariants.p}>
+        The default DMN Runner port is <Text className={"kogito--code"}>{DMN_RUNNER_DEFAULT_PORT}</Text>. If you're
+        already using this port for another application, you can change the port used to connect with the DMN Runner.
+      </Text>
+      <br />
+      <Form isHorizontal={true}>
+        <FormGroup
+          fieldId={"dmn-runner-port"}
+          label={"Port"}
+          validated={
+            dmnRunner.port === "" || parseInt(dmnRunner.port, 10) < 0 || parseInt(dmnRunner.port, 10) > 65353
+              ? "error"
+              : "success"
+          }
+          helperTextInvalid={"Invalid port. Valid ports: 0 <= port <= 65353"}
+        >
+          <TextInput value={dmnRunner.port} type={"number"} onChange={(value) => dmnRunner.saveNewPort(value)} />
+        </FormGroup>
+      </Form>
+    </>
   );
 }
