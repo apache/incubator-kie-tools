@@ -75,21 +75,18 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
           return;
         }
 
+        this.editor.close();
         vscode.commands.executeCommand("vscode.openWith", this.editor.document.uri, "default");
         vscode.window.showInformationMessage(i18n.reopenAsDiagramText, i18n.reopenAsDiagramButton).then((s2) => {
           if (s2 !== i18n.reopenAsDiagramButton) {
             return;
           }
 
-          const reopenAsDiagram = () =>
-            vscode.commands.executeCommand("vscode.openWith", this.editor.document.uri, this.viewType);
-
-          if (vscode.window.activeTextEditor?.document.uri.fsPath !== this.editor.document.uri.fsPath) {
-            reopenAsDiagram();
-            return;
-          }
-
-          vscode.window.activeTextEditor?.document.save().then(() => reopenAsDiagram());
+          vscode.window
+            .showTextDocument(this.editor.document.uri)
+            .then((editor) => editor.document.save())
+            .then(() => vscode.commands.executeCommand("workbench.action.closeActiveEditor"))
+            .then(() => vscode.commands.executeCommand("vscode.openWith", this.editor.document.uri, this.viewType));
         });
       });
   }
