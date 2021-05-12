@@ -7,6 +7,7 @@ import (
 	"runtime"
 	"strconv"
 
+	"github.com/kiegroup/kogito-tooling-go/pkg/config"
 	"github.com/kiegroup/kogito-tooling-go/pkg/images"
 	"github.com/getlantern/systray"
 )
@@ -32,7 +33,7 @@ func (self *KogitoSystray) onReady() {
 	systray.AddSeparator()
 	self.operationSection()
 	systray.AddSeparator()
-	quitItem := systray.AddMenuItem(QUIT, QUIT)
+	quitItem := systray.AddMenuItem(QUIT, "")
 
 	self.StartStopItem.SetTitle(STARTING)
 	go self.controller.Start()
@@ -80,28 +81,35 @@ func (self *KogitoSystray) Stop() {
 }
 
 func (self *KogitoSystray) mainSection() {
-	self.openModeler = systray.AddMenuItem(BUSINESS_MODELER, BUSINESS_MODELER)
+	self.openModeler = systray.AddMenuItem(BUSINESS_MODELER, "")
 
-	self.StatusItem = systray.AddMenuItem(SERVER_STATUS, SERVER_STATUS)
+	self.StatusItem = systray.AddMenuItem(SERVER_STATUS, "")
 	self.StatusItem.Disable()
 
 	self.informationMenu()
 }
 
 func (self *KogitoSystray) informationMenu() {
-	information := systray.AddMenuItem(INFORMATION, INFORMATION)
-	port := information.AddSubMenuItem(INFORMATION_PORT+": "+strconv.Itoa(self.controller.Port), INFORMATION_PORT)
+	information := systray.AddMenuItem(INFORMATION, "")
+
+	var config config.Config
+	conf := config.GetConfig()
+
+	version := information.AddSubMenuItem(VERSION+": "+conf.GetConfig().App.Version, "")
+	version.Disable()
+
+	port := information.AddSubMenuItem(INFORMATION_PORT+": "+strconv.Itoa(self.controller.Port), "")
 	port.Disable()
-	self.runnerPortItem = information.AddSubMenuItem(INFORMATION_RUNNER_PORT+": "+self.getRunnerPortStatus(), INFORMATION_RUNNER_PORT)
+	self.runnerPortItem = information.AddSubMenuItem(INFORMATION_RUNNER_PORT+": "+self.getRunnerPortStatus(), "")
 	self.runnerPortItem.Disable()
 
-	businessModelerUrlItem := information.AddSubMenuItem(INFORMATION_BUSINESS_MODELER_URL+": "+MODELER_LINK, INFORMATION_BUSINESS_MODELER_URL)
+	businessModelerUrlItem := information.AddSubMenuItem(INFORMATION_BUSINESS_MODELER_URL+": "+MODELER_LINK, "")
 	businessModelerUrlItem.Disable()
 }
 
 func (self *KogitoSystray) operationSection() {
-	self.StartStopItem = systray.AddMenuItem(START, START)
-	self.restartItem = systray.AddMenuItem(RESTART, RESTART)
+	self.StartStopItem = systray.AddMenuItem(START, "")
+	self.restartItem = systray.AddMenuItem(RESTART, "")
 
 }
 
