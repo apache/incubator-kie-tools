@@ -92,7 +92,7 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Open the <Label>dmn-runner-macos-{dmnRunner.version}.dmg</Label> file.
+                    Open the <Label>dmn_runner_macos_{dmnRunner.version}.dmg</Label> file.
                   </Text>
                 </TextContent>
               </ListItem>
@@ -237,7 +237,7 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Move the <Label>dmn-runner-windows-{dmnRunner.version}.exe</Label> file to your preferred folder.
+                    Move the <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> file to your preferred folder.
                   </Text>
                 </TextContent>
               </ListItem>
@@ -267,7 +267,7 @@ export function DmnRunnerModal() {
                     <TextContent>
                       <Text component={TextVariants.p}>
                         If not, start the DMN Runner by opening the{" "}
-                        <Label>dmn-runner-windows-{dmnRunner.version}.exe</Label> file.
+                        <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> file.
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -283,7 +283,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        Open folder where you placed the <Label>dmn-runner-windows-{dmnRunner.version}.exe</Label> file.
+                        Open folder where you placed the <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> file.
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -306,7 +306,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        Open the <Label>dmn-runner-windows-{dmnRunner.version}.exe</Label> file.
+                        Open the <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> file.
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -326,7 +326,7 @@ export function DmnRunnerModal() {
                   <br />
                   <TextContent>
                     <Text component={TextVariants.p} className={"kogito--code"}>
-                      "dmn-runner-windows-{dmnRunner.version}.exe" -p {dmnRunner.port}
+                      "dmn_runner_windows_{dmnRunner.version}.exe" -p {dmnRunner.port}
                     </Text>
                   </TextContent>
                   <br />
@@ -369,7 +369,7 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Extract the contents of <Label>dmn-runner-linux-{dmnRunner.version}.tar.gz</Label> to your location
+                    Extract the contents of <Label>dmn_runner_linux_{dmnRunner.version}.tar.gz</Label> to your location
                     of choice.
                   </Text>
                 </TextContent>
@@ -378,7 +378,7 @@ export function DmnRunnerModal() {
             <br />
             <TextContent>
               <Text component={TextVariants.p}>
-                The DMN Runner binary, <Label>dmn-runner</Label>, is a single binary file, which means you can add it to
+                The DMN Runner binary, <Label>dmn_runner</Label>, is a single binary file, which means you can add it to
                 your PATH or even configure it to execute when your computer starts.
               </Text>
             </TextContent>
@@ -406,7 +406,7 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Go to the folder where you placed the <Label>dmn-runner</Label> binary.
+                    Go to the folder where you placed the <Label>dmn_runner</Label> binary.
                   </Text>
                 </TextContent>
               </ListItem>
@@ -415,7 +415,7 @@ export function DmnRunnerModal() {
                   <Text component={TextVariants.p}>
                     Run{" "}
                     <Text component={TextVariants.p} className={"kogito--code"}>
-                      ./dmn-runner
+                      ./dmn_runner
                     </Text>
                   </Text>
                 </TextContent>
@@ -429,13 +429,13 @@ export function DmnRunnerModal() {
                 <TextContent>
                   <Text component={TextVariants.p}>
                     Open a Terminal window and run the following command on the directory where you placed the{" "}
-                    <Label>dmn-runner</Label> binary:
+                    <Label>dmn_runner</Label> binary:
                   </Text>
                 </TextContent>
                 <br />
                 <TextContent>
                   <Text component={TextVariants.p} className={"kogito--code"}>
-                    ./dmn-runner -p {dmnRunner.port}
+                    ./dmn_runner -p {dmnRunner.port}
                   </Text>
                 </TextContent>
                 <br />
