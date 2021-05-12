@@ -121,6 +121,9 @@ func (self *Proxy) Stop() {
 }
 
 func (self *Proxy) Refresh() {
+	
+	self.view.SetLoading();
+
 	started := false
 	countDown := 5
 	retry := true

@@ -16,9 +16,7 @@ type KogitoSystray struct {
 	controller     *Proxy
 	runnerPortItem *systray.MenuItem
 	openModeler    *systray.MenuItem
-	restartItem    *systray.MenuItem
 	StartStopItem  *systray.MenuItem
-	StatusItem     *systray.MenuItem
 }
 
 func (self *KogitoSystray) Run() {
@@ -26,8 +24,8 @@ func (self *KogitoSystray) Run() {
 }
 
 func (self *KogitoSystray) onReady() {
-	systray.SetTemplateIcon(images.Data, images.Data)
-	systray.SetTooltip(NAME)
+	systray.SetTemplateIcon(images.DataStarted, images.DataStarted)
+	systray.SetTooltip(APPNAME)
 
 	self.mainSection()
 	systray.AddSeparator()
@@ -43,13 +41,6 @@ func (self *KogitoSystray) onReady() {
 		select {
 		case <-self.openModeler.ClickedCh:
 			self.openBrowser(MODELER_LINK)
-		case <-self.restartItem.ClickedCh:
-			if self.controller.Started {
-				self.Stop()
-				self.Start()
-			} else {
-				self.Start()
-			}
 		case <-self.StartStopItem.ClickedCh:
 			if self.controller.Started {
 				self.Stop()
@@ -82,47 +73,33 @@ func (self *KogitoSystray) Stop() {
 
 func (self *KogitoSystray) mainSection() {
 	self.openModeler = systray.AddMenuItem(BUSINESS_MODELER, "")
-
-	self.StatusItem = systray.AddMenuItem(SERVER_STATUS, "")
-	self.StatusItem.Disable()
-
-	self.informationMenu()
-}
-
-func (self *KogitoSystray) informationMenu() {
-	information := systray.AddMenuItem(INFORMATION, "")
+	
+	systray.AddSeparator()
 
 	var config config.Config
 	conf := config.GetConfig()
 
-	version := information.AddSubMenuItem(VERSION+": "+conf.GetConfig().App.Version, "")
+	version := systray.AddMenuItem(VERSION+": "+conf.GetConfig().App.Version, "")
 	version.Disable()
 
-	port := information.AddSubMenuItem(INFORMATION_PORT+": "+strconv.Itoa(self.controller.Port), "")
-	port.Disable()
-	self.runnerPortItem = information.AddSubMenuItem(INFORMATION_RUNNER_PORT+": "+self.getRunnerPortStatus(), "")
+	self.runnerPortItem = systray.AddMenuItem(INFORMATION_PORTS+": "+strconv.Itoa(self.controller.Port)+" -> "+self.getRunnerPortStatus(), "")
 	self.runnerPortItem.Disable()
-
-	businessModelerUrlItem := information.AddSubMenuItem(INFORMATION_BUSINESS_MODELER_URL+": "+MODELER_LINK, "")
-	businessModelerUrlItem.Disable()
 }
+
 
 func (self *KogitoSystray) operationSection() {
 	self.StartStopItem = systray.AddMenuItem(START, "")
-	self.restartItem = systray.AddMenuItem(RESTART, "")
 
 }
 
 func (self *KogitoSystray) Refresh() {
 	self.refreshRunnerPort()
 	self.changeStartStop()
-	self.changeStatus()
+	self.changeIcon()
 }
 
 func (self *KogitoSystray) refreshRunnerPort() {
-	if self.runnerPortItem != nil {
-		self.runnerPortItem.SetTitle(INFORMATION_RUNNER_PORT + ": " + self.getRunnerPortStatus())
-	}
+	self.runnerPortItem.SetTitle(INFORMATION_PORTS+": "+strconv.Itoa(self.controller.Port)+" -> "+self.getRunnerPortStatus())
 }
 
 func (self *KogitoSystray) getRunnerPortStatus() string {
@@ -133,12 +110,8 @@ func (self *KogitoSystray) getRunnerPortStatus() string {
 	return status
 }
 
-func (self *KogitoSystray) changeStatus() {
-	if self.controller.Started {
-		self.StatusItem.SetTitle(SERVER_STATUS_ON)
-	} else {
-		self.StatusItem.SetTitle(SERVER_STATUS_OFF)
-	}
+func (self *KogitoSystray) SetLoading() {
+	systray.SetTemplateIcon(images.DataLoading, images.DataLoading)
 }
 
 func (self *KogitoSystray) changeStartStop() {
@@ -146,6 +119,14 @@ func (self *KogitoSystray) changeStartStop() {
 		self.StartStopItem.SetTitle(STOP)
 	} else {
 		self.StartStopItem.SetTitle(START)
+	}
+}
+
+func (self *KogitoSystray) changeIcon() {
+	if self.controller.Started {
+		systray.SetTemplateIcon(images.DataStarted, images.DataStarted)
+	} else {
+		systray.SetTemplateIcon(images.DataStopped, images.DataStopped)
 	}
 }
 
