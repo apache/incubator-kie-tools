@@ -72,7 +72,7 @@ export function DmnRunnerModal() {
             {dmnRunner.outdated && (
               <>
                 <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner is outdated!"}>
-                  It looks like you're using a outdated version of the DMN Runner. Follow the instructions below to
+                  It looks like you're using an incompatible version of the DMN Runner. Follow the instructions below to
                   update.
                 </Alert>
                 <br />
@@ -92,7 +92,7 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Open the <Label>dmn-runner-macos-v{dmnRunner.version}.dmg</Label> file.
+                    Open the <Label>dmn-runner-macos-{dmnRunner.version}.dmg</Label> file.
                   </Text>
                 </TextContent>
               </ListItem>
@@ -205,7 +205,7 @@ export function DmnRunnerModal() {
         ),
       },
     ],
-    [dmnRunner.status, dmnRunner.port, dmnRunner.saveNewPort, dmnRunner.outdated]
+    [dmnRunner.version, dmnRunner.status, dmnRunner.port, dmnRunner.saveNewPort, dmnRunner.outdated, downloadDmnRunnerUrl]
   );
 
   const windowsWizardSteps = useMemo(
@@ -217,7 +217,7 @@ export function DmnRunnerModal() {
             {dmnRunner.outdated && (
               <>
                 <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner is outdated!"}>
-                  It looks like you're using a outdated version of the DMN Runner. Follow the instructions below to
+                  It looks like you're using an incompatible version of the DMN Runner. Follow the instructions below to
                   update.
                 </Alert>
                 <br />
@@ -230,23 +230,14 @@ export function DmnRunnerModal() {
                     <Text component={TextVariants.a} href={downloadDmnRunnerUrl}>
                       Download
                     </Text>{" "}
-                    DMN Runner.
+                    DMN Runner. Note that you'll probably have to right-click the download and choose "Keep".
                   </Text>
                 </TextContent>
               </ListItem>
-              <br />
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Open the <Label>dmn-runner-macos-v{dmnRunner.version}.exe</Label> file.
-                  </Text>
-                </TextContent>
-              </ListItem>
-              <br />
-              <ListItem>
-                <TextContent>
-                  <Text>
-                    Drag <Label>Kogito DMN Runner.app</Label> to the <Label>Applications</Label> folder.
+                    Move the <Label>dmn-runner-windows-{dmnRunner.version}.exe</Label> file to your preferred folder.
                   </Text>
                 </TextContent>
               </ListItem>
@@ -258,61 +249,95 @@ export function DmnRunnerModal() {
         name: "Start",
         component: (
           <>
-            {dmnRunner.status === DmnRunnerStatus.STOPPED && (
-              <div>
+            {dmnRunner.status === DmnRunnerStatus.STOPPED ? (
+              <>
                 <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner has stopped!"}>
                   It looks like the DMN Runner has suddenly stopped, please follow these instructions to start it again.
                 </Alert>
                 <br />
-              </div>
+                <List>
+                  <ListItem>
+                    <TextContent>
+                      <Text component={TextVariants.p}>
+                        If you see the DMN Runner icon on your system bar, simply click it and select "Start".
+                      </Text>
+                    </TextContent>
+                  </ListItem>
+                  <ListItem>
+                    <TextContent>
+                      <Text component={TextVariants.p}>
+                        If not, start the DMN Runner by opening the{" "}
+                        <Label>dmn-runner-windows-{dmnRunner.version}.exe</Label> file.
+                      </Text>
+                    </TextContent>
+                  </ListItem>
+                </List>
+              </>
+            ) : (
+              <>
+                <TextContent>
+                  <Text component={TextVariants.p}>If you just installed DMN Runner:</Text>
+                </TextContent>
+                <br />
+                <List>
+                  <ListItem>
+                    <TextContent>
+                      <Text component={TextVariants.p}>
+                        Open folder where you placed the <Label>dmn-runner-windows-{dmnRunner.version}.exe</Label> file.
+                      </Text>
+                    </TextContent>
+                  </ListItem>
+                  <ListItem>
+                    <TextContent>
+                      <Text component={TextVariants.p}>
+                        Double-click it and select "More info" then click on the "Run anyway" button.
+                      </Text>
+                    </TextContent>
+                  </ListItem>
+                </List>
+
+                <br />
+
+                <TextContent>
+                  <Text component={TextVariants.p}>If you already installed and ran the DMN Runner before:</Text>
+                </TextContent>
+                <br />
+                <List>
+                  <ListItem>
+                    <TextContent>
+                      <Text component={TextVariants.p}>
+                        Open the <Label>dmn-runner-windows-{dmnRunner.version}.exe</Label> file.
+                      </Text>
+                    </TextContent>
+                  </ListItem>
+                </List>
+                <br />
+                <br />
+                <hr />
+                <br />
+                <ExpandableSection toggleTextExpanded="Advanced Settings" toggleTextCollapsed="Advanced Settings">
+                  <DmnRunnerPortForm />
+                  <br />
+                  <TextContent>
+                    <Text component={TextVariants.p}>
+                      Run the following command on a Terminal window to start DMN Runner on a different port:
+                    </Text>
+                  </TextContent>
+                  <br />
+                  <TextContent>
+                    <Text component={TextVariants.p} className={"kogito--code"}>
+                      "dmn-runner-windows-{dmnRunner.version}.exe" -p {dmnRunner.port}
+                    </Text>
+                  </TextContent>
+                  <br />
+                </ExpandableSection>
+              </>
             )}
-            <List>
-              <ListItem>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    Open the <Label>Applications</Label> folder.
-                  </Text>
-                </TextContent>
-              </ListItem>
-              <br />
-              <ListItem>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    Right-click on <Label>Kogito DMN Runner.app</Label>, select "Open" and then "Cancel".
-                  </Text>
-                </TextContent>
-              </ListItem>
-              <br />
-              <ListItem>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    Right-click on <Label>Kogito DMN Runner.app</Label> <b>again</b> and then select "Open".
-                  </Text>
-                </TextContent>
-              </ListItem>
-              <br />
-              <hr />
-              <br />
-              <ExpandableSection toggleTextExpanded="Advanced Settings" toggleTextCollapsed="Advanced Settings">
-                <DmnRunnerPortForm />
-                <br />
-                <TextContent>
-                  <Text component={TextVariants.p}>Run the following command on a Terminal tab:</Text>
-                </TextContent>
-                <br />
-                <TextContent>
-                  <Text component={TextVariants.p} className={"kogito--code"}>
-                    /Applications/Kogito\ DMN\ Runner.app/Contents/MacOs/kogito -p {dmnRunner.port}
-                  </Text>
-                </TextContent>
-                <br />
-              </ExpandableSection>
-            </List>
           </>
         ),
       },
     ],
-    [dmnRunner.status, dmnRunner.port, dmnRunner.saveNewPort, dmnRunner.outdated]
+    [dmnRunner.version, dmnRunner.status, dmnRunner.port, dmnRunner.saveNewPort, dmnRunner.outdated, downloadDmnRunnerUrl]
   );
 
   const linuxWizardSteps = useMemo(
@@ -324,7 +349,7 @@ export function DmnRunnerModal() {
             {dmnRunner.outdated && (
               <>
                 <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner is outdated!"}>
-                  It looks like you're using a outdated version of the DMN Runner. Follow the instructions below to
+                  It looks like you're using an incompatible version of the DMN Runner. Follow the instructions below to
                   update.
                 </Alert>
                 <br />
@@ -344,7 +369,7 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Extract the contents of <Label>dmn-runner-linux-v{dmnRunner.version}.tar.gz</Label> to your location
+                    Extract the contents of <Label>dmn-runner-linux-{dmnRunner.version}.tar.gz</Label> to your location
                     of choice.
                   </Text>
                 </TextContent>
@@ -420,7 +445,7 @@ export function DmnRunnerModal() {
         ),
       },
     ],
-    [dmnRunner.status, dmnRunner.port, dmnRunner.saveNewPort, dmnRunner.outdated]
+    [dmnRunner.version, dmnRunner.status, dmnRunner.port, dmnRunner.saveNewPort, dmnRunner.outdated, downloadDmnRunnerUrl]
   );
 
   const wizardSteps = useMemo(() => {

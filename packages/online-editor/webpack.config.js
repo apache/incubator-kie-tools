@@ -61,13 +61,13 @@ function getDmnRunnerArgs(argv) {
   compatibleVersion = compatibleVersion || `0.0.0`;
   macOsDownloadUrl =
     macOsDownloadUrl ||
-    `https://github.com/kiegroup/kogito-tooling-go/releases/latest/download/dmn_runner_macos_v${compatibleVersion}.dmg`;
+    `https://github.com/kiegroup/kogito-tooling-go/releases/download/${compatibleVersion}/dmn_runner_macos_${compatibleVersion}.dmg`;
   windowsDownloadUrl =
     windowsDownloadUrl ||
-    `https://github.com/kiegroup/kogito-tooling-go/releases/latest/download/dmn_runner_windows_v${compatibleVersion}.exe`;
+    `https://github.com/kiegroup/kogito-tooling-go/releases/download/${compatibleVersion}/dmn_runner_windows_${compatibleVersion}.exe`;
   linuxDownloadUrl =
     linuxDownloadUrl ||
-    `https://github.com/kiegroup/kogito-tooling-go/releases/latest/download/dmn_runner_linux_v${compatibleVersion}.tar.gz`;
+    `https://github.com/kiegroup/kogito-tooling-go/releases/download/${compatibleVersion}/dmn_runner_linux_${compatibleVersion}.tar.gz`;
 
   console.info("DMN Runner :: Linux download URL: " + linuxDownloadUrl);
   console.info("DMN Runner :: macOS download URL: " + macOsDownloadUrl);
