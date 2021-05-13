@@ -18,7 +18,7 @@ import * as React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { DmnEditorComponent } from "../components/DmnEditorComponent";
 import { BpmnEditorComponent } from "../components/BpmnEditorComponent";
-import { ContentType } from "@kogito-tooling/channel-common-api";
+import { ContentType } from "@kogito-tooling/workspace/dist/api";
 import { customWorkItemWid } from "./widDefinitions";
 import { processWithWidDefinition } from "./processWithWidDefinition.js";
 

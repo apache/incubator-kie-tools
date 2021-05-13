@@ -15,7 +15,7 @@
  */
 
 import { Notification, NotificationsApi } from "@kogito-tooling/notifications/dist/api";
-import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/channel-common-api";
+import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/workspace/dist/api";
 import {
   EditorFactory,
   EditorInitArgs,

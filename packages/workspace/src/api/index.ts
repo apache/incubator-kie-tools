@@ -14,4 +14,14 @@
  * limitations under the License.
  */
 
-export { WorkspaceApi } from "./WorkspaceApi";
+export * from "./WorkspaceApi";
+export * from "./ResourceContentOptions";
+export * from "./ResourceListOptions";
+export * from "./SearchType";
+export * from "./ResourceContentRequest";
+export * from "./ResourceContentService";
+export * from "./KogitoEdit";
+export * from "./ResourcesList";
+export * from "./ResourceListRequest";
+export * from "./ResourceContent";
+export * from "./ContentType";

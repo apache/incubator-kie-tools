@@ -24,7 +24,7 @@ import {
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
-} from "@kogito-tooling/channel-common-api";
+} from "@kogito-tooling/workspace/dist/api";
 import { File } from "../../channel";
 import { Notification } from "@kogito-tooling/notifications/dist/api";
 

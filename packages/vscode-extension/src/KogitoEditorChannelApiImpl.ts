@@ -20,7 +20,7 @@ import {
   ResourceContentRequest,
   ResourceContentService,
   ResourceListRequest,
-} from "@kogito-tooling/channel-common-api";
+} from "@kogito-tooling/workspace/dist/api";
 import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor/dist/api";
 import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
 import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";

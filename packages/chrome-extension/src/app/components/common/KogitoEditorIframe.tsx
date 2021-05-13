@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/channel-common-api";
+import { ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/workspace/dist/api";
 import { EmbeddedEditor, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { ChannelType } from "@kogito-tooling/editor/dist/api";
 import * as React from "react";

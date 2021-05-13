@@ -15,14 +15,15 @@
  */
 
 import {
+  KogitoEdit,
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
-} from "@kogito-tooling/channel-common-api";
+  WorkspaceApi,
+} from "../api";
 import * as fs from "fs";
 import * as vscode from "vscode";
-import { WorkspaceApi } from "../api";
 
 export class VsCodeWorkspaceApi implements WorkspaceApi {
   public receive_openFile(path: string) {
@@ -33,6 +34,10 @@ export class VsCodeWorkspaceApi implements WorkspaceApi {
   }
 
   public async receive_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent> {
+    throw new Error("This is not implemented yet.");
+  }
+
+  public async receive_newEdit(edit: KogitoEdit) {
     throw new Error("This is not implemented yet.");
   }
 

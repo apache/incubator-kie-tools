@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ContentType } from "@kogito-tooling/channel-common-api/dist";
+import { ContentType } from "@kogito-tooling/workspace/dist/api";
 import { EditorApi, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
 import { StateControl } from "@kogito-tooling/editor/dist/channel";
 import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";

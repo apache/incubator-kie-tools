@@ -39,7 +39,7 @@ import { SingleEditorRouter } from "./components/EditorCore/organisms";
 import { PMMLModelMapping, PMMLModels, SupportedCapability } from "./PMMLModelHelper";
 import { Operation, OperationContext } from "./components/EditorScorecard";
 import { toNotifications, ValidationContext, ValidationRegistry } from "./validation";
-import { KogitoEdit } from "@kogito-tooling/channel-common-api";
+import { KogitoEdit } from "@kogito-tooling/workspace/dist/api";
 import { Notification } from "@kogito-tooling/notifications/dist/api";
 import { Builder } from "./paths";
 
