@@ -132,11 +132,11 @@ export default class VSCodeTestHelper {
       // click on src to reexpand the tree and click on desired item
       const srcItem = await this.workspaceSectionView.findItem(this.SRC_ROOT);
       if (srcItem != undefined) {
-        srcItem.click();
+        await srcItem.click();
       }
       const fileItem = await this.workspaceSectionView.findItem(fileName);
       if (fileItem != undefined) {
-        fileItem.click();
+        await fileItem.click();
       }
     }
 
