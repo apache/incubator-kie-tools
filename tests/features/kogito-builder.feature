@@ -11,6 +11,17 @@ Feature: kogito-builder image tests
     And the image should contain label io.k8s.display-name with value Kogito based on Quarkus or Spring Boot
     And the image should contain label io.openshift.tags with value builder,kogito,quarkus,springboot
 
+  Scenario: verify if community builder image does not contain the red hat maven repositories
+    When container is started with command bash
+    Then file /home/kogito/.m2/settings.xml should not contain <id>redhat-maven-repositories</id>
+    And file /home/kogito/.m2/settings.xml should not contain <activeProfile>redhat-maven-repositories</activeProfile>
+    And file /home/kogito/.m2/settings.xml should not contain <id>redhat-ga-repository</id>
+    And file /home/kogito/.m2/settings.xml should not contain <url>https://maven.repository.redhat.com/ga/</url>
+    And file /home/kogito/.m2/settings.xml should not contain <id>redhat-ea-repository</id>
+    And file /home/kogito/.m2/settings.xml should not contain <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
+    And file /home/kogito/.m2/settings.xml should not contain <id>redhat-techpreview-repository</id>
+    And file /home/kogito/.m2/settings.xml should not contain <url>https://maven.repository.redhat.com/techpreview/all</url>
+
   Scenario: Verify if the s2i build is finished as expected performing a non native build with persistence enabled
     Given s2i build https://github.com/kiegroup/kogito-examples.git from process-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable          | value         |

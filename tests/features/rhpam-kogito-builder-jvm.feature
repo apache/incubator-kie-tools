@@ -12,3 +12,15 @@ Feature: rhpam-kogito-builder-rhel8 feature.
     And the image should contain label io.openshift.tags with value rhpam-kogito,builder,kogito,quarkus,springboot
     And the image should contain label io.openshift.s2i.assemble-input-files with value /home/kogito/bin
     And the image should contain label com.redhat.component with value rhpam-7-kogito-builder-rhel8-container
+
+
+  Scenario: verify if prod builder image contains the red hat maven repositories
+    When container is started with command bash
+    Then file /home/kogito/.m2/settings.xml should contain <id>redhat-maven-repositories</id>
+    And file /home/kogito/.m2/settings.xml should contain <activeProfile>redhat-maven-repositories</activeProfile>
+    And file /home/kogito/.m2/settings.xml should contain <id>redhat-ga-repository</id>
+    And file /home/kogito/.m2/settings.xml should contain <url>https://maven.repository.redhat.com/ga/</url>
+    And file /home/kogito/.m2/settings.xml should contain <id>redhat-ea-repository</id>
+    And file /home/kogito/.m2/settings.xml should contain <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
+    And file /home/kogito/.m2/settings.xml should contain <id>redhat-techpreview-repository</id>
+    And file /home/kogito/.m2/settings.xml should contain <url>https://maven.repository.redhat.com/techpreview/all</url>

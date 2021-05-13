@@ -25,7 +25,7 @@ case ${ACTION} in
     ;;
 
     "test")
-        ${CEKIT_CMD} test --overrides-file ${image_name}-overrides.yaml behave
+        ${CEKIT_CMD} test --overrides-file ${image_name}-overrides.yaml behave $3
     ;;
     *)
         echo "Please use build or test actions."

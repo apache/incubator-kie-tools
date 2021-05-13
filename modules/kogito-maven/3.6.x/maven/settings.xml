@@ -3,55 +3,58 @@
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
                       https://maven.apache.org/xsd/settings-1.0.0.xsd">
 
-    <mirrors>
-        <!-- ### configured mirrors ### -->
-    </mirrors>
+  <mirrors>
+    <!-- ### configured mirrors ### -->
+  </mirrors>
 
-    <proxies>
-        <!-- ### configured http proxy ### -->
-    </proxies>
+  <proxies>
+    <!-- ### configured http proxy ### -->
+  </proxies>
 
-    <profiles>
-        <profile>
-            <id>default</id>
-            <repositories>
-                <repository>
-                    <id>jboss-public-repository-group</id>
-                    <name>JBoss Public Repository Group</name>
-                    <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-                    <layout>default</layout>
-                    <releases>
-                        <enabled>true</enabled>
-                        <updatePolicy>never</updatePolicy>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </snapshots>
-                </repository>
-                <!-- ### configured repositories ### -->
-            </repositories>
+  <profiles>
+    <!-- ### redhat maven repositories ### -->
 
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>jboss-public-repository-group</id>
-                    <name>JBoss Public Repository Group</name>
-                    <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-                    <layout>default</layout>
-                    <releases>
-                        <enabled>true</enabled>
-                        <updatePolicy>never</updatePolicy>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </snapshots>
-                </pluginRepository>
-                <!-- ### configured plugin repositories ### -->
-            </pluginRepositories>
-        </profile>
-    </profiles>
-    <activeProfiles>
-        <activeProfile>default</activeProfile>
-    </activeProfiles>
+    <profile>
+      <id>default</id>
+      <repositories>
+        <repository>
+          <id>jboss-public-repository-group</id>
+          <name>JBoss Public Repository Group</name>
+          <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </repository>
+        <!-- ### configured repositories ### -->
+      </repositories>
+
+      <pluginRepositories>
+        <pluginRepository>
+          <id>jboss-public-repository-group</id>
+          <name>JBoss Public Repository Group</name>
+          <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </pluginRepository>
+        <!-- ### configured plugin repositories ### -->
+      </pluginRepositories>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <!-- ### redhat maven profile ### -->
+    <activeProfile>default</activeProfile>
+  </activeProfiles>
 </settings>
