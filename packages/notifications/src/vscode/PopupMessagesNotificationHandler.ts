@@ -27,11 +27,11 @@ export class PopupMessagesNotificationHandler implements NotificationsApi {
     this.currentI18n = this.i18n.getCurrent();
   }
 
-  public createNotification(notification: Notification): void {
+  public kogitoNotifications_createNotification(notification: Notification): void {
     this.getHandleStrategyForSeverity(notification.severity)(notification.message, notification.path);
   }
 
-  public setNotifications(path: string, notifications: Notification[]): void {
+  public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
     if (notifications.length === 0) {
       return;
     }
@@ -45,7 +45,7 @@ export class PopupMessagesNotificationHandler implements NotificationsApi {
     this.getHandleStrategyForSeverity("SUCCESS")(othersMessage, path);
   }
 
-  public removeNotifications(path: string): void {
+  public kogitoNotifications_removeNotifications(path: string): void {
     // Popups can't be removed.
   }
 
@@ -68,7 +68,7 @@ export class PopupMessagesNotificationHandler implements NotificationsApi {
             if (!selected) {
               return;
             }
-            this.workspaceApi.receive_openFile(path);
+            this.workspaceApi.kogitoWorkspace_openFile(path);
           });
   }
 

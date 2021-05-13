@@ -37,12 +37,12 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     private readonly resources?: Map<string, { contentType: ContentType; content: Promise<string> }>
   ) {}
 
-  public receive_newEdit(edit: KogitoEdit) {
+  public kogitoWorkspace_newEdit(edit: KogitoEdit) {
     this.stateControl.updateCommandStack({ id: edit.id });
-    this.overrides.receive_newEdit?.(edit);
+    this.overrides.kogitoWorkspace_newEdit?.(edit);
   }
 
-  public receive_stateControlCommandUpdate(command: StateControlCommand) {
+  public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {
     switch (command) {
       case StateControlCommand.REDO:
         this.stateControl.redo();
@@ -54,23 +54,23 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
         console.info(`Unknown message type received: ${command}`);
         break;
     }
-    this.overrides.receive_stateControlCommandUpdate?.(command);
+    this.overrides.kogitoEditor_stateControlCommandUpdate?.(command);
   }
 
-  public receive_guidedTourUserInteraction(userInteraction: UserInteraction) {
+  public kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction) {
     /* unsupported */
   }
 
-  public receive_guidedTourRegisterTutorial(tutorial: Tutorial) {
+  public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial) {
     /* unsupported */
   }
 
-  public async receive_contentRequest() {
+  public async kogitoEditor_contentRequest() {
     const content = await this.file.getFileContents();
     return { content: content ?? "", path: this.file.fileName };
   }
 
-  public async receive_resourceContentRequest(request: ResourceContentRequest) {
+  public async kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest) {
     const resource = this.resources?.get(request.path);
 
     if (!resource) {
@@ -92,7 +92,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     return new ResourceContent(request.path, await resource.content, resource.contentType);
   }
 
-  public async receive_resourceListRequest(request: ResourceListRequest) {
+  public async kogitoWorkspace_resourceListRequest(request: ResourceListRequest) {
     if (!this.resources) {
       return new ResourcesList(request.pattern, []);
     }
@@ -102,31 +102,31 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     return new ResourcesList(request.pattern, matches);
   }
 
-  public receive_openFile(path: string): void {
-    this.overrides.receive_openFile?.(path);
+  public kogitoWorkspace_openFile(path: string): void {
+    this.overrides.kogitoWorkspace_openFile?.(path);
   }
 
-  public receive_ready(): void {
-    this.overrides.receive_ready?.();
+  public kogitoChannel_ready(): void {
+    this.overrides.kogitoChannel_ready?.();
   }
 
-  public receive_setContentError(editorContent: EditorContent): void {
-    this.overrides.receive_setContentError?.(editorContent);
+  public kogitoEditor_setContentError(editorContent: EditorContent): void {
+    this.overrides.kogitoEditor_setContentError?.(editorContent);
   }
 
-  public receive_getLocale(): Promise<string> {
+  public kogitoI18n_getLocale(): Promise<string> {
     return Promise.resolve(this.locale);
   }
 
-  public createNotification(notification: Notification): void {
-    this.overrides.createNotification?.(notification);
+  public kogitoNotifications_createNotification(notification: Notification): void {
+    this.overrides.kogitoNotifications_createNotification?.(notification);
   }
 
-  public setNotifications(path: string, notifications: Notification[]): void {
-    this.overrides.setNotifications?.(path, notifications);
+  public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
+    this.overrides.kogitoNotifications_setNotifications?.(path, notifications);
   }
 
-  public removeNotifications(path: string): void {
-    this.overrides.removeNotifications?.(path);
+  public kogitoNotifications_removeNotifications(path: string): void {
+    this.overrides.kogitoNotifications_removeNotifications?.(path);
   }
 }

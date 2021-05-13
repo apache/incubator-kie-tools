@@ -47,19 +47,19 @@ export const createEditor = (
 ) => {
   return {
     getElementPosition: (selector: string): Promise<Rect> =>
-      envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(selector),
+      envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(selector),
     undo: () => {
       stateControl.undo();
-      return Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorUndo());
+      return Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorUndo());
     },
     redo: () => {
       stateControl.redo();
-      return Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorRedo());
+      return Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo());
     },
-    getContent: () => envelopeServer.envelopeApi.requests.receive_contentRequest().then((c) => c.content),
-    getPreview: () => envelopeServer.envelopeApi.requests.receive_previewRequest(),
+    getContent: () => envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
+    getPreview: () => envelopeServer.envelopeApi.requests.kogitoEditor_previewRequest(),
     setContent: (path: string, content: string) =>
-      envelopeServer.envelopeApi.requests.receive_contentChanged({
+      envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({
         path: path,
         content: content,
       }),
@@ -72,7 +72,7 @@ export const createEditor = (
       iframe.remove();
     },
     validate: () => {
-      return envelopeServer.envelopeApi.requests.validate();
+      return envelopeServer.envelopeApi.requests.kogitoEditor_validate();
     },
   };
 };

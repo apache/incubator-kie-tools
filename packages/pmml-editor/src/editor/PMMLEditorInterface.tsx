@@ -47,10 +47,10 @@ export class PMMLEditorInterface implements Editor {
     return (
       <PMMLEditor
         exposing={(s) => (this.self = s)}
-        ready={() => this.envelopeContext.channelApi.notifications.receive_ready()}
-        newEdit={(edit) => this.envelopeContext.channelApi.notifications.receive_newEdit(edit)}
+        ready={() => this.envelopeContext.channelApi.notifications.kogitoChannel_ready()}
+        newEdit={(edit) => this.envelopeContext.channelApi.notifications.kogitoWorkspace_newEdit(edit)}
         setNotifications={(path, notifications) =>
-          this.envelopeContext.channelApi.notifications.setNotifications(path, notifications)
+          this.envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications(path, notifications)
         }
       />
     );

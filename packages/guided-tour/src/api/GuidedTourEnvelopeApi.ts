@@ -17,5 +17,5 @@
 import { Rect } from "./Rect";
 
 export interface GuidedTourEnvelopeApi {
-  receive_guidedTourElementPositionRequest(selector: string): Promise<Rect>;
+  kogitoGuidedTour_guidedTourElementPositionRequest(selector: string): Promise<Rect>;
 }

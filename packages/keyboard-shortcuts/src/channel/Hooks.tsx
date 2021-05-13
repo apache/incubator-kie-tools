@@ -38,7 +38,7 @@ export function useSyncedKeyboardEvents(
     const listener = (keyboardEvent: KeyboardEvent) => {
       const channelKeyboardEvent = getChannelKeyboardEvent(keyboardEvent);
       console.debug(`New keyboard event (${JSON.stringify(channelKeyboardEvent)})!`);
-      envelopeApi.notifications.receive_channelKeyboardEvent(channelKeyboardEvent);
+      envelopeApi.notifications.kogitoKeyboardShortcuts_channelKeyboardEvent(channelKeyboardEvent);
     };
 
     element.addEventListener("keydown", listener);

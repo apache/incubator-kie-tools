@@ -79,7 +79,7 @@ export class KogitoEditableDocument implements CustomDocument {
 
       try {
         const notifications = await editor.validate();
-        this.vsCodeNotifications.setNotifications(destination.fsPath, notifications);
+        this.vsCodeNotifications.kogitoNotifications_setNotifications(destination.fsPath, notifications);
       } catch (e) {
         this.vsCodeLogger.warn(`File was not validated: ${e}`);
       }

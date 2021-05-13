@@ -16,5 +16,5 @@
 
 // tslint:disable-next-line:interface-name
 export interface I18nChannelApi {
-  receive_getLocale(): Promise<string>;
+  kogitoI18n_getLocale(): Promise<string>;
 }

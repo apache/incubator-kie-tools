@@ -35,7 +35,7 @@ const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boolean, ori
     { postMessage: (message) => iframe.contentWindow?.postMessage(message, "*") },
     origin ?? defaultOrigin,
     (self) => {
-      return self.envelopeApi.requests.receive_initRequest(
+      return self.envelopeApi.requests.kogitoEditor_initRequest(
         {
           origin: self.origin,
           envelopeServerId: self.id,
@@ -85,7 +85,7 @@ export function open(args: {
         },
         "en-US",
         {
-          receive_setContentError() {
+          kogitoEditor_setContentError() {
             if (!receivedSetContentError) {
               args.onError?.();
               receivedSetContentError = true;

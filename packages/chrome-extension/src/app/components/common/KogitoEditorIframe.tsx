@@ -118,10 +118,10 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           ref={editorRef}
           file={file}
           channelType={ChannelType.GITHUB}
-          receive_ready={onEditorReady}
-          receive_resourceContentRequest={onResourceContentRequest}
-          receive_resourceListRequest={onResourceContentList}
-          receive_setContentError={props.onSetContentError}
+          kogitoChannel_ready={onEditorReady}
+          kogitoWorkspace_resourceContentRequest={onResourceContentRequest}
+          kogitoWorkspace_resourceListRequest={onResourceContentList}
+          kogitoEditor_setContentError={props.onSetContentError}
           editorEnvelopeLocator={envelopeLocator}
           locale={locale}
         />

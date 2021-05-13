@@ -54,13 +54,13 @@ interface Props {
   exposing: (s: PMMLEditor) => void;
 
   /**
-   * Delegation for KogitoToolingChannelCommonApi.receive_ready() to signal to the Channel
+   * Delegation for KogitoToolingChannelCommonApi.kogitoChannel_ready() to signal to the Channel
    * that the editor is ready. Increases the decoupling of the PMMLEditor from the Channel.
    */
   ready: () => void;
 
   /**
-   * Delegation for KogitoToolingChannelCommonApi.receive_newEdit(edit) to signal to the Channel
+   * Delegation for KogitoToolingWorkspaceApi.kogitoWorkspace_newEdit(edit) to signal to the Channel
    * that a change has taken place. Increases the decoupling of the PMMLEditor from the Channel.
    * @param edit An object representing the unique change.
    */

@@ -68,7 +68,7 @@ describe("EmbeddedViewer::ONLINE", () => {
         file={file}
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
-        receive_resourceContentRequest={onResourceContentRequest}
+        kogitoWorkspace_resourceContentRequest={onResourceContentRequest}
         locale={"en"}
       />
     );
@@ -77,7 +77,7 @@ describe("EmbeddedViewer::ONLINE", () => {
       targetEnvelopeServerId: envelopeServerId,
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: "receive_resourceContentRequest",
+      type: "kogitoWorkspace_resourceContentRequest",
       data: [{ path: "" }],
     });
 
@@ -93,7 +93,7 @@ describe("EmbeddedViewer::ONLINE", () => {
         file={file}
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
-        receive_resourceListRequest={onResourceListRequest}
+        kogitoWorkspace_resourceListRequest={onResourceListRequest}
         locale={"en"}
       />
     );
@@ -102,7 +102,7 @@ describe("EmbeddedViewer::ONLINE", () => {
       targetEnvelopeServerId: envelopeServerId,
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: "receive_resourceListRequest",
+      type: "kogitoWorkspace_resourceListRequest",
       data: [{ pattern: "", paths: [] }],
     });
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Notification, NotificationsApi } from "@kogito-tooling/notifications/dist/api";
+import { Notification } from "@kogito-tooling/notifications/dist/api";
 import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/workspace/dist/api";
 import {
   EditorFactory,
@@ -38,6 +38,7 @@ import { GwtLanguageData, Resource } from "./GwtLanguageData";
 import { GwtStateControlService } from "./gwtStateControl";
 import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n";
 import { XmlFormatter } from "./XmlFormatter";
+import { NotificationsApi } from "./api/NotificationsApi";
 
 export interface CustomWindow extends Window {
   gwt: {
@@ -117,10 +118,10 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
         keyboardShortcuts: envelopeContext.services.keyboardShortcuts,
         guidedTourService: {
           refresh(userInteraction: UserInteraction): void {
-            envelopeContext.channelApi.notifications.receive_guidedTourUserInteraction(userInteraction);
+            envelopeContext.channelApi.notifications.kogitoGuidedTour_guidedTourUserInteraction(userInteraction);
           },
           registerTutorial(tutorial: Tutorial): void {
-            envelopeContext.channelApi.notifications.receive_guidedTourRegisterTutorial(tutorial);
+            envelopeContext.channelApi.notifications.kogitoGuidedTour_guidedTourRegisterTutorial(tutorial);
           },
           isEnabled(): boolean {
             return envelopeContext.services.guidedTour.isEnabled();
@@ -129,23 +130,23 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
         resourceContentEditorService: {
           get(path: string, opts?: ResourceContentOptions) {
             return envelopeContext.channelApi.requests
-              .receive_resourceContentRequest({ path, opts })
+              .kogitoWorkspace_resourceContentRequest({ path, opts })
               .then((r) => r?.content);
           },
           list(pattern: string, opts?: ResourceListOptions) {
             return envelopeContext.channelApi.requests
-              .receive_resourceListRequest({ pattern, opts })
+              .kogitoWorkspace_resourceListRequest({ pattern, opts })
               .then((r) => r.paths.sort());
           },
         },
         workspaceService: {
           openFile(path: string): void {
-            envelopeContext.channelApi.notifications.receive_openFile(path);
+            envelopeContext.channelApi.notifications.kogitoWorkspace_openFile(path);
           },
         },
         i18nService: {
           getLocale: () => {
-            return envelopeContext.channelApi.requests.receive_getLocale();
+            return envelopeContext.channelApi.requests.kogitoI18n_getLocale();
           },
           onLocaleChange: (onLocaleChange: (locale: string) => void) => {
             envelopeContext.services.i18n.subscribeToLocaleChange(onLocaleChange);
@@ -153,13 +154,13 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
         },
         notificationsService: {
           createNotification: (notification: Notification) => {
-            envelopeContext.channelApi.notifications.createNotification(notification);
+            envelopeContext.channelApi.notifications.kogitoNotifications_createNotification(notification);
           },
           removeNotifications: (path: string) => {
-            envelopeContext.channelApi.notifications.removeNotifications(path);
+            envelopeContext.channelApi.notifications.kogitoNotifications_removeNotifications(path);
           },
           setNotifications: (path: string, notifications: Notification[]) => {
-            envelopeContext.channelApi.notifications.setNotifications(path, notifications);
+            envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications(path, notifications);
           },
         },
       },

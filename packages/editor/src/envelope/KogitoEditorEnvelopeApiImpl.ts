@@ -64,7 +64,7 @@ export class KogitoEditorEnvelopeApiImpl<
     this.capturedInitRequestYet = true;
   }
 
-  public receive_initRequest = async (association: Association, initArgs: EditorInitArgs) => {
+  public kogitoEditor_initRequest = async (association: Association, initArgs: EditorInitArgs) => {
     this.args.envelopeBusController.associate(association.origin, association.envelopeServerId);
 
     if (this.hasCapturedInitRequestYet()) {
@@ -84,58 +84,58 @@ export class KogitoEditorEnvelopeApiImpl<
 
     this.args.view().setLoading();
 
-    const editorContent = await this.args.envelopeContext.channelApi.requests.receive_contentRequest();
+    const editorContent = await this.args.envelopeContext.channelApi.requests.kogitoEditor_contentRequest();
 
     await this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
-      .catch((e) => this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent))
+      .catch((e) => this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError(editorContent))
       .finally(() => this.args.view().setLoadingFinished());
 
     this.registerDefaultShortcuts(initArgs);
 
-    this.args.envelopeContext.channelApi.notifications.receive_ready();
+    this.args.envelopeContext.channelApi.notifications.kogitoChannel_ready();
   };
 
-  public receive_contentChanged = (editorContent: EditorContent) => {
+  public kogitoEditor_contentChanged = (editorContent: EditorContent) => {
     this.args.view().setLoading();
     return this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
       .catch((e) => {
-        this.args.envelopeContext.channelApi.notifications.receive_setContentError(editorContent);
+        this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError(editorContent);
         throw e;
       })
       .finally(() => this.args.view().setLoadingFinished());
   };
 
-  public receive_editorUndo() {
+  public kogitoEditor_editorUndo() {
     this.editor.undo();
   }
 
-  public receive_editorRedo() {
+  public kogitoEditor_editorRedo() {
     this.editor.redo();
   }
 
-  public receive_contentRequest() {
+  public kogitoEditor_contentRequest() {
     return this.editor.getContent().then((content) => ({ content: content }));
   }
 
-  public receive_previewRequest() {
+  public kogitoEditor_previewRequest() {
     return this.editor.getPreview().then((previewSvg) => previewSvg ?? "");
   }
 
-  public receive_guidedTourElementPositionRequest = async (selector: string) => {
+  public kogitoGuidedTour_guidedTourElementPositionRequest = async (selector: string) => {
     return this.editor.getElementPosition(selector).then((rect) => rect ?? DEFAULT_RECT);
   };
 
-  public receive_channelKeyboardEvent = (channelKeyboardEvent: ChannelKeyboardEvent) => {
+  public kogitoKeyboardShortcuts_channelKeyboardEvent = (channelKeyboardEvent: ChannelKeyboardEvent) => {
     window.dispatchEvent(new CustomEvent(channelKeyboardEvent.type, { detail: channelKeyboardEvent }));
   };
 
-  public receive_localeChange(locale: string) {
+  public kogitoI18n_localeChange(locale: string) {
     return this.args.envelopeContext.services.i18n.executeOnLocaleChangeSubscriptions(locale);
   }
 
-  public validate() {
+  public kogitoEditor_validate() {
     return this.editor.validate();
   }
 
@@ -158,7 +158,7 @@ export class KogitoEditorEnvelopeApiImpl<
       `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.redo}`,
       async () => {
         this.editor.redo();
-        this.args.envelopeContext.channelApi.notifications.receive_stateControlCommandUpdate(StateControlCommand.REDO);
+        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate(StateControlCommand.REDO);
       }
     );
     const undoId = this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
@@ -166,7 +166,7 @@ export class KogitoEditorEnvelopeApiImpl<
       `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.undo}`,
       async () => {
         this.editor.undo();
-        this.args.envelopeContext.channelApi.notifications.receive_stateControlCommandUpdate(StateControlCommand.UNDO);
+        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate(StateControlCommand.UNDO);
       }
     );
 

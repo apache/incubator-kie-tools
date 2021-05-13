@@ -15,5 +15,5 @@
  */
 
 export interface KogitoToolingChannelCommonApi {
-  receive_ready(): void;
+  kogitoChannel_ready(): void;
 }

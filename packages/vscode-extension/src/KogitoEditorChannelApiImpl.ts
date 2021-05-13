@@ -45,24 +45,24 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     private initialBackup = editor.document.initialBackup
   ) {}
 
-  public receive_newEdit(edit: KogitoEdit) {
+  public kogitoWorkspace_newEdit(edit: KogitoEdit) {
     this.editor.document.notifyEdit(this.editor, edit);
   }
 
-  public receive_openFile(path: string) {
-    this.workspaceApi.receive_openFile(
+  public kogitoWorkspace_openFile(path: string) {
+    this.workspaceApi.kogitoWorkspace_openFile(
       __path.isAbsolute(path) ? path : __path.join(__path.dirname(this.editor.document.uri.fsPath), path)
     );
   }
 
-  public async receive_contentRequest() {
+  public async kogitoEditor_contentRequest() {
     return vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri).then((contentArray) => {
       this.initialBackup = undefined;
       return { content: this.decoder.decode(contentArray), path: this.editor.document.relativePath };
     });
   }
 
-  public receive_setContentError(editorContent: EditorContent) {
+  public kogitoEditor_setContentError(editorContent: EditorContent) {
     const i18n = this.i18n.getCurrent();
 
     vscode.window
@@ -91,43 +91,43 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
       });
   }
 
-  public receive_ready() {
+  public kogitoChannel_ready() {
     /* empty */
   }
 
-  public receive_stateControlCommandUpdate(command: StateControlCommand) {
+  public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {
     /* VS Code has his own state control API. */
   }
 
-  public receive_guidedTourRegisterTutorial(tutorial: Tutorial) {
+  public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial) {
     /* empty */
   }
 
-  public receive_guidedTourUserInteraction(userInteraction: UserInteraction) {
+  public kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction) {
     /* empty */
   }
 
-  public receive_resourceContentRequest(request: ResourceContentRequest) {
+  public kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest) {
     return this.resourceContentService.get(request.path, request.opts);
   }
 
-  public receive_resourceListRequest(request: ResourceListRequest) {
+  public kogitoWorkspace_resourceListRequest(request: ResourceListRequest) {
     return this.resourceContentService.list(request.pattern, request.opts);
   }
 
-  public receive_getLocale(): Promise<string> {
+  public kogitoI18n_getLocale(): Promise<string> {
     return Promise.resolve(vscode.env.language);
   }
 
-  public createNotification(notification: Notification): void {
-    this.notificationsApi.createNotification(notification);
+  public kogitoNotifications_createNotification(notification: Notification): void {
+    this.notificationsApi.kogitoNotifications_createNotification(notification);
   }
 
-  public setNotifications(path: string, notifications: Notification[]): void {
-    this.notificationsApi.setNotifications(path, notifications);
+  public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
+    this.notificationsApi.kogitoNotifications_setNotifications(path, notifications);
   }
 
-  public removeNotifications(path: string): void {
-    this.notificationsApi.removeNotifications(path);
+  public kogitoNotifications_removeNotifications(path: string): void {
+    this.notificationsApi.kogitoNotifications_removeNotifications(path);
   }
 }

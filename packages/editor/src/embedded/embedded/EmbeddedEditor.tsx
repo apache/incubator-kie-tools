@@ -35,9 +35,9 @@ import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/ho
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 type ChannelApiMethodsAlreadyImplementedByEmbeddedEditor =
-  | "receive_guidedTourUserInteraction"
-  | "receive_guidedTourRegisterTutorial"
-  | "receive_contentRequest";
+  | "kogitoGuidedTour_guidedTourUserInteraction"
+  | "kogitoGuidedTour_guidedTourRegisterTutorial"
+  | "kogitoEditor_contentRequest";
 
 type EmbeddedEditorChannelApiOverrides = Partial<
   Omit<KogitoEditorChannelApi, ChannelApiMethodsAlreadyImplementedByEmbeddedEditor>
@@ -90,9 +90,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   const kogitoEditorChannelApiImpl = useMemo(() => {
     return new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, {
       ...props,
-      receive_ready: () => {
+      kogitoChannel_ready: () => {
         setReady(true);
-        props.receive_ready?.();
+        props.kogitoChannel_ready?.();
       },
     });
   }, [stateControl, props.file, props]);
@@ -102,7 +102,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       { postMessage: (message) => iframeRef.current?.contentWindow?.postMessage(message, "*") },
       props.editorEnvelopeLocator.targetOrigin,
       (self) =>
-        self.envelopeApi.requests.receive_initRequest(
+        self.envelopeApi.requests.kogitoEditor_initRequest(
           { origin: self.origin, envelopeServerId: self.id },
           {
             fileExtension: props.file.fileExtension,
@@ -118,12 +118,12 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   useConnectedEnvelopeServer(envelopeServer, kogitoEditorChannelApiImpl);
 
   useEffectAfterFirstRender(() => {
-    envelopeServer.envelopeApi.notifications.receive_localeChange(props.locale);
+    envelopeServer.envelopeApi.notifications.kogitoI18n_localeChange(props.locale);
   }, [props.locale]);
 
   useEffectAfterFirstRender(() => {
     props.file.getFileContents().then((content) => {
-      envelopeServer.envelopeApi.requests.receive_contentChanged({ content: content! });
+      envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ content: content! });
     });
   }, [props.file.getFileContents]);
 
@@ -145,13 +145,13 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         isReady: isReady,
         getStateControl: () => stateControl,
         getEnvelopeServer: () => envelopeServer,
-        getElementPosition: (s) => envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(s),
-        undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorUndo()),
-        redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorRedo()),
-        getContent: () => envelopeServer.envelopeApi.requests.receive_contentRequest().then((c) => c.content),
-        getPreview: () => envelopeServer.envelopeApi.requests.receive_previewRequest(),
-        setContent: (path, content) => envelopeServer.envelopeApi.requests.receive_contentChanged({ path, content }),
-        validate: () => envelopeServer.envelopeApi.requests.validate(),
+        getElementPosition: (s) => envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(s),
+        undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorUndo()),
+        redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo()),
+        getContent: () => envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
+        getPreview: () => envelopeServer.envelopeApi.requests.kogitoEditor_previewRequest(),
+        setContent: (path, content) => envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ path, content }),
+        validate: () => envelopeServer.envelopeApi.requests.kogitoEditor_validate(),
       };
     },
     [envelopeServer, stateControl, isReady]

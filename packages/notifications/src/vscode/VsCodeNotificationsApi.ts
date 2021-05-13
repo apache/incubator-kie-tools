@@ -34,20 +34,20 @@ export class VsCodeNotificationsApi implements NotificationsApi {
     };
   }
 
-  public createNotification(notification: Notification): void {
-    this.handle(notification).createNotification(notification);
+  public kogitoNotifications_createNotification(notification: Notification): void {
+    this.handle(notification).kogitoNotifications_createNotification(notification);
   }
 
-  public setNotifications(path: string, notifications: Notification[]): void {
+  public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
     const alerts = notifications.filter((n) => n.type === "ALERT");
     const problems = notifications.filter((n) => n.type !== "ALERT");
 
-    this.get("PROBLEM").setNotifications(path, problems);
-    this.get("ALERT").setNotifications(path, alerts);
+    this.get("PROBLEM").kogitoNotifications_setNotifications(path, problems);
+    this.get("ALERT").kogitoNotifications_setNotifications(path, alerts);
   }
 
-  public removeNotifications(path: string): void {
-    this.get("PROBLEM").removeNotifications(path);
+  public kogitoNotifications_removeNotifications(path: string): void {
+    this.get("PROBLEM").kogitoNotifications_removeNotifications(path);
   }
 
   private handle(notification: Notification): NotificationsApi {

@@ -16,5 +16,5 @@
 
 // tslint:disable-next-line:interface-name
 export interface I18nEnvelopeApi {
-  receive_localeChange(locale: string): void;
+  kogitoI18n_localeChange(locale: string): void;
 }
