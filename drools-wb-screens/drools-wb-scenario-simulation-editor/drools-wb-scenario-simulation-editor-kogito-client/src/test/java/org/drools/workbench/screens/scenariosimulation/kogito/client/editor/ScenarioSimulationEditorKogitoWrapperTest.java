@@ -24,6 +24,7 @@ import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.workbench.scenariosimulation.kogito.marshaller.js.callbacks.SCESIMMarshallCallback;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationView;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
@@ -48,6 +49,7 @@ import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPre
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.kogito.client.resources.i18n.KogitoClientConstants;
 import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
+import org.kie.workbench.common.widgets.client.errorpage.ErrorPage;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -89,6 +91,10 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
     private Promises promisesMock;
     @Mock
     private ScenarioSimulationEditorPresenter scenarioSimulationEditorPresenterMock;
+    @Mock
+    private ScenarioSimulationView scenarioSimulationViewMock;
+    @Mock
+    private ErrorPage errorPageMock;
     @Mock
     private ScenarioSimulationModel scenarioSimulationModelMock;
     @Mock
@@ -152,6 +158,7 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
     @Before
     public void setup() {
         when(scenarioSimulationEditorPresenterMock.getModel()).thenReturn(scenarioSimulationModelMock);
+        when(scenarioSimulationEditorPresenterMock.getView()).thenReturn(scenarioSimulationViewMock);
         when(scenarioSimulationModelMock.getSettings()).thenReturn(settingsMock);
         when(scenarioSimulationEditorPresenterMock.getContext()).thenReturn(scenarioSimulationContextMock);
         when(scenarioSimulationContextMock.getScenarioGridPanelByGridWidget(GridWidget.SIMULATION)).thenReturn(simulationGridPanelMock);
@@ -174,6 +181,7 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
                 this.authoringWorkbenchDocks = authoringEditorDockMock;
                 this.scenarioSimulationKogitoDocksHandler = scenarioSimulationKogitoDocksHandlerMock;
                 this.scenarioSimulationKogitoDMNMarshallerService = scenarioSimulationKogitoDMNMarshallerServiceMock;
+                this.errorPage = errorPageMock;
             }
 
             @Override
@@ -286,8 +294,7 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
         verify(scenarioSimulationEditorKogitoWrapperSpy, never()).showScenarioSimulationCreationPopup(any());
         verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).gotoPath(pathArgumentCaptor.capture());
         verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).unmarshallContent(eq("value"));
-        verify(scenarioSimulationEditorPresenterMock, times(1)).sendNotification(eq("Error message"),
-                                                                                 eq(NotificationEvent.NotificationType.ERROR));
+        verify(scenarioSimulationViewMock).setContentWidget(errorPageMock);
         verify(rejectCallbackFnMock, times(1)).onInvoke("Error message");
     }
 

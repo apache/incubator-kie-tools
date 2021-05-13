@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 
@@ -30,4 +31,6 @@ public interface ScenarioSimulationView extends KieEditorView,
     ScenarioGridWidget getScenarioGridWidget();
 
     void setScenarioGridWidget(ScenarioGridWidget scenarioMainGridWidget);
+
+    void setContentWidget(Widget widget);
 }

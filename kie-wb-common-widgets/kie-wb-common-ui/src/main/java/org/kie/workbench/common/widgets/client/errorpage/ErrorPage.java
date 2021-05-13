@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.widgets.views;
+package org.kie.workbench.common.widgets.client.errorpage;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;

@@ -72,6 +72,7 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSIT
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
+import org.kie.workbench.common.widgets.client.errorpage.ErrorPage;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.impl.ObservablePathImpl;
@@ -108,6 +109,7 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     protected KogitoScenarioSimulationBuilder scenarioSimulationBuilder;
     protected ScenarioSimulationKogitoDocksHandler scenarioSimulationKogitoDocksHandler;
     protected ScenarioSimulationKogitoDMNMarshallerService scenarioSimulationKogitoDMNMarshallerService;
+    protected ErrorPage errorPage;
 
     public ScenarioSimulationEditorKogitoWrapper() {
         //Zero-parameter constructor for CDI proxies
@@ -125,7 +127,8 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
             final ScenarioSimulationKogitoCreationPopupPresenter scenarioSimulationKogitoCreationPopupPresenter,
             final KogitoScenarioSimulationBuilder scenarioSimulationBuilder,
             final ScenarioSimulationKogitoDocksHandler scenarioSimulationKogitoDocksHandler,
-            final ScenarioSimulationKogitoDMNMarshallerService scenarioSimulationKogitoDMNMarshallerService) {
+            final ScenarioSimulationKogitoDMNMarshallerService scenarioSimulationKogitoDMNMarshallerService,
+            final ErrorPage errorPage) {
         super(scenarioSimulationEditorPresenter.getView(), multiPageEditorContainerView);
         this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenter;
         this.authoringWorkbenchDocks = authoringWorkbenchDocks;
@@ -137,6 +140,7 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
         this.scenarioSimulationKogitoCreationPopupPresenter = scenarioSimulationKogitoCreationPopupPresenter;
         this.scenarioSimulationKogitoDocksHandler = scenarioSimulationKogitoDocksHandler;
         this.scenarioSimulationKogitoDMNMarshallerService = scenarioSimulationKogitoDMNMarshallerService;
+        this.errorPage = errorPage;
     }
 
     @PostConstruct
@@ -191,7 +195,7 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
             success.onInvoke((Void) null);
         } catch (Exception e) {
             /* If any exception occurs, promise returns a failure */
-            scenarioSimulationEditorPresenter.sendNotification(e.getMessage(), NotificationEvent.NotificationType.ERROR);
+            scenarioSimulationEditorPresenter.getView().setContentWidget(errorPage);
             failure.onInvoke(e.getMessage());
         }
     }
