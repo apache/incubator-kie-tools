@@ -18,13 +18,14 @@ import { assert } from "chai";
 import {
   ActivityBar,
   By,
-  EditorView,
   InputBox,
   SideBarView,
   WebView,
   Workbench,
-  Notification,
   ViewControl,
+  VSBrowser,
+  WebDriver,
+  ViewSection,
 } from "vscode-extension-tester";
 import { DefaultWait } from "vscode-uitests-tooling";
 
@@ -36,10 +37,41 @@ import { DefaultWait } from "vscode-uitests-tooling";
  */
 export default class VSCodeTestHelper {
   /**
+   * Name of the root folder in workspace that contains all source files.
+   */
+  private readonly SRC_ROOT: string = "src";
+
+  /**
+   * Name of the roof folder of all testing resources.
+   */
+  private readonly RESOURCES_ROOT: string = "resources";
+
+  /**
+   * Loading timeout for editors.
+   */
+  private readonly EDITOR_LOADING_TIMEOUT: number = 10000;
+
+  /**
    * Handle for VSCode workbench.
    * Initialized in constructor.
    */
   private workbench: Workbench;
+
+  /**
+   * Instance of VSBrowser.
+   */
+  private browser: VSBrowser;
+
+  /**
+   * WebDriver of currently used VSBrowser.
+   */
+  private driver: WebDriver;
+
+  /**
+   * Handle for workspace section with directory tree and files that
+   * is located in sidebarview. Used to lookup resources and open them.
+   */
+  private workspaceSectionView: ViewSection;
 
   /**
    * Handle for sidebarview. Usually used to work with
@@ -50,6 +82,8 @@ export default class VSCodeTestHelper {
 
   constructor() {
     this.workbench = new Workbench() as Workbench;
+    this.browser = VSBrowser.instance;
+    this.driver = this.browser.driver;
   }
 
   /**
@@ -69,27 +103,48 @@ export default class VSCodeTestHelper {
     this.sidebarView = await control.openView();
     assert.isTrue(await this.sidebarView.isDisplayed(), "Explorer side bar view was not opened");
 
+    this.workspaceSectionView = await this.sidebarView.getContent().getSection("Untitled (Workspace)");
     return this.sidebarView;
   };
 
   /**
    * Opens file from a sidebarview. Expects that the sidebarview will be defined and open.
-   * Once the file is openned, it wait for the WebView to load and the returns it.
+   * Once the file is openned, it waits for the WebView to load and the returns it.
+   *
+   * If the file is not located in root of resources folder, specify a relative path to its
+   * parent directory.
+   * To open file in ".../resources/org/kie" call the method as openFileFromSidebar(fileName, "org/kie").
+   * Always separate the directories in path by "/"
    *
    * @param fileName name of the file to open
+   * @param fileParentPath optional, use when file is not in root of resources. This is the path of file's parent directory, relative to resources
+   *                       if not used the file will be looked in root of resources.
    * @returns promise that resolves to WebView of the openned file.
    */
-  public openFileFromSidebar = async (fileName: string): Promise<WebView> => {
-    const workspace = await this.sidebarView.getContent().getSection("Untitled (Workspace)");
-    assert.isTrue(await workspace.isExpanded(), "Workspace section was not expanded");
-
-    await workspace.openItem("resources", fileName);
+  public openFileFromSidebar = async (fileName: string, fileParentPath?: string): Promise<WebView> => {
+    if (fileParentPath == undefined || fileParentPath == "") {
+      await this.workspaceSectionView.openItem(this.RESOURCES_ROOT, fileName);
+    } else {
+      let pathPieces = fileParentPath.split("/");
+      pathPieces.unshift(this.RESOURCES_ROOT);
+      await this.workspaceSectionView.openItem(...pathPieces);
+      // For some reason openItem() collapses the view it expands so we
+      // click on src to reexpand the tree and click on desired item
+      const srcItem = await this.workspaceSectionView.findItem(this.SRC_ROOT);
+      if (srcItem != undefined) {
+        await srcItem.click();
+      }
+      const fileItem = await this.workspaceSectionView.findItem(fileName);
+      if (fileItem != undefined) {
+        await fileItem.click();
+      }
+    }
 
     // In cases where you have multiple KIE editors installed in VSCode
     // uncomment this to run locally without issues.
     // const input = await InputBox.create();
     // await input.selectQuickPick('KIE Kogito Editors');
-    const webview = new WebView(new EditorView(), By.linkText(fileName));
+    const webview = new WebView(this.workbench.getEditorView(), By.linkText(fileName));
     await DefaultWait.sleep(10000);
     return webview;
   };
@@ -98,15 +153,6 @@ export default class VSCodeTestHelper {
    * Close all editor views that are open.
    */
   public closeAllEditors = async (): Promise<void> => {
-    await new EditorView().closeAllEditors();
-  };
-
-  /**
-   * Gets all currently displayed notifications.
-   *
-   * @returns a promise that resolves to array of notifications.
-   */
-  public getNotifications = async (): Promise<Notification[]> => {
-    return await this.workbench.getNotifications();
+    await this.workbench.getEditorView().closeAllEditors();
   };
 }
