@@ -139,9 +139,10 @@ export default class BpmnEditorTestHelper {
       );
       if (title == categoryToOpen) {
         paletteElements[i].click();
+        return await palette.findElement(By.className("kie-palette-flyout"));
       }
     }
 
-    return await palette.findElement(By.className("kie-palette-flyout"));
+    throw Error("Palette category: [" + categoryToOpen + "] not found.");
   };
 }

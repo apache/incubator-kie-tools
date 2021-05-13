@@ -5,7 +5,7 @@
     "documentation" : "Calls internal service that creates the customer in database server.",
     "displayName" : "Create Customer Internal Service",
     "parameters" : [
-	  "in_customer_id" : new StringDataType(),
+	    "in_customer_id" : new StringDataType(),
       "in_customer_level_id" : new IntegerDataType(),
       "in_customer_initial_balance" : new FloatDataType(),
       "in_customer_level_label" : new EnumDataType(),

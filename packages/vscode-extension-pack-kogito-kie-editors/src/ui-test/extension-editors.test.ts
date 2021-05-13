@@ -18,7 +18,7 @@ import { By, SideBarView, WebView } from "vscode-extension-tester";
 import * as path from "path";
 import { aComponentWithText, h5ComponentWithText, spanComponentWithText } from "./helpers/CommonLocators";
 import { EditorTabs } from "./helpers/EditorTabs";
-import { assertWebElementIsDisplayedEnabled } from "./helpers/CommonAsserts";
+import { assertWebElementIsDisplayedEnabled, assertWebElementWithAtribute } from "./helpers/CommonAsserts";
 import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
 import BpmnEditorTestHelper, { PaletteCategories } from "./helpers/BpmnEditorTestHelper";
 import ScesimEditorTestHelper from "./helpers/ScesimEditorTestHelper";
@@ -184,18 +184,20 @@ describe("Editors are loading properly", () => {
     const propertiesPanel = await bpmnEditorTester.openDiagramProperties();
     let nameInput = await propertiesPanel.findElement(customTaskNameTextArea());
     assertWebElementIsDisplayedEnabled(nameInput);
-    assert.equal(await nameInput.getAttribute("value"), "Create Customer Internal Service");
+    assertWebElementWithAtribute(nameInput, "value", "Create Customer Internal Service");
 
     let docInput = await propertiesPanel.findElement(customTaskDocumentationTextArea());
     assertWebElementIsDisplayedEnabled(docInput);
-    assert.equal(
-      await docInput.getAttribute("value"),
+    assertWebElementWithAtribute(
+      docInput,
+      "value",
       "Calls internal service that creates the customer in database server."
     );
 
     let assignmentsTextBox = await propertiesPanel.findElement(assignmentsTextBoxInput());
     assert.isTrue(await assignmentsTextBox.isEnabled());
     assert.equal(await assignmentsTextBox.getAttribute("value"), "7 data inputs, 1 data output");
+    assertWebElementWithAtribute(assignmentsTextBox, "value", "7 data inputs, 1 data output");
 
     await webview.switchBack();
   });

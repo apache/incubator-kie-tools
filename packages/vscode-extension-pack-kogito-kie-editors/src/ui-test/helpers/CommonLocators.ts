@@ -44,7 +44,7 @@ export const h3ComponentWithText = (text: string): string => {
 };
 
 /**
- * Creates a XPATH string that locates <h4> element with specific text.
+ * Creates a XPATH string that locates <h5> element with specific text.
  *
  * @param text string to match
  */
