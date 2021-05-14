@@ -101,7 +101,7 @@ jobs:
 
       - name: Start http-server
         run: |
-          cd packages/online-editor/dist && python -m http.server 9001 &          
+          cd packages/online-editor/dist && python3 -m http.server 9001 &          
           sleep 20
           curl http://localhost:9001 -I
 
