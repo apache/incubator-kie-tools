@@ -11,8 +11,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/channel-common-api": "0.9.1",
-    "@kogito-tooling/workspace": "0.9.1"
+    "@kogito-tooling/channel-common-api": "0.9.1"
   },
   "scripts": {
     "lint": "echo 'Linting..'",
