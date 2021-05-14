@@ -99,14 +99,12 @@ jobs:
       - name: Build repository
         run: npx lerna run build:prod --scope '@kogito-tooling/online-editor' --include-dependencies
 
-      - name: Start http-server
+      - name: Run integration tests
         run: |
           cd packages/online-editor/dist && python3 -m http.server 9001 &          
           sleep 20
           curl http://localhost:9001 -I
-
-      - name: Run integration tests
-        run: npx lerna run cy:run --scope '@kogito-tooling/online-editor' --stream
+          npx lerna run cy:run --scope '@kogito-tooling/online-editor' --stream
 
       - name: Archive it test screenshots
         if: failure()
