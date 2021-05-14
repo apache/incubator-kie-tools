@@ -147,12 +147,12 @@ jobs:
         uses: actions/setup-node@v1
         if: github.event.inputs.kogitoToolingBranchToUpdate && github.event.inputs.kogitoToolingForkToUpdate
         with:
-          node-version: 12.16.3
+          node-version: 16.1.0
 
       - name: Setup Yarn
         if: github.event.inputs.kogitoToolingBranchToUpdate && github.event.inputs.kogitoToolingForkToUpdate
         run: |
-          npm install -g yarn@1.19.1
+          npm install -g yarn@1.22.10
           yarn config set network-timeout 1000000
 
       - name: Update kogito-tooling PR branch

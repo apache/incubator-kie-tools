@@ -73,7 +73,7 @@ In Kogito Tooling [releases page](https://github.com/kiegroup/kogito-tooling/rel
 
 ## Develop
 
-> **NOTE:** We recommend using _LTS_ version of Node.js when developing this project. Our CI uses Node `12.16.3` and Yarn `1.19.1`.
+> **NOTE:** We recommend using _LTS_ version of Node.js when developing this project. Our CI uses Node `16.1.0` and Yarn `1.22.10`.
 
 > **NOTE:** This repo now consumes NPM packages containing the exploded WARs of the BPMN, DMN, and SceSim Editors. For this reason, if you want to use a local build of one of them during development, you can use some environment variables to point to the exploded WAR directories.
 >

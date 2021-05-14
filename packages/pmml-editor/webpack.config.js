@@ -71,7 +71,7 @@ module.exports = [
       watchContentBase: true,
       contentBase: path.join(__dirname),
       compress: true,
-      port: 9001,
+      port: 8080,
       open: true,
       inline: true,
       hot: true,
