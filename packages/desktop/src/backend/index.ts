@@ -44,6 +44,7 @@ const createWindow = () => {
     show: false,
     icon: path.join(__dirname, "images/icon.png"),
     webPreferences: {
+      contextIsolation: false,
       enableRemoteModule: true,
       nodeIntegrationInWorker: true,
       nodeIntegration: true, // https://github.com/electron/electron/issues/9920#issuecomment-575839738
