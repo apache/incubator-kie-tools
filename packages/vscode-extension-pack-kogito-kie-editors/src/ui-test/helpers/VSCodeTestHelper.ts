@@ -20,14 +20,13 @@ import {
   By,
   InputBox,
   SideBarView,
-  WebView,
-  Workbench,
   ViewControl,
+  ViewSection,
   VSBrowser,
   WebDriver,
-  ViewSection,
+  WebView,
+  Workbench,
 } from "vscode-extension-tester";
-import { DefaultWait } from "vscode-uitests-tooling";
 
 /**
  * Common test helper class for VSCode extension testing.
@@ -145,7 +144,7 @@ export default class VSCodeTestHelper {
     // const input = await InputBox.create();
     // await input.selectQuickPick('KIE Kogito Editors');
     const webview = new WebView(this.workbench.getEditorView(), By.linkText(fileName));
-    await DefaultWait.sleep(10000);
+    await sleep(10000);
     return webview;
   };
 
@@ -155,4 +154,8 @@ export default class VSCodeTestHelper {
   public closeAllEditors = async (): Promise<void> => {
     await this.workbench.getEditorView().closeAllEditors();
   };
+}
+
+function sleep(ms: number): Promise<NodeJS.Timeout> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
