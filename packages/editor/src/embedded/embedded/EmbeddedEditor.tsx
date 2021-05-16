@@ -90,9 +90,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   const kogitoEditorChannelApiImpl = useMemo(() => {
     return new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, {
       ...props,
-      kogitoChannel_ready: () => {
+      kogitoEditor_ready: () => {
         setReady(true);
-        props.kogitoChannel_ready?.();
+        props.kogitoEditor_ready?.();
       },
     });
   }, [stateControl, props.file, props]);

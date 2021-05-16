@@ -93,7 +93,7 @@ export class KogitoEditorEnvelopeApiImpl<
 
     this.registerDefaultShortcuts(initArgs);
 
-    this.args.envelopeContext.channelApi.notifications.kogitoChannel_ready();
+    this.args.envelopeContext.channelApi.notifications.kogitoEditor_ready();
   };
 
   public kogitoEditor_contentChanged = (editorContent: EditorContent) => {

@@ -118,7 +118,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           ref={editorRef}
           file={file}
           channelType={ChannelType.GITHUB}
-          kogitoChannel_ready={onEditorReady}
+          kogitoEditor_ready={onEditorReady}
           kogitoWorkspace_resourceContentRequest={onResourceContentRequest}
           kogitoWorkspace_resourceListRequest={onResourceContentList}
           kogitoEditor_setContentError={props.onSetContentError}

@@ -15,4 +15,3 @@
  */
 
 export * from "./OperatingSystem";
-export * from "./KogitoToolingChannelCommonApi";

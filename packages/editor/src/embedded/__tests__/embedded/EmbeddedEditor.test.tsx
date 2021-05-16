@@ -156,7 +156,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         file={file}
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
-        kogitoChannel_ready={onReady}
+        kogitoEditor_ready={onReady}
         locale={"en"}
       />
     );
@@ -164,7 +164,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     await incomingMessage({
       targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: "kogitoChannel_ready",
+      type: "kogitoEditor_ready",
       data: [],
     });
 

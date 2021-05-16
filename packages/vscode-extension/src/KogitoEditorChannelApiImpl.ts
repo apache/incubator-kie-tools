@@ -91,7 +91,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
       });
   }
 
-  public kogitoChannel_ready() {
+  public kogitoEditor_ready() {
     /* empty */
   }
 

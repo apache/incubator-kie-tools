@@ -106,8 +106,8 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     this.overrides.kogitoWorkspace_openFile?.(path);
   }
 
-  public kogitoChannel_ready(): void {
-    this.overrides.kogitoChannel_ready?.();
+  public kogitoEditor_ready(): void {
+    this.overrides.kogitoEditor_ready?.();
   }
 
   public kogitoEditor_setContentError(editorContent: EditorContent): void {

@@ -23,7 +23,7 @@ type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 type ChannelApiMethodsThatAreNoOpOnEmbeddedViewer =
   | "kogitoEditor_setContentError"
-  | "kogitoChannel_ready"
+  | "kogitoEditor_ready"
   | "kogitoWorkspace_openFile"
   | "kogitoWorkspace_newEdit"
   | "kogitoEditor_stateControlCommandUpdate";

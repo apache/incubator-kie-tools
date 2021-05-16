@@ -369,7 +369,7 @@ export function EditorPage(props: Props) {
             <EmbeddedEditor
               ref={editorRef}
               file={context.file}
-              kogitoChannel_ready={saveOpenedFileThumbnail}
+              kogitoEditor_ready={saveOpenedFileThumbnail}
               kogitoEditor_setContentError={onSetContentError}
               editorEnvelopeLocator={context.editorEnvelopeLocator}
               channelType={ChannelType.DESKTOP}

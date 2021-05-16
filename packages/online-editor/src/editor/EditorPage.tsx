@@ -465,7 +465,7 @@ export function EditorPage(props: Props) {
         <EmbeddedEditor
           ref={editorRef}
           file={context.file}
-          kogitoChannel_ready={onReady}
+          kogitoEditor_ready={onReady}
           kogitoEditor_setContentError={onSetContentError}
           editorEnvelopeLocator={context.editorEnvelopeLocator}
           channelType={ChannelType.ONLINE}
