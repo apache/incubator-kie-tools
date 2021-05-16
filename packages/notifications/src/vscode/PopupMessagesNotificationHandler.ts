@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
 import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
 import * as vscode from "vscode";
 import { Notification, NotificationsApi, NotificationSeverity } from "../api";
 
 export class PopupMessagesNotificationHandler implements NotificationsApi {
-  private readonly currentI18n: CommonI18n;
-
-  constructor(private readonly workspaceApi: WorkspaceApi, private readonly i18n: I18n<CommonI18n>) {
-    this.currentI18n = this.i18n.getCurrent();
-  }
+  constructor(private readonly workspaceApi: WorkspaceApi) {}
 
   public kogitoNotifications_createNotification(notification: Notification): void {
     this.getHandleStrategyForSeverity(notification.severity)(notification.message, notification.path);
@@ -64,7 +58,8 @@ export class PopupMessagesNotificationHandler implements NotificationsApi {
     return (message: string, path: string) =>
       path.length === 0
         ? showFunction(message)
-        : showFunction(message, this.currentI18n.terms.open).then((selected) => {
+        : //TODO: tiago i18n
+          showFunction(message, "Open").then((selected) => {
             if (!selected) {
               return;
             }

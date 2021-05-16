@@ -17,8 +17,6 @@ import { Notification, NotificationsApi, NotificationType } from "../api";
 import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
 import { PopupMessagesNotificationHandler } from "./PopupMessagesNotificationHandler";
 import { ProblemsTabNotificationHandler } from "./ProblemsTabNotificationHandler";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
-import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
 type NotificationsApiHandlersMap = {
   [K in NotificationType]: NotificationsApi;
@@ -27,10 +25,10 @@ type NotificationsApiHandlersMap = {
 export class VsCodeNotificationsApi implements NotificationsApi {
   private readonly strategies: NotificationsApiHandlersMap;
 
-  constructor(private readonly workspaceApi: WorkspaceApi, private readonly i18n: I18n<CommonI18n>) {
+  constructor(private readonly workspaceApi: WorkspaceApi) {
     this.strategies = {
       PROBLEM: new ProblemsTabNotificationHandler(),
-      ALERT: new PopupMessagesNotificationHandler(this.workspaceApi, this.i18n),
+      ALERT: new PopupMessagesNotificationHandler(this.workspaceApi),
     };
   }
 

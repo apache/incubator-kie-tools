@@ -109,7 +109,7 @@ export const NegativeReinforcementDialog = (step: Step | undefined, onCloseActio
             </Text>
           </EmptyStateBody>
           <Button data-kgt-continue="true" onClick={showSuggestion}>
-            {i18n.terms.continue}
+            {i18n.continue}
           </Button>
           <EmptyStateSecondaryActions>
             <Button onClick={onCloseAction} variant="link">

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
 
 interface BackendDictionary extends ReferenceDictionary {
@@ -26,4 +25,4 @@ interface BackendDictionary extends ReferenceDictionary {
   testScenarioSummary: (tests: number, errors: number, skipped: number, failures: number) => string;
 }
 
-export interface BackendI18n extends BackendDictionary, CommonI18n {}
+export interface BackendI18n extends BackendDictionary {}

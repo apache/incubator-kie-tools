@@ -31,7 +31,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const workspaceApi = new VsCodeWorkspaceApi();
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
-  const notificationsApi = new VsCodeNotificationsApi(workspaceApi, backendI18n);
+  const notificationsApi = new VsCodeNotificationsApi(workspaceApi);
   backendProxy = new VsCodeBackendProxy(context, backendI18n, "kie-group.vscode-extension-backend");
 
   registerTestScenarioRunnerCommand({

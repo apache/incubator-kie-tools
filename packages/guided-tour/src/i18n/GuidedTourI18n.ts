@@ -15,16 +15,16 @@
  */
 
 import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
-import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
 interface GuidedTourDictionary extends ReferenceDictionary {
   great: string;
   stop: string;
   notFollowing: string;
   options: string;
+  continue: string;
   oops: string;
   somethingWrong: string;
   skipTour: string;
 }
 
-export interface GuidedTourI18n extends GuidedTourDictionary, CommonI18n {}
+export interface GuidedTourI18n extends GuidedTourDictionary {}

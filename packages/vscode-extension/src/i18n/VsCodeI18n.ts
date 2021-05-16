@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
 
 interface VsCodeDictionary extends ReferenceDictionary {
@@ -27,4 +26,4 @@ interface VsCodeDictionary extends ReferenceDictionary {
   reopenAsDiagramButton: string;
 }
 
-export interface VsCodeI18n extends VsCodeDictionary, CommonI18n {}
+export interface VsCodeI18n extends VsCodeDictionary {}

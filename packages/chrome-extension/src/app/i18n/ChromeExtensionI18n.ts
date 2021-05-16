@@ -15,11 +15,13 @@
  */
 
 import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
-import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
 interface ChromeExtensionDictionary extends ReferenceDictionary {
   openIn: (text: string) => string;
   seeAsDiagram: string;
+  fullScreen: string;
+  reset: string;
+  note: string;
   tree: {
     openInOnlineEditor: string;
   };
@@ -59,4 +61,4 @@ interface ChromeExtensionDictionary extends ReferenceDictionary {
   };
 }
 
-export interface ChromeExtensionI18n extends ChromeExtensionDictionary, CommonI18n {}
+export interface ChromeExtensionI18n extends ChromeExtensionDictionary {}

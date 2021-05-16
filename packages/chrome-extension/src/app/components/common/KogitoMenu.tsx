@@ -114,7 +114,7 @@ export function KogitoMenu() {
                     <p>{i18n.common.menu.tokenInfo.whichPermissionUserGive}</p>
                     <p>
                       <b>
-                        <u>{i18n.terms.note.toUpperCase()}:</u>&nbsp;
+                        <u>{i18n.note.toUpperCase()}:</u>&nbsp;
                       </b>
                       <I18nHtml>{i18n.common.menu.tokenInfo.permission}</I18nHtml>
                     </p>
@@ -141,7 +141,7 @@ export function KogitoMenu() {
             {!!potentialToken && <b className={"icon cross"} />}
           </label>
           <button className={"btn btn-sm"} onClick={onReset}>
-            {i18n.terms.reset}
+            {i18n.reset}
           </button>
         </>
       )}
