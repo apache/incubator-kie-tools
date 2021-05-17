@@ -49,9 +49,7 @@ module.exports = (env, argv) => {
   console.info(`Building '${path.basename(process.cwd())}' for ${env.dev ? "development" : "production"}`);
 
   const transpileOnly =
-    argv["WEBPACK_TS_LOADER_transpileOnly"] ??
-    process.env["WEBPACK_TS_LOADER_transpileOnly"] ??
-    false;
+    argv["WEBPACK_TS_LOADER_transpileOnly"] ?? process.env["WEBPACK_TS_LOADER_transpileOnly"] === "true";
 
   console.info("TS Loader :: transpileOnly: " + transpileOnly);
 
@@ -73,8 +71,6 @@ module.exports = (env, argv) => {
                 transpileOnly,
                 compilerOptions: {
                   sourceMap: true,
-                  declaration: !transpileOnly,
-                  declarationMap: !transpileOnly,
                 },
               },
             },
@@ -92,8 +88,6 @@ module.exports = (env, argv) => {
                 transpileOnly,
                 compilerOptions: {
                   sourceMap: false,
-                  declaration: true,
-                  declarationMap: true,
                 },
               },
             },
