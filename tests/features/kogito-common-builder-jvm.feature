@@ -131,42 +131,6 @@ Feature: kogito-builder image JVM build tests
       | wait            | 80                    |
       | expected_phrase | ["hello","world"]     |
 
-  Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly
-    Given s2i build /tmp/kogito-examples from dmn-example using master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
-      | variable       | value          |
-      | RUNTIME_TYPE   | quarkus        |
-      | NATIVE         | false          |
-      | KOGITO_VERSION | 2.0.0-SNAPSHOT |  
-    Then file /home/kogito/bin/quarkus-run.jar should exist
-    And check that page is served
-      | property        | value                                                                                            |
-      | port            | 8080                                                                                             |
-      | path            | /Traffic%20Violation                                                                             |
-      | wait            | 80                                                                                               |
-      | expected_phrase | Should the driver be suspended?                                                                  |
-      | request_method  | POST                                                                                             |
-      | content_type    | application/json                                                                                 |
-      | request_body    | {"Driver": {"Points": 2}, "Violation": {"Type": "speed","Actual Speed": 120,"Speed Limit": 100}} |
-
-  Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly with custom group id, archetype & version
-    Given s2i build /tmp/kogito-examples from dmn-example using master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
-      | variable            | value          |
-      | RUNTIME_TYPE        | quarkus        |
-      | NATIVE              | false          |
-      | KOGITO_VERSION      | 2.0.0-SNAPSHOT |  
-      | PROJECT_GROUP_ID    | com.mycompany  |
-      | PROJECT_ARTIFACT_ID | myproject      |
-      | PROJECT_VERSION     | 2.0-SNAPSHOT   |
-    Then file /home/kogito/bin/quarkus-run.jar should exist
-    And check that page is served
-      | property        | value                                                                                            |
-      | port            | 8080                                                                                             |
-      | path            | /Traffic%20Violation                                                                             |
-      | wait            | 80                                                                                               |
-      | expected_phrase | Should the driver be suspended?                                                                  |
-      | request_method  | POST                                                                                             |
-      | content_type    | application/json                                                                                 |
-      | request_body    | {"Driver": {"Points": 2}, "Violation": {"Type": "speed","Actual Speed": 120,"Speed Limit": 100}} |
 
 #### SpringBoot Scenarios
 

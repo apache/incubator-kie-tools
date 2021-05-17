@@ -104,8 +104,11 @@ function build_kogito_app() {
     else
         local ARCHETYPE_ARTIFACT_ID
         if [ "${RUNTIME_TYPE}" == "${QUARKUS_RUNTIME_TYPE}" ]; then
-            ARCHETYPE_ARTIFACT_ID='kogito-quarkus-archetype'
-
+             if [[ "${JBOSS_IMAGE_NAME}" =~ "rhpam-7" ]]; then
+                ARCHETYPE_ARTIFACT_ID='kogito-quarkus-dm-archetype'
+            else
+                ARCHETYPE_ARTIFACT_ID='kogito-quarkus-archetype'
+            fi
         elif [ "${RUNTIME_TYPE}" == "${SPRINGBOOT_RUNTIME_TYPE}" ]; then
             ARCHETYPE_ARTIFACT_ID="kogito-springboot-archetype"
 
@@ -114,7 +117,7 @@ function build_kogito_app() {
             exit 1
         fi
 
-        log_info "---> Generating $RUNTIME_TYPE project structure..."
+        log_info "---> Generating $RUNTIME_TYPE project structure using the $ARCHETYPE_ARTIFACT_ID archetype..."
         $MAVEN_HOME/bin/mvn archetype:generate -B -DarchetypeGroupId=org.kie.kogito -DarchetypeArtifactId=$ARCHETYPE_ARTIFACT_ID \
             -DarchetypeVersion=$KOGITO_VERSION -DgroupId=$PROJECT_GROUP_ID -DartifactId=$PROJECT_ARTIFACT_ID -Dversion=$PROJECT_VERSION \
             ${MAVEN_ARGS_APPEND} -s "${KOGITO_HOME}"/.m2/settings.xml

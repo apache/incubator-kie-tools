@@ -48,7 +48,7 @@ build-prod: clone-repos
 
 .PHONY: build-prod-image
 image_name=
-build-prod-image:
+build-prod-image: clone-repos
 ifneq ($(ignore_build),true)
 	scripts/build-product-image.sh "build" $(image_name) ${BUILD_ENGINE}
 endif

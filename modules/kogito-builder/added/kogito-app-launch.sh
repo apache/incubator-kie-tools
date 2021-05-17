@@ -11,6 +11,7 @@ if [[ "$1" == "-h" ]]; then
     exec /usr/local/s2i/usage
     exit 0
 fi
+
 # Configuration scripts
 # Any configuration script that needs to run on image startup must be added here.
 CONFIGURE_SCRIPTS=(

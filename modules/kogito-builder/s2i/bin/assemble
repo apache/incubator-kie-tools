@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 #
 # S2I assemble script for the 'kogito-builder' image.
 # The 'assemble' script builds your application source so that it is ready to run.
@@ -11,9 +10,7 @@ set -e
 
 source ${S2I_MODULE_LOCATION}/s2i-core
 
-
 runtime_type=$(get_runtime_type)
-
 log_info "----> RUNTIME_TYPE has been set to $runtime_type"
 
 #############################################

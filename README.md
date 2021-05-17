@@ -349,7 +349,7 @@ Both methods are described below.
 that contains Business Process or Rules and all needed dependencies and files to execute it on the target runtime, 
 either Quarkus or Spring Boot.
 
-If you don't have a already existing project, the best way to create a new one is to use Kogito Maven Archetypes 
+If you don't have an already existing project, the best way to create a new one is to use Kogito Maven Archetypes 
 to generate project structure. 
 The available archetypes are:
 
