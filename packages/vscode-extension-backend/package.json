@@ -63,10 +63,9 @@
     "watch": "webpack",
     "test": "jest --silent --verbose --passWithNoTests",
     "test:it": "echo 'No tests to run.'",
-    "build:dev": "rm -rf dist && webpack",
-    "build": "yarn run build:dev",
-    "build:prod:linux:darwin": "yarn run build && yarn run test && yarn run test:it && yarn run package:prod",
-    "build:prod:windows": "yarn run build && yarn run test && yarn run package:prod",
+    "build:dev": "rm -rf dist && webpack --env dev",
+    "build:prod:linux:darwin": "rm -rf dist && webpack && yarn run test && yarn run test:it && yarn run package:prod",
+    "build:prod:windows": "rm -rf dist && webpack && yarn run test && yarn run package:prod",
     "build:prod": "run-script-os"
   },
   "dependencies": {

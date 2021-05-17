@@ -15,9 +15,9 @@
  */
 
 const path = require("path");
+const { merge } = require("webpack-merge");
 
-module.exports = {
-  mode: "production",
+const common = {
   output: {
     path: path.resolve("./dist"),
     filename: "[name].js",
@@ -43,12 +43,45 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js", ".jsx"],
     modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")],
   },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: "ts-loader",
-      },
-    ],
-  },
+};
+
+module.exports = (env) => {
+  console.info(`Building '${path.basename(process.cwd())}' for ${env.dev ? "development" : "production"}`);
+  return env.dev
+    ? merge(common, {
+        mode: "development",
+        devtool: "inline-source-map",
+        module: {
+          rules: [
+            {
+              test: /\.js$/,
+              enforce: "pre",
+              use: ["source-map-loader"],
+            },
+            {
+              test: /\.tsx?$/,
+              loader: "ts-loader",
+              options: {
+                transpileOnly: true,
+                compilerOptions: {
+                  sourceMap: true,
+                  declaration: false,
+                  declarationMap: false,
+                },
+              },
+            },
+          ],
+        },
+      })
+    : merge(common, {
+        mode: "production",
+        module: {
+          rules: [
+            {
+              test: /\.tsx?$/,
+              loader: "ts-loader",
+            },
+          ],
+        },
+      });
 };

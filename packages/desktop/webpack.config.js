@@ -20,8 +20,8 @@ const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 
-module.exports = async (argv, env) => [
-  merge(common, {
+module.exports = async (env, argv) => [
+  merge(common(env), {
     target: "electron-main",
     entry: {
       index: "./src/backend/index.ts",
@@ -35,7 +35,7 @@ module.exports = async (argv, env) => [
       __filename: false,
     },
   }),
-  merge(common, {
+  merge(common(env), {
     target: "web",
     entry: {
       "webview/index": "./src/webview/index.tsx",

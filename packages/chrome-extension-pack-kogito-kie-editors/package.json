@@ -17,9 +17,8 @@
   "scripts": {
     "lint": "echo 'Linting...'",
     "test": "echo 'No tests to run.'",
-    "build:dev": "rm -rf dist && webpack",
-    "build": "yarn run lint && yarn test && yarn run build:dev",
-    "build:prod": "yarn run build #mode production",
+    "build:dev": "rm -rf dist && webpack --env dev",
+    "build:prod": "yarn run lint && yarn test && rm -rf dist && webpack",
     "serve-envelope": "webpack serve",
     "test:it": "jest --runInBand"
   },

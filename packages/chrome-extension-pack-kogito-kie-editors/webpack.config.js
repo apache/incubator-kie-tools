@@ -72,7 +72,7 @@ module.exports = async (env, argv) => {
   const [router_targetOrigin, router_relativePath] = getRouterArgs(argv);
   const [onlineEditor_url, manifestFile] = getOnlineEditorArgs(argv);
 
-  return merge(common, {
+  return merge(common(env), {
     entry: {
       "content_scripts/github": "./src/github-content-script.ts",
       "content_scripts/online-editor": "./src/online-editor-content-script.ts",

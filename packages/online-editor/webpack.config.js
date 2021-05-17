@@ -56,7 +56,7 @@ function getDownloadHubArgs(argv) {
 module.exports = async (env, argv) => {
   const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs(argv);
 
-  return merge(common, {
+  return merge(common(env), {
     entry: {
       index: "./src/index.tsx",
       "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",

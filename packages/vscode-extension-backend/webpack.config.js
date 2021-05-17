@@ -19,8 +19,8 @@ const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 
-module.exports = async (argv, env) => [
-  merge(common, {
+module.exports = async (env, argv) => [
+  merge(common(env), {
     output: {
       library: "AppFormer.VsCodeBackendExtension",
       libraryTarget: "umd",

@@ -20,8 +20,8 @@ const os = require("os");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
-module.exports = [
-  merge(common, {
+module.exports = (env) => [
+  merge(common(env), {
     externals: {
       electron: "commonjs electron",
     },
@@ -48,7 +48,7 @@ module.exports = [
       }),
     ],
   }),
-  merge(common, {
+  merge(common(env), {
     externals: {
       electron: "commonjs electron",
     },

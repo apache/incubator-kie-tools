@@ -15,13 +15,12 @@
   },
   "publisher": "kie-group",
   "scripts": {
-    "build": "yarn test && yarn run build:dev",
-    "build:dev": "rm -rf dist && webpack",
+    "build:dev": "rm -rf dist && webpack --env dev",
     "compile": "webpack",
     "watch": "webpack",
     "test": "jest --silent --verbose",
     "test:clearCache": "jest --clearCache",
-    "build:prod": "yarn run build #mode production"
+    "build:prod": "yarn test && rm -rf dist && webpack"
   },
   "dependencies": {
     "@kogito-tooling/backend": "0.9.1",

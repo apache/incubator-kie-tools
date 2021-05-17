@@ -18,23 +18,24 @@ const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const path = require("path");
 
-module.exports = merge(common, {
-  output: {
-    path: path.join(__dirname, "dist"),
-    filename: "[name]/index.js",
-    library: ["[name]", "Editor"],
-    libraryTarget: "umd",
-  },
-  entry: {
-    dmn: "./src/dmn/index.ts",
-    bpmn: "./src/bpmn/index.ts",
-  },
-  devServer: {
-    historyApiFallback: false,
-    disableHostCheck: true,
-    watchContentBase: true,
-    contentBase: [path.join(__dirname, "./dist")],
-    compress: true,
-    port: 9001,
-  },
-});
+module.exports = (env) =>
+  merge(common(env), {
+    output: {
+      path: path.join(__dirname, "dist"),
+      filename: "[name]/index.js",
+      library: ["[name]", "Editor"],
+      libraryTarget: "umd",
+    },
+    entry: {
+      dmn: "./src/dmn/index.ts",
+      bpmn: "./src/bpmn/index.ts",
+    },
+    devServer: {
+      historyApiFallback: false,
+      disableHostCheck: true,
+      watchContentBase: true,
+      contentBase: [path.join(__dirname, "./dist")],
+      compress: true,
+      port: 9001,
+    },
+  });

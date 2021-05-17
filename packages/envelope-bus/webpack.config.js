@@ -18,17 +18,18 @@ const nodeExternals = require("webpack-node-externals");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
-module.exports = merge(common, {
-  entry: {
-    "hooks/index": "./src/hooks/index.ts",
-    "channel/index": "./src/channel/index.ts",
-    "envelope/index": "./src/envelope/index.ts",
-    "api/index": "./src/api/index.ts",
-    "common/index": "./src/common/index.ts",
-    "common/__tests__/index": "./src/common/__tests__/index.ts",
-  },
-  output: {
-    libraryTarget: "commonjs2",
-  },
-  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
-});
+module.exports = (env) =>
+  merge(common(env), {
+    entry: {
+      "hooks/index": "./src/hooks/index.ts",
+      "channel/index": "./src/channel/index.ts",
+      "envelope/index": "./src/envelope/index.ts",
+      "api/index": "./src/api/index.ts",
+      "common/index": "./src/common/index.ts",
+      "common/__tests__/index": "./src/common/__tests__/index.ts",
+    },
+    output: {
+      libraryTarget: "commonjs2",
+    },
+    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
+  });
