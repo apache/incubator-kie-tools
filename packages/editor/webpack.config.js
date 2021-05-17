@@ -19,8 +19,8 @@ const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
-module.exports = (env) => [
-  merge(common(env), {
+module.exports = (env, argv) => [
+  merge(common(env, argv), {
     entry: {
       "api/index": "./src/api/index.ts",
     },
@@ -30,7 +30,7 @@ module.exports = (env) => [
     },
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   }),
-  merge(common(env), {
+  merge(common(env, argv), {
     entry: {
       "envelope/index": "./src/envelope/index.ts",
     },
@@ -40,7 +40,7 @@ module.exports = (env) => [
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
     module: { rules: [...pfWebpackOptions.patternflyRules] },
   }),
-  merge(common(env), {
+  merge(common(env, argv), {
     entry: {
       "embedded/index": "./src/embedded/index.ts",
     },
@@ -51,7 +51,7 @@ module.exports = (env) => [
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
     module: { rules: [...pfWebpackOptions.patternflyRules] },
   }),
-  merge(common(env), {
+  merge(common(env, argv), {
     entry: {
       "channel/index": "./src/channel/index.ts",
     },

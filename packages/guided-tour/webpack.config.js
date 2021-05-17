@@ -19,8 +19,8 @@ const pfWebpackOptions = require("../patternfly-base/patternflyWebpackOptions");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
-module.exports = (env) =>
-  merge(common(env), {
+module.exports = (env, argv) =>
+  merge(common(env, argv), {
     entry: {
       "api/index": "./src/api/index.ts",
       "channel/index": "./src/channel/index.ts",

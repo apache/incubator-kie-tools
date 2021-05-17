@@ -45,8 +45,16 @@ const common = {
   },
 };
 
-module.exports = (env) => {
+module.exports = (env, argv) => {
   console.info(`Building '${path.basename(process.cwd())}' for ${env.dev ? "development" : "production"}`);
+
+  const transpileOnly =
+    argv["WEBPACK_TS_LOADER_transpileOnly"] ??
+    process.env["WEBPACK_TS_LOADER_transpileOnly"] ??
+    false;
+
+  console.info("TS Loader :: transpileOnly: " + transpileOnly);
+
   return env.dev
     ? merge(common, {
         mode: "development",
@@ -62,11 +70,11 @@ module.exports = (env) => {
               test: /\.tsx?$/,
               loader: "ts-loader",
               options: {
-                transpileOnly: true,
+                transpileOnly,
                 compilerOptions: {
                   sourceMap: true,
-                  declaration: false,
-                  declarationMap: false,
+                  declaration: !transpileOnly,
+                  declarationMap: !transpileOnly,
                 },
               },
             },
@@ -80,6 +88,14 @@ module.exports = (env) => {
             {
               test: /\.tsx?$/,
               loader: "ts-loader",
+              options: {
+                transpileOnly,
+                compilerOptions: {
+                  sourceMap: false,
+                  declaration: true,
+                  declarationMap: true,
+                },
+              },
             },
           ],
         },

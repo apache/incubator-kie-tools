@@ -18,8 +18,8 @@ const nodeExternals = require("webpack-node-externals");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
-module.exports = (env) => [
-  merge(common(env), {
+module.exports = (env, argv) => [
+  merge(common(env, argv), {
     entry: {
       "bpmn/envelope/index": "./src/bpmn/envelope/index.ts",
       "bpmn/api/index": "./src/bpmn/api/index.ts",

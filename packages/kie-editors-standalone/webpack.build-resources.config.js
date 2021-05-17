@@ -19,8 +19,8 @@ const common = require("../../webpack.common.config");
 const CopyPlugin = require("copy-webpack-plugin");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
-module.exports = (env) => [
-  merge(common(env), {
+module.exports = (env, argv) => [
+  merge(common(env, argv), {
     entry: {
       "preprocessor/preprocessor": "./src/preprocessor/preprocessor.ts",
     },
@@ -31,7 +31,7 @@ module.exports = (env) => [
       __filename: true, //Uses current working dir
     },
   }),
-  merge(common(env), {
+  merge(common(env, argv), {
     output: {
       publicPath: "",
     },

@@ -21,8 +21,8 @@ const common = require("../../webpack.common.config");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 const nodeExternals = require("webpack-node-externals");
 
-module.exports = (env) => [
-  merge(common(env), {
+module.exports = (env, argv) => [
+  merge(common(env, argv), {
     entry: {
       "editor/index": "./src/editor/index.ts",
     },
@@ -34,7 +34,7 @@ module.exports = (env) => [
       rules: [...pfWebpackOptions.patternflyRules],
     },
   }),
-  merge(common(env), {
+  merge(common(env, argv), {
     entry: {
       index: "./src/showcase/index.tsx",
     },

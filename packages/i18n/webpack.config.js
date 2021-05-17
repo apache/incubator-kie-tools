@@ -18,8 +18,8 @@ const nodeExternals = require("webpack-node-externals");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
-module.exports = (env) =>
-  merge(common(env), {
+module.exports = (env, argv) =>
+  merge(common(env, argv), {
     entry: {
       api: "./src/api/index.ts",
       core: "./src/core/index.ts",

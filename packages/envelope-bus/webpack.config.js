@@ -18,8 +18,8 @@ const nodeExternals = require("webpack-node-externals");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
-module.exports = (env) =>
-  merge(common(env), {
+module.exports = (env, argv) =>
+  merge(common(env, argv), {
     entry: {
       "hooks/index": "./src/hooks/index.ts",
       "channel/index": "./src/channel/index.ts",
