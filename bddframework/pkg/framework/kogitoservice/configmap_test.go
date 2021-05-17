@@ -279,7 +279,7 @@ func Test_getAppPropsFromConfigMap(t *testing.T) {
 			args{
 				&corev1.ConfigMap{
 					Data: map[string]string{
-						ConfigMapApplicationPropertyKey: "\ntest1=test1\ntest2=test2\ntest3=test3",
+						ConfigMapApplicationPropertyKey: "\ntest1=test1\ntest2=test2\ntest3=test3 username=\"user\" password=\"pass\";",
 					},
 				},
 				true,
@@ -287,7 +287,7 @@ func Test_getAppPropsFromConfigMap(t *testing.T) {
 			map[string]string{
 				"test1": "test1",
 				"test2": "test2",
-				"test3": "test3",
+				"test3": "test3 username=\"user\" password=\"pass\";",
 			},
 		},
 	}

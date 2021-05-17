@@ -104,7 +104,7 @@ func getAppPropsFromConfigMap(configMap *corev1.ConfigMap, exist bool) map[strin
 		if data, ok := configMap.Data[ConfigMapApplicationPropertyKey]; ok {
 			props := strings.Split(data, "\n")
 			for _, p := range props {
-				ps := strings.Split(p, "=")
+				ps := strings.SplitN(p, "=", 2)
 				if len(ps) > 1 {
 					appProps[strings.TrimSpace(ps[0])] = strings.TrimSpace(ps[1])
 				}
