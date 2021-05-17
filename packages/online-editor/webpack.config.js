@@ -20,6 +20,7 @@ const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebp
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
+const { EnvironmentPlugin } = require("webpack");
 
 function getLatestGitTag() {
   const tagName = require("child_process").execSync("git rev-list --tags --max-count=1").toString().trim();
@@ -63,6 +64,11 @@ module.exports = async (env, argv) => {
       "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
     },
     plugins: [
+      new EnvironmentPlugin({
+        WEBPACK_REPLACE__hubLinuxUrl: downloadHub_linuxUrl,
+        WEBPACK_REPLACE__hubMacOsUrl: downloadHub_macOsUrl,
+        WEBPACK_REPLACE__hubWindowsUrl: downloadHub_windowsUrl,
+      }),
       new CopyPlugin({
         patterns: [
           { from: "./static/resources", to: "./resources" },
@@ -96,29 +102,7 @@ module.exports = async (env, argv) => {
       },
     },
     module: {
-      rules: [
-        {
-          test: /DownloadHubModal\.tsx$/,
-          loader: "string-replace-loader",
-          options: {
-            multiple: [
-              {
-                search: "$_{WEBPACK_REPLACE__hubLinuxUrl}",
-                replace: downloadHub_linuxUrl,
-              },
-              {
-                search: "$_{WEBPACK_REPLACE__hubMacOsUrl}",
-                replace: downloadHub_macOsUrl,
-              },
-              {
-                search: "$_{WEBPACK_REPLACE__hubWindowsUrl}",
-                replace: downloadHub_windowsUrl,
-              },
-            ],
-          },
-        },
-        ...pfWebpackOptions.patternflyRules,
-      ],
+      rules: [...pfWebpackOptions.patternflyRules],
     },
     devServer: {
       historyApiFallback: false,

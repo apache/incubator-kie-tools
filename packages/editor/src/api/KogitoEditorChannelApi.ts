@@ -28,7 +28,7 @@ export interface KogitoEditorChannelApi
     CapabilityChannelApi,
     WorkspaceApi,
     NotificationsApi {
-  kogitoEditor_ready(): void
+  kogitoEditor_ready(): void;
   kogitoEditor_setContentError(content: EditorContent): void;
   kogitoEditor_stateControlCommandUpdate(command: StateControlCommand): void;
   kogitoEditor_contentRequest(): Promise<EditorContent>;

@@ -16,7 +16,7 @@
 
 export class ChromeRouter {
   public getResourcesPathPrefix(): string {
-    const relativePath = "$_{WEBPACK_REPLACE__relativePath}";
+    const relativePath = process.env.WEBPACK_REPLACE__relativePath;
     if (relativePath) {
       return `${this.getTargetOrigin()}/${relativePath}`;
     } else {
@@ -25,6 +25,6 @@ export class ChromeRouter {
   }
 
   public getTargetOrigin() {
-    return "$_{WEBPACK_REPLACE__targetOrigin}";
+    return process.env.WEBPACK_REPLACE__targetOrigin;
   }
 }

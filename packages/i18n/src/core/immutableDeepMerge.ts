@@ -26,10 +26,7 @@ function deepMerge<D>(target: ReferenceDictionary, source: TranslatedDictionary<
     if (typeof sourceValue === "string" || typeof sourceValue === "function") {
       target[key] = sourceValue as string | DictionaryInterpolation;
     } else {
-      target[key] = deepMerge(
-        createObjectCopy(target[key] as ReferenceDictionary),
-        sourceValue as ReferenceDictionary
-      );
+      target[key] = deepMerge(createObjectCopy(target[key] as ReferenceDictionary), sourceValue as ReferenceDictionary);
     }
   });
   return target;

@@ -158,7 +158,9 @@ export class KogitoEditorEnvelopeApiImpl<
       `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.redo}`,
       async () => {
         this.editor.redo();
-        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate(StateControlCommand.REDO);
+        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate(
+          StateControlCommand.REDO
+        );
       }
     );
     const undoId = this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
@@ -166,7 +168,9 @@ export class KogitoEditorEnvelopeApiImpl<
       `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.undo}`,
       async () => {
         this.editor.undo();
-        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate(StateControlCommand.UNDO);
+        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate(
+          StateControlCommand.UNDO
+        );
       }
     );
 

@@ -70,7 +70,9 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   }
 
   public async kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest) {
-    return this.overrides.kogitoWorkspace_resourceContentRequest?.(request) ?? new ResourceContent(request.path, undefined);
+    return (
+      this.overrides.kogitoWorkspace_resourceContentRequest?.(request) ?? new ResourceContent(request.path, undefined)
+    );
   }
 
   public async kogitoWorkspace_resourceListRequest(request: ResourceListRequest) {

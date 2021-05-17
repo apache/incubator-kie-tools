@@ -22,6 +22,7 @@ const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebp
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
+const { EnvironmentPlugin } = require("webpack");
 
 function getLatestGitTag() {
   const tagName = require("child_process").execSync("git rev-list --tags --max-count=1").toString().trim();
@@ -88,6 +89,11 @@ module.exports = async (env, argv) => {
       port: 9000,
     },
     plugins: [
+      new EnvironmentPlugin({
+        WEBPACK_REPLACE__targetOrigin: router_targetOrigin,
+        WEBPACK_REPLACE__relativePath: router_relativePath,
+        WEBPACK_REPLACE__onlineEditor_url: onlineEditor_url,
+      }),
       new CopyPlugin({
         patterns: [
           { from: "./static", to: "." },
@@ -109,37 +115,7 @@ module.exports = async (env, argv) => {
       }),
     ],
     module: {
-      rules: [
-        {
-          test: /ChromeRouter\.ts$/,
-          loader: "string-replace-loader",
-          options: {
-            multiple: [
-              {
-                search: "$_{WEBPACK_REPLACE__targetOrigin}",
-                replace: router_targetOrigin,
-              },
-              {
-                search: "$_{WEBPACK_REPLACE__relativePath}",
-                replace: router_relativePath,
-              },
-            ],
-          },
-        },
-        {
-          test: /background\.ts|OnlineEditorManager\.ts$/,
-          loader: "string-replace-loader",
-          options: {
-            multiple: [
-              {
-                search: "$_{WEBPACK_REPLACE__onlineEditor_url}",
-                replace: onlineEditor_url,
-              },
-            ],
-          },
-        },
-        ...pfWebpackOptions.patternflyRules,
-      ],
+      rules: [...pfWebpackOptions.patternflyRules],
     },
   });
 };

@@ -145,12 +145,14 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         isReady: isReady,
         getStateControl: () => stateControl,
         getEnvelopeServer: () => envelopeServer,
-        getElementPosition: (s) => envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(s),
+        getElementPosition: (s) =>
+          envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(s),
         undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorUndo()),
         redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo()),
         getContent: () => envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
         getPreview: () => envelopeServer.envelopeApi.requests.kogitoEditor_previewRequest(),
-        setContent: (path, content) => envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ path, content }),
+        setContent: (path, content) =>
+          envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ path, content }),
         validate: () => envelopeServer.envelopeApi.requests.kogitoEditor_validate(),
       };
     },
