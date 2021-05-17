@@ -24,6 +24,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/internal"
 	"github.com/kiegroup/kogito-operator/meta"
+	"github.com/kiegroup/kogito-operator/version"
 	imgv1 "github.com/openshift/api/image/v1"
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
@@ -37,7 +38,7 @@ import (
 
 func Test_serviceDeployer_createRequiredResources_OnOCPImageStreamCreated(t *testing.T) {
 	jobsService := test.CreateFakeJobsService(t.Name())
-	is, tag := test.CreateImageStreams("kogito-jobs-service", jobsService.GetNamespace(), jobsService.GetName(), infrastructure.GetKogitoImageVersion())
+	is, tag := test.CreateImageStreams("kogito-jobs-service", jobsService.GetNamespace(), jobsService.GetName(), infrastructure.GetKogitoImageVersion(version.Version))
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(is).AddImageObjects(tag).Build()
 	deployer := newTestSupServiceDeployer(cli, jobsService, "kogito-jobs-service")
 	resources, err := deployer.createRequiredResources()
@@ -113,7 +114,7 @@ func Test_serviceDeployer_createRequiredResources_CreateNewAppPropConfigMap(t *t
 	instance.GetSpec().AddInfra(kogitoKafka.GetName())
 	instance.GetSpec().AddInfra(kogitoInfinispan.GetName())
 	instance.GetSpec().AddInfra(kogitoKnative.GetName())
-	is, tag := test.CreateImageStreams("kogito-data-index-infinispan", instance.GetNamespace(), instance.GetName(), infrastructure.GetKogitoImageVersion())
+	is, tag := test.CreateImageStreams("kogito-data-index-infinispan", instance.GetNamespace(), instance.GetName(), infrastructure.GetKogitoImageVersion(version.Version))
 	cli := test.NewFakeClientBuilder().OnOpenShift().
 		AddK8sObjects(is, kogitoKafka, kogitoInfinispan, kogitoKnative).
 		AddImageObjects(tag).
@@ -144,7 +145,7 @@ func Test_serviceDeployer_createRequiredResources_CreateNewAppPropConfigMap(t *t
 
 func Test_serviceDeployer_createRequiredResources_CreateWithAppPropConfigMap(t *testing.T) {
 	instance := test.CreateFakeDataIndex(t.Name())
-	is, tag := test.CreateImageStreams("kogito-data-index-infinispan", instance.GetNamespace(), instance.GetName(), infrastructure.GetKogitoImageVersion())
+	is, tag := test.CreateImageStreams("kogito-data-index-infinispan", instance.GetNamespace(), instance.GetName(), infrastructure.GetKogitoImageVersion(version.Version))
 	cm := &corev1.ConfigMap{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ConfigMap",
@@ -250,9 +251,10 @@ func assertDeployerNoErrorAndCreateResources(t *testing.T, deployer serviceDeplo
 
 func newTestSupServiceDeployer(cli *client.Client, instance api.KogitoService, imageName string) serviceDeployer {
 	context := operator.Context{
-		Client: cli,
-		Log:    test.TestLogger,
-		Scheme: meta.GetRegisteredSchema(),
+		Client:  cli,
+		Log:     test.TestLogger,
+		Scheme:  meta.GetRegisteredSchema(),
+		Version: version.Version,
 	}
 	return serviceDeployer{Context: context, instance: instance,
 		definition: ServiceDefinition{

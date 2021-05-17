@@ -126,10 +126,11 @@ func (b *decoratorHandler) decoratorForLocalSourceBuilder() decorator {
 func (b *decoratorHandler) decoratorForSourceBuilder() decorator {
 	return func(build api.KogitoBuildInterface, bc *buildv1.BuildConfig) {
 		bc.Name = GetBuildBuilderName(build)
+		imageStreamHandler := NewImageSteamHandler(b.Context)
 		baseImage := corev1.ObjectReference{
 			Kind:      kindImageStreamTag,
 			Namespace: build.GetNamespace(),
-			Name:      resolveKogitoImageStreamTagName(build, true),
+			Name:      imageStreamHandler.ResolveKogitoImageStreamTagName(build, true),
 		}
 		// we output to a image stream with the same name of the build.
 		// this image stream will be the input for the base BC.
@@ -212,10 +213,11 @@ func (b *decoratorHandler) decoratorForSourceRuntimeBuilder() decorator {
 func (b *decoratorHandler) decoratorForRuntimeBuilder() decorator {
 	return func(build api.KogitoBuildInterface, bc *buildv1.BuildConfig) {
 		bc.Name = build.GetName()
+		imageStreamHandler := NewImageSteamHandler(b.Context)
 		baseImage := corev1.ObjectReference{
 			Kind:      kindImageStreamTag,
 			Namespace: build.GetNamespace(),
-			Name:      resolveKogitoImageStreamTagName(build, false),
+			Name:      imageStreamHandler.ResolveKogitoImageStreamTagName(build, false),
 		}
 		// this image stream will be the input for the KogitoRuntime deployment.
 		bc.Spec.Output.To = &corev1.ObjectReference{

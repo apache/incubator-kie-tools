@@ -18,6 +18,8 @@ import (
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
+	"github.com/kiegroup/kogito-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/version"
 	"testing"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -44,7 +46,7 @@ func Test_resolveSourceStrategyImageNameForBuilds(t *testing.T) {
 		ObjectMeta: metav1.ObjectMeta{Name: "buildSpringBootCustom", Namespace: t.Name()},
 		Spec:       v1beta1.KogitoBuildSpec{Runtime: api.SpringBootRuntimeType, BuildImage: "my-image:1.0"},
 	}
-	tag := ":" + infrastructure.GetKogitoImageVersion()
+	tag := ":" + infrastructure.GetKogitoImageVersion(version.Version)
 	type args struct {
 		build        *v1beta1.KogitoBuild
 		builderImage bool
@@ -63,9 +65,13 @@ func Test_resolveSourceStrategyImageNameForBuilds(t *testing.T) {
 		{"SpringBoot Custom Builder", args{buildSpringBootCustom, true}, "my-image:1.0"},
 		{"Quarkus Custom Base", args{buildQuarkusCustom, false}, "my-image:1.0"},
 	}
+	context := operator.Context{
+		Version: version.Version,
+	}
+	imageStreamHandler := NewImageSteamHandler(context)
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := resolveKogitoImageNameTag(tt.args.build, tt.args.builderImage); got != tt.want {
+			if got := imageStreamHandler.ResolveKogitoImageNameTag(tt.args.build, tt.args.builderImage); got != tt.want {
 				t.Errorf("resolveKogitoImageNameTag() = %v, want %v", got, tt.want)
 			}
 		})

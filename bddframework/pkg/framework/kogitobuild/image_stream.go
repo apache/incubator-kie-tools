@@ -99,6 +99,8 @@ var (
 // ImageStreamHandler ...
 type ImageStreamHandler interface {
 	CreateRequiredKogitoImageStreams(build api.KogitoBuildInterface) (created bool, err error)
+	ResolveKogitoImageStreamTagName(build api.KogitoBuildInterface, isBuilder bool) string
+	ResolveKogitoImageNameTag(build api.KogitoBuildInterface, isBuilder bool) string
 }
 
 type imageStreamHandler struct {
@@ -121,10 +123,10 @@ func NewImageSteamHandler(context operator.Context) ImageStreamHandler {
 func (k *imageStreamHandler) CreateRequiredKogitoImageStreams(build api.KogitoBuildInterface) (created bool, err error) {
 	buildersCreated := false
 	runtimeCreated := false
-	if buildersCreated, err = k.createRequiredKogitoImageStreamTag(newKogitoImageStreamForBuilders(build)); err != nil {
+	if buildersCreated, err = k.createRequiredKogitoImageStreamTag(k.newKogitoImageStreamForBuilders(build)); err != nil {
 		return false, err
 	}
-	if runtimeCreated, err = k.createRequiredKogitoImageStreamTag(newKogitoImageStreamForRuntime(build)); err != nil {
+	if runtimeCreated, err = k.createRequiredKogitoImageStreamTag(k.newKogitoImageStreamForRuntime(build)); err != nil {
 		return false, err
 	}
 	return buildersCreated || runtimeCreated, nil
@@ -174,19 +176,19 @@ func (k *imageStreamHandler) createRequiredKogitoImageStreamTag(requiredStream i
 }
 
 // newKogitoImageStreamForBuilders same as newKogitoImageStream(build, true)
-func newKogitoImageStreamForBuilders(build api.KogitoBuildInterface) imgv1.ImageStream {
-	return newKogitoImageStream(build, true)
+func (k *imageStreamHandler) newKogitoImageStreamForBuilders(build api.KogitoBuildInterface) imgv1.ImageStream {
+	return k.newKogitoImageStream(build, true)
 }
 
 // newKogitoImageStreamForRuntime same as newKogitoImageStream(build, false)
-func newKogitoImageStreamForRuntime(build api.KogitoBuildInterface) imgv1.ImageStream {
-	return newKogitoImageStream(build, false)
+func (k *imageStreamHandler) newKogitoImageStreamForRuntime(build api.KogitoBuildInterface) imgv1.ImageStream {
+	return k.newKogitoImageStream(build, false)
 }
 
 // newKogitoImageStream creates a new OpenShift ImageStream based on the given build and the image purpose
-func newKogitoImageStream(build api.KogitoBuildInterface, isBuilder bool) imgv1.ImageStream {
+func (k *imageStreamHandler) newKogitoImageStream(build api.KogitoBuildInterface, isBuilder bool) imgv1.ImageStream {
 	imageStreamName := resolveKogitoImageStreamName(build, isBuilder)
-	imageTag := resolveKogitoImageTag(build, isBuilder)
+	imageTag := k.resolveKogitoImageTag(build, isBuilder)
 	imageRegistry := resolveKogitoImageRegistryNamespace(build, isBuilder)
 	imageType := getKogitoImageType(isBuilder, build.GetSpec().IsNative())
 	tagAnnotations := tagDefaultAnnotations[imageType]
@@ -228,16 +230,16 @@ func getKogitoImageType(isBuilder bool, isNative bool) kogitoImageType {
 	return kogitoRuntimeNativeImage
 }
 
-// resolveKogitoImageNameTag resolves the ImageStreamTag to be used in the given build, e.g. kogito-quarkus-ubi8-s2i:0.11
-func resolveKogitoImageNameTag(build api.KogitoBuildInterface, isBuilder bool) string {
+// ResolveKogitoImageNameTag resolves the ImageStreamTag to be used in the given build, e.g. kogito-quarkus-ubi8-s2i:0.11
+func (k *imageStreamHandler) ResolveKogitoImageNameTag(build api.KogitoBuildInterface, isBuilder bool) string {
 	return strings.Join([]string{
 		resolveKogitoImageName(build, isBuilder),
-		resolveKogitoImageTag(build, isBuilder),
+		k.resolveKogitoImageTag(build, isBuilder),
 	}, ":")
 }
 
 // resolveKogitoImageTag resolves the ImageTag to be used in the given build, e.g. 0.11
-func resolveKogitoImageTag(build api.KogitoBuildInterface, isBuilder bool) string {
+func (k *imageStreamHandler) resolveKogitoImageTag(build api.KogitoBuildInterface, isBuilder bool) string {
 	image := framework.ConvertImageTagToImage(build.GetSpec().GetRuntimeImage())
 	if isBuilder {
 		image = framework.ConvertImageTagToImage(build.GetSpec().GetBuildImage())
@@ -245,7 +247,7 @@ func resolveKogitoImageTag(build api.KogitoBuildInterface, isBuilder bool) strin
 	if len(image.Tag) > 0 {
 		return image.Tag
 	}
-	return infrastructure.GetKogitoImageVersion()
+	return infrastructure.GetKogitoImageVersion(k.Context.Version)
 }
 
 // resolveKogitoImageName resolves the ImageName to be used in the given build, e.g. kogito-quarkus-ubi8-s2i
@@ -308,9 +310,9 @@ func resolveKogitoImageStreamName(build api.KogitoBuildInterface, isBuilder bool
 }
 
 // resolveKogitoImageName resolves the ImageName to be used in the given build, e.g. kogito-quarkus-ubi8-s2i
-func resolveKogitoImageStreamTagName(build api.KogitoBuildInterface, isBuilder bool) string {
+func (k *imageStreamHandler) ResolveKogitoImageStreamTagName(build api.KogitoBuildInterface, isBuilder bool) string {
 	imageStream := resolveKogitoImageStreamName(build, isBuilder)
-	imageTag := resolveKogitoImageTag(build, isBuilder)
+	imageTag := k.resolveKogitoImageTag(build, isBuilder)
 	return strings.Join([]string{imageStream, imageTag}, ":")
 }
 
