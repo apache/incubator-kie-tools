@@ -22,6 +22,8 @@ jobs:
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
         with:
           commit-message: Bump version to ${{ github.event.inputs.new_version }}
           committer: Kogito Tooling Bot <kietooling@gmail.com>
