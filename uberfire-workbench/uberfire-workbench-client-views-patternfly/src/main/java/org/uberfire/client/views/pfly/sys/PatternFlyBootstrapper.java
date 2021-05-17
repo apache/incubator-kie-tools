@@ -89,10 +89,10 @@ public class PatternFlyBootstrapper {
 
     public static void ensureMonacoEditorLoaderIsAvailable() {
         if (!isMonacoEditorLoaded) {
-            isMonacoEditorLoaded = true;
-            ScriptInjector.fromUrl(PatternFlyClientBundle.INSTANCE.monacoEditor().getSafeUri().asString())
+            ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.monacoEditor().getText())
                     .setWindow(ScriptInjector.TOP_WINDOW)
                     .inject();
+            isMonacoEditorLoaded = true;
         }
     }
 

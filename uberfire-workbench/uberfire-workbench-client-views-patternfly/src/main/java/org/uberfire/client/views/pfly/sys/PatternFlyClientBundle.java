@@ -18,7 +18,6 @@ package org.uberfire.client.views.pfly.sys;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.DataResource;
 import com.google.gwt.resources.client.TextResource;
 
 public interface PatternFlyClientBundle extends ClientBundle {
@@ -37,8 +36,6 @@ public interface PatternFlyClientBundle extends ClientBundle {
     @Source("org/uberfire/client/views/static/moment-timezone/moment-timezone-with-data-2012-2022.min.js")
     TextResource momentTimeZone();
 
-    @DataResource.DoNotEmbed
-    @DataResource.MimeType("text/javascript")
     @Source("org/uberfire/client/views/static/appformer-js-monaco/monaco.min.js")
-    DataResource monacoEditor();
+    TextResource monacoEditor();
 }
