@@ -90,6 +90,7 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
             fieldItemPresenter.fieldItemMap.get(key).onFieldElementSelected();
         } else {
             instanceListGroupItemView.showCheck(true);
+            onSelectedElement(instanceListGroupItemView);
         }
     }
 
