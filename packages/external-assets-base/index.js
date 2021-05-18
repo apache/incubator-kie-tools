@@ -95,6 +95,6 @@ module.exports = {
 
     console.info(`External asset :: Quarkus Runner path: ${matches[0]}`);
 
-    return path;
+    return matches[0];
   },
 };
