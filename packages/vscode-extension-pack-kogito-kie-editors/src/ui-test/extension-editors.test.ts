@@ -61,6 +61,7 @@ describe("Editors are loading properly", () => {
     this.timeout(15000);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
+    await webview.switchBack();
   });
 
   it("Opens demo.bpmn file in BPMN Editor and loads correct diagram", async function () {
