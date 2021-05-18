@@ -17,6 +17,7 @@ package org.drools.workbench.screens.scenariosimulation.client;
 
 import javax.annotation.PostConstruct;
 
+import com.ait.lienzo.client.core.config.LienzoCore;
 import org.drools.workbench.screens.scenariosimulation.client.resources.ScenarioSimulationEditorResources;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 
@@ -26,5 +27,6 @@ public class ScenarioSimulationEditorEntryPoint {
     @PostConstruct
     public void startApp() {
         ScenarioSimulationEditorResources.INSTANCE.css().ensureInjected();
+        LienzoCore.get().setHidpiEnabled(true);
     }
 }
