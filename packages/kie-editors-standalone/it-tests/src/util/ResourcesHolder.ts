@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ContentType, ResourceContent } from "@kogito-tooling/channel-common-api/dist";
+import { ContentType, ResourceContent } from "@kogito-tooling/workspace/dist/api";
 
 export interface ResourcesHolderItem {
   name: string;

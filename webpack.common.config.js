@@ -51,11 +51,17 @@ module.exports = (env, argv) => {
   const transpileOnly =
     argv["WEBPACK_TS_LOADER_transpileOnly"] ?? process.env["WEBPACK_TS_LOADER_transpileOnly"] === "true";
 
-  console.info("TS Loader :: transpileOnly: " + transpileOnly);
+  const minimize = argv["WEBPACK_minimize"] ?? process.env["WEBPACK_minimize"] === "true";
+
+  console.info("Webpack - TS Loader :: transpileOnly: " + transpileOnly);
+  console.info("Webpack :: minimize: " + minimize);
 
   return env.dev
     ? merge(common, {
         mode: "development",
+        optimization: {
+          minimize
+        },
         devtool: "inline-source-map",
         module: {
           rules: [
@@ -79,6 +85,9 @@ module.exports = (env, argv) => {
       })
     : merge(common, {
         mode: "production",
+        optimization: {
+          minimize
+        },
         module: {
           rules: [
             {

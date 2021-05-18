@@ -20,7 +20,7 @@ import Tools from "../utils/Tools";
 export default abstract class PageFragment {
   public constructor(protected readonly tools: Tools, protected readonly root: Element) {}
 
-  public abstract async waitUntilLoaded(): Promise<void>;
+  public abstract waitUntilLoaded(): Promise<void>;
 
   public static async create<T extends PageFragment>(
     type: new (tools: Tools, root: Element) => T,

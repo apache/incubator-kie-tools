@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useRef, useEffect, useState } from "react";
 
-import { ContentType, ResourceContent } from "@kogito-tooling/channel-common-api/dist";
+import { ContentType, ResourceContent } from "@kogito-tooling/workspace/dist/api";
 import { StandaloneEditorApi } from "@kogito-tooling/kie-editors-standalone/dist/common/Editor";
 
 import { FileLoader } from "./FileLoader";
