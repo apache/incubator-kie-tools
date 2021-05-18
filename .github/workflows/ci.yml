@@ -8,6 +8,10 @@ on:
   pull_request:
     branches: "**"
 
+env:
+  WEBPACK_minimize: "true"
+  WEBPACK_TS_LOADER_transpileOnly: "false"
+
 jobs:
   build:
     if: github.repository == 'kiegroup/kogito-tooling' || github.event_name != 'schedule'
@@ -69,8 +73,6 @@ jobs:
 
       - name: "Build :: prod and pack"
         run: yarn run build:prod
-        env:
-          DISPLAY: ":99.0"
 
       - name: Upload VS Code Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'

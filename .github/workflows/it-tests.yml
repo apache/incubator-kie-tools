@@ -6,7 +6,7 @@ on:
 
 env:
   WEBPACK_minimize: "false"
-  WEBPACK_TS_LOADER_transpileOnly: "true"
+  WEBPACK_TS_LOADER_transpileOnly: "false"
 
 jobs:
   chrome-extension-tests-it:
