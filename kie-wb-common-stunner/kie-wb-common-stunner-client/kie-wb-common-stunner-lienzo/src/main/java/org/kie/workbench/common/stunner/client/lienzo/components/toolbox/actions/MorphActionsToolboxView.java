@@ -114,13 +114,16 @@ public class MorphActionsToolboxView
                         .decorate(getToolboxFactory()
                                           .decorators()
                                           .button()
-                                          .setPadding(BUTTON_PADDING)
-                                          .configure(path -> path.setFillColor(ColorName.LIGHTGREY)))
+                                          .setPadding(BUTTON_PADDING))
                         .decorateGrid(getToolboxFactory()
                                               .decorators()
                                               .button()
                                               .setPadding(GRID_DECORATOR_PADDING)
-                                              .configure(path -> path.setFillColor("#e6e6e6")));
+                                              .configure(path -> {
+                                                  path.setFillColor(ColorName.WHITE);
+                                                  path.setFillAlpha(0.95);
+                                                  path.setStrokeAlpha(0);
+                                              }));
         getToolboxView().add(gridItem);
     }
 

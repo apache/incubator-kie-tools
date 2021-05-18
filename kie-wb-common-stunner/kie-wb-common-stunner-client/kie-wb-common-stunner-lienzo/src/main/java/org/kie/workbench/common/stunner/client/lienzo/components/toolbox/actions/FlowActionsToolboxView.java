@@ -25,11 +25,9 @@ import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
 import com.ait.lienzo.client.core.shape.toolbox.ToolboxVisibilityExecutors;
 import com.ait.lienzo.client.core.shape.toolbox.grid.AutoGrid;
 import com.ait.lienzo.client.core.shape.toolbox.items.ButtonItem;
-import com.ait.lienzo.client.core.shape.toolbox.items.decorator.BoxDecorator;
 import com.ait.lienzo.client.core.shape.toolbox.items.impl.ItemsToolboxHighlight;
 import com.ait.lienzo.client.core.shape.toolbox.items.impl.ToolboxFactory;
 import com.ait.lienzo.client.core.shape.toolbox.items.tooltip.ToolboxTextTooltip;
-import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.Direction;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderers;
@@ -74,6 +72,16 @@ public class FlowActionsToolboxView
                               .withIconSize(getGlyphSize())
                               .towards(GRID_TOWARDS)
                               .build())
+                .decorate(getToolboxFactory()
+                                  .decorators()
+                                  .box()
+                                  .setPadding(BUTTON_PADDING)
+                                  .configure(path -> {
+                                      path.setFillAlpha(0.95);
+                                      path.setFillColor(ColorName.WHITE);
+                                      path.setStrokeAlpha(0);
+                                  })
+                )
                 .useShowExecutor(ToolboxVisibilityExecutors.upScaleX())
                 .useHideExecutor(ToolboxVisibilityExecutors.downScaleX());
         highlight = new ItemsToolboxHighlight(getToolboxView());
@@ -85,17 +93,6 @@ public class FlowActionsToolboxView
                 .tooltips()
                 .forToolbox(getToolboxView())
                 .withText(defaultTextConsumer());
-    }
-
-    @Override
-    protected BoxDecorator createDecorator() {
-        final BoxDecorator decorator = super.createDecorator();
-        decorator.configure(path -> {
-            path.setStrokeWidth(1)
-                    .setStrokeColor("#0000FF")
-                    .setShadow(new Shadow(ColorName.BLACK.getColor().setA(0.80), 10, 3, 3));
-        });
-        return decorator;
     }
 
     @Override

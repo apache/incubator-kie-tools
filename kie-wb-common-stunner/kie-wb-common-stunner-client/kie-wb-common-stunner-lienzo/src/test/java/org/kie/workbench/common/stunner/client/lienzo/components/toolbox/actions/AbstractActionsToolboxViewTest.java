@@ -109,6 +109,7 @@ public abstract class AbstractActionsToolboxViewTest {
         when(tooltipFactory.forToolbox(any())).thenReturn(toolboxTooltip);
         when(boxDecorator.configure(any())).thenReturn(boxDecorator);
         when(boxDecorator.copy()).thenReturn(boxDecorator);
+        when(boxDecorator.setPadding(5)).thenReturn(boxDecorator);
         when(toolboxViewBoundingBox.getWidth()).thenReturn(300d);
         when(toolboxViewBoundingBox.getHeight()).thenReturn(600d);
         when(toolboxView.getBoundingBox()).thenReturn(toolboxViewBoundingBox);
