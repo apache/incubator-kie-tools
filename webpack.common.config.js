@@ -49,9 +49,9 @@ module.exports = (env, argv) => {
   console.info(`Building '${path.basename(process.cwd())}' for ${env.dev ? "development" : "production"}`);
 
   const transpileOnly =
-    argv["WEBPACK_TS_LOADER_transpileOnly"] ?? process.env["WEBPACK_TS_LOADER_transpileOnly"] === "true";
+    (argv["WEBPACK_TS_LOADER_transpileOnly"] ?? process.env["WEBPACK_TS_LOADER_transpileOnly"] ?? "true") === "true";
 
-  const minimize = argv["WEBPACK_minimize"] ?? process.env["WEBPACK_minimize"] === "true";
+  const minimize = (argv["WEBPACK_minimize"] ?? process.env["WEBPACK_minimize"] ?? "false") === "true";
 
   console.info("Webpack - TS Loader :: transpileOnly: " + transpileOnly);
   console.info("Webpack :: minimize: " + minimize);

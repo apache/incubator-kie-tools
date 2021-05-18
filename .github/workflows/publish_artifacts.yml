@@ -39,6 +39,8 @@ jobs:
 
       - name: Build
         env:
+          WEBPACK_minimize: "true"
+          WEBPACK_TS_LOADER_transpileOnly: "false"
           ROUTER_targetOrigin: "https://kiegroup.github.io"
           ROUTER_relativePath: "kogito-online/editors/${{ steps.release-tag.outputs.tag }}/"
           DOWNLOAD_HUB_linuxUrl: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ steps.release-tag.outputs.tag }}/business_modeler_hub_preview_linux_${{ steps.release-tag.outputs.tag }}.tar.gz"

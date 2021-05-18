@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: "**"
 
+env:
+  WEBPACK_minimize: "false"
+  WEBPACK_TS_LOADER_transpileOnly: "true"
+
 jobs:
   chrome-extension-tests-it:
     runs-on: ${{ matrix.os }}
@@ -37,7 +41,7 @@ jobs:
         run: yarn bootstrap
 
       - name: Build repository
-        run: yarn lerna run build:prod --scope=chrome-extension-pack-kogito-kie-editors --scope=@kogito-tooling/online-editor --include-dependencies
+        run: yarn lerna run build:prod --scope=chrome-extension-pack-kogito-kie-editors --scope=@kogito-tooling/online-editor --include-dependencies --stream
 
       - name: Increase inotify watches
         if: matrix.os == 'ubuntu-latest'
@@ -99,7 +103,7 @@ jobs:
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
       - name: Build repository
-        run: yarn lerna run build:prod --scope '@kogito-tooling/online-editor' --include-dependencies
+        run: yarn lerna run build:prod --scope '@kogito-tooling/online-editor' --include-dependencies --stream
 
       - name: Run integration tests
         run: yarn lerna run test:it --scope '@kogito-tooling/online-editor' --stream
@@ -150,7 +154,7 @@ jobs:
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
       - name: Build repository
-        run: yarn lerna run build:prod --scope '@kogito-tooling/pmml-editor' --include-dependencies
+        run: yarn lerna run build:prod --scope '@kogito-tooling/pmml-editor' --include-dependencies --stream
 
       - name: Run integration tests
         run: yarn lerna run test:it --scope '@kogito-tooling/pmml-editor' --stream
@@ -205,7 +209,7 @@ jobs:
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
       - name: Build desktop package
-        run: yarn lerna run build:prod --scope '@kogito-tooling/desktop' --include-dependencies
+        run: yarn lerna run build:prod --scope '@kogito-tooling/desktop' --include-dependencies --stream
 
       - name: Run integration tests
         env:
@@ -244,13 +248,13 @@ jobs:
         run: yarn bootstrap
 
       - name: Build repository
-        run: yarn lerna run build:prod --scope '@kogito-tooling/kie-editors-standalone' --include-dependencies
+        run: yarn lerna run build:prod --scope '@kogito-tooling/kie-editors-standalone' --include-dependencies --stream
 
       - name: Build testing app
-        run: yarn lerna run build:it --scope '@kogito-tooling/kie-editors-standalone'
+        run: yarn lerna run build:it --scope '@kogito-tooling/kie-editors-standalone' --stream
 
       - name: Run tests
-        run: yarn lerna run test:it --scope '@kogito-tooling/kie-editors-standalone'
+        run: yarn lerna run test:it --scope '@kogito-tooling/kie-editors-standalone' --stream
 
       - name: Archive test results
         if: failure()
@@ -305,10 +309,10 @@ jobs:
         run: yarn bootstrap
 
       - name: Build repository
-        run: yarn lerna run build:prod --scope 'vscode-extension-pack-kogito-kie-editors' --include-dependencies
+        run: yarn lerna run build:prod --scope 'vscode-extension-pack-kogito-kie-editors' --include-dependencies --stream
 
       - name: Run tests
-        run: yarn lerna run test:it --scope 'vscode-extension-pack-kogito-kie-editors'
+        run: yarn lerna run test:it --scope 'vscode-extension-pack-kogito-kie-editors' --stream
         env:
           DISPLAY: ":99.0"
 

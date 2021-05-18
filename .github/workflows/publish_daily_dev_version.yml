@@ -57,6 +57,8 @@ jobs:
 
       - name: Build kogito-tooling
         env:
+          WEBPACK_minimize: "true"
+          WEBPACK_TS_LOADER_transpileOnly: "false"
           ROUTER_targetOrigin: "https://kiegroup.github.io"
           ROUTER_relativePath: "kogito-online/dev/editors/"
           DOWNLOAD_HUB_linuxUrl: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
@@ -67,14 +69,14 @@ jobs:
           cd kogito-tooling
           yarn run build:prod
 
-      - name: Upload VSCode Extension (Ubuntu only)
+      - name: Upload VS Code Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v1
         with:
           name: vscode-extension
           path: kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
 
-      - name: Upload Backend VSCode Extension (Ubuntu only)
+      - name: Upload Backend VS Code Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v1
         with:

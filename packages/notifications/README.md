@@ -44,7 +44,7 @@ NotificationsApi main attributes:
 - severity: `"INFO" | "WARNING" | "ERROR" | "SUCCESS" | "HINT"`
 - type: `"PROBLEM" | "ALERT"`
 
-### VSCode
+### VS Code
 
 The VsCodeNotificationsApi is the only "public" class users have access. Under the hood it contains two different implementations depending on `Notification.type`.
 
