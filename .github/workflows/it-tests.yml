@@ -36,7 +36,7 @@ jobs:
         run: yarn bootstrap
 
       - name: Build repository
-        run: yarn run build:dev
+        run: npx lerna run build:prod --scope=chrome-extension-pack-kogito-kie-editors --scope=@kogito-tooling/online-editor --include-dependencies
 
       - name: Increase inotify watches
         if: matrix.os == 'ubuntu-latest'

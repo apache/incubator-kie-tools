@@ -42,8 +42,7 @@ export const ModelCard = (props: ModelCardProps) => {
   const { index, modelName, modelType } = props;
 
   const onClickModel = useCallback(
-    (e: any) => {
-      //FIXME: tiago MouseEvent
+    (e: MouseEvent) => {
       if (index !== undefined) {
         e.stopPropagation();
         props.onClick(index);
@@ -53,8 +52,7 @@ export const ModelCard = (props: ModelCardProps) => {
   );
 
   const onDeleteModel = useCallback(
-    (e: any) => {
-      //FIXME: tiago MouseEvent
+    (e: MouseEvent) => {
       if (index !== undefined) {
         e.stopPropagation();
         props.onDelete(index);
