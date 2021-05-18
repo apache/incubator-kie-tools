@@ -149,10 +149,10 @@ jobs:
         with:
           node-version: 16.1.0
 
-      - name: Setup Yarn
+      - name: Setup Yarn and Lerna
         if: github.event.inputs.kogitoToolingBranchToUpdate && github.event.inputs.kogitoToolingForkToUpdate
         run: |
-          npm install -g yarn@1.22.10
+          npm install -g lerna@4.0.0 yarn@1.22.10
           yarn config set network-timeout 1000000
 
       - name: Update kogito-tooling PR branch

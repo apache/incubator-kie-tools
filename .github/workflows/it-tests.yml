@@ -13,6 +13,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         node: [16.1.0]
         yarn: [1.22.10]
+        lerna: [4.0.0]
 
     steps:
       - uses: actions/checkout@v2
@@ -23,9 +24,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Setup Yarn
+      - name: Setup Yarn and Lerna
         run: |
-          npm install -g yarn@${{ matrix.yarn }}
+          npm install -g lerna@${{ matrix.lerna }} yarn@${{ matrix.yarn }}
           yarn config set network-timeout 1000000
 
       - name: Start Xvfb (Ubuntu only)
@@ -84,9 +85,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Setup Yarn
+      - name: Setup Yarn and Lerna
         run: |
-          npm install -g yarn@${{ matrix.yarn }}
+          npm install -g lerna@${{ matrix.lerna }} yarn@${{ matrix.yarn }}
           yarn config set network-timeout 1000000
 
       - name: Download dependencies
@@ -134,9 +135,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Setup Yarn
+      - name: Setup Yarn and Lerna
         run: |
-          npm install -g yarn@${{ matrix.yarn }}
+          npm install -g lerna@${{ matrix.lerna }} yarn@${{ matrix.yarn }}
           yarn config set network-timeout 1000000
 
       - name: Download dependencies
@@ -184,9 +185,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Setup Yarn
+      - name: Setup Yarn and Lerna
         run: |
-          npm install -g yarn@${{ matrix.yarn }}
+          npm install -g lerna@${{ matrix.lerna }} yarn@${{ matrix.yarn }}
           yarn config set network-timeout 1000000
 
       - name: Start Xvfb (Ubuntu only)
@@ -226,9 +227,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Setup Yarn
+      - name: Setup Yarn and Lerna
         run: |
-          npm install -g yarn@${{ matrix.yarn }}
+          npm install -g lerna@${{ matrix.lerna }} yarn@${{ matrix.yarn }}
           yarn config set network-timeout 1000000
 
       - name: Start Xvfb (Ubuntu only)
@@ -286,9 +287,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Setup Yarn
+      - name: Setup Yarn and Lerna
         run: |
-          npm install -g yarn@${{ matrix.yarn }}
+          npm install -g lerna@${{ matrix.lerna }} yarn@${{ matrix.yarn }}
           yarn config set network-timeout 1000000
 
       - name: Start Xvfb (Ubuntu only)
