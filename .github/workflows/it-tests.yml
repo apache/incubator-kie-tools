@@ -37,7 +37,7 @@ jobs:
         run: yarn bootstrap
 
       - name: Build repository
-        run: npx lerna run build:prod --scope=chrome-extension-pack-kogito-kie-editors --scope=@kogito-tooling/online-editor --include-dependencies
+        run: yarn lerna run build:prod --scope=chrome-extension-pack-kogito-kie-editors --scope=@kogito-tooling/online-editor --include-dependencies
 
       - name: Increase inotify watches
         if: matrix.os == 'ubuntu-latest'
@@ -75,6 +75,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         node: [16.1.0]
         yarn: [1.22.10]
+        lerna: [4.0.0]
 
     steps:
       - uses: actions/checkout@v2
@@ -98,10 +99,10 @@ jobs:
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
       - name: Build repository
-        run: npx lerna run build:prod --scope '@kogito-tooling/online-editor' --include-dependencies
+        run: yarn lerna run build:prod --scope '@kogito-tooling/online-editor' --include-dependencies
 
       - name: Run integration tests
-        run: npx lerna run test:it --scope '@kogito-tooling/online-editor' --stream
+        run: yarn lerna run test:it --scope '@kogito-tooling/online-editor' --stream
 
       - name: Archive it test screenshots
         if: failure()
@@ -125,6 +126,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         node: [16.1.0]
         yarn: [1.22.10]
+        lerna: [4.0.0]
 
     steps:
       - uses: actions/checkout@v2
@@ -148,10 +150,10 @@ jobs:
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
       - name: Build repository
-        run: npx lerna run build:prod --scope '@kogito-tooling/pmml-editor' --include-dependencies
+        run: yarn lerna run build:prod --scope '@kogito-tooling/pmml-editor' --include-dependencies
 
       - name: Run integration tests
-        run: npx lerna run test:it --scope '@kogito-tooling/pmml-editor' --stream
+        run: yarn lerna run test:it --scope '@kogito-tooling/pmml-editor' --stream
 
       - name: Archive it test screenshots
         if: failure()
@@ -175,6 +177,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         node: [16.1.0]
         yarn: [1.22.10]
+        lerna: [4.0.0]
 
     steps:
       - uses: actions/checkout@v2
@@ -202,12 +205,12 @@ jobs:
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
       - name: Build desktop package
-        run: npx lerna run build:prod --scope '@kogito-tooling/desktop' --include-dependencies
+        run: yarn lerna run build:prod --scope '@kogito-tooling/desktop' --include-dependencies
 
       - name: Run integration tests
         env:
           DISPLAY: ":99.0"
-        run: npx lerna run test:it --scope '@kogito-tooling/desktop' --stream
+        run: yarn lerna run test:it --scope '@kogito-tooling/desktop' --stream
 
   kie-editors-standalone-tests-it:
     runs-on: ${{ matrix.os }}
@@ -217,6 +220,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         node: [16.1.0]
         yarn: [1.22.10]
+        lerna: [4.0.0]
 
     steps:
       - uses: actions/checkout@v2
@@ -240,13 +244,13 @@ jobs:
         run: yarn bootstrap
 
       - name: Build repository
-        run: npx lerna run build:prod --scope '@kogito-tooling/kie-editors-standalone' --include-dependencies
+        run: yarn lerna run build:prod --scope '@kogito-tooling/kie-editors-standalone' --include-dependencies
 
       - name: Build testing app
-        run: npx lerna run build:it --scope '@kogito-tooling/kie-editors-standalone'
+        run: yarn lerna run build:it --scope '@kogito-tooling/kie-editors-standalone'
 
       - name: Run tests
-        run: npx lerna run test:it --scope '@kogito-tooling/kie-editors-standalone'
+        run: yarn lerna run test:it --scope '@kogito-tooling/kie-editors-standalone'
 
       - name: Archive test results
         if: failure()
@@ -277,6 +281,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         node: [16.1.0]
         yarn: [1.22.10]
+        lerna: [4.0.0]
 
     steps:
       - uses: actions/checkout@v2
@@ -300,10 +305,10 @@ jobs:
         run: yarn bootstrap
 
       - name: Build repository
-        run: npx lerna run build:prod --scope 'vscode-extension-pack-kogito-kie-editors' --include-dependencies
+        run: yarn lerna run build:prod --scope 'vscode-extension-pack-kogito-kie-editors' --include-dependencies
 
       - name: Run tests
-        run: npx lerna run test:it --scope 'vscode-extension-pack-kogito-kie-editors'
+        run: yarn lerna run test:it --scope 'vscode-extension-pack-kogito-kie-editors'
         env:
           DISPLAY: ":99.0"
 

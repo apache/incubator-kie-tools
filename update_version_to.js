@@ -25,7 +25,7 @@ const LERNA_JSON = "./lerna.json";
 //
 
 async function updatePackages(lernaVersionArg) {
-  await exec(`npx lerna version ${lernaVersionArg} --no-push --no-git-tag-version --exact --yes`);
+  await exec(`yarn lerna version ${lernaVersionArg} --no-push --no-git-tag-version --exact --yes`);
   return require(LERNA_JSON).version;
 }
 
