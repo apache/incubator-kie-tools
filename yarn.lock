@@ -1300,25 +1300,25 @@
   resolved "https://registry.yarnpkg.com/@kiegroup/monaco-editor/-/monaco-editor-2.3.0.tgz#6a3480fff8c3e8e19beb29368b07da2f3f1c13a1"
   integrity sha512-Q5cQZzENImglp4XygBDkUhQeWIQ5EtKCqX9yEzuxQCqOsdU4Ghi1v8qhWPtasnRmPcF9JMJp/qjzR9rgyTpFZg==
 
-"@kogito-tooling/bpmn-editor-unpacked@^8.0.0":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-8.0.0.tgz#f94fe426ab1437657c56b69343191dd4f5fd6fe0"
-  integrity sha512-J25F3UoBDCT8SDECXTn++B8r6jjjfmgrV2jSNrYFCro95BxAzYGuHhjLgzj9AOQfLkf6fWImKQiPa6qKTzVraQ==
+"@kogito-tooling/bpmn-editor-unpacked@^8.1.0":
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-8.1.0.tgz#9ad1f0a0c2582876cbd5e744ecbe43d549c7c1a6"
+  integrity sha512-yHXMavqpXqq3dkOgVI++koZjAuRRt6SbOzLu3BdugsHhNA2BH/GMt5uUkytu4BDI0ftDOV+YzlGU0oOoYt2RiQ==
 
-"@kogito-tooling/dmn-editor-unpacked@^8.0.0":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-8.0.0.tgz#a97f367564b885cc26836be6fa97875e39f259cf"
-  integrity sha512-xppJX9M7sTW68l0odDg/z0uqmOE1DwACowcfmVm0+RPMF3sAN0i1EdPLS1Q3D8m4f+5UvTpQlG4AENq9K2hzkw==
+"@kogito-tooling/dmn-editor-unpacked@^8.1.0":
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-8.1.0.tgz#5e733a120b353ea7409f5312c1fc86ad243df2e7"
+  integrity sha512-jHL2x+cnznjQSNxjTqmxCXg8fTv29XgRvqDTU4gsxE3GspCp46F78h7A2RCYXNaKeyvwRU1lpaSZYeaIbTvAmQ==
 
 "@kogito-tooling/quarkus-runner-unpacked@0.7.0-SNAPSHOT":
   version "0.7.0-SNAPSHOT"
   resolved "https://registry.yarnpkg.com/@kogito-tooling/quarkus-runner-unpacked/-/quarkus-runner-unpacked-0.7.0-SNAPSHOT.tgz#5f84c2657347f82f1cab0f08cc9b430b32c9d222"
   integrity sha512-nlfngzKGZrI+P6+4dZr76FDGUoXuNsRWckNs7QS8iLTvEChi3azgFz4CBIqNB5sJjPUF4P+TAxsFlQMidIBzyA==
 
-"@kogito-tooling/scesim-editor-unpacked@^8.0.0":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.0.0.tgz#ac515d7455e5a6d1f8d65ce7ee1eb805f98bc285"
-  integrity sha512-tWY9LmRHT1f76aJm4PFPhwQNA/pp5VtUpdNOxsy2TA0Lg4LkTnnsB+sPYIaZnkr0dkuGZYEDYW3spSAeTGv83g==
+"@kogito-tooling/scesim-editor-unpacked@^8.1.0":
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.1.0.tgz#142c54b0710af7bca5083adf8c765d696f1e248f"
+  integrity sha512-ceTuaoZfiZSsqGusBq91OTkLyoxib2wzZ6QU5XCWru0GcjvBsZr9guth7N7NVrY9f9BMWE/b48RQdPgYrZcC5g==
 
 "@lerna/add@3.18.0":
   version "3.18.0"
