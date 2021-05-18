@@ -22,10 +22,10 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@kogito-tooling/bpmn-editor-unpacked": "8.0.0-SNAPSHOT-20210430.130828",
-    "@kogito-tooling/dmn-editor-unpacked": "8.0.0-SNAPSHOT-20210430.130828",
+    "@kogito-tooling/bpmn-editor-unpacked": "^8.1.0",
+    "@kogito-tooling/dmn-editor-unpacked": "^8.1.0",
     "@kogito-tooling/quarkus-runner-unpacked": "0.7.0-SNAPSHOT",
-    "@kogito-tooling/scesim-editor-unpacked": "8.0.0-SNAPSHOT-20210430.130828",
+    "@kogito-tooling/scesim-editor-unpacked": "^8.1.0",
     "monaco-editor": "^0.23.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"

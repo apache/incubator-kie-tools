@@ -25,8 +25,7 @@ module.exports = (env, argv) => [
       "api/index": "./src/api/index.ts",
     },
     output: {
-      libraryTarget: "umd",
-      globalObject: "this",
+      libraryTarget: "commonjs2",
     },
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   }),
