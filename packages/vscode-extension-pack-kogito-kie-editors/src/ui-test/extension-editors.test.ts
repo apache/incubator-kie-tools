@@ -52,10 +52,15 @@ describe("Editors are loading properly", () => {
     folderView = await testHelper.openFolder(RESOURCES);
   });
 
+  beforeEach(async function () {
+    await testHelper.closeAllEditors();
+    await testHelper.closeAllNotifications();
+  });
+
   afterEach(async function () {
     this.timeout(15000);
-    await testHelper.closeAllNotifications();
     await testHelper.closeAllEditors();
+    await testHelper.closeAllNotifications();
   });
 
   it("Opens demo.bpmn file in BPMN Editor and loads correct diagram", async function () {

@@ -151,15 +151,15 @@ export default class VSCodeTestHelper {
   };
 
   /**
-   * Close all editor views that are open.
+   * Closes all editor views that are open.
+   * Resolves even if there are no open editor views.
    */
   public closeAllEditors = async (): Promise<void> => {
-    await this.workbench
-      .getEditorView()
-      .closeAllEditors()
-      .catch((error) => {
-        assert.fail("VSCodeTestHelper was not able to close EditorView. Reason: [" + error + "]");
-      });
+    try {
+      await this.workbench.getEditorView().closeAllEditors();
+    } catch (error) {
+      // catch the error when there is nothing to close
+    }
   };
 
   /**
