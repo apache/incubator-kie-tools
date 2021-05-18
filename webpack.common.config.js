@@ -60,7 +60,7 @@ module.exports = (env, argv) => {
     ? merge(common, {
         mode: "development",
         optimization: {
-          minimize
+          minimize,
         },
         devtool: "inline-source-map",
         module: {
@@ -86,7 +86,7 @@ module.exports = (env, argv) => {
     : merge(common, {
         mode: "production",
         optimization: {
-          minimize
+          minimize,
         },
         module: {
           rules: [
