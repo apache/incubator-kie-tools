@@ -26,8 +26,9 @@ import {
   VSBrowser,
   WebDriver,
   ViewSection,
+  until,
 } from "vscode-extension-tester";
-import { DefaultWait } from "vscode-uitests-tooling";
+import { kogitoLoadingSpinner } from "./CommonLocators";
 
 /**
  * Common test helper class for VSCode extension testing.
@@ -145,14 +146,81 @@ export default class VSCodeTestHelper {
     // const input = await InputBox.create();
     // await input.selectQuickPick('KIE Kogito Editors');
     const webview = new WebView(this.workbench.getEditorView(), By.linkText(fileName));
-    await DefaultWait.sleep(10000);
+    await this.waitUntilKogitoEditorIsLoaded(webview);
     return webview;
   };
 
   /**
-   * Close all editor views that are open.
+   * Closes all editor views that are open.
+   * Resolves even if there are no open editor views.
    */
   public closeAllEditors = async (): Promise<void> => {
-    await this.workbench.getEditorView().closeAllEditors();
+    try {
+      await this.workbench.getEditorView().closeAllEditors();
+    } catch (error) {
+      // catch the error when there is nothing to close
+    }
+  };
+
+  /**
+   * Closes all notifications that can be found using {@see Workbench}.
+   */
+  public closeAllNotifications = async (): Promise<void> => {
+    const activeNotifications = await this.workbench.getNotifications();
+    activeNotifications.forEach(async (notification) => {
+      await notification.dismiss();
+    });
+  };
+
+  /**
+   * Waits until the provided webview has fully loaded kogito editor.
+   * Method will look in the webview for active iframe and switches to the
+   * iframe if located.
+   * After that it looks for div#envelope-app in the iframe#active-frame and if found,
+   * waits for kogito editor loading spinner to not be present.
+   * Returns void promise if the loading spinner disappears in timeout that is
+   * set in {@see this.EDITOR_LOADING_TIMEOUT} property.
+   *
+   * @param webview {@see WebView} that contains the kogito editor with envelope-app
+   */
+  public waitUntilKogitoEditorIsLoaded = async (webview: WebView): Promise<void> => {
+    const driver = webview.getDriver();
+    await driver.wait(
+      until.elementLocated(By.className("webview ready")),
+      2000,
+      "No iframe.webview.ready that was ready was located in webview under 2 seconds." +
+        "This should not happen and is most probably issue of VSCode." +
+        "In case this happens investigate vscode or vscode-extension-tester dependency."
+    );
+    await driver.switchTo().frame(await driver.findElement(By.className("webview ready")));
+    await driver.wait(
+      until.elementLocated(By.id("active-frame")),
+      2000,
+      "No iframe#active-frame located in webview under 2 seconds." +
+        "This should not happen and is most probably issue of VSCode." +
+        "In case this happens investigate vscode or vscode-extension-tester dependency."
+    );
+    await driver.switchTo().frame(await driver.findElement(By.id("active-frame")));
+    await driver.wait(
+      until.elementLocated(By.id("envelope-app")),
+      this.EDITOR_LOADING_TIMEOUT,
+      "No 'div#envelope-app' located in webview's active-frame in " +
+        this.EDITOR_LOADING_TIMEOUT +
+        "ms. Please investigate."
+    );
+    await driver.wait(
+      async () => {
+        const loadingSpinners = await webview.getDriver().findElements(kogitoLoadingSpinner());
+        if (loadingSpinners && loadingSpinners.length > 0) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      this.EDITOR_LOADING_TIMEOUT,
+      "Editor was still loading after " + this.EDITOR_LOADING_TIMEOUT + "ms. Please investigate."
+    );
+
+    await driver.switchTo().frame(null);
   };
 }

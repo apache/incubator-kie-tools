@@ -3591,6 +3591,14 @@ axios@^0.21.1:
   dependencies:
     follow-redirects "^1.10.0"
 
+azure-devops-node-api@^10.2.2:
+  version "10.2.2"
+  resolved "https://registry.yarnpkg.com/azure-devops-node-api/-/azure-devops-node-api-10.2.2.tgz#9f557e622dd07bbaa9bd5e7e84e17c761e2151b2"
+  integrity sha512-4TVv2X7oNStT0vLaEfExmy3J4/CzfuXolEcQl/BRUmvGySqKStTG2O55/hUQ0kM7UJlZBLgniM0SBq4d/WkKow==
+  dependencies:
+    tunnel "0.0.6"
+    typed-rest-client "^1.8.4"
+
 azure-devops-node-api@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/azure-devops-node-api/-/azure-devops-node-api-7.2.0.tgz#131d4e01cf12ebc6e45569b5e0c5c249e4114d6d"
@@ -7813,6 +7821,15 @@ get-intrinsic@^1.0.0:
     has "^1.0.3"
     has-symbols "^1.0.1"
 
+get-intrinsic@^1.0.2:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/get-intrinsic/-/get-intrinsic-1.1.1.tgz#15f59f376f855c446963948f0d24cd3637b4abc6"
+  integrity sha512-kWZrnVM42QCiEA2Ig1bG8zjoIMOgxWwYCEeNdwY6Tv/cOSeGpcoX4pXHfKUxNKVoArnrEr2e9srnAxxGIraS9Q==
+  dependencies:
+    function-bind "^1.1.1"
+    has "^1.0.3"
+    has-symbols "^1.0.1"
+
 get-package-info@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/get-package-info/-/get-package-info-1.0.0.tgz#6432796563e28113cd9474dbbd00052985a4999c"
@@ -10533,17 +10550,6 @@ markdown-it@^10.0.0:
     mdurl "^1.0.1"
     uc.micro "^1.0.5"
 
-markdown-it@^8.3.1:
-  version "8.4.2"
-  resolved "https://registry.yarnpkg.com/markdown-it/-/markdown-it-8.4.2.tgz#386f98998dc15a37722aa7722084f4020bdd9b54"
-  integrity sha512-GcRz3AWTqSUphY3vsUqQSFMbgR38a4Lh3GWlHRh/7MRwz8mcu9n2IO7HOh+bXHrR9kOPDl5RNCaEsrneb+xhHQ==
-  dependencies:
-    argparse "^1.0.7"
-    entities "~1.1.1"
-    linkify-it "^2.0.0"
-    mdurl "^1.0.1"
-    uc.micro "^1.0.5"
-
 marky@^1.2.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/marky/-/marky-1.2.1.tgz#a3fcf82ffd357756b8b8affec9fdbf3a30dc1b02"
@@ -11543,6 +11549,11 @@ object-inspect@^1.8.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.9.0.tgz#c90521d74e1127b67266ded3394ad6116986533a"
   integrity sha512-i3Bp9iTqwhaLZBxGkRfo5ZbE07BQRT7MGu8+nNgwW9ItGp1TzCTw2DLEoWwjClxBjOFI/hWljTAmYGCEwmtnOw==
+
+object-inspect@^1.9.0:
+  version "1.10.3"
+  resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.10.3.tgz#c2aa7d2d09f50c99375704f7a0adf24c5782d369"
+  integrity sha512-e5mCJlSH7poANfC8z8S9s9S2IN5/4Zb3aZ33f5s8YqoazCFzNLloLU8r5VCG+G7WoqLvAAZoVMcy3tp/3X0Plw==
 
 object-is@^1.0.1:
   version "1.0.2"
@@ -12604,7 +12615,7 @@ puppeteer-core@^5.1.0:
     unbzip2-stream "^1.3.3"
     ws "^7.2.3"
 
-q@^1.0.1, q@^1.5.1:
+q@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
   integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
@@ -12613,6 +12624,13 @@ qs@6.7.0:
   version "6.7.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
   integrity sha512-VCdBRNFTX1fyE7Nb6FYoURo/SPe62QCaAyzJvUjwRaIsc+NePBEniHlvxFmmX56+HZphIGtV0XeCirBtpDrTyQ==
+
+qs@^6.9.1:
+  version "6.10.1"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.10.1.tgz#4931482fa8d647a5aab799c5271d2133b981fb6a"
+  integrity sha512-M528Hph6wsSVOBiYUnGf+K/7w0hNshs/duGsNXPUCLH5XAqjEtiPGwNONLV0tBH8NoGb0mvD5JubnUTrujKDTg==
+  dependencies:
+    side-channel "^1.0.4"
 
 qs@~6.5.2:
   version "6.5.2"
@@ -13799,6 +13817,15 @@ shellwords@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
   integrity sha512-vFwSUfQvqybiICwZY5+DAWIPLKsWO31Q91JSKl3UYv+K5c2QRPzn0qzec6QPu1Qc9eHYItiP3NdJqNVqetYAww==
+
+side-channel@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/side-channel/-/side-channel-1.0.4.tgz#efce5c8fdc104ee751b25c58d4290011fa5ea2cf"
+  integrity sha512-q5XPytqFEIKHkGdiMIrY10mvLRvnQh42/+GoBlFW3b2LXLE2xxJpZFdm94we0BaoV3RwJyGqg5wS7epxTv0Zvw==
+  dependencies:
+    call-bind "^1.0.0"
+    get-intrinsic "^1.0.2"
+    object-inspect "^1.9.0"
 
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.3"
@@ -15062,7 +15089,7 @@ tunnel@0.0.4:
   resolved "https://registry.yarnpkg.com/tunnel/-/tunnel-0.0.4.tgz#2d3785a158c174c9a16dc2c046ec5fc5f1742213"
   integrity sha1-LTeFoVjBdMmhbcLARuxfxfF0IhM=
 
-tunnel@^0.0.6:
+tunnel@0.0.6, tunnel@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/tunnel/-/tunnel-0.0.6.tgz#72f1314b34a5b192db012324df2cc587ca47f92c"
   integrity sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==
@@ -15125,13 +15152,14 @@ typed-rest-client@1.2.0:
     tunnel "0.0.4"
     underscore "1.8.3"
 
-typed-rest-client@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/typed-rest-client/-/typed-rest-client-0.9.0.tgz#f768cc0dc3f4e950f06e04825c36b3e7834aa1f2"
-  integrity sha1-92jMDcP06VDwbgSCXDaz54NKofI=
+typed-rest-client@^1.8.4:
+  version "1.8.4"
+  resolved "https://registry.yarnpkg.com/typed-rest-client/-/typed-rest-client-1.8.4.tgz#ba3fb788e5b9322547406392533f12d660a5ced6"
+  integrity sha512-MyfKKYzk3I6/QQp6e1T50py4qg+c+9BzOEl2rBmQIpStwNUoqQ73An+Tkfy9YuV7O+o2mpVVJpe+fH//POZkbg==
   dependencies:
-    tunnel "0.0.4"
-    underscore "1.8.3"
+    qs "^6.9.1"
+    tunnel "0.0.6"
+    underscore "^1.12.1"
 
 typedarray-to-buffer@^3.1.5:
   version "3.1.5"
@@ -15196,10 +15224,10 @@ underscore@1.8.3:
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.8.3.tgz#4f3fb53b106e6097fcf9cb4109f2a5e9bdfa5022"
   integrity sha1-Tz+1OxBuYJf8+ctBCfKl6b36UCI=
 
-underscore@^1.8.3:
-  version "1.9.2"
-  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.9.2.tgz#0c8d6f536d6f378a5af264a72f7bec50feb7cf2f"
-  integrity sha512-D39qtimx0c1fI3ya1Lnhk3E9nONswSKhnffBI0gME9C99fYOkNi04xs8K6pePLhvl1frbDemkaBQ5ikWllR2HQ==
+underscore@^1.12.1:
+  version "1.13.1"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.13.1.tgz#0c1c6bd2df54b6b69f2314066d65b6cde6fcf9d1"
+  integrity sha512-hzSoAVtJF+3ZtiFX0VgfFPHEDRm7Y/QPjGyNo4TVdnDTdft3tr8hEkD25a1jC+TjTuE7tkHGKkhwCgs9dgBB2g==
 
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"
@@ -15747,18 +15775,20 @@ vm-browserify@^1.0.1:
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
-vsce@1.59.0:
-  version "1.59.0"
-  resolved "https://registry.yarnpkg.com/vsce/-/vsce-1.59.0.tgz#921362828d6c54b6d8d5b98fc01dcaa853f02f31"
-  integrity sha512-tkB97885k5ce25Brbe9AZTCAXAkBh7oa5EOzY0BCJQ51W/mfRaQuCluCd9gZpWdgiU4AbPvwxtoVKKsenlSt8w==
+vsce@1.88.0:
+  version "1.88.0"
+  resolved "https://registry.yarnpkg.com/vsce/-/vsce-1.88.0.tgz#748dc9f75996d97a5953408848c56c4c1b4dca6b"
+  integrity sha512-FS5ou3G+WRnPPr/tWVs8b/jVzeDacgZHy/y7/QQW7maSPFEAmRt2bFGUJtJVEUDLBqtDm/3VGMJ7D31cF2U1tw==
   dependencies:
+    azure-devops-node-api "^10.2.2"
     chalk "^2.4.2"
     cheerio "^1.0.0-rc.1"
-    commander "^2.8.1"
+    commander "^6.1.0"
     denodeify "^1.2.1"
     glob "^7.0.6"
-    lodash "^4.17.10"
-    markdown-it "^8.3.1"
+    leven "^3.1.0"
+    lodash "^4.17.15"
+    markdown-it "^10.0.0"
     mime "^1.3.4"
     minimatch "^3.0.3"
     osenv "^0.1.3"
@@ -15766,8 +15796,8 @@ vsce@1.59.0:
     read "^1.0.7"
     semver "^5.1.0"
     tmp "0.0.29"
+    typed-rest-client "^1.8.4"
     url-join "^1.1.0"
-    vso-node-api "6.1.2-preview"
     yauzl "^2.3.1"
     yazl "^2.2.2"
 
@@ -15838,21 +15868,6 @@ vscode-test@1.0.0:
   dependencies:
     http-proxy-agent "^2.1.0"
     https-proxy-agent "^2.2.1"
-
-vscode-uitests-tooling@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/vscode-uitests-tooling/-/vscode-uitests-tooling-2.0.1.tgz#5f3e3b2f70a3cc463af8b456207ae167c2d08291"
-  integrity sha512-AIWHk5Fg9VIEvOsj47lAnXlIa5hZUXpORdjGZ5aXhWDX7Et29JXVDQCG89jKdJtZ+MKTA3BaQn68vGXcTS7fgQ==
-
-vso-node-api@6.1.2-preview:
-  version "6.1.2-preview"
-  resolved "https://registry.yarnpkg.com/vso-node-api/-/vso-node-api-6.1.2-preview.tgz#aab3546df2451ecd894e071bb99b5df19c5fa78f"
-  integrity sha1-qrNUbfJFHs2JTgcbuZtd8Zxfp48=
-  dependencies:
-    q "^1.0.1"
-    tunnel "0.0.4"
-    typed-rest-client "^0.9.0"
-    underscore "^1.8.3"
 
 w3c-hr-time@^1.0.1:
   version "1.0.2"

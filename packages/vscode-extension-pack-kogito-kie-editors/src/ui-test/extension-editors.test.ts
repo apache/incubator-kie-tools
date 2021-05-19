@@ -49,13 +49,19 @@ describe("Editors are loading properly", () => {
   before(async function () {
     this.timeout(60000);
     testHelper = new VSCodeTestHelper();
-    await testHelper.closeAllEditors();
     folderView = await testHelper.openFolder(RESOURCES);
+  });
+
+  beforeEach(async function () {
+    await testHelper.closeAllEditors();
+    await testHelper.closeAllNotifications();
   });
 
   afterEach(async function () {
     this.timeout(15000);
     await testHelper.closeAllEditors();
+    await testHelper.closeAllNotifications();
+    await webview.switchBack();
   });
 
   it("Opens demo.bpmn file in BPMN Editor and loads correct diagram", async function () {
@@ -63,9 +69,6 @@ describe("Editors are loading properly", () => {
     webview = await testHelper.openFileFromSidebar(DEMO_BPMN);
     await webview.switchToFrame();
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
-
-    const envelopApp = await webview.findWebElement(By.id("envelope-app"));
-    await assertWebElementIsDisplayedEnabled(envelopApp);
 
     const palette = await bpmnEditorTester.getPalette();
     await assertWebElementIsDisplayedEnabled(palette);
@@ -86,9 +89,6 @@ describe("Editors are loading properly", () => {
     await webview.switchToFrame();
     const dmnEditorTester = new DmnEditorTestHelper(webview);
 
-    const envelopApp = await webview.findWebElement(By.id("envelope-app"));
-    await assertWebElementIsDisplayedEnabled(envelopApp);
-
     await dmnEditorTester.openDiagramProperties();
     await dmnEditorTester.openDiagramExplorer();
     await dmnEditorTester.openDecisionNavigator();
@@ -101,9 +101,6 @@ describe("Editors are loading properly", () => {
     webview = await testHelper.openFileFromSidebar(DEMO_DMN);
     await webview.switchToFrame();
     const dmnEditorTester = new DmnEditorTestHelper(webview);
-
-    const envelopApp = await webview.findWebElement(By.id("envelope-app"));
-    await assertWebElementIsDisplayedEnabled(envelopApp);
 
     await dmnEditorTester.switchEditorTab(EditorTabs.IncludedModels);
     await dmnEditorTester.includeModel(REUSABLE_DMN, "reusable-model");
@@ -123,9 +120,6 @@ describe("Editors are loading properly", () => {
     await webview.switchToFrame();
     const scesimEditorTester = new ScesimEditorTestHelper(webview);
 
-    const envelopApp = await webview.findWebElement(By.id("envelope-app"));
-    await assertWebElementIsDisplayedEnabled(envelopApp);
-
     await scesimEditorTester.openScenarioCheatsheet();
     await scesimEditorTester.openSettings();
     await scesimEditorTester.openTestTools();
@@ -138,9 +132,6 @@ describe("Editors are loading properly", () => {
     webview = await testHelper.openFileFromSidebar(DEMO_PMML);
     await webview.switchToFrame();
     const pmmlEditorTester = new PmmlEditorTestHelper(webview);
-
-    const envelopApp = await webview.findWebElement(By.id("envelope-app"));
-    await assertWebElementIsDisplayedEnabled(envelopApp);
 
     const dataDictionaryModel = await pmmlEditorTester.openDataDictionary();
     dataDictionaryModel.close();
