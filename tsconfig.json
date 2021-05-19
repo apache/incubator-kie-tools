@@ -8,7 +8,6 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "removeComments": true,
-    //    "strictNullChecks": true,
     "experimentalDecorators": true,
     "downlevelIteration": true,
     "jsx": "react-jsx"
