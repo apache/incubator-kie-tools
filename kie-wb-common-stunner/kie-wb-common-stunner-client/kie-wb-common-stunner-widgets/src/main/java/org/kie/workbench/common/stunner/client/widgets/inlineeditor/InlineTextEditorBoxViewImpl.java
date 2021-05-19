@@ -19,9 +19,12 @@ package org.kie.workbench.common.stunner.client.widgets.inlineeditor;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
+import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -131,6 +134,12 @@ public class InlineTextEditorBoxViewImpl
                                                   "height: " + height + "px;");
         nameField.setAttribute("style", buildStyle(width, height));
         presenter.onChangeName(name);
+        final CSSStyleDeclaration style = ((HTMLElement) editNameBox.getParentElement()).getStyle();
+
+        Scheduler.get().scheduleDeferred(() -> {
+            style.removeProperty("z-index");
+            style.setProperty("z-index", "0");
+        });
         presenter.flush();
         nameField.setTextContent(name);
         nameField.setAttribute("data-text", placeholder);

@@ -71,6 +71,8 @@ public class BS3PaletteWidgetImpl
     private Map<String, DefinitionPaletteCategoryWidget> categoryWidgets = new HashMap<>();
 
     private BS3PaletteWidgetView view;
+    private double lastX = 0;
+    private double lastY = 0;
 
     @Inject
     public BS3PaletteWidgetImpl(final ShapeManager shapeManager,
@@ -227,6 +229,11 @@ public class BS3PaletteWidgetImpl
     public void onDragProxyComplete(final String definitionId,
                                     final double x,
                                     final double y) {
+
+        if (lastX == x && lastY == y) {
+            return;
+        }
+
         if (null != itemDropCallback) {
             final Object definition = clientFactoryServices.getClientFactoryManager().newDefinition(definitionId);
             final ShapeFactory<?, ? extends Shape> factory = getShapeFactory();
@@ -266,6 +273,8 @@ public class BS3PaletteWidgetImpl
                                                              event.getMouseX(),
                                                              event.getMouseY());
         }
+        lastX = event.getMouseX();
+        lastY = event.getMouseY();
     }
 
     private String getItemDefinitionId(final String itemId) {

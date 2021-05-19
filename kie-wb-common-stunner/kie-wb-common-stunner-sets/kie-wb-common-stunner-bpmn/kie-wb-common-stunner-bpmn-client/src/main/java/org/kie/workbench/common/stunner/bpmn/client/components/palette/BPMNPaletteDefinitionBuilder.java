@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.components.palette;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,6 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -201,7 +203,8 @@ public class BPMNPaletteDefinitionBuilder
         final ExpandedPaletteDefinitionBuilder.ItemMessageProvider categoryMessageProvider =
                 paletteDefinitionBuilder.getCategoryMessageProvider();
         final Function<String, Glyph> categoryGlyphProvider = paletteDefinitionBuilder.getCategoryGlyphProvider();
-        final Collection<WorkItemDefinition> workItemDefinitions = workItemDefinitionRegistry.get().items();
+        final Collection<WorkItemDefinition> workItemDefinitions = workItemDefinitionRegistry.get().items().stream().sorted(Comparator.comparing(WorkItemDefinition::getName)).collect(Collectors.toCollection(ArrayList::new));
+
         if (!workItemDefinitions.isEmpty()) {
             final String customTasksTitle = categoryMessageProvider.getTitle(BPMNCategories.CUSTOM_TASKS);
             final String customTasksDesc = categoryMessageProvider.getDescription(BPMNCategories.CUSTOM_TASKS);

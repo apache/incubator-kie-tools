@@ -84,6 +84,9 @@ public class InlineTextEditorBoxViewImplTest {
 
     private InlineTextEditorBoxViewImpl tested;
 
+    @Mock
+    private org.jboss.errai.common.client.dom.HTMLElement parentElement;
+
     @Before
     @SuppressWarnings("unchecked")
     public void init() {
@@ -91,6 +94,7 @@ public class InlineTextEditorBoxViewImplTest {
         this.tested.init(presenter);
         when(editNameBox.getStyle()).thenReturn(editNameBoxStyle);
         when(nameField.getStyle()).thenReturn(nameFieldStyle);
+        when(editNameBox.getParentElement()).thenReturn(parentElement);
         doAnswer(i -> {
             ((Scheduler.ScheduledCommand) i.getArguments()[0]).execute();
             return null;
