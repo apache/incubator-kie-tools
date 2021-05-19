@@ -20,13 +20,13 @@ import {
   By,
   InputBox,
   SideBarView,
+  until,
   ViewControl,
   ViewSection,
   VSBrowser,
   WebDriver,
   WebView,
   Workbench,
-  until,
 } from "vscode-extension-tester";
 import { kogitoLoadingSpinner } from "./CommonLocators";
 
@@ -146,7 +146,7 @@ export default class VSCodeTestHelper {
     // const input = await InputBox.create();
     // await input.selectQuickPick('KIE Kogito Editors');
     const webview = new WebView(this.workbench.getEditorView(), By.linkText(fileName));
-    await this.waitUntilKogitoEditorIsLoaded(webview);
+    await sleep(10000);
     return webview;
   };
 
@@ -223,4 +223,8 @@ export default class VSCodeTestHelper {
 
     await driver.switchTo().frame(null);
   };
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
