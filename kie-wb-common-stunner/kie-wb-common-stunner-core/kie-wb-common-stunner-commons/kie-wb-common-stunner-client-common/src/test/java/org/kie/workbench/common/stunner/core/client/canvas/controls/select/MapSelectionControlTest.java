@@ -255,7 +255,7 @@ public class MapSelectionControlTest {
                 ArgumentCaptor.forClass(CanvasSelectionEvent.class);
         // Verify it has only been fired once
         verify(elementSelectedEvent,
-               times(1)).fire(elementSelectedEventArgumentCaptor.capture());
+               times(2)).fire(elementSelectedEventArgumentCaptor.capture());
         final CanvasSelectionEvent event = elementSelectedEventArgumentCaptor.getValue();
         assertEquals(1, event.getIdentifiers().size());
         assertEquals(ELEMENT_UUID, event.getIdentifiers().iterator().next());

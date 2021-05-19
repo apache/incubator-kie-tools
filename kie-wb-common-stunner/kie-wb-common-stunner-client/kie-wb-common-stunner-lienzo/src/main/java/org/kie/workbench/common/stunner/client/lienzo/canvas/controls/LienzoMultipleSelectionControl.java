@@ -104,13 +104,21 @@ public class LienzoMultipleSelectionControl<H extends AbstractCanvasHandler>
         @Override
         public void onChanged(final SelectionManager.SelectedItems selectedItems) {
             final SelectionManager.ChangedItems changedItems = selectedItems.getChanged();
-            getSelectionControl().deselect(new Lists.Builder<String>()
-                                                   .addAll(shapesToIdentifiers(changedItems.getRemovedShapes().toList()))
-                                                   .addAll(shapesToIdentifiers(changedItems.getRemovedConnectors().toList())).build());
-            getSelectionControl().select(new Lists.Builder<String>()
-                                                 .addAll(shapesToIdentifiers(changedItems.getAddedShapes().toList()))
-                                                 .addAll(shapesToIdentifiers(changedItems.getAddedConnectors().toList())).build());
-            defaultSelectionListener.onChanged(selectedItems);
+            final int added = selectedItems.getChanged().addedSize();
+            final int removed = selectedItems.getChanged().removedSize();
+            if (added > 0 || removed > 0) {
+                getSelectionControl().deselect(new Lists.Builder<String>()
+                                                       .addAll(shapesToIdentifiers(changedItems.getRemovedShapes().toList()))
+                                                       .addAll(shapesToIdentifiers(changedItems.getRemovedConnectors().toList())).build());
+                getSelectionControl().select(new Lists.Builder<String>()
+                                                     .addAll(shapesToIdentifiers(changedItems.getAddedShapes().toList()))
+                                                     .addAll(shapesToIdentifiers(changedItems.getAddedConnectors().toList())).build());
+                defaultSelectionListener.onChanged(selectedItems);
+
+                if (getSelectionControl().getSelectedItems().isEmpty()) {
+                    canvasClearSelectionEvent.fire(new CanvasClearSelectionEvent(getCanvasHandler()));
+                }
+            }
         }
     };
 
@@ -190,9 +198,6 @@ public class LienzoMultipleSelectionControl<H extends AbstractCanvasHandler>
         checkNotNull("event",
                      event);
         if (Objects.equals(getCanvasHandler(), event.getCanvasHandler())) {
-            if (event.getIdentifiers().size() == 1) {
-                onClearSelection();
-            }
             selectionShapeProvider.moveShapeToTop();
         }
     }

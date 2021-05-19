@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasDomainObjectListener;
@@ -179,21 +180,27 @@ public class FormsCanvasSessionHandler {
         }
     }
 
-    void onCanvasSelectionEvent(@Observes CanvasSelectionEvent event) {
-        checkNotNull("event",
-                     event);
+    void onCanvasSelectionEvent(@Observes CanvasClearSelectionEvent event) {
+        if (checkCanvasHandler(event.getCanvasHandler())) {
+            selectRoot();
+        }
+    }
 
+    void onCanvasSelectionEvent(@Observes CanvasSelectionEvent event) {
         if (checkCanvasHandler(event.getCanvasHandler())) {
             if (event.getIdentifiers().size() == 1) {
                 final String uuid = event.getIdentifiers().iterator().next();
                 final Element<? extends Definition<?>> element = CanvasLayoutUtils.getElement(getCanvasHandler(), uuid);
                 scheduleRender(() -> render(element));
             } else {
-                // Select root canvas
-                final Element<? extends Definition<?>> element = CanvasLayoutUtils.getElement(getCanvasHandler(), this.getDiagram().getMetadata().getCanvasRootUUID());
-                render(element);
+                selectRoot();
             }
         }
+    }
+
+    private void selectRoot() {
+        final Element<? extends Definition<?>> element = CanvasLayoutUtils.getElement(getCanvasHandler(), this.getDiagram().getMetadata().getCanvasRootUUID());
+        render(element);
     }
 
     protected void scheduleRender(final com.google.gwt.user.client.Command command) {

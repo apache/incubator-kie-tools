@@ -48,8 +48,8 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
                    CanvasRegistrationControl<H, Element>,
                    CanvasControl.SessionAware<ClientSession> {
 
-    private final Event<CanvasSelectionEvent> canvasSelectionEvent;
-    private Event<CanvasClearSelectionEvent> canvasClearSelectionEvent;
+    protected final Event<CanvasSelectionEvent> canvasSelectionEvent;
+    protected Event<CanvasClearSelectionEvent> canvasClearSelectionEvent;
     private final MapSelectionControl<H> selectionControl;
 
     @Inject
