@@ -30,9 +30,8 @@ function querySelector(query: string) {
 }
 
 export const useSelectorHandler = () => {
-  const { currentStep, currentTutorial, latestUserInteraction, setCurrentRefElementPosition } = useContext(
-    CurrentTutorialContext
-  );
+  const { currentStep, currentTutorial, latestUserInteraction, setCurrentRefElementPosition } =
+    useContext(CurrentTutorialContext);
   const dialogStep = useMemo(() => getCurrentStep(currentStep, currentTutorial), [currentStep, currentTutorial]);
   const selector = dialogStep?.selector ?? "";
 

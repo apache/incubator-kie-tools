@@ -38,7 +38,8 @@ export class KogitoEditorEnvelopeApiImpl<
   E extends Editor,
   EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi> = KogitoEditorEnvelopeApi,
   ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi> = KogitoEditorChannelApi
-> implements KogitoEditorEnvelopeApi {
+> implements KogitoEditorEnvelopeApi
+{
   private capturedInitRequestYet = false;
   private editor: E;
 

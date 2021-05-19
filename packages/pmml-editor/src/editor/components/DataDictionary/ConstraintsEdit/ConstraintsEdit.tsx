@@ -46,9 +46,10 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     dataType.constraints?.type === ConstraintType.ENUMERATION ? dataType.constraints.value : undefined
   );
 
-  const rangeConstraintLimit = useMemo(() => (dataType.optype === "continuous" && dataType.isCyclic ? 1 : undefined), [
-    dataType,
-  ]);
+  const rangeConstraintLimit = useMemo(
+    () => (dataType.optype === "continuous" && dataType.isCyclic ? 1 : undefined),
+    [dataType]
+  );
 
   const handleTypeChange = (event: React.MouseEvent | React.ChangeEvent, value: string) => {
     if (value !== constraintType) {

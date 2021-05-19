@@ -30,7 +30,8 @@ export type BpmnEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
 
 export class BpmnEditorEnvelopeApiImpl
   extends KogitoEditorEnvelopeApiImpl<BpmnEditor, BpmnEditorEnvelopeApi, BpmnEditorChannelApi>
-  implements BpmnEditorEnvelopeApi {
+  implements BpmnEditorEnvelopeApi
+{
   constructor(
     private readonly bpmnArgs: BpmnEnvelopeApiFactoryArgs,
     gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }

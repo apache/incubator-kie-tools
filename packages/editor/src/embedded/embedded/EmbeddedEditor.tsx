@@ -81,10 +81,10 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   const stateControl = useMemo(() => new StateControl(), [props.file.getFileContents]);
   const [isReady, setReady] = useState(false);
 
-  const envelopeMapping = useMemo(() => props.editorEnvelopeLocator.mapping.get(props.file.fileExtension), [
-    props.editorEnvelopeLocator,
-    props.file,
-  ]);
+  const envelopeMapping = useMemo(
+    () => props.editorEnvelopeLocator.mapping.get(props.file.fileExtension),
+    [props.editorEnvelopeLocator, props.file]
+  );
 
   //Setup envelope bus communication
   const kogitoEditorChannelApiImpl = useMemo(() => {

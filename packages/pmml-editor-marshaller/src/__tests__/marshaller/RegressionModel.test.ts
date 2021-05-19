@@ -146,7 +146,8 @@ describe("RegressionModel tests", () => {
 
     expect(regressionTable.CategoricalPredictor).not.toBeUndefined();
 
-    const categoricalPredicators: CategoricalPredictor[] = regressionTable.CategoricalPredictor as CategoricalPredictor[];
+    const categoricalPredicators: CategoricalPredictor[] =
+      regressionTable.CategoricalPredictor as CategoricalPredictor[];
     expect(categoricalPredicators.length).toBe(3);
 
     const categoricalPredicator0: CategoricalPredictor = categoricalPredicators[0];
