@@ -17,41 +17,13 @@
 const path = require("path");
 const { merge } = require("webpack-merge");
 
-const common = {
-  output: {
-    path: path.resolve("./dist"),
-    filename: "[name].js",
-    chunkFilename: "[name].bundle.js",
-  },
-  stats: {
-    excludeAssets: [
-      (name) => !name.endsWith(".js"),
-      /.*DMNKogitoRuntimeWebapp.*/,
-      /.*KogitoBPMNEditor.*/,
-      /.*DroolsWorkbenchScenarioSimulationKogitoRuntime.*/,
-      /gwt-editors\/.*/,
-      /editors\/.*/,
-    ],
-    excludeModules: true,
-  },
-  performance: {
-    maxAssetSize: 30000000,
-    maxEntrypointSize: 30000000,
-  },
-  resolve: {
-    fallback: { path: require.resolve("path-browserify") }, // Required for `minimatch`, as Webpack 5 doesn't add polyfills automatically anymore.
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")],
-  },
-};
-
 module.exports = (env, argv) => {
   console.info(`Building '${path.basename(process.cwd())}' for ${env.dev ? "development" : "production"}`);
 
   const transpileOnly =
-    (argv["WEBPACK_TS_LOADER_transpileOnly"] ?? process.env["WEBPACK_TS_LOADER_transpileOnly"] ?? "false") === "true";
+    (env["WEBPACK_TS_LOADER_transpileOnly"] ?? process.env["WEBPACK_TS_LOADER_transpileOnly"] ?? "false") === "true";
 
-  const minimize = (argv["WEBPACK_minimize"] ?? process.env["WEBPACK_minimize"] ?? "true") === "true";
+  const minimize = (env["WEBPACK_minimize"] ?? process.env["WEBPACK_minimize"] ?? "true") === "true";
 
   console.info("Webpack :: TS Loader :: transpileOnly: " + transpileOnly);
   console.info("Webpack :: minimize: " + minimize);
@@ -103,4 +75,32 @@ module.exports = (env, argv) => {
           ],
         },
       });
+};
+
+const common = {
+  output: {
+    path: path.resolve("./dist"),
+    filename: "[name].js",
+    chunkFilename: "[name].bundle.js",
+  },
+  stats: {
+    excludeAssets: [
+      (name) => !name.endsWith(".js"),
+      /.*DMNKogitoRuntimeWebapp.*/,
+      /.*KogitoBPMNEditor.*/,
+      /.*DroolsWorkbenchScenarioSimulationKogitoRuntime.*/,
+      /gwt-editors\/.*/,
+      /editors\/.*/,
+    ],
+    excludeModules: true,
+  },
+  performance: {
+    maxAssetSize: 30000000,
+    maxEntrypointSize: 30000000,
+  },
+  resolve: {
+    fallback: { path: require.resolve("path-browserify") }, // Required for `minimatch`, as Webpack 5 doesn't add polyfills automatically anymore.
+    extensions: [".tsx", ".ts", ".js", ".jsx"],
+    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")],
+  },
 };
