@@ -111,8 +111,11 @@ func WaitForKogitoInfraResource(namespace, name string, timeoutInMin int) error 
 			if infraResource == nil {
 				return false, nil
 			}
-			conditions := *infraResource.GetStatus().GetConditions()
-			successCondition := meta.FindStatusCondition(conditions, string(api.KogitoInfraConfigured))
+			conditions := infraResource.GetStatus().GetConditions()
+			if conditions == nil {
+				return false, nil
+			}
+			successCondition := meta.FindStatusCondition(*conditions, string(api.KogitoInfraConfigured))
 			if successCondition == nil {
 				return false, nil
 			}
