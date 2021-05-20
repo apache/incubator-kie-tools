@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-import { Application } from "spectron";
+import {Application, SpectronClient} from "spectron";
 import { join } from "path";
 import { platform } from "os";
 
 export async function initApp(): Promise<Application> {
-  await sleep(10000);
-  const startedApp = await new Application({
+  return await new Application({
     path: join(__dirname, "..", "node_modules", ".bin", "electron" + (platform() === "win32" ? ".cmd" : "")),
     args: [join(__dirname, "..")],
   }).start();
-  await sleep(10000);
-  return startedApp;
 }
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+export async function waitLoading(client: SpectronClient) {
+  // wait until loading popup disappears
+  await client.$("[data-testid='loading-screen-div']");
+  await client.$(".kogito-tooling--keyboard-shortcuts-icon");
 }

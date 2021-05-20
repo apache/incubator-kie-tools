@@ -15,7 +15,7 @@
  */
 
 import { Application, SpectronClient } from "spectron";
-import { initApp } from "./Tools";
+import {initApp, waitLoading} from "./Tools";
 
 let app: Application;
 let client: SpectronClient;
@@ -69,10 +69,7 @@ async function testEmptyBpmn() {
   const iframe = await client.$("#kogito-iframe");
   await client.switchToFrame(iframe);
 
-  // wait until loading popup disappears
-  const loadingDialog = await client.$("#loading-screen");
-  await client.waitUntil(async () => await loadingDialog.isDisplayed(), { timeout: 5000 });
-  await client.waitUntil(async () => !(await loadingDialog.isExisting()), { timeout: 30000 });
+  await waitLoading(client);
 
   // open properties panel
   const propertiesButton = await client.$("[data-ouia-component-id='docks-item-DiagramEditorPropertiesScreen']");

@@ -250,9 +250,6 @@ jobs:
       - name: Build repository
         run: yarn lerna run build:prod --scope '@kogito-tooling/kie-editors-standalone' --include-dependencies --stream
 
-      - name: Build testing app
-        run: yarn lerna run build:it --scope '@kogito-tooling/kie-editors-standalone' --stream
-
       - name: Run tests
         run: yarn lerna run test:it --scope '@kogito-tooling/kie-editors-standalone' --stream
 
