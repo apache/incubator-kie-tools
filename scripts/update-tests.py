@@ -46,4 +46,3 @@ if __name__ == "__main__":
     
     if args.runtime_image_native:
         common.update_runtime_image_in_behave_tests(args.runtime_image_native, 'native')
-        

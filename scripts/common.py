@@ -12,14 +12,16 @@ MODULES = {"kogito-data-index-common", "kogito-data-index-mongodb",
            "kogito-data-index-infinispan", "kogito-trusty-common",
            "kogito-trusty-infinispan", "kogito-trusty-redis",
            "kogito-explainability", "kogito-image-dependencies",
-           "kogito-jobs-service", "kogito-trusty-ui",
-           "kogito-jq", "kogito-kubernetes-client",
-           "kogito-launch-scripts", "kogito-logging",
-           "kogito-management-console", "kogito-task-console",
-           "kogito-persistence", "kogito-runtime-native",
-           "kogito-runtime-jvm", "kogito-builder",
-           "kogito-s2i-core", "kogito-system-user",
-           "kogito-jit-runner", "kogito-custom-truststore"}
+           "kogito-jobs-service-common", "kogito-jobs-service-ephemeral",
+           "kogito-jobs-service-infinispan", "kogito-jobs-service-mongodb",
+           "kogito-trusty-ui", "kogito-jq",
+           "kogito-kubernetes-client", "kogito-launch-scripts",
+           "kogito-logging", "kogito-management-console",
+           "kogito-task-console", "kogito-persistence",
+           "kogito-runtime-native", "kogito-runtime-jvm",
+           "kogito-builder", "kogito-s2i-core",
+           "kogito-system-user", "kogito-jit-runner",
+           "kogito-custom-truststore"}
 MODULE_FILENAME = "module.yaml"
 MODULES_DIR = "modules"
 

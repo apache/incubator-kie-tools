@@ -1,0 +1,15 @@
+schema_version: 1
+name: org.kie.kogito.jobs.service.mongodb
+version: "2.0.0-snapshot"
+
+artifacts:
+  - name: jobs-service-mongodb-runner.jar
+    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/jobs-service-mongodb/2.0.0-SNAPSHOT/jobs-service-mongodb-2.0.0-20210512.050908-1-runner.jar
+    md5: 23edd8d75049d372af50f44b94802460
+
+execute:
+  - script: configure
+
+modules:
+  install:
+    - name: org.kie.kogito.jobs.service.common

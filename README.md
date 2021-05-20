@@ -527,7 +527,9 @@ Today we have 3 Kogito Component Images:
 * [quay.io/kiegroup/kogito-trusty-infinispan](https://quay.io/kiegroup/kogito-trusty-infinispan)
 * [quay.io/kiegroup/kogito-trusty-redis](https://quay.io/kiegroup/kogito-trusty-redis)
 * [quay.io/kiegroup/kogito-explainability](https://quay.io/kiegroup/kogito-explainability)
-* [quay.io/kiegroup/kogito-jobs-service](htps://quay.io/kiegroup/kogito-jobs-service)
+* [quay.io/kiegroup/kogito-jobs-service-ephemeral](https://quay.io/kiegroup/kogito-jobs-service-ephemeral) 
+* [quay.io/kiegroup/kogito-jobs-service-infinispan](https://quay.io/kiegroup/kogito-jobs-service-infinispan)
+* [quay.io/kiegroup/kogito-jobs-service-mongodb](https://quay.io/kiegroup/kogito-jobs-service-mongodb)
 * [quay.io/kiegroup/kogito-management-console](https://quay.io/kiegroup/kogito-management-console)
 * [quay.io/kiegroup/kogito-task-console](https://quay.io/kiegroup/kogito-task-console)
 * [quay.io/kiegroup/kogito-trusty-ui](https://quay.io/kiegroup/kogito-trusty-ui)
@@ -623,28 +625,37 @@ To know what configurations this image accepts please take a look [here](kogito-
 The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Trusty Service 
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
 
-### Kogito Jobs Service Component Image
+### Kogito Jobs Service Component Images
 
 The Kogito Jobs Service is a dedicated lightweight service responsible for scheduling jobs that aim at firing at a given time. 
-It does not execute the job itself but it triggers a callback that could be an HTTP request on a given endpoint specified 
+It does not execute the job itself, but it triggers a callback that could be an HTTP request on a given endpoint specified 
 on the job request, or any other callback that could be supported by the service. 
-For more information please visit this (link)[https://github.com/kiegroup/kogito-runtimes/wiki/Job-Service]
+For more information please visit this [link](https://github.com/kiegroup/kogito-runtimes/wiki/Job-Service).
 
+Today, the Jobs service contains two images:
+
+- [ephemeral](kogito-jobs-service-ephemeral-overrides.yaml)
+- [infinispan](kogito-jobs-service-infinispan-overrides.yaml)
+- [mongodb](kogito-jobs-service-mongodb-overrides.yaml)
 
 Basic usage:
 
 ```bash
-$ docker run -it quay.io/kiegroup/kogito-jobs-service:latest
+$ docker run -it quay.io/kiegroup/kogito-jobs-service-ephemeral:latest
 ```
 
-To enable debug just use this env while running this image:
+To enable debug on the Jobs Service images, set the ` SCRIPT_DEBUG` to `true`, example: 
 
 ```bash
-docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-jobs-service:latest
+docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-jobs-service-infinispan:latest
 ```
+
 You should notice a few debug messages being printed in the system output.
 
-To know what configurations this image accepts please take a look [here](kogito-jobs-service-overrides.yaml) on the **envs** section.
+The ephemeral image does not have external dependencies like a backend persistence provider, it uses in-memory persistence
+while working with Jobs Services `infinispan` and `mongodb` variants, it will need to have an Infinispan and MongoDB server,
+respectively, previously running.
+
 
 The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Jobs Service
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications
