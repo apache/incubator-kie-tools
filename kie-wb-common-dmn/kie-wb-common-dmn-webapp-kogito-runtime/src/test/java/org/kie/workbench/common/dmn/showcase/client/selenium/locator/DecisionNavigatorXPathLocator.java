@@ -72,7 +72,7 @@ public class DecisionNavigatorXPathLocator implements XPathLocator {
      */
     public static DecisionNavigatorXPathLocator node(final String nodeName) {
         return new DecisionNavigatorXPathLocator(
-                String.format("//div[@id='decision-graphs-content']//ul/li[@title='%s']/div",
+                String.format("//div[@id='decision-graphs-content']//ul/li[contains(@title,'%s')]/div",
                               nodeName));
     }
 

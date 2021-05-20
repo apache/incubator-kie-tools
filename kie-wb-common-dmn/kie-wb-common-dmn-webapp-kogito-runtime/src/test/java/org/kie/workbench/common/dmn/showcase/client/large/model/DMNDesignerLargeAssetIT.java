@@ -55,4 +55,16 @@ public class DMNDesignerLargeAssetIT extends DMNDesignerBaseIT {
             decisionNavigator.assertItemIsPresent(DecisionNavigatorXPathLocator.node("Decision " + i));
         }
     }
+
+    @Test
+    public void testUniqueNodesWithLayout() throws Exception {
+        final String expected = loadResource("large-model-nodes-38-unique-layout.xml");
+        setContent(expected);
+
+        final String actual = getContent();
+        assertThat(actual).isNotBlank();
+
+        decisionNavigator.assertItemsMatch(DecisionNavigatorXPathLocator.node("anonym_"),
+                                           39); // 38 nodes + 1 diagram root
+    }
 }
