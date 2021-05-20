@@ -15,52 +15,60 @@
  */
 
 import * as React from "react";
-import { useRef } from "react";
-import { ResourcesHolderItem, ResourcesHolder } from "../util/ResourcesHolder";
+import { SetStateAction, useRef } from "react";
+import { ContentType, ResourceContent } from "@kogito-tooling/workspace/dist/api";
+
+export interface UploadedFile {
+  name: string;
+  value: ResourceContent;
+}
 
 interface Props {
   allowDownload: boolean;
   allowUpload: boolean;
-  onView: (resource: ResourcesHolderItem) => void;
-  resourcesHolder: ResourcesHolder;
-  onResourceChange: () => void;
+  onView: (resource: UploadedFile) => void;
+  files: UploadedFile[];
+  setFiles: React.Dispatch<SetStateAction<UploadedFile[]>>;
   ouiaId?: string;
   ouiaSafe?: boolean;
 }
-export const FileLoader: React.FC<Props> = ({
-  allowDownload,
-  allowUpload,
-  onView,
-  resourcesHolder,
-  onResourceChange,
-  ouiaId,
-  ouiaSafe,
-}) => {
+
+export const FileLoader: React.FC<Props> = (props: Props) => {
   const fileInput = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
     if (fileInput!.current!.files!.length > 0) {
-      Array.from(fileInput!.current!.files!).forEach((f) => {
-        resourcesHolder.loadFile(f, onResourceChange);
+      Array.from(fileInput!.current!.files!).forEach((file) => {
+        readUploadedFileAsText(file).then((fileContent) =>
+          props.setFiles((files) => [
+            ...files,
+            { name: file.name, value: { path: file.name, type: ContentType.TEXT, content: fileContent } },
+          ])
+        );
       });
       fileInput.current!.value = "";
     }
   };
-  const remove = (resource: ResourcesHolderItem) => {
-    resourcesHolder.removeFile(resource);
-    onResourceChange();
-  };
-  const download = (resource: ResourcesHolderItem) => {
-    alert(resource.value.content);
-  };
-  const view = (resource: ResourcesHolderItem) => {
-    onView(resource);
+  const remove = (resource: UploadedFile) => {
+    props.setFiles((files) => {
+      const newFiles = Array.from(files);
+      newFiles.splice(newFiles.indexOf(resource));
+      return newFiles;
+    });
   };
 
-  const renderForm = () => {
-    return (
-      allowUpload && (
+  const download = (resource: UploadedFile) => {
+    alert(resource.value.content);
+  };
+
+  const view = (resource: UploadedFile) => {
+    props.onView(resource);
+  };
+
+  const renderedForm = (
+    <>
+      {props.allowUpload && (
         <form onSubmit={handleSubmit} data-ouia-component-type="file-upload-form">
           <label>
             File to upload:&nbsp;
@@ -68,54 +76,69 @@ export const FileLoader: React.FC<Props> = ({
           </label>
           <button type="submit">Submit</button>
         </form>
-      )
-    );
-  };
-  const renderFiles = () => {
-    return (
-      <ul data-ouia-component-type="file-list">
-        {Array.from(resourcesHolder.resources).map(([key, value]) => {
-          const item: ResourcesHolderItem = { name: key, value: value };
-          return (
-            <li data-ouia-component-type="file-list-item" data-ouia-component-id={item.name} key={item.name}>
-              <span>{item.name}</span>
+      )}
+    </>
+  );
+
+  const renderedFiles = (
+    <ul data-ouia-component-type="file-list">
+      {props.files.map((file) => {
+        const item: UploadedFile = { name: file.name, value: file.value };
+        return (
+          <li data-ouia-component-type="file-list-item" data-ouia-component-id={item.name} key={item.name}>
+            <span>{item.name}</span>
+            <button
+              data-ouia-component-type="file-list-item-button"
+              data-ouia-component-id="view"
+              onClick={() => view(item)}
+            >
+              view
+            </button>
+            {props.allowDownload && (
               <button
                 data-ouia-component-type="file-list-item-button"
-                data-ouia-component-id="view"
-                onClick={(it) => view(item)}
+                data-ouia-component-id="download"
+                onClick={() => download(item)}
               >
-                view
+                download
               </button>
-              {allowDownload && (
-                <button
-                  data-ouia-component-type="file-list-item-button"
-                  data-ouia-component-id="download"
-                  onClick={(it) => download(item)}
-                >
-                  download
-                </button>
-              )}
-              <button
-                data-ouia-component-type="file-list-item-button"
-                data-ouia-component-id="remove"
-                onClick={(it) => remove(item)}
-              >
-                remove
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    );
-  };
+            )}
+            <button
+              data-ouia-component-type="file-list-item-button"
+              data-ouia-component-id="remove"
+              onClick={() => remove(item)}
+            >
+              remove
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  );
+
   return (
     <div
       data-ouia-component-type="file-loader"
-      data-ouia-component-id={ouiaId}
-      data-ouia-safe={ouiaSafe ? ouiaSafe : true}
+      data-ouia-component-id={props.ouiaId}
+      data-ouia-safe={props.ouiaSafe ? props.ouiaSafe : true}
     >
-      {allowUpload && renderForm()}
-      {renderFiles()}
+      {props.allowUpload && renderedForm}
+      {renderedFiles}
     </div>
   );
 };
+
+function readUploadedFileAsText(inputFile: File): Promise<string> {
+  const temporaryFileReader = new FileReader();
+
+  return new Promise((resolve, reject) => {
+    temporaryFileReader.onerror = () => {
+      temporaryFileReader.abort();
+      reject(new DOMException("Problem parsing input file."));
+    };
+    temporaryFileReader.onload = () => {
+      resolve(temporaryFileReader!.result as string);
+    };
+    temporaryFileReader.readAsText(inputFile);
+  });
+}

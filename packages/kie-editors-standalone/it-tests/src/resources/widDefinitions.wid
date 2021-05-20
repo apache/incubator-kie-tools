@@ -1,4 +1,3 @@
-export const customWorkItemWid = `
 [
   [
     "name" : "CreateCustomer",
@@ -22,4 +21,4 @@ export const customWorkItemWid = `
     ],
     "icon" : "defaultemailicon.gif",
   ]
-]`;
+]
