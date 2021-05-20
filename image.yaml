@@ -2,10 +2,7 @@ schema_version: 1
 
 name: "kogito-image-real-name-on-overrides-file"
 version: "2.0.0-snapshot"
-# until this issue is not fixed use 8.0 tag.
-# https://github.com/rpm-software-management/microdnf/issues/50
-# https://bugzilla.redhat.com/show_bug.cgi?id=1769831
-from: "registry.access.redhat.com/ubi8/ubi-minimal:8.0"
+from: "registry.access.redhat.com/ubi8/ubi-minimal:latest"
 
 labels:
   - name: "io.openshift.s2i.scripts-url"
