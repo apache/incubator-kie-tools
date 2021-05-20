@@ -3,6 +3,9 @@ name: "Bump Version"
 on:
   workflow_dispatch:
     inputs:
+      release_version:
+        description: "Release version"
+        required: true
       new_version:
         description: "New version"
         required: true
@@ -17,6 +20,22 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
+      - name: Set release version
+        shell: bash
+        run: ./bump_version.sh ${{ github.event.inputs.release_version }}
+
+      - name: Commit new release files
+        run: |
+          git config --local user.email "kietooling@gmail.com"
+          git config --local user.name "Kogito Tooling Bot"
+          git commit -m "Release ${{ github.event.inputs.release_version }}" -a
+        
+      - name: Push release branch
+        uses: ad-m/github-push-action@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+          branch: '${{ github.event.inputs.release_version }}-release'
 
       - name: Bump version
         shell: bash
