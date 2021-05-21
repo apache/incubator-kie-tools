@@ -14,8 +14,8 @@
     "lint": "echo 'Linting..'",
     "test": "jest --passWithNoTests",
     "test:clearCache": "jest --clearCache",
-    "build:dev": "rm -rf dist && webpack --env dev",
-    "build:prod": "yarn run lint && yarn test && rm -rf dist && webpack"
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "yarn run lint && yarn test && rimraf dist && webpack"
   },
   "dependencies": {
     "@kogito-tooling/i18n": "0.10.0",

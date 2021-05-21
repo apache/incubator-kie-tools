@@ -120,9 +120,9 @@
     "compile": "webpack",
     "watch": "webpack",
     "test": "echo 'No tests to run.'",
-    "test:it": "rm -rf ./test-resource && rm -rf ./out && tsc --skipLibCheck --sourceMap true && extest setup-and-run --yarn -u -e ./test-resources -o src/ui-test/settings.json \"out/ui-test/*.test.js\"",
-    "test:it:insider": "rm -rf ./test-resource && rm -rf ./out && tsc --skipLibCheck --sourceMap true && extest setup-and-run -t insider --yarn -u -e ./test-resources -o src/ui-test/settings.json \"out/ui-test/*.test.js\"",
-    "build:dev": "rm -rf dist && webpack --env dev",
+    "test:it": "rimraf ./test-resource && rimraf ./out && tsc --skipLibCheck --sourceMap true && extest setup-and-run --yarn -u -e ./test-resources -o src/ui-test/settings.json \"out/ui-test/*.test.js\"",
+    "test:it:insider": "rimraf ./test-resource && rimraf ./out && tsc --skipLibCheck --sourceMap true && extest setup-and-run -t insider --yarn -u -e ./test-resources -o src/ui-test/settings.json \"out/ui-test/*.test.js\"",
+    "build:dev": "rimraf dist && webpack --env dev",
     "build:prod:linux:darwin": "webpack && yarn run test && yarn run package:prod",
     "build:prod:windows": "webpack && yarn run test && yarn run package:prod",
     "build:prod": "run-script-os"

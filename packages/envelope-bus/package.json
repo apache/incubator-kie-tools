@@ -13,8 +13,8 @@
   "scripts": {
     "lint": "echo 'Linting..'",
     "test": "jest --silent --verbose --passWithNoTests",
-    "build:dev": "rm -rf dist && webpack --env dev",
-    "build:prod": "yarn run lint && yarn test && rm -rf dist && webpack"
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "yarn run lint && yarn test && rimraf dist && webpack"
   },
   "babel": {
     "presets": [

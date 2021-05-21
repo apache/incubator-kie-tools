@@ -55,12 +55,14 @@ describe("Bpmn Workitem E2E Test.", () => {
 
     cy.editor("bpmn-workitem")
       .find("[data-field='explorerPanelBody']")
+      .wait(1000)
       .scrollIntoView()
       .should("be.visible")
       .click({ force: true });
 
     cy.editor("bpmn-workitem")
       .find("[data-field='explorerPanelBody']")
+      .wait(1000)
       .scrollIntoView()
       .should("be.visible")
       .find("a.gwt-Anchor")
@@ -145,7 +147,13 @@ describe("Bpmn Workitem E2E Test.", () => {
     });
 
     it("Data assignments of custom work item tasks are not disabled", () => {
-      cy.wrap(propertyItems).find("a").contains("Data Assignments").should("not.be.disabled").click().scrollIntoView();
+      cy.wrap(propertyItems)
+        .find("a")
+        .contains("Data Assignments")
+        .should("not.be.disabled")
+        .click()
+        .wait(1000)
+        .scrollIntoView();
     });
 
     describe("Custom workitem task has expected data inputs and data output assignments.", () => {
@@ -254,6 +262,7 @@ describe("Bpmn Workitem E2E Test.", () => {
 
       cy.editor("bpmn-workitem")
         .find("[data-field='explorerPanelBody']")
+        .wait(1000)
         .scrollIntoView()
         .should("be.visible")
         .find("a.gwt-Anchor")

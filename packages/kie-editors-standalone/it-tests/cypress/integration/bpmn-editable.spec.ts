@@ -30,6 +30,7 @@ describe("Bpmn Editable.", () => {
 
     cy.editor("bpmn-editable")
       .find("[data-field='explorerPanelBody']")
+      .wait(1000)
       .scrollIntoView()
       .should("be.visible")
       .find("a.gwt-Anchor")
