@@ -65,6 +65,8 @@ const loadEditorInternal = (options: Record<string, any>, editorIds: string[]) =
       }
     });
 
+  cy.wait(3000);
+
   Cypress.log({ name: "loadEditor", message: `Wait for editor ${editorIds} to load.` });
 };
 

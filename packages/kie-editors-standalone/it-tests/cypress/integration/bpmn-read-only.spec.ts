@@ -197,7 +197,7 @@ describe("Bpmn Read Only.", () => {
       });
 
       it("Process advanced (Advanced section) section is not disabled", () => {
-        cy.wrap(propertyItems).find("a").contains("Advanced").should("not.be.disabled").click().scrollIntoView();
+        cy.wrap(propertyItems).find("a").contains("Advanced").should("not.be.disabled").click().scrollTo("bottom");
       });
 
       describe("Process metadata attributes rows are displayed as read only", () => {

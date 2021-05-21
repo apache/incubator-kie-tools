@@ -19,7 +19,6 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const common = require("../../../webpack.common.config");
 const { merge } = require("webpack-merge");
 
-
 // This is the fastest configuration to startup this app
 const defaultEnv = { WEBPACK_TS_LOADER_transpileOnly: "true", WEBPACK_minimize: "false" };
 

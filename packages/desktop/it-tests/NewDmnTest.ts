@@ -15,7 +15,7 @@
  */
 
 import { Application, SpectronClient } from "spectron";
-import {initApp, waitLoading} from "./Tools";
+import { initApp, waitLoading } from "./Tools";
 
 let app: Application;
 let client: SpectronClient;

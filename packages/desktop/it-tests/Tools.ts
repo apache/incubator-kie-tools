@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Application, SpectronClient} from "spectron";
+import { Application, SpectronClient } from "spectron";
 import { join } from "path";
 import { platform } from "os";
 
