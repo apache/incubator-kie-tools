@@ -37,6 +37,7 @@ export default class SideBar extends PageFragment {
     const expandedBar: Locator = this.tools.by(SideBar.EXPANDED_BAR_LOCATOR);
 
     if (!(await this.isSideBarOpen(sideBarTitle))) {
+      await this.tools.sleep(1000);
       await byIcon.click();
       await expandedBar.wait(5000).untilVisible();
       // move to make the tooltip diappear
