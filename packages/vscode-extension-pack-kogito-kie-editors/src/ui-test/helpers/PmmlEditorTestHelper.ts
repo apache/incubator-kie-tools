@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { By, WebElement, WebView } from "vscode-extension-tester";
+import { By, WebElement, WebView, until } from "vscode-extension-tester";
 import { assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
 
 export class Modal {
@@ -66,6 +66,9 @@ export default class PmmlEditorTestHelper {
    * @returns Promise<WebElement> promise that resolves to PMML Data Dictionary button.
    */
   private getDataDictionaryButton = async (): Promise<WebElement> => {
+    this.webview.getDriver().wait(
+      until.elementLocated(By.xpath("//button[@data-title='DataDictionary']"))
+    )
     this.dataDictionaryButton = await this.webview.findWebElement(By.xpath("//button[@data-title='DataDictionary']"));
     return this.dataDictionaryButton;
   };
