@@ -219,15 +219,15 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: kogito-jobs-service
+      name: kogito-jobs-service-ephemeral
       annotations:
-        openshift.io/display-name: Runtime image for the Kogito Jobs Service
+        openshift.io/display-name: Runtime image for Kogito in memory Jobs Service
         openshift.io/provider-display-name: Kie Group.
     spec:
       tags:
         - name: '2.0.0-snapshot'
           annotations:
-            description: Runtime image for the Kogito Jobs Service
+            description: Runtime image for Kogito in memory Jobs Service
             iconClass: icon-jbpm
             tags: kogito,jobs-service
             supports: out-of-box process timers
@@ -236,7 +236,49 @@ items:
             type: Local
           from:
             kind: DockerImage
-            name: quay.io/kiegroup/kogito-jobs-service:2.0.0-snapshot
+            name: quay.io/kiegroup/kogito-jobs-service-ephemeral:2.0.0-snapshot
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: kogito-jobs-service-infinispan
+      annotations:
+        openshift.io/display-name: Runtime image for Kogito Jobs Service based on Infinispan
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '2.0.0-snapshot'
+          annotations:
+            description: Runtime image for Kogito Jobs Service based on Infinispan
+            iconClass: icon-jbpm
+            tags: kogito,jobs-service
+            supports: out-of-box process timers
+            version: '2.0.0-snapshot'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-jobs-service-infinispan:2.0.0-snapshot
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: kogito-jobs-service-mongodb
+      annotations:
+        openshift.io/display-name: Runtime image for Kogito Jobs Service based on Mongodb
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '2.0.0-snapshot'
+          annotations:
+            description: Runtime image for Kogito Jobs Service based on Mongodb
+            iconClass: icon-jbpm
+            tags: kogito,jobs-service
+            supports: out-of-box process timers
+            version: '2.0.0-snapshot'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-jobs-service-mongodb:2.0.0-snapshot
   - kind: ImageStream
     apiVersion: v1
     metadata:

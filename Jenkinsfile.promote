@@ -77,18 +77,6 @@ pipeline {
                         }
                         sh updateArtifactCmd
 
-                        // Debug purpose in case of issue
-                        sh 'cat modules/kogito-data-index-infinispan/module.yaml'
-                        sh 'cat modules/kogito-data-index-mongodb/module.yaml'
-                        sh 'cat modules/kogito-trusty-infinispan/module.yaml'
-                        sh 'cat modules/kogito-trusty-redis/module.yaml'
-                        sh 'cat modules/kogito-explainability/module.yaml'
-                        sh 'cat modules/kogito-jobs-service/module.yaml'
-                        sh 'cat modules/kogito-management-console/module.yaml'
-                        sh 'cat modules/kogito-task-console/module.yaml'
-                        sh 'cat modules/kogito-trusty-ui/module.yaml'
-                        sh 'cat modules/kogito-jit-runner/module.yaml'
-
                         try {
                             githubscm.commitChanges('Setup Maven artifacts to released ones')
                             githubscm.pushObject('origin', getPRSourceBranch(), getBotAuthorCredsID())

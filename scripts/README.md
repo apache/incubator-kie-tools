@@ -110,7 +110,7 @@ This script will help you while building images and test in a local OpenShift Cl
 images built in your local registry with the tag following the patter: X.Z, e.g. 0.10:
 
 ```text
-quay.io/kiegroup/kogito-jobs-service:0.10
+quay.io/kiegroup/kogito-jobs-service-ephemeral:0.10
 ```
 
 The [Makefile](../Makefile) has an option to do it, it can be invoked as the following sample:
@@ -191,13 +191,16 @@ The command will update the needed files with the new URL:
 
 - kogito-data-index-infinispan/module.yaml
 - kogito-data-index-mongodb/module.yaml
-- kogito-jobs-service/module.yaml
+- kogito-explainability/module.yaml
+- kogito-jit-runner/module.yaml
+- kogito-jobs-service-ephemeral/module.yaml
+- kogito-jobs-service-infinispan/module.yaml
+- kogito-jobs-service-mongodb/module.yaml
 - kogito-management-console/module.yaml
+- kogito-task-console/module.yaml
 - kogito-trusty-ui/module.yaml
 - kogito-trusty-infinispan/module.yaml
 - kogito-trusty-redis/module.yaml
-- kogito-jit-runner/module.yaml
-- kogito-explainability/module.yaml
 
 ### Update tests script
 

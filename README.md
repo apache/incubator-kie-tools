@@ -792,7 +792,9 @@ imagestream.image.openshift.io/kogito-data-index-infinispan created
 imagestream.image.openshift.io/kogito-data-index-mongodb created
 imagestream.image.openshift.io/kogito-trusty-infinispan created
 imagestream.image.openshift.io/kogito-trusty-redis created
-imagestream.image.openshift.io/kogito-jobs-service created
+imagestream.image.openshift.io/kogito-jobs-service-ephemeral created
+imagestream.image.openshift.io/kogito-jobs-service-infinispan created
+imagestream.image.openshift.io/kogito-jobs-service-mongodb created
 imagestream.image.openshift.io/kogito-management-console created
 
 # performing a new build
@@ -980,7 +982,9 @@ With this Makefile you can:
      $ make build-image image_name=kogito-trusty-infinispan
      $ make build-image image_name=kogito-trusty-redis
      $ make build-image image_name=kogito-explainability
-     $ make build-image image_name=kogito-jobs-service 
+     $ make build-image image_name=kogito-jobs-service-ephemeral
+     $ make build-image image_name=kogito-jobs-service-infinispan
+     $ make build-image image_name=kogito-jobs-service-mongodb
      $ make build-image image_name=kogito-management-console
      $ make build-image image_name=kogito-trusty-ui
      $ make build-image image_name=kogito-jit-runner
@@ -1048,7 +1052,10 @@ Below you can find all modules used to build the Kogito Images
 - [kogito-graalvm-installer](modules/kogito-graalvm-installer): Installs the GraalVM on the target Image.
 - [kogito-graalvm-scripts](modules/kogito-graalvm-scripts): Configures the GraalVM on the target image and provides custom configuration script. 
 - [kogito-image-dependencies](modules/kogito-image-dependencies): Installs rpm packages on the target image. Contains common dependencies for Kogito Images.
-- [kogito-jobs-service](modules/kogito-jobs-service): Installs and Configure the jobs-service jar inside the image
+- [kogito-jobs-service-common](modules/kogito-jobs-service-common): Job service common module
+- [kogito-jobs-service-ephemeral](modules/kogito-jobs-service-ephemeral): Installs and Configure the in-memory jobs-service jar inside the image
+- [kogito-jobs-service-infinispan](modules/kogito-jobs-service-infinispan): Installs and Configure the infinispan jobs-service jar inside the image
+- [kogito-jobs-service-mongodb](modules/kogito-jobs-service-mongodb): Installs and Configure the mongodb jobs-service jar inside the image
 - [kogito-jq](modules/kogito-jq): Provides jq binary.
 - [kogito-kubernetes-client](modules/kogito-kubernetes-client): Provides a simple wrapper to interact with Kubernetes API.
 - [kogito-launch-scripts](modules/kogito-launch-scripts): Main script for all images, it contains the startup script for Kogito Images
@@ -1073,7 +1080,9 @@ Please inspect the images overrides files to learn which modules are installed o
 - [quay.io/kiegroup/kogito-trusty-infinispan](kogito-trusty-infinispan-overrides.yaml)
 - [quay.io/kiegroup/kogito-trusty-redis](kogito-trusty-redis-overrides.yaml)
 - [quay.io/kiegroup/kogito-explainability](kogito-explainability-overrides.yaml)
-- [quay.io/kiegroup/kogito-jobs-service](kogito-jobs-service-overrides.yaml)
+- [quay.io/kiegroup/kogito-jobs-service-ephemeral](kogito-jobs-service-ephemeral-overrides.yaml)
+- [quay.io/kiegroup/kogito-jobs-service-infinispan](kogito-jobs-service-infinispan-overrides.yaml)
+- [quay.io/kiegroup/kogito-jobs-service-mongodb](kogito-jobs-service-mongodb-overrides.yaml)
 - [quay.io/kiegroup/kogito-management-console](kogito-management-console-overrides.yaml)
 - [quay.io/kiegroup/kogito-trusty-ui](kogito-trusty-ui-overrides.yaml)
 - [quay.io/kiegroup/kogito-jit-runner](kogito-jit-runner-overrides.yaml)
@@ -1224,7 +1233,7 @@ As an example, let's execute the tests from the [kogito-s2i-core](modules/kogito
 The best way to start to interact with Bats tests is take a look on its [documentation](https://github.com/sstephenson/bats) 
 and after use the existing ones as example.
 
-[Here](modules/kogito-jobs-service/tests/bats) you can find a basic example about how our Bats tests
+[Here](modules/kogito-jobs-service-common/tests/bats) you can find a basic example about how our Bats tests
 are structured.
 
 
