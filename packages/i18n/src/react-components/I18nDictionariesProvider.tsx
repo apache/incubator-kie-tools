@@ -19,7 +19,6 @@ import { useCallback, useMemo, useState } from "react";
 import { I18nDefaults, I18n, I18nDictionaries, ReferenceDictionary } from "../core";
 import { I18nContextType } from "./I18nContext";
 
-// tslint:disable-next-line:interface-name
 export interface I18nDictionariesProviderProps<D extends ReferenceDictionary> {
   defaults: I18nDefaults<D>;
   dictionaries: I18nDictionaries<D>;

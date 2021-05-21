@@ -20,7 +20,7 @@ export class ChromeRouter {
     if (relativePath) {
       return `${this.getTargetOrigin()}/${relativePath}`;
     } else {
-      return this.getTargetOrigin();
+      return this.getTargetOrigin() ?? "";
     }
   }
 

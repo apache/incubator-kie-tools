@@ -55,7 +55,7 @@ class ChromeResourceContentService implements ResourceContentService {
         ...this.repoInfo,
       })
       .then((v) => {
-        const filteredPaths = v.data.tree.filter((file) => file.type === "blob").map((file) => file.path);
+        const filteredPaths = v.data.tree.filter((file) => file.type === "blob").map((file) => file.path!);
         const result = minimatch.match(filteredPaths, pattern);
         return new ResourcesList(pattern, result);
       })

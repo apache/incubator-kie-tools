@@ -36,7 +36,7 @@ interface Props {
   onSetContentError: () => void;
 }
 
-const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEditorRef, Props> = (
+const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEditorRef | undefined, Props> = (
   props,
   forwardedRef
 ) => {
@@ -101,7 +101,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
     forwardedRef,
     () => {
       if (!editor) {
-        return null;
+        return undefined;
       }
 
       return {

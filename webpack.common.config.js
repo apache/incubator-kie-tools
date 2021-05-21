@@ -23,7 +23,7 @@ module.exports = (env, argv) => {
   const transpileOnly =
     (env["WEBPACK_TS_LOADER_transpileOnly"] ?? process.env["WEBPACK_TS_LOADER_transpileOnly"] ?? "false") === "true";
 
-  const minimize = (env["WEBPACK_minimize"] ?? process.env["WEBPACK_minimize"] ?? "true") === "true";
+  const minimize = env.dev ? false : (env["WEBPACK_minimize"] ?? process.env["WEBPACK_minimize"] ?? "true") === "true";
 
   console.info("Webpack :: TS Loader :: transpileOnly: " + transpileOnly);
   console.info("Webpack :: minimize: " + minimize);

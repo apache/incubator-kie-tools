@@ -53,13 +53,11 @@ export type Props = EmbeddedEditorChannelApiOverrides & {
 /**
  * Forward reference for the `EmbeddedEditor` to support consumers to call upon embedded operations.
  */
-export type EmbeddedEditorRef =
-  | (EditorApi & {
-      isReady: boolean;
-      getStateControl(): StateControl;
-      getEnvelopeServer(): EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
-    })
-  | null;
+export type EmbeddedEditorRef = EditorApi & {
+  isReady: boolean;
+  getStateControl(): StateControl;
+  getEnvelopeServer(): EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
+};
 
 const containerStyles: CSS.Properties = {
   display: "flex",
@@ -73,7 +71,7 @@ const containerStyles: CSS.Properties = {
   overflow: "hidden",
 };
 
-const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRef, Props> = (
+const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditorRef | undefined, Props> = (
   props: Props,
   forwardedRef
 ) => {
@@ -138,7 +136,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     forwardedRef,
     () => {
       if (!iframeRef.current) {
-        return null;
+        return undefined;
       }
 
       return {

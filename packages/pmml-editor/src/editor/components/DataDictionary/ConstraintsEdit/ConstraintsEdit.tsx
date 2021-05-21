@@ -104,7 +104,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   };
 
   const handleRangeAdd = () => {
-    const updatedRanges = [...ranges];
+    const updatedRanges = [...(ranges ?? [])];
     updatedRanges.push({
       start: {
         value: "",
@@ -124,7 +124,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   };
 
   const handleRangeDelete = (index: number) => {
-    const updatedRanges = [...ranges];
+    const updatedRanges = [...(ranges ?? [])];
     updatedRanges.splice(index, 1);
     onSave({
       constraints: {
@@ -135,7 +135,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   };
 
   const handleEnumsChange = (value: string, index: number) => {
-    const updatedEnums = [...enums];
+    const updatedEnums = [...(enums ?? [])];
     updatedEnums[index] = value;
     onSave({
       constraints: {
@@ -146,7 +146,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   };
 
   const handleEnumsDelete = (index: number) => {
-    const updatedEnums = [...enums];
+    const updatedEnums = [...(enums ?? [])];
     updatedEnums.splice(index, 1);
     onSave({
       constraints: {
@@ -157,7 +157,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   };
 
   const handleAddEnum = () => {
-    const updatedEnums = [...enums, ""];
+    const updatedEnums = [...(enums ?? []), ""];
     onSave({
       constraints: {
         type: ConstraintType.ENUMERATION,

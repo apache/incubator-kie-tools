@@ -297,7 +297,7 @@ export class GithubService {
 
   public async getGistRawUrlFromId(gistId: string, gistFilename: string | undefined): Promise<string> {
     const { data } = await this.octokit.gists.get({ gist_id: gistId });
-    const filename = gistFilename ? gistFilename : Object.keys(data.files)[0];
+    const filename = gistFilename ? gistFilename : Object.keys(data.files!)[0];
     return this.removeCommitHashFromGistRawUrl((data as any).files[filename].raw_url);
   }
 

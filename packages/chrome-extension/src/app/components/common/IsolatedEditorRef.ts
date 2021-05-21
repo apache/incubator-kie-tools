@@ -18,13 +18,13 @@ import { useCallback, useState } from "react";
 
 export type IsolatedEditorRef = {
   setContent(content: string): Promise<void>;
-} | null;
+};
 
 export function useIsolatedEditorRef() {
-  const [isolatedEditor, setIsolatedEditor] = useState<IsolatedEditorRef | undefined>(null);
+  const [isolatedEditor, setIsolatedEditor] = useState<IsolatedEditorRef>();
 
   const isolatedEditorRef = useCallback((node: IsolatedEditorRef) => {
-    if (node !== null) {
+    if (node) {
       setIsolatedEditor(node);
     }
   }, []);

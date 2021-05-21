@@ -32,7 +32,7 @@ export interface EditorEnvelopeViewApi<E extends Editor> {
   setLocale: (locale: string) => void;
 }
 
-export const EditorEnvelopeViewRef: React.RefForwardingComponent<EditorEnvelopeViewApi<Editor>, Props> = (
+export const EditorEnvelopeViewRef: React.ForwardRefRenderFunction<EditorEnvelopeViewApi<Editor>, Props> = (
   props: Props,
   forwardingRef
 ) => {
