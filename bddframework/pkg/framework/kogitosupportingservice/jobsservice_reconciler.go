@@ -24,7 +24,7 @@ import (
 
 const (
 	// DefaultJobsServiceImageName is the default image name for the Jobs Service image
-	DefaultJobsServiceImageName = "kogito-jobs-service"
+	DefaultJobsServiceImageName = "kogito-jobs-service-ephemeral"
 	// DefaultJobsServiceName is the default name for the Jobs Services instance service
 	DefaultJobsServiceName = "jobs-service"
 )
