@@ -150,7 +150,14 @@ describe("Bpmn Read Only.", () => {
       });
 
       it("Process variables (Process Data section) section is not disabled", () => {
-        cy.wrap(propertyItems).find("a").contains("Process Data").should("not.be.disabled").click().scrollIntoView();
+        // Wait for animation to stop before scrolling;
+        cy.wrap(propertyItems)
+          .find("a")
+          .contains("Process Data")
+          .should("not.be.disabled")
+          .click()
+          .wait(1000)
+          .scrollIntoView();
       });
 
       it("Process variables add button is read only", () => {
@@ -197,7 +204,14 @@ describe("Bpmn Read Only.", () => {
       });
 
       it("Process advanced (Advanced section) section is not disabled", () => {
-        cy.wrap(propertyItems).find("a").contains("Advanced").should("not.be.disabled").click().scrollTo("bottom");
+        // Wait for animation to stop before scrolling;
+        cy.wrap(propertyItems)
+          .find("a")
+          .contains("Advanced")
+          .should("not.be.disabled")
+          .click()
+          .wait(1000)
+          .scrollIntoView();
       });
 
       describe("Process metadata attributes rows are displayed as read only", () => {
@@ -243,6 +257,7 @@ describe("Bpmn Read Only.", () => {
             .contains("Global Variables")
             .siblings()
             .first()
+            .wait(1000) // Wait for animation to stop before scrolling;
             .scrollIntoView()
             .should("not.be.disabled")
             .should("be.visible")

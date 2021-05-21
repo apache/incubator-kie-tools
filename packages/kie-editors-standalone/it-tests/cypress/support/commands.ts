@@ -65,6 +65,7 @@ const loadEditorInternal = (options: Record<string, any>, editorIds: string[]) =
       }
     });
 
+  // it takes a while for the editor to display everything correctly even after the loading screen disappears
   cy.wait(20000);
 
   Cypress.log({ name: "loadEditor", message: `Wait for editor ${editorIds} to load.` });
