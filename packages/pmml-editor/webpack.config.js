@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-const path = require("path");
-const CopyPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 const nodeExternals = require("webpack-node-externals");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = (env, argv) => [
   merge(common(env, argv), {
@@ -33,49 +32,10 @@ module.exports = (env, argv) => [
     module: {
       rules: [...pfWebpackOptions.patternflyRules],
     },
-  }),
-  merge(common(env, argv), {
-    entry: {
-      index: "./src/showcase/index.tsx",
-    },
     plugins: [
       new CopyPlugin({
-        patterns: [
-          { from: "./src/showcase/static/resources", to: "./resources" },
-          { from: "./src/showcase/static/index.html", to: "./index.html" },
-          { from: "./src/showcase/static/favicon.ico", to: "./favicon.ico" },
-          { from: "./static/images", to: "./images" },
-        ],
+        patterns: [{ from: "./static/images", to: "./images" }],
       }),
     ],
-    module: {
-      rules: [
-        {
-          test: /\.ttf$/,
-          use: ["file-loader"],
-        },
-        ...pfWebpackOptions.patternflyRules,
-      ],
-    },
-    resolve: {
-      alias: {
-        // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
-        // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
-        // `@kiegroup/monaco-editor`. This way, everything works as expected.
-        "monaco-editor/esm/vs/editor/editor.api": path.resolve(__dirname, "../../node_modules/@kiegroup/monaco-editor"),
-      },
-    },
-    devServer: {
-      historyApiFallback: true,
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: path.join(__dirname),
-      compress: true,
-      port: 8080,
-      open: true,
-      inline: true,
-      hot: true,
-      overlay: true,
-    },
   }),
 ];
