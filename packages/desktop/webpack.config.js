@@ -22,7 +22,7 @@ const externalAssets = require("@kogito-tooling/external-assets-base");
 
 module.exports = async (env, argv) => [
   merge(common(env, argv), {
-    target: "electron-main",
+    target: "electron14-main",
     entry: {
       index: "./src/backend/index.ts",
     },
@@ -60,7 +60,7 @@ module.exports = async (env, argv) => [
     ],
   }),
   merge(common(env, argv), {
-    target: "electron-renderer",
+    target: "electron14-renderer",
     entry: {
       "webview/index": "./src/webview/index.tsx",
     },
