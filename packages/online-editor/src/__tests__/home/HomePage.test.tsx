@@ -34,9 +34,9 @@ jest.mock("react-router", () => {
 });
 
 declare global {
-    interface Global {
-      fetch: Promise<Response>;
-    }
+  interface Global {
+    fetch: Promise<Response>;
+  }
 }
 
 describe("HomePage", () => {

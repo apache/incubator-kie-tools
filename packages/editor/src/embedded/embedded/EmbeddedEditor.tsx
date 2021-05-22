@@ -111,7 +111,14 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
           }
         )
     );
-  }, [props.editorEnvelopeLocator.targetOrigin, props.file.fileExtension, props.file.isReadOnly, props.locale, props.channelType, envelopeMapping?.resourcesPathPrefix]);
+  }, [
+    props.editorEnvelopeLocator.targetOrigin,
+    props.file.fileExtension,
+    props.file.isReadOnly,
+    props.locale,
+    props.channelType,
+    envelopeMapping?.resourcesPathPrefix,
+  ]);
 
   useConnectedEnvelopeServer(envelopeServer, kogitoEditorChannelApiImpl);
 

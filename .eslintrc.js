@@ -35,7 +35,6 @@ module.exports = {
     "no-case-declarations": "off",
     "@typescript-eslint/ban-ts-comment": "off",
 
-
     // REACT
 
     "react/prop-types": "off",
