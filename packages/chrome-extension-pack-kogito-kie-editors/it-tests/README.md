@@ -1,12 +1,12 @@
 # Kogito Google Chrome extension selenium tests
 
-Integration tests for Kogito Chrome extrension. Uses selenium to test the Kogito plugin in Chrome browser.
+Integration tests for Kogito Chrome extension. Uses selenium to test the Kogito plugin in Chrome browser.
 
 ## Installation
 
 1. Set `UNZIPPED_CHROME_EXTENSION_PATH` variable
 
-Tests need `UNZIPPED_CHROME_EXTENSION_PATH` environment variable to be set to directory with unzipped Chome Extension.
+Tests need `UNZIPPED_CHROME_EXTENSION_PATH` environment variable to be set to directory with unzipped Chrome Extension.
 If the variable is not set, `chrome-extension-pack-kogito-kie-editors/dist` is used.
 
 ```bash
@@ -56,7 +56,7 @@ afterEach(async () => {
 
 ## Framework
 
-- `Tools` class shoud be inicialized before every test by `let tools = await Tools.init(TEST_NAME)`. It creates selenium driver and it serves as basic entry point for the framework.
+- `Tools` class should be initialized before every test by `let tools = await Tools.init(TEST_NAME)`. It creates selenium driver and serves as basic entry point for the framework.
   After every test `finishTest()` method should be called to quit the driver and create screenshots.
 - `Page` class represents single browser page. Page can be created by `await tools.openPage(PageClass, url)` or `await tools.createPage(PageClass)`.
 - `PageFragment` class represents part of Page defined by root `Element`. PageFragment can be created by `await tools.createPageFragment(PageFragmentClass, rootElement)`.

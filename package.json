@@ -19,7 +19,8 @@
     "npm-tt": "npm-tt",
     "publish:productization": "lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/online-editor --ignore @kogito-tooling/desktop --ignore @kogito-tooling/hub --ignore @kogito-tooling/pmml-editor -- npm publish --access public",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@kogito-tooling/bpmn-editor-unpacked": "^8.1.0",
@@ -73,6 +74,7 @@
     "file-loader": "^6.2.0",
     "glob": "^7.1.6",
     "html-webpack-plugin": "^5.3.1",
+    "husky": "^6.0.0",
     "identity-obj-proxy": "^3.0.0",
     "is-plain-object": "^5.0.0",
     "jest": "^26.6.3",
