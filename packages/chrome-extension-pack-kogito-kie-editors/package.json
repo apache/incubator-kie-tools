@@ -20,7 +20,7 @@
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "yarn run lint && yarn test && rimraf dist && webpack",
     "serve-envelope": "webpack serve",
-    "test:it": "jest"
+    "test:it": "jest --runInBand"
   },
   "babel": {
     "presets": [
