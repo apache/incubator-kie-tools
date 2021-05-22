@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        node: [16.1.0]
+        node: [14.17.0]
         yarn: [1.22.10]
         lerna: [4.0.0]
 
@@ -89,7 +89,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        node: [16.1.0]
+        node: [14.17.0]
         yarn: [1.22.10]
         lerna: [4.0.0]
 
@@ -215,7 +215,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        node: [16.1.0]
+        node: [14.17.0]
         yarn: [1.22.10]
         lerna: [4.0.0]
 
@@ -270,7 +270,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        node: [16.1.0]
+        node: [14.17.0]
         yarn: [1.22.10]
         lerna: [4.0.0]
 
@@ -340,7 +340,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        node: [16.1.0]
+        node: [14.17.0]
         yarn: [1.22.10]
         lerna: [4.0.0]
 
