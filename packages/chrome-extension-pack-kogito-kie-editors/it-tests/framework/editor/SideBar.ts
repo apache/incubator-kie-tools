@@ -37,7 +37,6 @@ export default class SideBar extends PageFragment {
     const expandedBar: Locator = this.tools.by(SideBar.EXPANDED_BAR_LOCATOR);
 
     if (!(await this.isSideBarOpen(sideBarTitle))) {
-
       for (let i = 0; await expandedBar.wait().isVisible(); i++) {
         await byIcon.click();
         await this.tools.sleep(1000);
