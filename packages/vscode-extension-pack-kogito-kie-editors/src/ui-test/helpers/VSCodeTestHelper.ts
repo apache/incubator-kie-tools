@@ -126,7 +126,7 @@ export default class VSCodeTestHelper {
     if (fileParentPath == undefined || fileParentPath == "") {
       await this.workspaceSectionView.openItem(this.RESOURCES_ROOT, fileName);
     } else {
-      let pathPieces = fileParentPath.split("/");
+      const pathPieces = fileParentPath.split("/");
       pathPieces.unshift(this.RESOURCES_ROOT);
       await this.workspaceSectionView.openItem(...pathPieces);
       // For some reason openItem() collapses the view it expands so we

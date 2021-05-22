@@ -29,6 +29,10 @@ afterEach(async () => {
   await app.stop();
 });
 
+test("Dummy", async () => {
+  expect(1).toStrictEqual(1);
+});
+
 test("BPMN example", async () => {
   // create new bpmn sample
   const bpmnCard = await client.$("[data-ouia-component-id='new-sample-bpmn-file-card']");

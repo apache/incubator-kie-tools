@@ -82,6 +82,11 @@ class DummyEditorComponent extends React.Component<Props, State> {
   }
 
   public render() {
-    return <div>Here's the dummy content: {this.state.content}</div>;
+    return (
+      <div>
+        {"Here's the dummy content: "}
+        {this.state.content}
+      </div>
+    );
   }
 }

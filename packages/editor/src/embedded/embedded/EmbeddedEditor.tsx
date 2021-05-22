@@ -93,7 +93,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
         props.kogitoEditor_ready?.();
       },
     });
-  }, [stateControl, props.file, props]);
+  }, [stateControl, props]);
 
   const envelopeServer = useMemo(() => {
     return new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
@@ -111,7 +111,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
           }
         )
     );
-  }, [envelopeMapping, props.file, props.editorEnvelopeLocator]);
+  }, [props.editorEnvelopeLocator.targetOrigin, props.file.fileExtension, props.file.isReadOnly, props.locale, props.channelType, envelopeMapping?.resourcesPathPrefix]);
 
   useConnectedEnvelopeServer(envelopeServer, kogitoEditorChannelApiImpl);
 

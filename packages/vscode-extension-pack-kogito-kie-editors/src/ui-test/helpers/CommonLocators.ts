@@ -22,7 +22,7 @@ import { By } from "vscode-extension-tester";
  * @param text string to match
  */
 export const aComponentWithText = (text: string): By => {
-  return By.xpath(`//a[text() = \'${text}\']`);
+  return By.xpath(`//a[text() = '${text}']`);
 };
 
 /**
@@ -31,7 +31,7 @@ export const aComponentWithText = (text: string): By => {
  * @param text string to match
  */
 export const spanComponentWithText = (text: string): By => {
-  return By.xpath(`//span[text() = \'${text}\']`);
+  return By.xpath(`//span[text() = '${text}']`);
 };
 
 /**
@@ -40,7 +40,7 @@ export const spanComponentWithText = (text: string): By => {
  * @param text string to match
  */
 export const h3ComponentWithText = (text: string): string => {
-  return `//h3[text() = \'${text}\']`;
+  return `//h3[text() = '${text}']`;
 };
 
 /**
@@ -49,7 +49,7 @@ export const h3ComponentWithText = (text: string): string => {
  * @param text string to match
  */
 export const h5ComponentWithText = (text: string): By => {
-  return By.xpath(`//h5[text() = \'${text}\']`);
+  return By.xpath(`//h5[text() = '${text}']`);
 };
 
 /**
@@ -64,7 +64,7 @@ export const expandedDocksBarE = (): By => {
  * @param title title of the tab to match
  */
 export const tabWithTitle = (title: string): By => {
-  return By.xpath(`//ul/li[@data-ouia-component-type='editor-nav-tab' and @data-ouia-component-id=\'${title}\']/a`);
+  return By.xpath(`//ul/li[@data-ouia-component-type='editor-nav-tab' and @data-ouia-component-id='${title}']/a`);
 };
 
 /**

@@ -37,7 +37,7 @@
     "uuid": "^8.3.2"
   },
   "scripts": {
-    "lint": "echo 'Linting..'",
+    "lint": "yarn eslint ./src --ext .ts,.tsx",
     "test": "jest --silent --verbose",
     "test:clearCache": "jest --clearCache",
     "test:watch": "jest --watch",

@@ -24,5 +24,5 @@ export function useEffectAfterFirstRender(func: () => ReturnType<EffectCallback>
     } else {
       firstRender.current = false;
     }
-  }, deps);
+  }, deps); //eslint-disable-line
 }

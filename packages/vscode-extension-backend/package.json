@@ -61,11 +61,12 @@
     "package:prod": "cross-var \"vsce package --yarn -o ./dist/vscode-extension-backend_$npm_package_version.vsix\"",
     "compile": "webpack",
     "watch": "webpack",
+    "lint": "yarn eslint ./src --ext .ts,.tsx",
     "test": "jest --silent --verbose --passWithNoTests",
     "test:it": "echo 'No tests to run.'",
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod:linux:darwin": "rimraf dist && webpack && yarn run test && yarn run test:it && yarn run package:prod",
-    "build:prod:windows": "rimraf dist && webpack && yarn run test && yarn run package:prod",
+    "build:prod:linux:darwin": "rimraf dist && yarn lint && webpack && yarn run test && yarn run test:it && yarn run package:prod",
+    "build:prod:windows": "rimraf dist && yarn lint && webpack && yarn run test && yarn run package:prod",
     "build:prod": "run-script-os"
   },
   "dependencies": {

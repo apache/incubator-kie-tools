@@ -96,7 +96,7 @@
     "sax": "^1.2.4",
     "selenium-webdriver": "^4.0.0-beta.3",
     "source-map-loader": "^2.0.2",
-    "spectron": "^13.0.0",
+    "spectron": "^14.0.0",
     "start-server-and-test": "^1.12.1",
     "stream": "^0.0.2",
     "string-replace-loader": "^3.0.1",

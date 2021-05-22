@@ -13,7 +13,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "scripts": {
-    "lint": "echo 'Linting...'",
+    "lint": "yarn eslint ./src --ext .ts,.tsx",
     "test": "jest --silent --verbose --passWithNoTests",
     "test:clearCache": "jest --clearCache",
     "build:dev": "rimraf dist && webpack --env dev",

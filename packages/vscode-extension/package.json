@@ -18,9 +18,10 @@
     "build:dev": "rimraf dist && webpack --env dev",
     "compile": "webpack",
     "watch": "webpack",
+    "lint": "yarn eslint ./src --ext .ts,.tsx",
     "test": "jest --silent --verbose",
     "test:clearCache": "jest --clearCache",
-    "build:prod": "yarn test && rimraf dist && webpack"
+    "build:prod": "rimraf dist && yarn lint && yarn test && webpack"
   },
   "dependencies": {
     "@kogito-tooling/backend": "0.10.0",

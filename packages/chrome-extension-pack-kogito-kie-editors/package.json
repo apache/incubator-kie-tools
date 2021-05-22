@@ -15,12 +15,12 @@
     "@kogito-tooling/patternfly-base": "0.10.0"
   },
   "scripts": {
-    "lint": "echo 'Linting...'",
+    "lint": "yarn eslint ./src --ext .ts,.tsx",
     "test": "echo 'No tests to run.'",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "yarn run lint && yarn test && rimraf dist && webpack",
     "serve-envelope": "webpack serve",
-    "test:it": "jest --runInBand"
+    "test:it": "jest"
   },
   "babel": {
     "presets": [

@@ -22,7 +22,7 @@ import { By } from "vscode-extension-tester";
  * @param By locator for pallete item anchors
  */
 export const palletteItemAnchor = (itemName: string): By => {
-  return By.xpath(`//a[.//span[text() = \'${itemName}\']]`);
+  return By.xpath(`//a[.//span[text() = '${itemName}']]`);
 };
 
 /**
@@ -31,7 +31,7 @@ export const palletteItemAnchor = (itemName: string): By => {
  * @returns By locator for list of field containers that contain properties
  */
 export const propertiesFieldContainers = (): By => {
-  return By.xpath(`//div[@class=\'row\']`);
+  return By.xpath(`//div[@class='row']`);
 };
 
 /**

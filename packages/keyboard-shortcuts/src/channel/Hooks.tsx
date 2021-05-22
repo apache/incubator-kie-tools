@@ -49,5 +49,5 @@ export function useSyncedKeyboardEvents(
       element.removeEventListener("keyup", listener);
       element.removeEventListener("keypress", listener);
     };
-  }, [envelopeApi]);
+  }, [envelopeApi, element]);
 }

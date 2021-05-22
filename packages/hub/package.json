@@ -23,7 +23,7 @@
   "scripts": {
     "start": "electron dist",
     "rebuild": "electron-rebuild -f -w sqlite3",
-    "lint": "echo 'Linting..'",
+    "lint": "yarn eslint ./src --ext .ts,.tsx",
     "test": "echo 'No tests to run.'",
     "init": "yarn -f",
     "build:dev": "rimraf dist && webpack --env dev",

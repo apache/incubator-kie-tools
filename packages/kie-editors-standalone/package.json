@@ -19,7 +19,7 @@
     "@kogito-tooling/kie-bc-editors": "0.10.0"
   },
   "scripts": {
-    "lint": "echo 'Linting..'",
+    "lint": "yarn eslint ./src --ext .ts,.tsx",
     "test": "jest --silent --verbose --passWithNoTests",
     "build:preprocessor": "node dist/preprocessor/preprocessor.js",
     "build:dev": "rimraf dist && webpack --env dev --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --env dev --config webpack.package-resources.config.js",

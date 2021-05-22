@@ -20,7 +20,7 @@
     "minimatch": "^3.0.4"
   },
   "scripts": {
-    "lint": "echo 'Linting..'",
+    "lint": "yarn eslint ./src --ext .ts,.tsx",
     "test": "jest --silent --verbose",
     "test:clearCache": "jest --clearCache",
     "build:dev": "rimraf dist && webpack --env dev",

@@ -19,7 +19,7 @@
     "@kogito-tooling/pmml-editor-marshaller": "0.10.0"
   },
   "scripts": {
-    "lint": "echo 'Linting..'",
+    "lint": "yarn eslint ./src --ext .ts,.tsx",
     "test": "jest --verbose",
     "test:clearCache": "jest --clearCache",
     "build:dev": "rimraf dist && webpack --env dev",
