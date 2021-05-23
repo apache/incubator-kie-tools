@@ -21,6 +21,8 @@ import Locator from "../Locator";
 import PageFragment from "../PageFragment";
 import Properties from "./Properties";
 
+const MAX_ATTEMPTS_TO_OPEN_SIDEBAR = 10;
+
 export default class SideBar extends PageFragment {
   private static readonly PROP_BUTTON_LOCATOR = By.xpath("//div[./button[@data-title='Properties']]");
   private static readonly EXPLORER_BUTTON_LOCATOR = By.xpath(
@@ -36,13 +38,14 @@ export default class SideBar extends PageFragment {
   protected async openSideBar(byIcon: Element, sideBarTitle: string): Promise<Element> {
     const expandedBar: Locator = this.tools.by(SideBar.EXPANDED_BAR_LOCATOR);
 
-    for (let i = 0; !(await this.isSideBarOpen(sideBarTitle)) && i < 20; i++) {
+    // Some events might take a while to be registered in the docks icons, so we have to reattempt if it fails.
+    for (let i = 0; !(await this.isSideBarOpen(sideBarTitle)) && i < MAX_ATTEMPTS_TO_OPEN_SIDEBAR; i++) {
       await byIcon.click();
       await this.tools.sleep(1000);
     }
 
     // confirms that it's open.
-    await expandedBar.wait(1300).untilVisible();
+    await expandedBar.wait(2000).untilVisible();
 
     // move to make the tooltip diappear
     await byIcon.offsetMove(-200, 0);
