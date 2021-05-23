@@ -36,18 +36,16 @@ export default class SideBar extends PageFragment {
   protected async openSideBar(byIcon: Element, sideBarTitle: string): Promise<Element> {
     const expandedBar: Locator = this.tools.by(SideBar.EXPANDED_BAR_LOCATOR);
 
-    if (!(await this.isSideBarOpen(sideBarTitle))) {
-      for (let i = 0; !(await expandedBar.wait().isVisible()) && i < 20; i++) {
-        await byIcon.click();
-        await this.tools.sleep(1000);
-      }
-
-      // confirms that it's open.
-      await expandedBar.wait(1300).untilVisible();
-
-      // move to make the tooltip diappear
-      await byIcon.offsetMove(-200, 0);
+    for (let i = 0; !(await this.isSideBarOpen(sideBarTitle)) && i < 20; i++) {
+      await byIcon.click();
+      await this.tools.sleep(1000);
     }
+
+    // confirms that it's open.
+    await expandedBar.wait(1300).untilVisible();
+
+    // move to make the tooltip diappear
+    await byIcon.offsetMove(-200, 0);
 
     return await expandedBar.getElement();
   }
