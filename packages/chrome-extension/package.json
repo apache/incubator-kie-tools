@@ -20,8 +20,8 @@
     "minimatch": "^3.0.4"
   },
   "scripts": {
-    "lint": "yarn eslint ./src --ext .ts,.tsx",
-    "test": "jest --silent --verbose",
+    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",
+    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose'",
     "test:clearCache": "jest --clearCache",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "yarn run lint && yarn test && rimraf dist && webpack"

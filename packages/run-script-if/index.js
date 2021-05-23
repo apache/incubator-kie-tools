@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+const yargs = require("yargs/yargs");
+const { hideBin } = require("yargs/helpers");
+const { spawn } = require("child_process");
+
+const argv = yargs(hideBin(process.argv)).options({
+  env: {
+    required: true,
+    type: "string",
+    description: "Environment variable name",
+  },
+  eq: {
+    default: "true",
+    alias: "equals",
+    type: "string",
+    description: "Value to be compared with the environment variable.",
+  },
+  command: {
+    required: true,
+    alias: "c",
+    type: "string",
+    description: "Command to execute if environment variable has the desired value",
+  },
+}).argv;
+
+if (process.env[argv.env] !== argv.eq) {
+  console.info(`Skipping '${argv.c}' because environment variable '${argv.env}' is not equal to '${argv.eq}'.`);
+  process.exit(0);
+}
+
+console.info(`Running '${argv.c}'. Environment variable '${argv.env}' is equal to '${argv.eq}'.`);
+
+let commandBin = argv.c.split(" ")[0];
+let commandArgs = argv.c.split(" ").slice(1);
+
+const command = spawn(commandBin, commandArgs, { stdio: "inherit" });
+command.on("error", (data) => {
+  console.error(`Error executing '${argv.c}':`);
+  console.error(data.toString());
+});
