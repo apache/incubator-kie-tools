@@ -8,10 +8,6 @@ on:
   pull_request:
     branches: "**"
 
-env:
-  WEBPACK_minimize: "true"
-  WEBPACK_TS_LOADER_transpileOnly: "false"
-
 jobs:
   build:
     if: github.repository == 'kiegroup/kogito-tooling' || github.event_name != 'schedule'

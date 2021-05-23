@@ -17,16 +17,16 @@
 describe("Bpmn Editable.", () => {
   before("Visit page", () => {
     cy.visit("localhost:9001/bpmn-editable");
-    cy.loadEditor("bpmn-editable");
+    cy.loadEditors(["bpmn-editable"]);
   });
 
   it("Test Load File And View", () => {
     cy.editor("bpmn-editable").find("[data-field='kie-palette']").should("be.visible");
 
-    cy.uploadFile("process-string.bpmn");
-    cy.viewFile("process-string.bpmn");
+    cy.uploadFile("process-string.bpmn", "bpmn-editable");
+    cy.viewFile("process-string.bpmn", "bpmn-editable");
 
-    cy.editor("bpmn-editable").find("[data-title='Explore Diagram']").should("be.visible").click({ force: true });
+    cy.editor("bpmn-editable").find("[data-title='Explore Diagram']").should("be.visible").click();
 
     cy.editor("bpmn-editable")
       .find("[data-field='explorerPanelBody']")

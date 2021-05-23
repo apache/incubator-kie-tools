@@ -19,31 +19,29 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const common = require("../../../webpack.common.config");
 const { merge } = require("webpack-merge");
 
-// This is the fastest configuration to startup this app
-const defaultEnv = { WEBPACK_TS_LOADER_transpileOnly: "true", WEBPACK_minimize: "false" };
-
-module.exports = merge(common(defaultEnv), {
-  mode: "development",
-  entry: {
-    app: path.resolve(__dirname, "src", "index.tsx"),
-  },
-  plugins: [
-    new HtmlWebPackPlugin({
-      template: path.resolve(__dirname, "public/index.html"),
-      filename: "index.html",
-    }),
-  ],
-  externals: {
-    "@kogito-tooling/kie-editors-standalone/dist/dmn": "DmnEditor",
-    "@kogito-tooling/kie-editors-standalone/dist/bpmn": "BpmnEditor",
-  },
-  devServer: {
-    contentBase: [path.join(__dirname, "dist"), path.join(__dirname, "../dist/")],
-    compress: true,
-    inline: true,
-    historyApiFallback: true,
-    overlay: true,
-    open: false,
-    port: 9001,
-  },
-});
+module.exports = (env, argv) =>
+  merge(common(env), {
+    mode: "development",
+    entry: {
+      app: path.resolve(__dirname, "src", "index.tsx"),
+    },
+    plugins: [
+      new HtmlWebPackPlugin({
+        template: path.resolve(__dirname, "public/index.html"),
+        filename: "index.html",
+      }),
+    ],
+    externals: {
+      "@kogito-tooling/kie-editors-standalone/dist/dmn": "DmnEditor",
+      "@kogito-tooling/kie-editors-standalone/dist/bpmn": "BpmnEditor",
+    },
+    devServer: {
+      contentBase: [path.join(__dirname, "dist"), path.join(__dirname, "../dist/")],
+      compress: true,
+      inline: true,
+      historyApiFallback: true,
+      overlay: true,
+      open: false,
+      port: 9001,
+    },
+  });

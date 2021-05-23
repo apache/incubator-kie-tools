@@ -2,6 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "sourceMap": false,
+    "declaration": true,
+    "declarationMap": true,
     "types": ["cypress"],
     "baseUrl": "./"
   },

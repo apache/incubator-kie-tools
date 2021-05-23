@@ -38,7 +38,7 @@ declare namespace Cypress {
      * @param editorIds string ids of the editor elements
      * @param options config object
      */
-    loadEditor(editorIds: string[] | string, options?: Record<string, unknown>): void;
+    loadEditors(editorIds: string[], options?: Record<string, unknown>): void;
 
     /**
      * Locate the editor component for interaction.
@@ -49,15 +49,15 @@ declare namespace Cypress {
     /**
      * Upload file using elements with type file-loader and given id.
      * @param fileName string name of the file
-     * @param componentId string id of the element
+     * @param editorId string id of the editor
      */
-    uploadFile(fileName: string, componentId?: string): Chainable<Element>;
+    uploadFile(fileName: string, editorId: string): Chainable<Element>;
 
     /**
      * Load file contents into editor by clicking the View button near the file-list item.
      * @param fileName string name of the file
-     * @param componentId string id of the element
+     * @param editorId string id of the editor
      */
-    viewFile(fileName: string, componentId?: string): Chainable<Element>;
+    viewFile(fileName: string, editorId: string): Chainable<Element>;
   }
 }

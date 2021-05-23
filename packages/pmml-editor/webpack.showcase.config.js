@@ -21,7 +21,7 @@ const common = require("../../webpack.common.config");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
 module.exports = (env, argv) =>
-  merge(common({ ...env, WEBPACK_TS_LOADER_transpileOnly: "true", WEBPACK_minimize: "false" }, argv), {
+  merge(common(env, argv), {
     mode: "development",
     entry: {
       index: "./src/showcase/index.tsx",

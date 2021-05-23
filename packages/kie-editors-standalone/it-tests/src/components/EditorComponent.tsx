@@ -22,9 +22,9 @@ import { Editor, StandaloneEditorApi } from "@kogito-tooling/kie-editors-standal
 
 export interface Props {
   id: string;
-  initialContent?: Promise<string>;
-  readOnly?: boolean;
-  origin?: string;
+  initialContent: Promise<string>;
+  readOnly: boolean;
+  origin: string;
   resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
 }
 
@@ -35,7 +35,7 @@ export type InternalProps = Props & {
 
 export const EditorComponent = (props: InternalProps) => {
   const [isDirty, setDirty] = useState(false);
-  const [editor, setEditor] = useState<StandaloneEditorApi>();
+  const editorRef = useRef<StandaloneEditorApi>(null);
   const [modelName, setModelName] = useState(props.defaultModelName ?? "new-file");
   const [files, setFiles] = useState<UploadedFile[]>([]);
 
@@ -44,44 +44,44 @@ export const EditorComponent = (props: InternalProps) => {
   useEffect(() => {
     const e = props.openEditor({
       container: editorContainerDivRef.current!,
-      initialContent: props.initialContent!,
-      readOnly: props.readOnly!,
+      initialContent: props.initialContent,
+      readOnly: props.readOnly,
       origin: props.origin,
       resources: props.resources,
     });
 
     e.subscribeToContentChanges(setDirty);
-    setEditor(e);
+    (editorRef as any).current = e;
 
     return () => {
       e.close();
     };
-  }, [props.id]);
+  }, [props.id, props.readOnly, props.origin, props.resources, props.initialContent]);
 
   const setEditorContents = useCallback(
     (resource: UploadedFile) => {
-      editor!.setContent(resource.value.path, resource.value.content);
+      editorRef.current?.setContent(resource.value.path, resource.value.content ?? "");
       setModelName(resource.name);
     },
-    [editor]
+    []
   );
 
   const editorUndo = () => {
-    editor!.undo();
+    editorRef.current?.undo();
   };
 
   const editorRedo = () => {
-    editor!.redo();
+    editorRef.current?.redo();
   };
 
   const editorSave = async () => {
-    const content = await editor!.getContent();
+    const content = await editorRef.current?.getContent();
     setFiles([...files, { name: modelName, value: { path: modelName, type: ContentType.TEXT, content } }]);
-    editor?.markAsSaved();
+    editorRef.current?.markAsSaved();
   };
 
-  const editorSvg = () => {
-    editor!.getPreview().then((content) => {
+  const downloadSvg = () => {
+    editorRef.current?.getPreview().then((content) => {
       const elem = window.document.createElement("a");
       elem.href = "data:text/svg+xml;charset=utf-8," + encodeURIComponent(content!);
       elem.download = modelName + ".svg";
@@ -91,8 +91,8 @@ export const EditorComponent = (props: InternalProps) => {
     });
   };
 
-  const editorXml = () => {
-    editor!.getContent().then((content) => {
+  const downloadXml = () => {
+    editorRef.current?.getContent().then((content) => {
       const elem = window.document.createElement("a");
       elem.href = "data:text/plain;charset=utf-8," + encodeURIComponent(content);
       elem.download = modelName;
@@ -113,10 +113,10 @@ export const EditorComponent = (props: InternalProps) => {
       <button id="save" onClick={editorSave} disabled={!isDirty}>
         save
       </button>
-      <button id="xml" onClick={editorXml}>
+      <button id="xml" onClick={downloadXml}>
         Download XML
       </button>
-      <button id="svg" onClick={editorSvg}>
+      <button id="svg" onClick={downloadSvg}>
         Download SVG
       </button>
     </div>

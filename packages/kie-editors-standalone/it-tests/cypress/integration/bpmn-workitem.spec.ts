@@ -20,7 +20,7 @@ describe("Bpmn Workitem E2E Test.", () => {
 
   before("Visit page", () => {
     cy.visit("localhost:9001/bpmn-workitem");
-    cy.loadEditor("bpmn-workitem");
+    cy.loadEditors(["bpmn-workitem"]);
   });
 
   it("Loads custom workitem definition to Palette on open", () => {
@@ -51,14 +51,14 @@ describe("Bpmn Workitem E2E Test.", () => {
   });
 
   it("Loads the Custom Workitem in diagram explorer", () => {
-    cy.editor("bpmn-workitem").find("[data-title='Explore Diagram']").should("be.visible").click({ force: true });
+    cy.editor("bpmn-workitem").find("[data-title='Explore Diagram']").should("be.visible").click();
 
     cy.editor("bpmn-workitem")
       .find("[data-field='explorerPanelBody']")
       .wait(1000)
       .scrollIntoView()
       .should("be.visible")
-      .click({ force: true });
+      .click();
 
     cy.editor("bpmn-workitem")
       .find("[data-field='explorerPanelBody']")
@@ -257,8 +257,8 @@ describe("Bpmn Workitem E2E Test.", () => {
   describe.skip("Unknown custom workitem task has expected properties.", () => {
     let unknownCustomWorkitemProperties: JQuery<HTMLElement>;
 
-    it("Loads the unkown custom workitem in diagram explorer", () => {
-      cy.editor("bpmn-workitem").find("[data-title='Explore Diagram']").should("be.visible").click({ force: true });
+    it("Loads the unknown custom workitem in diagram explorer", () => {
+      cy.editor("bpmn-workitem").find("[data-title='Explore Diagram']").should("be.visible").click();
 
       cy.editor("bpmn-workitem")
         .find("[data-field='explorerPanelBody']")

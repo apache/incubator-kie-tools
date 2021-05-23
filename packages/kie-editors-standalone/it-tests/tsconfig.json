@@ -6,9 +6,11 @@
     "jsx": "react-jsxdev",
     "moduleResolution": "node",
     "sourceMap": true,
+    "declaration": false,
+    "declarationMap": false,
     "noImplicitAny": false,
     "noImplicitThis": false,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "experimentalDecorators": false,
     "downlevelIteration": false
   },

@@ -53,7 +53,8 @@ export const FileLoader: React.FC<Props> = (props: Props) => {
   const remove = (resource: UploadedFile) => {
     props.setFiles((files) => {
       const newFiles = Array.from(files);
-      newFiles.splice(newFiles.indexOf(resource));
+      const resourceIndex = newFiles.findIndex(file => file.name === resource.name);
+      newFiles.splice(resourceIndex, 1);
       return newFiles;
     });
   };

@@ -26,32 +26,22 @@ export function App() {
   return (
     <Router>
       <>
-        <ul>
-          <li>
-            <Link to="/dmn-read-only">DMN Read Only</Link>
-          </li>
-          <li>
-            <Link to="/dmn-editable">DMN Editable</Link>
-          </li>
-          <li>
-            <Link to="/bpmn-editable">BPMN Editable</Link>
-          </li>
-          <li>
-            <Link to="/bpmn-read-only">BPMN Read Only</Link>
-          </li>
-          <li>
-            <Link to="/bpmn-workitem">BPMN Workitem</Link>
-          </li>
-          <li>
-            <Link to="/both-bpmn-dmn">Both BPMN DMN</Link>
-          </li>
-        </ul>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Link to="/dmn-read-only">DMN Read Only</Link>
+          <Link to="/dmn-editable">DMN Editable</Link>
+          <Link to="/bpmn-editable">BPMN Editable</Link>
+          <Link to="/bpmn-read-only">BPMN Read Only</Link>
+          <Link to="/bpmn-workitem">BPMN Workitem</Link>
+          <Link to="/both-bpmn-dmn">Both BPMN DMN</Link>
+        </div>
+        <br />
         <Switch>
           <Route
             exact={true}
             path="/dmn-read-only"
             render={() => (
               <DmnEditorComponent
+                origin={"*"}
                 key="dmn-read-only"
                 id="dmn-read-only"
                 readOnly={true}
@@ -64,6 +54,7 @@ export function App() {
             path="/dmn-editable"
             render={() => (
               <DmnEditorComponent
+                origin={"*"}
                 key="dmn-editable"
                 id="dmn-editable"
                 readOnly={false}
@@ -76,6 +67,7 @@ export function App() {
             path="/bpmn-editable"
             render={() => (
               <BpmnEditorComponent
+                origin={"*"}
                 key="bpmn-editable"
                 id="bpmn-editable"
                 readOnly={false}
@@ -88,6 +80,7 @@ export function App() {
             path="/bpmn-read-only"
             render={() => (
               <BpmnEditorComponent
+                origin={"*"}
                 key="bpmn-read-only"
                 id="bpmn-read-only"
                 readOnly={true}
@@ -100,6 +93,7 @@ export function App() {
             path="/bpmn-workitem"
             render={() => (
               <BpmnEditorComponent
+                origin={"*"}
                 id="bpmn-workitem"
                 readOnly={false}
                 initialContent={Promise.resolve(processWithWidDefinition)}
@@ -122,8 +116,13 @@ export function App() {
             path="/both-bpmn-dmn"
             render={() => (
               <>
-                <BpmnEditorComponent id="both-bpmn" readOnly={false} initialContent={Promise.resolve("")} />
-                <DmnEditorComponent id="both-dmn" readOnly={false} initialContent={Promise.resolve("")} />
+                <BpmnEditorComponent
+                  origin={"*"}
+                  id="both-bpmn"
+                  readOnly={false}
+                  initialContent={Promise.resolve("")}
+                />
+                <DmnEditorComponent origin={"*"} id="both-dmn" readOnly={false} initialContent={Promise.resolve("")} />
               </>
             )}
           />
