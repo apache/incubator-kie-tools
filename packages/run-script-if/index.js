@@ -53,6 +53,6 @@ command.on("error", (data) => {
   console.error(data.toString());
 });
 
-command.on('exit', (code) => {
+command.on("exit", (code) => {
   process.exit(code);
-})
+});

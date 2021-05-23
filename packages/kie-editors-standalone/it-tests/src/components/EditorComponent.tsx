@@ -58,13 +58,10 @@ export const EditorComponent = (props: InternalProps) => {
     };
   }, [props.id, props.readOnly, props.origin, props.resources, props.initialContent]);
 
-  const setEditorContents = useCallback(
-    (resource: UploadedFile) => {
-      editorRef.current?.setContent(resource.value.path, resource.value.content ?? "");
-      setModelName(resource.name);
-    },
-    []
-  );
+  const setEditorContents = useCallback((resource: UploadedFile) => {
+    editorRef.current?.setContent(resource.value.path, resource.value.content ?? "");
+    setModelName(resource.name);
+  }, []);
 
   const editorUndo = () => {
     editorRef.current?.undo();
