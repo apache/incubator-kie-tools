@@ -211,6 +211,7 @@ jobs:
 
   desktop-tests-it:
     runs-on: ${{ matrix.os }}
+    if: matrix.os != 'windows-latest'
     strategy:
       fail-fast: false
       matrix:
