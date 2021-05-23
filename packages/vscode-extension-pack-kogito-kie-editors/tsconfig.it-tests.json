@@ -6,5 +6,6 @@
     "resolveJsonModule": true,
     "outDir": "out"
   },
-  "include": ["src"]
+  "include": ["it-tests"],
+  "exclude": ["test-resources"]
 }

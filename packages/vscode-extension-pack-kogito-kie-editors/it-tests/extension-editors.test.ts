@@ -33,7 +33,7 @@ import {
 } from "./helpers/BpmnLocators";
 
 describe("Editors are loading properly", () => {
-  const RESOURCES: string = path.resolve("src", "ui-test", "resources");
+  const RESOURCES: string = path.resolve("it-tests", "resources");
   const DEMO_BPMN: string = "demo.bpmn";
   const DEMO_DMN: string = "demo.dmn";
   const DEMO_SCESIM: string = "demo.scesim";
