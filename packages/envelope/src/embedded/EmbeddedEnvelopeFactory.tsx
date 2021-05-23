@@ -58,7 +58,6 @@ export interface Props<
   config: EnvelopeDivConfig | EnvelopeIFrameConfig;
 }
 
-// eslint-disable-all
 export function EmbeddedEnvelopeFactory<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>,

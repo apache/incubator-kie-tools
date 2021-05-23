@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-// tslint:disable-next-line:interface-name
 export interface I18nDefaults<D extends ReferenceDictionary> {
   locale: string;
   dictionary: D;

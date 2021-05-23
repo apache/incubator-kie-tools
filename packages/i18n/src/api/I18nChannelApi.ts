@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-// tslint:disable-next-line:interface-name
 export interface I18nChannelApi {
   kogitoI18n_getLocale(): Promise<string>;
 }
