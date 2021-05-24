@@ -168,6 +168,30 @@ describe("Upload file test", () => {
     cy.get("#app p").should("be.visible").should("contain.text", "Welcome to Business Modeler!");
   });
 
+  it("should upload broken DMN file", () => {
+    // upload dmn file from fixtures directory by drag and drop
+    cy.get("#file-upload-field-filename").attachFile("testModelBroken.dmn", { subjectType: "drag-n-drop" });
+
+    // wait until loading dialog disappears
+    cy.loadEditor();
+
+    // check editor logo
+    cy.get("[class='pf-c-brand']").within(($logo) => {
+      expect($logo.attr("src")).contain("dmn");
+      expect($logo.attr("alt")).contain("dmn");
+    });
+
+    // check editor title name
+    cy.get("[aria-label='Edit file name']").should("have.value", "testModelBroken");
+
+    // DMN guided tour dialog can't be shown for invalid models
+    cy.get("[data-kgt-close='true']").should("not.exist");
+
+    cy.get("[data-ouia-component-id='OUIA-Generated-Alert-danger-1']").contains(
+      "Error opening file. You can edit it as text and reopen the diagram after you've fixed it."
+    );
+  });
+
   it("should upload PMML file", () => {
     // upload pmml file from fixtures directory by drag and drop
     cy.get("#file-upload-field-filename").attachFile("testScoreCard.pmml", { subjectType: "drag-n-drop" });
