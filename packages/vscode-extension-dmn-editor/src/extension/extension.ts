@@ -39,14 +39,14 @@ export function activate(context: vscode.ExtensionContext) {
         [
           "dmn",
           {
-            envelopePath: "dist/webview/index.js",
+            envelopePath: "dist/webview/DmnEditorEnvelopeApp.js",
             resourcesPathPrefix: "dist/webview/editors/dmn"
           }
         ],
         [
           "scesim",
           {
-            envelopePath: "dist/webview/index.js",
+            envelopePath: "dist/webview/SceSimEditorEnvelopeApp.js",
             resourcesPathPrefix: "dist/webview/editors/scesim"
           }
         ]

@@ -48,7 +48,7 @@ const commonConfig = {
   }
 };
 
-module.exports = async (argv) => [
+module.exports = async argv => [
   {
     ...commonConfig,
     target: "node",
@@ -61,7 +61,8 @@ module.exports = async (argv) => [
     ...commonConfig,
     target: "web",
     entry: {
-      "webview/index": "./src/webview/index.ts"
+      "webview/DmnEditorEnvelopeApp": "./src/webview/DmnEditorEnvelopeApp.ts",
+      "webview/SceSimEditorEnvelopeApp": "./src/webview/SceSimEditorEnvelopeApp.ts"
     },
     plugins: [
       new CopyWebpackPlugin([

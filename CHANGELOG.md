@@ -1,3 +1,35 @@
+# 0.10.0 (alpha)
+
+### New features:
+
+* [KOGITO-4179](https://issues.redhat.com/browse/KOGITO-4179) - [DMN Designer] Data Types - Add popover for showing data types fields in the data types tab
+
+### Fixed issues:
+
+* [KOGITO-4530](https://issues.redhat.com/browse/KOGITO-4530) - [DMN Designer] Boxed Expressions - Decision Tables - HiDPI is not working as expected
+* [KOGITO-4868](https://issues.redhat.com/browse/KOGITO-4868) - There is an additional scrollbar around the editor when it shouldn’t (SceSim only)
+* [KOGITO-4954](https://issues.redhat.com/browse/KOGITO-4954) - [Test Scenario] In some conditions Tabs disappear
+* [KOGITO-4872](https://issues.redhat.com/browse/KOGITO-4872) - SceSim editor needs an ErrorPage for when `setContent` fails
+
+# 0.9.1 (alpha)
+
+## New features:
+
+Infrastructure
+* [KOGITO-4914](https://issues.redhat.com/browse/KOGITO-4914) - The SVG icon is broken on vscode-insiders
+
+Editors
+* [KOGITO-2528](https://issues.redhat.com/browse/KOGITO-2528) - [BPMN] Reuse Data Types across the process
+
+## Fixed issues:
+
+Editors
+* [KOGITO-2197](https://issues.redhat.com/browse/KOGITO-2197) - [Scesim Editor] Bottom scroll bar getting hide
+* [KOGITO-3192](https://issues.redhat.com/browse/KOGITO-3192) - [DMN Designer] Multiple DRDs support - The undo/redo are lost when user changes between diagrams
+* [KOGITO-4892](https://issues.redhat.com/browse/KOGITO-4892) - Unable to view service tasks in VS Code on Windows
+* [KOGITO-4916](https://issues.redhat.com/browse/KOGITO-4916) - [DMN Designer] Error during the save/marshaller of specific diagrams
+
+
 # 0.9.0 (alpha)
 
 ## New features:
@@ -18,15 +50,10 @@ Infrastructure
 Editors
 * [KOGITO-4266](https://issues.redhat.com/browse/KOGITO-4266) - [DMN Designer] Decision Service is missing inputData element in model with multiple DRDs
 
+
 # 0.8.6 (alpha)
 
-Infrastructure
-
 --
-
-Editors
-
-- This release contains a CSS fix on the new PMML Editor.
 
 # 0.8.5 (alpha)
 

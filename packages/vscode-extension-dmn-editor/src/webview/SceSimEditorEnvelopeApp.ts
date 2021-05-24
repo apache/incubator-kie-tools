@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-import { GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
-import * as MicroEditorEnvelope from "@kogito-tooling/editor/dist/envelope";
-import { ChannelType, getOperatingSystem } from "@kogito-tooling/channel-common-api";
+import { SceSimEditorFactory } from "@kogito-tooling/kie-bc-editors/dist/scesim/envelope";
+import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
 
-declare global {
-  export const acquireVsCodeApi: any;
-}
+declare const acquireVsCodeApi: any;
 
-MicroEditorEnvelope.init({
+EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
-  editorFactory: new GwtEditorWrapperFactory(),
-  editorContext: {
-    channel: ChannelType.VSCODE,
-    operatingSystem: getOperatingSystem()
-  }
+  editorFactory: new SceSimEditorFactory({ shouldLoadResourcesDynamically: true })
 });

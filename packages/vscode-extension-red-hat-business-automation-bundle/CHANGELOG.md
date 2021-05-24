@@ -1,3 +1,16 @@
+# 0.10.0 (alpha)
+
+### New features:
+
+* [KOGITO-4179](https://issues.redhat.com/browse/KOGITO-4179) - [DMN Designer] Data Types - Add popover for showing data types fields in the data types tab
+
+### Fixed issues:
+
+* [KOGITO-4530](https://issues.redhat.com/browse/KOGITO-4530) - [DMN Designer] Boxed Expressions - Decision Tables - HiDPI is not working as expected
+* [KOGITO-4868](https://issues.redhat.com/browse/KOGITO-4868) - There is an additional scrollbar around the editor when it shouldn’t (SceSim only)
+* [KOGITO-4954](https://issues.redhat.com/browse/KOGITO-4954) - [Test Scenario] In some conditions Tabs disappear
+* [KOGITO-4872](https://issues.redhat.com/browse/KOGITO-4872) - SceSim editor needs an ErrorPage for when `setContent` fails
+
 # 0.9.1 (alpha)
 
 ## New features:

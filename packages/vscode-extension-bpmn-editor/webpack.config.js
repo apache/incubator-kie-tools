@@ -61,7 +61,7 @@ module.exports = async (argv) => [
     ...commonConfig,
     target: "web",
     entry: {
-      "webview/index": "./src/webview/index.ts"
+      "webview/BpmnEditorEnvelopeApp": "./src/webview/BpmnEditorEnvelopeApp.ts"
     },
     plugins: [
       new CopyWebpackPlugin([

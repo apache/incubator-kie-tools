@@ -3,7 +3,7 @@
   "publisher": "redhat",
   "displayName": "PMML Editor",
   "description": "Edit PMML Scorecards",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -17,12 +17,12 @@
     "watch": "yarn build-ext"
   },
   "dependencies": {
-    "@kogito-tooling/editor": "0.9.1",
-    "@kogito-tooling/i18n": "0.9.1",
-    "@kogito-tooling/patternfly-base": "0.9.1",
-    "@kogito-tooling/pmml-editor": "0.9.1",
-    "@kogito-tooling/vscode-extension": "0.9.1",
-    "@kogito-tooling/workspace": "0.9.1"
+    "@kogito-tooling/editor": "0.10.0",
+    "@kogito-tooling/i18n": "0.10.0",
+    "@kogito-tooling/patternfly-base": "0.10.0",
+    "@kogito-tooling/pmml-editor": "0.10.0",
+    "@kogito-tooling/vscode-extension": "0.10.0",
+    "@kogito-tooling/workspace": "0.10.0"
   },
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",

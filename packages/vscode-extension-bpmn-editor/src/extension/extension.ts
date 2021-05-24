@@ -39,14 +39,14 @@ export function activate(context: vscode.ExtensionContext) {
         [
           "bpmn",
           {
-            envelopePath: "dist/webview/index.js",
+            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
             resourcesPathPrefix: "dist/webview/editors/bpmn"
           }
         ],
         [
           "bpmn2",
           {
-            envelopePath: "dist/webview/index.js",
+            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
             resourcesPathPrefix: "dist/webview/editors/bpmn"
           }
         ]

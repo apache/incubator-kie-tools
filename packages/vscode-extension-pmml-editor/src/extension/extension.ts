@@ -39,7 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
         [
           "pmml",
           {
-            envelopePath: "dist/webview/index.js",
+            envelopePath: "dist/webview/PmmlEditorEnvelopeApp.js",
             resourcesPathPrefix: "dist/webview/editors/pmml"
           }
         ]
