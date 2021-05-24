@@ -25,7 +25,7 @@ pipeline {
         stage('Clone build configuration repo') {
             steps {
                 script {
-                    def currentBranch = "kogito-tooling/nightly/kogito-tooling-java"
+                    def currentBranch = env.BRANCH_NAME ?: env.GIT_BRANCH
                     println "Checking out ${env.BUILD_CONFIGURATION_REPO_URL}:${currentBranch} into build_config folder"
                     sh "git clone -b ${currentBranch} --single-branch ${env.BUILD_CONFIGURATION_REPO_URL} build_config"
                 }
@@ -51,7 +51,7 @@ pipeline {
         stage('Build Nightly projects') {
             steps {
                 script {
-                    def projectCollection = ["kiegroup/kogito-tooling-java", "kiegroup/kogito-editors-java", "ginxo/kogito-tooling"]
+                    def projectCollection = ["kiegroup/kogito-tooling-java", "kiegroup/kogito-editors-java", "kiegroup/kogito-tooling"]
                     println "Project Collection to build ${projectCollection}"
                     def buildConfigAdditionalVariables = [:]
                     def buildConfigPathFolder = "$WORKSPACE/build_config/kogito/nightly"
