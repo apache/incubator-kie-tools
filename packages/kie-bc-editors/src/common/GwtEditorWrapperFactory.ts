@@ -41,6 +41,7 @@ import { XmlFormatter } from "./XmlFormatter";
 import { NotificationsApi } from "./api/NotificationsApi";
 
 export interface CustomWindow extends Window {
+  startStandaloneEditor?: () => void;
   gwt: {
     stateControl: StateControlApi;
   };
@@ -72,8 +73,6 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
     envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
-    this.gwtAppFormerApi.setClientSideOnly(true);
-
     this.kieBcEditorsI18n.setLocale(initArgs.initialLocale);
     envelopeContext.services.i18n.subscribeToLocaleChange((locale) => {
       this.kieBcEditorsI18n.setLocale(locale);
@@ -91,6 +90,7 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
     });
 
     if (!this.gwtEditorEnvelopeConfig.shouldLoadResourcesDynamically) {
+      window.startStandaloneEditor?.();
       return gwtFinishedLoading;
     }
 
