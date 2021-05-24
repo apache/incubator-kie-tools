@@ -64,6 +64,7 @@
     "cypress": "^7.2.0",
     "cypress-file-upload": "^5.0.7",
     "cypress-iframe": "^1.0.1",
+    "cypress-log-to-output": "^1.1.2",
     "decompress": "^4.2.1",
     "electron-packager": "^15.2.0",
     "electron-rebuild": "^2.3.5",
