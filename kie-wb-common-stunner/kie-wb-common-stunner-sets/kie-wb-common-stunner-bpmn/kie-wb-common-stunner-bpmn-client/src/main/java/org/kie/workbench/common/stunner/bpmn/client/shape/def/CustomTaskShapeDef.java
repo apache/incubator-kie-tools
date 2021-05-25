@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory
 import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.CustomTaskShapeViewHandler;
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientUtils;
 import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.HorizontalAlignment;
@@ -83,15 +84,21 @@ public class CustomTaskShapeDef extends BaseDimensionedShapeDef
 
     public Glyph getGlyph(final Class<? extends CustomTask> type,
                           final String defId) {
-        final String name = defId.substring(defId.lastIndexOf(".") + 1, defId.length());
-        final String itemIconData = CustomTask.class.getSimpleName().equals(name) ? null :
-                workItemDefinitionRegistry
-                        .get()
-                        .get(name)
+        final String name = defId.substring(defId.lastIndexOf(".") + 1);
+
+        String itemIconData = WorkItemDefinitionClientUtils.getDefaultIconData();
+        if (!CustomTask.class.getSimpleName().equals(name)) {
+            WorkItemDefinition workItemDefinition = workItemDefinitionRegistry
+                    .get()
+                    .get(name);
+            if (workItemDefinition != null) {
+                itemIconData = workItemDefinition
                         .getIconDefinition()
                         .getIconData();
-        final String iconData = null != itemIconData ? itemIconData : WorkItemDefinitionClientUtils.getDefaultIconData();
-        return iconDataGlyphGenerator.apply(iconData);
+            }
+        }
+
+        return iconDataGlyphGenerator.apply(itemIconData);
     }
 
     @Override
