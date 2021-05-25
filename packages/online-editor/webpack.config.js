@@ -32,18 +32,18 @@ function getLatestGitTag() {
 }
 
 function getDownloadHubArgs(argv) {
-  let linuxUrl = argv["DOWNLOAD_HUB_linuxUrl"] || process.env["DOWNLOAD_HUB_linuxUrl"];
-  let macOsUrl = argv["DOWNLOAD_HUB_macOsUrl"] || process.env["DOWNLOAD_HUB_macOsUrl"];
-  let windowsUrl = argv["DOWNLOAD_HUB_windowsUrl"] || process.env["DOWNLOAD_HUB_windowsUrl"];
+  let linuxUrl = argv["DOWNLOAD_HUB_linuxUrl"] ?? process.env["DOWNLOAD_HUB_linuxUrl"];
+  let macOsUrl = argv["DOWNLOAD_HUB_macOsUrl"] ?? process.env["DOWNLOAD_HUB_macOsUrl"];
+  let windowsUrl = argv["DOWNLOAD_HUB_windowsUrl"] ?? process.env["DOWNLOAD_HUB_windowsUrl"];
 
   linuxUrl =
-    linuxUrl ||
+    linuxUrl ??
     `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_linux_${getLatestGitTag()}.zip`;
   macOsUrl =
-    macOsUrl ||
+    macOsUrl ??
     `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_macos_${getLatestGitTag()}.zip`;
   windowsUrl =
-    windowsUrl ||
+    windowsUrl ??
     `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_windows_${getLatestGitTag()}.zip`;
 
   console.info("Download Hub :: Linux URL: " + linuxUrl);

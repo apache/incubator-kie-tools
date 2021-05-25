@@ -34,15 +34,15 @@ function getLatestGitTag() {
 }
 
 function getRouterArgs(env, argv) {
-  let targetOrigin = argv["ROUTER_targetOrigin"] || process.env["ROUTER_targetOrigin"];
-  let relativePath = argv["ROUTER_relativePath"] || process.env["ROUTER_relativePath"];
+  let targetOrigin = argv["ROUTER_targetOrigin"] ?? process.env["ROUTER_targetOrigin"];
+  let relativePath = argv["ROUTER_relativePath"] ?? process.env["ROUTER_relativePath"];
 
   if (env.dev) {
-    targetOrigin = targetOrigin || "https://localhost:9000";
-    relativePath = relativePath || "";
+    targetOrigin = targetOrigin ?? "https://localhost:9000";
+    relativePath = relativePath ?? "";
   } else {
-    targetOrigin = targetOrigin || "https://kiegroup.github.io";
-    relativePath = relativePath || `kogito-online/editors/${getLatestGitTag()}/`;
+    targetOrigin = targetOrigin ?? "https://kiegroup.github.io";
+    relativePath = relativePath ?? `kogito-online/editors/${getLatestGitTag()}/`;
   }
 
   console.info("EditorEnvelopeLocator :: target origin: " + targetOrigin);
@@ -52,14 +52,14 @@ function getRouterArgs(env, argv) {
 }
 
 function getOnlineEditorArgs(env, argv) {
-  let onlineEditorUrl = argv["ONLINEEDITOR_url"] || process.env["ONLINEEDITOR_url"];
+  let onlineEditorUrl = argv["ONLINEEDITOR_url"] ?? process.env["ONLINEEDITOR_url"];
   let manifestFile;
 
   if (env.dev) {
-    onlineEditorUrl = onlineEditorUrl || "http://localhost:9001";
+    onlineEditorUrl = onlineEditorUrl ?? "http://localhost:9001";
     manifestFile = "manifest.dev.json";
   } else {
-    onlineEditorUrl = onlineEditorUrl || "https://kiegroup.github.io/kogito-online";
+    onlineEditorUrl = onlineEditorUrl ?? "https://kiegroup.github.io/kogito-online";
     manifestFile = "manifest.prod.json";
   }
 
