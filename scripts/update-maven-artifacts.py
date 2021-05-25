@@ -33,6 +33,7 @@ Modules = {
     "jobs-service-infinispan": "kogito-jobs-service-infinispan",
     "jobs-service-mongodb": "kogito-jobs-service-mongodb",
     "jobs-service-common": "kogito-jobs-service-ephemeral",
+    "jobs-service-postgresql": "kogito-jobs-service-postgresql",
     "management-console": "kogito-management-console",
     "task-console": "kogito-task-console",
     "trusty-ui": "kogito-trusty-ui",

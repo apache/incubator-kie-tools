@@ -530,6 +530,7 @@ Today we have 3 Kogito Component Images:
 * [quay.io/kiegroup/kogito-jobs-service-ephemeral](https://quay.io/kiegroup/kogito-jobs-service-ephemeral) 
 * [quay.io/kiegroup/kogito-jobs-service-infinispan](https://quay.io/kiegroup/kogito-jobs-service-infinispan)
 * [quay.io/kiegroup/kogito-jobs-service-mongodb](https://quay.io/kiegroup/kogito-jobs-service-mongodb)
+* [quay.io/kiegroup/kogito-jobs-service-postgresql](https://quay.io/kiegroup/kogito-jobs-service-postgresql)
 * [quay.io/kiegroup/kogito-management-console](https://quay.io/kiegroup/kogito-management-console)
 * [quay.io/kiegroup/kogito-task-console](https://quay.io/kiegroup/kogito-task-console)
 * [quay.io/kiegroup/kogito-trusty-ui](https://quay.io/kiegroup/kogito-trusty-ui)
@@ -557,6 +558,11 @@ $ docker run -it --env QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=my-infinispan-serve
 Basic usage with Mongodb:
 ```bash
 $ docker run -it --env QUARKUS_MONGODB_CONNECTION_STRING=mongodb://localhost:27017 quay.io/kiegroup/kogito-data-index-mongodb:latest
+```
+
+Basic usage with Postgresql:
+```bash
+$ docker run -it --env QUARKUS_POSTGRESQL_CONNECTION_STRING=postgresql://localhost:5432 quay.io/kiegroup/kogito-data-index-postgresql:latest
 ```
 
 To enable debug just use this env while running this image:
@@ -637,6 +643,7 @@ Today, the Jobs service contains two images:
 - [ephemeral](kogito-jobs-service-ephemeral-overrides.yaml)
 - [infinispan](kogito-jobs-service-infinispan-overrides.yaml)
 - [mongodb](kogito-jobs-service-mongodb-overrides.yaml)
+- [postgresql](kogito-jobs-service-postgresql-overrides.yaml)
 
 Basic usage:
 
@@ -653,7 +660,7 @@ docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-jobs-service-infi
 You should notice a few debug messages being printed in the system output.
 
 The ephemeral image does not have external dependencies like a backend persistence provider, it uses in-memory persistence
-while working with Jobs Services `infinispan` and `mongodb` variants, it will need to have an Infinispan and MongoDB server,
+while working with Jobs Services `infinispan`, `mongodb` and `postgresql` variants, it will need to have an Infinispan, MongoDB and Postgresql server,
 respectively, previously running.
 
 
@@ -795,6 +802,7 @@ imagestream.image.openshift.io/kogito-trusty-redis created
 imagestream.image.openshift.io/kogito-jobs-service-ephemeral created
 imagestream.image.openshift.io/kogito-jobs-service-infinispan created
 imagestream.image.openshift.io/kogito-jobs-service-mongodb created
+imagestream.image.openshift.io/kogito-jobs-service-postgresql created
 imagestream.image.openshift.io/kogito-management-console created
 
 # performing a new build
@@ -985,6 +993,7 @@ With this Makefile you can:
      $ make build-image image_name=kogito-jobs-service-ephemeral
      $ make build-image image_name=kogito-jobs-service-infinispan
      $ make build-image image_name=kogito-jobs-service-mongodb
+     $ make build-image image_name=kogito-jobs-service-postgresql
      $ make build-image image_name=kogito-management-console
      $ make build-image image_name=kogito-trusty-ui
      $ make build-image image_name=kogito-jit-runner
@@ -1056,6 +1065,7 @@ Below you can find all modules used to build the Kogito Images
 - [kogito-jobs-service-ephemeral](modules/kogito-jobs-service-ephemeral): Installs and Configure the in-memory jobs-service jar inside the image
 - [kogito-jobs-service-infinispan](modules/kogito-jobs-service-infinispan): Installs and Configure the infinispan jobs-service jar inside the image
 - [kogito-jobs-service-mongodb](modules/kogito-jobs-service-mongodb): Installs and Configure the mongodb jobs-service jar inside the image
+- [kogito-jobs-service-postgresql](modules/kogito-jobs-service-postgresql): Installs and Configure the postgresql jobs-service jar inside the image  
 - [kogito-jq](modules/kogito-jq): Provides jq binary.
 - [kogito-kubernetes-client](modules/kogito-kubernetes-client): Provides a simple wrapper to interact with Kubernetes API.
 - [kogito-launch-scripts](modules/kogito-launch-scripts): Main script for all images, it contains the startup script for Kogito Images
@@ -1083,6 +1093,7 @@ Please inspect the images overrides files to learn which modules are installed o
 - [quay.io/kiegroup/kogito-jobs-service-ephemeral](kogito-jobs-service-ephemeral-overrides.yaml)
 - [quay.io/kiegroup/kogito-jobs-service-infinispan](kogito-jobs-service-infinispan-overrides.yaml)
 - [quay.io/kiegroup/kogito-jobs-service-mongodb](kogito-jobs-service-mongodb-overrides.yaml)
+- [quay.io/kiegroup/kogito-jobs-service-postgresql](kogito-jobs-service-postgresql-overrides.yaml)  
 - [quay.io/kiegroup/kogito-management-console](kogito-management-console-overrides.yaml)
 - [quay.io/kiegroup/kogito-trusty-ui](kogito-trusty-ui-overrides.yaml)
 - [quay.io/kiegroup/kogito-jit-runner](kogito-jit-runner-overrides.yaml)

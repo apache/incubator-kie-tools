@@ -196,6 +196,7 @@ The command will update the needed files with the new URL:
 - kogito-jobs-service-ephemeral/module.yaml
 - kogito-jobs-service-infinispan/module.yaml
 - kogito-jobs-service-mongodb/module.yaml
+- kogito-jobs-service-postgresql/module.yaml  
 - kogito-management-console/module.yaml
 - kogito-task-console/module.yaml
 - kogito-trusty-ui/module.yaml

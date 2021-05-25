@@ -282,6 +282,27 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
+      name: kogito-jobs-service-postgresql
+      annotations:
+        openshift.io/display-name: Runtime image for Kogito Jobs Service based on Postgresql
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '2.0.0-snapshot'
+          annotations:
+            description: Runtime image for Kogito Jobs Service based on Postgresql
+            iconClass: icon-jbpm
+            tags: kogito,jobs-service
+            supports: out-of-box process timers
+            version: '2.0.0-snapshot'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-jobs-service-postgresql:2.0.0-snapshot
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
       name: kogito-management-console
       annotations:
         openshift.io/display-name: Runtime image for the Kogito Management Console
