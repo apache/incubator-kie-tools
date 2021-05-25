@@ -187,9 +187,7 @@ describe("Upload file test", () => {
     // DMN guided tour dialog can't be shown for invalid models
     cy.get("[data-kgt-close='true']").should("not.exist");
 
-    cy.get("[data-ouia-component-id='OUIA-Generated-Alert-danger-1']").contains(
-      "Error opening file. You can edit it as text and reopen the diagram after you've fixed it."
-    );
+    cy.get("[data-ouia-component-id='invalid-content-alert']").should("exist");
   });
 
   it("should upload PMML file", () => {
