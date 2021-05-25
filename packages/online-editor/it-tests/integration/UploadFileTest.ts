@@ -168,7 +168,7 @@ describe("Upload file test", () => {
     cy.get("#app p").should("be.visible").should("contain.text", "Welcome to Business Modeler!");
   });
 
-  it("should upload broken DMN file", () => {
+  it("DMN Guided Tour popup shouldn't appear when opening broken file", () => {
     // upload dmn file from fixtures directory by drag and drop
     cy.get("#file-upload-field-filename").attachFile("testModelBroken.dmn", { subjectType: "drag-n-drop" });
 
