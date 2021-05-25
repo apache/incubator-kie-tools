@@ -9,6 +9,8 @@ env:
   WEBPACK_TS_LOADER_transpileOnly: "true"
   KOGITO_TOOLING_BUILD_lint: "false"
   KOGITO_TOOLING_BUILD_test: "false"
+  ROUTER_targetOrigin: "https://localhost:9000"
+  ROUTER_relativePath: ""
 
 jobs:
   chrome-extension-tests-it:
