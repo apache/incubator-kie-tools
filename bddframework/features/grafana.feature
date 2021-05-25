@@ -23,4 +23,4 @@ Feature: Service Deployment: Grafana
       }
       """
 
-    Then HTTP GET request on service "grafana-service" with path "api/search" should contain a string "db/hello-operational-dashboard" within 3 minutes
+    Then HTTP GET request on service "grafana-service" with path "api/search" should contain a string "hello - Operational Dashboard" within 3 minutes
