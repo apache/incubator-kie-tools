@@ -20,9 +20,6 @@ module.exports = {
     // pmml-editor-marshaller
     "@typescript-eslint/no-inferrable-types": "off",
 
-    // keyboard-shortcuts
-    "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
-
     // guided-tour
     "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/no-empty-function": "off",
@@ -36,10 +33,14 @@ module.exports = {
     "@typescript-eslint/ban-ts-comment": "off",
 
     // REACT
-
     "react/prop-types": "off",
     "react/display-name": "off",
     "react-hooks/exhaustive-deps": "off",
     "react/jsx-no-target-blank": "off",
+  },
+  settings: {
+    react: {
+      version: "detect",
+    },
   },
 };

@@ -192,9 +192,14 @@ export class DefaultKeyboardShortcutsService {
 
   public deregister(id: number): void {
     const keyBinding = this.keyBindings.get(id);
-    this.keyBindingElement(keyBinding).removeEventListener("keypress", keyBinding?.listener!);
-    this.keyBindingElement(keyBinding).removeEventListener("keydown", keyBinding?.listener!);
-    this.keyBindingElement(keyBinding).removeEventListener("keyup", keyBinding?.listener!);
+    if (!keyBinding) {
+      console.error(`Unable to de-register keyboard shortcut with id ${id} because it was not registered.`);
+      return;
+    }
+
+    this.keyBindingElement(keyBinding).removeEventListener("keypress", keyBinding?.listener);
+    this.keyBindingElement(keyBinding).removeEventListener("keydown", keyBinding?.listener);
+    this.keyBindingElement(keyBinding).removeEventListener("keyup", keyBinding?.listener);
     this.keyBindings.delete(id);
   }
 
