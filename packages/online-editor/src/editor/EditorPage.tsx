@@ -32,6 +32,7 @@ import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/reac
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 
 const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kiegroup/monaco-editor");
 
@@ -492,3 +493,53 @@ export function EditorPage(props: Props) {
     </Page>
   );
 }
+
+interface Wrapped<T> {
+  name: T;
+}
+
+function wrapped<T extends string>(wrappedName: T): Wrapped<T> {
+  return { name: wrappedName };
+}
+
+type ExtractGeneric<Type> = Type extends Wrapped<infer X> ? X : never;
+
+function I18nWrapped<T extends Wrapped<string>, K>(props: {
+  components: { [K in ExtractGeneric<T>]: React.ReactNode };
+  children: Array<string | number | T>;
+}) {
+  return (
+    <>
+      {props.children.map((piece) => {
+        if (typeof piece === "string" || typeof piece === "number") {
+          return piece;
+        } else {
+          const a = piece.name as ExtractGeneric<T>;
+          return props.components[a];
+        }
+      })}
+    </>
+  );
+}
+
+const i18n = {
+  test: ["Test ", wrapped("label"), wrapped("jhow"), " top"],
+  test2: ["Test2"],
+  labelText: "labelText",
+  jhow: "jhow",
+};
+
+export const MyComponent = () => {
+  return (
+    <>
+      <I18nWrapped
+        components={{
+          jhow: <Label>{i18n.jhow}</Label>,
+          label: <Label>{i18n.labelText}</Label>,
+        }}
+      >
+        {i18n.test2}
+      </I18nWrapped>
+    </>
+  );
+};

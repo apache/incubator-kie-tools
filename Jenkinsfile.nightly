@@ -5,7 +5,7 @@ pipeline {
         label 'kie-rhel8 && kie-mem16g && !master'
     }
     tools {
-        nodejs "nodejs-16.1.0"
+        nodejs "nodejs-16.2.0"
     }
     parameters {
         booleanParam(description: 'Skip Tests? True as default', name: 'SKIP_TESTS', defaultValue: true)

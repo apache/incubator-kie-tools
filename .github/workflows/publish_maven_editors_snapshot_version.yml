@@ -147,7 +147,7 @@ jobs:
         uses: actions/setup-node@v1
         if: github.event.inputs.kogitoToolingBranchToUpdate && github.event.inputs.kogitoToolingForkToUpdate
         with:
-          node-version: 16.1.0
+          node-version: 16.2.0
 
       - name: Setup Yarn and Lerna
         if: github.event.inputs.kogitoToolingBranchToUpdate && github.event.inputs.kogitoToolingForkToUpdate

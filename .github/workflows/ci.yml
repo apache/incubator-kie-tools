@@ -16,7 +16,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        node: [16.1.0]
+        node: [16.2.0]
         yarn: [1.22.10]
         lerna: [4.0.0]
 

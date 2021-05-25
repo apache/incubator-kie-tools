@@ -33,16 +33,16 @@ function getLatestGitTag() {
     .trim();
 }
 
-function getRouterArgs(argv) {
+function getRouterArgs(env, argv) {
   let targetOrigin = argv["ROUTER_targetOrigin"] || process.env["ROUTER_targetOrigin"];
   let relativePath = argv["ROUTER_relativePath"] || process.env["ROUTER_relativePath"];
 
-  if (argv.mode === "production") {
-    targetOrigin = targetOrigin || "https://kiegroup.github.io";
-    relativePath = relativePath || `kogito-online/editors/${getLatestGitTag()}/`;
-  } else {
+  if (env.dev) {
     targetOrigin = targetOrigin || "https://localhost:9000";
     relativePath = relativePath || "";
+  } else {
+    targetOrigin = targetOrigin || "https://kiegroup.github.io";
+    relativePath = relativePath || `kogito-online/editors/${getLatestGitTag()}/`;
   }
 
   console.info("EditorEnvelopeLocator :: target origin: " + targetOrigin);
@@ -51,16 +51,16 @@ function getRouterArgs(argv) {
   return [targetOrigin, relativePath];
 }
 
-function getOnlineEditorArgs(argv) {
+function getOnlineEditorArgs(env, argv) {
   let onlineEditorUrl = argv["ONLINEEDITOR_url"] || process.env["ONLINEEDITOR_url"];
   let manifestFile;
 
-  if (argv.mode === "production") {
-    onlineEditorUrl = onlineEditorUrl || "https://kiegroup.github.io/kogito-online";
-    manifestFile = "manifest.prod.json";
-  } else {
+  if (env.dev) {
     onlineEditorUrl = onlineEditorUrl || "http://localhost:9001";
     manifestFile = "manifest.dev.json";
+  } else {
+    onlineEditorUrl = onlineEditorUrl || "https://kiegroup.github.io/kogito-online";
+    manifestFile = "manifest.prod.json";
   }
 
   console.info("Online Editor :: URL: " + onlineEditorUrl);
@@ -69,8 +69,8 @@ function getOnlineEditorArgs(argv) {
 }
 
 module.exports = async (env, argv) => {
-  const [router_targetOrigin, router_relativePath] = getRouterArgs(argv);
-  const [onlineEditor_url, manifestFile] = getOnlineEditorArgs(argv);
+  const [router_targetOrigin, router_relativePath] = getRouterArgs(env, argv);
+  const [onlineEditor_url, manifestFile] = getOnlineEditorArgs(env, argv);
 
   return merge(common(env, argv), {
     entry: {

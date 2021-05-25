@@ -15,7 +15,7 @@
   "scripts": {
     "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "yarn run lint && rimraf dist && webpack"
+    "build:prod": "yarn lint && rimraf dist && webpack"
   },
   "babel": {
     "presets": [

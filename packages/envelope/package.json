@@ -20,7 +20,7 @@
     "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose --passWithNoTests'",
     "test:clearCache": "jest --clearCache",
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "yarn run lint && yarn test && rimraf dist && webpack"
+    "build:prod": "yarn lint && yarn test && rimraf dist && webpack"
   },
   "babel": {
     "presets": [

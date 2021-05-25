@@ -23,7 +23,7 @@
     "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose --passWithNoTests'",
     "build:preprocessor": "node dist/preprocessor/preprocessor.js",
     "build:dev": "rimraf dist && webpack --env dev --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --env dev --config webpack.package-resources.config.js",
-    "build:prod": "yarn run lint && yarn test && rimraf dist && webpack --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --config webpack.package-resources.config.js",
+    "build:prod": "yarn lint && yarn test && rimraf dist && webpack --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --config webpack.package-resources.config.js",
     "build:productization": "yarn run build:prod",
     "start": "webpack serve --host 0.0.0.0 --config webpack.package-resources.config.js",
     "build:it": "rimraf it-tests/dist && webpack --config ./it-tests/webpack.config.js",

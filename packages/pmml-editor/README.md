@@ -8,6 +8,6 @@ Code herein is subject to change without notice.
 
 Nothing should be considered concrete at this point.
 
-In order to run:
+In order to run the development webapp:
 
-`yarn run start`
+`yarn start`
