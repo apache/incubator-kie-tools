@@ -47,7 +47,6 @@ describe("saveFile ipc event", () => {
     const desktopI18n = new I18n(desktopI18nDefaults, desktopI18nDictionaries);
     const menu = new Menu(window, userData, desktopI18n);
     const fileOperations = new FileOperations(window, menu, userData, desktopI18n);
-    console.info(fileOperations);
 
     act(() =>
       electron.ipcRenderer.send("saveFile", {
