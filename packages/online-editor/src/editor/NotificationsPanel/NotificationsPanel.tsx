@@ -25,6 +25,7 @@ import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-
 import { useNotificationsPanel } from "./NotificationsPanelContext";
 import { NotificationPanelTabContent } from "./NotificationsPanelTabContent";
 import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
+import { useOnlineI18n } from "../../common/i18n";
 
 interface Props {
   tabNames: string[];
@@ -33,6 +34,7 @@ interface Props {
 export function NotificationsPanel(props: Props) {
   const notificationsPanel = useNotificationsPanel();
   const [tabsNotifications, setTabsNotifications] = useState<Map<string, number>>(new Map());
+  const { i18n } = useOnlineI18n();
 
   const tabsMap: Map<string, React.RefObject<NotificationsApi>> = useMemo(
     () => new Map(props.tabNames.map((tabName) => [tabName, React.createRef<NotificationsApi>()])),
@@ -143,7 +145,7 @@ export function NotificationsPanel(props: Props) {
         {totalNotifications === 0 ? (
           <Tooltip
             key={"without-notifications"}
-            content={"Notifications Panel"}
+            content={i18n.names.notificationsPanel}
             flipBehavior={["left"]}
             distance={20}
             children={<ExclamationCircleIcon />}
@@ -151,7 +153,7 @@ export function NotificationsPanel(props: Props) {
         ) : (
           <Tooltip
             key={"with-notifications"}
-            content={"Notifications Panel"}
+            content={i18n.names.notificationsPanel}
             flipBehavior={["left"]}
             distance={20}
             children={
@@ -201,10 +203,10 @@ export function NotificationsPanel(props: Props) {
             }}
           >
             <div onClick={() => onRetractAll()}>
-              <Tooltip content={"Retract All"} children={<AngleUpIcon />} />
+              <Tooltip content={i18n.notificationsPanel.tooltip.retractAll} children={<AngleUpIcon />} />
             </div>
             <div onClick={() => onExpandAll()}>
-              <Tooltip content={"Expand All"} children={<AngleDownIcon />} />
+              <Tooltip content={i18n.notificationsPanel.tooltip.expandAll} children={<AngleDownIcon />} />
             </div>
           </div>
           <Tabs activeKey={notificationsPanel.activeTab} onSelect={onSelectTab}>

@@ -349,11 +349,11 @@ export function EditorPage(props: Props) {
         (context.file.fileExtension === "dmn" && context.isChrome && dmnRunnerStatus === DmnRunnerStatus.RUNNING) ||
         dmnRunnerStatus === DmnRunnerStatus.STOPPED
       ) {
-        return ["Validation", "Execution"];
+        return [i18n.notificationsPanel.validation, i18n.notificationsPanel.execution];
       }
-      return ["Validation"];
+      return [i18n.notificationsPanel.validation];
     },
-    [context.file.fileExtension, context.isChrome]
+    [context.file.fileExtension, context.isChrome, i18n]
   );
 
   useEffect(() => {

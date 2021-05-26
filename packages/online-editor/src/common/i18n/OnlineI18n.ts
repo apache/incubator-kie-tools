@@ -345,6 +345,10 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
   notificationsPanel: {
     validation: string;
     execution: string;
+    tooltip: {
+      retractAll: string;
+      expandAll: string;
+    }
   };
 }
 

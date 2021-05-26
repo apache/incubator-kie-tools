@@ -377,5 +377,9 @@ export const en = {
   notificationsPanel: {
     validation: "Validation",
     execution: "Execution",
+    tooltip : {
+      retractAll: "Retract All",
+      expandAll: "Expand All"
+    }
   },
 };
