@@ -169,6 +169,12 @@ describe("Upload file test", () => {
   });
 
   it("DMN Guided Tour popup shouldn't appear when opening broken file", () => {
+    cy.on("uncaught:exception", (err, runnable) => {
+      // The DMN Editor will throw an exception because it failed to marshall the contents of the uploaded file.
+      // Returning false here prevents Cypress from failing the test.
+      return false;
+    });
+
     // upload dmn file from fixtures directory by drag and drop
     cy.get("#file-upload-field-filename").attachFile("testModelBroken.dmn", { subjectType: "drag-n-drop" });
 
