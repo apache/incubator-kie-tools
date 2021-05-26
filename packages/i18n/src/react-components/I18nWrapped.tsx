@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +21,23 @@ type Components<Component extends Wrapped<string>> = {
   [K in ExtractWrappedComponentNames<Component>]: React.ReactNode;
 };
 
+interface ComponentChildren<Component> {
+  [x: number]: string | number | Component;
+}
+
+interface Children {
+  [x: number]: string | number;
+}
+
 interface Props<Component> {
   components: Component extends Wrapped<string> ? Components<Component> : undefined;
-  children: Array<string | number | Component>;
+  children: Component extends Wrapped<string> ? ComponentChildren<Component> : Children;
 }
 
 export function I18nWrapped<Component>(props: Props<Component>) {
   return (
     <>
-      {props.children.map((piece: any) => {
+      {Object.values(props.children).map((piece: any) => {
         if (typeof piece === "string" || typeof piece === "number") {
           return piece;
         }

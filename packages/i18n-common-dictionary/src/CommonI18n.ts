@@ -20,6 +20,7 @@ import { names } from "./names";
 // tslint:disable-next-line:interface-over-type-literal
 export type CommonDictionary = {
   available: string;
+  back: string;
   cancel: string;
   close: string;
   continue: string;
@@ -39,6 +40,7 @@ export type CommonDictionary = {
   launch: string;
   loading: string;
   new: string;
+  next: string;
   note: string;
   open: string;
   os: {
@@ -51,6 +53,8 @@ export type CommonDictionary = {
   redo: string;
   reset: string;
   save: string;
+  setup: string;
+  start: string;
   token: string;
   undo: string;
   uninstall: string;

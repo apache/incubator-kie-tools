@@ -39,6 +39,8 @@ import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/M
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { SelectDirection } from "@patternfly/react-core/dist/js/components/Select";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+import { useOnlineI18n } from "../../common/i18n";
+import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
 
 enum ModalPage {
   INITIAL,
@@ -47,6 +49,7 @@ enum ModalPage {
 }
 
 export function DmnRunnerModal() {
+  const { i18n } = useOnlineI18n();
   const [operatingSystem, setOperatingSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
   const [modalPage, setModalPage] = useState<ModalPage>(ModalPage.INITIAL);
   const dmnRunner = useDmnRunner();
@@ -66,14 +69,17 @@ export function DmnRunnerModal() {
   const macOsWizardSteps = useMemo(
     () => [
       {
-        name: "Install",
+        name: i18n.terms.install,
         component: (
           <>
             {dmnRunner.outdated && (
               <>
-                <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner is outdated!"}>
-                  It looks like you're using an incompatible version of the DMN Runner. Follow the instructions below to
-                  update.
+                <Alert
+                  variant={AlertVariant.warning}
+                  isInline={true}
+                  title={i18n.dmnRunner.modal.wizard.outdatedAlert.title}
+                >
+                  {i18n.dmnRunner.modal.wizard.outdatedAlert.message}
                 </Alert>
                 <br />
               </>
@@ -83,23 +89,29 @@ export function DmnRunnerModal() {
                 <TextContent>
                   <Text component={TextVariants.p}>
                     <Text component={TextVariants.a} href={downloadDmnRunnerUrl}>
-                      Download
+                      {i18n.terms.download}
                     </Text>{" "}
-                    DMN Runner.
+                    {i18n.dmnRunner.modal.wizard.macos.install.download}
                   </Text>
                 </TextContent>
               </ListItem>
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Open the <Label>dmn_runner_macos_{dmnRunner.version}.dmg</Label> file.
+                    <I18nWrapped components={{ file: <Label>dmn_runner_macos_{dmnRunner.version}.dmg</Label> }}>
+                      {i18n.dmnRunner.modal.wizard.macos.install.openFile}
+                    </I18nWrapped>
                   </Text>
                 </TextContent>
               </ListItem>
               <ListItem>
                 <TextContent>
                   <Text>
-                    Drag <Label>Kogito DMN Runner.app</Label> to the <Label>Applications</Label> folder.
+                    <I18nWrapped
+                      components={{ file: <Label>Kogito DMN Runner.app</Label>, folder: <Label>Applications</Label> }}
+                    >
+                      {i18n.dmnRunner.modal.wizard.macos.install.dragFileToApplicationsFolder}
+                    </I18nWrapped>
                   </Text>
                 </TextContent>
               </ListItem>
@@ -108,27 +120,33 @@ export function DmnRunnerModal() {
         ),
       },
       {
-        name: "Start",
+        name: i18n.terms.start,
         component: (
           <>
             {dmnRunner.status === DmnRunnerStatus.STOPPED ? (
               <>
-                <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner has stopped!"}>
-                  It looks like the DMN Runner has suddenly stopped, please follow these instructions to start it again.
+                <Alert
+                  variant={AlertVariant.warning}
+                  isInline={true}
+                  title={i18n.dmnRunner.modal.wizard.stoppedAlert.title}
+                >
+                  {i18n.dmnRunner.modal.wizard.stoppedAlert.message}
                 </Alert>
                 <br />
                 <List>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        If you see the DMN Runner icon on your system bar, simply click it and select "Start".
+                        {i18n.dmnRunner.modal.wizard.macos.start.stopped.startInstruction}
                       </Text>
                     </TextContent>
                   </ListItem>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        If not, start the DMN Runner app by launching <Label>Kogito DMN Runner.app</Label>.
+                        <I18nWrapped components={{ file: <Label>Kogito DMN Runner.app</Label> }}>
+                          {i18n.dmnRunner.modal.wizard.macos.start.stopped.launchDmnRunner}
+                        </I18nWrapped>
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -137,28 +155,34 @@ export function DmnRunnerModal() {
             ) : (
               <>
                 <TextContent>
-                  <Text component={TextVariants.p}>If you just installed DMN Runner:</Text>
+                  <Text component={TextVariants.p}>{i18n.dmnRunner.modal.wizard.macos.start.firstTime.title}</Text>
                 </TextContent>
                 <br />
                 <List>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        Open the <Label>Applications</Label> folder.
+                        <I18nWrapped components={{ folder: <Label>Applications</Label> }}>
+                          {i18n.dmnRunner.modal.wizard.macos.start.firstTime.openApplicationsFolder}
+                        </I18nWrapped>
                       </Text>
                     </TextContent>
                   </ListItem>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        Right-click on <Label>Kogito DMN Runner.app</Label>, select "Open" and then "Cancel".
+                        <I18nWrapped components={{ file: <Label>Kogito DMN Runner.app</Label> }}>
+                          {i18n.dmnRunner.modal.wizard.macos.start.firstTime.openAndCancel}
+                        </I18nWrapped>
                       </Text>
                     </TextContent>
                   </ListItem>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        Right-click on <Label>Kogito DMN Runner.app</Label> <b>again</b> and then select "Open".
+                        <I18nWrapped components={{ file: <Label>Kogito DMN Runner.app</Label>, again: <b>again</b> }}>
+                          {i18n.dmnRunner.modal.wizard.macos.start.firstTime.openInstruction}
+                        </I18nWrapped>
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -167,14 +191,16 @@ export function DmnRunnerModal() {
                 <br />
 
                 <TextContent>
-                  <Text component={TextVariants.p}>If you already installed and ran the DMN Runner before:</Text>
+                  <Text component={TextVariants.p}>{i18n.dmnRunner.modal.wizard.macos.start.alreadyRanBefore}</Text>
                 </TextContent>
                 <br />
                 <List>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        Launch the <Label>Kogito DMN Runner.app</Label>.
+                        <I18nWrapped components={{ file: <Label>Kogito DMN Runner.app</Label> }}>
+                          {i18n.dmnRunner.modal.wizard.macos.start.launchDmnRunner}
+                        </I18nWrapped>
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -183,12 +209,15 @@ export function DmnRunnerModal() {
                 <br />
                 <hr />
                 <br />
-                <ExpandableSection toggleTextExpanded="Advanced Settings" toggleTextCollapsed="Advanced Settings">
+                <ExpandableSection
+                  toggleTextExpanded={i18n.dmnRunner.modal.wizard.macos.start.advanced.title}
+                  toggleTextCollapsed={i18n.dmnRunner.modal.wizard.macos.start.advanced.title}
+                >
                   <DmnRunnerPortForm />
                   <br />
                   <TextContent>
                     <Text component={TextVariants.p}>
-                      Run the following command on a Terminal tab to start DMN Runner on a different port:
+                      {i18n.dmnRunner.modal.wizard.macos.start.advanced.runFollowingCommand}
                     </Text>
                   </TextContent>
                   <br />
@@ -205,20 +234,30 @@ export function DmnRunnerModal() {
         ),
       },
     ],
-    [dmnRunner.version, dmnRunner.status, dmnRunner.port, dmnRunner.saveNewPort, dmnRunner.outdated, downloadDmnRunnerUrl]
+    [
+      dmnRunner.version,
+      dmnRunner.status,
+      dmnRunner.port,
+      dmnRunner.saveNewPort,
+      dmnRunner.outdated,
+      downloadDmnRunnerUrl,
+    ]
   );
 
   const windowsWizardSteps = useMemo(
     () => [
       {
-        name: "Install",
+        name: i18n.terms.install,
         component: (
           <>
             {dmnRunner.outdated && (
               <>
-                <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner is outdated!"}>
-                  It looks like you're using an incompatible version of the DMN Runner. Follow the instructions below to
-                  update.
+                <Alert
+                  variant={AlertVariant.warning}
+                  isInline={true}
+                  title={i18n.dmnRunner.modal.wizard.outdatedAlert.title}
+                >
+                  {i18n.dmnRunner.modal.wizard.outdatedAlert.message}
                 </Alert>
                 <br />
               </>
@@ -228,17 +267,17 @@ export function DmnRunnerModal() {
                 <TextContent>
                   <Text component={TextVariants.p}>
                     <Text component={TextVariants.a} href={downloadDmnRunnerUrl}>
-                      Download
-                    </Text>{" "}
-                    DMN Runner. Note that you'll probably have to right-click the download and choose "Keep".
+                      {i18n.terms.download}
+                    </Text>
+                    {i18n.dmnRunner.modal.wizard.windows.install.keepDownload}
                   </Text>
                 </TextContent>
               </ListItem>
               <ListItem>
                 <TextContent>
-                  <Text component={TextVariants.p}>
-                    Move the <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> file to your preferred folder.
-                  </Text>
+                  <I18nWrapped components={{ file: <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> }}>
+                    {i18n.dmnRunner.modal.wizard.windows.install.moveTheFile}
+                  </I18nWrapped>
                 </TextContent>
               </ListItem>
             </List>
@@ -246,28 +285,33 @@ export function DmnRunnerModal() {
         ),
       },
       {
-        name: "Start",
+        name: i18n.terms.start,
         component: (
           <>
             {dmnRunner.status === DmnRunnerStatus.STOPPED ? (
               <>
-                <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner has stopped!"}>
-                  It looks like the DMN Runner has suddenly stopped, please follow these instructions to start it again.
+                <Alert
+                  variant={AlertVariant.warning}
+                  isInline={true}
+                  title={i18n.dmnRunner.modal.wizard.stoppedAlert.title}
+                >
+                  {i18n.dmnRunner.modal.wizard.stoppedAlert.message}
                 </Alert>
                 <br />
                 <List>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        If you see the DMN Runner icon on your system bar, simply click it and select "Start".
+                        {i18n.dmnRunner.modal.wizard.windows.start.stopped.startInstruction}
                       </Text>
                     </TextContent>
                   </ListItem>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        If not, start the DMN Runner by opening the{" "}
-                        <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> file.
+                        <I18nWrapped components={{ file: <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> }}>
+                          {i18n.dmnRunner.modal.wizard.windows.start.stopped.launchDmnRunner}
+                        </I18nWrapped>
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -276,21 +320,23 @@ export function DmnRunnerModal() {
             ) : (
               <>
                 <TextContent>
-                  <Text component={TextVariants.p}>If you just installed DMN Runner:</Text>
+                  <Text component={TextVariants.p}>{i18n.dmnRunner.modal.wizard.windows.start.firstTime.title}</Text>
                 </TextContent>
                 <br />
                 <List>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        Open folder where you placed the <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> file.
+                        <I18nWrapped components={{ file: <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> }}>
+                          {i18n.dmnRunner.modal.wizard.windows.start.firstTime.openFolder}
+                        </I18nWrapped>
                       </Text>
                     </TextContent>
                   </ListItem>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        Double-click it and select "More info" then click on the "Run anyway" button.
+                        {i18n.dmnRunner.modal.wizard.windows.start.firstTime.runAnyway}
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -299,14 +345,16 @@ export function DmnRunnerModal() {
                 <br />
 
                 <TextContent>
-                  <Text component={TextVariants.p}>If you already installed and ran the DMN Runner before:</Text>
+                  <Text component={TextVariants.p}>{i18n.dmnRunner.modal.wizard.windows.start.alreadyRanBefore}</Text>
                 </TextContent>
                 <br />
                 <List>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        Open the <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> file.
+                        <I18nWrapped components={{ file: <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> }}>
+                          {i18n.dmnRunner.modal.wizard.windows.start.launchDmnRunner}
+                        </I18nWrapped>
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -315,12 +363,15 @@ export function DmnRunnerModal() {
                 <br />
                 <hr />
                 <br />
-                <ExpandableSection toggleTextExpanded="Advanced Settings" toggleTextCollapsed="Advanced Settings">
+                <ExpandableSection
+                  toggleTextExpanded={i18n.dmnRunner.modal.wizard.windows.start.advanced.title}
+                  toggleTextCollapsed={i18n.dmnRunner.modal.wizard.windows.start.advanced.title}
+                >
                   <DmnRunnerPortForm />
                   <br />
                   <TextContent>
                     <Text component={TextVariants.p}>
-                      Run the following command on a Terminal window to start DMN Runner on a different port:
+                      {i18n.dmnRunner.modal.wizard.windows.start.advanced.runFollowingCommand}
                     </Text>
                   </TextContent>
                   <br />
@@ -337,20 +388,30 @@ export function DmnRunnerModal() {
         ),
       },
     ],
-    [dmnRunner.version, dmnRunner.status, dmnRunner.port, dmnRunner.saveNewPort, dmnRunner.outdated, downloadDmnRunnerUrl]
+    [
+      dmnRunner.version,
+      dmnRunner.status,
+      dmnRunner.port,
+      dmnRunner.saveNewPort,
+      dmnRunner.outdated,
+      downloadDmnRunnerUrl,
+    ]
   );
 
   const linuxWizardSteps = useMemo(
     () => [
       {
-        name: "Install",
+        name: i18n.terms.install,
         component: (
           <>
             {dmnRunner.outdated && (
               <>
-                <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner is outdated!"}>
-                  It looks like you're using an incompatible version of the DMN Runner. Follow the instructions below to
-                  update.
+                <Alert
+                  variant={AlertVariant.warning}
+                  isInline={true}
+                  title={i18n.dmnRunner.modal.wizard.outdatedAlert.title}
+                >
+                  {i18n.dmnRunner.modal.wizard.outdatedAlert.message}
                 </Alert>
                 <br />
               </>
@@ -360,17 +421,18 @@ export function DmnRunnerModal() {
                 <TextContent>
                   <Text component={TextVariants.p}>
                     <Text component={TextVariants.a} href={downloadDmnRunnerUrl}>
-                      Download
+                      {i18n.terms.download}
                     </Text>{" "}
-                    DMN Runner.
+                    {i18n.dmnRunner.modal.wizard.linux.install.download}
                   </Text>
                 </TextContent>
               </ListItem>
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Extract the contents of <Label>dmn_runner_linux_{dmnRunner.version}.tar.gz</Label> to your location
-                    of choice.
+                    <I18nWrapped components={{ file: <Label>dmn_runner_linux_{dmnRunner.version}.tar.gz</Label> }}>
+                      {i18n.dmnRunner.modal.wizard.linux.install.extractContent}
+                    </I18nWrapped>
                   </Text>
                 </TextContent>
               </ListItem>
@@ -378,21 +440,26 @@ export function DmnRunnerModal() {
             <br />
             <TextContent>
               <Text component={TextVariants.p}>
-                The DMN Runner binary, <Label>dmn_runner</Label>, is a single binary file, which means you can add it to
-                your PATH or even configure it to execute when your computer starts.
+                <I18nWrapped components={{ file: <Label>dmn_runner</Label> }}>
+                  {i18n.dmnRunner.modal.wizard.linux.install.binaryExplanation}
+                </I18nWrapped>
               </Text>
             </TextContent>
           </>
         ),
       },
       {
-        name: "Start",
+        name: i18n.terms.start,
         component: (
           <>
             {dmnRunner.status === DmnRunnerStatus.STOPPED && (
               <div>
-                <Alert variant={AlertVariant.warning} isInline={true} title={"DMN Runner has stopped!"}>
-                  It looks like the DMN Runner has suddenly stopped, please follow these instructions to start it again.
+                <Alert
+                  variant={AlertVariant.warning}
+                  isInline={true}
+                  title={i18n.dmnRunner.modal.wizard.stoppedAlert.title}
+                >
+                  {i18n.dmnRunner.modal.wizard.stoppedAlert.message}
                 </Alert>
                 <br />
               </div>
@@ -400,20 +467,22 @@ export function DmnRunnerModal() {
             <List>
               <ListItem>
                 <TextContent>
-                  <Text component={TextVariants.p}>Open a Terminal window.</Text>
+                  <Text component={TextVariants.p}>{i18n.dmnRunner.modal.wizard.linux.start.openTerminal}</Text>
                 </TextContent>
               </ListItem>
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Go to the folder where you placed the <Label>dmn_runner</Label> binary.
+                    <I18nWrapped components={{ file: <Label>dmn_runner</Label> }}>
+                      {i18n.dmnRunner.modal.wizard.linux.start.goToFolder}
+                    </I18nWrapped>
                   </Text>
                 </TextContent>
               </ListItem>
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Run{" "}
+                    {i18n.dmnRunner.modal.wizard.linux.start.runCommand}
                     <Text component={TextVariants.p} className={"kogito--code"}>
                       ./dmn_runner
                     </Text>
@@ -423,13 +492,17 @@ export function DmnRunnerModal() {
               <br />
               <hr />
               <br />
-              <ExpandableSection toggleTextExpanded="Advanced Settings" toggleTextCollapsed="Advanced Settings">
+              <ExpandableSection
+                toggleTextExpanded={i18n.dmnRunner.modal.wizard.linux.start.advanced.title}
+                toggleTextCollapsed={i18n.dmnRunner.modal.wizard.linux.start.advanced.title}
+              >
                 <DmnRunnerPortForm />
                 <br />
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Open a Terminal window and run the following command on the directory where you placed the{" "}
-                    <Label>dmn_runner</Label> binary:
+                    <I18nWrapped components={{ file: <Label>dmn_runner</Label> }}>
+                      {i18n.dmnRunner.modal.wizard.linux.start.advanced.runFollowingCommand}
+                    </I18nWrapped>
                   </Text>
                 </TextContent>
                 <br />
@@ -445,7 +518,14 @@ export function DmnRunnerModal() {
         ),
       },
     ],
-    [dmnRunner.version, dmnRunner.status, dmnRunner.port, dmnRunner.saveNewPort, dmnRunner.outdated, downloadDmnRunnerUrl]
+    [
+      dmnRunner.version,
+      dmnRunner.status,
+      dmnRunner.port,
+      dmnRunner.saveNewPort,
+      dmnRunner.outdated,
+      downloadDmnRunnerUrl,
+    ]
   );
 
   const wizardSteps = useMemo(() => {
@@ -487,9 +567,9 @@ export function DmnRunnerModal() {
       case ModalPage.USE:
         return "";
       case ModalPage.WIZARD:
-        return "DMN Runner Setup";
+        return i18n.dmnRunner.modal.wizard.title;
     }
-  }, [modalPage]);
+  }, [modalPage, i18n]);
 
   const modalVariant = useMemo(() => {
     switch (modalPage) {
@@ -508,11 +588,7 @@ export function DmnRunnerModal() {
       variant={modalVariant}
       aria-label={"Steps to enable the DMN Runner"}
       title={modalTitle}
-      description={
-        modalPage === ModalPage.WIZARD && (
-          <p>Choose your Operating System and follow the instructions to install and start the DMN Runner.</p>
-        )
-      }
+      description={modalPage === ModalPage.WIZARD && <p>{i18n.dmnRunner.modal.wizard.description}</p>}
       footer={
         <>
           {modalPage === ModalPage.INITIAL && <></>}
@@ -522,7 +598,9 @@ export function DmnRunnerModal() {
                 variant={"default"}
                 isInline={true}
                 className={"kogito--editor__dmn-runner-modal-footer-alert"}
-                title={<AnimatedTripleDotLabel label={"Waiting to connect to DMN Runner"} interval={750} />}
+                title={
+                  <AnimatedTripleDotLabel label={i18n.dmnRunner.modal.wizard.footerWaitingToConnect} interval={750} />
+                }
               />
             </div>
           )}
@@ -543,7 +621,7 @@ export function DmnRunnerModal() {
         >
           <div style={{ margin: "20px" }}>
             <TextContent>
-              <Text component={TextVariants.h1}>DMN Runner</Text>
+              <Text component={TextVariants.h1}>{i18n.names.dmnRunner}</Text>
             </TextContent>
           </div>
           <div
@@ -556,7 +634,7 @@ export function DmnRunnerModal() {
           >
             <div style={{ margin: "10px" }}>
               <TextContent>
-                <Text component={TextVariants.p}>Run your DMN models and see live forms and results as you edit.</Text>
+                <Text component={TextVariants.p}>{i18n.dmnRunner.modal.initial.runDmnModels}</Text>
               </TextContent>
             </div>
             <br />
@@ -566,25 +644,22 @@ export function DmnRunnerModal() {
             <br />
             <div>
               <TextContent>
-                <Text component={TextVariants.p}>
-                  With its validation and execution capabilities, DMN Runner helps you create assertive DMN decisions.
-                  Input nodes become interactive fields on an auto-generated form, and the results are displayed as
-                  easy-to-read cards.
-                </Text>
+                <Text component={TextVariants.p}>{i18n.dmnRunner.modal.initial.dmnRunnerExplanation}</Text>
               </TextContent>
             </div>
             <br />
             <div>
               <TextContent>
                 <Text component={TextVariants.p}>
-                  The Notifications Panel <ExclamationCircleIcon />, at the right-bottom side of the Editor, displays
-                  live Execution messages to assist during the modeling stage of your decisions.
+                  <I18nWrapped components={{ icon: <ExclamationCircleIcon /> }}>
+                    {i18n.dmnRunner.modal.initial.notificationPanelExplanation}
+                  </I18nWrapped>
                 </Text>
               </TextContent>
             </div>
             <br />
             <div style={{ margin: "10px" }}>
-              <Button onClick={() => setModalPage(ModalPage.WIZARD)}>Setup</Button>
+              <Button onClick={() => setModalPage(ModalPage.WIZARD)}>{i18n.terms.setup}</Button>
             </div>
           </div>
         </div>
@@ -592,7 +667,7 @@ export function DmnRunnerModal() {
       {modalPage === ModalPage.WIZARD && (
         <div>
           <Form isHorizontal={true}>
-            <FormGroup fieldId={"select-os"} label={"Operating system"}>
+            <FormGroup fieldId={"select-os"} label={i18n.terms.os.full}>
               <SelectOs selected={operatingSystem} onSelect={setOperatingSystem} direction={SelectDirection.down} />
             </FormGroup>
           </Form>
@@ -616,7 +691,7 @@ export function DmnRunnerModal() {
         >
           <div style={{ margin: "20px" }}>
             <TextContent>
-              <Text component={TextVariants.h1}>All set! 🎉</Text>
+              <Text component={TextVariants.h1}>{i18n.dmnRunner.modal.use.title}</Text>
             </TextContent>
           </div>
           <div
@@ -629,15 +704,15 @@ export function DmnRunnerModal() {
           >
             <TextContent style={{ margin: "10px" }}>
               <Text component={TextVariants.h3} style={{ textAlign: "center" }}>
-                You're connected to the DMN Runner.
+                {i18n.dmnRunner.modal.use.connected}
               </Text>
               <Text component={TextVariants.p} style={{ textAlign: "center" }}>
-                Fill the Form on the Inputs column and automatically see the results on the Outputs column.
+                {i18n.dmnRunner.modal.use.fillTheForm}
               </Text>
             </TextContent>
             <br />
             <Button variant="primary" type="submit" onClick={onClose} style={{ margin: "10px" }}>
-              Back to Editor
+              {i18n.dmnRunner.modal.use.backToEditor}
             </Button>
           </div>
         </div>
@@ -655,6 +730,7 @@ interface WizardImperativeControlProps {
 function DmnRunnerWizardFooter(props: WizardImperativeControlProps) {
   const wizardContext = useContext(WizardContext);
   const { status } = useDmnRunner();
+  const { i18n } = useOnlineI18n();
 
   useEffect(() => {
     if (status === DmnRunnerStatus.STOPPED) {
@@ -666,11 +742,11 @@ function DmnRunnerWizardFooter(props: WizardImperativeControlProps) {
     <WizardFooter>
       <WizardContextConsumer>
         {({ activeStep, goToStepByName, goToStepById, onNext, onBack }) => {
-          if (activeStep.name !== "Start") {
+          if (activeStep.name !== i18n.terms.start) {
             return (
               <>
                 <Button variant="primary" type="submit" onClick={onNext}>
-                  Next
+                  {i18n.terms.next}
                 </Button>
               </>
             );
@@ -678,7 +754,7 @@ function DmnRunnerWizardFooter(props: WizardImperativeControlProps) {
             return (
               <>
                 <Button variant="primary" type="submit" onClick={onBack}>
-                  Back
+                  {i18n.terms.back}
                 </Button>
               </>
             );
@@ -691,24 +767,26 @@ function DmnRunnerWizardFooter(props: WizardImperativeControlProps) {
 
 function DmnRunnerPortForm() {
   const dmnRunner = useDmnRunner();
+  const { i18n } = useOnlineI18n();
 
   return (
     <>
       <Text component={TextVariants.p}>
-        The default DMN Runner port is <Text className={"kogito--code"}>{DMN_RUNNER_DEFAULT_PORT}</Text>. If you're
-        already using this port for another application, you can change the port used to connect with the DMN Runner.
+        <I18nWrapped components={{ port: <Text className={"kogito--code"}>{DMN_RUNNER_DEFAULT_PORT}</Text> }}>
+          {i18n.dmnRunner.modal.wizard.advancedSettings.title}
+        </I18nWrapped>
       </Text>
       <br />
       <Form isHorizontal={true}>
         <FormGroup
           fieldId={"dmn-runner-port"}
-          label={"Port"}
+          label={i18n.dmnRunner.modal.wizard.advancedSettings.label}
           validated={
             dmnRunner.port === "" || parseInt(dmnRunner.port, 10) < 0 || parseInt(dmnRunner.port, 10) > 65353
               ? "error"
               : "success"
           }
-          helperTextInvalid={"Invalid port. Valid ports: 0 <= port <= 65353"}
+          helperTextInvalid={i18n.dmnRunner.modal.wizard.advancedSettings.helperTextInvalid}
         >
           <TextInput value={dmnRunner.port} type={"number"} onChange={(value) => dmnRunner.saveNewPort(value)} />
         </FormGroup>

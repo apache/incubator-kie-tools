@@ -18,6 +18,7 @@ import Ajv from "ajv";
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import { DmnRunnerJsonSchemaBridge } from "./uniforms/DmnRunnerJsonSchemaBridge";
 import { NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
+import { OnlineI18n } from "../../common/i18n";
 
 export interface DmnRunnerPayload {
   model: string;
@@ -87,7 +88,7 @@ export class DmnRunnerService {
   private readonly DMN_RUNNER_FORM_URL: string;
   private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
 
-  constructor(private port: string) {
+  constructor(private port: string, private readonly i18n: OnlineI18n) {
     this.setupAjv();
     this.DMN_RUNNER_SERVER_URL = `http://localhost:${port}`;
     this.DMN_RUNNER_PING = `${this.DMN_RUNNER_SERVER_URL}/ping`;
@@ -96,6 +97,7 @@ export class DmnRunnerService {
     this.DMN_RUNNER_FORM_URL = `${this.DMN_RUNNER_SERVER_URL}/jitdmn/schema/form`;
   }
 
+  // TODO: Remove form validation to days and time duration
   private setupAjv() {
     this.ajv.addMetaSchema(metaSchemaDraft04);
     this.ajv.addFormat("days and time duration", {
@@ -120,10 +122,10 @@ export class DmnRunnerService {
             details: validator.errors?.map((error) => {
               if (error.keyword === "format") {
                 if ((error.params as any).format === "days and time duration") {
-                  return { ...error, message: "should match format P1D(ays)2T(ime)" };
+                  return { ...error, message: this.i18n.dmnRunner.form.validation.daysAndTimeError };
                 }
                 if ((error.params as any).format === "years and months duration") {
-                  return { ...error, message: "should match format P1Y(ers)2M(onths)" };
+                  return { ...error, message: this.i18n.dmnRunner.form.validation.yearsAndMonthsError };
                 }
               }
               return error;
@@ -140,10 +142,10 @@ export class DmnRunnerService {
 
   public async version(): Promise<string> {
     const response = await fetch(this.DMN_RUNNER_PING, {
-      method: "GET"
+      method: "GET",
     });
     const json = await response.json();
-    return json.App.Version
+    return json.App.Version;
   }
 
   public async result(payload: DmnRunnerPayload): Promise<DmnResult> {
@@ -182,7 +184,7 @@ export class DmnRunnerService {
       } else if (!Object.hasOwnProperty.call(form.definitions[property], "type")) {
         form.definitions[property]!.type = "string";
       } else if (Object.hasOwnProperty.call(form.definitions[property], "enum")) {
-        form.definitions[property]!.placeholder = "Select...";
+        form.definitions[property]!.placeholder = this.i18n.dmnRunner.form.preProcessing.selectPlaceholder;
       } else if (Object.hasOwnProperty.call(form.definitions[property], "format")) {
         this.setCustomPlaceholders(form.definitions[property]!);
       }
@@ -201,10 +203,10 @@ export class DmnRunnerService {
 
   private setCustomPlaceholders(value: DmnRunnerDeepProperty) {
     if (value?.format === "days and time duration") {
-      value!.placeholder = "P1D5T or P2D or P1T";
+      value!.placeholder = this.i18n.dmnRunner.form.preProcessing.daysAndTimePlaceholder;
     }
     if (value?.format === "years and months duration") {
-      value!.placeholder = "P1Y5M or P2Y or P1M";
+      value!.placeholder = this.i18n.dmnRunner.form.preProcessing.yearsAndMonthsPlaceholder;
     }
   }
 

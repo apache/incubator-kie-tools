@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
+import { ReferenceDictionary, Wrapped } from "@kogito-tooling/i18n/dist/core";
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
 interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
@@ -197,6 +197,114 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
       possibleCauses: string;
       missingGitHubToken: string;
       cors: string;
+    };
+  };
+  dmnRunner: {
+    form: {
+      validation: {
+        daysAndTimeError: string;
+        yearsAndMonthsError: string;
+      };
+      preProcessing: {
+        selectPlaceholder: string;
+        daysAndTimePlaceholder: string;
+        yearsAndMonthsPlaceholder: string;
+      };
+    };
+    modal: {
+      initial: {
+        runDmnModels: string;
+        dmnRunnerExplanation: string;
+        notificationPanelExplanation: Array<string | Wrapped<"icon">>;
+      };
+      wizard: {
+        title: string;
+        description: string;
+        outdatedAlert: {
+          title: string;
+          message: string;
+        };
+        stoppedAlert: {
+          title: string;
+          message: string;
+        };
+        macos: {
+          install: {
+            download: string;
+            openFile: Array<string | Wrapped<"file">>;
+            dragFileToApplicationsFolder: Array<string | Wrapped<"file" | "folder">>;
+          };
+          start: {
+            stopped: {
+              startInstruction: string;
+              launchDmnRunner: Array<string | Wrapped<"file">>;
+            };
+            firstTime: {
+              title: string;
+              openApplicationsFolder: Array<string | Wrapped<"folder">>;
+              openAndCancel: Array<string | Wrapped<"file">>;
+              openInstruction: Array<string | Wrapped<"file" | "again">>;
+            };
+            alreadyRanBefore: string;
+            launchDmnRunner: Array<string | Wrapped<"file">>;
+            advanced: {
+              title: string;
+              runFollowingCommand: string;
+            };
+          };
+        };
+        windows: {
+          install: {
+            keepDownload: string;
+            moveTheFile: Array<string | Wrapped<"file">>;
+          };
+          start: {
+            stopped: {
+              startInstruction: string;
+              launchDmnRunner: Array<string | Wrapped<"file">>;
+            };
+            firstTime: {
+              title: string;
+              openFolder: Array<string | Wrapped<"file">>;
+              runAnyway: string;
+            };
+            alreadyRanBefore: string;
+            launchDmnRunner: Array<string | Wrapped<"file">>;
+            advanced: {
+              title: string;
+              runFollowingCommand: string;
+            };
+          };
+        };
+        linux: {
+          install: {
+            download: string;
+            extractContent: Array<string | Wrapped<"file">>;
+            binaryExplanation: Array<string | Wrapped<"file">>;
+          };
+          start: {
+            openTerminal: string;
+            goToFolder: Array<string | Wrapped<"file">>;
+            runCommand: string;
+            advanced: {
+              title: string;
+              runFollowingCommand: Array<string | Wrapped<"file">>;
+            };
+          };
+        };
+        footerWaitingToConnect: string;
+        advancedSettings: {
+          title: Array<string | Wrapped<"port">>;
+          label: string;
+          helperTextInvalid: string;
+        };
+      };
+      use: {
+        title: string;
+        connected: string;
+        fillTheForm: string;
+        backToEditor: string;
+      };
     };
   };
 }
