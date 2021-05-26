@@ -9,7 +9,6 @@ module.exports = {
     "plugin:react-hooks/recommended",
   ],
   rules: {
-    // envelope-bus
     "prefer-spread": "off",
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-explicit-any": "off",
@@ -23,7 +22,6 @@ module.exports = {
     "no-case-declarations": "off",
     "react/prop-types": "off",
     "react/display-name": "off",
-    "react-hooks/exhaustive-deps": "off",
     "react/jsx-no-target-blank": "off",
   },
   settings: {
