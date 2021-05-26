@@ -21,7 +21,7 @@ import Element from "../Element";
 export default class OnlineEditorPage extends EditorPage {
   private static readonly TOOLBAR_LOCATOR: By = By.className("kogito--editor__toolbar");
   private static readonly FILE_NAME_LOCATOR: By = By.xpath("//input[@aria-label='Edit file name']");
-  private static readonly CLOSE_TOUR_BUTTON_LOCATOR: By = By.xpath("//button[@data-kgt-close]");
+  private static readonly CLOSE_TOUR_BUTTON_LOCATOR: By = By.xpath("//div[@data-ouia-component-id='dmn-guided-tour']/button[@aria-label='Close']");
 
   public async waitUntilLoaded(): Promise<void> {
     return await this.tools.by(OnlineEditorPage.TOOLBAR_LOCATOR).wait(2000).untilPresent();

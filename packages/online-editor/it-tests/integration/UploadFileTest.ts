@@ -114,7 +114,7 @@ describe("Upload file test", () => {
     cy.get("[aria-label='Edit file name']").should("have.value", "testModel");
 
     // close DMN guided tour dialog
-    cy.get("[data-kgt-close='true']").click();
+    cy.get("[data-ouia-component-id='dmn-guided-tour'] button[aria-label='Close']").click();
 
     cy.getEditor().within(() => {
       // open properties panel and check values
