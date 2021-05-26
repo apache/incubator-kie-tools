@@ -17,10 +17,8 @@ package infrastructure
 import (
 	"fmt"
 	"github.com/kiegroup/kogito-operator/api"
-	"github.com/kiegroup/kogito-operator/core/client/openshift"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	imgv1 "github.com/openshift/api/image/v1"
-	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"os"
 	"strings"
@@ -84,12 +82,9 @@ func NewImageHandler(context operator.Context, image *api.Image, defaultImageNam
 func (i *imageHandler) CreateImageStreamIfNotExists() (*imgv1.ImageStream, error) {
 	if i.Client.IsOpenshift() {
 		imageStreamHandler := NewImageStreamHandler(i.Context)
-		imageStream, err := imageStreamHandler.FetchImageStream(types.NamespacedName{Name: i.imageStreamName, Namespace: i.namespace})
+		imageStream, err := imageStreamHandler.CreateImageStreamIfNotExists(types.NamespacedName{Name: i.imageStreamName, Namespace: i.namespace}, i.resolveTag(), i.addFromReference, i.resolveRegistryImage(), i.insecureImageRegistry)
 		if err != nil {
 			return nil, err
-		}
-		if imageStream == nil {
-			imageStream = imageStreamHandler.CreateImageStream(i.imageStreamName, i.namespace, i.resolveRegistryImage(), i.resolveTag(), i.addFromReference, i.insecureImageRegistry)
 		}
 		return imageStream, nil
 	}
@@ -98,55 +93,25 @@ func (i *imageHandler) CreateImageStreamIfNotExists() (*imgv1.ImageStream, error
 
 // resolveImage resolves images like "quay.io/kiegroup/kogito-jobs-service:latest" or "internal-registry/namespace/image:hash".
 // Can be empty if on OpenShift and the ImageStream is not ready.
+// In case of Openshift, image name is resolved using Image Stream tag to support kogito build.
 func (i *imageHandler) ResolveImage() (string, error) {
+	i.Log.Debug("Going to resolve image...")
 	if i.Client.IsOpenshift() {
-		if err := i.validateImageStreamTagStatus(); err != nil {
+		i.Log.Debug("Openshift environment found. Going to resolve image using ImageStream.")
+		imageStreamHandler := NewImageStreamHandler(i.Context)
+		if err := imageStreamHandler.ValidateTagStatus(types.NamespacedName{Name: i.imageStreamName, Namespace: i.namespace}, i.resolveTag()); err != nil {
 			return "", err
 		}
 		// the image is on an ImageStreamTag object
-		ist, err := openshift.ImageStreamC(i.Client).FetchTag(types.NamespacedName{Name: i.imageStreamName, Namespace: i.namespace}, i.resolveTag())
-		if err != nil {
+		ist, err := imageStreamHandler.FetchTag(types.NamespacedName{Name: i.imageStreamName, Namespace: i.namespace}, i.resolveTag())
+		if err != nil || ist == nil {
 			return "", err
-		} else if ist == nil {
-			return "", nil
 		}
 		return ist.Image.DockerImageReference, nil
 	}
+
+	// in k8s environment image name is resolved to image name provided by user through CRD.
 	return i.resolveRegistryImage(), nil
-}
-
-func (i *imageHandler) validateImageStreamTagStatus() error {
-	imageStreamHandler := NewImageStreamHandler(i.Context)
-	is, err := imageStreamHandler.FetchImageStream(types.NamespacedName{Name: i.imageStreamName, Namespace: i.namespace})
-	if err != nil {
-		return err
-	}
-	if is == nil {
-		return nil
-	}
-	tagCondition := i.findTagStatusCondition(is)
-	if tagCondition == nil {
-		return nil
-	}
-	if tagCondition.Status == corev1.ConditionFalse {
-		return fmt.Errorf(tagCondition.Message)
-	}
-	return nil
-}
-
-// findTagStatusCondition finds the ImportSuccess conditionType in conditions.
-func (i *imageHandler) findTagStatusCondition(is *imgv1.ImageStream) *imgv1.TagEventCondition {
-	tagEvents := is.Status.Tags
-	for _, tagEvent := range tagEvents {
-		if tagEvent.Tag == i.resolveTag() {
-			for _, condition := range tagEvent.Conditions {
-				if condition.Type == imgv1.ImportSuccess {
-					return &condition
-				}
-			}
-		}
-	}
-	return nil
 }
 
 // resolveRegistryImage resolves images like "quay.io/kiegroup/kogito-jobs-service:latest", as informed by user.

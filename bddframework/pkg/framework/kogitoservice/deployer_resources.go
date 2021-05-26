@@ -193,16 +193,6 @@ func (s *serviceDeployer) getKogitoServiceImage(imageHandler infrastructure.Imag
 		return image, nil
 	}
 	s.Log.Warn("Image not found for the service")
-
-	deploymentHandler := infrastructure.NewDeploymentHandler(s.Context)
-	deploymentDeployed, err := deploymentHandler.MustFetchDeployment(types.NamespacedName{Name: instance.GetName(), Namespace: instance.GetNamespace()})
-	if err != nil {
-		return "", err
-	}
-	if len(deploymentDeployed.Spec.Template.Spec.Containers) > 0 {
-		s.Log.Info("Returning the image resolved from the Deployment")
-		return deploymentDeployed.Spec.Template.Spec.Containers[0].Image, nil
-	}
 	return "", nil
 }
 
