@@ -17,9 +17,14 @@
 import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
 import * as vscode from "vscode";
 import { Notification, NotificationsApi, NotificationSeverity } from "../api";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { NotificationsApiVsCodeI18nDictionary } from "./i18n";
 
 export class PopupMessagesNotificationHandler implements NotificationsApi {
-  constructor(private readonly workspaceApi: WorkspaceApi) {}
+  constructor(
+    private readonly workspaceApi: WorkspaceApi,
+    private readonly i18n: I18n<NotificationsApiVsCodeI18nDictionary>
+  ) {}
 
   public kogitoNotifications_createNotification(notification: Notification): void {
     this.getHandleStrategyForSeverity(notification.severity)(notification.message, notification.path);
@@ -58,8 +63,7 @@ export class PopupMessagesNotificationHandler implements NotificationsApi {
     return (message: string, path: string) =>
       path.length === 0
         ? showFunction(message)
-        : //TODO: tiago i18n
-          showFunction(message, "Open").then((selected) => {
+        : showFunction(message, this.i18n.getCurrent().open).then((selected) => {
             if (!selected) {
               return;
             }
