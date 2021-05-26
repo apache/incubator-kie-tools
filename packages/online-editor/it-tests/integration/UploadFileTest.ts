@@ -185,9 +185,9 @@ describe("Upload file test", () => {
     cy.get("[aria-label='Edit file name']").should("have.value", "testModelBroken");
 
     // DMN guided tour dialog can't be shown for invalid models
-    cy.get("[data-kgt-close='true']").should("not.exist");
+    cy.get("[data-ouia-component-id='dmn-guided-tour']").should("not.be.visible");
 
-    cy.get("[data-ouia-component-id='invalid-content-alert']").should("exist");
+    cy.get("[data-ouia-component-id='invalid-content-alert']").should("be.visible");
   });
 
   it("should upload PMML file", () => {

@@ -4,6 +4,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
 <div>
   <div
     class="pf-c-modal-box kgt-dialog kgt-dialog--enabled"
+    data-ouia-component-id="dmn-guided-tour"
     style="transform: translate(-50%, -50%);"
   >
     <button
@@ -89,6 +90,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
 <div>
   <div
     class="pf-c-modal-box kgt-dialog kgt-dialog--enabled"
+    data-ouia-component-id="dmn-guided-tour"
     style="transform: translate(-50%, -50%);"
   >
     <button
@@ -204,6 +206,7 @@ exports[`Dialog when the step cannot be loaded renders empty state 1`] = `
 <div>
   <div
     class="pf-c-modal-box kgt-dialog kgt-dialog--enabled"
+    data-ouia-component-id="dmn-guided-tour"
     style="transform: translate(-50%, -50%);"
   >
     <div
@@ -256,6 +259,7 @@ exports[`Dialog when the step loads closes when users click on the close button 
 <div>
   <div
     class="pf-c-modal-box kgt-dialog kgt-dialog--disabled"
+    data-ouia-component-id="dmn-guided-tour"
     style="transform: translate(-50%, -50%);"
   >
     <button
@@ -356,6 +360,7 @@ exports[`Dialog when the step loads renders a step on auto mode 1`] = `
 <div>
   <div
     class="pf-c-modal-box kgt-dialog kgt-dialog--enabled"
+    data-ouia-component-id="dmn-guided-tour"
     style="transform: translate(-50%, -50%);"
   >
     <button
@@ -458,6 +463,7 @@ exports[`Dialog when the step loads renders function-based content 1`] = `
 <div>
   <div
     class="pf-c-modal-box kgt-dialog kgt-dialog--enabled"
+    data-ouia-component-id="dmn-guided-tour"
     style="transform: translate(-50%, -50%);"
   >
     <button
@@ -558,6 +564,7 @@ exports[`Dialog when the step loads renders react-based content 1`] = `
 <div>
   <div
     class="pf-c-modal-box kgt-dialog kgt-dialog--enabled"
+    data-ouia-component-id="dmn-guided-tour"
     style="transform: translate(-50%, -50%);"
   >
     <button
@@ -658,6 +665,7 @@ exports[`Dialog when the step loads renders string-based content 1`] = `
 <div>
   <div
     class="pf-c-modal-box kgt-dialog kgt-dialog--enabled"
+    data-ouia-component-id="dmn-guided-tour"
     style="transform: translate(-50%, -50%);"
   >
     <button

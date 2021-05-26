@@ -13,6 +13,7 @@ exports[`GuidedTour renders 1`] = `
   </svg>
   <div
     class="pf-c-modal-box kgt-dialog kgt-dialog--disabled"
+    data-ouia-component-id="dmn-guided-tour"
     style="transform: translate(-50%, -50%);"
   >
     <div

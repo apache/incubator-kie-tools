@@ -134,7 +134,7 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
   handleAutoMode();
 
   return (
-    <div style={dialogStyle} className={dialogClass}>
+    <div style={dialogStyle} className={dialogClass} data-ouia-component-id="dmn-guided-tour">
       {getDialogTemplate()}
     </div>
   );
