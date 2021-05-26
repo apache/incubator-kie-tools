@@ -17,4 +17,5 @@
 /**
  * Base interface for all capabilities.
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Capability {}

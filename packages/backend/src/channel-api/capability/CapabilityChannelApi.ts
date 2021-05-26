@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface CapabilityChannelApi {
   // receive_xxx methods go here.
 }

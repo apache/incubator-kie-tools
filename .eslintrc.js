@@ -16,23 +16,11 @@ module.exports = {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/ban-types": "off",
-
-    // pmml-editor-marshaller
     "@typescript-eslint/no-inferrable-types": "off",
-
-    // guided-tour
-    "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/no-empty-interface": ["error", { allowSingleExtends: true }],
     "@typescript-eslint/no-empty-function": "off",
-
-    //kie-bc-editors
-    "@typescript-eslint/no-this-alias": "off",
-
-    //pmml-editor
     "no-fallthrough": "off",
     "no-case-declarations": "off",
-    "@typescript-eslint/ban-ts-comment": "off",
-
-    // REACT
     "react/prop-types": "off",
     "react/display-name": "off",
     "react-hooks/exhaustive-deps": "off",
