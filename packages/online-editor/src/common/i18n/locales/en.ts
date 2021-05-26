@@ -365,7 +365,7 @@ export const en = {
         explanation: "Response appears after decisions are evaluated."
       }
     },
-    buttom: {
+    button: {
       available: `This is only available in ${en_common.names.chrome} at the moment`,
       tooltip: {
         outdated: `The ${en_common.names.dmnRunner} is outdated`,

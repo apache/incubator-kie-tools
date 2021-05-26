@@ -67,7 +67,7 @@ export function DmnRunnerButton() {
         key={"is-chrome"}
         flipBehavior={["left"]}
         trigger={!context.isChrome ? "mouseenter focus" : ""}
-        content={<p>{i18n.dmnRunner.buttom.available}</p>}
+        content={<p>{i18n.dmnRunner.button.available}</p>}
       >
         <Button
           data-testid="run-button"
@@ -81,7 +81,7 @@ export function DmnRunnerButton() {
               {dmnRunner.outdated && (
                 <Tooltip
                   key={"outdated"}
-                  content={i18n.dmnRunner.buttom.tooltip.outdated}
+                  content={i18n.dmnRunner.button.tooltip.outdated}
                   flipBehavior={["left"]}
                   distance={20}
                   children={<ExclamationTriangleIcon />}
@@ -93,7 +93,7 @@ export function DmnRunnerButton() {
                   {dmnRunner.status === DmnRunnerStatus.RUNNING ? (
                     <Tooltip
                       key={"connected"}
-                      content={i18n.dmnRunner.buttom.tooltip.connected}
+                      content={i18n.dmnRunner.button.tooltip.connected}
                       flipBehavior={["left"]}
                       distance={20}
                       children={<ConnectedIcon className={shouldBlinkDmnRunnerConnectedIcon ? "blink-opacity" : ""} />}
@@ -102,7 +102,7 @@ export function DmnRunnerButton() {
                   ) : (
                     <Tooltip
                       key={"disconnected"}
-                      content={i18n.dmnRunner.buttom.tooltip.disconnected}
+                      content={i18n.dmnRunner.button.tooltip.disconnected}
                       flipBehavior={["left"]}
                       distance={20}
                       children={<DisconnectedIcon />}

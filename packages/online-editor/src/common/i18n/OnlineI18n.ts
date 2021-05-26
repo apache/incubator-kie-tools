@@ -333,7 +333,7 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
         explanation: string;
       };
     };
-    buttom: {
+    button: {
       available: string;
       tooltip: {
         outdated: string;
