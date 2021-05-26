@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { Wrapped } from "./Wrapped";
+
 // tslint:disable-next-line:interface-name
 export interface I18nDefaults<D extends ReferenceDictionary<D>> {
   locale: string;
@@ -25,7 +27,12 @@ export type I18nDictionaries<D extends ReferenceDictionary<D>> = Map<string, Tra
 export type DictionaryInterpolation = (...args: Array<string | number>) => string;
 
 export type ReferenceDictionary<D> = {
-  [K in keyof D]: string | DictionaryInterpolation | ReferenceDictionary<any>;
+  [K in keyof D]:
+    | string
+    | number
+    | DictionaryInterpolation
+    | ReferenceDictionary<any>
+    | Array<string | number | Wrapped<string>>;
 };
 
 // Locales that aren't the default should implement this interface

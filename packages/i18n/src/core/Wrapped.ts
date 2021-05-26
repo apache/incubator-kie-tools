@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
-export * from "./I18n";
-export * from "./Dictionary";
-export * from "./Wrapped";
+export interface Wrapped<Name> {
+  name: Name;
+}
+
+export function wrapped<Name extends string>(wrappedName: Name): Wrapped<Name> {
+  return { name: wrappedName };
+}
+
+export type ExtractWrappedComponentNames<Component> = Component extends Wrapped<infer Name> ? Name : never;
