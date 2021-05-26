@@ -51,7 +51,7 @@ pipeline {
         stage('Build Nightly projects') {
             steps {
                 script {
-                    def projectCollection = ["kiegroup/kie-wb-common", "kiegroup/kogito-tooling-java", "kiegroup/drools-wb", "kiegroup/kogito-tooling"]
+                    def projectCollection = ["kiegroup/kogito-tooling-java", "kiegroup/kogito-editors-java", "kiegroup/kogito-tooling"]
                     println "Project Collection to build ${projectCollection}"
                     def buildConfigAdditionalVariables = [:]
                     def buildConfigPathFolder = "$WORKSPACE/build_config/kogito/nightly"
@@ -139,6 +139,6 @@ def buildProject(String project, Map<String, Object> buildConfig, String default
             def pom = readMavenPom file: 'pom.xml'
             env["${name}-VERSION".replace("-", "_")] = pom.version ?: pom.parent.version
         }
-        pmebuild.executeBuildScript("${group}/${name}", buildConfig, null)
+        pmebuild.executeBuildScript("${group}/${name}", buildConfig, "kogito-tooling-prod-master")
     }
 }

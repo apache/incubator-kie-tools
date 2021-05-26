@@ -264,7 +264,7 @@ export function EditorPage(props: Props) {
     })();
   });
 
-  useDmnTour(isEditorReady, context.file);
+  useDmnTour(isEditorReady && openAlert === AlertTypes.NONE, context.file);
 
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
@@ -354,6 +354,7 @@ export function EditorPage(props: Props) {
         {!fullscreen && openAlert === AlertTypes.SET_CONTENT_ERROR && (
           <div className={"kogito--alert-container"}>
             <Alert
+              ouiaId="invalid-content-alert"
               variant="danger"
               title={i18n.editorPage.alerts.setContentError.title}
               actionLinks={

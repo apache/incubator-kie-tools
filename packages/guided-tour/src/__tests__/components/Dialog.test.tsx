@@ -129,7 +129,10 @@ describe("Dialog", () => {
         ).wrapper
       );
 
-      fireEvent.click(document.querySelector("[data-kgt-close]")!, { bubbles: true });
+      fireEvent.click(
+        document.querySelector("[data-ouia-component-id='dmn-guided-tour'] button[aria-label='Close']")!,
+        { bubbles: true }
+      );
       expect(container).toMatchSnapshot();
     });
   });
