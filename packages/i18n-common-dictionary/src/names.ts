@@ -35,6 +35,7 @@ export const names = {
   kogito: "Kogito",
   linux: "Linux",
   macos: "macOS",
+  macosApplicationFolder: "Application",
   notificationsPanel: "Notifications Panel",
   oauth: "OAuth",
   redHat: "Red Hat",

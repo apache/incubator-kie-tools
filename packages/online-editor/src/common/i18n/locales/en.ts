@@ -241,7 +241,7 @@ export const en = {
         },
         macos: {
           install: {
-            download: `${en_common.names.dmnRunner}.`,
+            download: ` ${en_common.names.dmnRunner}.`,
             openFile: ["Open the ", wrapped("file"), " file."],
             dragFileToApplicationsFolder: ["Drag ", wrapped("file"), " to the ", wrapped("folder"), " folder."],
           },
@@ -253,6 +253,7 @@ export const en = {
             firstTime: {
               title: `If you just installed ${en_common.names.dmnRunner}:`,
               openApplicationsFolder: ["Open the ", wrapped("folder"), " folder."],
+              again: "again",
               openAndCancel: [
                 "Right-click on ",
                 wrapped("file"),

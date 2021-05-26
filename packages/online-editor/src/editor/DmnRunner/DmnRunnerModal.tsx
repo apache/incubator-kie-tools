@@ -54,6 +54,12 @@ export function DmnRunnerModal() {
   const [modalPage, setModalPage] = useState<ModalPage>(ModalPage.INITIAL);
   const dmnRunner = useDmnRunner();
 
+  const DMN_RUNNER_FILE_MACOS_DMG = useMemo(() => `dmn_runner_macos_${dmnRunner.version}.dmg`, [dmnRunner.version]);
+  const DMN_RUNNER_FILE_MACOS_APP = useMemo(() => "Kogito DMN Runner.app", []);
+  const DMN_RUNNER_FILE_WINDOWS_EXE = useMemo(() => `dmn_runner_windows_${dmnRunner.version}.exe`, [dmnRunner.version]);
+  const DMN_RUNNER_FILE_LINUX_TAR = useMemo(() => `dmn_runner_linux_${dmnRunner.version}.tar.gz`, [dmnRunner.version]);
+  const DMN_RUNNER_FILE_LINUX_BINARY = useMemo(() => "dmn_runner", []);
+
   const downloadDmnRunnerUrl = useMemo(() => {
     switch (operatingSystem) {
       case OperatingSystem.MACOS:
@@ -90,7 +96,7 @@ export function DmnRunnerModal() {
                   <Text component={TextVariants.p}>
                     <Text component={TextVariants.a} href={downloadDmnRunnerUrl}>
                       {i18n.terms.download}
-                    </Text>{" "}
+                    </Text>
                     {i18n.dmnRunner.modal.wizard.macos.install.download}
                   </Text>
                 </TextContent>
@@ -98,7 +104,7 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>dmn_runner_macos_{dmnRunner.version}.dmg</Label> }}>
+                    <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_MACOS_DMG}</Label> }}>
                       {i18n.dmnRunner.modal.wizard.macos.install.openFile}
                     </I18nWrapped>
                   </Text>
@@ -108,7 +114,10 @@ export function DmnRunnerModal() {
                 <TextContent>
                   <Text>
                     <I18nWrapped
-                      components={{ file: <Label>Kogito DMN Runner.app</Label>, folder: <Label>Applications</Label> }}
+                      components={{
+                        file: <Label>{DMN_RUNNER_FILE_MACOS_APP}</Label>,
+                        folder: <Label>{i18n.names.macosApplicationFolder}</Label>,
+                      }}
                     >
                       {i18n.dmnRunner.modal.wizard.macos.install.dragFileToApplicationsFolder}
                     </I18nWrapped>
@@ -144,7 +153,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>Kogito DMN Runner.app</Label> }}>
+                        <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_MACOS_APP}</Label> }}>
                           {i18n.dmnRunner.modal.wizard.macos.start.stopped.launchDmnRunner}
                         </I18nWrapped>
                       </Text>
@@ -162,7 +171,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ folder: <Label>Applications</Label> }}>
+                        <I18nWrapped components={{ folder: <Label>{i18n.names.macosApplicationFolder}</Label> }}>
                           {i18n.dmnRunner.modal.wizard.macos.start.firstTime.openApplicationsFolder}
                         </I18nWrapped>
                       </Text>
@@ -171,7 +180,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>Kogito DMN Runner.app</Label> }}>
+                        <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_MACOS_APP}</Label> }}>
                           {i18n.dmnRunner.modal.wizard.macos.start.firstTime.openAndCancel}
                         </I18nWrapped>
                       </Text>
@@ -180,7 +189,12 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>Kogito DMN Runner.app</Label>, again: <b>again</b> }}>
+                        <I18nWrapped
+                          components={{
+                            file: <Label>{DMN_RUNNER_FILE_MACOS_APP}</Label>,
+                            again: <b>{i18n.dmnRunner.modal.wizard.macos.start.firstTime.again}</b>,
+                          }}
+                        >
                           {i18n.dmnRunner.modal.wizard.macos.start.firstTime.openInstruction}
                         </I18nWrapped>
                       </Text>
@@ -198,7 +212,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>Kogito DMN Runner.app</Label> }}>
+                        <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_MACOS_APP}</Label> }}>
                           {i18n.dmnRunner.modal.wizard.macos.start.launchDmnRunner}
                         </I18nWrapped>
                       </Text>
@@ -241,7 +255,7 @@ export function DmnRunnerModal() {
       dmnRunner.saveNewPort,
       dmnRunner.outdated,
       downloadDmnRunnerUrl,
-      i18n
+      i18n,
     ]
   );
 
@@ -276,7 +290,7 @@ export function DmnRunnerModal() {
               </ListItem>
               <ListItem>
                 <TextContent>
-                  <I18nWrapped components={{ file: <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> }}>
+                  <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_WINDOWS_EXE}</Label> }}>
                     {i18n.dmnRunner.modal.wizard.windows.install.moveTheFile}
                   </I18nWrapped>
                 </TextContent>
@@ -310,7 +324,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> }}>
+                        <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_WINDOWS_EXE}</Label> }}>
                           {i18n.dmnRunner.modal.wizard.windows.start.stopped.launchDmnRunner}
                         </I18nWrapped>
                       </Text>
@@ -328,7 +342,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> }}>
+                        <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_WINDOWS_EXE}</Label> }}>
                           {i18n.dmnRunner.modal.wizard.windows.start.firstTime.openFolder}
                         </I18nWrapped>
                       </Text>
@@ -353,7 +367,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>dmn_runner_windows_{dmnRunner.version}.exe</Label> }}>
+                        <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_WINDOWS_EXE}</Label> }}>
                           {i18n.dmnRunner.modal.wizard.windows.start.launchDmnRunner}
                         </I18nWrapped>
                       </Text>
@@ -396,7 +410,7 @@ export function DmnRunnerModal() {
       dmnRunner.saveNewPort,
       dmnRunner.outdated,
       downloadDmnRunnerUrl,
-      i18n
+      i18n,
     ]
   );
 
@@ -432,7 +446,7 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>dmn_runner_linux_{dmnRunner.version}.tar.gz</Label> }}>
+                    <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_LINUX_TAR}</Label> }}>
                       {i18n.dmnRunner.modal.wizard.linux.install.extractContent}
                     </I18nWrapped>
                   </Text>
@@ -442,7 +456,7 @@ export function DmnRunnerModal() {
             <br />
             <TextContent>
               <Text component={TextVariants.p}>
-                <I18nWrapped components={{ file: <Label>dmn_runner</Label> }}>
+                <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_LINUX_BINARY}</Label> }}>
                   {i18n.dmnRunner.modal.wizard.linux.install.binaryExplanation}
                 </I18nWrapped>
               </Text>
@@ -475,7 +489,7 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>dmn_runner</Label> }}>
+                    <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_LINUX_BINARY}</Label> }}>
                       {i18n.dmnRunner.modal.wizard.linux.start.goToFolder}
                     </I18nWrapped>
                   </Text>
@@ -502,7 +516,7 @@ export function DmnRunnerModal() {
                 <br />
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>dmn_runner</Label> }}>
+                    <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_LINUX_BINARY}</Label> }}>
                       {i18n.dmnRunner.modal.wizard.linux.start.advanced.runFollowingCommand}
                     </I18nWrapped>
                   </Text>
@@ -527,7 +541,7 @@ export function DmnRunnerModal() {
       dmnRunner.saveNewPort,
       dmnRunner.outdated,
       downloadDmnRunnerUrl,
-      i18n
+      i18n,
     ]
   );
 

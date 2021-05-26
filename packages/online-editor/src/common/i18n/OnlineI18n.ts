@@ -243,6 +243,7 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
               title: string;
               openApplicationsFolder: Array<string | Wrapped<"folder">>;
               openAndCancel: Array<string | Wrapped<"file">>;
+              again: string;
               openInstruction: Array<string | Wrapped<"file" | "again">>;
             };
             alreadyRanBefore: string;
