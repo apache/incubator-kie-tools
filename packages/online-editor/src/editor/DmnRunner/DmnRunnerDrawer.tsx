@@ -44,6 +44,8 @@ import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelC
 import { Notification } from "@kogito-tooling/notifications/dist/api";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { useOnlineI18n } from "../../common/i18n";
+import { I18nWrapped } from "../../../../i18n/src/react-components";
 
 enum ButtonPosition {
   INPUT,
@@ -66,6 +68,7 @@ interface DmnRunnerStylesConfig {
 
 export function DmnRunnerDrawer(props: Props) {
   const notificationsPanel = useNotificationsPanel();
+  const { i18n } = useOnlineI18n();
   const dmnRunner = useDmnRunner();
   const [dmnRunnerResults, setDmnRunnerResults] = useState<DecisionResult[]>();
   const autoFormRef = useRef<HTMLFormElement>();
@@ -142,9 +145,9 @@ export function DmnRunnerDrawer(props: Props) {
           message: `${message.messageType}: ${message.message}`,
         }));
       });
-      notificationsPanel.getTabRef("Execution")?.setNotifications("", notifications);
+      notificationsPanel.getTabRef(i18n.notificationsPanel.execution)?.setNotifications("", notifications);
     },
-    [notificationsPanel.getTabRef]
+    [notificationsPanel.getTabRef, i18n]
   );
 
   const updateDmnRunnerResults = useCallback(
@@ -309,8 +312,8 @@ export function DmnRunnerDrawer(props: Props) {
 
   const openValidationTab = useCallback(() => {
     notificationsPanel.setIsOpen(true);
-    notificationsPanel.setActiveTab("Validation");
-  }, []);
+    notificationsPanel.setActiveTab(i18n.notificationsPanel.validation);
+  }, [i18n]);
 
   const formErrorMessage = useMemo(
     () => (
@@ -318,19 +321,23 @@ export function DmnRunnerDrawer(props: Props) {
         <EmptyState>
           <EmptyStateIcon icon={ExclamationIcon} />
           <TextContent>
-            <Text component={"h2"}>Oops!</Text>
+            <Text component={"h2"}>{i18n.dmnRunner.drawer.formError.title}</Text>
           </TextContent>
           <EmptyStateBody>
-            <TextContent>Form cannot be rendered because of an error.</TextContent>
+            <TextContent>{i18n.dmnRunner.drawer.formError.explanation}</TextContent>
             <br />
             <TextContent>
-              Check for <a onClick={openValidationTab}>Validation</a> errors on the Notifications Panel.
+              <I18nWrapped
+                components={{ link: <a onClick={openValidationTab}>{i18n.notificationsPanel.validation}</a> }}
+              >
+                {i18n.dmnRunner.drawer.formError.checkNotificationPanel}
+              </I18nWrapped>
             </TextContent>
           </EmptyStateBody>
         </EmptyState>
       </div>
     ),
-    [openValidationTab]
+    [openValidationTab, i18n]
   );
 
   return (
@@ -356,7 +363,7 @@ export function DmnRunnerDrawer(props: Props) {
           <Page className={"kogito--editor__dmn-runner-content-page"}>
             <PageSection className={"kogito--editor__dmn-runner-content-header"}>
               <TextContent>
-                <Text component={"h2"}>Inputs</Text>
+                <Text component={"h2"}>{i18n.terms.inputs}</Text>
               </TextContent>
               {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
                 <DrawerCloseButton onClick={(e: any) => dmnRunner.setDrawerExpanded(false)} />
@@ -388,11 +395,11 @@ export function DmnRunnerDrawer(props: Props) {
                     <EmptyState>
                       <EmptyStateIcon icon={CubesIcon} />
                       <TextContent>
-                        <Text component={"h2"}>No Form</Text>
+                        <Text component={"h2"}>{i18n.dmnRunner.drawer.withoutForm.title}</Text>
                       </TextContent>
                       <EmptyStateBody>
                         <TextContent>
-                          <Text component={TextVariants.p}>Associated DMN doesn't have any inputs.</Text>
+                          <Text component={TextVariants.p}>{i18n.dmnRunner.drawer.withoutForm.explanation}</Text>
                         </TextContent>
                       </EmptyStateBody>
                     </EmptyState>
@@ -412,7 +419,7 @@ export function DmnRunnerDrawer(props: Props) {
           <Page className={"kogito--editor__dmn-runner-content-page"}>
             <PageSection className={"kogito--editor__dmn-runner-content-header"}>
               <TextContent>
-                <Text component={"h2"}>Outputs</Text>
+                <Text component={"h2"}>{i18n.terms.outputs}</Text>
               </TextContent>
               {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
                 <DrawerCloseButton onClick={(e: any) => dmnRunner.setDrawerExpanded(false)} />
@@ -441,6 +448,7 @@ interface DmnRunnerResponseProps {
 
 function DmnRunnerResult(props: DmnRunnerResponseProps) {
   const notificationsPanel = useNotificationsPanel();
+  const { i18n } = useOnlineI18n();
 
   useEffect(() => {
     props.differences?.forEach((difference, index) => {
@@ -474,7 +482,7 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
             <div style={{ display: "flex", alignItems: "center" }}>
               <CheckCircleIcon />
               <a onClick={openExecutionTab} style={{ paddingLeft: "5px" }}>
-                Evaluated with success
+                {i18n.dmnRunner.drawer.evaluation.success}
               </a>
             </div>
           </>
@@ -485,7 +493,7 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
             <div style={{ display: "flex", alignItems: "center" }}>
               <InfoCircleIcon />
               <a onClick={openExecutionTab} style={{ paddingLeft: "5px" }}>
-                Evaluation skipped
+                {i18n.dmnRunner.drawer.evaluation.skipped}
               </a>
             </div>
           </>
@@ -496,13 +504,13 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
             <div style={{ display: "flex", alignItems: "center" }}>
               <ExclamationCircleIcon />
               <a onClick={openExecutionTab} style={{ paddingLeft: "5px" }}>
-                Evaluation failed
+                {i18n.dmnRunner.drawer.evaluation.failed}
               </a>
             </div>
           </>
         );
     }
-  }, []);
+  }, [i18n]);
 
   const result = useCallback((dmnRunnerResult: Result) => {
     switch (typeof dmnRunnerResult) {
@@ -578,11 +586,11 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
         <EmptyState>
           <EmptyStateIcon icon={InfoCircleIcon} />
           <TextContent>
-            <Text component={"h2"}>No response</Text>
+            <Text component={"h2"}>{i18n.dmnRunner.drawer.withoutResponse.title}</Text>
           </TextContent>
           <EmptyStateBody>
             <TextContent>
-              <Text>Response appears after decisions are evaluated.</Text>
+              <Text>{i18n.dmnRunner.drawer.withoutResponse.explanation}</Text>
             </TextContent>
           </EmptyStateBody>
         </EmptyState>

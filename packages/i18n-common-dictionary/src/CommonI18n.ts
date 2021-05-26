@@ -36,6 +36,7 @@ export type CommonDictionary = {
   files: string;
   forum: string;
   fullScreen: string;
+  inputs: string;
   install: string;
   launch: string;
   loading: string;
@@ -43,10 +44,12 @@ export type CommonDictionary = {
   next: string;
   note: string;
   open: string;
+  oops: string;
   os: {
     initials: string;
     full: string;
   };
+  outputs: string;
   paste: string;
   poweredBy: string;
   quit: string;

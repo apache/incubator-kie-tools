@@ -306,6 +306,45 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
         backToEditor: string;
       };
     };
+    dropdown: {
+      label: string;
+      setup: string;
+      open: string;
+      close: string;
+    };
+    drawer: {
+      formError: {
+        title: string;
+        explanation: string;
+        validation: string;
+        checkNotificationPanel: Array<string | Wrapped<"link">>;
+      };
+      withoutForm: {
+        title: string;
+        explanation: string;
+      };
+      evaluation: {
+        success: string;
+        skipped: string;
+        failed: string;
+      };
+      withoutResponse: {
+        title: string;
+        explanation: string;
+      };
+    };
+    buttom: {
+      available: string;
+      tooltip: {
+        outdated: string;
+        connected: string;
+        disconnected: string;
+      }
+    }
+  };
+  notificationsPanel: {
+    validation: string;
+    execution: string;
   };
 }
 

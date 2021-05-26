@@ -181,7 +181,7 @@ export function DmnRunnerContextProvider(props: Props) {
           }));
         })
         .then((notifications) => {
-          notificationsPanel.getTabRef("Validation")?.setNotifications("", notifications);
+          notificationsPanel.getTabRef(i18n.notificationsPanel.validation)?.setNotifications("", notifications);
         });
     };
 
@@ -195,7 +195,7 @@ export function DmnRunnerContextProvider(props: Props) {
     validate();
 
     return () => props.editor?.getStateControl().unsubscribe(subscription);
-  }, [props.editor, status, props.isEditorReady]);
+  }, [props.editor, status, props.isEditorReady, i18n]);
 
   return (
     <DmnRunnerContext.Provider

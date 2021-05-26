@@ -24,9 +24,11 @@ import { useCallback, useContext, useMemo } from "react";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useDmnRunner } from "./DmnRunnerContext";
 import { GlobalContext } from "../../common/GlobalContext";
+import { useOnlineI18n } from "../../common/i18n";
 
 export function DmnRunnerButton() {
   const dmnRunner = useDmnRunner();
+  const { i18n } = useOnlineI18n();
   const context = useContext(GlobalContext);
 
   const onDmnRunner = useCallback(() => {
@@ -65,7 +67,7 @@ export function DmnRunnerButton() {
         key={"is-chrome"}
         flipBehavior={["left"]}
         trigger={!context.isChrome ? "mouseenter focus" : ""}
-        content={<p>This is only available in Chrome at the moment</p>}
+        content={<p>{i18n.dmnRunner.buttom.available}</p>}
       >
         <Button
           data-testid="run-button"
@@ -79,7 +81,7 @@ export function DmnRunnerButton() {
               {dmnRunner.outdated && (
                 <Tooltip
                   key={"outdated"}
-                  content={"The DMN Runner is outdated"}
+                  content={i18n.dmnRunner.buttom.tooltip.outdated}
                   flipBehavior={["left"]}
                   distance={20}
                   children={<ExclamationTriangleIcon />}
@@ -91,7 +93,7 @@ export function DmnRunnerButton() {
                   {dmnRunner.status === DmnRunnerStatus.RUNNING ? (
                     <Tooltip
                       key={"connected"}
-                      content={"The DMN Runner is connected"}
+                      content={i18n.dmnRunner.buttom.tooltip.connected}
                       flipBehavior={["left"]}
                       distance={20}
                       children={<ConnectedIcon className={shouldBlinkDmnRunnerConnectedIcon ? "blink-opacity" : ""} />}
@@ -100,7 +102,7 @@ export function DmnRunnerButton() {
                   ) : (
                     <Tooltip
                       key={"disconnected"}
-                      content={"The DMN Runner is not connected"}
+                      content={i18n.dmnRunner.buttom.tooltip.disconnected}
                       flipBehavior={["left"]}
                       distance={20}
                       children={<DisconnectedIcon />}
@@ -112,7 +114,7 @@ export function DmnRunnerButton() {
             </>
           }
         >
-          DMN Runner
+          {i18n.names.dmnRunner}
         </Button>
       </Tooltip>
     </>

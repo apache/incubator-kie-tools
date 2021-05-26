@@ -241,6 +241,7 @@ export function DmnRunnerModal() {
       dmnRunner.saveNewPort,
       dmnRunner.outdated,
       downloadDmnRunnerUrl,
+      i18n
     ]
   );
 
@@ -395,6 +396,7 @@ export function DmnRunnerModal() {
       dmnRunner.saveNewPort,
       dmnRunner.outdated,
       downloadDmnRunnerUrl,
+      i18n
     ]
   );
 
@@ -525,6 +527,7 @@ export function DmnRunnerModal() {
       dmnRunner.saveNewPort,
       dmnRunner.outdated,
       downloadDmnRunnerUrl,
+      i18n
     ]
   );
 

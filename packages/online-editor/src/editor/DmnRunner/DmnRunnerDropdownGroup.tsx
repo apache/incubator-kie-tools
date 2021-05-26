@@ -19,26 +19,28 @@ import { DropdownGroup, DropdownItem } from "@patternfly/react-core/dist/js/comp
 import React from "react";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useDmnRunner } from "./DmnRunnerContext";
+import { useOnlineI18n } from "../../common/i18n";
 
 export function DmnRunnerDropdownGroup() {
   const dmnRunner = useDmnRunner();
+  const { i18n } = useOnlineI18n();
 
   return (
-    <DropdownGroup label={"DMN Runner"}>
+    <DropdownGroup label={i18n.dmnRunner.dropdown.label}>
       <>
         {dmnRunner.status !== DmnRunnerStatus.RUNNING && (
           <DropdownItem key={"setup-dmn-runner"} component={"button"} onClick={() => dmnRunner.setModalOpen(true)}>
-            Setup DMN Runner
+            {i18n.dmnRunner.dropdown.setup}
           </DropdownItem>
         )}
         {dmnRunner.status === DmnRunnerStatus.RUNNING && !dmnRunner.isDrawerExpanded && (
           <DropdownItem key={"open-dmn-runner"} component={"button"} onClick={() => dmnRunner.setDrawerExpanded(true)}>
-            Open DMN Runner panel
+            {i18n.dmnRunner.dropdown.open}
           </DropdownItem>
         )}
         {dmnRunner.status === DmnRunnerStatus.RUNNING && dmnRunner.isDrawerExpanded && (
           <DropdownItem key={"open-dmn-runner"} component={"button"} onClick={() => dmnRunner.setDrawerExpanded(false)}>
-            Close DMN Runner panel
+            {i18n.dmnRunner.dropdown.close}
           </DropdownItem>
         )}
       </>
