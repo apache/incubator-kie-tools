@@ -21,11 +21,8 @@ import { labeledInputElementInPropertiesPanel } from "../CommonLocators";
  * Class for accessing expanded DMN Properties panel
  */
 export default class PropertiesPanelHelper {
-  private root: WebElement;
 
-  constructor(root: WebElement) {
-    this.root = root;
-  }
+  constructor(private readonly root: WebElement) {}
 
   /**
    * Change a property to a provided value. The Original value is replaced by the new value completely.
@@ -34,7 +31,7 @@ export default class PropertiesPanelHelper {
    * @param propertyName
    * @param propertyValue
    */
-  public changeProperty = async (propertyName: string, propertyValue: string): Promise<PropertiesPanelHelper> => {
+  public async changeProperty(propertyName: string, propertyValue: string): Promise<PropertiesPanelHelper> {
     const property = await this.root.findElement(labeledInputElementInPropertiesPanel(propertyName));
     await property.clear();
     await property.sendKeys(propertyValue);

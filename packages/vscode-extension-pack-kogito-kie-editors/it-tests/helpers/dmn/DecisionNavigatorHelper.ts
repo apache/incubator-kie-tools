@@ -30,7 +30,7 @@ export default class DecisionNavigatorHelper {
    *
    * @param nodeName node name to select
    */
-  public selectDiagramNode = async (nodeName: string): Promise<DecisionNavigatorHelper> => {
+  public async selectDiagramNode(nodeName: string): Promise<DecisionNavigatorHelper> {
     const node: WebElement = await this.getDiagramNode(nodeName);
     await node.click();
 
@@ -42,11 +42,11 @@ export default class DecisionNavigatorHelper {
    *
    * @param nodeName node name that will be asserted
    */
-  public assertDiagramNodeIsPresent = async (nodeName: string): Promise<void> => {
+  public async assertDiagramNodeIsPresent(nodeName: string): Promise<void> {
     await assertWebElementIsDisplayedEnabled(await this.getDiagramNode(nodeName));
   };
 
-  private getDiagramNode = async (nodeName: string): Promise<WebElement> => {
+  private async getDiagramNode(nodeName: string): Promise<WebElement> {
     return this.root
       .getDriver()
       .wait(until.elementLocated(spanComponentWithText(nodeName)), 5000, `${nodeName} not found in 5 seconds`);
