@@ -35,7 +35,7 @@ teardown() {
     [[ "${testConfigFile}" =~ "tests.build-image-version=latest" ]]
     [[ "${testConfigFile}" =~ "tests.services-image-version=latest" ]]
     [[ "${testConfigFile}" =~ "tests.runtime-application-image-version=latest" ]]
-    [[ "${testConfigFile}" =~ "tests.examples-ref=master" ]]
+    [[ "${testConfigFile}" =~ "tests.examples-ref=nightly-master" ]]
 }
 
 @test "check update_test_config on release branch" {
@@ -52,7 +52,7 @@ teardown() {
     [[ "${testConfigFile}" =~ "tests.build-image-version=${VERSION_MAJOR_MINOR}" ]]
     [[ "${testConfigFile}" =~ "tests.services-image-version=${VERSION_MAJOR_MINOR}" ]]
     [[ "${testConfigFile}" =~ "tests.runtime-application-image-version=${VERSION_MAJOR_MINOR}" ]]
-    [[ "${testConfigFile}" =~ "tests.examples-ref=${VERSION_MAJOR_MINOR}.x" ]]
+    [[ "${testConfigFile}" =~ "tests.examples-ref=nightly-${VERSION_MAJOR_MINOR}.x" ]]
 }
 
 @test "check update_test_config on release branch with non snapshot version" {

@@ -25,13 +25,17 @@ git branch | grep \* | cut -d ' ' -f2 | grep ${current_major_minor}
 if [ $? -ne 0 ]; then
   echo "no release branch"
   test_branch="master"
+fi
 
-  # Check the version
-  getOperatorVersion | grep -v snapshot
-  if [ $? -ne 0 ]; then
-    echo "no release"
+# Check the version
+getOperatorVersion | grep -v snapshot
+if [ $? -ne 0 ]; then
+  echo "no release"
+
+  if [ "${test_branch}" = "master" ]; then
     test_image_version="latest"
-  fi
+  fi  
+  test_branch="nightly-${test_branch}"
 fi
 
 echo "Set test config with image version ${test_image_version} and branch ${test_branch}"
