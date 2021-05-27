@@ -22,11 +22,7 @@ import { spanComponentWithText } from "../CommonLocators";
  * Class for accessing expanded DMN Decision Navigator panel
  */
 export default class DecisionNavigatorHelper {
-  private root: WebElement;
-
-  constructor(root: WebElement) {
-    this.root = root;
-  }
+  constructor(private readonly root: WebElement) {}
 
   /**
    * Selects a DMN diagram node by click it the DMN Decision Navigator panel
