@@ -15,7 +15,7 @@
  */
 
 import { EditorEnvelopeLocator, ChannelType } from "../../../api";
-import { KogitoEdit } from "@kogito-tooling/channel-common-api";
+import { KogitoEdit } from "@kogito-tooling/workspace/dist/api";
 import * as React from "react";
 import { File } from "../../../channel";
 import { EmbeddedEditor, EmbeddedEditorRef } from "../../embedded";
@@ -74,7 +74,7 @@ describe("EmbeddedEditor::ONLINE", () => {
 
     const spyOnContentChangedNotification = jest.spyOn(
       editorRef.current!.getEnvelopeServer().envelopeApi.requests,
-      "receive_contentChanged"
+      "kogitoEditor_contentChanged"
     );
 
     editorRef.current?.setContent("path", "content");
@@ -95,7 +95,7 @@ describe("EmbeddedEditor::ONLINE", () => {
 
     const spyRequest_contentResponse = jest.spyOn(
       editorRef.current!.getEnvelopeServer().envelopeApi.requests,
-      "receive_contentRequest"
+      "kogitoEditor_contentRequest"
     );
     editorRef.current?.getContent();
 
@@ -115,7 +115,7 @@ describe("EmbeddedEditor::ONLINE", () => {
 
     const spyRequest_previewResponse = jest.spyOn(
       editorRef.current!.getEnvelopeServer().envelopeApi.requests,
-      "receive_previewRequest"
+      "kogitoEditor_previewRequest"
     );
     editorRef.current?.getPreview();
 
@@ -131,7 +131,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         file={file}
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
-        receive_setContentError={onSetContentError}
+        kogitoEditor_setContentError={onSetContentError}
         locale={"en"}
       />
     );
@@ -139,7 +139,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     await incomingMessage({
       targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: "receive_setContentError",
+      type: "kogitoEditor_setContentError",
       data: [],
     });
 
@@ -156,7 +156,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         file={file}
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
-        receive_ready={onReady}
+        kogitoEditor_ready={onReady}
         locale={"en"}
       />
     );
@@ -164,7 +164,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     await incomingMessage({
       targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: "receive_ready",
+      type: "kogitoEditor_ready",
       data: [],
     });
 
@@ -181,7 +181,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         file={file}
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
-        receive_resourceContentRequest={onResourceContentRequest}
+        kogitoWorkspace_resourceContentRequest={onResourceContentRequest}
         locale={"en"}
       />
     );
@@ -190,7 +190,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: "receive_resourceContentRequest",
+      type: "kogitoWorkspace_resourceContentRequest",
       data: [{ path: "" }],
     });
 
@@ -207,7 +207,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         file={file}
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
-        receive_resourceListRequest={onResourceListRequest}
+        kogitoWorkspace_resourceListRequest={onResourceListRequest}
         locale={"en"}
       />
     );
@@ -216,7 +216,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: "receive_resourceListRequest",
+      type: "kogitoWorkspace_resourceListRequest",
       data: [{ pattern: "", paths: [] }],
     });
 
@@ -233,7 +233,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         file={file}
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
-        receive_newEdit={onNewEdit}
+        kogitoWorkspace_newEdit={onNewEdit}
         locale={"en"}
       />
     );
@@ -241,7 +241,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     await incomingMessage({
       targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: "receive_newEdit",
+      type: "kogitoWorkspace_newEdit",
       data: [new KogitoEdit("1")],
     });
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/channel-common-api";
+import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/workspace/dist/api";
 
 /**
  * PUBLIC ENVELOPE API

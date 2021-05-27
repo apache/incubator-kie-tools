@@ -17,7 +17,7 @@
 describe("Dmn Editable Data Type.", () => {
   before("Visit page", () => {
     cy.visit("localhost:9001/dmn-editable");
-    cy.loadEditor("dmn-editable");
+    cy.loadEditors(["dmn-editable"]);
   });
 
   // Currently skipped due to https://issues.redhat.com/browse/KOGITO-3909

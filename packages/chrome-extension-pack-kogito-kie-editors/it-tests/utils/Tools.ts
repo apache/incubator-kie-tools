@@ -45,7 +45,7 @@ export default class Tools {
     return await this.screenShot.takePng(screenshotNamePrefix);
   }
 
-  public pause(timeout: number): Promise<void> {
+  public sleep(timeout: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, timeout));
   }
 

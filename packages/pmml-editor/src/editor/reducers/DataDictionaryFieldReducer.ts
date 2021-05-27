@@ -36,7 +36,8 @@ interface DataDictionaryFieldPayload {
   };
 }
 
-export type DataDictionaryFieldActions = ActionMap<DataDictionaryFieldPayload>[keyof ActionMap<DataDictionaryFieldPayload>];
+export type DataDictionaryFieldActions =
+  ActionMap<DataDictionaryFieldPayload>[keyof ActionMap<DataDictionaryFieldPayload>];
 
 export const DataDictionaryFieldReducer: HistoryAwareValidatingReducer<DataField[], DataDictionaryFieldActions> = (
   historyService: HistoryService,

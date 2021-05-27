@@ -30,7 +30,8 @@ export type SceSimEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
 
 export class SceSimEditorEnvelopeApiImpl
   extends KogitoEditorEnvelopeApiImpl<SceSimEditor, SceSimEditorEnvelopeApi, SceSimEditorChannelApi>
-  implements SceSimEditorEnvelopeApi {
+  implements SceSimEditorEnvelopeApi
+{
   constructor(
     private readonly sceSimArgs: SceSimEnvelopeApiFactoryArgs,
     gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }

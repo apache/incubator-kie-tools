@@ -23,7 +23,7 @@ describe("utils::extractEditorFileExtensionFromUrl", () => {
   const baseUrl = "https://kiegroup.github.io/kogito-online";
 
   function setWindowLocationHref(url: string) {
-    delete window.location;
+    delete (window as any).location;
     window.location = { href: `${baseUrl}/${url}` } as any;
   }
 

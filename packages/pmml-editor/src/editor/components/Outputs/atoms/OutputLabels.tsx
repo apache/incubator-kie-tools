@@ -32,17 +32,8 @@ interface OutputLabelsProps {
 }
 
 export const OutputLabels = (props: OutputLabelsProps) => {
-  const {
-    optype,
-    targetField,
-    targetFieldValidation,
-    feature,
-    value,
-    rank,
-    rankOrder,
-    segmentId,
-    isFinalResult,
-  } = props;
+  const { optype, targetField, targetFieldValidation, feature, value, rank, rankOrder, segmentId, isFinalResult } =
+    props;
 
   return (
     <>

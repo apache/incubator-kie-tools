@@ -13,10 +13,9 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "scripts": {
-    "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
-    "build:fast": "rm -rf dist && webpack",
-    "build": "yarn run lint && yarn run build:fast",
-    "build:prod": "yarn run build --mode production --devtool none --passWithNoTests"
+    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "yarn lint && rimraf dist && webpack"
   },
   "babel": {
     "presets": [

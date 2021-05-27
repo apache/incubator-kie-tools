@@ -17,7 +17,7 @@
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
 
-interface DesktopDictionary extends ReferenceDictionary<DesktopDictionary> {
+interface DesktopDictionary extends ReferenceDictionary {
   fileOperations: {
     dialog: {
       savePreview: string;

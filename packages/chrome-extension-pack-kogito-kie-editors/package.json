@@ -15,27 +15,17 @@
     "@kogito-tooling/patternfly-base": "0.10.0"
   },
   "scripts": {
-    "lint": "tslint -c ../../tslint.json '{src,it-tests}/**/*.{ts,tsx,js,jsx}'",
-    "test": "echo 'No tests to run.'",
-    "build:fast": "rm -rf dist && webpack",
-    "build": "yarn run lint && yarn test && yarn run build:fast",
-    "build:prod": "yarn run build --mode production --devtool none",
-    "serve-envelope": "webpack-dev-server",
-    "test:it": "jest --runInBand"
+    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",
+    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose --passWithNoTests'",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "yarn lint && yarn test && rimraf dist && webpack",
+    "serve-envelope": "webpack serve --env dev",
+    "test:it": "jest --runInBand -c ./jest.it.config.js"
   },
   "babel": {
     "presets": [
       "@babel/env",
       "@babel/react"
     ]
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.(ts)$": "ts-jest"
-    },
-    "testRegex": [
-      "it-tests/tests/.*Test.ts"
-    ],
-    "testTimeout": 100000
   }
 }

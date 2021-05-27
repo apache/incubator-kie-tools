@@ -17,7 +17,7 @@
 describe("Dmn Read Only.", () => {
   before("Visit page", () => {
     cy.visit("localhost:9001/dmn-read-only");
-    cy.loadEditor("dmn-read-only");
+    cy.loadEditors(["dmn-read-only"]);
   });
 
   it("Test Load File And View", () => {
@@ -27,8 +27,8 @@ describe("Dmn Read Only.", () => {
       .ouiaId("collapsed-docks-bar", "collapsed-docks-bar-W", { timeout: 10000 })
       .should("be.visible");
 
-    cy.uploadFile("call centre drd.dmn");
-    cy.viewFile("call centre drd.dmn");
+    cy.uploadFile("call centre drd.dmn", "dmn-read-only");
+    cy.viewFile("call centre drd.dmn", "dmn-read-only");
 
     cy.editor("dmn-read-only")
       .ouiaId("collapsed-docks-bar", "collapsed-docks-bar-W")

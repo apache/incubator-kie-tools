@@ -20,6 +20,7 @@ const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebp
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
+const { EnvironmentPlugin } = require("webpack");
 
 function getLatestGitTag() {
   const tagName = require("child_process").execSync("git rev-list --tags --max-count=1").toString().trim();
@@ -31,18 +32,18 @@ function getLatestGitTag() {
 }
 
 function getDownloadHubArgs(argv) {
-  let linuxUrl = argv["DOWNLOAD_HUB_linuxUrl"] || process.env["DOWNLOAD_HUB_linuxUrl"];
-  let macOsUrl = argv["DOWNLOAD_HUB_macOsUrl"] || process.env["DOWNLOAD_HUB_macOsUrl"];
-  let windowsUrl = argv["DOWNLOAD_HUB_windowsUrl"] || process.env["DOWNLOAD_HUB_windowsUrl"];
+  let linuxUrl = argv["DOWNLOAD_HUB_linuxUrl"] ?? process.env["DOWNLOAD_HUB_linuxUrl"];
+  let macOsUrl = argv["DOWNLOAD_HUB_macOsUrl"] ?? process.env["DOWNLOAD_HUB_macOsUrl"];
+  let windowsUrl = argv["DOWNLOAD_HUB_windowsUrl"] ?? process.env["DOWNLOAD_HUB_windowsUrl"];
 
   linuxUrl =
-    linuxUrl ||
+    linuxUrl ??
     `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_linux_${getLatestGitTag()}.zip`;
   macOsUrl =
-    macOsUrl ||
+    macOsUrl ??
     `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_macos_${getLatestGitTag()}.zip`;
   windowsUrl =
-    windowsUrl ||
+    windowsUrl ??
     `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_windows_${getLatestGitTag()}.zip`;
 
   console.info("Download Hub :: Linux URL: " + linuxUrl);
@@ -55,7 +56,7 @@ function getDownloadHubArgs(argv) {
 module.exports = async (env, argv) => {
   const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs(argv);
 
-  return merge(common, {
+  return merge(common(env, argv), {
     entry: {
       index: "./src/index.tsx",
       "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
@@ -63,19 +64,34 @@ module.exports = async (env, argv) => {
       "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
     },
     plugins: [
-      new CopyPlugin([
-        { from: "./static/resources", to: "./resources" },
-        { from: "./static/images", to: "./images" },
-        { from: "./static/samples", to: "./samples" },
-        { from: "./static/index.html", to: "./index.html" },
-        { from: "./static/favicon.ico", to: "./favicon.ico" },
-        { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] },
-        { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
-        { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
-        { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
-        { from: "../../node_modules/@kogito-tooling/pmml-editor/dist/images", to: "./images" },
-      ]),
+      new EnvironmentPlugin({
+        WEBPACK_REPLACE__hubLinuxUrl: downloadHub_linuxUrl,
+        WEBPACK_REPLACE__hubMacOsUrl: downloadHub_macOsUrl,
+        WEBPACK_REPLACE__hubWindowsUrl: downloadHub_windowsUrl,
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: "./static/resources", to: "./resources" },
+          { from: "./static/images", to: "./images" },
+          { from: "./static/samples", to: "./samples" },
+          { from: "./static/index.html", to: "./index.html" },
+          { from: "./static/favicon.ico", to: "./favicon.ico" },
+          {
+            from: externalAssets.dmnEditorPath(argv),
+            to: "./gwt-editors/dmn",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+          {
+            from: externalAssets.bpmnEditorPath(argv),
+            to: "./gwt-editors/bpmn",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+          { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
+          { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
+          { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
+          { from: "../../node_modules/@kogito-tooling/pmml-editor/dist/images", to: "./images" },
+        ],
+      }),
     ],
     resolve: {
       alias: {
@@ -86,29 +102,7 @@ module.exports = async (env, argv) => {
       },
     },
     module: {
-      rules: [
-        {
-          test: /DownloadHubModal\.tsx$/,
-          loader: "string-replace-loader",
-          options: {
-            multiple: [
-              {
-                search: "$_{WEBPACK_REPLACE__hubLinuxUrl}",
-                replace: downloadHub_linuxUrl,
-              },
-              {
-                search: "$_{WEBPACK_REPLACE__hubMacOsUrl}",
-                replace: downloadHub_macOsUrl,
-              },
-              {
-                search: "$_{WEBPACK_REPLACE__hubWindowsUrl}",
-                replace: downloadHub_windowsUrl,
-              },
-            ],
-          },
-        },
-        ...pfWebpackOptions.patternflyRules,
-      ],
+      rules: [...pfWebpackOptions.patternflyRules],
     },
     devServer: {
       historyApiFallback: false,

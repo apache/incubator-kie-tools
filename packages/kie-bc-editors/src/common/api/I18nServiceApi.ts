@@ -17,7 +17,6 @@
 /**
  * PUBLIC ENVELOPE API
  */
-// tslint:disable-next-line:interface-name
 export interface I18nServiceApi {
   onLocaleChange(callback: (locale: string) => void): void;
   getLocale(): Promise<string>;

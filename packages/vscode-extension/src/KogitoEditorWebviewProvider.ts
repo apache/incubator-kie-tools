@@ -104,7 +104,7 @@ export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoE
   }
 
   private setupListeners(document: KogitoEditableDocument) {
-    const listeners = [document.onDidChange((e) => this._onDidChangeCustomDocument.fire({ document, ...e }))];
+    const listeners = [document.onDidChange((e) => this._onDidChangeCustomDocument.fire({ ...e, document }))];
     document.onDidDispose(() => listeners.forEach((listener) => listener.dispose()));
   }
 

@@ -27,11 +27,11 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: 12.16.3
+          node-version: 16.2.0
 
-      - name: Setup Yarn
+      - name: Setup Yarn and Lerna
         run: |
-          npm install -g yarn@${{ matrix.yarn }}
+          npm install -g lerna@4.0.0 yarn@1.22.10
           yarn config set network-timeout 1000000
 
       - name: Start Xvfb
@@ -39,13 +39,15 @@ jobs:
 
       - name: Build
         env:
+          WEBPACK_minimize: "true"
+          WEBPACK_TS_LOADER_transpileOnly: "false"
           ROUTER_targetOrigin: "https://kiegroup.github.io"
           ROUTER_relativePath: "kogito-online/editors/${{ steps.release-tag.outputs.tag }}/"
           DOWNLOAD_HUB_linuxUrl: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ steps.release-tag.outputs.tag }}/business_modeler_hub_preview_linux_${{ steps.release-tag.outputs.tag }}.tar.gz"
           DOWNLOAD_HUB_macOsUrl: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ steps.release-tag.outputs.tag }}/business_modeler_hub_preview_macos_${{ steps.release-tag.outputs.tag }}.zip"
           DOWNLOAD_HUB_windowsUrl: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ steps.release-tag.outputs.tag }}/business_modeler_hub_preview_windows_${{ steps.release-tag.outputs.tag }}.zip"
           DISPLAY: ":99.0"
-        run: cd kogito-tooling && yarn run init && yarn run build:prod && cd -
+        run: cd kogito-tooling && yarn bootstrap && yarn run build:prod && cd -
 
       - name: Checkout "kogito-online"
         uses: actions/checkout@v2
@@ -94,4 +96,4 @@ jobs:
           NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-          cd kogito-tooling && npx lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/online-editor --ignore @kogito-tooling/desktop --ignore @kogito-tooling/hub -- npm publish --access public && cd -
+          cd kogito-tooling && yarn lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/online-editor --ignore @kogito-tooling/desktop --ignore @kogito-tooling/hub -- npm publish --access public && cd -

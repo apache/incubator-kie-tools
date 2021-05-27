@@ -2,9 +2,9 @@ const exec = require("child_process").exec;
 
 const UPDATE_PATTERNFLY_COMMAND =
   "yarn add @patternfly/patternfly @patternfly/react-charts @patternfly/react-core @patternfly/react-icons";
-const LINK_DEPENDENCIES_COMMAND = "(cd ../../; npx lerna run init)";
-const BUILD_PROJECT_COMMAND = "(cd ../../; npx lerna run build:fast)";
-const UPDATE_SNAPSHOTS_COMMAND = "(cd ../../; npx lerna run test --stream -- -u)";
+const LINK_DEPENDENCIES_COMMAND = "(cd ../../; yarn lerna bootstrap)";
+const BUILD_PROJECT_COMMAND = "(cd ../../; yarn lerna run build:dev)";
+const UPDATE_SNAPSHOTS_COMMAND = "(cd ../../; yarn lerna run test --stream -- -u)";
 
 async function executeCommand(command) {
   return new Promise((resolve, reject) => {

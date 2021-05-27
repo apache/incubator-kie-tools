@@ -20,13 +20,13 @@ import {
   By,
   InputBox,
   SideBarView,
-  WebView,
-  Workbench,
+  until,
   ViewControl,
+  ViewSection,
   VSBrowser,
   WebDriver,
-  ViewSection,
-  until,
+  WebView,
+  Workbench,
 } from "vscode-extension-tester";
 import { kogitoLoadingSpinner } from "./CommonLocators";
 
@@ -126,7 +126,7 @@ export default class VSCodeTestHelper {
     if (fileParentPath == undefined || fileParentPath == "") {
       await this.workspaceSectionView.openItem(this.RESOURCES_ROOT, fileName);
     } else {
-      let pathPieces = fileParentPath.split("/");
+      const pathPieces = fileParentPath.split("/");
       pathPieces.unshift(this.RESOURCES_ROOT);
       await this.workspaceSectionView.openItem(...pathPieces);
       // For some reason openItem() collapses the view it expands so we
@@ -146,7 +146,7 @@ export default class VSCodeTestHelper {
     // const input = await InputBox.create();
     // await input.selectQuickPick('KIE Kogito Editors');
     const webview = new WebView(this.workbench.getEditorView(), By.linkText(fileName));
-    await this.waitUntilKogitoEditorIsLoaded(webview);
+    await sleep(10000);
     return webview;
   };
 
@@ -223,4 +223,8 @@ export default class VSCodeTestHelper {
 
     await driver.switchTo().frame(null);
   };
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

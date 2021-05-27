@@ -128,7 +128,7 @@ export default class BpmnEditorTestHelper {
     const paletteElements = await palette.findElements(By.xpath("//button[@data-field='categoryIcon' and @title]"));
     assert.lengthOf(paletteElements, 9); // there should always be 9 categories
 
-    let categories = Object.values(PaletteCategories);
+    const categories = Object.values(PaletteCategories);
     let title: string;
     for (let i = 0; i < paletteElements.length; i++) {
       title = await paletteElements[i].getAttribute("title");

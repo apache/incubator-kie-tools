@@ -15,13 +15,12 @@
  */
 
 import { GuidedTourI18n } from "..";
-import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
 
 export const en: GuidedTourI18n = {
-  ...en_common,
   great: "Great",
   stop: "Do you want to stop the tour?",
   notFollowing: "Seems like you didn't follow the suggested action. Do you want to stop the tour?",
+  continue: "Continue",
   options: `Click on ${"Skip tour".bold()} to stop it or ${"Continue".bold()} to resume your tour`,
   oops: "Oops!",
   somethingWrong: "Something went wrong and the content could not be loaded.",

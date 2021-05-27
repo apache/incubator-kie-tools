@@ -15,10 +15,8 @@
  */
 
 import { BackendI18n } from "..";
-import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
 
 export const en: BackendI18n = {
-  ...en_common,
   dontShowAgain: "Don't Show Again",
   installExtension: "Install",
   installBackendExtensionMessage:

@@ -16,10 +16,10 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { ReferenceDictionary, DictionaryInterpolation } from "../core/Dictionary";
+import { DictionaryInterpolation, ReferenceDictionary } from "../core/Dictionary";
 import { I18nContextType } from "../react-components";
 
-export interface DummyDictionary extends ReferenceDictionary<DummyDictionary> {
+export interface DummyDictionary extends ReferenceDictionary {
   greeting: (name: string) => string;
   welcome: string;
   modal: {

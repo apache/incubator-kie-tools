@@ -18,18 +18,18 @@ import "cypress-file-upload";
 import "cypress-iframe";
 
 Cypress.Commands.add("ouiaId", { prevSubject: "optional" }, (subject, type: string, id: string, options = {}) => {
-  var typeSelector = type ? `[data-ouia-component-type='${type}']` : "";
-  var idSelector = id ? `[data-ouia-component-id='${id}']` : "";
-  var el;
+  const typeSelector = type ? `[data-ouia-component-type='${type}']` : "";
+  const idSelector = id ? `[data-ouia-component-id='${id}']` : "";
+
   if (subject) {
-    el = cy.wrap(subject, options).find(typeSelector + idSelector, options);
+    cy.wrap(subject, options).find(typeSelector + idSelector, options);
   } else {
-    el = cy.get(typeSelector + idSelector, options);
+    cy.get(typeSelector + idSelector, options);
   }
 });
 
 Cypress.Commands.add("ouiaType", { prevSubject: "optional" }, (subject, type: string, options = {}) => {
-  var typeSelector = type ? `[data-ouia-component-type='${type}']` : "";
+  const typeSelector = type ? `[data-ouia-component-type='${type}']` : "";
   if (subject) {
     cy.wrap(subject, options).find(typeSelector, options);
   } else {
@@ -37,64 +37,62 @@ Cypress.Commands.add("ouiaType", { prevSubject: "optional" }, (subject, type: st
   }
 });
 
-const loadEditorInternal = (options: Record<string, any>, editorIds: string[]) => {
+Cypress.Commands.add("loadEditors", (editorIds: string[], options?: Record<string, any>) => {
   const opts: Record<string, any> = { log: false, ...options };
   cy.get("div#root", opts)
     .should("exist")
     .within(opts, ($root) => {
-      cy.ouiaType("editor", opts).should("have.length", editorIds.length);
-      for (var i in editorIds) {
-        cy.ouiaId("editor", editorIds[i], opts).should("exist");
-        cy.frameLoaded("div#" + editorIds[i] + " iframe", opts);
+      // cy.ouiaType("editor", opts).should("have.length", editorIds.length);
+      for (const id in editorIds) {
+        cy.ouiaId("editor", editorIds[id], opts).should("exist");
+        cy.frameLoaded("div#" + editorIds[id] + " iframe", opts);
       }
-      for (var i in editorIds) {
-        cy.iframe("div#" + editorIds[i] + " iframe", opts)
-          .find("[data-testid='loading-screen-div']", {
-            timeout: 100,
-            ...opts,
-          })
+      for (const id in editorIds) {
+        cy.iframe("div#" + editorIds[id] + " iframe", opts)
+          .find("[data-testid='loading-screen-div']", { timeout: 1000, ...opts })
           .should("be.visible");
       }
-      for (var i in editorIds) {
-        cy.iframe("div#" + editorIds[i] + " iframe", opts)
-          .find("[data-testid='loading-screen-div']", {
-            timeout: 120000,
-            ...opts,
-          })
-          .should("not.exist");
+      for (const id in editorIds) {
+        cy.iframe("div#" + editorIds[id] + " iframe", opts)
+          .find(".kogito-tooling--keyboard-shortcuts-icon", { timeout: 120000, ...opts })
+          .should("be.visible");
       }
     });
-  const log = Cypress.log({ name: "loadEditor", message: `Wait for editor ${editorIds} to load.` });
-};
 
-Cypress.Commands.add("loadEditor", (editorId: string | string[], options?: Record<string, any>) => {
-  loadEditorInternal(options, Array.isArray(editorId) ? editorId : [editorId]);
+  // it takes a while for the editor to display everything correctly even after the loading screen disappears
+  cy.wait(1000);
+
+  Cypress.log({ name: "loadEditor", message: `Wait for editor '${editorIds}' to load.` });
 });
 
 Cypress.Commands.add("editor", (editorId: string, options?: Record<string, any>) => {
   cy.iframe("div#" + editorId + " iframe", { log: false });
-  const log = Cypress.log({ name: "editor", message: `Using editor ${editorId}` });
+  Cypress.log({ name: "editor", message: `Using editor ${editorId}` });
 });
 
-Cypress.Commands.add("uploadFile", (fileName: string, componentId: string) => {
+Cypress.Commands.add("uploadFile", (fileName: string, editorId: string) => {
   const noLogOpts = { log: false };
-  cy.ouiaId("file-loader", componentId, noLogOpts).within(noLogOpts, ($loader) => {
+  cy.ouiaId("file-loader", editorId, noLogOpts).within(noLogOpts, ($loader) => {
     cy.ouiaType("file-upload-form", noLogOpts).within(noLogOpts, ($form) => {
       cy.get("input[type='file']", noLogOpts).attachFile(fileName);
       cy.get("button", noLogOpts).click();
     });
   }); // upload file from fixtures
-  const log = Cypress.log({ name: "upload file", message: `Uploading file ${fileName} for editor ${componentId}.` });
+
+  Cypress.log({ name: "upload file", message: `Uploading file ${fileName} for editor ${editorId}.` });
 });
 
-Cypress.Commands.add("viewFile", (fileName: string, componentId: string, options?: Record<string, any>) => {
+Cypress.Commands.add("viewFile", (fileName: string, editorId: string, options?: Record<string, any>) => {
   const opts = { ...{ log: false }, options };
-  cy.ouiaId("file-loader", componentId, opts)
+  cy.ouiaId("file-loader", editorId, opts)
     .ouiaType("file-list", opts)
     .ouiaId("file-list-item", fileName, opts)
     .should("be.visible")
     .ouiaId("file-list-item-button", "view", opts)
     .should("be.visible")
     .click(); // choose file to view
-  const log = Cypress.log({ name: "view file", message: `Viewing file ${fileName} in editor ${componentId}.` });
+
+  cy.loadEditors([editorId], options);
+
+  Cypress.log({ name: "view file", message: `Viewing file ${fileName} in editor ${editorId}.` });
 });

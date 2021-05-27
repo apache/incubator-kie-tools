@@ -19,7 +19,7 @@ import Tools from "../utils/Tools";
 export default abstract class Page {
   public constructor(protected readonly tools: Tools) {}
 
-  public abstract async waitUntilLoaded(): Promise<void>;
+  public abstract waitUntilLoaded(): Promise<void>;
 
   public async scrollToTop(): Promise<void> {
     return await this.tools.window().scrollToTop();

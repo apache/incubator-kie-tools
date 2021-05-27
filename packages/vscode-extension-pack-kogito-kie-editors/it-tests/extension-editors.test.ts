@@ -33,7 +33,7 @@ import {
 } from "./helpers/BpmnLocators";
 
 describe("Editors are loading properly", () => {
-  const RESOURCES: string = path.resolve("src", "ui-test", "resources");
+  const RESOURCES: string = path.resolve("it-tests", "resources");
   const DEMO_BPMN: string = "demo.bpmn";
   const DEMO_DMN: string = "demo.dmn";
   const DEMO_SCESIM: string = "demo.scesim";
@@ -162,7 +162,7 @@ describe("Editors are loading properly", () => {
     assertWebElementIsDisplayedEnabled(await customTasksPaletteCategory.findElement(palletteItemAnchor("Email")));
 
     const explorer = await bpmnEditorTester.openDiagramExplorer();
-    let customTaskAnchor = await explorer.findElement(aComponentWithText("Create Customer Internal Service")); //store to click after checks.
+    const customTaskAnchor = await explorer.findElement(aComponentWithText("Create Customer Internal Service")); //store to click after checks.
     await assertWebElementIsDisplayedEnabled(customTaskAnchor);
     await assertWebElementIsDisplayedEnabled(
       await explorer.findElement(aComponentWithText("ProcessWithWorkItemDefinition"))
@@ -173,11 +173,11 @@ describe("Editors are loading properly", () => {
 
     await customTaskAnchor.click();
     const propertiesPanel = await bpmnEditorTester.openDiagramProperties();
-    let nameInput = await propertiesPanel.findElement(customTaskNameTextArea());
+    const nameInput = await propertiesPanel.findElement(customTaskNameTextArea());
     assertWebElementIsDisplayedEnabled(nameInput);
     assertWebElementWithAtribute(nameInput, "value", "Create Customer Internal Service");
 
-    let docInput = await propertiesPanel.findElement(customTaskDocumentationTextArea());
+    const docInput = await propertiesPanel.findElement(customTaskDocumentationTextArea());
     assertWebElementIsDisplayedEnabled(docInput);
     assertWebElementWithAtribute(
       docInput,
@@ -185,7 +185,7 @@ describe("Editors are loading properly", () => {
       "Calls internal service that creates the customer in database server."
     );
 
-    let assignmentsTextBox = await propertiesPanel.findElement(assignmentsTextBoxInput());
+    const assignmentsTextBox = await propertiesPanel.findElement(assignmentsTextBoxInput());
     assert.isTrue(await assignmentsTextBox.isEnabled());
     assert.equal(await assignmentsTextBox.getAttribute("value"), "7 data inputs, 1 data output");
     assertWebElementWithAtribute(assignmentsTextBox, "value", "7 data inputs, 1 data output");

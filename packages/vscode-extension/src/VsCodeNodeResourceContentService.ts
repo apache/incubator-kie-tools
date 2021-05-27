@@ -22,7 +22,7 @@ import {
   ResourceListOptions,
   ResourcesList,
   SearchType,
-} from "@kogito-tooling/channel-common-api";
+} from "@kogito-tooling/workspace/dist/api";
 
 import * as fs from "fs";
 import * as minimatch from "minimatch";

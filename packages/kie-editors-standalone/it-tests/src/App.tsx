@@ -15,43 +15,33 @@
  */
 
 import * as React from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { DmnEditorComponent } from "../components/DmnEditorComponent";
-import { BpmnEditorComponent } from "../components/BpmnEditorComponent";
-import { ContentType } from "@kogito-tooling/channel-common-api";
-import { customWorkItemWid } from "./widDefinitions";
-import { processWithWidDefinition } from "./processWithWidDefinition.js";
+import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
+import { DmnEditorComponent } from "./components/DmnEditorComponent";
+import { BpmnEditorComponent } from "./components/BpmnEditorComponent";
+import { ContentType } from "@kogito-tooling/workspace/dist/api";
+import processWithWidDefinition from "raw-loader!./resources/processWithWidDefinition.bpmn2";
+import customWorkItemWid from "raw-loader!./resources/widDefinitions.wid";
 
-export const EditorPage: React.FC<{}> = () => {
+export function App() {
   return (
     <Router>
       <>
-        <ul>
-          <li>
-            <Link to="/dmn-read-only">DMN Read Only</Link>
-          </li>
-          <li>
-            <Link to="/dmn-editable">DMN Editable</Link>
-          </li>
-          <li>
-            <Link to="/bpmn-editable">BPMN Editable</Link>
-          </li>
-          <li>
-            <Link to="/bpmn-read-only">BPMN Read Only</Link>
-          </li>
-          <li>
-            <Link to="/bpmn-workitem">BPMN Workitem</Link>
-          </li>
-          <li>
-            <Link to="/both-bpmn-dmn">Both BPMN DMN</Link>
-          </li>
-        </ul>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Link to="/dmn-read-only">DMN Read Only</Link>
+          <Link to="/dmn-editable">DMN Editable</Link>
+          <Link to="/bpmn-editable">BPMN Editable</Link>
+          <Link to="/bpmn-read-only">BPMN Read Only</Link>
+          <Link to="/bpmn-workitem">BPMN Workitem</Link>
+          <Link to="/both-bpmn-dmn">Both BPMN DMN</Link>
+        </div>
+        <br />
         <Switch>
           <Route
             exact={true}
             path="/dmn-read-only"
             render={() => (
               <DmnEditorComponent
+                origin={"*"}
                 key="dmn-read-only"
                 id="dmn-read-only"
                 readOnly={true}
@@ -64,6 +54,7 @@ export const EditorPage: React.FC<{}> = () => {
             path="/dmn-editable"
             render={() => (
               <DmnEditorComponent
+                origin={"*"}
                 key="dmn-editable"
                 id="dmn-editable"
                 readOnly={false}
@@ -76,6 +67,7 @@ export const EditorPage: React.FC<{}> = () => {
             path="/bpmn-editable"
             render={() => (
               <BpmnEditorComponent
+                origin={"*"}
                 key="bpmn-editable"
                 id="bpmn-editable"
                 readOnly={false}
@@ -88,6 +80,7 @@ export const EditorPage: React.FC<{}> = () => {
             path="/bpmn-read-only"
             render={() => (
               <BpmnEditorComponent
+                origin={"*"}
                 key="bpmn-read-only"
                 id="bpmn-read-only"
                 readOnly={true}
@@ -100,7 +93,7 @@ export const EditorPage: React.FC<{}> = () => {
             path="/bpmn-workitem"
             render={() => (
               <BpmnEditorComponent
-                key="bpmn-workitem"
+                origin={"*"}
                 id="bpmn-workitem"
                 readOnly={false}
                 initialContent={Promise.resolve(processWithWidDefinition)}
@@ -109,9 +102,8 @@ export const EditorPage: React.FC<{}> = () => {
                     [
                       "custom-workitem.wid",
                       {
-                        type: ContentType.TEXT,
-                        content: customWorkItemWid,
-                        path: "custom-workitem.wid",
+                        contentType: ContentType.TEXT,
+                        content: Promise.resolve(customWorkItemWid),
                       },
                     ],
                   ])
@@ -124,8 +116,13 @@ export const EditorPage: React.FC<{}> = () => {
             path="/both-bpmn-dmn"
             render={() => (
               <>
-                <BpmnEditorComponent id="both-bpmn" readOnly={false} initialContent={Promise.resolve("")} />
-                <DmnEditorComponent id="both-dmn" readOnly={false} initialContent={Promise.resolve("")} />
+                <BpmnEditorComponent
+                  origin={"*"}
+                  id="both-bpmn"
+                  readOnly={false}
+                  initialContent={Promise.resolve("")}
+                />
+                <DmnEditorComponent origin={"*"} id="both-dmn" readOnly={false} initialContent={Promise.resolve("")} />
               </>
             )}
           />
@@ -133,4 +130,4 @@ export const EditorPage: React.FC<{}> = () => {
       </>
     </Router>
   );
-};
+}

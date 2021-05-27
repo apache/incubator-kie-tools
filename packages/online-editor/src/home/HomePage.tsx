@@ -274,11 +274,11 @@ export function HomePage(props: Props) {
         urlToOpen: undefined,
       });
     }
-  }, [inputFileUrl]);
+  }, [context.editorEnvelopeLocator.mapping, context.githubService, inputFileUrl]);
 
   useEffect(() => {
     validateUrl();
-  }, [inputFileUrl]);
+  }, [validateUrl]);
 
   const inputFileFromUrlChanged = useCallback((fileUrl: string) => {
     setInputFileUrl(fileUrl);

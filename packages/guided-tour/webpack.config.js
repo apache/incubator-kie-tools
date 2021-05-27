@@ -19,19 +19,20 @@ const pfWebpackOptions = require("../patternfly-base/patternflyWebpackOptions");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
-module.exports = merge(common, {
-  entry: {
-    "api/index": "./src/api/index.ts",
-    "channel/index": "./src/channel/index.ts",
-    "envelope/index": "./src/envelope/index.ts",
-  },
-  target: "node",
-  output: {
-    libraryTarget: "umd",
-  },
-  externals: ["react", "react-dom", /^@patternfly\/.+$/],
-  plugins: [new CopyPlugin([{ from: "./static/css", to: "./css" }])],
-  module: {
-    rules: [...pfWebpackOptions.patternflyRules],
-  },
-});
+module.exports = (env, argv) =>
+  merge(common(env, argv), {
+    entry: {
+      "api/index": "./src/api/index.ts",
+      "channel/index": "./src/channel/index.ts",
+      "envelope/index": "./src/envelope/index.ts",
+    },
+    target: "node",
+    output: {
+      libraryTarget: "umd",
+    },
+    externals: ["react", "react-dom", /^@patternfly\/.+$/],
+    plugins: [new CopyPlugin({ patterns: [{ from: "./static/css", to: "./css" }] })],
+    module: {
+      rules: [...pfWebpackOptions.patternflyRules],
+    },
+  });

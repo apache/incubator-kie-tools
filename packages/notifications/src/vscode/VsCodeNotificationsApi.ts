@@ -18,7 +18,8 @@ import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
 import { PopupMessagesNotificationHandler } from "./PopupMessagesNotificationHandler";
 import { ProblemsTabNotificationHandler } from "./ProblemsTabNotificationHandler";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
-import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
+import * as vscode from "vscode";
+import { notificationsApiVsCodeI18nDefaults, notificationsApiVsCodeI18nDictionaries } from "./i18n";
 
 type NotificationsApiHandlersMap = {
   [K in NotificationType]: NotificationsApi;
@@ -27,27 +28,34 @@ type NotificationsApiHandlersMap = {
 export class VsCodeNotificationsApi implements NotificationsApi {
   private readonly strategies: NotificationsApiHandlersMap;
 
-  constructor(private readonly workspaceApi: WorkspaceApi, private readonly i18n: I18n<CommonI18n>) {
+  constructor(
+    private readonly workspaceApi: WorkspaceApi,
+    private readonly i18n = new I18n(
+      notificationsApiVsCodeI18nDefaults,
+      notificationsApiVsCodeI18nDictionaries,
+      vscode.env.language
+    )
+  ) {
     this.strategies = {
       PROBLEM: new ProblemsTabNotificationHandler(),
       ALERT: new PopupMessagesNotificationHandler(this.workspaceApi, this.i18n),
     };
   }
 
-  public createNotification(notification: Notification): void {
-    this.handle(notification).createNotification(notification);
+  public kogitoNotifications_createNotification(notification: Notification): void {
+    this.handle(notification).kogitoNotifications_createNotification(notification);
   }
 
-  public setNotifications(path: string, notifications: Notification[]): void {
+  public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
     const alerts = notifications.filter((n) => n.type === "ALERT");
     const problems = notifications.filter((n) => n.type !== "ALERT");
 
-    this.get("PROBLEM").setNotifications(path, problems);
-    this.get("ALERT").setNotifications(path, alerts);
+    this.get("PROBLEM").kogitoNotifications_setNotifications(path, problems);
+    this.get("ALERT").kogitoNotifications_setNotifications(path, alerts);
   }
 
-  public removeNotifications(path: string): void {
-    this.get("PROBLEM").removeNotifications(path);
+  public kogitoNotifications_removeNotifications(path: string): void {
+    this.get("PROBLEM").kogitoNotifications_removeNotifications(path);
   }
 
   private handle(notification: Notification): NotificationsApi {

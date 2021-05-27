@@ -57,8 +57,9 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        node: [12.16.3]
-        yarn: [1.19.1]
+        node: [16.2.0]
+        yarn: [1.22.10]
+        lerna: [4.0.0]
 
     steps:
       - uses: actions/checkout@v2
@@ -82,9 +83,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Setup Yarn
+      - name: Setup Yarn and Lerna
         run: |
-          npm install -g yarn@${{ matrix.yarn }}
+          npm install -g lerna@${{ matrix.lerna }} yarn@${{ matrix.yarn }}
           yarn config set network-timeout 1000000
 
       - name: Start Xvfb (Ubuntu only)
@@ -98,15 +99,17 @@ jobs:
 
       - name: Build
         env:
+          WEBPACK_minimize: "true"
+          WEBPACK_TS_LOADER_transpileOnly: "false"
           ROUTER_targetOrigin: "https://kiegroup.github.io"
           ROUTER_relativePath: "kogito-online/editors/${{ steps.release_json.outputs.tag }}/"
           DOWNLOAD_HUB_linuxUrl: "${{ steps.release_json_ext.outputs.download_url }}/business_modeler_hub_preview_linux_${{ steps.release_json.outputs.tag }}.tar.gz"
           DOWNLOAD_HUB_macOsUrl: "${{ steps.release_json_ext.outputs.download_url }}/business_modeler_hub_preview_macos_${{ steps.release_json.outputs.tag }}.zip"
           DOWNLOAD_HUB_windowsUrl: "${{ steps.release_json_ext.outputs.download_url }}/business_modeler_hub_preview_windows_${{ steps.release_json.outputs.tag }}.zip"
           DISPLAY: ":99.0"
-        run: cd kogito-tooling && yarn run init && yarn run build:prod && cd -
+        run: cd kogito-tooling && yarn bootstrap && yarn run build:prod && cd -
 
-      - name: Upload VSCode Extension (Ubuntu only)
+      - name: Upload VS Code Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         id: upload-vscode-extension
         uses: actions/upload-release-asset@master

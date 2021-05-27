@@ -17,7 +17,7 @@
 import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
-interface DesktopDictionary extends ReferenceDictionary<DesktopDictionary> {
+interface DesktopDictionary extends ReferenceDictionary {
   app: {
     title: string;
   };

@@ -158,7 +158,7 @@ describe("stop the Quarkus local server", () => {
   });
 
   async function startQuarkusServerTest(server: QuarkusLocalServer): Promise<void> {
-    const process = ({ kill: jest.fn(), pid: 9999 } as unknown) as cp.ChildProcess;
+    const process = { kill: jest.fn(), pid: 9999 } as unknown as cp.ChildProcess;
     process.stdout = new events.EventEmitter() as stream.Readable;
     sandbox.stub(cp, "spawn").returns(process);
 

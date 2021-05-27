@@ -22,11 +22,11 @@ import { EmbeddedEditor, Props as EmbeddedEditorProps } from "./EmbeddedEditor";
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 type ChannelApiMethodsThatAreNoOpOnEmbeddedViewer =
-  | "receive_setContentError"
-  | "receive_ready"
-  | "receive_openFile"
-  | "receive_newEdit"
-  | "receive_stateControlCommandUpdate";
+  | "kogitoEditor_setContentError"
+  | "kogitoEditor_ready"
+  | "kogitoWorkspace_openFile"
+  | "kogitoWorkspace_newEdit"
+  | "kogitoEditor_stateControlCommandUpdate";
 
 type EmbeddedViewerChannelApiOverrides = Partial<
   Omit<EmbeddedEditorProps, ChannelApiMethodsThatAreNoOpOnEmbeddedViewer>

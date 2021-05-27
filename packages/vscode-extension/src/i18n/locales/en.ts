@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
 import { VsCodeI18n } from "..";
 
 export const en: VsCodeI18n = {
-  ...en_common,
-  savedSvg: (fileName) => `${en_common.names.svg} saved at ${fileName}.`,
-  openSvg: `Open ${en_common.names.svg}`,
+  savedSvg: (fileName) => `SVG saved at ${fileName}.`,
+  openSvg: `Open SVG`,
   savedSuccessfully: "Saved successfully!",
   errorOpeningFileText: (fileName: string) => `Error opening '${fileName}'.`,
   openAsTextButton: "Open as text",

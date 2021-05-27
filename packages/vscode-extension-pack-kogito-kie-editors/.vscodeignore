@@ -6,9 +6,9 @@ test/**
 .gitignore
 vsc-extension-quickstart.md
 **/tsconfig.json
-**/tslint.json
 **/*.map
 **/*.ts
 **/*.log
 files-for-extension-testing
 test-resources/**
+test-resource

@@ -18,6 +18,6 @@ import { UserInteraction } from "./UserInteraction";
 import { Tutorial } from "./Tutorial";
 
 export interface GuidedTourChannelApi {
-  receive_guidedTourUserInteraction(userInteraction: UserInteraction): void;
-  receive_guidedTourRegisterTutorial(tutorial: Tutorial): void;
+  kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction): void;
+  kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial): void;
 }

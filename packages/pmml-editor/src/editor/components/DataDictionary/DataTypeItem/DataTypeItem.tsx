@@ -165,10 +165,10 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   }, [dataType]);
 
   const { validationRegistry } = useValidationRegistry();
-  const validations = useMemo(() => validationRegistry.get(Builder().forDataDictionary().forDataField(index).build()), [
-    index,
-    dataType,
-  ]);
+  const validations = useMemo(
+    () => validationRegistry.get(Builder().forDataDictionary().forDataField(index).build()),
+    [index, dataType]
+  );
 
   return (
     <article

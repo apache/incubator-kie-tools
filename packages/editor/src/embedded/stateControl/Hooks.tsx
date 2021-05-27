@@ -22,9 +22,9 @@ export function useDirtyState(editor?: EmbeddedEditorRef) {
 
   useEffect(() => {
     setIsDirty(editor?.getStateControl().isDirty() ?? false);
-    const callback = editor?.getStateControl().subscribe(setIsDirty)!;
+    const callback = editor?.getStateControl().subscribe(setIsDirty);
     return () => {
-      editor?.getStateControl().unsubscribe(callback);
+      editor?.getStateControl().unsubscribe(callback!);
     };
   }, [editor]);
 

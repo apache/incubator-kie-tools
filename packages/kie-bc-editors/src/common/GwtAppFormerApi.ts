@@ -59,8 +59,4 @@ export class GwtAppFormerApi {
 
     return gwtEditor.get();
   }
-
-  public setClientSideOnly(clientSideOnly: boolean) {
-    window.erraiBusRemoteCommunicationEnabled = !clientSideOnly;
-  }
 }

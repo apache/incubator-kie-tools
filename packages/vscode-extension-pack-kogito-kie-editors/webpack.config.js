@@ -21,8 +21,8 @@ const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 
-module.exports = async (argv, env) => [
-  merge(common, {
+module.exports = async (env, argv) => [
+  merge(common(env, argv), {
     output: {
       library: "AppFormer.VsCodePack",
       libraryTarget: "umd",
@@ -37,7 +37,7 @@ module.exports = async (argv, env) => [
     },
     plugins: [],
   }),
-  merge(common, {
+  merge(common(env, argv), {
     output: {
       library: "AppFormer.VsCodePackWebview",
       libraryTarget: "umd",
@@ -56,15 +56,29 @@ module.exports = async (argv, env) => [
       rules: [...pfWebpackOptions.patternflyRules],
     },
     plugins: [
-      new CopyWebpackPlugin([
-        { from: "./static", to: "static" },
-        { from: externalAssets.dmnEditorPath(argv), to: "webview/editors/dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.bpmnEditorPath(argv), to: "webview/editors/bpmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.scesimEditorPath(argv), to: "webview/editors/scesim", ignore: ["WEB-INF/**/*"] },
-      ]),
+      new CopyWebpackPlugin({
+        patterns: [
+          { from: "./static", to: "static" },
+          {
+            from: externalAssets.dmnEditorPath(argv),
+            to: "webview/editors/dmn",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+          {
+            from: externalAssets.bpmnEditorPath(argv),
+            to: "webview/editors/bpmn",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+          {
+            from: externalAssets.scesimEditorPath(argv),
+            to: "webview/editors/scesim",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+        ],
+      }),
     ],
   }),
-  merge(common, {
+  merge(common(env, argv), {
     output: {
       library: "AppFormer.VsCodePackWebview",
       libraryTarget: "umd",

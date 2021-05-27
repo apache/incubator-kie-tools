@@ -17,7 +17,7 @@
 describe("Both BPMN DMN.", () => {
   before("Visit page", () => {
     cy.visit("localhost:9001/both-bpmn-dmn");
-    cy.loadEditor(["both-bpmn", "both-dmn"]);
+    cy.loadEditors(["both-bpmn", "both-dmn"]);
   });
 
   it("Test Load File And View", () => {
@@ -39,7 +39,7 @@ describe("Both BPMN DMN.", () => {
       .find("button")
       .first()
       .should("be.visible")
-      .click({ force: true }); // open DecisionNavigator
+      .click(); // open DecisionNavigator
 
     cy.editor("both-dmn")
       .ouiaId("expanded-docks-bar", "expanded-docks-bar-W")
@@ -62,10 +62,11 @@ describe("Both BPMN DMN.", () => {
       });
 
     // Check BPMN loaded correctly
-    cy.editor("both-bpmn").find("[data-title='Explore Diagram']").should("be.visible").click({ force: true });
+    cy.editor("both-bpmn").find("[data-title='Explore Diagram']").should("be.visible").click();
 
     cy.editor("both-bpmn")
       .find("[data-field='explorerPanelBody']")
+      .wait(1000)
       .scrollIntoView()
       .should("be.visible")
       .find("a.gwt-Anchor")

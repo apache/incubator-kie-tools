@@ -36,16 +36,10 @@ export class GwtStateControlService {
   }
 
   public exposeApi(channelApi: MessageBusClientApi<KogitoEditorChannelApi>): StateControlApi {
-    const stateControl = this;
-
     return {
       registry: new DefaultKogitoCommandRegistry<unknown>(channelApi),
-      setUndoCommand(undoCommand: () => void) {
-        stateControl.undoCommand = undoCommand;
-      },
-      setRedoCommand(redoCommand: () => void) {
-        stateControl.redoCommand = redoCommand;
-      },
+      setUndoCommand: (undoCommand) => (this.undoCommand = undoCommand),
+      setRedoCommand: (redoCommand) => (this.redoCommand = redoCommand),
     };
   }
 }

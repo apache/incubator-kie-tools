@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoEdit } from "@kogito-tooling/channel-common-api";
+import { KogitoEdit } from "@kogito-tooling/workspace/dist/api";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
 import { VsCodeNotificationsApi } from "@kogito-tooling/notifications/dist/vscode";
 import * as vscode from "vscode";
@@ -79,7 +79,7 @@ export class KogitoEditableDocument implements CustomDocument {
 
       try {
         const notifications = await editor.validate();
-        this.vsCodeNotifications.setNotifications(destination.fsPath, notifications);
+        this.vsCodeNotifications.kogitoNotifications_setNotifications(destination.fsPath, notifications);
       } catch (e) {
         this.vsCodeLogger.warn(`File was not validated: ${e}`);
       }
