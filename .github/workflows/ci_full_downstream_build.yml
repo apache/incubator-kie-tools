@@ -93,11 +93,11 @@ jobs:
       - name: "kogito-tooling :: Setup Node"
         uses: actions/setup-node@v1
         with:
-          node-version: 12.16.3
+          node-version: 16.2.0
 
       - name: "kogito-tooling :: Setup Yarn"
         run: |
-          npm install -g yarn@1.19.1
+          npm install -g yarn@1.22.10
           yarn config set network-timeout 1000000
 
       - name: "kogito-tooling :: Start Xvfb"
@@ -121,7 +121,7 @@ jobs:
           DISPLAY: ":99.0"
         run: |
           cd ${{ github.workspace }}/kogito-tooling
-          yarn run init && yarn run build:prod
+          yarn bootstrap && yarn build:prod
 
       - name: "kogito-tooling :: Upload VS Code Extension"
         uses: actions/upload-artifact@v2
@@ -135,7 +135,7 @@ jobs:
       - name: "kogito-tooling :: Integration Tests :: Online Editor :: Run"
         run: |
           cd ${{ github.workspace }}/kogito-tooling
-          npx lerna run test:it --scope '@kogito-tooling/online-editor' --stream
+          yarn lerna run test:it --scope '@kogito-tooling/online-editor' --stream
 
       - name: "kogito-tooling :: Integration Tests :: Online Editor :: Archive Screenshots"
         if: failure()
@@ -154,7 +154,7 @@ jobs:
       - name: "kogito-tooling :: Integration Tests :: PMML Editor :: Run"
         run: |
           cd ${{ github.workspace }}/kogito-tooling
-          npx lerna run test:it --scope '@kogito-tooling/pmml-editor' --stream
+          yarn lerna run test:it --scope '@kogito-tooling/pmml-editor' --stream
 
       - name: "kogito-tooling :: Integration Tests :: PMML Editor :: Archive Screenshots"
         if: failure()
@@ -175,14 +175,14 @@ jobs:
           DISPLAY: ":99.0"
         run: |
           cd ${{ github.workspace }}/kogito-tooling
-          npx lerna run test:it --scope '@kogito-tooling/desktop' --stream
+          yarn lerna run test:it --scope '@kogito-tooling/desktop' --stream
 
       - name: "kogito-tooling :: Integration Tests :: VS Code Extension :: Run"
         env:
           DISPLAY: ":99.0"
         run: |
           cd ${{ github.workspace }}/kogito-tooling
-          npx lerna run test:it --scope 'vscode-extension-pack-kogito-kie-editors'
+          yarn lerna run test:it --scope 'vscode-extension-pack-kogito-kie-editors'
 
       - name: "kogito-tooling :: Integration Tests :: VS Code Extension :: Archive Results"
         if: failure()
@@ -194,12 +194,12 @@ jobs:
       - name: "kogito-tooling :: Integration Tests :: KIE Standalone Editors :: Build Testing App"
         run: |
           cd ${{ github.workspace }}/kogito-tooling
-          npx lerna run build:it --scope '@kogito-tooling/kie-editors-standalone'
+          yarn lerna run build:it --scope '@kogito-tooling/kie-editors-standalone'
 
       - name: "kogito-tooling :: Integration Tests :: KIE Standalone Editors :: Run"
         run: |
           cd ${{ github.workspace }}/kogito-tooling
-          npx lerna run test:it --scope '@kogito-tooling/kie-editors-standalone'
+          yarn lerna run test:it --scope '@kogito-tooling/kie-editors-standalone'
 
       - name: "kogito-tooling :: Integration Tests :: KIE Standalone Editors :: Archive Results"
         if: failure()
@@ -226,7 +226,7 @@ jobs:
       - name: "kogito-tooling :: Integration Tests :: Chrome Extension :: Build"
         run: |
           cd ${{ github.workspace }}/kogito-tooling
-          yarn run build:fast
+          yarn build:dev
 
       - name: "kogito-tooling :: Integration Tests :: Chrome Extension :: Run"
         env:
