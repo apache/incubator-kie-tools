@@ -23,7 +23,7 @@ Feature: kogito-builder image tests
     And file /home/kogito/.m2/settings.xml should not contain <url>https://maven.repository.redhat.com/techpreview/all</url>
 
   Scenario: Verify if the s2i build is finished as expected performing a non native build with persistence enabled
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from process-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from process-quarkus-example using nightly-master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable          | value         |
       | NATIVE            | false         |
       | RUNTIME_TYPE      | quarkus       |
@@ -33,7 +33,7 @@ Feature: kogito-builder image tests
     And s2i build log should contain '/home/kogito/bin/persons.proto' -> '/home/kogito/data/protobufs/persons.proto'
 
   Scenario: Verify if the s2i build is finished as expected with persistence enabled
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from process-springboot-example using master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from process-springboot-example using nightly-master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable          | value         |
       | MAVEN_ARGS_APPEND | -Ppersistence |
       | RUNTIME_TYPE      | springboot    |
@@ -42,7 +42,7 @@ Feature: kogito-builder image tests
     And s2i build log should contain '/home/kogito/bin/persons.proto' -> '/home/kogito/data/protobufs/persons.proto'
 
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly
-    Given s2i build /tmp/kogito-examples from dmn-example using master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build /tmp/kogito-examples from dmn-example using nightly-master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable       | value          |
       | RUNTIME_TYPE   | quarkus        |
       | NATIVE         | false          |
@@ -60,7 +60,7 @@ Feature: kogito-builder image tests
       | request_body    | {"Driver": {"Points": 2}, "Violation": {"Type": "speed","Actual Speed": 120,"Speed Limit": 100}} |
 
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly with custom group id, archetype & version
-    Given s2i build /tmp/kogito-examples from dmn-example using master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build /tmp/kogito-examples from dmn-example using nightly-master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable            | value          |
       | RUNTIME_TYPE        | quarkus        |
       | NATIVE              | false          |

@@ -92,7 +92,7 @@ pipeline {
                 script {
                     versionCmd = "python3 scripts/manage-kogito-version.py --bump-to ${getProjectVersion()} --confirm"
                     if (getBuildBranch() != 'master') {
-                        versionCmd += " --examples-ref ${getBuildBranch()}"
+                        versionCmd += " --examples-ref ${!isRelease() ? 'nightly-' : ''}${getBuildBranch()}"
                     }
                     if (getKogitoArtifactsVersion()) {
                         versionCmd += " --artifacts-version ${getKogitoArtifactsVersion()}"
