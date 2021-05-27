@@ -120,8 +120,11 @@ describe("Editors are loading properly", () => {
     await webview.switchToFrame();
     const dmnEditorTester = new DmnEditorTestHelper(webview);
 
-    await (await dmnEditorTester.openDecisionNavigator()).selectDiagramNode("?DemoDecision1");
-    await (await dmnEditorTester.openDiagramProperties()).changeProperty("Name", "Updated Name 1");
+    const decisionNavigator = await dmnEditorTester.openDecisionNavigator();
+    await decisionNavigator.selectDiagramNode("?DemoDecision1");
+    
+    const diagramProperties = await dmnEditorTester.openDiagramProperties();
+    await diagramProperties.changeProperty("Name", "Updated Name 1");
 
     const navigatorPanel: DecisionNavigatorHelper = await dmnEditorTester.openDecisionNavigator();
     await navigatorPanel.assertDiagramNodeIsPresent("Updated Name 1");
