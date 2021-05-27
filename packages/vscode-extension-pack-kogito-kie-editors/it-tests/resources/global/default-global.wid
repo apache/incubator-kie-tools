@@ -1,4 +1,3 @@
-export const customWorkItemWid = `
 [
   [
     "name" : "CreateCustomer",
@@ -21,5 +20,5 @@ export const customWorkItemWid = `
       "out_operation_success" : new BooleanDataType()
     ],
     "icon" : "defaultemailicon.gif",
-  ]
-]`;
+  ],
+] 

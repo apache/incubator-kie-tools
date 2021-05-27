@@ -62,7 +62,7 @@ interface DmnRunnerForm {
 
 interface DmnRunnerFormDefinitions {
   InputSet?: {
-    required: string[];
+    required?: string[];
     properties: object;
     type: string;
     placeholder?: string;
@@ -214,7 +214,7 @@ export class DmnRunnerService {
   private formPreprocessing(form: DmnRunnerForm) {
     delete form.definitions.InputSet?.required;
     if (Object.hasOwnProperty.call(form.definitions.InputSet, "properties")) {
-      Object.entries(form.definitions.InputSet?.properties!).forEach(
+      Object.entries(form.definitions.InputSet?.properties ?? {}).forEach(
         ([key, value]: [string, DmnRunnerDeepProperty]) => {
           this.formDeepPreprocessing(form, value, key);
         }

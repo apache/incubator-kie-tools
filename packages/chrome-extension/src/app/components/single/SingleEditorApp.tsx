@@ -109,9 +109,14 @@ export function SingleEditorApp(props: {
   }, [globals.externalEditorManager]);
 
   useEffect(() => {
-    const listener = globals.externalEditorManager?.listenToComeBack((fileName) => {
-      globals.dependencies.all.edit__githubFileNameInput()!.value = fileName;
-    }, isolatedEditor?.setContent!);
+    const listener = globals.externalEditorManager?.listenToComeBack(
+      (fileName) => {
+        globals.dependencies.all.edit__githubFileNameInput()!.value = fileName;
+      },
+      (content) => {
+        isolatedEditor?.setContent(content);
+      }
+    );
 
     return () => {
       listener?.stopListening();

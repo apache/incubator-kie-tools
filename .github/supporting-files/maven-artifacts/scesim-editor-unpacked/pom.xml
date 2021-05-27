@@ -48,7 +48,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.drools</groupId>
+            <groupId>org.kie.kogito</groupId>
             <artifactId>drools-wb-scenario-simulation-editor-kogito-runtime</artifactId>
             <version>${version.scesim.webapp}</version>
             <type>war</type>
@@ -72,7 +72,7 @@
                             <excludes>WEB-INF/</excludes>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>org.drools</groupId>
+                                    <groupId>org.kie.kogito</groupId>
                                     <artifactId>drools-wb-scenario-simulation-editor-kogito-runtime</artifactId>
                                     <version>${version.scesim.webapp}</version>
                                     <type>war</type>

@@ -84,9 +84,10 @@ export function DmnRunnerButton() {
                   content={i18n.dmnRunner.button.tooltip.outdated}
                   flipBehavior={["left"]}
                   distance={20}
-                  children={<ExclamationTriangleIcon />}
                   trigger={context.isChrome ? "mouseenter focus" : ""}
-                />
+                >
+                  <ExclamationTriangleIcon />
+                </Tooltip>
               )}
               {!dmnRunner.outdated && (
                 <>
@@ -96,18 +97,20 @@ export function DmnRunnerButton() {
                       content={i18n.dmnRunner.button.tooltip.connected}
                       flipBehavior={["left"]}
                       distance={20}
-                      children={<ConnectedIcon className={shouldBlinkDmnRunnerConnectedIcon ? "blink-opacity" : ""} />}
                       trigger={context.isChrome ? "mouseenter focus" : ""}
-                    />
+                    >
+                      <ConnectedIcon className={shouldBlinkDmnRunnerConnectedIcon ? "blink-opacity" : ""} />
+                    </Tooltip>
                   ) : (
                     <Tooltip
                       key={"disconnected"}
                       content={i18n.dmnRunner.button.tooltip.disconnected}
                       flipBehavior={["left"]}
                       distance={20}
-                      children={<DisconnectedIcon />}
                       trigger={context.isChrome ? "mouseenter focus" : ""}
-                    />
+                    >
+                      <DisconnectedIcon />
+                    </Tooltip>
                   )}
                 </>
               )}

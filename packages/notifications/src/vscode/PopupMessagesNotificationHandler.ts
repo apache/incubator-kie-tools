@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
 import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
 import * as vscode from "vscode";
 import { Notification, NotificationsApi, NotificationSeverity } from "../api";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { NotificationsApiVsCodeI18nDictionary } from "./i18n";
 
 export class PopupMessagesNotificationHandler implements NotificationsApi {
-  private readonly currentI18n: CommonI18n;
+  constructor(
+    private readonly workspaceApi: WorkspaceApi,
+    private readonly i18n: I18n<NotificationsApiVsCodeI18nDictionary>
+  ) {}
 
-  constructor(private readonly workspaceApi: WorkspaceApi, private readonly i18n: I18n<CommonI18n>) {
-    this.currentI18n = this.i18n.getCurrent();
-  }
-
-  public createNotification(notification: Notification): void {
+  public kogitoNotifications_createNotification(notification: Notification): void {
     this.getHandleStrategyForSeverity(notification.severity)(notification.message, notification.path);
   }
 
-  public setNotifications(path: string, notifications: Notification[]): void {
+  public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
     if (notifications.length === 0) {
       return;
     }
@@ -45,7 +44,7 @@ export class PopupMessagesNotificationHandler implements NotificationsApi {
     this.getHandleStrategyForSeverity("SUCCESS")(othersMessage, path);
   }
 
-  public removeNotifications(path: string): void {
+  public kogitoNotifications_removeNotifications(path: string): void {
     // Popups can't be removed.
   }
 
@@ -64,11 +63,11 @@ export class PopupMessagesNotificationHandler implements NotificationsApi {
     return (message: string, path: string) =>
       path.length === 0
         ? showFunction(message)
-        : showFunction(message, this.currentI18n.terms.open).then((selected) => {
+        : showFunction(message, this.i18n.getCurrent().open).then((selected) => {
             if (!selected) {
               return;
             }
-            this.workspaceApi.receive_openFile(path);
+            this.workspaceApi.kogitoWorkspace_openFile(path);
           });
   }
 

@@ -25,3 +25,18 @@ import { WebElement } from "vscode-extension-tester";
 export const assertWebElementIsDisplayedEnabled = async (tested: WebElement): Promise<void> => {
   assert.isTrue((await tested.isDisplayed()) && (await tested.isEnabled()));
 };
+
+/**
+ * Asserts that a provided WebElement had an attribute of a expected value.
+ *
+ * @param tested WebElement to test
+ * @param attribute string reprsentation of the attribute - "value"
+ * @param attributeValue expected value of the attribute as string
+ */
+export const assertWebElementWithAtribute = async (
+  tested: WebElement,
+  attribute: string,
+  attributeValue: string
+): Promise<void> => {
+  assert.equal(await tested.getAttribute(attribute), attributeValue);
+};

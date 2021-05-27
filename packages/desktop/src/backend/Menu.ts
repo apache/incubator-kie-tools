@@ -92,7 +92,7 @@ export class Menu {
                 ],
               })
               .then((result) => {
-                if (!result.canceled) {
+                if (result && !result.canceled) {
                   this.fileOperations.openFile(result.filePaths[0]);
                 }
               });

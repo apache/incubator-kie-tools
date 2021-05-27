@@ -15,35 +15,17 @@
  */
 
 import {
-  ResourceContent,
-  ResourceContentService,
-  ResourcesList,
-  ResourceContentOptions,
-  ResourceListOptions,
   ContentType,
-} from "@kogito-tooling/channel-common-api";
+  ResourceContent,
+  ResourceContentOptions,
+  ResourceContentService,
+  ResourceListOptions,
+  ResourcesList,
+} from "@kogito-tooling/workspace/dist/api";
 import { fetchFile } from "../../github/api";
 import * as minimatch from "minimatch";
 import { RepoInfo } from "./RepoInfo";
-import Octokit = require("@octokit/rest");
-
-class OctokitResponse {
-  public data: GithubTreeResponse;
-}
-
-class GithubAsset {
-  public type: string;
-  public path: string;
-  public mode: string;
-  public sha: string;
-  public url: string;
-}
-
-class GithubTreeResponse {
-  public sha: string;
-  public url: string;
-  public tree: GithubAsset[];
-}
+import { Octokit } from "@octokit/rest";
 
 class ChromeResourceContentService implements ResourceContentService {
   private readonly repoInfo: RepoInfo;
@@ -72,8 +54,8 @@ class ChromeResourceContentService implements ResourceContentService {
         tree_sha: this.repoInfo.gitref,
         ...this.repoInfo,
       })
-      .then((v: OctokitResponse) => {
-        const filteredPaths = v.data.tree.filter((file) => file.type === "blob").map((file) => file.path);
+      .then((v) => {
+        const filteredPaths = v.data.tree.filter((file) => file.type === "blob").map((file) => file.path!);
         const result = minimatch.match(filteredPaths, pattern);
         return new ResourcesList(pattern, result);
       })

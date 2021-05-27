@@ -1,12 +1,13 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "es6",
-    "declaration": false,
+    "module": "esnext",
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "moduleResolution": "node",
+    "declaration": false,
+    "declarationMap": false,
+    "resolveJsonModule": true,
+    "target": "es6"
   },
   "include": ["src"]
 }

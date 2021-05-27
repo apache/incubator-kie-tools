@@ -17,7 +17,7 @@
 import { ReferenceDictionary, Wrapped } from "@kogito-tooling/i18n/dist/core";
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
-interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
+interface OnlineDictionary extends ReferenceDictionary {
   downloadHubModal: {
     beforeDownload: {
       title: string;
@@ -317,7 +317,6 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
       formError: {
         title: string;
         explanation: string;
-        validation: string;
         checkNotificationPanel: Array<string | Wrapped<"link">>;
       };
       withoutForm: {
@@ -340,8 +339,8 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
         outdated: string;
         connected: string;
         disconnected: string;
-      }
-    }
+      };
+    };
   };
   notificationsPanel: {
     validation: string;
@@ -349,7 +348,7 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
     tooltip: {
       retractAll: string;
       expandAll: string;
-    }
+    };
   };
 }
 

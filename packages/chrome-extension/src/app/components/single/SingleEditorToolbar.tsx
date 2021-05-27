@@ -96,7 +96,7 @@ export function SingleEditorToolbar(props: {
             className={"btn d-none d-md-inline-block kogito-button"}
             onClick={goFullScreen}
           >
-            {i18n.terms.fullScreen}
+            {i18n.fullScreen}
           </button>
         )}
         {!props.textMode && (

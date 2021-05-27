@@ -147,12 +147,12 @@ jobs:
         uses: actions/setup-node@v1
         if: github.event.inputs.kogitoToolingBranchToUpdate && github.event.inputs.kogitoToolingForkToUpdate
         with:
-          node-version: 12.16.3
+          node-version: 16.2.0
 
-      - name: Setup Yarn
+      - name: Setup Yarn and Lerna
         if: github.event.inputs.kogitoToolingBranchToUpdate && github.event.inputs.kogitoToolingForkToUpdate
         run: |
-          npm install -g yarn@1.19.1
+          npm install -g lerna@4.0.0 yarn@1.22.10
           yarn config set network-timeout 1000000
 
       - name: Update kogito-tooling PR branch
@@ -166,7 +166,7 @@ jobs:
           git clean -fd
           git diff
           git checkout ${{ github.event.inputs.kogitoToolingBranchToUpdate }}
-          yarn run init
+          yarn bootstrap
           #
           yarn add -W @kogito-tooling/bpmn-editor-unpacked@${{ steps.newEditorsVersionOnNpm.outputs.version }} --non-interactive || true
           while [ -z `git diff | grep 'bpmn-editor-unpacked": "${{ steps.newEditorsVersionOnNpm.outputs.version }}"'` ]; do !!; done # Retry until last command succeeds

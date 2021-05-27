@@ -35,9 +35,9 @@ import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/ho
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 type ChannelApiMethodsAlreadyImplementedByEmbeddedEditor =
-  | "receive_guidedTourUserInteraction"
-  | "receive_guidedTourRegisterTutorial"
-  | "receive_contentRequest";
+  | "kogitoGuidedTour_guidedTourUserInteraction"
+  | "kogitoGuidedTour_guidedTourRegisterTutorial"
+  | "kogitoEditor_contentRequest";
 
 type EmbeddedEditorChannelApiOverrides = Partial<
   Omit<KogitoEditorChannelApi, ChannelApiMethodsAlreadyImplementedByEmbeddedEditor>
@@ -53,13 +53,11 @@ export type Props = EmbeddedEditorChannelApiOverrides & {
 /**
  * Forward reference for the `EmbeddedEditor` to support consumers to call upon embedded operations.
  */
-export type EmbeddedEditorRef =
-  | (EditorApi & {
-      isReady: boolean;
-      getStateControl(): StateControl;
-      getEnvelopeServer(): EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
-    })
-  | null;
+export type EmbeddedEditorRef = EditorApi & {
+  isReady: boolean;
+  getStateControl(): StateControl;
+  getEnvelopeServer(): EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
+};
 
 const containerStyles: CSS.Properties = {
   display: "flex",
@@ -73,7 +71,7 @@ const containerStyles: CSS.Properties = {
   overflow: "hidden",
 };
 
-const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRef, Props> = (
+const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditorRef | undefined, Props> = (
   props: Props,
   forwardedRef
 ) => {
@@ -81,28 +79,28 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   const stateControl = useMemo(() => new StateControl(), [props.file.getFileContents]);
   const [isReady, setReady] = useState(false);
 
-  const envelopeMapping = useMemo(() => props.editorEnvelopeLocator.mapping.get(props.file.fileExtension), [
-    props.editorEnvelopeLocator,
-    props.file,
-  ]);
+  const envelopeMapping = useMemo(
+    () => props.editorEnvelopeLocator.mapping.get(props.file.fileExtension),
+    [props.editorEnvelopeLocator, props.file]
+  );
 
   //Setup envelope bus communication
   const kogitoEditorChannelApiImpl = useMemo(() => {
     return new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, {
       ...props,
-      receive_ready: () => {
+      kogitoEditor_ready: () => {
         setReady(true);
-        props.receive_ready?.();
+        props.kogitoEditor_ready?.();
       },
     });
-  }, [stateControl, props.file, props]);
+  }, [stateControl, props]);
 
   const envelopeServer = useMemo(() => {
     return new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
       { postMessage: (message) => iframeRef.current?.contentWindow?.postMessage(message, "*") },
       props.editorEnvelopeLocator.targetOrigin,
       (self) =>
-        self.envelopeApi.requests.receive_initRequest(
+        self.envelopeApi.requests.kogitoEditor_initRequest(
           { origin: self.origin, envelopeServerId: self.id },
           {
             fileExtension: props.file.fileExtension,
@@ -113,17 +111,24 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           }
         )
     );
-  }, [envelopeMapping, props.file, props.editorEnvelopeLocator]);
+  }, [
+    props.editorEnvelopeLocator.targetOrigin,
+    props.file.fileExtension,
+    props.file.isReadOnly,
+    props.locale,
+    props.channelType,
+    envelopeMapping?.resourcesPathPrefix,
+  ]);
 
   useConnectedEnvelopeServer(envelopeServer, kogitoEditorChannelApiImpl);
 
   useEffectAfterFirstRender(() => {
-    envelopeServer.envelopeApi.notifications.receive_localeChange(props.locale);
+    envelopeServer.envelopeApi.notifications.kogitoI18n_localeChange(props.locale);
   }, [props.locale]);
 
   useEffectAfterFirstRender(() => {
     props.file.getFileContents().then((content) => {
-      envelopeServer.envelopeApi.requests.receive_contentChanged({ content: content! });
+      envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ content: content! });
     });
   }, [props.file.getFileContents]);
 
@@ -138,20 +143,22 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     forwardedRef,
     () => {
       if (!iframeRef.current) {
-        return null;
+        return undefined;
       }
 
       return {
         isReady: isReady,
         getStateControl: () => stateControl,
         getEnvelopeServer: () => envelopeServer,
-        getElementPosition: (s) => envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(s),
-        undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorUndo()),
-        redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorRedo()),
-        getContent: () => envelopeServer.envelopeApi.requests.receive_contentRequest().then((c) => c.content),
-        getPreview: () => envelopeServer.envelopeApi.requests.receive_previewRequest(),
-        setContent: (path, content) => envelopeServer.envelopeApi.requests.receive_contentChanged({ path, content }),
-        validate: () => envelopeServer.envelopeApi.requests.validate(),
+        getElementPosition: (s) =>
+          envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(s),
+        undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorUndo()),
+        redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo()),
+        getContent: () => envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
+        getPreview: () => envelopeServer.envelopeApi.requests.kogitoEditor_previewRequest(),
+        setContent: (path, content) =>
+          envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ path, content }),
+        validate: () => envelopeServer.envelopeApi.requests.kogitoEditor_validate(),
       };
     },
     [envelopeServer, stateControl, isReady]

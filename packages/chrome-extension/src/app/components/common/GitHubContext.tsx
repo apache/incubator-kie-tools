@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as Octokit from "@octokit/rest";
+import { Octokit } from "@octokit/rest";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useGlobals } from "./GlobalContext";

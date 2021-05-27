@@ -77,9 +77,10 @@ export function NotificationsPanel(props: Props) {
     notificationsPanel.setActiveTab(props.tabNames[0]);
   }, []);
 
-  const totalNotifications = useMemo(() => [...tabsNotifications.values()].reduce((acc, value) => acc + value, 0), [
-    tabsNotifications,
-  ]);
+  const totalNotifications = useMemo(
+    () => [...tabsNotifications.values()].reduce((acc, value) => acc + value, 0),
+    [tabsNotifications]
+  );
 
   const notificationsPanelDivRef = useRef<HTMLDivElement>(null);
   const [notificationsPanelIconPlace, setNotificationsPanelIconPlace] = useState<number>();
@@ -148,23 +149,23 @@ export function NotificationsPanel(props: Props) {
             content={i18n.names.notificationsPanel}
             flipBehavior={["left"]}
             distance={20}
-            children={<ExclamationCircleIcon />}
-          />
+          >
+            <ExclamationCircleIcon />
+          </Tooltip>
         ) : (
           <Tooltip
             key={"with-notifications"}
             content={i18n.names.notificationsPanel}
             flipBehavior={["left"]}
             distance={20}
-            children={
-              <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-                <span id={"dmn-runner-errors"} onAnimationEnd={onAnimationEnd}>
-                  {totalNotifications}
-                </span>
-                <ExclamationCircleIcon style={{ marginTop: "1px" }} />
-              </div>
-            }
-          />
+          >
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+              <span id={"dmn-runner-errors"} onAnimationEnd={onAnimationEnd}>
+                {totalNotifications}
+              </span>
+              <ExclamationCircleIcon style={{ marginTop: "1px" }} />
+            </div>
+          </Tooltip>
         )}
       </div>
       <div
@@ -203,10 +204,14 @@ export function NotificationsPanel(props: Props) {
             }}
           >
             <div onClick={() => onRetractAll()}>
-              <Tooltip content={i18n.notificationsPanel.tooltip.retractAll} children={<AngleUpIcon />} />
+              <Tooltip content={i18n.notificationsPanel.tooltip.retractAll}>
+                <AngleUpIcon />
+              </Tooltip>
             </div>
             <div onClick={() => onExpandAll()}>
-              <Tooltip content={i18n.notificationsPanel.tooltip.expandAll} children={<AngleDownIcon />} />
+              <Tooltip content={i18n.notificationsPanel.tooltip.expandAll}>
+                <AngleDownIcon />
+              </Tooltip>
             </div>
           </div>
           <Tabs activeKey={notificationsPanel.activeTab} onSelect={onSelectTab}>

@@ -37,7 +37,6 @@ export class EnvelopeBusMessageManager<
 
   private readonly remoteSubscriptions: Array<NotificationPropertyNames<ApiToProvide>> = [];
 
-  // tslint:disable-next-line:ban-types
   private readonly localSubscriptions = new Map<NotificationPropertyNames<ApiToConsume>, Function[]>();
 
   private requestIdCounter: number;

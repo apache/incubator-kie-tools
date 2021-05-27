@@ -19,19 +19,22 @@ const common = require("../../webpack.common.config");
 const CopyPlugin = require("copy-webpack-plugin");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
-module.exports = [
-  merge(common, {
+module.exports = (env, argv) => [
+  merge(common(env, argv), {
     entry: {
       "preprocessor/preprocessor": "./src/preprocessor/preprocessor.ts",
     },
-    plugins: [new CopyPlugin([{ from: "./resources", to: "./resources" }])],
+    plugins: [new CopyPlugin({ patterns: [{ from: "./resources", to: "./resources" }] })],
     target: "node",
     node: {
       __dirname: true, //Uses current working dir
       __filename: true, //Uses current working dir
     },
   }),
-  merge(common, {
+  merge(common(env, argv), {
+    output: {
+      publicPath: "",
+    },
     entry: {
       "envelope/bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
       "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",

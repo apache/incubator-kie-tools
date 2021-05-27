@@ -392,7 +392,7 @@ export function DmnRunnerModal() {
                   <br />
                   <TextContent>
                     <Text component={TextVariants.p} className={"kogito--code"}>
-                      "dmn_runner_windows_{dmnRunner.version}.exe" -p {dmnRunner.port}
+                      &quot;dmn_runner_windows_{dmnRunner.version}.exe&quot; -p {dmnRunner.port}
                     </Text>
                   </TextContent>
                   <br />

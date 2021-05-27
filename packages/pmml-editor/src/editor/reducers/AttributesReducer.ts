@@ -20,12 +20,16 @@ import { Reducer } from "react";
 import { immerable } from "immer";
 import { Builder } from "../paths";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 Attribute[immerable] = true;
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 Predicate[immerable] = true;
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 SimplePredicate[immerable] = true;
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 CompoundPredicate[immerable] = true;
 

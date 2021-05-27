@@ -34,7 +34,7 @@ const requestSetGitHubToken = jest.fn(() => null);
 const requestEmbed = jest.fn(() => null);
 
 function mockFunctions() {
-  const original = require.requireActual("../../common/Hooks");
+  const original = jest.requireActual("../../common/Hooks");
   return {
     ...original,
     useFileUrl: jest.fn().mockImplementation(() => "gist.githubusercontent.com/?file=something"),

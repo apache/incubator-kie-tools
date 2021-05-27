@@ -20,8 +20,8 @@ const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 
-module.exports = async (argv, env) => [
-  merge(common, {
+module.exports = async (env, argv) => [
+  merge(common(env, argv), {
     target: "electron-main",
     entry: {
       index: "./src/backend/index.ts",
@@ -29,33 +29,55 @@ module.exports = async (argv, env) => [
     externals: {
       electron: "commonjs electron",
     },
-    plugins: [new CopyPlugin([{ from: "./build", to: "./build" }])],
+    plugins: [new CopyPlugin({ patterns: [{ from: "./build", to: "./build" }] })],
     node: {
       __dirname: false,
       __filename: false,
     },
   }),
-  merge(common, {
+  merge(common(env, argv), {
     target: "web",
     entry: {
-      "webview/index": "./src/webview/index.tsx",
       "envelope/bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
       "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
+    },
+    module: { rules: [...pfWebpackOptions.patternflyRules] },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          {
+            from: externalAssets.dmnEditorPath(argv),
+            to: "./gwt-editors/dmn",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+          {
+            from: externalAssets.bpmnEditorPath(argv),
+            to: "./gwt-editors/bpmn",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+        ],
+      }),
+    ],
+  }),
+  merge(common(env, argv), {
+    target: "electron-renderer",
+    entry: {
+      "webview/index": "./src/webview/index.tsx",
     },
     externals: {
       electron: "commonjs electron",
     },
     module: { rules: [...pfWebpackOptions.patternflyRules] },
     plugins: [
-      new CopyPlugin([
-        { from: "./static/samples", to: "./samples" },
-        { from: "./static/resources", to: "./resources" },
-        { from: "./static/images", to: "./images" },
-        { from: "./static/envelope", to: "./envelope" },
-        { from: "./static/index.html", to: "./index.html" },
-        { from: externalAssets.dmnEditorPath(argv), to: "./gwt-editors/dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.bpmnEditorPath(argv), to: "./gwt-editors/bpmn", ignore: ["WEB-INF/**/*"] },
-      ]),
+      new CopyPlugin({
+        patterns: [
+          { from: "./static/samples", to: "./samples" },
+          { from: "./static/resources", to: "./resources" },
+          { from: "./static/images", to: "./images" },
+          { from: "./static/envelope", to: "./envelope" },
+          { from: "./static/index.html", to: "./index.html" },
+        ],
+      }),
     ],
   }),
 ];

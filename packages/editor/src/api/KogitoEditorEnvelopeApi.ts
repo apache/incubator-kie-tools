@@ -43,11 +43,11 @@ export interface EditorInitArgs {
 }
 
 export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, GuidedTourEnvelopeApi, I18nEnvelopeApi {
-  receive_contentChanged(content: EditorContent): Promise<void>;
-  receive_editorUndo(): void;
-  receive_editorRedo(): void;
-  receive_initRequest(association: Association, editorInit: EditorInitArgs): Promise<void>;
-  receive_contentRequest(): Promise<EditorContent>;
-  receive_previewRequest(): Promise<string>;
-  validate(): Promise<Notification[]>;
+  kogitoEditor_contentChanged(content: EditorContent): Promise<void>;
+  kogitoEditor_editorUndo(): void;
+  kogitoEditor_editorRedo(): void;
+  kogitoEditor_initRequest(association: Association, editorInit: EditorInitArgs): Promise<void>;
+  kogitoEditor_contentRequest(): Promise<EditorContent>;
+  kogitoEditor_previewRequest(): Promise<string>;
+  kogitoEditor_validate(): Promise<Notification[]>;
 }

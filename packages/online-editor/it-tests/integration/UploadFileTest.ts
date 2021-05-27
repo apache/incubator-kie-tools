@@ -114,7 +114,7 @@ describe("Upload file test", () => {
     cy.get("[aria-label='Edit file name']").should("have.value", "testModel");
 
     // close DMN guided tour dialog
-    cy.get("[data-kgt-close='true']").click();
+    cy.get("[data-ouia-component-id='dmn-guided-tour'] button[aria-label='Close']").click();
 
     cy.getEditor().within(() => {
       // open properties panel and check values
@@ -166,6 +166,34 @@ describe("Upload file test", () => {
 
     // check home page is visible
     cy.get("#app p").should("be.visible").should("contain.text", "Welcome to Business Modeler!");
+  });
+
+  it("DMN Guided Tour popup shouldn't appear when opening broken file", () => {
+    cy.on("uncaught:exception", (err, runnable) => {
+      // The DMN Editor will throw an exception because it failed to marshall the contents of the uploaded file.
+      // Returning false here prevents Cypress from failing the test.
+      return false;
+    });
+
+    // upload dmn file from fixtures directory by drag and drop
+    cy.get("#file-upload-field-filename").attachFile("testModelBroken.dmn", { subjectType: "drag-n-drop" });
+
+    // wait until loading dialog disappears
+    cy.loadEditor();
+
+    // check editor logo
+    cy.get("[class='pf-c-brand']").within(($logo) => {
+      expect($logo.attr("src")).contain("dmn");
+      expect($logo.attr("alt")).contain("dmn");
+    });
+
+    // check editor title name
+    cy.get("[aria-label='Edit file name']").should("have.value", "testModelBroken");
+
+    // DMN guided tour dialog can't be shown for invalid models
+    cy.get("[data-ouia-component-id='dmn-guided-tour']").should("not.be.visible");
+
+    cy.get("[data-ouia-component-id='invalid-content-alert']").should("be.visible");
   });
 
   it("should upload PMML file", () => {

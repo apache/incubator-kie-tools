@@ -61,9 +61,9 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
   }, []);
 
   useImperativeHandle(forwardingRef, () => ({
-    createNotification,
-    setNotifications,
-    removeNotifications,
+    kogitoNotifications_createNotification: createNotification,
+    kogitoNotifications_setNotifications: setNotifications,
+    kogitoNotifications_removeNotifications: removeNotifications,
   }));
 
   const notificationsMap: Map<string, Notification[]> = useMemo(() => {

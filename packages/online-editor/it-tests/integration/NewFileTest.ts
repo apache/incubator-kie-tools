@@ -68,7 +68,7 @@ describe("New file test", () => {
     cy.get("[aria-label='Edit file name']").should("have.value", "new-file");
 
     // close DMN guided tour dialog
-    cy.get("[data-kgt-close='true']").click();
+    cy.get("[data-ouia-component-id='dmn-guided-tour'] button[aria-label='Close']").click();
 
     cy.getEditor().within(() => {
       // open Decision navigator and check nodes

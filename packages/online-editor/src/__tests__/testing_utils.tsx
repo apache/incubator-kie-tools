@@ -32,7 +32,7 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
     resourcesPathPrefix: "",
   };
 
-  const usedCtx = {
+  const usedCtx: GlobalContextType = {
     file: EMPTY_FILE_DMN,
     routes: new Routes(),
     editorEnvelopeLocator: {

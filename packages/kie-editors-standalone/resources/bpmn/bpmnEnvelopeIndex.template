@@ -20,7 +20,20 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <script>
-        erraiBusRemoteCommunicationEnabled = false;
+        <!-- This function is called by GwtEditorWrapperFactory when the Editor envelope is ready -->
+        window.startStandaloneEditor = () => {
+            <%
+              _.map(editorResources.baseJsResources, function(jsResource) {
+                print('\nsetTimeout(() => { const jsResource = document.createElement("script"); jsResource.appendChild(document.createTextNode(`' + jsResource.content + '`)); document.head.append(jsResource); }, 0);');
+              });
+            %>
+
+            <%
+              _.map(editorResources.referencedJsResources, function(jsResource) {
+                print('\nsetTimeout(() => { const jsResource = document.createElement("script"); jsResource.appendChild(document.createTextNode(`' + jsResource.content + '`)); document.head.append(jsResource); }, 0);');
+              });
+            %>
+        };
     </script>
 
     <%
@@ -53,21 +66,6 @@
       });
       print('\n</style>\n');
     %>
-
-    <!-- Editor scripts are appended to head only after envelope is initialized. -->
-    <script>
-        <%
-          _.map(editorResources.baseJsResources, function(jsResource) {
-            print('\ndocument.addEventListener("DOMContentLoaded", () => { setTimeout(() => { const jsResource = document.createElement("script"); jsResource.appendChild(document.createTextNode(`' + jsResource.content + '`)); document.head.append(jsResource); }, 0); })');
-          });
-        %>
-
-        <%
-          _.map(editorResources.referencedJsResources, function(jsResource) {
-            print('\ndocument.addEventListener("DOMContentLoaded", () => { setTimeout(() => { const jsResource = document.createElement("script"); jsResource.appendChild(document.createTextNode(`' + jsResource.content + '`)); document.head.append(jsResource); }, 0); })');
-          });
-        %>
-    </script>
 </head>
 <body>
     <div id="envelope-app" />

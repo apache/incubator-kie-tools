@@ -21,6 +21,7 @@ import { AttributesReducer } from "./AttributesReducer";
 import { immerable } from "immer";
 import { Builder } from "../paths";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 Characteristic[immerable] = true;
 

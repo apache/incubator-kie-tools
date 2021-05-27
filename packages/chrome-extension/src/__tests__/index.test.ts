@@ -18,7 +18,7 @@ import { GitHubPageType } from "../app/github/GitHubPageType";
 
 function setWindowLocationPathname(pathname: string) {
   window = Object.create(window);
-  delete window.location;
+  delete (window as any).location;
   window.location = { pathname: pathname } as any;
 }
 

@@ -8,5 +8,6 @@
   "baseUrl": "http://localhost:9001",
   "chromeWebSecurity": false,
   "video": false,
-  "downloadsFolder": "downloads"
+  "downloadsFolder": "downloads",
+  "defaultCommandTimeout": 10000
 }

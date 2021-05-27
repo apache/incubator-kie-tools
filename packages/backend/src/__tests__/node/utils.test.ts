@@ -155,22 +155,20 @@ describe("utility to check whether java|openjdk is available or not", () => {
 });
 
 function mockCpExecCallbackOnce(error: cp.ExecException | null, stdout: string, stderr: string) {
-  (cp as jest.Mocked<typeof cp>).exec.mockImplementationOnce(
-    ((
-      command: string,
-      callback?: (error: cp.ExecException | null, stdout: string, stderr: string) => void
-    ): cp.ChildProcess => {
-      if (callback) {
-        callback(error, stdout, stderr);
-      }
+  (cp as jest.Mocked<typeof cp>).exec.mockImplementationOnce(((
+    command: string,
+    callback?: (error: cp.ExecException | null, stdout: string, stderr: string) => void
+  ): cp.ChildProcess => {
+    if (callback) {
+      callback(error, stdout, stderr);
+    }
 
-      return {} as cp.ChildProcess;
-    }) as typeof cp.exec
-  );
+    return {} as cp.ChildProcess;
+  }) as typeof cp.exec);
 }
 
 describe("Utility to kill a process", () => {
-  const process = ({ kill: jest.fn(), pid: 9999 } as unknown) as cp.ChildProcess;
+  const process = { kill: jest.fn(), pid: 9999 } as unknown as cp.ChildProcess;
   const sandbox = sinon.createSandbox();
 
   afterEach(() => {

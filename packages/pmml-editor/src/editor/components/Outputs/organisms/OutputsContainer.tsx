@@ -150,10 +150,10 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   };
 
   const { validationRegistry } = useValidationRegistry();
-  const validations = useMemo(() => validationRegistry.get(Builder().forModel(modelIndex).forOutput().build()), [
-    modelIndex,
-    output?.OutputField,
-  ]);
+  const validations = useMemo(
+    () => validationRegistry.get(Builder().forModel(modelIndex).forOutput().build()),
+    [modelIndex, output?.OutputField]
+  );
 
   return (
     <div className="outputs-container">

@@ -72,10 +72,10 @@ export const ModelTitle = (props: ModelTitleProps) => {
     setActiveOperation(Operation.NONE);
   };
 
-  const isEditModeEnabled = useMemo(() => isEditing && activeOperation === Operation.UPDATE_NAME, [
-    isEditing,
-    activeOperation,
-  ]);
+  const isEditModeEnabled = useMemo(
+    () => isEditing && activeOperation === Operation.UPDATE_NAME,
+    [isEditing, activeOperation]
+  );
 
   const modelTitleClassNames = useMemo(
     () =>

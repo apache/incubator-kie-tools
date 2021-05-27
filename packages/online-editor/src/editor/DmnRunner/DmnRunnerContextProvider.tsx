@@ -117,8 +117,7 @@ export function DmnRunnerContextProvider(props: Props) {
       return () => window.clearInterval(detectCrashesOrStops);
     }
 
-    let detectDmnRunner: number | undefined;
-    detectDmnRunner = window.setInterval(() => {
+    const detectDmnRunner: number | undefined = window.setInterval(() => {
       service.checkServer().then(() => {
         // Check the running version of the DMN Runner, if outdated cancel polling and change status.
         service.version().then((runnerVersion) => {
@@ -181,7 +180,9 @@ export function DmnRunnerContextProvider(props: Props) {
           }));
         })
         .then((notifications) => {
-          notificationsPanel.getTabRef(i18n.notificationsPanel.validation)?.setNotifications("", notifications);
+          notificationsPanel
+            .getTabRef(i18n.notificationsPanel.validation)
+            ?.kogitoNotifications_setNotifications("", notifications);
         });
     };
 

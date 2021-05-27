@@ -15,4 +15,6 @@
  */
 
 /// <reference types="cypress" />
-module.exports = (on: any, config: any) => {};
+module.exports = (on: any, config: any) => {
+  require("cypress-log-to-output").install(on);
+};

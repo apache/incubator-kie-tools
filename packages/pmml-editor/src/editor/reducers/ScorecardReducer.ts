@@ -40,6 +40,7 @@ import { validateCharacteristic, validateCharacteristics } from "../validation/C
 import { validateBaselineScore } from "../validation/ModelCoreProperties";
 import { getBaselineScore, getCharacteristics, getMiningSchema, getUseReasonCodes } from "../PMMLModelHelper";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 Scorecard[immerable] = true;
 

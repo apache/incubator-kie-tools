@@ -108,7 +108,7 @@ export function DmnRunnerDrawer(props: Props) {
   const defaultFormValues = useMemo(() => {
     return Object.keys(dmnRunner.jsonSchemaBridge?.schema?.properties ?? {}).reduce((acc, property) => {
       if (Object.hasOwnProperty.call(dmnRunner.jsonSchemaBridge?.schema?.properties[property], "$ref")) {
-        const refPath = dmnRunner.jsonSchemaBridge?.schema?.properties[property].$ref!.split("/").pop()!;
+        const refPath = dmnRunner.jsonSchemaBridge?.schema?.properties[property].$ref!.split("/").pop() ?? "";
         if (dmnRunner.jsonSchemaBridge?.schema?.definitions[refPath].type === "object") {
           acc[`${property}`] = {};
           return acc;
@@ -145,7 +145,9 @@ export function DmnRunnerDrawer(props: Props) {
           message: `${message.messageType}: ${message.message}`,
         }));
       });
-      notificationsPanel.getTabRef(i18n.notificationsPanel.execution)?.setNotifications("", notifications);
+      notificationsPanel
+        .getTabRef(i18n.notificationsPanel.execution)
+        ?.kogitoNotifications_setNotifications("", notifications);
     },
     [notificationsPanel.getTabRef, i18n]
   );
@@ -474,43 +476,46 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
     notificationsPanel.setActiveTab("Execution");
   }, [notificationsPanel]);
 
-  const resultStatus = useCallback((evaluationStatus: EvaluationStatus) => {
-    switch (evaluationStatus) {
-      case EvaluationStatus.SUCCEEDED:
-        return (
-          <>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <CheckCircleIcon />
-              <a onClick={openExecutionTab} style={{ paddingLeft: "5px" }}>
-                {i18n.dmnRunner.drawer.evaluation.success}
-              </a>
-            </div>
-          </>
-        );
-      case EvaluationStatus.SKIPPED:
-        return (
-          <>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <InfoCircleIcon />
-              <a onClick={openExecutionTab} style={{ paddingLeft: "5px" }}>
-                {i18n.dmnRunner.drawer.evaluation.skipped}
-              </a>
-            </div>
-          </>
-        );
-      case EvaluationStatus.FAILED:
-        return (
-          <>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <ExclamationCircleIcon />
-              <a onClick={openExecutionTab} style={{ paddingLeft: "5px" }}>
-                {i18n.dmnRunner.drawer.evaluation.failed}
-              </a>
-            </div>
-          </>
-        );
-    }
-  }, [i18n]);
+  const resultStatus = useCallback(
+    (evaluationStatus: EvaluationStatus) => {
+      switch (evaluationStatus) {
+        case EvaluationStatus.SUCCEEDED:
+          return (
+            <>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <CheckCircleIcon />
+                <a onClick={openExecutionTab} style={{ paddingLeft: "5px" }}>
+                  {i18n.dmnRunner.drawer.evaluation.success}
+                </a>
+              </div>
+            </>
+          );
+        case EvaluationStatus.SKIPPED:
+          return (
+            <>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <InfoCircleIcon />
+                <a onClick={openExecutionTab} style={{ paddingLeft: "5px" }}>
+                  {i18n.dmnRunner.drawer.evaluation.skipped}
+                </a>
+              </div>
+            </>
+          );
+        case EvaluationStatus.FAILED:
+          return (
+            <>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <ExclamationCircleIcon />
+                <a onClick={openExecutionTab} style={{ paddingLeft: "5px" }}>
+                  {i18n.dmnRunner.drawer.evaluation.failed}
+                </a>
+              </div>
+            </>
+          );
+      }
+    },
+    [i18n]
+  );
 
   const result = useCallback((dmnRunnerResult: Result) => {
     switch (typeof dmnRunnerResult) {
@@ -520,7 +525,7 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
       case "string":
         return dmnRunnerResult;
       case "object":
-        return !!dmnRunnerResult ? (
+        return dmnRunnerResult ? (
           Array.isArray(dmnRunnerResult) ? (
             <DescriptionList>
               {dmnRunnerResult.map((dmnResult, index) => (

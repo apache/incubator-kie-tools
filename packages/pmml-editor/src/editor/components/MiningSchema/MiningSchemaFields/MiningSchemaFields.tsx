@@ -63,17 +63,8 @@ interface MiningSchemaFieldProps {
 }
 
 const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
-  const {
-    index,
-    modelIndex,
-    dataDictionary,
-    field,
-    onAddProperties,
-    onDelete,
-    onPropertyDelete,
-    onEdit,
-    onCancel,
-  } = props;
+  const { index, modelIndex, dataDictionary, field, onAddProperties, onDelete, onPropertyDelete, onEdit, onCancel } =
+    props;
   const editing = useContext(MiningSchemaContext);
 
   const ref = useOnclickOutside(

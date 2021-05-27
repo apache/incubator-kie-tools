@@ -21,11 +21,11 @@ import { GithubTokenModal } from "../common/GithubTokenModal";
 import { GlobalContext } from "../common/GlobalContext";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
+import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
 import { UpdateGistErrors } from "../common/GithubService";
 import { EmbedModal } from "./EmbedModal";
 import { useFileUrl } from "../common/Hooks";
-import { useDmnTour } from "../tour";
 import { ChannelType } from "@kogito-tooling/editor/dist/api";
 import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
@@ -274,7 +274,7 @@ export function EditorPage(props: Props) {
     })();
   });
 
-  useDmnTour(isEditorReady, context.file);
+  useDmnTour(isEditorReady && openAlert === AlertTypes.NONE, context.file);
 
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
@@ -366,7 +366,7 @@ export function EditorPage(props: Props) {
         if (!Array.isArray(notifications)) {
           notifications = [];
         }
-        notificationsPanelRef.current?.getTabRef("Validation")?.setNotifications("", notifications);
+        notificationsPanelRef.current?.getTabRef("Validation")?.kogitoNotifications_setNotifications("", notifications);
       });
     };
 
@@ -423,7 +423,7 @@ export function EditorPage(props: Props) {
                       {!fullscreen && openAlert === AlertTypes.SET_CONTENT_ERROR && (
                         <div className={"kogito--alert-container"}>
                           <Alert
-                            className={"kogito--alert"}
+                            ouiaId="invalid-content-alert"
                             variant="danger"
                             title={i18n.editorPage.alerts.setContentError.title}
                             actionLinks={
@@ -550,9 +550,9 @@ export function EditorPage(props: Props) {
                       <EmbeddedEditor
                         ref={editorRef}
                         file={context.file}
+                        kogitoEditor_ready={onReady}
+                        kogitoEditor_setContentError={onSetContentError}
                         editorEnvelopeLocator={context.editorEnvelopeLocator}
-                        receive_setContentError={onSetContentError}
-                        receive_ready={onReady}
                         channelType={ChannelType.ONLINE}
                         locale={locale}
                       />

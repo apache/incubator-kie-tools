@@ -25,10 +25,10 @@ import "./NavigationControls.sass";
 
 export const NavigationControls = () => {
   const { currentTutorial, currentStep, setCurrentStep } = useContext(CurrentTutorialContext);
-  const isButtonsHidden = useMemo(() => getCurrentStep(currentStep, currentTutorial)?.navigatorEnabled !== true, [
-    currentStep,
-    currentTutorial,
-  ]);
+  const isButtonsHidden = useMemo(
+    () => getCurrentStep(currentStep, currentTutorial)?.navigatorEnabled !== true,
+    [currentStep, currentTutorial]
+  );
   const numberOfSteps = useMemo(() => getSteps(currentTutorial).length, [currentTutorial]);
   const currentStepNumber = (currentStep ?? 0) + 1;
 

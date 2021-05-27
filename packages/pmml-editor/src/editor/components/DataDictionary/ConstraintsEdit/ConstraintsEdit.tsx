@@ -46,9 +46,10 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     dataType.constraints?.type === ConstraintType.ENUMERATION ? dataType.constraints.value : undefined
   );
 
-  const rangeConstraintLimit = useMemo(() => (dataType.optype === "continuous" && dataType.isCyclic ? 1 : undefined), [
-    dataType,
-  ]);
+  const rangeConstraintLimit = useMemo(
+    () => (dataType.optype === "continuous" && dataType.isCyclic ? 1 : undefined),
+    [dataType]
+  );
 
   const handleTypeChange = (event: React.MouseEvent | React.ChangeEvent, value: string) => {
     if (value !== constraintType) {
@@ -103,7 +104,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   };
 
   const handleRangeAdd = () => {
-    const updatedRanges = [...ranges];
+    const updatedRanges = [...(ranges ?? [])];
     updatedRanges.push({
       start: {
         value: "",
@@ -123,7 +124,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   };
 
   const handleRangeDelete = (index: number) => {
-    const updatedRanges = [...ranges];
+    const updatedRanges = [...(ranges ?? [])];
     updatedRanges.splice(index, 1);
     onSave({
       constraints: {
@@ -134,7 +135,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   };
 
   const handleEnumsChange = (value: string, index: number) => {
-    const updatedEnums = [...enums];
+    const updatedEnums = [...(enums ?? [])];
     updatedEnums[index] = value;
     onSave({
       constraints: {
@@ -145,7 +146,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   };
 
   const handleEnumsDelete = (index: number) => {
-    const updatedEnums = [...enums];
+    const updatedEnums = [...(enums ?? [])];
     updatedEnums.splice(index, 1);
     onSave({
       constraints: {
@@ -156,7 +157,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   };
 
   const handleAddEnum = () => {
-    const updatedEnums = [...enums, ""];
+    const updatedEnums = [...(enums ?? []), ""];
     onSave({
       constraints: {
         type: ConstraintType.ENUMERATION,

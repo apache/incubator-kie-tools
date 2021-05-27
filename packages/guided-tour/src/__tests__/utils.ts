@@ -21,7 +21,7 @@ let contextMock = {};
 let componentContainer: HTMLElement | null = null;
 
 jest.mock("react", () => {
-  const ActualReact = require.requireActual("react");
+  const ActualReact = jest.requireActual("react");
   return {
     ...ActualReact,
     useContext: () => contextMock,

@@ -19,7 +19,7 @@ import { Uri, Webview } from "vscode";
 import * as nodePath from "path";
 import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
 import { BackendProxy } from "@kogito-tooling/backend/dist/api";
-import { ResourceContentService } from "@kogito-tooling/channel-common-api";
+import { ResourceContentService } from "@kogito-tooling/workspace/dist/api";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
 import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";

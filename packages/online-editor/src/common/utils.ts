@@ -15,7 +15,7 @@
  */
 
 export function extractFileExtension(fileName: string) {
-  return fileName.match(/[\.]/)
+  return fileName.match(/[.]/)
     ? fileName
         .split(".")
         ?.pop()

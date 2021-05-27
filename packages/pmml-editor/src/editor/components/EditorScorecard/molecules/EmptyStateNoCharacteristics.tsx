@@ -35,10 +35,10 @@ export const EmptyStateNoCharacteristics = (props: EmptyStateNoCharacteristicsPr
       No Characteristics defined
     </Title>
     <EmptyStateBody>
-      Characteristics define the point allocation strategy for the scorecard. Once point allocation between input
+      {`Characteristics define the point allocation strategy for the scorecard. Once point allocation between input
       attributes and partial scores takes place, each scorecard characteristic is assigned a single partial score which
       is used to compute the overall score. The overall score is simply the sum of all partial scores. Partial scores
-      are assumed to be continuous values of type "double".
+      are assumed to be continuous values of type "double".`}
     </EmptyStateBody>
     <Button
       data-testid="empty-state-no-characteristics__create-characteristic"

@@ -22,6 +22,7 @@ const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebp
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
+const { EnvironmentPlugin } = require("webpack");
 
 function getLatestGitTag() {
   const tagName = require("child_process").execSync("git rev-list --tags --max-count=1").toString().trim();
@@ -32,16 +33,16 @@ function getLatestGitTag() {
     .trim();
 }
 
-function getRouterArgs(argv) {
-  let targetOrigin = argv["ROUTER_targetOrigin"] || process.env["ROUTER_targetOrigin"];
-  let relativePath = argv["ROUTER_relativePath"] || process.env["ROUTER_relativePath"];
+function getRouterArgs(env, argv) {
+  let targetOrigin = argv["ROUTER_targetOrigin"] ?? process.env["ROUTER_targetOrigin"];
+  let relativePath = argv["ROUTER_relativePath"] ?? process.env["ROUTER_relativePath"];
 
-  if (argv.mode === "production") {
-    targetOrigin = targetOrigin || "https://kiegroup.github.io";
-    relativePath = relativePath || `kogito-online/editors/${getLatestGitTag()}/`;
+  if (env.dev) {
+    targetOrigin = targetOrigin ?? "https://localhost:9000";
+    relativePath = relativePath ?? "";
   } else {
-    targetOrigin = targetOrigin || "https://localhost:9000";
-    relativePath = relativePath || "";
+    targetOrigin = targetOrigin ?? "https://kiegroup.github.io";
+    relativePath = relativePath ?? `kogito-online/editors/${getLatestGitTag()}/`;
   }
 
   console.info("EditorEnvelopeLocator :: target origin: " + targetOrigin);
@@ -50,16 +51,16 @@ function getRouterArgs(argv) {
   return [targetOrigin, relativePath];
 }
 
-function getOnlineEditorArgs(argv) {
-  let onlineEditorUrl = argv["ONLINEEDITOR_url"] || process.env["ONLINEEDITOR_url"];
+function getOnlineEditorArgs(env, argv) {
+  let onlineEditorUrl = argv["ONLINEEDITOR_url"] ?? process.env["ONLINEEDITOR_url"];
   let manifestFile;
 
-  if (argv.mode === "production") {
-    onlineEditorUrl = onlineEditorUrl || "https://kiegroup.github.io/kogito-online";
-    manifestFile = "manifest.prod.json";
-  } else {
-    onlineEditorUrl = onlineEditorUrl || "http://localhost:9001";
+  if (env.dev) {
+    onlineEditorUrl = onlineEditorUrl ?? "http://localhost:9001";
     manifestFile = "manifest.dev.json";
+  } else {
+    onlineEditorUrl = onlineEditorUrl ?? "https://kiegroup.github.io/kogito-online";
+    manifestFile = "manifest.prod.json";
   }
 
   console.info("Online Editor :: URL: " + onlineEditorUrl);
@@ -68,10 +69,10 @@ function getOnlineEditorArgs(argv) {
 }
 
 module.exports = async (env, argv) => {
-  const [router_targetOrigin, router_relativePath] = getRouterArgs(argv);
-  const [onlineEditor_url, manifestFile] = getOnlineEditorArgs(argv);
+  const [router_targetOrigin, router_relativePath] = getRouterArgs(env, argv);
+  const [onlineEditor_url, manifestFile] = getOnlineEditorArgs(env, argv);
 
-  return merge(common, {
+  return merge(common(env, argv), {
     entry: {
       "content_scripts/github": "./src/github-content-script.ts",
       "content_scripts/online-editor": "./src/online-editor-content-script.ts",
@@ -88,15 +89,22 @@ module.exports = async (env, argv) => {
       port: 9000,
     },
     plugins: [
-      new CopyPlugin([
-        { from: "./static", to: "." },
-        { from: `./${manifestFile}`, to: "./manifest.json" },
+      new EnvironmentPlugin({
+        WEBPACK_REPLACE__targetOrigin: router_targetOrigin,
+        WEBPACK_REPLACE__relativePath: router_relativePath,
+        WEBPACK_REPLACE__onlineEditor_url: onlineEditor_url,
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: "./static", to: "." },
+          { from: `./${manifestFile}`, to: "./manifest.json" },
 
-        // These are used for development only.
-        { from: externalAssets.dmnEditorPath(argv), to: "dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.bpmnEditorPath(argv), to: "bpmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.scesimEditorPath(argv), to: "scesim", ignore: ["WEB-INF/**/*"] },
-      ]),
+          // These are used for development only.
+          { from: externalAssets.dmnEditorPath(argv), to: "dmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
+          { from: externalAssets.bpmnEditorPath(argv), to: "bpmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
+          { from: externalAssets.scesimEditorPath(argv), to: "scesim", globOptions: { ignore: ["WEB-INF/**/*"] } },
+        ],
+      }),
       new ZipPlugin({
         filename: "chrome_extension_kogito_kie_editors_" + packageJson.version + ".zip",
         pathPrefix: "dist",
@@ -107,37 +115,7 @@ module.exports = async (env, argv) => {
       }),
     ],
     module: {
-      rules: [
-        {
-          test: /ChromeRouter\.ts$/,
-          loader: "string-replace-loader",
-          options: {
-            multiple: [
-              {
-                search: "$_{WEBPACK_REPLACE__targetOrigin}",
-                replace: router_targetOrigin,
-              },
-              {
-                search: "$_{WEBPACK_REPLACE__relativePath}",
-                replace: router_relativePath,
-              },
-            ],
-          },
-        },
-        {
-          test: /background\.ts|OnlineEditorManager\.ts$/,
-          loader: "string-replace-loader",
-          options: {
-            multiple: [
-              {
-                search: "$_{WEBPACK_REPLACE__onlineEditor_url}",
-                replace: onlineEditor_url,
-              },
-            ],
-          },
-        },
-        ...pfWebpackOptions.patternflyRules,
-      ],
+      rules: [...pfWebpackOptions.patternflyRules],
     },
   });
 };

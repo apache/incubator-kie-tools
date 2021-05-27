@@ -20,6 +20,7 @@ import { Reducer } from "react";
 import { immerable } from "immer";
 import { Builder } from "../paths";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 Characteristics[immerable] = true;
 
