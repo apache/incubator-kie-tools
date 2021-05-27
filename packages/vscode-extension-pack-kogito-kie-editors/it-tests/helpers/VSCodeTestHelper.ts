@@ -231,10 +231,10 @@ export default class VSCodeTestHelper {
   public undo = async (): Promise<void> => {
     const edit = await new TitleBar().getItem("Edit");
     assertIsDefined(edit, "Edit Menu Item");
-    
+
     const editContextMenu = await edit.select();
     assertWebElementIsDisplayedEnabled(editContextMenu);
-    
+
     const undo = await editContextMenu.getItem("Undo");
     assertIsDefined(undo, "Undo Menu Item");
 

@@ -43,14 +43,12 @@ export const assertWebElementWithAtribute = async (
 
 /**
  * Asserts the provided variable is defined
- * 
+ *
  * @param value Variable to check
  * @param valueDescriptor Variable descriptor printed in case of assertion fail
  */
 export function assertIsDefined<T>(value: T, valueDescriptor?: String): asserts value is NonNullable<T> {
   if (value === undefined || value === null) {
-    throw new AssertionError(
-      `Expected ${valueDescriptor} to be defined, but received ${value}`
-    );
+    throw new AssertionError(`Expected ${valueDescriptor} to be defined, but received ${value}`);
   }
 }

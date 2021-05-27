@@ -28,14 +28,12 @@ import DecisionNavigatorHelper from "./DecisionNavigatorHelper";
  * via contructor.
  */
 export default class DmnEditorTestHelper {
-  
   private decisionNavigator: WebElement;
   private diagramExplorer: WebElement;
   private properties: WebElement;
 
-
   /**
-   * 
+   *
    * @param webview WebView where the editor Iframe is located.
    */
   constructor(private readonly webview: WebView) {}
@@ -48,7 +46,7 @@ export default class DmnEditorTestHelper {
   public async getDiagramExplorer(): Promise<WebElement> {
     this.diagramExplorer = await this.webview.findWebElement(By.xpath("//button[@data-title='Explore diagram']"));
     return this.diagramExplorer;
-  };
+  }
 
   /**
    * Finds DMN diagram properties element.
@@ -58,7 +56,7 @@ export default class DmnEditorTestHelper {
   public async getDiagramProperties(): Promise<WebElement> {
     this.properties = await this.webview.findWebElement(By.className("docks-item-E-DiagramEditorPropertiesScreen"));
     return this.properties;
-  };
+  }
 
   /**
    * Finds DMN decision navigator element.
@@ -70,7 +68,7 @@ export default class DmnEditorTestHelper {
       By.className("docks-item-E-org.kie.dmn.decision.navigator")
     );
     return this.decisionNavigator;
-  };
+  }
 
   /**
    * Switch editor to other Tab
@@ -80,7 +78,7 @@ export default class DmnEditorTestHelper {
     const tabElement = await this.webview.findWebElement(tabWithTitle(editorTab));
     await assertWebElementIsDisplayedEnabled(tabElement);
     await tabElement.click();
-  };
+  }
 
   /**
    * Using 'EditorTabs.IncludedModels' tab new model is included
@@ -120,7 +118,7 @@ export default class DmnEditorTestHelper {
     const includeButton = await this.webview.findWebElement(By.xpath("//button[@data-field='include']"));
     await assertWebElementIsDisplayedEnabled(includeButton);
     await includeButton.click();
-  };
+  }
 
   /**
    * Assert included model details on the 'EditorTabs.IncludedModels'
@@ -141,7 +139,7 @@ export default class DmnEditorTestHelper {
 
     const includedNodes = await includeDetails.findElement(By.xpath("//span[@data-field='drg-elements-count']"));
     expect(await includedNodes.getText()).to.equal(`${nodesCount}`, "Included model nodes count was not as expected");
-  };
+  }
 
   /**
    * Opens diagram properties.
@@ -160,7 +158,7 @@ export default class DmnEditorTestHelper {
     await assertWebElementIsDisplayedEnabled(await properties.findElement(By.xpath(h3ComponentWithText("Properties"))));
     await assertWebElementIsDisplayedEnabled(expandedPropertiesPanel);
     return new PropertiesPanelHelper(expandedPropertiesPanel);
-  };
+  }
 
   /**
    * Opens diagram explorer.
@@ -181,7 +179,7 @@ export default class DmnEditorTestHelper {
     );
     await assertWebElementIsDisplayedEnabled(expandedExplorerPanel);
     return expandedExplorerPanel;
-  };
+  }
 
   /**
    * Opens decision navigator.
@@ -202,5 +200,5 @@ export default class DmnEditorTestHelper {
     );
     await assertWebElementIsDisplayedEnabled(expandedNavigatorPanel);
     return new DecisionNavigatorHelper(expandedNavigatorPanel);
-  };
+  }
 }

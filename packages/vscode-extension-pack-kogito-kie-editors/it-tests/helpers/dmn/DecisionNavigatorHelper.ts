@@ -35,7 +35,7 @@ export default class DecisionNavigatorHelper {
     await node.click();
 
     return this;
-  };
+  }
 
   /**
    * Check if a given node is present in the DMN Deciion Navigator panel
@@ -44,11 +44,11 @@ export default class DecisionNavigatorHelper {
    */
   public async assertDiagramNodeIsPresent(nodeName: string): Promise<void> {
     await assertWebElementIsDisplayedEnabled(await this.getDiagramNode(nodeName));
-  };
+  }
 
   private async getDiagramNode(nodeName: string): Promise<WebElement> {
     return this.root
       .getDriver()
       .wait(until.elementLocated(spanComponentWithText(nodeName)), 5000, `${nodeName} not found in 5 seconds`);
-  };
+  }
 }

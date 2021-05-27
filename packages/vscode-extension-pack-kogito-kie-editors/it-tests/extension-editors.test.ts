@@ -122,7 +122,7 @@ describe("Editors are loading properly", () => {
 
     const decisionNavigator = await dmnEditorTester.openDecisionNavigator();
     await decisionNavigator.selectDiagramNode("?DemoDecision1");
-    
+
     const diagramProperties = await dmnEditorTester.openDiagramProperties();
     await diagramProperties.changeProperty("Name", "Updated Name 1");
 

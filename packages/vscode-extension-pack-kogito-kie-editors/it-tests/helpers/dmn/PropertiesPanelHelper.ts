@@ -21,7 +21,6 @@ import { labeledInputElementInPropertiesPanel } from "../CommonLocators";
  * Class for accessing expanded DMN Properties panel
  */
 export default class PropertiesPanelHelper {
-
   constructor(private readonly root: WebElement) {}
 
   /**
@@ -37,5 +36,5 @@ export default class PropertiesPanelHelper {
     await property.sendKeys(propertyValue);
 
     return this;
-  };
+  }
 }
