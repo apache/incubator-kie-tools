@@ -7,9 +7,9 @@ import (
 	"runtime"
 	"strconv"
 
+	"github.com/getlantern/systray"
 	"github.com/kiegroup/kogito-tooling-go/pkg/config"
 	"github.com/kiegroup/kogito-tooling-go/pkg/images"
-	"github.com/getlantern/systray"
 )
 
 type KogitoSystray struct {
@@ -35,7 +35,6 @@ func (self *KogitoSystray) onReady() {
 
 	self.StartStopItem.SetTitle(STARTING)
 	go self.controller.Start()
-
 
 	for {
 		select {
@@ -73,7 +72,7 @@ func (self *KogitoSystray) Stop() {
 
 func (self *KogitoSystray) mainSection() {
 	self.openModeler = systray.AddMenuItem(BUSINESS_MODELER, "")
-	
+
 	systray.AddSeparator()
 
 	var config config.Config
@@ -85,7 +84,6 @@ func (self *KogitoSystray) mainSection() {
 	self.runnerPortItem = systray.AddMenuItem(INFORMATION_PORTS+": "+strconv.Itoa(self.controller.Port)+" -> "+self.getRunnerPortStatus(), "")
 	self.runnerPortItem.Disable()
 }
-
 
 func (self *KogitoSystray) operationSection() {
 	self.StartStopItem = systray.AddMenuItem(START, "")
@@ -99,7 +97,7 @@ func (self *KogitoSystray) Refresh() {
 }
 
 func (self *KogitoSystray) refreshRunnerPort() {
-	self.runnerPortItem.SetTitle(INFORMATION_PORTS+": "+strconv.Itoa(self.controller.Port)+" -> "+self.getRunnerPortStatus())
+	self.runnerPortItem.SetTitle(INFORMATION_PORTS + ": " + strconv.Itoa(self.controller.Port) + " -> " + self.getRunnerPortStatus())
 }
 
 func (self *KogitoSystray) getRunnerPortStatus() string {
@@ -111,7 +109,11 @@ func (self *KogitoSystray) getRunnerPortStatus() string {
 }
 
 func (self *KogitoSystray) SetLoading() {
-	systray.SetTemplateIcon(images.DataLoading, images.DataLoading)
+	if runtime.GOOS == "linux" {
+		systray.SetTemplateIcon(images.DataLoadingLinux, images.DataLoadingLinux)
+	} else {
+		systray.SetTemplateIcon(images.DataLoading, images.DataLoading)
+	}
 }
 
 func (self *KogitoSystray) changeStartStop() {
@@ -124,9 +126,17 @@ func (self *KogitoSystray) changeStartStop() {
 
 func (self *KogitoSystray) changeIcon() {
 	if self.controller.Started {
-		systray.SetTemplateIcon(images.DataStarted, images.DataStarted)
+		if runtime.GOOS == "linux" {
+			systray.SetTemplateIcon(images.DataStartedLinux, images.DataStartedLinux)
+		} else {
+			systray.SetTemplateIcon(images.DataStarted, images.DataStarted)
+		}
 	} else {
-		systray.SetTemplateIcon(images.DataStopped, images.DataStopped)
+		if runtime.GOOS == "linux" {
+			systray.SetTemplateIcon(images.DataStoppedLinux, images.DataStoppedLinux)
+		} else {
+			systray.SetTemplateIcon(images.DataStopped, images.DataStopped)
+		}
 	}
 }
 

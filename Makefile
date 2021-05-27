@@ -8,7 +8,7 @@ clean:
 	$(RM) -rf ./build
 
 submodule:
-	git submodule update
+	cd kogito-apps && git submodule update
 
 # macOS
 macos: clean build-jitexecutor copy-jitexecutor build-macos package-macos
