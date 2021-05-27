@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { assert } from "chai";
+import { assert, AssertionError } from "chai";
 import {
   ActivityBar,
   By,
@@ -30,7 +30,7 @@ import {
   Workbench,
 } from "vscode-extension-tester";
 import { kogitoLoadingSpinner } from "./CommonLocators";
-import { assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
+import { assertIsDefined, assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
 
 /**
  * Common test helper class for VSCode extension testing.
@@ -230,14 +230,15 @@ export default class VSCodeTestHelper {
    */
   public undo = async (): Promise<void> => {
     const edit = await new TitleBar().getItem("Edit");
-    if (typeof edit !== "undefined") {
-      const editContextMenu = await edit.select();
-      assertWebElementIsDisplayedEnabled(editContextMenu);
-      const undo = await editContextMenu.getItem("Undo");
-      if (typeof undo !== "undefined") {
-        await undo.select();
-      }
-    }
+    assertIsDefined(edit, "Edit Menu Item");
+    
+    const editContextMenu = await edit.select();
+    assertWebElementIsDisplayedEnabled(editContextMenu);
+    
+    const undo = await editContextMenu.getItem("Undo");
+    assertIsDefined(undo, "Undo Menu Item");
+
+    await undo.select();
   };
 }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { assert } from "chai";
+import { assert, AssertionError } from "chai";
 import { WebElement } from "vscode-extension-tester";
 
 /**
@@ -40,3 +40,17 @@ export const assertWebElementWithAtribute = async (
 ): Promise<void> => {
   assert.equal(await tested.getAttribute(attribute), attributeValue);
 };
+
+/**
+ * Asserts the provided variable is defined
+ * 
+ * @param value Variable to check
+ * @param valueDescriptor Variable descriptor printed in case of assertion fail
+ */
+export function assertIsDefined<T>(value: T, valueDescriptor?: String): asserts value is NonNullable<T> {
+  if (value === undefined || value === null) {
+    throw new AssertionError(
+      `Expected ${valueDescriptor} to be defined, but received ${value}`
+    );
+  }
+}
