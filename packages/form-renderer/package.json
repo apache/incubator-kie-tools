@@ -18,8 +18,8 @@
   },
   "dependencies": {
     "ajv": "^6.12.2",
-    "uniforms": "^3.3.0",
-    "uniforms-bridge-json-schema": "^3.3.0",
+    "uniforms": "3.3.0",
+    "uniforms-bridge-json-schema": "3.3.0",
     "uniforms-patternfly": "^4.2.1"
   },
   "devDependencies": {

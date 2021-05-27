@@ -99,6 +99,10 @@ module.exports = async (env, argv) => {
         WEBPACK_REPLACE__hubLinuxUrl: downloadHub_linuxUrl,
         WEBPACK_REPLACE__hubMacOsUrl: downloadHub_macOsUrl,
         WEBPACK_REPLACE__hubWindowsUrl: downloadHub_windowsUrl,
+        WEBPACK_REPLACE__dmnRunnerLinuxDownloadUrl: dmnRunner_linuxDownloadUrl,
+        WEBPACK_REPLACE__dmnRunnerMacOsDownloadUrl: dmnRunner_macOsDownloadUrl,
+        WEBPACK_REPLACE__dmnRunnerWindowsDownloadUrl: dmnRunner_windowsDownloadUrl,
+        WEBPACK_REPLACE__dmnRunnerCompatibleVersion: dmnRunner_compatibleVersion,
       }),
       new CopyPlugin({
         patterns: [
@@ -133,41 +137,7 @@ module.exports = async (env, argv) => {
       },
     },
     module: {
-      rules: [
-        {
-          test: /DmnRunnerModal\.tsx$/,
-          loader: "string-replace-loader",
-          options: {
-            multiple: [
-              {
-                search: "$_{WEBPACK_REPLACE__dmnRunnerLinuxDownloadUrl}",
-                replace: dmnRunner_linuxDownloadUrl,
-              },
-              {
-                search: "$_{WEBPACK_REPLACE__dmnRunnerMacOsDownloadUrl}",
-                replace: dmnRunner_macOsDownloadUrl,
-              },
-              {
-                search: "$_{WEBPACK_REPLACE__dmnRunnerWindowsDownloadUrl}",
-                replace: dmnRunner_windowsDownloadUrl,
-              },
-            ],
-          },
-        },
-        {
-          test: /DmnRunnerContextProvider\.tsx$/,
-          loader: "string-replace-loader",
-          options: {
-            multiple: [
-              {
-                search: "$_{WEBPACK_REPLACE__dmnRunnerCompatibleVersion}",
-                replace: dmnRunner_compatibleVersion,
-              },
-            ],
-          },
-        },
-        ...pfWebpackOptions.patternflyRules,
-      ],
+      rules: [...pfWebpackOptions.patternflyRules],
     },
     devServer: {
       historyApiFallback: false,

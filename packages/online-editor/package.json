@@ -21,13 +21,13 @@
     "@octokit/rest": "^18.5.3",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0",
     "ajv": "^6.12.6",
     "ajv-errors": "^1.0.1",
     "deep-object-diff": "^1.1.0",
-    "uniforms": "^3.3.0",
-    "uniforms-bridge-json-schema": "^3.3.0",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
+    "uniforms": "3.3.0",
+    "uniforms-bridge-json-schema": "3.3.0",
     "uniforms-patternfly": "^4.2.1"
   },
   "scripts": {

@@ -53,7 +53,7 @@ export function DmnRunnerContextProvider(props: Props) {
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<DmnRunnerJsonSchemaBridge>();
   const [port, setPort] = useState(() => getCookie(DMN_RUNNER_PORT_COOKIE_NAME) ?? DMN_RUNNER_DEFAULT_PORT);
   const service = useMemo(() => new DmnRunnerService(port, i18n), [port]);
-  const version = useMemo(() => "$_{WEBPACK_REPLACE__dmnRunnerCompatibleVersion}", []);
+  const version = useMemo(() => process.env.WEBPACK_REPLACE__dmnRunnerCompatibleVersion ?? "0.0.0", []);
   const [formError, setFormError] = useState(false);
 
   const updateJsonSchemaBridge = useCallback(() => {
