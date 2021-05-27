@@ -18,10 +18,10 @@ import { useCallback, useState } from "react";
 import { EmbeddedEditorRef } from "./EmbeddedEditor";
 
 export function useEditorRef() {
-  const [editor, setEditor] = useState<EmbeddedEditorRef | undefined>(null);
+  const [editor, setEditor] = useState<EmbeddedEditorRef | undefined>(undefined);
 
   const editorRef = useCallback((node: EmbeddedEditorRef) => {
-    if (node !== null) {
+    if (node) {
       setEditor(node);
     }
   }, []);

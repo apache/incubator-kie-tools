@@ -51,7 +51,7 @@ export class BackendProxy {
       return CapabilityResponse.notAvailable(`Service ${serviceId} not available.`);
     }
 
-    return consumer((service as Capability) as T);
+    return consumer(service as Capability as T);
   }
 
   /**

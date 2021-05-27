@@ -45,11 +45,10 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
   const { setActiveOperation } = useOperation();
 
   const { validationRegistry } = useValidationRegistry();
-  const validations = useMemo(() => validationRegistry.get(Builder().forModel(modelIndex).forOutput().build()), [
-    modelIndex,
-    output,
-    miningSchema,
-  ]);
+  const validations = useMemo(
+    () => validationRegistry.get(Builder().forModel(modelIndex).forOutput().build()),
+    [modelIndex, output, miningSchema]
+  );
 
   const toggleModal = () => {
     setActiveOperation(Operation.NONE);

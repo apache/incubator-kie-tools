@@ -32,7 +32,7 @@ export const EmptyStateNoModels = (props: EmptyStateNoModelsProps) => (
   <EmptyState data-testid="empty-state-no-models" variant={EmptyStateVariant.small}>
     <EmptyStateIcon icon={BoxesIcon} />
     <Title headingLevel="h4" size="lg">
-      You don't have any PMML Models
+      {"You don't have any PMML Models"}
     </Title>
     <EmptyStateBody>
       PMML uses XML to represent predictive models. One or more predictive models can be contained in a PMML document.

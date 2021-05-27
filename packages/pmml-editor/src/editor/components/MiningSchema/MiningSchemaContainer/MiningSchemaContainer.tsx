@@ -87,10 +87,10 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
   }, [dataDictionary, miningSchema]);
 
   const { validationRegistry } = useValidationRegistry();
-  const validations = useMemo(() => validationRegistry.get(Builder().forModel(modelIndex).forMiningSchema().build()), [
-    dataDictionary,
-    miningSchema,
-  ]);
+  const validations = useMemo(
+    () => validationRegistry.get(Builder().forModel(modelIndex).forMiningSchema().build()),
+    [dataDictionary, miningSchema]
+  );
 
   return (
     <section className="mining-schema">

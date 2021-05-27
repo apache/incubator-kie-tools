@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Header } from "@kogito-tooling/pmml-editor-marshaller";
+import { Header, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions, AllActions, HeaderReducer } from "../../../editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "../../../editor/history";
 
 const service = new HistoryService([]);
 const header: Header = { description: "" };
-const pmml = { version: "1.0", DataDictionary: { DataField: [] }, Header: header };
+const pmml: PMML = { version: "1.0", DataDictionary: { DataField: [] }, Header: header };
 const reducer: Reducer<Header, AllActions> = HeaderReducer(service);
 
 describe("HeaderReducer::Valid actions", () => {

@@ -51,6 +51,6 @@ export async function generateSvg(
       return;
     }
 
-    workspaceApi.receive_openFile(svgAbsoluteFilePath);
+    workspaceApi.kogitoWorkspace_openFile(svgAbsoluteFilePath);
   });
 }

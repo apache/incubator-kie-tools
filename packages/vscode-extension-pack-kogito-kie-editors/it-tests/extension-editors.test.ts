@@ -16,23 +16,31 @@
 
 import { By, SideBarView, WebView } from "vscode-extension-tester";
 import * as path from "path";
-import { aComponentWithText } from "./helpers/CommonLocators";
+import { aComponentWithText, h5ComponentWithText, spanComponentWithText } from "./helpers/CommonLocators";
 import { EditorTabs } from "./helpers/EditorTabs";
-import { assertWebElementIsDisplayedEnabled } from "./helpers/CommonAsserts";
+import { assertWebElementIsDisplayedEnabled, assertWebElementWithAtribute } from "./helpers/CommonAsserts";
 import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
-import BpmnEditorTestHelper from "./helpers/BpmnEditorTestHelper";
+import BpmnEditorTestHelper, { PaletteCategories } from "./helpers/BpmnEditorTestHelper";
 import ScesimEditorTestHelper from "./helpers/ScesimEditorTestHelper";
 import DmnEditorTestHelper from "./helpers/DmnEditorTestHelper";
 import PmmlEditorTestHelper from "./helpers/PmmlEditorTestHelper";
+import { assert } from "chai";
+import {
+  customTaskNameTextArea,
+  customTaskDocumentationTextArea,
+  palletteItemAnchor,
+  assignmentsTextBoxInput,
+} from "./helpers/BpmnLocators";
 
 describe("Editors are loading properly", () => {
-  const RESOURCES: string = path.resolve("src", "ui-test", "resources");
+  const RESOURCES: string = path.resolve("it-tests", "resources");
   const DEMO_BPMN: string = "demo.bpmn";
   const DEMO_DMN: string = "demo.dmn";
   const DEMO_SCESIM: string = "demo.scesim";
   const DEMO_PMML: string = "demo.pmml";
 
   const REUSABLE_DMN: string = "reusable-model.dmn";
+  const WID_BPMN: string = "process-wid.bpmn";
 
   let testHelper: VSCodeTestHelper;
   let webview: WebView;
@@ -41,13 +49,19 @@ describe("Editors are loading properly", () => {
   before(async function () {
     this.timeout(60000);
     testHelper = new VSCodeTestHelper();
-    await testHelper.closeAllEditors();
     folderView = await testHelper.openFolder(RESOURCES);
+  });
+
+  beforeEach(async function () {
+    await testHelper.closeAllEditors();
+    await testHelper.closeAllNotifications();
   });
 
   afterEach(async function () {
     this.timeout(15000);
     await testHelper.closeAllEditors();
+    await testHelper.closeAllNotifications();
+    await webview.switchBack();
   });
 
   it("Opens demo.bpmn file in BPMN Editor and loads correct diagram", async function () {
@@ -56,18 +70,15 @@ describe("Editors are loading properly", () => {
     await webview.switchToFrame();
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
-    const envelopApp = await webview.findWebElement(By.id("envelope-app"));
-    await assertWebElementIsDisplayedEnabled(envelopApp);
-
     const palette = await bpmnEditorTester.getPalette();
     await assertWebElementIsDisplayedEnabled(palette);
 
     await bpmnEditorTester.openDiagramProperties();
 
     const explorer = await bpmnEditorTester.openDiagramExplorer();
-    await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(aComponentWithText("demo"))));
-    await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(aComponentWithText("Start"))));
-    await assertWebElementIsDisplayedEnabled(await explorer.findElement(By.xpath(aComponentWithText("End"))));
+    await assertWebElementIsDisplayedEnabled(await explorer.findElement(aComponentWithText("demo")));
+    await assertWebElementIsDisplayedEnabled(await explorer.findElement(aComponentWithText("Start")));
+    await assertWebElementIsDisplayedEnabled(await explorer.findElement(aComponentWithText("End")));
 
     await webview.switchBack();
   });
@@ -77,9 +88,6 @@ describe("Editors are loading properly", () => {
     webview = await testHelper.openFileFromSidebar(DEMO_DMN);
     await webview.switchToFrame();
     const dmnEditorTester = new DmnEditorTestHelper(webview);
-
-    const envelopApp = await webview.findWebElement(By.id("envelope-app"));
-    await assertWebElementIsDisplayedEnabled(envelopApp);
 
     await dmnEditorTester.openDiagramProperties();
     await dmnEditorTester.openDiagramExplorer();
@@ -93,9 +101,6 @@ describe("Editors are loading properly", () => {
     webview = await testHelper.openFileFromSidebar(DEMO_DMN);
     await webview.switchToFrame();
     const dmnEditorTester = new DmnEditorTestHelper(webview);
-
-    const envelopApp = await webview.findWebElement(By.id("envelope-app"));
-    await assertWebElementIsDisplayedEnabled(envelopApp);
 
     await dmnEditorTester.switchEditorTab(EditorTabs.IncludedModels);
     await dmnEditorTester.includeModel(REUSABLE_DMN, "reusable-model");
@@ -115,9 +120,6 @@ describe("Editors are loading properly", () => {
     await webview.switchToFrame();
     const scesimEditorTester = new ScesimEditorTestHelper(webview);
 
-    const envelopApp = await webview.findWebElement(By.id("envelope-app"));
-    await assertWebElementIsDisplayedEnabled(envelopApp);
-
     await scesimEditorTester.openScenarioCheatsheet();
     await scesimEditorTester.openSettings();
     await scesimEditorTester.openTestTools();
@@ -131,9 +133,6 @@ describe("Editors are loading properly", () => {
     await webview.switchToFrame();
     const pmmlEditorTester = new PmmlEditorTestHelper(webview);
 
-    const envelopApp = await webview.findWebElement(By.id("envelope-app"));
-    await assertWebElementIsDisplayedEnabled(envelopApp);
-
     const dataDictionaryModel = await pmmlEditorTester.openDataDictionary();
     dataDictionaryModel.close();
 
@@ -142,6 +141,54 @@ describe("Editors are loading properly", () => {
 
     const outputsModal = await pmmlEditorTester.openOutputs();
     outputsModal.close();
+
+    await webview.switchBack();
+  });
+
+  it("Opens process with work item definition properly", async function () {
+    this.timeout(20000);
+    webview = await testHelper.openFileFromSidebar(WID_BPMN, "src/main/java/org/kie/businessapp");
+    await webview.switchToFrame();
+    const bpmnEditorTester = new BpmnEditorTestHelper(webview);
+
+    const customTasksPaletteCategory = await bpmnEditorTester.openDiagramPalette(PaletteCategories.CUSTOM_TASKS);
+    assertWebElementIsDisplayedEnabled(await customTasksPaletteCategory.findElement(h5ComponentWithText("Milestone")));
+    assertWebElementIsDisplayedEnabled(
+      await customTasksPaletteCategory.findElement(h5ComponentWithText("CustomTasks"))
+    );
+    assertWebElementIsDisplayedEnabled(
+      await customTasksPaletteCategory.findElement(palletteItemAnchor("CreateCustomer"))
+    );
+    assertWebElementIsDisplayedEnabled(await customTasksPaletteCategory.findElement(palletteItemAnchor("Email")));
+
+    const explorer = await bpmnEditorTester.openDiagramExplorer();
+    const customTaskAnchor = await explorer.findElement(aComponentWithText("Create Customer Internal Service")); //store to click after checks.
+    await assertWebElementIsDisplayedEnabled(customTaskAnchor);
+    await assertWebElementIsDisplayedEnabled(
+      await explorer.findElement(aComponentWithText("ProcessWithWorkItemDefinition"))
+    );
+    await assertWebElementIsDisplayedEnabled(await explorer.findElement(aComponentWithText("Start")));
+    await assertWebElementIsDisplayedEnabled(await explorer.findElement(aComponentWithText("Email")));
+    await assertWebElementIsDisplayedEnabled(await explorer.findElement(aComponentWithText("End")));
+
+    await customTaskAnchor.click();
+    const propertiesPanel = await bpmnEditorTester.openDiagramProperties();
+    const nameInput = await propertiesPanel.findElement(customTaskNameTextArea());
+    assertWebElementIsDisplayedEnabled(nameInput);
+    assertWebElementWithAtribute(nameInput, "value", "Create Customer Internal Service");
+
+    const docInput = await propertiesPanel.findElement(customTaskDocumentationTextArea());
+    assertWebElementIsDisplayedEnabled(docInput);
+    assertWebElementWithAtribute(
+      docInput,
+      "value",
+      "Calls internal service that creates the customer in database server."
+    );
+
+    const assignmentsTextBox = await propertiesPanel.findElement(assignmentsTextBoxInput());
+    assert.isTrue(await assignmentsTextBox.isEnabled());
+    assert.equal(await assignmentsTextBox.getAttribute("value"), "7 data inputs, 1 data output");
+    assertWebElementWithAtribute(assignmentsTextBox, "value", "7 data inputs, 1 data output");
 
     await webview.switchBack();
   });

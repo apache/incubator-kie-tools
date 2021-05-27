@@ -69,11 +69,10 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
   };
 
   const { validationRegistry } = useValidationRegistry();
-  const validations = useMemo(() => validationRegistry.get(Builder().forModel(modelIndex).forMiningSchema().build()), [
-    modelIndex,
-    miningSchema,
-    dataDictionary,
-  ]);
+  const validations = useMemo(
+    () => validationRegistry.get(Builder().forModel(modelIndex).forMiningSchema().build()),
+    [modelIndex, miningSchema, dataDictionary]
+  );
 
   const header = (
     <Split hasGutter={true}>

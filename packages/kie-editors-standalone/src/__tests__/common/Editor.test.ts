@@ -48,7 +48,10 @@ describe("createEditor", () => {
       document.createElement("iframe")
     );
 
-    const spyOnContentChangedNotification = jest.spyOn(envelopeServer.envelopeApi.requests, "receive_contentChanged");
+    const spyOnContentChangedNotification = jest.spyOn(
+      envelopeServer.envelopeApi.requests,
+      "kogitoEditor_contentChanged"
+    );
 
     editor.setContent("my-path", "my-content");
     expect(spyOnContentChangedNotification).toHaveBeenCalledWith({

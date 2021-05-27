@@ -21,8 +21,8 @@ import { By } from "vscode-extension-tester";
  *
  * @param text string to match
  */
-export const aComponentWithText = (text: string): string => {
-  return `//a[text() = \'${text}\']`;
+export const aComponentWithText = (text: string): By => {
+  return By.xpath(`//a[text() = '${text}']`);
 };
 
 /**
@@ -30,8 +30,8 @@ export const aComponentWithText = (text: string): string => {
  *
  * @param text string to match
  */
-export const spanComponentWithText = (text: string): string => {
-  return `//span[text() = \'${text}\']`;
+export const spanComponentWithText = (text: string): By => {
+  return By.xpath(`//span[text() = '${text}']`);
 };
 
 /**
@@ -40,7 +40,16 @@ export const spanComponentWithText = (text: string): string => {
  * @param text string to match
  */
 export const h3ComponentWithText = (text: string): string => {
-  return `//h3[text() = \'${text}\']`;
+  return `//h3[text() = '${text}']`;
+};
+
+/**
+ * Creates a XPATH string that locates <h5> element with specific text.
+ *
+ * @param text string to match
+ */
+export const h5ComponentWithText = (text: string): By => {
+  return By.xpath(`//h5[text() = '${text}']`);
 };
 
 /**
@@ -55,5 +64,13 @@ export const expandedDocksBarE = (): By => {
  * @param title title of the tab to match
  */
 export const tabWithTitle = (title: string): By => {
-  return By.xpath(`//ul/li[@data-ouia-component-type='editor-nav-tab' and @data-ouia-component-id=\'${title}\']/a`);
+  return By.xpath(`//ul/li[@data-ouia-component-type='editor-nav-tab' and @data-ouia-component-id='${title}']/a`);
+};
+
+/**
+ * Creates a classname locator for kogito loading spinner.
+ * This is a common spinner used by envelope and will always be present.
+ */
+export const kogitoLoadingSpinner = (): By => {
+  return By.className("kogito-tooling--loading-screen-spinner");
 };

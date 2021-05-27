@@ -15,9 +15,8 @@
  */
 
 import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
-import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
-export interface EditorEnvelopeDictionary extends ReferenceDictionary<EditorEnvelopeDictionary> {
+export interface EditorEnvelopeDictionary extends ReferenceDictionary {
   keyBindingsHelpOverlay: {
     title: string;
     categories: {
@@ -35,4 +34,4 @@ export interface EditorEnvelopeDictionary extends ReferenceDictionary<EditorEnve
   };
 }
 
-export interface EditorEnvelopeI18n extends EditorEnvelopeDictionary, CommonI18n {}
+export interface EditorEnvelopeI18n extends EditorEnvelopeDictionary {}

@@ -16,11 +16,11 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { EditorPage } from "./pages/page";
+import { App } from "./App";
 
 ReactDOM.render(
   <React.StrictMode>
-    <EditorPage />
+    <App />
   </React.StrictMode>,
   document.getElementById("root")
 );

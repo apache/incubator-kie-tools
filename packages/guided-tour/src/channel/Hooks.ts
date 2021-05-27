@@ -25,7 +25,7 @@ export function useGuidedTourPositionProvider(
 ) {
   useEffect(() => {
     KogitoGuidedTour.getInstance().registerPositionProvider((selector: string) =>
-      envelopeApi.requests.receive_guidedTourElementPositionRequest(selector).then((position) => {
+      envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(selector).then((position) => {
         const parentRect = iframeRef.current?.getBoundingClientRect();
         KogitoGuidedTour.getInstance().onPositionReceived(position, parentRect);
       })

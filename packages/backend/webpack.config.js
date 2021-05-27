@@ -18,8 +18,8 @@ const nodeExternals = require("webpack-node-externals");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
-module.exports = [
-  merge(common, {
+module.exports = (env, argv) => [
+  merge(common(env, argv), {
     entry: {
       "api/index": "./src/api/index.ts",
       "channel-api/index": "./src/channel-api/index.ts",
@@ -31,7 +31,7 @@ module.exports = [
     },
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   }),
-  merge(common, {
+  merge(common(env, argv), {
     entry: {
       "node/index": "./src/node/index.ts",
     },
@@ -41,7 +41,7 @@ module.exports = [
     },
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   }),
-  merge(common, {
+  merge(common(env, argv), {
     entry: {
       "vscode/index": "./src/vscode/index.ts",
     },

@@ -34,20 +34,20 @@ const KOGITO_NOTIFICATION_TO_VS_CODE_DIAGNOSTIC_SEVERITY_CONVERTION_MAP: Notific
 export class ProblemsTabNotificationHandler implements NotificationsApi {
   private readonly diagnosticCollection = vscode.languages.createDiagnosticCollection(DIAGNOSTIC_COLLECTION_NAME);
 
-  public createNotification(notification: Notification): void {
+  public kogitoNotifications_createNotification(notification: Notification): void {
     const uri = vscode.Uri.file(notification.path);
     const diagnostics: vscode.Diagnostic[] = this.diagnosticCollection.get(uri)?.map((elem) => elem) || [];
     diagnostics.push(this.buildDiagnostic(notification));
     this.diagnosticCollection.set(uri, diagnostics);
   }
 
-  public setNotifications(path: string, notifications: Notification[]): void {
+  public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
     const uri = vscode.Uri.file(path);
     const diagnostics = notifications.map((notification) => this.buildDiagnostic(notification));
     this.diagnosticCollection.set(uri, diagnostics);
   }
 
-  public removeNotifications(path: string) {
+  public kogitoNotifications_removeNotifications(path: string) {
     this.diagnosticCollection.delete(vscode.Uri.file(path));
   }
 

@@ -30,7 +30,8 @@ export type DmnEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
 
 export class DmnEditorEnvelopeApiImpl
   extends KogitoEditorEnvelopeApiImpl<DmnEditor, DmnEditorEnvelopeApi, DmnEditorChannelApi>
-  implements DmnEditorEnvelopeApi {
+  implements DmnEditorEnvelopeApi
+{
   constructor(
     private readonly dmnArgs: DmnEnvelopeApiFactoryArgs,
     gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }

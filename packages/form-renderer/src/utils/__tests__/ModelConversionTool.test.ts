@@ -123,7 +123,7 @@ describe("Model Conversion  tests", () => {
   it("Empty schema conversion", () => {
     const model = getModel(currentDate);
     const formSchema = cloneDeep(schema);
-    delete formSchema.properties;
+    delete (formSchema as any).properties;
 
     const result = ModelConversionTool.convertDateToString(model, formSchema);
 

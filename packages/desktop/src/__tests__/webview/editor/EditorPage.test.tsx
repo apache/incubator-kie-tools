@@ -24,7 +24,7 @@ const onClose = jest.fn(() => null);
 const onFilenameChange = jest.fn((filePath: string) => null);
 
 function mockFunctions() {
-  const original = require.requireActual("@kogito-tooling/editor/dist/embedded");
+  const original = jest.requireActual("@kogito-tooling/editor/dist/embedded");
   return {
     ...original,
     useDirtyState: jest.fn(() => true).mockImplementationOnce(() => false),

@@ -16,57 +16,32 @@
 
 const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const common = require("../../../webpack.common.config");
+const { merge } = require("webpack-merge");
 
-module.exports = {
-  mode: "development",
-  devtool: "",
-  entry: {
-    app: path.resolve(__dirname, "src", "index.tsx"),
-  },
-  output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "[name].js",
-    libraryTarget: "umd",
-  },
-  plugins: [
-    new HtmlWebPackPlugin({
-      template: path.resolve(__dirname, "public/index.html"),
-      filename: "index.html",
-    }),
-  ],
-  resolve: {
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")],
-  },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: "ts-loader",
-      },
+module.exports = (env, argv) =>
+  merge(common(env), {
+    mode: "development",
+    entry: {
+      app: path.resolve(__dirname, "src", "index.tsx"),
+    },
+    plugins: [
+      new HtmlWebPackPlugin({
+        template: path.resolve(__dirname, "public/index.html"),
+        filename: "index.html",
+      }),
     ],
-  },
-  externals: {
-    "@kogito-tooling/kie-editors-standalone/dist/dmn": {
-      commonjs: "@kogito-tooling/kie-editors-standalone/dist/dmn",
-      commonjs2: "@kogito-tooling/kie-editors-standalone/dist/dmn",
-      amd: "@kogito-tooling/kie-editors-standalone/dist/dmn",
-      root: "DmnEditor",
+    externals: {
+      "@kogito-tooling/kie-editors-standalone/dist/dmn": "DmnEditor",
+      "@kogito-tooling/kie-editors-standalone/dist/bpmn": "BpmnEditor",
     },
-    "@kogito-tooling/kie-editors-standalone/dist/bpmn": {
-      commonjs: "@kogito-tooling/kie-editors-standalone/dist/bpmn",
-      commonjs2: "@kogito-tooling/kie-editors-standalone/dist/bpmn",
-      amd: "@kogito-tooling/kie-editors-standalone/dist/bpmn",
-      root: "BpmnEditor",
+    devServer: {
+      contentBase: [path.join(__dirname, "dist"), path.join(__dirname, "../dist/")],
+      compress: true,
+      inline: true,
+      historyApiFallback: true,
+      overlay: true,
+      open: false,
+      port: 9001,
     },
-  },
-  devServer: {
-    contentBase: [path.join(__dirname, "dist"), path.join(__dirname, "../dist/")],
-    compress: true,
-    inline: true,
-    historyApiFallback: true,
-    overlay: true,
-    open: false,
-    port: 9001,
-  },
-};
+  });

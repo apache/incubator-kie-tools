@@ -16,7 +16,7 @@
 
 import * as __path from "path";
 import { VsCodeNodeResourceContentService } from "../VsCodeNodeResourceContentService";
-import { ContentType } from "@kogito-tooling/channel-common-api";
+import { ContentType } from "@kogito-tooling/workspace/dist/api";
 
 const testWorkspace = __path.resolve(__dirname, "test-workspace") + __path.sep;
 

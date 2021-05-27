@@ -46,14 +46,8 @@ export const EditorHeader = (props: EditorHeaderProps) => {
   const { modelName, modelIndex } = props;
 
   if (isEditor(props)) {
-    const {
-      miningSchema,
-      output,
-      validateOutputFieldName,
-      deleteOutputField,
-      commitOutputField,
-      commitModelName,
-    } = props;
+    const { miningSchema, output, validateOutputFieldName, deleteOutputField, commitOutputField, commitModelName } =
+      props;
 
     return (
       <Split hasGutter={true} className={"editorHeader"}>

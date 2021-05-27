@@ -17,7 +17,6 @@
 import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
 import { names } from "./names";
 
-// tslint:disable-next-line:interface-over-type-literal
 export type CommonDictionary = {
   available: string;
   cancel: string;
@@ -56,7 +55,7 @@ export type CommonDictionary = {
   uninstall: string;
 };
 
-export interface CommonI18n extends ReferenceDictionary<CommonI18n> {
+export interface CommonI18n extends ReferenceDictionary {
   names: typeof names;
   terms: CommonDictionary;
 }

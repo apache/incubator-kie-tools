@@ -55,7 +55,7 @@ export class FileOperations {
           filters: [{ name: data.file.fileType.toUpperCase(), extensions: [data.file.fileType] }],
         })
         .then((result) => {
-          if (!result.canceled) {
+          if (result && !result.canceled) {
             this.writeFile(result.filePath!, data.file.fileContent);
           }
         });
@@ -72,7 +72,7 @@ export class FileOperations {
             filters: [{ name: data.fileType.toUpperCase(), extensions: [data.fileType] }],
           })
           .then((result) => {
-            if (!result.canceled) {
+            if (result && !result.canceled) {
               this.savePreview(result.filePath!, data.fileContent);
             }
           });

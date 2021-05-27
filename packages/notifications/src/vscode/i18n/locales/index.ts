@@ -14,6 +14,4 @@
  * limitations under the License.
  */
 
-{
-  "extends": "../../tslint.json"
-}
+export { en } from "./en";

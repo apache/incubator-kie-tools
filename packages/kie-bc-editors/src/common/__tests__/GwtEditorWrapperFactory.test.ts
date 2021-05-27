@@ -54,7 +54,6 @@ const xmlFormatter = { format: (c: string) => c };
 const gwtAppFormerApi = {
   onFinishedLoading: (callback: () => Promise<any>) => (window.appFormerGwtFinishedLoading = callback),
   getEditor: jest.fn(),
-  setClientSideOnly: jest.fn(),
 };
 
 function waitForNScriptsToLoad(remaining: number) {

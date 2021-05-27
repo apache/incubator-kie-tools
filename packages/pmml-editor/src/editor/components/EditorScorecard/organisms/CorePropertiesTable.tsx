@@ -134,10 +134,10 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     setActiveOperation(Operation.NONE);
   };
 
-  const isEditModeEnabled = useMemo(() => isEditing && activeOperation === Operation.UPDATE_CORE, [
-    isEditing,
-    activeOperation,
-  ]);
+  const isEditModeEnabled = useMemo(
+    () => isEditing && activeOperation === Operation.UPDATE_CORE,
+    [isEditing, activeOperation]
+  );
 
   const { validationRegistry } = useValidationRegistry();
   const baselineScoreValidation = validationRegistry.get(

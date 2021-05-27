@@ -16,7 +16,7 @@
 
 import { I18n, ReferenceDictionary, TranslatedDictionary } from "../../core";
 
-interface TestI18n extends ReferenceDictionary<TestI18n> {
+interface TestI18n extends ReferenceDictionary {
   test: string;
 }
 
@@ -24,7 +24,7 @@ const english: TestI18n = {
   test: "this is a test",
 };
 
-const portuguese: TranslatedDictionary<ReferenceDictionary<TestI18n>> = {
+const portuguese: TranslatedDictionary<ReferenceDictionary> = {
   test: "isso é um teste",
 };
 

@@ -15,10 +15,8 @@
  */
 
 import { EditorEnvelopeI18n } from "../EditorEnvelopeI18n";
-import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
 
 export const en: EditorEnvelopeI18n = {
-  ...en_common,
   keyBindingsHelpOverlay: {
     title: "Keyboard shortcuts",
     categories: {

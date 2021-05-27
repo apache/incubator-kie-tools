@@ -27,7 +27,7 @@ export class EnvelopeServer<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>
 > {
-  public static INIT_POLLING_TIMEOUT_IN_MS = 10000;
+  public static INIT_POLLING_TIMEOUT_IN_MS = 60000;
   public static INIT_POLLING_INTERVAL_IN_MS = 100;
 
   public initPolling?: ReturnType<typeof setInterval>;
@@ -52,6 +52,10 @@ export class EnvelopeServer<
   }
 
   public startInitPolling() {
+    // We can't wait for the setInterval to run, because messages can be sent during the current event-loop pass,
+    // making the Envelope reply a message to an old EnvelopeServer instance.
+    this.pollInit(this).then(() => this.stopInitPolling());
+
     this.initPolling = setInterval(() => {
       this.pollInit(this)
         .then(() => this.stopInitPolling())

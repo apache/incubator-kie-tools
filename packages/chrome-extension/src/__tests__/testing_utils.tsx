@@ -36,7 +36,7 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
     mapping: new Map([["txt", txtEnvelopeMapping]]),
   };
 
-  const usedCtx = {
+  const usedCtx: GlobalContextType = {
     id: "test-extension123",
     envelopeLocator: editorEnvelopeLocator,
     githubAuthTokenCookieName: "test-github-pat-name",
@@ -52,6 +52,7 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
     },
     ...ctx,
   };
+
   return {
     ctx: usedCtx,
     wrapper: (

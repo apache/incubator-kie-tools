@@ -31,7 +31,7 @@ const realRemoveEventListener = document.removeEventListener;
 const mockAddEventListener = jest.fn((event, fn) => (addedListeners[event] = fn));
 const mockRemoveEventListener = jest.fn((event, fn) => (removedListeners[event] = fn));
 
-const listener = (_: string) => undefined;
+const listener = (_: string): any => undefined;
 
 function testGuidedTourListener(
   methodName: string,
@@ -62,7 +62,7 @@ function testGuidedTourListener(
 }
 
 jest.mock("react", () => {
-  const ActualReact = require.requireActual("react");
+  const ActualReact = jest.requireActual("react");
   return {
     ...ActualReact,
     useLayoutEffect: (fn: any) => fn()(),

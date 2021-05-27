@@ -71,7 +71,7 @@ async function run(
     );
 
     if (response.status === CapabilityResponseStatus.NOT_AVAILABLE) {
-      notificationsApi.createNotification({
+      notificationsApi.kogitoNotifications_createNotification({
         message: response.message!,
         severity: "WARNING",
         type: "ALERT",
@@ -86,14 +86,14 @@ async function run(
 
     const testResult: TestResult = response.body;
 
-    notificationsApi.createNotification({
+    notificationsApi.kogitoNotifications_createNotification({
       message: i18n.testScenarioSummary(testResult.tests, testResult.errors, testResult.skipped, testResult.failures),
       severity: "INFO",
       type: "ALERT",
       path: testResult.filePath,
     });
   } catch (e) {
-    notificationsApi.createNotification({
+    notificationsApi.kogitoNotifications_createNotification({
       message: e,
       severity: "ERROR",
       type: "ALERT",

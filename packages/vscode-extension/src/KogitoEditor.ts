@@ -52,7 +52,7 @@ export class KogitoEditor implements EditorApi {
       },
       envelopeLocator.targetOrigin,
       (self) =>
-        self.envelopeApi.requests.receive_initRequest(
+        self.envelopeApi.requests.kogitoEditor_initRequest(
           { origin: self.origin, envelopeServerId: self.id },
           {
             fileExtension: document.fileExtension,
@@ -66,31 +66,31 @@ export class KogitoEditor implements EditorApi {
   ) {}
 
   public getElementPosition(selector: string) {
-    return this.envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(selector);
+    return this.envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(selector);
   }
 
   public getContent() {
-    return this.envelopeServer.envelopeApi.requests.receive_contentRequest().then((c) => c.content);
+    return this.envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content);
   }
 
   public setContent(path: string, content: string) {
-    return this.envelopeServer.envelopeApi.requests.receive_contentChanged({ path: path, content: content });
+    return this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ path: path, content: content });
   }
 
   public async undo() {
-    this.envelopeServer.envelopeApi.notifications.receive_editorUndo();
+    this.envelopeServer.envelopeApi.notifications.kogitoEditor_editorUndo();
   }
 
   public async redo() {
-    this.envelopeServer.envelopeApi.notifications.receive_editorRedo();
+    this.envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo();
   }
 
   public getPreview() {
-    return this.envelopeServer.envelopeApi.requests.receive_previewRequest();
+    return this.envelopeServer.envelopeApi.requests.kogitoEditor_previewRequest();
   }
 
   public validate() {
-    return this.envelopeServer.envelopeApi.requests.validate();
+    return this.envelopeServer.envelopeApi.requests.kogitoEditor_validate();
   }
 
   public startInitPolling() {
@@ -139,6 +139,10 @@ export class KogitoEditor implements EditorApi {
     );
   }
 
+  public close() {
+    this.panel.dispose();
+  }
+
   public hasUri(uri: vscode.Uri) {
     return this.document.uri === uri;
   }
@@ -167,7 +171,7 @@ export class KogitoEditor implements EditorApi {
                     background-color: #fff !important
                 }
             </style>
-        
+
             <title></title>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">

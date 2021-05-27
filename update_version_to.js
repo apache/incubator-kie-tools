@@ -17,7 +17,6 @@
 const fs = require("fs");
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
-const prettier = require("prettier");
 
 const CHROME_EXTENSION_MANIFEST_DEV_JSON = "./packages/chrome-extension-pack-kogito-kie-editors/manifest.dev.json";
 const CHROME_EXTENSION_MANIFEST_PROD_JSON = "./packages/chrome-extension-pack-kogito-kie-editors/manifest.prod.json";
@@ -26,7 +25,7 @@ const LERNA_JSON = "./lerna.json";
 //
 
 async function updatePackages(lernaVersionArg) {
-  await exec(`npx lerna version ${lernaVersionArg} --no-push --no-git-tag-version --exact --yes`);
+  await exec(`yarn lerna version ${lernaVersionArg} --no-push --no-git-tag-version --exact --yes`);
   return require(LERNA_JSON).version;
 }
 
@@ -34,8 +33,7 @@ async function updateChromeExtensionManifest(version, manifestPath) {
   const manifest = require(manifestPath);
   manifest.version = version;
 
-  const formattedManifest = prettier.format(JSON.stringify(manifest), { parser: "json" });
-  fs.writeFileSync(manifestPath, formattedManifest);
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest));
   return version;
 }
 
@@ -55,6 +53,10 @@ Promise.resolve()
   .then(() => updatePackages(lernaVersionArg))
   .then((version) => updateChromeExtensionManifest(version, CHROME_EXTENSION_MANIFEST_DEV_JSON))
   .then((version) => updateChromeExtensionManifest(version, CHROME_EXTENSION_MANIFEST_PROD_JSON))
+  .then(async (version) => {
+    await exec(`npm run format`);
+    return version;
+  })
   .then((version) => {
     console.error("");
     console.info(`Updated to '${version}'.`);

@@ -59,7 +59,7 @@ export const StepDialog = (
   const prevStep = useCallback(() => setCurrentStep(currentStep - 1), [currentStep]);
   return () => (
     <>
-      <ModalBoxCloseButton data-kgt-close="true" onClose={onCloseAction} />
+      <ModalBoxCloseButton onClose={onCloseAction} />
       {renderContent(content, onCloseAction, nextStep, prevStep)}
       <NavigationControls />
     </>
@@ -75,7 +75,7 @@ export const NegativeReinforcementDialog = (step: Step | undefined, onCloseActio
   if (!isHighlightLayerEnabled) {
     return () => (
       <>
-        <ModalBoxCloseButton data-kgt-close="true" onClose={onCloseAction} />
+        <ModalBoxCloseButton onClose={onCloseAction} />
         <EmptyState variant={EmptyStateVariant.small}>
           <EmptyStateIcon icon={BookIcon} />
           <Title headingLevel="h4" size="lg">
@@ -95,7 +95,7 @@ export const NegativeReinforcementDialog = (step: Step | undefined, onCloseActio
   } else {
     return () => (
       <>
-        <ModalBoxCloseButton data-kgt-close="true" onClose={onCloseAction} />
+        <ModalBoxCloseButton onClose={onCloseAction} />
         <EmptyState variant={EmptyStateVariant.small}>
           <EmptyStateIcon icon={BookIcon} />
           <Title headingLevel="h4" size="lg">
@@ -109,7 +109,7 @@ export const NegativeReinforcementDialog = (step: Step | undefined, onCloseActio
             </Text>
           </EmptyStateBody>
           <Button data-kgt-continue="true" onClick={showSuggestion}>
-            {i18n.terms.continue}
+            {i18n.continue}
           </Button>
           <EmptyStateSecondaryActions>
             <Button onClick={onCloseAction} variant="link">

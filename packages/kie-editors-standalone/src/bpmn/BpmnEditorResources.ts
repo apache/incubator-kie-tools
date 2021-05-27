@@ -25,22 +25,20 @@ export class BpmnEditorResources extends BaseEditorResources {
 
     const bpmnEditorResources: EditorResources = {
       envelopeJsResource: this.createResource({ path: `dist/envelope/bpmn-envelope.js` }),
-      baseJsResources: bpmnLanguageData?.resources
+      baseJsResources: bpmnLanguageData.resources
         .filter((r) => r.type === "js")
-        .pop()
-        ?.paths.map((p) => this.createResource({ path: p }, ["\\", "`", "$"]))!,
-      referencedJsResources: this.getReferencedJSPaths(
-        args.resourcesPathPrefix,
-        bpmnLanguageData.gwtModuleName
-      ).map((rp) => this.createResource(rp, ["\\", "`", "$"])),
-      baseCssResources: bpmnLanguageData?.resources
+        .flatMap((r) => r.paths)
+        .map((p) => this.createResource({ path: p }, ["\\", "`", "$"])),
+      referencedJsResources: this.getReferencedJSPaths(args.resourcesPathPrefix, bpmnLanguageData.gwtModuleName).map(
+        (rp) => this.createResource(rp, ["\\", "`", "$"])
+      ),
+      baseCssResources: bpmnLanguageData.resources
         .filter((r) => r.type === "css")
-        .pop()
-        ?.paths.map((p) => this.createResource({ path: p }))!,
-      referencedCssResources: this.getReferencedCSSPaths(
-        args.resourcesPathPrefix,
-        bpmnLanguageData.gwtModuleName
-      ).map((rp) => this.createResource(rp)),
+        .flatMap((r) => r.paths)
+        .map((p) => this.createResource({ path: p })),
+      referencedCssResources: this.getReferencedCSSPaths(args.resourcesPathPrefix, bpmnLanguageData.gwtModuleName).map(
+        (rp) => this.createResource(rp)
+      ),
       fontResources: this.getFontResources(args.resourcesPathPrefix, bpmnLanguageData.gwtModuleName),
     };
 

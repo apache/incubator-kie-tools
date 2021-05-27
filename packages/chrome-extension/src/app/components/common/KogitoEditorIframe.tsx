@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/channel-common-api";
+import { ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/workspace/dist/api";
 import { EmbeddedEditor, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { ChannelType } from "@kogito-tooling/editor/dist/api";
 import * as React from "react";
@@ -36,7 +36,7 @@ interface Props {
   onSetContentError: () => void;
 }
 
-const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEditorRef, Props> = (
+const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEditorRef | undefined, Props> = (
   props,
   forwardedRef
 ) => {
@@ -101,7 +101,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
     forwardedRef,
     () => {
       if (!editor) {
-        return null;
+        return undefined;
       }
 
       return {
@@ -118,10 +118,10 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           ref={editorRef}
           file={file}
           channelType={ChannelType.GITHUB}
-          receive_ready={onEditorReady}
-          receive_resourceContentRequest={onResourceContentRequest}
-          receive_resourceListRequest={onResourceContentList}
-          receive_setContentError={props.onSetContentError}
+          kogitoEditor_ready={onEditorReady}
+          kogitoWorkspace_resourceContentRequest={onResourceContentRequest}
+          kogitoWorkspace_resourceListRequest={onResourceContentList}
+          kogitoEditor_setContentError={props.onSetContentError}
           editorEnvelopeLocator={envelopeLocator}
           locale={locale}
         />

@@ -69,12 +69,12 @@ export function DownloadHubModal(props: {}) {
   const downloadHub = useMemo(() => {
     switch (operationalSystem) {
       case OperatingSystem.MACOS:
-        return "$_{WEBPACK_REPLACE__hubMacOsUrl}";
+        return process.env.WEBPACK_REPLACE__hubMacOsUrl;
       case OperatingSystem.WINDOWS:
-        return "$_{WEBPACK_REPLACE__hubWindowsUrl}";
+        return process.env.WEBPACK_REPLACE__hubWindowsUrl;
       case OperatingSystem.LINUX:
       default:
-        return "$_{WEBPACK_REPLACE__hubLinuxUrl}";
+        return process.env.WEBPACK_REPLACE__hubLinuxUrl;
     }
   }, [operationalSystem]);
 

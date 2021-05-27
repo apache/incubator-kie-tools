@@ -56,31 +56,21 @@ interface Values {
 const OutputFieldRow = (props: OutputFieldRowProps) => {
   const { modelIndex, outputFieldIndex, outputField, onEditOutputField, onDeleteOutputField } = props;
 
-  const {
-    name,
-    dataType,
-    optype,
-    targetField,
-    feature,
-    value,
-    rank,
-    rankOrder,
-    segmentId,
-    isFinalResult,
-  } = useMemo<Values>(() => {
-    return {
-      name: outputField?.name,
-      dataType: outputField?.dataType,
-      optype: outputField?.optype,
-      targetField: outputField?.targetField,
-      feature: outputField?.feature,
-      value: outputField?.value,
-      rank: outputField?.rank,
-      rankOrder: outputField?.rankOrder,
-      segmentId: outputField?.segmentId,
-      isFinalResult: outputField?.isFinalResult,
-    };
-  }, [outputField]);
+  const { name, dataType, optype, targetField, feature, value, rank, rankOrder, segmentId, isFinalResult } =
+    useMemo<Values>(() => {
+      return {
+        name: outputField?.name,
+        dataType: outputField?.dataType,
+        optype: outputField?.optype,
+        targetField: outputField?.targetField,
+        feature: outputField?.feature,
+        value: outputField?.value,
+        rank: outputField?.rank,
+        rankOrder: outputField?.rankOrder,
+        segmentId: outputField?.segmentId,
+        isFinalResult: outputField?.isFinalResult,
+      };
+    }, [outputField]);
 
   const { validationRegistry } = useValidationRegistry();
   const validations = useMemo(

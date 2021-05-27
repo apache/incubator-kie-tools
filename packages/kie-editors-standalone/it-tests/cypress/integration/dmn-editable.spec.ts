@@ -17,7 +17,7 @@
 describe("Dmn Editable.", () => {
   before("Visit page", () => {
     cy.visit("localhost:9001/dmn-editable");
-    cy.loadEditor("dmn-editable");
+    cy.loadEditors(["dmn-editable"]);
   });
 
   it("Test Load File And View", () => {
@@ -27,15 +27,15 @@ describe("Dmn Editable.", () => {
       .ouiaId("collapsed-docks-bar", "collapsed-docks-bar-W", { timeout: 10000 })
       .should("be.visible");
 
-    cy.uploadFile("call centre drd.dmn");
-    cy.viewFile("call centre drd.dmn");
+    cy.uploadFile("call centre drd.dmn", "dmn-editable");
+    cy.viewFile("call centre drd.dmn", "dmn-editable");
 
     cy.editor("dmn-editable")
       .ouiaId("collapsed-docks-bar", "collapsed-docks-bar-W")
       .find("button")
       .first()
       .should("be.visible")
-      .click({ force: true }); // open DecisionNavigator
+      .click(); // open DecisionNavigator
 
     cy.editor("dmn-editable")
       .ouiaId("expanded-docks-bar", "expanded-docks-bar-W")

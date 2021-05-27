@@ -29,7 +29,7 @@ interface Props {
   onSetContentError: () => void;
 }
 
-const RefForwardingIsolatedEditor: React.RefForwardingComponent<IsolatedEditorRef, Props> = (props, forwardedRef) => {
+const RefForwardingIsolatedEditor: React.ForwardRefRenderFunction<IsolatedEditorRef, Props> = (props, forwardedRef) => {
   const shouldRenderIframe = (props.keepRenderedEditorInTextMode && props.textMode) || !props.textMode;
   const githubApi = useGitHubApi();
 

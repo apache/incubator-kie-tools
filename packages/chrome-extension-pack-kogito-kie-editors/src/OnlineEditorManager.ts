@@ -33,9 +33,9 @@ export class OnlineEditorManager implements ExternalEditorManager {
   }
 
   public getLink(filePath: string) {
-    return `$_{WEBPACK_REPLACE__onlineEditor_url}/?file=https://raw.githubusercontent.com/${filePath}#/editor/${extractFileExtension(
-      filePath
-    )}`;
+    return `${
+      process.env.WEBPACK_REPLACE__onlineEditor_url
+    }/?file=https://raw.githubusercontent.com/${filePath}#/editor/${extractFileExtension(filePath)}`;
   }
 
   public listenToComeBack(setFileName: (fileName: string) => void, setFileContent: (fileContent: string) => void) {

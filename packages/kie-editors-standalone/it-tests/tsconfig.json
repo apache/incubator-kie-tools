@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
     "baseUrl": "./it-tests",
-    "module": "ES6",
+    "module": "commonjs",
     "outDir": "./dist",
-    "jsx": "react",
+    "jsx": "react-jsxdev",
     "moduleResolution": "node",
-    "sourceMap": false,
+    "sourceMap": true,
+    "declaration": false,
+    "declarationMap": false,
     "noImplicitAny": false,
     "noImplicitThis": false,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "experimentalDecorators": false,
     "downlevelIteration": false
   },

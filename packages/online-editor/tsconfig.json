@@ -4,7 +4,8 @@
     "module": "esnext",
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "declaration": false
+    "declaration": false,
+    "declarationMap": false
   },
   "include": ["src"]
 }

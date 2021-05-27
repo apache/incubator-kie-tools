@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/channel-common-api",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -13,12 +13,11 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "scripts": {
-    "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
-    "test": "jest --silent --verbose --passWithNoTests",
+    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",
+    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose --passWithNoTests'",
     "test:clearCache": "jest --clearCache",
-    "build:fast": "rm -rf dist && webpack",
-    "build": "yarn run lint && yarn test && yarn run build:fast",
-    "build:prod": "yarn run build --mode production --devtool none"
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "yarn lint && yarn test && rimraf dist && webpack"
   },
   "babel": {
     "presets": [

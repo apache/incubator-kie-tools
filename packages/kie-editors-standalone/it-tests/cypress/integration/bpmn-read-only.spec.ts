@@ -17,7 +17,7 @@
 describe("Bpmn Read Only.", () => {
   before("Visit page", () => {
     cy.visit("localhost:9001/bpmn-read-only");
-    cy.loadEditor("bpmn-read-only");
+    cy.loadEditors(["bpmn-read-only"]);
   });
 
   describe("Loads empty editor in read only mode", () => {
@@ -34,8 +34,8 @@ describe("Bpmn Read Only.", () => {
 
   describe("Loads non-empty editor in read only mode", () => {
     it("Loads non-empty editor without palette", () => {
-      cy.uploadFile("process-string.bpmn");
-      cy.viewFile("process-string.bpmn");
+      cy.uploadFile("process-string.bpmn", "bpmn-read-only");
+      cy.viewFile("process-string.bpmn", "bpmn-read-only");
 
       cy.editor("bpmn-read-only").find("[data-field='palettePanel']").should("not.be.visible");
     });
@@ -46,7 +46,7 @@ describe("Bpmn Read Only.", () => {
         .should("be.visible");
     });
 
-    it("Editor properties bar can be openned", () => {
+    it("Editor properties bar can be opened", () => {
       cy.editor("bpmn-read-only")
         .ouiaId("docks-item", "docks-item-DiagramEditorPropertiesScreen")
         .find("button")
@@ -150,7 +150,14 @@ describe("Bpmn Read Only.", () => {
       });
 
       it("Process variables (Process Data section) section is not disabled", () => {
-        cy.wrap(propertyItems).find("a").contains("Process Data").should("not.be.disabled").click().scrollIntoView();
+        // Wait for animation to stop before scrolling;
+        cy.wrap(propertyItems)
+          .find("a")
+          .contains("Process Data")
+          .should("not.be.disabled")
+          .click()
+          .wait(1000)
+          .scrollIntoView();
       });
 
       it("Process variables add button is read only", () => {
@@ -197,7 +204,14 @@ describe("Bpmn Read Only.", () => {
       });
 
       it("Process advanced (Advanced section) section is not disabled", () => {
-        cy.wrap(propertyItems).find("a").contains("Advanced").should("not.be.disabled").click().scrollIntoView();
+        // Wait for animation to stop before scrolling;
+        cy.wrap(propertyItems)
+          .find("a")
+          .contains("Advanced")
+          .should("not.be.disabled")
+          .click()
+          .wait(1000)
+          .scrollIntoView();
       });
 
       describe("Process metadata attributes rows are displayed as read only", () => {
@@ -243,6 +257,7 @@ describe("Bpmn Read Only.", () => {
             .contains("Global Variables")
             .siblings()
             .first()
+            .wait(1000) // Wait for animation to stop before scrolling;
             .scrollIntoView()
             .should("not.be.disabled")
             .should("be.visible")
