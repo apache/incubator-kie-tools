@@ -159,50 +159,27 @@ export function NotificationsPanel(props: Props) {
             flipBehavior={["left"]}
             distance={20}
           >
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+            <div className={"kogito--editor__notifications-panel-with-notifications-tooltip "}>
               <span id={"dmn-runner-errors"} onAnimationEnd={onAnimationEnd}>
                 {totalNotifications}
               </span>
-              <ExclamationCircleIcon style={{ marginTop: "1px" }} />
+              <ExclamationCircleIcon
+                className={"kogito--editor__notifications-panel-with-notifications-tooltip-exclamation-icon"}
+              />
             </div>
           </Tooltip>
         )}
       </div>
       <div
-        style={{
-          display: notificationsPanel.isOpen ? "flex" : "none",
-          flexDirection: "column",
-          borderTop: "solid 1px #ddd",
-        }}
+        className={
+          notificationsPanel.isOpen
+            ? "kogito--editor__notifications-panel-open"
+            : "kogito--editor__notifications-panel-close"
+        }
       >
-        <div
-          onMouseDown={onMouseDown}
-          style={{ height: "10px", borderBottom: "solid 1px #ddd", cursor: "row-resize" }}
-        />
-        <div
-          ref={notificationsPanelDivRef}
-          style={{
-            height: "350px",
-            width: "100%",
-            position: "relative",
-            overflow: "auto",
-          }}
-        >
-          <div
-            style={{
-              right: 0,
-              top: 0,
-              position: "absolute",
-              display: "flex",
-              width: "50px",
-              height: "40px",
-              justifyContent: "space-around",
-              alignItems: "center",
-              padding: "7px",
-              zIndex: 999,
-              userSelect: "none",
-            }}
-          >
+        <div onMouseDown={onMouseDown} className={"kogito--editor__notifications-panel-resizable-div"} />
+        <div ref={notificationsPanelDivRef} className={"kogito--editor__notifications-panel-div"}>
+          <div className={"kogito--editor__notifications-panel-icon-position"}>
             <div onClick={() => onRetractAll()}>
               <Tooltip content={i18n.notificationsPanel.tooltip.retractAll}>
                 <AngleUpIcon />

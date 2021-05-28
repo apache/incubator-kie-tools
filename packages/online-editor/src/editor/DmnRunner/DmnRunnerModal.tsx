@@ -626,30 +626,14 @@ export function DmnRunnerModal() {
       }
     >
       {modalPage === ModalPage.INITIAL && (
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-            marginLeft: "20px",
-          }}
-        >
-          <div style={{ margin: "20px" }}>
+        <div className={"kogito--editor__dmn-runner-modal-initial"}>
+          <div className={"kogito--editor__dmn-runner-modal-initial-title"}>
             <TextContent>
               <Text component={TextVariants.h1}>{i18n.names.dmnRunner}</Text>
             </TextContent>
           </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-            }}
-          >
-            <div style={{ margin: "10px" }}>
+          <div className={"kogito--editor__dmn-runner-modal-initial-content"}>
+            <div className={"kogito--editor__dmn-runner-modal-initial-margin"}>
               <TextContent>
                 <Text component={TextVariants.p}>{i18n.dmnRunner.modal.initial.runDmnModels}</Text>
               </TextContent>
@@ -675,7 +659,7 @@ export function DmnRunnerModal() {
               </TextContent>
             </div>
             <br />
-            <div style={{ margin: "10px" }}>
+            <div className={"kogito--editor__dmn-runner-modal-initial-margin"}>
               <Button onClick={() => setModalPage(ModalPage.WIZARD)}>{i18n.terms.setup}</Button>
             </div>
           </div>
@@ -697,38 +681,28 @@ export function DmnRunnerModal() {
         </div>
       )}
       {modalPage === ModalPage.USE && (
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-          }}
-        >
-          <div style={{ margin: "20px" }}>
+        <div className={"kogito--editor__dmn-runner-modal-use"}>
+          <div className={"kogito--editor__dmn-runner-modal-use-title"}>
             <TextContent>
               <Text component={TextVariants.h1}>{i18n.dmnRunner.modal.use.title}</Text>
             </TextContent>
           </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-            }}
-          >
-            <TextContent style={{ margin: "10px" }}>
-              <Text component={TextVariants.h3} style={{ textAlign: "center" }}>
+          <div className={"kogito--editor__dmn-runner-modal-use-main-content"}>
+            <TextContent className={"kogito--editor__dmn-runner-modal-use-margin"}>
+              <Text component={TextVariants.h3} className={"kogito--editor__dmn-runner-modal-use-text-align"}>
                 {i18n.dmnRunner.modal.use.connected}
               </Text>
-              <Text component={TextVariants.p} style={{ textAlign: "center" }}>
+              <Text component={TextVariants.p} className={"kogito--editor__dmn-runner-modal-use-text-align"}>
                 {i18n.dmnRunner.modal.use.fillTheForm}
               </Text>
             </TextContent>
             <br />
-            <Button variant="primary" type="submit" onClick={onClose} style={{ margin: "10px" }}>
+            <Button
+              variant="primary"
+              type="submit"
+              onClick={onClose}
+              className={"kogito--editor__dmn-runner-modal-use-margin"}
+            >
               {i18n.dmnRunner.modal.use.backToEditor}
             </Button>
           </div>

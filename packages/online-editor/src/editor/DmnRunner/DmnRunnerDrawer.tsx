@@ -482,9 +482,9 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
         case EvaluationStatus.SUCCEEDED:
           return (
             <>
-              <div style={{ display: "flex", alignItems: "center" }}>
+              <div className={"kogito--editor__dmn_runner-drawer-evaluation"}>
                 <CheckCircleIcon />
-                <a onClick={openExecutionTab} style={{ paddingLeft: "5px" }}>
+                <a onClick={openExecutionTab} className={"kogito--editor__dmn_runner-drawer-evaluation-link"}>
                   {i18n.dmnRunner.drawer.evaluation.success}
                 </a>
               </div>
@@ -493,9 +493,9 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
         case EvaluationStatus.SKIPPED:
           return (
             <>
-              <div style={{ display: "flex", alignItems: "center" }}>
+              <div className={"kogito--editor__dmn_runner-drawer-evaluation"}>
                 <InfoCircleIcon />
-                <a onClick={openExecutionTab} style={{ paddingLeft: "5px" }}>
+                <a onClick={openExecutionTab} className={"kogito--editor__dmn_runner-drawer-evaluation-link"}>
                   {i18n.dmnRunner.drawer.evaluation.skipped}
                 </a>
               </div>
@@ -504,9 +504,9 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
         case EvaluationStatus.FAILED:
           return (
             <>
-              <div style={{ display: "flex", alignItems: "center" }}>
+              <div className={"kogito--editor__dmn_runner-drawer-evaluation"}>
                 <ExclamationCircleIcon />
-                <a onClick={openExecutionTab} style={{ paddingLeft: "5px" }}>
+                <a onClick={openExecutionTab} className={"kogito--editor__dmn_runner-drawer-evaluation-link"}>
                   {i18n.dmnRunner.drawer.evaluation.failed}
                 </a>
               </div>
@@ -565,7 +565,7 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
   const resultsToRender = useMemo(
     () =>
       props.results?.map((dmnRunnerResult, index) => (
-        <div key={`${index}-dmn-runner-result`} style={{ padding: "10px" }}>
+        <div key={`${index}-dmn-runner-result`} className={"kogito--editor__dmn_runner-drawer-results"}>
           <Card
             id={`${index}-dmn-runner-result`}
             isFlat={true}

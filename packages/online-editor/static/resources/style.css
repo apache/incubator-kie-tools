@@ -366,6 +366,70 @@
   animation: flickerAnimation 2s infinite cubic-bezier(0.7, 0, 0.3, 1);
 }
 
+.kogito--editor__dmn_runner-drawer-evaluation {
+  display: flex;
+  align-items: center;
+}
+
+.kogito--editor__dmn_runner-drawer-evaluation-link {
+  padding-left: 5px;
+}
+
+.kogito--editor__dmn_runner-drawer-results {
+  padding: 10px;
+}
+
+.kogito--editor__dmn-runner-modal-initial {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-left: 20px;
+}
+
+.kogito--editor__dmn-runner-modal-initial-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.kogito--editor__dmn-runner-modal-initial-title {
+  margin: 20px;
+}
+
+.kogito--editor__dmn-runner-modal-initial-margin {
+  margin: 10px;
+}
+
+.kogito--editor__dmn-runner-modal-use {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.kogito--editor__dmn-runner-modal-use-title {
+  margin: 20px;
+}
+
+.kogito--editor__dmn-runner-modal-use-main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.kogito--editor__dmn-runner-modal-use-text-align {
+  text-align: center;
+}
+
+.kogito--editor__dmn-runner-modal-use-margin {
+  margin: 10px;
+}
+
 .kogito--editor__notifications-panel-button {
   display: flex;
   flex-direction: column;
@@ -390,6 +454,54 @@
 .kogito--editor__notifications-panel-error-count-updated {
   animation-name: highlight;
   animation-duration: 1s;
+}
+
+.kogito--editor__notifications-panel-with-notifications-tooltip {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.kogito--editor__notifications-panel-with-notifications-tooltip-exclamation-icon {
+  margin-top: 1px;
+}
+
+.kogito--editor__notifications-panel-open {
+  display: flex;
+  flex-direction: column;
+  border-top: solid 1px #ddd;
+}
+
+.kogito--editor__notifications-panel-close {
+  display: none;
+}
+
+.kogito--editor__notifications-panel-resizable-div {
+  height: 10px;
+  border-bottom: solid 1px #ddd;
+  cursor: row-resize;
+}
+
+.kogito--editor__notifications-panel-div {
+  height: 350px;
+  width: 100%;
+  position: relative;
+  overflow: auto;
+}
+
+.kogito--editor__notifications-panel-icon-position {
+  right: 0;
+  top: 0;
+  position: absolute;
+  display: flex;
+  width: 50px;
+  height: 40px;
+  justify-content: space-around;
+  align-items: center;
+  padding: 7px;
+  z-index: 999;
+  user-select: none;
 }
 
 @keyframes highlight {
