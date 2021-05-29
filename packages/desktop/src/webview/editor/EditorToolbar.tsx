@@ -17,16 +17,16 @@
 import * as React from "react";
 import { useContext, useMemo } from "react";
 import { GlobalContext } from "../common/GlobalContext";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import {
   PageHeader,
-  Brand,
   PageHeaderTools,
   PageHeaderToolsGroup,
   PageHeaderToolsItem,
-  Button,
-  Title,
-} from "@patternfly/react-core";
-import { CloseIcon } from "@patternfly/react-icons";
+} from "@patternfly/react-core/dist/js/components/Page";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
+import { CloseIcon } from "@patternfly/react-icons/dist/js/icons/close-icon";
 import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/components/Tooltip/Tooltip";
 import { removeDirectories } from "../../common/utils";
 import { useDesktopI18n } from "../common/i18n";

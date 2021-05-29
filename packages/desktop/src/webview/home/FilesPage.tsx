@@ -14,34 +14,21 @@
  * limitations under the License.
  */
 
-import {
-  Alert,
-  AlertActionCloseButton,
-  AlertVariant,
-  Bullseye,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Form,
-  FormGroup,
-  Gallery,
-  InputGroup,
-  PageSection,
-  Select,
-  SelectOption,
-  Text,
-  TextContent,
-  TextInput,
-  TextVariants,
-  Title,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem,
-  Tooltip,
-} from "@patternfly/react-core";
-import { SortAlphaDownIcon } from "@patternfly/react-icons";
+import { Alert, AlertActionCloseButton, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Card, CardBody, CardFooter, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
+import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
+import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { Select, SelectOption } from "@patternfly/react-core/dist/js/components/Select";
+import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { SortAlphaDownIcon } from "@patternfly/react-icons/dist/js/icons/sort-alpha-down-icon";
 import * as electron from "electron";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";

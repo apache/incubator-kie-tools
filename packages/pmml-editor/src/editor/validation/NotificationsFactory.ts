@@ -15,7 +15,7 @@
  */
 
 import { ValidationLevel } from "./ValidationLevel";
-import { Notification, NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
+import { Notification, NotificationSeverity } from "@kie-tooling-core/notifications/dist/api";
 import { ValidationEntry } from "./ValidationRegistry";
 
 export const toNotifications = (path: string, validationEntries: ValidationEntry[]): Notification[] => {

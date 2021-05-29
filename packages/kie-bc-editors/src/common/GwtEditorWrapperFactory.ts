@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { Notification } from "@kogito-tooling/notifications/dist/api";
-import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/workspace/dist/api";
+import { Notification } from "@kie-tooling-core/notifications/dist/api";
+import { ResourceContentOptions, ResourceListOptions } from "@kie-tooling-core/workspace/dist/api";
 import {
   EditorFactory,
   EditorInitArgs,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType,
-} from "@kogito-tooling/editor/dist/api";
-import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
+} from "@kie-tooling-core/editor/dist/api";
+import { Tutorial, UserInteraction } from "@kie-tooling-core/guided-tour/dist/api";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
 import { EditorContextApi } from "./api/EditorContextApi";
 import { GuidedTourApi } from "./api/GuidedTourApi";
 import { I18nServiceApi } from "./api/I18nServiceApi";

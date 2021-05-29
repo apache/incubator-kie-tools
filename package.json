@@ -27,7 +27,6 @@
     "@kogito-tooling/dmn-editor-unpacked": "^8.1.0",
     "@kogito-tooling/quarkus-runner-unpacked": "0.7.0-SNAPSHOT",
     "@kogito-tooling/scesim-editor-unpacked": "^8.1.0",
-    "monaco-editor": "^0.23.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

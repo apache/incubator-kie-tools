@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
+import * as EditorEnvelope from "@kie-tooling-core/editor/dist/envelope";
 import { SceSimEditorChannelApi, SceSimEditorEnvelopeApi } from "@kogito-tooling/kie-bc-editors/dist/scesim/api";
 import { SceSimEditor, SceSimEditorEnvelopeApiImpl } from "@kogito-tooling/kie-bc-editors/dist/scesim/envelope";
 

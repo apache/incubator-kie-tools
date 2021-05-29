@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Rect } from "@kogito-tooling/guided-tour/dist/api";
-import { Notification } from "@kogito-tooling/notifications/dist/api";
+import { Rect } from "@kie-tooling-core/guided-tour/dist/api";
+import { Notification } from "@kie-tooling-core/notifications/dist/api";
 
 declare global {
   //Exposed API of AppFormerGwt

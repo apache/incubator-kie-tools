@@ -39,8 +39,8 @@ import { SingleEditorRouter } from "./components/EditorCore/organisms";
 import { PMMLModelMapping, PMMLModels, SupportedCapability } from "./PMMLModelHelper";
 import { Operation, OperationContext } from "./components/EditorScorecard";
 import { toNotifications, ValidationContext, ValidationRegistry } from "./validation";
-import { KogitoEdit } from "@kogito-tooling/workspace/dist/api";
-import { Notification } from "@kogito-tooling/notifications/dist/api";
+import { KogitoEdit } from "@kie-tooling-core/workspace/dist/api";
+import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { Builder } from "./paths";
 
 const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;

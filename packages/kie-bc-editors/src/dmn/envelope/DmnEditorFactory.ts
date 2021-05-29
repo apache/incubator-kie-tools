@@ -16,7 +16,7 @@
 
 import { GwtEditorWrapperFactory } from "../../common";
 import { DmnEditorChannelApi, getDmnLanguageData } from "../api";
-import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
+import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tooling-core/editor/dist/api";
 import { DmnEditor, DmnEditorImpl } from "./DmnEditor";
 import { PMMLEditorMarshallerApi } from "../../common/api/PMMLEditorMarshallerApi";
 import { PMMLEditorMarshallerService } from "@kogito-tooling/pmml-editor-marshaller";

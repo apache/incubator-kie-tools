@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ExternalEditorManager } from "@kogito-tooling/chrome-extension";
+import { ExternalEditorManager } from "@kie-tooling-core/chrome-extension";
 import { extractFileExtension } from "./utils";
 
 export class OnlineEditorManager implements ExternalEditorManager {

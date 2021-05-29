@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { ContentType } from "@kogito-tooling/workspace/dist/api";
-import { EditorApi, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
-import { StateControl } from "@kogito-tooling/editor/dist/channel";
-import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
-import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
-import { Rect } from "@kogito-tooling/guided-tour/dist/api";
+import { ContentType } from "@kie-tooling-core/workspace/dist/api";
+import { EditorApi, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tooling-core/editor/dist/api";
+import { StateControl } from "@kie-tooling-core/editor/dist/channel";
+import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
+import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
+import { Rect } from "@kie-tooling-core/guided-tour/dist/api";
 
 export interface StandaloneEditorApi extends EditorApi {
   subscribeToContentChanges: StateControl["subscribe"];

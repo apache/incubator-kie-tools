@@ -21,38 +21,29 @@ import "@patternfly/patternfly/patternfly-addons.scss";
 import "@patternfly/patternfly/patternfly.scss";
 import "../../static/resources/style.css";
 import * as electron from "electron";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Card, CardBody, CardFooter, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
+import { Page, PageHeader, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Alert, AlertProps, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
+import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
+import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
+import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import {
-  Alert,
-  AlertActionCloseButton,
-  AlertProps,
-  Brand,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  ClipboardCopy,
-  Dropdown,
-  DropdownItem,
-  Gallery,
-  KebabToggle,
-  Modal,
-  Page,
-  PageHeader,
-  PageSection,
   Text,
   TextContent,
   TextList,
   TextListItem,
   TextListVariants,
   TextVariants,
-  Title,
-} from "@patternfly/react-core";
+} from "@patternfly/react-core/dist/js/components/Text";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
-import { OperatingSystem } from "@kogito-tooling/channel-common-api";
-import IpcRendererEvent = Electron.IpcRendererEvent;
+import { OperatingSystem } from "@kie-tooling-core/operating-system";
 import { useHubI18n } from "../common/i18n";
+import IpcRendererEvent = Electron.IpcRendererEvent;
 
 enum ExtensionStatus {
   UNKNOWN,

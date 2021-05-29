@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApi, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
+import { KogitoEditorChannelApi, KogitoEditorEnvelopeContextType } from "@kie-tooling-core/editor/dist/api";
 import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import { PMMLEditor, PMMLEditorInterface } from "../../editor";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
-import { OperatingSystem } from "@kogito-tooling/channel-common-api";
-import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
-import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
+import { DefaultKeyboardShortcutsService } from "@kie-tooling-core/keyboard-shortcuts/dist/envelope";
+import { OperatingSystem } from "@kie-tooling-core/operating-system";
+import { messageBusClientApiMock } from "@kie-tooling-core/envelope-bus/dist/common/__tests__";
+import { I18nService } from "@kie-tooling-core/i18n/dist/envelope";
 
 const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 

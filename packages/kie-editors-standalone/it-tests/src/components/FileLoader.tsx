@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { SetStateAction, useRef } from "react";
-import { ContentType, ResourceContent } from "@kogito-tooling/workspace/dist/api";
+import { ContentType, ResourceContent } from "@kie-tooling-core/workspace/dist/api";
 
 export interface UploadedFile {
   name: string;

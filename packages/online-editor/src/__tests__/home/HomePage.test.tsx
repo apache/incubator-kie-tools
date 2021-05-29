@@ -17,7 +17,7 @@
 import * as React from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import { HomePage } from "../../home/HomePage";
-import { File as UploadFile } from "@kogito-tooling/editor/dist/channel";
+import { File as UploadFile } from "@kie-tooling-core/editor/dist/channel";
 import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../testing_utils";
 import { GithubService } from "../../common/GithubService";
 

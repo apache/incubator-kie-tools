@@ -23,11 +23,11 @@ import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { BookOpenIcon } from "@patternfly/react-icons/dist/js/icons/book-open-icon";
 import { TrophyIcon } from "@patternfly/react-icons/dist/js/icons/trophy-icon";
-import { File } from "@kogito-tooling/editor/dist/channel";
-import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/channel";
-import { DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/guided-tour/dist/api";
+import { File } from "@kie-tooling-core/editor/dist/channel";
+import { KogitoGuidedTour } from "@kie-tooling-core/guided-tour/dist/channel";
+import { DemoMode, SubTutorialMode, Tutorial } from "@kie-tooling-core/guided-tour/dist/api";
 import { OnlineI18n, useOnlineI18n } from "../common/i18n";
-import { I18nHtml } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nHtml } from "@kie-tooling-core/i18n/dist/react-components";
 
 export function useDmnTour(isEditorReady: boolean, file: File) {
   const { i18n } = useOnlineI18n();

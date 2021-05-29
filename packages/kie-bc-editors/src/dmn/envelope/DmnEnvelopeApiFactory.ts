@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { EnvelopeApiFactoryArgs } from "@kogito-tooling/envelope";
+import { EnvelopeApiFactoryArgs } from "@kie-tooling-core/envelope";
 import { DmnEditorChannelApi, DmnEditorEnvelopeApi } from "../api";
-import { EditorEnvelopeViewApi, KogitoEditorEnvelopeApiImpl } from "@kogito-tooling/editor/dist/envelope";
+import { EditorEnvelopeViewApi, KogitoEditorEnvelopeApiImpl } from "@kie-tooling-core/editor/dist/envelope";
 import { DmnEditor } from "./DmnEditor";
-import { KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
+import { KogitoEditorEnvelopeContextType } from "@kie-tooling-core/editor/dist/api";
 import { DmnEditorFactory } from "./DmnEditorFactory";
 
 export type DmnEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<

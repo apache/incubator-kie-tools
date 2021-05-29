@@ -20,7 +20,7 @@ import { Menu } from "./Menu";
 import { FS } from "../storage/core/FS";
 import { Files } from "../storage/core/Files";
 import { DesktopUserData } from "./DesktopUserData";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
 import { desktopI18nDefaults, desktopI18nDictionaries } from "./i18n";
 
 let mainWindow: BrowserWindow | null = null;

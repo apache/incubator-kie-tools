@@ -17,7 +17,7 @@
 import * as React from "react";
 import { fireEvent, render } from "@testing-library/react";
 import { EditorToolbar } from "../../editor/EditorToolbar";
-import { EMPTY_FILE_BPMN, EMPTY_FILE_DMN, EMPTY_FILE_PMML, StateControl } from "@kogito-tooling/editor/dist/channel";
+import { EMPTY_FILE_BPMN, EMPTY_FILE_DMN, EMPTY_FILE_PMML, StateControl } from "@kie-tooling-core/editor/dist/channel";
 import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../testing_utils";
 import { GithubService } from "../../common/GithubService";
 import { EditorPage } from "../../editor/EditorPage";

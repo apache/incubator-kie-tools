@@ -21,7 +21,7 @@ import { DesktopUserData } from "./DesktopUserData";
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 import MenuItem = Electron.MenuItem;
 import IpcMainEvent = Electron.IpcMainEvent;
-import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
 import { DesktopI18n } from "./i18n";
 
 export class Menu {

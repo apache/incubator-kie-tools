@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Notification } from "@kogito-tooling/notifications/dist/api";
+import { Notification } from "@kie-tooling-core/notifications/dist/api";
 
 export interface NotificationsApi {
   /**

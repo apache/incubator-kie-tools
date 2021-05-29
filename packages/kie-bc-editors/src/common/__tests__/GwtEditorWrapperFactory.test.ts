@@ -17,11 +17,11 @@
 import { GwtEditorWrapperFactory } from "../GwtEditorWrapperFactory";
 import { GwtLanguageData, Resource } from "../GwtLanguageData";
 import { GwtStateControlService } from "../gwtStateControl";
-import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
-import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
-import { ChannelType, KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
+import { messageBusClientApiMock } from "@kie-tooling-core/envelope-bus/dist/common/__tests__";
+import { I18nService } from "@kie-tooling-core/i18n/dist/envelope";
+import { ChannelType, KogitoEditorChannelApi } from "@kie-tooling-core/editor/dist/api";
 import { GwtEditorWrapper } from "../GwtEditorWrapper";
-import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
 
 const cssResource: Resource = {
   type: "css",

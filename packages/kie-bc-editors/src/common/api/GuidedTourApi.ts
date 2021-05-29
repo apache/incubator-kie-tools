@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
+import { Tutorial, UserInteraction } from "@kie-tooling-core/guided-tour/dist/api";
 
 /**
  * PUBLIC ENVELOPE API

@@ -18,7 +18,7 @@ import { useRef } from "react";
 import MonacoEditor from "react-monaco-editor";
 import { EditorDidMount } from "react-monaco-editor/src/types";
 import { bootstrapMonaco } from "./PredicateEditorSetup";
-import * as monacoEditor from "@kiegroup/monaco-editor";
+import * as monacoEditor from "@kie-tooling-core/monaco-editor";
 
 interface PredicateEditorProps {
   text: string | undefined;
