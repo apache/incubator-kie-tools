@@ -20,7 +20,7 @@ import { ReactElement } from "react";
 import { PMMLEditor, PMMLEditorInterface } from "../../editor";
 import { DefaultKeyboardShortcutsService } from "@kie-tooling-core/keyboard-shortcuts/dist/envelope";
 import { OperatingSystem } from "@kie-tooling-core/operating-system";
-import { messageBusClientApiMock } from "@kie-tooling-core/envelope-bus/dist/common/__tests__";
+import { messageBusClientApiMock } from "@kie-tooling-core/envelope-bus/dist-tests/common";
 import { I18nService } from "@kie-tooling-core/i18n/dist/envelope";
 
 const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();

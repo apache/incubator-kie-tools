@@ -17,7 +17,7 @@
 import { GwtEditorWrapperFactory } from "../GwtEditorWrapperFactory";
 import { GwtLanguageData, Resource } from "../GwtLanguageData";
 import { GwtStateControlService } from "../gwtStateControl";
-import { messageBusClientApiMock } from "@kie-tooling-core/envelope-bus/dist/common/__tests__";
+import { messageBusClientApiMock } from "@kie-tooling-core/envelope-bus/dist-tests/common";
 import { I18nService } from "@kie-tooling-core/i18n/dist/envelope";
 import { ChannelType, KogitoEditorChannelApi } from "@kie-tooling-core/editor/dist/api";
 import { GwtEditorWrapper } from "../GwtEditorWrapper";

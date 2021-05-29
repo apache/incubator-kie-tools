@@ -26,9 +26,7 @@
     "@kogito-tooling/bpmn-editor-unpacked": "^8.1.0",
     "@kogito-tooling/dmn-editor-unpacked": "^8.1.0",
     "@kogito-tooling/quarkus-runner-unpacked": "0.7.0-SNAPSHOT",
-    "@kogito-tooling/scesim-editor-unpacked": "^8.1.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "@kogito-tooling/scesim-editor-unpacked": "^8.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
@@ -44,7 +42,7 @@
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.0.2",
     "@types/react": "^17.0.5",
-    "@types/react-dom": "^17.0.3",
+    "@types/react-dom": "^17.0.5",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
     "@types/selenium-webdriver": "^4.0.12",
@@ -82,7 +80,6 @@
     "junit-report-merger": "^2.2.2",
     "lerna": "^4.0.0",
     "lock-treatment-tool": "^0.4.2",
-    "minimatch": "^3.0.4",
     "mocha": "^8.3.2",
     "mocha-jenkins-reporter": "^0.4.5",
     "npm-run-all": "^4.1.5",
@@ -121,5 +118,11 @@
     "webpack-merge": "^5.7.3",
     "webpack-node-externals": "^3.0.0",
     "zip-webpack-plugin": "^4.0.1"
+  },
+  "optionalDependencies": {
+    "fast-xml-parser": "^3.19.0",
+    "@types/chrome": "^0.0.143",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   }
 }

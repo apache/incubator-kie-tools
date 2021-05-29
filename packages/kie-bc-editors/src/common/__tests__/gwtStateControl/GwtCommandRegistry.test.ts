@@ -17,7 +17,7 @@
 import { DefaultKogitoCommandRegistry } from "../../gwtStateControl";
 import { KogitoEditorChannelApi } from "@kie-tooling-core/editor/dist/api";
 import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
-import { messageBusClientApiMock } from "@kie-tooling-core/envelope-bus/dist/common/__tests__";
+import { messageBusClientApiMock } from "@kie-tooling-core/envelope-bus/dist-tests/common";
 
 class Command {
   private id: string;
