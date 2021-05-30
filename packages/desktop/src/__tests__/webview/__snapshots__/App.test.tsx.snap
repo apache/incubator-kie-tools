@@ -118,6 +118,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
       </div>
     </header>
     <div
+      aria-hidden="true"
       class="pf-c-page__sidebar pf-m-collapsed"
       id="page-sidebar"
     >
@@ -143,6 +144,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
               <a
                 aria-current="page"
                 class="pf-c-nav__link pf-m-current"
+                tabindex="-1"
               >
                 Files
               </a>
@@ -155,6 +157,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
             >
               <a
                 class="pf-c-nav__link"
+                tabindex="-1"
               >
                 Learn more
               </a>
@@ -641,6 +644,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
       </div>
     </header>
     <div
+      aria-hidden="true"
       class="pf-c-page__sidebar pf-m-collapsed"
       id="page-sidebar"
     >
@@ -666,6 +670,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
               <a
                 aria-current="page"
                 class="pf-c-nav__link pf-m-current"
+                tabindex="-1"
               >
                 Files
               </a>
@@ -678,6 +683,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
             >
               <a
                 class="pf-c-nav__link"
+                tabindex="-1"
               >
                 Learn more
               </a>
@@ -1089,7 +1095,6 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                   data-testid="toolbar-title"
                 >
                   <h3
-                    aria-describedby="pf-tooltip-2"
                     class="pf-c-title pf-m-xl"
                   >
                     a.dmn

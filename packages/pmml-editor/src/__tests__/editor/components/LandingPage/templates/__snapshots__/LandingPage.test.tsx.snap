@@ -326,7 +326,6 @@ exports[`LandingPage render::With Supported Model 1`] = `
               </div>
             </div>
             <div
-              aria-describedby="pf-tooltip-1"
               class="pf-c-card__title model-card__title"
             >
               <span
