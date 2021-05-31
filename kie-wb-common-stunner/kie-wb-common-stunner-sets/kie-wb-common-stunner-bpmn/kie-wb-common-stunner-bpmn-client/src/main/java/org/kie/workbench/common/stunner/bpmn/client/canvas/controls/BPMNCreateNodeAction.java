@@ -59,18 +59,34 @@ public class BPMNCreateNodeAction extends GeneralCreateNodeAction {
     @Override
     protected MagnetConnection buildConnectionBetween(final Node<View<?>, Edge> sourceNode,
                                                       final Node<View<?>, Edge> targetNode) {
-        final MagnetConnection connection = super.buildConnectionBetween(sourceNode, targetNode);
-        connection.setAuto(isAutoMagnetConnection(sourceNode, targetNode));
+        final boolean gatewaySourceOrTarget = isGatewaySourceOrTarget(sourceNode, targetNode);
+        MagnetConnection connection;
+
+        if (gatewaySourceOrTarget) {
+            connection = getMagnetConnectionFixed(sourceNode, targetNode);
+        } else {
+            connection = getMagnetConnectionCenter(sourceNode, targetNode);
+        }
+
+        connection.setAuto(false);
         return connection;
     }
 
-    public static boolean isAutoMagnetConnection(final Node<View<?>, Edge> sourceNode,
-                                                 final Node<View<?>, Edge> targetNode) {
+    protected MagnetConnection getMagnetConnectionCenter(Node<View<?>, Edge> sourceNode, Node<View<?>, Edge> targetNode) {
+        return super.buildCenterConnectionBetween(sourceNode, targetNode);
+    }
+
+    protected MagnetConnection getMagnetConnectionFixed(Node<View<?>, Edge> sourceNode, Node<View<?>, Edge> targetNode) {
+        return super.buildConnectionBetween(sourceNode, targetNode);
+    }
+
+    public static boolean isGatewaySourceOrTarget(final Node<View<?>, Edge> sourceNode,
+                                                  final Node<View<?>, Edge> targetNode) {
         final Object sourceDefinition = null != sourceNode ? sourceNode.getContent().getDefinition() : null;
         final Object targetDefinition = null != targetNode ? targetNode.getContent().getDefinition() : null;
         final boolean isSourceGateway = isGateway(sourceDefinition);
         final boolean isTargetGateway = isGateway(targetDefinition);
-        return !(isSourceGateway || isTargetGateway);
+        return isSourceGateway || isTargetGateway;
     }
 
     private static boolean isGateway(final Object bean) {

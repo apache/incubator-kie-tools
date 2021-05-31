@@ -169,6 +169,11 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
         return MagnetConnection.Builder.forTarget(sourceNode, targetNode);
     }
 
+    protected MagnetConnection buildCenterConnectionBetween(final Node<View<?>, Edge> sourceNode,
+                                                            final Node<View<?>, Edge> targetNode) {
+        return MagnetConnection.Builder.atCenter(sourceNode);
+    }
+
     private CanvasCommand<AbstractCanvasHandler> setEdgeTarget(final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                                                                final Edge<? extends ViewConnector<?>, Node> connector,
                                                                final Node<View<?>, Edge> targetNode,
