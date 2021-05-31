@@ -335,7 +335,6 @@ def update_maven_repo_in_clone_repo(repo_url, replace_jboss_repository):
         replacement = 'export MAVEN_REPO_URL="{}"'.format(repo_url)
     update_in_file(CLONE_REPO_SCRIPT, pattern, replacement)
 
-
 def ignore_maven_self_signed_certificate_in_clone_repo():
     """
     Sets the environment variable to ignore the self-signed certificates in maven

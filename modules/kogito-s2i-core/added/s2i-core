@@ -118,7 +118,7 @@ function build_kogito_app() {
         fi
 
         log_info "---> Generating $RUNTIME_TYPE project structure using the $ARCHETYPE_ARTIFACT_ID archetype..."
-        $MAVEN_HOME/bin/mvn archetype:generate -B -DarchetypeGroupId=org.kie.kogito -DarchetypeArtifactId=$ARCHETYPE_ARTIFACT_ID \
+        $MAVEN_HOME/bin/mvn archetype:generate -U -B -DinteractiveMode=false -DarchetypeGroupId=org.kie.kogito -DarchetypeArtifactId=$ARCHETYPE_ARTIFACT_ID \
             -DarchetypeVersion=$KOGITO_VERSION -DgroupId=$PROJECT_GROUP_ID -DartifactId=$PROJECT_ARTIFACT_ID -Dversion=$PROJECT_VERSION \
             ${MAVEN_ARGS_APPEND} -s "${KOGITO_HOME}"/.m2/settings.xml
 
@@ -126,19 +126,45 @@ function build_kogito_app() {
         log_info "--> Remove archetype generated resources"
         rm -rfv $PROJECT_ARTIFACT_ID/src/main/resources/*.{bpm,bpmn2,dmn,drl}
 
+        local require_sw
         # copy resources into the generated project
         for item in *
         do
             if [ -d "${item}" ] && [ "${item}" == "$PROJECT_ARTIFACT_ID" ]; then
                 log_info "--> Skipping generated project ..."
             else
-                log_info "--> Coping resource ${item}"
+                log_info "--> Copying resource ${item}"
                 cp -Rv "${item}" $PROJECT_ARTIFACT_ID/src/main/resources
+
+                if [[ ${item} =~ .*\.sw\.(yaml|yml|json) ]]; then
+                    if [[ "${RUNTIME_TYPE}" == "${QUARKUS_RUNTIME_TYPE}" ]]; then
+                        log_info "--> Found Serverless Workflow file. Will add Kogito Quarkus Workflows extension to the project."
+                        require_sw=true
+                    else
+                        log_warning "--> Builds from Serverless Workflow files are not supported for SpringBoot. Please build your project locally or use Quarkus."
+                        break
+                    fi
+                fi
             fi
         done
 
         # move all project content into the current directory
         mv -v $PROJECT_ARTIFACT_ID/* .
+
+        # add extension if needed
+        if [ ${require_sw} = true ]; then
+            log_info "--> Adding Kogito Quarkus Workflows extension to the generated project."
+            # we must set the evaluate version since forceStdout is not available in previous versions
+            quarkus_version=$($MAVEN_HOME/bin/mvn ${MAVEN_ARGS_APPEND} -s "${KOGITO_HOME}"/.m2/settings.xml help:evaluate -q -DforceStdout -Dexpression=quarkus.version)
+            if [[ ! "$quarkus_version" =~ [0-9]{0,2}\.[0-9]{0,3} ]]; then
+                log_error "--> Impossible to get Quarkus version from the generated Maven project (output: '$quarkus_version'), failing build"
+                exit 1
+            fi
+
+            log_info "--> Quarkus version is '$quarkus_version'"
+
+            $MAVEN_HOME/bin/mvn ${MAVEN_ARGS_APPEND} -s "${KOGITO_HOME}"/.m2/settings.xml io.quarkus:quarkus-maven-plugin:$quarkus_version:add-extension -Dextensions="org.kie.kogito:kogito-quarkus-serverless-workflow"
+        fi
 
         $MAVEN_HOME/bin/mvn clean package ${MAVEN_ARGS_APPEND} ${KOGITO_OPTS} ${nativeBuild} -s "${KOGITO_HOME}"/.m2/settings.xml \
             -DskipTests -Dmaven.test.skip -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \

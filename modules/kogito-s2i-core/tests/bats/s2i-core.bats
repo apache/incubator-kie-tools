@@ -54,7 +54,6 @@ teardown() {
 
 }
 
-
 @test "test assemble_runtime no binaries" {
     run assemble_runtime
     [ "$status" -eq 0 ]
@@ -88,7 +87,6 @@ teardown() {
     [ "${lines[5]}" = "'./myapp.jar' -> '"${KOGITO_HOME}"/bin/myapp.jar'" ]
 }
 
-
 @test "test runtime_assemble with binary builds with new Quarkus 1.12+ default builds" {
     mkdir -p "${KOGITO_HOME}"/bin
     # emulating an upload
@@ -120,7 +118,6 @@ teardown() {
     [ "${lines[14]}" = "'./quarkus-app/quarkus/generated-bytecode.jar' -> '/tmp/kogito_home/bin/quarkus/generated-bytecode.jar'" ]
     [ "${lines[15]}" = "'./quarkus-app/quarkus/quarkus-application.dat' -> '/tmp/kogito_home/bin/quarkus/quarkus-application.dat'" ]
 }
-
 
 @test "test runtime_assemble with binary builds native binary" {
     mkdir -p "${KOGITO_HOME}"/bin
@@ -155,7 +152,6 @@ teardown() {
     [ "${lines[7]}" = "'./myapp.jar' -> '"${KOGITO_HOME}"/bin/myapp.jar'" ]
 }
 
-
 @test "test runtime_assemble with binary builds entire target with new Quarkus 1.12+ default builds" {
     mkdir -p "${KOGITO_HOME}"/bin
     # emulating an upload
@@ -187,8 +183,6 @@ teardown() {
     [ "${lines[15]}" = "'./quarkus-app/quarkus/generated-bytecode.jar' -> '/tmp/kogito_home/bin/quarkus/generated-bytecode.jar'" ]
     [ "${lines[16]}" = "'./quarkus-app/quarkus/quarkus-application.dat' -> '/tmp/kogito_home/bin/quarkus/quarkus-application.dat'" ]
 }
-
-
 
 # Check that the irrelevant binaries are excluded
 @test "test runtime_assemble with binary builds entire target SpringBoot build" {
@@ -308,7 +302,6 @@ teardown() {
     [ "${lines[1]}" = "'target/app.jar' -> '"${KOGITO_HOME}"/bin'" ]
 }
 
-
 @test "test copy_kogito_app default quarkus java build no jar file present" {
     NATIVE="false"
     mkdir "${KOGITO_HOME}"/bin
@@ -392,4 +385,25 @@ teardown() {
 
     echo "result= ${lines[@]}"
     [ "${lines[0]}" = "---> Building application from source..." ]
+}
+
+@test "build_kogito_app build a project from a JSON Serverless Workflow file" {
+    mkdir /tmp/src
+    touch /tmp/src/workflow.sw.json
+
+    run build_kogito_app
+    rm -rf target/*
+    echo "result= ${lines[@]}"
+    [ "${lines[0]}" = "---> Generating quarkus project structure using the kogito-quarkus-archetype archetype..." ]
+}
+
+@test "build_kogito_app build a project from a YAML Serverless Workflow file" {
+    mkdir /tmp/src
+    touch /tmp/src/workflow.sw.yaml
+
+    run build_kogito_app
+    rm -rf target/*
+
+    echo "result= ${lines[@]}"
+    [ "${lines[0]}" = "---> Generating quarkus project structure using the kogito-quarkus-archetype archetype..." ]
 }
