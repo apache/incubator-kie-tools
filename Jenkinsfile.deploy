@@ -4,6 +4,8 @@ deployProperties = [ : ]
 
 commitDone = false
 
+BUILT_IMAGES = []
+
 pipeline {
     agent {
         label 'kogito-image-slave && !master'
@@ -62,7 +64,7 @@ pipeline {
                 }
             }
             post {
-                success {
+                always {
                     script {
                         setDeployPropertyIfNeeded('git.branch', getBuildBranch())
                         setDeployPropertyIfNeeded('git.author', getGitAuthor())
@@ -236,12 +238,13 @@ pipeline {
                 }
             }
             post {
-                success {
+                always {
                     script {
                         // Store image deployment information
                         String imgPrefix = "${getRepoName()}.image"
                         setDeployPropertyIfNeeded("${imgPrefix}.registry", getDeployImageRegistry())
                         setDeployPropertyIfNeeded("${imgPrefix}.namespace", getDeployImageNamespace())
+                        setDeployPropertyIfNeeded("${imgPrefix}.names", getBuiltImages().join(','))
                         setDeployPropertyIfNeeded("${imgPrefix}.name-suffix", getDeployImageNameSuffix())
                         setDeployPropertyIfNeeded("${imgPrefix}.tag", getDeployImageTag())
                     }
@@ -270,12 +273,12 @@ pipeline {
                     if (isCreateChangesPR()) {
                         String bodyMsg = "PR has been created with update Maven artifacts.\nPlease review it here: ${prLink}"
 
-                        emailext body: bodyMsg, subject: "[${getBuildBranch()}][d] Kogito Images pipeline", to: env.KOGITO_CI_EMAIL_TO 
+                        emailext body: bodyMsg, subject: "[${getBuildBranch()}][d] Kogito Images pipeline", to: env.KOGITO_CI_EMAIL_TO
                     }
                 }
             }
             post {
-                success {
+                always {
                     script {
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.source.uri", "https://github.com/${getBotAuthor()}/${getRepoName()}")
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.source.ref", getBotBranch())
@@ -334,25 +337,49 @@ void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
 }
 
 void buildImage(image) {
-    sh "make build-image image_name=${image} ignore_test=true cekit_option='--work-dir .'"
+    try {
+        sh "make build-image image_name=${image} ignore_test=true cekit_option='--work-dir .'"
+        registerBuiltImage (image)
+    } catch (err) {
+        unstable("${image} build failed")
+    }
 }
 
 void testImage(image) {
     try {
         sh "make build-image image_name=${image} ignore_build=true cekit_option='--work-dir .'"
+    } catch (err) {
+        removeBuiltImage (image)
+        unstable("${image} testing failed")
     } finally {
         junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
     }
 }
 
+void registerBuiltImage (String imageName) {
+    lock("${BUILD_URL}") {
+        BUILT_IMAGES.add(imageName)
+    }
+}
+
+void removeBuiltImage (String imageName) {
+    lock("${BUILD_URL}") {
+        BUILT_IMAGES = BUILT_IMAGES.findAll { it != imageName }
+    }
+}
+
+List getBuiltImages() {
+    return BUILT_IMAGES
+}
+
 void tagImages() {
-    for (String imageName : getImages()) {
+    for (String imageName : getBuiltImages()) {
         sh "${env.CONTAINER_ENGINE} tag quay.io/kiegroup/${imageName}:latest ${buildImageName(imageName)}"
     }
 }
 
 void pushImages() {
-    for (String imageName : getImages()) {
+    for (String imageName : getBuiltImages()) {
         pushImage(buildImageName(imageName))
     }
 }
@@ -366,7 +393,7 @@ void pushImage(String fullImageName) {
 // Set images public on quay. Useful when new images are introduced.
 void makeQuayImagesPublic() {
     String namespace = getDeployImageNamespace()
-    for (String imageName : getImages()) {
+    for (String imageName : getBuiltImages()) {
         String repository = getFinalImageName(imageName)
         echo "Check and set public if needed Quay repository ${namespace}/${repository}"
         try {
@@ -519,7 +546,7 @@ boolean shouldSkipTests() {
 }
 
 void setDeployPropertyIfNeeded(String key, def value) {
-    if (value != null && value != '') {
+    if (value) {
         deployProperties[key] = value
     }
 }

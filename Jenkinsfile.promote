@@ -482,6 +482,10 @@ String getOldImageNamespace() {
     return isOldImageInOpenshiftRegistry() ? 'openshift' : getParamOrDeployProperty('BASE_IMAGE_NAMESPACE' , "${getOldImagePrefix()}.namespace")
 }
 
+String getOldImageNames() {
+    return getParamOrDeployProperty('BASE_IMAGE_NAMES' , "${getOldImagePrefix()}.names")
+}
+
 String getOldImageNameSuffix() {
     return getParamOrDeployProperty('BASE_IMAGE_NAME_SUFFIX' , "${getOldImagePrefix()}.name-suffix")
 }
@@ -519,5 +523,6 @@ String getNewImageTag() {
 }
 
 String[] getImages() {
-    return sh(script: "make list | tr '\\n' ','", returnStdout: true).trim().split(',')
+    String oldImageNames = getOldImageNames()
+    return oldImageNames ? oldImageNames.split(',') : sh(script: "make list | tr '\\n' ','", returnStdout: true).trim().split(',')
 }
