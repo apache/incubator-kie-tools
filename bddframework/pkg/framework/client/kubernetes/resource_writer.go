@@ -52,7 +52,7 @@ type resourceWriter struct {
 }
 
 func (r *resourceWriter) Create(resource ResourceObject) error {
-	log.Info("Creating resource", "kind", resource.GetObjectKind().GroupVersionKind().Kind, "name", resource.GetName(), "namespace", resource.GetNamespace())
+	log.Debug("Creating resource", "kind", resource.GetObjectKind().GroupVersionKind().Kind, "name", resource.GetName(), "namespace", resource.GetNamespace())
 	if err := r.client.ControlCli.Create(context.TODO(), resource); err != nil {
 		log.Error(err, "Failed to create object. ")
 		return err
@@ -65,7 +65,7 @@ func (r *resourceWriter) Update(resource ResourceObject) error {
 	if err := r.client.ControlCli.Update(context.TODO(), resource); err != nil {
 		return err
 	}
-	log.Debug("Resource updated.", "name", resource.GetName(), "Creation Timestamp", resource.GetCreationTimestamp())
+	log.Debug("Resource updated.", "name", resource.GetName(), "Creation Timestamp", resource.GetCreationTimestamp(), "Resource", resource)
 	return nil
 }
 
