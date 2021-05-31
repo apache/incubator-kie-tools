@@ -20,8 +20,8 @@
   "scripts": {
     "start": "electron dist --disable-gpu",
     "rebuild": "electron-rebuild -f -w sqlite3",
-    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",
-    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose'",
+    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint --true-if-empty --then 'yarn eslint ./src --ext .ts,.tsx'",
+    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test --true-if-empty --then 'jest --silent --verbose'",
     "test:clearCache": "jest --clearCache",
     "init": "yarn -f",
     "build:dev": "rimraf dist && webpack --env dev",
