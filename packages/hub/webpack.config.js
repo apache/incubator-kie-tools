@@ -15,7 +15,7 @@
  */
 
 const CopyPlugin = require("copy-webpack-plugin");
-const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
+const pfWebpackOptions = require("@kie-tooling-core/patternfly-base/patternflyWebpackOptions");
 const os = require("os");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
