@@ -95,6 +95,7 @@ export default class VSCodeTestHelper {
    * @returns a promise that resolves to a SideBarView of the openned folder
    */
   public openFolder = async (absolutePath: string): Promise<SideBarView> => {
+    await sleep(5000);
     await this.workbench.executeCommand("Extest: Open Folder");
     const inputBox = await InputBox.create();
     await inputBox.setText(absolutePath);
@@ -146,7 +147,7 @@ export default class VSCodeTestHelper {
     // const input = await InputBox.create();
     // await input.selectQuickPick('KIE Kogito Editors');
     const webview = new WebView(this.workbench.getEditorView(), By.linkText(fileName));
-    await sleep(10000);
+    await this.waitUntilKogitoEditorIsLoaded(webview);
     return webview;
   };
 
@@ -167,9 +168,9 @@ export default class VSCodeTestHelper {
    */
   public closeAllNotifications = async (): Promise<void> => {
     const activeNotifications = await this.workbench.getNotifications();
-    activeNotifications.forEach(async (notification) => {
+    for (const notification of activeNotifications) {
       await notification.dismiss();
-    });
+    }
   };
 
   /**
@@ -211,15 +212,13 @@ export default class VSCodeTestHelper {
     await driver.wait(
       async () => {
         const loadingSpinners = await webview.getDriver().findElements(kogitoLoadingSpinner());
-        if (loadingSpinners && loadingSpinners.length > 0) {
-          return false;
-        } else {
-          return true;
-        }
+        return !loadingSpinners || loadingSpinners.length <= 0;
       },
       this.EDITOR_LOADING_TIMEOUT,
       "Editor was still loading after " + this.EDITOR_LOADING_TIMEOUT + "ms. Please investigate."
     );
+
+    await sleep(2000);
 
     await driver.switchTo().frame(null);
   };
