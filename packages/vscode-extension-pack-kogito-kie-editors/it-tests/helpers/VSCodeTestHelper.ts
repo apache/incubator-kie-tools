@@ -50,7 +50,7 @@ export default class VSCodeTestHelper {
   /**
    * Loading timeout for editors.
    */
-  private readonly EDITOR_LOADING_TIMEOUT: number = 10000;
+  private readonly EDITOR_LOADING_TIMEOUT: number = 60000;
 
   /**
    * Handle for VSCode workbench.
