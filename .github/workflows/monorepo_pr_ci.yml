@@ -27,9 +27,10 @@ jobs:
           npm install -g lerna@4.0.0 yarn@1.22.10
           yarn config set network-timeout 1000000
 
+      - uses: hmarr/debug-action@v2
+
       - name: "Bootstrap"
         run: |
-          echo ${{ github.event }}
           yarn bootstrap
 
       - name: "Build dependencies"
