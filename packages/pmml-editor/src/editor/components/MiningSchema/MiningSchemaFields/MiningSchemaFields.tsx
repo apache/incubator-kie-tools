@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useContext, useMemo } from "react";
+import { BaseSyntheticEvent, useContext, useMemo } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
@@ -91,7 +91,9 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
     onPropertyDelete(index, updatedField);
   };
 
-  const handleEdit = () => {
+  const handleEdit = (event: BaseSyntheticEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
     onEdit(index);
   };
 
@@ -105,14 +107,12 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
     <li
       className={`editable-item ${editing === index ? "editable-item--editing" : ""}`}
       key={field.name.value}
-      onClick={handleEdit}
+      onClick={(event) => handleEdit(event)}
       ref={ref}
       tabIndex={0}
       onKeyDown={(event) => {
         if (event.key === "Enter") {
-          event.preventDefault();
-          event.stopPropagation();
-          handleEdit();
+          handleEdit(event);
         }
         if (event.key === "Escape") {
           onCancel();

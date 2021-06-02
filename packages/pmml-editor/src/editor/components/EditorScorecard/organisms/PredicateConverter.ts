@@ -141,11 +141,11 @@ export const fromText = (text: string | undefined): Predicate | undefined => {
   }
 
   //Quick RegEx based match for SimplePredicates.. Need a parser for ALL Predicates
-  const regTrue = /^True$/gm;
-  const regFalse = /^False$/gm;
-  const regUnaryOperator = /^([a-zA-Z]+[0-9]*)\s+(isMissing|isNotMissing)\s*$/gm;
-  const regBinaryOperator = /^([a-zA-Z]+[0-9]*)\s*(=|>|<|<=|>=|<>)\s*"?([a-zA-Z0-9]+)"?$/gm;
-  const regSimpleCompound = /^(.*)\s*(and|or|xor)\s*(.*)$/gm;
+  const regTrue = /^True$/gim;
+  const regFalse = /^False$/gim;
+  const regUnaryOperator = /^(\S+)\s+(isMissing|isNotMissing)\s*$/gm;
+  const regBinaryOperator = /^(\S+)\s*(=|>|<|<=|>=|<>)\s*"?(\S+)"?$/gm;
+  const regSimpleCompound = /^(.*)\s*(\band\b|\bxor\b|\bor\b)\s*(.*)$/gm;
 
   if (regTrue.test(text)) {
     return TruePredicate();
