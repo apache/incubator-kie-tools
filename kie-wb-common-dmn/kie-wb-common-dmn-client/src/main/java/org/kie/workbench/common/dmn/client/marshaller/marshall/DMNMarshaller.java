@@ -207,9 +207,16 @@ public class DMNMarshaller {
                 if (viewDefinition instanceof DRGElement) {
                     final DRGElement drgElement = (DRGElement) viewDefinition;
                     if (!drgElement.isAllowOnlyVisualChange()) {
-                        nodes.put(drgElement.getId().getValue(),
-                                  stunnerToDMN(withIncludedModels(node, definitionsStunnerPojo),
-                                               componentWidthsConsumer));
+                        if (nodes.containsKey(drgElement.getId().getValue())) {
+                            final JSITDRGElement currentValue = nodes.get(drgElement.getId().getValue());
+                            mergeNodeRequirements(stunnerToDMN(withIncludedModels(node, definitionsStunnerPojo),
+                                                               componentWidthsConsumer),
+                                                  currentValue);
+                        } else {
+                            nodes.put(drgElement.getId().getValue(),
+                                      stunnerToDMN(withIncludedModels(node, definitionsStunnerPojo),
+                                                   componentWidthsConsumer));
+                        }
                     }
                     final String namespaceURI = definitionsStunnerPojo.getDefaultNamespace();
                     diagram.addDMNDiagramElement(WrapperUtils.getWrappedJSIDMNShape(diagram,
@@ -243,7 +250,7 @@ public class DMNMarshaller {
             }
 
             nodes.values().forEach(node -> {
-                mergeOrAddNodeToDefinitions(node, definitions);
+                addNodeToDefinitionsIfNotPresent(node, definitions);
             });
 
             textAnnotations.values().forEach(text -> {
@@ -272,7 +279,8 @@ public class DMNMarshaller {
             for (final Node<?, ?> node : diagramNodes) {
                 PointUtils.convertToRelativeBounds(node);
             }
-        };
+        }
+        ;
 
         return definitions;
     }
@@ -325,20 +333,17 @@ public class DMNMarshaller {
         return Optional.empty();
     }
 
-    void mergeOrAddNodeToDefinitions(final JSITDRGElement node,
-                                     final JSITDefinitions definitions) {
+    void addNodeToDefinitionsIfNotPresent(final JSITDRGElement node,
+                                          final JSITDefinitions definitions) {
 
         final Optional<JSITDRGElement> existingNode = getExistingNode(definitions, node);
 
-        if (existingNode.isPresent()) {
-            final JSITDRGElement existingDRGElement = Js.uncheckedCast(existingNode.get());
-            mergeNodeRequirements(node, existingDRGElement);
-        } else {
+        if (!existingNode.isPresent()) {
             addNodeToDefinitions(node, definitions);
         }
     }
 
-    private void addNodeToDefinitions(final JSITDRGElement node,
+    void addNodeToDefinitions(final JSITDRGElement node,
                                       final JSITDefinitions definitions) {
 
         final JSINodeLocalPartName localPart = getLocalPart(node);
@@ -352,8 +357,8 @@ public class DMNMarshaller {
         return WrapperUtils.getWrappedJSITDRGElement(node, PREFIX, localPart.getLocalPart());
     }
 
-    private void mergeNodeRequirements(final JSITDRGElement node,
-                                       final JSITDRGElement existingDRGElement) {
+    void mergeNodeRequirements(final JSITDRGElement node,
+                               final JSITDRGElement existingDRGElement) {
 
         if (instanceOfBusinessKnowledgeModel(node)) {
 
