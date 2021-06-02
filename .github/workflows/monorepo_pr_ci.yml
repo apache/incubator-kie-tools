@@ -1,0 +1,67 @@
+name: "CI :: Monorepo"
+
+on:
+  pull_request:
+    branches: "**"
+
+jobs:
+  monorepo-pr-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+
+      - name: "Fetch Git tags"
+        run: |
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.2.0
+
+      - name: "Setup Yarn and Lerna"
+        run: |
+          npm install -g lerna@4.0.0 yarn@1.22.10
+          yarn config set network-timeout 1000000
+
+      - name: "Bootstrap"
+        run: |
+          yarn bootstrap
+
+      - name: "Build dependencies"
+        env:
+          WEBPACK_minimize: "false"
+          WEBPACK_TS_LOADER_transpileOnly: "false"
+          KOGITO_TOOLING_BUILD_lint: "false"
+          KOGITO_TOOLING_BUILD_test: "false"
+          KOGITO_TOOLING_BUILD_testIT: "false"
+        run: |
+          export REF=${{ github.ref }} &&
+          export DEPENDENCIES=$(diff <(echo "$(lerna ls --since $REF --include-dependencies)" ) <(echo "$(lerna ls --since $REF)") --changed-group-format='%<%>' --unchanged-group-format='') &&
+          export SCOPE=$(echo $DEPENDENCIES | xargs -I{} echo '--scope="{}"') &&
+          echo $REF $SCOPE &&
+          yarn run-script-if --silent --env SCOPE --eq "" \
+            --then 'echo No dependencies to build.' \
+            --else 'lerna run --stream build:dev '$SCOPE
+
+      - name: "Start Xvfb (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+
+      - name: "Increase inotify watches"
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
+      - name: "Build changed and dependents"
+        env:
+          WEBPACK_minimize: "false"
+          WEBPACK_TS_LOADER_transpileOnly: "false"
+          KOGITO_TOOLING_BUILD_lint: "true"
+          KOGITO_TOOLING_BUILD_test: "true"
+          KOGITO_TOOLING_BUILD_testIT: "true"
+          DISPLAY: ":99.0"
+        run: |
+          lerna run build:prod --since ${{ github.ref }}

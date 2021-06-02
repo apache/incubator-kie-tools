@@ -60,7 +60,6 @@ jobs:
       - name: Build repository
         run: |
           yarn lerna run build:prod --scope=chrome-extension-pack-kogito-kie-editors --scope=@kogito-tooling/online-editor --include-dependencies --stream
-          yarn lerna run build:dev --scope=chrome-extension-pack-kogito-kie-editors --stream # Use manifest.dev.json.
 
       - name: Increase inotify watches
         if: matrix.os == 'ubuntu-latest'
@@ -71,10 +70,7 @@ jobs:
         env:
           DISPLAY: ":99.0"
         run: |
-          cd packages/online-editor && yarn start &
-          cd packages/chrome-extension-pack-kogito-kie-editors && yarn serve-envelope &
-          sleep 20  
-          cd packages/chrome-extension-pack-kogito-kie-editors && yarn test:it
+          yarn lerna run test:it --scope=chrome-extension-pack-kogito-kie-editors --stream # Use manifest.dev.json.
 
       - name: Archive it test screenshots
         if: success() || failure()
