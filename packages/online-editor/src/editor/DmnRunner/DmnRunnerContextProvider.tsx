@@ -75,6 +75,9 @@ export function DmnRunnerContextProvider(props: Props) {
                   if (!value || value.type) {
                     delete (newFormData as any)[property];
                   }
+                  if (value?.format) {
+                    (newFormData as any)[property] = undefined;
+                  }
                   return newFormData;
                 },
                 { ...previousFormData }

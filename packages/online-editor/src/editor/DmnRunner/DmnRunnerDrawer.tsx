@@ -38,7 +38,6 @@ import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circl
 import { diff } from "deep-object-diff";
 import { ErrorBoundary } from "../../common/ErrorBoundry";
 import { useDmnRunner } from "./DmnRunnerContext";
-import { THROTTLING_TIME } from "./DmnRunnerContextProvider";
 import { usePrevious } from "../../common/Hooks";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 import { Notification } from "@kogito-tooling/notifications/dist/api";
@@ -46,6 +45,8 @@ import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { useOnlineI18n } from "../../common/i18n";
 import { I18nWrapped } from "../../../../i18n/src/react-components";
+import { Tooltip } from "@patternfly/react-core";
+import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon";
 
 enum ButtonPosition {
   INPUT,
@@ -58,6 +59,7 @@ interface Props {
 
 const DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION = 711;
 const AUTO_SAVE_DELAY = 500;
+const DATE_REGEX = /\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2]\d|3[0-1])T(?:[0-1]\d|2[0-3]):[0-5]\d:[0-5]\dZ/;
 
 interface DmnRunnerStylesConfig {
   contentWidth: "50%" | "100%";
@@ -104,21 +106,6 @@ export function DmnRunnerDrawer(props: Props) {
     }
   }, []);
 
-  // Default values of the form
-  const defaultFormValues = useMemo(() => {
-    return Object.keys(dmnRunner.jsonSchemaBridge?.schema?.properties ?? {}).reduce((acc, property) => {
-      if (Object.hasOwnProperty.call(dmnRunner.jsonSchemaBridge?.schema?.properties[property], "$ref")) {
-        const refPath = dmnRunner.jsonSchemaBridge?.schema?.properties[property].$ref!.split("/").pop() ?? "";
-        if (dmnRunner.jsonSchemaBridge?.schema?.definitions[refPath].type === "object") {
-          acc[`${property}`] = {};
-          return acc;
-        }
-      }
-      acc[`${property}`] = undefined;
-      return acc;
-    }, {} as { [x: string]: any });
-  }, [dmnRunner.jsonSchemaBridge]);
-
   const setExecutionNotifications = useCallback(
     (result: DmnResult) => {
       const decisionNameByDecisionId = result.decisionResults?.reduce(
@@ -161,35 +148,33 @@ export function DmnRunnerDrawer(props: Props) {
       return props.editor
         .getContent()
         .then((content) => {
-          dmnRunner.service
-            .result({ context: { ...defaultFormValues, ...formData }, model: content })
-            .then((result) => {
-              if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
-                dmnRunner.setFormError(true);
-                return;
+          dmnRunner.service.result({ context: { ...formData }, model: content }).then((result) => {
+            if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
+              dmnRunner.setFormError(true);
+              return;
+            }
+
+            setExecutionNotifications(result);
+
+            setDmnRunnerResults((previousDmnRunnerResult) => {
+              const differences = result?.decisionResults
+                ?.map((decisionResult, index) => diff(previousDmnRunnerResult?.[index] ?? {}, decisionResult ?? {}))
+                .map((difference) => {
+                  delete (difference as any).messages;
+                  return difference;
+                });
+              if (differences?.length !== 0) {
+                setDmnRunnerResponseDiffs(differences);
               }
-
-              setExecutionNotifications(result);
-
-              setDmnRunnerResults((previousDmnRunnerResult) => {
-                const differences = result?.decisionResults
-                  ?.map((decisionResult, index) => diff(previousDmnRunnerResult?.[index] ?? {}, decisionResult ?? {}))
-                  .map((difference) => {
-                    delete (difference as any).messages;
-                    return difference;
-                  });
-                if (differences?.length !== 0) {
-                  setDmnRunnerResponseDiffs(differences);
-                }
-                return result?.decisionResults;
-              });
+              return result?.decisionResults;
             });
+          });
         })
         .catch(() => {
           setDmnRunnerResults(undefined);
         });
     },
-    [props.editor, dmnRunner.service, defaultFormValues, setExecutionNotifications]
+    [props.editor, dmnRunner.service, setExecutionNotifications]
   );
 
   // Update outputs column on form change
@@ -212,77 +197,51 @@ export function DmnRunnerDrawer(props: Props) {
   }, []);
 
   // Validation occurs on every change and submit.
-  const onValidate = useCallback((model, error: any) => {
-    if (!error) {
-      return;
-    }
-    // if the form has an error, the error should be displayed and the outputs column should be updated anyway.
-    const something: {
-      details: object[];
-      changes: Array<[string, string | number | undefined]>;
-    } = error.details.reduce(
-      (infos: any, detail: any) => {
-        if (detail.keyword === "type") {
-          // If it's a type error, it's handled by replacing the current value with a undefined value.
-          const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
-
-          // FIXME: tiago commented this code because of KOGITO-5111. Need to investigate.
-          // autoFormRef.current?.change(formFieldPath, undefined);
-
-          infos.changes = [...infos.changes, [formFieldPath, undefined]];
+  const onValidate = useCallback(
+    (model, error: any) => {
+      if (!error) {
+        return;
+      }
+      // if the form has an error, the error should be displayed and the outputs column should be updated anyway.
+      const {
+        details,
+        changes,
+      }: {
+        details: object[];
+        changes: Array<[string, string | number | undefined]>;
+      } = error.details.reduce(
+        (infos: any, detail: any) => {
+          if (detail.keyword === "type") {
+            // If it's a type error, it's handled by replacing the current value with a undefined value.
+            const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
+            infos.changes = [...infos.changes, [formFieldPath, undefined]];
+            return infos;
+          } else if (detail.keyword === "enum") {
+            // A enum error is caused by a type error.
+            const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
+            infos.changes = [...infos.changes, [formFieldPath, undefined]];
+            return infos;
+          }
+          infos.details = [...infos.details, detail];
           return infos;
-        } else if (detail.keyword === "enum") {
-          // FIXME: tiago commented this code because of KOGITO-5111. Need to investigate.
-          //
-          // A enum error is caused by a type error.
-          // const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
-          // autoFormRef.current?.change(formFieldPath, undefined);
-
-          return infos;
-        } else if (detail.keyword === "format") {
-          // const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
-          // autoFormRef.current?.change(formFieldPath, undefined);
-          // infos.changes = [...infos.changes, [formFieldPath, undefined]];
-          // return infos;
-        }
-        infos.details = [...infos.details, detail];
-        return infos;
-      },
-      { details: [], changes: [] }
-    );
-    // Update formData with the current change.
-    something.changes.forEach(([formFieldPath, fieldValue]) => {
-      formFieldPath?.split(".")?.reduce((deeper, field, index, array) => {
-        if (index === array.length - 1) {
-          deeper[field] = fieldValue;
-        } else {
-          return deeper[field];
-        }
-      }, model);
-    });
-    dmnRunner.setFormData(model);
-    return { details: something.details };
-  }, []);
-
-  // Subscribe to any change on the DMN Editor and submit the form
-  useEffect(() => {
-    if (props.editor) {
-      let timeout: number | undefined;
-      const subscription = props.editor.getStateControl().subscribe(() => {
-        if (timeout) {
-          clearTimeout(timeout);
-        }
-
-        timeout = window.setTimeout(() => {
-          updateDmnRunnerResults(dmnRunner.formData);
-        }, THROTTLING_TIME);
+        },
+        { details: [], changes: [] }
+      );
+      // Update formData with the current change.
+      changes.forEach(([formFieldPath, fieldValue]) => {
+        formFieldPath?.split(".")?.reduce((deeper, field, index, array) => {
+          if (index === array.length - 1) {
+            deeper[field] = fieldValue;
+          } else {
+            return deeper[field];
+          }
+        }, model);
       });
-
-      return () => {
-        props.editor?.getStateControl().unsubscribe(subscription);
-      };
-    }
-  }, [props.editor, dmnRunner.formData, updateDmnRunnerResults]);
+      dmnRunner.setFormData(model);
+      return { details };
+    },
+    [dmnRunner, dataPathToFormFieldPath]
+  );
 
   const shouldRenderForm = useMemo(() => {
     return (
@@ -522,7 +481,24 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
       case "boolean":
         return dmnRunnerResult ? <i>true</i> : <i>false</i>;
       case "number":
+        return dmnRunnerResult;
       case "string":
+        if (dmnRunnerResult.match(DATE_REGEX)) {
+          const current = new Date(dmnRunnerResult);
+          return (
+            <>
+              <Tooltip
+                key={`date-tooltip-${dmnRunnerResult}`}
+                content={<span>This value is in UTC. The value in your current timezone is {current.toString()}</span>}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <p style={{ marginRight: "10px" }}>{dmnRunnerResult}</p>
+                  <OutlinedQuestionCircleIcon />
+                </div>
+              </Tooltip>
+            </>
+          );
+        }
         return dmnRunnerResult;
       case "object":
         return dmnRunnerResult ? (
