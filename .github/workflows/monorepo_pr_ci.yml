@@ -68,4 +68,4 @@ jobs:
           KOGITO_TOOLING_BUILD_testIT: "true"
           DISPLAY: ":99.0"
         run: |
-          lerna run build:prod --since ${{ github.event.pull_request.base.sha }}
+          lerna run build:prod --stream --since ${{ github.event.pull_request.base.sha }}
