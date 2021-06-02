@@ -37,7 +37,7 @@ jobs:
           KOGITO_TOOLING_BUILD_test: "false"
           KOGITO_TOOLING_BUILD_testIT: "false"
         run: |
-          export REF=${{ github.ref }} &&
+          export REF=${{ github.base_ref }} &&
           export DEPENDENCIES=$(diff <(echo "$(lerna ls --since $REF --include-dependencies)" ) <(echo "$(lerna ls --since $REF)") --changed-group-format='%<%>' --unchanged-group-format='') &&
           export SCOPE=$(echo $DEPENDENCIES | xargs -I{} echo '--scope="{}"') &&
           echo $REF $SCOPE &&
@@ -64,4 +64,4 @@ jobs:
           KOGITO_TOOLING_BUILD_testIT: "true"
           DISPLAY: ":99.0"
         run: |
-          lerna run build:prod --since ${{ github.ref }}
+          lerna run build:prod --since ${{ github.base_ref }}
