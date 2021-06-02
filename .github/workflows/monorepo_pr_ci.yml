@@ -16,7 +16,6 @@ jobs:
       - name: "Fetch Git tags"
         run: |
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-          git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
 
       - name: "Setup Node"
         uses: actions/setup-node@v1
@@ -30,6 +29,7 @@ jobs:
 
       - name: "Bootstrap"
         run: |
+          echo ${{ github.event }}
           yarn bootstrap
 
       - name: "Build dependencies"
@@ -67,4 +67,4 @@ jobs:
           KOGITO_TOOLING_BUILD_testIT: "true"
           DISPLAY: ":99.0"
         run: |
-          lerna run build:prod --since ${{ github.base_ref }}
+          lerna run build:prod --since origin/${{ github.base_ref }}
