@@ -42,12 +42,11 @@ jobs:
           KOGITO_TOOLING_BUILD_testIT: "false"
         run: |
           export REF=${{ github.event.pull_request.base.sha }} &&
-          export DEPENDENCIES=$(diff <(echo "$(lerna ls --since $REF --include-dependencies)" ) <(echo "$(lerna ls --since $REF)") --changed-group-format='%<%>' --unchanged-group-format='') &&
-          export SCOPE=$(echo $DEPENDENCIES | xargs -I{} echo '--scope="{}"') &&
+          export SCOPE=$(diff <(echo "$(lerna ls --since $REF --include-dependencies)") <(echo "$(lerna ls --since $REF)") --changed-group-format='%<%>' --unchanged-group-format='' | xargs -I{} echo -n ' --scope="{}"') &&
           echo $REF $SCOPE &&
           yarn run-script-if --silent --env SCOPE --eq "" \
-            --then 'echo No dependencies to build.' \
-            --else 'lerna run --stream build:dev '$SCOPE
+            --then "echo No dependencies to build." \
+            --else "lerna run --stream build:dev $SCOPE"
 
       - name: "Start Xvfb (Ubuntu only)"
         run: |
