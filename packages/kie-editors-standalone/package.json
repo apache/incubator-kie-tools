@@ -12,7 +12,8 @@
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@kie-tooling-core/editor": "^0.0.1",
     "@kogito-tooling/external-assets-base": "0.10.0",
     "@kogito-tooling/kie-bc-editors": "0.10.0"
   },

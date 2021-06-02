@@ -23,5 +23,7 @@
       "@babel/react"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "@kie-tooling-core/i18n": "^0.0.1"
+  }
 }
