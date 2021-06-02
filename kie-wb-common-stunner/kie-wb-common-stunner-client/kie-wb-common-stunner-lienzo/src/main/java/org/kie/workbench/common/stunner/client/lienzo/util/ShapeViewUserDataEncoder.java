@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 public class ShapeViewUserDataEncoder {
 
-    protected ShapeViewUserDataEncoder() {
+    ShapeViewUserDataEncoder() {
 
     }
 
@@ -69,6 +69,7 @@ public class ShapeViewUserDataEncoder {
         shapeSupplier.get().setUserData(previousUserData + key + "=" + value);
     }
 
+    @SuppressWarnings("all")
     public void setShapeViewChildrenIds(String uuid, IContainer container) {
         //recursive call to set children in case of container
         container.getChildNodes().toList().stream()
@@ -82,8 +83,13 @@ public class ShapeViewUserDataEncoder {
                 .filter(child -> child instanceof IDrawable<?>)
                 .forEach(child -> {
                     IDrawable drawable = (IDrawable) child;
-                    //id == parent uuid + children userData
-                    drawable.setID(uuid + drawable.getUserData());
+                    String suffix = "";
+                    if (null != drawable.getUserData()) {
+                        suffix = drawable.getUserData().toString();
+                    } else if (null != drawable.getID()){
+                        suffix = "_" + drawable.getID();
+                    }
+                    drawable.setID(uuid + suffix);
                 });
     }
 }
