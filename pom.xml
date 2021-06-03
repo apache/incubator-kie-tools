@@ -6,7 +6,7 @@
 	<groupId>org.kie</groupId>
 	<!-- comment comment comment -->
 	<artifactId>lienzo-core</artifactId>
-	<version>7.55.0-SNAPSHOT</version>
+	<version>7.56.0-SNAPSHOT</version>
 	<name>[KIE] Lienzo - Core Framework</name>
 	<description>[KIE] Lienzo - Core Framework</description>
         <url>http://www.kiegroup.org</url>
