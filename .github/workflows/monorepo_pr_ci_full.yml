@@ -29,7 +29,15 @@ jobs:
           npm install -g lerna@4.0.0 yarn@1.22.10
           yarn config set network-timeout 1000000
 
-      - uses: hmarr/debug-action@v2
+      - name: "Check yarn.lock"
+        shell: bash
+        run: |
+          git diff yarn.lock;
+          [ "0" == "$(git diff yarn.lock | wc -l)" ]
+
+      - name: "Check format"
+        run: |
+          yarn format:check
 
       - name: "Bootstrap"
         run: |
@@ -39,11 +47,11 @@ jobs:
         run: |
           /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 
-      - name: "Increase inotify watches"
+      - name: "Increase inotify watches (Ubuntu only)"
         run: |
           echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
-      - name: "Build changed and dependents"
+      - name: "Build"
         env:
           WEBPACK_minimize: "false"
           WEBPACK_TS_LOADER_transpileOnly: "false"
