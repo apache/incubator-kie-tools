@@ -20,7 +20,7 @@ const supportedFileExtensions = ["bpmn", "dmn", "bpmn2", "myext"];
 
 describe("utils::extractEditorFileExtensionFromUrl", () => {
   const originalLocation = window.location;
-  const baseUrl = "https://kiegroup.github.io/kogito-online";
+  const baseUrl = "https://kiegroup.github.io/kogito-online/dev/#/";
 
   function setWindowLocationHref(url: string) {
     delete (window as any).location;
