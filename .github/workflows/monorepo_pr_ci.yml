@@ -4,8 +4,8 @@ on:
   pull_request:
     branches: "**"
     paths:
-      - "./packages/*"
-      - "!./packages/*"
+      - "packages/**"
+      - "!packages/**"
 
 jobs:
   monorepo-pr-ci:
