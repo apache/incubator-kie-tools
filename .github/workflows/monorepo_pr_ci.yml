@@ -3,7 +3,6 @@ name: "CI :: Monorepo"
 on:
   pull_request:
     branches: "**"
-    paths: ["./packages/*", "!./packages/*"]
 
 jobs:
   monorepo-pr-ci:
