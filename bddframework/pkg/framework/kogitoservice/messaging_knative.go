@@ -30,7 +30,10 @@ import (
 	"knative.dev/pkg/tracker"
 )
 
-const topicIdentifier = "kogito.kie.org/messageEventId"
+const (
+	topicIdentifier        = "kogito.kie.org/cloudEventType"
+	triggerFilterAttribute = "type"
+)
 
 // knativeMessagingDeployer implementation of messagingHandler
 type knativeMessagingDeployer struct {
@@ -55,41 +58,44 @@ func (k *knativeMessagingDeployer) CreateRequiredResources(service api.KogitoSer
 		return err
 	}
 	for _, topic := range topics {
-		if err := k.createKnativeTriggerIfNotExists(topic, service, infra); err != nil {
+		if err := k.createKnativeTriggersIfNotExists(topic, service, infra); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (k *knativeMessagingDeployer) createKnativeTriggerIfNotExists(topic messagingTopic, service api.KogitoService, infra api.KogitoInfraInterface) error {
+func (k *knativeMessagingDeployer) createKnativeTriggersIfNotExists(topic messagingTopic, service api.KogitoService, infra api.KogitoInfraInterface) error {
 	if topic.Kind == incoming {
-		if exists, err := k.triggerExists(topic, service); err != nil {
-			return err
-		} else if !exists {
-			knativeRes := k.newTrigger(topic, service, infra)
-			if err := kubernetes.ResourceC(k.Client).CreateForOwner(knativeRes, service, k.Scheme); err != nil {
+		for _, event := range topic.EventsMeta {
+			if exists, err := k.triggerExists(event, service); err != nil {
 				return err
+			} else if !exists {
+				trigger := k.newTrigger(event, service, infra)
+				if err := kubernetes.ResourceC(k.Client).CreateForOwner(trigger, service, k.Scheme); err != nil {
+					return err
+				}
 			}
 		}
 	}
 	return nil
 }
 
-// newTrigger creates a new Knative Eventing Trigger reference for the given Topic
-func (k *knativeMessagingDeployer) newTrigger(t messagingTopic, service api.KogitoService, infra api.KogitoInfraInterface) *eventingv1.Trigger {
+// newTrigger creates a new Knative Eventing Trigger reference for the given Event
+// See: https://knative.dev/docs/eventing/broker/triggers/#trigger-filtering
+func (k *knativeMessagingDeployer) newTrigger(e messagingEventMeta, service api.KogitoService, infra api.KogitoInfraInterface) *eventingv1.Trigger {
 	return &eventingv1.Trigger{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("%s-listener-%s", service.GetName(), util.RandomSuffix()),
 			Namespace: service.GetNamespace(),
 			Labels: map[string]string{
 				framework.LabelAppKey: service.GetName(),
-				topicIdentifier:       t.Name,
+				topicIdentifier:       e.Type,
 			},
 		},
 		Spec: eventingv1.TriggerSpec{
 			Broker: infra.GetSpec().GetResource().GetName(),
-			Filter: &eventingv1.TriggerFilter{Attributes: eventingv1.TriggerFilterAttributes{"type": t.Name}},
+			Filter: &eventingv1.TriggerFilter{Attributes: eventingv1.TriggerFilterAttributes{triggerFilterAttribute: e.Type}},
 			Subscriber: duckv1.Destination{
 				Ref: &duckv1.KReference{
 					Name:       service.GetName(),
@@ -144,11 +150,11 @@ func (k *knativeMessagingDeployer) newSinkBinding(service api.KogitoService, inf
 	}
 }
 
-func (k *knativeMessagingDeployer) triggerExists(t messagingTopic, service api.KogitoService) (bool, error) {
+func (k *knativeMessagingDeployer) triggerExists(e messagingEventMeta, service api.KogitoService) (bool, error) {
 	triggers := &eventingv1.TriggerList{}
 	labels := map[string]string{
 		framework.LabelAppKey: service.GetName(),
-		topicIdentifier:       t.Name,
+		topicIdentifier:       e.Type,
 	}
 	if err := kubernetes.ResourceC(k.Client).ListWithNamespaceAndLabel(service.GetNamespace(), triggers, labels); err != nil {
 		return false, err
