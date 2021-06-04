@@ -17,7 +17,6 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DecisionResult, DecisionResultMessage, DmnResult, EvaluationStatus, Result } from "./DmnRunnerService";
-import { AutoForm } from "uniforms-patternfly";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
@@ -36,9 +35,7 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
 import { diff } from "deep-object-diff";
-import { ErrorBoundary } from "../../common/ErrorBoundry";
 import { useDmnRunner } from "./DmnRunnerContext";
-import { usePrevious } from "../../common/Hooks";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 import { Notification } from "@kogito-tooling/notifications/dist/api";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
@@ -47,6 +44,8 @@ import { useOnlineI18n } from "../../common/i18n";
 import { I18nWrapped } from "../../../../i18n/src/react-components";
 import { Tooltip } from "@patternfly/react-core";
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon";
+import { DmnForm } from "../../../../form/src";
+import { usePrevious } from "../../common/Hooks";
 
 enum ButtonPosition {
   INPUT,
@@ -71,11 +70,10 @@ interface DmnRunnerStylesConfig {
 export function DmnRunnerDrawer(props: Props) {
   const notificationsPanel = useNotificationsPanel();
   const { i18n } = useOnlineI18n();
+  const formRef = useRef<HTMLFormElement>(null);
   const dmnRunner = useDmnRunner();
   const [dmnRunnerResults, setDmnRunnerResults] = useState<DecisionResult[]>();
-  const autoFormRef = useRef<HTMLFormElement>();
   const [dmnRunnerResponseDiffs, setDmnRunnerResponseDiffs] = useState<object[]>();
-  const errorBoundaryRef = useRef<ErrorBoundary>(null);
   const [dmnRunnerStylesConfig, setDmnRunnerStylesConfig] = useState<DmnRunnerStylesConfig>({
     contentWidth: "50%",
     contentHeight: "100%",
@@ -125,7 +123,7 @@ export function DmnRunnerDrawer(props: Props) {
 
       const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(([sourceId, messages]) => {
         const path = decisionNameByDecisionId?.get(sourceId) ?? "";
-        return messages.map((message) => ({
+        return messages.map((message: any) => ({
           type: "PROBLEM",
           path,
           severity: message.severity,
@@ -182,79 +180,13 @@ export function DmnRunnerDrawer(props: Props) {
     updateDmnRunnerResults(dmnRunner.formData);
   }, [dmnRunner.formData, updateDmnRunnerResults]);
 
-  const onSubmit = useCallback((data) => {
-    dmnRunner.setFormData(data);
-  }, []);
-
-  const dataPathToFormFieldPath = useCallback((path: string) => {
-    path = path.startsWith("/")
-      ? path.replace(/\//g, ".").replace(/~0/g, "~").replace(/~1/g, "/")
-      : path
-          .replace(/\[('|")(.+?)\1\]/g, ".$2")
-          .replace(/\[(.+?)\]/g, ".$1")
-          .replace(/\\'/g, "'");
-    return path.slice(1);
-  }, []);
-
-  // Validation occurs on every change and submit.
-  const onValidate = useCallback(
-    (model, error: any) => {
-      if (!error) {
-        return;
-      }
-      // if the form has an error, the error should be displayed and the outputs column should be updated anyway.
-      const {
-        details,
-        changes,
-      }: {
-        details: object[];
-        changes: Array<[string, string | number | undefined]>;
-      } = error.details.reduce(
-        (infos: any, detail: any) => {
-          if (detail.keyword === "type") {
-            // If it's a type error, it's handled by replacing the current value with a undefined value.
-            const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
-            infos.changes = [...infos.changes, [formFieldPath, undefined]];
-            return infos;
-          } else if (detail.keyword === "enum") {
-            // A enum error is caused by a type error.
-            const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
-            infos.changes = [...infos.changes, [formFieldPath, undefined]];
-            return infos;
-          }
-          infos.details = [...infos.details, detail];
-          return infos;
-        },
-        { details: [], changes: [] }
-      );
-      // Update formData with the current change.
-      changes.forEach(([formFieldPath, fieldValue]) => {
-        formFieldPath?.split(".")?.reduce((deeper, field, index, array) => {
-          if (index === array.length - 1) {
-            deeper[field] = fieldValue;
-          } else {
-            return deeper[field];
-          }
-        }, model);
-      });
-      dmnRunner.setFormData(model);
-      return { details };
-    },
-    [dmnRunner, dataPathToFormFieldPath]
-  );
-
   const shouldRenderForm = useMemo(() => {
     return (
       !dmnRunner.formError &&
-      dmnRunner.jsonSchemaBridge &&
-      Object.keys(dmnRunner.jsonSchemaBridge?.schema.properties ?? {}).length !== 0
+      dmnRunner.formSchema &&
+      Object.keys(dmnRunner.formSchema?.definitions?.InputSet?.properties ?? {}).length !== 0
     );
-  }, [dmnRunner.formError, dmnRunner.jsonSchemaBridge]);
-
-  // Resets the ErrorBoundary everytime the JsonSchemaBridge is updated
-  useEffect(() => {
-    errorBoundaryRef.current?.reset();
-  }, [dmnRunner.jsonSchemaBridge]);
+  }, [dmnRunner.formError, dmnRunner.formSchema]);
 
   const previousFormError = usePrevious(dmnRunner.formError);
   useEffect(() => {
@@ -263,9 +195,9 @@ export function DmnRunnerDrawer(props: Props) {
       updateDmnRunnerResults(dmnRunner.formData);
     } else if (previousFormError) {
       setTimeout(() => {
-        autoFormRef.current?.submit();
+        formRef.current?.submit();
         Object.keys(dmnRunner.formData ?? {}).forEach((propertyName) => {
-          autoFormRef.current?.change(propertyName, dmnRunner.formData?.[propertyName]);
+          formRef.current?.change(propertyName, dmnRunner.formData?.[propertyName]);
         });
       }, 0);
     }
@@ -333,22 +265,23 @@ export function DmnRunnerDrawer(props: Props) {
             <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
               <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
                 {shouldRenderForm ? (
-                  <ErrorBoundary ref={errorBoundaryRef} setHasError={dmnRunner.setFormError} error={formErrorMessage}>
-                    <AutoForm
-                      id={"form"}
-                      model={dmnRunner.formData}
-                      ref={autoFormRef}
-                      showInlineError={true}
-                      autosave={true}
-                      autosaveDelay={AUTO_SAVE_DELAY}
-                      schema={dmnRunner.jsonSchemaBridge}
-                      onSubmit={onSubmit}
-                      placeholder={true}
-                      errorsField={() => <></>}
-                      submitField={() => <></>}
-                      onValidate={onValidate}
-                    />
-                  </ErrorBoundary>
+                  <DmnForm
+                    formData={dmnRunner.formData}
+                    setFormData={dmnRunner.setFormData}
+                    formError={dmnRunner.formError}
+                    setFormError={dmnRunner.setFormError}
+                    formErrorMessage={formErrorMessage}
+                    formSchema={dmnRunner.formSchema}
+                    updateDmnRunnerResults={updateDmnRunnerResults}
+                    id={"form"}
+                    formRef={formRef}
+                    showInlineError={true}
+                    autosave={true}
+                    autosaveDelay={AUTO_SAVE_DELAY}
+                    placeholder={true}
+                    errorsField={() => <></>}
+                    submitField={() => <></>}
+                  />
                 ) : dmnRunner.formError ? (
                   formErrorMessage
                 ) : (
@@ -513,7 +446,7 @@ function DmnRunnerResult(props: DmnRunnerResponseProps) {
             </DescriptionList>
           ) : (
             <DescriptionList>
-              {Object.entries(dmnRunnerResult).map(([key, value]) => (
+              {Object.entries(dmnRunnerResult).map(([key, value]: [string, object | string]) => (
                 <DescriptionListGroup key={`object-result-${key}-${value}`}>
                   <DescriptionListTerm>{key}</DescriptionListTerm>
                   {typeof value === "object" && !!value ? (

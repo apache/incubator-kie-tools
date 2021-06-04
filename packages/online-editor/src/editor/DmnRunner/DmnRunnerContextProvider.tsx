@@ -18,8 +18,7 @@ import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { GlobalContext } from "../../common/GlobalContext";
 import { DmnRunnerContext } from "./DmnRunnerContext";
-import { DmnRunnerJsonSchemaBridge } from "./uniforms/DmnRunnerJsonSchemaBridge";
-import { DmnRunnerService } from "./DmnRunnerService";
+import { DmnFormSchema, DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerModal } from "./DmnRunnerModal";
 import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
@@ -50,20 +49,20 @@ export function DmnRunnerContextProvider(props: Props) {
   const [status, setStatus] = useState(() =>
     globalContext.file.fileExtension === "dmn" ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE
   );
-  const [jsonSchemaBridge, setJsonSchemaBridge] = useState<DmnRunnerJsonSchemaBridge>();
+  const [formSchema, setFormSchema] = useState<DmnFormSchema>();
   const [port, setPort] = useState(() => getCookie(DMN_RUNNER_PORT_COOKIE_NAME) ?? DMN_RUNNER_DEFAULT_PORT);
   const service = useMemo(() => new DmnRunnerService(port, i18n), [port]);
   const version = useMemo(() => process.env.WEBPACK_REPLACE__dmnRunnerCompatibleVersion ?? "0.0.0", []);
   const [formError, setFormError] = useState(false);
 
-  const updateJsonSchemaBridge = useCallback(() => {
+  const updateFormSchema = useCallback(() => {
     return props.editor
       ?.getContent()
-      .then((content) => service.getJsonSchemaBridge(content ?? ""))
-      .then((newJsonSchemaBridge) => {
+      .then((content) => service.getFormSchema(content ?? ""))
+      .then((newSchema) => {
         const propertiesDifference = diff(
-          jsonSchemaBridge?.schema.definitions.InputSet.properties ?? {},
-          newJsonSchemaBridge?.schema.definitions.InputSet.properties ?? {}
+          formSchema?.definitions?.InputSet?.properties ?? {},
+          newSchema?.definitions?.InputSet?.properties ?? {}
         );
 
         // Remove an formData property that has been deleted;
@@ -87,13 +86,13 @@ export function DmnRunnerContextProvider(props: Props) {
           }
           return false;
         });
-        setJsonSchemaBridge(newJsonSchemaBridge);
+        setFormSchema(newSchema);
       })
       .catch((err) => {
         console.error(err);
         setFormError(true);
       });
-  }, [props.editor, service, jsonSchemaBridge]);
+  }, [props.editor, service, formSchema]);
 
   // Pooling to detect either if DMN Runner is running or has stopped
   useEffect(() => {
@@ -114,7 +113,7 @@ export function DmnRunnerContextProvider(props: Props) {
 
       // After the detection of the DMN Runner, set the schema for the first time
       if (props.isEditorReady) {
-        updateJsonSchemaBridge();
+        updateFormSchema();
       }
 
       return () => window.clearInterval(detectCrashesOrStops);
@@ -153,11 +152,11 @@ export function DmnRunnerContextProvider(props: Props) {
         clearTimeout(timeout);
       }
       timeout = window.setTimeout(() => {
-        updateJsonSchemaBridge();
+        updateFormSchema();
       }, THROTTLING_TIME);
     });
     return () => props.editor?.getStateControl().unsubscribe(subscription);
-  }, [props.editor, status, updateJsonSchemaBridge]);
+  }, [props.editor, status, updateFormSchema]);
 
   const saveNewPort = useCallback((newPort: string) => {
     setPort(newPort);
@@ -206,7 +205,7 @@ export function DmnRunnerContextProvider(props: Props) {
       value={{
         status,
         setStatus,
-        jsonSchemaBridge,
+        formSchema,
         isDrawerExpanded,
         setDrawerExpanded,
         isModalOpen,

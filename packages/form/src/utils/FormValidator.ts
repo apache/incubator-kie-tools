@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as Ajv from "ajv";
+import Ajv from "ajv";
 import { ValidateFunction } from "ajv";
 
 /**

@@ -17,13 +17,12 @@
 import * as React from "react";
 import { useContext } from "react";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
-import { DmnRunnerJsonSchemaBridge } from "./uniforms/DmnRunnerJsonSchemaBridge";
-import { DmnRunnerService } from "./DmnRunnerService";
+import { DmnFormSchema, DmnRunnerService } from "./DmnRunnerService";
 
 export interface DmnRunnerContextType {
   status: DmnRunnerStatus;
   setStatus: React.Dispatch<DmnRunnerStatus>;
-  jsonSchemaBridge?: DmnRunnerJsonSchemaBridge;
+  formSchema?: DmnFormSchema;
   isDrawerExpanded: boolean;
   setDrawerExpanded: React.Dispatch<boolean>;
   isModalOpen: boolean;
