@@ -15,7 +15,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: .github/actions/setup-env
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
         with:
           os: ubuntu-latest
 
