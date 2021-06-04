@@ -29,6 +29,10 @@ jobs:
           npm install -g lerna@4.0.0 yarn@1.22.10
           yarn config set network-timeout 1000000
 
+      - name: "Bootstrap"
+        run: |
+          yarn bootstrap
+
       - name: "Check yarn.lock"
         shell: bash
         run: |
@@ -38,10 +42,6 @@ jobs:
       - name: "Check format"
         run: |
           yarn format:check
-
-      - name: "Bootstrap"
-        run: |
-          yarn bootstrap
 
       - name: "Build dependencies"
         env:
