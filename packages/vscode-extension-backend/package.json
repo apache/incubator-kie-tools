@@ -58,7 +58,7 @@
     ]
   },
   "scripts": {
-    "package:prod": "cross-var \"vsce package --yarn -o ./dist/vscode-extension-backend_$npm_package_version.vsix\"",
+    "package:prod": "vsce package --yarn -o ./dist/vscode-extension-backend_$npm_package_version.vsix",
     "compile": "webpack",
     "watch": "webpack",
     "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",
