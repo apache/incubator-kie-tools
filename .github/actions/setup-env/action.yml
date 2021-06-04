@@ -10,20 +10,18 @@ runs:
   using: "composite"
   steps:
     - name: "Fetch Git tags"
+      shell: bash
       run: |
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
-    - name: "Setup Node"
-      uses: actions/setup-node@v1
-      with:
-        node-version: 16.2.0
-
     - name: "Setup Yarn and Lerna"
+      shell: bash
       run: |
         npm install -g lerna@4.0.0 yarn@1.22.10
         yarn config set network-timeout 1000000
 
     - name: "Bootstrap"
+      shell: bash
       run: |
         yarn bootstrap
 
@@ -34,13 +32,16 @@ runs:
         [ "0" == "$(git diff yarn.lock | wc -l)" ]
 
     - name: "Check format"
+      shell: bash
       run: |
         yarn format:check
 
     - name: "Start Xvfb (Ubuntu only)"
+      shell: bash
       run: |
         /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 
     - name: "Increase inotify watches (Ubuntu only)"
+      shell: bash
       run: |
         echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
