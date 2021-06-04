@@ -33,6 +33,7 @@ Feature: Kogito integration with Keycloak
       | runtime-env  | quarkus.http.auth.permission.unsecure.policy   | permit                                         |
       | runtime-env  | quarkus.http.auth.permission.secure.paths      | /*                                             |
       | runtime-env  | quarkus.http.auth.permission.secure.policy     | authenticated                                  |
+      | runtime-env  | quarkus.oidc.token.issuer                      | any                                            |
     And Kogito Data Index has 1 pods running within 10 minutes
     And Stores access token for user "my-user" and password "my-password" on realm "kogito-realm" and client "kogito-dataindex-service" into variable "my-user-token"
 
@@ -61,6 +62,7 @@ Feature: Kogito integration with Keycloak
       | runtime-env  | quarkus.http.auth.permission.unsecure.policy   | permit                                         |
       | runtime-env  | quarkus.http.auth.permission.secure.paths      | /*                                             |
       | runtime-env  | quarkus.http.auth.permission.secure.policy     | authenticated                                  |
+      | runtime-env  | quarkus.oidc.token.issuer                      | any                                            |
     And Kogito Jobs Service has 1 pods running within 10 minutes
 
     Then HTTP GET request on service "jobs-service" with path "jobs" is forbidden within 1 minutes
@@ -98,6 +100,7 @@ Feature: Kogito integration with Keycloak
       | runtime-env  | quarkus.http.auth.permission.unsecure.policy   | permit                                         |
       | runtime-env  | quarkus.http.auth.permission.secure.paths      | /*                                             |
       | runtime-env  | quarkus.http.auth.permission.secure.policy     | authenticated                                  |
+      | runtime-env  | quarkus.oidc.token.issuer                      | any                                            |
     And Kogito Explainability has 1 pods running within 10 minutes
 
     Then HTTP GET request on service "explainability" with path "/v1/explain" is forbidden within 1 minutes
@@ -142,6 +145,7 @@ Feature: Kogito integration with Keycloak
       | runtime-env  | quarkus.http.auth.permission.unsecure.policy   | permit                                         |
       | runtime-env  | quarkus.http.auth.permission.secure.paths      | /*                                             |
       | runtime-env  | quarkus.http.auth.permission.secure.policy     | authenticated                                  |
+      | runtime-env  | quarkus.oidc.token.issuer                      | any                                            |
     And Kogito Trusty has 1 pods running within 10 minutes
 
     Then HTTP GET request on service "trusty" with path "/executions" is forbidden within 3 minutes
@@ -175,7 +179,7 @@ Feature: Kogito integration with Keycloak
       | runtime-env  | quarkus.http.auth.permission.unsecure.policy   | permit                                         |
       | runtime-env  | quarkus.http.auth.permission.secure.paths      | /*                                             |
       | runtime-env  | quarkus.http.auth.permission.secure.policy     | authenticated                                  |
-
+      | runtime-env  | quarkus.oidc.token.issuer                      | any                                            |
     And Kogito Management Console has 1 pods running within 10 minutes
 
     Then HTTP GET request on service "management-console" with path "" is forbidden within 2 minutes
@@ -210,7 +214,7 @@ Feature: Kogito integration with Keycloak
       | runtime-env  | quarkus.http.auth.permission.unsecure.policy   | permit                                         |
       | runtime-env  | quarkus.http.auth.permission.secure.paths      | /*                                             |
       | runtime-env  | quarkus.http.auth.permission.secure.policy     | authenticated                                  |
-
+      | runtime-env  | quarkus.oidc.token.issuer                      | any                                            |
     And Kogito Task Console has 1 pods running within 10 minutes
 
     Then HTTP GET request on service "task-console" with path "" is forbidden within 2 minutes
