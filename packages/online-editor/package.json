@@ -10,8 +10,8 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kie-tooling-core/editor": "^0.0.3",
-    "@kie-tooling-core/monaco-editor": "^0.0.3",
+    "@kie-tooling-core/editor": "^0.0.4",
+    "@kie-tooling-core/monaco-editor": "^0.0.4",
     "@kogito-tooling/external-assets-base": "0.10.0",
     "@kogito-tooling/i18n-common-dictionary": "0.10.0",
     "@kogito-tooling/kie-bc-editors": "0.10.0",

@@ -8,7 +8,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kie-tooling-core/chrome-extension": "^0.0.3",
+    "@kie-tooling-core/chrome-extension": "^0.0.4",
     "@kogito-tooling/external-assets-base": "0.10.0",
     "@kogito-tooling/kie-bc-editors": "0.10.0"
   },
