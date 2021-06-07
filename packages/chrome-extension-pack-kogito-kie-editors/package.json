@@ -8,7 +8,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kie-tooling-core/chrome-extension": "^0.0.2",
+    "@kie-tooling-core/chrome-extension": "^0.0.3",
     "@kogito-tooling/external-assets-base": "0.10.0",
     "@kogito-tooling/kie-bc-editors": "0.10.0"
   },
@@ -21,7 +21,7 @@
     "test:it:start:detached": "webpack serve --env dev &",
     "test:it:start:online-editor:detached": "npm --prefix ../online-editor run start &",
     "test:it:shutdown": "pgrep webpack | xargs kill",
-    "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then 'yarn rimraf ./dist-it-tests' 'yarn build:dev' 'yarn test:it:start:online-editor:detached' 'yarn test:it:start:detached' 'sleep 20' 'jest --runInBand -c ./jest.it.config.js' 'yarn test:it:shutdown'"
+    "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then 'yarn rimraf ./dist-it-tests' 'yarn build:dev' 'yarn test:it:start:online-editor:detached' 'yarn test:it:start:detached' 'sleep 20' 'jest --runInBand -c ./jest.it.config.js' --finally 'yarn test:it:shutdown'"
   },
   "babel": {
     "presets": [

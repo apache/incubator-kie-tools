@@ -7,7 +7,7 @@ on:
       - "packages/**"
 
 jobs:
-  monorepo-pr-ci:
+  monorepo-pr-ci-full:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
