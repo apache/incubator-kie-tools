@@ -45,7 +45,7 @@ export default class Driver {
     // init chrome driver log
     const LOGS_DIR: string = resolve("dist-it-tests", "logs");
     if (!existsSync(LOGS_DIR)) {
-      mkdirSync(LOGS_DIR);
+      mkdirSync(LOGS_DIR, { recursive: true });
     }
     const chromeServiceBuilder: ServiceBuilder = new ServiceBuilder();
     chromeServiceBuilder.loggingTo(LOGS_DIR + "/chromedriver.log").enableVerboseLogging();
