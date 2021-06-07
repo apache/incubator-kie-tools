@@ -43,7 +43,7 @@ export default class Driver {
     chromeOptions.addArguments("--load-extension=" + chromeExtensionPath, "--allow-insecure-localhost");
 
     // init chrome driver log
-    const LOGS_DIR: string = resolve("logs");
+    const LOGS_DIR: string = resolve("dist-it-tests", "logs");
     if (!existsSync(LOGS_DIR)) {
       mkdirSync(LOGS_DIR);
     }

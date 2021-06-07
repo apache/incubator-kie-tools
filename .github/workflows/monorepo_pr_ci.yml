@@ -50,3 +50,17 @@ jobs:
           DISPLAY: ":99.0"
         run: |
           lerna run build:prod --stream --concurrency 1 --since ${{ github.event.pull_request.base.sha }}
+
+      - name: "Upload build artifacts"
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts
+          path: |
+            packages/*/dist
+
+      - name: "Upload IT Tests artifacts"
+        uses: actions/upload-artifact@v2
+        with:
+          name: it-tests-artifacts
+          path: |
+            packages/*/dist-it-tests
