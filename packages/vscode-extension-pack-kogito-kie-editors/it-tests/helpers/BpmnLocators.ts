@@ -57,3 +57,7 @@ export const customTaskDocumentationTextArea = (): By => {
 export const assignmentsTextBoxInput = (): By => {
   return By.xpath("//input[@id='assignmentsTextBox']");
 };
+
+export const processNameInput = (): By => {
+  return By.xpath("//input[contains(@name, 'diagramSet.name')]");
+};
