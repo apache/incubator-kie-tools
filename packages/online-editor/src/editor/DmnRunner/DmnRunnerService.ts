@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { OnlineI18n } from "../../common/i18n";
 import { NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
 
 export interface DmnRunnerPayload {
@@ -68,7 +67,7 @@ export class DmnRunnerService {
   private readonly DMN_RUNNER_DMN_RESULT_URL: string;
   private readonly DMN_RUNNER_FORM_SCHEMA_URL: string;
 
-  constructor(private readonly port: string, private readonly i18n: OnlineI18n) {
+  constructor(private readonly port: string) {
     this.DMN_RUNNER_SERVER_URL = `http://localhost:${port}`;
     this.DMN_RUNNER_PING = `${this.DMN_RUNNER_SERVER_URL}/ping`;
     this.DMN_RUNNER_VALIDATE_URL = `${this.DMN_RUNNER_SERVER_URL}/jitdmn/validate`;

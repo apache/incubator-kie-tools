@@ -16,11 +16,13 @@
 
 import Ajv from "ajv";
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
+import { DmnFormI18n } from "./i18n";
 
 export class Validator {
   private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
+  private readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
 
-  constructor(private readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true })) {
+  constructor(private readonly i18n: DmnFormI18n) {
     this.setupValidator();
   }
 
@@ -53,10 +55,10 @@ export class Validator {
             details: validator.errors?.map((error: any) => {
               if (error.keyword === "format") {
                 if ((error.params as any).format === "days and time duration") {
-                  return { ...error, message: "" };
+                  return { ...error, message: this.i18n.form.validation.daysAndTimeError };
                 }
                 if ((error.params as any).format === "years and months duration") {
-                  return { ...error, message: "" };
+                  return { ...error, message: this.i18n.form.validation.yearsAndMonthsError };
                 }
               }
               return error;

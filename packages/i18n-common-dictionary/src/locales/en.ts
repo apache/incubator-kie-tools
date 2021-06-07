@@ -32,6 +32,7 @@ export const en: CommonI18n = {
     download: "Download",
     edit: "Edit",
     edited: "Edited",
+    execution: "Execution",
     exit: "Exit",
     file: "File",
     files: "Files",
@@ -62,5 +63,6 @@ export const en: CommonI18n = {
     token: "Token",
     undo: "Undo",
     uninstall: "Uninstall",
+    validation: "Validation",
   },
 };

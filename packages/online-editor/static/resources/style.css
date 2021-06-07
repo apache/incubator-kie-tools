@@ -316,25 +316,6 @@
   padding-right: 12px;
 }
 
-.kogito--editor__dmn-runner-drawer-content-body-output-card {
-  border: 0 !important;
-}
-
-.kogito--editor__dmn-runner-drawer-output-leaf-updated {
-  animation-name: highlight;
-  animation-duration: 1s;
-  border-radius: 4px;
-}
-
-@keyframes highlight {
-  0% {
-    background-color: var(--pf-global--palette--black-600);
-  }
-  100% {
-    background-color: var(--pf-global--palette--black-100);
-  }
-}
-
 .kogito--editor__dmn-runner-modal-footer {
   display: flex;
   flex-direction: column;
@@ -364,19 +345,6 @@
 
 .blink-opacity {
   animation: flickerAnimation 2s infinite cubic-bezier(0.7, 0, 0.3, 1);
-}
-
-.kogito--editor__dmn_runner-drawer-evaluation {
-  display: flex;
-  align-items: center;
-}
-
-.kogito--editor__dmn_runner-drawer-evaluation-link {
-  padding-left: 5px;
-}
-
-.kogito--editor__dmn_runner-drawer-results {
-  padding: 10px;
 }
 
 .kogito--editor__dmn-runner-modal-initial {

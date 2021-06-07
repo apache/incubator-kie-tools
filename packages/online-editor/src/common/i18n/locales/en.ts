@@ -18,7 +18,7 @@ import { OnlineI18n } from "..";
 import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
 import { wrapped } from "@kogito-tooling/i18n/dist/core";
 
-export const en = {
+export const en: OnlineI18n = {
   ...en_common,
   downloadHubModal: {
     beforeDownload: {
@@ -205,17 +205,6 @@ export const en = {
     },
   },
   dmnRunner: {
-    form: {
-      validation: {
-        daysAndTimeError: "should match format P1D(ays)2T(ime)",
-        yearsAndMonthsError: "should match format P1Y(ers)2M(onths)",
-      },
-      preProcessing: {
-        selectPlaceholder: "Select...",
-        daysAndTimePlaceholder: "P1D5T or P2D or P1T",
-        yearsAndMonthsPlaceholder: "P1Y5M or P2Y or P1M",
-      },
-    },
     modal: {
       initial: {
         runDmnModels: `Run your ${en_common.names.dmn} models and see live forms and results as you edit.`,
@@ -356,15 +345,6 @@ export const en = {
         title: "No Form",
         explanation: `Associated ${en_common.names.dmn} doesn't have any inputs.`,
       },
-      evaluation: {
-        success: "Evaluated with success",
-        skipped: "Evaluation skipped",
-        failed: "Evaluation failed",
-      },
-      withoutResponse: {
-        title: "No response",
-        explanation: "Response appears after decisions are evaluated."
-      }
     },
     button: {
       available: `This is only available in ${en_common.names.chrome} at the moment`,
@@ -372,15 +352,13 @@ export const en = {
         outdated: `The ${en_common.names.dmnRunner} is outdated`,
         connected: `The ${en_common.names.dmnRunner} is connected`,
         disconnected: `The ${en_common.names.dmnRunner} is disconnected`,
-      }
-    }
+      },
+    },
   },
   notificationsPanel: {
-    validation: "Validation",
-    execution: "Execution",
-    tooltip : {
+    tooltip: {
       retractAll: "Retract All",
-      expandAll: "Expand All"
-    }
+      expandAll: "Expand All",
+    },
   },
 };

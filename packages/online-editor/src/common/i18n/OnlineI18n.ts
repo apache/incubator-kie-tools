@@ -200,17 +200,6 @@ interface OnlineDictionary extends ReferenceDictionary {
     };
   };
   dmnRunner: {
-    form: {
-      validation: {
-        daysAndTimeError: string;
-        yearsAndMonthsError: string;
-      };
-      preProcessing: {
-        selectPlaceholder: string;
-        daysAndTimePlaceholder: string;
-        yearsAndMonthsPlaceholder: string;
-      };
-    };
     modal: {
       initial: {
         runDmnModels: string;
@@ -323,15 +312,6 @@ interface OnlineDictionary extends ReferenceDictionary {
         title: string;
         explanation: string;
       };
-      evaluation: {
-        success: string;
-        skipped: string;
-        failed: string;
-      };
-      withoutResponse: {
-        title: string;
-        explanation: string;
-      };
     };
     button: {
       available: string;
@@ -343,8 +323,6 @@ interface OnlineDictionary extends ReferenceDictionary {
     };
   };
   notificationsPanel: {
-    validation: string;
-    execution: string;
     tooltip: {
       retractAll: string;
       expandAll: string;

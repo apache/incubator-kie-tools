@@ -21,6 +21,7 @@ import { ErrorBoundary } from "@kogito-tooling/online-editor/src/common/ErrorBou
 import { dataPathToFormFieldPath } from "./uniforms/utils";
 import { DmnRunnerJsonSchemaBridge } from "./uniforms";
 import { Validator } from "./Validator";
+import { dmnFormI18n } from "./i18n";
 
 interface DmnRunnerForm {
   definitions: DmnRunnerFormDefinitions;
@@ -63,19 +64,24 @@ interface Props {
   onValidate?: (model: any, error: any) => void;
   errorsField?: () => React.ReactNode;
   submitField?: () => React.ReactNode;
+  locale?: string;
 }
 
 export function DmnForm(props: Props) {
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<DmnRunnerJsonSchemaBridge>();
-  const validator = useMemo(() => new Validator(), []);
+  const i18n = useMemo(() => {
+    dmnFormI18n.setLocale(props.locale ?? navigator.language);
+    return dmnFormI18n.getCurrent();
+  }, [props.locale]);
+  const validator = useMemo(() => new Validator(i18n), []);
 
   const setCustomPlaceholders = useCallback((value: DmnRunnerDeepProperty) => {
     if (value?.format === "days and time duration") {
-      value!.placeholder = "";
+      value!.placeholder = i18n.form.preProcessing.daysAndTimePlaceholder;
     }
     if (value?.format === "years and months duration") {
-      value!.placeholder = "";
+      value!.placeholder = i18n.form.preProcessing.yearsAndMonthsPlaceholder;
     }
   }, []);
 
@@ -92,7 +98,7 @@ export function DmnForm(props: Props) {
         } else if (!Object.hasOwnProperty.call(form.definitions[property], "type")) {
           form.definitions[property]!.type = "string";
         } else if (Object.hasOwnProperty.call(form.definitions[property], "enum")) {
-          form.definitions[property]!.placeholder = "Select...";
+          form.definitions[property]!.placeholder = i18n.form.preProcessing.selectPlaceholder;
         } else if (Object.hasOwnProperty.call(form.definitions[property], "format")) {
           setCustomPlaceholders(form.definitions[property]!);
         }

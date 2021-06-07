@@ -30,6 +30,7 @@ export type CommonDictionary = {
   download: string;
   edit: string;
   edited: string;
+  execution: string;
   exit: string;
   file: string;
   files: string;
@@ -60,6 +61,7 @@ export type CommonDictionary = {
   token: string;
   undo: string;
   uninstall: string;
+  validation: string;
 };
 
 export interface CommonI18n extends ReferenceDictionary {

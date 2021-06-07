@@ -16,24 +16,13 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { DecisionResult, DecisionResultMessage, DmnResult, EvaluationStatus, Result } from "./DmnRunnerService";
+import { DecisionResult, DecisionResultMessage, DmnResult } from "./DmnRunnerService";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
-import {
-  DescriptionList,
-  DescriptionListDescription,
-  DescriptionListGroup,
-  DescriptionListTerm,
-} from "@patternfly/react-core/dist/js/components/DescriptionList";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
-import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
 import { diff } from "deep-object-diff";
 import { useDmnRunner } from "./DmnRunnerContext";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
@@ -42,9 +31,7 @@ import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { useOnlineI18n } from "../../common/i18n";
 import { I18nWrapped } from "../../../../i18n/src/react-components";
-import { Tooltip } from "@patternfly/react-core";
-import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon";
-import { DmnForm } from "../../../../form/src";
+import { DmnForm, DmnFormResult } from "../../../../form/src";
 import { usePrevious } from "../../common/Hooks";
 
 enum ButtonPosition {
@@ -58,7 +45,6 @@ interface Props {
 
 const DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION = 711;
 const AUTO_SAVE_DELAY = 500;
-const DATE_REGEX = /\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2]\d|3[0-1])T(?:[0-1]\d|2[0-3]):[0-5]\d:[0-5]\dZ/;
 
 interface DmnRunnerStylesConfig {
   contentWidth: "50%" | "100%";
@@ -69,7 +55,7 @@ interface DmnRunnerStylesConfig {
 
 export function DmnRunnerDrawer(props: Props) {
   const notificationsPanel = useNotificationsPanel();
-  const { i18n } = useOnlineI18n();
+  const { i18n, locale } = useOnlineI18n();
   const formRef = useRef<HTMLFormElement>(null);
   const dmnRunner = useDmnRunner();
   const [dmnRunnerResults, setDmnRunnerResults] = useState<DecisionResult[]>();
@@ -130,9 +116,7 @@ export function DmnRunnerDrawer(props: Props) {
           message: `${message.messageType}: ${message.message}`,
         }));
       });
-      notificationsPanel
-        .getTabRef(i18n.notificationsPanel.execution)
-        ?.kogitoNotifications_setNotifications("", notifications);
+      notificationsPanel.getTabRef(i18n.terms.execution)?.kogitoNotifications_setNotifications("", notifications);
     },
     [notificationsPanel.getTabRef, i18n]
   );
@@ -205,7 +189,7 @@ export function DmnRunnerDrawer(props: Props) {
 
   const openValidationTab = useCallback(() => {
     notificationsPanel.setIsOpen(true);
-    notificationsPanel.setActiveTab(i18n.notificationsPanel.validation);
+    notificationsPanel.setActiveTab(i18n.terms.validation);
   }, [i18n]);
 
   const formErrorMessage = useMemo(
@@ -220,9 +204,7 @@ export function DmnRunnerDrawer(props: Props) {
             <TextContent>{i18n.dmnRunner.drawer.formError.explanation}</TextContent>
             <br />
             <TextContent>
-              <I18nWrapped
-                components={{ link: <a onClick={openValidationTab}>{i18n.notificationsPanel.validation}</a> }}
-              >
+              <I18nWrapped components={{ link: <a onClick={openValidationTab}>{i18n.terms.validation}</a> }}>
                 {i18n.dmnRunner.drawer.formError.checkNotificationPanel}
               </I18nWrapped>
             </TextContent>
@@ -232,6 +214,11 @@ export function DmnRunnerDrawer(props: Props) {
     ),
     [openValidationTab, i18n]
   );
+
+  const openExecutionTab = useCallback(() => {
+    notificationsPanel.setIsOpen(true);
+    notificationsPanel.setActiveTab(i18n.terms.execution);
+  }, [notificationsPanel]);
 
   return (
     <DrawerPanelContent
@@ -281,6 +268,7 @@ export function DmnRunnerDrawer(props: Props) {
                     placeholder={true}
                     errorsField={() => <></>}
                     submitField={() => <></>}
+                    locale={locale}
                   />
                 ) : dmnRunner.formError ? (
                   formErrorMessage
@@ -321,194 +309,18 @@ export function DmnRunnerDrawer(props: Props) {
             </PageSection>
             <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
               <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
-                <DmnRunnerResult results={dmnRunnerResults!} differences={dmnRunnerResponseDiffs} />
+                <DmnFormResult
+                  results={dmnRunnerResults!}
+                  differences={dmnRunnerResponseDiffs}
+                  locale={locale}
+                  notificationsPanel={true}
+                  openExecutionTab={openExecutionTab}
+                />
               </PageSection>
             </div>
           </Page>
         </div>
       </div>
     </DrawerPanelContent>
-  );
-}
-
-type DeepPartial<T> = {
-  [P in keyof T]?: DeepPartial<T[P]>;
-};
-
-interface DmnRunnerResponseProps {
-  results?: DecisionResult[];
-  differences?: Array<DeepPartial<DecisionResult>>;
-}
-
-function DmnRunnerResult(props: DmnRunnerResponseProps) {
-  const notificationsPanel = useNotificationsPanel();
-  const { i18n } = useOnlineI18n();
-
-  useEffect(() => {
-    props.differences?.forEach((difference, index) => {
-      if (Object.keys(difference).length === 0) {
-        return;
-      }
-
-      const updatedResult = document.getElementById(`${index}-dmn-runner-result`);
-      updatedResult?.classList.add("kogito--editor__dmn-runner-drawer-output-leaf-updated");
-    });
-  }, [props.differences]);
-
-  const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLElement>, index) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const updatedResult = document.getElementById(`${index}-dmn-runner-result`);
-    updatedResult?.classList.remove("kogito--editor__dmn-runner-drawer-output-leaf-updated");
-  }, []);
-
-  const openExecutionTab = useCallback(() => {
-    notificationsPanel.setIsOpen(true);
-    notificationsPanel.setActiveTab("Execution");
-  }, [notificationsPanel]);
-
-  const resultStatus = useCallback(
-    (evaluationStatus: EvaluationStatus) => {
-      switch (evaluationStatus) {
-        case EvaluationStatus.SUCCEEDED:
-          return (
-            <>
-              <div className={"kogito--editor__dmn_runner-drawer-evaluation"}>
-                <CheckCircleIcon />
-                <a onClick={openExecutionTab} className={"kogito--editor__dmn_runner-drawer-evaluation-link"}>
-                  {i18n.dmnRunner.drawer.evaluation.success}
-                </a>
-              </div>
-            </>
-          );
-        case EvaluationStatus.SKIPPED:
-          return (
-            <>
-              <div className={"kogito--editor__dmn_runner-drawer-evaluation"}>
-                <InfoCircleIcon />
-                <a onClick={openExecutionTab} className={"kogito--editor__dmn_runner-drawer-evaluation-link"}>
-                  {i18n.dmnRunner.drawer.evaluation.skipped}
-                </a>
-              </div>
-            </>
-          );
-        case EvaluationStatus.FAILED:
-          return (
-            <>
-              <div className={"kogito--editor__dmn_runner-drawer-evaluation"}>
-                <ExclamationCircleIcon />
-                <a onClick={openExecutionTab} className={"kogito--editor__dmn_runner-drawer-evaluation-link"}>
-                  {i18n.dmnRunner.drawer.evaluation.failed}
-                </a>
-              </div>
-            </>
-          );
-      }
-    },
-    [i18n]
-  );
-
-  const result = useCallback((dmnRunnerResult: Result) => {
-    switch (typeof dmnRunnerResult) {
-      case "boolean":
-        return dmnRunnerResult ? <i>true</i> : <i>false</i>;
-      case "number":
-        return dmnRunnerResult;
-      case "string":
-        if (dmnRunnerResult.match(DATE_REGEX)) {
-          const current = new Date(dmnRunnerResult);
-          return (
-            <>
-              <Tooltip
-                key={`date-tooltip-${dmnRunnerResult}`}
-                content={<span>This value is in UTC. The value in your current timezone is {current.toString()}</span>}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <p style={{ marginRight: "10px" }}>{dmnRunnerResult}</p>
-                  <OutlinedQuestionCircleIcon />
-                </div>
-              </Tooltip>
-            </>
-          );
-        }
-        return dmnRunnerResult;
-      case "object":
-        return dmnRunnerResult ? (
-          Array.isArray(dmnRunnerResult) ? (
-            <DescriptionList>
-              {dmnRunnerResult.map((dmnResult, index) => (
-                <DescriptionListGroup key={`array-result-${index}`}>
-                  <DescriptionListTerm>{index}</DescriptionListTerm>
-                  <DescriptionListDescription>{dmnResult}</DescriptionListDescription>
-                </DescriptionListGroup>
-              ))}
-            </DescriptionList>
-          ) : (
-            <DescriptionList>
-              {Object.entries(dmnRunnerResult).map(([key, value]: [string, object | string]) => (
-                <DescriptionListGroup key={`object-result-${key}-${value}`}>
-                  <DescriptionListTerm>{key}</DescriptionListTerm>
-                  {typeof value === "object" && !!value ? (
-                    Object.entries(value).map(([key2, value2]: [string, any]) => (
-                      <DescriptionListGroup key={`object2-result-${key2}-${value2}`}>
-                        <DescriptionListTerm>{key2}</DescriptionListTerm>
-                        <DescriptionListDescription>{value2}</DescriptionListDescription>
-                      </DescriptionListGroup>
-                    ))
-                  ) : (
-                    <DescriptionListDescription>{value}</DescriptionListDescription>
-                  )}
-                </DescriptionListGroup>
-              ))}
-            </DescriptionList>
-          )
-        ) : (
-          <i>(null)</i>
-        );
-      default:
-        return <i>(null)</i>;
-    }
-  }, []);
-
-  const resultsToRender = useMemo(
-    () =>
-      props.results?.map((dmnRunnerResult, index) => (
-        <div key={`${index}-dmn-runner-result`} className={"kogito--editor__dmn_runner-drawer-results"}>
-          <Card
-            id={`${index}-dmn-runner-result`}
-            isFlat={true}
-            className={"kogito--editor__dmn-runner-drawer-content-body-output-card"}
-            onAnimationEnd={(e) => onAnimationEnd(e, index)}
-          >
-            <CardTitle>
-              <Title headingLevel={"h2"}>{dmnRunnerResult.decisionName}</Title>
-            </CardTitle>
-            <CardBody isFilled={true}>{result(dmnRunnerResult.result)}</CardBody>
-            <CardFooter>{resultStatus(dmnRunnerResult.evaluationStatus)}</CardFooter>
-          </Card>
-        </div>
-      )),
-    [props.results, resultStatus]
-  );
-
-  return (
-    <div>
-      {resultsToRender && resultsToRender.length > 0 ? (
-        resultsToRender
-      ) : (
-        <EmptyState>
-          <EmptyStateIcon icon={InfoCircleIcon} />
-          <TextContent>
-            <Text component={"h2"}>{i18n.dmnRunner.drawer.withoutResponse.title}</Text>
-          </TextContent>
-          <EmptyStateBody>
-            <TextContent>
-              <Text>{i18n.dmnRunner.drawer.withoutResponse.explanation}</Text>
-            </TextContent>
-          </EmptyStateBody>
-        </EmptyState>
-      )}
-    </div>
   );
 }

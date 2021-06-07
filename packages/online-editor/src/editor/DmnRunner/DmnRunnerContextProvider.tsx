@@ -51,7 +51,7 @@ export function DmnRunnerContextProvider(props: Props) {
   );
   const [formSchema, setFormSchema] = useState<DmnFormSchema>();
   const [port, setPort] = useState(() => getCookie(DMN_RUNNER_PORT_COOKIE_NAME) ?? DMN_RUNNER_DEFAULT_PORT);
-  const service = useMemo(() => new DmnRunnerService(port, i18n), [port]);
+  const service = useMemo(() => new DmnRunnerService(port), [port]);
   const version = useMemo(() => process.env.WEBPACK_REPLACE__dmnRunnerCompatibleVersion ?? "0.0.0", []);
   const [formError, setFormError] = useState(false);
 
@@ -182,9 +182,7 @@ export function DmnRunnerContextProvider(props: Props) {
           }));
         })
         .then((notifications) => {
-          notificationsPanel
-            .getTabRef(i18n.notificationsPanel.validation)
-            ?.kogitoNotifications_setNotifications("", notifications);
+          notificationsPanel.getTabRef(i18n.terms.validation)?.kogitoNotifications_setNotifications("", notifications);
         });
     };
 

@@ -349,9 +349,9 @@ export function EditorPage(props: Props) {
         (context.file.fileExtension === "dmn" && context.isChrome && dmnRunnerStatus === DmnRunnerStatus.RUNNING) ||
         dmnRunnerStatus === DmnRunnerStatus.STOPPED
       ) {
-        return [i18n.notificationsPanel.validation, i18n.notificationsPanel.execution];
+        return [i18n.terms.validation, i18n.terms.execution];
       }
-      return [i18n.notificationsPanel.validation];
+      return [i18n.terms.validation];
     },
     [context.file.fileExtension, context.isChrome, i18n]
   );
