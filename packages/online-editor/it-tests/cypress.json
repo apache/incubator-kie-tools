@@ -7,7 +7,7 @@
   "supportFile": "support/index.ts",
   "baseUrl": "http://localhost:9001",
   "chromeWebSecurity": false,
-  "video": false,
+  "video": true,
   "downloadsFolder": "downloads",
   "defaultCommandTimeout": 10000
 }

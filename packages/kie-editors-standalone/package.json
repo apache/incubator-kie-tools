@@ -32,7 +32,7 @@
     "clean:it": "rimraf it-tests/results",
     "report:it": "jrm it-tests/results/junit.xml it-tests/results/junit-*.xml",
     "start-and-test:it": "start-server-and-test start:it http://localhost:9001 cy:run",
-    "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then 'npm-run-all -s -c clean:it start-and-test:it report:it'"
+    "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then 'yarn rimraf ./dist-it-tests' 'npm-run-all -s -c clean:it start-and-test:it report:it'"
   },
   "babel": {
     "presets": [

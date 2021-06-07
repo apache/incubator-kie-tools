@@ -39,13 +39,19 @@ jobs:
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2
         with:
-          name: build-artifacts
+          name: artifacts
+          if-no-files-found: warn
           path: |
             packages/*/dist
+            packages/hub/out
+            packages/desktop/out
+            !packages/hub/dist
+            !packages/desktop/dist
 
       - name: "Upload IT Tests artifacts"
         uses: actions/upload-artifact@v2
         with:
           name: it-tests-artifacts
+          if-no-files-found: warn
           path: |
             packages/*/dist-it-tests

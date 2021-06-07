@@ -121,7 +121,7 @@
     "watch": "webpack",
     "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint --true-if-empty --then 'yarn eslint ./src --ext .ts,.tsx'",
     "test": "run-script-if --env KOGITO_TOOLING_BUILD_test --true-if-empty --then 'jest --silent --verbose --passWithNoTests'",
-    "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then 'rimraf ./test-resource' 'rimraf ./out' 'tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true' 'extest setup-and-run --yarn -u -e ./test-resources -o it-tests/settings.json out/*.test.js'",
+    "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then 'yarn rimraf ./dist-it-tests' 'rimraf ./test-resource' 'rimraf ./out' 'tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true' 'extest setup-and-run --yarn -u -e ./test-resources -o it-tests/settings.json out/*.test.js'",
     "test:it:insider": "rimraf ./test-resource && rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run -t insider --yarn -u -e ./test-resources -o it-tests/settings.json out/*.test.js",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod:linux:darwin": "rimraf dist && yarn lint && webpack && yarn run test && yarn run package:prod",
