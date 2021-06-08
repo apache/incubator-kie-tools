@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import { assert, AssertionError } from "chai";
+import { assert } from "chai";
 import {
   ActivityBar,
   By,
   InputBox,
   SideBarView,
   until,
-  TitleBar,
   ViewControl,
   ViewSection,
   VSBrowser,
@@ -30,7 +29,6 @@ import {
   Workbench,
 } from "vscode-extension-tester";
 import { kogitoLoadingSpinner } from "./CommonLocators";
-import { assertIsDefined, assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
 
 /**
  * Common test helper class for VSCode extension testing.
@@ -228,16 +226,16 @@ export default class VSCodeTestHelper {
   /**
    * Opens commands prompt and select given command there
    */
-  public openCommandFromPrompt = async (command: string): Promise<void> => {
+  public executeCommandFromPrompt = async (command: string): Promise<void> => {
     const inputBox = (await this.workbench.openCommandPrompt()) as InputBox;
     await inputBox.setText(`>${command}`);
 
-    const qPicks = await inputBox.getQuickPicks();
+    const quickPicks = await inputBox.getQuickPicks();
 
-    for (const qPick of qPicks) {
-      const label = await qPick.getLabel();
+    for (const quickPick of quickPicks) {
+      const label = await quickPick.getLabel();
       if (label === command) {
-        await qPick.select();
+        await quickPick.select();
         await sleep(1000);
         return;
       }
