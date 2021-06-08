@@ -133,8 +133,8 @@ describe("Editors are loading properly", () => {
     await webview.switchBack();
 
     // changeProperty() is implemented as clear() and sendKeys(), that is why we need two undo operations
-    await testHelper.undo();
-    await testHelper.undo();
+    await testHelper.openCommandFromPrompt("Undo");
+    await testHelper.openCommandFromPrompt("Undo");
 
     await webview.switchToFrame();
 

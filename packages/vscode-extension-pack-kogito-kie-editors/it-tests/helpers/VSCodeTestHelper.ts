@@ -226,19 +226,24 @@ export default class VSCodeTestHelper {
   };
 
   /**
-   * Invokes the Edit -> Undo from the VS Code Title Bar
+   * Opens commands prompt and select given command there
    */
-  public undo = async (): Promise<void> => {
-    const edit = await new TitleBar().getItem("Edit");
-    assertIsDefined(edit, "Edit Menu Item");
+  public openCommandFromPrompt = async (command: string): Promise<void> => {
+    const inputBox = (await this.workbench.openCommandPrompt()) as InputBox;
+    await inputBox.setText(`>${command}`);
 
-    const editContextMenu = await edit.select();
-    assertWebElementIsDisplayedEnabled(editContextMenu);
+    const qPicks = await inputBox.getQuickPicks();
 
-    const undo = await editContextMenu.getItem("Undo");
-    assertIsDefined(undo, "Undo Menu Item");
+    for (const qPick of qPicks) {
+      const label = await qPick.getLabel();
+      if (label === command) {
+        await qPick.select();
+        await sleep(1000);
+        return;
+      }
+    }
 
-    await undo.select();
+    throw new Error(`'${command}' not found in prompt`);
   };
 }
 
