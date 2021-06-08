@@ -41,6 +41,8 @@ In Kogito Tooling [releases page](https://github.com/kiegroup/kogito-tooling/rel
 
 ## Build from source
 
+> **NOTE:** We recommend using Node 16 when developing this project. Our CI uses Node `16.2.0`, Yarn `1.22.10`, and Lerna `4.0.0`.
+
 1. Check out the source:
 
    ```
@@ -72,7 +74,7 @@ In Kogito Tooling [releases page](https://github.com/kiegroup/kogito-tooling/rel
 
 ## Develop
 
-> **NOTE:** We recommend using Node 16 when developing this project. Our CI uses Node `16.2.0` and Yarn `1.22.10`.
+> **NOTE:** We recommend using Node 16 when developing this project. Our CI uses Node `16.2.0`, Yarn `1.22.10`, and Lerna `4.0.0`.
 
 > **NOTE:** This repository contains several packages each with its own custom configurations. Here's a list of every environment variables you can use to customize the build.
 >
