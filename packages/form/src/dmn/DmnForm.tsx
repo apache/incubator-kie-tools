@@ -17,9 +17,9 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AutoForm } from "uniforms-patternfly";
-import { ErrorBoundary } from "@kogito-tooling/online-editor/src/common/ErrorBoundry";
+import { ErrorBoundary } from "../common/ErrorBoundary";
 import { dataPathToFormFieldPath } from "./uniforms/utils";
-import { DmnRunnerJsonSchemaBridge } from "./uniforms";
+import { DmnFormJsonSchemaBridge } from "./uniforms";
 import { Validator } from "./Validator";
 import { dmnFormI18n } from "./i18n";
 
@@ -69,7 +69,7 @@ interface Props {
 
 export function DmnForm(props: Props) {
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
-  const [jsonSchemaBridge, setJsonSchemaBridge] = useState<DmnRunnerJsonSchemaBridge>();
+  const [jsonSchemaBridge, setJsonSchemaBridge] = useState<DmnFormJsonSchemaBridge>();
   const i18n = useMemo(() => {
     dmnFormI18n.setLocale(props.locale ?? navigator.language);
     return dmnFormI18n.getCurrent();
@@ -136,7 +136,7 @@ export function DmnForm(props: Props) {
     const form: DmnRunnerForm = Object.assign(props.formSchema, {});
     formPreprocessing(form);
     const formDraft4 = { ...form, $schema: validator.getSchemaDraft4() };
-    return new DmnRunnerJsonSchemaBridge(formDraft4, validator.createValidator(formDraft4));
+    return new DmnFormJsonSchemaBridge(formDraft4, validator.createValidator(formDraft4));
   }, [props.formSchema, validator, formPreprocessing]);
 
   useEffect(() => {

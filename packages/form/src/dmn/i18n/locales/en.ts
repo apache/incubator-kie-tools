@@ -22,12 +22,12 @@ export const en: DmnFormI18n = {
   ...en_common,
   form: {
     validation: {
-      daysAndTimeError: "should match format P1D(ays)2T(ime)",
+      daysAndTimeError: "should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)",
       yearsAndMonthsError: "should match format P1Y(ers)2M(onths)",
     },
     preProcessing: {
       selectPlaceholder: "Select...",
-      daysAndTimePlaceholder: "P1D5T or P2D or P1T",
+      daysAndTimePlaceholder: "P1DT5H or P2D or PT1H2M10S",
       yearsAndMonthsPlaceholder: "P1Y5M or P2Y or P1M",
     },
   },

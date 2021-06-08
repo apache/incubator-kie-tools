@@ -18,6 +18,10 @@ import Ajv from "ajv";
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import { DmnFormI18n } from "./i18n";
 
+export const DAYS_AND_TIME =
+  /^(-|\+)?P(?:([-+]?[0-9]*)D)?(?:T(?:([-+]?[0-9]*)H)?(?:([-+]?[0-9]*)M)?(?:([-+]?[0-9]*)S)?)?$/;
+export const YEARS_AND_MONTHS = /^(-|\+)?P(?:([-+]?[0-9]*)Y)?(?:([-+]?[0-9]*)M)?$/;
+
 export class Validator {
   private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
   private readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
@@ -30,12 +34,12 @@ export class Validator {
     this.ajv.addMetaSchema(metaSchemaDraft04);
     this.ajv.addFormat("days and time duration", {
       type: "string",
-      validate: (data: string) => !!data.match(/(P[1-9][0-9]*D[1-9][0-9]*T)|(P([1-9][0-9]*)[D|T])\b/),
+      validate: (data: string) => !!data.match(DAYS_AND_TIME),
     });
 
     this.ajv.addFormat("years and months duration", {
       type: "string",
-      validate: (data: string) => !!data.match(/(P[1-9][0-9]*Y[1-9][0-9]*M)|(P([1-9][0-9]*)[Y|M])\b/),
+      validate: (data: string) => !!data.match(YEARS_AND_MONTHS),
     });
   }
 

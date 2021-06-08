@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./DmnRunnerJsonSchemaBridge";
+export * from "./DmnFormJsonSchemaBridge";

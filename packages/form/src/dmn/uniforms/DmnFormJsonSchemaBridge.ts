@@ -16,11 +16,19 @@
 
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 
-export class DmnRunnerJsonSchemaBridge extends JSONSchemaBridge {
+export enum Duration {
+  DaysAndTimeDuration,
+  YearsAndMonthsDuration,
+}
+
+export class DmnFormJsonSchemaBridge extends JSONSchemaBridge {
   public getType(name: string) {
     const { format: fieldFormat } = super.getField(name);
-    if (fieldFormat === "days and time duration" || fieldFormat === "years and months duration") {
-      // TODO: Return specific component for each case
+    // TODO: create custom components
+    if (fieldFormat === "days and time duration") {
+      return String;
+    }
+    if (fieldFormat === "years and months duration") {
       return String;
     }
     return super.getType(name);
