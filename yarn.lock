@@ -15945,11 +15945,6 @@ vscode-test@^1.5.2:
     rimraf "^3.0.2"
     unzipper "^0.10.11"
 
-vscode-uitests-tooling@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/vscode-uitests-tooling/-/vscode-uitests-tooling-2.0.2.tgz#aec4cc4ec896bde472e26be6dbde532c716dd423"
-  integrity sha512-s9aZ3BaBby+d6en0L1I04zAgptgi5L64C/vhURAtfmrUjHNbU77zyCrOgJc6pnI/w9AFxQXJR746+DkzwibWLg==
-
 w3c-hr-time@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/w3c-hr-time/-/w3c-hr-time-1.0.2.tgz#0a89cdf5cc15822df9c360543676963e0cc308cd"
