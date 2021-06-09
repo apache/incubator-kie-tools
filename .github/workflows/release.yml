@@ -72,7 +72,7 @@ jobs:
 
   hub:
     if: ${{ github.event.inputs.hub == "true" }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     needs: [prepare]
     strategy:
       matrix:
@@ -187,7 +187,7 @@ jobs:
 
   desktop:
     if: ${{ github.event.inputs.desktop == "true" }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     needs: [prepare]
     strategy:
       matrix:
