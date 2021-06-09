@@ -28,7 +28,7 @@ jobs:
         # This bash script returns 0 if equal and 1 otherwise. Will fail if versions are not equal.
         shell: bash
         run: |
-          [ "${{ steps.prerelease-tag.outputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
+          [ "${{ steps.release-draft-tag.outputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
 
       - name: "Create Release (draft)"
         id: create-release-draft
@@ -36,8 +36,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.prerelease-tag.outputs.tag }}
-          release_name: ${{ steps.prerelease-tag.outputs.tag }} (alpha)
+          tag_name: ${{ steps.release-draft-tag.outputs.tag }}
+          release_name: ${{ steps.release-draft-tag.outputs.tag }} (alpha)
           commitish: ${{ github.ref }}
           draft: true
           prerelease: true
