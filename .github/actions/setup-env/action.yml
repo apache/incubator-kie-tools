@@ -16,7 +16,7 @@ runs:
     - name: "Fetch Git tags"
       shell: bash
       run: |
-        git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+        cd ${{ inputs.path }} && git fetch --depth=1 origin +refs/tags/*:refs/tags/* && cd -
 
     - name: "Setup Yarn and Lerna"
       shell: bash
