@@ -71,7 +71,7 @@ jobs:
   #          [ "${{ github.event.inputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
 
   hub:
-    if: ${{ github.event.inputs.hub == true }}
+    if: ${{ github.event.inputs.hub == 'true' }}
     runs-on: ${{ matrix.os }}
     needs: [prepare]
     strategy:
@@ -102,7 +102,7 @@ jobs:
           echo "${{ needs.prepare.outputs.release-upload-url }}"
 
   online-editor:
-    if: ${{ github.event.inputs.online-editor == true }}
+    if: ${{ github.event.inputs.online-editor == 'true' }}
     runs-on: ubuntu-latest
     needs: [hub]
     steps:
@@ -130,7 +130,7 @@ jobs:
           echo "${{ needs.prepare.outputs.release-upload-url }}"
 
   chrome-extension:
-    if: ${{ github.event.inputs.chrome-extension == true }}
+    if: ${{ github.event.inputs.chrome-extension == 'true' }}
     runs-on: ubuntu-latest
     needs: [prepare]
     steps:
@@ -158,7 +158,7 @@ jobs:
           echo "${{ needs.prepare.outputs.release-upload-url }}"
 
   vscode-extensions-dev:
-    if: ${{ github.event.inputs.vscode-extension == true }}
+    if: ${{ github.event.inputs.vscode-extension == 'true' }}
     runs-on: ubuntu-latest
     needs: [prepare]
     steps:
@@ -186,7 +186,7 @@ jobs:
           echo "${{ needs.prepare.outputs.release-upload-url }}"
 
   desktop:
-    if: ${{ github.event.inputs.desktop == true }}
+    if: ${{ github.event.inputs.desktop == 'true' }}
     runs-on: ${{ matrix.os }}
     needs: [prepare]
     strategy:
@@ -217,7 +217,7 @@ jobs:
           echo "${{ needs.prepare.outputs.release-upload-url }}"
 
   standalone-editors:
-    if: ${{ github.event.inputs.standalone-editors == true }}
+    if: ${{ github.event.inputs.standalone-editors == 'true' }}
     runs-on: ubuntu-latest
     needs: [prepare]
     steps:
@@ -245,7 +245,7 @@ jobs:
           echo "${{ needs.prepare.outputs.release-upload-url }}"
 
   npm-packages:
-    if: ${{ github.event.inputs.npm-packages == true }}
+    if: ${{ github.event.inputs.npm-packages == 'true' }}
     runs-on: ubuntu-latest
     needs: [prepare]
     steps:
