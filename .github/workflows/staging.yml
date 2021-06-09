@@ -60,7 +60,7 @@ jobs:
           node-version: 16.2.0
 
       - name: "Setup environment"
-        uses: ./.github/actions/setup-env
+        uses: ./kogito-tooling/.github/actions/setup-env
         with:
           os: ${{ matrix.os }}
           path: ./kogito-tooling
