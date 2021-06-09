@@ -1,0 +1,112 @@
+name: "Release"
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag"
+        default: "true"
+        required: true
+      online-editor:
+        description: "Online Editor"
+        default: "true"
+        required: true
+      chrome-extension:
+        description: "Chrome Extension"
+        default: "true"
+        required: true
+      vscode-extensions-dev:
+        description: "VS Code Extensions (dev)"
+        default: "true"
+        required: true
+      desktop:
+        description: "Desktop"
+        default: "true"
+        required: true
+      hub:
+        description: "Hub"
+        default: "true"
+        required: true
+      standalone-editors:
+        description: "Standalone Editors"
+        default: "true"
+        required: true
+      npm-packages:
+        description: "NPM packages"
+        default: "true"
+        required: true
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      release-upload-url: ${{ steps.fetch-release-for-tag.data.upload_url }}
+    steps:
+      - name: "Fetch release for ${{ inputs.tag }}"
+        uses: octokit/request-action@v2.1.0
+        id: fetch-release-for-tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          route: GET /repos/{repo}/releases/tags/{tag}
+          repo: ${{ github.repository }}
+          tag: ${{ inputs.tag }}
+
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.fetch-release-for-tag.data.target_commitish }}
+
+      - name: "Check `tag` against `lerna.json.version`"
+        shell: bash
+        # This bash script returns 0 if equal and 1 otherwise. Will fail if versions are not equal.
+        run: |
+          [ "${{ inputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
+
+  hub:
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v2
+
+  online-editor:
+    runs-on: ubuntu-latest
+    needs: [hub]
+    steps:
+      - uses: actions/checkout@v2
+
+  chrome-extension:
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    steps:
+      - uses: actions/checkout@v2
+
+  vscode-extensions-dev:
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    steps:
+      - uses: actions/checkout@v2
+
+  desktop:
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v2
+
+  standalone-editors:
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    steps:
+      - uses: actions/checkout@v2
+
+  npm-packages:
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    steps:
+      - uses: actions/checkout@v2

@@ -5,6 +5,10 @@ inputs:
   os:
     description: "Operating System"
     required: true
+  path:
+    description: "kogito-tooling path"
+    required: false
+    default: "."
 
 runs:
   using: "composite"
@@ -23,7 +27,7 @@ runs:
     - name: "Bootstrap"
       shell: bash
       run: |
-        yarn bootstrap
+        cd ${{ inputs.path }} && yarn bootstrap && cd -
 
     - name: "Check yarn.lock"
       shell: bash
