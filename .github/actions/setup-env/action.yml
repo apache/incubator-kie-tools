@@ -31,6 +31,7 @@ runs:
       run: |
         cd ${{ inputs.path }}
         yarn bootstrap
+        echo 'a'
         cd -
 
     - name: "Check yarn.lock"
@@ -38,6 +39,7 @@ runs:
       run: |
         cd ${{ inputs.path }}
         git diff yarn.lock;
+        echo 'b'
         [ "0" == "$(git diff yarn.lock | wc -l)" ]
         cd -
 
@@ -46,6 +48,7 @@ runs:
       run: |
         cd ${{ inputs.path }}
         yarn format:check
+        echo 'c'
         cd -
 
     - name: "Start Xvfb (Ubuntu only)"
@@ -53,6 +56,7 @@ runs:
       run: |
         if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
             /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+            echo 'd'
         fi
 
     - name: "Increase inotify watches (Ubuntu only)"
@@ -60,4 +64,5 @@ runs:
       run: |
         if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
           echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+          echo 'e'
         fi
