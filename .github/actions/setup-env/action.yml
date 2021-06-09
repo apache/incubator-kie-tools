@@ -16,7 +16,9 @@ runs:
     - name: "Fetch Git tags"
       shell: bash
       run: |
-        cd ${{ inputs.path }} && git fetch --depth=1 origin +refs/tags/*:refs/tags/* && cd -
+        cd ${{ inputs.path }}
+        git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+        cd -
 
     - name: "Setup Yarn and Lerna"
       shell: bash
@@ -27,18 +29,24 @@ runs:
     - name: "Bootstrap"
       shell: bash
       run: |
-        cd ${{ inputs.path }} && yarn bootstrap && cd -
+        cd ${{ inputs.path }}
+        yarn bootstrap
+        cd -
 
     - name: "Check yarn.lock"
       shell: bash
       run: |
+        cd ${{ inputs.path }}
         git diff yarn.lock;
         [ "0" == "$(git diff yarn.lock | wc -l)" ]
+        cd -
 
     - name: "Check format"
       shell: bash
       run: |
+        cd ${{ inputs.path }}
         yarn format:check
+        cd -
 
     - name: "Start Xvfb (Ubuntu only)"
       shell: bash
