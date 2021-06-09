@@ -20,7 +20,7 @@
     "start": "webpack serve --env dev",
     "test:it:start:detached": "webpack serve --env dev &",
     "test:it:start:online-editor:detached": "npm --prefix ../online-editor run start &",
-    "test:it:shutdown": "lsof -n -i :9001 | grep LISTEN | xargs kill && lsof -n -i :9000 | grep LISTEN | xargs kill",
+    "test:it:shutdown": "lsof -n -i :9001 -i :9000 | grep LISTEN | tr -s ' ' | cut -d' ' -f2 | xargs kill",
     "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then 'yarn rimraf ./dist-it-tests' 'yarn build:dev' 'yarn test:it:start:online-editor:detached' 'yarn test:it:start:detached' 'sleep 20' 'jest --runInBand -c ./jest.it.config.js' --finally 'yarn test:it:shutdown'"
   },
   "babel": {
