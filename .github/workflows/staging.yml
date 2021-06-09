@@ -5,21 +5,21 @@ on:
     branches: ["**-prerelease"]
 
 jobs:
-  create-release:
+  create_release:
     runs-on: ubuntu-latest
     outputs:
-      upload-asset-url: ${{ steps.create-release-draft.outputs.upload_url }}
-      html-url: ${{ steps.create-release-draft.outputs.html_url }}
-      id: ${{ steps.create-release-draft.outputs.id }}
-      tag: ${{ steps.release-draft-tag.outputs.tag }}
-      download-asset-url: ${{ steps.release_json_ext.outputs.download_url }}
+      upload_asset_url: ${{ steps.create_release_draft.outputs.upload_url }}
+      html_url: ${{ steps.create_release_draft.outputs.html_url }}
+      id: ${{ steps.create_release_draft.outputs.id }}
+      tag: ${{ steps.release_draft_tag.outputs.tag }}
+      download_asset_url: ${{ steps.release_json_ext.outputs.download_url }}
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2
 
       - name: "Parse `tag`"
         # This bash script returns the `tag` name for the release. Will match "/refs/[tags/heads]/[tag]-prerelease"
-        id: release-draft-tag
+        id: release_draft_tag
         shell: bash
         run: |
           echo ::set-output name=tag::$(node -e "console.log('${{ github.ref }}'.match(/^.*\/(.+)-prerelease$/)[1])")
@@ -28,16 +28,16 @@ jobs:
         # This bash script returns 0 if equal and 1 otherwise. Will fail if versions are not equal.
         shell: bash
         run: |
-          [ "${{ steps.release-draft-tag.outputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
+          [ "${{ steps.release_draft_tag.outputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
 
       - name: "Create Release (draft)"
-        id: create-release-draft
+        id: create_release_draft
         uses: actions/create-release@v1.1.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.release-draft-tag.outputs.tag }}
-          release_name: ${{ steps.release-draft-tag.outputs.tag }} (alpha)
+          tag_name: ${{ steps.release_draft_tag.outputs.tag }}
+          release_name: ${{ steps.release_draft_tag.outputs.tag }} (alpha)
           commitish: ${{ github.ref }}
           draft: true
           prerelease: true
@@ -46,10 +46,10 @@ jobs:
         id: release_json_ext
         shell: python
         run: |
-          print('::set-output name=download_url::' + '${{ steps.create-release-draft.outputs.html_url }}'.replace('/tag/', '/download/'));
+          print('::set-output name=download_url::' + '${{ steps.create_release_draft.outputs.html_url }}'.replace('/tag/', '/download/'));
 
   upload-desktop-app-staging:
-    needs: [create-release]
+    needs: [create_release]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -85,11 +85,11 @@ jobs:
           DOWNLOAD_HUB_windowsUrl: "${{ steps.release_json_ext.outputs.download_url }}/business_modeler_hub_preview_windows_${{ needs.create-release.outputs.tag }}.zip"
           DISPLAY: ":99.0"
         run: |
-          echo ${{ needs.create-release.upload-asset-url }}
-          echo ${{ needs.create-release.download-asset-url }}
-          echo ${{ needs.create-release.html-url }}
-          echo ${{ needs.create-release.id }}
-          echo ${{ needs.create-release.tag }}
+          echo ${{ needs.create_release.outputs.upload_asset_url }}
+          echo ${{ needs.create_release.outputs.download_asset_url }}
+          echo ${{ needs.create_release.outputs.html_url }}
+          echo ${{ needs.create_release.outputs.id }}
+          echo ${{ needs.create_release.outputs.tag }}
 
 #          cd kogito-tooling && yarn run build:prod && cd -
 
@@ -100,7 +100,7 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #        with:
-#          upload-asset-url: ${{ needs.create-release.outputs.upload-asset-url }}
+#          upload_asset_url: ${{ needs.create-release.outputs.upload_asset_url }}
 #          asset_path: ./kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ needs.create-release.outputs.tag }}.vsix
 #          asset_name: vscode_extension_kogito_kie_editors_${{ needs.create-release.outputs.tag }}.vsix
 #          asset_content_type: application/zip
@@ -112,7 +112,7 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #        with:
-#          upload-asset-url: ${{ needs.create-release.outputs.upload-asset-url }}
+#          upload_asset_url: ${{ needs.create-release.outputs.upload_asset_url }}
 #          asset_path: ./kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ needs.create-release.outputs.tag }}.zip
 #          asset_name: chrome_extension_kogito_kie_editors_${{ needs.create-release.outputs.tag }}.zip
 #          asset_content_type: application/zip
@@ -124,7 +124,7 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #        with:
-#          upload-asset-url: ${{ needs.create-release.outputs.upload-asset-url }}
+#          upload_asset_url: ${{ needs.create-release.outputs.upload_asset_url }}
 #          asset_path: ./kogito-tooling/packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
 #          asset_name: business_modeler_preview_linux_${{ needs.create-release.outputs.tag }}.tar.gz
 #          asset_content_type: application/tar+gzip
@@ -136,7 +136,7 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #        with:
-#          upload-asset-url: ${{ needs.create-release.outputs.upload-asset-url }}
+#          upload_asset_url: ${{ needs.create-release.outputs.upload_asset_url }}
 #          asset_path: ./kogito-tooling/packages/desktop/out/Business Modeler Preview-darwin-x64.zip
 #          asset_name: business_modeler_preview_macos_${{ needs.create-release.outputs.tag }}.zip
 #          asset_content_type: application/zip
@@ -152,7 +152,7 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #        with:
-#          upload-asset-url: ${{ needs.create-release.outputs.upload-asset-url }}
+#          upload_asset_url: ${{ needs.create-release.outputs.upload_asset_url }}
 #          asset_path: "./kogito-tooling/packages/desktop/out/Business Modeler Preview-win32-x64.zip"
 #          asset_name: "business_modeler_preview_windows_${{ needs.create-release.outputs.tag }}.zip"
 #          asset_content_type: application/zip
@@ -164,7 +164,7 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #        with:
-#          upload-asset-url: ${{ needs.create-release.outputs.upload-asset-url }}
+#          upload_asset_url: ${{ needs.create-release.outputs.upload_asset_url }}
 #          asset_path: ./kogito-tooling/packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
 #          asset_name: business_modeler_hub_preview_linux_${{ needs.create-release.outputs.tag }}.tar.gz
 #          asset_content_type: application/tar+gzip
@@ -176,7 +176,7 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #        with:
-#          upload-asset-url: ${{ needs.create-release.outputs.upload-asset-url }}
+#          upload_asset_url: ${{ needs.create-release.outputs.upload_asset_url }}
 #          asset_path: ./kogito-tooling/packages/hub/out/Business Modeler Hub Preview-darwin-x64.zip
 #          asset_name: business_modeler_hub_preview_macos_${{ needs.create-release.outputs.tag }}.zip
 #          asset_content_type: application/zip
@@ -192,7 +192,7 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #        with:
-#          upload-asset-url: ${{ needs.create-release.outputs.upload-asset-url }}
+#          upload_asset_url: ${{ needs.create-release.outputs.upload_asset_url }}
 #          asset_path: "./kogito-tooling/packages/hub/out/Business Modeler Hub Preview-win32-x64.zip"
 #          asset_name: "business_modeler_hub_preview_windows_${{ needs.create-release.outputs.tag }}.zip"
 #          asset_content_type: application/zip
