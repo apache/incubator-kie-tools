@@ -13,12 +13,15 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: "Fetch Git tags"
+    - name: "Enter dir"
       shell: bash
       run: |
         cd ${{ inputs.path }}
+
+    - name: "Fetch Git tags"
+      shell: bash
+      run: |
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-        cd -
 
     - name: "Setup Yarn and Lerna"
       shell: bash
@@ -29,34 +32,24 @@ runs:
     - name: "Bootstrap"
       shell: bash
       run: |
-        cd ${{ inputs.path }}
         yarn bootstrap
-        echo 'a'
-        cd -
 
     - name: "Check yarn.lock"
       shell: bash
       run: |
-        cd ${{ inputs.path }}
         git diff yarn.lock;
-        echo 'b'
         [ "0" == "$(git diff yarn.lock | wc -l)" ]
-        cd -
 
     - name: "Check format"
       shell: bash
       run: |
-        cd ${{ inputs.path }}
         yarn format:check
-        echo 'c'
-        cd -
 
     - name: "Start Xvfb (Ubuntu only)"
       shell: bash
       run: |
         if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
             /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-            echo 'd'
         fi
 
     - name: "Increase inotify watches (Ubuntu only)"
@@ -64,5 +57,9 @@ runs:
       run: |
         if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
           echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-          echo 'e'
         fi
+
+    - name: "Go back"
+      shell: bash
+      run: |
+        cd -
