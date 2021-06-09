@@ -8,11 +8,11 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     outputs:
-      upload-asset-url: ${{ steps.create-release.outputs.upload_url }}
-      download-asset-url: ${{ steps.release_json_ext.outputs.download_url }}
+      upload-asset-url: ${{ steps.create-release-draft.outputs.upload_url }}
       html-url: ${{ steps.create-release-draft.outputs.html_url }}
       id: ${{ steps.create-release-draft.outputs.id }}
       tag: ${{ steps.release-draft-tag.outputs.tag }}
+      download-asset-url: ${{ steps.release_json_ext.outputs.download_url }}
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2
@@ -65,13 +65,13 @@ jobs:
         with:
           node-version: 16.2.0
 
-      - name: "Setup environment"
-        uses: ./kogito-tooling/.github/actions/setup-env
-        with:
-          os: ${{ matrix.os }}
-          path: ./kogito-tooling
+      #      - name: "Setup environment"
+      #        uses: ./kogito-tooling/.github/actions/setup-env
+      #        with:
+      #          os: ${{ matrix.os }}
+      #          path: ./kogito-tooling
 
-      - name: "Build staging artifacts"
+      - name: "Build"
         env:
           KOGITO_TOOLING_BUILD_testIT: "false"
           KOGITO_TOOLING_BUILD_test: "false"
