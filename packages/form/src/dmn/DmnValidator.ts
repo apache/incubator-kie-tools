@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-import Ajv from "ajv";
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import { DmnFormI18n } from "./i18n";
+import { Validator } from "../core";
+import { DmnFormJsonSchemaBridge } from "./uniforms";
 
 export const DAYS_AND_TIME =
   /^(-|\+)?P(?:([-+]?[0-9]*)D)?(?:T(?:([-+]?[0-9]*)H)?(?:([-+]?[0-9]*)M)?(?:([-+]?[0-9]*)S)?)?$/;
 export const YEARS_AND_MONTHS = /^(-|\+)?P(?:([-+]?[0-9]*)Y)?(?:([-+]?[0-9]*)M)?$/;
 
-export class Validator {
+export class DmnValidator extends Validator {
   private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
-  private readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
 
   constructor(private readonly i18n: DmnFormI18n) {
+    super();
     this.setupValidator();
   }
 
+  // Add meta schema v4 and period format
   private setupValidator() {
     this.ajv.addMetaSchema(metaSchemaDraft04);
     this.ajv.addFormat("days and time duration", {
@@ -43,10 +45,7 @@ export class Validator {
     });
   }
 
-  public getSchemaDraft4() {
-    return this.SCHEMA_DRAFT4;
-  }
-
+  // Override to add period validation
   public createValidator(jsonSchema: any) {
     const validator = this.ajv.compile(jsonSchema);
 
@@ -70,5 +69,10 @@ export class Validator {
           }
         : null;
     };
+  }
+
+  public getBridge(formSchema: any): DmnFormJsonSchemaBridge {
+    const formDraft4 = { ...formSchema, $schema: this.SCHEMA_DRAFT4 };
+    return new DmnFormJsonSchemaBridge(formDraft4, this.createValidator(formDraft4));
   }
 }

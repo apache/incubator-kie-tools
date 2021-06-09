@@ -3647,7 +3647,7 @@ ajv@^6.1.0, ajv@^6.12.0:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-ajv@^6.10.0, ajv@^6.12.2, ajv@^6.12.3, ajv@^6.12.4, ajv@^6.12.5, ajv@^6.12.6:
+ajv@^6.10.0, ajv@^6.12.3, ajv@^6.12.4, ajv@^6.12.5, ajv@^6.12.6:
   version "6.12.6"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.6.tgz#baf5a62e802b07d977034586f8c3baf5adf26df4"
   integrity sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==
@@ -15682,31 +15682,31 @@ unicode-property-aliases-ecmascript@^1.0.4:
   resolved "https://registry.yarnpkg.com/unicode-property-aliases-ecmascript/-/unicode-property-aliases-ecmascript-1.1.0.tgz#dd57a99f6207bedff4628abefb94c50db941c8f4"
   integrity sha512-PqSoPh/pWetQ2phoj5RLiaqIk4kCNwoV3CI+LfGmWLKI3rE3kl1h59XpX2BjgDrmbxD9ARtQobPGU1SguCYuQg==
 
-uniforms-bridge-json-schema@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/uniforms-bridge-json-schema/-/uniforms-bridge-json-schema-3.0.0.tgz#4754e7dc311925361a288230e383680fc704f9cb"
-  integrity sha512-ODxl1biFORYyZJpsQRHLP7p/8Evxw70aYPuJdJBkuzPCC1U/DAseBJXnqkTNWuCBOQoaPQ2uP7M/3r3hbhmjeQ==
+uniforms-bridge-json-schema@3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/uniforms-bridge-json-schema/-/uniforms-bridge-json-schema-3.3.0.tgz#023990a3e96adcd754538b5a9b49acb248b73100"
+  integrity sha512-OWh36jPpO9t5M7GGZXvOJMPmxmlOYB4x/ftREO8EKztecAhyTZjZUZuxYOUO7PKbWEQRBj0eQg4ONUmFIJSf/Q==
   dependencies:
     invariant "^2.0.0"
     lodash "^4.0.0"
     tslib "^1.10.0"
-    uniforms "^3.0.0"
+    uniforms "^3.3.0"
 
 uniforms-patternfly@^4.2.1:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/uniforms-patternfly/-/uniforms-patternfly-4.4.2.tgz#ee9d2a6bce719b152509039250d2c49f97beccf3"
   integrity sha512-d922yqnJ8dzOMgCFUSggJLTtfVsw34QqtKRoyfvLivLIJu8LLxQqTR4UzizZZes6w4JEOG7AFNH3UHylUwLS2g==
 
-uniforms@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/uniforms/-/uniforms-3.0.0.tgz#30414fedf951eb11625d49330166a05f8a6be54b"
-  integrity sha512-D8Dzx86t+79wGQ9chOrtBAqQ/sRuN4OdSuv52PnkYvtwERGkjX6PUIzJiExNokwhr39i5GiM1RtEu8KQS4xgzw==
+uniforms@3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/uniforms/-/uniforms-3.3.0.tgz#551ea13eab436c66e2018458ca49dfa51fc38f74"
+  integrity sha512-MM1yqy+orXKiqVguRKykEi0Yc/O2zUC+Q/RfZ0trg/Zma6cE7d0S3JLcV4obJbUXGRUHyirvhe98PhCF2nFgCw==
   dependencies:
     invariant "^2.0.0"
     lodash "^4.0.0"
     tslib "^1.10.0"
 
-uniforms@^3.0.0:
+uniforms@^3.3.0:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/uniforms/-/uniforms-3.5.1.tgz#7ae798518cc280c60e22cd1077aaa9440e2c6a84"
   integrity sha512-1N8Y/QB2YSiMJMkwh1iAAzEd2jVDDa5qzL0VynzD8bsaHBB2UhUPUavAitLXK1s+nL76Y472+iMG0p5onQl4hg==

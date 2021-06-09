@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./FormRenderer";
+export * from "./core";
 export * from "./dmn";

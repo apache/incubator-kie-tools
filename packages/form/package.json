@@ -17,10 +17,12 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
+    "@kogito-tooling/i18n": "0.10.0",
+    "@kogito-tooling/notifications": "0.10.0",
     "ajv": "^6.12.6",
     "ajv-errors": "^1.0.1",
-    "uniforms": "3.0.0",
-    "uniforms-bridge-json-schema": "3.0.0",
+    "uniforms": "3.3.0",
+    "uniforms-bridge-json-schema": "3.3.0",
     "uniforms-patternfly": "^4.2.1"
   },
   "devDependencies": {

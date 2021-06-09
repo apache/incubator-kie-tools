@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DmnForm tests Snapshot 1`] = `
+<div
+  data-testid="dmn-form"
+>
+  <form
+    class="pf-c-form"
+    novalidate=""
+  />
+</div>
+`;

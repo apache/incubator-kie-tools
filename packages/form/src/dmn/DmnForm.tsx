@@ -20,10 +20,10 @@ import { AutoForm } from "uniforms-patternfly";
 import { ErrorBoundary } from "../common/ErrorBoundary";
 import { dataPathToFormFieldPath } from "./uniforms/utils";
 import { DmnFormJsonSchemaBridge } from "./uniforms";
-import { Validator } from "./Validator";
+import { DmnValidator } from "./DmnValidator";
 import { dmnFormI18n } from "./i18n";
 
-interface DmnRunnerForm {
+export interface DmnRunnerForm {
   definitions: DmnRunnerFormDefinitions;
 }
 
@@ -33,7 +33,7 @@ interface DmnRunnerFormDefinitions {
     properties: object;
     type: string;
     placeholder?: string;
-    title: string;
+    title?: string;
     format?: string;
   };
 }
@@ -46,7 +46,7 @@ interface DmnRunnerDeepProperty {
   format?: string;
 }
 
-interface Props {
+export interface Props {
   formData: any;
   setFormData: React.Dispatch<any>;
   formError: boolean;
@@ -74,7 +74,7 @@ export function DmnForm(props: Props) {
     dmnFormI18n.setLocale(props.locale ?? navigator.language);
     return dmnFormI18n.getCurrent();
   }, [props.locale]);
-  const validator = useMemo(() => new Validator(i18n), []);
+  const validator = useMemo(() => new DmnValidator(i18n), []);
 
   const setCustomPlaceholders = useCallback((value: DmnRunnerDeepProperty) => {
     if (value?.format === "days and time duration") {
@@ -117,10 +117,10 @@ export function DmnForm(props: Props) {
     [setCustomPlaceholders]
   );
 
-  // Remove required property
+  // Remove required property and make deep preprocessing
   const formPreprocessing = useCallback(
     (form: DmnRunnerForm) => {
-      delete form.definitions.InputSet?.required;
+      delete form.definitions?.InputSet?.required;
       if (Object.hasOwnProperty.call(form.definitions.InputSet, "properties")) {
         Object.entries(form.definitions.InputSet?.properties ?? {}).forEach(
           ([key, value]: [string, DmnRunnerDeepProperty]) => {
@@ -132,16 +132,13 @@ export function DmnForm(props: Props) {
     [formDeepPreprocessing]
   );
 
-  const getDmnRunnerJsonSchemaBridge = useCallback(() => {
-    const form: DmnRunnerForm = Object.assign(props.formSchema, {});
-    formPreprocessing(form);
-    const formDraft4 = { ...form, $schema: validator.getSchemaDraft4() };
-    return new DmnFormJsonSchemaBridge(formDraft4, validator.createValidator(formDraft4));
-  }, [props.formSchema, validator, formPreprocessing]);
-
   useEffect(() => {
-    setJsonSchemaBridge(getDmnRunnerJsonSchemaBridge());
-  }, [getDmnRunnerJsonSchemaBridge]);
+    const form: DmnRunnerForm = Object.assign(props.formSchema ?? {}, {});
+    if (Object.keys(form).length > 0) {
+      formPreprocessing(form);
+    }
+    setJsonSchemaBridge(validator.getBridge(form));
+  }, [props.formSchema, formPreprocessing, validator]);
 
   const onSubmit = useCallback(
     (model) => {
@@ -196,7 +193,7 @@ export function DmnForm(props: Props) {
       props.setFormData(model);
       return { details };
     },
-    [props.setFormData, dataPathToFormFieldPath]
+    [props.setFormData]
   );
 
   // Resets the ErrorBoundary everytime the JsonSchemaBridge is updated
@@ -205,7 +202,7 @@ export function DmnForm(props: Props) {
   }, [props.formSchema]);
 
   return (
-    <>
+    <div data-testid={"dmn-form"}>
       {jsonSchemaBridge && (
         <ErrorBoundary ref={errorBoundaryRef} setHasError={props.setFormError} error={props.formErrorMessage}>
           <AutoForm
@@ -224,6 +221,6 @@ export function DmnForm(props: Props) {
           />
         </ErrorBoundary>
       )}
-    </>
+    </div>
   );
 }
