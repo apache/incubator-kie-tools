@@ -222,6 +222,27 @@ export default class VSCodeTestHelper {
 
     await driver.switchTo().frame(null);
   };
+
+  /**
+   * Opens commands prompt and select given command there
+   */
+  public executeCommandFromPrompt = async (command: string): Promise<void> => {
+    const inputBox = (await this.workbench.openCommandPrompt()) as InputBox;
+    await inputBox.setText(`>${command}`);
+
+    const quickPicks = await inputBox.getQuickPicks();
+
+    for (const quickPick of quickPicks) {
+      const label = await quickPick.getLabel();
+      if (label === command) {
+        await quickPick.select();
+        await sleep(1000);
+        return;
+      }
+    }
+
+    throw new Error(`'${command}' not found in prompt`);
+  };
 }
 
 function sleep(ms: number) {

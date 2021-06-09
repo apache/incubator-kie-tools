@@ -16,9 +16,11 @@
 
 import { expect } from "chai";
 import { By, until, WebElement, WebView } from "vscode-extension-tester";
-import { assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
-import { expandedDocksBarE, h3ComponentWithText, tabWithTitle } from "./CommonLocators";
-import { EditorTabs } from "./EditorTabs";
+import { assertWebElementIsDisplayedEnabled } from "../CommonAsserts";
+import { expandedDocksBarE, h3ComponentWithText, tabWithTitle } from "../CommonLocators";
+import { EditorTabs } from "../EditorTabs";
+import PropertiesPanelHelper from "./PropertiesPanelHelper";
+import DecisionNavigatorHelper from "./DecisionNavigatorHelper";
 
 /**
  * Helper class to easen work with DMN editor inside of a webview.
@@ -26,67 +28,63 @@ import { EditorTabs } from "./EditorTabs";
  * via contructor.
  */
 export default class DmnEditorTestHelper {
-  /**
-   * WebView in whitch the editor Iframe is located.
-   * Initialize in constructor.
-   */
-  private webview: WebView;
-
   private decisionNavigator: WebElement;
   private diagramExplorer: WebElement;
   private properties: WebElement;
 
-  constructor(webview: WebView) {
-    this.webview = webview;
-  }
+  /**
+   *
+   * @param webview WebView where the editor Iframe is located.
+   */
+  constructor(private readonly webview: WebView) {}
 
   /**
    * Finds button that open DMN diagram explorer.
    *
    * @returns Promise<WebElement> promise that resolves to DMN diagram explorer button.
    */
-  public getDiagramExplorer = async (): Promise<WebElement> => {
+  public async getDiagramExplorer(): Promise<WebElement> {
     this.diagramExplorer = await this.webview.findWebElement(By.xpath("//button[@data-title='Explore diagram']"));
     return this.diagramExplorer;
-  };
+  }
 
   /**
    * Finds DMN diagram properties element.
    *
    * @returns Promise<WebElement> promise that resolves to DMN diagram properties element.
    */
-  public getDiagramProperties = async (): Promise<WebElement> => {
+  public async getDiagramProperties(): Promise<WebElement> {
     this.properties = await this.webview.findWebElement(By.className("docks-item-E-DiagramEditorPropertiesScreen"));
     return this.properties;
-  };
+  }
 
   /**
    * Finds DMN decision navigator element.
    *
    * @returns Promise<WebElement> promise that resolves to DMN decision navigator element.
    */
-  public getDecisionNavigator = async (): Promise<WebElement> => {
+  public async getDecisionNavigator(): Promise<WebElement> {
     this.decisionNavigator = await this.webview.findWebElement(
       By.className("docks-item-E-org.kie.dmn.decision.navigator")
     );
     return this.decisionNavigator;
-  };
+  }
 
   /**
    * Switch editor to other Tab
    * @param editorTab Tab to be swithced on
    */
-  public switchEditorTab = async (editorTab: EditorTabs): Promise<void> => {
+  public async switchEditorTab(editorTab: EditorTabs): Promise<void> {
     const tabElement = await this.webview.findWebElement(tabWithTitle(editorTab));
     await assertWebElementIsDisplayedEnabled(tabElement);
     await tabElement.click();
-  };
+  }
 
   /**
    * Using 'EditorTabs.IncludedModels' tab new model is included
    * @param modelFileName file name in the same direcotry that will be included
    */
-  public includeModel = async (modelFileName: string, modelAlias: string): Promise<void> => {
+  public async includeModel(modelFileName: string, modelAlias: string): Promise<void> {
     // Invoke Include Model pop-up
     const includeModelButton = await this.webview.findWebElement(By.xpath("//button[@data-field='include-model']"));
     await assertWebElementIsDisplayedEnabled(includeModelButton);
@@ -120,14 +118,14 @@ export default class DmnEditorTestHelper {
     const includeButton = await this.webview.findWebElement(By.xpath("//button[@data-field='include']"));
     await assertWebElementIsDisplayedEnabled(includeButton);
     await includeButton.click();
-  };
+  }
 
   /**
    * Assert included model details on the 'EditorTabs.IncludedModels'
    * @param modelAlias model to be asserted
    * @param nodesCount asserted model expected nodes count
    */
-  public inspectIncludedModel = async (modelAlias: string, nodesCount: number): Promise<void> => {
+  public async inspectIncludedModel(modelAlias: string, nodesCount: number): Promise<void> {
     // Wait until card with include details is shown
     const includeDetails = await this.webview
       .getDriver()
@@ -141,7 +139,7 @@ export default class DmnEditorTestHelper {
 
     const includedNodes = await includeDetails.findElement(By.xpath("//span[@data-field='drg-elements-count']"));
     expect(await includedNodes.getText()).to.equal(`${nodesCount}`, "Included model nodes count was not as expected");
-  };
+  }
 
   /**
    * Opens diagram properties.
@@ -152,15 +150,15 @@ export default class DmnEditorTestHelper {
    *
    * @returns a promise resolving to WebElement of openned panel.
    */
-  public openDiagramProperties = async (): Promise<WebElement> => {
+  public async openDiagramProperties(): Promise<PropertiesPanelHelper> {
     const properties = await this.getDiagramProperties();
     await assertWebElementIsDisplayedEnabled(properties);
     await properties.click();
     const expandedPropertiesPanel = await this.webview.findWebElement(expandedDocksBarE());
     await assertWebElementIsDisplayedEnabled(await properties.findElement(By.xpath(h3ComponentWithText("Properties"))));
     await assertWebElementIsDisplayedEnabled(expandedPropertiesPanel);
-    return expandedPropertiesPanel;
-  };
+    return new PropertiesPanelHelper(expandedPropertiesPanel);
+  }
 
   /**
    * Opens diagram explorer.
@@ -171,7 +169,7 @@ export default class DmnEditorTestHelper {
    *
    * @returns a promise resolving to WebElement of openned panel.
    */
-  public openDiagramExplorer = async (): Promise<WebElement> => {
+  public async openDiagramExplorer(): Promise<WebElement> {
     const explorer = await this.getDiagramExplorer();
     await assertWebElementIsDisplayedEnabled(explorer);
     await explorer.click();
@@ -181,7 +179,7 @@ export default class DmnEditorTestHelper {
     );
     await assertWebElementIsDisplayedEnabled(expandedExplorerPanel);
     return expandedExplorerPanel;
-  };
+  }
 
   /**
    * Opens decision navigator.
@@ -192,7 +190,7 @@ export default class DmnEditorTestHelper {
    *
    * @returns a promise resolving to WebElement of openned panel.
    */
-  public openDecisionNavigator = async (): Promise<WebElement> => {
+  public async openDecisionNavigator(): Promise<DecisionNavigatorHelper> {
     const navigator = await this.getDecisionNavigator();
     await assertWebElementIsDisplayedEnabled(navigator);
     await navigator.click();
@@ -201,6 +199,6 @@ export default class DmnEditorTestHelper {
       await navigator.findElement(By.xpath(h3ComponentWithText("Decision Navigator")))
     );
     await assertWebElementIsDisplayedEnabled(expandedNavigatorPanel);
-    return expandedNavigatorPanel;
-  };
+    return new DecisionNavigatorHelper(expandedNavigatorPanel);
+  }
 }
