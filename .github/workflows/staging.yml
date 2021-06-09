@@ -49,7 +49,7 @@ jobs:
           print('::set-output name=download_url::' + '${{ steps.create-release-draft.outputs.html_url }}'.replace('/tag/', '/download/'));
 
   upload-desktop-app-staging:
-    needs: [create-release-draft]
+    needs: [create-release]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
