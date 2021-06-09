@@ -158,7 +158,7 @@ jobs:
           echo "${{ needs.prepare.outputs.release-upload-url }}"
 
   vscode-extensions-dev:
-    if: ${{ github.event.inputs.vscode-extension-dev == 'true' }}
+    if: ${{ github.event.inputs.vscode-extensions-dev == 'true' }}
     runs-on: ubuntu-latest
     needs: [prepare]
     steps:
