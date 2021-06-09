@@ -90,7 +90,7 @@ jobs:
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
         with:
-          os: ubuntu-latest
+          os: ${{ matrix.os }}
 
       - name: "Build"
         run: |
@@ -201,7 +201,7 @@ jobs:
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
         with:
-          os: ubuntu-latest
+          os: ${{ matrix.os }}
 
       - name: "Build"
         run: |
