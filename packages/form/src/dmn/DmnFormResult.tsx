@@ -93,7 +93,7 @@ export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotif
         return;
       }
 
-      const updatedResult = document.getElementById(`${index}-dmn-runner-result`);
+      const updatedResult = document.getElementById(`${index}-dmn-result`);
       updatedResult?.classList.add("kogito--editor__dmn-form-result__leaf-updated");
     });
   }, [props.differences]);
@@ -102,7 +102,7 @@ export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotif
     e.preventDefault();
     e.stopPropagation();
 
-    const updatedResult = document.getElementById(`${index}-dmn-runner-result`);
+    const updatedResult = document.getElementById(`${index}-dmn-result`);
     updatedResult?.classList.remove("kogito--editor__dmn-form-result__leaf-updated");
   }, []);
 
@@ -230,9 +230,9 @@ export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotif
   const resultsToRender = useMemo(
     () =>
       props.results?.map((dmnFormResult, index) => (
-        <div key={`${index}-dmn-runner-result`} className={"kogito--editor__dmn-form-result__results"}>
+        <div key={`${index}-dmn-result`} className={"kogito--editor__dmn-form-result__results"}>
           <Card
-            id={`${index}-dmn-runner-result`}
+            id={`${index}-dmn-result`}
             isFlat={true}
             className={"kogito--editor__dmn-form-result__results-card"}
             onAnimationEnd={(e) => onAnimationEnd(e, index)}

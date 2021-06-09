@@ -255,11 +255,10 @@ export function DmnRunnerDrawer(props: Props) {
                   <DmnForm
                     formData={dmnRunner.formData}
                     setFormData={dmnRunner.setFormData}
-                    formError={dmnRunner.formError}
                     setFormError={dmnRunner.setFormError}
                     formErrorMessage={formErrorMessage}
                     formSchema={dmnRunner.formSchema}
-                    updateDmnRunnerResults={updateDmnRunnerResults}
+                    updateDmnResults={updateDmnRunnerResults}
                     id={"form"}
                     formRef={formRef}
                     showInlineError={true}

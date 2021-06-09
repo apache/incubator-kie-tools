@@ -23,11 +23,11 @@ import { DmnFormJsonSchemaBridge } from "./uniforms";
 import { DmnValidator } from "./DmnValidator";
 import { dmnFormI18n } from "./i18n";
 
-export interface DmnRunnerForm {
-  definitions: DmnRunnerFormDefinitions;
+export interface DmnFormData {
+  definitions: DmnFormDefinitions;
 }
 
-interface DmnRunnerFormDefinitions {
+interface DmnFormDefinitions {
   InputSet?: {
     required?: string[];
     properties: object;
@@ -38,7 +38,7 @@ interface DmnRunnerFormDefinitions {
   };
 }
 
-interface DmnRunnerDeepProperty {
+interface DmnDeepProperty {
   $ref?: string;
   type?: string;
   placeholder?: string;
@@ -49,11 +49,10 @@ interface DmnRunnerDeepProperty {
 export interface Props {
   formData: any;
   setFormData: React.Dispatch<any>;
-  formError: boolean;
   setFormError: React.Dispatch<boolean>;
   formErrorMessage: React.ReactNode;
   formSchema?: any;
-  updateDmnRunnerResults: (model: any) => void;
+  updateDmnResults: (model: any) => void;
   id?: string;
   formRef?: React.RefObject<HTMLFormElement>;
   showInlineError?: boolean;
@@ -76,7 +75,7 @@ export function DmnForm(props: Props) {
   }, [props.locale]);
   const validator = useMemo(() => new DmnValidator(i18n), []);
 
-  const setCustomPlaceholders = useCallback((value: DmnRunnerDeepProperty) => {
+  const setCustomPlaceholders = useCallback((value: DmnDeepProperty) => {
     if (value?.format === "days and time duration") {
       value!.placeholder = i18n.form.preProcessing.daysAndTimePlaceholder;
     }
@@ -86,12 +85,12 @@ export function DmnForm(props: Props) {
   }, []);
 
   const formDeepPreprocessing = useCallback(
-    (form: DmnRunnerForm, value: DmnRunnerDeepProperty, title = "") => {
+    (form: DmnFormData, value: DmnDeepProperty, title = "") => {
       if (Object.hasOwnProperty.call(value, "$ref")) {
-        const property = value.$ref!.split("/").pop()! as keyof DmnRunnerFormDefinitions;
+        const property = value.$ref!.split("/").pop()! as keyof DmnFormDefinitions;
         if (form.definitions[property] && Object.hasOwnProperty.call(form.definitions[property], "properties")) {
           Object.entries(form.definitions[property]!.properties).forEach(
-            ([key, deepValue]: [string, DmnRunnerDeepProperty]) => {
+            ([key, deepValue]: [string, DmnDeepProperty]) => {
               formDeepPreprocessing(form, deepValue, key);
             }
           );
@@ -110,6 +109,9 @@ export function DmnForm(props: Props) {
         value.type = "string";
         return;
       }
+      if (Object.hasOwnProperty.call(value, "enum")) {
+        value.placeholder = i18n.form.preProcessing.selectPlaceholder;
+      }
       if (Object.hasOwnProperty.call(value, "format")) {
         setCustomPlaceholders(value);
       }
@@ -119,11 +121,11 @@ export function DmnForm(props: Props) {
 
   // Remove required property and make deep preprocessing
   const formPreprocessing = useCallback(
-    (form: DmnRunnerForm) => {
+    (form: DmnFormData) => {
       delete form.definitions?.InputSet?.required;
       if (Object.hasOwnProperty.call(form.definitions.InputSet, "properties")) {
         Object.entries(form.definitions.InputSet?.properties ?? {}).forEach(
-          ([key, value]: [string, DmnRunnerDeepProperty]) => {
+          ([key, value]: [string, DmnDeepProperty]) => {
             formDeepPreprocessing(form, value, key);
           }
         );
@@ -133,7 +135,7 @@ export function DmnForm(props: Props) {
   );
 
   useEffect(() => {
-    const form: DmnRunnerForm = Object.assign(props.formSchema ?? {}, {});
+    const form: DmnFormData = Object.assign(props.formSchema ?? {}, {});
     if (Object.keys(form).length > 0) {
       formPreprocessing(form);
     }
@@ -145,7 +147,7 @@ export function DmnForm(props: Props) {
       props.onSubmit?.(model);
       props.setFormData(model);
     },
-    [props.setFormData]
+    [props.setFormData, props.onSubmit]
   );
 
   // Validation occurs on every change and submit.
@@ -193,7 +195,7 @@ export function DmnForm(props: Props) {
       props.setFormData(model);
       return { details };
     },
-    [props.setFormData]
+    [props.setFormData, props.onValidate]
   );
 
   // Resets the ErrorBoundary everytime the JsonSchemaBridge is updated
@@ -216,8 +218,8 @@ export function DmnForm(props: Props) {
             placeholder={props.placeholder}
             onSubmit={onSubmit}
             onValidate={onValidate}
-            errorsField={props.errorsField ?? (() => <></>)}
-            submitField={props.submitField ?? (() => <></>)}
+            errorsField={props.errorsField}
+            submitField={props.submitField}
           />
         </ErrorBoundary>
       )}
