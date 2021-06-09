@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/pmml-editor",
-  "version": "0.10.0",
+  "version": "0.0.1",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/editor/index.js",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@kie-tooling-core/monaco-editor": "^0.0.4",
-    "@kogito-tooling/pmml-editor-marshaller": "0.10.0",
+    "@kogito-tooling/pmml-editor-marshaller": "0.0.1",
     "@types/lodash": "^4.14.168",
     "@types/react-redux": "^7.1.16",
     "@types/react-router-dom": "^5.1.7",

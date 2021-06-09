@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/hub",
-  "version": "0.10.0",
+  "version": "0.0.1",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -10,8 +10,8 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/desktop": "0.10.0",
-    "@kogito-tooling/i18n-common-dictionary": "0.10.0",
+    "@kogito-tooling/desktop": "0.0.1",
+    "@kogito-tooling/i18n-common-dictionary": "0.0.1",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
     "electron": "^12.0.6",
