@@ -1,0 +1,1052 @@
+/*
+   Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
+
+package com.ait.lienzo.client.core.shape;
+
+import java.util.List;
+
+import com.ait.lienzo.client.core.Attribute;
+import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.PathPartList;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.util.Geometry;
+import com.ait.lienzo.shared.core.types.Direction;
+import com.ait.lienzo.shared.core.types.ShapeType;
+import com.google.gwt.json.client.JSONObject;
+
+import static com.ait.lienzo.shared.core.types.Direction.EAST;
+import static com.ait.lienzo.shared.core.types.Direction.NONE;
+import static com.ait.lienzo.shared.core.types.Direction.NORTH;
+import static com.ait.lienzo.shared.core.types.Direction.NORTH_EAST;
+import static com.ait.lienzo.shared.core.types.Direction.NORTH_WEST;
+import static com.ait.lienzo.shared.core.types.Direction.SOUTH;
+import static com.ait.lienzo.shared.core.types.Direction.SOUTH_EAST;
+import static com.ait.lienzo.shared.core.types.Direction.SOUTH_WEST;
+import static com.ait.lienzo.shared.core.types.Direction.WEST;
+
+public class OrthogonalPolyLineBACKUP extends AbstractDirectionalMultiPointShape<OrthogonalPolyLineBACKUP>
+{
+    private Point2D m_headOffsetPoint;
+    private Direction m_actualHeadDirection;
+
+    private Point2D m_tailOffsetPoint;
+    private Direction m_actualTailDirection;
+
+    public OrthogonalPolyLineBACKUP(final Point2D start, final Point2D... points)
+    {
+        this(new Point2DArray(start, points));
+    }
+
+    public OrthogonalPolyLineBACKUP(final Point2DArray points)
+    {
+        super(ShapeType.ORTHOGONAL_POLYLINE);
+
+        setControlPoints(points);
+    }
+
+    public OrthogonalPolyLineBACKUP(final Point2DArray points, final double corner)
+    {
+        this(points);
+
+        setCornerRadius(corner);
+    }
+
+    protected OrthogonalPolyLineBACKUP(final JSONObject node, final ValidationContext ctx) throws ValidationException
+    {
+        super(ShapeType.ORTHOGONAL_POLYLINE, node, ctx);
+    }
+
+    private static final Point2D correctEndWithOffset(double offset, Direction direction, final Point2D target)
+    {
+        switch (direction)
+        {
+            case NORTH:
+                return target.setY(target.getY() - offset);
+            case EAST:
+                return target.setX(target.getX() + offset);
+            case SOUTH:
+                return target.setY(target.getY() + offset);
+            case WEST:
+                return target.setX(target.getX() - offset);
+            case NONE:
+                break;
+            default:
+                throw new IllegalStateException("Invalid Direction " + direction);
+        }
+
+        return target;
+    }
+
+    private static Point2D correctP0(Direction headDirection, double correction, OrthogonalPolyLineBACKUP pline, boolean write, NFastDoubleArrayJSO buffer, Point2D p0)
+    {
+        if ( !write ) {
+            p0 = p0.copy();
+        }
+
+        final double headOffset = pline.getHeadOffset();
+
+        // correct for headOffset
+        if (headOffset > 0)
+        {
+            correctEndWithOffset(headOffset, headDirection, p0);
+        }
+
+        // add starting point, that may have head offset
+        addPoint(buffer,  p0.getX(), p0.getY(), write);
+
+        // correct for correction
+        if ( correction > 0 ) {
+            // must do this off a cloned Point2D, as points[0] is used for M operation, during line drawing.
+            if ( write ) {
+                // if !write, we are alreayd working on a copy
+                p0 = p0.copy();
+            }
+            correctEndWithOffset(correction, headDirection, p0);
+            // add another point of the correction, to ensure the line is always visible at the tip of the arrow
+            addPoint(buffer,  p0.getX(), p0.getY(), write);
+        }
+        return p0;
+    }
+
+    private static final NFastDoubleArrayJSO getOrthogonalLinePoints(final Point2DArray points, Direction headDirection, Direction tailDirection, final double correction, final OrthogonalPolyLineBACKUP pline, boolean write)
+    {
+        final NFastDoubleArrayJSO buffer = NFastDoubleArrayJSO.make();
+
+        Point2D p0 = points.get(0);
+        p0 = correctP0(headDirection, correction, pline, write, buffer, p0);
+
+        int i = 1;
+        Direction direction = headDirection;
+        final int size = points.size();
+        Point2D p1;
+        Point2D p2;
+
+        for (; i < size - 1; i++) {
+            p1 = points.get(i);
+
+            p2 = points.get(i + 1);
+
+            direction = drawOrthogonalLinePointsAndReturnNextDirection(buffer, direction, null, p0.getX(), p0.getY(), p1.getX(), p1.getY(), p2.getX(), p2.getY(), write);
+
+
+            if (null == direction) {
+                return null;
+            }
+            p0 = p1;
+        }
+        p1 = points.get(size - 1);
+
+        addTail(points, buffer, direction, tailDirection, p0, p1, correction, pline);
+
+        return buffer;
+    }
+
+    private static final Direction[] getHeadAndTailForTwoPoints(Point2DArray points, NFastDoubleArrayJSO buffer, Direction headDirection, Direction tailDirection, Point2D p0, Point2D p1, double headOffsetAndCorrection, final double correction, final OrthogonalPolyLineBACKUP pline)
+    {
+        double p0x = p0.getX();
+        double p0y = p0.getY();
+        double p1x = p1.getX();
+        double p1y = p1.getY();
+        final double dx = (p1x - p0x);
+        final double dy = (p1y - p0y);
+
+        boolean verticalOverlap = (dx > -headOffsetAndCorrection && dx < headOffsetAndCorrection);
+        boolean horizontalOverlap = (dy > -headOffsetAndCorrection && dy < headOffsetAndCorrection);
+
+        boolean west = dx <= -headOffsetAndCorrection;
+        boolean east = dx >= headOffsetAndCorrection;
+        boolean north = dy <= -headOffsetAndCorrection;
+        boolean south = dy >= headOffsetAndCorrection;
+
+        switch (headDirection)
+        {
+            // Corner directions can go either way, so try both and pick the one that results in the least number of corners.
+            case NORTH_EAST:
+            {
+                Object[] tailDirections1 = getTailDirection(points, buffer, NORTH, tailDirection, correction, pline, p0x, p0y-headOffsetAndCorrection, p1x, p1y);
+                Object[] tailDirections2 = getTailDirection(points, buffer, EAST, tailDirection, correction, pline, p0x+headOffsetAndCorrection, p0y, p1x, p1y);
+
+                headDirection = ((Integer)tailDirections1[1]).intValue() <  ((Integer)tailDirections2[1]).intValue() ? NORTH : EAST;
+                tailDirection = (Direction) (( headDirection == NORTH ) ? tailDirections1[0] : tailDirections2[0]);
+                break;
+            }
+            case SOUTH_EAST:
+            {
+                Object[] tailDirections1 = getTailDirection(points, buffer, SOUTH, tailDirection, correction, pline, p0x, p0y+headOffsetAndCorrection, p1x, p1y);
+                Object[] tailDirections2 = getTailDirection(points, buffer, EAST, tailDirection, correction, pline, p0x+headOffsetAndCorrection, p0y, p1x, p1y);
+
+                headDirection = ((Integer)tailDirections1[1]).intValue() <  ((Integer)tailDirections2[1]).intValue() ? SOUTH : EAST;
+                tailDirection = (Direction) (( headDirection == SOUTH ) ? tailDirections1[0] : tailDirections2[0]);
+                break;
+            }
+            case SOUTH_WEST:
+            {
+                Object[] tailDirections1 = getTailDirection(points, buffer, SOUTH, tailDirection, correction, pline, p0x, p0y+headOffsetAndCorrection, p1x, p1y);
+                Object[] tailDirections2 = getTailDirection(points, buffer, WEST, tailDirection, correction, pline, p0x-headOffsetAndCorrection, p0y, p1x, p1y);
+
+                tailDirection = (Direction) (( headDirection == SOUTH ) ? tailDirections1[0] : tailDirections2[0]);
+                headDirection = ((Integer)tailDirections1[1]).intValue() <  ((Integer)tailDirections2[1]).intValue() ? SOUTH : WEST;
+                break;
+            }
+            case NORTH_WEST:
+            {
+                Object[] tailDirections1 = getTailDirection(points, buffer, NORTH, tailDirection, correction, pline, p0x, p0y-headOffsetAndCorrection, p1x, p1y);
+                Object[] tailDirections2 = getTailDirection(points, buffer, WEST, tailDirection, correction, pline, p0x-headOffsetAndCorrection, p0y, p1x, p1y);
+
+                headDirection = ((Integer)tailDirections1[1]).intValue() <  ((Integer)tailDirections2[1]).intValue() ? NORTH : WEST;
+                tailDirection = (Direction) (( headDirection == NORTH ) ? tailDirections1[0] : tailDirections2[0]);
+                break;
+            }
+            case NONE:
+            {
+                if ( east )
+                {
+                    headDirection = EAST;
+                }
+                else if ( west )
+                {
+                    headDirection = WEST;
+                }
+
+                if ( tailDirection == NORTH_WEST || tailDirection == NORTH_EAST)
+                {
+
+                    if ( verticalOverlap && south )
+                    {
+                        headDirection =  SOUTH;
+                    }
+                    else if ( horizontalOverlap && ((tailDirection == NORTH_WEST && west)||(tailDirection == NORTH_EAST && east)))
+                    {
+                        headDirection =  NORTH;
+                    }
+                    else if ( north )
+                    {
+                        headDirection =  NORTH;
+                    }
+                }
+                else if ( tailDirection == SOUTH_WEST || tailDirection == SOUTH_EAST)
+                {
+                    if ( verticalOverlap && north )
+                    {
+                        headDirection =  NORTH;
+                    }
+                    else if ( horizontalOverlap  && ((tailDirection == SOUTH_WEST && west)||(tailDirection == SOUTH_EAST && east)))
+                    {
+                        headDirection =  SOUTH;
+                    }
+                    else if ( south )
+                    {
+                        headDirection =  SOUTH;
+                    }
+                }
+                else if ( tailDirection == NONE && verticalOverlap)
+                {
+                    if (north  )
+                    {
+                        headDirection =  NORTH;
+                    }
+                    else if ( south )
+                    {
+                        headDirection =  SOUTH;
+                    }
+                }
+                else if ( tailDirection == NORTH)
+                {
+                    if ( horizontalOverlap || north )
+                    {
+                        headDirection =  NORTH;
+                    }
+                    else if ( verticalOverlap && south )
+                    {
+                        headDirection =  SOUTH;
+                    }
+                }
+                else if ( tailDirection == SOUTH)
+                {
+                    if ( horizontalOverlap || south )
+                    {
+                        headDirection =  SOUTH;
+                    }
+                    else if ( verticalOverlap && north )
+                    {
+                        headDirection =  NORTH;
+                    }
+                }
+                else if ( tailDirection == WEST)
+                {
+
+                    if ( east && !horizontalOverlap)
+                    {
+                        if (north)
+                        {
+                            headDirection = NORTH;
+                        }
+                        else if (south)
+                        {
+                            headDirection = SOUTH;
+                        }
+                    }
+                    else if (verticalOverlap)
+                    {
+                        headDirection = WEST;
+                    }
+                }
+                else if ( tailDirection == EAST)
+                {
+
+                    if ( west && !horizontalOverlap)
+                    {
+                        if (north)
+                        {
+                            headDirection = NORTH;
+                        }
+                        else if (south)
+                        {
+                            headDirection = SOUTH;
+                        }
+                    }
+                    else if (verticalOverlap)
+                    {
+                        headDirection = EAST;
+                    }
+                }
+
+                break;
+            }
+            default:
+                // return head and tail, as is.
+                break;
+        }
+
+        return new Direction[] { headDirection, tailDirection };
+    }
+
+    private static final void addTail(Point2DArray points, NFastDoubleArrayJSO buffer, Direction lastDirection, Direction tailDirection, Point2D p0, Point2D p1, final double correction, final OrthogonalPolyLineBACKUP pline)
+    {
+        double p0x = p0.getX();
+
+        double p0y = p0.getY();
+
+        double p1x = p1.getX();
+
+        double p1y = p1.getY();
+
+        // This returns an array, as addTail needs both the direction and the number of corner points.
+        Object[] tailDirections = getTailDirection(points, buffer, lastDirection, tailDirection, correction, pline, p0x, p0y, p1x, p1y);
+
+        addTail(points, buffer, lastDirection, (Direction) tailDirections[0], correction, pline, p0x, p0y, p1x, p1y, true);
+    }
+
+    private static Object[] getTailDirection(Point2DArray points, NFastDoubleArrayJSO buffer, Direction lastDirection, Direction tailDirection, double correction, OrthogonalPolyLineBACKUP pline, double p0x, double p0y, double p1x, double p1y)
+    {
+        int maxPoints = 0;
+
+        double offset = pline.getHeadOffset() + correction;
+        switch (tailDirection)
+        {
+            // Corner directions can go either way, so try both and pick the one that results in the least number of corners.
+            case NORTH_EAST:
+            {
+                int points1 = addTail(points, buffer, lastDirection, NORTH, correction, pline, p0x, p0y, p1x, p1y, false);
+
+                int points2 = addTail(points, buffer, lastDirection, EAST, correction, pline, p0x, p0y, p1x, p1y, false);
+
+                tailDirection = points1 < points2 ? NORTH : EAST;
+                maxPoints = points1 < points2 ? points1 : points2;
+                break;
+            }
+            case SOUTH_EAST:
+            {
+                int points1 = addTail(points, buffer, lastDirection, SOUTH, correction, pline, p0x, p0y, p1x, p1y, false);
+
+                int points2 = addTail(points, buffer, lastDirection, EAST, correction, pline, p0x, p0y, p1x, p1y, false);
+
+                tailDirection = points1 < points2 ? SOUTH : EAST;
+                maxPoints = points1 < points2 ? points1 : points2;
+                break;
+            }
+            case SOUTH_WEST:
+            {
+                int points1 = addTail(points, buffer, lastDirection, SOUTH, correction, pline, p0x, p0y, p1x, p1y, false);
+
+                int points2 = addTail(points, buffer, lastDirection, WEST, correction, pline, p0x, p0y, p1x, p1y, false);
+
+                tailDirection = points1 < points2 ? SOUTH : WEST;
+                maxPoints = points1 < points2 ? points1 : points2;
+                break;
+            }
+            case NORTH_WEST:
+            {
+                int points1 = addTail(points, buffer, lastDirection, NORTH, correction, pline, p0x, p0y, p1x, p1y, false);
+
+                int points2 = addTail(points, buffer, lastDirection, WEST, correction, pline, p0x, p0y, p1x, p1y, false);
+                tailDirection = points1 < points2 ? NORTH : WEST;
+                maxPoints = points1 < points2 ? points1 : points2;
+                break;
+            }
+            case NONE:
+            {
+                final double dx = (p1x - p0x);
+                final double dy = (p1y - p0y);
+
+                int bestPoints = 0;
+
+                if ( dx > offset )
+                {
+                    tailDirection = WEST;
+                    bestPoints = addTail(points, buffer, lastDirection, WEST, correction, pline, p0x, p0y, p1x, p1y, false);
+                }
+                else
+                {
+                    tailDirection = EAST;
+                    bestPoints = addTail(points, buffer, lastDirection, EAST, correction, pline, p0x, p0y, p1x, p1y, false);
+                }
+
+
+                if ( dy > 0 )
+                {
+                    int points3 = addTail(points, buffer, lastDirection, NORTH, correction, pline, p0x, p0y, p1x, p1y, false);
+
+                    if (points3 < bestPoints)
+                    {
+                        tailDirection = NORTH;
+                        bestPoints = points3;
+                    }
+                }
+                else
+                {
+                    int points4 = addTail(points, buffer, lastDirection, SOUTH, correction, pline, p0x, p0y, p1x, p1y, false);
+                    if (points4 < bestPoints)
+                    {
+                        tailDirection = SOUTH;
+                        bestPoints = points4;
+                    }
+                }
+
+                maxPoints = bestPoints;
+
+                break;
+            }
+            default:
+                maxPoints = addTail(points, buffer, lastDirection, tailDirection, correction, pline, p0x, p0y, p1x, p1y, false);
+                break;
+        }
+        return new Object[] { tailDirection, maxPoints};
+    }
+
+    private static int addTail(Point2DArray points, NFastDoubleArrayJSO buffer, Direction lastDirection, Direction tailDirection, double correction, final OrthogonalPolyLineBACKUP pline, double p0x, double p0y, double p1x, double p1y, boolean write)
+    {
+        double tailOffset = pline.getTailOffset();
+
+        double distance = 0;
+        Point2D p1 = points.get(points.size() - 1);
+
+        // correct for tailOffset
+        if (tailOffset > 0)
+        {
+            if ( !write )
+            {
+                p1 = p1.copy();
+            }
+            correctEndWithOffset(tailOffset, tailDirection, p1);
+            p1x = p1.getX();
+            p1y = p1.getY();
+        }
+
+        // correct for correction
+        if ( correction > 0 ) {
+            // must do this off a cloned Point2D, as we still need the p1, for the last part of the line at the end.
+            Point2D p1Copy = p1.copy();
+            correctEndWithOffset(correction, tailDirection, p1Copy);
+            p1x = p1Copy.getX();
+            p1y = p1Copy.getY();
+        }
+
+        final double dx = (p1x - p0x);
+        final double dy = (p1y - p0y);
+
+        int corners = 0;
+
+        boolean behind = false;
+
+        switch (tailDirection)
+        {
+            case NORTH:
+                behind = dy < 0;
+                break;
+            case SOUTH:
+                behind = dy > 0;
+                break;
+            case WEST:
+                behind = dx < 0;
+                break;
+            case EAST:
+                behind = dx > 0;
+                break;
+            case NONE:
+                // do nothing as NONE is explicitey handled at the end
+                break;
+            default:
+                throw new IllegalStateException("Invalid Direction " + tailDirection);
+        }
+        double x = p0x;
+
+        double y = p0y;
+
+        if (behind)
+        {
+            // 1) p0 is behind p1 and lastDirection points opposite direction p1's tail direction
+            // 2) p0 is behind p1 but lastDirection is perpedicularlly towrds p1
+            // This means going perpendicular to the current direction, in the direction of p1.
+            // It uses half the distance, so the lines look better spaced.
+            // means p0 is behind.
+            switch (tailDirection)
+            {
+                case NORTH:
+                case SOUTH:
+                    if ((lastDirection == NORTH && tailDirection == SOUTH) ||
+                        (lastDirection == SOUTH && tailDirection == NORTH) ||
+                        (dx > 0 && lastDirection == EAST) ||
+                        (dx < 0 && lastDirection == WEST) )
+                    {
+                        x = p0x + (dx / 2);
+                        addPoint(buffer, x, y, write);
+
+                        if ( lastDirection == NORTH || lastDirection == NORTH)
+                        {
+                            corners++;
+                        }
+                    }
+
+                    y = p1y;
+                    addPoint(buffer, x, y, write);
+                    if ( lastDirection != tailDirection )
+                    {
+                        corners++;
+                    }
+
+                    x = p1x;
+                    addPoint(buffer, x, y, write);
+                    corners++;
+
+                    y = p1.getY();
+                    addPoint(buffer, x, y, write);
+                    corners++;
+                    break;
+                case WEST:
+                case EAST:
+                    if ((lastDirection == WEST && tailDirection == EAST) ||
+                        (lastDirection == EAST && tailDirection == WEST) ||
+                        (dy > 0 && lastDirection == SOUTH) ||
+                        (dy < 0 && lastDirection == NORTH))
+                    {
+                        y = p0y + (dy / 2);
+                        addPoint(buffer, x, y, write);
+
+                        if ( lastDirection == EAST || lastDirection == WEST)
+                        {
+                            corners++;
+                        }
+                    }
+
+
+                    x = p1x;
+                    addPoint(buffer, x, y, write);
+                    if ( lastDirection != tailDirection )
+                    {
+                        corners++;
+                    }
+
+                    y = p1y;
+                    addPoint(buffer, x, y, write);
+                    corners++;
+
+                    x = p1.getX();
+                    addPoint(buffer, x, y, write);
+                    corners++;
+                    break;
+                default:
+                    throw new IllegalStateException("Invalid Direction " + tailDirection);
+            }
+        }
+        else
+        {
+            // means p0 is in front
+            // If p0 is in front and lastDirection points perpendicular away from p1, it must first be corrected.
+            // This means going 1/2 forward to the current direction, in the direction of p1, then going perpendicular
+            // It uses half the distance, so the lines look better spaced.
+            switch (tailDirection)
+            {
+                case NORTH:
+                case SOUTH:
+                    if ((lastDirection == NORTH && tailDirection == SOUTH) ||
+                        (lastDirection == SOUTH && tailDirection == NORTH) ||
+                        (dx > 0 && lastDirection == WEST) ||
+                        (dx < 0 && lastDirection == EAST))
+                    {
+                        y = p0y + (dy / 2);
+                        addPoint(buffer, x, y, write);
+
+                        if ( lastDirection == EAST || lastDirection == WEST)
+                        {
+                            lastDirection = ( dy < 0 ) ? NORTH : SOUTH;
+                            corners++;
+                        }
+                    }
+
+                    x = p1x;
+                    addPoint(buffer, x, y, write);
+                    if (lastDirection == NORTH || lastDirection == SOUTH)
+                    {
+                        corners++;
+                    }
+
+                    y = p1.getY();
+                    addPoint(buffer, x, y, write);
+                    corners++;
+                    break;
+                case WEST:
+                case EAST:
+                    if ( (lastDirection == WEST && tailDirection == EAST) ||
+                         (lastDirection == EAST && tailDirection == WEST) ||
+                         (dy > 0 && lastDirection == NORTH) ||
+                         (dy < 0 && lastDirection == SOUTH))
+                    {
+                        x = p0x + (dx / 2);
+                        addPoint(buffer, x, y, write);
+
+                        if ( lastDirection == NORTH || lastDirection == SOUTH)
+                        {
+                            lastDirection = ( dx < 0 ) ? WEST : EAST;
+                            corners++;
+                        }
+                    }
+
+                    y = p1y;
+                    addPoint(buffer, x, y, write);
+                    if (lastDirection == EAST || lastDirection == WEST)
+                    {
+                        corners++;
+                    }
+
+                    x = p1.getX();
+                    addPoint(buffer, x, y, write);
+                    corners++;
+                    break;
+                default:
+                    throw new IllegalStateException("Invalid Direction " + tailDirection);
+            }
+        }
+
+        return corners;
+    }
+
+    /**
+     * Draws an orthogonal line between two points, it uses the previous direction to determine the new direction. It
+     * will always attempt to continue the line in the same direction if it can do so, without requiring a corner.
+     * If the line goes back on itself, it'll go 50% of the way  and then go perpendicular, so that it no longer goes back on itself.
+     */
+    private static final Direction drawOrthogonalLinePointsAndReturnNextDirection(final NFastDoubleArrayJSO buffer, final Direction direction, Direction nextDirection, double p1x, double p1y, final double p2x, final double p2y, final double p3x, final double p3y, boolean write)
+    {
+        if (nextDirection == null)
+        {
+            nextDirection = getNextDirection(direction, p1x, p1y, p2x, p2y);
+        }
+
+
+        if ((nextDirection == SOUTH) || (nextDirection == NORTH))
+        {
+            if (p1x == p2x)
+            {
+                // points are already on a straight line, so don't try and apply an orthogonal line
+                addPoint(buffer, p2x, p2y, write);
+            }
+            else
+            {
+                addPoint(buffer, p1x, p2y, p2x, p2y, write);
+            }
+            if (p1x < p2x)
+            {
+                return EAST;
+            }
+            else if (p1x > p2x)
+            {
+                return WEST;
+            }
+            else
+            {
+                return nextDirection;
+            }
+        }
+        else
+        {
+            if (p1y != p2y)
+            {
+                addPoint(buffer, p2x, p1y, p2x, p2y, write);
+            }
+            else
+            {
+                // points are already on a straight line, so don't try and apply an orthogonal line
+
+                addPoint(buffer, p2x, p2y, write);
+            }
+            if (p1y > p2y)
+            {
+                return NORTH;
+            }
+            else if (p1y < p2y)
+            {
+                return SOUTH;
+            }
+            else
+            {
+                return nextDirection;
+            }
+        }
+    }
+
+    private static Direction getNextDirection(Direction direction, double p1x, double p1y, double p2x, double p2y)
+    {
+        Direction next_direction;
+
+        switch (direction)
+        {
+            case NORTH:
+                if (p2y < p1y)
+                {
+                    next_direction = NORTH;
+                }
+                else if (p2x > p1x)
+                {
+                    next_direction = EAST;
+                }
+                else
+                {
+                    next_direction = WEST;
+                }
+                break;
+            case SOUTH:
+                if (p2y > p1y)
+                {
+                    next_direction = SOUTH;
+                }
+                else if (p2x > p1x)
+                {
+                    next_direction = EAST;
+                }
+                else
+                {
+                    next_direction = WEST;
+                }
+                break;
+            case EAST:
+                if (p2x > p1x)
+                {
+                    next_direction = EAST;
+                }
+                else if (p2y < p1y)
+                {
+                    next_direction = NORTH;
+                }
+                else
+                {
+                    next_direction = SOUTH;
+                }
+                break;
+            case WEST:
+                if (p2x < p1x)
+                {
+                    next_direction = WEST;
+                }
+                else if (p2y < p1y)
+                {
+                    next_direction = NORTH;
+                }
+                else
+                {
+                    next_direction = SOUTH;
+                }
+                break;
+            default:
+                throw new IllegalStateException("This should not be reached (Defensive Code)");
+        }
+        return next_direction;
+    }
+
+    private static final void addPoint(final NFastDoubleArrayJSO buffer, final double x, final double y, boolean write)
+    {
+        if (write == true)
+        {
+            addPoint(buffer, x, y);
+        }
+    }
+
+    private static final void addPoint(final NFastDoubleArrayJSO buffer, final double x0, final double y0, double x1, double y1, boolean write)
+    {
+        if (write == true)
+        {
+            buffer.push(x0, y0, x1, y1);
+        }
+    }
+
+    private static final void addPoint(final NFastDoubleArrayJSO buffer, final double x, final double y)
+    {
+        // always attempt to normalise
+        if ( !buffer.isEmpty() )
+        {
+            double x1 = buffer.get(buffer.size()-2);
+            double y1 = buffer.get(buffer.size()-1);
+
+            if ( x == x1 && y == y1 )
+            {
+                return;
+                //throw new RuntimeException("Should not add a point for an existing point. This is here for Defensive Programming (mdp)" );
+            }
+            else if (x == x1 || y == y1)
+            {
+                if ( buffer.size() > 2 )
+                {
+                    double x2 = buffer.get(buffer.size()-4);
+                    double y2 = buffer.get(buffer.size()-3);
+                    if ( x == x1 && x == x2 )
+                    {
+                        buffer.set(buffer.size()-1, y);
+                        return;
+
+                    }
+                    else
+                    if ( y == y1 && y == y2 )
+                    {
+                        buffer.set(buffer.size()-2, x);
+                        return;
+                    }
+                }
+            }
+        }
+
+        buffer.push(x, y);
+    }
+
+    @Override
+    public boolean  parse(final Attributes attr)
+    {
+        Point2DArray points = attr.getControlPoints();
+
+        if (null != points)
+        {
+            points = points.noAdjacentPoints();// this clones the points, so we are ok to mutate the elements (see tail/head offset)
+
+            if (points.size() > 1)
+            {
+                final double headOffset = attr.getHeadOffset();
+
+                final double correction = attr.getCorrectionOffset();
+
+                Direction headDirection = attr.getHeadDirection();
+
+                Direction tailDirection = attr.getTailDirection();
+
+                if (ambigiousDirection(headDirection))
+                {
+                    Point2D p0 = points.get(0);
+                    Point2D p1 = points.get(1);
+
+                    double headOffsetAndCorrect = headOffset + correction;
+
+                    if (points.size() == 2)
+                    {
+                        Direction[] directions = getHeadAndTailForTwoPoints(points, null, headDirection, tailDirection, p0, p1, headOffsetAndCorrect, correction,this);
+                        headDirection = directions[0];
+                        tailDirection = directions[1];
+                    }
+                    else
+                    {
+                        // A mid point can be treated as a tail with a  NONE direction.
+                        Direction[] directions = getHeadAndTailForTwoPoints(points, null, headDirection, NONE, p0, p1, headOffsetAndCorrect, correction, this);
+                        headDirection = directions[0];
+                    }
+                }
+
+                final NFastDoubleArrayJSO opoint = getOrthogonalLinePoints(points, headDirection, tailDirection, correction, this, true);
+
+                m_headOffsetPoint = points.get(0);
+                m_tailOffsetPoint = points.get(points.size()-1);
+
+                if (null != opoint)
+                {
+                    final PathPartList list = getPathPartList();
+
+                    list.M(m_headOffsetPoint.getX(), m_headOffsetPoint.getY());
+
+                    final double radius = getCornerRadius();
+
+                    if (radius > 0)
+                    {
+                        Geometry.drawArcJoinedLines(list, Point2DArray.fromNFastDoubleArrayJSO(opoint), radius);
+                    }
+                    else
+                    {
+                        final int size = opoint.size();
+                        // start at 2, as M is for opoint[0]
+                        for (int i = 2; i < size; i += 2)
+                        {
+                            list.L(opoint.get(i), opoint.get(i + 1));
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean ambigiousDirection(Direction direction)
+    {
+        switch (direction)
+        {
+            case NORTH_EAST:
+            case NORTH_WEST:
+            case SOUTH_EAST:
+            case SOUTH_WEST:
+            case NONE:
+                return true;
+
+        }
+        return false;
+    }
+
+
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        if (getPathPartList().size() < 1)
+        {
+            if (false == parse(getAttributes()))
+            {
+                return new BoundingBox(0, 0, 0, 0);
+            }
+        }
+        return getPathPartList().getBoundingBox();
+    }
+
+    @Override
+    public OrthogonalPolyLineBACKUP refresh()
+    {
+        getPathPartList().clear();
+
+        return this;
+    }
+
+    @Override
+    protected boolean fill(Context2D context, Attributes attr, double alpha)
+    {
+        return false;
+    }
+
+    /**
+     * Returns this OrthogonalPolyLine's points.
+     *
+     * @return {@link Point2DArray}
+     */
+    public Point2DArray getControlPoints()
+    {
+        return getAttributes().getControlPoints();
+    }
+
+    /**
+     * Sets this OrthogonalPolyLine's points.
+     *
+     * @param points {@link Point2DArray}
+     * @return this OrthogonalPolyLine
+     */
+    public OrthogonalPolyLineBACKUP setControlPoints(final Point2DArray points)
+    {
+        getAttributes().setControlPoints(points);
+
+        return refresh();
+    }
+
+    public double getCornerRadius()
+    {
+        return getAttributes().getCornerRadius();
+    }
+
+    public OrthogonalPolyLineBACKUP setCornerRadius(final double radius)
+    {
+        getAttributes().setCornerRadius(radius);
+
+        return refresh();
+    }
+
+    @Override
+    public OrthogonalPolyLineBACKUP setPoint2DArray(final Point2DArray points)
+    {
+        return setControlPoints(points);
+    }
+
+    @Override
+    public Point2DArray getPoint2DArray()
+    {
+        return getControlPoints();
+    }
+
+    @Override
+    public boolean isControlPointShape()
+    {
+        return true;
+    }
+
+    @Override
+    public Point2D getHeadOffsetPoint()
+    {
+        return m_headOffsetPoint;
+    }
+
+    @Override
+    public Point2D getTailOffsetPoint()
+    {
+        return m_tailOffsetPoint;
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return getBoundingBoxAttributesComposed(Attribute.CONTROL_POINTS, Attribute.CORNER_RADIUS);
+    }
+
+    public static class OrthogonaPolylLineFactory extends AbstractDirectionalMultiPointShapeFactory<OrthogonalPolyLineBACKUP>
+    {
+        public OrthogonaPolylLineFactory()
+        {
+            super(ShapeType.ORTHOGONAL_POLYLINE);
+
+            addAttribute(Attribute.CORNER_RADIUS);
+
+            addAttribute(Attribute.CONTROL_POINTS, true);
+        }
+
+        @Override
+        public OrthogonalPolyLineBACKUP create(final JSONObject node, final ValidationContext ctx) throws ValidationException
+        {
+            return new OrthogonalPolyLineBACKUP(node, ctx);
+        }
+    }
+
+}
