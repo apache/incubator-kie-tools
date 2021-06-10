@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.DynamicReadOnlyUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
@@ -40,7 +40,7 @@ public class EditableHeaderGridWidgetEditCellMouseEventHandler extends DefaultGr
                                     final Optional<Integer> uiHeaderColumnIndex,
                                     final Optional<Integer> uiRowIndex,
                                     final Optional<Integer> uiColumnIndex,
-                                    final AbstractNodeMouseEvent event) {
+                                    final AbstractNodeHumanInputEvent event) {
         if (DynamicReadOnlyUtils.isOnlyVisualChangeAllowed(gridWidget)) {
             return false;
         }
@@ -59,7 +59,7 @@ public class EditableHeaderGridWidgetEditCellMouseEventHandler extends DefaultGr
                                     final Point2D relativeLocation,
                                     final int uiHeaderRowIndex,
                                     final int uiHeaderColumnIndex,
-                                    final AbstractNodeMouseEvent event) {
+                                    final AbstractNodeHumanInputEvent event) {
         final List<GridColumn<?>> gridColumns = gridWidget.getModel().getColumns();
         final GridColumn<?> gridColumn = gridColumns.get(uiHeaderColumnIndex);
         final List<GridColumn.HeaderMetaData> gridColumnHeaderMetaData = gridColumn.getHeaderMetaData();

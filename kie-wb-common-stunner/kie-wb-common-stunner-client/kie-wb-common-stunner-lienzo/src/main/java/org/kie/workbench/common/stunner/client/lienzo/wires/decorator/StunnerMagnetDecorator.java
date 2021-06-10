@@ -28,9 +28,9 @@ public class StunnerMagnetDecorator extends MagnetDecorator {
             case INVALID:
             case NONE:
                 shape.setFillColor(StunnerPointHandleDecorator.MAIN_COLOR)
+                        .setStrokeWidth(0)
                         .setFillAlpha(0.7)
                         .setStrokeAlpha(1)
-                        .setStrokeWidth(0)
                         .moveToTop();
         }
         return shape;

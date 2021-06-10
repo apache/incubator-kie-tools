@@ -16,16 +16,41 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.util;
 
+import com.ait.lienzo.client.core.Attribute;
+import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.OptionalBounds;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.LinearGradient;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 public class LienzoShapeUtils {
+
+    private static final String WIDTH = Attribute.WIDTH.getProperty();
+    private static final String HEIGHT = Attribute.HEIGHT.getProperty();
+
+    public static double getWidth(final IPrimitive<?> prim) {
+        return getDoubleFromPrimitive(WIDTH, prim);
+    }
+
+    public static void setWidth(final IPrimitive<?> prim,
+                                final double value) {
+        setDoubleFromPrimitive(WIDTH, prim, value);
+    }
+
+    public static double getHeight(final IPrimitive<?> prim) {
+        return getDoubleFromPrimitive(HEIGHT, prim);
+    }
+
+    public static void setHeight(final IPrimitive<?> prim,
+                                 final double value) {
+        setDoubleFromPrimitive(HEIGHT, prim, value);
+    }
 
     public static void scale(final Shape shape,
                              final double width,
@@ -100,5 +125,18 @@ public class LienzoShapeUtils {
             }
         }
         return result;
+    }
+
+    private static double getDoubleFromPrimitive(final String field,
+                                                 final IPrimitive<?> prim) {
+        JsPropertyMap<Object> nodeMap = Js.uncheckedCast(prim);
+        return nodeMap.has(field) ? Js.coerceToDouble(nodeMap.get(field)) : 0d;
+    }
+
+    private static void setDoubleFromPrimitive(final String field,
+                                               final IPrimitive<?> prim,
+                                               final double value) {
+        JsPropertyMap<Object> nodeMap = Js.uncheckedCast(prim);
+        nodeMap.set(field, value);
     }
 }

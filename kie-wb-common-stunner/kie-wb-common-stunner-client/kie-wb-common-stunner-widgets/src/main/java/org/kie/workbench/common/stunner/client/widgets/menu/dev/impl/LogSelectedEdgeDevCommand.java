@@ -90,7 +90,8 @@ public class LogSelectedEdgeDevCommand extends AbstractSelectionDevCommand {
             final WiresConnectorView connectorView = (WiresConnectorView) shape.getShapeView();
             final Point2DArray controlPoints1 = connectorView.getControlPoints();
             if (null != controlPoints1) {
-                for (com.ait.lienzo.client.core.types.Point2D point2D : controlPoints1) {
+                for (int i = 0; i < controlPoints1.size(); i++) {
+                    com.ait.lienzo.client.core.types.Point2D point2D = controlPoints1.get(i);
                     s1 += " [" + point2D.getX() + "," + point2D.getY() + "] ";
                 }
                 s1 += " *** ";

@@ -15,11 +15,11 @@
  */
 package org.uberfire.ext.wires.core.grids.client.util;
 
-import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
+import com.ait.lienzo.tools.client.event.INodeXYEvent;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -38,7 +38,8 @@ public class CoordinateUtilities {
     /**
      * Convert a DOM-relative coordinate to one within a GridWidget, taking
      * the current transformation (translation and scale) into consideration.
-     * @param view The GridWidget to which we need to find the relative coordinate.
+     *
+     * @param view  The GridWidget to which we need to find the relative coordinate.
      * @param point The Canvas/DOM MouseEvent coordinate.
      * @return A coordinate relative to the GridWidget (in un-transformed coordinate space).
      */
@@ -65,8 +66,9 @@ public class CoordinateUtilities {
     /**
      * Gets the row index corresponding to the provided Canvas y-coordinate relative to the grid. Grid-relative coordinates can be
      * obtained from {@link INodeXYEvent} using {@link CoordinateUtilities#convertDOMToGridCoordinate(GridWidget, Point2D)}
+     *
      * @param gridWidget GridWidget to check.
-     * @param relativeY y-coordinate relative to the GridWidget.
+     * @param relativeY  y-coordinate relative to the GridWidget.
      * @return The row index or null if the coordinate did not map to a cell.
      */
     public static Integer getUiRowIndex(final GridWidget gridWidget,
@@ -101,8 +103,9 @@ public class CoordinateUtilities {
     /**
      * Gets the column index corresponding to the provided Canvas x-coordinate relative to the grid. Grid-relative coordinates can be
      * obtained from {@link INodeXYEvent} using {@link CoordinateUtilities#convertDOMToGridCoordinate(GridWidget, Point2D)}
+     *
      * @param gridWidget GridWidget to check.
-     * @param relativeX x-coordinate relative to the GridWidget.
+     * @param relativeX  x-coordinate relative to the GridWidget.
      * @return The column index or null if the coordinate did not map to a cell.
      */
     public static Integer getUiColumnIndex(final GridWidget gridWidget,
@@ -133,8 +136,9 @@ public class CoordinateUtilities {
      * Gets the header row index corresponding to the provided Canvas y-coordinate relative to
      * the grid. Grid-relative coordinates can be obtained from {@link INodeXYEvent} using
      * {@link CoordinateUtilities#convertDOMToGridCoordinate(GridWidget, Point2D)}
+     *
      * @param gridWidget GridWidget to check.
-     * @param rp Canvas coordinate relative to the GridWidget.
+     * @param rp         Canvas coordinate relative to the GridWidget.
      * @return The header row index or null if the coordinate did not map to a header row.
      */
     public static Integer getUiHeaderRowIndex(final GridWidget gridWidget,

@@ -46,10 +46,10 @@ public class LienzoLayerUtils {
         }
         layer.drawWithTransforms(scratchPad.getContext(),
                                  1,
-                                 new BoundingBox(x,
-                                                 y,
-                                                 width,
-                                                 height));
+                                 BoundingBox.fromDoubles(x,
+                                                         y,
+                                                         width,
+                                                         height));
         final String data = scratchPad.toDataURL(dataURLType,
                                                  1);
         scratchPad.clear();

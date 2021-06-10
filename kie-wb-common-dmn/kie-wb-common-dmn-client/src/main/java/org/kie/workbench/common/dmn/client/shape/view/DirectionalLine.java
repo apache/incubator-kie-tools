@@ -20,7 +20,6 @@ import java.util.List;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
-import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
@@ -40,24 +39,14 @@ public class DirectionalLine extends AbstractDirectionalMultiPointShape<Directio
 
     public DirectionalLine(final Point2D start,
                            final Point2D end) {
-        this(new Point2DArray(start,
-                              end));
+        this(Point2DArray.fromArrayOfPoint2D(start,
+                                             end));
     }
 
     public DirectionalLine(final Point2DArray points) {
         super(ShapeType.LINE);
 
         setControlPoints(points);
-    }
-
-    public DirectionalLine setControlPoints(final Point2DArray points) {
-        getAttributes().setControlPoints(points);
-
-        return refresh();
-    }
-
-    public Point2DArray getControlPoints() {
-        return getAttributes().getControlPoints();
     }
 
     @Override
@@ -78,20 +67,25 @@ public class DirectionalLine extends AbstractDirectionalMultiPointShape<Directio
     }
 
     @Override
+    public DirectionalLine cloneLine() {
+        final Point2D p1 = getPoints().get(0);
+        final Point2D p2 = getPoints().get(getPoints().size() - 1);
+        return new DirectionalLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+    }
+
+    @Override
     public boolean isControlPointShape() {
         return false;
     }
 
     @Override
-    protected boolean fill(final Context2D context,
-                           final Attributes attr,
-                           final double alpha) {
+    protected boolean fill(Context2D context, double alpha) {
         return false;
     }
 
     @Override
-    public boolean parse(final Attributes attr) {
-        final Point2DArray points = attr.getControlPoints();
+    public boolean parse() {
+        final Point2DArray points = this.getPoints();
         if (null != points && points.size() > 1) {
             final Point2D p1 = points.get(0);
             final double x1 = p1.getX();
@@ -136,12 +130,11 @@ public class DirectionalLine extends AbstractDirectionalMultiPointShape<Directio
 
     @Override
     public BoundingBox getBoundingBox() {
-        if (getPathPartList().size() < 1
-                && !parse(getAttributes())) {
-            return new BoundingBox(0,
-                                   0,
-                                   0,
-                                   0);
+        if (getPathPartList().size() < 1 && !parse()) {
+            return BoundingBox.fromDoubles(0,
+                                           0,
+                                           0,
+                                           0);
         }
         return getPathPartList().getBoundingBox();
     }

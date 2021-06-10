@@ -252,6 +252,12 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
     }
 
     @Test
+    public void testMediatorControlInitialization() {
+        checkCanvasHandler(false,
+                           (c) -> verify(mediatorsControl, times(1)).init(canvas));
+    }
+
+    @Test
     public void testStartRequest() {
         checkCanvasHandler(false,
                            (c) -> {

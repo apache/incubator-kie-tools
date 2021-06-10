@@ -119,11 +119,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>com.ahome-it</groupId>
-      <artifactId>ahome-tooling-nativetools</artifactId>
-    </dependency>
-
     <!-- Test scope. -->
 
     <dependency>

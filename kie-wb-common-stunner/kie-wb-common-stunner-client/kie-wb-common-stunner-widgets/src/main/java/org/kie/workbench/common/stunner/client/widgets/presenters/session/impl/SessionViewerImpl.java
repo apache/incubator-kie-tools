@@ -81,6 +81,11 @@ public class SessionViewerImpl<S extends ViewerSession>
     }
 
     @Override
+    public void open(S item, int width, int height, SessionViewerCallback<Diagram> callback) {
+        // TODO lienzo-native
+    }
+
+    @Override
     public void destroy() {
         super.destroy();
         diagramSupplier = null;
@@ -142,6 +147,11 @@ public class SessionViewerImpl<S extends ViewerSession>
         @Override
         protected StunnerPreferencesRegistries getPreferencesRegistry() {
             return preferencesRegistries;
+        }
+
+        @Override
+        public void open(Diagram item, int width, int height, DiagramViewerCallback<Diagram> callback) {
+            // TODO lienzo-native
         }
 
         @Override

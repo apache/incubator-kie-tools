@@ -86,9 +86,9 @@ public class GridWidgetEnterPinnedModeAnimation extends TimedAnimation {
                       final Point2D frameLocation = startTranslation.add(delta.mul(pct));
                       final double frameScaleX = startScaleX + (endScaleX - startScaleX) * pct;
                       final double frameScaleY = startScaleY + (endScaleY - startScaleY) * pct;
-                      transform.scale(frameScaleX,
-                                      frameScaleY).translate(frameLocation.getX(),
-                                                             frameLocation.getY());
+                      transform.scaleWithXY(frameScaleX,
+                                            frameScaleY).translate(frameLocation.getX(),
+                                                                   frameLocation.getY());
 
                       hideGridWidgets(pct);
                       hideGridWidgetConnectors(pct);

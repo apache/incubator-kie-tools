@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas;
 
-import java.util.Optional;
 import java.util.function.BiFunction;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.util.CursorMap;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.dom.client.Style;
@@ -38,8 +38,8 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -76,8 +76,8 @@ public class LienzoCanvasViewTest {
         when(panel.asWidget()).thenReturn(panelWidget);
         when(panelWidget.getElement()).thenReturn(panelElement);
         when(panelElement.getStyle()).thenReturn(panelStyle);
-        when(settings.getCanvasSize()).thenReturn(Optional.empty());
         when(lienzoLayer.getTopLayer()).thenReturn(topLayer);
+        when(panel.show(lienzoLayer)).thenReturn(panel);
         this.tested = new LienzoCanvasViewStub(decoratorFactory);
     }
 
@@ -103,7 +103,8 @@ public class LienzoCanvasViewTest {
         when(panel.getView()).thenReturn(panelView);
         tested.initialize(panel, settings);
         tested.setCursor(AbstractCanvas.Cursors.MOVE);
-        verify(panelView, times(1)).setCursor(eq(Style.Cursor.MOVE));
+        verify(panelView, times(1))
+                .setCursor(eq(CursorMap.get().lookup(Style.Cursor.MOVE.getCssName())));
     }
 
     @Test

@@ -18,8 +18,9 @@ package org.kie.workbench.common.dmn.client.widgets.dnd;
 
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,11 +31,14 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class DelegatingGridWidgetDndMouseMoveHandlerTest {
@@ -50,12 +54,6 @@ public class DelegatingGridWidgetDndMouseMoveHandlerTest {
 
     @Mock
     private Viewport viewport;
-
-    @Mock
-    private DivElement element;
-
-    @Mock
-    private Style style;
 
     private DelegatingGridWidgetDndMouseMoveHandler handler;
 
@@ -93,12 +91,14 @@ public class DelegatingGridWidgetDndMouseMoveHandlerTest {
         doReturn(false).when(view).isRowDragPermitted(eq(state));
         doReturn(Style.Cursor.DEFAULT).when(state).getCursor();
         doReturn(viewport).when(gridLayer).getViewport();
-        doReturn(element).when(viewport).getElement();
-        doReturn(style).when(element).getStyle();
+        CSSStyleDeclaration style = spy(new CSSStyleDeclaration());
+        HTMLDivElement element = new HTMLDivElement();
+        element.style = style;
+        when(viewport.getElement()).thenReturn(element);
 
         handler.findMovableRows(view, rendererHelper.getRenderingInformation(), 0, 0);
 
         verify(state).reset();
-        verify(style).setCursor(eq(Style.Cursor.DEFAULT));
+        assertEquals(Style.Cursor.DEFAULT.getCssName(), style.cursor);
     }
 }

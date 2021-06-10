@@ -37,21 +37,31 @@ public abstract class AbstractSessionViewer<S extends AbstractSession>
     @Override
     public void open(final S item,
                      final SessionViewer.SessionViewerCallback<Diagram> callback) {
-        doOpen(item,
-               null,
-               null,
-               callback);
-    }
+        this.session = item;
+        if (null != getDiagram()) {
+            onBeforeOpen();
+            final SessionViewer.SessionViewerCallback<Diagram> c = new SessionViewerCallback<Diagram>() {
+                @Override
+                public void afterCanvasInitialized() {
+                    onAfterCanvasInitialized();
+                    callback.afterCanvasInitialized();
+                }
 
-    @Override
-    public void open(final S item,
-                     final int width,
-                     final int height,
-                     final SessionViewer.SessionViewerCallback<Diagram> callback) {
-        doOpen(item,
-               width,
-               height,
-               callback);
+                @Override
+                public void onSuccess() {
+                    onOpenSuccess();
+                    callback.onSuccess();
+                }
+
+                @Override
+                public void onError(final ClientRuntimeError error) {
+                    callback.onError(error);
+                }
+            };
+            getDiagramViewer().open(getDiagram(), c);
+        } else {
+            clear();
+        }
     }
 
     @Override
@@ -99,45 +109,6 @@ public abstract class AbstractSessionViewer<S extends AbstractSession>
     @Override
     public IsWidget getView() {
         return getDiagramViewer().getView();
-    }
-
-    private void doOpen(final S item,
-                        final Integer width,
-                        final Integer height,
-                        final SessionViewer.SessionViewerCallback<Diagram> callback) {
-        this.session = item;
-        if (null != getDiagram()) {
-            onBeforeOpen();
-            final SessionViewer.SessionViewerCallback<Diagram> c = new SessionViewerCallback<Diagram>() {
-                @Override
-                public void afterCanvasInitialized() {
-                    onAfterCanvasInitialized();
-                    callback.afterCanvasInitialized();
-                }
-
-                @Override
-                public void onSuccess() {
-                    onOpenSuccess();
-                    callback.onSuccess();
-                }
-
-                @Override
-                public void onError(final ClientRuntimeError error) {
-                    callback.onError(error);
-                }
-            };
-            if (null != width && null != height) {
-                getDiagramViewer().open(getDiagram(),
-                                        width,
-                                        height,
-                                        c);
-            } else {
-                getDiagramViewer().open(getDiagram(),
-                                        c);
-            }
-        } else {
-            clear();
-        }
     }
 
     protected void onBeforeOpen() {

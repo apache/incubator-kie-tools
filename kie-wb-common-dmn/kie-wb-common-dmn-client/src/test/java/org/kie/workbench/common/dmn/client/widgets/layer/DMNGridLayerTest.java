@@ -97,7 +97,6 @@ public class DMNGridLayerTest {
     @Mock
     private Viewport viewport;
 
-    @Mock
     private Transform transform;
 
     @Mock
@@ -116,6 +115,7 @@ public class DMNGridLayerTest {
         this.gridLayer = spy(new TestDMNGridLayer(context2D));
 
         doReturn(viewport).when(gridLayer).getViewport();
+        transform = Transform.makeFromValues(1, 0, 0, 1, VIEWPORT_TRANSLATE_X, VIEWPORT_TRANSLATE_Y);
         when(viewport.getTransform()).thenReturn(transform);
         when(container.getWidth()).thenReturn(CONTAINER_WIDTH);
         when(container.getHeight()).thenReturn(CONTAINER_HEIGHT);
@@ -123,9 +123,6 @@ public class DMNGridLayerTest {
         when(container.getY()).thenReturn(CONTAINER_Y);
         when(container.getComputedLocation()).thenReturn(new Point2D(PARENT_X, PARENT_Y));
         when(expressionGrid.getComputedLocation()).thenReturn(new Point2D(PARENT_X, PARENT_Y));
-
-        when(transform.getTranslateX()).thenReturn(VIEWPORT_TRANSLATE_X);
-        when(transform.getTranslateY()).thenReturn(VIEWPORT_TRANSLATE_Y);
     }
 
     @Test

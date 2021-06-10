@@ -16,12 +16,13 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.wires;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 
 public abstract class DelegateWiresCompositeControl implements WiresCompositeControl {
 

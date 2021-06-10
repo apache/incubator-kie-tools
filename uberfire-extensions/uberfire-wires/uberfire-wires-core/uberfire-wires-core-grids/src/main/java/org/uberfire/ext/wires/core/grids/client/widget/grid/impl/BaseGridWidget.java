@@ -124,7 +124,7 @@ public class BaseGridWidget extends Group implements GridWidget {
         addNodeDragEndHandler((event) -> {
             final GridWidgetDnDHandlersState state = ((DefaultGridLayer) getLayer()).getGridWidgetHandlersState();
             state.reset();
-            getViewport().getElement().getStyle().setCursor(state.getCursor());
+            getViewport().getElement().style.cursor = state.getCursor().getCssName();
         });
 
         headerSelectionYOffsetStrategy = getHeaderSelectionYOffsetStrategy();
@@ -279,6 +279,7 @@ public class BaseGridWidget extends Group implements GridWidget {
      * any resources they require (e.g. DOMElements). At the end of this method all visible
      * columns are given an opportunity to release any unused resources (e.g. DOMElements).
      * If a column is not visible it is given an opportunity to destroy all resources.
+     *
      * @param context
      * @param alpha
      */
@@ -290,7 +291,7 @@ public class BaseGridWidget extends Group implements GridWidget {
         if (isSelectionLayer && (false == isListening())) {
             return;
         }
-        alpha = alpha * getAttributes().getAlpha();
+        alpha = alpha * getAlpha();
 
         if (alpha <= 0) {
             return;
@@ -646,7 +647,8 @@ public class BaseGridWidget extends Group implements GridWidget {
 
     /**
      * Render the Widget's Header and append to this Group.
-     * @param allColumns All columns in the model.
+     *
+     * @param allColumns   All columns in the model.
      * @param blockColumns The columns to render for a block.
      */
     protected List<GridRenderer.RendererCommand> renderGridHeaderWidget(final List<GridColumn<?>> allColumns,
@@ -662,11 +664,12 @@ public class BaseGridWidget extends Group implements GridWidget {
 
     /**
      * Render the Widget's Body and append to this Group.
-     * @param blockColumns The columns to render.
+     *
+     * @param blockColumns          The columns to render.
      * @param absoluteColumnOffsetX Absolute offset from Grid's X co-ordinate to render first column in block.
-     * @param minVisibleRowIndex The index of the first visible row.
-     * @param maxVisibleRowIndex The index of the last visible row.
-     * @param transformer SelectionTransformer in operation.
+     * @param minVisibleRowIndex    The index of the first visible row.
+     * @param maxVisibleRowIndex    The index of the last visible row.
+     * @param transformer           SelectionTransformer in operation.
      */
     protected List<GridRenderer.RendererCommand> renderGridBodyWidget(final List<GridColumn<?>> blockColumns,
                                                                       final double absoluteColumnOffsetX,
@@ -699,6 +702,7 @@ public class BaseGridWidget extends Group implements GridWidget {
 
     /**
      * Render the selected ranges and append to the Body Group.
+     *
      * @param renderingInformation Calculated rendering information supporting rendering.
      * @return A Group containing the boundary.
      */
@@ -736,11 +740,12 @@ public class BaseGridWidget extends Group implements GridWidget {
 
     /**
      * Render the selected ranges and append to the Body Group.
-     * @param blockColumns The columns to render.
+     *
+     * @param blockColumns          The columns to render.
      * @param absoluteColumnOffsetX Absolute offset from Grid's X co-ordinate to render first column in block.
-     * @param minVisibleRowIndex The index of the first visible row.
-     * @param maxVisibleRowIndex The index of the last visible row.
-     * @param transformer SelectionTransformer in operation.
+     * @param minVisibleRowIndex    The index of the first visible row.
+     * @param maxVisibleRowIndex    The index of the last visible row.
+     * @param transformer           SelectionTransformer in operation.
      * @return
      */
     protected GridRenderer.RendererCommand renderSelectedRanges(final List<GridColumn<?>> blockColumns,

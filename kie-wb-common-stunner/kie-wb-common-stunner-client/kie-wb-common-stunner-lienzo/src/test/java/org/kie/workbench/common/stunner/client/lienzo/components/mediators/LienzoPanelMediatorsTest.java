@@ -20,6 +20,7 @@ import java.util.function.Supplier;
 
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,6 +66,9 @@ public class LienzoPanelMediatorsTest {
     @Mock
     private WiresLayer layer;
 
+    @Mock
+    private HTMLDivElement panelViewElement;
+
     private LienzoPanelMediators tested;
 
     @Before
@@ -74,6 +78,7 @@ public class LienzoPanelMediatorsTest {
         when(canvasView.getPanel()).thenReturn(panel);
         when(canvasView.getLayer()).thenReturn(layer);
         when(panel.getView()).thenReturn(panelView);
+        when(panelView.getElement()).thenReturn(panelViewElement);
         this.tested = new LienzoPanelMediators(mediators, selector);
         tested.init(() -> canvas);
     }

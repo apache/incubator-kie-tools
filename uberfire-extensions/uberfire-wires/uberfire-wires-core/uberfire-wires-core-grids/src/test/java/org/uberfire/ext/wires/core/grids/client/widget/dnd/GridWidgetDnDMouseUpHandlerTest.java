@@ -19,9 +19,8 @@ import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Command;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,12 +45,6 @@ public class GridWidgetDnDMouseUpHandlerTest {
     private Viewport viewport;
 
     @Mock
-    private DivElement element;
-
-    @Mock
-    private Style style;
-
-    @Mock
     private NodeMouseUpEvent event;
 
     private GridWidgetDnDHandlersState state;
@@ -61,8 +54,7 @@ public class GridWidgetDnDMouseUpHandlerTest {
     @Before
     public void setup() {
         when(layer.getViewport()).thenReturn(viewport);
-        when(viewport.getElement()).thenReturn(element);
-        when(element.getStyle()).thenReturn(style);
+        when(viewport.getElement()).thenReturn(new HTMLDivElement());
 
         final GridWidgetDnDHandlersState wrappedState = new GridWidgetDnDHandlersState();
         this.state = spy(wrappedState);

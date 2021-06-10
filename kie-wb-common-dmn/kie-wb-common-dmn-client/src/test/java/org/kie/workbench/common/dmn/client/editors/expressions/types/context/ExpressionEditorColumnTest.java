@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContainerUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.mocks.MockHasDOMElementResourcesHeaderMetaData;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.LiteralExpressionPMMLGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
@@ -459,29 +460,29 @@ public class ExpressionEditorColumnTest {
         final GridCellTuple parent = new GridCellTuple(0, 0, null);
         final Optional<HasName> hasName = Optional.of(mock(HasName.class));
 
-        return new BaseExpressionGrid(parent,
-                                      Optional.empty(),
-                                      HasExpression.NOP,
-                                      hasName,
-                                      gridPanel,
-                                      gridLayer,
-                                      new DMNGridData(),
-                                      renderer,
-                                      definitionUtils,
-                                      sessionManager,
-                                      sessionCommandManager,
-                                      canvasCommandFactory,
-                                      editorSelectedEvent,
-                                      refreshFormPropertiesEvent,
-                                      domainObjectSelectionEvent,
-                                      cellEditorControls,
-                                      listSelector,
-                                      translationService,
-                                      false,
-                                      0,
-                                      readOnlyProvider) {
+        return new BaseExpressionGrid<Expression, DMNGridData, ExpressionContainerUIModelMapper>(parent,
+                                                                                                 Optional.empty(),
+                                                                                                 HasExpression.NOP,
+                                                                                                 hasName,
+                                                                                                 gridPanel,
+                                                                                                 gridLayer,
+                                                                                                 new DMNGridData(),
+                                                                                                 renderer,
+                                                                                                 definitionUtils,
+                                                                                                 sessionManager,
+                                                                                                 sessionCommandManager,
+                                                                                                 canvasCommandFactory,
+                                                                                                 editorSelectedEvent,
+                                                                                                 refreshFormPropertiesEvent,
+                                                                                                 domainObjectSelectionEvent,
+                                                                                                 cellEditorControls,
+                                                                                                 listSelector,
+                                                                                                 translationService,
+                                                                                                 false,
+                                                                                                 0,
+                                                                                                 readOnlyProvider) {
             @Override
-            protected BaseUIModelMapper makeUiModelMapper() {
+            protected ExpressionContainerUIModelMapper makeUiModelMapper() {
                 return null;
             }
 

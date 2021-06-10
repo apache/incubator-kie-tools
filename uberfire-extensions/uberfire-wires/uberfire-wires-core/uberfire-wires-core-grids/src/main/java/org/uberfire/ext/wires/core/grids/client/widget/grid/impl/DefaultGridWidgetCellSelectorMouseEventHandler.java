@@ -17,7 +17,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
 import java.util.Optional;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
@@ -41,7 +41,7 @@ public class DefaultGridWidgetCellSelectorMouseEventHandler implements NodeMouse
                                     final Optional<Integer> uiHeaderColumnIndex,
                                     final Optional<Integer> uiRowIndex,
                                     final Optional<Integer> uiColumnIndex,
-                                    final AbstractNodeMouseEvent event) {
+                                    final AbstractNodeHumanInputEvent event) {
         if (isDNDOperationInProgress(gridWidget)) {
             return false;
         }
@@ -78,10 +78,10 @@ public class DefaultGridWidgetCellSelectorMouseEventHandler implements NodeMouse
                                     final Point2D relativeLocation,
                                     final int uiHeaderRowIndex,
                                     final int uiHeaderColumnIndex,
-                                    final AbstractNodeMouseEvent event) {
+                                    final AbstractNodeHumanInputEvent event) {
         final boolean isHandled = gridWidget.selectHeaderCell(relativeLocation,
                                                               event.isShiftKeyDown(),
-                                                              event.isControlKeyDown());
+                                                              event.isCtrlKeyDown());
         if (isHandled) {
             gridWidget.getLayer().batch();
         }
@@ -96,10 +96,10 @@ public class DefaultGridWidgetCellSelectorMouseEventHandler implements NodeMouse
                                   final Point2D relativeLocation,
                                   final int uiRowIndex,
                                   final int uiColumnIndex,
-                                  final AbstractNodeMouseEvent event) {
+                                  final AbstractNodeHumanInputEvent event) {
         final boolean isHandled = gridWidget.selectCell(relativeLocation,
                                                         event.isShiftKeyDown(),
-                                                        event.isControlKeyDown());
+                                                        event.isCtrlKeyDown());
 
         if (isHandled) {
             gridWidget.getLayer().batch();

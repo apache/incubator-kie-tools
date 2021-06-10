@@ -25,8 +25,7 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.MouseEvent;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -80,12 +79,6 @@ public class EditableHeaderGridWidgetEditCellMouseEventHandlerTest {
     private GridRenderer renderer;
 
     @Mock
-    private MouseEvent nativeClickEvent;
-
-    @Mock
-    private DoubleClickEvent nativeDoubleClickEvent;
-
-    @Mock
     private BaseGridRendererHelper rendererHelper;
 
     @Mock
@@ -123,8 +116,8 @@ public class EditableHeaderGridWidgetEditCellMouseEventHandlerTest {
     public void setup() {
         this.uiModel = new BaseGridData(false);
         this.uiModel.appendColumn(gridColumn);
-        this.clickEvent = new NodeMouseClickEvent(nativeClickEvent);
-        this.doubleClickEvent = new NodeMouseDoubleClickEvent(nativeDoubleClickEvent);
+        this.clickEvent = new NodeMouseClickEvent(mock(HTMLDivElement.class));
+        this.doubleClickEvent = new NodeMouseDoubleClickEvent(mock(HTMLDivElement.class));
 
         when(gridWidget.getModel()).thenReturn(uiModel);
         when(gridWidget.getRendererHelper()).thenReturn(rendererHelper);

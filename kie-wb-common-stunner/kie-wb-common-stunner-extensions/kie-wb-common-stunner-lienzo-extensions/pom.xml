@@ -53,13 +53,13 @@
     </dependency>
 
     <dependency>
-      <groupId>com.ahome-it</groupId>
-      <artifactId>ahome-tooling-nativetools</artifactId>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-core</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.ahome-it</groupId>
-      <artifactId>ahome-tooling-common</artifactId>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-dom</artifactId>
     </dependency>
 
     <!-- Testing. -->
@@ -85,6 +85,11 @@
       <groupId>org.kie</groupId>
       <artifactId>lienzo-tests</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>errai-common</artifactId>
     </dependency>
 
   </dependencies>

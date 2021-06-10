@@ -156,7 +156,7 @@ public class BaseKeyboardOperationTest {
         assertTrue(baseKeyboardOperationSpy.scrollSelectedCellIntoView(gridWidget));
         verify(layer, times(1)).getViewport();
         verify(viewport, times(1)).getTransform();
-        verify(transform, times(1)).scale(1, 1);
+        verify(transform, times(1)).scaleWithXY(1, 1);
         verify(transform, times(1)).translate(600, 0);
     }
 
@@ -169,7 +169,7 @@ public class BaseKeyboardOperationTest {
         assertTrue(baseKeyboardOperationSpy.scrollSelectedCellIntoView(gridWidget));
         verify(layer, times(1)).getViewport();
         verify(viewport, times(1)).getTransform();
-        verify(transform, times(1)).scale(1, 1);
+        verify(transform, times(1)).scaleWithXY(1, 1);
         verify(transform, times(1)).translate(500d, 0);
     }
 
@@ -180,7 +180,7 @@ public class BaseKeyboardOperationTest {
         assertTrue(baseKeyboardOperationSpy.scrollSelectedCellIntoView(gridWidget));
         verify(layer, times(1)).getViewport();
         verify(viewport, times(1)).getTransform();
-        verify(transform, times(1)).scale(1, 1);
+        verify(transform, times(1)).scaleWithXY(1, 1);
         verify(transform, times(1)).translate(0, 250);
     }
 
@@ -193,7 +193,7 @@ public class BaseKeyboardOperationTest {
         assertTrue(baseKeyboardOperationSpy.scrollSelectedCellIntoView(gridWidget));
         verify(layer, times(1)).getViewport();
         verify(viewport, times(1)).getTransform();
-        verify(transform, times(1)).scale(1, 1);
+        verify(transform, times(1)).scaleWithXY(1, 1);
         verify(transform, times(1)).translate(0, 400);
     }
 
@@ -204,7 +204,7 @@ public class BaseKeyboardOperationTest {
         assertTrue(baseKeyboardOperationSpy.scrollSelectedCellIntoView(gridWidget));
         verify(layer, times(1)).getViewport();
         verify(viewport, times(1)).getTransform();
-        verify(transform, times(1)).scale(1, 1);
+        verify(transform, times(1)).scaleWithXY(1, 1);
         verify(transform, times(1)).translate(50, 75);
     }
 
@@ -217,7 +217,7 @@ public class BaseKeyboardOperationTest {
         assertTrue(baseKeyboardOperationSpy.scrollSelectedCellIntoView(gridWidget));
         verify(layer, times(1)).getViewport();
         verify(viewport, times(1)).getTransform();
-        verify(transform, times(1)).scale(1, 1);
+        verify(transform, times(1)).scaleWithXY(1, 1);
         verify(transform, times(1)).translate(75, 100);
     }
 

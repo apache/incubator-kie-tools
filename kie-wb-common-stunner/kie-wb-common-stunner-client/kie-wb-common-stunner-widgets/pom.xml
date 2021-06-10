@@ -164,18 +164,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.ahome-it</groupId>
-      <artifactId>ahome-tooling-nativetools</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.ahome-it</groupId>
-      <artifactId>ahome-tooling-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>javax.annotation</groupId>
       <artifactId>javax.annotation-api</artifactId>
     </dependency>

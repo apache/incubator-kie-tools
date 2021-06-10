@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.client.lienzo.components.mediators;
 
 import java.util.function.Supplier;
 
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -34,8 +33,8 @@ public class LienzoPanelMediators {
     static final double MAX_SCALE = 2d;
     static final double ZOOM_FACTOR = 0.1d;
 
-    private final LienzoCanvasMediators mediators;
-    private final ZoomLevelSelectorPresenter selector;
+    final LienzoCanvasMediators mediators;
+    final ZoomLevelSelectorPresenter selector;
     LienzoPanelFocusHandler focusHandler;
 
     @Inject
@@ -90,11 +89,12 @@ public class LienzoPanelMediators {
         selector.scheduleHide();
     }
 
-    @PreDestroy
     public void destroy() {
         if (null != focusHandler) {
             focusHandler.clear();
             focusHandler = null;
         }
+        mediators.destroy();
+        selector.destroy();
     }
 }

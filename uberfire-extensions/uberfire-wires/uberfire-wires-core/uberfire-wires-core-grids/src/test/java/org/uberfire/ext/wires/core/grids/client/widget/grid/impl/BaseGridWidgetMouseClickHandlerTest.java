@@ -18,7 +18,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 import java.util.Collections;
 import java.util.Optional;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -142,6 +142,6 @@ public abstract class BaseGridWidgetMouseClickHandlerTest {
                                          any(Optional.class),
                                          any(Optional.class),
                                          any(Optional.class),
-                                         any(AbstractNodeMouseEvent.class));
+                                         any(AbstractNodeHumanInputEvent.class));
     }
 }

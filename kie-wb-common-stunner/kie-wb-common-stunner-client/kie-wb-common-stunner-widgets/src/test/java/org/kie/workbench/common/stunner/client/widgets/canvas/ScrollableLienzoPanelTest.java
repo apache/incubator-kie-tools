@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.widgets.canvas;
 
-import java.util.OptionalInt;
-import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,19 +51,19 @@ public class ScrollableLienzoPanelTest {
     @SuppressWarnings("unchecked")
     public void testInit() {
         tested.init();
-        ArgumentCaptor<BiFunction> builderCaptor = ArgumentCaptor.forClass(BiFunction.class);
+        ArgumentCaptor<Supplier> builderCaptor = ArgumentCaptor.forClass(Supplier.class);
         verify(panel, times(1)).setPanelBuilder(builderCaptor.capture());
-        BiFunction<OptionalInt, OptionalInt, LienzoBoundsPanel> builder = builderCaptor.getValue();
-        LienzoBoundsPanel result = builder.apply(OptionalInt.of(300), OptionalInt.of(450));
+        Supplier<LienzoBoundsPanel> builder = builderCaptor.getValue();
+        LienzoBoundsPanel result = builder.get();
         assertTrue(result instanceof ScrollableLienzoPanelView);
-        assertEquals(300, result.getWidthPx());
-        assertEquals(450, result.getHeightPx());
+        assertEquals(0, result.getWidePx());
+        assertEquals(0, result.getHighPx());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testRefresh() {
-        LienzoBoundsPanel view = mock(LienzoBoundsPanel.class);
+        ScrollablePanel view = mock(ScrollablePanel.class);
         when(panel.getView()).thenReturn(view);
         tested.refresh();
         verify(view, times(1)).refresh();

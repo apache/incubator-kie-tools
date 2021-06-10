@@ -58,8 +58,8 @@ public class DefaultGridWidgetPinnedModeMouseEventHandlerTest extends BaseGridWi
     public void enterPinnedMode() {
         when(gridWidget.isVisible()).thenReturn(true);
 
-        when(doubleClickEvent.getX()).thenReturn(100);
-        when(doubleClickEvent.getY()).thenReturn(100);
+        doubleClickEvent.x = 100;
+        doubleClickEvent.y = 100;
 
         final Point2D computedLocation = new Point2D(100.0, 100.0);
         when(gridWidget.getComputedLocation()).thenReturn(computedLocation);
@@ -90,8 +90,8 @@ public class DefaultGridWidgetPinnedModeMouseEventHandlerTest extends BaseGridWi
         when(gridWidget.isVisible()).thenReturn(true);
         when(pinnedModeManager.isGridPinned()).thenReturn(true);
 
-        when(doubleClickEvent.getX()).thenReturn(100);
-        when(doubleClickEvent.getY()).thenReturn(100);
+        doubleClickEvent.x = 100;
+        doubleClickEvent.y = 100;
 
         final Point2D computedLocation = new Point2D(100.0, 100.0);
         when(gridWidget.getComputedLocation()).thenReturn(computedLocation);

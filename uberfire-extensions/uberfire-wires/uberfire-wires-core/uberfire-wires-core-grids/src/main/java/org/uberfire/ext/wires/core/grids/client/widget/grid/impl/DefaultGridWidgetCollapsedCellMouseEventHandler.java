@@ -18,7 +18,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 import java.util.List;
 import java.util.Optional;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -33,7 +33,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 
 /**
  * A {@link NodeMouseEventHandler} to handle interaction with a "merged" {@link GridCell} "hot spot". The
- * {@link AbstractNodeMouseEvent} is checked to have happened over the {@link GridWidget#onGroupingToggle(double, double, double, double)}
+ * {@link AbstractNodeHumanInputEvent} is checked to have happened over the {@link GridWidget#onGroupingToggle(double, double, double, double)}
  * in which case the applicable {@link GridRow}(s) are either collapsed or expanded; depending on their state.
  */
 public class DefaultGridWidgetCollapsedCellMouseEventHandler implements NodeMouseEventHandler {
@@ -51,7 +51,7 @@ public class DefaultGridWidgetCollapsedCellMouseEventHandler implements NodeMous
                                     final Optional<Integer> uiHeaderColumnIndex,
                                     final Optional<Integer> uiRowIndex,
                                     final Optional<Integer> uiColumnIndex,
-                                    final AbstractNodeMouseEvent event) {
+                                    final AbstractNodeHumanInputEvent event) {
         if (isDNDOperationInProgress(gridWidget)) {
             return false;
         }
@@ -73,7 +73,7 @@ public class DefaultGridWidgetCollapsedCellMouseEventHandler implements NodeMous
                                   final Point2D relativeLocation,
                                   final int uiRowIndex,
                                   final int uiColumnIndex,
-                                  final AbstractNodeMouseEvent event) {
+                                  final AbstractNodeHumanInputEvent event) {
         final GridData gridData = gridWidget.getModel();
         final List<GridColumn<?>> gridColumns = gridData.getColumns();
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();

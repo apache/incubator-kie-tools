@@ -18,28 +18,29 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid;
 
 import java.util.Optional;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 /**
- * Defines a generic handler for any type of {@link AbstractNodeMouseEvent}.
+ * Defines a generic handler for any type of {@link AbstractNodeHumanInputEvent}.
  */
 public interface NodeMouseEventHandler {
 
     /**
-     * Executes when a {@link NodeMouseEventHandler} reacts to the {@link AbstractNodeMouseEvent}
+     * Executes when a {@link NodeMouseEventHandler} reacts to the {@link AbstractNodeHumanInputEvent}
      * to which the {@link NodeMouseEventHandler} has been registered. Note {@code uiHeaderRowIndex},
      * {@code uiHeaderColumnIndex}, {@code uiRowIndex} and {@code uiColumnIndex} may be {@link Optional#empty()} if
      * the event did not occur over the applicable element within the {@link GridWidget}.
-     * @param gridWidget The {@link GridWidget} on which the event occurred.
-     * @param relativeLocation {@link Point2D} relative to the top-left of the {@link GridWidget}
-     * @param uiHeaderRowIndex Index of the Header row as seen in the UI. 0-based index. Top row is 0.
+     *
+     * @param gridWidget          The {@link GridWidget} on which the event occurred.
+     * @param relativeLocation    {@link Point2D} relative to the top-left of the {@link GridWidget}
+     * @param uiHeaderRowIndex    Index of the Header row as seen in the UI. 0-based index. Top row is 0.
      * @param uiHeaderColumnIndex Index of the Header column as seen in the UI. 0-based index. Leftmost column is 0.
-     * @param uiRowIndex Index of the Body row as seen in the UI
-     * @param uiColumnIndex Index of the Body column as seen in the UI
-     * @param event The original event.
+     * @param uiRowIndex          Index of the Body row as seen in the UI
+     * @param uiColumnIndex       Index of the Body column as seen in the UI
+     * @param event               The original event.
      * @return true if the event was handled.
      */
     boolean onNodeMouseEvent(final GridWidget gridWidget,
@@ -48,44 +49,47 @@ public interface NodeMouseEventHandler {
                              final Optional<Integer> uiHeaderColumnIndex,
                              final Optional<Integer> uiRowIndex,
                              final Optional<Integer> uiColumnIndex,
-                             final AbstractNodeMouseEvent event);
+                             final AbstractNodeHumanInputEvent event);
 
     /**
      * Handles the event for a Header element.
-     * @param gridWidget The {@link GridWidget} on which the event occurred.
-     * @param relativeLocation {@link Point2D} relative to the top-left of the {@link GridWidget}
-     * @param uiHeaderRowIndex Index of the Header row as seen in the UI. 0-based index. Top row is 0.
+     *
+     * @param gridWidget          The {@link GridWidget} on which the event occurred.
+     * @param relativeLocation    {@link Point2D} relative to the top-left of the {@link GridWidget}
+     * @param uiHeaderRowIndex    Index of the Header row as seen in the UI. 0-based index. Top row is 0.
      * @param uiHeaderColumnIndex Index of the Header column as seen in the UI. 0-based index. Leftmost column is 0.
-     * @param event The original event.
+     * @param event               The original event.
      * @return true if the event was handled.
      */
     default boolean handleHeaderCell(final GridWidget gridWidget,
                                      final Point2D relativeLocation,
                                      final int uiHeaderRowIndex,
                                      final int uiHeaderColumnIndex,
-                                     final AbstractNodeMouseEvent event) {
+                                     final AbstractNodeHumanInputEvent event) {
         return false;
     }
 
     /**
      * Handles the event for a Body element.
-     * @param gridWidget The {@link GridWidget} on which the event occurred.
+     *
+     * @param gridWidget       The {@link GridWidget} on which the event occurred.
      * @param relativeLocation {@link Point2D} relative to the top-left of the {@link GridWidget}
-     * @param uiRowIndex Index of the Body row as seen in the UI
-     * @param uiColumnIndex Index of the Body column as seen in the UI
-     * @param event The original event.
+     * @param uiRowIndex       Index of the Body row as seen in the UI
+     * @param uiColumnIndex    Index of the Body column as seen in the UI
+     * @param event            The original event.
      * @return true if the event was handled.
      */
     default boolean handleBodyCell(final GridWidget gridWidget,
                                    final Point2D relativeLocation,
                                    final int uiRowIndex,
                                    final int uiColumnIndex,
-                                   final AbstractNodeMouseEvent event) {
+                                   final AbstractNodeHumanInputEvent event) {
         return false;
     }
 
     /**
-     * Returns whether the {@link AbstractNodeMouseEvent} occurred during a Drag and Drop operation.
+     * Returns whether the {@link AbstractNodeHumanInputEvent} occurred during a Drag and Drop operation.
+     *
      * @param gridWidget The {@link GridWidget} on which the event occurred.
      * @return true if the event occurred during a Drag and Drop operation.
      */

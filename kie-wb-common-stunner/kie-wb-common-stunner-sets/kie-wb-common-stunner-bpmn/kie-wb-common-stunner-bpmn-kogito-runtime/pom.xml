@@ -218,16 +218,6 @@
       <artifactId>lienzo-core</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>com.ahome-it</groupId>
-      <artifactId>ahome-tooling-nativetools</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.ahome-it</groupId>
-      <artifactId>ahome-tooling-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
     <!-- Form modeler -->
     <!-- Needed by stunner -->

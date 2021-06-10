@@ -37,14 +37,7 @@ public class ScalableLienzoPanel
 
     @PostConstruct
     public void init() {
-        panel.setPanelBuilder((width, height) -> {
-            if (width.isPresent() && height.isPresent()) {
-                return new ScalablePanel(StunnerBoundsProviderFactory.newProvider(),
-                                         width.getAsInt(),
-                                         height.getAsInt());
-            }
-            return new ScalablePanel(StunnerBoundsProviderFactory.newProvider());
-        });
+        panel.setPanelBuilder(() -> new ScalablePanel(StunnerBoundsProviderFactory.newProvider()));
     }
 
     @Override

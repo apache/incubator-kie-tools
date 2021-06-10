@@ -174,8 +174,8 @@ public class LienzoLayer {
     private void scale(final Transform transform,
                        final double sx,
                        final double sy) {
-        transform.scale(sx,
-                        sy);
+        transform.scaleWithXY(sx,
+                              sy);
         this.getViewPort().batch();
     }
 

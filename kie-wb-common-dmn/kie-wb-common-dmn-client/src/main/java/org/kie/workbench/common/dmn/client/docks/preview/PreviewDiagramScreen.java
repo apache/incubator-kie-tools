@@ -175,8 +175,6 @@ public class PreviewDiagramScreen extends AbstractActivity {
             }
             previewWidget = sessionPreviews.get();
             previewWidget.open((AbstractSession) session,
-                               PREVIEW_WIDTH,
-                               PREVIEW_HEIGHT,
                                new SessionViewer.SessionViewerCallback<Diagram>() {
                                    @Override
                                    public void afterCanvasInitialized() {

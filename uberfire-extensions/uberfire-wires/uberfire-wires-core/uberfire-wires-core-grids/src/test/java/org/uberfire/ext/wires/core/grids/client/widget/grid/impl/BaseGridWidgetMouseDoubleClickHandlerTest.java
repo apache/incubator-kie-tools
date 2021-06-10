@@ -19,13 +19,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.MouseEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +43,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLay
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -68,9 +70,6 @@ public abstract class BaseGridWidgetMouseDoubleClickHandlerTest {
     protected GridRenderer renderer;
 
     @Mock
-    protected DoubleClickEvent doubleClickEvent;
-
-    @Mock
     protected BaseGridRendererHelper helper;
 
     @Mock
@@ -87,11 +86,15 @@ public abstract class BaseGridWidgetMouseDoubleClickHandlerTest {
 
     protected NodeMouseDoubleClickEvent event;
 
+    @Mock
+    protected MouseEvent doubleClickEvent;
+
     private BaseGridWidgetMouseDoubleClickHandler mouseDoubleClickHandler;
 
     @Before
     public void setup() {
-        this.event = new NodeMouseDoubleClickEvent(doubleClickEvent);
+        this.event = new NodeMouseDoubleClickEvent(mock(HTMLDivElement.class));
+        this.event.override(null, doubleClickEvent, null, 0, 0, null);
 
         when(gridWidget.getViewport()).thenReturn(viewport);
         when(gridWidget.getModel()).thenReturn(uiModel);
@@ -150,6 +153,6 @@ public abstract class BaseGridWidgetMouseDoubleClickHandlerTest {
                                          any(Optional.class),
                                          any(Optional.class),
                                          any(Optional.class),
-                                         any(AbstractNodeMouseEvent.class));
+                                         any(AbstractNodeHumanInputEvent.class));
     }
 }

@@ -173,6 +173,7 @@ public abstract class BaseKeyboardOperation implements KeyboardOperation {
      * simple one. In case of an <b>header</b> cell, it manages a possible case where a cell is spanned over multiple
      * columns: when pressing <code>KEY_RIGHT</code>, it selected the last cell of the selected header cells group in
      * order to show all the spanned cell. The otherwise in all other cases
+     *
      * @param gridModel
      * @param isHeaderCellSelected
      * @return
@@ -202,8 +203,8 @@ public abstract class BaseKeyboardOperation implements KeyboardOperation {
         transform.reset();
 
         final Point2D frameLocation = translation.add(delta);
-        transform.scale(scaleX,
-                        scaleY).translate(frameLocation.getX(),
-                                          frameLocation.getY());
+        transform.scaleWithXY(scaleX,
+                              scaleY).translate(frameLocation.getX(),
+                                                frameLocation.getY());
     }
 }

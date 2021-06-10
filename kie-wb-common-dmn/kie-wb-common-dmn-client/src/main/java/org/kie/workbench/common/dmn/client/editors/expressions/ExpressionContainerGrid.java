@@ -24,9 +24,9 @@ import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
 
-import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
+import com.ait.lienzo.tools.client.event.INodeXYEvent;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -215,6 +215,7 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
     /**
      * Proxy {@link HasExpression} to be able intercept interactions with the original
      * to update the expression label in {@link ExpressionEditorView} when the {@link Expression} changes.
+     *
      * @param hasExpression A {@link HasExpression} to be proxied.
      * @return A proxy that intercepts interactions with the wrapped {@link HasExpression}
      */
@@ -251,6 +252,7 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
      * changes. The {@link Name} changes by a {@link SetHasValueCommand#execute(AbstractCanvasHandler)} or
      * {@link SetHasValueCommand#undo(AbstractCanvasHandler)} that ensures the {@link HasName#setName(Name)}
      * method is called.
+     *
      * @param hasName A {@link HasName} to be proxied.
      * @return A proxy that intercepts interactions with the wrapped {@link HasName}
      */

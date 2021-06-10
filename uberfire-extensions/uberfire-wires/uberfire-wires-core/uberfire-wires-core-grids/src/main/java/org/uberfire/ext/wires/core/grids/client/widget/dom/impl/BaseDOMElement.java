@@ -37,6 +37,7 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import jsinterop.base.Js;
 import org.uberfire.ext.wires.core.grids.client.util.MathUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -46,6 +47,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
  * The base of all DOMElements, providing common services such as Browser event propagation. MouseEvents do not bubble
  * from an absolutely positioned DIV to other DOM elements; such as the Canvas. This class therefore emulates event
  * propagation by passing MouseEvents to canvas Layer and Grid Widget.
+ *
  * @param <T> The data-type represented by the DOMElement.
  * @param <W> The Widget to be wrapped by the DOMElement.
  */
@@ -86,7 +88,7 @@ public abstract class BaseDOMElement<T, W extends Widget> {
         widgetContainer.addDomHandler(new MouseDownHandler() {
                                           @Override
                                           public void onMouseDown(final MouseDownEvent event) {
-                                              gridLayer.onNodeMouseDown(new NodeMouseDownEvent(event) {
+                                              gridLayer.onNodeMouseDown(new NodeMouseDownEvent(Js.cast(event.getRelativeElement())) {
 
                                                   @Override
                                                   public int getX() {
@@ -113,7 +115,7 @@ public abstract class BaseDOMElement<T, W extends Widget> {
                                               //The DOM Element changes the Cursor, so set to the state determined by the MouseEvent Handlers on GridLayer
                                               style.setCursor(gridLayer.getGridWidgetHandlersState().getCursor());
 
-                                              gridLayer.onNodeMouseMove(new NodeMouseMoveEvent(event) {
+                                              gridLayer.onNodeMouseMove(new NodeMouseMoveEvent(Js.cast(event.getRelativeElement())) {
 
                                                   @Override
                                                   public int getX() {
@@ -136,7 +138,7 @@ public abstract class BaseDOMElement<T, W extends Widget> {
         widgetContainer.addDomHandler(new MouseUpHandler() {
                                           @Override
                                           public void onMouseUp(final MouseUpEvent event) {
-                                              gridLayer.onNodeMouseUp(new NodeMouseUpEvent(event) {
+                                              gridLayer.onNodeMouseUp(new NodeMouseUpEvent(Js.cast(event.getRelativeElement())) {
 
                                                   @Override
                                                   public int getX() {
@@ -159,7 +161,7 @@ public abstract class BaseDOMElement<T, W extends Widget> {
         widgetContainer.addDomHandler(new ClickHandler() {
                                           @Override
                                           public void onClick(final ClickEvent event) {
-                                              gridWidget.onNodeMouseClick(new NodeMouseClickEvent(event) {
+                                              gridWidget.onNodeMouseClick(new NodeMouseClickEvent(Js.cast(event.getRelativeElement())) {
 
                                                   @Override
                                                   public int getX() {
@@ -180,6 +182,7 @@ public abstract class BaseDOMElement<T, W extends Widget> {
 
     /**
      * Set the Cell context this DOMElement is representing.
+     *
      * @param context
      */
     public void setContext(final GridBodyCellRenderContext context) {
@@ -188,18 +191,21 @@ public abstract class BaseDOMElement<T, W extends Widget> {
 
     /**
      * Initialise the DOMElement for the given cell and render context.
+     *
      * @param context The render context for the cell.
      */
     public abstract void initialise(final GridBodyCellRenderContext context);
 
     /**
      * Flush the state of the GWT Widget to the underlying GridWidget.
+     *
      * @param value The cell value requiring a DOMElement.
      */
     public abstract void flush(final T value);
 
     /**
      * Get a GWT Widget for the DOMElement.
+     *
      * @return
      */
     public W getWidget() {
@@ -208,6 +214,7 @@ public abstract class BaseDOMElement<T, W extends Widget> {
 
     /**
      * Get the container for the GWT Widget.
+     *
      * @return
      */
     protected SimplePanel getContainer() {
@@ -216,6 +223,7 @@ public abstract class BaseDOMElement<T, W extends Widget> {
 
     /**
      * Transform the DOMElement based on the render context, such as scale and position.
+     *
      * @param context
      */
     protected void transform(final GridBodyCellRenderContext context) {

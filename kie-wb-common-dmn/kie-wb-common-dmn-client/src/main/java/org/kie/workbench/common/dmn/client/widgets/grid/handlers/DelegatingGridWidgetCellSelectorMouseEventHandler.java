@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid.handlers;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -47,7 +47,7 @@ public class DelegatingGridWidgetCellSelectorMouseEventHandler extends DefaultGr
                                     final Optional<Integer> uiHeaderColumnIndex,
                                     final Optional<Integer> uiRowIndex,
                                     final Optional<Integer> uiColumnIndex,
-                                    final AbstractNodeMouseEvent event) {
+                                    final AbstractNodeHumanInputEvent event) {
         if (nestingSupplier.get() == 0) {
             return doSuperOnNodeMouseEvent(gridWidget,
                                            relativeLocation,
@@ -81,7 +81,7 @@ public class DelegatingGridWidgetCellSelectorMouseEventHandler extends DefaultGr
                                     final Optional<Integer> uiHeaderColumnIndex,
                                     final Optional<Integer> uiRowIndex,
                                     final Optional<Integer> uiColumnIndex,
-                                    final AbstractNodeMouseEvent event) {
+                                    final AbstractNodeHumanInputEvent event) {
         return super.onNodeMouseEvent(gridWidget,
                                       relativeLocation,
                                       uiHeaderRowIndex,
@@ -94,7 +94,7 @@ public class DelegatingGridWidgetCellSelectorMouseEventHandler extends DefaultGr
     private boolean delegatedHandleBodyCell(final GridWidget gridWidget,
                                             final int uiRowIndex,
                                             final int uiColumnIndex,
-                                            final AbstractNodeMouseEvent event) {
+                                            final AbstractNodeHumanInputEvent event) {
         final GridCellTuple parent = parentSupplier.get();
         final GridWidget parentGridWidget = parent.getGridWidget();
         final int parentRowIndex = parent.getRowIndex();
@@ -105,7 +105,7 @@ public class DelegatingGridWidgetCellSelectorMouseEventHandler extends DefaultGr
         final boolean isSelectionChanged = parentGridWidget.getCellSelectionManager().selectCell(parentRowIndex,
                                                                                                  parentColumnIndex,
                                                                                                  event.isShiftKeyDown(),
-                                                                                                 event.isControlKeyDown());
+                                                                                                 event.isCtrlKeyDown());
 
         if (isSelectionChanged) {
             parentGridWidget.getLayer().batch();

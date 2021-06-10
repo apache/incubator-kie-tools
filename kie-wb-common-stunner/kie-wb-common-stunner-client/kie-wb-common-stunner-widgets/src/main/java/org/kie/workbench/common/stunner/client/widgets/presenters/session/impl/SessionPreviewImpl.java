@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
 import java.lang.annotation.Annotation;
+import java.util.function.Predicate;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -26,7 +27,6 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
-import com.ait.tooling.common.api.java.util.function.Predicate;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasDecoratorFactory;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
@@ -242,6 +242,9 @@ public class SessionPreviewImpl<S extends AbstractSession>
         selectionControl = InstanceUtils.lookup(selectionControls, qualifier);
         commandFactory = InstanceUtils.lookup(canvasCommandFactories, qualifier);
         commandManager = InstanceUtils.lookup(canvasCommandManagers, qualifier);
+
+        // Allow preview to scale as the diagram grows horizontally/vertically
+        mediatorsControl.init(canvas);
     }
 
     @SuppressWarnings("unchecked")
@@ -372,5 +375,10 @@ public class SessionPreviewImpl<S extends AbstractSession>
     @SuppressWarnings("unchecked")
     public MediatorsControl<AbstractCanvas> getMediatorsControl() {
         return mediatorsControl;
+    }
+
+    @Override
+    public void open(S item, int width, int height, SessionViewerCallback<Diagram> callback) {
+        diagramPreview.open((Diagram) item, width, height, callback);
     }
 }

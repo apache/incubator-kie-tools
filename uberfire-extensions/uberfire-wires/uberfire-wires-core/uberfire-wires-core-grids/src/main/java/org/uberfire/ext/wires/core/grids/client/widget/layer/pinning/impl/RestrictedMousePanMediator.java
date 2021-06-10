@@ -24,8 +24,10 @@ import com.ait.lienzo.client.core.mediator.IEventFilter;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
+import com.ait.lienzo.tools.client.event.INodeEvent;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.shared.GwtEvent;
+import elemental2.dom.UIEvent;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 
@@ -41,7 +43,7 @@ public class RestrictedMousePanMediator extends AbstractMediator {
 
     private TransformMediator transformMediator;
 
-    private Point2D m_last = new Point2D();
+    private Point2D m_last = new Point2D(0, 0);
 
     private boolean m_dragging = false;
 
@@ -67,13 +69,35 @@ public class RestrictedMousePanMediator extends AbstractMediator {
     }
 
     @Override
+    public <H extends EventHandler> boolean handleEvent(INodeEvent.Type<H> type, UIEvent event, int x, int y) {
+        if (type == NodeMouseMoveEvent.getType()) {
+            if (isDragging()) {
+                onMouseMove(x, y);
+            }
+        } else if (type == NodeMouseDownEvent.getType()) {
+            final IEventFilter filter = getEventFilter();
+
+            if ((null == filter) || (!filter.isEnabled()) || (filter.test(event))) {
+                onMouseDown(x, y);
+            }
+        } else if (type == NodeMouseUpEvent.getType()) {
+            if (isDragging()) {
+                onMouseUp();
+            }
+        } else if (type == NodeMouseOutEvent.getType()) {
+            cancel();
+        }
+        return false;
+    }
+
+    @Override
     public void cancel() {
         m_dragging = false;
         setCursor(Style.Cursor.DEFAULT);
     }
 
     protected void setCursor(final Style.Cursor cursor) {
-        getLayerViewport().getElement().getStyle().setCursor(cursor);
+        getLayerViewport().getElement().style.cursor = cursor.getCssName();
     }
 
     protected Viewport getLayerViewport() {
@@ -84,32 +108,8 @@ public class RestrictedMousePanMediator extends AbstractMediator {
         return gridLayer;
     }
 
-    @Override
-    public boolean handleEvent(final GwtEvent<?> event) {
-        if (event.getAssociatedType() == NodeMouseMoveEvent.getType()) {
-            if (isDragging()) {
-                onMouseMove((NodeMouseMoveEvent) event);
-            }
-        } else if (event.getAssociatedType() == NodeMouseDownEvent.getType()) {
-            final IEventFilter filter = getEventFilter();
-
-            if ((null == filter) || (false == filter.isEnabled()) || (filter.test(event))) {
-                onMouseDown((NodeMouseDownEvent) event);
-            }
-        } else if (event.getAssociatedType() == NodeMouseUpEvent.getType()) {
-            if (isDragging()) {
-                onMouseUp((NodeMouseUpEvent) event);
-            }
-        } else if (event.getAssociatedType() == NodeMouseOutEvent.getType()) {
-            cancel();
-        }
-
-        return false;
-    }
-
-    protected void onMouseDown(final NodeMouseDownEvent event) {
-        m_last = new Point2D(event.getX(),
-                             event.getY());
+    protected void onMouseDown(int x, int y) {
+        m_last = new Point2D(x, y);
 
         m_dragging = true;
 
@@ -126,9 +126,8 @@ public class RestrictedMousePanMediator extends AbstractMediator {
         setCursor(Style.Cursor.MOVE);
     }
 
-    protected void onMouseMove(final NodeMouseMoveEvent event) {
-        final Point2D curr = new Point2D(event.getX(),
-                                         event.getY());
+    protected void onMouseMove(int x, int y) {
+        final Point2D curr = new Point2D(x, y);
 
         inverseTransform().transform(curr,
                                      curr);
@@ -154,7 +153,7 @@ public class RestrictedMousePanMediator extends AbstractMediator {
         }
     }
 
-    protected void onMouseUp(final NodeMouseUpEvent event) {
+    protected void onMouseUp() {
         cancel();
     }
 

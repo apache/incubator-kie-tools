@@ -22,7 +22,9 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.MouseEventUtil;
+import elemental2.dom.EventListener;
+import elemental2.dom.HTMLDivElement;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 
 @Dependent
@@ -41,7 +43,8 @@ public class LienzoCanvasNotification {
 
     private final View view;
     Supplier<LienzoPanel> panel;
-    HandlerRegistration outHandler;
+    EventListener mouseLeaveEventListener;
+    static final String ON_MOUSE_LEAVE = "mouseleave";
 
     @Inject
     public LienzoCanvasNotification(final View view) {
@@ -50,13 +53,15 @@ public class LienzoCanvasNotification {
 
     public void init(final Supplier<LienzoPanel> panel) {
         this.panel = panel;
-        this.outHandler = panel.get().getView().addMouseOutHandler(mouseOutEvent -> hide());
+        this.mouseLeaveEventListener = e -> hide();
+        getPanelElement().addEventListener(ON_MOUSE_LEAVE, mouseLeaveEventListener);
     }
 
     public void show(final String text) {
         final LienzoPanel p = panel.get();
-        final int absoluteLeft = p.getView().getAbsoluteLeft();
-        final int absoluteTop = p.getView().getAbsoluteTop();
+
+        final int absoluteLeft = MouseEventUtil.getAbsoluteLeft(p.getView().getElement());
+        final int absoluteTop = MouseEventUtil.getAbsoluteTop(p.getView().getElement());
         final int width = p.getWidthPx();
         final double x = absoluteLeft + (width / 2) - (5 * text.length());
         final double y = absoluteTop + 50;
@@ -72,10 +77,14 @@ public class LienzoCanvasNotification {
 
     @PreDestroy
     public void destroy() {
-        if (null != outHandler) {
-            outHandler.removeHandler();
-            outHandler = null;
+        if (null != mouseLeaveEventListener) {
+            getPanelElement().removeEventListener(ON_MOUSE_LEAVE, mouseLeaveEventListener);
         }
+        mouseLeaveEventListener = null;
         panel = null;
+    }
+
+    private HTMLDivElement getPanelElement() {
+        return panel.get().getView().getElement();
     }
 }

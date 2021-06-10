@@ -23,10 +23,11 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.Element;
+import elemental2.dom.EventListener;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -50,7 +51,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -93,6 +93,19 @@ public class ZoomLevelSelectorPresenterTest {
     @Mock
     private DefinitionUtils definitionUtils;
 
+    @Mock
+    private HTMLDivElement panelElement;
+
+    @Mock
+    private Element selectorElement;
+
+
+    @Mock
+    private com.google.gwt.user.client.Element gwtElement;
+
+    @Mock
+    private Widget widget;
+
     private ZoomLevelSelectorPresenter tested;
     private ClientTranslationService translationService;
     private FloatingView<IsWidget> floatingView;
@@ -111,27 +124,24 @@ public class ZoomLevelSelectorPresenterTest {
         when(canvasView.getLayer()).thenReturn(stunnerLayer);
         when(stunnerLayer.getLienzoLayer()).thenReturn(layer);
         when(panel.getView()).thenReturn(panelView);
-        when(selectorView.asWidget()).thenReturn(mock(Widget.class));
+        when(panelView.getElement()).thenReturn(panelElement);
+
+        when(selectorView.asWidget()).thenReturn(widget);
+        when(widget.getElement()).thenReturn(gwtElement);
+
         floatingView = spy(new FloatingWidgetView());
+
         tested = new ZoomLevelSelectorPresenter(translationService,
                                                 floatingView,
-                                                selector);
-        tested.construct();
+                                                selector,
+                                                    selectorElement);
+        tested.init(() -> canvas);
         tested.show();
     }
 
-    @Test
-    public void testConstruct() {
-        verify(floatingView, times(1)).clearTimeOut();
-        verify(floatingView, times(1)).setOffsetX(eq(0d));
-        verify(floatingView, times(1)).setOffsetY(eq(0d));
-        verify(floatingView, times(1)).hide();
-        verify(floatingView, never()).show();
-    }
 
     @Test
     public void testInit() {
-        tested.init(() -> canvas);
         verify(selector, times(1)).setText(eq("100%"));
         verify(selector, times(1)).dropUp();
         verify(selector, times(1)).onReset(any(Command.class));
@@ -145,9 +155,14 @@ public class ZoomLevelSelectorPresenterTest {
         verify(selector, times(1)).add(eq(ZoomLevelSelectorPresenter.LEVEL_200), any(Command.class));
         verify(selector, times(1)).add(eq(CoreTranslationMessages.FIT), any(Command.class));
         verify(floatingView, times(1)).add(eq(selector));
+        verify(floatingView, times(1)).clearTimeOut();
+        verify(floatingView, times(1)).setOffsetX(eq(0d));
+        verify(floatingView, times(1)).setOffsetY(eq(0d));
+        verify(floatingView, times(1)).hide();
+        verify(floatingView, never()).show();
         verify(viewport, times(1)).addViewportTransformChangedHandler(any(ViewportTransformChangedHandler.class));
-        verify(panelView, never()).addMouseOutHandler(any(MouseOutHandler.class));
-        verify(panelView, never()).addMouseOverHandler(any(MouseOverHandler.class));
+        verify(panelElement, never()).addEventListener(eq("mouseover"), any(EventListener.class));
+        verify(panelElement, never()).addEventListener(eq("mouseout"), any(EventListener.class));
     }
 
     @Test
@@ -195,7 +210,7 @@ public class ZoomLevelSelectorPresenterTest {
 
     @Test
     public void testOnIncreaseLevel() {
-        Transform viewportTransform = new Transform().translate(15, 35.5).scale(0.1, 0.3);
+        Transform viewportTransform = new Transform().translate(15, 35.5).scaleWithXY(0.1, 0.3);
         when(viewport.getTransform()).thenReturn(viewportTransform);
         tested.init(() -> canvas);
         selector.onIncreaseLevel();
@@ -204,7 +219,7 @@ public class ZoomLevelSelectorPresenterTest {
 
     @Test
     public void testOnDecreaseLevel() {
-        Transform viewportTransform = new Transform().translate(15, 35.5).scale(0.1, 0.3);
+        Transform viewportTransform = new Transform().translate(15, 35.5).scaleWithXY(0.1, 0.3);
         when(viewport.getTransform()).thenReturn(viewportTransform);
         tested.init(() -> canvas);
         selector.onDecreaseLevel();
@@ -243,17 +258,16 @@ public class ZoomLevelSelectorPresenterTest {
 
     @Test
     public void testOnLevelFit() {
-        when(panelView.getWidthPx()).thenReturn(300);
-        when(panelView.getHeightPx()).thenReturn(600);
+        when(panelView.getWidePx()).thenReturn(300);
+        when(panelView.getHighPx()).thenReturn(600);
         when(panelView.getLayerBounds()).thenReturn(Bounds.build(0, 0, 600, 900));
         verifyApplyLevel(CoreTranslationMessages.FIT, 0.5d);
     }
 
     private void verifyApplyLevel(final String text,
                                   final double level) {
-        Transform viewportTransform = new Transform().translate(0, 0).scale(0.1, 0.3);
+        Transform viewportTransform = new Transform().translate(0, 0).scaleWithXY(0.1, 0.3);
         when(viewport.getTransform()).thenReturn(viewportTransform);
-        tested.init(() -> canvas);
         ArgumentCaptor<Command> levelCaptor = ArgumentCaptor.forClass(Command.class);
         verify(selector, times(1)).add(eq(text), levelCaptor.capture());
         levelCaptor.getValue().execute();

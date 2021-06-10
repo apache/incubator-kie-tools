@@ -17,7 +17,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid;
 
 import java.util.Optional;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -48,7 +48,7 @@ public class NodeMouseEventHandlerTest {
     private Point2D relativeLocation;
 
     @Mock
-    private AbstractNodeMouseEvent event;
+    private AbstractNodeHumanInputEvent event;
 
     private NodeMouseEventHandler handler;
 
@@ -60,7 +60,7 @@ public class NodeMouseEventHandlerTest {
                         final Optional<Integer> uiHeaderColumnIndex,
                         final Optional<Integer> uiRowIndex,
                         final Optional<Integer> uiColumnIndex,
-                        final AbstractNodeMouseEvent event) -> false;
+                        final AbstractNodeHumanInputEvent event) -> false;
         when(gridWidget.getLayer()).thenReturn(gridLayer);
         when(gridLayer.getGridWidgetHandlersState()).thenReturn(state);
     }

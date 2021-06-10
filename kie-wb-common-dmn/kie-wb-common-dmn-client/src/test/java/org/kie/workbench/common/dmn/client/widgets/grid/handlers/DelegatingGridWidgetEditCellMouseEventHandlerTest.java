@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -167,7 +167,7 @@ public class DelegatingGridWidgetEditCellMouseEventHandlerTest {
     @Test
     public void testOnNodeMouseEventWhenNestedOnBodyWithoutCellSelection() {
         when(event.isShiftKeyDown()).thenReturn(false);
-        when(event.isControlKeyDown()).thenReturn(true);
+        when(event.isCtrlKeyDown()).thenReturn(true);
         when(parentGridData.getSelectedCells()).thenReturn(Collections.emptyList());
 
         setupGrid(() -> parent, () -> 1);
@@ -190,7 +190,7 @@ public class DelegatingGridWidgetEditCellMouseEventHandlerTest {
     @SuppressWarnings("unchecked")
     public void testOnNodeMouseEventWhenNestedOnBodyWithCellSelection() {
         when(event.isShiftKeyDown()).thenReturn(false);
-        when(event.isControlKeyDown()).thenReturn(true);
+        when(event.isCtrlKeyDown()).thenReturn(true);
         when(parentGridData.getSelectedCells()).thenReturn(Collections.singletonList(selectedCell));
         when(gridData.getCell(eq(0), eq(1))).thenReturn(gridCell);
         when(gridWidget.startEditingCell(Mockito.<Point2D>any())).thenReturn(true);
@@ -202,7 +202,7 @@ public class DelegatingGridWidgetEditCellMouseEventHandlerTest {
         uiRowIndex = Optional.of(0);
         uiColumnIndex = Optional.of(1);
 
-        doReturn(true).when(handler).isEventHandled(Mockito.<GridCellEditAction>any(), Mockito.<AbstractNodeMouseEvent>any());
+        doReturn(true).when(handler).isEventHandled(Mockito.<GridCellEditAction>any(), Mockito.<AbstractNodeHumanInputEvent>any());
 
         assertThat(handler.onNodeMouseEvent(gridWidget,
                                             relativeLocation,

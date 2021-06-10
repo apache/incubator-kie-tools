@@ -107,10 +107,10 @@ public class LienzoLayerUtilsTest {
         verify(context2D, times(1)).fillRect(eq(0d), eq(0d), eq(111d), eq(333d));
         verify(layer, times(1)).drawWithTransforms(eq(context2D),
                                                    eq(1d),
-                                                   eq(new BoundingBox(1d,
-                                                                      3d,
-                                                                      111d,
-                                                                      333d)));
+                                                   eq(BoundingBox.fromDoubles(1d,
+                                                                              3d,
+                                                                              111d,
+                                                                              333d)));
     }
 
     private WiresShape registerShape(final String expectedUUID) {

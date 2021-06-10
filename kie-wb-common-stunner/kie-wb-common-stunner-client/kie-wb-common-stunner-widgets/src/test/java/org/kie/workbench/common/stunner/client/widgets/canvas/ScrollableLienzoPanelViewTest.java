@@ -17,22 +17,13 @@
 package org.kie.workbench.common.stunner.client.widgets.canvas;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
+import elemental2.dom.EventListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,7 +40,7 @@ public class ScrollableLienzoPanelViewTest {
     @Before
     @SuppressWarnings("unchecked")
     public void init() {
-        tested = spy(new ScrollableLienzoPanelView(300, 150));
+        tested = spy(new ScrollableLienzoPanelView());
     }
 
     @Test
@@ -57,27 +48,9 @@ public class ScrollableLienzoPanelViewTest {
     public void testSetPresenter() {
         when(tested.isRemoteCommunicationEnabled()).thenReturn(true);
         tested.setPresenter(presenter);
-        verify(presenter, times(3)).register(any(HandlerRegistration.class));
-        ArgumentCaptor<KeyDownHandler> downCaptor = ArgumentCaptor.forClass(KeyDownHandler.class);
-        verify(tested, times(1)).addKeyDownHandler(downCaptor.capture());
-        KeyDownHandler downHandler = downCaptor.getValue();
-        KeyDownEvent keyDownEvent = mock(KeyDownEvent.class);
-        when(keyDownEvent.getNativeKeyCode()).thenReturn(11);
-        downHandler.onKeyDown(keyDownEvent);
-        verify(presenter, times(1)).onKeyDown(eq(11));
-        ArgumentCaptor<KeyPressHandler> pressCaptor = ArgumentCaptor.forClass(KeyPressHandler.class);
-        verify(tested, times(1)).addKeyPressHandler(pressCaptor.capture());
-        KeyPressHandler pressHandler = pressCaptor.getValue();
-        KeyPressEvent kePressEvent = mock(KeyPressEvent.class);
-        when(kePressEvent.getUnicodeCharCode()).thenReturn(33);
-        pressHandler.onKeyPress(kePressEvent);
-        verify(presenter, times(1)).onKeyPress(eq(33));
-        ArgumentCaptor<KeyUpHandler> upCaptor = ArgumentCaptor.forClass(KeyUpHandler.class);
-        verify(tested, times(1)).addKeyUpHandler(upCaptor.capture());
-        KeyUpHandler upHandler = upCaptor.getValue();
-        KeyUpEvent keyUpEvent = mock(KeyUpEvent.class);
-        when(keyUpEvent.getNativeKeyCode()).thenReturn(55);
-        upHandler.onKeyUp(keyUpEvent);
-        verify(presenter, times(1)).onKeyUp(eq(55));
+
+        verify(presenter, times(1)).addKeyDownHandler(any(EventListener.class));
+        verify(presenter, times(1)).addKeyPressHandler(any(EventListener.class));
+        verify(presenter, times(1)).addKeyUpHandler(any(EventListener.class));
     }
 }

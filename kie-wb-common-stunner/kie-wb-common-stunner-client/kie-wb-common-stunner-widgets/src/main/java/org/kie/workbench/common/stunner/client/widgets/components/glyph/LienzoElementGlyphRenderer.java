@@ -20,9 +20,9 @@ import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.widget.LienzoPanel;
 import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderer;
+import org.kie.workbench.common.stunner.client.lienzo.components.views.LienzoPanelWidget;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRenderer;
 import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -43,20 +43,20 @@ public abstract class LienzoElementGlyphRenderer<G extends Glyph> implements DOM
                             final double height) {
         final WidgetElementRendererView view = viewInstances.get();
 
-        final LienzoPanel panel = newPanel(glyph,
-                                           (int) width,
-                                           (int) height);
+        final LienzoPanelWidget panel = newPanel(glyph,
+                                                 (int) width,
+                                                 (int) height);
         return view.setWidget(panel);
     }
 
-    private LienzoPanel newPanel(final G glyph,
-                                 final int width,
-                                 final int height) {
+    private LienzoPanelWidget newPanel(final G glyph,
+                                       final int width,
+                                       final int height) {
         final Group glyphGroup = getLienzoGlyphRenderer().render(glyph,
                                                                  width,
                                                                  height);
-        final LienzoPanel panel = new LienzoPanel(width,
-                                                  height);
+        final LienzoPanelWidget panel = LienzoPanelWidget.create(width,
+                                                                 height);
         final Layer layer = new Layer();
         panel.add(layer.setTransformable(true));
         layer.add(glyphGroup);

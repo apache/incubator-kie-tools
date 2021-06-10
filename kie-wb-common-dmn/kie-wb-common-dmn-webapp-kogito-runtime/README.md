@@ -29,7 +29,7 @@ User Super Dev Mode: `true`
 
 VM Options:
 
-        -Xmx4G
+        -Xmx8G
         -Xms1024m
         -Xss1M
         -Derrai.dynamic_validation.enabled=true
@@ -37,6 +37,7 @@ VM Options:
 [OPTIONAL] Dev Mode Parameters:
         
         -style PRETTY
+        -generateJsInteropExports
         -logLevel [ERROR, WARN, INFO, TRACE, DEBUG, SPAM, or ALL]
 
 Start page: `test.html`

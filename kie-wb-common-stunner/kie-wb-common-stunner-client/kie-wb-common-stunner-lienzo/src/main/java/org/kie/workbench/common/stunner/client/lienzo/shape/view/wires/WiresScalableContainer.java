@@ -18,15 +18,15 @@ package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires;
 
 import java.util.function.Predicate;
 
-import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresLayoutContainerNoTextBoundingBox;
+import org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils;
 
 public class WiresScalableContainer extends WiresLayoutContainerNoTextBoundingBox {
 
@@ -59,14 +59,14 @@ public class WiresScalableContainer extends WiresLayoutContainerNoTextBoundingBo
                               final double height) {
         if (hasWidthHeight().test(child)) {
             if (width > 0) {
-                child.getAttributes().setWidth(width);
+                LienzoShapeUtils.setWidth(child, width);
             }
             if (height > 0) {
-                child.getAttributes().setHeight(height);
+                LienzoShapeUtils.setHeight(child, height);
             }
         }
-        child.getAttributes().setX(x);
-        child.getAttributes().setY(y);
+        child.setX(x);
+        child.setY(y);
     }
 
     public WiresScalableContainer addScalable(final IPrimitive<?> child) {
@@ -135,11 +135,11 @@ public class WiresScalableContainer extends WiresLayoutContainerNoTextBoundingBo
     }
 
     private double getWidth(final IPrimitive<?> prim) {
-        return prim.getAttributes().getDouble(Attribute.WIDTH.getProperty());
+        return LienzoShapeUtils.getWidth(prim);
     }
 
     private double getHeight(final IPrimitive<?> prim) {
-        return prim.getAttributes().getDouble(Attribute.HEIGHT.getProperty());
+        return LienzoShapeUtils.getHeight(prim);
     }
 
     private Predicate<IPrimitive> hasWidthHeight() {

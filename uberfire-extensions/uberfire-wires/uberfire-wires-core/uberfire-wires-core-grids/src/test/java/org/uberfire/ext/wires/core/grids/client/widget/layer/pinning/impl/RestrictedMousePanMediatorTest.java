@@ -25,8 +25,9 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.MouseEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,10 +35,11 @@ import org.mockito.ArgumentCaptor;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyDouble;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -55,6 +57,7 @@ public class RestrictedMousePanMediatorTest {
     }
 
     @Test
+    @SuppressWarnings("all")
     public void testGetLayerViewport() {
 
         final GridLayer layer = mock(GridLayer.class);
@@ -70,48 +73,43 @@ public class RestrictedMousePanMediatorTest {
     }
 
     @Test
+    @SuppressWarnings("all")
     public void testSetCursor() {
 
         final Viewport viewport = mock(Viewport.class);
-        final DivElement divElement = mock(DivElement.class);
-        final Style.Cursor cursor = mock(Style.Cursor.class);
-        final Style style = mock(Style.class);
+        final HTMLDivElement divElement = new HTMLDivElement();
 
-        doReturn(style).when(divElement).getStyle();
         doReturn(divElement).when(viewport).getElement();
         doReturn(viewport).when(mediator).getLayerViewport();
 
-        mediator.setCursor(cursor);
+        mediator.setCursor(Style.Cursor.MOVE);
 
-        verify(style).setCursor(cursor);
+        assertEquals(Style.Cursor.MOVE.getCssName(), divElement.style.cursor);
     }
 
     @Test
+    @SuppressWarnings("all")
     public void testCancel() throws Exception {
         final Viewport viewport = mock(Viewport.class);
-        final DivElement divElement = mock(DivElement.class);
-        final Style style = mock(Style.class);
+        final HTMLDivElement divElement = new HTMLDivElement();
 
-        doReturn(style).when(divElement).getStyle();
         doReturn(divElement).when(viewport).getElement();
         doReturn(viewport).when(mediator).getLayerViewport();
 
         mediator.cancel();
 
-        verify(style).setCursor(Style.Cursor.DEFAULT);
+        assertEquals(Style.Cursor.DEFAULT.getCssName(), divElement.style.cursor);
     }
 
     @Test
+    @SuppressWarnings("all")
     public void testHandleEventMouseMoveDragging() throws Exception {
-        final NodeMouseMoveEvent moveEvent = mock(NodeMouseMoveEvent.class);
         final Viewport viewport = mock(Viewport.class);
         final Transform transform = mock(Transform.class);
         final Transform inverseTransform = mock(Transform.class);
         final Scene scene = mock(Scene.class);
 
         doReturn(transform).when(transform).copy();
-
-        doReturn(NodeMouseMoveEvent.getType()).when(moveEvent).getAssociatedType();
 
         doReturn(transform).when(viewport).getTransform();
         doReturn(scene).when(viewport).getScene();
@@ -120,57 +118,43 @@ public class RestrictedMousePanMediatorTest {
         doReturn(true).when(mediator).isDragging();
         doReturn(inverseTransform).when(mediator).inverseTransform();
 
-        mediator.handleEvent(moveEvent);
+        mediator.handleEvent(NodeMouseMoveEvent.getType(), mock(MouseEvent.class), 10, 20);
 
-        verify(mediator).onMouseMove(eq(moveEvent));
+        verify(mediator).onMouseMove(eq(10), eq(20));
     }
 
     @Test
+    @SuppressWarnings("all")
     public void testHandleEventMouseMoveNotDragging() throws Exception {
-        final NodeMouseMoveEvent moveEvent = mock(NodeMouseMoveEvent.class);
-
-        doReturn(NodeMouseMoveEvent.getType()).when(moveEvent).getAssociatedType();
-
         doReturn(false).when(mediator).isDragging();
 
-        mediator.handleEvent(moveEvent);
+        mediator.handleEvent(NodeMouseMoveEvent.getType(), mock(MouseEvent.class), 10, 20);
 
-        verify(mediator,
-               never()).onMouseMove(any(NodeMouseMoveEvent.class));
+        verify(mediator, never()).onMouseMove(anyInt(), anyInt());
     }
 
     @Test
+    @SuppressWarnings("all")
     public void testHandleEventMouseDownNoFilter() throws Exception {
-        final NodeMouseDownEvent downEvent = mock(NodeMouseDownEvent.class);
-        final DivElement element = mock(DivElement.class);
-        final Style style = mock(Style.class);
+        final HTMLDivElement element = new HTMLDivElement();
         final Viewport viewport = mock(Viewport.class);
-
-        doReturn(NodeMouseDownEvent.getType()).when(downEvent).getAssociatedType();
-
-        doReturn(style).when(element).getStyle();
 
         doReturn(element).when(viewport).getElement();
 
         doReturn(viewport).when(mediator).getLayerViewport();
         doReturn(viewport).when(mediator).getViewport();
 
-        mediator.handleEvent(downEvent);
+        mediator.handleEvent(NodeMouseDownEvent.getType(), mock(MouseEvent.class), 10, 20);
 
-        verify(mediator).onMouseDown(eq(downEvent));
+        verify(mediator).onMouseDown(eq(10), eq(20));
     }
 
     @Test
+    @SuppressWarnings("all")
     public void testHandleEventMouseDownDisabledFilter() throws Exception {
-        final NodeMouseDownEvent downEvent = mock(NodeMouseDownEvent.class);
-        final DivElement element = mock(DivElement.class);
-        final Style style = mock(Style.class);
+        final HTMLDivElement element = new HTMLDivElement();
         final Viewport viewport = mock(Viewport.class);
         final IEventFilter iEventFilter = mock(IEventFilter.class);
-
-        doReturn(NodeMouseDownEvent.getType()).when(downEvent).getAssociatedType();
-
-        doReturn(style).when(element).getStyle();
 
         doReturn(element).when(viewport).getElement();
 
@@ -180,22 +164,17 @@ public class RestrictedMousePanMediatorTest {
         doReturn(viewport).when(mediator).getViewport();
         doReturn(iEventFilter).when(mediator).getEventFilter();
 
-        mediator.handleEvent(downEvent);
+        mediator.handleEvent(NodeMouseDownEvent.getType(), mock(MouseEvent.class), 10, 20);
 
-        verify(mediator).onMouseDown(eq(downEvent));
+        verify(mediator).onMouseDown(eq(10), eq(20));
     }
 
     @Test
+    @SuppressWarnings("all")
     public void testHandleEventMouseDownEnabledFilterTestPassed() throws Exception {
-        final NodeMouseDownEvent downEvent = mock(NodeMouseDownEvent.class);
-        final DivElement element = mock(DivElement.class);
-        final Style style = mock(Style.class);
+        final HTMLDivElement element = new HTMLDivElement();
         final Viewport viewport = mock(Viewport.class);
         final IEventFilter iEventFilter = mock(IEventFilter.class);
-
-        doReturn(NodeMouseDownEvent.getType()).when(downEvent).getAssociatedType();
-
-        doReturn(style).when(element).getStyle();
 
         doReturn(element).when(viewport).getElement();
 
@@ -206,22 +185,17 @@ public class RestrictedMousePanMediatorTest {
         doReturn(viewport).when(mediator).getViewport();
         doReturn(iEventFilter).when(mediator).getEventFilter();
 
-        mediator.handleEvent(downEvent);
+        mediator.handleEvent(NodeMouseDownEvent.getType(), mock(MouseEvent.class), 10, 20);
 
-        verify(mediator).onMouseDown(eq(downEvent));
+        verify(mediator).onMouseDown(eq(10), eq(20));
     }
 
     @Test
+    @SuppressWarnings("all")
     public void testHandleEventMouseDownEnabledFilterTestNotPassed() throws Exception {
-        final NodeMouseDownEvent downEvent = mock(NodeMouseDownEvent.class);
-        final DivElement element = mock(DivElement.class);
-        final Style style = mock(Style.class);
+        final HTMLDivElement element = new HTMLDivElement();
         final Viewport viewport = mock(Viewport.class);
         final IEventFilter iEventFilter = mock(IEventFilter.class);
-
-        doReturn(NodeMouseDownEvent.getType()).when(downEvent).getAssociatedType();
-
-        doReturn(style).when(element).getStyle();
 
         doReturn(element).when(viewport).getElement();
 
@@ -232,64 +206,46 @@ public class RestrictedMousePanMediatorTest {
         doReturn(viewport).when(mediator).getViewport();
         doReturn(iEventFilter).when(mediator).getEventFilter();
 
-        mediator.handleEvent(downEvent);
+        mediator.handleEvent(NodeMouseDownEvent.getType(), mock(MouseEvent.class), 10, 20);
 
-        verify(mediator,
-               never()).onMouseDown(any(NodeMouseDownEvent.class));
+        verify(mediator, never()).onMouseDown(anyInt(), anyInt());
     }
 
     @Test
+    @SuppressWarnings("all")
     public void testHandleEventMouseUpNotDragging() throws Exception {
-        final NodeMouseUpEvent upEvent = mock(NodeMouseUpEvent.class);
-
-        doReturn(NodeMouseUpEvent.getType()).when(upEvent).getAssociatedType();
-
         doReturn(false).when(mediator).isDragging();
 
-        mediator.handleEvent(upEvent);
+        mediator.handleEvent(NodeMouseUpEvent.getType(), mock(MouseEvent.class), 10, 20);
 
-        verify(mediator,
-               never()).onMouseUp(any(NodeMouseUpEvent.class));
-        verify(mediator,
-               never()).cancel();
+        verify(mediator, never()).onMouseUp();
+        verify(mediator, never()).cancel();
     }
 
     @Test
+    @SuppressWarnings("all")
     public void testHandleEventMouseUpDragging() throws Exception {
-        final NodeMouseUpEvent upEvent = mock(NodeMouseUpEvent.class);
-        final DivElement element = mock(DivElement.class);
-        final Style style = mock(Style.class);
+        final HTMLDivElement element = new HTMLDivElement();
         final Viewport viewport = mock(Viewport.class);
-
-        doReturn(NodeMouseUpEvent.getType()).when(upEvent).getAssociatedType();
-
-        doReturn(style).when(element).getStyle();
 
         doReturn(element).when(viewport).getElement();
 
         doReturn(viewport).when(mediator).getLayerViewport();
         doReturn(true).when(mediator).isDragging();
 
-        mediator.handleEvent(upEvent);
+        mediator.handleEvent(NodeMouseUpEvent.getType(), mock(MouseEvent.class), 10, 20);
 
-        verify(mediator).onMouseUp(eq(upEvent));
+        verify(mediator).onMouseUp();
         verify(mediator).cancel();
     }
 
     @Test
+    @SuppressWarnings("all")
     public void testOnMouseDown() throws Exception {
-        final NodeMouseDownEvent downEvent = mock(NodeMouseDownEvent.class);
         final Transform transform = mock(Transform.class);
         final Viewport viewport = mock(Viewport.class);
-        final DivElement element = mock(DivElement.class);
-        final Style style = mock(Style.class);
+        final HTMLDivElement element = new HTMLDivElement();
         final ArgumentCaptor<Point2D> point = ArgumentCaptor.forClass(Point2D.class);
-
-        doReturn(123).when(downEvent).getX();
-        doReturn(987).when(downEvent).getY();
-        doReturn(NodeMouseDownEvent.getType()).when(downEvent).getAssociatedType();
-
-        doReturn(style).when(element).getStyle();
 
         doReturn(transform).when(transform).getInverse();
 
@@ -299,7 +255,7 @@ public class RestrictedMousePanMediatorTest {
         doReturn(viewport).when(mediator).getViewport();
         doReturn(viewport).when(mediator).getLayerViewport();
 
-        mediator.onMouseDown(downEvent);
+        mediator.onMouseDown(123, 987);
 
         verify(transform).transform(point.capture(),
                                     point.capture());
@@ -330,18 +286,14 @@ public class RestrictedMousePanMediatorTest {
         testOnMouseMove(false);
     }
 
+    @SuppressWarnings("all")
     private void testOnMouseMove(boolean batchDrawing) {
         final int xCoordinate = 123;
         final int yCoordinate = 987;
-        final NodeMouseMoveEvent moveEvent = mock(NodeMouseMoveEvent.class);
         final Transform transform = mock(Transform.class);
         final Transform translated = mock(Transform.class);
         final Viewport viewport = mock(Viewport.class);
         final Scene scene = mock(Scene.class);
-
-        doReturn(xCoordinate).when(moveEvent).getX();
-        doReturn(yCoordinate).when(moveEvent).getY();
-        doReturn(NodeMouseMoveEvent.getType()).when(moveEvent).getAssociatedType();
 
         doReturn(translated).when(transform).translate(anyDouble(),
                                                        anyDouble());
@@ -354,7 +306,7 @@ public class RestrictedMousePanMediatorTest {
         doReturn(transform).when(mediator).inverseTransform();
         doReturn(batchDrawing).when(mediator).isBatchDraw();
 
-        mediator.onMouseMove(moveEvent);
+        mediator.onMouseMove(xCoordinate, yCoordinate);
 
         verify(transform).translate(xCoordinate,
                                     yCoordinate);
@@ -369,12 +321,8 @@ public class RestrictedMousePanMediatorTest {
 
         final int xMovement = 10;
         final int yMovement = 20;
-        final NodeMouseMoveEvent secondMoveEvent = mock(NodeMouseMoveEvent.class);
 
-        doReturn(xCoordinate + xMovement).when(secondMoveEvent).getX();
-        doReturn(yCoordinate + yMovement).when(secondMoveEvent).getY();
-
-        mediator.onMouseMove(secondMoveEvent);
+        mediator.onMouseMove(xCoordinate + xMovement, yCoordinate + yMovement);
 
         verify(transform).translate(xMovement,
                                     yMovement);

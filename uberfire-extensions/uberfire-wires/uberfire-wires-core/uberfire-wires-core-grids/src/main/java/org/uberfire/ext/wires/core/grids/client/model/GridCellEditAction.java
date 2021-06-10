@@ -18,7 +18,7 @@ package org.uberfire.ext.wires.core.grids.client.model;
 import java.util.Arrays;
 import java.util.Objects;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
 
@@ -27,21 +27,20 @@ import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
  */
 public enum GridCellEditAction {
 
-    NONE(AbstractNodeMouseEvent.class),
+    NONE(AbstractNodeHumanInputEvent.class),
     SINGLE_CLICK(NodeMouseClickEvent.class),
     DOUBLE_CLICK(NodeMouseDoubleClickEvent.class);
 
-    private Class<? extends AbstractNodeMouseEvent> eventClass;
+    private Class<? extends AbstractNodeHumanInputEvent> eventClass;
 
-    GridCellEditAction(final Class<? extends AbstractNodeMouseEvent> eventClass) {
+    GridCellEditAction(final Class<? extends AbstractNodeHumanInputEvent> eventClass) {
         this.eventClass = eventClass;
     }
 
-    public static GridCellEditAction getSupportedEditAction(final AbstractNodeMouseEvent event) {
+    public static GridCellEditAction getSupportedEditAction(final AbstractNodeHumanInputEvent event) {
         return Arrays.stream(values())
                 .filter(action -> Objects.equals(action.eventClass, event.getClass()))
                 .findFirst()
                 .orElse(NONE);
     }
-
 }

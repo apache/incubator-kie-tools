@@ -22,7 +22,7 @@ import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
 /**
  * The purpose of this class is to allow Items to align without taking account Text.
@@ -46,7 +46,7 @@ public class WiresLayoutContainerNoTextBoundingBox extends WiresLayoutContainer 
                     final BoundingPoints bpts = ((IDrawable) list.get(i)).getBoundingPoints();
 
                     if (null != bpts && !(getChildNodes().get(i) instanceof Text)) {
-                        bbox.add(bpts.getArray());
+                        bbox.addBoundingBox(bpts.getBoundingBox());
                     }
                 }
                 return bbox;

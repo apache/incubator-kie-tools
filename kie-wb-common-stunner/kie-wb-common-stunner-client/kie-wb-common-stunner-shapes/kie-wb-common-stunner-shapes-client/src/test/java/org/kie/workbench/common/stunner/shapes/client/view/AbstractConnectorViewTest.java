@@ -84,6 +84,6 @@ public class AbstractConnectorViewTest {
     }
 
     private BoundingBox emptyBoundingBox() {
-        return new BoundingBox(0, 0, 0, 0);
+        return BoundingBox.fromDoubles(0, 0, 0, 0);
     }
 }

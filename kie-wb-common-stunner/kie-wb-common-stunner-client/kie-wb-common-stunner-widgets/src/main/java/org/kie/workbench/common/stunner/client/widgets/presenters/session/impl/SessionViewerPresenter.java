@@ -121,4 +121,9 @@ public class SessionViewerPresenter<S extends ViewerSession>
         toolbars.destroy((ViewerToolbar) toolbar);
         toolbars.destroyAll();
     }
+
+    @Override
+    public void open(S item, int width, int height, SessionPresenterCallback<Diagram> callback) {
+        // TODO lienzo-native
+    }
 }

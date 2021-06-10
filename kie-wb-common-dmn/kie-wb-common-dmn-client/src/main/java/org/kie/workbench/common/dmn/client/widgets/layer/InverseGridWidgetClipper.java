@@ -30,14 +30,14 @@ public class InverseGridWidgetClipper implements IPathClipper {
 
     public InverseGridWidgetClipper(final GridWidget outer,
                                     final GridWidget inner) {
-        this.outerBoundingBox = new BoundingBox(outer.getComputedLocation().getX(),
-                                                outer.getComputedLocation().getY(),
-                                                outer.getWidth() + BaseExpressionGridTheme.STROKE_WIDTH,
-                                                outer.getHeight() + BaseExpressionGridTheme.STROKE_WIDTH);
-        this.innerBoundingBox = new BoundingBox(inner.getComputedLocation().getX(),
-                                                inner.getComputedLocation().getY(),
-                                                inner.getComputedLocation().getX() + inner.getWidth() + BaseExpressionGridTheme.STROKE_WIDTH,
-                                                inner.getComputedLocation().getY() + inner.getHeight() + BaseExpressionGridTheme.STROKE_WIDTH);
+        this.outerBoundingBox = BoundingBox.fromDoubles(outer.getComputedLocation().getX(),
+                                                        outer.getComputedLocation().getY(),
+                                                        outer.getWidth() + BaseExpressionGridTheme.STROKE_WIDTH,
+                                                        outer.getHeight() + BaseExpressionGridTheme.STROKE_WIDTH);
+        this.innerBoundingBox = BoundingBox.fromDoubles(inner.getComputedLocation().getX(),
+                                                        inner.getComputedLocation().getY(),
+                                                        inner.getComputedLocation().getX() + inner.getWidth() + BaseExpressionGridTheme.STROKE_WIDTH,
+                                                        inner.getComputedLocation().getY() + inner.getHeight() + BaseExpressionGridTheme.STROKE_WIDTH);
     }
 
     @Override

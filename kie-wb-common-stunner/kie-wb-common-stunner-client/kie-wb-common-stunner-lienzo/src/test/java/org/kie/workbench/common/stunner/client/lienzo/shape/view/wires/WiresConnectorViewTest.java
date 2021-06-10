@@ -99,7 +99,7 @@ public class WiresConnectorViewTest {
         Node headPathNode = headPath;
         Node tailPathNode = tailPath;
 
-        point2DArray = new Point2DArray(new Point2D(0, 10), new Point2D(10, 10), new Point2D(20, 20), new Point2D(30, 30), new Point2D(40, 40));
+        point2DArray = Point2DArray.fromArrayOfPoint2D(new Point2D(0, 10), new Point2D(10, 10), new Point2D(20, 20), new Point2D(30, 30), new Point2D(40, 40));
 
         when(line.getPoint2DArray()).thenReturn(point2DArray);
         when(line.asShape()).thenReturn(lineShape);
@@ -116,10 +116,10 @@ public class WiresConnectorViewTest {
         when(tailDecorator.getPath()).thenReturn(tailPath);
         when(headPath.asNode()).thenReturn(headPathNode);
         when(tailPath.asNode()).thenReturn(tailPathNode);
-        when(headPath.getBoundingBox()).thenReturn(new BoundingBox(0,
-                                                                   0,
-                                                                   10,
-                                                                   10));
+        when(headPath.getBoundingBox()).thenReturn(BoundingBox.fromDoubles(0,
+                                                                           0,
+                                                                           10,
+                                                                           10));
         this.tested = new WiresConnectorView(line,
                                              headDecorator,
                                              tailDecorator);
@@ -422,8 +422,8 @@ public class WiresConnectorViewTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testGetEmptyControlPoints() {
-        Point2DArray linePoints = new Point2DArray(new Point2D(0, 0),
-                                                   new Point2D(1, 2));
+        Point2DArray linePoints = Point2DArray.fromArrayOfPoint2D(new Point2D(0, 0),
+                                                                  new Point2D(1, 2));
         when(line.getPoint2DArray()).thenReturn(linePoints);
         ControlPoint[] controlPoints = tested.getManageableControlPoints();
         assertNotNull(controlPoints);
@@ -433,7 +433,7 @@ public class WiresConnectorViewTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testGetEmptyControlPoints2() {
-        Point2DArray linePoints = new Point2DArray(new Point2D(0, 0));
+        Point2DArray linePoints = Point2DArray.fromArrayOfPoint2D(new Point2D(0, 0));
         when(line.getPoint2DArray()).thenReturn(linePoints);
         ControlPoint[] controlPoints = tested.getManageableControlPoints();
         assertNotNull(controlPoints);
@@ -443,11 +443,11 @@ public class WiresConnectorViewTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testGetControlPoints() {
-        Point2DArray linePoints = new Point2DArray(new Point2D(0, 0),
-                                                   new Point2D(0.1, 0.2),
-                                                   new Point2D(0.3, 0.4),
-                                                   new Point2D(0.5, 0.6),
-                                                   new Point2D(1, 2));
+        Point2DArray linePoints = Point2DArray.fromArrayOfPoint2D(new Point2D(0, 0),
+                                                                  new Point2D(0.1, 0.2),
+                                                                  new Point2D(0.3, 0.4),
+                                                                  new Point2D(0.5, 0.6),
+                                                                  new Point2D(1, 2));
         when(line.getPoint2DArray()).thenReturn(linePoints);
         ControlPoint[] controlPoints = tested.getManageableControlPoints();
         assertNotNull(controlPoints);
@@ -472,9 +472,9 @@ public class WiresConnectorViewTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testAddControlPoint() {
-        Point2DArray cps = new Point2DArray(new Point2D(0, 0),
-                                            new Point2D(0.1, 0.2),
-                                            new Point2D(1, 2));
+        Point2DArray cps = Point2DArray.fromArrayOfPoint2D(new Point2D(0, 0),
+                                                           new Point2D(0.1, 0.2),
+                                                           new Point2D(1, 2));
         when(line.getPoint2DArray()).thenReturn(cps);
         ControlPoint newCP = ControlPoint.build(0.5, 0.5);
         tested.addControlPoint(newCP, 1);
@@ -489,9 +489,9 @@ public class WiresConnectorViewTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testDeleteControlPoint() {
-        Point2DArray cps = new Point2DArray(new Point2D(0, 0),
-                                            new Point2D(0.1, 0.2),
-                                            new Point2D(1, 2));
+        Point2DArray cps = Point2DArray.fromArrayOfPoint2D(new Point2D(0, 0),
+                                                           new Point2D(0.1, 0.2),
+                                                           new Point2D(1, 2));
         when(line.getPoint2DArray()).thenReturn(cps);
         tested.deleteControlPoint(0);
         ArgumentCaptor<Point2DArray> linePointsCaptor = ArgumentCaptor.forClass(Point2DArray.class);
@@ -506,17 +506,17 @@ public class WiresConnectorViewTest {
     @SuppressWarnings("unchecked")
     public void testUpdateControlPoint() {
         Point2D p = new Point2D(0.1, 0.2);
-        Point2DArray cps = new Point2DArray(new Point2D(0, 0),
-                                            p,
-                                            new Point2D(1, 2));
+        Point2DArray cps = Point2DArray.fromArrayOfPoint2D(new Point2D(0, 0),
+                                                           p,
+                                                           new Point2D(1, 2));
         when(line.getPoint2DArray()).thenReturn(cps);
         IControlHandleList pointHandles = mock(IControlHandleList.class);
         when(pointHandles.isEmpty()).thenReturn(false);
         when(pointHandles.size()).thenReturn(1);
         tested.setPointHandles(pointHandles);
         tested.updateControlPoints(new ControlPoint[]{ControlPoint.build(0.5, 0.5)});
-        assertEquals(0.5, p.getX(), 0d);
-        assertEquals(0.5, p.getY(), 0d);
+        assertEquals(0.5, p.getX(), 1d);
+        assertEquals(0.5, p.getY(), 1d);
     }
 
     @Test
@@ -543,7 +543,7 @@ public class WiresConnectorViewTest {
         double[] dashes = {1, 2, 3, 4};
         DashArray dashArray = DashArray.create(dash, dashes);
         tested.setDashArray(dashArray);
-        verify(line).setDashArray(dash, dashes);
+        verify(line).setDashArray(WiresConnectorView.getDashDoubleArray(dash, dashes));
     }
 
     @Test

@@ -108,12 +108,13 @@ public class WiresConnectorView<T> extends WiresConnector
             // Notice first and last CP from lienzo's connector are discarded,
             // as they're considered the Connection's on Stunner side, so not
             // part of the model's ControlPoint array.
-            return StreamSupport.stream(controlPoints.spliterator(), false)
-                    .limit(controlPoints.size() - 1)
-                    .skip(1)
-                    .map(controlPoint -> ControlPoint.build(controlPoint.getX(),
-                                                            controlPoint.getY()))
-                    .toArray(ControlPoint[]::new);
+            final ControlPoint[] result = new ControlPoint[controlPoints.size() - 2];
+            for (int i = 1; i < controlPoints.size() - 1; i++) {
+                com.ait.lienzo.client.core.types.Point2D p = controlPoints.get(i);
+                ControlPoint point = ControlPoint.build(p.getX(), p.getY());
+                result[i - 1] = point;
+            }
+            return result;
         }
         return new ControlPoint[0];
     }
@@ -556,9 +557,22 @@ public class WiresConnectorView<T> extends WiresConnector
 
     public T setDashArray(DashArray dashArray) {
         if (dashArray != null) {
-            getDirectionalLine().setDashArray(dashArray.getDash(), dashArray.getDashes());
+            getDirectionalLine().setDashArray(getDashDoubleArray(dashArray));
         }
         return cast();
+    }
+
+    static double[] getDashDoubleArray(double d, double[] array) {
+        final double[] result = new double[array.length + 1];
+        result[0] = d;
+        for (int i = 0; i < array.length; i++) {
+            result[i + 1] = array[i];
+        }
+        return result;
+    }
+
+    static double[] getDashDoubleArray(DashArray dashArray) {
+        return getDashDoubleArray(dashArray.getDash(), dashArray.getDashes());
     }
 
     private AbstractDirectionalMultiPointShape<?> getDirectionalLine() {

@@ -57,7 +57,7 @@ public class GridWidgetDnDMouseUpHandler implements NodeMouseUpHandler {
         //Reset state. Defer until the next browser event loop iteration to enable ClickEvents to be processed.
         scheduleDeferred(() -> {
             state.reset();
-            layer.getViewport().getElement().getStyle().setCursor(state.getCursor());
+            layer.getViewport().getElement().style.cursor = state.getCursor().getCssName();
         });
     }
 

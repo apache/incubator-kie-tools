@@ -34,24 +34,6 @@ public abstract class DelegateLienzoPanel<P extends LienzoPanel> implements Lien
     }
 
     @Override
-    public LienzoPanel show(final LienzoLayer layer,
-                            final int width,
-                            final int height) {
-        getDelegate().show(layer,
-                           width,
-                           height);
-        return this;
-    }
-
-    @Override
-    public LienzoPanel setPixelSize(final int wide,
-                                    final int high) {
-        getDelegate().setPixelSize(wide,
-                                   high);
-        return this;
-    }
-
-    @Override
     public LienzoPanel focus() {
         getDelegate().focus();
         return this;

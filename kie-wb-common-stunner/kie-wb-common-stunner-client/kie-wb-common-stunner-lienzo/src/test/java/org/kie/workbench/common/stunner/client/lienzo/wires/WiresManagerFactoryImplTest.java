@@ -19,10 +19,12 @@ package org.kie.workbench.common.stunner.client.lienzo.wires;
 import java.lang.reflect.Field;
 
 import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.decorator.MagnetDecorator;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresHandlerFactoryImpl;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +33,8 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresManagerFactoryImplTest {
@@ -43,10 +47,19 @@ public class WiresManagerFactoryImplTest {
     @Mock
     private WiresHandlerFactoryImpl wiresHandlerFactory;
 
-    private Layer layer = new Layer();
+    @Mock
+    private Viewport viewport;
+
+    @Mock
+    private HTMLDivElement element;
+
+    private Layer layer;
 
     @Before
     public void setUp() throws Exception {
+        layer = spy(new Layer());
+        when(layer.getViewport()).thenReturn(viewport);
+        when(viewport.getElement()).thenReturn(element);
         wiresManagerFactory = new WiresManagerFactoryImpl(wiresControlFactory, wiresHandlerFactory);
     }
 
@@ -62,7 +75,4 @@ public class WiresManagerFactoryImplTest {
 
         assertTrue(magnetDecorator instanceof StunnerMagnetDecorator);
     }
-
-
-
 }

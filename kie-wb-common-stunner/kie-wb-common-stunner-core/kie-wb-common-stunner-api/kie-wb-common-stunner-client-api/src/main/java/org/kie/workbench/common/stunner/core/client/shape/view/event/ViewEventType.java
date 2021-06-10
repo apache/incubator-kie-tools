@@ -29,8 +29,4 @@ public enum ViewEventType {
     TEXT_DBL_CLICK,
     DRAG,
     RESIZE,
-
-    // Mobile.
-    TOUCH,
-    GESTURE;
 }

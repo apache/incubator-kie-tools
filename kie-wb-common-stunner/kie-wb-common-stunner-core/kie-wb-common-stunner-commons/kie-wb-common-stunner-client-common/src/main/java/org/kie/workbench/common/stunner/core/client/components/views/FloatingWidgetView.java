@@ -25,7 +25,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegistrationImpl;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.GWTHandlerRegistration;
 import org.uberfire.mvp.Command;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -46,7 +46,7 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
     private boolean visible;
     private Command hideCallback;
     private final FlowPanel panel = new FlowPanel();
-    private final HandlerRegistrationImpl handlerRegistrationManager = new HandlerRegistrationImpl();
+    private final GWTHandlerRegistration handlerRegistrationManager = new GWTHandlerRegistration();
 
     public FloatingWidgetView() {
         this.attached = false;

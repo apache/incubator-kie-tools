@@ -16,16 +16,16 @@
 
 package org.kie.workbench.common.dmn.client.shape.view.decisionservice;
 
-import com.ait.lienzo.client.core.event.AbstractNodeDragEvent;
+import com.ait.lienzo.client.core.event.NodeDragStartHandler;
 import com.ait.lienzo.client.core.shape.wires.event.AbstractWiresDragEvent;
+import elemental2.dom.HTMLElement;
 
-public class MoveDividerEndEvent extends AbstractWiresDragEvent<MoveDividerEndHandler> {
+public class MoveDividerEndEvent extends AbstractWiresDragEvent<MoveDividerEndHandler, NodeDragStartHandler> {
 
     public static final Type<MoveDividerEndHandler> TYPE = new Type<>();
 
-    public MoveDividerEndEvent(final DecisionServiceSVGShapeView shape,
-                               final AbstractNodeDragEvent<?> nodeDragEvent) {
-        super(shape, nodeDragEvent);
+    public MoveDividerEndEvent(HTMLElement relativeElement) {
+        super(relativeElement);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class MoveDividerEndEvent extends AbstractWiresDragEvent<MoveDividerEndHa
     }
 
     @Override
-    protected void dispatch(final MoveDividerEndHandler handler) {
+    public void dispatch(final MoveDividerEndHandler handler) {
         handler.onMoveDividerEnd(this);
     }
 }

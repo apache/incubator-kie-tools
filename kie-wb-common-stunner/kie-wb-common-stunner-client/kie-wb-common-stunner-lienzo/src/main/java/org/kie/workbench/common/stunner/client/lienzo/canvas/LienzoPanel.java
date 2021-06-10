@@ -24,13 +24,6 @@ public interface LienzoPanel extends CanvasPanel {
 
     LienzoPanel show(final LienzoLayer layer);
 
-    LienzoPanel show(final LienzoLayer layer,
-                     final int width,
-                     final int height);
-
-    LienzoPanel setPixelSize(final int wide,
-                             final int high);
-
     LienzoPanel focus();
 
     void setBackgroundLayer(Layer layer);

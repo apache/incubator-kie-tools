@@ -24,7 +24,7 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
 public final class SVGContainer extends SVGPrimitive<Group> {
 
@@ -82,7 +82,8 @@ public final class SVGContainer extends SVGPrimitive<Group> {
         }
         final NFastArrayList<IPrimitive<?>> childNodes = container.getChildNodes();
         if (null != childNodes) {
-            for (final IPrimitive node : childNodes) {
+            for (int i = 0; i < childNodes.size(); i++) {
+                final IPrimitive node = childNodes.get(i);
                 if (null != node.getID() && node.getID().equals(uuid)) {
                     return node;
                 } else if (node instanceof IContainer) {

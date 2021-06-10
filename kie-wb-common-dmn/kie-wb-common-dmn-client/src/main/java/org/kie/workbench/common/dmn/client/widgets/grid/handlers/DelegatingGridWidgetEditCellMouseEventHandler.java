@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.DynamicReadOnlyUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -48,7 +48,7 @@ public class DelegatingGridWidgetEditCellMouseEventHandler extends DefaultGridWi
                                     final Optional<Integer> uiHeaderColumnIndex,
                                     final Optional<Integer> uiRowIndex,
                                     final Optional<Integer> uiColumnIndex,
-                                    final AbstractNodeMouseEvent event) {
+                                    final AbstractNodeHumanInputEvent event) {
         if (DynamicReadOnlyUtils.isOnlyVisualChangeAllowed(gridWidget)) {
             return false;
         }
@@ -81,7 +81,7 @@ public class DelegatingGridWidgetEditCellMouseEventHandler extends DefaultGridWi
                                     final Optional<Integer> uiHeaderColumnIndex,
                                     final Optional<Integer> uiRowIndex,
                                     final Optional<Integer> uiColumnIndex,
-                                    final AbstractNodeMouseEvent event) {
+                                    final AbstractNodeHumanInputEvent event) {
         return super.onNodeMouseEvent(gridWidget,
                                       relativeLocation,
                                       uiHeaderRowIndex,
@@ -95,7 +95,7 @@ public class DelegatingGridWidgetEditCellMouseEventHandler extends DefaultGridWi
                                             final Point2D relativeLocation,
                                             final int uiRowIndex,
                                             final int uiColumnIndex,
-                                            final AbstractNodeMouseEvent event) {
+                                            final AbstractNodeHumanInputEvent event) {
         final GridCellTuple parent = parentSupplier.get();
         final GridWidget parentGridWidget = parent.getGridWidget();
         final GridData parentGridData = parentGridWidget.getModel();
@@ -111,7 +111,7 @@ public class DelegatingGridWidgetEditCellMouseEventHandler extends DefaultGridWi
     }
 
     boolean isEventHandled(final GridCellEditAction cellEditAction,
-                           final AbstractNodeMouseEvent event) {
+                           final AbstractNodeHumanInputEvent event) {
         return Objects.equals(cellEditAction, GridCellEditAction.getSupportedEditAction(event));
     }
 }

@@ -42,10 +42,10 @@ import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerManager;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.client.event.INodeEvent;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.DragHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
@@ -92,9 +92,13 @@ public class DecisionServiceSVGShapeView extends SVGShapeViewImpl {
 
     public DecisionServiceSVGShapeView addDividerDragHandler(final DragHandler dragHandler) {
         final HandlerManager handlerManager = getHandlerManager();
-        final HandlerRegistration dragStartRegistration = handlerManager.addHandler(MoveDividerStartEvent.TYPE, event -> dragHandler.start(buildDragEvent(event)));
-        final HandlerRegistration dragStepRegistration = handlerManager.addHandler(MoveDividerStepEvent.TYPE, event -> dragHandler.handle(buildDragEvent(event)));
-        final HandlerRegistration dragEndRegistration = handlerManager.addHandler(MoveDividerEndEvent.TYPE, event -> dragHandler.end(buildDragEvent(event)));
+        final HandlerRegistration dragStartRegistration =
+                handlerManager.addHandler(MoveDividerStartEvent.TYPE,
+                                          (MoveDividerStartHandler) event -> dragHandler.start(buildDragEvent(event)));
+        final HandlerRegistration dragStepRegistration = handlerManager.addHandler(MoveDividerStepEvent.TYPE,
+                                                                                   (MoveDividerStepHandler) event -> dragHandler.handle(buildDragEvent(event)));
+        final HandlerRegistration dragEndRegistration = handlerManager.addHandler(MoveDividerEndEvent.TYPE,
+                                                                                  (MoveDividerEndHandler) event -> dragHandler.end(buildDragEvent(event)));
         final HandlerRegistration[] registrations = new HandlerRegistration[]{dragStartRegistration, dragStepRegistration, dragEndRegistration};
         getEventHandlerManager().addHandlersRegistration(ViewEventType.DRAG, registrations);
 
@@ -182,18 +186,18 @@ public class DecisionServiceSVGShapeView extends SVGShapeViewImpl {
         }
 
         private void moveDividerStart(final NodeDragStartEvent event) {
-            fireMoveDividerEvent(new MoveDividerStartEvent(DecisionServiceSVGShapeView.this, event));
+            fireMoveDividerEvent(new MoveDividerStartEvent(event.getRelativeElement()));
         }
 
         private void moveDividerMove(final NodeDragMoveEvent event) {
-            fireMoveDividerEvent(new MoveDividerStepEvent(DecisionServiceSVGShapeView.this, event));
+            fireMoveDividerEvent(new MoveDividerStepEvent(event.getRelativeElement()));
         }
 
         private void moveDividerEnd(final NodeDragEndEvent event) {
-            fireMoveDividerEvent(new MoveDividerEndEvent(DecisionServiceSVGShapeView.this, event));
+            fireMoveDividerEvent(new MoveDividerEndEvent(event.getRelativeElement()));
         }
 
-        private void fireMoveDividerEvent(final GwtEvent<?> event) {
+        private void fireMoveDividerEvent(final INodeEvent event) {
             moveDividerControlHandle.ifPresent(handle -> {
                 divider.setY(handle.getControl().getY());
                 getHandlerManager().fireEvent(event);

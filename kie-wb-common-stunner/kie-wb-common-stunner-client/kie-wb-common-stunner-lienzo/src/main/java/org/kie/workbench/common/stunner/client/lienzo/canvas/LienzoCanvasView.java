@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas;
 
-import java.util.Optional;
 import java.util.function.BiFunction;
 
 import com.ait.lienzo.client.core.shape.GridLayer;
 import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.util.CursorMap;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasView;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasGrid;
@@ -47,17 +47,8 @@ public abstract class LienzoCanvasView<L extends LienzoLayer>
 
     @Override
     protected LienzoCanvasView<L> doInitialize(final CanvasSettings canvasSettings) {
-        final Optional<CanvasSettings.CanvasSize> canvasSize = canvasSettings.getCanvasSize();
-        if (canvasSize.isPresent()) {
-            getLienzoPanel()
-                    .show(getLayer(),
-                          canvasSize.get().getWidth(),
-                          canvasSize.get().getHeight());
-        } else {
-            getLienzoPanel()
-                    .show(getLayer());
-        }
         getLienzoPanel()
+                .show(getLayer())
                 .asWidget()
                 .getElement()
                 .getStyle()
@@ -82,7 +73,7 @@ public abstract class LienzoCanvasView<L extends LienzoLayer>
 
     @Override
     protected void setViewCursor(final AbstractCanvas.Cursors cursor) {
-        getLienzoPanel().getView().setCursor(toViewCursor(cursor));
+        getLienzoPanel().getView().setCursor(CursorMap.get().lookup(toViewCursor(cursor).getCssName()));
         super.setViewCursor(cursor);
     }
 

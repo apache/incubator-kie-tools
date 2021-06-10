@@ -24,6 +24,7 @@ import javax.enterprise.context.Dependent;
 
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.tools.client.event.MouseEventUtil;
 import org.drools.scenariosimulation.api.model.AbstractScesimData;
 import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.FactMapping;
@@ -123,8 +124,9 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandler extends AbstractSce
             xPosition = (int) cellXYMiddleCoordinates.getX() - xMiddleWidth;
             position = PopoverView.Position.LEFT;
         }
+
         /* Popover can't be to the right nor to the left (single column); put it ABOVE the cell */
-        if (xPosition <= scenarioGrid.getLayer().getElement().getAbsoluteLeft()) {
+        if (xPosition <= MouseEventUtil.getAbsoluteLeft(scenarioGrid.getLayer().getElement())) {
             xPosition = (int) cellXYMiddleCoordinates.getX();
             yPosition = (int) cellXYMiddleCoordinates.getY() - cellHeight/2;
             position = PopoverView.Position.TOP;

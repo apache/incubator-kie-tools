@@ -26,7 +26,9 @@ import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 /**
  * The default Shape implementation for edges with ViewContent type, so basically connectors.
@@ -78,7 +80,8 @@ public class ConnectorShape<W, D extends ShapeViewDef<W, V>, V extends ShapeView
     @Override
     public void applyPosition(final Edge<ViewConnector<W>, Node> element,
                               final MutationContext mutationContext) {
-        // TODO
+        final Point2D location = GraphUtils.getPosition(element.getContent());
+        getShapeView().setShapeLocation(location);
     }
 
     @Override

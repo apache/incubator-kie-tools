@@ -21,15 +21,15 @@ import java.util.List;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 
-public class HandlerRegistrationImpl implements HandlerRegistration {
+public class GWTHandlerRegistration implements HandlerRegistration {
 
     private final List<HandlerRegistration> m_list = new LinkedList<>();
 
-    public HandlerRegistrationImpl() {
+    public GWTHandlerRegistration() {
     }
 
-    public HandlerRegistrationImpl(final HandlerRegistration handler,
-                                   final HandlerRegistration... handlers) {
+    public GWTHandlerRegistration(final HandlerRegistration handler,
+                                  final HandlerRegistration... handlers) {
         this.register(handler);
         HandlerRegistration[] arr$ = handlers;
         int len$ = handlers.length;
@@ -47,12 +47,12 @@ public class HandlerRegistrationImpl implements HandlerRegistration {
         return this.m_list.isEmpty();
     }
 
-    public final HandlerRegistrationImpl destroy() {
+    private void clear() {
         int size = this.size();
         for (int i = 0; i < size; ++i) {
-            ((HandlerRegistration) this.m_list.get(i)).removeHandler();
+            m_list.get(i).removeHandler();
         }
-        return this.clear();
+        m_list.clear();
     }
 
     public final HandlerRegistration register(final HandlerRegistration handler) {
@@ -66,7 +66,7 @@ public class HandlerRegistrationImpl implements HandlerRegistration {
         return null != handler && this.size() > 0 && this.m_list.contains(handler);
     }
 
-    public final HandlerRegistrationImpl deregister(final HandlerRegistration handler) {
+    public final GWTHandlerRegistration deregister(final HandlerRegistration handler) {
         if (null != handler) {
             if (this.size() > 0 && this.m_list.contains(handler)) {
                 this.m_list.remove(handler);
@@ -76,12 +76,7 @@ public class HandlerRegistrationImpl implements HandlerRegistration {
         return this;
     }
 
-    public final HandlerRegistrationImpl clear() {
-        this.m_list.clear();
-        return this;
-    }
-
     public void removeHandler() {
-        this.destroy();
+        clear();
     }
 }

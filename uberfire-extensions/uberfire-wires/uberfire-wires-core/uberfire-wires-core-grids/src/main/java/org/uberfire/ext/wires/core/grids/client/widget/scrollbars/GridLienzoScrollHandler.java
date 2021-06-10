@@ -18,10 +18,9 @@ package org.uberfire.ext.wires.core.grids.client.widget.scrollbars;
 
 import java.util.Objects;
 
-import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
-import com.ait.lienzo.client.widget.LienzoPanel;
+import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
@@ -111,7 +110,7 @@ public class GridLienzoScrollHandler {
     RestrictedMousePanMediator makeRestrictedMousePanMediator() {
         return new RestrictedMousePanMediator() {
             @Override
-            protected void onMouseMove(final NodeMouseMoveEvent event) {
+            protected void onMouseMove(int x, int y) {
                 refreshScrollPosition();
             }
 

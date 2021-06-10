@@ -20,13 +20,6 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Ring;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegistrationImpl;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
 /**
@@ -39,7 +32,6 @@ public class RingView extends AbstractHasRadiusView<RingView> {
     private static final int INNER_RADIUS_FACTOR = 2;
 
     private Ring ring;
-    private final HandlerRegistrationImpl registrations = new HandlerRegistrationImpl();
 
     public RingView(final double radius) {
         super(ShapeViewSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
@@ -49,7 +41,6 @@ public class RingView extends AbstractHasRadiusView<RingView> {
                         getOuterRadius(radius));
         addChild(ring,
                  LayoutContainer.Layout.CENTER);
-        // TODO: initResizeHandlers();
         super.setResizable(false);
     }
 
@@ -85,35 +76,7 @@ public class RingView extends AbstractHasRadiusView<RingView> {
     @Override
     public void destroy() {
         super.destroy();
-        registrations.removeHandler();
         ring.removeFromParent();
-    }
-
-    private void initResizeHandlers() {
-        registrations.register(this.addWiresResizeStartHandler(new WiresResizeStartHandler() {
-                                   @Override
-                                   public void onShapeResizeStart(final WiresResizeStartEvent wiresResizeStartEvent) {
-                                       resize(wiresResizeStartEvent.getWidth(),
-                                              wiresResizeStartEvent.getHeight());
-                                   }
-                               })
-        );
-        registrations.register(this.addWiresResizeStepHandler(new WiresResizeStepHandler() {
-                                   @Override
-                                   public void onShapeResizeStep(final WiresResizeStepEvent wiresResizeStepEvent) {
-                                       resize(wiresResizeStepEvent.getWidth(),
-                                              wiresResizeStepEvent.getHeight());
-                                   }
-                               })
-        );
-        registrations.register(this.addWiresResizeEndHandler(new WiresResizeEndHandler() {
-                                   @Override
-                                   public void onShapeResizeEnd(final WiresResizeEndEvent wiresResizeEndEvent) {
-                                       resize(wiresResizeEndEvent.getWidth(),
-                                              wiresResizeEndEvent.getHeight());
-                                   }
-                               })
-        );
     }
 
     private void resize(final double width,

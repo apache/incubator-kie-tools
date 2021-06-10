@@ -189,6 +189,8 @@
     <version.com.googlecode.jsonsimple>1.1.1</version.com.googlecode.jsonsimple>
     <version.com.googlecode.jtype>0.1.1</version.com.googlecode.jtype>
 
+    <version.org.kie.lienzo>7.56.0-SNAPSHOT</version.org.kie.lienzo>
+
     <!-- Properties from KIE-WB-COMMON parent POM -->
     <version.powermock.api.mockito2>2.0.9</version.powermock.api.mockito2>
     <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
@@ -306,6 +308,30 @@
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+      <!-- Lienzo artifacts for kogito stream -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>lienzo-core</artifactId>
+        <version>${version.org.kie.lienzo}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>lienzo-core</artifactId>
+        <version>${version.org.kie.lienzo}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>lienzo-tests</artifactId>
+        <version>${version.org.kie.lienzo}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>lienzo-tests</artifactId>
+        <version>${version.org.kie.lienzo}</version>
+        <classifier>sources</classifier>
       </dependency>
 
       <!-- log4j-to-slf4j -->

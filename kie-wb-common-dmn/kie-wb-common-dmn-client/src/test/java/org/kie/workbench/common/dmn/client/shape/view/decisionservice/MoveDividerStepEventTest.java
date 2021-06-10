@@ -15,8 +15,8 @@
  */
 package org.kie.workbench.common.dmn.client.shape.view.decisionservice;
 
-import com.ait.lienzo.client.core.event.AbstractNodeDragEvent;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,16 +24,11 @@ import org.mockito.Mock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class MoveDividerStepEventTest {
-
-    @Mock
-    private DecisionServiceSVGShapeView shape;
-
-    @Mock
-    private AbstractNodeDragEvent<?> nodeDragEvent;
 
     @Mock
     private MoveDividerStepHandler handler;
@@ -42,7 +37,7 @@ public class MoveDividerStepEventTest {
 
     @Before
     public void setup() {
-        this.event = new MoveDividerStepEvent(shape, nodeDragEvent);
+        this.event = new MoveDividerStepEvent(mock(HTMLElement.class));
     }
 
     @Test

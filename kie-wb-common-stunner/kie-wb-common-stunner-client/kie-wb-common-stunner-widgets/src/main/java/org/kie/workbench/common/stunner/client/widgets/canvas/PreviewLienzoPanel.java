@@ -22,7 +22,7 @@ import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.widget.panel.impl.PreviewPanel;
-import com.ait.lienzo.client.widget.panel.scrollbars.ScrollablePanel;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 
 @Dependent
 @Typed(PreviewLienzoPanel.class)
@@ -38,17 +38,14 @@ public class PreviewLienzoPanel
 
     @PostConstruct
     public void init() {
-        panel.setPanelBuilder((width, height) -> new PreviewPanel(width.orElse(300),
-                                                                  height.orElse(150)));
+        panel.setPanelBuilder(() -> new PreviewPanel(420, 210));
     }
 
     public PreviewLienzoPanel observe(final ScrollableLienzoPanel panel) {
-        getPreviewPanelView().observe((ScrollablePanel) panel.getDelegate().getView());
-        return this;
-    }
+        ((PreviewPanel) getDelegate().getView())
+                .observe((ScrollablePanel) panel.getDelegate().getView());
 
-    private PreviewPanel getPreviewPanelView() {
-        return (PreviewPanel) getDelegate().getView();
+        return this;
     }
 
     @Override

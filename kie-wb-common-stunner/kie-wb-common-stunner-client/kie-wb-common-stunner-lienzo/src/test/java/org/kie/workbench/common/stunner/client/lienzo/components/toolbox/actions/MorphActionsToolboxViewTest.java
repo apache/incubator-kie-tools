@@ -66,7 +66,7 @@ public class MorphActionsToolboxViewTest
         when(toolbox.size()).thenReturn(2);
         when(buttonsFactory.dropRight(any(Group.class))).thenReturn(buttonGridItem);
         when(decoratorsFactory.button()).thenReturn(buttonDecorator);
-        when(buttonDecorator.configure(any(com.ait.tooling.common.api.java.util.function.Consumer.class))).thenReturn(buttonDecorator);
+        when(buttonDecorator.configure(any(Consumer.class))).thenReturn(buttonDecorator);
         when(buttonDecorator.setBoundingBox(any(BoundingBox.class))).thenReturn(buttonDecorator);
         when(buttonDecorator.setPadding(anyDouble())).thenReturn(buttonDecorator);
         when(buttonDecorator.copy()).thenReturn(buttonDecorator);
@@ -76,7 +76,7 @@ public class MorphActionsToolboxViewTest
         when(buttonGridItem.decorateGrid(any(DecoratorItem.class))).thenReturn(buttonGridItem);
         when(buttonGridItem.onMouseEnter(any(NodeMouseEnterHandler.class))).thenReturn(buttonGridItem);
         when(buttonGridItem.onMouseExit(any(NodeMouseExitHandler.class))).thenReturn(buttonGridItem);
-        when(buttonGridItem.onClick(any(com.ait.tooling.common.api.java.util.function.Consumer.class))).thenReturn(buttonGridItem);
+        when(buttonGridItem.onClick(any(Consumer.class))).thenReturn(buttonGridItem);
         this.tested = new MorphActionsToolboxView(glyphRenderers,
                                                   toolboxFactory);
         when(toolbox.getView()).thenReturn(tested);

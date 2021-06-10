@@ -302,16 +302,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.ahome-it</groupId>
-      <artifactId>ahome-tooling-common</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.ahome-it</groupId>
-      <artifactId>ahome-tooling-nativetools</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel-gwt-functions</artifactId>
       <exclusions>

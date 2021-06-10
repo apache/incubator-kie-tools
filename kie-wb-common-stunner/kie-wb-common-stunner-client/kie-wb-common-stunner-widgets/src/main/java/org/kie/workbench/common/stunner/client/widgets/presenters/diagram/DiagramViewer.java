@@ -54,7 +54,9 @@ public interface DiagramViewer<D extends Diagram, H extends CanvasHandler>
      */
     interface DiagramViewerCallback<D extends Diagram> extends Viewer.Callback {
 
-        void onOpen(D diagram);
+        default void onOpen(D diagram) {
+
+        }
 
         /**
          * Provide additional callback notification fired once canvas and handler have been

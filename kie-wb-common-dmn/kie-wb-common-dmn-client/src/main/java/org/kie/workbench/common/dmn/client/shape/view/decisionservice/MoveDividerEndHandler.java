@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.shape.view.decisionservice;
 
-import com.ait.lienzo.client.core.shape.wires.event.WiresEventHandler;
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
 
-public interface MoveDividerEndHandler extends WiresEventHandler {
+public interface MoveDividerEndHandler extends EventHandler {
 
     void onMoveDividerEnd(final MoveDividerEndEvent event);
 }

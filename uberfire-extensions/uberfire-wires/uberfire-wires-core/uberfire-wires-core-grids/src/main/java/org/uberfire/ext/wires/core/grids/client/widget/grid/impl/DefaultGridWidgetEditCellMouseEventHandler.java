@@ -18,7 +18,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
@@ -38,7 +38,7 @@ public class DefaultGridWidgetEditCellMouseEventHandler implements NodeMouseEven
                                     final Optional<Integer> uiHeaderColumnIndex,
                                     final Optional<Integer> uiRowIndex,
                                     final Optional<Integer> uiColumnIndex,
-                                    final AbstractNodeMouseEvent event) {
+                                    final AbstractNodeHumanInputEvent event) {
         if (isDNDOperationInProgress(gridWidget)) {
             return false;
         }
@@ -63,9 +63,9 @@ public class DefaultGridWidgetEditCellMouseEventHandler implements NodeMouseEven
     }
 
     /**
-     * Checks if a {@link AbstractNodeMouseEvent} happened within a {@link GridCell}. If the
-     * {@link AbstractNodeMouseEvent} is found to have happened within a cell, the {@link GridCell#getSupportedEditAction()}
-     * is checked to {@link Object#equals(Object)} that for the {@link AbstractNodeMouseEvent}. If they equal then the
+     * Checks if a {@link AbstractNodeHumanInputEvent} happened within a {@link GridCell}. If the
+     * {@link AbstractNodeHumanInputEvent} is found to have happened within a cell, the {@link GridCell#getSupportedEditAction()}
+     * is checked to {@link Object#equals(Object)} that for the {@link AbstractNodeHumanInputEvent}. If they equal then the
      * {@link GridCell} is put into "edit" mode via {@link GridWidget#startEditingCell(Point2D)}.
      */
     @Override
@@ -73,7 +73,7 @@ public class DefaultGridWidgetEditCellMouseEventHandler implements NodeMouseEven
                                   final Point2D relativeLocation,
                                   final int uiRowIndex,
                                   final int uiColumnIndex,
-                                  final AbstractNodeMouseEvent event) {
+                                  final AbstractNodeHumanInputEvent event) {
         final GridData gridData = gridWidget.getModel();
         if (gridData.getSelectedCells().size() == 1) {
             final GridCell<?> cell = gridData.getCell(uiRowIndex, uiColumnIndex);

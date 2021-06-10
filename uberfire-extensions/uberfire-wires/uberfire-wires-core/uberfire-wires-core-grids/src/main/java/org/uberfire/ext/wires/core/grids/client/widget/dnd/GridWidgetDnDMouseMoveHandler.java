@@ -181,7 +181,7 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
                 }
             }
         }
-        layer.getViewport().getElement().getStyle().setCursor(cursor);
+        layer.getViewport().getElement().style.cursor = cursor.getCssName();
         state.setCursor(cursor);
     }
 

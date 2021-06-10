@@ -25,10 +25,10 @@ import java.util.function.Function;
 
 import javax.enterprise.event.Event;
 
-import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.tools.client.event.INodeXYEvent;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
