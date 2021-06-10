@@ -19,8 +19,8 @@ package com.ait.lienzo.client.core.shape;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
 
-public interface IDirectionalMultiPointShape<T extends Shape<T> & IDirectionalMultiPointShape<T>> extends IOffsetMultiPointShape<T>
-{
+public interface IDirectionalMultiPointShape<T extends Shape<T> & IDirectionalMultiPointShape<T>> extends IOffsetMultiPointShape<T> {
+
     T setTailDirection(Direction direction);
 
     Direction getTailDirection();

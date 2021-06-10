@@ -20,11 +20,14 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.types.Point2D;
 
-public interface LayoutContainer
-{
-    public enum Layout
-    {
-        CENTER, LEFT, TOP, RIGHT, BOTTOM;
+public interface LayoutContainer {
+
+    public enum Layout {
+        CENTER,
+        LEFT,
+        TOP,
+        RIGHT,
+        BOTTOM;
     }
 
     public LayoutContainer setOffset(Point2D offset);

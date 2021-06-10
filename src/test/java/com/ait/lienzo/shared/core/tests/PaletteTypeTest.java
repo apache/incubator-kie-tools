@@ -9,8 +9,7 @@ import static org.junit.Assert.assertTrue;
 public class PaletteTypeTest {
 
     @Test
-    public void testEquals()
-    {
+    public void testEquals() {
         PaletteType palette = PaletteType.PALETTE;
         assertFalse(palette.equals(null));
         assertTrue(palette.equals(palette));
@@ -28,13 +27,12 @@ public class PaletteTypeTest {
         assertTrue(overloadPalette.equals(palette));
     }
 
-    private static class PaletteTypeExtension extends PaletteType
-    {
+    private static class PaletteTypeExtension extends PaletteType {
+
         public static final PaletteTypeExtension OTHER = new PaletteTypeExtension("Other");
         public static final PaletteTypeExtension PALETTE = new PaletteTypeExtension("Palette");
 
-        protected PaletteTypeExtension(String value)
-        {
+        protected PaletteTypeExtension(String value) {
             super(value);
         }
     }

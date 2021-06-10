@@ -18,8 +18,7 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-public enum CompositeOperation implements EnumWithValue
-{
+public enum CompositeOperation implements EnumWithValue {
     /**
      * A (B is ignored). Display the source image instead of the destination
      * image.
@@ -90,35 +89,29 @@ public enum CompositeOperation implements EnumWithValue
 
     private static final EnumStringMap<CompositeOperation> LOOKUP_MAP = Statics.build(CompositeOperation.values());
 
-    private CompositeOperation(final String value)
-    {
+    private CompositeOperation(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
-    public static final CompositeOperation lookup(final String key)
-    {
+    public static final CompositeOperation lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, SOURCE_OVER);
     }
 
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(CompositeOperation.values());
     }
 
-    public static final List<CompositeOperation> getValues()
-    {
+    public static final List<CompositeOperation> getValues() {
         return Statics.getValues(CompositeOperation.values());
     }
 }

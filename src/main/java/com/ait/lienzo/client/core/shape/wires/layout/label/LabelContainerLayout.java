@@ -23,29 +23,25 @@ import com.ait.lienzo.client.core.shape.wires.layout.size.IMaxSizeLayout;
 import com.ait.lienzo.client.core.shape.wires.layout.size.SizeConstraintsContainerLayout;
 import com.ait.lienzo.client.core.types.BoundingBox;
 
-public class LabelContainerLayout extends AbstractContainerLayout<LabelLayout> implements IMaxSizeLayout<LabelLayout>
-{
+public class LabelContainerLayout extends AbstractContainerLayout<LabelLayout> implements IMaxSizeLayout<LabelLayout> {
+
     private final SizeConstraintsContainerLayout m_sizeConstraintsContainerLayout;
 
-    private final DirectionContainerLayout       m_directionContainerLayout;
+    private final DirectionContainerLayout m_directionContainerLayout;
 
-    public LabelContainerLayout(final IPrimitive parent)
-    {
+    public LabelContainerLayout(final IPrimitive parent) {
         this(parent, new SizeConstraintsContainerLayout(parent), new DirectionContainerLayout(parent));
     }
 
-    protected LabelContainerLayout(final IPrimitive parent, final SizeConstraintsContainerLayout sizeConstraintsContainerLayout, final DirectionContainerLayout directionContainerLayout)
-    {
+    protected LabelContainerLayout(final IPrimitive parent, final SizeConstraintsContainerLayout sizeConstraintsContainerLayout, final DirectionContainerLayout directionContainerLayout) {
         super(parent);
         m_sizeConstraintsContainerLayout = sizeConstraintsContainerLayout;
         m_directionContainerLayout = directionContainerLayout;
     }
 
     @Override
-    public LabelContainerLayout add(final IPrimitive<?> child, final LabelLayout layout)
-    {
-        if (child == null)
-        {
+    public LabelContainerLayout add(final IPrimitive<?> child, final LabelLayout layout) {
+        if (child == null) {
             throw new IllegalArgumentException("Child should not be null");
         }
 
@@ -58,18 +54,15 @@ public class LabelContainerLayout extends AbstractContainerLayout<LabelLayout> i
     }
 
     @Override
-    public BoundingBox getMaxSize(final IPrimitive<?> child)
-    {
+    public BoundingBox getMaxSize(final IPrimitive<?> child) {
 
         final LabelLayout layout = getLayout(child);
-        if (layout == null)
-        {
+        if (layout == null) {
             return new BoundingBox();
         }
         final Orientation orientation = layout.getDirectionLayout().getOrientation();
-        final BoundingBox boundaries  = m_sizeConstraintsContainerLayout.getMaxSize(child);
-        switch (orientation)
-        {
+        final BoundingBox boundaries = m_sizeConstraintsContainerLayout.getMaxSize(child);
+        switch (orientation) {
             case VERTICAL:
                 return BoundingBox.fromDoubles(boundaries.getMinY(), boundaries.getMinX(), boundaries.getMaxY(),
                                                boundaries.getMaxX());
@@ -80,8 +73,7 @@ public class LabelContainerLayout extends AbstractContainerLayout<LabelLayout> i
     }
 
     @Override
-    public LabelLayout getDefaultLayout()
-    {
+    public LabelLayout getDefaultLayout() {
         return new LabelLayout.Builder().build();
     }
 }

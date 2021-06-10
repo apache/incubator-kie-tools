@@ -19,27 +19,24 @@ package com.ait.lienzo.client.core.shape;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
 
-public final class BoundingBoxPathClipper extends AbstractPathClipper
-{
+public final class BoundingBoxPathClipper extends AbstractPathClipper {
+
     public static final String TYPE = "BoundingBoxPathClipper";
 
-    private final BoundingBox  m_bbox;
+    private final BoundingBox m_bbox;
 
-    public BoundingBoxPathClipper(final PathClipperJSO clip)
-    {
+    public BoundingBoxPathClipper(final PathClipperJSO clip) {
         super(clip);
 
         m_bbox = BoundingBox.fromBoundingBox(getBoundBox());
     }
 
-    public BoundingBoxPathClipper(final BoundingBox bbox)
-    {
+    public BoundingBoxPathClipper(final BoundingBox bbox) {
         this(PathClipperJSO.make(bbox));
     }
 
     @Override
-    protected final boolean apply(final Context2D context)
-    {
+    protected final boolean apply(final Context2D context) {
         context.beginPath();
 
         context.rect(m_bbox.getX(), m_bbox.getY(), m_bbox.getWidth(), m_bbox.getHeight());

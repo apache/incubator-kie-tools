@@ -20,8 +20,6 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
@@ -31,11 +29,11 @@ import com.ait.lienzo.shared.core.types.ShapeType;
 /**
  * Quadratic curves, a type of Bezier curve, are defined by a context point, a control point, and an ending point.
  */
-public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve>
-{
+public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve> {
+
     /**
      * Constructor. Creates an instance a quadratic curve.
-     * 
+     *
      * @param sx context point X coordinate
      * @param sy context point Y coordinate
      * @param cx control point X coordinate
@@ -43,35 +41,29 @@ public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve>
      * @param ex end point X coordinate
      * @param ey end point Y coordinate
      */
-    public QuadraticCurve(final double sx, final double sy, final double cx, final double cy, final double ex, final double ey)
-    {
+    public QuadraticCurve(final double sx, final double sy, final double cx, final double cy, final double ex, final double ey) {
         this(new Point2D(sx, sy), new Point2D(cx, cy), new Point2D(ex, ey));
     }
 
-    public QuadraticCurve(final double cx, final double cy, final double ex, final double ey)
-    {
+    public QuadraticCurve(final double cx, final double cy, final double ex, final double ey) {
         this(0, 0, cx, cy, ex, ey);
     }
 
-    public QuadraticCurve(final Point2D sp, final Point2D cp, final Point2D ep)
-    {
+    public QuadraticCurve(final Point2D sp, final Point2D cp, final Point2D ep) {
         super(ShapeType.QUADRATIC_CURVE);
 
         setControlPoints(Point2DArray.fromArrayOfPoint2D(sp, cp, ep));
     }
 
-    public QuadraticCurve(final Point2D cp, final Point2D ep)
-    {
+    public QuadraticCurve(final Point2D cp, final Point2D ep) {
         this(new Point2D(0, 0), cp, ep);
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         final BoundingBox bbox = Geometry.getBoundingBox(this);
 
-        if (null != bbox)
-        {
+        if (null != bbox) {
             return bbox;
         }
         return BoundingBox.fromDoubles(0, 0, 0, 0);
@@ -79,16 +71,14 @@ public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve>
 
     /**
      * Draws this quadratic curve
-     * 
+     *
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final double alpha)
-    {
+    protected boolean prepare(final Context2D context, final double alpha) {
         final Point2DArray points = getControlPoints();
 
-        if ((points != null) && (points.size() == 3))
-        {
+        if ((points != null) && (points.size() == 3)) {
             context.beginPath();
 
             final Point2D p0 = points.get(0);
@@ -107,33 +97,28 @@ public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve>
     }
 
     @Override
-    public QuadraticCurve setPoint2DArray(Point2DArray points)
-    {
+    public QuadraticCurve setPoint2DArray(Point2DArray points) {
         return setControlPoints(points);
     }
 
     @Override
-    public Point2DArray getPoint2DArray()
-    {
+    public Point2DArray getPoint2DArray() {
         return getControlPoints();
     }
 
     @Override
-    public boolean isControlPointShape()
-    {
+    public boolean isControlPointShape() {
         return true;
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.CONTROL_POINTS);
     }
 
-    public static class QuadraticCurveFactory extends ShapeFactory<QuadraticCurve>
-    {
-        public QuadraticCurveFactory()
-        {
+    public static class QuadraticCurveFactory extends ShapeFactory<QuadraticCurve> {
+
+        public QuadraticCurveFactory() {
             super(ShapeType.QUADRATIC_CURVE);
 
             addAttribute(Attribute.CONTROL_POINTS, true);

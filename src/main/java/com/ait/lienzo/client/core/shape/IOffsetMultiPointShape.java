@@ -18,8 +18,8 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.types.Point2D;
 
-public interface IOffsetMultiPointShape<T extends Shape<T> & IOffsetMultiPointShape<T>> extends IMultiPointShape<T>
-{
+public interface IOffsetMultiPointShape<T extends Shape<T> & IOffsetMultiPointShape<T>> extends IMultiPointShape<T> {
+
     public double getTailOffset();
 
     public T setTailOffset(double offset);

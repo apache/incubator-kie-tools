@@ -27,55 +27,52 @@ import jsinterop.annotations.JsType;
 
 /**
  * Simple, super-fast minimal native Map that by default uses a String as a key, but does not fully implement the Map interface
- * 
+ * <p>
  * For our purposes, in benchmarking, this is 50-60% faster than HashMap
  */
 
 @JsType(isNative = true, name = "Map", namespace = JsPackage.GLOBAL)
-public final class NFastStringMap<V> implements JsIterable<JsIterableTypeParameterArrayUnionType<String, V>[]>
-{
-    public NFastStringMap()
-    {
+public final class NFastStringMap<V> implements JsIterable<JsIterableTypeParameterArrayUnionType<String, V>[]> {
+
+    public NFastStringMap() {
     }
 
     /**
      * Add <key, value> to the map.
+     *
      * @param key
      * @param value
      */
     @JsOverlay
-    public final NFastStringMap<V> put(final String key, final V value)
-    {
+    public final NFastStringMap<V> put(final String key, final V value) {
         set(key, value);
 
         return this;
     }
 
-
     /**
      * Remove the value based on the key passed in as argument.
+     *
      * @param key
      */
     @JsOverlay
-    public final NFastStringMap<V> remove(final String key)
-    {
+    public final NFastStringMap<V> remove(final String key) {
         delete(key);
         return this;
     }
 
     /**
      * Returns true if the map has a value for the specified key
+     *
      * @param key
      */
     @JsOverlay
-    public final boolean isDefined(final String key)
-    {
+    public final boolean isDefined(final String key) {
         return has(key);
     }
 
     @JsOverlay
-    public final boolean isNull(final String key)
-    {
+    public final boolean isNull(final String key) {
         return has(key) && get(key) != null;
     }
 
@@ -83,8 +80,7 @@ public final class NFastStringMap<V> implements JsIterable<JsIterableTypeParamet
      * Returns the number of key-value mappings in this map
      */
     @JsOverlay
-    public final int size()
-    {
+    public final int size() {
         return size;
     }
 
@@ -96,9 +92,9 @@ public final class NFastStringMap<V> implements JsIterable<JsIterableTypeParamet
         return 0 == this.size();
     }
 
-
     /**
      * Get the value based on the key passed in.
+     *
      * @param key
      * @return
      */
@@ -126,5 +122,4 @@ public final class NFastStringMap<V> implements JsIterable<JsIterableTypeParamet
     public native JsIteratorIterable<String> keys();
 
     public native JsIteratorIterable<V> values();
-
 }

@@ -180,7 +180,6 @@ public class ButtonGridItemImpl
                                                                        itemFocusCallback));
                 focusHandlerRegistrations.add(registerItemUnFocusHandler(primitiveItem,
                                                                          itemUnFocusCallback));
-
             } catch (final ClassCastException e) {
                 throw new UnsupportedOperationException("The button only supports subtypes " +
                                                                 "of " + AbstractDecoratedItem.class.getName());
@@ -229,8 +228,10 @@ public class ButtonGridItemImpl
     }
 
     static void removeHandlers(Set<HandlerRegistration> handlerRegistrations) {
-        handlerRegistrations.forEach((handlerRegistration)-> {
-            if (null != handlerRegistration) handlerRegistration.removeHandler();
+        handlerRegistrations.forEach((handlerRegistration) -> {
+            if (null != handlerRegistration) {
+                handlerRegistration.removeHandler();
+            }
         });
         handlerRegistrations.clear();
     }

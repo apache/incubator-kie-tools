@@ -19,41 +19,36 @@ package com.ait.lienzo.client.core.types;
 import com.ait.lienzo.client.core.LienzoPath2D;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.tools.client.collection.NFastDoubleArray;
-
 import elemental2.core.Global;
 
-public class PathPartList
-{
-    private       double          m_cpx;
+public class PathPartList {
 
-    private       double          m_cpy;
+    private double m_cpx;
 
-    private       boolean         m_fin;
+    private double m_cpy;
 
-    private       boolean         m_mov;
+    private boolean m_fin;
 
-    private       LienzoPath2D    m_p2d;
+    private boolean m_mov;
 
-    private       BoundingBox     m_box;
+    private LienzoPath2D m_p2d;
+
+    private BoundingBox m_box;
 
     private final PathPartListJSO m_jso;
 
-    public PathPartList()
-    {
+    public PathPartList() {
         m_jso = PathPartListJSO.make();
     }
 
-    public static final PathPartList make(final PathPartListJSO jso, final boolean serialized)
-    {
+    public static final PathPartList make(final PathPartListJSO jso, final boolean serialized) {
         PathPartList plist = new PathPartList();
 
-        for (int i = 0; i < jso.getLength(); i++)
-        {
+        for (int i = 0; i < jso.getLength(); i++) {
             plist.m_jso.setAt(i, jso.get(i));
         }
 
-        if (serialized)
-        {
+        if (serialized) {
             plist.m_mov = true;
 
             plist.m_fin = true;
@@ -73,29 +68,24 @@ public class PathPartList
         return m_mov || m_fin;
     }
 
-    public final void push(final PathPartEntryJSO part)
-    {
+    public final void push(final PathPartEntryJSO part) {
         resetBoundingBox();
 
-        if (!m_mov)
-        {
+        if (!m_mov) {
             M(0, 0);
         }
         m_jso.push(part);
     }
 
-    public final PathPartEntryJSO get(final int i)
-    {
+    public final PathPartEntryJSO get(final int i) {
         return m_jso.get(i);
     }
 
-    public final int size()
-    {
+    public final int size() {
         return m_jso.length();
     }
 
-    public final void clear()
-    {
+    public final void clear() {
         m_p2d = null;
 
         resetBoundingBox();
@@ -107,25 +97,21 @@ public class PathPartList
         m_jso.setLength(0);
     }
 
-    public final LienzoPath2D getPath2D()
-    {
+    public final LienzoPath2D getPath2D() {
         return m_p2d;
     }
 
-    public final PathPartList setPath2D(final LienzoPath2D path)
-    {
+    public final PathPartList setPath2D(final LienzoPath2D path) {
         m_p2d = path;
 
         return this;
     }
 
-    public final PathPartListJSO getJSO()
-    {
+    public final PathPartListJSO getJSO() {
         return m_jso;
     }
 
-    public final PathPartList M(final double x, final double y)
-    {
+    public final PathPartList M(final double x, final double y) {
         m_mov = true;
 
         push(PathPartEntryJSO.make(PathPartEntryJSO.MOVETO_ABSOLUTE, new double[]{m_cpx = x, m_cpy = y}));
@@ -133,70 +119,59 @@ public class PathPartList
         return this;
     }
 
-    public final PathPartList M(final Point2D p)
-    {
+    public final PathPartList M(final Point2D p) {
         return M(p.getX(), p.getY());
     }
 
-    public final PathPartList L(final double x, final double y)
-    {
+    public final PathPartList L(final double x, final double y) {
         push(PathPartEntryJSO.make(PathPartEntryJSO.LINETO_ABSOLUTE, new double[]{m_cpx = x, m_cpy = y}));
 
         return this;
     }
 
-    public final PathPartList L(final Point2D p)
-    {
+    public final PathPartList L(final Point2D p) {
         return L(p.getX(), p.getY());
     }
 
-    public final PathPartList H(final double x)
-    {
+    public final PathPartList H(final double x) {
         push(PathPartEntryJSO.make(PathPartEntryJSO.LINETO_ABSOLUTE, new double[]{m_cpx = x, m_cpy}));
 
         return this;
     }
 
-    public final PathPartList V(final double y)
-    {
+    public final PathPartList V(final double y) {
         push(PathPartEntryJSO.make(PathPartEntryJSO.LINETO_ABSOLUTE, new double[]{m_cpx, m_cpy = y}));
 
         return this;
     }
 
-    public final PathPartList Q(final double cx, final double cy, final double x, final double y)
-    {
+    public final PathPartList Q(final double cx, final double cy, final double x, final double y) {
         push(PathPartEntryJSO.make(PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE, new double[]{cx, cy, m_cpx = x, m_cpy = y}));
 
         return this;
     }
 
-    public final PathPartList Q(final Point2D cp, final Point2D ep)
-    {
+    public final PathPartList Q(final Point2D cp, final Point2D ep) {
         return Q(cp.getX(), cp.getY(), ep.getX(), ep.getY());
     }
 
-    public final PathPartList C(final double x1, final double y1, final double x2, final double y2, final double x, final double y)
-    {
+    public final PathPartList C(final double x1, final double y1, final double x2, final double y2, final double x, final double y) {
         push(PathPartEntryJSO.make(PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE, new double[]{x1, y1, x2, y2, m_cpx = x, m_cpy = y}));
 
         return this;
     }
 
-    public final PathPartList C(final Point2D c1, final Point2D c2, final Point2D ep)
-    {
+    public final PathPartList C(final Point2D c1, final Point2D c2, final Point2D ep) {
         return C(c1.getX(), c1.getY(), c2.getX(), c2.getY(), ep.getX(), ep.getY());
     }
 
-    public PathPartList A(final double x0, final double y0, double x1, final double y1, final double radius)
-    {
+    public PathPartList A(final double x0, final double y0, double x1, final double y1, final double radius) {
         push(PathPartEntryJSO.make(PathPartEntryJSO.CANVAS_ARCTO_ABSOLUTE, new double[]{x0, y0, m_cpx = x1, m_cpy = y1, radius}));
 
         return this;
     }
 
-    public final PathPartList A(final double rx, final double ry, final double ps, final double fa, final double fs, final double x, final double y)
-    {
+    public final PathPartList A(final double rx, final double ry, final double ps, final double fa, final double fs, final double x, final double y) {
         final NFastDoubleArray points = PathPartList.convertEndpointToCenterParameterization(m_cpx, m_cpy, x, y, fa, fs, rx, ry, ps);
 
         points.push(m_cpx = x);
@@ -208,28 +183,24 @@ public class PathPartList
         return this;
     }
 
-    public final PathPartList Z()
-    {
+    public final PathPartList Z() {
         push(PathPartEntryJSO.make(PathPartEntryJSO.CLOSE_PATH_PART, new double[0]));
 
         return close();
     }
 
-    public final PathPartList close()
-    {
+    public final PathPartList close() {
         m_fin = true;
 
         m_mov = false;
 
-        if (null != m_p2d)
-        {
+        if (null != m_p2d) {
             m_p2d.closed = true;
         }
         return this;
     }
 
-    public final PathPartList circle(final double r)
-    {
+    public final PathPartList circle(final double r) {
         final double x = m_cpx;
 
         final double y = m_cpy;
@@ -249,8 +220,7 @@ public class PathPartList
         return this;
     }
 
-    public final PathPartList rect(final double x, final double y, final double w, final double h)
-    {
+    public final PathPartList rect(final double x, final double y, final double w, final double h) {
         M(x, y);
 
         L(x + w, y);
@@ -264,8 +234,7 @@ public class PathPartList
         return this;
     }
 
-    public final boolean isClosed()
-    {
+    public final boolean isClosed() {
         return m_fin;
     }
 
@@ -274,16 +243,13 @@ public class PathPartList
 //        return Global.JSON.stringify(m_jso);
 //    }
 
-    public final String toJSONString()
-    {
+    public final String toJSONString() {
         return Global.JSON.stringify(m_jso);
     }
 
-    public final PathPartList deep()
-    {
+    public final PathPartList deep() {
         final PathPartList make = new PathPartList();
-        for (int i = 0; i < m_jso.length(); i++)
-        {
+        for (int i = 0; i < m_jso.length(); i++) {
             PathPartEntryJSO entry = m_jso.get(i);
             make.push(entry.copy());
         }
@@ -300,13 +266,11 @@ public class PathPartList
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return toJSONString();
     }
 
-    public static final NFastDoubleArray convertEndpointToCenterParameterization(final double x1, final double y1, final double x2, final double y2, final double fa, final double fs, double rx, double ry, final double pv)
-    {
+    public static final NFastDoubleArray convertEndpointToCenterParameterization(final double x1, final double y1, final double x2, final double y2, final double fa, final double fs, double rx, double ry, final double pv) {
         final NFastDoubleArray points = new NFastDoubleArray();
 
         convertEndpointToCenterParameterization(points, x1, y1, x2, y2, fa, fs, rx, ry, pv);
@@ -314,8 +278,7 @@ public class PathPartList
         return points;
     }
 
-    public final static void convertEndpointToCenterParameterization(final NFastDoubleArray points, final double x1, final double y1, final double x2, final double y2, final double fa, final double fs, double rx, double ry, final double pv)
-    {
+    public final static void convertEndpointToCenterParameterization(final NFastDoubleArray points, final double x1, final double y1, final double x2, final double y2, final double fa, final double fs, double rx, double ry, final double pv) {
         final double ps = pv * Geometry.PI_180;
 
         final double cp = Math.cos(ps);
@@ -328,8 +291,7 @@ public class PathPartList
 
         final double lambda = (xp * xp) / (rx * rx) + (yp * yp) / (ry * ry);
 
-        if (lambda > 1)
-        {
+        if (lambda > 1) {
             double sq = Math.sqrt(lambda);
 
             rx *= sq;
@@ -338,12 +300,10 @@ public class PathPartList
         }
         double f = Math.sqrt((((rx * rx) * (ry * ry)) - ((rx * rx) * (yp * yp)) - ((ry * ry) * (xp * xp))) / ((rx * rx) * (yp * yp) + (ry * ry) * (xp * xp)));
 
-        if (fa == fs)
-        {
+        if (fa == fs) {
             f *= -1;
         }
-        if (Double.isNaN(f))
-        {
+        if (Double.isNaN(f)) {
             f = 0;
         }
         final double cxp = f * rx * yp / ry;
@@ -354,28 +314,24 @@ public class PathPartList
 
         final double cy = (y1 + y2) / 2.0 + sp * cxp + cp * cyp;
 
-        final double th = Geometry.getVectorAngle(new double[] { 1, 0 }, new double[] { (xp - cxp) / rx, (yp - cyp) / ry });
+        final double th = Geometry.getVectorAngle(new double[]{1, 0}, new double[]{(xp - cxp) / rx, (yp - cyp) / ry});
 
-        final double[] u = new double[] { (xp - cxp) / rx, (yp - cyp) / ry };
+        final double[] u = new double[]{(xp - cxp) / rx, (yp - cyp) / ry};
 
-        final double[] v = new double[] { (-1 * xp - cxp) / rx, (-1 * yp - cyp) / ry };
+        final double[] v = new double[]{(-1 * xp - cxp) / rx, (-1 * yp - cyp) / ry};
 
         double dt = Geometry.getVectorAngle(u, v);
 
-        if (Geometry.getVectorRatio(u, v) <= -1)
-        {
+        if (Geometry.getVectorRatio(u, v) <= -1) {
             dt = Math.PI;
         }
-        if (Geometry.getVectorRatio(u, v) >= 1)
-        {
+        if (Geometry.getVectorRatio(u, v) >= 1) {
             dt = 0;
         }
-        if (fs == 0 && dt > 0)
-        {
+        if (fs == 0 && dt > 0) {
             dt -= Geometry.TWO_PI;
         }
-        if (fs == 1 && dt < 0)
-        {
+        if (fs == 1 && dt < 0) {
             dt += Geometry.TWO_PI;
         }
         points.clear();
@@ -383,22 +339,18 @@ public class PathPartList
         points.push(cx, cy, rx, ry, th, dt, ps, fs);
     }
 
-    public void resetBoundingBox()
-    {
+    public void resetBoundingBox() {
         m_box = null;
     }
 
-    public BoundingBox getBoundingBox()
-    {
-        if (m_box != null)
-        {
+    public BoundingBox getBoundingBox() {
+        if (m_box != null) {
             return m_box;
         }
 
         final int size = size();
 
-        if (size < 1)
-        {
+        if (size < 1) {
             m_box = BoundingBox.fromDoubles(0, 0, 0, 0);
             return m_box;
         }
@@ -411,22 +363,19 @@ public class PathPartList
 
         int i = skipRedundantLeadingMoveTo(this);
 
-        for (; i < size; i++)
-        {
+        for (; i < size; i++) {
             final PathPartEntryJSO part = get(i);
 
             final double[] p = part.getPoints();
 
-            switch (part.getCommand())
-            {
+            switch (part.getCommand()) {
                 case PathPartEntryJSO.LINETO_ABSOLUTE:
                     m_box.add(oldx = p[0], oldy = p[1]);
                     break;
                 case PathPartEntryJSO.MOVETO_ABSOLUTE:
                     m_box.add(oldx = p[0], oldy = p[1]);
                     break;
-                case PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE:
-                {
+                case PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE: {
                     final double x0 = oldx;
                     final double y0 = oldy;
 
@@ -469,8 +418,7 @@ public class PathPartList
                     Point2D p0 = new Point2D(oldx, oldy);
                     Point2DArray pa = Geometry.getCanvasArcToPoints(p0, new Point2D(x0, y0), new Point2D(x1, y1), ra);
                     BoundingBox bb = Geometry.getBoundingBoxOfArc(pa.get(0), pa.get(1), pa.get(2), ra);
-                    if (false == pa.get(0).equals(p0))
-                    {
+                    if (false == pa.get(0).equals(p0)) {
                         bb.addPoint2D(p0);//p0 is always the start point of the path, but not necessary of the arc - depending on the radius
                     }
                     m_box.addBoundingBox(bb);
@@ -483,18 +431,14 @@ public class PathPartList
         return m_box;
     }
 
-    public static int skipRedundantLeadingMoveTo(final PathPartList list)
-    {
+    public static int skipRedundantLeadingMoveTo(final PathPartList list) {
         int i = 0;
 
-        for (; i < list.size(); i++)
-        {
+        for (; i < list.size(); i++) {
             final PathPartEntryJSO part = list.get(i);
 
-            if (part.getCommand() != PathPartEntryJSO.MOVETO_ABSOLUTE)
-            {
-                if (i != 0)
-                {
+            if (part.getCommand() != PathPartEntryJSO.MOVETO_ABSOLUTE) {
+                if (i != 0) {
                     // Atleast one M was found, so move back to it
                     i--;
                 }
@@ -504,28 +448,24 @@ public class PathPartList
         return i;
     }
 
-    public Point2DArray getPoints()
-    {
+    public Point2DArray getPoints() {
         final int size = size();
 
         Point2DArray points = new Point2DArray();
 
-        if (size < 1)
-        {
+        if (size < 1) {
             return points;
         }
         double oldx = 0;
 
         double oldy = 0;
 
-        for (int i = 0; i < size; i++)
-        {
+        for (int i = 0; i < size; i++) {
             final PathPartEntryJSO part = get(i);
 
             final double[] p = part.getPoints();
 
-            switch (part.getCommand())
-            {
+            switch (part.getCommand()) {
                 case PathPartEntryJSO.LINETO_ABSOLUTE:
                 case PathPartEntryJSO.MOVETO_ABSOLUTE:
                     points.pushXY(oldx = p[0], oldy = p[1]);
@@ -554,5 +494,4 @@ public class PathPartList
         }
         return points;
     }
-
 }

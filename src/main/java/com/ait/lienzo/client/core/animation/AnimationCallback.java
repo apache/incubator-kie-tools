@@ -17,26 +17,23 @@
 package com.ait.lienzo.client.core.animation;
 
 /**
- * AnimationCallback implements the methods of {@link IAnimationCallback} 
+ * AnimationCallback implements the methods of {@link IAnimationCallback}
  * that do nothing by default.
  */
-public class AnimationCallback implements IAnimationCallback
-{
+public class AnimationCallback implements IAnimationCallback {
+
     @Override
-    public void onStart(IAnimation animation, IAnimationHandle handle)
-    {
+    public void onStart(IAnimation animation, IAnimationHandle handle) {
         // Override if needed to use
     }
 
     @Override
-    public void onFrame(IAnimation animation, IAnimationHandle handle)
-    {
+    public void onFrame(IAnimation animation, IAnimationHandle handle) {
         // Override if needed to use
     }
 
     @Override
-    public void onClose(IAnimation animation, IAnimationHandle handle)
-    {
+    public void onClose(IAnimation animation, IAnimationHandle handle) {
         // Override if needed to use
     }
 }

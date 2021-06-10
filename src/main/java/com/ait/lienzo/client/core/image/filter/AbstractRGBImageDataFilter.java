@@ -20,14 +20,13 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.Color;
-import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.IColor;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.tools.client.StringOps;
-
 import jsinterop.annotations.JsProperty;
 
-public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataFilter<T>> extends AbstractImageDataFilter<T>
-{
+public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataFilter<T>> extends AbstractImageDataFilter<T> {
+
     @JsProperty
     private String color;
 
@@ -37,8 +36,7 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
 
     private int m_b;
 
-    public AbstractRGBImageDataFilter(final ImageFilterType type)
-    {
+    public AbstractRGBImageDataFilter(final ImageFilterType type) {
         super(type);
 
         m_r = 0;
@@ -50,8 +48,7 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         doUpdateColorFromRGB();
     }
 
-    public AbstractRGBImageDataFilter(final ImageFilterType type, final int r, final int g, final int b)
-    {
+    public AbstractRGBImageDataFilter(final ImageFilterType type, final int r, final int g, final int b) {
         super(type);
 
         m_r = fixc(r);
@@ -63,40 +60,33 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         doUpdateColorFromRGB();
     }
 
-    protected AbstractRGBImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException
-    {
+    protected AbstractRGBImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException {
         super(type, node, ctx);
 
         doUpdateRGBFromColor();
     }
 
-    public AbstractRGBImageDataFilter(final ImageFilterType type, final IColor color)
-    {
+    public AbstractRGBImageDataFilter(final ImageFilterType type, final IColor color) {
         this(type, color.getR(), color.getG(), color.getB());
     }
 
-    public AbstractRGBImageDataFilter(final ImageFilterType type, final String color)
-    {
+    public AbstractRGBImageDataFilter(final ImageFilterType type, final String color) {
         this(type, Color.fromColorString(color));
     }
 
-    public final int getR()
-    {
+    public final int getR() {
         return m_r;
     }
 
-    public final int getG()
-    {
+    public final int getG() {
         return m_g;
     }
 
-    public final int getB()
-    {
+    public final int getB() {
         return m_b;
     }
 
-    public final T setR(final int r)
-    {
+    public final T setR(final int r) {
         m_r = fixc(r);
 
         doUpdateColorFromRGB();
@@ -104,8 +94,7 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         return cast();
     }
 
-    public final T setG(final int g)
-    {
+    public final T setG(final int g) {
         m_g = fixc(g);
 
         doUpdateColorFromRGB();
@@ -113,8 +102,7 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         return cast();
     }
 
-    public final T setB(final int b)
-    {
+    public final T setB(final int b) {
         m_b = fixc(b);
 
         doUpdateColorFromRGB();
@@ -122,25 +110,20 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         return cast();
     }
 
-    private final void doUpdateColorFromRGB()
-    {
+    private final void doUpdateColorFromRGB() {
         this.color = new Color(getR(), getG(), getB()).getColorString();
     }
 
-    private final void doUpdateRGBFromColor()
-    {
+    private final void doUpdateRGBFromColor() {
         final String cstr = StringOps.toTrimOrNull(this.color);
 
-        if (null == cstr)
-        {
+        if (null == cstr) {
             m_r = 0;
 
             m_g = 0;
 
             m_b = 0;
-        }
-        else
-        {
+        } else {
             final Color colr = Color.fromColorString(cstr);
 
             m_r = colr.getR();
@@ -151,23 +134,18 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         }
     }
 
-    private final int fixc(final int color)
-    {
-        if (color < 0)
-        {
+    private final int fixc(final int color) {
+        if (color < 0) {
             return 0;
-        }
-        else if (color > 255)
-        {
+        } else if (color > 255) {
             return 255;
         }
         return color;
     }
 
-    protected abstract static class RGBImageDataFilterFactory<T extends AbstractRGBImageDataFilter<T>> extends ImageDataFilterFactory<T>
-    {
-        protected RGBImageDataFilterFactory(final ImageFilterType type)
-        {
+    protected abstract static class RGBImageDataFilterFactory<T extends AbstractRGBImageDataFilter<T>> extends ImageDataFilterFactory<T> {
+
+        protected RGBImageDataFilterFactory(final ImageFilterType type) {
             super(type);
 
             addAttribute(Attribute.COLOR, true);

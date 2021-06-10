@@ -18,24 +18,21 @@ package com.ait.lienzo.client.core.shape.json.validators;
 
 import com.ait.lienzo.tools.common.api.java.util.StringOps;
 
-public abstract class AbstractAttributeTypeValidator implements IAttributeTypeValidator
-{
+public abstract class AbstractAttributeTypeValidator implements IAttributeTypeValidator {
+
     private final String m_typeName;
 
-    protected AbstractAttributeTypeValidator(final String typeName)
-    {
+    protected AbstractAttributeTypeValidator(final String typeName) {
         m_typeName = StringOps.requireTrimOrNull(typeName);
     }
 
     @Override
-    public boolean isIgnored()
-    {
+    public boolean isIgnored() {
         return false;
     }
 
     @Override
-	public String getTypeName()
-    {
+    public String getTypeName() {
         return m_typeName;
     }
 }

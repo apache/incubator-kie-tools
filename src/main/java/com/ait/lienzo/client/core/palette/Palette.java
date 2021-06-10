@@ -21,52 +21,43 @@ import java.util.List;
 import com.ait.lienzo.shared.core.types.PaletteType;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
-public final class Palette extends AbstractPaletteBase<Palette>
-{
+public final class Palette extends AbstractPaletteBase<Palette> {
+
     private final NFastArrayList<PaletteItem> m_list = new NFastArrayList<>();
 
-    public Palette()
-    {
+    public Palette() {
         super(PaletteType.PALETTE);
     }
 
-    public int size()
-    {
+    public int size() {
         return m_list.size();
     }
 
-    public Palette addPaletteItem(final PaletteItem item)
-    {
-        if (null != item)
-        {
-            if (!m_list.contains(item))
-            {
+    public Palette addPaletteItem(final PaletteItem item) {
+        if (null != item) {
+            if (!m_list.contains(item)) {
                 m_list.add(item);
             }
         }
         return this;
     }
 
-    public Palette setPaletteItems(final List<PaletteItem> items)
-    {
+    public Palette setPaletteItems(final List<PaletteItem> items) {
         m_list.clear();
 
-        for (PaletteItem item : items)
-        {
+        for (PaletteItem item : items) {
             addPaletteItem(item);
         }
         return this;
     }
 
-    public NFastArrayList<PaletteItem> getPaletteItems()
-    {
+    public NFastArrayList<PaletteItem> getPaletteItems() {
         return m_list;
     }
 
-    public static final class PaletteFactory extends AbstractPalettebaseFactory<Palette>
-    {
-        public PaletteFactory()
-        {
+    public static final class PaletteFactory extends AbstractPalettebaseFactory<Palette> {
+
+        public PaletteFactory() {
             super(PaletteType.PALETTE);
         }
     }

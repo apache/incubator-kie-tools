@@ -16,13 +16,14 @@
 
 package com.ait.lienzo.client.core.shape.wires.layout.direction;
 
+import java.util.function.Function;
+
 import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.Direction;
 import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.Orientation;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import java.util.function.Function;
 
-public interface DirectionLayoutBuilder<A>
-{
+public interface DirectionLayoutBuilder<A> {
+
     Double apply(BoundingBox parentBoundingBox, BoundingBox childBoundingBox, A alignment, Orientation orientation,
                  Function<Direction, Double> margins);
 }

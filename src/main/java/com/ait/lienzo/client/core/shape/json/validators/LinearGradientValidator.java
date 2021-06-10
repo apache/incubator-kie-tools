@@ -18,12 +18,11 @@ package com.ait.lienzo.client.core.shape.json.validators;
 
 import com.ait.lienzo.client.core.types.LinearGradient;
 
-public class LinearGradientValidator extends ObjectValidator
-{
+public class LinearGradientValidator extends ObjectValidator {
+
     public static final LinearGradientValidator INSTANCE = new LinearGradientValidator();
 
-    public LinearGradientValidator()
-    {
+    public LinearGradientValidator() {
         super(LinearGradient.TYPE);
 
         addAttribute("type", StringValidator.INSTANCE, true);// must be "LinearGradient"
@@ -36,8 +35,7 @@ public class LinearGradientValidator extends ObjectValidator
     }
 
     @Override
-    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
-    {
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException {
         super.validate(jval, ctx);
 
         checkHardcodedAttribute("type", LinearGradient.TYPE, jval, ctx);

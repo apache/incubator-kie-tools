@@ -20,36 +20,31 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-
 import jsinterop.annotations.JsProperty;
 
 /**
  * Circle with a radius. The center point is set via the X,Y attributes.
  */
-public class Circle extends Shape<Circle>
-{
+public class Circle extends Shape<Circle> {
+
     @JsProperty
     private double radius;
 
     /**
      * Constructor. Creates an instance of a circle.
-     * 
+     *
      * @param radius
      */
-    public Circle(final double radius)
-    {
+    public Circle(final double radius) {
         super(ShapeType.CIRCLE);
 
         setRadius(radius);
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         final double radius = getRadius();
 
         return BoundingBox.fromDoubles(0 - radius, 0 - radius, radius, radius);
@@ -57,16 +52,14 @@ public class Circle extends Shape<Circle>
 
     /**
      * Draws this circle
-     * 
-     * @param context the {@link Context2D} used to draw this circle. 
+     *
+     * @param context the {@link Context2D} used to draw this circle.
      */
     @Override
-    protected boolean prepare(final Context2D context, final double alpha)
-    {
+    protected boolean prepare(final Context2D context, final double alpha) {
         final double r = getRadius();
 
-        if (r > 0)
-        {
+        if (r > 0) {
             context.beginPath();
 
             context.arc(0, 0, r, 0, Math.PI * 2, true);
@@ -79,19 +72,17 @@ public class Circle extends Shape<Circle>
     }
 
     @Override
-    protected boolean doStrokeExtraProperties()
-    {
+    protected boolean doStrokeExtraProperties() {
         return false;
     }
 
     /**
      * Sets this circle's radius.
-     * 
+     *
      * @param radius
      * @return this Circle
      */
-    public Circle setRadius(final double radius)
-    {
+    public Circle setRadius(final double radius) {
         this.radius = radius;
 
         return this;
@@ -99,24 +90,21 @@ public class Circle extends Shape<Circle>
 
     /**
      * Gets this circle's radius.
-     * 
+     *
      * @return double
      */
-    public double getRadius()
-    {
+    public double getRadius() {
         return this.radius;
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.RADIUS);
     }
 
-    public static class CircleFactory extends ShapeFactory<Circle>
-    {
-        public CircleFactory()
-        {
+    public static class CircleFactory extends ShapeFactory<Circle> {
+
+        public CircleFactory() {
             super(ShapeType.CIRCLE);
 
             addAttribute(Attribute.RADIUS, true);

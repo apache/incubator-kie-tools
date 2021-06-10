@@ -17,32 +17,27 @@
 package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.client.core.shape.Node;
-
 import elemental2.dom.HTMLElement;
 
-public class NodeTouchStartEvent extends AbstractNodeHumanInputEvent<NodeTouchStartHandler, Node>
-{
+public class NodeTouchStartEvent extends AbstractNodeHumanInputEvent<NodeTouchStartHandler, Node> {
+
     private static final Type<NodeTouchStartHandler> TYPE = new Type<>();
 
-    public static final Type<NodeTouchStartHandler> getType()
-    {
+    public static final Type<NodeTouchStartHandler> getType() {
         return TYPE;
     }
 
-    public NodeTouchStartEvent(final HTMLElement relativeElement)
-    {
+    public NodeTouchStartEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
     @Override
-    public final Type<NodeTouchStartHandler> getAssociatedType()
-    {
+    public final Type<NodeTouchStartHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    public void dispatch(final NodeTouchStartHandler handler)
-    {
+    public void dispatch(final NodeTouchStartHandler handler) {
         handler.onNodeTouchStart(this);
     }
 }

@@ -20,7 +20,6 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.event.AbstractNodeEvent;
 import com.ait.lienzo.tools.client.event.MouseEventUtil;
-
 import elemental2.dom.MouseEvent;
 import elemental2.dom.UIEvent;
 
@@ -44,228 +43,195 @@ import elemental2.dom.UIEvent;
  * <tr style="background: #EEEEEE;"><td>ALT</td><td>mouse event</td><td>whether the Alt key is pressed</td></tr>
  * <tr style="background: #EEEEEE;"><td>META</td><td>mouse event</td><td>whether the Meta key is pressed</td></tr>
  * </table>
- * 
+ *
  * @since 1.1
  */
-public final class EventFilter
-{
-    private static final IEventFilter[] FOR_TO_ARRAY  = new IEventFilter[0];
+public final class EventFilter {
 
-    public static final IEventFilter    ANY           = new AnyEventFilterOp();
+    private static final IEventFilter[] FOR_TO_ARRAY = new IEventFilter[0];
 
-    public static final IEventFilter    BUTTON_LEFT   = new ButtonLeftEventFilter();
+    public static final IEventFilter ANY = new AnyEventFilterOp();
 
-    public static final IEventFilter    BUTTON_MIDDLE = new ButtonMiddleEventFilter();
+    public static final IEventFilter BUTTON_LEFT = new ButtonLeftEventFilter();
 
-    public static final IEventFilter    BUTTON_RIGHT  = new ButtonRightEventFilter();
+    public static final IEventFilter BUTTON_MIDDLE = new ButtonMiddleEventFilter();
 
-    public static final IEventFilter    CONTROL       = new CtrlKeyEventFilter();
+    public static final IEventFilter BUTTON_RIGHT = new ButtonRightEventFilter();
 
-    public static final IEventFilter    META          = new MetaKeyEventFilter();
+    public static final IEventFilter CONTROL = new CtrlKeyEventFilter();
 
-    public static final IEventFilter    SHIFT         = new ShiftKeyEventFilter();
+    public static final IEventFilter META = new MetaKeyEventFilter();
 
-    public static final IEventFilter    ALT           = new AltKeyEventFilter();
+    public static final IEventFilter SHIFT = new ShiftKeyEventFilter();
 
-    private EventFilter()
-    {
+    public static final IEventFilter ALT = new AltKeyEventFilter();
+
+    private EventFilter() {
     }
 
     /**
-     * Chains several filters together. 
+     * Chains several filters together.
      * The resulting filter will return true, if at least one filter returns true.
-     * 
+     *
      * @param filters
      * @return IEventFilter
      */
-    public static final IEventFilter or(final IEventFilter... filters)
-    {
+    public static final IEventFilter or(final IEventFilter... filters) {
         return new OrOpEventFilter(filters);
     }
 
     /**
-     * Chains several filters together. 
+     * Chains several filters together.
      * The resulting filter will return true, if at least one filter returns true.
-     * 
+     *
      * @param filters
      * @return IEventFilter
      */
-    public static final IEventFilter or(final List<IEventFilter> filters)
-    {
+    public static final IEventFilter or(final List<IEventFilter> filters) {
         return new OrOpEventFilter(filters.toArray(FOR_TO_ARRAY));
     }
 
     /**
-     * Chains several filters together. 
+     * Chains several filters together.
      * The resulting filter will return false, if at least one filter returns false.
-     * 
+     *
      * @param filters
      * @return IEventFilter
      */
-    public static final IEventFilter and(final IEventFilter... filters)
-    {
+    public static final IEventFilter and(final IEventFilter... filters) {
         return new AndOpEventFilter(filters);
     }
 
     /**
-     * Chains several filters together. 
+     * Chains several filters together.
      * The resulting filter will return false, if at least one filter returns false.
-     * 
+     *
      * @param filters
      * @return IEventFilter
      */
-    public static final IEventFilter and(final List<IEventFilter> filters)
-    {
+    public static final IEventFilter and(final List<IEventFilter> filters) {
         return new AndOpEventFilter(filters.toArray(FOR_TO_ARRAY));
     }
 
     /**
      * The resulting filter will return false, if the specified filter returns true.
-     * 
+     *
      * @param filter IEventFilter.
      * @return IEventFilter
      */
-    public static final IEventFilter not(final IEventFilter filter)
-    {
-        return new AbstractEventFilter()
-        {
+    public static final IEventFilter not(final IEventFilter filter) {
+        return new AbstractEventFilter() {
             @Override
-            public final boolean test(final UIEvent event)
-            {
+            public final boolean test(final UIEvent event) {
                 return (!filter.test(event));
             }
         };
     }
 
-    private static final class AnyEventFilterOp implements IEventFilter
-    {
+    private static final class AnyEventFilterOp implements IEventFilter {
+
         @Override
-        public final boolean test(final UIEvent event)
-        {
+        public final boolean test(final UIEvent event) {
             return true;
         }
 
         @Override
-        public final boolean isEnabled()
-        {
+        public final boolean isEnabled() {
             return true;
         }
 
         @Override
-        public final void setEnabled(boolean enabled)
-        {
+        public final void setEnabled(boolean enabled) {
         }
     }
 
-    public static class ButtonLeftEventFilter extends AbstractEventFilter
-    {
+    public static class ButtonLeftEventFilter extends AbstractEventFilter {
+
         @Override
-        public boolean test(final UIEvent event)
-        {
-            if (event instanceof MouseEvent)
-            {
+        public boolean test(final UIEvent event) {
+            if (event instanceof MouseEvent) {
                 return MouseEventUtil.isButtonLeft((MouseEvent) event);
-
-            }
-            else
-            {
+            } else {
                 return false;
             }
         }
     }
 
-    public static class ButtonMiddleEventFilter extends AbstractEventFilter
-    {
+    public static class ButtonMiddleEventFilter extends AbstractEventFilter {
+
         @Override
-        public boolean test(final UIEvent event)
-        {
-            if (event instanceof MouseEvent)
-            {
+        public boolean test(final UIEvent event) {
+            if (event instanceof MouseEvent) {
                 return MouseEventUtil.isButtonMiddle((MouseEvent) event);
-            }
-            else
-            {
+            } else {
                 return false;
             }
         }
     }
 
-    public static class ButtonRightEventFilter extends AbstractEventFilter
-    {
+    public static class ButtonRightEventFilter extends AbstractEventFilter {
+
         @Override
-        public boolean test(final UIEvent event)
-        {
-            if (event instanceof MouseEvent)
-            {
+        public boolean test(final UIEvent event) {
+            if (event instanceof MouseEvent) {
                 return MouseEventUtil.isButtonRight((MouseEvent) event);
-            }
-            else
-            {
+            } else {
                 return false;
             }
         }
     }
 
-    public static class ShiftKeyEventFilter extends AbstractEventFilter
-    {
+    public static class ShiftKeyEventFilter extends AbstractEventFilter {
+
         @Override
-        public boolean test(final UIEvent event)
-        {
+        public boolean test(final UIEvent event) {
             return AbstractNodeEvent.isShiftKeyDown(event);
         }
     }
 
-    public static class CtrlKeyEventFilter extends AbstractEventFilter
-    {
+    public static class CtrlKeyEventFilter extends AbstractEventFilter {
+
         @Override
-        public boolean test(final UIEvent event)
-        {
+        public boolean test(final UIEvent event) {
             return AbstractNodeEvent.isCtrlKeyDown(event);
         }
     }
 
-    public static class MetaKeyEventFilter extends AbstractEventFilter
-    {
+    public static class MetaKeyEventFilter extends AbstractEventFilter {
+
         @Override
-        public boolean test(final UIEvent event)
-        {
+        public boolean test(final UIEvent event) {
             return AbstractNodeEvent.isMetaKeyDown(event);
         }
     }
 
-    public static class AltKeyEventFilter extends AbstractEventFilter
-    {
+    public static class AltKeyEventFilter extends AbstractEventFilter {
+
         @Override
-        public boolean test(final UIEvent event)
-        {
+        public boolean test(final UIEvent event) {
             return AbstractNodeEvent.isAltKeyDown(event);
         }
     }
 
-    private static final class AndOpEventFilter extends AbstractEventFilter
-    {
-        private final int            m_size;
+    private static final class AndOpEventFilter extends AbstractEventFilter {
+
+        private final int m_size;
 
         private final IEventFilter[] m_list;
 
-        public AndOpEventFilter(IEventFilter[] filters)
-        {
+        public AndOpEventFilter(IEventFilter[] filters) {
             m_list = filters;
 
             m_size = filters.length;
         }
 
         @Override
-        public final boolean test(final UIEvent event)
-        {
-            for (int i = 0; i < m_size; i++)
-            {
+        public final boolean test(final UIEvent event) {
+            for (int i = 0; i < m_size; i++) {
                 final IEventFilter filter = m_list[i];
 
-                if (filter.isEnabled())
-                {
-                    if (!filter.test(event))
-                    {
+                if (filter.isEnabled()) {
+                    if (!filter.test(event)) {
                         return false;
                     }
                 }
@@ -274,30 +240,25 @@ public final class EventFilter
         }
     }
 
-    private static final class OrOpEventFilter extends AbstractEventFilter
-    {
-        private final int            m_size;
+    private static final class OrOpEventFilter extends AbstractEventFilter {
+
+        private final int m_size;
 
         private final IEventFilter[] m_list;
 
-        public OrOpEventFilter(IEventFilter[] filters)
-        {
+        public OrOpEventFilter(IEventFilter[] filters) {
             m_list = filters;
 
             m_size = filters.length;
         }
 
         @Override
-        public final boolean test(final UIEvent event)
-        {
-            for (int i = 0; i < m_size; i++)
-            {
+        public final boolean test(final UIEvent event) {
+            for (int i = 0; i < m_size; i++) {
                 final IEventFilter filter = m_list[i];
 
-                if (filter.isEnabled())
-                {
-                    if (filter.test(event))
-                    {
+                if (filter.isEnabled()) {
+                    if (filter.test(event)) {
                         return true;
                     }
                 }

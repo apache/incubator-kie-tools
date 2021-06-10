@@ -22,8 +22,8 @@ import jsinterop.annotations.JsType;
  * Common interface for {@link LinearGradient}, {@link RadialGradient}
  * and {@link PatternGradient}
  */
-public interface FillGradient
-{
+public interface FillGradient {
+
     String getType();
 
     LinearGradient asLinearGradient();
@@ -33,12 +33,11 @@ public interface FillGradient
     PatternGradient asPatternGradient();
 
     @JsType
-    class GradientJSO
-    {
+    class GradientJSO {
+
         public String type;
 
-        protected GradientJSO()
-        {
+        protected GradientJSO() {
         }
     }
 }

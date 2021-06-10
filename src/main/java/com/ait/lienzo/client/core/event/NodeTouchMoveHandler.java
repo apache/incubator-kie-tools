@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
 
-public interface NodeTouchMoveHandler extends EventHandler
-{
+public interface NodeTouchMoveHandler extends EventHandler {
+
     public void onNodeTouchMove(NodeTouchMoveEvent event);
 }

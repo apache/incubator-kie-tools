@@ -24,58 +24,49 @@ import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import elemental2.dom.HTMLDivElement;
 
-public class ScalablePanel extends LienzoBoundsPanel
-{
+public class ScalablePanel extends LienzoBoundsPanel {
+
     private static final boolean KEEP_ASPECT_RATIO = true;
 
-    public ScalablePanel(final BoundsProvider layerBoundsProvider)
-    {
+    public ScalablePanel(final BoundsProvider layerBoundsProvider) {
         this(LienzoFixedPanel.newPanel(),
              layerBoundsProvider);
     }
 
     public ScalablePanel(final BoundsProvider layerBoundsProvider,
                          final int width,
-                         final int height)
-    {
+                         final int height) {
         this(LienzoFixedPanel.newPanel(width, height),
              layerBoundsProvider);
         setDefaultBounds(Bounds.relativeBox(width, height));
     }
 
     ScalablePanel(final LienzoPanel panel,
-                  final BoundsProvider layerBoundsProvider)
-    {
+                  final BoundsProvider layerBoundsProvider) {
         super(panel,
               layerBoundsProvider);
     }
 
     @Override
-    public ScalablePanel onRefresh()
-    {
+    public ScalablePanel onRefresh() {
         scale();
         batch();
         return this;
     }
 
-    private void scale()
-    {
+    private void scale() {
         final Layer layer = getLayer();
-        if (null != layer)
-        {
-            final double  width    = getLienzoPanel().getWidePx();
-            final double  height   = getLienzoPanel().getHighPx();
-            final Bounds  current  = getBounds();
-            final double  toWidth  = current.getX() + current.getWidth();
-            final double  toHeight = current.getY() + current.getHeight();
-            final boolean doScale  = toWidth > width || toHeight > height;
-            if (doScale)
-            {
+        if (null != layer) {
+            final double width = getLienzoPanel().getWidePx();
+            final double height = getLienzoPanel().getHighPx();
+            final Bounds current = getBounds();
+            final double toWidth = current.getX() + current.getWidth();
+            final double toHeight = current.getY() + current.getHeight();
+            final boolean doScale = toWidth > width || toHeight > height;
+            if (doScale) {
                 final double[] scaleFactor = getScaleFactor(width, height, toWidth, toHeight);
                 scale(scaleFactor[0], scaleFactor[1], KEEP_ASPECT_RATIO);
-            }
-            else
-            {
+            } else {
                 scale(1, 1, false);
             }
         }
@@ -83,14 +74,11 @@ public class ScalablePanel extends LienzoBoundsPanel
 
     protected void scale(final double scaleX,
                          final double scaleY,
-                         final boolean keepAspectRatio)
-    {
-        if (null != getLayer())
-        {
+                         final boolean keepAspectRatio) {
+        if (null != getLayer()) {
             double factorX = scaleX;
             double factorY = scaleY;
-            if (keepAspectRatio)
-            {
+            if (keepAspectRatio) {
                 double factor = scaleX <= scaleY ? scaleY : scaleX;
                 factorX = factor;
                 factorY = factor;
@@ -104,8 +92,7 @@ public class ScalablePanel extends LienzoBoundsPanel
     private static double[] getScaleFactor(final double width,
                                            final double height,
                                            final double targetWidth,
-                                           final double targetHeight)
-    {
+                                           final double targetHeight) {
         return new double[]{
                 width > 0 ? targetWidth / width : 1,
                 height > 0 ? targetHeight / height : 1};

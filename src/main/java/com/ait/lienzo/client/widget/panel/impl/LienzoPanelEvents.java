@@ -13,12 +13,12 @@ public class LienzoPanelEvents {
     static final String LIENZO_PANEL_SCROLL_EVENT = "lienzoPanelScrollEvent";
 
     static void addBoundsChangedEventListener(LienzoPanel panel,
-                                             EventListener eventListener) {
+                                              EventListener eventListener) {
         panel.getElement().addEventListener(LIENZO_PANEL_BOUNDS_CHANGED_EVENT, eventListener);
     }
 
     static void removeBoundsChangedEventListener(LienzoPanel panel,
-                                                     EventListener eventListener) {
+                                                 EventListener eventListener) {
         panel.getElement().removeEventListener(LIENZO_PANEL_BOUNDS_CHANGED_EVENT, eventListener);
     }
 
@@ -27,12 +27,12 @@ public class LienzoPanelEvents {
     }
 
     static void addResizeEventListener(LienzoPanel panel,
-                                                     EventListener eventListener) {
+                                       EventListener eventListener) {
         panel.getElement().addEventListener(LIENZO_PANEL_RESIZE_EVENT, eventListener);
     }
 
     static void removeResizeEventListener(LienzoPanel panel,
-                                              EventListener eventListener) {
+                                          EventListener eventListener) {
         panel.getElement().removeEventListener(LIENZO_PANEL_RESIZE_EVENT, eventListener);
     }
 
@@ -41,12 +41,12 @@ public class LienzoPanelEvents {
     }
 
     static void addScaleEventListener(LienzoPanel panel,
-                                              EventListener eventListener) {
+                                      EventListener eventListener) {
         panel.getElement().addEventListener(LIENZO_PANEL_SCALE_EVENT, eventListener);
     }
 
     static void removeScaleEventListener(LienzoPanel panel,
-                                             EventListener eventListener) {
+                                         EventListener eventListener) {
         panel.getElement().removeEventListener(LIENZO_PANEL_SCALE_EVENT, eventListener);
     }
 
@@ -55,12 +55,12 @@ public class LienzoPanelEvents {
     }
 
     static void addScrollEventListener(LienzoPanel panel,
-                                             EventListener eventListener) {
+                                       EventListener eventListener) {
         panel.getElement().addEventListener(LIENZO_PANEL_SCROLL_EVENT, eventListener);
     }
 
     static void removeScrollEventListener(LienzoPanel panel,
-                                              EventListener eventListener) {
+                                          EventListener eventListener) {
         panel.getElement().removeEventListener(LIENZO_PANEL_SCROLL_EVENT, eventListener);
     }
 

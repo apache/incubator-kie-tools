@@ -44,5 +44,4 @@ public interface WiresShapeControl extends WiresMoveControl,
     boolean accept();
 
     boolean isAccepted();
-
 }

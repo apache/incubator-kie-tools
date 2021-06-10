@@ -89,9 +89,7 @@ public class TextNoWrap implements ITextWrapper {
         drawCommand.draw(context, text.getText(), 0, 0);
     }
 
-    public Text getText()
-    {
+    public Text getText() {
         return text;
     }
-
 }

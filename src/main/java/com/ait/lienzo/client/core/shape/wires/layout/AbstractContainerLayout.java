@@ -22,78 +22,66 @@ import java.util.Map.Entry;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.types.BoundingBox;
 
-public abstract class AbstractContainerLayout<L> implements IContainerLayout<L>
-{
+public abstract class AbstractContainerLayout<L> implements IContainerLayout<L> {
+
     private final Map<IPrimitive, L> children;
 
-    private final IPrimitive         parent;
+    private final IPrimitive parent;
 
-    public AbstractContainerLayout(final IPrimitive parent)
-    {
-        if (parent == null)
-        {
+    public AbstractContainerLayout(final IPrimitive parent) {
+        if (parent == null) {
             throw new IllegalArgumentException("Parent cannot be null");
         }
         this.parent = parent;
         this.children = new HashMap<>();
     }
 
-    private Map<IPrimitive, L> getChildren()
-    {
+    private Map<IPrimitive, L> getChildren() {
         return children;
     }
 
     @Override
-    public IContainerLayout add(final IPrimitive<?> child)
-    {
+    public IContainerLayout add(final IPrimitive<?> child) {
         return add(child, getDefaultLayout());
     }
 
     @Override
-    public IContainerLayout add(final IPrimitive<?> child, final L layout)
-    {
+    public IContainerLayout add(final IPrimitive<?> child, final L layout) {
         getChildren().put(child, getLayout(layout));
         return this;
     }
 
     @Override
-    public void execute()
-    {
-        for (Entry<IPrimitive, L> e : getChildren().entrySet())
-        {
+    public void execute() {
+        for (Entry<IPrimitive, L> e : getChildren().entrySet()) {
             add(e.getKey(), e.getValue());
         }
     }
 
     @Override
-    public L getLayout(final IPrimitive<?> child)
-    {
+    public L getLayout(final IPrimitive<?> child) {
         return getChildren().get(child);
     }
 
     @Override
-    public IContainerLayout remove(final IPrimitive<?> child)
-    {
+    public IContainerLayout remove(final IPrimitive<?> child) {
         getChildren().remove(child);
         return this;
     }
 
     @Override
-    public IContainerLayout clear()
-    {
+    public IContainerLayout clear() {
         getChildren().clear();
         return this;
     }
 
     public abstract L getDefaultLayout();
 
-    protected L getLayout(final L layout)
-    {
+    protected L getLayout(final L layout) {
         return layout == null ? getDefaultLayout() : layout;
     }
 
-    public BoundingBox getParentBoundingBox()
-    {
+    public BoundingBox getParentBoundingBox() {
         return parent.getBoundingBox();
     }
 }

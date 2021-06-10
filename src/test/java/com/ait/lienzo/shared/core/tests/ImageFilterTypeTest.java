@@ -9,8 +9,7 @@ import static org.junit.Assert.assertTrue;
 public class ImageFilterTypeTest {
 
     @Test
-    public void testEquals()
-    {
+    public void testEquals() {
         ImageFilterType brightness = ImageFilterType.BrightnessImageDataFilterType;
         assertFalse(brightness.equals(null));
         assertTrue(brightness.equals(brightness));
@@ -29,16 +28,14 @@ public class ImageFilterTypeTest {
 
         assertTrue(overrideAlpha.equals(alpha));
         assertTrue(alpha.equals(overrideAlpha));
-
     }
 
-    private static class ImageFilterTypeExtension extends ImageFilterType
-    {
+    private static class ImageFilterTypeExtension extends ImageFilterType {
+
         private static ImageFilterTypeExtension SomeNewValue = new ImageFilterTypeExtension("SomeNewValue");
         private static ImageFilterTypeExtension AlphaScaleColorImageDataFilterType = new ImageFilterTypeExtension("AlphaScaleColorImageDataFilter");
 
-        protected ImageFilterTypeExtension(String value)
-        {
+        protected ImageFilterTypeExtension(String value) {
             super(value);
         }
     }

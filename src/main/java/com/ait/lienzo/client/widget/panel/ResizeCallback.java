@@ -21,5 +21,6 @@ import jsinterop.annotations.JsFunction;
 @JsFunction
 public
 interface ResizeCallback {
+
     void callEvent(Object event);
 }

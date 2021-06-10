@@ -21,48 +21,45 @@ import java.util.List;
 import com.ait.lienzo.client.core.shape.Arrow;
 
 /**
- * ArrowType defines the style of the arrow heads for an 
+ * ArrowType defines the style of the arrow heads for an
  * {@link Arrow}.
- * See the {@link Arrow} 
+ * See the {@link Arrow}
  * class for a detailed description.
  */
-public enum ArrowType implements EnumWithValue
-{
-    AT_END("at-end"), AT_START("at-start"), AT_BOTH_ENDS("at-both-ends"), AT_END_TAPERED("at-end-tapered"), AT_START_TAPERED("at-start-tapered");
+public enum ArrowType implements EnumWithValue {
+    AT_END("at-end"),
+    AT_START("at-start"),
+    AT_BOTH_ENDS("at-both-ends"),
+    AT_END_TAPERED("at-end-tapered"),
+    AT_START_TAPERED("at-start-tapered");
 
     private final String m_value;
 
     private static final EnumStringMap<ArrowType> LOOKUP_MAP = Statics.build(ArrowType.values());
 
-    private ArrowType(final String value)
-    {
+    private ArrowType(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
-    public static final ArrowType lookup(final String key)
-    {
+    public static final ArrowType lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, AT_END);
     }
 
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(ArrowType.values());
     }
 
-    public static final List<ArrowType> getValues()
-    {
+    public static final List<ArrowType> getValues() {
         return Statics.getValues(ArrowType.values());
     }
 }

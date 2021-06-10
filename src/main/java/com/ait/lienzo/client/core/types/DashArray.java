@@ -21,19 +21,16 @@ import elemental2.core.Global;
 /**
  * A native implementation of an array wrapped by a {@link DashArrayJSO}
  * This class is used in {@link Line} to create Dashed Lines.
- * 
  */
-public final class DashArray
-{
+public final class DashArray {
+
     private double[] m_jso;
 
-    public DashArray(final double... jso)
-    {
+    public DashArray(final double... jso) {
         m_jso = jso;
     }
 
-    public DashArray()
-    {
+    public DashArray() {
         m_jso = new double[0];
     }
 
@@ -62,20 +59,16 @@ public final class DashArray
 //        return this;
 //    }
 
-    public final double[] getNormalizedArray()
-    {
+    public final double[] getNormalizedArray() {
         final int leng = Math.abs(m_jso.length);
 
-        if (leng < 1)
-        {
+        if (leng < 1) {
             return new double[0];
         }
-        if ((leng % 2) == 1)
-        {
+        if ((leng % 2) == 1) {
             final double[] dashes = new double[leng * 2];
 
-            for (int i = 0; i < leng; i++)
-            {
+            for (int i = 0; i < leng; i++) {
                 dashes[i] = dashes[i + leng] = m_jso[i];
             }
             return dashes;
@@ -83,52 +76,42 @@ public final class DashArray
         return m_jso;
     }
 
-    public final int size()
-    {
+    public final int size() {
         return m_jso.length;
     }
 
-    public final double[] getJSO()
-    {
+    public final double[] getJSO() {
         return m_jso;
     }
 
-    public final String toJSONString()
-    {
+    public final String toJSONString() {
         return Global.JSON.stringify(m_jso);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return toJSONString();
     }
 
     @Override
-    public boolean equals(final Object other)
-    {
-        if ((other == null) || (!(other instanceof DashArray)))
-        {
+    public boolean equals(final Object other) {
+        if ((other == null) || (!(other instanceof DashArray))) {
             return false;
         }
-        if (this == other)
-        {
+        if (this == other) {
             return true;
         }
         final DashArray that = ((DashArray) other);
 
         final int leng = size();
 
-        if (that.size() != leng)
-        {
+        if (that.size() != leng) {
             return false;
         }
         final double[] o_jso = that.getJSO();
 
-        for (int i = 0; i < leng; i++)
-        {
-            if (o_jso[i] != m_jso[i])
-            {
+        for (int i = 0; i < leng; i++) {
+            if (o_jso[i] != m_jso[i]) {
                 return false;
             }
         }
@@ -136,8 +119,7 @@ public final class DashArray
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return toJSONString().hashCode();
     }
 }

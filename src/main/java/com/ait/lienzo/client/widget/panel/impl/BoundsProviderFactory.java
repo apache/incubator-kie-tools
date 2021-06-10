@@ -15,6 +15,8 @@
  */
 package com.ait.lienzo.client.widget.panel.impl;
 
+import java.util.function.Function;
+
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.wires.WiresLayer;
@@ -25,26 +27,21 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.BoundsProvider;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
-import java.util.function.Function;
 
-public class BoundsProviderFactory
-{
-    private BoundsProviderFactory()
-    {
+public class BoundsProviderFactory {
+
+    private BoundsProviderFactory() {
 
     }
 
-    public static class PrimitivesBoundsProvider extends FunctionalBoundsProvider<PrimitivesBoundsProvider>
-    {
+    public static class PrimitivesBoundsProvider extends FunctionalBoundsProvider<PrimitivesBoundsProvider> {
+
         @Override
-        public NFastArrayList<BoundingBox> getAll(final Layer layer)
-        {
-            NFastArrayList<BoundingBox>   result = new NFastArrayList<>();
+        public NFastArrayList<BoundingBox> getAll(final Layer layer) {
+            NFastArrayList<BoundingBox> result = new NFastArrayList<>();
             NFastArrayList<IPrimitive<?>> shapes = layer.getChildNodes();
-            if (null != shapes)
-            {
-                for (IPrimitive<?> shape : shapes.asList())
-                {
+            if (null != shapes) {
+                for (IPrimitive<?> shape : shapes.asList()) {
                     BoundingBox boundingBox = shape.getComputedBoundingPoints().getBoundingBox();
                     result.add(boundingBox);
                 }
@@ -53,24 +50,20 @@ public class BoundsProviderFactory
         }
     }
 
-    public static class WiresBoundsProvider extends FunctionalBoundsProvider<WiresBoundsProvider>
-    {
+    public static class WiresBoundsProvider extends FunctionalBoundsProvider<WiresBoundsProvider> {
+
         @Override
-        public NFastArrayList<BoundingBox> getAll(final Layer layer)
-        {
+        public NFastArrayList<BoundingBox> getAll(final Layer layer) {
             final WiresLayer wiresLayer = WiresManager.get(layer).getLayer();
             return getAll(wiresLayer);
         }
 
-        public NFastArrayList<BoundingBox> getAll(final WiresLayer wiresLayer)
-        {
-            final NFastArrayList<BoundingBox> result      = new NFastArrayList<>();
-            final NFastArrayList<WiresShape>  childShapes = wiresLayer.getChildShapes();
-            if (null != childShapes)
-            {
-                for (WiresShape shape : childShapes.asList())
-                {
-                    final Point2D     location    = shape.getLocation();
+        public NFastArrayList<BoundingBox> getAll(final WiresLayer wiresLayer) {
+            final NFastArrayList<BoundingBox> result = new NFastArrayList<>();
+            final NFastArrayList<WiresShape> childShapes = wiresLayer.getChildShapes();
+            if (null != childShapes) {
+                for (WiresShape shape : childShapes.asList()) {
+                    final Point2D location = shape.getLocation();
                     final BoundingBox boundingBox = shape.getGroup().getBoundingBox();
                     result.add(BoundingBox.fromDoubles(location.getX(),
                                                        location.getY(),
@@ -83,28 +76,25 @@ public class BoundsProviderFactory
     }
 
     public abstract static class FunctionalBoundsProvider<T extends FunctionalBoundsProvider>
-            implements BoundsProvider
-    {
-        public static final double                        PADDING = 25d;
+            implements BoundsProvider {
 
-        private             Function<BoundingBox, Bounds> boundsBuilder;
+        public static final double PADDING = 25d;
 
-        private             double                        padding;
+        private Function<BoundingBox, Bounds> boundsBuilder;
 
-        protected FunctionalBoundsProvider()
-        {
+        private double padding;
+
+        protected FunctionalBoundsProvider() {
             this.padding = PADDING;
             this.boundsBuilder = boundingBox -> buildBounds(boundingBox);
         }
 
-        public T setBoundsBuilder(final Function<BoundingBox, Bounds> boundsBuilder)
-        {
+        public T setBoundsBuilder(final Function<BoundingBox, Bounds> boundsBuilder) {
             this.boundsBuilder = boundsBuilder;
             return cast();
         }
 
-        public T setPadding(final double value)
-        {
+        public T setPadding(final double value) {
             this.padding = value;
             return cast();
         }
@@ -112,35 +102,27 @@ public class BoundsProviderFactory
         public abstract NFastArrayList<BoundingBox> getAll(Layer layer);
 
         @Override
-        public Bounds get(Layer layer)
-        {
-            if (null != layer)
-            {
+        public Bounds get(Layer layer) {
+            if (null != layer) {
                 final NFastArrayList<BoundingBox> boxes = getAll(layer);
-                if (boxes != null && !boxes.isEmpty())
-                {
+                if (boxes != null && !boxes.isEmpty()) {
                     return build(boxes);
                 }
             }
             return Bounds.empty();
         }
 
-        public Bounds build(final NFastArrayList<BoundingBox> boxes)
-        {
-            if (null != boxes)
-            {
+        public Bounds build(final NFastArrayList<BoundingBox> boxes) {
+            if (null != boxes) {
                 final BoundingBox result = new BoundingBox();
                 result.add(0, 0);
-                for (BoundingBox box : boxes.asList())
-                {
+                for (BoundingBox box : boxes.asList()) {
                     result.addBoundingBox(box);
                 }
-                if (result.getMinX() < 0)
-                {
+                if (result.getMinX() < 0) {
                     result.addX(result.getMinY() - padding);
                 }
-                if (result.getMinY() < 0)
-                {
+                if (result.getMinY() < 0) {
                     result.addY(result.getMinY() - padding);
                 }
                 result.add(result.getMaxX() + padding,
@@ -151,24 +133,19 @@ public class BoundsProviderFactory
         }
 
         @SuppressWarnings("unchecked")
-        private T cast()
-        {
+        private T cast() {
             return (T) this;
         }
     }
 
-    public static Bounds join(Bounds b1, Bounds b2)
-    {
-        if (null != b1 && null == b2)
-        {
+    public static Bounds join(Bounds b1, Bounds b2) {
+        if (null != b1 && null == b2) {
             return b1;
         }
-        if (null != b2 && null == b1)
-        {
+        if (null != b2 && null == b1) {
             return b2;
         }
-        if (null == b1)
-        {
+        if (null == b1) {
             return Bounds.empty();
         }
         BoundingBox boundsBB = BoundingBox.fromDoubles(b1.getX(),
@@ -186,11 +163,10 @@ public class BoundsProviderFactory
                             result.getHeight());
     }
 
-    public static Bounds buildBounds(final BoundingBox box)
-    {
-        final double x      = box.getX();
-        final double y      = box.getY();
-        final double width  = box.getWidth();
+    public static Bounds buildBounds(final BoundingBox box) {
+        final double x = box.getX();
+        final double y = box.getY();
+        final double width = box.getWidth();
         final double height = box.getHeight();
         return Bounds.build(x,
                             y,
@@ -199,45 +175,37 @@ public class BoundsProviderFactory
     }
 
     public static double computeWidth(final double ratio,
-                                      final double height)
-    {
+                                      final double height) {
         return height * ratio;
     }
 
     public static int computeWidth(final double ratio,
-                                   final int height)
-    {
+                                   final int height) {
         return (int) computeWidth(ratio, (double) height);
     }
 
     public static double computeHeight(final double ratio,
-                                       final double width)
-    {
+                                       final double width) {
         return width * (1 / ratio);
     }
 
     public static int computeHeight(final double ratio,
-                                    final int width)
-    {
+                                    final int width) {
         return (int) computeHeight(ratio, (double) width);
     }
 
     public static Bounds computeBoundsAspectRatio(final double ratio,
-                                                  final BoundingBox box)
-    {
-        final double x      = box.getX();
-        final double y      = box.getY();
-        final double width  = box.getWidth();
+                                                  final BoundingBox box) {
+        final double x = box.getX();
+        final double y = box.getY();
+        final double width = box.getWidth();
         final double height = box.getHeight();
-        final double cr     = width / height;
-        double       rw     = width;
-        double       rh     = height;
-        if (cr > ratio)
-        {
+        final double cr = width / height;
+        double rw = width;
+        double rh = height;
+        if (cr > ratio) {
             rh = computeHeight(ratio, width);
-        }
-        else
-        {
+        } else {
             rw = computeWidth(ratio, height);
         }
         return Bounds.build(x,

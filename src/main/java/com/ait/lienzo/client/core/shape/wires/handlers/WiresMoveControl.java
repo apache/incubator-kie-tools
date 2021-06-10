@@ -4,7 +4,7 @@ import com.ait.lienzo.client.core.types.Point2D;
 
 /**
  * Control for changing locations for wires objects (shapes, connectors, etc).
- *
+ * <p>
  * This type allows decoupling the drag handlers added by default to wires objects from each control's logic.
  */
 public interface WiresMoveControl {
@@ -18,6 +18,7 @@ public interface WiresMoveControl {
     /**
      * Moving the wires object a certain distance (dx, dy) from
      * the starting point.
+     *
      * @return <code>true</code> if the wires object location should be adjusted, and
      * <code>false</code> in case no adjustment is required.
      */

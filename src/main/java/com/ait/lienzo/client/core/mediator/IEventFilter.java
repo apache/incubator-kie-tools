@@ -22,11 +22,11 @@ import elemental2.dom.UIEvent;
 
 /**
  * IEventFilter is used by {@link AbstractMediator}
- * 
+ *
  * @since 1.1
  */
-public interface IEventFilter extends Predicate<UIEvent>
-{
+public interface IEventFilter extends Predicate<UIEvent> {
+
     boolean isEnabled();
 
     void setEnabled(boolean enabled);

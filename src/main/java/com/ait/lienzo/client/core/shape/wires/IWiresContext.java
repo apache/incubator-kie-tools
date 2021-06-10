@@ -16,8 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-public interface IWiresContext
-{
+public interface IWiresContext {
+
     public IHandleManager getHandleManager();
 
     public MagnetManager getMagnetManager();

@@ -22,12 +22,11 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
@@ -37,50 +36,43 @@ import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.shared.core.types.GroupType;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
-import java.util.function.Predicate;
-
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 /**
  * A Container capable of holding a collection of T objects
  */
-public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNode<T, C>implements IPrimitive<C>, IDestroyable
-{
-    private GroupType                   m_type = null;
+public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNode<T, C> implements IPrimitive<C>,
+                                                                                                                       IDestroyable {
+
+    private GroupType m_type = null;
 
     private final OptionalGroupOfFields m_opts = OptionalGroupOfFields.make();
-
 
     /**
      * Constructor. Creates an instance of a group.
      */
-    protected GroupOf(final GroupType type, final IStorageEngine<T> stor)
-    {
+    protected GroupOf(final GroupType type, final IStorageEngine<T> stor) {
         super(NodeType.GROUP, stor);
 
         m_type = type;
     }
 
     @Override
-    public C draw()
-    {
+    public C draw() {
         final Layer layer = getLayer();
 
-        if (null != layer)
-        {
+        if (null != layer) {
             layer.draw();
         }
         return cast();
     }
 
     @Override
-    public C batch()
-    {
+    public C batch() {
         final Layer layer = getLayer();
 
-        if (null != layer)
-        {
+        if (null != layer) {
             layer.batch();
         }
         return cast();
@@ -88,34 +80,29 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
 
     /**
      * Only sub-classes that wish to extend a Shape should use this.
-     * 
+     *
      * @param type
      */
-    protected void setGroupType(final GroupType type)
-    {
+    protected void setGroupType(final GroupType type) {
         m_type = type;
     }
 
-    public GroupType getGroupType()
-    {
+    public GroupType getGroupType() {
         return m_type;
     }
 
     @Override
-    public IFactory<?> getFactory()
-    {
+    public IFactory<?> getFactory() {
         return LienzoCore.get().getFactory(m_type);
     }
 
     @Override
-    public boolean isDragging()
-    {
+    public boolean isDragging() {
         return m_opts.isDragging();
     }
 
     @Override
-    public C setDragging(final boolean drag)
-    {
+    public C setDragging(final boolean drag) {
         m_opts.setDragging(drag);
 
         return cast();
@@ -123,37 +110,32 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
 
     /**
      * Returns this group as an {@link IPrimitive}.
-     * 
+     *
      * @return IPrimitive
      */
     @Override
-    public IPrimitive<?> asPrimitive()
-    {
+    public IPrimitive<?> asPrimitive() {
         return this;
     }
 
     /**
      * Returns this group as a {@link IContainer}
-     * 
+     *
      * @return IContainer<IPrimitive>
      */
     @Override
-    public IContainer<C, T> asContainer()
-    {
+    public IContainer<C, T> asContainer() {
         return cast();
     }
 
     @Override
-    public GroupOf<IPrimitive<?>, ?> asGroupOf()
-    {
+    public GroupOf<IPrimitive<?>, ?> asGroupOf() {
         return cast();
     }
 
     @Override
-    public Group asGroup()
-    {
-        if (this instanceof Group)
-        {
+    public Group asGroup() {
+        if (this instanceof Group) {
             return cast();
         }
         return null;
@@ -167,8 +149,7 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
      * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
      */
     @Override
-    public C add(final T child)
-    {
+    public C add(final T child) {
         child.removeFromParent();
 
         super.add(child);
@@ -180,36 +161,30 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
 
     @SuppressWarnings("unchecked")
     @Override
-    public C add(final T child, final T... children)
-    {
+    public C add(final T child, final T... children) {
         add(child);
 
-        for (T node : children)
-        {
+        for (T node : children) {
             add(node);
         }
         return cast();
     }
 
     @Override
-    public boolean removeFromParent()
-    {
+    public boolean removeFromParent() {
         Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             Layer layer = parent.asLayer();
 
-            if (null != layer)
-            {
+            if (null != layer) {
                 layer.remove(this);
 
                 return true;
             }
             GroupOf<IPrimitive<?>, ?> group = parent.asGroupOf();
 
-            if (null != group)
-            {
+            if (null != group) {
                 group.remove(this);
 
                 return true;
@@ -226,8 +201,7 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
      * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
      */
     @Override
-    public C remove(final T child)
-    {
+    public C remove(final T child) {
         child.detachFromLayerColorMap();
 
         super.remove(child);
@@ -243,8 +217,7 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
      * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
      */
     @Override
-    public C removeAll()
-    {
+    public C removeAll() {
         detachFromLayerColorMap();
 
         super.removeAll();
@@ -272,20 +245,16 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
      * Attaches all primitives to the Layers Color Map
      */
     @Override
-    public void attachToLayerColorMap()
-    {
+    public void attachToLayerColorMap() {
         final Layer layer = getLayer();
 
-        if (null != layer)
-        {
+        if (null != layer) {
             final NFastArrayList<T> list = getChildNodes();
 
-            if (null != list)
-            {
+            if (null != list) {
                 final int size = list.size();
 
-                for (int i = 0; i < size; i++)
-                {
+                for (int i = 0; i < size; i++) {
                     list.get(i).attachToLayerColorMap();
                 }
             }
@@ -296,20 +265,16 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
      * Detaches all primitives from the Layers Color Map
      */
     @Override
-    public void detachFromLayerColorMap()
-    {
+    public void detachFromLayerColorMap() {
         final Layer layer = getLayer();
 
-        if (null != layer)
-        {
+        if (null != layer) {
             final NFastArrayList<T> list = getChildNodes();
 
-            if (null != list)
-            {
+            if (null != list) {
                 final int size = list.size();
 
-                for (int i = 0; i < size; i++)
-                {
+                for (int i = 0; i < size; i++) {
                     list.get(i).detachFromLayerColorMap();
                 }
             }
@@ -318,21 +283,18 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
 
     /**
      * Moves this group's {@link Layer} one level up
-     * 
+     *
      * @return Group this Group
      */
     @SuppressWarnings("unchecked")
     @Override
-    public C moveUp()
-    {
+    public C moveUp() {
         final Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
-            if (null != container)
-            {
+            if (null != container) {
                 container.moveUp(this);
             }
         }
@@ -341,21 +303,18 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
 
     /**
      * Moves this group's {@link Layer} one level down
-     * 
+     *
      * @return Group this Group
      */
     @SuppressWarnings("unchecked")
     @Override
-    public C moveDown()
-    {
+    public C moveDown() {
         final Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
-            if (null != container)
-            {
+            if (null != container) {
                 container.moveDown(this);
             }
         }
@@ -364,21 +323,18 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
 
     /**
      * Moves this group's {@link Layer} to the top of the layer stack.
-     * 
+     *
      * @return Group this Group
      */
     @SuppressWarnings("unchecked")
     @Override
-    public C moveToTop()
-    {
+    public C moveToTop() {
         final Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
-            if (null != container)
-            {
+            if (null != container) {
                 container.moveToTop(this);
             }
         }
@@ -387,21 +343,18 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
 
     /**
      * Moves this group's {@link Layer} to the bottom of the layer stack.
-     * 
+     *
      * @return Group this Group
      */
     @SuppressWarnings("unchecked")
     @Override
-    public C moveToBottom()
-    {
+    public C moveToBottom() {
         final Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
-            if (null != container)
-            {
+            if (null != container) {
                 container.moveToBottom(this);
             }
         }
@@ -409,34 +362,27 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
     }
 
     @Override
-    protected void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
-    {
-        if (predicate.test(this))
-        {
+    protected void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff) {
+        if (predicate.test(this)) {
             buff.add(this);
         }
         final NFastArrayList<T> list = getChildNodes();
 
         final int size = list.size();
 
-        for (int i = 0; i < size; i++)
-        {
+        for (int i = 0; i < size; i++) {
             final T prim = list.get(i);
 
-            if (null != prim)
-            {
+            if (null != prim) {
                 final Node<?> node = prim.asNode();
 
-                if (null != node)
-                {
-                    if (predicate.test(node))
-                    {
+                if (null != node) {
+                    if (predicate.test(node)) {
                         buff.add(node);
                     }
                     final ContainerNode<?, ?> cont = node.asContainerNode();
 
-                    if (null != cont)
-                    {
+                    if (null != cont) {
                         cont.find(predicate, buff);
                     }
                 }
@@ -445,98 +391,81 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
     }
 
     @Override
-    public DragConstraintEnforcer getDragConstraints()
-    {
+    public DragConstraintEnforcer getDragConstraints() {
         final DragConstraintEnforcer enforcer = m_opts.getDragConstraintEnforcer();
 
-        if (enforcer == null)
-        {
+        if (enforcer == null) {
             return new DefaultDragConstraintEnforcer();
-        }
-        else
-        {
+        } else {
             return enforcer;
         }
     }
 
     @Override
-    public C setDragConstraints(final DragConstraintEnforcer enforcer)
-    {
+    public C setDragConstraints(final DragConstraintEnforcer enforcer) {
         m_opts.setDragConstraintEnforcer(enforcer);
 
         return cast();
     }
 
     @Override
-    public Map<ControlHandleType, IControlHandleList> getControlHandles(ControlHandleType... types)
-    {
+    public Map<ControlHandleType, IControlHandleList> getControlHandles(ControlHandleType... types) {
         return getControlHandles(Arrays.asList(types));
     }
 
     @Override
-    public Map<ControlHandleType, IControlHandleList> getControlHandles(List<ControlHandleType> types)
-    {
-        if ((null == types) || (types.isEmpty()))
-        {
+    public Map<ControlHandleType, IControlHandleList> getControlHandles(List<ControlHandleType> types) {
+        if ((null == types) || (types.isEmpty())) {
             return null;
         }
-        if (types.size() > 1)
-        {
+        if (types.size() > 1) {
             types = new ArrayList<>(new HashSet<>(types));
         }
         IControlHandleFactory factory = getControlHandleFactory();
 
-        if (null == factory)
-        {
+        if (null == factory) {
             return null;
         }
         return factory.getControlHandles(types);
     }
 
     @Override
-    public IControlHandleFactory getControlHandleFactory()
-    {
+    public IControlHandleFactory getControlHandleFactory() {
         return m_opts.getControlHandleFactory();
     }
 
     @Override
-    public C setControlHandleFactory(IControlHandleFactory factory)
-    {
+    public C setControlHandleFactory(IControlHandleFactory factory) {
         m_opts.setControlHandleFactory(factory);
 
         return cast();
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return new ArrayList<Attribute>();
     }
 
     @Override
-    public List<Attribute> getTransformingAttributes()
-    {
+    public List<Attribute> getTransformingAttributes() {
         return LienzoCore.STANDARD_TRANSFORMING_ATTRIBUTES;
     }
 
     @Override
-    public C refresh()
-    {
+    public C refresh() {
         final NFastArrayList<T> list = getChildNodes();
 
         final int size = list.size();
 
-        for (int i = 0; i < size; i++)
-        {
+        for (int i = 0; i < size; i++) {
             list.get(i).refresh();
         }
         return cast();
     }
 
-    protected abstract static class GroupOfFactory <T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNodeFactory<C>
-    {
-        protected GroupOfFactory(final GroupType type)
-        {
+    protected abstract static class GroupOfFactory<T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNodeFactory<C> {
+
+        protected GroupOfFactory(final GroupType type) {
             super(type.getValue());
 
             addAttribute(Attribute.X);
@@ -588,15 +517,14 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
             addAttribute(Attribute.EVENT_PROPAGATION_MODE);
         }
 
-        protected void setGroupType(final GroupType type)
-        {
+        protected void setGroupType(final GroupType type) {
             setTypeName(type.getValue());
         }
     }
 
     @JsType
-    private static class OptionalGroupOfFields
-    {
+    private static class OptionalGroupOfFields {
+
         @JsProperty
         private boolean drag;
 
@@ -606,42 +534,34 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
         @JsProperty
         private IControlHandleFactory hand;
 
-        public static final OptionalGroupOfFields make()
-        {
+        public static final OptionalGroupOfFields make() {
             return new OptionalGroupOfFields();
         }
 
-        protected OptionalGroupOfFields()
-        {
+        protected OptionalGroupOfFields() {
         }
 
-        protected final boolean isDragging()
-        {
-			return this.drag;
+        protected final boolean isDragging() {
+            return this.drag;
         }
 
-        protected final void setDragging(boolean drag)
-        {
+        protected final void setDragging(boolean drag) {
             this.drag = drag;
         }
 
-        protected final DragConstraintEnforcer getDragConstraintEnforcer()
-        {
-			return this.denf;
+        protected final DragConstraintEnforcer getDragConstraintEnforcer() {
+            return this.denf;
         }
 
-        protected final void setDragConstraintEnforcer(DragConstraintEnforcer denf)
-        {
+        protected final void setDragConstraintEnforcer(DragConstraintEnforcer denf) {
             this.denf = denf;
         }
 
-        protected final IControlHandleFactory getControlHandleFactory()
-        {
-			return this.hand;
+        protected final IControlHandleFactory getControlHandleFactory() {
+            return this.hand;
         }
 
-        protected final void setControlHandleFactory(IControlHandleFactory hand)
-        {
+        protected final void setControlHandleFactory(IControlHandleFactory hand) {
             this.hand = hand;
         }
     }

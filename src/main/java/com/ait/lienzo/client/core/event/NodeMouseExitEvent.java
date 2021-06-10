@@ -17,32 +17,27 @@
 package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.client.core.shape.Node;
-
 import elemental2.dom.HTMLElement;
 
-public class NodeMouseExitEvent extends AbstractNodeHumanInputEvent<NodeMouseExitHandler, Node>
-{
+public class NodeMouseExitEvent extends AbstractNodeHumanInputEvent<NodeMouseExitHandler, Node> {
+
     private static final Type<NodeMouseExitHandler> TYPE = new Type<>();
 
-    public static final Type<NodeMouseExitHandler> getType()
-    {
+    public static final Type<NodeMouseExitHandler> getType() {
         return TYPE;
     }
 
-    public NodeMouseExitEvent(final HTMLElement relativeElement)
-    {
+    public NodeMouseExitEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
     @Override
-    public final Type<NodeMouseExitHandler> getAssociatedType()
-    {
+    public final Type<NodeMouseExitHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    public void dispatch(final NodeMouseExitHandler handler)
-    {
+    public void dispatch(final NodeMouseExitHandler handler) {
         handler.onNodeMouseExit(this);
     }
 }

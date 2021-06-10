@@ -24,47 +24,42 @@ import com.ait.lienzo.client.widget.panel.impl.BoundsProviderFactory;
 
 public abstract class LienzoBoundsPanel<P extends LienzoBoundsPanel>
         extends LienzoPanel<P>
-        implements IsResizable
-{
-    private final LienzoPanel    lienzoPanel;
+        implements IsResizable {
+
+    private final LienzoPanel lienzoPanel;
 
     private final BoundsProvider boundsProvider;
 
-    private final Bounds         bounds;
+    private final Bounds bounds;
 
-    private       Bounds         defaultBounds;
+    private Bounds defaultBounds;
 
-    private       Layer          layer;
+    private Layer layer;
 
     public LienzoBoundsPanel(final LienzoPanel lienzoPanel,
-                             final BoundsProvider boundsProvider)
-    {
+                             final BoundsProvider boundsProvider) {
         this.lienzoPanel = lienzoPanel;
         this.boundsProvider = boundsProvider;
         this.bounds = Bounds.empty();
     }
 
     @Override
-    public P add(final Layer layer)
-    {
-        if (null != this.layer)
-        {
+    public P add(final Layer layer) {
+        if (null != this.layer) {
             throw new IllegalStateException("LienzoBoundsPanel type only allows a single layer.");
         }
         set(layer);
         return cast();
     }
 
-    public P set(final Layer layer)
-    {
+    public P set(final Layer layer) {
         this.layer = layer;
         lienzoPanel.add(layer);
         return cast();
     }
 
-    public final LienzoBoundsPanel refresh()
-    {
-        final Bounds bounds   = getLayerBounds();
+    public final LienzoBoundsPanel refresh() {
+        final Bounds bounds = getLayerBounds();
         final Bounds boundses = BoundsProviderFactory.join(bounds, getDefaultBounds());
         setBounds(boundses.getX(),
                   boundses.getY(),
@@ -82,8 +77,7 @@ public abstract class LienzoBoundsPanel<P extends LienzoBoundsPanel>
     protected void setBounds(final double x,
                              final double y,
                              final double width,
-                             final double height)
-    {
+                             final double height) {
         bounds.setX(x);
         bounds.setY(y);
         bounds.setWidth(width);
@@ -92,19 +86,16 @@ public abstract class LienzoBoundsPanel<P extends LienzoBoundsPanel>
 
     public abstract LienzoBoundsPanel onRefresh();
 
-    public Bounds getLayerBounds()
-    {
+    public Bounds getLayerBounds() {
         return boundsProvider.get(getLayer());
     }
 
-    public Bounds getBounds()
-    {
+    public Bounds getBounds() {
         return bounds;
     }
 
     @Override
-    public P setBackgroundLayer(Layer layer)
-    {
+    public P setBackgroundLayer(Layer layer) {
         lienzoPanel.setBackgroundLayer(layer);
         return cast();
     }
@@ -116,15 +107,12 @@ public abstract class LienzoBoundsPanel<P extends LienzoBoundsPanel>
     }
 
     @Override
-    public void onResize()
-    {
+    public void onResize() {
         refresh();
     }
 
-    public void batch()
-    {
-        if (null != getLayer())
-        {
+    public void batch() {
+        if (null != getLayer()) {
             getLayer().batch();
         }
     }
@@ -133,26 +121,22 @@ public abstract class LienzoBoundsPanel<P extends LienzoBoundsPanel>
     }
 
     @Override
-    public final void destroy()
-    {
+    public final void destroy() {
         doDestroy();
         getLienzoPanel().destroy();
         layer = null;
         defaultBounds = null;
     }
 
-    public Bounds getDefaultBounds()
-    {
+    public Bounds getDefaultBounds() {
         return defaultBounds;
     }
 
-    public void setDefaultBounds(final Bounds defaultBounds)
-    {
+    public void setDefaultBounds(final Bounds defaultBounds) {
         this.defaultBounds = defaultBounds;
     }
 
-    public Layer getLayer()
-    {
+    public Layer getLayer() {
         return layer;
     }
 
@@ -165,31 +149,26 @@ public abstract class LienzoBoundsPanel<P extends LienzoBoundsPanel>
         return null != getViewport() ? getViewport().getTransform() : null;
     }
 
-    public LienzoPanel getLienzoPanel()
-    {
+    public LienzoPanel getLienzoPanel() {
         return lienzoPanel;
     }
 
     @Override
-    public int getHighPx()
-    {
+    public int getHighPx() {
         return lienzoPanel.getHighPx();
     }
 
     @Override
-    public int getWidePx()
-    {
+    public int getWidePx() {
         return lienzoPanel.getWidePx();
     }
 
-    public BoundsProvider getBoundsProvider()
-    {
+    public BoundsProvider getBoundsProvider() {
         return boundsProvider;
     }
 
     @SuppressWarnings("unchecked")
-    private P cast()
-    {
+    private P cast() {
         return (P) this;
     }
 }

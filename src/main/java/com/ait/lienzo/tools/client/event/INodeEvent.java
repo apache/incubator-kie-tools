@@ -16,13 +16,11 @@
 
 package com.ait.lienzo.tools.client.event;
 
-import com.ait.lienzo.client.core.shape.Node;
-
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
 
-public interface INodeEvent<H, S>
-{
+public interface INodeEvent<H, S> {
+
     boolean isAlive();
 
     void preventDefault();
@@ -41,6 +39,7 @@ public interface INodeEvent<H, S>
 
     Type<H> getAssociatedType();
 
-    class Type<H>  {
+    class Type<H> {
+
     }
 }

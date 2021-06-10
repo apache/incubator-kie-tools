@@ -21,63 +21,55 @@ import com.ait.lienzo.tools.common.api.types.IStringValued;
 /**
  * NodeType is an extensible enumeration of top-level node types used in the Lienzo toolkit.
  */
-public class NodeType implements IStringValued
-{
-    public static final NodeType SCENE      = new NodeType("Scene");
+public class NodeType implements IStringValued {
 
-    public static final NodeType LAYER      = new NodeType("Layer");
+    public static final NodeType SCENE = new NodeType("Scene");
 
-    public static final NodeType GROUP      = new NodeType("Group");
+    public static final NodeType LAYER = new NodeType("Layer");
 
-    public static final NodeType SHAPE      = new NodeType("Shape");
+    public static final NodeType GROUP = new NodeType("Group");
 
-    public static final NodeType PROXY      = new NodeType("Proxy");
+    public static final NodeType SHAPE = new NodeType("Shape");
 
-    public static final NodeType VIEWPORT   = new NodeType("Viewport");
+    public static final NodeType PROXY = new NodeType("Proxy");
+
+    public static final NodeType VIEWPORT = new NodeType("Viewport");
 
     public static final NodeType GRID_LAYER = new NodeType("GridLayer");
 
-    private final String         m_value;
+    private final String m_value;
 
-    protected NodeType(final String value)
-    {
+    protected NodeType(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
     @Override
-    public boolean equals(final Object other)
-    {
-        if (!(other instanceof NodeType))
-        {
+    public boolean equals(final Object other) {
+        if (!(other instanceof NodeType)) {
             return false;
         }
-        if (this == other)
-        {
+        if (this == other) {
             return true;
         }
         return ((NodeType) other).getValue().equals(getValue());
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return getValue().hashCode();
     }
 
-    public NodeType copy()
-    {
+    public NodeType copy() {
         return new NodeType(m_value);
     }
 }

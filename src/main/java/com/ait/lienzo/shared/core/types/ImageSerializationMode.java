@@ -21,43 +21,37 @@ import java.util.List;
 /**
  * Serialization mode of a Picture or Sprite.
  */
-public enum ImageSerializationMode implements EnumWithValue
-{
-    URL("url"), DATA_URL("data-url");
+public enum ImageSerializationMode implements EnumWithValue {
+    URL("url"),
+    DATA_URL("data-url");
 
     private final String m_value;
 
     private static final EnumStringMap<ImageSerializationMode> LOOKUP_MAP = Statics.build(ImageSerializationMode.values());
 
-    private ImageSerializationMode(final String value)
-    {
+    private ImageSerializationMode(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
-    public static final ImageSerializationMode lookup(final String key)
-    {
+    public static final ImageSerializationMode lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, URL);
     }
 
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(ImageSerializationMode.values());
     }
 
-    public static final List<ImageSerializationMode> getValues()
-    {
+    public static final List<ImageSerializationMode> getValues() {
         return Statics.getValues(ImageSerializationMode.values());
     }
 }

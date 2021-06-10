@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.image;
 
 import com.ait.lienzo.client.core.shape.AbstractImageShape;
 
-public interface ImageShapeLoadedHandler<T extends AbstractImageShape<T>>
-{
+public interface ImageShapeLoadedHandler<T extends AbstractImageShape<T>> {
+
     public void onImageShapeLoaded(T image);
 }

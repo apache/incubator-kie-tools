@@ -57,9 +57,9 @@ public class ItemGridImpl
                 groupPrimitiveItem
                         .setBoundingBox(boundingBoxSupplier);
         this.boundingBox = BoundingBox.fromDoubles(0,
-                                           0,
-                                           1,
-                                           1);
+                                                   0,
+                                                   1,
+                                                   1);
         this.refreshCallback = new Runnable() {
             @Override
             public void run() {
@@ -202,9 +202,9 @@ public class ItemGridImpl
         }
 
         boundingBox = BoundingBox.fromDoubles(0,
-                                      0,
-                                      maxw,
-                                      maxh);
+                                              0,
+                                              maxw,
+                                              maxh);
         // Update decorator.
         if (null != getWrapped().getDecorator()) {
             getWrapped().getDecorator().setBoundingBox(getBoundingBox().get());

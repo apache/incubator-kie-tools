@@ -21,44 +21,36 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-
 import elemental2.core.Uint8ClampedArray;
 import elemental2.dom.ImageData;
 
 /**
  * A class that allows for easy creation of a Luminosity Gray Scale based Image Filter.
  */
-public class LuminosityGrayScaleImageDataFilter extends AbstractImageDataFilter<LuminosityGrayScaleImageDataFilter>
-{
-    public LuminosityGrayScaleImageDataFilter()
-    {
+public class LuminosityGrayScaleImageDataFilter extends AbstractImageDataFilter<LuminosityGrayScaleImageDataFilter> {
+
+    public LuminosityGrayScaleImageDataFilter() {
         super(ImageFilterType.LuminosityGrayScaleImageDataFilterType);
     }
 
-    protected LuminosityGrayScaleImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
-    {
+    protected LuminosityGrayScaleImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
         super(ImageFilterType.LuminosityGrayScaleImageDataFilterType, node, ctx);
     }
 
     @Override
-    public ImageData filter(ImageData source, boolean copy)
-    {
-        if (null == source)
-        {
+    public ImageData filter(ImageData source, boolean copy) {
+        if (null == source) {
             return null;
         }
-        if (copy)
-        {
+        if (copy) {
             source = ImageDataUtil.copy(source);
         }
-        if (!isActive())
-        {
+        if (!isActive()) {
             return source;
         }
         final Uint8ClampedArray data = source.data;
 
-        if (null == data)
-        {
+        if (null == data) {
             return source;
         }
         FilterCommonOps.dofilterLuminosity(data, FilterCommonOps.getLength(source));
@@ -67,15 +59,13 @@ public class LuminosityGrayScaleImageDataFilter extends AbstractImageDataFilter<
     }
 
     @Override
-    public IFactory<LuminosityGrayScaleImageDataFilter> getFactory()
-    {
+    public IFactory<LuminosityGrayScaleImageDataFilter> getFactory() {
         return new LuminosityGrayScaleImageDataFilterFactory();
     }
 
-    public static class LuminosityGrayScaleImageDataFilterFactory extends ImageDataFilterFactory<LuminosityGrayScaleImageDataFilter>
-    {
-        public LuminosityGrayScaleImageDataFilterFactory()
-        {
+    public static class LuminosityGrayScaleImageDataFilterFactory extends ImageDataFilterFactory<LuminosityGrayScaleImageDataFilter> {
+
+        public LuminosityGrayScaleImageDataFilterFactory() {
             super(ImageFilterType.LuminosityGrayScaleImageDataFilterType);
         }
     }

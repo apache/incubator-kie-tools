@@ -18,17 +18,15 @@ package com.ait.lienzo.client.core.palette;
 
 import com.ait.lienzo.shared.core.types.PaletteType;
 
-public final class PaletteItem extends AbstractPaletteBase<PaletteItem>
-{
-    public PaletteItem()
-    {
+public final class PaletteItem extends AbstractPaletteBase<PaletteItem> {
+
+    public PaletteItem() {
         super(PaletteType.PALETTE_ITEM);
     }
 
-    public static final class PaletteItemFactory extends AbstractPalettebaseFactory<PaletteItem>
-    {
-        public PaletteItemFactory()
-        {
+    public static final class PaletteItemFactory extends AbstractPalettebaseFactory<PaletteItem> {
+
+        public PaletteItemFactory() {
             super(PaletteType.PALETTE_ITEM);
         }
     }

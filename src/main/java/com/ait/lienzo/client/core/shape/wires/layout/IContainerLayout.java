@@ -18,12 +18,17 @@ package com.ait.lienzo.client.core.shape.wires.layout;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 
-public interface IContainerLayout<L>
-{
+public interface IContainerLayout<L> {
+
     L getLayout(IPrimitive<?> child);
+
     IContainerLayout add(IPrimitive<?> child, L layout);
+
     IContainerLayout add(IPrimitive<?> child);
+
     IContainerLayout remove(IPrimitive<?> child);
+
     IContainerLayout clear();
+
     void execute();
 }

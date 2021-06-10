@@ -21,31 +21,28 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-
 import jsinterop.annotations.JsProperty;
 import jsinterop.base.Js;
 
-public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageDataFilter>
-{
+public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageDataFilter> {
+
     @JsProperty
     private double gain;
 
     @JsProperty
     private double bias;
 
-    private double           m_ngain = Double.NaN;
+    private double m_ngain = Double.NaN;
 
-    private double           m_nbias = Double.NaN;
+    private double m_nbias = Double.NaN;
 
     private FilterTableArray m_table = null;
 
-    public GainImageDataFilter()
-    {
+    public GainImageDataFilter() {
         this(0.5, 0.5);
     }
 
-    public GainImageDataFilter(double gain, double bias)
-    {
+    public GainImageDataFilter(double gain, double bias) {
         super(ImageFilterType.GainImageDataFilterType);
 
         setGain(gain);
@@ -53,64 +50,53 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
         setBias(bias);
     }
 
-    protected GainImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
-    {
+    protected GainImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
         super(ImageFilterType.GainImageDataFilterType, node, ctx);
     }
 
-    public final GainImageDataFilter setGain(double gain)
-    {
+    public final GainImageDataFilter setGain(double gain) {
         this.gain = Math.max(Math.min(gain, getMaxGain()), getMinGain());
 
         return this;
     }
 
-    public final double getGain()
-    {
+    public final double getGain() {
         return Math.max(Math.min(this.gain, getMaxGain()), getMinGain());
     }
 
-    public final double getMinGain()
-    {
+    public final double getMinGain() {
         return 0;
     }
 
-    public final double getMaxGain()
-    {
+    public final double getMaxGain() {
         return 1;
     }
 
-    public final GainImageDataFilter setBias(double bias)
-    {
+    public final GainImageDataFilter setBias(double bias) {
         this.bias = Math.max(Math.min(bias, getMaxBias()), getMinBias());
 
         return this;
     }
 
-    public final double getBias()
-    {
+    public final double getBias() {
         return Math.max(Math.min(this.bias, getMaxBias()), getMinBias());
     }
 
-    public final double getMinBias()
-    {
+    public final double getMinBias() {
         return 0;
     }
 
-    public final double getMaxBias()
-    {
+    public final double getMaxBias() {
         return 1;
     }
 
     @Override
-    protected final FilterTableArray getTable()
-    {
+    protected final FilterTableArray getTable() {
         double gain = getGain();
 
         double bias = getBias();
 
-        if ((gain != m_ngain) || (bias != m_nbias))
-        {
+        if ((gain != m_ngain) || (bias != m_nbias)) {
             m_ngain = gain;
 
             m_nbias = bias;
@@ -120,31 +106,30 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
         return m_table;
     }
 
-    private final FilterTableArray getTable_()
-    {
+    private final FilterTableArray getTable_() {
         int[] table = new int[256];
         double gain = m_ngain;
         double bias = m_nbias;
-        for(int i = 0; i < 256; i++) {
+        for (int i = 0; i < 256; i++) {
             double v = i / 255;
             double k = (1 / gain - 2) * (1 - 2 * v);
             v = (v < 0.5) ? v / (k + 1) : (k - v) / (k - 1);
-            v /= (1 / bias - 2) * (1 - v) + 1; 
+            v /= (1 / bias - 2) * (1 - v) + 1;
             table[i] = Js.coerceToInt(255 * v);
         }
         return new FilterTableArray(table);
-    };
+    }
+
+    ;
 
     @Override
-    public IFactory<GainImageDataFilter> getFactory()
-    {
+    public IFactory<GainImageDataFilter> getFactory() {
         return new GainImageDataFilterFactory();
     }
 
-    public static class GainImageDataFilterFactory extends TableImageDataFilterFactory<GainImageDataFilter>
-    {
-        public GainImageDataFilterFactory()
-        {
+    public static class GainImageDataFilterFactory extends TableImageDataFilterFactory<GainImageDataFilter> {
+
+        public GainImageDataFilterFactory() {
             super(ImageFilterType.GainImageDataFilterType);
 
             addAttribute(Attribute.GAIN, true);

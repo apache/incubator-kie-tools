@@ -16,53 +16,45 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.tools.common.api.types.Activatable;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.common.api.types.Activatable;
 
-public abstract class AbstractControlHandle extends Activatable implements IControlHandle
-{
+public abstract class AbstractControlHandle extends Activatable implements IControlHandle {
+
     private final HandlerRegistrationManager m_manage = new HandlerRegistrationManager();
 
-    protected AbstractControlHandle()
-    {
+    protected AbstractControlHandle() {
         super(true);
     }
 
-    protected HandlerRegistration register(final HandlerRegistration handler)
-    {
+    protected HandlerRegistration register(final HandlerRegistration handler) {
         return m_manage.register(handler);
     }
 
-    protected void deregister(final HandlerRegistrationManager manager)
-    {
-        if (null != manager)
-        {
+    protected void deregister(final HandlerRegistrationManager manager) {
+        if (null != manager) {
             manager.deregister(m_manage);
         }
     }
 
-    protected void deregister(final HandlerRegistration handler)
-    {
+    protected void deregister(final HandlerRegistration handler) {
         m_manage.deregister(handler);
     }
 
     @Override
-    public void destroy()
-    {
+    public void destroy() {
         IPrimitive<?> prim = getControl();
 
-        if (null != prim)
-        {
+        if (null != prim) {
             prim.removeFromParent();
         }
         m_manage.destroy();
     }
 
     @Override
-    public final HandlerRegistrationManager getHandlerRegistrationManager()
-    {
+    public final HandlerRegistrationManager getHandlerRegistrationManager() {
         return m_manage;
     }
 }

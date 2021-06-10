@@ -18,50 +18,43 @@ package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Viewport;
-
 import elemental2.dom.HTMLElement;
 
-public class ViewportTransformChangedEvent extends AbstractNodeHumanInputEvent<ViewportTransformChangedHandler, Node>
-{
+public class ViewportTransformChangedEvent extends AbstractNodeHumanInputEvent<ViewportTransformChangedHandler, Node> {
+
     private static final Type<ViewportTransformChangedHandler> TYPE = new Type<>();
-    
+
     private Viewport m_viewport;
 
-    public static final Type<ViewportTransformChangedHandler> getType()
-    {
+    public static final Type<ViewportTransformChangedHandler> getType() {
         return TYPE;
     }
 
-    public ViewportTransformChangedEvent(final HTMLElement relativeElement)
-    {
+    public ViewportTransformChangedEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
-    public void override(final Viewport viewport)
-    {
+    public void override(final Viewport viewport) {
         m_viewport = viewport;
     }
 
     /**
      * Returns the Viewport whose Transform was changed
      * (probably due to a zoom operation.)
-     * 
+     *
      * @return Viewport
      */
-    public final Viewport getViewport()
-    {
+    public final Viewport getViewport() {
         return m_viewport;
     }
 
     @Override
-    public final Type<ViewportTransformChangedHandler> getAssociatedType()
-    {
+    public final Type<ViewportTransformChangedHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    public void dispatch(final ViewportTransformChangedHandler handler)
-    {
+    public void dispatch(final ViewportTransformChangedHandler handler) {
         handler.onViewportTransformChanged(this);
     }
 }

@@ -21,7 +21,6 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-
 import elemental2.core.Uint8ClampedArray;
 import elemental2.dom.ImageData;
 import jsinterop.base.Js;
@@ -29,37 +28,30 @@ import jsinterop.base.Js;
 /**
  * A class that allows for easy creation of a Invert Color Image Filter.
  */
-public class InvertColorImageDataFilter extends AbstractImageDataFilter<InvertColorImageDataFilter>
-{
-    public InvertColorImageDataFilter()
-    {
+public class InvertColorImageDataFilter extends AbstractImageDataFilter<InvertColorImageDataFilter> {
+
+    public InvertColorImageDataFilter() {
         super(ImageFilterType.InvertColorImageDataFilterType);
     }
 
-    protected InvertColorImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
-    {
+    protected InvertColorImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
         super(ImageFilterType.InvertColorImageDataFilterType, node, ctx);
     }
 
     @Override
-    public ImageData filter(ImageData source, boolean copy)
-    {
-        if (null == source)
-        {
+    public ImageData filter(ImageData source, boolean copy) {
+        if (null == source) {
             return null;
         }
-        if (copy)
-        {
+        if (copy) {
             source = ImageDataUtil.copy(source);
         }
-        if (!isActive())
-        {
+        if (!isActive()) {
             return source;
         }
         final Uint8ClampedArray data = source.data;
 
-        if (null == data)
-        {
+        if (null == data) {
             return source;
         }
         filter_(data, FilterCommonOps.getLength(source));
@@ -67,27 +59,24 @@ public class InvertColorImageDataFilter extends AbstractImageDataFilter<InvertCo
         return source;
     }
 
-    private final void filter_(Uint8ClampedArray dataArray, int length)
-    {
+    private final void filter_(Uint8ClampedArray dataArray, int length) {
         //int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
         int[] data = Js.uncheckedCast(dataArray);
-    	for (int i = 0; i < length; i += 4) {
-    		data[  i  ] = 255 - data[  i  ];
-    		data[i + 1] = 255 - data[i + 1];
-    		data[i + 2] = 255 - data[i + 2];
-    	}
+        for (int i = 0; i < length; i += 4) {
+            data[i] = 255 - data[i];
+            data[i + 1] = 255 - data[i + 1];
+            data[i + 2] = 255 - data[i + 2];
+        }
     }
 
     @Override
-    public IFactory<InvertColorImageDataFilter> getFactory()
-    {
+    public IFactory<InvertColorImageDataFilter> getFactory() {
         return new InvertColorImageDataFilterFactory();
     }
 
-    public static class InvertColorImageDataFilterFactory extends ImageDataFilterFactory<InvertColorImageDataFilter>
-    {
-        public InvertColorImageDataFilterFactory()
-        {
+    public static class InvertColorImageDataFilterFactory extends ImageDataFilterFactory<InvertColorImageDataFilter> {
+
+        public InvertColorImageDataFilterFactory() {
             super(ImageFilterType.InvertColorImageDataFilterType);
         }
     }

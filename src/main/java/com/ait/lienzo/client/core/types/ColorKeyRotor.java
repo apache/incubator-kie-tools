@@ -18,38 +18,33 @@ package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.shared.core.types.Color;
 
-public final class ColorKeyRotor
-{
+public final class ColorKeyRotor {
+
     public static final int COLOR_SPACE_MAXIMUM = 256 * 256 * 256;
 
-    private int             m_r_color           = 0;
+    private int m_r_color = 0;
 
-    private int             m_g_color           = 0;
+    private int m_g_color = 0;
 
-    private int             m_b_color           = 0;
+    private int m_b_color = 0;
 
-    public ColorKeyRotor()
-    {
+    public ColorKeyRotor() {
     }
 
-    public String next()
-    {
+    public String next() {
         m_r_color += 16;
 
-        if (m_r_color >= 256)
-        {
+        if (m_r_color >= 256) {
             m_r_color = m_r_color - 255;
 
             m_g_color += 16;
 
-            if (m_g_color >= 256)
-            {
+            if (m_g_color >= 256) {
                 m_g_color = m_g_color - 255;
 
                 m_b_color += 16;
 
-                if (m_b_color >= 256)
-                {
+                if (m_b_color >= 256) {
                     m_b_color = m_b_color - 255;
 
                     return next();

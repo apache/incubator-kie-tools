@@ -24,28 +24,24 @@ import com.ait.lienzo.shared.core.types.ImageFilterType;
 /**
  * A class that allows for easy creation of a Sharpen Image Filter.
  */
-public class BumpImageDataFilter extends AbstractConvolveImageDataFilter<BumpImageDataFilter>
-{
-    public BumpImageDataFilter()
-    {
+public class BumpImageDataFilter extends AbstractConvolveImageDataFilter<BumpImageDataFilter> {
+
+    public BumpImageDataFilter() {
         super(ImageFilterType.BumpImageDataFilterType, -1, -1, 0, -1, 1, 1, 0, 1, 1);
     }
 
-    protected BumpImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
-    {
+    protected BumpImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
         super(ImageFilterType.BumpImageDataFilterType, node, ctx);
     }
 
     @Override
-    public IFactory<BumpImageDataFilter> getFactory()
-    {
+    public IFactory<BumpImageDataFilter> getFactory() {
         return new BumpImageDataFilterFactory();
     }
 
-    public static class BumpImageDataFilterFactory extends ConvolveImageDataFilterFactory<BumpImageDataFilter>
-    {
-        public BumpImageDataFilterFactory()
-        {
+    public static class BumpImageDataFilterFactory extends ConvolveImageDataFilterFactory<BumpImageDataFilter> {
+
+        public BumpImageDataFilterFactory() {
             super(ImageFilterType.BumpImageDataFilterType);
         }
     }

@@ -16,9 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-public interface IContainmentAcceptor
-{
-    IContainmentAcceptor ALL  = new DefaultContainmentAcceptor(true);
+public interface IContainmentAcceptor {
+
+    IContainmentAcceptor ALL = new DefaultContainmentAcceptor(true);
 
     IContainmentAcceptor NONE = new DefaultContainmentAcceptor(false);
 
@@ -26,26 +26,22 @@ public interface IContainmentAcceptor
 
     boolean acceptContainment(WiresContainer parent, WiresShape[] children);
 
-    class DefaultContainmentAcceptor implements IContainmentAcceptor
-    {
+    class DefaultContainmentAcceptor implements IContainmentAcceptor {
+
         final private boolean m_defaultValue;
 
-        private DefaultContainmentAcceptor(final boolean defaultValue)
-        {
+        private DefaultContainmentAcceptor(final boolean defaultValue) {
             m_defaultValue = defaultValue;
         }
 
         @Override
-        public boolean containmentAllowed(WiresContainer parent, WiresShape[] children)
-        {
+        public boolean containmentAllowed(WiresContainer parent, WiresShape[] children) {
             return m_defaultValue;
         }
 
         @Override
-        public boolean acceptContainment(WiresContainer parent, WiresShape[] children)
-        {
+        public boolean acceptContainment(WiresContainer parent, WiresShape[] children) {
             return m_defaultValue;
         }
-
     }
 }

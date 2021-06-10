@@ -17,23 +17,22 @@ package com.ait.lienzo.client.core.shape.wires.layout.size;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.layout.AbstractContainerLayout;
 import com.ait.lienzo.client.core.shape.wires.layout.size.SizeConstraints.Type;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import java.util.function.BiFunction;
 
 public class SizeConstraintsContainerLayout extends AbstractContainerLayout<SizeConstraints>
-        implements IMaxSizeLayout<SizeConstraints>
-{
+        implements IMaxSizeLayout<SizeConstraints> {
+
     private static final Map<Type, BiFunction<SizeConstraints, BoundingBox, BoundingBox>> SIZE_BUILDERS = sizeBuilders();
 
-    private static Map<Type, BiFunction<SizeConstraints, BoundingBox, BoundingBox>> sizeBuilders()
-    {
+    private static Map<Type, BiFunction<SizeConstraints, BoundingBox, BoundingBox>> sizeBuilders() {
         final Map<Type, BiFunction<SizeConstraints, BoundingBox, BoundingBox>> sizeBuilders = new HashMap<>();
         sizeBuilders.put(Type.RAW, (sizeConstraints, parentBoundingBox) -> BoundingBox.fromDoubles(0, 0, sizeConstraints.getWidth() - sizeConstraints.getMarginX(),
-                                                                                           sizeConstraints.getHeight() - sizeConstraints.getMarginY()));
+                                                                                                   sizeConstraints.getHeight() - sizeConstraints.getMarginY()));
         sizeBuilders.put(Type.PERCENTAGE, (sizeConstraints, parentBoundingBox) -> {
             double width = sizeConstraints.getWidth() * (parentBoundingBox.getWidth() / 100) - sizeConstraints
                     .getMarginX();
@@ -44,25 +43,21 @@ public class SizeConstraintsContainerLayout extends AbstractContainerLayout<Size
         return sizeBuilders;
     }
 
-    public SizeConstraintsContainerLayout(final IPrimitive parentBoundingBox)
-    {
+    public SizeConstraintsContainerLayout(final IPrimitive parentBoundingBox) {
         super(parentBoundingBox);
     }
 
     @Override
-    public BoundingBox getMaxSize(final IPrimitive<?> child)
-    {
+    public BoundingBox getMaxSize(final IPrimitive<?> child) {
         final SizeConstraints layout = getLayout(child);
-        if (layout == null)
-        {
+        if (layout == null) {
             return new BoundingBox();
         }
         return SIZE_BUILDERS.get(layout.getType()).apply(layout, getParentBoundingBox());
     }
 
     @Override
-    public SizeConstraints getDefaultLayout()
-    {
+    public SizeConstraints getDefaultLayout() {
         return new SizeConstraints(100, 100, Type.PERCENTAGE);
     }
 }

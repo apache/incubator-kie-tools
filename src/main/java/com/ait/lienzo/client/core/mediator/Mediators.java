@@ -29,13 +29,13 @@ import elemental2.dom.UIEvent;
 
 /**
  * Mediators maintains a list (or stack) of {@link IMediator} instances.
- * 
- * These mediators can be used to intercept the events in the 
+ * <p>
+ * These mediators can be used to intercept the events in the
  * {@link Viewport} of a {@link LienzoPanel}.
  * Mediators are typically used for zooming or rubberbanding operations.
  * <p>
  * The mediators are processed in the order of the (internal) list.
- * To insert a new mediator into the start of the list (at position 0), 
+ * To insert a new mediator into the start of the list (at position 0),
  * use the {@link #push(IMediator) push} method.
  * To remove the first one, use the {@link #pop() pop} method.
  * The {@link #add(int, IMediator) addBoundingBox} and {@link #remove(IMediator) remove} methods can be used for more finer grained control.
@@ -45,56 +45,47 @@ import elemental2.dom.UIEvent;
  * <li>{@link IMediator#handleEvent(GwtEvent) handleEvent(GwtEvent)} - acts on the event if needed, and returns true if it did
  * <li>{@link IMediator#cancel() cancel()} - terminates the current operation and resets the internal state of the mediator for future use
  * </ul>
- * 
+ * <p>
  * See the built-in mediators:
  * <ul>
  * <li>{@link MouseBoxZoomMediator}
- * <li>{@link MouseWheelZoomMediator} 
+ * <li>{@link MouseWheelZoomMediator}
  * <li>{@link MouseSwipeZoomMediator}
  * </ul>
- * 
+ *
  * @see LienzoPanelHandlerManager
  * @see IMediator
  * @see Viewport#pushMediator(IMediator)
  * @see Viewport#getMediators()
- * 
  * @since 1.1
  */
-public final class Mediators implements Iterable<IMediator>
-{
-    private final Viewport                  m_viewport;
+public final class Mediators implements Iterable<IMediator> {
 
-    private int                             m_size      = 0;
+    private final Viewport m_viewport;
 
-    private boolean                         m_enabled   = true;
+    private int m_size = 0;
+
+    private boolean m_enabled = true;
 
     private final NFastArrayList<IMediator> m_mediators = new NFastArrayList<>();
 
-    public Mediators(final Viewport viewport)
-    {
+    public Mediators(final Viewport viewport) {
         m_viewport = viewport;
     }
 
-    public void push(final IMediator mediator)
-    {
-    	if (null != mediator)
-        {
-            if (mediator instanceof AbstractMediator)
-            {
+    public void push(final IMediator mediator) {
+        if (null != mediator) {
+            if (mediator instanceof AbstractMediator) {
                 ((AbstractMediator) mediator).setViewport(m_viewport);
             }
             m_mediators.push(mediator);
 
             m_size = m_mediators.size();
         }
-    	
-    	
     }
 
-    public IMediator pop()
-    {
-        if (m_size == 0)
-        {
+    public IMediator pop() {
+        if (m_size == 0) {
             return null;
         }
         final IMediator last = m_mediators.shift();
@@ -104,12 +95,9 @@ public final class Mediators implements Iterable<IMediator>
         return last;
     }
 
-    public void add(final int index, final IMediator mediator)
-    {
-        if (null != mediator)
-        {
-            if (mediator instanceof AbstractMediator)
-            {
+    public void add(final int index, final IMediator mediator) {
+        if (null != mediator) {
+            if (mediator instanceof AbstractMediator) {
                 ((AbstractMediator) mediator).setViewport(m_viewport);
             }
             m_mediators.splice(index, 0, mediator);
@@ -118,8 +106,7 @@ public final class Mediators implements Iterable<IMediator>
         }
     }
 
-    public boolean remove(final IMediator mediator)
-    {
+    public boolean remove(final IMediator mediator) {
         final boolean removed = m_mediators.contains(mediator);
 
         m_mediators.remove(mediator);
@@ -129,16 +116,12 @@ public final class Mediators implements Iterable<IMediator>
         return removed;
     }
 
-    public <H extends EventHandler> boolean handleEvent(Type<H> type, final UIEvent event, int x, int y)
-    {
-        if ((m_size > 0) && (m_enabled))
-        {
-            for (int i = 0; i < m_size; i++)
-            {
+    public <H extends EventHandler> boolean handleEvent(Type<H> type, final UIEvent event, int x, int y) {
+        if ((m_size > 0) && (m_enabled)) {
+            for (int i = 0; i < m_size; i++) {
                 final IMediator mediator = m_mediators.get(i);
 
-                if ((null != mediator) && (mediator.isEnabled()) && (mediator.handleEvent(type, event, x, y)))
-                {
+                if ((null != mediator) && (mediator.isEnabled()) && (mediator.handleEvent(type, event, x, y))) {
                     return true;
                 }
             }
@@ -146,19 +129,16 @@ public final class Mediators implements Iterable<IMediator>
         return false;
     }
 
-    public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         return m_enabled;
     }
 
-    public void setEnabled(final boolean enabled)
-    {
+    public void setEnabled(final boolean enabled) {
         m_enabled = enabled;
     }
 
     @Override
-    public Iterator<IMediator> iterator()
-    {
+    public Iterator<IMediator> iterator() {
         return new NFastArrayListIterator<>(m_mediators);
     }
 }

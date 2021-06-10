@@ -21,41 +21,33 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-
 import elemental2.core.Uint8ClampedArray;
 import elemental2.dom.ImageData;
 
-public abstract class AbstractValueTableImageDataFilter<T extends AbstractValueTableImageDataFilter<T>> extends AbstractValueImageDataFilter<T>
-{
-    protected AbstractValueTableImageDataFilter(final ImageFilterType type, final double value)
-    {
+public abstract class AbstractValueTableImageDataFilter<T extends AbstractValueTableImageDataFilter<T>> extends AbstractValueImageDataFilter<T> {
+
+    protected AbstractValueTableImageDataFilter(final ImageFilterType type, final double value) {
         super(type, value);
     }
 
-    protected AbstractValueTableImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException
-    {
+    protected AbstractValueTableImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException {
         super(type, node, ctx);
     }
 
     @Override
-    public ImageData filter(ImageData source, final boolean copy)
-    {
-        if (null == source)
-        {
+    public ImageData filter(ImageData source, final boolean copy) {
+        if (null == source) {
             return null;
         }
-        if (copy)
-        {
+        if (copy) {
             source = ImageDataUtil.copy(source);
         }
-        if (false == isActive())
-        {
+        if (false == isActive()) {
             return source;
         }
         final Uint8ClampedArray data = source.data;
 
-        if (null == data)
-        {
+        if (null == data) {
             return source;
         }
         FilterCommonOps.doFilterTable(data, getTable(getValue()), source.width, source.height);
@@ -64,17 +56,15 @@ public abstract class AbstractValueTableImageDataFilter<T extends AbstractValueT
     }
 
     @Override
-    public final boolean isTransforming()
-    {
+    public final boolean isTransforming() {
         return true;
     }
 
     protected abstract FilterTableArray getTable(double value);
 
-    protected static abstract class ValueTableImageDataFilterFactory<T extends AbstractValueTableImageDataFilter<T>> extends ImageDataFilterFactory<T>
-    {
-        protected ValueTableImageDataFilterFactory(final ImageFilterType type)
-        {
+    protected static abstract class ValueTableImageDataFilterFactory<T extends AbstractValueTableImageDataFilter<T>> extends ImageDataFilterFactory<T> {
+
+        protected ValueTableImageDataFilterFactory(final ImageFilterType type) {
             super(type);
 
             addAttribute(Attribute.VALUE, true);

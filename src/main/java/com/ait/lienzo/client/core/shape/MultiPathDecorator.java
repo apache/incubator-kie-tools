@@ -6,9 +6,10 @@ import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 
 public class MultiPathDecorator {
+
     MultiPath m_path;
-    double    m_width;
-    double    m_height;
+    double m_width;
+    double m_height;
 
     public MultiPathDecorator(MultiPath path) {
         m_path = path;
@@ -34,9 +35,7 @@ public class MultiPathDecorator {
         m_path.setRotation(angle);
     }
 
-    public MultiPathDecorator copy()
-    {
+    public MultiPathDecorator copy() {
         return new MultiPathDecorator(MultiPath.clonePath(m_path));
     }
-
 }

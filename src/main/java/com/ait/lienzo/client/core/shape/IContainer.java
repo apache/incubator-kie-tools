@@ -16,26 +16,27 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.function.Predicate;
+
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
-import java.util.function.Predicate;
 
 /**
- * Interface to be implemented by all primitive collections. 
+ * Interface to be implemented by all primitive collections.
  */
-public interface IContainer<T extends IContainer<T, M>, M> extends IDrawable<T>
-{
+public interface IContainer<T extends IContainer<T, M>, M> extends IDrawable<T> {
+
     /**
      * Gets all nodes in this container.
-     * 
+     *
      * @return FastArrayList
      */
     NFastArrayList<M> getChildNodes();
 
     /**
      * Gets all nodes in this container.
-     * 
+     *
      * @return FastArrayList
      */
     NFastArrayList<M> getChildNodes(BoundingBox bounds);
@@ -56,14 +57,14 @@ public interface IContainer<T extends IContainer<T, M>, M> extends IDrawable<T>
 
     /**
      * Adds a node to this container
-     * 
+     *
      * @param node
      */
     T add(M node);
 
     /**
      * Adds a node to this container
-     * 
+     *
      * @param node
      */
     @SuppressWarnings("unchecked")
@@ -71,7 +72,7 @@ public interface IContainer<T extends IContainer<T, M>, M> extends IDrawable<T>
 
     /**
      * Removes the given node from the container.
-     * 
+     *
      * @param node
      */
     T remove(M node);
@@ -83,34 +84,35 @@ public interface IContainer<T extends IContainer<T, M>, M> extends IDrawable<T>
 
     /**
      * Moves the node one layer up.
-     * 
+     *
      * @param node
      */
     T moveUp(M node);
 
     /**
      * Modes the node one layer down
-     * 
+     *
      * @param node
      */
     T moveDown(M node);
 
     /**
      * Moves the node to the top of the layer stack
-     * 
+     *
      * @param node
      */
     T moveToTop(M node);
 
     /**
      * Moves the node to the bottom of the layer stack
+     *
      * @param node
      */
     T moveToBottom(M node);
 
     /**
      * Searches and returns all {@link Node} that match the {@link INodeFilter}
-     * 
+     *
      * @param filter
      * @return ArrayList
      */
@@ -118,7 +120,7 @@ public interface IContainer<T extends IContainer<T, M>, M> extends IDrawable<T>
 
     /**
      * Searches and returns all {@link Node} that have a matching ID {@link INodeFilter}
-     * 
+     *
      * @param filter
      * @return ArrayList
      */
@@ -126,7 +128,7 @@ public interface IContainer<T extends IContainer<T, M>, M> extends IDrawable<T>
 
     /**
      * Returns the number of items in this container
-     * 
+     *
      * @return int
      */
     int length();

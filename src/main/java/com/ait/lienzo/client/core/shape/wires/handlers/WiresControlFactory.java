@@ -52,5 +52,4 @@ public interface WiresControlFactory {
      * Creates a new wires index..
      */
     WiresLayerIndex newIndex(WiresManager manager);
-
 }

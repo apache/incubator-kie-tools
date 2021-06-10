@@ -22,8 +22,8 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 @JsType
-public final class BoundingBox
-{
+public final class BoundingBox {
+
     @JsProperty
     private double minx;
 
@@ -36,8 +36,7 @@ public final class BoundingBox
     @JsProperty
     private double maxy;
 
-    public BoundingBox()
-    {
+    public BoundingBox() {
 
         minx = Double.MAX_VALUE;
         miny = Double.MAX_VALUE;
@@ -45,13 +44,11 @@ public final class BoundingBox
         maxy = -Double.MAX_VALUE;
     }
 
-    public static BoundingBox fromBoundingBox(final BoundingBox bbox)
-    {
-        return fromDoubles(bbox.minx, bbox.miny, bbox.maxx,bbox.maxy);
+    public static BoundingBox fromBoundingBox(final BoundingBox bbox) {
+        return fromDoubles(bbox.minx, bbox.miny, bbox.maxx, bbox.maxy);
     }
 
-    public static BoundingBox fromDoubles(final double minx, final double miny, final double maxx, final double maxy)
-    {
+    public static BoundingBox fromDoubles(final double minx, final double miny, final double maxx, final double maxy) {
         BoundingBox box = new BoundingBox();
         box.addX(minx);
         box.addY(miny);
@@ -61,16 +58,14 @@ public final class BoundingBox
         return box;
     }
 
-    public static BoundingBox fromArrayOfPoint2D(final Point2D... points)
-    {
+    public static BoundingBox fromArrayOfPoint2D(final Point2D... points) {
         BoundingBox box = new BoundingBox();
         box.addDoubles(points);
 
         return box;
     }
 
-    public static BoundingBox fromPoint2DArray(final Point2DArray points)
-    {
+    public static BoundingBox fromPoint2DArray(final Point2DArray points) {
         BoundingBox box = new BoundingBox();
         box.addPoint2DArray(points);
 
@@ -82,57 +77,49 @@ public final class BoundingBox
 //        m_jso = Objects.requireNonNull(jso);
 //    }
 
-    public final boolean isValid()
-    {
+    public final boolean isValid() {
         final double minx = getMinX();
 
         final double maxx = getMaxX();
 
-        if ((maxx <= minx) || (maxx == -Double.MAX_VALUE) || (minx == Double.MAX_VALUE))
-        {
+        if ((maxx <= minx) || (maxx == -Double.MAX_VALUE) || (minx == Double.MAX_VALUE)) {
             return false;
         }
         final double miny = getMinY();
 
         final double maxy = getMaxY();
 
-        if ((maxy <= miny) || (maxy == -Double.MAX_VALUE) || (miny == Double.MAX_VALUE))
-        {
+        if ((maxy <= miny) || (maxy == -Double.MAX_VALUE) || (miny == Double.MAX_VALUE)) {
             return false;
         }
         return true;
     }
 
-    public final BoundingBox addX(final double x)
-    {
+    public final BoundingBox addX(final double x) {
         if (x < this.minx) {
             this.minx = x;
         }
 
-        if (x > this.maxx)
-        {
+        if (x > this.maxx) {
             this.maxx = x;
         }
 
         return this;
     }
 
-    public final BoundingBox addY(final double y)
-    {
+    public final BoundingBox addY(final double y) {
         if (y < this.miny) {
             this.miny = y;
         }
 
-        if (y > this.maxy)
-        {
+        if (y > this.maxy) {
             this.maxy = y;
         }
 
         return this;
     }
 
-    public final BoundingBox add(final double x, final double y)
-    {
+    public final BoundingBox add(final double x, final double y) {
         addX(x);
 
         addY(y);
@@ -140,10 +127,8 @@ public final class BoundingBox
         return this;
     }
 
-    public final BoundingBox addBoundingBox(final BoundingBox bbox)
-    {
-        if (null != bbox)
-        {
+    public final BoundingBox addBoundingBox(final BoundingBox bbox) {
+        if (null != bbox) {
             addX(bbox.getMinX());
 
             addY(bbox.getMinY());
@@ -155,18 +140,14 @@ public final class BoundingBox
         return this;
     }
 
-    public final BoundingBox addDoubles(final Point2D... points)
-    {
-        if (null != points)
-        {
+    public final BoundingBox addDoubles(final Point2D... points) {
+        if (null != points) {
             final int size = points.length;
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 final Point2D p = points[i];
 
-                if (null != p)
-                {
+                if (null != p) {
                     addX(p.getX());
 
                     addY(p.getY());
@@ -176,18 +157,14 @@ public final class BoundingBox
         return this;
     }
 
-    public final BoundingBox addPoint2DArray(final Point2DArray points)
-    {
-        if (null != points)
-        {
+    public final BoundingBox addPoint2DArray(final Point2DArray points) {
+        if (null != points) {
             final int size = points.size();
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 final Point2D p = points.get(i);
 
-                if (null != p)
-                {
+                if (null != p) {
                     addX(p.getX());
 
                     addY(p.getY());
@@ -197,10 +174,8 @@ public final class BoundingBox
         return this;
     }
 
-    public final BoundingBox addPoint2D(final Point2D point)
-    {
-        if (null != point)
-        {
+    public final BoundingBox addPoint2D(final Point2D point) {
+        if (null != point) {
             addX(point.getX());
 
             addY(point.getY());
@@ -208,87 +183,68 @@ public final class BoundingBox
         return this;
     }
 
-    public final double getX()
-    {
+    public final double getX() {
         return this.minx;
     }
 
-    public final double getY()
-    {
+    public final double getY() {
         return this.miny;
     }
 
-    public final double getWidth()
-    {
+    public final double getWidth() {
         return Math.abs(getMaxX() - getMinX());
     }
 
-    public final double getHeight()
-    {
+    public final double getHeight() {
         return Math.abs(getMaxY() - getMinY());
     }
 
-    public final double getMinX()
-    {
+    public final double getMinX() {
         return this.minx;
     }
 
-    public final double getMaxX()
-    {
+    public final double getMaxX() {
         return this.maxx;
     }
 
-    public final double getMinY()
-    {
+    public final double getMinY() {
         return this.miny;
     }
 
-    public final double getMaxY()
-    {
+    public final double getMaxY() {
         return this.maxy;
     }
 
-    public final boolean intersects(BoundingBox other)
-    {
-        if (getMaxX() < other.getMinX())
-        {
+    public final boolean intersects(BoundingBox other) {
+        if (getMaxX() < other.getMinX()) {
             return false; // this is left of other
         }
-        if (getMinX() > other.getMaxX())
-        {
+        if (getMinX() > other.getMaxX()) {
             return false; // this is right of other
         }
-        if (getMaxY() < other.getMinY())
-        {
+        if (getMaxY() < other.getMinY()) {
             return false; // this is above other
         }
-        if (getMinY() > other.getMaxY())
-        {
+        if (getMinY() > other.getMaxY()) {
             return false; // this is below other
         }
         return true; // boxes overlap
     }
 
-    public final boolean containsBoundingBox(BoundingBox other)
-    {
-        if (getMinX() <= other.getMinX() && getMaxX() >= other.getMaxX() && getMinY() <= other.getMinY() && getMaxY() >= other.getMaxY())
-        {
+    public final boolean containsBoundingBox(BoundingBox other) {
+        if (getMinX() <= other.getMinX() && getMaxX() >= other.getMaxX() && getMinY() <= other.getMinY() && getMaxY() >= other.getMaxY()) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
-    public final boolean containsPoint(Point2D p)
-    {
+    public final boolean containsPoint(Point2D p) {
         return getMinX() <= p.getX() && getMaxX() >= p.getX() &&
-               getMinY() <= p.getY() && getMaxY() >= p.getY();
+                getMinY() <= p.getY() && getMaxY() >= p.getY();
     }
 
-    public final String toJSONString()
-    {
+    public final String toJSONString() {
         // TODO: lienzo-to-native
 
         return "{" + getX() + ", " + getY() + ", " + getWidth() + ", " + getHeight() + "}";
@@ -312,14 +268,11 @@ public final class BoundingBox
     }
 
     @Override
-    public final boolean equals(final Object other)
-    {
-        if ((other == null) || (!(other instanceof BoundingBox)))
-        {
+    public final boolean equals(final Object other) {
+        if ((other == null) || (!(other instanceof BoundingBox))) {
             return false;
         }
-        if (this == other)
-        {
+        if (this == other) {
             return true;
         }
         final BoundingBox that = ((BoundingBox) other);
@@ -336,8 +289,7 @@ public final class BoundingBox
         return boundingBox;
     }
 
-    public void offset(int dx, int dy)
-    {
+    public void offset(int dx, int dy) {
         this.minx = this.minx + dx;
         this.maxx = this.maxx + dx;
         this.miny = this.miny + dy;

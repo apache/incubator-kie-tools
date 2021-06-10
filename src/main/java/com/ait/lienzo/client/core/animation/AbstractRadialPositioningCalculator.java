@@ -18,11 +18,10 @@ package com.ait.lienzo.client.core.animation;
 
 import com.ait.lienzo.client.core.types.Point2D;
 
-public abstract class AbstractRadialPositioningCalculator implements IPositioningCalculator
-{
+public abstract class AbstractRadialPositioningCalculator implements IPositioningCalculator {
+
     @Override
-    public final Point2D calculate(final double percent)
-    {
+    public final Point2D calculate(final double percent) {
         final double r = getRadius(percent);
 
         final double a = ((Math.PI * 2) * (getMultiplier(percent) * percent));
@@ -36,20 +35,17 @@ public abstract class AbstractRadialPositioningCalculator implements IPositionin
 
     public abstract double getRadius(double percent);
 
-    public double getMultiplier(double percent)
-    {
+    public double getMultiplier(double percent) {
         return 1;
     }
 
     @Override
-    public boolean isStateful()
-    {
+    public boolean isStateful() {
         return false;
     }
 
     @Override
-    public IPositioningCalculator copy()
-    {
+    public IPositioningCalculator copy() {
         return this;
     }
 }

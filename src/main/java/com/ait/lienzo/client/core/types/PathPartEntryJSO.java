@@ -21,23 +21,23 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 @JsType
-public class PathPartEntryJSO
-{
-    public static final int UNDEFINED_PATH_PART        = 0;
+public class PathPartEntryJSO {
 
-    public static final int LINETO_ABSOLUTE            = 1;
+    public static final int UNDEFINED_PATH_PART = 0;
 
-    public static final int MOVETO_ABSOLUTE            = 2;
+    public static final int LINETO_ABSOLUTE = 1;
 
-    public static final int BEZIER_CURVETO_ABSOLUTE    = 3;
+    public static final int MOVETO_ABSOLUTE = 2;
+
+    public static final int BEZIER_CURVETO_ABSOLUTE = 3;
 
     public static final int QUADRATIC_CURVETO_ABSOLUTE = 4;
 
-    public static final int ARCTO_ABSOLUTE             = 5;
+    public static final int ARCTO_ABSOLUTE = 5;
 
-    public static final int CLOSE_PATH_PART            = 6;
+    public static final int CLOSE_PATH_PART = 6;
 
-    public static final int CANVAS_ARCTO_ABSOLUTE      = 7;
+    public static final int CANVAS_ARCTO_ABSOLUTE = 7;
 
     @JsProperty
     private int command;
@@ -45,39 +45,32 @@ public class PathPartEntryJSO
     @JsProperty
     private double[] points;
 
-    public static final PathPartEntryJSO make(int command, double[] points)
-    {
+    public static final PathPartEntryJSO make(int command, double[] points) {
         return new PathPartEntryJSO(command, points);
     }
 
-    public PathPartEntryJSO(int command, double[] points)
-    {
+    public PathPartEntryJSO(int command, double[] points) {
         this.command = command;
         this.points = points;
     }
 
-    public final String toJSONString()
-    {
+    public final String toJSONString() {
         return Global.JSON.stringify(this);
     }
 
-    public final int getCommand()
-    {
+    public final int getCommand() {
         return this.command;
     }
 
-    public final double[] getPoints()
-    {
+    public final double[] getPoints() {
         return this.points;
     }
 
-    public final PathPartEntryJSO copy()
-    {
+    public final PathPartEntryJSO copy() {
         int command = getCommand();
 
         double[] cp = new double[points.length];
-        for (int i = 0; i < points.length; i++ )
-        {
+        for (int i = 0; i < points.length; i++) {
             cp[i] = points[i];
         }
 

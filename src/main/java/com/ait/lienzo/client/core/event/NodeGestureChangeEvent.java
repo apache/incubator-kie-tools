@@ -18,29 +18,25 @@ package com.ait.lienzo.client.core.event;
 
 import elemental2.dom.HTMLElement;
 
-public class NodeGestureChangeEvent extends AbstractNodeGestureEvent<NodeGestureChangeHandler>
-{
+public class NodeGestureChangeEvent extends AbstractNodeGestureEvent<NodeGestureChangeHandler> {
+
     private static final Type<NodeGestureChangeHandler> TYPE = new Type<>();
 
-    public static final Type<NodeGestureChangeHandler> getType()
-    {
+    public static final Type<NodeGestureChangeHandler> getType() {
         return TYPE;
     }
 
-    public NodeGestureChangeEvent(final HTMLElement relativeElement)
-    {
+    public NodeGestureChangeEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
     @Override
-    public final Type<NodeGestureChangeHandler> getAssociatedType()
-    {
+    public final Type<NodeGestureChangeHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    public void dispatch(final NodeGestureChangeHandler handler)
-    {
+    public void dispatch(final NodeGestureChangeHandler handler) {
         handler.onNodeGestureChange(this);
     }
 }

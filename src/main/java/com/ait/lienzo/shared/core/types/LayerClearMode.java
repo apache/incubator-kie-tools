@@ -18,43 +18,37 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-public enum LayerClearMode implements EnumWithValue
-{
-    CLEAR("clear-layer"), RESIZE("resize-layer");
+public enum LayerClearMode implements EnumWithValue {
+    CLEAR("clear-layer"),
+    RESIZE("resize-layer");
 
     private final String m_value;
 
     private static final EnumStringMap<LayerClearMode> LOOKUP_MAP = Statics.build(LayerClearMode.values());
 
-    private LayerClearMode(final String value)
-    {
+    private LayerClearMode(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
-    public static final LayerClearMode lookup(final String key)
-    {
+    public static final LayerClearMode lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, CLEAR);
     }
 
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(LayerClearMode.values());
     }
 
-    public static final List<LayerClearMode> getValues()
-    {
+    public static final List<LayerClearMode> getValues() {
         return Statics.getValues(LayerClearMode.values());
     }
 }

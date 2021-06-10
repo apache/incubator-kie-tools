@@ -26,18 +26,15 @@ import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import com.ait.lienzo.tools.client.collection.NFastStringMap;
-
 import elemental2.dom.ImageData;
 
-public class BackingColorMapUtils
-{
-    private BackingColorMapUtils()
-    {
+public class BackingColorMapUtils {
+
+    private BackingColorMapUtils() {
 
     }
 
-    public static ImageData drawShapesToBacking(NFastArrayList<WiresShape> prims, ScratchPad scratch, WiresContainer skip, NFastStringMap<WiresShape> shape_color_map)
-    {
+    public static ImageData drawShapesToBacking(NFastArrayList<WiresShape> prims, ScratchPad scratch, WiresContainer skip, NFastStringMap<WiresShape> shape_color_map) {
         scratch.clear();
         Context2D ctx = scratch.getContext();
 
@@ -47,47 +44,38 @@ public class BackingColorMapUtils
         return ctx.getImageData(0, 0, scratch.getWidth(), scratch.getHeight());
     }
 
-    public static void drawShapesToBacking(NFastArrayList<WiresShape> prims, Context2D ctx, WiresContainer skip, NFastStringMap<WiresShape> shape_color_map)
-    {
-        for (int j = 0; j < prims.size(); j++)
-        {
+    public static void drawShapesToBacking(NFastArrayList<WiresShape> prims, Context2D ctx, WiresContainer skip, NFastStringMap<WiresShape> shape_color_map) {
+        for (int j = 0; j < prims.size(); j++) {
             WiresShape prim = prims.get(j);
-            if (prim == skip)
-            {
+            if (prim == skip) {
                 continue;
             }
             drawShapeToBacking(ctx, prim, MagnetManager.m_c_rotor.next(), shape_color_map);
 
-            if (prim.getChildShapes() != null && !prim.getChildShapes().isEmpty())
-            {
+            if (prim.getChildShapes() != null && !prim.getChildShapes().isEmpty()) {
                 drawShapesToBacking(prim.getChildShapes(), ctx, skip, shape_color_map);
             }
         }
     }
 
-    public static void drawShapeToBacking(Context2D ctx, WiresShape shape, String color, NFastStringMap<WiresShape> m_shape_color_map)
-    {
+    public static void drawShapeToBacking(Context2D ctx, WiresShape shape, String color, NFastStringMap<WiresShape> m_shape_color_map) {
         m_shape_color_map.put(color, shape);
         drawShapeToBacking(ctx, shape, color);
     }
 
-    public static void drawShapeToBacking(Context2D ctx, WiresShape shape, String color)
-    {
+    public static void drawShapeToBacking(Context2D ctx, WiresShape shape, String color) {
         MultiPath multiPath = shape.getPath();
         drawShapeToBacking(ctx, shape, color, multiPath.getStrokeWidth(), true);
     }
 
-    public static void drawShapeToBacking(Context2D ctx, WiresShape shape, String color, double strokeWidth, boolean fill)
-    {
+    public static void drawShapeToBacking(Context2D ctx, WiresShape shape, String color, double strokeWidth, boolean fill) {
         drawShapeToBacking(ctx, shape.getPath(), color, strokeWidth, fill);
     }
 
-    public static void drawShapeToBacking(Context2D ctx, MultiPath multiPath, String color, double strokeWidth, boolean fill)
-    {
+    public static void drawShapeToBacking(Context2D ctx, MultiPath multiPath, String color, double strokeWidth, boolean fill) {
         NFastArrayList<PathPartList> listOfPaths = multiPath.getActualPathPartListArray();
 
-        for (int k = 0; k < listOfPaths.size(); k++)
-        {
+        for (int k = 0; k < listOfPaths.size(); k++) {
             PathPartList path = listOfPaths.get(k);
 
             ctx.setStrokeWidth(strokeWidth);
@@ -102,34 +90,28 @@ public class BackingColorMapUtils
             ctx.moveTo(offsetX, offsetY);
 
             boolean closed = false;
-            for (int i = 0; i < path.size(); i++)
-            {
+            for (int i = 0; i < path.size(); i++) {
                 PathPartEntryJSO entry = path.get(i);
                 double[] points = entry.getPoints();
 
-                switch (entry.getCommand())
-                {
-                    case PathPartEntryJSO.MOVETO_ABSOLUTE:
-                    {
+                switch (entry.getCommand()) {
+                    case PathPartEntryJSO.MOVETO_ABSOLUTE: {
                         ctx.moveTo(points[0] + offsetX, points[1] + offsetY);
                         break;
                     }
-                    case PathPartEntryJSO.LINETO_ABSOLUTE:
-                    {
+                    case PathPartEntryJSO.LINETO_ABSOLUTE: {
                         points = entry.getPoints();
                         double x0 = points[0] + offsetX;
                         double y0 = points[1] + offsetY;
                         ctx.lineTo(x0, y0);
                         break;
                     }
-                    case PathPartEntryJSO.CLOSE_PATH_PART:
-                    {
+                    case PathPartEntryJSO.CLOSE_PATH_PART: {
                         ctx.closePath();
                         closed = true;
                         break;
                     }
-                    case PathPartEntryJSO.CANVAS_ARCTO_ABSOLUTE:
-                    {
+                    case PathPartEntryJSO.CANVAS_ARCTO_ABSOLUTE: {
                         points = entry.getPoints();
 
                         double x0 = points[0] + offsetX;
@@ -141,8 +123,7 @@ public class BackingColorMapUtils
                         ctx.arcTo(x0, y0, x1, y1, r);
                         break;
                     }
-                    case PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE:
-                    {
+                    case PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE: {
                         points = entry.getPoints();
 
                         double x0 = points[0] + offsetX;
@@ -158,20 +139,17 @@ public class BackingColorMapUtils
                 }
             }
 
-            if (!closed)
-            {
+            if (!closed) {
                 ctx.closePath();
             }
-            if (fill)
-            {
+            if (fill) {
                 ctx.fill();
             }
             ctx.stroke();
         }
     }
 
-    public static String findColorAtPoint(final ImageData imageData, final int x, final int y)
-    {
+    public static String findColorAtPoint(final ImageData imageData, final int x, final int y) {
         //imageData.data.getAt()
 
         int red = ImageDataUtil.getRedAt(imageData, x, y);
@@ -179,8 +157,7 @@ public class BackingColorMapUtils
         int blue = ImageDataUtil.getBlueAt(imageData, x, y);
         int alpha = ImageDataUtil.getAlphaAt(imageData, x, y);
 
-        if (alpha != 255)
-        {
+        if (alpha != 255) {
             return null;
         }
         return Color.rgbToBrowserHexColor(red, green, blue);

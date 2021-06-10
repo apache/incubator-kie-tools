@@ -407,5 +407,4 @@ public class Style {
 
         public abstract String getCssName();
     }
-
 }

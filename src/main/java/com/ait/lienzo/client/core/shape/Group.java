@@ -22,56 +22,44 @@ import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.shape.storage.PrimitiveFastArrayStorageEngine;
 import com.ait.lienzo.shared.core.types.GroupType;
 
-public class Group extends GroupOf<IPrimitive<?>, Group>
-{
-    public Group()
-    {
+public class Group extends GroupOf<IPrimitive<?>, Group> {
+
+    public Group() {
         super(GroupType.GROUP, new PrimitiveFastArrayStorageEngine());
     }
 
-    public Group(final IStorageEngine<IPrimitive<?>> storage)
-    {
+    public Group(final IStorageEngine<IPrimitive<?>> storage) {
         super(GroupType.GROUP, storage);
     }
 
     @Override
-    public Group asGroup()
-    {
+    public Group asGroup() {
         return this;
     }
 
     @Override
-    public final IStorageEngine<IPrimitive<?>> getDefaultStorageEngine()
-    {
+    public final IStorageEngine<IPrimitive<?>> getDefaultStorageEngine() {
         return new PrimitiveFastArrayStorageEngine();
     }
 
-    public static class GroupFactory extends GroupOfFactory<IPrimitive<?>, Group>
-    {
-        public GroupFactory()
-        {
+    public static class GroupFactory extends GroupOfFactory<IPrimitive<?>, Group> {
+
+        public GroupFactory() {
             super(GroupType.GROUP);
         }
 
         @Override
-        public boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
-        {
+        public boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx) {
             final IPrimitive<?> prim = node.asPrimitive();
 
-            if (null != prim)
-            {
+            if (null != prim) {
                 container.asGroup().add(prim);
 
                 return true;
-            }
-            else
-            {
-                try
-                {
+            } else {
+                try {
                     ctx.addBadTypeError(node.getClass().getName() + " is not a Primitive");
-                }
-                catch (ValidationException e)
-                {
+                } catch (ValidationException e) {
                     return false;
                 }
             }

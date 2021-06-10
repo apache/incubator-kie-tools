@@ -21,65 +21,53 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-
 import elemental2.core.Uint8ClampedArray;
 import elemental2.dom.ImageData;
 import jsinterop.base.Js;
 
-public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<StackBlurImageDataFilter>
-{
-    public StackBlurImageDataFilter(int value)
-    {
+public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<StackBlurImageDataFilter> {
+
+    public StackBlurImageDataFilter(int value) {
         super(ImageFilterType.StackBlurImageDataFilterType, value);
     }
 
-    public StackBlurImageDataFilter()
-    {
+    public StackBlurImageDataFilter() {
         super(ImageFilterType.StackBlurImageDataFilterType, 1);
     }
 
-    protected StackBlurImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
-    {
+    protected StackBlurImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
         super(ImageFilterType.StackBlurImageDataFilterType, node, ctx);
     }
 
     @Override
-    public double getMinValue()
-    {
+    public double getMinValue() {
         return 0;
     }
 
     @Override
-    public double getMaxValue()
-    {
+    public double getMaxValue() {
         return 180;
     }
 
     @Override
-    public double getRefValue()
-    {
+    public double getRefValue() {
         return 1;
     }
 
     @Override
-    public ImageData filter(ImageData source, boolean copy)
-    {
-        if (null == source)
-        {
+    public ImageData filter(ImageData source, boolean copy) {
+        if (null == source) {
             return null;
         }
-        if (copy)
-        {
+        if (copy) {
             source = ImageDataUtil.copy(source);
         }
-        if (!isActive())
-        {
+        if (!isActive()) {
             return source;
         }
         final Uint8ClampedArray data = source.data;
 
-        if (null == data)
-        {
+        if (null == data) {
             return source;
         }
         filter_(data, source.width, source.height, (int) getValue(), FilterCommonOps);
@@ -88,6 +76,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
     }
 
     public static class BlurStack {
+
         public double r = 0;
         public double g = 0;
         public double b = 0;
@@ -95,8 +84,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
         public BlurStack next = null;
     }
 
-    private final void filter_(Uint8ClampedArray dataArray, int width, int height, int radius, ImageDataFilterCommonOps fops)
-    {
+    private final void filter_(Uint8ClampedArray dataArray, int width, int height, int radius, ImageDataFilterCommonOps fops) {
         //int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
         int[] data = Js.uncheckedCast(dataArray);
 
@@ -119,8 +107,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
         BlurStack stackEnd = null;
         for (i = 1; i < div; i++) {
             stack = stack.next = new BlurStack();
-            if (i == radiusPlus1)
-            {
+            if (i == radiusPlus1) {
                 stackEnd = stack;
             }
         }
@@ -136,7 +123,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
         for (y = 0; y < height; y++) {
             r_in_sum = g_in_sum = b_in_sum = r_sum = g_sum = b_sum = 0;
 
-            r_out_sum = radiusPlus1 * (pr = data[  yi  ]);
+            r_out_sum = radiusPlus1 * (pr = data[yi]);
             g_out_sum = radiusPlus1 * (pg = data[yi + 1]);
             b_out_sum = radiusPlus1 * (pb = data[yi + 2]);
 
@@ -154,7 +141,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
             }
             for (i = 1; i < radiusPlus1; i++) {
                 p = yi + ((widthMinus1 < i ? widthMinus1 : i) << 2);
-                r_sum += (stack.r = (pr = data[  p  ])) * (rbs = radiusPlus1 - i);
+                r_sum += (stack.r = (pr = data[p])) * (rbs = radiusPlus1 - i);
                 g_sum += (stack.g = (pg = data[p + 1])) * rbs;
                 b_sum += (stack.b = (pb = data[p + 2])) * rbs;
                 r_in_sum += pr;
@@ -165,7 +152,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
             stackIn = stackStart;
             stackOut = stackEnd;
             for (x = 0; x < width; x++) {
-                data[  yi  ] = (r_sum * mul_sum) >> shg_sum;
+                data[yi] = (r_sum * mul_sum) >> shg_sum;
                 data[yi + 1] = (g_sum * mul_sum) >> shg_sum;
                 data[yi + 2] = (b_sum * mul_sum) >> shg_sum;
                 r_sum -= r_out_sum;
@@ -205,7 +192,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
             g_in_sum = b_in_sum = r_in_sum = g_sum = b_sum = r_sum = 0;
 
             yi = x << 2;
-            r_out_sum = radiusPlus1 * (pr = data[  yi  ]);
+            r_out_sum = radiusPlus1 * (pr = data[yi]);
             g_out_sum = radiusPlus1 * (pg = data[yi + 1]);
             b_out_sum = radiusPlus1 * (pb = data[yi + 2]);
 
@@ -226,7 +213,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
             for (i = 1; i <= radius; i++) {
                 yi = (yp + x) << 2;
 
-                r_sum += (stack.r = (pr = data[  yi  ])) * (rbs = radiusPlus1 - i);
+                r_sum += (stack.r = (pr = data[yi])) * (rbs = radiusPlus1 - i);
                 g_sum += (stack.g = (pg = data[yi + 1])) * rbs;
                 b_sum += (stack.b = (pb = data[yi + 2])) * rbs;
 
@@ -245,7 +232,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
             stackOut = stackEnd;
             for (y = 0; y < height; y++) {
                 p = yi << 2;
-                data[  p  ] = (r_sum * mul_sum) >> shg_sum;
+                data[p] = (r_sum * mul_sum) >> shg_sum;
                 data[p + 1] = (g_sum * mul_sum) >> shg_sum;
                 data[p + 2] = (b_sum * mul_sum) >> shg_sum;
 
@@ -259,7 +246,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
 
                 p = (x + (((p = y + radiusPlus1) < heightMinus1 ? p : heightMinus1) * width)) << 2;
 
-                r_sum += (r_in_sum += (stackIn.r = data[  p  ]));
+                r_sum += (r_in_sum += (stackIn.r = data[p]));
                 g_sum += (g_in_sum += (stackIn.g = data[p + 1]));
                 b_sum += (b_in_sum += (stackIn.b = data[p + 2]));
 
@@ -281,15 +268,13 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
     }
 
     @Override
-    public IFactory<StackBlurImageDataFilter> getFactory()
-    {
+    public IFactory<StackBlurImageDataFilter> getFactory() {
         return new StackBlurImageDataFilterFactory();
     }
 
-    public static class StackBlurImageDataFilterFactory extends ValueImageDataFilterFactory<StackBlurImageDataFilter>
-    {
-        public StackBlurImageDataFilterFactory()
-        {
+    public static class StackBlurImageDataFilterFactory extends ValueImageDataFilterFactory<StackBlurImageDataFilter> {
+
+        public StackBlurImageDataFilterFactory() {
             super(ImageFilterType.StackBlurImageDataFilterType);
         }
     }

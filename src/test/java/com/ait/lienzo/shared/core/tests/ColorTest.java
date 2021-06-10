@@ -16,6 +16,10 @@
 
 package com.ait.lienzo.shared.core.tests;
 
+import com.ait.lienzo.shared.core.types.Color;
+import com.ait.lienzo.shared.core.types.ColorName;
+import org.junit.Test;
+
 import static com.ait.lienzo.shared.core.types.Color.fromColorString;
 import static com.ait.lienzo.shared.core.types.ColorName.ANTIQUEWHITE;
 import static com.ait.lienzo.shared.core.types.ColorName.BEIGE;
@@ -36,16 +40,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
+public class ColorTest {
 
-import com.ait.lienzo.shared.core.types.Color;
-import com.ait.lienzo.shared.core.types.ColorName;
-
-public class ColorTest
-{
     @Test
-    public void testHex2RGB()
-    {
+    public void testHex2RGB() {
         Color white = Color.hex2RGB("#fFFffF");
         assertEquals(WHITE.getColor(), white);
 
@@ -68,30 +66,25 @@ public class ColorTest
         assertEquals(BEIGE.getColor(), Color.hex2RGB(BEIGE.getHexColor()));
 
         assertNull(Color.hex2RGB("#XYZ"));
-
     }
 
     @Test
-    public void testGetRGB()
-    {
+    public void testGetRGB() {
         Color color = ANTIQUEWHITE.getColor();
         final String ANTIQUEWHITE_RGB = String.format("rgb(%s,%s,%s)", ANTIQUEWHITE.getR(), ANTIQUEWHITE.getG(), ANTIQUEWHITE.getB());
         assertEquals(ANTIQUEWHITE_RGB, color.getRGB());
     }
 
     @Test
-    public void testGetRGBA()
-    {
+    public void testGetRGBA() {
         Color color = BISQUE.getColor();
         final String BISQUE_RGBA = String.format("rgba(%s,%s,%s,%s)", BISQUE.getR(), BISQUE.getG(), BISQUE.getB(), BISQUE.getA());
         assertEquals(BISQUE_RGBA, color.getRGBA());
     }
 
     @Test
-    public void testGetRandomHexColor()
-    {
-        for (int i = 0; i < 1000; i++)
-        {
+    public void testGetRandomHexColor() {
+        for (int i = 0; i < 1000; i++) {
             String hex = Color.getRandomHexColor();
             assertEquals(7, hex.length());
             assertTrue(hex.startsWith("#"));
@@ -103,8 +96,7 @@ public class ColorTest
     }
 
     @Test
-    public void testBrightness()
-    {
+    public void testBrightness() {
         Color color = BROWN.getColor();
         assertEquals("rgb(165,42,42)", color.getRGB());
         assertEquals("rgb(216,93,93)", color.brightness(0.2).getRGB());
@@ -115,14 +107,12 @@ public class ColorTest
     }
 
     @Test
-    public void testToBrowserRGB()
-    {
+    public void testToBrowserRGB() {
         assertEquals(BISQUE.getColor().getRGB(), Color.toBrowserRGB(BISQUE.getR(), BISQUE.getG(), BISQUE.getB()));
     }
 
     @Test
-    public void testFromColorString()
-    {
+    public void testFromColorString() {
         assertEquals(ColorName.TRANSPARENT.getColor(), fromColorString("transparent"));
 
         assertNull(fromColorString("#1234567890"));
@@ -146,22 +136,19 @@ public class ColorTest
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testFromColorStringWithIllegalArgumentException()
-    {
+    public void testFromColorStringWithIllegalArgumentException() {
         assertEquals(SIENNA.getColor(), fromColorString("hsl(19.3, 56.1, 40.2)"));
     }
 
     @Test
-    public void testFromHSL()
-    {
+    public void testFromHSL() {
         assertEquals(SIENNA.getColor(), Color.fromHSL(19.3, 56.1, 40.2));
         assertEquals(BLACK.getColor(), Color.fromHSL(0, 0, 0));
         assertEquals(WHITE.getColor(), Color.fromHSL(0.0, 0.0, 100.0));
     }
 
     @Test
-    public void test()
-    {
+    public void test() {
         Color color = SIENNA.getColor();
         final String SIENNA_RGB = String.format("rgb(%s,%s,%s)", SIENNA.getR(), SIENNA.getG(), SIENNA.getB());
         assertEquals(color.getColorString(), SIENNA_RGB);
@@ -172,8 +159,7 @@ public class ColorTest
     }
 
     @Test
-    public void testEquals()
-    {
+    public void testEquals() {
         Color color = BEIGE.getColor();
         assertTrue(color.equals(color));
         assertTrue(color.equals(BEIGE.getColor()));
@@ -181,8 +167,7 @@ public class ColorTest
         assertFalse(color.equals(SALMON.getColor()));
     }
 
-    public void testGetHSLFromRGB()
-    {
+    public void testGetHSLFromRGB() {
         final String SIENNA_HSL = "hsl(19.3,56.1%,40.2%)";
         Color sienna = fromColorString(SIENNA_HSL);
         assertEquals(SIENNA.getColor(), sienna);
@@ -209,15 +194,13 @@ public class ColorTest
     }
 
     @Test
-    public void testFixRGB()
-    {
+    public void testFixRGB() {
         Color red = new Color(256, -1, 0);
         assertEquals(RED.getColor(), red);
     }
 
     @Test
-    public void testFixAlpha()
-    {
+    public void testFixAlpha() {
         Color lime = new Color(0, 10000, -1000, -0.1);
         assertEquals(LIME.getColor().setA(0), lime);
 
@@ -225,14 +208,12 @@ public class ColorTest
         assertEquals(BLUE.getColor(), blue);
     }
 
-    public void testGetHSL()
-    {
+    public void testGetHSL() {
         assertEquals("hsl(271.1,75.9%,52.7%)", BLUEVIOLET.getColor().getHSL().toBrowserHSL());
     }
 
     @Test
-    public void testToBrowserRGBA()
-    {
+    public void testToBrowserRGBA() {
         assertEquals("rgba(100,150,200,0.5)", Color.toBrowserRGBA(100, 150, 200, 0.50));
     }
 }

@@ -22,16 +22,13 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.ShapeType;
-
 import jsinterop.annotations.JsProperty;
 
-public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirectionalMultiPointShape<T> & IDirectionalMultiPointShape<T>> extends AbstractOffsetMultiPointShape<T> implements IDirectionalMultiPointShape<T>
-{
+public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirectionalMultiPointShape<T> & IDirectionalMultiPointShape<T>> extends AbstractOffsetMultiPointShape<T> implements IDirectionalMultiPointShape<T> {
+
     @JsProperty
     private Direction headDirection;
 
@@ -41,60 +38,51 @@ public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirec
     @JsProperty
     private double correctionOffset = LienzoCore.get().getDefaultConnectorOffset();
 
-    protected AbstractDirectionalMultiPointShape(final ShapeType type)
-    {
+    protected AbstractDirectionalMultiPointShape(final ShapeType type) {
         super(type);
     }
 
     @Override
-    public IDirectionalMultiPointShape<?> asDirectionalMultiPointShape()
-    {
+    public IDirectionalMultiPointShape<?> asDirectionalMultiPointShape() {
         return this;
     }
 
     @Override
-    public Direction getHeadDirection()
-    {
+    public Direction getHeadDirection() {
         return this.headDirection;
     }
 
     @Override
-    public T setHeadDirection(final Direction direction)
-    {
+    public T setHeadDirection(final Direction direction) {
         this.headDirection = direction;
 
         return refresh();
     }
 
     @Override
-    public Direction getTailDirection()
-    {
+    public Direction getTailDirection() {
         return this.tailDirection;
     }
 
     @Override
-    public T setTailDirection(final Direction direction)
-    {
+    public T setTailDirection(final Direction direction) {
         this.tailDirection = direction;
 
         return refresh();
     }
 
-    public final T setCorrectionOffset(double offset)
-    {
+    public final T setCorrectionOffset(double offset) {
         this.correctionOffset = offset;
 
         return refresh();
     }
 
-    public final double getCorrectionOffset()
-    {
+    public final double getCorrectionOffset() {
         return this.correctionOffset;
     }
 
     @Override
-    protected List<Attribute> getBoundingBoxAttributesComposed(final List<Attribute> attributes)
-    {
+    protected List<Attribute> getBoundingBoxAttributesComposed(final List<Attribute> attributes) {
         final ArrayList<Attribute> list = new ArrayList<Attribute>(super.getBoundingBoxAttributesComposed(attributes));
 
         list.addAll(Arrays.asList(Attribute.HEAD_DIRECTION, Attribute.TAIL_DIRECTION));
@@ -117,10 +105,9 @@ public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirec
         return other;
     }
 
-    protected static abstract class AbstractDirectionalMultiPointShapeFactory<T extends AbstractDirectionalMultiPointShape<T>> extends AbstractOffsetMultiPointShapeFactory<T>
-    {
-        protected AbstractDirectionalMultiPointShapeFactory(final ShapeType type)
-        {
+    protected static abstract class AbstractDirectionalMultiPointShapeFactory<T extends AbstractDirectionalMultiPointShape<T>> extends AbstractOffsetMultiPointShapeFactory<T> {
+
+        protected AbstractDirectionalMultiPointShapeFactory(final ShapeType type) {
             super(type);
 
             addAttribute(Attribute.HEAD_DIRECTION);

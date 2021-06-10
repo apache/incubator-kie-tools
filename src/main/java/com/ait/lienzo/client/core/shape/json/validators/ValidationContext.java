@@ -28,75 +28,70 @@ import com.ait.lienzo.client.core.util.StringFormatter;
  * <p>
  * All error messages use {@link MessageConstants} so that they can
  * be internationalized.
- * 
+ *
  * @see JSONDeserializer
  */
-public class ValidationContext
-{
-    private boolean                     m_stopOnError;
+public class ValidationContext {
 
-    private boolean                     m_validate = true;
+    private boolean m_stopOnError;
 
-    private final List<String>          m_stack    = new ArrayList<>();
+    private boolean m_validate = true;
 
-    private final List<ValidationError> m_errors   = new ArrayList<>();
+    private final List<String> m_stack = new ArrayList<>();
+
+    private final List<ValidationError> m_errors = new ArrayList<>();
 
     /**
-     * Push the context (e.g. attribute name) that is being deserialized 
+     * Push the context (e.g. attribute name) that is being deserialized
      * onto the context.
-     * 
+     * <p>
      * The context stack tracks where we are in the JSON tree
      * so we can give useful error messages.
-     * 
+     *
      * @param context e.g. attribute name
      * @see #pop()
      */
-    public void push(final String context)
-    {
+    public void push(final String context) {
         m_stack.add("." + context);
     }
 
     /**
-     * Push the index of the array that is being deserialized 
+     * Push the index of the array that is being deserialized
      * onto the context.
-     * 
+     * <p>
      * The context stack tracks where we are in the JSON tree
      * so we can give useful error messages.
-     * 
+     *
      * @param index of the child node that is being deserialized
      * @see #pop()
      */
-    public void pushIndex(final int index)
-    {
+    public void pushIndex(final int index) {
         m_stack.add("[" + index + "]");
     }
 
     /**
      * Pops the context stack.
-     * 
+     *
      * @see #push(String)
      * @see #pushIndex(int)
      */
-    public void pop()
-    {
+    public void pop() {
         m_stack.remove(m_stack.size() - 1);
     }
 
     /**
      * Adds a ValidationError.
-     * 
+     * <p>
      * If stopOnError is true, it will immediately throw a ValidationException
      * to stop the deserialization process.
-     * 
+     *
      * @param e
      * @throws ValidationException
      */
-    protected void addError(final ValidationError e) throws ValidationException
-    {
+    protected void addError(final ValidationError e) throws ValidationException {
         m_errors.add(e);
 
-        if (m_stopOnError)
-        {
+        if (m_stopOnError) {
             throw new ValidationException(this);
         }
     }
@@ -105,39 +100,34 @@ public class ValidationContext
      * Adds a ValidationError with the specified message and the current context stack.
      * If stopOnError is true, it will immediately throw a ValidationException
      * to stop the deserialization process.
-     * 
+     *
      * @param msg Validation error message
-     * 
      * @throws ValidationException
      */
-    public void addError(final String msg) throws ValidationException
-    {
+    public void addError(final String msg) throws ValidationException {
         addError(new ValidationError(msg, joinContext(m_stack)));
     }
 
     /**
      * Calls {@link #addError(String)} with a message that indicates
      * that a required attribute is missing.
-     * 
+     *
      * @throws ValidationException
      */
-    public void addRequiredError() throws ValidationException
-    {
+    public void addRequiredError() throws ValidationException {
         addError(MessageConstants.MESSAGES.attributeIsRequired());
     }
 
     /**
      * Calls {@link #addError(String)} with a message that indicates
-     * that a node has the wrong JSON type, 
+     * that a node has the wrong JSON type,
      * e.g. we're expecting a String but the value was a Number.
-     * 
+     *
      * @param type expected Node or Shape type
-     * @param val JSONValue that caused the error
-     * 
+     * @param val  JSONValue that caused the error
      * @throws ValidationException
      */
-    public void addBadValueError(final String type, final Object val) throws ValidationException
-    {
+    public void addBadValueError(final String type, final Object val) throws ValidationException {
         addError(StringFormatter.format(MessageConstants.MESSAGES.invalidValueForType(), type, val));
     }
 
@@ -147,13 +137,11 @@ public class ValidationContext
      * <p>
      * If you're writing your own Node class, you may need to register the
      * type in {@link FactoryRegistry}.
-     * 
+     *
      * @param type Node or Shape type
-     * 
      * @throws ValidationException
      */
-    public void addBadTypeError(final String type) throws ValidationException
-    {
+    public void addBadTypeError(final String type) throws ValidationException {
         addError(StringFormatter.format(MessageConstants.MESSAGES.invalidType(), type));
     }
 
@@ -161,24 +149,21 @@ public class ValidationContext
      * Calls {@link #addError(String)} with a message that indicates
      * that the specified Node or Shape type does not have the attribute
      * that is on the context stack.
-     * 
+     *
      * @throws ValidationException
      */
-    public void addInvalidAttributeError(final String type) throws ValidationException
-    {
+    public void addInvalidAttributeError(final String type) throws ValidationException {
         addError(StringFormatter.format(MessageConstants.MESSAGES.attributeIsInvalidForType(), type));
     }
 
     /**
      * Calls {@link #addError(String)} with a message that indicates
      * that the attribute on the context stack must have a specific (hardcoded) value.
-     * 
+     *
      * @param val The value that was found (and was wrong)
-     * 
      * @throws ValidationException
      */
-    public void addRequiredAttributeValueError(final String val) throws ValidationException
-    {
+    public void addRequiredAttributeValueError(final String val) throws ValidationException {
         addError(StringFormatter.format(MessageConstants.MESSAGES.attributeValueMustBeFixed(), val));
     }
 
@@ -188,72 +173,66 @@ public class ValidationContext
      * <p>
      * If you're writing your own Node class, you may need to register the
      * type in {@link FactoryRegistry}.
-     * 
+     *
      * @param type Node or Shape type
      * @throws ValidationException
      */
-    public void addMissingNodeFactoryError(final String type) throws ValidationException
-    {
+    public void addMissingNodeFactoryError(final String type) throws ValidationException {
         addError(StringFormatter.format(MessageConstants.MESSAGES.missingNodeFactory(), type));
     }
 
     /**
      * Calls {@link #addError(String)} with a message that indicates
      * that an array has the wrong number of elements
-     * 
+     *
      * @param expectedSize
      * @param actualSize
      * @throws ValidationException
      */
-    public void addBadArraySizeError(final int expectedSize, final int actualSize) throws ValidationException
-    {
+    public void addBadArraySizeError(final int expectedSize, final int actualSize) throws ValidationException {
         addError(StringFormatter.format(MessageConstants.MESSAGES.invalidArraySize(), expectedSize, actualSize));
     }
 
     /**
      * Returns whether to stop the deserialization process when an error is encountered.
-     * 
+     *
      * @return boolean
      */
-    public boolean isStopOnError()
-    {
+    public boolean isStopOnError() {
         return m_stopOnError;
     }
 
     /**
      * Sets whether to stop the deserialization process when an error is encountered.
-     * 
+     *
      * @return this ValidationContext
      */
-    public ValidationContext setStopOnError(final boolean stopOnError)
-    {
+    public ValidationContext setStopOnError(final boolean stopOnError) {
         m_stopOnError = stopOnError;
 
         return this;
     }
 
     /**
-     * Returns whether we should validate the node structure 
+     * Returns whether we should validate the node structure
      * (i.e. attribute values, required attributes and valid child node types)
      * during the deserialization process.
-     * 
+     *
      * @return boolean
      */
-    public boolean isValidate()
-    {
+    public boolean isValidate() {
         return m_validate;
     }
 
     /**
-     * Sets whether we should validate the node structure 
+     * Sets whether we should validate the node structure
      * (i.e. attribute values, required attributes and valid child node types)
      * during the deserialization process.
-     * 
+     *
      * @param validate
      * @return this ValidationContext
      */
-    public ValidationContext setValidate(final boolean validate)
-    {
+    public ValidationContext setValidate(final boolean validate) {
         m_validate = validate;
 
         return this;
@@ -261,43 +240,36 @@ public class ValidationContext
 
     /**
      * Returns the number of errors that were encountered.
-     * 
+     *
      * @return int
      */
-    public int getErrorCount()
-    {
+    public int getErrorCount() {
         return m_errors.size();
     }
 
     /**
      * Returns the list of ValidationErrors that were found.
-     * 
+     *
      * @return List<ValidationError>
      */
-    public List<ValidationError> getErrors()
-    {
+    public List<ValidationError> getErrors() {
         return m_errors;
     }
 
     /**
      * Returns a string with all error messages for debugging purposes.
-     * 
+     *
      * @return String
      */
-    public String getDebugString()
-    {
+    public String getDebugString() {
         final StringBuilder b = new StringBuilder();
 
         boolean first = true;
 
-        for (ValidationError e : m_errors)
-        {
-            if (first)
-            {
+        for (ValidationError e : m_errors) {
+            if (first) {
                 first = false;
-            }
-            else
-            {
+            } else {
                 b.append("\n");
             }
             b.append(e.getContext()).append(" - ").append(e.getMessage());
@@ -305,12 +277,10 @@ public class ValidationContext
         return b.toString();
     }
 
-    private static String joinContext(final List<String> stack)
-    {
+    private static String joinContext(final List<String> stack) {
         final StringBuilder b = new StringBuilder();
 
-        for (String s : stack)
-        {
+        for (String s : stack) {
             b.append(s);
         }
         return b.toString();

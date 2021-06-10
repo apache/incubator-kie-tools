@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.tools.common.api.types;
 
-public interface IValued<T>
-{
+public interface IValued<T> {
+
     public T getValue();
 }

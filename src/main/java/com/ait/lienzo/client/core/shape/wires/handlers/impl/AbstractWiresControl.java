@@ -27,7 +27,7 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 public abstract class AbstractWiresControl<T> implements WiresMoveControl {
 
     private final Supplier<WiresParentPickerControl> parentPickerControl;
-    private       boolean                            enabled;
+    private boolean enabled;
 
     protected AbstractWiresControl(final Supplier<WiresParentPickerControl> parentPickerControl) {
         this.parentPickerControl = parentPickerControl;
@@ -107,5 +107,4 @@ public abstract class AbstractWiresControl<T> implements WiresMoveControl {
     protected boolean isStartDocked() {
         return ((WiresParentPickerControlImpl) getParentPickerControl()).isStartDocked();
     }
-
 }

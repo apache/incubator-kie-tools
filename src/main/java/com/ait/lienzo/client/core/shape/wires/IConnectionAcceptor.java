@@ -16,9 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-public interface IConnectionAcceptor
-{
-    IConnectionAcceptor ALL  = new DefaultConnectionAcceptor(true);
+public interface IConnectionAcceptor {
+
+    IConnectionAcceptor ALL = new DefaultConnectionAcceptor(true);
 
     IConnectionAcceptor NONE = new DefaultConnectionAcceptor(false);
 
@@ -30,38 +30,32 @@ public interface IConnectionAcceptor
 
     boolean acceptTail(WiresConnection tail, WiresMagnet magnet);
 
-    class DefaultConnectionAcceptor implements IConnectionAcceptor
-    {
+    class DefaultConnectionAcceptor implements IConnectionAcceptor {
+
         final private boolean m_defaultValue;
 
-        private DefaultConnectionAcceptor(final boolean defaultValue)
-        {
+        private DefaultConnectionAcceptor(final boolean defaultValue) {
             m_defaultValue = defaultValue;
         }
 
         @Override
-        public boolean tailConnectionAllowed(WiresConnection connection, WiresShape shape)
-        {
+        public boolean tailConnectionAllowed(WiresConnection connection, WiresShape shape) {
             return m_defaultValue;
         }
 
         @Override
-        public boolean headConnectionAllowed(WiresConnection connection, WiresShape shape)
-        {
+        public boolean headConnectionAllowed(WiresConnection connection, WiresShape shape) {
             return m_defaultValue;
         }
 
         @Override
-        public boolean acceptHead(WiresConnection connection, WiresMagnet magnet)
-        {
+        public boolean acceptHead(WiresConnection connection, WiresMagnet magnet) {
             return m_defaultValue;
         }
 
         @Override
-        public boolean acceptTail(WiresConnection connection, WiresMagnet magnet)
-        {
+        public boolean acceptTail(WiresConnection connection, WiresMagnet magnet) {
             return m_defaultValue;
         }
-
     }
 }

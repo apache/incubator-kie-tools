@@ -23,118 +23,102 @@ import elemental2.dom.HTMLImageElement;
 import jsinterop.annotations.JsType;
 
 /**
- * PatternGradient defines the fill style for a {@link Shape} as a Pattern Gradient. 
+ * PatternGradient defines the fill style for a {@link Shape} as a Pattern Gradient.
  */
-public final class PatternGradient implements FillGradient
-{
-    public static final String       TYPE = "PatternGradient";
+public final class PatternGradient implements FillGradient {
+
+    public static final String TYPE = "PatternGradient";
 
     private final PatternGradientJSO m_jso;
 
-    public PatternGradient(final PatternGradientJSO jso)
-    {
+    public PatternGradient(final PatternGradientJSO jso) {
         m_jso = jso;
     }
 
-    public PatternGradient(final HTMLImageElement image)
-    {
+    public PatternGradient(final HTMLImageElement image) {
         this(PatternGradientJSO.make(image, ScratchPad.toDataURL(image), FillRepeat.REPEAT.getValue()));
     }
 
-    public PatternGradient(final HTMLImageElement image, final FillRepeat repeat)
-    {
+    public PatternGradient(final HTMLImageElement image, final FillRepeat repeat) {
         this(PatternGradientJSO.make(image, ScratchPad.toDataURL(image), repeat.getValue()));
     }
 
     @Override
-    public LinearGradient asLinearGradient()
-    {
+    public LinearGradient asLinearGradient() {
         return null;
     }
 
     @Override
-    public RadialGradient asRadialGradient()
-    {
+    public RadialGradient asRadialGradient() {
         return null;
     }
 
     @Override
-    public PatternGradient asPatternGradient()
-    {
+    public PatternGradient asPatternGradient() {
         return this;
     }
 
     @Override
-    public String getType()
-    {
+    public String getType() {
         return TYPE;
     }
 
-    public String getSrc()
-    {
+    public String getSrc() {
         return m_jso.src;
     }
 
-    public FillRepeat getRepeat()
-    {
+    public FillRepeat getRepeat() {
         return FillRepeat.lookup(m_jso.repeat);
     }
 
-    public final PatternGradientJSO getJSO()
-    {
+    public final PatternGradientJSO getJSO() {
         return m_jso;
     }
 
-    public final String toJSONString()
-    {
+    public final String toJSONString() {
         return Global.JSON.stringify(m_jso);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return toJSONString();
     }
 
     @Override
-    public boolean equals(final Object other)
-    {
-        if ((other == null) || (!(other instanceof PatternGradient)))
-        {
+    public boolean equals(final Object other) {
+        if ((other == null) || (!(other instanceof PatternGradient))) {
             return false;
         }
-        if (this == other)
-        {
+        if (this == other) {
             return true;
         }
         return ((PatternGradient) other).toJSONString().equals(toJSONString());
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return toJSONString().hashCode();
     }
 
     @JsType
-    public static final class PatternGradientJSO extends GradientJSO
-    {
+    public static final class PatternGradientJSO extends GradientJSO {
+
         public String src;
         public String repeat;
         public HTMLImageElement image;
 
-        protected PatternGradientJSO()
-        {
+        protected PatternGradientJSO() {
         }
 
-        public static final PatternGradientJSO make(HTMLImageElement e, String s, String r)
-        {
+        public static final PatternGradientJSO make(HTMLImageElement e, String s, String r) {
             PatternGradientJSO grad = new PatternGradientJSO();
             grad.src = s;
             grad.repeat = r;
             grad.type = "PatternGradient";
             grad.image = e;
             return grad;
-        };
+        }
+
+        ;
     }
 }

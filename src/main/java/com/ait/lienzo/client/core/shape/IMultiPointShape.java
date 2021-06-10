@@ -18,8 +18,8 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.types.Point2DArray;
 
-public interface IMultiPointShape<T extends Shape<T> & IMultiPointShape<T>> extends IPrimitive<T>
-{
+public interface IMultiPointShape<T extends Shape<T> & IMultiPointShape<T>> extends IPrimitive<T> {
+
     T setPoint2DArray(Point2DArray points);
 
     Point2DArray getPoint2DArray();

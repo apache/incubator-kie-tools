@@ -20,7 +20,6 @@ import com.ait.lienzo.client.core.shape.Movie;
 import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-
 import elemental2.core.JsArray;
 import elemental2.dom.ImageData;
 import jsinterop.annotations.JsPackage;
@@ -29,17 +28,17 @@ import jsinterop.annotations.JsType;
 /**
  * Interface to be used to create {@link Picture} and {@link Movie} filters.
  */
-public interface ImageDataFilter<T extends ImageDataFilter<T>> extends IJSONSerializable<T>
-{
-    int                            R_OFFSET        = 0;
+public interface ImageDataFilter<T extends ImageDataFilter<T>> extends IJSONSerializable<T> {
 
-    int                            G_OFFSET        = 1;
+    int R_OFFSET = 0;
 
-    int                            B_OFFSET        = 2;
+    int G_OFFSET = 1;
 
-    int                            A_OFFSET        = 3;
+    int B_OFFSET = 2;
 
-    int                            PIXEL_SZ        = 4;
+    int A_OFFSET = 3;
+
+    int PIXEL_SZ = 4;
 
     ImageDataFilterCommonOps FilterCommonOps = ImageDataFilterCommonOps.make();
 
@@ -54,23 +53,21 @@ public interface ImageDataFilter<T extends ImageDataFilter<T>> extends IJSONSeri
     ImageFilterType getType();
 
     @JsType(isNative = true, name = "Array", namespace = JsPackage.GLOBAL)
-    final class FilterTableArray extends JsArray<Integer>
-    {
-        protected FilterTableArray(int... items)
-        {
+    final class FilterTableArray extends JsArray<Integer> {
+
+        protected FilterTableArray(int... items) {
         }
     }
 
-    interface FilterTransformFunction
-    {
+    interface FilterTransformFunction {
+
         void transform(int x, int y, int[] out);
     }
 
     @JsType(isNative = true, name = "Array", namespace = JsPackage.GLOBAL)
-    final class FilterConvolveMatrix extends JsArray<Double>
-    {
-        public FilterConvolveMatrix()
-        {
+    final class FilterConvolveMatrix extends JsArray<Double> {
+
+        public FilterConvolveMatrix() {
         }
     }
 }

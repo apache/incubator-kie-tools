@@ -3,10 +3,10 @@ package com.ait.lienzo.client.core.image;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.widget.RootPanel;
-
 import elemental2.dom.HTMLImageElement;
 
 public class ImageElementProxy {
+
     private HTMLImageElement imageElement;
 
     public ImageElementProxy() {

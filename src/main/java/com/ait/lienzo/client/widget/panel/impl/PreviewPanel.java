@@ -29,26 +29,24 @@ import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.tools.client.event.HandlerManager;
 import elemental2.dom.EventListener;
 
-public class PreviewPanel extends ScalablePanel
-{
+public class PreviewPanel extends ScalablePanel {
+
     private final HandlerManager m_events;
 
     private final Bounds visibleBounds;
 
     private final Point2D visibleScaleFactor;
 
-    private final PreviewLayer               previewLayer;
+    private final PreviewLayer previewLayer;
 
-    private final PreviewLayerDecorator      decorator;
+    private final PreviewLayerDecorator decorator;
 
     public PreviewPanel(final int width,
-                        final int height)
-    {
+                        final int height) {
         this(LienzoFixedPanel.newPanel(width, height));
     }
 
-    PreviewPanel(final LienzoPanel panel)
-    {
+    PreviewPanel(final LienzoPanel panel) {
         super(panel, new PreviewBoundsProvider());
         m_events = new HandlerManager(this);
         visibleBounds = Bounds.empty();
@@ -57,23 +55,19 @@ public class PreviewPanel extends ScalablePanel
                                         visibleBoundsSupplier);
         decorator = new PreviewLayerDecorator(backgroundBoundsSupplier,
                                               visibleBoundsSupplier,
-                                              new PreviewLayerDecorator.EventHandler()
-                                              {
+                                              new PreviewLayerDecorator.EventHandler() {
                                                   @Override
-                                                  public void onMouseEnter()
-                                                  {
+                                                  public void onMouseEnter() {
                                                       getLienzoPanel().getElement().style.cursor = Cursor.MOVE.getCssName();
                                                   }
 
                                                   @Override
-                                                  public void onMouseExit()
-                                                  {
+                                                  public void onMouseExit() {
                                                       getLienzoPanel().getElement().style.cursor = Cursor.DEFAULT.getCssName();
                                                   }
 
                                                   @Override
-                                                  public void onMove(final Point2D point)
-                                                  {
+                                                  public void onMove(final Point2D point) {
                                                       setVisibleBoundsAt(point.getX(),
                                                                          point.getY());
                                                       updatePanelScroll();
@@ -85,8 +79,7 @@ public class PreviewPanel extends ScalablePanel
     PreviewPanel(final LienzoPanel panel,
                  final PreviewLayer previewLayer,
                  final PreviewLayerDecorator decorator,
-                 final HandlerManager m_events)
-    {
+                 final HandlerManager m_events) {
         super(panel, new PreviewBoundsProvider());
         this.m_events = m_events;
         this.visibleBounds = Bounds.empty();
@@ -97,13 +90,10 @@ public class PreviewPanel extends ScalablePanel
 
     private final Supplier<Bounds> backgroundBoundsSupplier = this::getBackgroundBounds;
 
-    private final Supplier<Bounds> visibleBoundsSupplier    = new Supplier<Bounds>()
-    {
+    private final Supplier<Bounds> visibleBoundsSupplier = new Supplier<Bounds>() {
         @Override
-        public Bounds get()
-        {
-            if (!isDisplayVisibleArea())
-            {
+        public Bounds get() {
+            if (!isDisplayVisibleArea()) {
                 return Bounds.empty();
             }
             return Bounds.build(visibleBounds.getX(),
@@ -132,8 +122,7 @@ public class PreviewPanel extends ScalablePanel
     private EventListener scaleEventListener;
     private EventListener boundsChangedEventListener;
 
-    public PreviewPanel observe(final ScrollablePanel panel)
-    {
+    public PreviewPanel observe(final ScrollablePanel panel) {
 
         if (null != observed) {
             throw new IllegalStateException("Cannot observe twice");
@@ -144,8 +133,7 @@ public class PreviewPanel extends ScalablePanel
         observed = panel;
 
         scrollEventListener = panel.addScrollEventListener(event -> {
-            if (!decorator.isDragging())
-            {
+            if (!decorator.isDragging()) {
                 scroll(panel.getHorizontalScrollRate(), panel.getVerticalScrollRate());
             }
         });
@@ -175,27 +163,24 @@ public class PreviewPanel extends ScalablePanel
     }
 
     @Override
-    public LienzoBoundsPanel set(final Layer layer)
-    {
+    public LienzoBoundsPanel set(final Layer layer) {
         super.set(layer);
         getLienzoPanel().add(previewLayer);
         previewLayer.add(decorator.asPrimitive());
         return this;
     }
 
-    void updatePanelScroll()
-    {
-        if (null != observed)
-        {
+    void updatePanelScroll() {
+        if (null != observed) {
             final Bounds backgroundBounds = getBackgroundBounds();
-            final double bgWidth          = backgroundBounds.getWidth();
-            final double bgHeight         = backgroundBounds.getHeight();
-            final double x                = visibleBounds.getX();
-            final double y                = visibleBounds.getY();
-            final double width            = bgWidth - getVisibleWidth();
-            final double height           = bgHeight - getVisibleHeight();
-            final double pctX             = width > 0 ? x / width * 100 : 0d;
-            final double pctY             = height > 0 ? y / height * 100 : 0d;
+            final double bgWidth = backgroundBounds.getWidth();
+            final double bgHeight = backgroundBounds.getHeight();
+            final double x = visibleBounds.getX();
+            final double y = visibleBounds.getY();
+            final double width = bgWidth - getVisibleWidth();
+            final double height = bgHeight - getVisibleHeight();
+            final double pctX = width > 0 ? x / width * 100 : 0d;
+            final double pctY = height > 0 ? y / height * 100 : 0d;
 
             observed.applyScrollRateToLayer(pctX, pctY);
             observed.onRefresh();
@@ -203,22 +188,20 @@ public class PreviewPanel extends ScalablePanel
     }
 
     public ScalablePanel adjustVisibleBounds(final double pctX,
-                                             final double pctY)
-    {
+                                             final double pctY) {
         final Bounds backgroundBounds = getBackgroundBounds();
-        final double width            = backgroundBounds.getWidth() - getVisibleWidth();
-        final double height           = backgroundBounds.getHeight() - getVisibleHeight();
-        final double incX             = width * pctX / 100;
-        final double incY             = height * pctY / 100;
-        final double x                = backgroundBounds.getX();
-        final double y                = backgroundBounds.getY();
+        final double width = backgroundBounds.getWidth() - getVisibleWidth();
+        final double height = backgroundBounds.getHeight() - getVisibleHeight();
+        final double incX = width * pctX / 100;
+        final double incY = height * pctY / 100;
+        final double x = backgroundBounds.getX();
+        final double y = backgroundBounds.getY();
         return setVisibleBoundsAt(x + incX,
                                   y + incY);
     }
 
     public ScalablePanel setVisibleBoundsAt(final double x,
-                                            final double y)
-    {
+                                            final double y) {
         visibleBounds
                 .setX(x)
                 .setY(y);
@@ -226,8 +209,7 @@ public class PreviewPanel extends ScalablePanel
     }
 
     public ScalablePanel setVisibleBoundsSize(final double width,
-                                              final double height)
-    {
+                                              final double height) {
         visibleBounds
                 .setWidth(width)
                 .setHeight(height);
@@ -235,8 +217,7 @@ public class PreviewPanel extends ScalablePanel
     }
 
     private void resize(final double width,
-                        final double height)
-    {
+                        final double height) {
         setDefaultBounds(Bounds.relativeBox(width, height));
         setVisibleBoundsSize(width,
                              height);
@@ -244,27 +225,23 @@ public class PreviewPanel extends ScalablePanel
     }
 
     private void scroll(final double pctX,
-                        final double pctY)
-    {
+                        final double pctY) {
         adjustVisibleBounds(pctX,
                             pctY);
         batch();
     }
 
     @Override
-    public void batch()
-    {
+    public void batch() {
         super.batch();
-        if (null != getLayer())
-        {
+        if (null != getLayer()) {
             decorator.update();
             previewLayer.batch();
         }
     }
 
     @Override
-    protected void doDestroy()
-    {
+    protected void doDestroy() {
         getPreviewBoundsProvider().destroy();
         decorator.destroy();
         previewLayer.clear();
@@ -272,82 +249,70 @@ public class PreviewPanel extends ScalablePanel
         super.doDestroy();
     }
 
-    PreviewBoundsProvider getPreviewBoundsProvider()
-    {
+    PreviewBoundsProvider getPreviewBoundsProvider() {
         return (PreviewBoundsProvider) getBoundsProvider();
     }
 
-    Bounds getVisibleBounds()
-    {
+    Bounds getVisibleBounds() {
         return visibleBounds;
     }
 
-    public static class PreviewBoundsProvider implements BoundsProvider
-    {
+    public static class PreviewBoundsProvider implements BoundsProvider {
+
         LienzoBoundsPanel delegate;
 
         public PreviewBoundsProvider delegate(final PreviewPanel panel,
-                                              final LienzoBoundsPanel delegate)
-        {
+                                              final LienzoBoundsPanel delegate) {
             this.delegate = delegate;
             return this;
         }
 
         @Override
-        public Bounds get(Layer layer)
-        {
-            if (null != delegate)
-            {
+        public Bounds get(Layer layer) {
+            if (null != delegate) {
                 return delegate.getLayerBounds();
             }
             return Bounds.empty();
         }
 
-        public void destroy()
-        {
+        public void destroy() {
             this.delegate = null;
         }
     }
 
-    private double getVisibleWidth()
-    {
+    private double getVisibleWidth() {
         return visibleBounds.getWidth() * visibleScaleFactor.getX();
     }
 
-    private double getVisibleHeight()
-    {
+    private double getVisibleHeight() {
         return visibleBounds.getHeight() * visibleScaleFactor.getY();
     }
 
-    private boolean isDisplayVisibleArea()
-    {
-        final double visibleWidth  = getVisibleWidth();
+    private boolean isDisplayVisibleArea() {
+        final double visibleWidth = getVisibleWidth();
         final double visibleHeight = getVisibleHeight();
-        final double boundsWidth   = getBounds().getWidth();
+        final double boundsWidth = getBounds().getWidth();
         final double boundseHeight = getBounds().getHeight();
         return !(boundsWidth <= visibleWidth && boundseHeight <= visibleHeight);
     }
 
-    private Bounds getBackgroundBounds()
-    {
+    private Bounds getBackgroundBounds() {
         return obtainViewportBounds(getLayer());
     }
 
-    static double[] getSafeScaleValues(final Layer layer)
-    {
-        final Viewport vp        = layer.getViewport();
+    static double[] getSafeScaleValues(final Layer layer) {
+        final Viewport vp = layer.getViewport();
         final Transform transform = vp.getTransform();
-        final double    scaleX    = null != transform ? transform.getScaleX() : 1d;
-        final double    scaleY    = null != transform ? transform.getScaleY() : 1d;
+        final double scaleX = null != transform ? transform.getScaleX() : 1d;
+        final double scaleY = null != transform ? transform.getScaleY() : 1d;
         return new double[]{scaleX, scaleY};
     }
 
-    static Bounds obtainViewportBounds(final Layer layer)
-    {
+    static Bounds obtainViewportBounds(final Layer layer) {
         final double[] scale = getSafeScaleValues(layer);
-        final Viewport vp    = layer.getViewport();
-        final double   vw    = vp.getWidth() * (1 / scale[0]);
-        final double   vh    = vp.getHeight() * (1 / scale[1]);
+        final Viewport vp = layer.getViewport();
+        final double vw = vp.getWidth() * (1 / scale[0]);
+        final double vh = vp.getHeight() * (1 / scale[1]);
         return Bounds.relativeBox(vw, vh);
     }
 }

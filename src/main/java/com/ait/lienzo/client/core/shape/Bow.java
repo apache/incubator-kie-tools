@@ -21,17 +21,14 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-
 import jsinterop.annotations.JsProperty;
 
 /**
+ *
  */
-public class Bow extends Shape<Bow>
-{
+public class Bow extends Shape<Bow> {
 
     @JsProperty
     private double innerRadius;
@@ -48,17 +45,15 @@ public class Bow extends Shape<Bow>
     @JsProperty
     private boolean counterClockwise;
 
-
     /**
      * Constructor. Creates an instance of a bow.
-     * 
+     *
      * @param radius
-     * @param startAngle in radians
-     * @param endAngle in radians
+     * @param startAngle       in radians
+     * @param endAngle         in radians
      * @param counterClockwise
      */
-    public Bow(final double innerRadius, final double outerRadius, final double startAngle, final double endAngle, final boolean counterClockwise)
-    {
+    public Bow(final double innerRadius, final double outerRadius, final double startAngle, final double endAngle, final boolean counterClockwise) {
         super(ShapeType.BOW);
 
         setInnerRadius(innerRadius).setOuterRadius(outerRadius).setStartAngle(startAngle).setEndAngle(endAngle).setCounterClockwise(counterClockwise);
@@ -66,19 +61,17 @@ public class Bow extends Shape<Bow>
 
     /**
      * Constructor. Creates an instance of a bow, drawn clockwise.
-     * 
+     *
      * @param radius
      * @param startAngle in radians
-     * @param endAngle in radians
+     * @param endAngle   in radians
      */
-    public Bow(final double innerRadius, final double outerRadius, final double startAngle, final double endAngle)
-    {
+    public Bow(final double innerRadius, final double outerRadius, final double startAngle, final double endAngle) {
         this(innerRadius, outerRadius, startAngle, endAngle, false);
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         final double radius = Math.max(getInnerRadius(), getOuterRadius());
 
         return BoundingBox.fromDoubles(0 - radius, 0 - radius, radius, radius);
@@ -86,18 +79,16 @@ public class Bow extends Shape<Bow>
 
     /**
      * Draws this bow.
-     * 
+     *
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final double alpha)
-    {
+    protected boolean prepare(final Context2D context, final double alpha) {
         final double end = getEndAngle();
 
         final double beg = getStartAngle();
 
-        if (beg == end)
-        {
+        if (beg == end) {
             return false;
         }
         final double ord = getOuterRadius();
@@ -106,8 +97,7 @@ public class Bow extends Shape<Bow>
 
         final boolean ccw = isCounterClockwise();
 
-        if ((ord > 0) && (ird > 0))
-        {
+        if ((ord > 0) && (ird > 0)) {
             context.beginPath();
 
             context.arc(0, 0, ord, beg, end, ccw);
@@ -126,8 +116,7 @@ public class Bow extends Shape<Bow>
      *
      * @return double
      */
-    public double getInnerRadius()
-    {
+    public double getInnerRadius() {
         return this.innerRadius;
     }
 
@@ -137,8 +126,7 @@ public class Bow extends Shape<Bow>
      * @param radius
      * @return this Bow
      */
-    public Bow setInnerRadius(final double radius)
-    {
+    public Bow setInnerRadius(final double radius) {
         this.innerRadius = radius;
 
         return this;
@@ -149,8 +137,7 @@ public class Bow extends Shape<Bow>
      *
      * @return double
      */
-    public double getOuterRadius()
-    {
+    public double getOuterRadius() {
         return this.outerRadius;
     }
 
@@ -160,8 +147,7 @@ public class Bow extends Shape<Bow>
      * @param radius
      * @return this Bow
      */
-    public Bow setOuterRadius(final double radius)
-    {
+    public Bow setOuterRadius(final double radius) {
         this.outerRadius = radius;
 
         return this;
@@ -172,8 +158,7 @@ public class Bow extends Shape<Bow>
      *
      * @return double (in radians)
      */
-    public double getStartAngle()
-    {
+    public double getStartAngle() {
         return this.startAngle;
     }
 
@@ -183,8 +168,7 @@ public class Bow extends Shape<Bow>
      * @param angle (in radians)
      * @return this bow
      */
-    public Bow setStartAngle(final double angle)
-    {
+    public Bow setStartAngle(final double angle) {
         this.startAngle = angle;
 
         return this;
@@ -195,8 +179,7 @@ public class Bow extends Shape<Bow>
      *
      * @return double (in radians)
      */
-    public double getEndAngle()
-    {
+    public double getEndAngle() {
         return this.endAngle;
     }
 
@@ -206,8 +189,7 @@ public class Bow extends Shape<Bow>
      * @param angle (in radians)
      * @return this bow
      */
-    public Bow setEndAngle(final double angle)
-    {
+    public Bow setEndAngle(final double angle) {
         this.endAngle = angle;
 
         return this;
@@ -218,8 +200,7 @@ public class Bow extends Shape<Bow>
      *
      * @return boolean
      */
-    public boolean isCounterClockwise()
-    {
+    public boolean isCounterClockwise() {
         return this.counterClockwise;
     }
 
@@ -229,23 +210,20 @@ public class Bow extends Shape<Bow>
      * @param counterClockwise If true, it's drawn counter clockwise.
      * @return this slice
      */
-    public Bow setCounterClockwise(final boolean counterClockwise)
-    {
+    public Bow setCounterClockwise(final boolean counterClockwise) {
         this.counterClockwise = counterClockwise;
 
         return this;
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return Arrays.asList(Attribute.INNER_RADIUS, Attribute.OUTER_RADIUS, Attribute.START_ANGLE, Attribute.END_ANGLE, Attribute.COUNTER_CLOCKWISE);
     }
 
-    public static class BowFactory extends ShapeFactory<Bow>
-    {
-        public BowFactory()
-        {
+    public static class BowFactory extends ShapeFactory<Bow> {
+
+        public BowFactory() {
             super(ShapeType.BOW);
 
             addAttribute(Attribute.INNER_RADIUS, true);

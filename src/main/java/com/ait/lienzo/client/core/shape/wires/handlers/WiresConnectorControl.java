@@ -12,10 +12,12 @@ import com.ait.lienzo.client.core.types.Point2D;
  * <code>com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory</code> and provide custom
  * user interaction behaviours rather than defaults.
  */
-public interface WiresConnectorControl extends WiresMoveControl, WiresControl {
+public interface WiresConnectorControl extends WiresMoveControl,
+                                               WiresControl {
 
     /**
      * Add a control point on the existing {@link WiresConnector#getLine()} returning the selected index to the control point
+     *
      * @param x position
      * @param y position
      * @return index to the added Control Point
@@ -33,5 +35,4 @@ public interface WiresConnectorControl extends WiresMoveControl, WiresControl {
     boolean areControlPointsVisible();
 
     boolean accept();
-
 }

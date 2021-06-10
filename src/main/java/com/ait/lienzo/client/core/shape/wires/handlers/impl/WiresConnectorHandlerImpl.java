@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.event.NodeDragStartEvent;
@@ -30,60 +32,54 @@ import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorHandler;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.tools.client.Timer;
-import java.util.function.Consumer;
 
-public class WiresConnectorHandlerImpl implements WiresConnectorHandler
-{
+public class WiresConnectorHandlerImpl implements WiresConnectorHandler {
+
     static final int MOUSE_DOWN_TIMER_DELAY = 350;
 
-    private final WiresConnector        m_connector;
+    private final WiresConnector m_connector;
 
-    private final  WiresManager         m_wiresManager;
-    private final  Consumer<Event>      mouseDownEventConsumer;
-    private        Timer                clickTimer;
-    private        Event                event;
-    private        boolean              ownToken;
+    private final WiresManager m_wiresManager;
+    private final Consumer<Event> mouseDownEventConsumer;
+    private Timer clickTimer;
+    private Event event;
+    private boolean ownToken;
 
-    private final Consumer<Event>      mouseClickEventConsumer;
+    private final Consumer<Event> mouseClickEventConsumer;
 
-    Timer                             mouseDownTimer;
+    Timer mouseDownTimer;
 
-    public static class Event
-    {
-        final double  x;
+    public static class Event {
 
-        final double  y;
+        final double x;
+
+        final double y;
 
         final boolean isShiftKeyDown;
 
         public Event(final double x,
                      final double y,
-                     final boolean isShiftKeyDown)
-        {
+                     final boolean isShiftKeyDown) {
             this.x = x;
             this.y = y;
             this.isShiftKeyDown = isShiftKeyDown;
         }
 
-        public double getX()
-        {
+        public double getX() {
             return x;
         }
 
-        public double getY()
-        {
+        public double getY() {
             return y;
         }
 
-        public boolean isShiftKeyDown()
-        {
+        public boolean isShiftKeyDown() {
             return isShiftKeyDown;
         }
     }
 
     public WiresConnectorHandlerImpl(final WiresConnector connector,
-                                     final WiresManager wiresManager)
-    {
+                                     final WiresManager wiresManager) {
         this(connector,
              wiresManager,
              WiresConnectorEventFunctions.select(wiresManager, connector),
@@ -93,8 +89,7 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler
     public WiresConnectorHandlerImpl(final WiresConnector connector,
                                      final WiresManager wiresManager,
                                      final Consumer<Event> mouseClickEventConsumer,
-                                     final Consumer<Event> mouseDownEventConsumer)
-    {
+                                     final Consumer<Event> mouseDownEventConsumer) {
         this.m_connector = connector;
         this.m_wiresManager = wiresManager;
         this.mouseClickEventConsumer = mouseClickEventConsumer;
@@ -102,23 +97,20 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler
     }
 
     @Override
-    public void onNodeDragStart(final NodeDragStartEvent event)
-    {
+    public void onNodeDragStart(final NodeDragStartEvent event) {
         getControl().hideControlPoints();
         getControl().onMoveStart(event.getDragContext().getDragStartX(),
-                                      event.getDragContext().getDragStartY());
-    }
-
-    @Override
-    public void onNodeDragMove(final NodeDragMoveEvent event)
-    {
-        getControl().onMove(event.getDragContext().getDragStartX(),
                                  event.getDragContext().getDragStartY());
     }
 
     @Override
-    public void onNodeDragEnd(final NodeDragEndEvent event)
-    {
+    public void onNodeDragMove(final NodeDragMoveEvent event) {
+        getControl().onMove(event.getDragContext().getDragStartX(),
+                            event.getDragContext().getDragStartY());
+    }
+
+    @Override
+    public void onNodeDragEnd(final NodeDragEndEvent event) {
         getControl().onMove(event.getDragContext().getDragStartX(),
                             event.getDragContext().getDragStartY());
         if (getControl().accept()) {
@@ -127,45 +119,36 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler
         } else {
             getControl().reset();
         }
-        
     }
 
-    public WiresConnectorControlImpl getControl()
-    {
+    public WiresConnectorControlImpl getControl() {
         return (WiresConnectorControlImpl) m_connector.getControl();
     }
 
-    WiresConnector getConnector()
-    {
+    WiresConnector getConnector() {
         return m_connector;
     }
 
-    WiresManager getWiresManager()
-    {
+    WiresManager getWiresManager() {
         return m_wiresManager;
     }
 
     @Override
-    public void onNodeMouseEnter(NodeMouseEnterEvent event)
-    {
+    public void onNodeMouseEnter(NodeMouseEnterEvent event) {
         ifControlPointsBuilder(builder -> builder.enable());
     }
 
     @Override
-    public void onNodeMouseExit(NodeMouseExitEvent event)
-    {
+    public void onNodeMouseExit(NodeMouseExitEvent event) {
         ifControlPointsBuilder(builder -> builder.disable());
     }
 
     @Override
-    public void onNodeMouseDown(final NodeMouseDownEvent event)
-    {
+    public void onNodeMouseDown(final NodeMouseDownEvent event) {
         ifControlPointsBuilder(builder -> {
-            mouseDownTimer = new Timer()
-            {
+            mouseDownTimer = new Timer() {
                 @Override
-                public void run()
-                {
+                public void run() {
                     final Point2D point = WiresShapeControlUtils.getViewportRelativeLocation(getLayer().getViewport(), event);
                     mouseDownEventConsumer.accept(new Event(point.getX(), point.getY(), false));
                     builder.createControlPointAt(event.getX(), event.getY());
@@ -177,10 +160,8 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler
     }
 
     @Override
-    public void onNodeMouseMove(final NodeMouseMoveEvent event)
-    {
-        if (null != mouseDownTimer)
-        {
+    public void onNodeMouseMove(final NodeMouseMoveEvent event) {
+        if (null != mouseDownTimer) {
             mouseDownTimer.run();
             mouseDownTimer = null;
         }
@@ -188,40 +169,32 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler
     }
 
     @Override
-    public void onNodeMouseClick(final NodeMouseClickEvent mouseEvent)
-    {
-        if (null != mouseDownTimer)
-        {
+    public void onNodeMouseClick(final NodeMouseClickEvent mouseEvent) {
+        if (null != mouseDownTimer) {
             mouseDownTimer.cancel();
             mouseDownTimer = null;
         }
         getControl().getControlPointBuilder().closeControlPointBuildAnimation();
         final Point2D location = WiresShapeControlUtils.getViewportRelativeLocation(getLayer().getViewport(), mouseEvent);
-        final Event   event    = new Event(location.getX(), location.getY(), mouseEvent.isShiftKeyDown());
+        final Event event = new Event(location.getX(), location.getY(), mouseEvent.isShiftKeyDown());
         mouseClickEventConsumer.accept(event);
     }
 
-    private Layer getLayer()
-    {
+    private Layer getLayer() {
         return m_wiresManager.getLayer().getLayer();
     }
 
-    private void ifControlPointsBuilder(final Consumer<WiresConnectorControlPointBuilder> consumer)
-    {
-        if (isControlPointsBuilderAllowed(getConnector()))
-        {
+    private void ifControlPointsBuilder(final Consumer<WiresConnectorControlPointBuilder> consumer) {
+        if (isControlPointsBuilderAllowed(getConnector())) {
             consumer.accept(getControl().getControlPointBuilder());
         }
     }
 
-    private static boolean isControlPointsBuilderAllowed(final WiresConnector connector)
-    {
-        if (!connector.getLine().isControlPointShape())
-        {
+    private static boolean isControlPointsBuilderAllowed(final WiresConnector connector) {
+        if (!connector.getLine().isControlPointShape()) {
             // skipping in case the connector is not a control point shape
             return false;
         }
         return !connector.isDraggable();
     }
-
 }

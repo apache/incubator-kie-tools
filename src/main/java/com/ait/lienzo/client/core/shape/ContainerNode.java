@@ -33,33 +33,31 @@ import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
 /**
  * ContainerNode acts as a Collection holder for primitives.
- * 
+ *
  * <ul>
  * <li>A ContainerNode may contain {@link Layer} or {@link Group}.</li>
  * <li>A Container handles collection operations such as addBoundingBox, remove and removeAll.</li>
  * </ul>
- * 
+ *
  * @param <T>
  */
 public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerNode<M, T>>
         extends Node<T>
-        implements IContainer<T, M>
-{
-    private BoundingBox       m_bbox;
+        implements IContainer<T, M> {
 
-    private IPathClipper      m_clip;
+    private BoundingBox m_bbox;
+
+    private IPathClipper m_clip;
 
     private IStorageEngine<M> m_stor;
 
-    protected ContainerNode(final NodeType type, final IStorageEngine<M> storage)
-    {
+    protected ContainerNode(final NodeType type, final IStorageEngine<M> storage) {
         super(type);
 
         setStorageEngine(storage);
     }
 
-    protected ContainerNode(final NodeType type)
-    {
+    protected ContainerNode(final NodeType type) {
         super(type);
     }
 
@@ -67,38 +65,31 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Returns a {@link NFastArrayList} containing all children.
      */
     @Override
-    public NFastArrayList<M> getChildNodes()
-    {
+    public NFastArrayList<M> getChildNodes() {
         return getStorageEngine().getChildren();
     }
 
     @Override
-    public NFastArrayList<M> getChildNodes(final BoundingBox bounds)
-    {
+    public NFastArrayList<M> getChildNodes(final BoundingBox bounds) {
         return getStorageEngine().getChildren(bounds);
     }
 
     @Override
-    public int length()
-    {
+    public int length() {
         return getStorageEngine().size();
     }
 
     @Override
-    public IStorageEngine<M> getStorageEngine()
-    {
-        if (null == m_stor)
-        {
+    public IStorageEngine<M> getStorageEngine() {
+        if (null == m_stor) {
             m_stor = getDefaultStorageEngine();
         }
         return m_stor;
     }
 
     @Override
-    public T setStorageEngine(final IStorageEngine<M> storage)
-    {
-        if ((null != storage) && (null != m_stor))
-        {
+    public T setStorageEngine(final IStorageEngine<M> storage) {
+        if ((null != storage) && (null != m_stor)) {
             storage.migrate(m_stor);
         }
         m_stor = storage;
@@ -107,16 +98,14 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     }
 
     @Override
-    public T setStorageBounds(BoundingBox bounds)
-    {
+    public T setStorageBounds(BoundingBox bounds) {
         m_bbox = bounds;
 
         return cast();
     }
 
     @Override
-    public BoundingBox getStorageBounds()
-    {
+    public BoundingBox getStorageBounds() {
         return m_bbox;
     }
 
@@ -128,8 +117,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
      */
     @Override
-    public T add(final M child)
-    {
+    public T add(final M child) {
         final Node<?> node = child.asNode();
 
         node.setParent(this);
@@ -147,8 +135,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
      */
     @Override
-    public T remove(final M child)
-    {
+    public T remove(final M child) {
         final Node<?> node = child.asNode();
 
         node.setParent(null);
@@ -166,8 +153,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
      */
     @Override
-    public T removeAll()
-    {
+    public T removeAll() {
         getStorageEngine().clear();
 
         return cast();
@@ -175,28 +161,24 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
 
     /**
      * Used internally. Draws the node in the current Context2D
-     * without applying the transformation-related attributes 
+     * without applying the transformation-related attributes
      * (e.g. X, Y, ROTATION, SCALE, SHEAR, OFFSET and TRANSFORM.)
-     * <p> 
+     * <p>
      * Groups should draw their children in the current context.
      */
     @Override
-    protected void drawWithoutTransforms(final Context2D context, double alpha, final BoundingBox bounds)
-    {
-        if ((context.isSelection()) && (!isListening()))
-        {
+    protected void drawWithoutTransforms(final Context2D context, double alpha, final BoundingBox bounds) {
+        if ((context.isSelection()) && (!isListening())) {
             return;
         }
         alpha = alpha * getAlpha();
 
-        if (alpha <= 0)
-        {
+        if (alpha <= 0) {
             return;
         }
         BoundingBox bbox = getStorageBounds();
 
-        if (null == bbox)
-        {
+        if (null == bbox) {
             bbox = bounds;
         }
         final NFastArrayList<M> list = getChildNodes(bbox);
@@ -205,42 +187,34 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
 
         final IPathClipper clip = getPathClipper();
 
-        if ((null != clip) && (clip.isActive()))
-        {
+        if ((null != clip) && (clip.isActive())) {
             context.save();
 
             clip.clip(context);
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 list.get(i).drawWithTransforms(context, alpha, bbox);
             }
             context.restore();
-        }
-        else
-        {
-            for (int i = 0; i < size; i++)
-            {
+        } else {
+            for (int i = 0; i < size; i++) {
                 list.get(i).drawWithTransforms(context, alpha, bbox);
             }
         }
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         final BoundingBox bbox = new BoundingBox();
 
         final NFastArrayList<M> list = getChildNodes();
 
         final int size = list.size();
 
-        for (int i = 0; i < size; i++)
-        {
+        for (int i = 0; i < size; i++) {
             final BoundingPoints bpts = list.get(i).getBoundingPoints();
 
-            if (null != bpts)
-            {
+            if (null != bpts) {
                 bbox.addPoint2DArray(bpts.getArray());
             }
         }
@@ -250,8 +224,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     // TODO - do this for containers
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return new ArrayList<>(0);
     }
 
@@ -259,8 +232,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Moves the {@link Layer} up
      */
     @Override
-    public T moveUp(final M node)
-    {
+    public T moveUp(final M node) {
         getStorageEngine().moveUp(node);
 
         return cast();
@@ -270,8 +242,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Moves the {@link Layer} down
      */
     @Override
-    public T moveDown(final M node)
-    {
+    public T moveDown(final M node) {
         getStorageEngine().moveDown(node);
 
         return cast();
@@ -281,8 +252,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Moves the {@link Layer} to the top
      */
     @Override
-    public T moveToTop(final M node)
-    {
+    public T moveToTop(final M node) {
         getStorageEngine().moveToTop(node);
 
         return cast();
@@ -292,31 +262,26 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Moves the {@link Layer} to the bottom
      */
     @Override
-    public T moveToBottom(final M node)
-    {
+    public T moveToBottom(final M node) {
         getStorageEngine().moveToBottom(node);
 
         return cast();
     }
 
     @Override
-    public final Iterable<Node<?>> findByID(String id)
-    {
-        if ((null == id) || ((id = id.trim()).isEmpty()))
-        {
+    public final Iterable<Node<?>> findByID(String id) {
+        if ((null == id) || ((id = id.trim()).isEmpty())) {
             return new ArrayList<>(0);
         }
         final String look = id;
 
         return find(node -> {
-            if (null == node)
-            {
+            if (null == node) {
                 return false;
             }
             String id1 = node.getID();
 
-            if ((null != id1) && (false == (id1 = id1.trim()).isEmpty()))
-            {
+            if ((null != id1) && (false == (id1 = id1.trim()).isEmpty())) {
                 return id1.equals(look);
             }
             return false;
@@ -326,8 +291,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     protected abstract void find(Predicate<Node<?>> predicate, LinkedHashSet<Node<?>> buff);
 
     @Override
-    public final Iterable<Node<?>> find(final Predicate<Node<?>> predicate)
-    {
+    public final Iterable<Node<?>> find(final Predicate<Node<?>> predicate) {
         final LinkedHashSet<Node<?>> buff = new LinkedHashSet<>();
 
         find(predicate, buff);
@@ -336,40 +300,34 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     }
 
     @Override
-    public T setPathClipper(final IPathClipper clipper)
-    {
+    public T setPathClipper(final IPathClipper clipper) {
         m_clip = clipper;
 
         return cast();
     }
 
     @Override
-    public IPathClipper getPathClipper()
-    {
+    public IPathClipper getPathClipper() {
         return m_clip;
     }
 
     @Override
-    public ContainerNode<?, ?> asContainerNode()
-    {
+    public ContainerNode<?, ?> asContainerNode() {
         return this;
     }
 
     @Override
-    public IContainer<?, ?> asContainer()
-    {
+    public IContainer<?, ?> asContainer() {
         return this;
     }
 
-    public abstract static class ContainerNodeFactory<C extends IJSONSerializable<C> & IContainer<C, ?>>extends NodeFactory<C>implements IContainerFactory
-    {
-        protected ContainerNodeFactory(final NodeType type)
-        {
+    public abstract static class ContainerNodeFactory<C extends IJSONSerializable<C> & IContainer<C, ?>> extends NodeFactory<C> implements IContainerFactory {
+
+        protected ContainerNodeFactory(final NodeType type) {
             this(type.getValue());
         }
 
-        protected ContainerNodeFactory(final String typeName)
-        {
+        protected ContainerNodeFactory(final String typeName) {
             super(typeName);
         }
     }

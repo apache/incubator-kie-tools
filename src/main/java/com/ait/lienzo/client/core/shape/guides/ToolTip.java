@@ -35,50 +35,49 @@ import com.ait.lienzo.tools.client.StringOps;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 
-public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePrimitive<ToolTip>
-{
-    private static final String FONT_FAMILY     = "Verdana";
+public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePrimitive<ToolTip> {
+
+    private static final String FONT_FAMILY = "Verdana";
 
     private static final String TEXT_FONT_STYLE = "normal";
 
     private static final String LABL_FONT_STYLE = "bold";
 
-    private static final int    FONT_SIZE       = 10;
+    private static final int FONT_SIZE = 10;
 
-    private static final IColor LABEL_COLOR     = ColorName.BLACK;
+    private static final IColor LABEL_COLOR = ColorName.BLACK;
 
-    private final Rectangle     m_body;
+    private final Rectangle m_body;
 
-    private final        Triangle         m_tail;
+    private final Triangle m_tail;
 
-    private final        Triangle         m_mask;
+    private final Triangle m_mask;
 
-    private final        Text             m_text;
+    private final Text m_text;
 
-    private final        Text             m_labl;
+    private final Text m_labl;
 
-    private              int              m_wait;
+    private int m_wait;
 
-    private              boolean          m_show;
+    private boolean m_show;
 
-    private              double           m_oldx;
+    private double m_oldx;
 
-    private              double           m_oldy;
+    private double m_oldy;
 
-    private              double           m_padding;
+    private double m_padding;
 
-    private              double           m_tailValue;
+    private double m_tailValue;
 
-    private              String           m_textValue;
+    private String m_textValue;
 
-    private              String           m_lablValue;
+    private String m_lablValue;
 
     private RepeatingCommand m_autoHider;
 
-    private static final Shadow           SHADOW          = new Shadow(ColorName.BLACK.getColor().setA(0.80), 10, 3, 3);
+    private static final Shadow SHADOW = new Shadow(ColorName.BLACK.getColor().setA(0.80), 10, 3, 3);
 
-    public ToolTip()
-    {
+    public ToolTip() {
         super(GroupType.GROUP, new PrimitiveFastArrayStorageEngine());
 
         m_body = new Rectangle(1, 1).setCornerRadius(5).setStrokeWidth(1).setShadow(SHADOW);
@@ -115,27 +114,22 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
     }
 
     @Override
-    public IGuidePrimitive<?> asGuide()
-    {
+    public IGuidePrimitive<?> asGuide() {
         return this;
     }
 
     @Override
-    public ToolTip show(final double x, final double y)
-    {
+    public ToolTip show(final double x, final double y) {
         return show(x, y, false);
     }
 
-    private ToolTip show(final double x, final double y, final boolean force)
-    {
+    private ToolTip show(final double x, final double y, final boolean force) {
         m_autoHider = null;
 
-        if ((!force) && (!m_show))
-        {
+        if ((!force) && (!m_show)) {
             return this;
         }
-        if (!m_show)
-        {
+        if (!m_show) {
             hide();
         }
         m_oldx = x;
@@ -154,12 +148,9 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
 
         final double pd = getPadding();
 
-        if ((null == m_textValue) || (m_textValue.isEmpty()))
-        {
+        if ((null == m_textValue) || (m_textValue.isEmpty())) {
             m_text.setText("").setVisible(false);
-        }
-        else
-        {
+        } else {
             m_text.setText(m_textValue).setVisible(true);
 
             final BoundingBox bb = m_text.getBoundingBox();
@@ -168,12 +159,9 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
 
             th = bb.getHeight();
         }
-        if ((null == m_lablValue) || (m_lablValue.isEmpty()))
-        {
+        if ((null == m_lablValue) || (m_lablValue.isEmpty())) {
             m_labl.setText("").setVisible(false);
-        }
-        else
-        {
+        } else {
             m_labl.setText(m_lablValue).setVisible(true);
 
             final BoundingBox bb = m_labl.getBoundingBox();
@@ -196,45 +184,34 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
 
         final double tv = getTailValue();
 
-        if (tv > 1)
-        {
+        if (tv > 1) {
             m_tail.setPoints(new Point2D(w2 - tv, rh), new Point2D(w2, rh + tv), new Point2D(w2 + tv, rh)).setVisible(true);
 
             m_mask.setPoints(new Point2D(w2 - tv - 3, rh - 3), new Point2D(w2, rh + tv - 3), new Point2D(w2 + tv + 3, rh - 3)).setVisible(true);
-        }
-        else
-        {
+        } else {
             m_tail.setVisible(false);
 
             m_mask.setVisible(false);
         }
-        if (th > 0)
-        {
+        if (th > 0) {
             m_text.setX(w2);
 
-            if (lh > 0)
-            {
+            if (lh > 0) {
                 m_labl.setY(h2 - (th / 2) - 2);
 
                 m_text.setY(h2 + (lh / 2) + 2);
-            }
-            else
-            {
+            } else {
                 m_text.setY(h2);
             }
         }
-        if (lh > 0)
-        {
+        if (lh > 0) {
             m_labl.setX(w2);
 
-            if (th > 0)
-            {
+            if (th > 0) {
                 m_labl.setY(h2 - (th / 2) - 2);
 
                 m_text.setY(h2 + (lh / 2) + 2);
-            }
-            else
-            {
+            } else {
                 m_labl.setY(h2);
             }
         }
@@ -242,15 +219,11 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
 
         setY(y - rh);
 
-        if ((!force) && (getAutoHideTime() > 0))
-        {
-            m_autoHider = new RepeatingCommand()
-            {
+        if ((!force) && (getAutoHideTime() > 0)) {
+            m_autoHider = new RepeatingCommand() {
                 @Override
-                public boolean execute()
-                {
-                    if ((this == m_autoHider) && (isShowing()))
-                    {
+                public boolean execute() {
+                    if ((this == m_autoHider) && (isShowing())) {
                         hide();
                     }
                     return false;
@@ -264,62 +237,51 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
     }
 
     @Override
-    public boolean isShowing()
-    {
+    public boolean isShowing() {
         return (!m_show);
     }
 
     @Override
-    public int getAutoHideTime()
-    {
+    public int getAutoHideTime() {
         return m_wait;
     }
 
     @Override
-    public ToolTip setAutoHideTime(final int time)
-    {
+    public ToolTip setAutoHideTime(final int time) {
         m_wait = Math.max(time, 0);
 
         return this;
     }
 
-    public double getPadding()
-    {
+    public double getPadding() {
         return m_padding;
     }
 
-    public ToolTip setPadding(final double padding)
-    {
+    public ToolTip setPadding(final double padding) {
         m_padding = Math.max(padding, 2);
 
         return this;
     }
 
-    public double getTailValue()
-    {
+    public double getTailValue() {
         return m_tailValue;
     }
 
-    public ToolTip setTailValue(final double value)
-    {
+    public ToolTip setTailValue(final double value) {
         m_tailValue = Math.max(value, 0);
 
         return this;
     }
 
-    public ToolTip setFillColor(IColor fill)
-    {
-        if (null == fill)
-        {
+    public ToolTip setFillColor(IColor fill) {
+        if (null == fill) {
             fill = ColorName.WHITESMOKE;
         }
         return setFillColor(fill.getColorString());
     }
 
-    public ToolTip setFillColor(String fill)
-    {
-        if (null == (fill = StringOps.toTrimOrNull(fill)))
-        {
+    public ToolTip setFillColor(String fill) {
+        if (null == (fill = StringOps.toTrimOrNull(fill))) {
             fill = ColorName.WHITESMOKE.getColorString();
         }
         m_body.setFillColor(fill);
@@ -328,26 +290,22 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
 
         m_mask.setFillColor(fill);
 
-        if (isShowing())
-        {
+        if (isShowing()) {
             return draw();
         }
         return this;
     }
 
     @Override
-    public ToolTip draw()
-    {
+    public ToolTip draw() {
         moveToTop();
 
         return batch();
     }
 
     @Override
-    public ToolTip hide()
-    {
-        if (m_show)
-        {
+    public ToolTip hide() {
+        if (m_show) {
             return this;
         }
         m_show = true;
@@ -357,22 +315,19 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
         return batch();
     }
 
-    public ToolTip setValues(final String text, final String labl)
-    {
+    public ToolTip setValues(final String text, final String labl) {
         m_textValue = text;
 
         m_lablValue = labl;
 
-        if (isShowing())
-        {
+        if (isShowing()) {
             show(m_oldx, m_oldy, true);
         }
         return this;
     }
 
     @Override
-    public IStorageEngine<IPrimitive<?>> getDefaultStorageEngine()
-    {
+    public IStorageEngine<IPrimitive<?>> getDefaultStorageEngine() {
         return new PrimitiveFastArrayStorageEngine();
     }
 }

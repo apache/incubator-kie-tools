@@ -16,23 +16,20 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-public class IgnoreTypeValidator extends AbstractAttributeTypeValidator
-{
+public class IgnoreTypeValidator extends AbstractAttributeTypeValidator {
+
     public static final IgnoreTypeValidator INSTANCE = new IgnoreTypeValidator();
 
-    public IgnoreTypeValidator()
-    {
+    public IgnoreTypeValidator() {
         super("Ignore");
     }
 
     @Override
-    public boolean isIgnored()
-    {
+    public boolean isIgnored() {
         return true;
     }
 
     @Override
-    public void validate(Object jval, ValidationContext ctx) throws ValidationException
-    {
+    public void validate(Object jval, ValidationContext ctx) throws ValidationException {
     }
 }

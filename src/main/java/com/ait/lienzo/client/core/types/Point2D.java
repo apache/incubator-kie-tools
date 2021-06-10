@@ -19,21 +19,19 @@ package com.ait.lienzo.client.core.types;
 import java.util.Objects;
 
 import com.ait.lienzo.client.core.util.GeometryException;
-
 import elemental2.core.Global;
 import jsinterop.annotations.JsProperty;
 
 /**
  * Point2D can be used to represent a point or vector in 2D.
- * 
+ *
  * <p>
  * Some of the methods related to linear algebra come in two flavors, e.g. plus() and plusInSitu().
  * The first one does not modify the object that it is invoked on, but the second one does.
  * The second one is a little faster as it does not need to create a new object.
  * Think of them as the "+" and the "+=" operators respectively.
  */
-public final class Point2D
-{
+public final class Point2D {
 //    private Point2DJSO m_jso;
 
     @JsProperty
@@ -44,37 +42,35 @@ public final class Point2D
 
     /**
      * Constructs a Point2D at (x,y)
-     * 
+     *
      * @param x double
      * @param y double
      */
-    public Point2D(final double x, final double y)
-    {
+    public Point2D(final double x, final double y) {
         this.x = x;
         this.y = y;
     }
 
-    public final Point2D copy()
-    {
+    public final Point2D copy() {
         return new Point2D(x, y);
     }
 
     /**
      * Returns the x coordinate
+     *
      * @return double
      */
-    public final double getX()
-    {
+    public final double getX() {
         return this.x;
     }
 
     /**
      * Sets the x coordinate
+     *
      * @param x double
      * @return this Point2D
      */
-    public final Point2D setX(final double x)
-    {
+    public final Point2D setX(final double x) {
         this.x = x;
 
         return this;
@@ -82,20 +78,20 @@ public final class Point2D
 
     /**
      * Returns the y coordinate
+     *
      * @return double
      */
-    public final double getY()
-    {
+    public final double getY() {
         return this.y;
     }
 
     /**
      * Sets the y coordinate
+     *
      * @param y double
      * @return this Point2D
      */
-    public final Point2D setY(final double y)
-    {
+    public final Point2D setY(final double y) {
         this.y = y;
 
         return this;
@@ -103,12 +99,11 @@ public final class Point2D
 
     /**
      * Sets the x and y coordinates to those of point P.
-     * 
+     *
      * @param p Point2D
      * @return this Point2D
      */
-    public final Point2D set(final Point2D p)
-    {
+    public final Point2D set(final Point2D p) {
         x = p.getX();
         y = p.getY();
 
@@ -117,11 +112,10 @@ public final class Point2D
 
     /**
      * Returns the length of the vector from (0,0) to this Point2D.
-     * 
+     *
      * @return double
      */
-    public final double getLength()
-    {
+    public final double getLength() {
         double dx = this.x;
 
         double dy = this.y;
@@ -131,12 +125,11 @@ public final class Point2D
 
     /**
      * Returns the distance from this Point2D to the other Point2D.
-     * 
+     *
      * @param other Point2D
      * @return double
      */
-    public final double distance(final Point2D other)
-    {
+    public final double distance(final Point2D other) {
         double dx = other.x - this.x;
 
         double dy = other.y - this.y;
@@ -144,37 +137,32 @@ public final class Point2D
         return Math.sqrt((dx * dx) + (dy * dy));
     }
 
-
     /**
      * Returns a new point by adding the coordinates of this point and point P,
      * i.e. (this.x + p.x, this.y + p.y)
      * <p>
      * This Point2D is not modified.
-     * 
+     *
      * @param p Point2D
      * @return a new Point2D
      */
-    public final Point2D add(final Point2D p)
-    {
+    public final Point2D add(final Point2D p) {
         return new Point2D(this.x + p.x, this.y + p.y);
     }
 
-    public final Point2D offset(final double x, final double y)
-    {
+    public final Point2D offset(final double x, final double y) {
         this.x += x;
         this.y += y;
 
         return this;
     }
 
-    public final Point2D normalize(final double length)
-    {
+    public final Point2D normalize(final double length) {
         final double x = getX();
 
         final double y = getY();
 
-        if (((x == 0) && (y == 0)) || (length == 0))
-        {
+        if (((x == 0) && (y == 0)) || (length == 0)) {
             return this;
         }
         final double angle = Math.atan2(y, x);
@@ -190,17 +178,15 @@ public final class Point2D
      * i.e. (this.x - p.x, this.y - p.y)
      * <p>
      * This Point2D is not modified.
-     * 
+     *
      * @param p Point2D
      * @return a new Point2D
      */
-    public final Point2D sub(final Point2D p)
-    {
+    public final Point2D sub(final Point2D p) {
         return new Point2D(this.x - p.x, this.y - p.y);
     }
 
-    public final Point2D subXY(double x, double y)
-    {
+    public final Point2D subXY(double x, double y) {
         return new Point2D(this.x - x, this.y - y);
     }
 
@@ -209,14 +195,12 @@ public final class Point2D
      * i.e. (this.x / d, this.y / d)
      * <p>
      * This Point2D is not modified.
-     * 
+     *
      * @param d double
      * @return a new Point2D
      */
-    public final Point2D div(final double d) throws GeometryException
-    {
-        if (d == 0.0)
-        {
+    public final Point2D div(final double d) throws GeometryException {
+        if (d == 0.0) {
             throw new GeometryException("can't divide by 0");
         }
         return mul(1.0 / d);
@@ -227,44 +211,39 @@ public final class Point2D
      * i.e. (this.x * d, this.y * d)
      * <p>
      * This Point2D is not modified.
-     * 
+     *
      * @param d double
      * @return a new Point2D
      */
-    public final Point2D scale(final double d)
-    {
+    public final Point2D scale(final double d) {
         return new Point2D(this.x * d, this.y * d);
     }
 
-    public final Point2D mul(final double d)
-    {
+    public final Point2D mul(final double d) {
         return scale(d);
     }
 
     /**
-     * Returns a new Point2D perpendicular to this vector by rotating this Point2D 
+     * Returns a new Point2D perpendicular to this vector by rotating this Point2D
      * 90 degrees counterclockwise around (0,0)
-     * 
+     *
      * @return Point2D
      * @see http://mathworld.wolfram.com/PerpendicularVector.html
      */
-    public final Point2D perpendicular()
-    {
+    public final Point2D perpendicular() {
         return new Point2D(-this.y, this.x);
     }
 
     /**
-     * Returns a new Point2D by rotating this Point2D counterclockwise 
+     * Returns a new Point2D by rotating this Point2D counterclockwise
      * over the angle (in radians, not degrees!)
      * <p>
      * This Point2D is not modified.
-     * 
+     *
      * @param angleInRadians
-     * 
      * @return Point2D
      */
-    public final Point2D rotate(final double angle)
-    {
+    public final Point2D rotate(final double angle) {
         //return new Point2D(m_jso.rotate(angle));
         double s = Math.sin(angle);
         double c = Math.cos(angle);
@@ -275,15 +254,13 @@ public final class Point2D
     /**
      * Returns a new Point2D in the same direction as this Point2D
      * with a length of 1.
-     * 
+     *
      * @return Point2D
      */
-    public final Point2D unit() throws GeometryException
-    {
+    public final Point2D unit() throws GeometryException {
         double len = getLength();
 
-        if (len == 0)
-        {
+        if (len == 0) {
             throw new GeometryException("can't normalize (0,0)");
         }
         return div(len);
@@ -291,22 +268,20 @@ public final class Point2D
 
     /**
      * Returns whether this point is the Null vector (0,0)
-     * 
+     *
      * @return boolean
      */
-    public final boolean isNullVector()
-    {
+    public final boolean isNullVector() {
         return ((this.x == 0) && (this.y == 0));
     }
 
     /**
-     * Returns the angle of the vector thru (0,0) and this Point2D, 
+     * Returns the angle of the vector thru (0,0) and this Point2D,
      * and the positive x-axis. Returns 0 for the null vector (0,0).
-     * 
+     *
      * @return double
      */
-    public final double theta()
-    {
+    public final double theta() {
         if ((this.x == 0) && (this.y == 0)) {
             return 0.0; // not sure if check is needed
         }
@@ -315,8 +290,7 @@ public final class Point2D
         return (a >= 0.0) ? a : (a + Math.PI * 2);
     }
 
-    public final double thetaTo(final Point2D p)
-    {
+    public final double thetaTo(final Point2D p) {
         if ((this.x == p.x) && (this.y == p.y)) {
             return 0.0;
         }
@@ -325,20 +299,16 @@ public final class Point2D
         return (a >= 0.0) ? a : (a + Math.PI * 2);
     }
 
-    public final String toJSONString()
-    {
+    public final String toJSONString() {
         return Global.JSON.stringify(this);
     }
 
     @Override
-    public boolean equals(final Object other)
-    {
-        if ((other == null) || (!(other instanceof Point2D)))
-        {
+    public boolean equals(final Object other) {
+        if ((other == null) || (!(other instanceof Point2D))) {
             return false;
         }
-        if (this == other)
-        {
+        if (this == other) {
             return true;
         }
         final Point2D p = ((Point2D) other);
@@ -361,16 +331,13 @@ public final class Point2D
         return Objects.hash(x, y);
     }
 
-    public final double dot(final Point2D p)
-    {
+    public final double dot(final Point2D p) {
         return this.x * p.x + this.y * p.y;
     }
 
-    public final double crossScalar(final Point2D p)
-    {
+    public final double crossScalar(final Point2D p) {
         return this.x * p.y - this.y * p.x;
     }
-
 
     /**
      * Returns the determinant of vectors P and Q. By definition:
@@ -387,25 +354,23 @@ public final class Point2D
      *  <li>if Q is on your right, det(P,Q) &lt; 0
      *  <li>if Q is on the line thru P and the Origin, det(P,Q) = 0
      * </ul>
-     * 
+     *
      * @param p Point2D
      * @param q Point2D
      * @return the determinant of vectors P and Q
      */
-    public static final double det(final Point2D p, final Point2D q)
-    {
+    public static final double det(final Point2D p, final Point2D q) {
         return (p.getX() * q.getY()) - (p.getY() * q.getX());
     }
 
     /**
      * Construct a Point2D from polar coordinates, i.e. a radius and an angle.
-     * 
+     *
      * @param radius
-     * @param angle in radians
+     * @param angle  in radians
      * @return Point2D
      */
-    public static final Point2D polar(final double radius, final double angle)
-    {
+    public static final Point2D polar(final double radius, final double angle) {
         return new Point2D(radius * Math.cos(angle), radius * Math.sin(angle));
     }
 

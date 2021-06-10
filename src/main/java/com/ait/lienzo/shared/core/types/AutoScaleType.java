@@ -19,43 +19,40 @@ package com.ait.lienzo.shared.core.types;
 import java.util.List;
 
 // TODO: Really used? can be removed?
-public enum AutoScaleType implements EnumWithValue
-{
-    NONE("scaleWithXY-none"), MIN("scaleWithXY-min"), MAX("scaleWithXY-max"), WIDTH("scaleWithXY-width"), HEIGHT("scaleWithXY-height");
+public enum AutoScaleType implements EnumWithValue {
+    NONE("scaleWithXY-none"),
+    MIN("scaleWithXY-min"),
+    MAX("scaleWithXY-max"),
+    WIDTH("scaleWithXY-width"),
+    HEIGHT("scaleWithXY-height");
 
     private final String m_value;
 
     private static final EnumStringMap<AutoScaleType> LOOKUP_MAP = Statics.build(AutoScaleType.values());
 
-    private AutoScaleType(final String value)
-    {
+    private AutoScaleType(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
-    public static final AutoScaleType lookup(final String key)
-    {
+    public static final AutoScaleType lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, NONE);
     }
 
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(AutoScaleType.values());
     }
 
-    public static final List<AutoScaleType> getValues()
-    {
+    public static final List<AutoScaleType> getValues() {
         return Statics.getValues(AutoScaleType.values());
     }
 }

@@ -18,31 +18,27 @@ package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.shared.core.types.ScreenOrientation;
-
 import elemental2.dom.HTMLElement;
 
-public class OrientationChangeEvent extends AbstractNodeHumanInputEvent<OrientationChangeHandler, Node>
-{
-    private int                                   m_width;
+public class OrientationChangeEvent extends AbstractNodeHumanInputEvent<OrientationChangeHandler, Node> {
 
-    private int                                   m_height;
+    private int m_width;
 
-    private ScreenOrientation                     m_orientation;
+    private int m_height;
+
+    private ScreenOrientation m_orientation;
 
     private static final Type<OrientationChangeHandler> TYPE = new Type<>();
 
-    public static final Type<OrientationChangeHandler> getType()
-    {
+    public static final Type<OrientationChangeHandler> getType() {
         return TYPE;
     }
 
-    public OrientationChangeEvent(final HTMLElement relativeElement)
-    {
+    public OrientationChangeEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
-    public void override(final ScreenOrientation orientation, final int width, final int height)
-    {
+    public void override(final ScreenOrientation orientation, final int width, final int height) {
         m_width = width;
 
         m_height = height;
@@ -51,29 +47,24 @@ public class OrientationChangeEvent extends AbstractNodeHumanInputEvent<Orientat
     }
 
     @Override
-    public final Type<OrientationChangeHandler> getAssociatedType()
-    {
+    public final Type<OrientationChangeHandler> getAssociatedType() {
         return TYPE;
     }
 
-    public int getWidth()
-    {
+    public int getWidth() {
         return m_width;
     }
 
-    public int getHeight()
-    {
+    public int getHeight() {
         return m_height;
     }
 
-    public ScreenOrientation getOrientation()
-    {
+    public ScreenOrientation getOrientation() {
         return m_orientation;
     }
 
     @Override
-    public void dispatch(final OrientationChangeHandler handler)
-    {
+    public void dispatch(final OrientationChangeHandler handler) {
         handler.onOrientationChange(this);
     }
 }

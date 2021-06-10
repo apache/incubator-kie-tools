@@ -16,53 +16,44 @@
 
 package com.ait.lienzo.client.core.animation;
 
-import com.ait.lienzo.client.core.shape.Node;
-import com.ait.lienzo.client.core.animation.AnimationScheduler;
 import com.ait.lienzo.client.core.animation.AnimationScheduler.AnimationCallback;
+import com.ait.lienzo.client.core.shape.Node;
 
-public abstract class AbstractAnimation implements IAnimation, IAnimationHandle
-{
-    private Node<?>                  m_node;
+public abstract class AbstractAnimation implements IAnimation,
+                                                   IAnimationHandle {
 
-    private final double             m_duration;
+    private Node<?> m_node;
+
+    private final double m_duration;
 
     private final IAnimationCallback m_callback;
 
-    private double                   m_begtime = 0;
+    private double m_begtime = 0;
 
-    private boolean                  m_running = false;
+    private boolean m_running = false;
 
-    private AnimationCallback        m_animate = null;
+    private AnimationCallback m_animate = null;
 
-    protected AbstractAnimation(final double duration, final IAnimationCallback callback)
-    {
+    protected AbstractAnimation(final double duration, final IAnimationCallback callback) {
         m_duration = duration;
 
         m_callback = callback;
     }
 
-    protected double getBegTime()
-    {
+    protected double getBegTime() {
         return m_begtime;
     }
 
-    private final AnimationCallback getAnimationCallback()
-    {
-        if (null == m_animate)
-        {
-            m_animate = new AnimationCallback()
-            {
+    private final AnimationCallback getAnimationCallback() {
+        if (null == m_animate) {
+            m_animate = new AnimationCallback() {
                 @Override
-                public void execute(double time)
-                {
+                public void execute(double time) {
                     doFrame();
 
-                    if (isRunning() && m_animate != null)
-                    {
+                    if (isRunning() && m_animate != null) {
                         AnimationScheduler.get().requestAnimationFrame(m_animate);
-                    }
-                    else
-                    {
+                    } else {
                         doClose();
                     }
                 }
@@ -72,10 +63,8 @@ public abstract class AbstractAnimation implements IAnimation, IAnimationHandle
     }
 
     @Override
-    public IAnimationHandle run()
-    {
-        if (isRunning())
-        {
+    public IAnimationHandle run() {
+        if (isRunning()) {
             return this;
         }
         m_running = true;
@@ -90,8 +79,7 @@ public abstract class AbstractAnimation implements IAnimation, IAnimationHandle
     }
 
     @Override
-    public IAnimationHandle stop()
-    {
+    public IAnimationHandle stop() {
         m_running = false;
 
         m_animate = null;
@@ -100,83 +88,67 @@ public abstract class AbstractAnimation implements IAnimation, IAnimationHandle
     }
 
     @Override
-    public boolean isRunning()
-    {
+    public boolean isRunning() {
         return m_running;
     }
 
     @Override
-    public IAnimation setNode(final Node<?> node)
-    {
+    public IAnimation setNode(final Node<?> node) {
         m_node = node;
 
         return this;
     }
 
     @Override
-    public Node<?> getNode()
-    {
+    public Node<?> getNode() {
         return m_node;
     }
 
     @Override
-    public double getPercent()
-    {
+    public double getPercent() {
         double duration = getDuration();
 
-        if (duration != INDEFINITE_ANIMATION)
-        {
+        if (duration != INDEFINITE_ANIMATION) {
             return (((double) System.currentTimeMillis()) - m_begtime) / m_duration;
-        }
-        else
-        {
+        } else {
             return 1.0;
         }
     }
 
     @Override
-    public double getDuration()
-    {
+    public double getDuration() {
         return m_duration;
     }
 
     @Override
-    public IAnimation doStart()
-    {
+    public IAnimation doStart() {
         final Node<?> node = getNode();
 
-        if (null != node)
-        {
+        if (null != node) {
             node.doAnimating();
         }
-        if (null != m_callback)
-        {
+        if (null != m_callback) {
             m_callback.onStart(this, this);
         }
         return this;
     }
 
     @Override
-    public IAnimation doFrame()
-    {
-        if (null != m_callback)
-        {
+    public IAnimation doFrame() {
+        if (null != m_callback) {
             m_callback.onFrame(this, this);
         }
         return this;
     }
 
     @Override
-    public IAnimation doClose()
-    {
+    public IAnimation doClose() {
         final Node<?> node = getNode();
 
-        if (null != node)
-        {
+        if (null != node) {
             node.unAnimating();
         }
-        if (null != m_callback)
-        {
+        if (null != m_callback) {
             m_callback.onClose(this, this);
         }
         return this;

@@ -18,17 +18,15 @@ package com.ait.lienzo.client.core.shape.json.validators;
 
 import com.ait.lienzo.client.core.AttributeType;
 
-public class MultiTypeValidator extends AbstractAttributeTypeValidator
-{
+public class MultiTypeValidator extends AbstractAttributeTypeValidator {
+
     private final AttributeType[] m_types;
 
     /**
-     * 
-     * @param typeDescription   E.g. "Color or Gradient"
+     * @param typeDescription E.g. "Color or Gradient"
      * @param types
      */
-    public MultiTypeValidator(final String typeName, final AttributeType[] types)
-    {
+    public MultiTypeValidator(final String typeName, final AttributeType[] types) {
         super(typeName);
 
         m_types = types;
@@ -36,28 +34,21 @@ public class MultiTypeValidator extends AbstractAttributeTypeValidator
 
     @Override
     // @FIXME serialization (mdp)
-    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
-    {
-        for (AttributeType type : m_types)
-        {
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException {
+        for (AttributeType type : m_types) {
             boolean valid = true;
 
             final ValidationContext test = new ValidationContext().setStopOnError(false);
 
-            try
-            {
+            try {
                 type.validate(jval, test);
-            }
-            catch (ValidationException e)
-            {
+            } catch (ValidationException e) {
                 valid = false;
             }
-            if (test.getErrorCount() > 0)
-            {
+            if (test.getErrorCount() > 0) {
                 valid = false;
             }
-            if (valid)
-            {
+            if (valid) {
                 return;// OK
             }
         }

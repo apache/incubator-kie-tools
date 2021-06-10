@@ -5,22 +5,20 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresMoveEvent;
-
 import elemental2.dom.HTMLElement;
 
-public class WiresEventHandlers
-{
-    private           HTMLElement                      relativeDiv;
+public class WiresEventHandlers {
 
-    public final      WiresDragStartEvent              dragStartEvent;
-    public final      WiresDragMoveEvent               dragMoveEvent;
-    public final      WiresDragEndEvent                dragEndEvent;
-    public final      WiresMoveEvent                   wiresMoveEvent;
+    private HTMLElement relativeDiv;
+
+    public final WiresDragStartEvent dragStartEvent;
+    public final WiresDragMoveEvent dragMoveEvent;
+    public final WiresDragEndEvent dragEndEvent;
+    public final WiresMoveEvent wiresMoveEvent;
 
     public final WiresConnectorPointsChangedEvent wiresConnectorPointsChangedEvent;
 
-    public WiresEventHandlers(final HTMLElement relativeDiv)
-    {
+    public WiresEventHandlers(final HTMLElement relativeDiv) {
         this.relativeDiv = relativeDiv;
 
         this.dragStartEvent = new WiresDragStartEvent(relativeDiv);

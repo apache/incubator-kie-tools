@@ -21,7 +21,6 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-
 import elemental2.core.Uint8ClampedArray;
 import elemental2.dom.ImageData;
 import jsinterop.base.Js;
@@ -29,60 +28,49 @@ import jsinterop.base.Js;
 /**
  * A class that allows for easy creation of Brightness Filters.
  */
-public class HueImageDataFilter extends AbstractValueImageDataFilter<HueImageDataFilter>
-{
-    public HueImageDataFilter()
-    {
+public class HueImageDataFilter extends AbstractValueImageDataFilter<HueImageDataFilter> {
+
+    public HueImageDataFilter() {
         super(ImageFilterType.HueImageDataFilterType, 0);
     }
 
-    public HueImageDataFilter(double value)
-    {
+    public HueImageDataFilter(double value) {
         super(ImageFilterType.HueImageDataFilterType, value);
     }
 
-    protected HueImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
-    {
+    protected HueImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
         super(ImageFilterType.HueImageDataFilterType, node, ctx);
     }
 
     @Override
-    public double getMinValue()
-    {
+    public double getMinValue() {
         return -1;
     }
 
     @Override
-    public double getMaxValue()
-    {
+    public double getMaxValue() {
         return 1;
     }
 
     @Override
-    public double getRefValue()
-    {
+    public double getRefValue() {
         return 0;
     }
 
     @Override
-    public ImageData filter(ImageData source, boolean copy)
-    {
-        if (null == source)
-        {
+    public ImageData filter(ImageData source, boolean copy) {
+        if (null == source) {
             return null;
         }
-        if (copy)
-        {
+        if (copy) {
             source = ImageDataUtil.copy(source);
         }
-        if (!isActive())
-        {
+        if (!isActive()) {
             return source;
         }
         final Uint8ClampedArray data = source.data;
 
-        if (null == data)
-        {
+        if (null == data) {
             return source;
         }
         filter_(data, source.width, source.height, getValue(), FilterCommonOps);
@@ -90,36 +78,33 @@ public class HueImageDataFilter extends AbstractValueImageDataFilter<HueImageDat
         return source;
     }
 
-    private final void filter_(Uint8ClampedArray dataArray, int w, int h, double value, ImageDataFilterCommonOps fops)
-    {
+    private final void filter_(Uint8ClampedArray dataArray, int w, int h, double value, ImageDataFilterCommonOps fops) {
         //int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
         int[] data = Js.uncheckedCast(dataArray);
-    	 for (int y = 0; y < h; y++) {
+        for (int y = 0; y < h; y++) {
             for (int x = 0; x < w; x++) {
                 int p = (y * w + x) * 4;
                 int[] hsv = fops.RGBtoHSV(data[p], data[p + 1], data[p + 2]);
                 hsv[0] += value;
-                while(hsv[0] < 0) {
+                while (hsv[0] < 0) {
                     hsv[0] += 360;
                 }
                 int[] rgb = fops.HSVtoRGB(hsv[0], hsv[1], hsv[2]);
-                for(int i = 0; i < 3; i++) {
-                    data[p+i] = rgb[i];
+                for (int i = 0; i < 3; i++) {
+                    data[p + i] = rgb[i];
                 }
-            }   
+            }
         }
     }
 
     @Override
-    public IFactory<HueImageDataFilter> getFactory()
-    {
+    public IFactory<HueImageDataFilter> getFactory() {
         return new HueImageDataFilterFactory();
     }
 
-    public static class HueImageDataFilterFactory extends ValueImageDataFilterFactory<HueImageDataFilter>
-    {
-        public HueImageDataFilterFactory()
-        {
+    public static class HueImageDataFilterFactory extends ValueImageDataFilterFactory<HueImageDataFilter> {
+
+        public HueImageDataFilterFactory() {
             super(ImageFilterType.HueImageDataFilterType);
         }
     }

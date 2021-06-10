@@ -20,41 +20,33 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-
 import elemental2.core.Uint8ClampedArray;
 import elemental2.dom.ImageData;
 
-public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageDataFilter<T>> extends AbstractImageDataFilter<T>
-{
-    protected AbstractTableImageDataFilter(final ImageFilterType type)
-    {
+public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageDataFilter<T>> extends AbstractImageDataFilter<T> {
+
+    protected AbstractTableImageDataFilter(final ImageFilterType type) {
         super(type);
     }
 
-    protected AbstractTableImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException
-    {
+    protected AbstractTableImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException {
         super(type, node, ctx);
     }
 
     @Override
-    public ImageData filter(ImageData source, final boolean copy)
-    {
-        if (null == source)
-        {
+    public ImageData filter(ImageData source, final boolean copy) {
+        if (null == source) {
             return null;
         }
-        if (copy)
-        {
+        if (copy) {
             source = ImageDataUtil.copy(source);
         }
-        if (false == isActive())
-        {
+        if (false == isActive()) {
             return source;
         }
         final Uint8ClampedArray data = source.data;
 
-        if (null == data)
-        {
+        if (null == data) {
             return source;
         }
         FilterCommonOps.doFilterTable(data, getTable(), source.width, source.height);
@@ -63,17 +55,15 @@ public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageD
     }
 
     @Override
-    public final boolean isTransforming()
-    {
+    public final boolean isTransforming() {
         return true;
     }
 
     protected abstract FilterTableArray getTable();
 
-    protected static abstract class TableImageDataFilterFactory<T extends AbstractTableImageDataFilter<T>> extends ImageDataFilterFactory<T>
-    {
-        protected TableImageDataFilterFactory(final ImageFilterType type)
-        {
+    protected static abstract class TableImageDataFilterFactory<T extends AbstractTableImageDataFilter<T>> extends ImageDataFilterFactory<T> {
+
+        protected TableImageDataFilterFactory(final ImageFilterType type) {
             super(type);
         }
     }

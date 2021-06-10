@@ -16,12 +16,11 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-public class ShadowValidator extends ObjectValidator
-{
+public class ShadowValidator extends ObjectValidator {
+
     public static final ShadowValidator INSTANCE = new ShadowValidator();
 
-    public ShadowValidator()
-    {
+    public ShadowValidator() {
         super("Shadow");
 
         addAttribute("color", ColorValidator.INSTANCE, false);

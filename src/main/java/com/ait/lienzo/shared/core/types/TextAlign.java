@@ -16,50 +16,47 @@
 
 package com.ait.lienzo.shared.core.types;
 
-import com.ait.lienzo.client.core.shape.Text;
-
 import java.util.List;
+
+import com.ait.lienzo.client.core.shape.Text;
 
 /**
  * Enum to create a type safe set of values for {@link Text} Alignment.
  */
-public enum TextAlign implements EnumWithValue
-{
-    START("start"), END("end"), LEFT("left"), CENTER("center"), RIGHT("right");
+public enum TextAlign implements EnumWithValue {
+    START("start"),
+    END("end"),
+    LEFT("left"),
+    CENTER("center"),
+    RIGHT("right");
 
     private final String m_value;
 
     private static final EnumStringMap<TextAlign> LOOKUP_MAP = Statics.build(TextAlign.values());
 
-    TextAlign(final String value)
-    {
+    TextAlign(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
-    public static final TextAlign lookup(final String key)
-    {
+    public static final TextAlign lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, START);
     }
 
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(TextAlign.values());
     }
 
-    public static final List<TextAlign> getValues()
-    {
+    public static final List<TextAlign> getValues() {
         return Statics.getValues(TextAlign.values());
     }
 }

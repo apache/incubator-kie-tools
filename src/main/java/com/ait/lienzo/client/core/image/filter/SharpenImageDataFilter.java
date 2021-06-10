@@ -24,45 +24,38 @@ import com.ait.lienzo.shared.core.types.ImageFilterType;
 /**
  * A class that allows for easy creation of a Sharpen Image Filter.
  */
-public class SharpenImageDataFilter extends AbstractConvolveImageDataFilter<SharpenImageDataFilter>
-{
-    public SharpenImageDataFilter()
-    {
+public class SharpenImageDataFilter extends AbstractConvolveImageDataFilter<SharpenImageDataFilter> {
+
+    public SharpenImageDataFilter() {
         this(SharpenType.HARD);
     }
 
-    public SharpenImageDataFilter(double... matrix)
-    {
+    public SharpenImageDataFilter(double... matrix) {
         super(ImageFilterType.SharpenImageDataFilterType, matrix);
     }
 
-    public SharpenImageDataFilter(SharpenType matrix)
-    {
+    public SharpenImageDataFilter(SharpenType matrix) {
         this(matrix.getMatrix());
     }
 
-    protected SharpenImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
-    {
+    protected SharpenImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
         super(ImageFilterType.SharpenImageDataFilterType, node, ctx);
     }
 
-    public enum SharpenType
-    {
-        HARD(0.0, -1, 0, -1, 5, -1, 0, -1, 0), SOFT(0, -0.2, 0, -0.2, 1.8, -0.2, 0, -0.2, 0);
+    public enum SharpenType {
+        HARD(0.0, -1, 0, -1, 5, -1, 0, -1, 0),
+        SOFT(0, -0.2, 0, -0.2, 1.8, -0.2, 0, -0.2, 0);
 
         private final double[] m_matrix;
 
-        SharpenType(double... matrix)
-        {
+        SharpenType(double... matrix) {
             m_matrix = matrix;
         }
 
-        public final double[] getMatrix()
-        {
+        public final double[] getMatrix() {
             double copy[] = new double[m_matrix.length];
 
-            for (int i = 0; i < m_matrix.length; i++)
-            {
+            for (int i = 0; i < m_matrix.length; i++) {
                 copy[i] = m_matrix[i];
             }
             return copy;
@@ -70,15 +63,13 @@ public class SharpenImageDataFilter extends AbstractConvolveImageDataFilter<Shar
     }
 
     @Override
-    public IFactory<SharpenImageDataFilter> getFactory()
-    {
+    public IFactory<SharpenImageDataFilter> getFactory() {
         return new SharpenImageDataFilterFactory();
     }
 
-    public static class SharpenImageDataFilterFactory extends ConvolveImageDataFilterFactory<SharpenImageDataFilter>
-    {
-        public SharpenImageDataFilterFactory()
-        {
+    public static class SharpenImageDataFilterFactory extends ConvolveImageDataFilterFactory<SharpenImageDataFilter> {
+
+        public SharpenImageDataFilterFactory() {
             super(ImageFilterType.SharpenImageDataFilterType);
         }
     }

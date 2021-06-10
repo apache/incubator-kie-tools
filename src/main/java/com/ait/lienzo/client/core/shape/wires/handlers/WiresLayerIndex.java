@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresLayer;
  * An indexed shape part picker for the given control's layer.
  */
 public interface WiresLayerIndex {
+
     /**
      * Excludes the given shape from the resulting index.
      */

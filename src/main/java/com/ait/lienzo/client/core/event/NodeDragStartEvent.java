@@ -17,32 +17,27 @@
 package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.client.core.shape.Node;
-
 import elemental2.dom.HTMLElement;
 
-public class NodeDragStartEvent extends AbstractNodeHumanInputEvent<NodeDragStartHandler, Node>
-{
+public class NodeDragStartEvent extends AbstractNodeHumanInputEvent<NodeDragStartHandler, Node> {
+
     private static final Type<NodeDragStartHandler> TYPE = new Type<>();
 
-    public static final Type<NodeDragStartHandler> getType()
-    {
+    public static final Type<NodeDragStartHandler> getType() {
         return TYPE;
     }
 
-    public NodeDragStartEvent(final HTMLElement relativeElement)
-    {
+    public NodeDragStartEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
     @Override
-    public final Type<NodeDragStartHandler> getAssociatedType()
-    {
+    public final Type<NodeDragStartHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    public void dispatch(final NodeDragStartHandler handler)
-    {
+    public void dispatch(final NodeDragStartHandler handler) {
         handler.onNodeDragStart(this);
     }
 }

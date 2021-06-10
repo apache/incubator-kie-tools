@@ -16,12 +16,11 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-public class DragBoundsValidator extends ObjectValidator
-{
+public class DragBoundsValidator extends ObjectValidator {
+
     public static final DragBoundsValidator INSTANCE = new DragBoundsValidator();
 
-    public DragBoundsValidator()
-    {
+    public DragBoundsValidator() {
         super("DragBounds");
 
         addAttribute("x1", NumberValidator.INSTANCE, false);

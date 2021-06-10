@@ -31,46 +31,40 @@ import elemental2.dom.UIEvent;
  * NodeMouseDownHandler and NodeMouseUpHandler to miss receipt of Events. This implementation also restricts
  * transformations according to a {@link TransformMediator}.
  */
-public class RestrictedMousePanMediator extends AbstractMediator
-{
+public class RestrictedMousePanMediator extends AbstractMediator {
+
     private final LienzoBoundsPanel panel;
 
-    private       TransformMediator transformMediator;
+    private TransformMediator transformMediator;
 
-    private Point2D   m_last             = new Point2D(0, 0);
+    private Point2D m_last = new Point2D(0, 0);
 
-    private boolean   m_dragging         = false;
+    private boolean m_dragging = false;
 
     private Transform m_inverseTransform = null;
 
-    public RestrictedMousePanMediator(final LienzoBoundsPanel panel)
-    {
+    public RestrictedMousePanMediator(final LienzoBoundsPanel panel) {
         this.panel = panel;
     }
 
-    public boolean isDragging()
-    {
+    public boolean isDragging() {
         return m_dragging;
     }
 
-    public TransformMediator getTransformMediator()
-    {
+    public TransformMediator getTransformMediator() {
         return this.transformMediator;
     }
 
-    public void setTransformMediator(final TransformMediator transformMediator)
-    {
+    public void setTransformMediator(final TransformMediator transformMediator) {
         this.transformMediator = transformMediator;
     }
 
     @Override
-    public void cancel()
-    {
+    public void cancel() {
         m_dragging = false;
     }
 
-    Layer getLayer()
-    {
+    Layer getLayer() {
         return getViewport().getLayer();
     }
 
@@ -80,20 +74,17 @@ public class RestrictedMousePanMediator extends AbstractMediator
                                                         int x,
                                                         int y) {
         if ("mouseMove".equals(event.type)) {
-            if (isDragging())
-            {
+            if (isDragging()) {
                 onMouseMove(x, y);
             }
         } else if ("mouseDown".equals(event.type)) {
             final IEventFilter filter = getEventFilter();
 
-            if ((null == filter) || (!filter.isEnabled()) || (filter.test(event)))
-            {
+            if ((null == filter) || (!filter.isEnabled()) || (filter.test(event))) {
                 onMouseDown(x, y);
             }
         } else if ("mouseUp".equals(event.type)) {
-            if (isDragging())
-            {
+            if (isDragging()) {
                 onMouseUp();
             }
         } else if ("mouseOut".equals(event.type)) {
@@ -138,16 +129,14 @@ public class RestrictedMousePanMediator extends AbstractMediator
     }*/
 
     protected void onMouseDown(final int x,
-                               final int y)
-    {
+                               final int y) {
         m_last = new Point2D(x, y);
 
         m_dragging = true;
 
         Transform transform = getTransform();
 
-        if (transform == null)
-        {
+        if (transform == null) {
             setTransform(transform = new Transform());
         }
         m_inverseTransform = transform.getInverse();
@@ -157,8 +146,7 @@ public class RestrictedMousePanMediator extends AbstractMediator
     }
 
     protected void onMouseMove(final int x,
-                               final int y)
-    {
+                               final int y) {
         final Point2D curr = new Point2D(x, y);
 
         inverseTransform().transform(curr,
@@ -169,8 +157,7 @@ public class RestrictedMousePanMediator extends AbstractMediator
 
         Transform newTransform = getTransform().copy().translate(deltaX,
                                                                  deltaY);
-        if (transformMediator != null)
-        {
+        if (transformMediator != null) {
             newTransform = transformMediator.adjust(newTransform,
                                                     panel.getBounds());
         }
@@ -179,23 +166,18 @@ public class RestrictedMousePanMediator extends AbstractMediator
 
         m_last = curr;
 
-        if (isBatchDraw())
-        {
+        if (isBatchDraw()) {
             getViewport().getScene().batch();
-        }
-        else
-        {
+        } else {
             getViewport().getScene().draw();
         }
     }
 
-    protected void onMouseUp()
-    {
+    protected void onMouseUp() {
         cancel();
     }
 
-    protected Transform inverseTransform()
-    {
+    protected Transform inverseTransform() {
         return m_inverseTransform;
     }
 }

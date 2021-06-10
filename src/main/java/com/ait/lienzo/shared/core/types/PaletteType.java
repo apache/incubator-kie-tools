@@ -18,48 +18,41 @@ package com.ait.lienzo.shared.core.types;
 
 import com.ait.lienzo.tools.common.api.types.IStringValued;
 
-public class PaletteType implements IStringValued
-{
-    public static final PaletteType PALETTE      = new PaletteType("Palette");
+public class PaletteType implements IStringValued {
+
+    public static final PaletteType PALETTE = new PaletteType("Palette");
 
     public static final PaletteType PALETTE_ITEM = new PaletteType("PaletteItem");
 
-    private final String            m_value;
+    private final String m_value;
 
-    protected PaletteType(final String value)
-    {
+    protected PaletteType(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public boolean equals(final Object other)
-    {
-        if (!(other instanceof PaletteType))
-        {
+    public boolean equals(final Object other) {
+        if (!(other instanceof PaletteType)) {
             return false;
         }
-        if (this == other)
-        {
+        if (this == other) {
             return true;
         }
         return ((PaletteType) other).getValue().equals(getValue());
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return getValue().hashCode();
     }
 }

@@ -85,10 +85,9 @@ import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.shared.core.types.PaletteType;
 import com.ait.lienzo.shared.core.types.ShapeType;
 
-final class LienzoCorePlugin extends AbstractLienzoCorePlugin
-{
-    LienzoCorePlugin()
-    {
+final class LienzoCorePlugin extends AbstractLienzoCorePlugin {
+
+    LienzoCorePlugin() {
         addFactorySupplier(ShapeType.ARC, () -> new Arc.ArcFactory());
         addFactorySupplier(ShapeType.ARROW, () -> new Arrow.ArrowFactory());
         addFactorySupplier(ShapeType.BEZIER_CURVE, () -> new BezierCurve.BezierCurveFactory());
@@ -154,14 +153,12 @@ final class LienzoCorePlugin extends AbstractLienzoCorePlugin
     }
 
     @Override
-    public final String getNameSpace()
-    {
+    public final String getNameSpace() {
         return "LienzoCore";
     }
 
     @Override
-    public final String getVersion()
-    {
+    public final String getVersion() {
         return "2.0.295-RELEASE";
     }
 }

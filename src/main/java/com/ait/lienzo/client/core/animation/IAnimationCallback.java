@@ -23,16 +23,16 @@ package com.ait.lienzo.client.core.animation;
  * <li>onFrame - invoked once for every frame
  * <li>onClose - invoked when the animation ends
  * </ul>
- * 
+ * <p>
  * Each callback method take several parameters:
  * <ul>
  * <li>{@link IAnimationHandle} - allows you to cancel the animation
  * </ul>
- * 
+ *
  * @see IAnimationHandle
  */
-public interface IAnimationCallback
-{
+public interface IAnimationCallback {
+
     public void onStart(IAnimation animation, IAnimationHandle handle);
 
     public void onFrame(IAnimation animation, IAnimationHandle handle);

@@ -22,37 +22,31 @@ import java.util.HashMap;
 
 import com.ait.lienzo.client.core.style.Style.Cursor;
 
-public final class CursorMap
-{
-    private static final CursorMap        INSTANCE  = new CursorMap();
+public final class CursorMap {
+
+    private static final CursorMap INSTANCE = new CursorMap();
 
     private final HashMap<String, Cursor> m_cursors = new HashMap<>();
 
-    public static final CursorMap get()
-    {
+    public static final CursorMap get() {
         return INSTANCE;
     }
 
-    private CursorMap()
-    {
-        for (Cursor cursor : Cursor.values())
-        {
+    private CursorMap() {
+        for (Cursor cursor : Cursor.values()) {
             m_cursors.put(cursor.getCssName(), cursor);
         }
     }
 
-    public final Collection<String> keys()
-    {
+    public final Collection<String> keys() {
         return Collections.unmodifiableSet(m_cursors.keySet());
     }
 
-    public final Collection<Cursor> values()
-    {
+    public final Collection<Cursor> values() {
         return Collections.unmodifiableCollection(m_cursors.values());
     }
 
-    public final Cursor lookup(final String key)
-    {
+    public final Cursor lookup(final String key) {
         return m_cursors.get(key);
     }
 }

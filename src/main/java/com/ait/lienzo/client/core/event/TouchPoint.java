@@ -16,26 +16,23 @@
 
 package com.ait.lienzo.client.core.event;
 
-public final class TouchPoint
-{
+public final class TouchPoint {
+
     private final int m_x;
 
     private final int m_y;
 
-    public TouchPoint(final int x, final int y)
-    {
+    public TouchPoint(final int x, final int y) {
         m_x = x;
 
         m_y = y;
     }
 
-    public final int getX()
-    {
+    public final int getX() {
         return m_x;
     }
 
-    public final int getY()
-    {
+    public final int getY() {
         return m_y;
     }
 }

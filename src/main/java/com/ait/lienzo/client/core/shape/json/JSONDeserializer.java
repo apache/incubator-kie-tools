@@ -16,21 +16,12 @@
 
 package com.ait.lienzo.client.core.shape.json;
 
-import java.util.ArrayList;
-import java.util.Set;
-
-import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.AttributeType;
-import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.image.filter.ImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
 import com.ait.lienzo.client.core.palette.Palette;
-import com.ait.lienzo.client.core.palette.PaletteItem;
 import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.tools.client.StringOps;
 //import com.google.gwt.json.client.JSONArray;
 //import com.google.gwt.json.client.JSONObject;
 //import com.google.gwt.json.client.JSONParser;
@@ -44,8 +35,8 @@ import com.ait.lienzo.tools.client.StringOps;
  * @see Node#toJSONString()
  */
 // @FIXME really should delete this class and use something else (mdp)
-public final class JSONDeserializer
-{
+public final class JSONDeserializer {
+
     private static final JSONDeserializer INSTANCE = new JSONDeserializer();
 
     public static final JSONDeserializer get()// questionable? do we allow sub-classing? this is always a problem with singletons. Should the class be final?
@@ -53,20 +44,18 @@ public final class JSONDeserializer
         return INSTANCE;
     }
 
-    private JSONDeserializer()
-    {
+    private JSONDeserializer() {
         // There can be only one. Therefore it's a Singleton and can't be sub-classed, all methods and variables can be final
     }
 
     /**
      * Parses the JSON string and returns the {@link IJSONSerializable}.
      * Same as {@link #fromString(String, boolean)} with validate set to true.
-     * 
+     *
      * @param string JSON string as produced by {@link IJSONSerializable#toJSONString()}
      * @return IJSONSerializable
      */
-    public final IJSONSerializable<?> fromString(final String string) throws Exception, ValidationException
-    {
+    public final IJSONSerializable<?> fromString(final String string) throws Exception, ValidationException {
 //        final ValidationContext ctx = new ValidationContext();
 //
 //        ctx.setValidate(true);
@@ -92,13 +81,12 @@ public final class JSONDeserializer
      * If validate is true, it will attempt to validate the attributes and types of child nodes etc.
      * If validate is false, it assumes the JSON string is correct
      * (this is a little faster.)
-     * 
-     * @param string JSON string as produced by {@link IJSONSerializable#toJSONString()}
+     *
+     * @param string   JSON string as produced by {@link IJSONSerializable#toJSONString()}
      * @param validate Whether to validate the attributes and child node types
      * @return IJSONSerializable
      */
-    public final IJSONSerializable<?> fromString(String string, final boolean validate)
-    {
+    public final IJSONSerializable<?> fromString(String string, final boolean validate) {
 //        if (null == (string = StringOps.toTrimOrNull(string)))
 //        {
 //            return null;
@@ -145,13 +133,12 @@ public final class JSONDeserializer
      *   Console.log(ctx.getDebugString());
      * }
      * </pre>
-     * 
+     *
      * @param string JSON string as produced by {@link IJSONSerializable#toJSONString()}
-     * @param ctx ValidationContext
+     * @param ctx    ValidationContext
      * @return IJSONSerializable
      */
-    public final IJSONSerializable<?> fromString(String string, final ValidationContext ctx)
-    {
+    public final IJSONSerializable<?> fromString(String string, final ValidationContext ctx) {
 //        try
 //        {
 //            ctx.push("fromString");
@@ -192,14 +179,13 @@ public final class JSONDeserializer
      * <p>
      * You should only call this when you're writing your own node class
      * and you're building a custom {@link IFactory}.
-     * 
+     *
      * @param json JSONObject
-     * @param ctx ValidationContext
+     * @param ctx  ValidationContext
      * @return IJSONSerializable
      * @throws ValidationException
      */
-    public final IJSONSerializable<?> fromJSON(final Object json, final ValidationContext ctx) throws ValidationException
-    {
+    public final IJSONSerializable<?> fromJSON(final Object json, final ValidationContext ctx) throws ValidationException {
 //        if (null == json)
 //        {
 //            return null;
@@ -268,8 +254,7 @@ public final class JSONDeserializer
         return null;
     }
 
-    protected final void validateAttributes(final Object json, final IFactory<?> factory, final String type, final ValidationContext ctx) throws ValidationException
-    {
+    protected final void validateAttributes(final Object json, final IFactory<?> factory, final String type, final ValidationContext ctx) throws ValidationException {
 //        final JSONValue aval = json.get("attributes");
 //
 //        if (null == aval)
@@ -336,21 +321,20 @@ public final class JSONDeserializer
     }
 
     /**
-     * Creates the child nodes for a {@link IJSONSerializable} that implements 
+     * Creates the child nodes for a {@link IJSONSerializable} that implements
      * {@link IContainer} from a JSONObject node.
      * <p>
      * You should only call this when you're writing your own {@link IContainer} class
      * and you're building a custom {@link IFactory}.
-     * 
+     *
      * @param container IContainer
-     * @param node parent JSONObject
-     * @param factory IContainerFactory
-     * @param ctx ValidationContext
+     * @param node      parent JSONObject
+     * @param factory   IContainerFactory
+     * @param ctx       ValidationContext
      * @throws ValidationException
      */
 
-    public final void deserializeChildren(final IContainer<?, ?> container, final Object node, final IContainerFactory factory, final ValidationContext ctx) throws ValidationException
-    {
+    public final void deserializeChildren(final IContainer<?, ?> container, final Object node, final IContainerFactory factory, final ValidationContext ctx) throws ValidationException {
 //        JSONValue jsonvalu = node.get("children");
 //
 //        if (null == jsonvalu)
@@ -406,8 +390,7 @@ public final class JSONDeserializer
 //        ctx.pop();// children
     }
 
-    public final void deserializeFilters(final ImageDataFilterable<?> filterable, final Object node, final ValidationContext ctx) throws ValidationException
-    {
+    public final void deserializeFilters(final ImageDataFilterable<?> filterable, final Object node, final ValidationContext ctx) throws ValidationException {
 //        JSONValue jsonvalu = node.get("filters");
 //
 //        if (null == jsonvalu)
@@ -463,8 +446,7 @@ public final class JSONDeserializer
 //        ctx.pop();// children
     }
 
-    public final void deserializePaletteItems(final Palette palette, final Object node, final ValidationContext ctx) throws ValidationException
-    {
+    public final void deserializePaletteItems(final Palette palette, final Object node, final ValidationContext ctx) throws ValidationException {
 //        JSONValue jsonvalu = node.get("items");
 //
 //        if (null == jsonvalu)

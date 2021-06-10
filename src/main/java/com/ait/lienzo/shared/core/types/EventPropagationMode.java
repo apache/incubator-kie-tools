@@ -18,9 +18,10 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-public enum EventPropagationMode implements EnumWithValue
-{
-    NO_ANCESTORS("no-ancestors", 0), FIRST_ANCESTOR("first-ancestor", 1), LAST_ANCESTOR("last-ancestor", 2);
+public enum EventPropagationMode implements EnumWithValue {
+    NO_ANCESTORS("no-ancestors", 0),
+    FIRST_ANCESTOR("first-ancestor", 1),
+    LAST_ANCESTOR("last-ancestor", 2);
 
     private final int m_order;
 
@@ -28,42 +29,35 @@ public enum EventPropagationMode implements EnumWithValue
 
     private static final EnumStringMap<EventPropagationMode> LOOKUP_MAP = Statics.build(EventPropagationMode.values());
 
-    private EventPropagationMode(final String value, final int order)
-    {
+    private EventPropagationMode(final String value, final int order) {
         m_value = value;
 
         m_order = order;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
-    public final int getOrder()
-    {
+    public final int getOrder() {
         return m_order;
     }
 
-    public static final EventPropagationMode lookup(final String key)
-    {
+    public static final EventPropagationMode lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, LAST_ANCESTOR);
     }
 
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(EventPropagationMode.values());
     }
 
-    public static final List<EventPropagationMode> getValues()
-    {
+    public static final List<EventPropagationMode> getValues() {
         return Statics.getValues(EventPropagationMode.values());
     }
 }

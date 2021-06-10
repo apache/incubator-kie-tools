@@ -17,30 +17,26 @@
 package com.ait.lienzo.client.core.shape.wires.event;
 
 import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
-
 import elemental2.dom.HTMLElement;
 
 /**
  * <p>Event that is fired when the drag moves ( drag produced by one of resize control points for a wires shape ).</p>
  */
-public class WiresResizeStepEvent extends AbstractWiresResizeEvent<WiresResizeStepHandler, NodeDragMoveHandler>
-{
+public class WiresResizeStepEvent extends AbstractWiresResizeEvent<WiresResizeStepHandler, NodeDragMoveHandler> {
+
     public static final Type<WiresResizeStepHandler> TYPE = new Type<>();
 
-    public WiresResizeStepEvent(final HTMLElement relativeElement)
-    {
+    public WiresResizeStepEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
     @Override
-    public Type<WiresResizeStepHandler> getAssociatedType()
-    {
+    public Type<WiresResizeStepHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    public void dispatch(final WiresResizeStepHandler shapeMovedHandler)
-    {
+    public void dispatch(final WiresResizeStepHandler shapeMovedHandler) {
         shapeMovedHandler.onShapeResizeStep(this);
     }
 }

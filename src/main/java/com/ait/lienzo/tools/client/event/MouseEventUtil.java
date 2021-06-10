@@ -4,11 +4,9 @@ import elemental2.dom.HTMLElement;
 import elemental2.dom.MouseEvent;
 import jsinterop.base.Js;
 
-public class MouseEventUtil
-{
+public class MouseEventUtil {
 
-    private MouseEventUtil()
-    {
+    private MouseEventUtil() {
 
     }
 
@@ -27,14 +25,12 @@ public class MouseEventUtil
      */
     public static final int BUTTON_RIGHT = 2;
 
-    private static double getSubPixelAbsoluteLeft(HTMLElement elem)
-    {
+    private static double getSubPixelAbsoluteLeft(HTMLElement elem) {
         // Lifted from GWT
         double left = 0;
         HTMLElement curr = elem;
         // This intentionally excludes body which has a null offsetParent.
-        while (curr.offsetParent != null)
-        {
+        while (curr.offsetParent != null) {
             left -= curr.scrollLeft;
             curr = Js.uncheckedCast(curr.parentNode);
         }
@@ -45,14 +41,12 @@ public class MouseEventUtil
         return left;
     }
 
-    private static double getSubPixelAbsoluteTop(HTMLElement elem)
-    {
+    private static double getSubPixelAbsoluteTop(HTMLElement elem) {
         // Lifted from GWT  @TODO I might need checks, before assuming Element is HTMLElement (mdp)
         double left = 0;
         HTMLElement curr = elem;
         // This intentionally excludes body which has a null offsetParent.
-        while (curr.offsetParent != null)
-        {
+        while (curr.offsetParent != null) {
             left -= curr.scrollTop;
             curr = Js.uncheckedCast(curr.parentNode);
         }
@@ -71,50 +65,39 @@ public class MouseEventUtil
         return Js.coerceToInt(getSubPixelAbsoluteTop(elem));
     }
 
-    public static int getRelativeX(final double clientX, final HTMLElement target)
-    {
+    public static int getRelativeX(final double clientX, final HTMLElement target) {
         // Lifted from GWT
         return Js.coerceToInt(clientX - getAbsoluteLeft(target) + target.scrollLeft +
-                              target.ownerDocument.documentElement.scrollLeft);
+                                      target.ownerDocument.documentElement.scrollLeft);
     }
 
-    public static int getRelativeY(final double clientY, final HTMLElement target)
-    {
+    public static int getRelativeY(final double clientY, final HTMLElement target) {
         // Lifted from GWT
-        return Js.coerceToInt(clientY- getAbsoluteTop(target) + target.scrollTop +
-                              target.ownerDocument.documentElement.scrollTop);
+        return Js.coerceToInt(clientY - getAbsoluteTop(target) + target.scrollTop +
+                                      target.ownerDocument.documentElement.scrollTop);
     }
 
-    public static final boolean isButtonLeft(final MouseEvent event)
-    {
-        if (null != event)
-        {
-            if (event.button == BUTTON_LEFT)
-            {
+    public static final boolean isButtonLeft(final MouseEvent event) {
+        if (null != event) {
+            if (event.button == BUTTON_LEFT) {
                 return true;
             }
         }
         return false;
     }
 
-    public static final boolean isButtonMiddle(final MouseEvent event)
-    {
-        if (null != event)
-        {
-            if (event.button == BUTTON_MIDDLE)
-            {
+    public static final boolean isButtonMiddle(final MouseEvent event) {
+        if (null != event) {
+            if (event.button == BUTTON_MIDDLE) {
                 return true;
             }
         }
         return false;
     }
 
-    public static final boolean isButtonRight(final MouseEvent event)
-    {
-        if (null != event)
-        {
-            if (event.button == BUTTON_RIGHT)
-            {
+    public static final boolean isButtonRight(final MouseEvent event) {
+        if (null != event) {
+            if (event.button == BUTTON_RIGHT) {
                 return true;
             }
         }

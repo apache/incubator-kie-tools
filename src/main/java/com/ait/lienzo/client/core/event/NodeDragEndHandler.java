@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
 
-public interface NodeDragEndHandler extends EventHandler
-{
+public interface NodeDragEndHandler extends EventHandler {
+
     public void onNodeDragEnd(NodeDragEndEvent event);
 }

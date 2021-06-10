@@ -20,62 +20,52 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-
 import jsinterop.base.Js;
 
-public class PosterizeImageDataFilter extends AbstractValueTableImageDataFilter<PosterizeImageDataFilter>
-{
-    private double           m_value = Double.NaN;
+public class PosterizeImageDataFilter extends AbstractValueTableImageDataFilter<PosterizeImageDataFilter> {
+
+    private double m_value = Double.NaN;
 
     private FilterTableArray m_table = null;
 
-    public PosterizeImageDataFilter()
-    {
+    public PosterizeImageDataFilter() {
         super(ImageFilterType.PosterizeImageDataFilterType, 6);
     }
 
-    public PosterizeImageDataFilter(double value)
-    {
+    public PosterizeImageDataFilter(double value) {
         super(ImageFilterType.PosterizeImageDataFilterType, value);
     }
 
-    protected PosterizeImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
-    {
+    protected PosterizeImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
         super(ImageFilterType.PosterizeImageDataFilterType, node, ctx);
     }
 
     @Override
-    public double getMinValue()
-    {
+    public double getMinValue() {
         return 2;
     }
 
     @Override
-    public double getMaxValue()
-    {
+    public double getMaxValue() {
         return 30;
     }
 
     @Override
-    public double getRefValue()
-    {
+    public double getRefValue() {
         return 6;
     }
 
     @Override
-    protected final FilterTableArray getTable(double value)
-    {
-        if (value != m_value)
-        {
+    protected final FilterTableArray getTable(double value) {
+        if (value != m_value) {
             m_table = getTable_(m_value = value);
         }
         return m_table;
     }
 
-    private final FilterTableArray getTable_(double value)
-    {
+    private final FilterTableArray getTable_(double value) {
         int[] table = new int[256];
-        for(int i = 0; i < 256; i++) {
+        for (int i = 0; i < 256; i++) {
             int v = Js.coerceToInt((i * value / 256));
             int k = Js.coerceToInt(255 * (v) / (value - 1));
             table[i] = k;
@@ -84,15 +74,13 @@ public class PosterizeImageDataFilter extends AbstractValueTableImageDataFilter<
     }
 
     @Override
-    public IFactory<PosterizeImageDataFilter> getFactory()
-    {
+    public IFactory<PosterizeImageDataFilter> getFactory() {
         return new PosterizeImageDataFilterFactory();
     }
 
-    public static class PosterizeImageDataFilterFactory extends ValueTableImageDataFilterFactory<PosterizeImageDataFilter>
-    {
-        public PosterizeImageDataFilterFactory()
-        {
+    public static class PosterizeImageDataFilterFactory extends ValueTableImageDataFilterFactory<PosterizeImageDataFilter> {
+
+        public PosterizeImageDataFilterFactory() {
             super(ImageFilterType.PosterizeImageDataFilterType);
         }
     }

@@ -19,15 +19,15 @@ package com.ait.lienzo.client.core.animation;
 import com.ait.lienzo.client.core.shape.Node;
 
 /**
- * IAnimationHandle can be used to terminate an animation via the cancel method. 
- * It provides additional methods to indicate it is running ({@link #isRunning()}) and to start the animation ({@link #run()}) 
+ * IAnimationHandle can be used to terminate an animation via the cancel method.
+ * It provides additional methods to indicate it is running ({@link #isRunning()}) and to start the animation ({@link #run()})
  * <p>
  * Note that the animate methods of Shapes and Group automatically call run for you.
- * 
+ *
  * @see AnimationManager
  */
-public interface IAnimationHandle
-{
+public interface IAnimationHandle {
+
     IAnimationHandle run();
 
     IAnimationHandle stop();

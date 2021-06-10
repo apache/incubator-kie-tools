@@ -32,25 +32,21 @@ public final class NFastStringSet implements JsIterable<String>//, NHasJSO<NFast
     public int size;
 
     @JsOverlay
-    public static final NFastStringSet makeFromString(final String key)
-    {
+    public static final NFastStringSet makeFromString(final String key) {
         NFastStringSet set = new NFastStringSet();
         set.add(key);
         return set;
     }
 
     @JsOverlay
-    public static final NFastStringSet makeFromSet(final NFastStringSet keys)
-    {
+    public static final NFastStringSet makeFromSet(final NFastStringSet keys) {
         NFastStringSet set = new NFastStringSet();
         String[] keyArray = Js.uncheckedCast(JsArray.from(keys));
-        for(String key : keyArray)
-        {
+        for (String key : keyArray) {
             set.add(key);
         }
         return set;
     }
-
 
     public native NFastStringSet add(String value);
 
@@ -69,45 +65,37 @@ public final class NFastStringSet implements JsIterable<String>//, NHasJSO<NFast
     public native JsIteratorIterable<String> values();
 
     @JsOverlay
-    public final boolean contains(final String key)
-    {
+    public final boolean contains(final String key) {
         return has(key);
     }
 
     @JsOverlay
-    public final NFastStringSet remove(final String key)
-    {
+    public final NFastStringSet remove(final String key) {
         delete(key);
         return this;
     }
 
     @JsOverlay
-    public final int size()
-    {
+    public final int size() {
         return size;
     }
 
     public native void clear();
 
     @JsOverlay
-    public final boolean isEmpty()
-    {
+    public final boolean isEmpty() {
         return size == 0;
     }
 
     @JsOverlay
-    public final boolean any(final NFastStringSet look)
-    {
-        if (null == look)
-        {
+    public final boolean any(final NFastStringSet look) {
+        if (null == look) {
             return false;
         }
 
         String[] array = Js.uncheckedCast(JsArray.from(look));
-        for ( String name : array)
-        {
-            if (look.contains(name) && contains(name))
-            {
+        for (String name : array) {
+            if (look.contains(name) && contains(name)) {
                 return true;
             }
         }
@@ -115,12 +103,10 @@ public final class NFastStringSet implements JsIterable<String>//, NHasJSO<NFast
     }
 
     @JsOverlay
-    public final boolean none(final NFastStringSet look)
-    {
+    public final boolean none(final NFastStringSet look) {
         String[] array = Js.uncheckedCast(JsArray.from(look));
-        for ( String name : array) {
-            if (look.contains(name) && contains(name))
-            {
+        for (String name : array) {
+            if (look.contains(name) && contains(name)) {
                 return false;
             }
         }
@@ -128,17 +114,13 @@ public final class NFastStringSet implements JsIterable<String>//, NHasJSO<NFast
     }
 
     @JsOverlay
-    public final boolean all(final NFastStringSet look)
-    {
+    public final boolean all(final NFastStringSet look) {
         boolean sean = false;
         String[] array = Js.uncheckedCast(JsArray.from(look));
-        for ( String name : array) {
-            if (contains(name))
-            {
+        for (String name : array) {
+            if (contains(name)) {
                 sean = true;
-            }
-            else
-            {
+            } else {
                 return false;
             }
         }

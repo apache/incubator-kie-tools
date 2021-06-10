@@ -20,29 +20,26 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
-
 import jsinterop.annotations.JsProperty;
 
 /**
  * Star is defined by an inner radius, an outer radius and the number of points.
  * The center points is at (0,0) unless additional attributes are set.
  */
-public class Star extends Shape<Star>
-{
+public class Star extends Shape<Star> {
+
     private final PathPartList m_list = new PathPartList();
 
     @JsProperty
-    private double       cornerRadius;
+    private double cornerRadius;
 
     @JsProperty
-    private int          starPoints;
+    private int starPoints;
 
     @JsProperty
     private double innerRadius;
@@ -55,30 +52,26 @@ public class Star extends Shape<Star>
      * circle which all the tips of the star touch, and an inner circle where all the
      * vertices of the star's arms touch.  The distance between the inner and the outer
      * circle define how long the star's arms are.
-     * 
-     * @param points number of points in this star.
+     *
+     * @param points      number of points in this star.
      * @param innerRadius radius of the inner circle.
      * @param outerRadius radius of the enclosing circle.
      */
-    public Star(final int points, final double innerRadius, final double outerRadius)
-    {
+    public Star(final int points, final double innerRadius, final double outerRadius) {
         super(ShapeType.STAR);
 
         setStarPoints(points).setInnerRadius(innerRadius).setOuterRadius(outerRadius);
     }
 
-    public Star(final int points, final double innerRadius, final double outerRadius, final double corner)
-    {
+    public Star(final int points, final double innerRadius, final double outerRadius, final double corner) {
         this(points, innerRadius, outerRadius);
 
         setCornerRadius(corner);
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
-        if (m_list.size() < 1)
-        {
+    public BoundingBox getBoundingBox() {
+        if (m_list.size() < 1) {
             parse();
         }
         return m_list.getBoundingBox();
@@ -86,21 +79,17 @@ public class Star extends Shape<Star>
 
     /**
      * Draws this star.
-     * 
+     *
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final double alpha)
-    {
-        if (m_list.size() < 1)
-        {
-            if (!parse())
-            {
+    protected boolean prepare(final Context2D context, final double alpha) {
+        if (m_list.size() < 1) {
+            if (!parse()) {
                 return false;
             }
         }
-        if (m_list.size() < 1)
-        {
+        if (m_list.size() < 1) {
             return false;
         }
         context.path(m_list);
@@ -108,26 +97,22 @@ public class Star extends Shape<Star>
         return true;
     }
 
-    private boolean parse()
-    {
+    private boolean parse() {
         final int sp = getStarPoints();
 
         final double ir = getInnerRadius();
 
         final double or = getOuterRadius();
 
-        if ((sp > 4) && (ir > 0) && (or > 0) && (or > ir))
-        {
+        if ((sp > 4) && (ir > 0) && (or > 0) && (or > ir)) {
             m_list.M(0, 0 - or);
 
             final int s2 = sp * 2;
 
             final double corner = getCornerRadius();
 
-            if (corner <= 0)
-            {
-                for (int n = 1; n < s2; n++)
-                {
+            if (corner <= 0) {
+                for (int n = 1; n < s2; n++) {
                     final double stheta = (n * Math.PI / sp);
 
                     final double radius = (((n % 2) == 0) ? or : ir);
@@ -135,13 +120,10 @@ public class Star extends Shape<Star>
                     m_list.L(radius * Math.sin(stheta), -1 * radius * Math.cos(stheta));
                 }
                 m_list.Z();
-            }
-            else
-            {
+            } else {
                 final Point2DArray list = Point2DArray.fromArrayOfDouble(0, 0 - or);
 
-                for (int n = 1; n < s2; n++)
-                {
+                for (int n = 1; n < s2; n++) {
                     final double stheta = (n * Math.PI / sp);
 
                     final double radius = (((n % 2) == 0) ? or : ir);
@@ -156,8 +138,7 @@ public class Star extends Shape<Star>
     }
 
     @Override
-    public Star refresh()
-    {
+    public Star refresh() {
         m_list.clear();
 
         return this;
@@ -165,26 +146,23 @@ public class Star extends Shape<Star>
 
     /**
      * Returns the number of Stars points.
-     * 
+     *
      * @return int
      */
-    public int getStarPoints()
-    {
+    public int getStarPoints() {
         return this.starPoints;
     }
 
     /**
      * Sets the number of Star points.
-     * 
+     * <p>
      * If the value passed is less than 5, it will be replaced by 5.
-     * 
+     *
      * @param points
      * @return this Star
      */
-    public Star setStarPoints(int points)
-    {
-        if (points < 5)
-        {
+    public Star setStarPoints(int points) {
+        if (points < 5) {
             points = 5;
         }
         this.starPoints = points;
@@ -197,8 +175,7 @@ public class Star extends Shape<Star>
      *
      * @return double
      */
-    public double getInnerRadius()
-    {
+    public double getInnerRadius() {
         return this.innerRadius;
     }
 
@@ -208,8 +185,7 @@ public class Star extends Shape<Star>
      * @param radius
      * @return this Star
      */
-    public Star setInnerRadius(final double radius)
-    {
+    public Star setInnerRadius(final double radius) {
         this.innerRadius = radius;
 
         return this;
@@ -220,8 +196,7 @@ public class Star extends Shape<Star>
      *
      * @return double
      */
-    public double getOuterRadius()
-    {
+    public double getOuterRadius() {
         return this.outerRadius;
     }
 
@@ -231,52 +206,43 @@ public class Star extends Shape<Star>
      * @param radius
      * @return this Star
      */
-    public Star setOuterRadius(final double radius)
-    {
+    public Star setOuterRadius(final double radius) {
         this.outerRadius = radius;
 
         return this;
     }
 
-    public double getCornerRadius()
-    {
+    public double getCornerRadius() {
         return this.cornerRadius;
     }
 
-    public Star setCornerRadius(final double radius)
-    {
+    public Star setCornerRadius(final double radius) {
         this.cornerRadius = radius;
 
         return refresh();
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.STAR_POINTS, Attribute.INNER_RADIUS, Attribute.OUTER_RADIUS, Attribute.CORNER_RADIUS);
     }
 
     @Override
-    public PathPartList getPathPartList()
-    {
-        if (m_list.size() < 1)
-        {
-            if (!parse())
-            {
+    public PathPartList getPathPartList() {
+        if (m_list.size() < 1) {
+            if (!parse()) {
                 return null;
             }
         }
-        if (m_list.size() < 1)
-        {
+        if (m_list.size() < 1) {
             return null;
         }
         return m_list;
     }
 
-    public static class StarFactory extends ShapeFactory<Star>
-    {
-        public StarFactory()
-        {
+    public static class StarFactory extends ShapeFactory<Star> {
+
+        public StarFactory() {
             super(ShapeType.STAR);
 
             addAttribute(Attribute.CORNER_RADIUS);

@@ -16,18 +16,16 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-public class TransformValidator extends ArrayValidator
-{
+public class TransformValidator extends ArrayValidator {
+
     public static final TransformValidator INSTANCE = new TransformValidator();
 
-    public TransformValidator()
-    {
+    public TransformValidator() {
         super(NumberValidator.INSTANCE);
     }
 
     @Override
-    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
-    {
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException {
         super.validate(jval, ctx);
 
         // @FIXME serialization (mdp)

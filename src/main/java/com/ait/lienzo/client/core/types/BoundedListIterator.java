@@ -19,16 +19,15 @@ package com.ait.lienzo.client.core.types;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public final class BoundedListIterator<T> implements Iterator<T>
-{
-    private int                   m_curpos;
+public final class BoundedListIterator<T> implements Iterator<T> {
 
-    private final int             m_szlist;
+    private int m_curpos;
+
+    private final int m_szlist;
 
     private final IBoundedList<T> m_listof;
 
-    public BoundedListIterator(final IBoundedList<T> listof)
-    {
+    public BoundedListIterator(final IBoundedList<T> listof) {
         m_curpos = 0;
 
         m_listof = listof;
@@ -37,18 +36,15 @@ public final class BoundedListIterator<T> implements Iterator<T>
     }
 
     @Override
-    public final boolean hasNext()
-    {
+    public final boolean hasNext() {
         return (m_curpos != m_szlist);
     }
 
     @Override
-    public final T next()
-    {
+    public final T next() {
         final int i = m_curpos;
 
-        if (i >= m_szlist)
-        {
+        if (i >= m_szlist) {
             throw new NoSuchElementException();
         }
         m_curpos = i + 1;
@@ -57,8 +53,7 @@ public final class BoundedListIterator<T> implements Iterator<T>
     }
 
     @Override
-    public final void remove()
-    {
+    public final void remove() {
         throw new UnsupportedOperationException();
     }
 }

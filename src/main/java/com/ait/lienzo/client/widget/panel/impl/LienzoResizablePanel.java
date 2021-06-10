@@ -28,7 +28,7 @@ public class LienzoResizablePanel
         this.m_resizeCallback = e -> fitToParentSize();
     }
 
-    public void initResizeObserver(){
+    public void initResizeObserver() {
         if (null == resizeObserver &&
                 null != panel.getElement().parentNode &&
                 null != panel.getElement().parentNode.parentNode) {
@@ -65,5 +65,4 @@ public class LienzoResizablePanel
             }
         }
     }
-
 }

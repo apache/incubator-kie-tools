@@ -20,12 +20,11 @@ package com.ait.lienzo.client.core.shape.json.validators;
  * RadiusPoint has x, y and radius properties.
  * It's part of a {@link RadialGradient}.
  */
-public class RadiusPointValidator extends ObjectValidator
-{
+public class RadiusPointValidator extends ObjectValidator {
+
     public static final RadiusPointValidator INSTANCE = new RadiusPointValidator();
 
-    public RadiusPointValidator()
-    {
+    public RadiusPointValidator() {
         super("RadiusPoint");
 
         addAttribute("x", NumberValidator.INSTANCE, true);

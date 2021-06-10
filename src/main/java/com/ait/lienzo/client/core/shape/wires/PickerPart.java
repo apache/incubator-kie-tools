@@ -16,37 +16,34 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-public class PickerPart
-{
+public class PickerPart {
+
     private final WiresShape m_shape;
 
-    private final ShapePart  m_part;
+    private final ShapePart m_part;
 
-    public WiresShape getShape()
-    {
+    public WiresShape getShape() {
         return m_shape;
     }
 
-    public ShapePart getShapePart()
-    {
+    public ShapePart getShapePart() {
         return m_part;
     }
 
-    public enum ShapePart
-    {
-        BORDER, BORDER_HOTSPOT, BODY
+    public enum ShapePart {
+        BORDER,
+        BORDER_HOTSPOT,
+        BODY
     }
 
-    public PickerPart(WiresShape shape, ShapePart part)
-    {
+    public PickerPart(WiresShape shape, ShapePart part) {
         m_shape = shape;
-        
+
         m_part = part;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getShapePart().toString() + " for " + getShape().toString();
     }
 }

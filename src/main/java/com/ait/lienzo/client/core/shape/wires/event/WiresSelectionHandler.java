@@ -20,8 +20,8 @@ import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
 
-public interface WiresSelectionHandler extends EventHandler
-{
+public interface WiresSelectionHandler extends EventHandler {
+
     public void onSelected(WiresShape shape);
 
     public void onUnSelected(WiresShape shape);

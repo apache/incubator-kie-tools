@@ -22,112 +22,94 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
-public abstract class AbstractFastArrayStorageEngine<M> extends AbstractStorageEngine<M>
-{
+public abstract class AbstractFastArrayStorageEngine<M> extends AbstractStorageEngine<M> {
+
     private final NFastArrayList<M> m_list = new NFastArrayList<M>();
 
-    protected AbstractFastArrayStorageEngine(final StorageEngineType type)
-    {
+    protected AbstractFastArrayStorageEngine(final StorageEngineType type) {
         super(type);
     }
 
-    protected AbstractFastArrayStorageEngine(final StorageEngineType type, final Object node, final ValidationContext ctx) throws ValidationException
-    {
+    protected AbstractFastArrayStorageEngine(final StorageEngineType type, final Object node, final ValidationContext ctx) throws ValidationException {
         super(type, node, ctx);
     }
 
     @Override
-    public int size()
-    {
+    public int size() {
         return m_list.size();
     }
 
     @Override
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return m_list.isEmpty();
     }
 
     @Override
-    public void clear()
-    {
+    public void clear() {
         m_list.clear();
     }
 
     @Override
-    public boolean contains(final M item)
-    {
+    public boolean contains(final M item) {
         return m_list.contains(item);
     }
 
     @Override
-    public void add(final M item)
-    {
+    public void add(final M item) {
         m_list.add(item);
     }
 
     @Override
-    public void remove(final M item)
-    {
+    public void remove(final M item) {
         m_list.remove(item);
     }
 
     @Override
-    public void refresh(M item)
-    {
+    public void refresh(M item) {
     }
 
     @Override
-    public void refresh()
-    {
+    public void refresh() {
     }
 
     @Override
-    public NFastArrayList<M> getChildren()
-    {
+    public NFastArrayList<M> getChildren() {
         return m_list;
     }
 
     @Override
-    public NFastArrayList<M> getChildren(BoundingBox bounds)
-    {
+    public NFastArrayList<M> getChildren(BoundingBox bounds) {
         return m_list;
     }
 
     @Override
-    public boolean isSpatiallyIndexed()
-    {
+    public boolean isSpatiallyIndexed() {
         return false;
     }
 
     @Override
-    public void moveUp(final M item)
-    {
+    public void moveUp(final M item) {
         m_list.moveUp(item);
     }
 
     @Override
-    public void moveDown(final M item)
-    {
+    public void moveDown(final M item) {
         m_list.moveDown(item);
     }
 
     @Override
-    public void moveToTop(final M item)
-    {
+    public void moveToTop(final M item) {
         m_list.moveToTop(item);
     }
 
     @Override
-    public void moveToBottom(final M item)
-    {
+    public void moveToBottom(final M item) {
         m_list.moveToBottom(item);
     }
 
-    public abstract static class FastArrayStorageEngineFactory<S extends IJSONSerializable<S>> extends AbstractStorageEngineFactory<S>
-    {
-        protected FastArrayStorageEngineFactory(final StorageEngineType type)
-        {
+    public abstract static class FastArrayStorageEngineFactory<S extends IJSONSerializable<S>> extends AbstractStorageEngineFactory<S> {
+
+        protected FastArrayStorageEngineFactory(final StorageEngineType type) {
             super(type);
         }
     }

@@ -9,8 +9,7 @@ import static org.junit.Assert.assertTrue;
 public class NodeTypeTest {
 
     @Test
-    public void testEquals()
-    {
+    public void testEquals() {
         NodeType group = NodeType.GROUP;
         assertFalse(group.equals(null));
         assertTrue(group.equals(group));
@@ -28,13 +27,12 @@ public class NodeTypeTest {
         assertTrue(group.equals(overrideGroup));
     }
 
-    private static class NodeTypeExtension extends NodeType
-    {
+    private static class NodeTypeExtension extends NodeType {
+
         public static NodeTypeExtension SOMETHING = new NodeTypeExtension("Something");
         public static NodeTypeExtension GROUP = new NodeTypeExtension("Group");
 
-        protected NodeTypeExtension(String value)
-        {
+        protected NodeTypeExtension(String value) {
             super(value);
         }
     }

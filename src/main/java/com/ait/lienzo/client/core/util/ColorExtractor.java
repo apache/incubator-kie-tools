@@ -19,19 +19,16 @@ package com.ait.lienzo.client.core.util;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.Color;
-
 import elemental2.dom.ImageData;
 
-public final class ColorExtractor
-{
+public final class ColorExtractor {
+
     private static final ScratchPad SCRATCH = new ScratchPad(2, 2);
 
-    private ColorExtractor()
-    {
+    private ColorExtractor() {
     }
 
-    public static final Color extract(final String color)
-    {
+    public static final Color extract(final String color) {
         SCRATCH.clear();
 
         final Context2D context = SCRATCH.getContext();
@@ -42,6 +39,6 @@ public final class ColorExtractor
 
         final ImageData data = context.getImageData(0, 0, 2, 2);
 
-        return new Color(ImageDataUtil.getRedAt(data,1, 1), ImageDataUtil.getGreenAt(data,1, 1), ImageDataUtil.getBlueAt(data,1, 1), (((double) ImageDataUtil.getAlphaAt(data, 1, 1)) / 255.0));
+        return new Color(ImageDataUtil.getRedAt(data, 1, 1), ImageDataUtil.getGreenAt(data, 1, 1), ImageDataUtil.getBlueAt(data, 1, 1), (((double) ImageDataUtil.getAlphaAt(data, 1, 1)) / 255.0));
     }
 }

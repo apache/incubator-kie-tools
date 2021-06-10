@@ -22,68 +22,56 @@ import com.ait.lienzo.client.core.types.BoundedListIterator;
 import com.ait.lienzo.client.core.types.IBoundedList;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
-public class AnimationProperties implements IBoundedList<AnimationProperty>
-{
+public class AnimationProperties implements IBoundedList<AnimationProperty> {
+
     private final NFastArrayList<AnimationProperty> m_properties = new NFastArrayList<>();
 
-    public static final AnimationProperties toPropertyList(final AnimationProperty property, final AnimationProperty... properties)
-    {
+    public static final AnimationProperties toPropertyList(final AnimationProperty property, final AnimationProperty... properties) {
         return new AnimationProperties(property, properties);
     }
 
-    public AnimationProperties()
-    {
+    public AnimationProperties() {
     }
 
-    public AnimationProperties(final AnimationProperty property, final AnimationProperty... properties)
-    {
+    public AnimationProperties(final AnimationProperty property, final AnimationProperty... properties) {
         push(property);
 
-        if (null != properties)
-        {
+        if (null != properties) {
             final int size = properties.length;
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 push(properties[i]);
             }
         }
     }
 
     @Override
-    public final int size()
-    {
+    public final int size() {
         return m_properties.size();
     }
 
     @Override
-    public final AnimationProperty get(final int i)
-    {
-        if ((i < 0) || (i >= m_properties.size()))
-        {
+    public final AnimationProperty get(final int i) {
+        if ((i < 0) || (i >= m_properties.size())) {
             return null;
         }
         return m_properties.get(i);
     }
 
-    public final AnimationProperties push(final AnimationProperty property)
-    {
-        if (null != property)
-        {
+    public final AnimationProperties push(final AnimationProperty property) {
+        if (null != property) {
             m_properties.add(property);
         }
         return this;
     }
 
     @Override
-    public final Iterator<AnimationProperty> iterator()
-    {
+    public final Iterator<AnimationProperty> iterator() {
         return new BoundedListIterator<>(this);
     }
 
     @Override
-    public final boolean isEmpty()
-    {
+    public final boolean isEmpty() {
         return m_properties.isEmpty();
     }
 }

@@ -60,64 +60,61 @@ import jsinterop.base.Js;
  */
 public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements RequiresResize, ProvidesResize
 {
-    private final Viewport       m_view;
 
-    private HTMLDivElement       m_elm;
+    private final Viewport m_view;
 
-    private int                  m_width;
+    private HTMLDivElement m_elm;
 
-    private int                  m_height;
+    private int m_width;
 
-    private boolean              m_flex;
+    private int m_height;
 
-    private AutoScaleType        m_auto;
+    private boolean m_flex;
+
+    private AutoScaleType m_auto;
 
     private LienzoPanelHandlerManager m_events;
 
-    private Cursor               m_widget_cursor;
+    private Cursor m_widget_cursor;
 
-    private Cursor               m_active_cursor;
+    private Cursor m_active_cursor;
 
-    private Cursor               m_normal_cursor;
+    private Cursor m_normal_cursor;
 
-    private Cursor               m_select_cursor;
+    private Cursor m_select_cursor;
 
-    private int                  m_widthOffset;
-    private int                  m_heightOffset;
+    private int m_widthOffset;
+    private int m_heightOffset;
 
-    private EventListener        m_resizeListener;
+    private EventListener m_resizeListener;
 
-    public LienzoPanelImpl(final HTMLDivElement elm, boolean resize)
-    {
-        this(elm, resize, 0,0);
+    public LienzoPanelImpl(final HTMLDivElement elm, boolean resize) {
+        this(elm, resize, 0, 0);
     }
 
-    public LienzoPanelImpl(final HTMLDivElement elm, boolean resize, int widthOffset, int heightOffset)
-    {
+    public LienzoPanelImpl(final HTMLDivElement elm, boolean resize, int widthOffset, int heightOffset) {
         m_view = new Viewport();
         m_elm = elm;
         m_elm.tabIndex = 0;
 
-        Size size = getSize((HTMLDivElement)elm.parentNode);
+        Size size = getSize((HTMLDivElement) elm.parentNode);
 
         m_widthOffset = widthOffset;
         m_heightOffset = heightOffset;
 
         doPostCTOR(size.width - widthOffset, size.height - heightOffset);
 
-        if (resize)
-        {
+        if (resize) {
             m_resizeListener = e ->
             {
-                Size resizeSize = getSize((HTMLDivElement)elm.parentNode);
+                Size resizeSize = getSize((HTMLDivElement) elm.parentNode);
                 setPixelSize(resizeSize.width, resizeSize.height);
             };
             DomGlobal.window.addEventListener("resize", m_resizeListener);
         }
     }
 
-    public LienzoPanelImpl(HTMLDivElement elm, int width, int height)
-    {
+    public LienzoPanelImpl(HTMLDivElement elm, int width, int height) {
         m_view = new Viewport();
         m_elm = elm;
         m_elm.tabIndex = 0;
@@ -125,8 +122,7 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
         doPostCTOR(width, height);
     }
 
-    private Size getSize(final HTMLDivElement elm)
-    {
+    private Size getSize(final HTMLDivElement elm) {
         CSSStyleDeclaration cs = Js.<ViewCSS>uncheckedCast(DomGlobal.window).getComputedStyle(elm);
 
         double paddingX = JsNumber.parseFloat(cs.paddingLeft.asString()) + JsNumber.parseFloat(cs.paddingRight.asString());
@@ -136,30 +132,27 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
         double borderY = JsNumber.parseFloat(cs.borderTopWidth.asString()) + JsNumber.parseFloat(cs.borderBottomWidth.asString());
 
         // Element width and height minus padding and border
-        int width  = (int)(elm.offsetWidth - paddingX - borderX);
-        int height = (int)(elm.offsetHeight - paddingY - borderY);
+        int width = (int) (elm.offsetWidth - paddingX - borderX);
+        int height = (int) (elm.offsetHeight - paddingY - borderY);
 
         return new Size(width, height);
     }
 
-    public static class Size
-    {
+    public static class Size {
+
         public int width;
         public int height;
 
-        public Size(final int width, final int height)
-        {
+        public Size(final int width, final int height) {
             this.width = width;
             this.height = height;
         }
     }
 
-    private final void doPostCTOR(final int width, final int height)
-    {
+    private final void doPostCTOR(final int width, final int height) {
         m_view.setDragMouseButtons(DragMouseControl.LEFT_MOUSE_ONLY);
 
-        if (LienzoCore.IS_CANVAS_SUPPORTED)
-        {
+        if (LienzoCore.IS_CANVAS_SUPPORTED) {
 
             HTMLDivElement divElement = Js.uncheckedCast(m_view.getElement());
 
@@ -170,9 +163,7 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
             m_widget_cursor = CursorMap.get().lookup(m_elm.style.cursor);
 
             m_events = new LienzoPanelHandlerManager(this);
-        }
-        else
-        {
+        } else {
 
             //add(new Label(MessageConstants.MESSAGES.getCanvasUnsupportedMessage()));
             m_elm.innerHTML = MessageConstants.MESSAGES.getCanvasUnsupportedMessage();
@@ -183,23 +174,19 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
         m_elm.style.outlineStyle = OutlineStyle.NONE.getCssName();
     }
 
-    private void setWidth(int width)
-    {
+    private void setWidth(int width) {
         m_elm.style.width = WidthUnionType.of(width);
     }
 
-    private void setHeight(int height)
-    {
+    private void setHeight(int height) {
         m_elm.style.height = HeightUnionType.of(height);
     }
 
-    private void setWidth(String width)
-    {
+    private void setWidth(String width) {
         m_elm.style.width = WidthUnionType.of(width);
     }
 
-    private void setHeight(String height)
-    {
+    private void setHeight(String height) {
         m_elm.style.height = HeightUnionType.of(height);
     }
 
@@ -208,8 +195,7 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
         //removeFromParent();
         // @FIXME should remove all listeners (mdp) and check if anything else needs to be done as part of destroy()
         m_events.destroy();
-        if (m_resizeListener != null )
-        {
+        if (m_resizeListener != null) {
             DomGlobal.window.removeEventListener("resize", m_resizeListener);
         }
         m_elm.remove();
@@ -221,38 +207,32 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
         m_select_cursor = null;
     }
 
-    public LienzoPanelImpl setAutoScale(final AutoScaleType type)
-    {
+    public LienzoPanelImpl setAutoScale(final AutoScaleType type) {
         m_auto = type;
 
         return this;
     }
 
-    public AutoScaleType getAutoScale()
-    {
-        if (null == m_auto)
-        {
+    public AutoScaleType getAutoScale() {
+        if (null == m_auto) {
             return AutoScaleType.NONE;
         }
         return m_auto;
     }
 
-    public LienzoPanelImpl setTransform(final Transform transform)
-    {
+    public LienzoPanelImpl setTransform(final Transform transform) {
         getViewport().setTransform(transform);
 
         return this;
     }
 
-    public LienzoPanelImpl draw()
-    {
+    public LienzoPanelImpl draw() {
         getViewport().draw();
 
         return this;
     }
 
-    public LienzoPanelImpl batch()
-    {
+    public LienzoPanelImpl batch() {
         getViewport().batch();
 
         return this;
@@ -265,8 +245,7 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
      * @param layer
      * @return
      */
-    public LienzoPanelImpl add(final Layer layer)
-    {
+    public LienzoPanelImpl add(final Layer layer) {
         getScene().add(layer);
 
         return this;
@@ -279,12 +258,10 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
      * @param layer
      * @return
      */
-    public LienzoPanelImpl add(final Layer layer, final Layer... layers)
-    {
+    public LienzoPanelImpl add(final Layer layer, final Layer... layers) {
         add(layer);
 
-        for (Layer node : layers)
-        {
+        for (Layer node : layers) {
             add(node);
         }
         return this;
@@ -297,8 +274,7 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
      * @param layer
      * @return
      */
-    public LienzoPanelImpl remove(final Layer layer)
-    {
+    public LienzoPanelImpl remove(final Layer layer) {
         getScene().remove(layer);
 
         return this;
@@ -306,11 +282,10 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
 
     /**
      * Removes all layer from the {@link LienzoPanelImpl}.
-
+     *
      * @return
      */
-    public LienzoPanelImpl removeAll()
-    {
+    public LienzoPanelImpl removeAll() {
         getScene().removeAll();
 
         return this;
@@ -320,8 +295,7 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
      * Sets the size in pixels of the {@link LienzoPanelImpl}
      * Sets the size in pixels of the {@link com.ait.lienzo.client.core.shape.Viewport} contained and automatically added to the instance of the {@link LienzoPanelImpl}
      */
-    public void setPixelSize(final int width, final int height)
-    {
+    public void setPixelSize(final int width, final int height) {
         if (width >= 0) {
             m_width = width;
             setWidth(width + Style.Unit.PX.getType());
@@ -338,12 +312,11 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
 
     /**
      * Sets the type of cursor to be used when hovering above the element.
+     *
      * @param cursor
      */
-    public LienzoPanelImpl setCursor(final Cursor cursor)
-    {
-        if ((cursor != null) && (cursor != m_active_cursor))
-        {
+    public LienzoPanelImpl setCursor(final Cursor cursor) {
+        if ((cursor != null) && (cursor != m_active_cursor)) {
             m_active_cursor = cursor;
 
             // Need to defer this, sometimes, if the browser is busy, etc, changing cursors does not take effect till events are done processing
@@ -373,65 +346,57 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
         return m_height;
     }
 
-    public LienzoPanelImpl setNormalCursor(final Cursor cursor)
-    {
+    public LienzoPanelImpl setNormalCursor(final Cursor cursor) {
         m_normal_cursor = cursor;
 
         return this;
     }
 
-    public Cursor getNormalCursor()
-    {
+    public Cursor getNormalCursor() {
         return m_normal_cursor;
     }
 
-    public LienzoPanelImpl setSelectCursor(final Cursor cursor)
-    {
+    public LienzoPanelImpl setSelectCursor(final Cursor cursor) {
         m_select_cursor = cursor;
 
         return this;
     }
 
-    public Cursor getSelectCursor()
-    {
+    public Cursor getSelectCursor() {
         return m_select_cursor;
     }
 
-    public Cursor getActiveCursor()
-    {
+    public Cursor getActiveCursor() {
         return m_active_cursor;
     }
 
-    final Cursor getWidgetCursor()
-    {
+    final Cursor getWidgetCursor() {
         return m_widget_cursor;
     }
 
     /**
      * Returns the {@link com.ait.lienzo.client.core.shape.Viewport} main {@link com.ait.lienzo.client.core.shape.Scene}
+     *
      * @return
      */
-    public Scene getScene()
-    {
+    public Scene getScene() {
         return getViewport().getScene();
     }
 
     /**
      * Returns the automatically create {@link com.ait.lienzo.client.core.shape.Viewport} instance.
+     *
      * @return
      */
-    public final Viewport getViewport()
-    {
+    public final Viewport getViewport() {
         return m_view;
     }
 
-    public Iterable<Node<?>> findByID(final String id)
-    {
+    public Iterable<Node<?>> findByID(final String id) {
         return getViewport().findByID(id);
     }
 
-    public Iterable<Node<?>> find(final Predicate<Node<?>> predicate)
-    {
+    public Iterable<Node<?>> find(final Predicate<Node<?>> predicate) {
         return getViewport().find(predicate);
     }
 
@@ -440,8 +405,7 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
      *
      * @param layer
      */
-    public LienzoPanelImpl setBackgroundLayer(final Layer layer)
-    {
+    public LienzoPanelImpl setBackgroundLayer(final Layer layer) {
         getViewport().setBackgroundLayer(layer);
 
         return this;
@@ -452,28 +416,23 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
      *
      * @return
      */
-    public Layer getDragLayer()
-    {
+    public Layer getDragLayer() {
         return getViewport().getDragLayer();
     }
 
-    public String toDataURL()
-    {
+    public String toDataURL() {
         return getViewport().toDataURL();
     }
 
-    public String toDataURL(final boolean includeBackgroundLayer)
-    {
+    public String toDataURL(final boolean includeBackgroundLayer) {
         return getViewport().toDataURL(includeBackgroundLayer);
     }
 
-    public String toDataURL(final DataURLType mimetype)
-    {
+    public String toDataURL(final DataURLType mimetype) {
         return getViewport().toDataURL(mimetype);
     }
 
-    public String toDataURL(final DataURLType mimetype, final boolean includeBackgroundLayer)
-    {
+    public String toDataURL(final DataURLType mimetype, final boolean includeBackgroundLayer) {
         return getViewport().toDataURL(mimetype, includeBackgroundLayer);
     }
 
@@ -483,10 +442,8 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
      * @param color String
      * @return this LienzoPanelImpl
      */
-    public LienzoPanelImpl setBackgroundColor(final String color)
-    {
-        if (null != color)
-        {
+    public LienzoPanelImpl setBackgroundColor(final String color) {
+        if (null != color) {
             m_elm.style.backgroundColor = color;
         }
         return this;
@@ -498,10 +455,8 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
      * @param color IColor, i.e. ColorName or Color
      * @return this LienzoPanelImpl
      */
-    public LienzoPanelImpl setBackgroundColor(final IColor color)
-    {
-        if (null != color)
-        {
+    public LienzoPanelImpl setBackgroundColor(final IColor color) {
+        if (null != color) {
             setBackgroundColor(color.getColorString());
         }
         return this;
@@ -514,8 +469,7 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
      *
      * @return String
      */
-    public String getBackgroundColor()
-    {
+    public String getBackgroundColor() {
         return m_elm.style.backgroundColor;
     }
 
@@ -525,29 +479,26 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
      *
      * @return Mediators
      */
-    public Mediators getMediators()
-    {
+    public Mediators getMediators() {
         return getViewport().getMediators();
     }
 
     /**
      * Add a mediator to the stack of {@link com.ait.lienzo.client.core.mediator.Mediators} for this panels {@link com.ait.lienzo.client.core.shape.Viewport}.
      * The one that is added last, will be called first.
-     *
+     * <p>
      * Mediators can be used to e.g. to addBoundingBox zoom operations.
      *
      * @param mediator IMediator
      */
-    public LienzoPanelImpl pushMediator(final IMediator mediator)
-    {
+    public LienzoPanelImpl pushMediator(final IMediator mediator) {
         getViewport().pushMediator(mediator);
 
         return this;
     }
 
     // @FIXME I don't think this does anything, so ignoring. Delete later. (mdp)
-    public static void enableWindowMouseWheelScroll(boolean enabled)
-    {
+    public static void enableWindowMouseWheelScroll(boolean enabled) {
 //		$wnd.mousewheel = function() {
 //			return enabled;
 //		}
@@ -565,14 +516,12 @@ public class LienzoPanelImpl extends LienzoPanel //extends FocusPanel implements
         m_elm.tabIndex = index;
     }
 
-    public HTMLDivElement getElement()
-    {
+    public HTMLDivElement getElement() {
         return m_elm;
     }
 
     //TODO lienzo-to-native Check if works
-    public void setVisible(boolean visible)
-    {
+    public void setVisible(boolean visible) {
         if (visible) {
             m_elm.style.display = Style.Display.BLOCK.getCssName(); //inline
         } else {

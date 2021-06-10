@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.image;
 
 import com.ait.lienzo.client.core.shape.Sprite;
 
-public interface SpriteLoadedHandler
-{
+public interface SpriteLoadedHandler {
+
     public void onSpriteLoaded(Sprite sprite);
 }

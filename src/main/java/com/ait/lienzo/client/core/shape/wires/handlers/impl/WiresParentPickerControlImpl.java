@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
@@ -24,16 +26,15 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMouseControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.types.Point2D;
-import java.util.function.Supplier;
 
 public class WiresParentPickerControlImpl implements WiresParentPickerControl,
                                                      WiresMouseControl {
 
     private final WiresShapeLocationControlImpl shapeLocationControl;
-    private final Supplier<WiresLayerIndex>     index;
-    private       WiresContainer                m_parent;
-    private       PickerPart                    m_parentPart;
-    private       WiresContainer                initialParent;
+    private final Supplier<WiresLayerIndex> index;
+    private WiresContainer m_parent;
+    private PickerPart m_parentPart;
+    private WiresContainer initialParent;
 
     public WiresParentPickerControlImpl(final WiresShape m_shape,
                                         final Supplier<WiresLayerIndex> index) {
@@ -104,7 +105,7 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
     private PickerPart findShapeAt(double x,
                                    double y) {
         final PickerPart parent = index.get().findShapeAt((int) x,
-                                                       (int) y);
+                                                          (int) y);
         // Ensure same shape is not the parent found, even if it
         // has been indexed in the colormap picker.
         if (null != parent
@@ -200,8 +201,7 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
     }
 
     @Override
-    public WiresLayerIndex getIndex()
-    {
+    public WiresLayerIndex getIndex() {
         return index.get();
     }
 
@@ -220,5 +220,4 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
     public boolean isStartDocked() {
         return shapeLocationControl.isStartDocked();
     }
-
 }

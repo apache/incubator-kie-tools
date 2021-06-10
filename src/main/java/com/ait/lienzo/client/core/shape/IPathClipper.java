@@ -19,7 +19,7 @@ package com.ait.lienzo.client.core.shape;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.tools.common.api.types.IActivatable;
 
-public interface IPathClipper extends IActivatable
-{
+public interface IPathClipper extends IActivatable {
+
     public boolean clip(Context2D context);
 }

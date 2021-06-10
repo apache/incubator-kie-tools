@@ -34,7 +34,6 @@ public class WiresControlPointHandlerImpl implements WiresControlPointHandler {
     private final WiresManager m_manager;
     private int cpIndexInitial;
 
-
     public WiresControlPointHandlerImpl(final WiresConnector connector,
                                         final WiresManager wiresManager) {
         this.m_connector = connector;
@@ -66,9 +65,9 @@ public class WiresControlPointHandlerImpl implements WiresControlPointHandler {
     public void onNodeDragMove(NodeDragMoveEvent event) {
         final IPrimitive<?> primitive = (IPrimitive<?>) event.getSource();
         final Point2D location = m_connector.getLine().adjustPoint(primitive.getX(),
-                                                                     primitive.getY(),
-                                                                     event.getX(),
-                                                                     event.getY());
+                                                                   primitive.getY(),
+                                                                   event.getX(),
+                                                                   event.getY());
         if (null != location) {
             primitive.setX(location.getX());
             primitive.setY(location.getY());
@@ -80,8 +79,8 @@ public class WiresControlPointHandlerImpl implements WiresControlPointHandler {
     public void onNodeDragEnd(NodeDragEndEvent event) {
         final IPrimitive<?> primitive = (IPrimitive<?>) event.getSource();
         if (!getControl().moveControlPoint(cpIndexInitial,
-                                      new Point2D(primitive.getX(),
-                                                  primitive.getY()))) {
+                                           new Point2D(primitive.getX(),
+                                                       primitive.getY()))) {
             event.getDragContext().reset();
             getControl().reset();
         }
@@ -94,5 +93,4 @@ public class WiresControlPointHandlerImpl implements WiresControlPointHandler {
     private WiresConnectorControl getControl() {
         return m_connector.getControl();
     }
-
 }

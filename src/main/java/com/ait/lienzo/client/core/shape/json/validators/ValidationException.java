@@ -16,21 +16,19 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-public class ValidationException extends Exception
-{
+public class ValidationException extends Exception {
+
     private static final long serialVersionUID = 1L;
 
     private ValidationContext m_context;
 
-    public ValidationException(final ValidationContext context)
-    {
+    public ValidationException(final ValidationContext context) {
         super(context.getDebugString());
 
         m_context = context;
     }
 
-    public ValidationContext getContext()
-    {
+    public ValidationContext getContext() {
         return m_context;
     }
 }

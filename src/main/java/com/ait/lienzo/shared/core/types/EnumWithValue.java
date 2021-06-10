@@ -24,90 +24,75 @@ import java.util.List;
 
 import com.ait.lienzo.tools.common.api.types.IStringValued;
 
-public interface EnumWithValue extends IStringValued
-{
-    public static final class EnumStringMap<T extends EnumWithValue> extends LinkedHashMap<String, T>
-    {
+public interface EnumWithValue extends IStringValued {
+
+    public static final class EnumStringMap<T extends EnumWithValue> extends LinkedHashMap<String, T> {
+
         private static final long serialVersionUID = -8637592993705769824L;
 
-        public EnumStringMap()
-        {
+        public EnumStringMap() {
         }
 
-        public EnumStringMap(final T[] values)
-        {
+        public EnumStringMap(final T[] values) {
             final int size = values.length;
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 final T value = values[i];
 
                 put(value.getValue(), value);
             }
         }
 
-        public T lookup(final String key, final T otherwise)
-        {
-            if ((null != key) && (key.length() > 0))
-            {
+        public T lookup(final String key, final T otherwise) {
+            if ((null != key) && (key.length() > 0)) {
                 final T value = get(key);
 
-                if (null != value)
-                {
+                if (null != value) {
                     return value;
                 }
             }
             return otherwise;
         }
 
-        public List<String> getKeys()
-        {
+        public List<String> getKeys() {
             return new ArrayList<>(keySet());
         }
 
-        public List<T> getValues()
-        {
+        public List<T> getValues() {
             return new ArrayList<>(values());
         }
-        
-        public Iterator<T> iterator()
-        {
+
+        public Iterator<T> iterator() {
             return getValues().iterator();
         }
     }
 
-    final class Statics
-    {
-        private Statics()
-        {
+    final class Statics {
+
+        private Statics() {
 
         }
 
-        public static final <T extends EnumWithValue> EnumStringMap<T> build(final T[] values)
-        {
+        public static final <T extends EnumWithValue> EnumStringMap<T> build(final T[] values) {
             return new EnumStringMap<>(values);
         }
 
-        public static final <T extends EnumWithValue> T lookup(final String key, final EnumStringMap<T> map, final T otherwise)
-        {
+        public static final <T extends EnumWithValue> T lookup(final String key, final EnumStringMap<T> map, final T otherwise) {
             return map.lookup(key, otherwise);
         }
 
-        public static final <T extends EnumWithValue> List<String> getKeys(final T[] values)
-        {
+        public static final <T extends EnumWithValue> List<String> getKeys(final T[] values) {
             final int size = values.length;
 
             final ArrayList<String> keys = new ArrayList<>(size);
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 keys.add(values[i].getValue());
             }
             return keys;
         }
 
-        public static final <T extends EnumWithValue> List<T> getValues(final T[] values)
-        {
+        public static final <T extends EnumWithValue> List<T> getValues(final T[] values) {
             return Arrays.asList(values);
         }
     }

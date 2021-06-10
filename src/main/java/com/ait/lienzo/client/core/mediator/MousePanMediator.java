@@ -16,102 +16,84 @@
 
 package com.ait.lienzo.client.core.mediator;
 
-import elemental2.dom.UIEvent;
-
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
-import com.ait.lienzo.tools.client.event.INodeEvent.Type;
 import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
+import com.ait.lienzo.tools.client.event.INodeEvent.Type;
+import elemental2.dom.UIEvent;
 
 /**
  * MousePanMediator provides pan behavior similar to dragging the mouse in Google Maps.
  * Only the zoomable Layers are affected.
- * 
+ *
  * @see Mediators
- * 
  * @since 1.1
  */
-public class MousePanMediator extends AbstractMediator
-{
-    private Point2D   m_last             = new Point2D(0,0);
+public class MousePanMediator extends AbstractMediator {
 
-    private boolean   m_dragging         = false;
+    private Point2D m_last = new Point2D(0, 0);
 
-    private boolean   m_xconstrained     = false;
+    private boolean m_dragging = false;
 
-    private boolean   m_yconstrained     = false;
+    private boolean m_xconstrained = false;
+
+    private boolean m_yconstrained = false;
 
     private Transform m_inverseTransform = null;
 
-    public MousePanMediator()
-    {
+    public MousePanMediator() {
     }
 
-    public MousePanMediator(final IEventFilter... filters)
-    {
+    public MousePanMediator(final IEventFilter... filters) {
         setEventFilter(EventFilter.and(filters));
     }
 
-    public MousePanMediator setXConstrained(final boolean m_constrained)
-    {
+    public MousePanMediator setXConstrained(final boolean m_constrained) {
         this.m_xconstrained = m_constrained;
         return this;
     }
 
-    public boolean isXConstrained()
-    {
+    public boolean isXConstrained() {
         return m_xconstrained;
     }
 
-    public MousePanMediator setYConstrained(final boolean m_constrained)
-    {
+    public MousePanMediator setYConstrained(final boolean m_constrained) {
         this.m_yconstrained = m_constrained;
         return this;
     }
 
-    public boolean isYConstrained()
-    {
+    public boolean isYConstrained() {
         return m_yconstrained;
     }
 
     @Override
-    public void cancel()
-    {
+    public void cancel() {
         m_dragging = false;
     }
 
     @Override
-    public <H extends EventHandler> boolean handleEvent(Type<H> type, final UIEvent event, int x, int y)
-    {
-        if (type == NodeMouseMoveEvent.getType())
-        {
-            if (m_dragging)
-            {
+    public <H extends EventHandler> boolean handleEvent(Type<H> type, final UIEvent event, int x, int y) {
+        if (type == NodeMouseMoveEvent.getType()) {
+            if (m_dragging) {
                 onMouseMove(x, y);
 
                 return true;
             }
             return false;
-        }
-        else if (type == NodeMouseDownEvent.getType())
-        {
+        } else if (type == NodeMouseDownEvent.getType()) {
             final IEventFilter filter = getEventFilter();
 
-            if ((null == filter) || (!filter.isEnabled()) || (filter.test(event)))
-            {
+            if ((null == filter) || (!filter.isEnabled()) || (filter.test(event))) {
                 onMouseDown(x, y);
 
                 return true;
             }
             return false;
-        }
-        else if (type == NodeMouseUpEvent.getType())
-        {
-            if (m_dragging)
-            {
+        } else if (type == NodeMouseUpEvent.getType()) {
+            if (m_dragging) {
                 onMouseUp();
 
                 return true;
@@ -120,16 +102,14 @@ public class MousePanMediator extends AbstractMediator
         return false;
     }
 
-    protected void onMouseDown(int x, int y)
-    {
+    protected void onMouseDown(int x, int y) {
         m_last = new Point2D(x, y);
 
         m_dragging = true;
 
         Transform transform = getTransform();
 
-        if (transform == null)
-        {
+        if (transform == null) {
             setTransform(transform = new Transform());
         }
         m_inverseTransform = transform.getInverse();
@@ -137,8 +117,7 @@ public class MousePanMediator extends AbstractMediator
         m_inverseTransform.transform(m_last, m_last);
     }
 
-    protected void onMouseMove(int x, int y)
-    {
+    protected void onMouseMove(int x, int y) {
         final Transform transform = getTransform();
         final Point2D curr = new Point2D(x, y);
 
@@ -151,18 +130,14 @@ public class MousePanMediator extends AbstractMediator
 
         m_last = curr;
 
-        if (isBatchDraw())
-        {
+        if (isBatchDraw()) {
             getViewport().getScene().batch();
-        }
-        else
-        {
+        } else {
             getViewport().getScene().draw();
         }
     }
 
-    protected void onMouseUp()
-    {
+    protected void onMouseUp() {
         cancel();
     }
 }

@@ -19,10 +19,9 @@ package com.ait.lienzo.client.core.shape.wires.event;
 import com.ait.lienzo.client.core.event.AbstractNodeEvent;
 import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.shape.Node;
-import com.ait.lienzo.tools.client.event.INodeXYEvent;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
-
+import com.ait.lienzo.tools.client.event.INodeXYEvent;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
 
@@ -41,18 +40,16 @@ import elemental2.dom.HTMLElement;
 public abstract class AbstractWiresResizeEvent<H extends EventHandler, H2 extends EventHandler> extends AbstractNodeEvent<H, WiresShape> implements INodeXYEvent<H, WiresShape> {
 
     private AbstractNodeHumanInputEvent<H2, Node> nodeDragEvent;
-    private int                                         x;
-    private int                                         y;
-    private double                                      width;
-    private double                                      height;
+    private int x;
+    private int y;
+    private double width;
+    private double height;
 
-    public AbstractWiresResizeEvent(final HTMLElement relativeElement)
-    {
+    public AbstractWiresResizeEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
-    public void kill()
-    {
+    public void kill() {
         setSource(null);
         setDead(true);
         nodeDragEvent = null;
@@ -62,8 +59,7 @@ public abstract class AbstractWiresResizeEvent<H extends EventHandler, H2 extend
         height = 0;
     }
 
-    public void revive()
-    {
+    public void revive() {
         setSource(null);
         setDead(false);
         nodeDragEvent = null;
@@ -110,9 +106,7 @@ public abstract class AbstractWiresResizeEvent<H extends EventHandler, H2 extend
         return height;
     }
 
-    public Event getNativeEvent()
-    {
+    public Event getNativeEvent() {
         throw new UnsupportedOperationException();
     }
-
 }

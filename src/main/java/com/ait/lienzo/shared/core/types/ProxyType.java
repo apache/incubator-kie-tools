@@ -18,36 +18,30 @@ package com.ait.lienzo.shared.core.types;
 
 import com.ait.lienzo.tools.common.api.types.IStringValued;
 
-public class ProxyType implements IStringValued
-{
+public class ProxyType implements IStringValued {
+
     private final String m_value;
 
-    protected ProxyType(final String value)
-    {
+    protected ProxyType(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
     @Override
-    public boolean equals(final Object other)
-    {
-        if (!(other instanceof ProxyType))
-        {
+    public boolean equals(final Object other) {
+        if (!(other instanceof ProxyType)) {
             return false;
         }
-        if (this == other)
-        {
+        if (this == other) {
             return true;
         }
         ProxyType that = ((ProxyType) other);
@@ -56,8 +50,7 @@ public class ProxyType implements IStringValued
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return getValue().hashCode();
     }
 }

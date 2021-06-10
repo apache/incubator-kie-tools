@@ -17,28 +17,26 @@
 package com.ait.lienzo.client.core.shape.json.validators;
 
 /**
- * ValidationError defines an error that was found during the 
+ * ValidationError defines an error that was found during the
  * deserialization process of a Node from a JSON string.
- * 
- * 
+ *
  * @see JSONDeserializer
  * @see ValidationContext
  */
-public class ValidationError
-{
+public class ValidationError {
+
     private final String m_context;
 
     private final String m_message;
 
     /**
      * Constructor for a ValidationError.
-     * 
+     *
      * @param message the error message
      * @param context the context string that indicates which node or attribute was in error,
-     * e.g. ".children[4].children[2].attributes.fillColor"
+     *                e.g. ".children[4].children[2].attributes.fillColor"
      */
-    public ValidationError(final String message, final String context)
-    {
+    public ValidationError(final String message, final String context) {
         m_message = message;
 
         m_context = context;
@@ -47,21 +45,19 @@ public class ValidationError
     /**
      * Returns the context string that indicates which node or attribute was in error,
      * e.g. ".children[4].children[2].attributes.fillColor"
-     * 
+     *
      * @return String
      */
-    public String getContext()
-    {
+    public String getContext() {
         return m_context;
     }
 
     /**
      * Returns the error message.
-     * 
+     *
      * @return String
      */
-    public String getMessage()
-    {
+    public String getMessage() {
         return m_message;
     }
 }

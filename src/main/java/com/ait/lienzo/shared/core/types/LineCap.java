@@ -21,43 +21,38 @@ import java.util.List;
 /**
  * Enum to type safe the usage of Canvas Line Caps.
  */
-public enum LineCap implements EnumWithValue
-{
-    BUTT("butt"), ROUND("round"), SQUARE("square");
+public enum LineCap implements EnumWithValue {
+    BUTT("butt"),
+    ROUND("round"),
+    SQUARE("square");
 
     private final String m_value;
 
     private static final EnumStringMap<LineCap> LOOKUP_MAP = Statics.build(LineCap.values());
 
-    private LineCap(final String value)
-    {
+    private LineCap(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
-    public static final LineCap lookup(final String key)
-    {
+    public static final LineCap lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, BUTT);
     }
 
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(LineCap.values());
     }
 
-    public static final List<LineCap> getValues()
-    {
+    public static final List<LineCap> getValues() {
         return Statics.getValues(LineCap.values());
     }
 }

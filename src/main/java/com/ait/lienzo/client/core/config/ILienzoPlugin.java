@@ -19,8 +19,8 @@ package com.ait.lienzo.client.core.config;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.tools.common.api.types.IStringValued;
 
-public interface ILienzoPlugin
-{
+public interface ILienzoPlugin {
+
     String getVersion();
 
     String getNameSpace();

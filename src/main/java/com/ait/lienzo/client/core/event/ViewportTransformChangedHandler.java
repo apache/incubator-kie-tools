@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
 
-public interface ViewportTransformChangedHandler extends EventHandler
-{
+public interface ViewportTransformChangedHandler extends EventHandler {
+
     public void onViewportTransformChanged(ViewportTransformChangedEvent event);
 }

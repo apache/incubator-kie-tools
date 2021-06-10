@@ -21,43 +21,37 @@ import java.util.List;
 /**
  * DataURLType defines export format for toDataURL
  */
-public enum DataURLType implements EnumWithValue
-{
-    PNG("image/png"), JPG("image/jpeg");
+public enum DataURLType implements EnumWithValue {
+    PNG("image/png"),
+    JPG("image/jpeg");
 
     private final String m_value;
 
     private static final EnumStringMap<DataURLType> LOOKUP_MAP = Statics.build(DataURLType.values());
 
-    private DataURLType(final String value)
-    {
+    private DataURLType(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
-    public static final DataURLType lookup(final String key)
-    {
+    public static final DataURLType lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, PNG);
     }
 
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(DataURLType.values());
     }
 
-    public static final List<DataURLType> getValues()
-    {
+    public static final List<DataURLType> getValues() {
         return Statics.getValues(DataURLType.values());
     }
 }

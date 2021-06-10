@@ -15,28 +15,27 @@
  */
 package com.ait.lienzo.client.core.shape.wires.layout.direction;
 
+import java.util.function.Function;
+
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.layout.AbstractContainerLayout;
 import com.ait.lienzo.client.core.shape.wires.layout.IContainerLayout;
 import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.Direction;
 import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.Orientation;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import java.util.function.Function;
 
-public class DirectionContainerLayout extends AbstractContainerLayout<DirectionLayout>
-{
-    public DirectionContainerLayout(final IPrimitive parent)
-    {
+public class DirectionContainerLayout extends AbstractContainerLayout<DirectionLayout> {
+
+    public DirectionContainerLayout(final IPrimitive parent) {
         super(parent);
     }
 
-    private BoundingBox getChildBoundingBox(final IPrimitive<?> child, Orientation orientation)
-    {
+    private BoundingBox getChildBoundingBox(final IPrimitive<?> child, Orientation orientation) {
         BoundingBox childBoundingBox = child.getBoundingBox();
         return (Orientation.VERTICAL.equals(orientation)) ?
-               BoundingBox.fromDoubles(childBoundingBox.getMinY(), childBoundingBox.getMinX(), childBoundingBox.getHeight(),
-                                       childBoundingBox.getWidth()) :
-               childBoundingBox;
+                BoundingBox.fromDoubles(childBoundingBox.getMinY(), childBoundingBox.getMinX(), childBoundingBox.getHeight(),
+                                        childBoundingBox.getWidth()) :
+                childBoundingBox;
     }
 
     public IPrimitive get() {
@@ -46,19 +45,16 @@ public class DirectionContainerLayout extends AbstractContainerLayout<DirectionL
     IPrimitive child;
 
     @Override
-    public IContainerLayout add(final IPrimitive child, final DirectionLayout layout)
-    {
-        if (child == null)
-        {
+    public IContainerLayout add(final IPrimitive child, final DirectionLayout layout) {
+        if (child == null) {
             throw new IllegalArgumentException("Child should not be null");
         }
 
         this.child = child;
 
-
         final DirectionLayout currentLayout = getLayout(layout);
 
-        final BoundingBox childBoundingBox  = getChildBoundingBox(child, currentLayout.getOrientation());
+        final BoundingBox childBoundingBox = getChildBoundingBox(child, currentLayout.getOrientation());
         final BoundingBox parentBoundingBox = getParentBoundingBox();
 
         final Function<Direction, Double> margins = currentLayout::getMargin;
@@ -84,8 +80,7 @@ public class DirectionContainerLayout extends AbstractContainerLayout<DirectionL
     }
 
     @Override
-    public DirectionLayout getDefaultLayout()
-    {
+    public DirectionLayout getDefaultLayout() {
         return new DirectionLayout.Builder().build();
     }
 }

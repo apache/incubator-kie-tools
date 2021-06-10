@@ -15,5 +15,4 @@ public interface WiresBoundsConstraintControl extends WiresMoveControl {
 
         T setLocationBounds(OptionalBounds bounds);
     }
-
 }

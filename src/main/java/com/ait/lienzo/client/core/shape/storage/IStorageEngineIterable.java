@@ -20,7 +20,7 @@ import java.util.Iterator;
 
 import com.ait.lienzo.client.core.types.BoundingBox;
 
-public interface IStorageEngineIterable<M> extends Iterable<M>
-{
+public interface IStorageEngineIterable<M> extends Iterable<M> {
+
     public Iterator<M> iterator(BoundingBox bounds);
 }

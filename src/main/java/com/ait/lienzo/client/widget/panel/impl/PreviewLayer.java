@@ -16,49 +16,45 @@
 
 package com.ait.lienzo.client.widget.panel.impl;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.shared.core.types.ColorName;
-import java.util.function.Supplier;
 
-public class PreviewLayer extends Layer
-{
-    static final  double           ALPHA      = 0.5d;
+public class PreviewLayer extends Layer {
 
-    static final  String           FILL_COLOR = ColorName.LIGHTGREY.getColorString();
+    static final double ALPHA = 0.5d;
+
+    static final String FILL_COLOR = ColorName.LIGHTGREY.getColorString();
 
     private final Supplier<Bounds> backgroundBounds;
 
     private final Supplier<Bounds> visibleBounds;
 
     public PreviewLayer(final Supplier<Bounds> backgroundBounds,
-                        final Supplier<Bounds> visibleBounds)
-    {
+                        final Supplier<Bounds> visibleBounds) {
         this.backgroundBounds = backgroundBounds;
         this.visibleBounds = visibleBounds;
         setTransformable(true);
         setListening(true);
     }
 
-
     @Override
     public void drawWithTransforms(final Context2D context,
                                    final double alpha,
                                    final BoundingBox bounds,
-                                   final Supplier<Transform> transformSupplier)
-    {
+                                   final Supplier<Transform> transformSupplier) {
         drawBackground(context);
         super.drawWithTransforms(context, alpha, bounds, transformSupplier);
     }
 
-    private void drawBackground(final Context2D context)
-    {
+    private void drawBackground(final Context2D context) {
         final Bounds clearBounds = visibleBounds.get();
-        if (clearBounds.getWidth() > 0 || clearBounds.getHeight() > 0)
-        {
+        if (clearBounds.getWidth() > 0 || clearBounds.getHeight() > 0) {
             final Bounds bgBounds = backgroundBounds.get();
             context.save();
             context.setGlobalAlpha(ALPHA);

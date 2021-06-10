@@ -20,88 +20,73 @@ import com.ait.lienzo.tools.client.collection.NFastStringMap;
 import com.google.gwt.resources.client.ImageResource;
 import elemental2.dom.HTMLImageElement;
 
-public final class ImageCache
-{
-    private static final ImageCache                INSTANCE   = new ImageCache();
+public final class ImageCache {
 
-    private final NFastStringMap<String>           m_messages = new NFastStringMap<>();
+    private static final ImageCache INSTANCE = new ImageCache();
+
+    private final NFastStringMap<String> m_messages = new NFastStringMap<>();
 
     private final NFastStringMap<HTMLImageElement> m_url_hmap = new NFastStringMap<>();
 
     private final NFastStringMap<HTMLImageElement> m_key_hmap = new NFastStringMap<>();
 
-    private int                                    m_counting = -1;
+    private int m_counting = -1;
 
-    private Runnable                               m_callback = null;
+    private Runnable m_callback = null;
 
-    public static final ImageCache get()
-    {
+    public static final ImageCache get() {
         return INSTANCE;
     }
 
-    private ImageCache()
-    {
+    private ImageCache() {
     }
 
-    public final ImageCache add(final String url)
-    {
+    public final ImageCache add(final String url) {
         return add(url, url);
     }
 
-    public final ImageCache add(final String key, final String url)
-    {
-        if (m_counting < 0)
-        {
+    public final ImageCache add(final String key, final String url) {
+        if (m_counting < 0) {
             m_counting = 0;
         }
         m_counting++;
 
-        new ImageLoader(url)
-        {
+        new ImageLoader(url) {
             @Override
-            public final void onImageElementLoad(final HTMLImageElement elem)
-            {
+            public final void onImageElementLoad(final HTMLImageElement elem) {
                 done(key, url, elem, "success");
             }
 
             @Override
-            public final void onImageElementError(final String message)
-            {
+            public final void onImageElementError(final String message) {
                 done(key, url, null, message);
             }
         };
         return this;
     }
 
-    public final ImageCache add(final String key, final ImageResource resource)
-    {
-        if (m_counting < 0)
-        {
+    public final ImageCache add(final String key, final ImageResource resource) {
+        if (m_counting < 0) {
             m_counting = 0;
         }
         m_counting++;
 
-        new ImageLoader(resource)
-        {
+        new ImageLoader(resource) {
             @Override
-            public final void onImageElementLoad(final HTMLImageElement elem)
-            {
+            public final void onImageElementLoad(final HTMLImageElement elem) {
                 done(key, resource.getName(), elem, "success");
             }
 
             @Override
-            public final void onImageElementError(final String message)
-            {
+            public final void onImageElementError(final String message) {
                 done(key, resource.getName(), null, message);
             }
         };
         return this;
     }
 
-    private final void done(String key, String url, HTMLImageElement image, String message)
-    {
-        if (null != image)
-        {
+    private final void done(String key, String url, HTMLImageElement image, String message) {
+        if (null != image) {
             m_key_hmap.put(key, image);
 
             m_url_hmap.put(url, image);
@@ -112,31 +97,25 @@ public final class ImageCache
 
         m_counting--;
 
-        if ((null != m_callback) && (m_counting == 0))
-        {
+        if ((null != m_callback) && (m_counting == 0)) {
             m_callback.run();
         }
     }
 
-    public final HTMLImageElement getImageByKey(String key)
-    {
+    public final HTMLImageElement getImageByKey(String key) {
         return m_key_hmap.get(key);
     }
 
-    public final HTMLImageElement getImageByURL(String url)
-    {
+    public final HTMLImageElement getImageByURL(String url) {
         return m_url_hmap.get(url);
     }
 
-    public final String getMessage(String name)
-    {
+    public final String getMessage(String name) {
         return m_messages.get(name);
     }
 
-    public final void reset()
-    {
-        if (m_counting > 0)
-        {
+    public final void reset() {
+        if (m_counting > 0) {
             throw new IllegalStateException("ImageCache still loading");
         }
         m_counting = -1;
@@ -148,31 +127,23 @@ public final class ImageCache
         m_callback = null;
     }
 
-    public final boolean isLoaded()
-    {
-        if (m_counting == 0)
-        {
+    public final boolean isLoaded() {
+        if (m_counting == 0) {
             return true;
         }
         return false;
     }
 
-    public final void onLoaded(Runnable callback)
-    {
-        if (null == callback)
-        {
+    public final void onLoaded(Runnable callback) {
+        if (null == callback) {
             throw new NullPointerException("null callback for ImageCache");
         }
-        if (m_counting < 0)
-        {
+        if (m_counting < 0) {
             throw new IllegalStateException("ImageCache has no images added");
         }
-        if (m_counting == 0)
-        {
+        if (m_counting == 0) {
             callback.run();
-        }
-        else
-        {
+        } else {
             m_callback = callback;
         }
     }

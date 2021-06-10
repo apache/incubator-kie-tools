@@ -22,11 +22,9 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 /**
  * An interface to define Text wrapping behaviour.
  */
-public interface ITextWrapper
-{
+public interface ITextWrapper {
 
     BoundingBox getBoundingBox();
 
     void drawString(final Context2D context, final IDrawString drawCommand);
-
 }

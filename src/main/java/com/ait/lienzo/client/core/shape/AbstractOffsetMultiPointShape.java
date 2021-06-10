@@ -20,69 +20,57 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ShapeType;
-
 import jsinterop.annotations.JsProperty;
 
-public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMultiPointShape<T> & IOffsetMultiPointShape<T>> extends AbstractMultiPointShape<T> implements IOffsetMultiPointShape<T>
-{
-    @JsProperty
-    private  double headOffset;
+public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMultiPointShape<T> & IOffsetMultiPointShape<T>> extends AbstractMultiPointShape<T> implements IOffsetMultiPointShape<T> {
 
     @JsProperty
-    private  double tailOffset;
+    private double headOffset;
 
-    protected AbstractOffsetMultiPointShape(final ShapeType type)
-    {
+    @JsProperty
+    private double tailOffset;
+
+    protected AbstractOffsetMultiPointShape(final ShapeType type) {
         super(type);
     }
 
     @Override
-    public IOffsetMultiPointShape<?> asOffsetMultiPointShape()
-    {
+    public IOffsetMultiPointShape<?> asOffsetMultiPointShape() {
         return this;
     }
 
-    public double getTailOffset()
-    {
+    public double getTailOffset() {
         return this.tailOffset;
     }
 
-    public T setTailOffset(final double offset)
-    {
+    public T setTailOffset(final double offset) {
         this.tailOffset = offset;
 
         return refresh();
     }
 
-    public double getHeadOffset()
-    {
+    public double getHeadOffset() {
         return this.headOffset;
     }
 
-    public T setHeadOffset(final double offset)
-    {
+    public T setHeadOffset(final double offset) {
         this.headOffset = offset;
 
         return refresh();
     }
 
-    protected List<Attribute> getBoundingBoxAttributesComposed(final Attribute... compose)
-    {
+    protected List<Attribute> getBoundingBoxAttributesComposed(final Attribute... compose) {
         return getBoundingBoxAttributesComposed(asAttributes(compose));
     }
 
-    protected List<Attribute> getBoundingBoxAttributesComposed(final List<Attribute> attributes)
-    {
+    protected List<Attribute> getBoundingBoxAttributesComposed(final List<Attribute> attributes) {
         return asAttributes(attributes, Attribute.HEAD_OFFSET, Attribute.TAIL_OFFSET);
     }
 
-    protected static abstract class AbstractOffsetMultiPointShapeFactory<T extends AbstractOffsetMultiPointShape<T>>extends ShapeFactory<T>
-    {
-        protected AbstractOffsetMultiPointShapeFactory(final ShapeType type)
-        {
+    protected static abstract class AbstractOffsetMultiPointShapeFactory<T extends AbstractOffsetMultiPointShape<T>> extends ShapeFactory<T> {
+
+        protected AbstractOffsetMultiPointShapeFactory(final ShapeType type) {
             super(type);
 
             addAttribute(Attribute.HEAD_OFFSET);
@@ -92,21 +80,17 @@ public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMult
     }
 
     @Override
-    protected boolean prepare(final Context2D context,  final double alpha)
-    {
+    protected boolean prepare(final Context2D context, final double alpha) {
         final boolean prepared = isPathPartListPrepared();
 
-        if (prepared)
-        {
+        if (prepared) {
             context.path(getPathPartList());
         }
         return prepared;
     }
 
-    public boolean isPathPartListPrepared()
-    {
-        if (getPathPartList().size() < 1)
-        {
+    public boolean isPathPartListPrepared() {
+        if (getPathPartList().size() < 1) {
             return parse();
         }
 

@@ -21,64 +21,58 @@ import java.util.List;
 /**
  * Enum to be used to constrain the Dragging Layer of a {@link Shape} or {@link Group}
  */
-public enum DragMode implements EnumWithValue
-{
-    DRAG_LAYER("drag-layer"), SAME_LAYER("same-layer");
+public enum DragMode implements EnumWithValue {
+    DRAG_LAYER("drag-layer"),
+    SAME_LAYER("same-layer");
 
     private final String m_value;
 
     private static final EnumStringMap<DragMode> LOOKUP_MAP = Statics.build(DragMode.values());
 
-    DragMode(final String value)
-    {
+    DragMode(final String value) {
         m_value = value;
     }
 
     /**
      * Return String representation.
-     * 
+     *
      * @return
      */
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
     /**
      * Used to safely convert from a String to an enum.
-     * 
+     *
      * @param key
      * @return
      */
-    public static final DragMode lookup(final String key)
-    {
+    public static final DragMode lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, DRAG_LAYER);
     }
 
     /**
      * Return list of enum keys.
-     * 
+     *
      * @return
      */
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(DragMode.values());
     }
 
     /**
      * Return list of enum values.
-     * 
+     *
      * @return
      */
-    public static final List<DragMode> getValues()
-    {
+    public static final List<DragMode> getValues() {
         return Statics.getValues(DragMode.values());
     }
 }

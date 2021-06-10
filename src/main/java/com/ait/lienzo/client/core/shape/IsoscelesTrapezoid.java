@@ -20,19 +20,16 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
-
 import jsinterop.annotations.JsProperty;
 
-public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
-{
+public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid> {
+
     @JsProperty
     private double height;
 
@@ -47,32 +44,26 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
 
     private final PathPartList m_list = new PathPartList();
 
-    public IsoscelesTrapezoid(final double topwidth, final double bottomwidth, final double height)
-    {
+    public IsoscelesTrapezoid(final double topwidth, final double bottomwidth, final double height) {
         super(ShapeType.ISOSCELES_TRAPEZOID);
 
         setTopWidth(topwidth).setBottomWidth(bottomwidth).setHeight(height);
     }
 
-    public IsoscelesTrapezoid(final double topwidth, final double bottomwidth, final double height, final double corner)
-    {
+    public IsoscelesTrapezoid(final double topwidth, final double bottomwidth, final double height, final double corner) {
         this(topwidth, bottomwidth, height);
 
         setCornerRadius(corner);
     }
 
     @Override
-    protected boolean prepare(final Context2D context, final double alpha)
-    {
-        if (m_list.size() < 1)
-        {
-            if (!parse())
-            {
+    protected boolean prepare(final Context2D context, final double alpha) {
+        if (m_list.size() < 1) {
+            if (!parse()) {
                 return false;
             }
         }
-        if (m_list.size() < 1)
-        {
+        if (m_list.size() < 1) {
             return false;
         }
         context.path(m_list);
@@ -80,22 +71,19 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
         return true;
     }
 
-    private boolean parse()
-    {
+    private boolean parse() {
         final double hig = getHeight();
 
         final double top = getTopWidth();
 
         final double bot = getBottomWidth();
 
-        if ((hig > 0) && (top > 0) && (bot > 0))
-        {
+        if ((hig > 0) && (top > 0) && (bot > 0)) {
             final double sub = Math.abs(top - bot);
 
             final Point2DArray list = new Point2DArray();
 
-            if (0 == sub)
-            {
+            if (0 == sub) {
                 list.pushXY(0, 0);
 
                 list.pushXY(top, 0);
@@ -103,11 +91,8 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
                 list.pushXY(top, hig);
 
                 list.pushXY(0, hig);
-            }
-            else
-            {
-                if (top > bot)
-                {
+            } else {
+                if (top > bot) {
                     list.pushXY(0, 0);
 
                     list.pushXY(top, 0);
@@ -115,9 +100,7 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
                     list.pushXY((sub / 2.0) + bot, hig);
 
                     list.pushXY((sub / 2.0), hig);
-                }
-                else
-                {
+                } else {
                     list.pushXY((sub / 2.0), 0);
 
                     list.pushXY((sub / 2.0) + top, 0);
@@ -133,18 +116,14 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
 
             final double corner = getCornerRadius();
 
-            if (corner <= 0)
-            {
+            if (corner <= 0) {
                 final int size = list.size();
 
-                for (int i = 1; i < size; i++)
-                {
+                for (int i = 1; i < size; i++) {
                     m_list.L(list.get(i));
                 }
                 m_list.Z();
-            }
-            else
-            {
+            } else {
                 list.push(p0);
                 Geometry.drawArcJoinedLines(m_list, list, corner);
             }
@@ -154,77 +133,65 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         return BoundingBox.fromDoubles(0, 0, Math.max(getTopWidth(), getBottomWidth()), getHeight());
     }
 
     @Override
-    public IsoscelesTrapezoid refresh()
-    {
+    public IsoscelesTrapezoid refresh() {
         m_list.clear();
 
         return this;
     }
 
-    public IsoscelesTrapezoid setTopWidth(final double topWidth)
-    {
+    public IsoscelesTrapezoid setTopWidth(final double topWidth) {
         this.topWidth = topWidth;
 
         return refresh();
     }
 
-    public double getTopWidth()
-    {
+    public double getTopWidth() {
         return this.topWidth;
     }
 
-    public IsoscelesTrapezoid setBottomWidth(final double bottomWidth)
-    {
+    public IsoscelesTrapezoid setBottomWidth(final double bottomWidth) {
         this.bottomWidth = bottomWidth;
 
         return refresh();
     }
 
-    public double getBottomWidth()
-    {
+    public double getBottomWidth() {
         return this.bottomWidth;
     }
 
-    public IsoscelesTrapezoid setHeight(final double height)
-    {
+    public IsoscelesTrapezoid setHeight(final double height) {
         this.height = height;
 
         return refresh();
     }
 
-    public double getHeight()
-    {
+    public double getHeight() {
         return this.height;
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.TOP_WIDTH, Attribute.BOTTOM_WIDTH, Attribute.HEIGHT, Attribute.CORNER_RADIUS);
     }
 
-    public double getCornerRadius()
-    {
+    public double getCornerRadius() {
         return this.cornerRadius;
     }
 
-    public IsoscelesTrapezoid setCornerRadius(final double radius)
-    {
+    public IsoscelesTrapezoid setCornerRadius(final double radius) {
         this.cornerRadius = cornerRadius;
 
         return refresh();
     }
 
-    public static class IsoscelesTrapezoidFactory extends ShapeFactory<IsoscelesTrapezoid>
-    {
-        public IsoscelesTrapezoidFactory()
-        {
+    public static class IsoscelesTrapezoidFactory extends ShapeFactory<IsoscelesTrapezoid> {
+
+        public IsoscelesTrapezoidFactory() {
             super(ShapeType.ISOSCELES_TRAPEZOID);
 
             addAttribute(Attribute.CORNER_RADIUS);

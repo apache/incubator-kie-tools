@@ -16,18 +16,15 @@
 
 package com.ait.lienzo.client.core.animation;
 
-public class TimedAnimation extends AbstractAnimation
-{
-    public TimedAnimation(final double duration, final IAnimationCallback callback)
-    {
+public class TimedAnimation extends AbstractAnimation {
+
+    public TimedAnimation(final double duration, final IAnimationCallback callback) {
         super(duration, callback);
     }
 
     @Override
-    public IAnimation doFrame()
-    {
-        if (System.currentTimeMillis() >= (getBegTime() + getDuration()))
-        {
+    public IAnimation doFrame() {
+        if (System.currentTimeMillis() >= (getBegTime() + getDuration())) {
             stop();
         }
         return super.doFrame();

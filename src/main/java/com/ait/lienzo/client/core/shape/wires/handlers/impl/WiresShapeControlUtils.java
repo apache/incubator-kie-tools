@@ -44,7 +44,6 @@ import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
 public class WiresShapeControlUtils {
 
-
     public static void moveShapeUpToParent(final WiresShape shape,
                                            final WiresContainer parent) {
         if (null != parent && null != parent.getContainer()) {
@@ -60,14 +59,14 @@ public class WiresShapeControlUtils {
         for (WiresConnector connector : connectors.asList()) {
             connector.getGroup().moveToTop();
         }
-            final NFastArrayList<WiresShape> childShapes = shape.getChildShapes();
-            if (null != childShapes) {
-                for (WiresShape childShape : childShapes.asList()) {
-                    if (!processed.contains(childShape)) {
-                        moveConnectorsToTop(childShape, processed);
-                    }
+        final NFastArrayList<WiresShape> childShapes = shape.getChildShapes();
+        if (null != childShapes) {
+            for (WiresShape childShape : childShapes.asList()) {
+                if (!processed.contains(childShape)) {
+                    moveConnectorsToTop(childShape, processed);
                 }
             }
+        }
     }
 
     public static NFastArrayList<WiresConnector> getConnectors(final WiresShape shape) {
@@ -404,8 +403,8 @@ public class WiresShapeControlUtils {
                                                  MultiPath path,
                                                  Point2DArray intersectPoints,
                                                  Point2D absLoc) {
-        NFastArrayList<PathPartList> array =  path.getActualPathPartListArray();
-        for (int i = 0, size = array.size(); i < size; i++ ) {
+        NFastArrayList<PathPartList> array = path.getActualPathPartListArray();
+        for (int i = 0, size = array.size(); i < size; i++) {
             PathPartList pathPartList = array.get(i);
             intersectPoints = getPoint2Ds(linePoints,
                                           intersectPoints,
@@ -421,7 +420,7 @@ public class WiresShapeControlUtils {
                                             PathPartList pathPartList) {
         Point2DArray offsetLinePoints = new Point2DArray();
 
-        for (int i = 0, size = linePoints.size(); i < size; i++ ) {
+        for (int i = 0, size = linePoints.size(); i < size; i++) {
             Point2D p = linePoints.get(i);
             offsetLinePoints.push(p.copy().offset(-absLoc.getX(),
                                                   -absLoc.getY()));
@@ -435,7 +434,7 @@ public class WiresShapeControlUtils {
                 intersectPoints = new Point2DArray();
             }
 
-            for (int i = 0, size = pathPartIntersectPoints.size(); i < size; i++ ) {
+            for (int i = 0, size = pathPartIntersectPoints.size(); i < size; i++) {
                 Point2D p = pathPartIntersectPoints.get(i);
                 intersectPoints.push(p);
             }

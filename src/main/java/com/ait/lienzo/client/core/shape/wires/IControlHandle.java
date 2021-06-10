@@ -19,11 +19,11 @@ package com.ait.lienzo.client.core.shape.wires;
 import java.util.Objects;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.tools.common.api.types.IActivatable;
 import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.common.api.types.IActivatable;
 
-public interface IControlHandle extends IActivatable
-{
+public interface IControlHandle extends IActivatable {
+
     IPrimitive<?> getControl();
 
     ControlHandleType getType();
@@ -32,52 +32,44 @@ public interface IControlHandle extends IActivatable
 
     HandlerRegistrationManager getHandlerRegistrationManager();
 
-    abstract class ControlHandleType
-    {
-        private final int    m_value;
+    abstract class ControlHandleType {
+
+        private final int m_value;
 
         private final String m_label;
 
-        private static int   s_value;
+        private static int s_value;
 
-        protected ControlHandleType(final String label)
-        {
+        protected ControlHandleType(final String label) {
             m_label = Objects.requireNonNull(label);
 
             m_value = ++s_value;
         }
 
-        public final int getValue()
-        {
+        public final int getValue() {
             return m_value;
         }
 
-        public final String getLabel()
-        {
+        public final String getLabel() {
             return m_label;
         }
 
         @Override
-        public final int hashCode()
-        {
+        public final int hashCode() {
             return m_value;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "ControlHandleType(" + m_label + "," + m_value + ")";
         }
 
         @Override
-        public boolean equals(final Object other)
-        {
-            if ((other == null) || (!(other instanceof ControlHandleType)))
-            {
+        public boolean equals(final Object other) {
+            if ((other == null) || (!(other instanceof ControlHandleType))) {
                 return false;
             }
-            if (this == other)
-            {
+            if (this == other) {
                 return true;
             }
             ControlHandleType that = ((ControlHandleType) other);
@@ -86,26 +78,25 @@ public interface IControlHandle extends IActivatable
         }
     }
 
-    final class ControlHandleStandardType extends ControlHandleType
-    {
-        public static final ControlHandleType POINT     = new ControlHandleStandardType("POINT");
+    final class ControlHandleStandardType extends ControlHandleType {
 
-        public static final ControlHandleType ROTATE    = new ControlHandleStandardType("ROTATE");
+        public static final ControlHandleType POINT = new ControlHandleStandardType("POINT");
 
-        public static final ControlHandleType RESIZE    = new ControlHandleStandardType("RESIZE");
+        public static final ControlHandleType ROTATE = new ControlHandleStandardType("ROTATE");
 
-        public static final ControlHandleType SCALE     = new ControlHandleStandardType("SCALE");
+        public static final ControlHandleType RESIZE = new ControlHandleStandardType("RESIZE");
 
-        public static final ControlHandleType SHEAR     = new ControlHandleStandardType("SHEAR");
+        public static final ControlHandleType SCALE = new ControlHandleStandardType("SCALE");
 
-        public static final ControlHandleType HANDLE    = new ControlHandleStandardType("HANDLE");
+        public static final ControlHandleType SHEAR = new ControlHandleStandardType("SHEAR");
 
-        public static final ControlHandleType MAGNET    = new ControlHandleStandardType("MAGNET");
+        public static final ControlHandleType HANDLE = new ControlHandleStandardType("HANDLE");
+
+        public static final ControlHandleType MAGNET = new ControlHandleStandardType("MAGNET");
 
         public static final ControlHandleType CONNECTOR = new ControlHandleStandardType("CONNECTOR");
 
-        private ControlHandleStandardType(final String label)
-        {
+        private ControlHandleStandardType(final String label) {
             super(label);
         }
     }

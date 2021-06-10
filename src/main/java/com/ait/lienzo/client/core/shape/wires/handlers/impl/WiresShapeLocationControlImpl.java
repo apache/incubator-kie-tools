@@ -49,7 +49,7 @@ public class WiresShapeLocationControlImpl implements WiresShapeLocationControl 
         m_mouseStartY = y;
 
         final Point2D absShapeLoc = getShape().getPath().getComputedLocation();
-        final BoundingBox box     = getShape().getPath().getBoundingBox();
+        final BoundingBox box = getShape().getPath().getBoundingBox();
 
         m_shapeStartCenterX = absShapeLoc.getX() + (box.getWidth() / 2);
         m_shapeStartCenterY = absShapeLoc.getY() + (box.getHeight() / 2);

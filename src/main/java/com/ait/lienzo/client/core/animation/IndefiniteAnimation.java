@@ -16,10 +16,9 @@
 
 package com.ait.lienzo.client.core.animation;
 
-public class IndefiniteAnimation extends AbstractAnimation
-{
-    public IndefiniteAnimation(final IAnimationCallback callback)
-    {
+public class IndefiniteAnimation extends AbstractAnimation {
+
+    public IndefiniteAnimation(final IAnimationCallback callback) {
         super(INDEFINITE_ANIMATION, callback);
     }
 }

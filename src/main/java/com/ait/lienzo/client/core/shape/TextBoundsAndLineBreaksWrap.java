@@ -29,6 +29,7 @@ import com.ait.lienzo.shared.core.types.TextUnit;
  * ITextWrapper implementation that wraps text when a line exceeds the width of the provided boundary.
  */
 public class TextBoundsAndLineBreaksWrap extends TextBoundsWrap {
+
     public TextBoundsAndLineBreaksWrap(final Text text) {
         super(text);
     }
@@ -105,7 +106,7 @@ public class TextBoundsAndLineBreaksWrap extends TextBoundsWrap {
                 xOffset = wrapBoundaries.getWidth();
                 break;
         }
-        
+
         double yOffset = 0.8;
 
         for (int i = 0; i < lines.size(); i++) {

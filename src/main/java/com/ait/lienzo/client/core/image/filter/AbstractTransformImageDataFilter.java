@@ -20,47 +20,38 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-
 import elemental2.core.Uint8ClampedArray;
 import elemental2.dom.ImageData;
 
-public abstract class AbstractTransformImageDataFilter<T extends AbstractTransformImageDataFilter<T>> extends AbstractImageDataFilter<T>
-{
-    protected AbstractTransformImageDataFilter(final ImageFilterType type)
-    {
+public abstract class AbstractTransformImageDataFilter<T extends AbstractTransformImageDataFilter<T>> extends AbstractImageDataFilter<T> {
+
+    protected AbstractTransformImageDataFilter(final ImageFilterType type) {
         super(type);
     }
 
-    protected AbstractTransformImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException
-    {
+    protected AbstractTransformImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException {
         super(type, node, ctx);
     }
 
     @Override
-    public ImageData filter(ImageData source, final boolean copy)
-    {
-        if (null == source)
-        {
+    public ImageData filter(ImageData source, final boolean copy) {
+        if (null == source) {
             return null;
         }
-        if (copy)
-        {
+        if (copy) {
             source = ImageDataUtil.copy(source);
         }
-        if (false == isActive())
-        {
+        if (false == isActive()) {
             return source;
         }
         final Uint8ClampedArray data = source.data;
 
-        if (null == data)
-        {
+        if (null == data) {
             return source;
         }
         final FilterTransformFunction transform = getTransform();
 
-        if (null == transform)
-        {
+        if (null == transform) {
             return source;
         }
         final ImageData result = ImageDataUtil.create(source);
@@ -71,8 +62,7 @@ public abstract class AbstractTransformImageDataFilter<T extends AbstractTransfo
     }
 
     @Override
-    public final boolean isTransforming()
-    {
+    public final boolean isTransforming() {
         return true;
     }
 

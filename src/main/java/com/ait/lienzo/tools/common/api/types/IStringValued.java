@@ -16,6 +16,6 @@
 
 package com.ait.lienzo.tools.common.api.types;
 
-public interface IStringValued extends IValued<String>
-{
+public interface IStringValued extends IValued<String> {
+
 }

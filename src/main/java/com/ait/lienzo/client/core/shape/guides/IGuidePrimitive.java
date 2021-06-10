@@ -18,8 +18,8 @@ package com.ait.lienzo.client.core.shape.guides;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 
-public interface IGuidePrimitive<T extends IGuidePrimitive<T>> extends IPrimitive<T>
-{
+public interface IGuidePrimitive<T extends IGuidePrimitive<T>> extends IPrimitive<T> {
+
     public T hide();
 
     public T show(double x, double y);

@@ -26,41 +26,36 @@ import jsinterop.base.JsArrayLike;
 @JsType(isNative = true, name = "Array", namespace = JsPackage.GLOBAL)
 public class NFastDoubleArray extends NArrayBase<Double> {
 
-    public NFastDoubleArray()
-    {
+    public NFastDoubleArray() {
     }
 
     @JsOverlay
     public static final NFastDoubleArray makeFromDoubles(double... list) {
         NFastDoubleArray array = new NFastDoubleArray();
-        for ( double d : list)
-        {
+        for (double d : list) {
             array.push(d);
         }
 
         return array;
     }
 
-
     @JsOverlay
-    public static final NFastDoubleArray make2P(final double i, final double i1)
-    {
+    public static final NFastDoubleArray make2P(final double i, final double i1) {
         NFastDoubleArray array = new NFastDoubleArray();
-        array.push( i, i1);
+        array.push(i, i1);
         return array;
     }
 
     /**
      * Return the primitive found at the specified index.
+     *
      * @param index
      * @return
      */
     @JsOverlay
-    public final Double get(final int index)
-    {
+    public final Double get(final int index) {
         // @TODO is this really necessary to incurr the cost to be defensive. Surely better to avoid bad code in the first place? (mdp)
-        if ((index >= 0) && (index < size()))
-        {
+        if ((index >= 0) && (index < size())) {
             return getAt(index);
         }
         return null;
@@ -68,11 +63,11 @@ public class NFastDoubleArray extends NArrayBase<Double> {
 
     /**
      * Add a value to the List
+     *
      * @param value
      */
     @JsOverlay
-    public final NFastDoubleArray add(final Double value)
-    {
+    public final NFastDoubleArray add(final Double value) {
         push(value);
 
         return this;
@@ -80,11 +75,11 @@ public class NFastDoubleArray extends NArrayBase<Double> {
 
     /**
      * Add a value to the List
+     *
      * @param value
      */
     @JsOverlay
-    public final NFastDoubleArray set(final int i, final Double value)
-    {
+    public final NFastDoubleArray set(final int i, final Double value) {
         setAt(i, value);
 
         return this;
@@ -97,16 +92,14 @@ public class NFastDoubleArray extends NArrayBase<Double> {
      * @return boolean
      */
     @JsOverlay
-    public final boolean contains(final Double value)
-    {
+    public final boolean contains(final Double value) {
         return indexOf(value) > 0;
     }
 
     public native int indexOf(Double obj);
 
     @JsOverlay
-    public final double[] toArray()
-    {
+    public final double[] toArray() {
         // yes this is horrible, but JS doesn't differentiate between Double and double and it avoids an array copy.
         double[] d = Js.uncheckedCast(JsArray.from((JsArrayLike<Double>) this));
         return d;

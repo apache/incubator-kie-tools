@@ -20,42 +20,37 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
-
 import jsinterop.annotations.JsProperty;
 
 /**
- * A triangle is one of the basic shapes of geometry: a polygon with three corners or vertices and three sides 
+ * A triangle is one of the basic shapes of geometry: a polygon with three corners or vertices and three sides
  * or edges which are line segments.
- * In Euclidean geometry any three points, when non-collinear, determine a unique triangle and a unique plane 
- * (i.e. a two-dimensional Euclidean space). 
+ * In Euclidean geometry any three points, when non-collinear, determine a unique triangle and a unique plane
+ * (i.e. a two-dimensional Euclidean space).
  */
-public class Triangle extends AbstractMultiPointShape<Triangle>
-{
+public class Triangle extends AbstractMultiPointShape<Triangle> {
+
     @JsProperty
-    private double       cornerRadius;
+    private double cornerRadius;
 
     /**
      * Constructor. Creates an instance of a triangle.
-     * 
+     *
      * @param 3 points {@link Point2D}
      */
-    public Triangle(final Point2D a, final Point2D b, final Point2D c)
-    {
+    public Triangle(final Point2D a, final Point2D b, final Point2D c) {
         super(ShapeType.TRIANGLE);
 
         setPoints(a, b, c);
     }
 
-    public Triangle(final Point2D a, final Point2D b, final Point2D c, final double corner)
-    {
+    public Triangle(final Point2D a, final Point2D b, final Point2D c, final double corner) {
         this(a, b, c);
 
         setCornerRadius(corner);
@@ -67,35 +62,29 @@ public class Triangle extends AbstractMultiPointShape<Triangle>
      * @param 3 points {@link Point2D}
      * @return this Triangle
      */
-    public Triangle setPoints(final Point2D a, final Point2D b, final Point2D c)
-    {
+    public Triangle setPoints(final Point2D a, final Point2D b, final Point2D c) {
         return setPoint2DArray(Point2DArray.fromArrayOfPoint2D(a, b, c));
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         return BoundingBox.fromPoint2DArray(getPoints());
     }
 
     /**
      * Draws this polygon.
-     * 
+     *
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final double alpha)
-    {
+    protected boolean prepare(final Context2D context, final double alpha) {
         PathPartList plist = getPathPartList();
-        if (plist.size() < 1)
-        {
-            if (!parse())
-            {
+        if (plist.size() < 1) {
+            if (!parse()) {
                 return false;
             }
         }
-        if (plist.size() < 1)
-        {
+        if (plist.size() < 1) {
             return false;
         }
         context.path(plist);
@@ -103,30 +92,25 @@ public class Triangle extends AbstractMultiPointShape<Triangle>
         return true;
     }
 
-    private boolean parse()
-    {
+    private boolean parse() {
         final Point2DArray list = getPoints().noAdjacentPoints();
 
         PathPartList plist = getPathPartList();
 
-        if ((null != list) && (list.size() > 2))
-        {
+        if ((null != list) && (list.size() > 2)) {
             final Point2D p0 = list.get(0);
 
             plist.M(p0);
 
             final double corner = getCornerRadius();
 
-            if (corner <= 0)
-            {
+            if (corner <= 0) {
                 plist.L(list.get(1));
 
                 plist.L(list.get(2));
 
                 plist.Z();
-            }
-            else
-            {
+            } else {
                 list.push(p0);
                 Geometry.drawArcJoinedLines(plist, list, corner);
             }
@@ -135,28 +119,24 @@ public class Triangle extends AbstractMultiPointShape<Triangle>
         return false;
     }
 
-    public double getCornerRadius()
-    {
+    public double getCornerRadius() {
         return this.cornerRadius;
     }
 
-    public Triangle setCornerRadius(final double radius)
-    {
+    public Triangle setCornerRadius(final double radius) {
         this.cornerRadius = radius;
 
         return refresh();
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.POINTS, Attribute.CORNER_RADIUS);
     }
 
-    public static class TriangleFactory extends ShapeFactory<Triangle>
-    {
-        public TriangleFactory()
-        {
+    public static class TriangleFactory extends ShapeFactory<Triangle> {
+
+        public TriangleFactory() {
             super(ShapeType.TRIANGLE);
 
             addAttribute(Attribute.POINTS, true);

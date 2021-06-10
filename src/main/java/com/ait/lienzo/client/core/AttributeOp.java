@@ -21,26 +21,21 @@ import java.util.List;
 import com.ait.lienzo.tools.client.collection.NFastStringSet;
 import com.ait.lienzo.tools.common.api.flow.Flows.BooleanOp;
 import com.ait.lienzo.tools.common.api.flow.Flows.PredicateBooleanOp;
-
 import elemental2.core.JsArray;
 import jsinterop.base.Js;
 
-public final class AttributeOp
-{
+public final class AttributeOp {
+
     private static NFastStringSet s_changed;
 
-    private AttributeOp()
-    {
+    private AttributeOp() {
     }
 
-    public static final boolean evaluate(final NFastStringSet changed, final BooleanOp op)
-    {
-        if ((null == changed) || (null == op))
-        {
+    public static final boolean evaluate(final NFastStringSet changed, final BooleanOp op) {
+        if ((null == changed) || (null == op)) {
             return false;
         }
-        if (changed.isEmpty())
-        {
+        if (changed.isEmpty()) {
             return false;
         }
         s_changed = changed;
@@ -52,138 +47,115 @@ public final class AttributeOp
         return result;
     }
 
-    private static final NFastStringSet context()
-    {
+    private static final NFastStringSet context() {
         return s_changed;
     }
 
-    private static final NFastStringSet toSet(final Attribute... attributes)
-    {
+    private static final NFastStringSet toSet(final Attribute... attributes) {
         final NFastStringSet nset = new NFastStringSet();
 
-        for (Attribute attribute : attributes)
-        {
+        for (Attribute attribute : attributes) {
             nset.add(attribute.getProperty());
         }
         return nset;
     }
 
-    private static final NFastStringSet toSet(final List<Attribute> attributes)
-    {
+    private static final NFastStringSet toSet(final List<Attribute> attributes) {
         final NFastStringSet nset = new NFastStringSet();
 
-        for (Attribute attribute : attributes)
-        {
+        for (Attribute attribute : attributes) {
             nset.add(attribute.getProperty());
         }
         return nset;
     }
 
-    public static final BooleanOp has(final Attribute attributes)
-    {
+    public static final BooleanOp has(final Attribute attributes) {
         return new AnyStringSetOp(toSet(attributes));
     }
 
-    public static final BooleanOp any(final Attribute... attributes)
-    {
+    public static final BooleanOp any(final Attribute... attributes) {
         return new AnyStringSetOp(toSet(attributes));
     }
 
-    public static final BooleanOp any(final List<Attribute> attributes)
-    {
+    public static final BooleanOp any(final List<Attribute> attributes) {
         return new AnyStringSetOp(toSet(attributes));
     }
 
-    public static final BooleanOp none(final Attribute... attributes)
-    {
+    public static final BooleanOp none(final Attribute... attributes) {
         return new NoneStringSetOp(toSet(attributes));
     }
 
-    public static final BooleanOp none(final List<Attribute> attributes)
-    {
+    public static final BooleanOp none(final List<Attribute> attributes) {
         return new NoneStringSetOp(toSet(attributes));
     }
 
-    public static final BooleanOp all(final Attribute... attributes)
-    {
+    public static final BooleanOp all(final Attribute... attributes) {
         return new AllStringSetOp(toSet(attributes));
     }
 
-    public final BooleanOp all(final List<Attribute> attributes)
-    {
+    public final BooleanOp all(final List<Attribute> attributes) {
         return new AllStringSetOp(toSet(attributes));
     }
 
-    public static final BooleanOp one(final Attribute... attributes)
-    {
+    public static final BooleanOp one(final Attribute... attributes) {
         return new OneStringSetOp(toSet(attributes));
     }
 
-    public static final BooleanOp one(final List<Attribute> attributes)
-    {
+    public static final BooleanOp one(final List<Attribute> attributes) {
         return new OneStringSetOp(toSet(attributes));
     }
 
-    private abstract static class AbstractStringSetOp extends PredicateBooleanOp<NFastStringSet>
-    {
-        protected AbstractStringSetOp(final NFastStringSet attributes)
-        {
+    private abstract static class AbstractStringSetOp extends PredicateBooleanOp<NFastStringSet> {
+
+        protected AbstractStringSetOp(final NFastStringSet attributes) {
             super(attributes);
         }
     }
 
-    private static final class AnyStringSetOp extends AbstractStringSetOp
-    {
-        private AnyStringSetOp(final NFastStringSet attributes)
-        {
+    private static final class AnyStringSetOp extends AbstractStringSetOp {
+
+        private AnyStringSetOp(final NFastStringSet attributes) {
             super(attributes);
         }
 
         @Override
-        public final boolean test(final NFastStringSet attributes)
-        {
+        public final boolean test(final NFastStringSet attributes) {
             return context().any(attributes);
         }
     }
 
-    private static final class NoneStringSetOp extends AbstractStringSetOp
-    {
-        private NoneStringSetOp(final NFastStringSet attributes)
-        {
+    private static final class NoneStringSetOp extends AbstractStringSetOp {
+
+        private NoneStringSetOp(final NFastStringSet attributes) {
             super(attributes);
         }
 
         @Override
-        public final boolean test(final NFastStringSet attributes)
-        {
+        public final boolean test(final NFastStringSet attributes) {
             return context().none(attributes);
         }
     }
 
-    private static final class AllStringSetOp extends AbstractStringSetOp
-    {
-        private AllStringSetOp(final NFastStringSet attributes)
-        {
+    private static final class AllStringSetOp extends AbstractStringSetOp {
+
+        private AllStringSetOp(final NFastStringSet attributes) {
             super(attributes);
         }
 
         @Override
-        public final boolean test(final NFastStringSet attributes)
-        {
+        public final boolean test(final NFastStringSet attributes) {
             return context().all(attributes);
         }
     }
 
-    private static final class OneStringSetOp extends AbstractStringSetOp
-    {
-        private OneStringSetOp(final NFastStringSet attributes)
-        {
+    private static final class OneStringSetOp extends AbstractStringSetOp {
+
+        private OneStringSetOp(final NFastStringSet attributes) {
             super(attributes);
         }
 
         @Override
-        public final boolean test(final NFastStringSet attributes)
-        {
+        public final boolean test(final NFastStringSet attributes) {
             int count = 0;
 
             final NFastStringSet seen = new NFastStringSet();
@@ -191,13 +163,10 @@ public final class AttributeOp
             final NFastStringSet changed = context();
 
             String[] array = Js.uncheckedCast(JsArray.from(attributes));
-            for (String attribute : array)
-            {
-                if (!seen.contains(attribute) && changed.contains(attribute))
-                {
-                    if (++count > 1)
-                    {
-                       return false;
+            for (String attribute : array) {
+                if (!seen.contains(attribute) && changed.contains(attribute)) {
+                    if (++count > 1) {
+                        return false;
                     }
                     seen.add(attribute);
                 }

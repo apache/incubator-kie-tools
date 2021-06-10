@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.gwtlienzo.i18n;
 
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -47,25 +46,25 @@ import com.ait.lienzo.gwtlienzo.i18n.client.LocalizableResource;
  * {@code @GenerateKeys}.  Also, the default value can be specified in an annotation
  * rather than a default properties file (and some key generators may require the value
  * to be given in the source file via annotations). For example,
- *
+ * <p>
  * {@example com.google.gwt.examples.i18n.NumberFormatConstants}
- *
+ * <p>
  * expects to find properties named <code>decimalSeparator</code> and
  * <code>thousandsSeparator</code> in an associated properties file. For
  * example, the following properties would be used for a German locale:
- *
+ * <p>
  * {@gwt.include com/google/gwt/examples/i18n/NumberFormatConstants_de_DE.properties}
  *
  * <p>
  * The following example demonstrates how to use constant accessors defined in
  * the interface above:
- *
+ * <p>
  * {@example com.google.gwt.examples.i18n.NumberFormatConstantsExample#useNumberFormatConstants()}
  * </p>
  *
  * <p>
  * Here is the same example using annotations to store the default values:
- *
+ * <p>
  * {@example com.google.gwt.examples.i18n.NumberFormatConstantsAnnot}
  * </p>
  *
@@ -73,9 +72,9 @@ import com.ait.lienzo.gwtlienzo.i18n.client.LocalizableResource;
  * It is also possible to change the property name bound to a constant accessor
  * using the {@code @Key} annotation. For example,
  * {@example com.google.gwt.examples.i18n.NumberFormatConstantsWithAltKey}
- *
+ * <p>
  * would match the names of the following properties:
- *
+ * <p>
  * {@gwt.include com/google/gwt/examples/i18n/NumberFormatConstantsWithAltKey_en.properties}
  * </p>
  *
@@ -83,7 +82,7 @@ import com.ait.lienzo.gwtlienzo.i18n.client.LocalizableResource;
  * Constant accessors must be of the form
  *
  * <pre>T methodName()</pre>
- *
+ * <p>
  * where <code>T</code> is one of the return types in the following table:
  *
  * <table>
@@ -163,7 +162,7 @@ import com.ait.lienzo.gwtlienzo.i18n.client.LocalizableResource;
  * <p>The benefit of using annotations, aside from not having to switch to
  * a different file to enter the default values, is that you can make use
  * of compile-time constants and not worrying about quoting commas.  For example:
- *
+ * <p>
  * {@example com.google.gwt.examples.i18n.AnnotConstants}
  * </p>
  *
@@ -173,7 +172,7 @@ import com.ait.lienzo.gwtlienzo.i18n.client.LocalizableResource;
  * from <code>Intf</code> as follows:
  *
  * <pre class="code">Intf constants = (Intf)GWT.create(Intf.class);</pre>
- *
+ * <p>
  * then <code>constants</code> will be assigned an instance of a generated
  * class whose constant accessors are implemented by extracting values from a
  * set of matching properties files. Property values are sought using a
@@ -228,7 +227,7 @@ import com.ait.lienzo.gwtlienzo.i18n.client.LocalizableResource;
  * <h3>Required Module</h3>
  * Modules that use this interface should inherit
  * <code>com.google.gwt.i18n.I18N</code>.
- *
+ * <p>
  * {@gwt.include com/google/gwt/examples/i18n/InheritsExample.gwt.xml}
  *
  * <h3>Note</h3>
@@ -236,8 +235,8 @@ import com.ait.lienzo.gwtlienzo.i18n.client.LocalizableResource;
  * it since an implementation is generated automatically when message interfaces
  * are created using {@link com.google.gwt.core.client.GWT#create(Class)}.
  */
-public interface Constants extends LocalizableResource
-{
+public interface Constants extends LocalizableResource {
+
     /**
      * Default boolean value to be used if no translation is found (and also used as the
      * source for translation).  No quoting (other than normal Java string quoting)
@@ -247,6 +246,7 @@ public interface Constants extends LocalizableResource
     @Target(ElementType.METHOD)
     @Documented
     public @interface DefaultBooleanValue {
+
         boolean value();
     }
 
@@ -259,6 +259,7 @@ public interface Constants extends LocalizableResource
     @Target(ElementType.METHOD)
     @Documented
     public @interface DefaultDoubleValue {
+
         double value();
     }
 
@@ -271,6 +272,7 @@ public interface Constants extends LocalizableResource
     @Target(ElementType.METHOD)
     @Documented
     public @interface DefaultFloatValue {
+
         float value();
     }
 
@@ -283,6 +285,7 @@ public interface Constants extends LocalizableResource
     @Target(ElementType.METHOD)
     @Documented
     public @interface DefaultIntValue {
+
         int value();
     }
 
@@ -290,7 +293,7 @@ public interface Constants extends LocalizableResource
      * Default string array value to be used if no translation is found (and also
      * used as the source for translation). No quoting (other than normal Java
      * string quoting) is done.
-     *
+     * <p>
      * Note that in the corresponding properties/etc file, commas are used to separate
      * elements of the array unless they are preceded with a backslash.
      */
@@ -298,6 +301,7 @@ public interface Constants extends LocalizableResource
     @Target(ElementType.METHOD)
     @Documented
     public @interface DefaultStringArrayValue {
+
         String[] value();
     }
 
@@ -306,7 +310,7 @@ public interface Constants extends LocalizableResource
      * used as the source for translation). No quoting (other than normal Java
      * string quoting) is done.  The strings for the map are supplied in key/value
      * pairs.
-     *
+     * <p>
      * Note that in the corresponding properties/etc file, new keys can be supplied
      * with the name of the method (or its corresponding key) listing the set of keys
      * for the map separated by commas (commas can be part of the keys by preceding
@@ -317,6 +321,7 @@ public interface Constants extends LocalizableResource
     @Target(ElementType.METHOD)
     @Documented
     public @interface DefaultStringMapValue {
+
         /**
          * Must be key-value pairs.
          */
@@ -332,6 +337,7 @@ public interface Constants extends LocalizableResource
     @Target(ElementType.METHOD)
     @Documented
     public @interface DefaultStringValue {
+
         String value();
     }
 }

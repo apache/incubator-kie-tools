@@ -8,15 +8,13 @@ import jsinterop.annotations.JsType;
 /**
  * This currently is only used by SVGPath and exists only to track if the Path2D was closed or not, and thus should be filled
  */
-@JsType(isNative = true, name="Path2D", namespace = JsPackage.GLOBAL)
-public class LienzoPath2D extends Path2D
-{
+@JsType(isNative = true, name = "Path2D", namespace = JsPackage.GLOBAL)
+public class LienzoPath2D extends Path2D {
+
     public boolean closed;
 
     @JsOverlay
-    public final boolean isClosed()
-    {
+    public final boolean isClosed() {
         return closed;
     }
-
 }

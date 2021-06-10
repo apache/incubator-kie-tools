@@ -29,100 +29,87 @@ import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.V
 import com.ait.lienzo.client.core.shape.wires.layout.size.SizeConstraints;
 import com.ait.lienzo.client.core.shape.wires.layout.size.SizeConstraints.Type;
 
-public class LabelLayout
-{
+public class LabelLayout {
+
     private DirectionLayout m_directionLayout;
     private SizeConstraints m_sizeConstraints;
 
-    protected LabelLayout(final DirectionLayout directionLayout, final SizeConstraints sizeConstraints)
-    {
+    protected LabelLayout(final DirectionLayout directionLayout, final SizeConstraints sizeConstraints) {
         m_directionLayout = directionLayout;
         m_sizeConstraints = sizeConstraints;
     }
 
-    public SizeConstraints getSizeConstraints()
-    {
+    public SizeConstraints getSizeConstraints() {
         return m_sizeConstraints;
     }
 
-    public DirectionLayout getDirectionLayout()
-    {
+    public DirectionLayout getDirectionLayout() {
         return m_directionLayout;
     }
 
-    @Override public boolean equals(final Object o)
-    {
-        if (this == o)
-        {
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if (!(o instanceof LabelLayout))
-        {
+        if (!(o instanceof LabelLayout)) {
             return false;
         }
         final LabelLayout that = (LabelLayout) o;
         return Objects.equals(getDirectionLayout(), that.getDirectionLayout()) &&
-               Objects.equals(getSizeConstraints(), that.getSizeConstraints());
+                Objects.equals(getSizeConstraints(), that.getSizeConstraints());
     }
 
-    @Override public int hashCode()
-    {
+    @Override
+    public int hashCode() {
         return Objects.hash(getDirectionLayout(), getSizeConstraints());
     }
 
-    public static class Builder
-    {
-        private       HorizontalAlignment    m_horizontalAlignment = HorizontalAlignment.CENTER;
-        private       VerticalAlignment      m_verticalAlignment   = VerticalAlignment.MIDDLE;
-        private       ReferencePosition      m_referencePosition   = ReferencePosition.INSIDE;
-        private       Orientation            m_orientation         = Orientation.HORIZONTAL;
-        private final Map<Direction, Double> m_margins             = new HashMap<>();
-        private       SizeConstraints        m_sizeConstraints     = new SizeConstraints(100, 100, Type.PERCENTAGE);
+    public static class Builder {
 
-        public Builder horizontalAlignment(final HorizontalAlignment horizontalAlignment)
-        {
+        private HorizontalAlignment m_horizontalAlignment = HorizontalAlignment.CENTER;
+        private VerticalAlignment m_verticalAlignment = VerticalAlignment.MIDDLE;
+        private ReferencePosition m_referencePosition = ReferencePosition.INSIDE;
+        private Orientation m_orientation = Orientation.HORIZONTAL;
+        private final Map<Direction, Double> m_margins = new HashMap<>();
+        private SizeConstraints m_sizeConstraints = new SizeConstraints(100, 100, Type.PERCENTAGE);
+
+        public Builder horizontalAlignment(final HorizontalAlignment horizontalAlignment) {
             m_horizontalAlignment = horizontalAlignment;
             return this;
         }
 
-        public Builder verticalAlignment(final VerticalAlignment verticalAlignment)
-        {
+        public Builder verticalAlignment(final VerticalAlignment verticalAlignment) {
             m_verticalAlignment = verticalAlignment;
             return this;
         }
 
-        public Builder orientation(final Orientation orientation)
-        {
+        public Builder orientation(final Orientation orientation) {
             m_orientation = orientation;
             return this;
         }
 
-        public Builder referencePosition(final ReferencePosition referencePosition)
-        {
+        public Builder referencePosition(final ReferencePosition referencePosition) {
             m_referencePosition = referencePosition;
             return this;
         }
 
-        public Builder margin(final Direction direction, final Double value)
-        {
+        public Builder margin(final Direction direction, final Double value) {
             m_margins.put(direction, value);
             return this;
         }
 
-        public Builder margins(final Map<Direction, Double> margins)
-        {
+        public Builder margins(final Map<Direction, Double> margins) {
             m_margins.putAll(margins);
             return this;
         }
 
-        public Builder sizeConstraints(final SizeConstraints sizeConstraints)
-        {
+        public Builder sizeConstraints(final SizeConstraints sizeConstraints) {
             m_sizeConstraints = sizeConstraints;
             return this;
         }
 
-        public LabelLayout build()
-        {
+        public LabelLayout build() {
             final DirectionLayout directionLayout = new DirectionLayout.Builder()
                     .horizontalAlignment(m_horizontalAlignment).verticalAlignment(m_verticalAlignment)
                     .orientation(m_orientation).referencePosition(m_referencePosition).margins(m_margins).build();
@@ -136,7 +123,7 @@ public class LabelLayout
             final SizeConstraints sizeConstraints = (m_sizeConstraints == null) ?
                     new SizeConstraints() :
                     new SizeConstraints(m_sizeConstraints.getWidth(), m_sizeConstraints.getHeight(),
-                            m_sizeConstraints.getType(), marginX != null ? marginX : 0, marginY != null ? marginY : 0);
+                                        m_sizeConstraints.getType(), marginX != null ? marginX : 0, marginY != null ? marginY : 0);
             return new LabelLayout(directionLayout, sizeConstraints);
         }
     }

@@ -16,12 +16,11 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-public class BoundingBoxArrayValidator extends ArrayValidator
-{
+public class BoundingBoxArrayValidator extends ArrayValidator {
+
     public static final BoundingBoxArrayValidator INSTANCE = new BoundingBoxArrayValidator();
 
-    public BoundingBoxArrayValidator()
-    {
+    public BoundingBoxArrayValidator() {
         super(BoundingBoxValidator.INSTANCE);
     }
 }

@@ -20,10 +20,9 @@ import com.ait.lienzo.client.core.shape.GridLayer;
 import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.shared.core.types.ColorName;
 
-public class StandardBackgroundGridLayer extends GridLayer
-{
-    public StandardBackgroundGridLayer()
-    {
+public class StandardBackgroundGridLayer extends GridLayer {
+
+    public StandardBackgroundGridLayer() {
         super(100, new Line().setAlpha(0.40).setStrokeWidth(1).setStrokeColor(ColorName.ROYALBLUE), 10, new Line().setAlpha(0.25).setStrokeWidth(1).setStrokeColor(ColorName.ROYALBLUE));
 
         setTransformable(false).setListening(false);

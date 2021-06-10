@@ -16,89 +16,71 @@
 
 package com.ait.lienzo.client.core.event;
 
-
-import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.tools.client.event.INodeEvent;
-
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MouseEvent;
-import elemental2.dom.Touch;
 import elemental2.dom.TouchEvent;
 import elemental2.dom.UIEvent;
 
 // @FIXME preventDefault and stopPropagation do very little, maybe a GWTEvent porting error.
 // @TODO RENAME, this is no longer just for nodes (mdp)
-public abstract class AbstractNodeEvent<H, S> implements INodeEvent<H, S>
-{
+public abstract class AbstractNodeEvent<H, S> implements INodeEvent<H, S> {
+
     private boolean m_dead = false;
 
-    private S    source;
+    private S source;
 
     private HTMLElement relativeElement;
 
-    public AbstractNodeEvent(final HTMLElement relativeElement)
-    {
+    public AbstractNodeEvent(final HTMLElement relativeElement) {
         this.relativeElement = relativeElement;
     }
 
     @Override
-    public final boolean isAlive()
-    {
+    public final boolean isAlive() {
         return (false == m_dead);
     }
 
-    protected void setDead(boolean dead)
-    {
+    protected void setDead(boolean dead) {
         m_dead = dead;
     }
 
     @Override
-    public final void preventDefault()
-    {
+    public final void preventDefault() {
         m_dead = true;
     }
 
     @Override
-    public final void stopPropagation()
-    {
+    public final void stopPropagation() {
         m_dead = true;
     }
 
     @Override
-    public S getSource()
-    {
+    public S getSource() {
         return source;
     }
 
-    public HTMLElement getRelativeElement()
-    {
+    public HTMLElement getRelativeElement() {
         return this.relativeElement;
     }
 
-    public void setSource(final S source)
-    {
+    public void setSource(final S source) {
         this.source = source;
     }
 
-    public static final boolean isShiftKeyDown(final UIEvent event)
-    {
+    public static final boolean isShiftKeyDown(final UIEvent event) {
         return (null != event) && (event instanceof MouseEvent) ? ((MouseEvent) event).shiftKey : ((TouchEvent) event).shiftKey;
     }
 
-    public static final boolean isAltKeyDown(final UIEvent event)
-    {
+    public static final boolean isAltKeyDown(final UIEvent event) {
         return (null != event) && (event instanceof MouseEvent) ? ((MouseEvent) event).altKey : ((TouchEvent) event).altKey;
     }
 
-    public static final boolean isMetaKeyDown(final UIEvent event)
-    {
-        return (null != event) && (event instanceof MouseEvent) ?  ((MouseEvent) event).metaKey : ((TouchEvent) event).metaKey;
+    public static final boolean isMetaKeyDown(final UIEvent event) {
+        return (null != event) && (event instanceof MouseEvent) ? ((MouseEvent) event).metaKey : ((TouchEvent) event).metaKey;
     }
 
-    public static final boolean isCtrlKeyDown(final UIEvent event)
-    {
-        return (null != event) && (event instanceof MouseEvent) ?  ((MouseEvent) event).ctrlKey : ((TouchEvent) event).ctrlKey;
+    public static final boolean isCtrlKeyDown(final UIEvent event) {
+        return (null != event) && (event instanceof MouseEvent) ? ((MouseEvent) event).ctrlKey : ((TouchEvent) event).ctrlKey;
     }
-
-
 }

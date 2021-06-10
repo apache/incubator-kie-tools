@@ -16,20 +16,17 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-public class SpriteBehaviorMapValidator extends AbstractAttributeTypeValidator
-{
+public class SpriteBehaviorMapValidator extends AbstractAttributeTypeValidator {
+
     public static final SpriteBehaviorMapValidator INSTANCE = new SpriteBehaviorMapValidator();
 
-    public SpriteBehaviorMapValidator()
-    {
+    public SpriteBehaviorMapValidator() {
         super("SpriteBehaviorMap");
     }
 
     @Override
-    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
-    {
-        if (null == jval)
-        {
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException {
+        if (null == jval) {
             ctx.addBadTypeError(getTypeName());
 
             return;

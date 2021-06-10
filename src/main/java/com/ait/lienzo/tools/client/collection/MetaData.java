@@ -25,9 +25,8 @@ public final class MetaData //implements NHasJSO<NObjectJSO>, NJSONStringify
 {
 //    private final NObjectJSO m_jso;
 
-    public MetaData()
-    {
- //       m_jso = NObjectJSO.make2P();
+    public MetaData() {
+        //       m_jso = NObjectJSO.make2P();
     }
 
 //    public MetaData(final NObjectJSO jso)
@@ -55,50 +54,43 @@ public final class MetaData //implements NHasJSO<NObjectJSO>, NJSONStringify
 //        }
 //    }
 
-
 //    @Override
 //    public final NObjectJSO getJSO()
 //    {
 //        return m_jso;
 //    }
 
-    public final MetaData putString(final String name, final String value)
-    {
+    public final MetaData putString(final String name, final String value) {
 //        m_jso.putString(name, value);
 //        return this;
         throw new UnsupportedOperationException();
     }
 
-    public final MetaData putInt(final String name, final int value)
-    {
+    public final MetaData putInt(final String name, final int value) {
 //        m_jso.putString(name, value);
 //        return this;
         throw new UnsupportedOperationException();
     }
 
-    public final MetaData putDouble(final String name, final double value)
-    {
+    public final MetaData putDouble(final String name, final double value) {
 //        m_jso.putString(name, value);
 //        return this;
         throw new UnsupportedOperationException();
     }
 
-    public final MetaData putBoolean(final String name, final boolean value)
-    {
+    public final MetaData putBoolean(final String name, final boolean value) {
 //        m_jso.putString(name, value);
 //        return this;
         throw new UnsupportedOperationException();
     }
 
-    public final MetaData putMetaData(final String name, final MetaData value)
-    {
+    public final MetaData putMetaData(final String name, final MetaData value) {
 //        m_jso.putString(name, value);
 //        return this;
         throw new UnsupportedOperationException();
     }
 
-    public final boolean isEmpty()
-    {
+    public final boolean isEmpty() {
 //        return m_jso.isEmpty();
         return true;
     }
@@ -109,46 +101,39 @@ public final class MetaData //implements NHasJSO<NObjectJSO>, NJSONStringify
 //        throw new UnsupportedOperationException();
 //    }
 
-    public final boolean isString(final String name)
-    {
+    public final boolean isString(final String name) {
         //return Native.isString(m_jso, NUtils.doKeyRepair(name));
         throw new UnsupportedOperationException();
     }
 
-    public final boolean isBoolean(final String name)
-    {
+    public final boolean isBoolean(final String name) {
         //return Native.isBoolean(m_jso, NUtils.doKeyRepair(name));
         throw new UnsupportedOperationException();
     }
 
-    public final boolean isObject(final String name)
-    {
+    public final boolean isObject(final String name) {
 
         //return Native.isObject(m_jso, NUtils.doKeyRepair(name));
         throw new UnsupportedOperationException();
     }
 
-    public final boolean isArray(final String name)
-    {
+    public final boolean isArray(final String name) {
         //return Native.isArray(m_jso, NUtils.doKeyRepair(name));
         //return false;
         throw new UnsupportedOperationException();
     }
 
-    public final boolean isNumber(final String name)
-    {
+    public final boolean isNumber(final String name) {
 //        return Native.isNumber(m_jso, NUtils.doKeyRepair(name));
         throw new UnsupportedOperationException();
     }
 
-    public final boolean isInteger(final String name)
-    {
+    public final boolean isInteger(final String name) {
 //        return Native.isInteger(m_jso, NUtils.doKeyRepair(name));
         throw new UnsupportedOperationException();
     }
 
-    public final int getAsInteger(final String name)
-    {
+    public final int getAsInteger(final String name) {
 //        if (isInteger(name))
 //        {
 //            return m_jso.getAsInteger(name);
@@ -157,8 +142,7 @@ public final class MetaData //implements NHasJSO<NObjectJSO>, NJSONStringify
         throw new UnsupportedOperationException();
     }
 
-    public final double getAsDouble(final String name)
-    {
+    public final double getAsDouble(final String name) {
 //        if (isNumber(name))
 //        {
 //            return m_jso.getAsDouble(name);
@@ -167,8 +151,7 @@ public final class MetaData //implements NHasJSO<NObjectJSO>, NJSONStringify
         throw new UnsupportedOperationException();
     }
 
-    public final String getAsString(final String name)
-    {
+    public final String getAsString(final String name) {
 //        if (isString(name))
 //        {
 //            return m_jso.getAsString(name);
@@ -177,8 +160,7 @@ public final class MetaData //implements NHasJSO<NObjectJSO>, NJSONStringify
         throw new UnsupportedOperationException();
     }
 
-    public final boolean getAsBoolean(final String name)
-    {
+    public final boolean getAsBoolean(final String name) {
 //        if (isBoolean(name))
 //        {
 //            return m_jso.getAsBoolean(name);
@@ -187,8 +169,7 @@ public final class MetaData //implements NHasJSO<NObjectJSO>, NJSONStringify
         throw new UnsupportedOperationException();
     }
 
-    public final MetaData getAsMetaData(final String name)
-    {
+    public final MetaData getAsMetaData(final String name) {
 //        if (isObject(name))
 //        {
 //            return new MetaData(m_jso.getAsJSO(name));
@@ -196,14 +177,12 @@ public final class MetaData //implements NHasJSO<NObjectJSO>, NJSONStringify
         throw new UnsupportedOperationException();
     }
 
-    public final boolean isDefined(final String name)
-    {
+    public final boolean isDefined(final String name) {
 //        return m_jso.isDefined(name);
         throw new UnsupportedOperationException();
     }
 
-    public final MetaData remove(final String name)
-    {
+    public final MetaData remove(final String name) {
 //        m_jso.remove(name);
         throw new UnsupportedOperationException();
     }
@@ -247,21 +226,18 @@ public final class MetaData //implements NHasJSO<NObjectJSO>, NJSONStringify
 //    }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
 //        return toJSONString();
         return null;
     }
 
     @Override
-    public final boolean equals(final Object other)
-    {
+    public final boolean equals(final Object other) {
         return false;
     }
 
     @Override
-    public final int hashCode()
-    {
+    public final int hashCode() {
         return 0;
     }
 

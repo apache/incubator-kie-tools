@@ -32,13 +32,11 @@ public class NObjectJSO implements JsIterable<JsIterableTypeParameterArrayUnionT
 {
 
     @JsOverlay
-    public static final NObjectJSO make()
-    {
+    public static final NObjectJSO make() {
         return new NObjectJSO(); //createNObjectBaseJSO();
     }
 
-    protected NObjectJSO()
-    {
+    protected NObjectJSO() {
     }
 
 //    @JsOverlay
@@ -55,8 +53,7 @@ public class NObjectJSO implements JsIterable<JsIterableTypeParameterArrayUnionT
      * Returns the number of key-value mappings in this map
      */
     @JsOverlay
-    public final int size()
-    {
+    public final int size() {
         return size;
     }
 
@@ -72,6 +69,7 @@ public class NObjectJSO implements JsIterable<JsIterableTypeParameterArrayUnionT
 
     /**
      * Get the value based on the key passed in.
+     *
      * @param key
      * @return
      */
@@ -90,26 +88,22 @@ public class NObjectJSO implements JsIterable<JsIterableTypeParameterArrayUnionT
     public native JsIteratorIterable<?> values();
 
     @JsOverlay
-    public final void put(final String name, final int value)
-    {
+    public final void put(final String name, final int value) {
         set(name, value);
     }
 
     @JsOverlay
-    public final void put(final String name, final double value)
-    {
+    public final void put(final String name, final double value) {
         set(name, value);
     }
 
     @JsOverlay
-    public final void put(final String name, final boolean value)
-    {
+    public final void put(final String name, final boolean value) {
         set(name, value);
     }
 
     @JsOverlay
-    public final void put(final String name, final String value)
-    {
+    public final void put(final String name, final String value) {
         set(name, value);
     }
 
@@ -169,44 +163,36 @@ public class NObjectJSO implements JsIterable<JsIterableTypeParameterArrayUnionT
 //    }
 
     @JsOverlay
-    public final int getAsInteger(final String name)
-    {
+    public final int getAsInteger(final String name) {
         Object o = get(name);
-        if ( o == null || o == Global.undefined)
-        {
+        if (o == null || o == Global.undefined) {
             return 0;
         }
         return Js.cast(o);
     }
 
     @JsOverlay
-    public final double getAsDouble(final String name)
-    {
+    public final double getAsDouble(final String name) {
         Object o = get(name);
-        if ( o == null || o == Global.undefined)
-        {
+        if (o == null || o == Global.undefined) {
             return 0;
         }
         return Js.cast(o);
     }
 
     @JsOverlay
-    public final boolean getAsBoolean(final String name)
-    {
+    public final boolean getAsBoolean(final String name) {
         Object o = get(name);
-        if ( o == null || o == Global.undefined)
-        {
+        if (o == null || o == Global.undefined) {
             return false;
         }
         return Js.cast(o);
     }
 
     @JsOverlay
-    public final String getAsString(final String name)
-    {
+    public final String getAsString(final String name) {
         Object o = get(name);
-        if ( o == null || o == Global.undefined)
-        {
+        if (o == null || o == Global.undefined) {
             return null;
         }
         return Js.cast(o);
@@ -223,5 +209,4 @@ public class NObjectJSO implements JsIterable<JsIterableTypeParameterArrayUnionT
 //    {
 //        return NUtils.Native.getAsNValue(this, name);
 //    }
-
 }

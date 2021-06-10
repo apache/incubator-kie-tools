@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.image;
 
 import com.ait.lienzo.client.core.shape.Sprite;
 
-public interface SpriteOnRollHandler
-{
+public interface SpriteOnRollHandler {
+
     public boolean onSpriteRoll(Sprite sprite);
 }

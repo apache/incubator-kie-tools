@@ -45,97 +45,86 @@ import jsinterop.base.JsPropertyMap;
 /**
  * A Global Configuration Manager.
  */
-public final class LienzoCore
-{
-    public static final List<Attribute>    STANDARD_TRANSFORMING_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(Attribute.X, Attribute.Y, Attribute.SCALE, Attribute.SHEAR, Attribute.ROTATION, Attribute.OFFSET));
+public final class LienzoCore {
 
-    public static final List<Attribute>    VIEWPORT_TRANSFORMING_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(Attribute.X, Attribute.Y, Attribute.SCALE, Attribute.SHEAR, Attribute.ROTATION, Attribute.OFFSET));
+    public static final List<Attribute> STANDARD_TRANSFORMING_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(Attribute.X, Attribute.Y, Attribute.SCALE, Attribute.SHEAR, Attribute.ROTATION, Attribute.OFFSET));
 
-    private static final LienzoCore        INSTANCE                         = new LienzoCore();
+    public static final List<Attribute> VIEWPORT_TRANSFORMING_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(Attribute.X, Attribute.Y, Attribute.SCALE, Attribute.SHEAR, Attribute.ROTATION, Attribute.OFFSET));
 
-    public static final double             DEFAULT_FONT_SIZE                = 48;
+    private static final LienzoCore INSTANCE = new LienzoCore();
 
-    public static final double             DEFAULT_CONNECTOR_OFFSET         = 10;
+    public static final double DEFAULT_FONT_SIZE = 48;
 
-    public static final String             DEFAULT_FONT_STYLE               = "normal";
+    public static final double DEFAULT_CONNECTOR_OFFSET = 10;
 
-    public static final String             DEFAULT_FONT_FAMILY              = "Helvetica";
+    public static final String DEFAULT_FONT_STYLE = "normal";
 
-    public static final boolean            IS_CANVAS_SUPPORTED              = isCanvasSupported();
+    public static final String DEFAULT_FONT_FAMILY = "Helvetica";
 
-    private double                         m_deviceScale                    = 0;
+    public static final boolean IS_CANVAS_SUPPORTED = isCanvasSupported();
 
-    private double                         m_strokeWidth                    = 1;
+    private double m_deviceScale = 0;
 
-    private double                         m_backingStorePixelRatio         = 0;
+    private double m_strokeWidth = 1;
 
-    private double                         m_defaultConnectorOffset         = DEFAULT_CONNECTOR_OFFSET;
+    private double m_backingStorePixelRatio = 0;
 
-    private String                         m_strokeColor                    = "black";
+    private double m_defaultConnectorOffset = DEFAULT_CONNECTOR_OFFSET;
 
-    private boolean                        m_fillShapeForSelection          = true;
+    private String m_strokeColor = "black";
 
-    private boolean                        m_globalLineDashSupport          = true;
+    private boolean m_fillShapeForSelection = true;
 
-    private boolean                        m_scaledCanvasForRetina          = true;
+    private boolean m_globalLineDashSupport = true;
 
-    private boolean                        m_nativeLineDashSupport          = false;
+    private boolean m_scaledCanvasForRetina = true;
 
-    private boolean                        m_enableBlobIfSupported          = true;
+    private boolean m_nativeLineDashSupport = false;
 
-    private boolean                        m_nativeLineDashExamine          = false;
+    private boolean m_enableBlobIfSupported = true;
 
-    private boolean                        m_hidpiEnabled                   = false;
+    private boolean m_nativeLineDashExamine = false;
 
-    private Cursor                        m_normal_cursor                  = Cursor.DEFAULT;
+    private boolean m_hidpiEnabled = false;
 
-    private Cursor                         m_select_cursor                  = Cursor.CROSSHAIR;
+    private Cursor m_normal_cursor = Cursor.DEFAULT;
 
-    private LayerClearMode                 m_layerClearMode                 = LayerClearMode.CLEAR;
+    private Cursor m_select_cursor = Cursor.CROSSHAIR;
 
-    private ImageSelectionMode             m_imageSelectionMode             = ImageSelectionMode.SELECT_NON_TRANSPARENT;
+    private LayerClearMode m_layerClearMode = LayerClearMode.CLEAR;
 
-    private final ArrayList<ILienzoPlugin> m_plugins                        = new ArrayList<>();
+    private ImageSelectionMode m_imageSelectionMode = ImageSelectionMode.SELECT_NON_TRANSPARENT;
 
+    private final ArrayList<ILienzoPlugin> m_plugins = new ArrayList<>();
 
-
-    private static boolean isCanvasSupported()
-    {
+    private static boolean isCanvasSupported() {
 
         HTMLCanvasElement canvas = Js.uncheckedCast(DomGlobal.document.createElement("canvas"));
-        return ( canvas != null && Js.asPropertyMap(canvas).has("getContext"));
-
+        return (canvas != null && Js.asPropertyMap(canvas).has("getContext"));
     }
 
-    private LienzoCore()
-    {
+    private LienzoCore() {
         // @FIXME need to figure out how to get the root DIV
         //RootPanel.get().getElement().getStyle().setProperty("webkitTapHighlightColor", "rgba(0,0,0,0)");
     }
 
-    public static final LienzoCore get()
-    {
+    public static final LienzoCore get() {
         return INSTANCE;
     }
 
-    public final boolean addPlugin(final ILienzoPlugin plugin)
-    {
-        if (null == plugin)
-        {
+    public final boolean addPlugin(final ILienzoPlugin plugin) {
+        if (null == plugin) {
             return false;
         }
         log("Lienzo adding plugin: " + plugin.getNameSpace());
 
-        if (m_plugins.contains(plugin))
-        {
+        if (m_plugins.contains(plugin)) {
             error("Lienzo plugin " + plugin.getNameSpace() + " already added.");
 
             return false;
         }
-        for (ILienzoPlugin p : m_plugins)
-        {
-            if (plugin.getNameSpace().equals(p.getNameSpace()))
-            {
+        for (ILienzoPlugin p : m_plugins) {
+            if (plugin.getNameSpace().equals(p.getNameSpace())) {
                 error("Lienzo plugin " + plugin.getNameSpace() + " with name name space already added.");
 
                 return false;
@@ -146,14 +135,10 @@ public final class LienzoCore
         return true;
     }
 
-    public final ILienzoPlugin getPlugin(String name)
-    {
-        if (null != (name = StringOps.toTrimOrNull(name)))
-        {
-            for (ILienzoPlugin p : m_plugins)
-            {
-                if (p.getNameSpace().equals(name))
-                {
+    public final ILienzoPlugin getPlugin(String name) {
+        if (null != (name = StringOps.toTrimOrNull(name))) {
+            for (ILienzoPlugin p : m_plugins) {
+                if (p.getNameSpace().equals(name)) {
                     return p;
                 }
             }
@@ -161,26 +146,20 @@ public final class LienzoCore
         return null;
     }
 
-    public final List<ILienzoPlugin> getPlugins()
-    {
+    public final List<ILienzoPlugin> getPlugins() {
         return Collections.unmodifiableList(m_plugins);
     }
 
-    public final IFactory<?> getFactory(final IStringValued type)
-    {
+    public final IFactory<?> getFactory(final IStringValued type) {
         return getFactory((null != type) ? type.getValue() : null);
     }
 
-    public final IFactory<?> getFactory(String name)
-    {
-        if (null != (name = StringOps.toTrimOrNull(name)))
-        {
-            for (ILienzoPlugin p : m_plugins)
-            {
+    public final IFactory<?> getFactory(String name) {
+        if (null != (name = StringOps.toTrimOrNull(name))) {
+            for (ILienzoPlugin p : m_plugins) {
                 final IFactory<?> factory = p.getFactory(name);
 
-                if (null != factory)
-                {
+                if (null != factory) {
                     return factory;
                 }
             }
@@ -188,48 +167,39 @@ public final class LienzoCore
         return null;
     }
 
-    public final void log(final String message)
-    {
+    public final void log(final String message) {
         Console.get().info(message);
     }
 
-    public final void info(final String message)
-    {
+    public final void info(final String message) {
         Console.get().info(message);
     }
 
-    public final void fine(final String message)
-    {
+    public final void fine(final String message) {
         Console.get().fine(message);
     }
 
-    public final void warn(final String message)
-    {
+    public final void warn(final String message) {
         Console.get().warn(message);
     }
 
-    public final void error(final String message)
-    {
+    public final void error(final String message) {
         Console.get().error(message);
     }
 
-    public final void error(final String message, final Throwable e)
-    {
+    public final void error(final String message, final Throwable e) {
         Console.get().error(message, e);
     }
 
-    public final void severe(final String message)
-    {
+    public final void severe(final String message) {
         Console.get().severe(message);
     }
 
-    public final void severe(final String message, final Throwable e)
-    {
+    public final void severe(final String message, final Throwable e) {
         Console.get().severe(message, e);
     }
 
-    public final void stack(final String message, final Throwable e)
-    {
+    public final void stack(final String message, final Throwable e) {
         // @FIXME mdp
 //        if (e instanceof UmbrellaException)
 //        {
@@ -243,57 +213,44 @@ public final class LienzoCore
 //        }
         Console.get().error(message, e);
 
-        for (StackTraceElement s : e.getStackTrace())
-        {
+        for (StackTraceElement s : e.getStackTrace()) {
             Console.get().error(s.toString());
         }
     }
 
-    public final String getUserAgent()
-    {
+    public final String getUserAgent() {
         return DomGlobal.window.navigator.userAgent;
     }
 
-    public final boolean isSafari()
-    {
+    public final boolean isSafari() {
         String ua = getUserAgent();
 
-        if ((ua.indexOf("Safari") >= 0) && (ua.indexOf("Chrome") < 0))
-        {
+        if ((ua.indexOf("Safari") >= 0) && (ua.indexOf("Chrome") < 0)) {
             return true;
         }
         return false;
     }
 
-    public final boolean isSafariBroken()
-    {
+    public final boolean isSafariBroken() {
         String ua = getUserAgent();
 
-        if ((ua.indexOf("Safari") >= 0) && (ua.indexOf("Chrome") < 0))
-        {
-            if (ua.indexOf("OS X") >= 0)
-            {
+        if ((ua.indexOf("Safari") >= 0) && (ua.indexOf("Chrome") < 0)) {
+            if (ua.indexOf("OS X") >= 0) {
                 int p = ua.indexOf("Version/");
 
-                if (p >= 0)
-                {
+                if (p >= 0) {
                     ua = ua.substring(p + "Version/".length());
 
                     p = ua.indexOf(" ");
 
-                    if (p >= 0)
-                    {
+                    if (p >= 0) {
                         ua = ua.substring(0, p).replaceAll("\\.", "");
 
-                        try
-                        {
-                            if (Integer.parseInt(ua) > 902)
-                            {
+                        try {
+                            if (Integer.parseInt(ua) > 902) {
                                 return false;
                             }
-                        }
-                        catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             error("isSafariBroken(" + ua + ")", e);
                         }
                     }
@@ -304,118 +261,92 @@ public final class LienzoCore
         return false;
     }
 
-    public final boolean isFirefox()
-    {
+    public final boolean isFirefox() {
         String ua = getUserAgent();
 
         // IE 11 Says it is Mozilla!!! Check for Trident
 
-        if (((ua.indexOf("Mozilla") >= 0) || (ua.indexOf("Firefox") >= 0)) && (ua.indexOf("Trident") < 0))
-        {
+        if (((ua.indexOf("Mozilla") >= 0) || (ua.indexOf("Firefox") >= 0)) && (ua.indexOf("Trident") < 0)) {
             return (false == isSafari());
         }
         return false;
     }
 
-    public final boolean isBlobAPIEnabled()
-    {
+    public final boolean isBlobAPIEnabled() {
         return m_enableBlobIfSupported;
     }
 
-    public final LienzoCore setBlobAPIEnabled(final boolean enabled)
-    {
+    public final LienzoCore setBlobAPIEnabled(final boolean enabled) {
         m_enableBlobIfSupported = enabled;
 
         return this;
     }
 
-    public final LienzoCore setScaledCanvasForRetina(final boolean enabled)
-    {
+    public final LienzoCore setScaledCanvasForRetina(final boolean enabled) {
         m_scaledCanvasForRetina = enabled;
 
         return this;
     }
 
-    public final boolean isScaledCanvasForRetina()
-    {
+    public final boolean isScaledCanvasForRetina() {
         return m_scaledCanvasForRetina;
     }
 
-    public final LienzoCore setDefaultFillShapeForSelection(final boolean fill)
-    {
+    public final LienzoCore setDefaultFillShapeForSelection(final boolean fill) {
         m_fillShapeForSelection = fill;
 
         return this;
     }
 
-    public final ImageSelectionMode getDefaultImageSelectionMode()
-    {
+    public final ImageSelectionMode getDefaultImageSelectionMode() {
         return m_imageSelectionMode;
     }
 
-    public final LienzoCore setDefaultImageSelectionMode(final ImageSelectionMode mode)
-    {
-        if (null == mode)
-        {
+    public final LienzoCore setDefaultImageSelectionMode(final ImageSelectionMode mode) {
+        if (null == mode) {
             m_imageSelectionMode = ImageSelectionMode.SELECT_NON_TRANSPARENT;
-        }
-        else
-        {
+        } else {
             m_imageSelectionMode = mode;
         }
         return this;
     }
 
-    public final boolean getDefaultFillShapeForSelection()
-    {
+    public final boolean getDefaultFillShapeForSelection() {
         return m_fillShapeForSelection;
     }
 
-    public final LienzoCore setDefaultStrokeWidth(final double width)
-    {
-        if (width > 0)
-        {
+    public final LienzoCore setDefaultStrokeWidth(final double width) {
+        if (width > 0) {
             m_strokeWidth = width;
-        }
-        else
-        {
+        } else {
             m_strokeWidth = 1;
         }
         return this;
     }
 
-    public final double getDefaultStrokeWidth()
-    {
+    public final double getDefaultStrokeWidth() {
         return m_strokeWidth;
     }
 
-    public final LienzoCore setDefaultStrokeColor(final IColor color)
-    {
-        if (color != null)
-        {
+    public final LienzoCore setDefaultStrokeColor(final IColor color) {
+        if (color != null) {
             m_strokeColor = color.getColorString();
-        }
-        else
-        {
+        } else {
             m_strokeColor = "black";
         }
         return this;
     }
 
-    public final String getDefaultStrokeColor()
-    {
+    public final String getDefaultStrokeColor() {
         return m_strokeColor;
     }
 
-    public final double getDefaultConnectorOffset()
-    {
+    public final double getDefaultConnectorOffset() {
         return m_defaultConnectorOffset;
     }
 
-    public final LienzoCore setDefaultConnectorOffset(final double offset)
-    {
-        if (offset >= 0)
-        {
+    public final LienzoCore setDefaultConnectorOffset(final double offset) {
+        if (offset >= 0) {
             m_defaultConnectorOffset = offset;
         }
         return this;
@@ -423,34 +354,29 @@ public final class LienzoCore
 
     /**
      * Returns true if the Canvas element is supported.
+     *
      * @return
      */
-    public final boolean isCanvasSupportedx()
-    {
+    public final boolean isCanvasSupportedx() {
         return IS_CANVAS_SUPPORTED;
     }
 
-    public final boolean isLineDashSupported()
-    {
+    public final boolean isLineDashSupported() {
         return ((isGlobalLineDashSupported()) && (isNativeLineDashSupported()));
     }
 
-    public final boolean isGlobalLineDashSupported()
-    {
+    public final boolean isGlobalLineDashSupported() {
         return m_globalLineDashSupport;
     }
 
-    public final LienzoCore setGlobalLineDashSupported(final boolean supported)
-    {
+    public final LienzoCore setGlobalLineDashSupported(final boolean supported) {
         m_globalLineDashSupport = supported;
 
         return this;
     }
 
-    public final boolean isNativeLineDashSupported()
-    {
-        if (false == m_nativeLineDashExamine)
-        {
+    public final boolean isNativeLineDashSupported() {
+        if (false == m_nativeLineDashExamine) {
             m_nativeLineDashSupport = examineNativeLineDashSupported();
 
             m_nativeLineDashExamine = true;
@@ -458,76 +384,59 @@ public final class LienzoCore
         return m_nativeLineDashSupport;
     }
 
-    public final double getDefaultFontSize()
-    {
+    public final double getDefaultFontSize() {
         return DEFAULT_FONT_SIZE;
     }
 
-    public final String getDefaultFontStyle()
-    {
+    public final String getDefaultFontStyle() {
         return DEFAULT_FONT_STYLE;
     }
 
-    public final String getDefaultFontFamily()
-    {
+    public final String getDefaultFontFamily() {
         return DEFAULT_FONT_FAMILY;
     }
 
-    public final LayerClearMode getLayerClearMode()
-    {
+    public final LayerClearMode getLayerClearMode() {
         return m_layerClearMode;
     }
 
-    public final LienzoCore setLayerClearMode(final LayerClearMode mode)
-    {
-        if (null != mode)
-        {
+    public final LienzoCore setLayerClearMode(final LayerClearMode mode) {
+        if (null != mode) {
             m_layerClearMode = mode;
-        }
-        else
-        {
+        } else {
             m_layerClearMode = LayerClearMode.CLEAR;
         }
         return this;
     }
 
-    public final double getDevicePixelRatio()
-    {
+    public final double getDevicePixelRatio() {
         JsPropertyMap<Object> windowMap = Js.uncheckedCast(DomGlobal.window);
         double devicePixelRatio = windowMap.has("devicePixelRatio") ? (double) windowMap.get("devicePixelRatio") : 1;
         return devicePixelRatio;
-    };
+    }
 
-    public final double getBackingStorePixelRatio()
-    {
-        if (m_backingStorePixelRatio != 0)
-        {
+    ;
+
+    public final double getBackingStorePixelRatio() {
+        if (m_backingStorePixelRatio != 0) {
             return m_backingStorePixelRatio;
         }
-        if (IS_CANVAS_SUPPORTED)
-        {
-            try
-            {
+        if (IS_CANVAS_SUPPORTED) {
+            try {
                 m_backingStorePixelRatio = new ScratchPad(1, 1).getContext().getBackingStorePixelRatio();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 m_backingStorePixelRatio = 1;
 
                 error("Backing Store Pixel Ratio failed ", e);
             }
-        }
-        else
-        {
+        } else {
             m_backingStorePixelRatio = 1;
         }
         return m_backingStorePixelRatio;
     }
 
-    public final double getDeviceScale()
-    {
-        if (m_deviceScale != 0)
-        {
+    public final double getDeviceScale() {
+        if (m_deviceScale != 0) {
             return m_deviceScale;
         }
         return (m_deviceScale = getDevicePixelRatio() / getBackingStorePixelRatio());
@@ -541,13 +450,10 @@ public final class LienzoCore
         return m_hidpiEnabled = hidpiEnabled;
     }
 
-    private final boolean examineNativeLineDashSupported()
-    {
+    private final boolean examineNativeLineDashSupported() {
         // @FIXME is this really neded now? Do we not have a minimum browser level now, that makes this redundant? (mdp)
-        if (IS_CANVAS_SUPPORTED)
-        {
-            try
-            {
+        if (IS_CANVAS_SUPPORTED) {
+            try {
                 final ScratchPad scratch = new ScratchPad(20, 10);
 
                 final Context2D context = scratch.getContext();
@@ -580,45 +486,36 @@ public final class LienzoCore
 
                 final ImageData backing = context.getImageData(0, 0, 20, 10);
 
-                if (null != backing)
-                {
+                if (null != backing) {
 
-                    if ((ImageDataUtil.getRedAt(backing, 3, 5) == 255) && (ImageDataUtil.getBlueAt(backing, 3, 5) == 0) && (ImageDataUtil.getGreenAt(backing, 3, 5) == 0))
-                    {
-                        if ((ImageDataUtil.getRedAt(backing, 8, 5) == 0) && (ImageDataUtil.getBlueAt(backing, 8, 5) == 255) && (ImageDataUtil.getGreenAt(backing, 8, 5) == 0))
-                        {
+                    if ((ImageDataUtil.getRedAt(backing, 3, 5) == 255) && (ImageDataUtil.getBlueAt(backing, 3, 5) == 0) && (ImageDataUtil.getGreenAt(backing, 3, 5) == 0)) {
+                        if ((ImageDataUtil.getRedAt(backing, 8, 5) == 0) && (ImageDataUtil.getBlueAt(backing, 8, 5) == 255) && (ImageDataUtil.getGreenAt(backing, 8, 5) == 0)) {
                             return true;
                         }
                     }
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 error("Line Dash test failed ", e);// FF 22 dev mode does not like line dashes
             }
         }
         return false;
     }
 
-    public final LienzoCore setDefaultNormalCursor(final Cursor cursor)
-    {
+    public final LienzoCore setDefaultNormalCursor(final Cursor cursor) {
         m_normal_cursor = cursor;
         return this;
     }
 
-    public final Cursor getDefaultNormalCursor()
-    {
+    public final Cursor getDefaultNormalCursor() {
         return m_normal_cursor;
     }
 
-    public final LienzoCore setDefaultSelectCursor(final Cursor cursor)
-    {
+    public final LienzoCore setDefaultSelectCursor(final Cursor cursor) {
         m_select_cursor = cursor;
         return this;
     }
 
-    public final Cursor getDefaultSelectCursor()
-    {
+    public final Cursor getDefaultSelectCursor() {
         return m_select_cursor;
     }
 }

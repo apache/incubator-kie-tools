@@ -64,21 +64,22 @@ import elemental2.dom.MouseEvent;
  * It starts on the layer mouseDown, at which point it tracks the MouseMove, as there is no Layer drag event. Further the mouseup
  * can occur over any shape, that might consume the event, so it should intercept that globally first to correct handle. It also has special handling
  * to ignore the click event during selection creation.
- *
+ * <p>
  * The other intricate part is the differentiation between normally selected connectors and externally connected ones. When a connector, in a selection,
  * is connected to a shape outside of the selection then that connection cannot be moved with the drag. However we want the BoundingBox to correctly indicate this.
  * So the normal shapes and connections draw an initial BoundingBox that is just offset during drag, however any externally connected connection has its BoundingBox
  * redetermined and added to that starting BoundingBox. This must be redetected and handled each time a shape is added or removed from the selection.
- *
+ * <p>
  * There is also additional complexity due to nested shapes and connectors to those nested shapes. Currently a selection only ever containsBoundingBox the outer most parent and all children
  * are implicitely in the selection. So we need to remove children when adding a parent, adding of children is ignored if the parent already exists and checking for externally
  * connected connectors must check for all shapes and their children.
- *
+ * <p>
  * Finally it should be noted the SelectionManager controls what is in and out of the selection, and drawing the actual visible rectangle. It is up to the SelectionListener
  * implementation to handle showing nad hiding of handles.
  */
-public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseClickHandler, NodeMouseDownHandler
-{
+public class SelectionManager implements NodeMouseDoubleClickHandler,
+                                         NodeMouseClickHandler,
+                                         NodeMouseDownHandler {
 
     public interface SelectionShapeProvider<T extends SelectionShapeProvider> {
 
@@ -89,54 +90,52 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         T setLocation(Point2D location);
 
         T setSize(double width,
-                   double height);
+                  double height);
 
         boolean isMultipleSelection(MouseEvent event);
 
         T clear();
-
     }
 
-    public static int                   SELECTION_PADDING = 10;
+    public static int SELECTION_PADDING = 10;
 
-    private final Layer                 m_layer;
+    private final Layer m_layer;
 
-    private final WiresManager          m_wiresManager;
+    private final WiresManager m_wiresManager;
 
-    private SelectedItems               m_selected;
+    private SelectedItems m_selected;
 
     private final WiresCompositeControl m_shapeControl;
 
-    private HandlerRegistration         m_selectMouseDownHandlerReg;
+    private HandlerRegistration m_selectMouseDownHandlerReg;
 
-    private HandlerRegistration         m_selectMouseClickHandlerReg;
+    private HandlerRegistration m_selectMouseClickHandlerReg;
 
-    private HandlerRegistration         m_selectMouseDoubleClickHandlerReg;
+    private HandlerRegistration m_selectMouseDoubleClickHandlerReg;
 
-    private SelectionShapeProvider      m_selectionShapeProvider;
+    private SelectionShapeProvider m_selectionShapeProvider;
 
-    BoundingBox                 m_startBoundingBox;
+    BoundingBox m_startBoundingBox;
 
-    private Point2D                     m_start;
+    private Point2D m_start;
 
-    private HandlerRegistration         m_dragSelectionStartReg;
+    private HandlerRegistration m_dragSelectionStartReg;
 
-    private HandlerRegistration         m_dragSelectionMoveReg;
+    private HandlerRegistration m_dragSelectionMoveReg;
 
-    private HandlerRegistration         m_dragSelectionEndReg;
+    private HandlerRegistration m_dragSelectionEndReg;
 
-    private HandlerRegistration         m_dragSelectionMouseClickReg;
+    private HandlerRegistration m_dragSelectionMouseClickReg;
 
-    private SelectionDragHandler        m_selectionDragHandler;
+    private SelectionDragHandler m_selectionDragHandler;
 
-    private       boolean              m_selectionCreationInProcess;
+    private boolean m_selectionCreationInProcess;
 
-    private       boolean              m_ignoreMouseClick;
+    private boolean m_ignoreMouseClick;
 
-    private       SelectionListener    m_selectionListener;
+    private SelectionListener m_selectionListener;
 
-    public SelectionManager(final WiresManager wiresManager)
-    {
+    public SelectionManager(final WiresManager wiresManager) {
         m_wiresManager = wiresManager;
         m_layer = wiresManager.getLayer().getLayer();
         m_selectionShapeProvider = new RectangleSelectionProvider();
@@ -146,7 +145,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         m_selected = new SelectedItems(this, m_layer);
 
         OnMouseXEventHandler onMouseXEventHandler = new OnMouseXEventHandler();
-        OnEventHandlers      onEventHandlers      = m_layer.getViewport().getOnEventHandlers();
+        OnEventHandlers onEventHandlers = m_layer.getViewport().getOnEventHandlers();
         onEventHandlers.setOnMouseClickEventHandle(onMouseXEventHandler);
         onEventHandlers.setOnMouseDoubleClickEventHandle(onMouseXEventHandler);
         onEventHandlers.setOnMouseDownEventHandle(onMouseXEventHandler);
@@ -158,22 +157,20 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         m_shapeControl = wiresManager
                 .getControlFactory()
                 .newCompositeControl(new WiresCompositeControl.Context() {
-                                             @Override
-                                             public Collection<WiresShape> getShapes() {
-                                                 return m_selected.m_shapes;
-                                             }
+                                         @Override
+                                         public Collection<WiresShape> getShapes() {
+                                             return m_selected.m_shapes;
+                                         }
 
-                                             @Override
-                                             public Collection<WiresConnector> getConnectors() {
-                                                 return m_selected.m_connectors;
-                                             }
-
-                                         },
-                                         wiresManager);
+                                         @Override
+                                         public Collection<WiresConnector> getConnectors() {
+                                             return m_selected.m_connectors;
+                                         }
+                                     },
+                                     wiresManager);
     }
 
-    protected boolean isSelectionCreationInProcess()
-    {
+    protected boolean isSelectionCreationInProcess() {
         return m_selectionCreationInProcess;
     }
 
@@ -186,18 +183,15 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         return this;
     }
 
-    public void selected(WiresShape shape, boolean isSelectionMultiple)
-    {
+    public void selected(WiresShape shape, boolean isSelectionMultiple) {
         m_selected.selected(shape, isSelectionMultiple);
     }
 
-    public void selected(WiresConnector connector, boolean isSelectionMultiple)
-    {
+    public void selected(WiresConnector connector, boolean isSelectionMultiple) {
         m_selected.selected(connector, isSelectionMultiple);
     }
 
-    public SelectionManager setSelectionListener(SelectionListener selectionListener)
-    {
+    public SelectionManager setSelectionListener(SelectionListener selectionListener) {
         m_selectionListener = selectionListener;
         return this;
     }
@@ -210,84 +204,68 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         this.m_selected = items;
     }
 
-    public class OnMouseXEventHandler implements OnMouseEventHandler
-    {
+    public class OnMouseXEventHandler implements OnMouseEventHandler {
+
         public void down(MouseEvent event,
                          int x,
-                         int y)
-        {
-            if ( getSelectionShape() != null  && !m_selectionShapeProvider.isMultipleSelection(event))
-            {
+                         int y) {
+            if (getSelectionShape() != null && !m_selectionShapeProvider.isMultipleSelection(event)) {
                 // if the mousedown is any where other than the rectangle, and shift was not held,  clear it.
                 // this way, if necessary, a new selection can begin
                 Node<?> node = m_layer.getViewport().findShapeAtPoint(x, y);
-                if (node != getSelectionShape())
-                {
+                if (node != getSelectionShape()) {
                     clearIfSelection();
                 }
             }
         }
 
         @Override
-        public boolean onMouseEventBefore(MouseEvent event)
-        {
+        public boolean onMouseEventBefore(MouseEvent event) {
             boolean isLeftButton = isButtonLeft(event);
-            if (!isLeftButton)
-            {
+            if (!isLeftButton) {
                 return true;
             }
 
             // CLICK
-            if (event.type.equals(EventType.CLICKED.getType()))
-            {
+            if (event.type.equals(EventType.CLICKED.getType())) {
                 // this is to differentiate on a drag's mouseup event. It must come before the selection shape null
                 // as it must always cleanup a m_ignoreMouseClick after a mouse down
-                if (m_ignoreMouseClick)
-                {
+                if (m_ignoreMouseClick) {
                     m_ignoreMouseClick = false; // drag has finished, so reset
                     return false;
-                }
-                else
-                {
+                } else {
                     return true;
                 }
             }
 
-            HTMLElement relativeElement  = m_layer.getViewport().getElement();
-            final int   x     = MouseEventUtil.getRelativeX(event.clientX, relativeElement);
-            final int   y     = MouseEventUtil.getRelativeY(event.clientY, relativeElement);
+            HTMLElement relativeElement = m_layer.getViewport().getElement();
+            final int x = MouseEventUtil.getRelativeX(event.clientX, relativeElement);
+            final int y = MouseEventUtil.getRelativeY(event.clientY, relativeElement);
 
             // DOWN
-            if (event.type.equalsIgnoreCase( EventType.MOUSE_DOWN.getType()))
-            {
+            if (event.type.equalsIgnoreCase(EventType.MOUSE_DOWN.getType())) {
                 down(event, x, y);
                 return true;
             }
 
             // No selection shape and not about to create and create one
-            if (getSelectionShape() == null && !m_selectionCreationInProcess)
-            {
+            if (getSelectionShape() == null && !m_selectionCreationInProcess) {
                 // do nothing
                 return true;
             }
 
             // MOVE
-            if (event.type.equalsIgnoreCase( EventType.MOUSE_MOVE.getType()))
-            {
-                if (m_selectionCreationInProcess)
-                {
+            if (event.type.equalsIgnoreCase(EventType.MOUSE_MOVE.getType())) {
+                if (m_selectionCreationInProcess) {
                     drawSelectionShape(event, x, y);
                     return false;
-                }
-                else
-                {
+                } else {
                     return true;
                 }
             }
 
             // UP
-            if (event.type.equalsIgnoreCase( EventType.MOUSE_UP.getType()))
-            {
+            if (event.type.equalsIgnoreCase(EventType.MOUSE_UP.getType())) {
                 return selectionEventHandlingComplete(event, x, y);
             }
             return true;
@@ -295,8 +273,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
 
         void drawSelectionShape(MouseEvent event,
                                 int x,
-                                int y)
-        {
+                                int y) {
             final double relativeStartX = getSelectionManager().relativeStartX();
             final double relativeStartY = getSelectionManager().relativeStartY();
             final Point2D untransformedPoint = getSelectionManager().getUntransformedPoint(new Point2D(x, y));
@@ -305,12 +282,10 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             double width = relativeEventX - relativeStartX;
             double height = relativeEventY - relativeStartY;
             // if either width or height is zero, you won't see the line being drawn, so ensure at least 1px separation
-            if ( width == 0 )
-            {
+            if (width == 0) {
                 width += 1;
             }
-            if ( height == 0 )
-            {
+            if (height == 0) {
                 height += 1;
             }
 
@@ -319,42 +294,33 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             overLayer.draw();
         }
 
-        SelectionManager getSelectionManager()
-        {
+        SelectionManager getSelectionManager() {
             return SelectionManager.this;
         }
 
         private boolean selectionEventHandlingComplete(MouseEvent event,
                                                        int x,
                                                        int y) {
-            if(m_selectionCreationInProcess)
-            {
+            if (m_selectionCreationInProcess) {
                 m_selected.clear();
                 // selection shape is null, for a layer mouse down without any drag
-                if (getSelectionShape() != null)
-                {
+                if (getSelectionShape() != null) {
                     m_ignoreMouseClick = true; // only ignore a mouse click, if there was an actual drag and thus selection shape creation
 
                     Layer layer = getSelectionShape().getLayer(); // this is in the drag layer, so also redraw there
-                    if (x != m_start.getX() && y != m_start.getY())
-                    {
+                    if (x != m_start.getX() && y != m_start.getY()) {
                         getItemsInBoundingBox(getSelectionShape().getComputedBoundingPoints().getBoundingBox());
                         // can be null if there was no mousemove
-                        if (!m_selected.isEmpty())
-                        {
+                        if (!m_selected.isEmpty()) {
                             m_selectionShapeProvider.clear();
                             drawSelectionShapeForSelection();
 
                             m_layer.draw();
-                        }
-                        else
-                        {
+                        } else {
                             // destroy the selection if it's empty
                             destroySelectionShape();
                         }
-                    }
-                    else
-                    {
+                    } else {
                         // destroy the selection if it's empty
                         destroySelectionShape();
                     }
@@ -371,31 +337,26 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             return true;
         }
 
-        @Override public void onMouseEventAfter(MouseEvent event)
-        {
+        @Override
+        public void onMouseEventAfter(MouseEvent event) {
 
         }
     }
 
-    public void rebuildSelectionArea()
-    {
-        if (m_selected.isEmpty())
-        {
+    public void rebuildSelectionArea() {
+        if (m_selected.isEmpty()) {
             return;
         }
         m_selected.rebuildBoundingBox();
         drawSelectionShapeForSelection();
     }
 
-    public void drawSelectionShapeForSelection()
-    {
-        if (m_selected.isEmpty())
-        {
+    public void drawSelectionShapeForSelection() {
+        if (m_selected.isEmpty()) {
             return;
         }
 
-        if(!m_selected.m_shapes.isEmpty() || m_selected.m_connectors.size() != m_selected.m_externallyConnected.size())
-        {
+        if (!m_selected.m_shapes.isEmpty() || m_selected.m_connectors.size() != m_selected.m_externallyConnected.size()) {
             BoundingBox bbox = m_selected.getBoundingBox();
             m_startBoundingBox = BoundingBox.fromBoundingBox(bbox);
             drawSelectionShape(bbox.getX(),
@@ -403,12 +364,10 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                                bbox.getWidth(),
                                bbox.getHeight(),
                                m_layer);
-        }
-        else
-        {
+        } else {
             // There are no shapes and no non-externally connected connectors, so set startBoundingBox to null
             // use an initial arbitrary rectangle x,y,w,h the updateRectangleForExternallyConnectedConnectors will correct this, as it'll ignore the existing x,y,w,h
-            drawSelectionShape(0, 0, 20, 20, m_layer );
+            drawSelectionShape(0, 0, 20, 20, m_layer);
         }
 
         if (!m_selected.m_externallyConnected.isEmpty()) {
@@ -417,31 +376,27 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
     }
 
     @Override
-    public void onNodeMouseClick(NodeMouseClickEvent event)
-    {
+    public void onNodeMouseClick(NodeMouseClickEvent event) {
         if (event.isButtonLeft()) {
             clearIfSelection();
         }
     }
 
     @Override
-    public void onNodeMouseDoubleClick(NodeMouseDoubleClickEvent event)
-    {
+    public void onNodeMouseDoubleClick(NodeMouseDoubleClickEvent event) {
         if (event.isButtonLeft()) {
             clearIfSelection();
         }
     }
 
-    @Override public void onNodeMouseDown(NodeMouseDownEvent event)
-    {
-        if (!event.isButtonLeft())
-        {
+    @Override
+    public void onNodeMouseDown(NodeMouseDownEvent event) {
+        if (!event.isButtonLeft()) {
             return;
         }
 
         Node<?> node = m_layer.getViewport().findShapeAtPoint(event.getX(), event.getY());
-        if (node == null)
-        {
+        if (node == null) {
             // only start the select if there is no shape at the current mouse xy/
             // as events bubble up to root, if there are no handlers for this specific event type, so need to detect that.
             m_start = new Point2D(event.getX(),
@@ -452,15 +407,12 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         }
     }
 
-    public void clearSelection()
-    {
+    public void clearSelection() {
         clearIfSelection();
     }
 
-    private void clearIfSelection()
-    {
-        if (!isSelectionHandlerRunning())
-        {
+    private void clearIfSelection() {
+        if (!isSelectionHandlerRunning()) {
             destroySelectionShape();
             m_selected.clear();
             m_selected.notifyListener();
@@ -471,34 +423,29 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                                    double y,
                                    double width,
                                    double height,
-                                   Layer layer)
-    {
+                                   Layer layer) {
         final double padding = SELECTION_PADDING;
         double sx = x - padding;
         double sy = y - padding;
         double sw = width;
         double sh = height;
-        if (sw < 0)
-        {
+        if (sw < 0) {
             sw = Math.abs(sw);
             sx = relativeStartX() - sw;
         }
-        if (sh < 0)
-        {
+        if (sh < 0) {
             sh = Math.abs(sh);
             sy = relativeStartY() - sh;
         }
         sw = sw + (padding * 2);
         sh = sh + (padding * 2);
         final Point2D location = new Point2D(sx, sy);
-        if (getSelectionShape() == null)
-        {
+        if (getSelectionShape() == null) {
             // Build the instance.
             m_selectionShapeProvider.build();
 
             // Register the handlers.
-            if (layer == m_layer)
-            {
+            if (layer == m_layer) {
                 // don't do this if it was added to the overlay layer
                 getSelectionShape()
                         .setDraggable(true)
@@ -516,28 +463,23 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                 .setSize(sw, sh);
     }
 
-    double relativeStartX()
-    {
+    double relativeStartX() {
         return getUntransformedStartPoint().getX();
     }
 
-    double relativeStartY()
-    {
+    double relativeStartY() {
         return getUntransformedStartPoint().getY();
     }
 
-    public Point2D getUntransformedStartPoint()
-    {
+    public Point2D getUntransformedStartPoint() {
         return getUntransformedPoint(getStart());
     }
 
-    public Point2D getUntransformedPoint(final Point2D point2D)
-    {
+    public Point2D getUntransformedPoint(final Point2D point2D) {
         final Transform transform = getViewportTransform();
-        final Point2D untransformed = new Point2D(0,0);
+        final Point2D untransformed = new Point2D(0, 0);
 
-        if (transform != null)
-        {
+        if (transform != null) {
             transform.getInverse().transform(point2D, untransformed);
             return untransformed;
         }
@@ -545,56 +487,47 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         return point2D;
     }
 
-    Point2D getStart()
-    {
+    Point2D getStart() {
         return m_start;
     }
 
-    public Transform getViewportTransform()
-    {
+    public Transform getViewportTransform() {
         return m_layer.getViewport().getTransform();
     }
 
-    public static class ChangedItems
-    {
-        private final NFastArrayList<WiresShape>     m_removedShapes = new NFastArrayList<>();
-        private final NFastArrayList<WiresShape>     m_addedShapes = new NFastArrayList<>();
+    public static class ChangedItems {
+
+        private final NFastArrayList<WiresShape> m_removedShapes = new NFastArrayList<>();
+        private final NFastArrayList<WiresShape> m_addedShapes = new NFastArrayList<>();
 
         private final NFastArrayList<WiresConnector> m_removedConnectors = new NFastArrayList<>();
         private final NFastArrayList<WiresConnector> m_addedConnectors = new NFastArrayList<>();
 
-        public NFastArrayList<WiresShape> getRemovedShapes()
-        {
+        public NFastArrayList<WiresShape> getRemovedShapes() {
             return m_removedShapes;
         }
 
-        public NFastArrayList<WiresShape> getAddedShapes()
-        {
+        public NFastArrayList<WiresShape> getAddedShapes() {
             return m_addedShapes;
         }
 
-        public NFastArrayList<WiresConnector> getRemovedConnectors()
-        {
+        public NFastArrayList<WiresConnector> getRemovedConnectors() {
             return m_removedConnectors;
         }
 
-        public NFastArrayList<WiresConnector> getAddedConnectors()
-        {
+        public NFastArrayList<WiresConnector> getAddedConnectors() {
             return m_addedConnectors;
         }
 
-        public int removedSize()
-        {
+        public int removedSize() {
             return m_removedConnectors.size() + m_removedShapes.size();
         }
 
-        public int addedSize()
-        {
+        public int addedSize() {
             return m_addedConnectors.size() + m_addedShapes.size();
         }
 
-        public void clear()
-        {
+        public void clear() {
             m_removedShapes.clear();
             m_addedShapes.clear();
             m_removedConnectors.clear();
@@ -602,22 +535,21 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         }
     }
 
-    public static class SelectedItems
-    {
-        private final Set<WiresShape>     m_shapes;
+    public static class SelectedItems {
+
+        private final Set<WiresShape> m_shapes;
         private final Set<WiresConnector> m_connectors;
         // external coupled connectors are connectors who are connected to a shape, not part of the selection
         // these will not be part of selection rectangle BoundingBox, but would be part of any copy/paste
         private final Set<WiresConnector> m_externallyConnected;
-        private boolean                   selectionGroup;
-        private final Layer               m_layer;
-        private final SelectionManager    m_selManager;
-        private BoundingBox               m_bbox;
+        private boolean selectionGroup;
+        private final Layer m_layer;
+        private final SelectionManager m_selManager;
+        private BoundingBox m_bbox;
 
         private ChangedItems m_changed = new ChangedItems();
 
-        public SelectedItems(SelectionManager selManager, Layer layer)
-        {
+        public SelectedItems(SelectionManager selManager, Layer layer) {
             m_selManager = selManager;
             m_layer = layer;
             m_shapes = new HashSet<>();
@@ -626,29 +558,22 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             m_bbox = new BoundingBox();
         }
 
-        public ChangedItems getChanged()
-        {
+        public ChangedItems getChanged() {
             return m_changed;
         }
 
-        public void selected(WiresShape shape, boolean isSelectionMultiple)
-        {
-            if (!isSelectionMultiple)
-            {
+        public void selected(WiresShape shape, boolean isSelectionMultiple) {
+            if (!isSelectionMultiple) {
                 // clear all shapes and re-addBoundingBox current to just select the current
                 // if only current is selected, it will just remove and re-addBoundingBox it, user should not notice any change.
                 m_selManager.destroySelectionShape();
                 clear();
 
                 add(shape);
-            }
-            else
-            {
-                if (isShapeSelected(shape))
-                {
+            } else {
+                if (isShapeSelected(shape)) {
                     remove(shape);
-                }
-                else  if (hasSameParentsAsSelection(shape) && shape.getDockedTo() == null) // cannot docked shapes
+                } else if (hasSameParentsAsSelection(shape) && shape.getDockedTo() == null) // cannot docked shapes
                 {
                     removeChildShape(shape.getChildShapes());
                     add(shape);
@@ -657,47 +582,36 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             notifyListener(isSelectionMultiple);
         }
 
-        public boolean isShapeSelected(final WiresShape shape)
-        {
+        public boolean isShapeSelected(final WiresShape shape) {
             return m_shapes.contains(shape);
         }
 
-        public boolean isConnectorSelected(final WiresConnector connector)
-        {
+        public boolean isConnectorSelected(final WiresConnector connector) {
             return m_connectors.contains(connector);
         }
 
-        private boolean hasSameParentsAsSelection(WiresShape subjectShape)
-        {
-            for (WiresShape existingShape : m_shapes)
-            {
-                if (existingShape.getParent() != subjectShape.getParent())
-                {
+        private boolean hasSameParentsAsSelection(WiresShape subjectShape) {
+            for (WiresShape existingShape : m_shapes) {
+                if (existingShape.getParent() != subjectShape.getParent()) {
                     return false;
                 }
             }
             return true;
         }
 
-        private WiresShape findParentIfInSelection(WiresShape subjectShape)
-        {
-            for (WiresShape existingShape : m_shapes)
-            {
-                if (existingShape == subjectShape || hasChild(existingShape.getChildShapes(), subjectShape))
-                {
+        private WiresShape findParentIfInSelection(WiresShape subjectShape) {
+            for (WiresShape existingShape : m_shapes) {
+                if (existingShape == subjectShape || hasChild(existingShape.getChildShapes(), subjectShape)) {
                     return existingShape;
                 }
             }
             return null;
         }
 
-        private boolean hasChild(NFastArrayList<WiresShape> shapes, WiresShape subjectShape)
-        {
-            for (int i = 0, size = shapes.size(); i < size; i++)
-            {
+        private boolean hasChild(NFastArrayList<WiresShape> shapes, WiresShape subjectShape) {
+            for (int i = 0, size = shapes.size(); i < size; i++) {
                 WiresShape childShape = shapes.get(i);
-                if ( childShape == subjectShape)
-                {
+                if (childShape == subjectShape) {
                     return true;
                 }
                 hasChild(childShape.getChildShapes(), subjectShape);
@@ -705,14 +619,10 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             return false;
         }
 
-        private void removeChildShape(NFastArrayList<WiresShape> shapes)
-        {
-            for (WiresShape childShape : shapes.asList())
-            {
-                for (WiresShape existingShape : m_shapes)
-                {
-                    if (childShape == existingShape)
-                    {
+        private void removeChildShape(NFastArrayList<WiresShape> shapes) {
+            for (WiresShape childShape : shapes.asList()) {
+                for (WiresShape existingShape : m_shapes) {
+                    if (childShape == existingShape) {
                         // must remove any existing child shape of the parent currently being added
                         remove(existingShape);
                     }
@@ -721,32 +631,23 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             }
         }
 
-        public void selected(WiresConnector connector, boolean isSelectionMultiple)
-        {
-            if (!isSelectionMultiple)
-            {
+        public void selected(WiresConnector connector, boolean isSelectionMultiple) {
+            if (!isSelectionMultiple) {
                 // clear all shapes and re-addBoundingBox current to just select the current
                 // if only current is selected, it will just remove and re-addBoundingBox it, user should not notice any change.
                 m_selManager.destroySelectionShape();
                 clear();
 
                 add(connector);
-                if (m_selManager.isExternallyConnected(connector))
-                {
+                if (m_selManager.isExternallyConnected(connector)) {
                     addExternallyConnected(connector);
                 }
-            }
-            else
-            {
-                if (isConnectorSelected(connector))
-                {
+            } else {
+                if (isConnectorSelected(connector)) {
                     remove(connector);
-                }
-                else
-                {
+                } else {
                     add(connector);
-                    if (m_selManager.isExternallyConnected(connector))
-                    {
+                    if (m_selManager.isExternallyConnected(connector)) {
                         addExternallyConnected(connector);
                     }
                 }
@@ -754,59 +655,44 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             notifyListener(isSelectionMultiple);
         }
 
-        public void rebuildBoundingBox()
-        {
+        public void rebuildBoundingBox() {
             m_selManager.m_startBoundingBox = null;
             m_bbox = new BoundingBox();
 
-            for(WiresShape shape : m_shapes)
-            {
+            for (WiresShape shape : m_shapes) {
                 BoundingBox nodeBox = shape.getContainer().getComputedBoundingPoints().getBoundingBox();
                 m_bbox.addBoundingBox(nodeBox);
             }
 
-            for(WiresConnector connector : m_connectors)
-            {
-                if (!m_externallyConnected.contains(connector))
-                {
+            for (WiresConnector connector : m_connectors) {
+                if (!m_externallyConnected.contains(connector)) {
                     BoundingBox nodeBox = connector.getGroup().getComputedBoundingPoints().getBoundingBox();
                     m_bbox.addBoundingBox(nodeBox);
                 }
             }
         }
 
-        public boolean add(WiresShape shape)
-        {
+        public boolean add(WiresShape shape) {
             // For any Shape being added that also has an added a WiresConnector we must check if the WiresConnector is
             // still connected externally or not.
             // At this stage we know it must be in m_externallyConnected, if the other connection is in the selection,
             // then it should be removed from m_externallyConnected.
-            if (shape.getMagnets() != null)
-            {
-                for (int i = 0; i < shape.getMagnets().size(); i++)
-                {
+            if (shape.getMagnets() != null) {
+                for (int i = 0; i < shape.getMagnets().size(); i++) {
                     WiresMagnet magnet = shape.getMagnets().getMagnet(i);
-                    if (magnet.getConnections() != null)
-                    {
-                        for (WiresConnection connection : magnet.getConnections().asList())
-                        {
+                    if (magnet.getConnections() != null) {
+                        for (WiresConnection connection : magnet.getConnections().asList()) {
                             WiresConnector wiresConnector = connection.getConnector();
-                            if (isConnectorSelected(wiresConnector) && getExternallyConnected().contains(wiresConnector))
-                            {
-                                WiresConnection otherConnection =  connection.getOppositeConnection();
-                                if (otherConnection != null && otherConnection.getMagnet() != null)
-                                {
+                            if (isConnectorSelected(wiresConnector) && getExternallyConnected().contains(wiresConnector)) {
+                                WiresConnection otherConnection = connection.getOppositeConnection();
+                                if (otherConnection != null && otherConnection.getMagnet() != null) {
                                     WiresShape otherShape = otherConnection.getMagnet().getMagnets().getWiresShape();
-                                    if (findParentIfInSelection(otherShape) != null)
-                                    {
+                                    if (findParentIfInSelection(otherShape) != null) {
                                         getExternallyConnected().remove(wiresConnector);
                                     }
-                                }
-                                else if (otherConnection != null)
-                                {
+                                } else if (otherConnection != null) {
                                     getExternallyConnected().remove(wiresConnector);
                                 }
-
                             }
                         }
                     }
@@ -817,110 +703,91 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             return m_shapes.add(shape);
         }
 
-        public boolean remove(WiresShape shape)
-        {
+        public boolean remove(WiresShape shape) {
             updateExternallyConnectedOnShapeRemove(shape);
 
             m_changed.getRemovedShapes().add(shape);
             return m_shapes.remove(shape);
         }
 
-        /** If a shape is removed, any connectors need to be checked in case they are not externally connected
-         *  this must be done for the current shape and all children shapes, as the child could have a connector in the selection
+        /**
+         * If a shape is removed, any connectors need to be checked in case they are not externally connected
+         * this must be done for the current shape and all children shapes, as the child could have a connector in the selection
+         *
          * @param shape
          */
-        private void updateExternallyConnectedOnShapeRemove(WiresShape shape)
-        {
-            if (shape.getMagnets() != null)
-            {
-                for (int i = 0; i < shape.getMagnets().size(); i++)
-                {
+        private void updateExternallyConnectedOnShapeRemove(WiresShape shape) {
+            if (shape.getMagnets() != null) {
+                for (int i = 0; i < shape.getMagnets().size(); i++) {
                     WiresMagnet magnet = shape.getMagnets().getMagnet(i);
-                    if (magnet.getConnections() != null)
-                    {
-                        for (WiresConnection connection : magnet.getConnections().asList())
-                        {
+                    if (magnet.getConnections() != null) {
+                        for (WiresConnection connection : magnet.getConnections().asList()) {
                             WiresConnector wiresConnector = connection.getConnector();
-                            if (isConnectorSelected(wiresConnector) && !m_externallyConnected.contains(wiresConnector))
-                            {
+                            if (isConnectorSelected(wiresConnector) && !m_externallyConnected.contains(wiresConnector)) {
                                 m_externallyConnected.add(wiresConnector);
                             }
                         }
                     }
                 }
             }
-            for (WiresShape child : shape.getChildShapes().asList())
-            {
+            for (WiresShape child : shape.getChildShapes().asList()) {
                 updateExternallyConnectedOnShapeRemove(child);
             }
         }
 
-        public boolean add(WiresConnector connector)
-        {
+        public boolean add(WiresConnector connector) {
             m_changed.getAddedConnectors().add(connector);
             return m_connectors.add(connector);
         }
 
-        public boolean addExternallyConnected(WiresConnector connector)
-        {
+        public boolean addExternallyConnected(WiresConnector connector) {
             return m_externallyConnected.add(connector);
         }
 
-
-        public boolean remove(WiresConnector connector)
-        {
+        public boolean remove(WiresConnector connector) {
             m_changed.getRemovedConnectors().add(connector);
             m_externallyConnected.remove(connector); // it may or may not be in here, but attempt remove in case it is
             return m_connectors.remove(connector);
         }
 
-        public Set<WiresShape> getShapes()
-        {
+        public Set<WiresShape> getShapes() {
             return m_shapes;
         }
 
-        public Set<WiresConnector> getConnectors()
-        {
+        public Set<WiresConnector> getConnectors() {
             return m_connectors;
         }
 
-        public Set<WiresConnector> getExternallyConnected()
-        {
+        public Set<WiresConnector> getExternallyConnected() {
             return m_externallyConnected;
         }
 
-        public boolean isExternallyConnector(WiresConnector connector)
-        {
+        public boolean isExternallyConnector(WiresConnector connector) {
             return m_externallyConnected.contains(connector);
         }
 
-        public boolean isSelectionGroup()
-        {
+        public boolean isSelectionGroup() {
             return selectionGroup;
         }
 
-        public void setSelectionGroup(boolean selectionGroup)
-        {
+        public void setSelectionGroup(boolean selectionGroup) {
             this.selectionGroup = selectionGroup;
         }
 
-        public int size()
-        {
+        public int size() {
             return m_shapes.size() + m_connectors.size();
         }
 
-        public boolean isEmpty()
-        {
+        public boolean isEmpty() {
             return m_shapes.isEmpty() && m_connectors.isEmpty();
         }
 
-        public void clear()
-        {
+        public void clear() {
             // selection controls can only exist, if there is single entry
             m_changed.clear(); // clear first
             recordPrevious();
 
-            selectionGroup  = false;
+            selectionGroup = false;
 
             m_shapes.clear();
             m_connectors.clear();
@@ -929,9 +796,8 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             m_selManager.m_startBoundingBox = null;
         }
 
-        public void destroy()
-        {
-            selectionGroup  = false;
+        public void destroy() {
+            selectionGroup = false;
             m_changed.clear();
             m_shapes.clear();
             m_connectors.clear();
@@ -940,52 +806,39 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             m_selManager.m_startBoundingBox = null;
         }
 
-        public void recordPrevious()
-        {
-            for (WiresShape shape : m_shapes)
-            {
+        public void recordPrevious() {
+            for (WiresShape shape : m_shapes) {
                 m_changed.getRemovedShapes().add(shape);
             }
 
-            for (WiresConnector connector : m_connectors)
-            {
+            for (WiresConnector connector : m_connectors) {
                 m_changed.getRemovedConnectors().add(connector);
             }
         }
 
-        public BoundingBox getBoundingBox()
-        {
+        public BoundingBox getBoundingBox() {
             return m_bbox;
         }
 
-        public void notifyListener(boolean isSelectionMultiple)
-        {
-            if (isSelectionMultiple)
-            {
-                if ( !isEmpty() )
-                {
+        public void notifyListener(boolean isSelectionMultiple) {
+            if (isSelectionMultiple) {
+                if (!isEmpty()) {
                     selectionGroup = true;
                     m_selManager.rebuildSelectionArea();
-                }
-                else
-                {
+                } else {
                     selectionGroup = false;
                 }
-            }
-            else
-            {
+            } else {
                 selectionGroup = false;
             }
 
             notifyListener();
         }
 
-        public void notifyListener()
-        {
+        public void notifyListener() {
             selectShapes();
             m_changed.clear();
-            if (isEmpty())
-            {
+            if (isEmpty()) {
                 selectionGroup = false;
                 // nothing left, so properly clean things up.
                 m_selManager.destroySelectionShape();
@@ -999,12 +852,11 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         }
     }
 
-    public void getItemsInBoundingBox(BoundingBox selectionBox)
-    {
+    public void getItemsInBoundingBox(BoundingBox selectionBox) {
         m_selected.setSelectionGroup(true);
         BoundingBox box = m_selected.getBoundingBox();
 
-        BoundingBox      nodeBox;
+        BoundingBox nodeBox;
         List<WiresShape> toBeRemoved = new ArrayList<>();
 
         Map<String, WiresShape> shapesMap = new HashMap<>();
@@ -1012,111 +864,91 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
 
         // first build a map of all shapes that intersect with teh selection rectangle. Nested shapes will be used later.
         final WiresShape[] shapes = m_wiresManager.getShapes();
-        for (WiresShape shape : shapes)
-        {
-            if ( shape.getDockedTo() != null)
-            {
+        for (WiresShape shape : shapes) {
+            if (shape.getDockedTo() != null) {
                 // docked items cannot be added to a selection, only their parent they are docked to
                 continue;
             }
             nodeBox = shape.getContainer().getComputedBoundingPoints().getBoundingBox();
-            if (selectionBox.intersects(nodeBox))
-            {
+            if (selectionBox.intersects(nodeBox)) {
                 shapesMap.put(shape.getContainer().uuid(), shape);
                 uuidMap.put(shape.getContainer().uuid(), nodeBox);
             }
         }
 
         // addBoundingBox to removal list any shape whose parent is also in the selection
-        for (WiresShape shape : shapesMap.values())
-        {
-            if (null != shape.getParent() && shapesMap.containsKey(shape.getParent().getContainer().uuid()))
-            {
+        for (WiresShape shape : shapesMap.values()) {
+            if (null != shape.getParent() && shapesMap.containsKey(shape.getParent().getContainer().uuid())) {
                 toBeRemoved.add(shape); // can't remove yet, as it may have selected children itself, which will also need to be removed
             }
         }
 
         // now the list is built, safely remove the shapes
-        for (WiresShape shape : toBeRemoved)
-        {
+        for (WiresShape shape : toBeRemoved) {
             shapesMap.remove(shape.getContainer().uuid());
         }
 
-        for (WiresShape shape : shapesMap.values())
-        {
+        for (WiresShape shape : shapesMap.values()) {
             nodeBox = uuidMap.get(shape.getContainer().uuid());
             m_selected.add(shape);
             box.addBoundingBox(nodeBox);
         }
 
-        for (WiresConnector connector : m_wiresManager.getConnectorList().asList())
-        {
+        for (WiresConnector connector : m_wiresManager.getConnectorList().asList()) {
             boolean externallyConnected = isExternallyConnected(connector);
 
             Point2DArray points = new Point2DArray();
-            Point2D      loc    = getSelectionShape().getLocation();
-            BoundingBox  boundingBox = getSelectionShape().getBoundingBox();
+            Point2D loc = getSelectionShape().getLocation();
+            BoundingBox boundingBox = getSelectionShape().getBoundingBox();
             points.pushXY(loc.getX(), loc.getY());
             points.pushXY(loc.getX() + boundingBox.getWidth(), loc.getY());
             points.pushXY(loc.getX() + boundingBox.getWidth(), loc.getY() + boundingBox.getHeight());
             points.pushXY(loc.getX(), loc.getY() + boundingBox.getHeight());
 
             nodeBox = connector.getGroup().getComputedBoundingPoints().getBoundingBox();
-            if (selectionBox.containsBoundingBox(nodeBox))
-            {
+            if (selectionBox.containsBoundingBox(nodeBox)) {
                 addConnector(connector, externallyConnected, box, nodeBox);
-            }
-            else
-            {
+            } else {
                 Point2DArray intersections = Geometry.getIntersectPolyLinePath(points, connector.getLine().asShape().getPathPartList(), true);
-                if (intersections!=null && intersections.size()> 0)
-                {
+                if (intersections != null && intersections.size() > 0) {
                     addConnector(connector, externallyConnected, box, nodeBox);
-                }
-                else
-                {
+                } else {
                     // the above checked the line, also check the head and tail.
 
                     // head is rotated around an offset with also set. The reverse of this must be applied to the
                     // selection rectangle, to ensure thinsg are all in the same space,  for intersection to work
                     MultiPath path = connector.getHead();
                     Transform xfrm = new Transform();
-                    xfrm.translate(path.getOffset().getX(),path.getOffset().getY());
-                    xfrm.rotate(0-path.getRotation());
+                    xfrm.translate(path.getOffset().getX(), path.getOffset().getY());
+                    xfrm.rotate(0 - path.getRotation());
                     xfrm.translate(0 - path.getX(), 0 - path.getY());
                     xfrm.translate(0 - path.getOffset().getX(), 0 - path.getOffset().getY());
 
                     Point2DArray transformedPoints = points.copy();
-                    for (Point2D p : transformedPoints.asArray())
-                    {
+                    for (Point2D p : transformedPoints.asArray()) {
                         xfrm.transform(p, p);
                     }
 
                     intersections = Geometry.getIntersectPolyLinePath(transformedPoints, connector.getHead().getActualPathPartListArray().get(0), true);
-                    if (intersections!=null && intersections.size()> 0)
-                    {
+                    if (intersections != null && intersections.size() > 0) {
                         addConnector(connector, externallyConnected, box, nodeBox);
-                    }
-                    else
-                    {
+                    } else {
                         // tail is rotated around an offset with also set. The reverse of this must be applied to the
                         // selection rectangle, to ensure thinsg are all in the same space,  for intersection to work
                         path = connector.getTail();
                         xfrm = new Transform();
-                        xfrm.translate(path.getOffset().getX(),path.getOffset().getY());
-                        xfrm.rotate(0-path.getRotation());
+                        xfrm.translate(path.getOffset().getX(), path.getOffset().getY());
+                        xfrm.rotate(0 - path.getRotation());
                         xfrm.translate(0 - path.getX(), 0 - path.getY());
                         xfrm.translate(0 - path.getOffset().getX(), 0 - path.getOffset().getY());
 
                         transformedPoints = points.copy();
-                        for (Point2D p : transformedPoints.asArray())
-                        {
+                        for (Point2D p : transformedPoints.asArray()) {
                             xfrm.transform(p, p);
                         }
 
                         intersections = Geometry.getIntersectPolyLinePath(transformedPoints, connector.getTail().getActualPathPartListArray().get(0), true);
-                        if (intersections!=null && intersections.size()> 0)
-                        {
+                        if (intersections != null && intersections.size() > 0) {
                             addConnector(connector, externallyConnected, box, nodeBox);
                         }
                     }
@@ -1128,19 +960,17 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
     /**
      * returns whether the connector is connected to a shape not in the selection.
      * As this could be connected to a nested shape, it iterates from that shape (not in the selection) until it finds it's parent in the selection or it returns null.
+     *
      * @param connector
      * @return
      */
-    private boolean isExternallyConnected(WiresConnector connector)
-    {
+    private boolean isExternallyConnected(WiresConnector connector) {
         WiresShape headShape = null;
         WiresShape tailShape = null;
-        if ( connector.getHeadConnection().getMagnet() != null)
-        {
+        if (connector.getHeadConnection().getMagnet() != null) {
             headShape = connector.getHeadConnection().getMagnet().getMagnets().getWiresShape();
         }
-        if ( connector.getTailConnection().getMagnet() != null)
-        {
+        if (connector.getTailConnection().getMagnet() != null) {
             tailShape = connector.getTailConnection().getMagnet().getMagnets().getWiresShape();
         }
         boolean hasHeadShapeNotInSelection = headShape != null && m_selected.findParentIfInSelection(headShape) == null;
@@ -1149,27 +979,19 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         return hasHeadShapeNotInSelection || hasTailShapeNotInSelection;
     }
 
-    private void addConnector(WiresConnector connector, boolean externallyCoupled, BoundingBox box, BoundingBox nodeBox)
-    {
+    private void addConnector(WiresConnector connector, boolean externallyCoupled, BoundingBox box, BoundingBox nodeBox) {
         m_selected.add(connector);
 
-        if (!externallyCoupled)
-        {
+        if (!externallyCoupled) {
             box.addBoundingBox(nodeBox);
-        }
-        else
-        {
+        } else {
             m_selected.addExternallyConnected(connector);
         }
-
     }
 
-    private void destroySelectionShape()
-    {
-        if (getSelectionShape() != null )
-        {
-            if (m_dragSelectionStartReg != null)
-            {
+    private void destroySelectionShape() {
+        if (getSelectionShape() != null) {
+            if (m_dragSelectionStartReg != null) {
                 // this is not added for the selection creation rectangle.
                 m_dragSelectionStartReg.removeHandler();
                 m_dragSelectionMoveReg.removeHandler();
@@ -1190,10 +1012,8 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                 m_selectionDragHandler.isRunning();
     }
 
-    public void destroy()
-    {
-        if (m_selectMouseDownHandlerReg != null)
-        {
+    public void destroy() {
+        if (m_selectMouseDownHandlerReg != null) {
             m_selectMouseDownHandlerReg.removeHandler();
             m_selectMouseClickHandlerReg.removeHandler();
             m_selectMouseDoubleClickHandlerReg.removeHandler();
@@ -1214,8 +1034,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         m_start = null;
     }
 
-    private double[] calculateSelectionShapeForExternallyConnectedConnectors(int dx, int dy, BoundingBox originalBox)
-    {
+    private double[] calculateSelectionShapeForExternallyConnectedConnectors(int dx, int dy, BoundingBox originalBox) {
 
         BoundingBox box = new BoundingBox();
         if (null != originalBox) {
@@ -1224,14 +1043,13 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         box.offset(dx, dy);
 
         if (m_selected.m_externallyConnected.isEmpty()) {
-            return new double[] { box.getMinX() - SELECTION_PADDING, box.getMinY() - SELECTION_PADDING };
+            return new double[]{box.getMinX() - SELECTION_PADDING, box.getMinY() - SELECTION_PADDING};
         }
 
         double width = null != originalBox ? originalBox.getWidth() : 0d;
         double height = null != originalBox ? originalBox.getHeight() : 0d;
         if (!m_selected.m_externallyConnected.isEmpty()) {
-            for (WiresConnector connector : m_selected.m_externallyConnected)
-            {
+            for (WiresConnector connector : m_selected.m_externallyConnected) {
                 box.addBoundingBox(connector.getHead().getComputedBoundingPoints().getBoundingBox());
                 box.addBoundingBox(connector.getTail().getComputedBoundingPoints().getBoundingBox());
                 box.addBoundingBox(connector.getLine().getComputedBoundingPoints().getBoundingBox());
@@ -1240,7 +1058,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             height = box.getMaxY() - box.getMinY();
         }
 
-        return new double[] { box.getMinX(), box.getMinY(), width, height};
+        return new double[]{box.getMinX(), box.getMinY(), width, height};
     }
 
     public WiresCompositeControl getControl() {
@@ -1249,8 +1067,8 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
 
     public static class SelectionDragHandler implements NodeDragEndHandler,
                                                         DragConstraintEnforcer,
-                                                        NodeMouseClickHandler
-    {
+                                                        NodeMouseClickHandler {
+
         SelectionManager m_selectionManager;
         WiresCompositeShapeHandler multipleShapeHandler;
         private int adjustX = 0;
@@ -1268,8 +1086,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         }
 
         @Override
-        public void onNodeMouseClick(NodeMouseClickEvent event)
-        {
+        public void onNodeMouseClick(NodeMouseClickEvent event) {
             // temporarily remove the rect, use findAt to find the underlying shape and trigger the click event
             if (event.isButtonLeft()) {
                 m_selectionManager.getSelectionShape().removeFromParent();
@@ -1277,10 +1094,8 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                 Node<?> node = m_selectionManager.m_layer.getViewport().findShapeAtPoint(event.getX(), event.getY());
                 m_selectionManager.m_layer.add(m_selectionManager.getSelectionShape());
                 m_selectionManager.m_layer.draw();
-                while (node!=null)
-                {
-                    if(node.isEventHandled(event.getAssociatedType()))
-                    {
+                while (node != null) {
+                    if (node.isEventHandled(event.getAssociatedType())) {
                         node.fireEvent(event);
                         break;
                     }
@@ -1311,11 +1126,10 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             return adjusted;
         }
 
-        @Override public void onNodeDragEnd(NodeDragEndEvent event)
-        {
+        @Override
+        public void onNodeDragEnd(NodeDragEndEvent event) {
             updateSelectionShapeForExternallyConnectedConnectors(adjustX, adjustY, m_selectionManager.m_startBoundingBox);
-            if ( m_selectionManager.m_startBoundingBox != null)
-            {
+            if (m_selectionManager.m_startBoundingBox != null) {
                 m_selectionManager.m_startBoundingBox.offset(adjustX, adjustY);
             }
             m_selectionManager.m_ignoreMouseClick = true; // need to ignore the click event after
@@ -1326,19 +1140,16 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             reinforceSelectionShapeOnTop();
         }
 
-        void reinforceSelectionShapeOnTop()
-        {
+        void reinforceSelectionShapeOnTop() {
             Shape<?> shape = m_selectionManager.getSelectionShape();
-            if (null != shape )
-            {
+            if (null != shape) {
                 shape.getLayer().moveToTop(shape);
             }
         }
 
         void updateSelectionShapeForExternallyConnectedConnectors(int dx,
-                                                                          int dy,
-                                                                          BoundingBox originalBox)
-        {
+                                                                  int dy,
+                                                                  BoundingBox originalBox) {
             final double[] attrs = m_selectionManager
                     .calculateSelectionShapeForExternallyConnectedConnectors(dx, dy, originalBox);
             m_selectionManager.m_selectionShapeProvider
@@ -1387,9 +1198,9 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
 
         @Override
         public RectangleSelectionProvider setSize(double width,
-                                                    double height) {
+                                                  double height) {
             shape.setWidth(width)
-                .setHeight(height);
+                    .setHeight(height);
             return this;
         }
 
@@ -1411,11 +1222,9 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         public Shape<?> getShape() {
             return shape;
         }
-
     }
 
     private static boolean isButtonLeft(MouseEvent event) {
         return event.button == MouseEventUtil.BUTTON_LEFT;
     }
-
 }

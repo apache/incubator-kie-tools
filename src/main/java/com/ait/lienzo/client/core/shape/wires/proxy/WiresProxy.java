@@ -20,6 +20,7 @@ public interface WiresProxy {
 
     /**
      * Start point, the proxy shape will appear at this location.
+     *
      * @param x The value for the absolute X coordinate.
      * @param y The value for the absolute Y coordinate.
      */
@@ -27,6 +28,7 @@ public interface WiresProxy {
 
     /**
      * Move the proxy shape.
+     *
      * @param dx The X diff, since the start point.
      * @param dy The Y diff, since the start point.
      */

@@ -21,43 +21,37 @@ import java.util.List;
 /**
  * Selection mode of a Picture or Sprite.
  */
-public enum ImageSelectionMode implements EnumWithValue
-{
-    SELECT_BOUNDS("select-bounds"), SELECT_NON_TRANSPARENT("select-non-transparent");
+public enum ImageSelectionMode implements EnumWithValue {
+    SELECT_BOUNDS("select-bounds"),
+    SELECT_NON_TRANSPARENT("select-non-transparent");
 
     private final String m_value;
 
     private static final EnumStringMap<ImageSelectionMode> LOOKUP_MAP = Statics.build(ImageSelectionMode.values());
 
-    private ImageSelectionMode(final String value)
-    {
+    private ImageSelectionMode(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
-    public static final ImageSelectionMode lookup(final String key)
-    {
+    public static final ImageSelectionMode lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, SELECT_NON_TRANSPARENT);
     }
 
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(ImageSelectionMode.values());
     }
 
-    public static final List<ImageSelectionMode> getValues()
-    {
+    public static final List<ImageSelectionMode> getValues() {
         return Statics.getValues(ImageSelectionMode.values());
     }
 }

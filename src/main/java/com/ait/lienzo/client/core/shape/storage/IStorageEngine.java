@@ -20,8 +20,8 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.tools.client.collection.MetaData;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
-public interface IStorageEngine<M> extends IStorageEngineIterable<M>
-{
+public interface IStorageEngine<M> extends IStorageEngineIterable<M> {
+
     int size();
 
     void clear();

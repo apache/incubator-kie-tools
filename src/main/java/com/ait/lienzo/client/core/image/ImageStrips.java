@@ -1,8 +1,9 @@
 package com.ait.lienzo.client.core.image;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.tools.client.collection.NFastStringMap;
-import java.util.function.Supplier;
 
 public class ImageStrips {
 
@@ -40,8 +41,8 @@ public class ImageStrips {
             final ImageStrip strip = strips[index];
             register(strip,
                      () -> register(strips,
-                              index + 1,
-                              loadCallback));
+                                    index + 1,
+                                    loadCallback));
         } else {
             loadCallback.run();
         }
@@ -60,7 +61,7 @@ public class ImageStrips {
     }
 
     void registerStrip(final ImageStrip strip,
-                      final ImageElementProxy handler) {
+                       final ImageElementProxy handler) {
         strips.put(strip.getName(), strip);
         proxies.put(strip.getName(), handler);
     }

@@ -21,46 +21,39 @@ import com.ait.lienzo.tools.common.api.types.IStringValued;
 /**
  * GroupType is an extensible enumeration of all GroupOf types.
  */
-public class GroupType implements IStringValued
-{
+public class GroupType implements IStringValued {
+
     public static final GroupType GROUP = new GroupType("Group");
 
-    private final String          m_value;
+    private final String m_value;
 
-    protected GroupType(final String value)
-    {
+    protected GroupType(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public boolean equals(final Object other)
-    {
-        if (!(other instanceof GroupType))
-        {
+    public boolean equals(final Object other) {
+        if (!(other instanceof GroupType)) {
             return false;
         }
-        if (this == other)
-        {
+        if (this == other) {
             return true;
         }
         return ((GroupType) other).getValue().equals(getValue());
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return getValue().hashCode();
     }
 }

@@ -17,15 +17,14 @@
 package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.shared.core.types.Color;
-
 import elemental2.core.Uint8ClampedArray;
 import elemental2.dom.ImageData;
 
 /**
  * A simple Red-Blue-Green-Alpha color representation.
  */
-public final class ImageDataPixelColor
-{
+public final class ImageDataPixelColor {
+
     private final int m_r;
 
     private final int m_g;
@@ -34,8 +33,7 @@ public final class ImageDataPixelColor
 
     private final int m_a;
 
-    public ImageDataPixelColor(final ImageData source)
-    {
+    public ImageDataPixelColor(final ImageData source) {
         final Uint8ClampedArray data = source.data;
 
         m_r = (int) color(data, 0);
@@ -47,33 +45,27 @@ public final class ImageDataPixelColor
         m_a = (int) color(data, 3);
     }
 
-    private final double color(Uint8ClampedArray data, int i)
-    {
-		return data.getAt(i);
+    private final double color(Uint8ClampedArray data, int i) {
+        return data.getAt(i);
     }
 
-    public final int getR()
-    {
+    public final int getR() {
         return m_r;
     }
 
-    public final int getG()
-    {
+    public final int getG() {
         return m_g;
     }
 
-    public final int getB()
-    {
+    public final int getB() {
         return m_b;
     }
 
-    public final int getA()
-    {
+    public final int getA() {
         return m_a;
     }
 
-    public final String toBrowserRGB()
-    {
+    public final String toBrowserRGB() {
         return Color.rgbToBrowserHexColor(m_r, m_g, m_b);
     }
 }

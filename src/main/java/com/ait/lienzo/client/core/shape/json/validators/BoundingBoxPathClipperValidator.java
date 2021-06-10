@@ -18,18 +18,16 @@ package com.ait.lienzo.client.core.shape.json.validators;
 
 import com.ait.lienzo.client.core.shape.BoundingBoxPathClipper;
 
-public class BoundingBoxPathClipperValidator extends AbstractPathClipperValidator
-{
+public class BoundingBoxPathClipperValidator extends AbstractPathClipperValidator {
+
     public static final BoundingBoxPathClipperValidator INSTANCE = new BoundingBoxPathClipperValidator();
 
-    public BoundingBoxPathClipperValidator()
-    {
+    public BoundingBoxPathClipperValidator() {
         super(BoundingBoxPathClipper.TYPE);
     }
 
     @Override
-    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
-    {
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException {
         super.validate(jval, ctx);
 
         checkHardcodedAttribute("type", BoundingBoxPathClipper.TYPE, jval, ctx);

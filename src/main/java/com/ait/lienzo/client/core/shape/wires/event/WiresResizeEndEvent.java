@@ -17,30 +17,26 @@
 package com.ait.lienzo.client.core.shape.wires.event;
 
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
-
 import elemental2.dom.HTMLElement;
 
 /**
  * <p>Event that is fired when the drag ends ( drag produced by one of resize control points for a wires shape ).</p>
  */
-public class WiresResizeEndEvent extends AbstractWiresResizeEvent<WiresResizeEndHandler, NodeDragEndHandler>
-{
+public class WiresResizeEndEvent extends AbstractWiresResizeEvent<WiresResizeEndHandler, NodeDragEndHandler> {
+
     public static final Type<WiresResizeEndHandler> TYPE = new Type<>();
 
-    public WiresResizeEndEvent(final HTMLElement relativeElement)
-    {
+    public WiresResizeEndEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
     @Override
-    public Type<WiresResizeEndHandler> getAssociatedType()
-    {
+    public Type<WiresResizeEndHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    public void dispatch(final WiresResizeEndHandler shapeMovedHandler)
-    {
+    public void dispatch(final WiresResizeEndHandler shapeMovedHandler) {
         shapeMovedHandler.onShapeResizeEnd(this);
     }
 }

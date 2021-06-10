@@ -18,23 +18,19 @@ package com.ait.lienzo.tools.client;
 
 import com.google.gwt.safehtml.shared.SimpleHtmlSanitizer;
 
-public final class XSS
-{
+public final class XSS {
+
     private static final XSS INSTANCE = new XSS();
 
-    private XSS()
-    {
+    private XSS() {
     }
 
-    public static final XSS get()
-    {
+    public static final XSS get() {
         return INSTANCE;
     }
 
-    public final String clean(String html)
-    {
-        if ((null == html) || (html.isEmpty()))
-        {
+    public final String clean(String html) {
+        if ((null == html) || (html.isEmpty())) {
             return html;
         }
         return SimpleHtmlSanitizer.sanitizeHtml(html).asString();

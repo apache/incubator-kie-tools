@@ -16,8 +16,8 @@
 
 package com.ait.lienzo.client.core.image;
 
-public final class ImageClipBounds
-{
+public final class ImageClipBounds {
+
     private final int m_clip_xpos;
 
     private final int m_clip_ypos;
@@ -30,8 +30,7 @@ public final class ImageClipBounds
 
     private final int m_dest_high;
 
-    public ImageClipBounds(final int cx, final int cy, final int cw, final int ch, final int dw, final int dh)
-    {
+    public ImageClipBounds(final int cx, final int cy, final int cw, final int ch, final int dw, final int dh) {
         m_clip_xpos = cx;
 
         m_clip_ypos = cy;
@@ -45,51 +44,41 @@ public final class ImageClipBounds
         m_dest_high = dh;
     }
 
-    public final int getClipXPos()
-    {
+    public final int getClipXPos() {
         return m_clip_xpos;
     }
 
-    public final int getClipYPos()
-    {
+    public final int getClipYPos() {
         return m_clip_ypos;
     }
 
-    public final int getClipWide()
-    {
+    public final int getClipWide() {
         return m_clip_wide;
     }
 
-    public final int getClipHigh()
-    {
+    public final int getClipHigh() {
         return m_clip_high;
     }
 
-    public final int getDestWide()
-    {
+    public final int getDestWide() {
         return m_dest_wide;
     }
 
-    public final int getDestHigh()
-    {
+    public final int getDestHigh() {
         return m_dest_high;
     }
 
-    public final boolean isSame(final ImageClipBounds that)
-    {
-        if (null == that)
-        {
+    public final boolean isSame(final ImageClipBounds that) {
+        if (null == that) {
             return false;
         }
-        if (this == that)
-        {
+        if (this == that) {
             return true;
         }
         return ((that.m_clip_xpos == m_clip_xpos) && (that.m_clip_ypos == m_clip_ypos) && (that.m_clip_wide == m_clip_wide) && (that.m_clip_high == m_clip_high) && (that.m_dest_wide == m_dest_wide) && (that.m_dest_high == m_dest_high));
     }
 
-    public final boolean isDifferent(final ImageClipBounds that)
-    {
+    public final boolean isDifferent(final ImageClipBounds that) {
         return (!isSame(that));
     }
 }

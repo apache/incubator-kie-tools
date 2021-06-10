@@ -17,53 +17,45 @@
 package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.client.core.shape.Node;
-
 import elemental2.dom.HTMLElement;
 
-public class ResizeEndEvent extends AbstractNodeHumanInputEvent<ResizeEndHandler, Node>
-{
-    private int                           m_width;
+public class ResizeEndEvent extends AbstractNodeHumanInputEvent<ResizeEndHandler, Node> {
 
-    private int                           m_height;
+    private int m_width;
+
+    private int m_height;
 
     private static final Type<ResizeEndHandler> TYPE = new Type<>();
 
-    public static final Type<ResizeEndHandler> getType()
-    {
+    public static final Type<ResizeEndHandler> getType() {
         return TYPE;
     }
 
-    public ResizeEndEvent(final HTMLElement relativeElement)
-    {
+    public ResizeEndEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
-    public void override(final int width, final int height)
-    {
+    public void override(final int width, final int height) {
         m_width = width;
 
         m_height = height;
     }
 
     @Override
-    public final Type<ResizeEndHandler> getAssociatedType()
-    {
+    public final Type<ResizeEndHandler> getAssociatedType() {
         return TYPE;
     }
 
-    public int getWidth()
-    {
+    public int getWidth() {
         return m_width;
     }
 
-    public int getHeight()
-    {
+    public int getHeight() {
         return m_height;
     }
 
     @Override
-    public void dispatch(final ResizeEndHandler handler)
-    {
+    public void dispatch(final ResizeEndHandler handler) {
         handler.onResizeEnd(this);
     }
 }

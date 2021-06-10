@@ -25,39 +25,36 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 /**
  * ITextWrapper implementation that truncates text and appends "..." if there is no space left.
  */
-@SuppressWarnings("Duplicates") public class TextLineBreakTruncateWrapper extends TextTruncateWrapper
-{
-    public static final String       WHITESPACE_REGEX   = " |\\t";
+@SuppressWarnings("Duplicates")
+public class TextLineBreakTruncateWrapper extends TextTruncateWrapper {
 
-    public static final String       LINEBREAK          = "\n";
+    public static final String WHITESPACE_REGEX = " |\\t";
 
-    public static final int          MAX_LENGHT_TO_WRAP = 10;
+    public static final String LINEBREAK = "\n";
 
-    private             int          lastTextHash;
+    public static final int MAX_LENGHT_TO_WRAP = 10;
 
-    private final       List<String> textLines;
+    private int lastTextHash;
 
-    public TextLineBreakTruncateWrapper(final Text text, final BoundingBox wrapBoundaries)
-    {
+    private final List<String> textLines;
+
+    public TextLineBreakTruncateWrapper(final Text text, final BoundingBox wrapBoundaries) {
         super(text, wrapBoundaries);
         setMargin(10);
         textLines = new ArrayList<>();
     }
 
-    private String[] splitWords(final String text)
-    {
+    private String[] splitWords(final String text) {
         return text.replaceAll(LINEBREAK, " " + LINEBREAK + " ").split(WHITESPACE_REGEX);
     }
 
     @Override
-    protected double[] calculateWrapBoundaries()
-    {
-        final List<String> lines  = getWrappedTextLines(textSupplier.get());
-        final double       height = getHeightByLines(lines.size());
+    protected double[] calculateWrapBoundaries() {
+        final List<String> lines = getWrappedTextLines(textSupplier.get());
+        final double height = getHeightByLines(lines.size());
 
         double maxWidth = 0;
-        for (String line : lines)
-        {
+        for (String line : lines) {
             double lineWidth = getBoundingBoxForString(line).getWidth();
             maxWidth = (lineWidth > maxWidth) ? lineWidth : maxWidth;
         }
@@ -65,57 +62,49 @@ import com.ait.lienzo.client.core.types.BoundingBox;
         return new double[]{maxWidth, height};
     }
 
-    private double getRemainingHeight(int numOfLines)
-    {
+    private double getRemainingHeight(int numOfLines) {
         return getWrapBoundaries().getHeight() - (Y_OFFSET * numOfLines);
     }
 
     @Override
-    public void drawString(final Context2D context, final IDrawString drawCommand)
-    {
+    public void drawString(final Context2D context, final IDrawString drawCommand) {
         final List<String> lines = getWrappedTextLines(text.getText());
         drawLines(context, drawCommand, lines, getBoundingBox().getWidth());
     }
 
-    private boolean hasChanged(String text)
-    {
+    private boolean hasChanged(String text) {
         final int currentTextHash = Objects.hash(text, getWrapBoundaries());
-        boolean   hasChanged      = (currentTextHash != lastTextHash);
-        if (hasChanged)
-        {
+        boolean hasChanged = (currentTextHash != lastTextHash);
+        if (hasChanged) {
             lastTextHash = currentTextHash;
         }
         return hasChanged;
     }
 
-    private List<String> getWrappedTextLines(final String text)
-    {
+    private List<String> getWrappedTextLines(final String text) {
 
         //in case text and boundaries has not changed return preview lines, to avoid recalculate the text wrapping
-        if (!hasChanged(text))
-        {
+        if (!hasChanged(text)) {
             return textLines;
         }
         textLines.clear();
 
-        final String[]      words           = splitWords(text);
-        final List<String>  lines           = new ArrayList<>();
-        final double        boundariesWidth = getWrapBoundariesWidth();
-        final StringBuilder currentLine     = new StringBuilder();
+        final String[] words = splitWords(text);
+        final List<String> lines = new ArrayList<>();
+        final double boundariesWidth = getWrapBoundariesWidth();
+        final StringBuilder currentLine = new StringBuilder();
 
-        for (int i = 0; i < words.length; i++)
-        {
+        for (int i = 0; i < words.length; i++) {
 
             int lineIndex = lines.size() + 1;
-            if (!hasVerticalSpace(lineIndex, getLineHeight(), getRemainingHeight(lineIndex)) && !lines.isEmpty())
-            {
+            if (!hasVerticalSpace(lineIndex, getLineHeight(), getRemainingHeight(lineIndex)) && !lines.isEmpty()) {
                 final int lastWordIndex = lines.size() - 1;
                 final String endWord = lines.get(lastWordIndex);
                 final String truncated =
                         (endWord.length() > 3 ? endWord.substring(0, endWord.length() - 4) : endWord) + "...";
                 lines.remove(lastWordIndex);
                 //add if it has space to draw the truncated word
-                if(hasHorizontalSpaceToDraw(truncated, "", boundariesWidth)) {
+                if (hasHorizontalSpaceToDraw(truncated, "", boundariesWidth)) {
                     lines.add(truncated);
                 }
                 break;
@@ -123,25 +112,22 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 
             //set current world + whitespace if applicable
             final String currentWord = words[i];
-            if (currentWord.contains(LINEBREAK))
-            {
+            if (currentWord.contains(LINEBREAK)) {
                 flushLine(lines, currentLine);
                 continue;
             }
 
-            if (!hasHorizontalSpaceToDraw(currentLine.toString(), currentWord, boundariesWidth))
-            {
+            if (!hasHorizontalSpaceToDraw(currentLine.toString(), currentWord, boundariesWidth)) {
                 //find the currentWord max char index that fits the boundariesWidth
                 final int splitCharIndex = getSplitCharIndexToFitWidth(boundariesWidth, currentLine.toString(),
                                                                        currentWord);
 
                 //spliting the word to fit the boundaries width
                 String remainingWord = currentWord.substring(splitCharIndex);
-                String truncated     = currentWord.substring(0, splitCharIndex);
+                String truncated = currentWord.substring(0, splitCharIndex);
 
                 //handle splited word in case it is short, breaking to the next line
-                if (remainingWord.length() < MAX_LENGHT_TO_WRAP && currentLine.length() > 0)
-                {
+                if (remainingWord.length() < MAX_LENGHT_TO_WRAP && currentLine.length() > 0) {
                     truncated = "";
                     remainingWord = currentWord;
                 }
@@ -157,8 +143,7 @@ import com.ait.lienzo.client.core.types.BoundingBox;
             currentLine.append(currentWord + ((i + 1 < words.length && !" ".equals(words[i])) ? " " : ""));
 
             //handle last line
-            if (i == words.length - 1)
-            {
+            if (i == words.length - 1) {
                 lines.add(currentLine.toString());
                 break;
             }
@@ -168,17 +153,14 @@ import com.ait.lienzo.client.core.types.BoundingBox;
         return lines;
     }
 
-    private int getSplitCharIndexToFitWidth(double boundariesWidth, String currentLine, String currentWord)
-    {
+    private int getSplitCharIndexToFitWidth(double boundariesWidth, String currentLine, String currentWord) {
         int remainingCharIndex = 0;
-        while (!currentWord.isEmpty() && hasHorizontalSpaceToDraw(currentLine, currentWord.substring(0, ++remainingCharIndex), boundariesWidth))
-        {
+        while (!currentWord.isEmpty() && hasHorizontalSpaceToDraw(currentLine, currentWord.substring(0, ++remainingCharIndex), boundariesWidth)) {
         }
         return remainingCharIndex;
     }
 
-    private void flushLine(final List<String> lines, final StringBuilder currentLine)
-    {
+    private void flushLine(final List<String> lines, final StringBuilder currentLine) {
         lines.add(currentLine.toString());
         currentLine.setLength(0);
     }

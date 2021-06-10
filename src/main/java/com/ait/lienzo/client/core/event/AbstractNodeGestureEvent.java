@@ -18,34 +18,29 @@ package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
-
 import elemental2.dom.HTMLElement;
 
-public abstract class AbstractNodeGestureEvent<H extends EventHandler> extends AbstractNodeHumanInputEvent<H, Node>
-{
+public abstract class AbstractNodeGestureEvent<H extends EventHandler> extends AbstractNodeHumanInputEvent<H, Node> {
+
     private double m_scale;
 
     private double m_rotation;
 
-    public AbstractNodeGestureEvent(final HTMLElement relativeElement)
-    {
+    public AbstractNodeGestureEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
-    public void override(final double scale, final double rotation)
-    {
+    public void override(final double scale, final double rotation) {
         m_scale = scale;
 
         m_rotation = rotation;
     }
 
-    public double getRotation()
-    {
+    public double getRotation() {
         return m_rotation;
     }
 
-    public double getScale()
-    {
+    public double getScale() {
         return m_scale;
     }
 }

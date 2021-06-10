@@ -21,7 +21,6 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-
 import elemental2.core.Uint8ClampedArray;
 import elemental2.dom.ImageData;
 import jsinterop.base.Js;
@@ -29,60 +28,49 @@ import jsinterop.base.Js;
 /**
  * A class that allows for easy creation of Brightness Filters.
  */
-public class BrightnessImageDataFilter extends AbstractValueImageDataFilter<BrightnessImageDataFilter>
-{
-    public BrightnessImageDataFilter()
-    {
+public class BrightnessImageDataFilter extends AbstractValueImageDataFilter<BrightnessImageDataFilter> {
+
+    public BrightnessImageDataFilter() {
         super(ImageFilterType.BrightnessImageDataFilterType, 0);
     }
 
-    public BrightnessImageDataFilter(double value)
-    {
+    public BrightnessImageDataFilter(double value) {
         super(ImageFilterType.BrightnessImageDataFilterType, value);
     }
 
-    protected BrightnessImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
-    {
+    protected BrightnessImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
         super(ImageFilterType.BrightnessImageDataFilterType, node, ctx);
     }
 
     @Override
-    public double getMinValue()
-    {
+    public double getMinValue() {
         return -1;
     }
 
     @Override
-    public double getMaxValue()
-    {
+    public double getMaxValue() {
         return 1;
     }
 
     @Override
-    public double getRefValue()
-    {
+    public double getRefValue() {
         return 0;
     }
 
     @Override
-    public ImageData filter(ImageData source, boolean copy)
-    {
-        if (null == source)
-        {
+    public ImageData filter(ImageData source, boolean copy) {
+        if (null == source) {
             return null;
         }
-        if (copy)
-        {
+        if (copy) {
             source = ImageDataUtil.copy(source);
         }
-        if (!isActive())
-        {
+        if (!isActive()) {
             return source;
         }
         final Uint8ClampedArray data = source.data;
 
-        if (null == data)
-        {
+        if (null == data) {
             return source;
         }
         filter_(data, FilterCommonOps.getLength(source), getValue());
@@ -90,28 +78,25 @@ public class BrightnessImageDataFilter extends AbstractValueImageDataFilter<Brig
         return source;
     }
 
-    private final void filter_(Uint8ClampedArray dataArray, int length, double value)
-    {
+    private final void filter_(Uint8ClampedArray dataArray, int length, double value) {
 //        int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
         int[] data = Js.uncheckedCast(dataArray);
         double v = (value * 255) + 0.5;
-    	for (int i = 0; i < length; i += 4) {
-            data[  i  ] =  Js.coerceToInt(Math.max(Math.min(data[  i  ] + v, 255), 0));
+        for (int i = 0; i < length; i += 4) {
+            data[i] = Js.coerceToInt(Math.max(Math.min(data[i] + v, 255), 0));
             data[i + 1] = Js.coerceToInt(Math.max(Math.min(data[i + 1] + v, 255), 0));
             data[i + 2] = Js.coerceToInt(Math.max(Math.min(data[i + 2] + v, 255), 0));
-    	}
+        }
     }
 
     @Override
-    public IFactory<BrightnessImageDataFilter> getFactory()
-    {
+    public IFactory<BrightnessImageDataFilter> getFactory() {
         return new BrightnessImageDataFilterFactory();
     }
 
-    public static class BrightnessImageDataFilterFactory extends ValueImageDataFilterFactory<BrightnessImageDataFilter>
-    {
-        public BrightnessImageDataFilterFactory()
-        {
+    public static class BrightnessImageDataFilterFactory extends ValueImageDataFilterFactory<BrightnessImageDataFilter> {
+
+        public BrightnessImageDataFilterFactory() {
             super(ImageFilterType.BrightnessImageDataFilterType);
         }
     }

@@ -65,23 +65,24 @@ import elemental2.dom.HTMLDivElement;
  * <li>The main {@link Scene} can contain multiple {@link Layer}.</li>
  * </ul>
  */
-public class Viewport extends ContainerNode<Scene, Viewport> implements EventReceiver
-{
-    private       int            m_wide    = 0;
+public class Viewport extends ContainerNode<Scene, Viewport> implements EventReceiver {
 
-    private       int            m_high    = 0;
+    private int m_wide = 0;
 
-    private final HTMLDivElement m_element = (HTMLDivElement) DomGlobal.document.createElement("div");;
+    private int m_high = 0;
 
-    private       Scene          m_drag    = new Scene();
+    private final HTMLDivElement m_element = (HTMLDivElement) DomGlobal.document.createElement("div");
+    ;
 
-    private       Scene          m_main    = null;
+    private Scene m_drag = new Scene();
 
-    private       Scene          m_back    = new Scene();
+    private Scene m_main = null;
 
-    private       ScratchPad     m_spad    = new ScratchPad(0, 0);
+    private Scene m_back = new Scene();
 
-    private       Mediators      m_mediators;
+    private ScratchPad m_spad = new ScratchPad(0, 0);
+
+    private Mediators m_mediators;
 
     private DragMouseControl m_drag_mouse_control;
 
@@ -91,13 +92,11 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
 
     private ViewportTransformChangedEvent viewportTransformChangedEvent;
 
-    public Viewport()
-    {
+    public Viewport() {
         this(0, 0);
     }
 
-    public Viewport(final Scene main, final int wide, final int high)
-    {
+    public Viewport(final Scene main, final int wide, final int high) {
         super(NodeType.VIEWPORT, new ViewportFastArrayStorageEngine());
 
         m_wide = wide;
@@ -113,8 +112,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      * @param wide
      * @param high
      */
-    public Viewport(final int wide, final int high)
-    {
+    public Viewport(final int wide, final int high) {
         super(NodeType.VIEWPORT, new ViewportFastArrayStorageEngine());
 
         m_wide = wide;
@@ -125,8 +123,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
     }
 
     @Override
-    public final IStorageEngine<Scene> getDefaultStorageEngine()
-    {
+    public final IStorageEngine<Scene> getDefaultStorageEngine() {
         return new ViewportFastArrayStorageEngine();
     }
 
@@ -134,16 +131,14 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      * Sets the Transform for this Viewport and fires a ZoomEvent
      * to any ZoomHandlers registered with this Viewport.
      *
-     *
      * @param transform Transform
      * @return this Viewport
      */
 
     @Override
-    public final Viewport setTransform(final Transform transform)
-    {
+    public final Viewport setTransform(final Transform transform) {
         super.setTransform(transform);
-        if(viewportTransformChangedEvent != null) {
+        if (viewportTransformChangedEvent != null) {
             viewportTransformChangedEvent.revive();
             viewportTransformChangedEvent.override(this);
             super.fireEvent(viewportTransformChangedEvent);
@@ -153,29 +148,24 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
     }
 
     @Override
-    protected Transform getPossibleNodeTransform()
-    {
+    protected Transform getPossibleNodeTransform() {
         return getTransform();
     }
 
     @Override
-    public List<Attribute> getTransformingAttributes()
-    {
+    public List<Attribute> getTransformingAttributes() {
         return LienzoCore.VIEWPORT_TRANSFORMING_ATTRIBUTES;
     }
 
-    public void setDragMouseButtons(DragMouseControl controls)
-    {
+    public void setDragMouseButtons(DragMouseControl controls) {
         m_drag_mouse_control = controls;
     }
 
-    public DragMouseControl getDragMouseButtons()
-    {
+    public DragMouseControl getDragMouseButtons() {
         return m_drag_mouse_control;
     }
 
-    private final void setSceneAndState(final Scene main)
-    {
+    private final void setSceneAndState(final Scene main) {
         add(m_back, m_main = main, m_drag);
 
         m_drag.add(new DragLayer());
@@ -188,8 +178,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
 
         final Transform transform = getTransform();
 
-        if (null == transform)
-        {
+        if (null == transform) {
             // Zoom mediators rely on the Transform not being null.
 
             setTransform(new Transform());
@@ -198,8 +187,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
     }
 
     @Override
-    public final Viewport asViewport()
-    {
+    public final Viewport asViewport() {
         return this;
     }
 
@@ -208,8 +196,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      *
      * @return int
      */
-    public final int getWidth()
-    {
+    public final int getWidth() {
         return m_wide;
     }
 
@@ -218,8 +205,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      *
      * @return int
      */
-    public final int getHeight()
-    {
+    public final int getHeight() {
         return m_high;
     }
 
@@ -228,8 +214,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      *
      * @return {@link HTMLDivElement}
      */
-    public final HTMLDivElement getElement()
-    {
+    public final HTMLDivElement getElement() {
         return m_element;
     }
 
@@ -240,28 +225,24 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      * @param high
      * @return Viewpor this viewport
      */
-    public final Viewport setPixelSize(final int wide, final int high)
-    {
+    public final Viewport setPixelSize(final int wide, final int high) {
         m_wide = wide;
 
         m_high = high;
 
         getElement().style.width = CSSProperties.WidthUnionType.of(wide + Style.Unit.PX.getType());
 
-        getElement().style.height= CSSProperties.HeightUnionType.of(high + Style.Unit.PX.getType());
+        getElement().style.height = CSSProperties.HeightUnionType.of(high + Style.Unit.PX.getType());
 
         final NFastArrayList<Scene> scenes = getChildNodes();
 
-        if (null != scenes)
-        {
+        if (null != scenes) {
             final int size = scenes.size();
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 final Scene scene = scenes.get(i);
 
-                if (null != scene)
-                {
+                if (null != scene) {
                     scene.setPixelSize(wide, high);
                 }
             }
@@ -271,8 +252,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
         return this;
     }
 
-    public OnEventHandlers getOnEventHandlers()
-    {
+    public OnEventHandlers getOnEventHandlers() {
         return m_onEventHandlers;
     }
 
@@ -282,16 +262,12 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      * @param scene
      */
     @Override
-    public final Viewport add(final Scene scene)
-    {
-        if ((null != scene) && (LienzoCore.IS_CANVAS_SUPPORTED))
-        {
-            if (!scene.adopt(this))
-            {
+    public final Viewport add(final Scene scene) {
+        if ((null != scene) && (LienzoCore.IS_CANVAS_SUPPORTED)) {
+            if (!scene.adopt(this)) {
                 throw new IllegalArgumentException("Scene is already adopted.");
             }
-            if (length() > 2)
-            {
+            if (length() > 2) {
                 throw new IllegalArgumentException("Too many Scene objects is Viewport.");
             }
             HTMLDivElement element = scene.getElement();
@@ -315,63 +291,51 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
     }
 
     @Override
-    public final Viewport add(final Scene scene, final Scene... children)
-    {
+    public final Viewport add(final Scene scene, final Scene... children) {
         add(scene);
 
-        for (Scene node : children)
-        {
+        for (Scene node : children) {
             add(node);
         }
         return this;
     }
 
     @Override
-    public boolean removeFromParent()
-    {
+    public boolean removeFromParent() {
         return false;
     }
 
-    public HandlerRegistration addViewportTransformChangedHandler(final ViewportTransformChangedHandler handler)
-    {
+    public HandlerRegistration addViewportTransformChangedHandler(final ViewportTransformChangedHandler handler) {
         return addEnsureHandler(ViewportTransformChangedEvent.getType(), handler);
     }
 
-    public HandlerRegistration addOrientationChangeHandler(final OrientationChangeHandler handler)
-    {
+    public HandlerRegistration addOrientationChangeHandler(final OrientationChangeHandler handler) {
         return addEnsureHandler(OrientationChangeEvent.getType(), handler);
     }
 
-    public HandlerRegistration addResizeStartHandler(final ResizeStartHandler handler)
-    {
+    public HandlerRegistration addResizeStartHandler(final ResizeStartHandler handler) {
         return addEnsureHandler(ResizeStartEvent.getType(), handler);
     }
 
-    public HandlerRegistration addResizeChangeHandler(final ResizeChangeHandler handler)
-    {
+    public HandlerRegistration addResizeChangeHandler(final ResizeChangeHandler handler) {
         return addEnsureHandler(ResizeChangeEvent.getType(), handler);
     }
 
-    public HandlerRegistration addResizeEndHandler(final ResizeEndHandler handler)
-    {
+    public HandlerRegistration addResizeEndHandler(final ResizeEndHandler handler) {
         return addEnsureHandler(ResizeEndEvent.getType(), handler);
     }
 
     @Override
-    public final Viewport draw()
-    {
+    public final Viewport draw() {
         final NFastArrayList<Scene> scenes = getChildNodes();
 
-        if (null != scenes)
-        {
+        if (null != scenes) {
             final int size = scenes.size();
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 final Scene scene = scenes.get(i);
 
-                if (null != scene)
-                {
+                if (null != scene) {
                     scene.draw();
                 }
             }
@@ -380,20 +344,16 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
     }
 
     @Override
-    public final Viewport batch()
-    {
+    public final Viewport batch() {
         final NFastArrayList<Scene> scenes = getChildNodes();
 
-        if (null != scenes)
-        {
+        if (null != scenes) {
             final int size = scenes.size();
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 final Scene scene = scenes.get(i);
 
-                if (null != scene)
-                {
+                if (null != scene) {
                     scene.batch();
                 }
             }
@@ -407,8 +367,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      * @return {@link Scene}
      */
     @Override
-    public final Scene getScene()
-    {
+    public final Scene getScene() {
         return m_main;
     }
 
@@ -418,8 +377,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      * @param layer
      * @return this Viewport
      */
-    public final Viewport setBackgroundLayer(final Layer layer)
-    {
+    public final Viewport setBackgroundLayer(final Layer layer) {
         m_back.removeAll();
 
         m_back.add(layer);
@@ -432,26 +390,22 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      *
      * @return {@link Layer}
      */
-    public final Layer getDragLayer()
-    {
+    public final Layer getDragLayer() {
         return m_drag.getChildNodes().get(0);
     }
 
     @Override
-    public final Layer getOverLayer()
-    {
+    public final Layer getOverLayer() {
         return m_drag.getChildNodes().get(1);
     }
 
     @Override
-    public final Viewport getViewport()
-    {
+    public final Viewport getViewport() {
         return this;
     }
 
     @Override
-    public final ScratchPad getScratchPad()
-    {
+    public final ScratchPad getScratchPad() {
         return m_spad;
     }
 
@@ -459,8 +413,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      * No-op; this method has no effect. Simply overriden but in reality Scenes will not be removed from this {@link Viewport}
      */
     @Override
-    public final Viewport remove(final Scene scene)
-    {
+    public final Viewport remove(final Scene scene) {
         return this;
     }
 
@@ -468,8 +421,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      * No-op; this method has no effect. Simply overriden but in reality Scenes will not be removed from this {@link Viewport}
      */
     @Override
-    public final Viewport removeAll()
-    {
+    public final Viewport removeAll() {
         getScene().removeAll();
 
         return this;
@@ -481,8 +433,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      * @return this Viewport
      */
     @Override
-    public final Viewport moveUp()
-    {
+    public final Viewport moveUp() {
         return this;
     }
 
@@ -492,8 +443,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      * @return this Viewport
      */
     @Override
-    public final Viewport moveDown()
-    {
+    public final Viewport moveDown() {
         return this;
     }
 
@@ -503,8 +453,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      * @return this Viewport
      */
     @Override
-    public final Viewport moveToTop()
-    {
+    public final Viewport moveToTop() {
         return this;
     }
 
@@ -514,8 +463,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      * @return this Viewport
      */
     @Override
-    public final Viewport moveToBottom()
-    {
+    public final Viewport moveToBottom() {
         return this;
     }
 
@@ -528,16 +476,13 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      * @param width
      * @param height
      */
-    public final void viewGlobalArea(double x, double y, double width, double height)
-    {
-        if (width <= 0 || height <= 0)
-        {
+    public final void viewGlobalArea(double x, double y, double width, double height) {
+        if (width <= 0 || height <= 0) {
             return;
         }
         final Transform t = getTransform();
 
-        if (null != t)
-        {
+        if (null != t) {
             Point2D a = new Point2D(x, y);
 
             Point2D b = new Point2D(x + width, y + height);
@@ -568,31 +513,25 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      * @param width
      * @param height
      */
-    public final void viewLocalArea(final double x, final double y, final double width, final double height)
-    {
+    public final void viewLocalArea(final double x, final double y, final double width, final double height) {
         final Transform t = Transform.createViewportTransform(x, y, width, height, m_wide, m_high);
 
-        if (t != null)
-        {
+        if (t != null) {
             setTransform(t);
         }
     }
 
-    private final Layer getBackgroundLayer()
-    {
+    private final Layer getBackgroundLayer() {
         final NFastArrayList<Layer> list = m_back.getChildNodes();
 
-        if (list.size() > 0)
-        {
+        if (list.size() > 0) {
             return list.get(0);
         }
         return null;
     }
 
-    public final Shape<?> findShapeAtPoint(final int x, final int y)
-    {
-        if (isVisible())
-        {
+    public final Shape<?> findShapeAtPoint(final int x, final int y) {
+        if (isVisible()) {
             return getScene().findShapeAtPoint(x, y);
         }
         return null;
@@ -601,50 +540,37 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
     /**
      * Fires the given GWT event.
      */
-    public final  <H extends EventHandler, S> void fireEvent(final INodeEvent<H, S> event)
-    {
+    public final <H extends EventHandler, S> void fireEvent(final INodeEvent<H, S> event) {
         getScene().fireEvent(event);
     }
 
-    public final String toDataURL()
-    {
+    public final String toDataURL() {
         return getScene().toDataURL();
     }
 
-    public final String toDataURL(final boolean includeBackgroundLayer)
-    {
-        if (includeBackgroundLayer)
-        {
+    public final String toDataURL(final boolean includeBackgroundLayer) {
+        if (includeBackgroundLayer) {
             return getScene().toDataURL(getBackgroundLayer());
-        }
-        else
-        {
+        } else {
             return getScene().toDataURL();
         }
     }
 
-    public final String toDataURL(final DataURLType mimetype)
-    {
+    public final String toDataURL(final DataURLType mimetype) {
         return getScene().toDataURL(mimetype);
     }
 
-    public final String toDataURL(final DataURLType mimetype, final boolean includeBackgroundLayer)
-    {
-        if (includeBackgroundLayer)
-        {
+    public final String toDataURL(final DataURLType mimetype, final boolean includeBackgroundLayer) {
+        if (includeBackgroundLayer) {
             return getScene().toDataURL(mimetype, getBackgroundLayer());
-        }
-        else
-        {
+        } else {
             return getScene().toDataURL(mimetype);
         }
     }
 
     @Override
-    protected void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
-    {
-        if (predicate.test(this))
-        {
+    protected void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff) {
+        if (predicate.test(this)) {
             buff.add(this);
         }
         m_main.find(predicate, buff);
@@ -656,21 +582,19 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      *
      * @return Mediators
      */
-    public final Mediators getMediators()
-    {
+    public final Mediators getMediators() {
         return m_mediators;
     }
 
     /**
      * Add a mediator to the stack of {@link Mediators} for this viewport.
      * The one that is added last, will be called first.
-     *
+     * <p>
      * Mediators can be used to e.g. to addBoundingBox zoom operations.
      *
      * @param mediator IMediator
      */
-    public final void pushMediator(final IMediator mediator)
-    {
+    public final void pushMediator(final IMediator mediator) {
         m_mediators.push(mediator);
     }
 
@@ -686,10 +610,9 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
 //        return addEnsureHandler(ViewportTransformChangedEvent.getType(), handler);
 //    }
 
-    public static class ViewportFactory extends ContainerNodeFactory<Viewport>
-    {
-        public ViewportFactory()
-        {
+    public static class ViewportFactory extends ContainerNodeFactory<Viewport> {
+
+        public ViewportFactory() {
             super(NodeType.VIEWPORT);
 
             // For Viewports, the Transform is required (for other Nodes it's optional),
@@ -699,33 +622,22 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
         }
 
         @Override
-        public final boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
-        {
-            if (node.getNodeType() == NodeType.SCENE)
-            {
-                if (container.length() > 2)
-                {
-                    try
-                    {
+        public final boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx) {
+            if (node.getNodeType() == NodeType.SCENE) {
+                if (container.length() > 2) {
+                    try {
                         ctx.addError("Too many Scene objects is Viewport");
-                    }
-                    catch (ValidationException e)
-                    {
+                    } catch (ValidationException e) {
                         return false;
                     }
                 }
                 container.asViewport().setSceneAndState(node.asScene());
 
                 return true;
-            }
-            else
-            {
-                try
-                {
+            } else {
+                try {
                     ctx.addBadTypeError(node.getClass().getName() + " is not a Scene");
-                }
-                catch (ValidationException e)
-                {
+                } catch (ValidationException e) {
                     return false;
                 }
             }
@@ -733,26 +645,22 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
         }
     }
 
-    private static class DragLayer extends Layer
-    {
+    private static class DragLayer extends Layer {
+
         private DragContext2D m_context;
 
-        public DragLayer()
-        {
+        public DragLayer() {
             setVisible(true);
 
             setListening(false);
         }
 
         @Override
-        public HTMLCanvasElement getCanvasElement()
-        {
+        public HTMLCanvasElement getCanvasElement() {
             final HTMLCanvasElement element = super.getCanvasElement();
 
-            if (null != element)
-            {
-                if (null == m_context)
-                {
+            if (null != element) {
+                if (null == m_context) {
                     m_context = new DragContext2D(element);
                 }
             }
@@ -760,21 +668,18 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
         }
 
         @Override
-        public final Context2D getContext()
-        {
+        public final Context2D getContext() {
             return m_context;
         }
 
-        private static class DragContext2D extends Context2D
-        {
-            public DragContext2D(HTMLCanvasElement element)
-            {
+        private static class DragContext2D extends Context2D {
+
+            public DragContext2D(HTMLCanvasElement element) {
                 super(element);
             }
 
             @Override
-            public boolean isDrag()
-            {
+            public boolean isDrag() {
                 return true;
             }
         }

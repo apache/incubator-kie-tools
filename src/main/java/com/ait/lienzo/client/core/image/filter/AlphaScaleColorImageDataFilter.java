@@ -23,89 +23,74 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-
 import elemental2.core.Uint8ClampedArray;
 import elemental2.dom.ImageData;
 import jsinterop.annotations.JsProperty;
 import jsinterop.base.Js;
 
-public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<AlphaScaleColorImageDataFilter>
-{
+public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<AlphaScaleColorImageDataFilter> {
+
     @JsProperty
     private boolean inverted;
 
-    public AlphaScaleColorImageDataFilter(int r, int g, int b)
-    {
+    public AlphaScaleColorImageDataFilter(int r, int g, int b) {
         super(ImageFilterType.AlphaScaleColorImageDataFilterType, r, g, b);
     }
 
-    public AlphaScaleColorImageDataFilter(int r, int g, int b, boolean invert)
-    {
+    public AlphaScaleColorImageDataFilter(int r, int g, int b, boolean invert) {
         super(ImageFilterType.AlphaScaleColorImageDataFilterType, r, g, b);
 
         setInverted(invert);
     }
 
-    public AlphaScaleColorImageDataFilter(IColor color)
-    {
+    public AlphaScaleColorImageDataFilter(IColor color) {
         super(ImageFilterType.AlphaScaleColorImageDataFilterType, color);
     }
 
-    public AlphaScaleColorImageDataFilter(IColor color, boolean invert)
-    {
+    public AlphaScaleColorImageDataFilter(IColor color, boolean invert) {
         super(ImageFilterType.AlphaScaleColorImageDataFilterType, color);
 
         setInverted(invert);
     }
 
-    public AlphaScaleColorImageDataFilter(String color)
-    {
+    public AlphaScaleColorImageDataFilter(String color) {
         super(ImageFilterType.AlphaScaleColorImageDataFilterType, color);
     }
 
-    public AlphaScaleColorImageDataFilter(String color, boolean invert)
-    {
+    public AlphaScaleColorImageDataFilter(String color, boolean invert) {
         super(ImageFilterType.AlphaScaleColorImageDataFilterType, color);
 
         setInverted(invert);
     }
 
-    protected AlphaScaleColorImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
-    {
+    protected AlphaScaleColorImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
         super(ImageFilterType.AlphaScaleColorImageDataFilterType, node, ctx);
     }
 
-    public AlphaScaleColorImageDataFilter setInverted(boolean inverted)
-    {
+    public AlphaScaleColorImageDataFilter setInverted(boolean inverted) {
         this.inverted = inverted;
 
         return this;
     }
 
-    public boolean isInverted()
-    {
+    public boolean isInverted() {
         return this.inverted;
     }
 
     @Override
-    public ImageData filter(ImageData source, boolean copy)
-    {
-        if (null == source)
-        {
+    public ImageData filter(ImageData source, boolean copy) {
+        if (null == source) {
             return null;
         }
-        if (copy)
-        {
+        if (copy) {
             source = ImageDataUtil.copy(source);
         }
-        if (!isActive())
-        {
+        if (!isActive()) {
             return source;
         }
         final Uint8ClampedArray data = source.data;
 
-        if (null == data)
-        {
+        if (null == data) {
             return source;
         }
         filter_(data, FilterCommonOps.getLength(source), getR(), getG(), getB(), isInverted());
@@ -113,12 +98,11 @@ public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<A
         return source;
     }
 
-    private final void filter_(Uint8ClampedArray dataArray, int length, int r, int g, int b, boolean invert)
-    {
+    private final void filter_(Uint8ClampedArray dataArray, int length, int r, int g, int b, boolean invert) {
         int[] data = Js.uncheckedCast(dataArray);
         for (int i = 0; i < length; i += 4) {
             double v = ((data[i] * 0.21) + (data[i + 1] * 0.72) + (data[i + 2] * 0.07));
-            data[  i  ] = r;
+            data[i] = r;
             data[i + 1] = g;
             data[i + 2] = b;
             v = Js.coerceToInt(v + 0.5);
@@ -131,15 +115,13 @@ public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<A
     }
 
     @Override
-    public IFactory<AlphaScaleColorImageDataFilter> getFactory()
-    {
+    public IFactory<AlphaScaleColorImageDataFilter> getFactory() {
         return new AlphaScaleColorImageDataFilterFactory();
     }
 
-    public static class AlphaScaleColorImageDataFilterFactory extends RGBImageDataFilterFactory<AlphaScaleColorImageDataFilter>
-    {
-        public AlphaScaleColorImageDataFilterFactory()
-        {
+    public static class AlphaScaleColorImageDataFilterFactory extends RGBImageDataFilterFactory<AlphaScaleColorImageDataFilter> {
+
+        public AlphaScaleColorImageDataFilterFactory() {
             super(ImageFilterType.AlphaScaleColorImageDataFilterType);
 
             addAttribute(Attribute.INVERTED);

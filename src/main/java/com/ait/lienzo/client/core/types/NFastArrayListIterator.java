@@ -21,16 +21,15 @@ import java.util.NoSuchElementException;
 
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
-public class NFastArrayListIterator<T> implements Iterator<T>
-{
-    private int                     m_curpos;
+public class NFastArrayListIterator<T> implements Iterator<T> {
 
-    private final int               m_szlist;
+    private int m_curpos;
+
+    private final int m_szlist;
 
     private final NFastArrayList<T> m_listof;
 
-    public NFastArrayListIterator(final NFastArrayList<T> listof)
-    {
+    public NFastArrayListIterator(final NFastArrayList<T> listof) {
         m_curpos = 0;
 
         m_listof = listof;
@@ -39,18 +38,15 @@ public class NFastArrayListIterator<T> implements Iterator<T>
     }
 
     @Override
-    public boolean hasNext()
-    {
+    public boolean hasNext() {
         return (m_curpos != m_szlist);
     }
 
     @Override
-    public T next()
-    {
+    public T next() {
         final int i = m_curpos;
 
-        if (i >= m_szlist)
-        {
+        if (i >= m_szlist) {
             throw new NoSuchElementException();
         }
         m_curpos = i + 1;
@@ -59,8 +55,7 @@ public class NFastArrayListIterator<T> implements Iterator<T>
     }
 
     @Override
-    public void remove()
-    {
+    public void remove() {
         throw new UnsupportedOperationException();
     }
 }

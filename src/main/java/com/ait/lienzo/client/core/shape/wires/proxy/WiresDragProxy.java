@@ -18,14 +18,6 @@ package com.ait.lienzo.client.core.shape.wires.proxy;
 
 import java.util.function.Supplier;
 
-import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
-import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
-import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
-import com.ait.lienzo.client.core.event.NodeMouseMoveHandler;
-import com.ait.lienzo.client.core.event.NodeMouseOutEvent;
-import com.ait.lienzo.client.core.event.NodeMouseOutHandler;
-import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
-import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;

@@ -2,8 +2,8 @@ package com.ait.lienzo.client.core.event;
 
 import elemental2.dom.MouseEvent;
 
-public class OnEventHandlers
-{
+public class OnEventHandlers {
+
     private OnMouseEventHandler m_onMouseDownEventHandle = DefaultOnMouseEventHandler.INSTANCE;
 
     private OnMouseEventHandler m_onMouseUpEventHandle = DefaultOnMouseEventHandler.INSTANCE;
@@ -14,75 +14,62 @@ public class OnEventHandlers
 
     private OnMouseEventHandler m_onMouseDoubleClickEventHandle = DefaultOnMouseEventHandler.INSTANCE;
 
-    public OnMouseEventHandler getOnMouseDownEventHandle()
-    {
+    public OnMouseEventHandler getOnMouseDownEventHandle() {
         return m_onMouseDownEventHandle;
     }
 
-    public void setOnMouseDownEventHandle(OnMouseEventHandler onMouseDownEventHandle)
-    {
+    public void setOnMouseDownEventHandle(OnMouseEventHandler onMouseDownEventHandle) {
         m_onMouseDownEventHandle = onMouseDownEventHandle;
     }
 
-    public OnMouseEventHandler getOnMouseUpEventHandle()
-    {
+    public OnMouseEventHandler getOnMouseUpEventHandle() {
         return m_onMouseUpEventHandle;
     }
 
-    public void setOnMouseUpEventHandle(OnMouseEventHandler onMouseUpEventHandle)
-    {
+    public void setOnMouseUpEventHandle(OnMouseEventHandler onMouseUpEventHandle) {
         m_onMouseUpEventHandle = onMouseUpEventHandle;
     }
 
-    public OnMouseEventHandler getOnMouseMoveEventHandle()
-    {
+    public OnMouseEventHandler getOnMouseMoveEventHandle() {
         return m_onMouseMoveEventHandle;
     }
 
-    public void setOnMouseMoveEventHandle(OnMouseEventHandler onMouseMoveEventHandle)
-    {
+    public void setOnMouseMoveEventHandle(OnMouseEventHandler onMouseMoveEventHandle) {
         m_onMouseMoveEventHandle = onMouseMoveEventHandle;
     }
 
-    public OnMouseEventHandler getOnMouseClickEventHandle()
-    {
+    public OnMouseEventHandler getOnMouseClickEventHandle() {
         return m_onMouseClickEventHandle;
     }
 
-    public void setOnMouseClickEventHandle(OnMouseEventHandler onMouseClickEventHandle)
-    {
+    public void setOnMouseClickEventHandle(OnMouseEventHandler onMouseClickEventHandle) {
         m_onMouseClickEventHandle = onMouseClickEventHandle;
     }
 
-    public OnMouseEventHandler getOnMouseDoubleClickEventHandle()
-    {
+    public OnMouseEventHandler getOnMouseDoubleClickEventHandle() {
         return m_onMouseDoubleClickEventHandle;
     }
 
-    public void setOnMouseDoubleClickEventHandle(OnMouseEventHandler onMouseDoubleClickEventHandle)
-    {
+    public void setOnMouseDoubleClickEventHandle(OnMouseEventHandler onMouseDoubleClickEventHandle) {
         m_onMouseDoubleClickEventHandle = onMouseDoubleClickEventHandle;
     }
 
-    public static class DefaultOnMouseEventHandler implements OnMouseEventHandler
-    {
+    public static class DefaultOnMouseEventHandler implements OnMouseEventHandler {
+
         static DefaultOnMouseEventHandler INSTANCE = new DefaultOnMouseEventHandler();
 
         @Override
-        public boolean onMouseEventBefore(MouseEvent listener)
-        {
+        public boolean onMouseEventBefore(MouseEvent listener) {
             return true;
         }
 
         @Override
-        public void onMouseEventAfter(MouseEvent listener)
-        {
+        public void onMouseEventAfter(MouseEvent listener) {
 
         }
     }
 
-    public void destroy()
-    {
+    public void destroy() {
         m_onMouseDownEventHandle = null;
         m_onMouseUpEventHandle = null;
         m_onMouseMoveEventHandle = null;

@@ -19,9 +19,9 @@ package com.ait.lienzo.client.core.types;
 import com.ait.lienzo.client.core.shape.Layer;
 
 /**
- * Interface to be used for handler invoked before a {@link Layer} draw operation. 
+ * Interface to be used for handler invoked before a {@link Layer} draw operation.
  */
-public interface OnLayerBeforeDraw
-{
+public interface OnLayerBeforeDraw {
+
     public boolean onLayerBeforeDraw(Layer layer);
 }

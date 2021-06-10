@@ -102,79 +102,78 @@ import jsinterop.base.Js;
 /**
  * Node is the base class for {@link ContainerNode} and {@link Shape}.
  * This class provides a lot of the scaffolding for drawable nodes.
- * 
+ *
  * @param <T>
  */
-public abstract class Node<T extends Node<T>> implements IDrawable<T>
-{
+public abstract class Node<T extends Node<T>> implements IDrawable<T> {
+
     private static final HashSet<Type<?>> ALL_EVENTS = new HashSet<>();
 
-    private final OptionalNodeFields      m_opts     = OptionalNodeFields.make();
+    private final OptionalNodeFields m_opts = OptionalNodeFields.make();
 
-    private NodeType                      m_type;
+    private NodeType m_type;
 
-    private Node<?>                       m_parent;
-
-    @JsProperty
-    private       double                  x;
+    private Node<?> m_parent;
 
     @JsProperty
-    private       double                  y;
+    private double x;
 
     @JsProperty
-    private       double                  rotation;
+    private double y;
 
     @JsProperty
-    private       Point2D                 scale;
+    private double rotation;
 
     @JsProperty
-    private       Point2D                 shear;
+    private Point2D scale;
 
     @JsProperty
-    private       Point2D                 offset;
+    private Point2D shear;
 
     @JsProperty
-    private       DragConstraint          dragConstraint;
+    private Point2D offset;
 
     @JsProperty
-    private       Transform               transform;
+    private DragConstraint dragConstraint;
+
+    @JsProperty
+    private Transform transform;
 
     /**
      * 1.0 is the default
      */
     @JsProperty
-    private double               alpha = 1;
+    private double alpha = 1;
 
     /**
      * 1.0 is the default
      */
     @JsProperty
-    private double               strokeAlpha = 1;
+    private double strokeAlpha = 1;
 
     /**
      * 1.0 is the default
      */
     @JsProperty
-    private double               fillAlpha   = 1;
+    private double fillAlpha = 1;
 
     @JsProperty
-    private boolean              visible     = true;
+    private boolean visible = true;
 
     @JsProperty
-    private String               id;
-
-
-    @JsProperty
-    private boolean                   draggable;
+    private String id;
 
     @JsProperty
-    private DragBounds                dragBounds;
+    private boolean draggable;
 
     @JsProperty
-    private DragMode                  dragMode;
+    private DragBounds dragBounds;
 
     @JsProperty
-    private boolean                   listening = true;
+    private DragMode dragMode;
+
+    @JsProperty
+    private boolean listening = true;
 
     /**
      * This is cached, to avoid recreating each draw
@@ -185,18 +184,15 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     private EventPropagationMode eventPropagationMode = EventPropagationMode.lookup(null);
 
     @SafeVarargs
-    public static final <T> List<T> asList(final T... list)
-    {
+    public static final <T> List<T> asList(final T... list) {
         return Collections.unmodifiableList(Arrays.asList(list));
     }
 
-    public static final List<Attribute> asAttributes(final Attribute... list)
-    {
+    public static final List<Attribute> asAttributes(final Attribute... list) {
         return asList(list);
     }
 
-    public static final List<Attribute> asAttributes(final List<Attribute> base, final Attribute... list)
-    {
+    public static final List<Attribute> asAttributes(final List<Attribute> base, final Attribute... list) {
         final ArrayList<Attribute> make = new ArrayList<>(base);
 
         make.addAll(asList(list));
@@ -204,17 +200,14 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         return Collections.unmodifiableList(make);
     }
 
-    public static final boolean isEventHandledGlobally(final Type<?> type)
-    {
-        if (null != type)
-        {
+    public static final boolean isEventHandledGlobally(final Type<?> type) {
+        if (null != type) {
             return ALL_EVENTS.contains(type);
         }
         return false;
     }
 
-    protected Node(final NodeType type)
-    {
+    protected Node(final NodeType type) {
         m_type = type;
 
         // m_attr = new Attributes(this);
@@ -225,47 +218,39 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
      *
      * @param type
      */
-    protected void setNodeType(final NodeType type)
-    {
+    protected void setNodeType(final NodeType type) {
         m_type = type;
     }
 
     @Override
-    public IFactory<?> getFactory()
-    {
+    public IFactory<?> getFactory() {
         return LienzoCore.get().getFactory(m_type);
     }
 
-    public EventPropagationMode getEventPropagationMode()
-    {
+    public EventPropagationMode getEventPropagationMode() {
         return this.eventPropagationMode;
     }
 
-    public T setEventPropagationMode(final EventPropagationMode mode)
-    {
+    public T setEventPropagationMode(final EventPropagationMode mode) {
         this.eventPropagationMode = mode;
 
         return cast();
     }
 
-    public final double getX()
-    {
+    public final double getX() {
         return x;
     }
 
-    public final double getY()
-    {
+    public final double getY() {
         return this.y;
     }
 
-    public final T setX(final double x)
-    {
+    public final T setX(final double x) {
         this.x = x;
         return cast();
     }
 
-    public final T setY(final double y)
-    {
+    public final T setY(final double y) {
         this.y = y;
         return cast();
     }
@@ -276,8 +261,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
      * @param p Point2D
      * @return this Shape
      */
-    public T setLocation(final Point2D p)
-    {
+    public T setLocation(final Point2D p) {
         setX(p.getX());
 
         setY(p.getY());
@@ -285,123 +269,100 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         return cast();
     }
 
-    public final T setRotation(final double radians)
-    {
+    public final T setRotation(final double radians) {
         this.rotation = radians;
         return cast();
     }
 
-    public final double getRotation()
-    {
+    public final double getRotation() {
         return rotation;
     }
 
-    public final T setRotationDegrees(final double degrees)
-    {
+    public final T setRotationDegrees(final double degrees) {
         this.rotation = Geometry.toRadians(degrees);
         return cast();
     }
 
-
-
-    public final T setAlpha(double alpha)
-    {
+    public final T setAlpha(double alpha) {
         this.alpha = alpha;
         return cast();
     }
 
-    public final double getAlpha()
-    {
+    public final double getAlpha() {
         return alpha;
     }
 
-    public final T setStrokeAlpha(double alpha)
-    {
+    public final T setStrokeAlpha(double alpha) {
         this.strokeAlpha = alpha;
         return cast();
     }
 
-    public final double getStrokeAlpha()
-    {
+    public final double getStrokeAlpha() {
         return this.strokeAlpha;
     }
 
-    public final T setFillAlpha(double alpha)
-    {
+    public final T setFillAlpha(double alpha) {
         this.fillAlpha = alpha;
         return cast();
     }
 
-    public final double getFillAlpha()
-    {
+    public final double getFillAlpha() {
         return this.fillAlpha;
     }
 
-    public final double getRotationDegrees()
-    {
+    public final double getRotationDegrees() {
         return Geometry.toDegrees(this.rotation);
     }
 
-    public final T setScale(final Point2D scale)
-    {
+    public final T setScale(final Point2D scale) {
         this.scale = scale;
         return cast();
     }
 
-    public final T setScale(final double scalex, final double scaley)
-    {
+    public final T setScale(final double scalex, final double scaley) {
         setScale(new Point2D(scalex, scaley));
         return cast();
     }
 
-    public final T setScale(final double value)
-    {
+    public final T setScale(final double value) {
         setScale(new Point2D(value, value));
         return cast();
     }
 
-    public final Point2D getScale()
-    {
+    public final Point2D getScale() {
         return this.scale;
     }
 
-    public final T setShear(final double shearX, final double shearY)
-    {
+    public final T setShear(final double shearX, final double shearY) {
         setShear(new Point2D(shearX, shearY));
         return cast();
     }
 
-    public final T setShear(final Point2D shear)
-    {
+    public final T setShear(final Point2D shear) {
         this.shear = shear;
         return cast();
     }
 
-    public final Point2D getShear()
-    {
+    public final Point2D getShear() {
         return shear;
     }
 
-    public final T setOffset(final Point2D offset)
-    {
+    public final T setOffset(final Point2D offset) {
         this.offset = offset;
         return cast();
     }
 
-    public final T setOffset(final double x, final double y)
-    {
+    public final T setOffset(final double x, final double y) {
         setOffset(new Point2D(x, y));
         return cast();
     }
 
-    public final T setOffset(final double xy)
-    {
+    public final T setOffset(final double xy) {
         setOffset(new Point2D(xy, xy));
         return cast();
     }
 
-    public final Point2D getOffset()
-    {
+    public final Point2D getOffset() {
         return this.offset;
     }
 
@@ -410,8 +371,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
      *
      * @return Point2D
      */
-    public Point2D getLocation()
-    {
+    public Point2D getLocation() {
         return new Point2D(getX(), getY());
     }
 
@@ -420,8 +380,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
      *
      * @return boolean
      */
-    public boolean isDraggable()
-    {
+    public boolean isDraggable() {
         return draggable;
     }
 
@@ -430,8 +389,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
      *
      * @return T
      */
-    public T setDraggable(final boolean draggable)
-    {
+    public T setDraggable(final boolean draggable) {
         this.draggable = draggable;
 
         return cast();
@@ -442,8 +400,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
      *
      * @return DragConstraint
      */
-    public DragConstraint getDragConstraint()
-    {
+    public DragConstraint getDragConstraint() {
         return this.dragConstraint;
     }
 
@@ -453,8 +410,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
      * @param constraint
      * @return T
      */
-    public T setDragConstraint(final DragConstraint constraint)
-    {
+    public T setDragConstraint(final DragConstraint constraint) {
         this.dragConstraint = constraint;
 
         return cast();
@@ -465,8 +421,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
      *
      * @return DragBounds
      */
-    public DragBounds getDragBounds()
-    {
+    public DragBounds getDragBounds() {
         return this.dragBounds;
     }
 
@@ -476,8 +431,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
      * @param bounds
      * @return T
      */
-    public T setDragBounds(final DragBounds bounds)
-    {
+    public T setDragBounds(final DragBounds bounds) {
         this.dragBounds = bounds;
 
         return cast();
@@ -488,8 +442,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
      *
      * @return DragMode
      */
-    public DragMode getDragMode()
-    {
+    public DragMode getDragMode() {
         return this.dragMode;
     }
 
@@ -499,27 +452,23 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
      * @param mode
      * @return T
      */
-    public T setDragMode(final DragMode mode)
-    {
+    public T setDragMode(final DragMode mode) {
         this.dragMode = mode;
 
         return cast();
     }
 
     @Override
-    public IMultiPointShape<?> asMultiPointShape()
-    {
+    public IMultiPointShape<?> asMultiPointShape() {
         return null;
     }
 
     @Override
-    public ContainerNode<?, ?> asContainerNode()
-    {
+    public ContainerNode<?, ?> asContainerNode() {
         return null;
     }
 
-    protected final <M> M cast()
-    {
+    protected final <M> M cast() {
         return Js.uncheckedCast(this);
     }
 
@@ -545,8 +494,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     }
 
     @Override
-    public final String uuid()
-    {
+    public final String uuid() {
         return m_opts.uuid();
     }
 
@@ -566,89 +514,76 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 //    }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getClass().getSimpleName() + " : " + getUserData() + " : " + getX() + " : " + getY();
     }
 
     @Override
-    public T refresh()
-    {
+    public T refresh() {
         return cast();
     }
 
     @Override
-    public final boolean hasMetaData()
-    {
+    public final boolean hasMetaData() {
         return m_opts.hasMetaData();
     }
 
     @Override
-    public final MetaData getMetaData()
-    {
+    public final MetaData getMetaData() {
         return m_opts.getMetaData();
     }
 
     /**
      * Returns the collection of {@link Attribute} for this object.
-     * 
+     *
      * @return Collection&lt;Attribute&gt;
      */
     @Override
-    public Collection<Attribute> getAttributeSheet()
-    {
+    public Collection<Attribute> getAttributeSheet() {
         return getFactory().getAttributeSheet();
     }
 
     /**
      * Returns the collection of required {@link Attribute} for this object.
-     * 
+     *
      * @return Collection&lt;Attribute&gt;
      */
     @Override
-    public Collection<Attribute> getRequiredAttributes()
-    {
+    public Collection<Attribute> getRequiredAttributes() {
         return getFactory().getRequiredAttributes();
     }
 
-    protected void setParent(final Node<?> parent)
-    {
+    protected void setParent(final Node<?> parent) {
         m_parent = parent;
     }
 
-    public final boolean isAnimating()
-    {
+    public final boolean isAnimating() {
         return m_opts.isAnimating();
     }
 
-    public final void doAnimating()
-    {
+    public final void doAnimating() {
         m_opts.doAnimating();
     }
 
-    public final void unAnimating()
-    {
+    public final void unAnimating() {
         m_opts.unAnimating();
     }
 
     @Override
-    public Node<?> getParent()
-    {
+    public Node<?> getParent() {
         return m_parent;
     }
 
     /**
      * Returns the Layer that this Node is on.
-     * 
+     *
      * @return {@link Layer}
      */
     @Override
-    public Layer getLayer()
-    {
+    public Layer getLayer() {
         final Node<?> parent = getParent();// change, no iteration, no testing, no casting, recurses upwards to a Layer, and Layer returns itself, CYCLES!!!
 
-        if (null != parent)
-        {
+        if (null != parent) {
             return parent.getLayer();
         }
         return null;
@@ -656,16 +591,14 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
     /**
      * Returns the Scene that this Node is on.
-     * 
+     *
      * @return Scene
      */
     @Override
-    public Scene getScene()
-    {
+    public Scene getScene() {
         final Node<?> parent = getParent();// change, no iteration, no testing, no casting, recurses upwards to a Scene, and Scene returns itself, CYCLES!!!
 
-        if (null != parent)
-        {
+        if (null != parent) {
             return parent.getScene();
         }
         return null;
@@ -675,12 +608,10 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
      * Returns the Viewport that this Node is on.
      */
     @Override
-    public Viewport getViewport()
-    {
+    public Viewport getViewport() {
         final Node<?> parent = getParent();// change, no iteration, no testing, no casting, recurses upwards to a Viewport, and Viewport returns itself, CYCLES!!!
 
-        if (null != parent)
-        {
+        if (null != parent) {
             return parent.getViewport();
         }
         return null;
@@ -688,16 +619,14 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
     /**
      * Gets the viewport's Over Layer {@link Layer}
-     * 
+     *
      * @return Layer
      */
     @Override
-    public Layer getOverLayer()
-    {
+    public Layer getOverLayer() {
         final Viewport viewport = getViewport();
 
-        if (null != viewport)
-        {
+        if (null != viewport) {
             return viewport.getOverLayer();
         }
         return null;
@@ -705,16 +634,14 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
     /**
      * Gets the object's {@link ScratchPad}
-     * 
+     *
      * @return ScratchPad
      */
     @Override
-    public ScratchPad getScratchPad()
-    {
+    public ScratchPad getScratchPad() {
         final Viewport viewport = getViewport();
 
-        if (null != viewport)
-        {
+        if (null != viewport) {
             return viewport.getScratchPad();
         }
         return null;
@@ -722,11 +649,11 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
     /**
      * Returns the node's {@link NodeType}.
+     *
      * @return {@link NodeType}
      */
     @Override
-    public NodeType getNodeType()
-    {
+    public NodeType getNodeType() {
         return m_type;
     }
 
@@ -742,28 +669,23 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
      * and restores the context.
      */
     @Override
-    public void drawWithTransforms(final Context2D context, final double alpha, final BoundingBox bounds)
-    {
+    public void drawWithTransforms(final Context2D context, final double alpha, final BoundingBox bounds) {
         drawWithTransforms(context,
                            alpha,
                            bounds,
                            this::getPossibleNodeTransform);
     }
 
-    public void drawWithTransforms(final Context2D context, final double alpha, final BoundingBox bounds, final Supplier<Transform> transformSupplier)
-    {
-        if ((context.isSelection()) && (!isListening()))
-        {
+    public void drawWithTransforms(final Context2D context, final double alpha, final BoundingBox bounds, final Supplier<Transform> transformSupplier) {
+        if ((context.isSelection()) && (!isListening())) {
             return;
         }
-        if (context.isDrag() || isVisible())
-        {
+        if (context.isDrag() || isVisible()) {
             context.saveContainer(getID());
 
             final Transform xfrm = transformSupplier.get();
 
-            if (null != xfrm)
-            {
+            if (null != xfrm) {
                 context.transform(xfrm);
             }
             drawWithoutTransforms(context, alpha, bounds);
@@ -774,20 +696,19 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
     /**
      * Used internally. Draws the node in the current Context2D
-     * without applying the transformation-related attributes 
+     * without applying the transformation-related attributes
      * (e.g. X, Y, ROTATION, SCALE, SHEAR, OFFSET and TRANSFORM.)
-     * <p> 
+     * <p>
      * Shapes should apply the non-Transform related attributes (such a colors, strokeWidth etc.)
-     * and draw the Shape's details (such as the the actual lines and fills) 
+     * and draw the Shape's details (such as the the actual lines and fills)
      * and Groups should draw their children.
-     * 
+     *
      * @param context
      */
     protected abstract void drawWithoutTransforms(Context2D context, double alpha, BoundingBox bounds);
 
     @Override
-    public Point2D getAbsoluteLocation()
-    {
+    public Point2D getAbsoluteLocation() {
         final Point2D p = new Point2D(0, 0);
 
         getAbsoluteTransform().transform(p, p);
@@ -796,21 +717,18 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     }
 
     @Override
-    public Point2D getComputedLocation()
-    {
-        final Point2D locn = new Point2D(0,0);
+    public Point2D getComputedLocation() {
+        final Point2D locn = new Point2D(0, 0);
 
         addParentsLocations(locn);
 
         return locn;
     }
 
-    protected void addParentsLocations(final Point2D locn)
-    {
+    protected void addParentsLocations(final Point2D locn) {
         final Node<?> node = getParent();
 
-        if (null != node)
-        {
+        if (null != node) {
             node.addParentsLocations(locn);
         }
 
@@ -820,13 +738,12 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     /**
      * Returns the absolute transform by concatenating the transforms
      * of all its ancestors from the Viewport down to this node's parent.
-     * 
+     *
      * @return {@link Transform}
      */
 
     @Override
-    public Transform getAbsoluteTransform()
-    {
+    public Transform getAbsoluteTransform() {
         final Transform xfrm = new Transform();
 
         getAbsoluteTransformFromParents(this, xfrm);
@@ -834,41 +751,34 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         return xfrm;
     }
 
-    private final void getAbsoluteTransformFromParents(final Node<?> root, final Transform xfrm)
-    {
+    private final void getAbsoluteTransformFromParents(final Node<?> root, final Transform xfrm) {
         /*
          * recursive walk up till parent is null
          */
 
-        if (null == root)
-        {
+        if (null == root) {
             return;
         }
         getAbsoluteTransformFromParents(root.getParent(), xfrm);
 
         final Transform temp = root.getPossibleNodeTransform();
 
-        if (temp != null)
-        {
+        if (temp != null) {
             xfrm.multiply(temp);
         }
     }
 
-    public final boolean hasAnyTransformAttributes()
-    {
+    public final boolean hasAnyTransformAttributes() {
         return x != 0 || y != 0 || getRotation() != 0 || getScale() != null || getShear() != null;
     }
 
-    public final boolean hasComplexTransformAttributes()
-    {
+    public final boolean hasComplexTransformAttributes() {
         return getRotation() != 0 || getScale() != null || getShear() != null;
     }
 
-    protected Transform getPossibleNodeTransform()
-    {
+    protected Transform getPossibleNodeTransform() {
 
-        if (!hasAnyTransformAttributes() && null == transform)
-        {
+        if (!hasAnyTransformAttributes() && null == transform) {
             return null;
         }
         cachedXfrm = Transform.fromXY(cachedXfrm, getX(), getY());
@@ -879,11 +789,9 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         {
             cachedXfrm.multiply(t2);
             return cachedXfrm;
-
         }
 
-        if (!hasComplexTransformAttributes())
-        {
+        if (!hasComplexTransformAttributes()) {
             return cachedXfrm;
         }
         // Otherwise use ROTATION, SCALE, OFFSET and SHEAR
@@ -894,63 +802,51 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
         final Point2D offset = getOffset();
 
-        if (null != offset)
-        {
+        if (null != offset) {
             ox = offset.getX();
 
             oy = offset.getY();
         }
         final double r = getRotation();
 
-        if (r != 0)
-        {
-            if ((ox != 0) || (oy != 0))
-            {
+        if (r != 0) {
+            if ((ox != 0) || (oy != 0)) {
                 cachedXfrm.translate(ox, oy);
 
                 cachedXfrm.rotate(r);
 
                 cachedXfrm.translate(-ox, -oy);
-            }
-            else
-            {
+            } else {
                 cachedXfrm.rotate(r);
             }
         }
         final Point2D scale = getScale();
 
-        if (null != scale)
-        {
+        if (null != scale) {
             final double sx = scale.getX();
 
             final double sy = scale.getY();
 
-            if ((sx != 1) || (sy != 1))
-            {
-                if ((ox != 0) || (oy != 0))
-                {
+            if ((sx != 1) || (sy != 1)) {
+                if ((ox != 0) || (oy != 0)) {
                     cachedXfrm.translate(ox, oy);
 
                     cachedXfrm.scaleWithXY(sx, sy);
 
                     cachedXfrm.translate(-ox, -oy);
-                }
-                else
-                {
+                } else {
                     cachedXfrm.scaleWithXY(sx, sy);
                 }
             }
         }
         final Point2D shear = getShear();
 
-        if (null != shear)
-        {
+        if (null != shear) {
             final double sx = shear.getX();
 
             final double sy = shear.getY();
 
-            if ((sx != 0) || (sy != 0))
-            {
+            if ((sx != 0) || (sy != 0)) {
                 cachedXfrm.shear(sx, sy);
             }
         }
@@ -1045,38 +941,31 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     }*/
 
     @Override
-    public BoundingPoints getComputedBoundingPoints()
-    {
+    public BoundingPoints getComputedBoundingPoints() {
         double computedXOffset = 0;
         double computedYOffset = 0;
         Node parent = getParent();
-        if (parent != null)
-        {
+        if (parent != null) {
             Point2D computedLocation = parent.getComputedLocation();
             computedXOffset = computedLocation.getX();
             computedYOffset = computedLocation.getY();
-
         }
 
         return getBoundingPoints(computedXOffset, computedYOffset);
     }
 
     @Override
-    public BoundingPoints getBoundingPoints()
-    {
+    public BoundingPoints getBoundingPoints() {
         return getBoundingPoints(0, 0);
     }
 
-    public BoundingPoints getBoundingPoints(final double computedOffsetX, final double computedOffsetY)
-    {
+    public BoundingPoints getBoundingPoints(final double computedOffsetX, final double computedOffsetY) {
         final BoundingBox bbox = getBoundingBox();
 
-        if (null != bbox)
-        {
+        if (null != bbox) {
             final Transform transform = getPossibleNodeTransform();
 
-            if (null != transform)
-            {
+            if (null != transform) {
                 return new BoundingPoints(bbox).transform(computedOffsetX, computedOffsetY, transform);
             }
             return new BoundingPoints(bbox);
@@ -1085,36 +974,32 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     }
 
     @Override
-    public T setUserData(final Object data)
-    {
+    public T setUserData(final Object data) {
         m_opts.setUserData(data);
 
         return cast();
     }
 
     @Override
-    public Object getUserData()
-    {
+    public Object getUserData() {
         return m_opts.getUserData();
     }
 
     /**
      * Sets whether the node is visible.
-     * 
+     *
      * @param visible
      * @return this Node
      */
     @Override
-    public T setVisible(final boolean visible)
-    {
+    public T setVisible(final boolean visible) {
         this.visible = visible;
 
         return cast();
     }
 
     @Override
-    public boolean isVisible()
-    {
+    public boolean isVisible() {
         return this.visible;
     }
 
@@ -1134,21 +1019,19 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
     /**
      * Sets whether this node is listening for events.
-     * 
+     *
      * @param listening
      * @return this Node
      */
     @Override
-    public T setListening(final boolean listening)
-    {
+    public T setListening(final boolean listening) {
         this.listening = listening;
 
         return cast();
     }
 
     @Override
-    public boolean isListening()
-    {
+    public boolean isListening() {
         return listening;
     }
 
@@ -1171,13 +1054,12 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
     /**
      * Sets the ID of this node.
-     * 
+     *
      * @param id
      * @return
      */
     @Override
-    public T setID(final String id)
-    {
+    public T setID(final String id) {
         this.id = id;
 
         return cast();
@@ -1185,102 +1067,87 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
     /**
      * Returns the ID of this node.
+     *
      * @return String
      */
     @Override
-    public String getID()
-    {
+    public String getID() {
         return this.id;
     }
 
-    public Transform getTransform()
-    {
+    public Transform getTransform() {
         return transform;
     }
 
-    public T setTransform(final Transform transform)
-    {
+    public T setTransform(final Transform transform) {
         this.transform = transform;
         return cast();
     }
 
     /**
      * Returns this Node
+     *
      * @return Node
      */
     @Override
-    public Node<?> asNode()
-    {
+    public Node<?> asNode() {
         return this;
     }
 
     @Override
-    public IContainer<?, ?> asContainer()
-    {
+    public IContainer<?, ?> asContainer() {
         return null;
     }
 
     @Override
-    public IPrimitive<?> asPrimitive()
-    {
+    public IPrimitive<?> asPrimitive() {
         return null;
     }
 
     @Override
-    public IGuidePrimitive<?> asGuide()
-    {
+    public IGuidePrimitive<?> asGuide() {
         return null;
     }
 
     @Override
-    public Scene asScene()
-    {
+    public Scene asScene() {
         return null;
     }
 
     @Override
-    public Viewport asViewport()
-    {
+    public Viewport asViewport() {
         return null;
     }
 
     @Override
-    public Layer asLayer()
-    {
+    public Layer asLayer() {
         return null;
     }
 
     @Override
-    public GroupOf<IPrimitive<?>, ?> asGroupOf()
-    {
+    public GroupOf<IPrimitive<?>, ?> asGroupOf() {
         return null;
     }
 
     @Override
-    public Group asGroup()
-    {
+    public Group asGroup() {
         return null;
     }
 
     @Override
-    public Shape<?> asShape()
-    {
+    public Shape<?> asShape() {
         return null;
     }
 
     @Override
-    public <H extends EventHandler> boolean isEventHandled(final Type<H> type)
-    {
+    public <H extends EventHandler> boolean isEventHandled(final Type<H> type) {
         final HandlerManager hand = m_opts.getHandlerManager();
 
-        if ((null != hand) && (isEventHandledGlobally(type)) && (isListening()))
-        {
-            if (!isVisible())
-            {
+        if ((null != hand) && (isEventHandledGlobally(type)) && (isListening())) {
+            if (!isVisible()) {
                 final IPrimitive<?> prim = asPrimitive();
 
-                if ((null != prim) && (prim.isDragging()) && ((type == NodeDragStartEvent.getType()) || (type == NodeDragMoveEvent.getType()) || (type == NodeDragEndEvent.getType())))
-                {
+                if ((null != prim) && (prim.isDragging()) && ((type == NodeDragStartEvent.getType()) || (type == NodeDragMoveEvent.getType()) || (type == NodeDragEndEvent.getType()))) {
                     return hand.isEventHandled(type);
                 }
                 return false;
@@ -1291,24 +1158,20 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     }
 
     @Override
-    public <H extends EventHandler, S> void fireEvent(final INodeEvent<H, S> event)
-    {
-        if (isEventHandled(event.getAssociatedType()))
-        {
+    public <H extends EventHandler, S> void fireEvent(final INodeEvent<H, S> event) {
+        if (isEventHandled(event.getAssociatedType())) {
             m_opts.getHandlerManager().fireEvent(event);
         }
     }
 
-    protected final <H extends EventHandler> HandlerRegistration addEnsureHandler(final Type<H> type, final H handler)
-    {
+    protected final <H extends EventHandler> HandlerRegistration addEnsureHandler(final Type<H> type, final H handler) {
         Objects.requireNonNull(type);
 
         Objects.requireNonNull(handler);
 
         HandlerManager hand = m_opts.getHandlerManager();
 
-        if (null == hand)
-        {
+        if (null == hand) {
             hand = new HandlerManager(this);
 
             m_opts.setHandlerManager(hand);
@@ -1319,166 +1182,139 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     }
 
     @Override
-    public final T cancelAttributesChangedBatcher()
-    {
+    public final T cancelAttributesChangedBatcher() {
         //m_attr.cancelAttributesChangedBatcher();
 
         return cast();
     }
 
     @Override
-    public HandlerRegistration addNodeMouseClickHandler(final NodeMouseClickHandler handler)
-    {
+    public HandlerRegistration addNodeMouseClickHandler(final NodeMouseClickHandler handler) {
         return addEnsureHandler(NodeMouseClickEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeMouseDoubleClickHandler(final NodeMouseDoubleClickHandler handler)
-    {
+    public HandlerRegistration addNodeMouseDoubleClickHandler(final NodeMouseDoubleClickHandler handler) {
         return addEnsureHandler(NodeMouseDoubleClickEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeMouseDownHandler(final NodeMouseDownHandler handler)
-    {
+    public HandlerRegistration addNodeMouseDownHandler(final NodeMouseDownHandler handler) {
         return addEnsureHandler(NodeMouseDownEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeMouseMoveHandler(final NodeMouseMoveHandler handler)
-    {
+    public HandlerRegistration addNodeMouseMoveHandler(final NodeMouseMoveHandler handler) {
         return addEnsureHandler(NodeMouseMoveEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeMouseOutHandler(final NodeMouseOutHandler handler)
-    {
+    public HandlerRegistration addNodeMouseOutHandler(final NodeMouseOutHandler handler) {
         return addEnsureHandler(NodeMouseOutEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeMouseOverHandler(final NodeMouseOverHandler handler)
-    {
+    public HandlerRegistration addNodeMouseOverHandler(final NodeMouseOverHandler handler) {
         return addEnsureHandler(NodeMouseOverEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeMouseExitHandler(final NodeMouseExitHandler handler)
-    {
+    public HandlerRegistration addNodeMouseExitHandler(final NodeMouseExitHandler handler) {
         return addEnsureHandler(NodeMouseExitEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeMouseEnterHandler(final NodeMouseEnterHandler handler)
-    {
+    public HandlerRegistration addNodeMouseEnterHandler(final NodeMouseEnterHandler handler) {
         return addEnsureHandler(NodeMouseEnterEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeMouseUpHandler(final NodeMouseUpHandler handler)
-    {
+    public HandlerRegistration addNodeMouseUpHandler(final NodeMouseUpHandler handler) {
         return addEnsureHandler(NodeMouseUpEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeMouseWheelHandler(final NodeMouseWheelHandler handler)
-    {
+    public HandlerRegistration addNodeMouseWheelHandler(final NodeMouseWheelHandler handler) {
         return addEnsureHandler(NodeMouseWheelEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeTouchCancelHandler(final NodeTouchCancelHandler handler)
-    {
+    public HandlerRegistration addNodeTouchCancelHandler(final NodeTouchCancelHandler handler) {
         return addEnsureHandler(NodeTouchCancelEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeTouchEndHandler(final NodeTouchEndHandler handler)
-    {
+    public HandlerRegistration addNodeTouchEndHandler(final NodeTouchEndHandler handler) {
         return addEnsureHandler(NodeTouchEndEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeTouchMoveHandler(final NodeTouchMoveHandler handler)
-    {
+    public HandlerRegistration addNodeTouchMoveHandler(final NodeTouchMoveHandler handler) {
         return addEnsureHandler(NodeTouchMoveEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeTouchStartHandler(final NodeTouchStartHandler handler)
-    {
+    public HandlerRegistration addNodeTouchStartHandler(final NodeTouchStartHandler handler) {
         return addEnsureHandler(NodeTouchStartEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeGestureStartHandler(final NodeGestureStartHandler handler)
-    {
+    public HandlerRegistration addNodeGestureStartHandler(final NodeGestureStartHandler handler) {
         return addEnsureHandler(NodeGestureStartEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeGestureEndHandler(final NodeGestureEndHandler handler)
-    {
+    public HandlerRegistration addNodeGestureEndHandler(final NodeGestureEndHandler handler) {
         return addEnsureHandler(NodeGestureEndEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeGestureChangeHandler(final NodeGestureChangeHandler handler)
-    {
+    public HandlerRegistration addNodeGestureChangeHandler(final NodeGestureChangeHandler handler) {
         return addEnsureHandler(NodeGestureChangeEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeDragEndHandler(final NodeDragEndHandler handler)
-    {
+    public HandlerRegistration addNodeDragEndHandler(final NodeDragEndHandler handler) {
         return addEnsureHandler(NodeDragEndEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeDragMoveHandler(final NodeDragMoveHandler handler)
-    {
+    public HandlerRegistration addNodeDragMoveHandler(final NodeDragMoveHandler handler) {
         return addEnsureHandler(NodeDragMoveEvent.getType(), handler);
     }
 
     @Override
-    public HandlerRegistration addNodeDragStartHandler(final NodeDragStartHandler handler)
-    {
+    public HandlerRegistration addNodeDragStartHandler(final NodeDragStartHandler handler) {
         return addEnsureHandler(NodeDragStartEvent.getType(), handler);
     }
 
     @Override
-    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */)
-    {
+    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */) {
         return new TweeningAnimation(this, tweener, properties, duration, null).run();
     }
 
     @Override
-    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */, final IAnimationCallback callback)
-    {
+    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */, final IAnimationCallback callback) {
         return new TweeningAnimation(this, tweener, properties, duration, callback).run();
     }
 
     @Override
-    public final boolean equals(final Object other)
-    {
+    public final boolean equals(final Object other) {
         return (this == other);
     }
 
     @Override
-    public final int hashCode()
-    {
+    public final int hashCode() {
         return m_opts.hashCode();
     }
 
-    public abstract static class NodeFactory<N extends IJSONSerializable<N>>extends AbstractFactory<N>
-    {
-        protected NodeFactory(final NodeType type)
-        {
+    public abstract static class NodeFactory<N extends IJSONSerializable<N>> extends AbstractFactory<N> {
+
+        protected NodeFactory(final NodeType type) {
             this(type.getValue());
         }
 
-        protected NodeFactory(final String typeName)
-        {
+        protected NodeFactory(final String typeName) {
             super(typeName);
 
             addAttribute(Attribute.ID);
@@ -1490,26 +1326,25 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
         /**
          * Only factories that wish to extend other factories should use this.
-         * 
+         *
          * @param type {@link NodeType}
          */
-        protected void setNodeType(final NodeType type)
-        {
+        protected void setNodeType(final NodeType type) {
             setTypeName(type.getValue());
         }
     }
 
     @JsType
-    private static class OptionalNodeFields
-    {
+    private static class OptionalNodeFields {
+
         @JsProperty
         private String uuid;
 
         @JsProperty
-        private  MetaData meta;
+        private MetaData meta;
 
         @JsProperty
-        private  Object userData;
+        private Object userData;
 
         @JsProperty
         private HandlerManager hand;
@@ -1517,79 +1352,63 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         @JsProperty
         private int anim;
 
-        public static final OptionalNodeFields make()
-        {
+        public static final OptionalNodeFields make() {
             return new OptionalNodeFields();
         }
 
-        protected OptionalNodeFields()
-        {
+        protected OptionalNodeFields() {
         }
 
-        protected final String uuid()
-        {
-            if (null == this.uuid)
-            {
+        protected final String uuid() {
+            if (null == this.uuid) {
                 this.uuid = UUID.uuid();
             }
             return uuid;
         }
 
-        protected final boolean hasMetaData()
-        {
+        protected final boolean hasMetaData() {
             return this.meta != null;
         }
 
-        protected final MetaData getMetaData()
-        {
-            if (this.meta == null)
-            {
+        protected final MetaData getMetaData() {
+            if (this.meta == null) {
                 this.meta = new MetaData();
             }
-            return this.meta ;
+            return this.meta;
         }
 
-        protected final void setMetaData(final MetaData meta)
-        {
+        protected final void setMetaData(final MetaData meta) {
             this.meta = meta;
         }
 
-
-        protected final Object getUserData()
-        {
-			return this.userData;
+        protected final Object getUserData() {
+            return this.userData;
         }
 
-        protected final void setUserData(Object userData)
-        {
+        protected final void setUserData(Object userData) {
             this.userData = userData;
         }
 
-        protected final HandlerManager getHandlerManager()
-        {
-			return this.hand;
+        protected final HandlerManager getHandlerManager() {
+            return this.hand;
         }
 
-        protected final void setHandlerManager(HandlerManager hand)
-        {
+        protected final void setHandlerManager(HandlerManager hand) {
             this.hand = hand;
         }
 
-        protected final boolean isAnimating()
-        {
-			return anim > 0;
+        protected final boolean isAnimating() {
+            return anim > 0;
         }
 
-        protected final void doAnimating()
-        {
+        protected final void doAnimating() {
             this.anim = this.anim + 1;
         }
 
-        protected final void unAnimating()
-        {
-			if (this.anim > 0) {
-				this.anim = this.anim - 1;
-			}
+        protected final void unAnimating() {
+            if (this.anim > 0) {
+                this.anim = this.anim - 1;
+            }
         }
     }
 }

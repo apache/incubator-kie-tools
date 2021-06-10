@@ -16,19 +16,17 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-public class BooleanValidator extends AbstractAttributeTypeValidator
-{
+public class BooleanValidator extends AbstractAttributeTypeValidator {
+
     public static final BooleanValidator INSTANCE = new BooleanValidator();
 
-    public BooleanValidator()
-    {
+    public BooleanValidator() {
         super("Boolean");
     }
+
     @Override
-    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
-    {
-        if (null == jval)
-        {
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException {
+        if (null == jval) {
             ctx.addBadTypeError("Boolean");
 
             return;

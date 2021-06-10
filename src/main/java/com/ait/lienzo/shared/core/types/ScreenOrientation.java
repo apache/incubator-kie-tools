@@ -18,43 +18,37 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-public enum ScreenOrientation implements EnumWithValue
-{
-    PORTRAIT("portrait"), LANDSCAPE("landscape");
+public enum ScreenOrientation implements EnumWithValue {
+    PORTRAIT("portrait"),
+    LANDSCAPE("landscape");
 
     private final String m_value;
 
     private static final EnumStringMap<ScreenOrientation> LOOKUP_MAP = Statics.build(ScreenOrientation.values());
 
-    private ScreenOrientation(final String value)
-    {
+    private ScreenOrientation(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
-    public static final ScreenOrientation lookup(final String key)
-    {
+    public static final ScreenOrientation lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, null);
     }
 
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(ScreenOrientation.values());
     }
 
-    public static final List<ScreenOrientation> getValues()
-    {
+    public static final List<ScreenOrientation> getValues() {
         return Statics.getValues(ScreenOrientation.values());
     }
 }

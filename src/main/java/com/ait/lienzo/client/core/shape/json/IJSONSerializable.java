@@ -21,11 +21,10 @@ package com.ait.lienzo.client.core.shape.json;
  * If you addBoundingBox new types of said objects, and would like to take advantage of JSON serialization,
  * the new object will need to implement this interface, and register its factory with the
  * {@link FactoryRegistry}
- * 
+ *
  * @param <T>
  */
-public interface IJSONSerializable<T extends IJSONSerializable<T>>
-{
+public interface IJSONSerializable<T extends IJSONSerializable<T>> {
 
 //    String toJSONString();
 //    public JSONObject toJSONObject();

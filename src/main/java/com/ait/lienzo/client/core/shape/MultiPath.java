@@ -19,23 +19,18 @@ package com.ait.lienzo.client.core.shape;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.PathPartList;
-import com.ait.lienzo.client.core.types.PathPartListJSO;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
-public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
-{
-    public MultiPath()
-    {
+public class MultiPath extends AbstractMultiPathPartShape<MultiPath> {
+
+    public MultiPath() {
         super(ShapeType.MULTI_PATH);
     }
 
-    public MultiPath(String path)
-    {
+    public MultiPath(String path) {
         super(ShapeType.MULTI_PATH);
 
         PathPartList list = getOrIncrementList();
@@ -43,12 +38,10 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
         SVGPath.parse(list, path);
     }
 
-    public MultiPath(String[] paths)
-    {
+    public MultiPath(String[] paths) {
         super(ShapeType.MULTI_PATH);
 
-        for (String path : paths)
-        {
+        for (String path : paths) {
             PathPartList list = getOrIncrementList();
 
             SVGPath.parse(list, path);
@@ -61,133 +54,112 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
         return (MultiPath) multiPath.copyTo(new MultiPath());
     }
 
-    public MultiPath M(final double x, final double y)
-    {
+    public MultiPath M(final double x, final double y) {
         getOrIncrementList().M(x, y);
 
         return this;
     }
 
-    public MultiPath M(final Point2D p)
-    {
+    public MultiPath M(final Point2D p) {
         return M(p.getX(), p.getY());
     }
 
-    public MultiPath L(final double x, final double y)
-    {
+    public MultiPath L(final double x, final double y) {
         getOrIncrementList().L(x, y);
 
         return this;
     }
 
-    public MultiPath L(final Point2D p)
-    {
+    public MultiPath L(final Point2D p) {
         return L(p.getX(), p.getY());
     }
 
-    public MultiPath H(final double x)
-    {
+    public MultiPath H(final double x) {
         getOrIncrementList().H(x);
 
         return this;
     }
 
-    public MultiPath V(final double y)
-    {
+    public MultiPath V(final double y) {
         getOrIncrementList().V(y);
 
         return this;
     }
 
-    public MultiPath Q(final double cx, final double cy, final double x, final double y)
-    {
+    public MultiPath Q(final double cx, final double cy, final double x, final double y) {
         getOrIncrementList().Q(cx, cy, x, y);
 
         return this;
     }
 
-    public MultiPath Q(final Point2D cp, final Point2D ep)
-    {
+    public MultiPath Q(final Point2D cp, final Point2D ep) {
         return Q(cp.getX(), cp.getY(), ep.getX(), ep.getY());
     }
 
-    public MultiPath C(final double x1, final double y1, final double x2, final double y2, final double x, final double y)
-    {
+    public MultiPath C(final double x1, final double y1, final double x2, final double y2, final double x, final double y) {
         getOrIncrementList().C(x1, y1, x2, y2, x, y);
 
         return this;
     }
 
-    public MultiPath C(final Point2D c1, final Point2D c2, final Point2D ep)
-    {
+    public MultiPath C(final Point2D c1, final Point2D c2, final Point2D ep) {
         return C(c1.getX(), c1.getY(), c2.getX(), c2.getY(), ep.getX(), ep.getY());
     }
 
-    public MultiPath A(final double x0, final double y0, double x1, final double y1, double radius)
-    {
+    public MultiPath A(final double x0, final double y0, double x1, final double y1, double radius) {
         getOrIncrementList().A(x0, y0, x1, y1, radius);
 
         return this;
     }
 
-    public MultiPath A(final double rx, final double ry, final double ps, final double fa, final double fs, final double x, final double y)
-    {
+    public MultiPath A(final double rx, final double ry, final double ps, final double fa, final double fs, final double x, final double y) {
         getOrIncrementList().A(rx, ry, ps, fa, fs, x, y);
 
         return this;
     }
 
-    public MultiPath Z()
-    {
+    public MultiPath Z() {
         getOrIncrementList().Z();
 
         return this;
     }
 
-    public MultiPath z()
-    {
+    public MultiPath z() {
         return Z();
     }
 
-    public final MultiPath circle(final double radius)
-    {
+    public final MultiPath circle(final double radius) {
         getOrIncrementList().circle(radius);
 
         return this;
     }
 
-    public final MultiPath rect(final double x, final double y, final double w, final double h)
-    {
+    public final MultiPath rect(final double x, final double y, final double w, final double h) {
         getOrIncrementList().rect(x, y, w, h);
 
         return this;
     }
 
-    public MultiPath close()
-    {
+    public MultiPath close() {
         final NFastArrayList<PathPartList> list = getPathPartListArray();
 
-        if (list.size() > 0)
-        {
+        if (list.size() > 0) {
             list.get(list.size() - 1).close();
         }
         return this;
     }
 
     @Override
-    public MultiPath refresh()
-    {
+    public MultiPath refresh() {
         return this;
     }
 
-    private final PathPartList getOrIncrementList()
-    {
+    private final PathPartList getOrIncrementList() {
         resetBoundingBox(); // null the cache, as the BB will change
 
         final NFastArrayList<PathPartList> list = getPathPartListArray();
 
-        if (list.size() < 1)
-        {
+        if (list.size() < 1) {
             PathPartList path = new PathPartList();
 
             list.add(path);
@@ -196,12 +168,10 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
         }
         PathPartList path = list.get(list.size() - 1);
 
-        if (path.size() < 1)
-        {
+        if (path.size() < 1) {
             return path;
         }
-        if (path.isClosed())
-        {
+        if (path.isClosed()) {
             path = new PathPartList();
 
             list.add(path);
@@ -210,15 +180,13 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes();
     }
 
-    public static class MultiPathFactory extends ShapeFactory<MultiPath>
-    {
-        public MultiPathFactory()
-        {
+    public static class MultiPathFactory extends ShapeFactory<MultiPath> {
+
+        public MultiPathFactory() {
             super(ShapeType.MULTI_PATH);
         }
     }

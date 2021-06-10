@@ -22,8 +22,8 @@ import com.ait.lienzo.client.widget.panel.Bounds;
  * Defines a mediator that can mediate {@link com.ait.lienzo.client.core.types.Transform} applied to a {@link
  * com.ait.lienzo.client.core.shape.Viewport}.
  */
-public interface TransformMediator
-{
+public interface TransformMediator {
+
     /**
      * Adjusts a {@link com.ait.lienzo.client.core.types.Transform} to mediate transformations.
      *

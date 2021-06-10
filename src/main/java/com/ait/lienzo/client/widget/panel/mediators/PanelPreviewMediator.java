@@ -33,7 +33,6 @@ import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.client.widget.panel.util.PanelTransformUtils;
 import com.ait.lienzo.shared.core.types.ColorName;
 import elemental2.dom.CSSStyleDeclaration;
-import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 
 public class PanelPreviewMediator extends AbstractPanelMediator<PanelPreviewMediator> {

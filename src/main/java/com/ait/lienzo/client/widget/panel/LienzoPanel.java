@@ -21,8 +21,8 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.style.Style.Cursor;
 import elemental2.dom.HTMLDivElement;
 
-public abstract class LienzoPanel<P extends LienzoPanel>
-{
+public abstract class LienzoPanel<P extends LienzoPanel> {
+
     public abstract P add(Layer layer);
 
     public abstract P setBackgroundLayer(Layer layer);

@@ -18,8 +18,8 @@ package com.ait.lienzo.client.core.image.filter;
 
 import java.util.Collection;
 
-public interface ImageDataFilterable<T extends ImageDataFilterable<T>>
-{
+public interface ImageDataFilterable<T extends ImageDataFilterable<T>> {
+
     T setFilters(ImageDataFilter<?>... filters);
 
     T addFilters(ImageDataFilter<?>... filters);

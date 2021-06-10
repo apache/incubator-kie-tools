@@ -18,8 +18,8 @@ package com.ait.lienzo.client.core.animation;
 
 import com.ait.lienzo.client.core.shape.Node;
 
-public interface IAnimation
-{
+public interface IAnimation {
+
     double INDEFINITE_ANIMATION = -1;
 
     double getPercent();

@@ -16,8 +16,8 @@
 
 package com.ait.lienzo.tools.client;
 
-public interface ILogging
-{
+public interface ILogging {
+
     public void info(String message);
 
     public void severe(String message);

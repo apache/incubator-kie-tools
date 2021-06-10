@@ -21,43 +21,38 @@ import java.util.List;
 /**
  * Enum to type safe the usage of Canvas Line Joins.
  */
-public enum LineJoin implements EnumWithValue
-{
-    ROUND("round"), BEVEL("bevel"), MITER("miter");
+public enum LineJoin implements EnumWithValue {
+    ROUND("round"),
+    BEVEL("bevel"),
+    MITER("miter");
 
     private final String m_value;
 
     private static final EnumStringMap<LineJoin> LOOKUP_MAP = Statics.build(LineJoin.values());
 
-    private LineJoin(final String value)
-    {
+    private LineJoin(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
-    public static final LineJoin lookup(final String key)
-    {
+    public static final LineJoin lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, MITER);
     }
 
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(LineJoin.values());
     }
 
-    public static final List<LineJoin> getValues()
-    {
+    public static final List<LineJoin> getValues() {
         return Statics.getValues(LineJoin.values());
     }
 }

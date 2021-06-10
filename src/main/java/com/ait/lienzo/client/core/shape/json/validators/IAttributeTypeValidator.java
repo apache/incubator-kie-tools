@@ -16,8 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-public interface IAttributeTypeValidator
-{
+public interface IAttributeTypeValidator {
+
     public boolean isIgnored();
 
     public String getTypeName();

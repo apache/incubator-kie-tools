@@ -19,67 +19,57 @@ package com.ait.lienzo.tools.client;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class Logging implements ILogging
-{
+public final class Logging implements ILogging {
+
     private static Logging INSTANCE;
 
-    private final  Logger  m_logger;
+    private final Logger m_logger;
 
-    public static final Logging get()
-    {
-        if (null == INSTANCE)
-        {
+    public static final Logging get() {
+        if (null == INSTANCE) {
             INSTANCE = new Logging();
         }
         return INSTANCE;
     }
 
-    private Logging()
-    {
+    private Logging() {
         // @FIXME getModuleName() does not exist in gwt3, yet (mdp);
-        m_logger = Logger.getLogger( "lienzo-core_logger");
+        m_logger = Logger.getLogger("lienzo-core_logger");
         //m_logger = Logger.getLogger(GWT.getModuleName() + "_logger");
     }
 
     @Override
-    public final void info(final String message)
-    {
+    public final void info(final String message) {
         m_logger.log(Level.INFO, message);
     }
 
     @Override
-    public final void severe(final String message)
-    {
+    public final void severe(final String message) {
         m_logger.log(Level.SEVERE, "SEVERE: " + message);
     }
 
     @Override
-    public final void error(final String message)
-    {
+    public final void error(final String message) {
         m_logger.log(Level.SEVERE, "ERROR: " + message);
     }
 
     @Override
-    public final void error(final String message, final Throwable e)
-    {
+    public final void error(final String message, final Throwable e) {
         m_logger.log(Level.SEVERE, "ERROR: " + message + " " + e.getMessage());
     }
 
     @Override
-    public final void fine(final String message)
-    {
+    public final void fine(final String message) {
         m_logger.log(Level.FINE, message);
     }
 
     @Override
-    public final void warn(final String message)
-    {
+    public final void warn(final String message) {
         m_logger.log(Level.WARNING, message);
     }
 
     @Override
-    public final void severe(final String message, final Throwable e)
-    {
+    public final void severe(final String message, final Throwable e) {
         m_logger.log(Level.SEVERE, "SEVERE: " + message + " " + e.getMessage());
     }
 }

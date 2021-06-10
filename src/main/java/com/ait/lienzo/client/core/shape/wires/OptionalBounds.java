@@ -99,19 +99,17 @@ public class OptionalBounds {
 
     public boolean lessOrEqualThanMinY(final double value) {
         return hasMinY() && value <= getMinY();
-
     }
+
     public boolean lessOrEqualThanMinX(final double value) {
         return hasMinX() && value <= getMinX();
     }
 
     public boolean biggerOrEqualThanMaxY(final double value) {
         return hasMaxY() && value >= getMaxY();
-
     }
+
     public boolean biggerOrEqualThanMaxX(final double value) {
         return hasMaxX() && value >= getMaxX();
     }
-
-
 }

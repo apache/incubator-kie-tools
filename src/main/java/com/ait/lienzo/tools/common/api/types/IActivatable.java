@@ -16,8 +16,8 @@
 
 package com.ait.lienzo.tools.common.api.types;
 
-public interface IActivatable
-{
+public interface IActivatable {
+
     public boolean isActive();
 
     public boolean setActive(boolean active);

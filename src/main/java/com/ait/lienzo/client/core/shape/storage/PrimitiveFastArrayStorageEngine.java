@@ -23,28 +23,24 @@ import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 
-public class PrimitiveFastArrayStorageEngine extends AbstractFastArrayStorageEngine<IPrimitive<?>> implements IJSONSerializable<PrimitiveFastArrayStorageEngine>
-{
-    public PrimitiveFastArrayStorageEngine()
-    {
+public class PrimitiveFastArrayStorageEngine extends AbstractFastArrayStorageEngine<IPrimitive<?>> implements IJSONSerializable<PrimitiveFastArrayStorageEngine> {
+
+    public PrimitiveFastArrayStorageEngine() {
         super(StorageEngineType.PRIMITIVE_FAST_ARRAY_STORAGE_ENGINE);
     }
 
-    protected PrimitiveFastArrayStorageEngine(final Object node, final ValidationContext ctx) throws ValidationException
-    {
+    protected PrimitiveFastArrayStorageEngine(final Object node, final ValidationContext ctx) throws ValidationException {
         super(StorageEngineType.PRIMITIVE_FAST_ARRAY_STORAGE_ENGINE, node, ctx);
     }
 
     @Override
-    public IFactory<?> getFactory()
-    {
+    public IFactory<?> getFactory() {
         return LienzoCore.get().getFactory(getStorageEngineType());
     }
 
-    public static class PrimitiveFastArrayStorageEngineFactory extends FastArrayStorageEngineFactory<PrimitiveFastArrayStorageEngine>
-    {
-        public PrimitiveFastArrayStorageEngineFactory()
-        {
+    public static class PrimitiveFastArrayStorageEngineFactory extends FastArrayStorageEngineFactory<PrimitiveFastArrayStorageEngine> {
+
+        public PrimitiveFastArrayStorageEngineFactory() {
             super(StorageEngineType.PRIMITIVE_FAST_ARRAY_STORAGE_ENGINE);
         }
     }

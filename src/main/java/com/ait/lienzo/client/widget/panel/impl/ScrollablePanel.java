@@ -86,16 +86,12 @@ public class ScrollablePanel extends LienzoBoundsPanel {
         return this;
     }
 
-    private void setupMouseDragSynchronization()
-    {
-        if (null != getViewport())
-        {
+    private void setupMouseDragSynchronization() {
+        if (null != getViewport()) {
             // TODO: Remove this mediator once destroying the panel.
-            panMediator = new RestrictedMousePanMediator(this)
-            {
+            panMediator = new RestrictedMousePanMediator(this) {
                 @Override
-                protected void onMouseMove(int x, int y)
-                {
+                protected void onMouseMove(int x, int y) {
                     refreshScrollPosition();
                 }
             };
@@ -269,8 +265,7 @@ public class ScrollablePanel extends LienzoBoundsPanel {
         };
     }
 
-    public void initResizeObserver()
-    {
+    public void initResizeObserver() {
         if (null == resizeObserver && isContainerStillOpened()) {
             resizeObserver = new ResizeObserver(m_resizeCallback);
             resizeObserver.observe((Element) this.getElement().parentNode.parentNode);
@@ -278,8 +273,7 @@ public class ScrollablePanel extends LienzoBoundsPanel {
     }
 
     @Override
-    public LienzoFixedPanel getLienzoPanel()
-    {
+    public LienzoFixedPanel getLienzoPanel() {
         return (LienzoFixedPanel) super.getLienzoPanel();
     }
 

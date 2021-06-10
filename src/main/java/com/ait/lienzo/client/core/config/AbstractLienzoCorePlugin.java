@@ -16,48 +16,40 @@
 
 package com.ait.lienzo.client.core.config;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.tools.client.StringOps;
-import java.util.function.Supplier;
 import com.ait.lienzo.tools.client.collection.NFastStringMap;
 import com.ait.lienzo.tools.common.api.types.IStringValued;
-
 import elemental2.core.JsArray;
 import jsinterop.base.Js;
 
-public abstract class AbstractLienzoCorePlugin implements ILienzoPlugin
-{
-    private final NFastStringMap<IFactory<?>>           m_factories = new NFastStringMap<IFactory<?>>();
+public abstract class AbstractLienzoCorePlugin implements ILienzoPlugin {
+
+    private final NFastStringMap<IFactory<?>> m_factories = new NFastStringMap<IFactory<?>>();
 
     private final NFastStringMap<Supplier<IFactory<?>>> m_suppliers = new NFastStringMap<Supplier<IFactory<?>>>();
 
-    protected AbstractLienzoCorePlugin()
-    {
+    protected AbstractLienzoCorePlugin() {
     }
 
-    protected final boolean addFactorySupplier(final IStringValued type, final Supplier<IFactory<?>> supplier)
-    {
+    protected final boolean addFactorySupplier(final IStringValued type, final Supplier<IFactory<?>> supplier) {
         return addFactorySupplier((null != type) ? type.getValue() : null, supplier);
     }
 
-    protected final boolean addFactorySupplier(String name, final Supplier<IFactory<?>> supplier)
-    {
-        if (null == (name = StringOps.toTrimOrNull(name)))
-        {
+    protected final boolean addFactorySupplier(String name, final Supplier<IFactory<?>> supplier) {
+        if (null == (name = StringOps.toTrimOrNull(name))) {
             return false;
         }
-        if (null == supplier)
-        {
+        if (null == supplier) {
             return false;
         }
-        if (null != m_suppliers.get(name))
-        {
+        if (null != m_suppliers.get(name)) {
             LienzoCore.get().error("Supplier for type " + name + "  has already been defined.");
 
             return false;
-        }
-        else
-        {
+        } else {
             m_suppliers.put(name, supplier);
 
             return true;
@@ -65,38 +57,31 @@ public abstract class AbstractLienzoCorePlugin implements ILienzoPlugin
     }
 
     @Override
-    public final String[] keys()
-    {
+    public final String[] keys() {
         return Js.uncheckedCast(JsArray.from(m_suppliers.keys()));
     }
 
     @Override
-    public final IFactory<?> getFactory(final IStringValued type)
-    {
+    public final IFactory<?> getFactory(final IStringValued type) {
         return getFactory((null != type) ? type.getValue() : null);
     }
 
     @Override
-    public final IFactory<?> getFactory(String name)
-    {
-        if (null == (name = StringOps.toTrimOrNull(name)))
-        {
+    public final IFactory<?> getFactory(String name) {
+        if (null == (name = StringOps.toTrimOrNull(name))) {
             return null;
         }
         IFactory<?> factory = m_factories.get(name);
 
-        if (null != factory)
-        {
+        if (null != factory) {
             return factory;
         }
         final Supplier<IFactory<?>> supplier = m_suppliers.get(name);
 
-        if (null != supplier)
-        {
+        if (null != supplier) {
             factory = supplier.get();
 
-            if (null != factory)
-            {
+            if (null != factory) {
                 m_factories.put(name, factory);
 
                 return factory;

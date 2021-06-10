@@ -21,12 +21,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
-public final class BoundingPoints implements Iterable<Point2D>
-{
+public final class BoundingPoints implements Iterable<Point2D> {
+
     private final Point2DArray m_array = new Point2DArray();
 
-    public BoundingPoints(final BoundingBox bbox)
-    {
+    public BoundingPoints(final BoundingBox bbox) {
         double x = bbox.getX();
 
         double y = bbox.getY();
@@ -44,24 +43,19 @@ public final class BoundingPoints implements Iterable<Point2D>
         m_array.push(new Point2D(x + 0, y + h));
     }
 
-    public final Point2DArray getArray()
-    {
+    public final Point2DArray getArray() {
         return m_array;
     }
 
-    public final BoundingPoints transform(final Transform transform)
-    {
+    public final BoundingPoints transform(final Transform transform) {
         return transform(0, 0, transform);
     }
 
-    public final BoundingPoints transform(final double computedOffsetX, final double computedOffsetY, final Transform transform)
-    {
-        if (null != transform)
-        {
+    public final BoundingPoints transform(final double computedOffsetX, final double computedOffsetY, final Transform transform) {
+        if (null != transform) {
             final int leng = m_array.size();
 
-            for (int i = 0; i < leng; i++)
-            {
+            for (int i = 0; i < leng; i++) {
                 final Point2D p = m_array.get(i);
                 transform.transform(p, p);
                 p.offset(computedOffsetX, computedOffsetY);
@@ -70,58 +64,48 @@ public final class BoundingPoints implements Iterable<Point2D>
         return this;
     }
 
-    public final BoundingBox getBoundingBox()
-    {
+    public final BoundingBox getBoundingBox() {
         return m_array.getBoundingBox();
     }
 
-    public final Collection<Point2D> getPoints()
-    {
+    public final Collection<Point2D> getPoints() {
         final int leng = m_array.size();
 
         final ArrayList<Point2D> list = new ArrayList<>(leng);
 
-        for (int i = 0; i < leng; i++)
-        {
+        for (int i = 0; i < leng; i++) {
             list.add(m_array.get(i));
         }
         return Collections.unmodifiableCollection(list);
     }
 
-    public final String toJSONString()
-    {
+    public final String toJSONString() {
         return m_array.toJSONString();
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return toJSONString();
     }
 
     @Override
-    public boolean equals(final Object other)
-    {
-        if ((other == null) || (!(other instanceof BoundingPoints)))
-        {
+    public boolean equals(final Object other) {
+        if ((other == null) || (!(other instanceof BoundingPoints))) {
             return false;
         }
-        if (this == other)
-        {
+        if (this == other) {
             return true;
         }
         return ((BoundingPoints) other).getArray().equals(getArray());
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return toJSONString().hashCode();
     }
 
     @Override
-    public final Iterator<Point2D> iterator()
-    {
+    public final Iterator<Point2D> iterator() {
         return m_array.iterator();
     }
 }

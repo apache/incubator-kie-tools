@@ -20,11 +20,8 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-
 import jsinterop.annotations.JsProperty;
 
 /**
@@ -32,8 +29,8 @@ import jsinterop.annotations.JsProperty;
  * The angles can be specified in clockwise or counter-clockwise order.
  * Slices greater than 180 degrees (or PI radians) look like pacmans.
  */
-public class Slice extends Shape<Slice>
-{
+public class Slice extends Shape<Slice> {
+
     @JsProperty
     private double radius;
 
@@ -46,17 +43,15 @@ public class Slice extends Shape<Slice>
     @JsProperty
     private boolean counterClockwise;
 
-
     /**
      * Constructor. Creates an instance of a slice.
-     * 
+     *
      * @param radius
-     * @param startAngle in radians
-     * @param endAngle in radians
+     * @param startAngle       in radians
+     * @param endAngle         in radians
      * @param counterClockwise
      */
-    public Slice(final double radius, final double startAngle, final double endAngle, final boolean counterClockwise)
-    {
+    public Slice(final double radius, final double startAngle, final double endAngle, final boolean counterClockwise) {
         super(ShapeType.SLICE);
 
         setRadius(radius).setStartAngle(startAngle).setEndAngle(endAngle).setCounterClockwise(counterClockwise);
@@ -64,19 +59,17 @@ public class Slice extends Shape<Slice>
 
     /**
      * Constructor. Creates an instance of a slice, drawn clockwise.
-     * 
+     *
      * @param radius
      * @param startAngle in radians
-     * @param endAngle in radians
+     * @param endAngle   in radians
      */
-    public Slice(final double radius, final double startAngle, final double endAngle)
-    {
+    public Slice(final double radius, final double startAngle, final double endAngle) {
         this(radius, startAngle, endAngle, false);
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         final double radius = getRadius();
 
         return BoundingBox.fromDoubles(0 - radius, 0 - radius, radius, radius);
@@ -84,36 +77,31 @@ public class Slice extends Shape<Slice>
 
     /**
      * Draws this slice.
-     * 
+     *
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final double alpha)
-    {
+    protected boolean prepare(final Context2D context, final double alpha) {
         final double beg = getStartAngle();
 
         final double end = getEndAngle();
 
-        if (beg == end)
-        {
+        if (beg == end) {
             return false;
         }
         final double r = getRadius();
 
-        if (r > 0)
-        {
+        if (r > 0) {
             boolean pacman = true;
 
-            if ((Math.abs(beg - end) % (Math.PI * 2)) == 0)
-            {
+            if ((Math.abs(beg - end) % (Math.PI * 2)) == 0) {
                 pacman = false;
             }
             context.beginPath();
 
             context.arc(0, 0, r, beg, end, isCounterClockwise());
 
-            if (pacman)
-            {
+            if (pacman) {
                 context.lineTo(0, 0);
             }
             context.closePath();
@@ -129,8 +117,7 @@ public class Slice extends Shape<Slice>
      * @param radius
      * @return this Circle
      */
-    public Slice setRadius(final double radius)
-    {
+    public Slice setRadius(final double radius) {
         this.radius = radius;
 
         return this;
@@ -141,8 +128,7 @@ public class Slice extends Shape<Slice>
      *
      * @return double
      */
-    public double getRadius()
-    {
+    public double getRadius() {
         return this.radius;
     }
 
@@ -151,8 +137,7 @@ public class Slice extends Shape<Slice>
      *
      * @return double (in radians)
      */
-    public double getStartAngle()
-    {
+    public double getStartAngle() {
         return this.startAngle;
     }
 
@@ -162,8 +147,7 @@ public class Slice extends Shape<Slice>
      * @param angle (in radians)
      * @return this slice
      */
-    public Slice setStartAngle(final double angle)
-    {
+    public Slice setStartAngle(final double angle) {
         this.startAngle = angle;
 
         return this;
@@ -174,8 +158,7 @@ public class Slice extends Shape<Slice>
      *
      * @return double (in radians)
      */
-    public double getEndAngle()
-    {
+    public double getEndAngle() {
         return this.endAngle;
     }
 
@@ -185,8 +168,7 @@ public class Slice extends Shape<Slice>
      * @param angle (in radians)
      * @return this slice
      */
-    public Slice setEndAngle(final double angle)
-    {
+    public Slice setEndAngle(final double angle) {
         this.endAngle = angle;
 
         return this;
@@ -197,8 +179,7 @@ public class Slice extends Shape<Slice>
      *
      * @return boolean
      */
-    public boolean isCounterClockwise()
-    {
+    public boolean isCounterClockwise() {
         return this.counterClockwise;
     }
 
@@ -208,23 +189,20 @@ public class Slice extends Shape<Slice>
      * @param counterClockwise If true, it's drawn counter clockwise.
      * @return this slice
      */
-    public Slice setCounterClockwise(final boolean counterClockwise)
-    {
+    public Slice setCounterClockwise(final boolean counterClockwise) {
         this.counterClockwise = counterClockwise;
 
         return this;
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.RADIUS, Attribute.START_ANGLE, Attribute.END_ANGLE, Attribute.COUNTER_CLOCKWISE);
     }
 
-    public static class SliceFactory extends ShapeFactory<Slice>
-    {
-        public SliceFactory()
-        {
+    public static class SliceFactory extends ShapeFactory<Slice> {
+
+        public SliceFactory() {
             super(ShapeType.SLICE);
 
             addAttribute(Attribute.RADIUS, true);

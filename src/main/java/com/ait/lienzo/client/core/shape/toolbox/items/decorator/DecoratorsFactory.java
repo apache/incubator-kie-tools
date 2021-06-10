@@ -16,10 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.decorator;
 
-import java.util.function.Consumer;
-
-import com.ait.lienzo.client.core.shape.MultiPath;
-
 public class DecoratorsFactory {
 
     static final double SELECTION_OFFSET = 15d;
@@ -46,14 +42,14 @@ public class DecoratorsFactory {
         return new BoxDecorator()
                 .configure(path -> path.setFillAlpha(0.7))
                 .useShowExecutor(path -> path
-                    .setFillBoundsForSelection(true)
-                    .setFillShapeForSelection(true)
-                    .setSelectionBoundsOffset(SELECTION_OFFSET)
-                    .setSelectionStrokeOffset(SELECTION_OFFSET)
-                    .setAlpha(1))
+                        .setFillBoundsForSelection(true)
+                        .setFillShapeForSelection(true)
+                        .setSelectionBoundsOffset(SELECTION_OFFSET)
+                        .setSelectionStrokeOffset(SELECTION_OFFSET)
+                        .setAlpha(1))
                 .useHideExecutor(path -> path
-                    .setFillBoundsForSelection(false)
-                    .setFillShapeForSelection(false)
-                    .setAlpha(0));
+                        .setFillBoundsForSelection(false)
+                        .setFillShapeForSelection(false)
+                        .setAlpha(0));
     }
 }

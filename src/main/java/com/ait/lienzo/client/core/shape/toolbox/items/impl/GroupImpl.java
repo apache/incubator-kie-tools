@@ -76,9 +76,9 @@ class GroupImpl extends AbstractGroupItem<GroupImpl> {
         return () -> {
             if (primitive.getChildNodes().size() == 0) {
                 return BoundingBox.fromDoubles(0,
-                                       0,
-                                       1,
-                                       1);
+                                               0,
+                                               1,
+                                               1);
             }
             return GroupImpl.super.getBoundingBox().get();
         };

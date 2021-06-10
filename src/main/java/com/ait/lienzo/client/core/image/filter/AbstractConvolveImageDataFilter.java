@@ -21,36 +21,30 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.ait.lienzo.tools.client.Console;
-
 import elemental2.core.Uint8ClampedArray;
 import elemental2.dom.ImageData;
 import jsinterop.annotations.JsProperty;
 
-public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolveImageDataFilter<T>> extends AbstractImageDataFilter<T>
-{
+public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolveImageDataFilter<T>> extends AbstractImageDataFilter<T> {
+
     @JsProperty
     private FilterConvolveMatrix filterConvolveMatrix;
 
-    protected AbstractConvolveImageDataFilter(final ImageFilterType type, final double... matrix)
-    {
+    protected AbstractConvolveImageDataFilter(final ImageFilterType type, final double... matrix) {
         super(type);
 
         setMatrix(matrix);
     }
 
-    protected AbstractConvolveImageDataFilter(final ImageFilterType type, final FilterConvolveMatrix matrix)
-    {
+    protected AbstractConvolveImageDataFilter(final ImageFilterType type, final FilterConvolveMatrix matrix) {
         super(type);
 
         setMatrix(matrix);
     }
 
-    protected AbstractConvolveImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException
-    {
+    protected AbstractConvolveImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException {
         super(type, node, ctx);
     }
-
 
 //    public final void setMatrix(final double... matrix)
 //    {
@@ -79,60 +73,49 @@ public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolve
 //        return new FilterConvolveMatrix();
 //    }
 
-    public final T setMatrix(final double... matrix)
-    {
+    public final T setMatrix(final double... matrix) {
         this.filterConvolveMatrix = new FilterConvolveMatrix();
-        for ( int i = 0, length = matrix.length; i<length; i++)
-        {
+        for (int i = 0, length = matrix.length; i < length; i++) {
             this.filterConvolveMatrix.push(matrix[i]);
         }
 
         return cast();
     }
 
-    public final T setMatrix(final FilterConvolveMatrix matrix)
-    {
+    public final T setMatrix(final FilterConvolveMatrix matrix) {
         this.filterConvolveMatrix = matrix;
 
         return cast();
     }
 
-    public final FilterConvolveMatrix getMatrix()
-    {
+    public final FilterConvolveMatrix getMatrix() {
         return this.filterConvolveMatrix;
     }
 
     @Override
-    public final boolean isTransforming()
-    {
+    public final boolean isTransforming() {
         return true;
     }
 
     @Override
-    public ImageData filter(ImageData source, final boolean copy)
-    {
-        if (null == source)
-        {
+    public ImageData filter(ImageData source, final boolean copy) {
+        if (null == source) {
             return null;
         }
-        if (copy)
-        {
+        if (copy) {
             source = ImageDataUtil.copy(source);
         }
-        if (false == isActive())
-        {
+        if (false == isActive()) {
             return source;
         }
         final Uint8ClampedArray data = source.data;
 
-        if (null == data)
-        {
+        if (null == data) {
             return source;
         }
         final FilterConvolveMatrix matrix = getMatrix();
 
-        if (matrix.getLength() < 1)
-        {
+        if (matrix.getLength() < 1) {
             return source;
         }
         final ImageData result = ImageDataUtil.create(source);
@@ -142,10 +125,9 @@ public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolve
         return result;
     }
 
-    protected static abstract class ConvolveImageDataFilterFactory<T extends AbstractConvolveImageDataFilter<T>> extends ImageDataFilterFactory<T>
-    {
-        protected ConvolveImageDataFilterFactory(final ImageFilterType type)
-        {
+    protected static abstract class ConvolveImageDataFilterFactory<T extends AbstractConvolveImageDataFilter<T>> extends ImageDataFilterFactory<T> {
+
+        protected ConvolveImageDataFilterFactory(final ImageFilterType type) {
             super(type);
 
             addAttribute(Attribute.MATRIX, true);

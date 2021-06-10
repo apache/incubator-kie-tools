@@ -42,18 +42,18 @@ import jsinterop.base.Js;
 
 /**
  * Scene serves as a container for {@link Layer}<
- * 
+ *
  * <ul>
  * <li>A {@link Scene} can contain more than one {@link Layer}</li>
- * </ul> 
+ * </ul>
  */
-public class Scene extends ContainerNode<Layer, Scene>
-{
-    private int              m_wide    = 0;
+public class Scene extends ContainerNode<Layer, Scene> {
 
-    private int              m_high    = 0;
+    private int m_wide = 0;
 
-    private Viewport         m_owns    = null;
+    private int m_high = 0;
+
+    private Viewport m_owns = null;
 
     private static long idCounter;
 
@@ -62,28 +62,23 @@ public class Scene extends ContainerNode<Layer, Scene>
     /**
      * Constructor. Creates an instance of a scene.
      */
-    public Scene()
-    {
+    public Scene() {
         super(NodeType.SCENE, new SceneFastArrayStorageEngine());
         m_element.id = "scene_div" + idCounter++;
     }
 
     @Override
-    public final IStorageEngine<Layer> getDefaultStorageEngine()
-    {
+    public final IStorageEngine<Layer> getDefaultStorageEngine() {
         return new SceneFastArrayStorageEngine();
     }
 
     @Override
-    public List<Attribute> getTransformingAttributes()
-    {
+    public List<Attribute> getTransformingAttributes() {
         return LienzoCore.STANDARD_TRANSFORMING_ATTRIBUTES;
     }
 
-    public final boolean adopt(final Viewport owns)
-    {
-        if ((null == m_owns) || (m_owns == owns))
-        {
+    public final boolean adopt(final Viewport owns) {
+        if ((null == m_owns) || (m_owns == owns)) {
             m_owns = owns;
 
             return true;
@@ -93,42 +88,38 @@ public class Scene extends ContainerNode<Layer, Scene>
 
     /**
      * Returns the {@link HTMLDivElement}
-     * 
+     *
      * @return {@link HTMLDivElement}
      */
-    public HTMLDivElement getElement()
-    {
+    public HTMLDivElement getElement() {
         return m_element;
     }
 
     /**
      * Returns this scene's width, in pixels.
-     * 
+     *
      * @return int
      */
-    public int getWidth()
-    {
+    public int getWidth() {
         return m_wide;
     }
 
     /**
      * Returns this scene's height, in pixels
-     * 
+     *
      * @return int
      */
-    public int getHeight()
-    {
+    public int getHeight() {
         return m_high;
     }
 
     /**
      * Sets this scene's width, in pixels
-     * 
+     *
      * @param wide
      * @return this Scene
      */
-    public Scene setWidth(final int wide)
-    {
+    public Scene setWidth(final int wide) {
         setPixelSize(wide, getHeight());
 
         return this;
@@ -136,12 +127,11 @@ public class Scene extends ContainerNode<Layer, Scene>
 
     /**
      * Sets this scene's height, in pixels
-     * 
+     *
      * @param high
      * @return this Scene
      */
-    public Scene setHeight(final int high)
-    {
+    public Scene setHeight(final int high) {
         setPixelSize(getWidth(), high);
 
         return this;
@@ -149,13 +139,12 @@ public class Scene extends ContainerNode<Layer, Scene>
 
     /**
      * Sets this scene's size (width and height) in pixels.
-     * 
+     *
      * @param wide
      * @param high
      * @return this Scene
      */
-    public final Scene setPixelSize(final int wide, final int high)
-    {
+    public final Scene setPixelSize(final int wide, final int high) {
         m_wide = wide;
 
         m_high = high;
@@ -166,16 +155,13 @@ public class Scene extends ContainerNode<Layer, Scene>
 
         final NFastArrayList<Layer> layers = getChildNodes();
 
-        if (null != layers)
-        {
+        if (null != layers) {
             final int size = layers.size();
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 final Layer layer = layers.get(i);
 
-                if (null != layer)
-                {
+                if (null != layer) {
                     layer.setPixelSize(wide, high);
                 }
             }
@@ -185,44 +171,40 @@ public class Scene extends ContainerNode<Layer, Scene>
 
     /**
      * Returns this scene.
-     * 
+     *
      * @return Scene
      */
     @Override
-    public final Scene getScene()
-    {
+    public final Scene getScene() {
         return this;
     }
 
     /**
      * Convenience method to return an instance of itself.
-     * 
+     *
      * @return Scene
      */
     @Override
-    public final Scene asScene()
-    {
+    public final Scene asScene() {
         return this;
     }
 
     /**
      * Returns an instance of this scene cast to {@link IContainer}
-     * 
+     *
      * @return Scene
      */
     @Override
-    public final IContainer<Scene, Layer> asContainer()
-    {
+    public final IContainer<Scene, Layer> asContainer() {
         return this;
     }
 
     /**
      * Returns the top layer (which is drawn last)
-     * 
+     *
      * @return Layer
      */
-    public final Layer getTopLayer()
-    {
+    public final Layer getTopLayer() {
         final NFastArrayList<Layer> layers = getChildNodes();
 
         final int n = layers.size();
@@ -234,20 +216,16 @@ public class Scene extends ContainerNode<Layer, Scene>
      * Iterates over the list of {@link Layer} and draws them all.
      */
     @Override
-    public final Scene draw()
-    {
+    public final Scene draw() {
         final NFastArrayList<Layer> layers = getChildNodes();
 
-        if (null != layers)
-        {
+        if (null != layers) {
             final int size = layers.size();
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 final Layer layer = layers.get(i);
 
-                if (null != layer)
-                {
+                if (null != layer) {
                     layer.draw();
                 }
             }
@@ -259,20 +237,16 @@ public class Scene extends ContainerNode<Layer, Scene>
      * Iterates over the list of {@link Layer} and batch draws them all.
      */
     @Override
-    public final Scene batch()
-    {
+    public final Scene batch() {
         final NFastArrayList<Layer> layers = getChildNodes();
 
-        if (null != layers)
-        {
+        if (null != layers) {
             final int size = layers.size();
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 final Layer layer = layers.get(i);
 
-                if (null != layer)
-                {
+                if (null != layer) {
                     layer.batch();
                 }
             }
@@ -284,31 +258,25 @@ public class Scene extends ContainerNode<Layer, Scene>
      * Given a set of (x,y) coordinates, returns the {@link Shape} that is matched.
      * The {@link Shape} returned will be the one found in the upper {@link Layer}
      * Return null if no {@link Shape} is detected or found.
-     * 
+     *
      * @param x
      * @param y
      * @return Shape
      */
-    public final Shape<?> findShapeAtPoint(final int x, final int y)
-    {
-        if (isVisible())
-        {
+    public final Shape<?> findShapeAtPoint(final int x, final int y) {
+        if (isVisible()) {
             final NFastArrayList<Layer> layers = getChildNodes();
 
-            if (null != layers)
-            {
+            if (null != layers) {
                 int size = layers.size();
 
-                for (int i = size - 1; i >= 0; i--)
-                {
+                for (int i = size - 1; i >= 0; i--) {
                     final Layer layer = layers.get(i);
 
-                    if (null != layer)
-                    {
+                    if (null != layer) {
                         final Shape<?> shape = layer.findShapeAtPoint(x, y);
 
-                        if (null != shape)
-                        {
+                        if (null != shape) {
                             return shape;
                         }
                     }
@@ -321,20 +289,16 @@ public class Scene extends ContainerNode<Layer, Scene>
     /**
      * Fires the given GWT event.
      */
-    public final  <H extends EventHandler, S> void fireEvent(final INodeEvent<H, S> event)
-    {
+    public final <H extends EventHandler, S> void fireEvent(final INodeEvent<H, S> event) {
         final NFastArrayList<Layer> layers = getChildNodes();
 
-        if (null != layers)
-        {
+        if (null != layers) {
             final int size = layers.size();
 
-            for (int i = size - 1; i >= 0; i--)
-            {
+            for (int i = size - 1; i >= 0; i--) {
                 final Layer layer = layers.get(i);
 
-                if (null != layer)
-                {
+                if (null != layer) {
                     layer.fireEvent(event);
                 }
             }
@@ -346,10 +310,8 @@ public class Scene extends ContainerNode<Layer, Scene>
      * A draw will be invoked after the layer is added.
      */
     @Override
-    public final Scene add(final Layer layer)
-    {
-        if ((null != layer) && (LienzoCore.IS_CANVAS_SUPPORTED))
-        {
+    public final Scene add(final Layer layer) {
+        if ((null != layer) && (LienzoCore.IS_CANVAS_SUPPORTED)) {
             layer.removeFromParent();
 
             layer.setPixelSize(getWidth(), getHeight());
@@ -364,28 +326,23 @@ public class Scene extends ContainerNode<Layer, Scene>
     }
 
     @Override
-    public final Scene add(final Layer layer, final Layer... children)
-    {
+    public final Scene add(final Layer layer, final Layer... children) {
         add(layer);
 
-        for (Layer node : children)
-        {
+        for (Layer node : children) {
             add(node);
         }
         return this;
     }
 
     @Override
-    public boolean removeFromParent()
-    {
+    public boolean removeFromParent() {
         final Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             final Viewport view = parent.asViewport();
 
-            if (null != view)
-            {
+            if (null != view) {
                 view.remove(this);
 
                 return true;
@@ -398,12 +355,9 @@ public class Scene extends ContainerNode<Layer, Scene>
      * Removes a {@link Layer}
      */
     @Override
-    public final Scene remove(final Layer layer)
-    {
-        if ((null != layer) && (LienzoCore.IS_CANVAS_SUPPORTED))
-        {
-            if (getChildNodes().contains(layer))
-            {
+    public final Scene remove(final Layer layer) {
+        if ((null != layer) && (LienzoCore.IS_CANVAS_SUPPORTED)) {
+            if (getChildNodes().contains(layer)) {
                 getElement().removeChild(layer.getElement());
             }
             super.remove(layer);
@@ -415,12 +369,9 @@ public class Scene extends ContainerNode<Layer, Scene>
      * Removes all {@link Layer}
      */
     @Override
-    public final Scene removeAll()
-    {
-        if (LienzoCore.IS_CANVAS_SUPPORTED)
-        {
-            while (getElement().childElementCount > 0)
-            {
+    public final Scene removeAll() {
+        if (LienzoCore.IS_CANVAS_SUPPORTED) {
+            while (getElement().childElementCount > 0) {
                 getElement().removeChild(getElement().firstChild);
             }
         }
@@ -431,30 +382,24 @@ public class Scene extends ContainerNode<Layer, Scene>
 
     /**
      * Moves the layer one level down in this scene.
-     * 
+     *
      * @param layer
      */
     @Override
-    public final Scene moveDown(final Layer layer)
-    {
-        if ((null != layer) && (LienzoCore.IS_CANVAS_SUPPORTED))
-        {
+    public final Scene moveDown(final Layer layer) {
+        if ((null != layer) && (LienzoCore.IS_CANVAS_SUPPORTED)) {
             final int size = (int) getElement().childElementCount;
 
-            if (size < 2)
-            {
+            if (size < 2) {
                 return this;
             }
             final HTMLDivElement element = layer.getElement();
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 final HTMLDivElement look = Js.uncheckedCast(getElement().childNodes.getAt(i));
 
-                if (look == element)
-                {
-                    if (i == 0)
-                    {
+                if (look == element) {
+                    if (i == 0) {
                         // already at bottom
 
                         break;
@@ -466,8 +411,7 @@ public class Scene extends ContainerNode<Layer, Scene>
             }
             final NFastArrayList<Layer> layers = getChildNodes();
 
-            if (null != layers)
-            {
+            if (null != layers) {
                 layers.moveDown(layer);
             }
         }
@@ -476,36 +420,30 @@ public class Scene extends ContainerNode<Layer, Scene>
 
     /**
      * Moves the layer one level up in this scene.
-     * 
+     *
      * @param layer
      */
     @Override
-    public final Scene moveUp(final Layer layer)
-    {
-        if ((null != layer) && (LienzoCore.IS_CANVAS_SUPPORTED))
-        {
+    public final Scene moveUp(final Layer layer) {
+        if ((null != layer) && (LienzoCore.IS_CANVAS_SUPPORTED)) {
             final int size = (int) getElement().childElementCount;
 
-            if (size < 2)
-            {
+            if (size < 2) {
                 return this;
             }
             final HTMLDivElement element = layer.getElement();
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 final HTMLDivElement look = Js.uncheckedCast(getElement().childNodes.getAt(i));
 
-                if (look == element)
-                {
-                    if ((i + 1) == size)
-                    {
+                if (look == element) {
+                    if ((i + 1) == size) {
                         break;// already at top
                     }
                     getElement().removeChild(element);
 
                     // @FIXME does this really need the +1 and nextsibling. We sholud tes this (mdp)
-                    getElement().insertBefore(element, getElement().childNodes.getAt(i+1).nextSibling);
+                    getElement().insertBefore(element, getElement().childNodes.getAt(i + 1).nextSibling);
                     //getElement().insertAfter(element, getElement().getChild(i + 1)); // FIXME  his is what it was before (md)
 
                     break;
@@ -513,8 +451,7 @@ public class Scene extends ContainerNode<Layer, Scene>
             }
             final NFastArrayList<Layer> layers = getChildNodes();
 
-            if (null != layers)
-            {
+            if (null != layers) {
                 layers.moveUp(layer);
             }
         }
@@ -523,18 +460,15 @@ public class Scene extends ContainerNode<Layer, Scene>
 
     /**
      * Moves the layer to the top of the layers stack in this scene.
-     * 
+     *
      * @param layer
      */
     @Override
-    public final Scene moveToTop(final Layer layer)
-    {
-        if ((null != layer) && (LienzoCore.IS_CANVAS_SUPPORTED))
-        {
+    public final Scene moveToTop(final Layer layer) {
+        if ((null != layer) && (LienzoCore.IS_CANVAS_SUPPORTED)) {
             final double size = getElement().childElementCount;
 
-            if (size < 2)
-            {
+            if (size < 2) {
                 return this;
             }
             final HTMLDivElement element = layer.getElement();
@@ -545,8 +479,7 @@ public class Scene extends ContainerNode<Layer, Scene>
 
             final NFastArrayList<Layer> layers = getChildNodes();
 
-            if (null != layers)
-            {
+            if (null != layers) {
                 layers.moveToTop(layer);
             }
         }
@@ -555,18 +488,15 @@ public class Scene extends ContainerNode<Layer, Scene>
 
     /**
      * Moves the layer to the bottom of the layers stack in this scene.
-     * 
+     *
      * @param layer
      */
     @Override
-    public final Scene moveToBottom(final Layer layer)
-    {
-        if ((null != layer) && (LienzoCore.IS_CANVAS_SUPPORTED))
-        {
+    public final Scene moveToBottom(final Layer layer) {
+        if ((null != layer) && (LienzoCore.IS_CANVAS_SUPPORTED)) {
             final int size = (int) getElement().childElementCount;
 
-            if (size < 2)
-            {
+            if (size < 2) {
                 return this;
             }
             final HTMLDivElement element = layer.getElement();
@@ -577,8 +507,7 @@ public class Scene extends ContainerNode<Layer, Scene>
 
             final NFastArrayList<Layer> layers = getChildNodes();
 
-            if (null != layers)
-            {
+            if (null != layers) {
                 layers.moveToBottom(layer);
             }
         }
@@ -587,52 +516,46 @@ public class Scene extends ContainerNode<Layer, Scene>
 
     /**
      * No-op, but must implement.
-     * 
+     *
      * @return this Scene
      */
     @Override
-    public final Scene moveUp()
-    {
+    public final Scene moveUp() {
         return this;
     }
 
     /**
      * No-op, but must implement.
-     * 
+     *
      * @return this Scene
      */
     @Override
-    public final Scene moveDown()
-    {
+    public final Scene moveDown() {
         return this;
     }
 
     /**
      * No-op, but must implement.
-     * 
+     *
      * @return this Scene
      */
     @Override
-    public final Scene moveToTop()
-    {
+    public final Scene moveToTop() {
         return this;
     }
 
     /**
      * No-op, but must implement.
-     * 
+     *
      * @return this Scene
      */
     @Override
-    public final Scene moveToBottom()
-    {
+    public final Scene moveToBottom() {
         return this;
     }
 
-    public final String toDataURL()
-    {
-        if (LienzoCore.IS_CANVAS_SUPPORTED)
-        {
+    public final String toDataURL() {
+        if (LienzoCore.IS_CANVAS_SUPPORTED) {
             final ScratchPad scratch = new ScratchPad(getWidth(), getHeight());
 
             final Context2D context = scratch.getContext();
@@ -641,55 +564,44 @@ public class Scene extends ContainerNode<Layer, Scene>
 
             BoundingBox bbox = getStorageBounds();
 
-            if (null == bbox)
-            {
+            if (null == bbox) {
                 Viewport viewport = getViewport();
 
-                if (null != viewport)
-                {
+                if (null != viewport) {
                     bbox = viewport.getStorageBounds();
                 }
             }
-            if (null != layers)
-            {
+            if (null != layers) {
                 final int size = layers.size();
 
                 final IPathClipper clip = getPathClipper();
 
-                if ((null != clip) && (clip.isActive()))
-                {
+                if ((null != clip) && (clip.isActive())) {
                     context.save();
 
                     clip.clip(context);
                 }
-                for (int i = size - 1; i >= 0; i--)
-                {
+                for (int i = size - 1; i >= 0; i--) {
                     final Layer layer = layers.get(i);
 
-                    if ((null != layer) && (layer.isVisible()))
-                    {
+                    if ((null != layer) && (layer.isVisible())) {
                         layer.drawWithTransforms(context, 1, bbox);
                     }
                 }
-                if ((null != clip) && (clip.isActive()))
-                {
+                if ((null != clip) && (clip.isActive())) {
                     context.restore();
                 }
             }
             return scratch.toDataURL();
-        }
-        else
-        {
+        } else {
             return "data:,";
         }
     }
 
     // package protected
 
-    final String toDataURL(final Layer background)
-    {
-        if (LienzoCore.IS_CANVAS_SUPPORTED)
-        {
+    final String toDataURL(final Layer background) {
+        if (LienzoCore.IS_CANVAS_SUPPORTED) {
             final ScratchPad scratch = new ScratchPad(getWidth(), getHeight());
 
             final Context2D context = scratch.getContext();
@@ -698,57 +610,45 @@ public class Scene extends ContainerNode<Layer, Scene>
 
             BoundingBox bbox = getStorageBounds();
 
-            if (null == bbox)
-            {
+            if (null == bbox) {
                 Viewport viewport = getViewport();
 
-                if (null != viewport)
-                {
+                if (null != viewport) {
                     bbox = viewport.getStorageBounds();
                 }
             }
-            if (null != layers)
-            {
+            if (null != layers) {
                 final int size = layers.size();
 
-                if (null != background)
-                {
+                if (null != background) {
                     background.drawWithTransforms(context, 1, bbox);
                 }
                 final IPathClipper clip = getPathClipper();
 
-                if ((null != clip) && (clip.isActive()))
-                {
+                if ((null != clip) && (clip.isActive())) {
                     context.save();
 
                     clip.clip(context);
                 }
-                for (int i = size - 1; i >= 0; i--)
-                {
+                for (int i = size - 1; i >= 0; i--) {
                     final Layer layer = layers.get(i);
 
-                    if ((null != layer) && (layer.isVisible()))
-                    {
+                    if ((null != layer) && (layer.isVisible())) {
                         layer.drawWithTransforms(context, 1, bbox);
                     }
                 }
-                if ((null != clip) && (clip.isActive()))
-                {
+                if ((null != clip) && (clip.isActive())) {
                     context.restore();
                 }
             }
             return scratch.toDataURL();
-        }
-        else
-        {
+        } else {
             return "data:,";
         }
     }
 
-    public final String toDataURL(final DataURLType mimetype)
-    {
-        if (LienzoCore.IS_CANVAS_SUPPORTED)
-        {
+    public final String toDataURL(final DataURLType mimetype) {
+        if (LienzoCore.IS_CANVAS_SUPPORTED) {
             final ScratchPad scratch = new ScratchPad(getWidth(), getHeight());
 
             final Context2D context = scratch.getContext();
@@ -757,55 +657,44 @@ public class Scene extends ContainerNode<Layer, Scene>
 
             BoundingBox bbox = getStorageBounds();
 
-            if (null == bbox)
-            {
+            if (null == bbox) {
                 Viewport viewport = getViewport();
 
-                if (null != viewport)
-                {
+                if (null != viewport) {
                     bbox = viewport.getStorageBounds();
                 }
             }
-            if (null != layers)
-            {
+            if (null != layers) {
                 final int size = layers.size();
 
                 final IPathClipper clip = getPathClipper();
 
-                if ((null != clip) && (clip.isActive()))
-                {
+                if ((null != clip) && (clip.isActive())) {
                     context.save();
 
                     clip.clip(context);
                 }
-                for (int i = size - 1; i >= 0; i--)
-                {
+                for (int i = size - 1; i >= 0; i--) {
                     final Layer layer = layers.get(i);
 
-                    if ((null != layer) && (layer.isVisible()))
-                    {
+                    if ((null != layer) && (layer.isVisible())) {
                         layer.drawWithTransforms(context, 1, bbox);
                     }
                 }
-                if ((null != clip) && (clip.isActive()))
-                {
+                if ((null != clip) && (clip.isActive())) {
                     context.restore();
                 }
             }
             return scratch.toDataURL(mimetype, 1.0);
-        }
-        else
-        {
+        } else {
             return "data:,";
         }
     }
 
     // package protected
 
-    final String toDataURL(final DataURLType mimetype, final Layer background)
-    {
-        if (LienzoCore.IS_CANVAS_SUPPORTED)
-        {
+    final String toDataURL(final DataURLType mimetype, final Layer background) {
+        if (LienzoCore.IS_CANVAS_SUPPORTED) {
             final ScratchPad scratch = new ScratchPad(getWidth(), getHeight());
 
             final Context2D context = scratch.getContext();
@@ -814,72 +703,57 @@ public class Scene extends ContainerNode<Layer, Scene>
 
             BoundingBox bbox = getStorageBounds();
 
-            if (null == bbox)
-            {
+            if (null == bbox) {
                 Viewport viewport = getViewport();
 
-                if (null != viewport)
-                {
+                if (null != viewport) {
                     bbox = viewport.getStorageBounds();
                 }
             }
-            if (null != layers)
-            {
+            if (null != layers) {
                 final int size = layers.size();
 
-                if (null != background)
-                {
+                if (null != background) {
                     background.drawWithTransforms(context, 1, bbox);
                 }
                 final IPathClipper clip = getPathClipper();
 
-                if ((null != clip) && (clip.isActive()))
-                {
+                if ((null != clip) && (clip.isActive())) {
                     context.save();
 
                     clip.clip(context);
                 }
-                for (int i = size - 1; i >= 0; i--)
-                {
+                for (int i = size - 1; i >= 0; i--) {
                     final Layer layer = layers.get(i);
 
-                    if ((null != layer) && (layer.isVisible()))
-                    {
+                    if ((null != layer) && (layer.isVisible())) {
                         layer.drawWithTransforms(context, 1, bbox);
                     }
                 }
-                if ((null != clip) && (clip.isActive()))
-                {
+                if ((null != clip) && (clip.isActive())) {
                     context.restore();
                 }
             }
             return scratch.toDataURL(mimetype, 1.0);
-        }
-        else
-        {
+        } else {
             return "data:,";
         }
     }
 
     @Override
-    protected void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
-    {
-        if (predicate.test(this))
-        {
+    protected void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff) {
+        if (predicate.test(this)) {
             buff.add(this);
         }
         final NFastArrayList<Layer> list = getChildNodes();
 
         final int size = list.size();
 
-        for (int i = 0; i < size; i++)
-        {
+        for (int i = 0; i < size; i++) {
             final Layer layer = list.get(i);
 
-            if (null != layer)
-            {
-                if (predicate.test(layer))
-                {
+            if (null != layer) {
+                if (predicate.test(layer)) {
                     buff.add(layer);
                 }
                 layer.find(predicate, buff);
@@ -887,30 +761,22 @@ public class Scene extends ContainerNode<Layer, Scene>
         }
     }
 
-    public static class SceneFactory extends ContainerNodeFactory<Scene>
-    {
-        public SceneFactory()
-        {
+    public static class SceneFactory extends ContainerNodeFactory<Scene> {
+
+        public SceneFactory() {
             super(NodeType.SCENE);
         }
 
         @Override
-        public final boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
-        {
-            if ((node.getNodeType() == NodeType.LAYER) || (node.getNodeType() == NodeType.GRID_LAYER))
-            {
+        public final boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx) {
+            if ((node.getNodeType() == NodeType.LAYER) || (node.getNodeType() == NodeType.GRID_LAYER)) {
                 container.asScene().add(node.asLayer());
 
                 return true;
-            }
-            else
-            {
-                try
-                {
+            } else {
+                try {
                     ctx.addBadTypeError(node.getClass().getName() + " is not a Layer");
-                }
-                catch (ValidationException e)
-                {
+                } catch (ValidationException e) {
                     return false;
                 }
             }

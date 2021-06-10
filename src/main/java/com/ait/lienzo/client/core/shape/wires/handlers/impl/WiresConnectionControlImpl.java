@@ -30,38 +30,37 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectionControl;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.tools.client.collection.NFastStringMap;
-
 import elemental2.dom.ImageData;
 
 public class WiresConnectionControlImpl implements WiresConnectionControl {
 
-    private       WiresConnector        m_connector;
+    private WiresConnector m_connector;
 
-    private       WiresManager          m_manager;
+    private WiresManager m_manager;
 
-    private final boolean               m_head;
+    private final boolean m_head;
 
-    private       ImageData             m_shapesBacking;
+    private ImageData m_shapesBacking;
 
-    private       ImageData             m_magnetsBacking;
+    private ImageData m_magnetsBacking;
 
-    private       MagnetManager.Magnets m_magnets;
+    private MagnetManager.Magnets m_magnets;
 
-    private       double                m_startX;
+    private double m_startX;
 
-    private       double                m_startY;
+    private double m_startY;
 
-    private       Point2D               m_adjust;
+    private Point2D m_adjust;
 
-    private       String                m_colorKey;
+    private String m_colorKey;
 
     private boolean m_allowed;
 
     private WiresMagnet m_initial_magnet;
 
-    private       WiresMagnet           m_current_magnet;
+    private WiresMagnet m_current_magnet;
 
-    private       boolean               m_initialAutoConnect;
+    private boolean m_initialAutoConnect;
 
     private final NFastStringMap<WiresShape> m_shape_color_map = new NFastStringMap<WiresShape>();
 
@@ -168,11 +167,11 @@ public class WiresConnectionControlImpl implements WiresConnectionControl {
             }
         }
         m_allowed = allowedMagnetAndUpdateAutoConnections(m_manager,
-                                                               connection,
-                                                               m_head,
-                                                               shape,
-                                                               m_current_magnet,
-                                                               true);
+                                                          connection,
+                                                          m_head,
+                                                          shape,
+                                                          m_current_magnet,
+                                                          true);
     }
 
     public static boolean allowedMagnetAndUpdateAutoConnections(WiresManager wiresManager,
@@ -201,11 +200,11 @@ public class WiresConnectionControlImpl implements WiresConnectionControl {
 
         if (applyAccept && accept) {
             accept = acceptMagnetAndUpdateAutoConnection(connectionAcceptor,
-                                                                   connection,
-                                                                   isHead,
-                                                                   headS,
-                                                                   tailS,
-                                                                   currentMagnet);
+                                                         connection,
+                                                         isHead,
+                                                         headS,
+                                                         tailS,
+                                                         currentMagnet);
         }
         return accept;
     }

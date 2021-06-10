@@ -19,8 +19,6 @@ package com.ait.lienzo.client.core.shape;
 import com.ait.lienzo.client.core.image.ImageClipBounds;
 import com.ait.lienzo.client.core.image.ImageProxy;
 import com.ait.lienzo.client.core.image.ImageShapeLoadedHandler;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.ImageSerializationMode;
@@ -30,12 +28,12 @@ import com.google.gwt.safehtml.shared.UriUtils;
 import elemental2.dom.ImageData;
 import jsinterop.annotations.JsProperty;
 
-public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extends Shape<T>
-{
+public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extends Shape<T> {
+
     private final ImageProxy<T> m_proxy;
 
     @JsProperty
-    private String                 url;
+    private String url;
 
     @JsProperty
     private ImageSerializationMode imageSerializationMode;
@@ -43,8 +41,7 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
     @JsProperty
     private ImageSelectionMode imageSelectionMode;
 
-    protected AbstractImageShape(final ShapeType type, final String url, final boolean listening, final ImageSelectionMode mode)
-    {
+    protected AbstractImageShape(final ShapeType type, final String url, final boolean listening, final ImageSelectionMode mode) {
         super(type);
 
         setURL(url);
@@ -56,124 +53,104 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
         m_proxy = new ImageProxy<T>(upcast());
     }
 
-    protected AbstractImageShape(final ShapeType type, final ImageResource resource, final boolean listening, final ImageSelectionMode mode)
-    {
+    protected AbstractImageShape(final ShapeType type, final ImageResource resource, final boolean listening, final ImageSelectionMode mode) {
         this(type, resource.getSafeUri().asString(), listening, mode);
     }
 
-    public final ImageProxy<T> getImageProxy()
-    {
+    public final ImageProxy<T> getImageProxy() {
         return m_proxy;
     }
 
     @Override
-    protected void setColorKey(final String ckey)
-    {
+    protected void setColorKey(final String ckey) {
         super.setColorKey(ckey);
 
         getImageProxy().setColorKey(ckey);
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         return getImageProxy().getBoundingBox();
     }
 
     /**
      * Returns the URL of the image. For ImageResources, this return the
      * value of ImageResource.getSafeUri().asString().
-     * 
+     *
      * @return String
      */
-    public String getURL()
-    {
+    public String getURL() {
         return this.url;
     }
 
     /**
      * Sets the URL of the image. For ImageResources, this should be the
      * value of ImageResource.getSafeUri().asString().
-     * 
+     *
      * @param url
      * @return Picture
      */
-    protected void setURL(final String url)
-    {
+    protected void setURL(final String url) {
         this.url = toValidURL(url);
     }
 
-    public static String toValidURL(String url)
-    {
-        if ((null == url) || ((url = url.trim()).isEmpty()) || (url.startsWith("#")))
-        {
+    public static String toValidURL(String url) {
+        if ((null == url) || ((url = url.trim()).isEmpty()) || (url.startsWith("#"))) {
             throw new NullPointerException("null or empty or invalid url");
         }
-        if (url.startsWith("data:"))
-        {
+        if (url.startsWith("data:")) {
             return url;
         }
         url = UriUtils.fromString(url).asString();
 
-        if ((null == url) || ((url = url.trim()).isEmpty()) || (url.startsWith("#")))
-        {
+        if ((null == url) || ((url = url.trim()).isEmpty()) || (url.startsWith("#"))) {
             throw new NullPointerException("null or empty or invalid url");
         }
         return url;
     }
 
-    public ImageSelectionMode getImageSelectionMode()
-    {
+    public ImageSelectionMode getImageSelectionMode() {
         return this.imageSelectionMode;
     }
 
-    public T setImageSelectionMode(final ImageSelectionMode selectionMode)
-    {
+    public T setImageSelectionMode(final ImageSelectionMode selectionMode) {
         this.imageSelectionMode = selectionMode;
 
         return upcast();
     }
 
-    public ImageSerializationMode getImageSerializationMode()
-    {
+    public ImageSerializationMode getImageSerializationMode() {
         return this.imageSerializationMode;
     }
 
-    public T setImageSerializationMode(final ImageSerializationMode serializationMode)
-    {
+    public T setImageSerializationMode(final ImageSerializationMode serializationMode) {
         this.imageSerializationMode = imageSerializationMode;
 
         return upcast();
     }
 
-    public boolean isLoaded()
-    {
+    public boolean isLoaded() {
         return m_proxy.isLoaded();
     }
 
-    public String getLoadedMessage()
-    {
+    public String getLoadedMessage() {
         return m_proxy.getLoadedMessage();
     }
 
-    public ImageData getImageData()
-    {
+    public ImageData getImageData() {
         return m_proxy.getImageData();
     }
 
-    public String toDataURL(final boolean filtered)
-    {
+    public String toDataURL(final boolean filtered) {
         return m_proxy.toDataURL(filtered);
     }
 
-    protected void setImageShapeLoadedHandler(final ImageShapeLoadedHandler<T> handler)
-    {
+    protected void setImageShapeLoadedHandler(final ImageShapeLoadedHandler<T> handler) {
         m_proxy.setImageShapeLoadedHandler(handler);
     }
 
     @SuppressWarnings("unchecked")
-    private final T upcast()
-    {
+    private final T upcast() {
         return (T) this;
     }
 

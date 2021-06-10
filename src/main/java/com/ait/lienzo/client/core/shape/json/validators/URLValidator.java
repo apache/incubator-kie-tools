@@ -16,20 +16,17 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-public class URLValidator extends AbstractAttributeTypeValidator
-{
+public class URLValidator extends AbstractAttributeTypeValidator {
+
     public static final URLValidator INSTANCE = new URLValidator();
 
-    public URLValidator()
-    {
+    public URLValidator() {
         super("URL");
     }
 
     @Override
-    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
-    {
-        if (null == jval)
-        {
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException {
+        if (null == jval) {
             ctx.addBadTypeError(getTypeName());
 
             return;

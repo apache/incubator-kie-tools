@@ -22,45 +22,43 @@ public interface ILayoutHandler {
 
     ILayoutHandler NONE = new DefaultLayoutHandler();
 
-    void add( final WiresShape shape,
-              final WiresContainer container,
-              final Point2D mouseRelativeLoc );
+    void add(final WiresShape shape,
+             final WiresContainer container,
+             final Point2D mouseRelativeLoc);
 
-    void remove( final WiresShape shape,
-                 final WiresContainer container );
+    void remove(final WiresShape shape,
+                final WiresContainer container);
 
-    void requestLayout( final WiresContainer container );
+    void requestLayout(final WiresContainer container);
 
-    void layout( final WiresContainer container );
+    void layout(final WiresContainer container);
 
     class DefaultLayoutHandler implements ILayoutHandler {
 
         @Override
-        public void add( final WiresShape shape,
-                         final WiresContainer container,
-                         final Point2D mouseRelativeLoc ) {
+        public void add(final WiresShape shape,
+                        final WiresContainer container,
+                        final Point2D mouseRelativeLoc) {
             //Add the shape to the container at the specified position. No layout.
-            shape.setLocation( mouseRelativeLoc );
-            container.add( shape );
+            shape.setLocation(mouseRelativeLoc);
+            container.add(shape);
         }
 
         @Override
-        public void remove( final WiresShape shape,
-                            final WiresContainer container ) {
+        public void remove(final WiresShape shape,
+                           final WiresContainer container) {
             //Remove the shape from its container. No layout.
-            container.remove( shape );
+            container.remove(shape);
         }
 
         @Override
-        public void requestLayout( final WiresContainer container ) {
+        public void requestLayout(final WiresContainer container) {
             //No automated layout by default
         }
 
         @Override
-        public void layout( final WiresContainer container ) {
+        public void layout(final WiresContainer container) {
             //No automated layout by default
         }
-
     }
-
 }

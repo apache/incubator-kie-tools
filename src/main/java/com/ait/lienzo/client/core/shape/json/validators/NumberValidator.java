@@ -18,20 +18,17 @@ package com.ait.lienzo.client.core.shape.json.validators;
 
 import elemental2.core.JsNumber;
 
-public class NumberValidator extends AbstractAttributeTypeValidator
-{
+public class NumberValidator extends AbstractAttributeTypeValidator {
+
     public static final NumberValidator INSTANCE = new NumberValidator();
 
-    public NumberValidator()
-    {
+    public NumberValidator() {
         super("Number");
     }
 
     @Override
-    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
-    {
-        if (null == jval)
-        {
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException {
+        if (null == jval) {
             ctx.addBadTypeError(getTypeName());
 
             return;
@@ -52,8 +49,7 @@ public class NumberValidator extends AbstractAttributeTypeValidator
 //        }
     }
 
-    private final boolean isNumber(double number)
-    {
-		return JsNumber.isFinite(number);
+    private final boolean isNumber(double number) {
+        return JsNumber.isFinite(number);
     }
 }

@@ -16,28 +16,24 @@
 
 package com.ait.lienzo.client.core.mediator;
 
-public abstract class AbstractEventFilter implements IEventFilter
-{
+public abstract class AbstractEventFilter implements IEventFilter {
+
     private boolean m_enabled = true;
 
-    protected AbstractEventFilter()
-    {
+    protected AbstractEventFilter() {
     }
 
-    protected AbstractEventFilter(final boolean enabled)
-    {
+    protected AbstractEventFilter(final boolean enabled) {
         m_enabled = enabled;
     }
 
     @Override
-    public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         return m_enabled;
     }
 
     @Override
-    public void setEnabled(final boolean enabled)
-    {
+    public void setEnabled(final boolean enabled) {
         m_enabled = enabled;
     }
 }

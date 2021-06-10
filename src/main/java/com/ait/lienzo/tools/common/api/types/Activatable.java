@@ -16,31 +16,26 @@
 
 package com.ait.lienzo.tools.common.api.types;
 
-public class Activatable implements IActivatable
-{
+public class Activatable implements IActivatable {
+
     private boolean m_active;
 
-    public Activatable()
-    {
+    public Activatable() {
         this(false);
     }
 
-    public Activatable(final boolean active)
-    {
+    public Activatable(final boolean active) {
         m_active = active;
     }
 
     @Override
-    public boolean isActive()
-    {
+    public boolean isActive() {
         return m_active;
     }
 
     @Override
-    public boolean setActive(final boolean active)
-    {
-        if (active != m_active)
-        {
+    public boolean setActive(final boolean active) {
+        if (active != m_active) {
             m_active = active;
 
             return true;

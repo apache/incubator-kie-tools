@@ -20,89 +20,77 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-
 import jsinterop.base.Js;
 
-public class DiffusionImageDataFilter extends AbstractValueTransformImageDataFilter<DiffusionImageDataFilter>
-{
-    public DiffusionImageDataFilter()
-    {
+public class DiffusionImageDataFilter extends AbstractValueTransformImageDataFilter<DiffusionImageDataFilter> {
+
+    public DiffusionImageDataFilter() {
         super(ImageFilterType.DiffusionImageDataFilterType, 4);
     }
 
-    public DiffusionImageDataFilter(double value)
-    {
+    public DiffusionImageDataFilter(double value) {
         super(ImageFilterType.DiffusionImageDataFilterType, value);
     }
 
-    protected DiffusionImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
-    {
+    protected DiffusionImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
         super(ImageFilterType.DiffusionImageDataFilterType, node, ctx);
     }
 
     @Override
-    public double getMinValue()
-    {
+    public double getMinValue() {
         return 1;
     }
 
     @Override
-    public double getMaxValue()
-    {
+    public double getMaxValue() {
         return 100;
     }
 
     @Override
-    public double getRefValue()
-    {
+    public double getRefValue() {
         return 4;
     }
 
     @Override
-    protected final FilterTransformFunction getTransform(double value)
-    {
-		int[] stabl = new int[256];
+    protected final FilterTransformFunction getTransform(double value) {
+        int[] stabl = new int[256];
         int[] ctabl = new int[256];
-		for (int i = 0; i < 256; i++) {
-			double a = Math.PI * 2 * i / 256;
-			stabl[i] = Js.coerceToInt(value * Math.sin(a));
-			ctabl[i] = Js.coerceToInt(value * Math.cos(a));
-		}
+        for (int i = 0; i < 256; i++) {
+            double a = Math.PI * 2 * i / 256;
+            stabl[i] = Js.coerceToInt(value * Math.sin(a));
+            ctabl[i] = Js.coerceToInt(value * Math.cos(a));
+        }
 
         return new DiffusionImageDataFilterFilterTransformer(stabl, ctabl);
     }
 
-    public static class DiffusionImageDataFilterFilterTransformer implements FilterTransformFunction
-    {
+    public static class DiffusionImageDataFilterFilterTransformer implements FilterTransformFunction {
+
         int[] stabl;
         int[] ctabl;
 
-        public DiffusionImageDataFilterFilterTransformer(final int[] stabl, final int[] ctabl)
-        {
+        public DiffusionImageDataFilterFilterTransformer(final int[] stabl, final int[] ctabl) {
             this.stabl = stabl;
             this.ctabl = ctabl;
         }
 
         @Override
-        public void transform(final int x, final int y, final int[] out)
-        {
-			int a = Js.coerceToInt(Math.random() * 255);
+        public void transform(final int x, final int y, final int[] out) {
+            int a = Js.coerceToInt(Math.random() * 255);
             double d = Math.random();
-			out[0] = Js.coerceToInt(x + d * stabl[a]);
-			out[1] = Js.coerceToInt(y + d * ctabl[a]);
+            out[0] = Js.coerceToInt(x + d * stabl[a]);
+            out[1] = Js.coerceToInt(y + d * ctabl[a]);
         }
     }
 
     @Override
-    public IFactory<DiffusionImageDataFilter> getFactory()
-    {
+    public IFactory<DiffusionImageDataFilter> getFactory() {
         return new DiffusionImageDataFilterFactory();
     }
 
-    public static class DiffusionImageDataFilterFactory extends ValueTransformImageDataFilterFactory<DiffusionImageDataFilter>
-    {
-        public DiffusionImageDataFilterFactory()
-        {
+    public static class DiffusionImageDataFilterFactory extends ValueTransformImageDataFilterFactory<DiffusionImageDataFilter> {
+
+        public DiffusionImageDataFilterFactory() {
             super(ImageFilterType.DiffusionImageDataFilterType);
         }
     }

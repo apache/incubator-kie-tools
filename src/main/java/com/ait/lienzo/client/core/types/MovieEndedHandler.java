@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.client.core.shape.Movie;
 
-public interface MovieEndedHandler
-{
+public interface MovieEndedHandler {
+
     public void onEnded(Movie movie);
 }

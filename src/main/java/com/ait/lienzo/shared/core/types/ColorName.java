@@ -25,8 +25,8 @@ import java.util.List;
  * @see Color
  * @see <a href="http://www.w3.org/TR/css3-color/">CSS Color Module Level 3</a>
  */
-public enum ColorName implements EnumWithValue, IColor
-{
+public enum ColorName implements EnumWithValue,
+                                 IColor {
     ALICEBLUE("aliceblue", 240, 248, 255), // #f0f8ff
     ANTIQUEWHITE("antiquewhite", 250, 235, 215), // #faebd7
     AQUA("aqua", 0, 255, 255), // #00ffff
@@ -188,8 +188,7 @@ public enum ColorName implements EnumWithValue, IColor
 
     private final double m_a;
 
-    private ColorName(final String value, final int r, final int g, final int b)
-    {
+    private ColorName(final String value, final int r, final int g, final int b) {
         m_value = value;
 
         m_r = r;
@@ -201,8 +200,7 @@ public enum ColorName implements EnumWithValue, IColor
         m_a = 1;
     }
 
-    private ColorName(final String value, final int r, final int g, final int b, final double a)
-    {
+    private ColorName(final String value, final int r, final int g, final int b, final double a) {
         m_value = value;
 
         m_r = r;
@@ -214,74 +212,61 @@ public enum ColorName implements EnumWithValue, IColor
         m_a = Math.max(Math.min(a, 1.0), 0.0);
     }
 
-    public String getHexColor()
-    {
+    public String getHexColor() {
         return Color.rgbToBrowserHexColor(getR(), getG(), getB());
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
     @Override
-    public final String getColorString()
-    {
+    public final String getColorString() {
         return m_value;
     }
 
     @Override
-    public final int getR()
-    {
+    public final int getR() {
         return m_r;
     }
 
     @Override
-    public final int getG()
-    {
+    public final int getG() {
         return m_g;
     }
 
     @Override
-    public final int getB()
-    {
+    public final int getB() {
         return m_b;
     }
 
     @Override
-    public final double getA()
-    {
+    public final double getA() {
         return m_a;
     }
 
-    public Color getColor()
-    {
-        if (getA() == 1)
-        {
+    public Color getColor() {
+        if (getA() == 1) {
             return new Color(getR(), getG(), getB());
         }
         return new Color(getR(), getG(), getB(), getA());
     }
 
-    public static final ColorName lookup(final String key)
-    {
+    public static final ColorName lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, null);
     }
 
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(ColorName.values());
     }
 
-    public static final List<ColorName> getValues()
-    {
+    public static final List<ColorName> getValues() {
         return Statics.getValues(ColorName.values());
     }
 }

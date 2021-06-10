@@ -19,18 +19,17 @@ package com.ait.lienzo.client.core.animation;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
-public class TweeningAnimation extends TimedAnimation
-{
-    private final AnimationTweener            m_tweener;
+public class TweeningAnimation extends TimedAnimation {
 
-    private final AnimationProperties         m_properties;
+    private final AnimationTweener m_tweener;
+
+    private final AnimationProperties m_properties;
 
     private NFastArrayList<AnimationProperty> m_workingset;
 
-    private boolean                           m_refreshing = false;
+    private boolean m_refreshing = false;
 
-    public TweeningAnimation(final Node<?> node, final AnimationTweener tweener, final AnimationProperties properties, final double duration, final IAnimationCallback callback)
-    {
+    public TweeningAnimation(final Node<?> node, final AnimationTweener tweener, final AnimationProperties properties, final double duration, final IAnimationCallback callback) {
         super(duration, callback);
 
         setNode(node);
@@ -41,30 +40,23 @@ public class TweeningAnimation extends TimedAnimation
     }
 
     @Override
-    public IAnimation doStart()
-    {
-        if ((null != m_properties) && (m_properties.size() > 0))
-        {
+    public IAnimation doStart() {
+        if ((null != m_properties) && (m_properties.size() > 0)) {
             m_workingset = new NFastArrayList<>();
 
             final Node<?> node = getNode();
 
             final int size = m_properties.size();
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 AnimationProperty property = m_properties.get(i);
 
-                if (null != property)
-                {
-                    if (property.isStateful())
-                    {
+                if (null != property) {
+                    if (property.isStateful()) {
                         property = property.copy();
                     }
-                    if (null != property)
-                    {
-                        if (property.init(node))
-                        {
+                    if (null != property) {
+                        if (property.init(node)) {
                             m_workingset.add(property);
 
                             m_refreshing = m_refreshing || property.isRefreshing();
@@ -79,16 +71,14 @@ public class TweeningAnimation extends TimedAnimation
     }
 
     @Override
-    public IAnimation doFrame()
-    {
+    public IAnimation doFrame() {
         apply(getPercent());
 
         return super.doFrame();
     }
 
     @Override
-    public IAnimation doClose()
-    {
+    public IAnimation doClose() {
         apply(1.0);
 
         m_workingset = null;
@@ -98,32 +88,25 @@ public class TweeningAnimation extends TimedAnimation
         return super.doClose();
     }
 
-    private void apply(double percent)
-    {
-        if (null != m_tweener)
-        {
+    private void apply(double percent) {
+        if (null != m_tweener) {
             percent = m_tweener.apply(percent);
         }
-        if (null != m_workingset)
-        {
+        if (null != m_workingset) {
             final int size = m_workingset.size();
 
-            if (size > 0)
-            {
+            if (size > 0) {
                 boolean draw = false;
 
                 final Node<?> node = getNode();
 
-                for (int i = 0; i < size; i++)
-                {
+                for (int i = 0; i < size; i++) {
                     final boolean good = m_workingset.get(i).apply(node, percent);
 
                     draw = (draw || good);// Don't combine booleans above to avoid short-circuits. - DSJ
                 }
-                if (draw)
-                {
-                    if (m_refreshing)
-                    {
+                if (draw) {
+                    if (m_refreshing) {
                         node.refresh();
                     }
                     node.batch();

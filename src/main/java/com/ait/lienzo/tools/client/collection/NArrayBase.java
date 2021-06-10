@@ -27,71 +27,62 @@ import jsinterop.base.Js;
 import jsinterop.base.JsArrayLike;
 
 @JsType(isNative = true, name = "Array", namespace = JsPackage.GLOBAL)
-public abstract class NArrayBase<M> implements JsIterable<M>, JsArrayLike<M>
-{
-    protected NArrayBase()
-    {
+public abstract class NArrayBase<M> implements JsIterable<M>,
+                                               JsArrayLike<M> {
+
+    protected NArrayBase() {
     }
 
     @JsOverlay
-    public final void clear()
-    {
+    public final void clear() {
         setSize(0);
     }
 
     @JsOverlay
-    public final String join()
-    {
+    public final String join() {
         return join(",");
     }
 
     @JsOverlay
-    public final boolean isNull(final int index)
-    {
-        if ((index < 0) || (index >= size()))
-        {
+    public final boolean isNull(final int index) {
+        if ((index < 0) || (index >= size())) {
             return true;
         }
         return getAt(index) == null;
     }
 
     @JsOverlay
-    public final boolean isDefined(final int index)
-    {
-        if ((index < 0) || (index >= size()))
-        {
+    public final boolean isDefined(final int index) {
+        if ((index < 0) || (index >= size())) {
             return false;
         }
         return getAt(index) == Js.undefined();
     }
 
     @JsOverlay
-    public final boolean isEmpty()
-    {
-		return getLength() < 1;
+    public final boolean isEmpty() {
+        return getLength() < 1;
     }
 
     @JsOverlay
-    public final int size()
-    {
-		return getLength();
+    public final int size() {
+        return getLength();
     }
 
     public native int push(M... var_args);
 
     @JsOverlay
-    public final void setSize(int size)
-    {
-		if (size < 0) {
-			size = 0;
-		}
-		if (getLength() < size) {
-			while (getLength() < size) {
-				this.pop();
-			}
-		} else {
-		    setLength(size);
-		}
+    public final void setSize(int size) {
+        if (size < 0) {
+            size = 0;
+        }
+        if (getLength() < size) {
+            while (getLength() < size) {
+                this.pop();
+            }
+        } else {
+            setLength(size);
+        }
     }
 
     public native M pop();
@@ -112,8 +103,6 @@ public abstract class NArrayBase<M> implements JsIterable<M>, JsArrayLike<M>
 
     public native M[] reverse();
 
-
-
     public final native String join(String separator);
 
     public final native M concat(M value);
@@ -123,15 +112,12 @@ public abstract class NArrayBase<M> implements JsIterable<M>, JsArrayLike<M>
     public native M[] concat(M... items);
 
     @JsOverlay
-    public final Iterator<M> iterator()
-    {
+    public final Iterator<M> iterator() {
         return asList().iterator();
     }
 
     @JsOverlay
-    public final List<M> toList()
-    {
+    public final List<M> toList() {
         return asList();
     }
-
 }

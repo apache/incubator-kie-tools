@@ -8,29 +8,25 @@ import jsinterop.base.JsArrayLike;
 
 @JsType(isNative = true, name = "Array", namespace = JsPackage.GLOBAL)
 public class PathPartListJSO implements JsIterable<PathPartEntryJSO>,
-                                               JsArrayLike<PathPartEntryJSO>
-{
+                                        JsArrayLike<PathPartEntryJSO> {
+
     @JsOverlay
-    public static final PathPartListJSO make()
-    {
+    public static final PathPartListJSO make() {
         return new PathPartListJSO();
     }
 
-    protected PathPartListJSO()
-    {
+    protected PathPartListJSO() {
     }
 
     public native int push(PathPartEntryJSO... var_args);
 
     @JsOverlay
-    public final PathPartEntryJSO get(final int i)
-    {
+    public final PathPartEntryJSO get(final int i) {
         return getAt(i);
     }
 
     @JsOverlay
-    public final int length()
-    {
+    public final int length() {
         return getLength();
     }
 }

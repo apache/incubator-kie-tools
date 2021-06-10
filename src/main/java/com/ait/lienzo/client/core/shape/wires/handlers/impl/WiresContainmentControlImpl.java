@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresLayer;
@@ -24,7 +26,6 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.types.Point2D;
-import java.util.function.Supplier;
 
 public class WiresContainmentControlImpl extends AbstractWiresControl<WiresContainmentControlImpl>
         implements WiresContainmentControl {
@@ -144,5 +145,4 @@ public class WiresContainmentControlImpl extends AbstractWiresControl<WiresConta
             return current.sub(trgAbsOffset);
         }
     }
-
 }

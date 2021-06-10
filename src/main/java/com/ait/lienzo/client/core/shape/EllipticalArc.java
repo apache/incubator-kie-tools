@@ -20,18 +20,15 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-
 import jsinterop.annotations.JsProperty;
 
 /**
  * Arcs are defined by a center point, a radius, a starting angle, an ending angle, and the drawing direction (either clockwise or counterclockwise).
  */
-public class EllipticalArc extends Shape<EllipticalArc>
-{
+public class EllipticalArc extends Shape<EllipticalArc> {
+
     @JsProperty
     private double radiusX;
 
@@ -49,17 +46,14 @@ public class EllipticalArc extends Shape<EllipticalArc>
 
     /**
      * Constructor. Creates an instance of an arc.
-     * 
-     * @param radius radius of the circle
-     * @param startAngle starting angle (in radians) of this arc
-     * @param endAngle end angle (in radians) of this arc
-     * @param counterClockwise 
-     *            direction in which the arc is drawn.  True draws the arc counter clockwise;
-     *            false draws the arc clockwise.
-     *          
+     *
+     * @param radius           radius of the circle
+     * @param startAngle       starting angle (in radians) of this arc
+     * @param endAngle         end angle (in radians) of this arc
+     * @param counterClockwise direction in which the arc is drawn.  True draws the arc counter clockwise;
+     *                         false draws the arc clockwise.
      */
-    public EllipticalArc(final double radiusX, final double radiusY, final double startAngle, final double endAngle, final boolean counterClockwise)
-    {
+    public EllipticalArc(final double radiusX, final double radiusY, final double startAngle, final double endAngle, final boolean counterClockwise) {
         super(ShapeType.ELLIPTICAL_ARC);
 
         setRadiusX(radiusX).setRadiusY(radiusY).setStartAngle(startAngle).setEndAngle(endAngle).setCounterClockwise(counterClockwise);
@@ -67,21 +61,19 @@ public class EllipticalArc extends Shape<EllipticalArc>
 
     /**
      * Constructor. Creates an instance of an arc, drawn clockwise.
-     * 
-     * @param radius radius of the circle
+     *
+     * @param radius     radius of the circle
      * @param startAngle starting angle (in radians) of this arc
-     * @param endAngle end angle (in radians) of this arc
+     * @param endAngle   end angle (in radians) of this arc
      */
-    public EllipticalArc(final double radiusX, final double radiusY, final double startAngle, final double endAngle)
-    {
+    public EllipticalArc(final double radiusX, final double radiusY, final double startAngle, final double endAngle) {
         super(ShapeType.ELLIPTICAL_ARC);
 
         setRadiusX(radiusX).setRadiusY(radiusY).setStartAngle(startAngle).setEndAngle(endAngle).setCounterClockwise(false);
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         final double rx = getRadiusX();
 
         final double ry = getRadiusY();
@@ -91,18 +83,16 @@ public class EllipticalArc extends Shape<EllipticalArc>
 
     /**
      * Draws this arc.
-     * 
+     *
      * @param context the {@link Context2D} used to draw this arc.
      */
     @Override
-    protected boolean prepare(final Context2D context, final double alpha)
-    {
-        final double rx =  getRadiusX();
+    protected boolean prepare(final Context2D context, final double alpha) {
+        final double rx = getRadiusX();
 
         final double ry = getRadiusY();
 
-        if ((rx > 0) && (ry > 0))
-        {
+        if ((rx > 0) && (ry > 0)) {
             context.beginPath();
 
             context.ellipse(0, 0, rx, ry, 0, getStartAngle(), getEndAngle(), isCounterClockwise());
@@ -118,8 +108,7 @@ public class EllipticalArc extends Shape<EllipticalArc>
      * @param radiusX
      * @return this Circle
      */
-    public EllipticalArc setRadiusX(final double radiusX)
-    {
+    public EllipticalArc setRadiusX(final double radiusX) {
         this.radiusX = radiusX;
 
         return this;
@@ -130,8 +119,7 @@ public class EllipticalArc extends Shape<EllipticalArc>
      *
      * @return double
      */
-    public double getRadiusY()
-    {
+    public double getRadiusY() {
         return this.radiusY;
     }
 
@@ -141,8 +129,7 @@ public class EllipticalArc extends Shape<EllipticalArc>
      * @param radiusY
      * @return this Circle
      */
-    public EllipticalArc setRadiusY(final double radiusY)
-    {
+    public EllipticalArc setRadiusY(final double radiusY) {
         this.radiusY = radiusY;
 
         return this;
@@ -153,8 +140,7 @@ public class EllipticalArc extends Shape<EllipticalArc>
      *
      * @return double
      */
-    public double getRadiusX()
-    {
+    public double getRadiusX() {
         return this.radiusX;
     }
 
@@ -163,8 +149,7 @@ public class EllipticalArc extends Shape<EllipticalArc>
      *
      * @return double (in radians)
      */
-    public double getStartAngle()
-    {
+    public double getStartAngle() {
         return this.startAngle;
     }
 
@@ -174,8 +159,7 @@ public class EllipticalArc extends Shape<EllipticalArc>
      * @param angle (in radians)
      * @return this Arc
      */
-    public EllipticalArc setStartAngle(final double angle)
-    {
+    public EllipticalArc setStartAngle(final double angle) {
         this.startAngle = angle;
 
         return this;
@@ -186,8 +170,7 @@ public class EllipticalArc extends Shape<EllipticalArc>
      *
      * @return double (in radians)
      */
-    public double getEndAngle()
-    {
+    public double getEndAngle() {
         return this.endAngle;
     }
 
@@ -197,8 +180,7 @@ public class EllipticalArc extends Shape<EllipticalArc>
      * @param angle (in radians)
      * @return this Arc
      */
-    public EllipticalArc setEndAngle(final double angle)
-    {
+    public EllipticalArc setEndAngle(final double angle) {
         this.endAngle = angle;
 
         return this;
@@ -209,8 +191,7 @@ public class EllipticalArc extends Shape<EllipticalArc>
      *
      * @return boolean
      */
-    public boolean isCounterClockwise()
-    {
+    public boolean isCounterClockwise() {
         return this.counterClockwise;
     }
 
@@ -220,23 +201,20 @@ public class EllipticalArc extends Shape<EllipticalArc>
      * @param counterClockwise If true, it's drawn counter clockwise.
      * @return this Arc
      */
-    public EllipticalArc setCounterClockwise(final boolean counterClockwise)
-    {
+    public EllipticalArc setCounterClockwise(final boolean counterClockwise) {
         this.counterClockwise = counterClockwise;
 
         return this;
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.RADIUS_X, Attribute.RADIUS_Y, Attribute.START_ANGLE, Attribute.END_ANGLE, Attribute.COUNTER_CLOCKWISE);
     }
 
-    public static class EllipticalArcFactory extends ShapeFactory<EllipticalArc>
-    {
-        public EllipticalArcFactory()
-        {
+    public static class EllipticalArcFactory extends ShapeFactory<EllipticalArc> {
+
+        public EllipticalArcFactory() {
             super(ShapeType.ELLIPTICAL_ARC);
 
             addAttribute(Attribute.RADIUS_X, true);

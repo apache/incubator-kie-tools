@@ -20,11 +20,8 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-
 import jsinterop.annotations.JsProperty;
 
 /**
@@ -32,8 +29,8 @@ import jsinterop.annotations.JsProperty;
  * The angles can be specified in clockwise or counter-clockwise order.
  * Slices greater than 180 degrees (or PI radians) look like pacmans.
  */
-public class Ring extends Shape<Ring>
-{
+public class Ring extends Shape<Ring> {
+
     @JsProperty
     private double innerRadius;
 
@@ -42,43 +39,37 @@ public class Ring extends Shape<Ring>
 
     /**
      * Constructor. Creates an instance of a slice.
-     *
      */
-    public Ring(final double innerRadius, final double outerRadius)
-    {
+    public Ring(final double innerRadius, final double outerRadius) {
         super(ShapeType.RING);
 
         setInnerRadius(innerRadius).setOuterRadius(outerRadius);
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         final double radius = Math.max(getInnerRadius(), getOuterRadius());
 
         return BoundingBox.fromDoubles(0 - radius, 0 - radius, radius, radius);
     }
 
     @Override
-    protected boolean doStrokeExtraProperties()
-    {
+    protected boolean doStrokeExtraProperties() {
         return false;
     }
 
     /**
      * Draws this slice.
-     * 
+     *
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final double alpha)
-    {
+    protected boolean prepare(final Context2D context, final double alpha) {
         final double ord = getOuterRadius();
 
         final double ird = getInnerRadius();
 
-        if ((ord > 0) && (ird > 0) && (ord > ird))
-        {
+        if ((ord > 0) && (ird > 0) && (ord > ird)) {
             context.beginPath();
 
             context.arc(0, 0, ord, 0, Math.PI * 2, false);
@@ -93,12 +84,9 @@ public class Ring extends Shape<Ring>
     }
 
     @Override
-    protected void stroke(final Context2D context, final double alpha, final boolean filled)
-    {
-        if (setStrokeParams(context, alpha, filled))
-        {
-            if (getShadow() != null && !context.isSelection())
-            {
+    protected void stroke(final Context2D context, final double alpha, final boolean filled) {
+        if (setStrokeParams(context, alpha, filled)) {
+            if (getShadow() != null && !context.isSelection()) {
                 doApplyShadow(context);
             }
             context.beginPath();
@@ -123,22 +111,20 @@ public class Ring extends Shape<Ring>
 
     /**
      * Gets the {@link Star} inner radius.
-     * 
+     *
      * @return double
      */
-    public double getInnerRadius()
-    {
+    public double getInnerRadius() {
         return this.innerRadius;
     }
 
     /**
      * Sets the {@link Star} inner radius.
-     * 
+     *
      * @param radius
      * @return this Star
      */
-    public Ring setInnerRadius(final double radius)
-    {
+    public Ring setInnerRadius(final double radius) {
         this.innerRadius = radius;
 
         return this;
@@ -146,37 +132,33 @@ public class Ring extends Shape<Ring>
 
     /**
      * Returns the {@link Star} outer radius.
-     * 
+     *
      * @return double
      */
-    public double getOuterRadius()
-    {
+    public double getOuterRadius() {
         return this.outerRadius;
     }
 
     /**
      * Sets the outer radius.
-     * 
+     *
      * @param radius
      * @return this Star
      */
-    public Ring setOuterRadius(final double radius)
-    {
+    public Ring setOuterRadius(final double radius) {
         this.outerRadius = radius;
 
         return this;
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.INNER_RADIUS, Attribute.OUTER_RADIUS);
     }
 
-    public static class RingFactory extends ShapeFactory<Ring>
-    {
-        public RingFactory()
-        {
+    public static class RingFactory extends ShapeFactory<Ring> {
+
+        public RingFactory() {
             super(ShapeType.RING);
 
             addAttribute(Attribute.INNER_RADIUS, true);

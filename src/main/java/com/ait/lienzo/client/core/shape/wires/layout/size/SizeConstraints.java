@@ -18,88 +18,78 @@ package com.ait.lienzo.client.core.shape.wires.layout.size;
 
 import java.util.Objects;
 
-public class SizeConstraints
-{
-    public enum Type
-    {
-        PERCENTAGE, RAW
+public class SizeConstraints {
+
+    public enum Type {
+        PERCENTAGE,
+        RAW
     }
 
     private double width;
     private double height;
     private double marginX;
     private double marginY;
-    private Type   m_type;
+    private Type m_type;
 
     public SizeConstraints(final double width, final double height, final Type type, final double marginX,
-            final double marginY)
-    {
+                           final double marginY) {
         this(width, height, type);
         this.marginX = marginX;
         this.marginY = marginY;
     }
 
-    public SizeConstraints(final double width, final double height)
-    {
+    public SizeConstraints(final double width, final double height) {
         this(width, height, Type.RAW);
     }
 
-    public SizeConstraints(final double width, final double height, final Type type)
-    {
+    public SizeConstraints(final double width, final double height, final Type type) {
         this.width = width;
         this.height = height;
         this.m_type = type;
     }
 
-    public SizeConstraints(){
+    public SizeConstraints() {
         this(100, 100, Type.PERCENTAGE);
     }
 
-    public double getWidth()
-    {
+    public double getWidth() {
         return width;
     }
 
-    public double getHeight()
-    {
+    public double getHeight() {
         return height;
     }
 
-    public Type getType()
-    {
+    public Type getType() {
         return m_type;
     }
 
-    public double getMarginX()
-    {
+    public double getMarginX() {
         return marginX;
     }
 
-    public double getMarginY()
-    {
+    public double getMarginY() {
         return marginY;
     }
 
-    @Override public boolean equals(final Object o)
-    {
-        if (this == o)
-        {
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if (!(o instanceof SizeConstraints))
-        {
+        if (!(o instanceof SizeConstraints)) {
             return false;
         }
         final SizeConstraints that = (SizeConstraints) o;
         return Double.compare(that.getWidth(), getWidth()) == 0 &&
-               Double.compare(that.getHeight(), getHeight()) == 0 &&
-               Double.compare(that.getMarginX(), getMarginX()) == 0 &&
-               Double.compare(that.getMarginY(), getMarginY()) == 0 &&
-               getType() == that.getType();
+                Double.compare(that.getHeight(), getHeight()) == 0 &&
+                Double.compare(that.getMarginX(), getMarginX()) == 0 &&
+                Double.compare(that.getMarginY(), getMarginY()) == 0 &&
+                getType() == that.getType();
     }
 
-    @Override public int hashCode()
-    {
+    @Override
+    public int hashCode() {
         return Objects.hash(getWidth(), getHeight(), getMarginX(), getMarginY(), getType());
     }
 }

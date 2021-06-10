@@ -23,12 +23,14 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class ResizeObserver {
 
-    public ResizeObserver(ResizeCallback callback) {};
+    public ResizeObserver(ResizeCallback callback) {
+    }
+
+    ;
 
     public native void observe(Element element);
 
     public native void unobserve(Element element);
 
     public native void disconnect();
-
 }

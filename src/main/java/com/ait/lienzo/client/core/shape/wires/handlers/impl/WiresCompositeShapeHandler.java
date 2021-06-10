@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import java.util.Collection;
+import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
@@ -31,7 +32,6 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
-import java.util.function.Supplier;
 
 /**
  * This handler's goals are:
@@ -43,8 +43,8 @@ public class WiresCompositeShapeHandler
         implements DragConstraintEnforcer,
                    NodeDragEndHandler {
 
-    private final Supplier<WiresLayerIndex>                 indexBuilder;
-    private final WiresCompositeControl                     shapeControl;
+    private final Supplier<WiresLayerIndex> indexBuilder;
+    private final WiresCompositeControl shapeControl;
     private final WiresShapeHighlight<PickerPart.ShapePart> highlight;
 
     public WiresCompositeShapeHandler(final Supplier<WiresLayerIndex> indexBuilder,
@@ -138,7 +138,6 @@ public class WiresCompositeShapeHandler
         return shapeControl;
     }
 
-
     private WiresLayerIndex buildIndex() {
         final Collection<WiresShape> shapes = shapeControl.getContext().getShapes();
         final WiresLayerIndex index = indexBuilder.get();
@@ -149,7 +148,6 @@ public class WiresCompositeShapeHandler
         }
         index.build(getWiresManager().getLayer());
         return index;
-
     }
 
     private void clearIndex() {

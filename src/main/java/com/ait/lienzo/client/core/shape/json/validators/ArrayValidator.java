@@ -18,33 +18,29 @@ package com.ait.lienzo.client.core.shape.json.validators;
 
 import java.util.Objects;
 
-public class ArrayValidator extends AbstractAttributeTypeValidator
-{
-	private final IAttributeTypeValidator m_elementTypeValidator;
+public class ArrayValidator extends AbstractAttributeTypeValidator {
 
-	public ArrayValidator(final IAttributeTypeValidator elementTypeValidator)
-	{
-		this("Array", elementTypeValidator);
-	}
+    private final IAttributeTypeValidator m_elementTypeValidator;
 
-	public ArrayValidator(final String typeName, final IAttributeTypeValidator elementTypeValidator)
-	{
-		super(typeName);
+    public ArrayValidator(final IAttributeTypeValidator elementTypeValidator) {
+        this("Array", elementTypeValidator);
+    }
 
-		m_elementTypeValidator = Objects.requireNonNull(elementTypeValidator);
-	}
+    public ArrayValidator(final String typeName, final IAttributeTypeValidator elementTypeValidator) {
+        super(typeName);
 
-	@Override
-	public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
-	{
-		if (null == jval)
-		{
-			ctx.addBadTypeError(getTypeName());
+        m_elementTypeValidator = Objects.requireNonNull(elementTypeValidator);
+    }
 
-			return;
-		}
+    @Override
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException {
+        if (null == jval) {
+            ctx.addBadTypeError(getTypeName());
 
-		// @FIXME serialization (mdp)
+            return;
+        }
+
+        // @FIXME serialization (mdp)
 //		final JSONArray jarr = jval.isArray();
 //
 //		if (null == jarr)
@@ -64,5 +60,5 @@ public class ArrayValidator extends AbstractAttributeTypeValidator
 //				ctx.pop();// index
 //			}
 //		}
-	}
+    }
 }

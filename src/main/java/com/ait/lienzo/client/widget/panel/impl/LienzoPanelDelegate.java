@@ -57,5 +57,4 @@ public abstract class LienzoPanelDelegate<T extends LienzoPanelDelegate> extends
     private T cast() {
         return (T) this;
     }
-
 }

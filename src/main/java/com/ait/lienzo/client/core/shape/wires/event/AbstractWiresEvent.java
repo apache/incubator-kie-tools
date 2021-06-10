@@ -17,17 +17,13 @@
 package com.ait.lienzo.client.core.shape.wires.event;
 
 import com.ait.lienzo.client.core.event.AbstractNodeEvent;
-import com.ait.lienzo.tools.client.event.INodeEvent;
 import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
-
-
+import com.ait.lienzo.tools.client.event.INodeEvent;
 import elemental2.dom.HTMLElement;
 
-public abstract class AbstractWiresEvent<H extends EventHandler, S> extends AbstractNodeEvent<H, S> implements INodeEvent<H, S>
-{
-    public AbstractWiresEvent(final HTMLElement relativeElement)
-    {
+public abstract class AbstractWiresEvent<H extends EventHandler, S> extends AbstractNodeEvent<H, S> implements INodeEvent<H, S> {
+
+    public AbstractWiresEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
-
 }

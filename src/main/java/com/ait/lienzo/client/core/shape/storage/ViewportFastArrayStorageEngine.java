@@ -23,28 +23,24 @@ import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 
-public class ViewportFastArrayStorageEngine extends AbstractFastArrayStorageEngine<Scene> implements IJSONSerializable<ViewportFastArrayStorageEngine>
-{
-    public ViewportFastArrayStorageEngine()
-    {
+public class ViewportFastArrayStorageEngine extends AbstractFastArrayStorageEngine<Scene> implements IJSONSerializable<ViewportFastArrayStorageEngine> {
+
+    public ViewportFastArrayStorageEngine() {
         super(StorageEngineType.VIEWPORT_FAST_ARRAY_STORAGE_ENGINE);
     }
 
-    protected ViewportFastArrayStorageEngine(final Object node, final ValidationContext ctx) throws ValidationException
-    {
+    protected ViewportFastArrayStorageEngine(final Object node, final ValidationContext ctx) throws ValidationException {
         super(StorageEngineType.VIEWPORT_FAST_ARRAY_STORAGE_ENGINE, node, ctx);
     }
 
     @Override
-    public IFactory<?> getFactory()
-    {
+    public IFactory<?> getFactory() {
         return LienzoCore.get().getFactory(getStorageEngineType());
     }
 
-    public static class ViewportFastArrayStorageEngineFactory extends FastArrayStorageEngineFactory<ViewportFastArrayStorageEngine>
-    {
-        public ViewportFastArrayStorageEngineFactory()
-        {
+    public static class ViewportFastArrayStorageEngineFactory extends FastArrayStorageEngineFactory<ViewportFastArrayStorageEngine> {
+
+        public ViewportFastArrayStorageEngineFactory() {
             super(StorageEngineType.VIEWPORT_FAST_ARRAY_STORAGE_ENGINE);
         }
     }

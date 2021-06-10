@@ -20,49 +20,42 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-
 import jsinterop.base.Js;
 
-public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<SolarizeImageDataFilter>
-{
+public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<SolarizeImageDataFilter> {
+
     private static final FilterTableArray CONSTANT_TABLE = table();
 
-    private static final FilterTableArray table()
-    {
+    private static final FilterTableArray table() {
         int[] table = new int[256];
-        for(int i = 0; i < 256; i++) {
+        for (int i = 0; i < 256; i++) {
             int v = Js.coerceToInt(((i / 255 > 0.5) ? 2 * (i / 255 - 0.5) : 2 * (0.5 - i / 255)) * 255);
             table[i] = v;
         }
         return new FilterTableArray(table);
     }
 
-    public SolarizeImageDataFilter()
-    {
+    public SolarizeImageDataFilter() {
         super(ImageFilterType.SolarizeImageDataFilterType);
     }
 
-    protected SolarizeImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
-    {
+    protected SolarizeImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
         super(ImageFilterType.SolarizeImageDataFilterType, node, ctx);
     }
 
     @Override
-    protected final FilterTableArray getTable()
-    {
+    protected final FilterTableArray getTable() {
         return CONSTANT_TABLE;
     }
 
     @Override
-    public IFactory<SolarizeImageDataFilter> getFactory()
-    {
+    public IFactory<SolarizeImageDataFilter> getFactory() {
         return new SolarizeImageDataFilterFactory();
     }
 
-    public static class SolarizeImageDataFilterFactory extends TableImageDataFilterFactory<SolarizeImageDataFilter>
-    {
-        public SolarizeImageDataFilterFactory()
-        {
+    public static class SolarizeImageDataFilterFactory extends TableImageDataFilterFactory<SolarizeImageDataFilter> {
+
+        public SolarizeImageDataFilterFactory() {
             super(ImageFilterType.SolarizeImageDataFilterType);
         }
     }

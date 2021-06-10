@@ -18,8 +18,7 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.types.BoundingBox;
 
-public interface ITextWrapperWithBoundaries extends ITextWrapper
-{
+public interface ITextWrapperWithBoundaries extends ITextWrapper {
 
     void setWrapBoundaries(final BoundingBox boundingBox);
 }

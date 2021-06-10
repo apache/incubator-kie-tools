@@ -27,21 +27,19 @@ import com.ait.lienzo.client.core.types.NFastArrayListIterator;
 import com.ait.lienzo.tools.client.collection.MetaData;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
-public abstract class AbstractStorageEngine<M> implements IStorageEngine<M>
-{
-    private final MetaData          m_meta;
+public abstract class AbstractStorageEngine<M> implements IStorageEngine<M> {
+
+    private final MetaData m_meta;
 
     private final StorageEngineType m_type;
 
-    protected AbstractStorageEngine(final StorageEngineType type)
-    {
+    protected AbstractStorageEngine(final StorageEngineType type) {
         m_type = type;
 
         m_meta = new MetaData();
     }
 
-    protected AbstractStorageEngine(final StorageEngineType type, final Object node, final ValidationContext ctx) throws ValidationException
-    {
+    protected AbstractStorageEngine(final StorageEngineType type, final Object node, final ValidationContext ctx) throws ValidationException {
         m_type = type;
 
         //final JSONValue mval = node.get("meta");
@@ -78,24 +76,19 @@ public abstract class AbstractStorageEngine<M> implements IStorageEngine<M>
     }
 
     @Override
-    public MetaData getMetaData()
-    {
+    public MetaData getMetaData() {
         return m_meta;
     }
 
     @Override
-    public void migrate(final IStorageEngine<M> storage)
-    {
-        if (null != storage)
-        {
+    public void migrate(final IStorageEngine<M> storage) {
+        if (null != storage) {
             final NFastArrayList<M> list = storage.getChildren();
 
-            if (null != list)
-            {
+            if (null != list) {
                 final int size = list.size();
 
-                for (int i = 0; i < size; i++)
-                {
+                for (int i = 0; i < size; i++) {
                     add(list.get(i));
                 }
             }
@@ -103,27 +96,23 @@ public abstract class AbstractStorageEngine<M> implements IStorageEngine<M>
     }
 
     @Override
-    public StorageEngineType getStorageEngineType()
-    {
+    public StorageEngineType getStorageEngineType() {
         return m_type;
     }
 
     @Override
-    public Iterator<M> iterator(final BoundingBox bounds)
-    {
+    public Iterator<M> iterator(final BoundingBox bounds) {
         return new NFastArrayListIterator<M>(getChildren(bounds));
     }
 
     @Override
-    public Iterator<M> iterator()
-    {
+    public Iterator<M> iterator() {
         return new NFastArrayListIterator<M>(getChildren());
     }
 
-    protected static abstract class AbstractStorageEngineFactory<S extends IJSONSerializable<S>> extends AbstractFactory<S>
-    {
-        protected AbstractStorageEngineFactory(final StorageEngineType type)
-        {
+    protected static abstract class AbstractStorageEngineFactory<S extends IJSONSerializable<S>> extends AbstractFactory<S> {
+
+        protected AbstractStorageEngineFactory(final StorageEngineType type) {
             super(type.getValue());
         }
     }

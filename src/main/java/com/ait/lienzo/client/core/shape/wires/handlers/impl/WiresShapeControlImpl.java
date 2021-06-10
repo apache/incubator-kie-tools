@@ -118,10 +118,9 @@ public class WiresShapeControlImpl
         m_connectorsWithSpecialConnections = WiresShapeControlUtils.collectionSpecialConnectors(getShape());
         //setting the child connectors that should be moved with the Shape
         m_connectors = getShape().getChildShapes() != null && !getShape().getChildShapes().isEmpty() ?
-                       WiresShapeControlUtils.lookupChildrenConnectorsToUpdate(getShape()).values() :
-                       Collections.emptyList();
+                WiresShapeControlUtils.lookupChildrenConnectorsToUpdate(getShape()).values() :
+                Collections.emptyList();
         forEachConnectorControl(control -> control.onMoveStart(x, y));
-
     }
 
     @Override
@@ -208,7 +207,7 @@ public class WiresShapeControlImpl
         shapeUpdated(false);
 
         forEachConnectorControl(control -> control.onMove(dx,
-                                                  dy));
+                                                          dy));
 
         WiresShapeControlUtils.checkForAndApplyLineSplice(getWiresManager(),
                                                           getShape());

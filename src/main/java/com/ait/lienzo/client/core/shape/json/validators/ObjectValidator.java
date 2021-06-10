@@ -18,34 +18,28 @@ package com.ait.lienzo.client.core.shape.json.validators;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
-public class ObjectValidator extends AbstractAttributeTypeValidator
-{
-    private final ArrayList<String>                        m_requiredAttributes = new ArrayList<>();
+public class ObjectValidator extends AbstractAttributeTypeValidator {
 
-    private final HashMap<String, IAttributeTypeValidator> m_attributes         = new HashMap<>();
+    private final ArrayList<String> m_requiredAttributes = new ArrayList<>();
 
-    public ObjectValidator(final String typeName)
-    {
+    private final HashMap<String, IAttributeTypeValidator> m_attributes = new HashMap<>();
+
+    public ObjectValidator(final String typeName) {
         super(typeName);
     }
 
-    public void addAttribute(final String attrName, final IAttributeTypeValidator type, final boolean required)
-    {
+    public void addAttribute(final String attrName, final IAttributeTypeValidator type, final boolean required) {
         m_attributes.put(attrName, type);
 
-        if (required)
-        {
+        if (required) {
             m_requiredAttributes.add(attrName);
         }
     }
 
     @Override
-    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
-    {
-        if (null == jval)
-        {
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException {
+        if (null == jval) {
             ctx.addBadTypeError(getTypeName());
 
             return;
@@ -104,8 +98,7 @@ public class ObjectValidator extends AbstractAttributeTypeValidator
 //        }
     }
 
-    protected void checkHardcodedAttribute(final String attrName, final String requiredAttrValue, final Object jval, final ValidationContext ctx) throws ValidationException
-    {
+    protected void checkHardcodedAttribute(final String attrName, final String requiredAttrValue, final Object jval, final ValidationContext ctx) throws ValidationException {
         // ASSUMPTION: requiredness was already checked and reported on
 
         // @FIXME serialization (mdp)

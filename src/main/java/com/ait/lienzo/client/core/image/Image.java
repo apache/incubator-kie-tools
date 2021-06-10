@@ -12,7 +12,6 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-
 import jsinterop.annotations.JsProperty;
 
 public class Image
@@ -22,7 +21,7 @@ public class Image
     ImageElementProxy imageProxy;
 
     @JsProperty
-    private String                 url;
+    private String url;
 
     @JsProperty
     private int clippedImageStartX;
@@ -102,6 +101,7 @@ public class Image
      * Returns the width of the picture's clip region.
      * If the value is not set, it defaults to 0, which means it will
      * use the width of the loaded image.
+     *
      * @return int
      */
     public int getClippedImageWidth() {
@@ -331,8 +331,7 @@ public class Image
      *
      * @return String
      */
-    public String getURL()
-    {
+    public String getURL() {
         return this.url;
     }
 
@@ -343,8 +342,7 @@ public class Image
      * @param url
      * @return Picture
      */
-    protected void setURL(final String url)
-    {
+    protected void setURL(final String url) {
         this.url = Picture.toValidURL(url);
     }
 
@@ -377,7 +375,7 @@ public class Image
             if (node instanceof Image) {
                 final Image self = (Image) node;
                 self.configure(self.getURL())
-                    .load(image -> image.performBatch());
+                        .load(image -> image.performBatch());
             }
         }
     }

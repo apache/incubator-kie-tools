@@ -20,7 +20,7 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.layout.IContainerLayout;
 import com.ait.lienzo.client.core.types.BoundingBox;
 
-public interface IMaxSizeLayout<L> extends IContainerLayout<L>
-{
+public interface IMaxSizeLayout<L> extends IContainerLayout<L> {
+
     BoundingBox getMaxSize(IPrimitive<?> child);
 }

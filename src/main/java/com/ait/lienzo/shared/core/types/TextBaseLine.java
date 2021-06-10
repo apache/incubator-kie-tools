@@ -16,50 +16,48 @@
 
 package com.ait.lienzo.shared.core.types;
 
-import com.ait.lienzo.client.core.shape.Text;
-
 import java.util.List;
+
+import com.ait.lienzo.client.core.shape.Text;
 
 /**
  * Enum to create a type safe set of values for {@link Text} Alignment.
  */
-public enum TextBaseLine implements EnumWithValue
-{
-    ALPHABETIC("alphabetic"), TOP("top"), HANGING("hanging"), MIDDLE("middle"), IDEOGRAPHIC("ideographic"), BOTTOM("bottom");
+public enum TextBaseLine implements EnumWithValue {
+    ALPHABETIC("alphabetic"),
+    TOP("top"),
+    HANGING("hanging"),
+    MIDDLE("middle"),
+    IDEOGRAPHIC("ideographic"),
+    BOTTOM("bottom");
 
     private final String m_value;
 
     private static final EnumStringMap<TextBaseLine> LOOKUP_MAP = Statics.build(TextBaseLine.values());
 
-    private TextBaseLine(final String value)
-    {
+    private TextBaseLine(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
-    public static final TextBaseLine lookup(final String key)
-    {
+    public static final TextBaseLine lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, ALPHABETIC);
     }
 
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(TextBaseLine.values());
     }
 
-    public static final List<TextBaseLine> getValues()
-    {
+    public static final List<TextBaseLine> getValues() {
         return Statics.getValues(TextBaseLine.values());
     }
 }

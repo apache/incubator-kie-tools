@@ -24,8 +24,8 @@ import jsinterop.annotations.JsType;
  * A facade implementation in JavaScript for fast Lists.
  */
 @JsType(isNative = true, name = "Array", namespace = JsPackage.GLOBAL)
-public final class NFastArrayList<M> extends NArrayBase<M>
-{
+public final class NFastArrayList<M> extends NArrayBase<M> {
+
     @JsOverlay
     public static <M> NFastArrayList<M> fromObjects(M... objects) {
         final NFastArrayList<M> list = new NFastArrayList<>();
@@ -35,21 +35,19 @@ public final class NFastArrayList<M> extends NArrayBase<M>
         return list;
     }
 
-    public NFastArrayList()
-    {
+    public NFastArrayList() {
     }
 
     /**
      * Return the primitive found at the specified index.
+     *
      * @param index
      * @return
      */
     @JsOverlay
-    public final M get(final int index)
-    {
+    public final M get(final int index) {
         // @TODO is this really necessary to incurr the cost to be defensive. Surely better to avoid bad code in the first place? (mdp)
-        if ((index >= 0) && (index < size()))
-        {
+        if ((index >= 0) && (index < size())) {
             return getAt(index);
         }
         return null;
@@ -57,11 +55,11 @@ public final class NFastArrayList<M> extends NArrayBase<M>
 
     /**
      * Add a value to the List
+     *
      * @param value
      */
     @JsOverlay
-    public final NFastArrayList<M> add(final M value)
-    {
+    public final NFastArrayList<M> add(final M value) {
         push(value);
 
         return this;
@@ -69,11 +67,11 @@ public final class NFastArrayList<M> extends NArrayBase<M>
 
     /**
      * Add a value to the List
+     *
      * @param value
      */
     @JsOverlay
-    public final NFastArrayList<M> set(final int i, final M value)
-    {
+    public final NFastArrayList<M> set(final int i, final M value) {
         setAt(i, value);
 
         return this;
@@ -86,16 +84,14 @@ public final class NFastArrayList<M> extends NArrayBase<M>
      * @return boolean
      */
     @JsOverlay
-    public final boolean contains(final M value)
-    {
+    public final boolean contains(final M value) {
         return indexOf(value) > 0;
     }
 
     public native int indexOf(M obj);
 
     @JsOverlay
-    public final NFastArrayList<M> copy()
-    {
+    public final NFastArrayList<M> copy() {
         NFastArrayList<M> list = new NFastArrayList<>();
         M[] array = slice(0);
         list.push(array);
@@ -104,11 +100,11 @@ public final class NFastArrayList<M> extends NArrayBase<M>
 
     /**
      * Remove the value passed in as argument from the List.
+     *
      * @param value
      */
     @JsOverlay
-    public final NFastArrayList<M> remove(final M value)
-    {
+    public final NFastArrayList<M> remove(final M value) {
         for (int i = 0; i < getLength(); i++) {
             if (getAt(i) == value) {
                 this.splice(i, 1);
@@ -119,8 +115,7 @@ public final class NFastArrayList<M> extends NArrayBase<M>
     }
 
     @JsOverlay
-    public final NFastArrayList<M> moveUp(final M value)
-    {
+    public final NFastArrayList<M> moveUp(final M value) {
         int leng = getLength();
         if (leng < 2) {
             return this;
@@ -140,8 +135,7 @@ public final class NFastArrayList<M> extends NArrayBase<M>
     }
 
     @JsOverlay
-    public final NFastArrayList<M> moveDown(final M value)
-    {
+    public final NFastArrayList<M> moveDown(final M value) {
         int leng = getLength();
         if (leng < 2) {
             return this;
@@ -162,10 +156,8 @@ public final class NFastArrayList<M> extends NArrayBase<M>
     }
 
     @JsOverlay
-    public final NFastArrayList<M> moveToTop(final M value)
-    {
-        if ((size() < 2) || (!contains(value)))
-        {
+    public final NFastArrayList<M> moveToTop(final M value) {
+        if ((size() < 2) || (!contains(value))) {
             return this;
         }
         remove(value);
@@ -176,10 +168,8 @@ public final class NFastArrayList<M> extends NArrayBase<M>
     }
 
     @JsOverlay
-    public final NFastArrayList<M> moveToBottom(final M value)
-    {
-        if ((size() < 2) || (!contains(value)))
-        {
+    public final NFastArrayList<M> moveToBottom(final M value) {
+        if ((size() < 2) || (!contains(value))) {
             return this;
         }
         remove(value);
@@ -188,5 +178,4 @@ public final class NFastArrayList<M> extends NArrayBase<M>
 
         return this;
     }
-
 }

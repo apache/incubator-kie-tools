@@ -56,7 +56,6 @@ public class WiresShapeHighlightControl implements WiresShapeControl {
                                               },
                                               controlFactory.newShapeHighlight(wiresManager),
                                               delegate);
-
     }
 
     public WiresShapeHighlightControl(final WiresManager wiresManager,
@@ -260,12 +259,11 @@ public class WiresShapeHighlightControl implements WiresShapeControl {
         return getDelegate().getParentPickerControl().getParentShapePart();
     }
 
-    private  boolean isDocked(final WiresShape shape) {
+    private boolean isDocked(final WiresShape shape) {
         return null != shape.getDockedTo();
     }
 
     private void clearIndex() {
         getDelegate().getParentPickerControl().getIndex().clear();
     }
-
 }

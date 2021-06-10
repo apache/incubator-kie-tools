@@ -20,22 +20,21 @@ import com.ait.lienzo.client.core.types.Point2D;
 
 /**
  * DragConstraintEnforcer can be used to restrict where a Node can be dragged to.
- *
  */
-public interface DragConstraintEnforcer
-{
+public interface DragConstraintEnforcer {
+
     /**
      * Called when the drag operation starts.
-     * 
+     *
      * @param dragContext
      */
     void startDrag(DragContext dragContext);
 
     /**
      * Adjust the drag offset (dx,dy)
-     * 
-     * @param dxy (dx,dy) specified in local coordinates, 
-     *      i.e. in the parent node's coordinate system
+     *
+     * @param dxy (dx,dy) specified in local coordinates,
+     *            i.e. in the parent node's coordinate system
      */
     boolean adjust(Point2D dxy);
 }

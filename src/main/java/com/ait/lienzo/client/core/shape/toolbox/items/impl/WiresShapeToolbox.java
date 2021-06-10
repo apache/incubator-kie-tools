@@ -183,7 +183,8 @@ public class WiresShapeToolbox
     }
 
     public void hideAndDestroy() {
-        toolbox.hide(() -> {},
+        toolbox.hide(() -> {
+                     },
                      WiresShapeToolbox.this::doDestroy);
     }
 

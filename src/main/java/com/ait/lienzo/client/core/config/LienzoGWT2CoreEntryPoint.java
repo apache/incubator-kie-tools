@@ -18,11 +18,10 @@ package com.ait.lienzo.client.core.config;
 
 import com.google.gwt.core.client.EntryPoint;
 
-public final class LienzoGWT2CoreEntryPoint implements EntryPoint
-{
+public final class LienzoGWT2CoreEntryPoint implements EntryPoint {
+
     @Override
-    public final void onModuleLoad()
-    {
+    public final void onModuleLoad() {
         LienzoCore.get().addPlugin(new LienzoCorePlugin());
     }
 }

@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.shared.core.types;
 
-public interface DoublePowerFunction
-{
+public interface DoublePowerFunction {
+
     public double apply(double value);
 }

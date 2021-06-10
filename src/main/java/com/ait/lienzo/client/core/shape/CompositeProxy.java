@@ -26,8 +26,6 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
@@ -37,16 +35,15 @@ import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.shared.core.types.ProxyType;
 
-public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends IPrimitive<?>> extends Node<C>implements IPrimitive<C>
-{
-    private ProxyType              m_type                   = null;
+public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends IPrimitive<?>> extends Node<C> implements IPrimitive<C> {
 
-    private IControlHandleFactory  m_controlHandleFactory   = null;
+    private ProxyType m_type = null;
+
+    private IControlHandleFactory m_controlHandleFactory = null;
 
     private DragConstraintEnforcer m_dragConstraintEnforcer = null;
 
-    protected CompositeProxy(final ProxyType type)
-    {
+    protected CompositeProxy(final ProxyType type) {
         super(NodeType.PROXY);
 
         m_type = type;
@@ -54,41 +51,34 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
 
     protected abstract P getProxy();
 
-    protected void setProxyType(final ProxyType type)
-    {
+    protected void setProxyType(final ProxyType type) {
         m_type = type;
     }
 
-    public ProxyType getProxyType()
-    {
+    public ProxyType getProxyType() {
         return m_type;
     }
 
     @Override
-    public IFactory<?> getFactory()
-    {
+    public IFactory<?> getFactory() {
         return LienzoCore.get().getFactory(m_type);
     }
 
     @Override
-    public boolean removeFromParent()
-    {
+    public boolean removeFromParent() {
         Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             Layer layer = parent.asLayer();
 
-            if (null != layer)
-            {
+            if (null != layer) {
                 layer.remove(this);
 
                 return true;
             }
             GroupOf<IPrimitive<?>, ?> group = parent.asGroupOf();
 
-            if (null != group)
-            {
+            if (null != group) {
                 group.remove(this);
 
                 return true;
@@ -98,22 +88,19 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
     }
 
     /**
-    * Moves this shape one layer up.
-    * 
-    * @return T
-    */
+     * Moves this shape one layer up.
+     *
+     * @return T
+     */
     @SuppressWarnings("unchecked")
     @Override
-    public C moveUp()
-    {
+    public C moveUp() {
         final Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
-            if (null != container)
-            {
+            if (null != container) {
                 container.moveUp(this);
             }
         }
@@ -122,21 +109,18 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
 
     /**
      * Moves this shape one layer down.
-     * 
+     *
      * @return T
      */
     @SuppressWarnings("unchecked")
     @Override
-    public C moveDown()
-    {
+    public C moveDown() {
         final Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
-            if (null != container)
-            {
+            if (null != container) {
                 container.moveDown(this);
             }
         }
@@ -145,21 +129,18 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
 
     /**
      * Moves this shape to the top of the layers stack.
-     * 
+     *
      * @return T
      */
     @SuppressWarnings("unchecked")
     @Override
-    public C moveToTop()
-    {
+    public C moveToTop() {
         final Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
-            if (null != container)
-            {
+            if (null != container) {
                 container.moveToTop(this);
             }
         }
@@ -168,21 +149,18 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
 
     /**
      * Moves this shape to the bottomw of the layers stack.
-     * 
+     *
      * @return T
      */
     @SuppressWarnings("unchecked")
     @Override
-    public C moveToBottom()
-    {
+    public C moveToBottom() {
         final Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
-            if (null != container)
-            {
+            if (null != container) {
                 container.moveToBottom(this);
             }
         }
@@ -190,106 +168,87 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
     }
 
     @Override
-    public Map<ControlHandleType, IControlHandleList> getControlHandles(ControlHandleType... types)
-    {
+    public Map<ControlHandleType, IControlHandleList> getControlHandles(ControlHandleType... types) {
         return getControlHandles(Arrays.asList(types));
     }
 
     @Override
-    public Map<ControlHandleType, IControlHandleList> getControlHandles(List<ControlHandleType> types)
-    {
-        if ((null == types) || (types.isEmpty()))
-        {
+    public Map<ControlHandleType, IControlHandleList> getControlHandles(List<ControlHandleType> types) {
+        if ((null == types) || (types.isEmpty())) {
             return null;
         }
-        if (types.size() > 1)
-        {
+        if (types.size() > 1) {
             types = new ArrayList<ControlHandleType>(new HashSet<ControlHandleType>(types));
         }
         IControlHandleFactory factory = getControlHandleFactory();
 
-        if (null == factory)
-        {
+        if (null == factory) {
             return null;
         }
         return factory.getControlHandles(types);
     }
 
     @Override
-    public IControlHandleFactory getControlHandleFactory()
-    {
+    public IControlHandleFactory getControlHandleFactory() {
         return m_controlHandleFactory;
     }
 
     @Override
-    public C setControlHandleFactory(IControlHandleFactory factory)
-    {
+    public C setControlHandleFactory(IControlHandleFactory factory) {
         m_controlHandleFactory = factory;
 
         return cast();
     }
 
     @Override
-    public DragConstraintEnforcer getDragConstraints()
-    {
-        if (null == m_dragConstraintEnforcer)
-        {
+    public DragConstraintEnforcer getDragConstraints() {
+        if (null == m_dragConstraintEnforcer) {
             return new DefaultDragConstraintEnforcer();
-        }
-        else
-        {
+        } else {
             return m_dragConstraintEnforcer;
         }
     }
 
     @Override
-    public C setDragConstraints(final DragConstraintEnforcer enforcer)
-    {
+    public C setDragConstraints(final DragConstraintEnforcer enforcer) {
         m_dragConstraintEnforcer = enforcer;
 
         return cast();
     }
 
     @Override
-    public void attachToLayerColorMap()
-    {
+    public void attachToLayerColorMap() {
         getProxy().attachToLayerColorMap();
     }
 
     @Override
-    public void detachFromLayerColorMap()
-    {
+    public void detachFromLayerColorMap() {
         getProxy().detachFromLayerColorMap();
     }
 
     @Override
-    public C refresh()
-    {
+    public C refresh() {
         getProxy().refresh();
 
         return cast();
     }
 
     @Override
-    protected void drawWithoutTransforms(final Context2D context, double alpha, final BoundingBox bounds)
-    {
-        if ((context.isSelection()) && (!isListening()))
-        {
+    protected void drawWithoutTransforms(final Context2D context, double alpha, final BoundingBox bounds) {
+        if ((context.isSelection()) && (!isListening())) {
             return;
         }
         alpha = alpha * getAlpha();
 
-        if (alpha <= 0)
-        {
+        if (alpha <= 0) {
             return;
         }
         getProxy().drawWithTransforms(context, alpha, bounds);
     }
 
-    protected abstract static class CompositeProxyFactory<C extends CompositeProxy<C, P>, P extends IPrimitive<?>> extends NodeFactory<C>
-    {
-        protected CompositeProxyFactory(final ProxyType type)
-        {
+    protected abstract static class CompositeProxyFactory<C extends CompositeProxy<C, P>, P extends IPrimitive<?>> extends NodeFactory<C> {
+
+        protected CompositeProxyFactory(final ProxyType type) {
             super(type.getValue());
 
             addAttribute(Attribute.X);
@@ -341,8 +300,7 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
             addAttribute(Attribute.EVENT_PROPAGATION_MODE);
         }
 
-        protected void setProxyType(final ProxyType type)
-        {
+        protected void setProxyType(final ProxyType type) {
             setTypeName(type.getValue());
         }
     }

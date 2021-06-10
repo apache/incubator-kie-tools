@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
@@ -29,10 +32,6 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragContext;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import static com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlUtils.excludeFromIndex;
 
 /**
  * This handler's goals are:
@@ -46,8 +45,8 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
 
     public WiresShapeHandlerImpl(final Supplier<WiresLayerIndex> indexBuilder,
                                  final WiresShape shape,
-                             final WiresShapeHighlight<PickerPart.ShapePart> highlight,
-                             final WiresManager manager) {
+                                 final WiresShapeHighlight<PickerPart.ShapePart> highlight,
+                                 final WiresManager manager) {
         super(manager);
         this.clickEventConsumer = new Consumer<NodeMouseClickEvent>() {
             @Override
@@ -98,14 +97,13 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
 
         final Point2D startAdjusted = dragContext.getStartAdjusted();
         getHighlightControl().onMoveStart(startAdjusted.getX(), startAdjusted.getY());
-
     }
 
     @Override
     protected boolean doAdjust(Point2D dxy) {
 
         if (getHighlightControl().onMove(dxy.getX(),
-                           dxy.getY())) {
+                                         dxy.getY())) {
             dxy.set(getHighlightControl().getAdjust());
             return true;
         }
@@ -124,35 +122,34 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
 
         getHighlightControl().onMove(dx, dy);
         getHighlightControl().onMoveComplete();
-
     }
 
     @Override
     public void onNodeMouseClick(NodeMouseClickEvent event) {
         getHighlightControl().onMouseClick(new MouseEvent(event.getX(),
-                                                 event.getY(),
-                                                 event.isShiftKeyDown(),
-                                                 event.isAltKeyDown(),
-                                                 event.isCtrlKeyDown()));
+                                                          event.getY(),
+                                                          event.isShiftKeyDown(),
+                                                          event.isAltKeyDown(),
+                                                          event.isCtrlKeyDown()));
         clickEventConsumer.accept(event);
     }
 
     @Override
     public void onNodeMouseDown(NodeMouseDownEvent event) {
         getHighlightControl().onMouseDown(new MouseEvent(event.getX(),
-                                           event.getY(),
-                                           event.isShiftKeyDown(),
-                                           event.isAltKeyDown(),
-                                           event.isCtrlKeyDown()));
+                                                         event.getY(),
+                                                         event.isShiftKeyDown(),
+                                                         event.isAltKeyDown(),
+                                                         event.isCtrlKeyDown()));
     }
 
     @Override
     public void onNodeMouseUp(NodeMouseUpEvent event) {
         getHighlightControl().onMouseUp(new MouseEvent(event.getX(),
-                                         event.getY(),
-                                         event.isShiftKeyDown(),
-                                         event.isAltKeyDown(),
-                                         event.isCtrlKeyDown()));
+                                                       event.getY(),
+                                                       event.isShiftKeyDown(),
+                                                       event.isAltKeyDown(),
+                                                       event.isCtrlKeyDown()));
     }
 
     private WiresShape getShape() {
@@ -162,5 +159,4 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
     private WiresShapeHighlightControl getHighlightControl() {
         return highlightControl;
     }
-
 }

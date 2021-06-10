@@ -31,100 +31,85 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
  * @param <T>
  * @since 1.1
  */
-public abstract class AbstractFactory<T extends IJSONSerializable<T>> implements IFactory<T>
-{
+public abstract class AbstractFactory<T extends IJSONSerializable<T>> implements IFactory<T> {
+
     private final LinkedHashMap<String, Attribute> m_requiredsSheet = new LinkedHashMap<String, Attribute>();
 
     private final LinkedHashMap<String, Attribute> m_attributeSheet = new LinkedHashMap<String, Attribute>();
 
-    private String                                 m_typeName;
+    private String m_typeName;
 
-    protected AbstractFactory(final String typeName)
-    {
+    protected AbstractFactory(final String typeName) {
         m_typeName = typeName;
     }
 
     /**
      * Only factories that wish to extend other factories should use this.
-     * 
+     *
      * @param typeName
      */
-    protected void setTypeName(final String typeName)
-    {
+    protected void setTypeName(final String typeName) {
         m_typeName = typeName;
     }
 
     @Override
-    public String getTypeName()
-    {
+    public String getTypeName() {
         return m_typeName;
     }
 
-    protected void addAttribute(final Attribute attr, final boolean required)
-    {
+    protected void addAttribute(final Attribute attr, final boolean required) {
         // Allow setting the attribute twice to override the requiredness
         // with a different value.
 
         final String prop = attr.getProperty();
 
-        if (false == m_attributeSheet.containsKey(prop))
-        {
+        if (false == m_attributeSheet.containsKey(prop)) {
             m_attributeSheet.put(prop, attr);
         }
-        if (required)
-        {
-            if (false == m_requiredsSheet.containsKey(prop))
-            {
+        if (required) {
+            if (false == m_requiredsSheet.containsKey(prop)) {
                 m_requiredsSheet.put(prop, attr);
             }
-        }
-        else
-        {
+        } else {
             m_requiredsSheet.remove(prop);
         }
     }
 
     /**
      * Add optional attribute
+     *
      * @param attr
      */
-    protected void addAttribute(final Attribute attr)
-    {
+    protected void addAttribute(final Attribute attr) {
         addAttribute(attr, false);
     }
 
     @Override
-    public Collection<Attribute> getAttributeSheet()
-    {
+    public Collection<Attribute> getAttributeSheet() {
         return Collections.unmodifiableCollection(m_attributeSheet.values());
     }
 
     @Override
-    public Collection<Attribute> getRequiredAttributes()
-    {
+    public Collection<Attribute> getRequiredAttributes() {
         return Collections.unmodifiableCollection(m_requiredsSheet.values());
     }
 
     @Override
-    public AttributeType getAttributeType(final String type)
-    {
+    public AttributeType getAttributeType(final String type) {
         final Attribute attr = m_attributeSheet.get(type);
 
-        if (null != attr)
-        {
+        if (null != attr) {
             return attr.getType();
         }
         return null;
     }
 
     @Override
-    public void process(IJSONSerializable<?> node, ValidationContext ctx) throws ValidationException
-    {
+    public void process(IJSONSerializable<?> node, ValidationContext ctx) throws ValidationException {
     }
 
     @Override
-    public boolean isPostProcessed()
-    {
+    public boolean isPostProcessed() {
         return false;
     }
 }

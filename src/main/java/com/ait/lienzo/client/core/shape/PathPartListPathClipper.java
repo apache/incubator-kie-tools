@@ -19,47 +19,38 @@ package com.ait.lienzo.client.core.shape;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.PathPartList;
 
-public final class PathPartListPathClipper extends AbstractPathClipper
-{
+public final class PathPartListPathClipper extends AbstractPathClipper {
+
     public static final String TYPE = "PathPartListPathClipper";
 
     private final PathPartList m_path;
 
-    public PathPartListPathClipper(final PathClipperJSO clip)
-    {
+    public PathPartListPathClipper(final PathClipperJSO clip) {
         super(clip);
 
-        if (null == getPathPartList())
-        {
+        if (null == getPathPartList()) {
             m_path = null;
-        }
-        else
-        {
+        } else {
             m_path = PathPartList.make(getPathPartList().getJSO(), true);
         }
     }
 
-    public PathPartListPathClipper(final PathPartList path)
-    {
+    public PathPartListPathClipper(final PathPartList path) {
         this(PathClipperJSO.make(path));
     }
 
-    public PathPartListPathClipper(final Shape<?> shape)
-    {
+    public PathPartListPathClipper(final Shape<?> shape) {
         this(shape.getPathPartList());
     }
 
     @Override
-    protected final boolean apply(final Context2D context)
-    {
-        if (null != m_path)
-        {
+    protected final boolean apply(final Context2D context) {
+        if (null != m_path) {
             context.beginPath();
 
             final boolean fill = context.clip(m_path);
 
-            if (fill)
-            {
+            if (fill) {
                 context.clip();
             }
             return fill;

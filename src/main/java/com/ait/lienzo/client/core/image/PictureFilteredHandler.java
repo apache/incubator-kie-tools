@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.image;
 
 import com.ait.lienzo.client.core.shape.Picture;
 
-public interface PictureFilteredHandler
-{
+public interface PictureFilteredHandler {
+
     public void onPictureFiltered(Picture picture);
 }

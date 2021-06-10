@@ -19,10 +19,9 @@ package com.ait.lienzo.client.core.shape.wires.event;
 import com.ait.lienzo.client.core.event.AbstractNodeEvent;
 import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.shape.Node;
-import com.ait.lienzo.tools.client.event.INodeXYEvent;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
-
+import com.ait.lienzo.tools.client.event.INodeXYEvent;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
 
@@ -35,54 +34,46 @@ import elemental2.dom.HTMLElement;
  *     <li>nodeDragEvent = the drag event on the node.</li>
  * </ul>
  */
-public abstract class AbstractWiresDragEvent<H extends EventHandler, H2 extends EventHandler> extends AbstractNodeEvent<H, WiresContainer> implements INodeXYEvent<H, WiresContainer>
-{
+public abstract class AbstractWiresDragEvent<H extends EventHandler, H2 extends EventHandler> extends AbstractNodeEvent<H, WiresContainer> implements INodeXYEvent<H, WiresContainer> {
+
     private AbstractNodeHumanInputEvent<H2, Node> nodeDragEvent;
 
-    public AbstractWiresDragEvent(final HTMLElement relativeElement)
-    {
+    public AbstractWiresDragEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
-    public void kill()
-    {
+    public void kill() {
         setSource(null);
         setDead(true);
         nodeDragEvent = null;
     }
 
-    public void revive()
-    {
+    public void revive() {
         setSource(null);
         setDead(false);
         nodeDragEvent = null;
     }
 
-    public void override(final WiresContainer shape, final AbstractNodeHumanInputEvent<H2, Node> nodeDragEvent)
-    {
+    public void override(final WiresContainer shape, final AbstractNodeHumanInputEvent<H2, Node> nodeDragEvent) {
         setSource(shape);
         this.nodeDragEvent = nodeDragEvent;
     }
 
     @Override
-    public int getX()
-    {
+    public int getX() {
         return nodeDragEvent.getX();
     }
 
     @Override
-    public int getY()
-    {
+    public int getY() {
         return nodeDragEvent.getY();
     }
 
-    public AbstractNodeHumanInputEvent<H2, Node> getNodeDragEvent()
-    {
+    public AbstractNodeHumanInputEvent<H2, Node> getNodeDragEvent() {
         return nodeDragEvent;
     }
 
-    public Event getNativeEvent()
-    {
+    public Event getNativeEvent() {
         throw new UnsupportedOperationException();
     }
 }

@@ -22,122 +22,103 @@ import elemental2.core.JsArray;
 import jsinterop.annotations.JsType;
 
 /**
- * LinearGradient defines the fill style for a {@link Shape} as a Linear Gradient. 
+ * LinearGradient defines the fill style for a {@link Shape} as a Linear Gradient.
  */
-public final class LinearGradient implements FillGradient
-{
-    public static final String      TYPE = "LinearGradient";
+public final class LinearGradient implements FillGradient {
+
+    public static final String TYPE = "LinearGradient";
 
     private final LinearGradientJSO m_jso;
 
-    public LinearGradient(final LinearGradientJSO jso)
-    {
+    public LinearGradient(final LinearGradientJSO jso) {
         m_jso = jso;
     }
 
-    public LinearGradient(final double sx, final double sy, final double ex, final double ey)
-    {
+    public LinearGradient(final double sx, final double sy, final double ex, final double ey) {
         this(LinearGradientJSO.make(sx, sy, ex, ey));
     }
 
     @Override
-    public String getType()
-    {
+    public String getType() {
         return TYPE;
     }
 
-    public final LinearGradient addColorStop(final double stop, final String color)
-    {
+    public final LinearGradient addColorStop(final double stop, final String color) {
         m_jso.addColorStop(stop, color);
 
         return this;
     }
 
-    public final LinearGradient addColorStop(final double stop, final IColor color)
-    {
+    public final LinearGradient addColorStop(final double stop, final IColor color) {
         m_jso.addColorStop(stop, color.getColorString());
 
         return this;
     }
 
     @Override
-    public LinearGradient asLinearGradient()
-    {
+    public LinearGradient asLinearGradient() {
         return this;
     }
 
     @Override
-    public RadialGradient asRadialGradient()
-    {
+    public RadialGradient asRadialGradient() {
         return null;
     }
 
     @Override
-    public PatternGradient asPatternGradient()
-    {
+    public PatternGradient asPatternGradient() {
         return null;
     }
 
-    public final LinearGradientJSO getJSO()
-    {
+    public final LinearGradientJSO getJSO() {
         return m_jso;
     }
 
-    public final String toJSONString()
-    {
+    public final String toJSONString() {
         return Global.JSON.stringify(m_jso);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return toJSONString();
     }
 
     @Override
-    public boolean equals(final Object other)
-    {
-        if ((other == null) || (!(other instanceof LinearGradient)))
-        {
+    public boolean equals(final Object other) {
+        if ((other == null) || (!(other instanceof LinearGradient))) {
             return false;
         }
-        if (this == other)
-        {
+        if (this == other) {
             return true;
         }
         return ((LinearGradient) other).toJSONString().equals(toJSONString());
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return toJSONString().hashCode();
     }
 
     @JsType
-    public static class LinearGradientJSO extends GradientJSO
-    {
-        public  double  sx;
-        public  double  sy;
-        public  double  ex;
-        public  double  ey;
-        public  JsArray<Object[]> colorStops;
+    public static class LinearGradientJSO extends GradientJSO {
 
+        public double sx;
+        public double sy;
+        public double ex;
+        public double ey;
+        public JsArray<Object[]> colorStops;
 
-        public LinearGradientJSO()
-        {
+        public LinearGradientJSO() {
         }
 
-        public static final LinearGradientJSO make(double sx, double sy, double ex, double ey)
-        {
+        public static final LinearGradientJSO make(double sx, double sy, double ex, double ey) {
             LinearGradientJSO grad = new LinearGradientJSO();
             setValues(sx, sy, ex, ey, grad);
             grad.type = "LinearGradient";
             return grad;
         }
 
-        protected static void setValues(final double sx, final double sy, final double ex, final double ey, final LinearGradientJSO grad)
-        {
+        protected static void setValues(final double sx, final double sy, final double ex, final double ey, final LinearGradientJSO grad) {
             grad.sx = sx;
             grad.sy = sy;
 
@@ -147,8 +128,7 @@ public final class LinearGradient implements FillGradient
             grad.colorStops = new JsArray<>();
         }
 
-        public final void addColorStop(double stop, String color)
-        {
+        public final void addColorStop(double stop, String color) {
             this.colorStops.push(new Object[]{stop, color});
         }
     }

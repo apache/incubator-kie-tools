@@ -16,12 +16,11 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-public class Point2DValidator extends ObjectValidator
-{
+public class Point2DValidator extends ObjectValidator {
+
     public static final Point2DValidator INSTANCE = new Point2DValidator();
 
-    public Point2DValidator()
-    {
+    public Point2DValidator() {
         super("Point2D");
 
         addAttribute("x", NumberValidator.INSTANCE, true);

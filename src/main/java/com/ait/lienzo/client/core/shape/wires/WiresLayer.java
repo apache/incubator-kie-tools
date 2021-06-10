@@ -20,15 +20,13 @@ package com.ait.lienzo.client.core.shape.wires;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.Point2D;
 
-public class WiresLayer extends WiresContainer
-{
-    public WiresLayer(Layer layer)
-    {
+public class WiresLayer extends WiresContainer {
+
+    public WiresLayer(Layer layer) {
         super(layer);
     }
 
-    public Layer getLayer()
-    {
+    public Layer getLayer() {
         return (Layer) getContainer();
     }
 

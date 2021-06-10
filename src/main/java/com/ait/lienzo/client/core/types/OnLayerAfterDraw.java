@@ -19,9 +19,9 @@ package com.ait.lienzo.client.core.types;
 import com.ait.lienzo.client.core.shape.Layer;
 
 /**
- * Interface to be used for handler invoked after a {@link Layer} draw operation. 
+ * Interface to be used for handler invoked after a {@link Layer} draw operation.
  */
-public interface OnLayerAfterDraw
-{
+public interface OnLayerAfterDraw {
+
     public void onLayerAfterDraw(Layer layer);
 }

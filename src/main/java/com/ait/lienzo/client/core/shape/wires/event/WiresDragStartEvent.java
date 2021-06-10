@@ -17,31 +17,26 @@
 package com.ait.lienzo.client.core.shape.wires.event;
 
 import com.ait.lienzo.client.core.event.NodeDragStartHandler;
-
 import elemental2.dom.HTMLElement;
 
 /**
  * <p>Event that is fired when a wires container drag starts.</p>
  */
-public class WiresDragStartEvent extends AbstractWiresDragEvent<WiresDragStartHandler, NodeDragStartHandler>
-{
+public class WiresDragStartEvent extends AbstractWiresDragEvent<WiresDragStartHandler, NodeDragStartHandler> {
 
     public static final Type<WiresDragStartHandler> TYPE = new Type<>();
 
-    public WiresDragStartEvent(final HTMLElement relativeElement)
-    {
+    public WiresDragStartEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
     @Override
-    public Type<WiresDragStartHandler> getAssociatedType()
-    {
+    public Type<WiresDragStartHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    public void dispatch(final WiresDragStartHandler shapeMovedHandler)
-    {
+    public void dispatch(final WiresDragStartHandler shapeMovedHandler) {
         shapeMovedHandler.onShapeDragStart(this);
     }
 }

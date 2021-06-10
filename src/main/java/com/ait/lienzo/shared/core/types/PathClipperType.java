@@ -18,43 +18,38 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-public enum PathClipperType implements EnumWithValue
-{
-    NONE("none"), BOUNDING_BOX("bounding-box"), PATH_PART_LIST("path-part-list");
+public enum PathClipperType implements EnumWithValue {
+    NONE("none"),
+    BOUNDING_BOX("bounding-box"),
+    PATH_PART_LIST("path-part-list");
 
     private final String m_value;
 
     private static final EnumStringMap<PathClipperType> LOOKUP_MAP = Statics.build(PathClipperType.values());
 
-    private PathClipperType(final String value)
-    {
+    private PathClipperType(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
-    public static final PathClipperType lookup(final String key)
-    {
+    public static final PathClipperType lookup(final String key) {
         return Statics.lookup(key, LOOKUP_MAP, NONE);
     }
 
-    public static final List<String> getKeys()
-    {
+    public static final List<String> getKeys() {
         return Statics.getKeys(PathClipperType.values());
     }
 
-    public static final List<PathClipperType> getValues()
-    {
+    public static final List<PathClipperType> getValues() {
         return Statics.getValues(PathClipperType.values());
     }
 }

@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
 
-public interface NodeMouseClickHandler extends EventHandler
-{
+public interface NodeMouseClickHandler extends EventHandler {
+
     public void onNodeMouseClick(NodeMouseClickEvent event);
 }

@@ -21,16 +21,16 @@ import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 
 /**
- * IContainerFactory should be implemented by {@link IFactory factories} 
+ * IContainerFactory should be implemented by {@link IFactory factories}
  * for objects that may contain child nodes.
- * 
+ *
  * @since 1.1
  */
-public interface IContainerFactory
-{
+public interface IContainerFactory {
+
     /**
      * Returns whether the specified childNode is valid for this container, and if so, addBoundingBox it.
-     * 
+     *
      * @param childNode IJSONSerializable
      */
 

@@ -16,20 +16,17 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-public class StringValidator extends AbstractAttributeTypeValidator
-{
+public class StringValidator extends AbstractAttributeTypeValidator {
+
     public static final StringValidator INSTANCE = new StringValidator();
 
-    public StringValidator()
-    {
+    public StringValidator() {
         super("String");
     }
 
     @Override
-    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
-    {
-        if (null == jval)
-        {
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException {
+        if (null == jval) {
             ctx.addBadTypeError(getTypeName());
 
             return;

@@ -24,14 +24,14 @@ import java.lang.annotation.Target;
 
 /**
  * This is the common superinterface to Messages and Constants.
- *
+ * <p>
  * Each (and the Constants subinterface ConstantsWithLookup) provide
  * compile-time localization of various forms of data.  Messages is
  * used for <code>MessageFormat</code>-style strings which can have
  * parameters (including support for plural forms), while Constants
  * can be other types, have simplified quoting requirements, and do
  * not take any parameters.
- *
+ * <p>
  * The annotations defined here are common to both -- see the individual
  * subinterfaces for additional annotations which apply only to each
  * one.
@@ -58,6 +58,7 @@ public interface LocalizableResource {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     public @interface Description {
+
         String value();
     }
 
@@ -69,7 +70,7 @@ public interface LocalizableResource {
      * do not; also, additional parameters may be specified via format-specific
      * annotations -- see the documentation of the MessageCatalogFormat implementation
      * for details.
-     *
+     * <p>
      * Examples:
      * <ul>
      * <li>&#64;Generate(format = "com.google.gwt.i18n.server.PropertyCatalogFactory")
@@ -97,11 +98,11 @@ public interface LocalizableResource {
          * implement com.google.gwt.i18n.server.MessageCatalogFactory
          * (com.google.gwt.i18n.rebind.format.MessageCatalogFormat still works, but
          * is deprecated).
-         *
+         * <p>
          * Strings are used here instead of class literals because the generators
          * will likely contain non-translatable code and thus can't be referenced
          * from translatable code directly.
-         *
+         * <p>
          * Each generator may define additional annotations to supply other
          * necessary parameters.
          */
@@ -119,7 +120,7 @@ public interface LocalizableResource {
          * just only one locale happened to be compiled for), the locale will be
          * appended to the name (such as _default [for the default locale], _en_US,
          * etc) as well as the proper extension for the specified format.
-         *
+         * <p>
          * Note that if multiple generators are used, they will have the same base
          * filename so the extensions must be different.
          */
@@ -140,6 +141,7 @@ public interface LocalizableResource {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
     public @interface GeneratedFrom {
+
         String value();
     }
 
@@ -155,6 +157,7 @@ public interface LocalizableResource {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
     public @interface GenerateKeys {
+
         String value() default "com.google.gwt.i18n.server.keygen.MD5KeyGenerator";
     }
 
@@ -166,6 +169,7 @@ public interface LocalizableResource {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     public @interface Key {
+
         String value();
     }
 
@@ -177,6 +181,7 @@ public interface LocalizableResource {
     @Target(ElementType.METHOD)
     @Documented
     public @interface Meaning {
+
         String value();
     }
 }

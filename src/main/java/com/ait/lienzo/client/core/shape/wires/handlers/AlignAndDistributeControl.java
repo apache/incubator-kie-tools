@@ -15,7 +15,7 @@ public interface AlignAndDistributeControl {
 
     void refresh();
 
-    void refresh( boolean transforms, boolean attributes );
+    void refresh(boolean transforms, boolean attributes);
 
     void reset();
 
@@ -48,5 +48,4 @@ public interface AlignAndDistributeControl {
     void setIndexed(boolean indexed);
 
     void updateIndex();
-
 }

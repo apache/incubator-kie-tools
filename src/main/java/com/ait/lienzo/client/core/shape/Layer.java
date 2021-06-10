@@ -51,58 +51,53 @@ import elemental2.dom.HTMLDivElement;
  *      <li>Layers are assigned z-indexes automatically.</li>
  *      <li>Every Layer containsBoundingBox a {@link SelectionLayer} to act as an off-set canvas.</li>
  *      <li>Layers may contain {@link IPrimitive} or {@link Group}.</li>
- * </ul> 
+ * </ul>
  */
-public class Layer extends ContainerNode<IPrimitive<?>, Layer>
-{
-    private       int                      m_wide               = 0;
+public class Layer extends ContainerNode<IPrimitive<?>, Layer> {
 
-    private       int                      m_high               = 0;
+    private int m_wide = 0;
 
-    private       boolean                  m_shower             = false;
+    private int m_high = 0;
 
-    private       SelectionLayer           m_select             = null;
+    private boolean m_shower = false;
 
-    private       OnLayerBeforeDraw        m_olbd               = null;
+    private SelectionLayer m_select = null;
 
-    private       OnLayerAfterDraw         m_olad               = null;
+    private OnLayerBeforeDraw m_olbd = null;
 
-    private       HTMLCanvasElement        m_element            = null;
+    private OnLayerAfterDraw m_olad = null;
 
-    private       Context2D                m_context            = null;
+    private HTMLCanvasElement m_element = null;
 
-    private       HTMLDivElement           m_wrapper            = null;
+    private Context2D m_context = null;
 
-    private       long                     m_batched            = 0L;
+    private HTMLDivElement m_wrapper = null;
 
-    private       boolean                  clearLayerBeforeDraw = true;
+    private long m_batched = 0L;
 
-    private       boolean transformable                         = true;
+    private boolean clearLayerBeforeDraw = true;
 
-    private final ColorKeyRotor            m_c_rotor         = new ColorKeyRotor();
+    private boolean transformable = true;
+
+    private final ColorKeyRotor m_c_rotor = new ColorKeyRotor();
 
     private final NFastStringMap<Shape<?>> m_shape_color_map = new NFastStringMap<>();
 
     private static long idCounter;
 
-
     /**
      * Constructor. Creates an instance of a Layer.
      */
-    public Layer()
-    {
+    public Layer() {
         super(NodeType.LAYER, new PrimitiveFastArrayStorageEngine());
     }
 
-    public Layer(final IStorageEngine<IPrimitive<?>> storage)
-    {
+    public Layer(final IStorageEngine<IPrimitive<?>> storage) {
         super(NodeType.LAYER, storage);
     }
 
-    public final HTMLDivElement getElement()
-    {
-        if (null == m_wrapper)
-        {
+    public final HTMLDivElement getElement() {
+        if (null == m_wrapper) {
             m_wrapper = (HTMLDivElement) DomGlobal.document.createElement("div"); //Document.get().createDivElement();
 
             m_wrapper.style.position = Style.Position.ABSOLUTE.getCssName();
@@ -113,10 +108,8 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
             final HTMLCanvasElement element = getCanvasElement();
 
-            if (null != element)
-            {
-                if (!isSelection())
-                {
+            if (null != element) {
+                if (!isSelection()) {
                     m_wrapper.appendChild(element);
                 }
             }
@@ -124,42 +117,35 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         return m_wrapper;
     }
 
-    public final boolean isBatchScheduled()
-    {
+    public final boolean isBatchScheduled() {
         return (m_batched > 0L);
     }
 
-    public final Layer doBatchScheduled()
-    {
+    public final Layer doBatchScheduled() {
         m_batched++;
 
         return this;
     }
 
-    public final Layer unBatchScheduled()
-    {
+    public final Layer unBatchScheduled() {
         m_batched = 0L;
 
         return this;
     }
 
     @Override
-    public final IStorageEngine<IPrimitive<?>> getDefaultStorageEngine()
-    {
+    public final IStorageEngine<IPrimitive<?>> getDefaultStorageEngine() {
         return new PrimitiveFastArrayStorageEngine();
     }
 
     /**
      * Returns the Selection Layer.
-     * 
+     *
      * @return {@link SelectionLayer}
      */
-    public final SelectionLayer getSelectionLayer()
-    {
-        if (isListening())
-        {
-            if (null == m_select)
-            {
+    public final SelectionLayer getSelectionLayer() {
+        if (isListening()) {
+            if (null == m_select) {
                 m_select = new SelectionLayer();
 
                 m_select.setPixelSize(getWidth(), getHeight());
@@ -172,31 +158,25 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     /**
      * Looks at the {@link SelectionLayer} and attempts to find a {@link Shape} whose alpha
      * channel is 255.
-     * 
+     *
      * @param x
      * @param y
      * @return {@link Shape}
      */
-    public Shape<?> findShapeAtPoint(final int x, final int y)
-    {
-        if (isVisible())
-        {
+    public Shape<?> findShapeAtPoint(final int x, final int y) {
+        if (isVisible()) {
             final SelectionLayer selection = getSelectionLayer();
 
-            if (null != selection)
-            {
+            if (null != selection) {
                 final ImageDataPixelColor rgba = selection.getContext().getImageDataPixelColor(x, y);// x,y is adjusted to canvas coordinates in event dispatch
 
-                if (null != rgba)
-                {
-                    if (rgba.getA() != 255)
-                    {
+                if (null != rgba) {
+                    if (rgba.getA() != 255) {
                         return null;
                     }
                     final Shape<?> shape = m_shape_color_map.get(rgba.toBrowserRGB());
 
-                    if ((null != shape) && (shape.isVisible()))
-                    {
+                    if ((null != shape) && (shape.isVisible())) {
                         return shape;
                     }
                 }
@@ -206,8 +186,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     }
 
     @Override
-    public List<Attribute> getTransformingAttributes()
-    {
+    public List<Attribute> getTransformingAttributes() {
         return LienzoCore.STANDARD_TRANSFORMING_ATTRIBUTES;
     }
 
@@ -219,8 +198,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
      */
     @Override
-    public Layer add(final IPrimitive<?> child)
-    {
+    public Layer add(final IPrimitive<?> child) {
         super.add(child);
 
         child.attachToLayerColorMap();
@@ -229,27 +207,24 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     }
 
     @Override
-    public Layer add(final IPrimitive<?> child, final IPrimitive<?>... children)
-    {
+    public Layer add(final IPrimitive<?> child, final IPrimitive<?>... children) {
         add(child);
 
-        for (IPrimitive<?> node : children)
-        {
+        for (IPrimitive<?> node : children) {
             add(node);
         }
         return this;
     }
 
     /**
-    * Removes a primitive from the container. Override to ensure primitive is removed from Layers Color Map
-    * <p>
-    * It should be noted that this operation will not have an apparent effect for an already rendered (drawn) Container.
-    * In other words, if the Container has already been drawn and a new primitive is added, you'll need to invoke draw() on the
-    * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
-    */
+     * Removes a primitive from the container. Override to ensure primitive is removed from Layers Color Map
+     * <p>
+     * It should be noted that this operation will not have an apparent effect for an already rendered (drawn) Container.
+     * In other words, if the Container has already been drawn and a new primitive is added, you'll need to invoke draw() on the
+     * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
+     */
     @Override
-    public Layer remove(final IPrimitive<?> child)
-    {
+    public Layer remove(final IPrimitive<?> child) {
         child.detachFromLayerColorMap();
 
         super.remove(child);
@@ -258,16 +233,13 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     }
 
     @Override
-    public boolean removeFromParent()
-    {
+    public boolean removeFromParent() {
         final Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             final Scene scene = parent.asScene();
 
-            if (null != scene)
-            {
+            if (null != scene) {
                 scene.remove(this);
 
                 return true;
@@ -284,16 +256,13 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
      */
     @Override
-    public Layer removeAll()
-    {
+    public Layer removeAll() {
         final NFastArrayList<IPrimitive<?>> list = getChildNodes();
 
-        if (null != list)
-        {
+        if (null != list) {
             final int size = list.size();
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 list.get(i).detachFromLayerColorMap();
             }
         }
@@ -305,30 +274,25 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     /**
      * Internal method. Attach a Shape to the Layers Color Map
      */
-    final void attachShapeToColorMap(final Shape<?> shape)
-    {
-        if (null != shape)
-        {
+    final void attachShapeToColorMap(final Shape<?> shape) {
+        if (null != shape) {
             String color = shape.getColorKey();
 
-            if (null != color)
-            {
+            if (null != color) {
                 m_shape_color_map.remove(color);
 
                 shape.setColorKey(null);
             }
             int count = 0;
 
-            do
-            {
+            do {
                 count++;
 
                 color = m_c_rotor.next();
             }
             while ((m_shape_color_map.get(color) != null) && (count <= ColorKeyRotor.COLOR_SPACE_MAXIMUM));
 
-            if (count > ColorKeyRotor.COLOR_SPACE_MAXIMUM)
-            {
+            if (count > ColorKeyRotor.COLOR_SPACE_MAXIMUM) {
                 throw new IllegalArgumentException("Exhausted color space " + count);
             }
             m_shape_color_map.put(color, shape);
@@ -339,21 +303,17 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     /**
      * Internal method. Detach a {@link Shape} from the Layers Color Map
-     * 
+     *
      * @param shape
      */
-    final void detachShapeFromColorMap(final Shape<?> shape)
-    {
-        if (null != shape)
-        {
+    final void detachShapeFromColorMap(final Shape<?> shape) {
+        if (null != shape) {
             final String color = shape.getColorKey();
 
-            if (null != color)
-            {
+            if (null != color) {
                 final Shape<?> look = m_shape_color_map.get(color);
 
-                if (shape == look)
-                {
+                if (shape == look) {
                     shape.setColorKey(null);
 
                     m_shape_color_map.remove(color);
@@ -364,38 +324,33 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     /**
      * Sets this layer's pixel size.
-     * 
+     *
      * @param wide
      * @param high
      */
-    public void setPixelSize(final int wide, final int high)
-    {
+    public void setPixelSize(final int wide, final int high) {
         m_wide = wide;
 
         m_high = high;
 
-        if (LienzoCore.IS_CANVAS_SUPPORTED)
-        {
-            if (!isSelection())
-            {
+        if (LienzoCore.IS_CANVAS_SUPPORTED) {
+            if (!isSelection()) {
                 getElement().style.width = CSSProperties.WidthUnionType.of(wide + Style.Unit.PX.getType());
 
-                getElement().style.height= CSSProperties.HeightUnionType.of(high + Style.Unit.PX.getType());
+                getElement().style.height = CSSProperties.HeightUnionType.of(high + Style.Unit.PX.getType());
             }
 
             final HTMLCanvasElement element = getCanvasElement();
 
             element.width = wide;
 
-            element.height= high;
+            element.height = high;
 
-            if (!isSelection())
-            {
+            if (!isSelection()) {
                 getContext().getNativeContext().initDeviceRatio();
             }
 
-            if ((!isSelection()) && (null != m_select))
-            {
+            if ((!isSelection()) && (null != m_select)) {
                 m_select.setPixelSize(wide, high);
             }
         }
@@ -403,29 +358,22 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     /**
      * Enables event handling on this object.
-     * 
+     *
      * @param listening
      * @param Layer
      */
     @Override
-    public Layer setListening(final boolean listening)
-    {
+    public Layer setListening(final boolean listening) {
         super.setListening(listening);
 
-        if (listening)
-        {
-            if (isShowSelectionLayer())
-            {
-                if (null != getSelectionLayer())
-                {
+        if (listening) {
+            if (isShowSelectionLayer()) {
+                if (null != getSelectionLayer()) {
                     doShowSelectionLayer(true);
                 }
             }
-        }
-        else
-        {
-            if (isShowSelectionLayer())
-            {
+        } else {
+            if (isShowSelectionLayer()) {
                 doShowSelectionLayer(false);
             }
             m_select = null;
@@ -433,40 +381,31 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         return this;
     }
 
-    public boolean isShowSelectionLayer()
-    {
+    public boolean isShowSelectionLayer() {
         return m_shower;
     }
 
-    public Layer setShowSelectionLayer(final boolean shower)
-    {
+    public Layer setShowSelectionLayer(final boolean shower) {
         m_shower = shower;
 
         return doShowSelectionLayer(shower);
     }
 
-    private final Layer doShowSelectionLayer(final boolean shower)
-    {
-        if (!isSelection())
-        {
-            if (null != m_select)
-            {
-                while (getElement().childElementCount > 0)
-                {
+    private final Layer doShowSelectionLayer(final boolean shower) {
+        if (!isSelection()) {
+            if (null != m_select) {
+                while (getElement().childElementCount > 0) {
                     getElement().removeChild(getElement().childNodes.getAt(0));
                 }
                 HTMLCanvasElement element = getCanvasElement();
 
-                if (null != element)
-                {
+                if (null != element) {
                     getElement().appendChild(element);
                 }
-                if (shower)
-                {
+                if (shower) {
                     element = m_select.getCanvasElement();
 
-                    if (null != element)
-                    {
+                    if (null != element) {
                         getElement().appendChild(element);
                     }
                 }
@@ -477,42 +416,38 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     /**
      * Gets this layer's width.
-     * 
+     *
      * @return int
      */
-    public int getWidth()
-    {
+    public int getWidth() {
         return m_wide;
     }
 
     /**
      * Sets this layer's width
-     * 
+     *
      * @param wide
      */
-    void setWidth(final int wide)
-    {
+    void setWidth(final int wide) {
         m_wide = wide;
     }
 
     /**
      * Gets this layer's height
-     * 
+     *
      * @return int
      */
-    public int getHeight()
-    {
+    public int getHeight() {
         return m_high;
     }
 
     /**
      * Sets this layer's height
-     * 
+     *
      * @param high
      * @return Layer
      */
-    void setHeight(final int high)
-    {
+    void setHeight(final int high) {
         m_high = high;
     }
 
@@ -520,11 +455,10 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * Returns whether the Layer is zoomable.
      * If not, changes to the (parent) Viewport's transform (probably due to zoom or pan operations) won't affect this layer.
      * The default value is true.
-     * 
+     *
      * @return boolean
      */
-    public boolean isTransformable()
-    {
+    public boolean isTransformable() {
         return transformable;
     }
 
@@ -532,12 +466,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * Sets whether the Layer is zoomable.
      * If not, changes to the (parent) Viewport's transform (probably due to zoom or pan operations) won't affect this layer.
      * The default value is true.
-     * 
+     *
      * @param zoomable boolean
      * @return
      */
-    public Layer setTransformable(final boolean transformable)
-    {
+    public Layer setTransformable(final boolean transformable) {
         this.transformable = transformable;
 
         return this;
@@ -545,37 +478,32 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     /**
      * Returns whether this layer is cleared before being drawn.
-     * 
+     *
      * @return boolean
      */
-    public boolean isClearLayerBeforeDraw()
-    {
+    public boolean isClearLayerBeforeDraw() {
         return this.clearLayerBeforeDraw;
     }
 
     /**
      * Sets whether this layer should be cleared before being drawn.
-     * 
+     *
      * @param clear
      * @return Layer
      */
-    public Layer setClearLayerBeforeDraw(final boolean clear)
-    {
+    public Layer setClearLayerBeforeDraw(final boolean clear) {
         this.clearLayerBeforeDraw = clear;
         return this;
     }
 
     /**
      * Return the {@link CanvasElement}.
-     * 
+     *
      * @return CanvasElement
      */
-    public HTMLCanvasElement getCanvasElement()
-    {
-        if (LienzoCore.IS_CANVAS_SUPPORTED)
-        {
-            if (null == m_element)
-            {
+    public HTMLCanvasElement getCanvasElement() {
+        if (LienzoCore.IS_CANVAS_SUPPORTED) {
+            if (null == m_element) {
                 m_element = (HTMLCanvasElement) DomGlobal.document.createElement("canvas"); //Document.get().createCanvasElement();
 
                 m_element.style.position = Style.Position.ABSOLUTE.getCssName();
@@ -584,8 +512,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                 m_element.id = "layer_canvas" + idCounter++;
             }
-            if (null == m_context)
-            {
+            if (null == m_context) {
                 m_context = new Context2D(m_element);
             }
         }
@@ -595,12 +522,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     /**
      * Handler that can be used to hook into the pre-drawing process.
      * If the handler returns false, no drawing will take place.
-     * 
+     *
      * @param onLayerBeforeDrawHandler
      * @return Layer
      */
-    public Layer setOnLayerBeforeDraw(final OnLayerBeforeDraw onLayerBeforeDrawHandler)
-    {
+    public Layer setOnLayerBeforeDraw(final OnLayerBeforeDraw onLayerBeforeDrawHandler) {
         m_olbd = onLayerBeforeDrawHandler;
 
         return this;
@@ -609,12 +535,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     /**
      * Handler that can be used to hook into the post-drawing process.
      * The handler will be invoked after the drawing process finishes.
-     * 
+     *
      * @param onLayerAfterDrawHandler
      * @return Layer
      */
-    public Layer setOnLayerAfterDraw(final OnLayerAfterDraw onLayerAfterDrawHandler)
-    {
+    public Layer setOnLayerAfterDraw(final OnLayerAfterDraw onLayerAfterDrawHandler) {
         m_olad = onLayerAfterDrawHandler;
 
         return this;
@@ -626,90 +551,73 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      */
 
     @Override
-    public Layer draw()
-    {
+    public Layer draw() {
         return draw(getContext());
     }
 
-    public Layer draw(Context2D context)
-    {
-        if (LienzoCore.IS_CANVAS_SUPPORTED)
-        {
-            if (isClearLayerBeforeDraw())
-            {
+    public Layer draw(Context2D context) {
+        if (LienzoCore.IS_CANVAS_SUPPORTED) {
+            if (isClearLayerBeforeDraw()) {
                 clear();
             }
-            if (isVisible())
-            {
+            if (isVisible()) {
                 boolean draw = true;
 
-                if (null != m_olbd)
-                {
+                if (null != m_olbd) {
                     draw = m_olbd.onLayerBeforeDraw(this);
                 }
-                if (draw)
-                {
+                if (draw) {
                     Transform transform = null;
 
                     final Viewport viewport = getViewport();
 
-                    if ((isTransformable()) && (null != viewport))
-                    {
+                    if ((isTransformable()) && (null != viewport)) {
                         transform = viewport.getTransform();
                     }
                     context.save();
 
-                    if (null != transform)
-                    {
+                    if (null != transform) {
                         context.transform(transform);
                     }
                     final BoundingBox bbox = getStorageBounds();
 
                     IPathClipper vclp = null;
 
-                    if (null != viewport)
-                    {
+                    if (null != viewport) {
                         vclp = viewport.getPathClipper();
 
-                        if ((null != vclp) && (vclp.isActive()))
-                        {
+                        if ((null != vclp) && (vclp.isActive())) {
                             vclp.clip(context);
                         }
                     }
                     final IPathClipper lclp = getPathClipper();
 
-                    if ((null != lclp) && (lclp.isActive()))
-                    {
+                    if ((null != lclp) && (lclp.isActive())) {
                         lclp.clip(context);
                     }
                     drawWithTransforms(context, 1, bbox);
 
                     context.restore();
 
-                    if (null != m_olad)
-                    {
+                    if (null != m_olad) {
                         m_olad.onLayerAfterDraw(this);
                     }
                     final SelectionLayer selection = getSelectionLayer();
 
-                    if (null != selection)
-                    {
+                    if (null != selection) {
                         selection.clear();
 
                         context = selection.getContext();
 
                         context.save();
 
-                        if (null != transform)
-                        {
+                        if (null != transform) {
                             context.transform(transform);
                         }
-                        if ((null != vclp) && (vclp.isActive()))
-                        {
+                        if ((null != vclp) && (vclp.isActive())) {
                             vclp.clip(context);
                         }
-                        if ((null != lclp) && (lclp.isActive()))
-                        {
+                        if ((null != lclp) && (lclp.isActive())) {
                             lclp.clip(context);
                         }
                         drawWithTransforms(context, 1, bbox);
@@ -725,100 +633,86 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     /**
      * Performs batch updates to the Layer, that is, drawing is deferred till the next AnimationFrame,
      * to cut down on redraws on rapid event dispatch.
-     * 
+     *
      * @return Layer
      */
     @Override
-    public Layer batch()
-    {
+    public Layer batch() {
         return LayerRedrawManager.get().schedule(this);
     }
 
     /**
      * Sets whether this object is visible.
-     * 
+     *
      * @param visible
      * @return Layer
      */
     @Override
-    public Layer setVisible(final boolean visible)
-    {
+    public Layer setVisible(final boolean visible) {
         super.setVisible(visible);
 
-        getElement().style.visibility = visible ?  Style.Visibility.VISIBLE.getCssName() : Style.Visibility.HIDDEN.getCssName();
+        getElement().style.visibility = visible ? Style.Visibility.VISIBLE.getCssName() : Style.Visibility.HIDDEN.getCssName();
 
         return this;
     }
 
     /**
      * Returns this layer
-     * 
+     *
      * @return Layer
      */
     @Override
-    public Layer getLayer()
-    {
+    public Layer getLayer() {
         return this;
     }
 
     @Override
-    public Layer asLayer()
-    {
+    public Layer asLayer() {
         return this;
     }
 
-    public boolean isSelection()
-    {
+    public boolean isSelection() {
         return false;
     }
 
     /**
      * Clears the layer.
      */
-    public void clear()
-    {
-        if (LienzoCore.get().getLayerClearMode() == LayerClearMode.CLEAR)
-        {
+    public void clear() {
+        if (LienzoCore.get().getLayerClearMode() == LayerClearMode.CLEAR) {
             final Context2D context = getContext();
 
-            if (null != context)
-            {
+            if (null != context) {
                 context.clearRect(0, 0, getWidth(), getHeight());
             }
-        }
-        else
-        {
+        } else {
             setPixelSize(getWidth(), getHeight());
         }
     }
 
     /**
      * Returns the {@link Context2D} this layer is operating on.
-     * 
+     *
      * @return Context2D
      */
-    public Context2D getContext()
-    {
+    public Context2D getContext() {
         return m_context;
     }
 
     /**
      * Moves this layer one level up.
-     * 
+     *
      * @return Layer
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Layer moveUp()
-    {
+    public Layer moveUp() {
         final Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
 
-            if (null != container)
-            {
+            if (null != container) {
                 container.moveUp(this);
             }
         }
@@ -827,21 +721,18 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     /**
      * Moves this layer one level down.
-     * 
+     *
      * @return Layer
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Layer moveDown()
-    {
+    public Layer moveDown() {
         final Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
 
-            if (null != container)
-            {
+            if (null != container) {
                 container.moveDown(this);
             }
         }
@@ -850,21 +741,18 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     /**
      * Moves this layer to the top of the layer stack.
-     * 
+     *
      * @return Layer
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Layer moveToTop()
-    {
+    public Layer moveToTop() {
         final Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
 
-            if (null != container)
-            {
+            if (null != container) {
                 container.moveToTop(this);
             }
         }
@@ -873,21 +761,18 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     /**
      * Moves this layer to the bottom of the layer stack.
-     * 
+     *
      * @return Layer
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Layer moveToBottom()
-    {
+    public Layer moveToBottom() {
         final Node<?> parent = getParent();
 
-        if (null != parent)
-        {
+        if (null != parent) {
             final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
 
-            if (null != container)
-            {
+            if (null != container) {
                 container.moveToBottom(this);
             }
         }
@@ -898,41 +783,33 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * Returns all the {@link Node} objects present in this layer that match the
      * given {@link com.ait.lienzo.client.core.types.INodeFilter}, this Layer
      * included.
-     * 
+     *
      * @param filter
      * @return ArrayList<Node>
      */
     @Override
-    protected void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
-    {
-        if (predicate.test(this))
-        {
+    protected void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff) {
+        if (predicate.test(this)) {
             buff.add(this);
         }
         final NFastArrayList<IPrimitive<?>> list = getChildNodes();
 
-        if (null != list)
-        {
+        if (null != list) {
             final int size = list.size();
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 final IPrimitive<?> prim = list.get(i);
 
-                if (null != prim)
-                {
+                if (null != prim) {
                     final Node<?> node = prim.asNode();
 
-                    if (null != node)
-                    {
-                        if (predicate.test(node))
-                        {
+                    if (null != node) {
+                        if (predicate.test(node)) {
                             buff.add(node);
                         }
                         final ContainerNode<?, ?> cont = node.asContainerNode();
 
-                        if (null != cont)
-                        {
+                        if (null != cont) {
                             cont.find(predicate, buff);
                         }
                     }
@@ -943,58 +820,46 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     /**
      * Returns the content of this Layer as a PNG image that can be used as a source for another canvas or an HTML element.
-     * 
+     *
      * @return String
      */
-    public final String toDataURL()
-    {
-        if (null != m_element)
-        {
+    public final String toDataURL() {
+        if (null != m_element) {
             return toDataURL(m_element);
-        }
-        else
-        {
+        } else {
             return "data:,";
         }
     }
 
     /**
      * Returns the content of this {@link Layer} as an image that can be used as a source for another canvas or an HTML element
-     * 
+     *
      * @return String
      */
-    public final String toDataURL(DataURLType mimetype)
-    {
-        if (null != m_element)
-        {
-            if (null == mimetype)
-            {
+    public final String toDataURL(DataURLType mimetype) {
+        if (null != m_element) {
+            if (null == mimetype) {
                 mimetype = DataURLType.PNG;
             }
             return toDataURL(m_element, mimetype.getValue());
-        }
-        else
-        {
+        } else {
             return "data:,";
         }
     }
 
-    private static final String toDataURL(HTMLCanvasElement element)
-    {
-		return element.toDataURL(null);
+    private static final String toDataURL(HTMLCanvasElement element) {
+        return element.toDataURL(null);
     }
 
-    private static final String toDataURL(HTMLCanvasElement element, String mimetype)
-    {
-		return element.toDataURL(mimetype);
+    private static final String toDataURL(HTMLCanvasElement element, String mimetype) {
+        return element.toDataURL(mimetype);
     }
 
-    public static class SelectionLayer extends Layer
-    {
+    public static class SelectionLayer extends Layer {
+
         private SelectionContext2D m_context;
 
-        public SelectionLayer()
-        {
+        public SelectionLayer() {
             super();
 
             setListening(false);
@@ -1004,20 +869,16 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
          * Empty implementation of draw. Not needed in this case.
          */
         @Override
-        public Layer draw()
-        {
+        public Layer draw() {
             return this;
         }
 
         @Override
-        public HTMLCanvasElement getCanvasElement()
-        {
+        public HTMLCanvasElement getCanvasElement() {
             final HTMLCanvasElement element = super.getCanvasElement();
 
-            if (null != element)
-            {
-                if (null == m_context)
-                {
+            if (null != element) {
+                if (null == m_context) {
                     m_context = new SelectionContext2D(element);
                 }
             }
@@ -1025,43 +886,37 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         }
 
         @Override
-        public boolean isSelection()
-        {
+        public boolean isSelection() {
             return true;
         }
 
         @Override
-        public Context2D getContext()
-        {
+        public Context2D getContext() {
             return m_context;
         }
 
-        private static class SelectionContext2D extends Context2D
-        {
-            public SelectionContext2D(final HTMLCanvasElement element)
-            {
+        private static class SelectionContext2D extends Context2D {
+
+            public SelectionContext2D(final HTMLCanvasElement element) {
                 super(element);
 
                 super.setGlobalAlpha(1);
             }
 
             @Override
-            public boolean isSelection()
-            {
+            public boolean isSelection() {
                 return true;
             }
 
             @Override
-            public void setGlobalAlpha(final double alpha)
-            {
+            public void setGlobalAlpha(final double alpha) {
             }
         }
     }
 
-    public static class LayerFactory extends ContainerNodeFactory<Layer>
-    {
-        public LayerFactory()
-        {
+    public static class LayerFactory extends ContainerNodeFactory<Layer> {
+
+        public LayerFactory() {
             super(NodeType.LAYER);
 
             addAttribute(Attribute.CLEAR_LAYER_BEFORE_DRAW);
@@ -1070,24 +925,17 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         }
 
         @Override
-        public boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
-        {
+        public boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx) {
             final IPrimitive<?> prim = node.asPrimitive();
 
-            if (null != prim)
-            {
+            if (null != prim) {
                 container.asLayer().add(prim);
 
                 return true;
-            }
-            else
-            {
-                try
-                {
+            } else {
+                try {
                     ctx.addBadTypeError(node.getClass().getName() + " is not a Primitive");
-                }
-                catch (ValidationException e)
-                {
+                } catch (ValidationException e) {
                     return false;
                 }
             }

@@ -18,42 +18,36 @@ package com.ait.lienzo.client.core.shape.storage;
 
 import com.ait.lienzo.tools.common.api.types.IStringValued;
 
-public class StorageEngineType implements IStringValued
-{
-    public static final StorageEngineType VIEWPORT_FAST_ARRAY_STORAGE_ENGINE  = new StorageEngineType("ViewportFastArrayStorageEngine");
+public class StorageEngineType implements IStringValued {
 
-    public static final StorageEngineType SCENE_FAST_ARRAY_STORAGE_ENGINE     = new StorageEngineType("SceneFastArrayStorageEngine");
+    public static final StorageEngineType VIEWPORT_FAST_ARRAY_STORAGE_ENGINE = new StorageEngineType("ViewportFastArrayStorageEngine");
+
+    public static final StorageEngineType SCENE_FAST_ARRAY_STORAGE_ENGINE = new StorageEngineType("SceneFastArrayStorageEngine");
 
     public static final StorageEngineType PRIMITIVE_FAST_ARRAY_STORAGE_ENGINE = new StorageEngineType("PrimitiveFastArrayStorageEngine");
 
-    private final String                  m_value;
+    private final String m_value;
 
-    protected StorageEngineType(final String value)
-    {
+    protected StorageEngineType(final String value) {
         m_value = value;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return m_value;
     }
 
     @Override
-    public final String getValue()
-    {
+    public final String getValue() {
         return m_value;
     }
 
     @Override
-    public boolean equals(final Object other)
-    {
-        if ((other == null) || (!(other instanceof StorageEngineType)))
-        {
+    public boolean equals(final Object other) {
+        if ((other == null) || (!(other instanceof StorageEngineType))) {
             return false;
         }
-        if (this == other)
-        {
+        if (this == other) {
             return true;
         }
         StorageEngineType that = ((StorageEngineType) other);
@@ -62,8 +56,7 @@ public class StorageEngineType implements IStringValued
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return getValue().hashCode();
     }
 }

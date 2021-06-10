@@ -19,5 +19,4 @@ package com.ait.lienzo.client.core.image;
 public interface ImageLoadCallback {
 
     void onImageLoaded(Image image);
-
 }

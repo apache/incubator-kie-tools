@@ -29,21 +29,21 @@ import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 
-public class PreviewLayerDecorator
-{
-    static final  String                     STROKE_COLOR = ColorName.RED.getColorString();
+public class PreviewLayerDecorator {
 
-    static final  double                     STROKE_WIDTH = 3d;
+    static final String STROKE_COLOR = ColorName.RED.getColorString();
 
-    private final Supplier<Bounds>           backgroundBounds;
+    static final double STROKE_WIDTH = 3d;
 
-    private final Supplier<Bounds>           visibleBounds;
+    private final Supplier<Bounds> backgroundBounds;
 
-    private final EventHandler               eventHandler;
+    private final Supplier<Bounds> visibleBounds;
 
-    private final Rectangle                  decorator;
+    private final EventHandler eventHandler;
 
-    private       DragContext                dragContext;
+    private final Rectangle decorator;
+
+    private DragContext dragContext;
 
     private HandlerRegistration dragStartHandlerReg;
     private HandlerRegistration dragMoveHandlerReg;
@@ -51,8 +51,8 @@ public class PreviewLayerDecorator
     private HandlerRegistration mouseEnterHandlerReg;
     private HandlerRegistration mouseExitHandlerReg;
 
-    public interface EventHandler
-    {
+    public interface EventHandler {
+
         void onMouseEnter();
 
         void onMouseExit();
@@ -62,8 +62,7 @@ public class PreviewLayerDecorator
 
     public PreviewLayerDecorator(final Supplier<Bounds> backgroundBounds,
                                  final Supplier<Bounds> visibleBounds,
-                                 final EventHandler eventHandler)
-    {
+                                 final EventHandler eventHandler) {
         this(backgroundBounds,
              visibleBounds,
              eventHandler,
@@ -73,8 +72,7 @@ public class PreviewLayerDecorator
     PreviewLayerDecorator(final Supplier<Bounds> backgroundBounds,
                           final Supplier<Bounds> visibleBounds,
                           final EventHandler eventHandler,
-                          final Rectangle decorator)
-    {
+                          final Rectangle decorator) {
         this.backgroundBounds = backgroundBounds;
         this.visibleBounds = visibleBounds;
         this.eventHandler = eventHandler;
@@ -82,42 +80,36 @@ public class PreviewLayerDecorator
         init();
     }
 
-    public void update()
-    {
+    public void update() {
         final Bounds viewportBounds = backgroundBounds.get();
-        final Bounds bounds         = visibleBounds.get();
-        final double x              = bounds.getX();
-        final double y              = bounds.getY();
-        final double width          = bounds.getWidth();
-        final double height         = bounds.getHeight();
-        if (width <= 0 && height <= 0)
-        {
+        final Bounds bounds = visibleBounds.get();
+        final double x = bounds.getX();
+        final double y = bounds.getY();
+        final double width = bounds.getWidth();
+        final double height = bounds.getHeight();
+        if (width <= 0 && height <= 0) {
             decorator.setStrokeAlpha(0)
-                     .setListening(false);
-        }
-        else if (!isDragging())
-        {
+                    .setListening(false);
+        } else if (!isDragging()) {
             decorator.setListening(true)
-                     .getDragBounds()
-                     .setX1(viewportBounds.getX())
-                     .setY1(viewportBounds.getY())
-                     .setX2(viewportBounds.getWidth() - width)
-                     .setY2(viewportBounds.getHeight() - height);
+                    .getDragBounds()
+                    .setX1(viewportBounds.getX())
+                    .setY1(viewportBounds.getY())
+                    .setX2(viewportBounds.getWidth() - width)
+                    .setY2(viewportBounds.getHeight() - height);
 
             decorator.setX(x)
-                     .setY(y);
+                    .setY(y);
             if (width != viewportBounds.getWidth() ||
-                height != viewportBounds.getHeight())
-            {
+                    height != viewportBounds.getHeight()) {
                 decorator.setWidth(width)
-                         .setHeight(height)
-                         .setStrokeAlpha(1);
+                        .setHeight(height)
+                        .setStrokeAlpha(1);
             }
         }
     }
 
-    public void destroy()
-    {
+    public void destroy() {
         dragStartHandlerReg.removeHandler();
         dragMoveHandlerReg.removeHandler();
         dragEndHandlerReg.removeHandler();
@@ -127,13 +119,11 @@ public class PreviewLayerDecorator
         decorator.removeFromParent();
     }
 
-    public IPrimitive<?> asPrimitive()
-    {
+    public IPrimitive<?> asPrimitive() {
         return decorator;
     }
 
-    private void init()
-    {
+    private void init() {
         dragStartHandlerReg = decorator.addNodeDragStartHandler(this::onDecoratorDragStart);
         dragMoveHandlerReg = decorator.addNodeDragMoveHandler(event -> onDecoratorDragMove());
         dragEndHandlerReg = decorator.addNodeDragEndHandler(event -> onDecoratorDragEnd());
@@ -141,8 +131,7 @@ public class PreviewLayerDecorator
         mouseExitHandlerReg = decorator.addNodeMouseExitHandler(event -> onMouseExit());
     }
 
-    static Rectangle buildDecorator()
-    {
+    static Rectangle buildDecorator() {
         return new Rectangle(5, 5)
                 .setStrokeAlpha(1)
                 .setStrokeColor(STROKE_COLOR)
@@ -155,33 +144,27 @@ public class PreviewLayerDecorator
                 .setDragConstraints(new DefaultDragConstraintEnforcer());
     }
 
-    public boolean isDragging()
-    {
+    public boolean isDragging() {
         return null != dragContext;
     }
 
-    void onMouseEnter()
-    {
+    void onMouseEnter() {
         eventHandler.onMouseEnter();
     }
 
-    void onMouseExit()
-    {
+    void onMouseExit() {
         eventHandler.onMouseExit();
     }
 
-    void onDecoratorDragStart(final AbstractNodeHumanInputEvent event)
-    {
+    void onDecoratorDragStart(final AbstractNodeHumanInputEvent event) {
         dragContext = event.getDragContext();
     }
 
-    void onDecoratorDragMove()
-    {
+    void onDecoratorDragMove() {
         eventHandler.onMove(decorator.getLocation().copy());
     }
 
-    void onDecoratorDragEnd()
-    {
+    void onDecoratorDragEnd() {
         dragContext = null;
     }
 }

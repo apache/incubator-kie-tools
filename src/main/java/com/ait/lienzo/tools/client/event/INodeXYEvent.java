@@ -16,8 +16,8 @@
 
 package com.ait.lienzo.tools.client.event;
 
-public interface INodeXYEvent<H, S> extends INodeEvent<H, S>
-{
+public interface INodeXYEvent<H, S> extends INodeEvent<H, S> {
+
     public int getX();
 
     public int getY();

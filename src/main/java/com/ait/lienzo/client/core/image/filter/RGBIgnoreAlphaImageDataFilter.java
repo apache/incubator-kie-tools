@@ -20,46 +20,40 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
-import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.IColor;
-
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import elemental2.core.Uint8ClampedArray;
 import elemental2.dom.ImageData;
 import jsinterop.base.Js;
 
 /**
  * An Image filter to convert all pixels in the CanvasPixelArray to an RGB color.
- * 
+ *
  * <ul>
  * 	<li>
  * 		Alpha is always set to 255 in this filter.
  *  </li>
  * </ui>
  */
-public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RGBIgnoreAlphaImageDataFilter>
-{
-    public RGBIgnoreAlphaImageDataFilter()
-    {
+public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RGBIgnoreAlphaImageDataFilter> {
+
+    public RGBIgnoreAlphaImageDataFilter() {
         super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType);
     }
 
-    public RGBIgnoreAlphaImageDataFilter(int r, int g, int b)
-    {
+    public RGBIgnoreAlphaImageDataFilter(int r, int g, int b) {
         super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, r, g, b);
     }
 
-    public RGBIgnoreAlphaImageDataFilter(IColor color)
-    {
+    public RGBIgnoreAlphaImageDataFilter(IColor color) {
         super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, color);
     }
 
-    public RGBIgnoreAlphaImageDataFilter(String color)
-    {
+    public RGBIgnoreAlphaImageDataFilter(String color) {
         super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, color);
     }
 
-    protected RGBIgnoreAlphaImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
-    {
+    protected RGBIgnoreAlphaImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
         super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, node, ctx);
     }
 
@@ -67,24 +61,19 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RG
      * Returns an {@link ImageData} that is transformed based on the passed in RGB color, setting alpha to 255
      */
     @Override
-    public ImageData filter(ImageData source, boolean copy)
-    {
-        if (null == source)
-        {
+    public ImageData filter(ImageData source, boolean copy) {
+        if (null == source) {
             return null;
         }
-        if (copy)
-        {
-            source =  ImageDataUtil.copy(source);
+        if (copy) {
+            source = ImageDataUtil.copy(source);
         }
-        if (!isActive())
-        {
+        if (!isActive()) {
             return source;
         }
         final Uint8ClampedArray data = source.data;
 
-        if (null == data)
-        {
+        if (null == data) {
             return source;
         }
         filter_(data, FilterCommonOps.getLength(source), getR(), getG(), getB());
@@ -92,30 +81,27 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RG
         return source;
     }
 
-    private final void filter_(Uint8ClampedArray dataArray, int length, int r, int g, int b)
-    {
+    private final void filter_(Uint8ClampedArray dataArray, int length, int r, int g, int b) {
 //        Uint8ClampedArray.ConstructorLengthUnionType temp = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray);
         int[] data = Js.uncheckedCast(dataArray);
-    	for (int i = 0; i < length; i += 4) {
-    		if (data[i + 3] > 0) {
-    			data[  i  ] = r;
-    			data[i + 1] = g;
-    			data[i + 2] = b;
-    			data[i + 3] = 255;
-    		}
-    	}
+        for (int i = 0; i < length; i += 4) {
+            if (data[i + 3] > 0) {
+                data[i] = r;
+                data[i + 1] = g;
+                data[i + 2] = b;
+                data[i + 3] = 255;
+            }
+        }
     }
 
     @Override
-    public IFactory<RGBIgnoreAlphaImageDataFilter> getFactory()
-    {
+    public IFactory<RGBIgnoreAlphaImageDataFilter> getFactory() {
         return new RGBIgnoreAlphaImageDataFilterFactory();
     }
 
-    public static class RGBIgnoreAlphaImageDataFilterFactory extends RGBImageDataFilterFactory<RGBIgnoreAlphaImageDataFilter>
-    {
-        public RGBIgnoreAlphaImageDataFilterFactory()
-        {
+    public static class RGBIgnoreAlphaImageDataFilterFactory extends RGBImageDataFilterFactory<RGBIgnoreAlphaImageDataFilter> {
+
+        public RGBIgnoreAlphaImageDataFilterFactory() {
             super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType);
         }
     }

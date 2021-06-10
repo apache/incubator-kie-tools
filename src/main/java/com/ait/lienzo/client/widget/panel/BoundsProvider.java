@@ -18,7 +18,7 @@ package com.ait.lienzo.client.widget.panel;
 
 import com.ait.lienzo.client.core.shape.Layer;
 
-public interface BoundsProvider
-{
+public interface BoundsProvider {
+
     Bounds get(Layer layer);
 }

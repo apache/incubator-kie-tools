@@ -239,9 +239,9 @@ public abstract class AbstractGroupItem<T extends AbstractGroupItem>
         final BoundingBox bb = getBoundingBox().get();
         final Point2D computedLocation = asPrimitive().getComputedLocation();
         return BoundingBox.fromDoubles(computedLocation.getX() - pad,
-                               computedLocation.getY() - pad,
-                               computedLocation.getX() + bb.getWidth() + pad,
-                               computedLocation.getY() + bb.getHeight() + pad);
+                                       computedLocation.getY() - pad,
+                                       computedLocation.getX() + bb.getWidth() + pad,
+                                       computedLocation.getY() + bb.getHeight() + pad);
     }
 
     protected void updateAddOnsVisibility() {

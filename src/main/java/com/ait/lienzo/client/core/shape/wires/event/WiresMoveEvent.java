@@ -17,9 +17,8 @@
 package com.ait.lienzo.client.core.shape.wires.event;
 
 import com.ait.lienzo.client.core.event.AbstractNodeEvent;
-import com.ait.lienzo.tools.client.event.INodeXYEvent;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
-
+import com.ait.lienzo.tools.client.event.INodeXYEvent;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
 
@@ -31,65 +30,55 @@ import elemental2.dom.HTMLElement;
  *     <li>y = the Y coordinate value of the shape's container</li>
  * </ul>
  */
-public class WiresMoveEvent extends AbstractNodeEvent<WiresMoveHandler, WiresContainer> implements INodeXYEvent<WiresMoveHandler, WiresContainer>
-{
+public class WiresMoveEvent extends AbstractNodeEvent<WiresMoveHandler, WiresContainer> implements INodeXYEvent<WiresMoveHandler, WiresContainer> {
+
     public static final Type<WiresMoveHandler> TYPE = new Type<>();
 
-    private int                                   x;
+    private int x;
 
-    private int                                   y;
+    private int y;
 
-    public WiresMoveEvent(final HTMLElement relativeElement)
-    {
+    public WiresMoveEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
-
-    public void kill()
-    {
+    public void kill() {
         setSource(null);
         setDead(true);
     }
 
-    public void revive()
-    {
+    public void revive() {
         setSource(null);
         setDead(false);
     }
 
-    public void override(final WiresContainer shape, final int x, final int y)
-    {
+    public void override(final WiresContainer shape, final int x, final int y) {
         setSource(shape);
         this.x = x;
         this.y = y;
     }
 
     @Override
-    public Type<WiresMoveHandler> getAssociatedType()
-    {
+    public Type<WiresMoveHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    public void dispatch(final WiresMoveHandler shapeMovedHandler)
-    {
+    public void dispatch(final WiresMoveHandler shapeMovedHandler) {
         shapeMovedHandler.onShapeMoved(this);
     }
 
     @Override
-    public int getX()
-    {
+    public int getX() {
         return x;
     }
 
     @Override
-    public int getY()
-    {
+    public int getY() {
         return y;
     }
 
-    public Event getNativeEvent()
-    {
+    public Event getNativeEvent() {
         throw new UnsupportedOperationException();
     }
 }

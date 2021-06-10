@@ -25,25 +25,22 @@ import jsinterop.annotations.JsType;
 /**
  * RadialGradient defines the fill style for a {@link Shape} as a Radial Gradient.
  */
-public final class RadialGradient implements FillGradient
-{
-    public static final String      TYPE = "RadialGradient";
+public final class RadialGradient implements FillGradient {
+
+    public static final String TYPE = "RadialGradient";
 
     private final RadialGradientJSO m_jso;
 
-    public RadialGradient(final RadialGradientJSO jso)
-    {
+    public RadialGradient(final RadialGradientJSO jso) {
         m_jso = jso;
     }
 
-    public RadialGradient(final double sx, final double sy, final double sr, final double ex, final double ey, final double er)
-    {
+    public RadialGradient(final double sx, final double sy, final double sr, final double ex, final double ey, final double er) {
         this(RadialGradientJSO.make(sx, sy, sr, ex, ey, er));
     }
 
     @Override
-    public String getType()
-    {
+    public String getType() {
         return TYPE;
     }
 
@@ -54,8 +51,7 @@ public final class RadialGradient implements FillGradient
      * @param color
      * @return {@link RadialGradient}
      */
-    public final RadialGradient addColorStop(final double stop, final String color)
-    {
+    public final RadialGradient addColorStop(final double stop, final String color) {
         m_jso.addColorStop(stop, color);
 
         return this;
@@ -68,80 +64,67 @@ public final class RadialGradient implements FillGradient
      * @param color {@link ColorName} or {@link Color}
      * @return {@link RadialGradient}
      */
-    public final RadialGradient addColorStop(final double stop, final IColor color)
-    {
+    public final RadialGradient addColorStop(final double stop, final IColor color) {
         m_jso.addColorStop(stop, color.getColorString());
 
         return this;
     }
 
     @Override
-    public LinearGradient asLinearGradient()
-    {
+    public LinearGradient asLinearGradient() {
         return null;
     }
 
     @Override
-    public RadialGradient asRadialGradient()
-    {
+    public RadialGradient asRadialGradient() {
         return this;
     }
 
     @Override
-    public PatternGradient asPatternGradient()
-    {
+    public PatternGradient asPatternGradient() {
         return null;
     }
 
-    public final RadialGradientJSO getJSO()
-    {
+    public final RadialGradientJSO getJSO() {
         return m_jso;
     }
 
-    public final String toJSONString()
-    {
+    public final String toJSONString() {
         return Global.JSON.stringify(m_jso);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return toJSONString();
     }
 
     @Override
-    public boolean equals(final Object other)
-    {
-        if ((other == null) || (!(other instanceof RadialGradient)))
-        {
+    public boolean equals(final Object other) {
+        if ((other == null) || (!(other instanceof RadialGradient))) {
             return false;
         }
-        if (this == other)
-        {
+        if (this == other) {
             return true;
         }
         return ((RadialGradient) other).toJSONString().equals(toJSONString());
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return toJSONString().hashCode();
     }
 
     @JsType
-    public static final class RadialGradientJSO extends LinearGradientJSO
-    {
+    public static final class RadialGradientJSO extends LinearGradientJSO {
+
         public double sr;
         public double er;
 
         @JsConstructor
-        protected RadialGradientJSO()
-        {
+        protected RadialGradientJSO() {
         }
 
-        public static final RadialGradientJSO make(double sx, double sy, double sr, double ex, double ey, double er)
-        {
+        public static final RadialGradientJSO make(double sx, double sy, double sr, double ex, double ey, double er) {
             RadialGradientJSO grad = new RadialGradientJSO();
             setValues(sx, sy, ex, ey, grad);
             grad.sr = sr;
@@ -149,6 +132,5 @@ public final class RadialGradient implements FillGradient
             grad.type = "RadialGradient";
             return grad;
         }
-
     }
 }

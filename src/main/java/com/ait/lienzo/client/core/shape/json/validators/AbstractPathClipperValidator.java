@@ -16,18 +16,17 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-public abstract class AbstractPathClipperValidator extends ObjectValidator
-{
-	protected AbstractPathClipperValidator(final String typeName)
-	{
-		super(typeName);
+public abstract class AbstractPathClipperValidator extends ObjectValidator {
 
-		addAttribute("x", NumberValidator.INSTANCE, true);
+    protected AbstractPathClipperValidator(final String typeName) {
+        super(typeName);
 
-		addAttribute("y", NumberValidator.INSTANCE, true);
+        addAttribute("x", NumberValidator.INSTANCE, true);
 
-		addAttribute("type", StringValidator.INSTANCE, true);
+        addAttribute("y", NumberValidator.INSTANCE, true);
 
-		addAttribute("active", BooleanValidator.INSTANCE, false);
-	}
+        addAttribute("type", StringValidator.INSTANCE, true);
+
+        addAttribute("active", BooleanValidator.INSTANCE, false);
+    }
 }

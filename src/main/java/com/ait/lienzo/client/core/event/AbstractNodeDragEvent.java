@@ -19,13 +19,10 @@ package com.ait.lienzo.client.core.event;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.tools.client.event.INodeXYEvent;
-import com.ait.lienzo.tools.client.event.MouseEventUtil;
-
 import elemental2.dom.HTMLElement;
-import elemental2.dom.MouseEvent;
 
-public abstract class AbstractNodeDragEvent<H> extends AbstractNodeEvent<H, Node> implements INodeXYEvent<H, Node>
-{
+public abstract class AbstractNodeDragEvent<H> extends AbstractNodeEvent<H, Node> implements INodeXYEvent<H, Node> {
+
     private DragContext m_drag;
 
 //    public AbstractNodeDragEvent(final DragContext drag)
@@ -33,15 +30,12 @@ public abstract class AbstractNodeDragEvent<H> extends AbstractNodeEvent<H, Node
 //        m_drag = drag;
 //    }
 
-    public AbstractNodeDragEvent(final HTMLElement relativeElement)
-    {
+    public AbstractNodeDragEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
-
-    public void reviveMouseEvent(Node sourceNode, final DragContext drag)
-    {
-        this.m_drag  = m_drag;
+    public void reviveMouseEvent(Node sourceNode, final DragContext drag) {
+        this.m_drag = m_drag;
         setSource(sourceNode);
 
 //        m_x = MouseEventUtil.getRelativeX(event.clientX, getRelativeElement());
@@ -50,19 +44,16 @@ public abstract class AbstractNodeDragEvent<H> extends AbstractNodeEvent<H, Node
     }
 
     @Override
-    public int getX()
-    {
+    public int getX() {
         return m_drag.getEventX();
     }
 
-    public final DragContext getDragContext()
-    {
+    public final DragContext getDragContext() {
         return m_drag;
     }
 
     @Override
-    public int getY()
-    {
+    public int getY() {
         return m_drag.getEventY();
     }
 }

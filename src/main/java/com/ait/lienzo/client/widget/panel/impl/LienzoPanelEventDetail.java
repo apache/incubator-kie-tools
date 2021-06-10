@@ -20,8 +20,8 @@ import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import elemental2.dom.CustomEvent;
 import elemental2.dom.Event;
 
-public class LienzoPanelEventDetail
-{
+public class LienzoPanelEventDetail {
+
     private final LienzoPanel panel;
 
     public static LienzoPanelEventDetail getDetail(Event event) {

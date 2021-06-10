@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
@@ -30,7 +31,6 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.types.Point2D;
-import java.util.function.Supplier;
 
 /**
  * The default WiresCompositeControl implementation.
@@ -52,8 +52,7 @@ public class WiresCompositeControlImpl
 
     @Override
     public void useIndex(Supplier<WiresLayerIndex> index) {
-        for (WiresShape shape : selectionContext.getShapes())
-        {
+        for (WiresShape shape : selectionContext.getShapes()) {
             shape.getControl().useIndex(index);
         }
     }
@@ -90,7 +89,7 @@ public class WiresCompositeControlImpl
 
         for (WiresConnector connector : selectedConnectors) {
             connector.getControl().onMoveStart(x,
-                                             y); // records the start position of all the points
+                                               y); // records the start position of all the points
             WiresConnector.updateHeadTailForRefreshedConnector(connector);
         }
     }
@@ -146,7 +145,7 @@ public class WiresCompositeControlImpl
         if (!selectedConnectors.isEmpty()) {
             for (WiresConnector connector : selectedConnectors) {
                 connector.getControl().onMove(dx,
-                                            dy);
+                                              dy);
             }
         }
 

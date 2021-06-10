@@ -20,19 +20,16 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-
 import jsinterop.annotations.JsProperty;
 
 /**
  * Rectangle is defined by a width and a height.
  * It may have rounded corners.
  */
-public class Rectangle extends Shape<Rectangle>
-{
+public class Rectangle extends Shape<Rectangle> {
+
     @JsProperty
     private double width;
 
@@ -44,57 +41,51 @@ public class Rectangle extends Shape<Rectangle>
 
     /**
      * Constructor. Creates an instance of a rectangle.
-     * 
+     *
      * @param width
      * @param height
      */
-    public Rectangle(final double width, final double height)
-    {
+    public Rectangle(final double width, final double height) {
         super(ShapeType.RECTANGLE);
 
         setWidth(width).setHeight(height);
     }
 
     /**
-     * Constructor. Creates an instance of rectangle with rounded corners. 
-     * 
+     * Constructor. Creates an instance of rectangle with rounded corners.
+     *
      * @param width
      * @param height
      * @param cornerRadius
      */
-    public Rectangle(final double width, final double height, final double corner)
-    {
+    public Rectangle(final double width, final double height, final double corner) {
         this(width, height);
 
         setCornerRadius(corner);
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         return BoundingBox.fromDoubles(0, 0, getWidth(), getHeight());
     }
 
     /**
      * Draws this rectangle.
-     * 
+     *
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final double alpha)
-    {
+    protected boolean prepare(final Context2D context, final double alpha) {
         final double w = getWidth();
 
         final double h = getHeight();
 
         final double r = getCornerRadius();
 
-        if ((w > 0) && (h > 0))
-        {
+        if ((w > 0) && (h > 0)) {
             context.beginPath();
 
-            if ((r > 0) && (r < (w / 2)) && (r < (h / 2)))
-            {
+            if ((r > 0) && (r < (w / 2)) && (r < (h / 2))) {
                 context.moveTo(r, 0);
 
                 context.lineTo(w - r, 0);
@@ -112,9 +103,7 @@ public class Rectangle extends Shape<Rectangle>
                 context.lineTo(0, r);
 
                 context.arc(r, r, r, Math.PI, Math.PI * 3 / 2, false);
-            }
-            else
-            {
+            } else {
                 context.rect(0, 0, w, h);
             }
             context.closePath();
@@ -129,8 +118,7 @@ public class Rectangle extends Shape<Rectangle>
      *
      * @return double
      */
-    public double getWidth()
-    {
+    public double getWidth() {
         return this.width;
     }
 
@@ -140,8 +128,7 @@ public class Rectangle extends Shape<Rectangle>
      * @param width
      * @return this Rectangle
      */
-    public Rectangle setWidth(final double width)
-    {
+    public Rectangle setWidth(final double width) {
         this.width = width;
 
         return this;
@@ -152,8 +139,7 @@ public class Rectangle extends Shape<Rectangle>
      *
      * @return double
      */
-    public double getHeight()
-    {
+    public double getHeight() {
         return this.height;
     }
 
@@ -163,48 +149,41 @@ public class Rectangle extends Shape<Rectangle>
      * @param height
      * @return this Rectangle
      */
-    public Rectangle setHeight(final double height)
-    {
+    public Rectangle setHeight(final double height) {
         this.height = height;
 
         return this;
     }
 
-
-
     /**
      * Gets the corner radius, if this rectangle has rounded corners.
-     * 
+     *
      * @return double the value returned is 0 if the rectangle has no rounded corners.
      */
-    public double getCornerRadius()
-    {
+    public double getCornerRadius() {
         return this.cornerRadius;
     }
 
     /**
      * Sets the radius for this rectangle's rounded corners
-     *  
+     *
      * @param radius
      * @return this Rectangle
      */
-    public Rectangle setCornerRadius(final double radius)
-    {
+    public Rectangle setCornerRadius(final double radius) {
         this.cornerRadius = radius;
 
         return this;
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.WIDTH, Attribute.HEIGHT, Attribute.CORNER_RADIUS);
     }
 
-    public static class RectangleFactory extends ShapeFactory<Rectangle>
-    {
-        public RectangleFactory()
-        {
+    public static class RectangleFactory extends ShapeFactory<Rectangle> {
+
+        public RectangleFactory() {
             super(ShapeType.RECTANGLE);
 
             addAttribute(Attribute.WIDTH, true);

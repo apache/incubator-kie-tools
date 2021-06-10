@@ -16,7 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
-import com.ait.lienzo.tools.client.event.HandlerRegistration;
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
@@ -28,26 +29,25 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.Geometry;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
-
-import java.util.function.Supplier;
 
 public class WiresDockingControlImpl extends AbstractWiresControl<WiresDockingControlImpl>
         implements WiresDockingControl {
 
-    private final HandlerRegistrationManager      m_handlerRegistrations;
-    private Point2D                               m_absInitialPathLocation;
-    private Point2D                               m_intersection;
-    private Point2D                               m_absDockPosition;
-    private double  xRatio;
-    private double  yRatio;
+    private final HandlerRegistrationManager m_handlerRegistrations;
+    private Point2D m_absInitialPathLocation;
+    private Point2D m_intersection;
+    private Point2D m_absDockPosition;
+    private double xRatio;
+    private double yRatio;
 
     public WiresDockingControlImpl(final Supplier<WiresParentPickerControl> parentPickerControl) {
         this(parentPickerControl, new HandlerRegistrationManager());
     }
 
     WiresDockingControlImpl(final Supplier<WiresParentPickerControl> parentPickerControl,
-                                   final HandlerRegistrationManager registrationManager) {
+                            final HandlerRegistrationManager registrationManager) {
         super(parentPickerControl);
         m_handlerRegistrations = registrationManager;
     }
@@ -76,14 +76,14 @@ public class WiresDockingControlImpl extends AbstractWiresControl<WiresDockingCo
         return isIntersecting();
     }
 
-    private Point2D findIntersection(double dx, double dy, final Point2D initialPathLocation, final WiresShape shape,  final WiresShape parent) {
+    private Point2D findIntersection(double dx, double dy, final Point2D initialPathLocation, final WiresShape shape, final WiresShape parent) {
         if (null == parent) {
             return null;
         }
         final Point2D parentLocation = parent.getComputedLocation();
         final BoundingBox box = shape.getPath().getBoundingBox();
         final double shapeX = initialPathLocation.getX() + dx + (box.getWidth() / 2) - parentLocation.getX();
-        final double shapeY = initialPathLocation.getY() + dy + (box.getHeight() / 2)- parentLocation.getY();
+        final double shapeY = initialPathLocation.getY() + dy + (box.getHeight() / 2) - parentLocation.getY();
 
         return Geometry.findIntersection((int) shapeX, (int) shapeY, parent.getPath());
     }
@@ -154,7 +154,7 @@ public class WiresDockingControlImpl extends AbstractWiresControl<WiresDockingCo
         }
         BoundingBox box = shape.getPath().getBoundingBox();
         double x = m_intersection.getX() - (box.getWidth() / 2);
-        double y = m_intersection.getY() -  (box.getHeight() / 2);
+        double y = m_intersection.getY() - (box.getHeight() / 2);
         return new Point2D(x, y);
     }
 
@@ -228,8 +228,7 @@ public class WiresDockingControlImpl extends AbstractWiresControl<WiresDockingCo
         xRatio = -1;
         yRatio = -1;
         registerHandler(parentWireShape.addWiresResizeStepHandler(event -> {
-            if ( xRatio == -1 && yRatio == -1 )
-            {
+            if (xRatio == -1 && yRatio == -1) {
                 // this is a hack, to ensure it runs on the first before any resize computations
                 BoundingBox parentBox = event.getSource().getPath().getBoundingBox();
 

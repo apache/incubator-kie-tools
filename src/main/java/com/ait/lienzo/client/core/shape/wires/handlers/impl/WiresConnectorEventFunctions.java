@@ -16,34 +16,29 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
-import com.ait.lienzo.client.core.shape.wires.SelectionManager;
-import com.ait.lienzo.client.core.shape.wires.WiresConnector;
-import com.ait.lienzo.client.core.shape.wires.WiresManager;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorHandlerImpl.Event;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class WiresConnectorEventFunctions
-{
-    public static Predicate<WiresConnector> canShowControlPoints()
-    {
+import com.ait.lienzo.client.core.shape.wires.WiresConnector;
+import com.ait.lienzo.client.core.shape.wires.WiresManager;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorHandlerImpl.Event;
+
+public class WiresConnectorEventFunctions {
+
+    public static Predicate<WiresConnector> canShowControlPoints() {
         return connector -> !connector.getControl().areControlPointsVisible();
     }
 
-    public static Predicate<WiresConnector> canHideControlPoints(final WiresManager wiresManager)
-    {
+    public static Predicate<WiresConnector> canHideControlPoints(final WiresManager wiresManager) {
         return connector -> null == wiresManager.getSelectionManager() ||
-               !wiresManager.getSelectionManager().getSelectedItems().getConnectors().contains(connector);
+                !wiresManager.getSelectionManager().getSelectedItems().getConnectors().contains(connector);
     }
 
     public static Consumer<Event> select(final WiresManager wiresManager,
-                                         final WiresConnector connector)
-    {
-        return new Consumer<WiresConnectorHandlerImpl.Event>()
-        {
+                                         final WiresConnector connector) {
+        return new Consumer<WiresConnectorHandlerImpl.Event>() {
             @Override
-            public void accept(WiresConnectorHandlerImpl.Event event)
-            {
+            public void accept(WiresConnectorHandlerImpl.Event event) {
                 if (null != wiresManager.getSelectionManager()) {
                     wiresManager.getSelectionManager().selected(connector, false);
                 }
@@ -52,8 +47,7 @@ public class WiresConnectorEventFunctions
         };
     }
 
-    public static Consumer<WiresConnectorHandlerImpl.Event> addControlPoint(final WiresConnector connector)
-    {
+    public static Consumer<WiresConnectorHandlerImpl.Event> addControlPoint(final WiresConnector connector) {
         return event -> connector.getControl().addControlPoint(event.x, event.y);
     }
 }

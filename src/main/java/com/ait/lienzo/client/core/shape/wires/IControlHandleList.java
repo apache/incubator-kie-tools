@@ -16,11 +16,12 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.tools.common.api.types.IActivatable;
 import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.common.api.types.IActivatable;
 
-public interface IControlHandleList extends IActivatable, Iterable<IControlHandle>
-{
+public interface IControlHandleList extends IActivatable,
+                                            Iterable<IControlHandle> {
+
     int size();
 
     boolean isEmpty();

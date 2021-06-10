@@ -23,8 +23,7 @@ import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 
 public class PanelTransformUtils {
 
-    private PanelTransformUtils()
-    {
+    private PanelTransformUtils() {
 
     }
 
@@ -66,5 +65,4 @@ public class PanelTransformUtils {
         final double scaleY = transform.getScaleY();
         return scaleX < scaleY ? scaleX : scaleY;
     }
-
 }

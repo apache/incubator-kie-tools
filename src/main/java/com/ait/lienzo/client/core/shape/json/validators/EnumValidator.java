@@ -18,22 +18,19 @@ package com.ait.lienzo.client.core.shape.json.validators;
 
 import com.ait.lienzo.shared.core.types.EnumWithValue;
 
-public class EnumValidator<T extends Enum<T> & EnumWithValue>extends AbstractAttributeTypeValidator
-{
+public class EnumValidator<T extends Enum<T> & EnumWithValue> extends AbstractAttributeTypeValidator {
+
     private final T[] m_values;
 
-    public EnumValidator(final String typeName, final T[] values)
-    {
+    public EnumValidator(final String typeName, final T[] values) {
         super(typeName);
 
         m_values = values;
     }
 
     @Override
-    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
-    {
-        if (null == jval)
-        {
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException {
+        if (null == jval) {
             ctx.addBadTypeError(getTypeName());
 
             return;

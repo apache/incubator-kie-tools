@@ -21,8 +21,6 @@ import java.util.List;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -34,14 +32,13 @@ import com.ait.lienzo.shared.core.types.ShapeType;
  * The class can be used to draw regular lines as well as dashed lines.
  * To create a dashed line, use one of the setDashArray() methods.
  */
-public class Line extends AbstractOffsetMultiPointShape<Line>
-{
+public class Line extends AbstractOffsetMultiPointShape<Line> {
+
     /**
      * Constructor.  Creates an instance of a line of 0-pixel length, at the 0,0
      * coordinates.
      */
-    public Line()
-    {
+    public Line() {
         this(0, 0, 0, 0);
     }
 
@@ -53,27 +50,23 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
      * @param x2 second point X coordinate
      * @param y2 second point Y coordinate
      */
-    public Line(final double x1, final double y1, final double x2, final double y2)
-    {
+    public Line(final double x1, final double y1, final double x2, final double y2) {
         this(new Point2D(x1, y1), new Point2D(x2, y2));
     }
 
-    public Line(final Point2D p1, final Point2D p2)
-    {
+    public Line(final Point2D p1, final Point2D p2) {
         super(ShapeType.LINE);
 
         setPoint2DArray(Point2DArray.fromArrayOfPoint2D(p1, p2));
     }
 
     @Override
-    public Line refresh()
-    {
+    public Line refresh() {
         return cast();
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         return BoundingBox.fromPoint2DArray(getPoints());
     }
 
@@ -83,26 +76,19 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final double alpha)
-    {
+    protected boolean prepare(final Context2D context, final double alpha) {
         final Point2DArray list = getPoints();
 
-        if ((null != list) && (list.size() == 2))
-        {
-            if (getDashArray() != null)
-            {
-                if (!LienzoCore.get().isNativeLineDashSupported())
-                {
+        if ((null != list) && (list.size() == 2)) {
+            if (getDashArray() != null) {
+                if (!LienzoCore.get().isNativeLineDashSupported()) {
                     DashArray dash = getDashArray();
 
-                    if (dash != null)
-                    {
+                    if (dash != null) {
                         double[] data = dash.getNormalizedArray();
 
-                        if (data.length > 0)
-                        {
-                            if (setStrokeParams(context, alpha, false))
-                            {
+                        if (data.length > 0) {
+                            if (setStrokeParams(context, alpha, false)) {
                                 Point2D p0 = list.get(0);
 
                                 Point2D p1 = list.get(1);
@@ -133,38 +119,31 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
         return false;
     }
 
-
     @Override
-    public boolean parse()
-    {
+    public boolean parse() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Point2DArray getPoint2DArray()
-    {
+    public Point2DArray getPoint2DArray() {
         return getPoints();
     }
 
     @Override
-    public Point2D getTailOffsetPoint()
-    {
+    public Point2D getTailOffsetPoint() {
         final Point2DArray list = getPoints();
 
-        if ((null != list) && (list.size() == 2))
-        {
+        if ((null != list) && (list.size() == 2)) {
             return list.get(0);
         }
         return null;
     }
 
     @Override
-    public Point2D getHeadOffsetPoint()
-    {
+    public Point2D getHeadOffsetPoint() {
         final Point2DArray list = getPoints();
 
-        if ((null != list) && (list.size() == 2))
-        {
+        if ((null != list) && (list.size() == 2)) {
             return list.get(1);
         }
         return null;
@@ -174,8 +153,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
      * Empty implementation since we multi-purpose this class for regular and dashed lines.
      */
     @Override
-    public boolean fill(final Context2D context, final double alpha)
-    {
+    public boolean fill(final Context2D context, final double alpha) {
         return false;
     }
 
@@ -190,8 +168,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
      * @param da
      * @param plus
      */
-    protected void drawDashedLine(final Context2D context, double x, double y, final double x2, final double y2, final double[] da, final double plus)
-    {
+    protected void drawDashedLine(final Context2D context, double x, double y, final double x2, final double y2, final double[] da, final double plus) {
         final int dashCount = da.length;
 
         final double dx = (x2 - x);
@@ -208,38 +185,29 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
 
         int dashIndex = 0;
 
-        while (distRemaining >= 0.1)
-        {
+        while (distRemaining >= 0.1) {
             double dashLength = Math.min(distRemaining, da[dashIndex % dashCount]);
 
             double step = Math.sqrt(dashLength * dashLength / (1 + slope * slope));
 
-            if (xbig)
-            {
-                if (dx < 0)
-                {
+            if (xbig) {
+                if (dx < 0) {
                     step = -step;
                 }
                 x += step;
 
                 y += slope * step;
-            }
-            else
-            {
-                if (dy < 0)
-                {
+            } else {
+                if (dy < 0) {
                     step = -step;
                 }
                 x += slope * step;
 
                 y += step;
             }
-            if (dashIndex % 2 == 0)
-            {
+            if (dashIndex % 2 == 0) {
                 context.lineTo(x, y);
-            }
-            else
-            {
+            } else {
                 context.moveTo(x, y);
             }
             distRemaining -= dashLength;
@@ -249,15 +217,13 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return getBoundingBoxAttributesComposed(Attribute.POINTS);
     }
 
-    public static class LineFactory extends AbstractOffsetMultiPointShapeFactory<Line>
-    {
-        public LineFactory()
-        {
+    public static class LineFactory extends AbstractOffsetMultiPointShapeFactory<Line> {
+
+        public LineFactory() {
             super(ShapeType.LINE);
 
             addAttribute(Attribute.POINTS, true);

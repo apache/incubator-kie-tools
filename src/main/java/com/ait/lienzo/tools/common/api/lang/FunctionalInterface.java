@@ -25,6 +25,6 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(value = ElementType.TYPE)
-public @interface FunctionalInterface
-{
+public @interface FunctionalInterface {
+
 }

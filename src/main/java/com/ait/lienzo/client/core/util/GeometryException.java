@@ -17,15 +17,14 @@
 package com.ait.lienzo.client.core.util;
 
 /**
- * GeometryException is thrown by various geometry related classes, 
+ * GeometryException is thrown by various geometry related classes,
  * such as {@link Transform} and {@link Point2D}
  */
-public class GeometryException extends RuntimeException
-{
+public class GeometryException extends RuntimeException {
+
     private static final long serialVersionUID = 1L;
 
-    public GeometryException(final String msg)
-    {
+    public GeometryException(final String msg) {
         super(msg);
     }
 }

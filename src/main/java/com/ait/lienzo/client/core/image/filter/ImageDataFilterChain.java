@@ -26,53 +26,44 @@ import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import elemental2.dom.ImageData;
 
-public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilterChain> implements ImageDataFilterable<ImageDataFilterChain>
-{
+public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilterChain> implements ImageDataFilterable<ImageDataFilterChain> {
+
     private NFastArrayList<ImageDataFilter<?>> m_filters = new NFastArrayList<>();
 
-    public ImageDataFilterChain()
-    {
+    public ImageDataFilterChain() {
         super(ImageFilterType.ImageDataFilterChainType);
     }
 
-    public ImageDataFilterChain(ImageDataFilter<?>... filters)
-    {
+    public ImageDataFilterChain(ImageDataFilter<?>... filters) {
         super(ImageFilterType.ImageDataFilterChainType);
 
         addFilters(filters);
     }
 
-    protected ImageDataFilterChain(Object node, ValidationContext ctx) throws ValidationException
-    {
+    protected ImageDataFilterChain(Object node, ValidationContext ctx) throws ValidationException {
         super(ImageFilterType.ImageDataFilterChainType, node, ctx);
     }
 
-    public int size()
-    {
+    public int size() {
         return m_filters.size();
     }
 
     @Override
-    public ImageDataFilterChain clearFilters()
-    {
+    public ImageDataFilterChain clearFilters() {
         m_filters.clear();
 
         return this;
     }
 
     @Override
-    public boolean isTransforming()
-    {
-        if (isActive())
-        {
+    public boolean isTransforming() {
+        if (isActive()) {
             int size = size();
 
-            for (int i = 0; i < size; i++)
-            {
+            for (int i = 0; i < size; i++) {
                 ImageDataFilter<?> filter = m_filters.get(i);
 
-                if ((null != filter) && (filter.isTransforming()) && (filter.isActive()))
-                {
+                if ((null != filter) && (filter.isTransforming()) && (filter.isActive())) {
                     return true;
                 }
             }
@@ -81,32 +72,25 @@ public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilte
     }
 
     @Override
-    public ImageData filter(ImageData source, boolean copy)
-    {
-        if (null == source)
-        {
+    public ImageData filter(ImageData source, boolean copy) {
+        if (null == source) {
             return null;
         }
-        if (!isActive())
-        {
+        if (!isActive()) {
             return source;
         }
-        if (copy)
-        {
+        if (copy) {
             source = ImageDataUtil.copy(source);
         }
         int size = size();
 
-        for (int i = 0; i < size; i++)
-        {
+        for (int i = 0; i < size; i++) {
             ImageDataFilter<?> filter = m_filters.get(i);
 
-            if ((null != filter) && (filter.isActive()))
-            {
+            if ((null != filter) && (filter.isActive())) {
                 ImageData imdata = filter.filter(source, false);
 
-                if (null != imdata)
-                {
+                if (null != imdata) {
                     source = imdata;
                 }
             }
@@ -114,24 +98,18 @@ public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilte
         return source;
     }
 
-    private final void add(ImageDataFilter<?> filter)
-    {
-        if (null != filter)
-        {
-            if (!m_filters.contains(filter))
-            {
+    private final void add(ImageDataFilter<?> filter) {
+        if (null != filter) {
+            if (!m_filters.contains(filter)) {
                 m_filters.add(filter);
             }
         }
     }
 
     @Override
-    public ImageDataFilterChain addFilters(ImageDataFilter<?>... filters)
-    {
-        if (null != filters)
-        {
-            for (int i = 0; i < filters.length; i++)
-            {
+    public ImageDataFilterChain addFilters(ImageDataFilter<?>... filters) {
+        if (null != filters) {
+            for (int i = 0; i < filters.length; i++) {
                 add(filters[i]);
             }
         }
@@ -139,35 +117,27 @@ public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilte
     }
 
     @Override
-    public ImageDataFilterChain setFilters(ImageDataFilter<?>... filters)
-    {
+    public ImageDataFilterChain setFilters(ImageDataFilter<?>... filters) {
         clearFilters();
 
-        if (null != filters)
-        {
-            for (int i = 0; i < filters.length; i++)
-            {
+        if (null != filters) {
+            for (int i = 0; i < filters.length; i++) {
                 add(filters[i]);
             }
         }
         return this;
     }
 
-    private final void remove(ImageDataFilter<?> filter)
-    {
-        if (null != filter)
-        {
+    private final void remove(ImageDataFilter<?> filter) {
+        if (null != filter) {
             m_filters.remove(filter);
         }
     }
 
     @Override
-    public ImageDataFilterChain removeFilters(ImageDataFilter<?>... filters)
-    {
-        if (null != filters)
-        {
-            for (int i = 0; i < filters.length; i++)
-            {
+    public ImageDataFilterChain removeFilters(ImageDataFilter<?>... filters) {
+        if (null != filters) {
+            for (int i = 0; i < filters.length; i++) {
                 remove(filters[i]);
             }
         }
@@ -175,62 +145,50 @@ public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilte
     }
 
     @Override
-    public ImageDataFilterChain setFiltersActive(boolean active)
-    {
+    public ImageDataFilterChain setFiltersActive(boolean active) {
         setActive(active);
 
         return this;
     }
 
     @Override
-    public boolean areFiltersActive()
-    {
+    public boolean areFiltersActive() {
         return isActive();
     }
 
     @Override
-    public ImageDataFilterChain setFilters(Iterable<ImageDataFilter<?>> filters)
-    {
+    public ImageDataFilterChain setFilters(Iterable<ImageDataFilter<?>> filters) {
         clearFilters();
 
-        for (ImageDataFilter<?> filter : filters)
-        {
+        for (ImageDataFilter<?> filter : filters) {
             add(filter);
         }
         return this;
     }
 
     @Override
-    public ImageDataFilterChain addFilters(Iterable<ImageDataFilter<?>> filters)
-    {
-        for (ImageDataFilter<?> filter : filters)
-        {
+    public ImageDataFilterChain addFilters(Iterable<ImageDataFilter<?>> filters) {
+        for (ImageDataFilter<?> filter : filters) {
             add(filter);
         }
         return this;
     }
 
     @Override
-    public ImageDataFilterChain removeFilters(Iterable<ImageDataFilter<?>> filters)
-    {
-        for (ImageDataFilter<?> filter : filters)
-        {
+    public ImageDataFilterChain removeFilters(Iterable<ImageDataFilter<?>> filters) {
+        for (ImageDataFilter<?> filter : filters) {
             remove(filter);
         }
         return this;
     }
 
     @Override
-    public boolean isActive()
-    {
-        if ((super.isActive()) && (m_filters.size() > 0))
-        {
-            for (int i = 0; i < m_filters.size(); i++)
-            {
+    public boolean isActive() {
+        if ((super.isActive()) && (m_filters.size() > 0)) {
+            for (int i = 0; i < m_filters.size(); i++) {
                 ImageDataFilter<?> filter = m_filters.get(i);
 
-                if ((null != filter) && (filter.isActive()))
-                {
+                if ((null != filter) && (filter.isActive())) {
                     return true;
                 }
             }
@@ -239,21 +197,18 @@ public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilte
     }
 
     @Override
-    public Collection<ImageDataFilter<?>> getFilters()
-    {
+    public Collection<ImageDataFilter<?>> getFilters() {
         return m_filters.toList();
     }
 
     @Override
-    public IFactory<ImageDataFilterChain> getFactory()
-    {
+    public IFactory<ImageDataFilterChain> getFactory() {
         return new ImageDataFilterChainFactory();
     }
 
-    public static class ImageDataFilterChainFactory extends ImageDataFilterFactory<ImageDataFilterChain>
-    {
-        public ImageDataFilterChainFactory()
-        {
+    public static class ImageDataFilterChainFactory extends ImageDataFilterFactory<ImageDataFilterChain> {
+
+        public ImageDataFilterChainFactory() {
             super(ImageFilterType.ImageDataFilterChainType);
         }
     }

@@ -21,79 +21,62 @@ import java.util.List;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.LienzoPath2D;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.tools.client.collection.NFastDoubleArray;
-
 import jsinterop.annotations.JsProperty;
 
-public class SVGPath extends Shape<SVGPath>
-{
-    private static final String[] COMMANDS = { "m", "M", "l", "L", "v", "V", "h", "H", "z", "Z", "c", "C", "q", "Q", "t", "T", "s", "S", "a", "A" };
+public class SVGPath extends Shape<SVGPath> {
+
+    private static final String[] COMMANDS = {"m", "M", "l", "L", "v", "V", "h", "H", "z", "Z", "c", "C", "q", "Q", "t", "T", "s", "S", "a", "A"};
 
     @JsProperty
-    private String                m_path;
+    private String m_path;
 
-    private final PathPartList    m_list   = new PathPartList();
+    private final PathPartList m_list = new PathPartList();
 
-    public SVGPath(final String path)
-    {
+    public SVGPath(final String path) {
         super(ShapeType.SVG_PATH);
 
         setPath(path);
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         return m_list.getBoundingBox();
     }
 
     @Override
-    protected void drawWithoutTransforms(final Context2D context, double alpha, BoundingBox bounds)
-    {
-        if (m_list.size() < 1)
-        {
+    protected void drawWithoutTransforms(final Context2D context, double alpha, BoundingBox bounds) {
+        if (m_list.size() < 1) {
             return;
         }
 
         alpha = alpha * getAlpha();
 
-        if (alpha <= 0)
-        {
+        if (alpha <= 0) {
             return;
         }
-        if (context.isSelection())
-        {
-            if (dofillBoundsForSelection(context, alpha))
-            {
+        if (context.isSelection()) {
+            if (dofillBoundsForSelection(context, alpha)) {
                 return;
             }
-        }
-        else
-        {
+        } else {
             setAppliedShadow(false);
         }
         final LienzoPath2D path = m_list.getPath2D();
 
         boolean fill = false;
 
-        if (null != path)
-        {
-            if (path.isClosed())
-            {
+        if (null != path) {
+            if (path.isClosed()) {
                 fill = fill(context, alpha, path);
             }
             stroke(context, alpha, path, fill);
-        }
-        else
-        {
-            if (context.path(m_list))
-            {
+        } else {
+            if (context.path(m_list)) {
                 fill = fill(context, alpha);
             }
             stroke(context, alpha, fill);
@@ -101,22 +84,18 @@ public class SVGPath extends Shape<SVGPath>
     }
 
     @Override
-    protected boolean prepare(final Context2D context, double alpha)
-    {
-        if (m_list.size() < 1)
-        {
+    protected boolean prepare(final Context2D context, double alpha) {
+        if (m_list.size() < 1) {
             return false;
         }
         return true;
     }
 
-    private final void parse(final String path)
-    {
+    private final void parse(final String path) {
         parse(m_list, path);
     }
 
-    public static final void parse(final PathPartList partlist, String path)
-    {
+    public static final void parse(final PathPartList partlist, String path) {
         partlist.clear();
 
         path = path.replaceAll("\\s+", " ").trim();
@@ -126,14 +105,12 @@ public class SVGPath extends Shape<SVGPath>
 //        {
 //            partlist.setPath2D(new Path2D(path));
 //        }
-        for (int n = 0; n < COMMANDS.length; n++)
-        {
+        for (int n = 0; n < COMMANDS.length; n++) {
             path = path.replaceAll(COMMANDS[n] + " ", COMMANDS[n]);
         }
         path = path.replaceAll(" ", ",");
 
-        for (int n = 0; n < COMMANDS.length; n++)
-        {
+        for (int n = 0; n < COMMANDS.length; n++) {
             path = path.replaceAll(COMMANDS[n], "#" + COMMANDS[n]);
         }
         final String[] list = path.split("#");
@@ -142,8 +119,7 @@ public class SVGPath extends Shape<SVGPath>
 
         double cpy = 0;
 
-        for (int n = 1, l = list.length; n < l; n++)
-        {
+        for (int n = 1, l = list.length; n < l; n++) {
             String str = list[n];
 
             char chr = str.charAt(0);
@@ -154,28 +130,24 @@ public class SVGPath extends Shape<SVGPath>
 
             int beg = 0;
 
-            if ((pts.length > 0) && (pts[0].isEmpty()))
-            {
+            if ((pts.length > 0) && (pts[0].isEmpty())) {
                 beg = 1;
             }
             final NFastDoubleArray source = new NFastDoubleArray();
 
-            for (int i = beg, z = pts.length; i < z; i++)
-            {
+            for (int i = beg, z = pts.length; i < z; i++) {
                 source.push(Double.valueOf(pts[i]).doubleValue());
             }
             PathPartEntryJSO prev;
 
             double ctx, cty;
 
-            while (source.size() > 0)
-            {
+            while (source.size() > 0) {
                 int cmd = PathPartEntryJSO.UNDEFINED_PATH_PART;
 
                 final NFastDoubleArray points = new NFastDoubleArray();
 
-                switch (chr)
-                {
+                switch (chr) {
                     case 'l':
                         cpx += source.shift();
 
@@ -209,14 +181,11 @@ public class SVGPath extends Shape<SVGPath>
 
                         final int size = partlist.size();
 
-                        if (size > 2 && partlist.get(size - 1).getCommand() == PathPartEntryJSO.CLOSE_PATH_PART)
-                        {
-                            for (int idx = size - 2; idx >= 0; idx--)
-                            {
+                        if (size > 2 && partlist.get(size - 1).getCommand() == PathPartEntryJSO.CLOSE_PATH_PART) {
+                            for (int idx = size - 2; idx >= 0; idx--) {
                                 prev = partlist.get(idx);
 
-                                if (prev.getCommand() == PathPartEntryJSO.MOVETO_ABSOLUTE)
-                                {
+                                if (prev.getCommand() == PathPartEntryJSO.MOVETO_ABSOLUTE) {
                                     cpx = prev.getPoints()[0] + dx;
 
                                     cpy = prev.getPoints()[1] + dy;
@@ -327,8 +296,7 @@ public class SVGPath extends Shape<SVGPath>
 
                         prev = partlist.get(partlist.size() - 1);
 
-                        if (prev.getCommand() == PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE)
-                        {
+                        if (prev.getCommand() == PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE) {
                             ctx = cpx + (cpx - prev.getPoints()[2]);
 
                             cty = cpy + (cpy - prev.getPoints()[3]);
@@ -358,8 +326,7 @@ public class SVGPath extends Shape<SVGPath>
 
                         prev = partlist.get(partlist.size() - 1);
 
-                        if (prev.getCommand() == PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE)
-                        {
+                        if (prev.getCommand() == PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE) {
                             ctx = cpx + (cpx - prev.getPoints()[2]);
 
                             cty = cpy + (cpy - prev.getPoints()[3]);
@@ -419,8 +386,7 @@ public class SVGPath extends Shape<SVGPath>
 
                         prev = partlist.get(partlist.size() - 1);
 
-                        if (prev.getCommand() == PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE)
-                        {
+                        if (prev.getCommand() == PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE) {
                             ctx = cpx + (cpx - prev.getPoints()[0]);
 
                             cty = cpy + (cpy - prev.getPoints()[1]);
@@ -446,8 +412,7 @@ public class SVGPath extends Shape<SVGPath>
 
                         prev = partlist.get(partlist.size() - 1);
 
-                        if (prev.getCommand() == PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE)
-                        {
+                        if (prev.getCommand() == PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE) {
                             ctx = cpx + (cpx - prev.getPoints()[0]);
 
                             cty = cpy + (cpy - prev.getPoints()[1]);
@@ -466,8 +431,7 @@ public class SVGPath extends Shape<SVGPath>
 
                         cmd = PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE;
                         break;
-                    case 'A':
-                    {
+                    case 'A': {
                         final double rx = source.shift();
 
                         final double ry = source.shift();
@@ -495,8 +459,7 @@ public class SVGPath extends Shape<SVGPath>
                         cmd = PathPartEntryJSO.ARCTO_ABSOLUTE;
                         break;
                     }
-                    case 'a':
-                    {
+                    case 'a': {
                         final double rx = source.shift();
 
                         final double ry = source.shift();
@@ -525,43 +488,36 @@ public class SVGPath extends Shape<SVGPath>
                         break;
                     }
                 }
-                if (cmd != PathPartEntryJSO.UNDEFINED_PATH_PART)
-                {
+                if (cmd != PathPartEntryJSO.UNDEFINED_PATH_PART) {
                     partlist.push(PathPartEntryJSO.make(cmd, points.toArray()));
                 }
             }
-            if ((chr == 'z') || (chr == 'Z'))
-            {
+            if ((chr == 'z') || (chr == 'Z')) {
                 partlist.Z();
             }
         }
     }
 
-    public String getPath()
-    {
+    public String getPath() {
         return this.m_path;
     }
 
-    public SVGPath setPath(final String path)
-    {
+    public SVGPath setPath(final String path) {
 
-        if (false == path.equals(m_path))
-        {
+        if (false == path.equals(m_path)) {
             parse(m_path = path);
         }
         return this;
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.PATH);
     }
 
-    public static class SVGPathFactory extends ShapeFactory<SVGPath>
-    {
-        public SVGPathFactory()
-        {
+    public static class SVGPathFactory extends ShapeFactory<SVGPath> {
+
+        public SVGPathFactory() {
             super(ShapeType.SVG_PATH);
 
             addAttribute(Attribute.PATH, true);

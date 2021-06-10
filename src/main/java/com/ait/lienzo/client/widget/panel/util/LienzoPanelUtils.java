@@ -14,8 +14,7 @@ import static elemental2.dom.DomGlobal.document;
 
 public class LienzoPanelUtils {
 
-    private LienzoPanelUtils()
-    {
+    private LienzoPanelUtils() {
 
     }
 
@@ -25,16 +24,16 @@ public class LienzoPanelUtils {
 
     public static int[] getPxSize(final HTMLDivElement element) {
         if (element == null) {
-            return new int[] {0, 0};
+            return new int[]{0, 0};
         }
         final CSSStyleDeclaration cs = Js.<ViewCSS>uncheckedCast(DomGlobal.window).getComputedStyle(element);
         final double paddingX = JsNumber.parseFloat(cs.paddingLeft.asString()) + JsNumber.parseFloat(cs.paddingRight.asString());
         final double paddingY = JsNumber.parseFloat(cs.paddingTop.asString()) + JsNumber.parseFloat(cs.paddingBottom.asString());
         final double borderX = JsNumber.parseFloat(cs.borderLeftWidth.asString()) + JsNumber.parseFloat(cs.borderRightWidth.asString());
         final double borderY = JsNumber.parseFloat(cs.borderTopWidth.asString()) + JsNumber.parseFloat(cs.borderBottomWidth.asString());
-        final int width  = (int)(element.offsetWidth - paddingX - borderX);
-        final int height = (int)(element.offsetHeight - paddingY - borderY);
-        return new int[] {width, height};
+        final int width = (int) (element.offsetWidth - paddingX - borderX);
+        final int height = (int) (element.offsetHeight - paddingY - borderY);
+        return new int[]{width, height};
     }
 
     public static void setPanelWidth(final HTMLDivElement panel,

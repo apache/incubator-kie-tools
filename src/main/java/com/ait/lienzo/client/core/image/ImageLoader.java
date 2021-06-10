@@ -25,23 +25,20 @@ import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLImageElement;
 import elemental2.dom.Image;
 
-public abstract class ImageLoader
-{
-    public ImageLoader(final String url)
-    {
+public abstract class ImageLoader {
+
+    public ImageLoader(final String url) {
         this(url,
              new Image());
     }
 
     public ImageLoader(final String url,
-                       final HTMLImageElement image)
-    {
+                       final HTMLImageElement image) {
         setVisible(image, false);
 
         final String crossOrigin = url.startsWith("http:") || (url.startsWith("https:")) ? "anonymous" : null;
 
-        if (null != crossOrigin)
-        {
+        if (null != crossOrigin) {
             setCrossOrigin(image, crossOrigin);
         }
 
@@ -68,14 +65,12 @@ public abstract class ImageLoader
         image.src = url;
     }
 
-    public ImageLoader(final ImageResource resource)
-    {
+    public ImageLoader(final ImageResource resource) {
         this(resource,
              new Image());
     }
 
-    public static void setVisible(HTMLElement image, boolean visible)
-    {
+    public static void setVisible(HTMLElement image, boolean visible) {
         image.style.display = visible ? "" : Style.Display.NONE.getCssName(); // @FIXME check that it should really be "", I just followed GWT UIObject setVisible.
 
         if (visible) {
@@ -86,8 +81,7 @@ public abstract class ImageLoader
     }
 
     public ImageLoader(final ImageResource resource,
-                       final HTMLImageElement image)
-    {
+                       final HTMLImageElement image) {
         setVisible(image, false);
 
         image.onload = e ->
@@ -115,9 +109,7 @@ public abstract class ImageLoader
             image.style.background = "url(\"" + urlAsString + "\") no-repeat " + (-resource.getLeft() + "px ") + (-resource.getTop() + "px");
             image.style.width = CSSProperties.WidthUnionType.of(resource.getHeight());
             image.style.height = CSSProperties.HeightUnionType.of(resource.getHeight());
-        }
-        else
-        {
+        } else {
             // lifted from com.google.gwt.user.client.ui.Image setResource
             image.src = urlAsString;
             image.width = resource.getWidth();
@@ -127,33 +119,27 @@ public abstract class ImageLoader
         RootPanel.get().add(image);
     }
 
-
     private final void doImageElementLoadAndRetry(final HTMLImageElement image,
                                                   final String orig,
-                                                  final String url)
-    {
+                                                  final String url) {
         final int w = Math.max(image.width, image.width);
 
         final int h = Math.max(image.height, image.height);
 
-        if ((w < 1) || (h < 1))
-        {
+        if ((w < 1) || (h < 1)) {
 
             image.onload = e ->
             {
                 image.onload = null;
                 image.onerror = null;
                 // @FIXME removed 'naturalHeight' in image I think this is supported by all browser now. Needs double check (mdp)
-                if (image.naturalHeight + image.naturalWidth == 0 || image.height + image.width == 0)
-                {
+                if (image.naturalHeight + image.naturalWidth == 0 || image.height + image.width == 0) {
                     // it failed, so undo
                     // @FIXME check this cast works (mdp)
                     RootPanel.get().remove(image);
                     onImageElementError("Image " + url + " failed to load");
                     image.crossOrigin = orig;
-                }
-                else
-                {
+                } else {
                     onImageElementLoad(image);
                 }
                 return null;
@@ -172,10 +158,7 @@ public abstract class ImageLoader
             };
 
             image.src = url;
-
-        }
-        else
-        {
+        } else {
             image.width = w;
 
             image.height = h;
@@ -184,27 +167,22 @@ public abstract class ImageLoader
         }
     }
 
-    public boolean isValidDataURL(final String url)
-    {
-        if ((url.startsWith("data:")) && (url.length() > 6) && (!("data:,".equals(url))))
-        {
+    public boolean isValidDataURL(final String url) {
+        if ((url.startsWith("data:")) && (url.length() > 6) && (!("data:,".equals(url)))) {
             return true;
         }
         return false;
     }
 
-    public boolean isValidSVG(final String url)
-    {
+    public boolean isValidSVG(final String url) {
         return url.toLowerCase().contains("svg+xml");
     }
 
-    private final void setCrossOrigin(HTMLImageElement element, String value)
-    {
-		element.crossOrigin = value;
+    private final void setCrossOrigin(HTMLImageElement element, String value) {
+        element.crossOrigin = value;
     }
 
     public abstract void onImageElementLoad(HTMLImageElement elem);
 
     public abstract void onImageElementError(String message);
-
 }

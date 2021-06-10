@@ -16,11 +16,11 @@
 
 package com.ait.lienzo.client.core.types;
 
-public interface IBoundedList<T> extends Iterable<T>
-{
+public interface IBoundedList<T> extends Iterable<T> {
+
     public int size();
-    
+
     public T get(int index);
-    
+
     public boolean isEmpty();
 }

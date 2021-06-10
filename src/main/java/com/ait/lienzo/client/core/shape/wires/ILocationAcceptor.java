@@ -25,10 +25,10 @@ public interface ILocationAcceptor {
     ILocationAcceptor NONE = new DefaultLocationAcceptor(false);
 
     boolean allow(WiresContainer[] shapes,
-                         Point2D[] locations);
+                  Point2D[] locations);
 
     boolean accept(WiresContainer[] shapes,
-                          Point2D[] locations);
+                   Point2D[] locations);
 
     class DefaultLocationAcceptor implements ILocationAcceptor {
 

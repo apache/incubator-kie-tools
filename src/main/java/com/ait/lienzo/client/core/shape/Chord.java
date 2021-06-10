@@ -21,11 +21,8 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-
 import jsinterop.annotations.JsProperty;
 
 /**
@@ -33,8 +30,8 @@ import jsinterop.annotations.JsProperty;
  * a chord is a circle with a flat side, which is defined by the start and end angles.
  * The angles can be specified in clockwise or counter-clockwise order.
  */
-public class Chord extends Shape<Chord>
-{
+public class Chord extends Shape<Chord> {
+
     @JsProperty
     private double radius;
 
@@ -49,14 +46,13 @@ public class Chord extends Shape<Chord>
 
     /**
      * Constructor. Creates an instance of a chord.
-     * 
+     *
      * @param radius
-     * @param startAngle in radians
-     * @param endAngle in radians
+     * @param startAngle       in radians
+     * @param endAngle         in radians
      * @param counterClockwise
      */
-    public Chord(final double radius, final double startAngle, final double endAngle, final boolean counterClockwise)
-    {
+    public Chord(final double radius, final double startAngle, final double endAngle, final boolean counterClockwise) {
         super(ShapeType.CHORD);
 
         setRadius(radius).setStartAngle(startAngle).setEndAngle(endAngle).setCounterClockwise(counterClockwise);
@@ -64,13 +60,12 @@ public class Chord extends Shape<Chord>
 
     /**
      * Constructor. Creates an instance of a chord, drawn clockwise.
-     * 
+     *
      * @param radius
      * @param startAngle in radians
-     * @param endAngle in radians
+     * @param endAngle   in radians
      */
-    public Chord(final double radius, final double startAngle, final double endAngle)
-    {
+    public Chord(final double radius, final double startAngle, final double endAngle) {
         this(radius, startAngle, endAngle, false);
     }
 
@@ -80,24 +75,19 @@ public class Chord extends Shape<Chord>
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final double alpha)
-    {
+    protected boolean prepare(final Context2D context, final double alpha) {
         final double r = getRadius();
 
         final double beg = getStartAngle();
 
         final double end = getEndAngle();
 
-        if (r > 0)
-        {
+        if (r > 0) {
             context.beginPath();
 
-            if (beg == end)
-            {
+            if (beg == end) {
                 context.arc(0, 0, r, 0, Math.PI * 2, true);
-            }
-            else
-            {
+            } else {
                 context.arc(0, 0, r, beg, end, isCounterClockwise());
             }
             context.closePath();
@@ -108,8 +98,7 @@ public class Chord extends Shape<Chord>
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         final double radius = getRadius();
 
         return BoundingBox.fromDoubles(0 - radius, 0 - radius, radius, radius);
@@ -121,8 +110,7 @@ public class Chord extends Shape<Chord>
      * @param radius
      * @return this Circle
      */
-    public Chord setRadius(final double radius)
-    {
+    public Chord setRadius(final double radius) {
         this.radius = radius;
 
         return this;
@@ -133,8 +121,7 @@ public class Chord extends Shape<Chord>
      *
      * @return double
      */
-    public double getRadius()
-    {
+    public double getRadius() {
         return this.radius;
     }
 
@@ -143,8 +130,7 @@ public class Chord extends Shape<Chord>
      *
      * @return double (in radians)
      */
-    public double getStartAngle()
-    {
+    public double getStartAngle() {
         return this.startAngle;
     }
 
@@ -154,8 +140,7 @@ public class Chord extends Shape<Chord>
      * @param angle (in radians)
      * @return this chord
      */
-    public Chord setStartAngle(final double angle)
-    {
+    public Chord setStartAngle(final double angle) {
         this.startAngle = angle;
 
         return this;
@@ -166,8 +151,7 @@ public class Chord extends Shape<Chord>
      *
      * @return double (in radians)
      */
-    public double getEndAngle()
-    {
+    public double getEndAngle() {
         return this.endAngle;
     }
 
@@ -177,8 +161,7 @@ public class Chord extends Shape<Chord>
      * @param angle (in radians)
      * @return this chord
      */
-    public Chord setEndAngle(final double angle)
-    {
+    public Chord setEndAngle(final double angle) {
         this.endAngle = angle;
 
         return this;
@@ -189,8 +172,7 @@ public class Chord extends Shape<Chord>
      *
      * @return boolean
      */
-    public boolean isCounterClockwise()
-    {
+    public boolean isCounterClockwise() {
         return this.counterClockwise;
     }
 
@@ -200,23 +182,20 @@ public class Chord extends Shape<Chord>
      * @param counterClockwise If true, it's drawn counter clockwise.
      * @return this chord
      */
-    public Chord setCounterClockwise(final boolean counterClockwise)
-    {
+    public Chord setCounterClockwise(final boolean counterClockwise) {
         this.counterClockwise = counterClockwise;
 
         return this;
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return Arrays.asList(Attribute.RADIUS, Attribute.START_ANGLE, Attribute.END_ANGLE, Attribute.COUNTER_CLOCKWISE);
     }
 
-    public static class ChordFactory extends ShapeFactory<Chord>
-    {
-        public ChordFactory()
-        {
+    public static class ChordFactory extends ShapeFactory<Chord> {
+
+        public ChordFactory() {
             super(ShapeType.CHORD);
 
             addAttribute(Attribute.RADIUS, true);

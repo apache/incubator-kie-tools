@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.core.mediator;
 
-import elemental2.dom.UIEvent;
+import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
@@ -25,52 +25,51 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
 import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.tools.client.event.INodeEvent.Type;
-import java.util.function.Consumer;
-import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
+import elemental2.dom.UIEvent;
+
 /**
  * MouseBoxZoomMediator zooms in when the user drags a rectangular area.
  * <p>
- * The visual style of the drag box can be modified by changing the 
+ * The visual style of the drag box can be modified by changing the
  * attributes of the Rectangle primitive.
- * The default drag box uses a black outline of 1 pixel wide and 
+ * The default drag box uses a black outline of 1 pixel wide and
  * an opacity (alpha value) of 0.5.
  * <p>
  * The dimensions of the zoom box will be adjusted to match the aspect ratio
  * of the viewport, thus maintaining the same scaleWithXY in the X and Y axes.
- * 
+ *
  * @see Mediators
- * 
  * @since 1.1
  */
-public class MouseBoxZoomMediator extends AbstractMediator
-{
-    private double    m_maxScale         = Double.MAX_VALUE;
+public class MouseBoxZoomMediator extends AbstractMediator {
 
-    private Point2D   m_start            = null;
+    private double m_maxScale = Double.MAX_VALUE;
 
-    private Point2D   m_end              = new Point2D(0, 0);
+    private Point2D m_start = null;
+
+    private Point2D m_end = new Point2D(0, 0);
 
     private Transform m_inverseTransform = null;
 
-    private boolean   m_dragging         = false;
+    private boolean m_dragging = false;
 
-    private Layer     m_dragLayer        = null;
+    private Layer m_dragLayer = null;
 
-    private Rectangle m_rectangle        = null;
+    private Rectangle m_rectangle = null;
 
-    private boolean   m_addedRectangle   = false;
+    private boolean m_addedRectangle = false;
 
-    private Consumer<Transform> m_onTransform     = transform -> {};
+    private Consumer<Transform> m_onTransform = transform -> {
+    };
 
-    public MouseBoxZoomMediator()
-    {
+    public MouseBoxZoomMediator() {
         setDefaultRectangle();
     }
 
-    public MouseBoxZoomMediator(final IEventFilter... filters)
-    {
+    public MouseBoxZoomMediator(final IEventFilter... filters) {
         this();
 
         setEventFilter(EventFilter.and(filters));
@@ -78,26 +77,24 @@ public class MouseBoxZoomMediator extends AbstractMediator
 
     /**
      * Sets the maximum scale of the viewport.
-     *
+     * <p>
      * The default value is Double.MAX_VALUE (unlimited.)
      *
      * @return double
      */
-    public double getMaxScale()
-    {
+    public double getMaxScale() {
         return m_maxScale;
     }
 
     /**
      * Sets the maximum scale of the viewport.
-     *
+     * <p>
      * The default value is Double.MAX_VALUE (unlimited.)
      *
      * @param maxScale double
      * @return MouseBoxZoomMediator
      */
-    public MouseBoxZoomMediator setMaxScale(final double maxScale)
-    {
+    public MouseBoxZoomMediator setMaxScale(final double maxScale) {
         m_maxScale = maxScale;
 
         return this;
@@ -108,42 +105,37 @@ public class MouseBoxZoomMediator extends AbstractMediator
      *
      * @return {@link Rectangle}
      */
-    public Rectangle getRectangle()
-    {
+    public Rectangle getRectangle() {
         return m_rectangle;
     }
 
     /**
      * Sets the {@link Rectangle} that is used to draw the zoom box.
+     *
      * @param r {@link Rectangle}
      * @return MouseBoxZoomMediator
      */
-    public MouseBoxZoomMediator setRectangle(final Rectangle r)
-    {
+    public MouseBoxZoomMediator setRectangle(final Rectangle r) {
         m_rectangle = r;
 
         return this;
     }
 
-    public MouseBoxZoomMediator setOnTransform(final Consumer<Transform> m_onTransform)
-    {
+    public MouseBoxZoomMediator setOnTransform(final Consumer<Transform> m_onTransform) {
         this.m_onTransform = m_onTransform;
 
         return this;
     }
 
-    public Consumer<Transform> getOnTransform()
-    {
+    public Consumer<Transform> getOnTransform() {
         return m_onTransform;
     }
 
     @Override
-    public void cancel()
-    {
+    public void cancel() {
         m_dragging = false;
 
-        if (m_addedRectangle)
-        {
+        if (m_addedRectangle) {
             m_dragLayer.remove(m_rectangle);
 
             m_addedRectangle = false;
@@ -153,32 +145,23 @@ public class MouseBoxZoomMediator extends AbstractMediator
     }
 
     @Override
-    public <H extends EventHandler> boolean handleEvent(Type<H> type, final UIEvent event, int x, int y)
-    {
-        if (type == NodeMouseMoveEvent.getType())
-        {
-            if (m_dragging)
-            {
+    public <H extends EventHandler> boolean handleEvent(Type<H> type, final UIEvent event, int x, int y) {
+        if (type == NodeMouseMoveEvent.getType()) {
+            if (m_dragging) {
                 onMouseMove(x, y);
                 return true;
             }
             return false;
-        }
-        else if (type == NodeMouseDownEvent.getType())
-        {
+        } else if (type == NodeMouseDownEvent.getType()) {
             final IEventFilter filter = getEventFilter();
 
-            if ((null == filter) || (!filter.isEnabled()) || (filter.test(event)))
-            {
+            if ((null == filter) || (!filter.isEnabled()) || (filter.test(event))) {
                 onMouseDown(x, y);
                 return true;
             }
             return false;
-        }
-        else if (type == NodeMouseUpEvent.getType())
-        {
-            if (m_dragging)
-            {
+        } else if (type == NodeMouseUpEvent.getType()) {
+            if (m_dragging) {
                 onMouseUp(x, y);
                 return true;
             }
@@ -186,8 +169,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
         return false;
     }
 
-    protected void onMouseDown(int x, int y)
-    {
+    protected void onMouseDown(int x, int y) {
         m_start = new Point2D(x, y);
 
         m_dragging = true;
@@ -196,8 +178,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
 
         Transform transform = m_dragLayer.isTransformable() ? getViewport().getTransform() : null;
 
-        if (transform == null)
-        {
+        if (transform == null) {
             transform = new Transform();
         }
         m_rectangle.setStrokeWidth(1 / transform.getScaleX());
@@ -209,8 +190,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
         m_addedRectangle = false;
     }
 
-    protected void onMouseMove(int eventX, int eventY)
-    {
+    protected void onMouseMove(int eventX, int eventY) {
         m_end.setX(eventX).setY(eventY);
 
         m_inverseTransform.transform(m_end, m_end);
@@ -223,22 +203,19 @@ public class MouseBoxZoomMediator extends AbstractMediator
 
         double dy = m_end.getY() - y;
 
-        if (dx < 0)
-        {
+        if (dx < 0) {
             x += dx;
 
             dx = -dx;
         }
-        if (dy < 0)
-        {
+        if (dy < 0) {
             y += dy;
 
             dy = -dy;
         }
         m_rectangle.setX(x).setY(y).setWidth(dx).setHeight(dy);
 
-        if (!m_addedRectangle)
-        {
+        if (!m_addedRectangle) {
             m_addedRectangle = true;
 
             m_dragLayer.add(m_rectangle);
@@ -246,8 +223,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
         m_dragLayer.draw();
     }
 
-    protected void onMouseUp(int eventX, int eventY)
-    {
+    protected void onMouseUp(int eventX, int eventY) {
         cancel();
 
         m_end.setX(eventX).setY(eventY);
@@ -262,14 +238,12 @@ public class MouseBoxZoomMediator extends AbstractMediator
 
         double dy = m_end.getY() - y;
 
-        if (dx < 0)
-        {
+        if (dx < 0) {
             x += dx;
 
             dx = -dx;
         }
-        if (dy < 0)
-        {
+        if (dy < 0) {
             y += dy;
 
             dy = -dy;
@@ -281,8 +255,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
         Transform transform = Transform.createViewportTransform(x, y, dx, dy, getViewport().getWidth(), getViewport().getHeight());
 
         // prevent zooming in too far
-        if (null != transform && scale > m_maxScale)
-        {
+        if (null != transform && scale > m_maxScale) {
             double ds = m_maxScale / scale;
             transform.scaleAboutPoint(ds, m_start.getX(), m_start.getY());
         }
@@ -293,19 +266,14 @@ public class MouseBoxZoomMediator extends AbstractMediator
 
         m_onTransform.accept(transform);
 
-        if (isBatchDraw())
-        {
+        if (isBatchDraw()) {
             getViewport().getScene().batch();
-        }
-        else
-        {
+        } else {
             getViewport().getScene().draw();
         }
     }
 
-    protected void setDefaultRectangle()
-    {
+    protected void setDefaultRectangle() {
         setRectangle(new Rectangle(1, 1).setStrokeColor(new Color(0, 0, 0, 0.5)));
     }
-
 }

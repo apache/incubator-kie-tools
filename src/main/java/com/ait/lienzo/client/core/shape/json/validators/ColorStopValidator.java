@@ -16,14 +16,13 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-public class ColorStopValidator extends ObjectValidator
-{
-    public static final ColorStopValidator INSTANCE       = new ColorStopValidator();
+public class ColorStopValidator extends ObjectValidator {
 
-    public static final ArrayValidator     ARRAY_INSTANCE = new ArrayValidator(INSTANCE);
+    public static final ColorStopValidator INSTANCE = new ColorStopValidator();
 
-    public ColorStopValidator()
-    {
+    public static final ArrayValidator ARRAY_INSTANCE = new ArrayValidator(INSTANCE);
+
+    public ColorStopValidator() {
         super("ColorStop");
 
         addAttribute("stop", NumberValidator.INSTANCE, true);

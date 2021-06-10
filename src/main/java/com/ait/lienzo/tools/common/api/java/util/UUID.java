@@ -16,16 +16,14 @@
 
 package com.ait.lienzo.tools.common.api.java.util;
 
-public final class UUID
-{    
+public final class UUID {
+
     private static final char[] CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
-    protected UUID()
-    {
+    protected UUID() {
     }
 
-    public static final String uuid()
-    {
+    public static final String uuid() {
         final char[] uuid = new char[36];
 
         // rfc4122 requires these characters
@@ -37,10 +35,8 @@ public final class UUID
         // Fill in random data. At i==19 set the high bits of clock sequence as
         // per rfc4122, sec. 4.1.5
 
-        for (int i = 0; i < 36; i++)
-        {
-            if (uuid[i] == 0)
-            {
+        for (int i = 0; i < 36; i++) {
+            if (uuid[i] == 0) {
                 final int r = (int) (Math.random() * 16);
 
                 uuid[i] = CHARS[(i == 19) ? (r & 0x3) | 0x8 : r & 0xf];

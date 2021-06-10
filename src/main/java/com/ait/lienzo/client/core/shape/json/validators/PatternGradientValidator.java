@@ -19,12 +19,11 @@ package com.ait.lienzo.client.core.shape.json.validators;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.shared.core.types.FillRepeat;
 
-public class PatternGradientValidator extends ObjectValidator
-{
+public class PatternGradientValidator extends ObjectValidator {
+
     public static final PatternGradientValidator INSTANCE = new PatternGradientValidator();
 
-    public PatternGradientValidator()
-    {
+    public PatternGradientValidator() {
         super(PatternGradient.TYPE);
 
         addAttribute("type", StringValidator.INSTANCE, true); // must be "PatternGradient"
@@ -32,13 +31,12 @@ public class PatternGradientValidator extends ObjectValidator
         addAttribute("repeat", new EnumValidator<FillRepeat>("FillRepeat", FillRepeat.values()), true); // default: "repeat"
 
         addAttribute("src", StringValidator.INSTANCE, true);
-        
+
         addAttribute("image", IgnoreTypeValidator.INSTANCE, false);
     }
 
     @Override
-    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
-    {
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException {
         super.validate(jval, ctx);
 
         checkHardcodedAttribute("type", PatternGradient.TYPE, jval, ctx);

@@ -20,77 +20,65 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-
 import jsinterop.base.Js;
 
-public class GammaImageDataFilter extends AbstractValueTableImageDataFilter<GammaImageDataFilter>
-{
-    private double           m_value = Double.NaN;
+public class GammaImageDataFilter extends AbstractValueTableImageDataFilter<GammaImageDataFilter> {
+
+    private double m_value = Double.NaN;
 
     private FilterTableArray m_table = null;
 
-    public GammaImageDataFilter()
-    {
+    public GammaImageDataFilter() {
         super(ImageFilterType.GammaImageDataFilterType, 1);
     }
 
-    public GammaImageDataFilter(double value)
-    {
+    public GammaImageDataFilter(double value) {
         super(ImageFilterType.GammaImageDataFilterType, value);
     }
 
-    protected GammaImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
-    {
+    protected GammaImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
         super(ImageFilterType.GammaImageDataFilterType, node, ctx);
     }
 
     @Override
-    public double getMinValue()
-    {
+    public double getMinValue() {
         return 0;
     }
 
     @Override
-    public double getMaxValue()
-    {
+    public double getMaxValue() {
         return 2;
     }
 
     @Override
-    public double getRefValue()
-    {
+    public double getRefValue() {
         return 1;
     }
 
     @Override
-    protected final FilterTableArray getTable(double value)
-    {
-        if (value != m_value)
-        {
+    protected final FilterTableArray getTable(double value) {
+        if (value != m_value) {
             m_table = getTable_(m_value = value);
         }
         return m_table;
     }
 
-    private final FilterTableArray getTable_(double value)
-    {
+    private final FilterTableArray getTable_(double value) {
         int[] table = new int[256];
-        for(int i = 0; i < 256; i++) {
+        for (int i = 0; i < 256; i++) {
             table[i] = Js.coerceToInt(255 * Math.pow(i / 255, 1 / value) + 0.5);
         }
         return new FilterTableArray(table);
     }
 
     @Override
-    public IFactory<GammaImageDataFilter> getFactory()
-    {
+    public IFactory<GammaImageDataFilter> getFactory() {
         return new GammaImageDataFilterFactory();
     }
 
-    public static class GammaImageDataFilterFactory extends ValueTableImageDataFilterFactory<GammaImageDataFilter>
-    {
-        public GammaImageDataFilterFactory()
-        {
+    public static class GammaImageDataFilterFactory extends ValueTableImageDataFilterFactory<GammaImageDataFilter> {
+
+        public GammaImageDataFilterFactory() {
             super(ImageFilterType.GammaImageDataFilterType);
         }
     }

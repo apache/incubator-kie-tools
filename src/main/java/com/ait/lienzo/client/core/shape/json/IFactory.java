@@ -36,34 +36,36 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
  * @param <T> IJSONSerializable
  * @since 1.1
  */
-public interface IFactory<T extends IJSONSerializable<T>>
-{
+public interface IFactory<T extends IJSONSerializable<T>> {
+
     /**
      * Returns the type name that is used when serializing an object of this type.
      * <p>
      * See {@link ShapeType} and {@link NodeType} for the type names used by the Lienzo toolkit
      * (and makeXY sure you don't use the same names!)
-     * 
+     *
      * @return String e.g. "Circle" for the Circle class
      */
     String getTypeName();
 
     /**
      * Returns a collection of all the attributes that this type supports.
+     *
      * @return Collection&lt;Attribute&gt;
      */
     Collection<Attribute> getAttributeSheet();
 
     /**
      * Returns a collection of the required attributes that this type supports.
+     *
      * @return Collection&lt;Attribute&gt;
      */
     Collection<Attribute> getRequiredAttributes();
 
     /**
-     * Returns the {@link AttributeType} of the attribute with the specified 
+     * Returns the {@link AttributeType} of the attribute with the specified
      * attributeName.
-     * 
+     *
      * @param attributeName
      * @return AttributeType
      */

@@ -27,42 +27,36 @@ import elemental2.dom.WheelEvent;
 
 /**
  * MouseWheelZoomMediator zooms in or out when the mouse wheel is moved.
- * 
+ *
  * @see Mediators
- * 
  * @since 1.1
  */
-public class MouseWheelZoomMediator extends AbstractMediator
-{
-    private double  m_minScale          = 0;
+public class MouseWheelZoomMediator extends AbstractMediator {
 
-    private double  m_maxScale          = Double.MAX_VALUE;
+    private double m_minScale = 0;
 
-    private boolean m_downZoomOut       = true;
+    private double m_maxScale = Double.MAX_VALUE;
 
-    private double  m_zoomFactor        = 0.1;
+    private boolean m_downZoomOut = true;
 
-    private boolean m_scaleAboutPoint   = true;
+    private double m_zoomFactor = 0.1;
 
-    public MouseWheelZoomMediator()
-    {
+    private boolean m_scaleAboutPoint = true;
+
+    public MouseWheelZoomMediator() {
         LienzoPanelImpl.enableWindowMouseWheelScroll(true);
     }
 
-    public MouseWheelZoomMediator(final IEventFilter... filters)
-    {
+    public MouseWheelZoomMediator(final IEventFilter... filters) {
         setEventFilter(EventFilter.and(filters));
     }
 
     @Override
-    public <H extends EventHandler> boolean handleEvent(Type<H> type, final UIEvent event, int x, int y)
-    {
-        if (type == NodeMouseWheelEvent.getType())
-        {
+    public <H extends EventHandler> boolean handleEvent(Type<H> type, final UIEvent event, int x, int y) {
+        if (type == NodeMouseWheelEvent.getType()) {
             final IEventFilter filter = getEventFilter();
 
-            if ((null == filter) || (!filter.isEnabled()) || (filter.test(event)))
-            {
+            if ((null == filter) || (!filter.isEnabled()) || (filter.test(event))) {
                 onMouseWheel((WheelEvent) event, x, y);
 
                 return true;
@@ -72,45 +66,40 @@ public class MouseWheelZoomMediator extends AbstractMediator
     }
 
     @Override
-    public void cancel()
-    {
+    public void cancel() {
         // nothing to do
     }
 
-    public MouseWheelZoomMediator setScaleAboutPoint(final boolean s)
-    {
+    public MouseWheelZoomMediator setScaleAboutPoint(final boolean s) {
         m_scaleAboutPoint = s;
 
         return this;
     }
 
-    public boolean isScaleAboutPoint()
-    {
+    public boolean isScaleAboutPoint() {
         return m_scaleAboutPoint;
     }
 
     /**
      * Sets the minimum scaleWithXY of the viewport.
-     * 
+     * <p>
      * The default value is 0 (unlimited.)
-     * 
+     *
      * @return double
      */
-    public double getMinScale()
-    {
+    public double getMinScale() {
         return m_minScale;
     }
 
     /**
      * Sets the minimum scaleWithXY of the viewport.
-     * 
+     * <p>
      * The default value is 0 (unlimited.)
-     * 
+     *
      * @param minScale
      * @return MouseWheelZoomMediator
      */
-    public MouseWheelZoomMediator setMinScale(final double minScale)
-    {
+    public MouseWheelZoomMediator setMinScale(final double minScale) {
         m_minScale = minScale;
 
         return this;
@@ -118,26 +107,24 @@ public class MouseWheelZoomMediator extends AbstractMediator
 
     /**
      * Sets the maximum scaleWithXY of the viewport.
-     * 
+     * <p>
      * The default value is Double.MAX_VALUE (unlimited.)
-     * 
+     *
      * @return double
      */
-    public double getMaxScale()
-    {
+    public double getMaxScale() {
         return m_maxScale;
     }
 
     /**
      * Sets the maximum scaleWithXY of the viewport.
-     * 
+     * <p>
      * The default value is Double.MAX_VALUE (unlimited.)
-     * 
+     *
      * @param maxScale double
      * @return MouseWheelZoomMediator
      */
-    public MouseWheelZoomMediator setMaxScale(final double maxScale)
-    {
+    public MouseWheelZoomMediator setMaxScale(final double maxScale) {
         m_maxScale = maxScale;
 
         return this;
@@ -145,25 +132,23 @@ public class MouseWheelZoomMediator extends AbstractMediator
 
     /**
      * Returns whether rolling the mouse wheel down will zoom out.
-     * 
+     * <p>
      * The default value is true.
-     * 
+     *
      * @return boolean
      */
-    public boolean isDownZoomOut()
-    {
+    public boolean isDownZoomOut() {
         return m_downZoomOut;
     }
 
     /**
      * Sets whether rolling the mouse wheel down will zoom out.
-     * 
+     * <p>
      * The default value is true.
-     * 
+     *
      * @param downZoomOut
      */
-    public MouseWheelZoomMediator setDownZoomOut(final boolean downZoomOut)
-    {
+    public MouseWheelZoomMediator setDownZoomOut(final boolean downZoomOut) {
         m_downZoomOut = downZoomOut;
 
         return this;
@@ -171,37 +156,33 @@ public class MouseWheelZoomMediator extends AbstractMediator
 
     /**
      * Returns the zoom factor by which we zoom in or out when the mouse wheel is moved.
-     * 
+     * <p>
      * The default value is 0.1 (10%)
-     *   
+     *
      * @return double
      */
-    public double getZoomFactor()
-    {
+    public double getZoomFactor() {
         return m_zoomFactor;
     }
 
     /**
      * Sets the zoom factor by which we zoom in or out when the mouse wheel is moved.
-     * 
+     * <p>
      * The default value is 0.1 (10%)
-     * 
+     *
      * @param zoomFactor double
      * @return MouseSwipeZoomMediator
      */
-    public MouseWheelZoomMediator setZoomFactor(final double zoomFactor)
-    {
+    public MouseWheelZoomMediator setZoomFactor(final double zoomFactor) {
         m_zoomFactor = zoomFactor;
 
         return this;
     }
 
-    protected void onMouseWheel(WheelEvent event, int x, int y)
-    {
+    protected void onMouseWheel(WheelEvent event, int x, int y) {
         Transform transform = getTransform();
 
-        if (transform == null)
-        {
+        if (transform == null) {
             setTransform(transform = new Transform());
         }
         double scaleDelta;
@@ -210,9 +191,7 @@ public class MouseWheelZoomMediator extends AbstractMediator
         {
             // zoom out
             scaleDelta = 1 / (1 + m_zoomFactor);
-        }
-        else
-        {
+        } else {
             // zoom in
             scaleDelta = 1 + m_zoomFactor;
         }
@@ -222,40 +201,31 @@ public class MouseWheelZoomMediator extends AbstractMediator
 
         double newScale = currentScale * scaleDelta;
 
-        if (newScale < m_minScale)
-        {
+        if (newScale < m_minScale) {
             scaleDelta = m_minScale / currentScale;
         }
-        if ((m_maxScale > 0) && (newScale > m_maxScale))
-        {
+        if ((m_maxScale > 0) && (newScale > m_maxScale)) {
             scaleDelta = m_maxScale / currentScale;
         }
 
-        if (m_scaleAboutPoint)
-        {
+        if (m_scaleAboutPoint) {
 
             Point2D p = new Point2D(x, y);
 
             transform.getInverse().transform(p, p);
 
-
             transform = transform.copy();
 
             transform.scaleAboutPoint(scaleDelta, p.getX(), p.getY());
-        }
-        else
-        {
+        } else {
             transform.scale(scaleDelta);
         }
 
         setTransform(transform);
 
-        if (isBatchDraw())
-        {
+        if (isBatchDraw()) {
             getViewport().getScene().batch();
-        }
-        else
-        {
+        } else {
             getViewport().getScene().draw();
         }
     }

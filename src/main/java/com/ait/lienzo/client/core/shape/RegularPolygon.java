@@ -20,22 +20,19 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
-
 import jsinterop.annotations.JsProperty;
 
 /**
- * In Euclidean geometry, a regular polygon is a polygon that is equiangular (all angles are equal in measure) 
+ * In Euclidean geometry, a regular polygon is a polygon that is equiangular (all angles are equal in measure)
  * and equilateral (all sides have the same length).  All regular polygons fit perfectly inside a circle.
  */
-public class RegularPolygon extends Shape<RegularPolygon>
-{
+public class RegularPolygon extends Shape<RegularPolygon> {
+
     @JsProperty
     private double radius;
 
@@ -49,27 +46,24 @@ public class RegularPolygon extends Shape<RegularPolygon>
 
     /**
      * Constructor. Creates an instance of a regular polygon.
-     * 
-     * @param sides number of sides
+     *
+     * @param sides  number of sides
      * @param radius size of the encompassing circle
      */
-    public RegularPolygon(final int sides, final double radius)
-    {
+    public RegularPolygon(final int sides, final double radius) {
         super(ShapeType.REGULAR_POLYGON);
 
         setRadius(radius).setSides(sides);
     }
 
-    public RegularPolygon(final int sides, final double radius, final double corner)
-    {
+    public RegularPolygon(final int sides, final double radius, final double corner) {
         this(sides, radius);
 
         setCornerRadius(corner);
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         final int s = getSides();
 
         final double r = getRadius();
@@ -82,14 +76,12 @@ public class RegularPolygon extends Shape<RegularPolygon>
 
         double maxy = 0;
 
-        if ((s > 2) && (r > 0))
-        {
+        if ((s > 2) && (r > 0)) {
             minx = maxx = 0;
 
             miny = maxy = 0 - r;
 
-            for (int n = 1; n < s; n++)
-            {
+            for (int n = 1; n < s; n++) {
                 double x = (r * Math.sin(n * 2 * Math.PI / s));
 
                 double y = (-1 * r * Math.cos(n * 2 * Math.PI / s));
@@ -108,21 +100,17 @@ public class RegularPolygon extends Shape<RegularPolygon>
 
     /**
      * Draws this regular polygon
-     * 
+     *
      * @context
      */
     @Override
-    protected boolean prepare(final Context2D context, final double alpha)
-    {
-        if (m_list.size() < 1)
-        {
-            if (!parse())
-            {
+    protected boolean prepare(final Context2D context, final double alpha) {
+        if (m_list.size() < 1) {
+            if (!parse()) {
                 return false;
             }
         }
-        if (m_list.size() < 1)
-        {
+        if (m_list.size() < 1) {
             return false;
         }
         context.path(m_list);
@@ -130,34 +118,27 @@ public class RegularPolygon extends Shape<RegularPolygon>
         return true;
     }
 
-    private boolean parse()
-    {
+    private boolean parse() {
         final int sides = getSides();
 
         final double radius = getRadius();
 
-        if ((sides > 2) && (radius > 0))
-        {
+        if ((sides > 2) && (radius > 0)) {
             m_list.M(0, 0 - radius);
 
             final double corner = getCornerRadius();
 
-            if (corner <= 0)
-            {
-                for (int n = 1; n < sides; n++)
-                {
+            if (corner <= 0) {
+                for (int n = 1; n < sides; n++) {
                     final double theta = (n * 2 * Math.PI / sides);
 
                     m_list.L(radius * Math.sin(theta), -1 * radius * Math.cos(theta));
                 }
                 m_list.Z();
-            }
-            else
-            {
+            } else {
                 final Point2DArray list = new Point2DArray().pushXY(0, 0 - radius);
 
-                for (int n = 1; n < sides; n++)
-                {
+                for (int n = 1; n < sides; n++) {
                     final double theta = (n * 2 * Math.PI / sides);
 
                     list.pushXY(radius * Math.sin(theta), -1 * radius * Math.cos(theta));
@@ -170,8 +151,7 @@ public class RegularPolygon extends Shape<RegularPolygon>
     }
 
     @Override
-    public RegularPolygon refresh()
-    {
+    public RegularPolygon refresh() {
         m_list.clear();
 
         return this;
@@ -179,47 +159,42 @@ public class RegularPolygon extends Shape<RegularPolygon>
 
     /**
      * Gets this regular polygon's encompassing circle's radius.
-     * 
+     *
      * @return double
      */
-    public double getRadius()
-    {
+    public double getRadius() {
         return this.radius;
     }
 
     /**
      * Sets the size of this regular polygon, expressed by the radius of the enclosing circle.
-     * 
+     *
      * @param radius
      * @return this RegularPolygon
      */
-    public RegularPolygon setRadius(final double radius)
-    {
-       this.radius = radius;
+    public RegularPolygon setRadius(final double radius) {
+        this.radius = radius;
 
         return refresh();
     }
 
     /**
      * Gets the number of sides this regular polygon has.
-     * 
+     *
      * @return int
      */
-    public int getSides()
-    {
+    public int getSides() {
         return this.sides;
     }
 
     /**
      * Sets the number of sides this regular polygon has.
-     * 
+     *
      * @param sides
      * @return this RegularPolygon
      */
-    public RegularPolygon setSides(final int sides)
-    {
-        if (sides < 3)
-        {
+    public RegularPolygon setSides(final int sides) {
+        if (sides < 3) {
             throw new IllegalArgumentException("Cannot have less than 3 sides");
         }
         this.sides = sides;
@@ -227,28 +202,24 @@ public class RegularPolygon extends Shape<RegularPolygon>
         return refresh();
     }
 
-    public double getCornerRadius()
-    {
+    public double getCornerRadius() {
         return this.cornerRadius;
     }
 
-    public RegularPolygon setCornerRadius(final double radius)
-    {
+    public RegularPolygon setCornerRadius(final double radius) {
         this.cornerRadius = cornerRadius;
 
         return refresh();
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.RADIUS, Attribute.SIDES, Attribute.CORNER_RADIUS);
     }
 
-    public static class RegularPolygonFactory extends ShapeFactory<RegularPolygon>
-    {
-        public RegularPolygonFactory()
-        {
+    public static class RegularPolygonFactory extends ShapeFactory<RegularPolygon> {
+
+        public RegularPolygonFactory() {
             super(ShapeType.REGULAR_POLYGON);
 
             addAttribute(Attribute.RADIUS, true);

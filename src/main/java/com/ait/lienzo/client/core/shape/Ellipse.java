@@ -20,11 +20,8 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-
 import jsinterop.annotations.JsProperty;
 
 /**
@@ -32,8 +29,8 @@ import jsinterop.annotations.JsProperty;
  * The center of the ellipse will be at (0,0) unless
  * it is moved by setting X, Y, OFFSET or TRANSFORM attributes.
  */
-public class Ellipse extends Shape<Ellipse>
-{
+public class Ellipse extends Shape<Ellipse> {
+
     @JsProperty
     private double width;
 
@@ -44,20 +41,18 @@ public class Ellipse extends Shape<Ellipse>
      * Constructor. Creates an instance of an ellipse.
      * The center of the ellipse will be at (0,0) unless
      * it is moved by setting X, Y, OFFSET or TRANSFORM attributes.
-     * 
+     *
      * @param width
      * @param height
      */
-    public Ellipse(final double width, final double height)
-    {
+    public Ellipse(final double width, final double height) {
         super(ShapeType.ELLIPSE);
 
         setWidth(width).setHeight(height);
     }
 
     @Override
-    public BoundingBox getBoundingBox()
-    {
+    public BoundingBox getBoundingBox() {
         final double w = getWidth() / 2;
 
         final double h = getHeight() / 2;
@@ -66,25 +61,22 @@ public class Ellipse extends Shape<Ellipse>
     }
 
     @Override
-    protected boolean doStrokeExtraProperties()
-    {
+    protected boolean doStrokeExtraProperties() {
         return false;
     }
 
     /**
      * Draws this ellipse.
-     * 
+     *
      * @param context the {@link Context2D} used to draw this ellipse.
      */
     @Override
-    protected boolean prepare(final Context2D context, final double alpha)
-    {
+    protected boolean prepare(final Context2D context, final double alpha) {
         final double w = getWidth();
 
         final double h = getHeight();
 
-        if ((w > 0) && (h > 0))
-        {
+        if ((w > 0) && (h > 0)) {
             context.beginPath();
 
             context.ellipse(0, 0, w / 2, h / 2, 0, 0, Math.PI * 2, true);
@@ -101,8 +93,7 @@ public class Ellipse extends Shape<Ellipse>
      *
      * @return double
      */
-    public double getWidth()
-    {
+    public double getWidth() {
         return this.width;
     }
 
@@ -112,8 +103,7 @@ public class Ellipse extends Shape<Ellipse>
      * @param width
      * @return this ellipse
      */
-    public Ellipse setWidth(final double width)
-    {
+    public Ellipse setWidth(final double width) {
         this.width = width;
 
         return this;
@@ -124,8 +114,7 @@ public class Ellipse extends Shape<Ellipse>
      *
      * @return double
      */
-    public double getHeight()
-    {
+    public double getHeight() {
         return this.height;
     }
 
@@ -135,23 +124,20 @@ public class Ellipse extends Shape<Ellipse>
      * @param height
      * @return this ellipse
      */
-    public Ellipse setHeight(final double height)
-    {
+    public Ellipse setHeight(final double height) {
         this.height = height;
 
         return this;
     }
 
     @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
+    public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.WIDTH, Attribute.HEIGHT);
     }
 
-    public static class EllipseFactory extends ShapeFactory<Ellipse>
-    {
-        public EllipseFactory()
-        {
+    public static class EllipseFactory extends ShapeFactory<Ellipse> {
+
+        public EllipseFactory() {
             super(ShapeType.ELLIPSE);
 
             addAttribute(Attribute.WIDTH, true);

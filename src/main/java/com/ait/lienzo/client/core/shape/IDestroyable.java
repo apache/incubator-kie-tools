@@ -17,10 +17,9 @@
 package com.ait.lienzo.client.core.shape;
 
 /**
- *  For stateful shape instances, in order to destroy its state.
+ * For stateful shape instances, in order to destroy its state.
  */
 public interface IDestroyable {
 
     void destroy();
-
 }

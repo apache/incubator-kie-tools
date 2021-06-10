@@ -12,6 +12,7 @@ public class LienzoPanelScrollEventDetail extends LienzoPanelEventDetail {
     public static LienzoPanelScrollEventDetail getScrollDetail(Event event) {
         return (LienzoPanelScrollEventDetail) ((CustomEvent) event).detail;
     }
+
     public LienzoPanelScrollEventDetail(LienzoPanel panel,
                                         double px,
                                         double py) {
