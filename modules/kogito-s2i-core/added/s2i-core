@@ -103,15 +103,15 @@ function build_kogito_app() {
 
     else
         local ARCHETYPE_ARTIFACT_ID
+        # for product builds, the "dm" identifier will be used
+        local BUILD_IDENTIFIER="-"
+        if [[ "${JBOSS_IMAGE_NAME}" =~ "rhpam-7" ]]; then
+            BUILD_IDENTIFIER="-dm-"
+        fi
         if [ "${RUNTIME_TYPE}" == "${QUARKUS_RUNTIME_TYPE}" ]; then
-             if [[ "${JBOSS_IMAGE_NAME}" =~ "rhpam-7" ]]; then
-                ARCHETYPE_ARTIFACT_ID='kogito-quarkus-dm-archetype'
-            else
-                ARCHETYPE_ARTIFACT_ID='kogito-quarkus-archetype'
-            fi
+            ARCHETYPE_ARTIFACT_ID="kogito-quarkus${BUILD_IDENTIFIER}archetype"
         elif [ "${RUNTIME_TYPE}" == "${SPRINGBOOT_RUNTIME_TYPE}" ]; then
-            ARCHETYPE_ARTIFACT_ID="kogito-springboot-archetype"
-
+            ARCHETYPE_ARTIFACT_ID="kogito-springboot${BUILD_IDENTIFIER}archetype"
         else
             log_error "---> Invalid RUNTIME_TYPE(${RUNTIME_TYPE}) provided, failing build..."
             exit 1

@@ -102,3 +102,22 @@ Feature: kogito-builder image tests
       | request_method        | POST                          |
       | content_type          | application/cloudevents+json  |
       | request_body          | {"specversion": "1.0", "source": "behave", "type": "orderEvent", "id": "12345", "data": {"id":"f0643c68-609c-48aa-a820-5df423fa4fe0","country":"Brazil","total":10000,"description":"iPhone 12"}}|
+
+#### SpringBoot Scenarios
+
+  Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly when runtime is springboot
+    Given s2i build /tmp/kogito-examples from dmn-example using nightly-master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+      | variable       | value          |
+      | KOGITO_VERSION | 2.0.0-SNAPSHOT |
+      | RUNTIME_TYPE   | springboot     |
+    Then file /home/kogito/bin/project-1.0-SNAPSHOT.jar should exist
+    And s2i build log should contain Generating springboot project structure using the kogito-springboot-archetype archetype...
+    And check that page is served
+      | property        | value                                                                                            |
+      | port            | 8080                                                                                             |
+      | path            | /Traffic%20Violation                                                                             |
+      | wait            | 80                                                                                               |
+      | expected_phrase | Should the driver be suspended?                                                                  |
+      | request_method  | POST                                                                                             |
+      | content_type    | application/json                                                                                 |
+      | request_body    | {"Driver": {"Points": 2}, "Violation": {"Type": "speed","Actual Speed": 120,"Speed Limit": 100}} |

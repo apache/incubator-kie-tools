@@ -232,14 +232,6 @@ Feature: kogito-builder image JVM build tests
     Then s2i build log should contain Expanding artifacts from incremental build...
     And s2i build log should not contain WARNING: Clean build will be performed because of error saving previous build artifacts
 
-  Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly when runtime is springboot
-    Given s2i build /tmp/kogito-examples from dmn-example using nightly-master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
-      | variable       | value          |
-      | KOGITO_VERSION | 2.0.0-SNAPSHOT |
-      | RUNTIME_TYPE   | springboot     |
-    Then file /home/kogito/bin/project-1.0-SNAPSHOT.jar should exist
-
-
   Scenario: Verify if the s2i build is finished as expected with uber-jar package type built
     Given s2i build https://github.com/kiegroup/kogito-examples.git from process-quarkus-example using nightly-master and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable          | value                           |
