@@ -53,6 +53,22 @@ In Kogito Tooling [releases page](https://github.com/kiegroup/kogito-tooling/rel
    > git clone https://github.com/kiegroup/kogito-tooling.git
    > ```
 
+1. Install NodeJs, Yarn and Lerna:
+
+   For NodeJs follow any chosen way for your operating system https://nodejs.org/en/download/package-manager/ or download and install as guided at https://github.com/nodejs/help/wiki/Installation.
+
+   Yarn installation command:
+
+   ```
+   npm install -g yarn
+   ```
+
+   Lerna installation command:
+
+   ```
+   npm install -g lerna@4.0.0
+   ```
+
 1. Build with Yarn:
 
    ```bash
