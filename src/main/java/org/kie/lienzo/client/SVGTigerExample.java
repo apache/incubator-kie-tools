@@ -4,22 +4,19 @@ import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.SVGPath;
 import com.ait.lienzo.shared.core.types.DragMode;
-import org.kie.lienzo.client.BaseExample;
 
-public class SVGTigerExample extends BaseExample implements Example
-{
+public class SVGTigerExample extends BaseExample implements Example {
+
     private Circle[] circles;
     int total = 1000;
 
-    public SVGTigerExample(final String title)
-    {
+    public SVGTigerExample(final String title) {
         super(title);
         heightOffset = 30;
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         //Performance.get().now();
 
         //final Layer layer = new Layer();

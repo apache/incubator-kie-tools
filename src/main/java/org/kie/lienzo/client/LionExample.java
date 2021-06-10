@@ -18,8 +18,8 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 
-public class LionExample extends BaseExample implements Example
-{
+public class LionExample extends BaseExample implements Example {
+
     private IPathClipper m_bbox_clip;
 
     private IPathClipper m_star_clip;
@@ -28,19 +28,17 @@ public class LionExample extends BaseExample implements Example
 
     private HTMLButtonElement m_dostar = (HTMLButtonElement) DomGlobal.document.createElement("button");
 
-    public LionExample(final String title)
-    {
+    public LionExample(final String title) {
         super(title);
     }
 
-    @Override public void init(final LienzoPanel panel, final HTMLDivElement topDiv)
-    {
+    @Override
+    public void init(final LienzoPanel panel, final HTMLDivElement topDiv) {
         super.init(panel, topDiv);
         topDiv.style.display = Display.INLINE_BLOCK.getCssName();
 
         m_doclip = (HTMLButtonElement) DomGlobal.document.createElement("button");
         m_doclip.textContent = "Rect Off";
-
 
         m_dostar = (HTMLButtonElement) DomGlobal.document.createElement("button");
         m_dostar.textContent = "Star Off";
@@ -51,8 +49,8 @@ public class LionExample extends BaseExample implements Example
         heightOffset = 30;
     }
 
-    @Override public void destroy()
-    {
+    @Override
+    public void destroy() {
         super.destroy();
 
         m_doclip.remove();
@@ -60,8 +58,7 @@ public class LionExample extends BaseExample implements Example
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         final Layer boxes = new Layer();
 
         final Rectangle rect = new Rectangle(352, 352).setX(124).setY(124).setStrokeColor(ColorName.BLACK).setStrokeWidth(3).setListening(false).setVisible(false);
@@ -76,31 +73,26 @@ public class LionExample extends BaseExample implements Example
         m_star_clip = path;
         m_star_clip.setActive(false);
 
-
         layer.setPathClipper(new BoundingBoxPathClipper(BoundingBox.fromDoubles(125, 125, 475, 475)));
         m_bbox_clip = layer.getPathClipper();
         m_bbox_clip.setActive(false);
 
         m_doclip.name = "Rect Off";
         m_doclip.onclick = (e) -> {
-            if (m_star_clip.isActive())
-            {
+            if (m_star_clip.isActive()) {
                 m_star_clip.setActive(false);
 
                 star.setVisible(false);
 
                 m_dostar.textContent = "Star Off";
             }
-            if (m_bbox_clip.isActive())
-            {
+            if (m_bbox_clip.isActive()) {
                 m_bbox_clip.setActive(false);
 
                 rect.setVisible(false);
 
                 m_doclip.textContent = "Rect Off";
-            }
-            else
-            {
+            } else {
                 layer.setPathClipper(m_bbox_clip);
 
                 m_bbox_clip.setActive(true);
@@ -117,36 +109,32 @@ public class LionExample extends BaseExample implements Example
         m_doclip.style.width = CSSProperties.WidthUnionType.of("90px");
 
         m_dostar.onclick = (e) -> {
-                if (m_bbox_clip.isActive())
-                {
-                    m_bbox_clip.setActive(false);
+            if (m_bbox_clip.isActive()) {
+                m_bbox_clip.setActive(false);
 
-                    rect.setVisible(false);
+                rect.setVisible(false);
 
-                    m_doclip.textContent = "Rect Off";
-                }
-                if (m_star_clip.isActive())
-                {
-                    m_star_clip.setActive(false);
+                m_doclip.textContent = "Rect Off";
+            }
+            if (m_star_clip.isActive()) {
+                m_star_clip.setActive(false);
 
-                    star.setVisible(false);
+                star.setVisible(false);
 
-                    m_dostar.textContent = "Star Off";
-                }
-                else
-                {
-                    layer.setPathClipper(m_star_clip);
+                m_dostar.textContent = "Star Off";
+            } else {
+                layer.setPathClipper(m_star_clip);
 
-                    m_star_clip.setActive(true);
+                m_star_clip.setActive(true);
 
-                    star.setVisible(true);
+                star.setVisible(true);
 
-                    m_dostar.textContent = "Star On";
-                }
-                layer.batch();
+                m_dostar.textContent = "Star On";
+            }
+            layer.batch();
 
-                boxes.batch();
-                return null;
+            boxes.batch();
+            return null;
         };
         m_dostar.style.width = CSSProperties.WidthUnionType.of("90px");
 
@@ -402,5 +390,4 @@ public class LionExample extends BaseExample implements Example
 
         panel.add(boxes);
     }
-
 }

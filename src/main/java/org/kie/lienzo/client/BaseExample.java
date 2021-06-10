@@ -21,8 +21,8 @@ import org.kie.lienzo.client.util.Util;
 
 import static elemental2.dom.DomGlobal.document;
 
-public abstract class BaseExample implements Example
-{
+public abstract class BaseExample implements Example {
+
     private String title;
     protected LienzoPanel panel;
     protected Layer layer;
@@ -42,21 +42,18 @@ public abstract class BaseExample implements Example
 
     protected HTMLDivElement topDiv;
 
-    public BaseExample(final String title)
-    {
+    public BaseExample(final String title) {
         this.title = title;
         console = new Console();
     }
 
     @Override
-    public String getTitle()
-    {
+    public String getTitle() {
         return title;
     }
 
     @Override
-    public void init(final LienzoPanel panel, HTMLDivElement topDiv)
-    {
+    public void init(final LienzoPanel panel, HTMLDivElement topDiv) {
         this.topDiv = topDiv;
 
         this.panel = panel;
@@ -73,31 +70,27 @@ public abstract class BaseExample implements Example
         this.panel.getViewport().pushMediator(pan);
     }
 
-    @Override public int getWidthOffset()
-    {
+    @Override
+    public int getWidthOffset() {
         return widthOffset;
     }
 
-    @Override public int getHeightOffset()
-    {
+    @Override
+    public int getHeightOffset() {
         return heightOffset;
     }
 
-    public void setRandomLocation(Shape shape)
-    {
+    public void setRandomLocation(Shape shape) {
         Util.setLocation(shape, width, height, leftPadding, topPadding, rightPadding, bottomPadding);
     }
 
     @Override
-    public void destroy()
-    {
+    public void destroy() {
         panel.destroy();
     }
 
-
     @Override
-    public void onResize()
-    {
+    public void onResize() {
         width = panel.getWidePx();
         height = panel.getHighPx();
     }
@@ -150,5 +143,4 @@ public abstract class BaseExample implements Example
         e.style.marginLeft = CSSProperties.MarginLeftUnionType.of("5px");
         e.style.marginRight = CSSProperties.MarginRightUnionType.of("5px");
     }
-
 }

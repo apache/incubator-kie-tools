@@ -57,19 +57,18 @@ public class BasicWiresExample extends BaseExample implements Example {
 
         // Rectangle - Red
         rectangleRedShape = new WiresShape(new MultiPath().rect(0, 0, 100, 100)
-                                                              .setStrokeColor("#FF0000")
-                                                              .setFillColor("#FF0000"))
+                                                   .setStrokeColor("#FF0000")
+                                                   .setFillColor("#FF0000"))
                 .setDraggable(true)
                 .setLocation(new Point2D(100, 600));
         rectangleRedShape.getGroup().setUserData(LABEL_CHILD);
         wiresManager.register(rectangleRedShape);
         wiresManager.getMagnetManager().createMagnets(rectangleRedShape);
 
-
         // Circle - Red
         circleRedShape = new WiresShape(new MultiPath().circle(50)
-                                                   .setStrokeColor("#FF0000")
-                                                   .setFillColor("#FF0000"))
+                                                .setStrokeColor("#FF0000")
+                                                .setFillColor("#FF0000"))
                 .setDraggable(true)
                 .setLocation(new Point2D(400, 600));
         circleRedShape.getGroup().setUserData(LABEL_CHILD);
@@ -78,8 +77,8 @@ public class BasicWiresExample extends BaseExample implements Example {
 
         // Rectangle - Blue
         rectangleBlueShape = new WiresShape(new MultiPath().rect(0, 0, 100, 100)
-                                                               .setStrokeColor("#0000FF")
-                                                               .setFillColor("#0000FF"))
+                                                    .setStrokeColor("#0000FF")
+                                                    .setFillColor("#0000FF"))
                 .setDraggable(true)
                 .setLocation(new Point2D(650, 600));
         rectangleBlueShape.getGroup().setUserData(LABEL_CHILD);
@@ -88,8 +87,8 @@ public class BasicWiresExample extends BaseExample implements Example {
 
         // Rectangle - Black
         rectangleBlackShape = new WiresShape(new MultiPath().rect(0, 0, 350, 450)
-                                                    .setStrokeColor("#000000")
-                                                    .setFillColor("#FFFFFF"))
+                                                     .setStrokeColor("#000000")
+                                                     .setFillColor("#FFFFFF"))
                 .setDraggable(true)
                 .setLocation(new Point2D(50, 50));
         rectangleBlackShape.getGroup().setUserData(LABEL_PARENT);
@@ -115,7 +114,6 @@ public class BasicWiresExample extends BaseExample implements Example {
         public boolean acceptContainment(WiresContainer parent, WiresShape[] children) {
             return test(parent, children);
         }
-
     };
 
     private static final IDockingAcceptor DOCKING_ACCEPTOR = new IDockingAcceptor() {
@@ -160,5 +158,4 @@ public class BasicWiresExample extends BaseExample implements Example {
     private void onButton1Click() {
         DomGlobal.alert("Button1 clicked!");
     }
-
 }

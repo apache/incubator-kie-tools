@@ -13,6 +13,7 @@ import elemental2.dom.HTMLDivElement;
 import static elemental2.dom.DomGlobal.document;
 
 public class BaseLienzoExamples {
+
     HTMLDivElement panelDiv;
 
     LienzoPanel lienzo;
@@ -44,7 +45,7 @@ public class BaseLienzoExamples {
                     new Animate("Animations"),
                     new LionExample("Polygon Lion with Clipping"),
                     new WiresExample("Wires General"),
-                    new WiresDockingExample("Wires Docking" ),
+                    new WiresDockingExample("Wires Docking"),
                     new CardinalIntersectsExample("Cardinal Intersects"),
                     new CornerRadiusExample("Corner Radius"),
                     new ShapesExample("Shapes Example"),
@@ -55,19 +56,15 @@ public class BaseLienzoExamples {
                     new ImageStripExample("Image Strip Example"),
                     new AsteroidsGameExample("Asteroids Game")
         );
-
     }
 
-    public void createTests(Example... tests)
-    {
-        for ( Example test : tests)
-        {
+    public void createTests(Example... tests) {
+        for (Example test : tests) {
             createTest(test);
         }
     }
 
-    public void createTest(Example test)
-    {
+    public void createTest(Example test) {
         HTMLDivElement e1 = (HTMLDivElement) document.createElement("div");
         HTMLDivElement top = (HTMLDivElement) document.getElementById("top");
         elemental2.dom.Text e1Text = document.createTextNode(test.getTitle());
@@ -78,16 +75,13 @@ public class BaseLienzoExamples {
             this.test = test;
             this.test.init(lienzo, top);
             this.test.run();
-
         });
         Element links = document.getElementById("nav");
         links.appendChild(e1);
     }
 
-    private void createPanel(Example test)
-    {
-        if (this.test != null)
-        {
+    private void createPanel(Example test) {
+        if (this.test != null) {
             this.test.destroy();
             this.test = null;
         }
@@ -130,7 +124,6 @@ public class BaseLienzoExamples {
             DomGlobal.console.log("Px/Py = " + detail.getPx() + ", " + detail.getPy());
         });*/
 
-
         applyGrid(lienzo);
 
 //        DomGlobal.window.addEventListener("resize", (e) ->
@@ -139,20 +132,20 @@ public class BaseLienzoExamples {
 //        });
     }
 
-    private void applyGrid( final LienzoPanel panel) {
+    private void applyGrid(final LienzoPanel panel) {
         // Grid.
-        Line line1 = new Line(0, 0, 0, 0 )
-                .setStrokeColor( "#0000FF" )
-                .setAlpha( 0.2 );
-        Line line2 = new Line( 0, 0, 0, 0 )
-                .setStrokeColor( "#00FF00"  )
-                .setAlpha( 0.2 );
+        Line line1 = new Line(0, 0, 0, 0)
+                .setStrokeColor("#0000FF")
+                .setAlpha(0.2);
+        Line line2 = new Line(0, 0, 0, 0)
+                .setStrokeColor("#00FF00")
+                .setAlpha(0.2);
 
-        line2.setDashArray( 2,
-                2 );
+        line2.setDashArray(2,
+                           2);
 
-        GridLayer gridLayer = new GridLayer(100, line1, 25, line2 );
+        GridLayer gridLayer = new GridLayer(100, line1, 25, line2);
 
-        panel.setBackgroundLayer( gridLayer );
+        panel.setBackgroundLayer(gridLayer);
     }
 }

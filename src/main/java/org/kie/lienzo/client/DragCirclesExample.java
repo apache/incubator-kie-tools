@@ -2,21 +2,18 @@ package org.kie.lienzo.client;
 
 import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.shared.core.types.Color;
-import org.kie.lienzo.client.BaseExample;
 
-public class DragCirclesExample extends BaseExample implements Example
-{
+public class DragCirclesExample extends BaseExample implements Example {
+
     private Circle[] circles;
     int total = 1000;
 
-    public DragCirclesExample(final String title)
-    {
+    public DragCirclesExample(final String title) {
         super(title);
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         this.circles = new Circle[total];
 
         for (int i = 0; i < total; i++) {
@@ -27,12 +24,11 @@ public class DragCirclesExample extends BaseExample implements Example
             setRandomLocation(circle);
 
             layer.add(circle);
-
         }
     }
 
-    @Override public void onResize()
-    {
+    @Override
+    public void onResize() {
         super.onResize();
 
         for (int i = 0; i < total; i++) {

@@ -14,28 +14,25 @@ import elemental2.dom.HTMLSelectElement;
 
 import static elemental2.dom.DomGlobal.document;
 
-public class TweeningExample extends BaseExample implements Example
-{
+public class TweeningExample extends BaseExample implements Example {
 
     private double xMoveBy;
     private Circle circle;
-    private int    RADIUS = 80;
+    private int RADIUS = 80;
     private IAnimationHandle handle;
     HTMLSelectElement select;
 
-    public TweeningExample(final String title)
-    {
+    public TweeningExample(final String title) {
         super(title);
     }
 
-    @Override public void init(final LienzoPanel panel, final HTMLDivElement topDiv)
-    {
+    @Override
+    public void init(final LienzoPanel panel, final HTMLDivElement topDiv) {
         super.init(panel, topDiv);
         topDiv.style.display = Display.INLINE_BLOCK.getCssName();
 
         select = (HTMLSelectElement) document.createElement("select");
-        for (TweenerTypes tweenerTypes : TweenerTypes.values())
-        {
+        for (TweenerTypes tweenerTypes : TweenerTypes.values()) {
             addOption(tweenerTypes, select);
         }
         topDiv.appendChild(select);
@@ -47,24 +44,22 @@ public class TweeningExample extends BaseExample implements Example
         };
     }
 
-    private void addOption(TweenerTypes tweener, HTMLSelectElement select)
-    {
+    private void addOption(TweenerTypes tweener, HTMLSelectElement select) {
         HTMLOptionElement option = (HTMLOptionElement) document.createElement("option");
         option.label = tweener.name();
         option.value = tweener.name();
         select.add(option);
     }
 
-    @Override public void destroy()
-    {
+    @Override
+    public void destroy() {
         super.destroy();
         select.remove();
     }
 
     @Override
-    public void run()
-    {
-        final int x = width - RADIUS*2;
+    public void run() {
+        final int x = width - RADIUS * 2;
         final int y = height / 2;
         xMoveBy = width - (RADIUS * 4);
 
@@ -74,11 +69,10 @@ public class TweeningExample extends BaseExample implements Example
     }
 
     public void tween(TweenerTypes tweenerType) {
-        if (handle != null)
-        {
+        if (handle != null) {
             handle.stop();
             handle = null;
-            int x = width - RADIUS*2;
+            int x = width - RADIUS * 2;
             int y = height / 2;
             circle.setX(x).setY(y);
         }
@@ -107,6 +101,11 @@ public class TweeningExample extends BaseExample implements Example
     }
 
     public enum TweenerTypes {
-        NONE, LINEAR, EASE_IN, EASE_OUT, EASE_IN_OUT, ELASTIC;
+        NONE,
+        LINEAR,
+        EASE_IN,
+        EASE_OUT,
+        EASE_IN_OUT,
+        ELASTIC;
     }
 }

@@ -10,5 +10,4 @@ public class LienzoExamples extends BaseLienzoExamples implements EntryPoint {
         new LienzoCoreEntryPoint().onModuleLoad();
         doLoad();
     }
-
 }

@@ -50,7 +50,6 @@ public class ImageStripExample extends BaseExample implements Example {
         layer.draw();
     }
 
-
     private void onStripRegistered() {
 
         int initial_x = 100;

@@ -7,24 +7,21 @@ import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.tools.client.Timer;
 import elemental2.dom.TextMetrics;
-import org.kie.lienzo.client.BaseExample;
 
-public class MeasureTextExample extends BaseExample implements Example
-{
-    private final String       APPEND_TO_TEXT = ". Cursor at the end of the line ";
+public class MeasureTextExample extends BaseExample implements Example {
 
-    private       TextSample[] samples = new TextSample[5];
+    private final String APPEND_TO_TEXT = ". Cursor at the end of the line ";
+
+    private TextSample[] samples = new TextSample[5];
 
     private Timer timer;
 
-    public MeasureTextExample(final String title)
-    {
+    public MeasureTextExample(final String title) {
         super(title);
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         samples[0] = new TextSample("Regular text" + APPEND_TO_TEXT, ColorName.DARKMAGENTA.getValue(), 100, 100);
         samples[1] = new TextSample("Scaled down text" + APPEND_TO_TEXT, ColorName.CHOCOLATE.getValue(), 100, 120);
         samples[2] = new TextSample("Rotated text" + APPEND_TO_TEXT, ColorName.DARKBLUE.getValue(), 100, 150);
@@ -56,12 +53,12 @@ public class MeasureTextExample extends BaseExample implements Example
         layer.draw();
     }
 
-    public static class TextSample extends Group
-    {
-        private        String           color;
-        private Text text      = null;
-        private Line line      = null;
-        private        int              m_x, m_y;
+    public static class TextSample extends Group {
+
+        private String color;
+        private Text text = null;
+        private Line line = null;
+        private int m_x, m_y;
         private boolean show;
 
         public TextSample(String textString, String color, int x, int y) {

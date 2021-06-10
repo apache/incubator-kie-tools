@@ -5,24 +5,20 @@ import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.shared.core.types.TextAlign;
-import org.kie.lienzo.client.BaseExample;
 
-public class StrokeAndFillingExample extends BaseExample implements Example
-{
+public class StrokeAndFillingExample extends BaseExample implements Example {
+
     private Circle[] circles;
-    private Text[]   texts;
+    private Text[] texts;
 
+    private int total = 3;
 
-    private int      total = 3;
-
-    public StrokeAndFillingExample(final String title)
-    {
+    public StrokeAndFillingExample(final String title) {
         super(title);
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         final String strokeColor = Color.getRandomHexColor();
         final String fillColor = Color.getRandomHexColor();
         Text text;
@@ -37,7 +33,7 @@ public class StrokeAndFillingExample extends BaseExample implements Example
 
             if (i == 0) {
                 text = new Text("Stroke", "oblique normal bold", 24).setTextAlign(TextAlign.CENTER).setStrokeColor(strokeColor)
-                                                                    .setStrokeWidth(2);
+                        .setStrokeWidth(2);
                 texts[i] = text;
                 circle.setStrokeColor(strokeColor).setStrokeWidth(2);
             } else if (i == 1) {
@@ -46,7 +42,7 @@ public class StrokeAndFillingExample extends BaseExample implements Example
                 circle.setFillColor(fillColor);
             } else if (i == 2) {
                 text = new Text("Stroke & Fill", "oblique normal bold", 24).setTextAlign(TextAlign.CENTER)
-                                                                           .setStrokeColor(strokeColor).setStrokeWidth(2).setFillColor(fillColor);
+                        .setStrokeColor(strokeColor).setStrokeWidth(2).setFillColor(fillColor);
                 texts[i] = text;
                 circle.setFillColor(fillColor).setStrokeColor(strokeColor).setStrokeWidth(2);
             } else {
@@ -62,8 +58,7 @@ public class StrokeAndFillingExample extends BaseExample implements Example
     }
 
     @Override
-    public void onResize()
-    {
+    public void onResize() {
         super.onResize();
 
         setLocation();
@@ -71,17 +66,16 @@ public class StrokeAndFillingExample extends BaseExample implements Example
         layer.batch();
     }
 
-    private void setLocation()
-    {
-        int          x = (int) (width * .25);
-        int          y = (int) (height * .50);
+    private void setLocation() {
+        int x = (int) (width * .25);
+        int y = (int) (height * .50);
 
         for (int i = 0; i < circles.length; i++) {
-            int   xOffSet = x * (i+1);
-            Shape shape   = circles[i];
+            int xOffSet = x * (i + 1);
+            Shape shape = circles[i];
             shape.setX(xOffSet).setY(y);
 
-            final Text text   = texts[i];
+            final Text text = texts[i];
             text.setX(xOffSet).setY(y - 70);
         }
     }

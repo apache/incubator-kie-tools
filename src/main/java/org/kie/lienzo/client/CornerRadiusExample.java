@@ -32,76 +32,65 @@ import jsinterop.base.JsPropertyMap;
 
 import static elemental2.dom.DomGlobal.document;
 
-public class CornerRadiusExample extends BaseExample implements Example
-{
-    private double         m_corner = 0;
+public class CornerRadiusExample extends BaseExample implements Example {
+
+    private double m_corner = 0;
 
     private HTMLSelectElement select;
 
-    public CornerRadiusExample(final String title)
-    {
+    public CornerRadiusExample(final String title) {
         super(title);
     }
 
     @Override
-    public void init(final LienzoPanel panel, final HTMLDivElement topDiv)
-    {
+    public void init(final LienzoPanel panel, final HTMLDivElement topDiv) {
         super.init(panel, topDiv);
         topDiv.style.display = Display.INLINE_BLOCK.getCssName();
 
         select = (HTMLSelectElement) document.createElement("select");
-        for (int i = 0; i < 45; i += 5)
-        {
+        for (int i = 0; i < 45; i += 5) {
             addOption(i, select);
         }
         topDiv.appendChild(select);
 
         select.onchange = (e) -> {
-                m_corner = Double.parseDouble(select.value);
+            m_corner = Double.parseDouble(select.value);
 
-                for (final IPrimitive<?> prim : layer.getChildNodes().toList())
-                {
-                    JsPropertyMap map = Js.asPropertyMap(prim);
-                    if (map.has("cornerRadius"))
-                    {
-                        map.set("cornerRadius", m_corner);
-                    }
-                    prim.refresh();
+            for (final IPrimitive<?> prim : layer.getChildNodes().toList()) {
+                JsPropertyMap map = Js.asPropertyMap(prim);
+                if (map.has("cornerRadius")) {
+                    map.set("cornerRadius", m_corner);
                 }
-                layer.batch();
+                prim.refresh();
+            }
+            layer.batch();
             return null;
         };
 
         heightOffset = 30;
     }
 
-    private void addOption(int radius, HTMLSelectElement select)
-    {
+    private void addOption(int radius, HTMLSelectElement select) {
         HTMLOptionElement option = (HTMLOptionElement) document.createElement("option");
         option.label = "" + radius;
         option.value = "" + radius;
         select.add(option);
     }
 
-    public void run()
-    {
+    public void run() {
         make(layer);
 
         final ToolTip tool = new ToolTip().setAutoHideTime(1000);
 
         panel.getViewport().getOverLayer().add(tool);
 
-        for (final IPrimitive<?> prim : layer.getChildNodes().toList())
-        {
+        for (final IPrimitive<?> prim : layer.getChildNodes().toList()) {
             final Shape<?> shape = prim.asShape();
 
-            if (null != shape)
-            {
-                shape.addNodeMouseEnterHandler(new NodeMouseEnterHandler()
-                {
+            if (null != shape) {
+                shape.addNodeMouseEnterHandler(new NodeMouseEnterHandler() {
                     @Override
-                    public void onNodeMouseEnter(final NodeMouseEnterEvent event)
-                    {
+                    public void onNodeMouseEnter(final NodeMouseEnterEvent event) {
                         tool.setValues("Corner(" + m_corner + ")", shape.getShapeType().getValue());
 
                         final BoundingBox bb = shape.getBoundingBox();
@@ -109,27 +98,21 @@ public class CornerRadiusExample extends BaseExample implements Example
                         tool.show(shape.getX() + bb.getX() + (bb.getWidth() / 2), shape.getY() + bb.getY() + (bb.getHeight() / 2));
                     }
                 });
-                shape.addNodeMouseExitHandler(new NodeMouseExitHandler()
-                {
+                shape.addNodeMouseExitHandler(new NodeMouseExitHandler() {
                     @Override
-                    public void onNodeMouseExit(final NodeMouseExitEvent event)
-                    {
+                    public void onNodeMouseExit(final NodeMouseExitEvent event) {
                         tool.hide();
                     }
                 });
-                shape.addNodeDragStartHandler(new NodeDragStartHandler()
-                {
+                shape.addNodeDragStartHandler(new NodeDragStartHandler() {
                     @Override
-                    public void onNodeDragStart(final NodeDragStartEvent event)
-                    {
+                    public void onNodeDragStart(final NodeDragStartEvent event) {
                         tool.hide();
                     }
                 });
-                shape.addNodeDragEndHandler(new NodeDragEndHandler()
-                {
+                shape.addNodeDragEndHandler(new NodeDragEndHandler() {
                     @Override
-                    public void onNodeDragEnd(final NodeDragEndEvent event)
-                    {
+                    public void onNodeDragEnd(final NodeDragEndEvent event) {
                         tool.setValues("Corner(" + m_corner + ")", shape.getShapeType().getValue());
 
                         final BoundingBox bb = shape.getBoundingBox();
@@ -141,14 +124,13 @@ public class CornerRadiusExample extends BaseExample implements Example
         }
     }
 
-    @Override public void destroy()
-    {
+    @Override
+    public void destroy() {
         super.destroy();
         select.remove();
     }
 
-    private void make(final Layer layer)
-    {
+    private void make(final Layer layer) {
         final Star star = new Star(5, 50, 100);
         star.setDraggable(true);
         star.setX(115);

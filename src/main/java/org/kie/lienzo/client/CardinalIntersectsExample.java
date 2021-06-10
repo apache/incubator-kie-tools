@@ -10,30 +10,26 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ColorName;
-import org.kie.lienzo.client.BaseExample;
 
-public class CardinalIntersectsExample extends BaseExample implements Example
-{
-    public CardinalIntersectsExample(final String title)
-    {
+public class CardinalIntersectsExample extends BaseExample implements Example {
+
+    public CardinalIntersectsExample(final String title) {
         super(title);
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         layer.add(makeBoundingBoxWithLineIntersects());
 
         layer.add(makeAllCardinalIntersectionPoints());
     }
 
-    private final Group makeAllCardinalIntersectionPoints()
-    {
+    private final Group makeAllCardinalIntersectionPoints() {
         final Group container = new Group().setX(-60).setY(450);
 
         // clockwise
         MultiPath path = new MultiPath();
-        Group g    = new Group();
+        Group g = new Group();
         g.setX(50);
         g.setY(20);
         container.add(g);
@@ -205,25 +201,21 @@ public class CardinalIntersectsExample extends BaseExample implements Example
         return container;
     }
 
-    private final void drawPath(final MultiPath path, final Group g)
-    {
+    private final void drawPath(final MultiPath path, final Group g) {
         g.add(path);
 
         final PathPartList list = path.getPathPartListArray().get(0);
 
         final Point2DArray array = Geometry.getCardinalIntersects(list, MagnetManager.EIGHT_CARDINALS);
 
-        for (final Point2D p : array.asArray())
-        {
-            if (null != p)
-            {
+        for (final Point2D p : array.asArray()) {
+            if (null != p) {
                 drawCircle(g, p);
             }
         }
     }
 
-    private final Group makeBoundingBoxWithLineIntersects()
-    {
+    private final Group makeBoundingBoxWithLineIntersects() {
         final Group container = new Group().setX(15).setY(-100);
 
         Group g = new Group();
@@ -324,8 +316,7 @@ public class CardinalIntersectsExample extends BaseExample implements Example
         return container;
     }
 
-    private final void drawArcWithLineIntersect(final Group g, final Point2D arc0, final Point2D arc1, final Point2D arc2, final Point2D lineStart, final Point2D lineEnd, final double radius)
-    {
+    private final void drawArcWithLineIntersect(final Group g, final Point2D arc0, final Point2D arc1, final Point2D arc2, final Point2D lineStart, final Point2D lineEnd, final double radius) {
         MultiPath path = new MultiPath();
 
         path.M(arc0);
@@ -351,14 +342,12 @@ public class CardinalIntersectsExample extends BaseExample implements Example
 
         final int size = list.size();
 
-        for (int i = 0; i < size; i++)
-        {
+        for (int i = 0; i < size; i++) {
             drawCircle(g, list.get(i));
         }
     }
 
-    private final void drawCircle(final Group container, final Point2D p)
-    {
+    private final void drawCircle(final Group container, final Point2D p) {
         container.add(new Circle(3).setLocation(p).setFillColor(ColorName.RED).setStrokeColor(ColorName.RED));
     }
 }

@@ -10,22 +10,19 @@ import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.shared.core.types.Color;
-import org.kie.lienzo.client.BaseExample;
 import org.kie.lienzo.client.util.Util;
 
-public class GradientsAndShadowsExample extends BaseExample implements Example
-{
-    private Shape[] shapes;
-    private int     total = 4;
+public class GradientsAndShadowsExample extends BaseExample implements Example {
 
-    public GradientsAndShadowsExample(final String title)
-    {
+    private Shape[] shapes;
+    private int total = 4;
+
+    public GradientsAndShadowsExample(final String title) {
         super(title);
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
 
         shapes = new Shape[total * 5];
 
@@ -40,7 +37,7 @@ public class GradientsAndShadowsExample extends BaseExample implements Example
 
             final Circle circle = new Circle(Util.randomNumber(8, 10));
             circle.setStrokeColor(Color.getRandomHexColor()).setStrokeWidth(strokeWidth).setFillGradient(radialGradient)
-                  .setShadow(new Shadow(Color.getRandomHexColor(), 50, 0, 0)).setDraggable(true);
+                    .setShadow(new Shadow(Color.getRandomHexColor(), 50, 0, 0)).setDraggable(true);
             setRandomLocation(circle);
             layer.add(circle);
             shapes[j++] = circle;
@@ -52,28 +49,28 @@ public class GradientsAndShadowsExample extends BaseExample implements Example
 
             final Rectangle rectangle = new Rectangle(Math.random() * 160, Math.random() * 100);
             rectangle.setStrokeColor(Color.getRandomHexColor()).setStrokeWidth(strokeWidth).setFillGradient(linearGradient)
-                     .setShadow(new Shadow(Color.getRandomHexColor(), 50, 0, 0)).setDraggable(true);
+                    .setShadow(new Shadow(Color.getRandomHexColor(), 50, 0, 0)).setDraggable(true);
             setRandomLocation(rectangle);
             layer.add(rectangle);
             shapes[j++] = rectangle;
 
             final Star star = new Star((int) (Math.random() * 10), 25, 50);
             star.setStrokeColor(Color.getRandomHexColor()).setStrokeWidth(strokeWidth).setFillGradient(linearGradient)
-                .setShadow(new Shadow(Color.getRandomHexColor(), 20, 10, 10)).setDraggable(true);
+                    .setShadow(new Shadow(Color.getRandomHexColor(), 20, 10, 10)).setDraggable(true);
             setRandomLocation(star);
             layer.add(star);
             shapes[j++] = star;
 
             final Arc arc = new Arc((int) (Math.random() * 80), 0, (Math.PI * 2) / 2);
             arc.setStrokeColor(Color.getRandomHexColor()).setStrokeWidth(strokeWidth).setFillGradient(radialGradient)
-               .setShadow(new Shadow(Color.getRandomHexColor(), 50, 0, 0)).setDraggable(true);
+                    .setShadow(new Shadow(Color.getRandomHexColor(), 50, 0, 0)).setDraggable(true);
             setRandomLocation(arc);
             layer.add(arc);
             shapes[j++] = arc;
 
             final Ellipse ellipse = new Ellipse(Math.random() * 120, Math.random() * 60);
             ellipse.setStrokeColor(Color.getRandomHexColor()).setStrokeWidth(strokeWidth).setFillGradient(linearGradient)
-                   .setShadow(new Shadow(Color.getRandomHexColor(), 50, 0, 0)).setDraggable(true);
+                    .setShadow(new Shadow(Color.getRandomHexColor(), 50, 0, 0)).setDraggable(true);
             setRandomLocation(ellipse);
             layer.add(ellipse);
             shapes[j++] = ellipse;
@@ -83,8 +80,7 @@ public class GradientsAndShadowsExample extends BaseExample implements Example
     }
 
     @Override
-    public void onResize()
-    {
+    public void onResize() {
         super.onResize();
 
         for (int j = 0; j < shapes.length; j++) {

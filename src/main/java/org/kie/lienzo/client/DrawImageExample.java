@@ -40,24 +40,22 @@ import org.kie.lienzo.client.util.Util;
 
 import static elemental2.dom.DomGlobal.document;
 
-public class DrawImageExample extends BaseExample implements Example
-{
-    private final String            IMAGE_URL = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Peach_poster_rodents.jpg/640px-Peach_poster_rodents.jpg";
+public class DrawImageExample extends BaseExample implements Example {
 
-    private       HTMLInputElement  slider    = (HTMLInputElement) DomGlobal.document.createElement("input");
+    private final String IMAGE_URL = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Peach_poster_rodents.jpg/640px-Peach_poster_rodents.jpg";
 
-    private       JsArray<Picture>  pictures;
+    private HTMLInputElement slider = (HTMLInputElement) DomGlobal.document.createElement("input");
 
-    private       HTMLSelectElement select;
+    private JsArray<Picture> pictures;
 
+    private HTMLSelectElement select;
 
-    public DrawImageExample(final String title)
-    {
+    public DrawImageExample(final String title) {
         super(title);
     }
 
-    @Override public void init(final LienzoPanel panel, final HTMLDivElement topDiv)
-    {
+    @Override
+    public void init(final LienzoPanel panel, final HTMLDivElement topDiv) {
         super.init(panel, topDiv);
         topDiv.style.display = Display.INLINE_BLOCK.getCssName();
 
@@ -70,7 +68,7 @@ public class DrawImageExample extends BaseExample implements Example
         slider.value = "25";
         slider.oninput = (e) -> {
             double scale = Double.parseDouble(slider.value);
-            setScale( scale / 100 );
+            setScale(scale / 100);
             console.log("scale " + slider.value + "%");
             layer.batch();
             return null;
@@ -104,13 +102,11 @@ public class DrawImageExample extends BaseExample implements Example
         addOption("Stack Blur", select);
         addOption("None", select);
 
-
         topDiv.appendChild(select);
 
         select.onchange = (e) -> {
             AbstractImageDataFilter filter = null;
-            switch (select.value)
-            {
+            switch (select.value) {
                 case "Grey Scale":
                     filter = new AverageGrayScaleImageDataFilter();
                     break;
@@ -171,7 +167,7 @@ public class DrawImageExample extends BaseExample implements Example
                 case "Sharpen":
                     filter = new SharpenImageDataFilter();
                     break;
-                case "Solarize": 
+                case "Solarize":
                     filter = new SolarizeImageDataFilter();
                     break;
                 case "Stack Blur":
@@ -181,8 +177,7 @@ public class DrawImageExample extends BaseExample implements Example
                     clearImageDataFilter();
                     break;
             }
-            if (filter != null)
-            {
+            if (filter != null) {
                 console.log("Filter Request Start: " + select.value);
                 setImageDataFilter(filter);
                 console.log("Filter Finished End: " + select.value);
@@ -192,8 +187,7 @@ public class DrawImageExample extends BaseExample implements Example
         };
     }
 
-    private HTMLOptionElement addOption(String filter, HTMLSelectElement select)
-    {
+    private HTMLOptionElement addOption(String filter, HTMLSelectElement select) {
         HTMLOptionElement option = (HTMLOptionElement) document.createElement("option");
         option.label = filter;
         option.value = filter;
@@ -202,10 +196,8 @@ public class DrawImageExample extends BaseExample implements Example
     }
 
     @Override
-    public void run()
-    {
-        for (int i = 0; i < 5; i++)
-        {
+    public void run() {
+        for (int i = 0; i < 5; i++) {
             final int pos = i;
             PictureLoadedHandler handler = (e) ->
             {
@@ -224,34 +216,30 @@ public class DrawImageExample extends BaseExample implements Example
         }
     }
 
-    public void setScale(double scale)
-    {
-       for(Picture picture : pictures.asList())
-       {
-           picture.setScale( scale );
-       }
+    public void setScale(double scale) {
+        for (Picture picture : pictures.asList()) {
+            picture.setScale(scale);
+        }
     }
 
-    public void setImageDataFilter(ImageDataFilter filter)
-    {
-        for(Picture picture : pictures.asList())
-        {
+    public void setImageDataFilter(ImageDataFilter filter) {
+        for (Picture picture : pictures.asList()) {
             picture.getImageProxy().setFilters(filter);
-            picture.reFilter((e)->{});
+            picture.reFilter((e) -> {
+            });
         }
     }
 
-    public void clearImageDataFilter()
-    {
-        for(Picture picture : pictures.asList())
-        {
+    public void clearImageDataFilter() {
+        for (Picture picture : pictures.asList()) {
             picture.getImageProxy().clearFilters();
-            picture.reFilter((e)->{});
+            picture.reFilter((e) -> {
+            });
         }
     }
 
-    @Override public void destroy()
-    {
+    @Override
+    public void destroy() {
         super.destroy();
         select.remove();
         slider.remove();

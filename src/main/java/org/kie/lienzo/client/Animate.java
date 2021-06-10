@@ -41,12 +41,11 @@ import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.
 import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.X;
 import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.Y;
 
-public class Animate extends BaseExample implements Example
-{
+public class Animate extends BaseExample implements Example {
+
     private boolean m_to_yellow = true;
 
-    public Animate(final String title)
-    {
+    public Animate(final String title) {
         super(title);
     }
 
@@ -75,23 +74,19 @@ public class Animate extends BaseExample implements Example
 
         final Star sun = new Star(13, 70, 100).setX(x).setY(y).setStrokeColor(ColorName.RED).setStrokeWidth(3).setFillColor(ColorName.YELLOW).setAlpha(0.75);
 
-        final IPositioningCalculator orbit = new AbstractRadialPositioningCalculator()
-        {
+        final IPositioningCalculator orbit = new AbstractRadialPositioningCalculator() {
             @Override
-            public double getX(final double percent)
-            {
+            public double getX(final double percent) {
                 return sun.getX();
             }
 
             @Override
-            public double getY(final double percent)
-            {
+            public double getY(final double percent) {
                 return sun.getY();
             }
 
             @Override
-            public double getRadius(final double percent)
-            {
+            public double getRadius(final double percent) {
                 return sun.getOuterRadius() + 100;
             }
         };
@@ -99,61 +94,48 @@ public class Animate extends BaseExample implements Example
 
         final Circle moon = new Circle(20).setX(x + 100 + 100 + 50 + 40).setY(y).setStrokeColor(ColorName.BLACK).setStrokeWidth(2).setFillColor(ColorName.DARKGRAY).setShadow(new Shadow(ColorName.BLACK, 10, 5, 5));
 
-        sun.addNodeMouseClickHandler(new NodeMouseClickHandler()
-        {
+        sun.addNodeMouseClickHandler(new NodeMouseClickHandler() {
             @Override
-            public void onNodeMouseClick(final NodeMouseClickEvent event)
-            {
+            public void onNodeMouseClick(final NodeMouseClickEvent event) {
                 sun.getLayer().setListening(false);
 
-                final IPositioningCalculator calc = new AbstractRadialPositioningCalculator()
-                {
+                final IPositioningCalculator calc = new AbstractRadialPositioningCalculator() {
                     @Override
-                    public double getX(final double percent)
-                    {
+                    public double getX(final double percent) {
                         return earth.getX();
                     }
 
                     @Override
-                    public double getY(final double percent)
-                    {
+                    public double getY(final double percent) {
                         return earth.getY();
                     }
 
                     @Override
-                    public double getRadius(final double percent)
-                    {
+                    public double getRadius(final double percent) {
                         return earth.getRadius() + 40;
                     }
 
                     @Override
-                    public double getMultiplier(final double percent)
-                    {
+                    public double getMultiplier(final double percent) {
                         return 5;
                     }
                 };
-                sun.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(X(x + 500), Y(y - 50), ROTATION_DEGREES(360 * 3), INNER_RADIUS(70 * 1.5), OUTER_RADIUS(100 * 1.5)), 8000, new AnimationCallback()
-                {
+                sun.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(X(x + 500), Y(y - 50), ROTATION_DEGREES(360 * 3), INNER_RADIUS(70 * 1.5), OUTER_RADIUS(100 * 1.5)), 8000, new AnimationCallback() {
                     @Override
-                    public void onStart(final IAnimation animation, final IAnimationHandle handle)
-                    {
+                    public void onStart(final IAnimation animation, final IAnimationHandle handle) {
                         doRotation(earth, moon, orbit, calc);
                     }
 
                     @Override
-                    public void onClose(final IAnimation animation, final IAnimationHandle handle)
-                    {
-                        sun.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(X(x), Y(y), ROTATION_DEGREES(0), INNER_RADIUS(70), OUTER_RADIUS(100)), 8000, new AnimationCallback()
-                        {
+                    public void onClose(final IAnimation animation, final IAnimationHandle handle) {
+                        sun.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(X(x), Y(y), ROTATION_DEGREES(0), INNER_RADIUS(70), OUTER_RADIUS(100)), 8000, new AnimationCallback() {
                             @Override
-                            public void onStart(final IAnimation animation, final IAnimationHandle handle)
-                            {
+                            public void onStart(final IAnimation animation, final IAnimationHandle handle) {
                                 doRotation(earth, moon, orbit, calc);
                             }
 
                             @Override
-                            public void onClose(final IAnimation animation, final IAnimationHandle handle)
-                            {
+                            public void onClose(final IAnimation animation, final IAnimationHandle handle) {
                                 sun.getLayer().setListening(true);
 
                                 sun.getLayer().draw();
@@ -165,16 +147,12 @@ public class Animate extends BaseExample implements Example
         });
         layer.add(rectangle);
 
-        rectangle.addNodeMouseClickHandler(new NodeMouseClickHandler()
-        {
+        rectangle.addNodeMouseClickHandler(new NodeMouseClickHandler() {
             @Override
-            public void onNodeMouseClick(final NodeMouseClickEvent event)
-            {
-                rectangle.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(ALPHA(1, 0)), 1000, new AnimationCallback()
-                {
+            public void onNodeMouseClick(final NodeMouseClickEvent event) {
+                rectangle.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(ALPHA(1, 0)), 1000, new AnimationCallback() {
                     @Override
-                    public void onClose(final IAnimation animation, final IAnimationHandle handle)
-                    {
+                    public void onClose(final IAnimation animation, final IAnimationHandle handle) {
                         rectangle.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(ALPHA(0, 1)), 1000);
                     }
                 });
@@ -182,16 +160,12 @@ public class Animate extends BaseExample implements Example
         });
         layer.add(rectcolor);
 
-        rectcolor.addNodeMouseClickHandler(new NodeMouseClickHandler()
-        {
+        rectcolor.addNodeMouseClickHandler(new NodeMouseClickHandler() {
             @Override
-            public void onNodeMouseClick(final NodeMouseClickEvent event)
-            {
-                rectcolor.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(FILL_COLOR(m_to_yellow ? ColorName.YELLOW : ColorName.HOTPINK)), 1000, new AnimationCallback()
-                {
+            public void onNodeMouseClick(final NodeMouseClickEvent event) {
+                rectcolor.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(FILL_COLOR(m_to_yellow ? ColorName.YELLOW : ColorName.HOTPINK)), 1000, new AnimationCallback() {
                     @Override
-                    public void onClose(final IAnimation animation, final IAnimationHandle handle)
-                    {
+                    public void onClose(final IAnimation animation, final IAnimationHandle handle) {
                         m_to_yellow = !m_to_yellow;
                     }
                 });
@@ -201,16 +175,12 @@ public class Animate extends BaseExample implements Example
 
         final Spline spline = new Spline(points).setStrokeColor(ColorName.BLUE).setStrokeWidth(7).setLineCap(LineCap.ROUND).setDashArray(15, 15);
 
-        spline.addNodeMouseClickHandler(new NodeMouseClickHandler()
-        {
+        spline.addNodeMouseClickHandler(new NodeMouseClickHandler() {
             @Override
-            public void onNodeMouseClick(final NodeMouseClickEvent event)
-            {
-                spline.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(DASH_OFFSET(300)), 5000, new AnimationCallback()
-                {
+            public void onNodeMouseClick(final NodeMouseClickEvent event) {
+                spline.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(DASH_OFFSET(300)), 5000, new AnimationCallback() {
                     @Override
-                    public void onClose(final IAnimation animation, final IAnimationHandle handle)
-                    {
+                    public void onClose(final IAnimation animation, final IAnimationHandle handle) {
                         spline.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(DASH_OFFSET(0)), 5000);
                     }
                 });
@@ -218,8 +188,7 @@ public class Animate extends BaseExample implements Example
         });
         layer.add(spline);
 
-        for (int i = 0; i < points.size(); i++)
-        {
+        for (int i = 0; i < points.size(); i++) {
             final Point2D p = points.get(i);
 
             final Circle c = new Circle(10).setFillColor(ColorName.BLACK).setAlpha(0.5).setX(p.getX()).setY(p.getY());
@@ -236,24 +205,17 @@ public class Animate extends BaseExample implements Example
 
     private Group m_shadey = null;
 
-    public Bow flippy(final Bow prim, final IColor color)
-    {
-        prim.addNodeMouseClickHandler(new NodeMouseClickHandler()
-        {
+    public Bow flippy(final Bow prim, final IColor color) {
+        prim.addNodeMouseClickHandler(new NodeMouseClickHandler() {
             @Override
-            public void onNodeMouseClick(final NodeMouseClickEvent event)
-            {
+            public void onNodeMouseClick(final NodeMouseClickEvent event) {
                 Console.get().info("flippy");
-                prim.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(SCALE(1, -1)), 500, new AnimationCallback()
-                {
+                prim.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(SCALE(1, -1)), 500, new AnimationCallback() {
                     @Override
-                    public void onClose(final IAnimation animation, final IAnimationHandle handle)
-                    {
-                        prim.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(SCALE(1, 1)), 500, new AnimationCallback()
-                        {
+                    public void onClose(final IAnimation animation, final IAnimationHandle handle) {
+                        prim.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(SCALE(1, 1)), 500, new AnimationCallback() {
                             @Override
-                            public void onClose(final IAnimation animation, final IAnimationHandle handle)
-                            {
+                            public void onClose(final IAnimation animation, final IAnimationHandle handle) {
                                 shadey(prim.getLayer(), color);
                             }
                         });
@@ -264,31 +226,26 @@ public class Animate extends BaseExample implements Example
         return prim;
     }
 
-    public void shadey(final Layer layer, final IColor color)
-    {
+    public void shadey(final Layer layer, final IColor color) {
         final Rectangle[] r = new Rectangle[5];
 
-        if (null != m_shadey)
-        {
+        if (null != m_shadey) {
             layer.remove(m_shadey);
 
             layer.draw();
         }
         m_shadey = new Group().setX(400).setY(50);
 
-        for (int i = 0; i < 5; i++)
-        {
+        for (int i = 0; i < 5; i++) {
             r[i] = new Rectangle(900, 40).setFillColor(color).setStrokeColor(ColorName.BLACK).setStrokeWidth(2).setAlpha(0).setX(0).setY((i * 50)).setScale(1, 0).setShadow(new Shadow(ColorName.BLACK.getColor().setA(0.5), 5, 5, 5));
 
             m_shadey.add(r[i]);
         }
         layer.add(m_shadey);
 
-        final RepeatingCommand command = new RepeatingCommand()
-        {
+        final RepeatingCommand command = new RepeatingCommand() {
             @Override
-            public boolean execute()
-            {
+            public boolean execute() {
                 forward(0, r);
 
                 return false;
@@ -297,35 +254,25 @@ public class Animate extends BaseExample implements Example
         Scheduler.get().scheduleFixedDelay(command, 100);
     }
 
-    public void forward(final int i, final Rectangle[] r)
-    {
-        if (i < 5)
-        {
-            final RepeatingCommand command = new RepeatingCommand()
-            {
+    public void forward(final int i, final Rectangle[] r) {
+        if (i < 5) {
+            final RepeatingCommand command = new RepeatingCommand() {
                 @Override
-                public boolean execute()
-                {
+                public boolean execute() {
                     forward(i + 1, r);
 
-                    r[i].addNodeMouseClickHandler(new NodeMouseClickHandler()
-                    {
+                    r[i].addNodeMouseClickHandler(new NodeMouseClickHandler() {
                         @Override
-                        public void onNodeMouseClick(final NodeMouseClickEvent event)
-                        {
-                            r[i].animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(AnimationProperty.Properties.X(r[i].getX() + 900)), 300, new AnimationCallback()
-                            {
+                        public void onNodeMouseClick(final NodeMouseClickEvent event) {
+                            r[i].animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(AnimationProperty.Properties.X(r[i].getX() + 900)), 300, new AnimationCallback() {
                                 @Override
-                                public void onClose(final IAnimation animation, final IAnimationHandle handle)
-                                {
+                                public void onClose(final IAnimation animation, final IAnimationHandle handle) {
                                     r[i].setVisible(false);
 
                                     r[i].getLayer().draw();
 
-                                    for (int j = i + 1; j < 5; j++)
-                                    {
-                                        if (r[j].isVisible())
-                                        {
+                                    for (int j = i + 1; j < 5; j++) {
+                                        if (r[j].isVisible()) {
                                             r[j].animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(AnimationProperty.Properties.Y(r[j].getY() - 50)), 300);
                                         }
                                     }
@@ -342,13 +289,10 @@ public class Animate extends BaseExample implements Example
         }
     }
 
-    private void doRotation(final Circle earth, final Circle moon, final IPositioningCalculator orbit, final IPositioningCalculator calc)
-    {
-        earth.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(POSITIONING(orbit)), 8000, new AnimationCallback()
-        {
+    private void doRotation(final Circle earth, final Circle moon, final IPositioningCalculator orbit, final IPositioningCalculator calc) {
+        earth.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(POSITIONING(orbit)), 8000, new AnimationCallback() {
             @Override
-            public void onStart(final IAnimation animation, final IAnimationHandle handle)
-            {
+            public void onStart(final IAnimation animation, final IAnimationHandle handle) {
                 moon.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(POSITIONING(calc)), 8000);
             }
         });

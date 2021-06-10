@@ -2,7 +2,6 @@ package org.kie.lienzo.client;
 
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.shared.core.types.ColorName;
-import org.kie.lienzo.client.BaseExample;
 
 public class BasicExample extends BaseExample implements Example {
 
@@ -26,5 +25,4 @@ public class BasicExample extends BaseExample implements Example {
 
         layer.draw();
     }
-
 }

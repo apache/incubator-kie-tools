@@ -21,40 +21,38 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.EventListener;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.KeyboardEvent;
-import org.kie.lienzo.client.BaseExample;
 
-public class AsteroidsGameExample extends BaseExample implements Example
-{
-    private static final int   MAX_BULLETS = 6;
+public class AsteroidsGameExample extends BaseExample implements Example {
 
-    private Ship               ship;
-    private ArrayList<Bullet>  bullets;
-    private ArrayList<Rock>    rocks;
+    private static final int MAX_BULLETS = 6;
 
-    private int                score;
+    private Ship ship;
+    private ArrayList<Bullet> bullets;
+    private ArrayList<Rock> rocks;
+
+    private int score;
     private Layer scoreLayer;
     private Text scoreText;
 
-    private int                numberOfLives;
+    private int numberOfLives;
     private ArrayList<Polygon> lives;
 
-    private EventListener      keydownListener = (e) -> {
+    private EventListener keydownListener = (e) -> {
         KeyboardEvent keyboardEvent = (KeyboardEvent) e;
         key(keyboardEvent, true);
     };
 
-    private EventListener      keyupListener = (e) -> {
+    private EventListener keyupListener = (e) -> {
         KeyboardEvent keyboardEvent = (KeyboardEvent) e;
         key(keyboardEvent, false);
     };
 
-    public AsteroidsGameExample(final String title)
-    {
+    public AsteroidsGameExample(final String title) {
         super(title);
     }
 
-    @Override public void init(final LienzoPanel panel, final HTMLDivElement topDiv)
-    {
+    @Override
+    public void init(final LienzoPanel panel, final HTMLDivElement topDiv) {
         super.init(panel, topDiv);
 
         // Install key up/down handlers
@@ -69,8 +67,7 @@ public class AsteroidsGameExample extends BaseExample implements Example
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         numberOfLives = 3;
         score = 0;
 
@@ -88,12 +85,11 @@ public class AsteroidsGameExample extends BaseExample implements Example
         rocks = new ArrayList<Rock>();
 
         // Add 6 rocks. Not too close to the ship.
-        for (int i = 0; i < 6;) {
+        for (int i = 0; i < 6; ) {
             double x = width * Math.random();
             double y = height * Math.random();
 
-            if (ship.distance(x, y) < 200)
-            {
+            if (ship.distance(x, y) < 200) {
                 continue;
             }
 
@@ -117,7 +113,8 @@ public class AsteroidsGameExample extends BaseExample implements Example
                 }
 
                 // Update the rocks
-                ROCKS: for (int i = rocks.size() - 1; i >= 0; i--) {
+                ROCKS:
+                for (int i = rocks.size() - 1; i >= 0; i--) {
                     Rock rock = rocks.get(i);
                     rock.update();
 
@@ -139,24 +136,18 @@ public class AsteroidsGameExample extends BaseExample implements Example
                     }
 
                     // Check if the rock hit the ship
-                    if (rock.hits(ship.getX(), ship.getY(), 5))
-                    {
+                    if (rock.hits(ship.getX(), ship.getY(), 5)) {
                         // Rock hit ship. Rotate colors to simulate explosion
                         ship.setShipColor(nextColor());
-                        if ( hit <= 0 && numberOfLives > 0)
-                        {
+                        if (hit <= 0 && numberOfLives > 0) {
                             drawLives(--numberOfLives);
                         }
 
                         hit = 300;
-                    }
-                    else if ( hit >= 0 )
-                    {
+                    } else if (hit >= 0) {
                         ship.setShipColor(nextColor());
                         hit--;
-                    }
-                    else
-                    {
+                    } else {
                         ship.setShipColor(ColorName.WHITE.getValue());
                     }
                 }
@@ -165,8 +156,7 @@ public class AsteroidsGameExample extends BaseExample implements Example
 
                 layer.batch();
 
-                if (numberOfLives == 0)
-                {
+                if (numberOfLives == 0) {
                     Text gameOverText = new Text("Game Over Press Space To Restart").setStrokeColor(ColorName.CRIMSON).setFillColor(ColorName.CRIMSON);
                     gameOverText.setX(25).setY(300);
                     scoreLayer.add(gameOverText);
@@ -176,26 +166,22 @@ public class AsteroidsGameExample extends BaseExample implements Example
             }
 
             private int colorIndex = 0;
-            private String[] colors = { "yellow", "yellow", "yellow", "yellow",
-                                        "orange", "orange", "orange", "orange",
-                                        "red", "red", "red", "red",
-                                        "blueviolet", "blueviolet", "blueviolet", "blueviolet"};
+            private String[] colors = {"yellow", "yellow", "yellow", "yellow",
+                    "orange", "orange", "orange", "orange",
+                    "red", "red", "red", "red",
+                    "blueviolet", "blueviolet", "blueviolet", "blueviolet"};
 
             private String nextColor() {
                 colorIndex = (colorIndex + 1) % colors.length;
                 return colors[colorIndex];
             }
-
         });
         handle.run();
     }
 
-    private void drawLives(int numberOfLives)
-    {
-        if (lives != null)
-        {
-            for (int i = 0; i < lives.size(); i++)
-            {
+    private void drawLives(int numberOfLives) {
+        if (lives != null) {
+            for (int i = 0; i < lives.size(); i++) {
                 lives.get(i).removeFromParent();
             }
         }
@@ -203,8 +189,7 @@ public class AsteroidsGameExample extends BaseExample implements Example
         lives = new ArrayList<Polygon>(numberOfLives);
 
         int x = 250;
-        for (int i = 0; i < numberOfLives; i++)
-        {
+        for (int i = 0; i < numberOfLives; i++) {
             Polygon ship = createShip();
             ship.setY(21);
             ship.setX(x);
@@ -228,27 +213,29 @@ public class AsteroidsGameExample extends BaseExample implements Example
         switch (code) {
             case "Left": // IE/Edge specific value
             case "ArrowLeft": // Rotate left
-                if (down)
+                if (down) {
                     ship.rotate(-1);
+                }
                 break;
             case "Right": // IE/Edge specific value
             case "ArrowRight": // Rotate right
-                if (down)
+                if (down) {
                     ship.rotate(1);
+                }
                 break;
 
             case "ArrowUp": // Thrust ship
-                if (down)
+                if (down) {
                     ship.thrust(true);
-                else
+                } else {
                     ship.thrust(false);
+                }
                 break;
 
             case "Space": // older browsers
             case "Spacebar": // older browsers
             case " ": // SPACE BAR - Fire bullet
-                if ( numberOfLives == 0 )
-                {
+                if (numberOfLives == 0) {
                     // remove or null everything, so we can start again.
                     layer.removeAll();
                     scoreLayer.removeAll();
@@ -260,9 +247,7 @@ public class AsteroidsGameExample extends BaseExample implements Example
                     scoreText = null;
                     lives = null;
                     run();
-                }
-                else if (down && bullets.size() < MAX_BULLETS)
-                {
+                } else if (down && bullets.size() < MAX_BULLETS) {
                     ship.fire(layer, bullets);
                 }
                 break;
@@ -311,7 +296,6 @@ public class AsteroidsGameExample extends BaseExample implements Example
             tick(shape);
 
             layer.add(shape);
-
         }
 
         public Group getShape() {
@@ -348,27 +332,29 @@ public class AsteroidsGameExample extends BaseExample implements Example
 
         public void thrust(boolean val) {
             thrust = val;
-            if (!thrust)
+            if (!thrust) {
                 return;
+            }
 
             // Thrusters are on - adjust the speed
             double dx = getDx();
             double nvx = dx - Math.sin(angle) * THRUST;
-            if (nvx < MAX_SPEED)
+            if (nvx < MAX_SPEED) {
                 dx = nvx;
+            }
 
             double dy = getDy();
             double nvy = dy + Math.cos(angle) * THRUST;
-            if (nvy < MAX_SPEED)
+            if (nvy < MAX_SPEED) {
                 dy = nvy;
+            }
 
             setSpeed(dx, dy);
         }
     }
 
-    private Polygon createShip()
-    {
-        Point2DArray a    = new Point2DArray().pushXY(0, 10).pushXY(5, -6).pushXY(0, -2).pushXY(-5, -6);
+    private Polygon createShip() {
+        Point2DArray a = new Point2DArray().pushXY(0, 10).pushXY(5, -6).pushXY(0, -2).pushXY(-5, -6);
         Polygon ship = new Polygon(a);
         ship.setStrokeColor(ColorName.WHITE);
         ship.setStrokeWidth(2);
@@ -376,10 +362,11 @@ public class AsteroidsGameExample extends BaseExample implements Example
     }
 
     public class Rock extends Falling {
-        private int     size; // 40, 20, 10
-        private double  spin; // how fast it spins
-        private int     score; // number of points for this rock
-        private double  maxRadius; // how big the rock is
+
+        private int size; // 40, 20, 10
+        private double spin; // how fast it spins
+        private int score; // number of points for this rock
+        private double maxRadius; // how big the rock is
         private Polygon shape;
 
         public Rock(Layer layer, double x, double y, int si) {
@@ -433,8 +420,7 @@ public class AsteroidsGameExample extends BaseExample implements Example
                 double radius = size + (size / 2 * Math.random());
                 a.pushXY(Math.sin(angle) * radius, Math.cos(angle) * radius);
 
-                if (radius > maxRadius)
-                {
+                if (radius > maxRadius) {
                     maxRadius = radius; // track how big the rock is
                 }
             }
@@ -450,10 +436,11 @@ public class AsteroidsGameExample extends BaseExample implements Example
     }
 
     public class Bullet extends Falling {
-        private static final double SPEED = 4;
-        private static final int    DISTANCE = 400; // how far the bullet flies
 
-        private              int    i = 0; // how many ticks the bullet has been flying
+        private static final double SPEED = 4;
+        private static final int DISTANCE = 400; // how far the bullet flies
+
+        private int i = 0; // how many ticks the bullet has been flying
         private Circle shape;
 
         public Bullet(Layer layer, double x, double y, double dx, double dy, double angle) {
@@ -483,6 +470,7 @@ public class AsteroidsGameExample extends BaseExample implements Example
 
     // Base class for falling objects, i.e. Ship, Bullet and Rock
     public class Falling {
+
         private double x;
         private double y;
         private double dx;
@@ -529,15 +517,17 @@ public class AsteroidsGameExample extends BaseExample implements Example
                 x += dx;
                 y += dy;
 
-                if (x < 0)
+                if (x < 0) {
                     x = screenWidth;
-                else if (x > screenWidth)
+                } else if (x > screenWidth) {
                     x = 0;
+                }
 
-                if (y < 0)
+                if (y < 0) {
                     y = screenHeight;
-                else if (y > screenHeight)
+                } else if (y > screenHeight) {
                     y = 0;
+                }
 
                 startTime += every;
                 ticks++;
@@ -572,13 +562,13 @@ public class AsteroidsGameExample extends BaseExample implements Example
         }
     }
 
-    @Override public void onResize()
-    {
+    @Override
+    public void onResize() {
         super.onResize();
     }
 
-    @Override public void destroy()
-    {
+    @Override
+    public void destroy() {
         super.destroy();
         DomGlobal.window.removeEventListener("keydown", keydownListener);
         DomGlobal.window.removeEventListener("keyup", keyupListener);

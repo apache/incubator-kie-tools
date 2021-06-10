@@ -16,32 +16,30 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.shared.core.types.ColorName;
 import elemental2.dom.HTMLDivElement;
-import org.kie.lienzo.client.BaseExample;
 
-public class Transform3PointsExample extends BaseExample implements Example
-{
-    private static final int         WIDTH       = 200;
-    private static final int         DX          = 20;
-    private static final int         DY          = 20;
-    private static final String      TEXT_FONT   = "oblique normal bold";
-    private static final int         TEXT_SIZE   = 16;
+public class Transform3PointsExample extends BaseExample implements Example {
 
-    private              SliceGroup  node;
+    private static final int WIDTH = 200;
+    private static final int DX = 20;
+    private static final int DY = 20;
+    private static final String TEXT_FONT = "oblique normal bold";
+    private static final int TEXT_SIZE = 16;
 
-    private              DragPoint[] fromPoints;
-    private              DragPoint[] toPoints;
-    private              Button      animateButton;
-    private              Text[]      animateText = new Text[3];
-    private              Button      resetButton;
-    private              Text[]      resetText   = new Text[3];
+    private SliceGroup node;
+
+    private DragPoint[] fromPoints;
+    private DragPoint[] toPoints;
+    private Button animateButton;
+    private Text[] animateText = new Text[3];
+    private Button resetButton;
+    private Text[] resetText = new Text[3];
 
     private Transform originalTransform;
     private Transform fromTransform;
     private Transform toTransform;
-    private              double[]    transform   = new double[6];
+    private double[] transform = new double[6];
 
-    public Transform3PointsExample(final String title)
-    {
+    public Transform3PointsExample(final String title) {
         super(title);
     }
 
@@ -83,8 +81,8 @@ public class Transform3PointsExample extends BaseExample implements Example
 
         resetButton = new Button("Reset");
         resetButton.setX(400).setY(430).setVisible(false);
-        resetButton.addNodeMouseClickHandler( (e) -> reset() );
-        resetButton.addNodeTouchStartHandler( (e) -> reset() );
+        resetButton.addNodeMouseClickHandler((e) -> reset());
+        resetButton.addNodeTouchStartHandler((e) -> reset());
         layer.add(resetButton);
 
         animateText[0] = new Text("Drag the red target points to the desired location and click 'Animate'.", TEXT_FONT, TEXT_SIZE);
@@ -108,28 +106,24 @@ public class Transform3PointsExample extends BaseExample implements Example
         layer.add(resetText[2]);
     }
 
-    @Override public void run()
-    {
+    @Override
+    public void run() {
 
     }
 
-    public void animate()
-    {
+    public void animate() {
         Point2DArray src = new Point2DArray();
-        for (int i = 0; i < fromPoints.length; i++)
-        {
+        for (int i = 0; i < fromPoints.length; i++) {
             src.push(new Point2D(fromPoints[i].getX(), fromPoints[i].getY()));
         }
         Point2DArray target = new Point2DArray();
-        for (int i = 0; i < toPoints.length; i++)
-        {
+        for (int i = 0; i < toPoints.length; i++) {
             target.push(new Point2D(toPoints[i].getX(), toPoints[i].getY()));
         }
 
         // Calculate the Transform to go from the 3 source points to the 3 target points
         fromTransform = node.getAbsoluteTransform();
-        if (fromTransform == null)
-        {
+        if (fromTransform == null) {
             fromTransform = new Transform();
         }
 
@@ -142,8 +136,9 @@ public class Transform3PointsExample extends BaseExample implements Example
             public void onStart(IAnimation animation, IAnimationHandle handle) {
                 // Hide the Animate button and associated text
                 animateButton.setVisible(false);
-                for (int i = 0; i < animateText.length; i++)
+                for (int i = 0; i < animateText.length; i++) {
                     animateText[i].setVisible(false);
+                }
                 repaint();
             }
 
@@ -168,32 +163,30 @@ public class Transform3PointsExample extends BaseExample implements Example
             public void onClose(IAnimation animation, IAnimationHandle handle) {
                 // Show the Reset button and associated text
                 resetButton.setVisible(true);
-                for (int i = 0; i < resetText.length; i++)
-                {
+                for (int i = 0; i < resetText.length; i++) {
                     resetText[i].setVisible(true);
                 }
                 repaint();
             }
-
         });
         handle.setNode(node);
         handle.run(); // start the animation
     }
 
-    private void repaint()
-    {
+    private void repaint() {
         layer.getScene().draw();
     }
 
-    protected void reset()
-    {
+    protected void reset() {
         animateButton.setVisible(true);
-        for (int i = 0; i < animateText.length; i++)
+        for (int i = 0; i < animateText.length; i++) {
             animateText[i].setVisible(true);
+        }
 
         resetButton.setVisible(false);
-        for (int i = 0; i < resetText.length; i++)
+        for (int i = 0; i < resetText.length; i++) {
             resetText[i].setVisible(false);
+        }
 
         // Put the node back in its original location
         node.setTransform(originalTransform);
@@ -208,24 +201,23 @@ public class Transform3PointsExample extends BaseExample implements Example
 
     // A SliceGroup is a Group with a Rectangle and some Slices and Text inside the Rectangle.
     // One Slice is scaled and one is rotated.
-    public static class SliceGroup extends Group
-    {
+    public static class SliceGroup extends Group {
+
         private double width;
 
-        public SliceGroup(double w, String color)
-        {
+        public SliceGroup(double w, String color) {
             width = w;
 
             add(new Rectangle(w, w).setStrokeColor(color));
 
-            double r = w/4;
+            double r = w / 4;
             Slice s = new Slice(r, 0, Math.PI / 2, true);
             s.setX(r).setY(r);
             s.setFillColor(color);
             s.setDraggable(true);
             add(s);
 
-            Text t = new Text("Slices", "oblique normal bold", w/15);
+            Text t = new Text("Slices", "oblique normal bold", w / 15);
             t.setX(r * 0.6).setY(r * 0.8);
             t.setFillColor(ColorName.YELLOW);
             add(t);
@@ -245,13 +237,12 @@ public class Transform3PointsExample extends BaseExample implements Example
             add(s);
         }
 
-        public SliceGroup addSliceGroup(String color)
-        {
+        public SliceGroup addSliceGroup(String color) {
             SliceGroup s = new SliceGroup(width, color);
             s.setRotation(-Math.PI / 2);
             s.setScale(0.5);
             double r = width / 4;
-            s.setX(r*2).setY(r*4);
+            s.setX(r * 2).setY(r * 4);
 
             add(s);
 
@@ -259,10 +250,9 @@ public class Transform3PointsExample extends BaseExample implements Example
         }
     }
 
-    public static class DragPoint extends Group
-    {
-        public DragPoint(String label, String color, int x, int y)
-        {
+    public static class DragPoint extends Group {
+
+        public DragPoint(String label, String color, int x, int y) {
             Circle c = new Circle(10);
             c.setFillColor(color);
             c.setStrokeColor(ColorName.BLACK);
@@ -282,10 +272,9 @@ public class Transform3PointsExample extends BaseExample implements Example
         }
     }
 
-    public class Button extends Group
-    {
-        public Button(String label)
-        {
+    public class Button extends Group {
+
+        public Button(String label) {
             Rectangle r = new Rectangle(100, 30, 5);
             r.setFillColor("green");
             r.setShadow(new Shadow(ColorName.DARKGREEN.getValue(), 6, 6, 6));

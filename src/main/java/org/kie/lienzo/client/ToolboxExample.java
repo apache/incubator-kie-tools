@@ -71,7 +71,6 @@ public class ToolboxExample extends BaseExample implements Example {
     @Override
     public void run() {
 
-
         // Wires Manager.
         WiresManager wires_manager = WiresManager.get(layer);
         wires_manager.setContainmentAcceptor(IContainmentAcceptor.ALL);
@@ -135,8 +134,8 @@ public class ToolboxExample extends BaseExample implements Example {
                                         .setFillColor(color))
                         .decorate(ToolboxFactory.INSTANCE.decorators().box())
                         .tooltip(ToolboxFactory.INSTANCE.tooltips()
-                        .forToolbox(toolbox)
-                        .withText(defaultTextConsumer()))
+                                         .forToolbox(toolbox)
+                                         .withText(defaultTextConsumer()))
                         .onMouseEnter(event -> DomGlobal.console.log("onToolboxMouseEnter [" + color + "]"))
                         .onMouseExit(event -> DomGlobal.console.log("onToolboxMouseExit [" + color + "]"))
                         .onClick(event -> DomGlobal.console.log("onToolboxButtonClick [" + color + "]"));
@@ -191,7 +190,6 @@ public class ToolboxExample extends BaseExample implements Example {
             destroyToolboxesButton.disabled = true;
             draw();
         }
-
     }
 
     private Layer getTopLayer() {

@@ -5,23 +5,20 @@ import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.shared.core.types.ColorName;
-import org.kie.lienzo.client.BaseExample;
 
-public class PanAndZoomExample extends BaseExample implements Example
-{
-    private Shape[]   shapes;
+public class PanAndZoomExample extends BaseExample implements Example {
 
-    private int      total = 50;
+    private Shape[] shapes;
 
-    public PanAndZoomExample(final String title)
-    {
+    private int total = 50;
+
+    public PanAndZoomExample(final String title) {
         super(title);
         topPadding = 100;
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
 
         shapes = new Shape[total];
         for (int i = 0; i < total; i++) {
@@ -48,7 +45,6 @@ public class PanAndZoomExample extends BaseExample implements Example
             text.setFontSize(24);
             text.setFillColor(ColorName.BLACK);
             layer.add(text);
-
         }
 
         setLocation();
@@ -57,8 +53,7 @@ public class PanAndZoomExample extends BaseExample implements Example
     }
 
     @Override
-    public void onResize()
-    {
+    public void onResize() {
         super.onResize();
 
         setLocation();
@@ -66,10 +61,9 @@ public class PanAndZoomExample extends BaseExample implements Example
         layer.batch();
     }
 
-    private void setLocation()
-    {
+    private void setLocation() {
         for (int i = 0; i < shapes.length; i++) {
-            final Shape shape =  shapes[i];
+            final Shape shape = shapes[i];
             setRandomLocation(shape);
         }
     }

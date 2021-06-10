@@ -4,24 +4,21 @@ import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
-import org.kie.lienzo.client.BaseExample;
 
-public class VerticalTextAlignmentExample extends BaseExample implements Example
-{
-    private Rectangle[]   markers;
-    private Text[]   texts;
+public class VerticalTextAlignmentExample extends BaseExample implements Example {
 
-    private int      total = TextBaseLine.values().length;
+    private Rectangle[] markers;
+    private Text[] texts;
 
-    public VerticalTextAlignmentExample(final String title)
-    {
+    private int total = TextBaseLine.values().length;
+
+    public VerticalTextAlignmentExample(final String title) {
         super(title);
         topPadding = 100;
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
 
         markers = new Rectangle[total];
         texts = new Text[total];
@@ -50,8 +47,7 @@ public class VerticalTextAlignmentExample extends BaseExample implements Example
     }
 
     @Override
-    public void onResize()
-    {
+    public void onResize() {
         super.onResize();
 
         setLocation();
@@ -59,8 +55,7 @@ public class VerticalTextAlignmentExample extends BaseExample implements Example
         layer.batch();
     }
 
-    private void setLocation()
-    {
+    private void setLocation() {
         int x = width / 2;
         int y = height / 4;
         int fontSize = 24;
@@ -70,7 +65,7 @@ public class VerticalTextAlignmentExample extends BaseExample implements Example
             Text text = texts[i];
 
             marker.setX(x).setY(y);
-            text.setX(x).setY(y) ;
+            text.setX(x).setY(y);
 
             y += fontSize * 3;
         }
