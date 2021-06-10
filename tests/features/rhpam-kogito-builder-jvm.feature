@@ -26,7 +26,7 @@ Feature: rhpam-kogito-builder-rhel8 feature.
     And file /home/kogito/.m2/settings.xml should contain <url>https://maven.repository.redhat.com/techpreview/all</url>
 
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly
-    Given s2i build /tmp/kogito-examples from dmn-example using master and runtime-image rhpam-7/rhpam-kogito-runtime-jvm-rhel8:latest
+    Given s2i build /tmp/kogito-examples from dmn-example using nightly-master and runtime-image rhpam-7/rhpam-kogito-runtime-jvm-rhel8:latest
       | variable       | value          |
       | RUNTIME_TYPE   | quarkus        |
       | NATIVE         | false          |
@@ -44,7 +44,7 @@ Feature: rhpam-kogito-builder-rhel8 feature.
       | request_body    | {"Driver": {"Points": 2}, "Violation": {"Type": "speed","Actual Speed": 120,"Speed Limit": 100}} |
 
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly with custom group id, archetype & version
-    Given s2i build /tmp/kogito-examples from dmn-example using master and runtime-image rhpam-7/rhpam-kogito-runtime-jvm-rhel8:latest
+    Given s2i build /tmp/kogito-examples from dmn-example using nightly-master and runtime-image rhpam-7/rhpam-kogito-runtime-jvm-rhel8:latest
       | variable            | value          |
       | RUNTIME_TYPE        | quarkus        |
       | NATIVE              | false          |
