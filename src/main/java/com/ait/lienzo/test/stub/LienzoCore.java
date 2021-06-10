@@ -18,7 +18,6 @@ import com.ait.lienzo.tools.client.StringOps;
 import com.ait.lienzo.tools.common.api.types.IStringValued;
 import com.google.gwt.dom.client.Style;
 
-
 @StubClass("com.ait.lienzo.client.core.config.LienzoCore")
 public class LienzoCore {
 
@@ -304,6 +303,7 @@ public class LienzoCore {
 
     /**
      * Returns true if the Canvas element is supported.
+     *
      * @return
      */
     public final boolean isCanvasSupportedx() {

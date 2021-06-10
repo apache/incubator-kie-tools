@@ -15,25 +15,22 @@
  */
 package com.ait.lienzo.client.core.shape.wires.layout.direction;
 
-import org.junit.Test;
-
 import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.ReferencePosition;
 import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.VerticalAlignment;
+import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public class VerticalLayoutFactoryTest
-{
+public class VerticalLayoutFactoryTest {
+
     @Test
-    public void getInside()
-    {
+    public void getInside() {
         DirectionLayoutBuilder<VerticalAlignment> insideBuilder = VerticalLayoutFactory.get(ReferencePosition.INSIDE);
         assertTrue(insideBuilder instanceof VerticalLayoutFactory.InnerVerticalLayoutBuilder);
     }
 
     @Test
-    public void getOutside()
-    {
+    public void getOutside() {
         DirectionLayoutBuilder<VerticalAlignment> insideBuilder = VerticalLayoutFactory.get(ReferencePosition.OUTSIDE);
         assertTrue(insideBuilder instanceof VerticalLayoutFactory.OuterVerticalLayoutBuilder);
     }

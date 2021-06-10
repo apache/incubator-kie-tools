@@ -107,6 +107,5 @@ public abstract class AbstractWiresControlTest {
 
         shape.setLocation(new Point2D(0, 0));
         parent.setLocation(new Point2D(0, 0));
-
     }
 }

@@ -81,5 +81,4 @@ public class OptionalBoundsTest {
         assertFalse(bounds.biggerOrEqualThanMaxX(55.45d));
         assertFalse(bounds.biggerOrEqualThanMaxX(0d));
     }
-
 }

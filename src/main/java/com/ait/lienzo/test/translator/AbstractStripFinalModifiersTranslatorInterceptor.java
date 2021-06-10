@@ -31,22 +31,18 @@ import javassist.NotFoundException;
  *
  * @author Roger Martinez
  * @since 1.0
- *
  */
-public abstract class AbstractStripFinalModifiersTranslatorInterceptor implements LienzoMockitoClassTranslator.TranslatorInterceptor
-{
+public abstract class AbstractStripFinalModifiersTranslatorInterceptor implements LienzoMockitoClassTranslator.TranslatorInterceptor {
+
     protected abstract Set<String> getClassNames();
 
     @Override
-    public boolean interceptBeforeParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException
-    {
-        if (doIntercept(name))
-        {
+    public boolean interceptBeforeParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException {
+        if (doIntercept(name)) {
             final CtClass clazz = classPool.get(name);
 
             // Remove final modifiers for methods, so can be mocked.
-            for (final CtMethod method : clazz.getDeclaredMethods())
-            {
+            for (final CtMethod method : clazz.getDeclaredMethods()) {
                 method.setModifiers(method.getModifiers() & ~Modifier.FINAL);
             }
             // Intercept class loading. Avoid parent's job..
@@ -56,8 +52,7 @@ public abstract class AbstractStripFinalModifiersTranslatorInterceptor implement
         return false;
     }
 
-    private boolean doIntercept(final String name)
-    {
+    private boolean doIntercept(final String name) {
         return (getClassNames() != null) && getClassNames().contains(name);
     }
 }

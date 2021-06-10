@@ -13,18 +13,15 @@ public class RootPanel {
 
     private List<Element> elements = new ArrayList<>();
 
-    public static RootPanel get()
-    {
+    public static RootPanel get() {
         return INSTANCE;
     }
 
-    public void add(Element child)
-    {
+    public void add(Element child) {
         elements.add(child);
     }
 
-    public void remove(Element child)
-    {
+    public void remove(Element child) {
         child.remove();
     }
 }

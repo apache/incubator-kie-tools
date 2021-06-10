@@ -20,7 +20,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.ait.lienzo.test.settings.Settings;
-
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.NotFoundException;
@@ -29,31 +28,26 @@ import javassist.NotFoundException;
  * It removes the <code>final</code> modifier class declared methods, so those can be further mocked using
  * regular mockito API.
  *
- * @See com.ait.lienzo.test.annotation.Settings#mocks
- *
  * @author Roger Martinez
+ * @See com.ait.lienzo.test.annotation.Settings#mocks
  * @since 1.0
- *
  */
-public class StripFinalModifiersTranslatorInterceptor extends AbstractStripFinalModifiersTranslatorInterceptor implements HasSettings
-{
+public class StripFinalModifiersTranslatorInterceptor extends AbstractStripFinalModifiersTranslatorInterceptor implements HasSettings {
+
     private final Set<String> classNames = new LinkedHashSet<>();
 
     @Override
-    protected Set<String> getClassNames()
-    {
+    protected Set<String> getClassNames() {
         return classNames;
     }
 
     @Override
-    public void useSettings(final Settings settings)
-    {
+    public void useSettings(final Settings settings) {
         this.classNames.addAll(settings.getMocks());
     }
 
     @Override
-    public void interceptAfterParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException
-    {
+    public void interceptAfterParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException {
         // Nothing required for now.
     }
 }

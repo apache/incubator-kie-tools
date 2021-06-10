@@ -214,7 +214,7 @@ public class TextTruncateWrapperTest extends BaseTextTest {
         tested.setWrapper(new TextTruncateWrapper(tested, bbox));
         tested.setTextAlign(TextAlign.LEFT);
 
-        Mockito.doReturn(1.0 ).when(tested ).getLineHeight(any(Context2D.class ));
+        Mockito.doReturn(1.0).when(tested).getLineHeight(any(Context2D.class));
 
         assertTrue(bbox.getWidth() >= tested.getBoundingBox().getWidth());
 

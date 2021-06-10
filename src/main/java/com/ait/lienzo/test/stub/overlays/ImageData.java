@@ -18,5 +18,4 @@ public class ImageData {
     public ImageData(double d1, double d2) {
         data = new Uint8ClampedArray(28);
     }
-
 }

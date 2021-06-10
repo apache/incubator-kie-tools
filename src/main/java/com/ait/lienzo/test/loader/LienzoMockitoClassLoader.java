@@ -18,7 +18,6 @@ package com.ait.lienzo.test.loader;
 
 import com.ait.lienzo.test.settings.Settings;
 import com.ait.lienzo.test.translator.LienzoMockitoClassTranslator;
-
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.Loader;
@@ -28,28 +27,26 @@ import javassist.Translator;
 /**
  * I know, very trick class :/ But it's the only way I found to integrate with current GwtMockito junit
  * runner using same class pool and avoiding building another one on top of it.
- *
+ * <p>
  * This class loader does not loads any class, neither the classpath is really set. It always delegates to parent, which use to be the app one from the testing context.
- *
+ * <p>
  * It just waits for the GwtMockitoClassLoader present into the current's thread context, and then add a custom javassist translator, that wraps the one from gwt as well,
  * to apply custom stuff in top of th gwt one at runtime class loading time.
- *
+ * <p>
  * The reason for this class is that this translation wrapping job must be done on the junit runner constructor,
  * before loading any of our class from interest,
  * so the test class itself and all the classes loaded during tests executions will be loaded and handled by our custom translators.
  *
  * @author Roger Martinez
  * @since 1.0
- *
  */
-public class LienzoMockitoClassLoader extends Loader
-{
+public class LienzoMockitoClassLoader extends Loader {
+
     private final Settings settings;
 
-    private boolean        initialized = false;
+    private boolean initialized = false;
 
-    public LienzoMockitoClassLoader(final Settings settings, final ClassLoader parent, final ClassPool classPool)
-    {
+    public LienzoMockitoClassLoader(final Settings settings, final ClassLoader parent, final ClassPool classPool) {
         super(parent, classPool);
 
         this.settings = settings;
@@ -59,29 +56,24 @@ public class LienzoMockitoClassLoader extends Loader
      * Delegates always to parent class loader.
      */
     @Override
-    protected Class<?> findClass(final String name) throws ClassNotFoundException
-    {
+    protected Class<?> findClass(final String name) throws ClassNotFoundException {
         initIfApplies();
 
         return null;
     }
 
     @Override
-    public Class<?> loadClass(final String name) throws ClassNotFoundException
-    {
+    public Class<?> loadClass(final String name) throws ClassNotFoundException {
         initIfApplies();
 
         return super.loadClass(name);
     }
 
-    private void initIfApplies()
-    {
-        if (!initialized)
-        {
+    private void initIfApplies() {
+        if (!initialized) {
             final ClassLoader l = Thread.currentThread().getContextClassLoader();
 
-            if (l instanceof Translator)
-            {
+            if (l instanceof Translator) {
                 final Loader gwtMockitoLoader = (Loader) l;
 
                 final Translator gwtMockitoTranslator = (Translator) gwtMockitoLoader;
@@ -93,20 +85,14 @@ public class LienzoMockitoClassLoader extends Loader
         }
     }
 
-    public void updateLoaderWithLienzoTranslator(final Loader loader, final Translator translator)
-    {
-        try
-        {
+    public void updateLoaderWithLienzoTranslator(final Loader loader, final Translator translator) {
+        try {
             final LienzoMockitoClassTranslator lienzoTranslator = new LienzoMockitoClassTranslator(settings, translator);
 
             loader.addTranslator(ClassPool.getDefault(), lienzoTranslator);
-        }
-        catch (final NotFoundException e)
-        {
+        } catch (final NotFoundException e) {
             e.printStackTrace();
-        }
-        catch (final CannotCompileException e)
-        {
+        } catch (final CannotCompileException e) {
             e.printStackTrace();
         }
     }

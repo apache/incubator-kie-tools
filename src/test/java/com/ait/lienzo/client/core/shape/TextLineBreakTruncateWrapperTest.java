@@ -176,19 +176,19 @@ public class TextLineBreakTruncateWrapperTest extends BaseTextTest {
     }
 
     @Test
-    public void testLineBreak(){
+    public void testLineBreak() {
         testTextBoundsWrap("Word1\nWord2\nWord3 Word4 Word5 Word6 Word7",
                            new Object[]{
-                        new DrawnText("Word1",
-                                0,
-                                0.8),
-                        new DrawnText("Word2",
-                                0,
-                                1.8),
-                        new DrawnText("Word3 Word4 Word5 Word6 Word7",
-                                0,
-                                2.8)
-                },
+                                   new DrawnText("Word1",
+                                                 0,
+                                                 0.8),
+                                   new DrawnText("Word2",
+                                                 0,
+                                                 1.8),
+                                   new DrawnText("Word3 Word4 Word5 Word6 Word7",
+                                                 0,
+                                                 2.8)
+                           },
                            getWidth(30),
                            getLineHeight(3));
     }
@@ -198,7 +198,7 @@ public class TextLineBreakTruncateWrapperTest extends BaseTextTest {
     }
 
     @Test
-    public void testLineBreakWithSpaces(){
+    public void testLineBreakWithSpaces() {
         testTextBoundsWrap("Word 1   \n Word 2   \n   Word 3 Word 4",
                            new Object[]{
                                    new DrawnText("Word 1",
@@ -210,28 +210,28 @@ public class TextLineBreakTruncateWrapperTest extends BaseTextTest {
                                    new DrawnText("   Word 3 Word 4",
                                                  0,
                                                  2.8)
-                },
+                           },
                            getWidth(30),
                            getLineHeight(3));
     }
 
     @Test
-    public void testLineBreakTruncated(){
+    public void testLineBreakTruncated() {
         testTextBoundsWrap("Word1\nWord2\nWord3 Word4 Word5 Word6 Word7",
                            new Object[]{
-                        new DrawnText("Word1",
-                                0,
-                                0.8),
-                        new DrawnText("Word2",
-                                0,
-                                1.8),
-                        new DrawnText("Word3",
-                                0,
-                                2.8),
-                        new DrawnText("Wo...",
-                                0,
-                                3.8)
-                },
+                                   new DrawnText("Word1",
+                                                 0,
+                                                 0.8),
+                                   new DrawnText("Word2",
+                                                 0,
+                                                 1.8),
+                                   new DrawnText("Word3",
+                                                 0,
+                                                 2.8),
+                                   new DrawnText("Wo...",
+                                                 0,
+                                                 3.8)
+                           },
                            getWidth(5),
                            getLineHeight(4));
     }
@@ -276,9 +276,8 @@ public class TextLineBreakTruncateWrapperTest extends BaseTextTest {
         assertArrayEquals(results, getDrawnTextRemovePaddingChar());
     }
 
-    private Object[] getDrawnTextRemovePaddingChar()
-    {
-        for(Object o : drawnTexts.toArray()){
+    private Object[] getDrawnTextRemovePaddingChar() {
+        for (Object o : drawnTexts.toArray()) {
             DrawnText drawnText = (DrawnText) o;
             drawnText.text = StringUtils.stripEnd(drawnText.text, " ");
         }

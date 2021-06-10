@@ -35,5 +35,4 @@ public class FillStyleUnionType {
     public boolean isString() {
         return (Object) this instanceof String;
     }
-
 }

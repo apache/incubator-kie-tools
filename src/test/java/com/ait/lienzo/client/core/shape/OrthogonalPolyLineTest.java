@@ -7,7 +7,6 @@ import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 
 import static com.ait.lienzo.client.core.shape.OrthogonalPolyLine.correctEndWithOffset;
 import static com.ait.lienzo.shared.core.types.Direction.EAST;
@@ -17,18 +16,15 @@ import static com.ait.lienzo.shared.core.types.Direction.NORTH_EAST;
 import static com.ait.lienzo.shared.core.types.Direction.SOUTH;
 import static com.ait.lienzo.shared.core.types.Direction.WEST;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class OrthogonalPolyLineTest
-{
+public class OrthogonalPolyLineTest {
 
     @Test
-    public void testGetBoundingBoxForEmptyPath()
-    {
+    public void testGetBoundingBoxForEmptyPath() {
         OrthogonalPolyLine polyLine = new OrthogonalPolyLine(new Point2DArray());
         BoundingBox box = polyLine.getBoundingBox();
 
@@ -38,10 +34,8 @@ public class OrthogonalPolyLineTest
         assertEquals(0, box.getMaxY(), 0.000001);
     }
 
-
     @Test
-    public void testParse()
-    {
+    public void testParse() {
         Point2DArray points = new Point2DArray();
         OrthogonalPolyLine polyLine = spy(new OrthogonalPolyLine(points));
 
@@ -55,43 +49,36 @@ public class OrthogonalPolyLineTest
     }
 
     @Test
-    public void testCorrectEndWithNorthOffset()
-    {
+    public void testCorrectEndWithNorthOffset() {
         testCorrectEndWithOffset(NORTH, 3, 0);
     }
 
     @Test
-    public void testCorrectEndWithEastOffset()
-    {
+    public void testCorrectEndWithEastOffset() {
         testCorrectEndWithOffset(EAST, 6, 3);
     }
 
     @Test
-    public void testCorrectEndWithSouthOffset()
-    {
+    public void testCorrectEndWithSouthOffset() {
         testCorrectEndWithOffset(SOUTH, 3, 6);
     }
 
     @Test
-    public void testCorrectEndWithWestOffset()
-    {
+    public void testCorrectEndWithWestOffset() {
         testCorrectEndWithOffset(WEST, 0, 3);
     }
 
     @Test
-    public void testCorrectEndWithNONEOffset()
-    {
+    public void testCorrectEndWithNONEOffset() {
         testCorrectEndWithOffset(NONE, 3, 3);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testCorrectEndWithOffsetWithWrongDirection()
-    {
+    public void testCorrectEndWithOffsetWithWrongDirection() {
         testCorrectEndWithOffset(NORTH_EAST, 1000, 1000);
     }
 
-    private void testCorrectEndWithOffset(Direction direction, double expectedX, double expectedY)
-    {
+    private void testCorrectEndWithOffset(Direction direction, double expectedX, double expectedY) {
         Point2D point = new Point2D(3, 3);
         double offset = 3;
         point = correctEndWithOffset(offset, direction, point);

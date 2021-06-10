@@ -15,36 +15,32 @@
  */
 package com.ait.lienzo.client.core.shape.wires.layout.size;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.ait.lienzo.client.core.shape.wires.layout.AbstractContainerLayoutTest;
 import com.ait.lienzo.client.core.shape.wires.layout.size.SizeConstraints.Type;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class SizeConstraintsContainerLayoutTest extends AbstractContainerLayoutTest<SizeConstraints, SizeConstraintsContainerLayout>
-{
+public class SizeConstraintsContainerLayoutTest extends AbstractContainerLayoutTest<SizeConstraints, SizeConstraintsContainerLayout> {
+
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         super.setUp();
         currentLayout = new SizeConstraints();
     }
 
     @Override
-    protected SizeConstraintsContainerLayout createInstance()
-    {
+    protected SizeConstraintsContainerLayout createInstance() {
         return new SizeConstraintsContainerLayout(parent);
     }
 
     @Test
-    public void getMaxSizePercentage()
-    {
+    public void getMaxSizePercentage() {
         tested.add(child, new SizeConstraints(50, 50, Type.PERCENTAGE));
         final BoundingBox maxSize = tested.getMaxSize(child);
         assertEquals(maxSize.getWidth(), parent.getBoundingBox().getWidth() / 2, 0d);
@@ -52,16 +48,15 @@ public class SizeConstraintsContainerLayoutTest extends AbstractContainerLayoutT
     }
 
     @Test
-    public void getMaxSizePx()
-    {
+    public void getMaxSizePx() {
         tested.add(child, new SizeConstraints(30, 15, Type.RAW));
         final BoundingBox maxSize = tested.getMaxSize(child);
         assertEquals(30, maxSize.getWidth(), 0d);
         assertEquals(15, maxSize.getHeight(), 0d);
     }
 
-    @Override protected SizeConstraints getDefaultLayoutForTest()
-    {
+    @Override
+    protected SizeConstraints getDefaultLayoutForTest() {
         return new SizeConstraints(100, 100, Type.PERCENTAGE);
     }
 }

@@ -16,26 +16,24 @@
 
 package com.ait.lienzo.test.annotation;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
  * Lienzo's JSO fully qualified class names to be mocked.
- *
+ * <p>
  * NOTE: Use <code>$</code> as the inner class separator character on the fqcn.
  *
- * @See com.ait.lienzo.test.annotation.Settings#mocks
- *
  * @author Roger Martinez
+ * @See com.ait.lienzo.test.annotation.Settings#mocks
  * @since 1.0
- *
  */
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface Mocks
-{
+public @interface Mocks {
+
     public String[] value();
 }

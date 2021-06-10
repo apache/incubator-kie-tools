@@ -21,7 +21,6 @@ import java.util.ArrayList;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.util.ScratchPad;
-import elemental2.dom.HTMLCanvasElement;
 import elemental2.dom.TextMetrics;
 import org.junit.Before;
 import org.mockito.Mock;
@@ -29,7 +28,8 @@ import org.mockito.stubbing.Answer;
 
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 public abstract class BaseTextTest {
 

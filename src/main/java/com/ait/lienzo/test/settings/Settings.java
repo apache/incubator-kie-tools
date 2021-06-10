@@ -30,22 +30,20 @@ import com.ait.lienzo.test.translator.LienzoMockitoClassTranslator;
  *
  * @author Roger Martinez
  * @since 1.0
- *
  */
-public final class Settings
-{
-    private final Map<String, String>                                            stubs;
+public final class Settings {
 
-    private final Collection<String>                                             jsoStubs;
+    private final Map<String, String> stubs;
 
-    private final Collection<String>                                             jsoMocks;
+    private final Collection<String> jsoStubs;
 
-    private final Collection<String>                                             mocks;
+    private final Collection<String> jsoMocks;
+
+    private final Collection<String> mocks;
 
     private final Collection<LienzoMockitoClassTranslator.TranslatorInterceptor> translators;
 
-    Settings(final Collection<LienzoMockitoClassTranslator.TranslatorInterceptor> translators)
-    {
+    Settings(final Collection<LienzoMockitoClassTranslator.TranslatorInterceptor> translators) {
         this.stubs = new LinkedHashMap<>();
         this.jsoStubs = new LinkedHashSet<>();
         this.jsoMocks = new LinkedHashSet<>();
@@ -53,8 +51,7 @@ public final class Settings
         this.translators = translators;
     }
 
-    Settings(final Map<String, String> stubs, final Set<String> jsoStubs, final Set<String> jsoMocks, final Set<String> mocks, final List<LienzoMockitoClassTranslator.TranslatorInterceptor> translators)
-    {
+    Settings(final Map<String, String> stubs, final Set<String> jsoStubs, final Set<String> jsoMocks, final Set<String> mocks, final List<LienzoMockitoClassTranslator.TranslatorInterceptor> translators) {
         this.stubs = stubs;
         this.jsoStubs = jsoStubs;
         this.jsoMocks = jsoMocks;
@@ -62,28 +59,23 @@ public final class Settings
         this.translators = translators;
     }
 
-    public Map<String, String> getStubs()
-    {
+    public Map<String, String> getStubs() {
         return stubs;
     }
 
-    public Collection<String> getJSOStubs()
-    {
+    public Collection<String> getJSOStubs() {
         return jsoStubs;
     }
 
-    public Collection<String> getJSOMocks()
-    {
+    public Collection<String> getJSOMocks() {
         return jsoMocks;
     }
 
-    public Collection<String> getMocks()
-    {
+    public Collection<String> getMocks() {
         return mocks;
     }
 
-    public Collection<LienzoMockitoClassTranslator.TranslatorInterceptor> getAdditionalTranslators()
-    {
+    public Collection<LienzoMockitoClassTranslator.TranslatorInterceptor> getAdditionalTranslators() {
         return translators;
     }
 }

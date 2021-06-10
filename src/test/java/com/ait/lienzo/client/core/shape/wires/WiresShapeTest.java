@@ -48,23 +48,37 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.stubbing.Answer;
 
-import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.*;
+import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.CONNECTOR;
+import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
+import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.RESIZE;
 import static com.ait.lienzo.shared.core.types.EventPropagationMode.FIRST_ANCESTOR;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class WiresShapeTest
-{
-    private WiresShape                 tested;
+public class WiresShapeTest {
 
-    private MultiPath                  path;
+    private WiresShape tested;
+
+    private MultiPath path;
 
     @Mock
-    private LayoutContainer            layoutContainer;
+    private LayoutContainer layoutContainer;
 
     @Mock
     private HandlerRegistrationManager handlerRegistrationManager;
@@ -73,16 +87,15 @@ public class WiresShapeTest
     private HandlerManager handlerManager;
 
     @Mock
-    private WiresContainer             parent;
+    private WiresContainer parent;
 
     @Mock
-    private MagnetManager.Magnets      magnets;
+    private MagnetManager.Magnets magnets;
 
-    private Group                      group;
+    private Group group;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         path = spy(new MultiPath().rect(3, 7, 100, 100));
         group = spy(new Group());
         when(layoutContainer.getGroup()).thenReturn(group);
@@ -94,8 +107,7 @@ public class WiresShapeTest
     }
 
     @Test
-    public void testInit()
-    {
+    public void testInit() {
         assertNull(tested.getParent());
         assertNull(tested.getDockedTo());
         assertEquals(path, tested.getPath());
@@ -110,8 +122,7 @@ public class WiresShapeTest
     }
 
     @Test
-    public void testSetDraggable()
-    {
+    public void testSetDraggable() {
         tested.setDraggable(false);
         assertFalse(tested.getGroup().isDraggable());
 
@@ -120,8 +131,7 @@ public class WiresShapeTest
     }
 
     @Test
-    public void testDraggableHandlers()
-    {
+    public void testDraggableHandlers() {
         final WiresShapeHandler handler = mock(WiresShapeHandler.class);
         WiresManager.addWiresShapeHandler(tested,
                                           handlerRegistrationManager,
@@ -134,8 +144,7 @@ public class WiresShapeTest
     }
 
     @Test
-    public void testLocation()
-    {
+    public void testLocation() {
         final Point2D location = new Point2D(11, 55.5);
         tested.setLocation(location);
         assertEquals(location, tested.getLocation());
@@ -143,8 +152,7 @@ public class WiresShapeTest
     }
 
     @Test
-    public void testSetResizable()
-    {
+    public void testSetResizable() {
         tested.setResizable(false);
         assertFalse(tested.isResizable());
 
@@ -153,8 +161,7 @@ public class WiresShapeTest
     }
 
     @Test
-    public void testAddChild()
-    {
+    public void testAddChild() {
         final IPrimitive<?> child = new Rectangle(10, 10);
         tested.addChild(child);
 
@@ -166,8 +173,7 @@ public class WiresShapeTest
     }
 
     @Test
-    public void testAddChildWithLayout()
-    {
+    public void testAddChildWithLayout() {
         final IPrimitive<?> child = new Rectangle(10, 10);
         final LayoutContainer.Layout layout = LayoutContainer.Layout.CENTER;
         tested.addChild(child, layout);
@@ -179,8 +185,7 @@ public class WiresShapeTest
     }
 
     @Test
-    public void testRemoveChild()
-    {
+    public void testRemoveChild() {
         final IPrimitive<?> child = new Rectangle(10, 10);
         tested.removeChild(child);
         verify(layoutContainer, never()).add(child);
@@ -192,8 +197,7 @@ public class WiresShapeTest
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testAddWiresHandlers()
-    {
+    public void testAddWiresHandlers() {
         final WiresResizeStartHandler startHandler = mock(WiresResizeStartHandler.class);
         final WiresResizeStepHandler stepHandler = mock(WiresResizeStepHandler.class);
         final WiresResizeEndHandler endHandler = mock(WiresResizeEndHandler.class);
@@ -207,8 +211,7 @@ public class WiresShapeTest
         final HandlerRegistration registration = mock(HandlerRegistration.class);
         doAnswer((Answer<HandlerRegistration>) invocationOnMock -> {
             final DomEvent.Type type = (DomEvent.Type) invocationOnMock.getArguments()[0];
-            if (WiresResizeEndEvent.TYPE.equals(type))
-            {
+            if (WiresResizeEndEvent.TYPE.equals(type)) {
                 final WiresResizeEndHandler handler = (WiresResizeEndHandler) invocationOnMock.getArguments()[1];
                 final WiresResizeEndEvent endEvent = mock(WiresResizeEndEvent.class);
                 handler.onShapeResizeEnd(endEvent);
@@ -216,12 +219,10 @@ public class WiresShapeTest
             }
             return registration;
         }).when(handlerManager).addHandler(any(INodeEvent.Type.class), any(EventHandler.class));
-
     }
 
     @Test
-    public void testListen()
-    {
+    public void testListen() {
         tested.listen(true);
         assertTrue(tested.isListening());
         tested.listen(false);
@@ -229,8 +230,7 @@ public class WiresShapeTest
     }
 
     @Test
-    public void testDestroy()
-    {
+    public void testDestroy() {
         final WiresShapeControlHandleList controls = mock(WiresShapeControlHandleList.class);
         final WiresShape shape = spy(new WiresShape(path, layoutContainer));
         final WiresShapeControl shapeControl = mock(WiresShapeControl.class);
@@ -245,8 +245,7 @@ public class WiresShapeTest
     }
 
     @Test
-    public void testRemoveFromParent()
-    {
+    public void testRemoveFromParent() {
         final WiresShape shape = spy(new WiresShape(path, layoutContainer));
 
         // No null pointer expected
@@ -259,8 +258,7 @@ public class WiresShapeTest
     }
 
     @Test
-    public void testLoadControls()
-    {
+    public void testLoadControls() {
         assertNull(tested.getControls());
 
         assertNull(tested.loadControls(null));
@@ -276,7 +274,6 @@ public class WiresShapeTest
         verify(path).getControlHandles(RESIZE);
         verify(tested).createControlHandles(eq(RESIZE), any(ControlHandleList.class));
 
-
         assertNotNull(tested.loadControls(POINT));
         assertNotNull(tested.getControls());
         verify(path).getControlHandles(POINT);
@@ -284,8 +281,7 @@ public class WiresShapeTest
     }
 
     @Test
-    public void testSetMagnets()
-    {
+    public void testSetMagnets() {
         assertNull(tested.getMagnets());
 
         tested.setMagnets(magnets);
@@ -293,8 +289,7 @@ public class WiresShapeTest
     }
 
     @Test
-    public void testRefresh()
-    {
+    public void testRefresh() {
         final WiresShapeControlHandleList controls = mock(WiresShapeControlHandleList.class);
         doReturn(controls).when(tested).createControlHandles(eq(RESIZE), any(ControlHandleList.class));
 
@@ -304,8 +299,7 @@ public class WiresShapeTest
     }
 
     @Test
-    public void testEquals()
-    {
+    public void testEquals() {
         WiresShape shape1 = new WiresShape(path, layoutContainer, handlerManager, handlerRegistrationManager);
         assertEquals(shape1, shape1);
         assertFalse(shape1.equals(null));

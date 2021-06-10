@@ -124,7 +124,7 @@ public class WiresShapeLocationControlImplTest {
     }
 
     @Test
-    public void testDestroy(){
+    public void testDestroy() {
         testClear();
     }
 }

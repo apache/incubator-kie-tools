@@ -20,6 +20,4 @@ public class DomGlobal {
     public static double setTimeout(elemental2.dom.DomGlobal.SetTimeoutCallbackFn callback, double delay, Object... callbackParams) {
         return 0d;
     }
-
-
 }

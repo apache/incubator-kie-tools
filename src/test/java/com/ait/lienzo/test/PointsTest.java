@@ -18,42 +18,38 @@
 
 package com.ait.lienzo.test;
 
-import static org.junit.Assert.assertEquals;
-
+import com.ait.lienzo.client.core.types.Point2D;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ait.lienzo.client.core.types.Point2D;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Consider Point2D#toString method stubbed as no-op. So expect an empty js array to string as result,
  * but the test will run as no native/final problematic methods present.
- *
+ * <p>
  * If you need to specify custom mocking behavior for np-op methods:
- *    @See com.ait.lienzo.test.PointsMockTest
- *
- * If you need to specify custom implementations:
- *    @See com.ait.lienzo.test.stub.custom.StubPointsTest
  *
  * @author Roger Martinez
+ * @See com.ait.lienzo.test.PointsMockTest
+ * <p>
+ * If you need to specify custom implementations:
+ * @See com.ait.lienzo.test.stub.custom.StubPointsTest
  * @since 1.0
- *
  */
 @RunWith(LienzoMockitoTestRunner.class)
-public class PointsTest
-{
-    public class MyLienzo
-    {
+public class PointsTest {
+
+    public class MyLienzo {
+
         private final Point2D p;
 
-        public MyLienzo(final Point2D p)
-        {
+        public MyLienzo(final Point2D p) {
             this.p = p;
         }
 
-        public Point2D test(final Point2D p)
-        {
+        public Point2D test(final Point2D p) {
             return this.p.add(p);
         }
     }
@@ -61,14 +57,12 @@ public class PointsTest
     private MyLienzo myLienzo;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         myLienzo = new MyLienzo(new Point2D(0, 0));
     }
 
     @Test
-    public void test()
-    {
+    public void test() {
         final Point2D p = myLienzo.test(new Point2D(0, 0));
 
         assertEquals(0, p.getX(), 0);

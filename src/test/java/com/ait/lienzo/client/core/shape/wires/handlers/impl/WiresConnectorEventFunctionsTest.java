@@ -30,33 +30,35 @@ import org.mockito.Mock;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class WiresConnectorEventFunctionsTest
-{
-    @Mock
-    private WiresManager          wiresManager;
+public class WiresConnectorEventFunctionsTest {
 
     @Mock
-    private SelectionManager      selectionManager;
+    private WiresManager wiresManager;
 
     @Mock
-    private WiresConnector        connector;
+    private SelectionManager selectionManager;
+
+    @Mock
+    private WiresConnector connector;
 
     @Mock
     private WiresConnectorControl connectorControl;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         when(wiresManager.getSelectionManager()).thenReturn(selectionManager);
         when(connector.getControl()).thenReturn(connectorControl);
     }
 
     @Test
-    public void testCanShowControlPoints()
-    {
+    public void testCanShowControlPoints() {
         when(connectorControl.areControlPointsVisible()).thenReturn(true);
         assertFalse(WiresConnectorEventFunctions.canShowControlPoints().test(connector));
         when(connectorControl.areControlPointsVisible()).thenReturn(false);
@@ -64,8 +66,7 @@ public class WiresConnectorEventFunctionsTest
     }
 
     @Test
-    public void testCanHideControlPoints()
-    {
+    public void testCanHideControlPoints() {
         when(wiresManager.getSelectionManager()).thenReturn(null);
         assertTrue(WiresConnectorEventFunctions.canHideControlPoints(wiresManager).test(connector));
         when(wiresManager.getSelectionManager()).thenReturn(selectionManager);
@@ -77,8 +78,7 @@ public class WiresConnectorEventFunctionsTest
     }
 
     @Test
-    public void testSelect()
-    {
+    public void testSelect() {
         WiresConnectorHandlerImpl.Event event = mock(WiresConnectorHandlerImpl.Event.class);
         WiresConnectorEventFunctions.select(wiresManager, connector).accept(event);
         verify(selectionManager, times(1)).selected(eq(connector), eq(false));
@@ -87,8 +87,7 @@ public class WiresConnectorEventFunctionsTest
     }
 
     @Test
-    public void testAddControlPoint()
-    {
+    public void testAddControlPoint() {
         WiresConnectorHandlerImpl.Event event = new WiresConnectorHandlerImpl.Event(22.1, 324.22, false);
         WiresConnectorEventFunctions.addControlPoint(connector).accept(event);
         verify(connectorControl, times(1)).addControlPoint(eq(22.1d), eq(324.22d));

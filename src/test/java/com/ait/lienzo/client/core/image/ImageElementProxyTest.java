@@ -85,5 +85,4 @@ public class ImageElementProxyTest {
                                             eq(10d),
                                             eq(10d));
     }
-
 }

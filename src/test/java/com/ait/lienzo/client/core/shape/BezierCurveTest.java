@@ -50,5 +50,4 @@ public class BezierCurveTest {
         assertEquals(157.06256395286277, boundingBox.getMaxX(), 0);
         assertEquals(100, boundingBox.getMaxY(), 0);
     }
-
 }

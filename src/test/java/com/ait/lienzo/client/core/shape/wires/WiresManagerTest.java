@@ -42,19 +42,31 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class WiresManagerTest
-{
+public class WiresManagerTest {
+
     private static final String LAYER_ID = "theLayer";
 
     private WiresManager tested;
 
-    private Layer        layer;
+    private Layer layer;
 
     private Scene scene = new Scene();
 
@@ -64,8 +76,7 @@ public class WiresManagerTest
     private Viewport viewport;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         OnEventHandlers onEventHandlers = new OnEventHandlers();
 
         layer = spy(new Layer());
@@ -83,8 +94,7 @@ public class WiresManagerTest
     }
 
     @Test
-    public void testGetWiresManager()
-    {
+    public void testGetWiresManager() {
         final Layer layer2 = spy(new Layer());
         layer2.setID("layer2");
         when(layer2.getViewport()).thenReturn(viewport);
@@ -94,8 +104,7 @@ public class WiresManagerTest
     }
 
     @Test
-    public void testCreateWiresManagerInstance()
-    {
+    public void testCreateWiresManagerInstance() {
         final Layer layer2 = mock(Layer.class);
         when(layer2.uuid()).thenReturn("layer2");
         when(layer2.getViewport()).thenReturn(viewport);
@@ -109,8 +118,7 @@ public class WiresManagerTest
     }
 
     @Test
-    public void testRegisterShape()
-    {
+    public void testRegisterShape() {
         final IContainmentAcceptor containmentAcceptor = mock(IContainmentAcceptor.class);
         final IDockingAcceptor dockingAcceptor = mock(IDockingAcceptor.class);
         tested.setContainmentAcceptor(containmentAcceptor);
@@ -131,8 +139,7 @@ public class WiresManagerTest
     }
 
     @Test
-    public void testResizeShape()
-    {
+    public void testResizeShape() {
         final Viewport viewport = mock(Viewport.class);
         when(viewport.getOverLayer()).thenReturn(mock(Layer.class));
         when(layer.getViewport()).thenReturn(viewport);
@@ -166,8 +173,7 @@ public class WiresManagerTest
     }
 
     @Test
-    public void testDeregisterShape()
-    {
+    public void testDeregisterShape() {
         final WiresManager spied = spy(tested);
         final HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
         doReturn(handlerRegistrationManager).when(spied).createHandlerRegistrationManager();
@@ -187,8 +193,7 @@ public class WiresManagerTest
     }
 
     @Test
-    public void testRegisterConnector()
-    {
+    public void testRegisterConnector() {
         final IConnectionAcceptor connectionAcceptor = mock(IConnectionAcceptor.class);
         tested.setConnectionAcceptor(connectionAcceptor);
         final WiresManager spied = spy(tested);
@@ -222,8 +227,7 @@ public class WiresManagerTest
     }
 
     @Test
-    public void testDeregisterConnector()
-    {
+    public void testDeregisterConnector() {
         final WiresManager spied = spy(tested);
         final HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
         doReturn(handlerRegistrationManager).when(spied).createHandlerRegistrationManager();

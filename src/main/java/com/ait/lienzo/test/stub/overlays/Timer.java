@@ -39,8 +39,7 @@ import com.ait.lienzo.test.annotation.StubClass;
  * </p>
  */
 @StubClass("com.ait.lienzo.tools.client.Timer")
-public abstract class Timer
-{
+public abstract class Timer {
 
     private boolean isRepeating;
 
@@ -94,7 +93,7 @@ public abstract class Timer
      * first canceled before re-scheduling.
      *
      * @param periodMillis how long to wait before the timer elapses, in milliseconds, between each
-     *        repetition
+     *                     repetition
      */
     public void scheduleRepeating(int periodMillis) {
 
@@ -118,6 +117,5 @@ public abstract class Timer
         // Run the timer's code.
         run();
     }
-
 }
 

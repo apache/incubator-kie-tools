@@ -32,12 +32,9 @@ public class CanvasRenderingContext2D extends BaseRenderingContext2D {
         static elemental2.dom.CanvasRenderingContext2D.FillStyleUnionType of(Object o) {
             return null;
         }
-
     }
 
     public ImageData getImageData(int sx, int sy, int sw, int sh) {
         return new ImageData(100, 100);
     }
-
-
 }

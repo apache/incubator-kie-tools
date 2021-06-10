@@ -16,24 +16,23 @@
 
 package com.ait.lienzo.test.annotation;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
  * Lienzo's JSO fully qualified class names to stub.
- *
+ * <p>
  * NOTE: Use <code>$</code> as the inner class separator character on the fqcn.
  *
  * @author Roger Martinez
  * @since 1.0
- *
  */
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface JSOStubs
-{
+public @interface JSOStubs {
+
     public String[] value();
 }

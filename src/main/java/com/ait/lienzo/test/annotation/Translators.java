@@ -16,24 +16,23 @@
 
 package com.ait.lienzo.test.annotation;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import com.ait.lienzo.test.translator.LienzoMockitoClassTranslator;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Specify custom translator interceptors. They must provide a public no-arg constructor.
  *
  * @author Roger Martinez
  * @since 1.0
- *
  */
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface Translators
-{
+public @interface Translators {
+
     public Class<? extends LienzoMockitoClassTranslator.TranslatorInterceptor>[] value();
 }

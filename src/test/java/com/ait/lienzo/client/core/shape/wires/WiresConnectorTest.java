@@ -91,8 +91,7 @@ public class WiresConnectorTest {
     }
 
     @Test
-    public void testDestroy()
-    {
+    public void testDestroy() {
         tested.addToLayer(new Layer());
         assertNotNull(tested.getGroup().getLayer());
         WiresConnection headConnection = mock(WiresConnection.class);
@@ -143,5 +142,4 @@ public class WiresConnectorTest {
         assertEquals(1, tested.getControlPointIndex(CP1.getX(), CP1.getY()));
         assertEquals(2, tested.getControlPointIndex(CP2.getX(), CP2.getY()));
     }
-
 }

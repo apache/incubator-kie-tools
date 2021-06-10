@@ -31,8 +31,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -94,13 +92,13 @@ public class GroupImplTest {
             ((Runnable) invocationOnMock.getArguments()[1]).run();
             return groupItem;
         }).when(groupItem).show(any(Runnable.class),
-                                    any(Runnable.class));
+                                any(Runnable.class));
         doAnswer(invocationOnMock -> {
             ((Runnable) invocationOnMock.getArguments()[0]).run();
             ((Runnable) invocationOnMock.getArguments()[1]).run();
             return groupItem;
         }).when(groupItem).hide(any(Runnable.class),
-                                    any(Runnable.class));
+                                any(Runnable.class));
         tested = new GroupImpl(groupItem,
                                group)
                 .useHideExecutor(hideExecutor)

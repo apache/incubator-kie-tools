@@ -17,5 +17,4 @@ public class Element {
     public double scrollTop;
     public int scrollWidth;
     public String tagName;
-
 }

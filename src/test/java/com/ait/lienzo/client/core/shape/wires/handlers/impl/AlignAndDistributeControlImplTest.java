@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
-import java.util.Arrays;
-
-import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.wires.AlignAndDistribute;
@@ -67,7 +64,7 @@ public class AlignAndDistributeControlImplTest extends AbstractWiresControlTest 
         when(group.getComputedBoundingPoints()).thenReturn(points);
         when(group.uuid()).thenReturn(UUID);
 
-        tested = new AlignAndDistributeControlImpl(group,alignAndDistribute,callback);
+        tested = new AlignAndDistributeControlImpl(group, alignAndDistribute, callback);
         tested.setIndexed(true);
 
         when(alignAndDistribute.getControlForShape(anyString())).thenReturn(tested);
@@ -98,5 +95,4 @@ public class AlignAndDistributeControlImplTest extends AbstractWiresControlTest 
         spied.refresh();
         verify(spied, never()).updateIndex();
     }
-
 }

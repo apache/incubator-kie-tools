@@ -27,18 +27,16 @@ import com.ait.lienzo.test.translator.StripFinalModifiersTranslatorInterceptor;
 
 /**
  * This class contains the default framework's settings.
- *
+ * <p>
  * You can add your custom settings, if necessary, by using the
  * annotation <code>com.ait.lienzo.test.annotation.Settings</code>
  * on your test classes.
  *
- * @See com.ait.lienzo.test.annotation.Settings
- *
  * @author Roger Martinez
+ * @See com.ait.lienzo.test.annotation.Settings
  * @since 1.0
- *
  */
-@com.ait.lienzo.test.annotation.Settings (
+@com.ait.lienzo.test.annotation.Settings(
 
         /*  Note: Class 'com.ait.lienzo.client.core.shape.Node' is already available for being mocked due to
                   the use of the translator 'com.ait.lienzo.test.translator.LienzoNodeTranslatorInterceptor'.
@@ -111,13 +109,12 @@ import com.ait.lienzo.test.translator.StripFinalModifiersTranslatorInterceptor;
 
         logEnabled = false
 
-        )
+)
 
-public final class DefaultSettingsHolder
-{
+public final class DefaultSettingsHolder {
+
     public static final DefaultSettingsHolder INSTANCE = new DefaultSettingsHolder();
 
-    private DefaultSettingsHolder()
-    {
+    private DefaultSettingsHolder() {
     }
 }

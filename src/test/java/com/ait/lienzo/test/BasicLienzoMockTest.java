@@ -16,53 +16,49 @@
 
 package com.ait.lienzo.test;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Rectangle;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.Rectangle;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Basic test that asserts the behavior of the <code>Layer</code> instead of its state.
- *
+ * <p>
  * What happens on this tests is:
- *
+ * <p>
  * 1.- By annotating the unit test with the <code>@RunWith( LienzoMockitoTestRunner.class )</code> the <code>Layer</code> class
  * is being processed and all native/final methods have been stripped, so can be mocked.
- *
+ * <p>
  * 2.- The Layer is mocked using regular Mockito annotations, so you can use regular Mockito API to verity it's behavior.
- *
+ * <p>
  * Note: You can either use gwt mocks, mockito spies and whatever other functionality, if you need so.
  *
  * @author Roger Martinez
  * @since 1.0
- *
  */
 @RunWith(LienzoMockitoTestRunner.class)
-public class BasicLienzoMockTest
-{
-    public class MyLienzo
-    {
-        private final Layer     layer;
+public class BasicLienzoMockTest {
+
+    public class MyLienzo {
+
+        private final Layer layer;
 
         private final Rectangle rectangle = new Rectangle(50, 50);
 
-        public MyLienzo(final Layer layer)
-        {
+        public MyLienzo(final Layer layer) {
             this.layer = layer;
         }
 
-        public void test()
-        {
+        public void test() {
             rectangle.setFillColor("#0000FF");
 
             layer.add(rectangle);
@@ -70,35 +66,31 @@ public class BasicLienzoMockTest
             layer.draw();
         }
 
-        public void test2()
-        {
+        public void test2() {
             final int w = layer.getWidth();
 
             rectangle.setX(w + 100);
         }
 
-        public Rectangle getRectangle()
-        {
+        public Rectangle getRectangle() {
             return rectangle;
         }
     }
 
     @Mock
-    Layer            layer;
+    Layer layer;
 
     private MyLienzo myLienzo;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         when(layer.getWidth()).thenReturn(300);
 
         myLienzo = new MyLienzo(layer);
     }
 
     @Test
-    public void test()
-    {
+    public void test() {
         myLienzo.test();
 
         verify(layer, times(1)).add(any(Rectangle.class));
@@ -111,8 +103,7 @@ public class BasicLienzoMockTest
     }
 
     @Test
-    public void test2()
-    {
+    public void test2() {
         myLienzo.test2();
 
         verify(layer, times(1)).getWidth();
@@ -124,8 +115,7 @@ public class BasicLienzoMockTest
      * Method getFillAlpha can be mocked as the final modifier from original class has been removed.
      */
     @Test
-    public void testMockFillAlhpaFinalMethod()
-    {
+    public void testMockFillAlhpaFinalMethod() {
         final Rectangle rrr = mock(Rectangle.class);
 
         when(rrr.getFillAlpha()).thenReturn(0.5d);
@@ -137,8 +127,7 @@ public class BasicLienzoMockTest
      * Method uuid can be mocked as the final modifier from original class has been removed.
      */
     @Test
-    public void testMockUUIDFinalMethod()
-    {
+    public void testMockUUIDFinalMethod() {
         final Rectangle rrr = mock(Rectangle.class);
 
         when(rrr.uuid()).thenReturn("mockedUUID");

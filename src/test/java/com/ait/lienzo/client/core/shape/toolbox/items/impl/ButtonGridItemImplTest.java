@@ -408,6 +408,5 @@ public class ButtonGridItemImplTest {
                times(1)).destroy();
         verify(toolbox,
                times(1)).destroy();
-
     }
 }

@@ -27,78 +27,65 @@ import com.ait.lienzo.test.util.LienzoMockitoLogger;
 
 /**
  * In-memory Map implementation stub stub for class <code>com.ait.tooling.nativetools.client.collection.NFastStringMap</code>.
- *
+ * <p>
  * Results easier creating this stub class for this wrapper of NFastStringMapJSO than creating concrete stubs for NFastStringMapJSO and
  * its super classes.
  *
  * @author Roger Martinez
  * @since 1.0
- *
  */
 @StubClass("com.ait.lienzo.tools.client.collection.NFastStringMap")
-public class NFastStringMap<V>
-{
+public class NFastStringMap<V> {
+
     private final Map<String, V> map = new HashMap<>();
 
-    public NFastStringMap()
-    {
+    public NFastStringMap() {
         LienzoMockitoLogger.log("NFastStringMap", "Creating custom Lienzo overlay type.");
     }
 
-    public NFastStringMap<V> put(final String key, final V value)
-    {
+    public NFastStringMap<V> put(final String key, final V value) {
         map.put(key, value);
         return this;
     }
 
-    public V get(final String key)
-    {
+    public V get(final String key) {
         //return map.get(NUtils.doKeyRepair(key));
         return map.get(key);
     }
 
-    public NFastStringMap<V> remove(final String key)
-    {
+    public NFastStringMap<V> remove(final String key) {
         map.remove(key);
 
         return this;
     }
 
-    public boolean isDefined(final String key)
-    {
+    public boolean isDefined(final String key) {
         return map.containsKey(key);
     }
 
-    public boolean isNull(final String key)
-    {
+    public boolean isNull(final String key) {
         return map.get(key) == null;
     }
 
-    public int size()
-    {
+    public int size() {
         return map.size();
     }
 
-    public void clear()
-    {
+    public void clear() {
         map.clear();
     }
 
-
-    public Collection<String> keys()
-    {
+    public Collection<String> keys() {
         return map.keySet();
     }
 
-    public Collection<V> values()
-    {
+    public Collection<V> values() {
         final ArrayList<V> list = new ArrayList<>(map.values());
 
         return Collections.unmodifiableList(list);
     }
 
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return map.isEmpty();
     }
 }

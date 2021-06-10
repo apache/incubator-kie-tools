@@ -36,13 +36,13 @@ public class MagnetDecoratorTest {
     private Shape shape;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         tested = new MagnetDecorator();
         shape = spy(new Circle(1));
     }
 
     @Test
-    public void decorateTest(){
+    public void decorateTest() {
         tested.decorate(shape, IShapeDecorator.ShapeState.VALID);
         tested.decorate(shape, IShapeDecorator.ShapeState.NONE);
         tested.decorate(shape, IShapeDecorator.ShapeState.INVALID);

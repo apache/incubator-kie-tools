@@ -58,7 +58,6 @@ public class BackingColorMapUtilsTest {
     @Mock
     private PathPartEntryJSO entry;
 
-
     private static final Double X0 = 0d;
     private static final Double Y0 = 0d;
     private static final Double X1 = 10d;
@@ -70,10 +69,9 @@ public class BackingColorMapUtilsTest {
 
     private double[] bezierPoints = new double[]{X0, Y0, X1, Y1, X2, Y2};
 
-
     @Before
-    public void setUp(){
-        location = new Point2D(OFFSET_X,OFFSET_Y);
+    public void setUp() {
+        location = new Point2D(OFFSET_X, OFFSET_Y);
         points = Point2DArray.fromArrayOfPoint2D(location);
         pathPartLists = new NFastArrayList<>();
         pathPartLists.add(pathPartList);
@@ -88,11 +86,10 @@ public class BackingColorMapUtilsTest {
     }
 
     @Test
-    public void drawShapeToBackingTest(){
+    public void drawShapeToBackingTest() {
         BackingColorMapUtils.drawShapeToBacking(ctx, shape, color);
         verify(ctx).bezierCurveTo(X0 + OFFSET_X, Y0 + OFFSET_Y,
                                   X1 + OFFSET_X, Y1 + OFFSET_Y,
                                   X2 + OFFSET_X, Y2 + OFFSET_Y);
     }
-
 }

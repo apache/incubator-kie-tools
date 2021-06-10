@@ -71,12 +71,10 @@ public class WiresCompositeShapeHandlerTest {
 
     private WiresShape parent;
 
-
     @Before
     public void setup() {
         parent = new WiresShape(new MultiPath().circle(10));
         when(control.getSharedParent()).thenReturn(parent);
-
 
         when(control.getContext()).thenReturn(context);
         when(context.getShapes()).thenReturn(Collections.EMPTY_LIST);

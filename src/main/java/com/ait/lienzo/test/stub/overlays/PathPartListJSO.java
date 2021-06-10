@@ -11,16 +11,14 @@ import jsinterop.annotations.JsOverlay;
  * Created by treblereel 11/5/19
  */
 @StubClass("com.ait.lienzo.client.core.types.PathPartListJSO")
-public class PathPartListJSO extends LinkedList<PathPartEntryJSO>
-{
+public class PathPartListJSO extends LinkedList<PathPartEntryJSO> {
+
     @JsOverlay
-    public static final PathPartListJSO make()
-    {
+    public static final PathPartListJSO make() {
         return new PathPartListJSO();
     }
 
-    protected PathPartListJSO()
-    {
+    protected PathPartListJSO() {
     }
 
     public int push(PathPartEntryJSO... var_args) {
@@ -31,14 +29,12 @@ public class PathPartListJSO extends LinkedList<PathPartEntryJSO>
     }
 
     @JsOverlay
-    public final PathPartEntryJSO get(final int i)
-    {
+    public final PathPartEntryJSO get(final int i) {
         return super.get(i);
     }
 
     @JsOverlay
-    public final int length()
-    {
+    public final int length() {
         return size();
     }
 

@@ -137,7 +137,7 @@ public class ItemGridImplTest {
             when(groupItem.isVisible()).thenReturn(true);
             return groupItem;
         }).when(groupItem).show(any(Runnable.class),
-                                    any(Runnable.class));
+                                any(Runnable.class));
         doAnswer(invocationOnMock -> {
             ((Runnable) invocationOnMock.getArguments()[0]).run();
             ((Runnable) invocationOnMock.getArguments()[1]).run();
@@ -145,7 +145,7 @@ public class ItemGridImplTest {
             when(groupItem.isVisible()).thenReturn(false);
             return groupItem;
         }).when(groupItem).hide(any(Runnable.class),
-                                    any(Runnable.class));
+                                any(Runnable.class));
 
         tested = new ItemGridImpl(groupItem)
                 .useHideExecutor(hideExecutor)

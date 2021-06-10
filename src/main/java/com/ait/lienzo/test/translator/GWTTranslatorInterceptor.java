@@ -17,7 +17,6 @@
 package com.ait.lienzo.test.translator;
 
 import com.google.gwt.core.client.GWT;
-
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -29,29 +28,23 @@ import javassist.NotFoundException;
  *
  * @author Roger Martinez
  * @since 1.0
- *
  */
-public class GWTTranslatorInterceptor implements LienzoMockitoClassTranslator.TranslatorInterceptor
-{
-    private static final String JSO_CLASS        = GWT.class.getName();
+public class GWTTranslatorInterceptor implements LienzoMockitoClassTranslator.TranslatorInterceptor {
+
+    private static final String JSO_CLASS = GWT.class.getName();
 
     private static final String METHOD_IS_SCRIPT = "isScript";
 
-    public GWTTranslatorInterceptor()
-    {
+    public GWTTranslatorInterceptor() {
     }
 
     @Override
-    public boolean interceptBeforeParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException
-    {
-        if (name.equals(JSO_CLASS))
-        {
+    public boolean interceptBeforeParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException {
+        if (name.equals(JSO_CLASS)) {
             final CtClass clazz = classPool.get(name);
 
-            for (final CtMethod method : clazz.getDeclaredMethods())
-            {
-                if (METHOD_IS_SCRIPT.equals(method.getName()))
-                {
+            for (final CtMethod method : clazz.getDeclaredMethods()) {
+                if (METHOD_IS_SCRIPT.equals(method.getName())) {
                     method.setBody("{ return false; }");
                 }
             }
@@ -61,8 +54,7 @@ public class GWTTranslatorInterceptor implements LienzoMockitoClassTranslator.Tr
     }
 
     @Override
-    public void interceptAfterParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException
-    {
+    public void interceptAfterParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException {
         // Nothing required for now.
     }
 }

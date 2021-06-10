@@ -46,13 +46,13 @@ import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 @WithClassesToStub(JsArray.class)
-public class MagnetManagerTest
-{
-    @Mock
-    private MagnetManager.Magnets       magnets;
+public class MagnetManagerTest {
 
     @Mock
-    private ScratchPad                  scratchPad;
+    private MagnetManager.Magnets magnets;
+
+    @Mock
+    private ScratchPad scratchPad;
 
     @Mock
     private NFastStringMap<WiresShape> shapesColors;
@@ -66,13 +66,12 @@ public class MagnetManagerTest
     private MagnetManager tested;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         tested = spy(new MagnetManager());
     }
 
     @Test
-    public void testDrawMagnetsToBack()
-    {
+    public void testDrawMagnetsToBack() {
         // ScratchPad and it's context preparations
         final Context2D context = mock(Context2D.class);
         when(scratchPad.getContext()).thenReturn(context);
@@ -104,10 +103,9 @@ public class MagnetManagerTest
         verify(context).getImageData(0, 0, 121, 132);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Test
-    public void testDrawMagnet()
-    {
+    public void testDrawMagnet() {
         final Context2D context = mock(Context2D.class);
         final WiresMagnet magnet = mock(WiresMagnet.class);
         final IPrimitive primitive = mock(IPrimitive.class);

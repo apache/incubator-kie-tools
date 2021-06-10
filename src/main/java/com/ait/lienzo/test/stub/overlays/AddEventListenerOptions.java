@@ -36,5 +36,4 @@ public interface AddEventListenerOptions extends EventListenerOptions,
     void setOnce(boolean once);
 
     void setPassive(boolean passive);
-
 }

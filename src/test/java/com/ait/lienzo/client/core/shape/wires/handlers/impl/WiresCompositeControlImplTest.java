@@ -16,6 +16,11 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.PolyLine;
@@ -23,7 +28,13 @@ import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.*;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -33,13 +44,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.function.Supplier;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresCompositeControlImplTest extends AbstractWiresControlTest {
@@ -109,7 +124,7 @@ public class WiresCompositeControlImplTest extends AbstractWiresControlTest {
         });
 
         final Point2DArray points = Point2DArray.fromArrayOfPoint2D(new Point2D(10, 20),
-                                                     new Point2D(30, 40));
+                                                                    new Point2D(30, 40));
         final PolyLine line = new PolyLine(points);
         connector = new WiresConnector(line,
                                        new MultiPathDecorator(new MultiPath().circle(10)),
@@ -169,5 +184,4 @@ public class WiresCompositeControlImplTest extends AbstractWiresControlTest {
         tested.onMoveStart(2d, 7d);
         assertTrue(tested.accept());
     }
-
 }

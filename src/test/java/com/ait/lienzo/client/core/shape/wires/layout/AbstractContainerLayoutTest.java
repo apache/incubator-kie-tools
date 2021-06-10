@@ -15,17 +15,12 @@
  */
 package com.ait.lienzo.client.core.shape.wires.layout;
 
+import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-
-import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.Text;
-import com.ait.lienzo.client.core.shape.TextBoundsWrap;
-import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.test.LienzoMockitoTestRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,65 +32,58 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class AbstractContainerLayoutTest<T, C extends AbstractContainerLayout<T>>
-{
-    protected Object                  DEFAULT_LAYOUT = new Object();
+public class AbstractContainerLayoutTest<T, C extends AbstractContainerLayout<T>> {
+
+    protected Object DEFAULT_LAYOUT = new Object();
 
     protected C tested;
 
-    protected MultiPath               parent;
+    protected MultiPath parent;
 
-    protected Text           child;
+    protected Text child;
 
-    protected T                       currentLayout;
+    protected T currentLayout;
 
-    protected Text           child2;
+    protected Text child2;
 
     @Before
-    public void setUp()
-    {
-        parent = new MultiPath().rect(0,0,20,20);
+    public void setUp() {
+        parent = new MultiPath().rect(0, 0, 20, 20);
         tested = spy(createInstance());
         child = spy(new Text("test"));
         child2 = new Text("test2");
         currentLayout = (T) mock(Object.class);
     }
 
-    protected T getDefaultLayoutForTest()
-    {
+    protected T getDefaultLayoutForTest() {
         return (T) DEFAULT_LAYOUT;
     }
 
-    protected C createInstance()
-    {
-        return (C) new AbstractContainerLayout<Object>(parent)
-        {
-            @Override public Object getDefaultLayout()
-            {
+    protected C createInstance() {
+        return (C) new AbstractContainerLayout<Object>(parent) {
+            @Override
+            public Object getDefaultLayout() {
                 return getDefaultLayoutForTest();
             }
         };
     }
 
     @Test
-    public void addDefaultLayout()
-    {
+    public void addDefaultLayout() {
         tested.add(child);
         final Object layout = tested.getLayout(child);
         assertEquals(layout, getDefaultLayoutForTest());
     }
 
     @Test
-    public void add()
-    {
+    public void add() {
         tested.add(child, currentLayout);
         final Object layout = tested.getLayout(child);
         assertEquals(layout, currentLayout);
     }
 
     @Test
-    public void execute()
-    {
+    public void execute() {
         tested.add(child, currentLayout);
         tested.add(child2, currentLayout);
         tested.execute();
@@ -104,8 +92,7 @@ public class AbstractContainerLayoutTest<T, C extends AbstractContainerLayout<T>
     }
 
     @Test
-    public void remove()
-    {
+    public void remove() {
         tested.add(child);
         assertNotNull(tested.getLayout(child));
         tested.remove(child);
@@ -113,8 +100,7 @@ public class AbstractContainerLayoutTest<T, C extends AbstractContainerLayout<T>
     }
 
     @Test
-    public void clear()
-    {
+    public void clear() {
         tested.add(child);
         tested.add(child2);
         assertNotNull(tested.getLayout(child));
@@ -125,14 +111,12 @@ public class AbstractContainerLayoutTest<T, C extends AbstractContainerLayout<T>
     }
 
     @Test
-    public void getDefaultLayout()
-    {
+    public void getDefaultLayout() {
         assertEquals(tested.getDefaultLayout(), getDefaultLayoutForTest());
     }
 
     @Test
-    public void getParentBoundingBox()
-    {
+    public void getParentBoundingBox() {
         assertEquals(tested.getParentBoundingBox(), parent.getBoundingBox());
     }
 }

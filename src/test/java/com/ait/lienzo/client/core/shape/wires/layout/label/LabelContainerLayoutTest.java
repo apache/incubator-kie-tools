@@ -15,14 +15,13 @@
  */
 package com.ait.lienzo.client.core.shape.wires.layout.label;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.layout.AbstractContainerLayoutTest;
 import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionContainerLayout;
 import com.ait.lienzo.client.core.shape.wires.layout.size.SizeConstraintsContainerLayout;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -30,43 +29,39 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-public class LabelContainerLayoutTest extends AbstractContainerLayoutTest<LabelLayout, LabelContainerLayout>
-{
+public class LabelContainerLayoutTest extends AbstractContainerLayoutTest<LabelLayout, LabelContainerLayout> {
+
     private SizeConstraintsContainerLayout sizeConstraintsContainerLayout;
 
-    private DirectionContainerLayout       directionContainerLayout;
+    private DirectionContainerLayout directionContainerLayout;
 
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         super.setUp();
         currentLayout = new LabelLayout.Builder().build();
     }
 
     @Override
-    protected LabelContainerLayout createInstance()
-    {
+    protected LabelContainerLayout createInstance() {
         sizeConstraintsContainerLayout = spy(new SizeConstraintsContainerLayout(parent));
         directionContainerLayout = spy(new DirectionContainerLayout(parent));
         return new LabelContainerLayout(parent, sizeConstraintsContainerLayout, directionContainerLayout);
     }
 
-    @Override protected LabelLayout getDefaultLayoutForTest()
-    {
+    @Override
+    protected LabelLayout getDefaultLayoutForTest() {
         return new LabelLayout.Builder().build();
     }
 
     @Test
-    public void add()
-    {
+    public void add() {
         tested.add(child, currentLayout);
         verify(sizeConstraintsContainerLayout).add(child, currentLayout.getSizeConstraints());
         verify(directionContainerLayout).add(child, currentLayout.getDirectionLayout());
     }
 
     @Test
-    public void getMaxSize()
-    {
+    public void getMaxSize() {
         tested.add(child);
         final BoundingBox maxSize = tested.getMaxSize(child);
         verify(sizeConstraintsContainerLayout).getMaxSize(child);
@@ -74,8 +69,7 @@ public class LabelContainerLayoutTest extends AbstractContainerLayoutTest<LabelL
     }
 
     @Test
-    public void getMaxSizeFromNull()
-    {
+    public void getMaxSizeFromNull() {
         final BoundingBox maxSize = tested.getMaxSize(child);
         verify(sizeConstraintsContainerLayout, never()).getMaxSize(any(IPrimitive.class));
         assertEquals(maxSize, new BoundingBox());

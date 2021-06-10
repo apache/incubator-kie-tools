@@ -45,14 +45,24 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class WiresConnectorControlPointBuilderTest
-{
+public class WiresConnectorControlPointBuilderTest {
+
     private static final MultiPath headPath = spy(new MultiPath().circle(10));
 
     private static final MultiPath tailPath = new MultiPath().circle(10);
@@ -60,27 +70,26 @@ public class WiresConnectorControlPointBuilderTest
     private static Predicate<WiresConnector> TRUE_PREDICATE = connector -> true;
 
     @Mock
-    private WiresConnectorControlImpl             control;
+    private WiresConnectorControlImpl control;
 
     @Mock
-    private PointHandleDecorator              pointHandleDecorator;
+    private PointHandleDecorator pointHandleDecorator;
 
     @Mock
     private HandlerRegistrationManager controlEvents;
 
     @Mock
-    private Viewport                          viewport;
+    private Viewport viewport;
 
     private WiresConnectorControlPointBuilder tested;
 
-    private Layer                             layer;
+    private Layer layer;
 
-    private Layer                             overLayer;
+    private Layer overLayer;
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setup()
-    {
+    public void setup() {
         layer = spy(new Layer());
         Transform transform = new Transform();
         when(layer.getViewport()).thenReturn(viewport);
@@ -94,12 +103,11 @@ public class WiresConnectorControlPointBuilderTest
         when(control.getPointHandleDecorator()).thenReturn(pointHandleDecorator);
         when(control.areControlPointsVisible()).thenReturn(false);
         when(control.getControlPointEventRegistrationManager()).thenReturn(controlEvents);
-        tested = new WiresConnectorControlPointBuilder(TRUE_PREDICATE, TRUE_PREDICATE , connector);
+        tested = new WiresConnectorControlPointBuilder(TRUE_PREDICATE, TRUE_PREDICATE, connector);
     }
 
     @Test
-    public void testEnable()
-    {
+    public void testEnable() {
         Timer exitTimer = mock(Timer.class);
         when(exitTimer.isRunning()).thenReturn(false);
         tested.exitTimer = exitTimer;
@@ -115,8 +123,7 @@ public class WiresConnectorControlPointBuilderTest
     }
 
     @Test
-    public void testDisable()
-    {
+    public void testDisable() {
         Timer exitTimer = mock(Timer.class);
         when(exitTimer.isRunning()).thenReturn(false);
         tested.enable();
@@ -138,14 +145,13 @@ public class WiresConnectorControlPointBuilderTest
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testScheduleControlPointBuildAnimation()
-    {
+    public void testScheduleControlPointBuildAnimation() {
         tested.enable();
         tested.mousePointerCP = spy(new Rectangle(50, 50)
-                .setX(1.5)
-                .setY(33.65)
-                .setStrokeAlpha(1)
-                .setStrokeColor(ColorName.RED));
+                                            .setX(1.5)
+                                            .setY(33.65)
+                                            .setStrokeAlpha(1)
+                                            .setStrokeColor(ColorName.RED));
         Function<Shape<?>, IAnimationHandle> animateTask = mock(Function.class);
         tested.scheduleControlPointBuildAnimation(animateTask);
         verify(overLayer, times(1)).add(eq(tested.cpBuilderAnimationShape));
@@ -167,8 +173,7 @@ public class WiresConnectorControlPointBuilderTest
     }
 
     @Test
-    public void testCreateControlPointAt()
-    {
+    public void testCreateControlPointAt() {
         tested.enable();
         Shape<?> cpShape = mock(Shape.class);
         tested.mousePointerCP = cpShape;
@@ -182,8 +187,7 @@ public class WiresConnectorControlPointBuilderTest
     }
 
     @Test
-    public void testMoveControlPointTo()
-    {
+    public void testMoveControlPointTo() {
         tested.enable();
         tested.moveControlPointTo(55, 55);
 
@@ -202,8 +206,7 @@ public class WiresConnectorControlPointBuilderTest
     }
 
     @Test
-    public void testMoveNearToCP()
-    {
+    public void testMoveNearToCP() {
         tested.enable();
         tested.moveControlPointTo(0, 0);
 
@@ -211,5 +214,4 @@ public class WiresConnectorControlPointBuilderTest
         verify(layer, never()).batch();
         verify(overLayer, never()).batch();
     }
-
 }

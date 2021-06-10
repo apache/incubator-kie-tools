@@ -26,11 +26,11 @@ public class Uint8ClampedArray {
 
     public <T> T getAt(int index) {
 
-        if(array.length < index) {
+        if (array.length < index) {
             return null;
         }
 
-        return (T)array[index];
+        return (T) array[index];
     }
 
     public <T> void setAt(int index, T value) {

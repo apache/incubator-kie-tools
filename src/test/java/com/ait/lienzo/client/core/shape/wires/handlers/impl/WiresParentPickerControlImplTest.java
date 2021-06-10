@@ -72,8 +72,7 @@ public class WiresParentPickerControlImplTest {
     private Supplier<WiresLayerIndex> index;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         layer = spy(new Layer());
         when(layer.getViewport()).thenReturn(viewport);
 
@@ -91,8 +90,7 @@ public class WiresParentPickerControlImplTest {
     }
 
     @Test
-    public void testReturnParentAtCertainLocation()
-    {
+    public void testReturnParentAtCertainLocation() {
         // Start moving shape.
         tested.onMoveStart(START_X,
                            START_Y);
@@ -129,7 +127,7 @@ public class WiresParentPickerControlImplTest {
     }
 
     @Test
-    public void testDestroy(){
+    public void testDestroy() {
         tested.destroy();
         verify(shapeLocationControl, atLeastOnce()).clear();
         verify(shapeLocationControl).destroy();

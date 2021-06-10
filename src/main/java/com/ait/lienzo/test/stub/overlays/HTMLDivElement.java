@@ -5,5 +5,6 @@ import elemental2.dom.HTMLElement;
 
 @StubClass("elemental2.dom.HTMLDivElement")
 public class HTMLDivElement extends HTMLElement {
+
     public String align;
 }

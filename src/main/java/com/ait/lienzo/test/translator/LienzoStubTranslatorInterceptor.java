@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ait.lienzo.test.settings.Settings;
-
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -29,37 +28,31 @@ import javassist.NotFoundException;
 
 /**
  * Translator interceptor for stub classes.
- *
+ * <p>
  * It replaces the stub classes given at compile time by the Lienzo original classes.
  *
  * @author Roger Martinez
  * @since 1.0
- *
  */
-public class LienzoStubTranslatorInterceptor implements LienzoMockitoClassTranslator.TranslatorInterceptor, HasSettings
-{
+public class LienzoStubTranslatorInterceptor implements LienzoMockitoClassTranslator.TranslatorInterceptor,
+                                                        HasSettings {
+
     private final Map<String, String> stubs = new LinkedHashMap<>();
 
-    public LienzoStubTranslatorInterceptor()
-    {
+    public LienzoStubTranslatorInterceptor() {
     }
 
     @Override
-    public boolean interceptBeforeParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException
-    {
+    public boolean interceptBeforeParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException {
         // Check if the concrete class can be translated using our concrete stubbed ones with method implementations.
-        if (stubs.keySet().contains(name))
-        {
+        if (stubs.keySet().contains(name)) {
             final String translationClass = stubs.get(name);
 
-            if ((null != translationClass) && (translationClass.trim().length() > 0))
-            {
-                try
-                {
+            if ((null != translationClass) && (translationClass.trim().length() > 0)) {
+                try {
                     final CtClass ctClass = classPool.getCtClass(name);
 
-                    if (ctClass.isFrozen())
-                    {
+                    if (ctClass.isFrozen()) {
                         ctClass.defrost();
                     }
                     classPool.getAndRename(translationClass, name);
@@ -68,22 +61,17 @@ public class LienzoStubTranslatorInterceptor implements LienzoMockitoClassTransl
                     // contains some reference to any other stub as well.
                     // If found other stub references on parent, replace
                     // parent types for the expected parent type.
-                    if (null != stubCtClass.getSuperclass())
-                    {
+                    if (null != stubCtClass.getSuperclass()) {
                         final String superStubName = stubCtClass.getSuperclass().getName();
-                        if (stubs.containsValue(superStubName))
-                        {
+                        if (stubs.containsValue(superStubName)) {
                             final String superName = getKey(superStubName);
-                            if (null != superName)
-                            {
+                            if (null != superName) {
                                 final CtClass pp = classPool.get(superName);
                                 stubCtClass.setSuperclass(pp);
                             }
                         }
                     }
-                }
-                catch (final NotFoundException e)
-                {
+                } catch (final NotFoundException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -94,28 +82,23 @@ public class LienzoStubTranslatorInterceptor implements LienzoMockitoClassTransl
     }
 
     @Override
-    public void useSettings(final Settings settings)
-    {
+    public void useSettings(final Settings settings) {
         assert null != settings;
 
         this.stubs.putAll(settings.getStubs());
     }
 
     @Override
-    public void interceptAfterParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException
-    {
+    public void interceptAfterParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException {
         // Nothing required for now.
     }
 
-    private String getKey(final String value)
-    {
+    private String getKey(final String value) {
         final Set<Map.Entry<String, String>> entries = stubs.entrySet();
-        for (final Map.Entry<String, String> entry : entries)
-        {
+        for (final Map.Entry<String, String> entry : entries) {
             final String _key = entry.getKey();
             final String _value = entry.getValue();
-            if (_value.equals(value))
-            {
+            if (_value.equals(value)) {
                 return _key;
             }
         }

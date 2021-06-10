@@ -26,97 +26,81 @@ import com.ait.lienzo.test.util.LienzoMockitoLogger;
 
 /**
  * In-memory array list implementation stub for class <code>com.ait.tooling.nativetools.client.collection.NFastArrayList</code>.
- *
+ * <p>
  * Results easier creating this stub class for this wrapper of FastArrayListJSO than creating concrete stubs for NFastArrayListJSO and
  * its super classes.
  *
  * @author Roger Martinez
  * @since 1.0
- *
  */
 @StubClass("com.ait.lienzo.tools.client.collection.NFastArrayList")
-public class NFastArrayList<M> implements Iterable<M>
-{
+public class NFastArrayList<M> implements Iterable<M> {
+
     private final ArrayList<M> list = new ArrayList<M>();
 
-    public NFastArrayList()
-    {
+    public NFastArrayList() {
         LienzoMockitoLogger.log("NFastArrayList", "Creating custom Lienzo overlay type.");
     }
 
     @SuppressWarnings("unchecked")
-    public NFastArrayList(final M value, final M... values)
-    {
+    public NFastArrayList(final M value, final M... values) {
         this();
 
         add(value);
 
-        if ((null != values) && (values.length > 0))
-        {
-            for (int i = 0; i < values.length; i++)
-            {
+        if ((null != values) && (values.length > 0)) {
+            for (int i = 0; i < values.length; i++) {
                 add(values[i]);
             }
         }
     }
 
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return list.isEmpty();
     }
 
-    public int size()
-    {
+    public int size() {
         return list.size();
     }
 
-    public <M> M get(final int index)
-    {
-        return (M)list.get(index);
+    public <M> M get(final int index) {
+        return (M) list.get(index);
     }
 
-    public NFastArrayList<M> add(final M value)
-    {
+    public NFastArrayList<M> add(final M value) {
         list.add(value);
 
         return this;
     }
 
-    public NFastArrayList<M> set(final int i, final M value)
-    {
+    public NFastArrayList<M> set(final int i, final M value) {
         list.set(i, value);
 
         return this;
     }
 
-    public boolean contains(final M value)
-    {
+    public boolean contains(final M value) {
         return list.contains(value);
     }
 
-    public void clear()
-    {
+    public void clear() {
         list.clear();
     }
 
-    public NFastArrayList<M> remove(final M value)
-    {
+    public NFastArrayList<M> remove(final M value) {
         list.remove(value);
 
         return this;
     }
 
-    public NFastArrayList<M> unshift(final M value)
-    {
+    public NFastArrayList<M> unshift(final M value) {
         doUnShift(value);
 
         return this;
     }
 
-    public NFastArrayList<M> moveUp(final M value)
-    {
-        if (!list.isEmpty())
-        {
+    public NFastArrayList<M> moveUp(final M value) {
+        if (!list.isEmpty()) {
             final int i = list.indexOf(value);
 
             list.set(i + 1, value);
@@ -124,10 +108,8 @@ public class NFastArrayList<M> implements Iterable<M>
         return this;
     }
 
-    public NFastArrayList<M> moveDown(final M value)
-    {
-        if (!list.isEmpty())
-        {
+    public NFastArrayList<M> moveDown(final M value) {
+        if (!list.isEmpty()) {
             final int i = list.indexOf(value);
 
             list.set(i > 0 ? i - 1 : 0, value);
@@ -135,10 +117,8 @@ public class NFastArrayList<M> implements Iterable<M>
         return this;
     }
 
-    public NFastArrayList<M> moveToTop(final M value)
-    {
-        if ((size() < 2) || (!contains(value)))
-        {
+    public NFastArrayList<M> moveToTop(final M value) {
+        if ((size() < 2) || (!contains(value))) {
             return this;
         }
         remove(value);
@@ -148,10 +128,8 @@ public class NFastArrayList<M> implements Iterable<M>
         return this;
     }
 
-    public NFastArrayList<M> moveToBottom(final M value)
-    {
-        if ((size() < 2) || (!contains(value)))
-        {
+    public NFastArrayList<M> moveToBottom(final M value) {
+        if ((size() < 2) || (!contains(value))) {
             return this;
         }
         remove(value);
@@ -161,12 +139,10 @@ public class NFastArrayList<M> implements Iterable<M>
         return this;
     }
 
-    public M pop()
-    {
+    public M pop() {
         M result = null;
 
-        if (!list.isEmpty())
-        {
+        if (!list.isEmpty()) {
             final int i = list.size() - 1;
 
             result = list.get(i);
@@ -176,38 +152,32 @@ public class NFastArrayList<M> implements Iterable<M>
         return result;
     }
 
-    public M shift()
-    {
+    public M shift() {
         return doShift();
     }
 
-    public NFastArrayList<M> splice(final int beg, final int removed, final M value)
-    {
+    public NFastArrayList<M> splice(final int beg, final int removed, final M value) {
         // TODO
 
         return this;
     }
 
-    public NFastArrayList<M> reverse()
-    {
+    public NFastArrayList<M> reverse() {
         Collections.reverse(list);
 
         return this;
     }
 
-    public int push(final M... values)
-    {
+    public int push(final M... values) {
         add(values[0]);
 
-        for (int i = 1; i < values.length; i++)
-        {
+        for (int i = 1; i < values.length; i++) {
             add(values[i]);
         }
         return size();
     }
 
-    public NFastArrayList<M> copy()
-    {
+    public NFastArrayList<M> copy() {
         final NFastArrayList<M> result = new NFastArrayList<>();
 
         result.list.addAll(this.list);
@@ -215,12 +185,10 @@ public class NFastArrayList<M> implements Iterable<M>
         return result;
     }
 
-    public NFastArrayList<M> concat(final NFastArrayList<M> value)
-    {
+    public NFastArrayList<M> concat(final NFastArrayList<M> value) {
         final NFastArrayList<M> result = copy();
 
-        if (null != value)
-        {
+        if (null != value) {
             result.list.addAll(value.list);
 
             return copy();
@@ -228,40 +196,34 @@ public class NFastArrayList<M> implements Iterable<M>
         return result;
     }
 
-    public NFastArrayList<M> slice(final int beg)
-    {
+    public NFastArrayList<M> slice(final int beg) {
         // TODO
         return copy();
     }
 
-    public NFastArrayList<M> slice(final int beg, final int end)
-    {
+    public NFastArrayList<M> slice(final int beg, final int end) {
         // TODO: Arrays.copyOfRange(list, beg, end);
 
         return copy();
     }
 
-    public List<M> toList()
-    {
+    public List<M> toList() {
         final int size = size();
 
         final ArrayList<M> list = new ArrayList<>(size);
 
-        for (int i = 0; i < size; i++)
-        {
+        for (int i = 0; i < size; i++) {
             list.add(get(i));
         }
         return Collections.unmodifiableList(list);
     }
 
     @Override
-    public Iterator<M> iterator()
-    {
+    public Iterator<M> iterator() {
         return toList().iterator();
     }
 
-    private M doShift()
-    {
+    private M doShift() {
         final M t = list.get(0);
 
         list.remove(0);
@@ -273,8 +235,7 @@ public class NFastArrayList<M> implements Iterable<M>
         return list;
     }
 
-    private void doUnShift(final M value)
-    {
+    private void doUnShift(final M value) {
         list.add(0, value);
     }
 }

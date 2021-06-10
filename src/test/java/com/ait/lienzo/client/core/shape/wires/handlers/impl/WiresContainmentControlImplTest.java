@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
-import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;

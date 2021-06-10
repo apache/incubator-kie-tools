@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
-import java.util.function.Supplier;
-
 import com.ait.lienzo.client.core.shape.wires.OptionalBounds;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;

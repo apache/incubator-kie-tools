@@ -16,16 +16,12 @@
 
 package com.ait.lienzo.client.core.image;
 
-import java.util.function.Supplier;
-
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static com.ait.lienzo.client.core.image.ImageStrips.URL_PATTERN;
 import static com.ait.lienzo.client.core.image.ImageStrips.URL_SEPARATOR;
@@ -67,7 +63,7 @@ public class ImageStripsTest {
             ((Runnable) invocationOnMock.getArguments()[1]).run();
             return null;
         }).when(proxy).load(anyString(),
-                                any(Runnable.class));
+                            any(Runnable.class));
         instance = new ImageStrips(() -> proxy);
     }
 

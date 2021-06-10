@@ -59,7 +59,6 @@ public class ImageTest {
         tested.imageProxy = proxy;
     }
 
-
     @Test
     public void testClippingAttributes() {
         tested.setClippedImageStartX(7);
@@ -124,15 +123,14 @@ public class ImageTest {
         assertEquals(0, tested.getClippedImageDestinationHeight(), 0);
     }
 
-
     @Test
     public void testLoad() {
         doReturn(false).when(proxy).isLoaded();
         doAnswer(invocationOnMock -> {
-            ((Runnable)invocationOnMock.getArguments()[1]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
             return null;
         }).when(proxy).load(anyString(),
-                                any(Runnable.class));
+                            any(Runnable.class));
         final String url = "anotherUrl";
         tested.setURL(url);
         final ImageLoadCallback callback = mock(ImageLoadCallback.class);
@@ -150,7 +148,7 @@ public class ImageTest {
         final ImageLoadCallback callback = mock(ImageLoadCallback.class);
         tested.load(callback);
         verify(proxy, never()).load(anyString(),
-                                     any(Runnable.class));
+                                    any(Runnable.class));
         verify(callback, times(1)).onImageLoaded(eq(tested));
     }
 
@@ -175,7 +173,7 @@ public class ImageTest {
         doReturn("#000000").when(spied).getColorKey();
         spied.drawImage(context);
         verify(proxy, never()).draw(eq(context),
-                                     any(ImageClipBounds.class));
+                                    any(ImageClipBounds.class));
         verify(context, times(1)).save();
         verify(context, times(1)).setFillColor(anyString());
         verify(context, times(1)).fillRect(eq(0d),
@@ -184,5 +182,4 @@ public class ImageTest {
                                            eq(20d));
         verify(context, times(1)).restore();
     }
-
 }

@@ -1,7 +1,6 @@
 package com.ait.lienzo.test.stub.overlays;
 
 import com.ait.lienzo.test.annotation.StubClass;
-import elemental2.core.JSONType;
 
 /**
  * @author Dmitrii Tikhomirov
@@ -11,5 +10,4 @@ import elemental2.core.JSONType;
 public class Global {
 
     public static elemental2.core.JSONType JSON = new elemental2.core.JSONType();
-
 }

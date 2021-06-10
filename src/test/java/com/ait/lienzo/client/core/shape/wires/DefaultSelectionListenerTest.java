@@ -14,42 +14,41 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class DefaultSelectionListenerTest
-{
+public class DefaultSelectionListenerTest {
+
     @Mock
     private Consumer<WiresShape> onSelectShape;
 
     @Mock
-    private Consumer<WiresShape>           onDeselectShape;
+    private Consumer<WiresShape> onDeselectShape;
 
     @Mock
-    private Consumer<WiresConnector>       onSelectConnector;
+    private Consumer<WiresConnector> onSelectConnector;
 
     @Mock
-    private Consumer<WiresConnector>       onDeselectConnector;
+    private Consumer<WiresConnector> onDeselectConnector;
 
     @Mock
-    private SelectionManager               selectionManager;
+    private SelectionManager selectionManager;
 
     @Mock
-    private WiresShape                     selectedShape;
+    private WiresShape selectedShape;
 
     @Mock
-    private WiresShape                     deselectedShape;
+    private WiresShape deselectedShape;
 
     @Mock
-    private WiresConnector                 selectedConnector;
+    private WiresConnector selectedConnector;
 
     @Mock
-    private WiresConnector                 deselectedConnector;
+    private WiresConnector deselectedConnector;
 
-    private DefaultSelectionListener       tested;
+    private DefaultSelectionListener tested;
 
     private SelectionManager.SelectedItems selectedItems;
 
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         Layer layer = new Layer();
         selectedItems = new SelectionManager.SelectedItems(selectionManager, layer);
         selectedItems.add(selectedShape);
@@ -64,8 +63,7 @@ public class DefaultSelectionListenerTest
     }
 
     @Test
-    public void testOnItemsChanged()
-    {
+    public void testOnItemsChanged() {
         tested.onChanged(selectedItems);
         verify(onSelectShape, times(1)).accept(eq(selectedShape));
         verify(onDeselectShape, times(1)).accept(eq(deselectedShape));

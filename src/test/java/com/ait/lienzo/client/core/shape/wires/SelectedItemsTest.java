@@ -46,16 +46,14 @@ public class SelectedItemsTest {
     private SelectionManager.SelectedItems selectedItems;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         SelectionManager manager = mock(SelectionManager.class);
         Layer layer = mock(Layer.class);
         selectedItems = new SelectionManager.SelectedItems(manager, layer);
     }
 
     @Test
-    public void testAddToSelectionShapeWithoutMagnets()
-    {
+    public void testAddToSelectionShapeWithoutMagnets() {
         selectedItems.add(shape);
         verify(shape, times(1)).getMagnets();
 
@@ -64,8 +62,7 @@ public class SelectedItemsTest {
     }
 
     @Test
-    public void testAddToSelectionShapeWithMagnetsWithoutConnections()
-    {
+    public void testAddToSelectionShapeWithMagnetsWithoutConnections() {
         when(shape.getMagnets()).thenReturn(magnets);
 
         selectedItems.add(shape);
@@ -77,8 +74,7 @@ public class SelectedItemsTest {
     }
 
     @Test
-    public void testAddToSelectionShapeWithMagnetsAndConnections()
-    {
+    public void testAddToSelectionShapeWithMagnetsAndConnections() {
         WiresMagnet magnet = mock(WiresMagnet.class);
         NFastArrayList<WiresConnection> wiresConnections = new NFastArrayList<>();
         WiresConnection connection = mock(WiresConnection.class);

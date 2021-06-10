@@ -96,11 +96,9 @@ public class TextUtils {
     public BoundingBox getBoundingBox(final String text, final double size, final String style, final String family, final TextUnit unit, final TextBaseLine baseline, final TextAlign align) {
 
         //For WiresConnectorLabelFactoryTest.testSegmentLabelExecutor
-        if(text.contains("Doing some")) {
-            return BoundingBox.fromDoubles(0,0,0,0);
+        if (text.contains("Doing some")) {
+            return BoundingBox.fromDoubles(0, 0, 0, 0);
         }
-
-
 
         if ((null == text) || (text.isEmpty()) || (false == (size > 0))) {
             return BoundingBox.fromDoubles(0, 0, 0, 0);

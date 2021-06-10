@@ -26,15 +26,13 @@ import org.junit.runner.RunWith;
 public class LienzoCoreAttributesTest {
 
     @Test
-    public void canEnableHiDPI()
-    {
+    public void canEnableHiDPI() {
         LienzoCore.get().setHidpiEnabled(true);
         Assert.assertTrue(LienzoCore.get().isHidpiEnabled());
     }
 
     @Test
-    public void canEnableThenDisableHiDPI()
-    {
+    public void canEnableThenDisableHiDPI() {
         LienzoCore.get().setHidpiEnabled(true);
         Assert.assertTrue(LienzoCore.get().isHidpiEnabled());
         LienzoCore.get().setHidpiEnabled(false);

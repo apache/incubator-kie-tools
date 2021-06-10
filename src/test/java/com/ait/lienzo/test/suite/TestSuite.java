@@ -29,6 +29,7 @@ import org.junit.runners.Suite;
 
 /**
  * Lienzo testing suite.
+ *
  * @author Roger Martinez
  * @since 1.0
  */
@@ -39,15 +40,13 @@ import org.junit.runners.Suite;
         PointsTest.class,
         PointsMockTest.class,
 })
-public class TestSuite
-{
+public class TestSuite {
+
     @BeforeClass
-    public static void setUpClass()
-    {
+    public static void setUpClass() {
     }
 
     @AfterClass
-    public static void tearDownClass()
-    {
+    public static void tearDownClass() {
     }
 }

@@ -15,6 +15,9 @@
  */
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.HashSet;
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.event.NodeDragStartEvent;
@@ -46,72 +49,71 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
-import java.util.HashSet;
-import java.util.function.Consumer;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class WiresConnectorHandlerImplTest
-{
+public class WiresConnectorHandlerImplTest {
+
     private static final String LAYER_ID = "LAYER_ID";
 
     @Mock
-    private WiresManager                      wiresManager;
+    private WiresManager wiresManager;
 
     @Mock
-    private WiresConnector                    connector;
+    private WiresConnector connector;
 
     @Mock
-    private WiresConnectorControlImpl             control;
+    private WiresConnectorControlImpl control;
 
     @Mock
     private Consumer<Event> clickEventConsumer;
 
     @Mock
-    private Consumer<Event>                   mouseDownConsumer;
+    private Consumer<Event> mouseDownConsumer;
 
     @Mock
     private WiresConnectorControlPointBuilder controlPointBuilder;
 
     @Mock
-    private PointHandleDecorator              pointHandleDecorator;
+    private PointHandleDecorator pointHandleDecorator;
 
     @Mock
-    private IDirectionalMultiPointShape       line;
+    private IDirectionalMultiPointShape line;
 
     @Mock
-    private Layer                             layer;
+    private Layer layer;
 
     @Mock
-    private Viewport                          viewPort;
+    private Viewport viewPort;
 
     @Mock
-    private SelectionManager                  selectionManager;
+    private SelectionManager selectionManager;
 
     @Mock
-    private SelectionManager.SelectedItems    selectedItems;
+    private SelectionManager.SelectedItems selectedItems;
 
     @Mock
-    private WiresLayer                        wiresLayer;
+    private WiresLayer wiresLayer;
 
     @Mock
-    private NodeMouseMoveEvent                moveEvent;
+    private NodeMouseMoveEvent moveEvent;
 
-    private WiresConnectorHandlerImpl         tested;
+    private WiresConnectorHandlerImpl tested;
 
-    private Transform                         transform;
+    private Transform transform;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         when(layer.uuid()).thenReturn(LAYER_ID);
         when(layer.getViewport()).thenReturn(viewPort);
         transform = new Transform();
@@ -139,10 +141,9 @@ public class WiresConnectorHandlerImplTest
     }
 
     @Test
-    public void testOnDragStart()
-    {
-        DragContext        context = mockDragContext();
-        NodeDragStartEvent event   = mock(NodeDragStartEvent.class);
+    public void testOnDragStart() {
+        DragContext context = mockDragContext();
+        NodeDragStartEvent event = mock(NodeDragStartEvent.class);
         when(event.getDragContext()).thenReturn(context);
         tested.onNodeDragStart(event);
         verify(control, times(1)).hideControlPoints();
@@ -153,10 +154,9 @@ public class WiresConnectorHandlerImplTest
     }
 
     @Test
-    public void testOnDragMove()
-    {
-        DragContext       context = mockDragContext();
-        NodeDragMoveEvent event   = mock(NodeDragMoveEvent.class);
+    public void testOnDragMove() {
+        DragContext context = mockDragContext();
+        NodeDragMoveEvent event = mock(NodeDragMoveEvent.class);
         when(event.getDragContext()).thenReturn(context);
         tested.onNodeDragMove(event);
         verify(control, times(1)).onMove(1d, 2d);
@@ -165,10 +165,9 @@ public class WiresConnectorHandlerImplTest
     }
 
     @Test
-    public void testOnDragEndAccept()
-    {
-        DragContext      context = mockDragContext();
-        NodeDragEndEvent event   = mock(NodeDragEndEvent.class);
+    public void testOnDragEndAccept() {
+        DragContext context = mockDragContext();
+        NodeDragEndEvent event = mock(NodeDragEndEvent.class);
         when(event.getDragContext()).thenReturn(context);
         when(control.onMove(anyDouble(), anyDouble())).thenReturn(false);
         when(control.accept()).thenReturn(true);
@@ -182,10 +181,9 @@ public class WiresConnectorHandlerImplTest
     }
 
     @Test
-    public void testOnDragEndReset()
-    {
-        DragContext      context = mockDragContext();
-        NodeDragEndEvent event   = mock(NodeDragEndEvent.class);
+    public void testOnDragEndReset() {
+        DragContext context = mockDragContext();
+        NodeDragEndEvent event = mock(NodeDragEndEvent.class);
         when(event.getDragContext()).thenReturn(context);
         when(control.onMove(anyDouble(), anyDouble())).thenReturn(false);
         tested.onNodeDragEnd(event);
@@ -198,8 +196,7 @@ public class WiresConnectorHandlerImplTest
     }
 
     @Test
-    public void testOnNodeMouseClick()
-    {
+    public void testOnNodeMouseClick() {
         Timer mouseDownTimer = mock(Timer.class);
         when(mouseDownTimer.isRunning()).thenReturn(true);
         tested.mouseDownTimer = mouseDownTimer;
@@ -221,32 +218,28 @@ public class WiresConnectorHandlerImplTest
     }
 
     @Test
-    public void testSelectionManagerIsNull()
-    {
+    public void testSelectionManagerIsNull() {
         // no assert intentionally, before the fix this tests failed with NullPointer Exception
         when(wiresManager.getSelectionManager()).thenReturn(null);
         tested.onNodeMouseMove(moveEvent);
     }
 
     @Test
-    public void testOnNodeMouseEnter()
-    {
+    public void testOnNodeMouseEnter() {
         NodeMouseEnterEvent enterEvent = mock(NodeMouseEnterEvent.class);
         tested.onNodeMouseEnter(enterEvent);
         verify(controlPointBuilder, times(1)).enable();
     }
 
     @Test
-    public void testOnNodeMouseExit()
-    {
+    public void testOnNodeMouseExit() {
         NodeMouseExitEvent event = mock(NodeMouseExitEvent.class);
         tested.onNodeMouseExit(event);
         verify(controlPointBuilder, times(1)).disable();
     }
 
     @Test
-    public void testOnNodeMouseDown()
-    {
+    public void testOnNodeMouseDown() {
         NodeMouseDownEvent event = mock(NodeMouseDownEvent.class);
         when(event.getX()).thenReturn(55);
         when(event.getY()).thenReturn(234);
@@ -264,8 +257,7 @@ public class WiresConnectorHandlerImplTest
     }
 
     @Test
-    public void testMoveAndCreateControlPoint()
-    {
+    public void testMoveAndCreateControlPoint() {
         Timer mouseDownTimer = mock(Timer.class);
         when(mouseDownTimer.isRunning()).thenReturn(true);
         tested.mouseDownTimer = mouseDownTimer;
@@ -278,8 +270,7 @@ public class WiresConnectorHandlerImplTest
         verify(controlPointBuilder, times(1)).moveControlPointTo(eq(321), eq(435));
     }
 
-    private static DragContext mockDragContext()
-    {
+    private static DragContext mockDragContext() {
         DragContext context = mock(DragContext.class);
         when(context.getDragStartX()).thenReturn(1);
         when(context.getDragStartY()).thenReturn(2);

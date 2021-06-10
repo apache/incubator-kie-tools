@@ -17,7 +17,6 @@ public class JsMap<KEY, VALUE> {
 
     public int size = 0;
 
-
     Map<KEY, VALUE> map = new HashMap<>();
 
     public VALUE get(KEY key) {
@@ -34,7 +33,7 @@ public class JsMap<KEY, VALUE> {
         return map.containsKey(key);
     }
 
-    public  JsIteratorIterable<VALUE> values() {
+    public JsIteratorIterable<VALUE> values() {
         return mock(JsIteratorIterable.class);
     }
 
