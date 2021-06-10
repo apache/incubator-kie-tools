@@ -94,6 +94,7 @@ jobs:
           os: ${{ matrix.os }}
 
       - name: "Build"
+        shell: bash
         run: |
           lerna run build:prod --scope=@kogito-tooling/hub --include-dependencies --stream
 
@@ -209,6 +210,7 @@ jobs:
           os: ${{ matrix.os }}
 
       - name: "Build"
+        shell: bash
         run: |
           lerna run build:prod --scope=@kogito-tooling/desktop --include-dependencies --stream
 
