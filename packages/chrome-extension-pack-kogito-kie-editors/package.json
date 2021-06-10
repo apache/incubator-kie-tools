@@ -9,8 +9,8 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kie-tooling-core/chrome-extension": "^0.0.5",
-    "@kie-tooling-core/patternfly-base": "^0.0.5",
+    "@kie-tooling-core/chrome-extension": "^0.0.6",
+    "@kie-tooling-core/patternfly-base": "^0.0.6",
     "@kogito-tooling/external-assets-base": "0.0.1",
     "@kogito-tooling/kie-bc-editors": "0.0.1"
   },

@@ -71,7 +71,7 @@
     "build:prod": "run-script-os"
   },
   "dependencies": {
-    "@kie-tooling-core/vscode-extension": "^0.0.5",
+    "@kie-tooling-core/vscode-extension": "^0.0.6",
     "@kogito-tooling/external-assets-base": "0.0.1"
   }
 }

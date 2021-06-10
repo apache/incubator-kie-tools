@@ -11,9 +11,9 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kie-tooling-core/editor": "^0.0.5",
-    "@kie-tooling-core/monaco-editor": "^0.0.5",
-    "@kie-tooling-core/patternfly-base": "^0.0.5",
+    "@kie-tooling-core/editor": "^0.0.6",
+    "@kie-tooling-core/monaco-editor": "^0.0.6",
+    "@kie-tooling-core/patternfly-base": "^0.0.6",
     "@kogito-tooling/external-assets-base": "0.0.1",
     "@kogito-tooling/i18n-common-dictionary": "0.0.1",
     "@kogito-tooling/kie-bc-editors": "0.0.1",
