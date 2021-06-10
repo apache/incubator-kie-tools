@@ -1,1 +1,275 @@
+name: "Release"
 
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag"
+        required: true
+      online-editor:
+        description: "Online Editor"
+        default: "true"
+        required: true
+      chrome-extension:
+        description: "Chrome Extension"
+        default: "true"
+        required: true
+      vscode-extensions-dev:
+        description: "VS Code Extensions (dev)"
+        default: "true"
+        required: true
+      desktop:
+        description: "Desktop"
+        default: "true"
+        required: true
+      hub:
+        description: "Hub"
+        default: "true"
+        required: true
+      standalone-editors:
+        description: "Standalone Editors"
+        default: "true"
+        required: true
+      npm-packages:
+        description: "NPM packages"
+        default: "true"
+        required: true
+
+env:
+  WEBPACK_minimize: "true"
+  WEBPACK_TS_LOADER_transpileOnly: "false"
+  KOGITO_TOOLING_BUILD_lint: "false"
+  KOGITO_TOOLING_BUILD_test: "false"
+  KOGITO_TOOLING_BUILD_testIT: "false"
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      release-upload-url: ${{ fromJSON(steps.fetch-release-for-tag.outputs.data).upload_url }}
+      release-ref: ${{ fromJSON(steps.fetch-release-for-tag.outputs.data).target_commitish }}
+    steps:
+      - name: "Fetch release for ${{ github.event.inputs.tag }}"
+        uses: octokit/request-action@v2.1.0
+        id: fetch-release-for-tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          route: GET /repos/{repo}/releases/tags/{tag}
+          repo: ${{ github.repository }}
+          tag: ${{ github.event.inputs.tag }}
+
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ fromJSON(steps.fetch-release-for-tag.outputs.data).target_commitish }}
+
+  #      - name: "Check `tag` against `lerna.json.version`"
+  #        shell: bash
+  #        # This bash script returns 0 if equal and 1 otherwise. Will fail if versions are not equal.
+  #        run: |
+  #          [ "${{ github.event.inputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
+
+  hub:
+    if: ${{ github.event.inputs.hub == 'true' }}
+    runs-on: ${{ matrix.os }}
+    needs: [prepare]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.prepare.outputs.release-ref }}
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.2.0
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ${{ matrix.os }}
+
+      - name: "Build"
+        shell: bash
+        run: |
+          lerna run build:prod --scope=@kogito-tooling/hub --include-dependencies --stream
+
+      - name: "Deploy"
+        run: |
+          echo "${{ needs.prepare.outputs.release-upload-url }}"
+
+  online-editor:
+    if: ${{ github.event.inputs.online-editor == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [hub]
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.prepare.outputs.release-ref }}
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.2.0
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ubuntu-latest
+
+      - name: "Build"
+        run: |
+          lerna run build:prod --scope=@kogito-tooling/online-editor --include-dependencies --stream
+
+      - name: "Deploy"
+        run: |
+          echo "${{ needs.prepare.outputs.release-upload-url }}"
+
+  chrome-extension:
+    if: ${{ github.event.inputs.chrome-extension == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.prepare.outputs.release-ref }}
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.2.0
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ubuntu-latest
+
+      - name: "Build"
+        run: |
+          lerna run build:prod --scope=chrome-extension-pack-kogito-kie-editors --include-dependencies --stream
+
+      - name: "Deploy"
+        run: |
+          echo "${{ needs.prepare.outputs.release-upload-url }}"
+
+  vscode-extensions-dev:
+    if: ${{ github.event.inputs.vscode-extensions-dev == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.prepare.outputs.release-ref }}
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.2.0
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ubuntu-latest
+
+      - name: "Build"
+        run: |
+          lerna run build:prod --scope=vscode-extension-pack-kogito-kie-editors --scope=vscode-extension-backend --include-dependencies --stream
+
+      - name: "Deploy"
+        run: |
+          echo "${{ needs.prepare.outputs.release-upload-url }}"
+
+  desktop:
+    if: ${{ github.event.inputs.desktop == 'true' }}
+    runs-on: ${{ matrix.os }}
+    needs: [prepare]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.prepare.outputs.release-ref }}
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.2.0
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ${{ matrix.os }}
+
+      - name: "Build"
+        shell: bash
+        run: |
+          lerna run build:prod --scope=@kogito-tooling/desktop --include-dependencies --stream
+
+      - name: "Deploy"
+        run: |
+          echo "${{ needs.prepare.outputs.release-upload-url }}"
+
+  standalone-editors:
+    if: ${{ github.event.inputs.standalone-editors == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.prepare.outputs.release-ref }}
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.2.0
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ubuntu-latest
+
+      - name: "Build"
+        run: |
+          lerna run build:prod --scope=@kogito-tooling/kie-editors-standalone --include-dependencies --stream
+
+      - name: "Deploy"
+        run: |
+          echo "${{ needs.prepare.outputs.release-upload-url }}"
+
+  npm-packages:
+    if: ${{ github.event.inputs.npm-packages == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.prepare.outputs.release-ref }}
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.2.0
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ubuntu-latest
+
+      - name: "Build"
+        run: |
+          lerna run build:prod --stream
+
+      - name: "Deploy"
+        run: |
+          echo "${{ needs.prepare.outputs.release-upload-url }}"
