@@ -18,8 +18,8 @@
     "@kogito-tooling/kie-bc-editors": "0.0.1"
   },
   "scripts": {
-    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint --true-if-empty --then 'yarn eslint ./src --ext .ts,.tsx'",
-    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test --true-if-empty --then 'jest --silent --verbose --passWithNoTests'",
+    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint --true-if-empty --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test --true-if-empty --then \"jest --silent --verbose --passWithNoTests\"",
     "build:preprocessor": "node dist/preprocessor/preprocessor.js",
     "build:dev": "rimraf dist && webpack --env dev --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --env dev --config webpack.package-resources.config.js",
     "build:prod": "yarn lint && yarn test && rimraf dist && webpack --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --config webpack.package-resources.config.js && yarn test:it",
@@ -32,7 +32,7 @@
     "clean:it": "rimraf it-tests/results",
     "report:it": "jrm it-tests/results/junit.xml it-tests/results/junit-*.xml",
     "start-and-test:it": "start-server-and-test start:it http://localhost:9001 cy:run",
-    "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then 'yarn rimraf ./dist-it-tests' 'npm-run-all -s -c clean:it start-and-test:it report:it'"
+    "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then \"yarn rimraf ./dist-it-tests\" \"npm-run-all -s -c clean:it start-and-test:it report:it\""
   },
   "babel": {
     "presets": [

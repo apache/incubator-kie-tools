@@ -21,8 +21,8 @@
   "scripts": {
     "start": "electron dist",
     "rebuild": "electron-rebuild -f -w sqlite3",
-    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint --true-if-empty --then 'yarn eslint ./src --ext .ts,.tsx'",
-    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test --true-if-empty --then 'jest --silent --verbose --passWithNoTests'",
+    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint --true-if-empty --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test --true-if-empty --then \"jest --silent --verbose --passWithNoTests\"",
     "init": "yarn -f",
     "build:dev": "rimraf dist && webpack --env dev",
     "clean:prod": "rimraf out && mkdir out",

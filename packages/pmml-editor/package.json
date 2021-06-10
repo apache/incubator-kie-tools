@@ -34,8 +34,8 @@
     "uuid": "^8.3.2"
   },
   "scripts": {
-    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint --true-if-empty --then 'yarn eslint ./src --ext .ts,.tsx'",
-    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test --true-if-empty --then 'jest --silent --verbose'",
+    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint --true-if-empty --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test --true-if-empty --then \"jest --silent --verbose\"",
     "test:clearCache": "jest --clearCache",
     "test:watch": "jest --watch",
     "build:dev": "rimraf dist && webpack --env dev",
@@ -44,7 +44,7 @@
     "deploy": "gh-pages -d dist",
     "cy:open": "yarn run cypress open --project it-tests",
     "cy:run": "yarn run cypress run -b chrome --project it-tests",
-    "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then 'yarn rimraf ./dist-it-tests' 'yarn run start-server-and-test start http://0.0.0.0:8080 cy:run'"
+    "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start http://0.0.0.0:8080 cy:run\""
   },
   "babel": {
     "presets": [
