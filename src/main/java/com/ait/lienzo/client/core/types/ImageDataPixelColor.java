@@ -17,8 +17,9 @@
 package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.shared.core.types.Color;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.core.client.JavaScriptObject;
+
+import elemental2.core.Uint8ClampedArray;
+import elemental2.dom.ImageData;
 
 /**
  * A simple Red-Blue-Green-Alpha color representation.
@@ -35,21 +36,21 @@ public final class ImageDataPixelColor
 
     public ImageDataPixelColor(final ImageData source)
     {
-        final CanvasPixelArray data = source.getData();
+        final Uint8ClampedArray data = source.data;
 
-        m_r = color(data, 0);
+        m_r = (int) color(data, 0);
 
-        m_g = color(data, 1);
+        m_g = (int) color(data, 1);
 
-        m_b = color(data, 2);
+        m_b = (int) color(data, 2);
 
-        m_a = color(data, 3);
+        m_a = (int) color(data, 3);
     }
 
-    private final native int color(JavaScriptObject data, int i)
-    /*-{
-		return data[i];
-    }-*/;
+    private final double color(Uint8ClampedArray data, int i)
+    {
+		return data.getAt(i);
+    }
 
     public final int getR()
     {

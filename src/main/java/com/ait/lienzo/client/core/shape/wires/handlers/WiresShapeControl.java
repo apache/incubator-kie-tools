@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers;
 
-import com.ait.tooling.common.api.java.util.function.Supplier;
+import java.util.function.Supplier;
 
 /**
  * The Wires Shape control type.

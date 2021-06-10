@@ -19,11 +19,12 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONObject;
+
+import elemental2.core.Uint8ClampedArray;
+import elemental2.dom.ImageData;
+import jsinterop.base.Js;
 
 /**
  * A class that allows for easy creation of Brightness Filters.
@@ -40,7 +41,7 @@ public class HueImageDataFilter extends AbstractValueImageDataFilter<HueImageDat
         super(ImageFilterType.HueImageDataFilterType, value);
     }
 
-    protected HueImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected HueImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
     {
         super(ImageFilterType.HueImageDataFilterType, node, ctx);
     }
@@ -72,40 +73,42 @@ public class HueImageDataFilter extends AbstractValueImageDataFilter<HueImageDat
         }
         if (copy)
         {
-            source = source.copy();
+            source = ImageDataUtil.copy(source);
         }
-        if (false == isActive())
+        if (!isActive())
         {
             return source;
         }
-        final CanvasPixelArray data = source.getData();
+        final Uint8ClampedArray data = source.data;
 
         if (null == data)
         {
             return source;
         }
-        filter_(data, source.getWidth(), source.getHeight(), getValue(), FilterCommonOps);
+        filter_(data, source.width, source.height, getValue(), FilterCommonOps);
 
         return source;
     }
 
-    private final native void filter_(JavaScriptObject data, int w, int h, double value, ImageDataFilterCommonOps fops)
-    /*-{
-    	 for (var y = 0; y < h; y++) {
-            for (var x = 0; x < w; x++) {
-                var p = (y * w + x) * 4;
-                var hsv = fops.RGBtoHSV(data[p], data[p + 1], data[p + 2]);
+    private final void filter_(Uint8ClampedArray dataArray, int w, int h, double value, ImageDataFilterCommonOps fops)
+    {
+        //int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
+        int[] data = Js.uncheckedCast(dataArray);
+    	 for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                int p = (y * w + x) * 4;
+                int[] hsv = fops.RGBtoHSV(data[p], data[p + 1], data[p + 2]);
                 hsv[0] += value;
                 while(hsv[0] < 0) {
                     hsv[0] += 360;
                 }
-                var rgb = fops.HSVtoRGB(hsv[0], hsv[1], hsv[2]);
-                for(var i = 0; i < 3; i++) {
+                int[] rgb = fops.HSVtoRGB(hsv[0], hsv[1], hsv[2]);
+                for(int i = 0; i < 3; i++) {
                     data[p+i] = rgb[i];
                 }
             }   
         }
-    }-*/;
+    }
 
     @Override
     public IFactory<HueImageDataFilter> getFactory()
@@ -118,12 +121,6 @@ public class HueImageDataFilter extends AbstractValueImageDataFilter<HueImageDat
         public HueImageDataFilterFactory()
         {
             super(ImageFilterType.HueImageDataFilterType);
-        }
-
-        @Override
-        public HueImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new HueImageDataFilter(node, ctx);
         }
     }
 }

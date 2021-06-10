@@ -16,20 +16,24 @@
 
 package com.ait.lienzo.client.core.util;
 
+import elemental2.core.JsNumber;
+
 public final class StringFormatter
 {
     private StringFormatter()
     {
     }
 
-    public static final native String toFixed(double value, int digits)
-    /*-{
-		var n = value;
-		if (isFinite(n)) {
-			return n.toFixed(digits);
+    public static String toFixed(double value, int digits)
+    {
+		double n = value;
+		if (JsNumber.isFinite(n))
+        {
+            JsNumber jsNumber = new JsNumber(n);
+            return jsNumber.toFixed(digits);
 		}
 		return "NaN";
-    }-*/;
+    }
 
     /**
      * Simple formatter. Replaces strings of the form "{0}", "{1}" etc. with the

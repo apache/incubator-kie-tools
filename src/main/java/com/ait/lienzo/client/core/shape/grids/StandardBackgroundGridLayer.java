@@ -27,7 +27,7 @@ public class StandardBackgroundGridLayer extends GridLayer
         super(100, new Line().setAlpha(0.40).setStrokeWidth(1).setStrokeColor(ColorName.ROYALBLUE), 10, new Line().setAlpha(0.25).setStrokeWidth(1).setStrokeColor(ColorName.ROYALBLUE));
 
         setTransformable(false).setListening(false);
-        
-        getElement().getStyle().setBackgroundColor(ColorName.WHITE.getColorString());
+
+        getElement().style.backgroundColor = ColorName.WHITE.getColorString();
     }
 }

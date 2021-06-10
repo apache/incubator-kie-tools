@@ -27,44 +27,43 @@ import com.ait.lienzo.client.core.shape.AbstractImageShape;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.util.ScratchPad;
+import com.ait.lienzo.client.widget.RootPanel;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
-import com.google.gwt.dom.client.ImageElement;
-import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.RootPanel;
+import elemental2.dom.HTMLImageElement;
+import elemental2.dom.Image;
+import elemental2.dom.ImageData;
 
 /**
  * ImageProxy is used by {@link AbstractImageShape} to load and draw the image.
  */
 public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFilterable<ImageProxy<T>>
 {
-    private final T                          m_image;
+    private final T                m_image;
 
-    private Image                      m_img;
+    private       Image            m_img;
 
-    private ImageElement               m_jsimg;
+    private       HTMLImageElement m_jsimg;
 
-    private final ScratchPad           m_normalImage;
+    private final ScratchPad       m_normalImage;
 
-    private final ScratchPad           m_filterImage;
+    private final ScratchPad       m_filterImage;
 
-    private final ScratchPad           m_selectImage;
+    private final ScratchPad       m_selectImage;
 
-    private int                        m_clip_xpos;
+    private       int              m_clip_xpos;
 
-    private int                        m_clip_ypos;
+    private       int              m_clip_ypos;
 
-    private int                        m_clip_wide;
+    private       int              m_clip_wide;
 
-    private int                        m_clip_high;
+    private       int              m_clip_high;
 
-    private int                        m_dest_wide;
+    private       int              m_dest_wide;
 
-    private int                        m_dest_high;
+    private       int              m_dest_high;
 
     private boolean                    m_is_done     = false;
 
@@ -130,7 +129,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
                         m_img)
         {
             @Override
-            public final void onImageElementLoad(final ImageElement elem)
+            public final void onImageElementLoad(final HTMLImageElement elem)
             {
                 doInitialize(elem);
             }
@@ -165,7 +164,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
                         m_img)
         {
             @Override
-            public final void onImageElementLoad(final ImageElement elem)
+            public final void onImageElementLoad(final HTMLImageElement elem)
             {
                 doInitialize(elem);
             }
@@ -178,17 +177,17 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         };
     }
 
-    private final void doInitialize(final ImageElement image)
+    private final void doInitialize(final HTMLImageElement image)
     {
         m_jsimg = image;
 
         if (m_clip_wide == 0)
         {
-            m_clip_wide = m_jsimg.getWidth();
+            m_clip_wide = m_jsimg.width;
         }
         if (m_clip_high == 0)
         {
-            m_clip_high = m_jsimg.getHeight();
+            m_clip_high = m_jsimg.height;
         }
         if (m_dest_wide == 0)
         {
@@ -198,7 +197,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         {
             m_dest_high = m_clip_high;
         }
-        if ((false == (m_filters.isActive())) && (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+        if ((!(m_filters.isActive())) && (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
         {
             m_fastout = true;
 
@@ -222,7 +221,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
             doFiltering(m_normalImage, m_filterImage, m_filters);
 
-            if ((false == m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+            if ((!m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
             {
                 doneLoading(true, "loaded " + m_image.getURL());
             }
@@ -254,7 +253,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
             m_ignores = new ClearFilter();
         }
-        else if (false == ckey.equals(m_k_color))
+        else if (!ckey.equals(m_k_color))
         {
             m_k_color = ckey;
 
@@ -289,7 +288,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     {
         if (null != m_jsimg)
         {
-            return m_jsimg.getSrc();
+            return m_jsimg.src;
         }
         return null;
     }
@@ -312,7 +311,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
     public void reFilter(final ImageShapeFilteredHandler<T> handler)
     {
-        if ((false == (m_filters.isActive())) && (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+        if ((!(m_filters.isActive())) && (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
         {
             m_fastout = true;
 
@@ -340,7 +339,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
             doFiltering(m_normalImage, m_filterImage, m_filters);
 
-            if ((false == m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+            if ((!m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
             {
                 handler.onImageShapeFiltered(m_image);
             }
@@ -359,7 +358,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
     public void unFilter(final ImageShapeFilteredHandler<T> handler)
     {
-        if ((false == (m_filters.isActive())) && (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+        if ((!(m_filters.isActive())) && (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
         {
             m_fastout = true;
 
@@ -383,7 +382,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
             }
             doFiltering(m_normalImage, m_filterImage, null);
 
-            if ((false == m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+            if ((!m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
             {
                 handler.onImageShapeFiltered(m_image);
             }
@@ -401,25 +400,25 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     @Override
-    public ImageProxy<T> setFilters(final ImageDataFilter<?> filter, final ImageDataFilter<?>... filters)
+    public ImageProxy<T> setFilters(final ImageDataFilter<?>... filters)
     {
-        m_filters.setFilters(filter, filters);
+        m_filters.setFilters(filters);
 
         return this;
     }
 
     @Override
-    public ImageProxy<T> addFilters(final ImageDataFilter<?> filter, final ImageDataFilter<?>... filters)
+    public ImageProxy<T> addFilters(final ImageDataFilter<?>... filters)
     {
-        m_filters.addFilters(filter, filters);
+        m_filters.addFilters(filters);
 
         return this;
     }
 
     @Override
-    public ImageProxy<T> removeFilters(final ImageDataFilter<?> filter, final ImageDataFilter<?>... filters)
+    public ImageProxy<T> removeFilters(final ImageDataFilter<?>... filters)
     {
-        m_filters.removeFilters(filter, filters);
+        m_filters.removeFilters(filters);
 
         return this;
     }
@@ -480,7 +479,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     {
         ImageClipBounds bounds = m_image.getImageClipBounds();
 
-        if (m_obounds.isDifferent(bounds))
+        if (m_obounds == null || m_obounds.isDifferent(bounds))
         {
             m_obounds = bounds;
 
@@ -498,11 +497,11 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
             if (m_clip_wide == 0)
             {
-                m_clip_wide = m_jsimg.getWidth();
+                m_clip_wide = m_jsimg.width;
             }
             if (m_clip_high == 0)
             {
-                m_clip_high = m_jsimg.getHeight();
+                m_clip_high = m_jsimg.height;
             }
             if (m_dest_wide == 0)
             {
@@ -512,7 +511,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
             {
                 m_dest_high = m_clip_high;
             }
-            if ((false == (m_filters.isActive())) && (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+            if ((!(m_filters.isActive())) && (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
             {
                 m_fastout = true;
             }
@@ -544,7 +543,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
     private final void doFiltering(final ScratchPad source, final ScratchPad target, final ImageDataFilter<?> filter)
     {
-        if ((null == filter) || (false == filter.isActive()))
+        if ((null == filter) || (!filter.isActive()))
         {
             target.clear();
 
@@ -618,7 +617,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
      */
     public ImageData getImageData()
     {
-        if (false == isLoaded())
+        if (!isLoaded())
         {
             return null;
         }
@@ -636,21 +635,15 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         }
     }
 
-    /**
-     * Returns the "data:" URL
-     * 
-     * @param mimeType If null, defaults to DataURLType.PNG
-     * @return String
-     */
     public String toDataURL(final boolean filtered)
     {
-        if (false == isLoaded())
+        if (!isLoaded())
         {
             return null;
         }
-        if ((m_fastout) || (false == filtered))
+        if ((m_fastout) || (!filtered))
         {
-            final ScratchPad temp = new ScratchPad(m_jsimg.getWidth(), m_jsimg.getHeight());
+            final ScratchPad temp = new ScratchPad(m_jsimg.width, m_jsimg.height);
 
             temp.getContext().drawImage(m_jsimg, 0, 0);
 
@@ -684,14 +677,14 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         return m_dest_high;
     }
 
-    public ImageElement getImage()
+    public HTMLImageElement getImage()
     {
         return m_jsimg;
     }
 
     public BoundingBox getBoundingBox()
     {
-        return new BoundingBox(0, 0, m_dest_wide, m_dest_high);
+        return BoundingBox.fromDoubles(0, 0, m_dest_wide, m_dest_high);
     }
 
     public void destroy()
@@ -703,7 +696,6 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     void destroy(final Image image)
     {
         RootPanel.get().remove(image);
-        image.removeFromParent();
         m_image.removeFromParent();
         m_normalImage.clear();
         m_filterImage.clear();
@@ -716,18 +708,6 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
     private static final class ClearFilter implements ImageDataFilter<ClearFilter>
     {
-        @Override
-        public String toJSONString()
-        {
-            return null;
-        }
-
-        @Override
-        public JSONObject toJSONObject()
-        {
-            return null;
-        }
-
         @Override
         public IFactory<?> getFactory()
         {

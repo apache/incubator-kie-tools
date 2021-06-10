@@ -18,18 +18,24 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.Color;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.collection.NFastStringMap;
+
+import elemental2.dom.ImageData;
 
 public class BackingColorMapUtils
 {
+    private BackingColorMapUtils()
+    {
+
+    }
+
     public static ImageData drawShapesToBacking(NFastArrayList<WiresShape> prims, ScratchPad scratch, WiresContainer skip, NFastStringMap<WiresShape> shape_color_map)
     {
         scratch.clear();
@@ -99,20 +105,20 @@ public class BackingColorMapUtils
             for (int i = 0; i < path.size(); i++)
             {
                 PathPartEntryJSO entry = path.get(i);
-                NFastDoubleArrayJSO points = entry.getPoints();
+                double[] points = entry.getPoints();
 
                 switch (entry.getCommand())
                 {
                     case PathPartEntryJSO.MOVETO_ABSOLUTE:
                     {
-                        ctx.moveTo(points.get(0) + offsetX, points.get(1) + offsetY);
+                        ctx.moveTo(points[0] + offsetX, points[1] + offsetY);
                         break;
                     }
                     case PathPartEntryJSO.LINETO_ABSOLUTE:
                     {
                         points = entry.getPoints();
-                        double x0 = points.get(0) + offsetX;
-                        double y0 = points.get(1) + offsetY;
+                        double x0 = points[0] + offsetX;
+                        double y0 = points[1] + offsetY;
                         ctx.lineTo(x0, y0);
                         break;
                     }
@@ -126,12 +132,12 @@ public class BackingColorMapUtils
                     {
                         points = entry.getPoints();
 
-                        double x0 = points.get(0) + offsetX;
-                        double y0 = points.get(1) + offsetY;
+                        double x0 = points[0] + offsetX;
+                        double y0 = points[1] + offsetY;
 
-                        double x1 = points.get(2) + offsetX;
-                        double y1 = points.get(3) + offsetY;
-                        double r = points.get(4);
+                        double x1 = points[2] + offsetX;
+                        double y1 = points[3] + offsetY;
+                        double r = points[4];
                         ctx.arcTo(x0, y0, x1, y1, r);
                         break;
                     }
@@ -139,14 +145,14 @@ public class BackingColorMapUtils
                     {
                         points = entry.getPoints();
 
-                        double x0 = points.get(0) + offsetX;
-                        double y0 = points.get(1) + offsetY;
+                        double x0 = points[0] + offsetX;
+                        double y0 = points[1] + offsetY;
 
-                        double x1 = points.get(2) + offsetX;
-                        double y1 = points.get(3) + offsetY;
+                        double x1 = points[2] + offsetX;
+                        double y1 = points[3] + offsetY;
 
-                        double x2 = points.get(4) + offsetX;
-                        double y2 = points.get(5) + offsetY;
+                        double x2 = points[4] + offsetX;
+                        double y2 = points[5] + offsetY;
                         ctx.bezierCurveTo(x0, y0, x1, y1, x2, y2);
                     }
                 }
@@ -166,17 +172,17 @@ public class BackingColorMapUtils
 
     public static String findColorAtPoint(final ImageData imageData, final int x, final int y)
     {
-        int red = imageData.getRedAt(x, y);
-        int green = imageData.getGreenAt(x, y);
-        int blue = imageData.getBlueAt(x, y);
-        int alpha = imageData.getAlphaAt(x, y);
+        //imageData.data.getAt()
+
+        int red = ImageDataUtil.getRedAt(imageData, x, y);
+        int green = ImageDataUtil.getGreenAt(imageData, x, y);
+        int blue = ImageDataUtil.getBlueAt(imageData, x, y);
+        int alpha = ImageDataUtil.getAlphaAt(imageData, x, y);
 
         if (alpha != 255)
         {
             return null;
         }
-        String color = Color.rgbToBrowserHexColor(red, green, blue);
-
-        return color;
+        return Color.rgbToBrowserHexColor(red, green, blue);
     }
 }

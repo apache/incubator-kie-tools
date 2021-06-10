@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.shared.core.types;
 
-import com.ait.tooling.common.api.types.IStringValued;
+import com.ait.lienzo.tools.common.api.types.IStringValued;
 
 public class ImageFilterType implements IStringValued
 {
@@ -88,7 +88,7 @@ public class ImageFilterType implements IStringValued
     @Override
     public boolean equals(final Object other)
     {
-        if (false == (other instanceof ImageFilterType))
+        if (!(other instanceof ImageFilterType))
         {
             return false;
         }

@@ -16,11 +16,12 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.impl;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.toolbox.GroupItem;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 
 class GroupImpl extends AbstractGroupItem<GroupImpl> {
 
@@ -72,17 +73,14 @@ class GroupImpl extends AbstractGroupItem<GroupImpl> {
 
     @Override
     public Supplier<BoundingBox> getBoundingBox() {
-        return new Supplier<BoundingBox>() {
-            @Override
-            public BoundingBox get() {
-                if (primitive.getChildNodes().size() == 0) {
-                    return new BoundingBox(0,
-                                           0,
-                                           1,
-                                           1);
-                }
-                return GroupImpl.super.getBoundingBox().get();
+        return () -> {
+            if (primitive.getChildNodes().size() == 0) {
+                return BoundingBox.fromDoubles(0,
+                                       0,
+                                       1,
+                                       1);
             }
+            return GroupImpl.super.getBoundingBox().get();
         };
     }
 }

@@ -22,7 +22,7 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.layout.AbstractContainerLayout;
 import com.ait.lienzo.client.core.shape.wires.layout.size.SizeConstraints.Type;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.tooling.common.api.java.util.function.BiFunction;
+import java.util.function.BiFunction;
 
 public class SizeConstraintsContainerLayout extends AbstractContainerLayout<SizeConstraints>
         implements IMaxSizeLayout<SizeConstraints>
@@ -32,26 +32,14 @@ public class SizeConstraintsContainerLayout extends AbstractContainerLayout<Size
     private static Map<Type, BiFunction<SizeConstraints, BoundingBox, BoundingBox>> sizeBuilders()
     {
         final Map<Type, BiFunction<SizeConstraints, BoundingBox, BoundingBox>> sizeBuilders = new HashMap<>();
-        sizeBuilders.put(Type.RAW, new BiFunction<SizeConstraints, BoundingBox, BoundingBox>()
-        {
-            @Override
-            public BoundingBox apply(final SizeConstraints sizeConstraints, final BoundingBox parentBoundingBox)
-            {
-                return new BoundingBox(0, 0, sizeConstraints.getWidth() - sizeConstraints.getMarginX(),
-                                       sizeConstraints.getHeight() - sizeConstraints.getMarginY());
-            }
-        });
-        sizeBuilders.put(Type.PERCENTAGE, new BiFunction<SizeConstraints, BoundingBox, BoundingBox>()
-        {
-            @Override
-            public BoundingBox apply(final SizeConstraints sizeConstraints, final BoundingBox parentBoundingBox)
-            {
-                double width = sizeConstraints.getWidth() * (parentBoundingBox.getWidth() / 100) - sizeConstraints
-                        .getMarginX();
-                double height = sizeConstraints.getHeight() * (parentBoundingBox.getHeight() / 100) - sizeConstraints
-                        .getMarginY();
-                return new BoundingBox(0, 0, width, height);
-            }
+        sizeBuilders.put(Type.RAW, (sizeConstraints, parentBoundingBox) -> BoundingBox.fromDoubles(0, 0, sizeConstraints.getWidth() - sizeConstraints.getMarginX(),
+                                                                                           sizeConstraints.getHeight() - sizeConstraints.getMarginY()));
+        sizeBuilders.put(Type.PERCENTAGE, (sizeConstraints, parentBoundingBox) -> {
+            double width = sizeConstraints.getWidth() * (parentBoundingBox.getWidth() / 100) - sizeConstraints
+                    .getMarginX();
+            double height = sizeConstraints.getHeight() * (parentBoundingBox.getHeight() / 100) - sizeConstraints
+                    .getMarginY();
+            return BoundingBox.fromDoubles(0, 0, width, height);
         });
         return sizeBuilders;
     }

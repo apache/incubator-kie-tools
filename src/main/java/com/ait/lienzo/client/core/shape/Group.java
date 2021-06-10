@@ -21,7 +21,6 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.shape.storage.PrimitiveFastArrayStorageEngine;
 import com.ait.lienzo.shared.core.types.GroupType;
-import com.google.gwt.json.client.JSONObject;
 
 public class Group extends GroupOf<IPrimitive<?>, Group>
 {
@@ -33,11 +32,6 @@ public class Group extends GroupOf<IPrimitive<?>, Group>
     public Group(final IStorageEngine<IPrimitive<?>> storage)
     {
         super(GroupType.GROUP, storage);
-    }
-
-    protected Group(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(GroupType.GROUP, node, ctx);
     }
 
     @Override
@@ -82,12 +76,6 @@ public class Group extends GroupOf<IPrimitive<?>, Group>
                 }
             }
             return false;
-        }
-
-        @Override
-        public Group container(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new Group(node, ctx);
         }
     }
 }

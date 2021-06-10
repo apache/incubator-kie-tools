@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.wires.proxy;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
 import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
@@ -27,8 +29,7 @@ import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
-import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 
 public class WiresDragProxy {
 
@@ -45,12 +46,7 @@ public class WiresDragProxy {
 
     public WiresDragProxy(final Supplier<AbstractWiresProxy> delegate) {
         this(delegate,
-             new Supplier<Layer>() {
-                 @Override
-                 public Layer get() {
-                     return new Layer().setListening(true);
-                 }
-             });
+             () -> new Layer().setListening(true));
     }
 
     public WiresDragProxy(final Supplier<AbstractWiresProxy> delegate,
@@ -103,34 +99,10 @@ public class WiresDragProxy {
         proxyDragLayer = proxyLayerBuilder.get();
         getLayer().getScene().add(proxyDragLayer.moveToTop());
         getLayer().setListening(false);
-
-        registrations[UP] = proxyDragLayer.addNodeMouseUpHandler(new NodeMouseUpHandler() {
-            @Override
-            public void onNodeMouseUp(NodeMouseUpEvent upEvent) {
-                end();
-            }
-        });
-
-        registrations[EXIT] = proxyDragLayer.addNodeMouseExitHandler(new NodeMouseExitHandler() {
-            @Override
-            public void onNodeMouseExit(NodeMouseExitEvent exitEvent) {
-                end();
-            }
-        });
-
-        registrations[OUT] = proxyDragLayer.addNodeMouseOutHandler(new NodeMouseOutHandler() {
-            @Override
-            public void onNodeMouseOut(NodeMouseOutEvent outEvent) {
-                end();
-            }
-        });
-
-        registrations[MOVE] = proxyDragLayer.addNodeMouseMoveHandler(new NodeMouseMoveHandler() {
-            @Override
-            public void onNodeMouseMove(NodeMouseMoveEvent moveEvent) {
-                move(moveEvent.getX(), moveEvent.getY());
-            }
-        });
+        registrations[UP] = proxyDragLayer.addNodeMouseUpHandler(upEvent -> end());
+        registrations[EXIT] = proxyDragLayer.addNodeMouseExitHandler(exitEvent -> end());
+        registrations[OUT] = proxyDragLayer.addNodeMouseOutHandler(outEvent -> end());
+        registrations[MOVE] = proxyDragLayer.addNodeMouseMoveHandler(moveEvent -> move(moveEvent.getX(), moveEvent.getY()));
     }
 
     private void endEventHandling() {

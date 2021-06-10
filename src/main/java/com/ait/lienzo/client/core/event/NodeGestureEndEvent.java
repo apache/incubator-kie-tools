@@ -16,18 +16,20 @@
 
 package com.ait.lienzo.client.core.event;
 
+import elemental2.dom.HTMLElement;
+
 public class NodeGestureEndEvent extends AbstractNodeGestureEvent<NodeGestureEndHandler>
 {
-    private static final Type<NodeGestureEndHandler> TYPE = new Type<NodeGestureEndHandler>();
+    private static final Type<NodeGestureEndHandler> TYPE = new Type<>();
 
     public static final Type<NodeGestureEndHandler> getType()
     {
         return TYPE;
     }
 
-    public NodeGestureEndEvent(final double scale, final double rotation)
+    public NodeGestureEndEvent(final HTMLElement relativeElement)
     {
-        super(rotation, scale);
+        super(relativeElement);
     }
 
     @Override
@@ -37,7 +39,7 @@ public class NodeGestureEndEvent extends AbstractNodeGestureEvent<NodeGestureEnd
     }
 
     @Override
-    protected void dispatch(final NodeGestureEndHandler handler)
+    public void dispatch(final NodeGestureEndHandler handler)
     {
         handler.onNodeGestureEnd(this);
     }

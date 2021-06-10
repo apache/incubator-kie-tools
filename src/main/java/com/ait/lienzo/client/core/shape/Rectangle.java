@@ -24,7 +24,8 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
 
 /**
  * Rectangle is defined by a width and a height.
@@ -32,6 +33,15 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Rectangle extends Shape<Rectangle>
 {
+    @JsProperty
+    private double width;
+
+    @JsProperty
+    private double height;
+
+    @JsProperty
+    private double cornerRadius;
+
     /**
      * Constructor. Creates an instance of a rectangle.
      * 
@@ -59,15 +69,10 @@ public class Rectangle extends Shape<Rectangle>
         setCornerRadius(corner);
     }
 
-    protected Rectangle(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.RECTANGLE, node, ctx);
-    }
-
     @Override
     public BoundingBox getBoundingBox()
     {
-        return new BoundingBox(0, 0, getWidth(), getHeight());
+        return BoundingBox.fromDoubles(0, 0, getWidth(), getHeight());
     }
 
     /**
@@ -76,13 +81,13 @@ public class Rectangle extends Shape<Rectangle>
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final double alpha)
     {
-        final double w = attr.getWidth();
+        final double w = getWidth();
 
-        final double h = attr.getHeight();
+        final double h = getHeight();
 
-        final double r = attr.getCornerRadius();
+        final double r = getCornerRadius();
 
         if ((w > 0) && (h > 0))
         {
@@ -120,50 +125,52 @@ public class Rectangle extends Shape<Rectangle>
     }
 
     /**
-     * Gets the width of this rectangle.
-     * 
+     * Gets the width of this parallelogram
+     *
      * @return double
      */
     public double getWidth()
     {
-        return getAttributes().getWidth();
+        return this.width;
     }
 
     /**
-     * Gets the height of this rectangle.
-     * 
+     * Sets the width of this rectangle
+     *
      * @param width
      * @return this Rectangle
      */
     public Rectangle setWidth(final double width)
     {
-        getAttributes().setWidth(width);
+        this.width = width;
 
         return this;
     }
 
     /**
-     * Gets the height of this rectangle.
-     * 
+     * Gets the height of this rectangle
+     *
      * @return double
      */
     public double getHeight()
     {
-        return getAttributes().getHeight();
+        return this.height;
     }
 
     /**
-     * Sets the height of this rectangle.
-     * 
+     * Sets the height of this rectangle
+     *
      * @param height
      * @return this Rectangle
      */
     public Rectangle setHeight(final double height)
     {
-        getAttributes().setHeight(height);
+        this.height = height;
 
         return this;
     }
+
+
 
     /**
      * Gets the corner radius, if this rectangle has rounded corners.
@@ -172,7 +179,7 @@ public class Rectangle extends Shape<Rectangle>
      */
     public double getCornerRadius()
     {
-        return getAttributes().getCornerRadius();
+        return this.cornerRadius;
     }
 
     /**
@@ -183,7 +190,7 @@ public class Rectangle extends Shape<Rectangle>
      */
     public Rectangle setCornerRadius(final double radius)
     {
-        getAttributes().setCornerRadius(radius);
+        this.cornerRadius = radius;
 
         return this;
     }
@@ -205,12 +212,6 @@ public class Rectangle extends Shape<Rectangle>
             addAttribute(Attribute.HEIGHT, true);
 
             addAttribute(Attribute.CORNER_RADIUS);
-        }
-
-        @Override
-        public Rectangle create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new Rectangle(node, ctx);
         }
     }
 }

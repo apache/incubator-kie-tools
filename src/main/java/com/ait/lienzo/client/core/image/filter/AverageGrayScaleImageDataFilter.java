@@ -19,11 +19,12 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONObject;
+
+import elemental2.core.Uint8ClampedArray;
+import elemental2.dom.ImageData;
+import jsinterop.base.Js;
 
 /**
  * A class that allows for easy creation of Gray Scale Filters.
@@ -35,7 +36,7 @@ public class AverageGrayScaleImageDataFilter extends AbstractImageDataFilter<Ave
         super(ImageFilterType.AverageGrayScaleImageDataFilterType);
     }
 
-    protected AverageGrayScaleImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected AverageGrayScaleImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
     {
         super(ImageFilterType.AverageGrayScaleImageDataFilterType, node, ctx);
     }
@@ -49,13 +50,13 @@ public class AverageGrayScaleImageDataFilter extends AbstractImageDataFilter<Ave
         }
         if (copy)
         {
-            source = source.copy();
+            source = ImageDataUtil.copy(source);
         }
-        if (false == isActive())
+        if (!isActive())
         {
             return source;
         }
-        final CanvasPixelArray data = source.getData();
+        final Uint8ClampedArray data = source.data;
 
         if (null == data)
         {
@@ -66,12 +67,16 @@ public class AverageGrayScaleImageDataFilter extends AbstractImageDataFilter<Ave
         return source;
     }
 
-    private final native void filter_(JavaScriptObject data, int length)
-    /*-{
-		for (var i = 0; i < length; i += 4) {
-			data[i] = data[i + 1] = data[i + 2] = (((data[i] + data[i + 1] + data[i + 2]) / 3.0) + 0.5) | 0;
-		}
-    }-*/;
+    private final void filter_(Uint8ClampedArray dataArray, int length)
+    {
+//        int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
+        int[] data = Js.uncheckedCast(dataArray);
+        for (int i = 0; i < length; i += 4)
+        {
+            double v = Js.coerceToInt(((data[i] + data[i + 1] + data[i + 2]) / 3.0) + 0.5);
+            data[i] = data[i + 1] = data[i + 2] = (int) v;
+        }
+    }
 
     @Override
     public IFactory<AverageGrayScaleImageDataFilter> getFactory()
@@ -84,12 +89,6 @@ public class AverageGrayScaleImageDataFilter extends AbstractImageDataFilter<Ave
         public AverageGrayScaleImageDataFilterFactory()
         {
             super(ImageFilterType.AverageGrayScaleImageDataFilterType);
-        }
-
-        @Override
-        public AverageGrayScaleImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new AverageGrayScaleImageDataFilter(node, ctx);
         }
     }
 }

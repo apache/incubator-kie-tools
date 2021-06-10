@@ -29,20 +29,22 @@ import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorHandler;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.tooling.common.api.java.util.function.Consumer;
-import com.google.gwt.user.client.Timer;
+import com.ait.lienzo.tools.client.Timer;
+import java.util.function.Consumer;
 
 public class WiresConnectorHandlerImpl implements WiresConnectorHandler
 {
     static final int MOUSE_DOWN_TIMER_DELAY = 350;
 
-    private final WiresConnector                    m_connector;
+    private final WiresConnector        m_connector;
 
-    private final WiresManager                      m_wiresManager;
+    private final  WiresManager         m_wiresManager;
+    private final  Consumer<Event>      mouseDownEventConsumer;
+    private        Timer                clickTimer;
+    private        Event                event;
+    private        boolean              ownToken;
 
-    private final Consumer<Event>                   mouseDownEventConsumer;
-
-    private final Consumer<Event>                   mouseClickEventConsumer;
+    private final Consumer<Event>      mouseClickEventConsumer;
 
     Timer                             mouseDownTimer;
 
@@ -146,48 +148,31 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler
     @Override
     public void onNodeMouseEnter(NodeMouseEnterEvent event)
     {
-        ifControlPointsBuilder(new Consumer<WiresConnectorControlPointBuilder>() {
-            @Override
-            public void accept(WiresConnectorControlPointBuilder builder)
-            {
-                builder.enable();
-            }
-        });
+        ifControlPointsBuilder(builder -> builder.enable());
     }
 
     @Override
     public void onNodeMouseExit(NodeMouseExitEvent event)
     {
-        ifControlPointsBuilder(new Consumer<WiresConnectorControlPointBuilder>() {
-            @Override
-            public void accept(WiresConnectorControlPointBuilder builder)
-            {
-                builder.disable();
-            }
-        });
+        ifControlPointsBuilder(builder -> builder.disable());
     }
 
     @Override
     public void onNodeMouseDown(final NodeMouseDownEvent event)
     {
-        ifControlPointsBuilder(new Consumer<WiresConnectorControlPointBuilder>()
-        {
-            @Override
-            public void accept(final WiresConnectorControlPointBuilder builder)
+        ifControlPointsBuilder(builder -> {
+            mouseDownTimer = new Timer()
             {
-                mouseDownTimer = new Timer()
+                @Override
+                public void run()
                 {
-                    @Override
-                    public void run()
-                    {
-                        final Point2D point = WiresShapeControlUtils.getViewportRelativeLocation(getLayer().getViewport(), event);
-                        mouseDownEventConsumer.accept(new Event(point.getX(), point.getY(), false));
-                        builder.createControlPointAt(event.getX(), event.getY());
-                    }
-                };
-                mouseDownTimer.schedule(MOUSE_DOWN_TIMER_DELAY);
-                builder.scheduleControlPointBuildAnimation(MOUSE_DOWN_TIMER_DELAY);
-            }
+                    final Point2D point = WiresShapeControlUtils.getViewportRelativeLocation(getLayer().getViewport(), event);
+                    mouseDownEventConsumer.accept(new Event(point.getX(), point.getY(), false));
+                    builder.createControlPointAt(event.getX(), event.getY());
+                }
+            };
+            mouseDownTimer.schedule(MOUSE_DOWN_TIMER_DELAY);
+            builder.scheduleControlPointBuildAnimation(MOUSE_DOWN_TIMER_DELAY);
         });
     }
 
@@ -199,14 +184,7 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler
             mouseDownTimer.run();
             mouseDownTimer = null;
         }
-        ifControlPointsBuilder(new Consumer<WiresConnectorControlPointBuilder>()
-        {
-            @Override
-            public void accept(final WiresConnectorControlPointBuilder builder)
-            {
-                builder.moveControlPointTo(event.getX(), event.getY());
-            }
-        });
+        ifControlPointsBuilder(builder -> builder.moveControlPointTo(event.getX(), event.getY()));
     }
 
     @Override

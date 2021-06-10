@@ -24,13 +24,25 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.tooling.common.api.java.util.function.Supplier;
+import java.util.function.Supplier;
 
 public class WiresContainmentControlImpl extends AbstractWiresControl<WiresContainmentControlImpl>
         implements WiresContainmentControl {
 
     public WiresContainmentControlImpl(final Supplier<WiresParentPickerControl> parentPickerControl) {
         super(parentPickerControl);
+    }
+
+    public static Point2D calculateCandidateLocation(final WiresParentPickerControlImpl parentPickerControl) {
+        final WiresLayer m_layer = parentPickerControl.getShape().getWiresManager().getLayer();
+        final WiresContainer parent = parentPickerControl.getParent();
+        final Point2D current = parentPickerControl.getShapeLocation();
+        if (parent == null || parent == m_layer) {
+            return current;
+        } else {
+            final Point2D trgAbsOffset = parent.getComputedLocation();
+            return current.sub(trgAbsOffset);
+        }
     }
 
     @Override
@@ -62,7 +74,7 @@ public class WiresContainmentControlImpl extends AbstractWiresControl<WiresConta
         final boolean isParentLayer = null == parent || parent instanceof WiresLayer;
         final WiresContainer candidateParent = isParentLayer ? m_layer : parent;
         final boolean isAllowed = containmentAcceptor.containmentAllowed(candidateParent,
-                                                           shapes);
+                                                                         shapes);
         if (!allowNotAccept && isAllowed) {
             return containmentAcceptor.acceptContainment(candidateParent,
                                                          shapes);
@@ -129,7 +141,7 @@ public class WiresContainmentControlImpl extends AbstractWiresControl<WiresConta
             return current;
         } else {
             final Point2D trgAbsOffset = parent.getComputedLocation();
-            return current.minus(trgAbsOffset);
+            return current.sub(trgAbsOffset);
         }
     }
 

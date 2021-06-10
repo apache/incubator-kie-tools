@@ -17,47 +17,44 @@
 package com.ait.lienzo.client.core.shape.storage;
 
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.tooling.nativetools.client.collection.MetaData;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import com.google.gwt.json.client.JSONObject;
+import com.ait.lienzo.tools.client.collection.MetaData;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
 public interface IStorageEngine<M> extends IStorageEngineIterable<M>
 {
-    public int size();
+    int size();
 
-    public void clear();
+    void clear();
 
-    public boolean isEmpty();
+    boolean isEmpty();
 
-    public void add(M item);
+    void add(M item);
 
-    public void remove(M item);
+    void remove(M item);
 
-    public void refresh();
+    void refresh();
 
-    public void refresh(M item);
+    void refresh(M item);
 
-    public boolean contains(M item);
+    boolean contains(M item);
 
-    public NFastArrayList<M> getChildren();
+    NFastArrayList<M> getChildren();
 
-    public NFastArrayList<M> getChildren(BoundingBox bounds);
+    NFastArrayList<M> getChildren(BoundingBox bounds);
 
-    public boolean isSpatiallyIndexed();
+    boolean isSpatiallyIndexed();
 
-    public MetaData getMetaData();
+    MetaData getMetaData();
 
-    public StorageEngineType getStorageEngineType();
+    StorageEngineType getStorageEngineType();
 
-    public void moveUp(M item);
+    void moveUp(M item);
 
-    public void moveDown(M item);
+    void moveDown(M item);
 
-    public void moveToTop(M item);
+    void moveToTop(M item);
 
-    public void moveToBottom(M item);
+    void moveToBottom(M item);
 
-    public JSONObject toJSONObject();
-
-    public void migrate(IStorageEngine<M> storage);
+    void migrate(IStorageEngine<M> storage);
 }

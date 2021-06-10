@@ -20,9 +20,12 @@ import java.util.Iterator;
 
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.NFastArrayListIterator;
-import com.ait.lienzo.client.widget.LienzoPanel;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import com.google.gwt.event.shared.GwtEvent;
+import com.ait.lienzo.client.widget.panel.LienzoPanel;
+import com.ait.lienzo.client.widget.panel.impl.LienzoPanelHandlerManager;
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.event.INodeEvent.Type;
+import elemental2.dom.UIEvent;
 
 /**
  * Mediators maintains a list (or stack) of {@link IMediator} instances.
@@ -35,7 +38,7 @@ import com.google.gwt.event.shared.GwtEvent;
  * To insert a new mediator into the start of the list (at position 0), 
  * use the {@link #push(IMediator) push} method.
  * To remove the first one, use the {@link #pop() pop} method.
- * The {@link #add(int, IMediator) add} and {@link #remove(IMediator) remove} methods can be used for more finer grained control.
+ * The {@link #add(int, IMediator) addBoundingBox} and {@link #remove(IMediator) remove} methods can be used for more finer grained control.
  * <p>
  * Each IMediator must implement two methods:
  * <ul>
@@ -50,7 +53,7 @@ import com.google.gwt.event.shared.GwtEvent;
  * <li>{@link MouseSwipeZoomMediator}
  * </ul>
  * 
- * @see LienzoHandlerManager
+ * @see LienzoPanelHandlerManager
  * @see IMediator
  * @see Viewport#pushMediator(IMediator)
  * @see Viewport#getMediators()
@@ -65,7 +68,7 @@ public final class Mediators implements Iterable<IMediator>
 
     private boolean                         m_enabled   = true;
 
-    private final NFastArrayList<IMediator> m_mediators = new NFastArrayList<IMediator>();
+    private final NFastArrayList<IMediator> m_mediators = new NFastArrayList<>();
 
     public Mediators(final Viewport viewport)
     {
@@ -126,7 +129,7 @@ public final class Mediators implements Iterable<IMediator>
         return removed;
     }
 
-    public boolean handleEvent(final GwtEvent<?> event)
+    public <H extends EventHandler> boolean handleEvent(Type<H> type, final UIEvent event, int x, int y)
     {
         if ((m_size > 0) && (m_enabled))
         {
@@ -134,7 +137,7 @@ public final class Mediators implements Iterable<IMediator>
             {
                 final IMediator mediator = m_mediators.get(i);
 
-                if ((null != mediator) && (mediator.isEnabled()) && (mediator.handleEvent(event)))
+                if ((null != mediator) && (mediator.isEnabled()) && (mediator.handleEvent(type, event, x, y)))
                 {
                     return true;
                 }
@@ -156,6 +159,6 @@ public final class Mediators implements Iterable<IMediator>
     @Override
     public Iterator<IMediator> iterator()
     {
-        return new NFastArrayListIterator<IMediator>(m_mediators);
+        return new NFastArrayListIterator<>(m_mediators);
     }
 }

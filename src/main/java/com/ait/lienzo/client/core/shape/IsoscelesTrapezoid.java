@@ -28,10 +28,23 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
 
 public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
 {
+    @JsProperty
+    private double height;
+
+    @JsProperty
+    private double topWidth;
+
+    @JsProperty
+    private double bottomWidth;
+
+    @JsProperty
+    private double cornerRadius;
+
     private final PathPartList m_list = new PathPartList();
 
     public IsoscelesTrapezoid(final double topwidth, final double bottomwidth, final double height)
@@ -48,17 +61,12 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
         setCornerRadius(corner);
     }
 
-    protected IsoscelesTrapezoid(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.ISOSCELES_TRAPEZOID, node, ctx);
-    }
-
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final double alpha)
     {
         if (m_list.size() < 1)
         {
-            if (false == parse(attr))
+            if (!parse())
             {
                 return false;
             }
@@ -72,13 +80,13 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
         return true;
     }
 
-    private boolean parse(final Attributes attr)
+    private boolean parse()
     {
-        final double hig = attr.getHeight();
+        final double hig = getHeight();
 
-        final double top = attr.getTopWidth();
+        final double top = getTopWidth();
 
-        final double bot = attr.getBottomWidth();
+        final double bot = getBottomWidth();
 
         if ((hig > 0) && (top > 0) && (bot > 0))
         {
@@ -88,35 +96,35 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
 
             if (0 == sub)
             {
-                list.push(0, 0);
+                list.pushXY(0, 0);
 
-                list.push(top, 0);
+                list.pushXY(top, 0);
 
-                list.push(top, hig);
+                list.pushXY(top, hig);
 
-                list.push(0, hig);
+                list.pushXY(0, hig);
             }
             else
             {
                 if (top > bot)
                 {
-                    list.push(0, 0);
+                    list.pushXY(0, 0);
 
-                    list.push(top, 0);
+                    list.pushXY(top, 0);
 
-                    list.push((sub / 2.0) + bot, hig);
+                    list.pushXY((sub / 2.0) + bot, hig);
 
-                    list.push((sub / 2.0), hig);
+                    list.pushXY((sub / 2.0), hig);
                 }
                 else
                 {
-                    list.push((sub / 2.0), 0);
+                    list.pushXY((sub / 2.0), 0);
 
-                    list.push((sub / 2.0) + top, 0);
+                    list.pushXY((sub / 2.0) + top, 0);
 
-                    list.push(bot, hig);
+                    list.pushXY(bot, hig);
 
-                    list.push(0, hig);
+                    list.pushXY(0, hig);
                 }
             }
             final Point2D p0 = list.get(0);
@@ -137,7 +145,8 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
             }
             else
             {
-                Geometry.drawArcJoinedLines(m_list, list.push(p0), corner);
+                list.push(p0);
+                Geometry.drawArcJoinedLines(m_list, list, corner);
             }
             return true;
         }
@@ -147,7 +156,7 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return new BoundingBox(0, 0, Math.max(getTopWidth(), getBottomWidth()), getHeight());
+        return BoundingBox.fromDoubles(0, 0, Math.max(getTopWidth(), getBottomWidth()), getHeight());
     }
 
     @Override
@@ -158,40 +167,40 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
         return this;
     }
 
-    public IsoscelesTrapezoid setTopWidth(final double topwidth)
+    public IsoscelesTrapezoid setTopWidth(final double topWidth)
     {
-        getAttributes().setTopWidth(topwidth);
+        this.topWidth = topWidth;
 
         return refresh();
     }
 
     public double getTopWidth()
     {
-        return getAttributes().getTopWidth();
+        return this.topWidth;
     }
 
-    public IsoscelesTrapezoid setBottomWidth(final double bottomwidth)
+    public IsoscelesTrapezoid setBottomWidth(final double bottomWidth)
     {
-        getAttributes().setBottomWidth(bottomwidth);
+        this.bottomWidth = bottomWidth;
 
         return refresh();
     }
 
     public double getBottomWidth()
     {
-        return getAttributes().getBottomWidth();
+        return this.bottomWidth;
     }
 
     public IsoscelesTrapezoid setHeight(final double height)
     {
-        getAttributes().setHeight(height);
+        this.height = height;
 
         return refresh();
     }
 
     public double getHeight()
     {
-        return getAttributes().getHeight();
+        return this.height;
     }
 
     @Override
@@ -202,12 +211,12 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
 
     public double getCornerRadius()
     {
-        return getAttributes().getCornerRadius();
+        return this.cornerRadius;
     }
 
     public IsoscelesTrapezoid setCornerRadius(final double radius)
     {
-        getAttributes().setCornerRadius(radius);
+        this.cornerRadius = cornerRadius;
 
         return refresh();
     }
@@ -225,12 +234,6 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
             addAttribute(Attribute.BOTTOM_WIDTH, true);
 
             addAttribute(Attribute.HEIGHT, true);
-        }
-
-        @Override
-        public IsoscelesTrapezoid create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new IsoscelesTrapezoid(node, ctx);
         }
     }
 }

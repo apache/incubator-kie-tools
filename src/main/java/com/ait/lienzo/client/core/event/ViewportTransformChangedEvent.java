@@ -16,20 +16,28 @@
 
 package com.ait.lienzo.client.core.event;
 
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Viewport;
 
-public class ViewportTransformChangedEvent extends AbstractNodeEvent<ViewportTransformChangedHandler>
+import elemental2.dom.HTMLElement;
+
+public class ViewportTransformChangedEvent extends AbstractNodeHumanInputEvent<ViewportTransformChangedHandler, Node>
 {
-    private static final Type<ViewportTransformChangedHandler> TYPE = new Type<ViewportTransformChangedHandler>();
+    private static final Type<ViewportTransformChangedHandler> TYPE = new Type<>();
     
-    private final Viewport m_viewport;
+    private Viewport m_viewport;
 
     public static final Type<ViewportTransformChangedHandler> getType()
     {
         return TYPE;
     }
 
-    public ViewportTransformChangedEvent(final Viewport viewport)
+    public ViewportTransformChangedEvent(final HTMLElement relativeElement)
+    {
+        super(relativeElement);
+    }
+
+    public void override(final Viewport viewport)
     {
         m_viewport = viewport;
     }
@@ -52,7 +60,7 @@ public class ViewportTransformChangedEvent extends AbstractNodeEvent<ViewportTra
     }
 
     @Override
-    protected void dispatch(final ViewportTransformChangedHandler handler)
+    public void dispatch(final ViewportTransformChangedHandler handler)
     {
         handler.onViewportTransformChanged(this);
     }

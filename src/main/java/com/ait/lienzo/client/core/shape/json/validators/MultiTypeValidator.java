@@ -17,7 +17,6 @@
 package com.ait.lienzo.client.core.shape.json.validators;
 
 import com.ait.lienzo.client.core.AttributeType;
-import com.google.gwt.json.client.JSONValue;
 
 public class MultiTypeValidator extends AbstractAttributeTypeValidator
 {
@@ -36,7 +35,8 @@ public class MultiTypeValidator extends AbstractAttributeTypeValidator
     }
 
     @Override
-    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
+    // @FIXME serialization (mdp)
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
     {
         for (AttributeType type : m_types)
         {

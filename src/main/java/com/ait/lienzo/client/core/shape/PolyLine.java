@@ -29,7 +29,8 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
 
 /**
  * PolyLine is a continuous line composed of one or more line segments.
@@ -42,6 +43,19 @@ public class PolyLine extends AbstractDirectionalMultiPointShape<PolyLine>
     private Point2D      m_headOffsetPoint;
 
     private Point2D      m_tailOffsetPoint;
+
+    @JsProperty
+    private double       cornerRadius;
+
+    /**
+     * Constructor. Creates an instance of a polyline.
+     *
+     * @param points a {@link Point2DArray} containing 2 or more points.
+     */
+    public PolyLine()
+    {
+        super(ShapeType.POLYLINE);
+    }
 
     /**
      * Constructor. Creates an instance of a polyline.
@@ -58,13 +72,12 @@ public class PolyLine extends AbstractDirectionalMultiPointShape<PolyLine>
     public PolyLine(final Point2DArray points, final double corner)
     {
         this(points);
-
         setCornerRadius(corner);
     }
 
-    public PolyLine(final Point2D point, final Point2D... points)
+    public PolyLine(final Point2D... points)
     {
-        this(new Point2DArray(point, points));
+        this(Point2DArray.fromArrayOfPoint2D(points));
     }
 
     public PolyLine(double... array)
@@ -72,21 +85,16 @@ public class PolyLine extends AbstractDirectionalMultiPointShape<PolyLine>
         this(Point2DArray.fromArrayOfDouble(array));
     }
 
-    protected PolyLine(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.POLYLINE, node, ctx);
-    }
-
     @Override
     public BoundingBox getBoundingBox()
     {
-        return new BoundingBox(getPoints());
+        return BoundingBox.fromPoint2DArray(getPoints());
     }
 
     @Override
-    public boolean parse(final Attributes attr)
+    public boolean parse()
     {
-        Point2DArray list = attr.getPoints();
+        Point2DArray list = super.getPoints();
 
         list = list.noAdjacentPoints();
         final int size = list.size();
@@ -96,8 +104,8 @@ public class PolyLine extends AbstractDirectionalMultiPointShape<PolyLine>
         }
 
         final PathPartList path = getPathPartList();
-        final double headOffset = attr.getHeadOffset();
-        final double tailOffset = attr.getTailOffset();
+        final double headOffset = getHeadOffset();
+        final double tailOffset = getTailOffset();
 
         if (size > 1)
         {
@@ -138,7 +146,7 @@ public class PolyLine extends AbstractDirectionalMultiPointShape<PolyLine>
             }
             else
             {
-                list = new Point2DArray(list.get(0).copy(), list.get(0).copy());
+                list = Point2DArray.fromArrayOfPoint2D(list.get(0).copy(), list.get(0).copy());
 
                 Geometry.drawArcJoinedLines(path, list, corner);
             }
@@ -147,41 +155,19 @@ public class PolyLine extends AbstractDirectionalMultiPointShape<PolyLine>
         return true;
     }
 
-    @Override
-    protected boolean fill(Context2D context, Attributes attr, double alpha)
+    protected boolean fill(Context2D context, double alpha)
     {
         return false;
     }
-
-    /**
-     * Returns this PolyLine's points.
-     * @return {@link Point2DArray}
-     */
-    public Point2DArray getPoints()
-    {
-        return getAttributes().getPoints();
-    }
-
-    /**
-     * Sets this PolyLine's points.
-     * @param points {@link Point2DArray}
-     * @return this PolyLine
-     */
-    public PolyLine setPoints(final Point2DArray points)
-    {
-        getAttributes().setPoints(points);
-
-        return refresh();
-    }
-
+    
     public double getCornerRadius()
     {
-        return getAttributes().getCornerRadius();
+        return this.cornerRadius;
     }
 
     public PolyLine setCornerRadius(final double radius)
     {
-        getAttributes().setCornerRadius(radius);
+        this.cornerRadius = radius;
 
         return refresh();
     }
@@ -224,7 +210,7 @@ public class PolyLine extends AbstractDirectionalMultiPointShape<PolyLine>
         Point2D target = null;
         Point2D after = null;
 
-        for (Point2D point: points) {
+        for (Point2D point: points.asArray()) {
             after = point;
 
             if (target != null) {
@@ -278,6 +264,22 @@ public class PolyLine extends AbstractDirectionalMultiPointShape<PolyLine>
         return true;
     }
 
+    @Override
+    public Shape<PolyLine> copyTo(Shape<PolyLine> other) {
+        super.copyTo(other);
+        ((PolyLine) other).m_headOffsetPoint = m_headOffsetPoint.copy();
+        ((PolyLine) other).m_tailOffsetPoint = m_tailOffsetPoint.copy();
+        ((PolyLine) other).cornerRadius = cornerRadius;
+
+        return other;
+    }
+
+    @Override
+    public PolyLine cloneLine() {
+        PolyLine polyLine = new PolyLine(this.getControlPoints().copy(), cornerRadius);
+        return (PolyLine) copyTo(polyLine);
+    }
+
     public static class PolyLineFactory extends AbstractOffsetMultiPointShapeFactory<PolyLine>
     {
         public PolyLineFactory()
@@ -287,12 +289,6 @@ public class PolyLine extends AbstractDirectionalMultiPointShape<PolyLine>
             addAttribute(Attribute.POINTS, true);
 
             addAttribute(Attribute.CORNER_RADIUS);
-        }
-
-        @Override
-        public PolyLine create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new PolyLine(node, ctx);
         }
     }
 }

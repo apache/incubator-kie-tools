@@ -16,7 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.wires.event;
 
-public interface WiresDragStartHandler extends WiresEventHandler
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
+
+public interface WiresDragStartHandler extends EventHandler
 {
     public void onShapeDragStart(WiresDragStartEvent event);
 }

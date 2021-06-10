@@ -16,10 +16,12 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.ait.lienzo.client.core.util.Geometry;
+import java.util.Objects;
+
 import com.ait.lienzo.client.core.util.GeometryException;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONObject;
+
+import elemental2.core.Global;
+import jsinterop.annotations.JsProperty;
 
 /**
  * Point2D can be used to represent a point or vector in 2D.
@@ -32,20 +34,13 @@ import com.google.gwt.json.client.JSONObject;
  */
 public final class Point2D
 {
-    private final Point2DJSO m_jso;
+//    private Point2DJSO m_jso;
 
-    public Point2D(final Point2DJSO jso)
-    {
-        m_jso = jso;
-    }
+    @JsProperty
+    private double x;
 
-    /**
-     * Constructs a Point2D at (0,0)
-     */
-    public Point2D()
-    {
-        this(Point2DJSO.make(0, 0));
-    }
+    @JsProperty
+    private double y;
 
     /**
      * Constructs a Point2D at (x,y)
@@ -55,17 +50,13 @@ public final class Point2D
      */
     public Point2D(final double x, final double y)
     {
-        this(Point2DJSO.make(x, y));
-    }
-
-    public Point2D(final Point2D p)
-    {
-        this(p.getJSO().copy());
+        this.x = x;
+        this.y = y;
     }
 
     public final Point2D copy()
     {
-        return new Point2D(m_jso.copy());
+        return new Point2D(x, y);
     }
 
     /**
@@ -74,7 +65,7 @@ public final class Point2D
      */
     public final double getX()
     {
-        return m_jso.getX();
+        return this.x;
     }
 
     /**
@@ -84,7 +75,7 @@ public final class Point2D
      */
     public final Point2D setX(final double x)
     {
-        m_jso.setX(x);
+        this.x = x;
 
         return this;
     }
@@ -95,7 +86,7 @@ public final class Point2D
      */
     public final double getY()
     {
-        return m_jso.getY();
+        return this.y;
     }
 
     /**
@@ -105,7 +96,7 @@ public final class Point2D
      */
     public final Point2D setY(final double y)
     {
-        m_jso.setY(y);
+        this.y = y;
 
         return this;
     }
@@ -118,7 +109,8 @@ public final class Point2D
      */
     public final Point2D set(final Point2D p)
     {
-        m_jso.set(p.getJSO());
+        x = p.getX();
+        y = p.getY();
 
         return this;
     }
@@ -130,8 +122,12 @@ public final class Point2D
      */
     public final double getLength()
     {
-        return m_jso.getLength();
-    };
+        double dx = this.x;
+
+        double dy = this.y;
+
+        return Math.sqrt((dx * dx) + (dy * dy));
+    }
 
     /**
      * Returns the distance from this Point2D to the other Point2D.
@@ -141,20 +137,13 @@ public final class Point2D
      */
     public final double distance(final Point2D other)
     {
-        return m_jso.distance(other.getJSO());
-    };
+        double dx = other.x - this.x;
 
-    /**
-     * Returns the distance from point A to point B.
-     * 
-     * @param a Point2D
-     * @param b Point2D
-     * @return double
-     */
-    public static final double distance(final Point2D a, final Point2D b)
-    {
-        return Point2DJSO.distance(a.getJSO(), b.getJSO());
-    };
+        double dy = other.y - this.y;
+
+        return Math.sqrt((dx * dx) + (dy * dy));
+    }
+
 
     /**
      * Returns a new point by adding the coordinates of this point and point P,
@@ -167,33 +156,13 @@ public final class Point2D
      */
     public final Point2D add(final Point2D p)
     {
-        return new Point2D(m_jso.add(p.getJSO()));
+        return new Point2D(this.x + p.x, this.y + p.y);
     }
 
     public final Point2D offset(final double x, final double y)
     {
-        m_jso.offset(x, y);
-
-        return this;
-    }
-
-    public final Point2D offset(final Point2D p)
-    {
-        m_jso.offset(p.getJSO());
-
-        return this;
-    }
-
-    public final Point2D minus(final double x, final double y)
-    {
-        m_jso.minus(x, y);
-
-        return this;
-    }
-
-    public final Point2D minus(final Point2D p)
-    {
-        m_jso.minus(p.getJSO());
+        this.x += x;
+        this.y += y;
 
         return this;
     }
@@ -210,7 +179,8 @@ public final class Point2D
         }
         final double angle = Math.atan2(y, x);
 
-        m_jso.set(Math.cos(angle) * length, Math.sin(angle) * length);
+        this.x = Math.cos(angle) * length;
+        this.y = Math.sin(angle) * length;
 
         return this;
     }
@@ -226,7 +196,12 @@ public final class Point2D
      */
     public final Point2D sub(final Point2D p)
     {
-        return new Point2D(m_jso.sub(p.getJSO()));
+        return new Point2D(this.x - p.x, this.y - p.y);
+    }
+
+    public final Point2D subXY(double x, double y)
+    {
+        return new Point2D(this.x - x, this.y - y);
     }
 
     /**
@@ -258,12 +233,12 @@ public final class Point2D
      */
     public final Point2D scale(final double d)
     {
-        return new Point2D(m_jso.scale(d));
+        return new Point2D(this.x * d, this.y * d);
     }
 
     public final Point2D mul(final double d)
     {
-        return new Point2D(m_jso.scale(d));
+        return scale(d);
     }
 
     /**
@@ -275,7 +250,7 @@ public final class Point2D
      */
     public final Point2D perpendicular()
     {
-        return new Point2D(m_jso.perpendicular());
+        return new Point2D(-this.y, this.x);
     }
 
     /**
@@ -290,7 +265,11 @@ public final class Point2D
      */
     public final Point2D rotate(final double angle)
     {
-        return new Point2D(m_jso.rotate(angle));
+        //return new Point2D(m_jso.rotate(angle));
+        double s = Math.sin(angle);
+        double c = Math.cos(angle);
+        return new Point2D(c * x - s * y,
+                           s * x + c * y);
     }
 
     /**
@@ -317,7 +296,7 @@ public final class Point2D
      */
     public final boolean isNullVector()
     {
-        return m_jso.isNullVector();
+        return ((this.x == 0) && (this.y == 0));
     }
 
     /**
@@ -328,38 +307,33 @@ public final class Point2D
      */
     public final double theta()
     {
-        return m_jso.theta();
+        if ((this.x == 0) && (this.y == 0)) {
+            return 0.0; // not sure if check is needed
+        }
+        double a = Math.atan2(this.y, this.x); // between [-PI,PI]
+
+        return (a >= 0.0) ? a : (a + Math.PI * 2);
     }
 
     public final double thetaTo(final Point2D p)
     {
-        return m_jso.thetaTo(p.getJSO());
-    }
+        if ((this.x == p.x) && (this.y == p.y)) {
+            return 0.0;
+        }
+        double a = Math.atan2(p.y, p.x) - Math.atan2(this.y, this.x);
 
-    /**
-     * Returns the underlying JavaScriptObject
-     * @return Point2DJSO
-     */
-    public final Point2DJSO getJSO()
-    {
-        return m_jso;
+        return (a >= 0.0) ? a : (a + Math.PI * 2);
     }
 
     public final String toJSONString()
     {
-        return new JSONObject(m_jso).toString();
-    }
-
-    @Override
-    public String toString()
-    {
-        return toJSONString();
+        return Global.JSON.stringify(this);
     }
 
     @Override
     public boolean equals(final Object other)
     {
-        if ((other == null) || (false == (other instanceof Point2D)))
+        if ((other == null) || (!(other instanceof Point2D)))
         {
             return false;
         }
@@ -372,51 +346,31 @@ public final class Point2D
         return ((p.getX() == getX()) && (p.getY() == getY()));
     }
 
-    public boolean closeEnough(final Point2D p)
-    {
-        return (Geometry.closeEnough(getX(), p.getX()) && Geometry.closeEnough(getY(), p.getY()));
-    }
-
-    public boolean closeEnough(final Point2D p, final double precision)
-    {
-        return (Geometry.closeEnough(getX(), p.getX(), precision) && Geometry.closeEnough(getY(), p.getY(), precision));
-    }
+//    public boolean closeEnough(final Point2D p)
+//    {
+//        return (Geometry.closeEnough(getX(), p.getX()) && Geometry.closeEnough(getY(), p.getY()));
+//    }
+//
+//    public boolean closeEnough(final Point2D p, final double precision)
+//    {
+//        return (Geometry.closeEnough(getX(), p.getX(), precision) && Geometry.closeEnough(getY(), p.getY(), precision));
+//    }
 
     @Override
-    public int hashCode()
-    {
-        return toJSONString().hashCode();
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 
     public final double dot(final Point2D p)
     {
-        return m_jso.dot(p.getJSO());
+        return this.x * p.x + this.y * p.y;
     }
 
     public final double crossScalar(final Point2D p)
     {
-        return m_jso.crossScalar(p.getJSO());
+        return this.x * p.y - this.y * p.x;
     }
 
-    /**
-     * Returns whether the 3 points are colinear, i.e. whether they lie on a single straight line.
-     * 
-     * @param p1
-     * @param p2
-     * @param p3
-     * @return
-     * 
-     * @see <a href="http://mathworld.wolfram.com/Collinear.html">Collinear in Wolfram MathWorld</a>
-     */
-    public static final boolean collinear(final Point2D p1, final Point2D p2, final Point2D p3)
-    {
-        return Geometry.collinear(p1, p2, p3);
-    }
-
-    public final boolean collinear(final Point2D p2, final Point2D p3)
-    {
-        return collinear(this, p2, p3);
-    }
 
     /**
      * Returns the determinant of vectors P and Q. By definition:
@@ -455,187 +409,164 @@ public final class Point2D
         return new Point2D(radius * Math.cos(angle), radius * Math.sin(angle));
     }
 
-    public static final class Point2DJSO extends JavaScriptObject
-    {
-        protected Point2DJSO()
-        {
-        }
-
-        public static final native Point2DJSO make(double xval, double yval)
-        /*-{
-			return {
-				x : xval,
-				y : yval
-			};
-        }-*/;
-
-        public static final native double distance(Point2DJSO a, Point2DJSO b)
-        /*-{
-			var dx = b.x - a.x;
-
-			var dy = b.y - a.y;
-
-			return Math.sqrt((dx * dx) + (dy * dy));
-        }-*/;
-
-        public static final native double length(Point2DJSO a)
-        /*-{
-			var dx = a.x;
-
-			var dy = a.y;
-
-			return Math.sqrt((dx * dx) + (dy * dy));
-        }-*/;
-
-        public final native double getX()
-        /*-{
-			return this.x;
-        }-*/;
-
-        public final native void setX(double x)
-        /*-{
-			this.x = x;
-        }-*/;
-
-        public final native double getY()
-        /*-{
-			return this.y;
-        }-*/;
-
-        public final native void setY(double y)
-        /*-{
-			this.y = y;
-        }-*/;
-
-        public final native void set(Point2DJSO o)
-        /*-{
-			this.x = o.x;
-			this.y = o.y;
-        }-*/;
-
-        public final native void set(double x, double y)
-        /*-{
-			this.x = x;
-			this.y = y;
-        }-*/;
-
-        public final native Point2DJSO copy()
-        /*-{
-			return {
-				x : this.x,
-				y : this.y
-			};
-        }-*/;
-
-        public final double distance(final Point2DJSO other)
-        {
-            return distance(this, other);
-        }
-
-        public final double getLength()
-        {
-            return length(this);
-        }
-
-        public final native Point2DJSO add(Point2DJSO jso)
-        /*-{
-			return {
-				x : this.x + jso.x,
-				y : this.y + jso.y
-			};
-        }-*/;
-
-        public final native void offset(double x, double y)
-        /*-{
-			this.x += x;
-			this.y += y;
-        }-*/;
-
-        public final native void offset(Point2DJSO jso)
-        /*-{
-			this.x += jso.x;
-			this.y += jso.y;
-        }-*/;
-
-        public final native void minus(double x, double y)
-        /*-{
-			this.x -= x;
-			this.y -= y;
-        }-*/;
-
-        public final native void minus(Point2DJSO jso)
-        /*-{
-			this.x -= jso.x;
-			this.y -= jso.y;
-        }-*/;
-
-        public final native Point2DJSO sub(Point2DJSO jso)
-        /*-{
-			return {
-				x : this.x - jso.x,
-				y : this.y - jso.y
-			};
-        }-*/;
-
-        public final native Point2DJSO scale(double d)
-        /*-{
-			return {
-				x : this.x * d,
-				y : this.y * d
-			};
-        }-*/;
-
-        public final native Point2DJSO perpendicular()
-        /*-{
-			return {
-				x : -this.y,
-				y : this.x
-			};
-        }-*/;
-
-        public final native Point2DJSO rotate(double angle)
-        /*-{
-			var s = Math.sin(angle);
-			var c = Math.cos(angle);
-			return {
-				x : c * this.x - s * this.y,
-				y : s * this.x + c * this.y
-			};
-        }-*/;
-
-        public final native double dot(Point2DJSO p)
-        /*-{
-			return this.x * p.x + this.y * p.y;
-        }-*/;
-
-        public final native double crossScalar(Point2DJSO p)
-        /*-{
-			return this.x * p.y - this.y * p.x;
-        }-*/;
-
-        public final native boolean isNullVector()
-        /*-{
-			return ((this.x == 0) && (this.y == 0));
-        }-*/;
-
-        public final native double theta()
-        /*-{
-			if ((this.x == 0) && (this.y == 0)) {
-				return 0.0; // not sure if check is needed
-			}
-			var a = Math.atan2(this.y, this.x); // between [-PI,PI]
-
-			return (a >= 0.0) ? a : (a + Math.PI * 2);
-        }-*/;
-
-        public final native double thetaTo(Point2DJSO p)
-        /*-{
-			if ((this.x == p.x) && (this.y == p.y)) {
-				return 0.0;
-			}
-			var a = Math.atan2(p.y, p.x) - Math.atan2(this.y, this.x);
-
-			return (a >= 0.0) ? a : (a + Math.PI * 2);
-        }-*/;
+    @Override
+    public String toString() {
+        return "Point2D{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
     }
+
+//    @JsType()
+//    public static final class Point2DJSO
+//    {
+//        private double x;
+//        private double y;
+//
+//        public Point2DJSO(final double x, final double y)
+//        {
+//            this.x = x;
+//            this.y = y;
+//        }
+//
+//        public static Point2DJSO makeFromValues(final double x, final double y)
+//        {
+//            return new Point2DJSO(x,y);
+//        }
+//
+//        public static double distance(Point2DJSO a, Point2DJSO b)
+//        {
+//			double dx = b.x - a.x;
+//
+//			double dy = b.y - a.y;
+//
+//			return Math.sqrt((dx * dx) + (dy * dy));
+//        };
+//
+//        public static double length(Point2DJSO a)
+//        {
+//			double dx = a.x;
+//
+//            double dy = a.y;
+//
+//			return Math.sqrt((dx * dx) + (dy * dy));
+//        };
+//
+//        public double getX()
+//        {
+//			return this.x;
+//        };
+//
+//        public void setX(double x)
+//        {
+//			this.x = x;
+//        };
+//
+//        public double getY()
+//        {
+//			return this.y;
+//        };
+//
+//        public void setY(double y)
+//        {
+//			this.y = y;
+//        };
+//
+//
+//        public void set(double x, double y)
+//        {
+//			this.x = x;
+//			this.y = y;
+//        };
+//
+//        public Point2DJSO copy()
+//        {
+//			return new Point2DJSO(x,y);
+//        };
+//
+//        public double distance(final Point2DJSO other)
+//        {
+//            return distance(this, other);
+//        }
+//
+//        public double getLength()
+//        {
+//            return length(this);
+//        }
+//
+//        public Point2DJSO addBoundingBox(Point2DJSO jso)
+//        {
+//			return new Point2DJSO(this.x + jso.x, this.y + jso.y);
+//        };
+//
+//        public void offset(double x, double y)
+//        {
+//			this.x += x;
+//			this.y += y;
+//        };
+//
+//        public Point2DJSO subXY(double x, double y)
+//        {
+//            return new Point2DJSO(this.x - x, this.y - y);
+//        };
+//
+//        public Point2DJSO sub(Point2DJSO jso)
+//        {
+//            return new Point2DJSO(this.x - jso.x, this.y - jso.y);
+//        };
+//
+//        public Point2DJSO scaleWithXY(double d)
+//        {
+//            return new Point2DJSO(this.x * d, this.y * d);
+//        };
+//
+//        public Point2DJSO perpendicular()
+//        {
+//            return new Point2DJSO(-this.y, this.x);
+//        };
+//
+//        public Point2DJSO rotate(double angle)
+//        {
+//			double s = Math.sin(angle);
+//            double c = Math.cos(angle);
+//            return new Point2DJSO(c * x - s * y,
+//                                  s * x + c * y);
+//
+//        };
+//
+//        public double dot(Point2DJSO p)
+//        {
+//			return this.x * p.x + this.y * p.y;
+//        };
+//
+//        public final double crossScalar(Point2DJSO p)
+//        {
+//			return this.x * p.y - this.y * p.x;
+//        };
+//
+//        public final boolean isNullVector()
+//        {
+//			return ((this.x == 0) && (this.y == 0));
+//        };
+//
+//        public final double theta()
+//        {
+//			if ((this.x == 0) && (this.y == 0)) {
+//				return 0.0; // not sure if check is needed
+//			}
+//			double a = Math.atan2(this.y, this.x); // between [-PI,PI]
+//
+//			return (a >= 0.0) ? a : (a + Math.PI * 2);
+//        };
+//
+//        public final double thetaTo(Point2DJSO p)
+//        {
+//			if ((this.x == p.x) && (this.y == p.y)) {
+//				return 0.0;
+//			}
+//			double a = Math.atan2(p.y, p.x) - Math.atan2(this.y, this.x);
+//
+//			return (a >= 0.0) ? a : (a + Math.PI * 2);
+//        };
+//    }
 }

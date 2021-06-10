@@ -16,10 +16,7 @@
 
 package com.ait.lienzo.client.core.palette;
 
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.PaletteType;
-import com.google.gwt.json.client.JSONObject;
 
 public final class PaletteItem extends AbstractPaletteBase<PaletteItem>
 {
@@ -28,22 +25,11 @@ public final class PaletteItem extends AbstractPaletteBase<PaletteItem>
         super(PaletteType.PALETTE_ITEM);
     }
 
-    protected PaletteItem(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(PaletteType.PALETTE_ITEM, node, ctx);
-    }
-
     public static final class PaletteItemFactory extends AbstractPalettebaseFactory<PaletteItem>
     {
         public PaletteItemFactory()
         {
             super(PaletteType.PALETTE_ITEM);
-        }
-
-        @Override
-        public PaletteItem create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new PaletteItem(node, ctx);
         }
     }
 }

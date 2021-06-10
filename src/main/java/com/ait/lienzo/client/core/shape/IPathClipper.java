@@ -17,7 +17,7 @@
 package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.tooling.common.api.types.IActivatable;
+import com.ait.lienzo.tools.common.api.types.IActivatable;
 
 public interface IPathClipper extends IActivatable
 {

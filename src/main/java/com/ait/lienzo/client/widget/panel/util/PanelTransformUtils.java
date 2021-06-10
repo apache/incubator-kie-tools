@@ -23,6 +23,11 @@ import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 
 public class PanelTransformUtils {
 
+    private PanelTransformUtils()
+    {
+
+    }
+
     public static void setScaleLevel(final Viewport viewport,
                                      final double level) {
         final Transform viewportTransform = viewport.getTransform();
@@ -38,8 +43,8 @@ public class PanelTransformUtils {
     }
 
     public static double computeZoomLevelFitToWidth(final LienzoBoundsPanel panel) {
-        final double panelWidth = panel.getWidthPx();
-        final double panelHeight = panel.getHeightPx();
+        final double panelWidth = panel.getWidePx();
+        final double panelHeight = panel.getHighPx();
         return computeZoomLevelFitToWidth(panelWidth, panelHeight, panel);
     }
 

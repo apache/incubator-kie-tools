@@ -19,16 +19,13 @@ package com.ait.lienzo.client.core.shape.wires;
 import java.util.HashMap;
 
 import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.event.AttributesChangedEvent;
-import com.ait.lienzo.client.core.event.AttributesChangedHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.tooling.common.api.java.util.UUID;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
+import com.ait.lienzo.tools.common.api.java.util.UUID;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
 /**
  * Basic layout container implementation.
@@ -39,36 +36,25 @@ public class WiresLayoutContainer implements LayoutContainer
 {
     private static final LayoutBuilder       CENTER_LAYOUT = new CenterLayoutBuilder();
 
-    private static final LayoutBuilder       TOP_LAYOUT    = new TopLayoutBuilder();
+    private static final LayoutBuilder                          TOP_LAYOUT    = new TopLayoutBuilder();
 
-    private static final LayoutBuilder       BOTTOM_LAYOUT = new BottomLayoutBuilder();
+    private static final LayoutBuilder                          BOTTOM_LAYOUT = new BottomLayoutBuilder();
 
-    private static final LayoutBuilder       LEFT_LAYOUT   = new LeftLayoutBuilder();
+    private static final LayoutBuilder                          LEFT_LAYOUT   = new LeftLayoutBuilder();
 
-    private static final LayoutBuilder       RIGHT_LAYOUT  = new RightLayoutBuilder();
+    private static final LayoutBuilder                          RIGHT_LAYOUT  = new RightLayoutBuilder();
 
-    private final Group                      group;
+    private final Group                                         group;
 
-    private final NFastArrayList<ChildEntry> children;
-
-    private final HandlerRegistrationManager attrHandlerRegs = new HandlerRegistrationManager();
+    private final NFastArrayList<ChildEntry>                    children;
 
     private final HashMap<ObjectAttribute, HandlerRegistration> registrations = new HashMap<>();
 
-    private final AttributesChangedHandler shapeAttributesChangedHandler = new AttributesChangedHandler()
-    {
-        @Override
-        public void onAttributesChanged(AttributesChangedEvent event)
-        {
-            refresh();
-        }
-    };
+    private Point2D                                             offset;
 
-    private Point2D                          offset;
+    private double                                              width;
 
-    private double                           width;
-
-    private double                           height;
+    private double                                              height;
 
     public WiresLayoutContainer()
     {
@@ -138,11 +124,12 @@ public class WiresLayoutContainer implements LayoutContainer
 
             final ChildEntry entry = new ChildEntry(child.getID(), layout);
             children.add(entry);
-            for (Attribute attribute : child.getTransformingAttributes()) {
-                HandlerRegistration reg = child.addAttributesChangedHandler(attribute, shapeAttributesChangedHandler);
-                registrations.put(new ObjectAttribute(child,attribute), reg);
-                attrHandlerRegs.register(reg);
-            }
+// TODO: lienzo-to-native: disabling attribute change handler (mdp) (roger)
+//            for (Attribute attribute : child.getTransformingAttributes()) {
+//                HandlerRegistration reg = child.addAttributesChangedHandler(attribute, shapeAttributesChangedHandler);
+//                registrations.put(new ObjectAttribute(child,attribute), reg);
+//                attrHandlerRegs.register(reg);
+//            }
 
             doPositionChild(child, true);
 
@@ -164,11 +151,6 @@ public class WiresLayoutContainer implements LayoutContainer
         if (null != entry)
         {
             children.remove(entry);
-
-            for (Attribute attribute : child.getTransformingAttributes()) {
-                ObjectAttribute key = new ObjectAttribute(child,attribute);
-                attrHandlerRegs.deregister(registrations.remove(key));
-            }
         }
 
         group.remove(child);
@@ -178,8 +160,10 @@ public class WiresLayoutContainer implements LayoutContainer
 
     public LayoutContainer execute()
     {
-        for (IPrimitive<?> child : group.getChildNodes())
+        NFastArrayList<IPrimitive<?>> nodes = group.getChildNodes();
+        for (int i = 0, size = nodes.size(); i < size; i++ )
         {
+            IPrimitive<?> child = nodes.get(i);
             doPositionChild(child, false);
         }
 
@@ -195,8 +179,10 @@ public class WiresLayoutContainer implements LayoutContainer
 
     public LayoutContainer refresh()
     {
-        for (final ChildEntry entry : children)
+
+        for (int i = 0, size = children.size(); i < size; i++)
         {
+            ChildEntry entry = children.get(i);
             entry.refresh();
         }
         return this;
@@ -209,7 +195,6 @@ public class WiresLayoutContainer implements LayoutContainer
             registration.removeHandler();
         }
         registrations.clear();
-        attrHandlerRegs.destroy();
         children.clear();
         group.removeAll();
         group.removeFromParent();
@@ -223,8 +208,9 @@ public class WiresLayoutContainer implements LayoutContainer
 
     private ChildEntry getChildEntry(final String key)
     {
-        for (final ChildEntry entry : children)
+        for (int i = 0, size = children.size(); i < size; i++)
         {
+            ChildEntry entry = children.get(i);
             if (entry.uuid.equals(key))
             {
                 return entry;
@@ -450,7 +436,7 @@ public class WiresLayoutContainer implements LayoutContainer
         }
     }
 
-    private final static class ObjectAttribute
+    private static final class ObjectAttribute
     {
         private final Object obj;
         private final Attribute attr;

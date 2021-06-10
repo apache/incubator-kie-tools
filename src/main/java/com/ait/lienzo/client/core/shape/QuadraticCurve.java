@@ -27,7 +27,6 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
 
 /**
  * Quadratic curves, a type of Bezier curve, are defined by a context point, a control point, and an ending point.
@@ -58,17 +57,12 @@ public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve>
     {
         super(ShapeType.QUADRATIC_CURVE);
 
-        setControlPoints(new Point2DArray(sp, cp, ep));
+        setControlPoints(Point2DArray.fromArrayOfPoint2D(sp, cp, ep));
     }
 
     public QuadraticCurve(final Point2D cp, final Point2D ep)
     {
         this(new Point2D(0, 0), cp, ep);
-    }
-
-    protected QuadraticCurve(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.QUADRATIC_CURVE, node, ctx);
     }
 
     @Override
@@ -80,7 +74,7 @@ public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve>
         {
             return bbox;
         }
-        return new BoundingBox(0, 0, 0, 0);
+        return BoundingBox.fromDoubles(0, 0, 0, 0);
     }
 
     /**
@@ -89,9 +83,9 @@ public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve>
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final double alpha)
     {
-        final Point2DArray points = attr.getControlPoints();
+        final Point2DArray points = getControlPoints();
 
         if ((points != null) && (points.size() == 3))
         {
@@ -110,30 +104,6 @@ public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve>
             return true;
         }
         return false;
-    }
-
-    /**
-     * Gets all points, which includes the context, control, and end point.
-     * 
-     * @return {@link Point2DArray}
-     */
-    public Point2DArray getControlPoints()
-    {
-        return getAttributes().getControlPoints();
-    }
-
-    /**
-     * Sets the points for this quadratic curve.  The argument, points, must be a 3-element
-     * {@link Point2DArray} containing: context, control, and end point
-     * 
-     * @param points
-     * @return this QuadraticCurve
-     */
-    public QuadraticCurve setControlPoints(final Point2DArray points)
-    {
-        getAttributes().setControlPoints(points);
-
-        return this;
     }
 
     @Override
@@ -167,12 +137,6 @@ public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve>
             super(ShapeType.QUADRATIC_CURVE);
 
             addAttribute(Attribute.CONTROL_POINTS, true);
-        }
-
-        @Override
-        public QuadraticCurve create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new QuadraticCurve(node, ctx);
         }
     }
 }

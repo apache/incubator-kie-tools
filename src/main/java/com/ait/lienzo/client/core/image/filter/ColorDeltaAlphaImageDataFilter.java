@@ -20,18 +20,23 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.IColor;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONObject;
+
+import elemental2.core.Uint8ClampedArray;
+import elemental2.dom.ImageData;
+import jsinterop.annotations.JsProperty;
+import jsinterop.base.Js;
 
 /**
  * A class that allows for easy creation of a Color Luminosity based Image Filter.
  */
 public class ColorDeltaAlphaImageDataFilter extends AbstractRGBImageDataFilter<ColorDeltaAlphaImageDataFilter>
 {
+    @JsProperty
+    private double value;
+
     public ColorDeltaAlphaImageDataFilter(int r, int g, int b, int value)
     {
         super(ImageFilterType.ColorDeltaAlphaImageDataFilterType, r, g, b);
@@ -51,21 +56,21 @@ public class ColorDeltaAlphaImageDataFilter extends AbstractRGBImageDataFilter<C
         setValue(value);
     }
 
-    protected ColorDeltaAlphaImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected ColorDeltaAlphaImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
     {
         super(ImageFilterType.ColorDeltaAlphaImageDataFilterType, node, ctx);
     }
 
     public final ColorDeltaAlphaImageDataFilter setValue(double value)
     {
-        getAttributes().setValue(value);
+        this.value = value;
 
         return this;
     }
 
     public final double getValue()
     {
-        return getAttributes().getValue();
+        return this.value;
     }
 
     @Override
@@ -77,13 +82,13 @@ public class ColorDeltaAlphaImageDataFilter extends AbstractRGBImageDataFilter<C
         }
         if (copy)
         {
-            source = source.copy();
+            source = ImageDataUtil.copy(source);
         }
         if (false == isActive())
         {
             return source;
         }
-        final CanvasPixelArray data = source.getData();
+        final Uint8ClampedArray data = source.data;
 
         if (null == data)
         {
@@ -94,23 +99,25 @@ public class ColorDeltaAlphaImageDataFilter extends AbstractRGBImageDataFilter<C
         return source;
     }
 
-    private final native void filter_(JavaScriptObject data, int length, int r, int g, int b, double v)
-    /*-{
-        var rmin = Math.max(r - v,   0) | 0;
-        var rmax = Math.min(r + v, 255) | 0;
-        var gmin = Math.max(g - v,   0) | 0;
-        var gmax = Math.min(g + v, 255) | 0;
-        var bmin = Math.max(b - v,   0) | 0;
-        var bmax = Math.min(b + v, 255) | 0;
-    	for (var i = 0; i < length; i += 4) {
-            var rval = data[  i  ];
-            var gval = data[i + 1];
-            var bval = data[i + 2];
+    private final void filter_(Uint8ClampedArray dataArray, int length, int r, int g, int b, double v)
+    {
+//        int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
+        int[] data = Js.uncheckedCast(dataArray);
+        int rmin = Js.coerceToInt(Math.max(r - v, 0));
+        int rmax = Js.coerceToInt(Math.min(r + v, 255));
+        int gmin = Js.coerceToInt(Math.max(g - v,   0));
+        int gmax = Js.coerceToInt(Math.min(g + v, 255));
+        int bmin = Js.coerceToInt(Math.max(b - v,   0));
+        int bmax = Js.coerceToInt(Math.min(b + v, 255));
+    	for (int i = 0; i < length; i += 4) {
+            double rval = data[  i  ];
+            double gval = data[i + 1];
+            double bval = data[i + 2];
             if((rval <= rmax) && (rval >= rmin) && (gval <= gmax) && (gval >= gmin) && (bval <= bmax) && (bval >= bmin)) {
                 data[i + 3] = 0;
             }
     	}
-    }-*/;
+    }
 
     @Override
     public IFactory<ColorDeltaAlphaImageDataFilter> getFactory()
@@ -125,12 +132,6 @@ public class ColorDeltaAlphaImageDataFilter extends AbstractRGBImageDataFilter<C
             super(ImageFilterType.ColorDeltaAlphaImageDataFilterType);
 
             addAttribute(Attribute.VALUE, true);
-        }
-
-        @Override
-        public ColorDeltaAlphaImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new ColorDeltaAlphaImageDataFilter(node, ctx);
         }
     }
 }

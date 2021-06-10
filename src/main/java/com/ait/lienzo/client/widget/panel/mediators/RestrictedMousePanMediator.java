@@ -15,17 +15,15 @@
  */
 package com.ait.lienzo.client.widget.panel.mediators;
 
-import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
-import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
-import com.ait.lienzo.client.core.event.NodeMouseOutEvent;
-import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.mediator.AbstractMediator;
 import com.ait.lienzo.client.core.mediator.IEventFilter;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import com.google.gwt.event.shared.GwtEvent;
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
+import com.ait.lienzo.tools.client.event.INodeEvent;
+import elemental2.dom.UIEvent;
 
 /**
  * This a fork of {@link com.ait.lienzo.client.core.mediator.MousePanMediator} however this implementation does not stop
@@ -39,7 +37,7 @@ public class RestrictedMousePanMediator extends AbstractMediator
 
     private       TransformMediator transformMediator;
 
-    private Point2D   m_last             = new Point2D();
+    private Point2D   m_last             = new Point2D(0, 0);
 
     private boolean   m_dragging         = false;
 
@@ -77,6 +75,35 @@ public class RestrictedMousePanMediator extends AbstractMediator
     }
 
     @Override
+    public <H extends EventHandler> boolean handleEvent(INodeEvent.Type<H> type,
+                                                        UIEvent event,
+                                                        int x,
+                                                        int y) {
+        if ("mouseMove".equals(event.type)) {
+            if (isDragging())
+            {
+                onMouseMove(x, y);
+            }
+        } else if ("mouseDown".equals(event.type)) {
+            final IEventFilter filter = getEventFilter();
+
+            if ((null == filter) || (!filter.isEnabled()) || (filter.test(event)))
+            {
+                onMouseDown(x, y);
+            }
+        } else if ("mouseUp".equals(event.type)) {
+            if (isDragging())
+            {
+                onMouseUp();
+            }
+        } else if ("mouseOut".equals(event.type)) {
+            cancel();
+        }
+
+        return false;
+    }
+
+    /*@Override
     public boolean handleEvent(final GwtEvent<?> event)
     {
         if (event.getAssociatedType() == NodeMouseMoveEvent.getType())
@@ -108,12 +135,12 @@ public class RestrictedMousePanMediator extends AbstractMediator
         }
 
         return false;
-    }
+    }*/
 
-    protected void onMouseDown(final NodeMouseDownEvent event)
+    protected void onMouseDown(final int x,
+                               final int y)
     {
-        m_last = new Point2D(event.getX(),
-                             event.getY());
+        m_last = new Point2D(x, y);
 
         m_dragging = true;
 
@@ -129,10 +156,10 @@ public class RestrictedMousePanMediator extends AbstractMediator
                                      m_last);
     }
 
-    protected void onMouseMove(final NodeMouseMoveEvent event)
+    protected void onMouseMove(final int x,
+                               final int y)
     {
-        final Point2D curr = new Point2D(event.getX(),
-                                         event.getY());
+        final Point2D curr = new Point2D(x, y);
 
         inverseTransform().transform(curr,
                                      curr);
@@ -162,7 +189,7 @@ public class RestrictedMousePanMediator extends AbstractMediator
         }
     }
 
-    protected void onMouseUp(final NodeMouseUpEvent event)
+    protected void onMouseUp()
     {
         cancel();
     }

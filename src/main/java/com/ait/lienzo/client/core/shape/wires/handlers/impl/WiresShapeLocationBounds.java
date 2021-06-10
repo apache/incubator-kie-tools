@@ -18,12 +18,12 @@ package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.shape.wires.OptionalBounds;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.tooling.common.api.java.util.function.Supplier;
+import java.util.function.Supplier;
 
 public class WiresShapeLocationBounds {
 
     private final Supplier<BoundingBox> absoluteShapeBounds;
-    private OptionalBounds constraints;
+    private       OptionalBounds        constraints;
 
     public WiresShapeLocationBounds(final Supplier<BoundingBox> absoluteShapeBounds) {
         this.absoluteShapeBounds = absoluteShapeBounds;

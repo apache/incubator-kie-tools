@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
@@ -32,8 +33,6 @@ import com.ait.lienzo.client.core.animation.IAnimationCallback;
 import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.animation.TweeningAnimation;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.event.AttributesChangedHandler;
-import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -78,29 +77,27 @@ import com.ait.lienzo.client.core.shape.guides.IGuidePrimitive;
 import com.ait.lienzo.client.core.shape.json.AbstractFactory;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
-import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
+import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.Point2D.Point2DJSO;
 import com.ait.lienzo.client.core.types.Transform;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.client.core.util.ScratchPad;
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
+import com.ait.lienzo.shared.core.types.DragConstraint;
+import com.ait.lienzo.shared.core.types.DragMode;
+import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.lienzo.shared.core.types.NodeType;
-import com.ait.tooling.common.api.java.util.UUID;
-import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.ait.tooling.nativetools.client.NObject;
-import com.ait.tooling.nativetools.client.NObjectJSO;
-import com.ait.tooling.nativetools.client.collection.MetaData;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.GwtEvent.Type;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONValue;
+import com.ait.lienzo.tools.client.collection.MetaData;
+import com.ait.lienzo.tools.client.event.HandlerManager;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.INodeEvent;
+import com.ait.lienzo.tools.client.event.INodeEvent.Type;
+import com.ait.lienzo.tools.common.api.java.util.UUID;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 
 /**
  * Node is the base class for {@link ContainerNode} and {@link Shape}.
@@ -110,15 +107,82 @@ import com.google.gwt.json.client.JSONValue;
  */
 public abstract class Node<T extends Node<T>> implements IDrawable<T>
 {
-    private static final HashSet<Type<?>> ALL_EVENTS = new HashSet<Type<?>>();
+    private static final HashSet<Type<?>> ALL_EVENTS = new HashSet<>();
 
-    private final Attributes              m_attr;
+    private final OptionalNodeFields      m_opts     = OptionalNodeFields.make();
 
     private NodeType                      m_type;
 
     private Node<?>                       m_parent;
 
-    private final OptionalNodeFields      m_opts     = OptionalNodeFields.make();
+    @JsProperty
+    private       double                  x;
+
+    @JsProperty
+    private       double                  y;
+
+    @JsProperty
+    private       double                  rotation;
+
+    @JsProperty
+    private       Point2D                 scale;
+
+    @JsProperty
+    private       Point2D                 shear;
+
+    @JsProperty
+    private       Point2D                 offset;
+
+    @JsProperty
+    private       DragConstraint          dragConstraint;
+
+    @JsProperty
+    private       Transform               transform;
+
+    /**
+     * 1.0 is the default
+     */
+    @JsProperty
+    private double               alpha = 1;
+
+    /**
+     * 1.0 is the default
+     */
+    @JsProperty
+    private double               strokeAlpha = 1;
+
+    /**
+     * 1.0 is the default
+     */
+    @JsProperty
+    private double               fillAlpha   = 1;
+
+    @JsProperty
+    private boolean              visible     = true;
+
+    @JsProperty
+    private String               id;
+
+
+    @JsProperty
+    private boolean                   draggable;
+
+    @JsProperty
+    private DragBounds                dragBounds;
+
+    @JsProperty
+    private DragMode                  dragMode;
+
+    @JsProperty
+    private boolean                   listening = true;
+
+    /**
+     * This is cached, to avoid recreating each draw
+     */
+    private Transform cachedXfrm;
+
+    @JsProperty
+    private EventPropagationMode eventPropagationMode = EventPropagationMode.lookup(null);
 
     @SafeVarargs
     public static final <T> List<T> asList(final T... list)
@@ -133,7 +197,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
     public static final List<Attribute> asAttributes(final List<Attribute> base, final Attribute... list)
     {
-        final ArrayList<Attribute> make = new ArrayList<Attribute>(base);
+        final ArrayList<Attribute> make = new ArrayList<>(base);
 
         make.addAll(asList(list));
 
@@ -153,12 +217,12 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     {
         m_type = type;
 
-        m_attr = new Attributes(this);
+        // m_attr = new Attributes(this);
     }
 
     /**
      * Only sub-classes that wish to extend a Shape should use this.
-     * 
+     *
      * @param type
      */
     protected void setNodeType(final NodeType type)
@@ -166,74 +230,280 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         m_type = type;
     }
 
-    /**
-     * Constructor used by de-serialization code.
-     * 
-     * @param type
-     * @param node
-     */
-    protected Node(final NodeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        m_type = type;
-
-        if (null == node)
-        {
-            m_attr = new Attributes(this);
-
-            return;
-        }
-        final JSONValue aval = node.get("attributes");
-
-        if (null == aval)
-        {
-            m_attr = new Attributes(this);
-        }
-        else
-        {
-            final JSONObject aobj = aval.isObject();
-
-            if (null == aobj)
-            {
-                m_attr = new Attributes(this);
-            }
-            else
-            {
-                final JavaScriptObject ajso = aobj.getJavaScriptObject();
-
-                if (null == ajso)
-                {
-                    m_attr = new Attributes(this);
-                }
-                else
-                {
-                    m_attr = new Attributes(ajso, this);
-                }
-            }
-        }
-        final JSONValue mval = node.get("meta");
-
-        if (null != mval)
-        {
-            final JSONObject mobj = mval.isObject();
-
-            if (null != mobj)
-            {
-                final JavaScriptObject mjso = mobj.getJavaScriptObject();
-
-                if (null != mjso)
-                {
-                    final NObjectJSO jso = mjso.cast();
-
-                    m_opts.setMetaData(new MetaData(jso));
-                }
-            }
-        }
-    }
-
     @Override
     public IFactory<?> getFactory()
     {
         return LienzoCore.get().getFactory(m_type);
+    }
+
+    public EventPropagationMode getEventPropagationMode()
+    {
+        return this.eventPropagationMode;
+    }
+
+    public T setEventPropagationMode(final EventPropagationMode mode)
+    {
+        this.eventPropagationMode = mode;
+
+        return cast();
+    }
+
+    public final double getX()
+    {
+        return x;
+    }
+
+    public final double getY()
+    {
+        return this.y;
+    }
+
+    public final T setX(final double x)
+    {
+        this.x = x;
+        return cast();
+    }
+
+    public final T setY(final double y)
+    {
+        this.y = y;
+        return cast();
+    }
+
+    /**
+     * Sets the X and Y attributes to P.x and P.y
+     *
+     * @param p Point2D
+     * @return this Shape
+     */
+    public T setLocation(final Point2D p)
+    {
+        setX(p.getX());
+
+        setY(p.getY());
+
+        return cast();
+    }
+
+    public final T setRotation(final double radians)
+    {
+        this.rotation = radians;
+        return cast();
+    }
+
+    public final double getRotation()
+    {
+        return rotation;
+    }
+
+    public final T setRotationDegrees(final double degrees)
+    {
+        this.rotation = Geometry.toRadians(degrees);
+        return cast();
+    }
+
+
+
+    public final T setAlpha(double alpha)
+    {
+        this.alpha = alpha;
+        return cast();
+    }
+
+    public final double getAlpha()
+    {
+        return alpha;
+    }
+
+    public final T setStrokeAlpha(double alpha)
+    {
+        this.strokeAlpha = alpha;
+        return cast();
+    }
+
+    public final double getStrokeAlpha()
+    {
+        return this.strokeAlpha;
+    }
+
+    public final T setFillAlpha(double alpha)
+    {
+        this.fillAlpha = alpha;
+        return cast();
+    }
+
+    public final double getFillAlpha()
+    {
+        return this.fillAlpha;
+    }
+
+    public final double getRotationDegrees()
+    {
+        return Geometry.toDegrees(this.rotation);
+    }
+
+    public final T setScale(final Point2D scale)
+    {
+        this.scale = scale;
+        return cast();
+    }
+
+    public final T setScale(final double scalex, final double scaley)
+    {
+        setScale(new Point2D(scalex, scaley));
+        return cast();
+    }
+
+    public final T setScale(final double value)
+    {
+        setScale(new Point2D(value, value));
+        return cast();
+    }
+
+    public final Point2D getScale()
+    {
+        return this.scale;
+    }
+
+    public final T setShear(final double shearX, final double shearY)
+    {
+        setShear(new Point2D(shearX, shearY));
+        return cast();
+    }
+
+    public final T setShear(final Point2D shear)
+    {
+        this.shear = shear;
+        return cast();
+    }
+
+    public final Point2D getShear()
+    {
+        return shear;
+    }
+
+    public final T setOffset(final Point2D offset)
+    {
+        this.offset = offset;
+        return cast();
+    }
+
+    public final T setOffset(final double x, final double y)
+    {
+        setOffset(new Point2D(x, y));
+        return cast();
+    }
+
+    public final T setOffset(final double xy)
+    {
+        setOffset(new Point2D(xy, xy));
+        return cast();
+    }
+
+    public final Point2D getOffset()
+    {
+        return this.offset;
+    }
+
+    /**
+     * Returns the X and Y attributes as a Point2D
+     *
+     * @return Point2D
+     */
+    public Point2D getLocation()
+    {
+        return new Point2D(getX(), getY());
+    }
+
+    /**
+     * Returns true if this shape can be dragged; false otherwise.
+     *
+     * @return boolean
+     */
+    public boolean isDraggable()
+    {
+        return draggable;
+    }
+
+    /**
+     * Sets if this shape can be dragged or not.
+     *
+     * @return T
+     */
+    public T setDraggable(final boolean draggable)
+    {
+        this.draggable = draggable;
+
+        return cast();
+    }
+
+    /**
+     * Gets this node's {@link com.ait.lienzo.shared.core.types.DragConstraint}
+     *
+     * @return DragConstraint
+     */
+    public DragConstraint getDragConstraint()
+    {
+        return this.dragConstraint;
+    }
+
+    /**
+     * Sets this node's drag constraint; e.g., horizontal, vertical or none (default)
+     *
+     * @param constraint
+     * @return T
+     */
+    public T setDragConstraint(final DragConstraint constraint)
+    {
+        this.dragConstraint = constraint;
+
+        return cast();
+    }
+
+    /**
+     * Gets the {@link DragBounds} for this node.
+     *
+     * @return DragBounds
+     */
+    public DragBounds getDragBounds()
+    {
+        return this.dragBounds;
+    }
+
+    /**
+     * Sets this nodes's drag bounds.
+     *
+     * @param bounds
+     * @return T
+     */
+    public T setDragBounds(final DragBounds bounds)
+    {
+        this.dragBounds = bounds;
+
+        return cast();
+    }
+
+    /**
+     * Gets the {@link com.ait.lienzo.shared.core.types.DragMode} for this node.
+     *
+     * @return DragMode
+     */
+    public DragMode getDragMode()
+    {
+        return this.dragMode;
+    }
+
+    /**
+     * Sets this node's drag mode.
+     *
+     * @param mode
+     * @return T
+     */
+    public T setDragMode(final DragMode mode)
+    {
+        this.dragMode = mode;
+
+        return cast();
     }
 
     @Override
@@ -250,17 +520,28 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
     protected final <M> M cast()
     {
-        return shade(this);
+        return Js.uncheckedCast(this);
     }
 
-    private final native <M> M shade(Node<T> self)
-    /*-{
-		return self;
-    }-*/;
-
-    protected final Node<?> copyUnchecked()
-    {
-        return (Node<?>) JSONDeserializer.get().fromString(toJSONString(), false);// don't validate
+    protected Node<T> copyTo(Node<T> other) {
+        other.m_type = this.m_type.copy();
+        other.x = this.x;
+        other.y = this.y;
+        other.rotation = this.rotation;
+        other.scale = null != this.scale ? this.scale.copy() : null;
+        other.shear = null != this.shear ? this.shear.copy() : null;
+        other.offset = null != this.offset ? this.offset.copy() : null;
+        other.dragConstraint = this.dragConstraint;
+        other.transform = null != this.transform ? this.transform.copy() : null;
+        other.alpha = this.alpha;
+        other.strokeAlpha = this.strokeAlpha;
+        other.fillAlpha = this.fillAlpha;
+        other.visible = this.visible;
+        other.draggable = this.draggable;
+        other.dragBounds = this.dragBounds;
+        other.dragMode = this.dragMode;
+        other.listening = this.listening;
+        return other;
     }
 
     @Override
@@ -269,43 +550,25 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         return m_opts.uuid();
     }
 
-    /**
-     * Serializes this Node as a JSON string.
-     * The JSON string can be deserialized with 
-     * {@link JSONDeserializer#fromString(String)}.
-     * 
-     * @return JSON string
-     */
-    @Override
-    public String toJSONString()
-    {
-        final JSONObject object = toJSONObject();
-
-        if (null != object)
-        {
-            return object.toString();
-        }
-        return null;
-    }
-
-    @Override
-    public NObject onWire()
-    {
-        final JSONObject object = toJSONObject();
-
-        if (null != object)
-        {
-            final NObjectJSO njso = object.getJavaScriptObject().cast();
-
-            return new NObject(njso);
-        }
-        return new NObject();
-    }
+// @FIXME (mdp)
+//    @Override
+//    public NObject onWire()
+//    {
+//        final JSONObject object = toJSONObject();
+//
+//        if (null != object)
+//        {
+//            final NObjectJSO njso = object.getJavaScriptObject().cast();
+//
+//            return new NObject(njso);
+//        }
+//        return new NObject();
+//    }
 
     @Override
     public String toString()
     {
-        return toJSONString();
+        return getClass().getSimpleName() + " : " + getUserData() + " : " + getX() + " : " + getY();
     }
 
     @Override
@@ -467,11 +730,11 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         return m_type;
     }
 
-    @Override
-    public final Attributes getAttributes()
-    {
-        return m_attr;
-    }
+//    @Override
+//    public final Attributes getAttributes()
+//    {
+//        return m_attr;
+//    }
 
     /**
      * Used internally. Applies the node's transform-related attributes
@@ -484,11 +747,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         drawWithTransforms(context,
                            alpha,
                            bounds,
-                           new Supplier<Transform>() {
-                               @Override
-                               public Transform get() {
-                                   return getPossibleNodeTransform();
-                               }});
+                           this::getPossibleNodeTransform);
     }
 
     public void drawWithTransforms(final Context2D context, final double alpha, final BoundingBox bounds, final Supplier<Transform> transformSupplier)
@@ -524,7 +783,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
      * 
      * @param context
      */
-    abstract protected void drawWithoutTransforms(Context2D context, double alpha, BoundingBox bounds);
+    protected abstract void drawWithoutTransforms(Context2D context, double alpha, BoundingBox bounds);
 
     @Override
     public Point2D getAbsoluteLocation()
@@ -539,14 +798,14 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     @Override
     public Point2D getComputedLocation()
     {
-        final Point2D locn = new Point2D();
+        final Point2D locn = new Point2D(0,0);
 
-        addParentsLocations(locn.getJSO());
+        addParentsLocations(locn);
 
         return locn;
     }
 
-    protected void addParentsLocations(final Point2DJSO locn)
+    protected void addParentsLocations(final Point2D locn)
     {
         final Node<?> node = getParent();
 
@@ -554,7 +813,8 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         {
             node.addParentsLocations(locn);
         }
-        locn.offset(m_attr.getX(), m_attr.getY());
+
+        locn.offset(getX(), getY());
     }
 
     /**
@@ -594,15 +854,122 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         }
     }
 
+    public final boolean hasAnyTransformAttributes()
+    {
+        return x != 0 || y != 0 || getRotation() != 0 || getScale() != null || getShear() != null;
+    }
+
+    public final boolean hasComplexTransformAttributes()
+    {
+        return getRotation() != 0 || getScale() != null || getShear() != null;
+    }
+
     protected Transform getPossibleNodeTransform()
     {
-        if (false == m_attr.hasAnyTransformAttributes())
+
+        if (!hasAnyTransformAttributes() && null == transform)
         {
             return null;
         }
-        final Transform xfrm = Transform.fromXY(m_attr.getX(), m_attr.getY());
+        cachedXfrm = Transform.fromXY(cachedXfrm, getX(), getY());
 
-        if (false == m_attr.hasComplexTransformAttributes())
+        Transform t2 = getTransform();
+
+        if (t2 != null) // Use the Transform if it's defined
+        {
+            cachedXfrm.multiply(t2);
+            return cachedXfrm;
+
+        }
+
+        if (!hasComplexTransformAttributes())
+        {
+            return cachedXfrm;
+        }
+        // Otherwise use ROTATION, SCALE, OFFSET and SHEAR
+
+        double ox = 0;
+
+        double oy = 0;
+
+        final Point2D offset = getOffset();
+
+        if (null != offset)
+        {
+            ox = offset.getX();
+
+            oy = offset.getY();
+        }
+        final double r = getRotation();
+
+        if (r != 0)
+        {
+            if ((ox != 0) || (oy != 0))
+            {
+                cachedXfrm.translate(ox, oy);
+
+                cachedXfrm.rotate(r);
+
+                cachedXfrm.translate(-ox, -oy);
+            }
+            else
+            {
+                cachedXfrm.rotate(r);
+            }
+        }
+        final Point2D scale = getScale();
+
+        if (null != scale)
+        {
+            final double sx = scale.getX();
+
+            final double sy = scale.getY();
+
+            if ((sx != 1) || (sy != 1))
+            {
+                if ((ox != 0) || (oy != 0))
+                {
+                    cachedXfrm.translate(ox, oy);
+
+                    cachedXfrm.scaleWithXY(sx, sy);
+
+                    cachedXfrm.translate(-ox, -oy);
+                }
+                else
+                {
+                    cachedXfrm.scaleWithXY(sx, sy);
+                }
+            }
+        }
+        final Point2D shear = getShear();
+
+        if (null != shear)
+        {
+            final double sx = shear.getX();
+
+            final double sy = shear.getY();
+
+            if ((sx != 0) || (sy != 0))
+            {
+                cachedXfrm.shear(sx, sy);
+            }
+        }
+        return cachedXfrm;
+    }
+
+
+/*    protected Transform getPossibleNodeTransform1()
+    {
+        if (!hasAnyTransformAttributes())
+        {
+            return null;
+        }
+        final Transform xfrm = Transform.fromXY(cachedXfrm, getX(), getY());
+        //cachedXfrm = Transform.fromXY(cachedXfrm, getX(), getY());
+
+
+
+        if (!hasComplexTransformAttributes())
         {
             return xfrm;
         }
@@ -612,7 +979,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
         double oy = 0;
 
-        final Point2D offset = m_attr.getOffset();
+        final Point2D offset = getOffset();
 
         if (null != offset)
         {
@@ -620,7 +987,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
             oy = offset.getY();
         }
-        final double r = m_attr.getRotation();
+        final double r = getRotation();
 
         if (r != 0)
         {
@@ -637,7 +1004,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
                 xfrm.rotate(r);
             }
         }
-        final Point2D scale = m_attr.getScale();
+        final Point2D scale = getScale();
 
         if (null != scale)
         {
@@ -651,17 +1018,17 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
                 {
                     xfrm.translate(ox, oy);
 
-                    xfrm.scale(sx, sy);
+                    xfrm.scaleWithXY(sx, sy);
 
                     xfrm.translate(-ox, -oy);
                 }
                 else
                 {
-                    xfrm.scale(sx, sy);
+                    xfrm.scaleWithXY(sx, sy);
                 }
             }
         }
-        final Point2D shear = m_attr.getShear();
+        final Point2D shear = getShear();
 
         if (null != shear)
         {
@@ -675,7 +1042,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
             }
         }
         return xfrm;
-    }
+    }*/
 
     @Override
     public BoundingPoints getComputedBoundingPoints()
@@ -740,7 +1107,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     @Override
     public T setVisible(final boolean visible)
     {
-        m_attr.setVisible(visible);
+        this.visible = visible;
 
         return cast();
     }
@@ -748,8 +1115,22 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     @Override
     public boolean isVisible()
     {
-        return m_attr.isVisible();
+        return this.visible;
     }
+
+//    public final void setListening(final boolean listening)
+//    {
+//        put(Attribute.LISTENING.getProperty(), listening);
+//    }
+//
+//    public final boolean isListening()
+//    {
+//        if (m_jso.has(Attribute.LISTENING.getProperty()))
+//        {
+//            return getBoolean(Attribute.LISTENING.getProperty());
+//        }
+//        return true;
+//    }
 
     /**
      * Sets whether this node is listening for events.
@@ -760,7 +1141,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     @Override
     public T setListening(final boolean listening)
     {
-        m_attr.setListening(listening);
+        this.listening = listening;
 
         return cast();
     }
@@ -768,32 +1149,25 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     @Override
     public boolean isListening()
     {
-        return m_attr.isListening();
+        return listening;
     }
 
-    /**
-     * Sets the name of this Node.
-     * 
-     * @param name
-     * @return this Node
-     */
-    @Override
-    public T setName(final String name)
-    {
-        m_attr.setName(name);
-
-        return cast();
-    }
-
-    /**
-     * Returns the name of this Node.
-     * @return String
-     */
-    @Override
-    public String getName()
-    {
-        return m_attr.getName();
-    }
+//    public final void setID(final String id)
+//    {
+//        if (null != id)
+//        {
+//            put(Attribute.ID.getProperty(), id);
+//        }
+//        else
+//        {
+//            remove(Attribute.ID.getProperty());
+//        }
+//    }
+//
+//    public final String getID()
+//    {
+//        return getString(Attribute.ID.getProperty());
+//    }
 
     /**
      * Sets the ID of this node.
@@ -804,7 +1178,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     @Override
     public T setID(final String id)
     {
-        m_attr.setID(id);
+        this.id = id;
 
         return cast();
     }
@@ -816,7 +1190,18 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     @Override
     public String getID()
     {
-        return m_attr.getID();
+        return this.id;
+    }
+
+    public Transform getTransform()
+    {
+        return transform;
+    }
+
+    public T setTransform(final Transform transform)
+    {
+        this.transform = transform;
+        return cast();
     }
 
     /**
@@ -884,13 +1269,13 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     }
 
     @Override
-    public boolean isEventHandled(final Type<?> type)
+    public <H extends EventHandler> boolean isEventHandled(final Type<H> type)
     {
         final HandlerManager hand = m_opts.getHandlerManager();
 
         if ((null != hand) && (isEventHandledGlobally(type)) && (isListening()))
         {
-            if (false == isVisible())
+            if (!isVisible())
             {
                 final IPrimitive<?> prim = asPrimitive();
 
@@ -906,7 +1291,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     }
 
     @Override
-    public void fireEvent(final GwtEvent<?> event)
+    public <H extends EventHandler, S> void fireEvent(final INodeEvent<H, S> event)
     {
         if (isEventHandled(event.getAssociatedType()))
         {
@@ -934,23 +1319,9 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     }
 
     @Override
-    public final T setAttributesChangedBatcher(final IAttributesChangedBatcher batcher)
-    {
-        m_attr.setAttributesChangedBatcher(batcher);
-
-        return cast();
-    }
-
-    @Override
-    public final HandlerRegistration addAttributesChangedHandler(final Attribute attribute, final AttributesChangedHandler handler)
-    {
-        return m_attr.addAttributesChangedHandler(attribute, handler);
-    }
-
-    @Override
     public final T cancelAttributesChangedBatcher()
     {
-        m_attr.cancelAttributesChangedBatcher();
+        //m_attr.cancelAttributesChangedBatcher();
 
         return cast();
     }
@@ -1099,7 +1470,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         return m_opts.hashCode();
     }
 
-    public static abstract class NodeFactory<N extends IJSONSerializable<N>>extends AbstractFactory<N>
+    public abstract static class NodeFactory<N extends IJSONSerializable<N>>extends AbstractFactory<N>
     {
         protected NodeFactory(final NodeType type)
         {
@@ -1111,8 +1482,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
             super(typeName);
 
             addAttribute(Attribute.ID);
-
-            addAttribute(Attribute.NAME);
 
             addAttribute(Attribute.VISIBLE);
 
@@ -1130,11 +1499,27 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         }
     }
 
-    private static class OptionalNodeFields extends JavaScriptObject
+    @JsType
+    private static class OptionalNodeFields
     {
+        @JsProperty
+        private String uuid;
+
+        @JsProperty
+        private  MetaData meta;
+
+        @JsProperty
+        private  Object userData;
+
+        @JsProperty
+        private HandlerManager hand;
+
+        @JsProperty
+        private int anim;
+
         public static final OptionalNodeFields make()
         {
-            return JavaScriptObject.createObject().cast();
+            return new OptionalNodeFields();
         }
 
         protected OptionalNodeFields()
@@ -1143,119 +1528,68 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
         protected final String uuid()
         {
-            final String uuid = uuid_0();
-
-            if (null != uuid)
+            if (null == this.uuid)
             {
-                return uuid;
+                this.uuid = UUID.uuid();
             }
-            return uuid_0(UUID.uuid());
+            return uuid;
         }
 
         protected final boolean hasMetaData()
         {
-            return (null != meta_0());
+            return this.meta != null;
         }
 
         protected final MetaData getMetaData()
         {
-            final MetaData meta = meta_0();
-
-            if (null != meta)
+            if (this.meta == null)
             {
-                return meta;
+                this.meta = new MetaData();
             }
-            return setMetaData(new MetaData());
+            return this.meta ;
         }
 
-        protected final MetaData setMetaData(final MetaData meta)
+        protected final void setMetaData(final MetaData meta)
         {
-            return meta_0(meta);
+            this.meta = meta;
         }
 
-        private final native String uuid_0()
-        /*-{
-			return this.uuid;
-        }-*/;
 
-        private final native String uuid_0(String uuid)
-        /*-{
-			if (null == uuid) {
-				delete this["uuid"];
-			} else {
-				this.uuid = uuid;
-			}
-			return uuid;
-        }-*/;
+        protected final Object getUserData()
+        {
+			return this.userData;
+        }
 
-        private final native MetaData meta_0()
-        /*-{
-			return this.meta;
-        }-*/;
+        protected final void setUserData(Object userData)
+        {
+            this.userData = userData;
+        }
 
-        private final native MetaData meta_0(MetaData meta)
-        /*-{
-			if (null == meta) {
-				delete this["meta"];
-			} else {
-				this.meta = meta;
-			}
-			return meta;
-        }-*/;
-
-        protected final native Object getUserData()
-        /*-{
-			return this.data;
-        }-*/;
-
-        protected final native void setUserData(Object data)
-        /*-{
-			if (null == data) {
-				delete this["data"];
-			} else {
-				this.data = data;
-			}
-        }-*/;
-
-        protected final native HandlerManager getHandlerManager()
-        /*-{
+        protected final HandlerManager getHandlerManager()
+        {
 			return this.hand;
-        }-*/;
+        }
 
-        protected final native void setHandlerManager(HandlerManager hand)
-        /*-{
-			if (null == hand) {
-				delete this["hand"];
-			} else {
-				this.hand = hand;
-			}
-        }-*/;
+        protected final void setHandlerManager(HandlerManager hand)
+        {
+            this.hand = hand;
+        }
 
-        protected final native boolean isAnimating()
-        /*-{
-			if (this.anim !== undefined) {
-				return (this.anim > 0);
-			}
-			return false;
-        }-*/;
+        protected final boolean isAnimating()
+        {
+			return anim > 0;
+        }
 
-        protected final native void doAnimating()
-        /*-{
-			if (this.anim !== undefined) {
-				this.anim = this.anim + 1;
-			} else {
-				this.anim = 1;
-			}
-        }-*/;
+        protected final void doAnimating()
+        {
+            this.anim = this.anim + 1;
+        }
 
-        protected final native void unAnimating()
-        /*-{
-			if (this.anim !== undefined) {
+        protected final void unAnimating()
+        {
+			if (this.anim > 0) {
 				this.anim = this.anim - 1;
-				if (this.anim < 1) {
-					delete this["anim"];
-				}
 			}
-        }-*/;
+        }
     }
 }

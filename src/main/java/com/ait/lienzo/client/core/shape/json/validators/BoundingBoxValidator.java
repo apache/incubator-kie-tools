@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.shape.json.validators;
 
 public class BoundingBoxValidator extends ObjectValidator
 {
-    public static BoundingBoxValidator INSTANCE = new BoundingBoxValidator();
+    public static final BoundingBoxValidator INSTANCE = new BoundingBoxValidator();
 
     public BoundingBoxValidator()
     {

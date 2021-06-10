@@ -50,7 +50,6 @@ import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
-import com.google.gwt.json.client.JSONValue;
 
 /**
  * Each {@link Attribute} has an AttributeType.
@@ -61,67 +60,67 @@ import com.google.gwt.json.client.JSONValue;
  */
 public class AttributeType
 {
-    public static AttributeType           TRANSFORM_TYPE              = new AttributeType(TransformValidator.INSTANCE);
+    public static final AttributeType           TRANSFORM_TYPE              = new AttributeType(TransformValidator.INSTANCE);
 
-    public static AttributeType           COLOR_TYPE                  = new AttributeType(ColorValidator.INSTANCE);
+    public static final AttributeType           COLOR_TYPE                  = new AttributeType(ColorValidator.INSTANCE);
 
-    public static AttributeType           STRING_TYPE                 = new AttributeType(StringValidator.INSTANCE);
+    public static final AttributeType           STRING_TYPE                 = new AttributeType(StringValidator.INSTANCE);
 
-    public static AttributeType           URL_TYPE                    = new AttributeType(URLValidator.INSTANCE);
+    public static final AttributeType           URL_TYPE                    = new AttributeType(URLValidator.INSTANCE);
 
-    public static AttributeType           NUMBER_TYPE                 = new AttributeType(NumberValidator.INSTANCE);
+    public static final AttributeType           NUMBER_TYPE                 = new AttributeType(NumberValidator.INSTANCE);
 
-    public static AttributeType           NUMBER_ARRAY_TYPE           = new AttributeType(new ArrayValidator(NumberValidator.INSTANCE));
+    public static final AttributeType           NUMBER_ARRAY_TYPE           = new AttributeType(new ArrayValidator(NumberValidator.INSTANCE));
 
-    public static AttributeType           BOOLEAN_TYPE                = new AttributeType(BooleanValidator.INSTANCE);
+    public static final AttributeType           BOOLEAN_TYPE                = new AttributeType(BooleanValidator.INSTANCE);
 
-    public static AttributeType           POINT2D_TYPE                = new AttributeType(Point2DValidator.INSTANCE);
+    public static final AttributeType           POINT2D_TYPE                = new AttributeType(Point2DValidator.INSTANCE);
 
-    public static AttributeType           POINT2D_ARRAY_TYPE          = new AttributeType(new ArrayValidator(Point2DValidator.INSTANCE));
+    public static final AttributeType           POINT2D_ARRAY_TYPE          = new AttributeType(new ArrayValidator(Point2DValidator.INSTANCE));
 
-    public static AttributeType           LINEAR_GRADIENT_TYPE        = new AttributeType(LinearGradientValidator.INSTANCE);
+    public static final AttributeType           LINEAR_GRADIENT_TYPE        = new AttributeType(LinearGradientValidator.INSTANCE);
 
-    public static AttributeType           PATTERN_GRADIENT_TYPE       = new AttributeType(PatternGradientValidator.INSTANCE);
+    public static final AttributeType           PATTERN_GRADIENT_TYPE       = new AttributeType(PatternGradientValidator.INSTANCE);
 
-    public static AttributeType           RADIAL_GRADIENT_TYPE        = new AttributeType(RadialGradientValidator.INSTANCE);
+    public static final AttributeType           RADIAL_GRADIENT_TYPE        = new AttributeType(RadialGradientValidator.INSTANCE);
 
-    public static AttributeType           SHADOW_TYPE                 = new AttributeType(ShadowValidator.INSTANCE);
+    public static final AttributeType           SHADOW_TYPE                 = new AttributeType(ShadowValidator.INSTANCE);
 
-    public static AttributeType           SERIALIZATION_MODE_TYPE     = new AttributeType(new EnumValidator<ImageSerializationMode>("SerializationMode", ImageSerializationMode.values()));
+    public static final AttributeType           SERIALIZATION_MODE_TYPE     = new AttributeType(new EnumValidator<>("SerializationMode", ImageSerializationMode.values()));
 
-    public static AttributeType           IMAGE_SELECTION_MODE_TYPE   = new AttributeType(new EnumValidator<ImageSelectionMode>("ImageSelectionMode", ImageSelectionMode.values()));
+    public static final AttributeType           IMAGE_SELECTION_MODE_TYPE   = new AttributeType(new EnumValidator<>("ImageSelectionMode", ImageSelectionMode.values()));
 
-    public static AttributeType           DASH_ARRAY_TYPE             = new AttributeType(new ArrayValidator(NumberValidator.INSTANCE));
+    public static final AttributeType           DASH_ARRAY_TYPE             = new AttributeType(new ArrayValidator(NumberValidator.INSTANCE));
 
-    public static AttributeType           LINE_CAP_TYPE               = new AttributeType(new EnumValidator<LineCap>("LineCap", LineCap.values()));
+    public static final AttributeType           LINE_CAP_TYPE               = new AttributeType(new EnumValidator<>("LineCap", LineCap.values()));
 
-    public static AttributeType           LINE_JOIN_TYPE              = new AttributeType(new EnumValidator<LineJoin>("LineJoin", LineJoin.values()));
+    public static final AttributeType           LINE_JOIN_TYPE              = new AttributeType(new EnumValidator<>("LineJoin", LineJoin.values()));
 
-    public static AttributeType           DRAG_BOUNDS_TYPE            = new AttributeType(DragBoundsValidator.INSTANCE);
+    public static final AttributeType           DRAG_BOUNDS_TYPE            = new AttributeType(DragBoundsValidator.INSTANCE);
 
-    public static AttributeType           DRAG_CONSTRAINT_TYPE        = new AttributeType(new EnumValidator<DragConstraint>("DragConstraint", DragConstraint.values()));
+    public static final AttributeType           DRAG_CONSTRAINT_TYPE        = new AttributeType(new EnumValidator<>("DragConstraint", DragConstraint.values()));
 
-    public static AttributeType           DRAG_MODE_TYPE              = new AttributeType(new EnumValidator<DragMode>("DragMode", DragMode.values()));
+    public static final AttributeType           DRAG_MODE_TYPE              = new AttributeType(new EnumValidator<>("DragMode", DragMode.values()));
 
-    public static AttributeType           TEXT_ALIGN_TYPE             = new AttributeType(new EnumValidator<TextAlign>("TextAlign", TextAlign.values()));
+    public static final AttributeType           TEXT_ALIGN_TYPE             = new AttributeType(new EnumValidator<>("TextAlign", TextAlign.values()));
 
-    public static AttributeType           TEXT_BASELINE_TYPE          = new AttributeType(new EnumValidator<TextBaseLine>("TextBaseLine", TextBaseLine.values()));
+    public static final AttributeType           TEXT_BASELINE_TYPE          = new AttributeType(new EnumValidator<>("TextBaseLine", TextBaseLine.values()));
 
-    public static AttributeType           TEXT_UNIT_TYPE              = new AttributeType(new EnumValidator<TextUnit>("TextUnit", TextUnit.values()));
+    public static final AttributeType           TEXT_UNIT_TYPE              = new AttributeType(new EnumValidator<>("TextUnit", TextUnit.values()));
 
-    public static AttributeType           COMPOSITE_OPERATION_TYPE    = new AttributeType(new EnumValidator<CompositeOperation>("CompositeOperation", CompositeOperation.values()));
+    public static final AttributeType           COMPOSITE_OPERATION_TYPE    = new AttributeType(new EnumValidator<>("CompositeOperation", CompositeOperation.values()));
 
-    public static AttributeType           ARROW_TYPE                  = new AttributeType(new EnumValidator<ArrowType>("ArrowType", ArrowType.values()));
+    public static final AttributeType           ARROW_TYPE                  = new AttributeType(new EnumValidator<>("ArrowType", ArrowType.values()));
 
-    public static AttributeType           FILL_TYPE                   = new MultiAttributeType("Color or Gradient", COLOR_TYPE, LINEAR_GRADIENT_TYPE, PATTERN_GRADIENT_TYPE, RADIAL_GRADIENT_TYPE);
+    public static final AttributeType           FILL_TYPE                   = new MultiAttributeType("Color or Gradient", COLOR_TYPE, LINEAR_GRADIENT_TYPE, PATTERN_GRADIENT_TYPE, RADIAL_GRADIENT_TYPE);
 
-    public static AttributeType           BEHAVIOR_MAP_TYPE           = new AttributeType(SpriteBehaviorMapValidator.INSTANCE);
+    public static final AttributeType           BEHAVIOR_MAP_TYPE           = new AttributeType(SpriteBehaviorMapValidator.INSTANCE);
 
-    public static AttributeType           STROKE_TYPE                 = COLOR_TYPE;
+    public static final AttributeType           STROKE_TYPE                 = COLOR_TYPE;
 
-    public static AttributeType           DIRECTION_TYPE              = new AttributeType(new EnumValidator<Direction>("Direction", Direction.values()));
+    public static final AttributeType           DIRECTION_TYPE              = new AttributeType(new EnumValidator<>("Direction", Direction.values()));
 
-    public static AttributeType           EVENT_PROPAGATION_MODE_TYPE = new AttributeType(new EnumValidator<EventPropagationMode>("EventPropagationMode", EventPropagationMode.values()));
+    public static final AttributeType           EVENT_PROPAGATION_MODE_TYPE = new AttributeType(new EnumValidator<>("EventPropagationMode", EventPropagationMode.values()));
 
     private final IAttributeTypeValidator m_validator;
 
@@ -130,7 +129,7 @@ public class AttributeType
         m_validator = Objects.requireNonNull(validator);
     }
 
-    public void validate(final JSONValue val, final ValidationContext ctx) throws ValidationException
+    public void validate(final Object val, final ValidationContext ctx) throws ValidationException
     {
         m_validator.validate(val, ctx);
     }

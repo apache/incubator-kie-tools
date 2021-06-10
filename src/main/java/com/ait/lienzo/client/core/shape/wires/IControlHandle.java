@@ -19,20 +19,20 @@ package com.ait.lienzo.client.core.shape.wires;
 import java.util.Objects;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.tooling.common.api.types.IActivatable;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.common.api.types.IActivatable;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
 
 public interface IControlHandle extends IActivatable
 {
-    public IPrimitive<?> getControl();
+    IPrimitive<?> getControl();
 
-    public ControlHandleType getType();
+    ControlHandleType getType();
 
-    public void destroy();
+    void destroy();
 
-    public HandlerRegistrationManager getHandlerRegistrationManager();
+    HandlerRegistrationManager getHandlerRegistrationManager();
 
-    public abstract static class ControlHandleType
+    abstract class ControlHandleType
     {
         private final int    m_value;
 
@@ -72,7 +72,7 @@ public interface IControlHandle extends IActivatable
         @Override
         public boolean equals(final Object other)
         {
-            if ((other == null) || (false == (other instanceof ControlHandleType)))
+            if ((other == null) || (!(other instanceof ControlHandleType)))
             {
                 return false;
             }
@@ -86,7 +86,7 @@ public interface IControlHandle extends IActivatable
         }
     }
 
-    public static final class ControlHandleStandardType extends ControlHandleType
+    final class ControlHandleStandardType extends ControlHandleType
     {
         public static final ControlHandleType POINT     = new ControlHandleStandardType("POINT");
 

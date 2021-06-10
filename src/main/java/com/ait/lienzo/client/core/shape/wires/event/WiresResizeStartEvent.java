@@ -16,20 +16,20 @@
 
 package com.ait.lienzo.client.core.shape.wires.event;
 
-import com.ait.lienzo.client.core.event.AbstractNodeDragEvent;
-import com.ait.lienzo.client.core.event.INodeXYEvent;
-import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.event.NodeDragStartHandler;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * <p>Event that is fired when the drag starts ( drag produced by one of resize control points for a wires shape ).</p>
  */
-public class WiresResizeStartEvent extends AbstractWiresResizeEvent<WiresResizeStartHandler> implements INodeXYEvent
+public class WiresResizeStartEvent extends AbstractWiresResizeEvent<WiresResizeStartHandler, NodeDragStartHandler>
 {
-    public static final Type<WiresResizeStartHandler> TYPE = new Type<WiresResizeStartHandler>();
+    public static final Type<WiresResizeStartHandler> TYPE = new Type<>();
 
-    public WiresResizeStartEvent(final WiresShape shape, final AbstractNodeDragEvent<?> nodeDragEvent, final int x, final int y, final double width, final double height)
+    public WiresResizeStartEvent(final HTMLElement relativeElement)
     {
-        super(shape, nodeDragEvent, x, y, width, height);
+        super(relativeElement);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class WiresResizeStartEvent extends AbstractWiresResizeEvent<WiresResizeS
     }
 
     @Override
-    protected void dispatch(final WiresResizeStartHandler shapeMovedHandler)
+    public void dispatch(final WiresResizeStartHandler shapeMovedHandler)
     {
         shapeMovedHandler.onShapeResizeStart(this);
     }

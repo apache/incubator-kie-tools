@@ -19,19 +19,20 @@ package com.ait.lienzo.client.core.util;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.shared.core.types.DataURLType;
-import com.google.gwt.dom.client.CanvasElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.ImageElement;
+
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLCanvasElement;
+import elemental2.dom.HTMLImageElement;
 
 public final class ScratchPad
 {
-    private int                 m_wide;
+    private       int               m_wide;
 
-    private int                 m_high;
+    private       int               m_high;
 
-    private final CanvasElement m_element;
+    private final HTMLCanvasElement m_element;
 
-    private final Context2D     m_context;
+    private final Context2D         m_context;
 
     public ScratchPad(final int wide, final int high)
     {
@@ -41,11 +42,11 @@ public final class ScratchPad
 
         if (LienzoCore.IS_CANVAS_SUPPORTED)
         {
-            m_element = Document.get().createCanvasElement();
+            m_element = (HTMLCanvasElement) DomGlobal.document.createElement("canvas"); // Document.get().createCanvasElement();
 
-            m_element.setWidth(wide);
+            m_element.width = wide;
 
-            m_element.setHeight(high);
+            m_element.height = high;
 
             m_context = new Context2D(m_element);
         }
@@ -69,12 +70,12 @@ public final class ScratchPad
 
     public final void setPixelSize(final int wide, final int high)
     {
-        m_element.setWidth(m_wide = wide);
+        m_element.width = m_wide = wide;
 
-        m_element.setHeight(m_high = high);
+        m_element.height = m_high = high;
     }
 
-    public final CanvasElement getElement()
+    public final HTMLCanvasElement getElement()
     {
         return m_element;
     }
@@ -122,42 +123,42 @@ public final class ScratchPad
         }
     }
 
-    public static final String toDataURL(final ImageElement element, final double quality)
+    public static final String toDataURL(final HTMLImageElement element, final double quality)
     {
         return toDataURL(element, DataURLType.PNG, quality);
     }
 
-    public static final String toDataURL(final ImageElement element, DataURLType mimetype, final double quality)
+    public static final String toDataURL(final HTMLImageElement element, DataURLType mimetype, final double quality)
     {
         if (null == mimetype)
         {
             mimetype = DataURLType.PNG;
         }
-        ScratchPad canvas = new ScratchPad(element.getWidth(), element.getHeight());
+        ScratchPad canvas = new ScratchPad(element.width, element.height);
 
-        canvas.getContext().drawImage(element, 0, 0, element.getWidth(), element.getHeight());
+        canvas.getContext().drawImage(element, 0, 0, element.width, element.height);
 
         return canvas.toDataURL(mimetype, quality);
     }
 
-    public static final String toDataURL(final ImageElement element)
+    public static final String toDataURL(final HTMLImageElement element)
     {
-        final ScratchPad canvas = new ScratchPad(element.getWidth(), element.getHeight());
+        final ScratchPad canvas = new ScratchPad(element.width, element.height);
 
         canvas.getContext().drawImage(element, 0, 0);
 
         return canvas.toDataURL();
     }
 
-    private static native final String toDataURL(final CanvasElement element)
-    /*-{
-		return element.toDataURL();
-    }-*/;
+    private static final String toDataURL(final HTMLCanvasElement element)
+    {
+		return element.toDataURL(null); // @FIXME Make sure this accepts null (mdp)
+    }
 
     // TODO other arguments, e.g. for image/jpeg The second argument, if it is a number in the range 0.0 to 1.0 inclusive, must be treated as the desired quality level. If it is not a number or is outside that range, the user agent must use its default value, as if the argument had been omitted.
 
-    private static native final String toDataURL(CanvasElement element, String mimetype, double quality)
-    /*-{
+    private static final String toDataURL(HTMLCanvasElement element, String mimetype, double quality)
+    {
 		return element.toDataURL(mimetype, quality);
-    }-*/;
+    }
 }

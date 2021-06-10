@@ -23,7 +23,7 @@ import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.O
 import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.ReferencePosition;
 import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.VerticalAlignment;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.tooling.common.api.java.util.function.Function;
+import java.util.function.Function;
 
 public class VerticalLayoutFactory
 {

@@ -28,7 +28,6 @@ import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
 
 /**
  * Line is a line segment between two points.
@@ -63,14 +62,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
     {
         super(ShapeType.LINE);
 
-        setPoints(new Point2DArray(p1, p2));
-    }
-
-    protected Line(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.LINE, node, ctx);
-
-        refresh();
+        setPoint2DArray(Point2DArray.fromArrayOfPoint2D(p1, p2));
     }
 
     @Override
@@ -82,7 +74,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return new BoundingBox(getPoints());
+        return BoundingBox.fromPoint2DArray(getPoints());
     }
 
     /**
@@ -91,17 +83,17 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final double alpha)
     {
-        final Point2DArray list = attr.getPoints();
+        final Point2DArray list = getPoints();
 
         if ((null != list) && (list.size() == 2))
         {
-            if (attr.isDefined(Attribute.DASH_ARRAY))
+            if (getDashArray() != null)
             {
-                if (false == LienzoCore.get().isNativeLineDashSupported())
+                if (!LienzoCore.get().isNativeLineDashSupported())
                 {
-                    DashArray dash = attr.getDashArray();
+                    DashArray dash = getDashArray();
 
                     if (dash != null)
                     {
@@ -109,7 +101,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
 
                         if (data.length > 0)
                         {
-                            if (setStrokeParams(context, attr, alpha, false))
+                            if (setStrokeParams(context, alpha, false))
                             {
                                 Point2D p0 = list.get(0);
 
@@ -117,7 +109,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
 
                                 context.beginPath();
 
-                                drawDashedLine(context, p0.getX(), p0.getY(), p1.getX(), p1.getY(), data, attr.getStrokeWidth() / 2);
+                                drawDashedLine(context, p0.getX(), p0.getY(), p1.getX(), p1.getY(), data, getStrokeWidth() / 2);
 
                                 context.restore();
                             }
@@ -141,40 +133,11 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
         return false;
     }
 
+
     @Override
-    public boolean parse(final Attributes attr)
+    public boolean parse()
     {
         throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Gets the end-points of this line.
-     *
-     * @return Point2DArray
-     */
-    public Point2DArray getPoints()
-    {
-        return getAttributes().getPoints();
-    }
-
-    /**
-     * Sets the end-points of this line.
-     * The points should be a 2-element {@link Point2DArray}
-     *
-     * @param points
-     * @return this Line
-     */
-    public Line setPoints(final Point2DArray points)
-    {
-        getAttributes().setPoints(points);
-
-        return refresh();
-    }
-
-    @Override
-    public Line setPoint2DArray(final Point2DArray points)
-    {
-        return setPoints(points);
     }
 
     @Override
@@ -211,7 +174,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
      * Empty implementation since we multi-purpose this class for regular and dashed lines.
      */
     @Override
-    public boolean fill(final Context2D context, final Attributes attr, final double alpha)
+    public boolean fill(final Context2D context, final double alpha)
     {
         return false;
     }
@@ -298,12 +261,6 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
             super(ShapeType.LINE);
 
             addAttribute(Attribute.POINTS, true);
-        }
-
-        @Override
-        public Line create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new Line(node, ctx);
         }
     }
 }

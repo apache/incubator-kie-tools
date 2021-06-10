@@ -18,9 +18,12 @@ package com.ait.lienzo.client.core;
 
 import java.util.List;
 
-import com.ait.tooling.common.api.flow.Flows.BooleanOp;
-import com.ait.tooling.common.api.flow.Flows.PredicateBooleanOp;
-import com.ait.tooling.nativetools.client.collection.NFastStringSet;
+import com.ait.lienzo.tools.client.collection.NFastStringSet;
+import com.ait.lienzo.tools.common.api.flow.Flows.BooleanOp;
+import com.ait.lienzo.tools.common.api.flow.Flows.PredicateBooleanOp;
+
+import elemental2.core.JsArray;
+import jsinterop.base.Js;
 
 public final class AttributeOp
 {
@@ -121,7 +124,7 @@ public final class AttributeOp
         return new OneStringSetOp(toSet(attributes));
     }
 
-    private static abstract class AbstractStringSetOp extends PredicateBooleanOp<NFastStringSet>
+    private abstract static class AbstractStringSetOp extends PredicateBooleanOp<NFastStringSet>
     {
         protected AbstractStringSetOp(final NFastStringSet attributes)
         {
@@ -187,18 +190,16 @@ public final class AttributeOp
 
             final NFastStringSet changed = context();
 
-            for (String attribute : attributes)
+            String[] array = Js.uncheckedCast(JsArray.from(attributes));
+            for (String attribute : array)
             {
-                if (false == seen.contains(attribute))
+                if (!seen.contains(attribute) && changed.contains(attribute))
                 {
-                    if (changed.contains(attribute))
+                    if (++count > 1)
                     {
-                        if (++count > 1)
-                        {
-                            return false;
-                        }
-                        seen.add(attribute);
+                       return false;
                     }
+                    seen.add(attribute);
                 }
             }
             return (0 != count);

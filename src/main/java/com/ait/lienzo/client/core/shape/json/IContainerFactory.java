@@ -29,7 +29,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 public interface IContainerFactory
 {
     /**
-     * Returns whether the specified childNode is valid for this container, and if so, add it.
+     * Returns whether the specified childNode is valid for this container, and if so, addBoundingBox it.
      * 
      * @param childNode IJSONSerializable
      */

@@ -16,9 +16,12 @@
 
 package com.ait.lienzo.client.core.shape.wires.event;
 
-import com.ait.lienzo.client.core.event.INodeXYEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeEvent;
+import com.ait.lienzo.tools.client.event.INodeXYEvent;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
-import com.google.gwt.event.shared.GwtEvent;
+
+import elemental2.dom.Event;
+import elemental2.dom.HTMLElement;
 
 /**
  * <p>Event that is fired when a WiresShape x/y coordinates has been changed.</p>
@@ -28,29 +31,47 @@ import com.google.gwt.event.shared.GwtEvent;
  *     <li>y = the Y coordinate value of the shape's container</li>
  * </ul>
  */
-public class WiresMoveEvent extends AbstractWiresEvent<WiresContainer, WiresMoveHandler> implements INodeXYEvent
+public class WiresMoveEvent extends AbstractNodeEvent<WiresMoveHandler, WiresContainer> implements INodeXYEvent<WiresMoveHandler, WiresContainer>
 {
-    public static final GwtEvent.Type<WiresMoveHandler> TYPE = new GwtEvent.Type<WiresMoveHandler>();
+    public static final Type<WiresMoveHandler> TYPE = new Type<>();
 
-    private final int                                   x;
+    private int                                   x;
 
-    private final int                                   y;
+    private int                                   y;
 
-    public WiresMoveEvent(final WiresContainer shape, final int x, final int y)
+    public WiresMoveEvent(final HTMLElement relativeElement)
     {
-        super(shape);
+        super(relativeElement);
+    }
+
+
+    public void kill()
+    {
+        setSource(null);
+        setDead(true);
+    }
+
+    public void revive()
+    {
+        setSource(null);
+        setDead(false);
+    }
+
+    public void override(final WiresContainer shape, final int x, final int y)
+    {
+        setSource(shape);
         this.x = x;
         this.y = y;
     }
 
     @Override
-    public GwtEvent.Type<WiresMoveHandler> getAssociatedType()
+    public Type<WiresMoveHandler> getAssociatedType()
     {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(final WiresMoveHandler shapeMovedHandler)
+    public void dispatch(final WiresMoveHandler shapeMovedHandler)
     {
         shapeMovedHandler.onShapeMoved(this);
     }
@@ -65,5 +86,10 @@ public class WiresMoveEvent extends AbstractWiresEvent<WiresContainer, WiresMove
     public int getY()
     {
         return y;
+    }
+
+    public Event getNativeEvent()
+    {
+        throw new UnsupportedOperationException();
     }
 }

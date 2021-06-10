@@ -19,11 +19,12 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONObject;
+
+import elemental2.core.Uint8ClampedArray;
+import elemental2.dom.ImageData;
+import jsinterop.base.Js;
 
 public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDataFilter>
 {
@@ -32,7 +33,7 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
         super(ImageFilterType.EmbossImageDataFilterType);
     }
 
-    protected EmbossImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected EmbossImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
     {
         super(ImageFilterType.EmbossImageDataFilterType, node, ctx);
     }
@@ -52,28 +53,30 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
         }
         if (copy)
         {
-            source = source.copy();
+            source = ImageDataUtil.copy(source);
         }
-        if (false == isActive())
+        if (!isActive())
         {
             return source;
         }
-        final CanvasPixelArray data = source.getData();
+        final Uint8ClampedArray data = source.data;
 
         if (null == data)
         {
             return source;
         }
-        filter_(data, FilterCommonOps.getLength(source), source.getWidth(), FilterCommonOps);
+        filter_(data, FilterCommonOps.getLength(source), source.width, FilterCommonOps);
 
         return source;
     }
 
-    private final native void filter_(JavaScriptObject data, int length, int width, ImageDataFilterCommonOps fops)
-    /*-{
-        for(var i = 0; i < length; i++) {
+    private final void filter_(Uint8ClampedArray dataArray, int length, int width, ImageDataFilterCommonOps fops)
+    {
+//        int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
+        int[] data = Js.uncheckedCast(dataArray);
+        for(int i = 0; i < length; i++) {
             if(i < (length - width * 4)) {
-                if(((i + 1) % 4) !== 0) {
+                if(((i + 1) % 4) != 0) {
                     if(((i + 4) % (width * 4)) == 0) {
                         data[  i  ] = data[i - 4];
                         data[i + 1] = data[i - 3];
@@ -84,13 +87,13 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
                     }
                 }
             } else {
-                if(((i + 1) % 4) !== 0) {
+                if(((i + 1) % 4) != 0) {
                     data[i] = data[i - width * 4];
                 }
             }
         }
-        fops.filterLuminosity(data, length);
-    }-*/;
+        fops.filterLuminosity(dataArray, length);
+    }
 
     @Override
     public IFactory<EmbossImageDataFilter> getFactory()
@@ -103,12 +106,6 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
         public EmbossImageDataFilterFactory()
         {
             super(ImageFilterType.EmbossImageDataFilterType);
-        }
-
-        @Override
-        public EmbossImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new EmbossImageDataFilter(node, ctx);
         }
     }
 }

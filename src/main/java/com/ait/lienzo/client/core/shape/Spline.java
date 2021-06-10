@@ -27,14 +27,22 @@ import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import com.google.gwt.json.client.JSONObject;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
+
+import jsinterop.annotations.JsProperty;
 
 public class Spline extends AbstractMultiPointShape<Spline>
 {
     private boolean            m_fill = false;
 
-    private final PathPartList m_list = new PathPartList();
+    @JsProperty
+    private double curveFactor = 0.5;
+
+    @JsProperty
+    private double angleFactor = 0;
+
+    @JsProperty
+    private boolean lineFlatten;
 
     /**
      * Constructor. Creates an instance of a spline.
@@ -46,19 +54,16 @@ public class Spline extends AbstractMultiPointShape<Spline>
         setControlPoints(points);
     }
 
-    protected Spline(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.SPLINE, node, ctx);
-    }
-
     @Override
     public BoundingBox getBoundingBox()
     {
-        if (m_list.size() < 1)
+        PathPartList plist = getPathPartList();
+
+        if (plist.size() < 1)
         {
-            parse(getAttributes());
+            parse();
         }
-        return m_list.getBoundingBox();
+        return plist.getBoundingBox();
     }
 
     /**
@@ -67,34 +72,38 @@ public class Spline extends AbstractMultiPointShape<Spline>
     * @param context the {@link Context2D} used to draw this spline.
     */
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final double alpha)
     {
-        if (m_list.size() < 1)
+        PathPartList plist = getPathPartList();
+
+        if (plist.size() < 1)
         {
-            parse(attr);
+            parse();
         }
-        if (m_list.size() < 1)
+        if (plist.size() < 1)
         {
             return false;
         }
-        m_fill = context.path(m_list);
+        m_fill = context.path(plist);
 
         return true;
     }
 
     @Override
-    protected boolean fill(Context2D context, Attributes attr, double alpha)
+    protected boolean fill(Context2D context, double alpha)
     {
         if (m_fill)
         {
-            return super.fill(context, attr, alpha);
+            return super.fill(context, alpha);
         }
         return false;
     }
 
-    private final void parse(final Attributes attr)
+    private final void parse()
     {
-        final PathPoint[] points = getPathPoints(attr.getControlPoints());
+        PathPartList plist = getPathPartList();
+
+        final PathPoint[] points = getPathPoints(getControlPoints());
 
         final int size = points.length;
 
@@ -102,13 +111,13 @@ public class Spline extends AbstractMultiPointShape<Spline>
         {
             if (size > 1)
             {
-                m_list.M(points[0].x, points[0].y).L(points[1].x, points[1].y);
+                plist.M(points[0].x, points[0].y).L(points[1].x, points[1].y);
             }
             return;
         }
-        final double curveFactor = attr.getCurveFactor();
+        final double curveFactor = getCurveFactor();
 
-        final double angleFactor = attr.getAngleFactor();
+        final double angleFactor = getAngleFactor();
 
         boolean closed = false;
 
@@ -128,7 +137,7 @@ public class Spline extends AbstractMultiPointShape<Spline>
         {
             closed = false;
         }
-        final NFastArrayList<PathPoint[]> carray = new NFastArrayList<PathPoint[]>();
+        final NFastArrayList<PathPoint[]> carray = new NFastArrayList<>();
 
         for (int i = begindex; i < endindex; i++)
         {
@@ -217,15 +226,15 @@ public class Spline extends AbstractMultiPointShape<Spline>
                 carray.set(i, PathPoint.toArray(cp1, cp2));
             }
         }
-        final boolean lineFlatten = attr.getLineFlatten();
+        final boolean lineFlatten = getLineFlatten();
 
-        m_list.M(points[0].x, points[0].y);
+        plist.M(points[0].x, points[0].y);
 
         if (begindex == 1)
         {
             final PathPoint point = carray.get(1)[0];
 
-            m_list.Q(point.x, point.y, points[1].x, points[1].y);
+            plist.Q(point.x, point.y, points[1].x, points[1].y);
         }
         int i;
 
@@ -235,7 +244,7 @@ public class Spline extends AbstractMultiPointShape<Spline>
 
             if (line)
             {
-                m_list.L(points[i + 1].x, points[i + 1].y);
+                plist.L(points[i + 1].x, points[i + 1].y);
             }
             else
             {
@@ -243,22 +252,22 @@ public class Spline extends AbstractMultiPointShape<Spline>
 
                 final PathPoint p2 = carray.get(i + 1)[0];
 
-                m_list.C(p1.x, p1.y, p2.x, p2.y, points[i + 1].x, points[i + 1].y);
+                plist.C(p1.x, p1.y, p2.x, p2.y, points[i + 1].x, points[i + 1].y);
             }
         }
         if (endindex == (size - 1))
         {
             final PathPoint point = carray.get(i)[1];
 
-            m_list.Q(point.x, point.y, points[i + 1].x, points[i + 1].y);
+            plist.Q(point.x, point.y, points[i + 1].x, points[i + 1].y);
         }
         if (closed)
         {
-            m_list.Z();
+            plist.Z();
         }
     }
 
-    private final static PathPoint[] getPathPoints(final Point2DArray array)
+    private static final PathPoint[] getPathPoints(final Point2DArray array)
     {
         if ((null == array) || (array.size() < 2))
         {
@@ -283,31 +292,6 @@ public class Spline extends AbstractMultiPointShape<Spline>
         return points;
     }
 
-    /**
-     * Gets this spline's control points.
-     * 
-     * @return {@link Point2DArray}
-     */
-    public Point2DArray getControlPoints()
-    {
-        return getAttributes().getControlPoints();
-    }
-
-    /**
-     * Sets the control points for this curve.
-     * 
-     * @param points
-     *            A {@link Point2DArray} containing the control points
-     *       
-     * @return this Spline
-     */
-    public Spline setControlPoints(final Point2DArray points)
-    {
-        getAttributes().setControlPoints(points);
-
-        return refresh();
-    }
-
     @Override
     public Spline setPoint2DArray(Point2DArray points)
     {
@@ -322,36 +306,36 @@ public class Spline extends AbstractMultiPointShape<Spline>
 
     public double getCurveFactor()
     {
-        return getAttributes().getCurveFactor();
+        return this.curveFactor;
     }
 
     public Spline setCurveFactor(final double factor)
     {
-        getAttributes().setCurveFactor(factor);
+        this.curveFactor = factor;
 
         return refresh();
     }
 
     public double getAngleFactor()
     {
-        return getAttributes().getAngleFactor();
+        return this.angleFactor;
     }
 
     public Spline setAngleFactor(final double factor)
     {
-        getAttributes().setAngleFactor(factor);
+        this.angleFactor = angleFactor;
 
         return refresh();
     }
 
     public boolean getLineFlatten()
     {
-        return getAttributes().getLineFlatten();
+        return this.lineFlatten;
     }
 
     public Spline setLineFlatten(final boolean flat)
     {
-        getAttributes().setLineFlatten(flat);
+        this.lineFlatten = flat;
 
         return refresh();
     }
@@ -375,12 +359,6 @@ public class Spline extends AbstractMultiPointShape<Spline>
             addAttribute(Attribute.LINE_FLATTEN);
 
             addAttribute(Attribute.CONTROL_POINTS, true);
-        }
-
-        @Override
-        public Spline create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new Spline(node, ctx);
         }
     }
 

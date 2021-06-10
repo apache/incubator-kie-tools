@@ -90,6 +90,6 @@ public final class ImageClipBounds
 
     public final boolean isDifferent(final ImageClipBounds that)
     {
-        return (false == isSame(that));
+        return (!isSame(that));
     }
 }

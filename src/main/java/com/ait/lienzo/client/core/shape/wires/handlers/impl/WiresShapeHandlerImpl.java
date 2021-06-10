@@ -29,8 +29,10 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragContext;
-import com.ait.tooling.common.api.java.util.function.Consumer;
-import com.ait.tooling.common.api.java.util.function.Supplier;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import static com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlUtils.excludeFromIndex;
 
 /**
  * This handler's goals are:
@@ -131,7 +133,7 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
                                                  event.getY(),
                                                  event.isShiftKeyDown(),
                                                  event.isAltKeyDown(),
-                                                 event.isControlKeyDown()));
+                                                 event.isCtrlKeyDown()));
         clickEventConsumer.accept(event);
     }
 
@@ -141,7 +143,7 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
                                            event.getY(),
                                            event.isShiftKeyDown(),
                                            event.isAltKeyDown(),
-                                           event.isControlKeyDown()));
+                                           event.isCtrlKeyDown()));
     }
 
     @Override
@@ -150,7 +152,7 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
                                          event.getY(),
                                          event.isShiftKeyDown(),
                                          event.isAltKeyDown(),
-                                         event.isControlKeyDown()));
+                                         event.isCtrlKeyDown()));
     }
 
     private WiresShape getShape() {

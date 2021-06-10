@@ -16,10 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.safehtml.shared.UriUtils;
-
 public class URLValidator extends AbstractAttributeTypeValidator
 {
     public static final URLValidator INSTANCE = new URLValidator();
@@ -30,7 +26,7 @@ public class URLValidator extends AbstractAttributeTypeValidator
     }
 
     @Override
-    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
@@ -38,33 +34,35 @@ public class URLValidator extends AbstractAttributeTypeValidator
 
             return;
         }
-        final JSONString str = jval.isString();
 
-        if (null == str)
-        {
-            ctx.addBadTypeError(getTypeName());
-
-            return;
-        }
-        String url = str.stringValue();
-
-        if ((null == url) || ((url = url.trim()).isEmpty()) || (url.startsWith("#")))
-        {
-            ctx.addBadTypeError(getTypeName());
-
-            return;
-        }
-        if (url.startsWith("data:"))
-        {
-            return;
-        }
-        url = UriUtils.fromString(url).asString();
-
-        if ((null == url) || ((url = url.trim()).isEmpty()) || (url.startsWith("#")))
-        {
-            ctx.addBadTypeError(getTypeName());
-
-            return;
-        }
+        // @FIXME serialization (mdp)
+//        final JSONString str = jval.isString();
+//
+//        if (null == str)
+//        {
+//            ctx.addBadTypeError(getTypeName());
+//
+//            return;
+//        }
+//        String url = str.stringValue();
+//
+//        if ((null == url) || ((url = url.trim()).isEmpty()) || (url.startsWith("#")))
+//        {
+//            ctx.addBadTypeError(getTypeName());
+//
+//            return;
+//        }
+//        if (url.startsWith("data:"))
+//        {
+//            return;
+//        }
+//        url = UriUtils.fromString(url).asString();
+//
+//        if ((null == url) || ((url = url.trim()).isEmpty()) || (url.startsWith("#")))
+//        {
+//            ctx.addBadTypeError(getTypeName());
+//
+//            return;
+//        }
     }
 }

@@ -18,9 +18,6 @@ package com.ait.lienzo.client.core.shape.json.validators;
 
 import java.util.Objects;
 
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONValue;
-
 public class ArrayValidator extends AbstractAttributeTypeValidator
 {
 	private final IAttributeTypeValidator m_elementTypeValidator;
@@ -38,7 +35,7 @@ public class ArrayValidator extends AbstractAttributeTypeValidator
 	}
 
 	@Override
-	public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
+	public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
 	{
 		if (null == jval)
 		{
@@ -46,24 +43,26 @@ public class ArrayValidator extends AbstractAttributeTypeValidator
 
 			return;
 		}
-		final JSONArray jarr = jval.isArray();
 
-		if (null == jarr)
-		{
-			ctx.addBadTypeError(getTypeName());
-		}
-		else
-		{
-			final int size = jarr.size();
-
-			for (int i = 0; i < size; i++)
-			{
-				ctx.pushIndex(i);
-
-				m_elementTypeValidator.validate(jarr.get(i), ctx);
-
-				ctx.pop();// index
-			}
-		}
+		// @FIXME serialization (mdp)
+//		final JSONArray jarr = jval.isArray();
+//
+//		if (null == jarr)
+//		{
+//			ctx.addBadTypeError(getTypeName());
+//		}
+//		else
+//		{
+//			final int size = jarr.size();
+//
+//			for (int i = 0; i < size; i++)
+//			{
+//				ctx.pushIndex(i);
+//
+//				m_elementTypeValidator.validate(jarr.get(i), ctx);
+//
+//				ctx.pop();// index
+//			}
+//		}
 	}
 }

@@ -32,22 +32,15 @@ import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
-import com.ait.lienzo.client.core.types.DragBounds;
-import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
-import com.ait.lienzo.shared.core.types.DragConstraint;
-import com.ait.lienzo.shared.core.types.DragMode;
-import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.lienzo.shared.core.types.GroupType;
 import com.ait.lienzo.shared.core.types.NodeType;
-import com.ait.tooling.common.api.java.util.function.Predicate;
-import com.ait.tooling.nativetools.client.collection.MetaData;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
+import java.util.function.Predicate;
+
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * A Container capable of holding a collection of T objects
@@ -58,22 +51,13 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
 
     private final OptionalGroupOfFields m_opts = OptionalGroupOfFields.make();
 
+
     /**
      * Constructor. Creates an instance of a group.
      */
     protected GroupOf(final GroupType type, final IStorageEngine<T> stor)
     {
         super(NodeType.GROUP, stor);
-
-        m_type = type;
-    }
-
-    /**
-     * Constructor. Creates an instance of a group.
-     */
-    protected GroupOf(final GroupType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(NodeType.GROUP, node, ctx);
 
         m_type = type;
     }
@@ -137,20 +121,6 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
         return cast();
     }
 
-    @Override
-    public EventPropagationMode getEventPropagationMode()
-    {
-        return getAttributes().getEventPropagationMode();
-    }
-
-    @Override
-    public C setEventPropagationMode(final EventPropagationMode mode)
-    {
-        getAttributes().setEventPropagationMode(mode);
-
-        return cast();
-    }
-
     /**
      * Returns this group as an {@link IPrimitive}.
      * 
@@ -160,468 +130,6 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
     public IPrimitive<?> asPrimitive()
     {
         return this;
-    }
-
-    /**
-     * Gets the X coordinate for this group.
-     * 
-     * @return double
-     */
-    @Override
-    public double getX()
-    {
-        return getAttributes().getX();
-    }
-
-    /**
-     * Sets the X coordinate for this group.
-     * 
-     * @param x
-     * @return Group this Group
-     */
-    @Override
-    public C setX(final double x)
-    {
-        getAttributes().setX(x);
-
-        return cast();
-    }
-
-    /**
-     * Gets the Y coordinate for this group.
-     * 
-     * @return double
-     */
-    @Override
-    public double getY()
-    {
-        return getAttributes().getY();
-    }
-
-    /**
-     * Sets the Y coordinate for this group.
-     * 
-     * @return Group this Group
-     */
-    @Override
-    public C setY(final double y)
-    {
-        getAttributes().setY(y);
-
-        return cast();
-    }
-
-    /**
-     * Sets the X and Y attributes to P.x and P.y
-     * 
-     * @param p Point2D
-     * @return Group this Group
-     */
-    @Override
-    public C setLocation(final Point2D p)
-    {
-        setX(p.getX());
-
-        setY(p.getY());
-
-        return cast();
-    }
-
-    /**
-     * Returns the X and Y attributes as a Point2D
-     * 
-     * @return Point2D
-     */
-    public Point2D getLocation()
-    {
-        return new Point2D(getX(), getY());
-    }
-
-    /**
-     * Gets the alpha value (transparency) for this group.
-     * 
-     * @return double between 0 and 1
-     */
-    @Override
-    public double getAlpha()
-    {
-        return getAttributes().getAlpha();
-    }
-
-    /**
-     * Sets the alpha value (transparency) on this group.
-     * 
-     * @param alpha between 0 and 1
-     * @return Group this Group
-     */
-    @Override
-    public C setAlpha(final double alpha)
-    {
-        getAttributes().setAlpha(alpha);
-
-        return cast();
-    }
-
-    /**
-     * Gets the alpha value (transparency) for this group.
-     * 
-     * @return double between 0 and 1
-     */
-    @Override
-    public double getFillAlpha()
-    {
-        return getAttributes().getFillAlpha();
-    }
-
-    /**
-     * Sets the alpha value (transparency) on this group.
-     * 
-     * @param alpha between 0 and 1
-     * @return Group this Group
-     */
-    @Override
-    public C setFillAlpha(final double alpha)
-    {
-        getAttributes().setFillAlpha(alpha);
-
-        return cast();
-    }
-
-    /**
-     * Sets the alpha color on this shape.
-     * 
-     * @param alpha
-     * @return T
-     */
-    @Override
-    public C setStrokeAlpha(final double alpha)
-    {
-        getAttributes().setStrokeAlpha(alpha);
-
-        return cast();
-    }
-
-    /**
-     * Gets the alpha value for this shape.
-     * 
-     * @return double
-     */
-    @Override
-    public double getStrokeAlpha()
-    {
-        return getAttributes().getStrokeAlpha();
-    }
-
-    /**
-     * Returns whether this group can be dragged.
-     * 
-     * @return boolean 
-     */
-    @Override
-    public boolean isDraggable()
-    {
-        return getAttributes().isDraggable();
-    }
-
-    /**
-     * Sets if this group can be dragged.
-     * 
-     * @param draggable true if the group can be dragged; false otherwise
-     * @return Group this Group
-     */
-    @Override
-    public C setDraggable(final boolean draggable)
-    {
-        getAttributes().setDraggable(draggable);
-
-        return cast();
-    }
-
-    @Override
-    public boolean isEditable()
-    {
-        return getAttributes().isEditable();
-    }
-
-    @Override
-    public C setEditable(final boolean editable)
-    {
-        getAttributes().setEditable(editable);
-
-        return cast();
-    }
-
-    /**
-     * Gets the group's scale.
-     * 
-     * @return {@link Point2D}
-     */
-    @Override
-    public Point2D getScale()
-    {
-        return getAttributes().getScale();
-    }
-
-    /**
-     * Sets the group's scale, starting at the given point.
-     * 
-     * @param scale
-     * @return Group this Group
-     */
-    @Override
-    public C setScale(final Point2D scale)
-    {
-        getAttributes().setScale(scale);
-
-        return cast();
-    }
-
-    /**
-     * Sets this group's scale, with the same value for x and y.
-     * 
-     * @param xy
-     * @return Group this Group
-     */
-    @Override
-    public C setScale(final double xy)
-    {
-        getAttributes().setScale(xy);
-
-        return cast();
-    }
-
-    /**
-     * Sets this gruop's scale, starting at the given x and y
-     * 
-     * @param x
-     * @param y
-     * @return Group this Group
-     */
-    @Override
-    public C setScale(final double x, final double y)
-    {
-        getAttributes().setScale(x, y);
-
-        return cast();
-    }
-
-    /**
-     * Gets this group's rotation, in radians.
-     * 
-     * @return double
-     */
-    @Override
-    public double getRotation()
-    {
-        return getAttributes().getRotation();
-    }
-
-    /**
-     * Sets this group's rotation, in radians.
-     * 
-     * @param radians
-     * @return Group this Group
-     */
-    @Override
-    public C setRotation(final double radians)
-    {
-        getAttributes().setRotation(radians);
-
-        return cast();
-    }
-
-    /**
-     * Gets this group's rotation, in degrees.
-     * 
-     * @return double
-     */
-    @Override
-    public double getRotationDegrees()
-    {
-        return getAttributes().getRotationDegrees();
-    }
-
-    /**
-     * Sets this group's rotation, in degrees.
-     * 
-     * @param degrees
-     * @return Group this Group
-     */
-    @Override
-    public C setRotationDegrees(final double degrees)
-    {
-        getAttributes().setRotationDegrees(degrees);
-
-        return cast();
-    }
-
-    /**
-     * Gets this group's offset as a {@link Point2D}
-     * 
-     * @return Point2D
-     */
-    @Override
-    public Point2D getOffset()
-    {
-        return getAttributes().getOffset();
-    }
-
-    /**
-     * Gets this group's shear as a {@link Point2D}
-     * 
-     * @return Point2D
-     */
-    @Override
-    public Point2D getShear()
-    {
-        return getAttributes().getShear();
-    }
-
-    /**
-     * Sets this group's shear
-     * 
-     * @param offset
-     * @return T
-     */
-    @Override
-    public C setShear(final Point2D shear)
-    {
-        getAttributes().setShear(shear);
-
-        return cast();
-    }
-
-    /**
-     * Sets this group's shear
-     * 
-     * @param offset
-     * @return T
-     */
-    @Override
-    public C setShear(final double x, final double y)
-    {
-        getAttributes().setShear(x, y);
-
-        return cast();
-    }
-
-    /**
-     * Sets this group's offset
-     * 
-     * @param offset
-     * @return Group this Group
-     */
-    @Override
-    public C setOffset(final Point2D offset)
-    {
-        getAttributes().setOffset(offset);
-
-        return cast();
-    }
-
-    /**
-     * Sets this group's offset, with the same value for x and y.
-     * 
-     * @param xy
-     * @return Group this Group
-     */
-    @Override
-    public C setOffset(final double xy)
-    {
-        getAttributes().setOffset(xy);
-
-        return cast();
-    }
-
-    /**
-     * Sets this group's offset, at the given x and y coordinates.
-     * 
-     * @param x
-     * @param y
-     * @return Group this Group
-     */
-    @Override
-    public C setOffset(final double x, final double y)
-    {
-        getAttributes().setOffset(x, y);
-
-        return cast();
-    }
-
-    /**
-     * Gets this group's {@link DragConstraint}
-     * 
-     * @return DragConstraint
-     */
-    @Override
-    public DragConstraint getDragConstraint()
-    {
-        return getAttributes().getDragConstraint();
-    }
-
-    /**
-     * Sets this group's drag constraint, 
-     * e.g. horizontal, vertical or none (default)
-     * 
-     * @param constraint
-     * @return Group this Group
-     */
-    @Override
-    public C setDragConstraint(final DragConstraint constraint)
-    {
-        getAttributes().setDragConstraint(constraint);
-
-        return cast();
-    }
-
-    /**
-     * Gets the {@link DragBounds} for this group.
-     * 
-     * @return DragBounds
-     */
-    @Override
-    public DragBounds getDragBounds()
-    {
-        return getAttributes().getDragBounds();
-    }
-
-    /**
-     * Sets this group's drag bounds.
-     * 
-     * @param bounds
-     * @return Group this Group
-     */
-    @Override
-    public C setDragBounds(final DragBounds bounds)
-    {
-        getAttributes().setDragBounds(bounds);
-
-        return cast();
-    }
-
-    /**
-     * Gets the {@link DragMode} for this node.
-     * 
-     * @return DragMode
-     */
-    @Override
-    public DragMode getDragMode()
-    {
-        return getAttributes().getDragMode();
-    }
-
-    /**
-     * Sets this node's drag mode.
-     * 
-     * @param mode
-     * @return Group this Group
-     */
-    @Override
-    public C setDragMode(final DragMode mode)
-    {
-        getAttributes().setDragMode(mode);
-
-        return cast();
     }
 
     /**
@@ -652,11 +160,11 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
     }
 
     /**
-     * Adds a primitive to the collection. Override to ensure primitive is put in Layers Color Map
+     * Adds a primitive to the collection. Override to ensure primitive is putString in Layers Color Map
      * <p>
      * It should be noted that this operation will not have an apparent effect for an already rendered (drawn) Container.
      * In other words, if the Container has already been drawn and a new primitive is added, you'll need to invoke draw() on the
-     * Container. This is done to enhance performance, otherwise, for every add we would have draws impacting performance.
+     * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
      */
     @Override
     public C add(final T child)
@@ -715,7 +223,7 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
      * <p>
      * It should be noted that this operation will not have an apparent effect for an already rendered (drawn) Container.
      * In other words, if the Container has already been drawn and a new primitive is added, you'll need to invoke draw() on the
-     * Container. This is done to enhance performance, otherwise, for every add we would have draws impacting performance.
+     * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
      */
     @Override
     public C remove(final T child)
@@ -732,7 +240,7 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
      * <p>
      * It should be noted that this operation will not have an apparent effect for an already rendered (drawn) Container.
      * In other words, if the Container has already been drawn and a new primitive is added, you'll need to invoke draw() on the
-     * Container. This is done to enhance performance, otherwise, for every add we would have draws impacting performance.
+     * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
      */
     @Override
     public C removeAll()
@@ -751,7 +259,7 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
 
     public static <T extends IPrimitive<?>, C extends GroupOf<T, C>> void destroy(final GroupOf<T, C> group) {
         final NFastArrayList<T> children = group.getChildNodes();
-        for (final T child : children) {
+        for (final T child : children.asList()) {
             if (child instanceof IDestroyable) {
                 ((IDestroyable) child).destroy();
             }
@@ -806,59 +314,6 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
                 }
             }
         }
-    }
-
-    /**
-     * Serialize this group as a {@link JSONObject}.
-     * 
-     * @return JSONObject
-     */
-    @Override
-    public JSONObject toJSONObject()
-    {
-        final JSONObject object = new JSONObject();
-
-        object.put("type", new JSONString(getGroupType().getValue()));
-
-        if (hasMetaData())
-        {
-            final MetaData meta = getMetaData();
-
-            if (false == meta.isEmpty())
-            {
-                object.put("meta", new JSONObject(meta.getJSO()));
-            }
-        }
-        object.put("attributes", new JSONObject(getAttributes().getJSO()));
-
-        final NFastArrayList<T> list = getChildNodes();
-
-        final JSONArray children = new JSONArray();
-
-        if (list != null)
-        {
-            final int size = list.size();
-
-            for (int i = 0; i < size; i++)
-            {
-                final T prim = list.get(i);
-
-                if (null != prim)
-                {
-                    JSONObject make = prim.toJSONObject();
-
-                    if (null != make)
-                    {
-                        children.set(children.size(), make);
-                    }
-                }
-            }
-        }
-        object.put("children", children);
-
-        object.put("storage", getStorageEngine().toJSONObject());
-
-        return object;
     }
 
     /**
@@ -1027,7 +482,7 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
         }
         if (types.size() > 1)
         {
-            types = new ArrayList<ControlHandleType>(new HashSet<ControlHandleType>(types));
+            types = new ArrayList<>(new HashSet<>(types));
         }
         IControlHandleFactory factory = getControlHandleFactory();
 
@@ -1078,7 +533,7 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
         return cast();
     }
 
-    protected static abstract class GroupOfFactory <T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNodeFactory<C>
+    protected abstract static class GroupOfFactory <T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNodeFactory<C>
     {
         protected GroupOfFactory(final GroupType type)
         {
@@ -1139,57 +594,55 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
         }
     }
 
-    private static class OptionalGroupOfFields extends JavaScriptObject
+    @JsType
+    private static class OptionalGroupOfFields
     {
+        @JsProperty
+        private boolean drag;
+
+        @JsProperty
+        private DragConstraintEnforcer denf;
+
+        @JsProperty
+        private IControlHandleFactory hand;
+
         public static final OptionalGroupOfFields make()
         {
-            return JavaScriptObject.createObject().cast();
+            return new OptionalGroupOfFields();
         }
 
         protected OptionalGroupOfFields()
         {
         }
 
-        protected final native boolean isDragging()
-        /*-{
-			return !!this.drag;
-        }-*/;
+        protected final boolean isDragging()
+        {
+			return this.drag;
+        }
 
-        protected final native void setDragging(boolean drag)
-        /*-{
-			if (false == drag) {
-				delete this["drag"];
-			} else {
-				this.drag = drag;
-			}
-        }-*/;
+        protected final void setDragging(boolean drag)
+        {
+            this.drag = drag;
+        }
 
-        protected final native DragConstraintEnforcer getDragConstraintEnforcer()
-        /*-{
+        protected final DragConstraintEnforcer getDragConstraintEnforcer()
+        {
 			return this.denf;
-        }-*/;
+        }
 
-        protected final native void setDragConstraintEnforcer(DragConstraintEnforcer denf)
-        /*-{
-			if (null == denf) {
-				delete this["denf"];
-			} else {
-				this.denf = denf;
-			}
-        }-*/;
+        protected final void setDragConstraintEnforcer(DragConstraintEnforcer denf)
+        {
+            this.denf = denf;
+        }
 
-        protected final native IControlHandleFactory getControlHandleFactory()
-        /*-{
+        protected final IControlHandleFactory getControlHandleFactory()
+        {
 			return this.hand;
-        }-*/;
+        }
 
-        protected final native void setControlHandleFactory(IControlHandleFactory hand)
-        /*-{
-			if (null == hand) {
-				delete this["hand"];
-			} else {
-				this.hand = hand;
-			}
-        }-*/;
+        protected final void setControlHandleFactory(IControlHandleFactory hand)
+        {
+            this.hand = hand;
+        }
     }
 }

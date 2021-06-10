@@ -21,10 +21,18 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
+import jsinterop.base.Js;
 
 public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageDataFilter>
 {
+    @JsProperty
+    private double gain;
+
+    @JsProperty
+    private double bias;
+
     private double           m_ngain = Double.NaN;
 
     private double           m_nbias = Double.NaN;
@@ -45,21 +53,21 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
         setBias(bias);
     }
 
-    protected GainImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected GainImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
     {
         super(ImageFilterType.GainImageDataFilterType, node, ctx);
     }
 
     public final GainImageDataFilter setGain(double gain)
     {
-        getAttributes().setGain(Math.max(Math.min(gain, getMaxGain()), getMinGain()));
+        this.gain = Math.max(Math.min(gain, getMaxGain()), getMinGain());
 
         return this;
     }
 
     public final double getGain()
     {
-        return Math.max(Math.min(getAttributes().getGain(), getMaxGain()), getMinGain());
+        return Math.max(Math.min(this.gain, getMaxGain()), getMinGain());
     }
 
     public final double getMinGain()
@@ -74,14 +82,14 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
 
     public final GainImageDataFilter setBias(double bias)
     {
-        getAttributes().setBias(Math.max(Math.min(bias, getMaxBias()), getMinBias()));
+        this.bias = Math.max(Math.min(bias, getMaxBias()), getMinBias());
 
         return this;
     }
 
     public final double getBias()
     {
-        return Math.max(Math.min(getAttributes().getBias(), getMaxBias()), getMinBias());
+        return Math.max(Math.min(this.bias, getMaxBias()), getMinBias());
     }
 
     public final double getMinBias()
@@ -112,20 +120,20 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
         return m_table;
     }
 
-    private final native FilterTableArray getTable_()
-    /*-{
-        var table = [];
-        var gain = this.@com.ait.lienzo.client.core.image.filter.GainImageDataFilter::m_ngain;
-        var bias = this.@com.ait.lienzo.client.core.image.filter.GainImageDataFilter::m_nbias;
-        for(var i = 0; i < 256; i++) {
-            var v = i / 255;
-            var k = (1 / gain - 2) * (1 - 2 * v);
+    private final FilterTableArray getTable_()
+    {
+        int[] table = new int[256];
+        double gain = m_ngain;
+        double bias = m_nbias;
+        for(int i = 0; i < 256; i++) {
+            double v = i / 255;
+            double k = (1 / gain - 2) * (1 - 2 * v);
             v = (v < 0.5) ? v / (k + 1) : (k - v) / (k - 1);
             v /= (1 / bias - 2) * (1 - v) + 1; 
-            table[i] = (255 * v) | 0;
+            table[i] = Js.coerceToInt(255 * v);
         }
-        return table;
-    }-*/;
+        return new FilterTableArray(table);
+    };
 
     @Override
     public IFactory<GainImageDataFilter> getFactory()
@@ -142,12 +150,6 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
             addAttribute(Attribute.GAIN, true);
 
             addAttribute(Attribute.BIAS, true);
-        }
-
-        @Override
-        public GainImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new GainImageDataFilter(node, ctx);
         }
     }
 }

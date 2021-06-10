@@ -19,10 +19,11 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.json.client.JSONObject;
+
+import elemental2.core.Uint8ClampedArray;
+import elemental2.dom.ImageData;
 
 /**
  * A class that allows for easy creation of a Luminosity Gray Scale based Image Filter.
@@ -34,7 +35,7 @@ public class LuminosityGrayScaleImageDataFilter extends AbstractImageDataFilter<
         super(ImageFilterType.LuminosityGrayScaleImageDataFilterType);
     }
 
-    protected LuminosityGrayScaleImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected LuminosityGrayScaleImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
     {
         super(ImageFilterType.LuminosityGrayScaleImageDataFilterType, node, ctx);
     }
@@ -48,13 +49,13 @@ public class LuminosityGrayScaleImageDataFilter extends AbstractImageDataFilter<
         }
         if (copy)
         {
-            source = source.copy();
+            source = ImageDataUtil.copy(source);
         }
-        if (false == isActive())
+        if (!isActive())
         {
             return source;
         }
-        final CanvasPixelArray data = source.getData();
+        final Uint8ClampedArray data = source.data;
 
         if (null == data)
         {
@@ -76,12 +77,6 @@ public class LuminosityGrayScaleImageDataFilter extends AbstractImageDataFilter<
         public LuminosityGrayScaleImageDataFilterFactory()
         {
             super(ImageFilterType.LuminosityGrayScaleImageDataFilterType);
-        }
-
-        @Override
-        public LuminosityGrayScaleImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new LuminosityGrayScaleImageDataFilter(node, ctx);
         }
     }
 }

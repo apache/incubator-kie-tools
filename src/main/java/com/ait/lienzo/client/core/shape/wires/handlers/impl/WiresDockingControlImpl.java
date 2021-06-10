@@ -16,24 +16,21 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.Geometry;
-import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
+
+import java.util.function.Supplier;
 
 public class WiresDockingControlImpl extends AbstractWiresControl<WiresDockingControlImpl>
         implements WiresDockingControl {
@@ -193,8 +190,7 @@ public class WiresDockingControlImpl extends AbstractWiresControl<WiresDockingCo
         final PickerPart.ShapePart parentShapePart = getParentPickerControl().getParentShapePart();
         final WiresManager wiresManager = m_layer.getWiresManager();
         final IDockingAcceptor dockingAcceptor = wiresManager.getDockingAcceptor();
-        return null != getParent() &&
-                null != parentShapePart
+        return null != getParent()
                 && parentShapePart == PickerPart.ShapePart.BORDER
                 && dockingAcceptor.acceptDocking(getParent(),
                                                  getShape());
@@ -231,36 +227,30 @@ public class WiresDockingControlImpl extends AbstractWiresControl<WiresDockingCo
 
         xRatio = -1;
         yRatio = -1;
-        registerHandler(parentWireShape.addWiresResizeStepHandler(new WiresResizeStepHandler() {
-            @Override
-            public void onShapeResizeStep(WiresResizeStepEvent event) {
-                if ( xRatio == -1 && yRatio == -1 )
-                {
-                    // this is a hack, to ensure it runs on the first before any resize computations
-                    BoundingBox parentBox = event.getShape().getPath().getBoundingBox();
+        registerHandler(parentWireShape.addWiresResizeStepHandler(event -> {
+            if ( xRatio == -1 && yRatio == -1 )
+            {
+                // this is a hack, to ensure it runs on the first before any resize computations
+                BoundingBox parentBox = event.getSource().getPath().getBoundingBox();
 
-                    // make sure everything is shifted to have x/y greater than 0
-                    double normaliseX = parentBox.getX() >= 0 ? 0 : 0 - parentBox.getX();
-                    double normaliseY = parentBox.getY() >= 0 ? 0 : 0 - parentBox.getY();
+                // makeXY sure everything is shifted to have x/y greater than 0
+                double normaliseX = parentBox.getX() >= 0 ? 0 : 0 - parentBox.getX();
+                double normaliseY = parentBox.getY() >= 0 ? 0 : 0 - parentBox.getY();
 
-                    Point2D location = shape.getLocation();
-                    xRatio = Geometry.getRatio(location.getX() + normaliseX + (shapeBox.getWidth() / 2), parentBox.getX() + normaliseX, parentBox.getWidth());
-                    yRatio = Geometry.getRatio(location.getY() + normaliseY + (shapeBox.getHeight() / 2), parentBox.getY() + normaliseY, parentBox.getHeight());
-                }
-                shape.setLocation(new Point2D(event.getX() + (event.getWidth() * xRatio) - (shapeBox.getWidth() / 2),
-                                              event.getY() + (event.getHeight() * yRatio) - (shapeBox.getHeight() / 2)));
-
-                shape.shapeMoved();
+                Point2D location = shape.getLocation();
+                xRatio = Geometry.getRatio(location.getX() + normaliseX + (shapeBox.getWidth() / 2), parentBox.getX() + normaliseX, parentBox.getWidth());
+                yRatio = Geometry.getRatio(location.getY() + normaliseY + (shapeBox.getHeight() / 2), parentBox.getY() + normaliseY, parentBox.getHeight());
             }
+            shape.setLocation(new Point2D(event.getX() + (event.getWidth() * xRatio) - (shapeBox.getWidth() / 2),
+                                          event.getY() + (event.getHeight() * yRatio) - (shapeBox.getHeight() / 2)));
+
+            shape.shapeMoved();
         }));
-        registerHandler(parentWireShape.addWiresResizeEndHandler(new WiresResizeEndHandler() {
-            @Override
-            public void onShapeResizeEnd(WiresResizeEndEvent event) {
-                shape.setLocation(new Point2D(event.getX() + (event.getWidth() * xRatio) - (shapeBox.getWidth() / 2),
-                                              event.getY() + (event.getHeight() * yRatio) - (shapeBox.getHeight() / 2)));
-                shape.shapeMoved();
-                shape.getControl().getAlignAndDistributeControl().updateIndex();
-            }
+        registerHandler(parentWireShape.addWiresResizeEndHandler(event -> {
+            shape.setLocation(new Point2D(event.getX() + (event.getWidth() * xRatio) - (shapeBox.getWidth() / 2),
+                                          event.getY() + (event.getHeight() * yRatio) - (shapeBox.getHeight() / 2)));
+            shape.shapeMoved();
+            shape.getControl().getAlignAndDistributeControl().updateIndex();
         }));
     }
 

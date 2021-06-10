@@ -16,17 +16,40 @@
 
 package com.ait.lienzo.client.core.event;
 
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
 
-public abstract class AbstractNodeEvent<H extends EventHandler> extends GwtEvent<H> implements INodeEvent
+import com.ait.lienzo.client.core.shape.Node;
+import com.ait.lienzo.tools.client.event.INodeEvent;
+
+import elemental2.dom.HTMLElement;
+import elemental2.dom.MouseEvent;
+import elemental2.dom.Touch;
+import elemental2.dom.TouchEvent;
+import elemental2.dom.UIEvent;
+
+// @FIXME preventDefault and stopPropagation do very little, maybe a GWTEvent porting error.
+// @TODO RENAME, this is no longer just for nodes (mdp)
+public abstract class AbstractNodeEvent<H, S> implements INodeEvent<H, S>
 {
     private boolean m_dead = false;
+
+    private S    source;
+
+    private HTMLElement relativeElement;
+
+    public AbstractNodeEvent(final HTMLElement relativeElement)
+    {
+        this.relativeElement = relativeElement;
+    }
 
     @Override
     public final boolean isAlive()
     {
         return (false == m_dead);
+    }
+
+    protected void setDead(boolean dead)
+    {
+        m_dead = dead;
     }
 
     @Override
@@ -42,8 +65,40 @@ public abstract class AbstractNodeEvent<H extends EventHandler> extends GwtEvent
     }
 
     @Override
-    public final GwtEvent<?> getNodeEvent()
+    public S getSource()
     {
-        return this;
+        return source;
     }
+
+    public HTMLElement getRelativeElement()
+    {
+        return this.relativeElement;
+    }
+
+    public void setSource(final S source)
+    {
+        this.source = source;
+    }
+
+    public static final boolean isShiftKeyDown(final UIEvent event)
+    {
+        return (null != event) && (event instanceof MouseEvent) ? ((MouseEvent) event).shiftKey : ((TouchEvent) event).shiftKey;
+    }
+
+    public static final boolean isAltKeyDown(final UIEvent event)
+    {
+        return (null != event) && (event instanceof MouseEvent) ? ((MouseEvent) event).altKey : ((TouchEvent) event).altKey;
+    }
+
+    public static final boolean isMetaKeyDown(final UIEvent event)
+    {
+        return (null != event) && (event instanceof MouseEvent) ?  ((MouseEvent) event).metaKey : ((TouchEvent) event).metaKey;
+    }
+
+    public static final boolean isCtrlKeyDown(final UIEvent event)
+    {
+        return (null != event) && (event instanceof MouseEvent) ?  ((MouseEvent) event).ctrlKey : ((TouchEvent) event).ctrlKey;
+    }
+
+
 }

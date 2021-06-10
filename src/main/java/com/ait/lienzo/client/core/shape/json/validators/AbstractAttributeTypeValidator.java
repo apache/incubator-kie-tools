@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-import com.ait.tooling.common.api.java.util.StringOps;
+import com.ait.lienzo.tools.common.api.java.util.StringOps;
 
 public abstract class AbstractAttributeTypeValidator implements IAttributeTypeValidator
 {

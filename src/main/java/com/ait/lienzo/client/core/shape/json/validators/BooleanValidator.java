@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-import com.google.gwt.json.client.JSONValue;
-
 public class BooleanValidator extends AbstractAttributeTypeValidator
 {
     public static final BooleanValidator INSTANCE = new BooleanValidator();
@@ -27,7 +25,7 @@ public class BooleanValidator extends AbstractAttributeTypeValidator
         super("Boolean");
     }
     @Override
-    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
@@ -35,9 +33,10 @@ public class BooleanValidator extends AbstractAttributeTypeValidator
 
             return;
         }
-        if (null == jval.isBoolean())
-        {
-            ctx.addBadTypeError("Boolean");
-        }
+        // @FIXME serialization (mdp)
+//        if (null == jval.isBoolean())
+//        {
+//            ctx.addBadTypeError("Boolean");
+//        }
     }
 }

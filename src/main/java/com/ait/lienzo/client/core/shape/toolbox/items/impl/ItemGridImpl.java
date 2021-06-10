@@ -19,6 +19,8 @@ package com.ait.lienzo.client.core.shape.toolbox.items.impl;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.toolbox.ItemGrid;
@@ -28,8 +30,6 @@ import com.ait.lienzo.client.core.shape.toolbox.items.AbstractPrimitiveItem;
 import com.ait.lienzo.client.core.shape.toolbox.items.DecoratedItem;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.tooling.common.api.java.util.function.BiConsumer;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 
 public class ItemGridImpl
         extends WrappedItem<ItemGridImpl>
@@ -56,7 +56,7 @@ public class ItemGridImpl
         this.groupPrimitiveItem =
                 groupPrimitiveItem
                         .setBoundingBox(boundingBoxSupplier);
-        this.boundingBox = new BoundingBox(0,
+        this.boundingBox = BoundingBox.fromDoubles(0,
                                            0,
                                            1,
                                            1);
@@ -201,7 +201,7 @@ public class ItemGridImpl
             }
         }
 
-        boundingBox = new BoundingBox(0,
+        boundingBox = BoundingBox.fromDoubles(0,
                                       0,
                                       maxw,
                                       maxh);

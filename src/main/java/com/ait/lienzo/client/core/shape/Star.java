@@ -27,7 +27,8 @@ import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
 
 /**
  * Star is defined by an inner radius, an outer radius and the number of points.
@@ -36,6 +37,18 @@ import com.google.gwt.json.client.JSONObject;
 public class Star extends Shape<Star>
 {
     private final PathPartList m_list = new PathPartList();
+
+    @JsProperty
+    private double       cornerRadius;
+
+    @JsProperty
+    private int          starPoints;
+
+    @JsProperty
+    private double innerRadius;
+
+    @JsProperty
+    private double outerRadius;
 
     /**
      * Constructor. Creates an instance of a star.  Visually, there is an enclosing
@@ -61,17 +74,12 @@ public class Star extends Shape<Star>
         setCornerRadius(corner);
     }
 
-    protected Star(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.STAR, node, ctx);
-    }
-
     @Override
     public BoundingBox getBoundingBox()
     {
         if (m_list.size() < 1)
         {
-            parse(getAttributes());
+            parse();
         }
         return m_list.getBoundingBox();
     }
@@ -82,11 +90,11 @@ public class Star extends Shape<Star>
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final double alpha)
     {
         if (m_list.size() < 1)
         {
-            if (false == parse(attr))
+            if (!parse())
             {
                 return false;
             }
@@ -100,13 +108,13 @@ public class Star extends Shape<Star>
         return true;
     }
 
-    private boolean parse(final Attributes attr)
+    private boolean parse()
     {
-        final int sp = attr.getStarPoints();
+        final int sp = getStarPoints();
 
-        final double ir = attr.getInnerRadius();
+        final double ir = getInnerRadius();
 
-        final double or = attr.getOuterRadius();
+        final double or = getOuterRadius();
 
         if ((sp > 4) && (ir > 0) && (or > 0) && (or > ir))
         {
@@ -130,7 +138,7 @@ public class Star extends Shape<Star>
             }
             else
             {
-                final Point2DArray list = new Point2DArray(0, 0 - or);
+                final Point2DArray list = Point2DArray.fromArrayOfDouble(0, 0 - or);
 
                 for (int n = 1; n < s2; n++)
                 {
@@ -138,9 +146,9 @@ public class Star extends Shape<Star>
 
                     final double radius = (((n % 2) == 0) ? or : ir);
 
-                    list.push(radius * Math.sin(stheta), -1 * radius * Math.cos(stheta));
+                    list.pushXY(radius * Math.sin(stheta), -1 * radius * Math.cos(stheta));
                 }
-                Geometry.drawArcJoinedLines(m_list, list.push(0, 0 - or), corner);
+                Geometry.drawArcJoinedLines(m_list, list.pushXY(0, 0 - or), corner);
             }
             return true;
         }
@@ -162,7 +170,7 @@ public class Star extends Shape<Star>
      */
     public int getStarPoints()
     {
-        return getAttributes().getStarPoints();
+        return this.starPoints;
     }
 
     /**
@@ -173,67 +181,71 @@ public class Star extends Shape<Star>
      * @param points
      * @return this Star
      */
-    public Star setStarPoints(final int points)
+    public Star setStarPoints(int points)
     {
-        getAttributes().setStarPoints(points);
+        if (points < 5)
+        {
+            points = 5;
+        }
+        this.starPoints = points;
 
         return refresh();
     }
 
     /**
      * Gets the {@link Star} inner radius.
-     * 
+     *
      * @return double
      */
     public double getInnerRadius()
     {
-        return getAttributes().getInnerRadius();
+        return this.innerRadius;
     }
 
     /**
      * Sets the {@link Star} inner radius.
-     * 
+     *
      * @param radius
      * @return this Star
      */
     public Star setInnerRadius(final double radius)
     {
-        getAttributes().setInnerRadius(radius);
+        this.innerRadius = radius;
 
-        return refresh();
+        return this;
     }
 
     /**
      * Returns the {@link Star} outer radius.
-     * 
+     *
      * @return double
      */
     public double getOuterRadius()
     {
-        return getAttributes().getOuterRadius();
+        return this.outerRadius;
     }
 
     /**
      * Sets the outer radius.
-     * 
+     *
      * @param radius
      * @return this Star
      */
     public Star setOuterRadius(final double radius)
     {
-        getAttributes().setOuterRadius(radius);
+        this.outerRadius = radius;
 
-        return refresh();
+        return this;
     }
 
     public double getCornerRadius()
     {
-        return getAttributes().getCornerRadius();
+        return this.cornerRadius;
     }
 
     public Star setCornerRadius(final double radius)
     {
-        getAttributes().setCornerRadius(radius);
+        this.cornerRadius = radius;
 
         return refresh();
     }
@@ -249,7 +261,7 @@ public class Star extends Shape<Star>
     {
         if (m_list.size() < 1)
         {
-            if (false == parse(getAttributes()))
+            if (!parse())
             {
                 return null;
             }
@@ -274,12 +286,6 @@ public class Star extends Shape<Star>
             addAttribute(Attribute.INNER_RADIUS, true);
 
             addAttribute(Attribute.OUTER_RADIUS, true);
-        }
-
-        @Override
-        public Star create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new Star(node, ctx);
         }
     }
 }

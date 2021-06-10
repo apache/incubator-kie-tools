@@ -16,8 +16,7 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-import com.google.gwt.json.client.JSONNumber;
-import com.google.gwt.json.client.JSONValue;
+import elemental2.core.JsNumber;
 
 public class NumberValidator extends AbstractAttributeTypeValidator
 {
@@ -29,7 +28,7 @@ public class NumberValidator extends AbstractAttributeTypeValidator
     }
 
     @Override
-    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
@@ -37,22 +36,24 @@ public class NumberValidator extends AbstractAttributeTypeValidator
 
             return;
         }
-        final JSONNumber numb = jval.isNumber();
 
-        if (null == numb)
-        {
-            ctx.addBadTypeError(getTypeName());
-
-            return;
-        }
-        if (false == isNumber(numb.doubleValue()))
-        {
-            ctx.addBadTypeError(getTypeName());
-        }
+        // @FIXME serialization (mdp)
+//        final JSONNumber numb = jval.isNumber();
+//
+//        if (null == numb)
+//        {
+//            ctx.addBadTypeError(getTypeName());
+//
+//            return;
+//        }
+//        if (false == isNumber(numb.doubleValue()))
+//        {
+//            ctx.addBadTypeError(getTypeName());
+//        }
     }
 
-    private final native boolean isNumber(double number)
-    /*-{
-		return isFinite(number);
-    }-*/;
+    private final boolean isNumber(double number)
+    {
+		return JsNumber.isFinite(number);
+    }
 }

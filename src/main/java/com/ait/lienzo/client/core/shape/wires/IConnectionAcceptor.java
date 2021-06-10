@@ -18,19 +18,19 @@ package com.ait.lienzo.client.core.shape.wires;
 
 public interface IConnectionAcceptor
 {
-    public static final IConnectionAcceptor ALL  = new DefaultConnectionAcceptor(true);
+    IConnectionAcceptor ALL  = new DefaultConnectionAcceptor(true);
 
-    public static final IConnectionAcceptor NONE = new DefaultConnectionAcceptor(false);
+    IConnectionAcceptor NONE = new DefaultConnectionAcceptor(false);
 
-    public boolean headConnectionAllowed(WiresConnection head, WiresShape shape);
+    boolean headConnectionAllowed(WiresConnection head, WiresShape shape);
 
-    public boolean tailConnectionAllowed(WiresConnection tail, WiresShape shape);
+    boolean tailConnectionAllowed(WiresConnection tail, WiresShape shape);
 
-    public boolean acceptHead(WiresConnection head, WiresMagnet magnet);
+    boolean acceptHead(WiresConnection head, WiresMagnet magnet);
 
-    public boolean acceptTail(WiresConnection tail, WiresMagnet magnet);
+    boolean acceptTail(WiresConnection tail, WiresMagnet magnet);
 
-    public static class DefaultConnectionAcceptor implements IConnectionAcceptor
+    class DefaultConnectionAcceptor implements IConnectionAcceptor
     {
         final private boolean m_defaultValue;
 

@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.shared.core.types;
 
-import com.ait.tooling.common.api.types.IStringValued;
+import com.ait.lienzo.tools.common.api.types.IStringValued;
 
 public class PaletteType implements IStringValued
 {
@@ -46,7 +46,7 @@ public class PaletteType implements IStringValued
     @Override
     public boolean equals(final Object other)
     {
-        if (false == (other instanceof PaletteType))
+        if (!(other instanceof PaletteType))
         {
             return false;
         }

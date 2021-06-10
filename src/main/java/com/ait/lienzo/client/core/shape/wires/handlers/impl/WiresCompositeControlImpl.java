@@ -30,7 +30,7 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.tooling.common.api.java.util.function.Supplier;
+import java.util.function.Supplier;
 
 /**
  * The default WiresCompositeControl implementation.
@@ -65,7 +65,7 @@ public class WiresCompositeControlImpl
         selectedShapes = new ArrayList<>(selectionContext.getShapes());
         selectedConnectors = new ArrayList<>(selectionContext.getConnectors());
 
-        Map<String, WiresConnector> connectors = new HashMap<String, WiresConnector>();
+        Map<String, WiresConnector> connectors = new HashMap<>();
         for (WiresShape shape : selectedShapes) {
 
             WiresShapeControlUtils.collectionSpecialConnectors(shape,
@@ -164,7 +164,7 @@ public class WiresCompositeControlImpl
                 parentPickerControl.getParent().getComputedLocation().add(candidate) :
                 candidate;
         if (null != parentPickerControl.getInitialParent()) {
-            co = co.minus(parentPickerControl.getInitialParent().getComputedLocation());
+            co = co.sub(parentPickerControl.getInitialParent().getComputedLocation());
         }
         return co;
     }
@@ -198,13 +198,13 @@ public class WiresCompositeControlImpl
         final Collection<WiresShape> shapes = selectedShapes;
         if (!shapes.isEmpty()) {
             for (WiresShape shape : shapes) {
-                shape.getControl().onMoveComplete();;
+                shape.getControl().onMoveComplete();
             }
         }
         final Collection<WiresConnector> connectors = selectedConnectors;
         if (!connectors.isEmpty()) {
             for (WiresConnector connector : connectors) {
-                connector.getControl().onMoveComplete();;
+                connector.getControl().onMoveComplete();
             }
         }
         delta = new Point2D(0, 0);
@@ -242,7 +242,6 @@ public class WiresCompositeControlImpl
 
     @Override
     public void execute() {
-        int i = 0;
         for (WiresShape shape : selectedShapes) {
             shape.getControl().getContainmentControl().execute();
         }

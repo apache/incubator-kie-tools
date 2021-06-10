@@ -24,7 +24,6 @@ import java.util.Map;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.Path2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.image.ImageLoader;
 import com.ait.lienzo.client.core.shape.json.IFactory;
@@ -35,29 +34,23 @@ import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.DashArray;
-import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.PatternGradient;
-import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
-import com.ait.lienzo.shared.core.types.DragConstraint;
-import com.ait.lienzo.shared.core.types.DragMode;
-import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.LineCap;
 import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.ait.tooling.nativetools.client.collection.MetaData;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.ImageElement;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
+import elemental2.dom.HTMLImageElement;
+import elemental2.dom.Path2D;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * Shapes are objects that can be drawn on a canvas.
@@ -73,50 +66,57 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
     private final OptionalShapeFields m_opts = OptionalShapeFields.make();
 
+    @JsProperty
+    private       FillGradient              gradient;
+
+    @JsProperty
+    private       String                    fillColor;
+
+    @JsProperty
+    private       String                    strokeColor;
+
+    @JsProperty
+    private boolean                   fillBoundsForSelection = false;
+
+    @JsProperty
+    private double                    selectionBoundsOffset  = 0;
+
+    @JsProperty
+    private boolean                   fillShapeForSelection = LienzoCore.get().getDefaultFillShapeForSelection();
+
+    @JsProperty
+    private double                    selectionStrokeOffset = 0;
+
+    @JsProperty
+    private double                    strokeWidth = LienzoCore.get().getDefaultStrokeWidth();
+
+    @JsProperty
+    private LineCap                   lineCap;
+
+    @JsProperty
+    private LineJoin                  lineJoin;
+
+    @JsProperty
+    private DashArray                 dashArray;
+
+    @JsProperty
+    private double                    dashOffset = 0;
+
+    @JsProperty
+    private Shadow                    shadow;
+
+    /**
+     * By leaving this as 0, it is considered unset.
+     * The spe default is 10.
+     */
+    @JsProperty
+    private double                    miterLimit = 0;
+
     protected Shape(final ShapeType type)
     {
         super(NodeType.SHAPE);
 
         m_type = type;
-    }
-
-    public Shape(final ShapeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(NodeType.SHAPE, node, ctx);
-
-        m_type = type;
-
-        final Attributes attr = getAttributes();
-
-        if (attr.hasFill())
-        {
-            FillGradient grad = attr.getFillGradient();
-
-            if (null != grad)
-            {
-                final PatternGradient patg = grad.asPatternGradient();
-
-                if (null != patg)
-                {
-                    new ImageLoader(patg.getSrc())
-                    {
-                        @Override
-                        public void onImageElementLoad(final ImageElement elem)
-                        {
-                            attr.setFillGradient(new PatternGradient(elem, patg.getRepeat()));
-
-                            batch();
-                        }
-
-                        @Override
-                        public void onImageElementError(String message)
-                        {
-                            LienzoCore.get().error(message);
-                        }
-                    };
-                }
-            }
-        }
     }
 
     @Override
@@ -174,7 +174,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         }
         if (types.size() > 1)
         {
-            types = new ArrayList<ControlHandleType>(new HashSet<ControlHandleType>(types));
+            types = new ArrayList<>(new HashSet<>(types));
         }
         IControlHandleFactory factory = getControlHandleFactory();
 
@@ -199,26 +199,25 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return cast();
     }
 
-    @Override
-    public T copy()
-    {
-        final Node<?> node = copyUnchecked();
-
-        if (null == node)
-        {
-            return null;
-        }
-        if (NodeType.SHAPE != node.getNodeType())
-        {
-            return null;
-        }
-        final Shape<?> shape = ((Shape<?>) node);
-
-        if (getShapeType() != shape.getShapeType())
-        {
-            return null;
-        }
-        return shape.cast();
+    public Shape<T> copyTo(Shape<T> other) {
+        super.copyTo(other);
+        other.m_type = this.m_type.copy();
+        other.m_ckey = this.m_ckey;
+        other.gradient = this.gradient;
+        other.fillColor = this.fillColor;
+        other.strokeColor = this.strokeColor;
+        other.fillBoundsForSelection = this.fillBoundsForSelection;
+        other.selectionBoundsOffset = this.selectionBoundsOffset;
+        other.fillShapeForSelection = this.fillShapeForSelection;
+        other.selectionStrokeOffset = this.selectionStrokeOffset;
+        other.strokeWidth = this.strokeWidth;
+        other.lineCap = this.lineCap;
+        other.lineJoin = this.lineJoin;
+        other.dashArray = null != dashArray ? new DashArray(this.dashArray.getJSO()) : null;
+        other.dashOffset = this.dashOffset;
+        other.shadow = null != shadow ? this.shadow.copy() : null;
+        other.miterLimit = this.miterLimit;
+        return other;
     }
 
     /**
@@ -232,9 +231,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     @Override
     protected void drawWithoutTransforms(final Context2D context, double alpha, BoundingBox bounds)
     {
-        final Attributes attr = getAttributes();
-
-        alpha = alpha * attr.getAlpha();
+        alpha = alpha * getAlpha();
 
         if (alpha <= 0)
         {
@@ -242,7 +239,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         }
         if (context.isSelection())
         {
-            if (dofillBoundsForSelection(context, attr, alpha))
+            if (dofillBoundsForSelection(context, alpha))
             {
                 return;
             }
@@ -251,11 +248,11 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         {
             setAppliedShadow(false);
         }
-        if (prepare(context, attr, alpha))
+        if (prepare(context, alpha))
         {
-            final boolean fill = fill(context, attr, alpha);
+            final boolean fill = fill(context, alpha);
 
-            stroke(context, attr, alpha, fill);
+            stroke(context, alpha, fill);
         }
     }
 
@@ -274,22 +271,15 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return m_opts.isAppliedShadow();
     }
 
-    protected abstract boolean prepare(Context2D context, Attributes attr, double alpha);
+    protected abstract boolean prepare(Context2D context, double alpha);
 
-    /**
-     * Fills the Shape using the passed attributes.
-     * This method will silently also fill the Shape to its unique rgb color if the context is a buffer.
-     * 
-     * @param context
-     * @param attr
-     */
-    protected boolean fill(final Context2D context, final Attributes attr, double alpha)
+    protected boolean fill(final Context2D context, double alpha)
     {
-        final boolean filled = attr.hasFill();
+        final boolean filled = hasFill();
 
-        if ((filled) || (attr.isFillShapeForSelection()))
+        if ((filled) || (isFillShapeForSelection()))
         {
-            alpha = alpha * attr.getFillAlpha();
+            alpha = alpha * getFillAlpha();
 
             if (alpha <= 0)
             {
@@ -313,19 +303,19 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
                 return true;
             }
-            if (false == filled)
+            if (!filled)
             {
                 return false;
             }
             context.save(getID());
 
-            if (attr.hasShadow())
+            if (getShadow() != null)
             {
-                doApplyShadow(context, attr);
+                doApplyShadow(context);
             }
             context.setGlobalAlpha(alpha);
 
-            final String fill = attr.getFillColor();
+            final String fill = getFillColor();
 
             if (null != fill)
             {
@@ -337,7 +327,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
                 return true;
             }
-            final FillGradient grad = attr.getFillGradient();
+            final FillGradient grad = getFillGradient();
 
             if (null != grad)
             {
@@ -379,11 +369,11 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return false;
     }
 
-    protected boolean dofillBoundsForSelection(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean dofillBoundsForSelection(final Context2D context, final double alpha)
     {
-        if (attr.isFillBoundsForSelection())
+        if (isFillBoundsForSelection())
         {
-            if ((alpha * attr.getFillAlpha()) > 0)
+            if ((alpha * getFillAlpha()) > 0)
             {
                 final String color = getColorKey();
 
@@ -416,13 +406,13 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return false;
     }
 
-    protected boolean fill(final Context2D context, final Attributes attr, double alpha, final Path2D path)
+    protected boolean fill(final Context2D context, double alpha, final Path2D path)
     {
-        final boolean filled = attr.hasFill();
+        final boolean filled = hasFill();
 
-        if ((filled) || (attr.isFillShapeForSelection()))
+        if ((filled) || (isFillShapeForSelection()))
         {
-            alpha = alpha * attr.getFillAlpha();
+            alpha = alpha * getFillAlpha();
 
             if (alpha <= 0)
             {
@@ -446,19 +436,19 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
                 return true;
             }
-            if (false == filled)
+            if (!filled)
             {
                 return false;
             }
             context.save(getID());
 
-            if (attr.hasShadow())
+            if (getShadow() != null)
             {
-                doApplyShadow(context, attr);
+                doApplyShadow(context);
             }
             context.setGlobalAlpha(alpha);
 
-            final String fill = attr.getFillColor();
+            final String fill = getFillColor();
 
             if (null != fill)
             {
@@ -472,7 +462,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
             }
             else
             {
-                final FillGradient grad = attr.getFillGradient();
+                final FillGradient grad = getFillGradient();
 
                 if (null != grad)
                 {
@@ -515,18 +505,11 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return false;
     }
 
-    /**
-     * Sets the Shape Stroke parameters.
-     * 
-     * @param context
-     * @param attr
-     * @return boolean
-     */
-    protected boolean setStrokeParams(final Context2D context, final Attributes attr, double alpha, final boolean filled)
+    protected boolean setStrokeParams(final Context2D context, double alpha, final boolean filled)
     {
-        double width = attr.getStrokeWidth();
+        double width = getStrokeWidth();
 
-        String color = attr.getStrokeColor();
+        String color = getStrokeColor();
 
         if (null == color)
         {
@@ -549,7 +532,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
             width = LienzoCore.get().getDefaultStrokeWidth();
         }
-        alpha = alpha * attr.getStrokeAlpha();
+        alpha = alpha * getStrokeAlpha();
 
         if (alpha <= 0)
         {
@@ -579,25 +562,25 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
         context.setStrokeWidth(width + offset);
 
-        if (false == attr.hasExtraStrokeAttributes())
+        if (!hasExtraStrokeAttributes())
         {
             return true;
         }
         boolean isdashed = false;
 
-        if (attr.isDefined(Attribute.DASH_ARRAY))
+        if (getDashArray() != null)
         {
             if (LienzoCore.get().isLineDashSupported())
             {
-                DashArray dash = attr.getDashArray();
+                DashArray dash = getDashArray();
 
                 if ((null != dash) && (dash.size() > 0))
                 {
                     context.setLineDash(dash);
 
-                    if (attr.isDefined(Attribute.DASH_OFFSET))
+                    if (dashOffset > 0)
                     {
-                        context.setLineDashOffset(attr.getDashOffset());
+                        context.setLineDashOffset(getDashOffset());
                     }
                     isdashed = true;
                 }
@@ -605,20 +588,26 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         }
         if ((isdashed) || (doStrokeExtraProperties()))
         {
-            if (attr.isDefined(Attribute.LINE_JOIN))
+            if (lineJoin != null)
             {
-                context.setLineJoin(attr.getLineJoin());
+                context.setLineJoin(getLineJoin());
             }
-            if (attr.isDefined(Attribute.LINE_CAP))
+            if (lineCap != null )
             {
-                context.setLineCap(attr.getLineCap());
+                context.setLineCap(getLineCap());
             }
-            if (attr.isDefined(Attribute.MITER_LIMIT))
+            if (miterLimit > 0)
             {
-                context.setMiterLimit(attr.getMiterLimit());
+                context.setMiterLimit(getMiterLimit());
             }
         }
         return true;
+    }
+
+    private final boolean hasExtraStrokeAttributes()
+    {
+        boolean hasAttribute = dashArray != null || lineJoin != null || lineCap != null || miterLimit > 0;
+        return hasAttribute;
     }
 
     protected boolean doStrokeExtraProperties()
@@ -626,19 +615,13 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return true;
     }
 
-    /**
-     * Sets the Shape stroke.
-     * 
-     * @param context
-     * @param attr
-     */
-    protected void stroke(final Context2D context, final Attributes attr, final double alpha, final boolean filled)
+    protected void stroke(final Context2D context,final double alpha, final boolean filled)
     {
-        if (setStrokeParams(context, attr, alpha, filled))
+        if (setStrokeParams(context, alpha, filled))
         {
-            if ((attr.hasShadow()) && (false == context.isSelection()))
+            if (getShadow() != null && !context.isSelection())
             {
-                doApplyShadow(context, attr);
+                doApplyShadow(context);
             }
             context.stroke();
 
@@ -646,13 +629,13 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         }
     }
 
-    protected void stroke(final Context2D context, final Attributes attr, final double alpha, final Path2D path, final boolean filled)
+    protected void stroke(final Context2D context, final double alpha, final Path2D path, final boolean filled)
     {
-        if (setStrokeParams(context, attr, alpha, filled))
+        if (setStrokeParams(context, alpha, filled))
         {
-            if ((attr.hasShadow()) && (false == context.isSelection()))
+            if (getShadow() != null && !context.isSelection())
             {
-                doApplyShadow(context, attr);
+                doApplyShadow(context);
             }
             context.stroke(path);
 
@@ -660,20 +643,13 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         }
     }
 
-    /**
-     * Applies this shape's Shadow.
-     * 
-     * @param context
-     * @param attr
-     * @return boolean
-     */
-    protected final void doApplyShadow(final Context2D context, final Attributes attr)
+    protected final void doApplyShadow(final Context2D context)
     {
-        if ((false == isAppliedShadow()) && (attr.hasShadow()))
+        if (!isAppliedShadow() && getShadow() != null)
         {
             setAppliedShadow(true);
 
-            final Shadow shadow = attr.getShadow();
+            final Shadow shadow = getShadow();
 
             if (null != shadow)
             {
@@ -696,74 +672,37 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return cast();
     }
 
-    @Override
-    public EventPropagationMode getEventPropagationMode()
-    {
-        return getAttributes().getEventPropagationMode();
-    }
-
-    @Override
-    public T setEventPropagationMode(final EventPropagationMode mode)
-    {
-        getAttributes().setEventPropagationMode(mode);
-
-        return cast();
-    }
-
-    /**
-     * Gets the {@link DashArray}. If this is a solid line, the dash array is empty.
-     * 
-     * @return {@link DashArray} if this line is not dashed, there will be no elements in the {@link DashArray}
-     */
     public DashArray getDashArray()
     {
-        return getAttributes().getDashArray();
+        return this.dashArray;
     }
 
-    /**
-     * Sets the dash array. 
-     * 
-     * @param array contains dash lengths
-     * @return this Line
-     */
     public T setDashArray(final DashArray array)
     {
-        getAttributes().setDashArray(array);
+        this.dashArray = array;
 
         return cast();
     }
 
     public double getDashOffset()
     {
-        return getAttributes().getDashOffset();
+        return this.dashOffset;
     }
 
     public T setDashOffset(final double offset)
     {
-        getAttributes().setDashOffset(offset);
+        this.dashOffset = offset;
 
         return cast();
     }
 
-    /**
-     * Sets the dash array with individual dash lengths.
-     * 
-     * @param dash length of dash
-     * @param dashes if specified, length of remaining dashes
-     * @return this Line
-     */
-    public T setDashArray(final double dash, final double... dashes)
+    public T setDashArray(final double... dashes)
     {
-        getAttributes().setDashArray(new DashArray(dash, dashes));
+        setDashArray(new DashArray(dashes));
 
         return cast();
     }
 
-    /**
-     * Returns this shape cast as an {@link IPrimitive}
-     * 
-     * @return IPrimitive
-     */
     @Override
     public IPrimitive<?> asPrimitive()
     {
@@ -776,27 +715,11 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return this;
     }
 
-    /**
-     * Returns the Shape type.
-     * 
-     * @return {@link ShapeType}
-     */
     public ShapeType getShapeType()
     {
         return m_type;
     }
 
-    @Override
-    public final double getFillAlpha()
-    {
-        return getAttributes().getFillAlpha();
-    }
-
-    /**
-     * Returns unique RGB color assigned to the off-set Shape.
-     * 
-     * @return String
-     */
     public String getColorKey()
     {
         return m_ckey;
@@ -834,11 +757,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return false;
     }
 
-    /**
-     * Moves this shape one layer up.
-     * 
-     * @return T
-     */
     @SuppressWarnings("unchecked")
     @Override
     public T moveUp()
@@ -857,11 +775,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return cast();
     }
 
-    /**
-     * Moves this shape one layer down.
-     * 
-     * @return T
-     */
     @SuppressWarnings("unchecked")
     @Override
     public T moveDown()
@@ -880,11 +793,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return cast();
     }
 
-    /**
-     * Moves this shape to the top of the layers stack.
-     * 
-     * @return T
-     */
     @SuppressWarnings("unchecked")
     @Override
     public T moveToTop()
@@ -903,11 +811,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return cast();
     }
 
-    /**
-     * Moves this shape to the bottomw of the layers stack.
-     * 
-     * @return T
-     */
     @SuppressWarnings("unchecked")
     @Override
     public T moveToBottom()
@@ -926,163 +829,91 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return cast();
     }
 
-    /**
-     * Gets the x coordinate for this shape.
-     * 
-     * @return double
-     */
-    @Override
-    public double getX()
+
+    public final boolean hasFill()
     {
-        return getAttributes().getX();
+        return gradient != null || fillColor != null;
     }
 
-    /**
-     * Sets the x coordinate for this shape.
-     * 
-     * @param x
-     * @return T
-     */
-    @Override
-    public T setX(final double x)
+    public final T setFillGradient(final LinearGradient gradient)
     {
-        getAttributes().setX(x);
-
+        this.gradient = gradient;
         return cast();
     }
 
-    /**
-     * Gets the y coordinate for this shape.
-     * 
-     * @return double
-     */
-    @Override
-    public double getY()
+    public final T setFillGradient(final RadialGradient gradient)
     {
-        return getAttributes().getY();
-    }
-
-    /**
-     * Sets the y coordinate for this shape.
-     * 
-     * @param y
-     * @return T
-     */
-    @Override
-    public T setY(final double y)
-    {
-        getAttributes().setY(y);
-
+        this.gradient = gradient;
         return cast();
     }
 
-    /**
-     * Sets the X and Y attributes to P.x and P.y
-     * 
-     * @param p Point2D
-     * @return this Shape
-     */
-    @Override
-    public T setLocation(final Point2D p)
+    public final T setFillGradient(final PatternGradient gradient)
     {
-        setX(p.getX());
-
-        setY(p.getY());
-
+        this.gradient = gradient;
         return cast();
     }
 
-    /**
-     * Returns the X and Y attributes as a Point2D
-     * 
-     * @return Point2D
-     */
-    @Override
-    public Point2D getLocation()
+    public final FillGradient getFillGradient()
     {
-        return new Point2D(getX(), getY());
+        return this.gradient;
     }
 
-    /**
-     * Returns true if this shape can be dragged; false otherwise.
-     * 
-     * @return boolean
-     */
-    @Override
-    public boolean isDraggable()
+    public T setFillColor(String fill)
     {
-        return getAttributes().isDraggable();
-    }
-
-    /**
-     * Sets if this shape can be dragged or not.
-     * 
-     * @return T
-     */
-    @Override
-    public T setDraggable(final boolean draggable)
-    {
-        getAttributes().setDraggable(draggable);
-
+        this.fillColor = fill;
         return cast();
     }
 
-    @Override
-    public boolean isEditable()
+    public final String getFillColor()
     {
-        return getAttributes().isEditable();
+        return this.fillColor;
     }
 
-    @Override
-    public T setEditable(final boolean editable)
-    {
-        getAttributes().setEditable(editable);
 
+    public final T setStrokeColor(String stroke)
+    {
+        this.strokeColor = stroke;
         return cast();
+    }
+
+    public final String getStrokeColor()
+    {
+        return this.strokeColor;
     }
 
     public boolean isFillShapeForSelection()
     {
-        return getAttributes().isFillShapeForSelection();
+        return this.fillShapeForSelection;
     }
 
     public T setFillShapeForSelection(final boolean selection)
     {
-        getAttributes().setFillShapeForSelection(selection);
+        this.fillShapeForSelection = selection;
 
         return cast();
-    }
-
-    public boolean isFillBoundsForSelection()
-    {
-        return getAttributes().isFillBoundsForSelection();
     }
 
     public T setFillBoundsForSelection(final boolean selection)
     {
-        getAttributes().setFillBoundsForSelection(selection);
+        this.fillBoundsForSelection = selection;
 
         return cast();
     }
 
-    /**
-     * Sets the number of pixels that are used to increase
-     * the bounding box on the selection layer.
-     */
-    public final T setSelectionBoundsOffset(final double offset)
+    public final boolean isFillBoundsForSelection()
     {
-        getAttributes().setSelectionBoundsOffset(offset);
-
-        return cast();
+        return this.fillBoundsForSelection;
     }
 
-    /**
-     * Gets the number of pixels that are used to increase
-     * the bounding box on the selection layer.
-     */
     public final double getSelectionBoundsOffset()
     {
-        return getAttributes().getSelectionBoundsOffset();
+        return this.selectionBoundsOffset;
+    }
+
+    public T setSelectionBoundsOffset(final double selectionBoundsOffset)
+    {
+        this.selectionBoundsOffset = selectionBoundsOffset;
+        return cast();
     }
 
     /**
@@ -1091,8 +922,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      */
     public final T setSelectionStrokeOffset(final double offset)
     {
-        getAttributes().setSelectionStrokeOffset(offset);
-
+        this.selectionStrokeOffset = offset;
         return cast();
     }
 
@@ -1102,367 +932,9 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      */
     public final double getSelectionStrokeOffset()
     {
-        return getAttributes().getSelectionStrokeOffset();
+        return this.selectionStrokeOffset;
     }
 
-    /**
-     * Gets this shape's scale.
-     * 
-     * @return double
-     */
-    @Override
-    public Point2D getScale()
-    {
-        return getAttributes().getScale();
-    }
-
-    /**
-     * Sets this shape's scale, starting at the given point.
-     * 
-     * @param scale
-     * @return T
-     */
-    @Override
-    public T setScale(final Point2D scale)
-    {
-        getAttributes().setScale(scale);
-
-        return cast();
-    }
-
-    /**
-     * Sets this shape's scale, with the same value for x and y.
-     * 
-     * @param xy
-     * @return T
-     */
-    @Override
-    public T setScale(final double xy)
-    {
-        getAttributes().setScale(xy);
-
-        return cast();
-    }
-
-    /**
-     * Sets this shape's scale, starting at the given x and y
-     * 
-     * @param x
-     * @param y
-     * @return T
-     */
-    @Override
-    public T setScale(final double x, final double y)
-    {
-        getAttributes().setScale(x, y);
-
-        return cast();
-    }
-
-    /**
-     * Gets this shape's rotation, in radians.
-     * 
-     * @return double
-     */
-    @Override
-    public double getRotation()
-    {
-        return getAttributes().getRotation();
-    }
-
-    /**
-     * Sets this group's rotation, in radians.
-     * 
-     * @param radians
-     * @return T
-     */
-    @Override
-    public T setRotation(final double radians)
-    {
-        getAttributes().setRotation(radians);
-
-        return cast();
-    }
-
-    /**
-     * Gets this group's rotation, in degrees.
-     * 
-     * @return double
-     */
-    @Override
-    public double getRotationDegrees()
-    {
-        return getAttributes().getRotationDegrees();
-    }
-
-    /**
-     * Sets this group's rotation, in degrees.
-     * 
-     * @param degrees
-     * @return T
-     */
-    @Override
-    public T setRotationDegrees(final double degrees)
-    {
-        getAttributes().setRotationDegrees(degrees);
-
-        return cast();
-    }
-
-    /**
-     * Gets this shape's shear as a {@link Point2D}
-     * 
-     * @return Point2D
-     */
-    @Override
-    public Point2D getShear()
-    {
-        return getAttributes().getShear();
-    }
-
-    /**
-     * Sets this shape's shear
-     * 
-     * @param offset
-     * @return T
-     */
-    @Override
-    public T setShear(final Point2D shear)
-    {
-        getAttributes().setShear(shear);
-
-        return cast();
-    }
-
-    /**
-     * Sets this shape's shear
-     * 
-     * @param offset
-     * @return T
-     */
-    @Override
-    public T setShear(final double x, final double y)
-    {
-        getAttributes().setShear(x, y);
-
-        return cast();
-    }
-
-    /**
-     * Gets this shape's offset as a {@link Point2D}
-     * 
-     * @return Point2D
-     */
-    @Override
-    public Point2D getOffset()
-    {
-        return getAttributes().getOffset();
-    }
-
-    /**
-     * Sets this shape's offset
-     * 
-     * @param offset
-     * @return T
-     */
-    @Override
-    public T setOffset(final Point2D offset)
-    {
-        getAttributes().setOffset(offset);
-
-        return cast();
-    }
-
-    /**
-     * Sets this shape's offset, with the same value for x and y.
-     * 
-     * @param xy
-     * @return T
-     */
-    @Override
-    public T setOffset(final double xy)
-    {
-        getAttributes().setOffset(xy);
-
-        return cast();
-    }
-
-    /**
-     * Sets this shape's offset, at the given x and y coordinates.
-     * 
-     * @param x
-     * @param y
-     * @return T
-     */
-    @Override
-    public T setOffset(final double x, final double y)
-    {
-        getAttributes().setOffset(x, y);
-
-        return cast();
-    }
-
-    /**
-     * Gets this shape's {@link DragConstraint}
-     * 
-     * @return DragConstraint
-     */
-    @Override
-    public DragConstraint getDragConstraint()
-    {
-        return getAttributes().getDragConstraint();
-    }
-
-    /**
-     * Sets this shape's drag constraint; e.g., horizontal, vertical or none (default)
-     * 
-     * @param constraint
-     * @return T
-     */
-    @Override
-    public T setDragConstraint(final DragConstraint constraint)
-    {
-        getAttributes().setDragConstraint(constraint);
-
-        return cast();
-    }
-
-    /**
-     * Gets the {@link DragBounds} for this shape.
-     * 
-     * @return DragBounds
-     */
-    @Override
-    public DragBounds getDragBounds()
-    {
-        return getAttributes().getDragBounds();
-    }
-
-    /**
-     * Sets this shape's drag bounds.
-     * 
-     * @param bounds
-     * @return T
-     */
-    @Override
-    public T setDragBounds(final DragBounds bounds)
-    {
-        getAttributes().setDragBounds(bounds);
-
-        return cast();
-    }
-
-    /**
-     * Gets the {@link DragMode} for this node.
-     * 
-     * @return DragMode
-     */
-    @Override
-    public DragMode getDragMode()
-    {
-        return getAttributes().getDragMode();
-    }
-
-    /**
-     * Sets this node's drag mode.
-     * 
-     * @param mode
-     * @return T
-     */
-    @Override
-    public T setDragMode(final DragMode mode)
-    {
-        getAttributes().setDragMode(mode);
-
-        return cast();
-    }
-
-    /**
-     * Gets the alpha value for this shape.
-     * 
-     * @return double
-     */
-    @Override
-    public double getAlpha()
-    {
-        return getAttributes().getAlpha();
-    }
-
-    /**
-     * Sets the alpha color on this shape.
-     * 
-     * @param alpha
-     * @return T
-     */
-    @Override
-    public T setAlpha(final double alpha)
-    {
-        getAttributes().setAlpha(alpha);
-
-        return cast();
-    }
-
-    /**
-     * Sets the alpha color on this shape.
-     * 
-     * @param alpha
-     * @return T
-     */
-    @Override
-    public T setFillAlpha(final double alpha)
-    {
-        getAttributes().setFillAlpha(alpha);
-
-        return cast();
-    }
-
-    /**
-     * Sets the alpha color on this shape.
-     * 
-     * @param alpha
-     * @return T
-     */
-    @Override
-    public T setStrokeAlpha(final double alpha)
-    {
-        getAttributes().setStrokeAlpha(alpha);
-
-        return cast();
-    }
-
-    /**
-     * Gets the alpha value for this shape.
-     * 
-     * @return double
-     */
-    @Override
-    public double getStrokeAlpha()
-    {
-        return getAttributes().getStrokeAlpha();
-    }
-
-    /**
-     * Gets the fill color in hex.
-     * 
-     * @return String
-     */
-    public String getFillColor()
-    {
-        return getAttributes().getFillColor();
-    }
-
-    /**
-     * Sets the fill color.
-     * 
-     * @param color in hex
-     * @return T
-     */
-    public T setFillColor(final String color)
-    {
-        getAttributes().setFillColor(color);
-
-        return cast();
-    }
 
     /**
      * Sets the fill color.
@@ -1473,80 +945,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     public T setFillColor(final IColor color)
     {
         return setFillColor(null == color ? null : color.getColorString());
-    }
-
-    /**
-     * Returns the fill gradient.
-     * 
-     * @return FillGradient i.e. {@link LinearGradient}, {@link RadialGradient}
-     *                  or {@link PatternGradient}
-     */
-    public FillGradient getFillGradient()
-    {
-        return getAttributes().getFillGradient();
-    }
-
-    /**
-     * Sets the gradient fill.
-     * 
-     * @param gradient a {@link LinearGradient}
-     * @return T
-     */
-    public T setFillGradient(final LinearGradient gradient)
-    {
-        getAttributes().setFillGradient(gradient);
-
-        return cast();
-    }
-
-    /**
-     * Sets the gradient fill.
-     * 
-     * @param gradient a {@link RadialGradient}
-     * @return T
-     */
-    public T setFillGradient(final RadialGradient gradient)
-    {
-        getAttributes().setFillGradient(gradient);
-
-        return cast();
-    }
-
-    /**
-     * Sets the gradient fill.
-     * 
-     * @param gradient a {@link PatternGradient}
-     * @return T
-     */
-
-    public T setFillGradient(final PatternGradient gradient)
-    {
-        getAttributes().setFillGradient(gradient);
-
-        return cast();
-    }
-
-    /**
-     * Gets the stroke color for this shape.
-     * 
-     * @return String color in hex
-     */
-    public String getStrokeColor()
-    {
-        return getAttributes().getStrokeColor();
-    }
-
-    /**
-     * Sets the stroke color.
-     * 
-     * @param color in hex
-     * @return T
-     */
-    public T setStrokeColor(final String color)
-    {
-        getAttributes().setStrokeColor(color);
-
-        return cast();
     }
 
     /**
@@ -1567,7 +965,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      */
     public double getStrokeWidth()
     {
-        return getAttributes().getStrokeWidth();
+        return this.strokeWidth;
     }
 
     /**
@@ -1578,7 +976,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      */
     public T setStrokeWidth(final double width)
     {
-        getAttributes().setStrokeWidth(width);
+        this.strokeWidth = width;
 
         return cast();
     }
@@ -1590,7 +988,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      */
     public LineJoin getLineJoin()
     {
-        return getAttributes().getLineJoin();
+        return this.lineJoin;
     }
 
     /**
@@ -1601,10 +999,20 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      */
     public T setLineJoin(final LineJoin linejoin)
     {
-        getAttributes().setLineJoin(linejoin);
+        this.lineJoin = lineJoin;
 
         return cast();
     }
+
+//    public final void setMiterLimit(final double limit)
+//    {
+//        put(Attribute.MITER_LIMIT.getProperty(), limit);
+//    }
+//
+//    public final double getMiterLimit()
+//    {
+//        return getDouble(Attribute.MITER_LIMIT.getProperty());
+//    }
 
     /**
      * Sets the value of Miter Limit for this shape.
@@ -1615,7 +1023,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
     public T setMiterLimit(final double limit)
     {
-        getAttributes().setMiterLimit(limit);
+        this.miterLimit = limit;
 
         return cast();
     }
@@ -1628,7 +1036,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
     public double getMiterLimit()
     {
-        return getAttributes().getMiterLimit();
+        return this.miterLimit;
     }
 
     /**
@@ -1638,7 +1046,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      */
     public LineCap getLineCap()
     {
-        return getAttributes().getLineCap();
+        return lineCap;
     }
 
     /**
@@ -1649,7 +1057,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      */
     public T setLineCap(final LineCap linecap)
     {
-        getAttributes().setLineCap(linecap);
+        this.lineCap = linecap;
 
         return cast();
     }
@@ -1661,7 +1069,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      */
     public Shadow getShadow()
     {
-        return getAttributes().getShadow();
+        return this.shadow;
     }
 
     /**
@@ -1672,7 +1080,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      */
     public T setShadow(final Shadow shadow)
     {
-        getAttributes().setShadow(shadow);
+        this.shadow = shadow;
 
         return cast();
     }
@@ -1703,32 +1111,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         {
             layer.detachShapeFromColorMap(this);
         }
-    }
-
-    /**
-     * Serializes this shape as a {@link JSONObject}
-     * 
-     * @return JSONObject
-     */
-    @Override
-    public JSONObject toJSONObject()
-    {
-        final JSONObject object = new JSONObject();
-
-        object.put("type", new JSONString(getShapeType().getValue()));
-
-        if (hasMetaData())
-        {
-            final MetaData meta = getMetaData();
-
-            if (false == meta.isEmpty())
-            {
-                object.put("meta", new JSONObject(meta.getJSO()));
-            }
-        }
-        object.put("attributes", new JSONObject(getAttributes().getJSO()));
-
-        return object;
     }
 
     @Override
@@ -1834,71 +1216,70 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         }
     }
 
-    private static class OptionalShapeFields extends JavaScriptObject
+    @JsType
+    private static class OptionalShapeFields
     {
+        @JsProperty
+        private boolean drag;
+
+        @JsProperty
+        private boolean apsh;
+
+        @JsProperty
+        private DragConstraintEnforcer denf;
+
+
+        @JsProperty
+        private IControlHandleFactory hand;
+
         public static final OptionalShapeFields make()
         {
-            return JavaScriptObject.createObject().cast();
+            return new OptionalShapeFields();
         }
+
 
         protected OptionalShapeFields()
         {
         }
 
-        protected final native boolean isDragging()
-        /*-{
-			return !!this.drag;
-        }-*/;
+        protected final boolean isDragging()
+        {
+			return this.drag;
+        }
 
-        protected final native void setDragging(boolean drag)
-        /*-{
-			if (false == drag) {
-				delete this["drag"];
-			} else {
-				this.drag = drag;
-			}
-        }-*/;
+        protected final void setDragging(boolean drag)
+        {
+            this.drag = drag;
+        }
 
-        protected final native boolean isAppliedShadow()
-        /*-{
-			return !!this.apsh;
-        }-*/;
+        protected final boolean isAppliedShadow()
+        {
+			return this.apsh;
+        }
 
-        protected final native void setAppliedShadow(boolean apsh)
-        /*-{
-			if (false == apsh) {
-				delete this["apsh"];
-			} else {
-				this.apsh = apsh;
-			}
-        }-*/;
+        protected final void setAppliedShadow(boolean apsh)
+        {
+            this.apsh = apsh;
+        }
 
-        protected final native DragConstraintEnforcer getDragConstraintEnforcer()
-        /*-{
+        protected final DragConstraintEnforcer getDragConstraintEnforcer()
+        {
 			return this.denf;
-        }-*/;
+        }
 
-        protected final native void setDragConstraintEnforcer(DragConstraintEnforcer denf)
-        /*-{
-			if (null == denf) {
-				delete this["denf"];
-			} else {
-				this.denf = denf;
-			}
-        }-*/;
+        protected final void setDragConstraintEnforcer(DragConstraintEnforcer denf)
+        {
+            this.denf = denf;
+        }
 
-        protected final native IControlHandleFactory getControlHandleFactory()
-        /*-{
+        protected final IControlHandleFactory getControlHandleFactory()
+        {
 			return this.hand;
-        }-*/;
+        }
 
-        protected final native void setControlHandleFactory(IControlHandleFactory hand)
-        /*-{
-			if (null == hand) {
-				delete this["hand"];
-			} else {
-				this.hand = hand;
-			}
-        }-*/;
+        protected final void setControlHandleFactory(IControlHandleFactory hand)
+        {
+            this.hand = hand;
+        }
     }
 }

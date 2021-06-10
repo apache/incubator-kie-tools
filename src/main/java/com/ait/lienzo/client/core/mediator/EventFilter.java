@@ -18,11 +18,11 @@ package com.ait.lienzo.client.core.mediator;
 
 import java.util.List;
 
-import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
-import com.google.gwt.event.dom.client.HumanInputEvent;
-import com.google.gwt.event.dom.client.MouseEvent;
-import com.google.gwt.event.shared.GwtEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeEvent;
+import com.ait.lienzo.tools.client.event.MouseEventUtil;
+
+import elemental2.dom.MouseEvent;
+import elemental2.dom.UIEvent;
 
 /**
  * EventFilter provides basic implementations of {@link IEventFilter}s.
@@ -53,19 +53,19 @@ public final class EventFilter
 
     public static final IEventFilter    ANY           = new AnyEventFilterOp();
 
-    public static final IEventFilter    BUTTON_LEFT   = new ButtonLeftEventFilterOp();
+    public static final IEventFilter    BUTTON_LEFT   = new ButtonLeftEventFilter();
 
-    public static final IEventFilter    BUTTON_MIDDLE = new ButtonMiddleEventFilterOp();
+    public static final IEventFilter    BUTTON_MIDDLE = new ButtonMiddleEventFilter();
 
-    public static final IEventFilter    BUTTON_RIGHT  = new ButtonRightEventFilterOp();
+    public static final IEventFilter    BUTTON_RIGHT  = new ButtonRightEventFilter();
 
-    public static final IEventFilter    CONTROL       = new CtrlKeyEventFilterOp();
+    public static final IEventFilter    CONTROL       = new CtrlKeyEventFilter();
 
-    public static final IEventFilter    META          = new MetaKeyEventFilterOp();
+    public static final IEventFilter    META          = new MetaKeyEventFilter();
 
-    public static final IEventFilter    SHIFT         = new ShiftKeyEventFilterOp();
+    public static final IEventFilter    SHIFT         = new ShiftKeyEventFilter();
 
-    public static final IEventFilter    ALT           = new AltKeyEventFilterOp();
+    public static final IEventFilter    ALT           = new AltKeyEventFilter();
 
     private EventFilter()
     {
@@ -130,9 +130,9 @@ public final class EventFilter
         return new AbstractEventFilter()
         {
             @Override
-            public final boolean test(final GwtEvent<?> event)
+            public final boolean test(final UIEvent event)
             {
-                return (false == filter.test(event));
+                return (!filter.test(event));
             }
         };
     }
@@ -140,7 +140,7 @@ public final class EventFilter
     private static final class AnyEventFilterOp implements IEventFilter
     {
         @Override
-        public final boolean test(final GwtEvent<?> event)
+        public final boolean test(final UIEvent event)
         {
             return true;
         }
@@ -160,238 +160,85 @@ public final class EventFilter
     public static class ButtonLeftEventFilter extends AbstractEventFilter
     {
         @Override
-        public boolean test(final GwtEvent<?> event)
+        public boolean test(final UIEvent event)
         {
-            if (event instanceof AbstractNodeMouseEvent<?, ?>)
+            if (event instanceof MouseEvent)
             {
-                return ((AbstractNodeMouseEvent<?, ?>) event).isButtonLeft();
-            }
-            else if (event instanceof MouseEvent<?>)
-            {
-                return AbstractNodeMouseEvent.isButtonLeft((MouseEvent<?>) event);
+                return MouseEventUtil.isButtonLeft((MouseEvent) event);
+
             }
             else
             {
                 return false;
             }
-        }
-    }
-
-    private static final class ButtonLeftEventFilterOp extends ButtonLeftEventFilter
-    {
-        @Override
-        public final boolean isEnabled()
-        {
-            return true;
-        }
-
-        @Override
-        public final void setEnabled(boolean enabled)
-        {
         }
     }
 
     public static class ButtonMiddleEventFilter extends AbstractEventFilter
     {
         @Override
-        public boolean test(final GwtEvent<?> event)
+        public boolean test(final UIEvent event)
         {
-            if (event instanceof AbstractNodeMouseEvent<?, ?>)
+            if (event instanceof MouseEvent)
             {
-                return ((AbstractNodeMouseEvent<?, ?>) event).isButtonMiddle();
-            }
-            else if (event instanceof MouseEvent<?>)
-            {
-                return AbstractNodeMouseEvent.isButtonMiddle((MouseEvent<?>) event);
+                return MouseEventUtil.isButtonMiddle((MouseEvent) event);
             }
             else
             {
                 return false;
             }
-        }
-    }
-
-    private final static class ButtonMiddleEventFilterOp extends ButtonMiddleEventFilter
-    {
-        @Override
-        public final boolean isEnabled()
-        {
-            return true;
-        }
-
-        @Override
-        public final void setEnabled(boolean enabled)
-        {
         }
     }
 
     public static class ButtonRightEventFilter extends AbstractEventFilter
     {
         @Override
-        public boolean test(final GwtEvent<?> event)
+        public boolean test(final UIEvent event)
         {
-            if (event instanceof AbstractNodeMouseEvent<?, ?>)
+            if (event instanceof MouseEvent)
             {
-                return ((AbstractNodeMouseEvent<?, ?>) event).isButtonRight();
-            }
-            else if (event instanceof MouseEvent<?>)
-            {
-                return AbstractNodeMouseEvent.isButtonRight((MouseEvent<?>) event);
+                return MouseEventUtil.isButtonRight((MouseEvent) event);
             }
             else
             {
                 return false;
             }
-        }
-    }
-
-    private final static class ButtonRightEventFilterOp extends ButtonRightEventFilter
-    {
-        @Override
-        public final boolean isEnabled()
-        {
-            return true;
-        }
-
-        @Override
-        public final void setEnabled(boolean enabled)
-        {
         }
     }
 
     public static class ShiftKeyEventFilter extends AbstractEventFilter
     {
         @Override
-        public boolean test(final GwtEvent<?> event)
+        public boolean test(final UIEvent event)
         {
-            if (event instanceof AbstractNodeHumanInputEvent<?, ?>)
-            {
-                return ((AbstractNodeHumanInputEvent<?, ?>) event).isShiftKeyDown();
-            }
-            else if (event instanceof HumanInputEvent<?>)
-            {
-                return AbstractNodeHumanInputEvent.isShiftKeyDown((HumanInputEvent<?>) event);
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
-
-    private final static class ShiftKeyEventFilterOp extends ShiftKeyEventFilter
-    {
-        @Override
-        public final boolean isEnabled()
-        {
-            return true;
-        }
-
-        @Override
-        public final void setEnabled(boolean enabled)
-        {
+            return AbstractNodeEvent.isShiftKeyDown(event);
         }
     }
 
     public static class CtrlKeyEventFilter extends AbstractEventFilter
     {
         @Override
-        public boolean test(final GwtEvent<?> event)
+        public boolean test(final UIEvent event)
         {
-            if (event instanceof AbstractNodeHumanInputEvent<?, ?>)
-            {
-                return ((AbstractNodeHumanInputEvent<?, ?>) event).isControlKeyDown();
-            }
-            else if (event instanceof HumanInputEvent<?>)
-            {
-                return AbstractNodeHumanInputEvent.isControlKeyDown((HumanInputEvent<?>) event);
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
-
-    private final static class CtrlKeyEventFilterOp extends CtrlKeyEventFilter
-    {
-        @Override
-        public final boolean isEnabled()
-        {
-            return true;
-        }
-
-        @Override
-        public final void setEnabled(boolean enabled)
-        {
+            return AbstractNodeEvent.isCtrlKeyDown(event);
         }
     }
 
     public static class MetaKeyEventFilter extends AbstractEventFilter
     {
         @Override
-        public boolean test(final GwtEvent<?> event)
+        public boolean test(final UIEvent event)
         {
-            if (event instanceof AbstractNodeHumanInputEvent<?, ?>)
-            {
-                return ((AbstractNodeHumanInputEvent<?, ?>) event).isMetaKeyDown();
-            }
-            else if (event instanceof HumanInputEvent<?>)
-            {
-                return AbstractNodeHumanInputEvent.isMetaKeyDown((HumanInputEvent<?>) event);
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
-
-    private final static class MetaKeyEventFilterOp extends MetaKeyEventFilter
-    {
-        @Override
-        public final boolean isEnabled()
-        {
-            return true;
-        }
-
-        @Override
-        public final void setEnabled(boolean enabled)
-        {
+            return AbstractNodeEvent.isMetaKeyDown(event);
         }
     }
 
     public static class AltKeyEventFilter extends AbstractEventFilter
     {
         @Override
-        public boolean test(final GwtEvent<?> event)
+        public boolean test(final UIEvent event)
         {
-            if (event instanceof AbstractNodeHumanInputEvent<?, ?>)
-            {
-                return ((AbstractNodeHumanInputEvent<?, ?>) event).isAltKeyDown();
-            }
-            else if (event instanceof HumanInputEvent<?>)
-            {
-                return AbstractNodeHumanInputEvent.isAltKeyDown((HumanInputEvent<?>) event);
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
-
-    private final static class AltKeyEventFilterOp extends AltKeyEventFilter
-    {
-        @Override
-        public final boolean isEnabled()
-        {
-            return true;
-        }
-
-        @Override
-        public final void setEnabled(boolean enabled)
-        {
+            return AbstractNodeEvent.isAltKeyDown(event);
         }
     }
 
@@ -409,7 +256,7 @@ public final class EventFilter
         }
 
         @Override
-        public final boolean test(final GwtEvent<?> event)
+        public final boolean test(final UIEvent event)
         {
             for (int i = 0; i < m_size; i++)
             {
@@ -417,7 +264,7 @@ public final class EventFilter
 
                 if (filter.isEnabled())
                 {
-                    if (false == filter.test(event))
+                    if (!filter.test(event))
                     {
                         return false;
                     }
@@ -441,7 +288,7 @@ public final class EventFilter
         }
 
         @Override
-        public final boolean test(final GwtEvent<?> event)
+        public final boolean test(final UIEvent event)
         {
             for (int i = 0; i < m_size; i++)
             {

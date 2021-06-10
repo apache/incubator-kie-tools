@@ -22,9 +22,9 @@ import java.util.Iterator;
 import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.types.NFastArrayListIterator;
-import com.ait.tooling.common.api.types.Activatable;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.common.api.types.Activatable;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
 
 public class ControlHandleList extends Activatable implements IControlHandleList
 {
@@ -64,7 +64,7 @@ public class ControlHandleList extends Activatable implements IControlHandleList
     @Override
     public final boolean contains(final IControlHandle handle)
     {
-        if ((null != handle) && (false == isEmpty()))
+        if ((null != handle) && (!isEmpty()))
         {
             return m_chlist.contains(handle);
         }
@@ -74,7 +74,7 @@ public class ControlHandleList extends Activatable implements IControlHandleList
     @Override
     public final void add(final IControlHandle handle)
     {
-        if ((null != handle) && (false == contains(handle)))
+        if ((null != handle) && (!contains(handle)))
         {
             m_chlist.add(handle);
         }
@@ -161,7 +161,7 @@ public class ControlHandleList extends Activatable implements IControlHandleList
     @Override
     public final Iterator<IControlHandle> iterator()
     {
-        return new NFastArrayListIterator<IControlHandle>(m_chlist);
+        return new NFastArrayListIterator<>(m_chlist);
     }
 
     @Override
@@ -172,7 +172,7 @@ public class ControlHandleList extends Activatable implements IControlHandleList
 
     void showOn(final IContainer<?, IPrimitive<?>> container)
     {
-        if ((null != container) && (false == isVisible()))
+        if ((null != container) && (!isVisible()))
         {
             int totl = 0;
 

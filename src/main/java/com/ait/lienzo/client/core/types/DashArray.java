@@ -16,8 +16,7 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
-import com.google.gwt.json.client.JSONArray;
+import elemental2.core.Global;
 
 /**
  * A native implementation of an array wrapped by a {@link DashArrayJSO}
@@ -26,53 +25,46 @@ import com.google.gwt.json.client.JSONArray;
  */
 public final class DashArray
 {
-    private final NFastDoubleArrayJSO m_jso;
+    private double[] m_jso;
 
-    public DashArray(final NFastDoubleArrayJSO jso)
+    public DashArray(final double... jso)
     {
         m_jso = jso;
     }
 
     public DashArray()
     {
-        this(NFastDoubleArrayJSO.make());
+        m_jso = new double[0];
     }
 
-    public DashArray(final double dash, final double... dashes)
-    {
-        this();
-
-        push(dash, dashes);
-    }
-
-    public final DashArray push(double dash)
-    {
-        if (dash < 0)
-        {
-            dash = Math.abs(dash);
-        }
-        m_jso.push(dash);
-
-        return this;
-    }
-
-    public final DashArray push(final double dash, final double... dashes)
-    {
-        push(dash);
-
-        if (dashes != null)
-        {
-            for (int i = 0; i < dashes.length; i++)
-            {
-                push(dashes[i]);
-            }
-        }
-        return this;
-    }
+//    public final DashArray push(double dash)
+//    {
+//        if (dash < 0)
+//        {
+//            dash = Math.abs(dash);
+//        }
+//        m_jso.push(dash);
+//
+//        return this;
+//    }
+//
+//    public final DashArray push(final double dash, final double... dashes)
+//    {
+//        push(dash);
+//
+//        if (dashes != null)
+//        {
+//            for (int i = 0; i < dashes.length; i++)
+//            {
+//                push(dashes[i]);
+//            }
+//        }
+//        return this;
+//    }
 
     public final double[] getNormalizedArray()
     {
-        final int leng = Math.abs(m_jso.size());
+        final int leng = Math.abs(m_jso.length);
 
         if (leng < 1)
         {
@@ -84,26 +76,26 @@ public final class DashArray
 
             for (int i = 0; i < leng; i++)
             {
-                dashes[i] = dashes[i + leng] = m_jso.get(i);
+                dashes[i] = dashes[i + leng] = m_jso[i];
             }
             return dashes;
         }
-        return m_jso.toArray();
+        return m_jso;
     }
 
     public final int size()
     {
-        return m_jso.size();
+        return m_jso.length;
     }
 
-    public final NFastDoubleArrayJSO getJSO()
+    public final double[] getJSO()
     {
         return m_jso;
     }
 
     public final String toJSONString()
     {
-        return new JSONArray(m_jso).toString();
+        return Global.JSON.stringify(m_jso);
     }
 
     @Override
@@ -115,7 +107,7 @@ public final class DashArray
     @Override
     public boolean equals(final Object other)
     {
-        if ((other == null) || (false == (other instanceof DashArray)))
+        if ((other == null) || (!(other instanceof DashArray)))
         {
             return false;
         }
@@ -131,11 +123,11 @@ public final class DashArray
         {
             return false;
         }
-        final NFastDoubleArrayJSO o_jso = that.getJSO();
+        final double[] o_jso = that.getJSO();
 
         for (int i = 0; i < leng; i++)
         {
-            if (o_jso.get(i) != m_jso.get(i))
+            if (o_jso[i] != m_jso[i])
             {
                 return false;
             }

@@ -31,7 +31,7 @@ public enum FillRepeat implements EnumWithValue
 
     private static final EnumStringMap<FillRepeat> LOOKUP_MAP = Statics.build(FillRepeat.values());
 
-    private FillRepeat(final String value)
+    FillRepeat(final String value)
     {
         m_value = value;
     }

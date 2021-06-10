@@ -20,8 +20,11 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.shared.core.types.PathClipperType;
-import com.google.gwt.core.client.JavaScriptObject;
 
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
+
+// @TODO This class and it's children need more checking (mdp)
 public abstract class AbstractPathClipper implements IPathClipper
 {
     private final PathClipperJSO m_jso;
@@ -39,7 +42,7 @@ public abstract class AbstractPathClipper implements IPathClipper
     @Override
     public boolean isActive()
     {
-        return m_jso.isActive_0();
+        return m_jso.isActive();
     }
 
     @Override
@@ -49,7 +52,7 @@ public abstract class AbstractPathClipper implements IPathClipper
         {
             return false;
         }
-        m_jso.setActive_0(active);
+        m_jso.setActive(active);
 
         return true;
     }
@@ -61,28 +64,28 @@ public abstract class AbstractPathClipper implements IPathClipper
 
     public final double getX()
     {
-        return m_jso.getX_0();
+        return m_jso.getX();
     }
 
     public final void setX(final double x)
     {
-        m_jso.setX_0(x);
+        m_jso.setX(x);
     }
 
     public final double getY()
     {
-        return m_jso.getY_0();
+        return m_jso.getY();
     }
 
     public final void setY(final double y)
     {
-        m_jso.setY_0(y);
+        m_jso.setY(y);
     }
 
     @Override
     public boolean clip(final Context2D context)
     {
-        if (isActive() && (null != getValue()))
+        if (isActive() && (null != getBoundBox() || null != getPathPartList()))
         {
             final double x = getX();
 
@@ -99,15 +102,34 @@ public abstract class AbstractPathClipper implements IPathClipper
         return false;
     }
 
-    protected final JavaScriptObject getValue()
+    protected final PathPartList getPathPartList()
     {
-        return m_jso.getValue_0();
+        return m_jso.getPathPartList();
+    }
+
+    protected final BoundingBox getBoundBox()
+    {
+        return m_jso.getBoundingBox();
     }
 
     abstract protected boolean apply(Context2D context);
 
-    public static final class PathClipperJSO extends JavaScriptObject
+
+    @JsType
+    public static final class PathClipperJSO
     {
+        private String type;
+
+        private double x;
+
+        private double y;
+
+        private boolean active;
+
+        private BoundingBox bbox;
+
+        private PathPartList plist;
+
         public static final PathPartList deep(final PathPartList path)
         {
             if (null == path)
@@ -137,40 +159,40 @@ public abstract class AbstractPathClipper implements IPathClipper
 
         static final PathClipperJSO make(final BoundingBox bbox)
         {
-            final PathClipperJSO jso = JavaScriptObject.createObject().cast();
+            final PathClipperJSO jso = new PathClipperJSO();
 
-            jso.setType_0(PathClipperType.BOUNDING_BOX.getValue());
+            jso.setTypeString(PathClipperType.BOUNDING_BOX.getValue());
 
-            jso.setValue_0(bbox.getJSO());
+            jso.setBoundingBox(bbox);
 
-            jso.setX_0(0);
+            jso.setX(0);
 
-            jso.setY_0(0);
+            jso.setY(0);
 
             return jso;
         }
 
         static final PathClipperJSO make(final PathPartList path)
         {
-            final PathClipperJSO jso = JavaScriptObject.createObject().cast();
+            final PathClipperJSO jso = new PathClipperJSO();
 
-            jso.setType_0(PathClipperType.PATH_PART_LIST.getValue());
+            jso.setTypeString(PathClipperType.PATH_PART_LIST.getValue());
 
             if (null == path)
             {
-                jso.setValue_0(null);
+                jso.setPathPartList(null);
             }
             else
             {
                 PathPartList list = deep(path);
                 if (list != null)
                 {
-                    jso.setValue_0(list.getJSO());
+                    jso.setPathPartList(deep(path));
                 }
             }
-            jso.setX_0(0);
+            jso.setX(0);
 
-            jso.setY_0(0);
+            jso.setY(0);
 
             return jso;
         }
@@ -181,57 +203,79 @@ public abstract class AbstractPathClipper implements IPathClipper
 
         public final PathClipperType getType()
         {
-            return PathClipperType.lookup(getType_0());
+            return PathClipperType.lookup(getTypeString());
         }
 
-        final native void setType_0(String type)
-        /*-{
+        @JsProperty
+        final  void setTypeString(String type)
+        {
 			this.type = type;
-        }-*/;
+        };
 
-        final native void setX_0(double x)
-        /*-{
+        @JsProperty
+        final void setX(double x)
+        {
 			this.x = x;
-        }-*/;
+        };
 
-        final native double getX_0()
-        /*-{
+        @JsProperty
+        final double getX()
+        {
 			return this.x;
-        }-*/;
+        };
 
-        final native void setY_0(double y)
-        /*-{
+        @JsProperty
+        final void setY(double y)
+        {
 			this.y = y;
-        }-*/;
+        };
 
-        final native double getY_0()
-        /*-{
+        @JsProperty
+        final double getY()
+        {
 			return this.y;
-        }-*/;
+        };
 
-        final native void setValue_0(JavaScriptObject value)
-        /*-{
-			this.value = value;
-        }-*/;
+        @JsProperty
+        final void setBoundingBox(BoundingBox bbox)
+        {
+			this.bbox = bbox;
+        };
 
-        final native JavaScriptObject getValue_0()
-        /*-{
-			return this.value;
-        }-*/;
+        @JsProperty
+        final BoundingBox getBoundingBox()
+        {
+			return this.bbox;
+        };
 
-        final native String getType_0()
-        /*-{
+        @JsProperty
+        final void setPathPartList(PathPartList plist)
+        {
+            this.plist = plist;
+        };
+
+        @JsProperty
+        final PathPartList getPathPartList()
+        {
+            return this.plist;
+        };
+
+        @JsProperty
+        final String getTypeString()
+        {
 			return this.type;
-        }-*/;
+        };
 
-        final native void setActive_0(boolean active)
-        /*-{
+        @JsProperty
+        final void setActive(boolean active)
+        {
 			this.active = active;
-        }-*/;
+        };
 
-        final native boolean isActive_0()
-        /*-{
+        @JsProperty
+        final boolean isActive()
+        {
 			return (!!this.active);
-        }-*/;
+        };
     }
 }

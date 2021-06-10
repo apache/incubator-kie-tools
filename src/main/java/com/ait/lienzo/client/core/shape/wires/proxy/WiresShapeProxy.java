@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.wires.proxy;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.wires.MagnetManager;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
@@ -25,9 +28,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHighlightControl;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.tooling.common.api.java.util.function.Consumer;
-import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
 public class WiresShapeProxy
         extends AbstractWiresProxy
@@ -59,7 +60,7 @@ public class WiresShapeProxy
         startLocation = location.copy();
         if (null != shape.getParent()) {
             final Point2D parentLocation = shape.getParent().getComputedLocation();
-            startLocation.add(parentLocation);
+            startLocation = startLocation.add(parentLocation);
             shape.removeFromParent();
             getWiresLayer().add(shape);
         }
@@ -81,8 +82,9 @@ public class WiresShapeProxy
     public void move(final double dx,
                      final double dy) {
         final boolean adjusted = control.onMove(dx, dy);
+        final Point2D adjust = control.getAdjust();
         final Point2D location = adjusted ?
-                startLocation.copy().offset(control.getAdjust()) :
+                startLocation.copy().offset(adjust.getX(), adjust.getY()) :
                 startLocation.copy().offset(dx, dy);
         shape.setLocation(location);
         batch();

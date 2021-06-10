@@ -16,8 +16,10 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
-import com.ait.tooling.common.api.java.util.function.Consumer;
+import java.util.function.Consumer;
+
+import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 
 public interface ActionItem<T extends ActionItem> extends DecoratedItem<T> {
 
@@ -25,7 +27,7 @@ public interface ActionItem<T extends ActionItem> extends DecoratedItem<T> {
 
     T disable();
 
-    T onClick(Consumer<AbstractNodeMouseEvent> onEvent);
+    T onClick(Consumer<NodeMouseClickEvent> onEvent);
 
-    T onMoveStart(Consumer<AbstractNodeMouseEvent> onEvent);
+    T onMoveStart(Consumer<NodeMouseMoveEvent> onEvent);
 }

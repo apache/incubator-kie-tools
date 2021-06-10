@@ -16,10 +16,12 @@
 package com.ait.lienzo.client.core.animation;
 
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import com.google.gwt.animation.client.AnimationScheduler;
-import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
-import com.google.gwt.dom.client.Element;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
+
+import com.ait.lienzo.client.core.animation.AnimationScheduler.AnimationCallback;
+
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 
 public final class LayerRedrawManager
 {
@@ -27,7 +29,7 @@ public final class LayerRedrawManager
 
     private final AnimationCallback         m_redraw;
 
-    private NFastArrayList<Layer>           m_layers = new NFastArrayList<Layer>();
+    private NFastArrayList<Layer>           m_layers = new NFastArrayList<>();
 
     public static final LayerRedrawManager get()
     {
@@ -36,23 +38,18 @@ public final class LayerRedrawManager
 
     private LayerRedrawManager()
     {
-        m_redraw = new AnimationCallback()
-        {
-            @Override
-            public final void execute(final double time)
+        m_redraw = time -> {
+            final int size = m_layers.size();
+
+            if (size > 0)
             {
-                final int size = m_layers.size();
+                final NFastArrayList<Layer> list = m_layers;
 
-                if (size > 0)
+                m_layers = new NFastArrayList<Layer>();
+
+                for (int i = 0; i < size; i++)
                 {
-                    final NFastArrayList<Layer> list = m_layers;
-
-                    m_layers = new NFastArrayList<Layer>();
-
-                    for (int i = 0; i < size; i++)
-                    {
-                        list.get(i).unBatchScheduled().draw();
-                    }
+                    list.get(i).unBatchScheduled().draw();
                 }
             }
         };
@@ -60,9 +57,9 @@ public final class LayerRedrawManager
 
     public final Layer schedule(final Layer layer)
     {
-        if ((null != layer) && (false == layer.isBatchScheduled()))
+        if ((null != layer) && (!layer.isBatchScheduled()))
         {
-            if (false == m_layers.contains(layer))
+            if (!m_layers.contains(layer))
             {
                 m_layers.add(layer.doBatchScheduled());
                 kick(layer.getElement());
@@ -71,11 +68,12 @@ public final class LayerRedrawManager
         return layer;
     }
 
-    private void kick(Element layerElement)
+    private void kick(HTMLElement layerElement)
     {
         if (!m_layers.isEmpty())
         {
-            AnimationScheduler.get().requestAnimationFrame(m_redraw, layerElement);
+            // @TODO check this works (mdp)
+            AnimationScheduler.get().requestAnimationFrame(m_redraw, Js.uncheckedCast(layerElement));
         }
     }
 }

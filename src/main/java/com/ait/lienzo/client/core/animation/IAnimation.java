@@ -20,19 +20,19 @@ import com.ait.lienzo.client.core.shape.Node;
 
 public interface IAnimation
 {
-    public static final double INDEFINITE_ANIMATION = -1;
+    double INDEFINITE_ANIMATION = -1;
 
-    public double getPercent();
+    double getPercent();
 
-    public double getDuration();
+    double getDuration();
 
-    public IAnimation doStart();
+    IAnimation doStart();
 
-    public IAnimation doFrame();
+    IAnimation doFrame();
 
-    public IAnimation doClose();
+    IAnimation doClose();
 
-    public Node<?> getNode();
+    Node<?> getNode();
 
-    public IAnimation setNode(Node<?> node);
+    IAnimation setNode(Node<?> node);
 }

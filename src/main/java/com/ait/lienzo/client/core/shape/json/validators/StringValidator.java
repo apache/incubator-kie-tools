@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-import com.google.gwt.json.client.JSONValue;
-
 public class StringValidator extends AbstractAttributeTypeValidator
 {
     public static final StringValidator INSTANCE = new StringValidator();
@@ -28,7 +26,7 @@ public class StringValidator extends AbstractAttributeTypeValidator
     }
 
     @Override
-    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
@@ -36,9 +34,10 @@ public class StringValidator extends AbstractAttributeTypeValidator
 
             return;
         }
-        if (null == jval.isString())
-        {
-            ctx.addBadTypeError(getTypeName());
-        }
+        // @FIXME serialization (mdp)
+//        if (null == jval.isString())
+//        {
+//            ctx.addBadTypeError(getTypeName());
+//        }
     }
 }

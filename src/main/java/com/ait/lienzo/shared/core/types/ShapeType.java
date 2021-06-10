@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.shared.core.types;
 
-import com.ait.tooling.common.api.types.IStringValued;
+import com.ait.lienzo.tools.common.api.types.IStringValued;
 
 /**
  * ShapeType is an extensible enumeration of all Shape types.
@@ -103,7 +103,7 @@ public class ShapeType implements IStringValued
     @Override
     public boolean equals(final Object other)
     {
-        if ((other == null) || (false == (other instanceof ShapeType)))
+        if ((other == null) || (!(other instanceof ShapeType)))
         {
             return false;
         }
@@ -120,5 +120,10 @@ public class ShapeType implements IStringValued
     public int hashCode()
     {
         return getValue().hashCode();
+    }
+
+    public ShapeType copy()
+    {
+        return new ShapeType(m_value);
     }
 }

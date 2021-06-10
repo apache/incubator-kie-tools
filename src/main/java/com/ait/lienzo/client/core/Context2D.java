@@ -18,14 +18,12 @@ package com.ait.lienzo.client.core;
 
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.types.DashArray;
-import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.ImageDataPixelColor;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.Shadow;
-import com.ait.lienzo.client.core.types.TextMetrics;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.CompositeOperation;
@@ -34,8 +32,14 @@ import com.ait.lienzo.shared.core.types.LineCap;
 import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
-import com.google.gwt.dom.client.CanvasElement;
-import com.google.gwt.dom.client.Element;
+import elemental2.dom.BaseRenderingContext2D.FillStyleUnionType;
+import elemental2.dom.BaseRenderingContext2D.StrokeStyleUnionType;
+import elemental2.dom.HTMLCanvasElement;
+import elemental2.dom.HTMLImageElement;
+import elemental2.dom.HTMLVideoElement;
+import elemental2.dom.ImageData;
+import elemental2.dom.Path2D;
+import elemental2.dom.TextMetrics;
 
 /**
  * Wrapper around a JSO that serves as a proxy to access the native capabilities of Canvas 2D.
@@ -43,19 +47,19 @@ import com.google.gwt.dom.client.Element;
  */
 public class Context2D
 {
-    private final INativeContext2D m_jso;
+    private final NativeContext2D m_jso;
 
-    public Context2D(final CanvasElement element)
+    public Context2D(final HTMLCanvasElement element)
     {
         this(NativeContext2D.make(element, LienzoCore.get().isHidpiEnabled()));
     }
 
-    public Context2D(final INativeContext2D jso)
+    public Context2D(final NativeContext2D jso)
     {
         m_jso = jso;
     }
 
-    public INativeContext2D getNativeContext()
+    public NativeContext2D getNativeContext()
     {
         return m_jso;
     }
@@ -126,19 +130,19 @@ public class Context2D
 
     public void setFillColor(final String color)
     {
-        m_jso.setFillColor(color);
+        m_jso.fillStyle = FillStyleUnionType.of(color);
     }
 
     /**
      * Sets the fill color
      * 
-     * @param color {@link ColorName} or {@link Color}
+     * @param color {@link ColorName} or {@link IColor}
      * 
      * @return this Context2D
      */
     public void setFillColor(final IColor color)
     {
-        m_jso.setFillColor((null != color) ? color.getColorString() : null);
+        setFillColor((null != color) ? color.getColorString() : null);
     }
 
     public void arc(final double x, final double y, final double radius, final double startAngle, final double endAngle, final boolean antiClockwise)
@@ -168,24 +172,25 @@ public class Context2D
 
     public void setStrokeColor(final String color)
     {
-        m_jso.setStrokeColor(color);
+        //m_jso.setStrokeColor(color);
+        m_jso.strokeStyle = StrokeStyleUnionType.of(color);
     }
 
     /**
      * Sets the stroke color
      * 
-     * @param color {@link ColorName} or {@link Color}
+     * @param color {@link ColorName} or {@link IColor}
      * 
      * @return this Context2D
      */
     public void setStrokeColor(final IColor color)
     {
-        m_jso.setStrokeColor((null != color) ? color.getColorString() : null);
+        m_jso.strokeStyle = StrokeStyleUnionType.of((null != color) ? color.getColorString() : null);
     }
 
     public void setStrokeWidth(final double width)
     {
-        m_jso.setStrokeWidth(width);
+        m_jso.setLineWidth(width);
     }
 
     public void setLineCap(final LineCap linecap)
@@ -206,12 +211,12 @@ public class Context2D
     public void setTransform(final double d0, final double d1, final double d2, final double d3, final double d4, final double d5)
     {
         m_jso.setTransform(d0, d1, d2, d3, d4, d5);
-    };
+    }
 
     public void setToIdentityTransform()
     {
         m_jso.setToIdentityTransform();
-    };
+    }
 
     public void moveTo(final double x, final double y)
     {
@@ -250,12 +255,12 @@ public class Context2D
 
     public void transform(final Transform transform)
     {
-        m_jso.transform((null != transform) ? transform.getJSO() : null);
+        m_jso.transform((null != transform) ? transform : null);
     }
 
     public void setTransform(final Transform transform)
     {
-        m_jso.setTransform((null != transform) ? transform.getJSO() : null);
+        m_jso.setTransform((null != transform) ? transform : null);
     }
 
     public void fillTextWithGradient(final String text, final double x, final double y, final double sx, final double sy, final double ex, final double ey, final String color)
@@ -305,7 +310,7 @@ public class Context2D
 
     public void scale(final double sx, final double sy)
     {
-        m_jso.scale(sx, sy);
+        m_jso.scale(sx*m_jso.scalingRatio , sy*m_jso.scalingRatio);
     }
 
     public void clearRect(final double x, final double y, final double wide, final double high)
@@ -381,14 +386,17 @@ public class Context2D
         m_jso.putImageData(imageData, x, y, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
     }
 
-    public ImageData createImageData(final double width, final double height)
+    public ImageData createImageData(final int width, final int height)
     {
         return m_jso.createImageData(width, height);
     }
 
     public ImageData createImageData(final ImageData data)
     {
-        return m_jso.createImageData(data);
+        // @FIXME this doesn't exist on Elm2
+        //return m_jso.createImageData(data);
+        //m_jso.createImageData(o,o);
+        return m_jso.createImageData(data.width, data.height);
     }
 
     public TextMetrics measureText(final String text)
@@ -401,22 +409,52 @@ public class Context2D
         m_jso.setGlobalCompositeOperation((null != operation) ? operation.getValue() : null);
     }
 
-    public void setImageSmoothingEnabled(final boolean enabled)
-    {
-        m_jso.setImageSmoothingEnabled(enabled);
-    }
+//    public void setImageSmoothingEnabled(final boolean enabled)
+//    {
+//        m_jso.setImageSmoothingEnabled(enabled);
+//    }
 
-    public void drawImage(final Element image, final double x, final double y)
+    public void drawImage(final HTMLImageElement image, final double x, final double y)
     {
         m_jso.drawImage(image, x, y);
     }
 
-    public void drawImage(final Element image, final double x, final double y, final double w, final double h)
+    public void drawImage(final HTMLImageElement image, final double x, final double y, final double w, final double h)
     {
         m_jso.drawImage(image, x, y, w, h);
     }
 
-    public void drawImage(final Element image, final double sx, final double sy, final double sw, final double sh, final double x, final double y, final double w, final double h)
+    public void drawImage(final HTMLImageElement image, final double sx, final double sy, final double sw, final double sh, final double x, final double y, final double w, final double h)
+    {
+        m_jso.drawImage(image, sx, sy, sw, sh, x, y, w, h);
+    }
+
+    public void drawImage(final HTMLCanvasElement image, final double x, final double y)
+    {
+        m_jso.drawImage(image, x, y);
+    }
+
+    public void drawImage(final HTMLCanvasElement image, final double x, final double y, final double w, final double h)
+    {
+        m_jso.drawImage(image, x, y, w, h);
+    }
+
+    public void drawImage(final HTMLCanvasElement image, final double sx, final double sy, final double sw, final double sh, final double x, final double y, final double w, final double h)
+    {
+        m_jso.drawImage(image, sx, sy, sw, sh, x, y, w, h);
+    }
+
+    public void drawImage(final HTMLVideoElement image, final double x, final double y)
+    {
+        m_jso.drawImage(image, x, y);
+    }
+
+    public void drawImage(final HTMLVideoElement image, final double x, final double y, final double w, final double h)
+    {
+        m_jso.drawImage(image, x, y, w, h);
+    }
+
+    public void drawImage(final HTMLVideoElement image, final double sx, final double sy, final double sw, final double sh, final double x, final double y, final double w, final double h)
     {
         m_jso.drawImage(image, sx, sy, sw, sh, x, y, w, h);
     }
@@ -428,7 +466,7 @@ public class Context2D
 
     public void setLineDashOffset(final double offset)
     {
-        m_jso.setLineDashOffset(offset);
+        m_jso.lineDashOffset = offset;
     }
 
     public double getBackingStorePixelRatio()
@@ -438,22 +476,17 @@ public class Context2D
 
     public void fill(final Path2D path)
     {
-        m_jso.fill(path.getNativePath2D());
+        m_jso.fill(path);
     }
 
     public void stroke(final Path2D path)
     {
-        m_jso.stroke(path.getNativePath2D());
+        m_jso.stroke(path);
     }
 
     public void clip(final Path2D path)
     {
-        m_jso.clip(path.getNativePath2D());
-    }
-
-    public Path2D getCurrentPath()
-    {
-        return new Path2D(m_jso.getCurrentPath());
+        m_jso.clip(path);
     }
 
     public boolean isSelection()

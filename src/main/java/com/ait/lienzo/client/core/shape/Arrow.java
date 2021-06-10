@@ -29,7 +29,8 @@ import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.client.core.util.GeometryException;
 import com.ait.lienzo.shared.core.types.ArrowType;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
 
 /**
  * Arrow is a type of Polygon. A picture is worth more than a 1000 words:
@@ -61,6 +62,23 @@ public class Arrow extends Shape<Arrow>
 {
     private Point2DArray m_polygon;
 
+    @JsProperty
+    private Point2DArray points;
+
+    @JsProperty
+    private double baseWidth;
+
+    @JsProperty
+    private double headWidth;
+
+    @JsProperty
+    private double arrowAngle;
+
+    @JsProperty
+    private double baseAngle;
+
+    ArrowType arrowType;
+
     /**
      * Constructor. Creates an instance of an arrow.
      * 
@@ -76,7 +94,7 @@ public class Arrow extends Shape<Arrow>
     {
         super(ShapeType.ARROW);
 
-        setPoints(new Point2DArray(start, end));
+        setPoints(Point2DArray.fromArrayOfPoint2D(start, end));
 
         setBaseWidth(baseWidth);
 
@@ -89,21 +107,10 @@ public class Arrow extends Shape<Arrow>
         setArrowType(arrowType);
     }
 
-    /**
-     * Constructor. Creates an instance of an arrow that is a copy of the serialized arrow
-     * given as an argument.
-     * 
-     * @param node serialized arrow 
-     */
-    protected Arrow(JSONObject node, ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.ARROW, node, ctx);
-    }
-
     @Override
     public BoundingBox getBoundingBox()
     {
-        return new BoundingBox(getPolygon());
+        return BoundingBox.fromPoint2DArray(getPolygon());
     }
 
     /**
@@ -112,7 +119,7 @@ public class Arrow extends Shape<Arrow>
      * @param context the {@link Context2D} used to draw this arrow.
      */
     @Override
-    protected boolean prepare(Context2D context, Attributes attr, double alpha)
+    protected boolean prepare(Context2D context, double alpha)
     {
         Point2DArray list = getPolygon();// is null for invalid arrow definition
 
@@ -197,7 +204,7 @@ public class Arrow extends Shape<Arrow>
      */
     public Point2DArray getPoints()
     {
-        return getAttributes().getPoints();
+        return this.points;
     }
 
     /**
@@ -208,7 +215,7 @@ public class Arrow extends Shape<Arrow>
      */
     public Arrow setPoints(Point2DArray points)
     {
-        getAttributes().setPoints(points);
+        this.points = points;
 
         invalidatePolygon();
 
@@ -222,7 +229,7 @@ public class Arrow extends Shape<Arrow>
      */
     public double getBaseWidth()
     {
-        return getAttributes().getBaseWidth();
+        return this.baseWidth;
     }
 
     /**
@@ -233,7 +240,7 @@ public class Arrow extends Shape<Arrow>
      */
     public Arrow setBaseWidth(double baseWidth)
     {
-        getAttributes().setBaseWidth(baseWidth);
+        this.baseWidth = baseWidth;
 
         invalidatePolygon();
 
@@ -247,7 +254,7 @@ public class Arrow extends Shape<Arrow>
      */
     public double getHeadWidth()
     {
-        return getAttributes().getHeadWidth();
+        return this.headWidth;
     }
 
     /**
@@ -258,7 +265,7 @@ public class Arrow extends Shape<Arrow>
      */
     public Arrow setHeadWidth(double headWidth)
     {
-        getAttributes().setHeadWidth(headWidth);
+        this.headWidth = headWidth;
 
         invalidatePolygon();
 
@@ -273,7 +280,7 @@ public class Arrow extends Shape<Arrow>
      */
     public double getArrowAngle()
     {
-        return getAttributes().getArrowAngle();
+        return this.arrowAngle;
     }
 
     /**
@@ -285,7 +292,7 @@ public class Arrow extends Shape<Arrow>
      */
     public Arrow setArrowAngle(double arrowAngle)
     {
-        getAttributes().setArrowAngle(arrowAngle);
+        this.arrowAngle = arrowAngle;
 
         invalidatePolygon();
 
@@ -300,7 +307,7 @@ public class Arrow extends Shape<Arrow>
      */
     public double getBaseAngle()
     {
-        return getAttributes().getBaseAngle();
+        return this.baseAngle;
     }
 
     /**
@@ -312,7 +319,7 @@ public class Arrow extends Shape<Arrow>
      */
     public Arrow setBaseAngle(double baseAngle)
     {
-        getAttributes().setBaseAngle(baseAngle);
+        this.baseAngle = baseAngle;
 
         invalidatePolygon();
 
@@ -327,7 +334,7 @@ public class Arrow extends Shape<Arrow>
      */
     public ArrowType getArrowType()
     {
-        return getAttributes().getArrowType();
+        return this.arrowType;
     }
 
     /**
@@ -339,7 +346,7 @@ public class Arrow extends Shape<Arrow>
      */
     public Arrow setArrowType(ArrowType arrowType)
     {
-        getAttributes().setArrowType(arrowType);
+        this.arrowType = arrowType;
 
         invalidatePolygon();
 
@@ -535,12 +542,6 @@ public class Arrow extends Shape<Arrow>
             addAttribute(Attribute.BASE_ANGLE, true);
 
             addAttribute(Attribute.ARROW_TYPE, true);
-        }
-
-        @Override
-        public Arrow create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new Arrow(node, ctx);
         }
     }
 }

@@ -16,9 +16,10 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 
 public abstract class AbstractDecoratedItem<T extends DecoratedItem>
         extends AbstractPrimitiveItem<T>

@@ -19,11 +19,12 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONObject;
+
+import elemental2.core.Uint8ClampedArray;
+import elemental2.dom.ImageData;
+import jsinterop.base.Js;
 
 public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<StackBlurImageDataFilter>
 {
@@ -37,7 +38,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
         super(ImageFilterType.StackBlurImageDataFilterType, 1);
     }
 
-    protected StackBlurImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected StackBlurImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
     {
         super(ImageFilterType.StackBlurImageDataFilterType, node, ctx);
     }
@@ -69,59 +70,68 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
         }
         if (copy)
         {
-            source = source.copy();
+            source = ImageDataUtil.copy(source);
         }
-        if (false == isActive())
+        if (!isActive())
         {
             return source;
         }
-        final CanvasPixelArray data = source.getData();
+        final Uint8ClampedArray data = source.data;
 
         if (null == data)
         {
             return source;
         }
-        filter_(data, source.getWidth(), source.getHeight(), (int) getValue(), FilterCommonOps);
+        filter_(data, source.width, source.height, (int) getValue(), FilterCommonOps);
 
         return source;
     }
 
-    private final native void filter_(JavaScriptObject data, int width, int height, int radius, ImageDataFilterCommonOps fops)
-    /*-{
-        function BlurStack() {
-            this.r = 0;
-            this.g = 0;
-            this.b = 0;
-            this.a = 0;
-            this.next = null;
-        };
-        var mul_table = fops.mul_table;
+    public static class BlurStack {
+        public double r = 0;
+        public double g = 0;
+        public double b = 0;
+        public double a = 0;
+        public BlurStack next = null;
+    }
 
-        var shg_table = fops.shg_table;
+    private final void filter_(Uint8ClampedArray dataArray, int width, int height, int radius, ImageDataFilterCommonOps fops)
+    {
+        //int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
+        int[] data = Js.uncheckedCast(dataArray);
 
-        var x, y, i, p, yp, yi, yw, r_sum, g_sum, b_sum, r_out_sum, g_out_sum, b_out_sum, r_in_sum, g_in_sum, b_in_sum, pr, pg, pb, rbs;
+        int[] mul_table = fops.mul_table;
 
-        var div = radius + radius + 1;
-        var widthMinus1 = width - 1;
-        var heightMinus1 = height - 1;
-        var radiusPlus1 = radius + 1;
-        var sumFactor = radiusPlus1 * (radiusPlus1 + 1) / 2;
+        int[] shg_table = fops.shg_table;
 
-        var stackStart = new BlurStack();
-        var stack = stackStart;
+        int x, y, i, p, yp, yi, yw, r_sum, g_sum, b_sum, r_in_sum, g_in_sum, b_in_sum, rbs;
+        double pr, pg, pb, r_out_sum, g_out_sum, b_out_sum;
+
+        int div = radius + radius + 1;
+        int widthMinus1 = width - 1;
+        int heightMinus1 = height - 1;
+        int radiusPlus1 = radius + 1;
+        double sumFactor = radiusPlus1 * (radiusPlus1 + 1) / 2;
+
+        BlurStack stackStart = new BlurStack();
+
+        BlurStack stack = stackStart;
+        BlurStack stackEnd = null;
         for (i = 1; i < div; i++) {
             stack = stack.next = new BlurStack();
             if (i == radiusPlus1)
-                var stackEnd = stack;
+            {
+                stackEnd = stack;
+            }
         }
         stack.next = stackStart;
-        var stackIn = null;
-        var stackOut = null;
+        BlurStack stackIn = null;
+        BlurStack stackOut = null;
 
         yw = yi = 0;
 
-        var mul_sum = mul_table[radius];
-        var shg_sum = shg_table[radius];
+        int mul_sum = mul_table[radius];
+        int shg_sum = shg_table[radius];
 
         for (y = 0; y < height; y++) {
             r_in_sum = g_in_sum = b_in_sum = r_sum = g_sum = b_sum = 0;
@@ -268,7 +278,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
                 yi += width;
             }
         }
-    }-*/;
+    }
 
     @Override
     public IFactory<StackBlurImageDataFilter> getFactory()
@@ -281,12 +291,6 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
         public StackBlurImageDataFilterFactory()
         {
             super(ImageFilterType.StackBlurImageDataFilterType);
-        }
-
-        @Override
-        public StackBlurImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new StackBlurImageDataFilter(node, ctx);
         }
     }
 }

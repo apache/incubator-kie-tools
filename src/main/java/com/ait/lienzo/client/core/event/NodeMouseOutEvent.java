@@ -16,21 +16,22 @@
 
 package com.ait.lienzo.client.core.event;
 
-import com.google.gwt.event.dom.client.MouseEvent;
-import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.ait.lienzo.client.core.shape.Node;
 
-public class NodeMouseOutEvent extends AbstractNodeMouseEvent<MouseEvent<?>, NodeMouseOutHandler>
+import elemental2.dom.HTMLElement;
+
+public class NodeMouseOutEvent extends AbstractNodeHumanInputEvent<NodeMouseOutHandler, Node>
 {
-    private static final Type<NodeMouseOutHandler> TYPE = new Type<NodeMouseOutHandler>();
+    private static final Type<NodeMouseOutHandler> TYPE = new Type<>();
 
     public static final Type<NodeMouseOutHandler> getType()
     {
         return TYPE;
     }
 
-    public NodeMouseOutEvent(final MouseOutEvent event)
+    public NodeMouseOutEvent(final HTMLElement relativeElement)
     {
-        super(event);
+        super(relativeElement);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class NodeMouseOutEvent extends AbstractNodeMouseEvent<MouseEvent<?>, Nod
     }
 
     @Override
-    protected void dispatch(final NodeMouseOutHandler handler)
+    public void dispatch(final NodeMouseOutHandler handler)
     {
         handler.onNodeMouseOut(this);
     }

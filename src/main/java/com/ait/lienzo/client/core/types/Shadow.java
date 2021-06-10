@@ -16,13 +16,14 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.ait.lienzo.client.core.types.Point2D.Point2DJSO;
 import com.ait.lienzo.shared.core.types.IColor;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONObject;
+
+import elemental2.core.Global;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
- * Wraps a Shadow JSO providing JS native access to color, blur and coordinates offset.
+ * Wraps a Shadow JSO providing access to color, blur and coordinates offset.
  */
 public final class Shadow
 {
@@ -61,7 +62,7 @@ public final class Shadow
      */
     public Shadow(final String color, final int blur, final double offx, final double offy)
     {
-        this(ShadowJSO.make(normalizeShadowColor(color), blur, true, new Point2D(offx, offy).getJSO()));
+        this(ShadowJSO.make(normalizeShadowColor(color), blur, true, new Point2D(offx, offy)));
     }
 
     /**
@@ -75,7 +76,7 @@ public final class Shadow
      */
     public Shadow(final IColor color, final int blur, final double offx, final double offy)
     {
-        this(ShadowJSO.make(normalizeShadowColor(color), blur, true, new Point2D(offx, offy).getJSO()));
+        this(ShadowJSO.make(normalizeShadowColor(color), blur, true, new Point2D(offx, offy)));
     }
 
     /**
@@ -88,7 +89,7 @@ public final class Shadow
      */
     public Shadow(final String color, final int blur, final double offx, final double offy, final boolean onfill)
     {
-        this(ShadowJSO.make(normalizeShadowColor(color), blur, onfill, new Point2D(offx, offy).getJSO()));
+        this(ShadowJSO.make(normalizeShadowColor(color), blur, onfill, new Point2D(offx, offy)));
     }
 
     /**
@@ -102,7 +103,7 @@ public final class Shadow
      */
     public Shadow(final IColor color, final int blur, final double offx, final double offy, final boolean onfill)
     {
-        this(ShadowJSO.make(normalizeShadowColor(color), blur, onfill, new Point2D(offx, offy).getJSO()));
+        this(ShadowJSO.make(normalizeShadowColor(color), blur, onfill, new Point2D(offx, offy)));
     }
 
     /**
@@ -168,24 +169,24 @@ public final class Shadow
      */
     public final Point2D getOffset()
     {
-        return new Point2D(m_jso.getOffset());
+        return new Point2D(m_jso.getOffset().getX(), m_jso.getOffset().getY());
     }
 
     /**
-     * Sets the color as a string.
+     * Sets the offset with a Point2D
      * 
      * @param offset Point2D
      * @return this Shadow
      */
     public final Shadow setOffset(final Point2D offset)
     {
-        m_jso.setOffset(offset.getJSO());
+        m_jso.setOffset(offset);
 
         return this;
     }
 
     /**
-     * Returns the offset as a Point2D.
+     * Returns the boolean onFill
      * @return Point2D
      */
     public final boolean getOnFill()
@@ -194,7 +195,7 @@ public final class Shadow
     }
 
     /**
-     * Sets the color as a string.
+     * Sets the boolean onFill
      * 
      * @param offset Point2D
      * @return this Shadow
@@ -206,6 +207,11 @@ public final class Shadow
         return this;
     }
 
+    public final Shadow copy()
+    {
+        return new Shadow(getJSO().copy());
+    }
+
     public final ShadowJSO getJSO()
     {
         return m_jso;
@@ -213,7 +219,7 @@ public final class Shadow
 
     public final String toJSONString()
     {
-        return new JSONObject(m_jso).toString();
+        return Global.JSON.stringify(m_jso);
     }
 
     @Override
@@ -225,7 +231,7 @@ public final class Shadow
     @Override
     public boolean equals(final Object other)
     {
-        if ((other == null) || (false == (other instanceof Shadow)))
+        if ((other == null) || (!(other instanceof Shadow)))
         {
             return false;
         }
@@ -242,63 +248,78 @@ public final class Shadow
         return toJSONString().hashCode();
     }
 
-    public static final class ShadowJSO extends JavaScriptObject
+    @JsType
+    public static final class ShadowJSO
     {
-        static final native ShadowJSO make(String color, int blur, boolean onfill, Point2DJSO offset)
-        /*-{
-			return {
-				color : color,
-				blur : blur,
-				offset : offset,
-				onfill : onfill
-			};
-        }-*/;
+        @JsProperty
+        private String color;
+
+        @JsProperty
+        private int blur;
+
+        @JsProperty
+        private boolean onfill;
+
+        @JsProperty
+        private Point2D offset;
+
+        static final ShadowJSO make(String color, int blur, boolean onfill, Point2D offset)
+        {
+            ShadowJSO jso = new ShadowJSO();
+            jso.color = color;
+            jso.blur = blur;
+            jso.offset = offset;
+            jso.onfill = onfill;
+
+            return jso;
+        }
 
         protected ShadowJSO()
         {
         }
 
-        public final native String getColor()
-        /*-{
+        public final String getColor()
+        {
 			return this.color;
-        }-*/;
+        }
 
-        public final native void setColor(String color)
-        /*-{
+        public final void setColor(String color)
+        {
 			this.color = color;
-        }-*/;
+        }
 
-        public final native int getBlur()
-        /*-{
+        public final int getBlur()
+        {
 			return this.blur;
-        }-*/;
+        }
 
-        public final native void setBlur(int blur)
-        /*-{
+        public final void setBlur(int blur)
+        {
 			this.blur = blur;
-        }-*/;
+        }
 
-        public final native boolean getOnFill()
-        /*-{
-			if (this.onfill != undefined) {
-				return this.onfill;
-			}
-			return true;
-        }-*/;
+        public final boolean getOnFill()
+        {
+			return this.onfill ;
+        }
 
-        public final native void setOnFill(boolean onfill)
-        /*-{
+        public final void setOnFill(boolean onfill)
+        {
 			this.onfill = onfill;
-        }-*/;
+        }
 
-        public final native Point2DJSO getOffset()
-        /*-{
+        public final Point2D getOffset()
+        {
 			return this.offset;
-        }-*/;
+        }
 
-        public final native void setOffset(Point2DJSO offset)
-        /*-{
+        public final void setOffset(Point2D offset)
+        {
 			this.offset = offset;
-        }-*/;
+        };
+
+        public ShadowJSO copy() {
+            return make(color, blur, onfill, offset);
+        }
     }
 }

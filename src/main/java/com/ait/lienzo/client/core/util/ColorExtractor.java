@@ -17,8 +17,10 @@
 package com.ait.lienzo.client.core.util;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.Color;
+
+import elemental2.dom.ImageData;
 
 public final class ColorExtractor
 {
@@ -40,6 +42,6 @@ public final class ColorExtractor
 
         final ImageData data = context.getImageData(0, 0, 2, 2);
 
-        return new Color(data.getRedAt(1, 1), data.getGreenAt(1, 1), data.getBlueAt(1, 1), (((double) data.getAlphaAt(1, 1)) / 255.0));
+        return new Color(ImageDataUtil.getRedAt(data,1, 1), ImageDataUtil.getGreenAt(data,1, 1), ImageDataUtil.getBlueAt(data,1, 1), (((double) ImageDataUtil.getAlphaAt(data, 1, 1)) / 255.0));
     }
 }

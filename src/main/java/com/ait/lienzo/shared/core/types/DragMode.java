@@ -29,7 +29,7 @@ public enum DragMode implements EnumWithValue
 
     private static final EnumStringMap<DragMode> LOOKUP_MAP = Statics.build(DragMode.values());
 
-    private DragMode(final String value)
+    DragMode(final String value)
     {
         m_value = value;
     }

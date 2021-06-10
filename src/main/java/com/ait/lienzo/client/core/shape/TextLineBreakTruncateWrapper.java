@@ -71,9 +71,9 @@ import com.ait.lienzo.client.core.types.BoundingBox;
     }
 
     @Override
-    public void drawString(final Context2D context, final Attributes attr, final IDrawString drawCommand)
+    public void drawString(final Context2D context, final IDrawString drawCommand)
     {
-        final List<String> lines = getWrappedTextLines(attr.getText());
+        final List<String> lines = getWrappedTextLines(text.getText());
         drawLines(context, drawCommand, lines, getBoundingBox().getWidth());
     }
 

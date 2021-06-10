@@ -29,7 +29,7 @@ public interface DragConstraintEnforcer
      * 
      * @param dragContext
      */
-    public void startDrag(DragContext dragContext);
+    void startDrag(DragContext dragContext);
 
     /**
      * Adjust the drag offset (dx,dy)
@@ -37,5 +37,5 @@ public interface DragConstraintEnforcer
      * @param dxy (dx,dy) specified in local coordinates, 
      *      i.e. in the parent node's coordinate system
      */
-    public boolean adjust(Point2D dxy);
+    boolean adjust(Point2D dxy);
 }

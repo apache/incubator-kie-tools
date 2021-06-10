@@ -31,7 +31,7 @@ public enum TextAlign implements EnumWithValue
 
     private static final EnumStringMap<TextAlign> LOOKUP_MAP = Statics.build(TextAlign.values());
 
-    private TextAlign(final String value)
+    TextAlign(final String value)
     {
         m_value = value;
     }

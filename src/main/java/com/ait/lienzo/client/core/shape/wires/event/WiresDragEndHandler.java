@@ -16,7 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.wires.event;
 
-public interface WiresDragEndHandler extends WiresEventHandler
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
+
+public interface WiresDragEndHandler extends EventHandler
 {
     public void onShapeDragEnd(WiresDragEndEvent event);
 }

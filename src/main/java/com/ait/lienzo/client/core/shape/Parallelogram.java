@@ -28,7 +28,8 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
 
 /**
  * Parallelogram defined by a width, a height and a skew factor.
@@ -36,6 +37,20 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Parallelogram extends Shape<Parallelogram>
 {
+    @JsProperty
+    private double width;
+
+    @JsProperty
+    private double height;
+
+    @JsProperty
+    private double cornerRadius;
+
+    @JsProperty
+    private double skew;
+
+
+
     private final PathPartList m_list = new PathPartList();
 
     /**
@@ -59,22 +74,17 @@ public class Parallelogram extends Shape<Parallelogram>
         setCornerRadius(corner);
     }
 
-    protected Parallelogram(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.PARALLELOGRAM, node, ctx);
-    }
-
     /**
      * Draws this parallelogram.
      * 
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final double alpha)
     {
         if (m_list.size() < 1)
         {
-            if (false == parse(attr))
+            if (!parse())
             {
                 return false;
             }
@@ -88,37 +98,37 @@ public class Parallelogram extends Shape<Parallelogram>
         return true;
     }
 
-    private boolean parse(final Attributes attr)
+    private boolean parse()
     {
-        final double wide = attr.getWidth();
+        final double wide = getWidth();
 
-        final double high = attr.getHeight();
+        final double high = getHeight();
 
         if ((wide > 0) && (high > 0))
         {
-            final double skew = attr.getSkew();
+            final double skew = getSkew();
 
             final Point2DArray list = new Point2DArray();
 
             if (skew >= 0)
             {
-                list.push(skew, 0);
+                list.pushXY(skew, 0);
 
-                list.push(wide, 0);
+                list.pushXY(wide, 0);
 
-                list.push(wide - skew, high);
+                list.pushXY(wide - skew, high);
 
-                list.push(0, high);
+                list.pushXY(0, high);
             }
             else
             {
-                list.push(0, 0);
+                list.pushXY(0, 0);
 
-                list.push(wide - Math.abs(skew), 0);
+                list.pushXY(wide - Math.abs(skew), 0);
 
-                list.push(wide, high);
+                list.pushXY(wide, high);
 
-                list.push(Math.abs(skew), high);
+                list.pushXY(Math.abs(skew), high);
             }
             final Point2D p0 = list.get(0);
 
@@ -126,7 +136,12 @@ public class Parallelogram extends Shape<Parallelogram>
 
             final double corner = getCornerRadius();
 
-            if (corner <= 0)
+            if (corner > 0)
+            {
+                list.push(p0);
+                Geometry.drawArcJoinedLines(m_list, list, corner);
+            }
+            else
             {
                 final int size = list.size();
 
@@ -136,10 +151,6 @@ public class Parallelogram extends Shape<Parallelogram>
                 }
                 m_list.Z();
             }
-            else
-            {
-                Geometry.drawArcJoinedLines(m_list, list.push(p0), corner);
-            }
             return true;
         }
         return false;
@@ -148,7 +159,7 @@ public class Parallelogram extends Shape<Parallelogram>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return new BoundingBox(0, 0, getWidth(), getHeight());
+        return BoundingBox.fromDoubles(0, 0, getWidth(), getHeight());
     }
 
     @Override
@@ -161,46 +172,46 @@ public class Parallelogram extends Shape<Parallelogram>
 
     /**
      * Gets the width of this parallelogram
-     * 
+     *
      * @return double
      */
     public double getWidth()
     {
-        return getAttributes().getWidth();
+        return this.width;
     }
 
     /**
      * Sets the width of this parallelogram
-     * 
+     *
      * @param width
      * @return this Parallelogram
      */
     public Parallelogram setWidth(final double width)
     {
-        getAttributes().setWidth(width);
+        this.width = width;
 
         return refresh();
     }
 
     /**
      * Gets the height of this parallelogram
-     * 
+     *
      * @return double
      */
     public double getHeight()
     {
-        return getAttributes().getHeight();
+        return this.height;
     }
 
     /**
      * Sets the height of this parallelogram
-     * 
+     *
      * @param height
      * @return this Parallelogram
      */
     public Parallelogram setHeight(final double height)
     {
-        getAttributes().setHeight(height);
+        this.height = height;
 
         return refresh();
     }
@@ -212,7 +223,7 @@ public class Parallelogram extends Shape<Parallelogram>
      */
     public double getSkew()
     {
-        return getAttributes().getSkew();
+        return this.skew;
     }
 
     /**
@@ -223,19 +234,19 @@ public class Parallelogram extends Shape<Parallelogram>
      */
     public Parallelogram setSkew(final double skew)
     {
-        getAttributes().setSkew(skew);
+        this.skew = skew;
 
         return refresh();
     }
 
     public double getCornerRadius()
     {
-        return getAttributes().getCornerRadius();
+        return this.cornerRadius;
     }
 
     public Parallelogram setCornerRadius(final double radius)
     {
-        getAttributes().setCornerRadius(radius);
+        this.cornerRadius = radius;
 
         return refresh();
     }
@@ -259,12 +270,6 @@ public class Parallelogram extends Shape<Parallelogram>
             addAttribute(Attribute.SKEW, true);
 
             addAttribute(Attribute.CORNER_RADIUS);
-        }
-
-        @Override
-        public Parallelogram create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new Parallelogram(node, ctx);
         }
     }
 }

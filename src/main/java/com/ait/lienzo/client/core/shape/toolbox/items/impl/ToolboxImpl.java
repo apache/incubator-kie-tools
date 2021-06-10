@@ -17,6 +17,8 @@
 package com.ait.lienzo.client.core.shape.toolbox.items.impl;
 
 import java.util.Iterator;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.toolbox.Positions;
@@ -27,8 +29,6 @@ import com.ait.lienzo.client.core.shape.toolbox.items.ItemsToolbox;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
-import com.ait.tooling.common.api.java.util.function.BiConsumer;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 
 /**
  * An ItemsToolbox implementation.
@@ -111,19 +111,13 @@ public class ToolboxImpl
     @Override
     public ItemsToolbox show(final Runnable before,
                              final Runnable after) {
-        return super.show(new Runnable() {
-                              @Override
-                              public void run() {
-                                  ToolboxImpl.this.reposition();
-                                  before.run();
-                              }
+        return super.show(() -> {
+                              ToolboxImpl.this.reposition();
+                              before.run();
                           },
-                          new Runnable() {
-                              @Override
-                              public void run() {
-                                  ToolboxImpl.this.fireRefresh();
-                                  after.run();
-                              }
+                          () -> {
+                              ToolboxImpl.this.fireRefresh();
+                              after.run();
                           });
     }
 
@@ -131,12 +125,9 @@ public class ToolboxImpl
     public ItemsToolbox hide(final Runnable before,
                              final Runnable after) {
         return super.hide(before,
-                          new Runnable() {
-                              @Override
-                              public void run() {
-                                  ToolboxImpl.this.fireRefresh();
-                                  after.run();
-                              }
+                          () -> {
+                              ToolboxImpl.this.fireRefresh();
+                              after.run();
                           });
     }
 
@@ -201,7 +192,7 @@ public class ToolboxImpl
         // Set the toolbox primitive's location
         // and ensure it's on top of any node or connector present in the layer below.
         asPrimitive()
-                .setLocation(location.offset(this.offset))
+                .setLocation(location.offset(this.offset.getX(), this.offset.getY()))
                 .moveToTop();
         fireRefresh();
     }

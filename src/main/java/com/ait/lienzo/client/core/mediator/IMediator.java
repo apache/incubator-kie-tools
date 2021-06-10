@@ -16,7 +16,10 @@
 
 package com.ait.lienzo.client.core.mediator;
 
-import com.google.gwt.event.shared.GwtEvent;
+import elemental2.dom.UIEvent;
+
+import com.ait.lienzo.tools.client.event.INodeEvent.Type;
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
 
 /**
  * IMediator is used in the {@link Mediators} list of a {@link Viewport}.
@@ -32,7 +35,7 @@ public interface IMediator
      * @param event One of the Lienzo Node events. (Note that these are not the raw GWT events.)
      * @return Whether it acted on the event. If so, no further {@link Mediators} will be invoked.
      */
-    public boolean handleEvent(GwtEvent<?> event);
+    public <H extends EventHandler> boolean handleEvent(Type<H> type, final UIEvent event, int x, int y);
 
     /**
      * Terminates the current operation and 

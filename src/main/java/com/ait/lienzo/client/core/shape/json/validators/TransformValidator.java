@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONValue;
-
 public class TransformValidator extends ArrayValidator
 {
     public static final TransformValidator INSTANCE = new TransformValidator();
@@ -29,36 +26,37 @@ public class TransformValidator extends ArrayValidator
     }
 
     @Override
-    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
     {
         super.validate(jval, ctx);
 
-        if (null != jval)
-        {
-            final JSONArray jarr = jval.isArray();
-
-            if (null != jarr)
-            {
-                if (jarr.size() != 6)
-                {
-                    ctx.addBadArraySizeError(6, jarr.size());
-                }
-                else
-                {
-                    for (int i = 0; i < 6; i++)
-                    {
-                        ctx.pushIndex(i);
-
-                        final JSONValue val = jarr.get(i);
-
-                        if ((val == null) || (val.isNumber() == null))
-                        {
-                            ctx.addBadTypeError(NumberValidator.INSTANCE.getTypeName());
-                        }
-                        ctx.pop();// i
-                    }
-                }
-            }
-        }
+        // @FIXME serialization (mdp)
+//        if (null != jval)
+//        {
+//            final JSONArray jarr = jval.isArray();
+//
+//            if (null != jarr)
+//            {
+//                if (jarr.size() != 6)
+//                {
+//                    ctx.addBadArraySizeError(6, jarr.size());
+//                }
+//                else
+//                {
+//                    for (int i = 0; i < 6; i++)
+//                    {
+//                        ctx.pushIndex(i);
+//
+//                        final JSONValue val = jarr.get(i);
+//
+//                        if ((val == null) || (val.isNumber() == null))
+//                        {
+//                            ctx.addBadTypeError(NumberValidator.INSTANCE.getTypeName());
+//                        }
+//                        ctx.pop();// i
+//                    }
+//                }
+//            }
+//        }
     }
 }

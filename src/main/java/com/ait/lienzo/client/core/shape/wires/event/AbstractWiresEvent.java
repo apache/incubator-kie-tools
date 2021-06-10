@@ -16,47 +16,18 @@
 
 package com.ait.lienzo.client.core.shape.wires.event;
 
-import com.ait.lienzo.client.core.event.INodeEvent;
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeEvent;
+import com.ait.lienzo.tools.client.event.INodeEvent;
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
 
-public abstract class AbstractWiresEvent<S, H extends EventHandler> extends GwtEvent<H> implements INodeEvent
+
+import elemental2.dom.HTMLElement;
+
+public abstract class AbstractWiresEvent<H extends EventHandler, S> extends AbstractNodeEvent<H, S> implements INodeEvent<H, S>
 {
-    private final S shape;
-
-    private boolean m_dead = false;
-
-    public AbstractWiresEvent(S shape)
+    public AbstractWiresEvent(final HTMLElement relativeElement)
     {
-        this.shape = shape;
+        super(relativeElement);
     }
 
-    public S getShape()
-    {
-        return shape;
-    }
-
-    @Override
-    public final boolean isAlive()
-    {
-        return (false == m_dead);
-    }
-
-    @Override
-    public final void preventDefault()
-    {
-        m_dead = true;
-    }
-
-    @Override
-    public final void stopPropagation()
-    {
-        m_dead = true;
-    }
-
-    @Override
-    public final GwtEvent<?> getNodeEvent()
-    {
-        return this;
-    }
 }

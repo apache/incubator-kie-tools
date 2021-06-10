@@ -21,23 +21,29 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
 
 public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirectionalMultiPointShape<T> & IDirectionalMultiPointShape<T>> extends AbstractOffsetMultiPointShape<T> implements IDirectionalMultiPointShape<T>
 {
+    @JsProperty
+    private Direction headDirection;
+
+    @JsProperty
+    private Direction tailDirection;
+
+    @JsProperty
+    private double correctionOffset = LienzoCore.get().getDefaultConnectorOffset();
+
     protected AbstractDirectionalMultiPointShape(final ShapeType type)
     {
         super(type);
-    }
-
-    protected AbstractDirectionalMultiPointShape(final ShapeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(type, node, ctx);
     }
 
     @Override
@@ -49,13 +55,13 @@ public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirec
     @Override
     public Direction getHeadDirection()
     {
-        return getAttributes().getHeadDirection();
+        return this.headDirection;
     }
 
     @Override
     public T setHeadDirection(final Direction direction)
     {
-        getAttributes().setHeadDirection(direction);
+        this.headDirection = direction;
 
         return refresh();
     }
@@ -63,29 +69,27 @@ public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirec
     @Override
     public Direction getTailDirection()
     {
-        return getAttributes().getTailDirection();
+        return this.tailDirection;
     }
 
     @Override
     public T setTailDirection(final Direction direction)
     {
-        getAttributes().setTailDirection(direction);
+        this.tailDirection = direction;
 
         return refresh();
     }
 
-    @Override
-    public double getCorrectionOffset()
+    public final T setCorrectionOffset(double offset)
     {
-        return getAttributes().getCorrectionOffset();
-    }
-
-    @Override
-    public T setCorrectionOffset(final double offset)
-    {
-        getAttributes().setCorrectionOffset(offset);
+        this.correctionOffset = offset;
 
         return refresh();
+    }
+
+    public final double getCorrectionOffset()
+    {
+        return this.correctionOffset;
     }
 
     @Override
@@ -101,6 +105,16 @@ public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirec
     @Override
     public Point2D adjustPoint(double x, double y, double deltaX, double deltaY) {
         return new Point2D(x, y);
+    }
+
+    @Override
+    public Shape<T> copyTo(Shape<T> other) {
+        super.copyTo(other);
+        ((IDirectionalMultiPointShape<T>) other).setHeadDirection(headDirection);
+        ((IDirectionalMultiPointShape<T>) other).setTailDirection(headDirection);
+        ((IDirectionalMultiPointShape<T>) other).setCorrectionOffset(correctionOffset);
+
+        return other;
     }
 
     protected static abstract class AbstractDirectionalMultiPointShapeFactory<T extends AbstractDirectionalMultiPointShape<T>> extends AbstractOffsetMultiPointShapeFactory<T>

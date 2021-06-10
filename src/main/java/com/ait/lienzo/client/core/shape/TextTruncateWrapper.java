@@ -1,12 +1,9 @@
 /*
    Copyright (c) 2019 Ahome' Innovation Technologies. All rights reserved.
-
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
-
        http://www.apache.org/licenses/LICENSE-2.0
-
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +21,7 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 /**
  * ITextWrapper implementation that truncates text and appends "..." if there is no space left.
  */
-@SuppressWarnings("Duplicates") public class TextTruncateWrapper extends TextBoundsWrap
+public class TextTruncateWrapper extends TextBoundsWrap
         implements ITextWrapperWithBoundaries
 {
     private BoundingBox             m_wrapBoundaries;
@@ -53,7 +50,7 @@ import com.ait.lienzo.client.core.types.BoundingBox;
     public BoundingBox getBoundingBox()
     {
         final double[] boundaries = calculateWrapBoundaries();
-        return new BoundingBox(0, 0, boundaries[0], boundaries[1]);
+        return BoundingBox.fromDoubles(0, 0, boundaries[0], boundaries[1]);
     }
 
     protected double getWrapBoundariesWidth()
@@ -107,8 +104,8 @@ import com.ait.lienzo.client.core.types.BoundingBox;
     }
 
     protected boolean hasVerticalSpace(final int lineIndex,
-                                     final double lineHeight,
-                                     final double availableHeight)
+                                       final double lineHeight,
+                                       final double availableHeight)
     {
         return lineHeight * (lineIndex + Y_OFFSET) <= availableHeight;
     }
@@ -120,17 +117,16 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 
     @Override
     public void drawString(final Context2D context,
-                           final Attributes attr,
                            final IDrawString drawCommand)
     {
-        final String[] words = attr.getText().split("\\s");
+        final String[] words = text.getText().split("\\s");
 
         if (words.length < 1)
         {
             return;
         }
 
-        final ArrayList<String> lines = new ArrayList<String>();
+        final ArrayList<String> lines = new ArrayList<>();
         final double boundariesWidth = getWrapBoundariesWidth();
         StringBuilder currentLine = new StringBuilder();
         String currentWord;
@@ -163,7 +159,7 @@ import com.ait.lienzo.client.core.types.BoundingBox;
                 }
 
                 if (i != words.length - 1 && !hasVerticalSpace(lines.size() + 2, lineHeight,
-                        getWrapBoundaries().getHeight() - (Y_OFFSET * lines.size() + 2)))
+                                                               getWrapBoundaries().getHeight() - (Y_OFFSET * lines.size() + 2)))
                 {
                     if (currentLine.length() > 3)
                     {
@@ -196,7 +192,7 @@ import com.ait.lienzo.client.core.types.BoundingBox;
                 currentLine.append(newWord);
 
                 if (!hasVerticalSpace(lines.size() + 2, lineHeight,
-                        getWrapBoundaries().getHeight() - (Y_OFFSET * lines.size() + 2)))
+                                      getWrapBoundaries().getHeight() - (Y_OFFSET * lines.size() + 2)))
                 {
                     if (currentLine.length() > 3) {
                         currentLine = new StringBuilder(currentLine.substring(0, currentLine.length() - 3) + "...");
@@ -230,13 +226,12 @@ import com.ait.lienzo.client.core.types.BoundingBox;
                 lines.add(currentLine.toString());
             }
         }
-
         drawLines(context, drawCommand, lines, boundariesWidth);
     }
 
     protected boolean hasHorizontalSpaceToDraw(final String currentLine,
-                                             final String currentWord,
-                                             final double boundariesWidth)
+                                               final String currentWord,
+                                               final double boundariesWidth)
     {
         final BoundingBox currentWordSize = getBoundingBoxForString(currentWord);
         final BoundingBox currentLineSize = getBoundingBoxForString(currentLine);

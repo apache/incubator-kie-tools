@@ -17,8 +17,8 @@
 package com.ait.lienzo.client.core.animation;
 
 import com.ait.lienzo.client.core.shape.Node;
-import com.google.gwt.animation.client.AnimationScheduler;
-import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
+import com.ait.lienzo.client.core.animation.AnimationScheduler;
+import com.ait.lienzo.client.core.animation.AnimationScheduler.AnimationCallback;
 
 public abstract class AbstractAnimation implements IAnimation, IAnimationHandle
 {
@@ -57,7 +57,7 @@ public abstract class AbstractAnimation implements IAnimation, IAnimationHandle
                 {
                     doFrame();
 
-                    if (isRunning())
+                    if (isRunning() && m_animate != null)
                     {
                         AnimationScheduler.get().requestAnimationFrame(m_animate);
                     }

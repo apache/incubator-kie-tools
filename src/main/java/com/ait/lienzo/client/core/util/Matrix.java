@@ -24,7 +24,7 @@ package com.ait.lienzo.client.core.util;
  * Do not try to bend the spoon, that's impossible. Instead, only try to realize the truth: there is no spoon.
  * 
  */
-final public class Matrix
+public final class Matrix
 {
     private final int        m_rows;
 

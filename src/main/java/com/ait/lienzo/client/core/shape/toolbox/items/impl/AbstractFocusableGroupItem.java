@@ -23,6 +23,7 @@ import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
 import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.toolbox.GroupItem;
 import com.ait.lienzo.client.core.shape.toolbox.ToolboxVisibilityExecutors;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 
 public abstract class AbstractFocusableGroupItem<T extends AbstractFocusableGroupItem>
@@ -35,6 +36,9 @@ public abstract class AbstractFocusableGroupItem<T extends AbstractFocusableGrou
     private FocusGroupExecutor focusGroupExecutor;
     private int focusDelay;
     private int unFocusDelay;
+
+    private HandlerRegistration mouseEnterHandler;
+    private HandlerRegistration mouseExitHandler;
 
     private final Timer focusDelayTimer = new Timer() {
         @Override
@@ -114,6 +118,17 @@ public abstract class AbstractFocusableGroupItem<T extends AbstractFocusableGrou
     @Override
     public void destroy() {
         cancelTimers();
+
+        if (null != mouseEnterHandler) {
+            mouseEnterHandler.removeHandler();
+            mouseEnterHandler = null;
+        }
+
+        if (null != mouseExitHandler) {
+            mouseExitHandler.removeHandler();
+            mouseExitHandler = null;
+        }
+
         super.destroy();
     }
 
@@ -123,13 +138,14 @@ public abstract class AbstractFocusableGroupItem<T extends AbstractFocusableGrou
     }
 
     protected T setupFocusingHandlers() {
-        registerMouseEnterHandler(new NodeMouseEnterHandler() {
+        mouseEnterHandler = registerMouseEnterHandler(new NodeMouseEnterHandler() {
             @Override
             public void onNodeMouseEnter(NodeMouseEnterEvent event) {
                 AbstractFocusableGroupItem.this.focus();
             }
         });
-        registerMouseExitHandler(new NodeMouseExitHandler() {
+
+        mouseExitHandler = registerMouseExitHandler(new NodeMouseExitHandler() {
             @Override
             public void onNodeMouseExit(NodeMouseExitEvent event) {
                 AbstractFocusableGroupItem.this.unFocus();

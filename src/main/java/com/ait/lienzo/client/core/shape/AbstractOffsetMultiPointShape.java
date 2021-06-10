@@ -23,18 +23,20 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
 
 public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMultiPointShape<T> & IOffsetMultiPointShape<T>> extends AbstractMultiPointShape<T> implements IOffsetMultiPointShape<T>
 {
+    @JsProperty
+    private  double headOffset;
+
+    @JsProperty
+    private  double tailOffset;
+
     protected AbstractOffsetMultiPointShape(final ShapeType type)
     {
         super(type);
-    }
-
-    protected AbstractOffsetMultiPointShape(final ShapeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(type, node, ctx);
     }
 
     @Override
@@ -43,30 +45,26 @@ public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMult
         return this;
     }
 
-    @Override
     public double getTailOffset()
     {
-        return getAttributes().getTailOffset();
+        return this.tailOffset;
     }
 
-    @Override
     public T setTailOffset(final double offset)
     {
-        getAttributes().setTailOffset(offset);
+        this.tailOffset = offset;
 
         return refresh();
     }
 
-    @Override
     public double getHeadOffset()
     {
-        return getAttributes().getHeadOffset();
+        return this.headOffset;
     }
 
-    @Override
     public T setHeadOffset(final double offset)
     {
-        getAttributes().setHeadOffset(offset);
+        this.headOffset = offset;
 
         return refresh();
     }
@@ -94,9 +92,9 @@ public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMult
     }
 
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context,  final double alpha)
     {
-        final boolean prepared = isPathPartListPrepared(attr);
+        final boolean prepared = isPathPartListPrepared();
 
         if (prepared)
         {
@@ -105,15 +103,15 @@ public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMult
         return prepared;
     }
 
-    public boolean isPathPartListPrepared(final Attributes attr)
+    public boolean isPathPartListPrepared()
     {
         if (getPathPartList().size() < 1)
         {
-            return parse(attr);
+            return parse();
         }
 
         return true;
     }
 
-    public abstract boolean parse(Attributes attr);
+    public abstract boolean parse();
 }

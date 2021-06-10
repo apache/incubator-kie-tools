@@ -20,23 +20,23 @@ import java.util.Collection;
 
 public interface ImageDataFilterable<T extends ImageDataFilterable<T>>
 {
-    public T setFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters);
+    T setFilters(ImageDataFilter<?>... filters);
 
-    public T addFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters);
+    T addFilters(ImageDataFilter<?>... filters);
 
-    public T removeFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters);
+    T removeFilters(ImageDataFilter<?>... filters);
 
-    public T setFilters(Iterable<ImageDataFilter<?>> filters);
+    T setFilters(Iterable<ImageDataFilter<?>> filters);
 
-    public T addFilters(Iterable<ImageDataFilter<?>> filters);
+    T addFilters(Iterable<ImageDataFilter<?>> filters);
 
-    public T removeFilters(Iterable<ImageDataFilter<?>> filters);
+    T removeFilters(Iterable<ImageDataFilter<?>> filters);
 
-    public T clearFilters();
+    T clearFilters();
 
-    public T setFiltersActive(boolean active);
+    T setFiltersActive(boolean active);
 
-    public boolean areFiltersActive();
+    boolean areFiltersActive();
 
-    public Collection<ImageDataFilter<?>> getFilters();
+    Collection<ImageDataFilter<?>> getFilters();
 }

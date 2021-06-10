@@ -29,8 +29,9 @@ import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
-import com.google.gwt.json.client.JSONObject;
+import com.ait.lienzo.tools.client.collection.NFastDoubleArray;
+
+import jsinterop.annotations.JsProperty;
 
 import static com.ait.lienzo.shared.core.types.Direction.EAST;
 import static com.ait.lienzo.shared.core.types.Direction.NONE;
@@ -57,9 +58,12 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
     private double       m_breakDistance;
 
-    public OrthogonalPolyLine(final Point2D start, final Point2D... points)
+    @JsProperty
+    private double       cornerRadius;
+
+    public OrthogonalPolyLine(final Point2D... points)
     {
-        this(new Point2DArray(start, points));
+        this(Point2DArray.fromArrayOfPoint2D(points));
     }
 
     public OrthogonalPolyLine(final Point2DArray points)
@@ -76,23 +80,17 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         setCornerRadius(corner);
     }
 
-    protected OrthogonalPolyLine(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.ORTHOGONAL_POLYLINE, node, ctx);
-    }
-
     @Override
-    public boolean parse(final Attributes attr)
+    public boolean parse()
     {
-        Point2DArray points = attr.getControlPoints();
-        points = correctBreakDistance(points, m_breakDistance);
+        Point2DArray points = correctBreakDistance(getControlPoints(), m_breakDistance);
 
         if (points.size() > 1)
         {
-            final double headOffset = attr.getHeadOffset();
-            final double correction = attr.getCorrectionOffset();
-            Direction headDirection = attr.getHeadDirection();
-            Direction tailDirection = attr.getTailDirection();
+            final double headOffset = getHeadOffset();
+            final double correction = getCorrectionOffset();
+            Direction headDirection = getHeadDirection();
+            Direction tailDirection = getTailDirection();
 
             if (headDirection == NONE)
             {
@@ -102,7 +100,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 headDirection = getHeadDirection(points, null, headDirection, tailDirection, p0, p1, headOffsetAndCorrect, correction,this);
             }
 
-            final NFastDoubleArrayJSO opoint = drawOrthogonalLinePoints(points, headDirection, tailDirection, correction, this, m_breakDistance,true);
+            final NFastDoubleArray opoint = drawOrthogonalLinePoints(points, headDirection, tailDirection, correction, this, m_breakDistance, true);
 
             m_headOffsetPoint = points.get(0);
             m_tailOffsetPoint = points.get(points.size()-1);
@@ -113,7 +111,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 list.M(m_headOffsetPoint.getX(), m_headOffsetPoint.getY());
                 final double radius = getCornerRadius();
 
-                m_computedPoint2DArray = Point2DArray.fromNFastDoubleArrayJSO(opoint);
+                m_computedPoint2DArray = Point2DArray.fromNFastDoubleArray(opoint);
 
                 if (radius > 0)
                 {
@@ -137,7 +135,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         return false;
     }
 
-    public static final Point2DArray correctBreakDistance(Point2DArray points, double breakDistance)
+    public final Point2DArray correctBreakDistance(Point2DArray points, double breakDistance)
     {
         Point2DArray cPoints = points.copy();
 
@@ -164,7 +162,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         return cPoints;
     }
 
-    private static final Direction getHeadDirection(Point2DArray points, NFastDoubleArrayJSO buffer, Direction headDirection, Direction tailDirection, Point2D p0, Point2D p1, double headOffsetAndCorrection, final double correction, final OrthogonalPolyLine pline)
+    private static final Direction getHeadDirection(Point2DArray points, NFastDoubleArray buffer, Direction headDirection, Direction tailDirection, Point2D p0, Point2D p1, double headOffsetAndCorrection, final double correction, final OrthogonalPolyLine pline)
     {
         double p0x = p0.getX();
         double p0y = p0.getY();
@@ -229,7 +227,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         }
     }
 
-    private static Point2D correctP0(Direction headDirection, double correction, OrthogonalPolyLine pline, boolean write, NFastDoubleArrayJSO buffer, Point2D p0)
+    private static Point2D correctP0(Direction headDirection, double correction, OrthogonalPolyLine pline, boolean write, NFastDoubleArray buffer, Point2D p0)
     {
         if ( !write ) {
             p0 = p0.copy();
@@ -243,7 +241,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
             correctEndWithOffset(headOffset, headDirection, p0);
         }
 
-        // add starting point, that may have head offset
+        // addBoundingBox starting point, that may have head offset
         addPoint(buffer,  p0.getX(), p0.getY(), write);
 
         // correct for correction
@@ -254,15 +252,15 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 p0 = p0.copy();
             }
             correctEndWithOffset(correction, headDirection, p0);
-            // add another point of the correction, to ensure the line is always visible at the tip of the arrow
+            // addBoundingBox another point of the correction, to ensure the line is always visible at the tip of the arrow
             addPoint(buffer,  p0.getX(), p0.getY(), write);
         }
         return p0;
     }
 
-    private static final NFastDoubleArrayJSO drawOrthogonalLinePoints(final Point2DArray points, Direction headDirection, Direction tailDirection, final double correction, final OrthogonalPolyLine pline, double breakDistance, boolean write)
+    private static final NFastDoubleArray drawOrthogonalLinePoints(final Point2DArray points, Direction headDirection, Direction tailDirection, final double correction, final OrthogonalPolyLine pline, double breakDistance, boolean write)
     {
-        final NFastDoubleArrayJSO buffer = NFastDoubleArrayJSO.make();
+        final NFastDoubleArray buffer = new NFastDoubleArray();
 
         Point2D p0 = points.get(0);
         p0 = correctP0(headDirection, correction, pline, write, buffer, p0);
@@ -297,7 +295,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
      * will always attempt to continue the line in the same direction if it can do so, without requiring a corner.
      * If the line goes back on itself, it'll go 50% of the way  and then go perpendicular, so that it no longer goes back on itself.
      */
-    private static final Direction drawOrthogonalLineSegment(final NFastDoubleArrayJSO buffer, final Direction direction, Direction nextDirection, double p1x, double p1y, final double p2x, final double p2y, final double p3x, final double p3y, boolean write)
+    private static final Direction drawOrthogonalLineSegment(final NFastDoubleArray buffer, final Direction direction, Direction nextDirection, double p1x, double p1y, final double p2x, final double p2y, final double p3x, final double p3y, boolean write)
     {
         if (nextDirection == null)
         {
@@ -448,7 +446,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
      * @param p1y
      * @return
      */
-    private static Direction getTailDirection(Point2DArray points, NFastDoubleArrayJSO buffer, Direction lastDirection, Direction tailDirection, double correction, OrthogonalPolyLine pline, double p0x, double p0y, double p1x, double p1y)
+    private static Direction getTailDirection(Point2DArray points, NFastDoubleArray buffer, Direction lastDirection, Direction tailDirection, double correction, OrthogonalPolyLine pline, double p0x, double p0y, double p1x, double p1y)
     {
         double offset = pline.getHeadOffset() + correction;
         switch (tailDirection)
@@ -501,7 +499,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
     }
 
 
-    private static final void drawTail(Point2DArray points, NFastDoubleArrayJSO buffer, Direction lastDirection, Direction tailDirection, Point2D p0, Point2D p1, final double correction, final OrthogonalPolyLine pline)
+    private static final void drawTail(Point2DArray points, NFastDoubleArray buffer, Direction lastDirection, Direction tailDirection, Point2D p0, Point2D p1, final double correction, final OrthogonalPolyLine pline)
     {
         double p0x = p0.getX();
 
@@ -520,7 +518,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
     /**
      * Draws the last segment of the line to the tail.
      * It will take into account the correction and arrow.
-     * Logic is applied to help draw an attractive line. Under certain conditions it will attempt to add an extra mid point. For example if you have directions
+     * Logic is applied to help draw an attractive line. Under certain conditions it will attempt to addBoundingBox an extra mid point. For example if you have directions
      * going opposite to each other, it will create a mid point so that the line goes back on itseld through this mid point.
      * @param points
      * @param buffer
@@ -535,7 +533,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
      * @param write
      * @return
      */
-    private static int drawTail(Point2DArray points, NFastDoubleArrayJSO buffer, Direction lastDirection, Direction tailDirection, double correction, final OrthogonalPolyLine pline, double p0x, double p0y, double p1x, double p1y, boolean write)
+    private static int drawTail(Point2DArray points, NFastDoubleArray buffer, Direction lastDirection, Direction tailDirection, double correction, final OrthogonalPolyLine pline, double p0x, double p0y, double p1x, double p1y, boolean write)
     {
         double tailOffset = pline.getTailOffset();
 
@@ -739,7 +737,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         return corners;
     }
 
-    private static final void addPoint(final NFastDoubleArrayJSO buffer, final double x, final double y, boolean write)
+    private static final void addPoint(final NFastDoubleArray buffer, final double x, final double y, boolean write)
     {
         if (write == true)
         {
@@ -747,7 +745,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         }
     }
 
-    private static final void addPoint(final NFastDoubleArrayJSO buffer, final double x0, final double y0, double x1, double y1, boolean write)
+    private static final void addPoint(final NFastDoubleArray buffer, final double x0, final double y0, double x1, double y1, boolean write)
     {
         if (write == true)
         {
@@ -755,7 +753,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         }
     }
 
-    private static final void addPoint(final NFastDoubleArrayJSO buffer, final double x, final double y)
+    private static final void addPoint(final NFastDoubleArray buffer, final double x, final double y)
     {
         // always attempt to normalise
         if ( !buffer.isEmpty() )
@@ -779,51 +777,29 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
     {
         if (getPathPartList().size() < 1)
         {
-            if (false == parse(getAttributes()))
+            if (false == parse())
             {
-                return new BoundingBox(0, 0, 0, 0);
+                return BoundingBox.fromDoubles(0, 0, 0, 0);
             }
         }
         return getPathPartList().getBoundingBox();
     }
 
     @Override
-    protected boolean fill(Context2D context, Attributes attr, double alpha)
+    protected boolean fill(Context2D context,  double alpha)
     {
         return false;
     }
 
-    /**
-     * Returns this OrthogonalPolyLine's points.
-     *
-     * @return {@link Point2DArray}
-     */
-    public Point2DArray getControlPoints()
-    {
-        return getAttributes().getControlPoints();
-    }
-
-    /**
-     * Sets this OrthogonalPolyLine's points.
-     *
-     * @param points {@link Point2DArray}
-     * @return this OrthogonalPolyLine
-     */
-    public OrthogonalPolyLine setControlPoints(final Point2DArray points)
-    {
-        getAttributes().setControlPoints(points);
-
-        return refresh();
-    }
 
     public double getCornerRadius()
     {
-        return getAttributes().getCornerRadius();
+        return this.cornerRadius;
     }
 
     public OrthogonalPolyLine setCornerRadius(final double radius)
     {
-        getAttributes().setCornerRadius(radius);
+        this.cornerRadius = cornerRadius;
 
         return refresh();
     }
@@ -881,6 +857,24 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         return getBoundingBoxAttributesComposed(Attribute.CONTROL_POINTS, Attribute.CORNER_RADIUS);
     }
 
+    @Override
+    public Shape<OrthogonalPolyLine> copyTo(Shape<OrthogonalPolyLine> other) {
+        super.copyTo(other);
+        ((OrthogonalPolyLine) other).m_headOffsetPoint = m_headOffsetPoint.copy();
+        ((OrthogonalPolyLine) other).m_tailOffsetPoint = m_tailOffsetPoint.copy();
+        ((OrthogonalPolyLine) other).m_computedPoint2DArray = m_computedPoint2DArray.copy();
+        ((OrthogonalPolyLine) other).m_breakDistance = m_breakDistance;
+        ((OrthogonalPolyLine) other).cornerRadius = cornerRadius;
+
+        return other;
+    }
+
+    @Override
+    public OrthogonalPolyLine cloneLine() {
+        OrthogonalPolyLine orthogonalPolyLine = new OrthogonalPolyLine(this.getControlPoints().copy(), cornerRadius);
+        return (OrthogonalPolyLine) copyTo(orthogonalPolyLine);
+    }
+
     public static class OrthogonaPolylLineFactory extends AbstractDirectionalMultiPointShapeFactory<OrthogonalPolyLine>
     {
         public OrthogonaPolylLineFactory()
@@ -891,12 +885,5 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
             addAttribute(Attribute.CONTROL_POINTS, true);
         }
-
-        @Override
-        public OrthogonalPolyLine create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new OrthogonalPolyLine(node, ctx);
-        }
     }
-
 }

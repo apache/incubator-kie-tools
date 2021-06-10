@@ -17,7 +17,6 @@
 package com.ait.lienzo.client.core.shape.json.validators;
 
 import com.ait.lienzo.client.core.shape.BoundingBoxPathClipper;
-import com.google.gwt.json.client.JSONValue;
 
 public class BoundingBoxPathClipperValidator extends AbstractPathClipperValidator
 {
@@ -29,7 +28,7 @@ public class BoundingBoxPathClipperValidator extends AbstractPathClipperValidato
     }
 
     @Override
-    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
     {
         super.validate(jval, ctx);
 

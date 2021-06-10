@@ -16,17 +16,18 @@
 
 package com.ait.lienzo.client.core.mediator;
 
-import com.ait.tooling.common.api.java.util.function.Predicate;
-import com.google.gwt.event.shared.GwtEvent;
+import java.util.function.Predicate;
+
+import elemental2.dom.UIEvent;
 
 /**
  * IEventFilter is used by {@link AbstractMediator}
  * 
  * @since 1.1
  */
-public interface IEventFilter extends Predicate<GwtEvent<?>>
+public interface IEventFilter extends Predicate<UIEvent>
 {
-    public boolean isEnabled();
+    boolean isEnabled();
 
-    public void setEnabled(boolean enabled);
+    void setEnabled(boolean enabled);
 }

@@ -21,19 +21,21 @@ import com.ait.lienzo.shared.core.types.Direction;
 
 public interface IDirectionalMultiPointShape<T extends Shape<T> & IDirectionalMultiPointShape<T>> extends IOffsetMultiPointShape<T>
 {
-    public T setTailDirection(Direction direction);
+    T setTailDirection(Direction direction);
 
-    public Direction getTailDirection();
+    Direction getTailDirection();
 
-    public T setHeadDirection(Direction direction);
+    T setHeadDirection(Direction direction);
 
-    public Direction getHeadDirection();
+    Direction getHeadDirection();
 
-    public double getCorrectionOffset();
+    double getCorrectionOffset();
 
-    public T setCorrectionOffset(final double offset);
+    T setCorrectionOffset(final double offset);
 
-    public boolean isPathPartListPrepared(final Attributes attr);
+    boolean isPathPartListPrepared();
 
-    public Point2D adjustPoint(double x, double y, double deltaX, double deltaY);
+    Point2D adjustPoint(double x, double y, double deltaX, double deltaY);
+
+    T cloneLine();
 }

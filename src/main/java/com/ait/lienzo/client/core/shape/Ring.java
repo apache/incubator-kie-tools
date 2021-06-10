@@ -24,7 +24,8 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
 
 /**
  * A Slice is defined by a start angle and an end angle, like a slice of a pizza.
@@ -33,13 +34,15 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Ring extends Shape<Ring>
 {
+    @JsProperty
+    private double innerRadius;
+
+    @JsProperty
+    private double outerRadius;
+
     /**
      * Constructor. Creates an instance of a slice.
-     * 
-     * @param radius
-     * @param startAngle in radians
-     * @param endAngle in radians
-     * @param counterClockwise
+     *
      */
     public Ring(final double innerRadius, final double outerRadius)
     {
@@ -48,17 +51,12 @@ public class Ring extends Shape<Ring>
         setInnerRadius(innerRadius).setOuterRadius(outerRadius);
     }
 
-    protected Ring(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.RING, node, ctx);
-    }
-
     @Override
     public BoundingBox getBoundingBox()
     {
         final double radius = Math.max(getInnerRadius(), getOuterRadius());
 
-        return new BoundingBox(0 - radius, 0 - radius, radius, radius);
+        return BoundingBox.fromDoubles(0 - radius, 0 - radius, radius, radius);
     }
 
     @Override
@@ -73,11 +71,11 @@ public class Ring extends Shape<Ring>
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final double alpha)
     {
-        final double ord = attr.getOuterRadius();
+        final double ord = getOuterRadius();
 
-        final double ird = attr.getInnerRadius();
+        final double ird = getInnerRadius();
 
         if ((ord > 0) && (ird > 0) && (ord > ird))
         {
@@ -95,17 +93,17 @@ public class Ring extends Shape<Ring>
     }
 
     @Override
-    protected void stroke(final Context2D context, final Attributes attr, final double alpha, final boolean filled)
+    protected void stroke(final Context2D context, final double alpha, final boolean filled)
     {
-        if (setStrokeParams(context, attr, alpha, filled))
+        if (setStrokeParams(context, alpha, filled))
         {
-            if ((attr.hasShadow()) && (false == context.isSelection()))
+            if (getShadow() != null && !context.isSelection())
             {
-                doApplyShadow(context, attr);
+                doApplyShadow(context);
             }
             context.beginPath();
 
-            context.arc(0, 0, attr.getOuterRadius(), 0, Math.PI * 2, false);
+            context.arc(0, 0, getOuterRadius(), 0, Math.PI * 2, false);
 
             context.closePath();
 
@@ -113,7 +111,7 @@ public class Ring extends Shape<Ring>
 
             context.beginPath();
 
-            context.arc(0, 0, attr.getInnerRadius(), 0, Math.PI * 2, true);
+            context.arc(0, 0, getInnerRadius(), 0, Math.PI * 2, true);
 
             context.closePath();
 
@@ -130,7 +128,7 @@ public class Ring extends Shape<Ring>
      */
     public double getInnerRadius()
     {
-        return getAttributes().getInnerRadius();
+        return this.innerRadius;
     }
 
     /**
@@ -141,7 +139,7 @@ public class Ring extends Shape<Ring>
      */
     public Ring setInnerRadius(final double radius)
     {
-        getAttributes().setInnerRadius(radius);
+        this.innerRadius = radius;
 
         return this;
     }
@@ -153,7 +151,7 @@ public class Ring extends Shape<Ring>
      */
     public double getOuterRadius()
     {
-        return getAttributes().getOuterRadius();
+        return this.outerRadius;
     }
 
     /**
@@ -164,7 +162,7 @@ public class Ring extends Shape<Ring>
      */
     public Ring setOuterRadius(final double radius)
     {
-        getAttributes().setOuterRadius(radius);
+        this.outerRadius = radius;
 
         return this;
     }
@@ -184,12 +182,6 @@ public class Ring extends Shape<Ring>
             addAttribute(Attribute.INNER_RADIUS, true);
 
             addAttribute(Attribute.OUTER_RADIUS, true);
-        }
-
-        @Override
-        public Ring create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new Ring(node, ctx);
         }
     }
 }

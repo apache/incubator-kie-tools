@@ -13,17 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-// TODO - review DSJ
 
 package com.ait.lienzo.client.core.shape.wires;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorHandler;
@@ -38,28 +36,28 @@ import com.ait.lienzo.client.core.types.OnLayerBeforeDraw;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
-import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.collection.NFastStringMap;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
+import elemental2.core.JsArray;
+import jsinterop.base.Js;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import static com.ait.lienzo.client.core.util.JsInteropUtils.toValuesJsArray;
 
 public final class WiresManager
 {
 
-    private static final NFastStringMap<WiresManager>        MANAGER_MAP           = new NFastStringMap<WiresManager>();
+    private static final Map<String, WiresManager> MANAGER_MAP           = new HashMap<>();
 
     private final MagnetManager                              m_magnetManager       = new MagnetManager();
 
     private final AlignAndDistribute                         m_index;
 
-    private final NFastStringMap<WiresShape>                 m_shapesMap           = new NFastStringMap<WiresShape>();
+    private final NFastStringMap<WiresShape>                 m_shapesMap           = new NFastStringMap<>();
 
-    private final NFastStringMap<HandlerRegistrationManager> m_shapeHandlersMap    = new NFastStringMap<HandlerRegistrationManager>();
+    private final NFastStringMap<HandlerRegistrationManager> m_shapeHandlersMap    = new NFastStringMap<>();
 
-    private final NFastArrayList<WiresConnector>             m_connectorList       = new NFastArrayList<WiresConnector>();
+    private final NFastArrayList<WiresConnector>             m_connectorList       = new NFastArrayList<>();
 
     private final WiresLayer                                 m_layer;
 
@@ -71,17 +69,19 @@ public final class WiresManager
 
     private IConnectionAcceptor                              m_connectionAcceptor  = IConnectionAcceptor.ALL;
 
-    private IContainmentAcceptor                             m_containmentAcceptor = IContainmentAcceptor.ALL;
+    private IContainmentAcceptor   m_containmentAcceptor = IContainmentAcceptor.ALL;
 
-    private IControlPointsAcceptor                           m_controlPointsAcceptor = IControlPointsAcceptor.ALL;
+    private IControlPointsAcceptor m_controlPointsAcceptor = IControlPointsAcceptor.ALL;
 
-    private IDockingAcceptor                                 m_dockingAcceptor     = IDockingAcceptor.NONE;
+    private IDockingAcceptor       m_dockingAcceptor     = IDockingAcceptor.NONE;
 
-    private SelectionManager                                 m_selectionManager;
+    private SelectionManager       m_selectionManager;
 
-    private WiresDragHandler                                 m_handler;
+    private WiresDragHandler       m_handler;
 
-    private boolean                                          m_spliceEnabled;
+    private boolean                m_spliceEnabled;
+
+    private WiresEventHandlers     m_wiresEventHandlers;
 
     public static final WiresManager get(Layer layer)
     {
@@ -122,6 +122,8 @@ public final class WiresManager
         m_handler = null;
         m_controlFactory = new WiresControlFactoryImpl();
         m_wiresHandlerFactory = new WiresHandlerFactoryImpl();
+
+        m_wiresEventHandlers = new WiresEventHandlers(layer.getViewport().getElement());
     }
 
     public SelectionManager enableSelectionManager()
@@ -131,6 +133,11 @@ public final class WiresManager
             m_selectionManager = new SelectionManager(this);
         }
         return m_selectionManager;
+    }
+
+    public WiresEventHandlers getWiresEventHandlers()
+    {
+        return m_wiresEventHandlers;
     }
 
     public boolean isSpliceEnabled()
@@ -159,8 +166,11 @@ public final class WiresManager
             // as this is expensive it's delayed until the last minute before draw. As drawing order is not guaranteed
             // this method is used to force a parse on any line that has been refreshed. Refreshed means it's points where
             // changed and thus will be reparsed.
-            for (WiresConnector c : m_wiresManager.getConnectorList())
+            //for (WiresConnector c : )
+            NFastArrayList<WiresConnector> list = m_wiresManager.getConnectorList();
+            for (int i = 0, size = list.size(); i < size; i++)
             {
+                WiresConnector c = list.get(i);
                 if (WiresConnector.updateHeadTailForRefreshedConnector(c))
                 {
                     return false;
@@ -220,7 +230,6 @@ public final class WiresManager
         // Shapes added to the canvas layer by default.
         getLayer().add(shape);
 
-
         final String uuid = shape.uuid();
         m_shapesMap.put(uuid, shape);
         m_shapeHandlersMap.put(uuid, registrationManager);
@@ -233,26 +242,14 @@ public final class WiresManager
     {
         // Shapes added to the align and distribute index.
         // Treat a resize like a drag.
-        // Except right now we cannot A&D during steps (TODO)
         final AlignAndDistributeControl alignAndDistrControl = addToIndex(shape);
         shape.getControl().setAlignAndDistributeControl(alignAndDistrControl);
 
-        registrationManager.register(shape.addWiresResizeStartHandler(new WiresResizeStartHandler()
-        {
-            @Override public void onShapeResizeStart(final WiresResizeStartEvent event)
-            {
-                alignAndDistrControl.dragStart();
-            }
-        }));
+        registrationManager.register(shape.addWiresResizeStartHandler(event -> alignAndDistrControl.dragStart()));
 
-        registrationManager.register(shape.addWiresResizeEndHandler(new WiresResizeEndHandler()
-        {
-            @Override
-            public void onShapeResizeEnd(WiresResizeEndEvent event)
-            {
-                alignAndDistrControl.dragEnd();
-            }
-        }));
+        registrationManager.register(shape.addWiresMoveHandler(event -> alignAndDistrControl.refresh(true, true)));
+
+        registrationManager.register(shape.addWiresResizeEndHandler(event -> alignAndDistrControl.dragEnd()));
     }
 
     public static void addWiresShapeHandler(final WiresShape shape,
@@ -295,6 +292,16 @@ public final class WiresManager
         if (addHandlers) {
             final WiresConnectorHandler handler = getWiresHandlerFactory().newConnectorHandler(connector, this);
 
+            m_registrationManager.register(connector.getHead().addNodeMouseClickHandler(handler));
+            m_registrationManager.register(connector.getHead().addNodeMouseEnterHandler(handler));
+            m_registrationManager.register(connector.getHead().addNodeMouseMoveHandler(handler));
+            m_registrationManager.register(connector.getHead().addNodeMouseExitHandler(handler));
+            m_registrationManager.register(connector.getTail().addNodeMouseClickHandler(handler));
+
+            m_registrationManager.register(connector.getTail().addNodeMouseEnterHandler(handler));
+            m_registrationManager.register(connector.getTail().addNodeMouseMoveHandler(handler));
+            m_registrationManager.register(connector.getTail().addNodeMouseExitHandler(handler));
+
             m_registrationManager.register(connector.getGroup().addNodeDragStartHandler(handler));
             m_registrationManager.register(connector.getGroup().addNodeDragMoveHandler(handler));
             m_registrationManager.register(connector.getGroup().addNodeDragEndHandler(handler));
@@ -304,15 +311,6 @@ public final class WiresManager
             m_registrationManager.register(connector.getLine().addNodeMouseMoveHandler(handler));
             m_registrationManager.register(connector.getLine().addNodeMouseEnterHandler(handler));
             m_registrationManager.register(connector.getLine().addNodeMouseExitHandler(handler));
-
-            m_registrationManager.register(connector.getHead().addNodeMouseClickHandler(handler));
-            m_registrationManager.register(connector.getHead().addNodeMouseEnterHandler(handler));
-            m_registrationManager.register(connector.getHead().addNodeMouseMoveHandler(handler));
-            m_registrationManager.register(connector.getHead().addNodeMouseExitHandler(handler));
-            m_registrationManager.register(connector.getTail().addNodeMouseClickHandler(handler));
-            m_registrationManager.register(connector.getTail().addNodeMouseEnterHandler(handler));
-            m_registrationManager.register(connector.getTail().addNodeMouseMoveHandler(handler));
-            m_registrationManager.register(connector.getTail().addNodeMouseExitHandler(handler));
         }
 
         getConnectorList().add(connector);
@@ -341,7 +339,7 @@ public final class WiresManager
 
     private void destroy() {
         if (!m_shapesMap.isEmpty()) {
-            final Collection<WiresShape> shapes = new ArrayList<>(m_shapesMap.values());
+            final WiresShape[] shapes = Js.uncheckedCast(JsArray.from(m_shapesMap.values()));
             for (WiresShape shape : shapes) {
                 deregister(shape);
             }
@@ -349,7 +347,7 @@ public final class WiresManager
         }
         if (!m_connectorList.isEmpty()) {
             final NFastArrayList<WiresConnector> connectors = m_connectorList.copy();
-            for (WiresConnector connector : connectors) {
+            for (WiresConnector connector : connectors.asList()) {
                 deregister(connector);
             }
             m_connectorList.clear();
@@ -496,6 +494,12 @@ public final class WiresManager
     public NFastStringMap<WiresShape> getShapesMap()
     {
         return m_shapesMap;
+    }
+
+    public WiresShape[] getShapes() {
+        JsArray<WiresShape> array = toValuesJsArray(m_shapesMap);
+        final WiresShape[] shapes = Js.uncheckedCast(array);
+        return shapes;
     }
 
     HandlerRegistrationManager createHandlerRegistrationManager()

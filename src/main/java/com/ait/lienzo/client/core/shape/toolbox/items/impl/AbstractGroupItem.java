@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.impl;
 
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
 import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.Group;
@@ -27,28 +30,19 @@ import com.ait.lienzo.client.core.shape.toolbox.items.DecoratorItem;
 import com.ait.lienzo.client.core.shape.toolbox.items.TooltipItem;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.tooling.common.api.java.util.function.BiConsumer;
-import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 
 public abstract class AbstractGroupItem<T extends AbstractGroupItem>
         extends AbstractDecoratedItem<T> {
 
     private final GroupItem groupItem;
-    private final HandlerRegistrationManager registrations = new HandlerRegistrationManager();
     private DecoratorItem<?> decorator;
     private TooltipItem<?> tooltip;
     private HandlerRegistration mouseEnterHandlerRegistration;
     private HandlerRegistration mouseExitHandlerRegistration;
 
     private Supplier<BoundingBox> boundingBoxSupplier =
-            new Supplier<BoundingBox>() {
-                @Override
-                public BoundingBox get() {
-                    return AbstractGroupItem.this.getPrimitive().getComputedBoundingPoints().getBoundingBox();
-                }
-            };
+            () -> AbstractGroupItem.this.getPrimitive().getComputedBoundingPoints().getBoundingBox();
 
     protected AbstractGroupItem(final GroupItem groupItem) {
         this.groupItem = groupItem;
@@ -122,15 +116,6 @@ public abstract class AbstractGroupItem<T extends AbstractGroupItem>
         return null != this.tooltip;
     }
 
-    public HandlerRegistrationManager registrations() {
-        return registrations;
-    }
-
-    protected T register(final HandlerRegistration registration) {
-        registrations.register(registration);
-        return cast();
-    }
-
     @Override
     public void destroy() {
         groupItem.destroy();
@@ -180,7 +165,6 @@ public abstract class AbstractGroupItem<T extends AbstractGroupItem>
                 getPrimitive()
                         .setListening(true)
                         .addNodeMouseEnterHandler(handler);
-        register(reg);
         return reg;
     }
 
@@ -190,7 +174,6 @@ public abstract class AbstractGroupItem<T extends AbstractGroupItem>
                 getPrimitive()
                         .setListening(true)
                         .addNodeMouseExitHandler(handler);
-        register(reg);
         return reg;
     }
 
@@ -255,7 +238,7 @@ public abstract class AbstractGroupItem<T extends AbstractGroupItem>
     private BoundingBox computeAbsoluteBoundingBox(final double pad) {
         final BoundingBox bb = getBoundingBox().get();
         final Point2D computedLocation = asPrimitive().getComputedLocation();
-        return new BoundingBox(computedLocation.getX() - pad,
+        return BoundingBox.fromDoubles(computedLocation.getX() - pad,
                                computedLocation.getY() - pad,
                                computedLocation.getX() + bb.getWidth() + pad,
                                computedLocation.getY() + bb.getHeight() + pad);
@@ -280,7 +263,14 @@ public abstract class AbstractGroupItem<T extends AbstractGroupItem>
     }
 
     private void destroyHandlers() {
-        registrations.removeHandler();
+        if (null != mouseEnterHandlerRegistration) {
+            mouseEnterHandlerRegistration.removeHandler();
+            mouseEnterHandlerRegistration = null;
+        }
+        if (null != mouseExitHandlerRegistration) {
+            mouseExitHandlerRegistration.removeHandler();
+            mouseExitHandlerRegistration = null;
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -18,8 +18,8 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.tooling.common.api.java.util.function.Predicate;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
+import java.util.function.Predicate;
 
 /**
  * Interface to be implemented by all primitive collections. 
@@ -31,35 +31,35 @@ public interface IContainer<T extends IContainer<T, M>, M> extends IDrawable<T>
      * 
      * @return FastArrayList
      */
-    public NFastArrayList<M> getChildNodes();
+    NFastArrayList<M> getChildNodes();
 
     /**
      * Gets all nodes in this container.
      * 
      * @return FastArrayList
      */
-    public NFastArrayList<M> getChildNodes(BoundingBox bounds);
+    NFastArrayList<M> getChildNodes(BoundingBox bounds);
 
-    public T setStorageEngine(IStorageEngine<M> storage);
+    T setStorageEngine(IStorageEngine<M> storage);
 
-    public IStorageEngine<M> getStorageEngine();
+    IStorageEngine<M> getStorageEngine();
 
-    public IStorageEngine<M> getDefaultStorageEngine();
+    IStorageEngine<M> getDefaultStorageEngine();
 
-    public T setStorageBounds(BoundingBox bounds);
+    T setStorageBounds(BoundingBox bounds);
 
-    public BoundingBox getStorageBounds();
+    BoundingBox getStorageBounds();
 
-    public T setPathClipper(IPathClipper clipper);
+    T setPathClipper(IPathClipper clipper);
 
-    public IPathClipper getPathClipper();
+    IPathClipper getPathClipper();
 
     /**
      * Adds a node to this container
      * 
      * @param node
      */
-    public T add(M node);
+    T add(M node);
 
     /**
      * Adds a node to this container
@@ -67,46 +67,46 @@ public interface IContainer<T extends IContainer<T, M>, M> extends IDrawable<T>
      * @param node
      */
     @SuppressWarnings("unchecked")
-    public T add(M node, M... list);
+    T add(M node, M... list);
 
     /**
      * Removes the given node from the container.
      * 
      * @param node
      */
-    public T remove(M node);
+    T remove(M node);
 
     /**
      * Removes all nodes from this cotainer.
      */
-    public T removeAll();
+    T removeAll();
 
     /**
      * Moves the node one layer up.
      * 
      * @param node
      */
-    public T moveUp(M node);
+    T moveUp(M node);
 
     /**
      * Modes the node one layer down
      * 
      * @param node
      */
-    public T moveDown(M node);
+    T moveDown(M node);
 
     /**
      * Moves the node to the top of the layer stack
      * 
      * @param node
      */
-    public T moveToTop(M node);
+    T moveToTop(M node);
 
     /**
      * Moves the node to the bottom of the layer stack
      * @param node
      */
-    public T moveToBottom(M node);
+    T moveToBottom(M node);
 
     /**
      * Searches and returns all {@link Node} that match the {@link INodeFilter}
@@ -114,7 +114,7 @@ public interface IContainer<T extends IContainer<T, M>, M> extends IDrawable<T>
      * @param filter
      * @return ArrayList
      */
-    public Iterable<Node<?>> find(Predicate<Node<?>> predicate);
+    Iterable<Node<?>> find(Predicate<Node<?>> predicate);
 
     /**
      * Searches and returns all {@link Node} that have a matching ID {@link INodeFilter}
@@ -122,12 +122,12 @@ public interface IContainer<T extends IContainer<T, M>, M> extends IDrawable<T>
      * @param filter
      * @return ArrayList
      */
-    public Iterable<Node<?>> findByID(String id);
+    Iterable<Node<?>> findByID(String id);
 
     /**
      * Returns the number of items in this container
      * 
      * @return int
      */
-    public int length();
+    int length();
 }

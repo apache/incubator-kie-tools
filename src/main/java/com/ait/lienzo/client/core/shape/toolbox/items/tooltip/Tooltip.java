@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.tooltip;
 
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.animation.AnimationProperties;
 import com.ait.lienzo.client.core.animation.AnimationProperty;
 import com.ait.lienzo.client.core.animation.AnimationTweener;
@@ -27,13 +29,13 @@ import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
-import com.ait.tooling.common.api.java.util.function.Consumer;
 
 public class Tooltip {
 
     private static final String PATH_FILL_COLOR = "#404040";
     private static final String PATH_STROKE_COLOR = "#000000";
     private static final String TEXT_COLOR = "#FFFFFF";
+    private static final double TEXT_STROKE_WIDTH = 0;
     private static final double DURATION = 150;
     private final MultiPath path;
     private final Text text;
@@ -49,7 +51,8 @@ public class Tooltip {
                         .setStrokeColor(PATH_STROKE_COLOR);
         this.text =
                 new Text("")
-                        .setFillColor(TEXT_COLOR);
+                        .setFillColor(TEXT_COLOR).
+                        setStrokeWidth(TEXT_STROKE_WIDTH);
         this.group =
                 new Group()
                         .setAlpha(0)
@@ -205,7 +208,7 @@ public class Tooltip {
         // Direction.
         final double tpw = (bw - tw - (padding * 2)) > 0 ? padding : 0;
         final double tph = (bh - th - (padding * 2)) > 0 ? padding : 0;
-        final Point2D textLoc = new Point2D();
+        final Point2D textLoc = new Point2D(0, 0);
         switch (direction) {
             case WEST:
                 path.setRotationDegrees(180);

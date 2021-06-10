@@ -16,10 +16,11 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.decorator;
 
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.toolbox.items.AbstractDecoratorItem;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.tooling.common.api.java.util.function.Consumer;
 
 public class BoxDecorator
         extends AbstractDecoratorItem<BoxDecorator> {
@@ -30,18 +31,8 @@ public class BoxDecorator
 
     private final MultiPath decorator;
     private double padding;
-    private Consumer<MultiPath> showExecutor = new Consumer<MultiPath>() {
-        @Override
-        public void accept(MultiPath path) {
-            path.setAlpha(1);
-        }
-    };
-    private Consumer<MultiPath> hideExecutor = new Consumer<MultiPath>() {
-        @Override
-        public void accept(MultiPath path) {
-            path.setAlpha(0);
-        }
-    };
+    private Consumer<MultiPath> showExecutor = path -> path.setAlpha(1);
+    private Consumer<MultiPath> hideExecutor = path -> path.setAlpha(0);
 
     BoxDecorator() {
         this(rect(new MultiPath(),
@@ -105,7 +96,7 @@ public class BoxDecorator
 
     @Override
     public BoxDecorator copy() {
-        return new BoxDecorator(decorator.copy())
+        return new BoxDecorator(MultiPath.clonePath(decorator))
                 .setPadding(padding);
     }
 

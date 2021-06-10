@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.shared.core.types;
 
-import com.ait.tooling.common.api.types.IStringValued;
+import com.ait.lienzo.tools.common.api.types.IStringValued;
 
 public class ProxyType implements IStringValued
 {
@@ -42,7 +42,7 @@ public class ProxyType implements IStringValued
     @Override
     public boolean equals(final Object other)
     {
-        if (false == (other instanceof ProxyType))
+        if (!(other instanceof ProxyType))
         {
             return false;
         }

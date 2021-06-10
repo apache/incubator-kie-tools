@@ -16,20 +16,29 @@
 
 package com.ait.lienzo.client.core.event;
 
-public class ResizeStartEvent extends AbstractNodeEvent<ResizeStartHandler>
+import com.ait.lienzo.client.core.shape.Node;
+
+import elemental2.dom.HTMLElement;
+
+public class ResizeStartEvent extends AbstractNodeHumanInputEvent<ResizeStartHandler, Node>
 {
-    private final int                             m_width;
+    private int                             m_width;
 
-    private final int                             m_height;
+    private int                             m_height;
 
-    private static final Type<ResizeStartHandler> TYPE = new Type<ResizeStartHandler>();
+    private static final Type<ResizeStartHandler> TYPE = new Type<>();
 
     public static final Type<ResizeStartHandler> getType()
     {
         return TYPE;
     }
 
-    public ResizeStartEvent(final int width, final int height)
+    public ResizeStartEvent(final HTMLElement relativeElement)
+    {
+        super(relativeElement);
+    }
+
+    public void override(final int width, final int height)
     {
         m_width = width;
 
@@ -53,7 +62,7 @@ public class ResizeStartEvent extends AbstractNodeEvent<ResizeStartHandler>
     }
 
     @Override
-    protected void dispatch(final ResizeStartHandler handler)
+    public void dispatch(final ResizeStartHandler handler)
     {
         handler.onResizeStart(this);
     }

@@ -27,7 +27,7 @@ public class BluePrintBackgroundGridLayer extends GridLayer
         super(20, new Line().setAlpha(0.2).setStrokeWidth(1).setStrokeColor(ColorName.WHITE));
 
         setTransformable(false).setListening(false);
-        
-        getElement().getStyle().setBackgroundColor(ColorName.ROYALBLUE.getColorString());
+
+        getElement().style.backgroundColor = ColorName.ROYALBLUE.getColorString();
     }
 }

@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.widget.panel.mediators;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.mediator.AbstractMediator;
 import com.ait.lienzo.client.core.mediator.EventFilter;
 import com.ait.lienzo.client.core.mediator.IEventFilter;
@@ -24,11 +26,9 @@ import com.ait.lienzo.client.core.mediator.MouseWheelZoomMediator;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import com.ait.lienzo.client.widget.panel.scrollbars.ScrollablePanel;
-import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
+import elemental2.dom.EventListener;
+import elemental2.dom.HTMLDivElement;
 
 public class PanelMediators {
 
@@ -42,45 +42,41 @@ public class PanelMediators {
     private MouseWheelZoomMediator zoomMediator;
     private MousePanMediator panMediator;
     private PanelPreviewMediator previewMediator;
-    private HandlerRegistration outHandler;
+
+    EventListener mouseLeaveListener;
+    HTMLDivElement panelElement;
+    static final String ON_MOUSE_LEAVE = "mouseleave";
 
     public static PanelMediators build(final LienzoBoundsPanel panel) {
-        return new PanelMediators().init(new Supplier<LienzoBoundsPanel>() {
-            @Override
-            public LienzoBoundsPanel get() {
-                return panel;
-            }
-        }, DEFAULT_EVENT_FILTER_ZOOM, DEFAULT_EVENT_FILTER_PAN);
+
+        return new PanelMediators().init(() -> panel,
+                                         DEFAULT_EVENT_FILTER_ZOOM,
+                                         DEFAULT_EVENT_FILTER_PAN);
     }
 
-    public static PanelMediators build(final LienzoBoundsPanel panel, final IEventFilter eventFilterZoom, final IEventFilter eventFilterPan) {
-        return new PanelMediators().init(new Supplier<LienzoBoundsPanel>() {
-            @Override
-            public LienzoBoundsPanel get() {
-                return panel;
-            }
-        }, eventFilterZoom, eventFilterPan);
+    public static PanelMediators build(final LienzoBoundsPanel panel,
+                                       IEventFilter eventFilterZoom,
+                                       IEventFilter eventFilterPan) {
+        return (new PanelMediators()).init(() -> panel,
+                                           eventFilterZoom,
+                                           eventFilterPan);
     }
 
-    public PanelMediators init(final Supplier<LienzoBoundsPanel> panelSupplier, final IEventFilter eventFilterZoom, final IEventFilter eventFilterPan) {
+    public PanelMediators init(final Supplier<LienzoBoundsPanel> panelSupplier,
+                               IEventFilter eventFilterZoom,
+                               IEventFilter eventFilterPan) {
         return init(panelSupplier,
-                    new Supplier<PanelPreviewMediator>() {
-                        @Override
-                        public PanelPreviewMediator get() {
-                            return PanelPreviewMediator.build((ScrollablePanel) panelSupplier.get());
-                        }
-                    },
+                    () -> PanelPreviewMediator.build((ScrollablePanel) panelSupplier.get()),
                     eventFilterZoom,
                     eventFilterPan);
     }
 
     public PanelMediators init(final Supplier<LienzoBoundsPanel> panelSupplier,
                                final Supplier<PanelPreviewMediator> previewMediatorBuilder,
-                               final IEventFilter eventFilterZoom,
-                               final IEventFilter eventFilterPan) {
+                               IEventFilter eventFilterZoom, IEventFilter eventFilterPan) {
         this.panelSupplier = panelSupplier;
         final LienzoBoundsPanel panel = panelSupplier.get();
-
+        this.panelElement = panel.getElement();
         final Viewport viewport = getViewport();
 
         zoomMediator = new MouseWheelZoomMediator(eventFilterZoom)
@@ -102,12 +98,9 @@ public class PanelMediators {
             previewMediator = previewMediatorBuilder.get();
         }
 
-        outHandler = panel.addMouseOutHandler(new MouseOutHandler() {
-            @Override
-            public void onMouseOut(MouseOutEvent mouseOutEvent) {
-                disablePreview();
-            }
-        });
+        mouseLeaveListener = mouseLeaveEvent -> disablePreview();
+        panel.getElement().addEventListener(ON_MOUSE_LEAVE, mouseLeaveListener);
+
         return this;
     }
 
@@ -147,9 +140,9 @@ public class PanelMediators {
             previewMediator.removeHandler();
             previewMediator = null;
         }
-        if (null != outHandler) {
-            outHandler.removeHandler();
-            outHandler = null;
+        if (null != panelElement && null != mouseLeaveListener) {
+            panelElement.removeEventListener(ON_MOUSE_LEAVE, mouseLeaveListener);
+            mouseLeaveListener = null;
         }
     }
 

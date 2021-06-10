@@ -16,24 +16,32 @@
 
 package com.ait.lienzo.client.core.event;
 
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.shared.core.types.ScreenOrientation;
 
-public class OrientationChangeEvent extends AbstractNodeEvent<OrientationChangeHandler>
+import elemental2.dom.HTMLElement;
+
+public class OrientationChangeEvent extends AbstractNodeHumanInputEvent<OrientationChangeHandler, Node>
 {
-    private final int                                   m_width;
+    private int                                   m_width;
 
-    private final int                                   m_height;
+    private int                                   m_height;
 
-    private final ScreenOrientation                     m_orientation;
+    private ScreenOrientation                     m_orientation;
 
-    private static final Type<OrientationChangeHandler> TYPE = new Type<OrientationChangeHandler>();
+    private static final Type<OrientationChangeHandler> TYPE = new Type<>();
 
     public static final Type<OrientationChangeHandler> getType()
     {
         return TYPE;
     }
 
-    public OrientationChangeEvent(final ScreenOrientation orientation, final int width, final int height)
+    public OrientationChangeEvent(final HTMLElement relativeElement)
+    {
+        super(relativeElement);
+    }
+
+    public void override(final ScreenOrientation orientation, final int width, final int height)
     {
         m_width = width;
 
@@ -64,7 +72,7 @@ public class OrientationChangeEvent extends AbstractNodeEvent<OrientationChangeH
     }
 
     @Override
-    protected void dispatch(final OrientationChangeHandler handler)
+    public void dispatch(final OrientationChangeHandler handler)
     {
         handler.onOrientationChange(this);
     }

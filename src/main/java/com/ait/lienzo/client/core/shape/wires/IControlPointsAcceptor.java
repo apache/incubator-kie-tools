@@ -5,21 +5,21 @@ import com.ait.lienzo.client.core.types.Point2DArray;
 
 public interface IControlPointsAcceptor
 {
-    public static final IControlPointsAcceptor ALL  = new DefaultControlPointsAcceptor(true);
+    IControlPointsAcceptor ALL  = new DefaultControlPointsAcceptor(true);
 
-    public static final IControlPointsAcceptor NONE = new DefaultControlPointsAcceptor(false);
+    IControlPointsAcceptor NONE = new DefaultControlPointsAcceptor(false);
 
-    public boolean add(WiresConnector connector,
+    boolean add(WiresConnector connector,
                        int index,
                        Point2D location);
 
-    public boolean move(WiresConnector connector,
+    boolean move(WiresConnector connector,
                         Point2DArray pointsLocation);
 
-    public boolean delete(WiresConnector connector,
+    boolean delete(WiresConnector connector,
                           int index);
 
-    public static class DefaultControlPointsAcceptor implements IControlPointsAcceptor {
+    class DefaultControlPointsAcceptor implements IControlPointsAcceptor {
         private final boolean accept;
 
         public DefaultControlPointsAcceptor(final boolean accept)

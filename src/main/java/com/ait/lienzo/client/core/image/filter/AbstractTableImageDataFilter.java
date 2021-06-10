@@ -18,10 +18,11 @@ package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.json.client.JSONObject;
+
+import elemental2.core.Uint8ClampedArray;
+import elemental2.dom.ImageData;
 
 public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageDataFilter<T>> extends AbstractImageDataFilter<T>
 {
@@ -30,7 +31,7 @@ public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageD
         super(type);
     }
 
-    protected AbstractTableImageDataFilter(final ImageFilterType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
+    protected AbstractTableImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException
     {
         super(type, node, ctx);
     }
@@ -44,19 +45,19 @@ public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageD
         }
         if (copy)
         {
-            source = source.copy();
+            source = ImageDataUtil.copy(source);
         }
         if (false == isActive())
         {
             return source;
         }
-        final CanvasPixelArray data = source.getData();
+        final Uint8ClampedArray data = source.data;
 
         if (null == data)
         {
             return source;
         }
-        FilterCommonOps.doFilterTable(data, getTable(), source.getWidth(), source.getHeight());
+        FilterCommonOps.doFilterTable(data, getTable(), source.width, source.height);
 
         return source;
     }

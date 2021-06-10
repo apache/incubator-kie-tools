@@ -1,11 +1,10 @@
 package com.ait.lienzo.client.core.event;
 
-import com.google.gwt.event.dom.client.MouseEvent;
-import com.google.gwt.event.shared.EventHandler;
+import elemental2.dom.MouseEvent;
 
 public interface OnMouseEventHandler
 {
-    public boolean  onMouseEventBefore(MouseEvent<? extends EventHandler> event);
+    boolean  onMouseEventBefore(MouseEvent event);
 
-    public void  onMouseEventAfter(MouseEvent<? extends EventHandler> event);
+    void  onMouseEventAfter(MouseEvent event);
 }

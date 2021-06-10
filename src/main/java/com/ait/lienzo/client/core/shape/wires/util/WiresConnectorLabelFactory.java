@@ -2,14 +2,13 @@ package com.ait.lienzo.client.core.shape.wires.util;
 
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextBoundsAndLineBreaksWrap;
-import com.ait.lienzo.client.core.shape.TextBoundsWrap;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.TextAlign;
-import com.ait.tooling.common.api.java.util.function.BiConsumer;
+import java.util.function.BiConsumer;
 
 public class WiresConnectorLabelFactory
 {
@@ -35,40 +34,33 @@ public class WiresConnectorLabelFactory
 
         public BiConsumer<Segment, Text> consumer()
         {
-            return new BiConsumer<Segment, Text>()
-            {
-                @Override
-                public void accept(final Segment segment,
-                                   final Text text)
-                {
-                    // Calculate some first segment dimensions on a cartesian axis.
-                    final Point2D start    = segment.start;
-                    final Point2D end      = segment.end;
-                    final double  distance = segment.length;
-                    final double  rotation = segment.tetha;
-                    final Point2D center   = Geometry.findCenter(start, end);
-                    final double  cos      = Math.cos(rotation);
-                    final double  sin      = Math.sin(rotation);
+            return (segment, text) -> {
+                // Calculate some first segment dimensions on a cartesian axis.
+                final Point2D start    = segment.start;
+                final Point2D end      = segment.end;
+                final double  distance = segment.length;
+                final double  rotation = segment.tetha;
+                final Point2D center   = Geometry.findCenter(start, end);
+                final double  cos      = Math.cos(rotation);
+                final double  sin      = Math.sin(rotation);
 
-                    // Wrap the text.
-                    final double         maxDistanceX = distance > TEXT_WRAP_MAX_WIDTH ? TEXT_WRAP_MAX_WIDTH : distance;
-                    final double         maxDistanceY = distance > TEXT_WRAP_MAX_HEIGHT ? TEXT_WRAP_MAX_HEIGHT : distance;
-                    final BoundingBox    wrap         = new BoundingBox(0, 0, maxDistanceX, maxDistanceY);
-                    text.setTextAlign(TextAlign.LEFT);
-                    final TextBoundsAndLineBreaksWrap textWrap     = new TextBoundsAndLineBreaksWrap(text, wrap);
-                    text.setWrapper(textWrap);
-                    text.moveToTop();
+                // Wrap the text.
+                final double         maxDistanceX = distance > TEXT_WRAP_MAX_WIDTH ? TEXT_WRAP_MAX_WIDTH : distance;
+                final double         maxDistanceY = distance > TEXT_WRAP_MAX_HEIGHT ? TEXT_WRAP_MAX_HEIGHT : distance;
+                final BoundingBox    wrap         = BoundingBox.fromDoubles(0, 0, maxDistanceX, maxDistanceY);
+                text.setTextAlign(TextAlign.LEFT);
+                final TextBoundsAndLineBreaksWrap textWrap     = new TextBoundsAndLineBreaksWrap(text, wrap);
+                text.setWrapper(textWrap);
+                text.moveToTop();
 
-                    // Set the right location.
-                    final BoundingBox tbb = textWrap.getTextBoundaries();
-                    final double  tbbw   = maxDistanceX / 2;
-                    final double  tox    = Math.abs(tbbw * cos);
-                    final Point2D offset = new Point2D(Math.abs(OFFSET * sin), Math.abs(OFFSET * cos) * -1);
-                    text.setLocation(center.minus(tox, tbb.getHeight()).add(offset));
-                }
+                // Set the right location.
+                final BoundingBox tbb = textWrap.getTextBoundaries();
+                final double  tbbw   = maxDistanceX / 2;
+                final double  tox    = Math.abs(tbbw * cos);
+                final Point2D offset = new Point2D(Math.abs(OFFSET * sin), Math.abs(OFFSET * cos) * -1);
+                text.setLocation(center.subXY(tox, tbb.getHeight()).add(offset));
             };
         }
-
     }
 
     public static class FirstSegmentLabelExecutor
@@ -85,17 +77,11 @@ public class WiresConnectorLabelFactory
 
         public BiConsumer<WiresConnector, Text> consumer()
         {
-            return new BiConsumer<WiresConnector, Text>()
-            {
-                @Override
-                public void accept(final WiresConnector connector,
-                                   final Text text)
+            return (connector, text) -> {
+                final Point2DArray points = connector.getLine().getPoint2DArray();
+                if (points.size() >= 2)
                 {
-                    final Point2DArray points = connector.getLine().getPoint2DArray();
-                    if (points.size() >= 2)
-                    {
-                        executor.accept(new Segment(0, points.get(0), points.get(1)), text);
-                    }
+                    executor.accept(new Segment(0, points.get(0), points.get(1)), text);
                 }
             };
         }
@@ -116,16 +102,10 @@ public class WiresConnectorLabelFactory
 
         public BiConsumer<WiresConnector, Text> consumer()
         {
-            return new BiConsumer<WiresConnector, Text>()
-            {
-                @Override
-                public void accept(final WiresConnector connector,
-                                   final Text text)
-                {
-                    final Segment[] segments = parseSegments(connector.getLine().getPoint2DArray());
-                    final Segment   largest  = largest(segments);
-                    executor.accept(largest, text);
-                }
+            return (connector, text) -> {
+                final Segment[] segments = parseSegments(connector.getLine().getPoint2DArray());
+                final Segment   largest  = largest(segments);
+                executor.accept(largest, text);
             };
         }
 

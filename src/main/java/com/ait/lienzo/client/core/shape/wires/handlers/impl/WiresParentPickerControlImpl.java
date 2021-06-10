@@ -24,16 +24,16 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMouseControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.tooling.common.api.java.util.function.Supplier;
+import java.util.function.Supplier;
 
 public class WiresParentPickerControlImpl implements WiresParentPickerControl,
                                                      WiresMouseControl {
 
     private final WiresShapeLocationControlImpl shapeLocationControl;
-    private final Supplier<WiresLayerIndex> index;
-    private WiresContainer m_parent;
-    private PickerPart m_parentPart;
-    private WiresContainer initialParent;
+    private final Supplier<WiresLayerIndex>     index;
+    private       WiresContainer                m_parent;
+    private       PickerPart                    m_parentPart;
+    private       WiresContainer                initialParent;
 
     public WiresParentPickerControlImpl(final WiresShape m_shape,
                                         final Supplier<WiresLayerIndex> index) {

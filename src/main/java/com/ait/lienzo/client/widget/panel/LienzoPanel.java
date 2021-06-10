@@ -17,25 +17,25 @@
 package com.ait.lienzo.client.widget.panel;
 
 import com.ait.lienzo.client.core.shape.Layer;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.ProvidesResize;
-import com.google.gwt.user.client.ui.RequiresResize;
+import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.style.Style.Cursor;
+import elemental2.dom.HTMLDivElement;
 
 public abstract class LienzoPanel<P extends LienzoPanel>
-        extends FocusPanel
-        implements RequiresResize,
-                   ProvidesResize
 {
     public abstract P add(Layer layer);
 
     public abstract P setBackgroundLayer(Layer layer);
 
-    public abstract P setCursor(Style.Cursor cursor);
+    public abstract P setCursor(Cursor cursor);
 
-    public abstract int getWidthPx();
+    public abstract int getWidePx();
 
-    public abstract int getHeightPx();
+    public abstract int getHighPx();
+
+    public abstract Viewport getViewport();
+
+    public abstract HTMLDivElement getElement();
 
     public abstract void destroy();
 }

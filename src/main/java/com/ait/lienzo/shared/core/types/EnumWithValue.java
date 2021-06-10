@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import com.ait.tooling.common.api.types.IStringValued;
+import com.ait.lienzo.tools.common.api.types.IStringValued;
 
 public interface EnumWithValue extends IStringValued
 {
@@ -62,12 +62,12 @@ public interface EnumWithValue extends IStringValued
 
         public List<String> getKeys()
         {
-            return new ArrayList<String>(keySet());
+            return new ArrayList<>(keySet());
         }
 
         public List<T> getValues()
         {
-            return new ArrayList<T>(values());
+            return new ArrayList<>(values());
         }
         
         public Iterator<T> iterator()
@@ -76,11 +76,16 @@ public interface EnumWithValue extends IStringValued
         }
     }
 
-    public static final class Statics
+    final class Statics
     {
+        private Statics()
+        {
+
+        }
+
         public static final <T extends EnumWithValue> EnumStringMap<T> build(final T[] values)
         {
-            return new EnumStringMap<T>(values);
+            return new EnumStringMap<>(values);
         }
 
         public static final <T extends EnumWithValue> T lookup(final String key, final EnumStringMap<T> map, final T otherwise)
@@ -92,7 +97,7 @@ public interface EnumWithValue extends IStringValued
         {
             final int size = values.length;
 
-            final ArrayList<String> keys = new ArrayList<String>(size);
+            final ArrayList<String> keys = new ArrayList<>(size);
 
             for (int i = 0; i < size; i++)
             {

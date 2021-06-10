@@ -16,22 +16,26 @@
 
 package com.ait.lienzo.client.core.event;
 
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.MouseEvent;
-import com.google.gwt.event.dom.client.MouseWheelEvent;
+import com.ait.lienzo.client.core.shape.Node;
 
-public class NodeMouseWheelEvent extends AbstractNodeMouseEvent<MouseEvent<?>, NodeMouseWheelHandler>
+import elemental2.dom.HTMLElement;
+import elemental2.dom.MouseEvent;
+import elemental2.dom.WheelEvent;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
+
+public class NodeMouseWheelEvent extends AbstractNodeHumanInputEvent<NodeMouseWheelHandler, Node>
 {
-    private static final Type<NodeMouseWheelHandler> TYPE = new Type<NodeMouseWheelHandler>();
+    private static final Type<NodeMouseWheelHandler> TYPE = new Type<>();
 
     public static final Type<NodeMouseWheelHandler> getType()
     {
         return TYPE;
     }
 
-    public NodeMouseWheelEvent(final MouseWheelEvent event)
+    public NodeMouseWheelEvent(final HTMLElement relativeElement)
     {
-        super(event);
+        super(relativeElement);
     }
 
     /**
@@ -51,7 +55,7 @@ public class NodeMouseWheelEvent extends AbstractNodeMouseEvent<MouseEvent<?>, N
 
     public double getNormalizedDeltaY()
     {
-        return getOriginalEvent().getDeltaY();
+        return getOriginalEvent().deltaY;
     }
 
     public boolean isNorth()
@@ -64,9 +68,9 @@ public class NodeMouseWheelEvent extends AbstractNodeMouseEvent<MouseEvent<?>, N
         return getDeltaY() < 0;
     }
 
-    public MouseWheelEvent getOriginalEvent()
+    public WheelEvent getOriginalEvent()
     {
-        return (MouseWheelEvent) getMouseEvent();
+        return (WheelEvent) getNativeEvent();
     }
 
     @Override
@@ -76,7 +80,7 @@ public class NodeMouseWheelEvent extends AbstractNodeMouseEvent<MouseEvent<?>, N
     }
 
     @Override
-    protected void dispatch(final NodeMouseWheelHandler handler)
+    public void dispatch(final NodeMouseWheelHandler handler)
     {
         handler.onNodeMouseWheel(this);
     }
@@ -90,35 +94,22 @@ public class NodeMouseWheelEvent extends AbstractNodeMouseEvent<MouseEvent<?>, N
      * 
      * @return the delta of the mouse wheel along the y axis
      */
-    public static double getNormalizedDeltaY(MouseWheelEvent e)
+    public static double getNormalizedDeltaY(MouseEvent event)
     {
-        return getNativeNormalizedDeltaY(e.getNativeEvent());
-    }
 
-    /**
-     * Returns the change in the mouse wheel position along the Y-axis; positive if
-     * the mouse wheel is moving north (toward the top of the screen) or negative
-     * if the mouse wheel is moving south (toward the bottom of the screen).
-     * 
-     * Note that delta values *are* normalized across browsers or OSes.
-     * 
-     * @return the delta of the mouse wheel along the y axis
-     * 
-     * @see http://stackoverflow.com/questions/6775168/zooming-with-canvas        
-     * @see http://www.adomas.org/javascript-mouse-wheel/
-     */
-    private static native final double getNativeNormalizedDeltaY(NativeEvent event)
-    /*-{
-		var delta = 0;
-		if (event.wheelDelta) {
-			// IE/Opera.
-			delta = event.wheelDelta / 120;
-		} else if (event.detail) {
-			// Mozilla case. 
-			// In Mozilla, sign of delta is different than in IE.
-			// Also, delta is multiple of 3.
-			delta = -event.detail / 3;
-		}
-		return delta;
-    }-*/;
+        WheelEvent    wheelEvent = Js.uncheckedCast(event);
+        JsPropertyMap<Object> wheelventMap  = Js.uncheckedCast(wheelEvent);
+
+        double delta = 0;
+        if (wheelventMap.has("wheelDelta")) {
+            // IE/Opera.
+            delta = (int)wheelventMap.get("wheelDelta") / 120;
+        } else if (wheelventMap.has("detail")) {
+            // Mozilla case.
+            // In Mozilla, sign of delta is different than in IE.
+            // Also, delta is multiple of 3.
+            delta = -wheelEvent.detail / 3;
+        }
+        return delta;
+    }
 }

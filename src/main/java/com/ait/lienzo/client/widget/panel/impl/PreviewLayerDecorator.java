@@ -16,7 +16,9 @@
 
 package com.ait.lienzo.client.widget.panel.impl;
 
-import com.ait.lienzo.client.core.event.*;
+import java.util.function.Supplier;
+
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.types.DragBounds;
@@ -25,16 +27,13 @@ import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.shared.core.types.ColorName;
-import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 
 public class PreviewLayerDecorator
 {
-    static final String STROKE_COLOR = ColorName.RED.getColorString();
+    static final  String                     STROKE_COLOR = ColorName.RED.getColorString();
 
-    static final double STROKE_WIDTH = 3d;
-
-    private final HandlerRegistrationManager handlers;
+    static final  double                     STROKE_WIDTH = 3d;
 
     private final Supplier<Bounds>           backgroundBounds;
 
@@ -46,6 +45,12 @@ public class PreviewLayerDecorator
 
     private       DragContext                dragContext;
 
+    private HandlerRegistration dragStartHandlerReg;
+    private HandlerRegistration dragMoveHandlerReg;
+    private HandlerRegistration dragEndHandlerReg;
+    private HandlerRegistration mouseEnterHandlerReg;
+    private HandlerRegistration mouseExitHandlerReg;
+
     public interface EventHandler
     {
         void onMouseEnter();
@@ -55,25 +60,21 @@ public class PreviewLayerDecorator
         void onMove(Point2D point);
     }
 
-    public PreviewLayerDecorator(final HandlerRegistrationManager handlers,
-                                 final Supplier<Bounds> backgroundBounds,
+    public PreviewLayerDecorator(final Supplier<Bounds> backgroundBounds,
                                  final Supplier<Bounds> visibleBounds,
                                  final EventHandler eventHandler)
     {
-        this(handlers,
-             backgroundBounds,
+        this(backgroundBounds,
              visibleBounds,
              eventHandler,
              buildDecorator());
     }
 
-    PreviewLayerDecorator(final HandlerRegistrationManager handlers,
-                          final Supplier<Bounds> backgroundBounds,
+    PreviewLayerDecorator(final Supplier<Bounds> backgroundBounds,
                           final Supplier<Bounds> visibleBounds,
                           final EventHandler eventHandler,
                           final Rectangle decorator)
     {
-        this.handlers = handlers;
         this.backgroundBounds = backgroundBounds;
         this.visibleBounds = visibleBounds;
         this.eventHandler = eventHandler;
@@ -117,6 +118,11 @@ public class PreviewLayerDecorator
 
     public void destroy()
     {
+        dragStartHandlerReg.removeHandler();
+        dragMoveHandlerReg.removeHandler();
+        dragEndHandlerReg.removeHandler();
+        mouseEnterHandlerReg.removeHandler();
+        mouseExitHandlerReg.removeHandler();
         dragContext = null;
         decorator.removeFromParent();
     }
@@ -128,57 +134,11 @@ public class PreviewLayerDecorator
 
     private void init()
     {
-        handlers.register(
-                decorator.addNodeDragStartHandler(new NodeDragStartHandler()
-                {
-                    @Override
-                    public void onNodeDragStart(NodeDragStartEvent event)
-                    {
-                        onDecoratorDragStart(event);
-                    }
-                })
-                         );
-        handlers.register(
-                decorator.addNodeDragMoveHandler(new NodeDragMoveHandler()
-                {
-                    @Override
-                    public void onNodeDragMove(NodeDragMoveEvent event)
-                    {
-                        onDecoratorDragMove();
-                    }
-                })
-                         );
-
-        handlers.register(
-                decorator.addNodeDragEndHandler(new NodeDragEndHandler()
-                {
-                    @Override
-                    public void onNodeDragEnd(NodeDragEndEvent event)
-                    {
-                        onDecoratorDragEnd();
-                    }
-                })
-                         );
-
-        handlers.register(
-                decorator.addNodeMouseEnterHandler(new NodeMouseEnterHandler()
-                {
-                    @Override
-                    public void onNodeMouseEnter(NodeMouseEnterEvent event)
-                    {
-                        onMouseEnter();
-                    }
-                }));
-
-        handlers.register(
-                decorator.addNodeMouseExitHandler(new NodeMouseExitHandler()
-                {
-                    @Override
-                    public void onNodeMouseExit(NodeMouseExitEvent event)
-                    {
-                        onMouseExit();
-                    }
-                }));
+        dragStartHandlerReg = decorator.addNodeDragStartHandler(this::onDecoratorDragStart);
+        dragMoveHandlerReg = decorator.addNodeDragMoveHandler(event -> onDecoratorDragMove());
+        dragEndHandlerReg = decorator.addNodeDragEndHandler(event -> onDecoratorDragEnd());
+        mouseEnterHandlerReg = decorator.addNodeMouseEnterHandler(event -> onMouseEnter());
+        mouseExitHandlerReg = decorator.addNodeMouseExitHandler(event -> onMouseExit());
     }
 
     static Rectangle buildDecorator()
@@ -210,7 +170,7 @@ public class PreviewLayerDecorator
         eventHandler.onMouseExit();
     }
 
-    void onDecoratorDragStart(final AbstractNodeDragEvent event)
+    void onDecoratorDragStart(final AbstractNodeHumanInputEvent event)
     {
         dragContext = event.getDragContext();
     }

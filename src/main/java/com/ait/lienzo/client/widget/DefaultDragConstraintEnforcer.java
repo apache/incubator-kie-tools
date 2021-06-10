@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.widget;
 
-import com.ait.lienzo.client.core.shape.Attributes;
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.DragConstraint;
@@ -38,22 +38,28 @@ public final class DefaultDragConstraintEnforcer implements DragConstraintEnforc
 
     private DragConstraint m_constraint;
 
-    private double         m_dx1, m_dx2, m_dy1, m_dy2;
+    private double         m_dx1;
+
+    private double         m_dx2;
+
+    private double         m_dy1;
+
+    private double         m_dy2;
 
     @Override
     public final void startDrag(final DragContext dragContext)
     {
-        final Attributes attr = dragContext.getNode().asNode().getAttributes();
+        final Node       node = dragContext.getNode().asNode();
 
-        m_constraint = attr.getDragConstraint();
+        m_constraint = node.getDragConstraint();
 
-        m_bounds = attr.getDragBounds();
+        m_bounds = node.getDragBounds();
 
         if (null != m_bounds)
         {
-            final double x = attr.getX();
+            final double x = node.getX();
 
-            final double y = attr.getY();
+            final double y = node.getY();
 
             if (m_bounds.isX1())
             {

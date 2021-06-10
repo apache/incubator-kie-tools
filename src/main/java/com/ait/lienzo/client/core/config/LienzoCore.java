@@ -24,23 +24,23 @@ import java.util.List;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.ait.lienzo.client.core.style.Style.Cursor;
 import com.ait.lienzo.client.core.types.DashArray;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.LayerClearMode;
 import com.ait.lienzo.shared.core.types.LineCap;
-import com.ait.tooling.common.api.java.util.StringOps;
-import com.ait.tooling.common.api.types.IStringValued;
-import com.ait.tooling.nativetools.client.util.Client;
-import com.ait.tooling.nativetools.client.util.Console;
-import com.google.gwt.canvas.client.Canvas;
-import com.google.gwt.dom.client.Style.Cursor;
-import com.google.gwt.event.shared.UmbrellaException;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.ait.lienzo.tools.client.Console;
+import com.ait.lienzo.tools.client.StringOps;
+import com.ait.lienzo.tools.common.api.types.IStringValued;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLCanvasElement;
+import elemental2.dom.ImageData;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * A Global Configuration Manager.
@@ -61,7 +61,7 @@ public final class LienzoCore
 
     public static final String             DEFAULT_FONT_FAMILY              = "Helvetica";
 
-    public static final boolean            IS_CANVAS_SUPPORTED              = Canvas.isSupported();
+    public static final boolean            IS_CANVAS_SUPPORTED              = isCanvasSupported();
 
     private double                         m_deviceScale                    = 0;
 
@@ -87,7 +87,7 @@ public final class LienzoCore
 
     private boolean                        m_hidpiEnabled                   = false;
 
-    private Cursor                         m_normal_cursor                  = Cursor.DEFAULT;
+    private Cursor                        m_normal_cursor                  = Cursor.DEFAULT;
 
     private Cursor                         m_select_cursor                  = Cursor.CROSSHAIR;
 
@@ -95,11 +95,22 @@ public final class LienzoCore
 
     private ImageSelectionMode             m_imageSelectionMode             = ImageSelectionMode.SELECT_NON_TRANSPARENT;
 
-    private final ArrayList<ILienzoPlugin> m_plugins                        = new ArrayList<ILienzoPlugin>();
+    private final ArrayList<ILienzoPlugin> m_plugins                        = new ArrayList<>();
+
+
+
+    private static boolean isCanvasSupported()
+    {
+
+        HTMLCanvasElement canvas = Js.uncheckedCast(DomGlobal.document.createElement("canvas"));
+        return ( canvas != null && Js.asPropertyMap(canvas).has("getContext"));
+
+    }
 
     private LienzoCore()
     {
-        RootPanel.get().getElement().getStyle().setProperty("webkitTapHighlightColor", "rgba(0,0,0,0)");
+        // @FIXME need to figure out how to get the root DIV
+        //RootPanel.get().getElement().getStyle().setProperty("webkitTapHighlightColor", "rgba(0,0,0,0)");
     }
 
     public static final LienzoCore get()
@@ -179,56 +190,57 @@ public final class LienzoCore
 
     public final void log(final String message)
     {
-        Client.get().info(message);
+        Console.get().info(message);
     }
 
     public final void info(final String message)
     {
-        Client.get().info(message);
+        Console.get().info(message);
     }
 
     public final void fine(final String message)
     {
-        Client.get().fine(message);
+        Console.get().fine(message);
     }
 
     public final void warn(final String message)
     {
-        Client.get().warn(message);
+        Console.get().warn(message);
     }
 
     public final void error(final String message)
     {
-        Client.get().error(message);
+        Console.get().error(message);
     }
 
     public final void error(final String message, final Throwable e)
     {
-        Client.get().error(message, e);
+        Console.get().error(message, e);
     }
 
     public final void severe(final String message)
     {
-        Client.get().severe(message);
+        Console.get().severe(message);
     }
 
     public final void severe(final String message, final Throwable e)
     {
-        Client.get().severe(message, e);
+        Console.get().severe(message, e);
     }
 
     public final void stack(final String message, final Throwable e)
     {
-        if (e instanceof UmbrellaException)
-        {
-            final UmbrellaException u = ((UmbrellaException) e);
-
-            for (Throwable t : u.getCauses())
-            {
-                stack(message, t);
-            }
-            return;
-        }
+        // @FIXME mdp
+//        if (e instanceof UmbrellaException)
+//        {
+//            final UmbrellaException u = ((UmbrellaException) e);
+//
+//            for (Throwable t : u.getCauses())
+//            {
+//                stack(message, t);
+//            }
+//            return;
+//        }
         Console.get().error(message, e);
 
         for (StackTraceElement s : e.getStackTrace())
@@ -239,7 +251,7 @@ public final class LienzoCore
 
     public final String getUserAgent()
     {
-        return Window.Navigator.getUserAgent();
+        return DomGlobal.window.navigator.userAgent;
     }
 
     public final boolean isSafari()
@@ -479,10 +491,12 @@ public final class LienzoCore
         return this;
     }
 
-    public final native double getDevicePixelRatio()
-    /*-{
-		return $wnd.devicePixelRatio || 1;
-    }-*/;
+    public final double getDevicePixelRatio()
+    {
+        JsPropertyMap<Object> windowMap = Js.uncheckedCast(DomGlobal.window);
+        double devicePixelRatio = windowMap.has("devicePixelRatio") ? (double) windowMap.get("devicePixelRatio") : 1;
+        return devicePixelRatio;
+    };
 
     public final double getBackingStorePixelRatio()
     {
@@ -529,6 +543,7 @@ public final class LienzoCore
 
     private final boolean examineNativeLineDashSupported()
     {
+        // @FIXME is this really neded now? Do we not have a minimum browser level now, that makes this redundant? (mdp)
         if (IS_CANVAS_SUPPORTED)
         {
             try
@@ -567,9 +582,10 @@ public final class LienzoCore
 
                 if (null != backing)
                 {
-                    if ((backing.getRedAt(3, 5) == 255) && (backing.getBlueAt(3, 5) == 0) && (backing.getGreenAt(3, 5) == 0))
+
+                    if ((ImageDataUtil.getRedAt(backing, 3, 5) == 255) && (ImageDataUtil.getBlueAt(backing, 3, 5) == 0) && (ImageDataUtil.getGreenAt(backing, 3, 5) == 0))
                     {
-                        if ((backing.getRedAt(8, 5) == 0) && (backing.getBlueAt(8, 5) == 255) && (backing.getGreenAt(8, 5) == 0))
+                        if ((ImageDataUtil.getRedAt(backing, 8, 5) == 0) && (ImageDataUtil.getBlueAt(backing, 8, 5) == 255) && (ImageDataUtil.getGreenAt(backing, 8, 5) == 0))
                         {
                             return true;
                         }

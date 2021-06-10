@@ -24,7 +24,8 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
 
 /**
  * A Slice is defined by a start angle and an end angle, like a slice of a pizza.
@@ -33,6 +34,19 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Slice extends Shape<Slice>
 {
+    @JsProperty
+    private double radius;
+
+    @JsProperty
+    private double startAngle;
+
+    @JsProperty
+    private double endAngle;
+
+    @JsProperty
+    private boolean counterClockwise;
+
+
     /**
      * Constructor. Creates an instance of a slice.
      * 
@@ -60,17 +74,12 @@ public class Slice extends Shape<Slice>
         this(radius, startAngle, endAngle, false);
     }
 
-    protected Slice(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.SLICE, node, ctx);
-    }
-
     @Override
     public BoundingBox getBoundingBox()
     {
         final double radius = getRadius();
 
-        return new BoundingBox(0 - radius, 0 - radius, radius, radius);
+        return BoundingBox.fromDoubles(0 - radius, 0 - radius, radius, radius);
     }
 
     /**
@@ -79,17 +88,17 @@ public class Slice extends Shape<Slice>
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final double alpha)
     {
-        final double beg = attr.getStartAngle();
+        final double beg = getStartAngle();
 
-        final double end = attr.getEndAngle();
+        final double end = getEndAngle();
 
         if (beg == end)
         {
             return false;
         }
-        final double r = attr.getRadius();
+        final double r = getRadius();
 
         if (r > 0)
         {
@@ -101,7 +110,7 @@ public class Slice extends Shape<Slice>
             }
             context.beginPath();
 
-            context.arc(0, 0, r, beg, end, attr.isCounterClockwise());
+            context.arc(0, 0, r, beg, end, isCounterClockwise());
 
             if (pacman)
             {
@@ -115,95 +124,93 @@ public class Slice extends Shape<Slice>
     }
 
     /**
-     * Gets this slice's radius
-     * 
+     * Sets this slice's radius.
+     *
+     * @param radius
+     * @return this Circle
+     */
+    public Slice setRadius(final double radius)
+    {
+        this.radius = radius;
+
+        return this;
+    }
+
+    /**
+     * Gets this slice's radius.
+     *
      * @return double
      */
     public double getRadius()
     {
-        return getAttributes().getRadius();
-    }
-
-    /**
-     * Sets this slice's radius.
-     * 
-     * @param radius
-     * @return this Slice.
-     */
-    public Slice setRadius(final double radius)
-    {
-        getAttributes().setRadius(radius);
-
-        return this;
+        return this.radius;
     }
 
     /**
      * Gets the starting angle of this slice.
-     * 
-     * @return double in radians
+     *
+     * @return double (in radians)
      */
     public double getStartAngle()
     {
-        return getAttributes().getStartAngle();
+        return this.startAngle;
     }
 
     /**
      * Sets the starting angle of this slice.
-     * 
-     * @param angle in radians
-     * @return this Slice.
+     *
+     * @param angle (in radians)
+     * @return this slice
      */
     public Slice setStartAngle(final double angle)
     {
-        getAttributes().setStartAngle(angle);
+        this.startAngle = angle;
 
         return this;
     }
 
     /**
      * Gets the end angle of this slice.
-     * 
-     * @return double in radians
+     *
+     * @return double (in radians)
      */
     public double getEndAngle()
     {
-        return getAttributes().getEndAngle();
+        return this.endAngle;
     }
 
     /**
-     * Gets the end angle of this slice.
-     * 
-     * @param angle in radians
-     * @return this Slice.
+     * Sets the end angle of this slice.
+     *
+     * @param angle (in radians)
+     * @return this slice
      */
     public Slice setEndAngle(final double angle)
     {
-        getAttributes().setEndAngle(angle);
+        this.endAngle = angle;
 
         return this;
     }
 
     /**
-     * Returns whether the slice is drawn counter clockwise.
-     * The default value is true.
-     * 
+     * Returns whether the drawing direction of this slice is counter clockwise.
+     *
      * @return boolean
      */
     public boolean isCounterClockwise()
     {
-        return getAttributes().isCounterClockwise();
+        return this.counterClockwise;
     }
 
     /**
-     * Sets whether the drawing direction of this slice is counter clockwise.
-     * The default value is true.
-     * 
-     * @param counterclockwise
-     * @return this Slice
+     * Sets the drawing direction for this slice.
+     *
+     * @param counterClockwise If true, it's drawn counter clockwise.
+     * @return this slice
      */
-    public Slice setCounterClockwise(final boolean counterclockwise)
+    public Slice setCounterClockwise(final boolean counterClockwise)
     {
-        getAttributes().setCounterClockwise(counterclockwise);
+        this.counterClockwise = counterClockwise;
 
         return this;
     }
@@ -227,12 +234,6 @@ public class Slice extends Shape<Slice>
             addAttribute(Attribute.END_ANGLE, true);
 
             addAttribute(Attribute.COUNTER_CLOCKWISE);
-        }
-
-        @Override
-        public Slice create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new Slice(node, ctx);
         }
     }
 }

@@ -20,10 +20,14 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
 
 public abstract class AbstractValueImageDataFilter<T extends AbstractValueImageDataFilter<T>> extends AbstractImageDataFilter<T>
 {
+    @JsProperty
+    private double value;
+
     public AbstractValueImageDataFilter(final ImageFilterType type, final double value)
     {
         super(type);
@@ -31,19 +35,19 @@ public abstract class AbstractValueImageDataFilter<T extends AbstractValueImageD
         setValue(value);
     }
 
-    protected AbstractValueImageDataFilter(final ImageFilterType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
+    protected AbstractValueImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException
     {
         super(type, node, ctx);
     }
 
     public final double getValue()
     {
-        return Math.max(Math.min(getAttributes().getValue(), getMaxValue()), getMinValue());
+        return Math.max(Math.min(this.value, getMaxValue()), getMinValue());
     }
 
     public final T setValue(final double value)
     {
-        getAttributes().setValue(Math.max(Math.min(value, getMaxValue()), getMinValue()));
+        this.value = Math.max(Math.min(value, getMaxValue()), getMinValue());
 
         return cast();
     }

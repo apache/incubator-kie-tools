@@ -22,13 +22,13 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.shared.core.types.ColorName;
-import com.ait.tooling.common.api.java.util.function.Supplier;
+import java.util.function.Supplier;
 
 public class PreviewLayer extends Layer
 {
-    static final double ALPHA      = 0.5d;
+    static final  double           ALPHA      = 0.5d;
 
-    static final String FILL_COLOR = ColorName.LIGHTGREY.getColorString();
+    static final  String           FILL_COLOR = ColorName.LIGHTGREY.getColorString();
 
     private final Supplier<Bounds> backgroundBounds;
 

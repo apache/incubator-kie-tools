@@ -16,9 +16,15 @@
 
 package com.ait.lienzo.client.core.shape.wires.event;
 
-import com.ait.lienzo.client.core.event.AbstractNodeDragEvent;
-import com.ait.lienzo.client.core.event.INodeXYEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
+import com.ait.lienzo.client.core.shape.Node;
+import com.ait.lienzo.tools.client.event.INodeXYEvent;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
+
+import elemental2.dom.Event;
+import elemental2.dom.HTMLElement;
 
 /**
  * <p>Base event that is fired when a wires container is being drag.</p>
@@ -29,13 +35,32 @@ import com.ait.lienzo.client.core.shape.wires.WiresContainer;
  *     <li>nodeDragEvent = the drag event on the node.</li>
  * </ul>
  */
-public abstract class AbstractWiresDragEvent<H extends WiresEventHandler>extends AbstractWiresEvent<WiresContainer, H> implements INodeXYEvent
+public abstract class AbstractWiresDragEvent<H extends EventHandler, H2 extends EventHandler> extends AbstractNodeEvent<H, WiresContainer> implements INodeXYEvent<H, WiresContainer>
 {
-    private final AbstractNodeDragEvent<?> nodeDragEvent;
+    private AbstractNodeHumanInputEvent<H2, Node> nodeDragEvent;
 
-    public AbstractWiresDragEvent(final WiresContainer shape, final AbstractNodeDragEvent<?> nodeDragEvent)
+    public AbstractWiresDragEvent(final HTMLElement relativeElement)
     {
-        super(shape);
+        super(relativeElement);
+    }
+
+    public void kill()
+    {
+        setSource(null);
+        setDead(true);
+        nodeDragEvent = null;
+    }
+
+    public void revive()
+    {
+        setSource(null);
+        setDead(false);
+        nodeDragEvent = null;
+    }
+
+    public void override(final WiresContainer shape, final AbstractNodeHumanInputEvent<H2, Node> nodeDragEvent)
+    {
+        setSource(shape);
         this.nodeDragEvent = nodeDragEvent;
     }
 
@@ -51,8 +76,13 @@ public abstract class AbstractWiresDragEvent<H extends WiresEventHandler>extends
         return nodeDragEvent.getY();
     }
 
-    public AbstractNodeDragEvent<?> getNodeDragEvent()
+    public AbstractNodeHumanInputEvent<H2, Node> getNodeDragEvent()
     {
         return nodeDragEvent;
+    }
+
+    public Event getNativeEvent()
+    {
+        throw new UnsupportedOperationException();
     }
 }

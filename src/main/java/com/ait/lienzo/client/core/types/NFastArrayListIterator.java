@@ -19,7 +19,7 @@ package com.ait.lienzo.client.core.types;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
 public class NFastArrayListIterator<T> implements Iterator<T>
 {

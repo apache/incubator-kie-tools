@@ -17,7 +17,6 @@
 package com.ait.lienzo.client.widget;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -78,20 +77,22 @@ public class DragContext
     /**
      * Starts a drag operation for the specified node.
      * 
-     * @param event the first drag event
+     * @param x
+     * @param y
      * @param prim the node that is being dragged
      */
-    public DragContext(final INodeXYEvent event, final IPrimitive<?> prim) {
-        this(event, prim, new Transform());
+    public DragContext(final int x, final int y,  final IPrimitive<?> prim) {
+        this(x, y, prim, new Transform());
     }
 
     /**
      * Starts a drap operation for the specified node, using viewport coordiants
-     * @param event the first drag event
+     * @param x
+     * @param y
      * @param prim the node that is being dragged
      * @param viewportToGlobalTransform The Transform of the Viewport
      */
-    public DragContext(final INodeXYEvent event, final IPrimitive<?> prim, final Transform viewportToGlobalTransform)
+    public DragContext(final int x, final int y, final IPrimitive<?> prim, final Transform viewportToGlobalTransform)
     {
         m_prim = prim;
 
@@ -101,9 +102,9 @@ public class DragContext
 
         m_lsty = m_prmy = m_prim.getY();
 
-        m_evtx = m_begx = event.getX();
+        m_evtx = m_begx = x;
 
-        m_evty = m_begy = event.getY();
+        m_evty = m_begy = y;
 
         m_ltog = m_prim.getParent().getAbsoluteTransform();
 
@@ -154,7 +155,7 @@ public class DragContext
 
         while (null != node)
         {
-            alpha = alpha * node.getAttributes().getAlpha();
+            alpha = alpha * node.getAlpha();
 
             node = node.getParent();
 
@@ -169,14 +170,15 @@ public class DragContext
     /**
      * Updates the context for the specified Drag Move event.
      * Used internally.
-     * 
-     * @param event Drag Move event
+     *
+     * @param x
+     * @param y
      */
-    public void dragUpdate(final INodeXYEvent event)
+    public void dragUpdate(final int x, final int y)
     {
-        m_evtx = event.getX();
+        m_evtx = x;
 
-        m_evty = event.getY();
+        m_evty = y;
 
         m_dstx = m_evtx - m_begx;
 
@@ -196,18 +198,20 @@ public class DragContext
         {
             m_drag.adjust(m_lclp);
         }
-        final double x = m_prmx + m_lclp.getX();
+        final double localX = m_prmx + m_lclp.getX();
 
-        final double y = m_prmy + m_lclp.getY();
+        final double localY = m_prmy + m_lclp.getY();
 
-        if (m_lstx != x)
+        if (m_lstx != localX)
         {
-            m_prim.setX(m_lstx = x);
+            m_prim.setX(m_lstx = localX);
         }
-        if (m_lsty != y)
+        if (m_lsty != localY)
         {
-            m_prim.setY(m_lsty = y);
+            m_prim.setY(m_lsty = localY);
         }
+        //Console.get().info("2) m_prim " + m_evtx + ":" + m_evty + ":" + m_dstx + " : " + m_dsty + " : " + p2 + " : " + m_lclp + " : " + m_prim.getLocation());
+
     }
 
     /**
@@ -370,7 +374,7 @@ public class DragContext
      * @return
      */
     public Point2D getDistanceAdjusted() {
-        return getEventAdjusted().minus(getStartAdjusted());
+        return getEventAdjusted().sub(getStartAdjusted());
     }
 
     /**
@@ -378,7 +382,7 @@ public class DragContext
      * 
      * @return IPrimitive
      */
-    public IPrimitive<?> getNode()
+    public IPrimitive getNode()
     {
         return m_prim;
     }

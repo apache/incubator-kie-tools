@@ -16,15 +16,14 @@
 
 package com.ait.lienzo.client.core.image;
 
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.dom.client.ImageElement;
-import com.google.gwt.event.dom.client.ErrorEvent;
-import com.google.gwt.event.dom.client.ErrorHandler;
-import com.google.gwt.event.dom.client.LoadEvent;
-import com.google.gwt.event.dom.client.LoadHandler;
+import com.ait.lienzo.client.core.style.Style;
+import com.ait.lienzo.client.widget.RootPanel;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.resources.client.impl.ImageResourcePrototype;
+import elemental2.dom.CSSProperties;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLImageElement;
+import elemental2.dom.Image;
 
 public abstract class ImageLoader
 {
@@ -35,55 +34,38 @@ public abstract class ImageLoader
     }
 
     public ImageLoader(final String url,
-                       final Image image)
+                       final HTMLImageElement image)
     {
-        final ImageElement element = ImageElement.as(image.getElement());
-
-        image.setVisible(false);
+        setVisible(image, false);
 
         final String crossOrigin = url.startsWith("http:") || (url.startsWith("https:")) ? "anonymous" : null;
 
         if (null != crossOrigin)
         {
-            setCrossOrigin(element, crossOrigin);
+            setCrossOrigin(image, crossOrigin);
         }
 
-        final HandlerRegistrationManager m_HandlerRegManager = new HandlerRegistrationManager();
+        image.onload = e ->
+        {
+            image.onload = null;
+            image.onerror = null;
+            doImageElementLoadAndRetry(image, crossOrigin, url);
+            return null;
+        };
 
-        m_HandlerRegManager.register(
-                image.addLoadHandler(new LoadHandler()
-                {
-                    @Override
-                    public final void onLoad(final LoadEvent event)
-                    {
-                        m_HandlerRegManager.removeHandler();
-                        doImageElementLoadAndRetry(element, image, crossOrigin, url);
-                    }
-                })
-        );
-        m_HandlerRegManager.register(
-                image.addErrorHandler(new ErrorHandler()
-                {
-                    @Override
-                    public final void onError(final ErrorEvent event)
-                    {
-                        RootPanel.get().remove(image);
-                        m_HandlerRegManager.removeHandler();
+        image.onerror = e ->
+        {
+            image.onload = null;
+            image.onerror = null;
+            image.remove();
+            onImageElementError("Resource " + url + " failed to load");
+            return null;
+        };
 
-                        onImageElementError("Image " + url + " failed to load");
-                    }
-                })
-        );
         RootPanel.get().add(image);
 
-        if (isValidDataURL(url) && isValidSVG(url))
-        {
-            image.setUrl(url);
-        }
-        else
-        {
-            element.setSrc(url);
-        }
+        // @FIXME I removed "isValidDataURL(url) && isValidSVG(url)" as it seems with Elemental2 it all end up at .src. But we should double check this (mdp)
+        image.src = url;
     }
 
     public ImageLoader(final ImageResource resource)
@@ -92,84 +74,119 @@ public abstract class ImageLoader
              new Image());
     }
 
-    public ImageLoader(final ImageResource resource,
-                       final Image image)
+    public static void setVisible(HTMLElement image, boolean visible)
     {
-        final ImageElement element = ImageElement.as(image.getElement());
+        image.style.display = visible ? "" : Style.Display.NONE.getCssName(); // @FIXME check that it should really be "", I just followed GWT UIObject setVisible.
 
-        image.setVisible(false);
+        if (visible) {
+            image.removeAttribute("aria-hidden");
+        } else {
+            image.setAttribute("aria-hidden", "true");
+        }
+    }
 
-        final HandlerRegistrationManager m_HandlerRegManager = new HandlerRegistrationManager();
+    public ImageLoader(final ImageResource resource,
+                       final HTMLImageElement image)
+    {
+        setVisible(image, false);
 
-        m_HandlerRegManager.register(
-                image.addLoadHandler(new LoadHandler()
+        image.onload = e ->
         {
-            @Override
-            public final void onLoad(final LoadEvent event)
-            {
-                onImageElementLoad(element);
-                m_HandlerRegManager.removeHandler();
-            }
-        })
-        );
-        m_HandlerRegManager.register(
-            image.addErrorHandler(new ErrorHandler()
-            {
-                @Override
-                public final void onError(final ErrorEvent event)
-                {
-                    RootPanel.get().remove(image);
-                    m_HandlerRegManager.removeHandler();
-                    onImageElementError("Resource " + resource.getName() + " failed to load");
-                }
-            })
-        );
-        image.setResource(resource);
+            image.onload = null;
+            image.onerror = null;
+            onImageElementLoad(image);
+            return null;
+        };
+
+        image.onerror = e ->
+        {
+            image.onload = null;
+            image.onerror = null;
+            image.remove();
+            onImageElementError("Resource " + resource.getName() + " failed to load");
+            return null;
+        };
+
+        // @FIXME double check this works, ImageReources can includ clippping information, so I had to case from Elemental2 to GWT (mdp)
+
+        String urlAsString = resource.getSafeUri().asString();
+        if (resource instanceof ImageResourcePrototype.Bundle) {
+            // lifted from com.google.gwt.user.client.ui.impl.ClippedImageImpl adjust
+            image.style.background = "url(\"" + urlAsString + "\") no-repeat " + (-resource.getLeft() + "px ") + (-resource.getTop() + "px");
+            image.style.width = CSSProperties.WidthUnionType.of(resource.getHeight());
+            image.style.height = CSSProperties.HeightUnionType.of(resource.getHeight());
+        }
+        else
+        {
+            // lifted from com.google.gwt.user.client.ui.Image setResource
+            image.src = urlAsString;
+            image.width = resource.getWidth();
+            image.height = resource.getHeight();
+        }
 
         RootPanel.get().add(image);
     }
 
-    private final void doImageElementLoadAndRetry(final ImageElement elem,
-                                                  final Image image,
+
+    private final void doImageElementLoadAndRetry(final HTMLImageElement image,
                                                   final String orig,
                                                   final String url)
     {
-        final int w = Math.max(image.getWidth(), elem.getWidth());
+        final int w = Math.max(image.width, image.width);
 
-        final int h = Math.max(image.getHeight(), elem.getHeight());
+        final int h = Math.max(image.height, image.height);
 
         if ((w < 1) || (h < 1))
         {
-            load(url, orig, new JSImageCallback()
+
+            image.onload = e ->
             {
-                @Override
-                public void onSuccess(final ImageElement e)
+                image.onload = null;
+                image.onerror = null;
+                // @FIXME removed 'naturalHeight' in image I think this is supported by all browser now. Needs double check (mdp)
+                if (image.naturalHeight + image.naturalWidth == 0 || image.height + image.width == 0)
                 {
-                    onImageElementLoad(e);
-                }
-
-                @Override
-                public void onFailure()
-                {
+                    // it failed, so undo
+                    // @FIXME check this cast works (mdp)
                     RootPanel.get().remove(image);
-
                     onImageElementError("Image " + url + " failed to load");
+                    image.crossOrigin = orig;
                 }
-            });
+                else
+                {
+                    onImageElementLoad(image);
+                }
+                return null;
+            };
+
+            image.onerror = e ->
+            {
+                image.onload = null;
+                image.onerror = null;
+                // it failed, so undo
+                // @FIXME check this cast works (mdp)
+                RootPanel.get().remove(image);
+                onImageElementError("Image " + url + " failed to load");
+                image.crossOrigin = orig;
+                return null;
+            };
+
+            image.src = url;
+
         }
         else
         {
-            elem.setWidth(w);
+            image.width = w;
 
-            elem.setHeight(h);
+            image.height = h;
 
-            onImageElementLoad(elem);
+            onImageElementLoad(image);
         }
     }
 
     public boolean isValidDataURL(final String url)
     {
-        if ((url.startsWith("data:")) && (url.length() > 6) && (false == ("data:,".equals(url))))
+        if ((url.startsWith("data:")) && (url.length() > 6) && (!("data:,".equals(url))))
         {
             return true;
         }
@@ -181,42 +198,13 @@ public abstract class ImageLoader
         return url.toLowerCase().contains("svg+xml");
     }
 
-    private final native void load(String url, String orig, JSImageCallback self)
-    /*-{
-		var image = new $wnd.Image();
-		image.onload = function() {
-			if ('naturalHeight' in image) {
-				if (image.naturalHeight + image.naturalWidth == 0) {
-					self.@com.ait.lienzo.client.core.image.ImageLoader.JSImageCallback::onFailure()();
-					return;
-				}
-			} else if (image.width + image.height == 0) {
-				self.@com.ait.lienzo.client.core.image.ImageLoader.JSImageCallback::onFailure()();
-				return;
-			}
-			self.@com.ait.lienzo.client.core.image.ImageLoader.JSImageCallback::onSuccess(Lcom/google/gwt/dom/client/ImageElement;)(image);
-		};
-		image.onerror = function() {
-			self.@com.ait.lienzo.client.core.image.ImageLoader.JSImageCallback::onFailure()();
-		};
-		if (undefined != orig) {
-			image.crossOrigin = orig;
-		}
-		image.src = url;
-    }-*/;
-
-    private final native void setCrossOrigin(ImageElement element, String value)
-    /*-{
+    private final void setCrossOrigin(HTMLImageElement element, String value)
+    {
 		element.crossOrigin = value;
-    }-*/;
+    }
 
-    public abstract void onImageElementLoad(ImageElement elem);
+    public abstract void onImageElementLoad(HTMLImageElement elem);
+
     public abstract void onImageElementError(String message);
 
-    private interface JSImageCallback
-    {
-        public void onSuccess(ImageElement e);
-
-        public void onFailure();
-    }
 }

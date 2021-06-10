@@ -16,8 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.decorator;
 
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.tooling.common.api.java.util.function.Consumer;
 
 public class DecoratorsFactory {
 
@@ -43,31 +44,16 @@ public class DecoratorsFactory {
      */
     public BoxDecorator button() {
         return new BoxDecorator()
-                .configure(new Consumer<MultiPath>() {
-                    @Override
-                    public void accept(MultiPath path) {
-                        path.setFillAlpha(0.7);
-                    }
-                })
-                .useShowExecutor(new Consumer<MultiPath>() {
-                    @Override
-                    public void accept(MultiPath path) {
-                        path
-                            .setFillBoundsForSelection(true)
-                            .setFillShapeForSelection(true)
-                            .setSelectionBoundsOffset(SELECTION_OFFSET)
-                            .setSelectionStrokeOffset(SELECTION_OFFSET)
-                            .setAlpha(1);
-                    }
-                })
-                .useHideExecutor(new Consumer<MultiPath>() {
-                    @Override
-                    public void accept(MultiPath path) {
-                        path
-                            .setFillBoundsForSelection(false)
-                            .setFillShapeForSelection(false)
-                            .setAlpha(0);
-                    }
-                });
+                .configure(path -> path.setFillAlpha(0.7))
+                .useShowExecutor(path -> path
+                    .setFillBoundsForSelection(true)
+                    .setFillShapeForSelection(true)
+                    .setSelectionBoundsOffset(SELECTION_OFFSET)
+                    .setSelectionStrokeOffset(SELECTION_OFFSET)
+                    .setAlpha(1))
+                .useHideExecutor(path -> path
+                    .setFillBoundsForSelection(false)
+                    .setFillShapeForSelection(false)
+                    .setAlpha(0));
     }
 }

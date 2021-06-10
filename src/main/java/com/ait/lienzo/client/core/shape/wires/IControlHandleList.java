@@ -16,30 +16,30 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.tooling.common.api.types.IActivatable;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.common.api.types.IActivatable;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
 
 public interface IControlHandleList extends IActivatable, Iterable<IControlHandle>
 {
-    public int size();
+    int size();
 
-    public boolean isEmpty();
+    boolean isEmpty();
 
-    public IControlHandle getHandle(int index);
+    IControlHandle getHandle(int index);
 
-    public void add(IControlHandle handle);
+    void add(IControlHandle handle);
 
-    public void remove(IControlHandle handle);
+    void remove(IControlHandle handle);
 
-    public boolean contains(IControlHandle handle);
+    boolean contains(IControlHandle handle);
 
-    public void destroy();
+    void destroy();
 
-    public void show();
+    void show();
 
-    public void hide();
+    void hide();
 
-    public boolean isVisible();
+    boolean isVisible();
 
-    public HandlerRegistrationManager getHandlerRegistrationManager();
+    HandlerRegistrationManager getHandlerRegistrationManager();
 }

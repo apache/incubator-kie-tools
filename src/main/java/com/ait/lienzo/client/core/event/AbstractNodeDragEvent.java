@@ -16,16 +16,37 @@
 
 package com.ait.lienzo.client.core.event;
 
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.widget.DragContext;
-import com.google.gwt.event.shared.EventHandler;
+import com.ait.lienzo.tools.client.event.INodeXYEvent;
+import com.ait.lienzo.tools.client.event.MouseEventUtil;
 
-public abstract class AbstractNodeDragEvent<H extends EventHandler> extends AbstractNodeEvent<H> implements INodeXYEvent
+import elemental2.dom.HTMLElement;
+import elemental2.dom.MouseEvent;
+
+public abstract class AbstractNodeDragEvent<H> extends AbstractNodeEvent<H, Node> implements INodeXYEvent<H, Node>
 {
-    private final DragContext m_drag;
+    private DragContext m_drag;
 
-    public AbstractNodeDragEvent(final DragContext drag)
+//    public AbstractNodeDragEvent(final DragContext drag)
+//    {
+//        m_drag = drag;
+//    }
+
+    public AbstractNodeDragEvent(final HTMLElement relativeElement)
     {
-        m_drag = drag;
+        super(relativeElement);
+    }
+
+
+    public void reviveMouseEvent(Node sourceNode, final DragContext drag)
+    {
+        this.m_drag  = m_drag;
+        setSource(sourceNode);
+
+//        m_x = MouseEventUtil.getRelativeX(event.clientX, getRelativeElement());
+//
+//        m_y = MouseEventUtil.getRelativeY(event.clientY, getRelativeElement());
     }
 
     @Override

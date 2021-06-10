@@ -17,8 +17,6 @@
 package com.ait.lienzo.client.core.shape.json.validators;
 
 import com.ait.lienzo.shared.core.types.EnumWithValue;
-import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
 
 public class EnumValidator<T extends Enum<T> & EnumWithValue>extends AbstractAttributeTypeValidator
 {
@@ -32,7 +30,7 @@ public class EnumValidator<T extends Enum<T> & EnumWithValue>extends AbstractAtt
     }
 
     @Override
-    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
@@ -40,27 +38,29 @@ public class EnumValidator<T extends Enum<T> & EnumWithValue>extends AbstractAtt
 
             return;
         }
-        final JSONString sval = jval.isString();
 
-        if (null == sval)
-        {
-            ctx.addBadTypeError(getTypeName());
-        }
-        else
-        {
-            final String string = sval.stringValue();
-
-            if (null != string)
-            {
-                for (T value : m_values)
-                {
-                    if (string.equals(value.getValue()))
-                    {
-                        return;
-                    }
-                }
-            }
-            ctx.addBadValueError(getTypeName(), jval);
-        }
+        // @FIXME serialization (mdp)
+//        final JSONString sval = jval.isString();
+//
+//        if (null == sval)
+//        {
+//            ctx.addBadTypeError(getTypeName());
+//        }
+//        else
+//        {
+//            final String string = sval.stringValue();
+//
+//            if (null != string)
+//            {
+//                for (T value : m_values)
+//                {
+//                    if (string.equals(value.getValue()))
+//                    {
+//                        return;
+//                    }
+//                }
+//            }
+//            ctx.addBadValueError(getTypeName(), jval);
+//        }
     }
 }

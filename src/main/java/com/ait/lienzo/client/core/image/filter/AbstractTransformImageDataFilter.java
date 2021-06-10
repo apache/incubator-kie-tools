@@ -18,10 +18,11 @@ package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.json.client.JSONObject;
+
+import elemental2.core.Uint8ClampedArray;
+import elemental2.dom.ImageData;
 
 public abstract class AbstractTransformImageDataFilter<T extends AbstractTransformImageDataFilter<T>> extends AbstractImageDataFilter<T>
 {
@@ -30,7 +31,7 @@ public abstract class AbstractTransformImageDataFilter<T extends AbstractTransfo
         super(type);
     }
 
-    protected AbstractTransformImageDataFilter(final ImageFilterType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
+    protected AbstractTransformImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException
     {
         super(type, node, ctx);
     }
@@ -44,13 +45,13 @@ public abstract class AbstractTransformImageDataFilter<T extends AbstractTransfo
         }
         if (copy)
         {
-            source = source.copy();
+            source = ImageDataUtil.copy(source);
         }
         if (false == isActive())
         {
             return source;
         }
-        final CanvasPixelArray data = source.getData();
+        final Uint8ClampedArray data = source.data;
 
         if (null == data)
         {
@@ -62,9 +63,9 @@ public abstract class AbstractTransformImageDataFilter<T extends AbstractTransfo
         {
             return source;
         }
-        final ImageData result = source.create();
+        final ImageData result = ImageDataUtil.create(source);
 
-        FilterCommonOps.doFilterTransform(data, result.getData(), transform, source.getWidth(), source.getHeight());
+        FilterCommonOps.doFilterTransform(data, result.data, transform, source.width, source.height);
 
         return result;
     }

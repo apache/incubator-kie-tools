@@ -31,7 +31,6 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresConnectorPointsChangedE
 import com.ait.lienzo.client.core.shape.wires.event.WiresConnectorPointsChangedHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -41,10 +40,11 @@ import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
-import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.collection.NFastStringMap;
+import com.ait.lienzo.tools.client.event.HandlerManager;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.ImageData;
 
 import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
 
@@ -69,6 +69,8 @@ public class WiresConnector
     private       WiresConnectorControl          m_connectorControl;
 
     private final HandlerManager                 m_events = new HandlerManager(this);
+
+    private WiresConnectorPointsChangedEvent wiresConnectorPointsChangedEvent;
 
     public WiresConnector(IDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator)
     {
@@ -297,10 +299,10 @@ public class WiresConnector
             Point2D c = Geometry.findCenter(box);
             Point2D     intersectPoint    = Geometry.getPathIntersect(connection, path, c, pointIndex);
             if (null == intersectPoint) {
-                intersectPoint = new Point2D();
+                intersectPoint = new Point2D(0,0 );
             }
 
-            Direction   d                 = MagnetManager.getDirection(intersectPoint, box);
+            Direction   d = MagnetManager.getDirection(intersectPoint, box);
 
             Point2D loc = path.getComputedLocation().copy();
 
@@ -421,12 +423,12 @@ public class WiresConnector
 
     private WiresMagnet[] getMagnetsWithMidPoint(WiresConnection headC, WiresConnection tailC, WiresShape headS, WiresShape tailS, BoundingBox headBox, BoundingBox tailBox)
     {
-        // make BB's of 1 Point2D, then we can reuse existing code.
+        // makeXY BB's of 1 Point2D, then we can reuse existing code.
         Point2D pAfterHead = getLine().getPoint2DArray().get(1);
         Point2D pBeforeTail = getLine().getPoint2DArray().get(getLine().getPoint2DArray().size()-2);
 
-        BoundingBox firstBB = new BoundingBox(pAfterHead, pAfterHead);
-        BoundingBox lastBB = new BoundingBox(pBeforeTail, pBeforeTail);
+        BoundingBox firstBB = BoundingBox.fromArrayOfPoint2D(pAfterHead, pAfterHead);
+        BoundingBox lastBB =  BoundingBox.fromArrayOfPoint2D(pBeforeTail, pBeforeTail);
 
         WiresMagnet headM = null;
         WiresMagnet tailM = null;
@@ -581,7 +583,7 @@ public class WiresConnector
                 headOffSettedPoint = headOriginalPoint.copy();
             }
 
-            boolean headContained = (tailBox != null) ? tailBox.contains(headOriginalPoint) : false;
+            boolean headContained = (tailBox != null) ? tailBox.containsPoint(headOriginalPoint) : false;
 
             for (int j = 1, size1 = tailMagnets.length; j < size1; j++)
             {
@@ -605,7 +607,7 @@ public class WiresConnector
                     tailOffSettedPoint = tailOriginalPoint.copy();
                 }
 
-                boolean tailContained = (headBox != null) ? headBox.contains(tailOriginalPoint) : false;
+                boolean tailContained = (headBox != null) ? headBox.containsPoint(tailOriginalPoint) : false;
 
                 double distance  = headOffSettedPoint.distance(tailOffSettedPoint);
                 int    contained = 0;
@@ -724,7 +726,8 @@ public class WiresConnector
 
     public void moveControlPoint(final int index,
                                  final Point2D location) {
-        getControlPoints().get(index).set(location);
+        getControlPoints().set(index, location);
+
         final IPrimitive<?> point = getControlPoint(index);
         if (null != point) {
             point.setLocation(location);
@@ -737,8 +740,24 @@ public class WiresConnector
         firePointsUpdated();
     }
 
+
+
     public void firePointsUpdated() {
-        m_events.fireEvent(new WiresConnectorPointsChangedEvent(this));
+        if(wiresConnectorPointsChangedEvent==null)
+        {
+            if (m_group.getLayer() == null)
+            {
+                // we cannot fire any events, until this group is added to a layer
+                return;
+            }
+            HTMLElement relativeDiv = m_group.getLayer().getViewport().getElement();
+            wiresConnectorPointsChangedEvent = new WiresConnectorPointsChangedEvent(relativeDiv);
+        }
+
+        wiresConnectorPointsChangedEvent.revive();
+        wiresConnectorPointsChangedEvent.override(this);
+        m_events.fireEvent(wiresConnectorPointsChangedEvent);
+        wiresConnectorPointsChangedEvent.kill();
     }
 
     private IPrimitive<?> getControlPoint(final int index) {
@@ -779,7 +798,7 @@ public class WiresConnector
                                                  final int mouseX,
                                                  final int mouseY,
                                                  final Point2DArray oldPoints) {
-        NFastStringMap<Integer> colorMap = new NFastStringMap<Integer>();
+        NFastStringMap<Integer> colorMap = new NFastStringMap<>();
 
         IDirectionalMultiPointShape<?> line = connector.getLine();
         ScratchPad scratch = line.getScratchPad();
@@ -791,7 +810,7 @@ public class WiresConnector
                      pointsIndex);
         Context2D ctx = scratch.getContext();
         double strokeWidth = line.asShape().getStrokeWidth();
-        //setting a minimum stroke width to make finding a close point to the connector easier
+        //setting a minimum stroke width to makeXY finding a close point to the connector easier
         ctx.setStrokeWidth((strokeWidth < MINIMUM_STROKE_WITH ? MINIMUM_STROKE_WITH : strokeWidth));
 
         Point2D absolutePos = connector.getLine().getComputedLocation();
@@ -804,12 +823,12 @@ public class WiresConnector
 
         for (int i = 0; i < path.size(); i++) {
             PathPartEntryJSO entry = path.get(i);
-            NFastDoubleArrayJSO points = entry.getPoints();
+            double[] points = entry.getPoints();
 
             switch (entry.getCommand()) {
                 case PathPartEntryJSO.MOVETO_ABSOLUTE: {
-                    double x0 = points.get(0) + offsetX;
-                    double y0 = points.get(1) + offsetY;
+                    double x0 = points[0] + offsetX;
+                    double y0 = points[1] + offsetY;
                     Point2D m = new Point2D(x0,
                                             y0);
                     if (i == 0) {
@@ -821,8 +840,8 @@ public class WiresConnector
                 }
                 case PathPartEntryJSO.LINETO_ABSOLUTE: {
                     points = entry.getPoints();
-                    double x0 = points.get(0) + offsetX;
-                    double y0 = points.get(1) + offsetY;
+                    double x0 = points[0] + offsetX;
+                    double y0 = points[1] + offsetY;
                     Point2D end = new Point2D(x0,
                                               y0);
 
@@ -867,14 +886,14 @@ public class WiresConnector
                 case PathPartEntryJSO.CANVAS_ARCTO_ABSOLUTE: {
                     points = entry.getPoints();
 
-                    double x0 = points.get(0) + offsetX;
-                    double y0 = points.get(1) + offsetY;
+                    double x0 = points[0] + offsetX;
+                    double y0 = points[1] + offsetY;
                     Point2D p0 = new Point2D(x0,
                                              y0);
 
-                    double x1 = points.get(2) + offsetX;
-                    double y1 = points.get(3) + offsetY;
-                    double r = points.get(4);
+                    double x1 = points[2] + offsetX;
+                    double y1 = points[3] + offsetY;
+                    double r = points[4];
 
                     if (p0.equals(oldPoints.get(pointsIndex))) {
                         pointsIndex++;
@@ -908,11 +927,16 @@ public class WiresConnector
         int sy = (int) (box.getY() - strokeWidth - offsetY);
         ImageData backing = ctx.getImageData(sx,
                                              sy,
-                                             (int) (box.getWidth() + strokeWidth + strokeWidth),
-                                             (int) (box.getHeight() + strokeWidth + strokeWidth));
+                                             (int) (box.getWidth() + strokeWidth),
+                                             (int) (box.getHeight() + strokeWidth));
+
+        // Snap mouse X/Y into ImageData boundaries
+        int fixedMouseX = Math.min(Math.abs(mouseX - sx), (int) (box.getWidth()));
+        int fixedMouseY = Math.min(Math.abs(mouseY - sy), (int) (box.getHeight()));
+
         color = BackingColorMapUtils.findColorAtPoint(backing,
-                                                      mouseX - sx,
-                                                      mouseY - sy);
+                                                      fixedMouseX,
+                                                      fixedMouseY);
         return null != color ? colorMap.get(color) : -1;
     }
 
@@ -951,7 +975,7 @@ public class WiresConnector
                 c.updateForSpecialConnections(false);
             }
 
-            final boolean prepared = line.isPathPartListPrepared(c.getLine().getAttributes());
+            final boolean prepared = line.isPathPartListPrepared();
 
             if (!prepared)
             {
@@ -961,12 +985,12 @@ public class WiresConnector
             Point2DArray points     = line.getPoint2DArray();
             Point2D      p0         = points.get(0);
             Point2D      p1         = line.getHeadOffsetPoint();
-            Point2DArray headPoints = new Point2DArray(p1, p0);
+            Point2DArray headPoints = Point2DArray.fromArrayOfPoint2D(p1, p0);
             c.getHeadDecorator().draw(headPoints);
 
             p0 = points.get(points.size() - 1);
             p1 = line.getTailOffsetPoint();
-            Point2DArray tailPoints = new Point2DArray(p1, p0);
+            Point2DArray tailPoints = Point2DArray.fromArrayOfPoint2D(p1, p0);
             c.getTailDecorator().draw(tailPoints);
         }
         return false;

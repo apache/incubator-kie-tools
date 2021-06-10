@@ -16,11 +16,14 @@
 
 package com.ait.lienzo.client.core.types;
 
+import com.ait.lienzo.client.core.types.LinearGradient.LinearGradientJSO;
 import com.ait.lienzo.shared.core.types.IColor;
-import com.google.gwt.json.client.JSONObject;
+import elemental2.core.Global;
+import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsType;
 
 /**
- * RadialGradient defines the fill style for a {@link Shape} as a Radial Gradient. 
+ * RadialGradient defines the fill style for a {@link Shape} as a Radial Gradient.
  */
 public final class RadialGradient implements FillGradient
 {
@@ -46,7 +49,7 @@ public final class RadialGradient implements FillGradient
 
     /**
      * Add color stop
-     * 
+     *
      * @param stop
      * @param color
      * @return {@link RadialGradient}
@@ -56,11 +59,11 @@ public final class RadialGradient implements FillGradient
         m_jso.addColorStop(stop, color);
 
         return this;
-    };
+    }
 
     /**
      * Add color stop
-     * 
+     *
      * @param stop
      * @param color {@link ColorName} or {@link Color}
      * @return {@link RadialGradient}
@@ -70,7 +73,7 @@ public final class RadialGradient implements FillGradient
         m_jso.addColorStop(stop, color.getColorString());
 
         return this;
-    };
+    }
 
     @Override
     public LinearGradient asLinearGradient()
@@ -97,7 +100,7 @@ public final class RadialGradient implements FillGradient
 
     public final String toJSONString()
     {
-        return new JSONObject(m_jso).toString();
+        return Global.JSON.stringify(m_jso);
     }
 
     @Override
@@ -109,7 +112,7 @@ public final class RadialGradient implements FillGradient
     @Override
     public boolean equals(final Object other)
     {
-        if ((other == null) || (false == (other instanceof RadialGradient)))
+        if ((other == null) || (!(other instanceof RadialGradient)))
         {
             return false;
         }
@@ -126,36 +129,26 @@ public final class RadialGradient implements FillGradient
         return toJSONString().hashCode();
     }
 
-    public static final class RadialGradientJSO extends GradientJSO
+    @JsType
+    public static final class RadialGradientJSO extends LinearGradientJSO
     {
+        public double sr;
+        public double er;
+
+        @JsConstructor
         protected RadialGradientJSO()
         {
         }
 
-        public static final native RadialGradientJSO make(double sx, double sy, double sr, double ex, double ey, double er)
-        /*-{
-			return {
-				start : {
-					x : sx,
-					y : sy,
-					radius : sr
-				},
-				end : {
-					x : ex,
-					y : ey,
-					radius : er
-				},
-				colorStops : [],
-				type : "RadialGradient"
-			};
-        }-*/;
+        public static final RadialGradientJSO make(double sx, double sy, double sr, double ex, double ey, double er)
+        {
+            RadialGradientJSO grad = new RadialGradientJSO();
+            setValues(sx, sy, ex, ey, grad);
+            grad.sr = sr;
+            grad.er = er;
+            grad.type = "RadialGradient";
+            return grad;
+        }
 
-        public final native void addColorStop(double stop, String color)
-        /*-{
-			this.colorStops.push({
-				stop : stop,
-				color : color
-			});
-        }-*/;
     }
 }

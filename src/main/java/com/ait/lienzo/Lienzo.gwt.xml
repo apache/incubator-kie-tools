@@ -17,12 +17,15 @@
 -->
 <module>
 	<inherits name='com.google.gwt.user.User' />
-	<inherits name='com.google.gwt.i18n.I18N' />
-	<inherits name='com.google.gwt.json.JSON' />
-	<inherits name='com.google.gwt.resources.Resources' />
-	<inherits name='com.ait.tooling.nativetools.NativeTools' />
-	<entry-point class='com.ait.lienzo.client.core.config.LienzoCoreEntryPoint' />
+	<inherits name='com.google.gwt.regexp.RegExp' />
+	<inherits name='elemental2.core.Core' />
+	<inherits name="elemental2.dom.Dom"/>
+
+	<entry-point class='com.ait.lienzo.client.core.config.LienzoGWT2CoreEntryPoint' />
+
 	<source path='client' />
 	<source path='shared' />
+	<source path='tools' />
+	<source path='gwtlienzo' />
 
 </module>

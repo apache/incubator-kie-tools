@@ -47,15 +47,17 @@ public class WiresShapeLocationControlImpl implements WiresShapeLocationControl 
         shapeInitialLocation = getShape().getComputedLocation();
         m_mouseStartX = x;
         m_mouseStartY = y;
-        final Point2D absShapeLoc = m_shape.getPath().getComputedLocation();
-        final BoundingBox box = m_shape.getPath().getBoundingBox();
+
+        final Point2D absShapeLoc = getShape().getPath().getComputedLocation();
+        final BoundingBox box     = getShape().getPath().getBoundingBox();
+
         m_shapeStartCenterX = absShapeLoc.getX() + (box.getWidth() / 2);
         m_shapeStartCenterY = absShapeLoc.getY() + (box.getHeight() / 2);
         m_startDocked = false;
 
-        final WiresContainer parent = m_shape.getParent();
+        final WiresContainer parent = getShape().getParent();
         if (parent != null && parent instanceof WiresShape) {
-            if (m_shape.getDockedTo() != null) {
+            if (getShape().getDockedTo() != null) {
                 m_startDocked = true;
             }
         }
@@ -63,8 +65,8 @@ public class WiresShapeLocationControlImpl implements WiresShapeLocationControl 
 
     @Override
     public Point2D getCurrentLocation() {
-        double x = 0;
-        double y = 0;
+        double x;
+        double y;
         if (m_startDocked) {
             x = (int) m_shapeStartCenterX;
             y = (int) m_shapeStartCenterY;
@@ -73,8 +75,7 @@ public class WiresShapeLocationControlImpl implements WiresShapeLocationControl 
             y = (int) m_mouseStartY;
         }
 
-        return new Point2D(x, y)
-                .offset(m_delta);
+        return new Point2D(x, y).offset(m_delta.getX(), m_delta.getY());
     }
 
     @Override
@@ -129,7 +130,7 @@ public class WiresShapeLocationControlImpl implements WiresShapeLocationControl 
     }
 
     public Point2D getShapeLocation() {
-        return getShapeInitialLocation().copy().offset(getCurrentDelta());
+        return getShapeInitialLocation().copy().offset(m_delta.getX(), m_delta.getY());
     }
 
     @Override

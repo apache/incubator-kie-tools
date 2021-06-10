@@ -20,13 +20,13 @@ import com.ait.lienzo.client.core.types.Point2DArray;
 
 public interface IMultiPointShape<T extends Shape<T> & IMultiPointShape<T>> extends IPrimitive<T>
 {
-    public T setPoint2DArray(Point2DArray points);
+    T setPoint2DArray(Point2DArray points);
 
-    public Point2DArray getPoint2DArray();
+    Point2DArray getPoint2DArray();
 
-    public boolean isControlPointShape();
+    boolean isControlPointShape();
 
-    public IOffsetMultiPointShape<?> asOffsetMultiPointShape();
+    IOffsetMultiPointShape<?> asOffsetMultiPointShape();
 
-    public IDirectionalMultiPointShape<?> asDirectionalMultiPointShape();
+    IDirectionalMultiPointShape<?> asDirectionalMultiPointShape();
 }

@@ -20,27 +20,29 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.base.Js;
 
 public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<SolarizeImageDataFilter>
 {
-    private final static FilterTableArray CONSTANT_TABLE = table();
+    private static final FilterTableArray CONSTANT_TABLE = table();
 
-    private final static native FilterTableArray table()
-    /*-{
-        var table = [];
-        for(var i = 0; i < 256; i++) {
-            table[i] = (((i / 255 > 0.5) ? 2 * (i / 255 - 0.5) : 2 * (0.5 - i / 255)) * 255) | 0;
+    private static final FilterTableArray table()
+    {
+        int[] table = new int[256];
+        for(int i = 0; i < 256; i++) {
+            int v = Js.coerceToInt(((i / 255 > 0.5) ? 2 * (i / 255 - 0.5) : 2 * (0.5 - i / 255)) * 255);
+            table[i] = v;
         }
-        return table;
-    }-*/;
+        return new FilterTableArray(table);
+    }
 
     public SolarizeImageDataFilter()
     {
         super(ImageFilterType.SolarizeImageDataFilterType);
     }
 
-    protected SolarizeImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected SolarizeImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
     {
         super(ImageFilterType.SolarizeImageDataFilterType, node, ctx);
     }
@@ -62,12 +64,6 @@ public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<Solari
         public SolarizeImageDataFilterFactory()
         {
             super(ImageFilterType.SolarizeImageDataFilterType);
-        }
-
-        @Override
-        public SolarizeImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new SolarizeImageDataFilter(node, ctx);
         }
     }
 }

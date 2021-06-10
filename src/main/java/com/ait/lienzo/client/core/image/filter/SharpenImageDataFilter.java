@@ -20,7 +20,6 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.google.gwt.json.client.JSONObject;
 
 /**
  * A class that allows for easy creation of a Sharpen Image Filter.
@@ -42,18 +41,18 @@ public class SharpenImageDataFilter extends AbstractConvolveImageDataFilter<Shar
         this(matrix.getMatrix());
     }
 
-    protected SharpenImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected SharpenImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
     {
         super(ImageFilterType.SharpenImageDataFilterType, node, ctx);
     }
 
-    public static enum SharpenType
+    public enum SharpenType
     {
         HARD(0.0, -1, 0, -1, 5, -1, 0, -1, 0), SOFT(0, -0.2, 0, -0.2, 1.8, -0.2, 0, -0.2, 0);
 
         private final double[] m_matrix;
 
-        private SharpenType(double... matrix)
+        SharpenType(double... matrix)
         {
             m_matrix = matrix;
         }
@@ -81,12 +80,6 @@ public class SharpenImageDataFilter extends AbstractConvolveImageDataFilter<Shar
         public SharpenImageDataFilterFactory()
         {
             super(ImageFilterType.SharpenImageDataFilterType);
-        }
-
-        @Override
-        public SharpenImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new SharpenImageDataFilter(node, ctx);
         }
     }
 }

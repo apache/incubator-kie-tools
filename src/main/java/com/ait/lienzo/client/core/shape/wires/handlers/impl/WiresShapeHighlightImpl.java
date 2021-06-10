@@ -86,7 +86,7 @@ public class WiresShapeHighlightImpl implements WiresShapeHighlight<PickerPart.S
     private void highlightBorder(final WiresShape parent) {
         if (null == m_path) {
             MultiPath path = parent.getPath();
-            m_path = path.copy();
+            m_path = MultiPath.clonePath(path);
             m_path.setStrokeWidth(borderSize);
             final Point2D absLoc = path.getComputedLocation();
             m_path.setX(absLoc.getX());

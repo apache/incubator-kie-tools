@@ -16,13 +16,14 @@
 
 package com.ait.lienzo.client.core.config;
 
-import java.util.Collection;
-
 import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.tooling.common.api.java.util.StringOps;
-import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.ait.tooling.common.api.types.IStringValued;
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
+import com.ait.lienzo.tools.client.StringOps;
+import java.util.function.Supplier;
+import com.ait.lienzo.tools.client.collection.NFastStringMap;
+import com.ait.lienzo.tools.common.api.types.IStringValued;
+
+import elemental2.core.JsArray;
+import jsinterop.base.Js;
 
 public abstract class AbstractLienzoCorePlugin implements ILienzoPlugin
 {
@@ -64,9 +65,9 @@ public abstract class AbstractLienzoCorePlugin implements ILienzoPlugin
     }
 
     @Override
-    public final Collection<String> keys()
+    public final String[] keys()
     {
-        return m_suppliers.keys();
+        return Js.uncheckedCast(JsArray.from(m_suppliers.keys()));
     }
 
     @Override

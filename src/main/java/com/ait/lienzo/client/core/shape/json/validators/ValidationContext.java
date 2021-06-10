@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.i18n.MessageConstants;
 import com.ait.lienzo.client.core.util.StringFormatter;
-import com.google.gwt.json.client.JSONValue;
 
 /**
  * ValidationContext is used during deserialization of a JSON string
@@ -38,9 +37,9 @@ public class ValidationContext
 
     private boolean                     m_validate = true;
 
-    private final List<String>          m_stack    = new ArrayList<String>();
+    private final List<String>          m_stack    = new ArrayList<>();
 
-    private final List<ValidationError> m_errors   = new ArrayList<ValidationError>();
+    private final List<ValidationError> m_errors   = new ArrayList<>();
 
     /**
      * Push the context (e.g. attribute name) that is being deserialized 
@@ -137,7 +136,7 @@ public class ValidationContext
      * 
      * @throws ValidationException
      */
-    public void addBadValueError(final String type, final JSONValue val) throws ValidationException
+    public void addBadValueError(final String type, final Object val) throws ValidationException
     {
         addError(StringFormatter.format(MessageConstants.MESSAGES.invalidValueForType(), type, val));
     }

@@ -2,13 +2,34 @@ package com.ait.lienzo.client.core.shape.wires.event;
 
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 
-public class WiresConnectorPointsChangedEvent extends AbstractWiresEvent<WiresConnector, WiresConnectorPointsChangedHandler>
-{
-    public static final Type<WiresConnectorPointsChangedHandler> TYPE = new Type<WiresConnectorPointsChangedHandler>();
+import elemental2.dom.Event;
+import elemental2.dom.HTMLElement;
 
-    public WiresConnectorPointsChangedEvent(WiresConnector shape)
+public class WiresConnectorPointsChangedEvent extends AbstractWiresEvent<WiresConnectorPointsChangedHandler, WiresConnector>
+{
+    public static final Type<WiresConnectorPointsChangedHandler> TYPE = new Type<>();
+
+    public WiresConnectorPointsChangedEvent(final HTMLElement relativeElement)
     {
-        super(shape);
+        super(relativeElement);
+    }
+
+    public void kill()
+    {
+        setSource(null);
+        setDead(true);
+    }
+
+    public void revive()
+    {
+        setSource(null);
+        setDead(false);
+    }
+
+
+    public void override(WiresConnector shape)
+    {
+        setSource(shape);
     }
 
     @Override
@@ -18,8 +39,13 @@ public class WiresConnectorPointsChangedEvent extends AbstractWiresEvent<WiresCo
     }
 
     @Override
-    protected void dispatch(WiresConnectorPointsChangedHandler handler)
+    public void dispatch(WiresConnectorPointsChangedHandler handler)
     {
         handler.onPointsChanged(this);
+    }
+
+    public Event getNativeEvent()
+    {
+        throw new UnsupportedOperationException();
     }
 }

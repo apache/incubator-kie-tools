@@ -16,21 +16,22 @@
 
 package com.ait.lienzo.client.core.event;
 
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.MouseEvent;
+import com.ait.lienzo.client.core.shape.Node;
 
-public class NodeMouseDoubleClickEvent extends AbstractNodeMouseEvent<MouseEvent<?>, NodeMouseDoubleClickHandler>
+import elemental2.dom.HTMLElement;
+
+public class NodeMouseDoubleClickEvent extends AbstractNodeHumanInputEvent<NodeMouseDoubleClickHandler, Node>
 {
-    private static final Type<NodeMouseDoubleClickHandler> TYPE = new Type<NodeMouseDoubleClickHandler>();
+    private static final Type<NodeMouseDoubleClickHandler> TYPE = new Type<>();
 
     public static Type<NodeMouseDoubleClickHandler> getType()
     {
         return TYPE;
     }
 
-    public NodeMouseDoubleClickEvent(final DoubleClickEvent event)
+    public NodeMouseDoubleClickEvent(final HTMLElement relativeElement)
     {
-        super(event);
+        super(relativeElement);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class NodeMouseDoubleClickEvent extends AbstractNodeMouseEvent<MouseEvent
     }
 
     @Override
-    protected void dispatch(final NodeMouseDoubleClickHandler handler)
+    public void dispatch(final NodeMouseDoubleClickHandler handler)
     {
         handler.onNodeMouseDoubleClick(this);
     }

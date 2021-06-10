@@ -17,7 +17,9 @@
 package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.shared.core.types.IColor;
-import com.google.gwt.json.client.JSONObject;
+import elemental2.core.Global;
+import elemental2.core.JsArray;
+import jsinterop.annotations.JsType;
 
 /**
  * LinearGradient defines the fill style for a {@link Shape} as a Linear Gradient. 
@@ -83,7 +85,7 @@ public final class LinearGradient implements FillGradient
 
     public final String toJSONString()
     {
-        return new JSONObject(m_jso).toString();
+        return Global.JSON.stringify(m_jso);
     }
 
     @Override
@@ -95,7 +97,7 @@ public final class LinearGradient implements FillGradient
     @Override
     public boolean equals(final Object other)
     {
-        if ((other == null) || (false == (other instanceof LinearGradient)))
+        if ((other == null) || (!(other instanceof LinearGradient)))
         {
             return false;
         }
@@ -112,34 +114,42 @@ public final class LinearGradient implements FillGradient
         return toJSONString().hashCode();
     }
 
-    public static final class LinearGradientJSO extends GradientJSO
+    @JsType
+    public static class LinearGradientJSO extends GradientJSO
     {
-        protected LinearGradientJSO()
+        public  double  sx;
+        public  double  sy;
+        public  double  ex;
+        public  double  ey;
+        public  JsArray<Object[]> colorStops;
+
+
+        public LinearGradientJSO()
         {
         }
 
-        public static final native LinearGradientJSO make(double sx, double sy, double ex, double ey)
-        /*-{
-			return {
-				start : {
-					x : sx,
-					y : sy,
-				},
-				end : {
-					x : ex,
-					y : ey,
-				},
-				colorStops : [],
-				type : "LinearGradient"
-			};
-        }-*/;
+        public static final LinearGradientJSO make(double sx, double sy, double ex, double ey)
+        {
+            LinearGradientJSO grad = new LinearGradientJSO();
+            setValues(sx, sy, ex, ey, grad);
+            grad.type = "LinearGradient";
+            return grad;
+        }
 
-        public final native void addColorStop(double stop, String color)
-        /*-{
-			this.colorStops.push({
-				stop : stop,
-				color : color
-			});
-        }-*/;
+        protected static void setValues(final double sx, final double sy, final double ex, final double ey, final LinearGradientJSO grad)
+        {
+            grad.sx = sx;
+            grad.sy = sy;
+
+            grad.ex = ex;
+            grad.ey = ey;
+
+            grad.colorStops = new JsArray<>();
+        }
+
+        public final void addColorStop(double stop, String color)
+        {
+            this.colorStops.push(new Object[]{stop, color});
+        }
     }
 }

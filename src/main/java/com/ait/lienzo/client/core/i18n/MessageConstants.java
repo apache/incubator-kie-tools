@@ -16,686 +16,1796 @@
 
 package com.ait.lienzo.client.core.i18n;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Constants;
+import com.ait.lienzo.gwtlienzo.i18n.Constants;
 
 /**
  * An I18 based interface used for Lienzo Constants.
  */
 public interface MessageConstants extends Constants
 {
-    public static final MessageConstants MESSAGES = GWT.create(MessageConstants.class);
+    // @FIXME no-op class for now, just to get things compiling (mdp)
+    MessageConstants MESSAGES = new MessageConstantsImpl(); //JsUtils.GWT.create(MessageConstants.class);
 
     @DefaultStringValue("Canvas is not supported in this browser!")
-    public String getCanvasUnsupportedMessage();
+    String getCanvasUnsupportedMessage();
 
     @DefaultStringValue("Movie playback was aborted.")
-    public String moviePlaybackWasAborted();
+    String moviePlaybackWasAborted();
 
     @DefaultStringValue("Movie network error.")
-    public String movieNetworkError();
+    String movieNetworkError();
 
     @DefaultStringValue("Movie decoding error.")
-    public String movieErrorInDecoding();
+    String movieErrorInDecoding();
 
     @DefaultStringValue("Movie format not supported.")
-    public String movieFormatNotSupported();
+    String movieFormatNotSupported();
 
     @DefaultStringValue("Movie not support in this browser.")
-    public String movieNotSupportedInThisBrowser();
+    String movieNotSupportedInThisBrowser();
 
     // ---------- Validation
 
     @DefaultStringValue("attribute is required")
-    public String attributeIsRequired();
+    String attributeIsRequired();
 
     @DefaultStringValue("invalid value for type {0} [{1}]")
     // type, value
-    public String invalidValueForType();
+    String invalidValueForType();
 
     @DefaultStringValue("value should be a {0}")
     // type
-    public String invalidType();
+    String invalidType();
 
     @DefaultStringValue("attribute is invalid for type {0}")
     // type
-    public String attributeIsInvalidForType();
+    String attributeIsInvalidForType();
 
     @DefaultStringValue("value must be [{0}]")
     // value
-    public String attributeValueMustBeFixed();
+    String attributeValueMustBeFixed();
 
     @DefaultStringValue("no NodeFactory is registered for type '{0}'")
     // type
-    public String missingNodeFactory();
+    String missingNodeFactory();
 
     @DefaultStringValue("Invalid array size. Expected value is {0}. Actual value is {1}")
     // expectedValue, actualValue
-    public String invalidArraySize();
+    String invalidArraySize();
 
     // ---------- Attributes
 
     @DefaultStringValue("Width")
-    public String widthLabel();
+    String widthLabel();
 
     @DefaultStringValue("Width value in pixels.")
-    public String widthDescription();
+    String widthDescription();
 
     @DefaultStringValue("Height")
-    public String heightLabel();
+    String heightLabel();
 
     @DefaultStringValue("Height value in pixels.")
-    public String heightDescription();
+    String heightDescription();
 
     @DefaultStringValue("Min Width")
-    public String minWidthLabel();
+    String minWidthLabel();
 
     @DefaultStringValue("Minimum Width value in pixels.")
-    public String minWidthDescription();
+    String minWidthDescription();
 
     @DefaultStringValue("Max Width")
-    public String maxWidthLabel();
+    String maxWidthLabel();
 
     @DefaultStringValue("Maximum Width value in pixels.")
-    public String maxWidthDescription();
+    String maxWidthDescription();
 
     @DefaultStringValue("Min Height")
-    public String minHeightLabel();
+    String minHeightLabel();
 
     @DefaultStringValue("Minimum Height value in pixels.")
-    public String minHeightDescription();
+    String minHeightDescription();
 
     @DefaultStringValue("Max Height")
-    public String maxHeightLabel();
+    String maxHeightLabel();
 
     @DefaultStringValue("Maximum Height value in pixels.")
-    public String maxHeightDescription();
+    String maxHeightDescription();
 
     @DefaultStringValue("Corner Radius")
-    public String cornerRadiusLabel();
+    String cornerRadiusLabel();
 
     @DefaultStringValue("The radius of a 90 degree arc, which is used as a rounded corner.")
-    public String cornerRadiusDescription();
+    String cornerRadiusDescription();
 
     @DefaultStringValue("Fill")
-    public String fillLabel();
+    String fillLabel();
 
     @DefaultStringValue("The color or gradient used to fill a shape.")
-    public String fillDescription();
+    String fillDescription();
 
     @DefaultStringValue("Stroke")
-    public String strokeLabel();
+    String strokeLabel();
 
     @DefaultStringValue("The color of the outline of a shape.")
-    public String strokeDescription();
+    String strokeDescription();
 
     @DefaultStringValue("Stroke Width")
-    public String strokeWidthLabel();
+    String strokeWidthLabel();
 
     @DefaultStringValue("Width in pixels of the outline of a shape.")
-    public String strokeWidthDescription();
+    String strokeWidthDescription();
 
     @DefaultStringValue("Line Join")
-    public String lineJoinLabel();
+    String lineJoinLabel();
 
     @DefaultStringValue("Specifies how the connection of individual stroke segments will be drawn.")
-    public String lineJoinDescription();
+    String lineJoinDescription();
 
     @DefaultStringValue("X")
-    public String xLabel();
+    String xLabel();
 
     @DefaultStringValue("X coordinate.")
-    public String xDescription();
+    String xDescription();
 
     @DefaultStringValue("Y")
-    public String yLabel();
+    String yLabel();
 
     @DefaultStringValue("Y coordinate.")
-    public String yDescription();
+    String yDescription();
 
     @DefaultStringValue("Visible")
-    public String visibleLabel();
+    String visibleLabel();
 
     @DefaultStringValue("Indicates if the shape is visible or not.")
-    public String visibleDescription();
+    String visibleDescription();
 
     @DefaultStringValue("Listening")
-    public String listeningLabel();
+    String listeningLabel();
 
     @DefaultStringValue("Indicates if the shape is listening for events.")
-    public String listeningDescription();
+    String listeningDescription();
 
     @DefaultStringValue("ID")
-    public String idLabel();
+    String idLabel();
 
     @DefaultStringValue("Unique identifier for the shape.")
-    public String idDescription();
+    String idDescription();
 
     @DefaultStringValue("Name")
-    public String nameLabel();
+    String nameLabel();
 
     @DefaultStringValue("Unique name given to the shape.")
-    public String nameDescription();
+    String nameDescription();
 
     @DefaultStringValue("Alpha")
-    public String alphaLabel();
+    String alphaLabel();
 
     @DefaultStringValue("The alpha transparency for the shape.")
-    public String alphaDescription();
+    String alphaDescription();
 
     @DefaultStringValue("Stroke Alpha")
-    public String strokeAlphaLabel();
+    String strokeAlphaLabel();
 
     @DefaultStringValue("The alpha transparency for the shape's stroke.")
-    public String strokeAlphaDescription();
+    String strokeAlphaDescription();
 
     @DefaultStringValue("Fill Alpha")
-    public String fillAlphaLabel();
+    String fillAlphaLabel();
 
     @DefaultStringValue("The alpha transparency for the shape's fill.")
-    public String fillAlphaDescription();
+    String fillAlphaDescription();
 
     @DefaultStringValue("Scale")
-    public String scaleLabel();
+    String scaleLabel();
 
     @DefaultStringValue("Scale at which the shape is drawn.")
-    public String scaleDescription();
+    String scaleDescription();
 
     @DefaultStringValue("Rotation")
-    public String rotationLabel();
+    String rotationLabel();
 
     @DefaultStringValue("Radians used for the rotation of the shape around its origin or offset position.")
-    public String rotationDescription();
+    String rotationDescription();
 
     @DefaultStringValue("Offset")
-    public String offsetLabel();
+    String offsetLabel();
 
     @DefaultStringValue("The offset from origin at which a shape will be rotated around.")
-    public String offsetDescription();
+    String offsetDescription();
 
     @DefaultStringValue("Draggable")
-    public String draggableLabel();
+    String draggableLabel();
 
     @DefaultStringValue("Indicates if the shape can be dragged.")
-    public String draggableDescription();
+    String draggableDescription();
 
     @DefaultStringValue("Drag Constraint")
-    public String dragConstraintLabel();
+    String dragConstraintLabel();
 
     @DefaultStringValue("Drag constraints for the shape limit how the shape can be dragged.")
-    public String dragConstraintDescription();
+    String dragConstraintDescription();
 
     @DefaultStringValue("Drag Bounds")
-    public String dragBoundsLabel();
+    String dragBoundsLabel();
 
     @DefaultStringValue("Drag bounds determine where the shape can be dragged.")
-    public String dragBoundsDescription();
+    String dragBoundsDescription();
 
     @DefaultStringValue("Radius")
-    public String radiusLabel();
+    String radiusLabel();
 
     @DefaultStringValue("The radius of a circle or circular arc type.")
-    public String radiusDescription();
+    String radiusDescription();
 
     @DefaultStringValue("Radius X")
-    public String radiusXLabel();
+    String radiusXLabel();
 
     @DefaultStringValue("The x radius of a elliptical arc type.")
-    public String radiusXDescription();
+    String radiusXDescription();
 
     @DefaultStringValue("Radius Y")
-    public String radiusYLabel();
+    String radiusYLabel();
 
     @DefaultStringValue("The y radius of a elliptical arc type.")
-    public String radiusYDescription();
+    String radiusYDescription();
 
     @DefaultStringValue("Clear Layer")
-    public String clearLayerBeforeDrawLabel();
+    String clearLayerBeforeDrawLabel();
 
     @DefaultStringValue("Indicates if the layer should be cleared before drawing.")
-    public String clearLayerBeforeDrawDescription();
+    String clearLayerBeforeDrawDescription();
 
     @DefaultStringValue("Text")
-    public String textLabel();
+    String textLabel();
 
     @DefaultStringValue("String value of a Text shape.")
-    public String textDescription();
+    String textDescription();
 
     @DefaultStringValue("Font Size")
-    public String fontSizeLabel();
+    String fontSizeLabel();
 
     @DefaultStringValue("Text font size in points. i.e., 24.")
-    public String fontSizeDescription();
+    String fontSizeDescription();
 
     @DefaultStringValue("Font Family")
-    public String fontFamilyLabel();
+    String fontFamilyLabel();
 
     @DefaultStringValue("Text font family. i.e., Tahoma.")
-    public String fontFamilyDescription();
+    String fontFamilyDescription();
 
     @DefaultStringValue("Font Style")
-    public String fontStyleLabel();
+    String fontStyleLabel();
 
     @DefaultStringValue("Text font style. e.g., bold, italic, normal, etc.")
-    public String fontStyleDescription();
+    String fontStyleDescription();
 
     @DefaultStringValue("Points")
-    public String pointsLabel();
+    String pointsLabel();
 
     @DefaultStringValue("Number of points the shape has.")
-    public String pointsDescription();
+    String pointsDescription();
 
     @DefaultStringValue("Star points.")
-    public String starPointsLabel();
+    String starPointsLabel();
 
     @DefaultStringValue("Number of points the star has.")
-    public String starPointsDescription();
+    String starPointsDescription();
 
     @DefaultStringValue("Line Cap")
-    public String lineCapLabel();
+    String lineCapLabel();
 
     @DefaultStringValue("Specifies how the end of a shapes stroke will be drawn.")
-    public String lineCapDescription();
+    String lineCapDescription();
 
     @DefaultStringValue("Dash Array")
-    public String dashArrayLabel();
+    String dashArrayLabel();
 
     @DefaultStringValue("The outline of the shape will be drawn as a dashed line. The dash array specifies how the dashes are drawn.")
-    public String dashArrayDescription();
+    String dashArrayDescription();
 
     @DefaultStringValue("Sides")
-    public String sidesLabel();
+    String sidesLabel();
 
     @DefaultStringValue("Number of sides the shape has.")
-    public String sidesDescription();
+    String sidesDescription();
 
     @DefaultStringValue("Outer Radius")
-    public String outerRadiusLabel();
+    String outerRadiusLabel();
 
     @DefaultStringValue("The radius of the shape's outer enclosing circle.")
-    public String outerRadiusDescription();
+    String outerRadiusDescription();
 
     @DefaultStringValue("Inner Radius")
-    public String innerRadiusLabel();
+    String innerRadiusLabel();
 
     @DefaultStringValue("The radius of the shape's inner enclosing circle.")
-    public String innerRadiusDescription();
+    String innerRadiusDescription();
 
     @DefaultStringValue("Skew")
-    public String skewLabel();
+    String skewLabel();
 
     @DefaultStringValue("The skew in pixels of a Parallelogram.")
-    public String skewDescription();
+    String skewDescription();
 
     @DefaultStringValue("Shadow")
-    public String shadowLabel();
+    String shadowLabel();
 
     @DefaultStringValue("The value for the shape's shadow.")
-    public String shadowDescription();
+    String shadowDescription();
 
     @DefaultStringValue("Start Angle")
-    public String startAngleLabel();
+    String startAngleLabel();
 
     @DefaultStringValue("The start angle of a shape's circular arc.")
-    public String startAngleDescription();
+    String startAngleDescription();
 
     @DefaultStringValue("End Angle")
-    public String endAngleLabel();
+    String endAngleLabel();
 
     @DefaultStringValue("The end angle of a shape's circular arc.")
-    public String endAngleDescription();
+    String endAngleDescription();
 
     @DefaultStringValue("Counter Clockwise")
-    public String counterClockwiseLabel();
+    String counterClockwiseLabel();
 
     @DefaultStringValue("Indicates if the shape's circular arc should be drawn counter clockwise.")
-    public String counterClockwiseDescription();
+    String counterClockwiseDescription();
 
     @DefaultStringValue("Control Points")
-    public String controlPointsLabel();
+    String controlPointsLabel();
 
     @DefaultStringValue("The control points of a Bezier or Quadratic curve.")
-    public String controlPointsDescription();
+    String controlPointsDescription();
 
     @DefaultStringValue("Text Baseline")
-    public String textBaseLineLabel();
+    String textBaseLineLabel();
 
     @DefaultStringValue("Vertical positioning for the text in the canvas.")
-    public String textBaseLineDescription();
+    String textBaseLineDescription();
 
     @DefaultStringValue("Text Align")
-    public String textAlignLabel();
+    String textAlignLabel();
 
     @DefaultStringValue("Horizontal positioning for the text in the canvas.")
-    public String textAlignDescription();
+    String textAlignDescription();
 
     @DefaultStringValue("Clipped Image Width")
-    public String clippedImageWidthLabel();
+    String clippedImageWidthLabel();
 
     @DefaultStringValue("The width of the clipped image (i.e., x coordinate where clipping ends).")
-    public String clippedImageWidthDescription();
+    String clippedImageWidthDescription();
 
     @DefaultStringValue("Clipped Image Height")
-    public String clippedImageHeightLabel();
+    String clippedImageHeightLabel();
 
     @DefaultStringValue("The height of the clipped image (i.e., y coordinate where clipping ends).")
-    public String clippedImageHeightDescription();
+    String clippedImageHeightDescription();
 
     @DefaultStringValue("Clipped Image Destination Width")
-    public String clippedImageDestinationWidthLabel();
+    String clippedImageDestinationWidthLabel();
 
     @DefaultStringValue("The destination width of the clipped image.")
-    public String clippedImageDestinationWidthDescription();
+    String clippedImageDestinationWidthDescription();
 
     @DefaultStringValue("Clipped Image Destination Height")
-    public String clippedImageDestinationHeightLabel();
+    String clippedImageDestinationHeightLabel();
 
     @DefaultStringValue("The destination height of the clipped image.")
-    public String clippedImageDestinationHeightDescription();
+    String clippedImageDestinationHeightDescription();
 
     @DefaultStringValue("Clipped Image X")
-    public String clippedImageStartXLabel();
+    String clippedImageStartXLabel();
 
     @DefaultStringValue("The x coordinate where clipping for the image begins.")
-    public String clippedImageStartXDescription();
+    String clippedImageStartXDescription();
 
     @DefaultStringValue("Clipped Image Y")
-    public String clippedImageStartYLabel();
+    String clippedImageStartYLabel();
 
     @DefaultStringValue("The y coordinate where clipping for the image begins.")
-    public String clippedImageStartYDescription();
+    String clippedImageStartYDescription();
 
     @DefaultStringValue("Serialization Mode")
-    public String serializationModeLabel();
+    String serializationModeLabel();
 
     @DefaultStringValue("Used when deserializing a Picture.")
-    public String serializationModeDescription();
+    String serializationModeDescription();
 
     @DefaultStringValue("URL")
-    public String urlLabel();
+    String urlLabel();
 
     @DefaultStringValue("Source URL for a Picture or Movie.")
-    public String urlDescription();
+    String urlDescription();
 
     @DefaultStringValue("Loop")
-    public String loopLabel();
+    String loopLabel();
 
     @DefaultStringValue("Indicates if the Movie should loop.")
-    public String loopDescription();
+    String loopDescription();
 
     @DefaultStringValue("Volume")
-    public String volumeLabel();
+    String volumeLabel();
 
     @DefaultStringValue("The Movie's (audio-only or video) volume.")
-    public String volumeDescription();
+    String volumeDescription();
 
     @DefaultStringValue("Base Width")
-    public String baseWidthLabel();
+    String baseWidthLabel();
 
     @DefaultStringValue("The width of the non-pointy end of an arrow.")
-    public String baseWidthDescription();
+    String baseWidthDescription();
 
     @DefaultStringValue("Head Width")
-    public String headWidthLabel();
+    String headWidthLabel();
 
     @DefaultStringValue("The width of the side of the triangle formed by the tip of the arrow, which is parallel to the base.")
-    public String headWidthDescription();
+    String headWidthDescription();
 
     @DefaultStringValue("Arrow Angle")
-    public String arrowAngleLabel();
+    String arrowAngleLabel();
 
     @DefaultStringValue("The angle between the midline and the outer diagonal of the arrow's tip.")
-    public String arrowAngleDescription();
+    String arrowAngleDescription();
 
     @DefaultStringValue("Base Angle")
-    public String baseAngleLabel();
+    String baseAngleLabel();
 
     @DefaultStringValue("The angle between the outer diagonal and the inner diagonal of the arrow's tip.")
-    public String baseAngleDescription();
+    String baseAngleDescription();
 
     @DefaultStringValue("Arrow Type")
-    public String arrowTypeLabel();
+    String arrowTypeLabel();
 
     @DefaultStringValue("Indicates at which end the tip of the arrow should be.")
-    public String arrowTypeDescription();
+    String arrowTypeDescription();
 
     @DefaultStringValue("Transform")
-    public String transformLabel();
+    String transformLabel();
 
     @DefaultStringValue("The transformation matrix.")
-    public String transformDescription();
+    String transformDescription();
 
     @DefaultStringValue("Miter Limit")
-    public String miterLimitLabel();
+    String miterLimitLabel();
 
     @DefaultStringValue("The pixel limit Miter LineJoins extend.")
-    public String miterLimitDescription();
+    String miterLimitDescription();
 
     @DefaultStringValue("Curve Factor")
-    public String curveFactorLabel();
+    String curveFactorLabel();
 
     @DefaultStringValue("The curvyness factor applied to curves on a spline.")
-    public String curveFactorDescription();
+    String curveFactorDescription();
 
     @DefaultStringValue("Angle Factor")
-    public String angleFactorLabel();
+    String angleFactorLabel();
 
     @DefaultStringValue("The angle factor applied to curves on a spline.")
-    public String angleFactorDescription();
+    String angleFactorDescription();
 
     @DefaultStringValue("Line Flatten")
-    public String lineFlattenLabel();
+    String lineFlattenLabel();
 
     @DefaultStringValue("If we flatten 3 co-linear points on a spline.")
-    public String lineFlattenDescription();
+    String lineFlattenDescription();
 
     @DefaultStringValue("Shear")
-    public String shearLabel();
+    String shearLabel();
 
     @DefaultStringValue("Shear transform.")
-    public String shearDescription();
+    String shearDescription();
 
     @DefaultStringValue("Fill Shape For Selection")
-    public String fillShapeForSelectionLabel();
+    String fillShapeForSelectionLabel();
 
     @DefaultStringValue("If a shape should be filled for events on the selection layer.")
-    public String fillShapeForSelectionDescription();
+    String fillShapeForSelectionDescription();
 
     @DefaultStringValue("Fill Shape Bounding Box For Selection")
-    public String fillBoundsForSelectionLabel();
+    String fillBoundsForSelectionLabel();
 
     @DefaultStringValue("If a shape's bounding box should be filled for events on the selection layer.")
-    public String fillBoundsForSelectionDescription();
+    String fillBoundsForSelectionDescription();
 
     @DefaultStringValue("The pixels that will be used to increase the bounding box size on the selection layer.")
-    public String selectionBoundsOffsetLabel();
+    String selectionBoundsOffsetLabel();
 
     @DefaultStringValue("The pixels that will be used to increase the bounding box size on the selection layer.")
-    public String selectionBoundsOffsetDescription();
+    String selectionBoundsOffsetDescription();
 
     @DefaultStringValue("The pixels that will be used to increase the stroke wdith on the selection layer.")
-    public String selectionStrokeOffsetLabel();
+    String selectionStrokeOffsetLabel();
 
     @DefaultStringValue("The pixels that will be used to increase the bounding box on the selection layer.")
-    public String selectionStrokeOffsetDescription();
+    String selectionStrokeOffsetDescription();
 
     @DefaultStringValue("Transformable")
-    public String transformableLabel();
+    String transformableLabel();
 
     @DefaultStringValue("If a Layer applies global transforms from the Viewport.")
-    public String transformableDescription();
+    String transformableDescription();
 
     @DefaultStringValue("Dash Offset")
-    public String dashOffsetLabel();
+    String dashOffsetLabel();
 
     @DefaultStringValue("Pixel units to offset before dash array is applied.")
-    public String dashOffsetDescription();
+    String dashOffsetDescription();
 
     @DefaultStringValue("Auto Play")
-    public String autoPlayLabel();
+    String autoPlayLabel();
 
     @DefaultStringValue("If a Movie automatically plays on first draw.")
-    public String autoPlayDescription();
+    String autoPlayDescription();
 
     @DefaultStringValue("Playback Rate")
-    public String playbackRateLabel();
+    String playbackRateLabel();
 
     @DefaultStringValue("Movie playback rate ( 1.0 is normal, 2.0 is double speed, -0.5 is half speed in reverse,etc ).")
-    public String playbackRateDescription();
+    String playbackRateDescription();
 
     @DefaultStringValue("Show Poster")
-    public String showPosterLabel();
+    String showPosterLabel();
 
     @DefaultStringValue("If a Movie has a poster image, show this when Movie is not playing.")
-    public String showPosterDescription();
+    String showPosterDescription();
 
     @DefaultStringValue("Top Width")
-    public String topWidthLabel();
+    String topWidthLabel();
 
     @DefaultStringValue("Top width of an IsoscelesTrapezoid.")
-    public String topWidthDescription();
+    String topWidthDescription();
 
     @DefaultStringValue("Bottom Width")
-    public String bottomWidthLabel();
+    String bottomWidthLabel();
 
     @DefaultStringValue("Bottom width of an IsoscelesTrapezoid.")
-    public String bottomWidthDescription();
+    String bottomWidthDescription();
 
     @DefaultStringValue("Image Selection Mode")
-    public String imageSelectionModeLabel();
+    String imageSelectionModeLabel();
 
     @DefaultStringValue("If events on a Image use the bounding box, or ignore transparent pixels.")
-    public String imageSelectionModeDescription();
+    String imageSelectionModeDescription();
 
     @DefaultStringValue("Drag Mode")
-    public String dragModeLabel();
+    String dragModeLabel();
 
     @DefaultStringValue("If a shape is dragged on the Drag Layer, or in it's own Layer.")
-    public String dragModeDescription();
+    String dragModeDescription();
 
     @DefaultStringValue("Path")
-    public String pathLabel();
+    String pathLabel();
 
     @DefaultStringValue("A valid SVG Path specification.")
-    public String pathDescription();
+    String pathDescription();
 
     @DefaultStringValue("Tick Rate")
-    public String tickRateLabel();
+    String tickRateLabel();
 
     @DefaultStringValue("Ticks per second of a Sprite.")
-    public String tickRateDescription();
+    String tickRateDescription();
 
     @DefaultStringValue("Sprite Behavior Map")
-    public String spriteBehaviorMapLabel();
+    String spriteBehaviorMapLabel();
 
     @DefaultStringValue("Map of Sprite Behaviors.")
-    public String spriteBehaviorMapDescription();
+    String spriteBehaviorMapDescription();
 
     @DefaultStringValue("Sprite Behavior")
-    public String spriteBehaviorLabel();
+    String spriteBehaviorLabel();
 
     @DefaultStringValue("Current Sprite Behavior.")
-    public String spriteBehaviorDescription();
+    String spriteBehaviorDescription();
 
     @DefaultStringValue("Editable")
-    public String editableLabel();
+    String editableLabel();
 
     @DefaultStringValue("If an item is editable.")
-    public String editableDescription();
+    String editableDescription();
 
     @DefaultStringValue("Active")
-    public String activeLabel();
+    String activeLabel();
 
     @DefaultStringValue("If an item is active.")
-    public String activeDescription();
+    String activeDescription();
 
     @DefaultStringValue("Value")
-    public String valueLabel();
+    String valueLabel();
 
     @DefaultStringValue("Numeric value of an item.")
-    public String valueDescription();
+    String valueDescription();
 
     @DefaultStringValue("Color")
-    public String colorLabel();
+    String colorLabel();
 
     @DefaultStringValue("Color of an item.")
-    public String colorDescription();
+    String colorDescription();
 
     @DefaultStringValue("Matrix")
-    public String matrixLabel();
+    String matrixLabel();
 
     @DefaultStringValue("Convolve filter matrix.")
-    public String matrixDescription();
+    String matrixDescription();
 
     @DefaultStringValue("Inverted")
-    public String invertedLabel();
+    String invertedLabel();
 
     @DefaultStringValue("Filter is inverted.")
-    public String invertedDescription();
+    String invertedDescription();
 
     @DefaultStringValue("Gain")
-    public String gainLabel();
+    String gainLabel();
 
     @DefaultStringValue("Gain of a filter.")
-    public String gainDescription();
+    String gainDescription();
 
     @DefaultStringValue("Bias")
-    public String biasLabel();
+    String biasLabel();
 
     @DefaultStringValue("Bias of a filter.")
-    public String biasDescription();
+    String biasDescription();
 
     @DefaultStringValue("Unit")
-    public String textUnitLabel();
+    String textUnitLabel();
 
     @DefaultStringValue("Unit size of Text (px,pt).")
-    public String textUnitDescription();
+    String textUnitDescription();
 
     @DefaultStringValue("Head Direction")
-    public String headDirectionLabel();
+    String headDirectionLabel();
 
     @DefaultStringValue("Head Direction of a PolyLine connector.")
-    public String headDirectionDescription();
+    String headDirectionDescription();
 
     @DefaultStringValue("Tail Direction")
-    public String tailDirectionLabel();
+    String tailDirectionLabel();
 
     @DefaultStringValue("Tail Direction of a PolyLine connector.")
-    public String tailDirectionDescription();
+    String tailDirectionDescription();
 
     @DefaultStringValue("Head Offset")
-    public String headOffsetLabel();
+    String headOffsetLabel();
 
     @DefaultStringValue("Head Offset of a PolyLine connector.")
-    public String headOffsetDescription();
+    String headOffsetDescription();
 
     @DefaultStringValue("Tail Offset")
-    public String tailOffsetLabel();
+    String tailOffsetLabel();
 
     @DefaultStringValue("Tail Offset of a PolyLine connector.")
-    public String tailOffsetDescription();
+    String tailOffsetDescription();
 
     @DefaultStringValue("Correction Offset")
-    public String correctionOffsetLabel();
+    String correctionOffsetLabel();
 
     @DefaultStringValue("Correction Offset of a PolyLine connector.")
-    public String correctionOffsetDescription();
+    String correctionOffsetDescription();
 
     @DefaultStringValue("Event Propgation")
-    public String eventPropagationModeLabel();
+    String eventPropagationModeLabel();
 
     @DefaultStringValue("Event propgation from Shapes to parent Group's")
     public String eventPropagationModedDescription();
 
     @DefaultStringValue("Decorator Length")
-    public String decoratorLengthLabel();
+    String decoratorLengthLabel();
 
     @DefaultStringValue("Decorator Length")
-    public String decoratorLengthDescription();
+    String decoratorLengthDescription();
 
     @DefaultStringValue("Arrow Ratio")
-    public String arrowRatioLabel();
+    String arrowRatioLabel();
 
     @DefaultStringValue("Arrow Ratio")
-    public String arrowRatioDescription();
+    String arrowRatioDescription();
+
+    class MessageConstantsImpl implements MessageConstants
+    {
+        private String emptyString = "";
+
+        @Override public String getCanvasUnsupportedMessage()
+        {
+            return emptyString;
+        }
+
+        @Override public String moviePlaybackWasAborted()
+        {
+            return emptyString;
+        }
+
+        @Override public String movieNetworkError()
+        {
+            return emptyString;
+        }
+
+        @Override public String movieErrorInDecoding()
+        {
+            return emptyString;
+        }
+
+        @Override public String movieFormatNotSupported()
+        {
+            return emptyString;
+        }
+
+        @Override public String movieNotSupportedInThisBrowser()
+        {
+            return emptyString;
+        }
+
+        @Override public String attributeIsRequired()
+        {
+            return emptyString;
+        }
+
+        @Override public String invalidValueForType()
+        {
+            return emptyString;
+        }
+
+        @Override public String invalidType()
+        {
+            return emptyString;
+        }
+
+        @Override public String attributeIsInvalidForType()
+        {
+            return emptyString;
+        }
+
+        @Override public String attributeValueMustBeFixed()
+        {
+            return emptyString;
+        }
+
+        @Override public String missingNodeFactory()
+        {
+            return emptyString;
+        }
+
+        @Override public String invalidArraySize()
+        {
+            return emptyString;
+        }
+
+        @Override public String widthLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String widthDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String heightLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String heightDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String minWidthLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String minWidthDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String maxWidthLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String maxWidthDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String minHeightLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String minHeightDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String maxHeightLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String maxHeightDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String cornerRadiusLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String cornerRadiusDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String fillLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String fillDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String strokeLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String strokeDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String strokeWidthLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String strokeWidthDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String lineJoinLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String lineJoinDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String xLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String xDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String yLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String yDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String visibleLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String visibleDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String listeningLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String listeningDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String idLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String idDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String nameLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String nameDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String alphaLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String alphaDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String strokeAlphaLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String strokeAlphaDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String fillAlphaLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String fillAlphaDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String scaleLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String scaleDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String rotationLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String rotationDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String offsetLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String offsetDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String draggableLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String draggableDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String dragConstraintLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String dragConstraintDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String dragBoundsLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String dragBoundsDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String radiusLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String radiusDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String radiusXLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String radiusXDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String radiusYLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String radiusYDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String clearLayerBeforeDrawLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String clearLayerBeforeDrawDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String textLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String textDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String fontSizeLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String fontSizeDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String fontFamilyLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String fontFamilyDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String fontStyleLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String fontStyleDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String pointsLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String pointsDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String starPointsLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String starPointsDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String lineCapLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String lineCapDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String dashArrayLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String dashArrayDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String sidesLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String sidesDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String outerRadiusLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String outerRadiusDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String innerRadiusLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String innerRadiusDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String skewLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String skewDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String shadowLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String shadowDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String startAngleLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String startAngleDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String endAngleLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String endAngleDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String counterClockwiseLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String counterClockwiseDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String controlPointsLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String controlPointsDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String textBaseLineLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String textBaseLineDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String textAlignLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String textAlignDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String clippedImageWidthLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String clippedImageWidthDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String clippedImageHeightLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String clippedImageHeightDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String clippedImageDestinationWidthLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String clippedImageDestinationWidthDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String clippedImageDestinationHeightLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String clippedImageDestinationHeightDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String clippedImageStartXLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String clippedImageStartXDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String clippedImageStartYLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String clippedImageStartYDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String serializationModeLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String serializationModeDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String urlLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String urlDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String loopLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String loopDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String volumeLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String volumeDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String baseWidthLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String baseWidthDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String headWidthLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String headWidthDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String arrowAngleLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String arrowAngleDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String baseAngleLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String baseAngleDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String arrowTypeLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String arrowTypeDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String transformLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String transformDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String miterLimitLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String miterLimitDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String curveFactorLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String curveFactorDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String angleFactorLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String angleFactorDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String lineFlattenLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String lineFlattenDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String shearLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String shearDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String fillShapeForSelectionLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String fillShapeForSelectionDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String fillBoundsForSelectionLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String fillBoundsForSelectionDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String selectionBoundsOffsetLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String selectionBoundsOffsetDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String selectionStrokeOffsetLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String selectionStrokeOffsetDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String transformableLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String transformableDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String dashOffsetLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String dashOffsetDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String autoPlayLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String autoPlayDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String playbackRateLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String playbackRateDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String showPosterLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String showPosterDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String topWidthLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String topWidthDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String bottomWidthLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String bottomWidthDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String imageSelectionModeLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String imageSelectionModeDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String dragModeLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String dragModeDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String pathLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String pathDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String tickRateLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String tickRateDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String spriteBehaviorMapLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String spriteBehaviorMapDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String spriteBehaviorLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String spriteBehaviorDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String editableLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String editableDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String activeLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String activeDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String valueLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String valueDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String colorLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String colorDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String matrixLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String matrixDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String invertedLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String invertedDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String gainLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String gainDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String biasLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String biasDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String textUnitLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String textUnitDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String headDirectionLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String headDirectionDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String tailDirectionLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String tailDirectionDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String headOffsetLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String headOffsetDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String tailOffsetLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String tailOffsetDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String correctionOffsetLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String correctionOffsetDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String eventPropagationModeLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String eventPropagationModedDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String decoratorLengthLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String decoratorLengthDescription()
+        {
+            return emptyString;
+        }
+
+        @Override public String arrowRatioLabel()
+        {
+            return emptyString;
+        }
+
+        @Override public String arrowRatioDescription()
+        {
+            return emptyString;
+        }
+    }
 }

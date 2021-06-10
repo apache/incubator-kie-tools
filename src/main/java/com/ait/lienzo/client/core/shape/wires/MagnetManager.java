@@ -17,10 +17,7 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.event.AttributesChangedEvent;
-import com.ait.lienzo.client.core.event.AttributesChangedHandler;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -36,15 +33,16 @@ import com.ait.lienzo.client.core.shape.wires.decorator.MagnetDecorator;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.ColorKeyRotor;
-import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.DragMode;
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.client.collection.NFastStringMap;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
+
+import elemental2.dom.ImageData;
 
 public class MagnetManager
 {
@@ -124,8 +122,8 @@ public class MagnetManager
         final Point2D primLoc = primTarget.getComputedLocation();
         final Magnets magnets = new Magnets(this, list, wiresShape);
 
-        int i = 0;
-        for (Point2D p : points)
+        int i    = 0;
+        for (Point2D p : points.asArray())
         {
             final double mx = primLoc.getX() + p.getX();
             final double my = primLoc.getY() + p.getY();
@@ -261,11 +259,11 @@ public class MagnetManager
         return new Circle(m_ctrlSize)
                 .setX(x)
                 .setY(y)
-                .setDraggable(true)
+                .setDraggable(false)
                 .setDragMode(DragMode.SAME_LAYER);
     }
 
-    public static class Magnets implements AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
+    public static class Magnets implements NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
     {
         private final IControlHandleList m_list;
 
@@ -284,8 +282,6 @@ public class MagnetManager
             m_wiresShape = wiresShape;
 
             Group shapeGroup = wiresShape.getGroup();
-            m_registrationManager.register(shapeGroup.addAttributesChangedHandler(Attribute.X, this));
-            m_registrationManager.register(shapeGroup.addAttributesChangedHandler(Attribute.Y, this));
             m_registrationManager.register(shapeGroup.addNodeDragStartHandler(this));
             m_registrationManager.register(shapeGroup.addNodeDragMoveHandler(this));
             m_registrationManager.register(shapeGroup.addNodeDragEndHandler(this));
@@ -299,15 +295,6 @@ public class MagnetManager
         public WiresShape getWiresShape()
         {
             return m_wiresShape;
-        }
-
-        @Override
-        public void onAttributesChanged(AttributesChangedEvent event)
-        {
-            if (!m_isDragging && event.any(Attribute.X, Attribute.Y))
-            {
-                getControl().shapeMoved();
-            }
         }
 
         @Override

@@ -19,12 +19,13 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.IColor;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONObject;
+
+import elemental2.core.Uint8ClampedArray;
+import elemental2.dom.ImageData;
+import jsinterop.base.Js;
 
 /**
  * A class that allows for easy creation of a Color Luminosity based Image Filter.
@@ -46,7 +47,7 @@ public class ColorLuminosityImageDataFilter extends AbstractRGBImageDataFilter<C
         super(ImageFilterType.ColorLuminosityImageDataFilterType, color);
     }
 
-    protected ColorLuminosityImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected ColorLuminosityImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
     {
         super(ImageFilterType.ColorLuminosityImageDataFilterType, node, ctx);
     }
@@ -60,13 +61,13 @@ public class ColorLuminosityImageDataFilter extends AbstractRGBImageDataFilter<C
         }
         if (copy)
         {
-            source = source.copy();
+            source = ImageDataUtil.copy(source);
         }
-        if (false == isActive())
+        if (!isActive())
         {
             return source;
         }
-        final CanvasPixelArray data = source.getData();
+        final Uint8ClampedArray data = source.data;
 
         if (null == data)
         {
@@ -77,15 +78,17 @@ public class ColorLuminosityImageDataFilter extends AbstractRGBImageDataFilter<C
         return source;
     }
 
-    private final native void filter_(JavaScriptObject data, int length, int r, int g, int b)
-    /*-{
-    	for (var i = 0; i < length; i += 4) {
-            var v = (((data[  i  ] * 0.21) + (data[i + 1] * 0.72) + (data[i + 2] * 0.07)) / 255.0);
-    		data[  i  ] = ((r * v) + 0.5) | 0;
-    		data[i + 1] = ((g * v) + 0.5) | 0;
-    		data[i + 2] = ((b * v) + 0.5) | 0;
+    private final void filter_(Uint8ClampedArray dataArray, int length, int r, int g, int b)
+    {
+//        int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
+        int[] data = Js.uncheckedCast(dataArray);
+    	for (int i = 0; i < length; i += 4) {
+            double v = (((data[  i  ] * 0.21) + (data[i + 1] * 0.72) + (data[i + 2] * 0.07)) / 255.0);
+            data[  i  ] = Js.coerceToInt(((r * v) + 0.5));
+            data[i + 1] = Js.coerceToInt(((g * v) + 0.5));
+            data[i + 2] = Js.coerceToInt(((b * v) + 0.5));
     	}
-    }-*/;
+    }
 
     @Override
     public IFactory<ColorLuminosityImageDataFilter> getFactory()
@@ -98,12 +101,6 @@ public class ColorLuminosityImageDataFilter extends AbstractRGBImageDataFilter<C
         public ColorLuminosityImageDataFilterFactory()
         {
             super(ImageFilterType.ColorLuminosityImageDataFilterType);
-        }
-
-        @Override
-        public ColorLuminosityImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new ColorLuminosityImageDataFilter(node, ctx);
         }
     }
 }

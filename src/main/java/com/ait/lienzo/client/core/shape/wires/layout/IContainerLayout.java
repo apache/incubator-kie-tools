@@ -17,7 +17,6 @@
 package com.ait.lienzo.client.core.shape.wires.layout;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.types.BoundingBox;
 
 public interface IContainerLayout<L>
 {

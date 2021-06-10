@@ -18,8 +18,9 @@ package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.FillRepeat;
-import com.google.gwt.dom.client.ImageElement;
-import com.google.gwt.json.client.JSONObject;
+import elemental2.core.Global;
+import elemental2.dom.HTMLImageElement;
+import jsinterop.annotations.JsType;
 
 /**
  * PatternGradient defines the fill style for a {@link Shape} as a Pattern Gradient. 
@@ -35,12 +36,12 @@ public final class PatternGradient implements FillGradient
         m_jso = jso;
     }
 
-    public PatternGradient(final ImageElement image)
+    public PatternGradient(final HTMLImageElement image)
     {
         this(PatternGradientJSO.make(image, ScratchPad.toDataURL(image), FillRepeat.REPEAT.getValue()));
     }
 
-    public PatternGradient(final ImageElement image, final FillRepeat repeat)
+    public PatternGradient(final HTMLImageElement image, final FillRepeat repeat)
     {
         this(PatternGradientJSO.make(image, ScratchPad.toDataURL(image), repeat.getValue()));
     }
@@ -71,12 +72,12 @@ public final class PatternGradient implements FillGradient
 
     public String getSrc()
     {
-        return m_jso.getSrc();
+        return m_jso.src;
     }
 
     public FillRepeat getRepeat()
     {
-        return FillRepeat.lookup(m_jso.getRepeat());
+        return FillRepeat.lookup(m_jso.repeat);
     }
 
     public final PatternGradientJSO getJSO()
@@ -86,7 +87,7 @@ public final class PatternGradient implements FillGradient
 
     public final String toJSONString()
     {
-        return new JSONObject(m_jso).toString();
+        return Global.JSON.stringify(m_jso);
     }
 
     @Override
@@ -98,7 +99,7 @@ public final class PatternGradient implements FillGradient
     @Override
     public boolean equals(final Object other)
     {
-        if ((other == null) || (false == (other instanceof PatternGradient)))
+        if ((other == null) || (!(other instanceof PatternGradient)))
         {
             return false;
         }
@@ -115,32 +116,25 @@ public final class PatternGradient implements FillGradient
         return toJSONString().hashCode();
     }
 
+    @JsType
     public static final class PatternGradientJSO extends GradientJSO
     {
+        public String src;
+        public String repeat;
+        public HTMLImageElement image;
+
         protected PatternGradientJSO()
         {
         }
 
-        public static final native PatternGradientJSO make(ImageElement e, String s, String r)
-        /*-{
-			var self = {};
-			self.src = s;
-			self.repeat = r;
-			self.type = "PatternGradient";
-			self.image = function() {
-			    return e;
-			};
-			return self;
-        }-*/;
-
-        public final native String getSrc()
-        /*-{
-			return this.src;
-        }-*/;
-
-        public final native String getRepeat()
-        /*-{
-			return this.repeat;
-        }-*/;
+        public static final PatternGradientJSO make(HTMLImageElement e, String s, String r)
+        {
+            PatternGradientJSO grad = new PatternGradientJSO();
+            grad.src = s;
+            grad.repeat = r;
+            grad.type = "PatternGradient";
+            grad.image = e;
+            return grad;
+        };
     }
 }

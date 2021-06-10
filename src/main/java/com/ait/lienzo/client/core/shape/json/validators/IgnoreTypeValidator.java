@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-import com.google.gwt.json.client.JSONValue;
-
 public class IgnoreTypeValidator extends AbstractAttributeTypeValidator
 {
     public static final IgnoreTypeValidator INSTANCE = new IgnoreTypeValidator();
@@ -34,7 +32,7 @@ public class IgnoreTypeValidator extends AbstractAttributeTypeValidator
     }
 
     @Override
-    public void validate(JSONValue jval, ValidationContext ctx) throws ValidationException
+    public void validate(Object jval, ValidationContext ctx) throws ValidationException
     {
     }
 }

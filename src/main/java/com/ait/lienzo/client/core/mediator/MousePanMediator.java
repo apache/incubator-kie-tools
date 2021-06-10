@@ -16,12 +16,15 @@
 
 package com.ait.lienzo.client.core.mediator;
 
+import elemental2.dom.UIEvent;
+
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
-import com.google.gwt.event.shared.GwtEvent;
+import com.ait.lienzo.tools.client.event.INodeEvent.Type;
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
 
 /**
  * MousePanMediator provides pan behavior similar to dragging the mouse in Google Maps.
@@ -33,7 +36,7 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class MousePanMediator extends AbstractMediator
 {
-    private Point2D   m_last             = new Point2D();
+    private Point2D   m_last             = new Point2D(0,0);
 
     private boolean   m_dragging         = false;
 
@@ -81,35 +84,35 @@ public class MousePanMediator extends AbstractMediator
     }
 
     @Override
-    public boolean handleEvent(final GwtEvent<?> event)
+    public <H extends EventHandler> boolean handleEvent(Type<H> type, final UIEvent event, int x, int y)
     {
-        if (event.getAssociatedType() == NodeMouseMoveEvent.getType())
+        if (type == NodeMouseMoveEvent.getType())
         {
             if (m_dragging)
             {
-                onMouseMove((NodeMouseMoveEvent) event);
+                onMouseMove(x, y);
 
                 return true;
             }
             return false;
         }
-        else if (event.getAssociatedType() == NodeMouseDownEvent.getType())
+        else if (type == NodeMouseDownEvent.getType())
         {
             final IEventFilter filter = getEventFilter();
 
-            if ((null == filter) || (false == filter.isEnabled()) || (filter.test(event)))
+            if ((null == filter) || (!filter.isEnabled()) || (filter.test(event)))
             {
-                onMouseDown((NodeMouseDownEvent) event);
+                onMouseDown(x, y);
 
                 return true;
             }
             return false;
         }
-        else if (event.getAssociatedType() == NodeMouseUpEvent.getType())
+        else if (type == NodeMouseUpEvent.getType())
         {
             if (m_dragging)
             {
-                onMouseUp((NodeMouseUpEvent) event);
+                onMouseUp();
 
                 return true;
             }
@@ -117,9 +120,9 @@ public class MousePanMediator extends AbstractMediator
         return false;
     }
 
-    protected void onMouseDown(final NodeMouseDownEvent event)
+    protected void onMouseDown(int x, int y)
     {
-        m_last = new Point2D(event.getX(), event.getY());
+        m_last = new Point2D(x, y);
 
         m_dragging = true;
 
@@ -134,17 +137,17 @@ public class MousePanMediator extends AbstractMediator
         m_inverseTransform.transform(m_last, m_last);
     }
 
-    protected void onMouseMove(final NodeMouseMoveEvent event)
+    protected void onMouseMove(int x, int y)
     {
         final Transform transform = getTransform();
-        final Point2D curr = new Point2D(event.getX(), event.getY());
+        final Point2D curr = new Point2D(x, y);
 
         m_inverseTransform.transform(curr, curr);
 
-        final double x = m_xconstrained && transform.getTranslateX() > 0 ? getTransform().getTranslateX() * -1 : curr.getX() - m_last.getX();
-        final double y = m_yconstrained && transform.getTranslateY() > 0 ? getTransform().getTranslateY() * -1 : curr.getY() - m_last.getY();
+        final double traslatedX = m_xconstrained && transform.getTranslateX() > 0 ? getTransform().getTranslateX() * -1 : curr.getX() - m_last.getX();
+        final double traslatedY = m_yconstrained && transform.getTranslateY() > 0 ? getTransform().getTranslateY() * -1 : curr.getY() - m_last.getY();
 
-        setTransform(getTransform().copy().translate(x, y));
+        setTransform(getTransform().copy().translate(traslatedX, traslatedY));
 
         m_last = curr;
 
@@ -158,7 +161,7 @@ public class MousePanMediator extends AbstractMediator
         }
     }
 
-    protected void onMouseUp(final NodeMouseUpEvent event)
+    protected void onMouseUp()
     {
         cancel();
     }

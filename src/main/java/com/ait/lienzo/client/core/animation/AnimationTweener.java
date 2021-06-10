@@ -20,19 +20,19 @@ import com.ait.lienzo.shared.core.types.DoublePowerFunction;
 
 public interface AnimationTweener extends DoublePowerFunction
 {
-    public static final AnimationTweener LINEAR      = TweenerBuilder.MAKE_LINEAR();
+    AnimationTweener LINEAR      = TweenerBuilder.MAKE_LINEAR();
 
-    public static final AnimationTweener EASE_IN     = TweenerBuilder.MAKE_EASE_IN(3.0);
+    AnimationTweener EASE_IN     = TweenerBuilder.MAKE_EASE_IN(3.0);
 
-    public static final AnimationTweener EASE_OUT    = TweenerBuilder.MAKE_EASE_OUT(3.0);
+    AnimationTweener EASE_OUT    = TweenerBuilder.MAKE_EASE_OUT(3.0);
 
-    public static final AnimationTweener EASE_IN_OUT = TweenerBuilder.MAKE_EASE_IN_OUT();
+    AnimationTweener EASE_IN_OUT = TweenerBuilder.MAKE_EASE_IN_OUT();
 
-    public static final AnimationTweener ELASTIC     = TweenerBuilder.MAKE_ELASTIC(3);
+    AnimationTweener ELASTIC     = TweenerBuilder.MAKE_ELASTIC(3);
 
-    public static final AnimationTweener BOUNCE      = TweenerBuilder.MAKE_BOUNCE(3);
+    AnimationTweener BOUNCE      = TweenerBuilder.MAKE_BOUNCE(3);
 
-    public static final class TweenerBuilder
+    final class TweenerBuilder
     {
         public static final AnimationTweener MAKE_EASE_IN(final double strength)
         {
@@ -46,77 +46,37 @@ public interface AnimationTweener extends DoublePowerFunction
 
         private static final AnimationTweener MAKE_LINEAR()
         {
-            return new AnimationTweener()
-            {
-                @Override
-                public final double apply(final double percent)
-                {
-                    return percent;
-                }
-            };
+            return percent -> percent;
         }
 
         private static final AnimationTweener MAKE_EASE_IN_P(final double strength)
         {
-            return new AnimationTweener()
-            {
-                @Override
-                public final double apply(final double percent)
-                {
-                    return Math.pow(percent, strength * 2.0);
-                }
-            };
+            return percent -> Math.pow(percent, strength * 2.0);
         }
 
         private static final AnimationTweener MAKE_EASE_OUT_P(final double strength)
         {
-            return new AnimationTweener()
-            {
-                @Override
-                public final double apply(final double percent)
-                {
-                    return (1.0 - Math.pow(1.0 - percent, strength * 2.0));
-                }
-            };
+            return percent -> (1.0 - Math.pow(1.0 - percent, strength * 2.0));
         }
 
         private static final AnimationTweener MAKE_EASE_IN_OUT()
         {
-            return new AnimationTweener()
-            {
-                @Override
-                public final double apply(final double percent)
-                {
-                    return (percent - Math.sin(percent * 2.0 * Math.PI) / (2.0 * Math.PI));
-                }
-            };
+            return percent -> (percent - Math.sin(percent * 2.0 * Math.PI) / (2.0 * Math.PI));
         }
 
         public static final AnimationTweener MAKE_ELASTIC(final int passes)
         {
-            return new AnimationTweener()
-            {
-                @Override
-                public final double apply(final double percent)
-                {
-                    return (((1.0 - Math.cos(percent * Math.PI * passes)) * (1.0 - percent)) + percent);
-                }
-            };
+            return percent -> (((1.0 - Math.cos(percent * Math.PI * passes)) * (1.0 - percent)) + percent);
         }
 
         public static final AnimationTweener MAKE_BOUNCE(final int bounces)
         {
             final AnimationTweener elastic = MAKE_ELASTIC(bounces);
 
-            return new AnimationTweener()
-            {
-                @Override
-                public final double apply(double percent)
-                {
-                    percent = elastic.apply(percent);
+            return percent -> {
+                percent = elastic.apply(percent);
 
-                    return ((percent <= 1.0) ? (percent) : (2.0 - percent));
-                }
+                return ((percent <= 1.0) ? (percent) : (2.0 - percent));
             };
         }
     }

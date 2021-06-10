@@ -16,12 +16,13 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.tooltip;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.toolbox.items.LayerToolbox;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.Direction;
-import com.ait.tooling.common.api.java.util.function.Consumer;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 
 public class ToolboxTextTooltip implements TextTooltipItem<ToolboxTextTooltip> {
 

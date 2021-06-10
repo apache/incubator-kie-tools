@@ -15,37 +15,28 @@
  *    limitations under the License.
  *
  */
-// TODO - review DSJ
 
 package com.ait.lienzo.client.core.shape.wires;
 
 import java.util.Iterator;
 
-import com.ait.lienzo.client.core.event.AbstractNodeDragEvent;
-import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
-import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
-import com.ait.lienzo.client.core.event.NodeDragStartEvent;
 import com.ait.lienzo.client.core.event.NodeDragStartHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndHandler;
-import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveHandler;
-import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartHandler;
-import com.ait.lienzo.client.core.shape.wires.event.WiresMoveEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresMoveHandler;
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
+
+import elemental2.dom.HTMLDivElement;
 
 /**
  * This class handles the Wires Shape controls to provide additional features.
@@ -70,6 +61,12 @@ public class WiresShapeControlHandleList implements IControlHandleList
 
     private Group                                  parent;
 
+    private WiresResizeStartEvent wiresResizeStartEvent;
+
+    private WiresResizeStepEvent wiresResizeStepEvent;
+
+    private WiresResizeEndEvent wiresResizeEndEvent;
+
     public WiresShapeControlHandleList(final WiresShape wiresShape, final IControlHandle.ControlHandleType controlsType, final ControlHandleList controls)
     {
         this(wiresShape, controlsType, controls, new HandlerRegistrationManager());
@@ -82,8 +79,25 @@ public class WiresShapeControlHandleList implements IControlHandleList
         this.m_ctrls_type = controlsType;
         this.m_registrationManager = registrationManager;
         this.parent = null;
+
+        // TODO: lienzo-to-native
+        /*HTMLElement relativeDiv = parent.getLayer().getViewport().getElement();
+        wiresResizeStartEvent = new WiresResizeStartEvent(relativeDiv);
+        wiresResizeStepEvent = new WiresResizeStepEvent(relativeDiv);
+        wiresResizeEndEvent = new WiresResizeEndEvent(relativeDiv);*/
+
         updateParentLocation();
         initControlsListeners();
+        setupEvents(parent);
+    }
+
+    protected void setupEvents(Group parent) {
+        if(parent != null && parent.getLayer().getViewport() != null) {
+            HTMLDivElement div = parent.getLayer().getViewport().getElement();
+            wiresResizeStartEvent = new WiresResizeStartEvent(div);
+            wiresResizeStepEvent = new WiresResizeStepEvent(div);
+            wiresResizeEndEvent = new WiresResizeEndEvent(div);
+        }
     }
 
     @Override
@@ -197,75 +211,26 @@ public class WiresShapeControlHandleList implements IControlHandleList
                 final IPrimitive<?> control = handle.getControl();
                 control.setUserData(this); // TODO (mdp) this is hack (and not robust, if something else re-uses this field) but for now it allows a fix in resize code that shifts the canvas location
 
-                m_registrationManager.register(control.addNodeDragStartHandler(new NodeDragStartHandler()
-                {
-                    @Override
-                    public void onNodeDragStart(final NodeDragStartEvent event)
-                    {
-                        WiresShapeControlHandleList.this.resizeStart(event);
-                    }
-                }));
+                m_registrationManager.register(control.addNodeDragStartHandler(event -> WiresShapeControlHandleList.this.resizeStart(event)));
 
-                m_registrationManager.register(control.addNodeDragMoveHandler(new NodeDragMoveHandler()
-                {
-                    @Override
-                    public void onNodeDragMove(final NodeDragMoveEvent event)
-                    {
-                        WiresShapeControlHandleList.this.resizeMove(event);
-                    }
-                }));
+                m_registrationManager.register(control.addNodeDragMoveHandler(event -> WiresShapeControlHandleList.this.resizeMove(event)));
 
-                m_registrationManager.register(control.addNodeDragEndHandler(new NodeDragEndHandler()
-                {
-                    @Override
-                    public void onNodeDragEnd(final NodeDragEndEvent event)
-                    {
-                        WiresShapeControlHandleList.this.resizeEnd(event);
-                    }
-                }));
+                m_registrationManager.register(control.addNodeDragEndHandler(event -> WiresShapeControlHandleList.this.resizeEnd(event)));
             }
         }
 
         // Shape container's drag.
-        m_registrationManager.register(m_wires_shape.addWiresDragStartHandler(new WiresDragStartHandler()
-        {
-            @Override
-            public void onShapeDragStart(WiresDragStartEvent event)
-            {
-                updateParentLocation();
-            }
-        }));
+        m_registrationManager.register(m_wires_shape.addWiresDragStartHandler(event -> updateParentLocation()));
 
-        m_registrationManager.register(m_wires_shape.addWiresDragMoveHandler(new WiresDragMoveHandler()
-        {
-            @Override
-            public void onShapeDragMove(WiresDragMoveEvent event)
-            {
-                updateParentLocation();
-            }
-        }));
+        m_registrationManager.register(m_wires_shape.addWiresDragMoveHandler(event -> updateParentLocation()));
 
-        m_registrationManager.register(m_wires_shape.addWiresDragEndHandler(new WiresDragEndHandler()
-        {
-            @Override
-            public void onShapeDragEnd(WiresDragEndEvent event)
-            {
-                updateParentLocation();
-            }
-        }));
+        m_registrationManager.register(m_wires_shape.addWiresDragEndHandler(event -> updateParentLocation()));
 
         // Shape container's position.
-        m_registrationManager.register(m_wires_shape.addWiresMoveHandler(new WiresMoveHandler()
-        {
-            @Override
-            public void onShapeMoved(WiresMoveEvent event)
-            {
-                updateParentLocation();
-            }
-        }));
+        m_registrationManager.register(m_wires_shape.addWiresMoveHandler(event -> updateParentLocation()));
     }
 
-    protected void resizeStart(final AbstractNodeDragEvent<?> dragEvent)
+    protected void resizeStart(final AbstractNodeHumanInputEvent<NodeDragStartHandler, Node> dragEvent)
     {
         if (m_wires_shape.isResizable())
         {
@@ -275,30 +240,39 @@ public class WiresShapeControlHandleList implements IControlHandleList
                 m_wires_shape.getMagnets().hide();
             }
 
-            final double[] r = this.resizeWhileDrag(dragEvent);
-            m_wires_shape.getHandlerManager().fireEvent(new WiresResizeStartEvent(m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3]));
+            final double[] r = this.resizeWhileDrag();
+            wiresResizeStartEvent.revive();
+            wiresResizeStartEvent.override(m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3]);
+            m_wires_shape.getHandlerManager().fireEvent(wiresResizeStartEvent);
+            wiresResizeStartEvent.kill();
         }
     }
 
-    protected void resizeMove(final AbstractNodeDragEvent<?> dragEvent)
+    protected void resizeMove(final AbstractNodeHumanInputEvent<NodeDragMoveHandler, Node> dragEvent)
     {
         if (m_wires_shape.isResizable())
         {
-            final double[] r = this.resizeWhileDrag(dragEvent);
-            m_wires_shape.getHandlerManager().fireEvent(new WiresResizeStepEvent(m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3]));
+            final double[] r = this.resizeWhileDrag();
+            wiresResizeStepEvent.revive();
+            wiresResizeStepEvent.override(m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3]);
+            m_wires_shape.getHandlerManager().fireEvent(wiresResizeStepEvent);
+            wiresResizeStepEvent.kill();
         }
     }
 
-    protected void resizeEnd(final AbstractNodeDragEvent<?> dragEvent)
+    protected void resizeEnd(final AbstractNodeHumanInputEvent<NodeDragEndHandler, Node> dragEvent)
     {
         if (m_wires_shape.isResizable())
         {
-            final double[] r = this.resizeWhileDrag(dragEvent);
-            m_wires_shape.getHandlerManager().fireEvent(new WiresResizeEndEvent(m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3]));
+            final double[] r = this.resizeWhileDrag();
+            wiresResizeEndEvent.revive();
+            wiresResizeEndEvent.override(m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3]);
+            m_wires_shape.getHandlerManager().fireEvent(wiresResizeEndEvent);
+            wiresResizeEndEvent.kill();
         }
     }
 
-    private double[] resizeWhileDrag(final AbstractNodeDragEvent<?> dragEvent)
+    private double[] resizeWhileDrag()
     {
         if (m_wires_shape.isResizable())
         {
@@ -373,7 +347,7 @@ public class WiresShapeControlHandleList implements IControlHandleList
         parent.setY(ap[1]);
         parent.moveToTop();
 
-        for (final WiresShape child : m_wires_shape.getChildShapes())
+        for (final WiresShape child : m_wires_shape.getChildShapes().asList())
         {
             if (null != child.getControls())
             {
@@ -389,7 +363,7 @@ public class WiresShapeControlHandleList implements IControlHandleList
         double maxx = controlPoints.get(0).getX();
         double maxy = controlPoints.get(0).getY();
 
-        for (Point2D control : controlPoints)
+        for (Point2D control : controlPoints.asArray())
         {
             if (control.getX() < minx)
             {
@@ -427,7 +401,7 @@ public class WiresShapeControlHandleList implements IControlHandleList
         // with the parent one.
         if (!visible)
         {
-            for (WiresShape shape : m_wires_shape.getChildShapes())
+            for (WiresShape shape : m_wires_shape.getChildShapes().asList())
             {
                 if (shape.getControls() == null)
                 {

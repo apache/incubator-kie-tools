@@ -8,6 +8,7 @@
 
 /target
 /local
+/jsZipCache/
 
 # Netbeans and IntelliJ files
 /nbproject

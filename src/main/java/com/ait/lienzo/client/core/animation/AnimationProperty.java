@@ -24,6 +24,9 @@ import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.shared.core.types.Color.HSL;
 import com.ait.lienzo.shared.core.types.IColor;
 
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
+
 /**
  * AnimationProperty defines what node attribute is modified during a "tweening" animation 
  * and what its ultimate target value is.
@@ -38,15 +41,15 @@ import com.ait.lienzo.shared.core.types.IColor;
 
 public interface AnimationProperty
 {
-    public boolean init(Node<?> node);
+    boolean init(Node<?> node);
 
-    public boolean apply(Node<?> node, double percent);
+    boolean apply(Node<?> node, double percent);
 
-    public boolean isStateful();
+    boolean isStateful();
 
-    public boolean isRefreshing();
+    boolean isRefreshing();
 
-    public AnimationProperty copy();
+    AnimationProperty copy();
 
     /**
      * Properties provides convenience methods for defining which attributes of an IPrimitive node 
@@ -60,8 +63,12 @@ public interface AnimationProperty
      * @see AnimationTweener
      */
 
-    public static class Properties
+    class Properties
     {
+        private Properties() {
+
+        }
+
         public static final AnimationProperty X(final double x)
         {
             return new DoubleAnimationProperty(x, Attribute.X);
@@ -332,13 +339,13 @@ public interface AnimationProperty
             @Override
             protected String getColorString(final Node<?> node)
             {
-                return node.getAttributes().getFillColor();
+                return node.asShape().getFillColor();
             }
 
             @Override
             protected void setColorString(final Node<?> node, final String color)
             {
-                node.getAttributes().setFillColor(color);
+                node.asShape().setFillColor(color);
             }
 
             @Override
@@ -358,13 +365,13 @@ public interface AnimationProperty
             @Override
             protected String getColorString(final Node<?> node)
             {
-                return node.getAttributes().getStrokeColor();
+                return node.asShape().getStrokeColor();
             }
 
             @Override
             protected void setColorString(final Node<?> node, final String color)
             {
-                node.getAttributes().setStrokeColor(color);
+                node.asShape().setStrokeColor(color);
             }
 
             @Override
@@ -374,7 +381,7 @@ public interface AnimationProperty
             }
         }
 
-        private static abstract class AbstractStringColorAnimationProperty implements AnimationProperty
+        private abstract static class AbstractStringColorAnimationProperty implements AnimationProperty
         {
             private final String    m_target;
 
@@ -506,11 +513,7 @@ public interface AnimationProperty
             @Override
             public boolean init(final Node<?> node)
             {
-                if ((node != null) && (m_calc != null))
-                {
-                    return true;
-                }
-                return false;
+                return (node != null) && (m_calc != null) ? true : false;
             }
 
             @Override
@@ -520,10 +523,8 @@ public interface AnimationProperty
 
                 if (posn != null)
                 {
-                    node.getAttributes().put(Attribute.X.getProperty(), posn.getX());
-
-                    node.getAttributes().put(Attribute.Y.getProperty(), posn.getY());
-
+                    node.setX(posn.getX());
+                    node.setY(posn.getY());
                     return true;
                 }
                 return false;
@@ -589,7 +590,8 @@ public interface AnimationProperty
             @Override
             public boolean apply(final Node<?> node, final double percent)
             {
-                node.getAttributes().put(m_attribute.getProperty(), (m_origin + ((m_target - m_origin) * percent)));
+                JsPropertyMap<Object> nodeMap  = Js.uncheckedCast(node);
+                nodeMap.set(m_attribute.getProperty(),  (m_origin + ((m_target - m_origin) * percent)));
 
                 return true;
             }
@@ -637,7 +639,9 @@ public interface AnimationProperty
                 {
                     m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
 
-                    m_origin = node.getAttributes().getDouble(m_attribute.getProperty());
+                    JsPropertyMap<Object> nodeMap  = Js.uncheckedCast(node);
+
+                    m_origin = Js.coerceToDouble(nodeMap.get(m_attribute.getProperty()));
 
                     return true;
                 }
@@ -647,7 +651,8 @@ public interface AnimationProperty
             @Override
             public boolean apply(final Node<?> node, final double percent)
             {
-                node.getAttributes().put(m_attribute.getProperty(), (m_origin + ((m_target - m_origin) * percent)));
+                JsPropertyMap<Object> nodeMap  = Js.uncheckedCast(node);
+                nodeMap.set(m_attribute.getProperty(),  (m_origin + ((m_target - m_origin) * percent)));
 
                 return true;
             }
@@ -740,7 +745,9 @@ public interface AnimationProperty
                 {
                     value = m_maxval;
                 }
-                node.getAttributes().put(m_attribute.getProperty(), value);
+
+                JsPropertyMap<Object> nodeMap  = Js.uncheckedCast(node);
+                nodeMap.set(m_attribute.getProperty(),  value);
 
                 return true;
             }
@@ -805,9 +812,11 @@ public interface AnimationProperty
                 {
                     m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
 
-                    if (node.getAttributes().isDefined(m_attribute))
+                    JsPropertyMap<Object> nodeMap  = Js.uncheckedCast(node);
+
+                    if (nodeMap.has(m_attribute.getProperty()))
                     {
-                        m_origin = node.getAttributes().getDouble(m_attribute.getProperty());
+                        m_origin = Js.coerceToDouble(nodeMap.get(m_attribute.getProperty()));
                     }
                     else
                     {
@@ -847,7 +856,8 @@ public interface AnimationProperty
                 {
                     value = m_maxval;
                 }
-                node.getAttributes().put(m_attribute.getProperty(), value);
+                JsPropertyMap<Object> nodeMap  = Js.uncheckedCast(node);
+                nodeMap.set(m_attribute.getProperty(),  value);
 
                 return true;
             }
@@ -901,7 +911,9 @@ public interface AnimationProperty
                 {
                     m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
 
-                    final Point2D orig = node.getAttributes().getPoint2D(m_attribute.getProperty());
+                    JsPropertyMap<Object> nodeMap  = Js.uncheckedCast(node);
+
+                    final Point2D orig = Js.uncheckedCast(nodeMap.get(m_attribute.getProperty()));
 
                     if (null == orig)
                     {
@@ -923,7 +935,8 @@ public interface AnimationProperty
             @Override
             public boolean apply(final Node<?> node, final double percent)
             {
-                node.getAttributes().putPoint2D(m_attribute.getProperty(), new Point2D(m_orig_x + ((m_targ_x - m_orig_x) * percent), m_orig_y + ((m_targ_y - m_orig_y) * percent)));
+                JsPropertyMap<Object> nodeMap  = Js.uncheckedCast(node);
+                nodeMap.set(m_attribute.getProperty(),  new Point2D(m_orig_x + ((m_targ_x - m_orig_x) * percent), m_orig_y + ((m_targ_y - m_orig_y) * percent)));
 
                 return true;
             }
@@ -977,7 +990,9 @@ public interface AnimationProperty
                 {
                     m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
 
-                    final Point2D orig = node.getAttributes().getPoint2D(m_attribute.getProperty());
+                    JsPropertyMap<Object> nodeMap  = Js.uncheckedCast(node);
+
+                    final Point2D orig = Js.uncheckedCast(nodeMap.get(m_attribute.getProperty()));
 
                     if (null == orig)
                     {
@@ -999,7 +1014,8 @@ public interface AnimationProperty
             @Override
             public boolean apply(final Node<?> node, final double percent)
             {
-                node.getAttributes().putPoint2D(m_attribute.getProperty(), new Point2D(m_orig_x + ((m_targ_x - m_orig_x) * percent), m_orig_y + ((m_targ_y - m_orig_y) * percent)));
+                JsPropertyMap<Object> nodeMap  = Js.uncheckedCast(node);
+                nodeMap.set(m_attribute.getProperty(),  new Point2D(m_orig_x + ((m_targ_x - m_orig_x) * percent), m_orig_y + ((m_targ_y - m_orig_y) * percent)));
 
                 return true;
             }

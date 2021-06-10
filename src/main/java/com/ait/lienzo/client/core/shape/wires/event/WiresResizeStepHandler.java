@@ -16,7 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.wires.event;
 
-public interface WiresResizeStepHandler extends WiresEventHandler
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
+
+public interface WiresResizeStepHandler extends EventHandler
 {
     public void onShapeResizeStep(WiresResizeStepEvent event);
 }

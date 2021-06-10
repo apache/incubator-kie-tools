@@ -16,7 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.wires.event;
 
-public interface WiresConnectorPointsChangedHandler extends WiresEventHandler
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
+
+public interface WiresConnectorPointsChangedHandler extends EventHandler
 {
     public void onPointsChanged(WiresConnectorPointsChangedEvent event);
 }

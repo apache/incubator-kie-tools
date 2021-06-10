@@ -22,6 +22,7 @@ import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.BoundsProvider;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
+import elemental2.dom.HTMLDivElement;
 
 public class ScalablePanel extends LienzoBoundsPanel
 {
@@ -29,7 +30,7 @@ public class ScalablePanel extends LienzoBoundsPanel
 
     public ScalablePanel(final BoundsProvider layerBoundsProvider)
     {
-        this(new LienzoPanelImpl(),
+        this(LienzoFixedPanel.newPanel(),
              layerBoundsProvider);
     }
 
@@ -37,7 +38,7 @@ public class ScalablePanel extends LienzoBoundsPanel
                          final int width,
                          final int height)
     {
-        this(new LienzoPanelImpl(width, height),
+        this(LienzoFixedPanel.newPanel(width, height),
              layerBoundsProvider);
         setDefaultBounds(Bounds.relativeBox(width, height));
     }
@@ -47,7 +48,6 @@ public class ScalablePanel extends LienzoBoundsPanel
     {
         super(panel,
               layerBoundsProvider);
-        add(getLienzoPanel());
     }
 
     @Override
@@ -63,8 +63,8 @@ public class ScalablePanel extends LienzoBoundsPanel
         final Layer layer = getLayer();
         if (null != layer)
         {
-            final double  width    = getLienzoPanel().getWidthPx();
-            final double  height   = getLienzoPanel().getHeightPx();
+            final double  width    = getLienzoPanel().getWidePx();
+            final double  height   = getLienzoPanel().getHighPx();
             final Bounds  current  = getBounds();
             final double  toWidth  = current.getX() + current.getWidth();
             final double  toHeight = current.getY() + current.getHeight();
@@ -96,7 +96,7 @@ public class ScalablePanel extends LienzoBoundsPanel
                 factorY = factor;
             }
             final Transform transform = new Transform();
-            transform.scale(1 / factorX, 1 / factorY);
+            transform.scaleWithXY(1 / factorX, 1 / factorY);
             getLayer().getViewport().setTransform(transform);
         }
     }
@@ -109,5 +109,10 @@ public class ScalablePanel extends LienzoBoundsPanel
         return new double[]{
                 width > 0 ? targetWidth / width : 1,
                 height > 0 ? targetHeight / height : 1};
+    }
+
+    @Override
+    public HTMLDivElement getElement() {
+        return getLienzoPanel().getElement();
     }
 }

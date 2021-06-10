@@ -30,35 +30,50 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.SpriteBehaviorMap;
-import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.ait.tooling.nativetools.client.collection.MetaData;
-import com.google.gwt.dom.client.ImageElement;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
+import com.ait.lienzo.tools.client.Timer;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.Timer;
+import elemental2.dom.HTMLImageElement;
+import jsinterop.annotations.JsProperty;
 
 public class Sprite extends Shape<Sprite>
 {
-    private int                 m_index  = 0;
+    private int                    m_index  = 0;
 
-    private BoundingBox[]       m_frames = null;
+    private BoundingBox[]          m_frames = null;
 
-    private ImageElement        m_sprite = null;
+    private HTMLImageElement       m_sprite = null;
 
-    private SpriteLoadedHandler m_loaded = null;
+    private SpriteLoadedHandler    m_loaded = null;
 
-    private SpriteOnTickHandler m_ontick = null;
+    private SpriteOnTickHandler    m_ontick = null;
 
-    private SpriteOnRollHandler m_onroll = null;
+    private SpriteOnRollHandler    m_onroll = null;
 
-    private boolean             m_paused = true;
+    private boolean                m_paused = true;
 
-    private boolean             m_inited = false;
+    private boolean                m_inited = false;
 
-    private Timer               m_ticker = null;
+    private Timer                  m_ticker = null;
+
+    @JsProperty
+    private String                 url;
+
+    @JsProperty
+    private boolean                autoPlay;
+
+    @JsProperty
+    private double                 tickRate;
+
+    @JsProperty
+    private String                 spriteBehavior;
+
+    @JsProperty
+    private SpriteBehaviorMap      spriteBehaviorMap;
+
+    @JsProperty
+    private ImageSerializationMode imageSerializationMode;
 
     public Sprite(final String url, double rate, SpriteBehaviorMap bmap, String behavior)
     {
@@ -69,7 +84,7 @@ public class Sprite extends Shape<Sprite>
         new ImageLoader(url)
         {
             @Override
-            public void onImageElementLoad(final ImageElement elem)
+            public void onImageElementLoad(final HTMLImageElement elem)
             {
                 m_sprite = elem;
 
@@ -96,7 +111,7 @@ public class Sprite extends Shape<Sprite>
         new ImageLoader(resource)
         {
             @Override
-            public void onImageElementLoad(final ImageElement elem)
+            public void onImageElementLoad(final HTMLImageElement elem)
             {
                 m_sprite = elem;
 
@@ -114,11 +129,11 @@ public class Sprite extends Shape<Sprite>
         };
     }
 
-    public Sprite(ImageElement sprite, double rate, SpriteBehaviorMap bmap, String behavior)
+    public Sprite(HTMLImageElement sprite, double rate, SpriteBehaviorMap bmap, String behavior)
     {
         super(ShapeType.SPRITE);
 
-        setURL(sprite.getSrc()).setTickRate(rate).setSpriteBehaviorMap(bmap).setSpriteBehavior(behavior);
+        setURL(sprite.src).setTickRate(rate).setSpriteBehaviorMap(bmap).setSpriteBehavior(behavior);
 
         m_sprite = sprite;
 
@@ -126,11 +141,6 @@ public class Sprite extends Shape<Sprite>
         {
             m_loaded.onSpriteLoaded(this);
         }
-    }
-
-    public Sprite(JSONObject node, ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.SPRITE, node, ctx);
     }
 
     Sprite load()
@@ -149,7 +159,7 @@ public class Sprite extends Shape<Sprite>
             new ImageLoader(url)
             {
                 @Override
-                public void onImageElementLoad(final ImageElement elem)
+                public void onImageElementLoad(final HTMLImageElement elem)
                 {
                     m_sprite = elem;
 
@@ -184,33 +194,33 @@ public class Sprite extends Shape<Sprite>
 
             high = Math.max(high, bbox.getHeight());
         }
-        return new BoundingBox(0, 0, wide, high);
+        return BoundingBox.fromDoubles(0, 0, wide, high);
     }
 
     public final String getURL()
     {
-        return getAttributes().getURL();
+        return this.url;
     }
 
     public final Sprite setURL(String url)
     {
-        if ((null == url) || (url.trim().isEmpty()))
+        if (null == url || (url = url.trim()).isEmpty())
         {
             throw new NullPointerException("url is null or empty");
         }
-        getAttributes().setURL(url);
+        this.url = url;
 
         return this;
     }
 
     public final double getTickRate()
     {
-        return getAttributes().getTickRate();
+        return this.tickRate;
     }
 
     public final Sprite setTickRate(double rate)
     {
-        getAttributes().setTickRate(rate);
+        this.tickRate = rate;
 
         if (isPlaying())
         {
@@ -221,9 +231,10 @@ public class Sprite extends Shape<Sprite>
         return this;
     }
 
+
     public final SpriteBehaviorMap getSpriteBehaviorMap()
     {
-        return getAttributes().getSpriteBehaviorMap();
+        return this.spriteBehaviorMap;
     }
 
     public final Sprite setSpriteBehaviorMap(SpriteBehaviorMap bmap)
@@ -232,11 +243,11 @@ public class Sprite extends Shape<Sprite>
         {
             throw new NullPointerException("SpriteBehaviorMap is null");
         }
-        getAttributes().setSpriteBehaviorMap(bmap);
+        this.spriteBehaviorMap = bmap;
 
         String behavior = getSpriteBehavior();
 
-        if ((null != behavior) && (false == behavior.trim().isEmpty()))
+        if ((null != behavior) && (!behavior.trim().isEmpty()))
         {
             m_index = 0;
 
@@ -247,19 +258,18 @@ public class Sprite extends Shape<Sprite>
 
     public final String getSpriteBehavior()
     {
-        return getAttributes().getSpriteBehavior();
+        return this.spriteBehavior;
     }
 
     public final Sprite setSpriteBehavior(String behavior)
     {
-        if ((null == behavior) || (behavior.trim().isEmpty()))
+        if ((null == behavior) || ((behavior = behavior.trim()).isEmpty()))
         {
             throw new NullPointerException("behavior is null or empty");
         }
-        getAttributes().setSpriteBehavior(behavior);
+        this.spriteBehavior = behavior;
 
         SpriteBehaviorMap bmap = getSpriteBehaviorMap();
-
         if (null != bmap)
         {
             m_index = 0;
@@ -271,31 +281,32 @@ public class Sprite extends Shape<Sprite>
 
     public final Sprite setSerializationMode(ImageSerializationMode mode)
     {
-        getAttributes().setSerializationMode(mode);
+        this.imageSerializationMode = mode;
 
         return this;
     }
 
     public final ImageSerializationMode getSerializationMode()
     {
-        return getAttributes().getSerializationMode();
+        return imageSerializationMode;
     }
+
 
     public final Sprite setAutoPlay(boolean play)
     {
-        getAttributes().setAutoPlay(play);
+        this.autoPlay = play;
 
         return this;
     }
 
     public final boolean isAutoPlay()
     {
-        return getAttributes().isAutoPlay();
+        return this.autoPlay;
     }
 
     public final Sprite play()
     {
-        if (false == isPlaying())
+        if (!isPlaying())
         {
             if ((null != m_frames) && (null != m_sprite) && (m_index < m_frames.length))
             {
@@ -372,11 +383,11 @@ public class Sprite extends Shape<Sprite>
 
     public final boolean isPlaying()
     {
-        return (false == m_paused);
+        return (!m_paused);
     }
 
     @Override
-    protected boolean prepare(Context2D context, Attributes attr, double alpha)
+    protected boolean prepare(Context2D context, double alpha)
     {
         if ((null != m_frames) && (null != m_sprite) && (m_index < m_frames.length))
         {
@@ -384,11 +395,11 @@ public class Sprite extends Shape<Sprite>
 
             if (null != bbox)
             {
-                if (false == m_inited)
+                if (!m_inited)
                 {
                     m_inited = true;
 
-                    if (attr.isAutoPlay())
+                    if (isAutoPlay())
                     {
                         play();
                     }
@@ -445,38 +456,6 @@ public class Sprite extends Shape<Sprite>
     }
 
     @Override
-    public JSONObject toJSONObject()
-    {
-        JSONObject attr = new JSONObject(getAttributes().getJSO());
-
-        if (getSerializationMode() == ImageSerializationMode.DATA_URL)
-        {
-            String url = getURL();
-
-            if (false == url.startsWith("data:"))
-            {
-                attr.put("url", new JSONString(ScratchPad.toDataURL(m_sprite)));
-            }
-        }
-        JSONObject object = new JSONObject();
-
-        object.put("type", new JSONString(getShapeType().getValue()));
-
-        if (hasMetaData())
-        {
-            final MetaData meta = getMetaData();
-
-            if (false == meta.isEmpty())
-            {
-                object.put("meta", new JSONObject(meta.getJSO()));
-            }
-        }
-        object.put("attributes", attr);
-
-        return object;
-    }
-
-    @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
         return asAttributes(Attribute.URL, Attribute.SPRITE_BEHAVIOR_MAP, Attribute.SPRITE_BEHAVIOR);
@@ -502,12 +481,6 @@ public class Sprite extends Shape<Sprite>
         }
 
         @Override
-        public Sprite create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new Sprite(node, ctx);
-        }
-
-        @Override
         public boolean isPostProcessed()
         {
             return true;
@@ -516,29 +489,24 @@ public class Sprite extends Shape<Sprite>
         @Override
         public void process(IJSONSerializable<?> node, ValidationContext ctx) throws ValidationException
         {
-            if (false == (node instanceof Sprite))
+            if (!(node instanceof Sprite))
             {
                 return;
             }
             Sprite self = (Sprite) node;
 
-            if (false == self.isLoaded())
+            if (!self.isLoaded())
             {
                 self.load();
 
-                self.onLoaded(new SpriteLoadedHandler()
-                {
-                    @Override
-                    public void onSpriteLoaded(Sprite sprite)
+                self.onLoaded(sprite -> {
+                    if (sprite.isLoaded() && sprite.isVisible())
                     {
-                        if (sprite.isLoaded() && sprite.isVisible())
-                        {
-                            Layer layer = sprite.getLayer();
+                        Layer layer = sprite.getLayer();
 
-                            if ((null != layer) && (null != layer.getViewport()))
-                            {
-                                layer.batch();
-                            }
+                        if ((null != layer) && (null != layer.getViewport()))
+                        {
+                            layer.batch();
                         }
                     }
                 });

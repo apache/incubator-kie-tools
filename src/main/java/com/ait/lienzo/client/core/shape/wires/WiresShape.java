@@ -19,7 +19,8 @@ package com.ait.lienzo.client.core.shape.wires;
 import java.util.Map;
 import java.util.Objects;
 
-import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
+import com.ait.lienzo.tools.client.event.HandlerManager;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Text;
@@ -37,9 +38,7 @@ import com.ait.lienzo.client.core.shape.wires.layout.label.LabelLayout;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
 
 
 public class WiresShape extends WiresContainer
@@ -69,12 +68,11 @@ public class WiresShape extends WiresContainer
         this.m_innerLayoutContainer = layoutContainer;
         this.m_ctrls = null;
         init();
-
     }
 
-    WiresShape(final MultiPath path, final LayoutContainer layoutContainer, final HandlerManager manager, final HandlerRegistrationManager registrationManager, final IAttributesChangedBatcher attributesChangedBatcher)
+    WiresShape(final MultiPath path, final LayoutContainer layoutContainer, final HandlerManager manager, final HandlerRegistrationManager registrationManager)
     {
-        super(layoutContainer.getGroup(), manager, registrationManager, attributesChangedBatcher);
+        super(layoutContainer.getGroup(), manager, registrationManager);
         this.m_drawnObject = path;
         this.m_ctrls = null;
         this.m_innerLayoutContainer = layoutContainer;
@@ -220,13 +218,10 @@ public class WiresShape extends WiresContainer
         Objects.requireNonNull(handler);
 
         return getHandlerManager().addHandler(WiresResizeEndEvent.TYPE,
-                                              new WiresResizeEndHandler() {
-                                                  @Override
-                                                  public void onShapeResizeEnd(WiresResizeEndEvent event) {
-                                                      handler.onShapeResizeEnd(event);
-                                                      m_innerLayoutContainer.refresh();
-                                                      refresh();
-                                                  }
+                                              (WiresResizeEndHandler) event -> {
+                                                  handler.onShapeResizeEnd(event);
+                                                  m_innerLayoutContainer.refresh();
+                                                  refresh();
                                               });
     }
 
@@ -318,7 +313,8 @@ public class WiresShape extends WiresContainer
         return m_innerLayoutContainer;
     }
 
-    @Override public boolean equals(Object o)
+    @Override
+    public boolean equals(Object o)
     {
         if (this == o)
         {
@@ -334,7 +330,8 @@ public class WiresShape extends WiresContainer
         return getGroup().uuid().equals(that.getGroup().uuid());
     }
 
-    @Override public int hashCode()
+    @Override
+    public int hashCode()
     {
         return getGroup().uuid().hashCode();
     }

@@ -16,11 +16,12 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONObject;
+import elemental2.core.Global;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
-public final class PathPartEntryJSO extends JavaScriptObject
+@JsType
+public class PathPartEntryJSO
 {
     public static final int UNDEFINED_PATH_PART        = 0;
 
@@ -38,38 +39,47 @@ public final class PathPartEntryJSO extends JavaScriptObject
 
     public static final int CANVAS_ARCTO_ABSOLUTE      = 7;
 
-    public static final native PathPartEntryJSO make(int c, NFastDoubleArrayJSO p)
-    /*-{
-        return {
-            command : c,
-            points : p
-        };
-    }-*/;
+    @JsProperty
+    private int command;
 
-    protected PathPartEntryJSO()
+    @JsProperty
+    private double[] points;
+
+    public static final PathPartEntryJSO make(int command, double[] points)
     {
+        return new PathPartEntryJSO(command, points);
+    }
+
+    public PathPartEntryJSO(int command, double[] points)
+    {
+        this.command = command;
+        this.points = points;
     }
 
     public final String toJSONString()
     {
-        return new JSONObject(this).toString();
+        return Global.JSON.stringify(this);
     }
 
-    public final native int getCommand()
-    /*-{
+    public final int getCommand()
+    {
         return this.command;
-    }-*/;
+    }
 
-    public final native NFastDoubleArrayJSO getPoints()
-    /*-{
+    public final double[] getPoints()
+    {
         return this.points;
-    }-*/;
+    }
 
     public final PathPartEntryJSO copy()
     {
         int command = getCommand();
 
-        NFastDoubleArrayJSO points = getPoints().copy();
+        double[] cp = new double[points.length];
+        for (int i = 0; i < points.length; i++ )
+        {
+            cp[i] = points[i];
+        }
 
         return make(command, points);
     }

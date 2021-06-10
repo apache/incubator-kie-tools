@@ -27,12 +27,6 @@ public interface ITextWrapper
 
     BoundingBox getBoundingBox();
 
-    void drawString(final Context2D context, final Attributes attr, final IDrawString drawCommand);
-
-    interface Supplier<T> {
-
-        T get();
-
-    }
+    void drawString(final Context2D context, final IDrawString drawCommand);
 
 }

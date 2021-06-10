@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.shape;
 
 import java.util.ArrayList;
+import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -57,10 +58,9 @@ public class TextBoundsAndLineBreaksWrap extends TextBoundsWrap {
 
     @Override
     public void drawString(final Context2D context,
-                           final Attributes attr,
                            final IDrawString drawCommand) {
         final BoundingBox wrapBoundaries = getWrapBoundaries();
-        final String[] textLines = attr.getText().split("\\r?\\n");
+        final String[] textLines = text.getText().split("\\r?\\n");
         if (textLines.length < 1) {
             return;
         }
@@ -111,7 +111,7 @@ public class TextBoundsAndLineBreaksWrap extends TextBoundsWrap {
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
             int toPad = (int) Math.round((wrapBoundaries.getWidth() - getBoundingBoxForString(line).getWidth()) / getBoundingBoxForString(" ").getWidth());
-            line = TextUtils.padString(line,
+            line = textUtils.padString(line,
                                        line.length() + toPad,
                                        ' ',
                                        textAlignSupplier.get());

@@ -19,11 +19,12 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONObject;
+
+import elemental2.core.Uint8ClampedArray;
+import elemental2.dom.ImageData;
+import jsinterop.base.Js;
 
 /**
  * A class that allows for easy creation of a Light Gray Scale Image Filter.
@@ -35,7 +36,7 @@ public class EdgeDetectImageDataFilter extends AbstractImageDataFilter<EdgeDetec
         super(ImageFilterType.EdgeDetectImageDataFilterType);
     }
 
-    protected EdgeDetectImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected EdgeDetectImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
     {
         super(ImageFilterType.EdgeDetectImageDataFilterType, node, ctx);
     }
@@ -49,75 +50,81 @@ public class EdgeDetectImageDataFilter extends AbstractImageDataFilter<EdgeDetec
         }
         if (copy)
         {
-            source = source.copy();
+            source = ImageDataUtil.copy(source);
         }
-        if (false == isActive())
+        if (!isActive())
         {
             return source;
         }
-        final CanvasPixelArray data = source.getData();
+        final Uint8ClampedArray data = source.data;
 
         if (null == data)
         {
             return source;
         }
-        ImageData result = source.create();
+        ImageData result = ImageDataUtil.create(source);
 
-        filter_(data, result.getData(), source.getWidth(), source.getHeight());
+        filter_(data, result.data, source.width, source.height);
 
         return result;
     }
 
-    private final native void filter_(JavaScriptObject data, JavaScriptObject buff, int w, int h)
-    /*-{
-		var hmap = [ -1, -2, -1, 0, 0, 0, 1, 2, 1 ];
-		var vmap = [ -1, 0, 1, -2, 0, 2, -1, 0, 1 ];
-		for (var y = 0; y < h; y++) {
-			for (var x = 0; x < w; x++) {
-				var p = (y * w + x) * 4;
-				var rh = 0;
-				gh = 0;
-				bh = 0;
-				var rv = 0;
-				gv = 0;
-				bv = 0;
-				for (var irow = -1; irow <= 1; irow++) {
-					var iy = y + irow;
-					var ioff;
+    private final void filter_(Uint8ClampedArray dataArray, Uint8ClampedArray buffArray, int w, int h)
+    {
+//        int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
+//        int[] buff = Uint8ClampedArray.ConstructorLengthUnionType.of(buffArray).asIntArray();
+
+        int[] data = Js.uncheckedCast(dataArray);
+        int[] buff = Js.uncheckedCast(buffArray);
+
+		int[] hmap = new int[] { -1, -2, -1, 0, 0, 0, 1, 2, 1 };
+        int[] vmap = new int[] { -1, 0, 1, -2, 0, 2, -1, 0, 1 };
+		for (int y = 0; y < h; y++) {
+			for (int x = 0; x < w; x++) {
+                int p = (y * w + x) * 4;
+                int rh = 0;
+                int gh = 0;
+                int bh = 0;
+                int rv = 0;
+                int gv = 0;
+                int bv = 0;
+				for (int irow = -1; irow <= 1; irow++) {
+                    int iy = y + irow;
+                    int ioff;
 					if ((iy >= 0) && (iy < h)) {
 						ioff = iy * w * 4;
 					} else {
 						ioff = y * w * 4;
 					}
-					var moff = 3 * (irow + 1) + 1;
-					for (var icol = -1; icol <= 1; icol++) {
-						var ix = x + icol;
+                    int moff = 3 * (irow + 1) + 1;
+					for (int icol = -1; icol <= 1; icol++) {
+                        int ix = x + icol;
 						if (!((ix >= 0) && (ix < w))) {
 							ix = x;
 						}
 						ix *= 4;
-						var f = ioff + ix;
-						var r = data[f];
-						var g = data[f + 1];
-						var b = data[f + 2];
-						var m = moff + icol;
-						var z = hmap[m];
-						var v = vmap[m];
-						rh += ((z * r) | 0);
-						bh += ((z * g) | 0);
-						gh += ((z * b) | 0);
-						rv += ((v * r) | 0);
-						gv += ((v * g) | 0);
-						bv += ((v * b) | 0);
+                        int f = ioff + ix;
+						double r = data[f];
+                        double g = data[f + 1];
+                        double b = data[f + 2];
+                        int m = moff + icol;
+						int z = hmap[m];
+                        int v = vmap[m];
+						rh += Js.coerceToInt(z * r);
+						bh += Js.coerceToInt(z * g);
+						gh += Js.coerceToInt(z * b);
+						rv += Js.coerceToInt(v * r);
+						gv += Js.coerceToInt(v * g);
+						bv += Js.coerceToInt(v * b);
 					}
 				}
-				buff[p] = ((Math.sqrt(rh * rh + rv * rv) / 1.8) | 0);
-				buff[p + 1] = ((Math.sqrt(gh * gh + gv * gv) / 1.8) | 0);
-				buff[p + 2] = ((Math.sqrt(bh * bh + bv * bv) / 1.8) | 0);
+				buff[p] = Js.coerceToInt(Math.sqrt(rh * rh + rv * rv) / 1.8);
+				buff[p + 1] = Js.coerceToInt((Math.sqrt(gh * gh + gv * gv) / 1.8));
+				buff[p + 2] = Js.coerceToInt((Math.sqrt(bh * bh + bv * bv) / 1.8));
 				buff[p + 3] = data[p + 3];
 			}
 		}
-    }-*/;
+    };
 
     @Override
     public IFactory<EdgeDetectImageDataFilter> getFactory()
@@ -130,12 +137,6 @@ public class EdgeDetectImageDataFilter extends AbstractImageDataFilter<EdgeDetec
         public EdgeDetectImageDataFilterFactory()
         {
             super(ImageFilterType.EdgeDetectImageDataFilterType);
-        }
-
-        @Override
-        public EdgeDetectImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new EdgeDetectImageDataFilter(node, ctx);
         }
     }
 }

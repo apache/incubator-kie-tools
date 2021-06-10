@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.BoundingBox.BoundingBoxJSO;
 
 public final class BoundingBoxPathClipper extends AbstractPathClipper
 {
@@ -30,7 +29,7 @@ public final class BoundingBoxPathClipper extends AbstractPathClipper
     {
         super(clip);
 
-        m_bbox = new BoundingBox((BoundingBoxJSO) getValue().cast());
+        m_bbox = BoundingBox.fromBoundingBox(getBoundBox());
     }
 
     public BoundingBoxPathClipper(final BoundingBox bbox)

@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.toolbox;
 
+import java.util.function.BiConsumer;
+
 import com.ait.lienzo.client.core.animation.AnimationCallback;
 import com.ait.lienzo.client.core.animation.AnimationProperties;
 import com.ait.lienzo.client.core.animation.AnimationProperty;
@@ -24,7 +26,6 @@ import com.ait.lienzo.client.core.animation.IAnimation;
 import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.tooling.common.api.java.util.function.BiConsumer;
 
 public class ToolboxVisibilityExecutors {
 

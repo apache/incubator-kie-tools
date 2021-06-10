@@ -16,9 +16,10 @@
 
 package com.ait.lienzo.client.core.shape.toolbox;
 
+import java.util.function.BiConsumer;
+
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.tooling.common.api.java.util.function.BiConsumer;
 
 public class GroupItem extends AbstractItem<GroupItem, Group> implements Item<GroupItem> {
 

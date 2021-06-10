@@ -16,8 +16,9 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONObject;
+import elemental2.core.Global;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * Class to be used to bound the dragging area of a {@link Shape} 
@@ -180,7 +181,7 @@ public final class DragBounds
 
     public final String toJSONString()
     {
-        return new JSONObject(m_jso).toString();
+        return Global.JSON.stringify(m_jso);
     }
 
     @Override
@@ -192,7 +193,7 @@ public final class DragBounds
     @Override
     public boolean equals(final Object other)
     {
-        if ((other == null) || (false == (other instanceof DragBounds)))
+        if ((other == null) || (!(other instanceof DragBounds)))
         {
             return false;
         }
@@ -209,97 +210,99 @@ public final class DragBounds
         return toJSONString().hashCode();
     }
 
-    public static final class DragBoundsJSO extends JavaScriptObject
+    @JsType
+    public static final class DragBoundsJSO
     {
-        static final native DragBoundsJSO make()
-        /*-{
-			return {};
-        }-*/;
+        @JsProperty
+        private Double x1;
 
-        static final native DragBoundsJSO make(double x1, double y1, double x2, double y2)
-        /*-{
-			return {
-				x1 : x1,
-				y1 : y1,
-				x2 : x2,
-				y2 : y2
-			};
-        }-*/;
+        @JsProperty
+        private Double y1;
+
+        @JsProperty
+        private Double x2;
+
+        @JsProperty
+        private Double y2;
+
+        static final DragBoundsJSO make()
+        {
+			return new DragBoundsJSO();
+        }
+
+        static DragBoundsJSO make(double x1, double y1, double x2, double y2)
+        {
+            DragBoundsJSO jso = new DragBoundsJSO();
+            jso.x1 = x1;
+            jso.y1 = y1;
+            jso.x2 = x2;
+            jso.y2 = y2;
+
+            return jso;
+        }
 
         protected DragBoundsJSO()
         {
         }
 
-        final native boolean isX1()
-        /*-{
-			if (this.x1 !== undefined) {
-				return true;
-			}
-			return false;
-        }-*/;
+        final boolean isX1()
+        {
+            return this.x1 != null;
+        }
 
-        final native boolean isX2()
-        /*-{
-			if (this.x2 !== undefined) {
-				return true;
-			}
-			return false;
-        }-*/;
+        final boolean isX2()
+        {
+            return this.x2 != null;
+        }
 
-        final native boolean isY1()
-        /*-{
-			if (this.y1 !== undefined) {
-				return true;
-			}
-			return false;
-        }-*/;
+        final boolean isY1()
+        {
+            return this.y1 != null;
+        }
 
-        final native boolean isY2()
-        /*-{
-			if (this.y2 !== undefined) {
-				return true;
-			}
-			return false;
-        }-*/;
+        final boolean isY2()
+        {
+            return this.y2 != null;
+        }
 
-        final native void setX1(double x1)
-        /*-{
+        final void setX1(double x1)
+        {
 			this.x1 = x1;
-        }-*/;
+        }
 
-        final native double getX1()
-        /*-{
+        final double getX1()
+        {
 			return this.x1;
-        }-*/;
+        }
 
-        final native void setX2(double x2)
-        /*-{
+        final void setX2(double x2)
+        {
 			this.x2 = x2;
-        }-*/;
+        }
 
-        final native double getX2()
-        /*-{
+        final double getX2()
+        {
 			return this.x2;
-        }-*/;
+        }
 
-        final native void setY1(double y1)
-        /*-{
+        final void setY1(double y1)
+        {
 			this.y1 = y1;
-        }-*/;
+        }
 
-        final native double getY1()
-        /*-{
+        final double getY1()
+        {
 			return this.y1;
-        }-*/;
+        }
 
-        final native void setY2(double y2)
-        /*-{
+        final void setY2(double y2)
+        {
 			this.y2 = y2;
-        }-*/;
+        }
 
-        final native double getY2()
-        /*-{
+        final double getY2()
+        {
 			return this.y2;
-        }-*/;
+        }
     }
 }

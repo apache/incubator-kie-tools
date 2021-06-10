@@ -503,7 +503,9 @@ public class Color implements IColor
      */
     public static final Color hex2RGB(final String hex)
     {
-        String r, g, b;
+        String r;
+        String g;
+        String b;
 
         final int len = hex.length();
 
@@ -758,7 +760,7 @@ public class Color implements IColor
     @Override
     public boolean equals(Object other)
     {
-        if (false == other instanceof Color)
+        if (!(other instanceof Color))
         {
             return false;
         }

@@ -16,14 +16,15 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.tooltip;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.toolbox.Positions;
 import com.ait.lienzo.client.core.shape.toolbox.items.AbstractPrimitiveItem;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.Direction;
-import com.ait.tooling.common.api.java.util.function.Consumer;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 
 public class PrimitiveTextTooltip
         extends AbstractPrimitiveItem<PrimitiveTextTooltip>
@@ -58,12 +59,7 @@ public class PrimitiveTextTooltip
                          final Tooltip tooltip,
                          final BoundingLocationExecutor locationExecutor) {
         this.tooltip = tooltip
-                .withText(new Consumer<Text>() {
-                    @Override
-                    public void accept(Text textPrim) {
-                        textPrim.setText(text);
-                    }
-                });
+                .withText((Consumer<Text>) textPrim -> textPrim.setText(text));
         this.locationExecutor = locationExecutor
                 .at(DEFAULT_AT);
         this.towards(DEFAULT_TOWARDS);

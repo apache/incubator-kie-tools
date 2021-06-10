@@ -71,8 +71,8 @@ public class LabelContainerLayout extends AbstractContainerLayout<LabelLayout> i
         switch (orientation)
         {
             case VERTICAL:
-                return new BoundingBox(boundaries.getMinY(), boundaries.getMinX(), boundaries.getMaxY(),
-                                       boundaries.getMaxX());
+                return BoundingBox.fromDoubles(boundaries.getMinY(), boundaries.getMinX(), boundaries.getMaxY(),
+                                               boundaries.getMaxX());
             case HORIZONTAL:
             default:
                 return boundaries;

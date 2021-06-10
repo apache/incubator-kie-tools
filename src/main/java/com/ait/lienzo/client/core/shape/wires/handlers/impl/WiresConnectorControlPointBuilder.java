@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.function.Function;
+
 import com.ait.lienzo.client.core.animation.AnimationProperties;
 import com.ait.lienzo.client.core.animation.AnimationProperty;
 import com.ait.lienzo.client.core.animation.AnimationTweener;
@@ -31,30 +33,29 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
-import com.ait.tooling.common.api.java.util.function.Function;
-import com.ait.tooling.common.api.java.util.function.Predicate;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Timer;
+import com.ait.lienzo.tools.client.Timer;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
+import java.util.function.Predicate;
 
 import static com.ait.lienzo.client.core.shape.AbstractMultiPointShape.DefaultMultiPointShapeHandleFactory.*;
 
 public class WiresConnectorControlPointBuilder
 {
-    private static final int    EXIT_DELAY                     = 150;
+    private static final int                                 EXIT_DELAY                     = 150;
 
-    private static final String DEFAULT_CP_BUILDER_SHAPE_COLOR = "#FF0000";
+    private static final String                              DEFAULT_CP_BUILDER_SHAPE_COLOR = "#FF0000";
 
-    private static final double NEW_CP_SCALE_FACTOR            = 1.5;
+    private static final double                              NEW_CP_SCALE_FACTOR            = 1.5;
 
-    private final Predicate<WiresConnector>           canHideControlPoints;
+    private final        Predicate<WiresConnector>           canHideControlPoints;
 
-    private final Predicate<WiresConnector>           canShowControlPoints;
+    private final        Predicate<WiresConnector>           canShowControlPoints;
 
-    private final WiresConnector                      connector;
+    private final        WiresConnector                      connector;
 
-    private final NFastArrayList<HandlerRegistration> registrations;
+    private final        NFastArrayList<HandlerRegistration> registrations;
 
     Arc              cpBuilderAnimationShape;
 
@@ -135,16 +136,9 @@ public class WiresConnectorControlPointBuilder
 
     public void scheduleControlPointBuildAnimation(final int delay)
     {
-        scheduleControlPointBuildAnimation(new Function<Shape<?>, IAnimationHandle>()
-        {
-            @Override
-            public IAnimationHandle apply(final Shape<?> shape)
-            {
-                return shape.animate(AnimationTweener.LINEAR,
-                                     AnimationProperties.toPropertyList(AnimationProperty.Properties.END_ANGLE(2 * Math.PI)),
-                                     delay);
-            }
-        });
+        scheduleControlPointBuildAnimation(shape -> shape.animate(AnimationTweener.LINEAR,
+                                                          AnimationProperties.toPropertyList(AnimationProperty.Properties.END_ANGLE(2 * Math.PI)),
+                                                          delay));
     }
 
     void scheduleControlPointBuildAnimation(final Function<Shape<?>, IAnimationHandle> animateTask)
@@ -290,33 +284,21 @@ public class WiresConnectorControlPointBuilder
     {
 
         register(manager,
-                 cp.addNodeMouseEnterHandler(new NodeMouseEnterHandler()
-                 {
-                     @Override
-                     public void onNodeMouseEnter(NodeMouseEnterEvent event)
-                     {
-                         destroyMousePointerCP();
-                         cancelExitTimer();
-                     }
+                 cp.addNodeMouseEnterHandler(event -> {
+                     destroyMousePointerCP();
+                     cancelExitTimer();
                  }));
 
         register(manager,
-                 cp.addNodeMouseExitHandler(new NodeMouseExitHandler()
-                 {
-                     @Override
-                     public void onNodeMouseExit(NodeMouseExitEvent event)
-                     {
-                         disable();
-                     }
-                 }));
+                 cp.addNodeMouseExitHandler(event -> disable()));
     }
 
     private Shape<?> createTransientControlHandle()
     {
         final Shape<?> pointHandleShape = new Circle(R0);
         getControl().getPointHandleDecorator().decorate(pointHandleShape, IShapeDecorator.ShapeState.INVALID);
-        pointHandleShape.getAttributes().setSelectionBoundsOffset(SELECTION_OFFSET);
-        pointHandleShape.getAttributes().setSelectionStrokeOffset(SELECTION_OFFSET);
+        pointHandleShape.setSelectionBoundsOffset(SELECTION_OFFSET);
+        pointHandleShape.setSelectionStrokeOffset(SELECTION_OFFSET);
         pointHandleShape.setFillBoundsForSelection(true);
         pointHandleShape.setFillShapeForSelection(true);
         pointHandleShape.setListening(true);

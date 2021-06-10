@@ -19,7 +19,7 @@ package com.ait.lienzo.client.core.shape.wires.layout.direction;
 import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.Direction;
 import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.Orientation;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.tooling.common.api.java.util.function.Function;
+import java.util.function.Function;
 
 public interface DirectionLayoutBuilder<A>
 {

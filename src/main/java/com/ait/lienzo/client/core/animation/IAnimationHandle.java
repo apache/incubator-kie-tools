@@ -28,11 +28,11 @@ import com.ait.lienzo.client.core.shape.Node;
  */
 public interface IAnimationHandle
 {
-    public IAnimationHandle run();
+    IAnimationHandle run();
 
-    public IAnimationHandle stop();
+    IAnimationHandle stop();
 
-    public Node<?> getNode();
+    Node<?> getNode();
 
-    public boolean isRunning();
+    boolean isRunning();
 }

@@ -22,7 +22,6 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.AttributeType;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.google.gwt.json.client.JSONObject;
 
 /**
  * IFactory provides meta information for serialization support.
@@ -43,34 +42,23 @@ public interface IFactory<T extends IJSONSerializable<T>>
      * Returns the type name that is used when serializing an object of this type.
      * <p>
      * See {@link ShapeType} and {@link NodeType} for the type names used by the Lienzo toolkit
-     * (and make sure you don't use the same names!)
+     * (and makeXY sure you don't use the same names!)
      * 
      * @return String e.g. "Circle" for the Circle class
      */
-    public String getTypeName();
-
-    /**
-     * Creates a new object of type T from a JSONObject.
-     * 
-     * @param node JSONObject
-     * @param ctx ValidationContext
-     * 
-     * @return T
-     * @throws ValidationException
-     */
-    public T create(JSONObject node, ValidationContext ctx) throws ValidationException;
+    String getTypeName();
 
     /**
      * Returns a collection of all the attributes that this type supports.
      * @return Collection&lt;Attribute&gt;
      */
-    public Collection<Attribute> getAttributeSheet();
+    Collection<Attribute> getAttributeSheet();
 
     /**
      * Returns a collection of the required attributes that this type supports.
      * @return Collection&lt;Attribute&gt;
      */
-    public Collection<Attribute> getRequiredAttributes();
+    Collection<Attribute> getRequiredAttributes();
 
     /**
      * Returns the {@link AttributeType} of the attribute with the specified 
@@ -79,9 +67,9 @@ public interface IFactory<T extends IJSONSerializable<T>>
      * @param attributeName
      * @return AttributeType
      */
-    public AttributeType getAttributeType(String attributeName);
+    AttributeType getAttributeType(String attributeName);
 
-    public void process(IJSONSerializable<?> node, ValidationContext ctx) throws ValidationException;
+    void process(IJSONSerializable<?> node, ValidationContext ctx) throws ValidationException;
 
-    public boolean isPostProcessed();
+    boolean isPostProcessed();
 }

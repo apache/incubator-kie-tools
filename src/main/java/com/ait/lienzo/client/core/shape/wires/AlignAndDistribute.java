@@ -18,11 +18,8 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.shape.IDrawable;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
@@ -120,11 +117,6 @@ public class AlignAndDistribute
         return prim.getComputedBoundingPoints().getBoundingBox();
     }
 
-    public static Attributes getAttributes(IPrimitive<?> prim)
-    {
-        return prim.getAttributes();
-    }
-
     public double getStrokeWidth()
     {
         return m_alignmentCallback.getStrokeWidth();
@@ -196,11 +188,10 @@ public class AlignAndDistribute
 
         AlignAndDistributeControl handler = m_shapes.get(uuid);
 
-        // only add if the group has not already been added
+        // only addBoundingBox if the group has not already been added
         if (null == handler)
         {
-            List<Attribute> attrs = group.getBoundingBoxAttributes();
-            handler = new AlignAndDistributeControlImpl((IPrimitive<?>) group, this, m_alignmentCallback, attrs);
+            handler = new AlignAndDistributeControlImpl((IPrimitive<?>) group, this, m_alignmentCallback);
             m_shapes.put(uuid, handler);
         }
         return handler;
@@ -298,7 +289,7 @@ public class AlignAndDistribute
             AlignAndDistributeControl h1 = dist.getShape1();
             AlignAndDistributeControl h2 = dist.getShape2();
 
-            // make sure we don't remove from handler, or it will remove from the collection currently being iterated.
+            // makeXY sure we don't remove from handler, or it will remove from the collection currently being iterated.
             if (handler == h1)
             {
                 h2.getHorizontalDistributionEntries().remove(dist);
@@ -330,7 +321,7 @@ public class AlignAndDistribute
             AlignAndDistributeControl h1 = dist.getShape1();
             AlignAndDistributeControl h2 = dist.getShape2();
 
-            // make sure we don't remove from handler, or it will remove from the collection currently being iterated.
+            // makeXY sure we don't remove from handler, or it will remove from the collection currently being iterated.
             if (handler == h1)
             {
                 h2.getVerticalDistributionEntries().remove(dist);
@@ -1226,11 +1217,11 @@ public class AlignAndDistribute
 
             if (vertical)
             {
-                points = new Point2DArray(new Point2D(x0, y0), new Point2D(edge, y0), new Point2D(edge, y1), new Point2D(x1, y1));
+                points = Point2DArray.fromArrayOfPoint2D(new Point2D(x0, y0), new Point2D(edge, y0), new Point2D(edge, y1), new Point2D(x1, y1));
             }
             else
             {
-                points = new Point2DArray(new Point2D(x0, y0), new Point2D(x0, edge), new Point2D(x1, edge), new Point2D(x1, y1));
+                points = Point2DArray.fromArrayOfPoint2D(new Point2D(x0, y0), new Point2D(x0, edge), new Point2D(x1, edge), new Point2D(x1, y1));
             }
             PolyLine pline = (PolyLine) m_lines[index];
 
@@ -1286,7 +1277,7 @@ public class AlignAndDistribute
             }
             else
             {
-                line.setPoints(new Point2DArray(new Point2D(left, pos), new Point2D(right, pos)));
+                line.setPoints(Point2DArray.fromArrayOfPoint2D(new Point2D(left, pos), new Point2D(right, pos)));
             }
         }
 
@@ -1327,7 +1318,7 @@ public class AlignAndDistribute
             }
             else
             {
-                line.setPoints(new Point2DArray(new Point2D(pos, top), new Point2D(pos, bottom)));
+                line.setPoints(Point2DArray.fromArrayOfPoint2D(new Point2D(pos, top), new Point2D(pos, bottom)));
             }
         }
     }

@@ -24,7 +24,7 @@ import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.H
 import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.Orientation;
 import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.ReferencePosition;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.tooling.common.api.java.util.function.Function;
+import java.util.function.Function;
 
 public class HorizontalLayoutFactory
 {

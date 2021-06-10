@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.PathPartList;
-import com.ait.lienzo.client.core.types.PathPartList.PathPartListJSO;
 
 public final class PathPartListPathClipper extends AbstractPathClipper
 {
@@ -30,13 +29,13 @@ public final class PathPartListPathClipper extends AbstractPathClipper
     {
         super(clip);
 
-        if (null == getValue())
+        if (null == getPathPartList())
         {
             m_path = null;
         }
         else
         {
-            m_path = new PathPartList((PathPartListJSO) getValue().cast(), true);
+            m_path = PathPartList.make(getPathPartList().getJSO(), true);
         }
     }
 

@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.impl;
 
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.toolbox.items.AbstractDecoratedItem;
 import com.ait.lienzo.client.core.shape.toolbox.items.AbstractDecoratorItem;
@@ -23,7 +25,6 @@ import com.ait.lienzo.client.core.shape.toolbox.items.ActionItem;
 import com.ait.lienzo.client.core.shape.toolbox.items.DecoratedItem;
 import com.ait.lienzo.client.core.shape.toolbox.items.DecoratorItem;
 import com.ait.lienzo.client.core.shape.toolbox.items.ItemsToolbox;
-import com.ait.tooling.common.api.java.util.function.Consumer;
 
 public class ItemsToolboxHighlight {
 
@@ -90,25 +91,17 @@ public class ItemsToolboxHighlight {
     }
 
     public static void restore(final ItemsToolbox toolbox) {
-        consumeActions(toolbox, new Consumer<ActionItem>() {
-            @Override
-            public void accept(ActionItem action) {
-                action.enable();
-            }
-        });
+        consumeActions(toolbox, ActionItem::enable);
     }
 
     public void highlight(final DecoratedItem item) {
-        consumeActions(toolbox, new Consumer<ActionItem>() {
-            @Override
-            public void accept(ActionItem action) {
-                if (action == item) {
-                    action.enable();
-                    decorator.restore();
-                    decorator.highlight(action);
-                } else {
-                    action.disable();
-                }
+        consumeActions(toolbox, action -> {
+            if (action == item) {
+                action.enable();
+                decorator.restore();
+                decorator.highlight(action);
+            } else {
+                action.disable();
             }
         });
     }

@@ -16,12 +16,15 @@
 
 package com.ait.lienzo.client.core.mediator;
 
+import elemental2.dom.UIEvent;
+
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
-import com.google.gwt.event.shared.GwtEvent;
+import com.ait.lienzo.tools.client.event.INodeEvent.Type;
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
 
 /**
  * SwipeMouseZoomMediator zooms in or out when the user drags a
@@ -48,7 +51,7 @@ public class MouseSwipeZoomMediator extends AbstractMediator
 
     private boolean m_dragging     = false;
 
-    private Point2D m_zoomCenter   = new Point2D();
+    private Point2D m_zoomCenter   = new Point2D(0,0);
 
     public MouseSwipeZoomMediator()
     {
@@ -60,7 +63,7 @@ public class MouseSwipeZoomMediator extends AbstractMediator
     }
 
     /**
-     * Sets the minimum scale of the viewport.
+     * Sets the minimum scaleWithXY of the viewport.
      * 
      * The default value is 0 (unlimited.)
      * 
@@ -72,7 +75,7 @@ public class MouseSwipeZoomMediator extends AbstractMediator
     }
 
     /**
-     * Sets the minimum scale of the viewport.
+     * Sets the minimum scaleWithXY of the viewport.
      * 
      * The default value is 0 (unlimited.)
      * 
@@ -87,7 +90,7 @@ public class MouseSwipeZoomMediator extends AbstractMediator
     }
 
     /**
-     * Sets the maximum scale of the viewport.
+     * Sets the maximum scaleWithXY of the viewport.
      * 
      * The default value is Double.MAX_VALUE (unlimited.)
      * 
@@ -99,7 +102,7 @@ public class MouseSwipeZoomMediator extends AbstractMediator
     }
 
     /**
-     * Sets the maximum scale of the viewport.
+     * Sets the maximum scaleWithXY of the viewport.
      * 
      * The default value is Double.MAX_VALUE (unlimited.)
      * 
@@ -175,35 +178,35 @@ public class MouseSwipeZoomMediator extends AbstractMediator
     }
 
     @Override
-    public boolean handleEvent(final GwtEvent<?> event)
+    public <H extends EventHandler> boolean handleEvent(Type<H> type, final UIEvent event, int x, int y)
     {
-        if (event.getAssociatedType() == NodeMouseMoveEvent.getType())
+        if (type == NodeMouseMoveEvent.getType())
         {
             if (m_dragging)
             {
-                onMouseMove((NodeMouseMoveEvent) event);
+                onMouseMove(x, y);
 
                 return true;
             }
             return false;
         }
-        else if (event.getAssociatedType() == NodeMouseDownEvent.getType())
+        else if (type == NodeMouseDownEvent.getType())
         {
             final IEventFilter filter = getEventFilter();
 
-            if ((null == filter) || (false == filter.isEnabled()) || (filter.test(event)))
+            if ((null == filter) || (!filter.isEnabled()) || (filter.test(event)))
             {
-                onMouseDown((NodeMouseDownEvent) event);
+                onMouseDown(x, y);
 
                 return true;
             }
             return false;
         }
-        else if (event.getAssociatedType() == NodeMouseUpEvent.getType())
+        else if (type == NodeMouseUpEvent.getType())
         {
             if (m_dragging)
             {
-                onMouseUp((NodeMouseUpEvent) event);
+                onMouseUp();
 
                 return true;
             }
@@ -211,23 +214,23 @@ public class MouseSwipeZoomMediator extends AbstractMediator
         return false;
     }
 
-    protected void onMouseDown(final NodeMouseDownEvent event)
+    protected void onMouseDown(int x, int y)
     {
-        m_start = new Point2D(event.getX(), event.getY());
+        m_start = new Point2D(x, y);
 
         m_dragging = true;
 
         getTransform().getInverse().transform(m_start, m_zoomCenter);
     }
 
-    protected void onMouseUp(final NodeMouseUpEvent event)
+    protected void onMouseUp()
     {
         m_dragging = false;
     }
 
-    protected void onMouseMove(final NodeMouseMoveEvent event)
+    protected void onMouseMove(int x, int y)
     {
-        double dx = event.getX() - m_start.getX();
+        double dx = x - y;
 
         double scaleDelta = (1.0 + (m_zoomFactor * dx * (m_rightZoomOut ? 1 : -1)));
 

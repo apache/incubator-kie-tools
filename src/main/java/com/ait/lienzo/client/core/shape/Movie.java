@@ -30,34 +30,28 @@ import com.ait.lienzo.client.core.image.ImageLoader;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterChain;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
-import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.MovieEndedHandler;
-import com.ait.lienzo.client.core.types.TextMetrics;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.MediaElement;
-import com.google.gwt.dom.client.VideoElement;
-import com.google.gwt.event.dom.client.EndedEvent;
-import com.google.gwt.event.dom.client.EndedHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONBoolean;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.media.client.Video;
-import com.google.gwt.media.dom.client.MediaError;
 import com.google.gwt.safehtml.shared.UriUtils;
-import com.google.gwt.user.client.ui.RootPanel;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLImageElement;
+import elemental2.dom.HTMLVideoElement;
+import elemental2.dom.MediaError;
+import elemental2.dom.TextMetrics;
+import jsinterop.annotations.JsProperty;
+import jsinterop.base.Js;
 
 /**
  * Movie provides a mechanism for viewing and controlling videos in a Canvas.
@@ -66,69 +60,109 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
 {
-    private static final int           MOVIE_ERROR_HIGH = 360;
+    private static final int               MOVIE_ERROR_HIGH = 360;
 
-    private static final int           MOVIE_ERROR_WIDE = 640;
+    private static final int               MOVIE_ERROR_WIDE = 640;
 
-    private boolean                    m_inits          = true;
+    private              boolean           m_inits          = true;
 
-    private boolean                    m_ended          = true;
+    private              boolean           m_ended          = true;
 
-    private boolean                    m_pause          = true;
+    private              boolean           m_pause          = true;
 
-    private boolean                    m_xorig          = false;
+    private              boolean           m_xorig          = false;
 
-    private String                     m_error          = null;
+    private              String            m_error          = null;
 
-    private ImageElement               m_postr          = null;
+    private              HTMLImageElement  m_postr          = null;
 
-    private MovieEndedHandler          m_onend          = null;
+    private              MovieEndedHandler m_onend          = null;
 
-    private final Video                m_video          = Video.createIfSupported();
+    private final        HTMLVideoElement  m_video          = Js.uncheckedCast(DomGlobal.document.createElement("video"));
 
-    private final MovieAnimation       m_animate;
+    private final        MovieAnimation       m_animate;
 
-    private final ImageDataFilterChain m_filters        = new ImageDataFilterChain();
+    private final        ImageDataFilterChain m_filters        = new ImageDataFilterChain();
 
-    private final ScratchPad           m_canvas         = new ScratchPad(0, 0);
+    private final        ScratchPad           m_canvas         = new ScratchPad(0, 0);
+
+    @JsProperty
+    private String                 url;
+
+    @JsProperty
+    private double width = -1;
+
+    @JsProperty
+    private double height = -1;
+
+    @JsProperty
+    private double volume = 0.5;
+
+    @JsProperty
+    private boolean autoPlay;
+
+    @JsProperty
+    private boolean loop;
+
+    @JsProperty
+    private  double playBackRate = 1.0;
+
+    @JsProperty
+    private boolean showPoster;
+
+
+    private TextUtils textUtils = new TextUtils();
+
+    public interface VideoElementOnLoad {
+        void onLoad(Movie movie, HTMLVideoElement elem);
+    }
+
+
+    /**
+     * Constructor. Creates an instance of a movie.
+     *
+     * @param url
+     */
+    public Movie(final String url)
+    {
+        this(url, (VideoElementOnLoad) null);
+    }
 
     /**
      * Constructor. Creates an instance of a movie.
      * 
      * @param url
      */
-    public Movie(final String url)
+    public Movie(final String url, VideoElementOnLoad onLoad)
     {
         super(ShapeType.MOVIE);
 
-        getAttributes().setURL(url);
+        this.url = url;
 
-        m_animate = doInitialize();
+        m_animate = doInitialize(onLoad);
     }
 
-    public Movie(final String url, final ImageDataFilter<?> filter, final ImageDataFilter<?>... filters)
+    public Movie(final String url, final ImageDataFilter<?>... filters)
+    {
+        this( url, (VideoElementOnLoad) null, filters);
+    }
+
+    public Movie(final String url, VideoElementOnLoad onLoad, final ImageDataFilter<?>... filters)
     {
         super(ShapeType.MOVIE);
 
-        getAttributes().setURL(url);
+        this.url = url;
 
-        m_animate = doInitialize();
+        m_animate = doInitialize(onLoad);
 
-        setFilters(filter, filters);
+        setFilters(filters);
     }
 
-    protected Movie(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.MOVIE, node, ctx);
-
-        m_animate = doInitialize();
-    }
-
-    private final MovieAnimation doInitialize()
+    private final MovieAnimation doInitialize(VideoElementOnLoad onLoad)
     {
         if (null != m_video)
         {
-            setErrorHandler(this, m_video.getVideoElement());
+            setErrorHandler(this, m_video);
 
             String url = getURL();
 
@@ -142,19 +176,25 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
             {
                 throw new NullPointerException("null or empty or invalid url");
             }
-            m_video.setSrc(url);
-
-            m_video.setLoop(isLoop());
-
-            m_video.setVisible(false);
-
-            m_video.setPlaybackRate(getPlaybackRate());
-
-            m_video.setPreload(MediaElement.PRELOAD_AUTO);
-
-            if (getAttributes().isDefined(Attribute.VOLUME))
+            if (onLoad != null)
             {
-                m_video.setVolume(getVolume());
+                m_video.onloadedmetadata = e -> { onLoad.onLoad(this, m_video); return null;};
+            }
+            m_video.src = url;
+
+            m_video.loop = isLoop();
+
+            ImageLoader.setVisible(m_video, false);
+
+            m_video.playbackRate = getPlaybackRate();
+
+            // @FIXME this property is missing from Elemental2, so used property map
+            //m_video.setPreload(MediaElement.PRELOAD_AUTO);
+            Js.asPropertyMap(m_video).set("preLoad", MediaElement.PRELOAD_AUTO);
+
+            if (getVolume() >= 0)
+            {
+                m_video.volume= getVolume();
             }
             setSizes();
 
@@ -166,12 +206,13 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
         }
     }
 
-    private final native void setErrorHandler(Movie movie, VideoElement element)
-    /*-{
-		element.onerror = function(e) {
-			movie.@com.ait.lienzo.client.core.shape.Movie::setErrorCode(I)(e.target.error.code);
+    private final void setErrorHandler(Movie movie, HTMLVideoElement element)
+    {
+		element.onerror = e -> {
+            movie.setErrorCode(((HTMLVideoElement)e.target).error.code);
+            return null;
 		};
-    }-*/;
+    }
 
     private final String getTextBestFit(final Context2D context, final String text, final int wide)
     {
@@ -181,7 +222,7 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
 
         String fm = LienzoCore.get().getDefaultFontFamily();
 
-        String tf = Text.getFontString(pt, TextUnit.PT, st, fm);
+        String tf = textUtils.getFontString(pt, TextUnit.PT, st, fm);
 
         context.save();
 
@@ -193,7 +234,7 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
 
             final TextMetrics tm = context.measureText(text);
 
-            if (tm.getWidth() < wide)
+            if (tm.width < wide)
             {
                 break;
             }
@@ -203,7 +244,7 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
             {
                 break;
             }
-            tf = Text.getFontString(pt, TextUnit.PT, st, fm);
+            tf = textUtils.getFontString(pt, TextUnit.PT, st, fm);
         }
         context.restore();
 
@@ -220,7 +261,7 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return new BoundingBox(0, 0, getWidth(), getHeight());
+        return BoundingBox.fromDoubles(0, 0, getWidth(), getHeight());
     }
 
     /**
@@ -230,7 +271,7 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final double alpha)
     {
         if (m_inits)
         {
@@ -247,7 +288,7 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
 
         if (null != m_error)
         {
-            if (false == context.isSelection())
+            if (!context.isSelection())
             {
                 if (wide < 1)
                 {
@@ -339,11 +380,11 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
 
             context.setGlobalAlpha(alpha);
 
-            if ((false == m_xorig) && (m_filters.isActive()))
+            if ((!m_xorig) && (m_filters.isActive()))
             {
                 try
                 {
-                    m_canvas.getContext().drawImage(m_video.getElement(), 0, 0, wide, high);
+                    m_canvas.getContext().drawImage(m_video, 0, 0, wide, high);
 
                     m_canvas.getContext().putImageData(m_filters.filter(m_canvas.getContext().getImageData(0, 0, wide, high), false), 0, 0);
 
@@ -354,16 +395,16 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
                     // We should only get an exception here if the URL is cross-origin, and getImageData() is basically a security exception.
                     // ...or other unknown bad things, either way, turn off filtering. DSJ 7/18/2014
 
-                    context.drawImage(m_video.getElement(), 0, 0, wide, high);
+                    context.drawImage(m_video, 0, 0, wide, high);
 
                     m_xorig = true;
 
-                    LienzoCore.get().error("ERROR: In Movie filtering " + m_video.getSrc() + " " + e.getMessage());
+                    LienzoCore.get().error("ERROR: In Movie filtering " + m_video.src + " " + e.getMessage());
                 }
             }
             else
             {
-                context.drawImage(m_video.getElement(), 0, 0, wide, high);
+                context.drawImage(m_video, 0, 0, wide, high);
             }
             context.restore();
         }
@@ -371,25 +412,25 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
     }
 
     @Override
-    public Movie setFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Movie setFilters(ImageDataFilter<?>... filters)
     {
-        m_filters.setFilters(filter, filters);
+        m_filters.setFilters(filters);
 
         return this;
     }
 
     @Override
-    public Movie addFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Movie addFilters(ImageDataFilter<?>... filters)
     {
-        m_filters.addFilters(filter, filters);
+        m_filters.addFilters(filters);
 
         return this;
     }
 
     @Override
-    public Movie removeFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Movie removeFilters(ImageDataFilter<?>... filters)
     {
-        m_filters.removeFilters(filter, filters);
+        m_filters.removeFilters(filters);
 
         return this;
     }
@@ -454,11 +495,11 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
      */
     public Movie setVolume(double volume)
     {
-        getAttributes().setVolume(volume);
+        this.volume = volume;
 
         if (null != m_video)
         {
-            m_video.setVolume(getVolume());
+            m_video.volume = volume;
         }
         return this;
     }
@@ -470,7 +511,7 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
      */
     public double getVolume()
     {
-        return getAttributes().getVolume();
+        return this.volume;
     }
 
     /**
@@ -480,7 +521,7 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
      */
     public String getURL()
     {
-        return getAttributes().getURL();
+        return this.url;
     }
 
     /**
@@ -490,12 +531,21 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
      */
     public Movie pause()
     {
-        if ((null != m_video) && (false == isPaused()))
+        if ((null != m_video) && (!isPaused()))
         {
             m_pause = true;
 
             m_video.pause();
         }
+        return this;
+    }
+
+    public Movie stop()
+    {
+        m_video.pause();
+        m_animate.stop();
+
+
         return this;
     }
 
@@ -512,15 +562,10 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
             {
                 final Movie movie = this;
 
-                Scheduler.get().scheduleDeferred(new ScheduledCommand()
-                {
-                    @Override
-                    public void execute()
+                Scheduler.get().scheduleDeferred(() -> {
+                    if (null != m_onend)
                     {
-                        if (null != m_onend)
-                        {
-                            m_onend.onEnded(movie);
-                        }
+                        m_onend.onEnded(movie);
                     }
                 });
             }
@@ -540,11 +585,11 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
      */
     public Movie setLoop(boolean loop)
     {
-        getAttributes().setLoop(loop);
+        this.loop = loop;
 
         if (null != m_video)
         {
-            m_video.setLoop(loop);
+            m_video.loop = loop;
         }
         return this;
     }
@@ -556,18 +601,18 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
      */
     public boolean isLoop()
     {
-        return getAttributes().isLoop();
+        return this.loop;
     }
 
     /**
      * Sets the width of this movie's display area
-     * 
+     *
      * @param wide
      * @return this Movie
      */
     public Movie setWidth(int wide)
     {
-        getAttributes().setWidth(wide);
+        this.width = wide;
 
         setSizes();
 
@@ -581,9 +626,9 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
      */
     public int getWidth()
     {
-        if (getAttributes().isDefined(Attribute.WIDTH))
+        if (width >= 0)
         {
-            int wide = (int) (getAttributes().getWidth() + 0.5);
+            int wide = (int) (width + 0.5);
 
             if (wide > 0)
             {
@@ -592,7 +637,7 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
         }
         if (null != m_video)
         {
-            return m_video.getVideoWidth();
+            return m_video.videoWidth;
         }
         return 0;
     }
@@ -605,7 +650,7 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
      */
     public Movie setHeight(int high)
     {
-        getAttributes().setHeight(high);
+        this.height = high;
 
         setSizes();
 
@@ -619,9 +664,9 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
      */
     public int getHeight()
     {
-        if (getAttributes().isDefined(Attribute.HEIGHT))
+        if (height >=0)
         {
-            int high = (int) (getAttributes().getHeight() + 0.5);
+            int high = (int) (height + 0.5);
 
             if (high > 0)
             {
@@ -630,49 +675,49 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
         }
         if (null != m_video)
         {
-            return m_video.getVideoHeight();
+            return m_video.videoHeight;
         }
         return 0;
     }
 
     public final Movie setPlaybackRate(double rate)
     {
-        getAttributes().setPlaybackRate(rate);
+        this.playBackRate = rate;
 
         if (null != m_video)
         {
-            m_video.setPlaybackRate(rate);
+            m_video.playbackRate = rate;
         }
         return this;
     }
 
     public final double getPlaybackRate()
     {
-        return getAttributes().getPlaybackRate();
+        return this.playBackRate;
     }
 
     public final Movie setAutoPlay(boolean play)
     {
-        getAttributes().setAutoPlay(play);
+        this.autoPlay = play;
 
         return this;
     }
 
     public final boolean isAutoPlay()
     {
-        return getAttributes().isAutoPlay();
+        return  this.autoPlay;
     }
 
     public final Movie setShowPoster(boolean show)
     {
-        getAttributes().setShowPoster(show);
+        this.showPoster = show;
 
         return this;
     }
 
     public final boolean isShowPoster()
     {
-        return getAttributes().isShowPoster();
+        return this.showPoster;
     }
 
     public final void play()
@@ -687,20 +732,29 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
         }
     }
 
+    // @FIXME this is temporary, while I wait for Elemental2 to be fixed
+    private static class MediaErrorWithInt
+    {
+        public static final int MEDIA_ERR_ABORTED = 1;
+        public static final int MEDIA_ERR_NETWORK = 2;
+        public static final int MEDIA_ERR_DECODE = 3;
+        public static final int MEDIA_ERR_SRC_NOT_SUPPORTED = 4;
+    }
+
     private final void setErrorCode(int code)
     {
         switch (code)
         {
-            case MediaError.MEDIA_ERR_ABORTED:
+            case MediaErrorWithInt.MEDIA_ERR_ABORTED:
                 m_error = MessageConstants.MESSAGES.moviePlaybackWasAborted();
                 break;
-            case MediaError.MEDIA_ERR_NETWORK:
+            case MediaErrorWithInt.MEDIA_ERR_NETWORK:
                 m_error = MessageConstants.MESSAGES.movieNetworkError();
                 break;
-            case MediaError.MEDIA_ERR_DECODE:
+            case MediaErrorWithInt.MEDIA_ERR_DECODE:
                 m_error = MessageConstants.MESSAGES.movieErrorInDecoding();
                 break;
-            case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+            case MediaErrorWithInt.MEDIA_ERR_SRC_NOT_SUPPORTED:
                 m_error = MessageConstants.MESSAGES.movieFormatNotSupported();
                 break;
         }
@@ -715,24 +769,24 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
     {
         if (null != m_video)
         {
-            MediaError status = m_video.getError();
+            MediaError status = m_video.error;
 
             if (status != null)
             {
-                setErrorCode(status.getCode());
+                setErrorCode(status.code);
             }
             else
             {
                 if (isShowPoster())
                 {
-                    final String url = m_video.getPoster();
+                    final String url = m_video.poster;
 
                     if (null != url)
                     {
                         new ImageLoader(url)
                         {
                             @Override
-                            public void onImageElementLoad(final ImageElement elem)
+                            public void onImageElementLoad(final HTMLImageElement elem)
                             {
                                 m_postr = elem;
                             }
@@ -762,46 +816,12 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
 
             final int high = getHeight();
 
-            m_video.setWidth(wide + "px");
+            m_video.width = wide;
 
-            m_video.setHeight(high + "px");
+            m_video.height = high;
 
             m_canvas.setPixelSize(wide, high);
         }
-    }
-
-    @Override
-    public JSONObject toJSONObject()
-    {
-        JSONObject object = super.toJSONObject();
-
-        ImageDataFilterChain chain = m_filters;
-
-        if ((null != chain) && (chain.size() > 0))
-        {
-            JSONArray filters = new JSONArray();
-
-            JSONObject filter = new JSONObject();
-
-            filter.put("active", JSONBoolean.getInstance(chain.isActive()));
-
-            for (ImageDataFilter<?> ifilter : chain.getFilters())
-            {
-                if (null != ifilter)
-                {
-                    JSONObject make = ifilter.toJSONObject();
-
-                    if (null != make)
-                    {
-                        filters.set(filters.size(), make);
-                    }
-                }
-            }
-            filter.put("filters", filters);
-
-            object.put("filter", filter);
-        }
-        return object;
     }
 
     @Override
@@ -812,15 +832,15 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
 
     private static final class MovieAnimation extends IndefiniteAnimation
     {
-        private HandlerRegistration m_watch = null;
+        private HandlerRegistration     m_watch = null;
 
-        private final Movie         m_movie;
+        private final Movie            m_movie;
 
-        private final Video         m_video;
+        private final HTMLVideoElement m_video;
 
         private boolean             m_start = true;
 
-        public MovieAnimation(final Movie movie, final Video video)
+        public MovieAnimation(final Movie movie, final HTMLVideoElement video)
         {
             super(null);
 
@@ -844,23 +864,22 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
         @Override
         public IAnimation doStart()
         {
-            RootPanel.get().add(m_video);
+            DomGlobal.document.body.appendChild(m_video);
 
             m_video.play();
 
             if (null == m_watch)
             {
-                m_watch = m_video.addEndedHandler(new EndedHandler()
+
+                m_video.onended = e ->
                 {
-                    @Override
-                    public void onEnded(EndedEvent event)
+
+                    if (!m_movie.isLoop())
                     {
-                        if (false == m_movie.isLoop())
-                        {
-                            m_movie.setEnded(true);
-                        }
+                        m_movie.setEnded(true);
                     }
-                });
+                    return null;
+                };
             }
             return draw();
         }
@@ -874,7 +893,7 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
         @Override
         public IAnimation doClose()
         {
-            RootPanel.get().remove(m_video);
+            m_video.remove();
 
             if (null != m_watch)
             {
@@ -913,7 +932,7 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
 
             if (null != layer)
             {
-                layer.batch();
+                layer.draw();
             }
             return this;
         }
@@ -940,34 +959,6 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
             addAttribute(Attribute.SHOW_POSTER);
 
             addAttribute(Attribute.PLAYBACK_RATE);
-        }
-
-        @Override
-        public Movie create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            Movie movie = new Movie(node, ctx);
-
-            JSONValue jval = node.get("filter");
-
-            if (null != jval)
-            {
-                JSONObject object = jval.isObject();
-
-                if (null != object)
-                {
-                    JSONDeserializer.get().deserializeFilters(movie, object, ctx);
-
-                    jval = object.get("active");
-
-                    JSONBoolean active = jval.isBoolean();
-
-                    if (null != active)
-                    {
-                        movie.setFiltersActive(active.booleanValue());
-                    }
-                }
-            }
-            return movie;
         }
     }
 }

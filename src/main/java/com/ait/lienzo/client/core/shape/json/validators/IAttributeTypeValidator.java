@@ -16,13 +16,11 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-import com.google.gwt.json.client.JSONValue;
-
 public interface IAttributeTypeValidator
 {
     public boolean isIgnored();
 
     public String getTypeName();
 
-    public void validate(JSONValue jval, ValidationContext ctx) throws ValidationException;
+    public void validate(Object jval, ValidationContext ctx) throws ValidationException;
 }

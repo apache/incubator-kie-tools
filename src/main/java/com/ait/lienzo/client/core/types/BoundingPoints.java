@@ -79,7 +79,7 @@ public final class BoundingPoints implements Iterable<Point2D>
     {
         final int leng = m_array.size();
 
-        final ArrayList<Point2D> list = new ArrayList<Point2D>(leng);
+        final ArrayList<Point2D> list = new ArrayList<>(leng);
 
         for (int i = 0; i < leng; i++)
         {
@@ -102,7 +102,7 @@ public final class BoundingPoints implements Iterable<Point2D>
     @Override
     public boolean equals(final Object other)
     {
-        if ((other == null) || (false == (other instanceof BoundingPoints)))
+        if ((other == null) || (!(other instanceof BoundingPoints)))
         {
             return false;
         }

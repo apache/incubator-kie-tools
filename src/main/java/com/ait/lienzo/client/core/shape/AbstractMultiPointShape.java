@@ -26,8 +26,6 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.animation.AnimationProperties;
 import com.ait.lienzo.client.core.animation.AnimationProperty;
 import com.ait.lienzo.client.core.animation.AnimationTweener;
-import com.ait.lienzo.client.core.event.AttributesChangedEvent;
-import com.ait.lienzo.client.core.event.AttributesChangedHandler;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -49,14 +47,19 @@ import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.json.client.JSONObject;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
+
+import jsinterop.annotations.JsProperty;
 
 public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<T> & IMultiPointShape<T>> extends Shape<T> implements IMultiPointShape<T>
 {
+    @JsProperty
+    private Point2DArray points;
+
     private final PathPartList m_list = new PathPartList();
 
     protected AbstractMultiPointShape(final ShapeType type)
@@ -64,15 +67,65 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
         super(type);
     }
 
-    protected AbstractMultiPointShape(final ShapeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
+    public final T setControlPoints(final Point2DArray points)
     {
-        super(type, node, ctx);
+        this.points = points;
+
+        return refresh();
+    }
+
+    public final Point2DArray getControlPoints()
+    {
+        return this.points;
     }
 
     @Override
     public PathPartList getPathPartList()
     {
         return m_list;
+    }
+
+    /**
+     * Gets this triangles points.
+     *
+     * @return {@link Point2DArray}
+     */
+    public Point2DArray getPoints()
+    {
+        return this.points;
+    }
+
+    /**
+     * Sets the end-points of this line.
+     * The points should be a 2-element {@link Point2DArray}
+     *
+     * @param points
+     * @return this Line
+     */
+    public T setPoints(final Point2DArray points)
+    {
+        this.points = points;
+
+        return refresh();
+    }
+
+    @Override
+    public T setPoint2DArray(final Point2DArray points)
+    {
+        if (points.size() > 3)
+        {
+            throw new IllegalArgumentException("Cannot have more than 3 points");
+        }
+
+        this.points = points;
+
+        return refresh();
+    }
+
+    @Override
+    public Point2DArray getPoint2DArray()
+    {
+        return getPoints();
     }
 
     @Override
@@ -188,7 +241,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
 
             manager.register(m_shape.addNodeDragEndHandler(shapeXoYChangedHandler));
 
-            for (Point2D point : m_shape.getPoint2DArray())
+            for (Point2D point : m_shape.getPoint2DArray().asArray())
             {
                 final Point2D p = point;
 
@@ -254,7 +307,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
         }
     }
 
-    public static class ShapeXorYChanged implements AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
+    public static class ShapeXorYChanged implements NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
     {
         private IControlHandleList m_handleList;
 
@@ -279,15 +332,6 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
         public void onNodeDragStart(NodeDragStartEvent event)
         {
             m_dragging = true;
-        }
-
-        @Override
-        public void onAttributesChanged(AttributesChangedEvent event)
-        {
-            if (!m_dragging && event.all(Attribute.X, Attribute.Y))
-            {
-                shapeMoved();
-            }
         }
 
         @Override

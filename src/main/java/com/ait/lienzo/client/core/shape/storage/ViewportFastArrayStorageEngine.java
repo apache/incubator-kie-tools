@@ -22,7 +22,6 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.google.gwt.json.client.JSONObject;
 
 public class ViewportFastArrayStorageEngine extends AbstractFastArrayStorageEngine<Scene> implements IJSONSerializable<ViewportFastArrayStorageEngine>
 {
@@ -31,7 +30,7 @@ public class ViewportFastArrayStorageEngine extends AbstractFastArrayStorageEngi
         super(StorageEngineType.VIEWPORT_FAST_ARRAY_STORAGE_ENGINE);
     }
 
-    protected ViewportFastArrayStorageEngine(final JSONObject node, final ValidationContext ctx) throws ValidationException
+    protected ViewportFastArrayStorageEngine(final Object node, final ValidationContext ctx) throws ValidationException
     {
         super(StorageEngineType.VIEWPORT_FAST_ARRAY_STORAGE_ENGINE, node, ctx);
     }
@@ -47,12 +46,6 @@ public class ViewportFastArrayStorageEngine extends AbstractFastArrayStorageEngi
         public ViewportFastArrayStorageEngineFactory()
         {
             super(StorageEngineType.VIEWPORT_FAST_ARRAY_STORAGE_ENGINE);
-        }
-
-        @Override
-        public ViewportFastArrayStorageEngine create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new ViewportFastArrayStorageEngine(node, ctx);
         }
     }
 }

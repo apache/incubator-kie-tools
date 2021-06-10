@@ -38,8 +38,8 @@ import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
-import com.ait.tooling.nativetools.client.collection.NFastDoubleArray;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.client.collection.NFastDoubleArray;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
 
 /**
  * This class can be a little confusing, due to the way that drag works. All lines have a Group that is x=0, y=0. when
@@ -320,12 +320,13 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
                                     final Point2D location)
     {
         final Point2DArray controlPoints = m_connector.getControlPoints();
+
+
+
         // Notice that control points [0] and [controlPoints.size - 1] are being used for the connections as well,
         // so they're being updated anyway on other event handlers - it must return "true" in that case.
         if (index > 0 && index < (controlPoints.size() - 1))
         {
-            final double tx = location.getX();
-            final double ty = location.getY();
             return getControlPointsAcceptor().move(m_connector,
                                                    controlPoints.copy().set(index, location));
         }

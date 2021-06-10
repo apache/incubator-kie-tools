@@ -24,13 +24,17 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
 
 /**
  * Circle with a radius. The center point is set via the X,Y attributes.
  */
 public class Circle extends Shape<Circle>
 {
+    @JsProperty
+    private double radius;
+
     /**
      * Constructor. Creates an instance of a circle.
      * 
@@ -43,17 +47,12 @@ public class Circle extends Shape<Circle>
         setRadius(radius);
     }
 
-    protected Circle(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.CIRCLE, node, ctx);
-    }
-
     @Override
     public BoundingBox getBoundingBox()
     {
         final double radius = getRadius();
 
-        return new BoundingBox(0 - radius, 0 - radius, radius, radius);
+        return BoundingBox.fromDoubles(0 - radius, 0 - radius, radius, radius);
     }
 
     /**
@@ -62,9 +61,9 @@ public class Circle extends Shape<Circle>
      * @param context the {@link Context2D} used to draw this circle. 
      */
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final double alpha)
     {
-        final double r = attr.getRadius();
+        final double r = getRadius();
 
         if (r > 0)
         {
@@ -93,7 +92,7 @@ public class Circle extends Shape<Circle>
      */
     public Circle setRadius(final double radius)
     {
-        getAttributes().setRadius(radius);
+        this.radius = radius;
 
         return this;
     }
@@ -105,7 +104,7 @@ public class Circle extends Shape<Circle>
      */
     public double getRadius()
     {
-        return getAttributes().getRadius();
+        return this.radius;
     }
 
     @Override
@@ -121,12 +120,6 @@ public class Circle extends Shape<Circle>
             super(ShapeType.CIRCLE);
 
             addAttribute(Attribute.RADIUS, true);
-        }
-
-        @Override
-        public Circle create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new Circle(node, ctx);
         }
     }
 }

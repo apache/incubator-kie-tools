@@ -19,13 +19,19 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.json.client.JSONObject;
+import com.ait.lienzo.tools.client.Console;
+
+import elemental2.core.Uint8ClampedArray;
+import elemental2.dom.ImageData;
+import jsinterop.annotations.JsProperty;
 
 public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolveImageDataFilter<T>> extends AbstractImageDataFilter<T>
 {
+    @JsProperty
+    private FilterConvolveMatrix filterConvolveMatrix;
+
     protected AbstractConvolveImageDataFilter(final ImageFilterType type, final double... matrix)
     {
         super(type);
@@ -40,28 +46,60 @@ public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolve
         setMatrix(matrix);
     }
 
-    protected AbstractConvolveImageDataFilter(final ImageFilterType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
+    protected AbstractConvolveImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException
     {
         super(type, node, ctx);
     }
 
+
+//    public final void setMatrix(final double... matrix)
+//    {
+//        FilterConvolveMatrix mjso = new FilterConvolveMatrix();
+//
+//        for (int i = 0; i < matrix.length; i++)
+//        {
+//            mjso.push(matrix[i]);
+//        }
+//        setMatrix(mjso);
+//    }
+//
+//    public final void setMatrix(final FilterConvolveMatrix matrix)
+//    {
+//        put(Attribute.MATRIX.getProperty(), (JavaScriptObject) Js.uncheckedCast(matrix));
+//    }
+//
+//    public final FilterConvolveMatrix getMatrix()
+//    {
+//        final Object mjso = getArray(Attribute.MATRIX.getProperty());
+//
+//        if (null != mjso)
+//        {
+//            return Js.uncheckedCast(mjso);
+//        }
+//        return new FilterConvolveMatrix();
+//    }
+
     public final T setMatrix(final double... matrix)
     {
-        getAttributes().setMatrix(matrix);
+        this.filterConvolveMatrix = new FilterConvolveMatrix();
+        for ( int i = 0, length = matrix.length; i<length; i++)
+        {
+            this.filterConvolveMatrix.push(matrix[i]);
+        }
 
         return cast();
     }
 
     public final T setMatrix(final FilterConvolveMatrix matrix)
     {
-        getAttributes().setMatrix(matrix);
+        this.filterConvolveMatrix = matrix;
 
         return cast();
     }
 
     public final FilterConvolveMatrix getMatrix()
     {
-        return getAttributes().getMatrix();
+        return this.filterConvolveMatrix;
     }
 
     @Override
@@ -79,13 +117,13 @@ public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolve
         }
         if (copy)
         {
-            source = source.copy();
+            source = ImageDataUtil.copy(source);
         }
         if (false == isActive())
         {
             return source;
         }
-        final CanvasPixelArray data = source.getData();
+        final Uint8ClampedArray data = source.data;
 
         if (null == data)
         {
@@ -93,13 +131,13 @@ public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolve
         }
         final FilterConvolveMatrix matrix = getMatrix();
 
-        if (matrix.size() < 1)
+        if (matrix.getLength() < 1)
         {
             return source;
         }
-        final ImageData result = source.create();
+        final ImageData result = ImageDataUtil.create(source);
 
-        FilterCommonOps.doFilterConvolve(data, result.getData(), matrix, source.getWidth(), source.getHeight());
+        FilterCommonOps.doFilterConvolve(data, result.data, matrix, source.width, source.height);
 
         return result;
     }

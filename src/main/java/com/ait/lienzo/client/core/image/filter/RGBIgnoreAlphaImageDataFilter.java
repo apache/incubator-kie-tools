@@ -19,12 +19,13 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.IColor;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONObject;
+
+import elemental2.core.Uint8ClampedArray;
+import elemental2.dom.ImageData;
+import jsinterop.base.Js;
 
 /**
  * An Image filter to convert all pixels in the CanvasPixelArray to an RGB color.
@@ -57,7 +58,7 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RG
         super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, color);
     }
 
-    protected RGBIgnoreAlphaImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected RGBIgnoreAlphaImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
     {
         super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, node, ctx);
     }
@@ -74,13 +75,13 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RG
         }
         if (copy)
         {
-            source = source.copy();
+            source =  ImageDataUtil.copy(source);
         }
-        if (false == isActive())
+        if (!isActive())
         {
             return source;
         }
-        final CanvasPixelArray data = source.getData();
+        final Uint8ClampedArray data = source.data;
 
         if (null == data)
         {
@@ -91,9 +92,11 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RG
         return source;
     }
 
-    private final native void filter_(JavaScriptObject data, int length, int r, int g, int b)
-    /*-{
-    	for (var i = 0; i < length; i += 4) {
+    private final void filter_(Uint8ClampedArray dataArray, int length, int r, int g, int b)
+    {
+//        Uint8ClampedArray.ConstructorLengthUnionType temp = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray);
+        int[] data = Js.uncheckedCast(dataArray);
+    	for (int i = 0; i < length; i += 4) {
     		if (data[i + 3] > 0) {
     			data[  i  ] = r;
     			data[i + 1] = g;
@@ -101,7 +104,7 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RG
     			data[i + 3] = 255;
     		}
     	}
-    }-*/;
+    }
 
     @Override
     public IFactory<RGBIgnoreAlphaImageDataFilter> getFactory()
@@ -114,12 +117,6 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RG
         public RGBIgnoreAlphaImageDataFilterFactory()
         {
             super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType);
-        }
-
-        @Override
-        public RGBIgnoreAlphaImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new RGBIgnoreAlphaImageDataFilter(node, ctx);
         }
     }
 }

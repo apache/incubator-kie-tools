@@ -2,35 +2,29 @@ package com.ait.lienzo.client.core.image;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.google.gwt.dom.client.ImageElement;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.ait.lienzo.client.widget.RootPanel;
+
+import elemental2.dom.HTMLImageElement;
 
 public class ImageElementProxy {
-
-    private com.google.gwt.user.client.ui.Image imageWidget;
-    private ImageElement imageElement;
+    private HTMLImageElement imageElement;
 
     public ImageElementProxy() {
     }
 
-    ImageElementProxy(com.google.gwt.user.client.ui.Image imageWidget,
-                             ImageElement imageElement) {
-        this.imageWidget = imageWidget;
+    ImageElementProxy(HTMLImageElement imageElement) {
         this.imageElement = imageElement;
     }
 
     public void load(final String url,
                      final Runnable callback) {
         assert null == imageElement;
-        imageWidget = new Image();
-        new ImageLoader(url,
-                        imageWidget) {
+
+        new ImageLoader(url) {
 
             @Override
-            public void onImageElementLoad(final ImageElement imageElement) {
-                ImageElementProxy.this.imageElement = imageElement;
-                imageElement.getWidth();
+            public void onImageElementLoad(final HTMLImageElement image) {
+                ImageElementProxy.this.imageElement = image;
                 callback.run();
             }
 
@@ -67,17 +61,15 @@ public class ImageElementProxy {
     }
 
     public int getWidth() {
-        return isLoaded() ? imageElement.getWidth() : 0;
+        return isLoaded() ? imageElement.width : 0;
     }
 
     public int getHeight() {
-        return isLoaded() ? imageElement.getHeight() : 0;
+        return isLoaded() ? imageElement.height : 0;
     }
 
     public void destroy() {
-        RootPanel.get().remove(imageWidget);
-        imageWidget.removeFromParent();
+        RootPanel.get().remove(imageElement);
         imageElement = null;
-        imageWidget = null;
     }
 }

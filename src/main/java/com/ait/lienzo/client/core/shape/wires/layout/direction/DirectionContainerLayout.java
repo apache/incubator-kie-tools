@@ -21,7 +21,7 @@ import com.ait.lienzo.client.core.shape.wires.layout.IContainerLayout;
 import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.Direction;
 import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.Orientation;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.tooling.common.api.java.util.function.Function;
+import java.util.function.Function;
 
 public class DirectionContainerLayout extends AbstractContainerLayout<DirectionLayout>
 {
@@ -34,44 +34,53 @@ public class DirectionContainerLayout extends AbstractContainerLayout<DirectionL
     {
         BoundingBox childBoundingBox = child.getBoundingBox();
         return (Orientation.VERTICAL.equals(orientation)) ?
-               new BoundingBox(childBoundingBox.getMinY(), childBoundingBox.getMinX(), childBoundingBox.getHeight(),
-                               childBoundingBox.getWidth()) :
+               BoundingBox.fromDoubles(childBoundingBox.getMinY(), childBoundingBox.getMinX(), childBoundingBox.getHeight(),
+                                       childBoundingBox.getWidth()) :
                childBoundingBox;
     }
 
+    public IPrimitive get() {
+        return child;
+    }
+
+    IPrimitive child;
+
     @Override
-    public IContainerLayout add(final IPrimitive<?> child, final DirectionLayout layout)
+    public IContainerLayout add(final IPrimitive child, final DirectionLayout layout)
     {
         if (child == null)
         {
             throw new IllegalArgumentException("Child should not be null");
         }
 
+        this.child = child;
+
+
         final DirectionLayout currentLayout = getLayout(layout);
 
         final BoundingBox childBoundingBox  = getChildBoundingBox(child, currentLayout.getOrientation());
         final BoundingBox parentBoundingBox = getParentBoundingBox();
 
-        final Function<Direction, Double> margins = new Function<Direction, Double>()
-        {
-            @Override
-            public Double apply(final Direction direction)
-            {
-                return currentLayout.getMargin(direction);
-            }
-        };
+        final Function<Direction, Double> margins = currentLayout::getMargin;
 
         //Horizontal Alignment
-        child.setX(HorizontalLayoutFactory.get(currentLayout.getReferencePosition())
-                                          .apply(parentBoundingBox, childBoundingBox, currentLayout.getHorizontalAlignment(),
-                                                 currentLayout.getOrientation(), margins));
-
+        setHorizontalAlignment(child, HorizontalLayoutFactory.get(currentLayout.getReferencePosition())
+                .apply(parentBoundingBox, childBoundingBox, currentLayout.getHorizontalAlignment(),
+                       currentLayout.getOrientation(), margins));
         //Vertical Alignment
-        child.setY(VerticalLayoutFactory.get(currentLayout.getReferencePosition())
-                                        .apply(parentBoundingBox, childBoundingBox, currentLayout.getVerticalAlignment(),
-                                               currentLayout.getOrientation(), margins));
+        setVerticalAlignment(child, VerticalLayoutFactory.get(currentLayout.getReferencePosition())
+                .apply(parentBoundingBox, childBoundingBox, currentLayout.getVerticalAlignment(),
+                       currentLayout.getOrientation(), margins));
 
         return super.add(child, currentLayout);
+    }
+
+    protected void setHorizontalAlignment(IPrimitive child, double x) {
+        child.setX(x);
+    }
+
+    protected void setVerticalAlignment(IPrimitive child, double y) {
+        child.setY(y);
     }
 
     @Override

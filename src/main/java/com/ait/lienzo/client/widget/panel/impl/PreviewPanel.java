@@ -15,34 +15,27 @@
  */
 package com.ait.lienzo.client.widget.panel.impl;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.style.Style.Cursor;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.BoundsProvider;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
-import com.ait.lienzo.client.widget.panel.event.*;
-import com.ait.lienzo.client.widget.panel.scrollbars.ScrollBars;
-import com.ait.lienzo.client.widget.panel.scrollbars.ScrollablePanel;
-import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
-
-import java.util.Objects;
+import com.ait.lienzo.tools.client.event.HandlerManager;
+import elemental2.dom.EventListener;
 
 public class PreviewPanel extends ScalablePanel
 {
-    private final HandlerManager             m_events;
+    private final HandlerManager m_events;
 
-    private final HandlerRegistrationManager handlers;
+    private final Bounds visibleBounds;
 
-    private final Bounds                     visibleBounds;
-
-    private final Point2D                    visibleScaleFactor;
+    private final Point2D visibleScaleFactor;
 
     private final PreviewLayer               previewLayer;
 
@@ -51,34 +44,31 @@ public class PreviewPanel extends ScalablePanel
     public PreviewPanel(final int width,
                         final int height)
     {
-        this(new LienzoPanelImpl(width, height), new HandlerRegistrationManager());
+        this(LienzoFixedPanel.newPanel(width, height));
     }
 
-    PreviewPanel(final LienzoPanel panel,
-                 final HandlerRegistrationManager registrationManager)
+    PreviewPanel(final LienzoPanel panel)
     {
         super(panel, new PreviewBoundsProvider());
         m_events = new HandlerManager(this);
         visibleBounds = Bounds.empty();
         visibleScaleFactor = new Point2D(1, 1);
-        handlers = registrationManager;
         previewLayer = new PreviewLayer(backgroundBoundsSupplier,
                                         visibleBoundsSupplier);
-        decorator = new PreviewLayerDecorator(handlers,
-                                              backgroundBoundsSupplier,
+        decorator = new PreviewLayerDecorator(backgroundBoundsSupplier,
                                               visibleBoundsSupplier,
                                               new PreviewLayerDecorator.EventHandler()
                                               {
                                                   @Override
                                                   public void onMouseEnter()
                                                   {
-                                                      getLienzoPanel().getElement().getStyle().setCursor(Style.Cursor.MOVE);
+                                                      getLienzoPanel().getElement().style.cursor = Cursor.MOVE.getCssName();
                                                   }
 
                                                   @Override
                                                   public void onMouseExit()
                                                   {
-                                                      getLienzoPanel().getElement().getStyle().setCursor(Style.Cursor.DEFAULT);
+                                                      getLienzoPanel().getElement().style.cursor = Cursor.DEFAULT.getCssName();
                                                   }
 
                                                   @Override
@@ -86,7 +76,7 @@ public class PreviewPanel extends ScalablePanel
                                                   {
                                                       setVisibleBoundsAt(point.getX(),
                                                                          point.getY());
-                                                      fireLienzoPanelScrollEvent();
+                                                      updatePanelScroll();
                                                       batch();
                                                   }
                                               });
@@ -95,26 +85,17 @@ public class PreviewPanel extends ScalablePanel
     PreviewPanel(final LienzoPanel panel,
                  final PreviewLayer previewLayer,
                  final PreviewLayerDecorator decorator,
-                 final HandlerManager m_events,
-                 final HandlerRegistrationManager registrationManager)
+                 final HandlerManager m_events)
     {
         super(panel, new PreviewBoundsProvider());
         this.m_events = m_events;
         this.visibleBounds = Bounds.empty();
         this.visibleScaleFactor = new Point2D(1, 1);
-        this.handlers = registrationManager;
         this.previewLayer = previewLayer;
         this.decorator = decorator;
     }
 
-    private final Supplier<Bounds> backgroundBoundsSupplier = new Supplier<Bounds>()
-    {
-        @Override
-        public Bounds get()
-        {
-            return getBackgroundBounds();
-        }
-    };
+    private final Supplier<Bounds> backgroundBoundsSupplier = this::getBackgroundBounds;
 
     private final Supplier<Bounds> visibleBoundsSupplier    = new Supplier<Bounds>()
     {
@@ -132,80 +113,63 @@ public class PreviewPanel extends ScalablePanel
         }
     };
 
+    private void removeListeners() {
+        if (null != observed) {
+            observed.removeScrollEventListener(scrollEventListener);
+            observed.removeScrollEventListener(resizeEventListener);
+            observed.removeScrollEventListener(scaleEventListener);
+            observed.removeScrollEventListener(boundsChangedEventListener);
+            scrollEventListener = null;
+            resizeEventListener = null;
+            scaleEventListener = null;
+            boundsChangedEventListener = null;
+        }
+    }
+
+    private ScrollablePanel observed;
+    private EventListener scrollEventListener;
+    private EventListener resizeEventListener;
+    private EventListener scaleEventListener;
+    private EventListener boundsChangedEventListener;
+
     public PreviewPanel observe(final ScrollablePanel panel)
     {
+
+        if (null != observed) {
+            throw new IllegalStateException("Cannot observe twice");
+        }
+
         getPreviewBoundsProvider().delegate(this, panel);
 
-        handlers.register(
-                panel.addLienzoPanelScrollEventHandler(new LienzoPanelScrollEventHandler()
-                {
-                    @Override
-                    public void onScroll(LienzoPanelScrollEvent event)
-                    {
-                        if (!decorator.isDragging())
-                        {
-                            scroll(event.getPctX(), event.getPctY());
-                        }
-                    }
-                })
-                         );
+        observed = panel;
 
-        handlers.register(
-                panel.addLienzoPanelResizeEventHandler(new LienzoPanelResizeEventHandler()
-                {
-                    @Override
-                    public void onResize(LienzoPanelResizeEvent event)
-                    {
-                        resize(event.getWidth(), event.getHeight());
-                    }
-                })
-                         );
+        scrollEventListener = panel.addScrollEventListener(event -> {
+            if (!decorator.isDragging())
+            {
+                scroll(panel.getHorizontalScrollRate(), panel.getVerticalScrollRate());
+            }
+        });
 
-        handlers.register(
-                panel.addLienzoPanelScaleChangedEventHandler(new LienzoPanelScaleChangedEventHandler()
-                {
-                    @Override
-                    public void onScale(LienzoPanelScaleChangedEvent event)
-                    {
-                        if (!decorator.isDragging())
-                        {
-                            final Point2D factor = event.getFactor();
-                            visibleScaleFactor
-                                    .setX(1 / factor.getX())
-                                    .setY(1 / factor.getY());
-                        }
-                    }
-                }));
+        resizeEventListener = panel.addResizeEventListener(event -> resize(observed.getWidePx(), observed.getHighPx()));
 
-        handlers.register(
-                panel.addLienzoPanelBoundsChangedEventHandler(new LienzoPanelBoundsChangedEventHandler()
-                {
-                    @Override
-                    public void onBoundsChanged(LienzoPanelBoundsChangedEvent event)
-                    {
-                        refresh();
-                    }
-                }));
-        handlers.register(
-                addLienzoPanelScrollEventHandler(new LienzoPanelScrollEventHandler()
-                {
-                    @Override
-                    public void onScroll(LienzoPanelScrollEvent event)
-                    {
-                        panel.getScrollHandler().updateLienzoPosition(event.getPctX(),
-                                                                      event.getPctY());
-                        panel.getScrollHandler().refresh();
-                    }
-                }));
+        scaleEventListener = panel.addScaleEventListener(event -> {
+
+            if (!decorator.isDragging()) {
+                visibleScaleFactor
+                        .setX(1 / panel.getViewport().getTransform().getScaleX())
+                        .setY(1 / panel.getViewport().getTransform().getScaleY());
+            }
+        });
+
+        boundsChangedEventListener = panel.addBoundsChangedEventListener(event -> refresh());
 
         // Use actual panel's size.
-        resize(panel.getWidthPx(),
-               panel.getHeightPx());
+        resize(panel.getWidePx(),
+               panel.getHighPx());
 
         // Use actual panel's scroll position.
-        final ScrollBars scrollBars = panel.getScrollHandler().scrollBars();
-        scroll(scrollBars.getHorizontalScrollPosition(),
-               scrollBars.getVerticalScrollPosition());
+        scroll(panel.getHorizontalScrollRate(),
+               panel.getVerticalScrollRate());
 
         return this;
     }
@@ -219,25 +183,23 @@ public class PreviewPanel extends ScalablePanel
         return this;
     }
 
-    public final HandlerRegistration addLienzoPanelScrollEventHandler(final LienzoPanelScrollEventHandler handler)
+    void updatePanelScroll()
     {
-        Objects.requireNonNull(handler);
+        if (null != observed)
+        {
+            final Bounds backgroundBounds = getBackgroundBounds();
+            final double bgWidth          = backgroundBounds.getWidth();
+            final double bgHeight         = backgroundBounds.getHeight();
+            final double x                = visibleBounds.getX();
+            final double y                = visibleBounds.getY();
+            final double width            = bgWidth - getVisibleWidth();
+            final double height           = bgHeight - getVisibleHeight();
+            final double pctX             = width > 0 ? x / width * 100 : 0d;
+            final double pctY             = height > 0 ? y / height * 100 : 0d;
 
-        return m_events.addHandler(LienzoPanelScrollEvent.TYPE, handler);
-    }
-
-    void fireLienzoPanelScrollEvent()
-    {
-        final Bounds backgroundBounds = getBackgroundBounds();
-        final double bgWidth          = backgroundBounds.getWidth();
-        final double bgHeight         = backgroundBounds.getHeight();
-        final double x                = visibleBounds.getX();
-        final double y                = visibleBounds.getY();
-        final double width            = bgWidth - getVisibleWidth();
-        final double height           = bgHeight - getVisibleHeight();
-        final double pctX             = width > 0 ? x / width * 100 : 0d;
-        final double pctY             = height > 0 ? y / height * 100 : 0d;
-        m_events.fireEvent(new LienzoPanelScrollEvent(pctX, pctY));
+            observed.applyScrollRateToLayer(pctX, pctY);
+            observed.onRefresh();
+        }
     }
 
     public ScalablePanel adjustVisibleBounds(final double pctX,
@@ -306,7 +268,7 @@ public class PreviewPanel extends ScalablePanel
         getPreviewBoundsProvider().destroy();
         decorator.destroy();
         previewLayer.clear();
-        handlers.removeHandler();
+        removeListeners();
         super.doDestroy();
     }
 
@@ -373,7 +335,7 @@ public class PreviewPanel extends ScalablePanel
 
     static double[] getSafeScaleValues(final Layer layer)
     {
-        final Viewport  vp        = layer.getViewport();
+        final Viewport vp        = layer.getViewport();
         final Transform transform = vp.getTransform();
         final double    scaleX    = null != transform ? transform.getScaleX() : 1d;
         final double    scaleY    = null != transform ? transform.getScaleY() : 1d;

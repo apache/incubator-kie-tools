@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.shape.json.validators;
 
 public class DragBoundsValidator extends ObjectValidator
 {
-    public static DragBoundsValidator INSTANCE = new DragBoundsValidator();
+    public static final DragBoundsValidator INSTANCE = new DragBoundsValidator();
 
     public DragBoundsValidator()
     {

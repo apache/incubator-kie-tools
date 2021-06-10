@@ -36,7 +36,7 @@ public class MultiPathDecorator {
 
     public MultiPathDecorator copy()
     {
-       return new MultiPathDecorator(m_path.copy());
+        return new MultiPathDecorator(MultiPath.clonePath(m_path));
     }
 
 }

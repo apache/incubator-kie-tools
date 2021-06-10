@@ -17,7 +17,6 @@
 package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -26,11 +25,6 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.NodeType;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONNull;
-import com.google.gwt.json.client.JSONNumber;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONValue;
 
 /**
  * GridLayer is a layer that draws a grid behind its child nodes.
@@ -46,7 +40,7 @@ import com.google.gwt.json.client.JSONValue;
  * The strokeWidth of the lines is impervious to any transforms defined on the Layer or its Viewport,
  * i.e. a 1 pixel line will always show as a 1 pixel line, regardless of how far you zoomed in or out.
  * <p>
- * Note that the empty GridLayer constructor does not add any Lines, so you will not see a grid unless you add some Lines.
+ * Note that the empty GridLayer constructor does not addBoundingBox any Lines, so you will not see a grid unless you addBoundingBox some Lines.
  * 
  * @since 1.1
  */
@@ -68,7 +62,7 @@ public class GridLayer extends Layer
 
     private Line[]           m_lines     = new Line[4];
 
-    // NOTE: we can't put Lines in Attributes
+    // NOTE: we can't putString Lines in Attributes
 
     /**
      * Creates an empty GridLayer with no lines.
@@ -120,17 +114,6 @@ public class GridLayer extends Layer
         setSecondaryLineX(secondaryLine);
 
         setSecondaryLineY(secondaryLine);
-    }
-
-    protected GridLayer(JSONObject node, ValidationContext ctx, Line[] lines, double[] sizes) throws ValidationException
-    {
-        super(node, ctx);
-
-        setNodeType(NodeType.GRID_LAYER);
-
-        m_lines = lines;
-
-        m_sizes = sizes;
     }
 
     /**
@@ -334,7 +317,7 @@ public class GridLayer extends Layer
     @Override
     protected void drawWithoutTransforms(Context2D context, double alpha, final BoundingBox bounds)
     {
-        if (false == isVisible())
+        if (!isVisible())
         {
             return;
         }
@@ -348,7 +331,8 @@ public class GridLayer extends Layer
 
         Point2D b = new Point2D(vw, vh);
 
-        double scaleX = 1, scaleY = 1;
+        double scaleX = 1;
+        double scaleY = 1;
 
         Transform t = isTransformable() ? vp.getTransform() : null;
 
@@ -415,12 +399,12 @@ public class GridLayer extends Layer
                 {
                     double[] d = previousDashes.getNormalizedArray();
 
-                    DashArray dashes = new DashArray();
-
+                    double[] copy = new double[d.length];
                     for (int i = 0; i < d.length; i++)
                     {
-                        dashes.push(d[i] / scale);
+                        copy[i] = d[i] / scale;
                     }
+                    DashArray dashes = new DashArray(copy);
                     line.setDashArray(dashes);
                 }
                 long n1 = Math.round(min / size);
@@ -489,99 +473,11 @@ public class GridLayer extends Layer
         super.drawWithoutTransforms(context, alpha, bounds);
     }
 
-    @Override
-    public JSONObject toJSONObject()
-    {
-        JSONObject obj = super.toJSONObject();
-
-        JSONArray lines = new JSONArray();
-
-        JSONArray sizes = new JSONArray();
-
-        for (int i = 0; i < 4; i++)
-        {
-            if (m_lines[i] == null)
-            {
-                lines.set(i, JSONNull.getInstance());
-            }
-            else
-            {
-                lines.set(i, m_lines[i].toJSONObject());
-            }
-            sizes.set(i, new JSONNumber(m_sizes[i]));
-        }
-        obj.put("lines", lines);
-
-        obj.put("sizes", sizes);
-
-        return obj;
-    }
-
     public static class GridLayerFactory extends LayerFactory
     {
         public GridLayerFactory()
         {
             setNodeType(NodeType.GRID_LAYER);
-        }
-
-        @Override
-        public GridLayer container(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            Line[] lines = new Line[4];
-
-            double[] sizes = { 10, 10, 5, 5 };
-
-            JSONValue aval = node.get("lines");
-
-            if (aval != null)
-            {
-                JSONArray arr = aval.isArray();
-
-                if (arr != null)
-                {
-                    for (int i = 0; i < 4 && i < arr.size(); i++)
-                    {
-                        JSONValue jval = arr.get(i);
-
-                        if (jval != null)
-                        {
-                            JSONObject jobj = jval.isObject();
-
-                            if (jobj != null)
-                            {
-                                Line line = (Line) JSONDeserializer.get().fromJSON(jobj, ctx);
-
-                                lines[i] = line;
-                            }
-                        }
-                    }
-                }
-            }
-            aval = node.get("sizes");
-
-            if (aval != null)
-            {
-                JSONArray arr = aval.isArray();
-
-                if (arr != null)
-                {
-                    for (int i = 0; i < 4 && i < arr.size(); i++)
-                    {
-                        JSONValue jval = arr.get(i);
-
-                        if (jval != null)
-                        {
-                            JSONNumber jnum = jval.isNumber();
-
-                            if (jnum != null)
-                            {
-                                sizes[i] = jnum.doubleValue();
-                            }
-                        }
-                    }
-                }
-            }
-            return new GridLayer(node, ctx, lines, sizes);
         }
     }
 }

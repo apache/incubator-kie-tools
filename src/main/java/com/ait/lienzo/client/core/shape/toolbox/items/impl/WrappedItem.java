@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.impl;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
 import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.Group;
@@ -25,7 +27,6 @@ import com.ait.lienzo.client.core.shape.toolbox.items.DecoratedItem;
 import com.ait.lienzo.client.core.shape.toolbox.items.DecoratorItem;
 import com.ait.lienzo.client.core.shape.toolbox.items.TooltipItem;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 
 public abstract class WrappedItem<T extends DecoratedItem>
         extends AbstractDecoratedItem<T> {

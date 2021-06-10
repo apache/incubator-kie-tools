@@ -24,7 +24,8 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
 
 /**
  * Ellipse is defined by a width and a height.
@@ -33,6 +34,12 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Ellipse extends Shape<Ellipse>
 {
+    @JsProperty
+    private double width;
+
+    @JsProperty
+    private double height;
+
     /**
      * Constructor. Creates an instance of an ellipse.
      * The center of the ellipse will be at (0,0) unless
@@ -48,11 +55,6 @@ public class Ellipse extends Shape<Ellipse>
         setWidth(width).setHeight(height);
     }
 
-    protected Ellipse(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.ELLIPSE, node, ctx);
-    }
-
     @Override
     public BoundingBox getBoundingBox()
     {
@@ -60,7 +62,7 @@ public class Ellipse extends Shape<Ellipse>
 
         final double h = getHeight() / 2;
 
-        return new BoundingBox(0 - w, 0 - h, w, h);
+        return BoundingBox.fromDoubles(0 - w, 0 - h, w, h);
     }
 
     @Override
@@ -75,11 +77,11 @@ public class Ellipse extends Shape<Ellipse>
      * @param context the {@link Context2D} used to draw this ellipse.
      */
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final double alpha)
     {
-        final double w = attr.getWidth();
+        final double w = getWidth();
 
-        final double h = attr.getHeight();
+        final double h = getHeight();
 
         if ((w > 0) && (h > 0))
         {
@@ -95,47 +97,47 @@ public class Ellipse extends Shape<Ellipse>
     }
 
     /**
-     * Gets this ellipse's width.
-     * 
+     * Gets the width of this parallelogram
+     *
      * @return double
      */
     public double getWidth()
     {
-        return getAttributes().getWidth();
+        return this.width;
     }
 
     /**
-     * Sets this ellipse's width.
-     * 
+     * Sets the width of this ellipse
+     *
      * @param width
-     * @return Ellipse this ellipse
+     * @return this ellipse
      */
     public Ellipse setWidth(final double width)
     {
-        getAttributes().setWidth(width);
+        this.width = width;
 
         return this;
     }
 
     /**
-     * Gets this ellipse's height.
-     * 
+     * Gets the height of this ellipse
+     *
      * @return double
      */
     public double getHeight()
     {
-        return getAttributes().getHeight();
+        return this.height;
     }
 
     /**
-     * Sets this ellipse's height.
-     * 
+     * Sets the height of this ellipse
+     *
      * @param height
-     * @return Ellipse this ellipse
+     * @return this ellipse
      */
     public Ellipse setHeight(final double height)
     {
-        getAttributes().setHeight(height);
+        this.height = height;
 
         return this;
     }
@@ -155,12 +157,6 @@ public class Ellipse extends Shape<Ellipse>
             addAttribute(Attribute.WIDTH, true);
 
             addAttribute(Attribute.HEIGHT, true);
-        }
-
-        @Override
-        public Ellipse create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new Ellipse(node, ctx);
         }
     }
 }

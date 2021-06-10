@@ -17,8 +17,6 @@
 package com.ait.lienzo.client.core.shape.json.validators;
 
 import com.ait.lienzo.shared.core.types.ColorName;
-import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
@@ -31,7 +29,7 @@ import com.google.gwt.regexp.shared.RegExp;
  */
 public class ColorValidator extends AbstractAttributeTypeValidator
 {
-    private static final String[]      SPECIAL_COLOR_NAMES = { "transparent", "currentcolor", "inherit" };
+    private static final String[]       SPECIAL_COLOR_NAMES = { "transparent", "currentcolor", "inherit" };
 
     // integer 0 - 255
     private static final String        I                   = "(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])";
@@ -47,17 +45,17 @@ public class ColorValidator extends AbstractAttributeTypeValidator
     private static final String        IP                  = "(?:" + I + "|" + P + ")";
 
     // alpha - float value between 0 and 1
-    private static final String        A                   = F;
+    private static final String         A                   = F;
 
-    private static final String        RGB                 = "\\s*" + IP + "\\s*,\\s*" + IP + "\\s*,\\s*" + IP + "\\s*";
+    private static final String         RGB                 = "\\s*" + IP + "\\s*,\\s*" + IP + "\\s*,\\s*" + IP + "\\s*";
 
-    private static final String        HSL                 = "\\s*" + F + "\\s*,\\s*" + P + "\\s*,\\s*" + P + "\\s*";
+    private static final String         HSL                 = "\\s*" + F + "\\s*,\\s*" + P + "\\s*,\\s*" + P + "\\s*";
 
-    private static final String        COLOR               = "#[0-9A-Fa-f]{3}|#[0-9A-Fa-f]{6}|rgb\\(" + RGB + "\\)|rgba\\(" + RGB + "\\s*,\\s*" + A + "\\)|hsl\\(" + HSL + "\\)|hsla\\(" + HSL + "\\s*,\\s*" + A + "\\)";
+    private static final String         COLOR               = "#[0-9A-Fa-f]{3}|#[0-9A-Fa-f]{6}|rgb\\(" + RGB + "\\)|rgba\\(" + RGB + "\\s*,\\s*" + A + "\\)|hsl\\(" + HSL + "\\)|hsla\\(" + HSL + "\\s*,\\s*" + A + "\\)";
 
-    private static final RegExp        COLOR_RE            = RegExp.compile("^(?:" + COLOR + ")$");
+    private static final RegExp COLOR_RE            = RegExp.compile("^(?:" + COLOR + ")$");
 
-    public static final ColorValidator INSTANCE            = new ColorValidator();
+    public static final  ColorValidator INSTANCE            = new ColorValidator();
 
     public ColorValidator()
     {
@@ -66,7 +64,7 @@ public class ColorValidator extends AbstractAttributeTypeValidator
     }
 
     @Override
-    public void validate(JSONValue jval, ValidationContext ctx) throws ValidationException
+    public void validate(Object jval, ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
@@ -74,29 +72,30 @@ public class ColorValidator extends AbstractAttributeTypeValidator
 
             return;
         }
-        JSONString s = jval.isString();
-
-        if (null == s)
-        {
-            ctx.addBadTypeError(getTypeName());
-
-            return;
-        }
-
-        // see http://www.w3.org/TR/css3-color/
-        // "#00f", "#0f0f0f", "#00F", "#0F0F0F", "rgb(255,0,0)", "rgba(0,0,0,0)", "red",
-        // "rgb(100%, 0%, 0%)", "hsl(0, 100%, 50%)", "hsla(120, 100%, 50%, 1)",
-        // "transparent", "inherit", "currentcolor"
-
-        // White space characters are allowed around the numerical values.
-        // Alpha should be between 0.0 and 1.0 inclusive
-        // All color names are a single word (no spaces or special characters)
-        // Color names are case-insensitive.
-
-        if (false == isValidColorName(s.stringValue()))
-        {
-            ctx.addBadValueError(getTypeName(), jval);
-        }
+        // FIXME serialization (mdp)
+//        JSONString s = jval.isString();
+//
+//        if (null == s)
+//        {
+//            ctx.addBadTypeError(getTypeName());
+//
+//            return;
+//        }
+//
+//        // see http://www.w3.org/TR/css3-color/
+//        // "#00f", "#0f0f0f", "#00F", "#0F0F0F", "rgb(255,0,0)", "rgba(0,0,0,0)", "red",
+//        // "rgb(100%, 0%, 0%)", "hsl(0, 100%, 50%)", "hsla(120, 100%, 50%, 1)",
+//        // "transparent", "inherit", "currentcolor"
+//
+//        // White space characters are allowed around the numerical values.
+//        // Alpha should be between 0.0 and 1.0 inclusive
+//        // All color names are a single word (no spaces or special characters)
+//        // Color names are case-insensitive.
+//
+//        if (false == isValidColorName(s.stringValue()))
+//        {
+//            ctx.addBadValueError(getTypeName(), jval);
+//        }
     }
 
     /**

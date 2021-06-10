@@ -20,15 +20,20 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONObject;
+
+import elemental2.core.Uint8ClampedArray;
+import elemental2.dom.ImageData;
+import jsinterop.annotations.JsProperty;
+import jsinterop.base.Js;
 
 public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<AlphaScaleColorImageDataFilter>
 {
+    @JsProperty
+    private boolean inverted;
+
     public AlphaScaleColorImageDataFilter(int r, int g, int b)
     {
         super(ImageFilterType.AlphaScaleColorImageDataFilterType, r, g, b);
@@ -65,21 +70,21 @@ public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<A
         setInverted(invert);
     }
 
-    protected AlphaScaleColorImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected AlphaScaleColorImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
     {
         super(ImageFilterType.AlphaScaleColorImageDataFilterType, node, ctx);
     }
 
     public AlphaScaleColorImageDataFilter setInverted(boolean inverted)
     {
-        getAttributes().setInverted(inverted);
+        this.inverted = inverted;
 
         return this;
     }
 
     public boolean isInverted()
     {
-        return getAttributes().isInverted();
+        return this.inverted;
     }
 
     @Override
@@ -91,13 +96,13 @@ public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<A
         }
         if (copy)
         {
-            source = source.copy();
+            source = ImageDataUtil.copy(source);
         }
-        if (false == isActive())
+        if (!isActive())
         {
             return source;
         }
-        final CanvasPixelArray data = source.getData();
+        final Uint8ClampedArray data = source.data;
 
         if (null == data)
         {
@@ -108,20 +113,22 @@ public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<A
         return source;
     }
 
-    private final native void filter_(JavaScriptObject data, int length, int r, int g, int b, boolean invert)
-    /*-{
-        for (var i = 0; i < length; i += 4) {
-            var v = ((data[i] * 0.21) + (data[i + 1] * 0.72) + (data[i + 2] * 0.07));
+    private final void filter_(Uint8ClampedArray dataArray, int length, int r, int g, int b, boolean invert)
+    {
+        int[] data = Js.uncheckedCast(dataArray);
+        for (int i = 0; i < length; i += 4) {
+            double v = ((data[i] * 0.21) + (data[i + 1] * 0.72) + (data[i + 2] * 0.07));
             data[  i  ] = r;
             data[i + 1] = g;
             data[i + 2] = b;
-            if (true == invert) {
-                data[i + 3] = (v + 0.5) | 0;
+            v = Js.coerceToInt(v + 0.5);
+            if (invert) {
+                data[i + 3] = (int) v;
             } else {
-                data[i + 3] = 255 - ((v + 0.5) | 0);
+                data[i + 3] = (int) (255 - v);
             }
         }
-    }-*/;
+    }
 
     @Override
     public IFactory<AlphaScaleColorImageDataFilter> getFactory()
@@ -136,12 +143,6 @@ public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<A
             super(ImageFilterType.AlphaScaleColorImageDataFilterType);
 
             addAttribute(Attribute.INVERTED);
-        }
-
-        @Override
-        public AlphaScaleColorImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new AlphaScaleColorImageDataFilter(node, ctx);
         }
     }
 }

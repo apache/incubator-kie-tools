@@ -25,17 +25,32 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
 
 /**
- * A Slice is defined by a start angle and an end angle, like a slice of a pizza.
- * The angles can be specified in clockwise or counter-clockwise order.
- * Slices greater than 180 degrees (or PI radians) look like pacmans.
  */
 public class Bow extends Shape<Bow>
 {
+
+    @JsProperty
+    private double innerRadius;
+
+    @JsProperty
+    private double outerRadius;
+
+    @JsProperty
+    private double startAngle;
+
+    @JsProperty
+    private double endAngle;
+
+    @JsProperty
+    private boolean counterClockwise;
+
+
     /**
-     * Constructor. Creates an instance of a slice.
+     * Constructor. Creates an instance of a bow.
      * 
      * @param radius
      * @param startAngle in radians
@@ -50,7 +65,7 @@ public class Bow extends Shape<Bow>
     }
 
     /**
-     * Constructor. Creates an instance of a slice, drawn clockwise.
+     * Constructor. Creates an instance of a bow, drawn clockwise.
      * 
      * @param radius
      * @param startAngle in radians
@@ -61,40 +76,35 @@ public class Bow extends Shape<Bow>
         this(innerRadius, outerRadius, startAngle, endAngle, false);
     }
 
-    protected Bow(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.BOW, node, ctx);
-    }
-
     @Override
     public BoundingBox getBoundingBox()
     {
         final double radius = Math.max(getInnerRadius(), getOuterRadius());
 
-        return new BoundingBox(0 - radius, 0 - radius, radius, radius);
+        return BoundingBox.fromDoubles(0 - radius, 0 - radius, radius, radius);
     }
 
     /**
-     * Draws this slice.
+     * Draws this bow.
      * 
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final double alpha)
     {
-        final double end = attr.getEndAngle();
+        final double end = getEndAngle();
 
-        final double beg = attr.getStartAngle();
+        final double beg = getStartAngle();
 
         if (beg == end)
         {
             return false;
         }
-        final double ord = attr.getOuterRadius();
+        final double ord = getOuterRadius();
 
-        final double ird = attr.getInnerRadius();
+        final double ird = getInnerRadius();
 
-        final boolean ccw = attr.isCounterClockwise();
+        final boolean ccw = isCounterClockwise();
 
         if ((ord > 0) && (ird > 0))
         {
@@ -102,7 +112,7 @@ public class Bow extends Shape<Bow>
 
             context.arc(0, 0, ord, beg, end, ccw);
 
-            context.arc(0, 0, ird, end, beg, (false == ccw));
+            context.arc(0, 0, ird, end, beg, (!ccw));
 
             context.closePath();
 
@@ -112,118 +122,116 @@ public class Bow extends Shape<Bow>
     }
 
     /**
-     * Gets the {@link Star} inner radius.
-     * 
+     * Gets the {@link Bow} inner radius.
+     *
      * @return double
      */
     public double getInnerRadius()
     {
-        return getAttributes().getInnerRadius();
+        return this.innerRadius;
     }
 
     /**
-     * Sets the {@link Star} inner radius.
-     * 
+     * Sets the {@link Bow} inner radius.
+     *
      * @param radius
-     * @return this Star
+     * @return this Bow
      */
     public Bow setInnerRadius(final double radius)
     {
-        getAttributes().setInnerRadius(radius);
+        this.innerRadius = radius;
 
         return this;
     }
 
     /**
-     * Returns the {@link Star} outer radius.
-     * 
+     * Returns the {@link Bow} outer radius.
+     *
      * @return double
      */
     public double getOuterRadius()
     {
-        return getAttributes().getOuterRadius();
+        return this.outerRadius;
     }
 
     /**
      * Sets the outer radius.
-     * 
+     *
      * @param radius
-     * @return this Star
+     * @return this Bow
      */
     public Bow setOuterRadius(final double radius)
     {
-        getAttributes().setOuterRadius(radius);
+        this.outerRadius = radius;
 
         return this;
     }
 
     /**
-     * Gets the starting angle of this slice.
-     * 
-     * @return double in radians
+     * Gets the starting angle of this bow.
+     *
+     * @return double (in radians)
      */
     public double getStartAngle()
     {
-        return getAttributes().getStartAngle();
+        return this.startAngle;
     }
 
     /**
-     * Sets the starting angle of this slice.
-     * 
-     * @param angle in radians
-     * @return this Slice.
+     * Sets the starting angle of this bow.
+     *
+     * @param angle (in radians)
+     * @return this bow
      */
     public Bow setStartAngle(final double angle)
     {
-        getAttributes().setStartAngle(angle);
+        this.startAngle = angle;
 
         return this;
     }
 
     /**
-     * Gets the end angle of this slice.
-     * 
-     * @return double in radians
+     * Gets the end angle of this bow.
+     *
+     * @return double (in radians)
      */
     public double getEndAngle()
     {
-        return getAttributes().getEndAngle();
+        return this.endAngle;
     }
 
     /**
-     * Gets the end angle of this slice.
-     * 
-     * @param angle in radians
-     * @return this Slice.
+     * Sets the end angle of this bow.
+     *
+     * @param angle (in radians)
+     * @return this bow
      */
     public Bow setEndAngle(final double angle)
     {
-        getAttributes().setEndAngle(angle);
+        this.endAngle = angle;
 
         return this;
     }
 
     /**
-     * Returns whether the slice is drawn counter clockwise.
-     * The default value is true.
-     * 
+     * Returns whether the drawing direction of this bow is counter clockwise.
+     *
      * @return boolean
      */
     public boolean isCounterClockwise()
     {
-        return getAttributes().isCounterClockwise();
+        return this.counterClockwise;
     }
 
     /**
-     * Sets whether the drawing direction of this slice is counter clockwise.
-     * The default value is true.
-     * 
-     * @param counterclockwise
-     * @return this Slice
+     * Sets the drawing direction for this slice.
+     *
+     * @param counterClockwise If true, it's drawn counter clockwise.
+     * @return this slice
      */
-    public Bow setCounterClockwise(final boolean counterclockwise)
+    public Bow setCounterClockwise(final boolean counterClockwise)
     {
-        getAttributes().setCounterClockwise(counterclockwise);
+        this.counterClockwise = counterClockwise;
 
         return this;
     }
@@ -249,12 +257,6 @@ public class Bow extends Shape<Bow>
             addAttribute(Attribute.END_ANGLE, true);
 
             addAttribute(Attribute.COUNTER_CLOCKWISE);
-        }
-
-        @Override
-        public Bow create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new Bow(node, ctx);
         }
     }
 }

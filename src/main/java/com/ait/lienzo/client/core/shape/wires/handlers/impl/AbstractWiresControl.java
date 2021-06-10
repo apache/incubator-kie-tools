@@ -16,17 +16,18 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMoveControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 
 public abstract class AbstractWiresControl<T> implements WiresMoveControl {
 
     private final Supplier<WiresParentPickerControl> parentPickerControl;
-    private boolean enabled;
+    private       boolean                            enabled;
 
     protected AbstractWiresControl(final Supplier<WiresParentPickerControl> parentPickerControl) {
         this.parentPickerControl = parentPickerControl;

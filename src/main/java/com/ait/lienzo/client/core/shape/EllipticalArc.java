@@ -24,13 +24,29 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.annotations.JsProperty;
 
 /**
  * Arcs are defined by a center point, a radius, a starting angle, an ending angle, and the drawing direction (either clockwise or counterclockwise).
  */
 public class EllipticalArc extends Shape<EllipticalArc>
 {
+    @JsProperty
+    private double radiusX;
+
+    @JsProperty
+    private double radiusY;
+
+    @JsProperty
+    private double startAngle;
+
+    @JsProperty
+    private double endAngle;
+
+    @JsProperty
+    private boolean counterClockwise;
+
     /**
      * Constructor. Creates an instance of an arc.
      * 
@@ -63,11 +79,6 @@ public class EllipticalArc extends Shape<EllipticalArc>
         setRadiusX(radiusX).setRadiusY(radiusY).setStartAngle(startAngle).setEndAngle(endAngle).setCounterClockwise(false);
     }
 
-    protected EllipticalArc(final JSONObject node, final ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.ELLIPTICAL_ARC, node, ctx);
-    }
-
     @Override
     public BoundingBox getBoundingBox()
     {
@@ -75,7 +86,7 @@ public class EllipticalArc extends Shape<EllipticalArc>
 
         final double ry = getRadiusY();
 
-        return new BoundingBox(0 - rx, 0 - ry, rx, ry);
+        return BoundingBox.fromDoubles(0 - rx, 0 - ry, rx, ry);
     }
 
     /**
@@ -84,17 +95,17 @@ public class EllipticalArc extends Shape<EllipticalArc>
      * @param context the {@link Context2D} used to draw this arc.
      */
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final double alpha)
     {
-        final double rx = attr.getRadiusX();
+        final double rx =  getRadiusX();
 
-        final double ry = attr.getRadiusY();
+        final double ry = getRadiusY();
 
         if ((rx > 0) && (ry > 0))
         {
             context.beginPath();
 
-            context.ellipse(0, 0, rx, ry, 0, attr.getStartAngle(), attr.getEndAngle(), attr.isCounterClockwise());
+            context.ellipse(0, 0, rx, ry, 0, getStartAngle(), getEndAngle(), isCounterClockwise());
 
             return true;
         }
@@ -102,110 +113,116 @@ public class EllipticalArc extends Shape<EllipticalArc>
     }
 
     /**
-     * Gets this arc's radius.
-     * 
-     * @return double
+     * Sets this arc's X radius.
+     *
+     * @param radiusX
+     * @return this Circle
      */
-    public double getRadiusX()
+    public EllipticalArc setRadiusX(final double radiusX)
     {
-        return getAttributes().getRadiusX();
+        this.radiusX = radiusX;
+
+        return this;
     }
 
     /**
-     * Gets this arc's radius.
-     * 
+     * Gets this arc's X radius.
+     *
      * @return double
      */
     public double getRadiusY()
     {
-        return getAttributes().getRadiusY();
+        return this.radiusY;
     }
 
     /**
-     * Sets this arc's radius.
-     * 
-     * @param radius
-     * @return this Arc
+     * Sets this arc's X radius.
+     *
+     * @param radiusY
+     * @return this Circle
      */
-    public EllipticalArc setRadiusX(final double radiusX)
+    public EllipticalArc setRadiusY(final double radiusY)
     {
-        getAttributes().setRadiusX(radiusX);
+        this.radiusY = radiusY;
 
         return this;
     }
 
-    public EllipticalArc setRadiusY(final double radiusY)
+    /**
+     * Gets this arc's X radius.
+     *
+     * @return double
+     */
+    public double getRadiusX()
     {
-        getAttributes().setRadiusY(radiusY);
-
-        return this;
+        return this.radiusX;
     }
 
     /**
      * Gets the starting angle of this arc.
-     * 
+     *
      * @return double (in radians)
      */
     public double getStartAngle()
     {
-        return getAttributes().getStartAngle();
+        return this.startAngle;
     }
 
     /**
      * Sets the starting angle of this arc.
-     * 
+     *
      * @param angle (in radians)
      * @return this Arc
      */
     public EllipticalArc setStartAngle(final double angle)
     {
-        getAttributes().setStartAngle(angle);
+        this.startAngle = angle;
 
         return this;
     }
 
     /**
      * Gets the end angle of this arc.
-     * 
+     *
      * @return double (in radians)
      */
     public double getEndAngle()
     {
-        return getAttributes().getEndAngle();
+        return this.endAngle;
     }
 
     /**
      * Sets the end angle of this arc.
-     * 
+     *
      * @param angle (in radians)
      * @return this Arc
      */
     public EllipticalArc setEndAngle(final double angle)
     {
-        getAttributes().setEndAngle(angle);
+        this.endAngle = angle;
 
         return this;
     }
 
     /**
      * Returns whether the drawing direction of this arc is counter clockwise.
-     * 
+     *
      * @return boolean
      */
     public boolean isCounterClockwise()
     {
-        return getAttributes().isCounterClockwise();
+        return this.counterClockwise;
     }
 
     /**
      * Sets the drawing direction for this arc.
-     * 
+     *
      * @param counterClockwise If true, it's drawn counter clockwise.
      * @return this Arc
      */
     public EllipticalArc setCounterClockwise(final boolean counterClockwise)
     {
-        getAttributes().setCounterClockwise(counterClockwise);
+        this.counterClockwise = counterClockwise;
 
         return this;
     }
@@ -231,12 +248,6 @@ public class EllipticalArc extends Shape<EllipticalArc>
             addAttribute(Attribute.END_ANGLE, true);
 
             addAttribute(Attribute.COUNTER_CLOCKWISE);
-        }
-
-        @Override
-        public EllipticalArc create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            return new EllipticalArc(node, ctx);
         }
     }
 }

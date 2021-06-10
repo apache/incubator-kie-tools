@@ -16,20 +16,18 @@
 
 package com.ait.lienzo.client.core.config;
 
-import java.util.Collection;
-
 import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.tooling.common.api.types.IStringValued;
+import com.ait.lienzo.tools.common.api.types.IStringValued;
 
 public interface ILienzoPlugin
 {
-    public String getVersion();
+    String getVersion();
 
-    public String getNameSpace();
+    String getNameSpace();
 
-    public Collection<String> keys();
+    String[] keys();
 
-    public IFactory<?> getFactory(String name);
+    IFactory<?> getFactory(String name);
 
-    public IFactory<?> getFactory(IStringValued type);
+    IFactory<?> getFactory(IStringValued type);
 }

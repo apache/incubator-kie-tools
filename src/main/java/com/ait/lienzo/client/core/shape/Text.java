@@ -28,12 +28,13 @@ import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.RadialGradient;
-import com.ait.lienzo.client.core.types.TextMetrics;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
-import com.google.gwt.json.client.JSONObject;
+
+import elemental2.dom.TextMetrics;
+import jsinterop.annotations.JsProperty;
 
 /**
  * Text implementation for Canvas.
@@ -42,27 +43,40 @@ public class Text extends Shape<Text>
 {
     private static final boolean                             GRADFILLS = LienzoCore.get().isSafariBroken();
 
-    private final IDrawString STROKE = new IDrawString() {
-        @Override
-        public void draw(Context2D context, String s,
-                         double xOffset, double lineNum) {
-            context.beginPath();
+    @JsProperty
+    private String text;
 
-            context.strokeText(s, xOffset, getLineHeight(context) * lineNum);
+    @JsProperty
+    private double fontSize = LienzoCore.get().getDefaultFontSize();
 
-            context.closePath();
+    @JsProperty
+    private String fontFamily = LienzoCore.get().getDefaultFontFamily();
 
-        }
+    @JsProperty
+    private String fontStyle = LienzoCore.get().getDefaultFontStyle();
+
+    @JsProperty
+    private TextBaseLine textBaseLine = TextBaseLine.ALPHABETIC;
+
+    @JsProperty
+    private TextAlign textAlign = TextAlign.START;
+
+    @JsProperty
+    private TextUnit textUnit = TextUnit.PT;
+
+    protected TextUtils textUtils = new TextUtils();
+
+
+    private final IDrawString STROKE = (context, s, xOffset, lineNum) -> {
+        context.beginPath();
+
+        context.strokeText(s, xOffset, getLineHeight(context) * lineNum);
+
+        context.closePath();
+
     };
 
-    private final IDrawString FILL = new IDrawString() {
-        @Override
-        public void draw(Context2D context,
-                         String s,
-                         double xOffset, double lineNum) {
-            context.fillText(s, xOffset, getLineHeight(context) * lineNum);
-        }
-    };
+    private final IDrawString FILL = (context, s, xOffset, lineNum) -> context.fillText(s, xOffset, getLineHeight(context) * lineNum);
 
     private ITextWrapper wrapper = new TextNoWrap(this);
 
@@ -81,7 +95,9 @@ public class Text extends Shape<Text>
         {
             text = "";
         }
-        setText(text).setFontFamily(globals.getDefaultFontFamily()).setFontStyle(globals.getDefaultFontStyle()).setFontSize(globals.getDefaultFontSize());
+        setText(text).setFontFamily(globals.getDefaultFontFamily())
+                .setFontStyle(globals.getDefaultFontStyle())
+                .setFontSize(globals.getDefaultFontSize());
     }
 
     /**
@@ -145,11 +161,6 @@ public class Text extends Shape<Text>
         setText(text).setFontFamily(family).setFontStyle(style).setFontSize(size);
     }
 
-    protected Text(JSONObject node, ValidationContext ctx) throws ValidationException
-    {
-        super(ShapeType.TEXT, node, ctx);
-    }
-
     @Override
     public BoundingBox getBoundingBox()
     {
@@ -157,38 +168,40 @@ public class Text extends Shape<Text>
     }
 
     private BoundingBox getBoundingBoxForString(String string) {
-        return TextUtils.getBoundingBox(string, getFontSize(), getFontStyle(), getFontFamily(), getTextUnit(), getTextBaseLine(), getTextAlign());
+        return textUtils.getBoundingBox(string,
+                                        getFontSize(),
+                                        getFontStyle(),
+                                        getFontFamily(),
+                                        getTextUnit(),
+                                        getTextBaseLine(),
+                                        getTextAlign());
     }
 
-    @Deprecated
-    public static final String getFontString(final double size, final TextUnit unit, final String style, final String family)
+    public String getFontString(final double size, final TextUnit unit, final String style, final String family)
     {
-        //public static method preserved for compatibility
-        return TextUtils.getFontString(size, unit, style, family);
+        return textUtils.getFontString(size, unit, style, family);
     }
 
     @Override
     protected void drawWithoutTransforms(final Context2D context, double alpha, BoundingBox bounds)
     {
-        final Attributes attr = getAttributes();
-
-        alpha = alpha * attr.getAlpha();
+        alpha = alpha * getAlpha();
 
         if (alpha <= 0)
         {
             return;
         }
-        final String text = attr.getText();
+        final String text = getText();
 
-        final double size = attr.getFontSize();
+        final double size = getFontSize();
 
-        if ((null == text) || (text.isEmpty()) || (false == (size > 0)))
+        if ((null == text) || (text.isEmpty()) || (!(size > 0)))
         {
             return;
         }
         if (context.isSelection())
         {
-            if (dofillBoundsForSelection(context, attr, alpha))
+            if (dofillBoundsForSelection(context, alpha))
             {
                 return;
             }
@@ -197,19 +210,19 @@ public class Text extends Shape<Text>
         {
             setAppliedShadow(false);
         }
-        if (attr.isDefined(Attribute.TEXT_BASELINE))
+        if (textBaseLine != null)
         {
-            context.setTextBaseline(attr.getTextBaseLine());
+            context.setTextBaseline(textBaseLine);
         }
-        if (attr.isDefined(Attribute.TEXT_ALIGN))
+        if (textAlign != null)
         {
-            context.setTextAlign(attr.getTextAlign());
+            context.setTextAlign(getTextAlign());
         }
-        context.setTextFont(getFontString(size, attr.getTextUnit(), attr.getFontStyle(), attr.getFontFamily()));
+        context.setTextFont(getFontString(size, getTextUnit(), getFontStyle(), getFontFamily()));
 
-        final boolean fill = fill(context, attr, alpha);
+        final boolean fill = fill(context, alpha);
 
-        stroke(context, attr, alpha, fill);
+        stroke(context, alpha, fill);
     }
 
     /**
@@ -218,19 +231,19 @@ public class Text extends Shape<Text>
      * @param context
      */
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final double alpha)
     {
         return false;
     }
 
     @Override
-    protected boolean fill(final Context2D context, final Attributes attr, double alpha)
+    protected boolean fill(final Context2D context, double alpha)
     {
-        final boolean filled = attr.hasFill();
+        final boolean filled = hasFill();
 
-        if ((filled) || (attr.isFillShapeForSelection()))
+        if ((filled) || (isFillShapeForSelection()))
         {
-            alpha = alpha * attr.getFillAlpha();
+            alpha = alpha * getFillAlpha();
 
             if (alpha <= 0)
             {
@@ -252,20 +265,14 @@ public class Text extends Shape<Text>
 
                     if (null != size)
                     {
-                        final double wide = size.getWidth();
+                        final double wide = size.width;
 
-                        final double high = size.getHeight();
+                        // This is a technique to determine the height of the font, using the highest letter 'M'
+                        double mWidth = context.measureText("M").width;
+                        double high = mWidth - mWidth / 6;
 
                         drawString(context,
-                                   attr,
-                                   new IDrawString() {
-                                       @Override
-                                       public void draw(Context2D context,
-                                                        String s,
-                                                        double xOffset, double lineNum) {
-                                           context.fillTextWithGradient(s, xOffset, getLineHeight(context) * lineNum, 0, 0, wide + (wide / 6), high + (high / 6), color);
-                                       }
-                                   });
+                                   (context12, s, xOffset, lineNum) -> context12.fillTextWithGradient(s, xOffset, getLineHeight(context12) * lineNum, 0, 0, wide + (wide / 6), high + (high / 6), color));
 
                     }
                     else
@@ -273,46 +280,38 @@ public class Text extends Shape<Text>
                         final Layer layer = getLayer();
 
                         drawString(context,
-                                   attr,
-                                   new IDrawString() {
-                                       @Override
-                                       public void draw(Context2D context,
-                                                        String s,
-                                                        double xOffset, double lineNum) {
-                                           context.fillTextWithGradient(s, xOffset, getLineHeight(context) * lineNum, 0,0, layer.getWidth(), layer.getHeight(), color);
-                                       }
-                                   });
+                                   (context1, s, xOffset, lineNum) -> context1.fillTextWithGradient(s, xOffset, getLineHeight(context1) * lineNum, 0, 0, layer.getWidth(), layer.getHeight(), color));
                     }
                 }
                 else
                 {
                     context.setFillColor(color);
 
-                    drawString(context,attr,FILL);
+                    drawString(context,FILL);
                 }
                 context.restore();
 
                 return true;
             }
-            if (false == filled)
+            if (!filled)
             {
                 return false;
             }
             context.save();
 
-            if (attr.hasShadow())
+            if (getShadow() != null)
             {
-                doApplyShadow(context, attr);
+                doApplyShadow(context);
             }
             context.setGlobalAlpha(alpha);
 
-            final String fill = attr.getFillColor();
+            final String fill = getFillColor();
 
             if (null != fill)
             {
                 context.setFillColor(fill);
 
-                drawString(context,attr,FILL);
+                drawString(context,FILL);
                 
                 context.restore();
 
@@ -320,7 +319,7 @@ public class Text extends Shape<Text>
             }
             else
             {
-                final FillGradient grad = attr.getFillGradient();
+                final FillGradient grad = getFillGradient();
 
                 if (null != grad)
                 {
@@ -330,7 +329,7 @@ public class Text extends Shape<Text>
                     {
                         context.setFillGradient(grad.asLinearGradient());
 
-                        drawString(context,attr,FILL);
+                        drawString(context,FILL);
 
                         context.restore();
 
@@ -340,7 +339,7 @@ public class Text extends Shape<Text>
                     {
                         context.setFillGradient(grad.asRadialGradient());
 
-                        drawString(context,attr,FILL);
+                        drawString(context,FILL);
 
                         context.restore();
 
@@ -350,7 +349,7 @@ public class Text extends Shape<Text>
                     {
                         context.setFillGradient(grad.asPatternGradient());
 
-                        drawString(context,attr,FILL);
+                        drawString(context,FILL);
 
                         context.restore();
 
@@ -364,27 +363,23 @@ public class Text extends Shape<Text>
     }
 
     @Override
-    protected void stroke(final Context2D context, final Attributes attr, final double alpha, final boolean filled)
+    protected void stroke(final Context2D context, final double alpha, final boolean filled)
     {
-        if (setStrokeParams(context, attr, alpha, filled))
+        if (setStrokeParams(context, alpha, filled))
         {
-            if ((attr.hasShadow()) && (false == context.isSelection()))
+            if (getShadow() != null && !context.isSelection())
             {
-                doApplyShadow(context, attr);
+                doApplyShadow(context);
             }
 
-            drawString(context, attr, STROKE);
+            drawString(context, STROKE);
             context.restore();
         }
     }
 
-    private static final native void log(String msg)/*-{
-        console.log(msg);
-    }-*/;
-
-    private void drawString(final Context2D context, final Attributes attr, IDrawString drawCommand)
+    private void drawString(final Context2D context, IDrawString drawCommand)
     {
-        wrapper.drawString(context,attr,drawCommand);
+        wrapper.drawString(context, drawCommand);
     }
 
     /**
@@ -400,9 +395,9 @@ public class Text extends Shape<Text>
 
         final double size = getFontSize();
 
-        if ((null == text) || (text.isEmpty()) || (false == (size > 0)))
+        if ((null == text) || (text.isEmpty()) || (!(size > 0)))
         {
-            return TextMetrics.make(0, 0);
+            return new TextMetrics();
         }
         context.save();
 
@@ -423,10 +418,6 @@ public class Text extends Shape<Text>
         context.transform(getAbsoluteTransform());
 
         TextMetrics meas = context.measureText(text);
-
-        double height = context.measureText("M").getWidth();
-
-        meas.setHeight(height - height / 6);
 
         context.restore();
 
@@ -472,7 +463,7 @@ public class Text extends Shape<Text>
      */
     public String getText()
     {
-        return getAttributes().getText();
+        return this.text;
     }
 
     /**
@@ -482,7 +473,7 @@ public class Text extends Shape<Text>
      */
     public Text setText(String text)
     {
-        getAttributes().setText(text);
+        this.text = text;
 
         return this;
     }
@@ -494,7 +485,7 @@ public class Text extends Shape<Text>
      */
     public String getFontFamily()
     {
-        return getAttributes().getFontFamily();
+        return this.fontFamily;
     }
 
     /**
@@ -504,7 +495,11 @@ public class Text extends Shape<Text>
      */
     public Text setFontFamily(String family)
     {
-        getAttributes().setFontFamily(family);
+        if ((null == family) || (family = family.trim()).isEmpty())
+        {
+            family =  LienzoCore.get().getDefaultFontFamily();
+        }
+        this.fontFamily = family;
 
         return this;
     }
@@ -516,7 +511,7 @@ public class Text extends Shape<Text>
      */
     public String getFontStyle()
     {
-        return getAttributes().getFontStyle();
+        return this.fontStyle;
     }
 
     /**
@@ -527,7 +522,11 @@ public class Text extends Shape<Text>
      */
     public Text setFontStyle(String style)
     {
-        getAttributes().setFontStyle(style);
+        if ((null == style) || (style = style.trim()).isEmpty())
+        {
+            style = LienzoCore.get().getDefaultFontStyle();
+        }
+        this.fontStyle = style;
 
         return this;
     }
@@ -539,7 +538,7 @@ public class Text extends Shape<Text>
      */
     public double getFontSize()
     {
-        return getAttributes().getFontSize();
+        return this.fontSize;
     }
 
     /**
@@ -550,21 +549,29 @@ public class Text extends Shape<Text>
      */
     public Text setFontSize(double size)
     {
-        getAttributes().setFontSize(size);
+        if (size <= 0.0)
+        {
+            size = LienzoCore.get().getDefaultFontSize();
+        }
+        this.fontSize = size;
 
         return this;
     }
 
     public Text setTextUnit(TextUnit unit)
     {
-        getAttributes().setTextUnit(unit);
+        if ( unit == null )
+        {
+            throw new IllegalArgumentException("TextUnit cannot be null");
+        }
+        this.textUnit = unit;
 
         return this;
     }
 
     public TextUnit getTextUnit()
     {
-        return getAttributes().getTextUnit();
+        return this.textUnit;
     }
 
     /**
@@ -574,7 +581,7 @@ public class Text extends Shape<Text>
      */
     public TextAlign getTextAlign()
     {
-        return getAttributes().getTextAlign();
+        return this.textAlign;
     }
 
     /**
@@ -585,7 +592,7 @@ public class Text extends Shape<Text>
      */
     public Text setTextAlign(TextAlign align)
     {
-        getAttributes().setTextAlign(align);
+        this.textAlign = align;
 
         return this;
     }
@@ -597,7 +604,7 @@ public class Text extends Shape<Text>
      */
     public TextBaseLine getTextBaseLine()
     {
-        return getAttributes().getTextBaseLine();
+        return this.textBaseLine;
     }
 
     /**
@@ -606,9 +613,9 @@ public class Text extends Shape<Text>
      * @param baseline
      * @return this Text
      */
-    public Text setTextBaseLine(TextBaseLine baseline)
+    public Text setTextBaseLine(TextBaseLine baseLine)
     {
-        getAttributes().setTextBaseLine(baseline);
+        this.textBaseLine = baseLine;
 
         return this;
     }
@@ -655,12 +662,6 @@ public class Text extends Shape<Text>
             addAttribute(Attribute.TEXT_BASELINE);
 
             addAttribute(Attribute.WIDTH);
-        }
-
-        @Override
-        public Text create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new Text(node, ctx);
         }
     }
 }

@@ -6,9 +6,9 @@ import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.event.WiresConnectorPointsChangedEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresConnectorPointsChangedHandler;
-import com.ait.tooling.common.api.java.util.function.BiConsumer;
-import com.ait.tooling.common.api.java.util.function.Consumer;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
 
 public class WiresConnectorLabel implements IDestroyable
 {
@@ -100,14 +100,10 @@ public class WiresConnectorLabel implements IDestroyable
         }
     }
 
-    private final WiresConnectorPointsChangedHandler pointsUpdatedHandler = new WiresConnectorPointsChangedHandler()
-    {
-        @Override public void onPointsChanged(WiresConnectorPointsChangedEvent event)
+    private final WiresConnectorPointsChangedHandler pointsUpdatedHandler = event -> {
+        if (isVisible())
         {
-            if (isVisible())
-            {
-                refresh();
-            }
+            refresh();
         }
     };
 }

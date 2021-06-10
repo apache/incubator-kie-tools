@@ -20,7 +20,8 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
-import com.google.gwt.json.client.JSONObject;
+
+import jsinterop.base.Js;
 
 public class ContrastImageDataFilter extends AbstractValueTableImageDataFilter<ContrastImageDataFilter>
 {
@@ -38,7 +39,7 @@ public class ContrastImageDataFilter extends AbstractValueTableImageDataFilter<C
         super(ImageFilterType.ContrastImageDataFilterType, value);
     }
 
-    protected ContrastImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected ContrastImageDataFilter(Object node, ValidationContext ctx) throws ValidationException
     {
         super(ImageFilterType.ContrastImageDataFilterType, node, ctx);
     }
@@ -71,14 +72,15 @@ public class ContrastImageDataFilter extends AbstractValueTableImageDataFilter<C
         return m_table;
     }
 
-    private final native FilterTableArray getTable_(double value)
-    /*-{
-		var table = [];
-		for (var i = 0; i < 256; i++) {
-			table[i] = (255 * (((i / 255) - 0.5) * value + 0.5)) | 0;
+    private final FilterTableArray getTable_(double value)
+    {
+        int[] table = new int[256];
+		for (int i = 0; i < 256; i++) {
+			table[i] =  Js.coerceToInt(255 * (((i / 255) - 0.5) * value + 0.5));
 		}
-		return table;
-    }-*/;
+
+		return new FilterTableArray(table);
+    }
 
     @Override
     public IFactory<ContrastImageDataFilter> getFactory()
@@ -91,12 +93,6 @@ public class ContrastImageDataFilter extends AbstractValueTableImageDataFilter<C
         public ContrastImageDataFilterFactory()
         {
             super(ImageFilterType.ContrastImageDataFilterType);
-        }
-
-        @Override
-        public ContrastImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
-        {
-            return new ContrastImageDataFilter(node, ctx);
         }
     }
 }

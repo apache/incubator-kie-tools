@@ -16,16 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-import java.util.Set;
-
-import com.ait.tooling.common.api.java.util.StringOps;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONValue;
-
 public class SpriteBehaviorMapValidator extends AbstractAttributeTypeValidator
 {
-    public static SpriteBehaviorMapValidator INSTANCE = new SpriteBehaviorMapValidator();
+    public static final SpriteBehaviorMapValidator INSTANCE = new SpriteBehaviorMapValidator();
 
     public SpriteBehaviorMapValidator()
     {
@@ -33,7 +26,7 @@ public class SpriteBehaviorMapValidator extends AbstractAttributeTypeValidator
     }
 
     @Override
-    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
+    public void validate(final Object jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
@@ -41,56 +34,57 @@ public class SpriteBehaviorMapValidator extends AbstractAttributeTypeValidator
 
             return;
         }
-        final JSONObject jobj = jval.isObject();
-
-        if (null == jobj)
-        {
-            ctx.addBadTypeError(getTypeName());
-        }
-        else
-        {
-            final Set<String> keys = jobj.keySet();
-
-            if (keys.isEmpty())
-            {
-                ctx.addBadTypeError(getTypeName() + ": empty behavior keys");
-
-                return;
-            }
-            for (String ikey : keys)
-            {
-                final String akey = StringOps.toTrimOrNull(ikey);
-
-                if (null == akey)
-                {
-                    ctx.addBadTypeError(getTypeName() + ": empty behavior name");
-
-                    return;
-                }
-                final JSONValue ival = jobj.get(akey);
-
-                if (null == ival)
-                {
-                    ctx.addBadTypeError(getTypeName() + ": missing behavior array for " + akey);
-
-                    return;
-                }
-                final JSONArray jarr = ival.isArray();
-
-                if (null == jarr)
-                {
-                    ctx.addBadTypeError(getTypeName() + ": invalid behavior array for " + akey);
-
-                    return;
-                }
-                if (jarr.size() < 2)
-                {
-                    ctx.addBadArraySizeError(2, jarr.size());
-
-                    return;
-                }
-                BoundingBoxArrayValidator.INSTANCE.validate(jarr, ctx);
-            }
-        }
+        // @FIXME serialization (mdp)
+//        final JSONObject jobj = jval.isObject();
+//
+//        if (null == jobj)
+//        {
+//            ctx.addBadTypeError(getTypeName());
+//        }
+//        else
+//        {
+//            final Set<String> keys = jobj.keySet();
+//
+//            if (keys.isEmpty())
+//            {
+//                ctx.addBadTypeError(getTypeName() + ": empty behavior keys");
+//
+//                return;
+//            }
+//            for (String ikey : keys)
+//            {
+//                final String akey = StringOps.toTrimOrNull(ikey);
+//
+//                if (null == akey)
+//                {
+//                    ctx.addBadTypeError(getTypeName() + ": empty behavior name");
+//
+//                    return;
+//                }
+//                final JSONValue ival = jobj.get(akey);
+//
+//                if (null == ival)
+//                {
+//                    ctx.addBadTypeError(getTypeName() + ": missing behavior array for " + akey);
+//
+//                    return;
+//                }
+//                final JSONArray jarr = ival.isArray();
+//
+//                if (null == jarr)
+//                {
+//                    ctx.addBadTypeError(getTypeName() + ": invalid behavior array for " + akey);
+//
+//                    return;
+//                }
+//                if (jarr.size() < 2)
+//                {
+//                    ctx.addBadArraySizeError(2, jarr.size());
+//
+//                    return;
+//                }
+//                BoundingBoxArrayValidator.INSTANCE.validate(jarr, ctx);
+//            }
+//        }
     }
 }

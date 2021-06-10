@@ -19,33 +19,31 @@ package com.ait.lienzo.client.core.shape;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.function.Predicate;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IContainerFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
-import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.shared.core.types.NodeType;
-import com.ait.tooling.common.api.java.util.function.Predicate;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import com.google.gwt.json.client.JSONObject;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
 /**
  * ContainerNode acts as a Collection holder for primitives.
  * 
  * <ul>
  * <li>A ContainerNode may contain {@link Layer} or {@link Group}.</li>
- * <li>A Container handles collection operations such as add, remove and removeAll.</li>
+ * <li>A Container handles collection operations such as addBoundingBox, remove and removeAll.</li>
  * </ul>
  * 
  * @param <T>
  */
-public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerNode<M, T>>extends Node<T>implements IContainer<T, M>
+public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerNode<M, T>>
+        extends Node<T>
+        implements IContainer<T, M>
 {
     private BoundingBox       m_bbox;
 
@@ -60,25 +58,9 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
         setStorageEngine(storage);
     }
 
-    protected ContainerNode(final NodeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
+    protected ContainerNode(final NodeType type)
     {
-        super(type, node, ctx);
-    }
-
-    @Override
-    public T copy()
-    {
-        final Node<?> node = copyUnchecked();
-
-        if (null == node)
-        {
-            return null;
-        }
-        if (getNodeType() != node.getNodeType())
-        {
-            return null;
-        }
-        return node.cast();
+        super(type);
     }
 
     /**
@@ -143,7 +125,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * <p>
      * It should be noted that this operation will not have an apparent effect for an already rendered (drawn) Container.
      * In other words, if the Container has already been drawn and a new primitive is added, you'll need to invoke draw() on the
-     * Container. This is done to enhance performance, otherwise, for every add we would have draws impacting performance.
+     * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
      */
     @Override
     public T add(final M child)
@@ -162,7 +144,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * <p>
      * It should be noted that this operation will not have an apparent effect for an already rendered (drawn) Container.
      * In other words, if the Container has already been drawn and a new primitive is added, you'll need to invoke draw() on the
-     * Container. This is done to enhance performance, otherwise, for every add we would have draws impacting performance.
+     * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
      */
     @Override
     public T remove(final M child)
@@ -181,7 +163,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * <p>
      * It should be noted that this operation will not have an apparent effect for an already rendered (drawn) Container.
      * In other words, if the Container has already been drawn and a new primitive is added, you'll need to invoke draw() on the
-     * Container. This is done to enhance performance, otherwise, for every add we would have draws impacting performance.
+     * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
      */
     @Override
     public T removeAll()
@@ -201,11 +183,11 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     @Override
     protected void drawWithoutTransforms(final Context2D context, double alpha, final BoundingBox bounds)
     {
-        if ((context.isSelection()) && (false == isListening()))
+        if ((context.isSelection()) && (!isListening()))
         {
             return;
         }
-        alpha = alpha * getAttributes().getAlpha();
+        alpha = alpha * getAlpha();
 
         if (alpha <= 0)
         {
@@ -259,7 +241,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
 
             if (null != bpts)
             {
-                bbox.add(bpts.getArray());
+                bbox.addPoint2DArray(bpts.getArray());
             }
         }
         return bbox;
@@ -270,7 +252,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return new ArrayList<Attribute>(0);
+        return new ArrayList<>(0);
     }
 
     /**
@@ -322,36 +304,31 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     {
         if ((null == id) || ((id = id.trim()).isEmpty()))
         {
-            return new ArrayList<Node<?>>(0);
+            return new ArrayList<>(0);
         }
         final String look = id;
 
-        return find(new Predicate<Node<?>>()
-        {
-            @Override
-            public boolean test(Node<?> node)
+        return find(node -> {
+            if (null == node)
             {
-                if (null == node)
-                {
-                    return false;
-                }
-                String id = node.getAttributes().getID();
-
-                if ((null != id) && (false == (id = id.trim()).isEmpty()))
-                {
-                    return id.equals(look);
-                }
                 return false;
             }
+            String id1 = node.getID();
+
+            if ((null != id1) && (false == (id1 = id1.trim()).isEmpty()))
+            {
+                return id1.equals(look);
+            }
+            return false;
         });
     }
 
-    abstract protected void find(Predicate<Node<?>> predicate, LinkedHashSet<Node<?>> buff);
+    protected abstract void find(Predicate<Node<?>> predicate, LinkedHashSet<Node<?>> buff);
 
     @Override
     public final Iterable<Node<?>> find(final Predicate<Node<?>> predicate)
     {
-        final LinkedHashSet<Node<?>> buff = new LinkedHashSet<Node<?>>();
+        final LinkedHashSet<Node<?>> buff = new LinkedHashSet<>();
 
         find(predicate, buff);
 
@@ -384,7 +361,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
         return this;
     }
 
-    public static abstract class ContainerNodeFactory<C extends IJSONSerializable<C> & IContainer<C, ?>>extends NodeFactory<C>implements IContainerFactory
+    public abstract static class ContainerNodeFactory<C extends IJSONSerializable<C> & IContainer<C, ?>>extends NodeFactory<C>implements IContainerFactory
     {
         protected ContainerNodeFactory(final NodeType type)
         {
@@ -394,18 +371,6 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
         protected ContainerNodeFactory(final String typeName)
         {
             super(typeName);
-        }
-
-        protected abstract C container(JSONObject node, ValidationContext ctx) throws ValidationException;
-
-        @Override
-        public C create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            final C container = container(node, ctx);
-
-            JSONDeserializer.get().deserializeChildren(container, node, this, ctx);
-
-            return container;
         }
     }
 }

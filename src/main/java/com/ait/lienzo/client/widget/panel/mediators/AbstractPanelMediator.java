@@ -1,8 +1,9 @@
 package com.ait.lienzo.client.widget.panel.mediators;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 
 public abstract class AbstractPanelMediator<T> {
 
@@ -56,5 +57,4 @@ public abstract class AbstractPanelMediator<T> {
     protected Layer getLayer() {
         return getPanel().getLayer();
     }
-
 }

@@ -16,10 +16,12 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.ait.lienzo.client.core.types.Point2D.Point2DJSO;
 import com.ait.lienzo.client.core.util.GeometryException;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONArray;
+import com.ait.lienzo.client.core.util.Matrix;
+
+import elemental2.core.Global;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * Transform is an affine transformation matrix.
@@ -31,9 +33,16 @@ import com.google.gwt.json.client.JSONArray;
  * @see <a href="http://docs.oracle.com/javase/6/docs/api/java/awt/geom/AffineTransform.html">http://docs.oracle.com/javase/6/docs/api/java/awt/geom/AffineTransform.html</a>
  * @see <a href="http://mathworld.wolfram.com/AffineTransformation.html">http://mathworld.wolfram.com/AffineTransformation.html</a>
  */
+@JsType
 public final class Transform
 {
-    private final TransformJSO m_jso;
+    @JsProperty
+    public double[] v;
+
+//    public Transform()
+//    {
+//        this.v = new double[] {1, 0, 0, 1, 0, 0 };
+//    }
 
     /**
      * Constructs a new <code>Transform</code> representing the
@@ -41,12 +50,12 @@ public final class Transform
      */
     public Transform()
     {
-        m_jso = TransformJSO.make();
+        this.v = new double[] {1, 0, 0, 1, 0, 0 };
     }
 
     /**
      * Constructs a new <code>Transform</code> from 6 floating point
-     * values representing the 6 specifiable entries of the 3x3
+     * v representing the 6 specifiable entries of the 3x3
      * transformation matrix.
      *
      * @param m00 the X coordinate scaling element of the 3x3 matrix
@@ -56,14 +65,22 @@ public final class Transform
      * @param m02 the X coordinate translation element of the 3x3 matrix
      * @param m12 the Y coordinate translation element of the 3x3 matrix
      */
-    public Transform(final double m00, final double m10, final double m01, final double m11, final double m02, final double m12)
+    public static Transform makeFromValues(final double m00, final double m10, final double m01, final double m11, final double m02, final double m12)
     {
-        m_jso = TransformJSO.make(m00, m10, m01, m11, m02, m12);
-    }
+        Transform t = new Transform();
+        t.v[0] = m00;
+        t.v[1] = m10;
+        t.v[2] = m01;
+        t.v[3] = m11;
+        t.v[4] = m02;
+        t.v[5] = m12;
+
+        return t;
+}
 
     /**
      * Constructs a new <code>Transform</code> from 6 floating point
-     * values representing the 6 specifiable entries of the 3x3
+     * v representing the 6 specifiable entries of the 3x3
      * transformation matrix. 
      *
      * @param m an array with [m00, m10, m01, m11, m02, m12] where:
@@ -74,31 +91,22 @@ public final class Transform
      * @param m02 the X coordinate translation element of the 3x3 matrix
      * @param m12 the Y coordinate translation element of the 3x3 matrix
      */
-    public Transform(final double[] m)
+    public static Transform makeFromArray(final double[] m)
     {
-        this(m[0], m[1], m[2], m[3], m[4], m[5]);
-    }
-
-    /**
-     * Constructs a Transform from a TransformJSO. Used internally.
-     * 
-     * @param jso TransformJSO
-     */
-    public Transform(final TransformJSO jso)
-    {
-        m_jso = jso;
+        return makeFromValues(m[0], m[1], m[2], m[3], m[4], m[5]);
     }
 
     public final Transform reset()
     {
-        m_jso.reset();
+        v = new double[] {1, 0, 0, 1, 0, 0 };
 
         return this;
     }
 
     public boolean isIdentity()
     {
-        return m_jso.isIdentity();
+        return (this.v[0] == 1) && (this.v[1] == 0) && (this.v[2] == 0)
+               && (this.v[3] == 1) && (this.v[4] == 0) && (this.v[5] == 0);
     }
 
     /**
@@ -109,7 +117,9 @@ public final class Transform
      */
     public Transform copy()
     {
-        return new Transform(m_jso.copy());
+        Transform jso = new Transform();
+        jso.v = new double[] {this.v[0], this.v[1], this.v[2], this.v[3], this.v[4], this.v[5] };
+        return jso;
     }
 
     /**
@@ -132,7 +142,9 @@ public final class Transform
      */
     public final Transform translate(final double tx, final double ty)
     {
-        m_jso.translate(tx, ty);
+        this.v[4] += this.v[0] * tx + this.v[2] * ty;
+
+        this.v[5] += this.v[1] * tx + this.v[3] * ty;
 
         return this;
     }
@@ -152,24 +164,36 @@ public final class Transform
      * Y axis direction 
      * @return this Transform
      */
-    public final Transform scale(final double sx, final double sy)
+    public final Transform scaleWithXY(final double sx, final double sy)
     {
-        m_jso.scale(sx, sy);
+        this.v[0] *= sx;
+
+        this.v[1] *= sx;
+
+        this.v[2] *= sy;
+
+        this.v[3] *= sy;
 
         return this;
     }
 
     /**
      * Concatenates this transform with a scaling transformation.
-     * Same as <pre>scale(scaleFactor, scaleFactor)</pre>
+     * Same as <pre>scaleWithXY(scaleFactor, scaleFactor)</pre>
      * 
-     * @see #scale(double, double)
-     * @param scaleFactor used as the scale factor for both x and y directions 
+     * @see #scaleWithXY(double, double)
+     * @param scaleFactor used as the scaleWithXY factor for both x and y directions
      * @return this Transform
      */
     public final Transform scale(final double scaleFactor)
     {
-        m_jso.scale(scaleFactor, scaleFactor);
+        this.v[0] *= scaleFactor;
+
+        this.v[1] *= scaleFactor;
+
+        this.v[2] *= scaleFactor;
+
+        this.v[3] *= scaleFactor;
 
         return this;
     }
@@ -191,7 +215,17 @@ public final class Transform
      */
     public final Transform shear(final double shx, final double shy)
     {
-        m_jso.shear(shx, shy);
+        double m00 = this.v[0];
+
+        double m10 = this.v[1];
+
+        this.v[0] += shy * this.v[2];
+
+        this.v[1] += shy * this.v[3];
+
+        this.v[2] += shx * m00;
+
+        this.v[3] += shx * m10;
 
         return this;
     }
@@ -214,7 +248,25 @@ public final class Transform
      */
     public final Transform rotate(final double theta)
     {
-        m_jso.rotate(theta);
+        double c = Math.cos(theta);
+
+        double s = Math.sin(theta);
+
+        double m11 = this.v[0] * c + this.v[2] * s;
+
+        double m12 = this.v[1] * c + this.v[3] * s;
+
+        double m21 = this.v[0] * -s + this.v[2] * c;
+
+        double m22 = this.v[1] * -s + this.v[3] * c;
+
+        this.v[0] = m11;
+
+        this.v[1] = m12;
+
+        this.v[2] = m21;
+
+        this.v[3] = m22;
 
         return this;
     }
@@ -228,7 +280,29 @@ public final class Transform
      */
     public final Transform multiply(final Transform transform)
     {
-        m_jso.multiply(transform.getJSO());
+        double m11 = this.v[0] * transform.v[0] + this.v[2] * transform.v[1];
+
+        double m12 = this.v[1] * transform.v[0] + this.v[3] * transform.v[1];
+
+        double m21 = this.v[0] * transform.v[2] + this.v[2] * transform.v[3];
+
+        double m22 = this.v[1] * transform.v[2] + this.v[3] * transform.v[3];
+
+        double dx = this.v[0] * transform.v[4] + this.v[2] * transform.v[5] + this.v[4];
+
+        double dy = this.v[1] * transform.v[4] + this.v[3] * transform.v[5] + this.v[5];
+
+        this.v[0] = m11;
+
+        this.v[1] = m12;
+
+        this.v[2] = m21;
+
+        this.v[3] = m22;
+
+        this.v[4] = dx;
+
+        this.v[5] = dy;
 
         return this;
     }
@@ -254,7 +328,7 @@ public final class Transform
      */
     public final Transform concatenate(final Transform transform)
     {
-        m_jso.multiply(transform.getJSO());
+        multiply(transform);
 
         return this;
     }
@@ -278,11 +352,37 @@ public final class Transform
      */
     public final Transform getInverse() throws GeometryException
     {
-        if (Math.abs(m_jso.getDeterminant()) <= Double.MIN_VALUE)
+        if (Math.abs(getDeterminant()) <= Double.MIN_VALUE)
         {
             throw new GeometryException("Can't invert this matrix - determinant is near 0");
         }
-        return new Transform(m_jso.getInverse());
+
+        //[0] m00, [1] m10, [2] m01, [3] m11, [4] m02, [5] m12
+        double m00 = this.v[0];
+        double m10 = this.v[1];
+        double m01 = this.v[2];
+        double m11 = this.v[3];
+        double m02 = this.v[4];
+        double m12 = this.v[5];
+
+        double det = (m00 * m11) - (m01 * m10);
+
+        Transform inverse = new Transform();
+        inverse.v = new double[] {
+                m11 / det,
+                -m10 / det,
+                -m01 / det,
+                m00 / det,
+                ((m01 * m12) - (m11 * m02)) / det,
+                ((m10 * m02) - (m00 * m12)) / det
+        };
+
+        return inverse;
+    }
+
+    public final double getDeterminant()
+    {
+        return this.v[0] * this.v[3] - this.v[2] * this.v[1]; // m00 * m11 - m01 * m10
     }
 
     /**
@@ -291,7 +391,7 @@ public final class Transform
      * If <code>ptDst</code> is <code>null</code>, a new {@link Point2D}
      * object is allocated and then the result of the transformation is
      * stored in this object.
-     * In either case, <code>ptDst</code>, which contains the
+     * In either case, <code>ptDst</code>, which containsBoundingBox the
      * transformed point, is returned for convenience.
      * If <code>ptSrc</code> and <code>ptDst</code> are the same
      * object, the input point is correctly overwritten with
@@ -304,7 +404,10 @@ public final class Transform
      */
     public final void transform(final Point2D ptSrc, final Point2D ptDst)
     {
-        m_jso.transform(ptSrc.getJSO(), ptDst.getJSO());
+        double x = ptSrc.getX();
+        double y = ptSrc.getY();
+        ptDst.setX(x * this.v[0] + y * this.v[2] + this.v[4]);
+        ptDst.setY(x * this.v[1] + y * this.v[3] + this.v[5]);
     }
 
     /**
@@ -314,7 +417,7 @@ public final class Transform
      * Equivalent to:
      * <pre>
      *  translate(x, y);
-     *  scale(scale, scale);
+     *  scaleWithXY(scaleWithXY, scaleWithXY);
      *  translate(-x, -y);
      *  </pre>
      * @param scale
@@ -325,7 +428,7 @@ public final class Transform
     {
         translate(x, y);
 
-        scale(scale, scale);
+        scaleWithXY(scale, scale);
 
         translate(-x, -y);
 
@@ -399,28 +502,20 @@ public final class Transform
     }
 
     /**
-     * Returns the underlying matrix values.
+     * Returns the underlying matrix v.
      * 
      * @param i index into the array [m00, m10, m01, m11, m02, m12]
      * @return matrix value
      */
     public final double get(final int i)
     {
-        return m_jso.get(i);
+        return v[i];
     }
 
-    /**
-     * Returns the TransformJSO Javascript object. Used internally.
-     * @return TransformJSO
-     */
-    public final TransformJSO getJSO()
-    {
-        return m_jso;
-    }
 
     public final String toJSONString()
     {
-        return new JSONArray(m_jso).toString();
+        return Global.JSON.stringify(this);
     }
 
     @Override
@@ -432,7 +527,7 @@ public final class Transform
     @Override
     public boolean equals(final Object other)
     {
-        if ((other == null) || (false == (other instanceof Transform)))
+        if ((other == null) || (!(other instanceof Transform)))
         {
             return false;
         }
@@ -440,7 +535,14 @@ public final class Transform
         {
             return true;
         }
-        return ((Transform) other).getJSO().same(getJSO());
+        return ((Transform) other).same(this);
+    }
+
+    public final boolean same(Transform that)
+    {
+        return (this.v[0] == that.v[0]) && (this.v[1] == that.v[1])
+               && (this.v[2] == that.v[2]) && (this.v[3] == that.v[3])
+               && (this.v[4] == that.v[4]) && (this.v[5] == that.v[5]);
     }
 
     @Override
@@ -449,9 +551,70 @@ public final class Transform
         return toJSONString().hashCode();
     }
 
-    public static final Transform fromXY(final double x, final double y)
+    public static final Transform fromXY(Transform xfrm, final double x, final double y)
     {
-        return new Transform(TransformJSO.make(x, y));
+
+        if ( xfrm == null)
+        {
+            xfrm = new Transform();
+        }
+        xfrm.v[0] = 1;
+        xfrm.v[1] = 0;
+        xfrm.v[2] = 0;
+        xfrm.v[3] = 1;
+        xfrm.v[4] = x;
+        xfrm.v[5] = y;
+
+        return xfrm;
+    }
+
+    /**
+     * Returns a Transform that converts
+     * the 3 source points into the 3 destination points.
+     *
+     * @param src       Array with 3 (different) source points
+     * @param target    Array with 3 target points
+     * @return Transform
+     */
+    public static final Transform create3PointTransform(Point2DArray src, Point2DArray target)
+    {
+        // Determine T so that:
+        //
+        // T * P = P' for each Point
+        //
+        // where T = (a b c)
+        // (d e f)
+        //
+        // T * P => x' = (ax + by + c)
+        // y' = (dx + ey + f)
+        //
+        // Given are 3 points and their projections: P1, P1', P2, P2', P3, P3'.
+        // P1 is (x1, y1) P1' is (x1', y1')
+        //
+        // (ax1 + by1 + c ) = x1'
+        // ( dx1 + ey1 + f) = y1'
+        // (ax2 + by2 + c ) = x2'
+        // ( dx2 + ey2 + f) = y2'
+        // (ax3 + by3 + c ) = x3'
+        // ( dx3 + ey3 + f) = y3'
+
+        Point2D p1 = src.get(0);
+        Point2D p2 = src.get(1);
+        Point2D p3 = src.get(2);
+
+        Point2D p1_ = target.get(0);
+        Point2D p2_ = target.get(1);
+        Point2D p3_ = target.get(2);
+
+        double[][] eq = { { p1.getX(), p1.getY(), 1, 0, 0, 0 }, { 0, 0, 0, p1.getX(), p1.getY(), 1 }, { p2.getX(), p2.getY(), 1, 0, 0, 0 }, { 0, 0, 0, p2.getX(), p2.getY(), 1 }, { p3.getX(), p3.getY(), 1, 0, 0, 0 }, { 0, 0, 0, p3.getX(), p3.getY(), 1 }, };
+
+        double[][] s = { { p1_.getX(), p1_.getY(), p2_.getX(), p2_.getY(), p3_.getX(), p3_.getY() } };
+        Matrix m = new Matrix(eq);
+        Matrix rhs = new Matrix(s).transpose();
+        Matrix T = m.solve(rhs);
+
+        double[][] d = T.getData();
+        return Transform.makeFromValues(d[0][0], d[3][0], d[1][0], d[4][0], d[2][0], d[5][0]);
     }
 
     /**
@@ -502,186 +665,185 @@ public final class Transform
 
         double m12 = -y * scale;
 
-        return new Transform(scale, 0, 0, scale, m02, m12);
+        return Transform.makeFromValues(scale, 0, 0, scale, m02, m12);
     }
 
-    /**
-     * Javascript class to store the Transform matrix values.
-     * It's an array with 6 values:
-     * 
-     * [0] m00, [1] m10, [2] m01, [3] m11, [4] m02, [5] m12
-     *
-     */
-    public static final class TransformJSO extends JavaScriptObject
-    {
-        protected TransformJSO()
-        {
-        }
-
-        public static final native TransformJSO make()
-        /*-{
-			return [ 1, 0, 0, 1, 0, 0 ];
-        }-*/;
-
-        public static final native TransformJSO make(double x, double y)
-        /*-{
-			return [ 1, 0, 0, 1, x, y ];
-        }-*/;
-
-        public static final native TransformJSO make(double m00, double m10, double m01, double m11, double m02, double m12)
-        /*-{
-			return [ m00, m10, m01, m11, m02, m12 ];
-        }-*/;
-
-        public final native void reset()
-        /*-{
-			this[0] = 1;
-
-			this[1] = 0;
-
-			this[2] = 0;
-
-			this[3] = 1;
-
-			this[4] = 0;
-
-			this[5] = 0;
-        }-*/;
-
-        public final native void translate(double x, double y)
-        /*-{
-			this[4] += this[0] * x + this[2] * y;
-
-			this[5] += this[1] * x + this[3] * y;
-        }-*/;
-
-        public final native boolean same(TransformJSO that)
-        /*-{
-			return (this[0] == that[0]) && (this[1] == that[1])
-					&& (this[2] == that[2]) && (this[3] == that[3])
-					&& (this[4] == that[4]) && (this[5] == that[5]);
-        }-*/;
-
-        public final native boolean isIdentity()
-        /*-{
-			return (this[0] == 1) && (this[1] == 0) && (this[2] == 0)
-					&& (this[3] == 1) && (this[4] == 0) && (this[5] == 0);
-        }-*/;
-
-        public final native TransformJSO copy()
-        /*-{
-			return [ this[0], this[1], this[2], this[3], this[4], this[5] ];
-        }-*/;
-
-        public final native void scale(double sx, double sy)
-        /*-{
-			this[0] *= sx;
-
-			this[1] *= sx;
-
-			this[2] *= sy;
-
-			this[3] *= sy;
-        }-*/;
-
-        public final native void shear(double shx, double shy)
-        /*-{
-			var m00 = this[0];
-
-			var m10 = this[1];
-
-			this[0] += shy * this[2];
-
-			this[1] += shy * this[3];
-
-			this[2] += shx * m00;
-
-			this[3] += shx * m10;
-        }-*/;
-
-        public final native void rotate(double rad)
-        /*-{
-			var c = Math.cos(rad);
-
-			var s = Math.sin(rad);
-
-			var m11 = this[0] * c + this[2] * s;
-
-			var m12 = this[1] * c + this[3] * s;
-
-			var m21 = this[0] * -s + this[2] * c;
-
-			var m22 = this[1] * -s + this[3] * c;
-
-			this[0] = m11;
-
-			this[1] = m12;
-
-			this[2] = m21;
-
-			this[3] = m22;
-        }-*/;
-
-        public final native void multiply(TransformJSO transform)
-        /*-{
-			var m11 = this[0] * transform[0] + this[2] * transform[1];
-
-			var m12 = this[1] * transform[0] + this[3] * transform[1];
-
-			var m21 = this[0] * transform[2] + this[2] * transform[3];
-
-			var m22 = this[1] * transform[2] + this[3] * transform[3];
-
-			var dx = this[0] * transform[4] + this[2] * transform[5] + this[4];
-
-			var dy = this[1] * transform[4] + this[3] * transform[5] + this[5];
-
-			this[0] = m11;
-
-			this[1] = m12;
-
-			this[2] = m21;
-
-			this[3] = m22;
-
-			this[4] = dx;
-
-			this[5] = dy;
-        }-*/;
-
-        public final native double getDeterminant()
-        /*-{
-			return this[0] * this[3] - this[2] * this[1]; // m00 * m11 - m01 * m10
-        }-*/;
-
-        public final native TransformJSO getInverse()
-        /*-{
-			//[0] m00, [1] m10, [2] m01, [3] m11, [4] m02, [5] m12
-			var m00 = this[0];
-			var m10 = this[1];
-			var m01 = this[2];
-			var m11 = this[3];
-			var m02 = this[4];
-			var m12 = this[5];
-
-			var det = m00 * m11 - m01 * m10;
-
-			return [ m11 / det, -m10 / det, -m01 / det, m00 / det,
-					(m01 * m12 - m11 * m02) / det,
-					(m10 * m02 - m00 * m12) / det ];
-        }-*/;
-
-        public final native double get(int i)
-        /*-{
-			return this[i];
-        }-*/;
-
-        public final native void transform(Point2DJSO src, Point2DJSO target)
-        /*-{
-			var x = src.x;
-			var y = src.y;
-			target.x = x * this[0] + y * this[2] + this[4];
-			target.y = x * this[1] + y * this[3] + this[5];
-        }-*/;
-    }
+//    /**
+//     * Javascript class to store the Transform matrix v.
+//     * It's an array with 6 v:
+//     *
+//     * [0] m00, [1] m10, [2] m01, [3] m11, [4] m02, [5] m12
+//     *
+//     */
+//    @JsType
+//    public static final class TransformJSO
+//    {
+//        @JsProperty
+//        public double[] v;
+//
+//        protected TransformJSO()
+//        {
+//            this.v = new double[] {1, 0, 0, 1, 0, 0 };
+//        }
+//
+//        public static final TransformJSO makeXY(double x, double y)
+//        {
+//            TransformJSO jso = new TransformJSO();
+//            jso.v = new double[] {1, 0, 0, 1, x, y };
+//            return jso;
+//        };
+//
+//        public static final TransformJSO makeFromValues(double m00, double m10, double m01, double m11, double m02, double m12)
+//        {
+//            TransformJSO jso = new TransformJSO();
+//            jso.v = new double[] {m00, m10, m01, m11, m02, m12};
+//            return jso;
+//        };
+//
+//        public final void reset()
+//        {
+//            v = new double[] {1, 0, 0, 1, 0, 0 };
+//        };
+//
+//        public final void translate(double x, double y)
+//        {
+//			this.v[4] += this.v[0] * x + this.v[2] * y;
+//
+//			this.v[5] += this.v[1] * x + this.v[3] * y;
+//        };
+//
+//        public final boolean same(TransformJSO that)
+//        {
+//			return (this.v[0] == that.v[0]) && (this.v[1] == that.v[1])
+//                   && (this.v[2] == that.v[2]) && (this.v[3] == that.v[3])
+//                   && (this.v[4] == that.v[4]) && (this.v[5] == that.v[5]);
+//        };
+//
+//        public final boolean isIdentity()
+//        {
+//			return (this.v[0] == 1) && (this.v[1] == 0) && (this.v[2] == 0)
+//                   && (this.v[3] == 1) && (this.v[4] == 0) && (this.v[5] == 0);
+//        };
+//
+//        public final TransformJSO copy()
+//        {
+//            TransformJSO jso = new TransformJSO();
+//            jso.v = new double[] {this.v[0], this.v[1], this.v[2], this.v[3], this.v[4], this.v[5] };
+//            return jso;
+//        };
+//
+//        public final void scaleWithXY(double sx, double sy)
+//        {
+//			this.v[0] *= sx;
+//
+//			this.v[1] *= sx;
+//
+//			this.v[2] *= sy;
+//
+//			this.v[3] *= sy;
+//        };
+//
+//        public final void shear(double shx, double shy)
+//        {
+//			double m00 = this.v[0];
+//
+//			double m10 = this.v[1];
+//
+//			this.v[0] += shy * this.v[2];
+//
+//			this.v[1] += shy * this.v[3];
+//
+//			this.v[2] += shx * m00;
+//
+//			this.v[3] += shx * m10;
+//        };
+//
+//        public final void rotate(double rad)
+//        {
+//			double c = Math.cos(rad);
+//
+//            double s = Math.sin(rad);
+//
+//            double m11 = this.v[0] * c + this.v[2] * s;
+//
+//            double m12 = this.v[1] * c + this.v[3] * s;
+//
+//            double m21 = this.v[0] * -s + this.v[2] * c;
+//
+//            double m22 = this.v[1] * -s + this.v[3] * c;
+//
+//			this.v[0] = m11;
+//
+//			this.v[1] = m12;
+//
+//			this.v[2] = m21;
+//
+//			this.v[3] = m22;
+//        };
+//
+//        public final void multiply(TransformJSO transform)
+//        {
+//            double m11 = this.v[0] * transform.v[0] + this.v[2] * transform.v[1];
+//
+//            double m12 = this.v[1] * transform.v[0] + this.v[3] * transform.v[1];
+//
+//            double m21 = this.v[0] * transform.v[2] + this.v[2] * transform.v[3];
+//
+//            double m22 = this.v[1] * transform.v[2] + this.v[3] * transform.v[3];
+//
+//            double dx = this.v[0] * transform.v[4] + this.v[2] * transform.v[5] + this.v[4];
+//
+//            double dy = this.v[1] * transform.v[4] + this.v[3] * transform.v[5] + this.v[5];
+//
+//			this.v[0] = m11;
+//
+//			this.v[1] = m12;
+//
+//			this.v[2] = m21;
+//
+//			this.v[3] = m22;
+//
+//			this.v[4] = dx;
+//
+//			this.v[5] = dy;
+//        };
+//
+//        public final double getDeterminant()
+//        {
+//			return this.v[0] * this.v[3] - this.v[2] * this.v[1]; // m00 * m11 - m01 * m10
+//        };
+//
+//        public final TransformJSO getInverse()
+//        {
+//			//[0] m00, [1] m10, [2] m01, [3] m11, [4] m02, [5] m12
+//            double m00 = this.v[0];
+//            double m10 = this.v[1];
+//            double m01 = this.v[2];
+//            double m11 = this.v[3];
+//            double m02 = this.v[4];
+//            double m12 = this.v[5];
+//
+//            double det = m00 * m11 - m01 * m10;
+//
+//            TransformJSO jso = new TransformJSO();
+//            jso.v = new double[] {m11 / det, -m10 / det, -m01 / det, m00 / det,
+//					(m01 * m12 - m11 * m02) / det,
+//					(m10 * m02 - m00 * m12) / det };
+//
+//            return jso;
+//        };
+//
+//        public final double get(int i)
+//        {
+//			return this.v[i];
+//        };
+//
+//        public final void transform(Point2D src, Point2D target)
+//        {
+//			double x = src.getX();
+//			double y = src.getY();
+//			target.setX(x * this.v[0] + y * this.v[2] + this.v[4]);
+//			target.setY(x * this.v[1] + y * this.v[3] + this.v[5]);
+//        };
+//    }
 }

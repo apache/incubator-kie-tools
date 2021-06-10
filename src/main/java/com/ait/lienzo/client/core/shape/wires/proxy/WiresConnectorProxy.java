@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.wires.proxy;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
@@ -24,8 +27,6 @@ import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectionContr
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorControlImpl;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
-import com.ait.tooling.common.api.java.util.function.Consumer;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 
 public class WiresConnectorProxy
         extends AbstractWiresProxy
@@ -63,8 +64,9 @@ public class WiresConnectorProxy
     public void move(final double dx,
                      final double dy) {
         final boolean adjust = getTailConnectionControl().onMove(dx, dy);
+        final Point2D adjustPoint = getTailConnectionControl().getAdjust();
         final Point2D location = adjust ?
-                startLocation.copy().offset(getTailConnectionControl().getAdjust()) :
+                startLocation.copy().offset(adjustPoint.getX(), adjustPoint.getY()) :
                 startLocation.copy().offset(dx, dy);
         setLocation(location);
         batch();

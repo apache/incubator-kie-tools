@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.core.shape.storage;
 
-import com.ait.tooling.common.api.types.IStringValued;
+import com.ait.lienzo.tools.common.api.types.IStringValued;
 
 public class StorageEngineType implements IStringValued
 {
@@ -48,7 +48,7 @@ public class StorageEngineType implements IStringValued
     @Override
     public boolean equals(final Object other)
     {
-        if ((other == null) || (false == (other instanceof StorageEngineType)))
+        if ((other == null) || (!(other instanceof StorageEngineType)))
         {
             return false;
         }

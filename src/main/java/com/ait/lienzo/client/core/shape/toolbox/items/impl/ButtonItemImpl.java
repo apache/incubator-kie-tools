@@ -16,22 +16,16 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.impl;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
-import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
-import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
-import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
-import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
-import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
-import com.ait.lienzo.client.core.event.NodeMouseMoveHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.toolbox.items.ButtonItem;
-import com.ait.tooling.common.api.java.util.function.BiConsumer;
-import com.ait.tooling.common.api.java.util.function.Consumer;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 
 public class ButtonItemImpl
         extends WrappedItem<ButtonItem>
@@ -41,8 +35,8 @@ public class ButtonItemImpl
     static final double ALPHA_DISABLED = 0.5d;
 
     private final AbstractFocusableGroupItem<?> item;
-    private Consumer<AbstractNodeMouseEvent> onClickEvent;
-    private Consumer<AbstractNodeMouseEvent> onMoveStartEvent;
+    private Consumer<NodeMouseClickEvent> onClickEvent;
+    private Consumer<NodeMouseMoveEvent> onMoveStartEvent;
     private HandlerRegistration clickHandlerRegistration;
     private HandlerRegistration downHandlerRegistration;
     private HandlerRegistration moveHandlerRegistration;
@@ -89,58 +83,38 @@ public class ButtonItemImpl
 
         // Register handlers.
         clickHandlerRegistration =
-                getPrimitive().addNodeMouseClickHandler(new NodeMouseClickHandler() {
-                    @Override
-                    public void onNodeMouseClick(NodeMouseClickEvent clickEvent) {
-                        isMouseDown = false;
-                        if (null != onClickEvent) {
-                            onClickEvent.accept(clickEvent);
-                        }
+                getPrimitive().addNodeMouseClickHandler(clickEvent -> {
+                    isMouseDown = false;
+                    if (null != onClickEvent) {
+                        onClickEvent.accept(clickEvent);
                     }
                 });
-        item.registrations().register(clickHandlerRegistration);
 
         downHandlerRegistration =
-                getPrimitive().addNodeMouseDownHandler(new NodeMouseDownHandler() {
-                    @Override
-                    public void onNodeMouseDown(NodeMouseDownEvent downEvent) {
-                        isMouseDown = true;
-                    }
-                });
-        item.registrations().register(downHandlerRegistration);
+                getPrimitive().addNodeMouseDownHandler(downEvent -> isMouseDown = true);
 
         moveHandlerRegistration =
-                getPrimitive().addNodeMouseMoveHandler(new NodeMouseMoveHandler() {
-                    @Override
-                    public void onNodeMouseMove(NodeMouseMoveEvent moveEvent) {
-                        if (isMouseDown) {
-                            isMouseDown = false;
-                            if (null != onMoveStartEvent) {
-                                onMoveStartEvent.accept(moveEvent);
-                            }
+                getPrimitive().addNodeMouseMoveHandler(moveEvent -> {
+                    if (isMouseDown) {
+                        isMouseDown = false;
+                        if (null != onMoveStartEvent) {
+                            onMoveStartEvent.accept(moveEvent);
                         }
                     }
                 });
-        item.registrations().register(moveHandlerRegistration);
 
         exitHandlerRegistration =
-                getPrimitive().addNodeMouseExitHandler(new NodeMouseExitHandler() {
-                    @Override
-                    public void onNodeMouseExit(NodeMouseExitEvent exitEvent) {
-                        isMouseDown = false;
-                    }
-                });
-        item.registrations().register(exitHandlerRegistration);
+                getPrimitive().addNodeMouseExitHandler(exitEvent -> isMouseDown = false);
     }
 
     @Override
-    public ButtonItem onClick(final Consumer<AbstractNodeMouseEvent> onEvent) {
+    public ButtonItem onClick(final Consumer<NodeMouseClickEvent> onEvent) {
         this.onClickEvent = onEvent;
         return this;
     }
 
     @Override
-    public ButtonItem onMoveStart(final Consumer<AbstractNodeMouseEvent> onEvent) {
+    public ButtonItem onMoveStart(final Consumer<NodeMouseMoveEvent> onEvent) {
         this.onMoveStartEvent = onEvent;
         return this;
     }
@@ -166,28 +140,28 @@ public class ButtonItemImpl
 
     private void removeClickHandlersRegistration() {
         if (null != clickHandlerRegistration) {
-            item.registrations().deregister(clickHandlerRegistration);
+            clickHandlerRegistration.removeHandler();
             clickHandlerRegistration = null;
         }
     }
 
     private void removeDownHandlersRegistration() {
         if (null != downHandlerRegistration) {
-            item.registrations().deregister(downHandlerRegistration);
+            downHandlerRegistration.removeHandler();
             downHandlerRegistration = null;
         }
     }
 
     private void removeMoveHandlerRegistration() {
         if (null != moveHandlerRegistration) {
-            item.registrations().deregister(moveHandlerRegistration);
+            moveHandlerRegistration.removeHandler();
             moveHandlerRegistration = null;
         }
     }
 
     private void removeExitHandlerRegistration() {
         if (null != exitHandlerRegistration) {
-            item.registrations().deregister(exitHandlerRegistration);
+            exitHandlerRegistration.removeHandler();
             exitHandlerRegistration = null;
         }
     }

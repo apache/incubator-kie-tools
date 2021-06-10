@@ -20,19 +20,19 @@ import com.ait.lienzo.client.core.types.Point2D;
 
 public interface ILocationAcceptor {
 
-    public static final ILocationAcceptor ALL = new DefaultLocationAcceptor(true);
+    ILocationAcceptor ALL = new DefaultLocationAcceptor(true);
 
-    public static final ILocationAcceptor NONE = new DefaultLocationAcceptor(false);
+    ILocationAcceptor NONE = new DefaultLocationAcceptor(false);
 
-    public boolean allow(WiresContainer[] shapes,
+    boolean allow(WiresContainer[] shapes,
                          Point2D[] locations);
 
-    public boolean accept(WiresContainer[] shapes,
+    boolean accept(WiresContainer[] shapes,
                           Point2D[] locations);
 
-    public static class DefaultLocationAcceptor implements ILocationAcceptor {
+    class DefaultLocationAcceptor implements ILocationAcceptor {
 
-        final private boolean m_defaultValue;
+        private final boolean m_defaultValue;
 
         private DefaultLocationAcceptor(final boolean defaultValue) {
             m_defaultValue = defaultValue;
