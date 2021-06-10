@@ -15,7 +15,7 @@
     "test:clearCache": "lerna run test:clearCache --stream",
     "update-version-to": "node ./update_version_to.js",
     "locktt": "locktt",
-    "install-locktt": "npm install lock-treatment-tool --global-style --no-package-lock --no-save",
+    "install-locktt": "npm install lock-treatment-tool --global-style --no-package-lock --no-save --ignore-scripts",
     "npm-tt": "npm-tt",
     "publish:productization": "lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/online-editor --ignore @kogito-tooling/desktop --ignore @kogito-tooling/hub --ignore @kogito-tooling/pmml-editor -- npm publish --access public",
     "format": "prettier --write .",

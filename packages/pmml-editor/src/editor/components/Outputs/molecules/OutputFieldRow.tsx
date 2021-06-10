@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useMemo } from "react";
+import { BaseSyntheticEvent, useMemo } from "react";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
@@ -85,16 +85,20 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
     [outputFieldIndex, modelIndex, outputField]
   );
 
+  const handleEdit = (event: BaseSyntheticEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    onEditOutputField();
+  };
+
   return (
     <section
-      className={"editable-item__inner"}
-      onClick={onEditOutputField}
       tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          e.stopPropagation();
-          onEditOutputField();
+      className={"editable-item__inner"}
+      onClick={(event) => handleEdit(event)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") {
+          handleEdit(event);
         }
       }}
     >
