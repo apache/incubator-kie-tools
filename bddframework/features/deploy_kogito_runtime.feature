@@ -227,8 +227,6 @@ Feature: Deploy Kogito Runtime
       | runtime | example-service       | native   |
       | quarkus | process-timer-quarkus | disabled |
 
-    # Disabled as long as https://issues.redhat.com/browse/KOGITO-1179 is not solved
-    @disabled
     @quarkus
     @native
     Examples:
