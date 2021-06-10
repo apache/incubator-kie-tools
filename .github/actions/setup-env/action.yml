@@ -13,41 +13,42 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: "Enter dir"
-      shell: bash
-      run: |
-        cd ${{ inputs.path }}
-
     - name: "Fetch Git tags"
       shell: bash
       run: |
+        cd ${{ inputs.path }}
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
     - name: "Setup Yarn and Lerna"
       shell: bash
       run: |
+        cd ${{ inputs.path }}
         npm install -g lerna@4.0.0 yarn@1.22.10
         yarn config set network-timeout 1000000
 
     - name: "Bootstrap"
       shell: bash
       run: |
+        cd ${{ inputs.path }}
         yarn bootstrap
 
     - name: "Check yarn.lock"
       shell: bash
       run: |
+        cd ${{ inputs.path }}
         git diff yarn.lock;
-        [ "0" == "$(git diff yarn.lock | wc -l)" ]
+        [ "0" == "$(git diff yarn.lock | wc -l | tr -d ' ')" ]
 
     - name: "Check format"
       shell: bash
       run: |
+        cd ${{ inputs.path }}
         yarn format:check
 
     - name: "Start Xvfb (Ubuntu only)"
       shell: bash
       run: |
+        cd ${{ inputs.path }}
         if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
             /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
         fi
@@ -55,11 +56,7 @@ runs:
     - name: "Increase inotify watches (Ubuntu only)"
       shell: bash
       run: |
+        cd ${{ inputs.path }}
         if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
           echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
         fi
-
-    - name: "Go back"
-      shell: bash
-      run: |
-        cd -
