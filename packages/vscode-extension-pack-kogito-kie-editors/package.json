@@ -127,7 +127,8 @@
     "build:prod": "rimraf dist && yarn lint && webpack && yarn run test && yarn run package:prod && yarn test:it"
   },
   "dependencies": {
-    "@kie-tooling-core/vscode-extension": "^0.0.4",
+    "@kie-tooling-core/patternfly-base": "^0.0.5",
+    "@kie-tooling-core/vscode-extension": "^0.0.5",
     "@kogito-tooling/external-assets-base": "0.0.1",
     "@kogito-tooling/kie-bc-editors": "0.0.1",
     "@kogito-tooling/pmml-editor": "0.0.1",

@@ -8,7 +8,8 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kie-tooling-core/chrome-extension": "^0.0.4",
+    "@kie-tooling-core/chrome-extension": "^0.0.5",
+    "@kie-tooling-core/patternfly-base": "^0.0.5",
     "@kogito-tooling/external-assets-base": "0.0.1",
     "@kogito-tooling/kie-bc-editors": "0.0.1"
   },
@@ -23,7 +24,7 @@
     "test:it:shutdown:win32": "lsof -n -i :9001 -i :9000 | grep LISTEN | tr -s ' ' | cut -d' ' -f2 | xargs kill",
     "test:it:shutdown:linux:darwin": "lsof -n -i :9001 -i :9000 | grep LISTEN | tr -s ' ' | cut -d' ' -f2 | xargs kill",
     "test:it:shutdown": "run-script-os",
-    "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then \"yarn rimraf ./dist-it-tests\" 'yarn build:dev\" \"yarn test:it:start:online-editor:detached\" \"yarn test:it:start:detached\" \"sleep 20\" \"jest --runInBand -c ./jest.it.config.js\" --finally \"yarn test:it:shutdown\""
+    "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then \"yarn rimraf ./dist-it-tests\" \"yarn build:dev\" \"yarn test:it:start:online-editor:detached\" \"yarn test:it:start:detached\" \"sleep 20\" \"jest --runInBand -c ./jest.it.config.js\" --finally \"yarn test:it:shutdown\""
   },
   "babel": {
     "presets": [
