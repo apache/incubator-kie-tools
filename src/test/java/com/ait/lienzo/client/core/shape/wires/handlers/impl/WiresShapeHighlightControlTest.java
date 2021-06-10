@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
@@ -33,7 +35,6 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -98,19 +99,9 @@ public class WiresShapeHighlightControlTest {
         when(parentPickerControl.getParent()).thenReturn(parent);
         when(parentPickerControl.getParentShapePart()).thenReturn(PickerPart.ShapePart.BODY);
         tested = new WiresShapeHighlightControl(wiresManager,
-                                                new Supplier<WiresLayerIndex>() {
-                                                    @Override
-                                                    public WiresLayerIndex get() {
-                                                        return index;
-                                                    }
-                                                },
+                                                () -> index,
                                                 highlight,
-                                                new Supplier<WiresShapeControl>() {
-                                                    @Override
-                                                    public WiresShapeControl get() {
-                                                        return delegate;
-                                                    }
-                                                });
+                                                () -> delegate);
     }
 
     @Test

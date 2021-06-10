@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.impl;
 
+import java.util.function.BiConsumer;
+
 import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
 import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.Group;
@@ -26,14 +28,11 @@ import com.ait.lienzo.client.core.shape.toolbox.items.TooltipItem;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.BiConsumer;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -41,6 +40,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -51,10 +51,10 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class ItemImplTest {
 
-    private final BoundingBox boundingBox = new BoundingBox(0d,
-                                                            0d,
-                                                            100d,
-                                                            200d);
+    private final BoundingBox boundingBox = BoundingBox.fromDoubles(0d,
+                                                                    0d,
+                                                                    100d,
+                                                                    200d);
 
     @Mock
     private GroupItem groupItem;
@@ -83,27 +83,26 @@ public class ItemImplTest {
     @SuppressWarnings("unchecked")
     public void setUp() {
         when(shape.setListening(anyBoolean())).thenReturn(shape);
+
+        doCallRealMethod().when(shape).addNodeMouseEnterHandler(any(NodeMouseEnterHandler.class));
+        doCallRealMethod().when(shape).addNodeMouseExitHandler(any(NodeMouseExitHandler.class));
+
         when(shape.addNodeMouseEnterHandler(any(NodeMouseEnterHandler.class))).thenReturn(mouseEnterHandlerRegistration);
         when(shape.addNodeMouseExitHandler(any(NodeMouseExitHandler.class))).thenReturn(mouseExitHandlerRegistration);
+
         when(shape.getComputedBoundingPoints()).thenReturn(boundingPoints);
         when(shape.getBoundingBox()).thenReturn(boundingBox);
         when(boundingPoints.getBoundingBox()).thenReturn(boundingBox);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                ((Runnable) invocationOnMock.getArguments()[0]).run();
-                ((Runnable) invocationOnMock.getArguments()[1]).run();
-                return groupItem;
-            }
+        doAnswer(invocationOnMock -> {
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
+            return groupItem;
         }).when(groupItem).show(any(Runnable.class),
                                 any(Runnable.class));
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                ((Runnable) invocationOnMock.getArguments()[0]).run();
-                ((Runnable) invocationOnMock.getArguments()[1]).run();
-                return groupItem;
-            }
+        doAnswer(invocationOnMock -> {
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
+            return groupItem;
         }).when(groupItem).hide(any(Runnable.class),
                                 any(Runnable.class));
         tested = new ItemImpl(groupItem,
@@ -219,25 +218,27 @@ public class ItemImplTest {
     public void testFocusExecutorDoingFocus() {
         final AbstractDecoratorItem decorator = mock(AbstractDecoratorItem.class);
         final Group decPrimitive = mock(Group.class);
-        when(decorator.asPrimitive()).thenReturn(decPrimitive);
+        final Group groupItemPrimitive = mock(Group.class);
         final TooltipItem<?> tooltip = mock(TooltipItem.class);
+        when(groupItem.asPrimitive()).thenReturn(groupItemPrimitive);
+        when(decorator.asPrimitive()).thenReturn(decPrimitive);
         tested =
-                new ItemImpl(groupItem,
-                             shape)
-                        .setFocusDelay(0)
-                        .setUnFocusDelay(0)
-                        .decorate(decorator)
-                        .tooltip(tooltip);
+                spy(new ItemImpl(groupItem,
+                                 shape)
+                            .setFocusDelay(0)
+                            .setUnFocusDelay(0)
+                            .decorate(decorator)
+                            .tooltip(tooltip));
+
         final AbstractFocusableGroupItem<ItemImpl>.FocusGroupExecutor focusExecutor =
                 spy(tested.getFocusGroupExecutor());
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                ((Runnable) invocationOnMock.getArguments()[1]).run();
-                return null;
-            }
+        when(tested.getFocusGroupExecutor()).thenReturn(focusExecutor);
+        doAnswer(invocationOnMock -> {
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
+            return null;
         }).when(focusExecutor).accept(any(Group.class),
                                       any(Runnable.class));
+
         focusExecutor.focus();
         verify(focusExecutor,
                times(1)).setAlpha(AbstractFocusableGroupItem.ALPHA_FOCUSED);
@@ -253,6 +254,8 @@ public class ItemImplTest {
     public void testFocusExecutorDoingUnFocus() {
         final AbstractDecoratorItem decorator = mock(AbstractDecoratorItem.class);
         final Group decPrimitive = mock(Group.class);
+        final Group groupItemPrimitive = mock(Group.class);
+        when(groupItem.asPrimitive()).thenReturn(groupItemPrimitive);
         when(decorator.asPrimitive()).thenReturn(decPrimitive);
         final TooltipItem<?> tooltip = mock(TooltipItem.class);
         tested =
@@ -264,12 +267,9 @@ public class ItemImplTest {
                         .tooltip(tooltip);
         final AbstractFocusableGroupItem<ItemImpl>.FocusGroupExecutor focusExecutor =
                 spy(tested.getFocusGroupExecutor());
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                ((Runnable) invocationOnMock.getArguments()[1]).run();
-                return null;
-            }
+        doAnswer(invocationOnMock -> {
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
+            return null;
         }).when(focusExecutor).accept(any(Group.class),
                                       any(Runnable.class));
         focusExecutor.unFocus();

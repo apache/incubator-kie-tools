@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.image;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.dom.client.ImageElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,18 +26,18 @@ import org.mockito.Mock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class ImageElementProxyTest {
 
     @Mock
-    private ImageElement imageElement;
+    private elemental2.dom.Image imageElement;
 
     @Mock
-    private com.google.gwt.user.client.ui.Image imageWidget;
+    private Image imageWidget;
 
     @Mock
     private Context2D context;
@@ -47,8 +46,7 @@ public class ImageElementProxyTest {
 
     @Before
     public void init() {
-        tested = new ImageElementProxy(imageWidget,
-                                       imageElement);
+        tested = spy(new ImageElementProxy(imageElement));
     }
 
     @Test
@@ -66,8 +64,8 @@ public class ImageElementProxyTest {
 
     @Test
     public void testSize() {
-        when(imageElement.getWidth()).thenReturn(15);
-        when(imageElement.getHeight()).thenReturn(70);
+        imageElement.width = 15;
+        imageElement.height = 70;
         assertEquals(15, tested.getWidth());
         assertEquals(70, tested.getHeight());
     }
@@ -88,9 +86,4 @@ public class ImageElementProxyTest {
                                             eq(10d));
     }
 
-    @Test
-    public void testDestroy() {
-        tested.destroy();
-        verify(imageWidget, times(1)).removeFromParent();
-    }
 }

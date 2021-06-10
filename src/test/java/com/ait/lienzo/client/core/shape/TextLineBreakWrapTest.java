@@ -20,6 +20,7 @@ package com.ait.lienzo.client.core.shape;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.lienzo.tools.client.collection.NFastDoubleArray;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -70,9 +71,7 @@ public class TextLineBreakWrapTest extends BaseTextTest {
         final Text tested = spy(new Text(text));
         tested.setWrapper(new TextLineBreakWrap(tested));
         tested.setTextAlign(TextAlign.LEFT);
-
         when(tested.getLineHeight(context)).thenReturn(1.0);
-
         tested.drawWithTransforms(context,
                                   1,
                                   new BoundingBox());

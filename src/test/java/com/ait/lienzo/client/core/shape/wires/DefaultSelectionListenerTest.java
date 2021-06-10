@@ -1,8 +1,9 @@
 package com.ait.lienzo.client.core.shape.wires;
 
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Consumer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +17,7 @@ import static org.mockito.Mockito.verify;
 public class DefaultSelectionListenerTest
 {
     @Mock
-    private Consumer<WiresShape>           onSelectShape;
+    private Consumer<WiresShape> onSelectShape;
 
     @Mock
     private Consumer<WiresShape>           onDeselectShape;

@@ -20,11 +20,11 @@ package com.ait.lienzo.client.core.shape;
 import java.util.ArrayList;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.types.TextMetrics;
 import com.ait.lienzo.client.core.util.ScratchPad;
+import elemental2.dom.HTMLCanvasElement;
+import elemental2.dom.TextMetrics;
 import org.junit.Before;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import static org.mockito.Matchers.anyDouble;
@@ -41,37 +41,26 @@ public abstract class BaseTextTest {
 
     protected ArrayList<DrawnText> drawnTexts = new ArrayList<>();
 
-    protected Answer<Object> drawTextAnswer = new Answer<Object>() {
-        @Override
-        public Object answer(InvocationOnMock invocation) throws Throwable {
-            Object[] args = invocation.getArguments();
-            String text = (String) args[0];
-            double x = (double) args[1];
-            double y = (double) args[2];
-
-            drawnTexts.add(new DrawnText(text,
-                                         x,
-                                         y));
-
-            return null;
-        }
+    protected Answer<Object> drawTextAnswer = invocation -> {
+        Object[] args = invocation.getArguments();
+        String text = (String) args[0];
+        double x = (double) args[1];
+        double y = (double) args[2];
+        drawnTexts.add(new DrawnText(text,
+                                     x,
+                                     y));
+        return null;
     };
 
     @Before
-    public void setup() throws Exception {
-        TextUtils.FORBOUNDS = scratchPad;
-
+    public void setup() {
         when(scratchPad.getContext()).thenReturn(context);
-        when(context.measureText(anyString())).thenAnswer(new Answer<TextMetrics>() {
-            @Override
-            public TextMetrics answer(InvocationOnMock invocation) throws Throwable {
-                Object[] args = invocation.getArguments();
-                String arg = (String) args[0];
-                TextMetrics out = mock(TextMetrics.class);
-                when(out.getWidth()).thenReturn(arg.length() * 1.0);
-                when(out.getHeight()).thenReturn(1.0);
-                return out;
-            }
+        when(context.measureText(anyString())).thenAnswer((Answer<TextMetrics>) invocation -> {
+            Object[] args = invocation.getArguments();
+            String arg = (String) args[0];
+            TextMetrics out = new TextMetrics();
+            when(out.width).thenReturn(arg.length() * 1.0);
+            return out;
         });
 
         doAnswer(drawTextAnswer)

@@ -39,7 +39,7 @@ import javassist.NotFoundException;
  */
 public class LienzoJSOStubTranslatorInterceptor extends AbstractLienzoJSOTranslatorInterceptor implements HasSettings
 {
-    private final Set<String> jsos = new LinkedHashSet<String>();
+    private final Set<String> jsos = new LinkedHashSet<>();
 
     public LienzoJSOStubTranslatorInterceptor()
     {

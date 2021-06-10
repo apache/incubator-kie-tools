@@ -46,10 +46,10 @@ public final class Settings
 
     Settings(final Collection<LienzoMockitoClassTranslator.TranslatorInterceptor> translators)
     {
-        this.stubs = new LinkedHashMap<String, String>();
-        this.jsoStubs = new LinkedHashSet<String>();
-        this.jsoMocks = new LinkedHashSet<String>();
-        this.mocks = new LinkedHashSet<String>();
+        this.stubs = new LinkedHashMap<>();
+        this.jsoStubs = new LinkedHashSet<>();
+        this.jsoMocks = new LinkedHashSet<>();
+        this.mocks = new LinkedHashSet<>();
         this.translators = translators;
     }
 

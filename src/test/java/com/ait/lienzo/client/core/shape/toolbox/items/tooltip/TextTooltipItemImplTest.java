@@ -16,10 +16,11 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.tooltip;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

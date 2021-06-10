@@ -38,7 +38,7 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +61,7 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
 
     private static final String CONNECTOR_UUID = "UUID";
     private static final Point2D CONTROL_POINT_LIENZO = new Point2D(100, 100);
-    private static final Point2DArray CONTROL_POINTS_LIENZO = new Point2DArray(CONTROL_POINT_LIENZO);
+    private static final Point2DArray CONTROL_POINTS_LIENZO = Point2DArray.fromArrayOfPoint2D(CONTROL_POINT_LIENZO);
 
     @Mock
     private ILocationAcceptor locationAcceptor;
@@ -132,7 +132,9 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
     public void setup() {
         super.setUp();
         manager.setLocationAcceptor(locationAcceptor);
-        connections = new NFastArrayList<>(connection1, connection2);
+        connections = new NFastArrayList<>();
+        connections.add(connection1);
+        connections.add(connection2);
         line = new PolyLine(0, 0, 10, 10, 100, 100);
         shape.getChildShapes().add(childWiresShape1);
         shape.getChildShapes().add(childWiresShape2);

@@ -261,11 +261,12 @@ public class TextLineBreakTruncateWrapperTest extends BaseTextTest {
 
         TextLineBreakTruncateWrapper wrapper = new TextLineBreakTruncateWrapper(tested,
                                                                                 bbox);
+
         tested.setWrapper(wrapper);
         tested.setTextAlign(TextAlign.LEFT);
 
         when(tested.getLineHeight(context)).thenReturn(1.0);
-        tested.getBoundingBox();
+
         assertTrue(bbox.getWidth() >= tested.getBoundingBox().getWidth());
 
         tested.drawWithTransforms(context,

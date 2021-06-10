@@ -16,23 +16,24 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class TextTruncateWrapperTest extends BaseTextTest {
 
     @Test
-    public void testSingleCharText() {
+    public void atestSingleCharText() {
         testTextBoundsWrap("a",
                            new Object[]{
                                    new DrawnText("a     ",
@@ -206,22 +207,20 @@ public class TextTruncateWrapperTest extends BaseTextTest {
                                     final Object[] results,
                                     final double width,
                                     final double height) {
+
         final BoundingBox bbox = new BoundingBox().addX(0).addY(0).addX(width).addY(height);
         final Text tested = spy(new Text(text));
 
-        tested.setWrapper(new TextTruncateWrapper(tested,
-                                                  bbox));
+        tested.setWrapper(new TextTruncateWrapper(tested, bbox));
         tested.setTextAlign(TextAlign.LEFT);
 
-        when(tested.getLineHeight(context)).thenReturn(1.0);
-        tested.getBoundingBox();
+        Mockito.doReturn(1.0 ).when(tested ).getLineHeight(any(Context2D.class ));
+
         assertTrue(bbox.getWidth() >= tested.getBoundingBox().getWidth());
 
         tested.drawWithTransforms(context,
                                   1,
                                   bbox);
-
-        assertArrayEquals(results,
-                          drawnTexts.toArray());
+        assertArrayEquals(results, drawnTexts.toArray());
     }
 }

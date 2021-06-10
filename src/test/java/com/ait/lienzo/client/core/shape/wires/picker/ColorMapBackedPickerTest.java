@@ -19,7 +19,6 @@ package com.ait.lienzo.client.core.shape.wires.picker;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.ImageDataPixelColor;
@@ -28,16 +27,13 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,6 +42,8 @@ public class ColorMapBackedPickerTest {
 
     public static final int X = 0;
     public static final int Y = 0;
+
+    private ColorMapBackedPicker tested;
 
     @Mock
     private ScratchPad scratchPad;
@@ -63,21 +61,15 @@ public class ColorMapBackedPickerTest {
     private Context2D context;
 
     @Mock
-    private Viewport viewPort;
-
-    @Mock
     private ImageDataPixelColor pixelColor;
 
     @Mock
     private PickerPart pickerPart;
 
-    private ColorMapBackedPicker tested;
-    private NFastArrayList<WiresShape> shapes;
-
     @Before
     public void setUp() {
-        NFastArrayList<PathPartList> pathPartList = new NFastArrayList<>(partList);
-        shapes = new NFastArrayList<>(shape);
+        NFastArrayList<PathPartList> pathPartList = new NFastArrayList<>();
+        pathPartList.add(partList);
         ColorMapBackedPicker.PickerOptions pickerOptions = new ColorMapBackedPicker.PickerOptions(false, 0);
         Point2D location = new Point2D(X, Y);
 
@@ -89,25 +81,16 @@ public class ColorMapBackedPickerTest {
         when(context.getImageDataPixelColor(X, Y)).thenReturn(pixelColor);
         when(pixelColor.toBrowserRGB()).thenReturn(Color.rgbToBrowserHexColor(0, 0, 0));
         when(pickerPart.getShape()).thenReturn(shape);
-
-        tested = spy(new ColorMapBackedPicker(scratchPad, pickerOptions));
+        tested = new ColorMapBackedPicker(scratchPad, pickerOptions);
     }
 
     @Test
     public void drawAndFindShapeAtTest() {
-        tested.build(shapes);
+
         tested.drawShape("#000000", 1, pickerPart, true);
         PickerPart shapeAt = tested.findShapeAt(X, Y);
         assertEquals(pickerPart, shapeAt);
         verify(context).getImageDataPixelColor(X, Y);
         verify(pixelColor).toBrowserRGB();
     }
-
-    @Test
-    public void buildTest() {
-        tested.build(shapes);
-        verify(tested, times(1)).clear();
-        verify(tested, times(1)).processShapes(eq(shapes));
-    }
-
 }

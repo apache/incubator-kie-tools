@@ -32,6 +32,7 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.PolyLine;
 import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.IControlPointsAcceptor;
@@ -46,7 +47,6 @@ import com.ait.lienzo.client.core.shape.wires.decorator.IShapeDecorator.ShapeSta
 import com.ait.lienzo.client.core.shape.wires.decorator.PointHandleDecorator;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlPointHandler;
 import com.ait.lienzo.client.core.types.DragBounds;
-import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.ScratchPad;
@@ -54,7 +54,9 @@ import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.ImageData;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,20 +64,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyDouble;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresConnectorControlImplTest {
@@ -85,7 +77,7 @@ public class WiresConnectorControlImplTest {
     private static final Point2D CP2_INIT = new Point2D(100, 50);
     private static final Point2D CP3_INIT = new Point2D(150, 50);
     private static final Point2D CP4_INIT = new Point2D(200, 50);
-    private static final MultiPath headPath = spy(new MultiPath().circle(10));
+    private static final MultiPath headPath = new MultiPath().circle(10);
     private static final MultiPath tailPath = new MultiPath().circle(10);
     private static final MultiPath shapePath = new MultiPath().rect(CP0_INIT.getX(), CP0_INIT.getY(), CP4_INIT.getX(), CP4_INIT.getY());
     private static final DragBounds DRAG_BOUNDS = new DragBounds(0, 0, 1000, 1000);
@@ -210,13 +202,19 @@ public class WiresConnectorControlImplTest {
     @Mock
     private ImageData imageData;
 
+    @Mock
+    private Viewport viewport;
+
+    @Mock
+    private HTMLDivElement element;
+
     @Before
     public void setup() {
-        CP0 = new Point2D(CP0_INIT);
-        CP1 = new Point2D(CP1_INIT);
-        CP2 = new Point2D(CP2_INIT);
-        CP3 = new Point2D(CP3_INIT);
-        CP4 = new Point2D(CP4_INIT);
+        CP0 = CP0_INIT.copy();
+        CP1 = CP1_INIT.copy();
+        CP2 = CP2_INIT.copy();
+        CP3 = CP3_INIT.copy();
+        CP4 = CP4_INIT.copy();
         cpShape0 = spy(new Circle(1));
         cpShape1 = spy(new Circle(1));
         cpShape2 = spy(new Circle(1));
@@ -237,6 +235,8 @@ public class WiresConnectorControlImplTest {
         when(layer.getLayer()).thenReturn(layer);
         when(layer.getScratchPad()).thenReturn(scratchPad);
         when(layer.getContext()).thenReturn(context);
+        when(layer.getViewport()).thenReturn(viewport);
+        when(viewport.getElement()).thenReturn(element);
         when(scratchPad.getContext()).thenReturn(context);
         when(context.getImageData(anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(imageData);
         when(wiresLayer.getLayer()).thenReturn(layer);
@@ -258,6 +258,7 @@ public class WiresConnectorControlImplTest {
         line = spy(new PolyLine(CP0, CP1, CP2, CP3, CP4));
         when(line.getOverLayer()).thenReturn(layer);
         connector = spy(new WiresConnector(headMagnet, tailMagnet, line, headDecorator, tailDecorator));
+
         when(headConnection.getControl()).thenReturn(cpShape0);
         when(tailConnection.getControl()).thenReturn(cpShape4);
         when(headConnection.getConnector()).thenReturn(connector);
@@ -307,10 +308,10 @@ public class WiresConnectorControlImplTest {
         assertTrue(moved4);
         assertTrue(moved5);
         assertEquals(CP0_INIT, CP0);
-        assertEquals(p1, CP1);
-        assertEquals(p2, CP2);
-        assertEquals(p3, CP3);
-        assertEquals(CP4_INIT, CP4);
+        assertEquals(p1, connector.getControlPoints().get(1));
+        assertEquals(p2, connector.getControlPoints().get(2));
+        assertEquals(p3, connector.getControlPoints().get(3));
+        assertEquals(CP4_INIT, connector.getControlPoints().get(4));
         verify(connector, never()).moveControlPoint(eq(1), eq(p0));
         verify(connector, atLeastOnce()).moveControlPoint(eq(1), eq(p1));
         verify(connector, atLeastOnce()).moveControlPoint(eq(2), eq(p2));
@@ -480,9 +481,9 @@ public class WiresConnectorControlImplTest {
         verifyControlPointShapeHandlers(cpShape3);
 
         //drag bounds
-        assertEquals(pointHandles.getHandle(1).getControl().getDragBounds(), DRAG_BOUNDS);
-        assertEquals(pointHandles.getHandle(2).getControl().getDragBounds(), DRAG_BOUNDS);
-        assertEquals(pointHandles.getHandle(3).getControl().getDragBounds(), DRAG_BOUNDS);
+        assertEquals(DRAG_BOUNDS, pointHandles.getHandle(1).getControl().getDragBounds());
+        assertEquals(DRAG_BOUNDS, pointHandles.getHandle(2).getControl().getDragBounds());
+        assertEquals(DRAG_BOUNDS, pointHandles.getHandle(3).getControl().getDragBounds());
         assertTrue(pointHandles.getHandle(0).getControl().getDragConstraints() instanceof WiresConnectorControlImpl.ConnectionHandler);
         assertTrue(pointHandles.getHandle(1).getControl().getDragConstraints() instanceof DefaultDragConstraintEnforcer);
         assertTrue(pointHandles.getHandle(2).getControl().getDragConstraints() instanceof DefaultDragConstraintEnforcer);

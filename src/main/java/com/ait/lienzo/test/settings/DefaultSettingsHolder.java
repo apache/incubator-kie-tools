@@ -21,6 +21,7 @@ import com.ait.lienzo.test.translator.GWTTranslatorInterceptor;
 import com.ait.lienzo.test.translator.LienzoJSOMockTranslatorInterceptor;
 import com.ait.lienzo.test.translator.LienzoJSOStubTranslatorInterceptor;
 import com.ait.lienzo.test.translator.LienzoNodeTranslatorInterceptor;
+import com.ait.lienzo.test.translator.LienzoPrimitiveTranslatorInterceptor;
 import com.ait.lienzo.test.translator.LienzoStubTranslatorInterceptor;
 import com.ait.lienzo.test.translator.StripFinalModifiersTranslatorInterceptor;
 
@@ -48,72 +49,70 @@ import com.ait.lienzo.test.translator.StripFinalModifiersTranslatorInterceptor;
         },
 
         stubs = {
-                com.ait.lienzo.test.stub.overlays.BoundingBoxJSO.class,
-                com.ait.lienzo.test.stub.overlays.DragBoundsJSO.class,
-                com.ait.lienzo.test.stub.overlays.TransformJSO.class,
-                com.ait.lienzo.test.stub.overlays.ShadowJSO.class,
-                com.ait.lienzo.test.stub.overlays.NObjectJSO.class,
-                com.ait.lienzo.test.stub.overlays.Point2DJSO.class,
-                com.ait.lienzo.test.stub.overlays.DragBoundsJSO.class,
-                com.ait.lienzo.test.stub.overlays.JsArray.class,
-                com.ait.lienzo.test.stub.overlays.JsArrayMixed.class,
-                com.ait.lienzo.test.stub.overlays.PathPartListJSO.class,
-                com.ait.lienzo.test.stub.overlays.PathPartEntryJSO.class,
-                com.ait.lienzo.test.stub.overlays.Point2DArrayJSO.class,
-                com.ait.lienzo.test.stub.overlays.NArrayBaseJSO.class,
-                com.ait.lienzo.test.stub.overlays.NFastPrimitiveArrayBaseJSO.class,
-                com.ait.lienzo.test.stub.overlays.NFastDoubleArrayJSO.class,
-                com.ait.lienzo.test.stub.overlays.OptionalNodeFields.class,
-                com.ait.lienzo.test.stub.overlays.OptionalShapeFields.class,
-                com.ait.lienzo.test.stub.overlays.OptionalGroupOfFields.class,
-                com.ait.lienzo.test.stub.Attributes.class,
+                com.ait.lienzo.test.stub.UIEvent.class,
                 com.ait.lienzo.test.stub.NFastArrayList.class,
                 com.ait.lienzo.test.stub.NFastStringMap.class,
+                com.ait.lienzo.test.stub.NFastDoubleArray.class,
+                com.ait.lienzo.test.stub.Uint8ClampedArray.class,
+                com.ait.lienzo.test.stub.LienzoCore.class,
+                com.ait.lienzo.test.stub.NFastStringMap.class,
+                com.ait.lienzo.test.stub.RootPanel.class,
+                com.ait.lienzo.test.stub.TextUtils.class,
+                com.ait.lienzo.test.stub.overlays.CanvasRenderingContext2D.class,
+                com.ait.lienzo.test.stub.overlays.Context2D.class,
+                com.ait.lienzo.test.stub.overlays.Global.class,
+                com.ait.lienzo.test.stub.overlays.JSONType.class,
+                com.ait.lienzo.test.stub.overlays.JsArray.class,
+                com.ait.lienzo.test.stub.overlays.JsMap.class,
+                com.ait.lienzo.test.stub.overlays.DomGlobal.class,
+                com.ait.lienzo.test.stub.overlays.Window.class,
+                com.ait.lienzo.test.stub.overlays.HTMLDocument.class,
+                com.ait.lienzo.test.stub.overlays.HTMLCanvasElement.class,
+                com.ait.lienzo.test.stub.overlays.HTMLDivElement.class,
+                com.ait.lienzo.test.stub.overlays.HTMLElement.class,
+                com.ait.lienzo.test.stub.overlays.AddEventListenerOptions.class,
+                com.ait.lienzo.test.stub.overlays.ImageData.class,
+                com.ait.lienzo.test.stub.overlays.PathPartListJSO.class,
+                com.ait.lienzo.test.stub.overlays.Point2DArray.class,
+                com.ait.lienzo.test.stub.overlays.ScratchPad.class,
+                com.ait.lienzo.test.stub.overlays.Timer.class
         },
 
         jsoStubs = {
                 "com.ait.lienzo.client.core.types.FillGradient$GradientJSO",
                 "com.ait.lienzo.client.core.types.ImageData",
-                "com.ait.lienzo.client.core.types.SpriteBehaviorMap$SpriteBehaviorMapJSO",
-                "com.ait.lienzo.client.core.types.SpriteBehaviorMap$BoundingBoxArrayJSO",
                 "com.ait.lienzo.client.core.types.TextMetrics",
                 "com.ait.lienzo.client.core.shape.AbstractPathClipper$PathClipperJSO",
                 "com.ait.lienzo.client.core.shape.Node$OptionalFields",
-                "com.ait.lienzo.client.core.Path2D$NativePath2D",
                 "com.ait.lienzo.client.core.NativeContext2D",
                 "com.ait.lienzo.client.core.image.filter.ImageDataFilterCommonOps",
                 "com.ait.lienzo.client.core.image.filter.ImageDataFilter$FilterTableArray",
-                "com.ait.lienzo.client.core.image.filter.ImageDataFilter$FilterTableArray",
                 "com.ait.tooling.nativetools.client.collection.NFastBooleanArrayJSO",
                 "com.ait.tooling.nativetools.client.collection.NFastIntegerArrayJSO",
-                "com.ait.tooling.nativetools.client.collection.NFastStringArrayJSO",
-                "com.ait.tooling.nativetools.client.NUtils$NativeOps",
-                "com.ait.tooling.nativetools.client.collection.NFastStringHistogram$NFastStringHistogramJSO",
-                "com.ait.tooling.nativetools.client.collection.NFastStringSet$NFastStringSetJSO",
-                "com.ait.tooling.nativetools.client.util.Performance$PerformanceEntryJSO",
-                "com.ait.tooling.nativetools.client.util.Performance$PerformanceEntryListJSO",
-                "com.ait.tooling.nativetools.client.util.Performance$PerformanceJSO",
-                "com.ait.tooling.nativetools.client.webworker.WebWorker$WebWorkerJSO",
-                "com.ait.tooling.nativetools.client.usermedia.UserMediaStream",
-                "com.ait.tooling.nativetools.client.NObjectBaseJSO"
+                "com.ait.tooling.nativetools.client.collection.NFastStringArrayJSO"
         },
 
-        jsoMocks = {},
+        jsoMocks = {
+                "elemental2.dom.CSSProperties$WidthUnionType",
+                "elemental2.dom.CSSProperties$HeightUnionType",
+                "elemental2.dom.CSSProperties$ZIndexUnionType",
+        },
 
         translators = {
-
                 LienzoStubTranslatorInterceptor.class,
                 LienzoJSOStubTranslatorInterceptor.class,
                 LienzoJSOMockTranslatorInterceptor.class,
                 CanvasSupportTranslatorInterceptor.class,
                 StripFinalModifiersTranslatorInterceptor.class,
                 LienzoNodeTranslatorInterceptor.class,
-                GWTTranslatorInterceptor.class
+                LienzoPrimitiveTranslatorInterceptor.class,
+                GWTTranslatorInterceptor.class,
         },
 
         logEnabled = false
 
         )
+
 public final class DefaultSettingsHolder
 {
     public static final DefaultSettingsHolder INSTANCE = new DefaultSettingsHolder();

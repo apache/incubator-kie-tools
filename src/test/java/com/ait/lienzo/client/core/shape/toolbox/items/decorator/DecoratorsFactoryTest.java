@@ -16,9 +16,10 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.decorator;
 
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Consumer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

@@ -18,11 +18,12 @@ package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
-import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +31,7 @@ import org.mockito.Mock;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -61,10 +63,13 @@ public class WiresControlPointHandlerImplTest {
 
     @Test
     public void testOnNodeDragMove() {
-        NodeDragMoveEvent event = mock(NodeDragMoveEvent.class);
+
+        elemental2.dom.HTMLElement element = mock(HTMLElement.class);
+
+        NodeDragMoveEvent event = spy(new NodeDragMoveEvent(element));
         when(event.getX()).thenReturn(2);
         when(event.getY()).thenReturn(7);
-        IPrimitive<?> primitive = mock(IPrimitive.class);
+        Line primitive = spy(new Line());
         when(primitive.getX()).thenReturn(12d);
         when(primitive.getY()).thenReturn(17d);
         when(event.getSource()).thenReturn(primitive);

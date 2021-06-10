@@ -38,7 +38,7 @@ import javassist.NotFoundException;
  */
 public class LienzoStubTranslatorInterceptor implements LienzoMockitoClassTranslator.TranslatorInterceptor, HasSettings
 {
-    private final Map<String, String> stubs = new LinkedHashMap<String, String>();
+    private final Map<String, String> stubs = new LinkedHashMap<>();
 
     public LienzoStubTranslatorInterceptor()
     {

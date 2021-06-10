@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.widget.panel.mediators;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.mediator.EventFilter;
 import com.ait.lienzo.client.core.mediator.IMediator;
 import com.ait.lienzo.client.core.mediator.MousePanMediator;
@@ -24,9 +26,9 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import com.ait.lienzo.client.widget.panel.scrollbars.ScrollablePanel;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Supplier;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +39,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -60,6 +63,7 @@ public class PanelMediatorsTest {
         viewport = new Viewport(scene, 1200, 1200);
         scene.add(layer);
         when(panel.getLayer()).thenReturn(layer);
+        when(panel.getElement()).thenReturn(mock(HTMLDivElement.class));
         tested = new PanelMediators().init(new Supplier<LienzoBoundsPanel>() {
             @Override
             public LienzoBoundsPanel get() {

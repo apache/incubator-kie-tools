@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndHandler;
 import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveHandler;
 import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartHandler;
@@ -42,8 +43,9 @@ import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHandler;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +56,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -109,7 +112,7 @@ public class WiresShapeControlHandleListTest
     public void setup()
     {
         final Layer layer = new Layer();
-        final Group group = new Group();
+        final Group group = spy(new Group());
         layer.add(group);
         doReturn(magnetsControl).when(control).getMagnetsControl();
         doReturn(control).when(handler).getControl();
@@ -165,8 +168,27 @@ public class WiresShapeControlHandleListTest
     @Test
     public void testCP_DragHandlers()
     {
-        final WiresShape realShape = new WiresShape(new MultiPath().rect(0, 0, 10, 10));
-        tested = new WiresShapeControlHandleList(realShape, IControlHandle.ControlHandleStandardType.RESIZE, controlHandleList, handlerRegistrationManager);
+
+        Viewport viewport = mock(Viewport.class);
+        HTMLDivElement element = mock(HTMLDivElement.class);
+
+        Group group = spy(new Group());
+        Layer layer = spy(Layer.class);
+
+        doReturn(layer).when(group).getLayer();
+        doReturn(viewport).when(layer).getViewport();
+        when(viewport.getElement()).thenReturn(element);
+
+        final WiresShape realShape = spy(new WiresShape(new MultiPath().rect(0, 0, 10, 10)));
+
+        doReturn(group).when(realShape).getGroup();
+
+        tested = new WiresShapeControlHandleList(realShape,
+                                                 IControlHandle.ControlHandleStandardType.RESIZE,
+                                                 controlHandleList,
+                                                 handlerRegistrationManager);
+
+
         WiresManager.addWiresShapeHandler(realShape,
                                           handlerRegistrationManager,
                                           handler);
@@ -175,47 +197,38 @@ public class WiresShapeControlHandleListTest
 
         final Point2D c0 = new Point2D(0, 0);
         final Point2D s0 = new Point2D(0, 0);
-        realShape.setResizable(true).addWiresResizeStartHandler(new WiresResizeStartHandler()
-        {
-            @Override
-            public void onShapeResizeStart(final WiresResizeStartEvent event)
-            {
-                c0.setX(event.getX());
-                c0.setY(event.getY());
-                s0.setX(event.getWidth());
-                s0.setY(event.getHeight());
-            }
+
+        realShape.setResizable(true).addWiresResizeStartHandler(event -> {
+            c0.setX(event.getX());
+            c0.setY(event.getY());
+            s0.setX(event.getWidth());
+            s0.setY(event.getHeight());
         });
         final Point2D c1 = new Point2D(0, 0);
         final Point2D s1 = new Point2D(0, 0);
-        realShape.addWiresResizeStepHandler(new WiresResizeStepHandler()
-        {
-            @Override
-            public void onShapeResizeStep(final WiresResizeStepEvent event)
-            {
-                c1.setX(event.getX());
-                c1.setY(event.getY());
-                s1.setX(event.getWidth());
-                s1.setY(event.getHeight());
-            }
+
+        realShape.addWiresResizeStepHandler(event -> {
+            c1.setX(event.getX());
+            c1.setY(event.getY());
+            s1.setX(event.getWidth());
+            s1.setY(event.getHeight());
         });
         final Point2D c2 = new Point2D(0, 0);
         final Point2D s2 = new Point2D(0, 0);
-        realShape.addWiresResizeEndHandler(new WiresResizeEndHandler()
-        {
-            @Override
-            public void onShapeResizeEnd(final WiresResizeEndEvent event)
-            {
-                c2.setX(event.getX());
-                c2.setY(event.getY());
-                s2.setX(event.getWidth());
-                s2.setY(event.getHeight());
-            }
+
+        realShape.addWiresResizeEndHandler(event -> {
+            c2.setX(event.getX());
+            c2.setY(event.getY());
+            s2.setX(event.getWidth());
+            s2.setY(event.getHeight());
         });
+
         // TODO: For now locations of mouse are not handles during drag events,
         // Event handlers checks Control Point position instead
         EventMockUtils.dragStart(primitive0, 9991, 9992);
         EventMockUtils.dragMove(primitive0, 9993, 9994);
+        EventMockUtils.dragEnd(primitive0, 9995, 9996);
+
         EventMockUtils.dragEnd(primitive0, 9995, 9996);
 
         assertEquals(1.0, c0.getX(), 0);

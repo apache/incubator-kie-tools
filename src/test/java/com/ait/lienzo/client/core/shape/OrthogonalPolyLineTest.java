@@ -26,18 +26,10 @@ import static org.mockito.Mockito.when;
 public class OrthogonalPolyLineTest
 {
 
-    @Mock
-    Point2DArray array;
-
-    @Mock
-    Attributes attributes;
-
     @Test
     public void testGetBoundingBoxForEmptyPath()
     {
-        when(array.size()).thenReturn(0);
-
-        OrthogonalPolyLine polyLine = new OrthogonalPolyLine(array);
+        OrthogonalPolyLine polyLine = new OrthogonalPolyLine(new Point2DArray());
         BoundingBox box = polyLine.getBoundingBox();
 
         assertEquals(0, box.getMinX(), 0.000001);
@@ -46,19 +38,20 @@ public class OrthogonalPolyLineTest
         assertEquals(0, box.getMaxY(), 0.000001);
     }
 
+
     @Test
     public void testParse()
     {
         Point2DArray points = new Point2DArray();
-        when(attributes.getControlPoints()).thenReturn(points);
-        when(attributes.getHeadDirection()).thenReturn(NONE);
-        when(attributes.getTailDirection()).thenReturn(NONE);
         OrthogonalPolyLine polyLine = spy(new OrthogonalPolyLine(points));
-        assertFalse(polyLine.parse(attributes));
 
-        points.push(0, 0);
-        points.push(5, 5);
-        assertTrue(polyLine.parse(attributes));
+        when(polyLine.getControlPoints()).thenReturn(points);
+        when(polyLine.getHeadDirection()).thenReturn(NONE);
+        when(polyLine.getTailDirection()).thenReturn(NONE);
+
+        points.push(new Point2D(0, 0));
+        points.push(new Point2D(5, 5));
+        assertTrue(polyLine.parse());
     }
 
     @Test

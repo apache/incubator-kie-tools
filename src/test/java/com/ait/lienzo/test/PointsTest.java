@@ -71,8 +71,8 @@ public class PointsTest
     {
         final Point2D p = myLienzo.test(new Point2D(0, 0));
 
-        assertEquals(p.getX(), 0, 0);
+        assertEquals(0, p.getX(), 0);
 
-        assertEquals(p.getY(), 0, 0);
+        assertEquals(0, p.getY(), 0);
     }
 }

@@ -16,7 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.impl;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
@@ -34,18 +36,13 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.BiConsumer;
-import com.ait.tooling.common.api.java.util.function.Consumer;
-import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerManager;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -64,10 +61,10 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class ButtonItemImplTest {
 
-    private final BoundingBox boundingBox = new BoundingBox(0d,
-                                                            0d,
-                                                            100d,
-                                                            200d);
+    private final BoundingBox boundingBox = BoundingBox.fromDoubles(0d,
+                                                                    0d,
+                                                                    100d,
+                                                                    200d);
 
     @Mock
     private AbstractFocusableGroupItem<?> groupItem;
@@ -88,19 +85,31 @@ public class ButtonItemImplTest {
     private BoundingPoints boundingPoints;
 
     @Mock
-    private HandlerRegistration clickReg;
+    private HandlerManager handlerManager;
 
     @Mock
-    private HandlerRegistration downReg;
+    private NodeMouseClickHandler nodeMouseClickHandler;
 
     @Mock
-    private HandlerRegistration moveReg;
+    private NodeMouseDownHandler nodeMouseDownHandler;
 
     @Mock
-    private HandlerRegistration exitReg;
+    private NodeMouseMoveHandler nodeMouseMoveHandler;
 
     @Mock
-    private HandlerRegistrationManager registrations;
+    private NodeMouseExitHandler nodeMouseExitHandler;
+
+    @Mock
+    private HandlerRegistration clickReg = new HandlerManager.HandlerRegistrationImpl(NodeMouseClickEvent.getType(), nodeMouseClickHandler, handlerManager);
+
+    @Mock
+    private HandlerRegistration downReg = new HandlerManager.HandlerRegistrationImpl(NodeMouseDownEvent.getType(), nodeMouseDownHandler, handlerManager);
+
+    @Mock
+    private HandlerRegistration moveReg = new HandlerManager.HandlerRegistrationImpl(NodeMouseMoveEvent.getType(), nodeMouseMoveHandler, handlerManager);
+
+    @Mock
+    private HandlerRegistration exitReg = new HandlerManager.HandlerRegistrationImpl(NodeMouseExitEvent.getType(), nodeMouseExitHandler, handlerManager);
 
     private ButtonItemImpl tested;
     private Layer layer;
@@ -111,11 +120,10 @@ public class ButtonItemImplTest {
     @SuppressWarnings("unchecked")
     public void setUp() {
         layer = spy(new Layer());
-        when(groupItem.registrations()).thenReturn(registrations);
         when(groupItem.getPrimitive()).thenReturn(groupItemPrim);
         when(groupItemPrim.getLayer()).thenReturn(layer);
         when(groupItemPrim.asNode()).thenReturn(new Group());
-        when(groupItemPrim.copy()).thenReturn(groupItemPrim);
+        when(groupItemPrim.copyTo(any(Shape.class))).thenReturn(groupItemPrim);
         when(groupItemPrim.setLocation(any(Point2D.class))).thenReturn(groupItemPrim);
         when(groupItemPrim.setAlpha(anyDouble())).thenReturn(groupItemPrim);
         when(groupItemPrim.setListening(anyBoolean())).thenReturn(groupItemPrim);
@@ -126,28 +134,17 @@ public class ButtonItemImplTest {
         when(groupItemPrim.addNodeMouseExitHandler(any(NodeMouseExitHandler.class))).thenReturn(exitReg);
         when(groupItem.asPrimitive()).thenReturn(groupItemGroup);
         when(boundingPoints.getBoundingBox()).thenReturn(boundingBox);
-        when(groupItem.getBoundingBox()).thenReturn(new Supplier<BoundingBox>() {
-            @Override
-            public BoundingBox get() {
-                return boundingBox;
-            }
-        });
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                ((Runnable) invocationOnMock.getArguments()[0]).run();
-                ((Runnable) invocationOnMock.getArguments()[1]).run();
-                return groupItem;
-            }
+        when(groupItem.getBoundingBox()).thenReturn(() -> boundingBox);
+        doAnswer(invocationOnMock -> {
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
+            return groupItem;
         }).when(groupItem).show(any(Runnable.class),
                                 any(Runnable.class));
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                ((Runnable) invocationOnMock.getArguments()[0]).run();
-                ((Runnable) invocationOnMock.getArguments()[1]).run();
-                return groupItem;
-            }
+        doAnswer(invocationOnMock -> {
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
+            return groupItem;
         }).when(groupItem).hide(any(Runnable.class),
                                 any(Runnable.class));
         tested =
@@ -215,8 +212,8 @@ public class ButtonItemImplTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testClickEvent() {
-        Consumer<AbstractNodeMouseEvent> clickConsumer = mock(Consumer.class);
-        Consumer<AbstractNodeMouseEvent> moveStartConsumer = mock(Consumer.class);
+        Consumer<NodeMouseClickEvent> clickConsumer = mock(Consumer.class);
+        Consumer<NodeMouseMoveEvent> moveStartConsumer = mock(Consumer.class);
         ButtonItem cascade = tested.onClick(clickConsumer);
         assertEquals(tested, cascade);
         cascade = tested.onMoveStart(moveStartConsumer);
@@ -224,7 +221,7 @@ public class ButtonItemImplTest {
         NodeMouseClickEvent clickEvent = mock(NodeMouseClickEvent.class);
         clickHandler.onNodeMouseClick(clickEvent);
         verify(clickConsumer, times(1)).accept(eq(clickEvent));
-        verify(moveStartConsumer, never()).accept(any(AbstractNodeMouseEvent.class));
+        verify(moveStartConsumer, never()).accept(any(NodeMouseMoveEvent.class));
     }
 
     @Test
@@ -233,8 +230,8 @@ public class ButtonItemImplTest {
         ArgumentCaptor<NodeMouseMoveHandler> moveHandlerCaptor = ArgumentCaptor.forClass(NodeMouseMoveHandler.class);
         verify(groupItemPrim, times(1)).addNodeMouseMoveHandler(moveHandlerCaptor.capture());
         NodeMouseMoveHandler moveHandler = moveHandlerCaptor.getValue();
-        Consumer<AbstractNodeMouseEvent> clickConsumer = mock(Consumer.class);
-        Consumer<AbstractNodeMouseEvent> moveStartConsumer = mock(Consumer.class);
+        Consumer<NodeMouseClickEvent> clickConsumer = mock(Consumer.class);
+        Consumer<NodeMouseMoveEvent> moveStartConsumer = mock(Consumer.class);
         ButtonItem cascade = tested.onClick(clickConsumer);
         assertEquals(tested, cascade);
         cascade = tested.onMoveStart(moveStartConsumer);
@@ -244,7 +241,7 @@ public class ButtonItemImplTest {
         NodeMouseMoveEvent moveEvent = mock(NodeMouseMoveEvent.class);
         moveHandler.onNodeMouseMove(moveEvent);
         verify(moveStartConsumer, times(1)).accept(eq(moveEvent));
-        verify(clickConsumer, never()).accept(any(AbstractNodeMouseEvent.class));
+        verify(clickConsumer, never()).accept(any(NodeMouseClickEvent.class));
     }
 
     @Test
@@ -253,8 +250,8 @@ public class ButtonItemImplTest {
         ArgumentCaptor<NodeMouseExitHandler> exitHandlerCaptor = ArgumentCaptor.forClass(NodeMouseExitHandler.class);
         verify(groupItemPrim, times(1)).addNodeMouseExitHandler(exitHandlerCaptor.capture());
         NodeMouseExitHandler exitHandler = exitHandlerCaptor.getValue();
-        Consumer<AbstractNodeMouseEvent> clickConsumer = mock(Consumer.class);
-        Consumer<AbstractNodeMouseEvent> moveStartConsumer = mock(Consumer.class);
+        Consumer<NodeMouseClickEvent> clickConsumer = mock(Consumer.class);
+        Consumer<NodeMouseMoveEvent> moveStartConsumer = mock(Consumer.class);
         ButtonItem cascade = tested.onClick(clickConsumer);
         assertEquals(tested, cascade);
         cascade = tested.onMoveStart(moveStartConsumer);
@@ -263,8 +260,8 @@ public class ButtonItemImplTest {
         downHandler.onNodeMouseDown(downEvent);
         NodeMouseExitEvent exitEvent = mock(NodeMouseExitEvent.class);
         exitHandler.onNodeMouseExit(exitEvent);
-        verify(clickConsumer, never()).accept(any(AbstractNodeMouseEvent.class));
-        verify(moveStartConsumer, never()).accept(any(AbstractNodeMouseEvent.class));
+        verify(clickConsumer, never()).accept(any(NodeMouseClickEvent.class));
+        verify(moveStartConsumer, never()).accept(any(NodeMouseMoveEvent.class));
     }
 
     @Test
@@ -298,11 +295,10 @@ public class ButtonItemImplTest {
     @Test
     public void testDestroy() {
         tested.destroy();
-        verify(groupItem,
-               times(1)).destroy();
-        verify(registrations, times(1)).deregister(eq(clickReg));
-        verify(registrations, times(1)).deregister(eq(downReg));
-        verify(registrations, times(1)).deregister(eq(moveReg));
-        verify(registrations, times(1)).deregister(eq(exitReg));
+        verify(groupItem, times(1)).destroy();
+        verify(clickReg, times(1)).removeHandler();
+        verify(downReg, times(1)).removeHandler();
+        verify(moveReg, times(1)).removeHandler();
+        verify(exitReg, times(1)).removeHandler();
     }
 }

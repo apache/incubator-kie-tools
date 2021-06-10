@@ -17,6 +17,8 @@
  */
 package com.ait.lienzo.client.core.shape.wires.handlers;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
@@ -28,7 +30,6 @@ import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHandlerImp
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,12 +100,7 @@ public class WiresShapeHandlerImplTest {
         when(dragContext.getStartAdjusted()).thenReturn(new Point2D(0,
                                                                     0));
         shape.setControl(control);
-        tested = spy(new WiresShapeHandlerImpl(new Supplier<WiresLayerIndex>() {
-            @Override
-            public WiresLayerIndex get() {
-                return index;
-            }
-        }, shape, highlight, manager));
+        tested = spy(new WiresShapeHandlerImpl(() -> index, shape, highlight, manager));
     }
 
     @Test

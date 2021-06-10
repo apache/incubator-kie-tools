@@ -29,14 +29,20 @@
 
   
   <properties>
-
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.org.kie.lienzo>${project.version}</version.org.kie.lienzo>
     <version.com.google.gwt>2.9.0</version.com.google.gwt>
-    <version.junit>4.11</version.junit>
-    <version.org.mockito>1.10.19</version.org.mockito>
-    <version.org.javassist>3.22.0-GA</version.org.javassist>
-    <version.com.google.gwt.gwtmockito>1.1.8</version.com.google.gwt.gwtmockito>
+    <version.com.google.gwt.user>2.9.0</version.com.google.gwt.user>
+    <maven.compiler.plugin.version>3.2</maven.compiler.plugin.version>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <version.maven.source.plugin>3.0.1</version.maven.source.plugin>
+    <version.maven.jar.plugin>2.5</version.maven.jar.plugin>
+    <version.maven.surefire.plugin>2.22.1</version.maven.surefire.plugin>
+    <version.junit>4.12</version.junit>
+    <version.org.mockito>3.9.0</version.org.mockito>
+    <version.org.javassist>3.27.0-GA</version.org.javassist>
+    <version.com.google.gwt.gwtmockito>1.1.9</version.com.google.gwt.gwtmockito>
 
   </properties>
 
@@ -109,6 +115,12 @@
       <version>${version.org.javassist}</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <version>${version.com.google.gwt.user}</version>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -133,16 +145,16 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.2</version>
+        <version>${maven.compiler.plugin.version}</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>3.0.1</version>
+        <version>${version.maven.source.plugin}</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -155,7 +167,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.5</version>
+        <version>${version.maven.jar.plugin}</version>
         <configuration>
           <archive>
             <manifestEntries>
@@ -169,7 +181,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.1</version>
+        <version>${version.maven.surefire.plugin}</version>
       </plugin>
       
     </plugins>

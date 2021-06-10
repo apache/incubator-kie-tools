@@ -47,7 +47,7 @@ public final class SettingsBuilder
         // Additional interceptors.
         final Class<? extends LienzoMockitoClassTranslator.TranslatorInterceptor>[] interceptorClasses = settingsAnnotation.translators();
 
-        final List<LienzoMockitoClassTranslator.TranslatorInterceptor> interceptors = new LinkedList<LienzoMockitoClassTranslator.TranslatorInterceptor>();
+        final List<LienzoMockitoClassTranslator.TranslatorInterceptor> interceptors = new LinkedList<>();
 
         if ((null != interceptorClasses) && (interceptorClasses.length > 0))
         {

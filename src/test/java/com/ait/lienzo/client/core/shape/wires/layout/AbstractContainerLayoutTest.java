@@ -30,6 +30,8 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,7 +47,6 @@ public class AbstractContainerLayoutTest<T, C extends AbstractContainerLayout<T>
 
     protected Text           child;
 
-    @Mock
     protected T                       currentLayout;
 
     protected Text           child2;
@@ -57,6 +58,7 @@ public class AbstractContainerLayoutTest<T, C extends AbstractContainerLayout<T>
         tested = spy(createInstance());
         child = spy(new Text("test"));
         child2 = new Text("test2");
+        currentLayout = (T) mock(Object.class);
     }
 
     protected T getDefaultLayoutForTest()
@@ -66,9 +68,9 @@ public class AbstractContainerLayoutTest<T, C extends AbstractContainerLayout<T>
 
     protected C createInstance()
     {
-        return (C) new AbstractContainerLayout<T>(parent)
+        return (C) new AbstractContainerLayout<Object>(parent)
         {
-            @Override public T getDefaultLayout()
+            @Override public Object getDefaultLayout()
             {
                 return getDefaultLayoutForTest();
             }
@@ -97,8 +99,8 @@ public class AbstractContainerLayoutTest<T, C extends AbstractContainerLayout<T>
         tested.add(child, currentLayout);
         tested.add(child2, currentLayout);
         tested.execute();
-        verify(tested, times(2)).add(child, currentLayout);
-        verify(tested, times(2)).add(child2, currentLayout);
+        verify(tested, times(2)).add(eq(child), eq(currentLayout));
+        verify(tested, times(2)).add(eq(child2), eq(currentLayout));
     }
 
     @Test

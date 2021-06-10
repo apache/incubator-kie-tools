@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.widget.panel.mediators;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.mediator.MouseBoxZoomMediator;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Scene;
@@ -23,18 +26,13 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.Bounds;
-import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
-import com.ait.lienzo.client.widget.panel.impl.LienzoPanelImpl;
+import com.ait.lienzo.client.widget.panel.impl.LienzoFixedPanel;
 import com.ait.lienzo.client.widget.panel.impl.PreviewLayer;
-import com.ait.lienzo.client.widget.panel.scrollbars.ScrollablePanel;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Consumer;
-import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,13 +63,13 @@ public class PanelPreviewMediatorTest {
     private ScrollablePanel panel;
 
     @Mock
-    private AbsolutePanel panelContainer;
+    private HTMLDivElement panelContainer;
 
     @Mock
-    private AbsolutePanel scrollPanel;
+    private HTMLDivElement scrollPanel;
 
     private PanelPreviewMediator tested;
-    private LienzoPanel previewPanel;
+    private LienzoFixedPanel previewPanel;
     private Layer layer;
 
     @Before
@@ -81,41 +79,37 @@ public class PanelPreviewMediatorTest {
         scene.add(layer);
         when(panel.getLayer()).thenReturn(layer);
         when(panel.getDomElementContainer()).thenReturn(panelContainer);
-        when(panel.getScrollPanel()).thenReturn(scrollPanel);
-        when(panel.getWidthPx()).thenReturn(WIDTH);
-        when(panel.getHeightPx()).thenReturn(HEIGHT);
+        when(panel.getElement()).thenReturn(scrollPanel);
+        when(panel.getWidePx()).thenReturn(WIDTH);
+        when(panel.getHighPx()).thenReturn(HEIGHT);
 
-        previewPanel = spy(new LienzoPanelImpl(1, 1));
+        previewPanel = spy(LienzoFixedPanel.newPanel(1, 1));
 
-        tested = new PanelPreviewMediator(new Supplier<LienzoBoundsPanel>() {
+        tested = new PanelPreviewMediator(() -> panel,
+                                          new Consumer<HTMLDivElement>() {
             @Override
-            public LienzoBoundsPanel get() {
-                return panel;
+            public void accept(HTMLDivElement htmlDivElement) {
+                panelContainer.appendChild(htmlDivElement);
             }
-        }, new Consumer<IsWidget>() {
+
             @Override
-            public void accept(IsWidget widget) {
-                panelContainer.add(widget);
+            public Consumer<HTMLDivElement> andThen(Consumer<? super HTMLDivElement> after) {
+                return null;
             }
-        }, new Supplier<LienzoPanel>() {
-            @Override
-            public LienzoPanel get() {
-                return previewPanel;
-            }
-        });
+        }, ()-> previewPanel);
         tested.setMaxScale(MAX_SCALE);
     }
 
     @Test
     public void testConstruction() {
-        verify(panelContainer, times(1)).add(any(IsWidget.class));
+        verify(panelContainer, times(1)).appendChild(any(HTMLDivElement.class));
         assertNotNull(tested.getPreviewLayer());
         PreviewLayer previewLayer = tested.getPreviewLayer();
         assertTrue(previewLayer.isListening());
         assertTrue(previewLayer.isTransformable());
         assertNotNull(tested.getPreviewPanel());
         LienzoPanel previewPanel = tested.getPreviewPanel();
-        assertFalse(previewPanel.isVisible());
+        assertEquals("none", previewPanel.getElement().style.display);
         assertEquals(previewLayer, previewLayer.getLayer());
         assertNotNull(tested.getMediator());
         MouseBoxZoomMediator mediator = tested.getMediator();
@@ -128,31 +122,30 @@ public class PanelPreviewMediatorTest {
         Viewport viewport = mock(Viewport.class);
         when(layer.getViewport()).thenReturn(viewport);
         tested.getMediator().setEnabled(true);
-        Transform transform = new Transform().translate(2, 3).scale(4, 5);
+        Transform transform = new Transform().translate(2, 3).scaleWithXY(4, 5);
         tested.getMediator().getOnTransform().accept(transform);
-        verify(viewport, times(1)).setTransform(eq(new Transform().translate(2, 3).scale(4, 5)));
+        verify(viewport, times(1)).setTransform(eq(new Transform().translate(2, 3).scaleWithXY(4, 5)));
         assertFalse(tested.getMediator().isEnabled());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testEnable() {
-        Element previewPanelElement = mock(Element.class);
-        Style previewPanelStyle = mock(Style.class);
+        HTMLDivElement previewPanelElement = mock(HTMLDivElement.class);
+        CSSStyleDeclaration previewPanelStyle = mock(CSSStyleDeclaration.class);
         when(previewPanel.getElement()).thenReturn(previewPanelElement);
-        when(previewPanelElement.getStyle()).thenReturn(previewPanelStyle);
+        previewPanelElement.style = previewPanelStyle;
         when(panel.getLayerBounds()).thenReturn(Bounds.build(0, 0, WIDTH / 2, HEIGHT / 2));
         tested.enable();
         assertTrue(tested.getPreviewLayer().isListening());
         assertFalse(layer.isListening());
         assertFalse(layer.isVisible());
-        verify(previewPanelStyle, times(1)).setPosition(eq(Style.Position.ABSOLUTE));
-        verify(previewPanelStyle, times(1)).setTop(eq(0d), eq(Style.Unit.PX));
-        verify(previewPanelStyle, times(1)).setLeft(eq(0d), eq(Style.Unit.PX));
-        verify(previewPanelStyle, times(1)).setBorderStyle(eq(Style.BorderStyle.NONE));
-        verify(previewPanelStyle, times(1)).setBackgroundColor(eq(PanelPreviewMediator.PREVIEW_BG_COLOR));
+        assertEquals("absolute", previewPanelStyle.position);
+        assertEquals("0px", previewPanelStyle.top);
+        assertEquals("0px", previewPanelStyle.left);
+        assertEquals("none", previewPanelStyle.borderStyle);
+        assertEquals(PanelPreviewMediator.PREVIEW_BG_COLOR, previewPanelStyle.backgroundColor);
         verify(previewPanel, times(1)).setPixelSize(WIDTH, HEIGHT);
-        verify(previewPanel, times(1)).setVisible(eq(false));
         Transform previewTransform = tested.getPreviewLayer().getViewport().getTransform();
         assertEquals(0.5833333333333334d, previewTransform.getScaleX(), 0d);
         assertEquals(0.5833333333333334d, previewTransform.getScaleY(), 0d);
@@ -161,7 +154,7 @@ public class PanelPreviewMediatorTest {
         ArgumentCaptor<Supplier> transformCaptor = ArgumentCaptor.forClass(Supplier.class);
         verify(layer, times(1)).drawWithTransforms(eq(tested.getPreviewLayer().getContext()),
                                                    eq(1d),
-                                                   eq(new BoundingBox(0, 0, WIDTH, HEIGHT)),
+                                                   eq(BoundingBox.fromDoubles(0, 0, WIDTH, HEIGHT)),
                                                    transformCaptor.capture());
         Supplier<Transform> drawTranform = transformCaptor.getValue();
         assertEquals(previewTransform, drawTranform.get());
@@ -175,9 +168,9 @@ public class PanelPreviewMediatorTest {
         tested.onDisable();
         assertFalse(tested.getMediator().isEnabled());
         assertEquals(0, tested.getPreviewLayer().length());
-        assertEquals(1, tested.getPreviewPanel().getWidthPx());
-        assertEquals(1, tested.getPreviewPanel().getHeightPx());
-        assertFalse(tested.getPreviewPanel().isVisible());
+        assertEquals(1, tested.getPreviewPanel().getWidePx());
+        assertEquals(1, tested.getPreviewPanel().getHighPx());
+        assertEquals("none", tested.getPreviewPanel().getElement().style.display);
         assertTrue(layer.isVisible());
         assertFalse(tested.isEnabled());
     }
@@ -188,11 +181,11 @@ public class PanelPreviewMediatorTest {
         assertFalse(tested.getMediator().isEnabled());
         assertNull(tested.getMediator().getOnTransform());
         assertEquals(0, tested.getPreviewLayer().length());
-        assertEquals(1, tested.getPreviewPanel().getWidthPx());
-        assertEquals(1, tested.getPreviewPanel().getHeightPx());
-        assertFalse(tested.getPreviewPanel().isVisible());
+        assertEquals(1, tested.getPreviewPanel().getWidePx());
+        assertEquals(1, tested.getPreviewPanel().getHighPx());
+        assertEquals("none", tested.getPreviewPanel().getElement().style.display);
         assertTrue(layer.isVisible());
         assertFalse(tested.isEnabled());
-        verify(previewPanel, times(1)).removeFromParent();
+        verify(previewPanel, times(1)).removeAll();
     }
 }

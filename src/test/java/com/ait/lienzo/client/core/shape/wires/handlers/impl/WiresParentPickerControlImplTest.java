@@ -17,26 +17,29 @@
  */
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
-import com.ait.lienzo.client.core.shape.wires.WiresContainer;
-import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
+import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,32 +51,43 @@ public class WiresParentPickerControlImplTest {
     private static final double START_Y = 5;
 
     @Mock
-    private WiresLayerIndex index;
+    private ColorMapBackedPicker picker;
 
+    @Mock
+    private WiresLayerIndex wiresLayerIndex;
+
+    @Mock
+    private Viewport viewport;
+
+    @Mock
+    private ScratchPad scratchPad;
+
+    private ColorMapBackedPicker.PickerOptions pickerOptions = new ColorMapBackedPicker.PickerOptions(false, 0);
     private WiresParentPickerControlImpl tested;
     private Layer layer;
     private WiresManager manager;
     private WiresShape shape;
     private WiresShape parent;
     private WiresShapeLocationControlImpl shapeLocationControl;
+    private Supplier<WiresLayerIndex> index;
 
     @Before
     public void setup()
     {
-        layer = new Layer();
+        layer = spy(new Layer());
+        when(layer.getViewport()).thenReturn(viewport);
+
         manager = WiresManager.get(layer);
         shape = new WiresShape(new MultiPath().rect(0, 0, 10, 10));
         shape.setWiresManager(manager);
         parent = new WiresShape(new MultiPath().rect(0, 0, 100, 100));
         parent.setWiresManager(manager);
         shapeLocationControl = spy(new WiresShapeLocationControlImpl(shape));
-        tested = new WiresParentPickerControlImpl(shapeLocationControl,
-                                                  new Supplier<WiresLayerIndex>() {
-                                                      @Override
-                                                      public WiresLayerIndex get() {
-                                                          return index;
-                                                      }
-                                                  });
+
+        WiresColorMapIndex wiresColorMapIndex = new WiresColorMapIndex(picker);
+        index = () -> wiresColorMapIndex;
+
+        tested = new WiresParentPickerControlImpl(shapeLocationControl, index);
     }
 
     @Test
@@ -84,7 +98,7 @@ public class WiresParentPickerControlImplTest {
                            START_Y);
         assertEquals(manager.getLayer(), tested.getParent());
         // Mock find method to return parent at the following location.
-        when(index.findShapeAt(eq((int) (START_X + 10)),
+        when(picker.findShapeAt(eq((int) (START_X + 10)),
                                 eq((int) (START_Y + 10))))
                 .thenReturn(new PickerPart(parent, PickerPart.ShapePart.BODY));
 
@@ -99,11 +113,19 @@ public class WiresParentPickerControlImplTest {
         dy = -10d;
         tested.onMove(dx, dy);
         assertEquals(manager.getLayer(), tested.getParent());
+    }
 
-        // Verify the index is never updated.
-        verify(index, never()).build(any(WiresLayer.class));
-        verify(index, never()).exclude(any(WiresContainer.class));
-        verify(index, never()).clear();
+    @Test
+    public void testIndex() {
+        ColorMapBackedPicker picker = spy(new ColorMapBackedPicker(scratchPad, pickerOptions));
+        WiresColorMapIndex wiresColorMapIndex = new WiresColorMapIndex(picker);
+        WiresParentPickerControlImpl tested = new WiresParentPickerControlImpl(shapeLocationControl,
+                                                                               () -> wiresColorMapIndex);
+        final WiresLayerIndex index = tested.getIndex();
+        index.clear();
+        assertTrue(pickerOptions.getShapesToSkip().isEmpty());
+        index.exclude(mock(WiresShape.class));
+        assertFalse(pickerOptions.getShapesToSkip().isEmpty());
     }
 
     @Test

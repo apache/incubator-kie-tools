@@ -22,8 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -61,6 +59,7 @@ public class ImageTest {
         tested.imageProxy = proxy;
     }
 
+
     @Test
     public void testClippingAttributes() {
         tested.setClippedImageStartX(7);
@@ -69,12 +68,12 @@ public class ImageTest {
         tested.setClippedImageHeight(21);
         tested.setClippedImageDestinationWidth(44);
         tested.setClippedImageDestinationHeight(67);
-        assertEquals(7, tested.getAttributes().getClippedImageStartX());
-        assertEquals(8, tested.getAttributes().getClippedImageStartY());
-        assertEquals(11, tested.getAttributes().getClippedImageWidth());
-        assertEquals(21, tested.getAttributes().getClippedImageHeight());
-        assertEquals(44, tested.getAttributes().getClippedImageDestinationWidth());
-        assertEquals(67, tested.getAttributes().getClippedImageDestinationHeight());
+        assertEquals(7, tested.getClippedImageStartX());
+        assertEquals(8, tested.getClippedImageStartY());
+        assertEquals(11, tested.getClippedImageWidth());
+        assertEquals(21, tested.getClippedImageHeight());
+        assertEquals(44, tested.getClippedImageDestinationWidth());
+        assertEquals(67, tested.getClippedImageDestinationHeight());
     }
 
     @Test
@@ -125,19 +124,17 @@ public class ImageTest {
         assertEquals(0, tested.getClippedImageDestinationHeight(), 0);
     }
 
+
     @Test
     public void testLoad() {
         doReturn(false).when(proxy).isLoaded();
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
-                ((Runnable)invocationOnMock.getArguments()[1]).run();
-                return null;
-            }
+        doAnswer(invocationOnMock -> {
+            ((Runnable)invocationOnMock.getArguments()[1]).run();
+            return null;
         }).when(proxy).load(anyString(),
-                            any(Runnable.class));
+                                any(Runnable.class));
         final String url = "anotherUrl";
-        tested.getAttributes().setURL(url);
+        tested.setURL(url);
         final ImageLoadCallback callback = mock(ImageLoadCallback.class);
         tested.load(callback);
         verify(proxy, times(1)).load(eq(url),
@@ -149,7 +146,7 @@ public class ImageTest {
     public void testAlreadyLoaded() {
         doReturn(true).when(proxy).isLoaded();
         final String url = "anotherUrl";
-        tested.getAttributes().setURL(url);
+        tested.setURL(url);
         final ImageLoadCallback callback = mock(ImageLoadCallback.class);
         tested.load(callback);
         verify(proxy, never()).load(anyString(),

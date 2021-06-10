@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.impl;
 
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.toolbox.GroupItem;
@@ -26,16 +29,12 @@ import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.BiConsumer;
-import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -52,10 +51,10 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class ItemGridImplTest {
 
-    private final BoundingBox boundingBox = new BoundingBox(0d,
-                                                            0d,
-                                                            100d,
-                                                            200d);
+    private final BoundingBox boundingBox = BoundingBox.fromDoubles(0d,
+                                                                    0d,
+                                                                    100d,
+                                                                    200d);
 
     @Mock
     private GroupImpl groupItem;
@@ -72,7 +71,6 @@ public class ItemGridImplTest {
     @Mock
     private BiConsumer<Group, Runnable> hideExecutor;
 
-    @Mock
     private NFastArrayList groupChildren;
 
     @Mock
@@ -121,48 +119,33 @@ public class ItemGridImplTest {
         when(button1BB.getHeight()).thenReturn(10d);
         when(button2BB.getWidth()).thenReturn(2.2d);
         when(button2BB.getHeight()).thenReturn(2.2d);
-        when(button1.getBoundingBox()).thenReturn(new Supplier() {
-            @Override
-            public Object get() {
-                return button1BB;
-            }
-        });
+        when(button1.getBoundingBox()).thenReturn(() -> button1BB);
         when(button1.asPrimitive()).thenReturn(button1Prim);
         when(button2.asPrimitive()).thenReturn(button2Prim);
-        when(button2.getBoundingBox()).thenReturn(new Supplier() {
-            @Override
-            public Object get() {
-                return button2BB;
-            }
-        });
+        when(button2.getBoundingBox()).thenReturn(() -> button2BB);
         when(group.getAlpha()).thenReturn(0d);
         when(group.getComputedBoundingPoints()).thenReturn(boundingPoints);
         when(group.getBoundingBox()).thenReturn(boundingBox);
+        groupChildren = new NFastArrayList<>();
+        groupChildren.add(new Object());
         when(group.getChildNodes()).thenReturn(groupChildren);
-        when(groupChildren.size()).thenReturn(1);
         when(boundingPoints.getBoundingBox()).thenReturn(boundingBox);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                ((Runnable) invocationOnMock.getArguments()[0]).run();
-                ((Runnable) invocationOnMock.getArguments()[1]).run();
-                when(group.getAlpha()).thenReturn(1d);
-                when(groupItem.isVisible()).thenReturn(true);
-                return groupItem;
-            }
+        doAnswer(invocationOnMock -> {
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
+            when(group.getAlpha()).thenReturn(1d);
+            when(groupItem.isVisible()).thenReturn(true);
+            return groupItem;
         }).when(groupItem).show(any(Runnable.class),
-                                any(Runnable.class));
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                ((Runnable) invocationOnMock.getArguments()[0]).run();
-                ((Runnable) invocationOnMock.getArguments()[1]).run();
-                when(group.getAlpha()).thenReturn(0d);
-                when(groupItem.isVisible()).thenReturn(false);
-                return groupItem;
-            }
+                                    any(Runnable.class));
+        doAnswer(invocationOnMock -> {
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
+            when(group.getAlpha()).thenReturn(0d);
+            when(groupItem.isVisible()).thenReturn(false);
+            return groupItem;
         }).when(groupItem).hide(any(Runnable.class),
-                                any(Runnable.class));
+                                    any(Runnable.class));
 
         tested = new ItemGridImpl(groupItem)
                 .useHideExecutor(hideExecutor)

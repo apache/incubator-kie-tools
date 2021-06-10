@@ -24,27 +24,34 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class PanelTransformUtilsTests {
 
+    @Mock
     private Viewport viewport;
 
     @Before
     public void setUp() {
-        viewport = new Viewport(1200, 900);
+        when(viewport.getWidth()).thenReturn(1200);
+        when(viewport.getHeight()).thenReturn(1200);
     }
 
     @Test
     public void testSetScaleLevel() {
         double level = 0.8d;
-        viewport.setTransform(new Transform().translate(0.1d, 0.2d).scale(0.3d, 0.4d));
+        when(viewport.setTransform(any(Transform.class))).thenCallRealMethod();
+        viewport.setTransform(new Transform().translate(0.1d, 0.2d).scaleWithXY(0.3d, 0.4d));
+        when(viewport.getTransform()).thenCallRealMethod();
         PanelTransformUtils.setScaleLevel(viewport, level);
         Transform transform = viewport.getTransform();
+
         assertEquals(0.1d, transform.getTranslateX(), 0d);
         assertEquals(0.2d, transform.getTranslateY(), 0d);
         assertEquals(0.8d, transform.getScaleX(), 0d);
@@ -53,7 +60,9 @@ public class PanelTransformUtilsTests {
 
     @Test
     public void testReset() {
-        viewport.setTransform(new Transform().translate(0.1d, 0.2d).scale(0.3d, 0.4d));
+        when(viewport.setTransform(any(Transform.class))).thenCallRealMethod();
+        viewport.setTransform(new Transform().translate(0.1d, 0.2d).scaleWithXY(0.3d, 0.4d));
+        when(viewport.getTransform()).thenCallRealMethod();
         PanelTransformUtils.reset(viewport);
         Transform transform = viewport.getTransform();
         assertEquals(0d, transform.getTranslateX(), 0d);
@@ -65,8 +74,8 @@ public class PanelTransformUtilsTests {
     @Test
     public void testComputeZoomLevelFitToWidth() {
         LienzoBoundsPanel panel = mock(LienzoBoundsPanel.class);
-        when(panel.getWidthPx()).thenReturn(800);
-        when(panel.getHeightPx()).thenReturn(600);
+        when(panel.getWidePx()).thenReturn(800);
+        when(panel.getHighPx()).thenReturn(600);
         Bounds layerBounds = Bounds.build(0d, 0d, 1600, 1200);
         when(panel.getLayerBounds()).thenReturn(layerBounds);
         double level = PanelTransformUtils.computeZoomLevelFitToWidth(panel);
@@ -75,7 +84,7 @@ public class PanelTransformUtilsTests {
 
     @Test
     public void testComputeLevel() {
-        viewport.setTransform(new Transform().translate(0.1d, 0.2d).scale(0.3d, 0.4d));
+        when(viewport.getTransform()).thenReturn(new Transform().translate(0.1d, 0.2d).scaleWithXY(0.3d, 0.4d));
         double level = PanelTransformUtils.computeLevel(viewport);
         assertEquals(0.3d, level, 0d);
     }

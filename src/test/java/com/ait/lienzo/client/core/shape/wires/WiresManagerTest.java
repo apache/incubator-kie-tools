@@ -19,11 +19,12 @@
 package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.event.OnEventHandlers;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
-import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
@@ -33,26 +34,18 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresHandlerFactory;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresManagerTest
@@ -63,11 +56,27 @@ public class WiresManagerTest
 
     private Layer        layer;
 
+    private Scene scene = new Scene();
+
+    @Mock
+    private HTMLDivElement element;
+
+    private Viewport viewport;
+
     @Before
     public void setup()
     {
+        OnEventHandlers onEventHandlers = new OnEventHandlers();
+
         layer = spy(new Layer());
-        Viewport viewport = new Viewport();
+        viewport = mock(Viewport.class);
+        when(viewport.getScene()).thenReturn(scene);
+        when(layer.getViewport()).thenReturn(viewport);
+        when(viewport.getOnEventHandlers()).thenReturn(onEventHandlers);
+        when(viewport.getElement()).thenReturn(element);
+        doNothing().when(layer).setPixelSize(anyInt(), anyInt());
+
+        when(viewport.setPixelSize(anyInt(), anyInt())).thenReturn(viewport);
         layer.setID(LAYER_ID);
         viewport.getScene().add(layer);
         tested = WiresManager.get(layer);
@@ -76,8 +85,9 @@ public class WiresManagerTest
     @Test
     public void testGetWiresManager()
     {
-        final Layer layer2 = new Layer();
+        final Layer layer2 = spy(new Layer());
         layer2.setID("layer2");
+        when(layer2.getViewport()).thenReturn(viewport);
         final WiresManager tested2 = WiresManager.get(layer2);
         assertEquals(tested, WiresManager.get(layer));
         assertEquals(tested2, WiresManager.get(layer2));
@@ -88,6 +98,8 @@ public class WiresManagerTest
     {
         final Layer layer2 = mock(Layer.class);
         when(layer2.uuid()).thenReturn("layer2");
+        when(layer2.getViewport()).thenReturn(viewport);
+
         final WiresManager manager = WiresManager.get(layer2);
         verify(layer2, times(1)).setOnLayerBeforeDraw(any(WiresManager.LinePreparer.class));
         assertNotNull(manager.getAlignAndDistribute());
@@ -113,7 +125,7 @@ public class WiresManagerTest
         assertNotNull(tested.getShape(shape.uuid()));
         verify(shape, times(1)).setControl(any(WiresShapeControl.class));
         verify(layer, times(1)).add(eq(shape.getGroup()));
-        verify(handlerRegistrationManager, times(6)).register(any(HandlerRegistration.class));
+        verify(handlerRegistrationManager, atLeastOnce()).register(any(HandlerRegistration.class));
         verify(shape).addWiresResizeStartHandler(any(WiresResizeStartHandler.class));
         verify(shape).addWiresResizeEndHandler(any(WiresResizeEndHandler.class));
     }
@@ -191,7 +203,6 @@ public class WiresManagerTest
         final WiresHandlerFactory wiresHandlerFactory = mock(WiresHandlerFactory.class);
         final WiresConnectorHandler wiresConnectorHandler = mock(WiresConnectorHandler.class);
         final WiresConnectorControl wiresConnectorControl = mock(WiresConnectorControl.class);
-        final Attributes attributes = mock(Attributes.class);
         doReturn(shapeGroup).when(connector).getGroup();
         doReturn(line).when(connector).getLine();
         doReturn(head).when(connector).getHead();
@@ -199,7 +210,6 @@ public class WiresManagerTest
         doReturn(group.uuid()).when(connector).uuid();
         doReturn(wiresConnectorHandler).when(wiresHandlerFactory).newConnectorHandler(connector, spied);
         doReturn(wiresConnectorControl).when(wiresConnectorHandler).getControl();
-        when(line.getAttributes()).thenReturn(attributes);
 
         spied.setWiresHandlerFactory(wiresHandlerFactory);
         assertEquals(spied.getWiresHandlerFactory(), wiresHandlerFactory);
@@ -223,13 +233,11 @@ public class WiresManagerTest
         final MultiPath head = mock(MultiPath.class);
         final MultiPath tail = mock(MultiPath.class);
         final WiresConnector connector = mock(WiresConnector.class);
-        final Attributes attributes = mock(Attributes.class);
         doReturn(shapeGroup).when(connector).getGroup();
         doReturn(line).when(connector).getLine();
         doReturn(head).when(connector).getHead();
         doReturn(tail).when(connector).getTail();
         doReturn(group.uuid()).when(connector).uuid();
-        when(line.getAttributes()).thenReturn(attributes);
         spied.enableSelectionManager();
         spied.getSelectionManager().getSelectedItems().add(connector);
         spied.register(connector);

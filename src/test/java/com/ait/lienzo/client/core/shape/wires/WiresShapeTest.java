@@ -18,7 +18,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
 import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
@@ -26,7 +25,6 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
-import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
@@ -35,22 +33,19 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHandler;
-import com.ait.lienzo.client.core.shape.wires.layout.label.LabelContainerLayout;
-import com.ait.lienzo.client.core.shape.wires.layout.label.LabelLayout;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
+import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.client.event.HandlerManager;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
+import com.ait.lienzo.tools.client.event.INodeEvent;
 import com.google.gwt.event.dom.client.DomEvent;
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.*;
@@ -75,10 +70,7 @@ public class WiresShapeTest
     private HandlerRegistrationManager handlerRegistrationManager;
 
     @Mock
-    private IAttributesChangedBatcher  attributesChangedBatcher;
-
-    @Mock
-    private HandlerManager             handlerManager;
+    private HandlerManager handlerManager;
 
     @Mock
     private WiresContainer             parent;
@@ -88,24 +80,17 @@ public class WiresShapeTest
 
     private Group                      group;
 
-    private Text label;
-
-    @Mock
-    private LabelLayout labelLayout;
-
     @Before
     public void setup()
     {
         path = spy(new MultiPath().rect(3, 7, 100, 100));
         group = spy(new Group());
-        label = spy(new Text("label"));
-        labelLayout = new LabelLayout.Builder().build();
         when(layoutContainer.getGroup()).thenReturn(group);
         when(layoutContainer.setOffset(any(Point2D.class))).thenReturn(layoutContainer);
         when(layoutContainer.setSize(anyDouble(), anyDouble())).thenReturn(layoutContainer);
         when(layoutContainer.execute()).thenReturn(layoutContainer);
         when(layoutContainer.refresh()).thenReturn(layoutContainer);
-        tested = spy(new WiresShape(path, layoutContainer, handlerManager, handlerRegistrationManager, attributesChangedBatcher));
+        tested = spy(new WiresShape(path, layoutContainer, handlerManager, handlerRegistrationManager));
     }
 
     @Test
@@ -220,23 +205,17 @@ public class WiresShapeTest
         verify(handlerManager).addHandler(WiresResizeStepEvent.TYPE, stepHandler);
 
         final HandlerRegistration registration = mock(HandlerRegistration.class);
-        doAnswer(new Answer<HandlerRegistration>()
-        {
-            @SuppressWarnings("rawtypes")
-            @Override
-            public HandlerRegistration answer(final InvocationOnMock invocationOnMock) throws Throwable
+        doAnswer((Answer<HandlerRegistration>) invocationOnMock -> {
+            final DomEvent.Type type = (DomEvent.Type) invocationOnMock.getArguments()[0];
+            if (WiresResizeEndEvent.TYPE.equals(type))
             {
-                final DomEvent.Type type = (DomEvent.Type) invocationOnMock.getArguments()[0];
-                if (WiresResizeEndEvent.TYPE.equals(type))
-                {
-                    final WiresResizeEndHandler handler = (WiresResizeEndHandler) invocationOnMock.getArguments()[1];
-                    final WiresResizeEndEvent endEvent = mock(WiresResizeEndEvent.class);
-                    handler.onShapeResizeEnd(endEvent);
-                    verify(endHandler, times(1)).onShapeResizeEnd(eq(endEvent));
-                }
-                return registration;
+                final WiresResizeEndHandler handler = (WiresResizeEndHandler) invocationOnMock.getArguments()[1];
+                final WiresResizeEndEvent endEvent = mock(WiresResizeEndEvent.class);
+                handler.onShapeResizeEnd(endEvent);
+                verify(endHandler, times(1)).onShapeResizeEnd(eq(endEvent));
             }
-        }).when(handlerManager).addHandler(any(GwtEvent.Type.class), any(EventHandler.class));
+            return registration;
+        }).when(handlerManager).addHandler(any(INodeEvent.Type.class), any(EventHandler.class));
 
     }
 
@@ -321,34 +300,25 @@ public class WiresShapeTest
 
         tested.refresh();
 
-        verify(tested, times(1)).destroyControls();
         verify(controls).refresh();
     }
 
     @Test
     public void testEquals()
     {
-        WiresShape shape1 = new WiresShape(path, layoutContainer, handlerManager, handlerRegistrationManager, attributesChangedBatcher);
+        WiresShape shape1 = new WiresShape(path, layoutContainer, handlerManager, handlerRegistrationManager);
         assertEquals(shape1, shape1);
         assertFalse(shape1.equals(null));
         assertFalse(shape1.equals(new Object()));
 
-        WiresShape shape2 = new WiresShape(path, layoutContainer, handlerManager, handlerRegistrationManager, attributesChangedBatcher);
+        WiresShape shape2 = new WiresShape(path, layoutContainer, handlerManager, handlerRegistrationManager);
         assertEquals(shape1, shape2);
         assertEquals(shape2, shape1);
 
         Group group2 = new Group();
         when(layoutContainer.getGroup()).thenReturn(group2);
-        shape2 = new WiresShape(path, layoutContainer, handlerManager, handlerRegistrationManager, attributesChangedBatcher);
+        shape2 = new WiresShape(path, layoutContainer, handlerManager, handlerRegistrationManager);
         assertNotEquals(shape1, shape2);
         assertNotEquals(shape2, shape1);
-    }
-
-    @Test
-    public void testAddLabel(){
-        final LabelContainerLayout labelContainerLayout = tested.addLabel(label, labelLayout);
-        verify(group).add(label);
-        final LabelLayout layout = labelContainerLayout.getLayout(label);
-        assertEquals(labelLayout, layout);
     }
 }

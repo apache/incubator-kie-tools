@@ -45,7 +45,7 @@ import javassist.NotFoundException;
  */
 public class LienzoJSOMockTranslatorInterceptor extends AbstractLienzoJSOTranslatorInterceptor implements HasSettings
 {
-    private final Set<String> jsos = new LinkedHashSet<String>();
+    private final Set<String> jsos = new LinkedHashSet<>();
 
     public LienzoJSOMockTranslatorInterceptor()
     {

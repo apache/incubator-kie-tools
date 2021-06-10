@@ -16,14 +16,15 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.tooltip;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Consumer;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -199,17 +200,12 @@ public class PrimitiveTextTooltipTest {
     public void testBoundingLocationExecutor() {
         final PrimitiveTextTooltip.BoundingLocationExecutor executor =
                 new PrimitiveTextTooltip.BoundingLocationExecutor();
-        final BoundingBox boundingBox = new BoundingBox(0d,
-                                                        0d,
-                                                        100d,
-                                                        200d);
+        final BoundingBox boundingBox = BoundingBox.fromDoubles(0d,
+                                                                0d,
+                                                                100d,
+                                                                200d);
         executor.at(Direction.SOUTH)
-                .forBoundingBox(new Supplier<BoundingBox>() {
-                    @Override
-                    public BoundingBox get() {
-                        return boundingBox;
-                    }
-                })
+                .forBoundingBox(() -> boundingBox)
                 .accept(tooltip);
         final ArgumentCaptor<Point2D> pointCaptor = ArgumentCaptor.forClass(Point2D.class);
         verify(tooltip,

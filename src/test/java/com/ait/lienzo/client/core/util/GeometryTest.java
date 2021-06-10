@@ -126,7 +126,7 @@ public class GeometryTest {
 
     @Test
     public void testGetBoundingBoxForQuadraticCurve() {
-        BoundingBox result = Geometry.getBoundingBoxForQuadraticCurve(new Point2DArray(new Point2D(1.13d, 3.454d),
+        BoundingBox result = Geometry.getBoundingBoxForQuadraticCurve(Point2DArray.fromArrayOfPoint2D(new Point2D(1.13d, 3.454d),
                                                                                        new Point2D(234.4d, 2.2d),
                                                                                        new Point2D(0.34d, 111d)));
         assertEquals(0d, result.getMinX(), 0);

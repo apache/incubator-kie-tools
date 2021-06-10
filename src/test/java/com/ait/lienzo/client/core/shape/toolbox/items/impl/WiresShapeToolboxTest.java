@@ -17,36 +17,39 @@
 package com.ait.lienzo.client.core.shape.toolbox.items.impl;
 
 import java.util.Iterator;
+import java.util.function.BiConsumer;
 
 import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.toolbox.grid.Point2DGrid;
 import com.ait.lienzo.client.core.shape.toolbox.items.DecoratedItem;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresMoveEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresMoveHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.BiConsumer;
-import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerManager;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -62,10 +65,10 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresShapeToolboxTest {
 
-    private final BoundingBox boundingBox = new BoundingBox(0d,
-                                                            0d,
-                                                            100d,
-                                                            200d);
+    private final BoundingBox boundingBox = BoundingBox.fromDoubles(0d,
+                                                                    0d,
+                                                                    100d,
+                                                                    200d);
     @Mock
     private BiConsumer<Group, Runnable> showExecutor;
 
@@ -82,13 +85,7 @@ public class WiresShapeToolboxTest {
     private Group group;
 
     @Mock
-    private IPrimitive primitive;
-
-    @Mock
     private BoundingPoints boundingPoints;
-
-    @Mock
-    private HandlerRegistrationManager registrations;
 
     @Mock
     private HandlerRegistration moveRegistration;
@@ -116,12 +113,7 @@ public class WiresShapeToolboxTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() {
-        when(toolbox.getBoundingBox()).thenReturn(new Supplier<BoundingBox>() {
-            @Override
-            public BoundingBox get() {
-                return boundingBox;
-            }
-        });
+        when(toolbox.getBoundingBox()).thenReturn(() -> boundingBox);
         when(toolbox.asPrimitive()).thenReturn(group);
         when(toolbox.setGridSize(anyDouble(),
                                  anyDouble())).thenReturn(toolbox);
@@ -139,35 +131,26 @@ public class WiresShapeToolboxTest {
         when(shape.addWiresResizeStartHandler(any(WiresResizeStartHandler.class))).thenReturn(resizeStartRegistration);
         when(shape.addWiresResizeStepHandler(any(WiresResizeStepHandler.class))).thenReturn(resizeStepRegistration);
         when(shape.addWiresResizeEndHandler(any(WiresResizeEndHandler.class))).thenReturn(resizeEndRegistration);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                ((Runnable) invocationOnMock.getArguments()[0]).run();
-                ((Runnable) invocationOnMock.getArguments()[1]).run();
-                return toolbox;
-            }
+        doAnswer(invocationOnMock -> {
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
+            return toolbox;
         }).when(toolbox).show(any(Runnable.class),
                               any(Runnable.class));
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                ((Runnable) invocationOnMock.getArguments()[0]).run();
-                ((Runnable) invocationOnMock.getArguments()[1]).run();
-                return toolbox;
-            }
+        doAnswer(invocationOnMock -> {
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
+            return toolbox;
         }).when(toolbox).hide(any(Runnable.class),
                               any(Runnable.class));
-        tested = new WiresShapeToolbox(shape,
-                                       toolbox,
-                                       registrations)
+        tested = new WiresShapeToolbox(shape, toolbox)
                 .useHideExecutor(hideExecutor)
                 .useShowExecutor(showExecutor);
     }
 
     @Test
     public void testInit() {
-        assertEquals(boundingBox,
-                     tested.getBoundingBox());
+        assertEquals(boundingBox, tested.getBoundingBox());
         assertFalse(tested.isVisible());
         verify(shape,
                times(1)).addWiresMoveHandler(any(WiresMoveHandler.class));
@@ -183,20 +166,6 @@ public class WiresShapeToolboxTest {
                times(1)).addWiresResizeStepHandler(any(WiresResizeStepHandler.class));
         verify(shape,
                times(1)).addWiresResizeEndHandler(any(WiresResizeEndHandler.class));
-        verify(registrations,
-               times(1)).register(eq(moveRegistration));
-        verify(registrations,
-               times(1)).register(eq(dragStartRegistration));
-        verify(registrations,
-               times(1)).register(eq(dragMoveRegistration));
-        verify(registrations,
-               times(1)).register(eq(dragEndRegistration));
-        verify(registrations,
-               times(1)).register(eq(resizeStartRegistration));
-        verify(registrations,
-               times(1)).register(eq(resizeStepRegistration));
-        verify(registrations,
-               times(1)).register(eq(resizeEndRegistration));
         verify(toolbox,
                times(1)).hide();
         ArgumentCaptor<Point2D> pc = ArgumentCaptor.forClass(Point2D.class);
@@ -308,12 +277,15 @@ public class WiresShapeToolboxTest {
     @Test
     public void testDestroy() {
         tested.destroy();
-        verify(toolbox,
-               times(1)).hide();
-        verify(toolbox,
-               times(1)).destroy();
-        verify(registrations,
-               times(1)).removeHandler();
+        verify(toolbox, times(1)).hide();
+        verify(toolbox, times(1)).destroy();
+        verify(moveRegistration, times(1)).removeHandler();
+        verify(dragStartRegistration, times(1)).removeHandler();
+        verify(dragMoveRegistration, times(1)).removeHandler();
+        verify(dragEndRegistration, times(1)).removeHandler();
+        verify(resizeStartRegistration, times(1)).removeHandler();
+        verify(resizeStepRegistration, times(1)).removeHandler();
+        verify(resizeEndRegistration, times(1)).removeHandler();
     }
 
     @Test
@@ -322,6 +294,12 @@ public class WiresShapeToolboxTest {
         verify(toolbox, times(1)).hide();
         verify(toolbox, times(1)).hide(any(Runnable.class), any(Runnable.class));
         verify(toolbox, times(1)).destroy();
-        verify(registrations, times(1)).removeHandler();
+        verify(moveRegistration, times(1)).removeHandler();
+        verify(dragStartRegistration, times(1)).removeHandler();
+        verify(dragMoveRegistration, times(1)).removeHandler();
+        verify(dragEndRegistration, times(1)).removeHandler();
+        verify(resizeStartRegistration, times(1)).removeHandler();
+        verify(resizeStepRegistration, times(1)).removeHandler();
+        verify(resizeEndRegistration, times(1)).removeHandler();
     }
 }

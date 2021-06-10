@@ -59,7 +59,7 @@ public class LienzoMockitoClassTranslator implements Translator
 
     private TranslatorInterceptor[] initInterceptors(final Settings settings)
     {
-        final List<TranslatorInterceptor> result = new LinkedList<TranslatorInterceptor>(settings.getAdditionalTranslators());
+        final List<TranslatorInterceptor> result = new LinkedList<>(settings.getAdditionalTranslators());
 
         // Configure the translator interceptor classes with the required settings.
         for (final LienzoMockitoClassTranslator.TranslatorInterceptor interceptor : result)

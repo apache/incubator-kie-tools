@@ -41,6 +41,10 @@ public class ReturnLienzoJSOMocks extends ReturnsMocks
     @Override
     public Object answer(final InvocationOnMock invocation) throws Throwable
     {
+        Class<?> returnType = invocation.getMethod().getReturnType();
+        if (returnType.getName().equals("void")) {
+            return null;
+        }
         return invocation.getMock();
     }
 }

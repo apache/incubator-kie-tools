@@ -42,6 +42,8 @@ public abstract class AbstractLienzoJSOTranslatorInterceptor implements LienzoMo
 
     protected static final String METHOD_CREATE = "create";
 
+    protected static final String METHOD_OF = "of";
+
     protected abstract Set<String> getJSOClasses();
 
     protected abstract void setMakeMethodBody(String fqcn, CtClass ctClass, CtMethod ctMethod) throws NotFoundException, CannotCompileException;
@@ -72,7 +74,7 @@ public abstract class AbstractLienzoJSOTranslatorInterceptor implements LienzoMo
             // Create stub/mock implementations for certain methods.
             for (final CtMethod method : clazz.getDeclaredMethods())
             {
-                if (isMakeMethod(method, name) || isCreateMethod(method, name))
+                if (isMakeMethod(method, name) || isCreateMethod(method, name) || isOfMethod(method, name))
                 {
                     method.setModifiers(method.getModifiers() & ~java.lang.reflect.Modifier.NATIVE);
 
@@ -92,6 +94,11 @@ public abstract class AbstractLienzoJSOTranslatorInterceptor implements LienzoMo
     protected boolean isCreateMethod(final CtMethod method, final String className) throws NotFoundException
     {
         return isMethod(method, className, METHOD_CREATE);
+    }
+
+    protected boolean isOfMethod(final CtMethod method, final String className) throws NotFoundException
+    {
+        return isMethod(method, className, METHOD_OF);
     }
 
     protected boolean isMethod(final CtMethod method, final String className, final String methodName) throws NotFoundException

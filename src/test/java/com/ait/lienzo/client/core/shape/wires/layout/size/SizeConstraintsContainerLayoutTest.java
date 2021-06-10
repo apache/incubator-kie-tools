@@ -33,6 +33,7 @@ public class SizeConstraintsContainerLayoutTest extends AbstractContainerLayoutT
     public void setUp()
     {
         super.setUp();
+        currentLayout = new SizeConstraints();
     }
 
     @Override
@@ -55,8 +56,8 @@ public class SizeConstraintsContainerLayoutTest extends AbstractContainerLayoutT
     {
         tested.add(child, new SizeConstraints(30, 15, Type.RAW));
         final BoundingBox maxSize = tested.getMaxSize(child);
-        assertEquals(maxSize.getWidth(), 30, 0d);
-        assertEquals(maxSize.getHeight(), 15, 0d);
+        assertEquals(30, maxSize.getWidth(), 0d);
+        assertEquals(15, maxSize.getHeight(), 0d);
     }
 
     @Override protected SizeConstraints getDefaultLayoutForTest()

@@ -23,8 +23,7 @@ import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,8 +58,6 @@ public class BackingColorMapUtilsTest {
     @Mock
     private PathPartEntryJSO entry;
 
-    @Mock
-    private NFastDoubleArrayJSO bezierPoints;
 
     private static final Double X0 = 0d;
     private static final Double Y0 = 0d;
@@ -71,11 +68,15 @@ public class BackingColorMapUtilsTest {
     private static final Double OFFSET_X = 5d;
     private static final Double OFFSET_Y = 5d;
 
+    private double[] bezierPoints = new double[]{X0, Y0, X1, Y1, X2, Y2};
+
+
     @Before
     public void setUp(){
         location = new Point2D(OFFSET_X,OFFSET_Y);
-        points = new Point2DArray(location);
-        pathPartLists = new NFastArrayList<>(pathPartList);
+        points = Point2DArray.fromArrayOfPoint2D(location);
+        pathPartLists = new NFastArrayList<>();
+        pathPartLists.add(pathPartList);
         when(shape.getPath()).thenReturn(path);
         when(path.getActualPathPartListArray()).thenReturn(pathPartLists);
         when(path.getComputedLocation()).thenReturn(location);
@@ -84,12 +85,6 @@ public class BackingColorMapUtilsTest {
         when(pathPartList.get(0)).thenReturn(entry);
         when(entry.getCommand()).thenReturn(PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE);
         when(entry.getPoints()).thenReturn(bezierPoints);
-        when(bezierPoints.get(0)).thenReturn(X0);
-        when(bezierPoints.get(1)).thenReturn(Y0);
-        when(bezierPoints.get(2)).thenReturn(X1);
-        when(bezierPoints.get(3)).thenReturn(Y1);
-        when(bezierPoints.get(4)).thenReturn(X2);
-        when(bezierPoints.get(5)).thenReturn(Y2);
     }
 
     @Test

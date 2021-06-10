@@ -15,60 +15,82 @@
  */
 package com.ait.lienzo.client.core.mediator;
 
-import com.ait.lienzo.client.core.event.NodeMouseWheelEvent;
+import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.WheelEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class MouseWheelZoomMediatorTest
 {
     @Mock
-    private NodeMouseWheelEvent    mouseWheelEvent;
+    private WheelEvent mouseWheelEvent;
 
     private MouseWheelZoomMediator tested;
 
+    @Mock
     private Viewport               viewport;
+
+    @Mock
+    private HTMLDivElement         element;
+
+    @Mock
+    private Scene scene;
+
+
+    private Transform transform = new Transform();
 
     @Before
     public void setUp()
     {
-        this.viewport = new Viewport();
-        this.tested = new MouseWheelZoomMediator();
+
+        this.tested = spy(new MouseWheelZoomMediator());
         this.tested.setZoomFactor(0.3);
         this.tested.setViewport(viewport);
+
+        when(viewport.getScene()).thenReturn(scene);
+        when(viewport.getElement()).thenReturn(element);
+        when(tested.getViewport()).thenReturn(viewport);
+
+        doCallRealMethod().when(viewport).setTransform(any(Transform.class));
+        doCallRealMethod().when(viewport).getTransform();
+        viewport.setTransform(transform);
     }
 
     @Test
     public void testOnMouseWheelAboutPoint()
     {
-        when(mouseWheelEvent.isSouth()).thenReturn(true);
-        when(mouseWheelEvent.isNorth()).thenReturn(false);
-        when(mouseWheelEvent.getX()).thenReturn(110);
-        when(mouseWheelEvent.getY()).thenReturn(323);
         tested.setScaleAboutPoint(true);
-        tested.onMouseWheel(mouseWheelEvent);
+        mouseWheelEvent.deltaY = -1;
+        tested.onMouseWheel(mouseWheelEvent, 110, 323);
+
         assertEquals(0.7692307692307692d, viewport.getTransform().getScaleX(), 0d);
         assertEquals(0.7692307692307692d, viewport.getTransform().getScaleY(), 0d);
         assertEquals(25.384615384615387d, viewport.getTransform().getTranslateX(), 0d);
         assertEquals(74.53846153846155d, viewport.getTransform().getTranslateY(), 0d);
+
+
     }
 
     @Test
     public void testOnMouseWheelRelativeToCenter()
     {
-        when(mouseWheelEvent.isSouth()).thenReturn(true);
-        when(mouseWheelEvent.isNorth()).thenReturn(false);
-        when(mouseWheelEvent.getX()).thenReturn(110);
-        when(mouseWheelEvent.getY()).thenReturn(323);
         tested.setScaleAboutPoint(false);
-        tested.onMouseWheel(mouseWheelEvent);
+        mouseWheelEvent.deltaY = -1;
+        tested.onMouseWheel(mouseWheelEvent, 110, 323);
+        assertEquals(transform, viewport.getTransform());
         assertEquals(0.7692307692307692d, viewport.getTransform().getScaleX(), 0d);
         assertEquals(0.7692307692307692d, viewport.getTransform().getScaleY(), 0d);
         assertEquals(0d, viewport.getTransform().getTranslateX(), 0d);

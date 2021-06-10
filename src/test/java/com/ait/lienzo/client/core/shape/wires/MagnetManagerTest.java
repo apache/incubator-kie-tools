@@ -26,7 +26,9 @@ import com.ait.lienzo.client.core.shape.wires.decorator.IShapeDecorator;
 import com.ait.lienzo.client.core.shape.wires.decorator.MagnetDecorator;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
+import com.ait.lienzo.tools.client.collection.NFastStringMap;
+import com.google.gwtmockito.WithClassesToStub;
+import elemental2.core.JsArray;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,6 +45,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
+@WithClassesToStub(JsArray.class)
 public class MagnetManagerTest
 {
     @Mock
@@ -52,7 +55,7 @@ public class MagnetManagerTest
     private ScratchPad                  scratchPad;
 
     @Mock
-    private NFastStringMap<WiresShape>  shapesColors;
+    private NFastStringMap<WiresShape> shapesColors;
 
     @Mock
     private NFastStringMap<WiresMagnet> magnetsColors;

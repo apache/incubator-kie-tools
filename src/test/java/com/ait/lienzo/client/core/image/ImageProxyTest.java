@@ -19,7 +19,9 @@ package com.ait.lienzo.client.core.image;
 import com.ait.lienzo.client.core.shape.AbstractImageShape;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.user.client.ui.Image;
+import com.google.gwtmockito.WithClassesToStub;
+import elemental2.core.JsArray;
+import elemental2.dom.Node;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,10 +32,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
+@WithClassesToStub(JsArray.class)
 public class ImageProxyTest {
 
     @Mock
-    private Image image;
+    private elemental2.dom.Image image;
 
     @Mock
     private ScratchPad normalImage;
@@ -55,12 +58,13 @@ public class ImageProxyTest {
                                   normalImage,
                                   filterImage,
                                   selectImage);
+        image.parentNode = new Node();
     }
 
     @Test
     public void testDestroy() {
         tested.destroy(image);
-        verify(image, times(1)).removeFromParent();
+        verify(image, times(1)).remove();
         verify(imageShape, times(1)).removeFromParent();
         verify(normalImage, times(1)).clear();
         verify(filterImage, times(1)).clear();

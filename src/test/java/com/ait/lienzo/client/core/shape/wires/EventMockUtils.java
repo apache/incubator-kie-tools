@@ -18,11 +18,11 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-import com.ait.lienzo.client.core.event.INodeXYEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.event.NodeDragStartEvent;
@@ -36,16 +36,7 @@ import com.ait.lienzo.client.core.event.NodeMouseOutEvent;
 import com.ait.lienzo.client.core.event.NodeMouseOverEvent;
 import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.widget.DragContext;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseEvent;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseUpEvent;
+import elemental2.dom.HTMLElement;
 
 /**
  * Utils for mocking and firing events on nodes / shapes.
@@ -55,122 +46,125 @@ public class EventMockUtils
 {
     public static void click(final IPrimitive<?> node, final double x, final double y)
     {
-        final ClickEvent clickEvent = mock(ClickEvent.class);
-        setUpMouseEvent(clickEvent, x, y);
+        final HTMLElement clickEvent = mock(HTMLElement.class);
+        NodeMouseClickEvent event = spy(new NodeMouseClickEvent(clickEvent));
+        setUpMouseEvent(event, x, y);
         node.fireEvent(new NodeMouseClickEvent(clickEvent));
     }
 
     public static void dblClick(final IPrimitive<?> node, final double x, final double y)
     {
-        final DoubleClickEvent clickEvent = mock(DoubleClickEvent.class);
-        setUpMouseEvent(clickEvent, x, y);
+
+        final HTMLElement clickEvent = mock(HTMLElement.class);
+        NodeMouseDoubleClickEvent event = spy(new NodeMouseDoubleClickEvent(clickEvent));
+        setUpMouseEvent(event, x, y);
         node.fireEvent(new NodeMouseDoubleClickEvent(clickEvent));
     }
 
     public static void dragStart(final IPrimitive<?> node, final double x, final double y)
     {
-        final DragContext dragContext = createDragContext(node, x, y);
-        node.fireEvent(new NodeDragStartEvent(dragContext));
+        final HTMLElement dragEvent = mock(HTMLElement.class);
+        NodeDragStartEvent nodeDragStartEvent = spy(new NodeDragStartEvent(dragEvent));
+        createDragContext(nodeDragStartEvent, x, y);
+        node.fireEvent(nodeDragStartEvent);
     }
 
     public static void dragMove(final IPrimitive<?> node, final double x, final double y)
     {
-        final DragContext dragContext = createDragContext(node, x, y);
-        node.fireEvent(new NodeDragMoveEvent(dragContext));
+        final HTMLElement dragEvent = mock(HTMLElement.class);
+        NodeDragMoveEvent nodeDragStartEvent = spy(new NodeDragMoveEvent(dragEvent));
+        createDragContext(nodeDragStartEvent, x, y);
+        node.fireEvent(nodeDragStartEvent);
     }
 
     public static void dragEnd(final IPrimitive<?> node, final double x, final double y)
     {
-        final DragContext dragContext = createDragContext(node, x, y);
-        node.fireEvent(new NodeDragEndEvent(dragContext));
+        final HTMLElement dragEvent = mock(HTMLElement.class);
+        NodeDragEndEvent nodeDragStartEvent = spy(new NodeDragEndEvent(dragEvent));
+        createDragContext(nodeDragStartEvent, x, y);
+        node.fireEvent(nodeDragStartEvent);
     }
 
     public static void mouseMove(final IPrimitive<?> node, final double x, final double y)
     {
-        final MouseMoveEvent event = mock(MouseMoveEvent.class);
+
+        final HTMLElement clickEvent = mock(HTMLElement.class);
+        NodeMouseMoveEvent event = spy(new NodeMouseMoveEvent(clickEvent));
         setUpMouseEvent(event, x, y);
-        node.fireEvent(new NodeMouseMoveEvent(event));
+        node.fireEvent(new NodeMouseMoveEvent(clickEvent));
     }
 
     public static void mouseEnter(final IPrimitive<?> node, final double x, final double y)
     {
-        final MouseMoveEvent event = mock(MouseMoveEvent.class);
+        final HTMLElement clickEvent = mock(HTMLElement.class);
+        NodeMouseMoveEvent event = spy(new NodeMouseMoveEvent(clickEvent));
         setUpMouseEvent(event, x, y);
-        node.fireEvent(new NodeMouseEnterEvent(event, (int) x, (int) y));
+        node.fireEvent(new NodeMouseEnterEvent(clickEvent));
     }
 
     public static void mouseOut(final IPrimitive<?> node, final double x, final double y)
     {
-        final MouseOutEvent event = mock(MouseOutEvent.class);
+        final HTMLElement clickEvent = mock(HTMLElement.class);
+        NodeMouseMoveEvent event = spy(new NodeMouseMoveEvent(clickEvent));
         setUpMouseEvent(event, x, y);
-        node.fireEvent(new NodeMouseOutEvent(event));
+        node.fireEvent(new NodeMouseOutEvent(clickEvent));
     }
 
     public static void mouseDown(final IPrimitive<?> node, final double x, final double y)
     {
-        final MouseDownEvent event = mock(MouseDownEvent.class);
+        final HTMLElement clickEvent = mock(HTMLElement.class);
+        NodeMouseDownEvent event = spy(new NodeMouseDownEvent(clickEvent));
         setUpMouseEvent(event, x, y);
-        node.fireEvent(new NodeMouseDownEvent(event));
+        node.fireEvent(new NodeMouseDownEvent(clickEvent));
     }
 
     public static void mouseUp(final IPrimitive<?> node, final double x, final double y)
     {
-        final MouseUpEvent event = mock(MouseUpEvent.class);
+        final HTMLElement clickEvent = mock(HTMLElement.class);
+        NodeMouseUpEvent event = spy(new NodeMouseUpEvent(clickEvent));
         setUpMouseEvent(event, x, y);
-        node.fireEvent(new NodeMouseUpEvent(event));
+        node.fireEvent(new NodeMouseUpEvent(clickEvent));
     }
 
     public static void mouseOver(final IPrimitive<?> node, final double x, final double y)
     {
-        final MouseOverEvent event = mock(MouseOverEvent.class);
+        final HTMLElement clickEvent = mock(HTMLElement.class);
+        NodeMouseOverEvent event = spy(new NodeMouseOverEvent(clickEvent));
         setUpMouseEvent(event, x, y);
-        node.fireEvent(new NodeMouseOverEvent(event));
+        node.fireEvent(new NodeMouseOverEvent(clickEvent));
     }
 
     public static void mouseExit(final IPrimitive<?> node, final double x, final double y)
     {
-        final MouseOverEvent event = mock(MouseOverEvent.class);
+        final HTMLElement clickEvent = mock(HTMLElement.class);
+        NodeMouseOverEvent event = spy(new NodeMouseOverEvent(clickEvent));
         setUpMouseEvent(event, x, y);
-        node.fireEvent(new NodeMouseExitEvent(event, (int) x, (int) y));
+        node.fireEvent(new NodeMouseExitEvent(clickEvent));
+
     }
 
-    private static void setUpMouseEvent(final MouseEvent<?> mouseEvent, final double x, final double y)
+    private static void setUpMouseEvent(final AbstractNodeHumanInputEvent mouseEvent, final double x, final double y)
     {
         final int _x = (int) x;
         final int _y = (int) y;
+
         when(mouseEvent.getX()).thenReturn(_x);
-        when(mouseEvent.getClientX()).thenReturn(_x);
-        when(mouseEvent.getRelativeX(any(Element.class))).thenReturn(_x);
-        when(mouseEvent.getRelativeY(any(Element.class))).thenReturn(_y);
         when(mouseEvent.getY()).thenReturn(_y);
-        when(mouseEvent.getClientY()).thenReturn(_y);
         when(mouseEvent.isAltKeyDown()).thenReturn(false);
-        when(mouseEvent.isControlKeyDown()).thenReturn(false);
+        when(mouseEvent.isCtrlKeyDown()).thenReturn(false);
         when(mouseEvent.isMetaKeyDown()).thenReturn(false);
         when(mouseEvent.isShiftKeyDown()).thenReturn(false);
     }
 
-    private static DragContext createDragContext(final IPrimitive<?> node, final double x, final double y)
+    private static AbstractNodeHumanInputEvent createDragContext(final AbstractNodeHumanInputEvent node, final double x, final double y)
     {
         final int _x = (int) x;
         final int _y = (int) y;
 
-        /*DragConstraintEnforcer dragConstraintEnforcer = mock(DragConstraintEnforcer.class);
-        DragContext dragContext = mock(DragContext.class);
-        when(dragContext.getDragConstraints()).thenReturn(dragConstraintEnforcer);
-        when(dragContext.getNode()).thenReturn(node);
-        when(dragContext.getDragStartX()).thenReturn(_x);
-        when(dragContext.getDragStartY()).thenReturn(_y);
-        when(dragContext.getEventX()).thenReturn(_x);
-        when(dragContext.getEventY()).thenReturn(_y);
-        when(dragContext.getDx()).thenReturn(_x);
-        when(dragContext.getDy()).thenReturn(_y);
-        return dragContext;*/
+        when(node.getX()).thenReturn(_x);
+        when(node.getY()).thenReturn(_y);
+        when(node.isAlive()).thenReturn(true);
 
-        final INodeXYEvent iNodeXYEvent = mock(INodeXYEvent.class);
-        when(iNodeXYEvent.getX()).thenReturn(_x);
-        when(iNodeXYEvent.getY()).thenReturn(_y);
-        when(iNodeXYEvent.isAlive()).thenReturn(true);
-        return new DragContext(iNodeXYEvent, node);
+        return node;
     }
 }

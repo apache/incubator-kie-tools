@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.wires.proxy;
 
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
@@ -30,8 +32,6 @@ import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorContro
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Consumer;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -121,12 +121,7 @@ public class WiresConnectorProxyTest {
         when(connectorControl.getHeadConnectionControl()).thenReturn(headConnectionControl);
         when(connectorControl.getTailConnectionControl()).thenReturn(tailConnectionControl);
         tested = new WiresConnectorProxy(wiresManager,
-                                         new Supplier<WiresConnector>() {
-                                             @Override
-                                             public WiresConnector get() {
-                                                 return connector;
-                                             }
-                                         },
+                                         () -> connector,
                                          connectorAcceptor,
                                          connectorDestroyer);
     }

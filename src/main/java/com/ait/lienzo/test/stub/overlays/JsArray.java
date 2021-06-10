@@ -22,7 +22,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.ait.lienzo.test.annotation.StubClass;
-import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * In-memory array implementation stub for class <code>com.google.gwt.core.client.JsArray</code>.
@@ -31,13 +30,23 @@ import com.google.gwt.core.client.JavaScriptObject;
  * @since 1.0
  *
  */
-@StubClass("com.google.gwt.core.client.JsArray")
-public class JsArray<T extends JavaScriptObject> extends JavaScriptObject
+@StubClass("elemental2.core.JsArray")
+public class JsArray<T>
 {
-    private final List<T> list = new ArrayList<T>();
+    public int length = 0;
 
-    protected JsArray()
+    private final List<T> list = new ArrayList<>();
+
+    public JsArray()
     {
+    }
+
+    public JsArray(T... items)
+    {
+        for (int i = 0; i < items.length; i++) {
+            list.add(items[i]);
+        }
+
     }
 
     public T get(final int index)
@@ -63,6 +72,16 @@ public class JsArray<T extends JavaScriptObject> extends JavaScriptObject
     public void push(final T value)
     {
         list.add(value);
+        this.length = list.size();
+    }
+
+    public int push(final T... items)
+    {
+        for (int i = 0; i < items.length; i++) {
+            list.add(items[i]);
+        }
+        this.length = list.size();
+        return list.size();
     }
 
     public void set(final int index, final T value)
@@ -72,6 +91,7 @@ public class JsArray<T extends JavaScriptObject> extends JavaScriptObject
             setLength(index + 1);
         }
         list.set(index, value);
+        this.length = list.size();
     }
 
     public void setLength(final int newLength)
@@ -80,9 +100,10 @@ public class JsArray<T extends JavaScriptObject> extends JavaScriptObject
         {
             for (int i = list.size(); i < newLength; i++)
             {
-                push(null);
+                this.push(list.get(i));
             }
         }
+        this.length = list.size();
     }
 
     public T shift()
@@ -100,12 +121,42 @@ public class JsArray<T extends JavaScriptObject> extends JavaScriptObject
         final T t = list.get(0);
 
         list.remove(0);
-
+        this.length = list.size();
         return t;
     }
 
     private void doUnShift(final T value)
     {
         list.add(0, value);
+        this.length = list.size();
+    }
+
+    public int indexOf(T obj)
+    {
+        return list.indexOf(obj);
+    }
+
+    public JsArray<T> splice(int index, int howMany, T... args)
+    {
+        if(args.length > 0){
+            throw new Error("Not implemented ");
+        }
+
+        List<T> result = new ArrayList<>();
+
+        for (int i = 0; i < howMany; i++) {
+           result.add(list.remove(index+i));
+        }
+        T[] results = (T[]) result.toArray();
+        return new JsArray<T>(results);
+    }
+
+    public int getLength()
+    {
+        return list.size();
+    }
+
+    public T getAt(int i) {
+        return list.get(i);
     }
 }

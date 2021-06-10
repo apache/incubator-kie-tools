@@ -16,8 +16,9 @@
 
 package com.ait.lienzo.client.core.image;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,20 +63,12 @@ public class ImageStripsTest {
 
     @Before
     public void init() {
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
-                ((Runnable) invocationOnMock.getArguments()[1]).run();
-                return null;
-            }
+        doAnswer(invocationOnMock -> {
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
+            return null;
         }).when(proxy).load(anyString(),
-                            any(Runnable.class));
-        instance = new ImageStrips(new Supplier<ImageElementProxy>() {
-            @Override
-            public ImageElementProxy get() {
-                return proxy;
-            }
-        });
+                                any(Runnable.class));
+        instance = new ImageStrips(() -> proxy);
     }
 
     @Test

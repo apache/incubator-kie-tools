@@ -57,7 +57,7 @@ public class DefaultControlPointsAcceptorTest {
 
     @Test
     public void testMove() {
-        Point2DArray points = new Point2DArray(0d, 1d);
+        Point2DArray points = Point2DArray.fromArrayOfDouble(0d, 1d);
         boolean result = tested.move(connector, points);
         assertTrue(result);
         verify(connector, times(1)).moveControlPoint(eq(0), eq(new Point2D(0d, 1d)));

@@ -16,28 +16,26 @@
 
 package com.ait.lienzo.client.core.shape.wires.util;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import java.util.function.BiConsumer;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
+import com.ait.lienzo.client.core.shape.wires.event.WiresConnectorPointsChangedHandler;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.BiConsumer;
-import com.ait.tooling.common.api.java.util.function.Consumer;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -50,6 +48,9 @@ public class WiresConnectorLabelTest {
 
     @Mock
     private HandlerRegistrationManager registrationManager;
+
+    @Mock
+    private HandlerRegistration handlerRegistration;
 
     @Mock
     private Group group;
@@ -67,6 +68,7 @@ public class WiresConnectorLabelTest {
 
     @Before
     public void setup() {
+        when(connector.addWiresConnectorPointsChangedHandler(any(WiresConnectorPointsChangedHandler.class))).thenReturn(handlerRegistration);
         when(connector.getGroup()).thenReturn(group);
         when(group.getLayer()).thenReturn(layer);
         tested = new WiresConnectorLabel(text,
@@ -87,12 +89,9 @@ public class WiresConnectorLabelTest {
     @Test
     public void testConfigure() {
         final boolean[] configured = new boolean[]{false};
-        tested.configure(new Consumer<Text>() {
-            @Override
-            public void accept(Text t) {
-                assertEquals(text, t);
-                configured[0] = true;
-            }
+        tested.configure(t -> {
+            assertEquals(text, t);
+            configured[0] = true;
         });
         assertTrue(configured[0]);
         verifyRefresh();
@@ -122,13 +121,5 @@ public class WiresConnectorLabelTest {
     private void verifyRefresh() {
         verify(executor, atLeastOnce()).accept(eq(connector), eq(text));
         verify(layer, atLeastOnce()).batch();
-    }
-
-    @Test
-    public void testBatchNullLayer(){
-        reset(group, layer);
-        when(group.getLayer()).thenReturn(null);
-        tested.show();
-        verify(layer, never()).batch();
     }
 }

@@ -18,6 +18,7 @@ package com.ait.lienzo.client.widget.panel;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +52,9 @@ public class LienzoBoundsPanelTest
     @Mock
     private ScratchPad        scratchPad;
 
+    @Mock
+    private HTMLDivElement    htmlDivElement;
+
     private LienzoBoundsPanel tested;
 
     @Before
@@ -58,23 +62,29 @@ public class LienzoBoundsPanelTest
     {
         when(boundsProvider.get(eq(layer))).thenReturn(BOUNDS);
         when(layer.getScratchPad()).thenReturn(scratchPad);
-        this.tested = new LienzoBoundsPanel(lienzoPanel,
-                                            boundsProvider)
-        {
+
+        this.tested = spy(new LienzoBoundsPanel(lienzoPanel,
+                                            boundsProvider){
+
             @Override
-            public LienzoBoundsPanel onRefresh()
-            {
+            public HTMLDivElement getElement() {
+                return null;
+            }
+
+            @Override
+            public LienzoBoundsPanel onRefresh() {
                 refreshCommand.run();
                 return this;
             }
 
             @Override
-            protected void doDestroy()
-            {
-                super.doDestroy();
+            protected void doDestroy() {
                 destroyCommand.run();
             }
-        };
+        });
+
+        when(tested.getElement()).thenReturn(htmlDivElement);
+
     }
 
     @Test
@@ -117,10 +127,10 @@ public class LienzoBoundsPanelTest
     @Test
     public void testSizeGetters()
     {
-        when(lienzoPanel.getWidthPx()).thenReturn(300);
-        when(lienzoPanel.getHeightPx()).thenReturn(100);
-        assertEquals(300, tested.getWidthPx());
-        assertEquals(100, tested.getHeightPx());
+        htmlDivElement.clientWidth = 300;
+        htmlDivElement.clientHeight = 100;
+        assertEquals(300, tested.getElement().clientWidth);
+        assertEquals(100, tested.getElement().clientHeight);
     }
 
     @Test

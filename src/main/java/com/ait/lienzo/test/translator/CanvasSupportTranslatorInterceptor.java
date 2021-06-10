@@ -17,7 +17,6 @@
 package com.ait.lienzo.test.translator;
 
 import com.google.gwt.canvas.client.Canvas;
-
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -41,10 +40,6 @@ public class CanvasSupportTranslatorInterceptor implements LienzoMockitoClassTra
     private static final String CANVAS_CLASS        = Canvas.class.getName();
 
     private static final String METHOD_IS_SUPPORTED = "isSupported";
-
-    public CanvasSupportTranslatorInterceptor()
-    {
-    }
 
     @Override
     public boolean interceptBeforeParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException

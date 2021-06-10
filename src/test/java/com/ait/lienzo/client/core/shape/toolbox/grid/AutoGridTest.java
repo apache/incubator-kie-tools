@@ -39,10 +39,10 @@ public class AutoGridTest {
         final double size = 10;
         final double padding = 5;
         final Direction direction = Direction.EAST;
-        final BoundingBox boundingBox = new BoundingBox(0d,
-                                                        0d,
-                                                        100d,
-                                                        100d);
+        final BoundingBox boundingBox = BoundingBox.fromDoubles(0d,
+                                                                0d,
+                                                                100d,
+                                                                100d);
         tested = new AutoGrid.Builder()
                 .forBoundingBox(boundingBox)
                 .withIconSize(size)
@@ -94,10 +94,10 @@ public class AutoGridTest {
         final double size = 2.5;
         final double padding = 0.5;
         final Direction direction = Direction.SOUTH;
-        final BoundingBox boundingBox = new BoundingBox(0d,
-                                                        0d,
-                                                        100d,
-                                                        100d);
+        final BoundingBox boundingBox = BoundingBox.fromDoubles(0d,
+                                                                0d,
+                                                                100d,
+                                                                100d);
         tested = new AutoGrid.Builder()
                 .forBoundingBox(boundingBox)
                 .withIconSize(size)
@@ -150,10 +150,10 @@ public class AutoGridTest {
         final double padding = 0.5;
         final double shapeSize = 100;
         final Direction direction = Direction.SOUTH;
-        final BoundingBox boundingBox = new BoundingBox(0d,
-                                                        0d,
-                                                        shapeSize,
-                                                        shapeSize);
+        final BoundingBox boundingBox = BoundingBox.fromDoubles(0d,
+                                                                0d,
+                                                                shapeSize,
+                                                                shapeSize);
         tested = new AutoGrid.Builder()
                 .forBoundingBox(boundingBox)
                 .withIconSize(size)

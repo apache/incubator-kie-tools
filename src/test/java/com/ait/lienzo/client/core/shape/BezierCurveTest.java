@@ -33,7 +33,7 @@ public class BezierCurveTest {
     private static final Point2D CP1 = new Point2D(230, 30);
     private static final Point2D CP2 = new Point2D(150, 60);
     private static final Point2D END = new Point2D(50, 100);
-    private static final Point2DArray POINTS = new Point2DArray(START, CP1, CP2, END);
+    private static final Point2DArray POINTS = Point2DArray.fromArrayOfPoint2D(START, CP1, CP2, END);
 
     private BezierCurve curve;
 

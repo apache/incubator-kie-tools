@@ -27,10 +27,11 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.MouseEvent;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.ait.lienzo.tools.client.event.EventType;
+import com.ait.lienzo.tools.client.event.MouseEventUtil;
+import elemental2.dom.Document;
+import elemental2.dom.HTMLHtmlElement;
+import elemental2.dom.MouseEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,8 +58,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class SelectionManagerTest
-{
+public class SelectionManagerTest {
 
     @Mock
     private WiresManager wiresManager;
@@ -105,11 +105,12 @@ public class SelectionManagerTest
     private SelectionManager realManager;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         Viewport viewport = spy(new Viewport());
         onEventHandlers = spy(new OnEventHandlers());
-
+        Document document = new Document();
+        viewport.getElement().ownerDocument = document;
+        document.documentElement = mock(HTMLHtmlElement.class);
         when(wiresManager.getLayer()).thenReturn(wiresLayer);
         when(wiresManager.getControlFactory()).thenReturn(factory);
         when(wiresLayer.getLayer()).thenReturn(layer);
@@ -131,8 +132,7 @@ public class SelectionManagerTest
     }
 
     @Test
-    public void testOnlyLeftMouseButtonCanStartSelection()
-    {
+    public void testOnlyLeftMouseButtonCanStartSelection() {
         when(mouseEvent.isButtonLeft()).thenReturn(false);
         manager.onNodeMouseDown(mouseEvent);
         assertFalse("Selection should be started by Left mouse button ONLY", manager.isSelectionCreationInProcess());
@@ -146,8 +146,7 @@ public class SelectionManagerTest
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testDoNotCleanSelectionForNodeDuringSelectionMove()
-    {
+    public void testDoNotCleanSelectionForNodeDuringSelectionMove() {
         realManager.setSelectionShapeProvider(selectionShapeProvider);
         realManager.setSelectionCreationInProcess(false);
 
@@ -155,16 +154,15 @@ public class SelectionManagerTest
         realManager.setSelectedItems(selectedItems);
 
         final MouseEvent mouseEvent = mock(MouseEvent.class);
-        when(mouseEvent.getNativeButton()).thenReturn(NativeEvent.BUTTON_LEFT);
-        when(mouseEvent.getAssociatedType()).thenReturn(MouseUpEvent.getType());
+        mouseEvent.button = MouseEventUtil.BUTTON_LEFT;
+        mouseEvent.type = EventType.MOUSE_UP.getType();
         onMouseXEventHandler.onMouseEventBefore(mouseEvent);
 
         verify(selectedItems, times(1)).notifyListener();
     }
 
     @Test
-    public void testNodesHighlightedAfterSelection()
-    {
+    public void testNodesHighlightedAfterSelection() {
         realManager.setSelectionShapeProvider(selectionShapeProvider);
         realManager.setSelectionCreationInProcess(true);
 
@@ -179,8 +177,8 @@ public class SelectionManagerTest
         realManager.onNodeMouseDown(nodeMouseEvent);
 
         final MouseEvent mouseEvent = mock(MouseEvent.class);
-        when(mouseEvent.getNativeButton()).thenReturn(NativeEvent.BUTTON_LEFT);
-        when(mouseEvent.getAssociatedType()).thenReturn(MouseUpEvent.getType());
+        mouseEvent.button = MouseEventUtil.BUTTON_LEFT;
+        mouseEvent.type = EventType.MOUSE_UP.getType();
         onMouseXEventHandler.onMouseEventBefore(mouseEvent);
 
         verify(selectedItems, never()).notifyListener();
@@ -188,8 +186,7 @@ public class SelectionManagerTest
     }
 
     @Test
-    public void testReinforceSelectionShapeOnTop()
-    {
+    public void testReinforceSelectionShapeOnTop() {
         Layer layer = mock(Layer.class);
         selectionDragHandler.m_selectionManager = manager;
         selectionDragHandler.m_selectionManager.m_startBoundingBox = mock(BoundingBox.class);
@@ -206,8 +203,7 @@ public class SelectionManagerTest
     }
 
     @Test
-    public void testReinforceSelectionShapeOnTopShapeNull()
-    {
+    public void testReinforceSelectionShapeOnTopShapeNull() {
         SelectionManager selectionManager = mock(SelectionManager.class);
         selectionDragHandler.m_selectionManager = selectionManager;
         selectionDragHandler.m_selectionManager.m_startBoundingBox = mock(BoundingBox.class);
@@ -226,9 +222,8 @@ public class SelectionManagerTest
     }
 
     @Test
-    public void testDrawSelectionShape()
-    {
-        final MouseMoveEvent mouseEvent = mock(MouseMoveEvent.class);
+    public void testDrawSelectionShape() {
+        final MouseEvent mouseEvent = mock(MouseEvent.class);
         final double x = 10;
         final double y = 20;
         final double translateX = 40;
@@ -239,23 +234,23 @@ public class SelectionManagerTest
         final double expectedY = 20;
         final double expectedWidth = -30;
         final double expectedHeight = -60;
-        final Transform transform = new Transform(scaleX, 0, 0, scaleY, translateX, translateY);
+        final Transform transform = Transform.makeFromValues(scaleX, 0, 0, scaleY, translateX, translateY);
 
         doReturn(transform).when(manager).getViewportTransform();
         doReturn(x).when(manager).relativeStartX();
         doReturn(y).when(manager).relativeStartY();
         doReturn(manager).when(onMouseXEventHandler).getSelectionManager();
 
-        onMouseXEventHandler.drawSelectionShape(mouseEvent);
+        onMouseXEventHandler.drawSelectionShape(mouseEvent, 0, 0);
 
         verify(manager).drawSelectionShape(eq(expectedX), eq(expectedY), eq(expectedWidth), eq(expectedHeight), eq(overLayer));
         verify(overLayer).draw();
+        verify(selectionShape, never()).moveToTop();
     }
 
     @Test
-    public void testDrawSelectionShapeWhenHeightAndWidthAreZero()
-    {
-        final MouseMoveEvent mouseEvent = mock(MouseMoveEvent.class);
+    public void testDrawSelectionShapeWhenHeightAndWidthAreZero() {
+        final MouseEvent mouseEvent = mock(MouseEvent.class);
         final double x = 10;
         final double y = 20;
         final double translateX = -10;
@@ -266,7 +261,7 @@ public class SelectionManagerTest
         final double expectedY = 20;
         final double expectedWidth = 1;
         final double expectedHeight = 1;
-        final Transform transform = new Transform(scaleX, 0, 0, scaleY, translateX, translateY);
+        final Transform transform = Transform.makeFromValues(scaleX, 0, 0, scaleY, translateX, translateY);
 
         doReturn(transform).when(manager).getViewportTransform();
         doReturn(x).when(manager).relativeStartX();
@@ -274,51 +269,48 @@ public class SelectionManagerTest
         doReturn(manager).when(onMouseXEventHandler).getSelectionManager();
         doNothing().when(manager).drawSelectionShape(anyInt(), anyInt(), anyInt(), anyInt(), any(Layer.class));
 
-        onMouseXEventHandler.drawSelectionShape(mouseEvent);
+        onMouseXEventHandler.drawSelectionShape(mouseEvent, 0, 0);
 
         verify(manager).drawSelectionShape(eq(expectedX), eq(expectedY), eq(expectedWidth), eq(expectedHeight), eq(overLayer));
         verify(overLayer).draw();
     }
 
     @Test
-    public void testRelativeStartX()
-    {
+    public void testRelativeStartX() {
         final double startX = 20;
         final double startY = 25;
         final Point2D start = new Point2D(startX, startY);
         final double translateX = 10d;
         final double scaleX = 2d;
-        final Transform transform = new Transform(scaleX, 0, 0, 1, translateX, 1);
+        final Transform transform = Transform.makeFromValues(scaleX, 0, 0, 1, translateX, 1);
 
-        when(manager.getViewportTransform()).thenReturn(transform);
-        when(manager.getStart()).thenReturn(start);
+        doReturn(transform).when(manager).getViewportTransform();
+        doReturn(start).when(manager).getStart();
 
-        final double relativeStartX = manager.relativeStartX();
+        final Double relativeStartX = manager.relativeStartX();
 
         assertEquals(5d, relativeStartX, 0);
     }
 
     @Test
-    public void testRelativeStartY()
-    {
+    public void testRelativeStartY() {
         final double startX = 25;
         final double startY = 20;
         final Point2D start = new Point2D(startX, startY);
         final double translateY = 10d;
         final double scaleY = 2d;
-        final Transform transform = new Transform(1, 0, 0, scaleY, 1, translateY);
+        final Transform transform = Transform.makeFromValues(1, 0, 0, scaleY, 1, translateY);
 
-        when(manager.getViewportTransform()).thenReturn(transform);
-        when(manager.getStart()).thenReturn(start);
+        doReturn(transform).when(manager).getViewportTransform();
+        doReturn(start).when(manager).getStart();
 
-        final double relativeStartY = manager.relativeStartY();
+        final Double relativeStartY = manager.relativeStartY();
 
         assertEquals(5d, relativeStartY, 0);
     }
 
     @Test
-    public void testDestroy()
-    {
+    public void testDestroy() {
         manager.destroy();
 
         assertNull(onEventHandlers.getOnMouseClickEventHandle());

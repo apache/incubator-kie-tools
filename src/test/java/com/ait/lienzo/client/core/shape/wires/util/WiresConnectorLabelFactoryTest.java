@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.wires.util;
 
+import java.util.function.BiConsumer;
+
 import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextBoundsWrap;
@@ -25,7 +27,6 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.BiConsumer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +53,7 @@ public class WiresConnectorLabelFactoryTest {
     @SuppressWarnings("unchecked")
     public void init() {
         text = new Text("Doing some testing here");
-        points = new Point2DArray(new Point2D(0d, 0d), new Point2D(12.4d, 65.3d), new Point2D(312.4d, 432.d));
+        points = Point2DArray.fromArrayOfPoint2D(new Point2D(0d, 0d), new Point2D(12.4d, 65.3d), new Point2D(312.4d, 432.d));
         when(connector.getLine()).thenReturn(line);
         when(line.getPoint2DArray()).thenReturn(points);
     }
@@ -64,9 +65,10 @@ public class WiresConnectorLabelFactoryTest {
         WiresConnectorLabelFactory.SegmentLabelExecutor executor = new WiresConnectorLabelFactory.SegmentLabelExecutor();
         Segment segment = new Segment(0, start, end);
         executor.consumer().accept(segment, text);
+
         assertNotNull(text.getWrapper());
         TextBoundsWrap wrapper = (TextBoundsWrap) text.getWrapper();
-        assertEquals(new BoundingBox(0d, 0d, 22.808989455914087d, 11d), wrapper.getWrapBoundaries());
+        assertEquals(BoundingBox.fromDoubles(0d, 0d, 22.808989455914087d, 11d), wrapper.getWrapBoundaries());
         assertEquals(new Point2D(18.987684456439d, 15.865763679785857d), text.getLocation());
     }
 
@@ -74,16 +76,13 @@ public class WiresConnectorLabelFactoryTest {
     @SuppressWarnings("unchecked")
     public void testFirstSegmentLabelExecutor() {
         final boolean[] delegated = new boolean[]{false};
-        BiConsumer<Segment, Text> delegate = new BiConsumer<Segment, Text>() {
-            @Override
-            public void accept(Segment segment, Text text) {
-                assertEquals(0, segment.getIndex());
-                assertEquals(66.4669090600729d, segment.getLength(), 0d);
-                assertEquals(-4.900047462313102d, segment.getTetha(), 0d);
-                assertEquals(new Point2D(0d, 0d), segment.getStart());
-                assertEquals(new Point2D(12.4d, 65.3d), segment.getEnd());
-                delegated[0] = true;
-            }
+        BiConsumer<Segment, Text> delegate = (segment, text) -> {
+            assertEquals(0, segment.getIndex());
+            assertEquals(66.4669090600729d, segment.getLength(), 0d);
+            assertEquals(-4.900047462313102d, segment.getTetha(), 0d);
+            assertEquals(new Point2D(0d, 0d), segment.getStart());
+            assertEquals(new Point2D(12.4d, 65.3d), segment.getEnd());
+            delegated[0] = true;
         };
         WiresConnectorLabelFactory.FirstSegmentLabelExecutor executor = new WiresConnectorLabelFactory.FirstSegmentLabelExecutor(delegate);
         executor.consumer().accept(connector, text);
@@ -94,16 +93,13 @@ public class WiresConnectorLabelFactoryTest {
     @SuppressWarnings("unchecked")
     public void testLongestSegmentLabelExecutor() {
         final boolean[] delegated = new boolean[]{false};
-        BiConsumer<Segment, Text> delegate = new BiConsumer<Segment, Text>() {
-            @Override
-            public void accept(Segment segment, Text text) {
-                assertEquals(1, segment.getIndex());
-                assertEquals(473.7814791652371d, segment.getLength(), 0d);
-                assertEquals(-5.398073939261661d, segment.getTetha(), 0d);
-                assertEquals(new Point2D(12.4d, 65.3d), segment.getStart());
-                assertEquals(new Point2D(312.4d, 432.d), segment.getEnd());
-                delegated[0] = true;
-            }
+        BiConsumer<Segment, Text> delegate = (segment, text) -> {
+            assertEquals(1, segment.getIndex());
+            assertEquals(473.7814791652371d, segment.getLength(), 0d);
+            assertEquals(-5.398073939261661d, segment.getTetha(), 0d);
+            assertEquals(new Point2D(12.4d, 65.3d), segment.getStart());
+            assertEquals(new Point2D(312.4d, 432.d), segment.getEnd());
+            delegated[0] = true;
         };
         WiresConnectorLabelFactory.LongestSegmentLabelExecutor executor = new WiresConnectorLabelFactory.LongestSegmentLabelExecutor(delegate);
         executor.consumer().accept(connector, text);

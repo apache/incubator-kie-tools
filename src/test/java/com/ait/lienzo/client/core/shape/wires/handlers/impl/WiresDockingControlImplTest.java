@@ -17,12 +17,10 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,12 +46,7 @@ public class WiresDockingControlImplTest extends AbstractWiresControlTest {
     @Before
     public void setUp() {
         super.setUp();
-        wiresDockingControl = new WiresDockingControlImpl(new Supplier<WiresParentPickerControl>() {
-            @Override
-            public WiresParentPickerControl get() {
-                return parentPicker;
-            }
-        }, handlerRegistrationManager);
+        wiresDockingControl = new WiresDockingControlImpl(() -> parentPicker, handlerRegistrationManager);
     }
 
     @Test
@@ -68,15 +61,15 @@ public class WiresDockingControlImplTest extends AbstractWiresControlTest {
         wiresDockingControl.doMoveStart(0, 0);
         wiresDockingControl.doMove(50, 50);
         Point2D adjust = wiresDockingControl.getAdjust();
-        assertEquals(adjust.getX(), 186.42135623730948d, 0);
-        assertEquals(adjust.getY(), 186.42135623730948d, 0);
+        assertEquals(adjust.getX(), 95d, 0);
+        assertEquals(adjust.getY(), 95d, 0);
     }
 
     @Test
     public void getAdjustWhenNoIntercepting() {
         Point2D adjust = wiresDockingControl.getAdjust();
-        assertEquals(adjust.getX(), 0, 0);
-        assertEquals(adjust.getY(), 0, 0);
+        assertEquals(0, adjust.getX(), 0);
+        assertEquals(0, adjust.getY(), 0);
     }
 
     @Test
@@ -116,8 +109,8 @@ public class WiresDockingControlImplTest extends AbstractWiresControlTest {
     public void testGetCandidateLocation() {
         wiresDockingControl.dock(parent);
         Point2D candidateLocation = wiresDockingControl.getCandidateLocation();
-        assertEquals(-96.42135623730951d, candidateLocation.getX(), 0d);
-        assertEquals(-96.42135623730951d, candidateLocation.getY(), 0d);
+        assertEquals(-5d, candidateLocation.getX(), 0d);
+        assertEquals(-5d, candidateLocation.getY(), 0d);
     }
 
     @Test

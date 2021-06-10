@@ -24,7 +24,6 @@ import java.util.Map;
 
 import com.ait.lienzo.test.annotation.StubClass;
 import com.ait.lienzo.test.util.LienzoMockitoLogger;
-import com.ait.tooling.nativetools.client.NUtils;
 
 /**
  * In-memory Map implementation stub stub for class <code>com.ait.tooling.nativetools.client.collection.NFastStringMap</code>.
@@ -36,10 +35,10 @@ import com.ait.tooling.nativetools.client.NUtils;
  * @since 1.0
  *
  */
-@StubClass("com.ait.tooling.nativetools.client.collection.NFastStringMap")
+@StubClass("com.ait.lienzo.tools.client.collection.NFastStringMap")
 public class NFastStringMap<V>
 {
-    private final Map<String, V> map = new HashMap<String, V>();
+    private final Map<String, V> map = new HashMap<>();
 
     public NFastStringMap()
     {
@@ -48,14 +47,14 @@ public class NFastStringMap<V>
 
     public NFastStringMap<V> put(final String key, final V value)
     {
-        map.put(NUtils.doKeyRepair(key), value);
-
+        map.put(key, value);
         return this;
     }
 
     public V get(final String key)
     {
-        return map.get(NUtils.doKeyRepair(key));
+        //return map.get(NUtils.doKeyRepair(key));
+        return map.get(key);
     }
 
     public NFastStringMap<V> remove(final String key)
@@ -80,12 +79,11 @@ public class NFastStringMap<V>
         return map.size();
     }
 
-    public NFastStringMap<V> clear()
+    public void clear()
     {
         map.clear();
-
-        return this;
     }
+
 
     public Collection<String> keys()
     {
@@ -94,7 +92,7 @@ public class NFastStringMap<V>
 
     public Collection<V> values()
     {
-        final ArrayList<V> list = new ArrayList<V>(map.values());
+        final ArrayList<V> list = new ArrayList<>(map.values());
 
         return Collections.unmodifiableList(list);
     }

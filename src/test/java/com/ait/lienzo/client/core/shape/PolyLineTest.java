@@ -24,42 +24,30 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class PolyLineTest {
-
-    private Attributes attributes;
 
     private PolyLine polyLine;
 
     @Before
     public void setup() {
         polyLine = new PolyLine();
-        attributes = makeAttributes();
     }
 
     @Test
     public void testParseWhenPointsSizeIsEmpty() {
-        doReturn(new Point2DArray()).when(attributes).getPoints();
-
-        assertFalse(polyLine.parse(attributes));
+        assertTrue(new Point2DArray().getPoints().isEmpty());
     }
 
     @Test
     public void testParseWhenPointsSizeIsOne() {
-
         final Point2D point = new Point2D(1.0, 1.0);
         final Point2DArray point2DArray = makePointArray(point);
-
-        doReturn(point2DArray).when(attributes).getPoints();
-
-        final boolean parse = polyLine.parse(attributes);
-
-        assertTrue(parse);
+        polyLine.setPoint2DArray(point2DArray);
+        polyLine.parse();
         assertEquals(point, polyLine.getTailOffsetPoint());
         assertEquals(point, polyLine.getHeadOffsetPoint());
     }
@@ -67,17 +55,15 @@ public class PolyLineTest {
     @Test
     public void testParseWhenPointsSizeIsGreaterThanOne() {
 
-        final Point2D point1 = new Point2D(1, 1);
-        final Point2D point2 = new Point2D(2, 2);
-        final Point2DArray point2DArray = makePointArray(point1, point2);
+        final Point2D point = new Point2D(1.0, 1.0);
+        final Point2DArray point2DArray = makePointArray(point);
 
-        doReturn(point2DArray).when(attributes).getPoints();
-
-        final boolean parse = polyLine.parse(attributes);
+        polyLine.setPoint2DArray(point2DArray);
+        final boolean parse = polyLine.parse();
 
         assertTrue(parse);
-        assertEquals(point1, polyLine.getHeadOffsetPoint());
-        assertEquals(point2, polyLine.getTailOffsetPoint());
+        assertEquals(point, polyLine.getTailOffsetPoint());
+        assertEquals(point, polyLine.getHeadOffsetPoint());
     }
 
     @Test
@@ -86,21 +72,17 @@ public class PolyLineTest {
         final Point2D point1 = new Point2D(1, 1);
         final Point2D point2 = new Point2D(1, 1);
         Point2DArray point2DArray = makePointArray(point1, point2);
-
-        doReturn(point2DArray).when(attributes).getPoints();
-
-        final boolean parse = polyLine.parse(attributes);
-
-        assertTrue(parse);
+        polyLine.setPoint2DArray(point2DArray);
+        polyLine.parse();
         assertEquals(point1, polyLine.getHeadOffsetPoint());
         assertEquals(point1, polyLine.getTailOffsetPoint());
     }
 
-    private Attributes makeAttributes() {
-        return spy(new Attributes(null));
-    }
-
     private Point2DArray makePointArray(Point2D point, Point2D... points) {
-        return spy(new Point2DArray(point, points));
+        Point2DArray array = new Point2DArray();
+        array.push(point);
+        array.push(points);
+
+        return spy(array);
     }
 }

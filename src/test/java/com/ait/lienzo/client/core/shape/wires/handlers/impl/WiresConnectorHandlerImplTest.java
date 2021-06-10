@@ -15,8 +15,6 @@
  */
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
-import java.util.HashSet;
-
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.event.NodeDragStartEvent;
@@ -41,25 +39,24 @@ import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Consumer;
-import com.google.gwt.user.client.Timer;
+import com.ait.lienzo.tools.client.Timer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
+import java.util.HashSet;
+import java.util.function.Consumer;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresConnectorHandlerImplTest
@@ -76,7 +73,7 @@ public class WiresConnectorHandlerImplTest
     private WiresConnectorControlImpl             control;
 
     @Mock
-    private Consumer<Event>                   clickEventConsumer;
+    private Consumer<Event> clickEventConsumer;
 
     @Mock
     private Consumer<Event>                   mouseDownConsumer;
@@ -119,10 +116,9 @@ public class WiresConnectorHandlerImplTest
         when(layer.getViewport()).thenReturn(viewPort);
         transform = new Transform();
         when(viewPort.getTransform()).thenReturn(transform);
-        Point2DArray linePoints = new Point2DArray(new Point2D(0, 0), new Point2D(100, 100));
-        BoundingBox boundingBox = new BoundingBox(0, 0, 100, 100);
+        Point2DArray linePoints = Point2DArray.fromArrayOfPoint2D(new Point2D(0, 0), new Point2D(100, 100));
+        BoundingBox boundingBox = BoundingBox.fromDoubles(0, 0, 100, 100);
         when(connector.getControl()).thenReturn(control);
-        when(control.accept()).thenReturn(true);
         when(control.getControlPointBuilder()).thenReturn(controlPointBuilder);
         when(control.areControlPointsVisible()).thenReturn(true);
         when(control.getPointHandleDecorator()).thenReturn(pointHandleDecorator);
@@ -175,7 +171,9 @@ public class WiresConnectorHandlerImplTest
         NodeDragEndEvent event   = mock(NodeDragEndEvent.class);
         when(event.getDragContext()).thenReturn(context);
         when(control.onMove(anyDouble(), anyDouble())).thenReturn(false);
+        when(control.accept()).thenReturn(true);
         tested.onNodeDragEnd(event);
+
         verify(control, times(1)).execute();
         verify(control, times(1)).onMoveComplete();
         verify(control, times(1)).onMove(anyDouble(), anyDouble());
@@ -190,8 +188,8 @@ public class WiresConnectorHandlerImplTest
         NodeDragEndEvent event   = mock(NodeDragEndEvent.class);
         when(event.getDragContext()).thenReturn(context);
         when(control.onMove(anyDouble(), anyDouble())).thenReturn(false);
-        when(control.accept()).thenReturn(false);
         tested.onNodeDragEnd(event);
+
         verify(control, times(1)).reset();
         verify(control, times(1)).onMove(anyDouble(), anyDouble());
         verify(control, never()).onMoveComplete();
@@ -208,7 +206,7 @@ public class WiresConnectorHandlerImplTest
         NodeMouseClickEvent event = mock(NodeMouseClickEvent.class);
         when(event.getX()).thenReturn(120);
         when(event.getY()).thenReturn(454);
-        transform.scale(2, 4);
+        transform.scaleWithXY(2, 4);
         tested.onNodeMouseClick(event);
         verify(mouseDownTimer, times(1)).cancel();
         verify(mouseDownTimer, never()).run();

@@ -16,10 +16,11 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.wires.OptionalBounds;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,18 +32,13 @@ import static org.junit.Assert.assertTrue;
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresShapeLocationBoundsTest {
 
-    private static BoundingBox SHAPE_BOUNDS = new BoundingBox(1.1d, 2.2d, 333.333d, 444.444d);
+    private static BoundingBox SHAPE_BOUNDS = BoundingBox.fromDoubles(1.1d, 2.2d, 333.333d, 444.444d);
 
     private WiresShapeLocationBounds tested;
 
     @Before
     public void setup() {
-        tested = new WiresShapeLocationBounds(new Supplier<BoundingBox>() {
-            @Override
-            public BoundingBox get() {
-                return SHAPE_BOUNDS;
-            }
-        });
+        tested = new WiresShapeLocationBounds(() -> SHAPE_BOUNDS);
     }
 
     @Test

@@ -41,9 +41,6 @@ public class AbstractOffsetMultiPointShapeTest {
     @Mock
     private PathPartList partList;
 
-    @Mock
-    private Attributes attributes;
-
     private AbstractOffsetMultiPointShape multiPointShape;
 
     @Before
@@ -54,10 +51,10 @@ public class AbstractOffsetMultiPointShapeTest {
     @Test
     public void testIsPathPartListPreparedWhenPathPartListSizeIsGreaterThanOrEqualToOne() {
 
+        when(multiPointShape.getPathPartList()).thenReturn(partList);
         when(partList.size()).thenReturn(1);
 
-        final boolean isPathPartListPrepared = multiPointShape.isPathPartListPrepared(attributes);
-
+        final boolean isPathPartListPrepared = multiPointShape.isPathPartListPrepared();
         assertTrue(isPathPartListPrepared);
     }
 
@@ -65,9 +62,9 @@ public class AbstractOffsetMultiPointShapeTest {
     public void testIsPathPartListPreparedWhenPathPartListSizeIsLessThanOneAndParseReturnsTrue() {
 
         when(partList.size()).thenReturn(0);
-        doReturn(true).when(multiPointShape).parse(attributes);
+        doReturn(true).when(multiPointShape).parse();
 
-        final boolean isPathPartListPrepared = multiPointShape.isPathPartListPrepared(attributes);
+        final boolean isPathPartListPrepared = multiPointShape.isPathPartListPrepared();
 
         assertTrue(isPathPartListPrepared);
     }
@@ -76,55 +73,46 @@ public class AbstractOffsetMultiPointShapeTest {
     public void testIsPathPartListPreparedWhenPathPartListSizeIsLessThanOneAndParseReturnsFalse() {
 
         when(partList.size()).thenReturn(0);
-        doReturn(false).when(multiPointShape).parse(attributes);
+        doReturn(false).when(multiPointShape).parse();
 
-        final boolean isPathPartListPrepared = multiPointShape.isPathPartListPrepared(attributes);
+        final boolean isPathPartListPrepared = multiPointShape.isPathPartListPrepared();
 
         assertFalse(isPathPartListPrepared);
     }
 
     private AbstractOffsetMultiPointShape makeMultiPointShape() {
+        return new MyAbstractOffsetMultiPointShape();
+    }
 
-        return new AbstractOffsetMultiPointShape(null) {
-            @Override
-            public List<Attribute> getBoundingBoxAttributes() {
-                return null;
-            }
+    private static class MyAbstractOffsetMultiPointShape extends AbstractOffsetMultiPointShape<MyAbstractOffsetMultiPointShape> {
 
-            @Override
-            public BoundingBox getBoundingBox() {
-                return null;
-            }
+        MyAbstractOffsetMultiPointShape() {
+            super(null);
+        }
 
-            @Override
-            public Shape setPoint2DArray(final Point2DArray points) {
-                return null;
-            }
+        @Override
+        public boolean parse() {
+            return false;
+        }
 
-            @Override
-            public Point2DArray getPoint2DArray() {
-                return null;
-            }
+        @Override
+        public Point2D getTailOffsetPoint() {
+            return null;
+        }
 
-            @Override
-            public Point2D getTailOffsetPoint() {
-                return null;
-            }
+        @Override
+        public Point2D getHeadOffsetPoint() {
+            return null;
+        }
 
-            @Override
-            public Point2D getHeadOffsetPoint() {
-                return null;
-            }
+        @Override
+        public List<Attribute> getBoundingBoxAttributes() {
+            return null;
+        }
 
-            @Override
-            public boolean parse(final Attributes attr) {
-                return false;
-            }
-
-            @Override
-            public PathPartList getPathPartList() {
-                return partList;
-            }
-        };
+        @Override
+        public BoundingBox getBoundingBox() {
+            return null;
+        }
     }
 }

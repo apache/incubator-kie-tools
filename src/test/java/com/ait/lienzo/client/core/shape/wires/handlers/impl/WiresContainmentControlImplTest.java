@@ -16,9 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,19 +30,14 @@ import static org.mockito.Mockito.verify;
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresContainmentControlImplTest {
 
-    @Mock
-    private WiresParentPickerControl parentPickerControl;
-
     private WiresContainmentControlImpl tested;
+
+    @Mock
+    private WiresParentPickerControl pickerControl;
 
     @Before
     public void setUp() {
-        tested = spy(new WiresContainmentControlImpl(new Supplier<WiresParentPickerControl>() {
-            @Override
-            public WiresParentPickerControl get() {
-                return parentPickerControl;
-            }
-        }));
+        tested = spy(new WiresContainmentControlImpl(() -> pickerControl));
     }
 
     @Test

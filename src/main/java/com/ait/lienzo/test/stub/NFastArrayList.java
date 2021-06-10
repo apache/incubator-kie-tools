@@ -34,13 +34,9 @@ import com.ait.lienzo.test.util.LienzoMockitoLogger;
  * @since 1.0
  *
  */
-@StubClass("com.ait.tooling.nativetools.client.collection.NFastArrayList")
+@StubClass("com.ait.lienzo.tools.client.collection.NFastArrayList")
 public class NFastArrayList<M> implements Iterable<M>
 {
-    private static final class FastArrayListJSO<M> extends com.ait.tooling.nativetools.client.NArrayBaseJSO<FastArrayListJSO<M>>
-    {
-    }
-
     private final ArrayList<M> list = new ArrayList<M>();
 
     public NFastArrayList()
@@ -64,12 +60,6 @@ public class NFastArrayList<M> implements Iterable<M>
         }
     }
 
-    @SuppressWarnings("unused")
-    private NFastArrayList(final FastArrayListJSO<M> jso)
-    {
-        this();
-    }
-
     public boolean isEmpty()
     {
         return list.isEmpty();
@@ -80,13 +70,9 @@ public class NFastArrayList<M> implements Iterable<M>
         return list.size();
     }
 
-    public M get(final int index)
+    public <M> M get(final int index)
     {
-        if ((index >= 0) && (index < size()))
-        {
-            return list.get(index);
-        }
-        return null;
+        return (M)list.get(index);
     }
 
     public NFastArrayList<M> add(final M value)
@@ -108,11 +94,9 @@ public class NFastArrayList<M> implements Iterable<M>
         return list.contains(value);
     }
 
-    public NFastArrayList<M> clear()
+    public void clear()
     {
         list.clear();
-
-        return this;
     }
 
     public NFastArrayList<M> remove(final M value)
@@ -153,7 +137,7 @@ public class NFastArrayList<M> implements Iterable<M>
 
     public NFastArrayList<M> moveToTop(final M value)
     {
-        if ((size() < 2) || (false == contains(value)))
+        if ((size() < 2) || (!contains(value)))
         {
             return this;
         }
@@ -166,7 +150,7 @@ public class NFastArrayList<M> implements Iterable<M>
 
     public NFastArrayList<M> moveToBottom(final M value)
     {
-        if ((size() < 2) || (false == contains(value)))
+        if ((size() < 2) || (!contains(value)))
         {
             return this;
         }
@@ -211,21 +195,20 @@ public class NFastArrayList<M> implements Iterable<M>
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public NFastArrayList<M> push(final M v, final M... values)
+    public int push(final M... values)
     {
-        add(v);
+        add(values[0]);
 
-        for (int i = 0; i < values.length; i++)
+        for (int i = 1; i < values.length; i++)
         {
             add(values[i]);
         }
-        return this;
+        return size();
     }
 
     public NFastArrayList<M> copy()
     {
-        final NFastArrayList<M> result = new NFastArrayList<M>();
+        final NFastArrayList<M> result = new NFastArrayList<>();
 
         result.list.addAll(this.list);
 
@@ -262,7 +245,7 @@ public class NFastArrayList<M> implements Iterable<M>
     {
         final int size = size();
 
-        final ArrayList<M> list = new ArrayList<M>(size);
+        final ArrayList<M> list = new ArrayList<>(size);
 
         for (int i = 0; i < size; i++)
         {
@@ -284,6 +267,10 @@ public class NFastArrayList<M> implements Iterable<M>
         list.remove(0);
 
         return t;
+    }
+
+    public List<M> asList() {
+        return list;
     }
 
     private void doUnShift(final M value)

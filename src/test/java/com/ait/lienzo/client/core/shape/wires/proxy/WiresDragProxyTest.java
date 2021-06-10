@@ -29,7 +29,6 @@ import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,18 +75,8 @@ public class WiresDragProxyTest {
         when(layer.getViewport()).thenReturn(viewport);
         viewport.setTransform(transform);
 
-        tested = new WiresDragProxy(new Supplier<AbstractWiresProxy>() {
-            @Override
-            public AbstractWiresProxy get() {
-                return proxy;
-            }
-        },
-                                    new Supplier<Layer>() {
-                                        @Override
-                                        public Layer get() {
-                                            return proxyLayer;
-                                        }
-                                    });
+        tested = new WiresDragProxy(() -> proxy,
+                                    () -> proxyLayer);
     }
 
     @Test

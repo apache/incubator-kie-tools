@@ -18,15 +18,16 @@ package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.types.Point2D;
+import elemental2.dom.HTMLDivElement;
 import org.mockito.Mock;
 
 import static org.mockito.Matchers.anyDouble;
@@ -53,7 +54,7 @@ public abstract class AbstractWiresControlTest {
     protected WiresParentPickerControlImpl parentPicker;
 
     @Mock
-    protected WiresLayerIndex index;
+    protected WiresColorMapIndex index;
 
     @Mock
     protected IDockingAcceptor dockingAcceptor;
@@ -70,9 +71,18 @@ public abstract class AbstractWiresControlTest {
     @Mock
     protected WiresMagnetsControl parentMagnetsControl;
 
+    @Mock
+    protected HTMLDivElement div;
+
+    @Mock
+    protected Viewport viewport;
+
     public void setUp() {
-        layer = new Layer();
+        layer = spy(new Layer());
         pickerOptions = new ColorMapBackedPicker.PickerOptions(false, 0);
+        when(layer.getViewport()).thenReturn(viewport);
+        when(viewport.getElement()).thenReturn(div);
+
         manager = WiresManager.get(layer);
         shape = spy(new WiresShape(new MultiPath().rect(0, 0, SHAPE_SIZE, SHAPE_SIZE)));
         shape.setWiresManager(manager);
@@ -85,12 +95,14 @@ public abstract class AbstractWiresControlTest {
 
         when(shapeControl.getMagnetsControl()).thenReturn(shapeMagnetsControl);
         when(parentControl.getMagnetsControl()).thenReturn(parentMagnetsControl);
+
         when(parentPicker.getParent()).thenReturn(parent);
         when(dockingAcceptor.dockingAllowed(parent, shape)).thenReturn(true);
         when(parentPicker.getParentShapePart()).thenReturn(PickerPart.ShapePart.BORDER);
         when(parentPicker.getShape()).thenReturn(shape);
         when(parentPicker.getCurrentLocation()).thenReturn(parent.getLocation());
-        when(parentPicker.onMove(anyDouble(), anyDouble())).thenReturn(false);
+        when(parentPicker.onMove(anyDouble(), anyDouble())).thenReturn(true);
+        when(parentPicker.getIndex()).thenReturn(index);
         when(parentPicker.getIndex()).thenReturn(index);
 
         shape.setLocation(new Point2D(0, 0));

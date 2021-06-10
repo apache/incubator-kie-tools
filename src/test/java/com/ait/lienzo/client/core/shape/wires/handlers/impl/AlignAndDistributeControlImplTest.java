@@ -19,9 +19,8 @@ package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 import java.util.Arrays;
 
 import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.wires.AlignAndDistribute;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
@@ -54,27 +53,21 @@ public class AlignAndDistributeControlImplTest extends AbstractWiresControlTest 
     private AlignAndDistribute.AlignAndDistributeMatchesCallback callback;
 
     @Mock
-    private Attribute attribute;
     private BoundingPoints points;
 
     private BoundingBox boundingBox;
-    private String prop = "prop";
-
-    private Attributes attributes;
 
     @Mock
-    private IJSONSerializable<?> groupAttr;
+    private Node node;
 
     @Before
     public void setUp() {
-        attributes = new Attributes(groupAttr);
-        boundingBox = new BoundingBox(0, 0, 100, 100);
+        boundingBox = BoundingBox.fromDoubles(0, 0, 100, 100);
         points = new BoundingPoints(boundingBox);
         when(group.getComputedBoundingPoints()).thenReturn(points);
-        when(attribute.getProperty()).thenReturn(prop);
-        when(group.getAttributes()).thenReturn(attributes);
         when(group.uuid()).thenReturn(UUID);
-        tested = new AlignAndDistributeControlImpl(group, alignAndDistribute, callback, Arrays.asList(attribute));
+
+        tested = new AlignAndDistributeControlImpl(group,alignAndDistribute,callback);
         tested.setIndexed(true);
 
         when(alignAndDistribute.getControlForShape(anyString())).thenReturn(tested);
@@ -91,6 +84,7 @@ public class AlignAndDistributeControlImplTest extends AbstractWiresControlTest 
 
     @Test
     public void indexOnTest() {
+        when(group.asNode()).thenReturn(node);
         tested.indexOn(group);
         AlignAndDistributeControlImpl spied = spy(tested);
         spied.refresh();
@@ -105,12 +99,4 @@ public class AlignAndDistributeControlImplTest extends AbstractWiresControlTest 
         verify(spied, never()).updateIndex();
     }
 
-    @Test
-    public void addHandlerTest() {
-        verify(group).addAttributesChangedHandler(Attribute.X, tested.ShapeAttributesChangedHandler);
-        verify(group).addAttributesChangedHandler(Attribute.Y, tested.ShapeAttributesChangedHandler);
-        verify(group).addAttributesChangedHandler(Attribute.ROTATION, tested.ShapeAttributesChangedHandler);
-        verify(group).addAttributesChangedHandler(Attribute.SCALE, tested.ShapeAttributesChangedHandler);
-        verify(group).addAttributesChangedHandler(Attribute.SHEAR, tested.ShapeAttributesChangedHandler);
-    }
 }

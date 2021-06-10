@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.toolbox.items.impl;
 
+import java.util.function.BiConsumer;
+
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.toolbox.GroupItem;
@@ -24,8 +26,7 @@ import com.ait.lienzo.client.core.shape.toolbox.items.TooltipItem;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.BiConsumer;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,10 +49,10 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class GroupImplTest {
 
-    private final BoundingBox boundingBox = new BoundingBox(0d,
-                                                            0d,
-                                                            100d,
-                                                            200d);
+    private final BoundingBox boundingBox = BoundingBox.fromDoubles(0d,
+                                                                    0d,
+                                                                    100d,
+                                                                    200d);
 
     @Mock
     private GroupItem groupItem;
@@ -68,7 +69,6 @@ public class GroupImplTest {
     @Mock
     private DecoratorItem decorator;
 
-    @Mock
     private NFastArrayList groupChildren;
 
     @Mock
@@ -85,27 +85,22 @@ public class GroupImplTest {
         when(group.getAlpha()).thenReturn(0d);
         when(group.getComputedBoundingPoints()).thenReturn(boundingPoints);
         when(group.getBoundingBox()).thenReturn(boundingBox);
+        groupChildren = new NFastArrayList<>();
+        groupChildren.add(new Object());
         when(group.getChildNodes()).thenReturn(groupChildren);
-        when(groupChildren.size()).thenReturn(1);
         when(boundingPoints.getBoundingBox()).thenReturn(boundingBox);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                ((Runnable) invocationOnMock.getArguments()[0]).run();
-                ((Runnable) invocationOnMock.getArguments()[1]).run();
-                return groupItem;
-            }
+        doAnswer(invocationOnMock -> {
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
+            return groupItem;
         }).when(groupItem).show(any(Runnable.class),
-                                any(Runnable.class));
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                ((Runnable) invocationOnMock.getArguments()[0]).run();
-                ((Runnable) invocationOnMock.getArguments()[1]).run();
-                return groupItem;
-            }
+                                    any(Runnable.class));
+        doAnswer(invocationOnMock -> {
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
+            return groupItem;
         }).when(groupItem).hide(any(Runnable.class),
-                                any(Runnable.class));
+                                    any(Runnable.class));
         tested = new GroupImpl(groupItem,
                                group)
                 .useHideExecutor(hideExecutor)
