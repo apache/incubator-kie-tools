@@ -179,7 +179,7 @@ jobs:
 
       - name: "Build"
         run: |
-          lerna run build:prod --scope=vscode-extension-pack-kogito-kie-editors --include-dependencies --stream
+          lerna run build:prod --scope=vscode-extension-pack-kogito-kie-editors --scope=vscode-extension-backend --include-dependencies --stream
 
       - name: "Deploy"
         run: |
