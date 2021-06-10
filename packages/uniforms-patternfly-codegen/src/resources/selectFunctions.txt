@@ -1,0 +1,16 @@
+const handleSelect = (
+  newSelection: string | SelectOptionObject,
+  isPlaceHolder: boolean,
+  currentSelection: string,
+  setSelection: (val: string) => void,
+  setExpanded: (expanded: boolean) => void
+) => {
+  if (isPlaceHolder) {
+    setSelection('');
+    setExpanded(false);
+  } else {
+    const parsedSelection = newSelection.toString ? newSelection.toString() : newSelection as string;
+    setSelection(parsedSelection || '');
+    setExpanded(false);
+  }
+};

@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import React from "react";
-import ReactDOMServer from "react-dom/server";
+import * as React from "react";
+import * as ReactDOMServer from "react-dom/server";
 import { Bridge } from "uniforms";
-import { RenderedElement } from "../../api";
+import { FormElement, FormInput } from "../../api";
 import FormInputs from "./FormInputs";
 import { CodeGenContext } from "../CodeGenContext";
+import NestedFieldInput from "./NestedFieldInput";
 
-export const renderFormInputs = (schema: Bridge): RenderedElement[] => {
+export const renderFormInputs = (schema: Bridge): FormElement<any>[] => {
   const codegenCtx: CodeGenContext = {
     rendered: [],
   };
@@ -34,4 +35,27 @@ export const renderFormInputs = (schema: Bridge): RenderedElement[] => {
   ReactDOMServer.renderToString(inputsElement);
 
   return codegenCtx.rendered;
+};
+
+export const renderNestedInputFragmentWithContext = (
+  uniformsContext: any,
+  field: any,
+  itempProps: any,
+  disabled?: boolean
+): FormInput => {
+  const codegenCtx: CodeGenContext = {
+    rendered: [],
+  };
+
+  ReactDOMServer.renderToString(
+    React.createElement(NestedFieldInput, {
+      codegenCtx,
+      uniformsContext,
+      field,
+      itempProps,
+      disabled,
+    })
+  );
+
+  return codegenCtx.rendered.length == 1 ? codegenCtx.rendered[0] : undefined;
 };

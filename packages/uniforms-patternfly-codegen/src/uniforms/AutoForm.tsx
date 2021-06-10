@@ -16,10 +16,12 @@
 
 import React from "react";
 import { Bridge } from "uniforms";
-import union from "lodash/union";
-import { RenderedElement } from "../api";
+import { union } from "lodash";
+import * as prettier from "prettier";
+import { FormElement } from "../api";
 import { NS_SEPARATOR } from "./utils/Utils";
 import { renderFormInputs } from "./rendering/RenderingUtils";
+import { getStaticCodeBlock } from "./staticCode/staticCodeBlocks";
 
 export type AutoFormProps = {
   id: string;
@@ -29,38 +31,48 @@ export type AutoFormProps = {
 };
 
 const AutoForm: React.FC<AutoFormProps> = (props) => {
-  const inputs: RenderedElement[] = renderFormInputs(props.schema);
+  const inputs: FormElement<any>[] = renderFormInputs(props.schema);
 
-  let pfImports: string[] = ["Form"];
+  let pfImports: string[] = [];
   let reactImports: string[] = [];
+  let staticCodeArray: string[] = [];
 
   inputs.forEach((input) => {
     pfImports = union(pfImports, input.pfImports);
     reactImports = union(reactImports, input.reactImports);
+    staticCodeArray = union(staticCodeArray, input.requiredCode);
   });
-
-  pfImports = union(["Form"], { ...pfImports });
 
   const formName = `Form${props.id ? `${NS_SEPARATOR}${props.id}` : ""}`;
   const hooks = inputs.map((input) => input.stateCode).join("\n");
   const elements = inputs.map((input) => input.jsxCode).join("\n");
+  const staticCodeStr: string = staticCodeArray.map((id) => getStaticCodeBlock(id)).join("\n");
 
   const formTemplate = `import React, { ${reactImports.join(", ")} }  from "react";
     import { ${pfImports.join(", ")} } from "@patternfly/react-core";
     
-    const ${formName}: React.FC<any> = ( props ) => {
+    const ${formName}: React.FC<any> = ( props:any ) => {
       ${hooks}
       
+      ${staticCodeStr}
+      
       return (
-        <Form>
+        <div className={'pf-c-form'}>
           ${elements}        
-        </Form>
+        </div>
       )    
     }
     
     export default ${formName};`;
 
-  return <>{formTemplate}</>;
+  const formattedFormTemplate = prettier.format(formTemplate, {
+    parser: "typescript",
+    singleQuote: true,
+    jsxSingleQuote: true,
+    jsxBracketSameLine: true,
+    tabWidth: 2,
+  });
+  return <>{formattedFormTemplate}</>;
 };
 
 export default AutoForm;

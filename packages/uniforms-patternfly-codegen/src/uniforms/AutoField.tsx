@@ -14,63 +14,47 @@
  * limitations under the License.
  */
 
-import { ComponentType, createElement } from "react";
-import { useField } from "uniforms";
-/*
-import DateField from './DateField';
-import ListField from './ListField';
-import NestField from './NestField';
-import NumField from './NumField';
-import RadioField from './RadioField';
-import SelectField from './SelectField';*/
+import { createAutoField } from "uniforms/es5/createAutoField";
+
 import TextField from "./TextField";
 import BoolField from "./BoolField";
 import NumField from "./NumField";
-//import NestField from './NestField';
-//import { useField } from "./useField";
+import NestField from "./NestField";
+import DateField from "./DateField";
+import RadioField from "./RadioField";
+import SelectField from "./SelectField";
+import CheckBoxGroupField from "./CheckBoxGroupField";
+import UnsupportedField from "./UnsupportedField";
 
-export type AutoFieldProps = {
-  component?: ComponentType<any>;
-  name: string;
-} & Record<string, unknown>;
+export type AutoFieldProps = Parameters<typeof AutoField>[0];
 
-export default function AutoField(originalProps: AutoFieldProps) {
-  const props = useField(originalProps.name, originalProps)[0];
-  const { allowedValues, fieldType } = props;
-  let { component } = props;
-
-  if (allowedValues) {
-    /*if (checkboxes && fieldType !== Array) {
-      component = RadioField;
-    } else {
-      component = SelectField;
-    }*/
-  } else {
-    switch (fieldType) {
-      /*case Array:
-        component = ListField;
-        break;*/
-      case Boolean:
-        component = BoolField;
-        break;
-      /*
-      case Date:
-        component = DateField;
-        break;*/
-      case Number:
-        component = NumField;
-        break;
-      /*    case Object:
-        component = NestField;
-        break;*/
-      case String:
-        component = TextField;
-        break;
+const AutoField = createAutoField((props) => {
+  if (props.allowedValues) {
+    if (props.checkboxes) {
+      return props.fieldType !== Array ? RadioField : CheckBoxGroupField;
     }
-    if (!component) {
-      throw new Error(`Unsupported field type: ${fieldType}`);
-    }
+    return SelectField;
   }
 
-  return createElement(component!, originalProps);
-}
+  switch (props.fieldType) {
+    /*
+    TODO: implement array support
+    case Array:
+      return  ListField;*/
+    case Boolean:
+      return BoolField;
+    case Date:
+      return DateField;
+    case Number:
+      return NumField;
+    case Object:
+      return NestField;
+    case String:
+      return TextField;
+  }
+
+  console.log(`Unsupported field type: ${props.fieldType}`);
+  return UnsupportedField;
+});
+
+export default AutoField;

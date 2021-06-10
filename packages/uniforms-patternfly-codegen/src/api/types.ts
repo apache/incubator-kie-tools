@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-export interface RenderedElement {
+export interface FormElement<REFERENCE_TYPE> {
   reactImports: string[];
   pfImports: string[];
 
-  ref: InputReference | InputReference[];
+  requiredCode?: string[];
+
+  ref: REFERENCE_TYPE;
 
   stateCode: string;
   jsxCode: string;
 }
+
+export interface FormInput extends FormElement<InputReference> {}
+
+export interface InputsContainer extends FormElement<InputReference[]> {}
 
 export interface InputReference {
   binding: string;

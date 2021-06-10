@@ -16,6 +16,7 @@
 
 import React from "react";
 import { render } from "@testing-library/react";
+import SimpleSchema from "simpl-schema";
 import { TestCodeGenContextProvider } from "./TestCodegenContextProvider";
 import { CodeGenContext } from "../uniforms/CodeGenContext";
 import { InputReference } from "../api";
@@ -24,13 +25,7 @@ import NumField from "../uniforms/NumField";
 describe("NumField test", () => {
   it("NumField - integer rendering", () => {
     const schema = {
-      name: "test schema",
-      type: "object",
-      properties: {
-        age: {
-          type: "integer",
-        },
-      },
+      age: { type: SimpleSchema.Integer },
     };
 
     const codegenContext: CodeGenContext = {
@@ -74,13 +69,7 @@ describe("NumField test", () => {
 
   it("NumField - decimal rendering", () => {
     const schema = {
-      name: "test schema",
-      type: "object",
-      properties: {
-        salary: {
-          type: "number",
-        },
-      },
+      salary: { type: Number },
     };
 
     const codegenContext: CodeGenContext = {

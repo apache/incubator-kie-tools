@@ -15,42 +15,47 @@
  */
 
 import React from "react";
-import { TextInputProps } from "@patternfly/react-core";
 import { connectField } from "uniforms";
-
-import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
-import { useAddFormElementToContext } from "./CodeGenContext";
+import { useCodegenContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
+import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 
-export type NumFieldProps = {
+export type RadioFieldProps = {
   id: string;
+  name: string;
   label: string;
-  decimal?: boolean;
-  value?: string;
-  onChange: (value?: string) => void;
+  allowedValues: string[];
+  onChange: (value: string) => void;
   disabled: boolean;
-} & Omit<TextInputProps, "isDisabled">;
+  required: boolean;
+  transform?: (value?: string) => string;
+};
 
-const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
+const Radio = (props: RadioFieldProps) => {
+  const codegenContext = useCodegenContext();
   const ref: InputReference = getInputReference(props.name);
 
-  const max = props.max ? `max={${props.max}}` : "";
-  const min = props.min ? `min={${props.min}}` : "";
+  const radios: string[] = [];
 
-  const inputJsxCode = `<TextInput
-      type={'number'}
+  props.allowedValues?.forEach((item) => {
+    const radio = `<Radio
+      key={'${item}'}
+      id={'${props.id}-${item}'}
       name={'${props.name}'}
-      isDisabled={${props.disabled || "false"}}
-      id={'${props.id}'}
-      placeholder={'${props.placeholder}'}
-      step={${props.decimal ? 0.01 : 1}} ${max} ${min}
-      value={${ref.stateName}}
-      onChange={${ref.stateSetter}}
+      isChecked={'${item}' === ${ref.stateName}}
+      isDisabled={${props.disabled || false}}
+      label={'${props.transform ? props.transform(item) : item}'}
+      aria-label={'${props.name}'}
+      onChange={() => ${ref.stateSetter}('${item}')}
     />`;
+    radios.push(radio);
+  });
+
+  const jsxCode = `<div>${radios.join("\n")}</div>`;
 
   const element: FormInput = buildDefaultInputElement({
-    pfImports: ["TextInput"],
-    inputJsxCode,
+    pfImports: ["Radio"],
+    inputJsxCode: jsxCode,
     ref,
     dataType: "string",
     wrapper: {
@@ -60,9 +65,9 @@ const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
     },
   });
 
-  useAddFormElementToContext(element);
+  codegenContext.rendered.push(element);
 
   return renderField(element);
 };
 
-export default connectField(Num);
+export default connectField(Radio);

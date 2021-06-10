@@ -16,39 +16,55 @@
 
 import { render } from "@testing-library/react";
 import * as React from "react";
+import { unescape } from "lodash";
 import AutoForm, { AutoFormProps } from "../uniforms/AutoForm";
-import JSONSchemaBridge from "uniforms-bridge-json-schema";
+import SimpleSchema from "simpl-schema";
+import createSchema from "./_createSchema";
 
 const schema = {
-  name: "Candidate",
-  type: "object",
-  properties: {
-    name: {
-      type: "string",
-    },
-    age: {
-      type: "integer",
-      uniforms: {
-        min: 18,
-        max: 99,
-      },
-    },
-    salary: {
-      type: "number",
-      uniforms: {
-        min: 0,
-        max: 100.98,
-      },
-    },
-    hire: {
-      type: "boolean",
-    },
+  name: String,
+  position: {
+    type: String,
+    defaultValue: "Developer",
+    allowedValues: ["Developer", "HR", "UX"],
   },
+  otherPositions: {
+    type: Array,
+    allowedValues: ["Developer", "HR", "UX"],
+  },
+  "otherPositions.$": String,
+  skills: {
+    type: Array,
+    allowedValues: ["Java", "React", "TypeScript", "Quarkus"],
+    uniforms: { checkboxes: true },
+  },
+  "skills.$": String,
+  age: {
+    type: SimpleSchema.Integer,
+    min: 18,
+    max: 99,
+  },
+  salary: {
+    type: Number,
+    min: 0,
+    max: 1000.5,
+  },
+  rating: {
+    type: Number,
+    allowedValues: [1, 2, 3, 4, 5],
+    uniforms: { checkboxes: true },
+  },
+  hire: Boolean,
+  hidingDate: Date,
+  friends: { type: Array },
+  "friends.$": Object,
+  "friends.$.name": { type: String },
+  "friends.$.age": { type: Number },
 };
 
 const props: AutoFormProps = {
   id: "HRInterview",
-  schema: new JSONSchemaBridge(schema, () => true),
+  schema: createSchema(schema),
   disabled: false,
   placeholder: true,
 };
@@ -56,5 +72,8 @@ const props: AutoFormProps = {
 describe("AutoForm tests", () => {
   it("Full rendering", () => {
     const { container } = render(<AutoForm {...props} />);
+    const form = unescape(container.innerHTML);
+
+    console.log(form);
   });
 });

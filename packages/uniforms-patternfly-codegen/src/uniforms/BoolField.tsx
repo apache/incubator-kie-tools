@@ -17,9 +17,10 @@
 import React from "react";
 import { CheckboxProps } from "@patternfly/react-core";
 import { connectField } from "uniforms";
-import { useCodegenContext } from "./CodeGenContext";
-import { InputReference } from "../api";
-import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
+import { useAddFormElementToContext } from "./CodeGenContext";
+import { FormInput, InputReference } from "../api";
+
+import { getInputReference, getStateCodeFromRef, renderField } from "./utils/Utils";
 
 export type BoolFieldProps = {
   appearance?: "checkbox" | "switch";
@@ -30,12 +31,12 @@ export type BoolFieldProps = {
 } & Omit<CheckboxProps, "isDisabled">;
 
 const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
-  const codegenContext = useCodegenContext();
-
   const ref: InputReference = getInputReference(props.name);
 
+  const stateCode = getStateCodeFromRef(ref, "boolean");
+
   const jsxCode = `<Checkbox
-      isChecked={props.value || false}
+      isChecked={${ref.stateName}}
       isDisabled={${props.disabled || "false"}}
       id="${props.id}"
       name="${props.name}"
@@ -43,8 +44,15 @@ const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
       onChange={${ref.stateSetter}}
     />`;
 
-  const element = buildDefaultInputElement(["Checkbox"], jsxCode, ref, "boolean", props);
-  codegenContext.rendered.push(element);
+  const element: FormInput = {
+    ref,
+    pfImports: ["Checkbox"],
+    reactImports: ["useState"],
+    jsxCode,
+    stateCode,
+  };
+
+  useAddFormElementToContext(element);
 
   return renderField(element);
 };

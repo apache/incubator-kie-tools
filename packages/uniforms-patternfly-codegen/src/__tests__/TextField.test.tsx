@@ -22,13 +22,7 @@ import { InputReference } from "../api";
 import TextField from "../uniforms/TextField";
 
 const schema = {
-  name: "test schema",
-  type: "object",
-  properties: {
-    name: {
-      type: "string",
-    },
-  },
+  name: { type: String },
 };
 
 describe("TextField test", () => {
@@ -45,7 +39,7 @@ describe("TextField test", () => {
       onChange: jest.fn(),
     };
 
-    const { container } = render(
+    render(
       <TestCodeGenContextProvider ctx={codegenContext} schema={schema}>
         <TextField {...props} />
       </TestCodeGenContextProvider>

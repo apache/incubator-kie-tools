@@ -15,44 +15,38 @@
  */
 
 import React from "react";
-import { TextInputProps } from "@patternfly/react-core";
-import { connectField } from "uniforms";
-
-import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
-import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
+import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
+import { connectField } from "uniforms";
+import { useAddFormElementToContext } from "./CodeGenContext";
 
-export type NumFieldProps = {
+export type ListFieldProps = {
   id: string;
+  name: string;
   label: string;
-  decimal?: boolean;
-  value?: string;
   onChange: (value?: string) => void;
+  fieldType?: any;
   disabled: boolean;
-} & Omit<TextInputProps, "isDisabled">;
+  required: boolean;
+};
 
-const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
+const Unsupported: React.FC<ListFieldProps> = (props: ListFieldProps) => {
   const ref: InputReference = getInputReference(props.name);
 
-  const max = props.max ? `max={${props.max}}` : "";
-  const min = props.min ? `min={${props.min}}` : "";
+  const jsxCode = `<Alert variant='warning' title='Unsupported field type: ${props.fieldType.name}'> 
+        Cannot find form control for property <code>${props.name}</code> with type <code>${props.fieldType.name}</code>:<br/> 
+        Some complex property types, such as <code>Array&lt;object&gt;</code> aren't yet supported, however, you can still write your 
+        own component into the form and use the already existing states <code>const [ ${ref.stateName}, ${ref.stateSetter} ]</code>.
+    </Alert>`;
 
-  const inputJsxCode = `<TextInput
-      type={'number'}
-      name={'${props.name}'}
-      isDisabled={${props.disabled || "false"}}
-      id={'${props.id}'}
-      placeholder={'${props.placeholder}'}
-      step={${props.decimal ? 0.01 : 1}} ${max} ${min}
-      value={${ref.stateName}}
-      onChange={${ref.stateSetter}}
-    />`;
+  const [dataType, defaultValue] = props.fieldType === Array ? ["any[]", "[]"] : ["any", ""];
 
   const element: FormInput = buildDefaultInputElement({
-    pfImports: ["TextInput"],
-    inputJsxCode,
+    pfImports: ["Alert"],
+    inputJsxCode: jsxCode,
     ref,
-    dataType: "string",
+    dataType,
+    defaultValue,
     wrapper: {
       id: props.id,
       label: props.label,
@@ -61,8 +55,7 @@ const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
   });
 
   useAddFormElementToContext(element);
-
   return renderField(element);
 };
 
-export default connectField(Num);
+export default connectField(Unsupported);

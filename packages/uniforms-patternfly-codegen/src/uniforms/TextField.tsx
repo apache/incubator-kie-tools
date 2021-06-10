@@ -18,9 +18,10 @@ import React from "react";
 import { connectField } from "uniforms";
 import { TextInputProps } from "@patternfly/react-core";
 
-import { useCodegenContext } from "./CodeGenContext";
-import { InputReference, RenderedElement } from "../api";
+import { useAddFormElementToContext } from "./CodeGenContext";
+import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
+import { DATE_FUNCTIONS } from "./staticCode/staticCodeBlocks";
 
 export type TextFieldProps = {
   id: string;
@@ -32,33 +33,59 @@ export type TextFieldProps = {
 } & Omit<TextInputProps, "isDisabled">;
 
 const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
-  const codegenContext = useCodegenContext();
   const ref: InputReference = getInputReference(props.name);
 
   const isDate: boolean = props.type === "date" || props.field.format === "date";
 
-  if (isDate) {
-    return undefined;
-  }
+  const getDateElement = (): FormInput => {
+    const inputJsxCode = `<DatePicker
+          id={'date-picker-${props.id}'}
+          isDisabled={${props.disabled || false}}
+          name={'${props.name}'}
+          onChange={newDate => onDateChange(newDate, ${ref.stateSetter},  ${ref.stateName})}
+          value={parseDate(${ref.stateName})}
+        />`;
+    return buildDefaultInputElement({
+      pfImports: ["DatePicker"],
+      inputJsxCode,
+      ref,
+      dataType: "Date",
+      requiredCode: [DATE_FUNCTIONS],
+      wrapper: {
+        id: props.id,
+        label: props.label,
+        required: props.required,
+      },
+    });
+  };
 
-  const inputCode = `<TextInput
-        name="${props.name}"
-        id="${props.id}"
+  const getTextInputElement = (): FormInput => {
+    const inputJsxCode = `<TextInput
+        name={'${props.name}'}
+        id={'${props.id}'}
         isDisabled={${props.disabled || "false"}}
-        placeholder="${props.placeholder}"
-        type="${props.type || "text"}"
+        placeholder={'${props.placeholder}'}
+        type={'${props.type || "text"}'}
         value={${ref.stateName}}
         onChange={${ref.stateSetter}}
         />`;
 
-  const element: RenderedElement = buildDefaultInputElement(["TextInput"], inputCode, ref, "string", {
-    id: props.id,
-    label: props.label,
-    required: props.required,
-    disabled: props.disabled,
-  });
+    return buildDefaultInputElement({
+      pfImports: ["TextInput"],
+      inputJsxCode,
+      ref,
+      dataType: "string",
+      wrapper: {
+        id: props.id,
+        label: props.label,
+        required: props.required,
+      },
+    });
+  };
 
-  codegenContext.rendered.push(element);
+  const element = isDate ? getDateElement() : getTextInputElement();
+
+  useAddFormElementToContext(element);
 
   return renderField(element);
 };

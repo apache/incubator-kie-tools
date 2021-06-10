@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
+import { Context } from "uniforms";
 import React from "react";
-import { Bridge, Context } from "uniforms";
 import { CodeGenContext, CodeGenContextProvider } from "../CodeGenContext";
-import AutoFields from "../AutoFields";
+import AutoField from "../AutoField";
 
 export interface Props {
-  schema: Bridge;
   codegenCtx: CodeGenContext;
-  uniformsCtx?: Context<any>;
+  uniformsContext: Context<any>;
+  field: any;
+  itempProps: any;
+  disabled: boolean;
 }
 
-export const FormInputs: React.FC<Props> = (props) => {
+export const NestedFieldInput: React.FC<Props> = ({ codegenCtx, uniformsContext, field, itempProps, disabled }) => {
   return (
-    <CodeGenContextProvider {...props}>
-      <AutoFields />
+    <CodeGenContextProvider codegenCtx={codegenCtx} uniformsCtx={uniformsContext}>
+      <AutoField key={field} name={field} disabled={disabled} {...itempProps} />
     </CodeGenContextProvider>
   );
 };
 
-export default FormInputs;
+export default NestedFieldInput;

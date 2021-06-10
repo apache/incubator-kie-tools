@@ -17,10 +17,20 @@
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const nodeExternals = require("webpack-node-externals");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = merge(common, {
   entry: {
     index: "./src/index.ts",
+  },
+  plugins: [new CopyPlugin({ patterns: [{ from: "./resources", to: "./resources" }] })],
+  module: {
+    rules: [
+      {
+        test: /\.txt$/i,
+        use: "raw-loader",
+      },
+    ],
   },
   output: {
     libraryTarget: "commonjs2",

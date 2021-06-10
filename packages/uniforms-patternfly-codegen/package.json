@@ -19,11 +19,14 @@
   },
   "dependencies": {
     "uniforms": "3.0.0",
-    "uniforms-bridge-json-schema": "3.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "lodash": "^4.14.2",
+    "prettier": "^2.2.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jest-raw-loader": "^1.0.1",
+    "@types/simpl-schema": "1.10.2",
+    "uniforms-bridge-simple-schema-2": "3.4.0"
+  },
   "babel": {
     "presets": [
       "@babel/env",

@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-import { InputReference, RenderedElement } from "../api";
+declare module "*.txt";

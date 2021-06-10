@@ -17,12 +17,11 @@
 import React, { createContext, useContext } from "react";
 
 import { Bridge, context, Context, randomIds } from "uniforms";
-import AutoFields from "./AutoFields";
 
-import { RenderedElement } from "../api";
+import { FormElement } from "../api";
 
 export interface CodeGenContext {
-  rendered: RenderedElement[];
+  rendered: FormElement<any>[];
 }
 
 export const codeGenContext = createContext<CodeGenContext>(null);
@@ -31,10 +30,19 @@ export const useCodegenContext = (): CodeGenContext => {
   return useContext<CodeGenContext>(codeGenContext);
 };
 
+export const useAddFormElementToContext = (formElement: FormElement<any>): void => {
+  const ctx = useCodegenContext();
+  if (!ctx) {
+    throw new Error(`'useAddFormElementToContext' should be called within a 'codegenContext'`);
+  }
+  ctx.rendered.push(formElement);
+};
+
 export interface ProviderProps {
-  schema: Bridge;
+  schema?: Bridge;
   codegenCtx: CodeGenContext;
   uniformsCtx?: Context<any>;
+  children: JSX.Element;
 }
 
 export const CodeGenContextProvider: React.FC<ProviderProps> = (props) => {
@@ -60,9 +68,7 @@ export const CodeGenContextProvider: React.FC<ProviderProps> = (props) => {
 
   return (
     <codeGenContext.Provider value={props.codegenCtx}>
-      <context.Provider value={ctx}>
-        <AutoFields />
-      </context.Provider>
+      <context.Provider value={ctx}>{props.children}</context.Provider>
     </codeGenContext.Provider>
   );
 };

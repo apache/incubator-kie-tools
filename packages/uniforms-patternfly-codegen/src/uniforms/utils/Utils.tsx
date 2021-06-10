@@ -15,9 +15,7 @@
  */
 
 import React from "react";
-import { FormGroupProps } from "@patternfly/react-core";
-//import ReactDOMServer from 'react-dom/server';
-import { InputReference, RenderedElement } from "../../api";
+import { FormElement, FormInput, InputReference } from "../../api";
 
 export const NS_SEPARATOR = "__";
 export const FIELD_SET_PREFFIX = `set`;
@@ -32,33 +30,52 @@ export const getInputReference = (binding: string): InputReference => {
   };
 };
 
-export const getStateCode = (ref: InputReference, dataType: string): string => {
-  return `const [ ${ref.stateName}, ${ref.stateSetter} ] = useState<${dataType}>();`;
+export const getStateCodeFromRef = (ref: InputReference, dataType: string, defaultValue?: string): string => {
+  return getStateCode(ref.stateName, ref.stateSetter, dataType, defaultValue);
+};
+
+export const getStateCode = (
+  stateName: string,
+  stateSetter: string,
+  dataType: string,
+  defaultValue?: string
+): string => {
+  return `const [ ${stateName}, ${stateSetter} ] = useState<${dataType}>(${defaultValue || ""});`;
+};
+
+type DefaultInputProps = {
+  pfImports: string[];
+  inputJsxCode: string;
+  ref: InputReference;
+  dataType: string;
+  defaultValue?: string;
+  requiredCode?: string[];
+  wrapper: WrapperProps;
 };
 
 type WrapperProps = {
   id: string;
   label: string;
-  disabled: boolean;
   required: boolean;
-} & Omit<FormGroupProps, "onChange" | "fieldId">;
+};
 
-export const buildDefaultInputElement = (
-  pfImports: string[],
-  input: string,
-  ref: InputReference,
-  dataType: string,
-  { id, label, disabled, required }: WrapperProps
-): RenderedElement => {
-  const stateCode = getStateCode(ref, dataType);
+export const buildDefaultInputElement = ({
+  pfImports,
+  inputJsxCode,
+  dataType,
+  defaultValue,
+  ref,
+  wrapper,
+  requiredCode,
+}: DefaultInputProps): FormInput => {
+  const stateCode = getStateCodeFromRef(ref, dataType, defaultValue);
 
   const jsxCode = `<FormGroup
-      fieldId="${id}"
-      label="${label}"
-      isRequired={${required}}
-      isDisabled={${disabled}}
+      fieldId="${wrapper.id}"
+      label="${wrapper.label}"
+      isRequired={${wrapper.required || false}}
     >
-      ${input}
+      ${inputJsxCode}
     </FormGroup>`;
 
   pfImports.push("FormGroup");
@@ -67,30 +84,12 @@ export const buildDefaultInputElement = (
     ref,
     pfImports,
     reactImports: ["useState"],
+    requiredCode: requiredCode,
     jsxCode,
     stateCode,
   };
 };
 
-export const renderField = (element: RenderedElement) => {
+export const renderField = (element: FormElement<any>) => {
   return <>{JSON.stringify(element)}</>;
 };
-/*
-
-export const renderNestedInputFragmentWithContext = (
-  parentContext: any,
-  field: any,
-  itempProps: any,
-  disabled?: boolean
-): RenderedField => {
-  const content = ReactDOMServer.renderToString(
-    React.createElement(NestedFormInputs, {
-      parentContext,
-      field,
-      itempProps,
-      disabled
-    })
-  );
-  return JSON.parse(parse(content));
-};
-*/

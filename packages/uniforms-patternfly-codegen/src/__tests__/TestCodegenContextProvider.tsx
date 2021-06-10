@@ -16,7 +16,7 @@
 
 import React from "react";
 import { CodeGenContext, codeGenContext } from "../uniforms/CodeGenContext";
-import { context, Context, randomIds } from "uniforms";
+import { context, Context } from "uniforms";
 import createContext from "./_createContext";
 
 export interface ProviderProps {

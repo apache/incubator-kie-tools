@@ -15,5 +15,3 @@
  */
 
 import "@testing-library/jest-dom";
-import React from "react";
-import ReactDOMServer from "react-dom/server";
