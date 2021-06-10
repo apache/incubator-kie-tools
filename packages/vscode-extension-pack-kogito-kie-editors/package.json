@@ -1,8 +1,9 @@
 {
   "name": "vscode-extension-pack-kogito-kie-editors",
+  "version": "0.0.1",
+  "private": true,
   "displayName": "BPMN, DMN, Test Scenario and (PMML) Scorecard Editors",
   "description": "",
-  "version": "0.0.1",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.46.0"
