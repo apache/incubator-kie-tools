@@ -16,7 +16,7 @@ exports[`DmnForm tests should have placeholder 1`] = `
 </span>
 `;
 
-exports[`DmnForm tests should remove required parameter 1`] = `
+exports[`DmnForm tests should remove require parameter 1`] = `
 <div>
   <div
     data-testid="dmn-form"

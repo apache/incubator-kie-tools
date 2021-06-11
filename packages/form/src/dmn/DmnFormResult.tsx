@@ -33,7 +33,7 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
 import { dmnFormI18n } from "./i18n";
-import { I18nWrapped } from "../../../i18n/src/react-components";
+import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
 import "./styles.scss";
 
 const DATE_REGEX = /\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2]\d|3[0-1])T(?:[0-1]\d|2[0-3]):[0-5]\d:[0-5]\dZ/;
@@ -66,14 +66,14 @@ type DeepPartial<T> = {
   [P in keyof T]?: DeepPartial<T[P]>;
 };
 
-interface DmnFormResultProps {
+export interface DmnFormResultProps {
   results?: DecisionResult[];
   differences?: Array<DeepPartial<DecisionResult>>;
   locale?: string;
   notificationsPanel: false;
 }
 
-interface DmnFormResultWithNotificationsPanelProps {
+export interface DmnFormResultWithNotificationsPanelProps {
   results?: DecisionResult[];
   differences?: Array<DeepPartial<DecisionResult>>;
   locale?: string;
@@ -249,7 +249,7 @@ export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotif
   );
 
   return (
-    <div>
+    <div data-testid={"dmn-form-result"}>
       {resultsToRender && resultsToRender.length > 0 ? (
         resultsToRender
       ) : (

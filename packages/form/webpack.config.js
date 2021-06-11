@@ -22,7 +22,8 @@ const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebp
 module.exports = (env, argv) => [
   merge(common(env, argv), {
     entry: {
-      index: "./src/index.ts",
+      core: "./src/core/index.ts",
+      dmn: "./src/dmn/index.ts",
     },
     output: {
       libraryTarget: "commonjs2",

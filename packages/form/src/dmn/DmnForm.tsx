@@ -22,6 +22,7 @@ import { dataPathToFormFieldPath } from "./uniforms/utils";
 import { DmnFormJsonSchemaBridge } from "./uniforms";
 import { DmnValidator } from "./DmnValidator";
 import { dmnFormI18n } from "./i18n";
+import { DmnAutoField } from "./uniforms/DmnAutoField";
 
 export interface DmnFormData {
   definitions: DmnFormDefinitions;
