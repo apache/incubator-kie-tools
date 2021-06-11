@@ -465,20 +465,20 @@
 
       <!-- KIE Lienzo modules -->
       <dependency>
-        <groupId>org.kie</groupId>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>lienzo-core</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie</groupId>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>lienzo-core</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
-        <groupId>org.kie</groupId>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>lienzo-tests</artifactId>
         <version>${project.version}</version>
       </dependency>

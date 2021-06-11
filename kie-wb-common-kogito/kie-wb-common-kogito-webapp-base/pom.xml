@@ -88,7 +88,7 @@
 
     <!-- Test scope dependencies -->
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>lienzo-tests</artifactId>
       <scope>test</scope>
       <exclusions>

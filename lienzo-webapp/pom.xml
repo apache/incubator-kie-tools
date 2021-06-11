@@ -1,29 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2021 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+  
 <project
 		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 		xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.kie</groupId>
-	<artifactId>lienzo-webapp</artifactId>
-	<version>7.56.0-SNAPSHOT</version>
-	<name>[KIE] Lienzo - Showcase Webapp</name>
-	<description>[KIE] Lienzo - Showcase Webapp</description>
-	<packaging>war</packaging>
+	<parent>
+		<groupId>org.kie.kogito</groupId>
+		<artifactId>kogito-editors-java</artifactId>
+		<version>8.1.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+  	</parent>
 
-	<properties>
-		<webappdir>${project.build.directory}/webapp</webappdir>
-		<webapp.libdir>${webappdir}/WEB-INF/lib</webapp.libdir>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<com.google.jsinterop.base.version>1.0.0</com.google.jsinterop.base.version>
-		<com.google.jsinterop.annotations.version>2.0.0</com.google.jsinterop.annotations.version>
-		<com.google.elemental2.version>1.1.0</com.google.elemental2.version>
-		<com.google.gwt.version>2.9.0</com.google.gwt.version>
-		<junit.version>4.12</junit.version>
-		<maven.clean.plugin.version>2.4.1</maven.clean.plugin.version>
-		<org.kie.lienzo.version>${project.version}</org.kie.lienzo.version>
-	</properties>
+	<artifactId>lienzo-webapp</artifactId>
+	<name>Lienzo - Showcase Webapp</name>
+	<description>Lienzo - Showcase Webapp</description>
+	<packaging>war</packaging>
 
 	<url>http://www.kiegroup.org</url>
 	<inceptionYear>2001</inceptionYear>
@@ -83,51 +89,38 @@
 	<dependencies>
 		<!-- Lienzo -->
 		<dependency>
-			<groupId>org.kie</groupId>
+			<groupId>org.kie.kogito</groupId>
 			<artifactId>lienzo-core</artifactId>
-			<version>${org.kie.lienzo.version}</version>
 		</dependency>
 		<!-- GWT -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
-			<version>${com.google.gwt.version}</version>
 		</dependency>
 		<!-- JsInterop & Elemental2 -->
 		<dependency>
 			<groupId>com.google.jsinterop</groupId>
 			<artifactId>base</artifactId>
-			<version>${com.google.jsinterop.base.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.elemental2</groupId>
 			<artifactId>elemental2-core</artifactId>
-			<version>${com.google.elemental2.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.elemental2</groupId>
 			<artifactId>elemental2-dom</artifactId>
-			<version>${com.google.elemental2.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.elemental2</groupId>
 			<artifactId>elemental2-promise</artifactId>
-			<version>${com.google.elemental2.version}</version>
 		</dependency>
 		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<scm>
-		<connection>scm:git:https://github.com/kiegroup/lienzo-webapp.git</connection>
-		<developerConnection>scm:git:git@github.com:kiegroup/lienzo-webapp.git</developerConnection>
-		<url>https://github.com/kiegroup/lienzo-core</url>
-	</scm>
 
 	<distributionManagement>
 		<repository>
@@ -146,11 +139,9 @@
 		<outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
 
 		<resources>
-			<!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
 			<resource>
 				<directory>src/main/java</directory>
 			</resource>
-			<!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
 			<resource>
 				<directory>src/main/resources</directory>
 			</resource>
@@ -158,7 +149,6 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
-				<version>${maven.clean.plugin.version}</version>
 				<configuration>
 					<filesets>
 						<fileset>
@@ -191,17 +181,8 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<configuration>
-							<source>${maven.compiler.source}</source>
-							<target>${maven.compiler.target}</target>
-						</configuration>
-					</plugin>
-					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>gwt-maven-plugin</artifactId>
-						<version>${com.google.gwt.version}</version>
 						<executions>
 							<execution>
 								<goals>
@@ -209,8 +190,6 @@
 								</goals>
 							</execution>
 						</executions>
-						<!-- Plugin configuration. There are many available options, see
-              gwt-maven-plugin documentation at codehaus.org -->
 						<configuration>
 							<runTarget>LienzoShowcase.html</runTarget>
 							<modules>
@@ -221,7 +200,6 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>gwt-maven-plugin</artifactId>
-						<version>${com.google.gwt.version}</version>
 						<executions>
 							<execution>
 								<goals>

@@ -48,7 +48,7 @@
     <!-- Lienzo. -->
 
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>lienzo-core</artifactId>
     </dependency>
 
@@ -82,7 +82,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>lienzo-tests</artifactId>
       <scope>test</scope>
     </dependency>
