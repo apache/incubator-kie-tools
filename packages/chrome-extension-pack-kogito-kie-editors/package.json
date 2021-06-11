@@ -26,13 +26,13 @@
     "test:it:start:online-editor:detached:linux:darwin": "npm --prefix ../online-editor run start &",
     "test:it:start:online-editor:detached:win32": "echo \"Not supported\"",
     "test:it:start:online-editor:detached": "run-script-os",
-    "test:it:shutdown:linux:darwin": "lsof -n -i :9001 -i :9000 | grep LISTEN | tr -s ' ' | cut -d' ' -f2 | xargs kill",
+    "test:it:shutdown:linux:darwin": "lsof -n -i :$(build-env chromeExtension.dev.port) -i :$(build-env onlineEditor.dev.port) | grep LISTEN | tr -s ' ' | cut -d' ' -f2 | xargs kill",
     "test:it:shutdown:win32": "echo \"Not supported\"",
     "test:it:shutdown": "run-script-os",
     "test:it:run:linux:darwin": "jest --runInBand -c ./jest.it.config.js",
     "test:it:run:win32": "echo \"Not supported\"",
     "test:it:run": "run-script-os",
-    "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then \"yarn rimraf ./dist-it-tests\" \"yarn build:dev\" \"yarn test:it:start:online-editor:detached\" \"yarn test:it:start:detached\" \"sleep 20\" \"yarn test:it:run\" --finally \"yarn test:it:shutdown\""
+    "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then \"yarn rimraf ./dist-it-tests\" \"yarn test:it:start:online-editor:detached\" \"yarn test:it:start:detached\" \"sleep 20\" \"yarn test:it:run\" --finally \"yarn test:it:shutdown\""
   },
   "babel": {
     "presets": [

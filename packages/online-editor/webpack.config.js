@@ -21,34 +21,16 @@ const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 const { EnvironmentPlugin } = require("webpack");
-
-function getLatestGitTag() {
-  const tagName = require("child_process").execSync("git rev-list --tags --max-count=1").toString().trim();
-
-  return require("child_process")
-    .execSync("git describe --tags " + tagName)
-    .toString()
-    .trim();
-}
+const buildEnv = require("@kogito-tooling/build-env");
 
 function getDownloadHubArgs() {
-  let linuxUrl = process.env["DOWNLOAD_HUB_linuxUrl"];
-  let macOsUrl = process.env["DOWNLOAD_HUB_macOsUrl"];
-  let windowsUrl = process.env["DOWNLOAD_HUB_windowsUrl"];
+  const linuxUrl = buildEnv.onlineEditor.downloadHubUrl.linux;
+  const macOsUrl = buildEnv.onlineEditor.downloadHubUrl.macOs;
+  const windowsUrl = buildEnv.onlineEditor.downloadHubUrl.windows;
 
-  linuxUrl =
-    linuxUrl ??
-    `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_linux_${getLatestGitTag()}.zip`;
-  macOsUrl =
-    macOsUrl ??
-    `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_macos_${getLatestGitTag()}.zip`;
-  windowsUrl =
-    windowsUrl ??
-    `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_windows_${getLatestGitTag()}.zip`;
-
-  console.info("Download Hub :: Linux URL: " + linuxUrl);
-  console.info("Download Hub :: macOS URL: " + macOsUrl);
-  console.info("Download Hub :: Windows URL: " + windowsUrl);
+  console.info(`Online Editor :: Download Hub URL (Linux): ${linuxUrl}`);
+  console.info(`Online Editor :: Download Hub URL (macOS): ${macOsUrl}`);
+  console.info(`Online Editor :: Download Hub URL (Windows): ${windowsUrl}`);
 
   return [linuxUrl, macOsUrl, windowsUrl];
 }
@@ -113,7 +95,7 @@ module.exports = async (env) => {
       watchContentBase: true,
       contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
       compress: true,
-      port: 9001,
+      port: buildEnv.onlineEditor.dev.port,
     },
   });
 };

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+import * as buildEnv from "@kogito-tooling/build-env";
+
 describe("Both BPMN DMN.", () => {
   before("Visit page", () => {
-    cy.visit("localhost:9001/both-bpmn-dmn");
+    cy.visit(`localhost:${buildEnv.standaloneEditors.dev.port}/both-bpmn-dmn`);
     cy.loadEditors(["both-bpmn", "both-dmn"]);
   });
 

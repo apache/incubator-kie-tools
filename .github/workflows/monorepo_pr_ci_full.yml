@@ -30,8 +30,8 @@ jobs:
 
       - name: "Build"
         env:
-          WEBPACK_minimize: "false"
-          WEBPACK_TS_LOADER_transpileOnly: "false"
+          WEBPACK__minimize: "false"
+          WEBPACK__tsLoaderTranspileOnly: "false"
           KOGITO_TOOLING_BUILD_lint: "true"
           KOGITO_TOOLING_BUILD_test: "true"
           KOGITO_TOOLING_BUILD_testIT: "true"
@@ -42,19 +42,19 @@ jobs:
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2
         with:
-          name: artifacts
+          name: artifacts-${{ matrix.os }}
           if-no-files-found: warn
           path: |
             packages/*/dist
-            packages/hub/out
-            packages/desktop/out
+            packages/hub/out/*.zip
+            packages/desktop/out/*.zip
             !packages/hub/dist
             !packages/desktop/dist
 
       - name: "Upload IT Tests artifacts"
         uses: actions/upload-artifact@v2
         with:
-          name: it-tests-artifacts
+          name: it-tests-artifacts-${{ matrix.os }}
           if-no-files-found: warn
           path: |
             packages/*/dist-it-tests

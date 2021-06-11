@@ -17,6 +17,7 @@
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const path = require("path");
+const buildEnv = require("@kogito-tooling/build-env");
 
 module.exports = (env) =>
   merge(common(env), {
@@ -36,6 +37,6 @@ module.exports = (env) =>
       watchContentBase: true,
       contentBase: [path.join(__dirname, "./dist")],
       compress: true,
-      port: 9001,
+      port: buildEnv.standaloneEditors.dev.port,
     },
   });

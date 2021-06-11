@@ -19,6 +19,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const pfWebpackOptions = require("@kie-tooling-core/patternfly-base/patternflyWebpackOptions");
+const buildEnv = require("@kogito-tooling/build-env");
 
 module.exports = (env) =>
   merge(common(env), {
@@ -62,7 +63,7 @@ module.exports = (env) =>
       watchContentBase: true,
       contentBase: path.join(__dirname),
       compress: true,
-      port: 8080,
+      port: buildEnv.pmmlEditor.dev.port,
       open: true,
       inline: true,
       hot: true,

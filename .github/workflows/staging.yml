@@ -18,17 +18,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: "Parse `tag`"
-        # This bash script returns the `tag` name for the release. Will match "/refs/[tags/heads]/[tag]-prerelease"
         id: release_draft_tag
         shell: bash
+        # This bash script returns the `tag` name for the release.
+        # Will match "/refs/{tags,heads}/{tag}-prerelease"
         run: |
-          echo ::set-output name=tag::$(node -e "console.log('${{ github.ref }}'.match(/^.*\/(.+)-prerelease$/)[1])")
+          echo ::set-output name=tag::$(node -p "'${{ github.ref }}'.match(/^.*\/(.+)-prerelease$/)[1]")
 
       - name: "Check `tag` against `lerna.json.version`"
-        # This bash script returns 0 if equal and 1 otherwise. Will fail if versions are not equal.
         shell: bash
         run: |
-          [ "${{ steps.release_draft_tag.outputs.tag }}" == "$(node -e "console.log(require('./lerna.json').version);")" ]
+          [ "${{ steps.release_draft_tag.outputs.tag }}" == "$(node -p "require('./lerna.json').version")" ]
 
       - name: "Create Release (draft)"
         id: create_release_draft
@@ -76,8 +76,8 @@ jobs:
           KOGITO_TOOLING_BUILD_testIT: "false"
           KOGITO_TOOLING_BUILD_test: "false"
           KOGITO_TOOLING_BUILD_lint: "false"
-          WEBPACK_minimize: "true"
-          WEBPACK_TS_LOADER_transpileOnly: "false"
+          WEBPACK__minimize: "true"
+          WEBPACK__tsLoaderTranspileOnly: "false"
           ROUTER_targetOrigin: "https://kiegroup.github.io"
           ROUTER_relativePath: "kogito-online/editors/${{ needs.create_release.outputs.tag }}/"
           DOWNLOAD_HUB_linuxUrl: "${{ steps.release_json_ext.outputs.download_url }}/business_modeler_hub_preview_linux_${{ needs.create_release.outputs.tag }}.tar.gz"

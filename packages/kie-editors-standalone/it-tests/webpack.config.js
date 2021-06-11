@@ -18,6 +18,7 @@ const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const common = require("../../../webpack.common.config");
 const { merge } = require("webpack-merge");
+const buildEnv = require("@kogito-tooling/build-env");
 
 module.exports = (env) =>
   merge(common(env), {
@@ -42,6 +43,6 @@ module.exports = (env) =>
       historyApiFallback: true,
       overlay: true,
       open: false,
-      port: 9001,
+      port: buildEnv.standaloneEditors.dev.port,
     },
   });

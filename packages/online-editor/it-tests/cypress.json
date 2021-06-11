@@ -5,7 +5,6 @@
   "screenshotsFolder": "../dist-it-tests/screenshots",
   "videosFolder": "../dist-it-tests/videos",
   "supportFile": "support/index.ts",
-  "baseUrl": "http://localhost:9001",
   "chromeWebSecurity": false,
   "video": true,
   "downloadsFolder": "downloads",

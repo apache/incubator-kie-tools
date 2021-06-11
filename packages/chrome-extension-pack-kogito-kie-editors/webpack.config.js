@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const ZipPlugin = require("zip-webpack-plugin");
 const packageJson = require("./package.json");
@@ -23,47 +22,24 @@ const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 const { EnvironmentPlugin } = require("webpack");
+const buildEnv = require("@kogito-tooling/build-env");
 
-function getLatestGitTag() {
-  const tagName = require("child_process").execSync("git rev-list --tags --max-count=1").toString().trim();
+function getRouterArgs() {
+  const targetOrigin = buildEnv.chromeExtension.routerTargetOrigin;
+  const relativePath = buildEnv.chromeExtension.routerRelativePath;
 
-  return require("child_process")
-    .execSync("git describe --tags " + tagName)
-    .toString()
-    .trim();
-}
-
-function getRouterArgs(env) {
-  let targetOrigin = process.env["ROUTER_targetOrigin"];
-  let relativePath = process.env["ROUTER_relativePath"];
-
-  if (env.dev) {
-    targetOrigin = targetOrigin ?? "https://localhost:9000";
-    relativePath = relativePath ?? "";
-  } else {
-    targetOrigin = targetOrigin ?? "https://kiegroup.github.io";
-    relativePath = relativePath ?? `kogito-online/editors/${getLatestGitTag()}/`;
-  }
-
-  console.info("EditorEnvelopeLocator :: target origin: " + targetOrigin);
-  console.info("EditorEnvelopeLocator :: relative path: " + relativePath);
+  console.info(`Chrome Extension :: Router target origin: ${targetOrigin}`);
+  console.info(`Chrome Extension :: Router relative path: ${relativePath}`);
 
   return [targetOrigin, relativePath];
 }
 
-function getOnlineEditorArgs(env) {
-  let onlineEditorUrl = process.env["ONLINEEDITOR_url"];
-  let manifestFile;
+function getOnlineEditorArgs() {
+  const onlineEditorUrl = buildEnv.chromeExtension.onlineEditorUrl;
+  const manifestFile = buildEnv.chromeExtension.manifestFile;
 
-  if (env.dev) {
-    onlineEditorUrl = onlineEditorUrl ?? "http://localhost:9001";
-    manifestFile = "manifest.dev.json";
-  } else {
-    onlineEditorUrl = onlineEditorUrl ?? "https://kiegroup.github.io/kogito-online";
-    manifestFile = "manifest.prod.json";
-  }
-
-  console.info("Online Editor :: URL: " + onlineEditorUrl);
+  console.info(`Chrome Extension :: Online Editor URL: ${onlineEditorUrl}`);
+  console.info(`Chrome Extension :: Manifest file: ${manifestFile}`);
 
   return [onlineEditorUrl, manifestFile];
 }
@@ -86,7 +62,7 @@ module.exports = async (env) => {
       compress: true,
       watchContentBase: true,
       https: true,
-      port: 9000,
+      port: buildEnv.chromeExtension.dev.port,
     },
     plugins: [
       new EnvironmentPlugin({
