@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Download openshift-validator-tool
         run: |
-          wget https://github.com/jboss-container-images/jboss-kie-modules/raw/master/tools/openshift-template-validator/openshift-template-validator-linux-amd64
+          wget https://github.com/jboss-container-images/jboss-kie-modules/raw/main/tools/openshift-template-validator/openshift-template-validator-linux-amd64
       - name: Add execution permission to openshift-validator-tool
         run: |
           chmod +x openshift-template-validator-linux-amd64
