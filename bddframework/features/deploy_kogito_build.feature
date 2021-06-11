@@ -1,3 +1,4 @@
+@kogitobuild
 Feature: Deploy Kogito Build
 
   Background:

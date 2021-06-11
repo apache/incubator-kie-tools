@@ -85,8 +85,9 @@ type TestConfig struct {
 	disableMavenNativeBuildInContainer bool
 
 	// examples repository
-	examplesRepositoryURI string
-	examplesRepositoryRef string
+	examplesRepositoryURI       string
+	examplesRepositoryRef       string
+	examplesRepositoryIgnoreSSL bool
 
 	// Infinispan
 	infinispanInstallationSource string
@@ -194,6 +195,7 @@ func BindFlags(set *flag.FlagSet) {
 	// examples repository
 	set.StringVar(&env.examplesRepositoryURI, prefix+"examples-uri", defaultKogitoExamplesURI, "Set the URI for the kogito-examples repository")
 	set.StringVar(&env.examplesRepositoryRef, prefix+"examples-ref", "", "Set the branch for the kogito-examples repository")
+	set.BoolVar(&env.examplesRepositoryIgnoreSSL, prefix+"examples-ignore-ssl", false, "Set to true to ignore SSL check when checking out examples repository")
 
 	// Infinispan
 	set.StringVar(&env.infinispanInstallationSource, prefix+"infinispan-installation-source", installationSourceOlm, "Infinispan operator installation source")
@@ -474,6 +476,11 @@ func GetExamplesRepositoryURI() string {
 // GetExamplesRepositoryRef return the branch for the examples repository
 func GetExamplesRepositoryRef() string {
 	return env.examplesRepositoryRef
+}
+
+// IsExamplesRepositoryIgnoreSSL return whether SSL should be ignored on Git checkout
+func IsExamplesRepositoryIgnoreSSL() bool {
+	return env.examplesRepositoryIgnoreSSL
 }
 
 // Infinispan

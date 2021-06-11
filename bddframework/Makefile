@@ -62,6 +62,7 @@ disable_maven_native_build_container=false
 # examples repository
 examples_uri=
 examples_ref=
+examples_ignore_ssl=
 # Infinispan
 infinispan_installation_source=
 # dev options
@@ -89,6 +90,7 @@ run-tests:
 	&& if [ "${maven_ignore_self_signed_certificate}" = "true" ]; then opts+=("--maven_ignore_self_signed_certificate"); fi \
 	&& if [ "${disable_maven_native_build_container}" = "true" ]; then opts+=("--disable_maven_native_build_container"); fi \
 	&& if [ "${custom_maven_repo_replace_default}" = "true" ]; then opts+=("--custom_maven_repo_replace_default"); fi \
+	&& if [ "${examples_ignore_ssl}" = "true" ]; then opts+=("--examples_ignore_ssl"); fi \
 	&& if [ "${operator_namespaced}" = "true" ]; then opts+=("--operator_namespaced"); fi \
 	&& if [ "${operator_profiling}" = "true" ]; then opts+=("--operator_profiling"); fi \
 	&& opts_str=$$(IFS=' ' ; echo "$${opts[*]}") \

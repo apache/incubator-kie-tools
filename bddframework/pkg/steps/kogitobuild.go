@@ -18,7 +18,11 @@ import (
 	"fmt"
 	"path/filepath"
 
+	corev1 "k8s.io/api/core/v1"
+
 	"github.com/kiegroup/kogito-operator/api"
+
+	operatorframework "github.com/kiegroup/kogito-operator/core/framework"
 
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
@@ -55,6 +59,10 @@ func (data *Data) buildExampleServiceWithConfiguration(runtimeType, contextDir s
 	buildHolder.KogitoBuild.GetSpec().GetGitSource().SetContextDir(contextDir)
 	if ref := config.GetExamplesRepositoryRef(); len(ref) > 0 {
 		buildHolder.KogitoBuild.GetSpec().GetGitSource().SetReference(ref)
+	}
+	if config.IsExamplesRepositoryIgnoreSSL() {
+		envs := buildHolder.KogitoBuild.GetSpec().GetEnv()
+		buildHolder.KogitoBuild.GetSpec().SetEnv(operatorframework.EnvOverride(envs, corev1.EnvVar{Name: "GIT_SSL_NO_VERIFY", Value: "true"}))
 	}
 
 	return framework.DeployKogitoBuild(data.Namespace, framework.GetDefaultInstallerType(), buildHolder)
