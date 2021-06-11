@@ -23,7 +23,6 @@ import java.util.Optional;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import elemental2.dom.HTMLDivElement;
@@ -132,7 +131,7 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
         when(errorReportPopupPresenterMock.isShown()).thenReturn(Boolean.FALSE);
         when(mouseMoveEvent.getX()).thenReturn(MX);
         when(mouseMoveEvent.getY()).thenReturn(MY);
-        // TODO lienzo-migration: when(layerElementMock.getAbsoluteLeft()).thenReturn(ABSOLUTE_LEFT);
+        layerElementMock.offsetLeft = ABSOLUTE_LEFT;
         when(scenarioGridLayerMock.getElement()).thenReturn(layerElementMock);
     }
 
@@ -280,7 +279,7 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
     @Test
     public void manageFailedFactMappingValueTop() {
         when(scenarioGridLayerMock.getWidth()).thenReturn(SMALLEST_LAYER);
-        // TODO lienzo-migration: when(layerElementMock.getAbsoluteLeft()).thenReturn(4000);
+        layerElementMock.offsetLeft = 4000;
         int expectedDy = DY - (CELL_HEIGHT / 2);
         doNothing().when(mouseMoveHandler).setupPopupPresenter(eq(factMappingValueMock),
                                                                eq(0),
@@ -291,13 +290,12 @@ public class ScenarioSimulationMainGridPanelMouseMoveHandlerTest extends Abstrac
         mouseMoveHandler.manageFailedFactMappingValue(factMappingValueMock, 0, COLUMN_INDEX);
         verify(mouseMoveHandler, times(1)).retrieveCellMiddleXYPosition(gridColumnMock, 0);
 
-// TODO lienzo-migration:
-//        verify(mouseMoveHandler, times(1)).setupPopupPresenter(eq(factMappingValueMock),
-//                                                               eq(0),
-//                                                               eq(COLUMN_INDEX),
-//                                                               eq(DX),
-//                                                               eq(expectedDy),
-//                                                               eq(PopoverView.Position.TOP));
+        verify(mouseMoveHandler, times(1)).setupPopupPresenter(eq(factMappingValueMock),
+                                                               eq(0),
+                                                               eq(COLUMN_INDEX),
+                                                               eq(DX),
+                                                               eq(expectedDy),
+                                                               eq(PopoverView.Position.TOP));
 
         verify(errorReportPopupPresenterMock, times(1)).show();
     }

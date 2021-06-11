@@ -81,7 +81,6 @@ import com.ait.lienzo.test.translator.StripFinalModifiersTranslatorInterceptor;
                 "com.ait.lienzo.client.core.types.ImageData",
                 "com.ait.lienzo.client.core.types.TextMetrics",
                 "com.ait.lienzo.client.core.shape.AbstractPathClipper$PathClipperJSO",
-                "com.ait.lienzo.client.core.shape.Node$OptionalFields",
                 "com.ait.lienzo.client.core.NativeContext2D",
                 "com.ait.lienzo.client.core.image.filter.ImageDataFilterCommonOps",
                 "com.ait.lienzo.client.core.image.filter.ImageDataFilter$FilterTableArray",
@@ -94,6 +93,7 @@ import com.ait.lienzo.test.translator.StripFinalModifiersTranslatorInterceptor;
                 "elemental2.dom.CSSProperties$WidthUnionType",
                 "elemental2.dom.CSSProperties$HeightUnionType",
                 "elemental2.dom.CSSProperties$ZIndexUnionType",
+                "com.ait.lienzo.client.core.shape.Node$OptionalFields",
         },
 
         translators = {

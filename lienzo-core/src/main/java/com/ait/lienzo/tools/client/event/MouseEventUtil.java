@@ -58,23 +58,23 @@ public class MouseEventUtil {
     }
 
     public static int getAbsoluteLeft(HTMLElement elem) {
-        return Js.coerceToInt(getSubPixelAbsoluteLeft(elem));
+        return (int) getSubPixelAbsoluteLeft(elem);
     }
 
     public static int getAbsoluteTop(HTMLElement elem) {
-        return Js.coerceToInt(getSubPixelAbsoluteTop(elem));
+        return (int) getSubPixelAbsoluteTop(elem);
     }
 
     public static int getRelativeX(final double clientX, final HTMLElement target) {
         // Lifted from GWT
-        return Js.coerceToInt(clientX - getAbsoluteLeft(target) + target.scrollLeft +
-                                      target.ownerDocument.documentElement.scrollLeft);
+        return (int) (clientX - getAbsoluteLeft(target) + target.scrollLeft +
+                target.ownerDocument.documentElement.scrollLeft);
     }
 
     public static int getRelativeY(final double clientY, final HTMLElement target) {
         // Lifted from GWT
-        return Js.coerceToInt(clientY - getAbsoluteTop(target) + target.scrollTop +
-                                      target.ownerDocument.documentElement.scrollTop);
+        return (int) (clientY - getAbsoluteTop(target) + target.scrollTop +
+                target.ownerDocument.documentElement.scrollTop);
     }
 
     public static final boolean isButtonLeft(final MouseEvent event) {
