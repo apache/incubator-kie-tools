@@ -146,7 +146,7 @@ export function DmnRunnerContextProvider(props: Props) {
     setCookie(DMN_RUNNER_PORT_COOKIE_NAME, newPort);
   }, []);
 
-  // Subscribe to any change on the DMN Editor and validate the model
+  // Subscribe to any change on the DMN Editor to validate the model and update the JSON Schema
   useEffect(() => {
     if (!props.editor?.isReady || status !== DmnRunnerStatus.RUNNING) {
       return;

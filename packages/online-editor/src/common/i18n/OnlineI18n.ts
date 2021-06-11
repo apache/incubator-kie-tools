@@ -323,6 +323,7 @@ interface OnlineDictionary extends ReferenceDictionary {
     };
   };
   notificationsPanel: {
+    name: string;
     tooltip: {
       retractAll: string;
       expandAll: string;

@@ -42,6 +42,7 @@ export const en: CommonI18n = {
     inputs: "Inputs",
     launch: "Launch",
     loading: "Loading",
+    macosApplicationFolder: "Application",
     new: "New",
     next: "Next",
     note: "Note",

@@ -116,7 +116,7 @@ export function DmnRunnerModal() {
                     <I18nWrapped
                       components={{
                         file: <Label>{DMN_RUNNER_FILE_MACOS_APP}</Label>,
-                        folder: <Label>{i18n.names.macosApplicationFolder}</Label>,
+                        folder: <Label>{i18n.terms.macosApplicationFolder}</Label>,
                       }}
                     >
                       {i18n.dmnRunner.modal.wizard.macos.install.dragFileToApplicationsFolder}
@@ -171,7 +171,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ folder: <Label>{i18n.names.macosApplicationFolder}</Label> }}>
+                        <I18nWrapped components={{ folder: <Label>{i18n.terms.macosApplicationFolder}</Label> }}>
                           {i18n.dmnRunner.modal.wizard.macos.start.firstTime.openApplicationsFolder}
                         </I18nWrapped>
                       </Text>

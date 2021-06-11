@@ -1,11 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DmnFormResult tests should render an anchor tag to redirect to notifications panel 1`] = `
+exports[`DmnFormResult tests should render an anchor tag 1`] = `
 <a
   class="kogito--editor__dmn-form-result__evaluation-link"
 >
   Evaluation failed
 </a>
+`;
+
+exports[`DmnFormResult tests should render an paragraph tag 1`] = `
+<p
+  class="kogito--editor__dmn-form-result__evaluation-link"
+>
+  Evaluation failed
+</p>
 `;
 
 exports[`DmnFormResult tests should render the DMNFormResult with the empty state 1`] = `
@@ -41,26 +49,10 @@ exports[`DmnFormResult tests should render the DmnFormResult with more then one 
 </h2>
 `;
 
-exports[`DmnFormResult tests should render the DmnFormResult with more then one result 4`] = `
-<a
-  class="kogito--editor__dmn-form-result__evaluation-link"
->
-  Evaluation failed
-</a>
-`;
-
 exports[`DmnFormResult tests should render the DmnFormResult with one result 1`] = `
 <h2
   class="pf-c-title pf-m-xl"
 >
   Decision-1
 </h2>
-`;
-
-exports[`DmnFormResult tests shouldn't render an anchor tag to redirect to notifications panel 1`] = `
-<p
-  class="kogito--editor__dmn-form-result__evaluation-link"
->
-  Evaluation failed
-</p>
 `;

@@ -23,7 +23,7 @@ export const en: DmnFormI18n = {
   form: {
     validation: {
       daysAndTimeError: "should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)",
-      yearsAndMonthsError: "should match format P1Y(ers)2M(onths)",
+      yearsAndMonthsError: "should match format P1Y(ears)2M(onths)",
     },
     preProcessing: {
       selectPlaceholder: "Select...",

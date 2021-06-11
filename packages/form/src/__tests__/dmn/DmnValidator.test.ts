@@ -77,7 +77,7 @@ describe("DmnValidator Tests", () => {
       const validate = validator.createValidator(schema);
       const errors = validate(model);
       expect(errors?.details[0].keyword).toEqual("format");
-      expect(errors?.details[0].message).toEqual("should match format P1Y(ers)2M(onths)");
+      expect(errors?.details[0].message).toEqual("should match format P1Y(ears)2M(onths)");
     });
   });
 

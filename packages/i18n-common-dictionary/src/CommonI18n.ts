@@ -40,6 +40,7 @@ export type CommonDictionary = {
   install: string;
   launch: string;
   loading: string;
+  macosApplicationFolder: string;
   new: string;
   next: string;
   note: string;

@@ -210,7 +210,7 @@ export const en: OnlineI18n = {
         runDmnModels: `Run your ${en_common.names.dmn} models and see live forms and results as you edit.`,
         dmnRunnerExplanation: `With its validation and execution capabilities, ${en_common.names.dmnRunner} helps you create assertive DMN decisions. Input nodes become interactive fields on an auto-generated form, and the results are displayed as easy-to-read cards.`,
         notificationPanelExplanation: [
-          `The ${en_common.names.notificationsPanel} `,
+          `The Notifications Panel `,
           wrapped("icon"),
           `, at the right-bottom side of the Editor, displays live Execution messages to assist during the modeling stage of your decisions.`,
         ],
@@ -339,7 +339,7 @@ export const en: OnlineI18n = {
       formError: {
         title: `${en_common.terms.oops}!`,
         explanation: "Form cannot be rendered because of an error.",
-        checkNotificationPanel: ["Check for ", wrapped("link"), ` error on the ${en_common.names.notificationsPanel}`],
+        checkNotificationPanel: ["Check for ", wrapped("link"), ` error on the Notifications Panel`],
       },
       withoutForm: {
         title: "No Form",
@@ -356,6 +356,7 @@ export const en: OnlineI18n = {
     },
   },
   notificationsPanel: {
+    name: "Notifications Panel",
     tooltip: {
       retractAll: "Retract All",
       expandAll: "Expand All",

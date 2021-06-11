@@ -146,7 +146,7 @@ export function NotificationsPanel(props: Props) {
         {totalNotifications === 0 ? (
           <Tooltip
             key={"without-notifications"}
-            content={i18n.names.notificationsPanel}
+            content={i18n.notificationsPanel.name}
             flipBehavior={["left"]}
             distance={20}
           >
@@ -155,7 +155,7 @@ export function NotificationsPanel(props: Props) {
         ) : (
           <Tooltip
             key={"with-notifications"}
-            content={i18n.names.notificationsPanel}
+            content={i18n.notificationsPanel.name}
             flipBehavior={["left"]}
             distance={20}
           >
