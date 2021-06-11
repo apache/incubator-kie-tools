@@ -50,7 +50,7 @@ export default class VSCodeTestHelper {
   /**
    * Loading timeout for editors.
    */
-  private readonly EDITOR_LOADING_TIMEOUT: number = 10000;
+  private readonly EDITOR_LOADING_TIMEOUT: number = 60000;
 
   /**
    * Handle for VSCode workbench.
@@ -95,6 +95,7 @@ export default class VSCodeTestHelper {
    * @returns a promise that resolves to a SideBarView of the openned folder
    */
   public openFolder = async (absolutePath: string): Promise<SideBarView> => {
+    await sleep(5000);
     await this.workbench.executeCommand("Extest: Open Folder");
     const inputBox = await InputBox.create();
     await inputBox.setText(absolutePath);
@@ -146,7 +147,7 @@ export default class VSCodeTestHelper {
     // const input = await InputBox.create();
     // await input.selectQuickPick('KIE Kogito Editors');
     const webview = new WebView(this.workbench.getEditorView(), By.linkText(fileName));
-    await sleep(10000);
+    await this.waitUntilKogitoEditorIsLoaded(webview);
     return webview;
   };
 
@@ -211,17 +212,36 @@ export default class VSCodeTestHelper {
     await driver.wait(
       async () => {
         const loadingSpinners = await webview.getDriver().findElements(kogitoLoadingSpinner());
-        if (loadingSpinners && loadingSpinners.length > 0) {
-          return false;
-        } else {
-          return true;
-        }
+        return !loadingSpinners || loadingSpinners.length <= 0;
       },
       this.EDITOR_LOADING_TIMEOUT,
       "Editor was still loading after " + this.EDITOR_LOADING_TIMEOUT + "ms. Please investigate."
     );
 
+    await sleep(2000);
+
     await driver.switchTo().frame(null);
+  };
+
+  /**
+   * Opens commands prompt and select given command there
+   */
+  public executeCommandFromPrompt = async (command: string): Promise<void> => {
+    const inputBox = (await this.workbench.openCommandPrompt()) as InputBox;
+    await inputBox.setText(`>${command}`);
+
+    const quickPicks = await inputBox.getQuickPicks();
+
+    for (const quickPick of quickPicks) {
+      const label = await quickPick.getLabel();
+      if (label === command) {
+        await quickPick.select();
+        await sleep(1000);
+        return;
+      }
+    }
+
+    throw new Error(`'${command}' not found in prompt`);
   };
 }
 

@@ -22,7 +22,7 @@ import { assertWebElementIsDisplayedEnabled, assertWebElementWithAtribute } from
 import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
 import BpmnEditorTestHelper, { PaletteCategories } from "./helpers/BpmnEditorTestHelper";
 import ScesimEditorTestHelper from "./helpers/ScesimEditorTestHelper";
-import DmnEditorTestHelper from "./helpers/DmnEditorTestHelper";
+import DmnEditorTestHelper from "./helpers/dmn/DmnEditorTestHelper";
 import PmmlEditorTestHelper from "./helpers/PmmlEditorTestHelper";
 import { assert } from "chai";
 import {
@@ -31,6 +31,7 @@ import {
   palletteItemAnchor,
   assignmentsTextBoxInput,
 } from "./helpers/BpmnLocators";
+import DecisionNavigatorHelper from "./helpers/dmn/DecisionNavigatorHelper";
 
 describe("Editors are loading properly", () => {
   const RESOURCES: string = path.resolve("it-tests", "resources");
@@ -109,6 +110,36 @@ describe("Editors are loading properly", () => {
     // await dmnEditorTester.inspectIncludedModel("reusable-model", 2)
 
     await dmnEditorTester.switchEditorTab(EditorTabs.Editor);
+
+    await webview.switchBack();
+  });
+
+  it("Undo command in DMN Editor", async function () {
+    this.timeout(40000);
+    webview = await testHelper.openFileFromSidebar(DEMO_DMN);
+    await webview.switchToFrame();
+    const dmnEditorTester = new DmnEditorTestHelper(webview);
+
+    const decisionNavigator = await dmnEditorTester.openDecisionNavigator();
+    await decisionNavigator.selectDiagramNode("?DemoDecision1");
+
+    const diagramProperties = await dmnEditorTester.openDiagramProperties();
+    await diagramProperties.changeProperty("Name", "Updated Name 1");
+
+    const navigatorPanel: DecisionNavigatorHelper = await dmnEditorTester.openDecisionNavigator();
+    await navigatorPanel.assertDiagramNodeIsPresent("Updated Name 1");
+    await navigatorPanel.assertDiagramNodeIsPresent("?DecisionFinal1");
+
+    await webview.switchBack();
+
+    // changeProperty() is implemented as clear() and sendKeys(), that is why we need two undo operations
+    await testHelper.executeCommandFromPrompt("Undo");
+    await testHelper.executeCommandFromPrompt("Undo");
+
+    await webview.switchToFrame();
+
+    await navigatorPanel.assertDiagramNodeIsPresent("?DemoDecision1");
+    await navigatorPanel.assertDiagramNodeIsPresent("?DecisionFinal1");
 
     await webview.switchBack();
   });
