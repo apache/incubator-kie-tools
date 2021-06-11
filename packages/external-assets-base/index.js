@@ -28,9 +28,8 @@ const glob = require("glob");
 const nodeModulesDir = "../.." + (__dirname.includes("node_modules") ? "" : "/node_modules");
 
 module.exports = {
-  dmnEditorPath: (argv) => {
+  dmnEditorPath: () => {
     const path =
-      (argv && argv["EXTERNAL_RESOURCE_PATH__dmnEditor"]) ??
       process.env["EXTERNAL_RESOURCE_PATH__dmnEditor"] ??
       nodePath.resolve(__dirname, nodeModulesDir + "/@kogito-tooling/dmn-editor-unpacked/target/dmn");
 
@@ -43,9 +42,8 @@ module.exports = {
     return path;
   },
 
-  bpmnEditorPath: (argv) => {
+  bpmnEditorPath: () => {
     const path =
-      (argv && argv["EXTERNAL_RESOURCE_PATH__bpmnEditor"]) ??
       process.env["EXTERNAL_RESOURCE_PATH__bpmnEditor"] ??
       nodePath.resolve(__dirname, nodeModulesDir + "/@kogito-tooling/bpmn-editor-unpacked/target/bpmn");
 
@@ -58,9 +56,8 @@ module.exports = {
     return path;
   },
 
-  scesimEditorPath: (argv) => {
+  scesimEditorPath: () => {
     const path =
-      (argv && argv["EXTERNAL_RESOURCE_PATH__scesimEditor"]) ??
       process.env["EXTERNAL_RESOURCE_PATH__scesimEditor"] ??
       nodePath.resolve(__dirname, nodeModulesDir + "/@kogito-tooling/scesim-editor-unpacked/target/scesim");
 
@@ -73,9 +70,8 @@ module.exports = {
     return path;
   },
 
-  quarkusRunnerPath: (argv) => {
+  quarkusRunnerPath: () => {
     const path =
-      (argv && argv["EXTERNAL_RESOURCE_PATH__quarkusRunner"]) ??
       process.env["EXTERNAL_RESOURCE_PATH__quarkusRunner"] ??
       nodePath.resolve(
         __dirname,

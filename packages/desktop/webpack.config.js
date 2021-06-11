@@ -20,8 +20,8 @@ const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 
-module.exports = async (env, argv) => [
-  merge(common(env, argv), {
+module.exports = async (env) => [
+  merge(common(env), {
     target: "electron-main",
     entry: {
       index: "./src/backend/index.ts",
@@ -35,7 +35,7 @@ module.exports = async (env, argv) => [
       __filename: false,
     },
   }),
-  merge(common(env, argv), {
+  merge(common(env), {
     target: "web",
     entry: {
       "envelope/bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
@@ -46,12 +46,12 @@ module.exports = async (env, argv) => [
       new CopyPlugin({
         patterns: [
           {
-            from: externalAssets.dmnEditorPath(argv),
+            from: externalAssets.dmnEditorPath(),
             to: "./gwt-editors/dmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
           {
-            from: externalAssets.bpmnEditorPath(argv),
+            from: externalAssets.bpmnEditorPath(),
             to: "./gwt-editors/bpmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
@@ -59,7 +59,7 @@ module.exports = async (env, argv) => [
       }),
     ],
   }),
-  merge(common(env, argv), {
+  merge(common(env), {
     target: "electron-renderer",
     entry: {
       "webview/index": "./src/webview/index.tsx",

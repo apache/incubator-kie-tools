@@ -21,8 +21,8 @@ const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 
-module.exports = async (env, argv) => [
-  merge(common(env, argv), {
+module.exports = async (env) => [
+  merge(common(env), {
     output: {
       library: "AppFormer.VsCodePack",
       libraryTarget: "umd",
@@ -37,7 +37,7 @@ module.exports = async (env, argv) => [
     },
     plugins: [],
   }),
-  merge(common(env, argv), {
+  merge(common(env), {
     output: {
       library: "AppFormer.VsCodePackWebview",
       libraryTarget: "umd",
@@ -60,17 +60,17 @@ module.exports = async (env, argv) => [
         patterns: [
           { from: "./static", to: "static" },
           {
-            from: externalAssets.dmnEditorPath(argv),
+            from: externalAssets.dmnEditorPath(),
             to: "webview/editors/dmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
           {
-            from: externalAssets.bpmnEditorPath(argv),
+            from: externalAssets.bpmnEditorPath(),
             to: "webview/editors/bpmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
           {
-            from: externalAssets.scesimEditorPath(argv),
+            from: externalAssets.scesimEditorPath(),
             to: "webview/editors/scesim",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
@@ -78,7 +78,7 @@ module.exports = async (env, argv) => [
       }),
     ],
   }),
-  merge(common(env, argv), {
+  merge(common(env), {
     output: {
       library: "AppFormer.VsCodePackWebview",
       libraryTarget: "umd",

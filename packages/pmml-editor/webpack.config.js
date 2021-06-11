@@ -20,8 +20,8 @@ const pfWebpackOptions = require("@kie-tooling-core/patternfly-base/patternflyWe
 const nodeExternals = require("webpack-node-externals");
 const CopyPlugin = require("copy-webpack-plugin");
 
-module.exports = (env, argv) => [
-  merge(common(env, argv), {
+module.exports = (env) => [
+  merge(common(env), {
     entry: {
       "editor/index": "./src/editor/index.ts",
     },

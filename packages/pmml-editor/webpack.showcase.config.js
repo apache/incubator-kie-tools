@@ -20,8 +20,8 @@ const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const pfWebpackOptions = require("@kie-tooling-core/patternfly-base/patternflyWebpackOptions");
 
-module.exports = (env, argv) =>
-  merge(common(env, argv), {
+module.exports = (env) =>
+  merge(common(env), {
     mode: "development",
     entry: {
       index: "./src/showcase/index.tsx",

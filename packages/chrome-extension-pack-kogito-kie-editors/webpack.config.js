@@ -33,9 +33,9 @@ function getLatestGitTag() {
     .trim();
 }
 
-function getRouterArgs(env, argv) {
-  let targetOrigin = argv["ROUTER_targetOrigin"] ?? process.env["ROUTER_targetOrigin"];
-  let relativePath = argv["ROUTER_relativePath"] ?? process.env["ROUTER_relativePath"];
+function getRouterArgs(env) {
+  let targetOrigin = process.env["ROUTER_targetOrigin"];
+  let relativePath = process.env["ROUTER_relativePath"];
 
   if (env.dev) {
     targetOrigin = targetOrigin ?? "https://localhost:9000";
@@ -51,8 +51,8 @@ function getRouterArgs(env, argv) {
   return [targetOrigin, relativePath];
 }
 
-function getOnlineEditorArgs(env, argv) {
-  let onlineEditorUrl = argv["ONLINEEDITOR_url"] ?? process.env["ONLINEEDITOR_url"];
+function getOnlineEditorArgs(env) {
+  let onlineEditorUrl = process.env["ONLINEEDITOR_url"];
   let manifestFile;
 
   if (env.dev) {
@@ -68,11 +68,11 @@ function getOnlineEditorArgs(env, argv) {
   return [onlineEditorUrl, manifestFile];
 }
 
-module.exports = async (env, argv) => {
-  const [router_targetOrigin, router_relativePath] = getRouterArgs(env, argv);
-  const [onlineEditor_url, manifestFile] = getOnlineEditorArgs(env, argv);
+module.exports = async (env) => {
+  const [router_targetOrigin, router_relativePath] = getRouterArgs(env);
+  const [onlineEditor_url, manifestFile] = getOnlineEditorArgs(env);
 
-  return merge(common(env, argv), {
+  return merge(common(env), {
     entry: {
       "content_scripts/github": "./src/github-content-script.ts",
       "content_scripts/online-editor": "./src/online-editor-content-script.ts",
@@ -100,9 +100,9 @@ module.exports = async (env, argv) => {
           { from: `./${manifestFile}`, to: "./manifest.json" },
 
           // These are used for development only.
-          { from: externalAssets.dmnEditorPath(argv), to: "dmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
-          { from: externalAssets.bpmnEditorPath(argv), to: "bpmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
-          { from: externalAssets.scesimEditorPath(argv), to: "scesim", globOptions: { ignore: ["WEB-INF/**/*"] } },
+          { from: externalAssets.dmnEditorPath(), to: "dmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
+          { from: externalAssets.bpmnEditorPath(), to: "bpmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
+          { from: externalAssets.scesimEditorPath(), to: "scesim", globOptions: { ignore: ["WEB-INF/**/*"] } },
         ],
       }),
       new ZipPlugin({

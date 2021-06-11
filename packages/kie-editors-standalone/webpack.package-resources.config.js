@@ -18,8 +18,8 @@ const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const path = require("path");
 
-module.exports = (env, argv) =>
-  merge(common(env, argv), {
+module.exports = (env) =>
+  merge(common(env), {
     output: {
       path: path.join(__dirname, "dist"),
       filename: "[name]/index.js",

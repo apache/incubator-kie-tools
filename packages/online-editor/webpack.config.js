@@ -31,10 +31,10 @@ function getLatestGitTag() {
     .trim();
 }
 
-function getDownloadHubArgs(argv) {
-  let linuxUrl = argv["DOWNLOAD_HUB_linuxUrl"] ?? process.env["DOWNLOAD_HUB_linuxUrl"];
-  let macOsUrl = argv["DOWNLOAD_HUB_macOsUrl"] ?? process.env["DOWNLOAD_HUB_macOsUrl"];
-  let windowsUrl = argv["DOWNLOAD_HUB_windowsUrl"] ?? process.env["DOWNLOAD_HUB_windowsUrl"];
+function getDownloadHubArgs() {
+  let linuxUrl = process.env["DOWNLOAD_HUB_linuxUrl"];
+  let macOsUrl = process.env["DOWNLOAD_HUB_macOsUrl"];
+  let windowsUrl = process.env["DOWNLOAD_HUB_windowsUrl"];
 
   linuxUrl =
     linuxUrl ??
@@ -53,10 +53,10 @@ function getDownloadHubArgs(argv) {
   return [linuxUrl, macOsUrl, windowsUrl];
 }
 
-module.exports = async (env, argv) => {
-  const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs(argv);
+module.exports = async (env) => {
+  const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs();
 
-  return merge(common(env, argv), {
+  return merge(common(env), {
     entry: {
       index: "./src/index.tsx",
       "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
@@ -77,12 +77,12 @@ module.exports = async (env, argv) => {
           { from: "./static/index.html", to: "./index.html" },
           { from: "./static/favicon.ico", to: "./favicon.ico" },
           {
-            from: externalAssets.dmnEditorPath(argv),
+            from: externalAssets.dmnEditorPath(),
             to: "./gwt-editors/dmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
           {
-            from: externalAssets.bpmnEditorPath(argv),
+            from: externalAssets.bpmnEditorPath(),
             to: "./gwt-editors/bpmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },

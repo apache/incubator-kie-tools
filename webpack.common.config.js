@@ -17,13 +17,13 @@
 const path = require("path");
 const { merge } = require("webpack-merge");
 
-module.exports = (env, argv) => {
+module.exports = (env) => {
   console.info(`Building '${path.basename(process.cwd())}' for ${env.dev ? "development" : "production"}`);
 
   const transpileOnly =
     (env["WEBPACK_TS_LOADER_transpileOnly"] ?? process.env["WEBPACK_TS_LOADER_transpileOnly"] ?? "false") === "true";
 
-  // minification is always false when in `dev`. When in `prod`, the default is true but can be overriden by env.
+  // minification is always false when in `dev`. When in `prod`, the default is true but can be overridden by env.
   const minimize = env.dev ? false : (env["WEBPACK_minimize"] ?? process.env["WEBPACK_minimize"] ?? "true") === "true";
 
   console.info("Webpack :: TS Loader :: transpileOnly: " + transpileOnly);

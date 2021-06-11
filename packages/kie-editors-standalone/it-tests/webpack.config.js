@@ -19,7 +19,7 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const common = require("../../../webpack.common.config");
 const { merge } = require("webpack-merge");
 
-module.exports = (env, argv) =>
+module.exports = (env) =>
   merge(common(env), {
     mode: "development",
     entry: {
