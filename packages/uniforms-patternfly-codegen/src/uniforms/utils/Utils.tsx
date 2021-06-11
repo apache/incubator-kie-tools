@@ -71,8 +71,8 @@ export const buildDefaultInputElement = ({
   const stateCode = getStateCodeFromRef(ref, dataType, defaultValue);
 
   const jsxCode = `<FormGroup
-      fieldId="${wrapper.id}"
-      label="${wrapper.label}"
+      fieldId={'${wrapper.id}'}
+      label={'${wrapper.label}'}
       isRequired={${wrapper.required || false}}
     >
       ${inputJsxCode}
@@ -91,5 +91,5 @@ export const buildDefaultInputElement = ({
 };
 
 export const renderField = (element: FormElement<any>) => {
-  return <>{JSON.stringify(element)}</>;
+  return <>{JSON.stringify(element).trim()}</>;
 };

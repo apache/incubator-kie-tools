@@ -15,21 +15,41 @@
  */
 
 import * as React from "react";
-import { CodeGenContext, codeGenContext } from "../uniforms/CodeGenContext";
+import { render } from "@testing-library/react";
 import { context, Context } from "uniforms/es5";
 import createContext from "./_createContext";
+import { codeGenContext, CodeGenContext } from "../uniforms/CodeGenContext";
+import { FormElement } from "../api";
 
-export interface ProviderProps {
-  ctx: CodeGenContext;
-  schema: any;
-  children: JSX.Element;
-}
-
-export const TestCodeGenContextProvider: React.FC<ProviderProps> = (props: ProviderProps) => {
+const TestCodeGenContextProvider: React.FC<any> = (props: any) => {
   const ctx: Context<any> = createContext(props.schema);
   return (
     <codeGenContext.Provider value={props.ctx}>
       <context.Provider value={ctx}>{props.children}</context.Provider>
     </codeGenContext.Provider>
   );
+};
+
+export type RenderedField<Element extends FormElement<any>, Container extends Element | DocumentFragment> = {
+  formElement: Element;
+  container: Container;
+};
+
+export const renderField = (Field: React.FC, props: any, schema?: any) => {
+  const codegenContext: CodeGenContext = {
+    rendered: [],
+  };
+
+  const { container } = render(
+    <TestCodeGenContextProvider ctx={codegenContext} schema={schema}>
+      <Field {...props} />
+    </TestCodeGenContextProvider>
+  );
+
+  expect(codegenContext.rendered).toHaveLength(1);
+
+  return {
+    container,
+    formElement: codegenContext.rendered[0],
+  };
 };

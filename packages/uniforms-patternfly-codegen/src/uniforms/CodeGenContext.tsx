@@ -16,7 +16,7 @@
 
 import React, { createContext, useContext } from "react";
 
-import { Bridge, context, Context, randomIds } from "uniforms";
+import { Bridge, context, Context, randomIds } from "uniforms/es5";
 
 import { FormElement } from "../api";
 

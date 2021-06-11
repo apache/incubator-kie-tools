@@ -1,5 +1,5 @@
 import React, { HTMLProps, useContext } from "react";
-import { connectField, context } from "uniforms";
+import { connectField, context } from "uniforms/es5";
 import { renderNestedInputFragmentWithContext } from "./rendering/RenderingUtils";
 import { renderField } from "./utils/Utils";
 import { FormInput, InputReference, InputsContainer } from "../api";

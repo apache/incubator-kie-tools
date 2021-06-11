@@ -15,7 +15,7 @@
  */
 
 import { ComponentType, createElement } from "react";
-import { useForm } from "uniforms";
+import { useForm } from "uniforms/es5";
 
 import AutoField from "./AutoField";
 

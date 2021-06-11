@@ -15,82 +15,36 @@
  */
 
 import * as React from "react";
-import { TextField } from "../uniforms";
 import { renderField } from "./_render";
-import { DATE_FUNCTIONS } from "../uniforms/staticCode/staticCodeBlocks";
+import { DATE_FUNCTIONS, TIME_FUNCTIONS } from "../uniforms/staticCode/staticCodeBlocks";
+import { DateField } from "../uniforms";
 
 const schema = {
-  name: { type: String },
+  birthday: { type: Date },
 };
 
-describe("<TextField> tests", () => {
-  it("<TextField> - TextInput rendering", () => {
+describe("<DateField> tests", () => {
+  it("<DateField> - rendering", () => {
     const props = {
       id: "id",
-      label: "label",
-      name: "name",
+      label: "Birthday",
+      name: "birthday",
       disabled: false,
       onChange: jest.fn(),
     };
 
-    const { container, formElement } = renderField(TextField, props, schema);
-
-    expect(container).toMatchSnapshot();
-
-    expect(formElement.reactImports).toContain("useState");
-    expect(formElement.pfImports).toContain("FormGroup");
-    expect(formElement.pfImports).toContain("TextInput");
-
-    expect(formElement.ref.binding).toBe(props.name);
-    expect(formElement.ref.stateName).toBe(props.name);
-    expect(formElement.ref.stateSetter).toBe(`set__${props.name}`);
-
-    expect(formElement.jsxCode).not.toBeNull();
-    expect(formElement.jsxCode).toContain(`label={'${props.label}'}`);
-    expect(formElement.jsxCode).toContain(`name={'${props.name}'}`);
-    expect(formElement.jsxCode).toContain("isDisabled={false}");
-    expect(formElement.stateCode).not.toBeNull();
-  });
-
-  it("<TextField> - TextInput rendering - disabled", () => {
-    const props = {
-      id: "id",
-      label: "label",
-      name: "name",
-      disabled: true,
-      onChange: jest.fn(),
-    };
-
-    const { container, formElement } = renderField(TextField, props, schema);
-
-    expect(container).toMatchSnapshot();
-
-    expect(formElement.jsxCode).not.toBeNull();
-    expect(formElement.jsxCode).toContain(`label={'${props.label}'}`);
-    expect(formElement.jsxCode).toContain(`name={'${props.name}'}`);
-    expect(formElement.jsxCode).toContain("isDisabled={true}");
-  });
-
-  it("<TextField> - DatePicker rendering", () => {
-    const props = {
-      id: "id",
-      label: "label",
-      name: "name",
-      disabled: false,
-      type: "date",
-      onChange: jest.fn(),
-    };
-
-    const { container, formElement } = renderField(TextField, props, schema);
+    const { container, formElement } = renderField(DateField, props, schema);
 
     expect(container).toMatchSnapshot();
 
     expect(formElement.reactImports).toContain("useState");
     expect(formElement.pfImports).toContain("FormGroup");
     expect(formElement.pfImports).toContain("DatePicker");
+    expect(formElement.pfImports).toContain("TimePicker");
     expect(formElement.requiredCode).not.toBeUndefined();
-    expect(formElement.requiredCode).toHaveLength(1);
+    expect(formElement.requiredCode).toHaveLength(2);
     expect(formElement.requiredCode).toContain(DATE_FUNCTIONS);
+    expect(formElement.requiredCode).toContain(TIME_FUNCTIONS);
     expect(formElement.ref.binding).toBe(props.name);
     expect(formElement.ref.stateName).toBe(props.name);
     expect(formElement.ref.stateSetter).toBe(`set__${props.name}`);
@@ -106,17 +60,16 @@ describe("<TextField> tests", () => {
     expect(formElement.stateCode).not.toBeNull();
   });
 
-  it("<TextField> - DatePicker rendering - disabled", () => {
+  it("<DateField> - rendering - disabled", () => {
     const props = {
       id: "id",
-      label: "label",
-      name: "name",
+      label: "Birthday",
+      name: "birthday",
       disabled: true,
-      type: "date",
       onChange: jest.fn(),
     };
 
-    const { container, formElement } = renderField(TextField, props, schema);
+    const { container, formElement } = renderField(DateField, props, schema);
 
     expect(container).toMatchSnapshot();
 

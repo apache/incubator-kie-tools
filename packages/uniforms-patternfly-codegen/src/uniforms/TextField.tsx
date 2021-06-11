@@ -15,7 +15,7 @@
  */
 
 import React from "react";
-import { connectField } from "uniforms";
+import { connectField } from "uniforms/es5";
 import { TextInputProps } from "@patternfly/react-core";
 
 import { useAddFormElementToContext } from "./CodeGenContext";

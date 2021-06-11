@@ -25,7 +25,6 @@ const schema = {
   name: String,
   position: {
     type: String,
-    defaultValue: "Developer",
     allowedValues: ["Developer", "HR", "UX"],
   },
   otherPositions: {

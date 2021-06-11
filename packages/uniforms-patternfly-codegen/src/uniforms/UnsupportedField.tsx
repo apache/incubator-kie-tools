@@ -17,10 +17,10 @@
 import React from "react";
 import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
-import { connectField } from "uniforms";
+import { connectField } from "uniforms/es5";
 import { useAddFormElementToContext } from "./CodeGenContext";
 
-export type ListFieldProps = {
+export type UnsupportedFieldProps = {
   id: string;
   name: string;
   label: string;
@@ -30,7 +30,7 @@ export type ListFieldProps = {
   required: boolean;
 };
 
-const Unsupported: React.FC<ListFieldProps> = (props: ListFieldProps) => {
+const Unsupported: React.FC<UnsupportedFieldProps> = (props: UnsupportedFieldProps) => {
   const ref: InputReference = getInputReference(props.name);
 
   const jsxCode = `<Alert variant='warning' title='Unsupported field type: ${props.fieldType.name}'> 

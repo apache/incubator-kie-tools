@@ -15,7 +15,7 @@
  */
 
 import React from "react";
-import { connectField } from "uniforms";
+import { connectField } from "uniforms/es5";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 import { getInputReference, getStateCode, getStateCodeFromRef, NS_SEPARATOR, renderField } from "./utils/Utils";
@@ -32,6 +32,8 @@ export type SelectInputProps = {
   disabled?: boolean;
   transform?: (value?: string) => string;
 };
+
+export const SELECT_IMPORTS: string[] = ["SelectOption", "SelectOptionObject", "Select", "SelectVariant", "FormGroup"];
 
 const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
   const ref: InputReference = getInputReference(props.name);
@@ -67,12 +69,12 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
     hanldeSelect = `handleSelect(value, isPlaceHolder, ${ref.stateName}, ${ref.stateSetter}, ${expandedStateNameSetter})`;
   }
   const jsxCode = `<FormGroup
-      fieldId="${props.id}"
-      label="${props.label}"
+      fieldId={'${props.id}'}
+      label={'${props.label}'}
       isRequired={${props.required}}
     ><Select
       id={'${props.id}'}
-      name={props.name}
+      name={'${props.name}'}
       variant={SelectVariant.${isArray ? "typeaheadMulti" : "single"}}
       isDisabled={${props.disabled || false}}
       placeholderText={'${props.placeholder || ""}'}
@@ -89,7 +91,7 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
 
   const element: FormInput = {
     ref,
-    pfImports: ["SelectOption", "SelectOptionObject", "Select", "SelectVariant", "FormGroup"],
+    pfImports: SELECT_IMPORTS,
     reactImports: ["useState"],
     requiredCode: [isArray ? MULTIPLE_SELECT_FUNCTIONS : SELECT_FUNCTIONS],
     jsxCode,

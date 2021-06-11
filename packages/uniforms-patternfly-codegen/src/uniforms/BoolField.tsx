@@ -16,7 +16,7 @@
 
 import React from "react";
 import { CheckboxProps } from "@patternfly/react-core";
-import { connectField } from "uniforms";
+import { connectField } from "uniforms/es5";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 
@@ -35,18 +35,20 @@ const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
 
   const stateCode = getStateCodeFromRef(ref, "boolean");
 
-  const jsxCode = `<Checkbox
+  const jsxCode = `<FormGroup fieldId='${props.id}'>
+    <Checkbox
       isChecked={${ref.stateName}}
       isDisabled={${props.disabled || "false"}}
-      id="${props.id}"
-      name="${props.name}"
-      label="${props.label}"
+      id={'${props.id}'}
+      name={'${props.name}'}
+      label={'${props.label}'}
       onChange={${ref.stateSetter}}
-    />`;
+    />
+  </FormGroup>`;
 
   const element: FormInput = {
     ref,
-    pfImports: ["Checkbox"],
+    pfImports: ["Checkbox", "FormGroup"],
     reactImports: ["useState"],
     jsxCode,
     stateCode,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Context, randomIds } from "uniforms";
+import { Context, randomIds } from "uniforms/es5";
 
 import createSchema from "./_createSchema";
 
