@@ -27,7 +27,7 @@
     "start": "webpack serve --host 0.0.0.0 --config webpack.package-resources.config.js",
     "cy:run": "yarn cypress run -b chrome --project it-tests",
     "cy:open": "yarn cypress open --project it-tests",
-    "start:it": "webpack serve --config ./it-tests/webpack.config.js",
+    "start:it": "webpack serve --host 0.0.0.0 --config ./it-tests/webpack.config.js",
     "test:it": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\""
   },
   "babel": {
