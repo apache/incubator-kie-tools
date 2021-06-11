@@ -2,7 +2,7 @@ name: "CI"
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
     branches: "**"
 
@@ -36,7 +36,7 @@ jobs:
       - name: Set up GOLANG 1.16
         uses: actions/setup-go@v2
         with:
-          go-version: '1.16'
+          go-version: "1.16"
 
       - name: Set long paths for Windows
         if: matrix.os == 'windows-latest'
