@@ -53,7 +53,7 @@ export function NotificationsPanel(props: Props) {
     setTabsNotifications((previousTabsNotifications) => {
       const newTabsNotifications = new Map(previousTabsNotifications);
       if (previousTabsNotifications.get(name) !== newQtt) {
-        const updatedResult = document.getElementById(`dmn-runner-errors`);
+        const updatedResult = document.getElementById(`total-notifications`);
         updatedResult?.classList.add("kogito--editor__notifications-panel-error-count-updated");
       }
       newTabsNotifications.set(name, newQtt);
@@ -65,7 +65,7 @@ export function NotificationsPanel(props: Props) {
     e.preventDefault();
     e.stopPropagation();
 
-    const updatedResult = document.getElementById(`dmn-runner-errors`);
+    const updatedResult = document.getElementById(`total-notifications`);
     updatedResult?.classList.remove("kogito--editor__notifications-panel-error-count-updated");
   }, []);
 
@@ -160,7 +160,7 @@ export function NotificationsPanel(props: Props) {
             distance={20}
           >
             <div className={"kogito--editor__notifications-panel-with-notifications-tooltip "}>
-              <span id={"dmn-runner-errors"} onAnimationEnd={onAnimationEnd}>
+              <span id={"total-notifications"} onAnimationEnd={onAnimationEnd}>
                 {totalNotifications}
               </span>
               <ExclamationCircleIcon

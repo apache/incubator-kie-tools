@@ -75,7 +75,7 @@ export class DmnRunnerService {
     this.DMN_RUNNER_FORM_SCHEMA_URL = `${this.DMN_RUNNER_SERVER_URL}/jitdmn/schema/form`;
   }
 
-  public async checkServer(): Promise<boolean> {
+  public async check(): Promise<boolean> {
     const response = await fetch(this.DMN_RUNNER_SERVER_URL, { method: "OPTIONS" });
     return response.status < 300;
   }
@@ -100,7 +100,7 @@ export class DmnRunnerService {
     return await response.json();
   }
 
-  public async validate(model: string) {
+  public async validate(model: string): Promise<[]> {
     const response = await fetch(this.DMN_RUNNER_VALIDATE_URL, {
       method: "POST",
       headers: {
@@ -111,7 +111,7 @@ export class DmnRunnerService {
     return await response.json();
   }
 
-  public async getFormSchema(model: string): Promise<DmnFormSchema> {
+  public async formSchema(model: string): Promise<DmnFormSchema> {
     const response = await fetch(this.DMN_RUNNER_FORM_SCHEMA_URL, {
       method: "POST",
       headers: {

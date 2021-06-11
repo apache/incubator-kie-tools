@@ -30,8 +30,8 @@ import { Notification } from "@kogito-tooling/notifications/dist/api";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { useOnlineI18n } from "../../common/i18n";
-import { I18nWrapped } from "../../../../i18n/src/react-components";
-import { DmnForm, DmnFormResult } from "../../../../form/src";
+import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
+import { DmnForm, DmnFormResult } from "@kogito-tooling/form/dist/dmn";
 import { usePrevious } from "../../common/Hooks";
 
 enum ButtonPosition {
@@ -97,7 +97,7 @@ export function DmnRunnerDrawer(props: Props) {
         new Map<string, string>()
       );
 
-      const messagesBySourceId = result.messages.reduce((acc, message) => {
+      const messagesBySourceId = result.messages?.reduce((acc, message) => {
         const messageEntry = acc.get(message.sourceId);
         if (!messageEntry) {
           acc.set(message.sourceId, [message]);
@@ -107,15 +107,17 @@ export function DmnRunnerDrawer(props: Props) {
         return acc;
       }, new Map<string, DecisionResultMessage[]>());
 
-      const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(([sourceId, messages]) => {
-        const path = decisionNameByDecisionId?.get(sourceId) ?? "";
-        return messages.map((message: any) => ({
-          type: "PROBLEM",
-          path,
-          severity: message.severity,
-          message: `${message.messageType}: ${message.message}`,
-        }));
-      });
+      const notifications: Notification[] = [...(messagesBySourceId?.entries() ?? [])].flatMap(
+        ([sourceId, messages]) => {
+          const path = decisionNameByDecisionId?.get(sourceId) ?? "";
+          return messages.map((message: any) => ({
+            type: "PROBLEM",
+            path,
+            severity: message.severity,
+            message: `${message.messageType}: ${message.message}`,
+          }));
+        }
+      );
       notificationsPanel.getTabRef(i18n.terms.execution)?.kogitoNotifications_setNotifications("", notifications);
     },
     [notificationsPanel.getTabRef, i18n]
@@ -130,7 +132,7 @@ export function DmnRunnerDrawer(props: Props) {
       return props.editor
         .getContent()
         .then((content) => {
-          dmnRunner.service.result({ context: { ...formData }, model: content }).then((result) => {
+          dmnRunner.service.result({ context: { ...formData }, model: content })?.then((result) => {
             if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
               dmnRunner.setFormError(true);
               return;
@@ -156,7 +158,7 @@ export function DmnRunnerDrawer(props: Props) {
           setDmnRunnerResults(undefined);
         });
     },
-    [props.editor, dmnRunner.service, setExecutionNotifications]
+    [props.editor, dmnRunner.status, dmnRunner.service, setExecutionNotifications]
   );
 
   // Update outputs column on form change
@@ -309,7 +311,7 @@ export function DmnRunnerDrawer(props: Props) {
             <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
               <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
                 <DmnFormResult
-                  results={dmnRunnerResults!}
+                  results={dmnRunnerResults}
                   differences={dmnRunnerResponseDiffs}
                   locale={locale}
                   notificationsPanel={true}

@@ -26,6 +26,7 @@ import { diff } from "deep-object-diff";
 import { getCookie, setCookie } from "../../common/utils";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 import { useOnlineI18n } from "../../common/i18n";
+import { NotificationType } from "@kogito-tooling/notifications/dist/api";
 
 const DMN_RUNNER_POLLING_TIME = 1000;
 export const THROTTLING_TIME = 200;
@@ -58,7 +59,7 @@ export function DmnRunnerContextProvider(props: Props) {
   const updateFormSchema = useCallback(() => {
     return props.editor
       ?.getContent()
-      .then((content) => service.getFormSchema(content ?? ""))
+      .then((content) => service.formSchema(content ?? ""))
       .then((newSchema) => {
         const propertiesDifference = diff(
           formSchema?.definitions?.InputSet?.properties ?? {},
@@ -103,7 +104,7 @@ export function DmnRunnerContextProvider(props: Props) {
     let detectCrashesOrStops: number | undefined;
     if (status === DmnRunnerStatus.RUNNING) {
       detectCrashesOrStops = window.setInterval(() => {
-        service.checkServer().catch(() => {
+        service.check().catch(() => {
           setStatus(DmnRunnerStatus.STOPPED);
           setModalOpen(true);
           setDrawerExpanded(false);
@@ -120,7 +121,7 @@ export function DmnRunnerContextProvider(props: Props) {
     }
 
     const detectDmnRunner: number | undefined = window.setInterval(() => {
-      service.checkServer().then(() => {
+      service.check().then(() => {
         // Check the running version of the DMN Runner, if outdated cancel polling and change status.
         service.version().then((runnerVersion) => {
           window.clearInterval(detectDmnRunner);
@@ -140,24 +141,6 @@ export function DmnRunnerContextProvider(props: Props) {
     return () => window.clearInterval(detectDmnRunner);
   }, [props.editor, props.isEditorReady, isModalOpen, status, service]);
 
-  // Subscribe to any change on the DMN Editor and update the JsonSchemaBridge
-  useEffect(() => {
-    if (!props.editor?.isReady || status !== DmnRunnerStatus.RUNNING) {
-      return;
-    }
-
-    let timeout: number | undefined;
-    const subscription = props.editor.getStateControl().subscribe(() => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-      timeout = window.setTimeout(() => {
-        updateFormSchema();
-      }, THROTTLING_TIME);
-    });
-    return () => props.editor?.getStateControl().unsubscribe(subscription);
-  }, [props.editor, status, updateFormSchema]);
-
   const saveNewPort = useCallback((newPort: string) => {
     setPort(newPort);
     setCookie(DMN_RUNNER_PORT_COOKIE_NAME, newPort);
@@ -174,14 +157,12 @@ export function DmnRunnerContextProvider(props: Props) {
         ?.getContent()
         .then((content) => service.validate(content ?? ""))
         .then((validationResults) => {
-          return validationResults.map((validationResult: any) => ({
-            type: "PROBLEM",
+          const notifications = validationResults.map((validationResult: any) => ({
+            type: "PROBLEM" as NotificationType,
             path: "",
             severity: validationResult.severity,
             message: `${validationResult.messageType}: ${validationResult.message}`,
           }));
-        })
-        .then((notifications) => {
           notificationsPanel.getTabRef(i18n.terms.validation)?.kogitoNotifications_setNotifications("", notifications);
         });
     };
@@ -191,12 +172,15 @@ export function DmnRunnerContextProvider(props: Props) {
       if (timeout) {
         clearTimeout(timeout);
       }
-      timeout = window.setTimeout(validate, THROTTLING_TIME);
+      timeout = window.setTimeout(() => {
+        validate();
+        updateFormSchema();
+      }, THROTTLING_TIME);
     });
     validate();
 
     return () => props.editor?.getStateControl().unsubscribe(subscription);
-  }, [props.editor, status, props.isEditorReady, i18n]);
+  }, [props.editor, status, props.isEditorReady, updateFormSchema, i18n]);
 
   return (
     <DmnRunnerContext.Provider
