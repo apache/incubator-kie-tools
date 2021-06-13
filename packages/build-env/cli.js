@@ -28,8 +28,10 @@ function main() {
 
     for (const v in vars) {
       result[vars[v].name] = buildEnv.vars().getOrDefault(vars[v]);
-      if (result[vars[v].name] === undefined) {
-        result[vars[v].name] = "[unset] ⚠️ ";
+      if (vars[v].default === undefined && result[vars[v].name]) {
+        result[vars[v].name] += " <- CHANGED 👀️ ";
+      } else if (result[vars[v].name] === undefined) {
+        result[vars[v].name] = "[unset] Default value may vary ⚠️ ";
       } else if (result[vars[v].name] !== vars[v].default) {
         result[vars[v].name] += " <- CHANGED 👀️ ";
       }
