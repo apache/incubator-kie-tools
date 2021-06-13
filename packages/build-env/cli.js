@@ -20,8 +20,35 @@ const buildEnv = require("./index");
 
 function main() {
   const path = process.argv[2];
+  const opt = process.argv[2];
+
+  if (opt === "--print-vars") {
+    const result = {};
+    const vars = buildEnv.vars().ENV_VARS;
+
+    for (const v in vars) {
+      console.info(vars[v].name);
+      result[vars[v].name] = buildEnv.vars().getOrDefault(vars[v]);
+      if (result[vars[v].name] === undefined) {
+        result[vars[v].name] = "[unset] ⚠️ ";
+      } else if (result[vars[v].name] !== vars[v].default) {
+        result[vars[v].name] += " <- CHANGED 👀️ ";
+      }
+    }
+
+    console.log("[build-env] Environment variables:");
+    console.log(JSON.stringify(flattenObj(result), undefined, 2));
+    process.exit(0);
+  }
+
+  if (opt === "--print-config") {
+    console.log("[build-env] CLI-accessible config:");
+    console.log(JSON.stringify(flattenObj(buildEnv), undefined, 2));
+    process.exit(0);
+  }
+
   if (!path) {
-    console.error("Please provide a property path");
+    console.error("Please an option.");
     process.exit(1);
   }
 
@@ -35,6 +62,18 @@ function main() {
   }
 
   console.log(prop);
+}
+
+function flattenObj(obj, parent, res = {}) {
+  for (const key in obj) {
+    let propName = parent ? parent + "." + key : key;
+    if (typeof obj[key] == "object") {
+      flattenObj(obj[key], propName, res);
+    } else {
+      res[propName] = obj[key];
+    }
+  }
+  return res;
 }
 
 main();

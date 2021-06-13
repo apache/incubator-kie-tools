@@ -11,6 +11,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
+    "@kogito-tooling/build-env": "0.0.1",
     "@kie-tooling-core/patternfly-base": "^0.0.6",
     "@kogito-tooling/external-assets-base": "0.0.1",
     "@kogito-tooling/i18n-common-dictionary": "0.0.1",
@@ -22,8 +23,8 @@
   "scripts": {
     "start": "electron dist --disable-gpu",
     "rebuild": "electron-rebuild -f -w sqlite3",
-    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint --true-if-empty --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test --true-if-empty --then \"jest --silent --verbose\"",
+    "lint": "run-script-if --bool $(build-env global.build.lint) --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "run-script-if --bool $(build-env global.build.test) --then \"jest --silent --verbose\"",
     "test:clearCache": "jest --clearCache",
     "init": "yarn -f",
     "build:dev": "rimraf dist && webpack --env dev",
@@ -38,7 +39,7 @@
     "build:prod:win32": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:win32",
     "build:prod:all": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:linux && yarn run package:prod:darwin && yarn run package:prod:win32",
     "build:prod": "run-script-os && yarn test:it",
-    "test:it:linux:darwin": "run-script-if --env KOGITO_TOOLING_BUILD_testIT --then \"yarn rimraf ./dist-it-tests\" \"jest --config it-tests/jest.config.json --runInBand --forceExit --verbose\"",
+    "test:it:linux:darwin": "run-script-if --bool $(build-env global.build.testIT) --then \"yarn rimraf ./dist-it-tests\" \"jest --config it-tests/jest.config.json --runInBand --forceExit --verbose\"",
     "test:it:win32": "echo \"Not supported\"",
     "test:it": "run-script-os"
   },

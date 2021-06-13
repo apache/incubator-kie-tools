@@ -12,5 +12,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "scripts": {
+    "print-build-env": "build-env --print-vars && build-env --print-config",
+    "build:dev": "yarn print-build-env",
+    "build:prod": "yarn print-build-env"
   }
 }

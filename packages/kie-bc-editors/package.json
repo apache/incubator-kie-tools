@@ -13,11 +13,12 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
+    "@kogito-tooling/build-env": "0.0.1",
     "@kogito-tooling/pmml-editor-marshaller": "0.0.1"
   },
   "scripts": {
-    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint --true-if-empty --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test --true-if-empty --then \"jest --silent --verbose --passWithNoTests\"",
+    "lint": "run-script-if --bool $(build-env global.build.lint) --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "run-script-if --bool $(build-env global.build.test) --then \"jest --silent --verbose --passWithNoTests\"",
     "test:clearCache": "jest --clearCache",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "yarn lint && yarn test && rimraf dist && webpack"

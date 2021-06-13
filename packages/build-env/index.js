@@ -18,34 +18,112 @@ const version = require("./package.json").version;
 
 const str2bool = (str) => str === "true";
 
+const get = (envVar) => process.env[envVar.name];
+const getOrDefault = (envVar) => get(envVar) ?? envVar.default;
+
+const ENV_VARS = {
+  KOGITO_TOOLING_BUILD_lint: {
+    name: "KOGITO_TOOLING_BUILD_lint",
+    default: `${true}`,
+    description: "",
+  },
+  KOGITO_TOOLING_BUILD_test: {
+    name: "KOGITO_TOOLING_BUILD_test",
+    default: `${true}`,
+    description: "",
+  },
+  KOGITO_TOOLING_BUILD_testIT: {
+    name: "KOGITO_TOOLING_BUILD_testIT",
+    default: `${false}`,
+    description: "",
+  },
+  CHROME_EXTENSION__routerTargetOrigin: {
+    name: "CHROME_EXTENSION__routerTargetOrigin",
+    default: "https://localhost:9000",
+    description: "",
+  },
+  CHROME_EXTENSION__routerRelativePath: {
+    name: "CHROME_EXTENSION__routerRelativePath",
+    default: "",
+    description: "",
+  },
+  CHROME_EXTENSION__onlineEditorUrl: {
+    name: "CHROME_EXTENSION__onlineEditorUrl",
+    default: "http://localhost:9001",
+    description: "",
+  },
+  CHROME_EXTENSION__manifestFile: {
+    name: "CHROME_EXTENSION__manifestFile",
+    default: "manifest.dev.json",
+    description: "",
+  },
+  ONLINE_EDITOR__downloadHubUrlLinux: {
+    name: "ONLINE_EDITOR__downloadHubUrlLinux",
+    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/business_modeler_hub_preview_linux_${version}.zip`,
+    description: "",
+  },
+  ONLINE_EDITOR__downloadHubUrlMacOs: {
+    name: "ONLINE_EDITOR__downloadHubUrlMacOs",
+    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/business_modeler_hub_preview_macos_${version}.zip`,
+    description: "",
+  },
+  ONLINE_EDITOR__downloadHubUrlWindows: {
+    name: "ONLINE_EDITOR__downloadHubUrlWindows",
+    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/business_modeler_hub_preview_windows_${version}.zip`,
+    description: "",
+  },
+  WEBPACK__minimize: {
+    name: "WEBPACK__minimize",
+    description: "",
+  },
+  WEBPACK__tsLoaderTranspileOnly: {
+    name: "WEBPACK__tsLoaderTranspileOnly",
+    description: "",
+  },
+  WEBPACK__sourceMaps: {
+    name: "WEBPACK__sourceMaps",
+    description: "",
+  },
+  WEBPACK__mode: {
+    name: "WEBPACK__mode",
+    description: "",
+  },
+};
+
 module.exports = {
   global: {
+    build: {
+      lint: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_lint)),
+      test: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_test)),
+      testIT: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_testIT)),
+    },
     webpack: (webpackEnv) => {
       if (webpackEnv.dev) {
         return {
-          minimize: str2bool(process.env["WEBPACK__minimize"] ?? `${false}`),
-          transpileOnly: str2bool(process.env["WEBPACK__tsLoaderTranspileOnly"] ?? `${false}`),
-          sourceMaps: str2bool(process.env["WEBPACK__sourceMaps"] ?? `${true}`),
-          mode: process.env["WEBPACK__mode"] ?? "development",
+          minimize: str2bool(get(ENV_VARS.WEBPACK__minimize) ?? `${false}`),
+          transpileOnly: str2bool(get(ENV_VARS.WEBPACK__tsLoaderTranspileOnly) ?? `${false}`),
+          sourceMaps: str2bool(get(ENV_VARS.WEBPACK__sourceMaps) ?? `${true}`),
+          mode: get(ENV_VARS.WEBPACK__mode) ?? "development",
         };
       } else {
         return {
-          minimize: str2bool(process.env["WEBPACK__minimize"] ?? `${true}`),
-          transpileOnly: str2bool(process.env["WEBPACK__tsLoaderTranspileOnly"] ?? `${false}`),
-          sourceMaps: str2bool(process.env["WEBPACK__sourceMaps"] ?? `${false}`),
-          mode: process.env["WEBPACK__mode"] ?? "production",
+          minimize: str2bool(get(ENV_VARS.WEBPACK__minimize) ?? `${true}`),
+          transpileOnly: str2bool(get(ENV_VARS.WEBPACK__tsLoaderTranspileOnly) ?? `${false}`),
+          sourceMaps: str2bool(get(ENV_VARS.WEBPACK__sourceMaps) ?? `${false}`),
+          mode: get(ENV_VARS.WEBPACK__mode) ?? "production",
         };
       }
     },
   },
+
   chromeExtension: {
     dev: {
       port: 9000,
     },
-    routerTargetOrigin: process.env["CHROME_EXTENSION__routerTargetOrigin"] ?? "https://localhost:9000",
-    routerRelativePath: process.env["CHROME_EXTENSION__routerRelativePath"] ?? "",
-    onlineEditorUrl: process.env["CHROME_EXTENSION__onlineEditorUrl"] ?? "http://localhost:9001",
-    manifestFile: process.env["CHROME_EXTENSION__manifestFile"] ?? "manifest.dev.json",
+    routerTargetOrigin: getOrDefault(ENV_VARS.CHROME_EXTENSION__routerTargetOrigin),
+    routerRelativePath: getOrDefault(ENV_VARS.CHROME_EXTENSION__routerRelativePath),
+    onlineEditorUrl: getOrDefault(ENV_VARS.CHROME_EXTENSION__onlineEditorUrl),
+    manifestFile: getOrDefault(ENV_VARS.CHROME_EXTENSION__manifestFile),
   },
 
   onlineEditor: {
@@ -53,15 +131,9 @@ module.exports = {
       port: 9001,
     },
     downloadHubUrl: {
-      linux:
-        process.env["ONLINE_EDITOR__downloadHubUrlLinux"] ??
-        `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/business_modeler_hub_preview_linux_${version}.zip`,
-      macOs:
-        process.env["ONLINE_EDITOR__downloadHubUrlLMacOs"] ??
-        `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/business_modeler_hub_preview_macos_${version}.zip`,
-      windows:
-        process.env["ONLINE_EDITOR__downloadHubUrlWindows"] ??
-        `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/business_modeler_hub_preview_windows_${version}.zip`,
+      linux: getOrDefault(ENV_VARS.ONLINE_EDITOR__downloadHubUrlLinux),
+      macOs: getOrDefault(ENV_VARS.ONLINE_EDITOR__downloadHubUrlMacOs),
+      windows: getOrDefault(ENV_VARS.ONLINE_EDITOR__downloadHubUrlWindows),
     },
   },
 
@@ -76,4 +148,8 @@ module.exports = {
       port: 9005,
     },
   },
+  vars: () => ({
+    ENV_VARS,
+    getOrDefault: getOrDefault,
+  }),
 };
