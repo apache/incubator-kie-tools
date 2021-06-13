@@ -27,7 +27,6 @@ function main() {
     const vars = buildEnv.vars().ENV_VARS;
 
     for (const v in vars) {
-      console.info(vars[v].name);
       result[vars[v].name] = buildEnv.vars().getOrDefault(vars[v]);
       if (result[vars[v].name] === undefined) {
         result[vars[v].name] = "[unset] ⚠️ ";
