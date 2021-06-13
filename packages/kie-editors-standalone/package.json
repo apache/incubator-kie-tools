@@ -19,8 +19,8 @@
     "@kogito-tooling/kie-bc-editors": "0.0.1"
   },
   "scripts": {
-    "lint": "run-script-if --bool $(build-env global.build.lint) --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "run-script-if --bool $(build-env global.build.test) --then \"jest --silent --verbose --passWithNoTests\"",
+    "lint": "yarn run run-script-if --bool $(build-env global.build.lint) --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool $(build-env global.build.test) --then \"jest --silent --verbose --passWithNoTests\"",
     "build:preprocessor": "node dist/preprocessor/preprocessor.js",
     "build:dev": "rimraf dist && webpack --env dev --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --env dev --config webpack.package-resources.config.js",
     "build:prod": "yarn lint && yarn test && rimraf dist && webpack --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --config webpack.package-resources.config.js && yarn test:it",
@@ -29,7 +29,7 @@
     "cy:run": "yarn cypress run -b chrome --project it-tests",
     "cy:open": "yarn cypress open --project it-tests",
     "start:it": "webpack serve --host 0.0.0.0 --config ./it-tests/webpack.config.js",
-    "test:it": "run-script-if --bool $(build-env global.build.testIT) --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\""
+    "test:it": "yarn run run-script-if --bool $(build-env global.build.testIT) --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\""
   },
   "babel": {
     "presets": [

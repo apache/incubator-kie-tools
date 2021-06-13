@@ -120,9 +120,9 @@
     "package:prod": "cross-var \"vsce package --yarn -o ./dist/vscode_extension_kogito_kie_editors_$npm_package_version.vsix\"",
     "compile": "webpack",
     "watch": "webpack",
-    "lint": "run-script-if --bool $(build-env global.build.lint) --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "run-script-if --bool $(build-env global.build.test) --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:it": "run-script-if --bool $(build-env global.build.testIT) --then \"yarn rimraf ./dist-it-tests\" \"rimraf ./test-resource\" \"rimraf ./out\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -u -e ./test-resources -o it-tests/settings.json out/*.test.js\"",
+    "lint": "yarn run run-script-if --bool $(build-env global.build.lint) --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool $(build-env global.build.test) --then \"jest --silent --verbose --passWithNoTests\"",
+    "test:it": "yarn run run-script-if --bool $(build-env global.build.testIT) --then \"yarn rimraf ./dist-it-tests\" \"rimraf ./test-resource\" \"rimraf ./out\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -u -e ./test-resources -o it-tests/settings.json out/*.test.js\"",
     "test:it:insider": "rimraf ./test-resource && rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run -t insider --yarn -u -e ./test-resources -o it-tests/settings.json out/*.test.js",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "rimraf dist && yarn lint && webpack && yarn run test && yarn run package:prod && yarn test:it"
