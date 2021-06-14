@@ -26,7 +26,6 @@
   "dependencies": {
     "@kogito-tooling/bpmn-editor-unpacked": "^8.1.0",
     "@kogito-tooling/dmn-editor-unpacked": "^8.1.0",
-    "@kogito-tooling/quarkus-runner-unpacked": "0.7.0-SNAPSHOT",
     "@kogito-tooling/scesim-editor-unpacked": "^8.1.0"
   },
   "devDependencies": {

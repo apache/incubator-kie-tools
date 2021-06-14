@@ -1755,11 +1755,6 @@
   resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-8.1.0.tgz#5e733a120b353ea7409f5312c1fc86ad243df2e7"
   integrity sha512-jHL2x+cnznjQSNxjTqmxCXg8fTv29XgRvqDTU4gsxE3GspCp46F78h7A2RCYXNaKeyvwRU1lpaSZYeaIbTvAmQ==
 
-"@kogito-tooling/quarkus-runner-unpacked@0.7.0-SNAPSHOT":
-  version "0.7.0-SNAPSHOT"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/quarkus-runner-unpacked/-/quarkus-runner-unpacked-0.7.0-SNAPSHOT.tgz#5f84c2657347f82f1cab0f08cc9b430b32c9d222"
-  integrity sha512-nlfngzKGZrI+P6+4dZr76FDGUoXuNsRWckNs7QS8iLTvEChi3azgFz4CBIqNB5sJjPUF4P+TAxsFlQMidIBzyA==
-
 "@kogito-tooling/scesim-editor-unpacked@^8.1.0":
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.1.0.tgz#142c54b0710af7bca5083adf8c765d696f1e248f"
