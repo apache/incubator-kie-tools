@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-latest, ubuntu-latest, windows-2016]
 
     steps:
       - uses: actions/checkout@v2
@@ -20,13 +20,13 @@ jobs:
           fetch-depth: 0
 
       - name: Set up JDK 11
-        if: matrix.os != 'windows-latest'
+        if: matrix.os != 'windows-2016'
         uses: actions/setup-java@v1
         with:
           java-version: "11"
 
       - name: Cache Maven packages
-        if: matrix.os != 'windows-latest'
+        if: matrix.os != 'windows-2016'
         uses: actions/cache@v2
         with:
           path: ~/.m2
@@ -39,7 +39,7 @@ jobs:
           go-version: "1.16"
 
       - name: Set long paths for Windows
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows-2016'
         run: git config --system core.longpaths true
 
       - name: Checkout submodules
@@ -87,26 +87,30 @@ jobs:
           name: dmn_runner_linux
           path: "./build/linux/dmn_runner_linux.tar.gz"
 
-      - name: Add msbuild to PATH
-        if: matrix.os == 'windows-latest'
-        uses: ilammy/msvc-dev-cmd@v1
+      - name: Setup MSCV
+        if: matrix.os == 'windows-2016'
+        uses: ilammy/msvc-dev-cmd@v1.5.0
 
-      - name: Set GraalVM
-        if: matrix.os == 'windows-latest'
-        run: |
-          curl -L -o graalvm-ce-java11-windows-amd64-21.1.0.zip  https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-windows-amd64-21.1.0.zip &&
-          tar -xf graalvm-ce-java11-windows-amd64-21.1.0.zip &&
-          echo "D:\a\kogito-tooling-go\kogito-tooling-go\graalvm-ce-java11-21.1.0\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append &&
-          echo "JAVA_HOME=D:\a\kogito-tooling-go\kogito-tooling-go\graalvm-ce-java11-21.1.0" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Setup MSBUILD
+        if: matrix.os == 'windows-2016'
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Setup GraalVM
+        if: matrix.os == 'windows-2016'
+        uses: ayltai/setup-graalvm@v1
+        with:
+          java-version: 11
+          graalvm-version: 20.3.0
+          native-image: true
 
       - name: Build Windows
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows-2016'
+        shell: cmd
         run: |
-          gu.cmd install native-image &&
           make win
 
       - name: Upload Windows runner
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows-2016'
         uses: actions/upload-artifact@v2
         with:
           name: dmn_runner_windows
