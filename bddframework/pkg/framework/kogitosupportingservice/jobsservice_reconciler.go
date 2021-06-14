@@ -15,16 +15,21 @@
 package kogitosupportingservice
 
 import (
+	"time"
+
 	"github.com/kiegroup/kogito-operator/core/connector"
 	"github.com/kiegroup/kogito-operator/core/kogitoservice"
 	"k8s.io/apimachinery/pkg/types"
 	controller "sigs.k8s.io/controller-runtime/pkg/reconcile"
-	"time"
 )
 
 const (
 	// DefaultJobsServiceImageName is the default image name for the Jobs Service image
 	DefaultJobsServiceImageName = "kogito-jobs-service-ephemeral"
+	// JobsServiceInfinispanImageName is the image name for the Jobs Service Service with Infinispan
+	JobsServiceInfinispanImageName = "kogito-jobs-service-infinispan"
+	// JobsServiceMongoDBImageName is the image name for the Jobs Service Service with MongoDB
+	JobsServiceMongoDBImageName = "kogito-jobs-service-mongodb"
 	// DefaultJobsServiceName is the default name for the Jobs Services instance service
 	DefaultJobsServiceName = "jobs-service"
 )
