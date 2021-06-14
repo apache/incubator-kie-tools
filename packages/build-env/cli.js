@@ -58,7 +58,9 @@ async function main() {
       for (const u in trMatrix)
         if (trMatrix[u][s] === "dependency" || trMatrix[u][s] === "devDependency")
           for (const v in trMatrix)
-            if (trMatrix[s][v] === "dependency" || trMatrix[s][v] === "devDependency") trMatrix[u][v] = "transitive";
+            if (trMatrix[s][v] === "dependency" || trMatrix[s][v] === "devDependency") {
+              trMatrix[u][v] = "transitive";
+            }
 
     const resMatrix = trMatrix;
 
