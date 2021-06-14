@@ -136,7 +136,8 @@ async function main() {
 
   const propertyPath = opt;
   if (!propertyPath) {
-    console.error("Please an option.");
+    console.error("Please provide a config property path.");
+    console.error(`See all config properties with 'build-env --print-config'`);
     process.exit(1);
   }
 
@@ -144,7 +145,8 @@ async function main() {
   for (const p of propertyPath.split(".")) {
     prop = prop[p];
     if (prop === undefined || typeof prop === "function") {
-      console.error(`Property '${propertyPath}' not found.`);
+      console.error(`Config property '${propertyPath}' not found. `);
+      console.error(`See all config properties with 'build-env --print-config'`);
       process.exit(1);
     }
   }
