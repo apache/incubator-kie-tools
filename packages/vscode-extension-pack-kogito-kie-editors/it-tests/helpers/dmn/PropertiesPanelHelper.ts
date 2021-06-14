@@ -15,7 +15,7 @@
  */
 
 import { WebElement } from "vscode-extension-tester";
-import { labeledInputElementInPropertiesPanel } from "../CommonLocators";
+import { labeledAnyElementInPropertiesPanel } from "../CommonLocators";
 
 /**
  * Class for accessing expanded DMN Properties panel
@@ -31,7 +31,7 @@ export default class PropertiesPanelHelper {
    * @param propertyValue
    */
   public async changeProperty(propertyName: string, propertyValue: string): Promise<PropertiesPanelHelper> {
-    const property = await this.root.findElement(labeledInputElementInPropertiesPanel(propertyName));
+    const property = await this.root.findElement(labeledAnyElementInPropertiesPanel(propertyName));
     await property.clear();
     await property.sendKeys(propertyValue);
 
