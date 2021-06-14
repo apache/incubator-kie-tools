@@ -20,14 +20,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.github.kiegroup</groupId>
-  <artifactId>kogito-tooling-java</artifactId>
+  <groupId>io.github.kiegroup.kogito.tooling</groupId>
+  <artifactId>backend-extended-services</artifactId>
   <packaging>pom</packaging>
-  <version>0.7.0-SNAPSHOT</version>
+  <version>0.0.1</version>
 
-  <name>Kogito Tooling Java - Parent</name>
+  <name>Backend Extended Services - Parent</name>
   <description>The parent contains all metadata including dependency versions and modules.</description>
-  <url>https://github.com/kiegroup/kogito-tooling-java</url>
+  <url>https://github.com/kiegroup/kogito-tooling</url>
   <inceptionYear>2020</inceptionYear>
   <licenses>
     <license>
@@ -46,9 +46,9 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git://github.com/kiegroup/kogito-tooling-java.git</connection>
-    <developerConnection>scm:git:ssh://github.com:kiegroup/kogito-tooling-java.git</developerConnection>
-    <url>http://github.com/kiegroup/kogito-tooling-java/tree/master</url>
+    <connection>scm:git:git://github.com/kiegroup/kogito-tooling.git</connection>
+    <developerConnection>scm:git:ssh://github.com:kiegroup/kogito-tooling.git</developerConnection>
+    <url>http://github.com/kiegroup/kogito-tooling/tree/master</url>
   </scm>
 
   <properties>

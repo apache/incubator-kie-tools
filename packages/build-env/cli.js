@@ -24,6 +24,7 @@ const path = require("path");
 
 async function main() {
   const opt = process.argv[2];
+  const flags = process.argv[3];
 
   if (opt === "--build-graph") {
     const g = graphviz.digraph("G");
@@ -141,17 +142,28 @@ async function main() {
     process.exit(1);
   }
 
-  let prop = buildEnv;
+  let configPropertyValue = buildEnv;
   for (const p of propertyPath.split(".")) {
-    prop = prop[p];
-    if (prop === undefined || typeof prop === "function") {
+    configPropertyValue = configPropertyValue[p];
+    if (configPropertyValue === undefined || typeof configPropertyValue === "function") {
       console.error(`Config property '${propertyPath}' not found. `);
       console.error(`See all config properties with 'build-env --print-config'`);
       process.exit(1);
     }
   }
 
-  console.log(prop);
+  if (flags === "--not") {
+    const isBoolean = `${configPropertyValue}` === "true" || `${configPropertyValue}` === "false";
+    if (isBoolean) {
+      console.log(!(`${configPropertyValue}` === "true"));
+      process.exit(0);
+    } else {
+      console.error(`Cannot negate non-boolean value '${configPropertyValue}'`);
+      process.exit(0);
+    }
+  }
+
+  console.log(configPropertyValue);
 }
 
 function flattenObj(obj, parent, res = {}) {

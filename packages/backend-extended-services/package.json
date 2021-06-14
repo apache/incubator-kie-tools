@@ -1,0 +1,22 @@
+{
+  "name": "@kogito-tooling/backend-extended-services",
+  "version": "0.0.1",
+  "description": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "files": [
+    "index.js",
+    "**/target/*.jar"
+  ],
+  "dependencies": {
+    "@kogito-tooling/build-env": "0.0.1"
+  },
+  "scripts": {
+    "lint": "echo 'Linting'",
+    "build:dev": "mvn clean install",
+    "build:prod": "yarn lint && mvn clean install -DskipTests=$(build-env global.build.test --not)"
+  }
+}

@@ -17,7 +17,7 @@
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
-const externalAssets = require("@kogito-tooling/external-assets-base");
+const backendExtendedServices = require("@kogito-tooling/backend-extended-services");
 
 module.exports = async (env) => [
   merge(common(env), {
@@ -37,7 +37,7 @@ module.exports = async (env) => [
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: externalAssets.quarkusRunnerPath(),
+            from: backendExtendedServices.quarkusRunnerPath(),
             to: "server/quarkus-runner.jar",
           },
         ],

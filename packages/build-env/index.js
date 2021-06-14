@@ -92,6 +92,7 @@ const ENV_VARS = {
 
 module.exports = {
   global: {
+    version: version,
     build: {
       lint: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_lint)),
       test: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_test)),
