@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { BaseSyntheticEvent, useEffect, useMemo, useState } from "react";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -103,7 +103,9 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     }
   };
 
-  const handleEditStatus = () => {
+  const handleEditStatus = (event: BaseSyntheticEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
     onEdit?.(index);
   };
 
@@ -309,12 +311,10 @@ const DataTypeItem = (props: DataTypeItemProps) => {
         <section
           className={"editable-item__inner"}
           tabIndex={0}
-          onClick={handleEditStatus}
+          onClick={(event) => handleEditStatus(event)}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
-              event.preventDefault();
-              event.stopPropagation();
-              handleEditStatus();
+              handleEditStatus(event);
             }
           }}
         >

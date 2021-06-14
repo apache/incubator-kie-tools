@@ -6,5 +6,6 @@
   "workbench.startupEditor": "none",
   "files.simpleDialog.enable": true,
   "window.dialogStyle": "custom",
-  "explorer.compactFolders": false
+  "explorer.compactFolders": false,
+  "security.workspace.trust.enabled": false
 }
