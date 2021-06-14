@@ -16,15 +16,15 @@
     "@kogito-tooling/kie-bc-editors": "0.0.1"
   },
   "scripts": {
-    "lint": "yarn run run-script-if --bool $(build-env global.build.lint) --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "yarn run run-script-if --bool $(build-env global.build.test) --then \"jest --silent --verbose --passWithNoTests\"",
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "yarn lint && yarn test && rimraf dist && webpack && yarn test:it",
     "start": "webpack serve --env dev",
     "test:it:start:online-editor": "npm --prefix ../online-editor run start",
     "test:it:start": "yarn start",
     "test:it:run": "jest --runInBand -c ./jest.it.config.js",
-    "test:it": "yarn run run-script-if --bool $(build-env global.build.testIT) --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test test:it:start:online-editor http-get://localhost:$(build-env onlineEditor.dev.port) test:it:start https-get://localhost:$(build-env chromeExtension.dev.port) test:it:run\""
+    "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test test:it:start:online-editor http-get://localhost:$(build-env onlineEditor.dev.port) test:it:start https-get://localhost:$(build-env chromeExtension.dev.port) test:it:run\""
   },
   "babel": {
     "presets": [

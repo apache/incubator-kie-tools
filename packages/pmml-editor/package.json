@@ -36,8 +36,8 @@
     "uuid": "^8.3.2"
   },
   "scripts": {
-    "lint": "yarn run run-script-if --bool $(build-env global.build.lint) --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "yarn run run-script-if --bool $(build-env global.build.test) --then \"jest --silent --verbose\"",
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose\"",
     "test:clearCache": "jest --clearCache",
     "test:watch": "jest --watch",
     "build:dev": "rimraf dist && webpack --env dev",
@@ -46,7 +46,7 @@
     "deploy": "gh-pages -d dist",
     "cy:open": "yarn run cypress open --project it-tests",
     "cy:run": "yarn run cypress run -b chrome --project it-tests",
-    "test:it": "yarn run run-script-if --bool $(build-env global.build.testIT) --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start http-get://0.0.0.0:$(build-env pmmlEditor.dev.port) cy:run\""
+    "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start http-get://0.0.0.0:$(build-env pmmlEditor.dev.port) cy:run\""
   },
   "babel": {
     "presets": [
