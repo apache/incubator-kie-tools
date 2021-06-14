@@ -41,7 +41,9 @@ runs:
       run: |
         echo "STEP: Setup default Maven args"
         cd ${{ inputs.path }}
-        yarn config set script-shell powershell.exe
+        if [ "${{ inputs.os }}" == "windows-latest" ]; then
+          yarn config set script-shell powershell.exe
+        fi
 
     - name: "Bootstrap"
       shell: bash
