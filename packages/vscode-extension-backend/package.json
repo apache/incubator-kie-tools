@@ -72,7 +72,7 @@
   },
   "dependencies": {
     "@kogito-tooling/build-env": "0.0.1",
-    "@kie-tooling-core/vscode-extension": "^0.0.7",
+    "@kie-tooling-core/vscode-extension": "^0.0.8",
     "@kogito-tooling/external-assets-base": "0.0.1"
   }
 }
