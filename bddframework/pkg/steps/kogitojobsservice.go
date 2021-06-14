@@ -17,6 +17,9 @@ package steps
 import (
 	"github.com/cucumber/godog"
 	//"github.com/kiegroup/kogito-operator/api/v1beta1"
+	"github.com/kiegroup/kogito-operator/core/infrastructure"
+	"github.com/kiegroup/kogito-operator/core/kogitosupportingservice"
+	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	"github.com/kiegroup/kogito-operator/test/pkg/steps/mappers"
 	bddtypes "github.com/kiegroup/kogito-operator/test/pkg/types"
@@ -50,6 +53,13 @@ func (data *Data) installKogitoJobsServiceWithReplicasWithConfiguration(replicas
 
 	if err := mappers.MapKogitoServiceTable(table, jobsService); err != nil {
 		return err
+	}
+	if jobsService.DatabaseType == infrastructure.InfinispanKind {
+		framework.GetMainLogger().Debug("Setting Jobs service Infinispan image")
+		jobsService.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetJobsServiceImageTag(), kogitosupportingservice.JobsServiceInfinispanImageName))
+	} else if jobsService.DatabaseType == infrastructure.MongoDBKind {
+		framework.GetMainLogger().Debug("Setting Jobs service MongoDB image")
+		jobsService.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetJobsServiceImageTag(), kogitosupportingservice.JobsServiceMongoDBImageName))
 	}
 
 	return framework.InstallKogitoJobsService(framework.GetDefaultInstallerType(), jobsService)
