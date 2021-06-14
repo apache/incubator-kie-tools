@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from "react";
+import * as React from "react";
 import { FormElement, FormInput, InputReference } from "../../api";
 
 export const NS_SEPARATOR = "__";

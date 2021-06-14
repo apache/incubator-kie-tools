@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from "react";
+import * as React from "react";
 import { Bridge } from "uniforms";
 import { union } from "lodash";
 import * as prettier from "prettier";

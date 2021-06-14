@@ -25,14 +25,6 @@ module.exports = (env, args) => [
       index: "./src/index.ts",
     },
     plugins: [new CopyPlugin({ patterns: [{ from: "./src/resources", to: "./resources" }] })],
-    module: {
-      rules: [
-        {
-          test: /\.txt$/i,
-          use: "raw-loader",
-        },
-      ],
-    },
     output: {
       libraryTarget: "commonjs2",
     },

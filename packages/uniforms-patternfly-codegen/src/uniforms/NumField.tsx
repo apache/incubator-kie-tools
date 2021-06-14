@@ -15,21 +15,23 @@
  */
 
 import React from "react";
-import { TextInputProps } from "@patternfly/react-core";
-import { connectField } from "uniforms/es5";
+import { connectField, HTMLFieldProps } from "uniforms/es5";
 
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 
-export type NumFieldProps = {
-  id: string;
-  label: string;
-  decimal?: boolean;
-  value?: string;
-  onChange: (value?: string) => void;
-  disabled: boolean;
-} & Omit<TextInputProps, "isDisabled">;
+export type NumFieldProps = HTMLFieldProps<
+  string,
+  HTMLInputElement,
+  {
+    label: string;
+    required: boolean;
+    decimal?: boolean;
+    min?: string;
+    max?: string;
+  }
+>;
 
 const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
   const ref: InputReference = getInputReference(props.name);

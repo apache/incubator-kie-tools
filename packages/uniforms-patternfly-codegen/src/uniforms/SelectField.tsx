@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-import React from "react";
-import { connectField } from "uniforms/es5";
+import * as React from "react";
+import { connectField, HTMLFieldProps } from "uniforms/es5";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 import { getInputReference, getStateCode, getStateCodeFromRef, NS_SEPARATOR, renderField } from "./utils/Utils";
 import { MULTIPLE_SELECT_FUNCTIONS, SELECT_FUNCTIONS } from "./staticCode/staticCodeBlocks";
 
-export type SelectInputProps = {
-  id: string;
-  name: string;
-  label: string;
-  required?: boolean;
-  fieldType?: typeof Array | any;
-  placeholder: string;
-  allowedValues?: string[];
-  disabled?: boolean;
-  transform?: (value?: string) => string;
-};
+export type SelectInputProps = HTMLFieldProps<
+  string | string[],
+  HTMLDivElement,
+  {
+    allowedValues?: string[];
+    transform?(value: string): string;
+  }
+>;
 
 export const SELECT_IMPORTS: string[] = ["SelectOption", "SelectOptionObject", "Select", "SelectVariant", "FormGroup"];
 

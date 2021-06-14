@@ -42,7 +42,7 @@ export const renderNestedInputFragmentWithContext = (
   field: any,
   itempProps: any,
   disabled?: boolean
-): FormInput => {
+): FormInput | undefined => {
   const codegenCtx: CodeGenContext = {
     rendered: [],
   };

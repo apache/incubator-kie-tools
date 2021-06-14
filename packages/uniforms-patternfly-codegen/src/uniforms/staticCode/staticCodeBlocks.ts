@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import * as dateFunctions from "!!raw-loader!../../resources/dateFunctions.txt";
-import * as timeFunctions from "!!raw-loader!../../resources/timeFunctions.txt";
-import * as selectFunctions from "!!raw-loader!../../resources/selectFunctions.txt";
-import * as multipleSelectFunctions from "!!raw-loader!../../resources/multipleSelectFunctions.txt";
-import * as checkboxGroupFunctions from "!!raw-loader!../../resources/checkboxGroupFunctions.txt";
+import dateFunctions from "!!raw-loader!../../resources/dateFunctions.txt";
+import timeFunctions from "!!raw-loader!../../resources/timeFunctions.txt";
+import selectFunctions from "!!raw-loader!../../resources/selectFunctions.txt";
+import multipleSelectFunctions from "!!raw-loader!../../resources/multipleSelectFunctions.txt";
+import checkboxGroupFunctions from "!!raw-loader!../../resources/checkboxGroupFunctions.txt";
 
 export const DATE_FUNCTIONS = "date_functions";
 export const TIME_FUNCTIONS = "time_functions";

@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-import React from "react";
+import * as React from "react";
 import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
-import { connectField } from "uniforms/es5";
+import { connectField, HTMLFieldProps } from "uniforms/es5";
 import { useAddFormElementToContext } from "./CodeGenContext";
 
-export type UnsupportedFieldProps = {
-  id: string;
-  name: string;
-  label: string;
-  onChange: (value?: string) => void;
-  fieldType?: any;
-  disabled: boolean;
-  required: boolean;
-};
+export type UnsupportedFieldProps = HTMLFieldProps<
+  any,
+  HTMLDivElement,
+  {
+    label: string;
+    required: boolean;
+  }
+>;
 
 const Unsupported: React.FC<UnsupportedFieldProps> = (props: UnsupportedFieldProps) => {
   const ref: InputReference = getInputReference(props.name);

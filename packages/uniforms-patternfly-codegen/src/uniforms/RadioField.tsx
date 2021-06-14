@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-import React from "react";
-import { connectField } from "uniforms/es5";
-import { useCodegenContext } from "./CodeGenContext";
+import * as React from "react";
+import { connectField, HTMLFieldProps } from "uniforms/es5";
+import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 
-export type RadioFieldProps = {
-  id: string;
-  name: string;
-  label: string;
-  allowedValues: string[];
-  onChange: (value: string) => void;
-  disabled: boolean;
-  required: boolean;
-  transform?: (value?: string) => string;
-};
+export type RadioFieldProps = HTMLFieldProps<
+  string,
+  HTMLDivElement,
+  {
+    name: string;
+    label: string;
+    transform?: (string?: string) => string;
+    allowedValues: string[];
+    required: boolean;
+    disabled: boolean;
+  }
+>;
 
 const Radio = (props: RadioFieldProps) => {
-  const codegenContext = useCodegenContext();
   const ref: InputReference = getInputReference(props.name);
 
   const radios: string[] = [];
@@ -65,7 +66,7 @@ const Radio = (props: RadioFieldProps) => {
     },
   });
 
-  codegenContext.rendered.push(element);
+  useAddFormElementToContext(element);
 
   return renderField(element);
 };

@@ -24,10 +24,10 @@ export interface CodeGenContext {
   rendered: FormElement<any>[];
 }
 
-export const codeGenContext = createContext<CodeGenContext>(null);
+export const codeGenContext = createContext<CodeGenContext | null>(null);
 
-export const useCodegenContext = (): CodeGenContext => {
-  return useContext<CodeGenContext>(codeGenContext);
+export const useCodegenContext = (): CodeGenContext | null => {
+  return useContext<CodeGenContext | null>(codeGenContext);
 };
 
 export const useAddFormElementToContext = (formElement: FormElement<any>): void => {
@@ -39,7 +39,7 @@ export const useAddFormElementToContext = (formElement: FormElement<any>): void 
 };
 
 export interface ProviderProps {
-  schema?: Bridge;
+  schema: Bridge;
   codegenCtx: CodeGenContext;
   uniformsCtx?: Context<any>;
   children: JSX.Element;
@@ -48,12 +48,12 @@ export interface ProviderProps {
 export const CodeGenContextProvider: React.FC<ProviderProps> = (props) => {
   const ctx: Context<any> = props.uniformsCtx || {
     changed: false,
-    changedMap: undefined,
+    changedMap: {},
     error: false,
-    model: undefined,
+    model: {},
     name: [],
-    onChange: undefined,
-    onSubmit: undefined,
+    onChange: (key, value) => {},
+    onSubmit: (event) => {},
     randomId: randomIds(),
     schema: props.schema,
     state: {

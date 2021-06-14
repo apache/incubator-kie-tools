@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-import React from "react";
-import { connectField } from "uniforms/es5";
+import * as React from "react";
+import { connectField, HTMLFieldProps } from "uniforms/es5";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { FormInput, InputReference } from "../api";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { CHECKBOX_GROUP_FUNCTIONS } from "./staticCode/staticCodeBlocks";
 
-export type CheckBoxGroupProps = {
-  id: string;
-  name: string;
-  label: string;
-  required?: boolean;
-  fieldType?: typeof Array | any;
-  placeholder: string;
-  allowedValues?: string[];
-  disabled?: boolean;
-  transform?: (value?: string) => string;
-};
+export type CheckBoxGroupProps = HTMLFieldProps<
+  string[],
+  HTMLDivElement,
+  {
+    name: string;
+    label: string;
+    allowedValues?: string[];
+    required: boolean;
+    transform?(value: string): string;
+  }
+>;
 
 const CheckBoxGroup: React.FC<CheckBoxGroupProps> = (props: CheckBoxGroupProps) => {
   const ref: InputReference = getInputReference(props.name);
@@ -51,7 +51,7 @@ const CheckBoxGroup: React.FC<CheckBoxGroupProps> = (props: CheckBoxGroupProps) 
 
   const element: FormInput = buildDefaultInputElement({
     pfImports: ["Checkbox"],
-    inputJsxCode: jsxCode,
+    inputJsxCode: jsxCode || "",
     ref: ref,
     dataType: "string[]",
     defaultValue: "[]",

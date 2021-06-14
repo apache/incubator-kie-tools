@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-import React from "react";
-import { connectField } from "uniforms/es5";
-import { TextInputProps } from "@patternfly/react-core";
+import * as React from "react";
+import { connectField, HTMLFieldProps } from "uniforms/es5";
 
 import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
-import { useCodegenContext } from "./CodeGenContext";
+import { useAddFormElementToContext } from "./CodeGenContext";
 import { DATE_FUNCTIONS, TIME_FUNCTIONS } from "./staticCode/staticCodeBlocks";
 
-export type DateFieldProps = {
-  id: string;
-  label: string;
-  value?: string;
-  onChange: (value?: string) => void;
-  disabled: boolean;
-  field?: { format: string };
-} & Omit<TextInputProps, "isDisabled">;
+export type DateFieldProps = HTMLFieldProps<
+  Date,
+  HTMLDivElement,
+  {
+    name: string;
+    label: string;
+    required: boolean;
+    max?: Date;
+    min?: Date;
+  }
+>;
 
 const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
-  const codegenContext = useCodegenContext();
   const ref: InputReference = getInputReference(props.name);
 
   const pfImports = ["DatePicker", "Flex", "FlexItem", "InputGroup", "TimePicker"];
@@ -78,7 +79,7 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
     },
   });
 
-  codegenContext.rendered.push(element);
+  useAddFormElementToContext(element);
 
   return renderField(element);
 };

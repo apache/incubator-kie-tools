@@ -17,7 +17,7 @@
 import * as React from "react";
 import { renderField } from "./_render";
 import { CHECKBOX_GROUP_FUNCTIONS } from "../uniforms/staticCode/staticCodeBlocks";
-import { CheckBoxGroupField, SelectField } from "../uniforms";
+import { CheckBoxGroupField } from "../uniforms";
 
 const schema = {
   roles: {

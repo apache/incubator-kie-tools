@@ -15,7 +15,7 @@
  */
 
 import { Context } from "uniforms";
-import React from "react";
+import * as React from "react";
 import { CodeGenContext, CodeGenContextProvider } from "../CodeGenContext";
 import AutoField from "../AutoField";
 
@@ -24,12 +24,12 @@ export interface Props {
   uniformsContext: Context<any>;
   field: any;
   itempProps: any;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 export const NestedFieldInput: React.FC<Props> = ({ codegenCtx, uniformsContext, field, itempProps, disabled }) => {
   return (
-    <CodeGenContextProvider codegenCtx={codegenCtx} uniformsCtx={uniformsContext}>
+    <CodeGenContextProvider schema={uniformsContext.schema} codegenCtx={codegenCtx} uniformsCtx={uniformsContext}>
       <AutoField key={field} name={field} disabled={disabled} {...itempProps} />
     </CodeGenContextProvider>
   );

@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-import React from "react";
-import { Bridge, Context } from "uniforms";
+import * as React from "react";
+import { Bridge } from "uniforms";
 import { CodeGenContext, CodeGenContextProvider } from "../CodeGenContext";
 import AutoFields from "../AutoFields";
 
 export interface Props {
   schema: Bridge;
   codegenCtx: CodeGenContext;
-  uniformsCtx?: Context<any>;
 }
 
 export const FormInputs: React.FC<Props> = (props) => {

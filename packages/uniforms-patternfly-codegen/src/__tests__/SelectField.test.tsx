@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { renderField } from "./_render";
-import { SELECT_FUNCTIONS, MULTIPLE_SELECT_FUNCTIONS } from "../uniforms/staticCode/staticCodeBlocks";
+import { MULTIPLE_SELECT_FUNCTIONS, SELECT_FUNCTIONS } from "../uniforms/staticCode/staticCodeBlocks";
 import { SelectField } from "../uniforms";
 import { NS_SEPARATOR } from "../uniforms/utils/Utils";
 import { SELECT_IMPORTS } from "../uniforms/SelectField";

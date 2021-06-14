@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import React from "react";
-import { CheckboxProps } from "@patternfly/react-core";
-import { connectField } from "uniforms/es5";
+import * as React from "react";
+import { connectField, HTMLFieldProps } from "uniforms/es5";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 
 import { getInputReference, getStateCodeFromRef, renderField } from "./utils/Utils";
 
-export type BoolFieldProps = {
-  appearance?: "checkbox" | "switch";
-  label: string;
-  disabled: boolean;
-  required: boolean;
-  onChange: (value?: string) => void;
-} & Omit<CheckboxProps, "isDisabled">;
+export type BoolFieldProps = HTMLFieldProps<
+  boolean,
+  HTMLDivElement,
+  {
+    name: string;
+    label: string;
+  }
+>;
 
 const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
   const ref: InputReference = getInputReference(props.name);

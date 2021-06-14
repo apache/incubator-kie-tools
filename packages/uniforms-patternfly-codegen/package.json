@@ -14,18 +14,13 @@
     "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",
     "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose'",
     "test:clearCache": "jest --clearCache",
-    "build:fast": "rm -rf dist && webpack",
+    "build:dev": "rimraf dist && webpack",
     "build:prod": "yarn lint && yarn test && rimraf dist && webpack"
   },
   "dependencies": {
     "uniforms": "3.0.0",
     "lodash": "^4.14.2",
     "prettier": "^2.2.1"
-  },
-  "devDependencies": {
-    "jest-raw-loader": "^1.0.1",
-    "@types/simpl-schema": "1.10.2",
-    "uniforms-bridge-simple-schema-2": "3.4.0"
   },
   "babel": {
     "presets": [

@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-import React from "react";
-import { connectField } from "uniforms/es5";
-import { TextInputProps } from "@patternfly/react-core";
+import * as React from "react";
+import { connectField, HTMLFieldProps } from "uniforms/es5";
 
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { DATE_FUNCTIONS } from "./staticCode/staticCodeBlocks";
 
-export type TextFieldProps = {
-  id: string;
-  label: string;
-  value?: string;
-  onChange: (value?: string) => void;
-  disabled: boolean;
-  field?: { format: string };
-} & Omit<TextInputProps, "isDisabled">;
+export type TextFieldProps = HTMLFieldProps<
+  string,
+  HTMLInputElement,
+  {
+    label: string;
+    required: boolean;
+  }
+>;
 
 const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
   const ref: InputReference = getInputReference(props.name);

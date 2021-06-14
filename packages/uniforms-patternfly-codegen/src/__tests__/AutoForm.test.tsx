@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { render } from "@testing-library/react";
 import * as React from "react";
+import { render } from "@testing-library/react";
 import { unescape } from "lodash";
 import AutoForm, { AutoFormProps } from "../uniforms/AutoForm";
 import SimpleSchema from "simpl-schema";
@@ -68,11 +68,12 @@ const props: AutoFormProps = {
   placeholder: true,
 };
 
-describe("AutoForm tests", () => {
-  it("Full rendering", () => {
+describe("<AutoForm> tests", () => {
+  it("<AutoForm> - Full rendering", () => {
     const { container } = render(<AutoForm {...props} />);
-    const form = unescape(container.innerHTML);
 
-    console.log(form);
+    expect(container).toMatchSnapshot();
+    const formSource = unescape(container.innerHTML);
+    expect(formSource).not.toBeUndefined();
   });
 });

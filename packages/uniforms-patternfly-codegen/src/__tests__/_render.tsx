@@ -53,3 +53,19 @@ export const renderField = (Field: React.FC, props: any, schema?: any) => {
     formElement: codegenContext.rendered[0],
   };
 };
+
+export const renderFields = (Field: React.FC, props: any, schema?: any) => {
+  const codegenContext: CodeGenContext = {
+    rendered: [],
+  };
+
+  const { container } = render(
+    <TestCodeGenContextProvider ctx={codegenContext} schema={schema}>
+      <Field {...props} />
+    </TestCodeGenContextProvider>
+  );
+
+  expect(codegenContext.rendered).not.toHaveLength(0);
+
+  return codegenContext.rendered;
+};
