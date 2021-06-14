@@ -36,6 +36,13 @@ runs:
         mkdir .mvn
         echo '-ntp' > .mvn/maven.config
 
+    - name: "Setup default shell for Yarn scripts on Windows"
+      shell: bash
+      run: |
+        echo "STEP: Setup default Maven args"
+        cd ${{ inputs.path }}
+        yarn config set script-shell powershell.exe
+
     - name: "Bootstrap"
       shell: bash
       run: |
