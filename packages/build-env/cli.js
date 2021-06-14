@@ -17,12 +17,88 @@
  */
 
 const buildEnv = require("./index");
+const graphviz = require("graphviz");
+const { getPackagesSync } = require("@lerna/project");
+const fs = require("fs");
+const path = require("path");
 
-function main() {
-  const path = process.argv[2];
+async function main() {
   const opt = process.argv[2];
 
-  if (opt === "--print-vars") {
+  if (opt === "--build-graph") {
+    const g = graphviz.digraph("G");
+
+    g.use = "dot";
+    g.set("ranksep", "1.5");
+    g.set("splines", "line");
+    g.setNodeAttribut("shape", "box");
+
+    const packages = getPackagesSync();
+    const packageMap = new Map(packages.map((p) => [p.name, p]));
+    const packageNames = new Set(packages.map((p) => p.name));
+
+    const adjMatrix = {};
+    for (const pkg of packages) {
+      adjMatrix[pkg.name] = adjMatrix[pkg.name] ?? {};
+      for (const depName of Object.keys(pkg.dependencies ?? {})) {
+        if (packageNames.has(depName)) {
+          adjMatrix[pkg.name][depName] = "dependency";
+        }
+      }
+      for (const depName of Object.keys(pkg.devDependencies ?? {})) {
+        if (packageNames.has(depName)) {
+          adjMatrix[pkg.name][depName] = "devDependency";
+        }
+      }
+    }
+
+    // transitive reduction
+    const trMatrix = JSON.parse(JSON.stringify(adjMatrix));
+    for (const s in trMatrix)
+      for (const u in trMatrix)
+        if (trMatrix[u][s] === "dependency" || trMatrix[u][s] === "devDependency")
+          for (const v in trMatrix)
+            if (trMatrix[s][v] === "dependency" || trMatrix[s][v] === "devDependency") trMatrix[u][v] = "transitive";
+
+    const resMatrix = trMatrix;
+
+    // print graph
+    for (const pkgName in resMatrix) {
+      const displayPkgName = pkgName;
+
+      const node = g.addNode(displayPkgName);
+      if (packageMap.get(pkgName)?.private) {
+        node.set("style", "dashed");
+      } else {
+        node.set("color", "blue");
+        node.set("fontcolor", "blue");
+      }
+
+      for (const depName in resMatrix[pkgName]) {
+        const displayDepName = depName;
+
+        if (resMatrix[pkgName][depName] === "dependency") {
+          const edge = g.addEdge(displayPkgName, displayDepName);
+          edge.set("style", "solid");
+        } else if (resMatrix[pkgName][depName] === "devDependency") {
+          const edge = g.addEdge(displayPkgName, displayDepName);
+          edge.set("style", "dashed");
+        } else if (resMatrix[pkgName][depName] === "transitive") {
+          // ignore
+        }
+      }
+    }
+
+    const data = g.to_dot();
+
+    const outputFilePath = path.resolve(__dirname, "graph.dot");
+    fs.writeFileSync(outputFilePath, data);
+
+    console.info(`[build-env] Wrote dependency graph to '${outputFilePath}'`);
+    process.exit(0);
+  }
+
+  if (opt === "--print-env") {
     const result = {};
     const vars = buildEnv.vars().ENV_VARS;
 
@@ -42,22 +118,31 @@ function main() {
     process.exit(0);
   }
 
+  if (opt === "--print-vars") {
+    const vars = buildEnv.vars().ENV_VARS;
+    for (const key in vars) {
+      console.log(vars[key].name);
+    }
+    process.exit(0);
+  }
+
   if (opt === "--print-config") {
     console.log("[build-env] CLI-accessible config:");
     console.log(JSON.stringify(flattenObj(buildEnv), undefined, 2));
     process.exit(0);
   }
 
-  if (!path) {
+  const propertyPath = opt;
+  if (!propertyPath) {
     console.error("Please an option.");
     process.exit(1);
   }
 
   let prop = buildEnv;
-  for (const p of path.split(".")) {
+  for (const p of propertyPath.split(".")) {
     prop = prop[p];
     if (prop === undefined || typeof prop === "function") {
-      console.error(`Property '${path}' not found.`);
+      console.error(`Property '${propertyPath}' not found.`);
       process.exit(1);
     }
   }

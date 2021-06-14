@@ -1,0 +1,38 @@
+digraph G {
+  graph [ ranksep =1.5, splines = "line" ];
+  node [ shape =box ];
+  "@kogito-tooling/build-env" [ color = "blue", fontcolor = "blue" ];
+  "chrome-extension-pack-kogito-kie-editors" [ style = "dashed" ];
+  "@kogito-tooling/external-assets-base" [ color = "blue", fontcolor = "blue" ];
+  "@kogito-tooling/kie-bc-editors" [ color = "blue", fontcolor = "blue" ];
+  "@kogito-tooling/desktop" [ style = "dashed" ];
+  "@kogito-tooling/i18n-common-dictionary" [ style = "dashed" ];
+  "@kogito-tooling/hub" [ style = "dashed" ];
+  "@kogito-tooling/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue" ];
+  "@kogito-tooling/kie-editors-standalone" [ color = "blue", fontcolor = "blue" ];
+  "@kogito-tooling/online-editor" [ style = "dashed" ];
+  "@kogito-tooling/pmml-editor" [ color = "blue", fontcolor = "blue" ];
+  "vscode-extension-backend" [ style = "dashed" ];
+  "vscode-extension-pack-kogito-kie-editors" [ style = "dashed" ];
+  "chrome-extension-pack-kogito-kie-editors" -> "@kogito-tooling/external-assets-base" [ style = "solid" ];
+  "chrome-extension-pack-kogito-kie-editors" -> "@kogito-tooling/kie-bc-editors" [ style = "solid" ];
+  "@kogito-tooling/desktop" -> "@kogito-tooling/external-assets-base" [ style = "solid" ];
+  "@kogito-tooling/desktop" -> "@kogito-tooling/i18n-common-dictionary" [ style = "solid" ];
+  "@kogito-tooling/desktop" -> "@kogito-tooling/kie-bc-editors" [ style = "solid" ];
+  "@kogito-tooling/external-assets-base" -> "@kogito-tooling/build-env" [ style = "solid" ];
+  "@kogito-tooling/hub" -> "@kogito-tooling/desktop" [ style = "solid" ];
+  "@kogito-tooling/i18n-common-dictionary" -> "@kogito-tooling/build-env" [ style = "solid" ];
+  "@kogito-tooling/kie-bc-editors" -> "@kogito-tooling/pmml-editor-marshaller" [ style = "solid" ];
+  "@kogito-tooling/kie-editors-standalone" -> "@kogito-tooling/external-assets-base" [ style = "dashed" ];
+  "@kogito-tooling/kie-editors-standalone" -> "@kogito-tooling/kie-bc-editors" [ style = "dashed" ];
+  "@kogito-tooling/online-editor" -> "@kogito-tooling/external-assets-base" [ style = "solid" ];
+  "@kogito-tooling/online-editor" -> "@kogito-tooling/i18n-common-dictionary" [ style = "solid" ];
+  "@kogito-tooling/online-editor" -> "@kogito-tooling/kie-bc-editors" [ style = "solid" ];
+  "@kogito-tooling/online-editor" -> "@kogito-tooling/pmml-editor" [ style = "solid" ];
+  "@kogito-tooling/pmml-editor" -> "@kogito-tooling/pmml-editor-marshaller" [ style = "solid" ];
+  "@kogito-tooling/pmml-editor-marshaller" -> "@kogito-tooling/build-env" [ style = "solid" ];
+  "vscode-extension-backend" -> "@kogito-tooling/external-assets-base" [ style = "solid" ];
+  "vscode-extension-pack-kogito-kie-editors" -> "@kogito-tooling/external-assets-base" [ style = "solid" ];
+  "vscode-extension-pack-kogito-kie-editors" -> "@kogito-tooling/kie-bc-editors" [ style = "solid" ];
+  "vscode-extension-pack-kogito-kie-editors" -> "@kogito-tooling/pmml-editor" [ style = "solid" ];
+}

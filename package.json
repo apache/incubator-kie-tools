@@ -7,8 +7,9 @@
     "packages/*"
   ],
   "scripts": {
+    "env:print": "build-env --print-env",
+    "env:vars": "build-env --print-vars",
     "bootstrap": "lerna bootstrap",
-    "build": "lerna run build --stream",
     "build:dev": "lerna run build:dev --stream",
     "build:prod": "lerna run build:prod --stream",
     "build:productization": "lerna run build:prod --scope=@kogito-tooling/kie-editors-standalone --include-filtered-dependencies --stream",
@@ -73,6 +74,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "file-loader": "^6.2.0",
     "glob": "^7.1.6",
+    "graphviz": "^0.0.9",
     "html-webpack-plugin": "^5.3.1",
     "husky": "^6.0.0",
     "identity-obj-proxy": "^3.0.0",

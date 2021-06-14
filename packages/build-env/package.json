@@ -14,7 +14,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "scripts": {
-    "print-build-env": "build-env --print-vars && build-env --print-config",
+    "print-build-env": "rimraf dist && build-env --build-graph && build-env --print-env && build-env --print-config",
     "build:dev": "yarn print-build-env",
     "build:prod": "yarn print-build-env"
   }
