@@ -64,10 +64,10 @@ jobs:
           DOWNLOAD_HUB_linuxUrl: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
           DOWNLOAD_HUB_macOsUrl: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
           DOWNLOAD_HUB_windowsUrl: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
-          DOWNLOAD_DMN_RUNNER_linuxUrl: "kiegroup.github.io/kogito-tooling-go/jit-executor/latest"
-          DOWNLOAD_DMN_RUNNER_macOsUrl: "kiegroup.github.io/kogito-tooling-go/jit-executor/latest"
-          DOWNLOAD_DMN_RUNNER_windowsUrl: "kiegroup.github.io/kogito-tooling-go/jit-executor/latest"
-          DMN_RUNNER_VERSION: "0.0.1"
+          DMN_RUNNER__linuxDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/dmn_runner_linux_${{ steps.release_json.outputs.tag }}.tar.gz"
+          DMN_RUNNER__macOsDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/dmn_runner_macos_${{ steps.release_json.outputs.tag }}.dmg"
+          DMN_RUNNER__windowsDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/dmn_runner_windows_${{ steps.release_json.outputs.tag }}.exe"
+          DMN_RUNNER__compatibleVersion: "${{ steps.release_json.outputs.tag }}"
           DISPLAY: ":99.0"
         run: |
           cd kogito-tooling
