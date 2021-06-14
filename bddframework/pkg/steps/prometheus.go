@@ -17,6 +17,7 @@ package steps
 import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
+	"github.com/kiegroup/kogito-operator/test/pkg/installers"
 )
 
 func registerPrometheusSteps(ctx *godog.ScenarioContext, data *Data) {
@@ -25,7 +26,7 @@ func registerPrometheusSteps(ctx *godog.ScenarioContext, data *Data) {
 }
 
 func (data *Data) prometheusOperatorIsDeployed() error {
-	return framework.InstallOperator(data.Namespace, "prometheus", "beta", framework.CommunityCatalog)
+	return installers.GetPrometheusInstaller().Install(data.Namespace)
 }
 
 func (data *Data) prometheusInstanceIsDeployed(labelName, labelValue string) error {
