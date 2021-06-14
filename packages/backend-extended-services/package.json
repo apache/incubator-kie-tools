@@ -16,7 +16,9 @@
   },
   "scripts": {
     "lint": "echo 'Linting'",
-    "build:dev": "mvn clean install -DskipTests",
-    "build:prod": "yarn run run-script-if --bool true --then \"yarn lint\" \"mvn clean install -DskipTests=$(build-env global.build.test --not)\""
+    "build": "mvn clean install",
+    "build:skipTests": "mvn clean install -DskipTests",
+    "build:dev": "yarn build:skipTests",
+    "build:prod": "yarn lint && yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"yarn build\" --else \"yarn build:skipTests\""
   }
 }
