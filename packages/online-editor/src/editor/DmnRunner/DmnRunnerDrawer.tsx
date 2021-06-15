@@ -132,7 +132,7 @@ export function DmnRunnerDrawer(props: Props) {
       return props.editor
         .getContent()
         .then((content) => {
-          dmnRunner.service.result({ context: { ...formData }, model: content })?.then((result) => {
+          dmnRunner.service.result({ context: formData, model: content })?.then((result) => {
             if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
               dmnRunner.setFormError(true);
               return;

@@ -22,7 +22,6 @@ import { DmnFormSchema, DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerModal } from "./DmnRunnerModal";
 import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
-import { diff } from "deep-object-diff";
 import { getCookie, setCookie } from "../../common/utils";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 import { useOnlineI18n } from "../../common/i18n";
@@ -60,40 +59,12 @@ export function DmnRunnerContextProvider(props: Props) {
     return props.editor
       ?.getContent()
       .then((content) => service.formSchema(content ?? ""))
-      .then((newSchema) => {
-        const propertiesDifference = diff(
-          formSchema?.definitions?.InputSet?.properties ?? {},
-          newSchema?.definitions?.InputSet?.properties ?? {}
-        );
-
-        // Remove an formData property that has been deleted;
-        setFormError((previous) => {
-          if (!previous) {
-            setFormData((previousFormData) => {
-              return Object.entries(propertiesDifference).reduce(
-                (newFormData, [property, value]) => {
-                  if (!value || value.type) {
-                    delete (newFormData as any)[property];
-                  }
-                  if (value?.format) {
-                    (newFormData as any)[property] = undefined;
-                  }
-                  return newFormData;
-                },
-                { ...previousFormData }
-              );
-            });
-            return false;
-          }
-          return false;
-        });
-        setFormSchema(newSchema);
-      })
+      .then((newSchema) => setFormSchema(newSchema))
       .catch((err) => {
         console.error(err);
         setFormError(true);
       });
-  }, [props.editor, service, formSchema]);
+  }, [props.editor, service]);
 
   // Pooling to detect either if DMN Runner is running or has stopped
   useEffect(() => {

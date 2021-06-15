@@ -22,6 +22,7 @@ import { dataPathToFormFieldPath } from "./uniforms/utils";
 import { DmnFormJsonSchemaBridge } from "./uniforms";
 import { DmnValidator } from "./DmnValidator";
 import { dmnFormI18n } from "./i18n";
+import { diff } from "deep-object-diff";
 
 export interface DmnFormData {
   definitions: DmnFormDefinitions;
@@ -49,7 +50,7 @@ interface DmnDeepProperty {
 export interface Props {
   formData: any;
   setFormData: React.Dispatch<any>;
-  setFormError: React.Dispatch<boolean>;
+  setFormError: React.Dispatch<any>;
   formErrorMessage: React.ReactNode;
   formSchema?: any;
   updateDmnResults: (model: any) => void;
@@ -66,6 +67,16 @@ export interface Props {
   locale?: string;
 }
 
+export function usePrevious(value: any) {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+}
+
 export function DmnForm(props: Props) {
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<DmnFormJsonSchemaBridge>();
@@ -74,6 +85,7 @@ export function DmnForm(props: Props) {
     return dmnFormI18n.getCurrent();
   }, [props.locale]);
   const validator = useMemo(() => new DmnValidator(i18n), []);
+  const [formModel, setFormModel] = useState<any>();
 
   const setCustomPlaceholders = useCallback((value: DmnDeepProperty) => {
     if (value?.format === "days and time duration") {
@@ -142,18 +154,79 @@ export function DmnForm(props: Props) {
     setJsonSchemaBridge(validator.getBridge(form));
   }, [props.formSchema, formPreprocessing, validator]);
 
+  const defaultFormValues = useMemo(() => {
+    return Object.keys(jsonSchemaBridge?.schema?.properties ?? {}).reduce((acc, property) => {
+      if (Object.hasOwnProperty.call(jsonSchemaBridge?.schema?.properties[property], "$ref")) {
+        const refPath = jsonSchemaBridge?.schema?.properties[property].$ref!.split("/").pop() ?? "";
+        if (jsonSchemaBridge?.schema?.definitions?.[refPath].type === "object") {
+          acc[`${property}`] = {};
+          return acc;
+        }
+        if (jsonSchemaBridge?.schema?.definitions?.[refPath]?.type === "array") {
+          acc[`${property}`] = [];
+          return acc;
+        }
+        if (jsonSchemaBridge?.schema?.definitions?.[refPath]?.type === "boolean") {
+          acc[`${property}`] = false;
+          return acc;
+        }
+      }
+      if (jsonSchemaBridge?.schema?.properties?.[property]?.type === "object") {
+        acc[`${property}`] = {};
+        return acc;
+      }
+      if (jsonSchemaBridge?.schema?.properties?.[property]?.type === "array") {
+        acc[`${property}`] = [];
+        return acc;
+      }
+      if (jsonSchemaBridge?.schema?.properties?.[property]?.type === "boolean") {
+        acc[`${property}`] = false;
+        return acc;
+      }
+      return acc;
+    }, {} as { [x: string]: any });
+  }, [jsonSchemaBridge]);
+
+  const previousFormSchema: any = usePrevious(props.formSchema);
+  useEffect(() => {
+    const propertiesDifference = diff(
+      previousFormSchema?.definitions?.InputSet?.properties ?? {},
+      props.formSchema?.definitions?.InputSet?.properties ?? {}
+    );
+
+    // Remove an formData property that has been deleted;
+    props.setFormError((previous: boolean) => {
+      if (!previous) {
+        const formData = Object.entries(propertiesDifference).reduce(
+          (newFormData, [property, value]) => {
+            if (!value || value.type) {
+              delete (newFormData as any)[property];
+            }
+            if (value?.format) {
+              (newFormData as any)[property] = undefined;
+            }
+            return newFormData;
+          },
+          { ...defaultFormValues, ...formModel }
+        );
+        props.setFormData(formData);
+      }
+      return false;
+    });
+  }, [props.setFormData, props.setFormError, props.onSubmit, defaultFormValues, props.formSchema, formModel]);
+
   const onSubmit = useCallback(
     (model) => {
       props.onSubmit?.(model);
-      props.setFormData(model);
     },
-    [props.setFormData, props.onSubmit]
+    [props.onSubmit]
   );
 
   // Validation occurs on every change and submit.
   const onValidate = useCallback(
     (model, error: any) => {
       props.onValidate?.(model, error);
+      setFormModel(model);
       if (!error) {
         return;
       }
@@ -192,10 +265,9 @@ export function DmnForm(props: Props) {
           }
         }, model);
       });
-      props.setFormData(model);
       return { details };
     },
-    [props.setFormData, props.onValidate]
+    [setFormModel, props.onValidate]
   );
 
   // Resets the ErrorBoundary everytime the JsonSchemaBridge is updated
@@ -220,6 +292,7 @@ export function DmnForm(props: Props) {
             onValidate={onValidate}
             errorsField={props.errorsField}
             submitField={props.submitField}
+            validate={"onChange"}
           />
         </ErrorBoundary>
       )}
