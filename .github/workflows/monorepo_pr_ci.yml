@@ -32,7 +32,7 @@ jobs:
       - name: "Build dependencies"
         run: |
           export REF=${{ github.event.pull_request.base.sha }} &&
-          export SCOPE=$(diff <(echo "$(lerna ls --since $REF --include-dependencies)") <(echo "$(lerna ls --since $REF)") --changed-group-format='%<%>' --unchanged-group-format='' | xargs -I{} echo -n ' --scope="{}"') &&
+          export SCOPE=$(diff <(echo "$(lerna ls --since $REF --include-dependencies --all | cut -d' ' -f1)") <(echo "$(lerna ls --since $REF  --all | cut -d' ' -f1)") --changed-group-format='%<%>' --unchanged-group-format='' | xargs -I{} echo -n ' --scope="{}"') &&
           echo $REF $SCOPE &&
           yarn run-script-if --silent --env SCOPE --eq "" \
             --then "echo No dependencies to build." \
