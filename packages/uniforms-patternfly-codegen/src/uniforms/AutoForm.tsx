@@ -16,7 +16,8 @@
 
 import * as React from "react";
 import { Bridge } from "uniforms";
-import { union } from "lodash";
+import union from "lodash/union";
+import escape from "lodash/escape";
 import * as prettier from "prettier";
 import { FormElement } from "../api";
 import { NS_SEPARATOR } from "./utils/Utils";
@@ -72,7 +73,7 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
     jsxBracketSameLine: true,
     tabWidth: 2,
   });
-  return <>{formattedFormTemplate}</>;
+  return <>{escape(formattedFormTemplate)}</>;
 };
 
 export default AutoForm;

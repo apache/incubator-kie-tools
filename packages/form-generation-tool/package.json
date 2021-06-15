@@ -1,0 +1,33 @@
+{
+  "name": "@kogito-tooling/form-generation-tool",
+  "version": "0.10.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "lint": "echo 'Linting....'",
+    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose'",
+    "test:clearCache": "jest --clearCache",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "package:prod:linux": "pkg dist/index.js --output dist/form-generation-tool-linux --target node16-linux-x64",
+    "package:prod:macos": "pkg dist/index.js --output dist/form-generation-tool-macos --target node16-macos-x64",
+    "package:prod:windows": "pkg dist/index.js --output dist/form-generation-tool-win.exe --target node16-win-x64",
+    "build:prod": "yarn lint && yarn test && rimraf dist && webpack && yarn run package:prod:linux && yarn run package:prod:macos && yarn run package:prod:windows"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "dependencies": {
+    "@kogito-tooling/uniforms-patternfly-codegen": "0.10.0",
+    "@types/yargs": "^17.0.0",
+    "uniforms": "3.0.0",
+    "uniforms-bridge-json-schema": "3.0.0",
+    "pkg": "^5.1.0",
+    "yargs": "^17.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
