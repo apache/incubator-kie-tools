@@ -15,10 +15,11 @@
     "@kogito-tooling/build-env": "0.0.1"
   },
   "scripts": {
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "lint": "echo 'Linting'",
-    "build": "mvn clean install",
-    "build:skipTests": "mvn clean install -DskipTests",
-    "build:dev": "yarn build:skipTests",
-    "build:prod": "yarn lint && yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"yarn build\" --else \"yarn build:skipTests\""
+    "build:dev": "mvn clean install -DskipTests",
+    "build:prod:win32": "yarn powershell \"mvn clean install `-DskipTests=$(build-env global.build.test --not)\"",
+    "build:prod:darwin:linux": "mvn clean install -DskipTests=$(build-env global.build.test --not)",
+    "build:prod": "yarn lint && run-script-os"
   }
 }
