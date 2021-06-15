@@ -45,8 +45,8 @@ jobs:
           KOGITO_TOOLING_BUILD_lint: "true"
           KOGITO_TOOLING_BUILD_test: "true"
           KOGITO_TOOLING_BUILD_testIT: "true"
-          START_SERVER_AND_TEST_INSECURE: "true"
           DISPLAY: ":99.0"
+          START_SERVER_AND_TEST_INSECURE: "true"
         run: |
           lerna run build:prod --stream --concurrency 1 --since ${{ github.event.pull_request.base.sha }}
 
