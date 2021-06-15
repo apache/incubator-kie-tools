@@ -23,6 +23,13 @@ import { DmnFormJsonSchemaBridge } from "./uniforms";
 import { DmnValidator } from "./DmnValidator";
 import { dmnFormI18n } from "./i18n";
 import { diff } from "deep-object-diff";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
+import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+
+const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
 export interface DmnFormData {
   definitions: DmnFormDefinitions;
@@ -86,6 +93,7 @@ export function DmnForm(props: Props) {
   }, [props.locale]);
   const validator = useMemo(() => new DmnValidator(i18n), []);
   const [formModel, setFormModel] = useState<any>();
+  const [validatorError, setValidatorError] = useState<boolean>(false);
 
   const setCustomPlaceholders = useCallback((value: DmnDeepProperty) => {
     if (value?.format === "days and time duration") {
@@ -145,14 +153,6 @@ export function DmnForm(props: Props) {
     },
     [formDeepPreprocessing]
   );
-
-  useEffect(() => {
-    const form: DmnFormData = Object.assign(props.formSchema ?? {}, {});
-    if (Object.keys(form).length > 0) {
-      formPreprocessing(form);
-    }
-    setJsonSchemaBridge(validator.getBridge(form));
-  }, [props.formSchema, formPreprocessing, validator]);
 
   const defaultFormValues = useMemo(() => {
     return Object.keys(jsonSchemaBridge?.schema?.properties ?? {}).reduce((acc, property) => {
@@ -215,6 +215,21 @@ export function DmnForm(props: Props) {
     });
   }, [props.setFormData, props.setFormError, props.onSubmit, defaultFormValues, props.formSchema, formModel]);
 
+  useEffect(() => {
+    const form: DmnFormData = Object.assign(props.formSchema ?? {}, {});
+    if (Object.keys(form).length > 0) {
+      formPreprocessing(form);
+    }
+    try {
+      const bridge = validator.getBridge(form);
+      setJsonSchemaBridge(bridge);
+      setValidatorError(false);
+    } catch (err) {
+      console.error(err);
+      setValidatorError(true);
+    }
+  }, [props.formSchema, formPreprocessing, validator]);
+
   const onSubmit = useCallback(
     (model) => {
       props.onSubmit?.(model);
@@ -276,26 +291,54 @@ export function DmnForm(props: Props) {
   }, [props.formSchema]);
 
   return (
-    <div data-testid={"dmn-form"}>
-      {jsonSchemaBridge && (
-        <ErrorBoundary ref={errorBoundaryRef} setHasError={props.setFormError} error={props.formErrorMessage}>
-          <AutoForm
-            id={props.id}
-            model={props.formData}
-            ref={props.formRef}
-            showInlineError={props.showInlineError}
-            autosave={props.autosave}
-            autosaveDelay={props.autosaveDelay}
-            schema={jsonSchemaBridge}
-            placeholder={props.placeholder}
-            onSubmit={onSubmit}
-            onValidate={onValidate}
-            errorsField={props.errorsField}
-            submitField={props.submitField}
-            validate={"onChange"}
-          />
-        </ErrorBoundary>
+    <>
+      {validatorError ? (
+        <EmptyState>
+          <EmptyStateIcon icon={ExclamationTriangleIcon} />
+          <TextContent>
+            <Text component={"h2"}>{i18n.form.error.title}</Text>
+          </TextContent>
+          <EmptyStateBody>
+            <TextContent>
+              <Text>
+                <I18nWrapped
+                  components={{
+                    jira: (
+                      <a href={KOGITO_JIRA_LINK} target={"_blank"}>
+                        {KOGITO_JIRA_LINK}
+                      </a>
+                    ),
+                  }}
+                >
+                  {i18n.form.error.message}
+                </I18nWrapped>
+              </Text>
+            </TextContent>
+          </EmptyStateBody>
+        </EmptyState>
+      ) : (
+        <div data-testid={"dmn-form"}>
+          {jsonSchemaBridge && (
+            <ErrorBoundary ref={errorBoundaryRef} setHasError={props.setFormError} error={props.formErrorMessage}>
+              <AutoForm
+                id={props.id}
+                model={props.formData}
+                ref={props.formRef}
+                showInlineError={props.showInlineError}
+                autosave={props.autosave}
+                autosaveDelay={props.autosaveDelay}
+                schema={jsonSchemaBridge}
+                placeholder={props.placeholder}
+                onSubmit={onSubmit}
+                onValidate={onValidate}
+                errorsField={props.errorsField}
+                submitField={props.submitField}
+                validate={"onChange"}
+              />
+            </ErrorBoundary>
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 }

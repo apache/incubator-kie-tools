@@ -19,7 +19,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { Tooltip } from "@patternfly/react-core";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon";
 import {
   DescriptionList,
