@@ -21,10 +21,24 @@ const graphviz = require("graphviz");
 const { getPackagesSync } = require("@lerna/project");
 const fs = require("fs");
 const path = require("path");
+const { spawnSync } = require("child_process");
 
 async function main() {
   const opt = process.argv[2];
   const flags = process.argv[3];
+
+  if (opt === "--print-cli-tools-check") {
+    console.info(`[build-env] CLI Tools:`);
+    const checks = {
+      ...checkCliTool("node", ["-v"]),
+      ...checkCliTool("npm", ["-v"]),
+      ...checkCliTool("yarn", ["-v"]),
+      ...checkCliTool("lerna", ["-v"]),
+      ...checkCliTool("mvn", ["-v"]),
+    };
+    console.info(checks);
+    process.exit(0);
+  }
 
   if (opt === "--build-graph") {
     const g = graphviz.digraph("G");
@@ -164,6 +178,21 @@ async function main() {
   }
 
   console.log(configPropertyValue);
+}
+
+function checkCliTool(bin, args) {
+  const checkingCommand = spawnSync(bin, args, { stdio: "pipe" });
+
+  let ret = {};
+  if (checkingCommand.status !== 0) {
+    const check = `[❌] ${bin}`;
+    ret[check] = "Not found. Problems may occur during the build.";
+  } else {
+    const check = `[✅] ${bin}`;
+    ret[check] = `${checkingCommand.stdout}`.trim();
+  }
+
+  return ret;
 }
 
 function flattenObj(obj, parent, res = {}) {
