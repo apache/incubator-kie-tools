@@ -30,6 +30,7 @@ import {
   customTaskDocumentationTextArea,
   palletteItemAnchor,
   assignmentsTextBoxInput,
+  processNameInput,
 } from "./helpers/BpmnLocators";
 import DecisionNavigatorHelper from "./helpers/dmn/DecisionNavigatorHelper";
 
@@ -220,6 +221,37 @@ describe("Editors are loading properly", () => {
     assert.isTrue(await assignmentsTextBox.isEnabled());
     assert.equal(await assignmentsTextBox.getAttribute("value"), "7 data inputs, 1 data output");
     assertWebElementWithAtribute(assignmentsTextBox, "value", "7 data inputs, 1 data output");
+
+    await webview.switchBack();
+  });
+
+  it("Saves a change of process name in BPMN editor properly", async function () {
+    this.timeout(60000);
+    webview = await testHelper.openFileFromSidebar("SaveAssetTest.bpmn");
+    await webview.switchToFrame();
+    let bpmnEditorTester = new BpmnEditorTestHelper(webview);
+
+    let properties = await bpmnEditorTester.openDiagramProperties();
+    let processNameInputField = await properties.findElement(processNameInput());
+    assert.isTrue(await processNameInputField.isEnabled());
+    const formerProcessId = await processNameInputField.getAttribute("value");
+    assert.isDefined(formerProcessId);
+
+    await processNameInputField.sendKeys("Renamed");
+    await bpmnEditorTester.openDiagramExplorer();
+
+    await webview.switchBack();
+
+    await testHelper.executeCommandFromPrompt("File: Save");
+    await testHelper.closeAllEditors();
+
+    webview = await testHelper.openFileFromSidebar("SaveAssetTest.bpmn");
+    await webview.switchToFrame();
+    bpmnEditorTester = new BpmnEditorTestHelper(webview);
+    properties = await bpmnEditorTester.openDiagramProperties();
+    processNameInputField = await properties.findElement(processNameInput());
+    assert.isTrue(await processNameInputField.isEnabled());
+    assert.equal(await processNameInputField.getAttribute("value"), formerProcessId + "Renamed");
 
     await webview.switchBack();
   });

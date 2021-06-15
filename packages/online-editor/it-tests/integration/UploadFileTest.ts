@@ -134,7 +134,8 @@ describe("Upload file test", () => {
       });
 
       // mark input data node and add node by shortcuts (d - decision)
-      cy.get("[title='Test input data'] > div").click().type("d");
+      cy.get("[title='Test input data'] > div").click();
+      cy.get("iframe").type("d", { force: true });
 
       // rename decision node
       cy.get("[data-title='Properties']").click();
