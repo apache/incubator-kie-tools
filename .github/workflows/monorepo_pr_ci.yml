@@ -51,6 +51,7 @@ jobs:
 
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2
+        if: always()
         with:
           name: artifacts-${{ matrix.os }}
           if-no-files-found: warn
@@ -63,6 +64,7 @@ jobs:
 
       - name: "Upload IT Tests artifacts"
         uses: actions/upload-artifact@v2
+        if: always()
         with:
           name: it-tests-artifacts-${{ matrix.os }}
           if-no-files-found: warn
