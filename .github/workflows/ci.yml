@@ -87,6 +87,14 @@ jobs:
           name: dmn_runner_linux
           path: "./build/linux/dmn_runner_linux.tar.gz"
 
+      - name: Configure Pagefile
+        if: matrix.os == 'windows-2016'
+        uses: al-cheb/configure-pagefile-action@v1.2
+        with:
+          minimum-size: 16GB
+          maximum-size: 16GB
+          disk-root: "C:"
+
       - name: Setup MSCV
         if: matrix.os == 'windows-2016'
         uses: ilammy/msvc-dev-cmd@v1.5.0
