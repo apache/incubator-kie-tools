@@ -116,3 +116,32 @@ func TestRemoveOwnerReference(t *testing.T) {
 	RemoveOwnerReference(owner, owned)
 	assert.Equal(t, 0, len(owned.GetOwnerReferences()))
 }
+
+func TestRemoveSharedOwnerReference_ResourceNotShared(t *testing.T) {
+	scheme := meta.GetRegisteredSchema()
+
+	owner := &apps.Deployment{ObjectMeta: metav1.ObjectMeta{Name: "deployment", Namespace: t.Name(), UID: test.GenerateUID()}}
+	owned := &corev1.ConfigMap{ObjectMeta: metav1.ObjectMeta{Name: "config-map", Namespace: t.Name(), UID: test.GenerateUID()}}
+	err := AddOwnerReference(owner, scheme, owned)
+	assert.NoError(t, err)
+
+	assert.Equal(t, 1, len(owned.GetOwnerReferences()))
+	RemoveSharedOwnerReference(owner, owned)
+	assert.Equal(t, 1, len(owned.GetOwnerReferences()))
+}
+
+func TestRemoveSharedOwnerReference_ResourceShared(t *testing.T) {
+	scheme := meta.GetRegisteredSchema()
+
+	owner1 := &apps.Deployment{ObjectMeta: metav1.ObjectMeta{Name: "deployment1", Namespace: t.Name(), UID: test.GenerateUID()}}
+	owner2 := &apps.Deployment{ObjectMeta: metav1.ObjectMeta{Name: "deployment2", Namespace: t.Name(), UID: test.GenerateUID()}}
+	owned := &corev1.ConfigMap{ObjectMeta: metav1.ObjectMeta{Name: "config-map", Namespace: t.Name(), UID: test.GenerateUID()}}
+	err := AddOwnerReference(owner1, scheme, owned)
+	assert.NoError(t, err)
+	err = AddOwnerReference(owner2, scheme, owned)
+	assert.NoError(t, err)
+
+	RemoveSharedOwnerReference(owner1, owned)
+	assert.Equal(t, 1, len(owned.GetOwnerReferences()))
+	assert.Equal(t, "deployment2", owned.GetOwnerReferences()[0].Name)
+}

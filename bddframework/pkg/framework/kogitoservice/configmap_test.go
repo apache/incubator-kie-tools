@@ -239,7 +239,6 @@ func TestGetAppPropConfigMapContentHash(t *testing.T) {
 func Test_getAppPropsFromConfigMap(t *testing.T) {
 	type args struct {
 		configMap *corev1.ConfigMap
-		exist     bool
 	}
 	tests := []struct {
 		name string
@@ -250,15 +249,6 @@ func Test_getAppPropsFromConfigMap(t *testing.T) {
 			"Not exist",
 			args{
 				&corev1.ConfigMap{},
-				false,
-			},
-			map[string]string{},
-		},
-		{
-			"Empty ConfigMap",
-			args{
-				&corev1.ConfigMap{},
-				true,
 			},
 			map[string]string{},
 		},
@@ -270,7 +260,6 @@ func Test_getAppPropsFromConfigMap(t *testing.T) {
 						ConfigMapApplicationPropertyKey: "",
 					},
 				},
-				true,
 			},
 			map[string]string{},
 		},
@@ -282,7 +271,6 @@ func Test_getAppPropsFromConfigMap(t *testing.T) {
 						ConfigMapApplicationPropertyKey: "\ntest1=test1\ntest2=test2\ntest3=test3 username=\"user\" password=\"pass\";",
 					},
 				},
-				true,
 			},
 			map[string]string{
 				"test1": "test1",
@@ -293,7 +281,7 @@ func Test_getAppPropsFromConfigMap(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := getAppPropsFromConfigMap(tt.args.configMap, tt.args.exist); !reflect.DeepEqual(got, tt.want) {
+			if got := getAppPropsFromConfigMap(tt.args.configMap); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("getAppPropsFromConfigMap() = %v, want %v", got, tt.want)
 			}
 		})

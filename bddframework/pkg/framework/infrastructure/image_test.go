@@ -27,7 +27,7 @@ import (
 
 func Test_imageHandler_resolveImageOnOpenShiftWithImageStreamCreated(t *testing.T) {
 	ns := t.Name()
-	is, tag := test.CreateImageStreams("jobs-service", ns, "my-data-index", GetKogitoImageVersion(version.Version))
+	is, tag := test.CreateFakeImageStreams("jobs-service", ns, GetKogitoImageVersion(version.Version))
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(is).AddImageObjects(tag).Build()
 	context := operator.Context{
 		Client:  cli,

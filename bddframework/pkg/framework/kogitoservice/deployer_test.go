@@ -24,9 +24,6 @@ import (
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/internal"
 	"github.com/kiegroup/kogito-operator/meta"
-	appsv1 "k8s.io/api/apps/v1"
-
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -166,49 +163,4 @@ func Test_serviceDeployer_DataIndex(t *testing.T) {
 		},
 	}
 	test.AssertFetchMustExist(t, cli, topic)
-}
-
-func Test_serviceDeployer_Deploy(t *testing.T) {
-	service := test.CreateFakeJobsService(t.Name())
-
-	deployment := &appsv1.Deployment{
-		ObjectMeta: v1.ObjectMeta{
-			Name:      service.GetName(),
-			Namespace: service.GetNamespace(),
-		},
-		Status: appsv1.DeploymentStatus{
-			AvailableReplicas: singleReplica,
-		},
-	}
-	cli := test.NewFakeClientBuilder().AddK8sObjects(service, deployment).OnOpenShift().Build()
-
-	definition := ServiceDefinition{
-		DefaultImageName: "kogito-jobs-service",
-		Request:          newReconcileRequest(t.Name()),
-	}
-	context := operator.Context{
-		Client: cli,
-		Log:    test.TestLogger,
-		Scheme: meta.GetRegisteredSchema(),
-	}
-	infraHandler := internal.NewKogitoInfraHandler(context)
-	deployer := NewServiceDeployer(context, definition, service, infraHandler)
-	requeueAfter, err := deployer.Deploy()
-	assert.NoError(t, err)
-	assert.True(t, requeueAfter == 0)
-
-	exists, err := kubernetes.ResourceC(cli).Fetch(service)
-	assert.NoError(t, err)
-	assert.True(t, exists)
-	conditions := *service.Status.Conditions
-	assert.Equal(t, 2, len(conditions))
-	provisioningCondition := getSpecificCondition(conditions, api.ProvisioningConditionType)
-	assert.NotNil(t, provisioningCondition)
-	assert.Equal(t, v1.ConditionFalse, provisioningCondition.Status)
-
-	deployedCondition := getSpecificCondition(conditions, api.DeployedConditionType)
-	assert.NotNil(t, deployedCondition)
-	assert.Equal(t, v1.ConditionTrue, deployedCondition.Status)
-
-	assert.Equal(t, int32(1), *service.GetSpec().GetReplicas())
 }

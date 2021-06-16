@@ -39,6 +39,7 @@ type prometheusManager struct {
 
 // NewPrometheusManager ...
 func NewPrometheusManager(context operator.Context) PrometheusManager {
+	context.Log = context.Log.WithValues("monitoring", "prometheus")
 	return &prometheusManager{
 		context,
 	}

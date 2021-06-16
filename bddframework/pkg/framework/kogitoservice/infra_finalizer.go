@@ -17,48 +17,54 @@ package kogitoservice
 import (
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/core/framework/util"
 	"github.com/kiegroup/kogito-operator/core/manager"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"k8s.io/apimachinery/pkg/types"
 )
 
-// FinalizerHandler ...
-type FinalizerHandler interface {
+const infraFinalizer = "delete.kogitoInfra.ownership.finalizer"
+
+// InfraFinalizerHandler ...
+type InfraFinalizerHandler interface {
 	AddFinalizer(instance api.KogitoService) error
 	HandleFinalization(instance api.KogitoService) error
 }
 
-type finalizerHandler struct {
+type infraFinalizerHandler struct {
 	operator.Context
 	infraHandler manager.KogitoInfraHandler
 }
 
 // NewFinalizerHandler ...
-func NewFinalizerHandler(context operator.Context, infraHandler manager.KogitoInfraHandler) FinalizerHandler {
-	return &finalizerHandler{
+func NewFinalizerHandler(context operator.Context, infraHandler manager.KogitoInfraHandler) InfraFinalizerHandler {
+	return &infraFinalizerHandler{
 		Context:      context,
 		infraHandler: infraHandler,
 	}
 }
 
 // AddFinalizer add finalizer to provide KogitoService instance
-func (f *finalizerHandler) AddFinalizer(instance api.KogitoService) error {
-	if len(instance.GetFinalizers()) < 1 && instance.GetDeletionTimestamp() == nil {
-		f.Log.Debug("Adding Finalizer for the KogitoService")
-		instance.SetFinalizers([]string{"delete.kogitoInfra.ownership.finalizer"})
+func (f *infraFinalizerHandler) AddFinalizer(instance api.KogitoService) error {
+	if instance.GetDeletionTimestamp().IsZero() {
+		if !util.Contains(infraFinalizer, instance.GetFinalizers()) {
+			f.Log.Debug("Adding Infra Finalizer for the KogitoService")
+			finalizers := append(instance.GetFinalizers(), infraFinalizer)
+			instance.SetFinalizers(finalizers)
 
-		// Update CR
-		if err := kubernetes.ResourceC(f.Client).Update(instance); err != nil {
-			f.Log.Error(err, "Failed to update finalizer in KogitoService")
-			return err
+			// Update CR
+			if err := kubernetes.ResourceC(f.Client).Update(instance); err != nil {
+				f.Log.Error(err, "Failed to update infra finalizer in KogitoService")
+				return err
+			}
+			f.Log.Debug("Successfully added infra finalizer into KogitoService instance", "instance", instance.GetName())
 		}
-		f.Log.Debug("Successfully added finalizer into KogitoService instance", "instance", instance.GetName())
 	}
 	return nil
 }
 
 // HandleFinalization remove owner reference of provided Kogito service from KogitoInfra instances and remove finalizer from KogitoService
-func (f *finalizerHandler) HandleFinalization(instance api.KogitoService) error {
+func (f *infraFinalizerHandler) HandleFinalization(instance api.KogitoService) error {
 	// Remove KogitoSupportingService ownership from referred KogitoInfra instances
 	infraManager := manager.NewKogitoInfraManager(f.Context, f.infraHandler)
 	for _, kogitoInfra := range instance.GetSpec().GetInfra() {
@@ -66,13 +72,18 @@ func (f *finalizerHandler) HandleFinalization(instance api.KogitoService) error 
 			return err
 		}
 	}
+
 	// Update finalizer to allow delete CR
-	f.Log.Debug("Removing finalizer from KogitoService")
-	instance.SetFinalizers(nil)
-	if err := kubernetes.ResourceC(f.Client).Update(instance); err != nil {
-		f.Log.Error(err, "Error occurs while removing finalizer from KogitoService")
-		return err
+	f.Log.Debug("Removing infra finalizer from KogitoService")
+	finalizers := instance.GetFinalizers()
+	removed := util.Remove(infraFinalizer, &finalizers)
+	instance.SetFinalizers(finalizers)
+	if removed {
+		if err := kubernetes.ResourceC(f.Client).Update(instance); err != nil {
+			f.Log.Error(err, "Error occurs while removing infra finalizer from KogitoService")
+			return err
+		}
 	}
-	f.Log.Debug("Successfully removed finalizer from KogitoService")
+	f.Log.Debug("Successfully removed infra finalizer from KogitoService")
 	return nil
 }

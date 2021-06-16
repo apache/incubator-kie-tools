@@ -59,12 +59,12 @@ func (c *appPropsConfigMapHandler) GetAppPropConfigMapContentHash(service api.Ko
 	configMapName := getAppPropConfigMapName(service)
 	configMap := &corev1.ConfigMap{ObjectMeta: metav1.ObjectMeta{Name: configMapName, Namespace: service.GetNamespace()}}
 
-	exist, err := kubernetes.ResourceC(c.Client).Fetch(configMap)
+	_, err := kubernetes.ResourceC(c.Client).Fetch(configMap)
 	if err != nil {
 		return "", nil, err
 	}
 
-	appPropsToApply := getAppPropsFromConfigMap(configMap, exist)
+	appPropsToApply := getAppPropsFromConfigMap(configMap)
 	if err = mergo.Merge(&appPropsToApply, appProps, mergo.WithOverride); err != nil {
 		return "", nil, err
 	}
@@ -98,9 +98,9 @@ func getAppPropConfigMapName(service api.KogitoService) string {
 }
 
 // getAppPropsFromConfigMap extracts the application properties from the ConfigMap to a string map
-func getAppPropsFromConfigMap(configMap *corev1.ConfigMap, exist bool) map[string]string {
+func getAppPropsFromConfigMap(configMap *corev1.ConfigMap) map[string]string {
 	appProps := map[string]string{}
-	if exist {
+	if configMap != nil {
 		if data, ok := configMap.Data[ConfigMapApplicationPropertyKey]; ok {
 			props := strings.Split(data, "\n")
 			for _, p := range props {

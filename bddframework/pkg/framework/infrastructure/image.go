@@ -16,12 +16,14 @@ package infrastructure
 
 import (
 	"fmt"
+	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	imgv1 "github.com/openshift/api/image/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"os"
 	"strings"
+	"time"
 )
 
 const (
@@ -49,6 +51,7 @@ type ImageHandler interface {
 	ResolveImageNameTag() string
 	ResolveImageStreamTriggerAnnotation(containerName string) (key, value string)
 	CreateImageStreamIfNotExists() (*imgv1.ImageStream, error)
+	ReconcileImageStream(owner resource.KubernetesResource) (time.Duration, error)
 }
 
 // imageHandler defines the base structure for images in either OpenShift or Kubernetes clusters
@@ -91,23 +94,23 @@ func (i *imageHandler) CreateImageStreamIfNotExists() (*imgv1.ImageStream, error
 	return nil, nil
 }
 
+func (i *imageHandler) ReconcileImageStream(owner resource.KubernetesResource) (reconcileInterval time.Duration, err error) {
+	if i.Client.IsOpenshift() {
+		imageStreamReconciler := NewImageStreamReconciler(i.Context, types.NamespacedName{Name: i.imageStreamName, Namespace: i.namespace}, i.resolveTag(), i.addFromReference, i.resolveRegistryImage(), i.insecureImageRegistry, owner)
+		return imageStreamReconciler.Reconcile()
+	}
+	return
+}
+
 // resolveImage resolves images like "quay.io/kiegroup/kogito-jobs-service:latest" or "internal-registry/namespace/image:hash".
 // Can be empty if on OpenShift and the ImageStream is not ready.
 // In case of Openshift, image name is resolved using Image Stream tag to support kogito build.
 func (i *imageHandler) ResolveImage() (string, error) {
 	i.Log.Debug("Going to resolve image...")
 	if i.Client.IsOpenshift() {
-		i.Log.Debug("Openshift environment found. Going to resolve image using ImageStream.")
+		i.Log.Debug("Openshift environment found.")
 		imageStreamHandler := NewImageStreamHandler(i.Context)
-		if err := imageStreamHandler.ValidateTagStatus(types.NamespacedName{Name: i.imageStreamName, Namespace: i.namespace}, i.resolveTag()); err != nil {
-			return "", err
-		}
-		// the image is on an ImageStreamTag object
-		ist, err := imageStreamHandler.FetchTag(types.NamespacedName{Name: i.imageStreamName, Namespace: i.namespace}, i.resolveTag())
-		if err != nil || ist == nil {
-			return "", err
-		}
-		return ist.Image.DockerImageReference, nil
+		return imageStreamHandler.ResolveImage(types.NamespacedName{Name: i.imageStreamName, Namespace: i.namespace}, i.resolveTag())
 	}
 
 	// in k8s environment image name is resolved to image name provided by user through CRD.

@@ -52,6 +52,7 @@ type GrafanaDashboard struct {
 
 // NewGrafanaDashboardManager ...
 func NewGrafanaDashboardManager(context operator.Context) GrafanaDashboardManager {
+	context.Log = context.Log.WithValues("monitoring", "grafana")
 	return &grafanaDashboardManager{
 		context,
 	}

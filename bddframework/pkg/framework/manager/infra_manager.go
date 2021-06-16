@@ -91,8 +91,8 @@ func (k *kogitoInfraManager) TakeKogitoInfraOwnership(key types.NamespacedName, 
 
 func (k *kogitoInfraManager) RemoveKogitoInfraOwnership(key types.NamespacedName, owner resource.KubernetesResource) (err error) {
 	k.Log.Info("Removing kogito infra ownership", "infra name", key.Name, "owner", owner.GetName())
-	kogitoInfra, err := k.MustFetchKogitoInfraInstance(key)
-	if err != nil {
+	kogitoInfra, err := k.infraHandler.FetchKogitoInfraInstance(key)
+	if err != nil || kogitoInfra == nil {
 		return
 	}
 	framework.RemoveOwnerReference(owner, kogitoInfra)

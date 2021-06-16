@@ -78,3 +78,21 @@ func RemoveOwnerReference(owner resource.KubernetesResource, resources ...resour
 		}
 	}
 }
+
+// RemoveSharedOwnerReference remove given owner from OwnerReference in the given resources only if resource is referred by multiple owners.
+func RemoveSharedOwnerReference(owner resource.KubernetesResource, resources ...resource.KubernetesResource) bool {
+	for _, res := range resources {
+		ownerRefs := res.GetOwnerReferences()
+		// remove owner reference only if resource is referred by multiple owners
+		if len(ownerRefs) > 1 {
+			for i, ownerRef := range ownerRefs {
+				if ownerRef.UID == owner.GetUID() {
+					updatedOwnerReferences := append(res.GetOwnerReferences()[:i], res.GetOwnerReferences()[i+1:]...)
+					res.SetOwnerReferences(updatedOwnerReferences)
+					return true
+				}
+			}
+		}
+	}
+	return false
+}

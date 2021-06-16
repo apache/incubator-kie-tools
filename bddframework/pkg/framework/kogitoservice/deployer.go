@@ -15,6 +15,7 @@
 package kogitoservice
 
 import (
+	"fmt"
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/manager"
@@ -141,8 +142,23 @@ func (s *serviceDeployer) Deploy() (time.Duration, error) {
 		return s.getReconcileResultFor(err)
 	}
 
+	imageHandler := s.newImageHandler()
+	if reconcileInterval, err := imageHandler.ReconcileImageStream(s.instance); err != nil {
+		return s.getReconcileResultFor(err)
+	} else if reconcileInterval > 0 {
+		return reconcileInterval, nil
+	}
+
+	imageName, err := imageHandler.ResolveImage()
+	// we only create the rest of the resources once we have a resolvable image
+	if err != nil {
+		return s.getReconcileResultFor(err)
+	} else if len(imageName) == 0 {
+		return s.getReconcileResultFor(fmt.Errorf("image not found"))
+	}
+
 	// create our resources
-	requestedResources, err := s.createRequiredResources()
+	requestedResources, err := s.createRequiredResources(imageName)
 	if err != nil {
 		return s.getReconcileResultFor(err)
 	}
@@ -158,6 +174,7 @@ func (s *serviceDeployer) Deploy() (time.Duration, error) {
 	deltas := comparator.Compare(deployedResources, requestedResources)
 	for resourceType, delta := range deltas {
 		if !delta.HasChanges() {
+			s.Log.Info("No delta found", "resourceType", resourceType)
 			continue
 		}
 		s.Log.Info("Will", "create", len(delta.Added), "update", len(delta.Updated), "delete", len(delta.Removed), "resourceType", resourceType)
@@ -233,6 +250,7 @@ func (s *serviceDeployer) checkInfraDependencies() error {
 }
 
 func (s *serviceDeployer) configureMessaging() error {
+	s.Log.Debug("Going to configuring messaging")
 	kafkaMessagingDeployer := NewKafkaMessagingDeployer(s.Context, s.definition, s.infraHandler)
 	if err := kafkaMessagingDeployer.CreateRequiredResources(s.instance); err != nil {
 		return errorForMessaging(err)
@@ -246,6 +264,7 @@ func (s *serviceDeployer) configureMessaging() error {
 }
 
 func (s *serviceDeployer) configureMonitoring() error {
+	s.Log.Debug("Going to configuring monitoring")
 	prometheusManager := NewPrometheusManager(s.Context)
 	if err := prometheusManager.ConfigurePrometheus(s.instance); err != nil {
 		s.Log.Error(err, "Could not deploy prometheus monitoring")

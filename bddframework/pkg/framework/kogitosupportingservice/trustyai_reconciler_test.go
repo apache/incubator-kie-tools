@@ -30,7 +30,7 @@ func TestReconcileKogitoSupportingTrusty_Reconcile(t *testing.T) {
 	kogitoKafka.GetSpec().GetResource().SetName(kafka.Name)
 	instance := test.CreateFakeTrustyAIService(ns)
 	instance.GetSpec().AddInfra(kogitoKafka.GetName())
-	cli := test.NewFakeClientBuilder().AddK8sObjects(kafka, instance, kogitoKafka).OnOpenShift().Build()
+	cli := test.NewFakeClientBuilder().AddK8sObjects(kafka, instance, kogitoKafka).Build()
 	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,

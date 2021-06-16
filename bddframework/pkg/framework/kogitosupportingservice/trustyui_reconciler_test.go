@@ -20,8 +20,8 @@ import (
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/internal"
 	"github.com/kiegroup/kogito-operator/meta"
-	imagev1 "github.com/openshift/api/image/v1"
 	"github.com/stretchr/testify/assert"
+	v12 "k8s.io/api/apps/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"testing"
 )
@@ -29,7 +29,7 @@ import (
 func TestReconcileKogitoSupportingServiceTrustyUI_Reconcile(t *testing.T) {
 	ns := t.Name()
 	instance := test.CreateFakeTrustyUIService(ns)
-	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).OnOpenShift().Build()
+	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).Build()
 	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
@@ -37,9 +37,10 @@ func TestReconcileKogitoSupportingServiceTrustyUI_Reconcile(t *testing.T) {
 	}
 	r := &trustyUISupportingServiceResource{
 		supportingServiceContext: supportingServiceContext{
-			instance:     instance,
-			Context:      context,
-			infraHandler: internal.NewKogitoInfraHandler(context),
+			instance:                 instance,
+			Context:                  context,
+			infraHandler:             internal.NewKogitoInfraHandler(context),
+			supportingServiceHandler: internal.NewKogitoSupportingServiceHandler(context),
 		},
 	}
 
@@ -63,7 +64,7 @@ func TestReconcileKogitoTrustyUI_CustomImage(t *testing.T) {
 	ns := t.Name()
 	instance := test.CreateFakeTrustyUIService(ns)
 	instance.GetSpec().SetImage("quay.io/mynamespace/awesome-trusty-ui:0.1.3")
-	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).OnOpenShift().Build()
+	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).Build()
 	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
@@ -71,23 +72,23 @@ func TestReconcileKogitoTrustyUI_CustomImage(t *testing.T) {
 	}
 	r := &trustyUISupportingServiceResource{
 		supportingServiceContext: supportingServiceContext{
-			Context:      context,
-			instance:     instance,
-			infraHandler: internal.NewKogitoInfraHandler(context),
+			Context:                  context,
+			instance:                 instance,
+			infraHandler:             internal.NewKogitoInfraHandler(context),
+			supportingServiceHandler: internal.NewKogitoSupportingServiceHandler(context),
 		},
 	}
+
 	requeueAfter, err := r.Reconcile()
 	assert.NoError(t, err)
 	assert.True(t, requeueAfter == 0)
 
-	// image stream
-	is := imagev1.ImageStream{
-		ObjectMeta: v1.ObjectMeta{Name: DefaultTrustyUIImageName, Namespace: ns},
+	// Check image name inside deployment
+	deployment := v12.Deployment{
+		ObjectMeta: v1.ObjectMeta{Name: instance.Name, Namespace: ns},
 	}
-	exists, err := kubernetes.ResourceC(cli).Fetch(&is)
+	exists, err := kubernetes.ResourceC(cli).Fetch(&deployment)
 	assert.True(t, exists)
 	assert.NoError(t, err)
-	assert.Len(t, is.Spec.Tags, 1)
-	assert.Equal(t, "0.1.3", is.Spec.Tags[0].Name)
-	assert.Equal(t, "quay.io/mynamespace/awesome-trusty-ui:0.1.3", is.Spec.Tags[0].From.Name)
+	assert.Equal(t, "quay.io/mynamespace/awesome-trusty-ui:0.1.3", deployment.Spec.Template.Spec.Containers[0].Image)
 }

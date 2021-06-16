@@ -15,6 +15,7 @@
 package util
 
 import (
+	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
 )
@@ -96,4 +97,11 @@ func TestContainsAll(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestRemove(t *testing.T) {
+	arr := []string{"1", "2", "3", "4", "5"}
+	removed := Remove("1", &arr)
+	assert.True(t, removed)
+	assert.Equal(t, []string{"2", "3", "4", "5"}, arr)
 }

@@ -21,14 +21,13 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// CreateImageStreams creates and gets an ImageStream and its ImageStreamTag for mocking purposes
-func CreateImageStreams(imageName, namespace, ownerName, imageVersion string) (*v1.ImageStream, *v1.ImageStreamTag) {
+// CreateFakeImageStreams creates and gets an ImageStream and its ImageStreamTag for mocking purposes
+func CreateFakeImageStreams(imageName, namespace, imageVersion string) (*v1.ImageStream, *v1.ImageStreamTag) {
 	image := fmt.Sprintf("quay.io/kiegroup/%s:%s", imageName, imageVersion)
 	is := &v1.ImageStream{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:            imageName,
-			Namespace:       namespace,
-			OwnerReferences: []metav1.OwnerReference{{Name: ownerName}},
+			Name:      imageName,
+			Namespace: namespace,
 		},
 		Spec: v1.ImageStreamSpec{
 			LookupPolicy: v1.ImageLookupPolicy{Local: true},

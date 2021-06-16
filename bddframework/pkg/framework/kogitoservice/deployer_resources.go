@@ -36,16 +36,8 @@ import (
 )
 
 // createRequiredResources creates the required resources given the KogitoService instance
-func (s *serviceDeployer) createRequiredResources() (resources map[reflect.Type][]resource.KubernetesResource, err error) {
+func (s *serviceDeployer) createRequiredResources(image string) (resources map[reflect.Type][]resource.KubernetesResource, err error) {
 	resources = make(map[reflect.Type][]resource.KubernetesResource)
-	imageHandler := s.newImageHandler()
-	imageStream, err := imageHandler.CreateImageStreamIfNotExists()
-	if err != nil {
-		return
-	}
-	if imageStream != nil {
-		resources[reflect.TypeOf(imgv1.ImageStream{})] = []resource.KubernetesResource{imageStream}
-	}
 
 	appProps := map[string]string{}
 	appPropsConfigMapHandler := NewAppPropsConfigMapHandler(s.Context)
@@ -62,72 +54,63 @@ func (s *serviceDeployer) createRequiredResources() (resources map[reflect.Type]
 		} else if !exists {
 			return resources, fmt.Errorf("propertiesConfigMap %s not found", s.instance.GetSpec().GetPropertiesConfigMap())
 		} else {
-			util.AppendToStringMap(getAppPropsFromConfigMap(propertiesConfigMap, exists), appProps)
+			util.AppendToStringMap(getAppPropsFromConfigMap(propertiesConfigMap), appProps)
 		}
-	}
-
-	_, configMap, err := appPropsConfigMapHandler.GetAppPropConfigMapContentHash(s.instance, appProps)
-	if err != nil {
-		return resources, err
 	}
 
 	// TODO: refactor this entire file
 
 	// we only create the rest of the resources once we have a resolvable image
 	// or if the deployment is already there, we don't want to delete it :)
-	if image, err := s.getKogitoServiceImage(imageHandler, s.instance); err != nil {
+	deploymentHandler := NewDeploymentHandler(s.Context)
+	deployment := deploymentHandler.CreateRequiredDeployment(s.instance, image, s.definition)
+	if err = s.onDeploymentCreate(deployment); err != nil {
 		return resources, err
-	} else if len(image) > 0 {
-		deploymentHandler := NewDeploymentHandler(s.Context)
-		deployment := deploymentHandler.CreateRequiredDeployment(s.instance, image, s.definition)
-		if err = s.onDeploymentCreate(deployment, imageStream); err != nil {
-			return resources, err
-		}
+	}
 
-		serviceHandler := infrastructure.NewServiceHandler(s.Context)
-		service := serviceHandler.CreateService(s.instance, deployment)
+	serviceHandler := infrastructure.NewServiceHandler(s.Context)
+	service := serviceHandler.CreateService(s.instance, deployment)
 
-		var infraVolumes []api.KogitoInfraVolumeInterface
+	var infraVolumes []api.KogitoInfraVolumeInterface
 
-		if len(s.instance.GetSpec().GetInfra()) > 0 {
-			s.Log.Debug("Infra references are provided")
-			var infraAppProps map[string]string
-			var infraEnvProp []corev1.EnvVar
-			infraAppProps, infraEnvProp, infraVolumes, err = s.fetchKogitoInfraProperties()
-			if err != nil {
-				return resources, err
-			}
-			util.AppendToStringMap(infraAppProps, appProps)
-			deployment.Spec.Template.Spec.Containers[0].Env = append(deployment.Spec.Template.Spec.Containers[0].Env, infraEnvProp...)
-		}
-
-		deployment.Spec.Template.Spec.Containers[0].Env = append(deployment.Spec.Template.Spec.Containers[0].Env, framework.CreateEnvVar(infrastructure.RuntimeTypeKey, string(s.instance.GetSpec().GetRuntime())))
-
-		if len(s.instance.GetSpec().GetConfig()) > 0 {
-			s.Log.Debug("custom app properties are provided in custom Config")
-			util.AppendToStringMap(s.instance.GetSpec().GetConfig(), appProps)
-		}
-
-		var contentHash string
-		contentHash, configMap, err = appPropsConfigMapHandler.GetAppPropConfigMapContentHash(s.instance, appProps)
+	if len(s.instance.GetSpec().GetInfra()) > 0 {
+		s.Log.Debug("Infra references are provided")
+		var infraAppProps map[string]string
+		var infraEnvProp []corev1.EnvVar
+		infraAppProps, infraEnvProp, infraVolumes, err = s.fetchKogitoInfraProperties()
 		if err != nil {
 			return resources, err
 		}
+		util.AppendToStringMap(infraAppProps, appProps)
+		deployment.Spec.Template.Spec.Containers[0].Env = append(deployment.Spec.Template.Spec.Containers[0].Env, infraEnvProp...)
+	}
 
-		s.applyApplicationPropertiesAnnotations(contentHash, deployment)
+	deployment.Spec.Template.Spec.Containers[0].Env = append(deployment.Spec.Template.Spec.Containers[0].Env, framework.CreateEnvVar(infrastructure.RuntimeTypeKey, string(s.instance.GetSpec().GetRuntime())))
 
-		s.mountKogitoInfraVolumes(infraVolumes, deployment)
+	if len(s.instance.GetSpec().GetConfig()) > 0 {
+		s.Log.Debug("custom app properties are provided in custom Config")
+		util.AppendToStringMap(s.instance.GetSpec().GetConfig(), appProps)
+	}
 
-		if err = NewTrustStoreHandler(s.Context).MountTrustStore(deployment, s.instance); err != nil {
-			return resources, err
-		}
+	var contentHash string
+	contentHash, configMap, err := appPropsConfigMapHandler.GetAppPropConfigMapContentHash(s.instance, appProps)
+	if err != nil {
+		return resources, err
+	}
 
-		resources[reflect.TypeOf(appsv1.Deployment{})] = []resource.KubernetesResource{deployment}
-		resources[reflect.TypeOf(corev1.Service{})] = []resource.KubernetesResource{service}
-		if s.Client.IsOpenshift() {
-			routeHandler := infrastructure.NewRouteHandler(s.Context)
-			resources[reflect.TypeOf(routev1.Route{})] = []resource.KubernetesResource{routeHandler.CreateRoute(service)}
-		}
+	s.applyApplicationPropertiesAnnotations(contentHash, deployment)
+
+	s.mountKogitoInfraVolumes(infraVolumes, deployment)
+
+	if err = NewTrustStoreHandler(s.Context).MountTrustStore(deployment, s.instance); err != nil {
+		return resources, err
+	}
+
+	resources[reflect.TypeOf(appsv1.Deployment{})] = []resource.KubernetesResource{deployment}
+	resources[reflect.TypeOf(corev1.Service{})] = []resource.KubernetesResource{service}
+	if s.Client.IsOpenshift() {
+		routeHandler := infrastructure.NewRouteHandler(s.Context)
+		resources[reflect.TypeOf(routev1.Route{})] = []resource.KubernetesResource{routeHandler.CreateRoute(service)}
 	}
 
 	if configMap != nil {
@@ -142,8 +125,8 @@ func (s *serviceDeployer) createRequiredResources() (resources map[reflect.Type]
 	return
 }
 
-func (s *serviceDeployer) onDeploymentCreate(deployment *appsv1.Deployment, imageStream *imgv1.ImageStream) error {
-	if imageStream != nil {
+func (s *serviceDeployer) onDeploymentCreate(deployment *appsv1.Deployment) error {
+	if s.Client.IsOpenshift() {
 		imageHandler := s.newImageHandler()
 		key, value := imageHandler.ResolveImageStreamTriggerAnnotation(s.instance.GetName())
 		deployment.Annotations = map[string]string{key: value}
@@ -184,18 +167,6 @@ func (s *serviceDeployer) setOwner(resources map[reflect.Type][]resource.Kuberne
 	return nil
 }
 
-func (s *serviceDeployer) getKogitoServiceImage(imageHandler infrastructure.ImageHandler, instance api.KogitoService) (string, error) {
-	image, err := imageHandler.ResolveImage()
-	if err != nil {
-		return "", errorForImageStreamNotReady(err)
-	}
-	if len(image) > 0 {
-		return image, nil
-	}
-	s.Log.Warn("Image not found for the service")
-	return "", nil
-}
-
 func (s *serviceDeployer) applyApplicationPropertiesAnnotations(contentHash string, deployment *appsv1.Deployment) {
 	if deployment.Spec.Template.Annotations == nil {
 		deployment.Spec.Template.Annotations = map[string]string{AppPropContentHashKey: contentHash}
@@ -208,7 +179,7 @@ func (s *serviceDeployer) applyApplicationPropertiesAnnotations(contentHash stri
 func (s *serviceDeployer) getDeployedResources() (resources map[reflect.Type][]resource.KubernetesResource, err error) {
 	var objectTypes []runtime.Object
 	if s.Client.IsOpenshift() {
-		objectTypes = []runtime.Object{&appsv1.DeploymentList{}, &corev1.ServiceList{}, &corev1.ConfigMapList{}, &routev1.RouteList{}, &imgv1.ImageStreamList{}}
+		objectTypes = []runtime.Object{&appsv1.DeploymentList{}, &corev1.ServiceList{}, &corev1.ConfigMapList{}, &routev1.RouteList{}}
 	} else {
 		objectTypes = []runtime.Object{&appsv1.DeploymentList{}, &corev1.ServiceList{}, &corev1.ConfigMapList{}}
 	}
@@ -221,10 +192,6 @@ func (s *serviceDeployer) getDeployedResources() (resources map[reflect.Type][]r
 	if err != nil {
 		return
 	}
-	if err = s.addSharedImageStreamToResources(resources, s.definition.DefaultImageName, s.getNamespace()); err != nil {
-		return
-	}
-
 	return
 }
 
@@ -281,10 +248,10 @@ func (s *serviceDeployer) fetchKogitoInfraProperties() (map[string]string, []cor
 			return nil, nil, nil, err
 		}
 
-		runtime := s.instance.GetSpec().GetRuntime()
+		runtimeType := s.instance.GetSpec().GetRuntime()
 
 		// fetch app properties from Kogito infra instance
-		runtimeProperties := kogitoInfraInstance.GetStatus().GetRuntimeProperties()[runtime]
+		runtimeProperties := kogitoInfraInstance.GetStatus().GetRuntimeProperties()[runtimeType]
 		if runtimeProperties != nil {
 			appProp := runtimeProperties.GetAppProps()
 			util.AppendToStringMap(appProp, consolidateAppProperties)
@@ -307,32 +274,13 @@ func (s *serviceDeployer) mountKogitoInfraVolumes(kogitoInfraVolumes []api.Kogit
 	}
 }
 
-// AddSharedImageStreamToResources adds the shared ImageStream in the given resource map.
-// Normally used during reconciliation phase to bring a not yet owned ImageStream to the deployed list.
-func (s *serviceDeployer) addSharedImageStreamToResources(resources map[reflect.Type][]resource.KubernetesResource, name, ns string) error {
-	if s.Client.IsOpenshift() {
-		// is the image already there?
-		for _, is := range resources[reflect.TypeOf(imgv1.ImageStream{})] {
-			if is.GetName() == name &&
-				is.GetNamespace() == ns {
-				return nil
-			}
-		}
-		// fetch the shared image
-		imageStreamHandler := infrastructure.NewImageStreamHandler(s.Context)
-		sharedImageStream, err := imageStreamHandler.FetchImageStream(types.NamespacedName{Name: name, Namespace: ns})
-		if err != nil {
-			return err
-		}
-		if sharedImageStream != nil {
-			resources[reflect.TypeOf(imgv1.ImageStream{})] = append(resources[reflect.TypeOf(imgv1.ImageStream{})], sharedImageStream)
-		}
-	}
-	return nil
-}
-
 func (s *serviceDeployer) newImageHandler() infrastructure.ImageHandler {
 	addDockerImageReference := len(s.instance.GetSpec().GetImage()) != 0 || !s.definition.CustomService
+	image := s.resolveImage()
+	return infrastructure.NewImageHandler(s.Context, image, s.definition.DefaultImageName, image.Name, s.instance.GetNamespace(), addDockerImageReference, s.instance.GetSpec().IsInsecureImageRegistry())
+}
+
+func (s *serviceDeployer) resolveImage() *api.Image {
 	var image api.Image
 	if len(s.instance.GetSpec().GetImage()) == 0 {
 		image = api.Image{
@@ -342,6 +290,5 @@ func (s *serviceDeployer) newImageHandler() infrastructure.ImageHandler {
 	} else {
 		image = framework.ConvertImageTagToImage(s.instance.GetSpec().GetImage())
 	}
-
-	return infrastructure.NewImageHandler(s.Context, &image, s.definition.DefaultImageName, s.definition.DefaultImageName, s.instance.GetNamespace(), addDockerImageReference, s.instance.GetSpec().IsInsecureImageRegistry())
+	return &image
 }

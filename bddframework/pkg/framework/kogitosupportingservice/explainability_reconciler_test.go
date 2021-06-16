@@ -31,7 +31,7 @@ func TestReconcileKogitoSupportingServiceExplainability_Reconcile(t *testing.T) 
 	explainabilityService := test.CreateFakeExplainabilityService(ns)
 	explainabilityService.GetSpec().AddInfra(kogitoKafka.GetName())
 
-	cli := test.NewFakeClientBuilder().AddK8sObjects(kafka, explainabilityService, kogitoKafka).OnOpenShift().Build()
+	cli := test.NewFakeClientBuilder().AddK8sObjects(kafka, explainabilityService, kogitoKafka).Build()
 	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,

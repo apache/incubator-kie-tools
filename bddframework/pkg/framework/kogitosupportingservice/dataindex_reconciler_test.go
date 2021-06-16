@@ -32,7 +32,7 @@ func TestKogitoSupportingServiceDataIndex_Reconcile(t *testing.T) {
 	dataIndex := test.CreateFakeDataIndex(ns)
 	dataIndex.GetSpec().AddInfra(kogitoKafka.GetName())
 	dataIndex.GetSpec().AddInfra(kogitoInfinispan.GetName())
-	cli := test.NewFakeClientBuilder().AddK8sObjects(dataIndex, kogitoKafka, kogitoInfinispan, kafka).OnOpenShift().Build()
+	cli := test.NewFakeClientBuilder().AddK8sObjects(dataIndex, kogitoKafka, kogitoInfinispan, kafka).Build()
 	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
