@@ -181,7 +181,8 @@ async function main() {
 }
 
 function checkCliTool(bin, args) {
-  const checkingCommand = spawnSync(bin, args, { stdio: "pipe" });
+  const shell = process.platform === "win32" ? { shell: "powershell.exe" } : {};
+  const checkingCommand = spawnSync(bin, args, { stdio: "pipe", ...shell });
 
   let ret = {};
   if (checkingCommand.status !== 0) {
