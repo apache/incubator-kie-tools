@@ -51,6 +51,13 @@ runs:
         git diff yarn.lock;
         [ "0" == "$(git diff yarn.lock | wc -l | tr -d ' ')" ]
 
+    - name: "Check dependencies mismatches"
+      shell: bash
+      run: |
+        echo "STEP: Check dependencies mismatches"
+        cd ${{ inputs.path }}
+        npx --yes syncpack list-mismatches
+
     - name: "Check format"
       shell: bash
       run: |
