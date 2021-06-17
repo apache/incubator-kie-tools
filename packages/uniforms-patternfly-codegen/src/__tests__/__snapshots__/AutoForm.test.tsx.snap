@@ -1,0 +1,450 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
+<div>
+  import React, { useState } from 'react';
+import {
+  TextInput,
+  FormGroup,
+  SelectOption,
+  SelectOptionObject,
+  Select,
+  SelectVariant,
+  Checkbox,
+  Radio,
+  DatePicker,
+  Flex,
+  FlexItem,
+  InputGroup,
+  TimePicker,
+  Alert,
+} from '@patternfly/react-core';
+
+const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
+  const [name, set__name] = useState&lt;string&gt;();
+  const [position, set__position] = useState&lt;string&gt;('');
+  const [position__expanded, set__position__expanded] =
+    useState&lt;boolean&gt;(false);
+  const [otherPositions, set__otherPositions] = useState&lt;string[]&gt;([]);
+  const [otherPositions__expanded, set__otherPositions__expanded] =
+    useState&lt;boolean&gt;(false);
+  const [skills, set__skills] = useState&lt;string[]&gt;([]);
+  const [age, set__age] = useState&lt;string&gt;();
+  const [salary, set__salary] = useState&lt;string&gt;();
+  const [rating, set__rating] = useState&lt;string&gt;();
+  const [hire, set__hire] = useState&lt;boolean&gt;();
+  const [hidingDate, set__hidingDate] = useState&lt;Date&gt;();
+  const [friends, set__friends] = useState&lt;any[]&gt;([]);
+
+  const handleSelect = (
+    newSelection: string | SelectOptionObject,
+    isPlaceHolder: boolean,
+    currentSelection: string,
+    setSelection: (val: string) =&gt; void,
+    setExpanded: (expanded: boolean) =&gt; void
+  ) =&gt; {
+    if (isPlaceHolder) {
+      setSelection('');
+      setExpanded(false);
+    } else {
+      const parsedSelection = newSelection.toString
+        ? newSelection.toString()
+        : (newSelection as string);
+      setSelection(parsedSelection || '');
+      setExpanded(false);
+    }
+  };
+  const handleMultipleSelect = (
+    newSelection: string | SelectOptionObject,
+    isPlaceHolder: boolean,
+    currentValue: string[],
+    setSelection: (val: string[]) =&gt; void
+  ) =&gt; {
+    if (isPlaceHolder) {
+      setSelection([]);
+    } else {
+      const parseSelection = (): string[] =&gt; {
+        const selectedValue = newSelection.toString
+          ? newSelection.toString()
+          : (newSelection as string);
+        if (currentValue.indexOf(selectedValue) != -1) {
+          return currentValue.filter((s) =&gt; s !== selectedValue);
+        }
+        return [selectedValue, ...currentValue];
+      };
+      setSelection(parseSelection());
+    }
+  };
+  const handleCheckboxGroupChange = (
+    checkboxValue: string,
+    groupValue: string[],
+    setter: (val: string[]) =&gt; void
+  ): void =&gt; {
+    const newValues = [...groupValue];
+    const index = newValues.indexOf(checkboxValue);
+    if (index != -1) {
+      newValues.splice(index, 1);
+    } else {
+      newValues.push(checkboxValue);
+    }
+    setter(newValues);
+  };
+  const parseDate = (date?: Date): string =&gt; {
+    if (!date) {
+      return '';
+    }
+    return date.toISOString().slice(0, -14);
+  };
+  const onDateChange = (
+    newValue: string,
+    setter: (date: Date) =&gt; void,
+    previousValue?: Date
+  ) =&gt; {
+    if (newValue) {
+      const newDate = new Date(newValue);
+      const time = parseTime(previousValue);
+      if (time !== '') {
+        newDate.setHours(parseInt(time && time.split(':')[0]));
+        newDate.setMinutes(parseInt(time && time.split(':')[1].split(' ')[0]));
+      }
+      setter(newDate);
+    }
+  };
+  const parseTime = (date?: Date): string =&gt; {
+    if (!date) {
+      return '';
+    }
+    let isAm = true;
+    let hours = date.getHours();
+    if (hours &gt; 12) {
+      hours %= 12;
+      isAm = false;
+    }
+    let minutes = date.getMinutes().toString();
+    if (minutes.length == 1) {
+      minutes = '0' + minutes;
+    }
+    return \`\${hours}:\${minutes} \${isAm ? 'AM' : 'PM'}\`;
+  };
+  const onTimeChange = (
+    time: string,
+    setter: (date: Date) =&gt; void,
+    previousValue?: Date,
+    hours?: number,
+    minutes?: number
+  ) =&gt; {
+    if (previousValue) {
+      const newDate = new Date(previousValue);
+      if (hours && minutes) {
+        newDate.setHours(hours);
+        newDate.setMinutes(minutes);
+      } else if (time !== '') {
+        const localeHours = parseInt(time && time.split(':')[0]);
+        const localeMinutes = parseInt(
+          time && time.split(':')[1].split(' ')[0]
+        );
+        if (!isNaN(localeHours) && !isNaN(localeMinutes)) {
+          newDate.setHours(localeHours);
+          newDate.setMinutes(localeMinutes);
+        }
+      }
+      setter(newDate);
+    }
+  };
+
+  return (
+    &lt;div className={'pf-c-form'}&gt;
+      &lt;FormGroup
+        fieldId={'uniforms-0000-0000'}
+        label={'Name'}
+        isRequired={true}&gt;
+        &lt;TextInput
+          name={'name'}
+          id={'uniforms-0000-0000'}
+          isDisabled={false}
+          placeholder={''}
+          type={'text'}
+          value={name}
+          onChange={set__name}
+        /&gt;
+      &lt;/FormGroup&gt;
+      &lt;FormGroup
+        fieldId={'uniforms-0000-0002'}
+        label={'Position'}
+        isRequired={true}&gt;
+        &lt;Select
+          id={'uniforms-0000-0002'}
+          name={'position'}
+          variant={SelectVariant.single}
+          isDisabled={false}
+          placeholderText={''}
+          isOpen={position__expanded}
+          selections={position}
+          onToggle={(isOpen) =&gt; set__position__expanded(isOpen)}
+          onSelect={(event, value, isPlaceHolder) =&gt; {
+            handleSelect(
+              value,
+              isPlaceHolder,
+              position,
+              set__position,
+              set__position__expanded
+            );
+          }}
+          value={position}&gt;
+          &lt;SelectOption key={'Developer'} value={'Developer'}&gt;
+            Developer
+          &lt;/SelectOption&gt;
+          &lt;SelectOption key={'HR'} value={'HR'}&gt;
+            HR
+          &lt;/SelectOption&gt;
+          &lt;SelectOption key={'UX'} value={'UX'}&gt;
+            UX
+          &lt;/SelectOption&gt;
+        &lt;/Select&gt;
+      &lt;/FormGroup&gt;
+      &lt;FormGroup
+        fieldId={'uniforms-0000-0004'}
+        label={'Other positions'}
+        isRequired={true}&gt;
+        &lt;Select
+          id={'uniforms-0000-0004'}
+          name={'otherPositions'}
+          variant={SelectVariant.typeaheadMulti}
+          isDisabled={false}
+          placeholderText={''}
+          isOpen={otherPositions__expanded}
+          selections={otherPositions}
+          onToggle={(isOpen) =&gt; set__otherPositions__expanded(isOpen)}
+          onSelect={(event, value, isPlaceHolder) =&gt; {
+            handleMultipleSelect(
+              value,
+              isPlaceHolder,
+              otherPositions,
+              set__otherPositions
+            );
+          }}
+          value={otherPositions}&gt;
+          &lt;SelectOption key={'Developer'} value={'Developer'}&gt;
+            Developer
+          &lt;/SelectOption&gt;
+          &lt;SelectOption key={'HR'} value={'HR'}&gt;
+            HR
+          &lt;/SelectOption&gt;
+          &lt;SelectOption key={'UX'} value={'UX'}&gt;
+            UX
+          &lt;/SelectOption&gt;
+        &lt;/Select&gt;
+      &lt;/FormGroup&gt;
+      &lt;FormGroup
+        fieldId={'uniforms-0000-0006'}
+        label={'Skills'}
+        isRequired={true}&gt;
+        &lt;Checkbox
+          key={'uniforms-0000-0006-Java'}
+          id={'uniforms-0000-0006-Java'}
+          name={'skills'}
+          aria-label={'skills'}
+          label={'Java'}
+          isDisabled={false}
+          isChecked={skills.indexOf('Java') != -1}
+          onChange={() =&gt;
+            handleCheckboxGroupChange('Java', skills, set__skills)
+          }
+          value={'Java'}
+        /&gt;
+        &lt;Checkbox
+          key={'uniforms-0000-0006-React'}
+          id={'uniforms-0000-0006-React'}
+          name={'skills'}
+          aria-label={'skills'}
+          label={'React'}
+          isDisabled={false}
+          isChecked={skills.indexOf('React') != -1}
+          onChange={() =&gt;
+            handleCheckboxGroupChange('React', skills, set__skills)
+          }
+          value={'React'}
+        /&gt;
+        &lt;Checkbox
+          key={'uniforms-0000-0006-TypeScript'}
+          id={'uniforms-0000-0006-TypeScript'}
+          name={'skills'}
+          aria-label={'skills'}
+          label={'TypeScript'}
+          isDisabled={false}
+          isChecked={skills.indexOf('TypeScript') != -1}
+          onChange={() =&gt;
+            handleCheckboxGroupChange('TypeScript', skills, set__skills)
+          }
+          value={'TypeScript'}
+        /&gt;
+        &lt;Checkbox
+          key={'uniforms-0000-0006-Quarkus'}
+          id={'uniforms-0000-0006-Quarkus'}
+          name={'skills'}
+          aria-label={'skills'}
+          label={'Quarkus'}
+          isDisabled={false}
+          isChecked={skills.indexOf('Quarkus') != -1}
+          onChange={() =&gt;
+            handleCheckboxGroupChange('Quarkus', skills, set__skills)
+          }
+          value={'Quarkus'}
+        /&gt;
+      &lt;/FormGroup&gt;
+      &lt;FormGroup fieldId={'uniforms-0000-0008'} label={'Age'} isRequired={true}&gt;
+        &lt;TextInput
+          type={'number'}
+          name={'age'}
+          isDisabled={false}
+          id={'uniforms-0000-0008'}
+          placeholder={''}
+          step={1}
+          max={99}
+          min={18}
+          value={age}
+          onChange={set__age}
+        /&gt;
+      &lt;/FormGroup&gt;
+      &lt;FormGroup
+        fieldId={'uniforms-0000-000a'}
+        label={'Salary'}
+        isRequired={true}&gt;
+        &lt;TextInput
+          type={'number'}
+          name={'salary'}
+          isDisabled={false}
+          id={'uniforms-0000-000a'}
+          placeholder={''}
+          step={0.01}
+          max={1000.5}
+          value={salary}
+          onChange={set__salary}
+        /&gt;
+      &lt;/FormGroup&gt;
+      &lt;FormGroup
+        fieldId={'uniforms-0000-000c'}
+        label={'Rating'}
+        isRequired={true}&gt;
+        &lt;div&gt;
+          &lt;Radio
+            key={'1'}
+            id={'uniforms-0000-000c-1'}
+            name={'rating'}
+            isChecked={'1' === rating}
+            isDisabled={false}
+            label={'1'}
+            aria-label={'rating'}
+            onChange={() =&gt; set__rating('1')}
+          /&gt;
+          &lt;Radio
+            key={'2'}
+            id={'uniforms-0000-000c-2'}
+            name={'rating'}
+            isChecked={'2' === rating}
+            isDisabled={false}
+            label={'2'}
+            aria-label={'rating'}
+            onChange={() =&gt; set__rating('2')}
+          /&gt;
+          &lt;Radio
+            key={'3'}
+            id={'uniforms-0000-000c-3'}
+            name={'rating'}
+            isChecked={'3' === rating}
+            isDisabled={false}
+            label={'3'}
+            aria-label={'rating'}
+            onChange={() =&gt; set__rating('3')}
+          /&gt;
+          &lt;Radio
+            key={'4'}
+            id={'uniforms-0000-000c-4'}
+            name={'rating'}
+            isChecked={'4' === rating}
+            isDisabled={false}
+            label={'4'}
+            aria-label={'rating'}
+            onChange={() =&gt; set__rating('4')}
+          /&gt;
+          &lt;Radio
+            key={'5'}
+            id={'uniforms-0000-000c-5'}
+            name={'rating'}
+            isChecked={'5' === rating}
+            isDisabled={false}
+            label={'5'}
+            aria-label={'rating'}
+            onChange={() =&gt; set__rating('5')}
+          /&gt;
+        &lt;/div&gt;
+      &lt;/FormGroup&gt;
+      &lt;FormGroup fieldId='uniforms-0000-000e'&gt;
+        &lt;Checkbox
+          isChecked={hire}
+          isDisabled={false}
+          id={'uniforms-0000-000e'}
+          name={'hire'}
+          label={'Hire'}
+          onChange={set__hire}
+        /&gt;
+      &lt;/FormGroup&gt;
+      &lt;FormGroup
+        fieldId={'uniforms-0000-000g'}
+        label={'Hiding date'}
+        isRequired={true}&gt;
+        &lt;Flex direction={{ default: 'column' }} id={'uniforms-0000-000g'}&gt;
+          &lt;FlexItem&gt;
+            &lt;InputGroup style={{ background: 'transparent' }}&gt;
+              &lt;DatePicker
+                id={'date-picker-uniforms-0000-000g'}
+                isDisabled={false}
+                name={'hidingDate'}
+                onChange={(newDate) =&gt;
+                  onDateChange(newDate, set__hidingDate, hidingDate)
+                }
+                value={parseDate(hidingDate)}
+              /&gt;
+              &lt;TimePicker
+                id={'time-picker-uniforms-0000-000g'}
+                isDisabled={false}
+                name={'hidingDate'}
+                onChange={(time, hours?, minutes?) =&gt;
+                  onTimeChange(
+                    time,
+                    set__hidingDate,
+                    hidingDate,
+                    hours,
+                    minutes
+                  )
+                }
+                style={{ width: '120px' }}
+                defaultTime={parseTime(hidingDate)}
+              /&gt;
+            &lt;/InputGroup&gt;
+          &lt;/FlexItem&gt;
+        &lt;/Flex&gt;
+      &lt;/FormGroup&gt;
+      &lt;FormGroup
+        fieldId={'uniforms-0000-000i'}
+        label={'Friends'}
+        isRequired={true}&gt;
+        &lt;Alert variant='warning' title='Unsupported field type: Array'&gt;
+          Cannot find form control for property &lt;code&gt;friends&lt;/code&gt; with type{' '}
+          &lt;code&gt;Array&lt;/code&gt;:&lt;br /&gt;
+          Some complex property types, such as &lt;code&gt;
+            Array&lt;object&gt;
+          &lt;/code&gt;{' '}
+          aren't yet supported, however, you can still write your own component
+          into the form and use the already existing states{' '}
+          &lt;code&gt;const [ friends, set__friends ]&lt;/code&gt;.
+        &lt;/Alert&gt;
+      &lt;/FormGroup&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Form__HRInterview;
+
+</div>
+`;

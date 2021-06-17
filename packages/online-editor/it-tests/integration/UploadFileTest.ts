@@ -56,7 +56,7 @@ describe("Upload file test", () => {
       cy.get("[data-ouia-component-id='tree-item-Start test node']").click();
 
       // add nodes by shortcuts (t - task, g - gateway, s - subprocess, e - end)
-      cy.get("[data-field='canvasPanel']").type("tgse");
+      cy.get("iframe").type("tgse", { force: true });
 
       // rename end node
       cy.get("[data-title='Properties']").click();
