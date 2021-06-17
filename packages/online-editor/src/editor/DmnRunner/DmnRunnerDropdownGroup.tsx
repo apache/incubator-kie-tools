@@ -29,17 +29,32 @@ export function DmnRunnerDropdownGroup() {
     <DropdownGroup label={i18n.dmnRunner.dropdown.label}>
       <>
         {dmnRunner.status !== DmnRunnerStatus.RUNNING && (
-          <DropdownItem key={"setup-dmn-runner"} component={"button"} onClick={() => dmnRunner.setModalOpen(true)}>
+          <DropdownItem
+            id={"dmn-runner-dropdown-setup"}
+            key={"setup-dmn-runner"}
+            component={"button"}
+            onClick={() => dmnRunner.setModalOpen(true)}
+          >
             {i18n.dmnRunner.dropdown.setup}
           </DropdownItem>
         )}
         {dmnRunner.status === DmnRunnerStatus.RUNNING && !dmnRunner.isDrawerExpanded && (
-          <DropdownItem key={"open-dmn-runner"} component={"button"} onClick={() => dmnRunner.setDrawerExpanded(true)}>
+          <DropdownItem
+            id={"dmn-runner-dropdown-open"}
+            key={"open-dmn-runner"}
+            component={"button"}
+            onClick={() => dmnRunner.setDrawerExpanded(true)}
+          >
             {i18n.dmnRunner.dropdown.open}
           </DropdownItem>
         )}
         {dmnRunner.status === DmnRunnerStatus.RUNNING && dmnRunner.isDrawerExpanded && (
-          <DropdownItem key={"open-dmn-runner"} component={"button"} onClick={() => dmnRunner.setDrawerExpanded(false)}>
+          <DropdownItem
+            id={"dmn-runner-dropdown-close"}
+            key={"open-dmn-runner"}
+            component={"button"}
+            onClick={() => dmnRunner.setDrawerExpanded(false)}
+          >
             {i18n.dmnRunner.dropdown.close}
           </DropdownItem>
         )}

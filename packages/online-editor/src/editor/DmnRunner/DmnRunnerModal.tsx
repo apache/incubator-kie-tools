@@ -94,7 +94,7 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <Text component={TextVariants.a} href={downloadDmnRunnerUrl}>
+                    <Text id={"dmn-runner-modal-download-macos"} component={TextVariants.a} href={downloadDmnRunnerUrl}>
                       {i18n.terms.download}
                     </Text>
                     {i18n.dmnRunner.modal.wizard.macos.install.download}
@@ -281,7 +281,11 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <Text component={TextVariants.a} href={downloadDmnRunnerUrl}>
+                    <Text
+                      id={"dmn-runner-modal-download-windows"}
+                      component={TextVariants.a}
+                      href={downloadDmnRunnerUrl}
+                    >
                       {i18n.terms.download}
                     </Text>
                     {i18n.dmnRunner.modal.wizard.windows.install.keepDownload}
@@ -436,7 +440,7 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <Text component={TextVariants.a} href={downloadDmnRunnerUrl}>
+                    <Text id={"dmn-runner-modal-download-linux"} component={TextVariants.a} href={downloadDmnRunnerUrl}>
                       {i18n.terms.download}
                     </Text>{" "}
                     {i18n.dmnRunner.modal.wizard.linux.install.download}

@@ -56,6 +56,7 @@ export function DmnRunnerButton() {
         content={<p>{i18n.dmnRunner.button.available}</p>}
       >
         <Button
+          id={"dmn-runner-button"}
           data-testid="run-button"
           variant={"tertiary"}
           onClick={onDmnRunner}
@@ -72,7 +73,7 @@ export function DmnRunnerButton() {
                   distance={20}
                   trigger={context.isChrome ? "mouseenter focus" : ""}
                 >
-                  <ExclamationTriangleIcon />
+                  <ExclamationTriangleIcon id={"dmn-runner-outdated-icon"} />
                 </Tooltip>
               )}
               {!dmnRunner.outdated && (
@@ -85,7 +86,10 @@ export function DmnRunnerButton() {
                       distance={20}
                       trigger={context.isChrome ? "mouseenter focus" : ""}
                     >
-                      <ConnectedIcon className={shouldBlinkDmnRunnerConnectedIcon ? "blink-opacity" : ""} />
+                      <ConnectedIcon
+                        id={"dmn-runner-connected-icon"}
+                        className={shouldBlinkDmnRunnerConnectedIcon ? "blink-opacity" : ""}
+                      />
                     </Tooltip>
                   ) : (
                     <Tooltip
@@ -95,7 +99,7 @@ export function DmnRunnerButton() {
                       distance={20}
                       trigger={context.isChrome ? "mouseenter focus" : ""}
                     >
-                      <DisconnectedIcon />
+                      <DisconnectedIcon id={"dmn-runner-disconnected-icon"} />
                     </Tooltip>
                   )}
                 </>
