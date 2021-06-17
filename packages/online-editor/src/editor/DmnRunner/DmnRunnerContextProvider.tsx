@@ -92,21 +92,26 @@ export function DmnRunnerContextProvider(props: Props) {
     }
 
     const detectDmnRunner: number | undefined = window.setInterval(() => {
-      service.check().then(() => {
-        // Check the running version of the DMN Runner, if outdated cancel polling and change status.
-        service.version().then((runnerVersion) => {
-          window.clearInterval(detectDmnRunner);
-          if (runnerVersion !== version) {
-            setOutdated(true);
-          } else {
-            setOutdated(false);
-            if (isModalOpen) {
-              setDrawerExpanded(true);
+      service
+        .check()
+        .then(() => {
+          // Check the running version of the DMN Runner, if outdated cancel polling and change status.
+          service.version().then((runnerVersion) => {
+            window.clearInterval(detectDmnRunner);
+            if (runnerVersion !== version) {
+              setOutdated(true);
+            } else {
+              setOutdated(false);
+              if (isModalOpen) {
+                setDrawerExpanded(true);
+              }
+              setStatus(DmnRunnerStatus.RUNNING);
             }
-            setStatus(DmnRunnerStatus.RUNNING);
-          }
+          });
+        })
+        .catch((err) => {
+          console.debug(err);
         });
-      });
     }, DMN_RUNNER_POLLING_TIME);
 
     return () => window.clearInterval(detectDmnRunner);
