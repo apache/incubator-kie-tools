@@ -23,7 +23,6 @@ import elemental2.core.Global;
 import elemental2.core.JsArray;
 import elemental2.core.JsMap;
 
-// @FIXME this needs to be tested well (mdp)
 public final class SpriteBehaviorMap {
 
     private final JsMap<String, JsArray<BoundingBox>> m_jso;

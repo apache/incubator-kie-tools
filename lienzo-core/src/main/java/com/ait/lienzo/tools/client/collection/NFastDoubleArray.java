@@ -54,7 +54,6 @@ public class NFastDoubleArray extends NArrayBase<Double> {
      */
     @JsOverlay
     public final Double get(final int index) {
-        // @TODO is this really necessary to incurr the cost to be defensive. Surely better to avoid bad code in the first place? (mdp)
         if ((index >= 0) && (index < size())) {
             return getAt(index);
         }
@@ -100,17 +99,7 @@ public class NFastDoubleArray extends NArrayBase<Double> {
 
     @JsOverlay
     public final double[] toArray() {
-        // yes this is horrible, but JS doesn't differentiate between Double and double and it avoids an array copy.
         double[] d = Js.uncheckedCast(JsArray.from((JsArrayLike<Double>) this));
         return d;
-//        final int size = size();
-//
-//        final double[] array = new double[size];
-//
-//        for (int i = 0; i < size; i++)
-//        {
-//            array[i] = get(i);
-//        }
-//        return array;
     }
 }

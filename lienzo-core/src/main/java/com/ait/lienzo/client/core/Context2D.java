@@ -330,9 +330,6 @@ public class Context2D {
     }
 
     public ImageData createImageData(final ImageData data) {
-        // @FIXME this doesn't exist on Elm2
-        //return m_jso.createImageData(data);
-        //m_jso.createImageData(o,o);
         return m_jso.createImageData(data.width, data.height);
     }
 
@@ -343,11 +340,6 @@ public class Context2D {
     public void setGlobalCompositeOperation(final CompositeOperation operation) {
         m_jso.setGlobalCompositeOperation((null != operation) ? operation.getValue() : null);
     }
-
-//    public void setImageSmoothingEnabled(final boolean enabled)
-//    {
-//        m_jso.setImageSmoothingEnabled(enabled);
-//    }
 
     public void drawImage(final HTMLImageElement image, final double x, final double y) {
         m_jso.drawImage(image, x, y);

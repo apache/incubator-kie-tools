@@ -46,7 +46,6 @@ public final class NFastArrayList<M> extends NArrayBase<M> {
      */
     @JsOverlay
     public final M get(final int index) {
-        // @TODO is this really necessary to incurr the cost to be defensive. Surely better to avoid bad code in the first place? (mdp)
         if ((index >= 0) && (index < size())) {
             return getAt(index);
         }

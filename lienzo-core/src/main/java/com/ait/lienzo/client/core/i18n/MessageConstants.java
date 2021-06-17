@@ -23,8 +23,7 @@ import com.ait.lienzo.gwtlienzo.i18n.Constants;
  */
 public interface MessageConstants extends Constants {
 
-    // @FIXME no-op class for now, just to get things compiling (mdp)
-    MessageConstants MESSAGES = new MessageConstantsImpl(); //JsUtils.GWT.create(MessageConstants.class);
+    MessageConstants MESSAGES = new MessageConstantsImpl();
 
     @DefaultStringValue("Canvas is not supported in this browser!")
     String getCanvasUnsupportedMessage();

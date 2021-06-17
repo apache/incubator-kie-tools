@@ -178,8 +178,6 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie> {
 
             m_video.playbackRate = getPlaybackRate();
 
-            // @FIXME this property is missing from Elemental2, so used property map
-            //m_video.setPreload(MediaElement.PRELOAD_AUTO);
             Js.asPropertyMap(m_video).set("preLoad", MediaElement.PRELOAD_AUTO);
 
             if (getVolume() >= 0) {

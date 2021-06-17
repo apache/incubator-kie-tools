@@ -33,7 +33,6 @@ import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.LayerClearMode;
 import com.ait.lienzo.shared.core.types.LineCap;
-import com.ait.lienzo.tools.client.Console;
 import com.ait.lienzo.tools.client.StringOps;
 import com.ait.lienzo.tools.common.api.types.IStringValued;
 import elemental2.dom.DomGlobal;
@@ -104,8 +103,6 @@ public final class LienzoCore {
     }
 
     private LienzoCore() {
-        // @FIXME need to figure out how to get the root DIV
-        //RootPanel.get().getElement().getStyle().setProperty("webkitTapHighlightColor", "rgba(0,0,0,0)");
     }
 
     public static final LienzoCore get() {
@@ -168,54 +165,23 @@ public final class LienzoCore {
     }
 
     public final void log(final String message) {
-        Console.get().info(message);
+        DomGlobal.console.info(message);
     }
 
     public final void info(final String message) {
-        Console.get().info(message);
-    }
-
-    public final void fine(final String message) {
-        Console.get().fine(message);
+        DomGlobal.console.info(message);
     }
 
     public final void warn(final String message) {
-        Console.get().warn(message);
+        DomGlobal.console.warn(message);
     }
 
     public final void error(final String message) {
-        Console.get().error(message);
+        DomGlobal.console.error(message);
     }
 
     public final void error(final String message, final Throwable e) {
-        Console.get().error(message, e);
-    }
-
-    public final void severe(final String message) {
-        Console.get().severe(message);
-    }
-
-    public final void severe(final String message, final Throwable e) {
-        Console.get().severe(message, e);
-    }
-
-    public final void stack(final String message, final Throwable e) {
-        // @FIXME mdp
-//        if (e instanceof UmbrellaException)
-//        {
-//            final UmbrellaException u = ((UmbrellaException) e);
-//
-//            for (Throwable t : u.getCauses())
-//            {
-//                stack(message, t);
-//            }
-//            return;
-//        }
-        Console.get().error(message, e);
-
-        for (StackTraceElement s : e.getStackTrace()) {
-            Console.get().error(s.toString());
-        }
+        DomGlobal.console.error(message, e);
     }
 
     public final String getUserAgent() {
@@ -263,8 +229,6 @@ public final class LienzoCore {
 
     public final boolean isFirefox() {
         String ua = getUserAgent();
-
-        // IE 11 Says it is Mozilla!!! Check for Trident
 
         if (((ua.indexOf("Mozilla") >= 0) || (ua.indexOf("Firefox") >= 0)) && (ua.indexOf("Trident") < 0)) {
             return (false == isSafari());

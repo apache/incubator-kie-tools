@@ -23,7 +23,6 @@ import com.ait.lienzo.shared.core.types.PathClipperType;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
-// @TODO This class and it's children need more checking (mdp)
 public abstract class AbstractPathClipper implements IPathClipper {
 
     private final PathClipperJSO m_jso;
@@ -181,83 +180,59 @@ public abstract class AbstractPathClipper implements IPathClipper {
             this.type = type;
         }
 
-        ;
-
         @JsProperty
         final void setX(double x) {
             this.x = x;
         }
-
-        ;
 
         @JsProperty
         final double getX() {
             return this.x;
         }
 
-        ;
-
         @JsProperty
         final void setY(double y) {
             this.y = y;
         }
-
-        ;
 
         @JsProperty
         final double getY() {
             return this.y;
         }
 
-        ;
-
         @JsProperty
         final void setBoundingBox(BoundingBox bbox) {
             this.bbox = bbox;
         }
-
-        ;
 
         @JsProperty
         final BoundingBox getBoundingBox() {
             return this.bbox;
         }
 
-        ;
-
         @JsProperty
         final void setPathPartList(PathPartList plist) {
             this.plist = plist;
         }
-
-        ;
 
         @JsProperty
         final PathPartList getPathPartList() {
             return this.plist;
         }
 
-        ;
-
         @JsProperty
         final String getTypeString() {
             return this.type;
         }
-
-        ;
 
         @JsProperty
         final void setActive(boolean active) {
             this.active = active;
         }
 
-        ;
-
         @JsProperty
         final boolean isActive() {
             return (!!this.active);
         }
-
-        ;
     }
 }

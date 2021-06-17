@@ -42,37 +42,7 @@ public abstract class AbstractStorageEngine<M> implements IStorageEngine<M> {
     protected AbstractStorageEngine(final StorageEngineType type, final Object node, final ValidationContext ctx) throws ValidationException {
         m_type = type;
 
-        //final JSONValue mval = node.get("meta");
         m_meta = new MetaData();
-//        if (null == mval)
-//        {
-//            m_meta = new MetaData();
-//        }
-//        else
-//        {
-//            final JSONObject mobj = mval.isObject();
-//
-//            if (null == mobj)
-//            {
-//                m_meta = new MetaData();
-//            }
-//            else
-//            {
-//                final JavaScriptObject mjso = mobj.getJavaScriptObject();
-//
-//                if (null == mjso)
-//                {
-//                    m_meta = new MetaData();
-//                }
-//                else
-//                {
-//                    // @FIXME (mdp)
-//                    // final NObjectJSO jso = mjso.cast();
-//                    // m_meta = new MetaData(jso);
-//                    m_meta = new MetaData();
-//                }
-//            }
-//        }
     }
 
     @Override

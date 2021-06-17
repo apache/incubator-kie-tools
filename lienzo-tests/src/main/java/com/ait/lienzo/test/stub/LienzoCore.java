@@ -13,7 +13,6 @@ import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.LayerClearMode;
 import com.ait.lienzo.test.annotation.StubClass;
-import com.ait.lienzo.tools.client.Console;
 import com.ait.lienzo.tools.client.StringOps;
 import com.ait.lienzo.tools.common.api.types.IStringValued;
 import com.google.gwt.dom.client.Style;
@@ -117,54 +116,23 @@ public class LienzoCore {
     }
 
     public final void log(final String message) {
-        Console.get().info(message);
+        System.out.println(message);
     }
 
     public final void info(final String message) {
-        Console.get().info(message);
-    }
-
-    public final void fine(final String message) {
-        Console.get().fine(message);
+        log(message);
     }
 
     public final void warn(final String message) {
-        Console.get().warn(message);
+        log(message);
     }
 
     public final void error(final String message) {
-        Console.get().error(message);
+        log(message);
     }
 
     public final void error(final String message, final Throwable e) {
-        Console.get().error(message, e);
-    }
-
-    public final void severe(final String message) {
-        Console.get().severe(message);
-    }
-
-    public final void severe(final String message, final Throwable e) {
-        Console.get().severe(message, e);
-    }
-
-    public final void stack(final String message, final Throwable e) {
-        // @FIXME mdp
-//        if (e instanceof UmbrellaException)
-//        {
-//            final UmbrellaException u = ((UmbrellaException) e);
-//
-//            for (Throwable t : u.getCauses())
-//            {
-//                stack(message, t);
-//            }
-//            return;
-//        }
-        Console.get().error(message, e);
-
-        for (StackTraceElement s : e.getStackTrace()) {
-            Console.get().error(s.toString());
-        }
+        log(message);
     }
 
     public final String getUserAgent() {

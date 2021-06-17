@@ -26,7 +26,6 @@ import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.LineCap;
 import com.ait.lienzo.shared.core.types.LineJoin;
-import com.ait.lienzo.tools.client.Console;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 
@@ -209,7 +208,6 @@ public class Animate extends BaseExample implements Example {
         prim.addNodeMouseClickHandler(new NodeMouseClickHandler() {
             @Override
             public void onNodeMouseClick(final NodeMouseClickEvent event) {
-                Console.get().info("flippy");
                 prim.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(SCALE(1, -1)), 500, new AnimationCallback() {
                     @Override
                     public void onClose(final IAnimation animation, final IAnimationHandle handle) {

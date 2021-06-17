@@ -27,9 +27,7 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 
 @JsType(isNative = true, name = "Map", namespace = JsPackage.GLOBAL)
-public class NObjectJSO implements JsIterable<JsIterableTypeParameterArrayUnionType<String, ?>[]>
-//extends NObjectBaseJSO<NObjectJSO>
-{
+public class NObjectJSO implements JsIterable<JsIterableTypeParameterArrayUnionType<String, ?>[]> {
 
     @JsOverlay
     public static final NObjectJSO make() {
@@ -38,16 +36,6 @@ public class NObjectJSO implements JsIterable<JsIterableTypeParameterArrayUnionT
 
     protected NObjectJSO() {
     }
-
-//    @JsOverlay
-//    public static final NObjectJSO cast(final JavaScriptObject jso)
-//    {
-//        if (null != jso)
-//        {
-//            return Js.uncheckedCast(jso);
-//        }
-//        return null;
-//    }
 
     /**
      * Returns the number of key-value mappings in this map
@@ -107,61 +95,6 @@ public class NObjectJSO implements JsIterable<JsIterableTypeParameterArrayUnionT
         set(name, value);
     }
 
-    // @FIXME (mdp)
-//    public final void putString(final String name, final NHasJSO<? extends JavaScriptObject> value)
-//    {
-//        if (null != value)
-//        {
-//            set(name, value.getJSO());
-//        }
-//        else
-//        {
-//            set(name, null);
-//        }
-//    }
-
-//    @JsOverlay
-//    public final void put(final String name, final JavaScriptObject value)
-//    {
-//        set(name, value);
-//    }
-
-//    private final native void put_0(String name, int value)
-//    /*-{
-//		this[name] = value;
-//    }-*/;
-//
-//    private final native void put_0(String name, double value)
-//    /*-{
-//		this[name] = value;
-//    }-*/;
-//
-//    private final native void put_0(String name, boolean value)
-//    /*-{
-//		this[name] = value;
-//    }-*/;
-//
-//    private final native void put_0(String name, String value)
-//    /*-{
-//		this[name] = value;
-//    }-*/;
-//
-//    private final native void put_0(String name, JavaScriptObject value)
-//    /*-{
-//		this[name] = value;
-//    }-*/;
-
-//    public final NValue<?> getAsNValue(final String name)
-//    {
-//        return getAsNValue_0(NUtils.doKeyRepair(name));
-//    }
-
-//    @JsOverlay
-//    public final JavaScriptObject getAsJSO(final String name)
-//    {
-//        return Js.uncheckedCast(get(name));
-//    }
-
     @JsOverlay
     public final int getAsInteger(final String name) {
         Object o = get(name);
@@ -197,16 +130,4 @@ public class NObjectJSO implements JsIterable<JsIterableTypeParameterArrayUnionT
         }
         return Js.cast(o);
     }
-
-//    public final String getAsString(final String name, final String otherwise)
-//    {
-//        final String value = Js.asString(get(name));
-//
-//        return ((null != value) ? value : otherwise);
-//    }
-
-//    private final NValue<?> getAsNValue_0(final String name)
-//    {
-//        return NUtils.Native.getAsNValue(this, name);
-//    }
 }

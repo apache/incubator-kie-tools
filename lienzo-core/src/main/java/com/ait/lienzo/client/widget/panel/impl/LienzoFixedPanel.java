@@ -19,7 +19,6 @@ import java.util.function.Predicate;
 
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.i18n.MessageConstants;
-import com.ait.lienzo.client.core.mediator.IMediator;
 import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Node;
@@ -185,18 +184,7 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
      */
     @Override
     public LienzoFixedPanel setCursor(final Cursor cursor) {
-        // TODO
-        /*getElement().getStyle().setCursor(cursor);
-
-        // Need to defer this, sometimes, if the browser is busy, etc, changing cursors does not take effect till events are done processing
-        Scheduler.get().scheduleDeferred(new ScheduledCommand()
-        {
-            @Override
-            public void execute()
-            {
-                getElement().getStyle().setCursor(cursor);
-            }
-        });*/
+        getElement().style.cursor = cursor.getCssName();
         return this;
     }
 
@@ -272,9 +260,7 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
      * @return this LienzoPanelImpl
      */
     public LienzoFixedPanel setBackgroundColor(final String color) {
-        if (null != color) {
-            // TODO: lienzo-to-native - getElement().getStyle().setBackgroundColor(color);
-        }
+        getElement().style.backgroundColor = color;
         return this;
     }
 
@@ -300,25 +286,4 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
     public Mediators getMediators() {
         return getViewport().getMediators();
     }
-
-    /**
-     * Add a mediator to the stack of {@link com.ait.lienzo.client.core.mediator.Mediators} for this panels {@link
-     * com.ait.lienzo.client.core.shape.Viewport}. The one that is added last, will be called first.
-     * <p/>
-     * Mediators can be used to e.g. to add zoom operations.
-     *
-     * @param mediator IMediator
-     */
-    public LienzoFixedPanel pushMediator(final IMediator mediator) {
-        getViewport().pushMediator(mediator);
-
-        return this;
-    }
-
-    public static native void enableWindowMouseWheelScroll(boolean enabled)
-        /*-{
-            $wnd.mousewheel = function () {
-                return enabled;
-            }
-        }-*/;
 }

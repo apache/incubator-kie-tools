@@ -61,7 +61,6 @@ public final class LayerRedrawManager {
 
     private void kick(HTMLElement layerElement) {
         if (!m_layers.isEmpty()) {
-            // @TODO check this works (mdp)
             AnimationScheduler.get().requestAnimationFrame(m_redraw, Js.uncheckedCast(layerElement));
         }
     }

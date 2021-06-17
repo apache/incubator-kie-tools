@@ -441,11 +441,7 @@ public class Scene extends ContainerNode<Layer, Scene> {
                         break;// already at top
                     }
                     getElement().removeChild(element);
-
-                    // @FIXME does this really need the +1 and nextsibling. We sholud tes this (mdp)
                     getElement().insertBefore(element, getElement().childNodes.getAt(i + 1).nextSibling);
-                    //getElement().insertAfter(element, getElement().getChild(i + 1)); // FIXME  his is what it was before (md)
-
                     break;
                 }
             }

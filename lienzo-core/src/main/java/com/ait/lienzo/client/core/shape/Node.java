@@ -498,21 +498,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
         return m_opts.uuid();
     }
 
-// @FIXME (mdp)
-//    @Override
-//    public NObject onWire()
-//    {
-//        final JSONObject object = toJSONObject();
-//
-//        if (null != object)
-//        {
-//            final NObjectJSO njso = object.getJavaScriptObject().cast();
-//
-//            return new NObject(njso);
-//        }
-//        return new NObject();
-//    }
-
     @Override
     public String toString() {
         return getClass().getSimpleName() + " : " + getUserData() + " : " + getX() + " : " + getY();
@@ -656,12 +641,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
     public NodeType getNodeType() {
         return m_type;
     }
-
-//    @Override
-//    public final Attributes getAttributes()
-//    {
-//        return m_attr;
-//    }
 
     /**
      * Used internally. Applies the node's transform-related attributes
@@ -853,93 +832,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
         return cachedXfrm;
     }
 
-
-/*    protected Transform getPossibleNodeTransform1()
-    {
-        if (!hasAnyTransformAttributes())
-        {
-            return null;
-        }
-        final Transform xfrm = Transform.fromXY(cachedXfrm, getX(), getY());
-        //cachedXfrm = Transform.fromXY(cachedXfrm, getX(), getY());
-
-
-
-        if (!hasComplexTransformAttributes())
-        {
-            return xfrm;
-        }
-        // Otherwise use ROTATION, SCALE, OFFSET and SHEAR
-
-        double ox = 0;
-
-        double oy = 0;
-
-        final Point2D offset = getOffset();
-
-        if (null != offset)
-        {
-            ox = offset.getX();
-
-            oy = offset.getY();
-        }
-        final double r = getRotation();
-
-        if (r != 0)
-        {
-            if ((ox != 0) || (oy != 0))
-            {
-                xfrm.translate(ox, oy);
-
-                xfrm.rotate(r);
-
-                xfrm.translate(-ox, -oy);
-            }
-            else
-            {
-                xfrm.rotate(r);
-            }
-        }
-        final Point2D scale = getScale();
-
-        if (null != scale)
-        {
-            final double sx = scale.getX();
-
-            final double sy = scale.getY();
-
-            if ((sx != 1) || (sy != 1))
-            {
-                if ((ox != 0) || (oy != 0))
-                {
-                    xfrm.translate(ox, oy);
-
-                    xfrm.scaleWithXY(sx, sy);
-
-                    xfrm.translate(-ox, -oy);
-                }
-                else
-                {
-                    xfrm.scaleWithXY(sx, sy);
-                }
-            }
-        }
-        final Point2D shear = getShear();
-
-        if (null != shear)
-        {
-            final double sx = shear.getX();
-
-            final double sy = shear.getY();
-
-            if ((sx != 0) || (sy != 0))
-            {
-                xfrm.shear(sx, sy);
-            }
-        }
-        return xfrm;
-    }*/
-
     @Override
     public BoundingPoints getComputedBoundingPoints() {
         double computedXOffset = 0;
@@ -1034,23 +926,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
     public boolean isListening() {
         return listening;
     }
-
-//    public final void setID(final String id)
-//    {
-//        if (null != id)
-//        {
-//            put(Attribute.ID.getProperty(), id);
-//        }
-//        else
-//        {
-//            remove(Attribute.ID.getProperty());
-//        }
-//    }
-//
-//    public final String getID()
-//    {
-//        return getString(Attribute.ID.getProperty());
-//    }
 
     /**
      * Sets the ID of this node.

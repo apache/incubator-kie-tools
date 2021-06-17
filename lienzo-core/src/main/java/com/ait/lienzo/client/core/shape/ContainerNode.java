@@ -221,8 +221,6 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
         return bbox;
     }
 
-    // TODO - do this for containers
-
     @Override
     public List<Attribute> getBoundingBoxAttributes() {
         return new ArrayList<>(0);

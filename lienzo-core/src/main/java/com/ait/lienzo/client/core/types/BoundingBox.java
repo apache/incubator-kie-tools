@@ -244,24 +244,6 @@ public final class BoundingBox {
                 getMinY() <= p.getY() && getMaxY() >= p.getY();
     }
 
-    public final String toJSONString() {
-        // TODO: lienzo-to-native
-
-        return "{" + getX() + ", " + getY() + ", " + getWidth() + ", " + getHeight() + "}";
-
-//        JSONObject object = new JSONObject();
-//
-//        object.put("x", new JSONNumber(getX()));
-//
-//        object.put("y", new JSONNumber(getY()));
-//
-//        object.put("width", new JSONNumber(getWidth()));
-//
-//        object.put("height", new JSONNumber(getHeight()));
-//
-//        return object.toString();
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(minx, miny, maxx, maxy);

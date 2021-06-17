@@ -42,7 +42,6 @@ public class MouseEventUtil {
     }
 
     private static double getSubPixelAbsoluteTop(HTMLElement elem) {
-        // Lifted from GWT  @TODO I might need checks, before assuming Element is HTMLElement (mdp)
         double left = 0;
         HTMLElement curr = elem;
         // This intentionally excludes body which has a null offsetParent.

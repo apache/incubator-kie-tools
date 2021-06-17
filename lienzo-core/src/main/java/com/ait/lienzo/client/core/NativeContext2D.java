@@ -187,121 +187,10 @@ public class NativeContext2D extends CanvasRenderingContext2D {
         save();
     }
 
-//    public final native void save()
-//    /*-{
-//		this.save();
-//    }-*/;
-
-//    public final native void restore()
-//    /*-{
-//		this.restore();
-//    }-*/;
-
-//    public final native void beginPath()
-//    /*-{
-//		this.beginPath();
-//    }-*/;
-
-//    public final native void closePath()
-//    /*-{
-//		this.closePath();
-//    }-*/;
-
-//    public final native void moveTo(double x, double y)
-//    /*-{
-//		this.moveTo(x, y);
-//    }-*/;
-
-//    public final native void lineTo(double x, double y)
-//    /*-{
-//		this.lineTo(x, y);
-//    }-*/;
-
     @JsOverlay
     public final void setGlobalCompositeOperation(String operation) {
         this.globalCompositeOperation = operation != null ? operation : "source-over";
     }
-
-//    public final native void setLineCap(String lineCap)
-//    /*-{
-//		this.lineCap = lineCap || "butt";
-//    }-*/;
-
-//    public final native void setLineJoin(String lineJoin)
-//    /*-{
-//		this.lineJoin = lineJoin || "miter";
-//    }-*/;
-
-//    public final native void quadraticCurveTo(double cpx, double cpy, double x, double y)
-//    /*-{
-//		this.quadraticCurveTo(cpx, cpy, x, y);
-//    }-*/;
-
-//    public final native void arc(double x, double y, double radius, double startAngle, double endAngle)
-//    /*-{
-//		this.arc(x, y, radius, startAngle, endAngle, false);
-//    }-*/;
-
-//    public final native void arc(double x, double y, double radius, double startAngle, double endAngle, boolean antiClockwise)
-//    /*-{
-//		this.arc(x, y, radius, startAngle, endAngle, antiClockwise);
-//    }-*/;
-
-//    public final native void ellipse(double x, double y, double rx, double ry, double ro, double sa, double ea, boolean ac)
-//    /*-{
-//		this.ellipse(x, y, rx, ry, ro, sa, ea, ac);
-//    }-*/;
-
-//    public final native void ellipse(double x, double y, double rx, double ry, double ro, double sa, double ea)
-//    /*-{
-//		this.ellipse(x, y, rx, ry, ro, sa, ea, false);
-//    }-*/;
-
-//    public final native void arcTo(double x1, double y1, double x2, double y2, double radius)
-//    /*-{
-//		this.arcTo(x1, y1, x2, y2, radius);
-//    }-*/;
-
-//    public final native void bezierCurveTo(double cp1x, double cp1y, double cp2x, double cp2y, double x, double y)
-//    /*-{
-//		this.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
-//    }-*/;
-
-//    public final native void clearRect(double x, double y, double w, double h)
-//    /*-{
-//		if ((w <= 0) || (h <= 0)) {
-//			return;
-//		}
-//		this.clearRect(x, y, w, h);
-//    }-*/;
-
-//    public final native void clip()
-//    /*-{
-//		this.clip();
-//    }-*/;
-
-//    public final native void fill()
-//    /*-{
-//		this.fill();
-//    }-*/;
-
-//    public final native void stroke()
-//    /*-{
-//		this.stroke();
-//    }-*/;
-
-//    public final native void fillRect(double x, double y, double w, double h)
-//    /*-{
-//		if ((w <= 0) || (h <= 0)) {
-//			return;
-//		}
-//		this.fillRect(x, y, w, h);
-//    }-*/;
-
-//    public final native void fillText(String text, double x, double y)
-//    /*-{
-//		this.fillText(text, x, y);
-//    }-*/;
 
     @JsOverlay
     public final void fillTextWithGradient(String text, double x, double y, double sx, double sy, double ex, double ey, String color) {
@@ -316,50 +205,6 @@ public class NativeContext2D extends CanvasRenderingContext2D {
 
         this.fillText(text, x, y);
     }
-
-//    public final native void fillText(String text, double x, double y, double maxWidth)
-//    /*-{
-//		this.fillText(text, x, y, maxWidth);
-//    }-*/;
-
-//    public final native void setFillColor(String fill)
-//    /*-{
-//		this.fillStyle = fill;
-//    }-*/;
-
-//    public final native void rect(double x, double y, double w, double h)
-//    /*-{
-//		if ((w <= 0) || (h <= 0)) {
-//			return;
-//		}
-//		this.rect(x, y, w, h);
-//    }-*/;
-
-//    public final native void rotate(double angle)
-//    /*-{
-//		this.rotate(angle);
-//    }-*/;
-
-//    public final native void scale(double sx, double sy)
-//    /*-{
-//		this.scale(sx*scalingRatio, sy*scalingRatio);
-//    }-*/;
-
-//    public final void setStrokeColor(String color)
-//    {
-//		this.strokeStyle = color;
-//    };
-
-//    @JsOverlay
-//    public final void setLineWidth(double width)
-//    {
-//		this.lineWidth = width;
-//    };
-
-//    public final void setImageSmoothingEnabled(boolean enabled)
-//    {
-//		this.imageSmoothingEnabled = enabled;
-//    };
 
     @JsOverlay
     public final void setFillGradient(LinearGradientJSO grad) {
@@ -415,11 +260,6 @@ public class NativeContext2D extends CanvasRenderingContext2D {
         }
     }
 
-//    public final native void transform(double d0, double d1, double d2, double d3, double d4, double d5)
-//    /*-{
-//		this.transform(d0, d1, d2, d3, d4, d5);
-//    }-*/;
-
     @JsOverlay
     public final void setTransform(Transform jso) {
         if (jso != null) {
@@ -427,51 +267,20 @@ public class NativeContext2D extends CanvasRenderingContext2D {
         }
     }
 
-//    public final native void setTransform(double d0, double d1, double d2, double d3, double d4, double d5)
-//    /*-{
-//		this.setTransform(d0, d1, d2, d3, d4, d5);
-//    }-*/;
-
     @JsOverlay
     public final void setToIdentityTransform() {
         setTransform(1, 0, 0, 1, 0, 0);
     }
-
-    ;
 
     @JsOverlay
     public final void setTextFont(String font) {
         setFont(font);
     }
 
-    ;
-
-//    public final native void setTextBaseline(String baseline)
-//    /*-{
-//		this.textBaseline = baseline || "alphabetic";
-//    }-*/;
-
-//    public final native void setTextAlign(String align)
-//    /*-{
-//		this.textAlign = align || "start";
-//    }-*/;
-
-//    public final native void strokeText(String text, double x, double y)
-//    /*-{
-//		this.strokeText(text, x, y);
-//    }-*/;
-
     @JsOverlay
     public final void setGlobalAlpha(double alpha) {
         this.globalAlpha = alpha;
     }
-
-    ;
-
-//    public final native void translate(double x, double y)
-//    /*-{
-//		this.translate(x, y);
-//    }-*/;
 
     @JsOverlay
     public final void setShadow(ShadowJSO shadow) {
@@ -494,93 +303,7 @@ public class NativeContext2D extends CanvasRenderingContext2D {
         return map.has(feature);
     }
 
-//    public final native boolean isPointInPath(double x, double y)
-//    /*-{
-//		return this.isPointInPath(x, y);
-//    }-*/;
-
-//    public final native ImageData getImageData(double x, double y, double width, double height)
-//    /*-{
-//		return this.getImageData(x, y, width, height);
-//    }-*/;
-
-//    public final native ImageData createImageData(double width, double height)
-//    /*-{
-//		return this.createImageData(width, height);
-//    }-*/;
-
-//    public final native ImageData createImageData(ImageData data)
-//    /*-{
-//		return this.createImageData(data);
-//    }-*/;
-
-//    public final native void putImageData(ImageData imageData, double x, double y)
-//    /*-{
-//		this.putImageData(imageData, x, y);
-//    }-*/;
-
-//    public final native void putImageData(ImageData imageData, double x, double y, double dx, double dy, double dw, double dh)
-//    /*-{
-//		if ((dw <= 0) || (dh <= 0)) {
-//			return;
-//		}
-//		this.putImageData(imageData, x, y, dx, dy, dw, dh);
-//    }-*/;
-
-//    /**
-//     * Returns the metrics for the given text.
-//     *
-//     * @param text the text to measure, as a String
-//     * @return a {@link TextMetrics} object
-//     */
-//    public final native TextMetrics measureText(String text)
-//    /*-{
-//		return this.measureText(text);
-//    }-*/;
-
-//    public final native void drawImage(Element image, double x, double y)
-//    /*-{
-//		this.drawImage(image, x, y);
-//    }-*/;
-
-//    public final native void drawImage(Element image, double x, double y, double w, double h)
-//    /*-{
-//		if ((w <= 0) || (h <= 0)) {
-//			return;
-//		}
-//		this.drawImage(image, x, y, w, h);
-//    }-*/;
-
-//    public final native void drawImage(Element image, double sx, double sy, double sw, double sh, double x, double y, double w, double h)
-//    /*-{
-//		if ((w <= 0) || (h <= 0)) {
-//			return;
-//		}
-//		if ((sw <= 0) || (sh <= 0)) {
-//			return;
-//		}
-//		this.drawImage(image, sx, sy, sw, sh, x, y, w, h);
-//    }-*/;
-
     public final native void resetClip();
-//    {
-//		this.resetClip();
-//    }
-//
-//    public final native void setMiterLimit(double limit)
-//    /*-{
-//		this.miterLimit = limit;
-//    }-*/;
-
-//    public final native void setLineDash(NFastDoubleArrayJSO dashes)
-//    /*-{
-//		this.setLineDash(dashes || []);
-//    }-*/;
-//
-//    public final native void setLineDashOffset(double offset)
-//    {
-//		this.setLineDashOffset(offset);
-//    };
 
     @JsOverlay
     public final double getBackingStorePixelRatio() {
@@ -645,37 +368,4 @@ public class NativeContext2D extends CanvasRenderingContext2D {
     public final boolean clip(PathPartListJSO list) {
         return path(list, false);
     }
-
-//    public final native void fill(NativePath2D path)
-//    /*-{
-//		if (path) {
-//			this.fill(path);
-//		}
-//    }-*/;
-
-//    public final native void stroke(NativePath2D path)
-//    /*-{
-//		if (path) {
-//			this.stroke(path);
-//		}
-//    }-*/;
-
-//    public final native void clip(NativePath2D path)
-//    /*-{
-//		if (path) {
-//			this.clip(path);
-//		}
-//    }-*/;
-
-//    public final native NativePath2D getCurrentPath()
-//    /*-{
-//		return this.currentPath || null;
-//    }-*/;
-
-//    public final native void setCurrentPath(NativePath2D path)
-//    /*-{
-//		if (path) {
-//			this.currentPath = path;
-//		}
-//    }-*/;
 }

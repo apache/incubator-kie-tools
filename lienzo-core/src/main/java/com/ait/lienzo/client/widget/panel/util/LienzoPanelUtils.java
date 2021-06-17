@@ -1,7 +1,6 @@
 package com.ait.lienzo.client.widget.panel.util;
 
 import com.ait.lienzo.client.core.style.Style;
-import com.ait.lienzo.client.core.types.BoundingBox;
 import elemental2.core.JsNumber;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.CSSStyleDeclaration;
@@ -51,13 +50,5 @@ public class LienzoPanelUtils {
                                     final int height) {
         setPanelWidth(panel, width);
         setPanelHeight(panel, height);
-    }
-
-    // TODO: Remove once BoundingBox#toString method works.
-    public static void logBoundingBox(BoundingBox bb) {
-        String s = null != bb ?
-                "[" + bb.getX() + ", " + bb.getY() + ", " + bb.getWidth() + ", " + bb.getHeight() + "]" :
-                "null";
-        DomGlobal.console.log(s);
     }
 }
