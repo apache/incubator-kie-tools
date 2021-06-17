@@ -538,6 +538,7 @@
               <runTarget>index.html</runTarget>
               <hostedWebapp>src/main/webapp</hostedWebapp>
               <gwtSdkFirstInClasspath>false</gwtSdkFirstInClasspath>
+              <generateJsInteropExports>true</generateJsInteropExports>
               <logLevel>INFO</logLevel>
 
               <compileSourcesArtifacts>
