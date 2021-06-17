@@ -5,6 +5,7 @@ deployProperties = [ : ]
 commitDone = false
 
 BUILT_IMAGES = []
+FAILED_IMAGES = []
 
 pipeline {
     agent {
@@ -113,12 +114,17 @@ pipeline {
                     if (getMavenArtifactRepository() != '') {
                         updateArtifactCmd += " --repo-url ${getMavenArtifactRepository()} --ignore-self-signed-cert"
                     }
-                    sh updateArtifactCmd
 
-                    if (isThereAnyChanges()) {
-                        commitChanges('Updated Maven artifacts')
-                    } else {
-                        echo 'No changes to commit'
+                    try {
+                        sh updateArtifactCmd
+                    } catch (err) {
+                        unstable('Error while updating Maven artifacts. Please check logs.')
+                    } finally {
+                        if (isThereAnyChanges()) {
+                            commitChanges('Updated Maven artifacts')
+                        } else {
+                            echo 'No changes to commit'
+                        }
                     }
                 }
             }
@@ -266,6 +272,21 @@ pipeline {
                     if (isRelease()) {
                         commitMsg = "[${getBuildBranch()}] Update project version to ${getProjectVersion()}"
                         prBody += '\nPlease do not merge, it should be merged automatically.'
+                    } else if (currentBuild.currentResult != 'SUCCESS') {
+                        commitMsg += " (${currentBuild.currentResult})"
+                        prBody += '\n\nSuccessful images:\n'
+                        getBuiltImages().each {
+                            prBody += "- ${it}\n"
+                        }
+                        if (getFailedImages()){
+                            prBody += '\nFailed images:\n'
+                            getFailedImages().each {
+                                prBody += "- ${it}\n"
+                            }
+                        } else {
+                            prBody += '\nImages were all successfully built but some other problem occured in the pipeline execution...\n'
+                        }
+                        prBody += '\nSee build url above for more information'
                     }
                     String prLink = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID())
                     deployProperties["${getRepoName()}.pr.link"] = prLink
@@ -339,8 +360,9 @@ void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
 void buildImage(image) {
     try {
         sh "make build-image image_name=${image} ignore_test=true cekit_option='--work-dir .'"
-        registerBuiltImage (image)
+        registerBuiltImage(image)
     } catch (err) {
+        registerFailedImage(image)
         unstable("${image} build failed")
     }
 }
@@ -350,15 +372,22 @@ void testImage(image) {
         sh "make build-image image_name=${image} ignore_build=true cekit_option='--work-dir .'"
     } catch (err) {
         removeBuiltImage (image)
+        registerFailedImage(image)
         unstable("${image} testing failed")
     } finally {
         junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
     }
 }
 
-void registerBuiltImage (String imageName) {
+void registerBuiltImage(String imageName) {
     lock("${BUILD_URL}") {
         BUILT_IMAGES.add(imageName)
+    }
+}
+
+void registerFailedImage(String imageName) {
+    lock("${BUILD_URL}") {
+        FAILED_IMAGES.add(imageName)
     }
 }
 
@@ -370,6 +399,10 @@ void removeBuiltImage (String imageName) {
 
 List getBuiltImages() {
     return BUILT_IMAGES
+}
+
+List getFailedImages() {
+    return FAILED_IMAGES
 }
 
 void tagImages() {
