@@ -61,6 +61,7 @@ Promise.resolve()
 
 async function updateNpmPackages(lernaVersionArg) {
   console.info("[update-version] Updating NPM packages...");
+
   execSync(`lerna version ${lernaVersionArg} --no-push --no-git-tag-version --exact --yes`, execOpts);
   return require(LERNA_JSON).version;
 }
