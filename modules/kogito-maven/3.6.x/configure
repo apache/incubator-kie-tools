@@ -39,7 +39,7 @@ if [ "${ENABLE_RH_MAVEN_REPO}" == "true" ]; then
       </snapshots>\
     </repository>\
     <repository>\
-      <id>jboss-eap-repository</id>\
+      <id>redhat-techpreview-repository</id>\
       <url>https://maven.repository.redhat.com/techpreview/all</url>\
       <releases>\
         <enabled>true</enabled>\
@@ -71,7 +71,7 @@ if [ "${ENABLE_RH_MAVEN_REPO}" == "true" ]; then
       </snapshots>\
     </pluginRepository>\
     <pluginRepository>\
-      <id>jboss-eap-plugin-repository</id>\
+      <id>redhat-techpreview-repository</id>\
       <url>https://maven.repository.redhat.com/techpreview/all</url>\
       <releases>\
         <enabled>true</enabled>\
