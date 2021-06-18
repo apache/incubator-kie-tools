@@ -86,9 +86,7 @@ public class ColorMapBackedPicker {
             addSupplementaryPaths(prim);
 
             if (m_options.hotspotsEnabled) {
-                // TODO: lienzo-to-native: type was BORDER_HOTSPOT before!!
                 drawShape(m_colorKeyRotor.next(), m_options.hotspotWidth, new PickerPart(prim, PickerPart.ShapePart.BORDER), false);
-
                 // need to be able to detect the difference between the actual border selection and the border hotspot
                 drawShape(m_colorKeyRotor.next(), multiPath.getStrokeWidth(), new PickerPart(prim, PickerPart.ShapePart.BORDER), false);
             }

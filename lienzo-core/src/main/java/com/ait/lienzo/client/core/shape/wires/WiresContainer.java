@@ -48,8 +48,6 @@ import static com.ait.lienzo.client.core.AttributeOp.any;
 
 public class WiresContainer {
 
-    private static final Flows.BooleanOp XYWH_OP = any(Attribute.X, Attribute.Y);
-
     private final NFastArrayList<WiresShape> m_childShapes;
 
     private final IContainer<?, IPrimitive<?>> m_container;
@@ -159,17 +157,6 @@ public class WiresContainer {
         }
 
         m_childShapes.add(shape);
-
-//        // This is needed as a workaround, due to getComputedBoundingBox needed atleast x and y set to something, else it won't work.
-//        Group group = shape.getGroup();
-//        if ( !group.getAttributes().isDefined(Attribute.X) )
-//        {
-//            group.setX(0);
-//        }
-//        if ( !group.getAttributes().isDefined(Attribute.Y) )
-//        {
-//            group.setY(0);
-//        }
 
         m_container.add(shape.getGroup());
 
@@ -321,6 +308,25 @@ public class WiresContainer {
         dockedTo = null;
         m_wiresManager = null;
         m_layoutHandler = null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        WiresShape that = (WiresShape) o;
+
+        return getGroup().uuid().equals(that.getGroup().uuid());
+    }
+
+    @Override
+    public int hashCode() {
+        return getGroup().uuid().hashCode();
     }
 
     protected HandlerManager getHandlerManager() {

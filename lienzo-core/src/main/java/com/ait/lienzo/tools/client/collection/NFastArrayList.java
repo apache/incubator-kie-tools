@@ -84,7 +84,7 @@ public final class NFastArrayList<M> extends NArrayBase<M> {
      */
     @JsOverlay
     public final boolean contains(final M value) {
-        return indexOf(value) > 0;
+        return indexOf(value) > -1;
     }
 
     public native int indexOf(M obj);

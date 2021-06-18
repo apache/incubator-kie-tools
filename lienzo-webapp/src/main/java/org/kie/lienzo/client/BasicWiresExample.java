@@ -61,6 +61,7 @@ public class BasicWiresExample extends BaseExample implements Example {
                                                    .setFillColor("#FF0000"))
                 .setDraggable(true)
                 .setLocation(new Point2D(100, 600));
+        rectangleRedShape.getGroup().setID("redRectangle");
         rectangleRedShape.getGroup().setUserData(LABEL_CHILD);
         wiresManager.register(rectangleRedShape);
         wiresManager.getMagnetManager().createMagnets(rectangleRedShape);
@@ -71,6 +72,7 @@ public class BasicWiresExample extends BaseExample implements Example {
                                                 .setFillColor("#FF0000"))
                 .setDraggable(true)
                 .setLocation(new Point2D(400, 600));
+        circleRedShape.getGroup().setID("redCircle");
         circleRedShape.getGroup().setUserData(LABEL_CHILD);
         wiresManager.register(circleRedShape);
         wiresManager.getMagnetManager().createMagnets(circleRedShape);
@@ -81,6 +83,7 @@ public class BasicWiresExample extends BaseExample implements Example {
                                                     .setFillColor("#0000FF"))
                 .setDraggable(true)
                 .setLocation(new Point2D(650, 600));
+        rectangleBlueShape.getGroup().setID("blueRectangle");
         rectangleBlueShape.getGroup().setUserData(LABEL_CHILD);
         wiresManager.register(rectangleBlueShape);
         wiresManager.getMagnetManager().createMagnets(rectangleBlueShape);
@@ -91,6 +94,7 @@ public class BasicWiresExample extends BaseExample implements Example {
                                                      .setFillColor("#FFFFFF"))
                 .setDraggable(true)
                 .setLocation(new Point2D(50, 50));
+        rectangleBlackShape.getGroup().setID("blackRectangle");
         rectangleBlackShape.getGroup().setUserData(LABEL_PARENT);
         wiresManager.register(rectangleBlackShape);
         wiresManager.getMagnetManager().createMagnets(rectangleBlackShape);

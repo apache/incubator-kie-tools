@@ -92,7 +92,7 @@ public class NFastDoubleArray extends NArrayBase<Double> {
      */
     @JsOverlay
     public final boolean contains(final Double value) {
-        return indexOf(value) > 0;
+        return indexOf(value) > -1;
     }
 
     public native int indexOf(Double obj);

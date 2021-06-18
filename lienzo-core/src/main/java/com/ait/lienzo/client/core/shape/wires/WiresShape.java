@@ -273,22 +273,5 @@ public class WiresShape extends WiresContainer {
         return m_innerLayoutContainer;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
 
-        WiresShape that = (WiresShape) o;
-
-        return getGroup().uuid().equals(that.getGroup().uuid());
-    }
-
-    @Override
-    public int hashCode() {
-        return getGroup().uuid().hashCode();
-    }
 }
