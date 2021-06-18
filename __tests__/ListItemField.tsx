@@ -1,16 +1,14 @@
 import React from 'react';
-import { AutoField, ListItemField, ListDelField } from 'uniforms-patternfly';
+import { AutoField, ListItemField } from 'uniforms-patternfly';
 
 import createContext from './_createContext';
 import mount from './_mount';
-import { Button } from '@patternfly/react-core';
-import { act } from 'react-dom/test-utils';
 
 test('<ListItemField> - works', () => {
   const element = <ListItemField name="x.1" />;
   const wrapper = mount(
     element,
-    createContext({ x: { type: Array }, 'x.$': { type: String } }),
+    createContext({ x: { type: Array }, 'x.$': { type: String } })
   );
 
   expect(wrapper.find(ListItemField)).toHaveLength(1);
@@ -20,7 +18,7 @@ test('<ListItemField> - renders AutoField', () => {
   const element = <ListItemField name="x.1" />;
   const wrapper = mount(
     element,
-    createContext({ x: { type: Array }, 'x.$': { type: String } }),
+    createContext({ x: { type: Array }, 'x.$': { type: String } })
   );
 
   expect(wrapper.find(AutoField)).toHaveLength(1);
@@ -36,7 +34,7 @@ test('<ListItemField> - renders children if specified', () => {
   );
   mount(
     element,
-    createContext({ x: { type: Array }, 'x.$': { type: String } }),
+    createContext({ x: { type: Array }, 'x.$': { type: String } })
   );
 
   expect(Child).toHaveBeenCalledTimes(1);
@@ -46,7 +44,7 @@ test('<ListItemField> - renders ListDelField', () => {
   const element = <ListItemField name="x.1" />;
   const wrapper = mount(
     element,
-    createContext({ x: { type: Array }, 'x.$': { type: String } }),
+    createContext({ x: { type: Array }, 'x.$': { type: String } })
   );
 
   expect(wrapper.find('ListDel')).toHaveLength(1);

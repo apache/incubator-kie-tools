@@ -91,4 +91,3 @@ test('<ListField> - renders children with correct name (children)', () => {
   expect(wrapper.find(Child).at(0).prop('name')).toBe('0');
   expect(wrapper.find(Child).at(1).prop('name')).toBe('1');
 });
-
