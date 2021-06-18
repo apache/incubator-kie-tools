@@ -174,7 +174,6 @@ func (d *grafanaDashboardManager) deployGrafanaDashboards(dashboards []GrafanaDa
 			},
 			Spec: grafanav1.GrafanaDashboardSpec{
 				Json: dashboard.RawJSONDashboard,
-				Name: dashboard.Name,
 			},
 		}
 		if err := kubernetes.ResourceC(d.Client).CreateIfNotExistsForOwner(dashboardDefinition, kogitoService, d.Scheme); err != nil {
