@@ -90,9 +90,25 @@ jobs:
         run: |
           yarn build:prod
 
+      - name: "Compress Online Editor (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        working-directory: ${{ github.workspace }}/kogito-tooling/packages/online-editor
+        run: |
+          zip -r dist.zip dist/*
+
+      - name: "STAGING: Upload Online Editor (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/online-editor/dist.zip
+          asset_name: STAGING__online_editor_${{ needs.create_release.outputs.tag }}.zip
+          asset_content_type: application/zip
+
       - name: "STAGING: Upload VS Code Extension (dev) (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
-        id: upload-vscode-extension-dev
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -104,7 +120,6 @@ jobs:
 
       - name: "STAGING: Upload VS Code Extension Backend (dev) (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
-        id: upload-vscode-extension-backend-dev
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -113,10 +128,9 @@ jobs:
           asset_path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-backend/dist/vscode-extension-backend_${{ needs.create_release.outputs.tag }}.vsix
           asset_name: STAGING__vscode_extension_backend_dev_${{ needs.create_release.outputs.tag }}.vsix
           asset_content_type: application/zip
-      #
+
       - name: "STAGING: Upload Chrome Extension (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
-        id: upload-chrome-extension
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -125,10 +139,9 @@ jobs:
           asset_path: ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ needs.create_release.outputs.tag }}.zip
           asset_name: STAGING__chrome_extension_${{ needs.create_release.outputs.tag }}.zip
           asset_content_type: application/zip
-      #
+
       - name: "STAGING: Upload Desktop App for Linux (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
-        id: upload-desktop-app-linux
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -137,10 +150,9 @@ jobs:
           asset_path: ${{ github.workspace }}/kogito-tooling/packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
           asset_name: STAGING__business_modeler_preview_linux_${{ needs.create_release.outputs.tag }}.tar.gz
           asset_content_type: application/tar+gzip
-      #
+
       - name: "STAGING: Upload Desktop App for macOS (macOS only)"
         if: matrix.os == 'macos-latest'
-        id: upload-desktop-app-macos
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -149,14 +161,13 @@ jobs:
           asset_path: ${{ github.workspace }}/kogito-tooling/packages/desktop/out/Business Modeler Preview-darwin-x64.zip
           asset_name: STAGING__business_modeler_preview_macos_${{ needs.create_release.outputs.tag }}.zip
           asset_content_type: application/zip
-      #
+
       - name: "Compress Desktop App (Windows only)"
         if: matrix.os == 'windows-latest'
         run: "Compress-Archive -Path \"kogito-tooling\\packages\\desktop\\out\\Business Modeler Preview-win32-x64\" -DestinationPath \"kogito-tooling\\packages\\desktop\\out\\Business Modeler Preview-win32-x64.zip\""
-      #
+
       - name: "STAGING: Upload Desktop App for Windows (Windows only)"
         if: matrix.os == 'windows-latest'
-        id: upload-desktop-app-windows
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -165,10 +176,9 @@ jobs:
           asset_path: "${{ github.workspace }}/kogito-tooling/packages/desktop/out/Business Modeler Preview-win32-x64.zip"
           asset_name: "STAGING__business_modeler_preview_windows_${{ needs.create_release.outputs.tag }}.zip"
           asset_content_type: application/zip
-      #
+
       - name: "STAGING: Upload Hub App for Linux (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
-        id: upload-hub-app-linux
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -177,10 +187,9 @@ jobs:
           asset_path: ${{ github.workspace }}/kogito-tooling/packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
           asset_name: STAGING__business_modeler_hub_preview_linux_${{ needs.create_release.outputs.tag }}.tar.gz
           asset_content_type: application/tar+gzip
-      #
+
       - name: "STAGING: Upload Hub App for macOS (macOS only)"
         if: matrix.os == 'macos-latest'
-        id: upload-hub-app-macos
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -189,14 +198,13 @@ jobs:
           asset_path: ${{ github.workspace }}/kogito-tooling/packages/hub/out/Business Modeler Hub Preview-darwin-x64.zip
           asset_name: STAGING__business_modeler_hub_preview_macos_${{ needs.create_release.outputs.tag }}.zip
           asset_content_type: application/zip
-      #
+
       - name: "Compress Hub App (Windows only)"
         if: matrix.os == 'windows-latest'
         run: "Compress-Archive -Path \"kogito-tooling\\packages\\hub\\out\\Business Modeler Hub Preview-win32-x64\" -DestinationPath \"kogito-tooling\\packages\\hub\\out\\Business Modeler Hub Preview-win32-x64.zip\""
 
       - name: "STAGING: Upload Hub App for Windows (Windows only)"
         if: matrix.os == 'windows-latest'
-        id: upload-hub-app-windows
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
