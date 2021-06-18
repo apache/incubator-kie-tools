@@ -70,7 +70,7 @@ jobs:
         uses: ./kogito-tooling/.github/actions/setup-env
         with:
           os: ${{ matrix.os }}
-          path: "${{ github.workspace }}/kogito-tooling"
+          path: kogito-tooling
 
       - name: "Build"
         working-directory: ${{ github.workspace }}/kogito-tooling
