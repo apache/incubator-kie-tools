@@ -43,18 +43,48 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.Graph
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getNodeSize;
+import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getPosition;
 
 @Dependent
 public class CanvasLayoutUtils {
 
-    private static final int PADDING_X = 40;
-    private static final int PADDING_Y = 40;
+    /**
+     * Orientation of the position generated for each node.
+     */
+    public enum Orientation {
+        /**
+         * Nodes are positioned at up to the right.
+         */
+        UpRight,
+
+        /**
+         * Nodes are positioned at right to the bottom. This is the default behavior.
+         */
+        RightBottom
+    }
+
+    public static final Orientation DEFAULT_NEW_NODE_ORIENTATION = Orientation.RightBottom;
+
+    static final int PADDING_X = 40;
+    static final int PADDING_Y = 40;
 
     private final GraphBoundsIndexer graphBoundsIndexer;
+
+    private Orientation orientation;
 
     @Inject
     public CanvasLayoutUtils(final GraphBoundsIndexer graphBoundsIndexer) {
         this.graphBoundsIndexer = graphBoundsIndexer;
+        this.orientation = DEFAULT_NEW_NODE_ORIENTATION;
+    }
+
+    public Orientation getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(final Orientation orientation) {
+        this.orientation = orientation;
     }
 
     public static boolean isCanvasRoot(final Diagram diagram,
@@ -85,37 +115,40 @@ public class CanvasLayoutUtils {
     @SuppressWarnings("unchecked")
     public Point2D getNext(final AbstractCanvasHandler canvasHandler,
                            final Node<View<?>, Edge> root,
-                           final Node<View<?>, Edge> newNode) {
+                           final Node<View<?>, Edge> newNode,
+                           final Orientation orientation) {
+        setOrientation(orientation);
         final double[] rootBounds = getBoundCoordinates(root);
-        final double[] rootSize = GraphUtils.getNodeSize(root.getContent());
-        final double[] newNodeSize = GraphUtils.getNodeSize(newNode.getContent());
-        Point2D[] offset = {new Point2D(PADDING_X,
-                                        0)};
-        Point2D[] parentOffset = {new Point2D(0,
-                                              0)};
-        double maxNodeY[] = {0};
+        final double[] rootSize = getNodeSize(root.getContent());
+        final double[] newNodeSize = getNodeSize(newNode.getContent());
+        final Point2D offset = getStartingOffset();
+        final Point2D maxNodePosition = new Point2D(0,
+                                                    0);
+
+        final Point2D rootNodePosition = getPosition(root.getContent());
+
         if (root.getOutEdges().size() > 0) {
             root.getOutEdges().stream()
                     .filter(e -> e.getContent() instanceof ViewConnector)
                     .filter(e -> null != e.getTargetNode() && !e.getTargetNode().equals(newNode))
                     .forEach(n -> {
                         final Node<View<?>, Edge> node = n.getTargetNode();
-                        final Point2D nodePos = GraphUtils.getPosition(node.getContent());
-                        final Point2D rootPos = GraphUtils.getPosition(root.getContent());
-                        if (nodePos.getY() > maxNodeY[0]) {
-                            maxNodeY[0] = nodePos.getY();
-                            final double[] nodeSize = GraphUtils.getNodeSize(node.getContent());
-                            offset[0].setY(maxNodeY[0] + nodeSize[1] - rootPos.getY());
-                        }
+                        final Point2D nodePos = getPosition(node.getContent());
+                        calculateOffsetForMultipleEdges(offset,
+                                                        maxNodePosition,
+                                                        node,
+                                                        nodePos,
+                                                        rootNodePosition);
                     });
-
-            offset[0].setY(offset[0].getY() + parentOffset[0].getY() + PADDING_Y);
+            calculatePaddingToFirstNode(rootSize, newNodeSize, offset);
         } else {
-            offset[0].setY(parentOffset[0].getY() - (newNodeSize[1] - rootSize[1]) / 2);
+            calculateOffsetForSingleEdge(rootSize, newNodeSize, offset);
         }
-        offset[0].setX(offset[0].getX() + PADDING_X);
-        final Point2D offsetCoordinates = new Point2D(offset[0].getX(),
-                                                      offset[0].getY());
+
+        calculatePadding(newNodeSize, offset);
+
+        final Point2D offsetCoordinates = new Point2D(offset.getX(),
+                                                      offset.getY());
 
         final Point2D rootNodeCoordinates = new Point2D(rootBounds[0],
                                                         rootBounds[1]);
@@ -131,6 +164,75 @@ public class CanvasLayoutUtils {
         );
     }
 
+    void calculatePaddingToFirstNode(final double[] rootSize,
+                                     final double[] newNodeSize,
+                                     final Point2D offset) {
+        switch (getOrientation()) {
+            case UpRight:
+                offset.setX(offset.getX() + PADDING_X + newNodeSize[0] - rootSize[0]);
+                break;
+            default:
+                offset.setY(offset.getY() + PADDING_Y);
+                break;
+        }
+    }
+
+    void calculatePadding(final double[] newNodeSize, final Point2D offset) {
+        switch (getOrientation()) {
+            case UpRight:
+                offset.setY(offset.getY() - PADDING_Y - newNodeSize[1]);
+                break;
+            default:
+                offset.setX(offset.getX() + PADDING_X);
+                break;
+        }
+    }
+
+    void calculateOffsetForSingleEdge(final double[] rootSize,
+                                              final double[] newNodeSize,
+                                              final Point2D offset) {
+        switch (getOrientation()) {
+            case UpRight:
+                offset.setX(-rootSize[0]);
+                break;
+            default:
+                offset.setY(-(newNodeSize[1] - rootSize[1]) / 2);
+                break;
+        }
+    }
+
+    void calculateOffsetForMultipleEdges(final Point2D offset,
+                                         final Point2D maxNodePosition,
+                                         final Node<View<?>, Edge> node,
+                                         final Point2D nodePos,
+                                         final Point2D rootPos) {
+        switch (getOrientation()) {
+            case UpRight:
+                if (nodePos.getX() > maxNodePosition.getX()) {
+                    maxNodePosition.setX(nodePos.getX());
+                    offset.setX(maxNodePosition.getX() - rootPos.getX());
+                }
+                break;
+            default:
+                if (nodePos.getY() > maxNodePosition.getY()) {
+                    maxNodePosition.setY(nodePos.getY());
+                    final double[] nodeSize = getNodeSize(node.getContent());
+                    offset.setY(maxNodePosition.getY() + nodeSize[1] - rootPos.getY());
+                }
+        }
+    }
+
+    Point2D getStartingOffset() {
+        switch (getOrientation()) {
+            case UpRight:
+                return new Point2D(0,
+                                   -PADDING_Y);
+            default:
+                return new Point2D(PADDING_X,
+                                   0);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public Point2D getNext(final AbstractCanvasHandler canvasHandler,
                            final Node<View<?>, Edge> root,
@@ -138,8 +240,8 @@ public class CanvasLayoutUtils {
                            final double rootNodeHeight,
                            final double newNodeWidth,
                            final double newNodeHeight,
-                           Point2D offset,
-                           Point2D rootNodeCoordinates
+                           final Point2D offset,
+                           final Point2D rootNodeCoordinates
     ) {
         checkNotNull("canvasHandler",
                      canvasHandler);
@@ -150,7 +252,7 @@ public class CanvasLayoutUtils {
 
         Element parentNode = GraphUtils.getParent(root.asNode());
 
-        Point2D newPositionUL = null;
+        Point2D newPositionUL;
         boolean checkParent = false;
         if (parentNode != null) {
             if (!(isCanvasRoot(canvasHandler.getDiagram(),
@@ -200,10 +302,18 @@ public class CanvasLayoutUtils {
                                                                            newNodeHeight,
                                                                            parentNode);
                     if (parentNode != targetNodeNewPos) {
-                        offset.setY(offset.getY() + PADDING_Y);
+                        if (getOrientation() == Orientation.RightBottom) {
+                            offset.setY(offset.getY() + PADDING_Y);
+                        } else {
+                            offset.setX(offset.getX() + PADDING_X);
+                        }
                     }
                 } else {
-                    offset.setY(offset.getY() + nodeAtPositionSize[1] + PADDING_Y);
+                    if (getOrientation() == Orientation.RightBottom) {
+                        offset.setY(offset.getY() + nodeAtPositionSize[1] + PADDING_Y);
+                    } else {
+                        offset.setX(offset.getX() + nodeAtPositionSize[0] + PADDING_X);
+                    }
                 }
                 newPositionUL = getNextPositionWithOffset(rootNodeCoordinates,
                                                           offset);
@@ -234,8 +344,8 @@ public class CanvasLayoutUtils {
 
         final Point2D nextPosition = getNextPositionWithOffset(rootNodeCoordinates,
                                                                offset);
-        final double[] parentNodeSize = GraphUtils.getNodeSize((View) parentNode.getContent());
-        final Point2D parentPosition = GraphUtils.getPosition((View) parentNode.getContent());
+        final double[] parentNodeSize = getNodeSize((View) parentNode.getContent());
+        final Point2D parentPosition = getPosition((View) parentNode.getContent());
         double newPositionToCheckX = (rootNodeCoordinates.getX() + rootNodeWidth + PADDING_X + nodeWidth);
         double parentPositionToCheckX = parentNodeSize[0] + parentPosition.getX();
 
@@ -265,7 +375,7 @@ public class CanvasLayoutUtils {
                                                          h,
                                                          parentNode);
         if (targetNode != null) {
-            return GraphUtils.getNodeSize((View) targetNode.getContent());
+            return getNodeSize((View) targetNode.getContent());
         } else {
             return null;
         }
@@ -285,10 +395,10 @@ public class CanvasLayoutUtils {
         return targetNode == null;
     }
 
-    private double[] getBoundCoordinates(final Node<View<?>, Edge> node) {
+    double[] getBoundCoordinates(final Node<View<?>, Edge> node) {
         if (GraphUtils.isDockedNode(node)) {
             final Node parent = GraphUtils.getDockParent(node).get();
-            final Point2D parentPosition = GraphUtils.getPosition((View) parent.getContent());
+            final Point2D parentPosition = getPosition((View) parent.getContent());
             return getBoundCoordinates(node.getContent(), Optional.ofNullable(parentPosition));
         }
         return getBoundCoordinates(node.getContent(), Optional.empty());

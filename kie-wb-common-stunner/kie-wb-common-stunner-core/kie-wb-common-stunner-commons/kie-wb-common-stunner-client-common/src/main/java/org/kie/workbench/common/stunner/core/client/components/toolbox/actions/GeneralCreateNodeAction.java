@@ -148,9 +148,14 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
         // Obtain the candidate locations for the target node.
         final Point2D location = canvasLayoutUtils.getNext(canvasHandler,
                                                            sourceNode,
-                                                           targetNode);
+                                                           targetNode,
+                                                           getNodeOrientation(targetNode));
         return commandFactory.updatePosition(targetNode,
                                              location);
+    }
+
+    public CanvasLayoutUtils.Orientation getNodeOrientation(final Node<View<?>, Edge> targetNode) {
+        return CanvasLayoutUtils.DEFAULT_NEW_NODE_ORIENTATION;
     }
 
     private CanvasCommand<AbstractCanvasHandler> addEdge(final CanvasHandler canvasHandler,

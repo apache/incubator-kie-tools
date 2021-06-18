@@ -219,7 +219,8 @@ public class CreateNodeToolboxActionTest {
     public void testOnMouseClick() {
         when(canvasLayoutUtils.getNext(eq(canvasHandler),
                                        eq(element),
-                                       eq(targetNode)))
+                                       eq(targetNode),
+                                       eq(CanvasLayoutUtils.DEFAULT_NEW_NODE_ORIENTATION)))
                 .thenReturn(new Point2D(100d,
                                         500d));
         final MouseClickEvent event = mock(MouseClickEvent.class);
