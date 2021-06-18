@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Checkbox,
   CheckboxProps,
@@ -104,6 +104,19 @@ function RenderSelect(props: SelectInputProps) {
   const [expanded, setExpanded] = useState<boolean>(false);
   const [selected, setSelected] = useState<string | string[]>([]);
 
+  useEffect(() => {
+    if (!props.value) {
+      setSelected([]);
+      setExpanded(false);
+    } else if (Array.isArray(props.value)) {
+      setSelected([...props.value]);
+      setExpanded(false);
+    } else {
+      setSelected(props.value);
+      setExpanded(false);
+    }
+  }, [props.value]);
+
   const parseInput = useCallback(
     (
       selection: string | SelectOptionObject,
@@ -135,13 +148,9 @@ function RenderSelect(props: SelectInputProps) {
     ) => {
       if (selection === props.placeholder) {
         props.onChange(undefined);
-        setSelected([]);
-        setExpanded(false);
       } else {
         const items = parseInput(selection, props.fieldType);
         props.onChange(items);
-        setSelected(items);
-        setExpanded(false);
       }
     },
     [parseInput, props]

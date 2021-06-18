@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Button, ButtonProps } from '@patternfly/react-core';
 import { MinusCircleIcon } from '@patternfly/react-icons';
-import { useField, filterDOMProps, joinName } from 'uniforms/es5';
+import {
+  connectField,
+  FieldProps,
+  filterDOMProps,
+  joinName,
+  useField,
+} from 'uniforms/es5';
 
-export type ListDelFieldProps = {
-  name: string;
-  parent?: any;
-  value?: unknown;
-} & ButtonProps;
+export type ListDelFieldProps = FieldProps<
+  unknown,
+  ButtonProps,
+  { icon?: ReactNode }
+>;
 
 function ListDel({ name, disabled, ...props }: ListDelFieldProps) {
   const nameParts = joinName(null, name);
@@ -39,4 +45,7 @@ function ListDel({ name, disabled, ...props }: ListDelFieldProps) {
   );
 }
 
-export default ListDel;
+export default connectField<ListDelFieldProps>(ListDel, {
+  initialValue: false,
+  kind: 'leaf',
+});
