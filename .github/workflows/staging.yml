@@ -55,11 +55,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-      - name: "Print release parameters"
-        shell: bash
-        run: |
-          echo ${{ toJSON(needs.create_release.outputs) }}
-
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
