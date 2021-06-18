@@ -197,7 +197,7 @@ public class DrawImageExample extends BaseExample implements Example {
 
     @Override
     public void run() {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 3; i++) {
             final int pos = i;
             PictureLoadedHandler handler = (e) ->
             {

@@ -89,7 +89,6 @@ import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.lienzo.shared.core.types.NodeType;
-import com.ait.lienzo.tools.client.collection.MetaData;
 import com.ait.lienzo.tools.client.event.HandlerManager;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.ait.lienzo.tools.client.event.INodeEvent;
@@ -506,16 +505,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
     @Override
     public T refresh() {
         return cast();
-    }
-
-    @Override
-    public final boolean hasMetaData() {
-        return m_opts.hasMetaData();
-    }
-
-    @Override
-    public final MetaData getMetaData() {
-        return m_opts.getMetaData();
     }
 
     /**
@@ -1216,9 +1205,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
         private String uuid;
 
         @JsProperty
-        private MetaData meta;
-
-        @JsProperty
         private Object userData;
 
         @JsProperty
@@ -1239,21 +1225,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
                 this.uuid = UUID.uuid();
             }
             return uuid;
-        }
-
-        protected final boolean hasMetaData() {
-            return this.meta != null;
-        }
-
-        protected final MetaData getMetaData() {
-            if (this.meta == null) {
-                this.meta = new MetaData();
-            }
-            return this.meta;
-        }
-
-        protected final void setMetaData(final MetaData meta) {
-            this.meta = meta;
         }
 
         protected final Object getUserData() {

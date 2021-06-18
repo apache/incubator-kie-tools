@@ -55,7 +55,6 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;
 import com.ait.lienzo.shared.core.types.NodeType;
-import com.ait.lienzo.tools.client.collection.MetaData;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.ait.lienzo.tools.client.event.INodeEvent.Type;
 
@@ -69,10 +68,6 @@ public interface IDrawable<T extends IDrawable<T>> extends EventReceiver,
     T draw();
 
     T batch();
-
-    boolean hasMetaData();
-
-    MetaData getMetaData();
 
     Collection<Attribute> getAttributeSheet();
 

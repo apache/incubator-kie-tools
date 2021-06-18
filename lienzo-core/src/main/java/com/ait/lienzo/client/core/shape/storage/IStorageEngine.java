@@ -17,7 +17,6 @@
 package com.ait.lienzo.client.core.shape.storage;
 
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.tools.client.collection.MetaData;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
 public interface IStorageEngine<M> extends IStorageEngineIterable<M> {
@@ -43,8 +42,6 @@ public interface IStorageEngine<M> extends IStorageEngineIterable<M> {
     NFastArrayList<M> getChildren(BoundingBox bounds);
 
     boolean isSpatiallyIndexed();
-
-    MetaData getMetaData();
 
     StorageEngineType getStorageEngineType();
 

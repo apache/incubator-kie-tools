@@ -24,30 +24,18 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.NFastArrayListIterator;
-import com.ait.lienzo.tools.client.collection.MetaData;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
 public abstract class AbstractStorageEngine<M> implements IStorageEngine<M> {
-
-    private final MetaData m_meta;
 
     private final StorageEngineType m_type;
 
     protected AbstractStorageEngine(final StorageEngineType type) {
         m_type = type;
-
-        m_meta = new MetaData();
     }
 
     protected AbstractStorageEngine(final StorageEngineType type, final Object node, final ValidationContext ctx) throws ValidationException {
         m_type = type;
-
-        m_meta = new MetaData();
-    }
-
-    @Override
-    public MetaData getMetaData() {
-        return m_meta;
     }
 
     @Override
