@@ -1,8 +1,10 @@
 import React from 'react';
-import { AutoField, ListItemField } from 'uniforms-patternfly';
+import { AutoField, ListItemField, ListDelField } from 'uniforms-patternfly';
 
 import createContext from './_createContext';
 import mount from './_mount';
+import { Button } from '@patternfly/react-core';
+import { act } from 'react-dom/test-utils';
 
 test('<ListItemField> - works', () => {
   const element = <ListItemField name="x.1" />;
@@ -38,4 +40,15 @@ test('<ListItemField> - renders children if specified', () => {
   );
 
   expect(Child).toHaveBeenCalledTimes(1);
+});
+
+test('<ListItemField> - renders ListDelField', () => {
+  const element = <ListItemField name="x.1" />;
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: Array }, 'x.$': { type: String } }),
+  );
+
+  expect(wrapper.find('ListDel')).toHaveLength(1);
+  expect(wrapper.find('ListDel').prop('name')).toBe('x.1');
 });
