@@ -206,6 +206,23 @@ func GetDeployment(namespace, deploymentName string) (*apps.Deployment, error) {
 	return deployment, nil
 }
 
+// GetDeploymentWaiting waits for a deployment to be available, then returns it
+func GetDeploymentWaiting(namespace, deploymentName string, timeoutInMin int) (deployment *apps.Deployment, err error) {
+	err = WaitForOnOpenshift(namespace, fmt.Sprintf("Deployment %s is available", deploymentName), timeoutInMin,
+		func() (bool, error) {
+			if dc, err := GetDeployment(namespace, deploymentName); err != nil {
+				return false, err
+			} else if dc == nil {
+				return false, nil
+			}
+			return true, nil
+		})
+	if err != nil {
+		return
+	}
+	return GetDeployment(namespace, deploymentName)
+}
+
 // LoadResource loads the resource from provided URI and creates it in the cluster
 func LoadResource(namespace, uri string, resourceRef kubernetes.ResourceObject, beforeCreate func(object interface{})) error {
 	GetLogger(namespace).Debug("loadResource", "uri", uri)
