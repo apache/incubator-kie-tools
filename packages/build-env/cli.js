@@ -41,13 +41,6 @@ async function main() {
   }
 
   if (opt === "--build-graph") {
-    const g = graphviz.digraph("G");
-
-    g.use = "dot";
-    g.set("ranksep", "1.5");
-    g.set("splines", "line");
-    g.setNodeAttribut("shape", "box");
-
     const packages = getPackagesSync();
     const packageMap = new Map(packages.map((p) => [p.name, p]));
     const packageNames = new Set(packages.map((p) => p.name));
@@ -80,25 +73,47 @@ async function main() {
     const resMatrix = trMatrix;
 
     // print graph
+    const g = graphviz.digraph("G");
+
+    g.use = "dot";
+    g.set("ranksep", "2");
+    g.set("splines", "polyline");
+    g.set("rankdir", "TB");
+
+    g.setNodeAttribut("shape", "box");
+
+    g.setEdgeAttribut("headport", "n");
+    g.setEdgeAttribut("tailport", "s");
+    g.setEdgeAttribut("arrowhead", "dot");
+    g.setEdgeAttribut("arrowsize", "0.5");
+
+    const root = g.addNode("kiegroup/kogito-tooling");
+    root.set("shape", "folder");
+
     for (const pkgName in resMatrix) {
       const displayPkgName = pkgName;
 
       const node = g.addNode(displayPkgName);
       if (packageMap.get(pkgName)?.private) {
-        node.set("style", "dashed");
+        node.set("style", "dashed, rounded");
       } else {
+        node.set("style", "rounded");
         node.set("color", "blue");
         node.set("fontcolor", "blue");
+      }
+
+      if (Object.keys(resMatrix[pkgName]).length === 0) {
+        g.addEdge(displayPkgName, root, {});
       }
 
       for (const depName in resMatrix[pkgName]) {
         const displayDepName = depName;
 
         if (resMatrix[pkgName][depName] === "dependency") {
-          const edge = g.addEdge(displayPkgName, displayDepName);
+          const edge = g.addEdge(displayPkgName, displayDepName, {});
           edge.set("style", "solid");
         } else if (resMatrix[pkgName][depName] === "devDependency") {
-          const edge = g.addEdge(displayPkgName, displayDepName);
+          const edge = g.addEdge(displayPkgName, displayDepName, {});
           edge.set("style", "dashed");
         } else if (resMatrix[pkgName][depName] === "transitive") {
           // ignore
@@ -106,10 +121,8 @@ async function main() {
       }
     }
 
-    const data = g.to_dot();
-
     const outputFilePath = path.resolve(__dirname, "graph.dot");
-    fs.writeFileSync(outputFilePath, data);
+    fs.writeFileSync(outputFilePath, g.to_dot());
 
     console.info(`[build-env] Wrote dependency graph to '${outputFilePath}'`);
     process.exit(0);
