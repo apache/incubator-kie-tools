@@ -58,7 +58,7 @@ jobs:
       - name: "Print release parameters"
         shell: bash
         run: |
-          echo ${{ needs.create_release.outputs }}
+          echo ${{ toJSON(needs.create_release.outputs) }}
 
       - name: "Checkout"
         uses: actions/checkout@v2
