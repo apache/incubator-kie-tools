@@ -91,3 +91,14 @@ test('<ListField> - renders children with correct name (children)', () => {
   expect(wrapper.find(Child).at(0).prop('name')).toBe('0');
   expect(wrapper.find(Child).at(1).prop('name')).toBe('1');
 });
+
+test('<ListField> - renders children with correct name (value)', () => {
+  const element = <ListField name="x" initialCount={2} />;
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: Array }, 'x.$': { type: String } })
+  );
+
+  expect(wrapper.find('ListItemField').at(0).prop('name')).toBe('0');
+  expect(wrapper.find('ListItemField').at(1).prop('name')).toBe('1');
+});
