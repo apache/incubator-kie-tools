@@ -190,6 +190,14 @@ public class PerformanceTests extends BaseExample implements Example {
         }
     }
 
+    @Override
+    public void onResize() {
+        super.onResize();
+        for (Shape shape : instances) {
+            setRandomLocation(shape);
+        }
+    }
+
     private void clear() {
         stopAnimation();
         if (null != instances) {

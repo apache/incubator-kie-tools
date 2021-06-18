@@ -1,21 +1,29 @@
 package org.kie.lienzo.client;
 
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
+import com.ait.lienzo.client.widget.panel.impl.BoundsProviderFactory;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import elemental2.dom.HTMLDivElement;
 
 public interface Example {
 
-    public void init(LienzoPanel panel, HTMLDivElement topDiv);
+    void init(LienzoPanel panel, HTMLDivElement topDiv);
 
-    public void run();
+    default LienzoPanel createPanel() {
+        ScrollablePanel panel = ScrollablePanel.newPanel(new BoundsProviderFactory.PrimitivesBoundsProvider());
+        panel.addResizeEventListener(evt -> onResize());
+        return panel;
+    }
 
-    public void onResize();
+    void run();
 
-    public String getTitle();
+    void onResize();
 
-    public int getWidthOffset();
+    String getTitle();
 
-    public int getHeightOffset();
+    int getWidthOffset();
 
-    public void destroy();
+    int getHeightOffset();
+
+    void destroy();
 }

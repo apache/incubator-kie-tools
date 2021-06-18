@@ -83,6 +83,9 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
 
     @Override
     public void destroy() {
+        if (null != getElement().parentElement) {
+            getElement().parentElement.removeChild(getElement());
+        }
         removeAll();
         m_events.destroy();
         m_events = null;

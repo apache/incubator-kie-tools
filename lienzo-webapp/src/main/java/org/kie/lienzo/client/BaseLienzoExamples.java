@@ -4,8 +4,6 @@ import com.ait.lienzo.client.core.shape.GridLayer;
 import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.widget.panel.IsResizable;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
-import com.ait.lienzo.client.widget.panel.impl.BoundsProviderFactory;
-import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.google.gwt.dom.client.Style.Display;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLDivElement;
@@ -21,8 +19,8 @@ public class BaseLienzoExamples {
     private Example test;
 
     public void doLoad() {
-        createTests(new BasicExample("Basic"),
-                    new BasicWiresExample("Basic Wires"),
+        createTests(new BasicShapesExample("Shapes"),
+                    new BasicWiresExample("Wires"),
                     new ToolboxExample("Toolbox"),
                     new PerformanceTests("Performance tests"),
                     new StrokeAndFillingExample("Stroke and Filling"),
@@ -91,9 +89,7 @@ public class BaseLienzoExamples {
         HTMLDivElement main = (HTMLDivElement) document.getElementById("main");
         main.appendChild(panelDiv);
 
-        // lienzo = LienzoFixedPanel.newPanel(600, 600);
-        // lienzo = LienzoResizablePanel.newPanel();
-        lienzo = ScrollablePanel.newPanel(new BoundsProviderFactory.PrimitivesBoundsProvider());
+        lienzo = test.createPanel();
 
         panelDiv.appendChild(lienzo.getElement());
 
@@ -101,39 +97,10 @@ public class BaseLienzoExamples {
             ((IsResizable) lienzo).onResize();
         }
 
-        // TODO: REMOVE ALL BELOW EVENT LISTENERS
-        /*((ScrollablePanel) lienzo).addBoundsChangedEventListener(evt -> {
-            DomGlobal.console.log("BOUNDS CHANGED!!! YEAH!");
-            LienzoPanelEventDetail detail = LienzoPanelEventDetail.getDetail(evt);
-            DomGlobal.console.log("DETAIL = " + detail.toString());
-        });
-
-        ((ScrollablePanel) lienzo).addResizeEventListener(evt -> {
-            DomGlobal.console.log("RESIZE!!! YEAH!");
-            LienzoPanelEventDetail detail = LienzoPanelEventDetail.getDetail(evt);
-            int widePx = detail.getLienzoPanel().getWidePx();
-            int highPx = detail.getLienzoPanel().getHighPx();
-            DomGlobal.console.log("DETAIL = " + detail.toString());
-            DomGlobal.console.log("W/H = " + widePx + ", " + highPx);
-        });
-
-        ((ScrollablePanel) lienzo).addScrollEventListener(evt -> {
-            DomGlobal.console.log("SCROLL!!! YEAH!");
-            LienzoPanelScrollEventDetail detail = LienzoPanelScrollEventDetail.getScrollDetail(evt);
-            DomGlobal.console.log("DETAIL = " + detail.toString());
-            DomGlobal.console.log("Px/Py = " + detail.getPx() + ", " + detail.getPy());
-        });*/
-
         applyGrid(lienzo);
-
-//        DomGlobal.window.addEventListener("resize", (e) ->
-//        {
-//            test.onResize();
-//        });
     }
 
     private void applyGrid(final LienzoPanel panel) {
-        // Grid.
         Line line1 = new Line(0, 0, 0, 0)
                 .setStrokeColor("#0000FF")
                 .setAlpha(0.2);
