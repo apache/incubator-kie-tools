@@ -32,7 +32,6 @@ import com.ait.lienzo.client.core.types.BoundingBoxTest;
 import com.ait.lienzo.client.core.util.GeometryTest;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanelTest;
 import com.ait.lienzo.client.widget.panel.mediators.BoundaryTransformMediatorTest;
-import com.ait.lienzo.client.widget.panel.mediators.RestrictedMousePanMediatorTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -55,7 +54,6 @@ import org.junit.runners.Suite;
         TextLineBreakWrapTest.class,
         MouseWheelZoomMediatorTest.class,
         BoundaryTransformMediatorTest.class,
-        RestrictedMousePanMediatorTest.class,
         LienzoBoundsPanelTest.class,
 })
 public class LienzoCoreTestSuite {

@@ -26,7 +26,6 @@ import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.client.widget.panel.ResizeCallback;
 import com.ait.lienzo.client.widget.panel.ResizeObserver;
-import com.ait.lienzo.client.widget.panel.mediators.RestrictedMousePanMediator;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.Element;
 import elemental2.dom.EventListener;
@@ -52,7 +51,6 @@ public class ScrollablePanel extends LienzoBoundsPanel {
     private int widePx;
     private int highPx;
     private boolean isMouseDown = false;
-    private RestrictedMousePanMediator panMediator;
     private ResizeObserver resizeObserver;
     private ResizeCallback m_resizeCallback;
     private static int PADDING_OFFSET = 4;
@@ -82,22 +80,7 @@ public class ScrollablePanel extends LienzoBoundsPanel {
         domElementContainer.style.position = Style.Position.ABSOLUTE.getCssName();
         domElementContainer.style.zIndex = CSSProperties.ZIndexUnionType.of(1);
         synchronizeScrollSize();
-        // TODO setupMouseDragSynchronization();
         return this;
-    }
-
-    private void setupMouseDragSynchronization() {
-        if (null != getViewport()) {
-            // TODO: Remove this mediator once destroying the panel.
-            panMediator = new RestrictedMousePanMediator(this) {
-                @Override
-                protected void onMouseMove(int x, int y) {
-                    refreshScrollPosition();
-                }
-            };
-            getViewport().getMediators().push(panMediator);
-            // TODO: getViewport().addViewportTransformChangedHandler(new ViewportScaleChangeHandler(ScrollablePanelHandler.this, getViewport().getTransform()))
-        }
     }
 
     public Bounds getVisibleBounds() {
