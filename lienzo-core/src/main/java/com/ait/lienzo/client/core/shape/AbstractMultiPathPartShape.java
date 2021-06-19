@@ -1128,7 +1128,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                 Point2D dxy = new Point2D(0 - xShift, 0 - yShift);
                 shiftPoints(dxy);
 
-                // TODO (mdp) this is a hack for now, as pure lienzo shapes cannot access Wires yet, and no easy way to inject a callable interface.
+                // This is a hack for now, as pure lienzo shapes cannot access Wires yet, and no easy way to inject a callable interface.
                 WiresShapeControlHandleList wiresHandleList = (WiresShapeControlHandleList) m_handle.getControl().getUserData();
                 if (wiresHandleList != null) {
                     Group g = ((Group) m_shape.getParent());

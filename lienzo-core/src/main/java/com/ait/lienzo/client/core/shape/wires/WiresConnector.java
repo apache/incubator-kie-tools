@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-// TODO - review DSJ
 
 package com.ait.lienzo.client.core.shape.wires;
 
@@ -485,7 +484,7 @@ public class WiresConnector {
                 OrthogonalPolyLine.correctEndWithOffset(correction, headM.getDirection(), headOffSettedPoint);
             } else {
                 // Ideally this would have also applied corrections, but at this point it's not easy to determine the Direction,
-                // but should probably be done at some point in the future (TODO).
+                // but should probably be done at some point in the future.
                 headOriginalPoint = headC.getControl().getComputedLocation();
                 headOffSettedPoint = headOriginalPoint.copy();
             }
@@ -505,7 +504,7 @@ public class WiresConnector {
                     OrthogonalPolyLine.correctEndWithOffset(correction, tailM.getDirection(), tailOffSettedPoint);
                 } else {
                     // Ideally this would have also applied corrections, but at this point it's not easy to determine the Direction,
-                    // but should probably be done at some point in the future (TODO).
+                    // but should probably be done at some point in the future.
                     tailOriginalPoint = tailC.getControl().getComputedLocation();
                     tailOffSettedPoint = tailOriginalPoint.copy();
                 }

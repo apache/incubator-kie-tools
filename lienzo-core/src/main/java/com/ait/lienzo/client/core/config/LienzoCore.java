@@ -415,7 +415,6 @@ public final class LienzoCore {
     }
 
     private final boolean examineNativeLineDashSupported() {
-        // @FIXME is this really neded now? Do we not have a minimum browser level now, that makes this redundant? (mdp)
         if (IS_CANVAS_SUPPORTED) {
             try {
                 final ScratchPad scratch = new ScratchPad(20, 10);

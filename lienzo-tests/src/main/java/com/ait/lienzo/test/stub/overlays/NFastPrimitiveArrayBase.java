@@ -6,12 +6,10 @@ public class NFastPrimitiveArrayBase<T extends NFastPrimitiveArrayBase<T>> exten
     }
 
     public T sort() {
-        // TODO
         return copy();
     }
 
     public T uniq() {
-        // TODO
         return copy();
     }
 }

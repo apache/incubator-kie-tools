@@ -49,11 +49,9 @@ public class NArrayBase<T extends NArrayBase<T>> {
     }
 
     public void setSize(final int size) {
-        // TODO
     }
 
     public void splice(final int beg, final int removed) {
-        // TODO
     }
 
     public void reverse() {
@@ -76,12 +74,10 @@ public class NArrayBase<T extends NArrayBase<T>> {
     }
 
     public T slice(final int beg) {
-        // TODO
         return copy();
     }
 
     public T slice(final int beg, final int end) {
-        // TODO
         return copy();
     }
 

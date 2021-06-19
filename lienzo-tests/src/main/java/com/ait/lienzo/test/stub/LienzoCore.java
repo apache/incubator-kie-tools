@@ -47,8 +47,6 @@ public class LienzoCore {
     private ImageSelectionMode m_imageSelectionMode = ImageSelectionMode.SELECT_NON_TRANSPARENT;
 
     private LienzoCore() {
-        // @FIXME need to figure out how to get the root DIV
-        //RootPanel.get().getElement().getStyle().setProperty("webkitTapHighlightColor", "rgba(0,0,0,0)");
     }
 
     private static boolean isCanvasSupported() {

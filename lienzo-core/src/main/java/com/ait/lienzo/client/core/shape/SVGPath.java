@@ -100,11 +100,6 @@ public class SVGPath extends Shape<SVGPath> {
 
         path = path.replaceAll("\\s+", " ").trim();
 
-        // @FIXME for now temporarily disabling this.
-//        if (Path2D.isSupported())
-//        {
-//            partlist.setPath2D(new Path2D(path));
-//        }
         for (int n = 0; n < COMMANDS.length; n++) {
             path = path.replaceAll(COMMANDS[n] + " ", COMMANDS[n]);
         }

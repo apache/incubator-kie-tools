@@ -307,7 +307,6 @@ public class Context2D {
     }
 
     public ImageData createImageData(final ImageData data) {
-        // @FIXME this doesn't exist on Elm2
         return jso.createImageData(data.width, data.height);
     }
 

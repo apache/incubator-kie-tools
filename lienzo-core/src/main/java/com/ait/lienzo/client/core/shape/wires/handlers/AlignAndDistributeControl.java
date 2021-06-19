@@ -10,7 +10,6 @@ import com.ait.lienzo.client.core.types.Point2D;
  * from the concrete event types fired, and these calls be reused programatically as well. So common logic
  * can be shared to provide drag and the operations support and attached to the necessary event handler type.
  */
-// TODO: Refactor this by implementing WiresControl, MoveControl.
 public interface AlignAndDistributeControl {
 
     void refresh();

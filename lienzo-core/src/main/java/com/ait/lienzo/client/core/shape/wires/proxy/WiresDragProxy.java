@@ -70,7 +70,6 @@ public class WiresDragProxy {
         getDelegate().start(start.getX(), start.getY());
     }
 
-    // TODO: Perform calls to move at regular time intervals... (also when using mouse events - handlers)
     private void move(final double x,
                       final double y) {
         final double dx = x - startPoint.getX();

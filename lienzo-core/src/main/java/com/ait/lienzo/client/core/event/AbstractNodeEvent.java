@@ -22,8 +22,6 @@ import elemental2.dom.MouseEvent;
 import elemental2.dom.TouchEvent;
 import elemental2.dom.UIEvent;
 
-// @FIXME preventDefault and stopPropagation do very little, maybe a GWTEvent porting error.
-// @TODO RENAME, this is no longer just for nodes (mdp)
 public abstract class AbstractNodeEvent<H, S> implements INodeEvent<H, S> {
 
     private boolean m_dead = false;

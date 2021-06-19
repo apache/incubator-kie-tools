@@ -13,13 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-// TODO - review DSJ
 
 package com.ait.lienzo.client.core.shape.wires;
 
 import java.util.Objects;
 
-import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -42,9 +40,6 @@ import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import com.ait.lienzo.tools.client.event.HandlerManager;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
-import com.ait.lienzo.tools.common.api.flow.Flows;
-
-import static com.ait.lienzo.client.core.AttributeOp.any;
 
 public class WiresContainer {
 

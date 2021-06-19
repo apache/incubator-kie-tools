@@ -129,41 +129,6 @@ public class NativeContext2D extends CanvasRenderingContext2D {
             }
         }
 
-        // @FIXME Add back in these pollyfills (or find better alterantive) (mdp)
-//		if (this.setLineDash) {
-//			this.setLineDashOffset = function(d) {
-//				this.lineDashOffset = d;
-//			};
-//		} else if (this.webkitLineDash) {
-//			this.setLineDash = function(d) {
-//				this.webkitLineDash = d;
-//			};
-//			this.setLineDashOffset = function(d) {
-//				this.webkitLineDashOffset = d;
-//			};
-//		} else if (this.mozDash) {
-//			this.setLineDash = function(d) {
-//				this.mozDash = d;
-//			};
-//			this.setLineDashOffset = function(d) {
-//				this.mozDashOffset = d;
-//			};
-//		} else {
-//			this.setLineDash = function(d) {
-//			};
-//			this.setLineDashOffset = function(d) {
-//			};
-//		}
-//		if (!this.ellipse) {
-//			this.ellipse = function(x, y, rx, ry, ro, sa, ea, ac) {
-//				this.save();
-//				this.translate(x, y);
-//				this.rotate(ro);
-//				this.scale(rx*scalingRatio, ry*scalingRatio);
-//				this.arc(0, 0, 1, sa, ea, ac);
-//				this.restore();
-//			};
-//		}
         return this;
     }
 
@@ -200,7 +165,6 @@ public class NativeContext2D extends CanvasRenderingContext2D {
 
         grad.addColorStop(1, color);
 
-        // @FIXME is this correct? (mdp)
         this.fillStyle = CanvasRenderingContext2D.FillStyleUnionType.of(grad);
 
         this.fillText(text, x, y);

@@ -61,7 +61,6 @@ public abstract class ImageLoader {
 
         RootPanel.get().add(image);
 
-        // @FIXME I removed "isValidDataURL(url) && isValidSVG(url)" as it seems with Elemental2 it all end up at .src. But we should double check this (mdp)
         image.src = url;
     }
 
@@ -71,7 +70,7 @@ public abstract class ImageLoader {
     }
 
     public static void setVisible(HTMLElement image, boolean visible) {
-        image.style.display = visible ? "" : Style.Display.NONE.getCssName(); // @FIXME check that it should really be "", I just followed GWT UIObject setVisible.
+        image.style.display = visible ? "" : Style.Display.NONE.getCssName();
 
         if (visible) {
             image.removeAttribute("aria-hidden");
@@ -100,8 +99,6 @@ public abstract class ImageLoader {
             onImageElementError("Resource " + resource.getName() + " failed to load");
             return null;
         };
-
-        // @FIXME double check this works, ImageReources can includ clippping information, so I had to case from Elemental2 to GWT (mdp)
 
         String urlAsString = resource.getSafeUri().asString();
         if (resource instanceof ImageResourcePrototype.Bundle) {
@@ -132,10 +129,8 @@ public abstract class ImageLoader {
             {
                 image.onload = null;
                 image.onerror = null;
-                // @FIXME removed 'naturalHeight' in image I think this is supported by all browser now. Needs double check (mdp)
                 if (image.naturalHeight + image.naturalWidth == 0 || image.height + image.width == 0) {
                     // it failed, so undo
-                    // @FIXME check this cast works (mdp)
                     RootPanel.get().remove(image);
                     onImageElementError("Image " + url + " failed to load");
                     image.crossOrigin = orig;
@@ -150,7 +145,6 @@ public abstract class ImageLoader {
                 image.onload = null;
                 image.onerror = null;
                 // it failed, so undo
-                // @FIXME check this cast works (mdp)
                 RootPanel.get().remove(image);
                 onImageElementError("Image " + url + " failed to load");
                 image.crossOrigin = orig;

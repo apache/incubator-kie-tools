@@ -186,7 +186,7 @@ public class WiresShapeControlHandleList implements IControlHandleList {
             for (int i = 0; i < POINTS_SIZE; i++) {
                 final IControlHandle handle = m_ctrls.getHandle(i);
                 final IPrimitive<?> control = handle.getControl();
-                control.setUserData(this); // TODO (mdp) this is hack (and not robust, if something else re-uses this field) but for now it allows a fix in resize code that shifts the canvas location
+                control.setUserData(this); // This is hack (and not robust, if something else re-uses this field) but for now it allows a fix in resize code that shifts the canvas location
 
                 m_registrationManager.register(control.addNodeDragStartHandler(event -> WiresShapeControlHandleList.this.resizeStart(event)));
 

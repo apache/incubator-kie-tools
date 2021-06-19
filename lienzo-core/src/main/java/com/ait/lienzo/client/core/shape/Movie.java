@@ -641,7 +641,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie> {
         }
     }
 
-    // @FIXME this is temporary, while I wait for Elemental2 to be fixed
+    // This is temporary, while I wait for Elemental2 to be fixed
     private static class MediaErrorWithInt {
 
         public static final int MEDIA_ERR_ABORTED = 1;

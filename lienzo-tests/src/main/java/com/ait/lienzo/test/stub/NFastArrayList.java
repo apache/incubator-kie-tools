@@ -157,14 +157,11 @@ public class NFastArrayList<M> implements Iterable<M> {
     }
 
     public NFastArrayList<M> splice(final int beg, final int removed, final M value) {
-        // TODO
-
         return this;
     }
 
     public NFastArrayList<M> reverse() {
         Collections.reverse(list);
-
         return this;
     }
 
@@ -197,13 +194,10 @@ public class NFastArrayList<M> implements Iterable<M> {
     }
 
     public NFastArrayList<M> slice(final int beg) {
-        // TODO
         return copy();
     }
 
     public NFastArrayList<M> slice(final int beg, final int end) {
-        // TODO: Arrays.copyOfRange(list, beg, end);
-
         return copy();
     }
 

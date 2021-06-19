@@ -92,7 +92,6 @@ public class LienzoMockitoClassTranslator implements Translator {
         }
     }
 
-    // TODO: Improve use of defrost, it can be expensive.
     private void ensureDefrost(final ClassPool pool, final String name) throws NotFoundException {
         final CtClass ctClass = pool.get(name);
 

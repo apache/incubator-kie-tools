@@ -148,7 +148,6 @@ public class WiresShapeControlHandleListTest {
     }
 
     private void verifyNodeHandlers(final IPrimitive<?> primitive) {
-        // TODO: check correctness of Handler (probably needs pure Java realization of NFastArrayList)
         verify(primitive).addNodeDragStartHandler(any(NodeDragStartHandler.class));
         verify(primitive).addNodeDragMoveHandler(any(NodeDragMoveHandler.class));
         verify(primitive).addNodeDragEndHandler(any(NodeDragEndHandler.class));
@@ -210,7 +209,6 @@ public class WiresShapeControlHandleListTest {
             s2.setY(event.getHeight());
         });
 
-        // TODO: For now locations of mouse are not handles during drag events,
         // Event handlers checks Control Point position instead
         EventMockUtils.dragStart(primitive0, 9991, 9992);
         EventMockUtils.dragMove(primitive0, 9993, 9994);
