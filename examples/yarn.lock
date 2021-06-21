@@ -1419,35 +1419,17 @@
     tippy.js "5.1.2"
     tslib "1.13.0"
 
-"@patternfly/react-core@4.45.1":
-  version "4.45.1"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-4.45.1.tgz#7350cd2d8f4efbace221651c989eea244600c300"
-  integrity sha512-taeZzqiM9AAgcKe5MIe5wyY6X3zMgqFYZF4yF6OaWMtijSglhaUBy6WwfQPslPiDnWUCjTBiam19IrG5SJ8usg==
-  dependencies:
-    "@patternfly/react-icons" "^4.7.4"
-    "@patternfly/react-styles" "^4.7.3"
-    "@patternfly/react-tokens" "^4.9.6"
-    focus-trap "4.0.2"
-    react-dropzone "9.0.0"
-    tippy.js "5.1.2"
-    tslib "^1.11.1"
-
-"@patternfly/react-icons@4.10.2", "@patternfly/react-icons@^4.10.2", "@patternfly/react-icons@^4.7.4":
+"@patternfly/react-icons@4.10.2", "@patternfly/react-icons@^4.10.2":
   version "4.10.2"
   resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.10.2.tgz#d0659e7763364b1e73ec0f3b60e20cf9e4f067d6"
   integrity sha512-mSkBRaEFukpaAoLDyd3nI+6Cj0z2/5DgJTA2i7By/UW1wJifKnBWW8NRO2SsJQVQIUtuuAunjUrjzKHdcxs5IQ==
 
-"@patternfly/react-icons@4.7.2":
-  version "4.7.2"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.7.2.tgz#f4ad252cb5682bd95da474ce9ce6ddf7fb3a1ac1"
-  integrity sha512-r1yCVHxUtRSblo8VwfaUM0d49z4eToZXAI0VzOnfKPRgSmGZrn6l8soQgDDtyQsSDr534Qvm55y/qLrlR9JCnw==
-
-"@patternfly/react-styles@^4.10.2", "@patternfly/react-styles@^4.7.3":
+"@patternfly/react-styles@^4.10.2":
   version "4.10.2"
   resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.10.2.tgz#f399766ecb26e44e605355e94271da54029b5990"
   integrity sha512-cGvDFAISGrt+RAkX5NVyILCjWV1l9PCUpnMq6v4/6jBJOEHTBnRjaIGa92dw3OrLh407cBOIC0ugweRnocRmPw==
 
-"@patternfly/react-tokens@^4.11.3", "@patternfly/react-tokens@^4.9.6":
+"@patternfly/react-tokens@^4.11.3":
   version "4.11.3"
   resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.11.3.tgz#f102df85af3d248728b6b33d5c16784fa0ad3ebb"
   integrity sha512-7VbmT+aOwxk1DYzwer+wZgcbvkSsUUTKMKJDzhMvm5xi9nDeW8qI7laxQbWC9PDfsI5tiPxI2+BSuHnZpV/eRg==
@@ -4788,14 +4770,6 @@ flush-write-stream@^1.0.0:
   dependencies:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
-
-focus-trap@4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-4.0.2.tgz#4ee2b96547c9ea0e4252a2d4b2cca68944194663"
-  integrity sha512-HtLjfAK7Hp2qbBtLS6wEznID1mPT+48ZnP2nkHzgjpL4kroYHg0CdqJ5cTXk+UO5znAxF5fRUkhdyfgrhh8Lzw==
-  dependencies:
-    tabbable "^3.1.2"
-    xtend "^4.0.1"
 
 focus-trap@6.2.2:
   version "6.2.2"
@@ -10516,11 +10490,6 @@ symbol-tree@^3.2.2:
   resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.4.tgz#430637d248ba77e078883951fb9aa0eed7c63fa2"
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
 
-tabbable@^3.1.2:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-3.1.2.tgz#f2d16cccd01f400e38635c7181adfe0ad965a4a2"
-  integrity sha512-wjB6puVXTYO0BSFtCmWQubA/KIn7Xvajw0x0l6eJUudMG/EAiJvIUnyNX6xO4NpGrJ16lbD0eUseB9WxW0vlpQ==
-
 tabbable@^5.1.4:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-5.2.0.tgz#4fba60991d8bb89d06e5d9455c92b453acf88fb2"
@@ -10749,25 +10718,25 @@ ts-pnp@^1.1.2:
   resolved "https://registry.yarnpkg.com/ts-pnp/-/ts-pnp-1.2.0.tgz#a500ad084b0798f1c3071af391e65912c86bca92"
   integrity sha512-csd+vJOb/gkzvcCHgTGSChYpy5f1/XKNsmvBGO4JXS+z1v2HobugDz4s1IeFXM3wZB44uczs+eazB5Q/ccdhQw==
 
-tslib@1.12.0:
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.12.0.tgz#d1fc9cacd06a1456c62f2902b361573e83d66473"
-  integrity sha512-5rxCQkP0kytf4H1T4xz1imjxaUUPMvc5aWp0rJ/VMIN7ClRiH1FwFvBt8wOeMasp/epeUnmSW6CixSIePtiLqA==
-
 tslib@1.13.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"
   integrity sha512-i/6DQjL8Xf3be4K/E6Wgpekn5Qasl1usyw++dAA35Ue5orEn65VIxOA+YvNNl9HV3qv70T7CNwjODHZrLwvd1Q==
 
-tslib@^1.10.0, tslib@^1.11.1, tslib@^1.8.1, tslib@^1.9.0:
+tslib@2.2.0, tslib@^2.0.1:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.2.0.tgz#fb2c475977e35e241311ede2693cee1ec6698f5c"
+  integrity sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w==
+
+tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2.0.1:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.2.0.tgz#fb2c475977e35e241311ede2693cee1ec6698f5c"
-  integrity sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w==
+tslib@^2.2.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
+  integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
 
 tsutils@^3.7.0:
   version "3.21.0"
@@ -10897,57 +10866,54 @@ unicode-trie@^0.3.1:
     pako "^0.2.5"
     tiny-inflate "^1.0.0"
 
-uniforms-bridge-graphql@3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/uniforms-bridge-graphql/-/uniforms-bridge-graphql-3.4.0.tgz#6cea957615cd3b6fb2d4ab230a6a18d799374716"
-  integrity sha512-yVGg8FxsNcKsLWAdel7xGojhj4ThFY8o5tYu0nXv7cE9jkWNj9Jq/+s9bna0H6iR00hTluBcvJxAXXbhewyEgA==
+uniforms-bridge-graphql@3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/uniforms-bridge-graphql/-/uniforms-bridge-graphql-3.5.1.tgz#e60cf744b59a4c97f30b4d4bb50cbcab5e739885"
+  integrity sha512-Fo9t8xO35cThtVWqEHAJAzGRCk8uWN2LA5SWao2LiXXxheVV6v23kL82/KNs2Fy8zNs63Sg6yjKkkkNflyqE+A==
   dependencies:
     graphql "^15.0.0"
     invariant "^2.0.0"
     lodash "^4.0.0"
-    tslib "^1.10.0"
-    uniforms "^3.4.0"
+    tslib "^2.2.0"
+    uniforms "^3.5.1"
 
-uniforms-bridge-json-schema@3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/uniforms-bridge-json-schema/-/uniforms-bridge-json-schema-3.4.0.tgz#33e726b7b90a304d4fd8d9fdcdcc35d232902b2f"
-  integrity sha512-vdK02/Hy8HFcNaPQnAUtQJCsy2iDR0JiVViXMq9iPtpuoseZfSFcqDU4RxVcM2K2WpMam+0Fwv2NRMOqQAvXLw==
+uniforms-bridge-json-schema@3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/uniforms-bridge-json-schema/-/uniforms-bridge-json-schema-3.5.1.tgz#651baf353d02fb50ec9972bd40cc74bbb066de4c"
+  integrity sha512-lu7QxZz8UHfx5YzgrJ8J6VzZpAvDbOlglloB9QtRz6SWy9+dH6r5k+1brsp3Eh57vfegdDR7fY6xuMRy/UDh7Q==
   dependencies:
     invariant "^2.0.0"
     lodash "^4.0.0"
-    tslib "^1.10.0"
-    uniforms "^3.4.0"
+    tslib "^2.2.0"
+    uniforms "^3.5.1"
 
-uniforms-bridge-simple-schema-2@3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/uniforms-bridge-simple-schema-2/-/uniforms-bridge-simple-schema-2-3.4.0.tgz#c4206d4172ef2b820a902352f7c94852c95bf0ae"
-  integrity sha512-J3t2HmG7Jymod1uQI9K0tCESU3EG/PuN9Ij5qQayrlsLm4rVnp8TW4BSOqC8nKcy653FY7PDFbVG3r8VHrtXPA==
+uniforms-bridge-simple-schema-2@3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/uniforms-bridge-simple-schema-2/-/uniforms-bridge-simple-schema-2-3.5.1.tgz#03cf6a814de8db98d7f95ec1413e93399ea86d5a"
+  integrity sha512-lYYN9UKXf/B/LNGk5OlEjGOGIB6opw1QcYQiZRMUgUEURHIPHhv732dLoPwLAxA6ZnN0DOo/JEkJMOGzGTzVeg==
   dependencies:
     invariant "^2.0.0"
     lodash "^4.0.0"
     simpl-schema "^1.0.0 || ^0.0.4"
-    tslib "^1.10.0"
-    uniforms "^3.4.0"
+    tslib "^2.2.0"
+    uniforms "^3.5.1"
 
-uniforms-bridge-simple-schema@3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/uniforms-bridge-simple-schema/-/uniforms-bridge-simple-schema-3.4.0.tgz#1af1e5698ffd244a114019e8d3442bbd0d13e40c"
-  integrity sha512-qsB4SPNNyIBu4k3TlXnJbxK+QBc+nyIecnG5l5pKdruCve6AUGCYcDl/XH9Wo3qbBDCRWh9KZJ+tVre5QuPJng==
+uniforms-bridge-simple-schema@3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/uniforms-bridge-simple-schema/-/uniforms-bridge-simple-schema-3.5.1.tgz#13b9459964f34a5aeab2a9b78fc7aafaa742dc08"
+  integrity sha512-Re/s580dHsH/Zi/llB+bfW66JZQCN/CycPBOh1d/lv7TxXE9onmCJSbEGMEi7szn6k7B3OoP6QqTUZ26dS8y+g==
   dependencies:
     invariant "^2.0.0"
     lodash "^4.0.0"
-    tslib "^1.10.0"
-    uniforms "^3.4.0"
+    tslib "^2.2.0"
+    uniforms "^3.5.1"
 
-uniforms-patternfly@4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/uniforms-patternfly/-/uniforms-patternfly-4.0.0.tgz#3a6a10682eae95f34d674f6f2958da2e76cfd937"
-  integrity sha512-qm8xB1zA9ZQAZMPmyErhqcsXPvh56LInQ5bXmRwDaCgmxytG5bpYigSPqb9NYHAoHsIsCaZzSBEmYkOEehqvgg==
-  dependencies:
-    "@patternfly/react-core" "4.45.1"
-    "@patternfly/react-icons" "4.7.2"
+uniforms-patternfly@4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/uniforms-patternfly/-/uniforms-patternfly-4.5.0.tgz#b67e0f6dc92760e50a12744f2cb6f89221d5fcaa"
+  integrity sha512-QSQsrjyY1r40UgzwONMKW1IEmCW6dOQGHcwLLshnNixUMzpJaQVUlIO/RGs7+xEvefgItIgnp5U+7yGhdfLo8g==
 
-uniforms@3.4.0, uniforms@^3.4.0:
+uniforms@3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uniforms/-/uniforms-3.4.0.tgz#3c3c59a1c644a80a7539d1af9e21ac7029ed8a0a"
   integrity sha512-eCbUYPkVVUWUDXweTeVFZqipkj5Sna42GMvjvcutyw+s5iP18o6QfPZsOTHwLXThPyObqehL5spPJvsznKlPaw==
@@ -10955,6 +10921,15 @@ uniforms@3.4.0, uniforms@^3.4.0:
     invariant "^2.0.0"
     lodash "^4.0.0"
     tslib "^1.10.0"
+
+uniforms@^3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/uniforms/-/uniforms-3.5.1.tgz#7ae798518cc280c60e22cd1077aaa9440e2c6a84"
+  integrity sha512-1N8Y/QB2YSiMJMkwh1iAAzEd2jVDDa5qzL0VynzD8bsaHBB2UhUPUavAitLXK1s+nL76Y472+iMG0p5onQl4hg==
+  dependencies:
+    invariant "^2.0.0"
+    lodash "^4.0.0"
+    tslib "^2.2.0"
 
 union-value@^1.0.0:
   version "1.0.1"
@@ -11631,7 +11606,7 @@ xregexp@4.0.0:
   resolved "https://registry.yarnpkg.com/xregexp/-/xregexp-4.0.0.tgz#e698189de49dd2a18cc5687b05e17c8e43943020"
   integrity sha512-PHyM+sQouu7xspQQwELlGwwd05mXUFqwFYfqPO0cC7x4fxyHnnuetmQr6CjJiafIDoH4MogHb9dOoJzR/Y4rFg==
 
-xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.1:
+xtend@^4.0.0, xtend@~4.0.1:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==

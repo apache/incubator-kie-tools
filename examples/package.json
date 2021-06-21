@@ -15,14 +15,14 @@
     "react-scripts": "3.1.1",
     "simpl-schema": "1.5.7",
     "uniforms": "3.4.0",
-    "uniforms-bridge-graphql": "3.4.0",
-    "uniforms-bridge-json-schema": "3.4.0",
-    "uniforms-bridge-simple-schema": "3.4.0",
-    "uniforms-bridge-simple-schema-2": "3.4.0",
+    "uniforms-bridge-graphql": "3.5.1",
+    "uniforms-bridge-json-schema": "3.5.1",
+    "uniforms-bridge-simple-schema": "3.5.1",
+    "uniforms-bridge-simple-schema-2": "3.5.1",
     "uniforms-patternfly": "4.5.0"
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.5",
-    "tslib": "1.12.0"
+    "tslib": "2.2.0"
   }
 }

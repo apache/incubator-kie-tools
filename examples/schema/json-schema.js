@@ -45,21 +45,10 @@ const schema = {
         name: {
           type: 'string'
         },
-        address: {
-          type: 'object',
-          properties: {
-            street: {
-              type: 'string'
-            },
-            city: {
-              type: 'string'
-            },
-            zipCode: {
-              type: 'string'
-            },
-            country: {
-              type: 'string'
-            }
+        addresses: {
+          type: 'array',
+          items: {
+            $ref: "#/definitions/address"
           }
         },
         phone: {
@@ -72,7 +61,27 @@ const schema = {
           type: 'string'
         }
       },
-      disabled: true
+    }
+  },
+  definitions: {
+    address: {
+      type: 'object',
+      properties: {
+        street: {
+          type: 'string'
+        },
+        city: {
+          type: 'string'
+        },
+        zipCode: {
+          type: 'string'
+        },
+        country: {
+          placeholder: "Select...",
+          enum: ["Brazil", "Ireland", "USA"],
+          type: 'string'
+        }
+      }
     }
   },
   phases: ['complete', 'release']
