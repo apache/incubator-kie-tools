@@ -27,7 +27,6 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -43,6 +42,7 @@ interface DmnFormDefinitions {
     placeholder?: string;
     title?: string;
     format?: string;
+    items: any[];
   };
 }
 
@@ -114,6 +114,12 @@ export function DmnForm(props: Props) {
               formDeepPreprocessing(form, deepValue, key);
             }
           );
+        } else if (
+          form.definitions[property] &&
+          form.definitions[property]?.type === "array" &&
+          Object.hasOwnProperty.call(form.definitions[property]?.items, "$ref")
+        ) {
+          formDeepPreprocessing(form, form.definitions[property]!.items as DmnDeepProperty);
         } else if (!Object.hasOwnProperty.call(form.definitions[property], "type")) {
           form.definitions[property]!.type = "string";
         } else if (Object.hasOwnProperty.call(form.definitions[property], "enum")) {

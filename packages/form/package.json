@@ -21,9 +21,9 @@
     "@kogito-tooling/notifications": "0.10.0",
     "ajv": "^6.12.6",
     "ajv-errors": "^1.0.1",
-    "uniforms": "3.3.0",
-    "uniforms-bridge-json-schema": "3.3.0",
-    "uniforms-patternfly": "^4.2.1"
+    "uniforms": "3.4.0",
+    "uniforms-bridge-json-schema": "3.4.0",
+    "uniforms-patternfly": "^4.5.0"
   },
   "devDependencies": {
     "lodash": "^4.14.2"
