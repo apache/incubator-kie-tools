@@ -1,18 +1,14 @@
-import React, { HTMLProps } from 'react';
-import { connectField, filterDOMProps } from 'uniforms/es5';
+import React from 'react';
+import { connectField, filterDOMProps, HTMLFieldProps } from 'uniforms/es5';
 import { Card, CardBody } from '@patternfly/react-core';
 
 import AutoField from './AutoField';
 
-export type NestFieldProps = {
-  error?: boolean;
-  errorMessage?: string;
-  fields?: any[];
-  itemProps?: object;
-  showInlineError?: boolean;
-  disabled?: boolean;
-  name: string;
-} & HTMLProps<HTMLDivElement>;
+export type NestFieldProps = HTMLFieldProps<
+  object,
+  HTMLDivElement,
+  { helperText?: string; itemProps?: object }
+>;
 
 const Nest = ({
   children,

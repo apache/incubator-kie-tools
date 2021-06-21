@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Ref, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Checkbox,
   CheckboxProps,
@@ -27,6 +27,7 @@ type CheckboxesProps = FieldProps<
   string | string[],
   CheckboxProps | RadioProps,
   {
+    checkboxes: true;
     fieldType?: typeof Array | any;
     onChange: (value?: string | string[]) => void;
     transform?: (value?: string) => string;
@@ -38,50 +39,11 @@ type CheckboxesProps = FieldProps<
 
 filterDOMProps.register('autoValue');
 
-function RenderCheckboxes(props: CheckboxesProps) {
-  const Group = useMemo(() => (props.fieldType === Array ? Checkbox : Radio), [
-    props,
-  ]);
-
-  return (
-    <div {...filterDOMProps(props)}>
-      {props.label && <label>{props.label}</label>}
-      {props.allowedValues!.map((item: string, index: number) => {
-        return (
-          <React.Fragment key={index}>
-            <label htmlFor={props.id}>
-              {props.transform ? props.transform(item) : item}
-            </label>
-            <Group
-              id={`${props.id}-${item}`}
-              isDisabled={props.disabled}
-              name={props.name}
-              aria-label={props.name}
-              value={props.value}
-              isChecked={
-                props.fieldType === Array && Array.isArray(props.value)
-                  ? props.value!.includes(item)
-                  : props.value === item
-              }
-              onChange={() => {
-                props.onChange(
-                  props.fieldType === Array && Array.isArray(props.value)
-                    ? xor(item, props.value)
-                    : item
-                );
-              }}
-            />
-          </React.Fragment>
-        );
-      })}
-    </div>
-  );
-}
-
 type SelectInputProps = FieldProps<
   string | string[],
   SelectProps,
   {
+    checkboxes: false;
     required?: boolean;
     id: string;
     fieldType?: typeof Array | any;
@@ -100,7 +62,50 @@ function isSelectOptionObject(
   return toBeDetermined.toString !== undefined;
 }
 
-function RenderSelect(props: SelectInputProps) {
+export type SelectFieldProps = CheckboxesProps | SelectInputProps;
+
+function SelectField(props: SelectFieldProps) {
+  if (props.checkboxes) {
+    const Group = useMemo(
+      () => (props.fieldType === Array ? Checkbox : Radio),
+      [props]
+    );
+
+    return (
+      <div {...filterDOMProps(props)}>
+        {props.label && <label>{props.label}</label>}
+        {props.allowedValues!.map((item: string, index: number) => {
+          return (
+            <React.Fragment key={index}>
+              <label htmlFor={props.id}>
+                {props.transform ? props.transform(item) : item}
+              </label>
+              <Group
+                id={`${props.id}-${item}`}
+                isDisabled={props.disabled}
+                name={props.name}
+                aria-label={props.name}
+                value={props.value}
+                isChecked={
+                  props.fieldType === Array && Array.isArray(props.value)
+                    ? props.value!.includes(item)
+                    : props.value === item
+                }
+                onChange={() => {
+                  props.onChange(
+                    props.fieldType === Array && Array.isArray(props.value)
+                      ? xor(item, props.value)
+                      : item
+                  );
+                }}
+              />
+            </React.Fragment>
+          );
+        })}
+      </div>
+    );
+  }
+
   const [expanded, setExpanded] = useState<boolean>(false);
   const [selected, setSelected] = useState<string | string[]>([]);
 
@@ -198,13 +203,4 @@ function RenderSelect(props: SelectInputProps) {
   );
 }
 
-export type SelectFieldProps = { checkboxes?: boolean } & (CheckboxesProps &
-  SelectProps);
-
-function SelectField({ checkboxes, ...props }: SelectFieldProps) {
-  return checkboxes
-    ? RenderCheckboxes(props as CheckboxesProps)
-    : RenderSelect(props as SelectInputProps);
-}
-
-export default connectField(SelectField);
+export default connectField<SelectFieldProps>(SelectField);
