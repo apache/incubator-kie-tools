@@ -18,7 +18,6 @@ import (
 	"context"
 	"fmt"
 	"sort"
-	"strings"
 
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/api/v1beta1"
@@ -31,7 +30,6 @@ import (
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	corev1 "k8s.io/api/core/v1"
-	v1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -58,8 +56,6 @@ const (
 	envVarInfinispanUser
 	// envVarInfinispanPassword environment variable for setting infinispan password
 	envVarInfinispanPassword
-	// saslPlain is the PLAIN type.
-	saslPlain                         = "PLAIN"
 	pkcs12CertType                    = "PKCS12"
 	certMountPath                     = operator.KogitoHomeDir + "/certs/infinispan"
 	truststoreSecretKey               = "truststore.p12"
@@ -68,7 +64,6 @@ const (
 	infinispanCertMountName           = "infinispan-cert"
 	infinispanEnvKeyCredSecret        = "INFINISPAN_CREDENTIAL_SECRET"
 	infinispanEnablePersistenceEnvKey = "ENABLE_PERSISTENCE"
-	infinispanConditionWellFormed     = "wellFormed"
 )
 
 var (
@@ -148,9 +143,8 @@ func (i *infinispanInfraReconciler) Reconcile() (requeue bool, resultErr error) 
 	} else {
 		return false, errorForResourceConfigError(i.instance, "No Infinispan resource name given")
 	}
-	infinispanCondition := getInfinispanWellFormedCondition(infinispanInstance)
-	if infinispanCondition == nil || infinispanCondition.Status != string(v1.ConditionTrue) {
-		return false, errorForResourceNotReadyError(fmt.Errorf("infinispan instance %s not ready. Waiting for Condition with Condition.Type == %s to have Condition.Status == %s", infinispanInstance.Name, infinispanConditionWellFormed, v1.ConditionTrue))
+	if !infinispanInstance.IsWellFormed() {
+		return false, errorForResourceNotReadyError(fmt.Errorf("infinispan instance %s not ready", infinispanInstance.Name))
 	}
 	if resultErr := i.updateInfinispanVolumesInStatus(infinispanInstance); resultErr != nil {
 		return false, nil
@@ -203,7 +197,6 @@ func (i *infinispanInfraReconciler) getInfinispanRuntimeAppProps(name string, na
 	if len(infinispanURI) > 0 {
 		appProps[propertiesInfinispan[runtime][appPropInfinispanServerList]] = infinispanURI
 	}
-	appProps[propertiesInfinispan[runtime][appPropInfinispanSaslMechanism]] = saslPlain
 
 	if hasInfinispanMountedVolume(i.instance) {
 		appProps[propertiesInfinispan[runtime][appPropInfinispanTrustStoreType]] = pkcs12CertType
@@ -242,7 +235,7 @@ func (i *infinispanInfraReconciler) updateInfinispanRuntimePropsInStatus(infinis
 }
 
 func (i *infinispanInfraReconciler) updateInfinispanVolumesInStatus(infinispanInstance *infinispan.Infinispan) error {
-	if len(infinispanInstance.Status.Security.EndpointEncryption.CertSecretName) == 0 {
+	if infinispanInstance.Status.Security == nil || infinispanInstance.Status.Security.EndpointEncryption == nil || len(infinispanInstance.Status.Security.EndpointEncryption.CertSecretName) == 0 {
 		return nil
 	}
 	tlsSecret, err := i.ensureEncryptionTrustStoreSecret(infinispanInstance)
@@ -280,7 +273,7 @@ func (i *infinispanInfraReconciler) updateInfinispanVolumesInStatus(infinispanIn
 }
 
 func (i *infinispanInfraReconciler) ensureEncryptionTrustStoreSecret(infinispanInstance *infinispan.Infinispan) (*corev1.Secret, error) {
-	if len(infinispanInstance.Status.Security.EndpointEncryption.CertSecretName) == 0 {
+	if infinispanInstance.Status.Security == nil || infinispanInstance.Status.Security.EndpointEncryption == nil || len(infinispanInstance.Status.Security.EndpointEncryption.CertSecretName) == 0 {
 		return nil, nil
 	}
 	kogitoInfraEncryptionSecret := &corev1.Secret{
@@ -366,20 +359,4 @@ func hasInfinispanMountedVolume(infra api.KogitoInfraInterface) bool {
 		}
 	}
 	return false
-}
-
-func getInfinispanWellFormedCondition(instance *infinispan.Infinispan) *infinispan.InfinispanCondition {
-	if len(instance.Status.Conditions) == 0 {
-		return nil
-	}
-
-	// Infinispan does not have a condition transition date, so let's get the wellFormed condition
-	for _, condition := range instance.Status.Conditions {
-		// Can be replaced by instance.IsWellFormed() once Infinispan release operator 2.0.7 and we update the dependency
-		if strings.EqualFold(condition.Type, infinispanConditionWellFormed) {
-			return &condition
-		}
-	}
-
-	return nil
 }

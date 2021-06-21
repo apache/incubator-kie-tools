@@ -15,6 +15,9 @@
 package kogitoinfra
 
 import (
+	"io/ioutil"
+	"testing"
+
 	ispn "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
 	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
@@ -23,11 +26,9 @@ import (
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
-	"io/ioutil"
 	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
-	"testing"
 )
 
 func Test_Reconcile_Infinispan(t *testing.T) {
@@ -54,23 +55,31 @@ func Test_Reconcile_Infinispan(t *testing.T) {
 	deployedInfinispan := &ispn.Infinispan{
 		ObjectMeta: v1.ObjectMeta{Name: "kogito-infinispan", Namespace: t.Name()},
 		Status: ispn.InfinispanStatus{
-			Security: ispn.InfinispanSecurity{
-				EndpointEncryption: ispn.EndpointEncryption{
+			Security: &ispn.InfinispanSecurity{
+				EndpointEncryption: &ispn.EndpointEncryption{
 					CertSecretName: tlsSecret.Name,
 				},
 			},
 			Conditions: []ispn.InfinispanCondition{
 				{
-					Type:   infinispanConditionWellFormed,
-					Status: string(v1.ConditionTrue),
+					Type:   ispn.ConditionWellFormed,
+					Status: v1.ConditionTrue,
 				},
 				{
-					Type:   "stopping",
-					Status: string(v1.ConditionFalse),
+					Type:   ispn.ConditionStopping,
+					Status: v1.ConditionFalse,
 				},
 				{
-					Type:   "gracefulShutdown",
-					Status: string(v1.ConditionFalse),
+					Type:   ispn.ConditionGracefulShutdown,
+					Status: v1.ConditionFalse,
+				},
+				{
+					Type:   ispn.ConditionPrelimChecksPassed,
+					Status: v1.ConditionTrue,
+				},
+				{
+					Type:   ispn.ConditionUpgrade,
+					Status: v1.ConditionFalse,
 				},
 			},
 		},
