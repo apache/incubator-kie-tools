@@ -94,7 +94,7 @@ To interact with Kogito images, you would need to install the needed dependencie
             * if any dependency is missing CeKit will tell which one.
     * [Bats](https://github.com/sstephenson/bats) 
     * Java 11 or higher
-    * Maven 3.6.2 or higher
+    * Maven 3.8.1 or higher
             
 * Optional dependencies:
     * [source-to-image](https://github.com/openshift/source-to-image)

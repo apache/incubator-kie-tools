@@ -1,0 +1,92 @@
+#!/bin/sh
+set -e
+
+SOURCES_DIR=/tmp/artifacts
+SCRIPT_DIR=$(dirname "${0}")
+
+tar xzf "${SOURCES_DIR}"/apache-maven-"${MAVEN_VERSION}"-bin.tar.gz -C /usr/share
+mv /usr/share/apache-maven-"${MAVEN_VERSION}" /usr/share/maven
+
+mkdir "${KOGITO_HOME}"/.m2
+cp -v "${SCRIPT_DIR}"/maven/* "${KOGITO_HOME}"/.m2
+cp -v "${SCRIPT_DIR}"/added/* "${KOGITO_HOME}"/launch/
+
+# configure Red Hat repositories on the maven settings.xml for product builds
+if [ "${ENABLE_RH_MAVEN_REPO}" == "true" ]; then
+    echo "enabling red hat repositories"
+    rh_repos="    <!-- JBoss EAP Maven repository -->\
+<profile>\
+  <id>redhat-maven-repositories</id>\
+  <repositories>\
+    <repository>\
+      <id>redhat-ga-repository</id>\
+      <url>https://maven.repository.redhat.com/ga/</url>\
+      <releases>\
+        <enabled>true</enabled>\
+      </releases>\
+      <snapshots>\
+        <enabled>false</enabled>\
+      </snapshots>\
+    </repository>\
+    <repository>\
+      <id>redhat-ea-repository</id>\
+      <url>https://maven.repository.redhat.com/earlyaccess/all/</url>\
+      <releases>\
+        <enabled>true</enabled>\
+      </releases>\
+      <snapshots>\
+        <enabled>false</enabled>\
+      </snapshots>\
+    </repository>\
+    <repository>\
+      <id>jboss-eap-repository</id>\
+      <url>https://maven.repository.redhat.com/techpreview/all</url>\
+      <releases>\
+        <enabled>true</enabled>\
+      </releases>\
+      <snapshots>\
+        <enabled>false</enabled>\
+      </snapshots>\
+    </repository>\
+  </repositories>\
+  <pluginRepositories>\
+    <pluginRepository>\
+      <id>redhat-ga-plugin-repository</id>\
+      <url>https://maven.repository.redhat.com/ga/</url>\
+      <releases>\
+        <enabled>true</enabled>\
+      </releases>\
+      <snapshots>\
+        <enabled>false</enabled>\
+      </snapshots>\
+    </pluginRepository>\
+    <pluginRepository>\
+      <id>redhat-ea-plugin-repository</id>\
+      <url>https://maven.repository.redhat.com/earlyaccess/all/</url>\
+      <releases>\
+        <enabled>true</enabled>\
+      </releases>\
+      <snapshots>\
+        <enabled>false</enabled>\
+      </snapshots>\
+    </pluginRepository>\
+    <pluginRepository>\
+      <id>jboss-eap-plugin-repository</id>\
+      <url>https://maven.repository.redhat.com/techpreview/all</url>\
+      <releases>\
+        <enabled>true</enabled>\
+      </releases>\
+      <snapshots>\
+        <enabled>false</enabled>\
+      </snapshots>\
+    </pluginRepository>\
+  </pluginRepositories>\
+</profile>\
+"
+    sed -i "s|<!-- ### redhat maven repositories ### -->|$rh_repos|" "${KOGITO_HOME}"/.m2/settings.xml
+    sed -i "s|<!-- ### redhat maven profile ### -->|<activeProfile>redhat-maven-repositories</activeProfile>|" "${KOGITO_HOME}"/.m2/settings.xml
+
+    mv "${KOGITO_HOME}"/.m2/settings.xml "${KOGITO_HOME}"/.m2/settings.xml.bkp
+    #format and write the new file
+    xmllint --format "${KOGITO_HOME}"/.m2/settings.xml.bkp > "${KOGITO_HOME}"/.m2/settings.xml
+fi
