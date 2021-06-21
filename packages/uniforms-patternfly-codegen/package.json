@@ -18,7 +18,7 @@
     "build:prod": "yarn lint && yarn test && rimraf dist && webpack"
   },
   "dependencies": {
-    "uniforms": "3.0.0",
+    "uniforms": "3.5.1",
     "lodash": "^4.14.2",
     "prettier": "^2.2.1"
   },
