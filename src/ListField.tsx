@@ -1,16 +1,15 @@
 import React, {
   Children,
-  ReactNode,
-  isValidElement,
   cloneElement,
+  isValidElement,
+  ReactNode,
 } from 'react';
-import { Tooltip, Split, SplitItem } from '@patternfly/react-core';
+import { Split, SplitItem, Tooltip } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
-import { HTMLFieldProps, connectField, filterDOMProps } from 'uniforms/es5';
+import { connectField, filterDOMProps, HTMLFieldProps } from 'uniforms/es5';
 
 import ListItemField from './ListItemField';
 import ListAddField from './ListAddField';
-import ListDelField from './ListDelField';
 
 export type ListFieldProps = HTMLFieldProps<
   unknown[],
@@ -67,8 +66,7 @@ function ListField({
         </SplitItem>
         <SplitItem isFilled />
         <SplitItem>
-          <ListAddField name={`${name}.$`} initialCount={initialCount} />{' '}
-          <ListDelField name={`${name}.$`} />
+          <ListAddField name={'$'} initialCount={initialCount} />
         </SplitItem>
       </Split>
 

@@ -2,15 +2,25 @@ import React from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 import { Button, ButtonProps } from '@patternfly/react-core';
 import { PlusCircleIcon } from '@patternfly/react-icons';
-import { useField, filterDOMProps, joinName } from 'uniforms/es5';
+import {
+  connectField,
+  FieldProps,
+  filterDOMProps,
+  joinName,
+  useField,
+} from 'uniforms/es5';
 
-export type ListAddFieldProps = {
-  initialCount?: number;
-  parent?: any;
-  name: string;
-  disabled?: boolean;
-  value?: unknown;
-} & ButtonProps;
+export type ListAddFieldProps = FieldProps<
+  unknown,
+  ButtonProps,
+  {
+    initialCount?: number;
+    parent?: any;
+    name: string;
+    disabled?: boolean;
+    value?: unknown;
+  }
+>;
 
 function ListAdd({
   disabled = false,
@@ -46,4 +56,7 @@ function ListAdd({
   );
 }
 
-export default ListAdd;
+export default connectField<ListAddFieldProps>(ListAdd, {
+  initialValue: false,
+  kind: 'leaf',
+});

@@ -16,90 +16,77 @@ To start using uniforms, we have to install three independent packages:
 2. Bridge
 3. Theme
 
-In this example, we will use the JSONSchema to describe our desired data format and style our form using Semantic UI theme.
+In this example, we will use the JSON Schema to describe our desired data format and style our form using the Pattenfly UI theme.
 
 ```shell
-npm install uniforms@3.0.0-rc.3 // or latest 
-npm install uniforms-bridge-simple-schema2@3.0.0-rc.3 // or latest
-npm install simpl-schema
+npm install uniforms@3.4.0
+npm install uniforms-json-schema-bridge@3.4.0
 npm install uniforms-patternfly
 npm install @patternfly/react-core @patternfly/react-icons
 ```
 
-<!-- **Note**: When using a themed package, remember to include correct styles! If you are willing to run this example by yourself,
-have a read on [Semantic UI React's theme usage](https://react.semantic-ui.com/usage/#theme). -->
+Don't forget that it's necessary to correctly load the styles from Patternfly. To do it, we recommend taking a look into the 
+[Patternfly React Seed](https://github.com/patternfly/patternfly-react-seed), or you can simply load the styles directly into
+your `index.html` like in the example app of this repo.
 
 ### 2. Start by defining a schema
 
-After we've installed required packages, it's time to define our Guest schema. We can do it in a plain JSON, which is a valid JSONSchema instance:
+After we've installed required packages, it's time to define our schema. We can do it in a plain JSON, which is a valid JSON Schema instance:
 
-```javascript
-import SimpleSchema from 'simpl-schema';
-
-const schema = new SimpleSchema({
-  name: {
-    type: String
-  },
-  lastname: {
-    type: String
-  },
-  date: {
-    type: Date
+```js
+const schema = {
+  type: 'object',
+  properties: {
+    foo: {
+      type: 'string'
+    },
   }
-});
+};
+
 ```
 
 ### 3. Then create the bridge
 
-Now that we have the schema, we can create the uniforms bridge of it, by using the corresponding uniforms schema-to-bridge package.
+Now that we have the schema, we can create the uniforms bridge of it, by using the corresponding uniforms bridge package.
 Creating the bridge instance is necessary - without it, uniforms would not be able to process form generation and validation.
-As we are using the SimplSchema, we have to import the `uniforms-bridge-simple-schema2` package.
+As we are using the JSON Schema, we have to import the `uniforms-bridge-json-schema` package. Also, because we're doing an
+example of a JSON Schema, it's necessary to use a JSON Schema validation library, and in this example we'll be using the AJV.
 
 ```js
-import { SimpleSchema2Bridge } from 'uniforms-bridge-simple-schema-2';
+import { JSONSchemaBridge } from 'uniforms-bridge-json-schema';
+import AJV from 'ajv';
 
-...
+const ajv = new Ajv({ allErrors: true, useDefaults: true });
 
-export default new SimpleSchema2Bridge(schema);
-```
+function createValidator(schema) {
+  const validator = ajv.compile(schema);
 
-Just to recap, the whole `schema.js` file looks like this:
+  return (model) => {
+    validator(model);
+    return validator.errors?.length ? { details: validator.errors } : null;
+  };
+}
 
-```js
-import SimpleSchema from 'simpl-schema';
-import { SimpleSchema2Bridge } from 'uniforms-bridge-simple-schema-2';
-
-const schema = new SimpleSchema({
-  name: {
-    type: String
-  },
-  lastname: {
-    type: String
-  },
-  date: {
-    type: Date
-  }
-});
-
-export default new SimpleSchema2Bridge(schema);
+const bridge = new JSONSchemaBridge(schema, createValidator(schema));
 ```
 
 ### 4. Finally, use it in a form! 🎉
 
 Uniforms theme packages provide the `AutoForm` component, which is able to generate the form based on the given schema.
-All we have to do now is to pass the previously created GuestSchema to the `AutoForm`:
+All we have to do now is to pass the previously created Bridge to the `AutoForm`:
 
 ```js
 import React from 'react';
-import { AutoForm } from uniforms-semantic;
+import { AutoForm } from 'uniforms-patternfly';
 
 import schema from './schema';
 
-export default function GuestForm() {
-  return <AutoForm schema={schema} onSubmit={console.log} />;
+export default function MyForm() {
+  return <AutoForm schema={bridge} onSubmit={console.log} />;
 }
 ```
 
 And that's it! `AutoForm` will generate a complete form with labeled fields, errors list (if any) and a submit button.
 
-Also, it will take care of validation and handle model changes.
+Also, it will take care of validation and handle model changes. In case you need more advanced feature, take a deeper look
+into the Uniforms docs.

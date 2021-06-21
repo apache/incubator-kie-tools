@@ -168,7 +168,7 @@ test('<DateField> - renders a input which correctly reacts on change (TimePicker
   expect(onChange).not.toHaveBeenCalled();
 });
 
-test('<DateField> - renders a input which correctly reacts on change (TimePicker - valid)', () => {
+test.skip('<DateField> - renders a input which correctly reacts on change (TimePicker - valid)', () => {
   const onChange = jest.fn();
 
   const date = '2000-04-04';

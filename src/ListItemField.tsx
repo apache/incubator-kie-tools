@@ -1,29 +1,33 @@
-import React, { Children, ReactNode } from 'react';
-import { joinName } from 'uniforms/es5';
+import React, { ReactNode } from 'react';
+import { connectField } from 'uniforms/es5';
 
 import AutoField from './AutoField';
+import ListDelField from './ListDelField';
 
 export type ListItemFieldProps = {
   children?: ReactNode;
-  name: string;
-  labelCol?: string;
-  label?: any;
-  wrapperCol?: any;
+  value?: unknown;
 };
 
-export default function ListItemField(props: ListItemFieldProps) {
+function ListItem({
+  children = <AutoField label={null} name={''} />,
+}: ListItemFieldProps) {
   return (
-    <div style={{ marginBottom: '1rem' }}>
-      {props.children ? (
-        Children.map(props.children as JSX.Element, (child) =>
-          React.cloneElement(child, {
-            name: joinName(props.name, child.props.name),
-            label: null,
-          })
-        )
-      ) : (
-        <AutoField {...props} />
-      )}
+    <div
+      style={{
+        marginBottom: '1rem',
+        display: 'flex',
+        justifyContent: 'space-between',
+      }}
+    >
+      <div style={{ width: '100%', marginRight: '10px' }}>{children}</div>
+      <div>
+        <ListDelField name={''} />
+      </div>
     </div>
   );
 }
+
+export default connectField<ListItemFieldProps>(ListItem, {
+  initialValue: false,
+});
