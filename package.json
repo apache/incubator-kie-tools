@@ -15,7 +15,7 @@
     "test:clearCache": "lerna run test:clearCache --stream",
     "update-version-to": "node ./update_version_to.js",
     "locktt": "locktt",
-    "install-locktt": "npm install lock-treatment-tool --global-style --no-package-lock --no-save",
+    "install-locktt": "npm install lock-treatment-tool --global-style --no-package-lock --no-save --ignore-scripts",
     "npm-tt": "npm-tt",
     "publish:productization": "lerna exec --scope @kogito-tooling/* --ignore @kogito-tooling/online-editor --ignore @kogito-tooling/desktop --ignore @kogito-tooling/hub --ignore @kogito-tooling/pmml-editor -- npm publish --access public",
     "format": "prettier --write .",
@@ -41,6 +41,7 @@
     "@testing-library/react-hooks": "^5.1.2",
     "@types/chai": "^4.2.17",
     "@types/glob": "^7.1.3",
+    "@types/invariant": "^2.2.34",
     "@types/jest": "^26.0.23",
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.0.2",
@@ -49,6 +50,7 @@
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
     "@types/selenium-webdriver": "^4.0.12",
+    "@types/simpl-schema": "1.10.2",
     "@types/underscore": "^1.11.2",
     "@types/vscode": "^1.56.0",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
@@ -112,15 +114,15 @@
     "url-loader": "^4.1.1",
     "vsce": "^1.88.0",
     "vscode-extension-tester": "^4.0.3",
-    "vscode-extension-tester-native": "^3.0.2",
     "vscode-test": "^1.5.2",
-    "vscode-uitests-tooling": "^2.0.2",
     "watch": "^1.0.2",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.7.0",
     "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.7.3",
     "webpack-node-externals": "^3.0.0",
-    "zip-webpack-plugin": "^4.0.1"
+    "zip-webpack-plugin": "^4.0.1",
+    "jest-raw-loader": "^1.0.1",
+    "uniforms-bridge-simple-schema-2": "3.4.0"
   }
 }

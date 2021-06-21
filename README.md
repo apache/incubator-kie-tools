@@ -1,6 +1,6 @@
 ## Kogito
 
-**Kogito** is the next generation of business automation platform focused on cloud-native development, deployment and execution.
+**Kogito** is the next generation of Business Automation platform focused on cloud-native development, deployment and execution.
 
 <p align="center"><img width=55% height=55% src="docs/kogito.png"></p>
 
@@ -41,6 +41,8 @@ In Kogito Tooling [releases page](https://github.com/kiegroup/kogito-tooling/rel
 
 ## Build from source
 
+> **NOTE:** We recommend using Node 16 when developing this project. Our CI uses Node `16.2.0`, Yarn `1.22.10`, and Lerna `4.0.0`.
+
 1. Check out the source:
 
    ```
@@ -52,6 +54,22 @@ In Kogito Tooling [releases page](https://github.com/kiegroup/kogito-tooling/rel
    > ```
    > git clone https://github.com/kiegroup/kogito-tooling.git
    > ```
+
+1. Install NodeJs, Yarn and Lerna:
+
+   For NodeJs follow any chosen way for your operating system https://nodejs.org/en/download/package-manager/ or download and install as guided at https://github.com/nodejs/help/wiki/Installation.
+
+   Yarn installation command:
+
+   ```
+   npm install -g yarn
+   ```
+
+   Lerna installation command:
+
+   ```
+   npm install -g lerna@4.0.0
+   ```
 
 1. Build with Yarn:
 
@@ -72,7 +90,7 @@ In Kogito Tooling [releases page](https://github.com/kiegroup/kogito-tooling/rel
 
 ## Develop
 
-> **NOTE:** We recommend using Node 16 when developing this project. Our CI uses Node `16.2.0` and Yarn `1.22.10`.
+> **NOTE:** We recommend using Node 16 when developing this project. Our CI uses Node `16.2.0`, Yarn `1.22.10`, and Lerna `4.0.0`.
 
 > **NOTE:** This repository contains several packages each with its own custom configurations. Here's a list of every environment variables you can use to customize the build.
 >

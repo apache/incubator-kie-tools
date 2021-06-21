@@ -22,7 +22,7 @@ import { assertWebElementIsDisplayedEnabled, assertWebElementWithAtribute } from
 import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
 import BpmnEditorTestHelper, { PaletteCategories } from "./helpers/BpmnEditorTestHelper";
 import ScesimEditorTestHelper from "./helpers/ScesimEditorTestHelper";
-import DmnEditorTestHelper from "./helpers/DmnEditorTestHelper";
+import DmnEditorTestHelper from "./helpers/dmn/DmnEditorTestHelper";
 import PmmlEditorTestHelper from "./helpers/PmmlEditorTestHelper";
 import { assert } from "chai";
 import {
@@ -30,7 +30,9 @@ import {
   customTaskDocumentationTextArea,
   palletteItemAnchor,
   assignmentsTextBoxInput,
+  processNameInput,
 } from "./helpers/BpmnLocators";
+import DecisionNavigatorHelper from "./helpers/dmn/DecisionNavigatorHelper";
 
 describe("Editors are loading properly", () => {
   const RESOURCES: string = path.resolve("it-tests", "resources");
@@ -113,6 +115,36 @@ describe("Editors are loading properly", () => {
     await webview.switchBack();
   });
 
+  it("Undo command in DMN Editor", async function () {
+    this.timeout(40000);
+    webview = await testHelper.openFileFromSidebar(DEMO_DMN);
+    await webview.switchToFrame();
+    const dmnEditorTester = new DmnEditorTestHelper(webview);
+
+    const decisionNavigator = await dmnEditorTester.openDecisionNavigator();
+    await decisionNavigator.selectDiagramNode("?DemoDecision1");
+
+    const diagramProperties = await dmnEditorTester.openDiagramProperties();
+    await diagramProperties.changeProperty("Name", "Updated Name 1");
+
+    const navigatorPanel: DecisionNavigatorHelper = await dmnEditorTester.openDecisionNavigator();
+    await navigatorPanel.assertDiagramNodeIsPresent("Updated Name 1");
+    await navigatorPanel.assertDiagramNodeIsPresent("?DecisionFinal1");
+
+    await webview.switchBack();
+
+    // changeProperty() is implemented as clear() and sendKeys(), that is why we need two undo operations
+    await testHelper.executeCommandFromPrompt("Undo");
+    await testHelper.executeCommandFromPrompt("Undo");
+
+    await webview.switchToFrame();
+
+    await navigatorPanel.assertDiagramNodeIsPresent("?DemoDecision1");
+    await navigatorPanel.assertDiagramNodeIsPresent("?DecisionFinal1");
+
+    await webview.switchBack();
+  });
+
   it("Opens demo.scesim file in SCESIM Editor", async function () {
     this.timeout(20000);
 
@@ -189,6 +221,37 @@ describe("Editors are loading properly", () => {
     assert.isTrue(await assignmentsTextBox.isEnabled());
     assert.equal(await assignmentsTextBox.getAttribute("value"), "7 data inputs, 1 data output");
     assertWebElementWithAtribute(assignmentsTextBox, "value", "7 data inputs, 1 data output");
+
+    await webview.switchBack();
+  });
+
+  it("Saves a change of process name in BPMN editor properly", async function () {
+    this.timeout(60000);
+    webview = await testHelper.openFileFromSidebar("SaveAssetTest.bpmn");
+    await webview.switchToFrame();
+    let bpmnEditorTester = new BpmnEditorTestHelper(webview);
+
+    let properties = await bpmnEditorTester.openDiagramProperties();
+    let processNameInputField = await properties.findElement(processNameInput());
+    assert.isTrue(await processNameInputField.isEnabled());
+    const formerProcessId = await processNameInputField.getAttribute("value");
+    assert.isDefined(formerProcessId);
+
+    await processNameInputField.sendKeys("Renamed");
+    await bpmnEditorTester.openDiagramExplorer();
+
+    await webview.switchBack();
+
+    await testHelper.executeCommandFromPrompt("File: Save");
+    await testHelper.closeAllEditors();
+
+    webview = await testHelper.openFileFromSidebar("SaveAssetTest.bpmn");
+    await webview.switchToFrame();
+    bpmnEditorTester = new BpmnEditorTestHelper(webview);
+    properties = await bpmnEditorTester.openDiagramProperties();
+    processNameInputField = await properties.findElement(processNameInput());
+    assert.isTrue(await processNameInputField.isEnabled());
+    assert.equal(await processNameInputField.getAttribute("value"), formerProcessId + "Renamed");
 
     await webview.switchBack();
   });
