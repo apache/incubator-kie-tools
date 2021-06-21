@@ -20,6 +20,11 @@
   ],
   "publisher": "kie-group",
   "main": "./dist/extension/extension.js",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
   "contributes": {
     "customEditors": [
       {
