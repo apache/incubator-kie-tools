@@ -19,8 +19,8 @@ To start using uniforms, we have to install three independent packages:
 In this example, we will use the JSON Schema to describe our desired data format and style our form using the Pattenfly UI theme.
 
 ```shell
-npm install uniforms@3.4.0
-npm install uniforms-json-schema-bridge@3.4.0
+npm install uniforms@3.5.1
+npm install uniforms-json-schema-bridge@3.5.1
 npm install uniforms-patternfly
 npm install @patternfly/react-core @patternfly/react-icons
 ```
@@ -28,6 +28,11 @@ npm install @patternfly/react-core @patternfly/react-icons
 Don't forget that it's necessary to correctly load the styles from Patternfly. To do it, we recommend taking a look into the 
 [Patternfly React Seed](https://github.com/patternfly/patternfly-react-seed), or you can simply load the styles directly into
 your `index.html` like in the example app of this repo.
+
+Obs: If you use a previous version of the `tslib` indirectly (version 1), it should be necessary to add this dependency as well.
+```shell
+npm install tslib@^2.2.0
+```
 
 ### 2. Start by defining a schema
 
