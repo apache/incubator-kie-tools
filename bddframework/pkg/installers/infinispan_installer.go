@@ -29,13 +29,13 @@ import (
 )
 
 var (
-	// infinispanOlmNamespacedInstaller installs Infinispan in the namespace using OLM
-	infinispanOlmNamespacedInstaller = OlmNamespacedServiceInstaller{
-		SubscriptionName:                  infinispanOperatorSubscriptionName,
-		Channel:                           infinispanOperatorSubscriptionChannel,
-		Catalog:                           framework.CommunityCatalog,
-		InstallationTimeoutInMinutes:      10,
-		GetAllNamespacedOlmCrsInNamespace: getInfinispanCrsInNamespace,
+	// infinispanOlmClusterWideInstaller installs Infinispan cluster wide using OLM
+	infinispanOlmClusterWideInstaller = OlmClusterWideServiceInstaller{
+		SubscriptionName:                   infinispanOperatorSubscriptionName,
+		Channel:                            infinispanOperatorSubscriptionChannel,
+		Catalog:                            framework.CommunityCatalog,
+		InstallationTimeoutInMinutes:       10,
+		GetAllClusterWideOlmCrsInNamespace: getInfinispanCrsInNamespace,
 	}
 	// infinispanYamlNamespacedInstaller installs Infinispan namespaced using YAMLs
 	infinispanYamlNamespacedInstaller = YamlNamespacedServiceInstaller{
@@ -47,7 +47,7 @@ var (
 	}
 
 	infinispanOperatorSubscriptionName    = "infinispan"
-	infinispanOperatorSubscriptionChannel = "2.0.x"
+	infinispanOperatorSubscriptionChannel = "2.1.x"
 	infinispanOperatorGitHubBranch        = "2.0.x"
 	infinispanOperatorDeployFilesURI      = fmt.Sprintf("https://raw.githubusercontent.com/infinispan/infinispan-operator/%s/deploy/", infinispanOperatorGitHubBranch)
 	infinispanOperatorServiceName         = "Infinispan"
@@ -60,7 +60,7 @@ func GetInfinispanInstaller() (ServiceInstaller, error) {
 	}
 
 	if config.IsInfinispanInstalledByOlm() {
-		return &infinispanOlmNamespacedInstaller, nil
+		return &infinispanOlmClusterWideInstaller, nil
 	}
 
 	return nil, errors.New("No Infinispan operator installer available for provided configuration")

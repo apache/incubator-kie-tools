@@ -104,8 +104,14 @@ func GetInfinispanStub(namespace, name, secretName string) *infinispan.Infinispa
 		},
 		Spec: infinispan.InfinispanSpec{
 			Replicas: 1,
+			Service: infinispan.InfinispanServiceSpec{
+				Type: infinispan.ServiceTypeCache,
+			},
 			Security: infinispan.InfinispanSecurity{
 				EndpointSecretName: secretName,
+				EndpointEncryption: &infinispan.EndpointEncryption{
+					Type: "None",
+				},
 			},
 		},
 	}
