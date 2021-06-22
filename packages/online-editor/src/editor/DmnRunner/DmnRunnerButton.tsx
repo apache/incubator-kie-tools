@@ -32,6 +32,7 @@ export function DmnRunnerButton() {
   const context = useContext(GlobalContext);
 
   const onDmnRunner = useCallback(() => {
+    dmnRunner.closeDmnTour();
     if (dmnRunner.status !== DmnRunnerStatus.RUNNING) {
       dmnRunner.setModalOpen(true);
     } else {

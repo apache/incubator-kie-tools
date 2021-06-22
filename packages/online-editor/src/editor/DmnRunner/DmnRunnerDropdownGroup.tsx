@@ -33,7 +33,10 @@ export function DmnRunnerDropdownGroup() {
             id={"dmn-runner-dropdown-setup"}
             key={"setup-dmn-runner"}
             component={"button"}
-            onClick={() => dmnRunner.setModalOpen(true)}
+            onClick={() => {
+              dmnRunner.closeDmnTour();
+              dmnRunner.setModalOpen(true);
+            }}
           >
             {i18n.dmnRunner.dropdown.setup}
           </DropdownItem>

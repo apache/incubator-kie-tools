@@ -36,6 +36,7 @@ export interface DmnRunnerContextType {
   formError: boolean;
   outdated: boolean;
   setFormError: React.Dispatch<boolean>;
+  closeDmnTour: () => void;
 }
 
 export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({

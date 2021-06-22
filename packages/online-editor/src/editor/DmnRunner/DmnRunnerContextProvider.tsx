@@ -36,6 +36,7 @@ interface Props {
   children: React.ReactNode;
   editor?: EmbeddedEditorRef;
   isEditorReady: boolean;
+  closeDmnTour: () => void;
 }
 
 export function DmnRunnerContextProvider(props: Props) {
@@ -177,6 +178,7 @@ export function DmnRunnerContextProvider(props: Props) {
         formError,
         setFormError,
         outdated,
+        closeDmnTour: props.closeDmnTour,
       }}
     >
       {props.children}

@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
@@ -47,6 +47,11 @@ export function useDmnTour(isEditorReady: boolean, file: File) {
       guidedTour.start(tutorial.label);
     }
   }, [isEditorReady, file]);
+
+  return useCallback(() => {
+    const guidedTour = KogitoGuidedTour.getInstance();
+    guidedTour.teardown();
+  }, []);
 }
 
 function getOnlineEditorTutorial(i18n: OnlineI18n) {

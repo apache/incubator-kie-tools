@@ -92,9 +92,14 @@ export function usingNotificationsPanelContext(children: React.ReactElement, ref
   return <NotificationsPanelContextProvider ref={ref}>{children}</NotificationsPanelContextProvider>;
 }
 
-export function usingDmnRunnerContext(children: React.ReactElement, editor: any, isEditorReady = true) {
+export function usingDmnRunnerContext(
+  children: React.ReactElement,
+  editor: any,
+  isEditorReady = true,
+  closeDmnTour = jest.fn()
+) {
   return (
-    <DmnRunnerContextProvider editor={editor} isEditorReady={isEditorReady}>
+    <DmnRunnerContextProvider editor={editor} isEditorReady={isEditorReady} closeDmnTour={closeDmnTour}>
       {children}
     </DmnRunnerContextProvider>
   );

@@ -274,7 +274,7 @@ export function EditorPage(props: Props) {
     })();
   });
 
-  useDmnTour(isEditorReady && openAlert === AlertTypes.NONE, context.file);
+  const closeDmnTour = useDmnTour(isEditorReady && openAlert === AlertTypes.NONE, context.file);
 
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
@@ -384,7 +384,7 @@ export function EditorPage(props: Props) {
 
   return (
     <NotificationsPanelContextProvider ref={notificationsPanelRef}>
-      <DmnRunnerContextProvider editor={editor} isEditorReady={isEditorReady}>
+      <DmnRunnerContextProvider editor={editor} isEditorReady={isEditorReady} closeDmnTour={closeDmnTour}>
         <DmnRunnerContext.Consumer>
           {(dmnRunner) => (
             <Page
