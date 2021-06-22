@@ -35,6 +35,11 @@
   "activationEvents": [
     "onCustomEditor:kieKogitoWebviewEditorsPmml"
   ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
   "contributes": {
     "customEditors": [
       {

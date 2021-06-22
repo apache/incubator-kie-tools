@@ -16,6 +16,11 @@
     "compile": "yarn build-ext",
     "watch": "yarn build-ext"
   },
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",
   "engines": {
