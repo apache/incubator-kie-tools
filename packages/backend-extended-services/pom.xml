@@ -23,7 +23,7 @@
   <groupId>io.github.kiegroup.kogito.tooling</groupId>
   <artifactId>backend-extended-services</artifactId>
   <packaging>pom</packaging>
-  <version>0.0.1</version>
+  <version>0.0.0</version>
 
   <name>Backend Extended Services - Parent</name>
   <description>The parent contains all metadata including dependency versions and modules.</description>

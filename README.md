@@ -96,8 +96,8 @@ In Kogito Tooling [releases page](https://github.com/kiegroup/kogito-tooling/rel
 >
 > - `KOGITO_TOOLING_BUILD_test`: Runs or skips the unit tests on all packages. Runs the tests if empty. Can be `"true"` or `"false"`.
 > - `KOGITO_TOOLING_BUILD_lint`: Runs or skips ESLint on all projects. Runs the linter if empty. Can be `"true"` or `"false"`.
-> - `WEBPACK__tsLoaderTranspileOnly`: Configures `ts-loader` with its value. [See default](https://github.com/kiegroup/kogito-tooling/blob/master/webpack.common.config.js#L16)
-> - `WEBPACK__minimize`: Configures Webpack to minimize the bundles or not. [See default](https://github.com/kiegroup/kogito-tooling/blob/master/webpack.common.config.js#L16)
+> - `WEBPACK__tsLoaderTranspileOnly`: Configures `ts-loader` with its value. [See default](https://github.com/kiegroup/kogito-tooling/blob/master/config/webpack.common.config.js#L16)
+> - `WEBPACK__minimize`: Configures Webpack to minimize the bundles or not. [See default](https://github.com/kiegroup/kogito-tooling/blob/master/config/webpack.common.config.js#L16)
 > - `DOWNLOAD_HUB_linuxUrl`: Used in `packages/online-editor`. Configures the URL to download the Linux Hub on the Online Editor. [See default](https://github.com/kiegroup/kogito-tooling/blob/master/packages/online-editor/webpack.config.js#L16) -
 > - `DOWNLOAD_HUB_macOsUrl`: Used in `packages/online-editor`. Configures the URL to download the macOS Hub on the Online Editor. [See default](https://github.com/kiegroup/kogito-tooling/blob/master/packages/online-editor/webpack.config.js#L16) -
 > - `DOWNLOAD_HUB_windowsUrl`: Used in `packages/online-editor`. Configures the URL to download the Windows Hub on the Online Editor. [See default](https://github.com/kiegroup/kogito-tooling/blob/master/packages/online-editor/webpack.config.js#L16) -

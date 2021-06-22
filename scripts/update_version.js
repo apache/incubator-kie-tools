@@ -19,9 +19,13 @@ const path = require("path");
 const execSync = require("child_process").execSync;
 const { getPackagesSync } = require("@lerna/project");
 
-const CHROME_EXTENSION_MANIFEST_DEV_JSON = "./packages/chrome-extension-pack-kogito-kie-editors/manifest.dev.json";
-const CHROME_EXTENSION_MANIFEST_PROD_JSON = "./packages/chrome-extension-pack-kogito-kie-editors/manifest.prod.json";
-const LERNA_JSON = "./lerna.json";
+const CHROME_EXTENSION_MANIFEST_DEV_JSON = path.resolve(
+  "./packages/chrome-extension-pack-kogito-kie-editors/manifest.dev.json"
+);
+const CHROME_EXTENSION_MANIFEST_PROD_JSON = path.resolve(
+  "./packages/chrome-extension-pack-kogito-kie-editors/manifest.prod.json"
+);
+const LERNA_JSON = path.resolve("./lerna.json");
 
 // MAIN
 

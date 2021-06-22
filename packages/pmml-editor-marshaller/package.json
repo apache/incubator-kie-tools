@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/pmml-editor-marshaller",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -13,7 +13,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/build-env": "0.0.1",
+    "@kogito-tooling/build-env": "0.0.0",
     "jsonata": "^1.8.3",
     "xml-js": "^1.6.11"
   },

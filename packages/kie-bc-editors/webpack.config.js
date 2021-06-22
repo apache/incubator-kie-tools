@@ -16,7 +16,7 @@
 
 const nodeExternals = require("webpack-node-externals");
 const { merge } = require("webpack-merge");
-const common = require("../../webpack.common.config");
+const common = require("../../config/webpack.common.config");
 
 module.exports = (env) => [
   merge(common(env), {

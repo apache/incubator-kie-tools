@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/online-editor",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "private": true,
   "description": "",
   "license": "Apache-2.0",
@@ -11,14 +11,14 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/build-env": "0.0.1",
     "@kie-tooling-core/editor": "^0.0.9",
     "@kie-tooling-core/monaco-editor": "^0.0.9",
     "@kie-tooling-core/patternfly-base": "^0.0.9",
-    "@kogito-tooling/external-assets-base": "0.0.1",
-    "@kogito-tooling/i18n-common-dictionary": "0.0.1",
-    "@kogito-tooling/kie-bc-editors": "0.0.1",
-    "@kogito-tooling/pmml-editor": "0.0.1",
+    "@kogito-tooling/build-env": "0.0.0",
+    "@kogito-tooling/external-assets-base": "0.0.0",
+    "@kogito-tooling/i18n-common-dictionary": "0.0.0",
+    "@kogito-tooling/kie-bc-editors": "0.0.0",
+    "@kogito-tooling/pmml-editor": "0.0.0",
     "@octokit/rest": "^18.5.3",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
