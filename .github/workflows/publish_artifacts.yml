@@ -50,6 +50,7 @@ jobs:
           DMN_RUNNER__macOsDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/dmn_runner_macos_${{ steps.release_json.outputs.tag }}.dmg"
           DMN_RUNNER__windowsDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/dmn_runner_windows_${{ steps.release_json.outputs.tag }}.exe"
           DMN_RUNNER__compatibleVersion: "${{ steps.release_json.outputs.tag }}"
+          KOGITO_ONLINE_EDITOR_GTM_ID: "GTM-PQGMKNW"
           DISPLAY: ":99.0"
         run: cd kogito-tooling && yarn bootstrap && yarn run build:prod && cd -
 
