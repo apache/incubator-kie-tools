@@ -125,7 +125,7 @@ jobs:
           rm -rf $DEPLOYMENT_DIR/gwt-editors
 
           echo "Make the Online Editor use the resources deployed by the Chrome Extension (to save space)"
-          ln -s $DEPLOYMENT_DIR/chrome-extension $DEPLOYMENT_DIR/gwt-editors
+          ln -s chrome-extension $DEPLOYMENT_DIR/gwt-editors
 
           echo "Commit changes and push"
           git add ${{ needs.create_release.outputs.tag }}-prerelease
