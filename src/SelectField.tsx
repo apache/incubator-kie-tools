@@ -171,14 +171,16 @@ function SelectField(props: SelectFieldProps) {
     [props]
   );
 
-  if (props.placeholder)
-    selectedOptions.unshift(
-      <SelectOption
-        key={props.allowedValues!.length}
-        isPlaceholder
-        value={props.placeholder}
-      />
-    );
+  useEffect(() => {
+    if (props.placeholder)
+      selectedOptions.unshift(
+        <SelectOption
+          key={props.allowedValues!.length}
+          isPlaceholder
+          value={props.placeholder}
+        />
+      );
+  }, [props.placeholder, selectedOptions])
 
   return wrapField(
     props,
