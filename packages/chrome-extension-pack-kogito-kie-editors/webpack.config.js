@@ -53,9 +53,9 @@ module.exports = async (env) => {
       "content_scripts/github": "./src/github-content-script.ts",
       "content_scripts/online-editor": "./src/online-editor-content-script.ts",
       background: "./src/background.ts",
-      "envelope/bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
-      "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
-      "envelope/scesim-envelope": "./src/envelope/SceSimEditorEnvelopeApp.ts",
+      "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
+      "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
+      "scesim-envelope": "./src/envelope/SceSimEditorEnvelopeApp.ts",
     },
     devServer: {
       contentBase: ["dist"],
@@ -83,11 +83,7 @@ module.exports = async (env) => {
       }),
       new ZipPlugin({
         filename: "chrome_extension_kogito_kie_editors_" + packageJson.version + ".zip",
-        pathPrefix: "dist",
-
-        // These are used for development only,
-        // therefore should not be included in the ZIP file.
-        exclude: ["dmn", "bpmn", "scesim"],
+        include: ["manifest.json", "background.js", "content_scripts", "resources"],
       }),
     ],
     module: {
