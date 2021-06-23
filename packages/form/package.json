@@ -23,7 +23,7 @@
     "ajv-errors": "^1.0.1",
     "uniforms": "3.5.1",
     "uniforms-bridge-json-schema": "3.5.1",
-    "uniforms-patternfly": "4.6.0"
+    "uniforms-patternfly": "4.6.1"
   },
   "devDependencies": {
     "lodash": "^4.14.2"

@@ -15406,10 +15406,10 @@ uniforms-bridge-simple-schema-2@3.5.1:
     tslib "^2.2.0"
     uniforms "^3.5.1"
 
-uniforms-patternfly@4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/uniforms-patternfly/-/uniforms-patternfly-4.6.0.tgz#9b203bf107cfded0edc050b0a50ad72428f9a7a4"
-  integrity sha512-eq4itnslHBOQ4zkaec2f40CZcVRmrGSBijG08veFCza9pBTBBONXSC7oqBVNoVxlXh5Y+rdXIBboMRRuftJ2JQ==
+uniforms-patternfly@4.6.1:
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/uniforms-patternfly/-/uniforms-patternfly-4.6.1.tgz#5807578f5d4fbdee6c5715f4db2d83bdd08e6aee"
+  integrity sha512-AR6Mu3yyZaUTAFcJs9VGA/6GJjRbA4NVqpEj1tWRf33RyCvqJLnGt++QiQ7p8O9SObGbpAG5m7UuigF2M/XfcA==
 
 uniforms@3.5.1, uniforms@^3.5.1:
   version "3.5.1"
