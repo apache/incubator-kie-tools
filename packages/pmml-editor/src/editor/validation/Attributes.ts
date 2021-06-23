@@ -27,7 +27,7 @@ import {
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
-import { Builder } from "../paths";
+import { Builder, PredicateBuilder } from "../paths";
 
 export const validateAttribute = (
   modelIndex: number,
@@ -76,13 +76,15 @@ export const validateAttribute = (
   //Predicates
   const fieldNames = miningFields.map((miningField) => miningField.name);
   validatePredicate(
-    modelIndex,
-    characteristicIndex,
-    attributeIndex,
+    Builder()
+      .forModel(modelIndex)
+      .forCharacteristics()
+      .forCharacteristic(characteristicIndex)
+      .forAttribute(attributeIndex)
+      .forPredicate(),
     attribute.predicate,
     fieldNames,
-    validationRegistry,
-    0
+    validationRegistry
   );
 };
 
@@ -116,25 +118,13 @@ export const validateAttributes = (
 };
 
 const validatePredicate = (
-  modelIndex: number,
-  characteristicIndex: number,
-  attributeIndex: number,
+  pathBuilder: PredicateBuilder,
   predicate: Predicate | undefined,
   fieldNames: FieldName[],
-  validationRegistry: ValidationRegistry,
-  nesting: number
+  validationRegistry: ValidationRegistry
 ) => {
   if (predicate === undefined) {
-    validationRegistry.set(
-      Builder()
-        .forModel(modelIndex)
-        .forCharacteristics()
-        .forCharacteristic(characteristicIndex)
-        .forAttribute(attributeIndex)
-        .forPredicate(nesting)
-        .build(),
-      new ValidationEntry(ValidationLevel.WARNING, `No predicate defined.`)
-    );
+    validationRegistry.set(pathBuilder.build(), new ValidationEntry(ValidationLevel.WARNING, `No predicate defined.`));
     return;
   } else if (predicate instanceof True) {
     return;
@@ -143,34 +133,20 @@ const validatePredicate = (
   } else if (predicate instanceof SimpleSetPredicate) {
     if (fieldNames.filter((fieldName) => fieldName === predicate.field).length === 0) {
       validationRegistry.set(
-        Builder()
-          .forModel(modelIndex)
-          .forCharacteristics()
-          .forCharacteristic(characteristicIndex)
-          .forAttribute(attributeIndex)
-          .forPredicate(nesting)
-          .forFieldName()
-          .build(),
+        pathBuilder.forFieldName().build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${predicate.field}" cannot be not found in the Mining Schema.`)
       );
     }
   } else if (predicate instanceof SimplePredicate) {
     if (fieldNames.filter((fieldName) => fieldName === predicate.field).length === 0) {
       validationRegistry.set(
-        Builder()
-          .forModel(modelIndex)
-          .forCharacteristics()
-          .forCharacteristic(characteristicIndex)
-          .forAttribute(attributeIndex)
-          .forPredicate(nesting)
-          .forFieldName()
-          .build(),
+        pathBuilder.forFieldName().build(),
         new ValidationEntry(ValidationLevel.WARNING, `"${predicate.field}" cannot be not found in the Mining Schema.`)
       );
     }
   } else if (predicate instanceof CompoundPredicate) {
-    predicate.predicates?.forEach((p) =>
-      validatePredicate(modelIndex, characteristicIndex, attributeIndex, p, fieldNames, validationRegistry, nesting + 1)
+    predicate.predicates?.forEach((p, i) =>
+      validatePredicate(pathBuilder.forPredicate(i), p, fieldNames, validationRegistry)
     );
   }
 };
