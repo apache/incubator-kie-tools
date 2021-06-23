@@ -54,21 +54,23 @@ export class DmnValidator extends Validator {
         // AJV doesn't handle dates objects. This transformation converts Dates to their UTC format.
         validator(JSON.parse(JSON.stringify(model)));
 
-        return validator.errors?.length
-          ? {
-              details: validator.errors?.map((error: any) => {
-                if (error.keyword === "format") {
-                  if ((error.params as any).format === "days and time duration") {
-                    return { ...error, message: this.i18n.form.validation.daysAndTimeError };
-                  }
-                  if ((error.params as any).format === "years and months duration") {
-                    return { ...error, message: this.i18n.form.validation.yearsAndMonthsError };
-                  }
-                }
-                return error;
-              }),
+        if (!validator.errors?.length) {
+          return null;
+        }
+
+        return {
+          details: validator.errors?.map((error: any) => {
+            if (error.keyword === "format") {
+              if ((error.params as any).format === "days and time duration") {
+                return { ...error, message: this.i18n.form.validation.daysAndTimeError };
+              }
+              if ((error.params as any).format === "years and months duration") {
+                return { ...error, message: this.i18n.form.validation.yearsAndMonthsError };
+              }
             }
-          : null;
+            return error;
+          }),
+        };
       };
     } catch (err) {
       throw err;
