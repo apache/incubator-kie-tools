@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"context"
 
-	"runtime"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -15,12 +14,13 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/kiegroup/kogito-tooling-go/pkg/config"
 	"github.com/kiegroup/kogito-tooling-go/pkg/utils"
-	"github.com/gorilla/mux"
 	"github.com/phayes/freeport"
 )
 
@@ -70,6 +70,7 @@ func (self *Proxy) Start() {
 	proxy := httputil.NewSingleHostReverseProxy(target)
 
 	r := mux.NewRouter()
+	r.PathPrefix("/devsandbox").HandlerFunc(devSandboxHandler())
 	r.PathPrefix("/ping").HandlerFunc(pingHandler(self.Port))
 	r.PathPrefix("/").HandlerFunc(proxyHandler(proxy, self.cmd))
 
@@ -115,14 +116,13 @@ func (self *Proxy) Stop() {
 	}
 	log.Println("Shutdown complete")
 
-
-	self.RunnerPort = 0;
-	self.Refresh();
+	self.RunnerPort = 0
+	self.Refresh()
 }
 
 func (self *Proxy) Refresh() {
-	
-	self.view.SetLoading();
+
+	self.view.SetLoading()
 
 	started := false
 	countDown := 5
@@ -158,11 +158,11 @@ func (self *Proxy) createJitExecutor(jitexecutor []byte) string {
 		os.Mkdir(cachePath, os.ModePerm)
 	}
 
-	var jitexecutorPath string;
+	var jitexecutorPath string
 
 	if runtime.GOOS == "windows" {
 		jitexecutorPath = filepath.Join(cachePath, "runner.exe")
-	} else {	
+	} else {
 		jitexecutorPath = filepath.Join(cachePath, "runner")
 	}
 
@@ -179,6 +179,32 @@ func (self *Proxy) createJitExecutor(jitexecutor []byte) string {
 	utils.Check(err)
 	f.Close()
 	return jitexecutorPath
+}
+
+func devSandboxHandler() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "OPTIONS" {
+			w.Header().Add("Access-Control-Allow-Origin", "*")
+			w.Header().Add("Access-Control-Allow-Methods", "*")
+			w.Header().Add("Access-Control-Allow-Headers", "*")
+			return
+		}
+
+		targetUrl, err := url.Parse(r.Header.Get("Target-Url"))
+		utils.Check(err)
+		emptyUrl, _ := url.Parse("")
+		r.URL = emptyUrl
+		r.Host = r.URL.Host
+
+		proxy := httputil.NewSingleHostReverseProxy(targetUrl)
+		proxy.ModifyResponse = func(resp *http.Response) error {
+			resp.Header.Add("Access-Control-Allow-Origin", "*")
+			resp.Header.Add("Access-Control-Allow-Methods", "*")
+			resp.Header.Add("Access-Control-Allow-Headers", "*")
+			return nil
+		}
+		proxy.ServeHTTP(w, r)
+	}
 }
 
 func proxyHandler(proxy *httputil.ReverseProxy, cmd *exec.Cmd) func(w http.ResponseWriter, r *http.Request) {
