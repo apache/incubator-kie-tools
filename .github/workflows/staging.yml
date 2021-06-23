@@ -71,6 +71,8 @@ jobs:
 
       - name: "Setup kogito-tooling-bot"
         uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+        with:
+          path: kogito-online-staging
 
       - name: "Setup Node"
         uses: actions/setup-node@v1
