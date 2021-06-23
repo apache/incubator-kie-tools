@@ -62,6 +62,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Checkout kogito-online-staging"
+        if: matrix.os == 'ubuntu-latest'
         uses: actions/checkout@v2
         with:
           path: ${{ github.workspace }}/kogito-online-staging
@@ -70,6 +71,7 @@ jobs:
           repository: kiegroup/kogito-online-staging
 
       - name: "Setup kogito-tooling-bot"
+        if: matrix.os == 'ubuntu-latest'
         uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
         with:
           path: kogito-online-staging
