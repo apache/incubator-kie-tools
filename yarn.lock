@@ -15385,7 +15385,7 @@ unicode-property-aliases-ecmascript@^1.0.4:
   resolved "https://registry.yarnpkg.com/unicode-property-aliases-ecmascript/-/unicode-property-aliases-ecmascript-1.1.0.tgz#dd57a99f6207bedff4628abefb94c50db941c8f4"
   integrity sha512-PqSoPh/pWetQ2phoj5RLiaqIk4kCNwoV3CI+LfGmWLKI3rE3kl1h59XpX2BjgDrmbxD9ARtQobPGU1SguCYuQg==
 
-uniforms-bridge-json-schema@3.5.1:
+uniforms-bridge-json-schema@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/uniforms-bridge-json-schema/-/uniforms-bridge-json-schema-3.5.1.tgz#651baf353d02fb50ec9972bd40cc74bbb066de4c"
   integrity sha512-lu7QxZz8UHfx5YzgrJ8J6VzZpAvDbOlglloB9QtRz6SWy9+dH6r5k+1brsp3Eh57vfegdDR7fY6xuMRy/UDh7Q==
@@ -15395,7 +15395,7 @@ uniforms-bridge-json-schema@3.5.1:
     tslib "^2.2.0"
     uniforms "^3.5.1"
 
-uniforms-bridge-simple-schema-2@3.5.1:
+uniforms-bridge-simple-schema-2@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/uniforms-bridge-simple-schema-2/-/uniforms-bridge-simple-schema-2-3.5.1.tgz#03cf6a814de8db98d7f95ec1413e93399ea86d5a"
   integrity sha512-lYYN9UKXf/B/LNGk5OlEjGOGIB6opw1QcYQiZRMUgUEURHIPHhv732dLoPwLAxA6ZnN0DOo/JEkJMOGzGTzVeg==
@@ -15406,12 +15406,12 @@ uniforms-bridge-simple-schema-2@3.5.1:
     tslib "^2.2.0"
     uniforms "^3.5.1"
 
-uniforms-patternfly@4.6.1:
+uniforms-patternfly@^4.6.1:
   version "4.6.1"
   resolved "https://registry.yarnpkg.com/uniforms-patternfly/-/uniforms-patternfly-4.6.1.tgz#5807578f5d4fbdee6c5715f4db2d83bdd08e6aee"
   integrity sha512-AR6Mu3yyZaUTAFcJs9VGA/6GJjRbA4NVqpEj1tWRf33RyCvqJLnGt++QiQ7p8O9SObGbpAG5m7UuigF2M/XfcA==
 
-uniforms@3.5.1, uniforms@^3.5.1:
+uniforms@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/uniforms/-/uniforms-3.5.1.tgz#7ae798518cc280c60e22cd1077aaa9440e2c6a84"
   integrity sha512-1N8Y/QB2YSiMJMkwh1iAAzEd2jVDDa5qzL0VynzD8bsaHBB2UhUPUavAitLXK1s+nL76Y472+iMG0p5onQl4hg==
