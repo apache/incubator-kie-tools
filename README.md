@@ -1,3 +1,5 @@
+<p align="center"><img width=55% src="docs/kogito.png"></p>
+
 # Kogito Tooling
 
 **[Kogito](http://kogito.kie.org)** is the next generation of business automation platform focused on cloud-native development, deployment and execution.
@@ -11,8 +13,6 @@ This repository contains all the tooling artifacts of the Kogito project.
 [![Contributors](https://img.shields.io/github/contributors/kiegroup/kogito-tooling.svg?style=flat-square)](https://github.com/kiegroup/kogito-tooling/graphs/contributors)
 [![License](https://img.shields.io/github/license/kiegroup/kogito-tooling.svg)](https://github.com/kiegroup/kogito-tooling/blob/master/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/kogito_kie.svg?label=Follow&style=social)](https://twitter.com/kogito_kie?lang=en)
-
-<p align="center"><img width=55% src="docs/kogito.png"></p>
 
 ## Documentation
 
