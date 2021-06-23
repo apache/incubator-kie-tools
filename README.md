@@ -84,11 +84,3 @@ The Kogito Tooling project contains several applications. To develop each one of
 1. After you've successfully built the project following the instructions above, go to `packages/kie-editors-standalone`.
 2. Open a terminal and run `yarn start`. This will start a `webpack serve` instance with the Standalone Editors test page.
 3. From now on you can use the development version of the Standalone DMN Editor by accessing `https://localhost:9001/resources/dmn` and the Standalone BPMN Editor by accessing `https://localhost:9001/resources/bpmn`.
-
-## Contribute
-
-- When opening PRs, please make sure to provide a detailed description of the issue along with the JIRA, if there's one.
-
-## Contributing to Kogito
-
-All contributions are welcome! Before you start please read the [Developing Drools and jBPM](https://github.com/kiegroup/droolsjbpm-build-bootstrap/blob/master/README.md) guide.
