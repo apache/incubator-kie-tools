@@ -99,9 +99,9 @@ jobs:
           CHROME_EXTENSION__routerRelativePath: "kogito-online-staging/${{ needs.create_release.outputs.tag }}-prerelease/chrome-extension"
           CHROME_EXTENSION__onlineEditorUrl: "https://kiegroup.github.io/kogito-online-staging/${{ needs.create_release.outputs.tag }}-prerelease"
           CHROME_EXTENSION__manifestFile: "manifest.prod.json"
-          ONLINE_EDITOR__downloadHubUrlLinux: "${{ needs.create_release.outputs.download_url }}/business_modeler_hub_preview_linux_${{ needs.create_release.outputs.tag }}.tar.gz"
-          ONLINE_EDITOR__downloadHubUrlMacOs: "${{ needs.create_release.outputs.download_url }}/business_modeler_hub_preview_macos_${{ needs.create_release.outputs.tag }}.zip"
-          ONLINE_EDITOR__downloadHubUrlWindows: "${{ needs.create_release.outputs.download_url }}/business_modeler_hub_preview_windows_${{ needs.create_release.outputs.tag }}.zip"
+          ONLINE_EDITOR__downloadHubUrlLinux: "${{ needs.create_release.outputs.download_asset_url }}/business_modeler_hub_preview_linux_${{ needs.create_release.outputs.tag }}.tar.gz"
+          ONLINE_EDITOR__downloadHubUrlMacOs: "${{ needs.create_release.outputs.download_asset_url }}/business_modeler_hub_preview_macos_${{ needs.create_release.outputs.tag }}.zip"
+          ONLINE_EDITOR__downloadHubUrlWindows: "${{ needs.create_release.outputs.download_asset_url }}/business_modeler_hub_preview_windows_${{ needs.create_release.outputs.tag }}.zip"
         run: |
           yarn build:prod
 
