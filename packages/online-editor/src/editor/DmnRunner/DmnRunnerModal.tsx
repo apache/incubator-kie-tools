@@ -48,6 +48,9 @@ enum ModalPage {
   USE,
 }
 
+const UBUNTU_APP_INDICATOR_LIB = "apt install libappindicator3-dev";
+const FEDORA_APP_INDICATOR_LIB = "dnf install libappindicator-gtk3";
+
 export function DmnRunnerModal() {
   const { i18n } = useOnlineI18n();
   const [operatingSystem, setOperatingSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
@@ -445,6 +448,25 @@ export function DmnRunnerModal() {
                     </Text>{" "}
                     {i18n.dmnRunner.modal.wizard.linux.install.download}
                   </Text>
+                </TextContent>
+              </ListItem>
+              <ListItem>
+                <TextContent>
+                  <Text component={TextVariants.p}>
+                    {i18n.dmnRunner.modal.wizard.linux.install.installAppIndicator}
+                  </Text>
+                  <List>
+                    <ListItem>
+                      <I18nWrapped components={{ package: <Label>{UBUNTU_APP_INDICATOR_LIB}</Label> }}>
+                        {i18n.dmnRunner.modal.wizard.linux.install.ubuntuDependency}
+                      </I18nWrapped>
+                    </ListItem>
+                    <ListItem>
+                      <I18nWrapped components={{ package: <Label>{FEDORA_APP_INDICATOR_LIB}</Label> }}>
+                        {i18n.dmnRunner.modal.wizard.linux.install.fedoraDependency}
+                      </I18nWrapped>
+                    </ListItem>
+                  </List>
                 </TextContent>
               </ListItem>
               <ListItem>

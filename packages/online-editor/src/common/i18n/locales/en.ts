@@ -290,6 +290,9 @@ export const en: OnlineI18n = {
         linux: {
           install: {
             download: ` ${en_common.names.dmnRunner}.`,
+            installAppIndicator: "Install the AppIndicator lib for your system:",
+            ubuntuDependency: [`${en_common.names.ubuntu}: `, wrapped("package")],
+            fedoraDependency: [`${en_common.names.fedora}: `, wrapped("package")],
             extractContent: ["Extract the contents of ", wrapped("file"), " to your location of choice."],
             binaryExplanation: [
               `The ${en_common.names.dmnRunner} binary, `,

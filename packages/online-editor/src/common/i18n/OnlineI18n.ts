@@ -269,6 +269,9 @@ interface OnlineDictionary extends ReferenceDictionary {
         linux: {
           install: {
             download: string;
+            installAppIndicator: string;
+            ubuntuDependency: Array<string | Wrapped<"package">>;
+            fedoraDependency: Array<string | Wrapped<"package">>;
             extractContent: Array<string | Wrapped<"file">>;
             binaryExplanation: Array<string | Wrapped<"file">>;
           };
