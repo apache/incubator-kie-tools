@@ -107,26 +107,27 @@ jobs:
         env:
           DEPLOYMENT_DIR: ${{ needs.create_release.outputs.tag }}-prerelease
         run: |
-          # Reset deployment dir
+          echo "Reset deployment dir"
           rm -rf $DEPLOYMENT_DIR
 
-          # Copy Online Editor resources to the deployment dir
+          echo "Copy Online Editor resources to the deployment dir"
           cp -r ${{ github.workspace }}/kogito-tooling/packages/online-editor/dist $DEPLOYMENT_DIR
 
-          # Create dir for deploying Chrome Extension resources
+          echo "Create dir for deploying Chrome Extension resources"
           mkdir $DEPLOYMENT_DIR/chrome-extension
 
-          # Copy Chrome Extension resources to the right place
+          echo "Copy Chrome Extension resources to the right place"
           cp -r ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/{bpmn,dmn,scesim,fonts,*-envelope.*} $DEPLOYMENT_DIR/chrome-extension
 
-          # Remove gwt-editors from the Online Editor deployment
+          echo "Remove gwt-editors from the Online Editor deployment"
           rm -rf $DEPLOYMENT_DIR/gwt-editors
 
-          # Make the Online Editor use the resources deployed by the Chrome Extension (to save space)
+          echo "Make the Online Editor use the resources deployed by the Chrome Extension (to save space)"
           ln -s $DEPLOYMENT_DIR/chrome-extension $DEPLOYMENT_DIR/gwt-editors
 
-          # Commit changes and push
-          git commit -am "Deploy ${{ needs.create_release.outputs.tag }}-prerelease (staging)"
+          echo "Commit changes and push"
+          git add ${{ needs.create_release.outputs.tag }}-prerelease
+          git commit -m "Deploy ${{ needs.create_release.outputs.tag }}-prerelease (staging)"
           git push origin main
 
       - name: "Compress Online Editor (Ubuntu only)"
