@@ -42,6 +42,7 @@ jobs:
           lerna run build:prod --stream --concurrency 1
 
       - name: "Check generated resources (you should commit those!)"
+        shell: bash
         run: |
           git diff
           [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
