@@ -46,8 +46,7 @@ var (
 	logFolder = defaultLogFolder
 
 	monitoredNamespaces sync.Map
-
-	loggerOpts = make(map[string]*Opts)
+	loggerOpts          sync.Map
 )
 
 // GetMainLogger returns the main logger
@@ -75,7 +74,7 @@ func FlushLogger(namespace string) error {
 	}
 	if writer, ok := opts.Output.(io.Closer); ok {
 		err := writer.Close()
-		delete(loggerOpts, namespace)
+		loggerOpts.Delete(namespace)
 		return err
 	}
 	return nil
@@ -83,16 +82,20 @@ func FlushLogger(namespace string) error {
 
 // FlushAllRemainingLoggers flushes all remaining loggers
 func FlushAllRemainingLoggers() {
-	for logName := range loggerOpts {
-		if err := FlushLogger(logName); err != nil {
+	loggerOpts.Range(func(logName, _ interface{}) bool {
+		if err := FlushLogger(logName.(string)); err != nil {
 			GetMainLogger().Error(err, "Error flushing logger", "logName", logName)
 		}
-	}
+		return true
+	})
 }
 
 func getLoggerOpts(logName string) (*Opts, bool) {
-	opts, exists := loggerOpts[logName]
-	return opts, exists
+	opts, exists := loggerOpts.Load(logName)
+	if exists {
+		return opts.(*Opts), exists
+	}
+	return nil, exists
 }
 
 func getOrCreateLoggerOpts(logName string) (*Opts, error) {
@@ -111,7 +114,7 @@ func getOrCreateLoggerOpts(logName string) (*Opts, error) {
 			Output:  io.MultiWriter(os.Stdout, fileWriter),
 			Verbose: util.GetBoolOSEnv("DEBUG"),
 		}
-		loggerOpts[logName] = opts
+		loggerOpts.Store(logName, opts)
 	}
 
 	return opts, nil
