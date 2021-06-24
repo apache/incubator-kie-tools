@@ -6,7 +6,7 @@ on:
       tag:
         description: "Tag"
         required: true
-      online-editor:
+      online_editor:
         description: "Online Editor"
         default: "true"
         required: true
@@ -140,12 +140,12 @@ jobs:
           asset_name: "business_modeler_hub_preview_windows_${{ needs.prepare.outputs.version }}.zip"
           asset_content_type: application/zip
 
-  online-editor:
+  online_editor:
     env:
       ONLINE_EDITOR__downloadHubUrlLinux: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_linux_${{ needs.prepare.outputs.version }}.tar.gz"
       ONLINE_EDITOR__downloadHubUrlMacOs: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_macos_${{ needs.prepare.outputs.version }}.zip"
       ONLINE_EDITOR__downloadHubUrlWindows: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_windows_${{ needs.prepare.outputs.version }}.zip"
-    if: ${{ always() && github.event.inputs.online-editor == 'true' && (needs.hub.result == 'success' || needs.hub.result == 'skipped') }}
+    if: ${{ always() && github.event.inputs.online_editor == 'true' && (needs.hub.result == 'success' || needs.hub.result == 'skipped') }}
     runs-on: ubuntu-latest
     needs: [prepare, hub]
     steps:
@@ -222,7 +222,7 @@ jobs:
       CHROME_EXTENSION__manifestFile: "manifest.prod.json"
     if: ${{ always() && github.event.inputs.chrome-extension == 'true' && (needs.online_editor.result == 'success' || needs.online_editor.result == 'skipped') }}
     runs-on: ubuntu-latest
-    needs: [prepare, online-editor]
+    needs: [prepare, online_editor]
     steps:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
