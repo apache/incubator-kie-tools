@@ -71,8 +71,6 @@ func (d *dataIndexSupportingServiceResource) Reconcile() (reconcileAfter time.Du
 var dataIndexKafkaTopics = []string{
 	"kogito-processinstances-events",
 	"kogito-usertaskinstances-events",
-	"kogito-processdomain-events",
-	"kogito-usertaskdomain-events",
 	"kogito-jobs-events",
 	"kogito-variables-events",
 }
