@@ -142,7 +142,7 @@ jobs:
 
   online-editor:
     env:
-      ONLINE_EDITOR__downloadHubUrlLinux: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_linux_${{ needs.prepare.outputs.version }}.zip"
+      ONLINE_EDITOR__downloadHubUrlLinux: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_linux_${{ needs.prepare.outputs.version }}.tar.gz"
       ONLINE_EDITOR__downloadHubUrlMacOs: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_macos_${{ needs.prepare.outputs.version }}.zip"
       ONLINE_EDITOR__downloadHubUrlWindows: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_windows_${{ needs.prepare.outputs.version }}.zip"
     if: ${{ github.event.inputs.online-editor == 'true' }}
@@ -200,11 +200,11 @@ jobs:
           cp -r ${{ github.workspace }}/kogito-tooling/node_modules/@kogito-tooling/dmn-editor-unpacked/target/dmn $EDITORS_DIR
           cp -r ${{ github.workspace }}/kogito-tooling/node_modules/@kogito-tooling/bpmn-editor-unpacked/target/bpmn $EDITORS_DIR
           cp -r ${{ github.workspace }}/kogito-tooling/node_modules/@kogito-tooling/scesim-editor-unpacked/target/scesim $EDITORS_DIR
-          rm ./editors/latest
+          rm -rf ./editors/latest
           ln -s ${{ needs.prepare.outputs.version }} ./editors/latest
 
           echo "Copy Online Editor resources"
-          rm ./gwt-editors
+          rm -rf ./gwt-editors
           cp -r ${{ github.workspace }}/kogito-tooling/packages/online-editor/dist/* .
           rm -rf ./gwt-editors
           ln -s $EDITORS_DIR gwt-editors
