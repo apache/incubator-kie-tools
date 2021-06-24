@@ -10,11 +10,11 @@ on:
         description: "Online Editor"
         default: "true"
         required: true
-      chrome-extension:
+      chrome_extension:
         description: "Chrome Extension"
         default: "true"
         required: true
-      vscode-extensions-dev:
+      vscode_extensions_dev:
         description: "VS Code Extensions (dev)"
         default: "true"
         required: true
@@ -26,8 +26,12 @@ on:
         description: "Hub"
         default: "true"
         required: true
-      npm-packages:
+      npm_packages:
         description: "NPM packages"
+        default: "true"
+        required: true
+      standalone_editors_cdn:
+        description: "Standalone Editors CDN"
         default: "true"
         required: true
 
@@ -116,14 +120,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
           asset_path: ./packages/hub/out/Business Modeler Hub Preview-darwin-x64.zip
           asset_name: business_modeler_hub_preview_macos_${{ needs.prepare.outputs.version }}.zip
           asset_content_type: application/zip
 
       - name: "Compress Hub App (Windows only)"
         if: matrix.os == 'windows-latest'
-        run: "Compress-Archive -Path \"kogito-tooling\\packages\\hub\\out\\Business Modeler Hub Preview-win32-x64\" -DestinationPath \"kogito-tooling\\packages\\hub\\out\\Business Modeler Hub Preview-win32-x64.zip\""
+        run: "Compress-Archive -Path \"packages\\hub\\out\\Business Modeler Hub Preview-win32-x64\" -DestinationPath \"packages\\hub\\out\\Business Modeler Hub Preview-win32-x64.zip\""
 
       - name: "Upload Hub App for Windows (Windows only)"
         if: matrix.os == 'windows-latest'
@@ -131,7 +135,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
           asset_path: "./packages/hub/out/Business Modeler Hub Preview-win32-x64.zip"
           asset_name: "business_modeler_hub_preview_windows_${{ needs.prepare.outputs.version }}.zip"
           asset_content_type: application/zip
@@ -145,10 +149,25 @@ jobs:
     runs-on: ubuntu-latest
     needs: [prepare, hub]
     steps:
-      - name: "Checkout"
+      - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release_ref }}
+          path: ${{ github.workspace }}/kogito-tooling
+          fetch-depth: 0
+
+      - name: "Checkout kogito-online"
+        uses: actions/checkout@v2
+        with:
+          path: ${{ github.workspace }}/kogito-online
+          fetch-depth: 0
+          token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+          repository: tiagobento/kogito-online
+          ref: gh-pages
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+        with:
+          path: kogito-online
 
       - name: "Setup Node"
         uses: actions/setup-node@v1
@@ -156,33 +175,74 @@ jobs:
           node-version: 16.2.0
 
       - name: "Setup environment"
-        uses: ./.github/actions/setup-env
+        uses: ./kogito-tooling/.github/actions/setup-env
         with:
-          os: ubuntu-latest
+          path: kogito-tooling
 
       - name: "Build"
+        working-directory: ${{ github.workspace }}/kogito-tooling
         run: |
           lerna run build:prod --scope=@kogito-tooling/online-editor --include-dependencies --stream
 
-      - name: "Publish to GitHub Pages (kogito-online)"
+      - name: "Deploy to GitHub Pages (kogito-online)"
+        working-directory: ${{ github.workspace }}/kogito-online
+        shell: bash
+        env:
+          EDITORS_DIR: ./editors/${{ needs.prepare.outputs.version }}
         run: |
-          echo "TODO:"
-          echo "Publishing to GitHub Pages (kogito-online)"
+          echo "Reset deployment dir"
+          shopt -s extglob
+          rm -rf -- !("dev"|"editors"|"standalone"|"chrome-extension"|".nojekyll")
 
-  chrome-extension:
+          echo "Copy Editor resources"
+          rm -rf $EDITORS_DIR
+          mkdir -p $EDITORS_DIR
+          cp -r ${{ github.workspace }}/kogito-tooling/node_modules/@kogito-tooling/dmn-editor-unpacked/target/dmn $EDITORS_DIR
+          cp -r ${{ github.workspace }}/kogito-tooling/node_modules/@kogito-tooling/bpmn-editor-unpacked/target/bpmn $EDITORS_DIR
+          cp -r ${{ github.workspace }}/kogito-tooling/node_modules/@kogito-tooling/scesim-editor-unpacked/target/scesim $EDITORS_DIR
+          rm ./editors/latest
+          ln -s ${{ needs.prepare.outputs.version }} ./editors/latest
+
+          echo "Copy Online Editor resources"
+          rm ./gwt-editors
+          cp -r ${{ github.workspace }}/kogito-tooling/packages/online-editor/dist/* .
+          rm -rf ./gwt-editors
+          ln -s $EDITORS_DIR gwt-editors
+
+          echo "Commit changes and push"
+          git add .
+          git commit -m "Deploy ${{ needs.prepare.outputs.version }} (Editors + Online Editor)"
+          git push origin gh-pages
+
+  chrome_extension:
     env:
-      CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
-      CHROME_EXTENSION__routerRelativePath: "kogito-online/editors/${{ needs.prepare.outputs.version }}"
-      CHROME_EXTENSION__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
+      CHROME_EXTENSION__routerTargetOrigin: "https://tiagobento.github.io"
+      CHROME_EXTENSION__routerRelativePath: "kogito-online/chrome-extension/${{ needs.prepare.outputs.version }}"
+      CHROME_EXTENSION__onlineEditorUrl: "https://tiagobento.github.io/kogito-online"
       CHROME_EXTENSION__manifestFile: "manifest.prod.json"
     if: ${{ github.event.inputs.chrome-extension == 'true' }}
     runs-on: ubuntu-latest
     needs: [prepare, online-editor]
     steps:
-      - name: "Checkout"
+      - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release_ref }}
+          path: ${{ github.workspace }}/kogito-tooling
+          fetch-depth: 0
+
+      - name: "Checkout kogito-online"
+        uses: actions/checkout@v2
+        with:
+          path: ${{ github.workspace }}/kogito-online
+          fetch-depth: 0
+          token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+          repository: tiagobento/kogito-online
+          ref: gh-pages
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+        with:
+          path: kogito-online
 
       - name: "Setup Node"
         uses: actions/setup-node@v1
@@ -190,16 +250,16 @@ jobs:
           node-version: 16.2.0
 
       - name: "Setup environment"
-        uses: ./.github/actions/setup-env
+        uses: ./kogito-tooling/.github/actions/setup-env
         with:
-          os: ubuntu-latest
+          path: kogito-tooling
 
       - name: "Build"
+        working-directory: ${{ github.workspace }}/kogito-tooling
         run: |
           lerna run build:prod --scope=chrome-extension-pack-kogito-kie-editors --include-dependencies --stream
 
       - name: "Upload Chrome Extension"
-        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -209,13 +269,33 @@ jobs:
           asset_name: chrome_extension_${{ needs.prepare.outputs.version }}.zip
           asset_content_type: application/zip
 
+      - name: "Deploy to GitHub Pages (kogito-online)"
+        working-directory: ${{ github.workspace }}/kogito-online
+        shell: bash
+        env:
+          EDITORS_DIR: ./editors/${{ needs.prepare.outputs.version }}
+          CHROME_EXTENSION_DIR: ./chrome-extension/${{ needs.prepare.outputs.version }}
+        run: |
+          echo "Copy Chrome Extension resources"
+          rm -rf $CHROME_EXTENSION_DIR
+          mkdir $CHROME_EXTENSION_DIR
+          cp -r ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/{fonts,*-envelope.*} $CHROME_EXTENSION_DIR
+          ln -s ../../$EDITORS_DIR/bpmn $CHROME_EXTENSION_DIR/bpmn
+          ln -s ../../$EDITORS_DIR/dmn $CHROME_EXTENSION_DIR/dmn
+          ln -s ../../$EDITORS_DIR/scesim $CHROME_EXTENSION_DIR/scesim
+
+          echo "Commit changes and push"
+          git add .
+          git commit -m "Deploy ${{ needs.prepare.outputs.version }} (Chrome Extension)"
+          git push origin gh-pages
+
       - name: "Publish to the Chrome Web Store"
         run: |
           echo "TODO:"
           echo "Publishing to the Chrome Web Store"
 
-  vscode-extensions-dev:
-    if: ${{ github.event.inputs.vscode-extensions-dev == 'true' }}
+  vscode_extensions_dev:
+    if: ${{ github.event.inputs.vscode_extensions_dev == 'true' }}
     runs-on: ubuntu-latest
     needs: [prepare]
     steps:
@@ -239,7 +319,6 @@ jobs:
           lerna run build:prod --scope=vscode-extension-pack-kogito-kie-editors --scope=vscode-extension-backend --include-dependencies --stream
 
       - name: "Upload VS Code Extension (dev) (Ubuntu only)"
-        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -250,7 +329,6 @@ jobs:
           asset_content_type: application/zip
 
       - name: "Upload VS Code Extension Backend (dev) (Ubuntu only)"
-        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -312,7 +390,7 @@ jobs:
 
       - name: "Compress Desktop App (Windows only)"
         if: matrix.os == 'windows-latest'
-        run: "Compress-Archive -Path \"kogito-tooling\\packages\\desktop\\out\\Business Modeler Preview-win32-x64\" -DestinationPath \"kogito-tooling\\packages\\desktop\\out\\Business Modeler Preview-win32-x64.zip\""
+        run: "Compress-Archive -Path \"packages\\desktop\\out\\Business Modeler Preview-win32-x64\" -DestinationPath \"packages\\desktop\\out\\Business Modeler Preview-win32-x64.zip\""
 
       - name: "Upload Desktop App for Windows (Windows only)"
         if: matrix.os == 'windows-latest'
@@ -325,8 +403,8 @@ jobs:
           asset_name: "business_modeler_preview_windows_${{ needs.prepare.outputs.version }}.zip"
           asset_content_type: application/zip
 
-  npm-packages:
-    if: ${{ github.event.inputs.npm-packages == 'true' }}
+  npm_packages:
+    if: ${{ github.event.inputs.npm_packages == 'true' }}
     runs-on: ubuntu-latest
     needs: [prepare]
     steps:
@@ -353,3 +431,60 @@ jobs:
         run: |
           echo "TODO:"
           echo "Publishing packages to the NPM registry"
+
+  standalone_editors_cdn:
+    if: ${{ github.event.inputs.standalone_editors_cdn == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [prepare, chrome_extension]
+    steps:
+      - name: "Checkout kogito-tooling"
+        uses: actions/checkout@v2
+        with:
+          path: ${{ github.workspace }}/kogito-tooling
+          fetch-depth: 0
+
+      - name: "Checkout kogito-online"
+        uses: actions/checkout@v2
+        with:
+          path: ${{ github.workspace }}/kogito-online
+          fetch-depth: 0
+          token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+          repository: tiagobento/kogito-online
+          ref: gh-pages
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+        with:
+          path: kogito-online
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.2.0
+
+      - name: "Setup environment"
+        uses: ./kogito-tooling/.github/actions/setup-env
+        with:
+          path: kogito-tooling
+
+      - name: "Build"
+        working-directory: ${{ github.workspace }}/kogito-tooling
+        run: |
+          lerna run build:prod --scope=@kogito-tooling/kie-editors-standalone --include-dependencies --stream
+
+      - name: "Deploy to GitHub Pages (kogito-online)"
+        working-directory: ${{ github.workspace }}/kogito-online
+        shell: bash
+        env:
+          STANDALONE_EDITORS_DIR: ./standalone/${{ needs.prepare.outputs.version }}
+        run: |
+          echo "Copy Chrome Extension resources"
+          rm -rf $STANDALONE_EDITORS_DIR
+          mkdir $STANDALONE_EDITORS_DIR
+          cp ${{ github.workspace }}/kogito-tooling/packages/kie-editors-standalone/dist/bpmn/index.js $STANDALONE_EDITORS_DIR/bpmn
+          cp ${{ github.workspace }}/kogito-tooling/packages/kie-editors-standalone/dist/dmn/index.js $STANDALONE_EDITORS_DIR/dmn
+
+          echo "Commit changes and push"
+          git add .
+          git commit -m "Deploy ${{ needs.prepare.outputs.version }} (Standalone Editors)"
+          git push origin gh-pages
