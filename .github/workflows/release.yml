@@ -278,7 +278,7 @@ jobs:
         run: |
           echo "Copy Chrome Extension resources"
           rm -rf $CHROME_EXTENSION_DIR
-          mkdir $CHROME_EXTENSION_DIR
+          mkdir -p $CHROME_EXTENSION_DIR
           cp -r ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/{fonts,*-envelope.*} $CHROME_EXTENSION_DIR
           ln -s ../../$EDITORS_DIR/bpmn $CHROME_EXTENSION_DIR/bpmn
           ln -s ../../$EDITORS_DIR/dmn $CHROME_EXTENSION_DIR/dmn
