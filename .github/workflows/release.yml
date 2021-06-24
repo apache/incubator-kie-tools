@@ -40,13 +40,14 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
-      release-upload-url: ${{ fromJSON(steps.fetch-release-for-tag.outputs.data).upload_url }}
-      release-download-url: ${{ steps.release-download-url.outputs.download-url }}
-      release-ref: ${{ fromJSON(steps.fetch-release-for-tag.outputs.data).target_commitish }}
+      upload_asset_url: ${{ fromJSON(steps.fetch_release_for_tag.outputs.data).upload_url }}
+      download_asset_url: ${{ steps.download_asset_url.outputs.download_url }}
+      release_ref: ${{ fromJSON(steps.fetch_release_for_tag.outputs.data).target_commitish }}
+      version: ${{ github.event.inputs.tag }}
     steps:
       - name: "Fetch release for ${{ github.event.inputs.tag }}"
         uses: octokit/request-action@v2.1.0
-        id: fetch-release-for-tag
+        id: fetch_release_for_tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -57,7 +58,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ fromJSON(steps.fetch-release-for-tag.outputs.data).target_commitish }}
+          ref: ${{ fromJSON(steps.fetch_release_for_tag.outputs.data).target_commitish }}
 
       - name: "Check `tag` against `(lerna.json).version`"
         shell: bash
@@ -65,10 +66,10 @@ jobs:
           [ "${{ github.event.inputs.tag }}" == "$(node -p "require('./lerna.json').version")" ]
 
       - name: "Generate download URL for Release assets"
-        id: release-download-url
+        id: download_asset_url
         shell: python
         run: |
-          print('::set-output name=download-url::' + '${{ fromJSON(steps.fetch-release-for-tag.outputs.data).html_url }}'.replace('/tag/', '/download/'));
+          print('::set-output name=download_url::' + '${{ fromJSON(steps.fetch_release_for_tag.outputs.data).html_url }}'.replace('/tag/', '/download/'));
 
   hub:
     if: ${{ github.event.inputs.hub == 'true' }}
@@ -81,7 +82,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release-ref }}
+          ref: ${{ needs.prepare.outputs.release_ref }}
 
       - name: "Setup Node"
         uses: actions/setup-node@v1
@@ -98,15 +99,48 @@ jobs:
         run: |
           lerna run build:prod --scope=@kogito-tooling/hub --include-dependencies --stream
 
-      - name: "Deploy"
-        run: |
-          echo "${{ needs.prepare.outputs.release-upload-url }}"
+      - name: "Upload Hub App for Linux (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: ./packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
+          asset_name: business_modeler_hub_preview_linux_${{ needs.prepare.outputs.version }}.tar.gz
+          asset_content_type: application/tar+gzip
+
+      - name: "Upload Hub App for macOS (macOS only)"
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: ./packages/hub/out/Business Modeler Hub Preview-darwin-x64.zip
+          asset_name: business_modeler_hub_preview_macos_${{ needs.prepare.outputs.version }}.zip
+          asset_content_type: application/zip
+
+      - name: "Compress Hub App (Windows only)"
+        if: matrix.os == 'windows-latest'
+        run: "Compress-Archive -Path \"kogito-tooling\\packages\\hub\\out\\Business Modeler Hub Preview-win32-x64\" -DestinationPath \"kogito-tooling\\packages\\hub\\out\\Business Modeler Hub Preview-win32-x64.zip\""
+
+      - name: "Upload Hub App for Windows (Windows only)"
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: "./packages/hub/out/Business Modeler Hub Preview-win32-x64.zip"
+          asset_name: "business_modeler_hub_preview_windows_${{ needs.prepare.outputs.version }}.zip"
+          asset_content_type: application/zip
 
   online-editor:
     env:
-      ONLINE_EDITOR__downloadHubUrlLinux: "${{ needs.prepare.outputs.release-download-url }}/business_modeler_hub_preview_linux_${{ github.event.inputs.tag }}.zip"
-      ONLINE_EDITOR__downloadHubUrlMacOs: "${{ needs.prepare.outputs.release-download-url }}/business_modeler_hub_preview_macos_${{ github.event.inputs.tag }}.zip"
-      ONLINE_EDITOR__downloadHubUrlWindows: "${{ needs.prepare.outputs.release-download-url }}/business_modeler_hub_preview_windows_${{ github.event.inputs.tag }}.zip"
+      ONLINE_EDITOR__downloadHubUrlLinux: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_linux_${{ needs.prepare.outputs.version }}.zip"
+      ONLINE_EDITOR__downloadHubUrlMacOs: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_macos_${{ needs.prepare.outputs.version }}.zip"
+      ONLINE_EDITOR__downloadHubUrlWindows: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_windows_${{ needs.prepare.outputs.version }}.zip"
     if: ${{ github.event.inputs.online-editor == 'true' }}
     runs-on: ubuntu-latest
     needs: [prepare, hub]
@@ -114,7 +148,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release-ref }}
+          ref: ${{ needs.prepare.outputs.release_ref }}
 
       - name: "Setup Node"
         uses: actions/setup-node@v1
@@ -130,14 +164,15 @@ jobs:
         run: |
           lerna run build:prod --scope=@kogito-tooling/online-editor --include-dependencies --stream
 
-      - name: "Deploy"
+      - name: "Publish to GitHub Pages (kogito-online)"
         run: |
-          echo "${{ needs.prepare.outputs.release-upload-url }}"
+          echo "TODO:"
+          echo "Publishing to GitHub Pages (kogito-online)"
 
   chrome-extension:
     env:
       CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
-      CHROME_EXTENSION__routerRelativePath: "kogito-online/editors/${{ github.event.inputs.tag }}"
+      CHROME_EXTENSION__routerRelativePath: "kogito-online/editors/${{ needs.prepare.outputs.version }}"
       CHROME_EXTENSION__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
       CHROME_EXTENSION__manifestFile: "manifest.prod.json"
     if: ${{ github.event.inputs.chrome-extension == 'true' }}
@@ -147,7 +182,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release-ref }}
+          ref: ${{ needs.prepare.outputs.release_ref }}
 
       - name: "Setup Node"
         uses: actions/setup-node@v1
@@ -163,9 +198,21 @@ jobs:
         run: |
           lerna run build:prod --scope=chrome-extension-pack-kogito-kie-editors --include-dependencies --stream
 
-      - name: "Deploy"
+      - name: "Upload Chrome Extension"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: ./packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ needs.prepare.outputs.version }}.zip
+          asset_name: chrome_extension_${{ needs.prepare.outputs.version }}.zip
+          asset_content_type: application/zip
+
+      - name: "Publish to the Chrome Web Store"
         run: |
-          echo "${{ needs.prepare.outputs.release-upload-url }}"
+          echo "TODO:"
+          echo "Publishing to the Chrome Web Store"
 
   vscode-extensions-dev:
     if: ${{ github.event.inputs.vscode-extensions-dev == 'true' }}
@@ -175,7 +222,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release-ref }}
+          ref: ${{ needs.prepare.outputs.release_ref }}
 
       - name: "Setup Node"
         uses: actions/setup-node@v1
@@ -191,9 +238,27 @@ jobs:
         run: |
           lerna run build:prod --scope=vscode-extension-pack-kogito-kie-editors --scope=vscode-extension-backend --include-dependencies --stream
 
-      - name: "Deploy"
-        run: |
-          echo "${{ needs.prepare.outputs.release-upload-url }}"
+      - name: "Upload VS Code Extension (dev) (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ needs.prepare.outputs.version }}.vsix
+          asset_name: vscode_extension_dev_${{ needs.prepare.outputs.version }}.vsix
+          asset_content_type: application/zip
+
+      - name: "Upload VS Code Extension Backend (dev) (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-backend/dist/vscode-extension-backend_${{ needs.prepare.outputs.version }}.vsix
+          asset_name: vscode_extension_backend_dev_${{ needs.prepare.outputs.version }}.vsix
+          asset_content_type: application/zip
 
   desktop:
     if: ${{ github.event.inputs.desktop == 'true' }}
@@ -206,7 +271,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release-ref }}
+          ref: ${{ needs.prepare.outputs.release_ref }}
 
       - name: "Setup Node"
         uses: actions/setup-node@v1
@@ -223,9 +288,42 @@ jobs:
         run: |
           lerna run build:prod --scope=@kogito-tooling/desktop --include-dependencies --stream
 
-      - name: "Deploy"
-        run: |
-          echo "${{ needs.prepare.outputs.release-upload-url }}"
+      - name: "Upload Desktop App for Linux (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: ./packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
+          asset_name: business_modeler_preview_linux_${{ needs.prepare.outputs.version }}.tar.gz
+          asset_content_type: application/tar+gzip
+
+      - name: "Upload Desktop App for macOS (macOS only)"
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: ./packages/desktop/out/Business Modeler Preview-darwin-x64.zip
+          asset_name: business_modeler_preview_macos_${{ needs.prepare.outputs.version }}.zip
+          asset_content_type: application/zip
+
+      - name: "Compress Desktop App (Windows only)"
+        if: matrix.os == 'windows-latest'
+        run: "Compress-Archive -Path \"kogito-tooling\\packages\\desktop\\out\\Business Modeler Preview-win32-x64\" -DestinationPath \"kogito-tooling\\packages\\desktop\\out\\Business Modeler Preview-win32-x64.zip\""
+
+      - name: "Upload Desktop App for Windows (Windows only)"
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: "./packages/desktop/out/Business Modeler Preview-win32-x64.zip"
+          asset_name: "business_modeler_preview_windows_${{ needs.prepare.outputs.version }}.zip"
+          asset_content_type: application/zip
 
   npm-packages:
     if: ${{ github.event.inputs.npm-packages == 'true' }}
@@ -235,7 +333,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release-ref }}
+          ref: ${{ needs.prepare.outputs.release_ref }}
 
       - name: "Setup Node"
         uses: actions/setup-node@v1
@@ -251,6 +349,7 @@ jobs:
         run: |
           lerna run build:prod --stream --no-private
 
-      - name: "Deploy"
+      - name: "Publish packages to the NPM registry"
         run: |
-          echo "${{ needs.prepare.outputs.release-upload-url }}"
+          echo "TODO:"
+          echo "Publishing packages to the NPM registry"
