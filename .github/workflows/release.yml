@@ -220,7 +220,7 @@ jobs:
       CHROME_EXTENSION__routerRelativePath: "kogito-online/chrome-extension/${{ needs.prepare.outputs.version }}"
       CHROME_EXTENSION__onlineEditorUrl: "https://tiagobento.github.io/kogito-online"
       CHROME_EXTENSION__manifestFile: "manifest.prod.json"
-    if: ${{ always() && github.event.inputs.chrome-extension == 'true' && (needs.online_editor.result == 'success' || needs.online_editor.result == 'skipped') }}
+    if: ${{ always() && github.event.inputs.chrome_extension == 'true' && (needs.online_editor.result == 'success' || needs.online_editor.result == 'skipped') }}
     runs-on: ubuntu-latest
     needs: [prepare, online_editor]
     steps:
