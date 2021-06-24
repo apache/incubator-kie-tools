@@ -265,7 +265,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
-          asset_path: ./packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ needs.prepare.outputs.version }}.zip
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ needs.prepare.outputs.version }}.zip
           asset_name: chrome_extension_${{ needs.prepare.outputs.version }}.zip
           asset_content_type: application/zip
 
