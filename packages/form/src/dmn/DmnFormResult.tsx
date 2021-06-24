@@ -190,22 +190,25 @@ export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotif
         }
         return dmnFormResult;
       case "object":
-        return dmnFormResult ? (
-          Array.isArray(dmnFormResult) ? (
-            <DescriptionList>
-              {dmnFormResult.map((dmnResult, index) => (
-                <DescriptionListGroup key={`array-result-${index}`}>
-                  <DescriptionListTerm>{index}</DescriptionListTerm>
-                  <DescriptionListDescription>{dmnResult}</DescriptionListDescription>
-                </DescriptionListGroup>
-              ))}
-            </DescriptionList>
-          ) : (
+        if (dmnFormResult) {
+          if (Array.isArray(dmnFormResult)) {
+            return (
+              <DescriptionList>
+                {dmnFormResult.map((dmnResult, index) => (
+                  <DescriptionListGroup key={`array-result-${index}`}>
+                    <DescriptionListTerm>{index}</DescriptionListTerm>
+                    <DescriptionListDescription>{dmnResult}</DescriptionListDescription>
+                  </DescriptionListGroup>
+                ))}
+              </DescriptionList>
+            );
+          }
+          return (
             <DescriptionList>
               {Object.entries(dmnFormResult).map(([key, value]: [string, object | string]) => (
                 <DescriptionListGroup key={`object-result-${key}-${value}`}>
                   <DescriptionListTerm>{key}</DescriptionListTerm>
-                  {typeof value === "object" && !!value ? (
+                  {value && typeof value === "object" ? (
                     Object.entries(value).map(([key2, value2]: [string, any]) => (
                       <DescriptionListGroup key={`object2-result-${key2}-${value2}`}>
                         <DescriptionListTerm>{key2}</DescriptionListTerm>
@@ -213,15 +216,14 @@ export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotif
                       </DescriptionListGroup>
                     ))
                   ) : (
-                    <DescriptionListDescription>{value}</DescriptionListDescription>
+                    <DescriptionListDescription>{result(value)}</DescriptionListDescription>
                   )}
                 </DescriptionListGroup>
               ))}
             </DescriptionList>
-          )
-        ) : (
-          <i>(null)</i>
-        );
+          );
+        }
+        return <i>(null)</i>;
       default:
         return <i>(null)</i>;
     }
