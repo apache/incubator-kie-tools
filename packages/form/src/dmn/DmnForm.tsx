@@ -112,7 +112,7 @@ export function DmnForm(props: Props) {
     return dmnFormI18n.getCurrent();
   }, [props.locale]);
   const validator = useMemo(() => new DmnValidator(i18n), []);
-  const [formModel, setFormModel] = useState<any>();
+  const [formModel, setFormModel] = useState<any>(props.formData);
   const [formStatus, setFormStatus] = useState<FormStatus>(FormStatus.EMPTY);
 
   const setCustomPlaceholders = useCallback((value: DmnDeepProperty) => {
