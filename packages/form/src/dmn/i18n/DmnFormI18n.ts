@@ -19,9 +19,20 @@ import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
 interface DmnFormDictionary extends ReferenceDictionary {
   form: {
-    error: {
-      title: string;
-      message: Array<string | Wrapped<"jira">>;
+    status: {
+      autoGenerationError: {
+        title: string;
+        explanation: string;
+        checkNotificationPanel: Array<string | Wrapped<"link">>;
+      };
+      emptyForm: {
+        title: string;
+        explanation: string;
+      };
+      validatorError: {
+        title: string;
+        message: Array<string | Wrapped<"jira">>;
+      };
     };
     validation: {
       daysAndTimeError: string;

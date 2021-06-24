@@ -24,11 +24,20 @@ import { DmnValidator } from "./DmnValidator";
 import { dmnFormI18n } from "./i18n";
 import { diff } from "deep-object-diff";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
+import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
+
+enum FormStatus {
+  WITHOUT_ERROR,
+  VALIDATOR_ERROR,
+  AUTO_GENERATION_ERROR,
+  EMPTY,
+}
 
 export interface DmnFormData {
   definitions: DmnFormDefinitions;
@@ -54,11 +63,11 @@ interface DmnDeepProperty {
   format?: string;
 }
 
-export interface Props {
+interface CommonProps {
   formData: any;
   setFormData: React.Dispatch<any>;
+  formError: boolean;
   setFormError: React.Dispatch<any>;
-  formErrorMessage: React.ReactNode;
   formSchema?: any;
   updateDmnResults: (model: any) => void;
   id?: string;
@@ -73,6 +82,17 @@ export interface Props {
   submitField?: () => React.ReactNode;
   locale?: string;
 }
+
+interface PropsWithNotificationsPanel extends CommonProps {
+  notificationsPanel: true;
+  openValidationTab: () => void;
+}
+
+interface PropsWithoutNotificationsPanel extends CommonProps {
+  notificationsPanel: false;
+}
+
+export type Props = PropsWithNotificationsPanel | PropsWithoutNotificationsPanel;
 
 export function usePrevious(value: any) {
   const ref = useRef();
@@ -93,7 +113,7 @@ export function DmnForm(props: Props) {
   }, [props.locale]);
   const validator = useMemo(() => new DmnValidator(i18n), []);
   const [formModel, setFormModel] = useState<any>();
-  const [validatorError, setValidatorError] = useState<boolean>(false);
+  const [formStatus, setFormStatus] = useState<FormStatus>(FormStatus.EMPTY);
 
   const setCustomPlaceholders = useCallback((value: DmnDeepProperty) => {
     if (value?.format === "days and time duration") {
@@ -229,10 +249,10 @@ export function DmnForm(props: Props) {
     try {
       const bridge = validator.getBridge(form);
       setJsonSchemaBridge(bridge);
-      setValidatorError(false);
+      setFormStatus(FormStatus.WITHOUT_ERROR);
     } catch (err) {
       console.error(err);
-      setValidatorError(true);
+      setFormStatus(FormStatus.VALIDATOR_ERROR);
     }
   }, [props.formSchema, formPreprocessing, validator]);
 
@@ -291,18 +311,56 @@ export function DmnForm(props: Props) {
     [setFormModel, props.onValidate]
   );
 
-  // Resets the ErrorBoundary everytime the JsonSchemaBridge is updated
+  const formErrorMessage = useMemo(
+    () => (
+      <div>
+        <EmptyState>
+          <EmptyStateIcon icon={ExclamationIcon} />
+          <TextContent>
+            <Text component={"h2"}>{i18n.form.status.autoGenerationError.title}</Text>
+          </TextContent>
+          <EmptyStateBody>
+            <TextContent>{i18n.form.status.autoGenerationError.explanation}</TextContent>
+            <br />
+            <TextContent>
+              {props.notificationsPanel && (
+                <I18nWrapped components={{ link: <a onClick={props?.openValidationTab}>{i18n.terms.validation}</a> }}>
+                  {i18n.form.status.autoGenerationError.checkNotificationPanel}
+                </I18nWrapped>
+              )}
+            </TextContent>
+          </EmptyStateBody>
+        </EmptyState>
+      </div>
+    ),
+    [props.notificationsPanel, i18n]
+  );
+
+  useEffect(() => {
+    if (props.formError) {
+      setFormStatus(FormStatus.AUTO_GENERATION_ERROR);
+    } else if (
+      !props.formSchema ||
+      Object.keys(props.formSchema?.definitions?.InputSet?.properties ?? {}).length === 0
+    ) {
+      setFormStatus(FormStatus.EMPTY);
+    } else {
+      setFormStatus(FormStatus.WITHOUT_ERROR);
+    }
+  }, [props.formError, props.formSchema]);
+
+  // Resets the ErrorBoundary everytime the FormSchema is updated
   useEffect(() => {
     errorBoundaryRef.current?.reset();
-  }, [props.formSchema]);
+  }, [props.formSchema, props.formSchema]);
 
   return (
     <>
-      {validatorError ? (
+      {formStatus === FormStatus.VALIDATOR_ERROR && (
         <EmptyState>
           <EmptyStateIcon icon={ExclamationTriangleIcon} />
           <TextContent>
-            <Text component={"h2"}>{i18n.form.error.title}</Text>
+            <Text component={"h2"}>{i18n.form.status.validatorError.title}</Text>
           </TextContent>
           <EmptyStateBody>
             <TextContent>
@@ -316,16 +374,33 @@ export function DmnForm(props: Props) {
                     ),
                   }}
                 >
-                  {i18n.form.error.message}
+                  {i18n.form.status.validatorError.message}
                 </I18nWrapped>
               </Text>
             </TextContent>
           </EmptyStateBody>
         </EmptyState>
-      ) : (
+      )}
+      {formStatus === FormStatus.AUTO_GENERATION_ERROR && formErrorMessage}
+      {formStatus === FormStatus.EMPTY && (
+        <div>
+          <EmptyState>
+            <EmptyStateIcon icon={CubesIcon} />
+            <TextContent>
+              <Text component={"h2"}>{i18n.form.status.emptyForm.title}</Text>
+            </TextContent>
+            <EmptyStateBody>
+              <TextContent>
+                <Text component={TextVariants.p}>{i18n.form.status.emptyForm.explanation}</Text>
+              </TextContent>
+            </EmptyStateBody>
+          </EmptyState>
+        </div>
+      )}
+      {formStatus === FormStatus.WITHOUT_ERROR && (
         <div data-testid={"dmn-form"}>
           {jsonSchemaBridge && (
-            <ErrorBoundary ref={errorBoundaryRef} setHasError={props.setFormError} error={props.formErrorMessage}>
+            <ErrorBoundary ref={errorBoundaryRef} setHasError={props.setFormError} error={formErrorMessage}>
               <AutoForm
                 id={props.id}
                 model={props.formData}

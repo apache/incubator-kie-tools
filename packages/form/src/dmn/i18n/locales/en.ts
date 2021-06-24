@@ -21,13 +21,24 @@ import { wrapped } from "@kogito-tooling/i18n/dist/core";
 export const en: DmnFormI18n = {
   ...en_common,
   form: {
-    error: {
-      title: "An error occurred while trying to generate the form",
-      message: [
-        `This ${en_common.names.dmn} model contains a construct that is not yet supported. Please refer to `,
-        wrapped("jira"),
-        " and report an issue. Don't forget to upload the current file.",
-      ],
+    status: {
+      autoGenerationError: {
+        title: `${en_common.terms.oops}!`,
+        explanation: "Form cannot be rendered because of an error.",
+        checkNotificationPanel: ["Check for ", wrapped("link"), ` error on the Notifications Panel`],
+      },
+      emptyForm: {
+        title: "No Form",
+        explanation: `Associated ${en_common.names.dmn} doesn't have any inputs.`,
+      },
+      validatorError: {
+        title: "An error occurred while trying to generate the form",
+        message: [
+          `This ${en_common.names.dmn} model contains a construct that is not yet supported. Please refer to `,
+          wrapped("jira"),
+          " and report an issue. Don't forget to upload the current file.",
+        ],
+      },
     },
     validation: {
       daysAndTimeError: "should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)",

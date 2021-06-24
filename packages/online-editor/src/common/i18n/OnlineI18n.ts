@@ -305,17 +305,6 @@ interface OnlineDictionary extends ReferenceDictionary {
       open: string;
       close: string;
     };
-    drawer: {
-      formError: {
-        title: string;
-        explanation: string;
-        checkNotificationPanel: Array<string | Wrapped<"link">>;
-      };
-      withoutForm: {
-        title: string;
-        explanation: string;
-      };
-    };
     button: {
       available: string;
       tooltip: {

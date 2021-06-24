@@ -338,17 +338,6 @@ export const en: OnlineI18n = {
       open: `${en_common.terms.open} ${en_common.names.dmnRunner} panel`,
       close: `${en_common.terms.close} ${en_common.names.dmnRunner} panel`,
     },
-    drawer: {
-      formError: {
-        title: `${en_common.terms.oops}!`,
-        explanation: "Form cannot be rendered because of an error.",
-        checkNotificationPanel: ["Check for ", wrapped("link"), ` error on the Notifications Panel`],
-      },
-      withoutForm: {
-        title: "No Form",
-        explanation: `Associated ${en_common.names.dmn} doesn't have any inputs.`,
-      },
-    },
     button: {
       available: `This is only available in ${en_common.names.chrome} at the moment`,
       tooltip: {

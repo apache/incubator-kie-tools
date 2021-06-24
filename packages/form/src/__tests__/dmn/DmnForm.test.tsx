@@ -37,10 +37,11 @@ const schema: any = {
 const props: Props = {
   formData: jest.fn(),
   setFormData: jest.fn(),
+  formError: false,
   setFormError: jest.fn(),
-  formErrorMessage: jest.fn(),
   updateDmnResults: jest.fn(),
   showInlineError: true,
+  notificationsPanel: false,
   autosave: false,
   placeholder: false,
   onSubmit: jest.fn(),

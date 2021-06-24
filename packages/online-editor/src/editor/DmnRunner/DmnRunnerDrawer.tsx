@@ -15,14 +15,11 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DecisionResult, DecisionResultMessage, DmnResult } from "./DmnRunnerService";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { diff } from "deep-object-diff";
 import { useDmnRunner } from "./DmnRunnerContext";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
@@ -30,7 +27,6 @@ import { Notification } from "@kogito-tooling/notifications/dist/api";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { useOnlineI18n } from "../../common/i18n";
-import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
 import { DmnForm, DmnFormResult } from "@kogito-tooling/form/dist/dmn";
 import { usePrevious } from "../../common/Hooks";
 
@@ -166,14 +162,6 @@ export function DmnRunnerDrawer(props: Props) {
     updateDmnRunnerResults(dmnRunner.formData);
   }, [dmnRunner.formData, updateDmnRunnerResults]);
 
-  const shouldRenderForm = useMemo(() => {
-    return (
-      !dmnRunner.formError &&
-      dmnRunner.formSchema &&
-      Object.keys(dmnRunner.formSchema?.definitions?.InputSet?.properties ?? {}).length !== 0
-    );
-  }, [dmnRunner.formError, dmnRunner.formSchema]);
-
   const previousFormError = usePrevious(dmnRunner.formError);
   useEffect(() => {
     if (dmnRunner.formError) {
@@ -193,29 +181,6 @@ export function DmnRunnerDrawer(props: Props) {
     notificationsPanel.setIsOpen(true);
     notificationsPanel.setActiveTab(i18n.terms.validation);
   }, [i18n]);
-
-  const formErrorMessage = useMemo(
-    () => (
-      <div>
-        <EmptyState>
-          <EmptyStateIcon icon={ExclamationIcon} />
-          <TextContent>
-            <Text component={"h2"}>{i18n.dmnRunner.drawer.formError.title}</Text>
-          </TextContent>
-          <EmptyStateBody>
-            <TextContent>{i18n.dmnRunner.drawer.formError.explanation}</TextContent>
-            <br />
-            <TextContent>
-              <I18nWrapped components={{ link: <a onClick={openValidationTab}>{i18n.terms.validation}</a> }}>
-                {i18n.dmnRunner.drawer.formError.checkNotificationPanel}
-              </I18nWrapped>
-            </TextContent>
-          </EmptyStateBody>
-        </EmptyState>
-      </div>
-    ),
-    [openValidationTab, i18n]
-  );
 
   const openExecutionTab = useCallback(() => {
     notificationsPanel.setIsOpen(true);
@@ -253,41 +218,25 @@ export function DmnRunnerDrawer(props: Props) {
             </PageSection>
             <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
               <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
-                {shouldRenderForm ? (
-                  <DmnForm
-                    formData={dmnRunner.formData}
-                    setFormData={dmnRunner.setFormData}
-                    setFormError={dmnRunner.setFormError}
-                    formErrorMessage={formErrorMessage}
-                    formSchema={dmnRunner.formSchema}
-                    updateDmnResults={updateDmnRunnerResults}
-                    id={"form"}
-                    formRef={formRef}
-                    showInlineError={true}
-                    autosave={true}
-                    autosaveDelay={AUTO_SAVE_DELAY}
-                    placeholder={true}
-                    errorsField={() => <></>}
-                    submitField={() => <></>}
-                    locale={locale}
-                  />
-                ) : dmnRunner.formError ? (
-                  formErrorMessage
-                ) : (
-                  <div>
-                    <EmptyState>
-                      <EmptyStateIcon icon={CubesIcon} />
-                      <TextContent>
-                        <Text component={"h2"}>{i18n.dmnRunner.drawer.withoutForm.title}</Text>
-                      </TextContent>
-                      <EmptyStateBody>
-                        <TextContent>
-                          <Text component={TextVariants.p}>{i18n.dmnRunner.drawer.withoutForm.explanation}</Text>
-                        </TextContent>
-                      </EmptyStateBody>
-                    </EmptyState>
-                  </div>
-                )}
+                <DmnForm
+                  formData={dmnRunner.formData}
+                  setFormData={dmnRunner.setFormData}
+                  formError={dmnRunner.formError}
+                  setFormError={dmnRunner.setFormError}
+                  formSchema={dmnRunner.formSchema}
+                  updateDmnResults={updateDmnRunnerResults}
+                  id={"form"}
+                  formRef={formRef}
+                  showInlineError={true}
+                  autosave={true}
+                  autosaveDelay={AUTO_SAVE_DELAY}
+                  placeholder={true}
+                  errorsField={() => <></>}
+                  submitField={() => <></>}
+                  locale={locale}
+                  notificationsPanel={true}
+                  openValidationTab={openValidationTab}
+                />
               </PageSection>
             </div>
           </Page>
