@@ -29,6 +29,7 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { cloneDeep } from "lodash";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -52,6 +53,7 @@ interface DmnFormDefinitions {
     title?: string;
     format?: string;
     items: any[];
+    "x-dmn-type"?: string;
   };
 }
 
@@ -61,6 +63,7 @@ interface DmnDeepProperty {
   placeholder?: string;
   title?: string;
   format?: string;
+  "x-dmn-type"?: string;
 }
 
 interface CommonProps {
@@ -69,7 +72,6 @@ interface CommonProps {
   formError: boolean;
   setFormError: React.Dispatch<any>;
   formSchema?: any;
-  updateDmnResults: (model: any) => void;
   id?: string;
   formRef?: React.RefObject<HTMLFormElement>;
   showInlineError?: boolean;
@@ -112,8 +114,9 @@ export function DmnForm(props: Props) {
     return dmnFormI18n.getCurrent();
   }, [props.locale]);
   const validator = useMemo(() => new DmnValidator(i18n), []);
-  const [formModel, setFormModel] = useState<any>(props.formData);
+  const [formModel, setFormModel] = useState<any>();
   const [formStatus, setFormStatus] = useState<FormStatus>(FormStatus.EMPTY);
+  const contextProperties = useMemo(() => new Map<string, string[]>(), []);
 
   const setCustomPlaceholders = useCallback((value: DmnDeepProperty) => {
     if (value?.format === "days and time duration") {
@@ -122,16 +125,19 @@ export function DmnForm(props: Props) {
     if (value?.format === "years and months duration") {
       value!.placeholder = i18n.form.preProcessing.yearsAndMonthsPlaceholder;
     }
+    if (value?.format === "time") {
+      value!.placeholder = "hh:mm:ss";
+    }
   }, []);
 
   const formDeepPreprocessing = useCallback(
-    (form: DmnFormData, value: DmnDeepProperty, title = "") => {
+    (form: DmnFormData, value: DmnDeepProperty, title = [""]) => {
       if (Object.hasOwnProperty.call(value, "$ref")) {
         const property = value.$ref!.split("/").pop()! as keyof DmnFormDefinitions;
         if (form.definitions[property] && Object.hasOwnProperty.call(form.definitions[property], "properties")) {
           Object.entries(form.definitions[property]!.properties).forEach(
             ([key, deepValue]: [string, DmnDeepProperty]) => {
-              formDeepPreprocessing(form, deepValue, key);
+              formDeepPreprocessing(form, deepValue, [...title, key]);
             }
           );
         } else if (
@@ -142,18 +148,24 @@ export function DmnForm(props: Props) {
           formDeepPreprocessing(form, form.definitions[property]!.items as DmnDeepProperty);
         } else if (!Object.hasOwnProperty.call(form.definitions[property], "type")) {
           form.definitions[property]!.type = "string";
+        } else if (form?.definitions?.[property]?.["x-dmn-type"] === "FEEL:context") {
+          form.definitions[property]!.placeholder = `{ "x": <value> }`;
+          contextProperties.set(title.join(""), title);
         } else if (Object.hasOwnProperty.call(form.definitions[property], "enum")) {
           form.definitions[property]!.placeholder = i18n.form.preProcessing.selectPlaceholder;
         } else if (Object.hasOwnProperty.call(form.definitions[property], "format")) {
           setCustomPlaceholders(form.definitions[property]!);
         }
-        form.definitions[property]!.title = title;
+        form.definitions[property]!.title = title[title.length - 1];
         return;
       }
-      value.title = title;
+      value.title = title[title.length - 1];
       if (!Object.hasOwnProperty.call(value, "type")) {
         value.type = "string";
-        return;
+      }
+      if (value?.["x-dmn-type"] === "FEEL:context") {
+        value!.placeholder = `{ "x": <value> }`;
+        contextProperties.set(title.join(""), title);
       }
       if (Object.hasOwnProperty.call(value, "enum")) {
         value.placeholder = i18n.form.preProcessing.selectPlaceholder;
@@ -172,7 +184,7 @@ export function DmnForm(props: Props) {
       if (Object.hasOwnProperty.call(form.definitions.InputSet, "properties")) {
         Object.entries(form.definitions.InputSet?.properties ?? {}).forEach(
           ([key, value]: [string, DmnDeepProperty]) => {
-            formDeepPreprocessing(form, value, key);
+            formDeepPreprocessing(form, value, [key]);
           }
         );
       }
@@ -213,16 +225,39 @@ export function DmnForm(props: Props) {
     }, {} as { [x: string]: any });
   }, [jsonSchemaBridge]);
 
+  const handleContextProperties: (obj: any, property: any, operation?: "parse" | "stringify") => void = useCallback(
+    (obj, property, operation) => {
+      const key = property?.shift()!;
+      const prop: any = obj[key];
+      if (!prop) {
+        return;
+      }
+      if (prop && property.length !== 0) {
+        return handleContextProperties(prop, property, operation);
+      }
+      try {
+        if (operation === "parse") {
+          obj[key] = JSON.parse(prop);
+        } else if (operation === "stringify") {
+          obj[key] = JSON.stringify(prop, null, 2);
+        }
+      } catch (err) {
+        obj[key] = prop;
+      }
+    },
+    []
+  );
+
   const previousFormSchema: any = usePrevious(props.formSchema);
   useEffect(() => {
-    const propertiesDifference = diff(
-      previousFormSchema?.definitions?.InputSet?.properties ?? {},
-      props.formSchema?.definitions?.InputSet?.properties ?? {}
-    );
-
     // Remove an formData property that has been deleted;
-    props.setFormError((previous: boolean) => {
-      if (!previous) {
+    props.setFormError((previousFormError: boolean) => {
+      if (!previousFormError) {
+        const propertiesDifference = diff(
+          previousFormSchema?.definitions?.InputSet?.properties ?? {},
+          props.formSchema?.definitions?.InputSet?.properties ?? {}
+        );
+
         const formData = Object.entries(propertiesDifference).reduce(
           (newFormData, [property, value]) => {
             if (!value || value.type) {
@@ -235,16 +270,31 @@ export function DmnForm(props: Props) {
           },
           { ...defaultFormValues, ...formModel }
         );
-        props.setFormData(formData);
+
+        const newFormData = cloneDeep(formData);
+        contextProperties.forEach((properties) => {
+          const propertiesCopy = [...properties];
+          handleContextProperties(newFormData, propertiesCopy, "parse");
+        });
+        props.setFormData(newFormData);
       }
       return false;
     });
-  }, [props.setFormData, props.setFormError, props.onSubmit, defaultFormValues, props.formSchema, formModel]);
+  }, [props.formSchema, formModel, defaultFormValues, contextProperties, handleContextProperties]);
 
   useEffect(() => {
-    const form: DmnFormData = Object.assign(props.formSchema ?? {}, {});
+    const form: DmnFormData = cloneDeep(props.formSchema ?? {});
     if (Object.keys(form).length > 0) {
       formPreprocessing(form);
+
+      if (!formModel) {
+        const newFormModel = cloneDeep(props.formData);
+        contextProperties.forEach((properties) => {
+          const propertiesCopy = [...properties];
+          handleContextProperties(newFormModel, propertiesCopy, "stringify");
+        });
+        setFormModel(newFormModel);
+      }
     }
     try {
       const bridge = validator.getBridge(form);
@@ -352,7 +402,7 @@ export function DmnForm(props: Props) {
   // Resets the ErrorBoundary everytime the FormSchema is updated
   useEffect(() => {
     errorBoundaryRef.current?.reset();
-  }, [props.formSchema, props.formSchema]);
+  }, [props.formSchema]);
 
   return (
     <>
@@ -403,7 +453,7 @@ export function DmnForm(props: Props) {
             <ErrorBoundary ref={errorBoundaryRef} setHasError={props.setFormError} error={formErrorMessage}>
               <AutoForm
                 id={props.id}
-                model={props.formData}
+                model={formModel}
                 ref={props.formRef}
                 showInlineError={props.showInlineError}
                 autosave={props.autosave}
