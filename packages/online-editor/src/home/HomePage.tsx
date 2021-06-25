@@ -571,6 +571,7 @@ export function HomePage(props: Props) {
             </CardFooter>
           </Card>
         </Gallery>
+        <div className={"kogito-tooling--build-info"}>{process.env["WEBPACK_REPLACE__buildInfo"]}</div>
       </PageSection>
     </Page>
   );

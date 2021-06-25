@@ -35,8 +35,15 @@ function getDownloadHubArgs() {
   return [linuxUrl, macOsUrl, windowsUrl];
 }
 
+function getBuildInfo() {
+  const buildInfo = buildEnv.onlineEditor.buildInfo;
+  console.info(`Online Editor :: Build info: ${buildInfo}`);
+  return buildInfo;
+}
+
 module.exports = async (env) => {
   const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs();
+  const buildInfo = getBuildInfo();
 
   return merge(common(env), {
     entry: {
@@ -50,6 +57,7 @@ module.exports = async (env) => {
         WEBPACK_REPLACE__hubLinuxUrl: downloadHub_linuxUrl,
         WEBPACK_REPLACE__hubMacOsUrl: downloadHub_macOsUrl,
         WEBPACK_REPLACE__hubWindowsUrl: downloadHub_windowsUrl,
+        WEBPACK_REPLACE__buildInfo: buildInfo,
       }),
       new CopyPlugin({
         patterns: [

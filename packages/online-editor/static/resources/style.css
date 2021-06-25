@@ -212,3 +212,10 @@
 .kogito--editor__embed-modal-embed-code-items {
   padding: var(--pf-global--spacer--xs);
 }
+
+.kogito-tooling--build-info {
+  font-size: 0.8em;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+}

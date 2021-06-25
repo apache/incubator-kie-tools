@@ -72,6 +72,11 @@ const ENV_VARS = {
     default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/business_modeler_hub_preview_windows_${version}.zip`,
     description: "",
   },
+  ONLINE_EDITOR__buildInfo: {
+    name: "ONLINE_EDITOR__buildInfo",
+    default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
+    description: "",
+  },
   WEBPACK__minimize: {
     name: "WEBPACK__minimize",
     description: "",
@@ -131,6 +136,7 @@ module.exports = {
     dev: {
       port: 9001,
     },
+    buildInfo: getOrDefault(ENV_VARS.ONLINE_EDITOR__buildInfo),
     downloadHubUrl: {
       linux: getOrDefault(ENV_VARS.ONLINE_EDITOR__downloadHubUrlLinux),
       macOs: getOrDefault(ENV_VARS.ONLINE_EDITOR__downloadHubUrlMacOs),
