@@ -249,28 +249,42 @@ export function DmnForm(props: Props) {
   );
 
   const previousFormSchema: any = usePrevious(props.formSchema);
+  const removeDeletedPropertiesAndAddDefaultValues = useCallback(
+    (formModel: any) => {
+      const propertiesDifference = diff(
+        previousFormSchema?.definitions?.InputSet?.properties ?? {},
+        props.formSchema?.definitions?.InputSet?.properties ?? {}
+      );
+
+      // Remove property that has been deleted;
+      return Object.entries(propertiesDifference).reduce(
+        (form, [property, value]) => {
+          if (!value || value.type) {
+            delete (form as any)[property];
+          }
+          if (value?.format) {
+            (form as any)[property] = undefined;
+          }
+          return form;
+        },
+        { ...defaultFormValues, ...formModel }
+      );
+    },
+    [props.formSchema, defaultFormValues]
+  );
+
   useEffect(() => {
-    // Remove an formData property that has been deleted;
+    setFormModel((previousFormModel: any) => {
+      if (previousFormModel) {
+        return removeDeletedPropertiesAndAddDefaultValues(previousFormModel);
+      }
+    });
+  }, [removeDeletedPropertiesAndAddDefaultValues]);
+
+  useEffect(() => {
     props.setFormError((previousFormError: boolean) => {
       if (!previousFormError) {
-        const propertiesDifference = diff(
-          previousFormSchema?.definitions?.InputSet?.properties ?? {},
-          props.formSchema?.definitions?.InputSet?.properties ?? {}
-        );
-
-        const formData = Object.entries(propertiesDifference).reduce(
-          (newFormData, [property, value]) => {
-            if (!value || value.type) {
-              delete (newFormData as any)[property];
-            }
-            if (value?.format) {
-              (newFormData as any)[property] = undefined;
-            }
-            return newFormData;
-          },
-          { ...defaultFormValues, ...formModel }
-        );
-
+        const formData = removeDeletedPropertiesAndAddDefaultValues(formModel);
         const newFormData = cloneDeep(formData);
         contextProperties.forEach((properties) => {
           const propertiesCopy = [...properties];
@@ -280,7 +294,7 @@ export function DmnForm(props: Props) {
       }
       return false;
     });
-  }, [props.formSchema, formModel, defaultFormValues, contextProperties, handleContextProperties]);
+  }, [removeDeletedPropertiesAndAddDefaultValues, formModel, contextProperties, handleContextProperties]);
 
   useEffect(() => {
     const form: DmnFormData = cloneDeep(props.formSchema ?? {});
@@ -394,10 +408,11 @@ export function DmnForm(props: Props) {
       Object.keys(props.formSchema?.definitions?.InputSet?.properties ?? {}).length === 0
     ) {
       setFormStatus(FormStatus.EMPTY);
-    } else {
+    } else if (jsonSchemaBridge) {
       setFormStatus(FormStatus.WITHOUT_ERROR);
+      errorBoundaryRef.current?.reset();
     }
-  }, [props.formError, props.formSchema]);
+  }, [props.formError, props.formSchema, jsonSchemaBridge, formModel]);
 
   // Resets the ErrorBoundary everytime the FormSchema is updated
   useEffect(() => {
@@ -407,29 +422,31 @@ export function DmnForm(props: Props) {
   return (
     <>
       {formStatus === FormStatus.VALIDATOR_ERROR && (
-        <EmptyState>
-          <EmptyStateIcon icon={ExclamationTriangleIcon} />
-          <TextContent>
-            <Text component={"h2"}>{i18n.form.status.validatorError.title}</Text>
-          </TextContent>
-          <EmptyStateBody>
+        <div>
+          <EmptyState>
+            <EmptyStateIcon icon={ExclamationTriangleIcon} />
             <TextContent>
-              <Text>
-                <I18nWrapped
-                  components={{
-                    jira: (
-                      <a href={KOGITO_JIRA_LINK} target={"_blank"}>
-                        {KOGITO_JIRA_LINK}
-                      </a>
-                    ),
-                  }}
-                >
-                  {i18n.form.status.validatorError.message}
-                </I18nWrapped>
-              </Text>
+              <Text component={"h2"}>{i18n.form.status.validatorError.title}</Text>
             </TextContent>
-          </EmptyStateBody>
-        </EmptyState>
+            <EmptyStateBody>
+              <TextContent>
+                <Text>
+                  <I18nWrapped
+                    components={{
+                      jira: (
+                        <a href={KOGITO_JIRA_LINK} target={"_blank"}>
+                          {KOGITO_JIRA_LINK}
+                        </a>
+                      ),
+                    }}
+                  >
+                    {i18n.form.status.validatorError.message}
+                  </I18nWrapped>
+                </Text>
+              </TextContent>
+            </EmptyStateBody>
+          </EmptyState>
+        </div>
       )}
       {formStatus === FormStatus.AUTO_GENERATION_ERROR && formErrorMessage}
       {formStatus === FormStatus.EMPTY && (
@@ -449,25 +466,23 @@ export function DmnForm(props: Props) {
       )}
       {formStatus === FormStatus.WITHOUT_ERROR && (
         <div data-testid={"dmn-form"}>
-          {jsonSchemaBridge && (
-            <ErrorBoundary ref={errorBoundaryRef} setHasError={props.setFormError} error={formErrorMessage}>
-              <AutoForm
-                id={props.id}
-                model={formModel}
-                ref={props.formRef}
-                showInlineError={props.showInlineError}
-                autosave={props.autosave}
-                autosaveDelay={props.autosaveDelay}
-                schema={jsonSchemaBridge}
-                placeholder={props.placeholder}
-                onSubmit={onSubmit}
-                onValidate={onValidate}
-                errorsField={props.errorsField}
-                submitField={props.submitField}
-                validate={"onChange"}
-              />
-            </ErrorBoundary>
-          )}
+          <ErrorBoundary ref={errorBoundaryRef} setHasError={props.setFormError} error={formErrorMessage}>
+            <AutoForm
+              id={props.id}
+              model={formModel}
+              ref={props.formRef}
+              showInlineError={props.showInlineError}
+              autosave={props.autosave}
+              autosaveDelay={props.autosaveDelay}
+              schema={jsonSchemaBridge}
+              placeholder={props.placeholder}
+              onSubmit={onSubmit}
+              onValidate={onValidate}
+              errorsField={props.errorsField}
+              submitField={props.submitField}
+              validate={"onChange"}
+            />
+          </ErrorBoundary>
         </div>
       )}
     </>
