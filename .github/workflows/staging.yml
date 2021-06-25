@@ -12,6 +12,7 @@ jobs:
       html_url: ${{ steps.create_release_draft.outputs.html_url }}
       id: ${{ steps.create_release_draft.outputs.id }}
       tag: ${{ steps.release_draft_tag.outputs.tag }}
+      commit_sha: ${{ steps.release_draft_tag.outputs.commit_sha }}
       download_asset_url: ${{ steps.release_json_ext.outputs.download_url }}
     steps:
       - name: "Checkout"
@@ -24,6 +25,7 @@ jobs:
         # Will match "/refs/{tags,heads}/{tag}-prerelease"
         run: |
           echo ::set-output name=tag::$(node -p "'${{ github.ref }}'.match(/^.*\/(.+)-prerelease$/)[1]")
+          echo ::set-output name=commit_sha::$(git rev-parse HEAD)
 
       - name: "Check `tag` against `lerna.json.version`"
         shell: bash
@@ -102,7 +104,7 @@ jobs:
           ONLINE_EDITOR__downloadHubUrlLinux: "${{ needs.create_release.outputs.download_asset_url }}/STAGING__business_modeler_hub_preview_linux_${{ needs.create_release.outputs.tag }}.tar.gz"
           ONLINE_EDITOR__downloadHubUrlMacOs: "${{ needs.create_release.outputs.download_asset_url }}/STAGING__business_modeler_hub_preview_macos_${{ needs.create_release.outputs.tag }}.zip"
           ONLINE_EDITOR__downloadHubUrlWindows: "${{ needs.create_release.outputs.download_asset_url }}/STAGING__business_modeler_hub_preview_windows_${{ needs.create_release.outputs.tag }}.zip"
-          ONLINE_EDITOR__buildInfo: "${{ needs.create_release.outputs.tag }} (staging)"
+          ONLINE_EDITOR__buildInfo: "${{ needs.create_release.outputs.tag }} (staging) @ ${{ needs.create_release.outputs.commit_sha }}"
         run: |
           yarn build:prod
 
