@@ -29,7 +29,7 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { cloneDeep } from "lodash";
+import cloneDeep from "lodash/cloneDeep";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -52,7 +52,7 @@ interface DmnFormDefinitions {
     placeholder?: string;
     title?: string;
     format?: string;
-    items: any[];
+    items: any[] & { properties: any };
     "x-dmn-type"?: string;
   };
 }
@@ -64,6 +64,7 @@ interface DmnDeepProperty {
   title?: string;
   format?: string;
   "x-dmn-type"?: string;
+  properties?: DmnDeepProperty;
 }
 
 interface CommonProps {
@@ -116,7 +117,7 @@ export function DmnForm(props: Props) {
   const validator = useMemo(() => new DmnValidator(i18n), []);
   const [formModel, setFormModel] = useState<any>();
   const [formStatus, setFormStatus] = useState<FormStatus>(FormStatus.EMPTY);
-  const contextProperties = useMemo(() => new Map<string, string[]>(), []);
+  const contextPath = useMemo(() => new Map<string, string[]>(), []);
 
   const setCustomPlaceholders = useCallback((value: DmnDeepProperty) => {
     if (value?.format === "days and time duration") {
@@ -141,12 +142,20 @@ export function DmnForm(props: Props) {
             }
           );
         } else if (form.definitions[property] && form.definitions[property]?.type === "array") {
-          formDeepPreprocessing(form, form.definitions[property]!.items as DmnDeepProperty);
+          if (Object.hasOwnProperty.call(form.definitions[property]?.items, "properties")) {
+            Object.entries(form.definitions[property]?.items.properties).forEach(
+              ([key, deepValue]: [string, DmnDeepProperty]) => {
+                formDeepPreprocessing(form, deepValue, [...title, key]);
+              }
+            );
+          } else {
+            formDeepPreprocessing(form, form.definitions[property]!.items as DmnDeepProperty, [...title]);
+          }
         } else if (!Object.hasOwnProperty.call(form.definitions[property], "type")) {
           form.definitions[property]!.type = "string";
         } else if (form?.definitions?.[property]?.["x-dmn-type"] === "FEEL:context") {
           form.definitions[property]!.placeholder = `{ "x": <value> }`;
-          contextProperties.set(title.join(""), title);
+          contextPath.set(title.join(""), title);
         } else if (Object.hasOwnProperty.call(form.definitions[property], "enum")) {
           form.definitions[property]!.placeholder = i18n.form.preProcessing.selectPlaceholder;
         } else if (Object.hasOwnProperty.call(form.definitions[property], "format")) {
@@ -161,7 +170,7 @@ export function DmnForm(props: Props) {
       }
       if (value?.["x-dmn-type"] === "FEEL:context") {
         value!.placeholder = `{ "x": <value> }`;
-        contextProperties.set(title.join(""), title);
+        contextPath.set(title.join(""), title);
       }
       if (Object.hasOwnProperty.call(value, "enum")) {
         value.placeholder = i18n.form.preProcessing.selectPlaceholder;
@@ -221,29 +230,50 @@ export function DmnForm(props: Props) {
     }, {} as { [x: string]: any });
   }, [jsonSchemaBridge]);
 
-  const handleContextProperties: (obj: any, property: string[], operation?: "parse" | "stringify") => void =
-    useCallback((obj, property, operation) => {
-      const key = property?.shift();
+  const handleContextPath: (obj: any, path: string[], operation?: "parse" | "stringify") => void = useCallback(
+    (obj, path, operation) => {
+      const key = path?.shift();
       if (!key) {
         return;
       }
+
       const prop: any = obj[key];
       if (!prop) {
         return;
       }
-      if (prop && property.length !== 0) {
-        return handleContextProperties(prop, property, operation);
+      if (prop && path.length !== 0) {
+        if (Array.isArray(prop)) {
+          prop.forEach((e, index) => {
+            const nextKey = path?.[0];
+            if (Object.hasOwnProperty.call(e, nextKey)) {
+              try {
+                if (operation === "parse") {
+                  obj[key][index] = JSON.parse(e[nextKey]);
+                } else if (operation === "stringify") {
+                  obj[key][index] = JSON.stringify(e[nextKey]);
+                }
+              } catch (err) {
+                obj[key][index] = prop;
+              }
+            }
+          });
+          return;
+        }
+        return handleContextPath(prop, path, operation);
       }
+
       try {
         if (operation === "parse") {
           obj[key] = JSON.parse(prop);
         } else if (operation === "stringify") {
-          obj[key] = JSON.stringify(prop, null, 2);
+          obj[key] = JSON.stringify(prop);
         }
       } catch (err) {
         obj[key] = prop;
       }
-    }, []);
+    },
+    []
+  );
 
   const previousFormSchema: any = usePrevious(props.formSchema);
   const removeDeletedPropertiesAndAddDefaultValues = useCallback(
@@ -283,15 +313,15 @@ export function DmnForm(props: Props) {
       if (!previousFormError) {
         const formData = removeDeletedPropertiesAndAddDefaultValues(formModel);
         const newFormData = cloneDeep(formData);
-        contextProperties.forEach((properties) => {
-          const propertiesCopy = [...properties];
-          handleContextProperties(newFormData, propertiesCopy, "parse");
+        contextPath.forEach((path) => {
+          const pathCopy = [...path];
+          handleContextPath(newFormData, pathCopy, "parse");
         });
         props.setFormData(newFormData);
       }
       return false;
     });
-  }, [removeDeletedPropertiesAndAddDefaultValues, formModel, contextProperties, handleContextProperties]);
+  }, [removeDeletedPropertiesAndAddDefaultValues, formModel, contextPath, handleContextPath]);
 
   useEffect(() => {
     const form: DmnFormData = cloneDeep(props.formSchema ?? {});
@@ -300,9 +330,9 @@ export function DmnForm(props: Props) {
 
       if (!formModel) {
         const newFormModel = cloneDeep(props.formData);
-        contextProperties.forEach((properties) => {
-          const propertiesCopy = [...properties];
-          handleContextProperties(newFormModel, propertiesCopy, "stringify");
+        contextPath.forEach((path) => {
+          const pathCopy = [...path];
+          handleContextPath(newFormModel, pathCopy, "stringify");
         });
         setFormModel(newFormModel);
       }
@@ -315,7 +345,7 @@ export function DmnForm(props: Props) {
       console.error(err);
       setFormStatus(FormStatus.VALIDATOR_ERROR);
     }
-  }, [props.formSchema, formPreprocessing, validator]);
+  }, [props.formSchema, formPreprocessing, validator, handleContextPath]);
 
   const onSubmit = useCallback(
     (model) => {
