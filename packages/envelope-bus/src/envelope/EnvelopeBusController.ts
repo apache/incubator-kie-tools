@@ -18,6 +18,7 @@ import {
   ApiDefinition,
   EnvelopeBus,
   EnvelopeBusMessage,
+  EnvelopeBusMessageDirectSender,
   EnvelopeBusMessagePurpose,
   FunctionPropertyNames,
 } from "../api";
@@ -64,15 +65,30 @@ export class EnvelopeBusController<
     if (!this.targetOrigin || !this.associatedEnvelopeServerId) {
       throw new Error("Tried to send message without associated Envelope Server set");
     }
-    this.bus.postMessage({ ...message, targetEnvelopeServerId: this.associatedEnvelopeServerId }, this.targetOrigin);
+    this.bus.postMessage(
+      {
+        ...message,
+        targetEnvelopeServerId: this.associatedEnvelopeServerId,
+        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_BUS_CONTROLLER,
+      },
+      this.targetOrigin
+    );
   }
 
   public receive(
     message: EnvelopeBusMessage<any, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
     apiImpl: ApiToProvide
   ) {
-    if (this.envelopeId && this.envelopeId !== message.targetEnvelopeId) {
-      // When an envelopeId is defined, the message should be ignored if it contains a different targetEnvelopeId
+    if (message.directSender === EnvelopeBusMessageDirectSender.ENVELOPE_BUS_CONTROLLER) {
+      // When a message came from another EnvelopeBusController, it should be ignored
+      return;
+    }
+
+    if (this.envelopeId !== message.targetEnvelopeId) {
+      // The message should be ignored if it contains a different targetEnvelopeId.
+      // Messages coming from REMOTE EnvelopeServers will have targetEnvelopeId equal to undefined, and
+      // EnvelopeBusControllers will have envelopeId equal to undefined when paired with REMOTE EnvelopeServers,
+      // thus messages from REMOTE EnvelopeServers won't be ignored.
       return;
     }
 

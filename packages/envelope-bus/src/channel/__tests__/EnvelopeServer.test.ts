@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusMessage, EnvelopeBusMessagePurpose, FunctionPropertyNames } from "../../api";
+import {
+  EnvelopeBusMessage,
+  EnvelopeBusMessageDirectSender,
+  EnvelopeBusMessagePurpose,
+  FunctionPropertyNames,
+} from "../../api";
 import { EnvelopeServer } from "../EnvelopeServer";
 
 interface ApiToProvide {
@@ -107,6 +112,7 @@ describe("receive", () => {
         requestId: "any",
         type: "someRequest",
         data: [],
+        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_BUS_CONTROLLER,
       },
       api
     );
@@ -124,6 +130,7 @@ describe("receive", () => {
         requestId: "any",
         type: "someRequest",
         data: [],
+        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_BUS_CONTROLLER,
       },
       api
     );
@@ -139,6 +146,7 @@ describe("receive", () => {
         requestId: "any",
         type: "someRequest",
         data: ["param1"],
+        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_BUS_CONTROLLER,
       },
       api
     );
@@ -156,6 +164,7 @@ describe("receive", () => {
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "setText",
         data: ["some text"],
+        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_BUS_CONTROLLER,
       },
       api
     );
@@ -170,11 +179,31 @@ describe("receive", () => {
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "setText",
         data: ["some text"],
+        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_BUS_CONTROLLER,
       },
       api
     );
 
     expect(api.setText).toBeCalledWith("some text");
+  });
+
+  test("any request from another EnvelopeServer", async () => {
+    envelopeServer.receive(
+      {
+        targetEnvelopeServerId: envelopeServer.id,
+        purpose: EnvelopeBusMessagePurpose.REQUEST,
+        requestId: "any",
+        type: "someRequest",
+        data: ["param1"],
+        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_SERVER,
+      },
+      api
+    );
+
+    await delay(0);
+
+    expect(sentMessages.length).toStrictEqual(0);
+    expect(api.someRequest).not.toHaveBeenCalled();
   });
 });
 
