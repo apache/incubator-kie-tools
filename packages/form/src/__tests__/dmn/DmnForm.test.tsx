@@ -39,7 +39,6 @@ const props: Props = {
   setFormData: jest.fn(),
   formError: false,
   setFormError: jest.fn(),
-  updateDmnResults: jest.fn(),
   showInlineError: true,
   notificationsPanel: false,
   autosave: false,

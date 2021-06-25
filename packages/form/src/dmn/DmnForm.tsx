@@ -140,11 +140,7 @@ export function DmnForm(props: Props) {
               formDeepPreprocessing(form, deepValue, [...title, key]);
             }
           );
-        } else if (
-          form.definitions[property] &&
-          form.definitions[property]?.type === "array" &&
-          Object.hasOwnProperty.call(form.definitions[property]?.items, "$ref")
-        ) {
+        } else if (form.definitions[property] && form.definitions[property]?.type === "array") {
           formDeepPreprocessing(form, form.definitions[property]!.items as DmnDeepProperty);
         } else if (!Object.hasOwnProperty.call(form.definitions[property], "type")) {
           form.definitions[property]!.type = "string";
@@ -225,9 +221,12 @@ export function DmnForm(props: Props) {
     }, {} as { [x: string]: any });
   }, [jsonSchemaBridge]);
 
-  const handleContextProperties: (obj: any, property: any, operation?: "parse" | "stringify") => void = useCallback(
-    (obj, property, operation) => {
-      const key = property?.shift()!;
+  const handleContextProperties: (obj: any, property: string[], operation?: "parse" | "stringify") => void =
+    useCallback((obj, property, operation) => {
+      const key = property?.shift();
+      if (!key) {
+        return;
+      }
       const prop: any = obj[key];
       if (!prop) {
         return;
@@ -244,9 +243,7 @@ export function DmnForm(props: Props) {
       } catch (err) {
         obj[key] = prop;
       }
-    },
-    []
-  );
+    }, []);
 
   const previousFormSchema: any = usePrevious(props.formSchema);
   const removeDeletedPropertiesAndAddDefaultValues = useCallback(
