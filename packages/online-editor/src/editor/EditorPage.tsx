@@ -52,7 +52,6 @@ export enum AlertTypes {
   INVALID_GIST_FILENAME,
   SET_CONTENT_ERROR,
   UNSAVED,
-  SUCCESS_DMN_RUNNER,
   ERROR,
 }
 
@@ -466,16 +465,6 @@ export function EditorPage(props: Props) {
                             <p>{i18n.editorPage.alerts.updateGistFilename.yourNewUrl}:</p>
                             <p>{updateGistFilenameUrl}</p>
                           </Alert>
-                        </div>
-                      )}
-                      {!fullscreen && openAlert === AlertTypes.SUCCESS_DMN_RUNNER && (
-                        <div className={"kogito--alert-container"}>
-                          <Alert
-                            className={"kogito--alert"}
-                            variant="success"
-                            title={"Success connecting with DMN Runner"}
-                            actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-                          />
                         </div>
                       )}
                       {!fullscreen && openAlert === AlertTypes.INVALID_CURRENT_GIST && (
