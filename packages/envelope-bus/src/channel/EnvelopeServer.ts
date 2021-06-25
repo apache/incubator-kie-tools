@@ -18,10 +18,16 @@ import {
   ApiDefinition,
   EnvelopeBus,
   EnvelopeBusMessage,
+  EnvelopeBusMessageDirectSender,
   EnvelopeBusMessagePurpose,
   FunctionPropertyNames,
 } from "../api";
 import { EnvelopeBusMessageManager } from "../common";
+
+export enum EnvelopeServerType {
+  LOCAL = "local",
+  REMOTE = "remote",
+}
 
 export class EnvelopeServer<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
@@ -43,8 +49,14 @@ export class EnvelopeServer<
     bus: EnvelopeBus,
     public readonly origin: string,
     public readonly pollInit: (self: EnvelopeServer<ApiToProvide, ApiToConsume>) => Promise<any>,
+    public readonly type: EnvelopeServerType = EnvelopeServerType.REMOTE,
     public readonly manager = new EnvelopeBusMessageManager<ApiToProvide, ApiToConsume>(
-      (message) => bus.postMessage({ ...message, targetEnvelopeId: this.id }),
+      (message) =>
+        bus.postMessage({
+          ...message,
+          targetEnvelopeId: type === EnvelopeServerType.LOCAL ? this.id : undefined,
+          directSender: EnvelopeBusMessageDirectSender.ENVELOPE_SERVER,
+        }),
       "EnvelopeServer"
     )
   ) {
@@ -77,6 +89,11 @@ export class EnvelopeServer<
     message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
     api: ApiToProvide
   ) {
+    if (message.directSender === EnvelopeBusMessageDirectSender.ENVELOPE_SERVER) {
+      // When a message came from another EnvelopeServer, it should be ignored
+      return;
+    }
+
     if (message.targetEnvelopeId) {
       // When the message has a targetEnvelopeId, it was directed to a specific envelope,
       // thus the channel should ignore it.
