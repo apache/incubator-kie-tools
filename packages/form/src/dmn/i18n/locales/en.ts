@@ -56,6 +56,15 @@ export const en: DmnFormI18n = {
       skipped: "Evaluation skipped",
       failed: "Evaluation failed",
     },
+    error: {
+      title: `${en_common.terms.oops}!`,
+      explanation: "Result cannot be rendered because of an error.",
+      message: [
+        `This result contains a construct that is not yet supported. Please refer to `,
+        wrapped("jira"),
+        " and report an issue. Don't forget to upload the current file, and the used inputs",
+      ],
+    },
     dateTooltip: ["This value is in UTC. The value in your current timezone is ", wrapped("date")],
     withoutResponse: {
       title: "No response",

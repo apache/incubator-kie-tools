@@ -50,6 +50,11 @@ interface DmnFormDictionary extends ReferenceDictionary {
       skipped: string;
       failed: string;
     };
+    error: {
+      title: string;
+      explanation: string;
+      message: Array<string | Wrapped<"jira">>;
+    };
     dateTooltip: Array<string | Wrapped<"date">>;
     withoutResponse: {
       title: string;

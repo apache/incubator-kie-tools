@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
@@ -35,6 +35,16 @@ import { NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
 import { dmnFormI18n } from "./i18n";
 import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
 import "./styles.scss";
+import { ErrorBoundary } from "../common/ErrorBoundary";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
+
+const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
+
+enum DmnFormResultStatus {
+  EMPTY,
+  ERROR,
+  VALID,
+}
 
 const DATE_REGEX = /\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2]\d|3[0-1])T(?:[0-1]\d|2[0-3]):[0-5]\d:[0-5]\dZ/;
 
@@ -82,10 +92,13 @@ export interface DmnFormResultWithNotificationsPanelProps {
 }
 
 export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotificationsPanelProps) {
+  const [formResultStatus, setFormResultStatus] = useState<DmnFormResultStatus>(DmnFormResultStatus.EMPTY);
+  const [formResultError, setFormResultError] = useState<boolean>(false);
   const i18n = useMemo(() => {
     dmnFormI18n.setLocale(props.locale ?? navigator.language);
     return dmnFormI18n.getCurrent();
   }, [props.locale]);
+  const errorBoundaryRef = useRef<ErrorBoundary>(null);
 
   useEffect(() => {
     props.differences?.forEach((difference, index) => {
@@ -165,69 +178,78 @@ export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotif
     [i18n]
   );
 
-  const result = useCallback((dmnFormResult: Result) => {
-    switch (typeof dmnFormResult) {
-      case "boolean":
-        return dmnFormResult ? <i>true</i> : <i>false</i>;
-      case "number":
-        return dmnFormResult;
-      case "string":
-        if (dmnFormResult.match(DATE_REGEX)) {
-          const current = new Date(dmnFormResult);
-          return (
-            <>
-              <Tooltip
-                key={`date-tooltip-${dmnFormResult}`}
-                content={<I18nWrapped components={{ date: current.toString() }}>{i18n.result.dateTooltip}</I18nWrapped>}
-              >
-                <div className={"kogito--editor__dmn-form-result__results-date"}>
-                  <p className={"kogito--editor__dmn-form-result__results-date"}>{dmnFormResult}</p>
-                  <OutlinedQuestionCircleIcon />
-                </div>
-              </Tooltip>
-            </>
-          );
-        }
-        return dmnFormResult;
-      case "object":
-        if (dmnFormResult) {
-          if (Array.isArray(dmnFormResult)) {
+  const result = useCallback(
+    (dmnFormResult: Result) => {
+      switch (typeof dmnFormResult) {
+        case "boolean":
+          return dmnFormResult ? <i>true</i> : <i>false</i>;
+        case "number":
+          return dmnFormResult;
+        case "string":
+          if (dmnFormResult.match(DATE_REGEX)) {
+            const current = new Date(dmnFormResult);
+            return (
+              <>
+                <Tooltip
+                  key={`date-tooltip-${dmnFormResult}`}
+                  content={
+                    <I18nWrapped components={{ date: current.toString() }}>{i18n.result.dateTooltip}</I18nWrapped>
+                  }
+                >
+                  <div className={"kogito--editor__dmn-form-result__results-date"}>
+                    <p className={"kogito--editor__dmn-form-result__results-date"}>{dmnFormResult}</p>
+                    <OutlinedQuestionCircleIcon />
+                  </div>
+                </Tooltip>
+              </>
+            );
+          }
+          return dmnFormResult;
+        case "object":
+          if (dmnFormResult) {
+            if (Array.isArray(dmnFormResult)) {
+              return (
+                <DescriptionList>
+                  {dmnFormResult.map((dmnResult, index) => (
+                    <DescriptionListGroup key={`array-result-${index}`}>
+                      <DescriptionListTerm>{index}</DescriptionListTerm>
+                      {dmnResult && typeof dmnResult === "object" ? (
+                        <DescriptionListDescription>{result(dmnResult)}</DescriptionListDescription>
+                      ) : (
+                        <DescriptionListDescription>{dmnResult}</DescriptionListDescription>
+                      )}
+                    </DescriptionListGroup>
+                  ))}
+                </DescriptionList>
+              );
+            }
             return (
               <DescriptionList>
-                {dmnFormResult.map((dmnResult, index) => (
-                  <DescriptionListGroup key={`array-result-${index}`}>
-                    <DescriptionListTerm>{index}</DescriptionListTerm>
-                    <DescriptionListDescription>{dmnResult}</DescriptionListDescription>
+                {Object.entries(dmnFormResult).map(([key, value]: [string, object | string]) => (
+                  <DescriptionListGroup key={`object-result-${key}-${value}`}>
+                    <DescriptionListTerm>{key}</DescriptionListTerm>
+                    {value && typeof value === "object" ? (
+                      Object.entries(value).map(([key2, value2]: [string, any]) => (
+                        <DescriptionListGroup key={`object2-result-${key2}-${value2}`}>
+                          <DescriptionListTerm>{key2}</DescriptionListTerm>
+                          <DescriptionListDescription>{value2}</DescriptionListDescription>
+                        </DescriptionListGroup>
+                      ))
+                    ) : (
+                      <DescriptionListDescription>{result(value)}</DescriptionListDescription>
+                    )}
                   </DescriptionListGroup>
                 ))}
               </DescriptionList>
             );
           }
-          return (
-            <DescriptionList>
-              {Object.entries(dmnFormResult).map(([key, value]: [string, object | string]) => (
-                <DescriptionListGroup key={`object-result-${key}-${value}`}>
-                  <DescriptionListTerm>{key}</DescriptionListTerm>
-                  {value && typeof value === "object" ? (
-                    Object.entries(value).map(([key2, value2]: [string, any]) => (
-                      <DescriptionListGroup key={`object2-result-${key2}-${value2}`}>
-                        <DescriptionListTerm>{key2}</DescriptionListTerm>
-                        <DescriptionListDescription>{value2}</DescriptionListDescription>
-                      </DescriptionListGroup>
-                    ))
-                  ) : (
-                    <DescriptionListDescription>{result(value)}</DescriptionListDescription>
-                  )}
-                </DescriptionListGroup>
-              ))}
-            </DescriptionList>
-          );
-        }
-        return <i>(null)</i>;
-      default:
-        return <i>(null)</i>;
-    }
-  }, []);
+          return <i>(null)</i>;
+        default:
+          return <i>(null)</i>;
+      }
+    },
+    [i18n]
+  );
 
   const resultsToRender = useMemo(
     () =>
@@ -250,11 +272,55 @@ export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotif
     [props.results, resultStatus]
   );
 
+  const formResultErrorMessage = useMemo(
+    () => (
+      <div>
+        <EmptyState>
+          <EmptyStateIcon icon={ExclamationTriangleIcon} />
+          <TextContent>
+            <Text component={"h2"}>{i18n.result.error.title}</Text>
+          </TextContent>
+          <EmptyStateBody>
+            <TextContent>{i18n.result.error.explanation}</TextContent>
+            <br />
+            <TextContent>
+              <I18nWrapped
+                components={{
+                  jira: (
+                    <a href={KOGITO_JIRA_LINK} target={"_blank"}>
+                      {KOGITO_JIRA_LINK}
+                    </a>
+                  ),
+                }}
+              >
+                {i18n.result.error.message}
+              </I18nWrapped>
+            </TextContent>
+          </EmptyStateBody>
+        </EmptyState>
+      </div>
+    ),
+    [i18n]
+  );
+
+  useEffect(() => {
+    if (resultsToRender && resultsToRender.length > 0) {
+      setFormResultStatus(DmnFormResultStatus.VALID);
+    } else if (formResultError) {
+      setFormResultStatus(DmnFormResultStatus.ERROR);
+    } else {
+      setFormResultStatus(DmnFormResultStatus.EMPTY);
+    }
+  }, [resultsToRender, formResultError]);
+
+  // Resets the ErrorBoundary everytime the FormSchema is updated
+  useEffect(() => {
+    errorBoundaryRef.current?.reset();
+  }, [props.results]);
+
   return (
-    <div data-testid={"dmn-form-result"}>
-      {resultsToRender && resultsToRender.length > 0 ? (
-        resultsToRender
-      ) : (
+    <>
+      {formResultStatus === DmnFormResultStatus.EMPTY && (
         <EmptyState>
           <EmptyStateIcon icon={InfoCircleIcon} />
           <TextContent>
@@ -267,6 +333,12 @@ export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotif
           </EmptyStateBody>
         </EmptyState>
       )}
-    </div>
+      {formResultStatus === DmnFormResultStatus.ERROR && formResultErrorMessage}
+      {formResultStatus === DmnFormResultStatus.VALID && (
+        <ErrorBoundary ref={errorBoundaryRef} setHasError={setFormResultError} error={formResultErrorMessage}>
+          <div data-testid={"dmn-form-result"}>{resultsToRender}</div>
+        </ErrorBoundary>
+      )}
+    </>
   );
 }
