@@ -4,8 +4,8 @@ version: "2.0.0-snapshot"
 
 artifacts:
   - name: jitexecutor-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/jitexecutor-runner/2.0.0-SNAPSHOT/jitexecutor-runner-2.0.0-20210625.050205-109-runner.jar
-    md5: 98fb1a3ec60d2b7c1ab4516c8894183f
+    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/jitexecutor-runner/2.0.0-SNAPSHOT/jitexecutor-runner-2.0.0-20210628.051132-111-runner.jar
+    md5: 09309df1f56c35e8a1dac12eccefb35b
 
 execute:
   - script: configure
