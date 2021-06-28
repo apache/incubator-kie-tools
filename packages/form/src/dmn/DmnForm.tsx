@@ -277,7 +277,7 @@ export function DmnForm(props: Props) {
 
   const previousFormSchema: any = usePrevious(props.formSchema);
   const removeDeletedPropertiesAndAddDefaultValues = useCallback(
-    (formModel: any) => {
+    (model: any) => {
       const propertiesDifference = diff(
         previousFormSchema?.definitions?.InputSet?.properties ?? {},
         props.formSchema?.definitions?.InputSet?.properties ?? {}
@@ -286,7 +286,7 @@ export function DmnForm(props: Props) {
       // Remove property that has been deleted;
       return Object.entries(propertiesDifference).reduce(
         (form, [property, value]) => {
-          if (!value || value.type) {
+          if (!value || value.type || value.$ref) {
             delete (form as any)[property];
           }
           if (value?.format) {
@@ -294,7 +294,7 @@ export function DmnForm(props: Props) {
           }
           return form;
         },
-        { ...defaultFormValues, ...formModel }
+        { ...defaultFormValues, ...model }
       );
     },
     [props.formSchema, defaultFormValues]
