@@ -25,7 +25,7 @@ export function Home() {
           <Text component={"h1"}>Welcome to Kogito Tooling Examples</Text>
           <Text component={"p"}>
             <span>To understand what's in this webapp, please refer to the project </span>
-            <a href={"https://github.com/kiegroup/kogito-tooling-examples/blob/master/README.md"}>{"README"}</a>
+            <a href={"https://github.com/kiegroup/kogito-tooling-examples/blob/main/README.md"}>{"README"}</a>
             <span> on GitHub.</span>
           </Text>
         </TextContent>
