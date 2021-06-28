@@ -19,17 +19,22 @@ Release workflow (post 0.13.0)
 
 #### STAGING ARTIFACTS
 
-- [Phase 1] online-editor (GitHub Pages -> kiegroup.github.io/kogito-online-staging/{version}-prerelease)
+- [Phase 1] online-editor (GitHub release, GitHub Pages -> kiegroup.github.io/kogito-online-staging/{version}-prerelease)
 - [Phase 1] chrome-extension (GitHub release)
 - [Phase 1] desktop x3 (one for each OS) (GitHub release)
-- [Phase 1] hub x3 (one for each OS) (GitHub release, Dropbox? Drive?)
-- [Phase 1] dmn-runner x3 (one for each OS) (GitHub release, Dropbox? Drive?)
+- [Phase 1] hub x3 (one for each OS) (GitHub release)
+- [Phase 1] vscode-extension-dev (GitHub release)
+- [Phase 1] vscode-extension-backend-dev (GitHub release)
 -
+- [Phase 2] dmn-dev-sandbox-deployment-base (Quay.io)
+- [Phase 2] kie-tooling-extended-services x3 (one for each OS) (GitHub release, Dropbox? Drive?)
 - [Phase 2] vscode-extension-bpmn-editor (GitHub release -> Jenkins: VS Code Marketplace, OpenVSX)
 - [Phase 2] vscode-extension-dmn-editor (GitHub release -> Jenkins: VS Code Marketplace, OpenVSX)
 - [Phase 2] vscode-extension-pmml-editor (GitHub release -> Jenkins: VS Code Marketplace, OpenVSX)
 - [Phase 2] vscode-extension-kogito-bundle (GitHub release -> Jenkins: VS Code Marketplace, OpenVSX)
 - [Phase 2] vscode-extension-redhat-business-automation-bundle (GitHub release -> Jenkins: VS Code Marketplace, OpenVSX)
+-
+- [Phase 3] form-generation-tool (GitHub release)
 
 #### PRODUCTION ARTIFACTS
 
@@ -40,9 +45,9 @@ Release workflow (post 0.13.0)
 - [Phase 1] desktop x3 (one for each OS) (GitHub release)
 - [Phase 1] hub x3 (one for each OS) (GitHub release)
 - [Phase 1] NPM Packages (including Standalone Editors)
-- [Phase 1] dmn-runner x3 (one for each OS) (GitHub release)
-- [Phase 1] dmn-dev-sandbox-base-image (Quay.io)
 -
+- [Phase 2] dmn-runner x3 (one for each OS) (GitHub release)
+- [Phase 2] dmn-dev-sandbox-deployment-base (Quay.io)
 - [Phase 2] vscode-extension-bpmn-editor (GitHub release -> Jenkins: VS Code Marketplace, OpenVSX)
 - [Phase 2] vscode-extension-dmn-editor (GitHub release -> Jenkins: VS Code Marketplace, OpenVSX)
 - [Phase 2] vscode-extension-pmml-editor (GitHub release -> Jenkins: VS Code Marketplace, OpenVSX)
@@ -50,4 +55,4 @@ Release workflow (post 0.13.0)
 - [Phase 2] vscode-extension-redhat-business-automation-bundle (GitHub release -> Jenkins: VS Code Marketplace, OpenVSX)
 -
 - [Phase 3] Quarkus Dev UI (Maven central)
-- [Phase 3] form-generation CLI (GitHub release)
+- [Phase 3] form-generation-tool (GitHub release)
