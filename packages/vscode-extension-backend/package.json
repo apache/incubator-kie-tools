@@ -22,6 +22,11 @@
     "onLanguage:dmn",
     "onLanguage:scesim"
   ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
   "contributes": {
     "languages": [
       {
