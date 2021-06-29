@@ -60,6 +60,7 @@
     "circular-dependency-plugin": "^5.2.2",
     "compressing": "^1.5.1",
     "copy-webpack-plugin": "^8.1.1",
+    "cpr": "^3.0.1",
     "cross-var": "^1.1.0",
     "css-loader": "^5.2.4",
     "cypress": "^7.2.0",
@@ -81,6 +82,7 @@
     "identity-obj-proxy": "^3.0.0",
     "is-plain-object": "^5.0.0",
     "jest": "^26.6.3",
+    "jest-raw-loader": "^1.0.1",
     "jest-webextension-mock": "^3.7.9",
     "junit-report-merger": "^2.2.2",
     "lerna": "^4.0.0",
@@ -110,6 +112,7 @@
     "ts-loader": "^9.1.2",
     "typescript": "^4.2.4",
     "underscore": "^1.13.1",
+    "uniforms-bridge-simple-schema-2": "3.4.0",
     "url-loader": "^4.1.1",
     "vsce": "^1.88.0",
     "vscode-extension-tester": "^4.0.3",
@@ -120,8 +123,6 @@
     "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.7.3",
     "webpack-node-externals": "^3.0.0",
-    "zip-webpack-plugin": "^4.0.1",
-    "jest-raw-loader": "^1.0.1",
-    "uniforms-bridge-simple-schema-2": "3.4.0"
+    "zip-webpack-plugin": "^4.0.1"
   }
 }
