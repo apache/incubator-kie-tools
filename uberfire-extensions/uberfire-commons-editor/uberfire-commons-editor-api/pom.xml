@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.kie.kogito</groupId>
     <artifactId>uberfire-commons-editor</artifactId>
-    <version>8.1.1-SNAPSHOT</version>
+    <version>8.2.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>uberfire-commons-editor-api</artifactId>
