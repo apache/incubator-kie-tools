@@ -167,10 +167,10 @@ export const en: OnlineI18n = {
     init: {
       title: `Welcome to the ${en_common.names.dmn} Editor`,
       learnMore: `Take this 5-minute tour to learn more about the ${en_common.names.dmn} Editor in a brief and interactive way.`,
-      dmnRunnerIntro: `If you already know your way around the ${en_common.names.dmn} Editor, you can skip this tour and start executing your models with the ${en_common.names.dmn} Runner.`,
+      dmnRunnerIntro: `If you already know your way around the ${en_common.names.dmn} Editor, you can skip this tour and start executing your models with the ${en_common.names.dmnRunner}.`,
       takeTour: "Take tour",
       skipTour: "Skip tour",
-      skipTourAndUseDmnRunner: `Skip tour and start ${en_common.names.dmn} Runner`,
+      skipTourAndUseDmnRunner: `Skip tour and start ${en_common.names.dmnRunner}`,
     },
     end: {
       title: "Congratulations",
@@ -181,7 +181,7 @@ export const en: OnlineI18n = {
         secondStep: `Define the decision logic in the ${"Can drive?".bold()} node to return ${"true".bold()} when ${"Age".bold()} is
               greater than ${"21".bold()}, otherwise ${"false".bold()};`,
         thirdStep: "Execute the model.",
-        startDmnRunner: `Start ${en_common.names.dmn} Runner`,
+        startDmnRunner: `Start ${en_common.names.dmnRunner}`,
       },
       findUsefulInfo: "You can find useful information in the",
       learnDMN: `Learn ${en_common.names.dmn} in 15 minutes`,
@@ -207,8 +207,8 @@ export const en: OnlineI18n = {
   dmnRunner: {
     modal: {
       initial: {
-        runDmnModels: `Run your ${en_common.names.dmn} models and see live forms and results as you edit.`,
-        dmnRunnerExplanation: `With its validation and execution capabilities, ${en_common.names.dmnRunner} helps you create assertive DMN decisions. Input nodes become interactive fields on an auto-generated form, and the results are displayed as easy-to-read cards.`,
+        runDmnModels: `Run your ${en_common.names.dmn} models with the ${en_common.names.kieToolingExtendedServices} and see live forms and results as you edit.`,
+        kieToolingExtendedServicesExplanation: `With its validation and execution capabilities, ${en_common.names.kieToolingExtendedServices} helps you create assertive DMN decisions. Input nodes become interactive fields on an auto-generated form, and the results are displayed as easy-to-read cards.`,
         notificationPanelExplanation: [
           `The Notifications Panel `,
           wrapped("icon"),
@@ -216,31 +216,33 @@ export const en: OnlineI18n = {
         ],
       },
       wizard: {
-        title: `${en_common.names.dmnRunner} ${en_common.terms.setup}`,
-        description: `Choose your ${en_common.terms.os.full} and follow the instructions to install and start the ${en_common.names.dmnRunner}.`,
+        title: `${en_common.names.kieToolingExtendedServices} ${en_common.terms.setup}`,
+        description: `Choose your ${en_common.terms.os.full} and follow the instructions to install and start the ${en_common.names.kieToolingExtendedServices}.`,
         outdatedAlert: {
-          title: `${en_common.names.dmnRunner} is outdated!`,
-          message:
-            "It looks like you're using an incompatible version of the DMN Runner. Follow the instructions below to update.",
+          title: `${en_common.names.kieToolingExtendedServices} is outdated!`,
+          message: `It looks like you're using an incompatible version of the ${en_common.names.kieToolingExtendedServices}. Follow the instructions below to update.`,
         },
         stoppedAlert: {
-          title: `${en_common.names.dmnRunner} has stopped!`,
-          message:
-            "It looks like the DMN Runner has suddenly stopped, please follow these instructions to start it again.",
+          title: `${en_common.names.kieToolingExtendedServices} has stopped!`,
+          message: `It looks like the ${en_common.names.kieToolingExtendedServices} has suddenly stopped, please follow these instructions to start it again.`,
         },
         macos: {
           install: {
-            download: ` ${en_common.names.dmnRunner}.`,
+            download: ` ${en_common.names.kieToolingExtendedServices}.`,
             openFile: ["Open the ", wrapped("file"), " file."],
             dragFileToApplicationsFolder: ["Drag ", wrapped("file"), " to the ", wrapped("folder"), " folder."],
           },
           start: {
             stopped: {
-              startInstruction: `If you see the ${en_common.names.dmnRunner} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
-              launchDmnRunner: ["If not, start the DMN Runner app by launching ", wrapped("file"), "."],
+              startInstruction: `If you see the ${en_common.names.kieToolingExtendedServices} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
+              launchKieToolingExtendedServices: [
+                `If not, start the ${en_common.names.kieToolingExtendedServices} app by launching `,
+                wrapped("file"),
+                ".",
+              ],
             },
             firstTime: {
-              title: `If you just installed ${en_common.names.dmnRunner}:`,
+              title: `If you just installed ${en_common.names.kieToolingExtendedServices}:`,
               openApplicationsFolder: ["Open the ", wrapped("folder"), " folder."],
               again: "again",
               openAndCancel: [
@@ -256,46 +258,50 @@ export const en: OnlineI18n = {
                 ` and then select "${en_common.terms.open}".`,
               ],
             },
-            alreadyRanBefore: `If you already installed and ran the ${en_common.names.dmnRunner} before:`,
-            launchDmnRunner: ["Launch the ", wrapped("file")],
+            alreadyRanBefore: `If you already installed and ran the ${en_common.names.kieToolingExtendedServices} before:`,
+            launchKieToolingExtendedServices: ["Launch the ", wrapped("file")],
             advanced: {
               title: "Advanced Settings",
-              runFollowingCommand: `Run the following command on a Terminal tab to start ${en_common.names.dmnRunner} on a different port:`,
+              runFollowingCommand: `Run the following command on a Terminal tab to start ${en_common.names.kieToolingExtendedServices} on a different port:`,
             },
           },
         },
         windows: {
           install: {
-            keepDownload: ` ${en_common.names.dmnRunner}. Note that you'll probably have to right-click the download and choose "Keep"`,
+            keepDownload: ` ${en_common.names.kieToolingExtendedServices}. Note that you'll probably have to right-click the download and choose "Keep"`,
             moveTheFile: ["Move the ", wrapped("file"), " file to your preferred folder."],
           },
           start: {
             stopped: {
-              startInstruction: `If you see the ${en_common.names.dmnRunner} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
-              launchDmnRunner: ["If not, start the DMN Runner by opening the ", wrapped("file"), "file."],
+              startInstruction: `If you see the ${en_common.names.kieToolingExtendedServices} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
+              launchKieToolingExtendedServices: [
+                `If not, start the ${en_common.names.kieToolingExtendedServices} by opening the `,
+                wrapped("file"),
+                "file.",
+              ],
             },
             firstTime: {
-              title: `If you just installed ${en_common.names.dmnRunner}:`,
+              title: `If you just installed ${en_common.names.kieToolingExtendedServices}:`,
               openFolder: ["Open folder where you placed the ", wrapped("file"), " file."],
               runAnyway: `Double-click it and select "More info" then click on the "Run anyway" button.`,
             },
-            alreadyRanBefore: `If you already installed and ran the ${en_common.names.dmnRunner} before:`,
-            launchDmnRunner: ["Open the ", wrapped("file"), " file."],
+            alreadyRanBefore: `If you already installed and ran the ${en_common.names.kieToolingExtendedServices} before:`,
+            launchKieToolingExtendedServices: ["Open the ", wrapped("file"), " file."],
             advanced: {
               title: "Advanced Settings",
-              runFollowingCommand: `Run the following command on the Command prompt to start ${en_common.names.dmnRunner} on a different port:`,
+              runFollowingCommand: `Run the following command on the Command prompt to start ${en_common.names.kieToolingExtendedServices} on a different port:`,
             },
           },
         },
         linux: {
           install: {
-            download: ` ${en_common.names.dmnRunner}.`,
+            download: ` ${en_common.names.kieToolingExtendedServices}.`,
             installAppIndicator: "Install the AppIndicator lib for your system:",
             ubuntuDependency: [`${en_common.names.ubuntu}: `, wrapped("package")],
             fedoraDependency: [`${en_common.names.fedora}: `, wrapped("package")],
             extractContent: ["Extract the contents of ", wrapped("file"), " to your location of choice."],
             binaryExplanation: [
-              `The ${en_common.names.dmnRunner} binary, `,
+              `The ${en_common.names.kieToolingExtendedServices} binary, `,
               wrapped("file"),
               ", is a single binary file, which means you can add it to your PATH or even configure it to execute when your computer starts.",
             ],
@@ -314,12 +320,12 @@ export const en: OnlineI18n = {
             },
           },
         },
-        footerWaitingToConnect: `Waiting to connect to ${en_common.names.dmnRunner}`,
+        footerWaitingToConnect: `Waiting to connect to ${en_common.names.kieToolingExtendedServices}`,
         advancedSettings: {
           title: [
-            `The default ${en_common.names.dmnRunner} port is `,
+            `The default ${en_common.names.kieToolingExtendedServices} port is `,
             wrapped("port"),
-            `. If you're already using this port for another application, you can change the port used to connect with the ${en_common.names.dmnRunner}.`,
+            `. If you're already using this port for another application, you can change the port used to connect with the ${en_common.names.kieToolingExtendedServices}.`,
           ],
           label: "Port",
           helperTextInvalid: "Invalid port. Valid ports: 0 <= port <= 65353",
@@ -327,23 +333,23 @@ export const en: OnlineI18n = {
       },
       use: {
         title: "All set! 🎉",
-        connected: `You're connected to the ${en_common.names.dmnRunner}.`,
+        connected: `You're connected to the ${en_common.names.kieToolingExtendedServices}.`,
         fillTheForm: "Fill the Form on the Inputs column and automatically see the results on the Outputs column.",
         backToEditor: "Back to Editor",
       },
     },
     dropdown: {
-      label: `${en_common.names.dmnRunner}`,
-      setup: `${en_common.terms.setup} ${en_common.names.dmnRunner}`,
-      open: `${en_common.terms.open} ${en_common.names.dmnRunner} panel`,
-      close: `${en_common.terms.close} ${en_common.names.dmnRunner} panel`,
+      label: `${en_common.names.kieToolingExtendedServices}`,
+      setup: `${en_common.terms.setup} ${en_common.names.kieToolingExtendedServices}`,
+      open: `${en_common.terms.open} ${en_common.names.kieToolingExtendedServices} panel`,
+      close: `${en_common.terms.close} ${en_common.names.kieToolingExtendedServices} panel`,
     },
     button: {
       available: `This is only available in ${en_common.names.chrome} at the moment`,
       tooltip: {
-        outdated: `The ${en_common.names.dmnRunner} is outdated`,
-        connected: `The ${en_common.names.dmnRunner} is connected`,
-        disconnected: `The ${en_common.names.dmnRunner} is disconnected`,
+        outdated: `The ${en_common.names.kieToolingExtendedServices} is outdated`,
+        connected: `The ${en_common.names.kieToolingExtendedServices} is connected`,
+        disconnected: `The ${en_common.names.kieToolingExtendedServices} is disconnected`,
       },
     },
   },

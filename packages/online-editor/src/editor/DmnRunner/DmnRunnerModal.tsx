@@ -57,11 +57,20 @@ export function DmnRunnerModal() {
   const [modalPage, setModalPage] = useState<ModalPage>(ModalPage.INITIAL);
   const dmnRunner = useDmnRunner();
 
-  const DMN_RUNNER_FILE_MACOS_DMG = useMemo(() => `dmn_runner_macos_${dmnRunner.version}.dmg`, [dmnRunner.version]);
-  const DMN_RUNNER_FILE_MACOS_APP = useMemo(() => "Kogito DMN Runner.app", []);
-  const DMN_RUNNER_FILE_WINDOWS_EXE = useMemo(() => `dmn_runner_windows_${dmnRunner.version}.exe`, [dmnRunner.version]);
-  const DMN_RUNNER_FILE_LINUX_TAR = useMemo(() => `dmn_runner_linux_${dmnRunner.version}.tar.gz`, [dmnRunner.version]);
-  const DMN_RUNNER_FILE_LINUX_BINARY = useMemo(() => "dmn_runner", []);
+  const DMN_RUNNER_FILE_MACOS_DMG = useMemo(
+    () => `kie_tooling_extended_services_macos_${dmnRunner.version}.dmg`,
+    [dmnRunner.version]
+  );
+  const DMN_RUNNER_FILE_MACOS_APP = useMemo(() => "Kogito KIE Tooling Extended Services.app", []);
+  const DMN_RUNNER_FILE_WINDOWS_EXE = useMemo(
+    () => `kie_tooling_extended_services_windows_${dmnRunner.version}.exe`,
+    [dmnRunner.version]
+  );
+  const DMN_RUNNER_FILE_LINUX_TAR = useMemo(
+    () => `kie_tooling_extended_services_linux_${dmnRunner.version}.tar.gz`,
+    [dmnRunner.version]
+  );
+  const DMN_RUNNER_FILE_LINUX_BINARY = useMemo(() => "kie_tooling_extended_services", []);
 
   const downloadDmnRunnerUrl = useMemo(() => {
     switch (operatingSystem) {
@@ -157,7 +166,7 @@ export function DmnRunnerModal() {
                     <TextContent>
                       <Text component={TextVariants.p}>
                         <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_MACOS_APP}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.macos.start.stopped.launchDmnRunner}
+                          {i18n.dmnRunner.modal.wizard.macos.start.stopped.launchKieToolingExtendedServices}
                         </I18nWrapped>
                       </Text>
                     </TextContent>
@@ -216,7 +225,7 @@ export function DmnRunnerModal() {
                     <TextContent>
                       <Text component={TextVariants.p}>
                         <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_MACOS_APP}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.macos.start.launchDmnRunner}
+                          {i18n.dmnRunner.modal.wizard.macos.start.launchKieToolingExtendedServices}
                         </I18nWrapped>
                       </Text>
                     </TextContent>
@@ -332,7 +341,7 @@ export function DmnRunnerModal() {
                     <TextContent>
                       <Text component={TextVariants.p}>
                         <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_WINDOWS_EXE}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.windows.start.stopped.launchDmnRunner}
+                          {i18n.dmnRunner.modal.wizard.windows.start.stopped.launchKieToolingExtendedServices}
                         </I18nWrapped>
                       </Text>
                     </TextContent>
@@ -375,7 +384,7 @@ export function DmnRunnerModal() {
                     <TextContent>
                       <Text component={TextVariants.p}>
                         <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_WINDOWS_EXE}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.windows.start.launchDmnRunner}
+                          {i18n.dmnRunner.modal.wizard.windows.start.launchKieToolingExtendedServices}
                         </I18nWrapped>
                       </Text>
                     </TextContent>
@@ -526,7 +535,7 @@ export function DmnRunnerModal() {
                   <Text component={TextVariants.p}>
                     {i18n.dmnRunner.modal.wizard.linux.start.runCommand}
                     <Text component={TextVariants.p} className={"kogito--code"}>
-                      ./dmn_runner
+                      ./kie-tooling-extended-services
                     </Text>
                   </Text>
                 </TextContent>
@@ -550,7 +559,7 @@ export function DmnRunnerModal() {
                 <br />
                 <TextContent>
                   <Text component={TextVariants.p} className={"kogito--code"}>
-                    ./dmn_runner -p {dmnRunner.port}
+                    ./kie-tooling-extended-services -p {dmnRunner.port}
                   </Text>
                 </TextContent>
                 <br />
@@ -671,7 +680,9 @@ export function DmnRunnerModal() {
             <br />
             <div>
               <TextContent>
-                <Text component={TextVariants.p}>{i18n.dmnRunner.modal.initial.dmnRunnerExplanation}</Text>
+                <Text component={TextVariants.p}>
+                  {i18n.dmnRunner.modal.initial.kieToolingExtendedServicesExplanation}
+                </Text>
               </TextContent>
             </div>
             <br />

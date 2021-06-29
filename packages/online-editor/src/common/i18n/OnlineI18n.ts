@@ -203,7 +203,7 @@ interface OnlineDictionary extends ReferenceDictionary {
     modal: {
       initial: {
         runDmnModels: string;
-        dmnRunnerExplanation: string;
+        kieToolingExtendedServicesExplanation: string;
         notificationPanelExplanation: Array<string | Wrapped<"icon">>;
       };
       wizard: {
@@ -226,7 +226,7 @@ interface OnlineDictionary extends ReferenceDictionary {
           start: {
             stopped: {
               startInstruction: string;
-              launchDmnRunner: Array<string | Wrapped<"file">>;
+              launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
             };
             firstTime: {
               title: string;
@@ -236,7 +236,7 @@ interface OnlineDictionary extends ReferenceDictionary {
               openInstruction: Array<string | Wrapped<"file" | "again">>;
             };
             alreadyRanBefore: string;
-            launchDmnRunner: Array<string | Wrapped<"file">>;
+            launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
             advanced: {
               title: string;
               runFollowingCommand: string;
@@ -251,7 +251,7 @@ interface OnlineDictionary extends ReferenceDictionary {
           start: {
             stopped: {
               startInstruction: string;
-              launchDmnRunner: Array<string | Wrapped<"file">>;
+              launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
             };
             firstTime: {
               title: string;
@@ -259,7 +259,7 @@ interface OnlineDictionary extends ReferenceDictionary {
               runAnyway: string;
             };
             alreadyRanBefore: string;
-            launchDmnRunner: Array<string | Wrapped<"file">>;
+            launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
             advanced: {
               title: string;
               runFollowingCommand: string;

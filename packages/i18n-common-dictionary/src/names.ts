@@ -29,6 +29,7 @@ export const names = {
   desktop: "Desktop",
   dmn: "DMN",
   dmnRunner: "DMN Runner",
+  kieToolingExtendedServices: "KIE Tooling Extended Services",
   fedora: "Fedora",
   pmml: "PMML",
   dropbox: "Dropbox",
