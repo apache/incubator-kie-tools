@@ -27,7 +27,7 @@ import { SelectOs } from "../../common/SelectOs";
 import { AnimatedTripleDotLabel } from "../../common/AnimatedTripleDotLabel";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useDmnRunner } from "./DmnRunnerContext";
-import { DMN_RUNNER_DEFAULT_PORT } from "./DmnRunnerContextProvider";
+import { KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT } from "./DmnRunnerContextProvider";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -57,20 +57,20 @@ export function DmnRunnerModal() {
   const [modalPage, setModalPage] = useState<ModalPage>(ModalPage.INITIAL);
   const dmnRunner = useDmnRunner();
 
-  const DMN_RUNNER_FILE_MACOS_DMG = useMemo(
+  const KIE_TOOLING_EXTENDED_SERVICES_MACOS_DMG = useMemo(
     () => `kie_tooling_extended_services_macos_${dmnRunner.version}.dmg`,
     [dmnRunner.version]
   );
-  const DMN_RUNNER_FILE_MACOS_APP = useMemo(() => "Kogito KIE Tooling Extended Services.app", []);
-  const DMN_RUNNER_FILE_WINDOWS_EXE = useMemo(
+  const KIE_TOOLING_EXTENDED_SERVICES_MACOS_APP = useMemo(() => "Kogito KIE Tooling Extended Services.app", []);
+  const KIE_TOOLING_EXTENDED_SERVICES_WINDOWS_EXE = useMemo(
     () => `kie_tooling_extended_services_windows_${dmnRunner.version}.exe`,
     [dmnRunner.version]
   );
-  const DMN_RUNNER_FILE_LINUX_TAR = useMemo(
+  const KIE_TOOLING_EXTENDED_SERVICES_LINUX_TAG_GZ = useMemo(
     () => `kie_tooling_extended_services_linux_${dmnRunner.version}.tar.gz`,
     [dmnRunner.version]
   );
-  const DMN_RUNNER_FILE_LINUX_BINARY = useMemo(() => "kie_tooling_extended_services", []);
+  const KIE_TOOLING_EXTENDED_SERVICES_BINARIES = useMemo(() => "kie_tooling_extended_services", []);
 
   const downloadDmnRunnerUrl = useMemo(() => {
     switch (operatingSystem) {
@@ -116,7 +116,7 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_MACOS_DMG}</Label> }}>
+                    <I18nWrapped components={{ file: <Label>{KIE_TOOLING_EXTENDED_SERVICES_MACOS_DMG}</Label> }}>
                       {i18n.dmnRunner.modal.wizard.macos.install.openFile}
                     </I18nWrapped>
                   </Text>
@@ -127,7 +127,7 @@ export function DmnRunnerModal() {
                   <Text>
                     <I18nWrapped
                       components={{
-                        file: <Label>{DMN_RUNNER_FILE_MACOS_APP}</Label>,
+                        file: <Label>{KIE_TOOLING_EXTENDED_SERVICES_MACOS_APP}</Label>,
                         folder: <Label>{i18n.terms.macosApplicationFolder}</Label>,
                       }}
                     >
@@ -165,7 +165,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_MACOS_APP}</Label> }}>
+                        <I18nWrapped components={{ file: <Label>{KIE_TOOLING_EXTENDED_SERVICES_MACOS_APP}</Label> }}>
                           {i18n.dmnRunner.modal.wizard.macos.start.stopped.launchKieToolingExtendedServices}
                         </I18nWrapped>
                       </Text>
@@ -192,7 +192,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_MACOS_APP}</Label> }}>
+                        <I18nWrapped components={{ file: <Label>{KIE_TOOLING_EXTENDED_SERVICES_MACOS_APP}</Label> }}>
                           {i18n.dmnRunner.modal.wizard.macos.start.firstTime.openAndCancel}
                         </I18nWrapped>
                       </Text>
@@ -203,7 +203,7 @@ export function DmnRunnerModal() {
                       <Text component={TextVariants.p}>
                         <I18nWrapped
                           components={{
-                            file: <Label>{DMN_RUNNER_FILE_MACOS_APP}</Label>,
+                            file: <Label>{KIE_TOOLING_EXTENDED_SERVICES_MACOS_APP}</Label>,
                             again: <b>{i18n.dmnRunner.modal.wizard.macos.start.firstTime.again}</b>,
                           }}
                         >
@@ -224,7 +224,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_MACOS_APP}</Label> }}>
+                        <I18nWrapped components={{ file: <Label>{KIE_TOOLING_EXTENDED_SERVICES_MACOS_APP}</Label> }}>
                           {i18n.dmnRunner.modal.wizard.macos.start.launchKieToolingExtendedServices}
                         </I18nWrapped>
                       </Text>
@@ -306,7 +306,7 @@ export function DmnRunnerModal() {
               </ListItem>
               <ListItem>
                 <TextContent>
-                  <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_WINDOWS_EXE}</Label> }}>
+                  <I18nWrapped components={{ file: <Label>{KIE_TOOLING_EXTENDED_SERVICES_WINDOWS_EXE}</Label> }}>
                     {i18n.dmnRunner.modal.wizard.windows.install.moveTheFile}
                   </I18nWrapped>
                 </TextContent>
@@ -340,7 +340,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_WINDOWS_EXE}</Label> }}>
+                        <I18nWrapped components={{ file: <Label>{KIE_TOOLING_EXTENDED_SERVICES_WINDOWS_EXE}</Label> }}>
                           {i18n.dmnRunner.modal.wizard.windows.start.stopped.launchKieToolingExtendedServices}
                         </I18nWrapped>
                       </Text>
@@ -358,7 +358,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_WINDOWS_EXE}</Label> }}>
+                        <I18nWrapped components={{ file: <Label>{KIE_TOOLING_EXTENDED_SERVICES_WINDOWS_EXE}</Label> }}>
                           {i18n.dmnRunner.modal.wizard.windows.start.firstTime.openFolder}
                         </I18nWrapped>
                       </Text>
@@ -383,7 +383,7 @@ export function DmnRunnerModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_WINDOWS_EXE}</Label> }}>
+                        <I18nWrapped components={{ file: <Label>{KIE_TOOLING_EXTENDED_SERVICES_WINDOWS_EXE}</Label> }}>
                           {i18n.dmnRunner.modal.wizard.windows.start.launchKieToolingExtendedServices}
                         </I18nWrapped>
                       </Text>
@@ -481,7 +481,7 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_LINUX_TAR}</Label> }}>
+                    <I18nWrapped components={{ file: <Label>{KIE_TOOLING_EXTENDED_SERVICES_LINUX_TAG_GZ}</Label> }}>
                       {i18n.dmnRunner.modal.wizard.linux.install.extractContent}
                     </I18nWrapped>
                   </Text>
@@ -491,7 +491,7 @@ export function DmnRunnerModal() {
             <br />
             <TextContent>
               <Text component={TextVariants.p}>
-                <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_LINUX_BINARY}</Label> }}>
+                <I18nWrapped components={{ file: <Label>{KIE_TOOLING_EXTENDED_SERVICES_BINARIES}</Label> }}>
                   {i18n.dmnRunner.modal.wizard.linux.install.binaryExplanation}
                 </I18nWrapped>
               </Text>
@@ -524,7 +524,7 @@ export function DmnRunnerModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_LINUX_BINARY}</Label> }}>
+                    <I18nWrapped components={{ file: <Label>{KIE_TOOLING_EXTENDED_SERVICES_BINARIES}</Label> }}>
                       {i18n.dmnRunner.modal.wizard.linux.start.goToFolder}
                     </I18nWrapped>
                   </Text>
@@ -551,7 +551,7 @@ export function DmnRunnerModal() {
                 <br />
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>{DMN_RUNNER_FILE_LINUX_BINARY}</Label> }}>
+                    <I18nWrapped components={{ file: <Label>{KIE_TOOLING_EXTENDED_SERVICES_BINARIES}</Label> }}>
                       {i18n.dmnRunner.modal.wizard.linux.start.advanced.runFollowingCommand}
                     </I18nWrapped>
                   </Text>
@@ -800,7 +800,9 @@ function DmnRunnerPortForm() {
   return (
     <>
       <Text component={TextVariants.p}>
-        <I18nWrapped components={{ port: <Text className={"kogito--code"}>{DMN_RUNNER_DEFAULT_PORT}</Text> }}>
+        <I18nWrapped
+          components={{ port: <Text className={"kogito--code"}>{KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT}</Text> }}
+        >
           {i18n.dmnRunner.modal.wizard.advancedSettings.title}
         </I18nWrapped>
       </Text>

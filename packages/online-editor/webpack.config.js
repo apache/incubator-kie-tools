@@ -84,26 +84,34 @@ function getDownloadHubArgs(argv) {
 }
 
 function getDmnRunnerArgs(argv) {
-  let linuxDownloadUrl = argv["DMN_RUNNER__linuxDownloadUrl"] || process.env["DMN_RUNNER__linuxDownloadUrl"];
-  let macOsDownloadUrl = argv["DMN_RUNNER__macOsDownloadUrl"] || process.env["DMN_RUNNER__macOsDownloadUrl"];
-  let windowsDownloadUrl = argv["DMN_RUNNER__windowsDownloadUrl"] || process.env["DMN_RUNNER__windowsDownloadUrl"];
-  let compatibleVersion = argv["DMN_RUNNER__compatibleVersion"] || process.env["DMN_RUNNER__compatibleVersion"];
+  let linuxDownloadUrl =
+    argv["KIE_TOOLING_EXTENDED_SERVICES__linuxDownloadUrl"] ||
+    process.env["KIE_TOOLING_EXTENDED_SERVICES__linuxDownloadUrl"];
+  let macOsDownloadUrl =
+    argv["KIE_TOOLING_EXTENDED_SERVICES__macOsDownloadUrl"] ||
+    process.env["KIE_TOOLING_EXTENDED_SERVICES__macOsDownloadUrl"];
+  let windowsDownloadUrl =
+    argv["KIE_TOOLING_EXTENDED_SERVICES__windowsDownloadUrl"] ||
+    process.env["KIE_TOOLING_EXTENDED_SERVICES__windowsDownloadUrl"];
+  let compatibleVersion =
+    argv["KIE_TOOLING_EXTENDED_SERVICES__compatibleVersion"] ||
+    process.env["KIE_TOOLING_EXTENDED_SERVICES__compatibleVersion"];
 
   compatibleVersion = compatibleVersion || `0.0.0`;
   macOsDownloadUrl =
     macOsDownloadUrl ||
-    `https://github.com/kiegroup/kogito-tooling-go/releases/download/${compatibleVersion}/dmn_runner_macos_${compatibleVersion}.dmg`;
+    `https://github.com/kiegroup/kogito-tooling-go/releases/download/${compatibleVersion}/kie_tooling_extended_services_macos_${compatibleVersion}.dmg`;
   windowsDownloadUrl =
     windowsDownloadUrl ||
-    `https://github.com/kiegroup/kogito-tooling-go/releases/download/${compatibleVersion}/dmn_runner_windows_${compatibleVersion}.exe`;
+    `https://github.com/kiegroup/kogito-tooling-go/releases/download/${compatibleVersion}/kie_tooling_extended_services_windows_${compatibleVersion}.exe`;
   linuxDownloadUrl =
     linuxDownloadUrl ||
-    `https://github.com/kiegroup/kogito-tooling-go/releases/download/${compatibleVersion}/dmn_runner_linux_${compatibleVersion}.tar.gz`;
+    `https://github.com/kiegroup/kogito-tooling-go/releases/download/${compatibleVersion}/kie_tooling_extended_services_linux_${compatibleVersion}.tar.gz`;
 
-  console.info("DMN Runner :: Linux download URL: " + linuxDownloadUrl);
-  console.info("DMN Runner :: macOS download URL: " + macOsDownloadUrl);
-  console.info("DMN Runner :: Windows download URL: " + windowsDownloadUrl);
-  console.info("DMN Runner :: Compatible version: " + compatibleVersion);
+  console.info("KIE Tooling Extended Services :: Linux download URL: " + linuxDownloadUrl);
+  console.info("KIE Tooling Extended Services :: macOS download URL: " + macOsDownloadUrl);
+  console.info("KIE Tooling Extended Services :: Windows download URL: " + windowsDownloadUrl);
+  console.info("KIE Tooling Extended Services :: Compatible version: " + compatibleVersion);
 
   return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
 }

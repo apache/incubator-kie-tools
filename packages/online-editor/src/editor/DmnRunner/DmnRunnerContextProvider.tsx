@@ -27,10 +27,10 @@ import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelC
 import { useOnlineI18n } from "../../common/i18n";
 import { NotificationType } from "@kogito-tooling/notifications/dist/api";
 
-const DMN_RUNNER_POLLING_TIME = 1000;
+const KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME = 1000;
 export const THROTTLING_TIME = 200;
-const DMN_RUNNER_PORT_COOKIE_NAME = "dmn-runner-port";
-export const DMN_RUNNER_DEFAULT_PORT = "21345";
+const KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tooling-extended-services-port";
+export const KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT = "21345";
 
 interface Props {
   children: React.ReactNode;
@@ -51,7 +51,9 @@ export function DmnRunnerContextProvider(props: Props) {
     globalContext.file.fileExtension === "dmn" ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE
   );
   const [formSchema, setFormSchema] = useState<DmnFormSchema>();
-  const [port, setPort] = useState(() => getCookie(DMN_RUNNER_PORT_COOKIE_NAME) ?? DMN_RUNNER_DEFAULT_PORT);
+  const [port, setPort] = useState(
+    () => getCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT
+  );
   const service = useMemo(() => new DmnRunnerService(port), [port]);
   const version = useMemo(() => process.env.WEBPACK_REPLACE__dmnRunnerCompatibleVersion ?? "0.0.0", []);
   const [formError, setFormError] = useState(false);
@@ -82,7 +84,7 @@ export function DmnRunnerContextProvider(props: Props) {
           setDrawerExpanded(false);
           window.clearInterval(detectCrashesOrStops);
         });
-      }, DMN_RUNNER_POLLING_TIME);
+      }, KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME);
 
       // After the detection of the DMN Runner, set the schema for the first time
       if (props.isEditorReady) {
@@ -113,14 +115,14 @@ export function DmnRunnerContextProvider(props: Props) {
         .catch((err) => {
           console.debug(err);
         });
-    }, DMN_RUNNER_POLLING_TIME);
+    }, KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME);
 
     return () => window.clearInterval(detectDmnRunner);
   }, [props.editor, props.isEditorReady, isModalOpen, status, service]);
 
   const saveNewPort = useCallback((newPort: string) => {
     setPort(newPort);
-    setCookie(DMN_RUNNER_PORT_COOKIE_NAME, newPort);
+    setCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME, newPort);
   }, []);
 
   // Subscribe to any change on the DMN Editor to validate the model and update the JSON Schema

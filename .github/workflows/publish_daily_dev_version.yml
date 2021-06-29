@@ -64,10 +64,10 @@ jobs:
           DOWNLOAD_HUB_linuxUrl: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
           DOWNLOAD_HUB_macOsUrl: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
           DOWNLOAD_HUB_windowsUrl: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
-          DMN_RUNNER__linuxDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/dmn_runner_linux_${{ steps.release_json.outputs.tag }}.tar.gz"
-          DMN_RUNNER__macOsDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/dmn_runner_macos_${{ steps.release_json.outputs.tag }}.dmg"
-          DMN_RUNNER__windowsDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/dmn_runner_windows_${{ steps.release_json.outputs.tag }}.exe"
-          DMN_RUNNER__compatibleVersion: "${{ steps.release_json.outputs.tag }}"
+          KIE_TOOLING_EXTENDED_SERVICES__linuxDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/kie_tooling_extended_services_linux_${{ steps.release_json.outputs.tag }}.tar.gz"
+          KIE_TOOLING_EXTENDED_SERVICES__macOsDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/kie_tooling_extended_services_macos_${{ steps.release_json.outputs.tag }}.dmg"
+          KIE_TOOLING_EXTENDED_SERVICES__windowsDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/kie_tooling_extended_services_windows_${{ steps.release_json.outputs.tag }}.exe"
+          KIE_TOOLING_EXTENDED_SERVICES__compatibleVersion: "${{ steps.release_json.outputs.tag }}"
           DISPLAY: ":99.0"
         run: |
           cd kogito-tooling
