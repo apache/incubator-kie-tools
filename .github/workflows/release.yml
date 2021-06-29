@@ -74,7 +74,7 @@ jobs:
         with:
           upload_url: ${{ steps.get-release.outputs.upload_url }}
           asset_path: ./scripts/macos/target/Kogito.dmg
-          asset_name: dmn_runner_macos_${{ steps.get-release.outputs.tag_name }}.dmg
+          asset_name: kie_tooling_extended_services_macos_${{ steps.get-release.outputs.tag_name }}.dmg
           asset_content_type: application/octet-stream
 
       - name: Build Linux
@@ -97,8 +97,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get-release.outputs.upload_url }}
-          asset_path: ./build/linux/dmn_runner_linux.tar.gz
-          asset_name: dmn_runner_linux_${{ steps.get-release.outputs.tag_name }}.tar.gz
+          asset_path: ./build/linux/kie_tooling_extended_services_linux.tar.gz
+          asset_name: kie_tooling_extended_services_linux_${{ steps.get-release.outputs.tag_name }}.tar.gz
           asset_content_type: application/tar+gzip
 
       - name: Configure Pagefile
@@ -139,6 +139,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get-release.outputs.upload_url }}
-          asset_path: ./build/win/dmn_runner.exe
-          asset_name: dmn_runner_windows_${{ steps.get-release.outputs.tag_name }}.exe
+          asset_path: ./build/win/kie_tooling_extended_services.exe
+          asset_name: kie_tooling_extended_services_windows_${{ steps.get-release.outputs.tag_name }}.exe
           asset_content_type: application/vnd.microsoft.portable-executable

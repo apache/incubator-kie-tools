@@ -1,7 +1,7 @@
 #! /bin/bash
 
 
-APP="target/Kogito DMN Runner.app"
+APP="target/KIE Tooling Extended Services.app"
 CONTENTS=$APP/Contents
 MACOS=$CONTENTS/MacOs
 RESOURCES=$CONTENTS/Resources
@@ -14,9 +14,9 @@ mkdir -p "$CONTENTS"
 mkdir "$MACOS"
 mkdir "$RESOURCES"
 
-cp ../../build/darwin/dmn_runner "$MACOS"/kogito
+cp ../../build/darwin/kie_tooling_extended_services "$MACOS"/kogito
 cp src/Info.plist "$CONTENTS"
-cp src/KogitoLogo.png "$RESOURCES"
+cp src/KieLogo.png "$RESOURCES"
 ln -s /Applications $APPLICATIONS
 
 hdiutil create /tmp/tmp.dmg -ov -volname Kogito -fs HFS+ -srcfolder "target" 

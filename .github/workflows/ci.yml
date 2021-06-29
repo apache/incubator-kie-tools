@@ -65,7 +65,7 @@ jobs:
         if: matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v2
         with:
-          name: dmn_runner_macos
+          name: kie_tooling_extended_services_macos
           path: "./scripts/macos/target/Kogito.dmg"
 
       - name: Build Linux
@@ -84,8 +84,8 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v2
         with:
-          name: dmn_runner_linux
-          path: "./build/linux/dmn_runner_linux.tar.gz"
+          name: kie_tooling_extended_services_linux
+          path: "./build/linux/kie_tooling_extended_services_linux.tar.gz"
 
       - name: Configure Pagefile
         if: matrix.os == 'windows-2016'
@@ -121,5 +121,5 @@ jobs:
         if: matrix.os == 'windows-2016'
         uses: actions/upload-artifact@v2
         with:
-          name: dmn_runner_windows
-          path: "./build/win/dmn_runner.exe"
+          name: kie_tooling_extended_services_windows
+          path: "./build/win/kie_tooling_extended_services.exe"

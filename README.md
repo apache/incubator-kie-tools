@@ -2,7 +2,7 @@
 
 Go applications for Kogito Tooling. Right now we have:
 
-- DMN Runner backend
+- KIE Tooling Extended Service backend
 
 ## Requirements
 

@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>kogito</string>
 	<key>CFBundleIconFile</key>
-	<string>KogitoLogo.png</string>
+	<string>KieLogo.png</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.kie.kogito</string>
 	<key>CFBundleInfoDictionaryVersion</key>
