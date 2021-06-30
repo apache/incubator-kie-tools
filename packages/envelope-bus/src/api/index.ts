@@ -73,6 +73,7 @@ export interface EnvelopeBusMessage<D, T> {
   purpose: EnvelopeBusMessagePurpose;
   error?: any; // Used on RESPONSES when an exception happens when processing a request
   targetEnvelopeId?: string; // Used for messages going from the EnvelopeServer to the Envelope
+  directSender?: EnvelopeBusMessageDirectSender;
 }
 
 export enum EnvelopeBusMessagePurpose {
@@ -81,6 +82,11 @@ export enum EnvelopeBusMessagePurpose {
   SUBSCRIPTION = "subscription",
   UNSUBSCRIPTION = "unsubscription",
   NOTIFICATION = "notification",
+}
+
+export enum EnvelopeBusMessageDirectSender {
+  ENVELOPE_BUS_CONTROLLER = "envelopeBusController",
+  ENVELOPE_SERVER = "envelopeServer",
 }
 
 export interface EnvelopeBus {

@@ -25,7 +25,7 @@ jobs:
 
       - name: Create Draft Release
         id: create_release
-        uses: actions/create-release@master
+        uses: actions/create-release@v1.1.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -116,7 +116,7 @@ jobs:
       - name: Upload VS Code Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         id: upload-vscode-extension
-        uses: actions/upload-release-asset@master
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -128,7 +128,7 @@ jobs:
       - name: Upload Chrome Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         id: upload-chrome-extension
-        uses: actions/upload-release-asset@master
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -140,7 +140,7 @@ jobs:
       - name: Upload Desktop App for Linux (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         id: upload-desktop-app-linux
-        uses: actions/upload-release-asset@master
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -152,7 +152,7 @@ jobs:
       - name: Upload Desktop App for macOS (macOS only)
         if: matrix.os == 'macos-latest'
         id: upload-desktop-app-macos
-        uses: actions/upload-release-asset@master
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -167,7 +167,7 @@ jobs:
       - name: Upload Desktop App for Windows (Windows only)
         if: matrix.os == 'windows-latest'
         id: upload-desktop-app-windows
-        uses: actions/upload-release-asset@master
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -179,7 +179,7 @@ jobs:
       - name: Upload Hub App for Linux (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         id: upload-hub-app-linux
-        uses: actions/upload-release-asset@master
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -191,7 +191,7 @@ jobs:
       - name: Upload Hub App for macOS (macOS only)
         if: matrix.os == 'macos-latest'
         id: upload-hub-app-macos
-        uses: actions/upload-release-asset@master
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -206,7 +206,7 @@ jobs:
       - name: Upload Hub App for Windows (Windows only)
         if: matrix.os == 'windows-latest'
         id: upload-hub-app-windows
-        uses: actions/upload-release-asset@master
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

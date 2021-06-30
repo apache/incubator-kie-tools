@@ -15,7 +15,7 @@
  */
 
 import { ApiDefinition, EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
-import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
+import { EnvelopeServer, EnvelopeServerType } from "@kogito-tooling/envelope-bus/dist/channel";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useRef } from "react";
 import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
@@ -82,10 +82,14 @@ export function EmbeddedEnvelopeFactory<
 
     const envelopeServer = useMemo(
       () =>
-        new EnvelopeServer<ApiToProvide, ApiToConsume>(bus, props.origin, (self) =>
-          props.pollInit(self, () =>
-            props.config.containerType === ContainerType.DIV ? divRef.current! : iframeRef.current!
-          )
+        new EnvelopeServer<ApiToProvide, ApiToConsume>(
+          bus,
+          props.origin,
+          (self) =>
+            props.pollInit(self, () =>
+              props.config.containerType === ContainerType.DIV ? divRef.current! : iframeRef.current!
+            ),
+          props.config.containerType === ContainerType.DIV ? EnvelopeServerType.LOCAL : EnvelopeServerType.REMOTE
         ),
       [bus, props.origin, props.pollInit]
     );

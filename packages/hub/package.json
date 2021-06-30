@@ -16,7 +16,7 @@
     "@kogito-tooling/patternfly-base": "0.10.0",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
-    "electron": "^12.0.6",
+    "electron": "^12.0.10",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0"
   },
