@@ -161,10 +161,8 @@ export function DmnForm(props: Props) {
         } else if (Object.hasOwnProperty.call(form.definitions[property], "format")) {
           setCustomPlaceholders(form.definitions[property]!);
         }
-        form.definitions[property]!.title = title[title.length - 1];
         return;
       }
-      value.title = title[title.length - 1];
       if (!Object.hasOwnProperty.call(value, "type")) {
         value.type = "string";
       }

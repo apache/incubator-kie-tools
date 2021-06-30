@@ -200,6 +200,13 @@ interface OnlineDictionary extends ReferenceDictionary {
     };
   };
   dmnRunner: {
+    drawer: {
+      error: {
+        title: string;
+        explanation: string;
+        message: Array<string | Wrapped<"jira">>;
+      };
+    };
     modal: {
       initial: {
         runDmnModels: string;

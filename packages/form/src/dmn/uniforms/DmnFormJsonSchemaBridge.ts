@@ -22,6 +22,14 @@ export enum Duration {
 }
 
 export class DmnFormJsonSchemaBridge extends JSONSchemaBridge {
+  public getProps(name: string, props: Record<string, any>) {
+    const finalProps = super.getProps(name, props);
+    if (finalProps.label) {
+      finalProps.label = name;
+    }
+    return finalProps;
+  }
+
   public getType(name: string) {
     const { format: fieldFormat } = super.getField(name);
     // TODO: create custom components

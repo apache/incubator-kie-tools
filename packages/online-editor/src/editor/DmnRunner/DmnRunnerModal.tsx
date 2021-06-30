@@ -61,7 +61,7 @@ export function DmnRunnerModal() {
     () => `kie_tooling_extended_services_macos_${dmnRunner.version}.dmg`,
     [dmnRunner.version]
   );
-  const KIE_TOOLING_EXTENDED_SERVICES_MACOS_APP = useMemo(() => "Kogito KIE Tooling Extended Services.app", []);
+  const KIE_TOOLING_EXTENDED_SERVICES_MACOS_APP = useMemo(() => "KIE Tooling Extended Services.app", []);
   const KIE_TOOLING_EXTENDED_SERVICES_WINDOWS_EXE = useMemo(
     () => `kie_tooling_extended_services_windows_${dmnRunner.version}.exe`,
     [dmnRunner.version]
@@ -249,7 +249,7 @@ export function DmnRunnerModal() {
                   <br />
                   <TextContent>
                     <Text component={TextVariants.p} className={"kogito--code"}>
-                      /Applications/Kogito\ DMN\ Runner.app/Contents/MacOs/kogito -p {dmnRunner.port}
+                      /Applications/KIE\ Tooling\ Extended\ Services.app/Contents/MacOs/kogito -p {dmnRunner.port}
                     </Text>
                   </TextContent>
                   <br />
