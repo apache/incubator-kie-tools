@@ -37,7 +37,7 @@ afterEach(async () => {
 test(TEST_NAME, async () => {
   const dmnGitHubEditorPage: GitHubEditorPage = await tools.openPage(
     GitHubEditorPage,
-    "https://github.com/kiegroup/kogito-tooling/blob/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn"
+    "https://github.com/kiegroup/kogito-tooling/blob/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn"
   );
   await dmnGitHubEditorPage.copyLinkToOnlineEditor();
   const clipboardUrl: string = await tools.clipboard().getContent();

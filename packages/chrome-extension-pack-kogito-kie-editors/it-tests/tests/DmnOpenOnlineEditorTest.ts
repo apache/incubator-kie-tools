@@ -34,7 +34,7 @@ test(TEST_NAME, async () => {
   const dmnPage: GitHubEditorPage = await tools.openPage(
     GitHubEditorPage,
     "https://github.com/kiegroup/" +
-      "kogito-tooling/blob/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn"
+      "kogito-tooling/blob/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn"
   );
   const onlineEditorPage: OnlineEditorPage = await dmnPage.openOnlineEditor();
   expect(await onlineEditorPage.getFileName()).toEqual("test");

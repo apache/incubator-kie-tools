@@ -33,9 +33,9 @@ beforeEach(async () => {
 
 test(TEST_NAME, async () => {
   const WEB_PAGE =
-    "https://github.com/kiegroup/kogito-tooling/tree/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples";
+    "https://github.com/kiegroup/kogito-tooling/tree/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples";
   const EXPECTED_LINK =
-    "kiegroup/kogito-tooling/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn";
+    "kiegroup/kogito-tooling/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn";
   const PROCESS_NAME = "myProcess";
   const FILE_NAME = "test.bpmn";
   const TASK_NODE_NAME = "MyTask";

@@ -18,7 +18,7 @@ import * as buildEnv from "@kogito-tooling/build-env";
 
 describe("Open from source test", () => {
   const SAMPLES_URL: string =
-    "https://raw.githubusercontent.com/kiegroup/kogito-tooling/master/packages/online-editor/it-tests/fixtures/";
+    "https://raw.githubusercontent.com/kiegroup/kogito-tooling/main/packages/online-editor/it-tests/fixtures/";
 
   beforeEach(() => {
     cy.visit(`http://localhost:${buildEnv.onlineEditor.dev.port}/`);
