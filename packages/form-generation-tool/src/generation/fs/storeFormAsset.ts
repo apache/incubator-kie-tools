@@ -34,7 +34,7 @@ export function storeFormAsset(formAsset: FormAsset, source: string, overwriteEx
     if (!overwriteExisting) {
       throw new Error(`Form "${formAsset.id}" already exists.`);
     }
-    console.log(`Form "${formAsset.id}" already exists. Proceding to delete it.`);
+    console.log(`Form "${formAsset.id}" already exists. Proceeding to overwrite it.`);
     fs.rmdirSync(storagePath, { recursive: true });
   }
   fs.mkdirSync(storagePath, { recursive: true });

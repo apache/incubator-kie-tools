@@ -19,41 +19,38 @@ import { FormGenerationTool, FormSchema, FormAsset } from "./types";
 import { loadProjectSchemas, storeFormAsset } from "./fs";
 
 export interface Args {
-  source: string;
+  path: string;
   type: string;
   overwrite: boolean;
 }
 
-export function generateForms({ source, type, overwrite }: Args) {
-  console.log("Starting Form generation:");
-  console.log(`Kogito Project path: '${source}'`);
-  console.log(`Form type: '${type}'`);
-  console.log(`Overwrite existing forms: '${overwrite}'`);
+export function generateForms({ path, type, overwrite }: Args) {
+  console.log("\nStarting Form generation:");
 
   try {
     const tool: FormGenerationTool = lookupFormGenerationTool(type);
 
-    const forms: FormSchema[] = loadProjectSchemas(source);
+    const forms: FormSchema[] = loadProjectSchemas(path);
 
     if (forms.length === 0) {
-      console.log(`Couldn't find any form in "${source}", check if your project is already built.`);
+      console.log(`\nCouldn't find any form schema in "${path}", check if your project is already built.`);
       return;
     }
 
-    console.log(`Found ${forms.length} schemas`);
+    console.log(`\nFound ${forms.length} schemas`);
 
     forms.forEach((form) => {
       try {
-        console.log(`Generating form "${form.name}"`);
+        console.log(`\nGenerating form "${form.name}"`);
         const output: FormAsset = tool.generate(form);
-        storeFormAsset(output, source, overwrite);
+        storeFormAsset(output, path, overwrite);
         console.log(`Successfully generated form "${form.name}"`);
       } catch (err) {
         console.log(`Error generating form "${form.name}": `, err.message);
       }
     });
   } catch (err) {
-    console.log(`Cannot generate forms in '${source}':`);
+    console.log("Error during form generation:");
     console.log(err.message);
   }
 }

@@ -14,6 +14,4 @@
  * limitations under the License.
  */
 
-export { checkKogitoProjectStructure, checkKogitoProjectHasForms } from "./checks";
-export { loadProjectSchemas } from "./loadProjectSchemas";
-export { storeFormAsset } from "./storeFormAsset";
+export { run } from "./cli";

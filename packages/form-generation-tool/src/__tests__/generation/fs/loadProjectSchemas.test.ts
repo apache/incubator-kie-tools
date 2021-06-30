@@ -15,32 +15,15 @@
  */
 
 import { loadProjectSchemas } from "../../../generation/fs";
-import {
-  ERROR_INVALID_FOLDER,
-  ERROR_NOT_DIRECTORY,
-  ERROR_NOT_MVN_PROJECT,
-} from "../../../generation/fs/loadProjectSchemas";
 import { FormSchema } from "../../../generation/types";
 
 describe("loadProjectSchemas tests", () => {
-  it("Load with invalid project path", () => {
-    expect(() => loadProjectSchemas(`${__dirname}/resources/invalid`)).toThrowError(ERROR_INVALID_FOLDER);
-  });
-
-  it("Load with non mvn project path", () => {
-    expect(() => loadProjectSchemas(`${__dirname}/resources`)).toThrowError(ERROR_NOT_MVN_PROJECT);
-  });
-
-  it("Load with file path", () => {
-    expect(() => loadProjectSchemas(`${__dirname}/resources/file.txt`)).toThrowError(ERROR_NOT_DIRECTORY);
-  });
-
   it("Load project without schemas", () => {
-    expect(() => loadProjectSchemas(`${__dirname}/resources/empty`)).toHaveLength(0);
+    expect(loadProjectSchemas(`${__dirname}/resources/empty`)).toHaveLength(0);
   });
 
   it("Load project with schemas", () => {
-    const schemas: FormSchema[] = loadProjectSchemas(`${__dirname}/resources/full`);
+    const schemas: FormSchema[] = loadProjectSchemas(`${__dirname}/resources/full`, "schemas");
 
     expect(schemas).toHaveLength(2);
 

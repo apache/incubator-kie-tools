@@ -13,52 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import yargs from "yargs";
-import { hideBin } from "yargs/helpers";
-import { generateForms } from "./generation/formGenerationCommand";
 
-yargs(hideBin(process.argv))
-  .scriptName("form-generation-tool")
-  .usage(
-    "Generates Forms for User tasks in Kogito projects. " +
-      "\nGenerated Forms will be stored in the project 'src/main/resources/forms' folder." +
-      "\n\nUsage: $0 [source]"
-  )
-  .command(
-    "$0 [source]",
-    "",
-    (yargs) => {
-      yargs
-        .positional("source", {
-          describe: "Path to a Kogito project.",
-          normalize: true,
-          demandOption: true,
-          nargs: 1,
-        })
-        .option("type", {
-          alias: "t",
-          type: "string",
-          default: "patternfly",
-          choices: ["patternfly", "bootstrap"],
-          description: 'Form type to generate. Available options are "patternfly" / "bootstrap".',
-        })
-        .option("overwrite", {
-          alias: "o",
-          type: "boolean",
-          default: false,
-          nargs: 0,
-          description: "Deletes all the existing forms in the project and creates new ones.",
-        });
-    },
-    (args) => {
-      generateForms({
-        source: args.source as string,
-        type: args.type as string,
-        overwrite: args.overwrite as boolean,
-      });
-    }
-  )
-  .help()
-  .demandOption("source", "Please provide a path to a Kogito project")
-  .showHelpOnFail(false, "Use --help for available options")
-  .version(false).argv;
+import * as cli from "./cli";
+
+cli.run();

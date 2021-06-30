@@ -34,7 +34,7 @@ describe("formGenerationCommand tests", () => {
 
   it("Generate forms with wrong tool type", () => {
     generateForms({
-      source: sourcePath,
+      path: sourcePath,
       type: "wrong type",
       overwrite: true,
     });
@@ -47,7 +47,7 @@ describe("formGenerationCommand tests", () => {
     loadProjectSchemasMock.mockReturnValueOnce([]);
 
     generateForms({
-      source: sourcePath,
+      path: sourcePath,
       type: "patternfly",
       overwrite: true,
     });
@@ -71,7 +71,7 @@ describe("formGenerationCommand tests", () => {
     loadProjectSchemasMock.mockReturnValueOnce(schemas);
 
     generateForms({
-      source: sourcePath,
+      path: sourcePath,
       type: "patternfly",
       overwrite: true,
     });
@@ -129,7 +129,7 @@ describe("formGenerationCommand tests", () => {
     loadProjectSchemasMock.mockReturnValueOnce(schemas);
 
     generateForms({
-      source: sourcePath,
+      path: sourcePath,
       type: tool.type,
       overwrite: true,
     });

@@ -17,29 +17,14 @@
 import fs from "fs";
 import { FormSchema } from "../types";
 import path from "path";
+import { checkKogitoProjectStructure } from "./checks";
 
 const JSON_SCHEMA_PATH = "target/classes/META-INF/jsonSchema";
 const JSON_SCHEMA_EXTENSION = ".json";
 
-export const ERROR_INVALID_FOLDER = "Source folder doesn't exist";
-export const ERROR_NOT_DIRECTORY = "Source folder isn't a directory";
-export const ERROR_NOT_MVN_PROJECT = "Cannot find 'pom.xml' in source folder, are you sure it is a Kogito project?";
-
-function checkKogitoProjectStructure(projectPath: string) {
-  if (!fs.existsSync(projectPath)) {
-    throw new Error(ERROR_INVALID_FOLDER);
-  }
-
-  const sourceStat = fs.statSync(projectPath);
-
-  if (!sourceStat.isDirectory()) {
-    throw new Error(ERROR_NOT_DIRECTORY);
-  }
-
-  if (!fs.existsSync(`${projectPath}/pom.xml`)) {
-    throw new Error(ERROR_NOT_MVN_PROJECT);
-  }
-}
+export const ERROR_INVALID_FOLDER = "Path doesn't exist";
+export const ERROR_NOT_DIRECTORY = "Path isn't a directory";
+export const ERROR_NOT_MVN_PROJECT = "Cannot find 'pom.xml' in source folder, are you sure it is a Kogito Project?";
 
 function isValidFile(schemasPath: string, file: string): boolean {
   if (!file.endsWith(JSON_SCHEMA_EXTENSION)) {
@@ -49,10 +34,14 @@ function isValidFile(schemasPath: string, file: string): boolean {
   return stat.isFile();
 }
 
-export function loadProjectSchemas(projectPath: string): FormSchema[] {
+export function loadProjectSchemas(projectPath: string, jsonSchemaPath?: string): FormSchema[] {
   checkKogitoProjectStructure(projectPath);
 
-  const schemasPath = `${projectPath}/${JSON_SCHEMA_PATH}`;
+  const schemasPath = `${projectPath}/${jsonSchemaPath || JSON_SCHEMA_PATH}`;
+
+  if (!fs.existsSync(schemasPath)) {
+    return [];
+  }
 
   const files = fs.readdirSync(schemasPath);
 
