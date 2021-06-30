@@ -524,6 +524,7 @@ Today we have 3 Kogito Component Images:
 
 * [quay.io/kiegroup/kogito-data-index-infinispan](https://quay.io/kiegroup/kogito-data-index-infinispan)
 * [quay.io/kiegroup/kogito-data-index-mongodb](https://quay.io/kiegroup/kogito-data-index-mongodb)
+* [quay.io/kiegroup/kogito-data-index-postgresql](https://quay.io/kiegroup/kogito-data-index-postgresql)
 * [quay.io/kiegroup/kogito-trusty-infinispan](https://quay.io/kiegroup/kogito-trusty-infinispan)
 * [quay.io/kiegroup/kogito-trusty-redis](https://quay.io/kiegroup/kogito-trusty-redis)
 * [quay.io/kiegroup/kogito-explainability](https://quay.io/kiegroup/kogito-explainability)
@@ -541,13 +542,15 @@ Today we have 3 Kogito Component Images:
 
 The Data Index Service aims at capturing and indexing data produced by one more Kogito runtime services. 
 For more information please visit this (link)(https://docs.jboss.org/kogito/release/latest/html_single/#proc-kogito-travel-agency-enable-data-index_kogito-deploying-on-openshift). 
-The Data Index Service depends on a running Infinispan or MongoDB Server.
+The Data Index Service depends on a running Infinispan, MongoDB or PostgreSQL.
 The Persistence service can be switched by using its corresponding image
 
 - Infinispan: quay.io/kiegroup/kogito-data-index-infinispan
     [image.yaml](kogito-data-index-infinispan-overrides.yaml)
 - Mongodb: quay.io/kiegroup/kogito-data-index-mongodb
     [image.yaml](kogito-data-index-mongodb-overrides.yaml)
+- PostgreSQL: quay.io/kiegroup/kogito-data-index-postgresql
+  [image.yaml](kogito-data-index-postgresql-overrides.yaml)
 
 
 Basic usage with Infinispan:
@@ -560,15 +563,18 @@ Basic usage with Mongodb:
 $ docker run -it --env QUARKUS_MONGODB_CONNECTION_STRING=mongodb://localhost:27017 quay.io/kiegroup/kogito-data-index-mongodb:latest
 ```
 
-Basic usage with Postgresql:
+Basic usage with PostgreSQL:
 ```bash
-$ docker run -it --env QUARKUS_POSTGRESQL_CONNECTION_STRING=postgresql://localhost:5432 quay.io/kiegroup/kogito-data-index-postgresql:latest
+$ docker run -it --env QUARKUS_DATASOURCE_JDBC_URL="jdbc:postgresql://localhost:5432/quarkus"  \
+    --env QUARKUS_DATASOURCE_USERNAME="kogito" \
+    --env QUARKUS_DATASOURCE_PASSWORD="secret" \
+    quay.io/kiegroup/kogito-data-index-postgresql:latest
 ```
 
 To enable debug just use this env while running this image:
 
 ```bash
-docker run -it --env SCRIPT_DEBUG=true --env QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=my-infinispan-server:11222 quay.io/kiegroup/kogito-data-index-infinispan:latest
+$ docker run -it --env SCRIPT_DEBUG=true --env QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=my-infinispan-server:11222 quay.io/kiegroup/kogito-data-index-infinispan:latest
 ```
 You should notice a few debug messages present in the system output.
 
@@ -596,6 +602,7 @@ To know what configurations this image accepts please take a look [here](kogito-
 
 The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Explainability Service 
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
+
 
 ### Kogito Trusty Component Image
 
@@ -660,7 +667,7 @@ docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-jobs-service-infi
 You should notice a few debug messages being printed in the system output.
 
 The ephemeral image does not have external dependencies like a backend persistence provider, it uses in-memory persistence
-while working with Jobs Services `infinispan`, `mongodb` and `postgresql` variants, it will need to have an Infinispan, MongoDB and Postgresql server,
+while working with Jobs Services `infinispan`, `mongodb` and `postgresql` variants, it will need to have an Infinispan, MongoDB and PostgreSQL server,
 respectively, previously running.
 
 
@@ -698,8 +705,8 @@ to your Kogito infrastructure on a Kubernetes cluster and provide its capabiliti
 
 ### Kogito Task Console Component Image
 
-The Kogito Task Console allows you to have a intuitive way to work with User Tasks in Kogito processes.
-It depends on the Kogito Data Index Service on which the Console will connect to so it can be able to manage it.
+The Kogito Task Console allows you to have an intuitive way to work with User Tasks in Kogito processes.
+It depends on the Kogito Data Index Service on which the Console will connect to, so it can be able to manage it.
 
 To work correctly, the Kogito Task Console needs the Kogito Data Index Service url. If not provided, it will try to connect to the default one (http://localhost:8180).
 
@@ -797,6 +804,7 @@ imagestream.image.openshift.io/kogito-runtime-jvm created
 imagestream.image.openshift.io/kogito-builder created
 imagestream.image.openshift.io/kogito-data-index-infinispan created
 imagestream.image.openshift.io/kogito-data-index-mongodb created
+imagestream.image.openshift.io/kogito-data-index-postgresql created
 imagestream.image.openshift.io/kogito-trusty-infinispan created
 imagestream.image.openshift.io/kogito-trusty-redis created
 imagestream.image.openshift.io/kogito-jobs-service-ephemeral created
@@ -910,7 +918,7 @@ $ curl -H "Content-Type: application/json" -X POST -d '{"strings":["hello"]}' \
      http://rules-quarkus-helloworld-service-rules-quarkus-helloworld.apps.lab.cloud/hello
 ```
 
-As output you should see the following response:
+As output, you should see the following response:
 
 ```json
 ["hello","world"]
@@ -987,6 +995,7 @@ With this Makefile you can:
      $ make build-image image_name=kogito-runtime-native
      $ make build-image image_name=kogito-data-index-infinispan
      $ make build-image image_name=kogito-data-index-mongodb
+     $ make build-image image_name=kogito-data-index-postgresql
      $ make build-image image_name=kogito-trusty-infinispan
      $ make build-image image_name=kogito-trusty-redis
      $ make build-image image_name=kogito-explainability
@@ -1054,6 +1063,7 @@ Below you can find all modules used to build the Kogito Images
 - [kogito-data-index-common](modules/kogito-data-index-common): Data Index common module.
 - [kogito-data-index-infinispan](modules/kogito-data-index-infinispan): Installs and Configure the infinispan data-index jar inside the image.
 - [kogito-data-index-mongodb](modules/kogito-data-index-mongodb): Installs and Configure the mongodb data-index jar inside the image.
+- [kogito-data-index-postgresql](modules/kogito-data-index-postgresql): Installs and Configure the postgresql data-index jar inside the image.
 - [kogito-trusty-infinispan](modules/kogito-trusty-infinispan): Installs and Configure the infinispan trusty jar inside the image.
 - [kogito-trusty-redis](modules/kogito-trusty-redis): Installs and Configure the redis trusty jar inside the image.
 - [kogito-explainability](modules/kogito-explainability): Installs and Configure the explainability jar inside the image.
@@ -1083,10 +1093,11 @@ Below you can find all modules used to build the Kogito Images
 
 
 For each image, we use a specific *-overrides.yaml file which will specific the modules needed.
-Please inspect the images overrides files to learn which modules are installed on each image:
+Please inspect the images overrides files to learn which modules are being installed on each image:
 
 - [quay.io/kiegroup/kogito-data-index-infinispan](kogito-data-index-infinispan-overrides.yaml)
 - [quay.io/kiegroup/kogito-data-index-mongodb](kogito-data-index-mongodb-overrides.yaml)
+- [quay.io/kiegroup/kogito-data-index-postgresql](kogito-data-index-postgresql-overrides.yaml)
 - [quay.io/kiegroup/kogito-trusty-infinispan](kogito-trusty-infinispan-overrides.yaml)
 - [quay.io/kiegroup/kogito-trusty-redis](kogito-trusty-redis-overrides.yaml)
 - [quay.io/kiegroup/kogito-explainability](kogito-explainability-overrides.yaml)

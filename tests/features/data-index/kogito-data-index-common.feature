@@ -1,4 +1,6 @@
-@quay.io/kiegroup/kogito-data-index-infinispan @quay.io/kiegroup/kogito-data-index-mongodb
+@quay.io/kiegroup/kogito-data-index-infinispan
+@quay.io/kiegroup/kogito-data-index-mongodb
+@quay.io/kiegroup/kogito-data-index-postgresql
 Feature: Kogito-data-index common feature.
   Scenario:   Scenario: Verify if the debug is correctly enabled and test default http port
     When container is started with env

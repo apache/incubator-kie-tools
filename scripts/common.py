@@ -9,12 +9,12 @@ from ruamel.yaml import YAML
 
 # All kogito-image modules that have the kogito version.
 MODULES = {"kogito-data-index-common", "kogito-data-index-mongodb",
-           "kogito-data-index-infinispan", "kogito-trusty-common",
-           "kogito-trusty-infinispan", "kogito-trusty-redis",
-           "kogito-explainability", "kogito-image-dependencies",
-           "kogito-jobs-service-common", "kogito-jobs-service-ephemeral",
-           "kogito-jobs-service-infinispan", "kogito-jobs-service-mongodb",
-           "kogito-jobs-service-postgresql",
+           "kogito-data-index-infinispan", "kogito-data-index-postgresql",
+           "kogito-trusty-common", "kogito-trusty-infinispan",
+           "kogito-trusty-redis", "kogito-explainability",
+           "kogito-image-dependencies", "kogito-jobs-service-common",
+           "kogito-jobs-service-ephemeral", "kogito-jobs-service-infinispan",
+           "kogito-jobs-service-mongodb", "kogito-jobs-service-postgresql",
            "kogito-trusty-ui", "kogito-jq",
            "kogito-kubernetes-client", "kogito-launch-scripts",
            "kogito-logging", "kogito-management-console",

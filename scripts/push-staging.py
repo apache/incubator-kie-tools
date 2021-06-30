@@ -23,9 +23,9 @@ QUAY_KOGITO_ORG_PLACE_HOLDER_NO_TAG = "quay.io/kiegroup/{}"
 
 
 def find_next_tag(override_tags):
-    '''
+    """
     Populate the IMAGES_NEXT_RC_TAGS with the next rc tag for each image.
-    '''
+    """
     global IMAGES_NEXT_RC_TAG
     for image in common.get_all_images():
         tag = fetch_tag(image, override_tags)
@@ -34,13 +34,13 @@ def find_next_tag(override_tags):
 
 
 def fetch_tag(image, override_tags):
-    '''
+    """
     fetch the rcX tag for the given image, keep increasing until no rc tag is found
     then return the next tag to be used.
     :param image: image to be verified
     :param override_tags: if true, does not increase the rc-X tag
     :return: the next rc tag if override_tags is false.
-    '''
+    """
     version = find_current_rc_version()
     while True:
         url = 'https://quay.io/api/v1/repository/kiegroup/{}/tag/{}/images'.format(image, version)
@@ -59,9 +59,9 @@ def fetch_tag(image, override_tags):
 
 
 def tag_and_push_images():
-    '''
+    """
     tag and push the images to quay.io
-    '''
+    """
     cli = docker.client.from_env()
     current_version = get_current_version()
     print("New rc tags %s" % IMAGES_NEXT_RC_TAG)
@@ -99,21 +99,21 @@ def tag_and_push_images():
 
 
 def get_current_version():
-    '''
+    """
     get the current image version from image.yaml. The version defined there will be considered
     the point of truth, update it carefully.
     :return: current image.yaml defined version
-    '''
+    """
     with open('image.yaml') as image_yaml:
         data = yaml.load(image_yaml, Loader=yaml.FullLoader)
         return data['version']
 
 
 def find_current_rc_version():
-    '''
+    """
     If the current version already includes the rc tag, keep it, otherwise add it -rc1 tag.
     :return: the current image tag version
-    '''
+    """
     version = get_current_version()
     if '-rc' in version:
         CURRENT_IMAGE_VERSION = version
@@ -123,12 +123,12 @@ def find_current_rc_version():
 
 
 def get_next_rc_version(current_rc_version, override_tags):
-    '''
+    """
     After finding the current rc tag of the image, adds one to it
     e.g: 0.10.0-rc1 will returned as 0.10.0-rc2
     :param current_rc_version: takes the current rc version of the image as input
     :return: returns the next rc version of the image
-    '''
+    """
     return current_rc_version if override_tags else (
                 current_rc_version.split("rc")[0] + "rc" + str(int(current_rc_version.split("rc")[1]) + 1))
 

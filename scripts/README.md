@@ -191,6 +191,7 @@ The command will update the needed files with the new URL:
 
 - kogito-data-index-infinispan/module.yaml
 - kogito-data-index-mongodb/module.yaml
+- kogito-data-index-postgresql/module.yaml
 - kogito-explainability/module.yaml
 - kogito-jit-runner/module.yaml
 - kogito-jobs-service-ephemeral/module.yaml

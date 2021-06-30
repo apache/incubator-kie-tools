@@ -22,10 +22,11 @@ DEFAULT_REPO_URL = "https://repository.jboss.org/nexus/content/groups/public/"
 KOGITO_ARTIFACT_PATH = "org/kie/kogito"
 
 Modules = {
-    #service-name: module-name(directory in which module's module.yaml file is present)
-    #Note: Service name should be same as given in the repository
+    # service-name: module-name(directory in which module's module.yaml file is present)
+    # Note: Service name should be same as given in the repository
     "data-index-service-infinispan": "kogito-data-index-infinispan",
     "data-index-service-mongodb": "kogito-data-index-mongodb",
+    "data-index-service-postgresql": "kogito-data-index-postgresql",
     "trusty-service-infinispan": "kogito-trusty-infinispan",
     "trusty-service-redis": "kogito-trusty-redis",
     "explainability-service-rest": "kogito-explainability",
@@ -40,7 +41,8 @@ Modules = {
     "jitexecutor-runner": "kogito-jit-runner"
 }
 
-def isSnapshotVersion(version):
+
+def is_snapshot_version(version):
     """
     Check whether the given version is a snapshot version
     :param version: The version to check
@@ -49,7 +51,7 @@ def isSnapshotVersion(version):
     return version.endswith("-SNAPSHOT")
 
 
-def getMetadataRoot(service):
+def get_metadata_root(service):
     """
     Get the root element from the maven-metadata
     :param service: Service information (repo_url, version, name)
@@ -65,45 +67,45 @@ def getMetadataRoot(service):
     return root
 
 
-def getSnapshotVersion(service):
+def get_snapshot_version(service):
     """
     parse the xml and finds the snapshotVersion
     :param service: Service information (repo_url, version, name)
     :return: snapshotVersion string
     """
-    root = getMetadataRoot(service)
+    root = get_metadata_root(service)
     snapshotVersion = root.find("./versioning/snapshotVersions/snapshotVersion/value").text
     return snapshotVersion
 
 
-def getRunnerURL(service):
+def get_runner_url(service):
     """
     Creates the updated URL for runner.jar
     :param service: Service information (repo_url, version, name)
     :return: url string
     """
     finalVersion = service["version"]
-    if isSnapshotVersion(finalVersion):
-        finalVersion = getSnapshotVersion(service)
+    if is_snapshot_version(finalVersion):
+        finalVersion = get_snapshot_version(service)
     url = service["repo_url"] + "{0}-{1}-runner.jar".format(service["name"], finalVersion)
-    checkUrl(url)
+    check_url(url)
     return url
 
 
-def getMD5(service):
+def get_md5(service):
     """
     Fetches the md5 code for the latest runner.jar
     :param service: Service information (repo_url, version, name)
     :return: runnerMD5 string
     """
-    runnerURL = getRunnerURL(service)
+    runnerURL = get_runner_url(service)
     runnerMD5URL = runnerURL+".md5"
-    checkUrl(runnerMD5URL)
+    check_url(runnerMD5URL)
     runnerMD5 = sp.getoutput("curl -s  {}".format(runnerMD5URL))
     return runnerMD5
 
 
-def checkUrl(url):
+def check_url(url):
     """
     Check url returns 2xx code.
     :param url
@@ -127,8 +129,8 @@ def update_artifacts(service, modulePath):
         # print(data['artifacts'])
         # print(filter(lambda x: service['name'] in x['name']))
         artifact = next(filter(lambda x: service['name'] in x['name'], data['artifacts']))
-        artifact['url'] = getRunnerURL(service)
-        artifact['md5'] = getMD5(service)
+        artifact['url'] = get_runner_url(service)
+        artifact['md5'] = get_md5(service)
     with open(modulePath, 'w') as module:
         common.yaml_loader().dump(data, module)
 

@@ -17,9 +17,11 @@ Feature: Kogito-jobs-service-postgresql feature.
 
   Scenario: verify if of container is correctly started with postgresql parameters
     When container is started with env
-      | variable                          | value                                          |
-      | SCRIPT_DEBUG                      | true                                           |
-      | QUARKUS_POSTGRES_CONNECTION_STRING | postgres://user:password@localhost:5432/admin  |
+      | variable                     | value                                    |
+      | SCRIPT_DEBUG                 | true                                     |
+      | QUARKUS_DATASOURCE_JDBC_URL  | jdbc:postgresql://10.1.1.10:5432/quarkus |
+      | QUARKUS_DATASOURCE_USERNAME  | kogito                                   |
+      | QUARKUS_DATASOURCE_PASSWORD  | s3cr3t                                   |
     Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/jobs-service-postgresql-runner.jar
-    And container log should contain localhost/127.0.0.1:5432
-    And container log should not contain Application failed to start
+    And container log should contain The connection attempt failed
+    And container log should contain Failed to start application (with profile prod)
