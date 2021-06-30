@@ -4,8 +4,8 @@ version: "2.0.0-snapshot"
 
 artifacts:
   - name: jobs-service-postgresql-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/jobs-service-postgresql/2.0.0-SNAPSHOT/jobs-service-postgresql-2.0.0-20210629.050012-44-runner.jar
-    md5: d0efe75f2597ab07d5a2ba475ceac007
+    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/jobs-service-postgresql/2.0.0-SNAPSHOT/jobs-service-postgresql-2.0.0-20210630.054203-45-runner.jar
+    md5: 8cb8ef18494ad92d0bb1f71c6b647f33
 
 execute:
   - script: configure
