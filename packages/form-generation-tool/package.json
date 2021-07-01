@@ -11,7 +11,7 @@
     "test:clearCache": "jest --clearCache",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod:linux": "pkg dist/index.js --output dist/form-generation-cli-linux --target node16-linux-x64",
-    "build:prod:darwin": "pkg dist/index.js --output dist/form-generation-cli-macos --target node16-macos-arm64",
+    "build:prod:darwin": "pkg dist/index.js --output dist/form-generation-cli-macos --target node16-macos-x64",
     "build:prod:win32": "pkg dist/index.js --output dist/form-generation-cli-win.exe --target node16-win-x64",
     "build:prod:all": "yarn lint && yarn test && rimraf dist && webpack && yarn run && yarn run package:prod:linux && yarn run package:prod:darwin && yarn run package:prod:win32",
     "build:prod": "yarn lint && yarn test && rimraf dist && webpack && run-script-os"
