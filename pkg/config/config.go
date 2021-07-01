@@ -14,9 +14,6 @@ type Config struct {
 	App struct {
 		Version string `yaml:"version"`
 	} `yaml:"app"`
-	Runner struct {
-		Location string `yaml:"location"`
-	} `yaml:"runner"`
 	Proxy struct {
 		IP   string `yaml:"ip"`
 		Port int    `yaml:"port"`
