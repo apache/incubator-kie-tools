@@ -25,7 +25,7 @@ export class DmnFormJsonSchemaBridge extends JSONSchemaBridge {
   public getProps(name: string, props: Record<string, any>) {
     const finalProps = super.getProps(name, props);
     if (finalProps.label) {
-      finalProps.label = name;
+      finalProps.label = name.split(".").pop() ?? name;
     }
     return finalProps;
   }
