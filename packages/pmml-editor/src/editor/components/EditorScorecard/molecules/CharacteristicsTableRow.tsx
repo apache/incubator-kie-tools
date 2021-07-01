@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback } from "react";
+import { BaseSyntheticEvent, useCallback } from "react";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import {
   AttributeLabels,
@@ -51,16 +51,20 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
     onDelete,
   } = props;
 
+  const handleEdit = (event: BaseSyntheticEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    onEdit();
+  };
+
   return (
     <article
       className={"editable-item__inner"}
       tabIndex={0}
-      onClick={onEdit}
+      onClick={handleEdit}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
-          e.preventDefault();
-          e.stopPropagation();
-          onEdit();
+          handleEdit(e);
         }
       }}
     >
