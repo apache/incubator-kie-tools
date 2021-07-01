@@ -59,3 +59,6 @@ copy-jitexecutor-snapshot:
 
 copy-jitexecutor-win-snapshot:
 	cp ./kogito-apps/jitexecutor/jitexecutor-runner/target/jitexecutor-runner-*-SNAPSHOT-runner.exe jitexecutor
+
+update-version-to:
+	sed -i "/^\([[:space:]]*version: \).*/s//\1$(VERSION)/" ./pkg/config/config.yaml
