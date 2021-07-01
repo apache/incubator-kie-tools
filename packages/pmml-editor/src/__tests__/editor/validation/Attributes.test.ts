@@ -178,7 +178,7 @@ describe("ValidateAttribute", () => {
     expect(registry.get(asPath("models[0]")).length).toBe(1);
     assertValidationEntry(
       "models[0].Characteristics.Characteristic[1].Attribute[2].predicate.fieldName",
-      "cannot be not found"
+      "cannot be found"
     );
   });
 
@@ -216,12 +216,64 @@ describe("ValidateAttribute", () => {
     expect(registry.get(asPath("models[0]")).length).toBe(2);
     assertValidationEntry(
       "models[0].Characteristics.Characteristic[1].Attribute[2].predicate.predicates[0].fieldName",
-      "cannot be not found"
+      "cannot be found"
     );
     assertValidationEntry(
       "models[0].Characteristics.Characteristic[1].Attribute[2].predicate.predicates[1].fieldName",
-      "cannot be not found"
+      "cannot be found"
     );
+  });
+
+  test("ValidateAttribute::predicates::definedAndDoesExist::SimplePredicate", () => {
+    validateAttribute(
+      0,
+      { baselineScore: 0.0, useReasonCodes: false },
+      1,
+      {
+        Attribute: [],
+      },
+      false,
+      2,
+      { predicate: new SimplePredicate({ field: "field1" as FieldName, operator: "equal", value: 100 }) },
+      [{ name: "field1" as FieldName }],
+      registry
+    );
+
+    expect(registry.get(asPath("models[0]")).length).toBe(0);
+  });
+
+  test("ValidateAttribute::predicates::definedAndDoesExist::CompoundPredicate", () => {
+    validateAttribute(
+      0,
+      { baselineScore: 0.0, useReasonCodes: false },
+      1,
+      {
+        Attribute: [],
+      },
+      false,
+      2,
+      {
+        predicate: new CompoundPredicate({
+          predicates: [
+            new SimplePredicate({
+              field: "field1" as FieldName,
+              operator: "greaterThan",
+              value: 100,
+            }),
+            new SimplePredicate({
+              field: "field1" as FieldName,
+              operator: "lessOrEqual",
+              value: 200,
+            }),
+          ],
+          booleanOperator: "and",
+        }),
+      },
+      [{ name: "field1" as FieldName }],
+      registry
+    );
+
+    expect(registry.get(asPath("models[0]")).length).toBe(0);
   });
 });
 

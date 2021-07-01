@@ -134,14 +134,14 @@ const validatePredicate = (
     if (fieldNames.filter((fieldName) => fieldName === predicate.field).length === 0) {
       validationRegistry.set(
         pathBuilder.forFieldName().build(),
-        new ValidationEntry(ValidationLevel.WARNING, `"${predicate.field}" cannot be not found in the Mining Schema.`)
+        new ValidationEntry(ValidationLevel.WARNING, `"${predicate.field}" cannot be found in the Mining Schema.`)
       );
     }
   } else if (predicate instanceof SimplePredicate) {
     if (fieldNames.filter((fieldName) => fieldName === predicate.field).length === 0) {
       validationRegistry.set(
         pathBuilder.forFieldName().build(),
-        new ValidationEntry(ValidationLevel.WARNING, `"${predicate.field}" cannot be not found in the Mining Schema.`)
+        new ValidationEntry(ValidationLevel.WARNING, `"${predicate.field}" cannot be found in the Mining Schema.`)
       );
     }
   } else if (predicate instanceof CompoundPredicate) {
