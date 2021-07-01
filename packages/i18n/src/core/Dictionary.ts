@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { Wrapped } from "./Wrapped";
+
 export interface I18nDefaults<D extends ReferenceDictionary> {
   locale: string;
   dictionary: D;
@@ -24,7 +26,7 @@ export type I18nDictionaries<D extends ReferenceDictionary> = Map<string, Transl
 export type DictionaryInterpolation = (...args: Array<string | number>) => string;
 
 export type ReferenceDictionary = {
-  [k: string]: string | DictionaryInterpolation | ReferenceDictionary;
+  [k: string]: string | DictionaryInterpolation | Array<string | number | Wrapped<string>> | ReferenceDictionary;
 };
 
 // Locales that aren't the default should implement this interface

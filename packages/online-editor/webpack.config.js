@@ -21,6 +21,36 @@ const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 const { EnvironmentPlugin } = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
+
+function getGtmResource(argv) {
+  const gtmId = argv["KOGITO_ONLINE_EDITOR_GTM_ID"] ?? process.env["KOGITO_ONLINE_EDITOR_GTM_ID"];
+  console.info("Google Tag Manager :: ID: " + gtmId);
+  return {
+    id: gtmId,
+    header: `<!-- Google Tag Manager -->
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','${gtmId}');
+    </script>
+    <!-- End Google Tag Manager -->`,
+    body: `<!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=${gtmId}"
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+      >
+      </iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->`,
+  };
+}
 
 function getLatestGitTag() {
   const tagName = require("child_process").execSync("git rev-list --tags --max-count=1").toString().trim();
@@ -53,8 +83,48 @@ function getDownloadHubArgs(argv) {
   return [linuxUrl, macOsUrl, windowsUrl];
 }
 
+function getDmnRunnerArgs(argv) {
+  let linuxDownloadUrl =
+    argv["KIE_TOOLING_EXTENDED_SERVICES__linuxDownloadUrl"] ||
+    process.env["KIE_TOOLING_EXTENDED_SERVICES__linuxDownloadUrl"];
+  let macOsDownloadUrl =
+    argv["KIE_TOOLING_EXTENDED_SERVICES__macOsDownloadUrl"] ||
+    process.env["KIE_TOOLING_EXTENDED_SERVICES__macOsDownloadUrl"];
+  let windowsDownloadUrl =
+    argv["KIE_TOOLING_EXTENDED_SERVICES__windowsDownloadUrl"] ||
+    process.env["KIE_TOOLING_EXTENDED_SERVICES__windowsDownloadUrl"];
+  let compatibleVersion =
+    argv["KIE_TOOLING_EXTENDED_SERVICES__compatibleVersion"] ||
+    process.env["KIE_TOOLING_EXTENDED_SERVICES__compatibleVersion"];
+
+  compatibleVersion = compatibleVersion || `0.0.0`;
+  macOsDownloadUrl =
+    macOsDownloadUrl ||
+    `https://github.com/kiegroup/kogito-tooling-go/releases/download/${compatibleVersion}/kie_tooling_extended_services_macos_${compatibleVersion}.dmg`;
+  windowsDownloadUrl =
+    windowsDownloadUrl ||
+    `https://github.com/kiegroup/kogito-tooling-go/releases/download/${compatibleVersion}/kie_tooling_extended_services_windows_${compatibleVersion}.exe`;
+  linuxDownloadUrl =
+    linuxDownloadUrl ||
+    `https://github.com/kiegroup/kogito-tooling-go/releases/download/${compatibleVersion}/kie_tooling_extended_services_linux_${compatibleVersion}.tar.gz`;
+
+  console.info("KIE Tooling Extended Services :: Linux download URL: " + linuxDownloadUrl);
+  console.info("KIE Tooling Extended Services :: macOS download URL: " + macOsDownloadUrl);
+  console.info("KIE Tooling Extended Services :: Windows download URL: " + windowsDownloadUrl);
+  console.info("KIE Tooling Extended Services :: Compatible version: " + compatibleVersion);
+
+  return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
+}
+
 module.exports = async (env, argv) => {
   const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs(argv);
+  const [
+    dmnRunner_linuxDownloadUrl,
+    dmnRunner_macOsDownloadUrl,
+    dmnRunner_windowsDownloadUrl,
+    dmnRunner_compatibleVersion,
+  ] = getDmnRunnerArgs(argv);
+  const gtmResource = getGtmResource(argv);
 
   return merge(common(env, argv), {
     entry: {
@@ -64,17 +134,36 @@ module.exports = async (env, argv) => {
       "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
     },
     plugins: [
+      new HtmlWebpackPlugin({
+        template: "./static/index.html",
+        inject: false,
+        minify: false,
+      }),
+      new HtmlReplaceWebpackPlugin([
+        {
+          pattern: /(<!-- gtm):([\w-\/]+)(\s*-->)?/g,
+          replacement: (match, gtm, type) => {
+            if (gtmResource.id) {
+              return gtmResource[type] ?? `${match}`;
+            }
+            return `${match}`;
+          },
+        },
+      ]),
       new EnvironmentPlugin({
         WEBPACK_REPLACE__hubLinuxUrl: downloadHub_linuxUrl,
         WEBPACK_REPLACE__hubMacOsUrl: downloadHub_macOsUrl,
         WEBPACK_REPLACE__hubWindowsUrl: downloadHub_windowsUrl,
+        WEBPACK_REPLACE__dmnRunnerLinuxDownloadUrl: dmnRunner_linuxDownloadUrl,
+        WEBPACK_REPLACE__dmnRunnerMacOsDownloadUrl: dmnRunner_macOsDownloadUrl,
+        WEBPACK_REPLACE__dmnRunnerWindowsDownloadUrl: dmnRunner_windowsDownloadUrl,
+        WEBPACK_REPLACE__dmnRunnerCompatibleVersion: dmnRunner_compatibleVersion,
       }),
       new CopyPlugin({
         patterns: [
           { from: "./static/resources", to: "./resources" },
           { from: "./static/images", to: "./images" },
           { from: "./static/samples", to: "./samples" },
-          { from: "./static/index.html", to: "./index.html" },
           { from: "./static/favicon.ico", to: "./favicon.ico" },
           {
             from: externalAssets.dmnEditorPath(argv),

@@ -38,6 +38,10 @@ import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
 import { useOnlineI18n } from "../common/i18n";
+import { DmnRunnerButton } from "./DmnRunner/DmnRunnerButton";
+import { useDmnRunner } from "./DmnRunner/DmnRunnerContext";
+import { DmnRunnerDropdownGroup } from "./DmnRunner/DmnRunnerDropdownGroup";
+import { DmnRunnerStatus } from "./DmnRunner/DmnRunnerStatus";
 
 interface Props {
   onFileNameChanged: (fileName: string, fileExtension: string) => void;
@@ -56,6 +60,7 @@ interface Props {
 
 export function EditorToolbar(props: Props) {
   const context = useContext(GlobalContext);
+  const dmnRunner = useDmnRunner();
   const location = useLocation();
   const [fileName, setFileName] = useState(context.file.fileName);
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
@@ -111,7 +116,7 @@ export function EditorToolbar(props: Props) {
         {i18n.editorToolbar.enterFullScreenView}
       </DropdownItem>,
     ],
-    [i18n, context, props.onClose, props.onFullScreen]
+    [i18n, context, props]
   );
 
   const includeDownloadSVGDropdownItem = useMemo(() => {
@@ -210,6 +215,22 @@ export function EditorToolbar(props: Props) {
       logoProps={logoProps}
       headerTools={
         <PageHeaderTools>
+          <PageHeaderToolsGroup>
+            {dmnRunner.status !== DmnRunnerStatus.UNAVAILABLE && (
+              <PageHeaderToolsItem
+                visibility={{
+                  default: "hidden",
+                  "2xl": "visible",
+                  xl: "visible",
+                  lg: "hidden",
+                  md: "hidden",
+                  sm: "hidden",
+                }}
+              >
+                <DmnRunnerButton />
+              </PageHeaderToolsItem>
+            )}
+          </PageHeaderToolsGroup>
           <PageHeaderToolsGroup>
             <PageHeaderToolsItem
               visibility={{
@@ -325,6 +346,9 @@ export function EditorToolbar(props: Props) {
                   <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
                     {...shareItems("sm")}
                   </DropdownGroup>,
+                  <React.Fragment key={"dmn-runner-group"}>
+                    {dmnRunner.status !== DmnRunnerStatus.UNAVAILABLE && <DmnRunnerDropdownGroup />}
+                  </React.Fragment>,
                 ]}
                 position={DropdownPosition.right}
               />

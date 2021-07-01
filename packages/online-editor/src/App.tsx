@@ -75,6 +75,7 @@ export function App(props: Props) {
           external: props.external,
           senderTabId: props.senderTabId,
           githubService: props.githubService,
+          isChrome: !!window.chrome,
         }}
       >
         <HashRouter>

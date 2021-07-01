@@ -15,12 +15,14 @@
     "@kogito-tooling/external-assets-base": "0.10.0",
     "@kogito-tooling/i18n": "0.10.0",
     "@kogito-tooling/i18n-common-dictionary": "0.10.0",
+    "@kogito-tooling/form": "0.10.0",
     "@kogito-tooling/kie-bc-editors": "0.10.0",
     "@kogito-tooling/patternfly-base": "0.10.0",
     "@kogito-tooling/pmml-editor": "0.10.0",
     "@octokit/rest": "^18.5.3",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
+    "deep-object-diff": "^1.1.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0"
   },
@@ -30,7 +32,7 @@
     "test:clearCache": "jest --clearCache",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "yarn lint && yarn test && rimraf dist && webpack",
-    "start": "webpack serve --host 0.0.0.0",
+    "start": "webpack serve --host 0.0.0.0 --env dev",
     "cy:open": "yarn run cypress open --project it-tests",
     "cy:run": "yarn run cypress run -b chrome --project it-tests",
     "test:it": "yarn run start-server-and-test start http://0.0.0.0:9001 cy:run"

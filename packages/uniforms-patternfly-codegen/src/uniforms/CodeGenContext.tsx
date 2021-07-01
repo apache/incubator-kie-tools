@@ -57,11 +57,13 @@ export const CodeGenContextProvider: React.FC<ProviderProps> = (props) => {
     randomId: randomIds(),
     schema: props.schema,
     state: {
+      readOnly: false,
       disabled: false,
       label: true,
       placeholder: true,
       showInlineError: true,
     },
+    submitted: false,
     submitting: false,
     validating: false,
   };

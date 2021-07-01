@@ -23,8 +23,9 @@ import { GlobalContext, GlobalContextType } from "../common/GlobalContext";
 import { Routes } from "../common/Routes";
 import { EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
 import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n/dist/react-components";
-import { onlineI18nDefaults, onlineI18nDictionaries, OnlineI18nContext } from "../common/i18n";
-import { OnlineI18n } from "../common/i18n";
+import { OnlineI18n, OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "../common/i18n";
+import { NotificationsPanelContextProvider } from "../editor/NotificationsPanel/NotificationsPanelContextProvider";
+import { DmnRunnerContextProvider } from "../editor/DmnRunner/DmnRunnerContextProvider";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const envelopeMapping: EnvelopeMapping = {
@@ -47,6 +48,7 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
     external: false,
     senderTabId: undefined,
     githubService: new GithubService(),
+    isChrome: true,
     ...ctx,
   };
   return {
@@ -84,4 +86,21 @@ export function usingTestingOnlineI18nContext(
       </I18nDictionariesProvider>
     ),
   };
+}
+
+export function usingNotificationsPanelContext(children: React.ReactElement, ref?: React.RefObject<any>) {
+  return <NotificationsPanelContextProvider ref={ref}>{children}</NotificationsPanelContextProvider>;
+}
+
+export function usingDmnRunnerContext(
+  children: React.ReactElement,
+  editor: any,
+  isEditorReady = true,
+  closeDmnTour = jest.fn()
+) {
+  return (
+    <DmnRunnerContextProvider editor={editor} isEditorReady={isEditorReady} closeDmnTour={closeDmnTour}>
+      {children}
+    </DmnRunnerContextProvider>
+  );
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
+import { ReferenceDictionary, Wrapped } from "@kogito-tooling/i18n/dist/core";
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
 interface OnlineDictionary extends ReferenceDictionary {
@@ -163,8 +163,10 @@ interface OnlineDictionary extends ReferenceDictionary {
     init: {
       title: string;
       learnMore: string;
-      letsGo: string;
+      dmnRunnerIntro: string;
+      takeTour: string;
       skipTour: string;
+      skipTourAndUseDmnRunner: string;
     };
     end: {
       title: string;
@@ -174,6 +176,7 @@ interface OnlineDictionary extends ReferenceDictionary {
         firstStep: string;
         secondStep: string;
         thirdStep: string;
+        startDmnRunner: string;
       };
       findUsefulInfo: string;
       learnDMN: string;
@@ -194,6 +197,135 @@ interface OnlineDictionary extends ReferenceDictionary {
       possibleCauses: string;
       missingGitHubToken: string;
       cors: string;
+    };
+  };
+  dmnRunner: {
+    drawer: {
+      error: {
+        title: string;
+        explanation: string;
+        message: Array<string | Wrapped<"jira">>;
+      };
+    };
+    modal: {
+      initial: {
+        runDmnModels: string;
+        kieToolingExtendedServicesExplanation: string;
+        notificationPanelExplanation: Array<string | Wrapped<"icon">>;
+      };
+      wizard: {
+        title: string;
+        description: string;
+        outdatedAlert: {
+          title: string;
+          message: string;
+        };
+        stoppedAlert: {
+          title: string;
+          message: string;
+        };
+        macos: {
+          install: {
+            download: string;
+            openFile: Array<string | Wrapped<"file">>;
+            dragFileToApplicationsFolder: Array<string | Wrapped<"file" | "folder">>;
+          };
+          start: {
+            stopped: {
+              startInstruction: string;
+              launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
+            };
+            firstTime: {
+              title: string;
+              openApplicationsFolder: Array<string | Wrapped<"folder">>;
+              openAndCancel: Array<string | Wrapped<"file">>;
+              again: string;
+              openInstruction: Array<string | Wrapped<"file" | "again">>;
+            };
+            alreadyRanBefore: string;
+            launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
+            advanced: {
+              title: string;
+              runFollowingCommand: string;
+            };
+          };
+        };
+        windows: {
+          install: {
+            keepDownload: string;
+            moveTheFile: Array<string | Wrapped<"file">>;
+          };
+          start: {
+            stopped: {
+              startInstruction: string;
+              launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
+            };
+            firstTime: {
+              title: string;
+              openFolder: Array<string | Wrapped<"file">>;
+              runAnyway: string;
+            };
+            alreadyRanBefore: string;
+            launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
+            advanced: {
+              title: string;
+              runFollowingCommand: string;
+            };
+          };
+        };
+        linux: {
+          install: {
+            download: string;
+            installAppIndicator: string;
+            ubuntuDependency: Array<string | Wrapped<"package">>;
+            fedoraDependency: Array<string | Wrapped<"package">>;
+            extractContent: Array<string | Wrapped<"file">>;
+            binaryExplanation: Array<string | Wrapped<"file">>;
+          };
+          start: {
+            openTerminal: string;
+            goToFolder: Array<string | Wrapped<"file">>;
+            runCommand: string;
+            advanced: {
+              title: string;
+              runFollowingCommand: Array<string | Wrapped<"file">>;
+            };
+          };
+        };
+        footerWaitingToConnect: string;
+        advancedSettings: {
+          title: Array<string | Wrapped<"port">>;
+          label: string;
+          helperTextInvalid: string;
+        };
+      };
+      use: {
+        title: string;
+        connected: string;
+        fillTheForm: string;
+        backToEditor: string;
+      };
+    };
+    dropdown: {
+      label: string;
+      setup: string;
+      open: string;
+      close: string;
+    };
+    button: {
+      available: string;
+      tooltip: {
+        outdated: string;
+        connected: string;
+        disconnected: string;
+      };
+    };
+  };
+  notificationsPanel: {
+    name: string;
+    tooltip: {
+      retractAll: string;
+      expandAll: string;
     };
   };
 }

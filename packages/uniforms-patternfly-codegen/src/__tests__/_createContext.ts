@@ -34,7 +34,9 @@ export default function createContext(schema?: {}, context?: Partial<Context<any
     validating: false,
     ...context,
     schema: createSchema(schema),
+    submitted: false,
     state: {
+      readOnly: false,
       disabled: false,
       label: false,
       placeholder: false,

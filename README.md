@@ -108,6 +108,10 @@ In Kogito Tooling [releases page](https://github.com/kiegroup/kogito-tooling/rel
 > - `EXTERNAL_RESOURCE_PATH__dmnEditor`: Used in several packages. Configures the local path from which the DMN Editor files will be copied. [See default](https://github.com/kiegroup/kogito-tooling/blob/main/packages/external-assets-base/index.js#L16)
 > - `EXTERNAL_RESOURCE_PATH__scesimEditor`: Used in several packages. Configures the local path from which the SceSim Editor files will be copied. [See default](https://github.com/kiegroup/kogito-tooling/blob/main/packages/external-assets-base/index.js#L16)
 > - `EXTERNAL_RESOURCE_PATH__quarkusRunner`: Used in `packages/vscode-extension-backend`. Configures the local path from which the Quarkus Runner files will be copied. [See default](https://github.com/kiegroup/kogito-tooling/blob/main/packages/external-assets-base/index.js#L16)
+> - `KIE_TOOLING_EXTENDED_SERVICES__linuxDownloadUrl`: Used in `packages/online-editor`. Configures the URL to download the Linux KIE Tooling Extended Services on the Online Editor. [See default](https://github.com/kiegroup/kogito-tooling/blob/master/packages/online-editor/webpack.config.js#L71)
+> - `KIE_TOOLING_EXTENDED_SERVICES__macOsDownloadUrl`: Used in `packages/online-editor`. Configures the URL to download the macOS KIE Tooling Extended Services on the Online Editor. [See default](https://github.com/kiegroup/kogito-tooling/blob/master/packages/online-editor/webpack.config.js#L65)
+> - `KIE_TOOLING_EXTENDED_SERVICES__windowsDownloadUrl`: Used in `packages/online-editor`. Configures the URL to download the Windows KIE Tooling Extended Services on the Online Editor. [See default](https://github.com/kiegroup/kogito-tooling/blob/master/packages/online-editor/webpack.config.js#L68)
+> - `KIE_TOOLING_EXTENDED_SERVICES__compatibleVersion`: Used in `packages/online-editor`. Configures the version of the KIE Tooling Extended Services on the Online Editor. [See default](https://github.com/kiegroup/kogito-tooling/blob/master/packages/online-editor/webpack.config.js#L62)
 >
 > **Example:**
 >

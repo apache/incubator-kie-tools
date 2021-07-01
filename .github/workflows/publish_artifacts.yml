@@ -46,6 +46,11 @@ jobs:
           DOWNLOAD_HUB_linuxUrl: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ steps.release-tag.outputs.tag }}/business_modeler_hub_preview_linux_${{ steps.release-tag.outputs.tag }}.tar.gz"
           DOWNLOAD_HUB_macOsUrl: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ steps.release-tag.outputs.tag }}/business_modeler_hub_preview_macos_${{ steps.release-tag.outputs.tag }}.zip"
           DOWNLOAD_HUB_windowsUrl: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ steps.release-tag.outputs.tag }}/business_modeler_hub_preview_windows_${{ steps.release-tag.outputs.tag }}.zip"
+          KIE_TOOLING_EXTENDED_SERVICES__linuxDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/kie_tooling_extended_services_linux_${{ steps.release_json.outputs.tag }}.tar.gz"
+          KIE_TOOLING_EXTENDED_SERVICES__macOsDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/kie_tooling_extended_services_macos_${{ steps.release_json.outputs.tag }}.dmg"
+          KIE_TOOLING_EXTENDED_SERVICES__windowsDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/kie_tooling_extended_services_windows_${{ steps.release_json.outputs.tag }}.exe"
+          KIE_TOOLING_EXTENDED_SERVICES__compatibleVersion: "${{ steps.release_json.outputs.tag }}"
+          KOGITO_ONLINE_EDITOR_GTM_ID: "GTM-PQGMKNW"
           DISPLAY: ":99.0"
         run: cd kogito-tooling && yarn bootstrap && yarn run build:prod && cd -
 
