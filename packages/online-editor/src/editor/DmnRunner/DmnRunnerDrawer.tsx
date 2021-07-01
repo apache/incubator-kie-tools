@@ -61,6 +61,7 @@ export function DmnRunnerDrawer(props: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const dmnRunner = useDmnRunner();
   const [drawerError, setDrawerError] = useState<boolean>(false);
+  const errorBoundaryRef = useRef<ErrorBoundary>(null);
   const [dmnRunnerResults, setDmnRunnerResults] = useState<DecisionResult[]>();
   const [dmnRunnerResponseDiffs, setDmnRunnerResponseDiffs] = useState<object[]>();
   const [dmnRunnerStylesConfig, setDmnRunnerStylesConfig] = useState<DmnRunnerStylesConfig>({
@@ -225,97 +226,100 @@ export function DmnRunnerDrawer(props: Props) {
     [i18n]
   );
 
+  useEffect(() => {
+    errorBoundaryRef.current?.reset();
+    setDrawerError(false);
+  }, [dmnRunner.formSchema]);
+
   return (
-    <>
+    <DrawerPanelContent
+      id={"kogito-panel-content"}
+      className={"kogito--editor__drawer-content-panel"}
+      defaultSize={`${DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION}px`}
+      onResize={onResize}
+      isResizable={true}
+      minSize={"361px"}
+    >
       {drawerError ? (
         drawerErrorMessage
       ) : (
-        <ErrorBoundary error={drawerErrorMessage} setHasError={setDrawerError}>
-          <DrawerPanelContent
-            id={"kogito-panel-content"}
-            className={"kogito--editor__drawer-content-panel"}
-            defaultSize={`${DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION}px`}
-            onResize={onResize}
-            isResizable={true}
-            minSize={"361px"}
+        <ErrorBoundary error={drawerErrorMessage} setHasError={setDrawerError} ref={errorBoundaryRef}>
+          <div
+            className={"kogito--editor__dmn-runner"}
+            style={{ flexDirection: dmnRunnerStylesConfig.contentFlexDirection }}
           >
             <div
-              className={"kogito--editor__dmn-runner"}
-              style={{ flexDirection: dmnRunnerStylesConfig.contentFlexDirection }}
+              className={"kogito--editor__dmn-runner-content"}
+              style={{
+                width: dmnRunnerStylesConfig.contentWidth,
+                height: dmnRunnerStylesConfig.contentHeight,
+              }}
             >
-              <div
-                className={"kogito--editor__dmn-runner-content"}
-                style={{
-                  width: dmnRunnerStylesConfig.contentWidth,
-                  height: dmnRunnerStylesConfig.contentHeight,
-                }}
-              >
-                <Page className={"kogito--editor__dmn-runner-content-page"}>
-                  <PageSection className={"kogito--editor__dmn-runner-content-header"}>
-                    <TextContent>
-                      <Text component={"h2"}>{i18n.terms.inputs}</Text>
-                    </TextContent>
-                    {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
-                      <DrawerCloseButton onClick={(e: any) => dmnRunner.setDrawerExpanded(false)} />
-                    )}
+              <Page className={"kogito--editor__dmn-runner-content-page"}>
+                <PageSection className={"kogito--editor__dmn-runner-content-header"}>
+                  <TextContent>
+                    <Text component={"h2"}>{i18n.terms.inputs}</Text>
+                  </TextContent>
+                  {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
+                    <DrawerCloseButton onClick={(e: any) => dmnRunner.setDrawerExpanded(false)} />
+                  )}
+                </PageSection>
+                <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
+                  <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
+                    <DmnForm
+                      formData={dmnRunner.formData}
+                      setFormData={dmnRunner.setFormData}
+                      formError={dmnRunner.formError}
+                      setFormError={dmnRunner.setFormError}
+                      formSchema={dmnRunner.formSchema}
+                      id={"form"}
+                      formRef={formRef}
+                      showInlineError={true}
+                      autosave={true}
+                      autosaveDelay={AUTO_SAVE_DELAY}
+                      placeholder={true}
+                      errorsField={() => <></>}
+                      submitField={() => <></>}
+                      locale={locale}
+                      notificationsPanel={true}
+                      openValidationTab={openValidationTab}
+                    />
                   </PageSection>
-                  <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
-                    <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
-                      <DmnForm
-                        formData={dmnRunner.formData}
-                        setFormData={dmnRunner.setFormData}
-                        formError={dmnRunner.formError}
-                        setFormError={dmnRunner.setFormError}
-                        formSchema={dmnRunner.formSchema}
-                        id={"form"}
-                        formRef={formRef}
-                        showInlineError={true}
-                        autosave={true}
-                        autosaveDelay={AUTO_SAVE_DELAY}
-                        placeholder={true}
-                        errorsField={() => <></>}
-                        submitField={() => <></>}
-                        locale={locale}
-                        notificationsPanel={true}
-                        openValidationTab={openValidationTab}
-                      />
-                    </PageSection>
-                  </div>
-                </Page>
-              </div>
-              <div
-                className={"kogito--editor__dmn-runner-content"}
-                style={{
-                  width: dmnRunnerStylesConfig.contentWidth,
-                  height: dmnRunnerStylesConfig.contentHeight,
-                }}
-              >
-                <Page className={"kogito--editor__dmn-runner-content-page"}>
-                  <PageSection className={"kogito--editor__dmn-runner-content-header"}>
-                    <TextContent>
-                      <Text component={"h2"}>{i18n.terms.outputs}</Text>
-                    </TextContent>
-                    {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
-                      <DrawerCloseButton onClick={(e: any) => dmnRunner.setDrawerExpanded(false)} />
-                    )}
-                  </PageSection>
-                  <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
-                    <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
-                      <DmnFormResult
-                        results={dmnRunnerResults}
-                        differences={dmnRunnerResponseDiffs}
-                        locale={locale}
-                        notificationsPanel={true}
-                        openExecutionTab={openExecutionTab}
-                      />
-                    </PageSection>
-                  </div>
-                </Page>
-              </div>
+                </div>
+              </Page>
             </div>
-          </DrawerPanelContent>
+            <div
+              className={"kogito--editor__dmn-runner-content"}
+              style={{
+                width: dmnRunnerStylesConfig.contentWidth,
+                height: dmnRunnerStylesConfig.contentHeight,
+              }}
+            >
+              <Page className={"kogito--editor__dmn-runner-content-page"}>
+                <PageSection className={"kogito--editor__dmn-runner-content-header"}>
+                  <TextContent>
+                    <Text component={"h2"}>{i18n.terms.outputs}</Text>
+                  </TextContent>
+                  {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
+                    <DrawerCloseButton onClick={(e: any) => dmnRunner.setDrawerExpanded(false)} />
+                  )}
+                </PageSection>
+                <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
+                  <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
+                    <DmnFormResult
+                      results={dmnRunnerResults}
+                      differences={dmnRunnerResponseDiffs}
+                      locale={locale}
+                      notificationsPanel={true}
+                      openExecutionTab={openExecutionTab}
+                    />
+                  </PageSection>
+                </div>
+              </Page>
+            </div>
+          </div>
         </ErrorBoundary>
       )}
-    </>
+    </DrawerPanelContent>
   );
 }
