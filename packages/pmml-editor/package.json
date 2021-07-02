@@ -45,7 +45,7 @@
     "test:watch": "jest --watch",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "yarn lint && yarn test && rimraf dist && webpack && yarn test:it",
-    "start": "webpack serve -c webpack.showcase.config.js --host 0.0.0.0 ",
+    "start": "webpack serve -c webpack.showcase.config.js --host 0.0.0.0 --env dev",
     "deploy": "gh-pages -d dist",
     "cy:open": "yarn run cypress open --project it-tests",
     "cy:run": "yarn run cypress run -b chrome --project it-tests",
