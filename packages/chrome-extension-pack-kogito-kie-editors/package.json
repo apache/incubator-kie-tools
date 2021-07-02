@@ -1,6 +1,6 @@
 {
   "name": "chrome-extension-pack-kogito-kie-editors",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "",
   "license": "Apache-2.0",
   "repository": {
@@ -8,11 +8,11 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/chrome-extension": "0.10.0",
-    "@kogito-tooling/editor": "0.10.0",
-    "@kogito-tooling/external-assets-base": "0.10.0",
-    "@kogito-tooling/kie-bc-editors": "0.10.0",
-    "@kogito-tooling/patternfly-base": "0.10.0"
+    "@kogito-tooling/chrome-extension": "0.11.0",
+    "@kogito-tooling/editor": "0.11.0",
+    "@kogito-tooling/external-assets-base": "0.11.0",
+    "@kogito-tooling/kie-bc-editors": "0.11.0",
+    "@kogito-tooling/patternfly-base": "0.11.0"
   },
   "scripts": {
     "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",

@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/pmml-editor-marshaller",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
