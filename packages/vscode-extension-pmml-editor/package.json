@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build-ext": "rm -rf dist && webpack --mode production --devtool none",
-    "pack-ext": "vsce package --yarn -o ./dist/vscode_extension_pmml_editor_$npm_package_version.vsix",
+    "pack-ext": "vsce package --githubBranch main --yarn -o ./dist/vscode_extension_pmml_editor_$npm_package_version.vsix",
     "pack": "yarn build-ext && yarn pack-ext",
     "compile": "yarn build-ext",
     "watch": "yarn build-ext"

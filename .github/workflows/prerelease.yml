@@ -29,7 +29,7 @@ jobs:
 
       - name: Create Draft Release
         id: create_release
-        uses: actions/create-release@master
+        uses: actions/create-release@v1.1.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -62,7 +62,7 @@ jobs:
 
       - name: Upload BPMN Editor Extension
         id: upload-bpmn-extension
-        uses: actions/upload-release-asset@master
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -73,7 +73,7 @@ jobs:
 
       - name: Upload DMN Editor Extension
         id: upload-dmn-extension
-        uses: actions/upload-release-asset@master
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -84,7 +84,7 @@ jobs:
 
       - name: Upload PMML Editor Extension
         id: upload-pmml-extension
-        uses: actions/upload-release-asset@master
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -95,7 +95,7 @@ jobs:
 
       - name: Upload Kogito Bundle Extension
         id: upload-kogito-bundle-extension
-        uses: actions/upload-release-asset@master
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -106,7 +106,7 @@ jobs:
 
       - name: Upload Red Hat Business Automation Bundle Extension
         id: upload-red-hat-business-automation-bundle-extension
-        uses: actions/upload-release-asset@master
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
