@@ -27,7 +27,13 @@ class Builders {
 }
 
 abstract class BaseBuilder {
-  constructor(protected readonly builders: Builders) {}
+  protected readonly builders: Builders;
+
+  constructor(builders: Builders) {
+    const clone: BaseBuilder[] = [];
+    builders.builders.forEach((builder) => clone.push(builder));
+    this.builders = new Builders(clone);
+  }
 
   protected abstract segment(): string;
 
@@ -68,9 +74,12 @@ class PMMLBuilder extends BaseBuilder {
 }
 
 class ModelBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly modelIndex?: number) {
+  private readonly modelIndex?: number;
+
+  constructor(builders: Builders, modelIndex?: number) {
     super(builders);
     this.builders.add(this);
+    this.modelIndex = modelIndex;
   }
 
   public forBaselineScore = () => {
@@ -99,7 +108,7 @@ class ModelBuilder extends BaseBuilder {
 }
 
 class HeaderBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -110,7 +119,7 @@ class HeaderBuilder extends BaseBuilder {
 }
 
 class DataDictionaryBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -125,9 +134,12 @@ class DataDictionaryBuilder extends BaseBuilder {
 }
 
 class DataFieldBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly dataFieldIndex?: number) {
+  private readonly dataFieldIndex?: number;
+
+  constructor(builders: Builders, dataFieldIndex?: number) {
     super(builders);
     this.builders.add(this);
+    this.dataFieldIndex = dataFieldIndex;
   }
 
   public forInterval = (intervalIndex?: number) => {
@@ -144,9 +156,12 @@ class DataFieldBuilder extends BaseBuilder {
 }
 
 class IntervalBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly intervalIndex?: number) {
+  private readonly intervalIndex?: number;
+
+  constructor(builders: Builders, intervalIndex?: number) {
     super(builders);
     this.builders.add(this);
+    this.intervalIndex = intervalIndex;
   }
 
   protected segment(): string {
@@ -155,9 +170,12 @@ class IntervalBuilder extends BaseBuilder {
 }
 
 class ValueBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly valueIndex?: number) {
+  private readonly valueIndex?: number;
+
+  constructor(builders: Builders, valueIndex?: number) {
     super(builders);
     this.builders.add(this);
+    this.valueIndex = valueIndex;
   }
 
   protected segment(): string {
@@ -166,7 +184,7 @@ class ValueBuilder extends BaseBuilder {
 }
 
 class CharacteristicsBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -181,9 +199,12 @@ class CharacteristicsBuilder extends BaseBuilder {
 }
 
 class CharacteristicBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly characteristicIndex?: number) {
+  private readonly characteristicIndex?: number;
+
+  constructor(builders: Builders, characteristicIndex?: number) {
     super(builders);
     this.builders.add(this);
+    this.characteristicIndex = characteristicIndex;
   }
 
   public forReasonCode = () => {
@@ -204,7 +225,7 @@ class CharacteristicBuilder extends BaseBuilder {
 }
 
 class ReasonCodeBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -215,7 +236,7 @@ class ReasonCodeBuilder extends BaseBuilder {
 }
 
 class BaselineScoreBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -226,7 +247,7 @@ class BaselineScoreBuilder extends BaseBuilder {
 }
 
 class UseReasonCodesBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -237,9 +258,12 @@ class UseReasonCodesBuilder extends BaseBuilder {
 }
 
 class AttributeBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly attributeIndex?: number) {
+  private readonly attributeIndex?: number;
+
+  constructor(builders: Builders, attributeIndex?: number) {
     super(builders);
     this.builders.add(this);
+    this.attributeIndex = attributeIndex;
   }
 
   public forPredicate = (predicateIndex?: number) => {
@@ -260,7 +284,7 @@ class AttributeBuilder extends BaseBuilder {
 }
 
 class PartialScoreBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -270,23 +294,30 @@ class PartialScoreBuilder extends BaseBuilder {
   }
 }
 
-class PredicateBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly predicateIndex?: number) {
+export class PredicateBuilder extends BaseBuilder {
+  private readonly predicateIndex?: number;
+
+  constructor(builders: Builders, predicateIndex?: number) {
     super(builders);
     this.builders.add(this);
+    this.predicateIndex = predicateIndex;
   }
 
   public forFieldName = () => {
     return new FieldNameBuilder(this.builders);
   };
 
+  public forPredicate = (predicateIndex?: number) => {
+    return new PredicateBuilder(this.builders, predicateIndex);
+  };
+
   protected segment(): string {
-    return this.predicateIndex !== undefined ? `predicate[${this.predicateIndex}]` : `predicate`;
+    return this.predicateIndex !== undefined ? `predicates[${this.predicateIndex}]` : `predicate`;
   }
 }
 
 class FieldNameBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -297,7 +328,7 @@ class FieldNameBuilder extends BaseBuilder {
 }
 
 class MiningSchemaBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -312,9 +343,12 @@ class MiningSchemaBuilder extends BaseBuilder {
 }
 
 class MiningFieldBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly miningFieldIndex?: number) {
+  private readonly miningFieldIndex?: number;
+
+  constructor(builders: Builders, miningFieldIndex?: number) {
     super(builders);
     this.builders.add(this);
+    this.miningFieldIndex = miningFieldIndex;
   }
 
   public forImportance = () => {
@@ -347,7 +381,7 @@ class MiningFieldBuilder extends BaseBuilder {
 }
 
 class MiningFieldImportanceBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -358,7 +392,7 @@ class MiningFieldImportanceBuilder extends BaseBuilder {
 }
 
 class MiningFieldLowValueBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -369,7 +403,7 @@ class MiningFieldLowValueBuilder extends BaseBuilder {
 }
 
 class MiningFieldHighValueBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -380,7 +414,7 @@ class MiningFieldHighValueBuilder extends BaseBuilder {
 }
 
 class MiningFieldMissingValueReplacementBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -391,7 +425,7 @@ class MiningFieldMissingValueReplacementBuilder extends BaseBuilder {
 }
 
 class MiningFieldInvalidValueReplacementBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -402,7 +436,7 @@ class MiningFieldInvalidValueReplacementBuilder extends BaseBuilder {
 }
 
 class MiningFieldDataFieldMissingBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -413,7 +447,7 @@ class MiningFieldDataFieldMissingBuilder extends BaseBuilder {
 }
 
 class OutputBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }
@@ -428,9 +462,12 @@ class OutputBuilder extends BaseBuilder {
 }
 
 class OutputFieldBuilder extends BaseBuilder {
-  constructor(protected builders: Builders, private readonly outputFieldIndex?: number) {
+  private readonly outputFieldIndex?: number;
+
+  constructor(builders: Builders, outputFieldIndex?: number) {
     super(builders);
     this.builders.add(this);
+    this.outputFieldIndex = outputFieldIndex;
   }
 
   public forTargetField = () => {
@@ -443,7 +480,7 @@ class OutputFieldBuilder extends BaseBuilder {
 }
 
 class OutputFieldTargetFieldBuilder extends BaseBuilder {
-  constructor(protected builders: Builders) {
+  constructor(builders: Builders) {
     super(builders);
     this.builders.add(this);
   }

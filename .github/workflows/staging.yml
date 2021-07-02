@@ -105,6 +105,11 @@ jobs:
           ONLINE_EDITOR__downloadHubUrlMacOs: "${{ needs.create_release.outputs.download_asset_url }}/STAGING__business_modeler_hub_preview_macos_${{ needs.create_release.outputs.tag }}.zip"
           ONLINE_EDITOR__downloadHubUrlWindows: "${{ needs.create_release.outputs.download_asset_url }}/STAGING__business_modeler_hub_preview_windows_${{ needs.create_release.outputs.tag }}.zip"
           ONLINE_EDITOR__buildInfo: "${{ needs.create_release.outputs.tag }} (staging) @ ${{ needs.create_release.outputs.commit_sha }}"
+          ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: ""
+          ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: ""
+          ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: ""
+          ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion: "${{ needs.create_release.outputs.tag }}"
+          ONLINE_EDITOR__gtmId: ""
         run: |
           yarn build:prod
 

@@ -10,6 +10,7 @@ digraph G {
   "@kogito-tooling/kie-bc-editors" [ style = "rounded", color = "blue", fontcolor = "blue" ];
   "@kogito-tooling/desktop" [ style = "dashed, rounded" ];
   "@kogito-tooling/i18n-common-dictionary" [ style = "dashed, rounded" ];
+  "@kogito-tooling/form" [ style = "rounded", color = "blue", fontcolor = "blue" ];
   "@kogito-tooling/hub" [ style = "dashed, rounded" ];
   "@kogito-tooling/pmml-editor-marshaller" [ style = "rounded", color = "blue", fontcolor = "blue" ];
   "@kogito-tooling/kie-editors-standalone" [ style = "rounded", color = "blue", fontcolor = "blue" ];
@@ -26,13 +27,14 @@ digraph G {
   "@kogito-tooling/desktop" -> "@kogito-tooling/i18n-common-dictionary" [ style = "solid" ];
   "@kogito-tooling/desktop" -> "@kogito-tooling/kie-bc-editors" [ style = "solid" ];
   "@kogito-tooling/external-assets-base" -> "@kogito-tooling/build-env" [ style = "solid" ];
+  "@kogito-tooling/form" -> "@kogito-tooling/i18n-common-dictionary" [ style = "solid" ];
   "@kogito-tooling/hub" -> "@kogito-tooling/desktop" [ style = "solid" ];
   "@kogito-tooling/i18n-common-dictionary" -> "@kogito-tooling/build-env" [ style = "solid" ];
   "@kogito-tooling/kie-bc-editors" -> "@kogito-tooling/pmml-editor-marshaller" [ style = "solid" ];
   "@kogito-tooling/kie-editors-standalone" -> "@kogito-tooling/external-assets-base" [ style = "dashed" ];
   "@kogito-tooling/kie-editors-standalone" -> "@kogito-tooling/kie-bc-editors" [ style = "dashed" ];
   "@kogito-tooling/online-editor" -> "@kogito-tooling/external-assets-base" [ style = "solid" ];
-  "@kogito-tooling/online-editor" -> "@kogito-tooling/i18n-common-dictionary" [ style = "solid" ];
+  "@kogito-tooling/online-editor" -> "@kogito-tooling/form" [ style = "solid" ];
   "@kogito-tooling/online-editor" -> "@kogito-tooling/kie-bc-editors" [ style = "solid" ];
   "@kogito-tooling/online-editor" -> "@kogito-tooling/pmml-editor" [ style = "solid" ];
   "@kogito-tooling/pmml-editor" -> "@kogito-tooling/pmml-editor-marshaller" [ style = "solid" ];

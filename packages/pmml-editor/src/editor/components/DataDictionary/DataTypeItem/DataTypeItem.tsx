@@ -311,7 +311,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
         <section
           className={"editable-item__inner"}
           tabIndex={0}
-          onClick={(event) => handleEditStatus(event)}
+          onClick={handleEditStatus}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               handleEditStatus(event);

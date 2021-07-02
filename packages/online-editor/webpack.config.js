@@ -22,28 +22,20 @@ const common = require("../../config/webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 const { EnvironmentPlugin } = require("webpack");
 const buildEnv = require("@kogito-tooling/build-env");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 
-function getDownloadHubArgs() {
-  const linuxUrl = buildEnv.onlineEditor.downloadHubUrl.linux;
-  const macOsUrl = buildEnv.onlineEditor.downloadHubUrl.macOs;
-  const windowsUrl = buildEnv.onlineEditor.downloadHubUrl.windows;
-
-  console.info(`Online Editor :: Download Hub URL (Linux): ${linuxUrl}`);
-  console.info(`Online Editor :: Download Hub URL (macOS): ${macOsUrl}`);
-  console.info(`Online Editor :: Download Hub URL (Windows): ${windowsUrl}`);
-
-  return [linuxUrl, macOsUrl, windowsUrl];
-}
-
-function getBuildInfo() {
-  const buildInfo = buildEnv.onlineEditor.buildInfo;
-  console.info(`Online Editor :: Build info: ${buildInfo}`);
-  return buildInfo;
-}
-
-module.exports = async (env) => {
+module.exports = async (env, argv) => {
   const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs();
   const buildInfo = getBuildInfo();
+  const [
+    kieToolingExtendedServices_linuxDownloadUrl,
+    kieToolingExtendedServices_macOsDownloadUrl,
+    kieToolingExtendedServices_windowsDownloadUrl,
+    kieToolingExtendedServices_compatibleVersion,
+  ] = getKieToolingExtendedServicesArgs(argv);
+
+  const gtmResource = getGtmResource(argv);
 
   return merge(common(env), {
     entry: {
@@ -53,18 +45,37 @@ module.exports = async (env) => {
       "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
     },
     plugins: [
+      new HtmlWebpackPlugin({
+        template: "./static/index.html",
+        inject: false,
+        minify: false,
+      }),
+      new HtmlReplaceWebpackPlugin([
+        {
+          pattern: /(<!-- gtm):([\w-\/]+)(\s*-->)?/g,
+          replacement: (match, gtm, type) => {
+            if (gtmResource) {
+              return gtmResource[type] ?? `${match}`;
+            }
+            return `${match}`;
+          },
+        },
+      ]),
       new EnvironmentPlugin({
         WEBPACK_REPLACE__hubLinuxUrl: downloadHub_linuxUrl,
         WEBPACK_REPLACE__hubMacOsUrl: downloadHub_macOsUrl,
         WEBPACK_REPLACE__hubWindowsUrl: downloadHub_windowsUrl,
         WEBPACK_REPLACE__buildInfo: buildInfo,
+        WEBPACK_REPLACE__dmnRunnerLinuxDownloadUrl: kieToolingExtendedServices_linuxDownloadUrl,
+        WEBPACK_REPLACE__dmnRunnerMacOsDownloadUrl: kieToolingExtendedServices_macOsDownloadUrl,
+        WEBPACK_REPLACE__dmnRunnerWindowsDownloadUrl: kieToolingExtendedServices_windowsDownloadUrl,
+        WEBPACK_REPLACE__dmnRunnerCompatibleVersion: kieToolingExtendedServices_compatibleVersion,
       }),
       new CopyPlugin({
         patterns: [
           { from: "./static/resources", to: "./resources" },
           { from: "./static/images", to: "./images" },
           { from: "./static/samples", to: "./samples" },
-          { from: "./static/index.html", to: "./index.html" },
           { from: "./static/favicon.ico", to: "./favicon.ico" },
           {
             from: externalAssets.dmnEditorPath(),
@@ -107,3 +118,68 @@ module.exports = async (env) => {
     },
   });
 };
+
+function getGtmResource() {
+  const gtmId = buildEnv.onlineEditor.gtmId;
+  console.info(`Google Tag Manager :: ID: ${gtmId}`);
+
+  if (!gtmId) {
+    return undefined;
+  }
+
+  return {
+    id: gtmId,
+    header: `<!-- Google Tag Manager -->
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','${gtmId}');
+    </script>
+    <!-- End Google Tag Manager -->`,
+    body: `<!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=${gtmId}"
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+      >
+      </iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->`,
+  };
+}
+
+function getDownloadHubArgs() {
+  const linuxUrl = buildEnv.onlineEditor.downloadHubUrl.linux;
+  const macOsUrl = buildEnv.onlineEditor.downloadHubUrl.macOs;
+  const windowsUrl = buildEnv.onlineEditor.downloadHubUrl.windows;
+
+  console.info(`Online Editor :: Download Hub URL (Linux): ${linuxUrl}`);
+  console.info(`Online Editor :: Download Hub URL (macOS): ${macOsUrl}`);
+  console.info(`Online Editor :: Download Hub URL (Windows): ${windowsUrl}`);
+
+  return [linuxUrl, macOsUrl, windowsUrl];
+}
+
+function getBuildInfo() {
+  const buildInfo = buildEnv.onlineEditor.buildInfo;
+  console.info(`Online Editor :: Build info: ${buildInfo}`);
+  return buildInfo;
+}
+
+function getKieToolingExtendedServicesArgs() {
+  const linuxDownloadUrl = buildEnv.onlineEditor.kieToolingExtendedServices.downloadUrl.linux;
+  const macOsDownloadUrl = buildEnv.onlineEditor.kieToolingExtendedServices.downloadUrl.macOs;
+  const windowsDownloadUrl = buildEnv.onlineEditor.kieToolingExtendedServices.downloadUrl.windows;
+  const compatibleVersion = buildEnv.onlineEditor.kieToolingExtendedServices.compatibleVersion;
+
+  console.info("KIE Tooling Extended Services :: Linux download URL: " + linuxDownloadUrl);
+  console.info("KIE Tooling Extended Services :: macOS download URL: " + macOsDownloadUrl);
+  console.info("KIE Tooling Extended Services :: Windows download URL: " + windowsDownloadUrl);
+  console.info("KIE Tooling Extended Services :: Compatible version: " + compatibleVersion);
+
+  return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
+}

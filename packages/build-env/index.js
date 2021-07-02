@@ -77,6 +77,31 @@ const ENV_VARS = {
     default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
     description: "",
   },
+  ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: {
+    name: "ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux",
+    default: `https://github.com/kiegroup/kogito-tooling-go/releases/download/${version}/kie_tooling_extended_services_linux_${version}.dmg`,
+    description: "",
+  },
+  ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: {
+    name: "ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs",
+    default: `https://github.com/kiegroup/kogito-tooling-go/releases/download/${version}/kie_tooling_extended_services_macos_${version}.dmg`,
+    description: "",
+  },
+  ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: {
+    name: "ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows",
+    default: `https://github.com/kiegroup/kogito-tooling-go/releases/download/${version}/kie_tooling_extended_services_windows_${version}.dmg`,
+    description: "",
+  },
+  ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion: {
+    name: "ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion",
+    default: version,
+    description: "",
+  },
+  ONLINE_EDITOR__gtmId: {
+    name: "ONLINE_EDITOR__gtmId",
+    default: undefined,
+    description: "",
+  },
   WEBPACK__minimize: {
     name: "WEBPACK__minimize",
     description: "",
@@ -136,11 +161,20 @@ module.exports = {
     dev: {
       port: 9001,
     },
+    gtmId: getOrDefault(ENV_VARS.ONLINE_EDITOR__gtmId),
     buildInfo: getOrDefault(ENV_VARS.ONLINE_EDITOR__buildInfo),
     downloadHubUrl: {
       linux: getOrDefault(ENV_VARS.ONLINE_EDITOR__downloadHubUrlLinux),
       macOs: getOrDefault(ENV_VARS.ONLINE_EDITOR__downloadHubUrlMacOs),
       windows: getOrDefault(ENV_VARS.ONLINE_EDITOR__downloadHubUrlWindows),
+    },
+    kieToolingExtendedServices: {
+      compatibleVersion: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion),
+      downloadUrl: {
+        linux: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux),
+        macOs: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs),
+        windows: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows),
+      },
     },
   },
 

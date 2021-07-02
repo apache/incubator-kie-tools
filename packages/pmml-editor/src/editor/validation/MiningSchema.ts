@@ -155,7 +155,7 @@ export const validateMiningFieldDataFieldReference = (
   if (dataFields.filter((dataField) => dataField.name === miningField.name).length === 0) {
     validationRegistry.set(
       Builder().forModel(modelIndex).forMiningSchema().forMiningField(miningFieldIndex).forDataFieldMissing().build(),
-      new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" cannot be not found in the Data Dictionary.`)
+      new ValidationEntry(ValidationLevel.WARNING, `"${miningField.name}" cannot be found in the Data Dictionary.`)
     );
   }
 };

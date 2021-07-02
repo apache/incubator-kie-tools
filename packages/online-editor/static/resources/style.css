@@ -81,12 +81,13 @@
 }
 
 .kogito--alert-container {
-  position: fixed;
+  position: absolute;
   display: flex;
   width: 100%;
   justify-content: center;
   align-items: center;
   padding: 1em;
+  pointer-events: none;
 }
 
 .kogito--alert {
@@ -94,7 +95,7 @@
 }
 
 .kogito--alert-container-unsaved {
-  position: fixed;
+  position: absolute;
   display: flex;
   width: 100%;
   justify-content: flex-end;
@@ -218,4 +219,271 @@
   position: fixed;
   bottom: 10px;
   right: 10px;
+}
+
+.kogito--code {
+  font-family: var(--pf-global--FontFamily--monospace);
+  font-weight: var(--pf-global--FontWeight--normal);
+  line-height: var(--pf-global--LineHeight--md);
+  font-size: var(--pf-global--FontSize--md);
+  display: inline;
+}
+
+.kogito--editor__page-section {
+  flex-basis: 100%;
+}
+
+.kogito--editor__drawer-content-close {
+  flex-basis: 100vw;
+  flex-shrink: 0 !important;
+}
+
+.kogito--editor__drawer-content-body {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.kogito--editor__drawer-content-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+@media screen and (min-width: 1200px) {
+  .kogito--editor__drawer-content-panel {
+    max-height: calc(100vh - 76px);
+  }
+}
+
+@media screen and (min-width: 0px) and (max-width: 1200px) {
+  .kogito--editor__drawer-content-panel {
+    max-height: calc(100vh - 108px);
+  }
+}
+
+.kogito--editor__dmn-runner {
+  display: flex;
+}
+
+@media screen and (min-width: 1200px) {
+  .kogito--editor__dmn-runner {
+    height: 100%;
+  }
+}
+
+@media screen and (min-width: 0px) and (max-width: 1200px) {
+  .kogito--editor__dmn-runner {
+    height: calc(100vh - 108px);
+  }
+}
+
+.kogito--editor__dmn-runner-content {
+  min-width: 350px;
+}
+
+.kogito--editor__dmn-runner-content-page {
+  flex-grow: 0;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+@media screen and (min-width: 1200px) {
+  .kogito--editor__dmn-runner-content-page {
+    max-height: calc(100vh - 76px);
+    flex-basis: 50%;
+  }
+}
+
+@media screen and (min-width: 0px) and (max-width: 1200px) {
+  .kogito--editor__dmn-runner-content-page {
+    max-height: unset;
+    flex-basis: 100%;
+  }
+}
+
+.kogito--editor__dmn-runner-content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+}
+
+.kogito--editor__dmn-runner-drawer-content-body {
+  overflow-y: auto;
+  height: 100%;
+}
+
+.kogito--editor__dmn-runner-drawer-content-body-input {
+  padding-top: 0;
+}
+
+.kogito--editor__dmn-runner-drawer-content-body-output {
+  padding-top: 0;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.kogito--editor__dmn-runner-modal-footer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.kogito--editor__dmn-runner-modal-footer-alert {
+  width: 100%;
+}
+
+.kogito--editor__dmn-runner-modal-footer-alert-success {
+  display: flex;
+  justify-content: space-between;
+}
+
+@keyframes flickerAnimation {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.66;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.blink-opacity {
+  animation: flickerAnimation 2s infinite cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+.kogito--editor__dmn-runner-modal-initial {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-left: 20px;
+}
+
+.kogito--editor__dmn-runner-modal-initial-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.kogito--editor__dmn-runner-modal-initial-title {
+  margin: 20px;
+}
+
+.kogito--editor__dmn-runner-modal-initial-margin {
+  margin: 10px;
+}
+
+.kogito--editor__dmn-runner-modal-use {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.kogito--editor__dmn-runner-modal-use-title {
+  margin: 20px;
+}
+
+.kogito--editor__dmn-runner-modal-use-main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.kogito--editor__dmn-runner-modal-use-text-align {
+  text-align: center;
+}
+
+.kogito--editor__dmn-runner-modal-use-margin {
+  margin: 10px;
+}
+
+.kogito--editor__notifications-panel-button {
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  z-index: 999;
+  right: 0;
+  bottom: 5px;
+  position: absolute;
+  padding: 7px;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  font-size: var(--pf-global--FontSize--md);
+  cursor: pointer;
+  color: var(--pf-global--Color--dark-100) !important;
+}
+
+.kogito--editor__notifications-panel-button.open {
+  bottom: 360px;
+}
+
+.kogito--editor__notifications-panel-error-count-updated {
+  animation-name: highlight;
+  animation-duration: 1s;
+}
+
+.kogito--editor__notifications-panel-with-notifications-tooltip {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.kogito--editor__notifications-panel-with-notifications-tooltip-exclamation-icon {
+  margin-top: 1px;
+}
+
+.kogito--editor__notifications-panel-open {
+  display: flex;
+  flex-direction: column;
+  border-top: solid 1px #ddd;
+}
+
+.kogito--editor__notifications-panel-close {
+  display: none;
+}
+
+.kogito--editor__notifications-panel-resizable-div {
+  height: 10px;
+  border-bottom: solid 1px #ddd;
+  cursor: row-resize;
+}
+
+.kogito--editor__notifications-panel-div {
+  height: 350px;
+  width: 100%;
+  position: relative;
+  overflow: auto;
+}
+
+.kogito--editor__notifications-panel-icon-position {
+  right: 0;
+  top: 0;
+  position: absolute;
+  display: flex;
+  width: 50px;
+  height: 40px;
+  justify-content: space-around;
+  align-items: center;
+  padding: 7px;
+  z-index: 999;
+  user-select: none;
+}
+
+@keyframes highlight {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

@@ -5,7 +5,9 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "declaration": false,
-    "declarationMap": false
+    "declarationMap": false,
+    "resolveJsonModule": true,
+    "target": "es6"
   },
   "include": ["src"]
 }

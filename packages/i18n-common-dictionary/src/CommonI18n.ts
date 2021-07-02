@@ -19,6 +19,7 @@ import { names } from "./names";
 
 export type CommonDictionary = {
   available: string;
+  back: string;
   cancel: string;
   close: string;
   continue: string;
@@ -29,30 +30,39 @@ export type CommonDictionary = {
   download: string;
   edit: string;
   edited: string;
+  execution: string;
   exit: string;
   file: string;
   files: string;
   forum: string;
   fullScreen: string;
+  inputs: string;
   install: string;
   launch: string;
   loading: string;
+  macosApplicationFolder: string;
   new: string;
+  next: string;
   note: string;
   open: string;
+  oops: string;
   os: {
     initials: string;
     full: string;
   };
+  outputs: string;
   paste: string;
   poweredBy: string;
   quit: string;
   redo: string;
   reset: string;
   save: string;
+  setup: string;
+  start: string;
   token: string;
   undo: string;
   uninstall: string;
+  validation: string;
 };
 
 export interface CommonI18n extends ReferenceDictionary {
