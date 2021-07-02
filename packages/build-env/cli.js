@@ -64,9 +64,13 @@ async function main() {
     const trMatrix = JSON.parse(JSON.stringify(adjMatrix));
     for (const s in trMatrix)
       for (const u in trMatrix)
-        if (trMatrix[u][s] === "dependency" || trMatrix[u][s] === "devDependency")
+        if (trMatrix[u][s] === "dependency" || trMatrix[u][s] === "devDependency" || trMatrix[u][s] === "transitive")
           for (const v in trMatrix)
-            if (trMatrix[s][v] === "dependency" || trMatrix[s][v] === "devDependency") {
+            if (
+              trMatrix[s][v] === "dependency" ||
+              trMatrix[s][v] === "devDependency" ||
+              trMatrix[s][v] === "transitive"
+            ) {
               trMatrix[u][v] = "transitive";
             }
 
