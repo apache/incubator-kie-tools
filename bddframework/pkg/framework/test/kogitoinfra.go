@@ -29,7 +29,7 @@ func CreateFakeKogitoKafka(namespace string) api.KogitoInfraInterface {
 			Namespace: namespace,
 		},
 		Spec: v1beta1.KogitoInfraSpec{
-			Resource: v1beta1.Resource{
+			Resource: v1beta1.InfraResource{
 				Kind:       "Kafka",
 				APIVersion: "kafka.strimzi.io/v1beta2",
 			},
@@ -66,7 +66,7 @@ func CreateFakeKogitoInfinispan(namespace string) api.KogitoInfraInterface {
 			Namespace: namespace,
 		},
 		Spec: v1beta1.KogitoInfraSpec{
-			Resource: v1beta1.Resource{
+			Resource: v1beta1.InfraResource{
 				Kind:       "Infinispan",
 				APIVersion: "infinispan.org/v1",
 			},
@@ -127,7 +127,7 @@ func CreateFakeKogitoKnative(namespace string) api.KogitoInfraInterface {
 			Namespace: namespace,
 		},
 		Spec: v1beta1.KogitoInfraSpec{
-			Resource: v1beta1.Resource{
+			Resource: v1beta1.InfraResource{
 				Kind:       "Broker",
 				APIVersion: "eventing.knative.dev/v1",
 			},

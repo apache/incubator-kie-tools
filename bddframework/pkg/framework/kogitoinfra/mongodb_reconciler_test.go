@@ -100,7 +100,7 @@ func TestRetrieveMongoDBCredentialsFromInstance(t *testing.T) {
 
 			kogitoInfra := &v1beta1.KogitoInfra{
 				Spec: v1beta1.KogitoInfraSpec{
-					Resource: v1beta1.Resource{
+					Resource: v1beta1.InfraResource{
 						Name:       "name",
 						Namespace:  "namespace",
 						Kind:       "kind",
