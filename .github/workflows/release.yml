@@ -146,11 +146,11 @@ jobs:
       ONLINE_EDITOR__downloadHubUrlMacOs: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_macos_${{ needs.prepare.outputs.version }}.zip"
       ONLINE_EDITOR__downloadHubUrlWindows: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_windows_${{ needs.prepare.outputs.version }}.zip"
       ONLINE_EDITOR__buildInfo: ""
-      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: ""
-      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: ""
-      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: ""
+      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ needs.create_release.outputs.tag }}/kie_tooling_extended_services_linux_${{ needs.create_release.outputs.tag }}.tar.gz"
+      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ needs.create_release.outputs.tag }}/kie_tooling_extended_services_macos_${{ needs.create_release.outputs.tag }}.dmg"
+      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ needs.create_release.outputs.tag }}/kie_tooling_extended_services_windows_${{ needs.create_release.outputs.tag }}.exe"
       ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion: "${{ needs.prepare.outputs.version }}"
-      ONLINE_EDITOR__gtmId: ""
+      ONLINE_EDITOR__gtmId: "GTM-PQGMKNW"
     if: ${{ always() && github.event.inputs.online_editor == 'true' && (needs.hub.result == 'success' || needs.hub.result == 'skipped') }}
     runs-on: ubuntu-latest
     needs: [prepare, hub]
