@@ -35,7 +35,7 @@ import { CharacteristicActions } from "./CharacteristicReducer";
 import { AttributesActions } from "./AttributesReducer";
 import { validateOutputs } from "../validation/Outputs";
 import { ValidationRegistry } from "../validation";
-import { Builder } from "../paths";
+import { Builder, PredicateBuilder } from "../paths";
 import { validateCharacteristic, validateCharacteristics } from "../validation/Characteristics";
 import { validateBaselineScore } from "../validation/ModelCoreProperties";
 import { getBaselineScore, getCharacteristics, getMiningSchema, getUseReasonCodes } from "../PMMLModelHelper";
@@ -51,7 +51,6 @@ interface ScorecardPayload {
   };
   [Actions.Scorecard_SetCoreProperties]: {
     readonly modelIndex: number;
-    readonly modelName: string;
     readonly isScorable: boolean;
     readonly functionName: MiningFunction;
     readonly algorithmName: string;
@@ -271,9 +270,12 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
           state.Characteristics.Characteristic.forEach((characteristic, characteristicIndex) => {
             characteristic.Attribute.forEach((attribute, attributeIndex) => {
               updatePredicateFieldName(
-                modelIndex,
-                characteristicIndex,
-                attributeIndex,
+                Builder()
+                  .forModel(modelIndex)
+                  .forCharacteristics()
+                  .forCharacteristic(characteristicIndex)
+                  .forAttribute(attributeIndex)
+                  .forPredicate(),
                 attribute.predicate,
                 dataFieldName,
                 originalDataFieldName,
@@ -377,9 +379,7 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
 };
 
 const updatePredicateFieldName = (
-  modelIndex: number,
-  characteristicIndex: number,
-  attributeIndex: number,
+  pathBuilder: PredicateBuilder,
   predicate: Predicate | undefined,
   name: FieldName,
   originalName: FieldName | undefined,
@@ -391,42 +391,23 @@ const updatePredicateFieldName = (
     return;
   } else if (predicate instanceof False) {
     return;
-  } else if (predicate instanceof SimpleSetPredicate) {
+  }
+  if (predicate instanceof SimpleSetPredicate) {
     if (originalName === predicate.field) {
-      service.batch(
-        predicate,
-        Builder()
-          .forModel(modelIndex)
-          .forCharacteristics()
-          .forCharacteristic(characteristicIndex)
-          .forAttribute(attributeIndex)
-          .forPredicate()
-          .build(),
-        (draft) => {
-          draft.field = name;
-        }
-      );
+      service.batch(predicate, pathBuilder.build(), (draft) => {
+        draft.field = name;
+      });
     }
   } else if (predicate instanceof SimplePredicate) {
     if (originalName === predicate.field) {
-      service.batch(
-        predicate,
-        Builder()
-          .forModel(modelIndex)
-          .forCharacteristics()
-          .forCharacteristic(characteristicIndex)
-          .forAttribute(attributeIndex)
-          .forPredicate()
-          .build(),
-        (draft) => {
-          draft.field = name;
-        }
-      );
+      service.batch(predicate, pathBuilder.build(), (draft) => {
+        draft.field = name;
+      });
     }
   } else if (predicate instanceof CompoundPredicate) {
     const cp: CompoundPredicate = predicate as CompoundPredicate;
-    cp.predicates?.forEach((p) =>
-      updatePredicateFieldName(modelIndex, characteristicIndex, attributeIndex, p, name, originalName, service)
+    cp.predicates?.forEach((p, i) =>
+      updatePredicateFieldName(pathBuilder.forPredicate(i), p, name, originalName, service)
     );
   }
 };

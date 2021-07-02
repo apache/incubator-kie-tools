@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { BaseSyntheticEvent, useEffect, useMemo, useState } from "react";
 import { GenericSelector } from "../atoms";
 import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kogito-tooling/pmml-editor-marshaller";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -144,16 +144,20 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     Builder().forModel(props.modelIndex).forBaselineScore().build()
   );
 
+  const handleEdit = (event: BaseSyntheticEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    onEdit();
+  };
+
   return (
     <div
       ref={ref}
-      onClick={onEdit}
+      onClick={handleEdit}
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
-          e.preventDefault();
-          e.stopPropagation();
-          onEdit();
+          handleEdit(e);
         }
       }}
     >
