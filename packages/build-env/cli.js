@@ -95,7 +95,13 @@ async function main() {
 
       const node = g.addNode(displayPkgName);
       if (packageMap.get(pkgName)?.private) {
+        node.set("color", "black");
+        node.set("fontcolor", "black");
         node.set("style", "dashed, rounded");
+      } else if (displayPkgName.startsWith("@kie-tooling-core")) {
+        node.set("style", "rounded");
+        node.set("color", "purple");
+        node.set("fontcolor", "purple");
       } else {
         node.set("style", "rounded");
         node.set("color", "blue");

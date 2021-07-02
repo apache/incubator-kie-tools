@@ -11,8 +11,10 @@ This package contains the tooling to handle environment variables and other buil
 Nodes:
 
 - `Blue`: Packages that are published to the NPM registry.
+- `Purple`: Core packages that are published to the NPM registry.
 - `Dotted black`: Packages that are deployed to other mediums.
 
 Edges:
 
 - `Dotted black`: devDependency.
+- `Solid black`: dependency.
