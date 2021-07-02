@@ -17,8 +17,8 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kie-tooling-core/i18n": "^0.0.0",
-    "@kie-tooling-core/notifications": "^0.0.0",
+    "@kie-tooling-core/i18n": "0.0.0",
+    "@kie-tooling-core/notifications": "0.0.0",
     "@kogito-tooling/i18n-common-dictionary": "0.0.0",
     "ajv": "^6.12.6",
     "ajv-errors": "^1.0.1",
