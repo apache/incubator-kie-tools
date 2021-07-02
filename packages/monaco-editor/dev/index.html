@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Monaco Editor Standalone</title>
+    <script src="../dist/standalone/monaco.min.js"></script>
+  </head>
+  <body style="height: 100vh">
+    <script>
+      monaco.editor.create(document.body, {
+        value: "function hello() {\n\talert('Hello world!');\n}",
+        language: "javascript",
+      });
+    </script>
+  </body>
+</html>

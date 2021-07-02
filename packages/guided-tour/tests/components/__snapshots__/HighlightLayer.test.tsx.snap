@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HighlightLayer does not render when layer and the current highlight are disabled 1`] = `
+<div>
+  <svg
+    class="kgt-svg-layer"
+    style="opacity: 0;"
+  >
+    <path
+      d=""
+      style="fill: rgba(0, 0, 0, .5);"
+    />
+  </svg>
+</div>
+`;
+
+exports[`HighlightLayer renders when layer is disabled, but the current step highlight is enabled 1`] = `
+<div>
+  <svg
+    class="kgt-svg-layer"
+    style="opacity: 1;"
+  >
+    <path
+      d="M0 0 H1024 V768 H0Z 
+              M-5 -5 V5 H5 V-5Z"
+      style="fill: rgba(0, 0, 0, .5);"
+    />
+  </svg>
+</div>
+`;
+
+exports[`HighlightLayer renders when layer is enabled, but current element position and curre step are not present 1`] = `
+<div>
+  <svg
+    class="kgt-svg-layer"
+    style="opacity: 1;"
+  >
+    <path
+      d="M0 0 H1024 V768 H0Z 
+              M-5 -5 V5 H5 V-5Z"
+      style="fill: rgba(0, 0, 0, .5);"
+    />
+  </svg>
+</div>
+`;
+
+exports[`HighlightLayer renders when layer is enabled, but the current step highlight is disabled 1`] = `
+<div>
+  <svg
+    class="kgt-svg-layer"
+    style="opacity: 1;"
+  >
+    <path
+      d="M0 0 H1024 V768 H0Z 
+              M-5 -5 V5 H5 V-5Z"
+      style="fill: rgba(0, 0, 0, .5);"
+    />
+  </svg>
+</div>
+`;
+
+exports[`HighlightLayer renders when layer with a square to highlight current element, when current element position is present 1`] = `
+<div>
+  <svg
+    class="kgt-svg-layer"
+    style="opacity: 1;"
+  >
+    <path
+      d="M0 0 H1024 V768 H0Z 
+              M95 95 V305 H305 V95Z"
+      style="fill: rgba(0, 0, 0, .5);"
+    />
+  </svg>
+</div>
+`;

@@ -1,0 +1,38 @@
+{
+  "name": "@kie-tooling-core/operating-system",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "scripts": {
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "build:dev": "rimraf dist && tsc -p tsconfig.dev.json",
+    "build:prod": "yarn lint && rimraf dist && tsc -p tsconfig.prod.json && yarn test"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "@babel/react"
+    ]
+  }
+}

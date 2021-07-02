@@ -1,0 +1,52 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import "./Colors.sass"
+
+.kgt-nav-controls
+  position: absolute
+  width: calc(100% - 20px)
+  bottom: 10px
+  right: 10px
+  &__bullets
+    position: absolute
+    bottom: 0
+    left: 30px
+    width: calc(100% - 60px)
+    text-align: center
+    white-space: nowrap
+    overflow: hidden
+  &__bullet
+    background-color: $kgt-light-gray
+    width: 12px
+    height: 12px
+    border-radius: 12px
+    margin: 10px 5px 5px
+    display: inline-block
+    &--current
+      background-color: $kgt-accent-color
+  [data-kgt-prev],
+  [data-kgt-next]
+    position: absolute
+    z-index: 1
+    bottom: 0
+  [data-kgt-prev]
+    left: 0
+  [data-kgt-next]
+    right: 0
+    
+  [hidden]
+    display: none

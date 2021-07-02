@@ -1,0 +1,376 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SingleEditorApp go fullscreen 1`] = `
+<body>
+  <div
+    class="kogito-iframe-fullscreen-container test-extension123"
+  >
+    <div
+      class="kogito-iframe-fullscreen-toolbar"
+    >
+      <a
+        data-testid="exit-fullscreen-button"
+        href="#"
+      >
+        Exit Full Screen
+      </a>
+    </div>
+    <div
+      class="kogito-iframe fullscreen"
+    >
+      <iframe
+        data-envelope-channel="GITHUB"
+        data-testid="kogito-iframe"
+        id="kogito-iframe"
+        src="chrome-testing://https://my-url.com/"
+        style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+        title="Kogito editor"
+      />
+    </div>
+  </div>
+  <div />
+  <div />
+  <div
+    class="hidden"
+  />
+  <div />
+</body>
+`;
+
+exports[`SingleEditorApp go fullscreen and back 1`] = `
+<body>
+  <div
+    class="kogito-iframe-fullscreen-container test-extension123 hidden"
+  />
+  <div>
+    <div
+      style="display: flex;"
+    >
+      <textarea
+        style="opacity: 0; width: 0px; height: 0px;"
+      >
+        https://external-editor-link/test-org/test-repo/test-branch/test/path/to/file.txt
+      </textarea>
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="go-fullscreen-button"
+      >
+        Full Screen
+      </button>
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="see-as-source-button"
+        disabled=""
+      >
+        See as source
+      </button>
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="open-ext-editor-button"
+      >
+        Open in Test Online Editor
+      </button>
+      <div
+        class="position-relative"
+      >
+        <button
+          class="btn d-none d-md-inline-block kogito-button"
+          data-testid="copy-link-button"
+        >
+          Copy link to Test Online Editor
+        </button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div
+      class="kogito-iframe not-fullscreen"
+    >
+      <iframe
+        data-envelope-channel="GITHUB"
+        data-testid="kogito-iframe"
+        id="kogito-iframe"
+        src="chrome-testing://https://my-url.com/"
+        style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+        title="Kogito editor"
+      />
+    </div>
+  </div>
+  <div
+    class="hidden"
+  />
+  <div />
+</body>
+`;
+
+exports[`SingleEditorApp not readonly 1`] = `
+<body>
+  <div
+    class="kogito-iframe-fullscreen-container test-extension123 hidden"
+  />
+  <div>
+    <div
+      style="display: flex;"
+    >
+      <textarea
+        style="opacity: 0; width: 0px; height: 0px;"
+      >
+        https://external-editor-link/test-org/test-repo/test-branch/test/path/to/file.txt
+      </textarea>
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="go-fullscreen-button"
+      >
+        Full Screen
+      </button>
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="see-as-source-button"
+        disabled=""
+      >
+        See as source
+      </button>
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="open-ext-editor-button"
+      >
+        Open in Test Online Editor
+      </button>
+      <div
+        class="position-relative"
+      >
+        <button
+          class="btn d-none d-md-inline-block kogito-button"
+          data-testid="copy-link-button"
+        >
+          Copy link to Test Online Editor
+        </button>
+      </div>
+    </div>
+    <div
+      class="flash flash-info"
+      style="height: 32px; padding: 5px 15px 5px 15px; white-space: nowrap;"
+    >
+      <h5>
+        This is a read-only visualization.
+      </h5>
+    </div>
+  </div>
+  <div>
+    <div
+      class="kogito-iframe not-fullscreen"
+    >
+      <iframe
+        data-envelope-channel="GITHUB"
+        data-testid="kogito-iframe"
+        id="kogito-iframe"
+        src="chrome-testing://https://my-url.com/"
+        style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+        title="Kogito editor"
+      />
+    </div>
+  </div>
+  <div
+    class="hidden"
+  />
+  <div />
+</body>
+`;
+
+exports[`SingleEditorApp open external editor 1`] = `
+<body>
+  <div
+    class="kogito-iframe-fullscreen-container test-extension123 hidden"
+  />
+  <div>
+    <div
+      style="display: flex;"
+    >
+      <textarea
+        style="opacity: 0; width: 0px; height: 0px;"
+      >
+        https://external-editor-link/test-org/test-repo/test-branch/test/path/to/file.txt
+      </textarea>
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="go-fullscreen-button"
+      >
+        Full Screen
+      </button>
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="see-as-source-button"
+        disabled=""
+      >
+        See as source
+      </button>
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="open-ext-editor-button"
+      >
+        Open in Test Online Editor
+      </button>
+      <div
+        class="position-relative"
+      >
+        <button
+          class="btn d-none d-md-inline-block kogito-button"
+          data-testid="copy-link-button"
+        >
+          Copy link to Test Online Editor
+        </button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div
+      class="kogito-iframe not-fullscreen"
+    >
+      <iframe
+        data-envelope-channel="GITHUB"
+        data-testid="kogito-iframe"
+        id="kogito-iframe"
+        src="chrome-testing://https://my-url.com/"
+        style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+        title="Kogito editor"
+      />
+    </div>
+  </div>
+  <div
+    class="hidden"
+  />
+  <div />
+</body>
+`;
+
+exports[`SingleEditorApp open external editor and wait for come back 1`] = `
+<body>
+  <div
+    class="kogito-iframe-fullscreen-container test-extension123 hidden"
+  />
+  <div>
+    <div
+      style="display: flex;"
+    >
+      <textarea
+        style="opacity: 0; width: 0px; height: 0px;"
+      >
+        https://external-editor-link/test-org/test-repo/test-branch/test/path/to/file.txt
+      </textarea>
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="go-fullscreen-button"
+      >
+        Full Screen
+      </button>
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="see-as-source-button"
+        disabled=""
+      >
+        See as source
+      </button>
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="open-ext-editor-button"
+      >
+        Open in Test Online Editor
+      </button>
+      <div
+        class="position-relative"
+      >
+        <button
+          class="btn d-none d-md-inline-block kogito-button"
+          data-testid="copy-link-button"
+        >
+          Copy link to Test Online Editor
+        </button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div
+      class="kogito-iframe not-fullscreen"
+    >
+      <iframe
+        data-envelope-channel="GITHUB"
+        data-testid="kogito-iframe"
+        id="kogito-iframe"
+        src="chrome-testing://https://my-url.com/"
+        style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+        title="Kogito editor"
+      />
+    </div>
+  </div>
+  <div
+    class="hidden"
+  />
+  <div />
+</body>
+`;
+
+exports[`SingleEditorApp readonly 1`] = `
+<body>
+  <div
+    class="kogito-iframe-fullscreen-container test-extension123 hidden"
+  />
+  <div>
+    <div
+      style="display: flex;"
+    >
+      <textarea
+        style="opacity: 0; width: 0px; height: 0px;"
+      >
+        https://external-editor-link/test-org/test-repo/test-branch/test/path/to/file.txt
+      </textarea>
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="go-fullscreen-button"
+      >
+        Full Screen
+      </button>
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="see-as-source-button"
+        disabled=""
+      >
+        See as source
+      </button>
+      <button
+        class="btn d-none d-md-inline-block kogito-button"
+        data-testid="open-ext-editor-button"
+      >
+        Open in Test Online Editor
+      </button>
+      <div
+        class="position-relative"
+      >
+        <button
+          class="btn d-none d-md-inline-block kogito-button"
+          data-testid="copy-link-button"
+        >
+          Copy link to Test Online Editor
+        </button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div
+      class="kogito-iframe not-fullscreen"
+    >
+      <iframe
+        data-envelope-channel="GITHUB"
+        data-testid="kogito-iframe"
+        id="kogito-iframe"
+        src="chrome-testing://https://my-url.com/"
+        style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+        title="Kogito editor"
+      />
+    </div>
+  </div>
+  <div
+    class="hidden"
+  />
+  <div />
+</body>
+`;

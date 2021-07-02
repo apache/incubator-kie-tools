@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EmbeddedViewer::ONLINE EmbeddedViewer::defaults 1`] = `
+<iframe
+  data-envelope-channel="ONLINE"
+  data-testid="kogito-iframe"
+  id="kogito-iframe"
+  src="envelope/envelope.html"
+  style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+  title="Kogito editor"
+/>
+`;
+
+exports[`EmbeddedViewer::ONLINE EmbeddedViewer::onResourceContentRequest 1`] = `
+<iframe
+  data-envelope-channel="ONLINE"
+  data-testid="kogito-iframe"
+  id="kogito-iframe"
+  src="envelope/envelope.html"
+  style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+  title="Kogito editor"
+/>
+`;
+
+exports[`EmbeddedViewer::ONLINE EmbeddedViewer::onResourceListRequest 1`] = `
+<iframe
+  data-envelope-channel="ONLINE"
+  data-testid="kogito-iframe"
+  id="kogito-iframe"
+  src="envelope/envelope.html"
+  style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+  title="Kogito editor"
+/>
+`;

@@ -1,0 +1,426 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NavigationControls renders with a tutorial and a step 1`] = `
+<div>
+  <div
+    class="kgt-nav-controls"
+  >
+    <button
+      aria-disabled="false"
+      class="pf-c-button pf-m-link"
+      data-kgt-prev="true"
+      data-ouia-component-id="OUIA-Generated-Button-link-5"
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe="true"
+      hidden=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 256 512"
+        width="1em"
+      >
+        <path
+          d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
+        />
+      </svg>
+    </button>
+    <div
+      class="kgt-nav-controls__bullets"
+    >
+      <div
+        class="kgt-nav-controls__bullet "
+      >
+          
+      </div>
+      <div
+        class="kgt-nav-controls__bullet "
+      >
+          
+      </div>
+      <div
+        class="kgt-nav-controls__bullet kgt-nav-controls__bullet--current"
+      >
+          
+      </div>
+    </div>
+    <button
+      aria-disabled="true"
+      class="pf-c-button pf-m-link pf-m-disabled"
+      data-kgt-next="true"
+      data-ouia-component-id="OUIA-Generated-Button-link-6"
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe="true"
+      disabled=""
+      hidden=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 256 512"
+        width="1em"
+      >
+        <path
+          d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`NavigationControls renders with buttons when navigator is enabled 1`] = `
+<div>
+  <div
+    class="kgt-nav-controls"
+  >
+    <button
+      aria-disabled="true"
+      class="pf-c-button pf-m-link pf-m-disabled"
+      data-kgt-prev="true"
+      data-ouia-component-id="OUIA-Generated-Button-link-11"
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe="true"
+      disabled=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 256 512"
+        width="1em"
+      >
+        <path
+          d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
+        />
+      </svg>
+    </button>
+    <div
+      class="kgt-nav-controls__bullets"
+    >
+      <div
+        class="kgt-nav-controls__bullet kgt-nav-controls__bullet--current"
+      >
+          
+      </div>
+    </div>
+    <button
+      aria-disabled="true"
+      class="pf-c-button pf-m-link pf-m-disabled"
+      data-kgt-next="true"
+      data-ouia-component-id="OUIA-Generated-Button-link-12"
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe="true"
+      disabled=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 256 512"
+        width="1em"
+      >
+        <path
+          d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`NavigationControls renders without a tutorial and without a step 1`] = `
+<div>
+  <div
+    class="kgt-nav-controls"
+  >
+    <button
+      aria-disabled="false"
+      class="pf-c-button pf-m-link"
+      data-kgt-prev="true"
+      data-ouia-component-id="OUIA-Generated-Button-link-9"
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe="true"
+      hidden=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 256 512"
+        width="1em"
+      >
+        <path
+          d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
+        />
+      </svg>
+    </button>
+    <div
+      class="kgt-nav-controls__bullets"
+    />
+    <button
+      aria-disabled="false"
+      class="pf-c-button pf-m-link"
+      data-kgt-next="true"
+      data-ouia-component-id="OUIA-Generated-Button-link-10"
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe="true"
+      hidden=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 256 512"
+        width="1em"
+      >
+        <path
+          d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`NavigationControls renders without a tutorial, but with a step 1`] = `
+<div>
+  <div
+    class="kgt-nav-controls"
+  >
+    <button
+      aria-disabled="false"
+      class="pf-c-button pf-m-link"
+      data-kgt-prev="true"
+      data-ouia-component-id="OUIA-Generated-Button-link-7"
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe="true"
+      hidden=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 256 512"
+        width="1em"
+      >
+        <path
+          d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
+        />
+      </svg>
+    </button>
+    <div
+      class="kgt-nav-controls__bullets"
+    />
+    <button
+      aria-disabled="false"
+      class="pf-c-button pf-m-link"
+      data-kgt-next="true"
+      data-ouia-component-id="OUIA-Generated-Button-link-8"
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe="true"
+      hidden=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 256 512"
+        width="1em"
+      >
+        <path
+          d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`NavigationControls works when users go to the next step 1`] = `
+<div>
+  <div
+    class="kgt-nav-controls"
+  >
+    <button
+      aria-disabled="false"
+      class="pf-c-button pf-m-link"
+      data-kgt-prev="true"
+      data-ouia-component-id="OUIA-Generated-Button-link-1"
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe="true"
+      hidden=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 256 512"
+        width="1em"
+      >
+        <path
+          d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
+        />
+      </svg>
+    </button>
+    <div
+      class="kgt-nav-controls__bullets"
+    >
+      <div
+        class="kgt-nav-controls__bullet "
+      >
+          
+      </div>
+      <div
+        class="kgt-nav-controls__bullet "
+      >
+          
+      </div>
+      <div
+        class="kgt-nav-controls__bullet kgt-nav-controls__bullet--current"
+      >
+          
+      </div>
+      <div
+        class="kgt-nav-controls__bullet "
+      >
+          
+      </div>
+    </div>
+    <button
+      aria-disabled="false"
+      class="pf-c-button pf-m-link"
+      data-kgt-next="true"
+      data-ouia-component-id="OUIA-Generated-Button-link-2"
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe="true"
+      hidden=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 256 512"
+        width="1em"
+      >
+        <path
+          d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`NavigationControls works when users go to the previous step 1`] = `
+<div>
+  <div
+    class="kgt-nav-controls"
+  >
+    <button
+      aria-disabled="false"
+      class="pf-c-button pf-m-link"
+      data-kgt-prev="true"
+      data-ouia-component-id="OUIA-Generated-Button-link-3"
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe="true"
+      hidden=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 256 512"
+        width="1em"
+      >
+        <path
+          d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
+        />
+      </svg>
+    </button>
+    <div
+      class="kgt-nav-controls__bullets"
+    >
+      <div
+        class="kgt-nav-controls__bullet "
+      >
+          
+      </div>
+      <div
+        class="kgt-nav-controls__bullet "
+      >
+          
+      </div>
+      <div
+        class="kgt-nav-controls__bullet kgt-nav-controls__bullet--current"
+      >
+          
+      </div>
+      <div
+        class="kgt-nav-controls__bullet "
+      >
+          
+      </div>
+    </div>
+    <button
+      aria-disabled="false"
+      class="pf-c-button pf-m-link"
+      data-kgt-next="true"
+      data-ouia-component-id="OUIA-Generated-Button-link-4"
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe="true"
+      hidden=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 256 512"
+        width="1em"
+      >
+        <path
+          d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+`;

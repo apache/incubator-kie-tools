@@ -1,0 +1,32 @@
+{
+  "name": "@kie-tooling-core/monaco-editor",
+  "version": "0.0.0",
+  "description": "Single-file build of monaco-editor.",
+  "main": "dist/standalone/monaco.min.js",
+  "types": "dist/standalone/monaco.min.d.ts",
+  "license": "MIT",
+  "files": [
+    "dist/standalone"
+  ],
+  "scripts": {
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "build:dev": "rimraf dist && webpack --mode development",
+    "build:prod": "rimraf dist && webpack --mode production"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0",
+    "css-loader": "^5.2.4",
+    "style-loader": "^2.0.0",
+    "ts-loader": "^9.2.2",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.6.0"
+  },
+  "dependencies": {
+    "monaco-editor": "^0.23.0"
+  },
+  "keywords": [
+    "monaco"
+  ]
+}
