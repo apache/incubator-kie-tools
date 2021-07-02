@@ -1,0 +1,10 @@
+name: "Env to JSON"
+description: "Converts environment variables to JSON"
+inputs:
+  path:
+    description: "The path where the JSON will be stored"
+    required: true
+    default: "env-to-json.json"
+runs:
+  using: "node12"
+  main: "index.js"
