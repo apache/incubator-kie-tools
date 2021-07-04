@@ -17,7 +17,7 @@
 const { merge } = require("webpack-merge");
 const common = require("../../config/webpack.common.config");
 const CopyPlugin = require("copy-webpack-plugin");
-const pfWebpackOptions = require("@kie-tooling-core/patternfly-base/patternflyWebpackOptions");
+const patternflyBase = require("@kie-tooling-core/patternfly-base");
 
 module.exports = (env) => [
   merge(common(env), {
@@ -40,7 +40,7 @@ module.exports = (env) => [
       "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
     },
     module: {
-      rules: [...pfWebpackOptions.patternflyRules],
+      rules: [...patternflyBase.webpackModuleRules],
     },
   }),
 ];

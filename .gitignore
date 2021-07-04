@@ -1,5 +1,6 @@
 **/node_modules/
 **/dist/
+**/dist-dev/
 **/dist-tests/
 **/dist-it-tests/
 **/it-tests-tmp/

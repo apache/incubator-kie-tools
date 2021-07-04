@@ -32,6 +32,7 @@ To start building the KIE Tooling Core project, you're going to need:
 - Maven `3.8.1` _(To install, run `xxx`)_
 - Java `11` _(To install, run `xxx`)_
 - (optional) Go `1.16` _(To install, run `xxx`)_
+- (optional) Make `x.x.x` _(To install, run `xxx`)_
 - (optional) Docker `x.x.x` _(To install, run `xxx`)_
 
 After installing the tools above, you'll need to download the dependencies and link the packages locally. Simply run:

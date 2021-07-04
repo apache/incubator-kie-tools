@@ -35,17 +35,16 @@
     "redux": "^4.1.0",
     "uuid": "^8.3.2"
   },
-  "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
-  },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "copy:css": "copyfiles -u 1 src/**/*.{sass,scss,css} dist/",
+    "copy:images": "cpr ./static/images ./dist/images",
+    "build:dev": "rimraf dist && yarn copy:css && yarn copy:images && tsc -p tsconfig.dev.json",
+    "build:prod": "yarn lint && rimraf dist && yarn copy:css && yarn copy:images && tsc -p tsconfig.prod.json && yarn test && yarn test:it",
     "test:clearCache": "jest --clearCache",
     "test:watch": "jest --watch",
-    "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "yarn lint && yarn test && rimraf dist && webpack && yarn test:it",
-    "start": "webpack serve -c webpack.showcase.config.js --host 0.0.0.0 --env dev",
+    "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
     "deploy": "gh-pages -d dist",
     "cy:open": "yarn run cypress open --project it-tests",
     "cy:run": "yarn run cypress run -b chrome --project it-tests",
@@ -53,11 +52,19 @@
   },
   "babel": {
     "presets": [
-      "@babel/env",
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
       "@babel/react"
     ]
   },
   "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0",
     "gh-pages": "^3.1.0"
   }
 }

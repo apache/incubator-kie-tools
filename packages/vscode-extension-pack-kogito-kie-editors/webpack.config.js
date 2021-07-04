@@ -16,7 +16,7 @@
 
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const pfWebpackOptions = require("@kie-tooling-core/patternfly-base/patternflyWebpackOptions");
+const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("../../config/webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
@@ -53,7 +53,7 @@ module.exports = async (env) => [
       "webview/SceSimEditorEnvelopeApp": "./src/webview/SceSimEditorEnvelopeApp.ts",
     },
     module: {
-      rules: [...pfWebpackOptions.patternflyRules],
+      rules: [...patternflyBase.webpackModuleRules],
     },
     plugins: [
       new CopyWebpackPlugin({
@@ -96,10 +96,7 @@ module.exports = async (env) => [
         // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
         // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
         // `@kie-tooling-core/monaco-editor`. This way, everything works as expected.
-        "monaco-editor/esm/vs/editor/editor.api": path.resolve(
-          __dirname,
-          "../../node_modules/@kie-tooling-core/monaco-editor"
-        ),
+        "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tooling-core/monaco-editor"),
       },
     },
     module: {
@@ -108,7 +105,7 @@ module.exports = async (env) => [
           test: /\.ttf$/,
           use: ["file-loader"],
         },
-        ...pfWebpackOptions.patternflyRules,
+        ...patternflyBase.webpackModuleRules,
       ],
     },
   }),

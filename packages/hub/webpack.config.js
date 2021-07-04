@@ -15,7 +15,7 @@
  */
 
 const CopyPlugin = require("copy-webpack-plugin");
-const pfWebpackOptions = require("@kie-tooling-core/patternfly-base/patternflyWebpackOptions");
+const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const os = require("os");
 const { merge } = require("webpack-merge");
 const common = require("../../config/webpack.common.config");
@@ -58,7 +58,7 @@ module.exports = (env) => [
       "webview/index": "./src/webview/index.tsx",
     },
     module: {
-      rules: [...pfWebpackOptions.patternflyRules],
+      rules: [...patternflyBase.webpackModuleRules],
     },
     plugins: [new CopyPlugin({ patterns: [{ from: "static/index.html" }] })],
   }),

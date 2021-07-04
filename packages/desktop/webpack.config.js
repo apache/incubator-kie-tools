@@ -15,7 +15,7 @@
  */
 
 const CopyPlugin = require("copy-webpack-plugin");
-const pfWebpackOptions = require("@kie-tooling-core/patternfly-base/patternflyWebpackOptions");
+const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("../../config/webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
@@ -41,7 +41,7 @@ module.exports = async (env) => [
       "envelope/bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
       "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
     },
-    module: { rules: [...pfWebpackOptions.patternflyRules] },
+    module: { rules: [...patternflyBase.webpackModuleRules] },
     plugins: [
       new CopyPlugin({
         patterns: [
@@ -67,7 +67,7 @@ module.exports = async (env) => [
     externals: {
       electron: "commonjs electron",
     },
-    module: { rules: [...pfWebpackOptions.patternflyRules] },
+    module: { rules: [...patternflyBase.webpackModuleRules] },
     plugins: [
       new CopyPlugin({
         patterns: [
