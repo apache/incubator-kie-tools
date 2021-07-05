@@ -81,6 +81,100 @@ interface OnlineDictionary extends ReferenceDictionary {
     share: string;
     embed: string;
   };
+  deploy: {
+    common: {
+      deployInstanceInfo: string;
+      disclaimer: string;
+      learnMore: string;
+      requiredField: string;
+      deploying: string;
+      saving: string;
+    };
+    dropdown: {
+      title: string;
+      noDeployments: string;
+      tooltip: {
+        disconnected: string;
+        connected: string;
+      };
+      item: {
+        upTooltip: string;
+        downTooltip: string;
+        inProgressTooltip: string;
+        createdAt: (date: string) => string;
+      };
+    };
+    introduction: {
+      sandboxShortDescription: string;
+      header: string;
+      subHeader: string;
+      disclaimer: string;
+      getStarted: string;
+    };
+    configModal: {
+      hostInfo: string;
+      usernameInfo: string;
+      tokenInfo: string;
+      validationError: string;
+      connectionError: string;
+      useWizard: string;
+    };
+    confirmModal: {
+      title: string;
+      body: string;
+    };
+    alerts: {
+      deployStartedError: string;
+      deployStartedSuccess: string;
+    };
+    configWizard: {
+      header: {
+        provider: string;
+      };
+      footer: {
+        deployNow: string;
+        continueEditing: string;
+      };
+      steps: {
+        first: {
+          name: string;
+          introduction: string;
+          goToGetStartedPage: string;
+          followSteps: string;
+          informUsername: string;
+          inputReason: string;
+          usernamePlaceholder: string;
+        };
+        second: {
+          name: string;
+          introduction: string;
+          accessLoginCommand: string;
+          accessDisplayToken: string;
+          copyInformation: string;
+          inputReason: string;
+          hostPlaceholder: string;
+          tokenPlaceholder: string;
+        };
+        final: {
+          name: string;
+          connectionError: string;
+          connectionSuccess: string;
+          introduction: string;
+          deployNowExplanation: string;
+          continueEditingExplanation: string;
+          configNote: string;
+          connectionErrorLong: string;
+          checkInfo: string;
+          possibleErrorReasons: {
+            introduction: string;
+            emptyField: string;
+            tokenExpired: string;
+            instanceExpired: string;
+          };
+        };
+      };
+    };
+  };
   embedModal: {
     title: string;
     description: string;

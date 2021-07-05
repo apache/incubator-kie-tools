@@ -83,6 +83,108 @@ export const en: OnlineI18n = {
     share: "Share",
     embed: "Embed",
   },
+  deploy: {
+    common: {
+      deployInstanceInfo: "Deploy instance information",
+      disclaimer:
+        "When you set up the required information, you are able to deploy decision models on your configured instance. All the information you provide is locally stored as browser cookies and they are never shared with anyone.",
+      learnMore: `Learn more about the ${en_common.names.shortDevSandbox}`,
+      requiredField: "This field cannot be empty.",
+      deploying: "Deploying ...",
+      saving: "Saving ...",
+    },
+    dropdown: {
+      title: "Deploy",
+      noDeployments: "Your deployments show up here",
+      tooltip: {
+        disconnected: "Your instance is disconnected",
+        connected: "Your instance is connected",
+      },
+      item: {
+        upTooltip: "This deployment is up and running. Click to see more details in your instance.",
+        downTooltip: "This deployment is not running. Click to see more details in your instance.",
+        inProgressTooltip:
+          "This deployment is in progress and it will be available shortly. Click to see more details in your instance.",
+        createdAt: (date: string) => `Created at ${date}`,
+      },
+    },
+    configModal: {
+      hostInfo: `The hostname associated with your instance.`,
+      usernameInfo: `The username of your ${en_common.names.redHat} account.`,
+      tokenInfo: `The token associated with your instance.`,
+      validationError: "You must fill out all required fields before you can proceed.",
+      connectionError: "Connection refused. Please check the information provided.",
+      useWizard: "Configure through the guided wizard instead",
+    },
+    confirmModal: {
+      title: "Deploy",
+      body: "Are you sure you want to deploy this diagram on your instance? This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.",
+    },
+    alerts: {
+      deployStartedError:
+        "Something went wrong when creating your deployment. Please check your configuration and try again.",
+      deployStartedSuccess: "Your deployment has been successfully started and it will be available shortly.",
+    },
+    introduction: {
+      sandboxShortDescription:
+        "The sandbox provides you with a private OpenShift environment in a shared, multi-tenant OpenShift cluster that is pre-configured with a set of developer tools.",
+      header: `Deploy to ${en_common.names.dmn} ${en_common.names.shortDevSandbox}`,
+      subHeader: "Design a decision model and easily deploy it to your cloud instance.",
+      disclaimer: `The ${en_common.names.dmn} ${
+        en_common.names.shortDevSandbox
+      } is intended to be used during ${"development".bold()}, so users should not use the
+        deployed ${en_common.names.dmn} services in production or for any type of business-critical workloads.`,
+      getStarted: "To get started, configure your instance information.",
+    },
+    configWizard: {
+      header: {
+        provider: "Provider",
+      },
+      footer: {
+        deployNow: "Deploy now",
+        continueEditing: "Continue editing",
+      },
+      steps: {
+        first: {
+          name: "Create your instance",
+          introduction: `In order to create your ${en_common.names.shortDevSandbox} instance:`,
+          goToGetStartedPage: "Go to the Get Started page",
+          followSteps: `Follow the steps to launch your instance. You will be asked to log in with your ${en_common.names.redHat} account.`,
+          informUsername: `Once your instance is up and running, inform the username of your ${en_common.names.redHat} account below.`,
+          inputReason: "This information is necessary for locating your namespaces.",
+          usernamePlaceholder: `The username of your ${en_common.names.redHat} account`,
+        },
+        second: {
+          name: "Set credentials",
+          introduction: `In your ${en_common.names.shortDevSandbox} instance:`,
+          accessLoginCommand: `Click on your username on the top right corner and then ${"'Copy login command'".bold()}.`,
+          accessDisplayToken: `If asked, log in with ${"'DevSandbox'".bold()}, and then access the ${"'Display Token'".bold()} link.`,
+          copyInformation: `In ${"'Log in with this token'".bold()} section, copy your ${"'--server'".bold()} and ${"'--token'".bold()} values, and paste them below.`,
+          inputReason: "This information is necessary for establishing a connection with your instance.",
+          hostPlaceholder: "Paste the --server value here",
+          tokenPlaceholder: "Paste the --token value here",
+        },
+        final: {
+          name: "Connect",
+          connectionSuccess: "Connection successfully established.",
+          connectionError: "Connection refused.",
+          introduction: "Now you are able to:",
+          deployNowExplanation: `${"Deplow now".bold()}: Your model will be deployed on your instance. This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.`,
+          continueEditingExplanation: `${"Continue editing".bold()}: Continue editing your model and deploy it later.`,
+          configNote: "Your configuration will be stored as browser cookies after the operations above.",
+          connectionErrorLong: `A connection with your ${en_common.names.shortDevSandbox} instance could not be established.`,
+          checkInfo: "Please check the information provided and try again.",
+          possibleErrorReasons: {
+            introduction: "Here are some possible reasons:",
+            emptyField: "One or more required information are not filled.",
+            instanceExpired:
+              "Instances expire in 30 days. After this period, you will need to recreate it, thus receiving a new host.",
+            tokenExpired: "Tokens expire on a daily basis.",
+          },
+        },
+      },
+    },
+  },
   embedModal: {
     title: "Embed",
     description:

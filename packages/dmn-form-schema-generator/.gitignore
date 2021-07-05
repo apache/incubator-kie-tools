@@ -1,0 +1,35 @@
+node_modules/
+dist/
+node/
+coverage/
+target/
+out/
+.idea
+**/.DS_Store
+*.log*
+**/stats.json
+**/junit.xml
+package-lock.json
+
+# Eclipse, Netbeans and IntelliJ files
+/.*
+!.github
+!.gitignore
+!.jenkins
+!.mvn
+/nbproject
+/*.ipr
+/*.iws
+**/*.iml
+.classpath
+.project
+.settings
+.vscode
+
+# Cypress - runtime artifacts and undesired dirs
+**/cypress/screenshots
+**/cypress/videos
+/packages/cypress*
+/cypress*
+
+.factorypath

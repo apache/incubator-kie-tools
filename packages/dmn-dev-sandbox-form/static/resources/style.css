@@ -1,0 +1,159 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.pf-c-page__header {
+  /* this adjusts the max specifically for our logo */
+  --pf-c-page__header-brand-link--c-brand--MaxHeight: 39px;
+}
+
+.kogito--alert-container {
+  position: fixed;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
+  z-index: 1000;
+}
+
+.kogito--dmn-form__toolbar {
+  --pf-c-page__header--BackgroundColor: var(--pf-global--palette--blue-600);
+  --pf-c-page__header-nav--BackgroundColor: var(--pf-global--palette--blue-600);
+}
+
+@media (min-width: 1200px) {
+  .kogito--dmn-form__toolbar {
+    --pf-c-page__header--MinHeight: unset;
+  }
+}
+
+.kogito--dmn-form__toolbar-logo {
+  cursor: default;
+}
+
+.kogito--dmn-form__toolbar-filename {
+  font-weight: bold;
+}
+
+.kogito--dmn-form__toolbar-icon-button {
+  --pf-c-button--FontSize: var(--pf-global--icon--FontSize--md);
+}
+
+.kogito--dmn-form__deploy-dropdown-tooltip {
+  --pf-c-tooltip__content--Color: var(--pf-global--BackgroundColor--dark-100);
+  --pf-c-tooltip__content--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
+}
+
+.kogito--dmn-form__toolbar.a {
+  color: var(--pf-global--Color--dark-100);
+  text-decoration: none;
+}
+
+.kogito--dmn-form {
+  display: flex;
+  height: 100%;
+}
+
+@media screen and (min-width: 1200px) {
+  .kogito--dmn-form__toolbar .pf-c-page__header-nav {
+    align-self: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .kogito--dmn-form__toolbar-title {
+    background-color: var(--pf-c-page__header-nav--BackgroundColor);
+    color: var(--pf-global--Color--light-100);
+    font-size: var(--pf-global--FontSize--xl);
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .kogito--dmn-form-content {
+    width: 50%;
+    height: 100%;
+  }
+}
+
+@media screen and (min-width: 0px) and (max-width: 1200px) {
+  .kogito--dmn-form__toolbar .pf-c-page__header-nav {
+    display: none;
+  }
+
+  .kogito--dmn-form__toolbar-title {
+    background-color: var(--pf-c-page__header-nav--BackgroundColor);
+    color: var(--pf-global--Color--light-100);
+    font-size: var(--pf-global--FontSize--sm);
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .kogito--dmn-form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .kogito--dmn-form-content {
+    width: 100%;
+    height: 50%;
+  }
+}
+
+.kogito--dmn-form-content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+}
+
+.kogito--dmn-form-content-header.inputs {
+  margin-bottom: 10px;
+}
+
+.kogito--dmn-form-drawer-content-body {
+  overflow-y: auto;
+  height: 100%;
+}
+
+.kogito--dmn-form-drawer-content-body-input {
+  padding-top: 0;
+}
+
+.kogito--dmn-form-drawer-content-body-output {
+  padding-top: 0;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.kogito--dmn-form-content-page {
+  flex-grow: 0;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+@media screen and (min-width: 1200px) {
+  .kogito--dmn-form-content-page {
+    max-height: calc(100vh - 76px);
+    flex-basis: 50%;
+  }
+}
+
+@media screen and (min-width: 0px) and (max-width: 1200px) {
+  .kogito--dmn-form-content-page {
+    max-height: unset;
+    flex-basis: 100%;
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@kogito-tooling/dmn-form-schema-generator",
+  "version": "0.10.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "scripts": {
+    "build:dev": "mvn clean package -B -DskipTests -nsu && echo ",
+    "build:prod": "mvn clean package -B -nsu && echo "
+  }
+}

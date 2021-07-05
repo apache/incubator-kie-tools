@@ -1,0 +1,18 @@
+{
+  "name": "@kogito-tooling/dmn-dev-sandbox-deployment-base",
+  "version": "0.10.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "scripts": {
+    "build:dev": "rimraf assets/ && mkdir assets/ && cd assets && mvn -N io.takari:maven:wrapper && cp ../../dmn-form-schema-generator/target/dmn-form-schema-generator.jar . && cp -R ../../dmn-dev-sandbox-form/dist dmn-form-webapp",
+    "build:prod": "yarn run build:dev"
+  },
+  "dependencies": {
+    "@kogito-tooling/dmn-dev-sandbox-form": "0.10.0",
+    "@kogito-tooling/dmn-form-schema-generator": "0.10.0"
+  }
+}

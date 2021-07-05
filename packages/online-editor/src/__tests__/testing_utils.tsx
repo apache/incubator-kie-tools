@@ -26,6 +26,7 @@ import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-to
 import { OnlineI18n, OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "../common/i18n";
 import { NotificationsPanelContextProvider } from "../editor/NotificationsPanel/NotificationsPanelContextProvider";
 import { DmnRunnerContextProvider } from "../editor/DmnRunner/DmnRunnerContextProvider";
+import { DeployContextProvider } from "../editor/deploy/DeployContextProvider";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const envelopeMapping: EnvelopeMapping = {
@@ -102,5 +103,13 @@ export function usingDmnRunnerContext(
     <DmnRunnerContextProvider editor={editor} isEditorReady={isEditorReady} closeDmnTour={closeDmnTour}>
       {children}
     </DmnRunnerContextProvider>
+  );
+}
+
+export function usingTestingDeployContext(children: React.ReactElement, editor: any, isEditorReady = true) {
+  return (
+    <DeployContextProvider editor={editor} isEditorReady={isEditorReady}>
+      {children}
+    </DeployContextProvider>
   );
 }

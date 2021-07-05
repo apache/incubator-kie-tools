@@ -42,6 +42,9 @@ import { DmnRunnerButton } from "./DmnRunner/DmnRunnerButton";
 import { useDmnRunner } from "./DmnRunner/DmnRunnerContext";
 import { DmnRunnerDropdownGroup } from "./DmnRunner/DmnRunnerDropdownGroup";
 import { DmnRunnerStatus } from "./DmnRunner/DmnRunnerStatus";
+import { useDeploy } from "./deploy/DeployContext";
+import { DeployInstanceStatus } from "./deploy/DeployInstanceStatus";
+import { DeployDropdown } from "./deploy/DeployDropdown";
 
 interface Props {
   onFileNameChanged: (fileName: string, fileExtension: string) => void;
@@ -61,6 +64,7 @@ interface Props {
 export function EditorToolbar(props: Props) {
   const context = useContext(GlobalContext);
   const dmnRunner = useDmnRunner();
+  const deployContext = useDeploy();
   const location = useLocation();
   const [fileName, setFileName] = useState(context.file.fileName);
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
@@ -215,6 +219,22 @@ export function EditorToolbar(props: Props) {
       logoProps={logoProps}
       headerTools={
         <PageHeaderTools>
+          {deployContext.instanceStatus !== DeployInstanceStatus.UNAVAILABLE && (
+            <PageHeaderToolsGroup>
+              <PageHeaderToolsItem
+                visibility={{
+                  default: "hidden",
+                  "2xl": "visible",
+                  xl: "visible",
+                  lg: "hidden",
+                  md: "hidden",
+                  sm: "hidden",
+                }}
+              >
+                <DeployDropdown />
+              </PageHeaderToolsItem>
+            </PageHeaderToolsGroup>
+          )}
           <PageHeaderToolsGroup>
             {dmnRunner.status !== DmnRunnerStatus.UNAVAILABLE && (
               <PageHeaderToolsItem

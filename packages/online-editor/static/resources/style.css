@@ -87,6 +87,8 @@
   justify-content: center;
   align-items: center;
   padding: 1em;
+  z-index: 1000;
+  pointer-events: none;
 }
 
 .kogito--alert {
@@ -485,4 +487,81 @@
   100% {
     opacity: 1;
   }
+}
+
+.kogito--editor__deploy-wizard-loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.kogito-editor__deploy-dropdown-tooltip {
+  --pf-c-tooltip__content--Color: var(--pf-global--BackgroundColor--dark-100);
+  --pf-c-tooltip__content--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
+}
+
+.kogito-editor_deploy-dropdown-item-status {
+  pointer-events: auto;
+}
+
+.kogito-editor_deploy-dropdown-item-status.up {
+  color: var(--pf-global--success-color--100);
+}
+
+.kogito-editor_deploy-dropdown-item-status.up:hover {
+  color: var(--pf-global--success-color--200);
+}
+
+.kogito-editor_deploy-dropdown-item-status.down {
+  color: var(--pf-global--warning-color--100);
+}
+
+.kogito-editor_deploy-dropdown-item-status.down:hover {
+  color: var(--pf-global--palette--gold-500);
+}
+
+.kogito-editor_deploy-dropdown-item-status.in-progress {
+  color: var(--pf-global--palette--black-800);
+}
+
+.kogito-editor_deploy-dropdown-item-status.in-progress:hover {
+  color: var(--pf-global--info-color--200);
+}
+
+@-webkit-keyframes rotating /* Safari and Chrome */ {
+  from {
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotating {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.rotating {
+  -webkit-animation: rotating 2s linear infinite;
+  -moz-animation: rotating 2s linear infinite;
+  -ms-animation: rotating 2s linear infinite;
+  -o-animation: rotating 2s linear infinite;
+  animation: rotating 2s linear infinite;
 }

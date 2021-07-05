@@ -22,6 +22,8 @@ export type CommonDictionary = {
   back: string;
   cancel: string;
   close: string;
+  configure: string;
+  confirm: string;
   continue: string;
   copy: string;
   cut: string;
@@ -36,6 +38,7 @@ export type CommonDictionary = {
   files: string;
   forum: string;
   fullScreen: string;
+  host: string;
   inputs: string;
   install: string;
   launch: string;
@@ -62,6 +65,7 @@ export type CommonDictionary = {
   token: string;
   undo: string;
   uninstall: string;
+  username: string;
   validation: string;
 };
 
