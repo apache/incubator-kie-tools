@@ -46,3 +46,7 @@ package-lock.json
 *.vsix
 *.dockerimage
 **/test-resources/
+
+**/mvnw
+**/mvnw.cmd
+**/.mvn
