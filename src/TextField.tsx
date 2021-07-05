@@ -1,5 +1,10 @@
 import React, { Ref, useCallback } from 'react';
-import { DatePicker, TextInput, TextInputProps } from '@patternfly/react-core';
+import {
+  DatePicker,
+  TextInput,
+  TextInputProps,
+  TimePicker,
+} from '@patternfly/react-core';
 import { connectField, filterDOMProps } from 'uniforms/es5';
 
 import wrapField from './wrapField';
@@ -29,9 +34,47 @@ const Text = (props: TextFieldProps) => {
     [props.max, props.min]
   );
 
+  const parseTime = useCallback((time: string) => {
+    const parsedTime = time.split(':').map((e) => parseInt(e, 10));
+    const date = new Date();
+    // @ts-ignore
+    date.setUTCHours(...parsedTime);
+    return date;
+  }, []);
+
+  const validateTime = useCallback(
+    (time: string) => {
+      if (typeof props.min === 'string' && typeof props.max === 'string') {
+        const parsedTime = parseTime(time);
+        const parsedMin = parseTime(props.min);
+        const parsedMax = parseTime(props.max);
+        if (parsedTime < parsedMin) {
+          return false;
+        }
+        if (parsedTime > parsedMax) {
+          return false;
+        }
+      }
+      return true;
+    },
+    [props.max, props.min]
+  );
+
   const onDateChange = useCallback(
     (value: string) => {
       props.onChange(value);
+    },
+    [props.disabled, props.onChange]
+  );
+
+  const onTimeChange = useCallback(
+    (time: string) => {
+      const parsedTime = time.split(':');
+      if (parsedTime.length === 2) {
+        props.onChange([...parsedTime, '00'].join(':'));
+      } else {
+        props.onChange(time);
+      }
     },
     [props.disabled, props.onChange]
   );
@@ -46,6 +89,15 @@ const Text = (props: TextFieldProps) => {
         onChange={onDateChange}
         value={props.value ?? ''}
         {...filterDOMProps(props)}
+      />
+    ) : props.type === 'time' || props.field?.format === 'time' ? (
+      <TimePicker
+        name={props.name}
+        isDisabled={props.disabled}
+        validateTime={validateTime}
+        onChange={onTimeChange}
+        is24Hour
+        value={props.value ?? ''}
       />
     ) : (
       <TextInput

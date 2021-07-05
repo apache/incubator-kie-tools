@@ -3,7 +3,6 @@
     "baseUrl": ".",
     "rootDir": "./src/",
     "outDir": "./dist/",
-    "composite": true,
     "declaration": true,
     "esModuleInterop": true,
     "importHelpers": true,
