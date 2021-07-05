@@ -22,7 +22,6 @@ import (
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
-	"github.com/kiegroup/kogito-operator/core/operator"
 	buildv1 "github.com/openshift/api/build/v1"
 	imgv1 "github.com/openshift/api/image/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -40,19 +39,19 @@ type DeltaProcessor interface {
 }
 
 type deltaProcessor struct {
-	operator.Context
+	BuildContext
 	build api.KogitoBuildInterface
 }
 
 // NewDeltaProcessor creates a new DeltaProcessor instance for the given KogitoBuild
-func NewDeltaProcessor(context operator.Context, build api.KogitoBuildInterface) (DeltaProcessor, error) {
+func NewDeltaProcessor(context BuildContext, build api.KogitoBuildInterface) (DeltaProcessor, error) {
 	setDefaults(build)
 	if err := sanityCheck(build); err != nil {
 		return nil, err
 	}
 	return &deltaProcessor{
-		Context: context,
-		build:   build,
+		BuildContext: context,
+		build:        build,
 	}, nil
 }
 
@@ -77,7 +76,7 @@ func sanityCheck(build api.KogitoBuildInterface) error {
 
 type manager struct {
 	build api.KogitoBuildInterface
-	operator.Context
+	BuildContext
 }
 
 type buildManager interface {
@@ -131,8 +130,8 @@ func (d *deltaProcessor) ProcessDelta() (resultErr error) {
 
 func (d *deltaProcessor) getBuildManager() buildManager {
 	manager := manager{
-		Context: d.Context,
-		build:   d.build,
+		BuildContext: d.BuildContext,
+		build:        d.build,
 	}
 	if api.LocalSourceBuildType == d.build.GetSpec().GetType() ||
 		api.RemoteSourceBuildType == d.build.GetSpec().GetType() {

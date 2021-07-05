@@ -43,10 +43,12 @@ func Test_decoratorForSourceBuilder_enableIncrementalBuild_Test(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().Build()
-	context := operator.Context{
-		Client: cli,
-		Log:    test.TestLogger,
-		Scheme: meta.GetRegisteredSchema(),
+	context := BuildContext{
+		Context: operator.Context{
+			Client: cli,
+			Log:    test.TestLogger,
+			Scheme: meta.GetRegisteredSchema(),
+		},
 	}
 	decoratorHandler := NewDecoratorHandler(context)
 	decoratorHandler.decoratorForSourceBuilder()(kogitoBuild, bc)
@@ -70,10 +72,12 @@ func Test_decoratorForSourceBuilder_disableIncrementalBuild_Test(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().Build()
-	context := operator.Context{
-		Client: cli,
-		Log:    test.TestLogger,
-		Scheme: meta.GetRegisteredSchema(),
+	context := BuildContext{
+		Context: operator.Context{
+			Client: cli,
+			Log:    test.TestLogger,
+			Scheme: meta.GetRegisteredSchema(),
+		},
 	}
 	decoratorHandler := NewDecoratorHandler(context)
 	decoratorHandler.decoratorForSourceBuilder()(kogitoBuild, bc)
@@ -93,10 +97,12 @@ func Test_decoratorForRemoteSourceBuilder_specSource(t *testing.T) {
 	}
 	bc := &buildv1.BuildConfig{}
 	cli := test.NewFakeClientBuilder().Build()
-	context := operator.Context{
-		Client: cli,
-		Log:    test.TestLogger,
-		Scheme: meta.GetRegisteredSchema(),
+	context := BuildContext{
+		Context: operator.Context{
+			Client: cli,
+			Log:    test.TestLogger,
+			Scheme: meta.GetRegisteredSchema(),
+		},
 	}
 	decoratorHandler := NewDecoratorHandler(context)
 	decoratorHandler.decoratorForRemoteSourceBuilder()(kogitoBuild, bc)
@@ -120,10 +126,12 @@ func Test_decoratorForRemoteSourceBuilder_githubWebHook(t *testing.T) {
 	}
 	bc := &buildv1.BuildConfig{}
 	cli := test.NewFakeClientBuilder().Build()
-	context := operator.Context{
-		Client: cli,
-		Log:    test.TestLogger,
-		Scheme: meta.GetRegisteredSchema(),
+	context := BuildContext{
+		Context: operator.Context{
+			Client: cli,
+			Log:    test.TestLogger,
+			Scheme: meta.GetRegisteredSchema(),
+		},
 	}
 	decoratorHandler := NewDecoratorHandler(context)
 	decoratorHandler.decoratorForRemoteSourceBuilder()(kogitoBuild, bc)
@@ -147,10 +155,12 @@ func Test_decoratorForRemoteSourceBuilder_genericWebHook(t *testing.T) {
 	}
 	bc := &buildv1.BuildConfig{}
 	cli := test.NewFakeClientBuilder().Build()
-	context := operator.Context{
-		Client: cli,
-		Log:    test.TestLogger,
-		Scheme: meta.GetRegisteredSchema(),
+	context := BuildContext{
+		Context: operator.Context{
+			Client: cli,
+			Log:    test.TestLogger,
+			Scheme: meta.GetRegisteredSchema(),
+		},
 	}
 	decoratorHandler := NewDecoratorHandler(context)
 	decoratorHandler.decoratorForRemoteSourceBuilder()(kogitoBuild, bc)
@@ -159,4 +169,38 @@ func Test_decoratorForRemoteSourceBuilder_genericWebHook(t *testing.T) {
 	assert.NotNil(t, bc.Spec.Triggers[0].GenericWebHook)
 	assert.True(t, bc.Spec.Triggers[0].GenericWebHook.AllowEnv)
 	assert.Equal(t, "generic_secret", bc.Spec.Triggers[0].GenericWebHook.SecretReference.Name)
+}
+
+func Test_decoratorForCustomLabels(t *testing.T) {
+	kogitoBuild := &v1beta1.KogitoBuild{
+		Spec: v1beta1.KogitoBuildSpec{
+			WebHooks: []v1beta1.WebHookSecret{
+				{
+					Type:   api.GenericWebHook,
+					Secret: "generic_secret",
+				},
+			},
+		},
+	}
+	bc := &buildv1.BuildConfig{
+		ObjectMeta: v12.ObjectMeta{
+			Labels: map[string]string{},
+		},
+	}
+	cli := test.NewFakeClientBuilder().Build()
+	context := BuildContext{
+		Context: operator.Context{
+			Client: cli,
+			Log:    test.TestLogger,
+			Scheme: meta.GetRegisteredSchema(),
+		},
+		Labels: map[string]string{
+			"key1": "value1",
+		},
+	}
+
+	decoratorHandler := NewDecoratorHandler(context)
+	decoratorHandler.decoratorForCustomLabels()(kogitoBuild, bc)
+	assert.Equal(t, 1, len(bc.Labels))
+	assert.Equal(t, "value1", bc.Labels["key1"])
 }

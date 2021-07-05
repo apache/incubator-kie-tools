@@ -29,9 +29,10 @@ type sourceManager struct {
 
 func (m *sourceManager) GetRequestedResources() (map[reflect.Type][]resource.KubernetesResource, error) {
 	resources := make(map[reflect.Type][]resource.KubernetesResource)
-	decoratorHandler := NewDecoratorHandler(m.Context)
-	builderBC := newBuildConfig(m.build, decoratorHandler.decoratorForSourceBuilder(), m.getBuilderDecorator())
-	runtimeBC := newBuildConfig(m.build, decoratorHandler.decoratorForRuntimeBuilder(), decoratorHandler.decoratorForSourceRuntimeBuilder())
+	decoratorHandler := NewDecoratorHandler(m.BuildContext)
+	buildConfigHandler := NewBuildConfigHandler(m.BuildContext)
+	builderBC := buildConfigHandler.newBuildConfig(m.build, decoratorHandler.decoratorForSourceBuilder(), m.getBuilderDecorator(), decoratorHandler.decoratorForCustomLabels())
+	runtimeBC := buildConfigHandler.newBuildConfig(m.build, decoratorHandler.decoratorForRuntimeBuilder(), decoratorHandler.decoratorForSourceRuntimeBuilder(), decoratorHandler.decoratorForCustomLabels())
 	builderIS := newOutputImageStreamForBuilder(&builderBC)
 	runtimeIS, err := newOutputImageStreamForRuntime(m.Context, &runtimeBC, m.build)
 	if err != nil {
@@ -50,7 +51,7 @@ func (m *sourceManager) GetRequestedResources() (map[reflect.Type][]resource.Kub
 }
 
 func (m *sourceManager) getBuilderDecorator() decorator {
-	decoratorHandler := NewDecoratorHandler(m.Context)
+	decoratorHandler := NewDecoratorHandler(m.BuildContext)
 	if api.LocalSourceBuildType == m.build.GetSpec().GetType() {
 		return decoratorHandler.decoratorForLocalSourceBuilder()
 	}
