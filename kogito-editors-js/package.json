@@ -1,0 +1,53 @@
+{
+  "name": "kogito-editors-js",
+  "version": "0.0.0",
+  "description": "React/TS/JS-based-components for Kogito editors",
+  "main": "index.js",
+  "license": "Apache-2.0",
+  "private": true,
+  "workspaces": [
+    "packages/**/*"
+  ],
+  "scripts": {
+    "init": "yarn install",
+    "locktt": "locktt",
+    "new-component": "node ./scripts/new-component.js",
+    "bootstrap": "yarn run init && lerna bootstrap",
+    "build:dev": "rimraf dist && lerna run build:dev --stream",
+    "build:prod": "rimraf dist && yarn format:check && lerna run build:prod --stream",
+    "gwt:wire": "lerna run build:dev && lerna run build:watch --parallel",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "css-loader": "^5.2.6",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "style-loader": "^2.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.5",
+    "@babel/preset-env": "^7.14.5",
+    "@types/node": "^15.0.2",
+    "@types/react": "^17.0.5",
+    "@types/react-dom": "^17.0.3",
+    "babel-loader": "^8.2.2",
+    "copy-webpack-plugin": "^9.0.0",
+    "css-minimizer-webpack-plugin": "^3.0.2",
+    "customize-cra": "^1.0.0",
+    "fs-extra": "^9.1.0",
+    "lerna": "^4.0.0",
+    "prettier": "^2.3.2",
+    "prompts": "^2.4.0",
+    "react-app-rewired": "^2.1.8",
+    "react-scripts": "^4.0.3",
+    "rimraf": "^3.0.2",
+    "ts-loader": "^9.2.3",
+    "typescript": "^4.2.4",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.7.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

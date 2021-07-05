@@ -100,6 +100,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- kogito-editors-js -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-editors-js</artifactId>
+    </dependency>
+
     <!-- Stunner -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -703,6 +709,26 @@
                   </artifactItems>
                 </configuration>
               </execution>
+              <execution>
+                <id>Unpack DMN loader from dependency</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.kie.kogito</groupId>
+                      <artifactId>kogito-editors-js</artifactId>
+                      <version>${project.version}</version>
+                      <type>jar</type>
+                      <overWrite>true</overWrite>
+                      <outputDirectory>${project.build.directory}/kogito-editors-js</outputDirectory>
+                      <includes>**/*.js,**/*.css</includes>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
             </executions>
           </plugin>
 
@@ -721,6 +747,23 @@
                     <copy todir="${basedir}/src/main/webapp/model" flatten="true">
                       <fileset dir="${project.build.directory}/DMNMarshaller">
                         <include name="**/*.js"/>
+                      </fileset>
+                    </copy>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>Copy kogito-editors-js assets to WAR</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <copy todir="${basedir}/src/main/webapp/kogito-editors-js" flatten="true">
+                      <fileset dir="${project.build.directory}/kogito-editors-js">
+                        <include name="**/*.js"/>
+                        <include name="**/*.css"/>
                       </fileset>
                     </copy>
                   </target>

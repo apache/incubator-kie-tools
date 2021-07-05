@@ -156,6 +156,12 @@
       <artifactId>kie-wb-common-ui</artifactId>
     </dependency>
 
+    <!-- kogito-editors-js -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-editors-js</artifactId>
+    </dependency>
+
     <!-- DMN Editor -->
     <dependency>
       <groupId>org.kie.kogito</groupId>

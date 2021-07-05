@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["src"],
+  "compilerOptions": {
+    "allowJs": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "esModuleInterop": true
+  }
+}

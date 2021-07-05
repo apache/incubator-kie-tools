@@ -263,6 +263,12 @@
 
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-editors-js</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>kie-wb-common-kogito-client</artifactId>
         <version>${project.version}</version>
       </dependency>

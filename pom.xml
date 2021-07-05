@@ -111,6 +111,7 @@
     <module>kie-wb-common-stunner</module>
     <module>kie-wb-common-dmn</module>
     <module>kie-wb-common-kogito</module>
+    <module>kogito-editors-js</module>
 
     <!-- DROOLS-WB -->
     <module>drools-wb-bom</module>

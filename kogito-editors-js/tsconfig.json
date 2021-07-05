@@ -1,0 +1,18 @@
+{
+  "exclude": ["./**/node_modules", "./**/__tests__"],
+  "compilerOptions": {
+    "lib": ["es6", "dom", "es2018.promise", "es2019"],
+    "target": "es5",
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "removeComments": true,
+    "strictNullChecks": true,
+    "experimentalDecorators": true,
+    "downlevelIteration": true,
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "declaration": true,
+    "declarationMap": true
+  }
+}
