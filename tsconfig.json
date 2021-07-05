@@ -5,6 +5,7 @@
     "target": "es5",
     "declaration": true,
     "declarationMap": true,
+    "sourceMap": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "removeComments": true,
