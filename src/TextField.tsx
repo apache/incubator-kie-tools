@@ -24,10 +24,17 @@ export type TextFieldProps = {
 const Text = (props: TextFieldProps) => {
   const validateDate = useCallback(
     (date) => {
-      if (props.min && date < props.min) {
-        return props.errorMessage ?? `Should be bigger than ${props.min}`;
-      } else if (props.max && date > props.max) {
-        return props.errorMessage ?? `Should be smaller than ${props.max}`;
+      if (props.min && date.toISOString() < new Date(props.min).toISOString()) {
+        return props.errorMessage && props.errorMessage.trim().length > 0
+          ? props.errorMessage
+          : `Should be after than ${props.min}`;
+      } else if (
+        props.max &&
+        date.toISOString() > new Date(props.max).toISOString()
+      ) {
+        return props.errorMessage && props.errorMessage.trim().length > 0
+          ? props.errorMessage
+          : `Should be before than ${props.max}`;
       }
       return '';
     },
