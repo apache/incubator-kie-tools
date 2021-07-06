@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import {
   Dropdown,
@@ -22,29 +23,28 @@ import {
   DropdownPosition,
   DropdownToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import {
   PageHeader,
   PageHeaderTools,
   PageHeaderToolsGroup,
   PageHeaderToolsItem,
 } from "@patternfly/react-core/dist/js/components/Page";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
-import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
+import { GlobalContext } from "../common/GlobalContext";
 import { useOnlineI18n } from "../common/i18n";
+import { useDmnDevSandbox } from "./DmnDevSandbox/DmnDevSandboxContext";
+import { DmnDevSandboxDropdown } from "./DmnDevSandbox/DmnDevSandboxDropdown";
+import { DmnDevSandboxInstanceStatus } from "./DmnDevSandbox/DmnDevSandboxInstanceStatus";
 import { DmnRunnerButton } from "./DmnRunner/DmnRunnerButton";
 import { useDmnRunner } from "./DmnRunner/DmnRunnerContext";
 import { DmnRunnerDropdownGroup } from "./DmnRunner/DmnRunnerDropdownGroup";
 import { DmnRunnerStatus } from "./DmnRunner/DmnRunnerStatus";
-import { useDeploy } from "./deploy/DeployContext";
-import { DeployInstanceStatus } from "./deploy/DeployInstanceStatus";
-import { DeployDropdown } from "./deploy/DeployDropdown";
 
 interface Props {
   onFileNameChanged: (fileName: string, fileExtension: string) => void;
@@ -64,7 +64,7 @@ interface Props {
 export function EditorToolbar(props: Props) {
   const context = useContext(GlobalContext);
   const dmnRunner = useDmnRunner();
-  const deployContext = useDeploy();
+  const dmnDevSandboxContext = useDmnDevSandbox();
   const location = useLocation();
   const [fileName, setFileName] = useState(context.file.fileName);
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
@@ -219,7 +219,7 @@ export function EditorToolbar(props: Props) {
       logoProps={logoProps}
       headerTools={
         <PageHeaderTools>
-          {deployContext.instanceStatus !== DeployInstanceStatus.UNAVAILABLE && (
+          {dmnDevSandboxContext.instanceStatus !== DmnDevSandboxInstanceStatus.UNAVAILABLE && (
             <PageHeaderToolsGroup>
               <PageHeaderToolsItem
                 visibility={{
@@ -231,7 +231,7 @@ export function EditorToolbar(props: Props) {
                   sm: "hidden",
                 }}
               >
-                <DeployDropdown />
+                <DmnDevSandboxDropdown />
               </PageHeaderToolsItem>
             </PageHeaderToolsGroup>
           )}

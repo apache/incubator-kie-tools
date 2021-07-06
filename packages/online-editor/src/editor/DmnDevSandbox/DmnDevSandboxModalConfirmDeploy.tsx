@@ -19,10 +19,10 @@ import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/M
 import * as React from "react";
 import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../../common/i18n";
-import { useDeploy } from "./DeployContext";
+import { useDmnDevSandbox } from "./DmnDevSandboxContext";
 
-export function ConfirmDeployModal() {
-  const deployContext = useDeploy();
+export function DmnDevSandboxModalConfirmDeploy() {
+  const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
 
@@ -32,23 +32,23 @@ export function ConfirmDeployModal() {
     }
 
     setConfirmLoading(true);
-    await deployContext.onDeploy(deployContext.currentConfig);
+    await dmnDevSandboxContext.onDeploy(dmnDevSandboxContext.currentConfig);
     setConfirmLoading(false);
 
-    deployContext.setConfirmDeployModalOpen(false);
-  }, [deployContext, isConfirmLoading]);
+    dmnDevSandboxContext.setConfirmDeployModalOpen(false);
+  }, [dmnDevSandboxContext, isConfirmLoading]);
 
   const onCancel = useCallback(() => {
-    deployContext.setConfirmDeployModalOpen(false);
+    dmnDevSandboxContext.setConfirmDeployModalOpen(false);
     setConfirmLoading(false);
-  }, [deployContext]);
+  }, [dmnDevSandboxContext]);
 
   return (
     <Modal
       data-testid={"confirm-deploy-modal"}
       variant={ModalVariant.small}
-      title={i18n.deploy.confirmModal.title}
-      isOpen={deployContext.isConfirmDeployModalOpen}
+      title={i18n.dmnDevSandbox.confirmModal.title}
+      isOpen={dmnDevSandboxContext.isConfirmDeployModalOpen}
       aria-label={"Confirm deploy modal"}
       onClose={onCancel}
       actions={[
@@ -59,14 +59,14 @@ export function ConfirmDeployModal() {
           isLoading={isConfirmLoading}
           spinnerAriaValueText={isConfirmLoading ? "Loading" : undefined}
         >
-          {isConfirmLoading ? i18n.deploy.common.deploying : i18n.terms.confirm}
+          {isConfirmLoading ? i18n.dmnDevSandbox.common.deploying : i18n.terms.confirm}
         </Button>,
         <Button key="cancel" variant="link" onClick={onCancel}>
           {i18n.terms.cancel}
         </Button>,
       ]}
     >
-      {i18n.deploy.confirmModal.body}
+      {i18n.dmnDevSandbox.confirmModal.body}
     </Modal>
   );
 }

@@ -30,9 +30,15 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useOnlineI18n } from "../../common/i18n";
-import { ConnectionConfig, isConfigValid, isHostValid, isTokenValid, isUsernameValid } from "./ConnectionConfig";
-import { useDeploy } from "./DeployContext";
-import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "./devsandbox/DeveloperSandboxService";
+import {
+  DmnDevSandboxConnectionConfig,
+  isConfigValid,
+  isHostValid,
+  isTokenValid,
+  isUsernameValid,
+} from "./DmnDevSandboxConnectionConfig";
+import { useDmnDevSandbox } from "./DmnDevSandboxContext";
+import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "./DmnDevSandboxService";
 
 enum WizardStepIds {
   USERNAME = "USERNAME",
@@ -45,10 +51,10 @@ enum FinishOperation {
   CONTINUE_EDITING = "CONTINUE_EDITING",
 }
 
-export function ConfigDeployWizard() {
-  const deployContext = useDeploy();
+export function DmnDevSandboxConfigWizard() {
+  const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
-  const [config, setConfig] = useState(deployContext.currentConfig);
+  const [config, setConfig] = useState(dmnDevSandboxContext.currentConfig);
   const [isConfigValidated, setConfigValidated] = useState(false);
   const [isDeployLoading, setDeployLoading] = useState(false);
   const [isContinueEditingLoading, setContinueEditingLoading] = useState(false);
@@ -75,10 +81,10 @@ export function ConfigDeployWizard() {
   }, [config]);
 
   useEffect(() => {
-    setConfig(deployContext.currentConfig);
-  }, [deployContext.currentConfig]);
+    setConfig(dmnDevSandboxContext.currentConfig);
+  }, [dmnDevSandboxContext.currentConfig]);
 
-  const resetUI = useCallback((config: ConnectionConfig) => {
+  const resetUI = useCallback((config: DmnDevSandboxConnectionConfig) => {
     setConfigValidated(false);
     setDeployLoading(false);
     setContinueEditingLoading(false);
@@ -87,9 +93,9 @@ export function ConfigDeployWizard() {
   }, []);
 
   const onWizardClose = useCallback(() => {
-    deployContext.setConfigWizardOpen(false);
-    resetUI(deployContext.currentConfig);
-  }, [deployContext, resetUI]);
+    dmnDevSandboxContext.setConfigWizardOpen(false);
+    resetUI(dmnDevSandboxContext.currentConfig);
+  }, [dmnDevSandboxContext, resetUI]);
 
   const onUsernameInputChanged = useCallback(
     (newValue: string) => {
@@ -116,11 +122,11 @@ export function ConfigDeployWizard() {
     async ({ id, name }, { prevId, prevName }) => {
       if (id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
-        setConfigValidated(await deployContext.onCheckConfig(config, false));
+        setConfigValidated(await dmnDevSandboxContext.onCheckConfig(config, false));
         setConnectLoading(false);
       }
     },
-    [config, deployContext]
+    [config, dmnDevSandboxContext]
   );
 
   const onFinish = useCallback(
@@ -132,11 +138,11 @@ export function ConfigDeployWizard() {
       setDeployLoading(operation === FinishOperation.DEPLOY_NOW);
       setContinueEditingLoading(operation === FinishOperation.CONTINUE_EDITING);
 
-      const isConfigOk = await deployContext.onCheckConfig(config, true);
+      const isConfigOk = await dmnDevSandboxContext.onCheckConfig(config, true);
       setConfigValidated(isConfigOk);
 
       if (isConfigOk && operation === FinishOperation.DEPLOY_NOW) {
-        await deployContext.onDeploy(config);
+        await dmnDevSandboxContext.onDeploy(config);
       }
 
       setDeployLoading(false);
@@ -146,26 +152,26 @@ export function ConfigDeployWizard() {
         return;
       }
 
-      deployContext.setConfigWizardOpen(false);
+      dmnDevSandboxContext.setConfigWizardOpen(false);
       resetUI(config);
     },
-    [config, deployContext, isContinueEditingLoading, isDeployLoading, resetUI]
+    [config, dmnDevSandboxContext, isContinueEditingLoading, isDeployLoading, resetUI]
   );
 
   const wizardSteps = useMemo(
     () => [
       {
         id: WizardStepIds.USERNAME,
-        name: i18n.deploy.configWizard.steps.first.name,
+        name: i18n.dmnDevSandbox.configWizard.steps.first.name,
         component: (
           <div>
-            <Text component={TextVariants.p}>{i18n.deploy.configWizard.steps.first.introduction}</Text>
+            <Text component={TextVariants.p}>{i18n.dmnDevSandbox.configWizard.steps.first.introduction}</Text>
             <List component={ListComponent.ol} type={OrderType.number} className="pf-u-mt-md">
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
                     <a href={DEVELOPER_SANDBOX_GET_STARTED_URL} target={"_blank"}>
-                      {i18n.deploy.configWizard.steps.first.goToGetStartedPage}
+                      {i18n.dmnDevSandbox.configWizard.steps.first.goToGetStartedPage}
                       <ExternalLinkAltIcon className="pf-u-mx-sm" />
                     </a>
                   </Text>
@@ -173,21 +179,21 @@ export function ConfigDeployWizard() {
               </ListItem>
               <ListItem>
                 <TextContent>
-                  <Text component={TextVariants.p}>{i18n.deploy.configWizard.steps.first.followSteps}</Text>
+                  <Text component={TextVariants.p}>{i18n.dmnDevSandbox.configWizard.steps.first.followSteps}</Text>
                 </TextContent>
               </ListItem>
               <ListItem>
                 <TextContent>
-                  <Text component={TextVariants.p}>{i18n.deploy.configWizard.steps.first.informUsername}</Text>
+                  <Text component={TextVariants.p}>{i18n.dmnDevSandbox.configWizard.steps.first.informUsername}</Text>
                 </TextContent>
               </ListItem>
             </List>
             <Form isHorizontal={true} className="pf-u-mt-md">
               <FormGroup
-                fieldId={"deploy-config-username"}
+                fieldId={"dmn-dev-sandbox-config-username"}
                 label={i18n.terms.username}
                 validated={isUsernameValidated ? "success" : "error"}
-                helperTextInvalid={i18n.deploy.common.requiredField}
+                helperTextInvalid={i18n.dmnDevSandbox.common.requiredField}
               >
                 <InputGroup>
                   <TextInput
@@ -199,7 +205,7 @@ export function ConfigDeployWizard() {
                     name="username-field"
                     aria-describedby="username-field"
                     value={config.username}
-                    placeholder={i18n.deploy.configWizard.steps.first.usernamePlaceholder}
+                    placeholder={i18n.dmnDevSandbox.configWizard.steps.first.usernamePlaceholder}
                     onChange={onUsernameInputChanged}
                   />
                   <InputGroupText>
@@ -211,46 +217,46 @@ export function ConfigDeployWizard() {
               </FormGroup>
             </Form>
             <Text className="pf-u-my-md" component={TextVariants.p}>
-              {i18n.deploy.configWizard.steps.first.inputReason}
+              {i18n.dmnDevSandbox.configWizard.steps.first.inputReason}
             </Text>
           </div>
         ),
       },
       {
         id: WizardStepIds.CREDENTIALS,
-        name: i18n.deploy.configWizard.steps.second.name,
+        name: i18n.dmnDevSandbox.configWizard.steps.second.name,
         component: (
           <div>
-            <Text component={TextVariants.p}>{i18n.deploy.configWizard.steps.second.introduction}</Text>
+            <Text component={TextVariants.p}>{i18n.dmnDevSandbox.configWizard.steps.second.introduction}</Text>
             <List className="pf-u-my-md" component={ListComponent.ol} type={OrderType.number}>
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nHtml>{i18n.deploy.configWizard.steps.second.accessLoginCommand}</I18nHtml>
+                    <I18nHtml>{i18n.dmnDevSandbox.configWizard.steps.second.accessLoginCommand}</I18nHtml>
                   </Text>
                 </TextContent>
               </ListItem>
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nHtml>{i18n.deploy.configWizard.steps.second.accessDisplayToken}</I18nHtml>
+                    <I18nHtml>{i18n.dmnDevSandbox.configWizard.steps.second.accessDisplayToken}</I18nHtml>
                   </Text>
                 </TextContent>
               </ListItem>
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nHtml>{i18n.deploy.configWizard.steps.second.copyInformation}</I18nHtml>
+                    <I18nHtml>{i18n.dmnDevSandbox.configWizard.steps.second.copyInformation}</I18nHtml>
                   </Text>
                 </TextContent>
               </ListItem>
             </List>
             <Form isHorizontal={true} className="pf-u-mt-md">
               <FormGroup
-                fieldId={"deploy-config-host"}
+                fieldId={"dmn-dev-sandbox-config-host"}
                 label={i18n.terms.host}
                 validated={isHostValidated ? "success" : "error"}
-                helperTextInvalid={i18n.deploy.common.requiredField}
+                helperTextInvalid={i18n.dmnDevSandbox.common.requiredField}
               >
                 <InputGroup>
                   <TextInput
@@ -261,7 +267,7 @@ export function ConfigDeployWizard() {
                     id="host-field"
                     name="host-field"
                     value={config.host}
-                    placeholder={i18n.deploy.configWizard.steps.second.hostPlaceholder}
+                    placeholder={i18n.dmnDevSandbox.configWizard.steps.second.hostPlaceholder}
                     onChange={onHostInputChanged}
                   />
                   <InputGroupText>
@@ -272,10 +278,10 @@ export function ConfigDeployWizard() {
                 </InputGroup>
               </FormGroup>
               <FormGroup
-                fieldId={"deploy-config-token"}
+                fieldId={"dmn-dev-sandbox-config-token"}
                 label={i18n.terms.token}
                 validated={isTokenValidated ? "success" : "error"}
-                helperTextInvalid={i18n.deploy.common.requiredField}
+                helperTextInvalid={i18n.dmnDevSandbox.common.requiredField}
               >
                 <InputGroup>
                   <TextInput
@@ -285,7 +291,7 @@ export function ConfigDeployWizard() {
                     id="token-field"
                     name="token-field"
                     value={config.token}
-                    placeholder={i18n.deploy.configWizard.steps.second.tokenPlaceholder}
+                    placeholder={i18n.dmnDevSandbox.configWizard.steps.second.tokenPlaceholder}
                     onChange={onTokenInputChanged}
                   />
                   <InputGroupText>
@@ -297,18 +303,18 @@ export function ConfigDeployWizard() {
               </FormGroup>
             </Form>
             <Text className="pf-u-my-md" component={TextVariants.p}>
-              {i18n.deploy.configWizard.steps.second.inputReason}
+              {i18n.dmnDevSandbox.configWizard.steps.second.inputReason}
             </Text>
           </div>
         ),
       },
       {
         id: WizardStepIds.CONNECT,
-        name: i18n.deploy.configWizard.steps.final.name,
+        name: i18n.dmnDevSandbox.configWizard.steps.final.name,
         component: (
           <>
             {isConnectLoading && (
-              <div className="kogito--editor__deploy-wizard-loading-spinner">
+              <div className="kogito--editor__dmn-dev-sandbox-wizard-loading-spinner">
                 <Spinner isSVG size="xl" />
               </div>
             )}
@@ -317,29 +323,29 @@ export function ConfigDeployWizard() {
                 <Alert
                   variant={"default"}
                   isInline={true}
-                  title={i18n.deploy.configWizard.steps.final.connectionSuccess}
+                  title={i18n.dmnDevSandbox.configWizard.steps.final.connectionSuccess}
                 />
                 <Text className="pf-u-mt-md" component={TextVariants.p}>
-                  {i18n.deploy.configWizard.steps.final.introduction}
+                  {i18n.dmnDevSandbox.configWizard.steps.final.introduction}
                 </Text>
                 <List className="pf-u-my-md">
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nHtml>{i18n.deploy.configWizard.steps.final.deployNowExplanation}</I18nHtml>
+                        <I18nHtml>{i18n.dmnDevSandbox.configWizard.steps.final.deployNowExplanation}</I18nHtml>
                       </Text>
                     </TextContent>
                   </ListItem>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nHtml>{i18n.deploy.configWizard.steps.final.continueEditingExplanation}</I18nHtml>
+                        <I18nHtml>{i18n.dmnDevSandbox.configWizard.steps.final.continueEditingExplanation}</I18nHtml>
                       </Text>
                     </TextContent>
                   </ListItem>
                 </List>
                 <Text className="pf-u-mt-md" component={TextVariants.p}>
-                  {i18n.deploy.configWizard.steps.final.configNote}
+                  {i18n.dmnDevSandbox.configWizard.steps.final.configNote}
                 </Text>
               </div>
             )}
@@ -348,39 +354,39 @@ export function ConfigDeployWizard() {
                 <Alert
                   variant={"danger"}
                   isInline={true}
-                  title={i18n.deploy.configWizard.steps.final.connectionError}
+                  title={i18n.dmnDevSandbox.configWizard.steps.final.connectionError}
                 />
                 <Text className="pf-u-mt-md" component={TextVariants.p}>
-                  {i18n.deploy.configWizard.steps.final.connectionErrorLong}
+                  {i18n.dmnDevSandbox.configWizard.steps.final.connectionErrorLong}
                 </Text>
                 <Text className="pf-u-mt-md" component={TextVariants.p}>
-                  {i18n.deploy.configWizard.steps.final.possibleErrorReasons.introduction}
+                  {i18n.dmnDevSandbox.configWizard.steps.final.possibleErrorReasons.introduction}
                 </Text>
                 <List className="pf-u-my-md">
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        {i18n.deploy.configWizard.steps.final.possibleErrorReasons.emptyField}
+                        {i18n.dmnDevSandbox.configWizard.steps.final.possibleErrorReasons.emptyField}
                       </Text>
                     </TextContent>
                   </ListItem>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        {i18n.deploy.configWizard.steps.final.possibleErrorReasons.instanceExpired}
+                        {i18n.dmnDevSandbox.configWizard.steps.final.possibleErrorReasons.instanceExpired}
                       </Text>
                     </TextContent>
                   </ListItem>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        {i18n.deploy.configWizard.steps.final.possibleErrorReasons.tokenExpired}
+                        {i18n.dmnDevSandbox.configWizard.steps.final.possibleErrorReasons.tokenExpired}
                       </Text>
                     </TextContent>
                   </ListItem>
                 </List>
                 <Text className="pf-u-mt-md" component={TextVariants.p}>
-                  {i18n.deploy.configWizard.steps.final.checkInfo}
+                  {i18n.dmnDevSandbox.configWizard.steps.final.checkInfo}
                 </Text>
               </div>
             )}
@@ -410,7 +416,7 @@ export function ConfigDeployWizard() {
       <WizardFooter>
         <WizardContextConsumer>
           {({ activeStep, goToStepByName, goToStepById, onNext, onBack, onClose }) => {
-            if (activeStep.name !== i18n.deploy.configWizard.steps.final.name) {
+            if (activeStep.name !== i18n.dmnDevSandbox.configWizard.steps.final.name) {
               return (
                 <>
                   <Button variant="primary" onClick={onNext}>
@@ -419,7 +425,7 @@ export function ConfigDeployWizard() {
                   <Button
                     variant="secondary"
                     onClick={onBack}
-                    isDisabled={activeStep.name === i18n.deploy.configWizard.steps.first.name}
+                    isDisabled={activeStep.name === i18n.dmnDevSandbox.configWizard.steps.first.name}
                   >
                     {i18n.terms.back}
                   </Button>
@@ -438,7 +444,9 @@ export function ConfigDeployWizard() {
                   isLoading={isDeployLoading}
                   spinnerAriaValueText={isDeployLoading ? "Loading" : undefined}
                 >
-                  {isDeployLoading ? i18n.deploy.common.deploying : i18n.deploy.configWizard.footer.deployNow}
+                  {isDeployLoading
+                    ? i18n.dmnDevSandbox.common.deploying
+                    : i18n.dmnDevSandbox.configWizard.footer.deployNow}
                 </Button>
                 <Button
                   onClick={() => onFinish(FinishOperation.CONTINUE_EDITING)}
@@ -448,8 +456,8 @@ export function ConfigDeployWizard() {
                   spinnerAriaValueText={isContinueEditingLoading ? "Loading" : undefined}
                 >
                   {isContinueEditingLoading
-                    ? i18n.deploy.common.saving
-                    : i18n.deploy.configWizard.footer.continueEditing}
+                    ? i18n.dmnDevSandbox.common.saving
+                    : i18n.dmnDevSandbox.configWizard.footer.continueEditing}
                 </Button>
                 <Button variant="secondary" onClick={onBack}>
                   {i18n.terms.back}
@@ -468,11 +476,11 @@ export function ConfigDeployWizard() {
 
   return (
     <Modal
-      title={i18n.deploy.common.deployInstanceInfo}
-      description={i18n.deploy.common.disclaimer}
-      isOpen={deployContext.isConfigWizardOpen}
+      title={i18n.dmnDevSandbox.common.deployInstanceInfo}
+      description={i18n.dmnDevSandbox.common.disclaimer}
+      isOpen={dmnDevSandboxContext.isConfigWizardOpen}
       variant={ModalVariant.large}
-      aria-label={"Steps to configure the deploy instance"}
+      aria-label={"Steps to configure the DmnDevSandbox instance"}
       onClose={onWizardClose}
     >
       <Wizard

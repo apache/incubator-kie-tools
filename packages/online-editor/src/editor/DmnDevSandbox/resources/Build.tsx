@@ -42,7 +42,7 @@ export interface CreateBuildArgs {
 }
 
 export class CreateBuild extends ResourceFetch {
-  private readonly BASE_IMAGE = "quay.io/caponetto/dmn-dev-sandbox-deployment-base:latest";
+  private readonly BASE_IMAGE = "quay.io/caponetto/dmn-dev-sandbox-deployment-base-image:latest";
   private readonly KOGITO_FOLDER = "/tmp/kogito";
   private readonly PROJECT_FOLDER = `${this.KOGITO_FOLDER}/project`;
   private readonly PROJECT_MAIN_RESOURCES = `${this.PROJECT_FOLDER}/src/main/resources`;
@@ -51,7 +51,7 @@ export class CreateBuild extends ResourceFetch {
   private readonly DEPLOYMENTS_FOLDER = "/deployments";
   private readonly POM_PATH = `${this.PROJECT_FOLDER}/pom.xml`;
   private readonly MVNW_PATH = `${this.KOGITO_FOLDER}/mvnw`;
-  private readonly FORM_SCHEMA_GENERATOR_PATH = `${this.KOGITO_FOLDER}/dmn-form-schema-generator.jar`;
+  private readonly FORM_SCHEMA_GENERATOR_PATH = `${this.KOGITO_FOLDER}/dmn-json-schema-generator.jar`;
   private readonly DATA_PATH = `${this.PROJECT_METAINF_RESOURCES}/data.json`;
 
   public constructor(protected args: ResourceArgs & CreateBuildArgs) {

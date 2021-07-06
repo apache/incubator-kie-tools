@@ -16,43 +16,43 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { ConnectionConfig } from "./ConnectionConfig";
 import { DeployedModel } from "./DeployedModel";
-import { DeployInstanceStatus } from "./DeployInstanceStatus";
-import { DeveloperSandboxService } from "./devsandbox/DeveloperSandboxService";
+import { DmnDevSandboxConnectionConfig } from "./DmnDevSandboxConnectionConfig";
+import { DmnDevSandboxInstanceStatus } from "./DmnDevSandboxInstanceStatus";
+import { DmnDevSandboxService } from "./DmnDevSandboxService";
 
-export interface DeployContextType {
+export interface DmnDevSandboxContextType {
   deployments: DeployedModel[];
-  service: DeveloperSandboxService;
-  currentConfig: ConnectionConfig;
-  instanceStatus: DeployInstanceStatus;
+  service: DmnDevSandboxService;
+  currentConfig: DmnDevSandboxConnectionConfig;
+  instanceStatus: DmnDevSandboxInstanceStatus;
   isConfigModalOpen: boolean;
   isConfigWizardOpen: boolean;
   isDeployDropdownOpen: boolean;
   isConfirmDeployModalOpen: boolean;
-  isDeployIntroductionModalOpen: boolean;
+  isIntroductionModalOpen: boolean;
   setDeployments: React.Dispatch<DeployedModel[]>;
-  setInstanceStatus: React.Dispatch<DeployInstanceStatus>;
+  setInstanceStatus: React.Dispatch<DmnDevSandboxInstanceStatus>;
   setConfigModalOpen: React.Dispatch<boolean>;
   setConfigWizardOpen: React.Dispatch<boolean>;
   setDeployDropdownOpen: React.Dispatch<boolean>;
   setConfirmDeployModalOpen: React.Dispatch<boolean>;
-  setDeployIntroductionModalOpen: React.Dispatch<boolean>;
-  onDeploy: (config: ConnectionConfig) => Promise<void>;
-  onCheckConfig: (config: ConnectionConfig, persist: boolean) => Promise<boolean>;
+  setIntroductionModalOpen: React.Dispatch<boolean>;
+  onDeploy: (config: DmnDevSandboxConnectionConfig) => Promise<void>;
+  onCheckConfig: (config: DmnDevSandboxConnectionConfig, persist: boolean) => Promise<boolean>;
   onResetConfig: () => void;
 }
 
-export const DeployContext = React.createContext<DeployContextType>({
+export const DmnDevSandboxContext = React.createContext<DmnDevSandboxContextType>({
   deployments: [],
-  instanceStatus: DeployInstanceStatus.UNAVAILABLE,
+  instanceStatus: DmnDevSandboxInstanceStatus.UNAVAILABLE,
   isConfigModalOpen: false,
   isConfigWizardOpen: false,
   isDeployDropdownOpen: false,
   isConfirmDeployModalOpen: false,
-  isDeployIntroductionModalOpen: false,
+  isIntroductionModalOpen: false,
 } as any);
 
-export function useDeploy() {
-  return useContext(DeployContext);
+export function useDmnDevSandbox() {
+  return useContext(DmnDevSandboxContext);
 }

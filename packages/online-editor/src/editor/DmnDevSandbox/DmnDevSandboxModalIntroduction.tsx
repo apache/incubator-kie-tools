@@ -25,54 +25,54 @@ import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/exter
 import * as React from "react";
 import { useCallback } from "react";
 import { useOnlineI18n } from "../../common/i18n";
-import { useDeploy } from "./DeployContext";
-import { DEVELOPER_SANDBOX_URL } from "./devsandbox/DeveloperSandboxService";
+import { useDmnDevSandbox } from "./DmnDevSandboxContext";
+import { DEVELOPER_SANDBOX_URL } from "./DmnDevSandboxService";
 
-export function DeployIntroductionModal() {
-  const deployContext = useDeploy();
+export function DmnDevSandboxModalIntroduction() {
+  const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
 
   const onConfigure = useCallback(() => {
-    deployContext.setDeployIntroductionModalOpen(false);
-    deployContext.setConfigWizardOpen(true);
-  }, [deployContext]);
+    dmnDevSandboxContext.setIntroductionModalOpen(false);
+    dmnDevSandboxContext.setConfigWizardOpen(true);
+  }, [dmnDevSandboxContext]);
 
   const onClose = useCallback(() => {
-    deployContext.setDeployIntroductionModalOpen(false);
-  }, [deployContext]);
+    dmnDevSandboxContext.setIntroductionModalOpen(false);
+  }, [dmnDevSandboxContext]);
 
   return (
     <Modal
-      data-testid={"deploy-introduction-modal"}
+      data-testid={"dmn-dev-sandbox-introduction-modal"}
       variant={ModalVariant.medium}
-      isOpen={deployContext.isDeployIntroductionModalOpen}
-      aria-label={"Deploy introduction modal"}
+      isOpen={dmnDevSandboxContext.isIntroductionModalOpen}
+      aria-label={"DmnDevSandbox introduction modal"}
       onClose={onClose}
     >
       <Stack>
         <StackItem>
           <TextContent>
             <Text className="pf-u-text-align-center" component={TextVariants.h1}>
-              {i18n.deploy.introduction.header}
+              {i18n.dmnDevSandbox.introduction.header}
             </Text>
           </TextContent>
         </StackItem>
         <StackItem>
           <TextContent>
             <Text className="pf-u-mt-md pf-u-text-align-center" component={TextVariants.h3}>
-              {i18n.deploy.introduction.subHeader}
+              {i18n.dmnDevSandbox.introduction.subHeader}
             </Text>
           </TextContent>
         </StackItem>
         <StackItem>
           <TextContent>
             <Text className="pf-u-mt-md" component={TextVariants.p}>
-              <I18nHtml>{i18n.deploy.introduction.disclaimer}</I18nHtml>
+              <I18nHtml>{i18n.dmnDevSandbox.introduction.disclaimer}</I18nHtml>
             </Text>
           </TextContent>
           <TextContent>
             <Text className="pf-u-mt-md" component={TextVariants.p}>
-              {i18n.deploy.introduction.getStarted}
+              {i18n.dmnDevSandbox.introduction.getStarted}
             </Text>
           </TextContent>
         </StackItem>
@@ -82,10 +82,10 @@ export function DeployIntroductionModal() {
             <CardBody>
               <TextContent>
                 <Text component={TextVariants.p}>
-                  {i18n.deploy.introduction.sandboxShortDescription}
+                  {i18n.dmnDevSandbox.introduction.sandboxShortDescription}
                   <br />
                   <Text component={TextVariants.a} href={DEVELOPER_SANDBOX_URL} target={"_blank"}>
-                    {i18n.deploy.common.learnMore}
+                    {i18n.dmnDevSandbox.common.learnMore}
                     <ExternalLinkAltIcon className="pf-u-mx-sm" />
                   </Text>
                 </Text>

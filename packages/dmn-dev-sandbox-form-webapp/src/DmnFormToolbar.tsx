@@ -44,7 +44,7 @@ interface Props {
   onOpenOnlineEditor: () => void;
 }
 
-export function DMNFormToolbar(props: Props) {
+export function DmnFormToolbar(props: Props) {
   const { i18n } = useDmnFormI18n();
   const [isLgKebabOpen, setLgKebabOpen] = useState(false);
   const [isSmKebabOpen, setSmKebabOpen] = useState(false);
@@ -66,7 +66,7 @@ export function DMNFormToolbar(props: Props) {
       <Text className={"kogito--dmn-form__toolbar-title"}>
         {i18n.formToolbar.disclaimer.title}
         <Tooltip
-          className="kogito--dmn-form__deploy-dropdown-tooltip"
+          className="kogito--dmn-form__toolbar-tooltip"
           key="disclaimer-tooltip"
           distance={20}
           content={<I18nHtml>{i18n.formToolbar.disclaimer.description}</I18nHtml>}

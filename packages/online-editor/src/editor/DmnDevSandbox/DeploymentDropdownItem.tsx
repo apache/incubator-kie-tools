@@ -23,8 +23,8 @@ import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../common/i18n";
-import { useDeploy } from "./DeployContext";
 import { DeployedModel, DeployedModelState } from "./DeployedModel";
+import { useDmnDevSandbox } from "./DmnDevSandboxContext";
 
 interface Props {
   id: number;
@@ -32,15 +32,15 @@ interface Props {
 }
 
 export function DeploymentDropdownItem(props: Props) {
-  const deployContext = useDeploy();
+  const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
 
   const onConfigure = useCallback(
     (e: React.MouseEvent) => {
-      deployContext.setDeployDropdownOpen(false);
+      dmnDevSandboxContext.setDeployDropdownOpen(false);
       e.stopPropagation();
     },
-    [deployContext]
+    [dmnDevSandboxContext]
   );
 
   const filename = useMemo(() => {
@@ -59,9 +59,9 @@ export function DeploymentDropdownItem(props: Props) {
   const stateIcon = useMemo(() => {
     if (props.deployment.state === DeployedModelState.UP) {
       return (
-        <Tooltip key={`deployment-up-${props.id}`} position="left" content={i18n.deploy.dropdown.item.upTooltip}>
+        <Tooltip key={`deployment-up-${props.id}`} position="left" content={i18n.dmnDevSandbox.dropdown.item.upTooltip}>
           <Text
-            className="kogito-editor_deploy-dropdown-item-status up"
+            className="kogito--editor__dmn-dev-sandbox-dropdown-item-status up"
             component={TextVariants.a}
             href={props.deployment.urls.console}
             target="_blank"
@@ -81,10 +81,10 @@ export function DeploymentDropdownItem(props: Props) {
         <Tooltip
           key={`deployment-in-progress-${props.id}`}
           position="left"
-          content={i18n.deploy.dropdown.item.inProgressTooltip}
+          content={i18n.dmnDevSandbox.dropdown.item.inProgressTooltip}
         >
           <Text
-            className="kogito-editor_deploy-dropdown-item-status in-progress"
+            className="kogito--editor__dmn-dev-sandbox-dropdown-item-status in-progress"
             component={TextVariants.a}
             href={props.deployment.urls.console}
             target="_blank"
@@ -97,9 +97,13 @@ export function DeploymentDropdownItem(props: Props) {
     }
 
     return (
-      <Tooltip key={`deployment-down-${props.id}`} position="left" content={i18n.deploy.dropdown.item.downTooltip}>
+      <Tooltip
+        key={`deployment-down-${props.id}`}
+        position="left"
+        content={i18n.dmnDevSandbox.dropdown.item.downTooltip}
+      >
         <Text
-          className="kogito-editor_deploy-dropdown-item-status down"
+          className="kogito--editor__dmn-dev-sandbox-dropdown-item-status down"
           component={TextVariants.a}
           href={props.deployment.urls.console}
           target="_blank"
@@ -118,9 +122,9 @@ export function DeploymentDropdownItem(props: Props) {
   return (
     <DropdownItem
       isDisabled={props.deployment.state !== DeployedModelState.UP}
-      key={`deploy-dropdown-item-${props.id}`}
+      key={`dmn-dev-sandbox-dropdown-item-${props.id}`}
       onClick={onItemClicked}
-      description={i18n.deploy.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}
+      description={i18n.dmnDevSandbox.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}
       icon={stateIcon}
     >
       {filename}

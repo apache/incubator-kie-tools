@@ -81,7 +81,7 @@ interface OnlineDictionary extends ReferenceDictionary {
     share: string;
     embed: string;
   };
-  deploy: {
+  dmnDevSandbox: {
     common: {
       deployInstanceInfo: string;
       disclaimer: string;

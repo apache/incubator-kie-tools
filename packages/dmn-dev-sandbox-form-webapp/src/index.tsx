@@ -18,7 +18,7 @@ import "@patternfly/react-core/dist/styles/base.css";
 import "@patternfly/patternfly/patternfly-addons.scss";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { DMNFormApp } from "./DMNFormApp";
+import { DmnFormApp } from "./DmnFormApp";
 import "../static/resources/style.css";
 import { I18n } from "../../i18n/dist/core";
 import { DmnFormI18n, dmnFormI18nDefaults, dmnFormI18nDictionaries } from "./i18n";
@@ -36,7 +36,7 @@ fetch(DATA_JSON_PATH)
     return response.json();
   })
   .then((formData: FormData) => {
-    ReactDOM.render(<DMNFormApp formData={formData} />, document.getElementById("app")!);
+    ReactDOM.render(<DmnFormApp formData={formData} />, document.getElementById("app")!);
   })
   .catch((error: any) => showError(error.toString()));
 

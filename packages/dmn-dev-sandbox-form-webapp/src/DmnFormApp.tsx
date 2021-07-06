@@ -18,7 +18,7 @@ import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-compon
 import * as React from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
-import { DMNFormPage } from "./DMNFormPage";
+import { DmnFormPage } from "./DmnFormPage";
 import { FormData } from "./FormData";
 import { DmnFormI18nContext, dmnFormI18nDefaults, dmnFormI18nDictionaries } from "./i18n";
 import { NoMatchPage } from "./NoMatchPage";
@@ -27,7 +27,7 @@ interface Props {
   formData: FormData;
 }
 
-export function DMNFormApp(props: Props) {
+export function DmnFormApp(props: Props) {
   return (
     <I18nDictionariesProvider
       defaults={dmnFormI18nDefaults}
@@ -38,7 +38,7 @@ export function DMNFormApp(props: Props) {
       <HashRouter>
         <Switch>
           <Route path="/">
-            <DMNFormPage formData={props.formData} />
+            <DmnFormPage formData={props.formData} />
           </Route>
           <Route component={NoMatchPage} />
         </Switch>

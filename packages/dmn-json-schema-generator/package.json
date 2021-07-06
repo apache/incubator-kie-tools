@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-tooling/dmn-form-schema-generator",
+  "name": "@kogito-tooling/dmn-json-schema-generator",
   "version": "0.10.0",
   "description": "",
   "license": "Apache-2.0",

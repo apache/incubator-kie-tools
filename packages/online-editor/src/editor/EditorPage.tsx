@@ -40,7 +40,7 @@ import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/reac
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
-import { DeployContextProvider } from "./deploy/DeployContextProvider";
+import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxContextProvider";
 
 const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tooling-core/monaco-editor");
 
@@ -387,7 +387,7 @@ export function EditorPage(props: Props) {
       <DmnRunnerContextProvider editor={editor} isEditorReady={isEditorReady} closeDmnTour={closeDmnTour}>
         <DmnRunnerContext.Consumer>
           {(dmnRunner) => (
-            <DeployContextProvider editor={editor} isEditorReady={isEditorReady}>
+            <DmnDevSandboxContextProvider editor={editor} isEditorReady={isEditorReady}>
               <Page
                 header={
                   <EditorToolbar
@@ -573,7 +573,7 @@ export function EditorPage(props: Props) {
                 <a ref={downloadRef} />
                 <a ref={downloadPreviewRef} />
               </Page>
-            </DeployContextProvider>
+            </DmnDevSandboxContextProvider>
           )}
         </DmnRunnerContext.Consumer>
       </DmnRunnerContextProvider>

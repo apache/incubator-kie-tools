@@ -30,8 +30,8 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useOnlineI18n } from "../../common/i18n";
-import { ConnectionConfig, EMPTY_CONFIG, isConfigValid } from "./ConnectionConfig";
-import { useDeploy } from "./DeployContext";
+import { DmnDevSandboxConnectionConfig, EMPTY_CONFIG, isConfigValid } from "./DmnDevSandboxConnectionConfig";
+import { useDmnDevSandbox } from "./DmnDevSandboxContext";
 
 enum FormValiationOptions {
   INITIAL,
@@ -39,32 +39,32 @@ enum FormValiationOptions {
   CONNECTION_ERROR,
 }
 
-export function ConfigDeployModal() {
-  const deployContext = useDeploy();
+export function DmnDevSandboxModalConfig() {
+  const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
-  const [config, setConfig] = useState(deployContext.currentConfig);
+  const [config, setConfig] = useState(dmnDevSandboxContext.currentConfig);
   const [isConfigValidated, setConfigValidated] = useState(FormValiationOptions.INITIAL);
   const [isSaveLoading, setSaveLoading] = useState(false);
 
   useEffect(() => {
-    setConfig(deployContext.currentConfig);
-  }, [deployContext.currentConfig]);
+    setConfig(dmnDevSandboxContext.currentConfig);
+  }, [dmnDevSandboxContext.currentConfig]);
 
-  const resetUI = useCallback((config: ConnectionConfig) => {
+  const resetUI = useCallback((config: DmnDevSandboxConnectionConfig) => {
     setConfigValidated(FormValiationOptions.INITIAL);
     setSaveLoading(false);
     setConfig(config);
   }, []);
 
   const onResetConfig = useCallback(() => {
-    deployContext.onResetConfig();
+    dmnDevSandboxContext.onResetConfig();
     resetUI(EMPTY_CONFIG);
-  }, [deployContext, resetUI]);
+  }, [dmnDevSandboxContext, resetUI]);
 
   const onClose = useCallback(() => {
-    deployContext.setConfigModalOpen(false);
-    resetUI(deployContext.currentConfig);
-  }, [deployContext, resetUI]);
+    dmnDevSandboxContext.setConfigModalOpen(false);
+    resetUI(dmnDevSandboxContext.currentConfig);
+  }, [dmnDevSandboxContext, resetUI]);
 
   const onSave = useCallback(async () => {
     if (isSaveLoading) {
@@ -77,7 +77,7 @@ export function ConfigDeployModal() {
     }
 
     setSaveLoading(true);
-    const isConfigOk = await deployContext.onCheckConfig(config, true);
+    const isConfigOk = await dmnDevSandboxContext.onCheckConfig(config, true);
     setSaveLoading(false);
 
     if (!isConfigOk) {
@@ -85,9 +85,9 @@ export function ConfigDeployModal() {
       return;
     }
 
-    deployContext.setConfigModalOpen(false);
+    dmnDevSandboxContext.setConfigModalOpen(false);
     resetUI(config);
-  }, [config, deployContext, isSaveLoading, resetUI]);
+  }, [config, dmnDevSandboxContext, isSaveLoading, resetUI]);
 
   const onClearHost = useCallback(() => setConfig({ ...config, host: "" }), [config]);
   const onClearUsername = useCallback(() => setConfig({ ...config, username: "" }), [config]);
@@ -116,47 +116,57 @@ export function ConfigDeployModal() {
 
   const onGoToWizard = useCallback(() => {
     onClose();
-    deployContext.setConfigWizardOpen(true);
-  }, [deployContext, onClose]);
+    dmnDevSandboxContext.setConfigWizardOpen(true);
+  }, [dmnDevSandboxContext, onClose]);
 
   return (
     <Modal
-      data-testid={"config-deploy-modal"}
+      data-testid={"config-dmn-dev-sandbox-modal"}
       variant={ModalVariant.medium}
-      isOpen={deployContext.isConfigModalOpen}
+      isOpen={dmnDevSandboxContext.isConfigModalOpen}
       onClose={onClose}
-      aria-label={"Configure deploy modal"}
+      aria-label={"Configure DmnDevSandbox modal"}
       header={
         <Title headingLevel="h1" size={BaseSizes["2xl"]}>
-          {i18n.deploy.common.deployInstanceInfo}
+          {i18n.dmnDevSandbox.common.deployInstanceInfo}
         </Title>
       }
     >
       <>
         <Text component={TextVariants.p} className="pf-u-mb-md">
-          {i18n.deploy.common.disclaimer}
+          {i18n.dmnDevSandbox.common.disclaimer}
         </Text>
         <div className="pf-u-my-md">
           <Button key="use-wizard" className="pf-u-p-0" variant="link" onClick={onGoToWizard}>
-            {i18n.deploy.configModal.useWizard}
+            {i18n.dmnDevSandbox.configModal.useWizard}
             <ArrowRightIcon className="pf-u-ml-sm" />
           </Button>
         </div>
         <Form>
           {isConfigValidated === FormValiationOptions.INVALID && (
             <FormAlert>
-              <Alert variant="danger" title={i18n.deploy.configModal.validationError} aria-live="polite" isInline />
+              <Alert
+                variant="danger"
+                title={i18n.dmnDevSandbox.configModal.validationError}
+                aria-live="polite"
+                isInline
+              />
             </FormAlert>
           )}
           {isConfigValidated === FormValiationOptions.CONNECTION_ERROR && (
             <FormAlert>
-              <Alert variant="danger" title={i18n.deploy.configModal.connectionError} aria-live="polite" isInline />
+              <Alert
+                variant="danger"
+                title={i18n.dmnDevSandbox.configModal.connectionError}
+                aria-live="polite"
+                isInline
+              />
             </FormAlert>
           )}
           <FormGroup
             label={i18n.terms.username}
             labelIcon={
-              <Popover bodyContent={i18n.deploy.configModal.usernameInfo}>
+              <Popover bodyContent={i18n.dmnDevSandbox.configModal.usernameInfo}>
                 <button
                   type="button"
                   aria-label="More info for username field"
@@ -192,7 +202,7 @@ export function ConfigDeployModal() {
           <FormGroup
             label={i18n.terms.host}
             labelIcon={
-              <Popover bodyContent={i18n.deploy.configModal.hostInfo}>
+              <Popover bodyContent={i18n.dmnDevSandbox.configModal.hostInfo}>
                 <button
                   type="button"
                   aria-label="More info for host field"
@@ -228,7 +238,7 @@ export function ConfigDeployModal() {
           <FormGroup
             label={i18n.terms.token}
             labelIcon={
-              <Popover bodyContent={i18n.deploy.configModal.tokenInfo}>
+              <Popover bodyContent={i18n.dmnDevSandbox.configModal.tokenInfo}>
                 <button
                   type="button"
                   aria-label="More info for token field"
@@ -269,7 +279,7 @@ export function ConfigDeployModal() {
               isLoading={isSaveLoading}
               spinnerAriaValueText={isSaveLoading ? "Loading" : undefined}
             >
-              {isSaveLoading ? i18n.deploy.common.saving : i18n.terms.save}
+              {isSaveLoading ? i18n.dmnDevSandbox.common.saving : i18n.terms.save}
             </Button>
             <Button key="reset" variant="danger" onClick={onResetConfig}>
               {i18n.terms.reset}

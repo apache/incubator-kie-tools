@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export enum DeployInstanceStatus {
+export enum DmnDevSandboxInstanceStatus {
   UNAVAILABLE = "UNAVAILABLE",
   DISCONNECTED = "DISCONNECTED",
   CONNECTED = "CONNECTED",

@@ -22,22 +22,22 @@ import { GlobalContext } from "../../common/GlobalContext";
 import { useOnlineI18n } from "../../common/i18n";
 import { useDmnRunner } from "../DmnRunner/DmnRunnerContext";
 import { DmnRunnerStatus } from "../DmnRunner/DmnRunnerStatus";
-import { ConfigDeployModal } from "./ConfigDeployModal";
-import { ConfigDeployWizard } from "./ConfigDeployWizard";
-import { ConfirmDeployModal } from "./ConfirmDeployModal";
+import { DeployedModel } from "./DeployedModel";
+import { DmnDevSandboxConfigWizard } from "./DmnDevSandboxConfigWizard";
 import {
-  ConnectionConfig,
+  DmnDevSandboxConnectionConfig,
   EMPTY_CONFIG,
   isConfigValid,
   readConfigCookie,
   resetConfigCookie,
   saveConfigCookie,
-} from "./ConnectionConfig";
-import { DeployContext } from "./DeployContext";
-import { DeployedModel } from "./DeployedModel";
-import { DeployInstanceStatus } from "./DeployInstanceStatus";
-import { DeployIntroductionModal } from "./DeployIntroductionModal";
-import { DeveloperSandboxService } from "./devsandbox/DeveloperSandboxService";
+} from "./DmnDevSandboxConnectionConfig";
+import { DmnDevSandboxContext } from "./DmnDevSandboxContext";
+import { DmnDevSandboxInstanceStatus } from "./DmnDevSandboxInstanceStatus";
+import { DmnDevSandboxModalConfig } from "./DmnDevSandboxModalConfig";
+import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandboxModalConfirmDeploy";
+import { DmnDevSandboxModalIntroduction } from "./DmnDevSandboxModalIntroduction";
+import { DmnDevSandboxService } from "./DmnDevSandboxService";
 
 interface Props {
   children: React.ReactNode;
@@ -51,16 +51,16 @@ enum AlertTypes {
   DEPLOY_STARTED_SUCCESS,
 }
 
-export function DeployContextProvider(props: Props) {
+export function DmnDevSandboxContextProvider(props: Props) {
   const KOGITO_ONLINE_EDITOR = "online-editor";
   const LOAD_DEPLOYMENTS_POLLING_TIME = 1000;
 
   const globalContext = useContext(GlobalContext);
   const dmnRunner = useDmnRunner();
   const { i18n } = useOnlineI18n();
-  const [instanceStatus, setInstanceStatus] = useState(DeployInstanceStatus.UNAVAILABLE);
+  const [instanceStatus, setInstanceStatus] = useState(DmnDevSandboxInstanceStatus.UNAVAILABLE);
   const service = useMemo(
-    () => new DeveloperSandboxService(KOGITO_ONLINE_EDITOR, `http://localhost:${dmnRunner.port}/devsandbox`),
+    () => new DmnDevSandboxService(KOGITO_ONLINE_EDITOR, `http://localhost:${dmnRunner.port}/devsandbox`),
     [dmnRunner.port]
   );
   const [currentConfig, setCurrentConfig] = useState(readConfigCookie());
@@ -68,7 +68,7 @@ export function DeployContextProvider(props: Props) {
   const [isConfigWizardOpen, setConfigWizardOpen] = useState(false);
   const [isDeployDropdownOpen, setDeployDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
-  const [isDeployIntroductionModalOpen, setDeployIntroductionModalOpen] = useState(false);
+  const [isIntroductionModalOpen, setIntroductionModalOpen] = useState(false);
   const [deployments, setDeployments] = useState([] as DeployedModel[]);
   const [openAlert, setOpenAlert] = useState(AlertTypes.NONE);
 
@@ -76,11 +76,11 @@ export function DeployContextProvider(props: Props) {
 
   const disconnect = useCallback(() => {
     setDeployments([]);
-    setInstanceStatus(DeployInstanceStatus.DISCONNECTED);
+    setInstanceStatus(DmnDevSandboxInstanceStatus.DISCONNECTED);
   }, []);
 
   const onCheckConfig = useCallback(
-    async (config: ConnectionConfig, persist: boolean) => {
+    async (config: DmnDevSandboxConnectionConfig, persist: boolean) => {
       const isConfigOk = isConfigValid(config) && (await service.isConnectionEstablished(config));
       if (persist) {
         if (isConfigOk) {
@@ -92,7 +92,9 @@ export function DeployContextProvider(props: Props) {
             disconnect();
           }
         }
-        setInstanceStatus(isConfigOk ? DeployInstanceStatus.CONNECTED : DeployInstanceStatus.DISCONNECTED);
+        setInstanceStatus(
+          isConfigOk ? DmnDevSandboxInstanceStatus.CONNECTED : DmnDevSandboxInstanceStatus.DISCONNECTED
+        );
       }
 
       return isConfigOk;
@@ -101,7 +103,7 @@ export function DeployContextProvider(props: Props) {
   );
 
   const onDeploy = useCallback(
-    async (config: ConnectionConfig) => {
+    async (config: DmnDevSandboxConnectionConfig) => {
       const isConfigOk = await onCheckConfig(config, false);
 
       if (!isConfigOk) {
@@ -133,13 +135,13 @@ export function DeployContextProvider(props: Props) {
   useEffect(() => {
     setInstanceStatus(
       dmnRunner.status === DmnRunnerStatus.RUNNING
-        ? DeployInstanceStatus.DISCONNECTED
-        : DeployInstanceStatus.UNAVAILABLE
+        ? DmnDevSandboxInstanceStatus.DISCONNECTED
+        : DmnDevSandboxInstanceStatus.UNAVAILABLE
     );
   }, [dmnRunner.status]);
 
   useEffect(() => {
-    if (instanceStatus === DeployInstanceStatus.UNAVAILABLE) {
+    if (instanceStatus === DmnDevSandboxInstanceStatus.UNAVAILABLE) {
       return;
     }
 
@@ -149,7 +151,7 @@ export function DeployContextProvider(props: Props) {
     }
 
     let loadDeploymentsTask: number | undefined;
-    if (instanceStatus === DeployInstanceStatus.CONNECTED) {
+    if (instanceStatus === DmnDevSandboxInstanceStatus.CONNECTED) {
       loadDeploymentsTask = window.setInterval(() => {
         service
           .loadDeployments(currentConfig)
@@ -163,7 +165,7 @@ export function DeployContextProvider(props: Props) {
       }, LOAD_DEPLOYMENTS_POLLING_TIME);
     }
 
-    if (instanceStatus === DeployInstanceStatus.DISCONNECTED) {
+    if (instanceStatus === DmnDevSandboxInstanceStatus.DISCONNECTED) {
       service
         .isConnectionEstablished(currentConfig)
         .then((isConfigOk) => {
@@ -171,7 +173,7 @@ export function DeployContextProvider(props: Props) {
             disconnect();
             return;
           }
-          setInstanceStatus(DeployInstanceStatus.CONNECTED);
+          setInstanceStatus(DmnDevSandboxInstanceStatus.CONNECTED);
         })
         .catch(() => disconnect());
     }
@@ -180,7 +182,7 @@ export function DeployContextProvider(props: Props) {
   }, [service, instanceStatus, currentConfig, deployments.length, disconnect]);
 
   return (
-    <DeployContext.Provider
+    <DmnDevSandboxContext.Provider
       value={{
         deployments,
         service,
@@ -190,14 +192,14 @@ export function DeployContextProvider(props: Props) {
         isConfigWizardOpen,
         isDeployDropdownOpen,
         isConfirmDeployModalOpen,
-        isDeployIntroductionModalOpen,
+        isIntroductionModalOpen,
         setDeployments,
         setInstanceStatus,
         setConfigModalOpen,
         setConfigWizardOpen,
         setDeployDropdownOpen,
         setConfirmDeployModalOpen,
-        setDeployIntroductionModalOpen,
+        setIntroductionModalOpen,
         onDeploy,
         onCheckConfig,
         onResetConfig,
@@ -208,7 +210,7 @@ export function DeployContextProvider(props: Props) {
           <Alert
             className={"kogito--alert"}
             variant="danger"
-            title={i18n.deploy.alerts.deployStartedError}
+            title={i18n.dmnDevSandbox.alerts.deployStartedError}
             actionClose={<AlertActionCloseButton onClose={closeAlert} />}
           />
         </div>
@@ -218,16 +220,16 @@ export function DeployContextProvider(props: Props) {
           <Alert
             className={"kogito--alert"}
             variant="info"
-            title={i18n.deploy.alerts.deployStartedSuccess}
+            title={i18n.dmnDevSandbox.alerts.deployStartedSuccess}
             actionClose={<AlertActionCloseButton onClose={closeAlert} />}
           />
         </div>
       )}
       {props.children}
-      <ConfigDeployModal />
-      <ConfigDeployWizard />
-      <ConfirmDeployModal />
-      <DeployIntroductionModal />
-    </DeployContext.Provider>
+      <DmnDevSandboxModalConfig />
+      <DmnDevSandboxConfigWizard />
+      <DmnDevSandboxModalConfirmDeploy />
+      <DmnDevSandboxModalIntroduction />
+    </DmnDevSandboxContext.Provider>
   );
 }

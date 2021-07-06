@@ -14,7 +14,7 @@
 
 FROM registry.access.redhat.com/openjdk/openjdk-11-rhel7:1.1
 
-ARG KOGITO_VERSION=1.7.0.Final
+ARG KOGITO_RUNTIME_VERSION=1.7.0.Final
 
 RUN mkdir /tmp/kogito/
 
@@ -22,12 +22,12 @@ WORKDIR /tmp/kogito/
 
 COPY assets/mvnw mvnw
 COPY assets/.mvn/ .mvn
-COPY assets/dmn-form-schema-generator.jar dmn-form-schema-generator.jar
+COPY assets/dmn-json-schema-generator.jar dmn-json-schema-generator.jar
 
 RUN ./mvnw archetype:generate -B \
         -DarchetypeGroupId=org.kie.kogito \
         -DarchetypeArtifactId=kogito-quarkus-archetype \
-        -DarchetypeVersion=${KOGITO_VERSION} \
+        -DarchetypeVersion=${KOGITO_RUNTIME_VERSION} \
         -DgroupId=org.kie.kogito \
         -DartifactId=project \
     && rm project/src/main/resources/*.bpmn2 \
@@ -35,7 +35,7 @@ RUN ./mvnw archetype:generate -B \
     && rm project/src/test/java/org/kie/kogito/*.java \
     && mkdir -p project/src/main/resources/META-INF
 
-COPY --chown=185:root assets/dmn-form-webapp/ project/src/main/resources/META-INF/resources/
+COPY --chown=185:root assets/dmn-dev-sandbox-form-webapp/ project/src/main/resources/META-INF/resources/
 
 RUN echo -e '\nquarkus.http.cors=true' >> project/src/main/resources/application.properties \
     && ./mvnw clean package -f project/pom.xml \

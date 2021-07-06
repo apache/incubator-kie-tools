@@ -21,7 +21,7 @@ import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Tex
 import { diff } from "deep-object-diff";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { DMNFormToolbar } from "./DMNFormToolbar";
+import { DmnFormToolbar } from "./DmnFormToolbar";
 import { FormData } from "./FormData";
 import { useDmnFormI18n } from "./i18n";
 
@@ -36,7 +36,7 @@ export enum AlertTypes {
 
 const AUTO_SAVE_DELAY = 500;
 
-export function DMNFormPage(props: Props) {
+export function DmnFormPage(props: Props) {
   const { i18n, locale } = useDmnFormI18n();
   const [formInputs, setFormInputs] = useState({});
   const [formOutputs, setFormOutputs] = useState<DecisionResult[]>();
@@ -94,7 +94,7 @@ export function DMNFormPage(props: Props) {
   return (
     <Page
       header={
-        <DMNFormToolbar
+        <DmnFormToolbar
           filename={props.formData.filename}
           onOpenOnlineEditor={onOpenOnlineEditor}
           onOpenSwaggerUI={onOpenSwaggerUI}
@@ -112,15 +112,15 @@ export function DMNFormPage(props: Props) {
         </div>
       )}
       <div className="kogito--dmn-form">
-        <div className="kogito--dmn-form-content">
-          <Page className={"kogito--dmn-form-content-page"}>
-            <PageSection className={"kogito--dmn-form-content-header inputs"}>
+        <div className="kogito--dmn-form__content">
+          <Page className={"kogito--dmn-form__content-page"}>
+            <PageSection className={"kogito--dmn-form__content-header inputs"}>
               <TextContent>
                 <Text component={"h2"}>{i18n.terms.inputs}</Text>
               </TextContent>
             </PageSection>
-            <div className={"kogito--dmn-form-drawer-content-body"}>
-              <PageSection className={"kogito--dmn-form-drawer-content-body-input"}>
+            <div className={"kogito--dmn-form__content-body"}>
+              <PageSection className={"kogito--dmn-form__content-body-input"}>
                 <DmnForm
                   formData={formInputs}
                   setFormData={setFormInputs}
@@ -141,15 +141,15 @@ export function DMNFormPage(props: Props) {
             </div>
           </Page>
         </div>
-        <div className="kogito--dmn-form-content">
-          <Page className={"kogito--dmn-form-content-page"}>
-            <PageSection className={"kogito--dmn-form-content-header"}>
+        <div className="kogito--dmn-form__content">
+          <Page className={"kogito--dmn-form__content-page"}>
+            <PageSection className={"kogito--dmn-form__content-header"}>
               <TextContent>
                 <Text component={"h2"}>{i18n.terms.outputs}</Text>
               </TextContent>
             </PageSection>
-            <div className={"kogito--dmn-form-drawer-content-body"}>
-              <PageSection isFilled={true} className="kogito--dmn-form-drawer-content-body-output">
+            <div className={"kogito--dmn-form__content-body"}>
+              <PageSection isFilled={true} className="kogito--dmn-form__content-body-output">
                 <DmnFormResult
                   results={formOutputs}
                   differences={formOutputDiffs}

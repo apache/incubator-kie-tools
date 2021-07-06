@@ -16,23 +16,23 @@
 
 import { getCookie, setCookie } from "../../common/utils";
 
-const USERNAME_COOKIE_NAME = "deploy-connection-username";
-const HOST_COOKIE_NAME = "deploy-connection-host";
-const TOKEN_COOKIE_NAME = "deploy-connection-token";
+const USERNAME_COOKIE_NAME = "dmn-dev-sandbox--connection-username";
+const HOST_COOKIE_NAME = "dmn-dev-sandbox--connection-host";
+const TOKEN_COOKIE_NAME = "dmn-dev-sandbox--connection-token";
 
-export interface ConnectionConfig {
+export interface DmnDevSandboxConnectionConfig {
   username: string;
   host: string;
   token: string;
 }
 
-export const EMPTY_CONFIG: ConnectionConfig = {
+export const EMPTY_CONFIG: DmnDevSandboxConnectionConfig = {
   username: "",
   host: "",
   token: "",
 };
 
-export function isConfigValid(config: ConnectionConfig): boolean {
+export function isConfigValid(config: DmnDevSandboxConnectionConfig): boolean {
   return isUsernameValid(config.username) && isHostValid(config.host) && isTokenValid(config.token);
 }
 
@@ -48,7 +48,7 @@ export function isTokenValid(token: string): boolean {
   return token !== undefined && token.trim().length > 0;
 }
 
-export function readConfigCookie(): ConnectionConfig {
+export function readConfigCookie(): DmnDevSandboxConnectionConfig {
   return {
     username: getCookie(USERNAME_COOKIE_NAME) ?? "",
     host: getCookie(HOST_COOKIE_NAME) ?? "",
@@ -60,7 +60,7 @@ export function resetConfigCookie(): void {
   saveConfigCookie(EMPTY_CONFIG);
 }
 
-export function saveConfigCookie(config: ConnectionConfig): void {
+export function saveConfigCookie(config: DmnDevSandboxConnectionConfig): void {
   setCookie(USERNAME_COOKIE_NAME, config.username);
   setCookie(HOST_COOKIE_NAME, config.host);
   setCookie(TOKEN_COOKIE_NAME, config.token);

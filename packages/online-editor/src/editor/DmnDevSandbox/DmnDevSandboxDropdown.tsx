@@ -29,41 +29,41 @@ import { DisconnectedIcon } from "@patternfly/react-icons/dist/js/icons/disconne
 import * as React from "react";
 import { useCallback } from "react";
 import { useOnlineI18n } from "../../common/i18n";
-import { isConfigValid } from "./ConnectionConfig";
-import { useDeploy } from "./DeployContext";
-import { DeployInstanceStatus } from "./DeployInstanceStatus";
 import { DeploymentDropdownItem } from "./DeploymentDropdownItem";
+import { isConfigValid } from "./DmnDevSandboxConnectionConfig";
+import { useDmnDevSandbox } from "./DmnDevSandboxContext";
+import { DmnDevSandboxInstanceStatus } from "./DmnDevSandboxInstanceStatus";
 
-export function DeployDropdown() {
-  const deployContext = useDeploy();
+export function DmnDevSandboxDropdown() {
+  const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
 
-  const onDropdownClicked = useCallback(() => deployContext.setConfigModalOpen(true), [deployContext]);
+  const onDropdownClicked = useCallback(() => dmnDevSandboxContext.setConfigModalOpen(true), [dmnDevSandboxContext]);
 
   const onDeploy = useCallback(() => {
-    deployContext.setDeployDropdownOpen(false);
-    if (deployContext.instanceStatus === DeployInstanceStatus.DISCONNECTED) {
-      if (!isConfigValid(deployContext.currentConfig)) {
-        deployContext.setDeployIntroductionModalOpen(true);
+    dmnDevSandboxContext.setDeployDropdownOpen(false);
+    if (dmnDevSandboxContext.instanceStatus === DmnDevSandboxInstanceStatus.DISCONNECTED) {
+      if (!isConfigValid(dmnDevSandboxContext.currentConfig)) {
+        dmnDevSandboxContext.setIntroductionModalOpen(true);
         return;
       }
-      deployContext.setConfigWizardOpen(true);
+      dmnDevSandboxContext.setConfigWizardOpen(true);
       return;
     }
-    deployContext.setConfirmDeployModalOpen(true);
-  }, [deployContext]);
+    dmnDevSandboxContext.setConfirmDeployModalOpen(true);
+  }, [dmnDevSandboxContext]);
 
   const dropdownItems = useCallback(
     (dropdownId: string) => {
       const items = [];
-      if (deployContext.deployments.length === 0) {
+      if (dmnDevSandboxContext.deployments.length === 0) {
         items.push(
           <DropdownItem key="disabled link" isDisabled>
-            {i18n.deploy.dropdown.noDeployments}
+            {i18n.dmnDevSandbox.dropdown.noDeployments}
           </DropdownItem>
         );
       } else {
-        deployContext.deployments
+        dmnDevSandboxContext.deployments
           .sort((a, b) => b.creationTimestamp.getTime() - a.creationTimestamp.getTime())
           .forEach((deployment, i) => {
             items.push(<DeploymentDropdownItem id={i} key={`deployment_item_${i}`} deployment={deployment} />);
@@ -75,7 +75,7 @@ export function DeployDropdown() {
           icon={<CogIcon />}
           component={"button"}
           onClick={onDropdownClicked}
-          ouiaId="deploy-setup-dropdown-button"
+          ouiaId="dmn-dev-sandbox-setup-dropdown-button"
         >
           {i18n.terms.configure}
         </DropdownItem>,
@@ -83,48 +83,53 @@ export function DeployDropdown() {
         items,
       ];
     },
-    [deployContext.deployments, onDropdownClicked, i18n.terms.configure, i18n.deploy.dropdown.noDeployments]
+    [
+      dmnDevSandboxContext.deployments,
+      onDropdownClicked,
+      i18n.terms.configure,
+      i18n.dmnDevSandbox.dropdown.noDeployments,
+    ]
   );
 
   return (
     <Dropdown
-      onSelect={() => deployContext.setDeployDropdownOpen(false)}
+      onSelect={() => dmnDevSandboxContext.setDeployDropdownOpen(false)}
       toggle={
         <DropdownToggle
-          id={"deploy-id-lg"}
-          data-testid={"deploy-menu"}
-          onToggle={(isOpen) => deployContext.setDeployDropdownOpen(isOpen)}
+          id={"dmn-dev-sandbox-id-lg"}
+          data-testid={"dmn-dev-sandbox-menu"}
+          onToggle={(isOpen) => dmnDevSandboxContext.setDeployDropdownOpen(isOpen)}
           splitButtonVariant="action"
           splitButtonItems={[
             <Button variant="tertiary" className={"pf-u-pr-md pf-u-pl-md"} key="deploy" onClick={onDeploy}>
-              {deployContext.instanceStatus === DeployInstanceStatus.DISCONNECTED && (
+              {dmnDevSandboxContext.instanceStatus === DmnDevSandboxInstanceStatus.DISCONNECTED && (
                 <Tooltip
-                  className="kogito-editor__deploy-dropdown-tooltip"
+                  className="kogito--editor__dmn-dev-sandbox-dropdown-tooltip"
                   key={"disconnected"}
                   position="left"
                   distance={20}
-                  content={i18n.deploy.dropdown.tooltip.disconnected}
+                  content={i18n.dmnDevSandbox.dropdown.tooltip.disconnected}
                 >
                   <DisconnectedIcon />
                 </Tooltip>
               )}
-              {deployContext.instanceStatus === DeployInstanceStatus.CONNECTED && (
+              {dmnDevSandboxContext.instanceStatus === DmnDevSandboxInstanceStatus.CONNECTED && (
                 <Tooltip
-                  className="kogito-editor__deploy-dropdown-tooltip"
+                  className="kogito--editor__dmn-dev-sandbox-dropdown-tooltip"
                   key={"connected"}
                   position="left"
                   distance={20}
-                  content={i18n.deploy.dropdown.tooltip.connected}
+                  content={i18n.dmnDevSandbox.dropdown.tooltip.connected}
                 >
                   <ConnectedIcon className="blink-opacity" />
                 </Tooltip>
               )}
-              <span className={"pf-u-ml-sm"}>{i18n.deploy.dropdown.title}</span>
+              <span className={"pf-u-ml-sm"}>{i18n.dmnDevSandbox.dropdown.title}</span>
             </Button>,
           ]}
         ></DropdownToggle>
       }
-      isOpen={deployContext.isDeployDropdownOpen}
+      isOpen={dmnDevSandboxContext.isDeployDropdownOpen}
       dropdownItems={dropdownItems("lg")}
       position={DropdownPosition.right}
     />

@@ -83,7 +83,7 @@ export const en: OnlineI18n = {
     share: "Share",
     embed: "Embed",
   },
-  deploy: {
+  dmnDevSandbox: {
     common: {
       deployInstanceInfo: "Deploy instance information",
       disclaimer:

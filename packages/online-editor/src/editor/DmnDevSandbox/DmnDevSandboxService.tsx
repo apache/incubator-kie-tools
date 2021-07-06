@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ConnectionConfig } from "../ConnectionConfig";
-import { DeployedModel, DeployedModelState } from "../DeployedModel";
+import { DeployedModel, DeployedModelState } from "./DeployedModel";
+import { DmnDevSandboxConnectionConfig } from "./DmnDevSandboxConnectionConfig";
 import { Build, Builds, CreateBuild, DeleteBuild, ListBuilds } from "./resources/Build";
 import { CreateBuildConfig, DeleteBuildConfig } from "./resources/BuildConfig";
 import {
@@ -34,13 +34,13 @@ import { CreateService, DeleteService } from "./resources/Service";
 export const DEVELOPER_SANDBOX_URL = "https://developers.redhat.com/developer-sandbox";
 export const DEVELOPER_SANDBOX_GET_STARTED_URL = "https://developers.redhat.com/developer-sandbox/get-started";
 
-export class DeveloperSandboxService {
+export class DmnDevSandboxService {
   private readonly RESOURCE_NAME_PREFIX = "dmn-dev-sandbox";
   private readonly NAMESPACE_SUFFIX = "-dev";
 
   public constructor(private readonly createdBy: string, private readonly proxyUrl: string) {}
 
-  public async isConnectionEstablished(config: ConnectionConfig): Promise<boolean> {
+  public async isConnectionEstablished(config: DmnDevSandboxConnectionConfig): Promise<boolean> {
     try {
       await this.fetchResource(
         new GetProject({
@@ -56,7 +56,7 @@ export class DeveloperSandboxService {
     }
   }
 
-  public async loadDeployments(config: ConnectionConfig): Promise<DeployedModel[]> {
+  public async loadDeployments(config: DmnDevSandboxConnectionConfig): Promise<DeployedModel[]> {
     const commonArgs = {
       host: config.host,
       namespace: this.composeNamespace(config.username),
@@ -89,7 +89,7 @@ export class DeveloperSandboxService {
       });
   }
 
-  public async deploy(filename: string, diagramContent: string, config: ConnectionConfig): Promise<void> {
+  public async deploy(filename: string, diagramContent: string, config: DmnDevSandboxConnectionConfig): Promise<void> {
     const commonArgs = {
       host: config.host,
       namespace: this.composeNamespace(config.username),

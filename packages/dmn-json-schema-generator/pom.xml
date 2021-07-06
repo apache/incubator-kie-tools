@@ -18,14 +18,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.kie.kogito</groupId>
-  <artifactId>dmn-form-schema-generator</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <artifactId>dmn-json-schema-generator</artifactId>
+  <version>0.0.0</version>
   <packaging>jar</packaging>
 
   <name>DMN Form Schema Generator</name>
 
   <properties>
-    <uberjar.name>dmn-form-schema-generator</uberjar.name>
+    <uberjar.name>dmn-json-schema-generator</uberjar.name>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <version.org.kie>7.56.0.Final</version.org.kie>

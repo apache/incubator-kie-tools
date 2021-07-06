@@ -34,12 +34,6 @@
   --pf-c-page__header-nav--BackgroundColor: var(--pf-global--palette--blue-600);
 }
 
-@media (min-width: 1200px) {
-  .kogito--dmn-form__toolbar {
-    --pf-c-page__header--MinHeight: unset;
-  }
-}
-
 .kogito--dmn-form__toolbar-logo {
   cursor: default;
 }
@@ -52,7 +46,7 @@
   --pf-c-button--FontSize: var(--pf-global--icon--FontSize--md);
 }
 
-.kogito--dmn-form__deploy-dropdown-tooltip {
+.kogito--dmn-form__toolbar-tooltip {
   --pf-c-tooltip__content--Color: var(--pf-global--BackgroundColor--dark-100);
   --pf-c-tooltip__content--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
 }
@@ -68,6 +62,10 @@
 }
 
 @media screen and (min-width: 1200px) {
+  .kogito--dmn-form__toolbar {
+    --pf-c-page__header--MinHeight: unset;
+  }
+
   .kogito--dmn-form__toolbar .pf-c-page__header-nav {
     align-self: center;
     justify-content: center;
@@ -82,7 +80,7 @@
     text-align: center;
   }
 
-  .kogito--dmn-form-content {
+  .kogito--dmn-form__content {
     width: 50%;
     height: 100%;
   }
@@ -106,53 +104,53 @@
     flex-direction: column;
   }
 
-  .kogito--dmn-form-content {
+  .kogito--dmn-form__content {
     width: 100%;
     height: 50%;
   }
 }
 
-.kogito--dmn-form-content-header {
+.kogito--dmn-form__content-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 60px;
 }
 
-.kogito--dmn-form-content-header.inputs {
+.kogito--dmn-form__content-header.inputs {
   margin-bottom: 10px;
 }
 
-.kogito--dmn-form-drawer-content-body {
+.kogito--dmn-form__content-body {
   overflow-y: auto;
   height: 100%;
 }
 
-.kogito--dmn-form-drawer-content-body-input {
+.kogito--dmn-form__content-body-input {
   padding-top: 0;
 }
 
-.kogito--dmn-form-drawer-content-body-output {
+.kogito--dmn-form__content-body-output {
   padding-top: 0;
   padding-left: 12px;
   padding-right: 12px;
 }
 
-.kogito--dmn-form-content-page {
+.kogito--dmn-form__content-page {
   flex-grow: 0;
   flex-shrink: 0;
   overflow: hidden;
 }
 
 @media screen and (min-width: 1200px) {
-  .kogito--dmn-form-content-page {
+  .kogito--dmn-form__content-page {
     max-height: calc(100vh - 76px);
     flex-basis: 50%;
   }
 }
 
 @media screen and (min-width: 0px) and (max-width: 1200px) {
-  .kogito--dmn-form-content-page {
+  .kogito--dmn-form__content-page {
     max-height: unset;
     flex-basis: 100%;
   }
