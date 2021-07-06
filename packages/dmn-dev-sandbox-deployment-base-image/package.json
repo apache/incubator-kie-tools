@@ -8,7 +8,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "scripts": {
-    "build:dev": "rimraf assets/ && mkdir assets/ && cd assets && mvn -N io.takari:maven:wrapper && cp ../../dmn-json-schema-generator/target/dmn-json-schema-generator.jar . && cp -R ../../dmn-dev-sandbox-form-webapp/dist dmn-dev-sandbox-form-webapp",
+    "build:dev": "rimraf dist/ && mkdir dist/ && cd dist && mvn -N io.takari:maven:wrapper && cp ../../dmn-json-schema-generator/target/dmn-json-schema-generator.jar . && cp -R ../../dmn-dev-sandbox-form-webapp/dist dmn-dev-sandbox-form-webapp",
     "build:prod": "yarn run build:dev"
   },
   "dependencies": {
