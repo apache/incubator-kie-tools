@@ -20,9 +20,9 @@ RUN mkdir /tmp/kogito/
 
 WORKDIR /tmp/kogito/
 
-COPY assets/mvnw mvnw
-COPY assets/.mvn/ .mvn
-COPY assets/dmn-json-schema-generator.jar dmn-json-schema-generator.jar
+COPY dist/mvnw mvnw
+COPY dist/.mvn/ .mvn
+COPY dist/dmn-json-schema-generator.jar dmn-json-schema-generator.jar
 
 RUN ./mvnw archetype:generate -B \
         -DarchetypeGroupId=org.kie.kogito \
@@ -35,7 +35,7 @@ RUN ./mvnw archetype:generate -B \
     && rm project/src/test/java/org/kie/kogito/*.java \
     && mkdir -p project/src/main/resources/META-INF
 
-COPY --chown=185:root assets/dmn-dev-sandbox-form-webapp/ project/src/main/resources/META-INF/resources/
+COPY --chown=185:root dist/dmn-dev-sandbox-form-webapp/ project/src/main/resources/META-INF/resources/
 
 RUN echo -e '\nquarkus.http.cors=true' >> project/src/main/resources/application.properties \
     && ./mvnw clean package -f project/pom.xml \

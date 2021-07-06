@@ -59,6 +59,16 @@
 .kogito--dmn-form {
   display: flex;
   height: 100%;
+  overflow: hidden;
+}
+
+.kogito--dmn-form__toolbar-title {
+  background-color: var(--pf-c-page__header-nav--BackgroundColor);
+  color: var(--pf-global--Color--light-100);
+  font-size: var(--pf-global--FontSize--xl);
+  font-weight: bold;
+  text-align: center;
+  cursor: alias;
 }
 
 @media screen and (min-width: 1200px) {
@@ -73,11 +83,7 @@
   }
 
   .kogito--dmn-form__toolbar-title {
-    background-color: var(--pf-c-page__header-nav--BackgroundColor);
-    color: var(--pf-global--Color--light-100);
     font-size: var(--pf-global--FontSize--xl);
-    font-weight: bold;
-    text-align: center;
   }
 
   .kogito--dmn-form__content {
@@ -92,11 +98,7 @@
   }
 
   .kogito--dmn-form__toolbar-title {
-    background-color: var(--pf-c-page__header-nav--BackgroundColor);
-    color: var(--pf-global--Color--light-100);
     font-size: var(--pf-global--FontSize--sm);
-    font-weight: bold;
-    text-align: center;
   }
 
   .kogito--dmn-form {
@@ -114,7 +116,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 60px;
+  height: 50px;
 }
 
 .kogito--dmn-form__content-header.inputs {

@@ -45,7 +45,7 @@ module.exports = async (env, argv) => {
       watchContentBase: true,
       contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
       compress: true,
-      port: 9001,
+      port: 9008,
     },
   });
 };

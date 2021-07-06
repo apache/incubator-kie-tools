@@ -63,19 +63,19 @@ export function DmnFormToolbar(props: Props) {
 
   const disclaimer = useMemo(() => {
     return (
-      <Text className={"kogito--dmn-form__toolbar-title"}>
-        {i18n.formToolbar.disclaimer.title}
-        <Tooltip
-          className="kogito--dmn-form__toolbar-tooltip"
-          key="disclaimer-tooltip"
-          distance={20}
-          content={<I18nHtml>{i18n.formToolbar.disclaimer.description}</I18nHtml>}
-        >
+      <Tooltip
+        className="kogito--dmn-form__toolbar-tooltip"
+        key="disclaimer-tooltip"
+        maxWidth={"250px"}
+        content={<I18nHtml>{i18n.formToolbar.disclaimer.description}</I18nHtml>}
+      >
+        <Text className={"kogito--dmn-form__toolbar-title"}>
+          {i18n.formToolbar.disclaimer.title}
           <HelpIcon className="pf-u-ml-sm" />
-        </Tooltip>
-      </Text>
+        </Text>
+      </Tooltip>
     );
-  }, [i18n.formToolbar.disclaimer.description, i18n.formToolbar.disclaimer.title]);
+  }, [i18n]);
 
   const viewItems = useCallback(
     (dropdownId: string) => [
@@ -109,7 +109,7 @@ export function DmnFormToolbar(props: Props) {
         </DropdownItem>
       </React.Fragment>,
     ],
-    [props.onOpenOnlineEditor, props.onOpenSwaggerUI, filename, i18n.terms.open, i18n.names.swaggerUI]
+    [props.onOpenOnlineEditor, props.onOpenSwaggerUI, filename, i18n]
   );
 
   return (

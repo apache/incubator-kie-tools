@@ -27,7 +27,7 @@
     "test:clearCache": "jest --clearCache",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "yarn lint && yarn test && rimraf dist && webpack",
-    "start": "webpack serve --host 0.0.0.0"
+    "start": "webpack serve --host 0.0.0.0 --env dev"
   },
   "babel": {
     "presets": [

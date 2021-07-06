@@ -17,7 +17,7 @@
 import { DecisionResult, DmnForm, DmnFormResult } from "@kogito-tooling/form/dist/dmn";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { diff } from "deep-object-diff";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
@@ -116,7 +116,7 @@ export function DmnFormPage(props: Props) {
           <Page className={"kogito--dmn-form__content-page"}>
             <PageSection className={"kogito--dmn-form__content-header inputs"}>
               <TextContent>
-                <Text component={"h2"}>{i18n.terms.inputs}</Text>
+                <Text component={TextVariants.h3}>{i18n.terms.inputs}</Text>
               </TextContent>
             </PageSection>
             <div className={"kogito--dmn-form__content-body"}>
@@ -145,7 +145,7 @@ export function DmnFormPage(props: Props) {
           <Page className={"kogito--dmn-form__content-page"}>
             <PageSection className={"kogito--dmn-form__content-header"}>
               <TextContent>
-                <Text component={"h2"}>{i18n.terms.outputs}</Text>
+                <Text component={TextVariants.h3}>{i18n.terms.outputs}</Text>
               </TextContent>
             </PageSection>
             <div className={"kogito--dmn-form__content-body"}>

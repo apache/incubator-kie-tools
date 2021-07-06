@@ -83,12 +83,7 @@ export function DmnDevSandboxDropdown() {
         items,
       ];
     },
-    [
-      dmnDevSandboxContext.deployments,
-      onDropdownClicked,
-      i18n.terms.configure,
-      i18n.dmnDevSandbox.dropdown.noDeployments,
-    ]
+    [dmnDevSandboxContext.deployments, onDropdownClicked, i18n]
   );
 
   return (
