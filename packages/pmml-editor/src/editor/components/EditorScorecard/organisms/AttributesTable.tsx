@@ -28,6 +28,8 @@ import "./AttributesTable.scss";
 import { Operation } from "../Operation";
 import { useSelector } from "react-redux";
 import { useOperation } from "../OperationContext";
+import { useEffect, useState } from "react";
+import { Interaction } from "../../../types";
 
 interface AttributesTableProps {
   modelIndex: number;
@@ -52,6 +54,8 @@ export const AttributesTable = (props: AttributesTableProps) => {
 
   const { setActiveOperation } = useOperation();
 
+  const [attributeFocusIndex, setAttributeFocusIndex] = useState<number | undefined>(undefined);
+
   const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
     return state.DataDictionary.DataField;
   });
@@ -63,9 +67,35 @@ export const AttributesTable = (props: AttributesTableProps) => {
     return [];
   });
 
+  //Set the focus on a Attribute as required
+  useEffect(() => {
+    if (attributeFocusIndex !== undefined) {
+      document.querySelector<HTMLElement>(`#attribute-n${attributeFocusIndex}`)?.focus();
+    }
+    return () => {
+      setAttributeFocusIndex(undefined);
+    };
+  }, [characteristic.Attribute, attributeFocusIndex]);
+
   const onEdit = (index: number | undefined) => {
     setActiveOperation(Operation.UPDATE_ATTRIBUTE);
     viewAttribute(index);
+  };
+
+  const handleDelete = (index: number, interaction: Interaction) => {
+    onDelete(index);
+    if (interaction === "mouse") {
+      //If the Attribute was deleted by clicking on the delete icon we need to blur
+      //the element otherwise the CSS :focus-within persists on the deleted element.
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement?.blur();
+      }
+    } else if (interaction === "keyboard") {
+      //If the Attribute was deleted by pressing enter on the delete icon when focused
+      //we need to set the focus to the next Attribute. The index of the _next_ item
+      //is identical to the index of the deleted item.
+      setAttributeFocusIndex(index);
+    }
   };
 
   const onDelete = (index: number | undefined) => {
@@ -78,21 +108,23 @@ export const AttributesTable = (props: AttributesTableProps) => {
     <section>
       {characteristic.Attribute.map((attribute, index) => {
         return (
-          <AttributesTableRow
-            key={index}
-            modelIndex={modelIndex}
-            characteristicIndex={characteristicIndex}
-            characteristic={characteristic}
-            attributeIndex={index}
-            attribute={attribute}
-            areReasonCodesUsed={areReasonCodesUsed}
-            characteristicReasonCode={characteristic.reasonCode}
-            dataFields={dataFields}
-            miningFields={miningFields}
-            onEdit={() => onEdit(index)}
-            onDelete={() => onDelete(index)}
-            onCommit={(partial) => onCommit(index, partial)}
-          />
+          <article key={index} className={`editable-item attribute-item-n${index}`}>
+            <AttributesTableRow
+              key={index}
+              modelIndex={modelIndex}
+              characteristicIndex={characteristicIndex}
+              characteristic={characteristic}
+              attributeIndex={index}
+              attribute={attribute}
+              areReasonCodesUsed={areReasonCodesUsed}
+              characteristicReasonCode={characteristic.reasonCode}
+              dataFields={dataFields}
+              miningFields={miningFields}
+              onEdit={() => onEdit(index)}
+              onDelete={(interaction) => handleDelete(index, interaction)}
+              onCommit={(partial) => onCommit(index, partial)}
+            />
+          </article>
         );
       })}
     </section>

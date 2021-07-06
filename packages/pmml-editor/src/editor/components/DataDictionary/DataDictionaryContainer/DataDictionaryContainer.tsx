@@ -18,6 +18,7 @@ import DataDictionaryPropertiesEdit from "../DataDictionaryPropertiesEdit/DataDi
 import { isEqual } from "lodash";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
+import { Interaction } from "../../../types";
 
 interface DataDictionaryContainerProps {
   dataDictionary: DDDataField[];
@@ -36,6 +37,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   const [viewSection, setViewSection] = useState<dataDictionarySection>("main");
   const [editingDataType, setEditingDataType] = useState<DDDataField>();
   const [sorting, setSorting] = useState(false);
+  const [dataTypeFocusIndex, setDataTypeFocusIndex] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     // undoing a recently created data field force to exit the editing mode for that field
@@ -80,8 +82,22 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
     saveDataType(dataType, index);
   };
 
-  const handleDelete = (index: number) => {
+  const handleDelete = (index: number, interaction: Interaction) => {
     onDelete(index);
+    if (interaction === "mouse") {
+      //If the DataTypeItem was deleted by clicking on the delete icon we need to blur
+      //the element otherwise the CSS :focus-within persists on the deleted element.
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement?.blur();
+      }
+    } else if (interaction === "keyboard") {
+      //If the DataTypeItem was deleted by pressing enter on the delete icon when focused
+      //we need to set the focus to the next DataTypeItem. The index of the _next_ item
+      //is identical to the index of the deleted item.
+      setDataTypeFocusIndex(index);
+    }
+    setEditing(undefined);
+    onEditingPhaseChange(false);
   };
 
   const handleEdit = (index: number) => {
@@ -159,6 +175,16 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
       validations.current = validationRegistry.get(Builder().forDataDictionary().build());
     }
   }, [dataDictionary, editing]);
+
+  //Set the focus on a DataTypeItem as required
+  useEffect(() => {
+    if (dataTypeFocusIndex !== undefined) {
+      document.querySelector<HTMLElement>(`#data-type-item-n${dataTypeFocusIndex}`)?.focus();
+    }
+    return () => {
+      setDataTypeFocusIndex(undefined);
+    };
+  }, [dataDictionary, dataTypeFocusIndex]);
 
   return (
     <div className="data-dictionary">

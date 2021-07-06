@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useMemo } from "react";
+import { BaseSyntheticEvent, useMemo } from "react";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Attribute, Characteristic, DataField, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
@@ -24,6 +24,7 @@ import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import { toText } from "../organisms";
+import { Interaction } from "../../../types";
 
 interface AttributesTableRowProps {
   modelIndex: number;
@@ -36,7 +37,7 @@ interface AttributesTableRowProps {
   dataFields: DataField[];
   miningFields: MiningField[];
   onEdit: () => void;
-  onDelete: () => void;
+  onDelete: (interaction: Interaction) => void;
   onCommit: (partial: Partial<Attribute>) => void;
 }
 
@@ -71,19 +72,24 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
     [modelIndex, characteristicIndex, attributeIndex, attribute, miningFields]
   );
 
+  const handleEdit = (event: BaseSyntheticEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    onEdit();
+  };
+
   return (
     <article
-      className={`attribute-item attribute-item-n${attributeIndex} editable-item`}
-      tabIndex={0}
+      id={`attribute-n${attributeIndex}`}
+      className={"attribute-item"}
       onClick={() => onEdit()}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
-          e.preventDefault();
-          e.stopPropagation();
-          onEdit();
+          handleEdit(e);
         }
       }}
       data-ouia-component-type="attribute-item"
+      tabIndex={0}
     >
       <Split hasGutter={true} style={{ height: "100%" }}>
         <SplitItem>
@@ -129,7 +135,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
           />
         </SplitItem>
         <SplitItem>
-          <AttributesTableAction onDelete={onDelete} />
+          <AttributesTableAction index={attributeIndex} onDelete={onDelete} />
         </SplitItem>
       </Split>
     </article>
