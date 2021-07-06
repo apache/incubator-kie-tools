@@ -120,11 +120,6 @@ public class DefaultDiagramEditor
     }
 
     @Override
-    public void open(Diagram item, int width, int height, DiagramViewerCallback<Diagram> callback) {
-        // TODO: lienzo-native
-    }
-
-    @Override
     public void scale(final int width,
                       final int height) {
         viewer.scale(width,

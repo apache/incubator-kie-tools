@@ -111,8 +111,9 @@ public class SessionEditorImpl<S extends EditorSession>
     }
 
     @Override
-    public void open(S item, int width, int height, SessionViewerCallback<Diagram> callback) {
-        // TODO lienzo-native
+    protected void onAfterCanvasInitialized() {
+        super.onAfterCanvasInitialized();
+        canvasPanel.getView().onResize();
     }
 
     @Override
@@ -173,11 +174,6 @@ public class SessionEditorImpl<S extends EditorSession>
         @Override
         protected StunnerPreferencesRegistries getPreferencesRegistry() {
             return preferencesRegistries;
-        }
-
-        @Override
-        public void open(Diagram item, int width, int height, DiagramViewerCallback<Diagram> callback) {
-            // TODO lienzo-native
         }
 
         @Override

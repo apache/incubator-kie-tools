@@ -108,9 +108,6 @@ public class SessionEditorPresenter<S extends EditorSession>
         super.onSessionOpened(session);
         cardinalityStateHandler.bind(session);
         sessionDiagramOpenedEvent.fire(new SessionDiagramOpenedEvent(session));
-
-        // Initialize canvas resizeObserver
-        editor.getCanvasPanel().getView().onResize();
     }
 
     void onScreenMaximizedEvent(@Observes ScreenMaximizedEvent event) {
@@ -182,10 +179,5 @@ public class SessionEditorPresenter<S extends EditorSession>
         if (null != session.getSelectionControl()) {
             session.getSelectionControl().clearSelection();
         }
-    }
-
-    @Override
-    public void open(S item, int width, int height, SessionPresenterCallback<Diagram> callback) {
-        // TODO: lienzo-native
     }
 }

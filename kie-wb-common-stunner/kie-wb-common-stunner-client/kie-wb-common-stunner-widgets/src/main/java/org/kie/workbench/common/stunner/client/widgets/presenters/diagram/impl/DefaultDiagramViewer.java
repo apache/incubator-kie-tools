@@ -137,11 +137,6 @@ public class DefaultDiagramViewer
     }
 
     @Override
-    public void open(Diagram item, int width, int height, DiagramViewerCallback<Diagram> callback) {
-        // TODO: lienzo-native
-    }
-
-    @Override
     public AbstractCanvasHandler getHandler() {
         return canvasHandler;
     }

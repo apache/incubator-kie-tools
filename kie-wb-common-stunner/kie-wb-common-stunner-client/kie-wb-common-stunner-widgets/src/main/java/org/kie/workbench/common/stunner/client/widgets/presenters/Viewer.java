@@ -56,19 +56,6 @@ public interface Viewer<T, H, V extends IsWidget, C extends Viewer.Callback> {
               final C callback);
 
     /**
-     * Opens the <code>item </code> instance and notifies the results to the <code>callback</code> instance using
-     * the constrained size values <code>width</code> and <code>height</code>.
-     * It relies on the implementations to build the view uisng this size or scale views, etc.
-     *
-     * @param item     The instance to open.
-     * @param callback The operation's callback.
-     */
-    void open(final T item,
-              final int width,
-              final int height,
-              final C callback);
-
-    /**
      * Scales the current view to the given size.
      *
      * @param width  The resulting width after scale.

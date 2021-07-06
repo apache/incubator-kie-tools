@@ -22,22 +22,17 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
-import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.preferences.StunnerDiagramEditorPreferences;
-import org.uberfire.mvp.ParameterizedCommand;
 
 /**
  * An abstract DiagramViewer type that opens the diagram in a viewer which is scaled
  * to fit the given size, usually for previewing goals.
+ *
  * @param <D> The diagram type.
  */
 public abstract class DiagramPreviewProxy<D extends Diagram>
@@ -52,33 +47,6 @@ public abstract class DiagramPreviewProxy<D extends Diagram>
                                final StunnerPreferencesRegistries preferencesRegistries) {
         this.viewer =
                 new DiagramViewerProxy<D>(view) {
-                    @Override
-                    public void open(D item, int width, int height, DiagramViewerCallback<D> callback) {
-                        onOpen(item);
-                        callback.onOpen(item);
-
-                        final StunnerDiagramEditorPreferences editorPreferences = getPreferences(item);
-                        final boolean isHiDPIEnabled = null != editorPreferences && editorPreferences.isHiDPIEnabled();
-                        final CanvasSettings settings = new CanvasSettings(isHiDPIEnabled);
-
-                        // Open and initialize the canvas and its handler.
-                        openCanvas(getCanvas(),
-                                   getCanvasPanel(),
-                                   settings);
-                        // Notify listeners that the canvas and the handler are ready.
-                        callback.afterCanvasInitialized();
-
-                        // Loads and draw the diagram into the canvas handled instance.
-                        getHandler().draw(item,
-                                          (ParameterizedCommand<CommandResult<?>>) result -> {
-                                              if (!CommandUtils.isError(result)) {
-                                                  callback.onSuccess();
-                                              } else {
-                                                  callback.onError(new ClientRuntimeError("An error occurred while drawing the diagram " +
-                                                                                                  "[result=" + result + "]"));
-                                              }
-                                          });
-                    }
 
                     @Override
                     public SelectionControl<AbstractCanvasHandler, Element> getSelectionControl() {

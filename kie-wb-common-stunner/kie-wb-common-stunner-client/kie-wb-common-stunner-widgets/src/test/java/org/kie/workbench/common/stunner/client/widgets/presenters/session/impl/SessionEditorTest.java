@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
@@ -62,6 +63,8 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     ScrollableLienzoPanel canvasPanel;
     @Mock
+    ScrollablePanel canvasPanelView;
+    @Mock
     MediatorsControl<AbstractCanvas> mediatorsControl;
     @Mock
     SelectionControl<AbstractCanvasHandler, Element> selectionControl;
@@ -83,6 +86,7 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
     @Before
     public void setup() throws Exception {
         super.init();
+        when(canvasPanel.getView()).thenReturn(canvasPanelView);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getCanvas()).thenReturn(canvas);
@@ -122,6 +126,7 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
                               any(ParameterizedCommand.class));
         verify(view,
                times(1)).setWidget(any(Widget.class));
+        verify(canvasPanelView, times(1)).onResize();
     }
 
     @Test

@@ -81,9 +81,6 @@ public class SessionPreviewImpl<S extends AbstractSession>
         implements SessionDiagramPreview<S>,
                    CommandRequestLifecycle {
 
-    private static final int DEFAULT_WIDTH = 300;
-    private static final int DEFAULT_HEIGHT = 300;
-
     private final DefinitionUtils definitionUtils;
     private final GraphUtils graphUtils;
     private final ShapeManager shapeManager;
@@ -147,16 +144,6 @@ public class SessionPreviewImpl<S extends AbstractSession>
                     @Override
                     public <C extends Canvas> MediatorsControl<C> getMediatorsControl() {
                         return (MediatorsControl<C>) mediatorsControl;
-                    }
-
-                    @Override
-                    protected int getWidth() {
-                        return DEFAULT_WIDTH;
-                    }
-
-                    @Override
-                    protected int getHeight() {
-                        return DEFAULT_HEIGHT;
                     }
 
                     @Override
@@ -372,13 +359,8 @@ public class SessionPreviewImpl<S extends AbstractSession>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("all")
     public MediatorsControl<AbstractCanvas> getMediatorsControl() {
         return mediatorsControl;
-    }
-
-    @Override
-    public void open(S item, int width, int height, SessionViewerCallback<Diagram> callback) {
-        diagramPreview.open((Diagram) item, width, height, callback);
     }
 }
