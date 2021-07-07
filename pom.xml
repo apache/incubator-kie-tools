@@ -26,7 +26,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito</groupId>
   <artifactId>kogito-editors-java</artifactId>
-  <version>8.1.1-SNAPSHOT</version>
+  <version>8.2.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Kogito Editors Java - Parent</name>
@@ -111,6 +111,7 @@
     <module>kie-wb-common-stunner</module>
     <module>kie-wb-common-dmn</module>
     <module>kie-wb-common-kogito</module>
+    <module>kogito-editors-js</module>
 
     <!-- DROOLS-WB -->
     <module>drools-wb-bom</module>

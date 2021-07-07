@@ -18,7 +18,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito</groupId>
   <artifactId>kie-wb-common-bom</artifactId>
-  <version>8.1.1-SNAPSHOT</version>
+  <version>8.2.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Kie-wb-common BOM</name>
@@ -258,6 +258,12 @@
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kie-wb-common-kogito-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-editors-js</artifactId>
         <version>${project.version}</version>
       </dependency>
 

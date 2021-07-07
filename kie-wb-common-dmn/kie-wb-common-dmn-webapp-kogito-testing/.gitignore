@@ -17,6 +17,9 @@
 /src/main/webapp/model/MainJs.js
 /src/main/webapp/model/FormatterJs.js
 
+# Copied from kogito-editors-js
+/src/main/webapp/kogito-editors-js
+
 # Eclipse, Netbeans and IntelliJ files
 /.*
 /**/.*

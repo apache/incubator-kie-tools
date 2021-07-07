@@ -18,7 +18,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito</groupId>
   <artifactId>drools-wb-bom</artifactId>
-  <version>8.1.1-SNAPSHOT</version>
+  <version>8.2.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Drools-wb BOM</name>

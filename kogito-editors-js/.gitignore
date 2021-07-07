@@ -1,0 +1,30 @@
+# Dependencies and builds
+build
+coverage
+dist
+dist
+local
+node_modules
+target
+
+# Eclipse, Netbeans and IntelliJ files
+!.gitignore
+*.iml
+*.ipr
+*.iws
+/nbproject
+
+# Misc
+**/.DS_Store
+*.log
+.env.development.local
+.env.local
+.env.production.local
+.env.test.local
+.eslintcache
+.idea
+.rpt2_cache
+.vscode
+coverage
+out
+target
