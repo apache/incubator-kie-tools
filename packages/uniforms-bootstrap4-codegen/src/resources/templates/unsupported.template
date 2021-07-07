@@ -1,0 +1,6 @@
+<div class="alert alert-warning" role="alert">
+  <h4 class="alert-heading">Unsupported field type: <%=props.fieldType%></h4>
+  <p>Cannot find form control for property <code><%=props.name%></code> with type <code><%=props.fieldType%></code>.</p>
+  <hr>
+  <p class="mb-0">Some complex property types, such as <code><%=props.fieldType%></code> aren't yet supported, however, you can still write your own component into the form and manually bind it.</p>
+</div>

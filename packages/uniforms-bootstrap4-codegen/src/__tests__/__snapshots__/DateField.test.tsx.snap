@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<DateField> tests <DateField> - rendering - disabled 1`] = `
+<div>
+  {"ref":{"id":"id","binding":"birthday"},"html":"&lt;div class=\\"form-group\\"&gt;\\n    &lt;label for=\\"id\\"&gt;Birthday&lt;/label&gt;\\n    &lt;input\\n      type=\\"datetime-local\\"\\n      id=\\"id\\"\\n      name=\\"birthday\\"\\n      class=\\"form-control\\"\\n      \\n      disabled\\n      \\n      \\n      \\n      /&gt;\\n&lt;/div&gt;"}
+</div>
+`;
+
+exports[`<DateField> tests <DateField> - rendering 1`] = `
+<div>
+  {"ref":{"id":"id","binding":"birthday"},"html":"&lt;div class=\\"form-group\\"&gt;\\n    &lt;label for=\\"id\\"&gt;Birthday&lt;/label&gt;\\n    &lt;input\\n      type=\\"datetime-local\\"\\n      id=\\"id\\"\\n      name=\\"birthday\\"\\n      class=\\"form-control\\"\\n      \\n      \\n      \\n      min=\\"2020-06-12T22:13\\"\\n      max=\\"2020-06-12T22:13\\"\\n      value=\\"2020-06-12T22:13\\"/&gt;\\n&lt;/div&gt;"}
+</div>
+`;

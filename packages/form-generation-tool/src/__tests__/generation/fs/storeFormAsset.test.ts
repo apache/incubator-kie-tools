@@ -24,11 +24,11 @@ jest.mock("fs");
 describe("storeFormAssets tests", () => {
   const mockFs = fs as jest.Mocked<typeof fs>;
 
-  const fsRmDirSyncMock = jest.fn();
+  const fsRmSyncMock = jest.fn();
   const fsMkDirSyncMock = jest.fn();
   const fsWriteFileSyncMock = jest.fn();
 
-  mockFs.rmdirSync.mockImplementation(fsRmDirSyncMock);
+  mockFs.rmSync.mockImplementation(fsRmSyncMock);
   mockFs.mkdirSync.mockImplementation(fsMkDirSyncMock);
   mockFs.writeFileSync.mockImplementation(fsWriteFileSyncMock);
 
@@ -53,7 +53,7 @@ describe("storeFormAssets tests", () => {
     mockFs.existsSync.mockImplementation(() => true);
 
     expect(() => storeFormAsset(formAsset, sourcePath, true)).not.toThrow();
-    expect(fsRmDirSyncMock).toHaveBeenCalledWith(getFormAssetStoragePath(sourcePath, formAsset), { recursive: true });
+    expect(fsRmSyncMock).toHaveBeenCalledWith(getFormAssetStoragePath(sourcePath, formAsset), { recursive: true });
     expect(fsMkDirSyncMock).toHaveBeenCalledWith(getFormAssetStoragePath(sourcePath, formAsset), { recursive: true });
     expect(fsWriteFileSyncMock).toHaveBeenCalledWith(getFormAssetPath(sourcePath, formAsset), formAsset.content);
   });
@@ -62,7 +62,7 @@ describe("storeFormAssets tests", () => {
     mockFs.existsSync.mockImplementation(() => false);
 
     expect(() => storeFormAsset(formAsset, sourcePath, true)).not.toThrow();
-    expect(fsRmDirSyncMock).not.toHaveBeenCalled();
+    expect(fsRmSyncMock).not.toHaveBeenCalled();
     expect(fsMkDirSyncMock).toHaveBeenCalledWith(getFormAssetStoragePath(sourcePath, formAsset), { recursive: true });
     expect(fsWriteFileSyncMock).toHaveBeenCalledWith(getFormAssetPath(sourcePath, formAsset), formAsset.content);
   });

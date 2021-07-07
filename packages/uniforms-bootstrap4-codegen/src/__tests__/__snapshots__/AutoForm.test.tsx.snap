@@ -1,0 +1,158 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
+<div>
+  &lt;div&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;Personal data&lt;/legend&gt;
+    &lt;div&gt;
+      &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label for=&quot;uniforms-0000-0002&quot;&gt;Name&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;uniforms-0000-0002&quot; name=&quot;personalData.name&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label for=&quot;uniforms-0000-0003&quot;&gt;Email&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;uniforms-0000-0003&quot; name=&quot;personalData.email&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/fieldset&gt;
+
+  &lt;fieldset&gt;
+    &lt;legend&gt;Address&lt;/legend&gt;
+    &lt;div&gt;
+      &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label for=&quot;uniforms-0000-0006&quot;&gt;Street&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;uniforms-0000-0006&quot; name=&quot;address.street&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label for=&quot;uniforms-0000-0008&quot;&gt;Num&lt;/label&gt;
+        &lt;input type=&quot;number&quot; class=&quot;form-control&quot; id=&quot;uniforms-0000-0008&quot; name=&quot;address.num&quot; step=&quot;1&quot; value=&quot;&quot; /&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label for=&quot;uniforms-0000-0009&quot;&gt;Cp&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;uniforms-0000-0009&quot; name=&quot;address.cp&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label for=&quot;uniforms-0000-000a&quot;&gt;City&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;uniforms-0000-000a&quot; name=&quot;address.city&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/fieldset&gt;
+
+  &lt;fieldset&gt;
+    &lt;legend&gt;Interview&lt;/legend&gt;
+    &lt;div&gt;
+      &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label for=&quot;uniforms-0000-000e&quot;&gt;Position&lt;/label&gt;
+        &lt;select class=&quot;form-control&quot; id=&quot;uniforms-0000-000e&quot; name=&quot;interview.position&quot;&gt;
+          &lt;option value=&quot;Developer&quot;&gt;Developer&lt;/option&gt;
+
+          &lt;option value=&quot;HR&quot;&gt;HR&lt;/option&gt;
+
+          &lt;option value=&quot;UX&quot;&gt;UX&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label for=&quot;uniforms-0000-000g&quot;&gt;Other positions&lt;/label&gt;
+        &lt;select class=&quot;form-control&quot; id=&quot;uniforms-0000-000g&quot; name=&quot;interview.otherPositions&quot; multiple&gt;
+          &lt;option value=&quot;Developer&quot;&gt;Developer&lt;/option&gt;
+
+          &lt;option value=&quot;HR&quot;&gt;HR&lt;/option&gt;
+
+          &lt;option value=&quot;UX&quot;&gt;UX&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label for=&quot;uniforms-0000-000i&quot;&gt;Skills&lt;/label&gt;
+
+        &lt;div class=&quot;form-check&quot;&gt;
+          &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000i__Java&quot; name=&quot;interview.skills&quot; value=&quot;Java&quot; /&gt;
+          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000i__Java&quot;&gt;Java&lt;/label&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;form-check&quot;&gt;
+          &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000i__React&quot; name=&quot;interview.skills&quot; value=&quot;React&quot; /&gt;
+          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000i__React&quot;&gt;React&lt;/label&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;form-check&quot;&gt;
+          &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000i__TypeScript&quot; name=&quot;interview.skills&quot; value=&quot;TypeScript&quot; /&gt;
+          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000i__TypeScript&quot;&gt;TypeScript&lt;/label&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;form-check&quot;&gt;
+          &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000i__Quarkus&quot; name=&quot;interview.skills&quot; value=&quot;Quarkus&quot; /&gt;
+          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000i__Quarkus&quot;&gt;Quarkus&lt;/label&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label for=&quot;uniforms-0000-000k&quot;&gt;Age&lt;/label&gt;
+        &lt;input type=&quot;number&quot; class=&quot;form-control&quot; id=&quot;uniforms-0000-000k&quot; name=&quot;interview.age&quot; min=&quot;18&quot; max=&quot;99&quot; step=&quot;1&quot; value=&quot;&quot; /&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label for=&quot;uniforms-0000-000m&quot;&gt;Salary&lt;/label&gt;
+        &lt;input type=&quot;number&quot; class=&quot;form-control&quot; id=&quot;uniforms-0000-000m&quot; name=&quot;interview.salary&quot; max=&quot;1000.5&quot; step=&quot;0.01&quot; value=&quot;&quot; /&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label for=&quot;uniforms-0000-000o&quot;&gt;Rating&lt;/label&gt;
+
+        &lt;div class=&quot;form-check&quot;&gt;
+          &lt;input type=&quot;radio&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000o__1&quot; name=&quot;interview.rating&quot; value=&quot;1&quot; /&gt;
+          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000o__1&quot;&gt;1&lt;/label&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;form-check&quot;&gt;
+          &lt;input type=&quot;radio&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000o__2&quot; name=&quot;interview.rating&quot; value=&quot;2&quot; /&gt;
+          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000o__2&quot;&gt;2&lt;/label&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;form-check&quot;&gt;
+          &lt;input type=&quot;radio&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000o__3&quot; name=&quot;interview.rating&quot; value=&quot;3&quot; /&gt;
+          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000o__3&quot;&gt;3&lt;/label&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;form-check&quot;&gt;
+          &lt;input type=&quot;radio&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000o__4&quot; name=&quot;interview.rating&quot; value=&quot;4&quot; /&gt;
+          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000o__4&quot;&gt;4&lt;/label&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;form-check&quot;&gt;
+          &lt;input type=&quot;radio&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000o__5&quot; name=&quot;interview.rating&quot; value=&quot;5&quot; /&gt;
+          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000o__5&quot;&gt;5&lt;/label&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;form-check&quot;&gt;
+        &lt;input type=&quot;checkbox&quot; id=&quot;uniforms-0000-000q&quot; name=&quot;interview.hire&quot; class=&quot;form-check-input&quot; /&gt;
+        &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000q&quot;&gt;Hire&lt;/label&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label for=&quot;uniforms-0000-000s&quot;&gt;Hiding date&lt;/label&gt;
+        &lt;input type=&quot;datetime-local&quot; id=&quot;uniforms-0000-000s&quot; name=&quot;interview.hidingDate&quot; class=&quot;form-control&quot; /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/fieldset&gt;
+
+  &lt;div class=&quot;alert alert-warning&quot; role=&quot;alert&quot;&gt;
+    &lt;h4 class=&quot;alert-heading&quot;&gt;Unsupported field type: Array&lt;/h4&gt;
+    &lt;p&gt;Cannot find form control for property &lt;code&gt;friends&lt;/code&gt; with type &lt;code&gt;Array&lt;/code&gt;.&lt;/p&gt;
+    &lt;hr /&gt;
+    &lt;p class=&quot;mb-0&quot;&gt;
+      Some complex property types, such as &lt;code&gt;Array&lt;/code&gt; aren&#39;t yet supported, however, you can still write your own component into the
+      form and manually bind it.
+    &lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+</div>
+`;

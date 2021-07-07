@@ -18,11 +18,11 @@ import { UniformsFormGenerationTool } from "../UniformsFormGenerationTool";
 import unescape from "lodash/unescape";
 import { FormAssetType, FormAsset, FormStyle } from "../../../types";
 
-import { renderForm } from "@kogito-tooling/uniforms-patternfly-codegen/dist";
+import { renderForm } from "@kogito-tooling/uniforms-bootstrap4-codegen/dist";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 
-export class PatternflyFormGenerationTool extends UniformsFormGenerationTool {
-  type: string = FormStyle.PATTERNFLY;
+export class Bootstrap4FormGenerationTool extends UniformsFormGenerationTool {
+  type: string = FormStyle.BOOTSTRAP;
 
   protected doGenerate = (formName: string, schema: any): FormAsset => {
     const form = renderForm({
@@ -33,8 +33,8 @@ export class PatternflyFormGenerationTool extends UniformsFormGenerationTool {
     });
     return {
       id: formName,
-      assetName: `${formName}.${FormAssetType.TSX}`,
-      type: FormAssetType.TSX,
+      assetName: `${formName}.${FormAssetType.HTML}`,
+      type: FormAssetType.HTML,
       content: unescape(form),
     };
   };

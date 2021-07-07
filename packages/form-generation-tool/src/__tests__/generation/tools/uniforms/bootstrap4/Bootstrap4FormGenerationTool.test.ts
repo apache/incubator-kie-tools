@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { PatternflyFormGenerationTool } from "../../../../../generation/tools/uniforms/patternfly/PatternflyFormGenerationTool";
 import { FormAsset } from "../../../../../generation/types";
 import { ApplyForVisaSchema } from "./mock";
+import { Bootstrap4FormGenerationTool } from "../../../../../generation/tools/uniforms/bootstrap4/Bootstrap4FormGenerationTool";
 
-describe("PatternflyFormGenerationTool tests", () => {
+describe("Bootstrap4FormGenerationTool tests", () => {
   it("Generate", () => {
-    const tool = new PatternflyFormGenerationTool();
+    const tool = new Bootstrap4FormGenerationTool();
 
     const formAsset: FormAsset = tool.generate({
       name: "ApplyForVisa",
@@ -29,9 +29,7 @@ describe("PatternflyFormGenerationTool tests", () => {
 
     expect(formAsset).not.toBeUndefined();
     expect(formAsset.id).toStrictEqual("ApplyForVisa");
-    expect(formAsset.assetName).toStrictEqual("ApplyForVisa.tsx");
+    expect(formAsset.assetName).toStrictEqual("ApplyForVisa.html");
     expect(formAsset.content).not.toBeUndefined();
-    expect(formAsset.content).toContain("const Form__ApplyForVisa");
-    expect(formAsset.content).toContain("export default Form__ApplyForVisa;");
   });
 });

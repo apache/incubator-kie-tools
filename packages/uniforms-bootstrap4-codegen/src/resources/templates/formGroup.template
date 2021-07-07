@@ -1,0 +1,4 @@
+<div class="form-group">
+    <label for="<%=props.id%>"><%=props.label%></label>
+    <%= input %>
+</div>
