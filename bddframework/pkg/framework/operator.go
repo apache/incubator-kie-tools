@@ -69,6 +69,8 @@ var (
 
 	kogitoOperatorCatalogSourceTimeoutInMin = 3
 
+	operatorGroupTimeoutInMin = 3
+
 	// CommunityCatalog operator catalog for community
 	CommunityCatalog = OperatorCatalog{
 		source:    "community-operators",
@@ -185,6 +187,10 @@ func InstallOperator(namespace, subscriptionName, channel string, catalog Operat
 		return err
 	}
 
+	if err := WaitForOperatorGroup(namespace, namespace); err != nil {
+		return err
+	}
+
 	if _, err := CreateNamespacedSubscriptionIfNotExist(namespace, subscriptionName, subscriptionName, catalog, channel); err != nil {
 		return err
 	}
@@ -278,6 +284,35 @@ func CreateOperatorGroupIfNotExists(namespace, operatorGroupName string) (*olmap
 		return nil, fmt.Errorf("Error creating OperatorGroup %s: %v", operatorGroupName, err)
 	}
 	return operatorGroup, nil
+}
+
+// WaitForOperatorGroup for an operator group to be available
+func WaitForOperatorGroup(namespace, operatorGroupName string) error {
+	return WaitForOnOpenshift(openShiftMarketplaceNamespace, fmt.Sprintf("%s OperatorGroup is ready", operatorGroupName), operatorGroupTimeoutInMin,
+		func() (bool, error) {
+			return isOperatorGroupReady(namespace, operatorGroupName)
+		})
+}
+
+func isOperatorGroupReady(namespace, operatorGroupName string) (bool, error) {
+	operatorGroup := &olmapiv1.OperatorGroup{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      operatorGroupName,
+			Namespace: namespace,
+		},
+	}
+	if exists, err := kubernetes.ResourceC(kubeClient).Fetch(operatorGroup); err != nil {
+		return false, fmt.Errorf("Error while trying to look for OperatorGroup %s: %v ", operatorGroupName, err)
+	} else if !exists {
+		return false, nil
+	}
+
+	for _, ns := range operatorGroup.Status.Namespaces {
+		if ns == namespace {
+			return true, nil
+		}
+	}
+	return false, nil
 }
 
 // CreateNamespacedSubscriptionIfNotExist create a namespaced subscription if not exists
