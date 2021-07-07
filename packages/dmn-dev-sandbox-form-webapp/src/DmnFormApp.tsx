@@ -19,7 +19,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
-import { AppData, DATA_JSON_PATH } from "./AppData";
+import { AppData, fetchAppData } from "./DmnDevSandboxAppDataApi";
 import { DmnFormErrorPage } from "./DmnFormErrorPage";
 import { DmnFormPage } from "./DmnFormPage";
 import { DmnFormI18nContext, dmnFormI18nDefaults, dmnFormI18nDictionaries } from "./i18n";
@@ -35,8 +35,7 @@ export function DmnFormApp() {
   const [appState, setAppState] = useState(AppState.INITIAL);
 
   useEffect(() => {
-    fetch(DATA_JSON_PATH)
-      .then((response: any) => response.json())
+    fetchAppData()
       .then((appData: AppData) => setAppData(appData))
       .catch((error: any) => console.error(error))
       .finally(() => setAppState(AppState.READY));

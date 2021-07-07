@@ -24,7 +24,8 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AppData } from "./AppData";
+import { AppData } from "./DmnDevSandboxAppDataApi";
+import { fetchDmnResult } from "./DmnDevSandboxRuntimeApi";
 import { DmnFormToolbar } from "./DmnFormToolbar";
 import { useDmnFormI18n } from "./i18n";
 
@@ -62,16 +63,12 @@ export function DmnFormPage(props: Props) {
 
   const onSubmit = useCallback(async () => {
     try {
-      const response = await fetch(`${props.appData.formUrl}/${props.appData.modelName}/dmnresult`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formInputs),
+      const formOutputs = await fetchDmnResult({
+        formUrl: props.appData.formUrl,
+        modelName: props.appData.modelName,
+        inputs: formInputs,
       });
 
-      const formOutputs = (await response.json()).decisionResults;
       setFormOutputs((previousOutputs: DecisionResult[]) => {
         const differences = extractDifferences(formOutputs, previousOutputs);
         if (differences?.length !== 0) {
@@ -79,10 +76,10 @@ export function DmnFormPage(props: Props) {
         }
         return formOutputs;
       });
-    } catch (e) {
+    } catch (error: any) {
       setFormOutputs(undefined);
       setOpenAlert(AlertTypes.ERROR);
-      console.error(e);
+      console.error(error);
     }
   }, [formInputs, props.appData.formUrl, props.appData.modelName]);
 

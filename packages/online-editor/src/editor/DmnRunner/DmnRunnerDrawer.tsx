@@ -150,10 +150,10 @@ export function DmnRunnerDrawer(props: Props) {
             setExecutionNotifications(result);
 
             setDmnRunnerResults((previousDmnRunnerResult: DecisionResult[]) => {
-              if (!result) {
+              if (!result || !result.decisionResults) {
                 return;
               }
-              const differences = extractDifferences(result.decisionResults!, previousDmnRunnerResult);
+              const differences = extractDifferences(result.decisionResults, previousDmnRunnerResult);
               if (differences?.length !== 0) {
                 setDmnRunnerResponseDiffs(differences);
               }

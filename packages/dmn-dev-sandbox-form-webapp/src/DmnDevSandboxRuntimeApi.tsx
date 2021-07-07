@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
+import { DecisionResult } from "@kogito-tooling/form/dist/dmn";
 
-export interface AppData {
-  filename: string;
-  modelName: string;
-  schema: DmnFormSchema;
+export interface FetchDmnResultArgs {
   formUrl: string;
-  modelUrl: string;
-  swaggerUIUrl: string;
+  modelName: string;
+  inputs: any;
 }
 
-export const DATA_JSON_PATH = "/data.json";
+export async function fetchDmnResult(args: FetchDmnResultArgs): Promise<DecisionResult[]> {
+  const response = await fetch(`${args.formUrl}/${args.modelName}/dmnresult`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(args.inputs),
+  });
+
+  return (await response.json()).decisionResults as DecisionResult[];
+}
