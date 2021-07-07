@@ -15,25 +15,24 @@
  */
 
 import { ErrorBoundary } from "@kogito-tooling/form/dist/common";
-import { DecisionResult, DmnForm, DmnFormResult } from "@kogito-tooling/form/dist/dmn";
+import { DecisionResult, DmnForm, DmnFormResult, extractDifferences } from "@kogito-tooling/form/dist/dmn";
 import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import { diff } from "deep-object-diff";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AppData } from "./AppData";
 import { DmnFormToolbar } from "./DmnFormToolbar";
-import { FormData } from "./FormData";
 import { useDmnFormI18n } from "./i18n";
 
 interface Props {
-  formData: FormData;
+  appData: AppData;
 }
 
-export enum AlertTypes {
+enum AlertTypes {
   NONE = "NONE",
   ERROR = "ERROR",
 }
@@ -43,7 +42,7 @@ const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
 export function DmnFormPage(props: Props) {
   const { i18n, locale } = useDmnFormI18n();
-  const [formInputs, setFormInputs] = useState({});
+  const [formInputs, setFormInputs] = useState();
   const [formOutputs, setFormOutputs] = useState<DecisionResult[]>();
   const [formOutputDiffs, setFormOutputDiffs] = useState<object[]>();
   const [formError, setFormError] = useState(false);
@@ -54,16 +53,16 @@ export function DmnFormPage(props: Props) {
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
   const onOpenSwaggerUI = useCallback(() => {
-    window.open(props.formData.swaggerUIUrl, "_blank");
-  }, [props.formData.swaggerUIUrl]);
+    window.open(props.appData.swaggerUIUrl, "_blank");
+  }, [props.appData.swaggerUIUrl]);
 
   const onOpenOnlineEditor = useCallback(() => {
-    window.open(props.formData.modelUrl, "_blank");
-  }, [props.formData.modelUrl]);
+    window.open(props.appData.modelUrl, "_blank");
+  }, [props.appData.modelUrl]);
 
   const onSubmit = useCallback(async () => {
     try {
-      const response = await fetch(`${props.formData.formUrl}/${props.formData.modelName}/dmnresult`, {
+      const response = await fetch(`${props.appData.formUrl}/${props.appData.modelName}/dmnresult`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -74,14 +73,7 @@ export function DmnFormPage(props: Props) {
 
       const formOutputs = (await response.json()).decisionResults;
       setFormOutputs((previousOutputs: DecisionResult[]) => {
-        const differences = formOutputs
-          .map((decisionResult: DecisionResult, index: number) =>
-            diff(previousOutputs?.[index] ?? {}, decisionResult ?? {})
-          )
-          .map((difference: any) => {
-            delete difference.messages;
-            return difference;
-          });
+        const differences = extractDifferences(formOutputs, previousOutputs);
         if (differences?.length !== 0) {
           setFormOutputDiffs(differences);
         }
@@ -92,7 +84,7 @@ export function DmnFormPage(props: Props) {
       setOpenAlert(AlertTypes.ERROR);
       console.error(e);
     }
-  }, [formInputs, props.formData.formUrl, props.formData.modelName]);
+  }, [formInputs, props.appData.formUrl, props.appData.modelName]);
 
   const pageErrorMessage = useMemo(
     () => (
@@ -103,10 +95,12 @@ export function DmnFormPage(props: Props) {
             <Text component={"h2"}>{i18n.page.error.title}</Text>
           </TextContent>
           <EmptyStateBody>
-            <TextContent>{i18n.page.error.explanation}</TextContent>
+            <TextContent>
+              <Text component={TextVariants.p}>{i18n.page.error.explanation}</Text>
+            </TextContent>
             <br />
             <TextContent>
-              {" "}
+              {i18n.page.error.dmnNotSupported}
               <I18nWrapped
                 components={{
                   jira: (
@@ -116,9 +110,11 @@ export function DmnFormPage(props: Props) {
                   ),
                 }}
               >
-                {i18n.page.error.message}
+                {i18n.page.error.referToJira}
               </I18nWrapped>
             </TextContent>
+            <br />
+            <TextContent>{i18n.page.error.uploadFiles}</TextContent>
           </EmptyStateBody>
         </EmptyState>
       </div>
@@ -129,17 +125,17 @@ export function DmnFormPage(props: Props) {
   useEffect(() => {
     errorBoundaryRef.current?.reset();
     setPageError(false);
-  }, [props.formData.schema]);
+  }, [props.appData.schema]);
 
   useEffect(() => {
     onSubmit();
-  }, [onSubmit]);
+  }, []);
 
   return (
     <Page
       header={
         <DmnFormToolbar
-          filename={props.formData.filename}
+          filename={props.appData.filename}
           onOpenOnlineEditor={onOpenOnlineEditor}
           onOpenSwaggerUI={onOpenSwaggerUI}
         />
@@ -174,7 +170,7 @@ export function DmnFormPage(props: Props) {
                       setFormData={setFormInputs}
                       formError={formError}
                       setFormError={setFormError}
-                      formSchema={props.formData.schema}
+                      formSchema={props.appData.schema}
                       id={"form"}
                       showInlineError={true}
                       notificationsPanel={false}

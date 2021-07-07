@@ -17,8 +17,9 @@
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { GlobalContext } from "../../common/GlobalContext";
+import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
 import { DmnRunnerContext } from "./DmnRunnerContext";
-import { DmnFormSchema, DmnRunnerService } from "./DmnRunnerService";
+import { DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerModal } from "./DmnRunnerModal";
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";

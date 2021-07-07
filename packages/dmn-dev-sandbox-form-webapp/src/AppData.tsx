@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-import "@patternfly/react-core/dist/styles/base.css";
-import "@patternfly/patternfly/patternfly-addons.scss";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { DmnFormApp } from "./DmnFormApp";
-import "../static/resources/style.css";
+import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
 
-ReactDOM.render(<DmnFormApp />, document.getElementById("app")!);
+export interface AppData {
+  filename: string;
+  modelName: string;
+  schema: DmnFormSchema;
+  formUrl: string;
+  modelUrl: string;
+  swaggerUIUrl: string;
+}
+
+export const DATA_JSON_PATH = "/data.json";

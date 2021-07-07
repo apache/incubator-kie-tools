@@ -28,7 +28,9 @@ interface DmnFormDictionary extends ReferenceDictionary {
     error: {
       title: string;
       explanation: string;
-      message: Array<string | Wrapped<"jira">>;
+      dmnNotSupported: string;
+      uploadFiles: string;
+      referToJira: Array<string | Wrapped<"jira">>;
     };
   };
   error: {

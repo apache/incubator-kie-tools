@@ -1,4 +1,5 @@
-import { DmnFormSchema, DmnRunnerPayload } from "../../../../editor/DmnRunner/DmnRunnerService";
+import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
+import { DmnRunnerPayload } from "../../../../editor/DmnRunner/DmnRunnerService";
 
 export class DmnRunnerService {
   constructor(private readonly port = "") {}

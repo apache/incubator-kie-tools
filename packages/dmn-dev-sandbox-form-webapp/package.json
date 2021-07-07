@@ -14,10 +14,8 @@
     "@kogito-tooling/i18n": "0.10.0",
     "@kogito-tooling/i18n-common-dictionary": "0.10.0",
     "@kogito-tooling/patternfly-base": "0.10.0",
-    "@kogito-tooling/notifications": "0.10.0",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
-    "deep-object-diff": "^1.1.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0"
   },

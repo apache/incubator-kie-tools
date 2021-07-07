@@ -16,8 +16,9 @@
 
 import * as React from "react";
 import { useContext } from "react";
+import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
+import { DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
-import { DmnFormSchema, DmnRunnerService } from "./DmnRunnerService";
 
 export interface DmnRunnerContextType {
   status: DmnRunnerStatus;

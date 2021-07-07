@@ -14,50 +14,11 @@
  * limitations under the License.
  */
 
-import { NotificationSeverity } from "@kie-tooling-core/notifications/dist/api";
+import { DmnFormSchema, DmnResult } from "@kie-tooling-core/form/dist/dmn";
 
 export interface DmnRunnerPayload {
   model: string;
   context: object;
-}
-
-export enum EvaluationStatus {
-  SUCCEEDED = "SUCCEEDED",
-  SKIPPED = "SKIPPED",
-  FAILED = "FAILED",
-}
-
-export interface DecisionResultMessage {
-  severity: NotificationSeverity;
-  message: string;
-  messageType: string;
-  sourceId: string;
-  level: string;
-}
-
-export type Result = boolean | number | null | object | object[] | string;
-
-export interface DecisionResult {
-  decisionId: string;
-  decisionName: string;
-  result: Result;
-  messages: DecisionResultMessage[];
-  evaluationStatus: EvaluationStatus;
-}
-
-export interface DmnResult {
-  details?: string;
-  stack?: string;
-  decisionResults?: DecisionResult[];
-  messages: DecisionResultMessage[];
-}
-
-export interface DmnFormSchema {
-  definitions?: {
-    InputSet?: {
-      properties: object;
-    };
-  };
 }
 
 export class DmnRunnerService {

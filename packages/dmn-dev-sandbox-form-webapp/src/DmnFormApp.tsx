@@ -16,18 +16,32 @@
 
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
+import { AppData, DATA_JSON_PATH } from "./AppData";
+import { DmnFormErrorPage } from "./DmnFormErrorPage";
 import { DmnFormPage } from "./DmnFormPage";
-import { FormData } from "./FormData";
 import { DmnFormI18nContext, dmnFormI18nDefaults, dmnFormI18nDictionaries } from "./i18n";
 import { NoMatchPage } from "./NoMatchPage";
 
-interface Props {
-  formData: FormData;
+enum AppState {
+  INITIAL,
+  READY,
 }
 
-export function DmnFormApp(props: Props) {
+export function DmnFormApp() {
+  const [appData, setAppData] = useState<AppData>();
+  const [appState, setAppState] = useState(AppState.INITIAL);
+
+  useEffect(() => {
+    fetch(DATA_JSON_PATH)
+      .then((response: any) => response.json())
+      .then((appData: AppData) => setAppData(appData))
+      .catch((error: any) => console.error(error))
+      .finally(() => setAppState(AppState.READY));
+  }, []);
+
   return (
     <I18nDictionariesProvider
       defaults={dmnFormI18nDefaults}
@@ -35,14 +49,14 @@ export function DmnFormApp(props: Props) {
       initialLocale={navigator.language}
       ctx={DmnFormI18nContext}
     >
-      <HashRouter>
-        <Switch>
-          <Route path="/">
-            <DmnFormPage formData={props.formData} />
-          </Route>
-          <Route component={NoMatchPage} />
-        </Switch>
-      </HashRouter>
+      {appState === AppState.READY && (
+        <HashRouter>
+          <Switch>
+            <Route path="/">{appData ? <DmnFormPage appData={appData} /> : <DmnFormErrorPage />}</Route>
+            <Route component={NoMatchPage} />
+          </Switch>
+        </HashRouter>
+      )}
     </I18nDictionariesProvider>
   );
 }

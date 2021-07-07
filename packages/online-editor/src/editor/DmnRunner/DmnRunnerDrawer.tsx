@@ -16,18 +16,23 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { DecisionResult, DecisionResultMessage, DmnResult } from "./DmnRunnerService";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
-import { diff } from "deep-object-diff";
 import { useDmnRunner } from "./DmnRunnerContext";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { useOnlineI18n } from "../../common/i18n";
-import { DmnForm, DmnFormResult } from "@kogito-tooling/form/dist/dmn";
+import {
+  DecisionResult,
+  DecisionResultMessage,
+  DmnForm,
+  DmnFormResult,
+  DmnResult,
+  extractDifferences,
+} from "@kogito-tooling/form/dist/dmn";
 import { ErrorBoundary } from "@kogito-tooling/form/dist/common";
 import { usePrevious } from "../../common/Hooks";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -144,17 +149,15 @@ export function DmnRunnerDrawer(props: Props) {
 
             setExecutionNotifications(result);
 
-            setDmnRunnerResults((previousDmnRunnerResult) => {
-              const differences = result?.decisionResults
-                ?.map((decisionResult, index) => diff(previousDmnRunnerResult?.[index] ?? {}, decisionResult ?? {}))
-                .map((difference) => {
-                  delete (difference as any).messages;
-                  return difference;
-                });
+            setDmnRunnerResults((previousDmnRunnerResult: DecisionResult[]) => {
+              if (!result) {
+                return;
+              }
+              const differences = extractDifferences(result.decisionResults!, previousDmnRunnerResult);
               if (differences?.length !== 0) {
                 setDmnRunnerResponseDiffs(differences);
               }
-              return result?.decisionResults;
+              return result.decisionResults;
             });
           });
         })
