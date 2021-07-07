@@ -27,8 +27,6 @@ public interface INodeEvent<H, S> {
 
     void stopPropagation();
 
-//    public Event getNodeEvent();
-
     void dispatch(final H handler);
 
     S getSource();

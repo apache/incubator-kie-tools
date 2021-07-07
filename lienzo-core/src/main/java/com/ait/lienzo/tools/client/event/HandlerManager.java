@@ -92,7 +92,7 @@ public class HandlerManager {
             }
             if (causes != null) {
                 // @FIXME make Umbrella Exception work with JsSet (mdp)
-                //throw new UmbrellaException(causes.);
+                throw new RuntimeException(causes.values().next().getValue());
             }
         } finally {
             firingDepth--;

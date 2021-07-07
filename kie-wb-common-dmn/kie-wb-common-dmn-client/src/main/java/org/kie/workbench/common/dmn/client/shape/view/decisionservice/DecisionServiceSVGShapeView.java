@@ -186,15 +186,21 @@ public class DecisionServiceSVGShapeView extends SVGShapeViewImpl {
         }
 
         private void moveDividerStart(final NodeDragStartEvent event) {
-            fireMoveDividerEvent(new MoveDividerStartEvent(event.getRelativeElement()));
+            MoveDividerStartEvent e = new MoveDividerStartEvent(event.getRelativeElement());
+            e.override(DecisionServiceSVGShapeView.this, event);
+            fireMoveDividerEvent(e);
         }
 
         private void moveDividerMove(final NodeDragMoveEvent event) {
-            fireMoveDividerEvent(new MoveDividerStepEvent(event.getRelativeElement()));
+            MoveDividerStepEvent e = new MoveDividerStepEvent(event.getRelativeElement());
+            e.override(DecisionServiceSVGShapeView.this, event);
+            fireMoveDividerEvent(e);
         }
 
         private void moveDividerEnd(final NodeDragEndEvent event) {
-            fireMoveDividerEvent(new MoveDividerEndEvent(event.getRelativeElement()));
+            MoveDividerEndEvent e = new MoveDividerEndEvent(event.getRelativeElement());
+            e.override(DecisionServiceSVGShapeView.this, event);
+            fireMoveDividerEvent(e);
         }
 
         private void fireMoveDividerEvent(final INodeEvent event) {

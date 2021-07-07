@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.dmn.client.shape.view.decisionservice;
 
-import com.ait.lienzo.client.core.event.NodeDragStartHandler;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
 import com.ait.lienzo.client.core.shape.wires.event.AbstractWiresDragEvent;
 import elemental2.dom.HTMLElement;
 
-public class MoveDividerStepEvent extends AbstractWiresDragEvent<MoveDividerStepHandler, NodeDragStartHandler> {
+public class MoveDividerStepEvent extends AbstractWiresDragEvent<MoveDividerStepHandler, NodeDragMoveHandler> {
 
     public static final Type<MoveDividerStepHandler> TYPE = new Type<>();
 

@@ -155,12 +155,12 @@ public class DecisionServiceSVGShapeViewTest {
         verify(dragHandler).start(any(DragEvent.class));
 
         MoveDividerStepEvent moveDividerStepEvent = new MoveDividerStepEvent(mock(HTMLElement.class));
-        moveDividerStepEvent.override(view, nodeDragStartEvent);
+        moveDividerStepEvent.override(view, nodeDragMoveEvent);
         handlerManager.getHandler(MoveDividerStepEvent.TYPE, 0).onMoveDividerStep(moveDividerStepEvent);
         verify(dragHandler).handle(any(DragEvent.class));
 
         MoveDividerEndEvent moveDividerEndEvent = new MoveDividerEndEvent(mock(HTMLElement.class));
-        moveDividerEndEvent.override(view, nodeDragStartEvent);
+        moveDividerEndEvent.override(view, nodeDragEndEvent);
         handlerManager.getHandler(MoveDividerEndEvent.TYPE, 0).onMoveDividerEnd(moveDividerEndEvent);
         verify(dragHandler).end(any(DragEvent.class));
     }
