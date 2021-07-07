@@ -1,3 +1,30 @@
+# 0.11.0 (alpha)
+
+### New features:
+
+* [KOGITO-4043](https://issues.redhat.com/browse/KOGITO-4043) - The nodes should be created on top of the selected node in DMN editor
+* [KOGITO-5132](https://issues.redhat.com/browse/KOGITO-5132) - BPMN Editor - Improve SVG generated ids
+* [KOGITO-3274](https://issues.redhat.com/browse/KOGITO-3274) - [DMN Designer] Read-only mode - Connectors appear differently on read-only mode
+* [KOGITO-5135](https://issues.redhat.com/browse/KOGITO-5135) - [SceSim Designer] HiDPI is not working as expected
+* [KOGITO-5142](https://issues.redhat.com/browse/KOGITO-5142) - [DMN/BPMN] Sync kogito-editors-java with latest translations
+* [KOGITO-5378](https://issues.redhat.com/browse/KOGITO-5378) - Kogito Tooling VS Code extensions Workspaces Trust
+* [KOGITO-4671](https://issues.redhat.com/browse/KOGITO-4671) - New elements should always be connected by their central magnetic point
+* [KOGITO-4980](https://issues.redhat.com/browse/KOGITO-4980) - Stunner - Palette fixes & improvements
+
+
+### Fixed issues:
+
+* [KOGITO-3998](https://issues.redhat.com/browse/KOGITO-3998) - It's not possible to save arrow edits
+* [KOGITO-4712](https://issues.redhat.com/browse/KOGITO-4712) - SceSim Editor does not work in Eclipse Theia
+* [KOGITO-4935](https://issues.redhat.com/browse/KOGITO-4935) - [BC included] [DMN/BPMN editor] Sometimes clicking outside doesn't unselect nodes
+* [KOGITO-4977](https://issues.redhat.com/browse/KOGITO-4977) - Stunner - Texts overlap toolboxes
+* [KOGITO-5003](https://issues.redhat.com/browse/KOGITO-5003) - [BC Included] DMN editor removing edges for duplicate Decision Nodes on canvas
+* [KOGITO-5011](https://issues.redhat.com/browse/KOGITO-5011) - Stunner - Unknown Custom tasks in Designer makes Diagram Explorer empty
+* [KOGITO-5021](https://issues.redhat.com/browse/KOGITO-5021) - Clear selection button doesn't work on Testing Tools when use click property first time.
+* [KOGITO-5168](https://issues.redhat.com/browse/KOGITO-5168) - Stunner - Editing text using Inline editor is shown over Properties panel or Expanded Palette
+* [KOGITO-5169](https://issues.redhat.com/browse/KOGITO-5169) - Stunner - The order of Custom tasks in the palette is different with every process opening
+
+
 # 0.10.0 (alpha)
 
 ### New features:

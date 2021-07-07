@@ -12,8 +12,8 @@
     "update-version-to": "npx lerna version --no-push --no-git-tag-version --exact --yes"
   },
   "dependencies": {
-    "react": "16.12.0",
-    "react-dom": "16.12.0"
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
   },
   "devDependencies": {
     "lerna": "3.18.3",
@@ -33,7 +33,6 @@
     "css-loader": "3.2.0",
     "url-loader": "4.0.0",
     "file-loader": "4.2.0",
-    "sass-loader": "7.3.1",
-    "node-sass": "4.12.0"
+    "sass-loader": "7.3.1"
   }
 }

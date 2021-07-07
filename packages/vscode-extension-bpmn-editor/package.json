@@ -3,7 +3,7 @@
   "publisher": "redhat",
   "displayName": "BPMN Editor",
   "description": "Edit BPMN files",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -17,12 +17,12 @@
     "watch": "yarn build-ext"
   },
   "dependencies": {
-    "@kogito-tooling/bpmn-editor-unpacked": "^8.1.0",
-    "@kogito-tooling/editor": "0.10.0",
-    "@kogito-tooling/external-assets-base": "0.10.0",
-    "@kogito-tooling/kie-bc-editors": "0.10.0",
-    "@kogito-tooling/patternfly-base": "0.10.0",
-    "@kogito-tooling/vscode-extension": "0.10.0"
+    "@kogito-tooling/bpmn-editor-unpacked": "^8.2.0",
+    "@kogito-tooling/editor": "0.11.0",
+    "@kogito-tooling/external-assets-base": "0.11.0",
+    "@kogito-tooling/kie-bc-editors": "0.11.0",
+    "@kogito-tooling/patternfly-base": "0.11.0",
+    "@kogito-tooling/vscode-extension": "0.11.0"
   },
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",

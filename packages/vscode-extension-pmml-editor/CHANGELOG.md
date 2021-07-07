@@ -1,3 +1,14 @@
+# 0.11.0 (alpha)
+
+### New features:
+
+* [KOGITO-5378](https://issues.redhat.com/browse/KOGITO-5378) - Kogito Tooling VS Code extensions Workspaces Trust
+
+### Fixed issues:
+
+* [FAI-503](https://issues.redhat.com/browse/FAI-503) - Score Cards: Support use of underscore ("_") in predicate field names
+* [FAI-519](https://issues.redhat.com/browse/FAI-519) - Score Cards: Renaming a DataField does not update Attributes' predicates
+
 # 0.10.0 (alpha)
 
 ## New features:
