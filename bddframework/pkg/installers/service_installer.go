@@ -225,6 +225,8 @@ func (installer *YamlClusterWideServiceInstaller) Install(namespace string) erro
 		return err
 	}
 
+	framework.OnNamespacePostCreated(installer.InstallationNamespace)
+
 	return installer.WaitForClusterYamlServiceRunning()
 }
 
@@ -234,7 +236,11 @@ func (installer *YamlClusterWideServiceInstaller) getAllCrsInNamespace(namespace
 
 func (installer *YamlClusterWideServiceInstaller) uninstallFromCluster() error {
 	stopNamespaceMonitoring(installer.InstallationNamespace)
-	return installer.UninstallClusterYaml()
+	if err := installer.UninstallClusterYaml(); err != nil {
+		return err
+	}
+	framework.OnNamespacePostDeleted(installer.InstallationNamespace)
+	return nil
 }
 
 func (installer *YamlClusterWideServiceInstaller) getServiceName() string {

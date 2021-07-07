@@ -37,7 +37,7 @@ func CreateNamespace(namespace string) error {
 	if err != nil {
 		return fmt.Errorf("Cannot create namespace %s: %v", namespace, err)
 	}
-	onNamespacePostCreated(namespace)
+	OnNamespacePostCreated(namespace)
 	return nil
 }
 
@@ -51,7 +51,7 @@ func CreateNamespaceIfNotExists(namespace string) (exists bool, err error) {
 		}
 		return false, fmt.Errorf("Cannot create namespace %s: %v", namespace, err)
 	}
-	onNamespacePostCreated(namespace)
+	OnNamespacePostCreated(namespace)
 	return false, nil
 }
 
@@ -63,7 +63,7 @@ func DeleteNamespace(namespace string) error {
 	if err != nil {
 		return fmt.Errorf("Cannot delete namespace %s: %v", namespace, err)
 	}
-	onNamespacePostDeleted(namespace)
+	OnNamespacePostDeleted(namespace)
 	return nil
 }
 
@@ -103,13 +103,15 @@ func ClearNamespaceHistory() {
 	os.Remove(namespaceLogFile)
 }
 
-func onNamespacePostCreated(namespace string) {
+// OnNamespacePostCreated hook when a namespace has been created
+func OnNamespacePostCreated(namespace string) {
 	if err := addNamespaceToHistory(namespace); err != nil {
 		GetLogger(namespace).Warn("Error updating namespace history", "error", err)
 	}
 }
 
-func onNamespacePostDeleted(namespace string) {
+// OnNamespacePostDeleted hook when a namespace has been deleted
+func OnNamespacePostDeleted(namespace string) {
 	if err := removeNamespaceFromHistory(namespace); err != nil {
 		GetLogger(namespace).Warn("Error removing namespace of history", "error", err)
 	}
