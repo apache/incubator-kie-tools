@@ -35,6 +35,7 @@ module.exports = async (env, argv) => {
     kieToolingExtendedServices_compatibleVersion,
   ] = getKieToolingExtendedServicesArgs(argv);
 
+  const [dmnDevSandbox_baseImageName, dmnDevSandbox_baseImageTag] = getDmnDevSandboxArgs(argv);
   const gtmResource = getGtmResource(argv);
 
   return merge(common(env), {
@@ -70,6 +71,8 @@ module.exports = async (env, argv) => {
         WEBPACK_REPLACE__dmnRunnerMacOsDownloadUrl: kieToolingExtendedServices_macOsDownloadUrl,
         WEBPACK_REPLACE__dmnRunnerWindowsDownloadUrl: kieToolingExtendedServices_windowsDownloadUrl,
         WEBPACK_REPLACE__dmnRunnerCompatibleVersion: kieToolingExtendedServices_compatibleVersion,
+        WEBPACK_REPLACE__dmnDevSandbox_baseImageName: dmnDevSandbox_baseImageName,
+        WEBPACK_REPLACE__dmnDevSandbox_baseImageTag: dmnDevSandbox_baseImageTag,
       }),
       new CopyPlugin({
         patterns: [
@@ -185,4 +188,18 @@ function getKieToolingExtendedServicesArgs() {
   console.info("KIE Tooling Extended Services :: Compatible version: " + compatibleVersion);
 
   return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
+}
+
+function getDmnDevSandboxArgs(argv) {
+  let baseImageName = argv["DMN_DEV_SANDBOX__baseImageName"] || process.env["DMN_DEV_SANDBOX__baseImageName"];
+  let baseImageTag = argv["DMN_DEV_SANDBOX__baseImageTag"] || process.env["DMN_DEV_SANDBOX__baseImageTag"];
+
+  // TODO CAPONETTO: Update to kietooling account
+  baseImageName = baseImageName ?? "quay.io/caponetto/dmn-dev-sandbox-deployment-base-image";
+  baseImageTag = baseImageTag ?? "latest";
+
+  console.info("DMN Dev Sandbox :: Base Image Name: " + baseImageName);
+  console.info("DMN Dev Sandbox :: Base Image Tag: " + baseImageTag);
+
+  return [baseImageName, baseImageTag];
 }
