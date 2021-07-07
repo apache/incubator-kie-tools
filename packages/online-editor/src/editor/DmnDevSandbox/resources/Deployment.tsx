@@ -91,7 +91,7 @@ export class CreateDeployment extends ResourceFetch {
             containers:
               - name: ${this.args.resourceName}
                 image: >-
-                  image-registry.openshift-image-registry.svc:5000/${this.args.namespace}/${this.args.resourceName}@sha256:1c9422fb7989b6d710306195aae2fecc8ab0cc099d8ac4b1c600f1d264cbfaf0
+                  image-registry.openshift-image-registry.svc:5000/${this.args.namespace}/${this.args.resourceName}:latest
                 ports:
                   - containerPort: 8080
                     protocol: TCP
