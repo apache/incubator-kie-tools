@@ -42,7 +42,7 @@ var (
 	kogitoOlmNamespacedInstaller = OlmNamespacedServiceInstaller{
 		SubscriptionName:                   kogitoOperatorSubscriptionName,
 		Channel:                            kogitoOperatorSubscriptionChannel,
-		Catalog:                            framework.CustomKogitoOperatorCatalog,
+		Catalog:                            framework.GetCustomKogitoOperatorCatalog,
 		InstallationTimeoutInMinutes:       5,
 		GetAllNamespacedOlmCrsInNamespace:  getKogitoCrsInNamespace,
 		CleanupNamespacedOlmCrsInNamespace: cleanupKogitoCrsInNamespace,
@@ -52,7 +52,7 @@ var (
 	kogitoOlmClusterWideInstaller = OlmClusterWideServiceInstaller{
 		SubscriptionName:                    kogitoOperatorSubscriptionName,
 		Channel:                             kogitoOperatorSubscriptionChannel,
-		Catalog:                             framework.CustomKogitoOperatorCatalog,
+		Catalog:                             framework.GetCustomKogitoOperatorCatalog,
 		InstallationTimeoutInMinutes:        5,
 		GetAllClusterWideOlmCrsInNamespace:  getKogitoCrsInNamespace,
 		CleanupClusterWideOlmCrsInNamespace: cleanupKogitoCrsInNamespace,

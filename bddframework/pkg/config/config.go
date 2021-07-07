@@ -143,7 +143,7 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.domainSuffix, prefix+"domain-suffix", "", "Set the domain suffix for exposed services. Ignored when running tests on Openshift.")
 	set.StringVar(&env.imageCacheMode, prefix+"image-cache-mode", "if-available", "Use this option to specify whether you want to use image cache for runtime images. Available options are 'always', 'never' or 'if-available'(default).")
 	set.IntVar(&env.httpRetryNumber, prefix+"http-retry-nb", defaultHTTPRetryNumber, "Set the retry number for all HTTP calls in case it fails (and response code != 500). Default value is 3.")
-	set.StringVar(&env.olmNamespace, prefix+"olm-namespace", "openshift-operators", "Set the namespace which is used for cluster scope operators. Default is 'openshift-operators'.")
+	set.StringVar(&env.olmNamespace, prefix+"olm-namespace", "", "Set the namespace which is used for cluster scope operators. Default is 'openshift-operators'.")
 
 	// operator information
 	set.StringVar(&env.operatorImageName, prefix+"operator-image-name", defaultOperatorImageName, "Operator image name")

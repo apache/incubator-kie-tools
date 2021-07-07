@@ -33,7 +33,7 @@ var (
 	infinispanOlmClusterWideInstaller = OlmClusterWideServiceInstaller{
 		SubscriptionName:                   infinispanOperatorSubscriptionName,
 		Channel:                            infinispanOperatorSubscriptionChannel,
-		Catalog:                            framework.CommunityCatalog,
+		Catalog:                            framework.GetCommunityCatalog,
 		InstallationTimeoutInMinutes:       10,
 		GetAllClusterWideOlmCrsInNamespace: getInfinispanCrsInNamespace,
 	}

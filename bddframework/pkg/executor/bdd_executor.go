@@ -23,13 +23,14 @@ import (
 
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/colors"
-
+	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	"github.com/kiegroup/kogito-operator/test/pkg/gherkin"
 	"github.com/kiegroup/kogito-operator/test/pkg/installers"
 	"github.com/kiegroup/kogito-operator/test/pkg/steps"
-
+	imgv1 "github.com/openshift/api/image/v1"
+	olmapiv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
 	flag "github.com/spf13/pflag"
 )
 
@@ -195,6 +196,10 @@ func initializeScenario(ctx *godog.ScenarioContext) {
 	}
 
 	data.RegisterAllSteps(ctx)
+	data.RegisterLogsKubernetesObjects(&v1beta1.KogitoRuntimeList{}, &v1beta1.KogitoBuildList{}, &v1beta1.KogitoSupportingService{}, &v1beta1.KogitoInfraList{}, &olmapiv1alpha1.ClusterServiceVersionList{})
+	if framework.IsOpenshift() {
+		data.RegisterLogsKubernetesObjects(&imgv1.ImageStreamList{})
+	}
 
 	// Scenario handlers
 	ctx.BeforeScenario(func(scenario *godog.Scenario) {
@@ -269,7 +274,7 @@ func showScenarios(features []*gherkin.Feature, showSteps bool) {
 }
 
 func monitorOlmNamespace() {
-	monitorNamespace(config.GetOlmNamespace())
+	monitorNamespace(framework.GetClusterOperatorNamespace())
 }
 
 func monitorNamespace(namespace string) {
@@ -282,7 +287,7 @@ func monitorNamespace(namespace string) {
 }
 
 func stopOlmNamespaceMonitoring() {
-	stopNamespaceMonitoring(config.GetOlmNamespace())
+	stopNamespaceMonitoring(framework.GetClusterOperatorNamespace())
 }
 
 func stopNamespaceMonitoring(namespace string) {

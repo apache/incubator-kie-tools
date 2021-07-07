@@ -25,7 +25,7 @@ var (
 	kafkaOlmClusterWideInstaller = OlmClusterWideServiceInstaller{
 		SubscriptionName:                   kafkaOperatorSubscriptionName,
 		Channel:                            kafkaOperatorSubscriptionChannel,
-		Catalog:                            framework.CommunityCatalog,
+		Catalog:                            framework.GetCommunityCatalog,
 		InstallationTimeoutInMinutes:       kafkaOperatorTimeoutInMin,
 		GetAllClusterWideOlmCrsInNamespace: getKafkaCrsInNamespace,
 	}

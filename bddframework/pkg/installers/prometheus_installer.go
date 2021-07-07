@@ -25,7 +25,7 @@ var (
 	prometheusOlmNamespacedInstaller = OlmNamespacedServiceInstaller{
 		SubscriptionName:                  prometheusOperatorSubscriptionName,
 		Channel:                           prometheusOperatorSubscriptionChannel,
-		Catalog:                           framework.CommunityCatalog,
+		Catalog:                           framework.GetCommunityCatalog,
 		InstallationTimeoutInMinutes:      3,
 		GetAllNamespacedOlmCrsInNamespace: getPrometheusCrsInNamespace,
 	}

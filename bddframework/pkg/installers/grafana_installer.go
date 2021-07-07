@@ -26,7 +26,7 @@ var (
 	grafanaOlmNamespacedInstaller = OlmNamespacedServiceInstaller{
 		SubscriptionName:                  grafanaOperatorSubscriptionName,
 		Channel:                           grafanaOperatorSubscriptionChannel,
-		Catalog:                           framework.CommunityCatalog,
+		Catalog:                           framework.GetCommunityCatalog,
 		InstallationTimeoutInMinutes:      3,
 		GetAllNamespacedOlmCrsInNamespace: getGrafanaCrsInNamespace,
 	}
