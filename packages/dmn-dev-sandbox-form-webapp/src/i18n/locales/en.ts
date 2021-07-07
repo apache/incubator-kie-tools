@@ -15,6 +15,7 @@
  */
 
 import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
+import { wrapped } from "@kogito-tooling/i18n/dist/core";
 import { DmnFormI18n } from "..";
 
 export const en: DmnFormI18n = {
@@ -26,6 +27,17 @@ export const en: DmnFormI18n = {
         en_common.names.shortDevSandbox
       } is intended to be used during ${"development".bold()}, so users should not use the
         deployed ${en_common.names.dmn} services in production or for any type of business-critical workloads.`,
+    },
+  },
+  page: {
+    error: {
+      title: `${en_common.terms.oops}!`,
+      explanation: "The page couldn't be rendered due to an error.",
+      message: [
+        `This ${en_common.names.dmn} has a construct that is not supported. Please refer to `,
+        wrapped("jira"),
+        " and report an issue. Don't forget to upload the current file, and the used inputs",
+      ],
     },
   },
   error: {

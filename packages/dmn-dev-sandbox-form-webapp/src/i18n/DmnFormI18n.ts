@@ -15,13 +15,20 @@
  */
 
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
-import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
+import { ReferenceDictionary, Wrapped } from "@kogito-tooling/i18n/dist/core";
 
 interface DmnFormDictionary extends ReferenceDictionary {
   formToolbar: {
     disclaimer: {
       title: string;
       description: string;
+    };
+  };
+  page: {
+    error: {
+      title: string;
+      explanation: string;
+      message: Array<string | Wrapped<"jira">>;
     };
   };
   error: {
