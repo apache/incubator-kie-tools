@@ -1,4 +1,4 @@
-import React, { Ref, useCallback } from 'react';
+import React, { Ref, useCallback, useMemo } from 'react';
 import {
   DatePicker,
   TextInput,
@@ -21,62 +21,76 @@ export type TextFieldProps = {
   field?: { format: string };
 } & Omit<TextInputProps, 'isDisabled'>;
 
-const timeRgx = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/;
-// simplified date regex
-const dateRgx = /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/;
+const timeRgx = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?/;
 
 const Text = (props: TextFieldProps) => {
   const validateDate = useCallback(
     (date) => {
-      if (
-        typeof props.min === 'string' &&
-        dateRgx.exec(props.min) &&
-        date.toISOString() < new Date(props.min).toISOString()
-      ) {
-        return props.errorMessage && props.errorMessage.trim().length > 0
-          ? props.errorMessage
-          : `Should be after than ${props.min}`;
-      } else if (
-        typeof props.max === 'string' &&
-        dateRgx.exec(props.max) &&
-        date.toISOString() > new Date(props.max).toISOString()
-      ) {
-        return props.errorMessage && props.errorMessage.trim().length > 0
-          ? props.errorMessage
-          : `Should be before than ${props.max}`;
+      if (typeof props.min === 'string') {
+        const minDate = new Date(props.min);
+        if (minDate.toString() === 'Invalid Date') {
+          return '';
+        } else if (date.toISOString() < minDate.toISOString()) {
+          return props.errorMessage && props.errorMessage.trim().length > 0
+            ? props.errorMessage
+            : `Should be after ${props.min}`;
+        }
+      }
+      if (typeof props.max === 'string') {
+        const maxDate = new Date(props.max);
+        if (maxDate.toString() === 'Invalid Date') {
+          return '';
+        } else if (date.toISOString() > maxDate.toISOString()) {
+          return props.errorMessage && props.errorMessage.trim().length > 0
+            ? props.errorMessage
+            : `Should be before ${props.max}`;
+        }
       }
       return '';
     },
-    [props.max, props.min]
+    [props.max, props.min, props.errorMessage]
   );
 
   const parseTime = useCallback((time: string) => {
     const parsedTime = timeRgx.exec(time);
     const date = new Date();
     // @ts-ignore
-    date.setUTCHours(parsedTime[1], parsedTime[2]);
+    if (!parsedTime) {
+      return undefined;
+    }
+    date.setUTCHours(Number(parsedTime[1]), Number(parsedTime[2]!));
     return date;
   }, []);
 
-  const validateTime = useCallback(
-    (time: string) => {
-      const parsedTime = parseTime(time);
-      if (typeof props.min === 'string' && timeRgx.exec(props.min)) {
-        const parsedMin = parseTime(props.min);
+  const isTimeInvalid = useMemo(() => {
+    if (
+      typeof props.value === 'string' &&
+      (props.type === 'time' || props.field?.format === 'time')
+    ) {
+      const parsedTime = parseTime(props.value);
+      if (
+        parsedTime &&
+        typeof props.min === 'string' &&
+        timeRgx.exec(props.min)
+      ) {
+        const parsedMin = parseTime(props.min)!;
         if (parsedTime < parsedMin) {
-          return false;
+          return `Should be after ${parsedMin.getUTCHours()}:${parsedMin.getUTCMinutes()}`;
         }
       }
-      if (typeof props.max === 'string' && timeRgx.exec(props.max)) {
-        const parsedMax = parseTime(props.max);
+      if (
+        parsedTime &&
+        typeof props.max === 'string' &&
+        timeRgx.exec(props.max)
+      ) {
+        const parsedMax = parseTime(props.max)!;
         if (parsedTime > parsedMax) {
-          return false;
+          return `Should be before ${parsedMax.getUTCHours()}:${parsedMax.getUTCMinutes()}`;
         }
       }
-      return true;
-    },
-    [props.max, props.min]
-  );
+    }
+    return false;
+  }, [props.type, props.field, props.value, props.max, props.min]);
 
   const onDateChange = useCallback(
     (value: string) => {
@@ -109,14 +123,26 @@ const Text = (props: TextFieldProps) => {
         {...filterDOMProps(props)}
       />
     ) : props.type === 'time' || props.field?.format === 'time' ? (
-      <TimePicker
-        name={props.name}
-        isDisabled={props.disabled}
-        validateTime={validateTime}
-        onChange={onTimeChange}
-        is24Hour
-        value={props.value ?? ''}
-      />
+      <>
+        <TimePicker
+          name={props.name}
+          isDisabled={props.disabled}
+          onChange={onTimeChange}
+          is24Hour
+          value={props.value ?? ''}
+        />
+        {isTimeInvalid && (
+          <div
+            style={{
+              fontSize: '0.875rem',
+              color: '#c9190b',
+              marginTop: '0.25rem',
+            }}
+          >
+            {isTimeInvalid}
+          </div>
+        )}
+      </>
     ) : (
       <TextInput
         name={props.name}
