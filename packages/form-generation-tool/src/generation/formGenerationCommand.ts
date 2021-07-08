@@ -44,9 +44,9 @@ export function generateForms({ path, type, overwrite }: Args) {
         console.log(`\nGenerating form "${form.name}"`);
         const output: FormAsset = tool.generate(form);
         storeFormAsset(output, path, overwrite);
-        console.log(`Successfully generated form "${form.name}"`);
+        console.log(`Successfully generated form "${output.assetName}"`);
       } catch (err) {
-        console.log(`Error generating form "${form.name}": `, err.message);
+        console.log(`Cannot generate form "${form.name}": `, err.message);
       }
     });
   } catch (err) {

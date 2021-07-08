@@ -32,7 +32,7 @@ export function storeFormAsset(formAsset: FormAsset, source: string, overwriteEx
 
   if (fs.existsSync(storagePath)) {
     if (!overwriteExisting) {
-      throw new Error(`Form "${formAsset.id}" already exists.`);
+      throw new Error(`Form already exists.`);
     }
     console.log(`Form "${formAsset.id}" already exists. Proceeding to overwrite it.`);
     fs.rmSync(storagePath, { recursive: true });

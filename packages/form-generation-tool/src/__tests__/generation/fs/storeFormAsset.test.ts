@@ -46,7 +46,7 @@ describe("storeFormAssets tests", () => {
 
   it("Store existing asset without overwrite", () => {
     mockFs.existsSync.mockImplementation(() => true);
-    expect(() => storeFormAsset(formAsset, sourcePath, false)).toThrow(`Form "${formAsset.id}" already exists.`);
+    expect(() => storeFormAsset(formAsset, sourcePath, false)).toThrow(`Form already exists.`);
   });
 
   it("Store existing asset with overwrite", () => {

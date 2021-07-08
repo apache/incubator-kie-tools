@@ -44,10 +44,13 @@ export function run() {
       overwrite: answers.overwrite,
     };
 
-    console.log(`\nCurrent selection:
-Project path: ${args.path}
-Form type: ${args.type}
-Overwrite existing forms: ${args.overwrite}\n`);
+    const message =
+      "\nCurrent selection:" +
+      `\nProject path: ${args.path}` +
+      `\nForm type: ${args.type}` +
+      `${args.overwrite !== undefined ? `\nOverwrite existing forms: ${args.overwrite}` : ""}\n`;
+
+    console.log(message);
 
     inquirer
       .prompt({
