@@ -198,7 +198,7 @@ public class DataTypeListShortcutsTest {
 
         shortcuts.onCtrlB();
 
-        verify(listItem).insertNestedField();
+        verify(listItem).addDataTypeRow();
     }
 
     @Test

@@ -696,7 +696,7 @@ public class DataTypeListItem {
         dataTypeShortcuts.highlight(target);
     }
 
-    void addDataTypeRow() {
+    public void addDataTypeRow() {
         if (isStructureType()) {
             insertNestedField();
         } else {
