@@ -51,9 +51,16 @@ func DeployPrometheusInstance(namespace, labelName, labelValue string) error {
 		return fmt.Errorf("Error while creating Prometheus CR: %v ", err)
 	}
 
-	// Prometheus doesn't create route by default, need to create it manually
-	if err := createHTTPRoute(namespace, defaultPrometheusService); err != nil {
-		return fmt.Errorf("Error while creating Prometheus route: %v ", err)
+	if IsOpenshift() {
+		// Prometheus doesn't create route by default, need to create it manually
+		if err := createHTTPRoute(namespace, defaultPrometheusService); err != nil {
+			return fmt.Errorf("Error while creating Prometheus route: %v ", err)
+		}
+	} else {
+		// Need to expose Prometheus
+		if err := ExposeServiceOnKubernetes(namespace, defaultPrometheusService); err != nil {
+			return fmt.Errorf("Error while exposing Prometheus service: %v ", err)
+		}
 	}
 
 	return nil

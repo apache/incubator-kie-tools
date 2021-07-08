@@ -17,9 +17,12 @@ package framework
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
+	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/machinebox/graphql"
 )
 
@@ -94,7 +97,7 @@ func ExecuteGraphQLRequestWithLogging(namespace, uri, path, query, bearerToken s
 // ExecuteGraphQLRequestWithLoggingOption executes a GraphQL query with possibility of logging each request
 func ExecuteGraphQLRequestWithLoggingOption(namespace, uri, path, query, bearerToken string, response interface{}, logResponse bool) error {
 	// create a client (safe to share across requests)
-	client := graphql.NewClient(fmt.Sprintf("%s/%s", uri, path))
+	client := graphql.NewClient(fmt.Sprintf("%s/%s", uri, path), graphql.WithHTTPClient(&http.Client{Timeout: (time.Duration(10*config.GetLoadFactor()) * time.Second)}))
 	req := graphql.NewRequest(query)
 	req.Header.Set("Cache-Control", "no-cache")
 	addGraphqlAuthentication(req, bearerToken)

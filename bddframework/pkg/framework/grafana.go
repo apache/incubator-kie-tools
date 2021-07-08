@@ -75,9 +75,16 @@ func DeployGrafanaInstance(namespace, labelName, labelValue string) error {
 		return fmt.Errorf("Grafana image %s wasn't found in the list of Grafana images with defined digest. In case this is new Grafana image please add it into the list with proper digest", deployment.Spec.Template.Spec.Containers[0].Image)
 	}
 
-	// Grafana creates HTTPS routes by default, need to create it manually
-	if err := createHTTPRoute(namespace, defaultGrafanaService); err != nil {
-		return fmt.Errorf("Error while creating Grafana route: %v ", err)
+	if IsOpenshift() {
+		// Grafana creates HTTPS routes by default, need to create HTTP route manually
+		if err := createHTTPRoute(namespace, defaultGrafanaService); err != nil {
+			return fmt.Errorf("Error while creating Grafana route: %v ", err)
+		}
+	} else {
+		// Need to expose Grafana
+		if err := ExposeServiceOnKubernetes(namespace, defaultGrafanaService); err != nil {
+			return fmt.Errorf("Error while exposing Grafana service: %v ", err)
+		}
 	}
 
 	return nil

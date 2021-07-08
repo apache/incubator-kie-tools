@@ -168,7 +168,7 @@ func cliInstall(serviceHolder *bddtypes.KogitoServiceHolder, cliDeployCommand, c
 // OnKogitoServiceDeployed is called when a service deployed.
 func OnKogitoServiceDeployed(namespace string, service api.KogitoService) error {
 	if !IsOpenshift() {
-		return ExposeServiceOnKubernetes(namespace, service)
+		return ExposeServiceOnKubernetes(namespace, service.GetName())
 	}
 
 	return nil

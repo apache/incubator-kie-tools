@@ -20,12 +20,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kiegroup/kogito-operator/api"
 	rbac "k8s.io/api/rbac/v1"
 
 	"github.com/kiegroup/kogito-operator/core/client"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	apps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -137,7 +135,7 @@ func GetActiveReplicaSetByDeployment(namespace string, dName string) (*apps.Repl
 	// Find ReplicaSet owned by Deployment with active Pods
 	for _, replicaSet := range replicaSets.Items {
 		for _, ownerReference := range replicaSet.OwnerReferences {
-			if ownerReference.Kind == "Deployment" && ownerReference.Name == dName && replicaSet.Spec.Size() > 0 {
+			if ownerReference.Kind == "Deployment" && ownerReference.Name == dName && replicaSet.Status.AvailableReplicas > 0 {
 				return &replicaSet, nil
 			}
 		}
@@ -467,17 +465,25 @@ func GetIngressURI(namespace, serviceName string) (string, error) {
 }
 
 // ExposeServiceOnKubernetes adds ingress CR to expose a service
-func ExposeServiceOnKubernetes(namespace string, service api.KogitoService) error {
-	host := service.GetName()
+func ExposeServiceOnKubernetes(namespace, serviceName string) error {
+	// Needed to retrieve service port to be used
+	service, err := GetService(namespace, serviceName)
+	if err != nil {
+		return err
+	}
+	if len(service.Spec.Ports) > 1 {
+		return fmt.Errorf("Service with name %s contains multiple ports, it is not clear which one should be exposed", serviceName)
+	}
+	port := service.Spec.Ports[0].Port
+
+	host := serviceName
 	if !config.IsLocalCluster() {
 		host += fmt.Sprintf(".%s.%s", namespace, config.GetDomainSuffix())
 	}
 
-	port := framework.DefaultExposedPort
-
 	ingress := k8sv1beta1.Ingress{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:        service.GetName(),
+			Name:        serviceName,
 			Namespace:   namespace,
 			Annotations: map[string]string{"nginx.ingress.kubernetes.io/rewrite-target": "/"},
 		},
@@ -491,8 +497,8 @@ func ExposeServiceOnKubernetes(namespace string, service api.KogitoService) erro
 								{
 									Path: "/",
 									Backend: k8sv1beta1.IngressBackend{
-										ServiceName: service.GetName(),
-										ServicePort: intstr.FromInt(port),
+										ServiceName: serviceName,
+										ServicePort: intstr.FromInt(int(port)),
 									},
 								},
 							},
