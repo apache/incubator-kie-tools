@@ -24,13 +24,16 @@ import {
 } from "@kie-tooling-core/editor/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tooling-core/guided-tour/dist/api";
 import { I18n } from "@kie-tooling-core/i18n/dist/core";
-import { EditorContextApi } from "./api/EditorContextApi";
-import { GuidedTourApi } from "./api/GuidedTourApi";
-import { I18nServiceApi } from "./api/I18nServiceApi";
-import { KeyboardShortcutsApi } from "./api/KeyboardShorcutsApi";
-import { ResourceContentApi } from "./api/ResourceContentApi";
-import { StateControlApi } from "./api/StateControlApi";
-import { WorkspaceServiceApi } from "./api/WorkspaceServiceApi";
+import {
+  EditorContextApi,
+  GuidedTourApi,
+  I18nServiceApi,
+  KeyboardShortcutsApi,
+  NotificationsApi,
+  ResourceContentApi,
+  StateControlApi,
+  WorkspaceServiceApi,
+} from "./api";
 import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
 import { GwtAppFormerApi } from "./GwtAppFormerApi";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
@@ -38,7 +41,6 @@ import { GwtLanguageData, Resource } from "./GwtLanguageData";
 import { GwtStateControlService } from "./gwtStateControl";
 import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n";
 import { XmlFormatter } from "./XmlFormatter";
-import { NotificationsApi } from "./api/NotificationsApi";
 
 export interface CustomWindow extends Window {
   startStandaloneEditor?: () => void;

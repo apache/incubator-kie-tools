@@ -90,7 +90,13 @@ module.exports = async (env, argv) => {
           { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
           { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
           { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
-          { from: "../../node_modules/@kogito-tooling/pmml-editor/dist/images", to: "./images" },
+          {
+            from: path.join(
+              path.dirname(require.resolve("@kogito-tooling/pmml-editor/package.json")),
+              "/static/images"
+            ),
+            to: "./images",
+          },
         ],
       }),
     ],

@@ -44,6 +44,14 @@ module.exports = (env) => {
       }
     : {};
 
+  const multiPackageLiveReloadLoader = env.live
+    ? [
+        {
+          loader: path.resolve(path.join(__dirname, "./multi-package-live-reload-loader.js")),
+        },
+      ]
+    : [];
+
   return {
     mode,
     optimization: {
@@ -55,13 +63,18 @@ module.exports = (env) => {
         ...sourceMapsLoader,
         {
           test: /\.tsx?$/,
-          loader: "ts-loader",
-          options: {
-            transpileOnly,
-            compilerOptions: {
-              sourceMap: sourceMaps,
+          use: [
+            {
+              loader: "ts-loader",
+              options: {
+                transpileOnly,
+                compilerOptions: {
+                  sourceMap: sourceMaps,
+                },
+              },
             },
-          },
+            ...multiPackageLiveReloadLoader,
+          ],
         },
       ],
     },
