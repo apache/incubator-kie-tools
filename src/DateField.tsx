@@ -137,6 +137,7 @@ function DateField(props: DateFieldProps) {
       </FlexItem>
       {isInvalid && (
         <div
+          id={`${props.id}-invalid-date-time`}
           style={{
             fontSize: '0.875rem',
             color: '#c9190b',

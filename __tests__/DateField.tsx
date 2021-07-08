@@ -88,17 +88,10 @@ test('<DateField> - renders a input with correct value (model)', () => {
     createContext({ x: { type: Date } }, { model: { x: now } })
   );
 
-  let isAm = true;
-  let hours = now.getHours();
-  if (hours > 12) {
-    hours %= 12;
-    isAm = false;
-  }
-  const minutes = now.getMinutes();
-  const time = `${hours}:${minutes} ${isAm ? 'AM' : 'PM'}`;
-
   expect(wrapper.find('input')).toHaveLength(2);
-  expect(wrapper.find('TimePicker').prop('value')).toEqual(time);
+  expect(wrapper.find('TimePicker').prop('value')).toEqual(
+    `${now.getUTCHours()}:${now.getUTCMinutes()}`
+  );
 });
 
 test('<DateField> - renders a input with correct value (specified)', () => {
@@ -128,7 +121,7 @@ test('<DateField> - renders a input which correctly reacts on change (DatePicker
     } as any);
   });
 
-  expect(onChange).toHaveBeenLastCalledWith('x', new Date(`${now}T00:00:00`));
+  expect(onChange).toHaveBeenLastCalledWith('x', new Date(`${now}T00:00:00Z`));
 });
 
 test('<DateField> - renders a input which correctly reacts on change (DatePicker - empty)', () => {
@@ -152,7 +145,7 @@ test('<DateField> - renders a input which correctly reacts on change (DatePicker
 test('<DateField> - renders a input which correctly reacts on change (TimePicker - invalid)', () => {
   const onChange = jest.fn();
 
-  const now = '10:00 AM';
+  const now = '10:00';
   const element = <DateField name="x" />;
   const wrapper = mount(
     element,
@@ -168,12 +161,12 @@ test('<DateField> - renders a input which correctly reacts on change (TimePicker
   expect(onChange).not.toHaveBeenCalled();
 });
 
-test.skip('<DateField> - renders a input which correctly reacts on change (TimePicker - valid)', () => {
+test('<DateField> - renders a input which correctly reacts on change (TimePicker - valid)', () => {
   const onChange = jest.fn();
 
   const date = '2000-04-04';
-  const time = '10:30 AM';
-  const element = <DateField name="x" value={new Date(`${date}T00:00:00`)} />;
+  const time = '10:30';
+  const element = <DateField name="x" value={new Date(`${date}T00:00:00Z`)} />;
   const wrapper = mount(
     element,
     createContext({ x: { type: Date } }, { onChange })
@@ -185,7 +178,7 @@ test.skip('<DateField> - renders a input which correctly reacts on change (TimeP
     } as any);
   });
 
-  expect(onChange).toHaveBeenLastCalledWith('x', new Date(`${date}T10:30:00`));
+  expect(onChange).toHaveBeenLastCalledWith('x', new Date(`${date}T10:30:00Z`));
 });
 
 test('<DateField> - renders a wrapper with unknown props', () => {
@@ -195,4 +188,68 @@ test('<DateField> - renders a wrapper with unknown props', () => {
   expect(wrapper.find('div').at(0).prop('data-x')).toBe('x');
   expect(wrapper.find('div').at(0).prop('data-y')).toBe('y');
   expect(wrapper.find('div').at(0).prop('data-z')).toBe('z');
+});
+
+test('<DateField> - test max property - valid', () => {
+  const onChange = jest.fn();
+
+  const date = '1998-12-31';
+  const max = '1999-01-01T00:00:00Z';
+  const element = (
+    <DateField name="x" max={max} value={new Date(`${date}T00:00:00Z`)} />
+  );
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: Date } }, { onChange })
+  );
+
+  expect(wrapper.text().includes('Should be before')).toBe(false);
+});
+
+test('<DateField> - test max property - invalid', () => {
+  const onChange = jest.fn();
+
+  const date = '1999-01-02';
+  const max = '1999-01-01T00:00:00Z';
+  const element = (
+    <DateField name="x" max={max} value={new Date(`${date}T00:00:00Z`)} />
+  );
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: Date } }, { onChange })
+  );
+
+  expect(wrapper.text().includes('Should be before')).toBe(true);
+});
+
+test('<DateField> - test min property - valid', () => {
+  const onChange = jest.fn();
+
+  const date = '1999-01-02';
+  const min = '1999-01-01T00:00:00Z';
+  const element = (
+    <DateField name="x" min={min} value={new Date(`${date}T00:00:00Z`)} />
+  );
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: Date } }, { onChange })
+  );
+
+  expect(wrapper.text().includes('Should be after')).toBe(false);
+});
+
+test('<DateField> - test min property - invalid', () => {
+  const onChange = jest.fn();
+
+  const date = '1998-12-31';
+  const min = '1999-01-01T00:00:00Z';
+  const element = (
+    <DateField name="x" min={min} value={new Date(`${date}T00:00:00Z`)} />
+  );
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: Date } }, { onChange })
+  );
+
+  expect(wrapper.text().includes('Should be after')).toBe(true);
 });
