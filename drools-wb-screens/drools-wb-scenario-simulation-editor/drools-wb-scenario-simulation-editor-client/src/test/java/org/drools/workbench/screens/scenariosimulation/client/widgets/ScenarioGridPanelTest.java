@@ -84,4 +84,14 @@ public class ScenarioGridPanelTest extends AbstractScenarioSimulationTest {
         scenarioGridPanelSpy.onNodeMouseWheel(nodeMouseWheelEvent);
         verify(scenarioGridModelMock, times(1)).destroyAllTextAreaDOMElementFactoryResources();
     }
+
+    @Test
+    public void onResize() {
+        scenarioGridPanelSpy.addHandlers(clickHandlerMock, scenarioSimulationGridPanelMouseMoveHandlerMock);
+        scenarioGridPanelSpy.onResize();
+        verify(scenarioGridLayerMock, times(1)).batch();
+        verify(clickHandlerMock, times(1)).hideMenus();
+        verify(scenarioSimulationGridPanelMouseMoveHandlerMock, times(1)).hidePopover();
+    }
+
 }

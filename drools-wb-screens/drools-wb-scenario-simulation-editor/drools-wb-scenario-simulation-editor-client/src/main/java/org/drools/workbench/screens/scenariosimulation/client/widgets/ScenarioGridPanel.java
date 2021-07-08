@@ -109,6 +109,7 @@ public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHa
     @Override
     public void onResize() {
         super.onResize();
+        getScenarioGridLayer().batch();
         clickHandler.hideMenus();
         mouseMoveHandler.hidePopover();
     }
