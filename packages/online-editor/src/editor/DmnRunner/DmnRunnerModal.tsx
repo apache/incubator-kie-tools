@@ -535,7 +535,7 @@ export function DmnRunnerModal() {
                   <Text component={TextVariants.p}>
                     {i18n.dmnRunner.modal.wizard.linux.start.runCommand}
                     <Text component={TextVariants.p} className={"kogito--code"}>
-                      ./kie-tooling-extended-services
+                      ./kie_tooling_extended_services
                     </Text>
                   </Text>
                 </TextContent>
@@ -559,7 +559,7 @@ export function DmnRunnerModal() {
                 <br />
                 <TextContent>
                   <Text component={TextVariants.p} className={"kogito--code"}>
-                    ./kie-tooling-extended-services -p {dmnRunner.port}
+                    ./kie_tooling_extended_services -p {dmnRunner.port}
                   </Text>
                 </TextContent>
                 <br />
