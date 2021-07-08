@@ -21,15 +21,24 @@ export type TextFieldProps = {
   field?: { format: string };
 } & Omit<TextInputProps, 'isDisabled'>;
 
+const timeRgx = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/;
+// simplified date regex
+const dateRgx = /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/;
+
 const Text = (props: TextFieldProps) => {
   const validateDate = useCallback(
     (date) => {
-      if (props.min && date.toISOString() < new Date(props.min).toISOString()) {
+      if (
+        typeof props.min === 'string' &&
+        dateRgx.exec(props.min) &&
+        date.toISOString() < new Date(props.min).toISOString()
+      ) {
         return props.errorMessage && props.errorMessage.trim().length > 0
           ? props.errorMessage
           : `Should be after than ${props.min}`;
       } else if (
-        props.max &&
+        typeof props.max === 'string' &&
+        dateRgx.exec(props.max) &&
         date.toISOString() > new Date(props.max).toISOString()
       ) {
         return props.errorMessage && props.errorMessage.trim().length > 0
@@ -42,22 +51,24 @@ const Text = (props: TextFieldProps) => {
   );
 
   const parseTime = useCallback((time: string) => {
-    const parsedTime = time.split(':').map((e) => parseInt(e, 10));
+    const parsedTime = timeRgx.exec(time);
     const date = new Date();
     // @ts-ignore
-    date.setUTCHours(...parsedTime);
+    date.setUTCHours(parsedTime[1], parsedTime[2]);
     return date;
   }, []);
 
   const validateTime = useCallback(
     (time: string) => {
-      if (typeof props.min === 'string' && typeof props.max === 'string') {
-        const parsedTime = parseTime(time);
+      const parsedTime = parseTime(time);
+      if (typeof props.min === 'string' && timeRgx.exec(props.min)) {
         const parsedMin = parseTime(props.min);
-        const parsedMax = parseTime(props.max);
         if (parsedTime < parsedMin) {
           return false;
         }
+      }
+      if (typeof props.max === 'string' && timeRgx.exec(props.max)) {
+        const parsedMax = parseTime(props.max);
         if (parsedTime > parsedMax) {
           return false;
         }

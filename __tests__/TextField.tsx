@@ -243,3 +243,80 @@ test('<TextField> - renders a input which correctly reacts on change (DatePicker
 
   expect(onChange).toHaveBeenLastCalledWith('x', date);
 });
+
+test('<TextField> - renders a initial value on time field (TimePicker)', () => {
+  const time = '10:00';
+  const element = (
+    <TextField required={true} name="x" label="y" type={'time'} />
+  );
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: String } }, { model: { x: time } })
+  );
+
+  expect(wrapper.find('TimePicker')).toHaveLength(1);
+  expect(wrapper.find('TimePicker').prop('value')).toBe(time);
+});
+
+test('<TextField> - renders a disabled date field (TimePicker)', () => {
+  const element = (
+    <TextField
+      required={true}
+      name="x"
+      label="y"
+      type={'time'}
+      disabled={true}
+    />
+  );
+  const wrapper = mount(element, createContext({ x: { type: String } }));
+
+  expect(wrapper.find('TimePicker')).toHaveLength(1);
+  expect(wrapper.find('input').prop('disabled')).toBe(true);
+});
+
+test('<TextField> - renders a input which correctly reacts on change (TimePicker)', () => {
+  const onChange = jest.fn();
+
+  const time = '10:10';
+  const element = (
+    <TextField required={true} name="x" label="y" type={'time'} />
+  );
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: String } }, { onChange })
+  );
+
+  act(() => {
+    wrapper.find('TimePicker').find('input').prop('onChange')!({
+      currentTarget: { value: time },
+    } as any);
+  });
+
+  expect(wrapper.find('label')).toHaveLength(1);
+  expect(wrapper.find('label').text()).toBe('y *');
+  expect(onChange).toHaveBeenLastCalledWith('x', '10:10:00');
+});
+
+test('<TextField> - renders a input which correctly reacts on change (TimePicker - empty)', () => {
+  const onChange = jest.fn();
+
+  const time = '';
+  const element = (
+    <TextField required={true} name="x" label="y" type={'time'} />
+  );
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: String } }, { onChange })
+  );
+
+  expect(wrapper.find('label')).toHaveLength(1);
+  expect(wrapper.find('label').text()).toBe('y *');
+
+  act(() => {
+    wrapper.find('TimePicker').find('input').prop('onChange')!({
+      currentTarget: { value: time },
+    } as any);
+  });
+
+  expect(onChange).toHaveBeenLastCalledWith('x', time);
+});
