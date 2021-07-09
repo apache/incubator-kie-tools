@@ -149,7 +149,7 @@ Feature: kogito-builder image JVM build tests
         | content_type         | application/json                                                              |
         | expected_status_code | 201                                                                           |
       And file /home/kogito/bin/process-springboot-example.jar should exist
-      And container log should contain main] .c.l.ClasspathLoggingApplicationListener
+      And container log should contain Started DemoApplication
       And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
   
   Scenario: Verify if the s2i build is finished as expected with no runtime image and debug enabled
@@ -167,7 +167,7 @@ Feature: kogito-builder image JVM build tests
       | content_type         | application/json                                                              |
       | expected_status_code | 201                                                                           |
     And file /home/kogito/bin/process-springboot-example.jar should exist
-    And container log should contain main] .c.l.ClasspathLoggingApplicationListener
+    And container log should contain Started DemoApplication
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
   
   Scenario: Verify if the s2i build is finished as expected and if it is listening on the expected port, test uses custom properties file to test the port configuration.
@@ -204,7 +204,7 @@ Feature: kogito-builder image JVM build tests
       | content_type         | application/json                                                              |
       | expected_status_code | 201                                                                           |
     And file /home/kogito/bin/process-springboot-example.jar should exist
-    And container log should contain main] .c.l.ClasspathLoggingApplicationListener
+    And container log should contain Started DemoApplication
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
 
   Scenario: Perform a incremental s2i build using springboot runtime type
