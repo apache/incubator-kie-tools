@@ -25,7 +25,6 @@ import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
 import com.ait.lienzo.client.core.image.filter.RGBIgnoreAlphaImageDataFilter;
 import com.ait.lienzo.client.core.shape.AbstractImageShape;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.client.widget.RootPanel;
@@ -596,11 +595,6 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     private static final class ClearFilter implements ImageDataFilter<ClearFilter> {
-
-        @Override
-        public IFactory<?> getFactory() {
-            return null;
-        }
 
         @Override
         public ImageData filter(ImageData source, boolean copy) {

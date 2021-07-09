@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
@@ -53,8 +50,8 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RG
         super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, color);
     }
 
-    protected RGBIgnoreAlphaImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, node, ctx);
+    protected RGBIgnoreAlphaImageDataFilter(Object node) {
+        super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, node);
     }
 
     /**
@@ -91,18 +88,6 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RG
                 data[i + 2] = b;
                 data[i + 3] = 255;
             }
-        }
-    }
-
-    @Override
-    public IFactory<RGBIgnoreAlphaImageDataFilter> getFactory() {
-        return new RGBIgnoreAlphaImageDataFilterFactory();
-    }
-
-    public static class RGBIgnoreAlphaImageDataFilterFactory extends RGBImageDataFilterFactory<RGBIgnoreAlphaImageDataFilter> {
-
-        public RGBIgnoreAlphaImageDataFilterFactory() {
-            super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType);
         }
     }
 }

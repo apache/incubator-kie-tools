@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import jsinterop.base.Js;
 
@@ -32,8 +29,8 @@ public class DiffusionImageDataFilter extends AbstractValueTransformImageDataFil
         super(ImageFilterType.DiffusionImageDataFilterType, value);
     }
 
-    protected DiffusionImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.DiffusionImageDataFilterType, node, ctx);
+    protected DiffusionImageDataFilter(Object node) {
+        super(ImageFilterType.DiffusionImageDataFilterType, node);
     }
 
     @Override
@@ -80,18 +77,6 @@ public class DiffusionImageDataFilter extends AbstractValueTransformImageDataFil
             double d = Math.random();
             out[0] = Js.coerceToInt(x + d * stabl[a]);
             out[1] = Js.coerceToInt(y + d * ctabl[a]);
-        }
-    }
-
-    @Override
-    public IFactory<DiffusionImageDataFilter> getFactory() {
-        return new DiffusionImageDataFilterFactory();
-    }
-
-    public static class DiffusionImageDataFilterFactory extends ValueTransformImageDataFilterFactory<DiffusionImageDataFilter> {
-
-        public DiffusionImageDataFilterFactory() {
-            super(ImageFilterType.DiffusionImageDataFilterType);
         }
     }
 }

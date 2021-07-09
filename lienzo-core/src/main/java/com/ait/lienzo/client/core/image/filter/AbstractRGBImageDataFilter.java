@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
@@ -60,8 +57,8 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         doUpdateColorFromRGB();
     }
 
-    protected AbstractRGBImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException {
-        super(type, node, ctx);
+    protected AbstractRGBImageDataFilter(final ImageFilterType type, final Object node) {
+        super(type, node);
 
         doUpdateRGBFromColor();
     }
@@ -141,14 +138,5 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
             return 255;
         }
         return color;
-    }
-
-    protected abstract static class RGBImageDataFilterFactory<T extends AbstractRGBImageDataFilter<T>> extends ImageDataFilterFactory<T> {
-
-        protected RGBImageDataFilterFactory(final ImageFilterType type) {
-            super(type);
-
-            addAttribute(Attribute.COLOR, true);
-        }
     }
 }

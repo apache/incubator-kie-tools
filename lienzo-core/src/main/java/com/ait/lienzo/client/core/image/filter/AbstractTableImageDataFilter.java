@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import elemental2.core.Uint8ClampedArray;
@@ -29,8 +27,8 @@ public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageD
         super(type);
     }
 
-    protected AbstractTableImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException {
-        super(type, node, ctx);
+    protected AbstractTableImageDataFilter(final ImageFilterType type, final Object node) {
+        super(type, node);
     }
 
     @Override
@@ -60,11 +58,4 @@ public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageD
     }
 
     protected abstract FilterTableArray getTable();
-
-    protected static abstract class TableImageDataFilterFactory<T extends AbstractTableImageDataFilter<T>> extends ImageDataFilterFactory<T> {
-
-        protected TableImageDataFilterFactory(final ImageFilterType type) {
-            super(type);
-        }
-    }
 }

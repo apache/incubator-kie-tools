@@ -25,7 +25,6 @@ import java.util.Map;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
@@ -142,11 +141,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      */
     protected void setShapeType(final ShapeType type) {
         m_type = type;
-    }
-
-    @Override
-    public IFactory<?> getFactory() {
-        return LienzoCore.get().getFactory(m_type);
     }
 
     @Override
@@ -974,78 +968,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     @Override
     public List<Attribute> getTransformingAttributes() {
         return LienzoCore.STANDARD_TRANSFORMING_ATTRIBUTES;
-    }
-
-    protected static abstract class ShapeFactory<S extends Shape<S>> extends NodeFactory<S> {
-
-        protected ShapeFactory(final ShapeType type) {
-            super(type.getValue());
-
-            addAttribute(Attribute.X);
-
-            addAttribute(Attribute.Y);
-
-            addAttribute(Attribute.ALPHA);
-
-            addAttribute(Attribute.FILL);
-
-            addAttribute(Attribute.FILL_ALPHA);
-
-            addAttribute(Attribute.STROKE);
-
-            addAttribute(Attribute.STROKE_WIDTH);
-
-            addAttribute(Attribute.STROKE_ALPHA);
-
-            addAttribute(Attribute.DRAGGABLE);
-
-            addAttribute(Attribute.EDITABLE);
-
-            addAttribute(Attribute.SCALE);
-
-            addAttribute(Attribute.SHEAR);
-
-            addAttribute(Attribute.ROTATION);
-
-            addAttribute(Attribute.OFFSET);
-
-            addAttribute(Attribute.SHADOW);
-
-            addAttribute(Attribute.LINE_CAP);
-
-            addAttribute(Attribute.LINE_JOIN);
-
-            addAttribute(Attribute.MITER_LIMIT);
-
-            addAttribute(Attribute.DRAG_CONSTRAINT);
-
-            addAttribute(Attribute.DRAG_BOUNDS);
-
-            addAttribute(Attribute.DRAG_MODE);
-
-            addAttribute(Attribute.DASH_ARRAY);
-
-            addAttribute(Attribute.DASH_OFFSET);
-
-            addAttribute(Attribute.FILL_SHAPE_FOR_SELECTION);
-
-            addAttribute(Attribute.FILL_BOUNDS_FOR_SELECTION);
-
-            addAttribute(Attribute.SELECTION_BOUNDS_OFFSET);
-
-            addAttribute(Attribute.SELECTION_STROKE_OFFSET);
-
-            addAttribute(Attribute.EVENT_PROPAGATION_MODE);
-        }
-
-        /**
-         * Only factories that wish to extend other factories should use this.
-         *
-         * @param type {@link ShapeType}
-         */
-        protected void setShapeType(final ShapeType type) {
-            setTypeName(type.getValue());
-        }
     }
 
     @JsType

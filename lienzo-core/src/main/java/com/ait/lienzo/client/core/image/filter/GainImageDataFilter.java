@@ -16,10 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import jsinterop.annotations.JsProperty;
 import jsinterop.base.Js;
@@ -50,8 +46,8 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
         setBias(bias);
     }
 
-    protected GainImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.GainImageDataFilterType, node, ctx);
+    protected GainImageDataFilter(Object node) {
+        super(ImageFilterType.GainImageDataFilterType, node);
     }
 
     public final GainImageDataFilter setGain(double gain) {
@@ -118,23 +114,5 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
             table[i] = Js.coerceToInt(255 * v);
         }
         return new FilterTableArray(table);
-    }
-
-    ;
-
-    @Override
-    public IFactory<GainImageDataFilter> getFactory() {
-        return new GainImageDataFilterFactory();
-    }
-
-    public static class GainImageDataFilterFactory extends TableImageDataFilterFactory<GainImageDataFilter> {
-
-        public GainImageDataFilterFactory() {
-            super(ImageFilterType.GainImageDataFilterType);
-
-            addAttribute(Attribute.GAIN, true);
-
-            addAttribute(Attribute.BIAS, true);
-        }
     }
 }

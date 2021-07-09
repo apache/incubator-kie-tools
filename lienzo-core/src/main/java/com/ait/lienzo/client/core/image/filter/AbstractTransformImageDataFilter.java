@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import elemental2.core.Uint8ClampedArray;
@@ -29,8 +27,8 @@ public abstract class AbstractTransformImageDataFilter<T extends AbstractTransfo
         super(type);
     }
 
-    protected AbstractTransformImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException {
-        super(type, node, ctx);
+    protected AbstractTransformImageDataFilter(final ImageFilterType type, final Object node) {
+        super(type, node);
     }
 
     @Override

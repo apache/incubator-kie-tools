@@ -509,13 +509,4 @@ public class SVGPath extends Shape<SVGPath> {
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.PATH);
     }
-
-    public static class SVGPathFactory extends ShapeFactory<SVGPath> {
-
-        public SVGPathFactory() {
-            super(ShapeType.SVG_PATH);
-
-            addAttribute(Attribute.PATH, true);
-        }
-    }
 }

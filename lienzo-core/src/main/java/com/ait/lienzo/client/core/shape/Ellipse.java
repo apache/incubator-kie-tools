@@ -134,15 +134,4 @@ public class Ellipse extends Shape<Ellipse> {
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.WIDTH, Attribute.HEIGHT);
     }
-
-    public static class EllipseFactory extends ShapeFactory<Ellipse> {
-
-        public EllipseFactory() {
-            super(ShapeType.ELLIPSE);
-
-            addAttribute(Attribute.WIDTH, true);
-
-            addAttribute(Attribute.HEIGHT, true);
-        }
-    }
 }

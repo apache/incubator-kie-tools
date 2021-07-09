@@ -199,19 +199,4 @@ public class Slice extends Shape<Slice> {
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.RADIUS, Attribute.START_ANGLE, Attribute.END_ANGLE, Attribute.COUNTER_CLOCKWISE);
     }
-
-    public static class SliceFactory extends ShapeFactory<Slice> {
-
-        public SliceFactory() {
-            super(ShapeType.SLICE);
-
-            addAttribute(Attribute.RADIUS, true);
-
-            addAttribute(Attribute.START_ANGLE, true);
-
-            addAttribute(Attribute.END_ANGLE, true);
-
-            addAttribute(Attribute.COUNTER_CLOCKWISE);
-        }
-    }
 }

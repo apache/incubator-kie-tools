@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.storage;
 
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
@@ -30,8 +27,8 @@ public abstract class AbstractFastArrayStorageEngine<M> extends AbstractStorageE
         super(type);
     }
 
-    protected AbstractFastArrayStorageEngine(final StorageEngineType type, final Object node, final ValidationContext ctx) throws ValidationException {
-        super(type, node, ctx);
+    protected AbstractFastArrayStorageEngine(final StorageEngineType type, final Object node) {
+        super(type, node);
     }
 
     @Override
@@ -105,12 +102,5 @@ public abstract class AbstractFastArrayStorageEngine<M> extends AbstractStorageE
     @Override
     public void moveToBottom(final M item) {
         m_list.moveToBottom(item);
-    }
-
-    public abstract static class FastArrayStorageEngineFactory<S extends IJSONSerializable<S>> extends AbstractStorageEngineFactory<S> {
-
-        protected FastArrayStorageEngineFactory(final StorageEngineType type) {
-            super(type);
-        }
     }
 }

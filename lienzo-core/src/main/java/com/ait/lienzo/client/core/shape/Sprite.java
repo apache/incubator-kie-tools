@@ -25,9 +25,6 @@ import com.ait.lienzo.client.core.image.ImageLoader;
 import com.ait.lienzo.client.core.image.SpriteLoadedHandler;
 import com.ait.lienzo.client.core.image.SpriteOnRollHandler;
 import com.ait.lienzo.client.core.image.SpriteOnTickHandler;
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.SpriteBehaviorMap;
 import com.ait.lienzo.shared.core.types.ImageSerializationMode;
@@ -386,51 +383,5 @@ public class Sprite extends Shape<Sprite> {
     @Override
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.URL, Attribute.SPRITE_BEHAVIOR_MAP, Attribute.SPRITE_BEHAVIOR);
-    }
-
-    public static class SpriteFactory extends ShapeFactory<Sprite> {
-
-        public SpriteFactory() {
-            super(ShapeType.SPRITE);
-
-            addAttribute(Attribute.URL, true);
-
-            addAttribute(Attribute.TICK_RATE, true);
-
-            addAttribute(Attribute.SPRITE_BEHAVIOR_MAP, true);
-
-            addAttribute(Attribute.SPRITE_BEHAVIOR, true);
-
-            addAttribute(Attribute.AUTO_PLAY);
-
-            addAttribute(Attribute.SERIALIZATION_MODE);
-        }
-
-        @Override
-        public boolean isPostProcessed() {
-            return true;
-        }
-
-        @Override
-        public void process(IJSONSerializable<?> node, ValidationContext ctx) throws ValidationException {
-            if (!(node instanceof Sprite)) {
-                return;
-            }
-            Sprite self = (Sprite) node;
-
-            if (!self.isLoaded()) {
-                self.load();
-
-                self.onLoaded(sprite -> {
-                    if (sprite.isLoaded() && sprite.isVisible()) {
-                        Layer layer = sprite.getLayer();
-
-                        if ((null != layer) && (null != layer.getViewport())) {
-                            layer.batch();
-                        }
-                    }
-                });
-            }
-        }
     }
 }

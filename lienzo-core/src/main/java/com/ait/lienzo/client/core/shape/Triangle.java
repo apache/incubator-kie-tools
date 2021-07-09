@@ -133,15 +133,4 @@ public class Triangle extends AbstractMultiPointShape<Triangle> {
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.POINTS, Attribute.CORNER_RADIUS);
     }
-
-    public static class TriangleFactory extends ShapeFactory<Triangle> {
-
-        public TriangleFactory() {
-            super(ShapeType.TRIANGLE);
-
-            addAttribute(Attribute.POINTS, true);
-
-            addAttribute(Attribute.CORNER_RADIUS);
-        }
-    }
 }

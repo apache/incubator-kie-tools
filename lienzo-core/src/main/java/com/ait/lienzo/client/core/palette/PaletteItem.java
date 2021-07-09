@@ -23,11 +23,4 @@ public final class PaletteItem extends AbstractPaletteBase<PaletteItem> {
     public PaletteItem() {
         super(PaletteType.PALETTE_ITEM);
     }
-
-    public static final class PaletteItemFactory extends AbstractPalettebaseFactory<PaletteItem> {
-
-        public PaletteItemFactory() {
-            super(PaletteType.PALETTE_ITEM);
-        }
-    }
 }

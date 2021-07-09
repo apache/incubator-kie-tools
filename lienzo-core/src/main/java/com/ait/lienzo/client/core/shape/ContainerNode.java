@@ -23,8 +23,6 @@ import java.util.function.Predicate;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.IContainerFactory;
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
@@ -317,16 +315,5 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     @Override
     public IContainer<?, ?> asContainer() {
         return this;
-    }
-
-    public abstract static class ContainerNodeFactory<C extends IJSONSerializable<C> & IContainer<C, ?>> extends NodeFactory<C> implements IContainerFactory {
-
-        protected ContainerNodeFactory(final NodeType type) {
-            this(type.getValue());
-        }
-
-        protected ContainerNodeFactory(final String typeName) {
-            super(typeName);
-        }
     }
 }

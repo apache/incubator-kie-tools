@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import elemental2.core.Uint8ClampedArray;
@@ -31,8 +28,8 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
         super(ImageFilterType.EmbossImageDataFilterType);
     }
 
-    protected EmbossImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.EmbossImageDataFilterType, node, ctx);
+    protected EmbossImageDataFilter(Object node) {
+        super(ImageFilterType.EmbossImageDataFilterType, node);
     }
 
     @Override
@@ -83,17 +80,5 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
             }
         }
         fops.filterLuminosity(dataArray, length);
-    }
-
-    @Override
-    public IFactory<EmbossImageDataFilter> getFactory() {
-        return new EmbossImageDataFilterFactory();
-    }
-
-    public static class EmbossImageDataFilterFactory extends ImageDataFilterFactory<EmbossImageDataFilter> {
-
-        public EmbossImageDataFilterFactory() {
-            super(ImageFilterType.EmbossImageDataFilterType);
-        }
     }
 }

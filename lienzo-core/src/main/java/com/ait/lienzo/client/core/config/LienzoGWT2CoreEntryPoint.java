@@ -22,6 +22,5 @@ public final class LienzoGWT2CoreEntryPoint implements EntryPoint {
 
     @Override
     public final void onModuleLoad() {
-        LienzoCore.get().addPlugin(new LienzoCorePlugin());
     }
 }

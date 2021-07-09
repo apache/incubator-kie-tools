@@ -104,17 +104,4 @@ public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirec
 
         return other;
     }
-
-    protected static abstract class AbstractDirectionalMultiPointShapeFactory<T extends AbstractDirectionalMultiPointShape<T>> extends AbstractOffsetMultiPointShapeFactory<T> {
-
-        protected AbstractDirectionalMultiPointShapeFactory(final ShapeType type) {
-            super(type);
-
-            addAttribute(Attribute.HEAD_DIRECTION);
-
-            addAttribute(Attribute.TAIL_DIRECTION);
-
-            addAttribute(Attribute.CORRECTION_OFFSET);
-        }
-    }
 }

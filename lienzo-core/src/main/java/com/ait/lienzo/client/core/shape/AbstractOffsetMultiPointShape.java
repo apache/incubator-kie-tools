@@ -68,17 +68,6 @@ public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMult
         return asAttributes(attributes, Attribute.HEAD_OFFSET, Attribute.TAIL_OFFSET);
     }
 
-    protected static abstract class AbstractOffsetMultiPointShapeFactory<T extends AbstractOffsetMultiPointShape<T>> extends ShapeFactory<T> {
-
-        protected AbstractOffsetMultiPointShapeFactory(final ShapeType type) {
-            super(type);
-
-            addAttribute(Attribute.HEAD_OFFSET);
-
-            addAttribute(Attribute.TAIL_OFFSET);
-        }
-    }
-
     @Override
     protected boolean prepare(final Context2D context, final double alpha) {
         final boolean prepared = isPathPartListPrepared();

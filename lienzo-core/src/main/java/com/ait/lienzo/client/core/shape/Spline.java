@@ -297,21 +297,6 @@ public class Spline extends AbstractMultiPointShape<Spline> {
         return asAttributes(Attribute.CONTROL_POINTS, Attribute.CURVE_FACTOR, Attribute.ANGLE_FACTOR, Attribute.LINE_FLATTEN);
     }
 
-    public static class SplineFactory extends ShapeFactory<Spline> {
-
-        public SplineFactory() {
-            super(ShapeType.SPLINE);
-
-            addAttribute(Attribute.CURVE_FACTOR);
-
-            addAttribute(Attribute.ANGLE_FACTOR);
-
-            addAttribute(Attribute.LINE_FLATTEN);
-
-            addAttribute(Attribute.CONTROL_POINTS, true);
-        }
-    }
-
     private static final class PathPoint {
 
         public double x;

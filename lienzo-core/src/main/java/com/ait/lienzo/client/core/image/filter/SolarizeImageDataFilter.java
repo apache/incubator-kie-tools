@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import jsinterop.base.Js;
 
@@ -39,24 +36,12 @@ public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<Solari
         super(ImageFilterType.SolarizeImageDataFilterType);
     }
 
-    protected SolarizeImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.SolarizeImageDataFilterType, node, ctx);
+    protected SolarizeImageDataFilter(Object node) {
+        super(ImageFilterType.SolarizeImageDataFilterType, node);
     }
 
     @Override
     protected final FilterTableArray getTable() {
         return CONSTANT_TABLE;
-    }
-
-    @Override
-    public IFactory<SolarizeImageDataFilter> getFactory() {
-        return new SolarizeImageDataFilterFactory();
-    }
-
-    public static class SolarizeImageDataFilterFactory extends TableImageDataFilterFactory<SolarizeImageDataFilter> {
-
-        public SolarizeImageDataFilterFactory() {
-            super(ImageFilterType.SolarizeImageDataFilterType);
-        }
     }
 }

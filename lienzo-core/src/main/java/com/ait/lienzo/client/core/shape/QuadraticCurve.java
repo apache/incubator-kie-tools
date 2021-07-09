@@ -115,13 +115,4 @@ public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve> {
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.CONTROL_POINTS);
     }
-
-    public static class QuadraticCurveFactory extends ShapeFactory<QuadraticCurve> {
-
-        public QuadraticCurveFactory() {
-            super(ShapeType.QUADRATIC_CURVE);
-
-            addAttribute(Attribute.CONTROL_POINTS, true);
-        }
-    }
 }

@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import elemental2.core.Uint8ClampedArray;
@@ -35,8 +32,8 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
         super(ImageFilterType.StackBlurImageDataFilterType, 1);
     }
 
-    protected StackBlurImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.StackBlurImageDataFilterType, node, ctx);
+    protected StackBlurImageDataFilter(Object node) {
+        super(ImageFilterType.StackBlurImageDataFilterType, node);
     }
 
     @Override
@@ -264,18 +261,6 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
 
                 yi += width;
             }
-        }
-    }
-
-    @Override
-    public IFactory<StackBlurImageDataFilter> getFactory() {
-        return new StackBlurImageDataFilterFactory();
-    }
-
-    public static class StackBlurImageDataFilterFactory extends ValueImageDataFilterFactory<StackBlurImageDataFilter> {
-
-        public StackBlurImageDataFilterFactory() {
-            super(ImageFilterType.StackBlurImageDataFilterType);
         }
     }
 }

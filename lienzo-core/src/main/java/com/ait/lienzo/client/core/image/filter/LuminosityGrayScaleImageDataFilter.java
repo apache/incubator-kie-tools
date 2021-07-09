@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import elemental2.core.Uint8ClampedArray;
@@ -33,8 +30,8 @@ public class LuminosityGrayScaleImageDataFilter extends AbstractImageDataFilter<
         super(ImageFilterType.LuminosityGrayScaleImageDataFilterType);
     }
 
-    protected LuminosityGrayScaleImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.LuminosityGrayScaleImageDataFilterType, node, ctx);
+    protected LuminosityGrayScaleImageDataFilter(Object node) {
+        super(ImageFilterType.LuminosityGrayScaleImageDataFilterType, node);
     }
 
     @Override
@@ -56,17 +53,5 @@ public class LuminosityGrayScaleImageDataFilter extends AbstractImageDataFilter<
         FilterCommonOps.dofilterLuminosity(data, FilterCommonOps.getLength(source));
 
         return source;
-    }
-
-    @Override
-    public IFactory<LuminosityGrayScaleImageDataFilter> getFactory() {
-        return new LuminosityGrayScaleImageDataFilterFactory();
-    }
-
-    public static class LuminosityGrayScaleImageDataFilterFactory extends ImageDataFilterFactory<LuminosityGrayScaleImageDataFilter> {
-
-        public LuminosityGrayScaleImageDataFilterFactory() {
-            super(ImageFilterType.LuminosityGrayScaleImageDataFilterType);
-        }
     }
 }

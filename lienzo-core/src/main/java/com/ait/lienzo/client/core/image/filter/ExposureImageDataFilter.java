@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import jsinterop.base.Js;
 
@@ -36,8 +33,8 @@ public class ExposureImageDataFilter extends AbstractValueTableImageDataFilter<E
         super(ImageFilterType.ExposureImageDataFilterType, value);
     }
 
-    protected ExposureImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.ExposureImageDataFilterType, node, ctx);
+    protected ExposureImageDataFilter(Object node) {
+        super(ImageFilterType.ExposureImageDataFilterType, node);
     }
 
     @Override
@@ -69,17 +66,5 @@ public class ExposureImageDataFilter extends AbstractValueTableImageDataFilter<E
             table[i] = Js.coerceToInt(255 * (1 - Math.exp(-(i / 255) * value)));
         }
         return new FilterTableArray(table);
-    }
-
-    @Override
-    public IFactory<ExposureImageDataFilter> getFactory() {
-        return new ExposureImageDataFilterFactory();
-    }
-
-    public static class ExposureImageDataFilterFactory extends ValueTableImageDataFilterFactory<ExposureImageDataFilter> {
-
-        public ExposureImageDataFilterFactory() {
-            super(ImageFilterType.ExposureImageDataFilterType);
-        }
     }
 }

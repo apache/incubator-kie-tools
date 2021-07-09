@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 
 /**
@@ -38,8 +35,8 @@ public class SharpenImageDataFilter extends AbstractConvolveImageDataFilter<Shar
         this(matrix.getMatrix());
     }
 
-    protected SharpenImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.SharpenImageDataFilterType, node, ctx);
+    protected SharpenImageDataFilter(Object node) {
+        super(ImageFilterType.SharpenImageDataFilterType, node);
     }
 
     public enum SharpenType {
@@ -59,18 +56,6 @@ public class SharpenImageDataFilter extends AbstractConvolveImageDataFilter<Shar
                 copy[i] = m_matrix[i];
             }
             return copy;
-        }
-    }
-
-    @Override
-    public IFactory<SharpenImageDataFilter> getFactory() {
-        return new SharpenImageDataFilterFactory();
-    }
-
-    public static class SharpenImageDataFilterFactory extends ConvolveImageDataFilterFactory<SharpenImageDataFilter> {
-
-        public SharpenImageDataFilterFactory() {
-            super(ImageFilterType.SharpenImageDataFilterType);
         }
     }
 }

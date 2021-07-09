@@ -249,15 +249,4 @@ public class PolyLine extends AbstractDirectionalMultiPointShape<PolyLine> {
         PolyLine polyLine = new PolyLine(this.getControlPoints().copy(), cornerRadius);
         return (PolyLine) copyTo(polyLine);
     }
-
-    public static class PolyLineFactory extends AbstractOffsetMultiPointShapeFactory<PolyLine> {
-
-        public PolyLineFactory() {
-            super(ShapeType.POLYLINE);
-
-            addAttribute(Attribute.POINTS, true);
-
-            addAttribute(Attribute.CORNER_RADIUS);
-        }
-    }
 }

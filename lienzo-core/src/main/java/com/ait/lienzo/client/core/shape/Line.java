@@ -220,13 +220,4 @@ public class Line extends AbstractOffsetMultiPointShape<Line> {
     public List<Attribute> getBoundingBoxAttributes() {
         return getBoundingBoxAttributesComposed(Attribute.POINTS);
     }
-
-    public static class LineFactory extends AbstractOffsetMultiPointShapeFactory<Line> {
-
-        public LineFactory() {
-            super(ShapeType.LINE);
-
-            addAttribute(Attribute.POINTS, true);
-        }
-    }
 }

@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
@@ -43,8 +40,8 @@ public class ColorLuminosityImageDataFilter extends AbstractRGBImageDataFilter<C
         super(ImageFilterType.ColorLuminosityImageDataFilterType, color);
     }
 
-    protected ColorLuminosityImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.ColorLuminosityImageDataFilterType, node, ctx);
+    protected ColorLuminosityImageDataFilter(Object node) {
+        super(ImageFilterType.ColorLuminosityImageDataFilterType, node);
     }
 
     @Override
@@ -76,18 +73,6 @@ public class ColorLuminosityImageDataFilter extends AbstractRGBImageDataFilter<C
             data[i] = Js.coerceToInt(((r * v) + 0.5));
             data[i + 1] = Js.coerceToInt(((g * v) + 0.5));
             data[i + 2] = Js.coerceToInt(((b * v) + 0.5));
-        }
-    }
-
-    @Override
-    public IFactory<ColorLuminosityImageDataFilter> getFactory() {
-        return new ColorLuminosityImageDataFilterFactory();
-    }
-
-    public static class ColorLuminosityImageDataFilterFactory extends RGBImageDataFilterFactory<ColorLuminosityImageDataFilter> {
-
-        public ColorLuminosityImageDataFilterFactory() {
-            super(ImageFilterType.ColorLuminosityImageDataFilterType);
         }
     }
 }

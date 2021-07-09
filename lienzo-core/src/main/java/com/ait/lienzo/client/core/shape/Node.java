@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.shape;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +31,6 @@ import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.ait.lienzo.client.core.animation.IAnimationCallback;
 import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.animation.TweeningAnimation;
-import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -74,9 +72,6 @@ import com.ait.lienzo.client.core.event.NodeTouchMoveHandler;
 import com.ait.lienzo.client.core.event.NodeTouchStartEvent;
 import com.ait.lienzo.client.core.event.NodeTouchStartHandler;
 import com.ait.lienzo.client.core.shape.guides.IGuidePrimitive;
-import com.ait.lienzo.client.core.shape.json.AbstractFactory;
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.types.DragBounds;
@@ -219,11 +214,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
      */
     protected void setNodeType(final NodeType type) {
         m_type = type;
-    }
-
-    @Override
-    public IFactory<?> getFactory() {
-        return LienzoCore.get().getFactory(m_type);
     }
 
     public EventPropagationMode getEventPropagationMode() {
@@ -505,26 +495,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
     @Override
     public T refresh() {
         return cast();
-    }
-
-    /**
-     * Returns the collection of {@link Attribute} for this object.
-     *
-     * @return Collection&lt;Attribute&gt;
-     */
-    @Override
-    public Collection<Attribute> getAttributeSheet() {
-        return getFactory().getAttributeSheet();
-    }
-
-    /**
-     * Returns the collection of required {@link Attribute} for this object.
-     *
-     * @return Collection&lt;Attribute&gt;
-     */
-    @Override
-    public Collection<Attribute> getRequiredAttributes() {
-        return getFactory().getRequiredAttributes();
     }
 
     protected void setParent(final Node<?> parent) {
@@ -1170,32 +1140,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
     @Override
     public final int hashCode() {
         return m_opts.hashCode();
-    }
-
-    public abstract static class NodeFactory<N extends IJSONSerializable<N>> extends AbstractFactory<N> {
-
-        protected NodeFactory(final NodeType type) {
-            this(type.getValue());
-        }
-
-        protected NodeFactory(final String typeName) {
-            super(typeName);
-
-            addAttribute(Attribute.ID);
-
-            addAttribute(Attribute.VISIBLE);
-
-            addAttribute(Attribute.LISTENING);
-        }
-
-        /**
-         * Only factories that wish to extend other factories should use this.
-         *
-         * @param type {@link NodeType}
-         */
-        protected void setNodeType(final NodeType type) {
-            setTypeName(type.getValue());
-        }
     }
 
     @JsType

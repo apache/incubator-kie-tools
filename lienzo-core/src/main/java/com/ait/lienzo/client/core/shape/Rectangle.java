@@ -180,17 +180,4 @@ public class Rectangle extends Shape<Rectangle> {
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.WIDTH, Attribute.HEIGHT, Attribute.CORNER_RADIUS);
     }
-
-    public static class RectangleFactory extends ShapeFactory<Rectangle> {
-
-        public RectangleFactory() {
-            super(ShapeType.RECTANGLE);
-
-            addAttribute(Attribute.WIDTH, true);
-
-            addAttribute(Attribute.HEIGHT, true);
-
-            addAttribute(Attribute.CORNER_RADIUS);
-        }
-    }
 }

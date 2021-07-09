@@ -367,7 +367,7 @@ public interface AnimationProperty {
 
             @Override
             public boolean init(final Node<?> node) {
-                if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable()) && (node.getAttributeSheet().contains(m_attribute))) {
+                if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable())) {
                     Color cend = ColorExtractor.extract(m_target);
 
                     String color = getColorString(node);
@@ -493,7 +493,7 @@ public interface AnimationProperty {
 
             @Override
             public boolean init(final Node<?> node) {
-                if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable()) && (node.getAttributeSheet().contains(m_attribute))) {
+                if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable())) {
                     m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
 
                     return true;
@@ -543,7 +543,7 @@ public interface AnimationProperty {
 
             @Override
             public boolean init(final Node<?> node) {
-                if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable()) && (node.getAttributeSheet().contains(m_attribute))) {
+                if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable())) {
                     m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
 
                     JsPropertyMap<Object> nodeMap = Js.uncheckedCast(node);
@@ -620,7 +620,7 @@ public interface AnimationProperty {
 
             @Override
             public boolean init(final Node<?> node) {
-                if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable()) && (node.getAttributeSheet().contains(m_attribute))) {
+                if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable())) {
                     m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
 
                     return true;
@@ -695,7 +695,7 @@ public interface AnimationProperty {
 
             @Override
             public boolean init(final Node<?> node) {
-                if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable()) && (node.getAttributeSheet().contains(m_attribute))) {
+                if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable())) {
                     m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
 
                     JsPropertyMap<Object> nodeMap = Js.uncheckedCast(node);
@@ -778,7 +778,7 @@ public interface AnimationProperty {
 
             @Override
             public boolean init(final Node<?> node) {
-                if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable()) && (node.getAttributeSheet().contains(m_attribute))) {
+                if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable())) {
                     m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
 
                     JsPropertyMap<Object> nodeMap = Js.uncheckedCast(node);
@@ -847,7 +847,7 @@ public interface AnimationProperty {
 
             @Override
             public boolean init(final Node<?> node) {
-                if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable()) && (node.getAttributeSheet().contains(m_attribute))) {
+                if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable())) {
                     m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
 
                     JsPropertyMap<Object> nodeMap = Js.uncheckedCast(node);

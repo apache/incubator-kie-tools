@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import jsinterop.base.Js;
 
@@ -36,8 +33,8 @@ public class GammaImageDataFilter extends AbstractValueTableImageDataFilter<Gamm
         super(ImageFilterType.GammaImageDataFilterType, value);
     }
 
-    protected GammaImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.GammaImageDataFilterType, node, ctx);
+    protected GammaImageDataFilter(Object node) {
+        super(ImageFilterType.GammaImageDataFilterType, node);
     }
 
     @Override
@@ -69,17 +66,5 @@ public class GammaImageDataFilter extends AbstractValueTableImageDataFilter<Gamm
             table[i] = Js.coerceToInt(255 * Math.pow(i / 255, 1 / value) + 0.5);
         }
         return new FilterTableArray(table);
-    }
-
-    @Override
-    public IFactory<GammaImageDataFilter> getFactory() {
-        return new GammaImageDataFilterFactory();
-    }
-
-    public static class GammaImageDataFilterFactory extends ValueTableImageDataFilterFactory<GammaImageDataFilter> {
-
-        public GammaImageDataFilterFactory() {
-            super(ImageFilterType.GammaImageDataFilterType);
-        }
     }
 }

@@ -16,32 +16,15 @@
 
 package com.ait.lienzo.client.core.shape.storage;
 
-import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 
-public class PrimitiveFastArrayStorageEngine extends AbstractFastArrayStorageEngine<IPrimitive<?>> implements IJSONSerializable<PrimitiveFastArrayStorageEngine> {
+public class PrimitiveFastArrayStorageEngine extends AbstractFastArrayStorageEngine<IPrimitive<?>> {
 
     public PrimitiveFastArrayStorageEngine() {
         super(StorageEngineType.PRIMITIVE_FAST_ARRAY_STORAGE_ENGINE);
     }
 
-    protected PrimitiveFastArrayStorageEngine(final Object node, final ValidationContext ctx) throws ValidationException {
-        super(StorageEngineType.PRIMITIVE_FAST_ARRAY_STORAGE_ENGINE, node, ctx);
-    }
-
-    @Override
-    public IFactory<?> getFactory() {
-        return LienzoCore.get().getFactory(getStorageEngineType());
-    }
-
-    public static class PrimitiveFastArrayStorageEngineFactory extends FastArrayStorageEngineFactory<PrimitiveFastArrayStorageEngine> {
-
-        public PrimitiveFastArrayStorageEngineFactory() {
-            super(StorageEngineType.PRIMITIVE_FAST_ARRAY_STORAGE_ENGINE);
-        }
+    protected PrimitiveFastArrayStorageEngine(final Object node) {
+        super(StorageEngineType.PRIMITIVE_FAST_ARRAY_STORAGE_ENGINE, node);
     }
 }

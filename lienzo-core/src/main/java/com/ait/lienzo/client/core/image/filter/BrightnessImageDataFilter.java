@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import elemental2.core.Uint8ClampedArray;
@@ -38,8 +35,8 @@ public class BrightnessImageDataFilter extends AbstractValueImageDataFilter<Brig
         super(ImageFilterType.BrightnessImageDataFilterType, value);
     }
 
-    protected BrightnessImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.BrightnessImageDataFilterType, node, ctx);
+    protected BrightnessImageDataFilter(Object node) {
+        super(ImageFilterType.BrightnessImageDataFilterType, node);
     }
 
     @Override
@@ -86,18 +83,6 @@ public class BrightnessImageDataFilter extends AbstractValueImageDataFilter<Brig
             data[i] = Js.coerceToInt(Math.max(Math.min(data[i] + v, 255), 0));
             data[i + 1] = Js.coerceToInt(Math.max(Math.min(data[i + 1] + v, 255), 0));
             data[i + 2] = Js.coerceToInt(Math.max(Math.min(data[i + 2] + v, 255), 0));
-        }
-    }
-
-    @Override
-    public IFactory<BrightnessImageDataFilter> getFactory() {
-        return new BrightnessImageDataFilterFactory();
-    }
-
-    public static class BrightnessImageDataFilterFactory extends ValueImageDataFilterFactory<BrightnessImageDataFilter> {
-
-        public BrightnessImageDataFilterFactory() {
-            super(ImageFilterType.BrightnessImageDataFilterType);
         }
     }
 }

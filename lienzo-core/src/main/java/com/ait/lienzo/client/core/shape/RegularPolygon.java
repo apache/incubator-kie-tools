@@ -216,17 +216,4 @@ public class RegularPolygon extends Shape<RegularPolygon> {
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.RADIUS, Attribute.SIDES, Attribute.CORNER_RADIUS);
     }
-
-    public static class RegularPolygonFactory extends ShapeFactory<RegularPolygon> {
-
-        public RegularPolygonFactory() {
-            super(ShapeType.REGULAR_POLYGON);
-
-            addAttribute(Attribute.RADIUS, true);
-
-            addAttribute(Attribute.SIDES, true);
-
-            addAttribute(Attribute.CORNER_RADIUS);
-        }
-    }
 }

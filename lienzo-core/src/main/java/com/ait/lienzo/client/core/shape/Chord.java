@@ -192,19 +192,4 @@ public class Chord extends Shape<Chord> {
     public List<Attribute> getBoundingBoxAttributes() {
         return Arrays.asList(Attribute.RADIUS, Attribute.START_ANGLE, Attribute.END_ANGLE, Attribute.COUNTER_CLOCKWISE);
     }
-
-    public static class ChordFactory extends ShapeFactory<Chord> {
-
-        public ChordFactory() {
-            super(ShapeType.CHORD);
-
-            addAttribute(Attribute.RADIUS, true);
-
-            addAttribute(Attribute.START_ANGLE, true);
-
-            addAttribute(Attribute.END_ANGLE, true);
-
-            addAttribute(Attribute.COUNTER_CLOCKWISE);
-        }
-    }
 }

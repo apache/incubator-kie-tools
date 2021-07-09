@@ -743,15 +743,4 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         OrthogonalPolyLine orthogonalPolyLine = new OrthogonalPolyLine(this.getControlPoints().copy(), cornerRadius);
         return (OrthogonalPolyLine) copyTo(orthogonalPolyLine);
     }
-
-    public static class OrthogonaPolylLineFactory extends AbstractDirectionalMultiPointShapeFactory<OrthogonalPolyLine> {
-
-        public OrthogonaPolylLineFactory() {
-            super(ShapeType.ORTHOGONAL_POLYLINE);
-
-            addAttribute(Attribute.CORNER_RADIUS);
-
-            addAttribute(Attribute.CONTROL_POINTS, true);
-        }
-    }
 }

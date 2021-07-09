@@ -22,10 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
@@ -57,11 +54,6 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
 
     public ProxyType getProxyType() {
         return m_type;
-    }
-
-    @Override
-    public IFactory<?> getFactory() {
-        return LienzoCore.get().getFactory(m_type);
     }
 
     @Override
@@ -244,64 +236,5 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
             return;
         }
         getProxy().drawWithTransforms(context, alpha, bounds);
-    }
-
-    protected abstract static class CompositeProxyFactory<C extends CompositeProxy<C, P>, P extends IPrimitive<?>> extends NodeFactory<C> {
-
-        protected CompositeProxyFactory(final ProxyType type) {
-            super(type.getValue());
-
-            addAttribute(Attribute.X);
-
-            addAttribute(Attribute.Y);
-
-            addAttribute(Attribute.ALPHA);
-
-            addAttribute(Attribute.FILL);
-
-            addAttribute(Attribute.FILL_ALPHA);
-
-            addAttribute(Attribute.STROKE);
-
-            addAttribute(Attribute.STROKE_WIDTH);
-
-            addAttribute(Attribute.STROKE_ALPHA);
-
-            addAttribute(Attribute.DRAGGABLE);
-
-            addAttribute(Attribute.EDITABLE);
-
-            addAttribute(Attribute.SCALE);
-
-            addAttribute(Attribute.SHEAR);
-
-            addAttribute(Attribute.ROTATION);
-
-            addAttribute(Attribute.OFFSET);
-
-            addAttribute(Attribute.SHADOW);
-
-            addAttribute(Attribute.LINE_CAP);
-
-            addAttribute(Attribute.LINE_JOIN);
-
-            addAttribute(Attribute.MITER_LIMIT);
-
-            addAttribute(Attribute.DRAG_CONSTRAINT);
-
-            addAttribute(Attribute.DRAG_BOUNDS);
-
-            addAttribute(Attribute.DRAG_MODE);
-
-            addAttribute(Attribute.DASH_ARRAY);
-
-            addAttribute(Attribute.DASH_OFFSET);
-
-            addAttribute(Attribute.EVENT_PROPAGATION_MODE);
-        }
-
-        protected void setProxyType(final ProxyType type) {
-            setTypeName(type.getValue());
-        }
     }
 }

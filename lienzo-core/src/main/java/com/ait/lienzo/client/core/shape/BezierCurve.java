@@ -121,13 +121,4 @@ public class BezierCurve extends AbstractMultiPointShape<BezierCurve> {
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.CONTROL_POINTS);
     }
-
-    public static class BezierCurveFactory extends ShapeFactory<BezierCurve> {
-
-        public BezierCurveFactory() {
-            super(ShapeType.BEZIER_CURVE);
-
-            addAttribute(Attribute.CONTROL_POINTS, true);
-        }
-    }
 }

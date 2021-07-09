@@ -316,16 +316,6 @@ public final class Point2D {
         return ((p.getX() == getX()) && (p.getY() == getY()));
     }
 
-//    public boolean closeEnough(final Point2D p)
-//    {
-//        return (Geometry.closeEnough(getX(), p.getX()) && Geometry.closeEnough(getY(), p.getY()));
-//    }
-//
-//    public boolean closeEnough(final Point2D p, final double precision)
-//    {
-//        return (Geometry.closeEnough(getX(), p.getX(), precision) && Geometry.closeEnough(getY(), p.getY(), precision));
-//    }
-
     @Override
     public int hashCode() {
         return Objects.hash(x, y);

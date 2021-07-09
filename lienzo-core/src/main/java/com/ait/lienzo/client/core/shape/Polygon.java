@@ -145,15 +145,4 @@ public class Polygon extends AbstractMultiPointShape<Polygon> {
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.POINTS, Attribute.CORNER_RADIUS);
     }
-
-    public static class PolygonFactory extends ShapeFactory<Polygon> {
-
-        public PolygonFactory() {
-            super(ShapeType.POLYGON);
-
-            addAttribute(Attribute.POINTS, true);
-
-            addAttribute(Attribute.CORNER_RADIUS);
-        }
-    }
 }

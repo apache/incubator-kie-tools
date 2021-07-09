@@ -16,10 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
@@ -63,8 +59,8 @@ public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<A
         setInverted(invert);
     }
 
-    protected AlphaScaleColorImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.AlphaScaleColorImageDataFilterType, node, ctx);
+    protected AlphaScaleColorImageDataFilter(Object node) {
+        super(ImageFilterType.AlphaScaleColorImageDataFilterType, node);
     }
 
     public AlphaScaleColorImageDataFilter setInverted(boolean inverted) {
@@ -111,20 +107,6 @@ public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<A
             } else {
                 data[i + 3] = (int) (255 - v);
             }
-        }
-    }
-
-    @Override
-    public IFactory<AlphaScaleColorImageDataFilter> getFactory() {
-        return new AlphaScaleColorImageDataFilterFactory();
-    }
-
-    public static class AlphaScaleColorImageDataFilterFactory extends RGBImageDataFilterFactory<AlphaScaleColorImageDataFilter> {
-
-        public AlphaScaleColorImageDataFilterFactory() {
-            super(ImageFilterType.AlphaScaleColorImageDataFilterType);
-
-            addAttribute(Attribute.INVERTED);
         }
     }
 }

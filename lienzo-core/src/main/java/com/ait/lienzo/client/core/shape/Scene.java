@@ -23,8 +23,6 @@ import java.util.function.Predicate;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.shape.storage.SceneFastArrayStorageEngine;
 import com.ait.lienzo.client.core.style.Style;
@@ -754,29 +752,6 @@ public class Scene extends ContainerNode<Layer, Scene> {
                 }
                 layer.find(predicate, buff);
             }
-        }
-    }
-
-    public static class SceneFactory extends ContainerNodeFactory<Scene> {
-
-        public SceneFactory() {
-            super(NodeType.SCENE);
-        }
-
-        @Override
-        public final boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx) {
-            if ((node.getNodeType() == NodeType.LAYER) || (node.getNodeType() == NodeType.GRID_LAYER)) {
-                container.asScene().add(node.asLayer());
-
-                return true;
-            } else {
-                try {
-                    ctx.addBadTypeError(node.getClass().getName() + " is not a Layer");
-                } catch (ValidationException e) {
-                    return false;
-                }
-            }
-            return false;
         }
     }
 }

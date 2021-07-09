@@ -24,8 +24,6 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.animation.LayerRedrawManager;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.shape.storage.PrimitiveFastArrayStorageEngine;
 import com.ait.lienzo.client.core.style.Style;
@@ -911,35 +909,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer> {
             @Override
             public void setGlobalAlpha(final double alpha) {
             }
-        }
-    }
-
-    public static class LayerFactory extends ContainerNodeFactory<Layer> {
-
-        public LayerFactory() {
-            super(NodeType.LAYER);
-
-            addAttribute(Attribute.CLEAR_LAYER_BEFORE_DRAW);
-
-            addAttribute(Attribute.TRANSFORMABLE);
-        }
-
-        @Override
-        public boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx) {
-            final IPrimitive<?> prim = node.asPrimitive();
-
-            if (null != prim) {
-                container.asLayer().add(prim);
-
-                return true;
-            } else {
-                try {
-                    ctx.addBadTypeError(node.getClass().getName() + " is not a Primitive");
-                } catch (ValidationException e) {
-                    return false;
-                }
-            }
-            return false;
         }
     }
 }

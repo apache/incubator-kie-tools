@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import elemental2.core.Uint8ClampedArray;
@@ -38,8 +35,8 @@ public class HueImageDataFilter extends AbstractValueImageDataFilter<HueImageDat
         super(ImageFilterType.HueImageDataFilterType, value);
     }
 
-    protected HueImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.HueImageDataFilterType, node, ctx);
+    protected HueImageDataFilter(Object node) {
+        super(ImageFilterType.HueImageDataFilterType, node);
     }
 
     @Override
@@ -94,18 +91,6 @@ public class HueImageDataFilter extends AbstractValueImageDataFilter<HueImageDat
                     data[p + i] = rgb[i];
                 }
             }
-        }
-    }
-
-    @Override
-    public IFactory<HueImageDataFilter> getFactory() {
-        return new HueImageDataFilterFactory();
-    }
-
-    public static class HueImageDataFilterFactory extends ValueImageDataFilterFactory<HueImageDataFilter> {
-
-        public HueImageDataFilterFactory() {
-            super(ImageFilterType.HueImageDataFilterType);
         }
     }
 }

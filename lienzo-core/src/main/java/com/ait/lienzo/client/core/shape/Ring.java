@@ -155,15 +155,4 @@ public class Ring extends Shape<Ring> {
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.INNER_RADIUS, Attribute.OUTER_RADIUS);
     }
-
-    public static class RingFactory extends ShapeFactory<Ring> {
-
-        public RingFactory() {
-            super(ShapeType.RING);
-
-            addAttribute(Attribute.INNER_RADIUS, true);
-
-            addAttribute(Attribute.OUTER_RADIUS, true);
-        }
-    }
 }

@@ -183,11 +183,4 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath> {
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes();
     }
-
-    public static class MultiPathFactory extends ShapeFactory<MultiPath> {
-
-        public MultiPathFactory() {
-            super(ShapeType.MULTI_PATH);
-        }
-    }
 }

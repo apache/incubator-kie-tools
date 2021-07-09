@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import elemental2.core.Uint8ClampedArray;
@@ -34,8 +31,8 @@ public class EdgeDetectImageDataFilter extends AbstractImageDataFilter<EdgeDetec
         super(ImageFilterType.EdgeDetectImageDataFilterType);
     }
 
-    protected EdgeDetectImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.EdgeDetectImageDataFilterType, node, ctx);
+    protected EdgeDetectImageDataFilter(Object node) {
+        super(ImageFilterType.EdgeDetectImageDataFilterType, node);
     }
 
     @Override
@@ -114,20 +111,6 @@ public class EdgeDetectImageDataFilter extends AbstractImageDataFilter<EdgeDetec
                 buff[p + 2] = Js.coerceToInt((Math.sqrt(bh * bh + bv * bv) / 1.8));
                 buff[p + 3] = data[p + 3];
             }
-        }
-    }
-
-    ;
-
-    @Override
-    public IFactory<EdgeDetectImageDataFilter> getFactory() {
-        return new EdgeDetectImageDataFilterFactory();
-    }
-
-    public static class EdgeDetectImageDataFilterFactory extends ImageDataFilterFactory<EdgeDetectImageDataFilter> {
-
-        public EdgeDetectImageDataFilterFactory() {
-            super(ImageFilterType.EdgeDetectImageDataFilterType);
         }
     }
 }

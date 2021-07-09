@@ -7,9 +7,6 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.IDestroyable;
 import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.client.core.shape.Shape;
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import jsinterop.annotations.JsProperty;
@@ -350,33 +347,5 @@ public class Image
     public void destroy() {
         destroyProxy();
         removeFromParent();
-    }
-
-    public static class ImageFactory extends ShapeFactory<Image> {
-
-        public ImageFactory() {
-            super(ShapeType.IMAGE);
-            addAttribute(Attribute.URL, true);
-            addAttribute(Attribute.CLIPPED_IMAGE_START_X);
-            addAttribute(Attribute.CLIPPED_IMAGE_START_Y);
-            addAttribute(Attribute.CLIPPED_IMAGE_WIDTH);
-            addAttribute(Attribute.CLIPPED_IMAGE_HEIGHT);
-            addAttribute(Attribute.CLIPPED_IMAGE_DESTINATION_WIDTH);
-            addAttribute(Attribute.CLIPPED_IMAGE_DESTINATION_HEIGHT);
-        }
-
-        @Override
-        public boolean isPostProcessed() {
-            return true;
-        }
-
-        @Override
-        public void process(IJSONSerializable<?> node, ValidationContext ctx) throws ValidationException {
-            if (node instanceof Image) {
-                final Image self = (Image) node;
-                self.configure(self.getURL())
-                        .load(image -> image.performBatch());
-            }
-        }
     }
 }

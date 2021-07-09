@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 
 /**
@@ -30,19 +27,7 @@ public class BumpImageDataFilter extends AbstractConvolveImageDataFilter<BumpIma
         super(ImageFilterType.BumpImageDataFilterType, -1, -1, 0, -1, 1, 1, 0, 1, 1);
     }
 
-    protected BumpImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.BumpImageDataFilterType, node, ctx);
-    }
-
-    @Override
-    public IFactory<BumpImageDataFilter> getFactory() {
-        return new BumpImageDataFilterFactory();
-    }
-
-    public static class BumpImageDataFilterFactory extends ConvolveImageDataFilterFactory<BumpImageDataFilter> {
-
-        public BumpImageDataFilterFactory() {
-            super(ImageFilterType.BumpImageDataFilterType);
-        }
+    protected BumpImageDataFilter(Object node) {
+        super(ImageFilterType.BumpImageDataFilterType, node);
     }
 }

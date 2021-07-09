@@ -211,21 +211,4 @@ public class EllipticalArc extends Shape<EllipticalArc> {
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.RADIUS_X, Attribute.RADIUS_Y, Attribute.START_ANGLE, Attribute.END_ANGLE, Attribute.COUNTER_CLOCKWISE);
     }
-
-    public static class EllipticalArcFactory extends ShapeFactory<EllipticalArc> {
-
-        public EllipticalArcFactory() {
-            super(ShapeType.ELLIPTICAL_ARC);
-
-            addAttribute(Attribute.RADIUS_X, true);
-
-            addAttribute(Attribute.RADIUS_Y, true);
-
-            addAttribute(Attribute.START_ANGLE, true);
-
-            addAttribute(Attribute.END_ANGLE, true);
-
-            addAttribute(Attribute.COUNTER_CLOCKWISE);
-        }
-    }
 }

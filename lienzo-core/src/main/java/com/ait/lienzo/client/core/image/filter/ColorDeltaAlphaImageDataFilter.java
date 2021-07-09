@@ -16,10 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
@@ -52,8 +48,8 @@ public class ColorDeltaAlphaImageDataFilter extends AbstractRGBImageDataFilter<C
         setValue(value);
     }
 
-    protected ColorDeltaAlphaImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.ColorDeltaAlphaImageDataFilterType, node, ctx);
+    protected ColorDeltaAlphaImageDataFilter(Object node) {
+        super(ImageFilterType.ColorDeltaAlphaImageDataFilterType, node);
     }
 
     public final ColorDeltaAlphaImageDataFilter setValue(double value) {
@@ -103,20 +99,6 @@ public class ColorDeltaAlphaImageDataFilter extends AbstractRGBImageDataFilter<C
             if ((rval <= rmax) && (rval >= rmin) && (gval <= gmax) && (gval >= gmin) && (bval <= bmax) && (bval >= bmin)) {
                 data[i + 3] = 0;
             }
-        }
-    }
-
-    @Override
-    public IFactory<ColorDeltaAlphaImageDataFilter> getFactory() {
-        return new ColorDeltaAlphaImageDataFilterFactory();
-    }
-
-    public static class ColorDeltaAlphaImageDataFilterFactory extends RGBImageDataFilterFactory<ColorDeltaAlphaImageDataFilter> {
-
-        public ColorDeltaAlphaImageDataFilterFactory() {
-            super(ImageFilterType.ColorDeltaAlphaImageDataFilterType);
-
-            addAttribute(Attribute.VALUE, true);
         }
     }
 }

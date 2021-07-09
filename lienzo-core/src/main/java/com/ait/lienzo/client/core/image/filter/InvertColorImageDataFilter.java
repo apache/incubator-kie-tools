@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import elemental2.core.Uint8ClampedArray;
@@ -34,8 +31,8 @@ public class InvertColorImageDataFilter extends AbstractImageDataFilter<InvertCo
         super(ImageFilterType.InvertColorImageDataFilterType);
     }
 
-    protected InvertColorImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.InvertColorImageDataFilterType, node, ctx);
+    protected InvertColorImageDataFilter(Object node) {
+        super(ImageFilterType.InvertColorImageDataFilterType, node);
     }
 
     @Override
@@ -66,18 +63,6 @@ public class InvertColorImageDataFilter extends AbstractImageDataFilter<InvertCo
             data[i] = 255 - data[i];
             data[i + 1] = 255 - data[i + 1];
             data[i + 2] = 255 - data[i + 2];
-        }
-    }
-
-    @Override
-    public IFactory<InvertColorImageDataFilter> getFactory() {
-        return new InvertColorImageDataFilterFactory();
-    }
-
-    public static class InvertColorImageDataFilterFactory extends ImageDataFilterFactory<InvertColorImageDataFilter> {
-
-        public InvertColorImageDataFilterFactory() {
-            super(ImageFilterType.InvertColorImageDataFilterType);
         }
     }
 }

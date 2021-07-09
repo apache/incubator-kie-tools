@@ -432,11 +432,4 @@ public class GridLayer extends Layer {
         // Draw children (if any)
         super.drawWithoutTransforms(context, alpha, bounds);
     }
-
-    public static class GridLayerFactory extends LayerFactory {
-
-        public GridLayerFactory() {
-            setNodeType(NodeType.GRID_LAYER);
-        }
-    }
 }

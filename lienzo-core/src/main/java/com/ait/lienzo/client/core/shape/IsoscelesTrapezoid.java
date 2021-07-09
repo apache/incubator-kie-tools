@@ -188,19 +188,4 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid> {
 
         return refresh();
     }
-
-    public static class IsoscelesTrapezoidFactory extends ShapeFactory<IsoscelesTrapezoid> {
-
-        public IsoscelesTrapezoidFactory() {
-            super(ShapeType.ISOSCELES_TRAPEZOID);
-
-            addAttribute(Attribute.CORNER_RADIUS);
-
-            addAttribute(Attribute.TOP_WIDTH, true);
-
-            addAttribute(Attribute.BOTTOM_WIDTH, true);
-
-            addAttribute(Attribute.HEIGHT, true);
-        }
-    }
 }

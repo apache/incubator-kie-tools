@@ -220,21 +220,4 @@ public class Bow extends Shape<Bow> {
     public List<Attribute> getBoundingBoxAttributes() {
         return Arrays.asList(Attribute.INNER_RADIUS, Attribute.OUTER_RADIUS, Attribute.START_ANGLE, Attribute.END_ANGLE, Attribute.COUNTER_CLOCKWISE);
     }
-
-    public static class BowFactory extends ShapeFactory<Bow> {
-
-        public BowFactory() {
-            super(ShapeType.BOW);
-
-            addAttribute(Attribute.INNER_RADIUS, true);
-
-            addAttribute(Attribute.OUTER_RADIUS, true);
-
-            addAttribute(Attribute.START_ANGLE, true);
-
-            addAttribute(Attribute.END_ANGLE, true);
-
-            addAttribute(Attribute.COUNTER_CLOCKWISE);
-        }
-    }
 }

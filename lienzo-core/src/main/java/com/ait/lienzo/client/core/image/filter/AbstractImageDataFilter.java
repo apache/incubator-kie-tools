@@ -16,10 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.shape.json.AbstractFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import jsinterop.annotations.JsProperty;
 
@@ -36,7 +32,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
         setActive(true);
     }
 
-    protected AbstractImageDataFilter(final ImageFilterType type, final Object node, final ValidationContext ctx) throws ValidationException {
+    protected AbstractImageDataFilter(final ImageFilterType type, final Object node) {
         m_type = type;
 
         if (null == node) {
@@ -67,14 +63,5 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
     @SuppressWarnings("unchecked")
     protected final T cast() {
         return (T) this;
-    }
-
-    protected static abstract class ImageDataFilterFactory<T extends ImageDataFilter<T>> extends AbstractFactory<T> {
-
-        protected ImageDataFilterFactory(final ImageFilterType type) {
-            super(type.getValue());
-
-            addAttribute(Attribute.ACTIVE, true);
-        }
     }
 }

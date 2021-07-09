@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import jsinterop.base.Js;
 
@@ -36,8 +33,8 @@ public class PosterizeImageDataFilter extends AbstractValueTableImageDataFilter<
         super(ImageFilterType.PosterizeImageDataFilterType, value);
     }
 
-    protected PosterizeImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.PosterizeImageDataFilterType, node, ctx);
+    protected PosterizeImageDataFilter(Object node) {
+        super(ImageFilterType.PosterizeImageDataFilterType, node);
     }
 
     @Override
@@ -71,17 +68,5 @@ public class PosterizeImageDataFilter extends AbstractValueTableImageDataFilter<
             table[i] = k;
         }
         return new FilterTableArray(table);
-    }
-
-    @Override
-    public IFactory<PosterizeImageDataFilter> getFactory() {
-        return new PosterizeImageDataFilterFactory();
-    }
-
-    public static class PosterizeImageDataFilterFactory extends ValueTableImageDataFilterFactory<PosterizeImageDataFilter> {
-
-        public PosterizeImageDataFilterFactory() {
-            super(ImageFilterType.PosterizeImageDataFilterType);
-        }
     }
 }

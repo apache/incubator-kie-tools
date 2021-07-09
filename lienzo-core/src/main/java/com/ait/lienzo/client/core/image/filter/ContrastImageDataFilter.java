@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import jsinterop.base.Js;
 
@@ -36,8 +33,8 @@ public class ContrastImageDataFilter extends AbstractValueTableImageDataFilter<C
         super(ImageFilterType.ContrastImageDataFilterType, value);
     }
 
-    protected ContrastImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.ContrastImageDataFilterType, node, ctx);
+    protected ContrastImageDataFilter(Object node) {
+        super(ImageFilterType.ContrastImageDataFilterType, node);
     }
 
     @Override
@@ -70,17 +67,5 @@ public class ContrastImageDataFilter extends AbstractValueTableImageDataFilter<C
         }
 
         return new FilterTableArray(table);
-    }
-
-    @Override
-    public IFactory<ContrastImageDataFilter> getFactory() {
-        return new ContrastImageDataFilterFactory();
-    }
-
-    public static class ContrastImageDataFilterFactory extends ValueTableImageDataFilterFactory<ContrastImageDataFilter> {
-
-        public ContrastImageDataFilterFactory() {
-            super(ImageFilterType.ContrastImageDataFilterType);
-        }
     }
 }

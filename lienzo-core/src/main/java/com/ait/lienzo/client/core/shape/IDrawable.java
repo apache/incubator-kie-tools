@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Collection;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -47,7 +46,6 @@ import com.ait.lienzo.client.core.event.NodeTouchEndHandler;
 import com.ait.lienzo.client.core.event.NodeTouchMoveHandler;
 import com.ait.lienzo.client.core.event.NodeTouchStartHandler;
 import com.ait.lienzo.client.core.shape.guides.IGuidePrimitive;
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -61,17 +59,11 @@ import com.ait.lienzo.tools.client.event.INodeEvent.Type;
 /**
  * Interface to be implemented by drawable objects.
  */
-public interface IDrawable<T extends IDrawable<T>> extends EventReceiver,
-                                                           IJSONSerializable<T> //NObjectOnWire,
-{
+public interface IDrawable<T extends IDrawable<T>> extends EventReceiver {
 
     T draw();
 
     T batch();
-
-    Collection<Attribute> getAttributeSheet();
-
-    Collection<Attribute> getRequiredAttributes();
 
     Node<?> getParent();
 

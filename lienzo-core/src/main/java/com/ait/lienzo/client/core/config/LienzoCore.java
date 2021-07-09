@@ -16,14 +16,12 @@
 
 package com.ait.lienzo.client.core.config;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.style.Style.Cursor;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
@@ -33,8 +31,6 @@ import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.LayerClearMode;
 import com.ait.lienzo.shared.core.types.LineCap;
-import com.ait.lienzo.tools.client.StringOps;
-import com.ait.lienzo.tools.common.api.types.IStringValued;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLCanvasElement;
 import elemental2.dom.ImageData;
@@ -94,8 +90,6 @@ public final class LienzoCore {
 
     private ImageSelectionMode m_imageSelectionMode = ImageSelectionMode.SELECT_NON_TRANSPARENT;
 
-    private final ArrayList<ILienzoPlugin> m_plugins = new ArrayList<>();
-
     private static boolean isCanvasSupported() {
 
         HTMLCanvasElement canvas = Js.uncheckedCast(DomGlobal.document.createElement("canvas"));
@@ -107,61 +101,6 @@ public final class LienzoCore {
 
     public static final LienzoCore get() {
         return INSTANCE;
-    }
-
-    public final boolean addPlugin(final ILienzoPlugin plugin) {
-        if (null == plugin) {
-            return false;
-        }
-        log("Lienzo adding plugin: " + plugin.getNameSpace());
-
-        if (m_plugins.contains(plugin)) {
-            error("Lienzo plugin " + plugin.getNameSpace() + " already added.");
-
-            return false;
-        }
-        for (ILienzoPlugin p : m_plugins) {
-            if (plugin.getNameSpace().equals(p.getNameSpace())) {
-                error("Lienzo plugin " + plugin.getNameSpace() + " with name name space already added.");
-
-                return false;
-            }
-        }
-        m_plugins.add(plugin);
-
-        return true;
-    }
-
-    public final ILienzoPlugin getPlugin(String name) {
-        if (null != (name = StringOps.toTrimOrNull(name))) {
-            for (ILienzoPlugin p : m_plugins) {
-                if (p.getNameSpace().equals(name)) {
-                    return p;
-                }
-            }
-        }
-        return null;
-    }
-
-    public final List<ILienzoPlugin> getPlugins() {
-        return Collections.unmodifiableList(m_plugins);
-    }
-
-    public final IFactory<?> getFactory(final IStringValued type) {
-        return getFactory((null != type) ? type.getValue() : null);
-    }
-
-    public final IFactory<?> getFactory(String name) {
-        if (null != (name = StringOps.toTrimOrNull(name))) {
-            for (ILienzoPlugin p : m_plugins) {
-                final IFactory<?> factory = p.getFactory(name);
-
-                if (null != factory) {
-                    return factory;
-                }
-            }
-        }
-        return null;
     }
 
     public final void log(final String message) {

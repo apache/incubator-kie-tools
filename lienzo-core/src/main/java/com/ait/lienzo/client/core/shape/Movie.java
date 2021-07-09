@@ -813,27 +813,4 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie> {
             return this;
         }
     }
-
-    public static class MovieFactory extends ShapeFactory<Movie> {
-
-        public MovieFactory() {
-            super(ShapeType.MOVIE);
-
-            addAttribute(Attribute.URL, true);
-
-            addAttribute(Attribute.LOOP);
-
-            addAttribute(Attribute.WIDTH);
-
-            addAttribute(Attribute.HEIGHT);
-
-            addAttribute(Attribute.VOLUME);
-
-            addAttribute(Attribute.AUTO_PLAY);
-
-            addAttribute(Attribute.SHOW_POSTER);
-
-            addAttribute(Attribute.PLAYBACK_RATE);
-        }
-    }
 }

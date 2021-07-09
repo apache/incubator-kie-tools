@@ -54,11 +54,4 @@ public final class Palette extends AbstractPaletteBase<Palette> {
     public NFastArrayList<PaletteItem> getPaletteItems() {
         return m_list;
     }
-
-    public static final class PaletteFactory extends AbstractPalettebaseFactory<Palette> {
-
-        public PaletteFactory() {
-            super(PaletteType.PALETTE);
-        }
-    }
 }

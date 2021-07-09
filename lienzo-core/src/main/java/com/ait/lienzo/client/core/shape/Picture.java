@@ -27,9 +27,6 @@ import com.ait.lienzo.client.core.image.PictureFilteredHandler;
 import com.ait.lienzo.client.core.image.PictureLoadedHandler;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.resources.client.ImageResource;
@@ -1560,50 +1557,6 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     public void destroy() {
         getImageProxy().destroy();
         removeFromParent();
-    }
-
-    public static class PictureFactory extends ShapeFactory<Picture> {
-
-        public PictureFactory() {
-            super(ShapeType.PICTURE);
-
-            addAttribute(Attribute.URL, true);
-
-            addAttribute(Attribute.CLIPPED_IMAGE_START_X);
-
-            addAttribute(Attribute.CLIPPED_IMAGE_START_Y);
-
-            addAttribute(Attribute.CLIPPED_IMAGE_WIDTH);
-
-            addAttribute(Attribute.CLIPPED_IMAGE_HEIGHT);
-
-            addAttribute(Attribute.CLIPPED_IMAGE_DESTINATION_WIDTH);
-
-            addAttribute(Attribute.CLIPPED_IMAGE_DESTINATION_HEIGHT);
-
-            addAttribute(Attribute.SERIALIZATION_MODE);
-
-            addAttribute(Attribute.IMAGE_SELECTION_MODE);
-        }
-
-        @Override
-        public boolean isPostProcessed() {
-            return true;
-        }
-
-        @Override
-        public void process(IJSONSerializable<?> node, ValidationContext ctx) throws ValidationException {
-            if (!(node instanceof Picture)) {
-                return;
-            }
-            Picture self = (Picture) node;
-
-            if (!self.isLoaded()) {
-                self.getImageProxy().load(self.getURL());
-
-                self.onLoaded(self.createPictureLoader());
-            }
-        }
     }
 
     private PictureLoadedHandler createPictureLoader() {

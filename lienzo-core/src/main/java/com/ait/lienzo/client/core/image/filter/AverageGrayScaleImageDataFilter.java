@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import elemental2.core.Uint8ClampedArray;
@@ -34,8 +31,8 @@ public class AverageGrayScaleImageDataFilter extends AbstractImageDataFilter<Ave
         super(ImageFilterType.AverageGrayScaleImageDataFilterType);
     }
 
-    protected AverageGrayScaleImageDataFilter(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.AverageGrayScaleImageDataFilterType, node, ctx);
+    protected AverageGrayScaleImageDataFilter(Object node) {
+        super(ImageFilterType.AverageGrayScaleImageDataFilterType, node);
     }
 
     @Override
@@ -65,18 +62,6 @@ public class AverageGrayScaleImageDataFilter extends AbstractImageDataFilter<Ave
         for (int i = 0; i < length; i += 4) {
             double v = Js.coerceToInt(((data[i] + data[i + 1] + data[i + 2]) / 3.0) + 0.5);
             data[i] = data[i + 1] = data[i + 2] = (int) v;
-        }
-    }
-
-    @Override
-    public IFactory<AverageGrayScaleImageDataFilter> getFactory() {
-        return new AverageGrayScaleImageDataFilterFactory();
-    }
-
-    public static class AverageGrayScaleImageDataFilterFactory extends ImageDataFilterFactory<AverageGrayScaleImageDataFilter> {
-
-        public AverageGrayScaleImageDataFilterFactory() {
-            super(ImageFilterType.AverageGrayScaleImageDataFilterType);
         }
     }
 }

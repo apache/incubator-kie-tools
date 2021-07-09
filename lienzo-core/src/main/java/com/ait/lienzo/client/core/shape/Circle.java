@@ -101,13 +101,4 @@ public class Circle extends Shape<Circle> {
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.RADIUS);
     }
-
-    public static class CircleFactory extends ShapeFactory<Circle> {
-
-        public CircleFactory() {
-            super(ShapeType.CIRCLE);
-
-            addAttribute(Attribute.RADIUS, true);
-        }
-    }
 }

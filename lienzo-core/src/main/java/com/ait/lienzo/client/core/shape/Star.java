@@ -239,19 +239,4 @@ public class Star extends Shape<Star> {
         }
         return m_list;
     }
-
-    public static class StarFactory extends ShapeFactory<Star> {
-
-        public StarFactory() {
-            super(ShapeType.STAR);
-
-            addAttribute(Attribute.CORNER_RADIUS);
-
-            addAttribute(Attribute.STAR_POINTS, true);
-
-            addAttribute(Attribute.INNER_RADIUS, true);
-
-            addAttribute(Attribute.OUTER_RADIUS, true);
-        }
-    }
 }

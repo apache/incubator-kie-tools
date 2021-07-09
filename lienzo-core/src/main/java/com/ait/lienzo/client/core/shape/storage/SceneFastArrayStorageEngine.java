@@ -16,32 +16,15 @@
 
 package com.ait.lienzo.client.core.shape.storage;
 
-import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 
-public class SceneFastArrayStorageEngine extends AbstractFastArrayStorageEngine<Layer> implements IJSONSerializable<SceneFastArrayStorageEngine> {
+public class SceneFastArrayStorageEngine extends AbstractFastArrayStorageEngine<Layer> {
 
     public SceneFastArrayStorageEngine() {
         super(StorageEngineType.SCENE_FAST_ARRAY_STORAGE_ENGINE);
     }
 
-    protected SceneFastArrayStorageEngine(final Object node, final ValidationContext ctx) throws ValidationException {
-        super(StorageEngineType.SCENE_FAST_ARRAY_STORAGE_ENGINE, node, ctx);
-    }
-
-    @Override
-    public IFactory<?> getFactory() {
-        return LienzoCore.get().getFactory(getStorageEngineType());
-    }
-
-    public static class SceneFastArrayStorageEngineFactory extends FastArrayStorageEngineFactory<SceneFastArrayStorageEngine> {
-
-        public SceneFastArrayStorageEngineFactory() {
-            super(StorageEngineType.SCENE_FAST_ARRAY_STORAGE_ENGINE);
-        }
+    protected SceneFastArrayStorageEngine(final Object node) {
+        super(StorageEngineType.SCENE_FAST_ARRAY_STORAGE_ENGINE, node);
     }
 }

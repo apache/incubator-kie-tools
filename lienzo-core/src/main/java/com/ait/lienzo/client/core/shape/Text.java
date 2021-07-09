@@ -560,27 +560,4 @@ public class Text extends Shape<Text> {
         this.wrapper = wrapper;
         return this;
     }
-
-    public static class TextFactory extends ShapeFactory<Text> {
-
-        public TextFactory() {
-            super(ShapeType.TEXT);
-
-            addAttribute(Attribute.TEXT, true);
-
-            addAttribute(Attribute.FONT_SIZE);
-
-            addAttribute(Attribute.FONT_STYLE);
-
-            addAttribute(Attribute.FONT_FAMILY);
-
-            addAttribute(Attribute.TEXT_UNIT);
-
-            addAttribute(Attribute.TEXT_ALIGN);
-
-            addAttribute(Attribute.TEXT_BASELINE);
-
-            addAttribute(Attribute.WIDTH);
-        }
-    }
 }

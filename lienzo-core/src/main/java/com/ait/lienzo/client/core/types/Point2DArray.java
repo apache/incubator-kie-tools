@@ -291,47 +291,6 @@ public class Point2DArray implements JsIterable<Point2D>,
         return Global.JSON.stringify(this);
     }
 
-//    @JsOverlay
-//    public final String toString()
-//    {
-//        return toJSONString();
-//    }
-//
-//    @JsOverlay
-//    public final boolean equals(final Object other)
-//    {
-//        if ((other == null) || (false == (other instanceof Point2DArray)))
-//        {
-//            return false;
-//        }
-//        if (this == other)
-//        {
-//            return true;
-//        }
-//        Point2DArray that = ((Point2DArray) other);
-//
-//        final int size = size();
-//
-//        if (that.size() != size)
-//        {
-//            return false;
-//        }
-//        for (int i = 0; i < size; i++)
-//        {
-//            if (false == get(i).equals(that.get(i)))
-//            {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-//
-//    @JsOverlay
-//    public final int hashCode()
-//    {
-//        return toJSONString().hashCode();
-//    }
-
     @JsOverlay
     public final Iterator<Point2D> iterator() {
         return asList().iterator();

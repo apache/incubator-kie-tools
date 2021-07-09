@@ -26,7 +26,6 @@ import java.util.function.Predicate;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
@@ -89,11 +88,6 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
 
     public GroupType getGroupType() {
         return m_type;
-    }
-
-    @Override
-    public IFactory<?> getFactory() {
-        return LienzoCore.get().getFactory(m_type);
     }
 
     @Override
@@ -461,65 +455,6 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
             list.get(i).refresh();
         }
         return cast();
-    }
-
-    protected abstract static class GroupOfFactory<T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNodeFactory<C> {
-
-        protected GroupOfFactory(final GroupType type) {
-            super(type.getValue());
-
-            addAttribute(Attribute.X);
-
-            addAttribute(Attribute.Y);
-
-            addAttribute(Attribute.ALPHA);
-
-            addAttribute(Attribute.FILL);
-
-            addAttribute(Attribute.FILL_ALPHA);
-
-            addAttribute(Attribute.STROKE);
-
-            addAttribute(Attribute.STROKE_WIDTH);
-
-            addAttribute(Attribute.STROKE_ALPHA);
-
-            addAttribute(Attribute.DRAGGABLE);
-
-            addAttribute(Attribute.EDITABLE);
-
-            addAttribute(Attribute.SCALE);
-
-            addAttribute(Attribute.SHEAR);
-
-            addAttribute(Attribute.ROTATION);
-
-            addAttribute(Attribute.OFFSET);
-
-            addAttribute(Attribute.SHADOW);
-
-            addAttribute(Attribute.LINE_CAP);
-
-            addAttribute(Attribute.LINE_JOIN);
-
-            addAttribute(Attribute.MITER_LIMIT);
-
-            addAttribute(Attribute.DRAG_CONSTRAINT);
-
-            addAttribute(Attribute.DRAG_BOUNDS);
-
-            addAttribute(Attribute.DRAG_MODE);
-
-            addAttribute(Attribute.DASH_ARRAY);
-
-            addAttribute(Attribute.DASH_OFFSET);
-
-            addAttribute(Attribute.EVENT_PROPAGATION_MODE);
-        }
-
-        protected void setGroupType(final GroupType type) {
-            setTypeName(type.getValue());
-        }
     }
 
     @JsType

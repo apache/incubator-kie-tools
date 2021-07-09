@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.shape.Movie;
 import com.ait.lienzo.client.core.shape.Picture;
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import elemental2.core.JsArray;
 import elemental2.dom.ImageData;
@@ -28,7 +27,7 @@ import jsinterop.annotations.JsType;
 /**
  * Interface to be used to create {@link Picture} and {@link Movie} filters.
  */
-public interface ImageDataFilter<T extends ImageDataFilter<T>> extends IJSONSerializable<T> {
+public interface ImageDataFilter<T extends ImageDataFilter<T>> {
 
     int R_OFFSET = 0;
 

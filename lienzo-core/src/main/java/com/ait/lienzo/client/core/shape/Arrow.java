@@ -483,23 +483,4 @@ public class Arrow extends Shape<Arrow> {
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.POINTS, Attribute.BASE_WIDTH, Attribute.HEAD_WIDTH, Attribute.ARROW_ANGLE, Attribute.BASE_ANGLE, Attribute.ARROW_TYPE);
     }
-
-    public static class ArrowFactory extends ShapeFactory<Arrow> {
-
-        public ArrowFactory() {
-            super(ShapeType.ARROW);
-
-            addAttribute(Attribute.POINTS, true);
-
-            addAttribute(Attribute.BASE_WIDTH, true);
-
-            addAttribute(Attribute.HEAD_WIDTH, true);
-
-            addAttribute(Attribute.ARROW_ANGLE, true);
-
-            addAttribute(Attribute.BASE_ANGLE, true);
-
-            addAttribute(Attribute.ARROW_TYPE, true);
-        }
-    }
 }

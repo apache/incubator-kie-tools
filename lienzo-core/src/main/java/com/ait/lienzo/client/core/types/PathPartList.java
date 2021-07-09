@@ -238,11 +238,6 @@ public class PathPartList {
         return m_fin;
     }
 
-//    public final JSONArray toJSONArray()
-//    {
-//        return Global.JSON.stringify(m_jso);
-//    }
-
     public final String toJSONString() {
         return Global.JSON.stringify(m_jso);
     }

@@ -18,9 +18,6 @@ package com.ait.lienzo.client.core.image.filter;
 
 import java.util.Collection;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataUtil;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
@@ -40,8 +37,8 @@ public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilte
         addFilters(filters);
     }
 
-    protected ImageDataFilterChain(Object node, ValidationContext ctx) throws ValidationException {
-        super(ImageFilterType.ImageDataFilterChainType, node, ctx);
+    protected ImageDataFilterChain(Object node) {
+        super(ImageFilterType.ImageDataFilterChainType, node);
     }
 
     public int size() {
@@ -199,17 +196,5 @@ public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilte
     @Override
     public Collection<ImageDataFilter<?>> getFilters() {
         return m_filters.toList();
-    }
-
-    @Override
-    public IFactory<ImageDataFilterChain> getFactory() {
-        return new ImageDataFilterChainFactory();
-    }
-
-    public static class ImageDataFilterChainFactory extends ImageDataFilterFactory<ImageDataFilterChain> {
-
-        public ImageDataFilterChainFactory() {
-            super(ImageFilterType.ImageDataFilterChainType);
-        }
     }
 }

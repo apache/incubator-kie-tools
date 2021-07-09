@@ -225,19 +225,4 @@ public class Parallelogram extends Shape<Parallelogram> {
     public List<Attribute> getBoundingBoxAttributes() {
         return asAttributes(Attribute.WIDTH, Attribute.HEIGHT, Attribute.SKEW, Attribute.CORNER_RADIUS);
     }
-
-    public static class ParallelogramFactory extends ShapeFactory<Parallelogram> {
-
-        public ParallelogramFactory() {
-            super(ShapeType.PARALLELOGRAM);
-
-            addAttribute(Attribute.WIDTH, true);
-
-            addAttribute(Attribute.HEIGHT, true);
-
-            addAttribute(Attribute.SKEW, true);
-
-            addAttribute(Attribute.CORNER_RADIUS);
-        }
-    }
 }

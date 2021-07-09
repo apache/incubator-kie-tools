@@ -37,8 +37,6 @@ import com.ait.lienzo.client.core.event.ViewportTransformChangedEvent;
 import com.ait.lienzo.client.core.event.ViewportTransformChangedHandler;
 import com.ait.lienzo.client.core.mediator.IMediator;
 import com.ait.lienzo.client.core.mediator.Mediators;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
-import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.shape.storage.ViewportFastArrayStorageEngine;
 import com.ait.lienzo.client.core.style.Style;
@@ -596,53 +594,6 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements EventRec
      */
     public final void pushMediator(final IMediator mediator) {
         m_mediators.push(mediator);
-    }
-
-//    /**
-//     * Adds a ViewportTransformChangedHandler that will be notified whenever the Viewport's
-//     * transform changes (probably due to a zoom or pan operation.)
-//     *
-//     * @param handler ViewportTransformChangedHandler
-//     * @return HandlerRegistration
-//     */
-//    public HandlerRegistration addViewportTransformChangedHandler(final ViewportTransformChangedHandler handler)
-//    {
-//        return addEnsureHandler(ViewportTransformChangedEvent.getType(), handler);
-//    }
-
-    public static class ViewportFactory extends ContainerNodeFactory<Viewport> {
-
-        public ViewportFactory() {
-            super(NodeType.VIEWPORT);
-
-            // For Viewports, the Transform is required (for other Nodes it's optional),
-            // so override the requirednesss.
-
-            addAttribute(Attribute.TRANSFORM, true);
-        }
-
-        @Override
-        public final boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx) {
-            if (node.getNodeType() == NodeType.SCENE) {
-                if (container.length() > 2) {
-                    try {
-                        ctx.addError("Too many Scene objects is Viewport");
-                    } catch (ValidationException e) {
-                        return false;
-                    }
-                }
-                container.asViewport().setSceneAndState(node.asScene());
-
-                return true;
-            } else {
-                try {
-                    ctx.addBadTypeError(node.getClass().getName() + " is not a Scene");
-                } catch (ValidationException e) {
-                    return false;
-                }
-            }
-            return false;
-        }
     }
 
     private static class DragLayer extends Layer {
