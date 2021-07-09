@@ -24,12 +24,16 @@ export type TextFieldProps = {
 const timeRgx = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?/;
 
 const Text = (props: TextFieldProps) => {
-  const validateDate = useCallback(
-    (date) => {
+  const isDateInvalid = useMemo(() => {
+    if (
+      typeof props.value === 'string' &&
+      (props.type === 'date' || props.field?.format === 'date')
+    ) {
+      const date = new Date(props.value);
       if (typeof props.min === 'string') {
         const minDate = new Date(props.min);
         if (minDate.toString() === 'Invalid Date') {
-          return '';
+          return false;
         } else if (date.toISOString() < minDate.toISOString()) {
           return props.errorMessage && props.errorMessage.trim().length > 0
             ? props.errorMessage
@@ -39,17 +43,16 @@ const Text = (props: TextFieldProps) => {
       if (typeof props.max === 'string') {
         const maxDate = new Date(props.max);
         if (maxDate.toString() === 'Invalid Date') {
-          return '';
+          return false;
         } else if (date.toISOString() > maxDate.toISOString()) {
           return props.errorMessage && props.errorMessage.trim().length > 0
             ? props.errorMessage
             : `Should be before ${props.max}`;
         }
       }
-      return '';
-    },
-    [props.max, props.min, props.errorMessage]
-  );
+    }
+    return false;
+  }, [props.value, props.max, props.min, props.errorMessage]);
 
   const parseTime = useCallback((time: string) => {
     const parsedTime = timeRgx.exec(time);
@@ -114,14 +117,26 @@ const Text = (props: TextFieldProps) => {
   return wrapField(
     props,
     props.type === 'date' || props.field?.format === 'date' ? (
-      <DatePicker
-        name={props.name}
-        isDisabled={props.disabled}
-        validators={[validateDate]}
-        onChange={onDateChange}
-        value={props.value ?? ''}
-        {...filterDOMProps(props)}
-      />
+      <>
+        <DatePicker
+          name={props.name}
+          isDisabled={props.disabled}
+          onChange={onDateChange}
+          value={props.value ?? ''}
+          {...filterDOMProps(props)}
+        />
+        {isDateInvalid && (
+          <div
+            style={{
+              fontSize: '0.875rem',
+              color: '#c9190b',
+              marginTop: '0.25rem',
+            }}
+          >
+            {isDateInvalid}
+          </div>
+        )}
+      </>
     ) : props.type === 'time' || props.field?.format === 'time' ? (
       <>
         <TimePicker
