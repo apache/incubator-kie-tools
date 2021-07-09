@@ -26,6 +26,7 @@ pipeline {
             steps {
                 script {
                     def currentBranch = env.BRANCH_NAME ?: env.GIT_BRANCH
+                    currentBranch = currentBranch == 'main' ? 'master' : currentBranch
                     println "Checking out ${env.BUILD_CONFIGURATION_REPO_URL}:${currentBranch} into build_config folder"
                     sh "git clone -b ${currentBranch} --single-branch ${env.BUILD_CONFIGURATION_REPO_URL} build_config"
                 }
