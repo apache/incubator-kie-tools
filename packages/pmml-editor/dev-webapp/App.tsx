@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { PMMLEditor } from "../src/editor";
+import { PMMLEditor } from "../src";
 import * as React from "react";
 import { useRef, useState } from "react";
 import { PMMLEmptyState } from "./EmptyState";
-import { Property } from "csstype";
+import type { Property } from "csstype";
 import { HistoryButtons, Theme } from "./HistoryButtons";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import "./App.scss";

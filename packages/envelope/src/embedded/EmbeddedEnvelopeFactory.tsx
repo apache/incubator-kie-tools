@@ -19,7 +19,7 @@ import { EnvelopeServer, EnvelopeServerType } from "@kie-tooling-core/envelope-b
 import * as React from "react";
 import { useImperativeHandle, useMemo, useRef } from "react";
 import { useConnectedEnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/hooks";
-import * as CSS from "csstype";
+import type * as CSS from "csstype";
 import { ContainerType } from "../api";
 
 const containerStyles: CSS.Properties = {

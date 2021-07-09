@@ -23,7 +23,7 @@ import {
 } from "../../api";
 import { useSyncedKeyboardEvents } from "@kie-tooling-core/keyboard-shortcuts/dist/channel";
 import { useGuidedTourPositionProvider } from "@kie-tooling-core/guided-tour/dist/channel";
-import * as CSS from "csstype";
+import type * as CSS from "csstype";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useRef, useState } from "react";
 import { File, StateControl } from "../../channel";

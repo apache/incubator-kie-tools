@@ -135,6 +135,7 @@ module.exports = {
           transpileOnly: str2bool(get(ENV_VARS.WEBPACK__tsLoaderTranspileOnly) ?? `${false}`),
           sourceMaps: str2bool(get(ENV_VARS.WEBPACK__sourceMaps) ?? `${true}`),
           mode: get(ENV_VARS.WEBPACK__mode) ?? "development",
+          live: webpackEnv.live,
         };
       } else {
         return {
@@ -142,6 +143,7 @@ module.exports = {
           transpileOnly: str2bool(get(ENV_VARS.WEBPACK__tsLoaderTranspileOnly) ?? `${false}`),
           sourceMaps: str2bool(get(ENV_VARS.WEBPACK__sourceMaps) ?? `${false}`),
           mode: get(ENV_VARS.WEBPACK__mode) ?? "production",
+          live: webpackEnv.live,
         };
       }
     },

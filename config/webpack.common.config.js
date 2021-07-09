@@ -22,11 +22,13 @@ module.exports = (env) => {
   const minimize = buildEnv.global.webpack(env).minimize;
   const sourceMaps = buildEnv.global.webpack(env).sourceMaps;
   const mode = buildEnv.global.webpack(env).mode;
+  const live = buildEnv.global.webpack(env).live;
 
   console.info(`Webpack :: ts-loader :: transpileOnly: ${transpileOnly}`);
   console.info(`Webpack :: minimize: ${minimize}`);
   console.info(`Webpack :: sourceMaps: ${sourceMaps}`);
   console.info(`Webpack :: mode: ${mode}`);
+  console.info(`Webpack :: live: ${live}`);
 
   const sourceMapsLoader = sourceMaps
     ? [
@@ -44,13 +46,15 @@ module.exports = (env) => {
       }
     : {};
 
-  const multiPackageLiveReloadLoader = env.live
+  const multiPackageLiveReloadLoader = live
     ? [
         {
           loader: path.resolve(path.join(__dirname, "./multi-package-live-reload-loader.js")),
         },
       ]
     : [];
+
+  const importsNotUsedAsValues = live ? { importsNotUsedAsValues: "preserve" } : {};
 
   return {
     mode,
@@ -69,6 +73,7 @@ module.exports = (env) => {
               options: {
                 transpileOnly,
                 compilerOptions: {
+                  ...importsNotUsedAsValues,
                   sourceMap: sourceMaps,
                 },
               },
