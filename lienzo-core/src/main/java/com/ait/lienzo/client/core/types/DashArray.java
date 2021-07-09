@@ -34,31 +34,6 @@ public final class DashArray {
         m_jso = new double[0];
     }
 
-//    public final DashArray push(double dash)
-//    {
-//        if (dash < 0)
-//        {
-//            dash = Math.abs(dash);
-//        }
-//        m_jso.push(dash);
-//
-//        return this;
-//    }
-//
-//    public final DashArray push(final double dash, final double... dashes)
-//    {
-//        push(dash);
-//
-//        if (dashes != null)
-//        {
-//            for (int i = 0; i < dashes.length; i++)
-//            {
-//                push(dashes[i]);
-//            }
-//        }
-//        return this;
-//    }
-
     public final double[] getNormalizedArray() {
         final int leng = Math.abs(m_jso.length);
 

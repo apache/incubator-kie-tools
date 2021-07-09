@@ -35,6 +35,7 @@ import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.shared.core.types.GroupType;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
+import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
@@ -463,10 +464,10 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
         @JsProperty
         private boolean drag;
 
-        @JsProperty
+        @JsIgnore
         private DragConstraintEnforcer denf;
 
-        @JsProperty
+        @JsIgnore
         private IControlHandleFactory hand;
 
         public static final OptionalGroupOfFields make() {

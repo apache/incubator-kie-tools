@@ -66,10 +66,8 @@ public class Sprite extends Shape<Sprite> {
     @JsProperty
     private String spriteBehavior;
 
-    @JsProperty
     private SpriteBehaviorMap spriteBehaviorMap;
 
-    @JsProperty
     private ImageSerializationMode imageSerializationMode;
 
     public Sprite(final String url, double rate, SpriteBehaviorMap bmap, String behavior) {

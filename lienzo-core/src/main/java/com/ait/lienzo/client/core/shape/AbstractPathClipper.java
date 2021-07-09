@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.shared.core.types.PathClipperType;
+import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
@@ -111,8 +112,10 @@ public abstract class AbstractPathClipper implements IPathClipper {
 
         private BoundingBox bbox;
 
+        @JsIgnore
         private PathPartList plist;
 
+        @JsIgnore
         public static final PathPartList deep(final PathPartList path) {
             if (null == path) {
                 return null;
@@ -210,12 +213,10 @@ public abstract class AbstractPathClipper implements IPathClipper {
             return this.bbox;
         }
 
-        @JsProperty
         final void setPathPartList(PathPartList plist) {
             this.plist = plist;
         }
 
-        @JsProperty
         final PathPartList getPathPartList() {
             return this.plist;
         }

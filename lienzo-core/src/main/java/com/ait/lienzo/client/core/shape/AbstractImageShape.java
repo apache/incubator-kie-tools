@@ -35,7 +35,6 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
     @JsProperty
     private String url;
 
-    @JsProperty
     private ImageSerializationMode imageSerializationMode;
 
     @JsProperty

@@ -44,6 +44,7 @@ import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import elemental2.dom.Path2D;
+import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
@@ -62,7 +63,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
     private final OptionalShapeFields m_opts = OptionalShapeFields.make();
 
-    @JsProperty
     private FillGradient gradient;
 
     @JsProperty
@@ -92,13 +92,11 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     @JsProperty
     private LineJoin lineJoin;
 
-    @JsProperty
     private DashArray dashArray;
 
     @JsProperty
     private double dashOffset = 0;
 
-    @JsProperty
     private Shadow shadow;
 
     /**
@@ -979,10 +977,10 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         @JsProperty
         private boolean apsh;
 
-        @JsProperty
+        @JsIgnore
         private DragConstraintEnforcer denf;
 
-        @JsProperty
+        @JsIgnore
         private IControlHandleFactory hand;
 
         public static final OptionalShapeFields make() {
