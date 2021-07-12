@@ -34,7 +34,8 @@ module.exports = async (env, argv) => {
     kieToolingExtendedServices_windowsDownloadUrl,
     kieToolingExtendedServices_compatibleVersion,
   ] = getKieToolingExtendedServicesArgs(argv);
-  const [dmnDevSandbox_baseImageName, dmnDevSandbox_baseImageTag] = getDmnDevSandboxArgs(argv);
+  const [dmnDevSandbox_baseImageName, dmnDevSandbox_baseImageTag, dmnDevSandbox_onlineEditorUrl] =
+    getDmnDevSandboxArgs(argv);
   const gtmResource = getGtmResource(argv);
 
   return merge(common(env), {
@@ -72,6 +73,7 @@ module.exports = async (env, argv) => {
         WEBPACK_REPLACE__kieToolingExtendedServicesCompatibleVersion: kieToolingExtendedServices_compatibleVersion,
         WEBPACK_REPLACE__dmnDevSandbox_baseImageName: dmnDevSandbox_baseImageName,
         WEBPACK_REPLACE__dmnDevSandbox_baseImageTag: dmnDevSandbox_baseImageTag,
+        WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl: dmnDevSandbox_onlineEditorUrl,
       }),
       new CopyPlugin({
         patterns: [
@@ -192,13 +194,16 @@ function getKieToolingExtendedServicesArgs() {
 function getDmnDevSandboxArgs(argv) {
   let baseImageName = argv["DMN_DEV_SANDBOX__baseImageName"] || process.env["DMN_DEV_SANDBOX__baseImageName"];
   let baseImageTag = argv["DMN_DEV_SANDBOX__baseImageTag"] || process.env["DMN_DEV_SANDBOX__baseImageTag"];
+  let onlineEditorUrl = argv["DMN_DEV_SANDBOX__onlineEditorUrl"] || process.env["DMN_DEV_SANDBOX__onlineEditorUrl"];
 
   // TODO CAPONETTO: Update to kietooling account
   baseImageName = baseImageName ?? "quay.io/caponetto/dmn-dev-sandbox-deployment-base-image";
   baseImageTag = baseImageTag ?? "latest";
+  onlineEditorUrl = onlineEditorUrl ?? "https://kiegroup.github.io/kogito-online";
 
   console.info("DMN Dev Sandbox :: Base Image Name: " + baseImageName);
   console.info("DMN Dev Sandbox :: Base Image Tag: " + baseImageTag);
+  console.info("DMN Dev Sandbox :: Online Editor Url: " + onlineEditorUrl);
 
-  return [baseImageName, baseImageTag];
+  return [baseImageName, baseImageTag, onlineEditorUrl];
 }

@@ -178,7 +178,9 @@ export class DmnDevSandboxService {
   }
 
   private composeOnlineEditorUrl(baseUrl: string, filename: string): string {
-    return `https://kiegroup.github.io/kogito-online/?file=${baseUrl}/${encodeURIComponent(filename)}#/editor/dmn`;
+    return `${process.env.WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl}/?file=${baseUrl}/${encodeURIComponent(
+      filename
+    )}#/editor/dmn`;
   }
 
   private extractDeploymentState(deployment: Deployment, build: Build | undefined): DeployedModelState {
