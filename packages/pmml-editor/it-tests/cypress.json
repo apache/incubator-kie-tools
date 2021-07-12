@@ -1,5 +1,5 @@
 {
-  "fixturesFolder": false,
+  "fixturesFolder": "fixtures",
   "integrationFolder": "integration",
   "pluginsFile": "plugins/index.ts",
   "screenshotsFolder": "../dist-it-tests/screenshots",
