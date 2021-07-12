@@ -174,7 +174,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
           <>
             {viewSection === "main" && (
               <section className="data-dictionary__overview">
-                <Flex className="data-dictionary__toolbar">
+                <Flex className="data-dictionary__toolbar" data-ouia-component-id="dd-toolbar">
                   <FlexItem>
                     <Button
                       variant="primary"
@@ -182,6 +182,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                       icon={<PlusIcon />}
                       iconPosition="left"
                       isDisabled={editing !== undefined || sorting}
+                      ouiaId="add-data-type"
                     >
                       Add Data Type
                     </Button>
@@ -216,7 +217,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                         <Alert variant="warning" isInline={true} title="Some items are invalid and need attention." />
                       </section>
                     )}
-                    <section className="data-dictionary__types-list">
+                    <section className="data-dictionary__types-list" data-ouia-component-id="dd-types-list">
                       {dataTypes.length === 0 && (
                         <Bullseye style={{ height: "40vh" }}>
                           <EmptyDataDictionary />

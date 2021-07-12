@@ -44,6 +44,7 @@ export const EmptyStateNoCharacteristics = (props: EmptyStateNoCharacteristicsPr
       data-testid="empty-state-no-characteristics__create-characteristic"
       variant="primary"
       onClick={props.addCharacteristic}
+      ouiaId="add-characteristic"
     >
       Add Characteristic
     </Button>

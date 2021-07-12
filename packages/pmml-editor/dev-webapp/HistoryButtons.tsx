@@ -107,14 +107,14 @@ const PMMLModal = (props: { get: () => Promise<string> }) => {
         isOpen={isModalOpen}
         onClose={handleModalToggle}
         actions={[
-          <Button key="ok" variant="primary" onClick={handleModalToggle}>
+          <Button key="ok" variant="primary" onClick={handleModalToggle} ouiaId="pmml-modal-confirm">
             OK
           </Button>,
         ]}
         style={{ overflowX: "scroll" }}
         appendTo={() => document.querySelector(".history-buttons") as HTMLElement}
       >
-        <pre>
+        <pre data-ouia-component-type="source-code">
           <div ref={textRef} />
         </pre>
       </Modal>

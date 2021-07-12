@@ -258,7 +258,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
   }, [filter, characteristics]);
 
   return (
-    <div className="characteristics-container">
+    <div className="characteristics-container" data-ouia-component-id="characteristics">
       {filteredCharacteristics.length === 0 && emptyStateProvider}
       {filteredCharacteristics.length > 0 && (
         <SwitchTransition mode={"out-in"}>

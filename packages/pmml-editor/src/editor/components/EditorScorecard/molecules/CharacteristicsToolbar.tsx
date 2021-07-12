@@ -45,7 +45,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
               </Title>
             </TextContent>
           </SplitItem>
-          <SplitItem isFilled={true} />
+          <SplitItem isFilled={true} data-ouia-component-type="filler" />
           <SplitItem>
             <ToolbarItem>
               <InputGroup>
@@ -83,6 +83,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                 data-testid="characteristics-toolbar__add-characteristic"
                 variant="primary"
                 onClick={() => onAddCharacteristic()}
+                data-ouia-component-id="add-characteristic"
               >
                 Add Characteristic
               </Button>

@@ -170,7 +170,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
             {viewSection === "overview" && (
               <Stack hasGutter={true} className="outputs-container__overview">
                 <StackItem>
-                  <Flex>
+                  <Flex data-ouia-component-id="outputs-toolbar">
                     <FlexItem>
                       <Button
                         variant="primary"
@@ -178,6 +178,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                         isDisabled={activeOperation !== Operation.NONE}
                         icon={<PlusIcon />}
                         iconPosition="left"
+                        ouiaId="add-output"
                       >
                         Add Output
                       </Button>
@@ -208,7 +209,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                     />
                   </StackItem>
                 )}
-                <StackItem className="outputs-container__fields-list">
+                <StackItem className="outputs-container__fields-list" data-ouia-component-id="outputs-overview">
                   <OutputFieldsTable
                     modelIndex={modelIndex}
                     outputs={output?.OutputField as OutputField[]}
