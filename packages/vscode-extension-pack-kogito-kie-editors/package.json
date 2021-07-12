@@ -126,7 +126,7 @@
     "watch": "webpack",
     "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",
     "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose --passWithNoTests'",
-    "test:it": "rimraf ./test-resource && rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn -u -e ./test-resources -o -c 1.57.1 it-tests/settings.json \"out/*.test.js\"",
+    "test:it": "rimraf ./test-resource && rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn -u -e ./test-resources -c 1.57.1 -o it-tests/settings.json \"out/*.test.js\"",
     "test:it:insider": "rimraf ./test-resource && rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run -t insider --yarn -u -e ./test-resources -o it-tests/settings.json \"out/*.test.js\"",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod:linux:darwin": "rimraf dist && yarn lint && webpack && yarn run test && yarn run package:prod",
