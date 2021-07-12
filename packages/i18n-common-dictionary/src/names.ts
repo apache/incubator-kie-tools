@@ -29,6 +29,7 @@ export const names = {
   desktop: "Desktop",
   devSandbox: "Developer Sandbox for Red Hat OpenShift",
   dmn: "DMN",
+  dmnDevSandbox: "DMN Developer Sandbox",
   dmnRunner: "DMN Runner",
   kieToolingExtendedServices: "KIE Tooling Extended Services",
   fedora: "Fedora",

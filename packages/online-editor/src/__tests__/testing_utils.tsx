@@ -26,6 +26,7 @@ import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-to
 import { OnlineI18n, OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "../common/i18n";
 import { DmnDevSandboxContextProvider } from "../editor/DmnDevSandbox/DmnDevSandboxContextProvider";
 import { DmnRunnerContextProvider } from "../editor/DmnRunner/DmnRunnerContextProvider";
+import { KieToolingExtendedServicesContextProvider } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
 import { NotificationsPanelContextProvider } from "../editor/NotificationsPanel/NotificationsPanelContextProvider";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
@@ -93,14 +94,9 @@ export function usingNotificationsPanelContext(children: React.ReactElement, ref
   return <NotificationsPanelContextProvider ref={ref}>{children}</NotificationsPanelContextProvider>;
 }
 
-export function usingDmnRunnerContext(
-  children: React.ReactElement,
-  editor: any,
-  isEditorReady = true,
-  closeDmnTour = jest.fn()
-) {
+export function usingDmnRunnerContext(children: React.ReactElement, editor: any, isEditorReady = true) {
   return (
-    <DmnRunnerContextProvider editor={editor} isEditorReady={isEditorReady} closeDmnTour={closeDmnTour}>
+    <DmnRunnerContextProvider editor={editor} isEditorReady={isEditorReady}>
       {children}
     </DmnRunnerContextProvider>
   );
@@ -111,5 +107,22 @@ export function usingTestingDmnDevSandboxContext(children: React.ReactElement, e
     <DmnDevSandboxContextProvider editor={editor} isEditorReady={isEditorReady}>
       {children}
     </DmnDevSandboxContextProvider>
+  );
+}
+
+export function usingTestingKieToolingExtendedServicesContext(
+  children: React.ReactElement,
+  editor: any,
+  isEditorReady = true,
+  closeDmnTour = jest.fn()
+) {
+  return (
+    <KieToolingExtendedServicesContextProvider
+      editor={editor}
+      isEditorReady={isEditorReady}
+      closeDmnTour={closeDmnTour}
+    >
+      {children}
+    </KieToolingExtendedServicesContextProvider>
   );
 }

@@ -134,7 +134,7 @@ export function DmnRunnerDrawer(props: Props) {
 
   const updateDmnRunnerResults = useCallback(
     (formData: object) => {
-      if (!props.editor?.isReady || dmnRunner.status !== DmnRunnerStatus.RUNNING) {
+      if (!props.editor?.isReady || dmnRunner.status !== DmnRunnerStatus.AVAILABLE) {
         return;
       }
 

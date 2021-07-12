@@ -34,7 +34,6 @@ module.exports = async (env, argv) => {
     kieToolingExtendedServices_windowsDownloadUrl,
     kieToolingExtendedServices_compatibleVersion,
   ] = getKieToolingExtendedServicesArgs(argv);
-
   const [dmnDevSandbox_baseImageName, dmnDevSandbox_baseImageTag] = getDmnDevSandboxArgs(argv);
   const gtmResource = getGtmResource(argv);
 
@@ -67,10 +66,10 @@ module.exports = async (env, argv) => {
         WEBPACK_REPLACE__hubMacOsUrl: downloadHub_macOsUrl,
         WEBPACK_REPLACE__hubWindowsUrl: downloadHub_windowsUrl,
         WEBPACK_REPLACE__buildInfo: buildInfo,
-        WEBPACK_REPLACE__dmnRunnerLinuxDownloadUrl: kieToolingExtendedServices_linuxDownloadUrl,
-        WEBPACK_REPLACE__dmnRunnerMacOsDownloadUrl: kieToolingExtendedServices_macOsDownloadUrl,
-        WEBPACK_REPLACE__dmnRunnerWindowsDownloadUrl: kieToolingExtendedServices_windowsDownloadUrl,
-        WEBPACK_REPLACE__dmnRunnerCompatibleVersion: kieToolingExtendedServices_compatibleVersion,
+        WEBPACK_REPLACE__kieToolingExtendedServicesLinuxDownloadUrl: kieToolingExtendedServices_linuxDownloadUrl,
+        WEBPACK_REPLACE__kieToolingExtendedServicesMacOsDownloadUrl: kieToolingExtendedServices_macOsDownloadUrl,
+        WEBPACK_REPLACE__kieToolingExtendedServicesWindowsDownloadUrl: kieToolingExtendedServices_windowsDownloadUrl,
+        WEBPACK_REPLACE__kieToolingExtendedServicesCompatibleVersion: kieToolingExtendedServices_compatibleVersion,
         WEBPACK_REPLACE__dmnDevSandbox_baseImageName: dmnDevSandbox_baseImageName,
         WEBPACK_REPLACE__dmnDevSandbox_baseImageTag: dmnDevSandbox_baseImageTag,
       }),

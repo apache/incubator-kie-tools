@@ -22,31 +22,14 @@ export interface DmnRunnerPayload {
 }
 
 export class DmnRunnerService {
-  private readonly DMN_RUNNER_SERVER_URL: string;
-  private readonly DMN_RUNNER_PING: string;
   private readonly DMN_RUNNER_VALIDATE_URL: string;
   private readonly DMN_RUNNER_DMN_RESULT_URL: string;
   private readonly DMN_RUNNER_FORM_SCHEMA_URL: string;
 
-  constructor(private readonly port: string) {
-    this.DMN_RUNNER_SERVER_URL = `http://localhost:${port}`;
-    this.DMN_RUNNER_PING = `${this.DMN_RUNNER_SERVER_URL}/ping`;
-    this.DMN_RUNNER_VALIDATE_URL = `${this.DMN_RUNNER_SERVER_URL}/jitdmn/validate`;
-    this.DMN_RUNNER_DMN_RESULT_URL = `${this.DMN_RUNNER_SERVER_URL}/jitdmn/dmnresult`;
-    this.DMN_RUNNER_FORM_SCHEMA_URL = `${this.DMN_RUNNER_SERVER_URL}/jitdmn/schema/form`;
-  }
-
-  public async check(): Promise<boolean> {
-    const response = await fetch(this.DMN_RUNNER_SERVER_URL, { method: "OPTIONS" });
-    return response.status < 300;
-  }
-
-  public async version(): Promise<string> {
-    const response = await fetch(this.DMN_RUNNER_PING, {
-      method: "GET",
-    });
-    const json = await response.json();
-    return json.App.Version;
+  constructor(private readonly baseUrl: string) {
+    this.DMN_RUNNER_VALIDATE_URL = `${this.baseUrl}/jitdmn/validate`;
+    this.DMN_RUNNER_DMN_RESULT_URL = `${this.baseUrl}/jitdmn/dmnresult`;
+    this.DMN_RUNNER_FORM_SCHEMA_URL = `${this.baseUrl}/jitdmn/schema/form`;
   }
 
   public async result(payload: DmnRunnerPayload): Promise<DmnResult> {

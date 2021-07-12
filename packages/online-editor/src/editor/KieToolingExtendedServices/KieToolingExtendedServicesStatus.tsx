@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-export enum DmnRunnerStatus {
-  UNAVAILABLE,
-  AVAILABLE,
+export enum KieToolingExtendedServicesStatus {
+  UNAVAILABLE = "UNAVAILABLE",
+  AVAILABLE = "AVAILABLE",
+  RUNNING = "RUNNING",
+  NOT_RUNNING = "NOT_RUNNING",
+  OUTDATED = "OUTDATED",
+  STOPPED = "STOPPED",
 }

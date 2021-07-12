@@ -15,7 +15,6 @@
  */
 
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
@@ -24,7 +23,6 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../common/i18n";
 import { DeployedModel, DeployedModelState } from "./DeployedModel";
-import { useDmnDevSandbox } from "./DmnDevSandboxContext";
 
 interface Props {
   id: number;
@@ -32,15 +30,14 @@ interface Props {
 }
 
 export function DeploymentDropdownItem(props: Props) {
-  const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
 
   const onConfigure = useCallback(
     (e: React.MouseEvent) => {
-      dmnDevSandboxContext.setDeployDropdownOpen(false);
+      window.open(props.deployment.urls.console, "_blank");
       e.stopPropagation();
     },
-    [dmnDevSandboxContext]
+    [props.deployment.urls.console]
   );
 
   const filename = useMemo(() => {
@@ -60,15 +57,10 @@ export function DeploymentDropdownItem(props: Props) {
     if (props.deployment.state === DeployedModelState.UP) {
       return (
         <Tooltip key={`deployment-up-${props.id}`} position="left" content={i18n.dmnDevSandbox.dropdown.item.upTooltip}>
-          <Text
-            className="kogito--editor__dmn-dev-sandbox-dropdown-item-status up"
-            component={TextVariants.a}
-            href={props.deployment.urls.console}
-            target="_blank"
+          <CheckCircleIcon
+            className="kogito--editor__dmn-dev-sandbox-dropdown-item-status success-icon"
             onClick={onConfigure}
-          >
-            <CheckCircleIcon />
-          </Text>
+          />
         </Tooltip>
       );
     }
@@ -83,15 +75,10 @@ export function DeploymentDropdownItem(props: Props) {
           position="left"
           content={i18n.dmnDevSandbox.dropdown.item.inProgressTooltip}
         >
-          <Text
-            className="kogito--editor__dmn-dev-sandbox-dropdown-item-status in-progress"
-            component={TextVariants.a}
-            href={props.deployment.urls.console}
-            target="_blank"
+          <SyncAltIcon
+            className="kogito--editor__dmn-dev-sandbox-dropdown-item-status in-progress-icon rotating"
             onClick={onConfigure}
-          >
-            <SyncAltIcon className="rotating" />
-          </Text>
+          />
         </Tooltip>
       );
     }
@@ -102,18 +89,13 @@ export function DeploymentDropdownItem(props: Props) {
         position="left"
         content={i18n.dmnDevSandbox.dropdown.item.downTooltip}
       >
-        <Text
-          className="kogito--editor__dmn-dev-sandbox-dropdown-item-status down"
-          component={TextVariants.a}
-          href={props.deployment.urls.console}
-          target="_blank"
+        <ExclamationTriangleIcon
+          className="kogito--editor__dmn-dev-sandbox-dropdown-item-status warning-icon"
           onClick={onConfigure}
-        >
-          <ExclamationTriangleIcon />
-        </Text>
+        />
       </Tooltip>
     );
-  }, [i18n, onConfigure, props.deployment.urls.console, props.deployment.state, props.id]);
+  }, [i18n, onConfigure, props.deployment.state, props.id]);
 
   const onItemClicked = useCallback(() => {
     window.open(props.deployment.urls.index, "_blank");

@@ -29,6 +29,7 @@ export const en: CommonI18n = {
     confirm: "Confirm",
     continue: "Continue",
     cut: "Cut",
+    deploy: "Deploy",
     dismiss: "Dismiss",
     done: "Done",
     download: "Download",

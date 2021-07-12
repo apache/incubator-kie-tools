@@ -23,21 +23,16 @@ import { DmnDevSandboxService } from "./DmnDevSandboxService";
 
 export interface DmnDevSandboxContextType {
   deployments: DeployedModel[];
-  service: DmnDevSandboxService;
   currentConfig: DmnDevSandboxConnectionConfig;
   instanceStatus: DmnDevSandboxInstanceStatus;
   isConfigModalOpen: boolean;
   isConfigWizardOpen: boolean;
-  isDeployDropdownOpen: boolean;
   isConfirmDeployModalOpen: boolean;
-  isIntroductionModalOpen: boolean;
   setDeployments: React.Dispatch<DeployedModel[]>;
   setInstanceStatus: React.Dispatch<DmnDevSandboxInstanceStatus>;
   setConfigModalOpen: React.Dispatch<boolean>;
   setConfigWizardOpen: React.Dispatch<boolean>;
-  setDeployDropdownOpen: React.Dispatch<boolean>;
   setConfirmDeployModalOpen: React.Dispatch<boolean>;
-  setIntroductionModalOpen: React.Dispatch<boolean>;
   onDeploy: (config: DmnDevSandboxConnectionConfig) => Promise<void>;
   onCheckConfig: (config: DmnDevSandboxConnectionConfig, persist: boolean) => Promise<boolean>;
   onResetConfig: () => void;
@@ -48,9 +43,7 @@ export const DmnDevSandboxContext = React.createContext<DmnDevSandboxContextType
   instanceStatus: DmnDevSandboxInstanceStatus.UNAVAILABLE,
   isConfigModalOpen: false,
   isConfigWizardOpen: false,
-  isDeployDropdownOpen: false,
   isConfirmDeployModalOpen: false,
-  isIntroductionModalOpen: false,
 } as any);
 
 export function useDmnDevSandbox() {

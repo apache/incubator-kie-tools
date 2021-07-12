@@ -51,7 +51,7 @@ enum FinishOperation {
   CONTINUE_EDITING = "CONTINUE_EDITING",
 }
 
-export function DmnDevSandboxConfigWizard() {
+export function DmnDevSandboxWizardConfig() {
   const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
   const [config, setConfig] = useState(dmnDevSandboxContext.currentConfig);

@@ -27,5 +27,7 @@ module.exports = {
   moduleNameMapper: {
     "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
     DmnRunnerService: "<rootDir>/src/__tests__/editor/DmnRunner/__mocks__/DmnRunnerService.ts",
+    KieToolingExtendedServicesBridge:
+      "<rootDir>/src/__tests__/editor/KieToolingExtendedServices/__mocks__/KieToolingExtendedServicesBridge.ts",
   },
 };

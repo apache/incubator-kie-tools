@@ -27,6 +27,7 @@ export type CommonDictionary = {
   continue: string;
   copy: string;
   cut: string;
+  deploy: string;
   dismiss: string;
   done: string;
   download: string;

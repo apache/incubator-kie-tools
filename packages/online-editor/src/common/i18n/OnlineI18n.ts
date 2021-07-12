@@ -89,6 +89,7 @@ interface OnlineDictionary extends ReferenceDictionary {
       requiredField: string;
       deploying: string;
       saving: string;
+      setupFirst: string;
     };
     dropdown: {
       title: string;
@@ -408,11 +409,6 @@ interface OnlineDictionary extends ReferenceDictionary {
     };
     button: {
       available: string;
-      tooltip: {
-        outdated: string;
-        connected: string;
-        disconnected: string;
-      };
     };
   };
   notificationsPanel: {
@@ -420,6 +416,18 @@ interface OnlineDictionary extends ReferenceDictionary {
     tooltip: {
       retractAll: string;
       expandAll: string;
+    };
+  };
+  kieToolingExtendedServices: {
+    connectedOnPort: (port: string) => string;
+    dropdown: {
+      tooltip: {
+        installForDmnRunner: string;
+        installForDmnDevSandbox: string;
+        outdated: string;
+        connected: string;
+        disconnected: string;
+      };
     };
   };
 }

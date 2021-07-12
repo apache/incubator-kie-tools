@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
 import * as React from "react";
 import { useContext } from "react";
-import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
 import { DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 
@@ -26,18 +26,11 @@ export interface DmnRunnerContextType {
   formSchema?: DmnFormSchema;
   isDrawerExpanded: boolean;
   setDrawerExpanded: React.Dispatch<boolean>;
-  isModalOpen: boolean;
-  setModalOpen: React.Dispatch<boolean>;
   formData: any;
   setFormData: React.Dispatch<any>;
-  port: string;
-  saveNewPort: (value: string) => void;
   service: DmnRunnerService;
-  version: string;
   formError: boolean;
-  outdated: boolean;
   setFormError: React.Dispatch<boolean>;
-  closeDmnTour: () => void;
 }
 
 export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({

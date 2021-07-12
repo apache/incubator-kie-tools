@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-export enum DmnRunnerStatus {
-  UNAVAILABLE,
-  AVAILABLE,
+export class KieToolingExtendedServicesBridge {
+  constructor(private readonly port = "") {}
+
+  public async check(): Promise<boolean> {
+    return new Promise((res) => res(true));
+  }
+
+  public async version(): Promise<string> {
+    return new Promise((res) => res(""));
+  }
 }

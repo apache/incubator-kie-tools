@@ -92,6 +92,7 @@ export const en: OnlineI18n = {
       requiredField: "This field cannot be empty.",
       deploying: "Deploying ...",
       saving: "Saving ...",
+      setupFirst: `Set up your ${en_common.names.dmnDevSandbox} to be able to deploy your models`,
     },
     dropdown: {
       title: "Deploy",
@@ -459,11 +460,6 @@ export const en: OnlineI18n = {
     },
     button: {
       available: `This is only available in ${en_common.names.chrome} at the moment`,
-      tooltip: {
-        outdated: `The ${en_common.names.kieToolingExtendedServices} is outdated`,
-        connected: `The ${en_common.names.kieToolingExtendedServices} is connected`,
-        disconnected: `The ${en_common.names.kieToolingExtendedServices} is disconnected`,
-      },
     },
   },
   notificationsPanel: {
@@ -471,6 +467,18 @@ export const en: OnlineI18n = {
     tooltip: {
       retractAll: "Retract All",
       expandAll: "Expand All",
+    },
+  },
+  kieToolingExtendedServices: {
+    connectedOnPort: (port: string) => `Connected on port ${port}`,
+    dropdown: {
+      tooltip: {
+        installForDmnRunner: `Install the ${en_common.names.kieToolingExtendedServices} to be able to use the ${en_common.names.dmnRunner}`,
+        installForDmnDevSandbox: `Install the ${en_common.names.kieToolingExtendedServices} to be able to use the ${en_common.names.dmnDevSandbox}`,
+        outdated: `The ${en_common.names.kieToolingExtendedServices} is outdated`,
+        connected: `The ${en_common.names.kieToolingExtendedServices} is connected`,
+        disconnected: `The ${en_common.names.kieToolingExtendedServices} is disconnected`,
+      },
     },
   },
 };
