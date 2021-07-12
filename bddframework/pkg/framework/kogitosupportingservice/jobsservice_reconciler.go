@@ -30,6 +30,8 @@ const (
 	JobsServiceInfinispanImageName = "kogito-jobs-service-infinispan"
 	// JobsServiceMongoDBImageName is the image name for the Jobs Service Service with MongoDB
 	JobsServiceMongoDBImageName = "kogito-jobs-service-mongodb"
+	// JobsServicePostgresqlImageName is the image name for the Jobs Service Service with PostgreSQL
+	JobsServicePostgresqlImageName = "kogito-jobs-service-postgresql"
 	// DefaultJobsServiceName is the default name for the Jobs Services instance service
 	DefaultJobsServiceName = "jobs-service"
 )
