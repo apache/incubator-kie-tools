@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<RadioField> tests <RadioField> - RadioInput rendering - disabled 1`] = `
+<div>
+  {"ref":{"id":"id","binding":"role"},"html":"&lt;div class=\\"form-group\\"&gt;\\n    &lt;label for=\\"id\\"&gt;Role&lt;/label&gt;\\n    \\n&lt;div class=\\"form-check\\"&gt;\\n    &lt;input type=\\"radio\\" class=\\"form-check-input\\"\\n        id=\\"id__Developer\\"\\n        name=\\"role\\"\\n        value=\\"Developer\\"\\n        disabled\\n        checked/&gt;\\n    &lt;label class=\\"form-check-label\\" for=\\"id__Developer\\"&gt;Developer&lt;/label&gt;\\n&lt;/div&gt;\\n\\n&lt;div class=\\"form-check\\"&gt;\\n    &lt;input type=\\"radio\\" class=\\"form-check-input\\"\\n        id=\\"id__HR\\"\\n        name=\\"role\\"\\n        value=\\"HR\\"\\n        disabled\\n        /&gt;\\n    &lt;label class=\\"form-check-label\\" for=\\"id__HR\\"&gt;HR&lt;/label&gt;\\n&lt;/div&gt;\\n\\n&lt;div class=\\"form-check\\"&gt;\\n    &lt;input type=\\"radio\\" class=\\"form-check-input\\"\\n        id=\\"id__UX\\"\\n        name=\\"role\\"\\n        value=\\"UX\\"\\n        disabled\\n        /&gt;\\n    &lt;label class=\\"form-check-label\\" for=\\"id__UX\\"&gt;UX&lt;/label&gt;\\n&lt;/div&gt;\\n\\n&lt;/div&gt;"}
+</div>
+`;
+
+exports[`<RadioField> tests <RadioField> - rendering 1`] = `
+<div>
+  {"ref":{"id":"id","binding":"role"},"html":"&lt;div class=\\"form-group\\"&gt;\\n    &lt;label for=\\"id\\"&gt;Role&lt;/label&gt;\\n    \\n&lt;div class=\\"form-check\\"&gt;\\n    &lt;input type=\\"radio\\" class=\\"form-check-input\\"\\n        id=\\"id__Developer\\"\\n        name=\\"role\\"\\n        value=\\"Developer\\"\\n        \\n        checked/&gt;\\n    &lt;label class=\\"form-check-label\\" for=\\"id__Developer\\"&gt;Developer&lt;/label&gt;\\n&lt;/div&gt;\\n\\n&lt;div class=\\"form-check\\"&gt;\\n    &lt;input type=\\"radio\\" class=\\"form-check-input\\"\\n        id=\\"id__HR\\"\\n        name=\\"role\\"\\n        value=\\"HR\\"\\n        \\n        /&gt;\\n    &lt;label class=\\"form-check-label\\" for=\\"id__HR\\"&gt;HR&lt;/label&gt;\\n&lt;/div&gt;\\n\\n&lt;div class=\\"form-check\\"&gt;\\n    &lt;input type=\\"radio\\" class=\\"form-check-input\\"\\n        id=\\"id__UX\\"\\n        name=\\"role\\"\\n        value=\\"UX\\"\\n        \\n        /&gt;\\n    &lt;label class=\\"form-check-label\\" for=\\"id__UX\\"&gt;UX&lt;/label&gt;\\n&lt;/div&gt;\\n\\n&lt;/div&gt;"}
+</div>
+`;

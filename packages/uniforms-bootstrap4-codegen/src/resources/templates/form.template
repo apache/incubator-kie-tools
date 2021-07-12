@@ -1,0 +1,5 @@
+<div>
+<% _.each(props.children, function(child) { %>
+    <%=child.html%>
+<% }); %>
+</div>

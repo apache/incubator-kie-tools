@@ -55,6 +55,7 @@ function createWindow() {
       enableRemoteModule: true,
       nodeIntegrationInWorker: true,
       nodeIntegration: true, // https://github.com/electron/electron/issues/9920#issuecomment-575839738
+      contextIsolation: false,
     },
   });
 

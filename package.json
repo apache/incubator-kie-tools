@@ -24,9 +24,9 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
-    "@kogito-tooling/bpmn-editor-unpacked": "^8.1.0",
-    "@kogito-tooling/dmn-editor-unpacked": "^8.1.0",
-    "@kogito-tooling/scesim-editor-unpacked": "^8.1.0"
+    "@kogito-tooling/bpmn-editor-unpacked": "^8.2.0",
+    "@kogito-tooling/dmn-editor-unpacked": "^8.2.0",
+    "@kogito-tooling/scesim-editor-unpacked": "^8.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
@@ -41,6 +41,7 @@
     "@types/chrome": "^0.0.143",
     "@types/glob": "^7.1.3",
     "@types/invariant": "^2.2.34",
+    "@types/inquirer": "^7.3.2",
     "@types/jest": "^26.0.23",
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.0.2",
@@ -124,7 +125,7 @@
     "uniforms-bridge-simple-schema-2": "^3.5.1",
     "url-loader": "^4.1.1",
     "vsce": "^1.88.0",
-    "vscode-extension-tester": "^4.0.3",
+    "vscode-extension-tester": "4.1.0",
     "vscode-test": "^1.5.2",
     "watch": "^1.0.2",
     "webpack": "^5.36.2",

@@ -69,7 +69,7 @@ describe("Editors are loading properly", () => {
   it("Opens demo.bpmn file in BPMN Editor and loads correct diagram", async function () {
     this.timeout(20000);
     webview = await testHelper.openFileFromSidebar(DEMO_BPMN);
-    await webview.switchToFrame();
+    await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
     const palette = await bpmnEditorTester.getPalette();
@@ -88,7 +88,7 @@ describe("Editors are loading properly", () => {
   it("Opens demo.dmn file in DMN Editor", async function () {
     this.timeout(20000);
     webview = await testHelper.openFileFromSidebar(DEMO_DMN);
-    await webview.switchToFrame();
+    await testHelper.switchWebviewToFrame(webview);
     const dmnEditorTester = new DmnEditorTestHelper(webview);
 
     await dmnEditorTester.openDiagramProperties();
@@ -101,7 +101,7 @@ describe("Editors are loading properly", () => {
   it("Include reusable-model in DMN Editor", async function () {
     this.timeout(20000);
     webview = await testHelper.openFileFromSidebar(DEMO_DMN);
-    await webview.switchToFrame();
+    await testHelper.switchWebviewToFrame(webview);
     const dmnEditorTester = new DmnEditorTestHelper(webview);
 
     await dmnEditorTester.switchEditorTab(EditorTabs.IncludedModels);
@@ -118,7 +118,7 @@ describe("Editors are loading properly", () => {
   it("Undo command in DMN Editor", async function () {
     this.timeout(40000);
     webview = await testHelper.openFileFromSidebar(DEMO_DMN);
-    await webview.switchToFrame();
+    await testHelper.switchWebviewToFrame(webview);
     const dmnEditorTester = new DmnEditorTestHelper(webview);
 
     const decisionNavigator = await dmnEditorTester.openDecisionNavigator();
@@ -137,7 +137,7 @@ describe("Editors are loading properly", () => {
     await testHelper.executeCommandFromPrompt("Undo");
     await testHelper.executeCommandFromPrompt("Undo");
 
-    await webview.switchToFrame();
+    await testHelper.switchWebviewToFrame(webview);
 
     await navigatorPanel.assertDiagramNodeIsPresent("?DemoDecision1");
     await navigatorPanel.assertDiagramNodeIsPresent("?DecisionFinal1");
@@ -149,7 +149,7 @@ describe("Editors are loading properly", () => {
     this.timeout(20000);
 
     webview = await testHelper.openFileFromSidebar(DEMO_SCESIM);
-    await webview.switchToFrame();
+    await testHelper.switchWebviewToFrame(webview);
     const scesimEditorTester = new ScesimEditorTestHelper(webview);
 
     await scesimEditorTester.openScenarioCheatsheet();
@@ -162,7 +162,7 @@ describe("Editors are loading properly", () => {
   it("Opens demo.pmml file in PMML Editor", async function () {
     this.timeout(20000);
     webview = await testHelper.openFileFromSidebar(DEMO_PMML);
-    await webview.switchToFrame();
+    await testHelper.switchWebviewToFrame(webview);
     const pmmlEditorTester = new PmmlEditorTestHelper(webview);
 
     const dataDictionaryModel = await pmmlEditorTester.openDataDictionary();
@@ -180,7 +180,7 @@ describe("Editors are loading properly", () => {
   it("Opens process with work item definition properly", async function () {
     this.timeout(20000);
     webview = await testHelper.openFileFromSidebar(WID_BPMN, "src/main/java/org/kie/businessapp");
-    await webview.switchToFrame();
+    await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
     const customTasksPaletteCategory = await bpmnEditorTester.openDiagramPalette(PaletteCategories.CUSTOM_TASKS);
@@ -228,7 +228,7 @@ describe("Editors are loading properly", () => {
   it("Saves a change of process name in BPMN editor properly", async function () {
     this.timeout(60000);
     webview = await testHelper.openFileFromSidebar("SaveAssetTest.bpmn");
-    await webview.switchToFrame();
+    await testHelper.switchWebviewToFrame(webview);
     let bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
     let properties = await bpmnEditorTester.openDiagramProperties();
@@ -246,7 +246,7 @@ describe("Editors are loading properly", () => {
     await testHelper.closeAllEditors();
 
     webview = await testHelper.openFileFromSidebar("SaveAssetTest.bpmn");
-    await webview.switchToFrame();
+    await testHelper.switchWebviewToFrame(webview);
     bpmnEditorTester = new BpmnEditorTestHelper(webview);
     properties = await bpmnEditorTester.openDiagramProperties();
     processNameInputField = await properties.findElement(processNameInput());

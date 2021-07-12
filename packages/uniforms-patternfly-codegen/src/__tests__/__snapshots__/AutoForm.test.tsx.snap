@@ -2,7 +2,7 @@
 
 exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 <div>
-  import React, { useState } from 'react';
+  import React, { useState } from &#39;react&#39;;
 import {
   TextInput,
   FormGroup,
@@ -18,11 +18,11 @@ import {
   InputGroup,
   TimePicker,
   Alert,
-} from '@patternfly/react-core';
+} from &#39;@patternfly/react-core&#39;;
 
 const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
   const [name, set__name] = useState&lt;string&gt;();
-  const [position, set__position] = useState&lt;string&gt;('');
+  const [position, set__position] = useState&lt;string&gt;(&#39;&#39;);
   const [position__expanded, set__position__expanded] =
     useState&lt;boolean&gt;(false);
   const [otherPositions, set__otherPositions] = useState&lt;string[]&gt;([]);
@@ -44,13 +44,13 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
     setExpanded: (expanded: boolean) =&gt; void
   ) =&gt; {
     if (isPlaceHolder) {
-      setSelection('');
+      setSelection(&#39;&#39;);
       setExpanded(false);
     } else {
       const parsedSelection = newSelection.toString
         ? newSelection.toString()
         : (newSelection as string);
-      setSelection(parsedSelection || '');
+      setSelection(parsedSelection || &#39;&#39;);
       setExpanded(false);
     }
   };
@@ -91,7 +91,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
   };
   const parseDate = (date?: Date): string =&gt; {
     if (!date) {
-      return '';
+      return &#39;&#39;;
     }
     return date.toISOString().slice(0, -14);
   };
@@ -103,16 +103,16 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
     if (newValue) {
       const newDate = new Date(newValue);
       const time = parseTime(previousValue);
-      if (time !== '') {
-        newDate.setHours(parseInt(time && time.split(':')[0]));
-        newDate.setMinutes(parseInt(time && time.split(':')[1].split(' ')[0]));
+      if (time !== &#39;&#39;) {
+        newDate.setHours(parseInt(time &amp;&amp; time.split(&#39;:&#39;)[0]));
+        newDate.setMinutes(parseInt(time &amp;&amp; time.split(&#39;:&#39;)[1].split(&#39; &#39;)[0]));
       }
       setter(newDate);
     }
   };
   const parseTime = (date?: Date): string =&gt; {
     if (!date) {
-      return '';
+      return &#39;&#39;;
     }
     let isAm = true;
     let hours = date.getHours();
@@ -122,9 +122,9 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
     }
     let minutes = date.getMinutes().toString();
     if (minutes.length == 1) {
-      minutes = '0' + minutes;
+      minutes = &#39;0&#39; + minutes;
     }
-    return \`\${hours}:\${minutes} \${isAm ? 'AM' : 'PM'}\`;
+    return \`\${hours}:\${minutes} \${isAm ? &#39;AM&#39; : &#39;PM&#39;}\`;
   };
   const onTimeChange = (
     time: string,
@@ -135,15 +135,15 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
   ) =&gt; {
     if (previousValue) {
       const newDate = new Date(previousValue);
-      if (hours && minutes) {
+      if (hours &amp;&amp; minutes) {
         newDate.setHours(hours);
         newDate.setMinutes(minutes);
-      } else if (time !== '') {
-        const localeHours = parseInt(time && time.split(':')[0]);
+      } else if (time !== &#39;&#39;) {
+        const localeHours = parseInt(time &amp;&amp; time.split(&#39;:&#39;)[0]);
         const localeMinutes = parseInt(
-          time && time.split(':')[1].split(' ')[0]
+          time &amp;&amp; time.split(&#39;:&#39;)[1].split(&#39; &#39;)[0]
         );
-        if (!isNaN(localeHours) && !isNaN(localeMinutes)) {
+        if (!isNaN(localeHours) &amp;&amp; !isNaN(localeMinutes)) {
           newDate.setHours(localeHours);
           newDate.setMinutes(localeMinutes);
         }
@@ -153,31 +153,31 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
   };
 
   return (
-    &lt;div className={'pf-c-form'}&gt;
+    &lt;div className={&#39;pf-c-form&#39;}&gt;
       &lt;FormGroup
-        fieldId={'uniforms-0000-0000'}
-        label={'Name'}
+        fieldId={&#39;uniforms-0000-0000&#39;}
+        label={&#39;Name&#39;}
         isRequired={true}&gt;
         &lt;TextInput
-          name={'name'}
-          id={'uniforms-0000-0000'}
+          name={&#39;name&#39;}
+          id={&#39;uniforms-0000-0000&#39;}
           isDisabled={false}
-          placeholder={''}
-          type={'text'}
+          placeholder={&#39;&#39;}
+          type={&#39;text&#39;}
           value={name}
           onChange={set__name}
         /&gt;
       &lt;/FormGroup&gt;
       &lt;FormGroup
-        fieldId={'uniforms-0000-0002'}
-        label={'Position'}
+        fieldId={&#39;uniforms-0000-0002&#39;}
+        label={&#39;Position&#39;}
         isRequired={true}&gt;
         &lt;Select
-          id={'uniforms-0000-0002'}
-          name={'position'}
+          id={&#39;uniforms-0000-0002&#39;}
+          name={&#39;position&#39;}
           variant={SelectVariant.single}
           isDisabled={false}
-          placeholderText={''}
+          placeholderText={&#39;&#39;}
           isOpen={position__expanded}
           selections={position}
           onToggle={(isOpen) =&gt; set__position__expanded(isOpen)}
@@ -191,27 +191,27 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
             );
           }}
           value={position}&gt;
-          &lt;SelectOption key={'Developer'} value={'Developer'}&gt;
+          &lt;SelectOption key={&#39;Developer&#39;} value={&#39;Developer&#39;}&gt;
             Developer
           &lt;/SelectOption&gt;
-          &lt;SelectOption key={'HR'} value={'HR'}&gt;
+          &lt;SelectOption key={&#39;HR&#39;} value={&#39;HR&#39;}&gt;
             HR
           &lt;/SelectOption&gt;
-          &lt;SelectOption key={'UX'} value={'UX'}&gt;
+          &lt;SelectOption key={&#39;UX&#39;} value={&#39;UX&#39;}&gt;
             UX
           &lt;/SelectOption&gt;
         &lt;/Select&gt;
       &lt;/FormGroup&gt;
       &lt;FormGroup
-        fieldId={'uniforms-0000-0004'}
-        label={'Other positions'}
+        fieldId={&#39;uniforms-0000-0004&#39;}
+        label={&#39;Other positions&#39;}
         isRequired={true}&gt;
         &lt;Select
-          id={'uniforms-0000-0004'}
-          name={'otherPositions'}
+          id={&#39;uniforms-0000-0004&#39;}
+          name={&#39;otherPositions&#39;}
           variant={SelectVariant.typeaheadMulti}
           isDisabled={false}
-          placeholderText={''}
+          placeholderText={&#39;&#39;}
           isOpen={otherPositions__expanded}
           selections={otherPositions}
           onToggle={(isOpen) =&gt; set__otherPositions__expanded(isOpen)}
@@ -224,81 +224,81 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
             );
           }}
           value={otherPositions}&gt;
-          &lt;SelectOption key={'Developer'} value={'Developer'}&gt;
+          &lt;SelectOption key={&#39;Developer&#39;} value={&#39;Developer&#39;}&gt;
             Developer
           &lt;/SelectOption&gt;
-          &lt;SelectOption key={'HR'} value={'HR'}&gt;
+          &lt;SelectOption key={&#39;HR&#39;} value={&#39;HR&#39;}&gt;
             HR
           &lt;/SelectOption&gt;
-          &lt;SelectOption key={'UX'} value={'UX'}&gt;
+          &lt;SelectOption key={&#39;UX&#39;} value={&#39;UX&#39;}&gt;
             UX
           &lt;/SelectOption&gt;
         &lt;/Select&gt;
       &lt;/FormGroup&gt;
       &lt;FormGroup
-        fieldId={'uniforms-0000-0006'}
-        label={'Skills'}
+        fieldId={&#39;uniforms-0000-0006&#39;}
+        label={&#39;Skills&#39;}
         isRequired={true}&gt;
         &lt;Checkbox
-          key={'uniforms-0000-0006-Java'}
-          id={'uniforms-0000-0006-Java'}
-          name={'skills'}
-          aria-label={'skills'}
-          label={'Java'}
+          key={&#39;uniforms-0000-0006-Java&#39;}
+          id={&#39;uniforms-0000-0006-Java&#39;}
+          name={&#39;skills&#39;}
+          aria-label={&#39;skills&#39;}
+          label={&#39;Java&#39;}
           isDisabled={false}
-          isChecked={skills.indexOf('Java') != -1}
+          isChecked={skills.indexOf(&#39;Java&#39;) != -1}
           onChange={() =&gt;
-            handleCheckboxGroupChange('Java', skills, set__skills)
+            handleCheckboxGroupChange(&#39;Java&#39;, skills, set__skills)
           }
-          value={'Java'}
+          value={&#39;Java&#39;}
         /&gt;
         &lt;Checkbox
-          key={'uniforms-0000-0006-React'}
-          id={'uniforms-0000-0006-React'}
-          name={'skills'}
-          aria-label={'skills'}
-          label={'React'}
+          key={&#39;uniforms-0000-0006-React&#39;}
+          id={&#39;uniforms-0000-0006-React&#39;}
+          name={&#39;skills&#39;}
+          aria-label={&#39;skills&#39;}
+          label={&#39;React&#39;}
           isDisabled={false}
-          isChecked={skills.indexOf('React') != -1}
+          isChecked={skills.indexOf(&#39;React&#39;) != -1}
           onChange={() =&gt;
-            handleCheckboxGroupChange('React', skills, set__skills)
+            handleCheckboxGroupChange(&#39;React&#39;, skills, set__skills)
           }
-          value={'React'}
+          value={&#39;React&#39;}
         /&gt;
         &lt;Checkbox
-          key={'uniforms-0000-0006-TypeScript'}
-          id={'uniforms-0000-0006-TypeScript'}
-          name={'skills'}
-          aria-label={'skills'}
-          label={'TypeScript'}
+          key={&#39;uniforms-0000-0006-TypeScript&#39;}
+          id={&#39;uniforms-0000-0006-TypeScript&#39;}
+          name={&#39;skills&#39;}
+          aria-label={&#39;skills&#39;}
+          label={&#39;TypeScript&#39;}
           isDisabled={false}
-          isChecked={skills.indexOf('TypeScript') != -1}
+          isChecked={skills.indexOf(&#39;TypeScript&#39;) != -1}
           onChange={() =&gt;
-            handleCheckboxGroupChange('TypeScript', skills, set__skills)
+            handleCheckboxGroupChange(&#39;TypeScript&#39;, skills, set__skills)
           }
-          value={'TypeScript'}
+          value={&#39;TypeScript&#39;}
         /&gt;
         &lt;Checkbox
-          key={'uniforms-0000-0006-Quarkus'}
-          id={'uniforms-0000-0006-Quarkus'}
-          name={'skills'}
-          aria-label={'skills'}
-          label={'Quarkus'}
+          key={&#39;uniforms-0000-0006-Quarkus&#39;}
+          id={&#39;uniforms-0000-0006-Quarkus&#39;}
+          name={&#39;skills&#39;}
+          aria-label={&#39;skills&#39;}
+          label={&#39;Quarkus&#39;}
           isDisabled={false}
-          isChecked={skills.indexOf('Quarkus') != -1}
+          isChecked={skills.indexOf(&#39;Quarkus&#39;) != -1}
           onChange={() =&gt;
-            handleCheckboxGroupChange('Quarkus', skills, set__skills)
+            handleCheckboxGroupChange(&#39;Quarkus&#39;, skills, set__skills)
           }
-          value={'Quarkus'}
+          value={&#39;Quarkus&#39;}
         /&gt;
       &lt;/FormGroup&gt;
-      &lt;FormGroup fieldId={'uniforms-0000-0008'} label={'Age'} isRequired={true}&gt;
+      &lt;FormGroup fieldId={&#39;uniforms-0000-0008&#39;} label={&#39;Age&#39;} isRequired={true}&gt;
         &lt;TextInput
-          type={'number'}
-          name={'age'}
+          type={&#39;number&#39;}
+          name={&#39;age&#39;}
           isDisabled={false}
-          id={'uniforms-0000-0008'}
-          placeholder={''}
+          id={&#39;uniforms-0000-0008&#39;}
+          placeholder={&#39;&#39;}
           step={1}
           max={99}
           min={18}
@@ -307,15 +307,15 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
         /&gt;
       &lt;/FormGroup&gt;
       &lt;FormGroup
-        fieldId={'uniforms-0000-000a'}
-        label={'Salary'}
+        fieldId={&#39;uniforms-0000-000a&#39;}
+        label={&#39;Salary&#39;}
         isRequired={true}&gt;
         &lt;TextInput
-          type={'number'}
-          name={'salary'}
+          type={&#39;number&#39;}
+          name={&#39;salary&#39;}
           isDisabled={false}
-          id={'uniforms-0000-000a'}
-          placeholder={''}
+          id={&#39;uniforms-0000-000a&#39;}
+          placeholder={&#39;&#39;}
           step={0.01}
           max={1000.5}
           value={salary}
@@ -323,92 +323,92 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
         /&gt;
       &lt;/FormGroup&gt;
       &lt;FormGroup
-        fieldId={'uniforms-0000-000c'}
-        label={'Rating'}
+        fieldId={&#39;uniforms-0000-000c&#39;}
+        label={&#39;Rating&#39;}
         isRequired={true}&gt;
         &lt;div&gt;
           &lt;Radio
-            key={'1'}
-            id={'uniforms-0000-000c-1'}
-            name={'rating'}
-            isChecked={'1' === rating}
+            key={&#39;1&#39;}
+            id={&#39;uniforms-0000-000c-1&#39;}
+            name={&#39;rating&#39;}
+            isChecked={&#39;1&#39; === rating}
             isDisabled={false}
-            label={'1'}
-            aria-label={'rating'}
-            onChange={() =&gt; set__rating('1')}
+            label={&#39;1&#39;}
+            aria-label={&#39;rating&#39;}
+            onChange={() =&gt; set__rating(&#39;1&#39;)}
           /&gt;
           &lt;Radio
-            key={'2'}
-            id={'uniforms-0000-000c-2'}
-            name={'rating'}
-            isChecked={'2' === rating}
+            key={&#39;2&#39;}
+            id={&#39;uniforms-0000-000c-2&#39;}
+            name={&#39;rating&#39;}
+            isChecked={&#39;2&#39; === rating}
             isDisabled={false}
-            label={'2'}
-            aria-label={'rating'}
-            onChange={() =&gt; set__rating('2')}
+            label={&#39;2&#39;}
+            aria-label={&#39;rating&#39;}
+            onChange={() =&gt; set__rating(&#39;2&#39;)}
           /&gt;
           &lt;Radio
-            key={'3'}
-            id={'uniforms-0000-000c-3'}
-            name={'rating'}
-            isChecked={'3' === rating}
+            key={&#39;3&#39;}
+            id={&#39;uniforms-0000-000c-3&#39;}
+            name={&#39;rating&#39;}
+            isChecked={&#39;3&#39; === rating}
             isDisabled={false}
-            label={'3'}
-            aria-label={'rating'}
-            onChange={() =&gt; set__rating('3')}
+            label={&#39;3&#39;}
+            aria-label={&#39;rating&#39;}
+            onChange={() =&gt; set__rating(&#39;3&#39;)}
           /&gt;
           &lt;Radio
-            key={'4'}
-            id={'uniforms-0000-000c-4'}
-            name={'rating'}
-            isChecked={'4' === rating}
+            key={&#39;4&#39;}
+            id={&#39;uniforms-0000-000c-4&#39;}
+            name={&#39;rating&#39;}
+            isChecked={&#39;4&#39; === rating}
             isDisabled={false}
-            label={'4'}
-            aria-label={'rating'}
-            onChange={() =&gt; set__rating('4')}
+            label={&#39;4&#39;}
+            aria-label={&#39;rating&#39;}
+            onChange={() =&gt; set__rating(&#39;4&#39;)}
           /&gt;
           &lt;Radio
-            key={'5'}
-            id={'uniforms-0000-000c-5'}
-            name={'rating'}
-            isChecked={'5' === rating}
+            key={&#39;5&#39;}
+            id={&#39;uniforms-0000-000c-5&#39;}
+            name={&#39;rating&#39;}
+            isChecked={&#39;5&#39; === rating}
             isDisabled={false}
-            label={'5'}
-            aria-label={'rating'}
-            onChange={() =&gt; set__rating('5')}
+            label={&#39;5&#39;}
+            aria-label={&#39;rating&#39;}
+            onChange={() =&gt; set__rating(&#39;5&#39;)}
           /&gt;
         &lt;/div&gt;
       &lt;/FormGroup&gt;
-      &lt;FormGroup fieldId='uniforms-0000-000e'&gt;
+      &lt;FormGroup fieldId=&#39;uniforms-0000-000e&#39;&gt;
         &lt;Checkbox
           isChecked={hire}
           isDisabled={false}
-          id={'uniforms-0000-000e'}
-          name={'hire'}
-          label={'Hire'}
+          id={&#39;uniforms-0000-000e&#39;}
+          name={&#39;hire&#39;}
+          label={&#39;Hire&#39;}
           onChange={set__hire}
         /&gt;
       &lt;/FormGroup&gt;
       &lt;FormGroup
-        fieldId={'uniforms-0000-000g'}
-        label={'Hiding date'}
+        fieldId={&#39;uniforms-0000-000g&#39;}
+        label={&#39;Hiding date&#39;}
         isRequired={true}&gt;
-        &lt;Flex direction={{ default: 'column' }} id={'uniforms-0000-000g'}&gt;
+        &lt;Flex direction={{ default: &#39;column&#39; }} id={&#39;uniforms-0000-000g&#39;}&gt;
           &lt;FlexItem&gt;
-            &lt;InputGroup style={{ background: 'transparent' }}&gt;
+            &lt;InputGroup style={{ background: &#39;transparent&#39; }}&gt;
               &lt;DatePicker
-                id={'date-picker-uniforms-0000-000g'}
+                id={&#39;date-picker-uniforms-0000-000g&#39;}
                 isDisabled={false}
-                name={'hidingDate'}
+                name={&#39;hidingDate&#39;}
                 onChange={(newDate) =&gt;
                   onDateChange(newDate, set__hidingDate, hidingDate)
                 }
                 value={parseDate(hidingDate)}
               /&gt;
               &lt;TimePicker
-                id={'time-picker-uniforms-0000-000g'}
+                id={&#39;time-picker-uniforms-0000-000g&#39;}
                 isDisabled={false}
-                name={'hidingDate'}
+                name={&#39;hidingDate&#39;}
                 onChange={(time, hours?, minutes?) =&gt;
                   onTimeChange(
                     time,
@@ -418,7 +418,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
                     minutes
                   )
                 }
-                style={{ width: '120px' }}
+                style={{ width: &#39;120px&#39; }}
                 defaultTime={parseTime(hidingDate)}
               /&gt;
             &lt;/InputGroup&gt;
@@ -426,17 +426,17 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
         &lt;/Flex&gt;
       &lt;/FormGroup&gt;
       &lt;FormGroup
-        fieldId={'uniforms-0000-000i'}
-        label={'Friends'}
+        fieldId={&#39;uniforms-0000-000i&#39;}
+        label={&#39;Friends&#39;}
         isRequired={true}&gt;
-        &lt;Alert variant='warning' title='Unsupported field type: Array'&gt;
-          Cannot find form control for property &lt;code&gt;friends&lt;/code&gt; with type{' '}
+        &lt;Alert variant=&#39;warning&#39; title=&#39;Unsupported field type: Array&#39;&gt;
+          Cannot find form control for property &lt;code&gt;friends&lt;/code&gt; with type{&#39; &#39;}
           &lt;code&gt;Array&lt;/code&gt;:&lt;br /&gt;
           Some complex property types, such as &lt;code&gt;
-            Array&lt;object&gt;
-          &lt;/code&gt;{' '}
-          aren't yet supported, however, you can still write your own component
-          into the form and use the already existing states{' '}
+            Array&amp;lt;object&amp;gt;
+          &lt;/code&gt;{&#39; &#39;}
+          aren&#39;t yet supported, however, you can still write your own component
+          into the form and use the already existing states{&#39; &#39;}
           &lt;code&gt;const [ friends, set__friends ]&lt;/code&gt;.
         &lt;/Alert&gt;
       &lt;/FormGroup&gt;

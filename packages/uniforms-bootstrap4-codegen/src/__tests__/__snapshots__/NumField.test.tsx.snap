@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<NumField> tests <NumField> - decimal rendering 1`] = `
+<div>
+  {"ref":{"id":"id","binding":"salary"},"html":"&lt;div class=\\"form-group\\"&gt;\\n    &lt;label for=\\"id\\"&gt;salary&lt;/label&gt;\\n    &lt;input\\n    type=\\"number\\"\\n    class=\\"form-control\\"\\n    id=\\"id\\"\\n    name=\\"salary\\"\\n    \\n    \\n    \\n    min=\\"400.5\\"\\n    max=\\"900.5\\"\\n    step=\\"0.01\\"\\n    value=\\"\\"/&gt;\\n&lt;/div&gt;"}
+</div>
+`;
+
+exports[`<NumField> tests <NumField> - integer rendering - disabled 1`] = `
+<div>
+  {"ref":{"id":"id","binding":"age"},"html":"&lt;div class=\\"form-group\\"&gt;\\n    &lt;label for=\\"id\\"&gt;age&lt;/label&gt;\\n    &lt;input\\n    type=\\"number\\"\\n    class=\\"form-control\\"\\n    id=\\"id\\"\\n    name=\\"age\\"\\n    \\n    disabled\\n    \\n    min=\\"10\\"\\n    max=\\"15\\"\\n    step=\\"1\\"\\n    value=\\"\\"/&gt;\\n&lt;/div&gt;"}
+</div>
+`;
+
+exports[`<NumField> tests <NumField> - integer rendering 1`] = `
+<div>
+  {"ref":{"id":"id","binding":"age"},"html":"&lt;div class=\\"form-group\\"&gt;\\n    &lt;label for=\\"id\\"&gt;age&lt;/label&gt;\\n    &lt;input\\n    type=\\"number\\"\\n    class=\\"form-control\\"\\n    id=\\"id\\"\\n    name=\\"age\\"\\n    \\n    \\n    \\n    min=\\"10\\"\\n    max=\\"15\\"\\n    step=\\"1\\"\\n    value=\\"\\"/&gt;\\n&lt;/div&gt;"}
+</div>
+`;

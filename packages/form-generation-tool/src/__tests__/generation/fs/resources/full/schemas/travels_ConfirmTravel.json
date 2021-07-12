@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "flight": {
+      "type": "object",
+      "properties": {
+        "arrival": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "departure": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "flightNumber": {
+          "type": "string"
+        },
+        "gate": {
+          "type": "string"
+        },
+        "seat": {
+          "type": "string"
+        }
+      },
+      "input": true
+    },
+    "hotel": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            },
+            "street": {
+              "type": "string"
+            },
+            "zipCode": {
+              "type": "string"
+            }
+          }
+        },
+        "bookingNumber": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "room": {
+          "type": "string"
+        }
+      },
+      "input": true
+    }
+  }
+}

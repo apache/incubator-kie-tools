@@ -240,8 +240,9 @@ export class GithubService {
   public fetchGistFile(fileUrl: string): Promise<string> {
     const gistId = this.extractGistIdFromRawUrl(fileUrl);
     const filename = this.extractGistFilenameFromRawUrl(fileUrl);
+    const parsedGistId = gistId.split("#").shift()!;
 
-    return this.octokit.gists.get({ gist_id: gistId }).then((response) => {
+    return this.octokit.gists.get({ gist_id: parsedGistId }).then((response) => {
       this.currentGist = { filename, id: gistId };
       return (response.data as any).files[filename].content;
     });
@@ -296,7 +297,8 @@ export class GithubService {
   }
 
   public async getGistRawUrlFromId(gistId: string, gistFilename: string | undefined): Promise<string> {
-    const { data } = await this.octokit.gists.get({ gist_id: gistId });
+    const parsedGistId = gistId.split("#").shift()!;
+    const { data } = await this.octokit.gists.get({ gist_id: parsedGistId });
     const filename = gistFilename ? gistFilename : Object.keys(data.files!)[0];
     return this.removeCommitHashFromGistRawUrl((data as any).files[filename].raw_url);
   }

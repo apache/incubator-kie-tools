@@ -1,0 +1,11 @@
+<% _.each(props.options, function(option) { %>
+<div class="form-check">
+    <input type="checkbox" class="form-check-input"
+        id="<%=props.id + '__' + option.value%>"
+        name="<%=props.name%>"
+        value="<%=option.value%>"
+        <%=props.disabled ? "disabled" : ""%>
+        <%=option.checked ? "checked" : ""%>/>
+    <label class="form-check-label" for="<%=props.id + '__' + option.value%>"><%=option.label%></label>
+</div>
+<% }); %>

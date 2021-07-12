@@ -19,7 +19,7 @@ import { connectField, context, HTMLFieldProps } from "uniforms/es5";
 import { renderNestedInputFragmentWithContext } from "./rendering/RenderingUtils";
 import { renderField } from "./utils/Utils";
 import { InputReference, InputsContainer } from "../api";
-import { useAddFormElementToContext } from "./CodeGenContext";
+import { codeGenContext } from "./CodeGenContext";
 import { union } from "lodash";
 
 export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps?: object }>;
@@ -38,6 +38,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
   ...props
 }: NestFieldProps) => {
   const uniformsContext = useContext(context);
+  const codegenCtx = useContext(codeGenContext);
 
   const nestedRefs: InputReference[] = [];
   const nestedStates: string[] = [];
@@ -84,7 +85,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
     ref: nestedRefs,
   };
 
-  useAddFormElementToContext(rendered);
+  codegenCtx?.rendered.push(rendered);
 
   return renderField(rendered);
 };

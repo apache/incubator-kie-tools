@@ -81,13 +81,12 @@
 }
 
 .kogito--alert-container {
-  position: absolute;
+  position: fixed;
   display: flex;
   width: 100%;
   justify-content: center;
   align-items: center;
   padding: 1em;
-  pointer-events: none;
 }
 
 .kogito--alert {
@@ -95,7 +94,7 @@
 }
 
 .kogito--alert-container-unsaved {
-  position: absolute;
+  position: fixed;
   display: flex;
   width: 100%;
   justify-content: flex-end;

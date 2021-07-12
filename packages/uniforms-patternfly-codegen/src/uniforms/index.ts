@@ -26,3 +26,5 @@ export { default as RadioField } from "./RadioField";
 export { default as SelectField } from "./SelectField";
 export { default as TextField } from "./TextField";
 export { default as UnsupportedField } from "./UnsupportedField";
+
+export { renderForm } from "./renderForm";

@@ -1,0 +1,37 @@
+{
+  "name": "@kogito-tooling/form-generation-tool",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test:clearCache": "jest --clearCache",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod:linux": "pkg dist/index.js --output dist/form-generation-cli-linux --target node16-linux-x64",
+    "build:prod:darwin": "pkg dist/index.js --output dist/form-generation-cli-macos --target node16-macos-x64",
+    "build:prod:win32": "pkg dist/index.js --output dist/form-generation-cli-win.exe --target node16-win-x64",
+    "build:prod:all": "yarn lint && yarn test && rimraf dist && webpack && yarn run && yarn run package:prod:linux && yarn run package:prod:darwin && yarn run package:prod:win32",
+    "build:prod": "yarn lint && yarn test && rimraf dist && webpack && run-script-os"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "dependencies": {
+    "@kogito-tooling/uniforms-patternfly-codegen": "0.0.0",
+    "@kogito-tooling/uniforms-bootstrap4-codegen": "0.0.0",
+    "uniforms": "^3.5.1",
+    "uniforms-bridge-json-schema": "^3.5.1",
+    "inquirer": "^8.1.1",
+    "pkg": "^5.1.0"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

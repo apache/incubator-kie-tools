@@ -15,3 +15,19 @@ const onDateChange = (newValue: string, setter: (date: Date) => void, previousVa
     setter(newDate);
   }
 };
+const parseTime = (date?: Date): string => {
+  if (!date) {
+    return '';
+  }
+  let isAm = true;
+  let hours = date.getHours();
+  if (hours > 12) {
+    hours %= 12;
+    isAm = false;
+  }
+  let minutes = date.getMinutes().toString();
+  if(minutes.length == 1) {
+    minutes = '0' + minutes;
+  }
+  return `${hours}:${minutes} ${isAm ? 'AM' : 'PM'}`;
+};
