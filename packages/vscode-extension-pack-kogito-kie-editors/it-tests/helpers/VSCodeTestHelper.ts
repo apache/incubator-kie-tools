@@ -243,6 +243,31 @@ export default class VSCodeTestHelper {
 
     throw new Error(`'${command}' not found in prompt`);
   };
+
+  /**
+   * Switches provided webview's context to iframe#active-frame within it.
+   *
+   * @param webview
+   */
+  public switchWebviewToFrame = async (webview: WebView): Promise<void> => {
+    const driver = webview.getDriver();
+    await driver.wait(
+      until.elementLocated(By.className("webview ready")),
+      2000,
+      "No iframe.webview.ready that was ready was located in webview under 2 seconds." +
+        "This should not happen and is most probably issue of VSCode." +
+        "In case this happens investigate vscode or vscode-extension-tester dependency."
+    );
+    await driver.switchTo().frame(await driver.findElement(By.className("webview ready")));
+    await driver.wait(
+      until.elementLocated(By.id("active-frame")),
+      2000,
+      "No iframe#active-frame located in webview under 2 seconds." +
+        "This should not happen and is most probably issue of VSCode." +
+        "In case this happens investigate vscode or vscode-extension-tester dependency."
+    );
+    await driver.switchTo().frame(await driver.findElement(By.id("active-frame")));
+  };
 }
 
 function sleep(ms: number) {
