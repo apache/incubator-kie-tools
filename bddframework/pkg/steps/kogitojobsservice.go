@@ -60,6 +60,9 @@ func (data *Data) installKogitoJobsServiceWithReplicasWithConfiguration(replicas
 	} else if jobsService.DatabaseType == infrastructure.MongoDBKind {
 		framework.GetMainLogger().Debug("Setting Jobs service MongoDB image")
 		jobsService.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetJobsServiceImageTag(), kogitosupportingservice.JobsServiceMongoDBImageName))
+	} else if jobsService.DatabaseType == "PostgreSQL" {
+		framework.GetMainLogger().Debug("Setting Jobs service PostgreSQL image")
+		jobsService.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetJobsServiceImageTag(), kogitosupportingservice.JobsServicePostgresqlImageName))
 	}
 
 	return framework.InstallKogitoJobsService(framework.GetDefaultInstallerType(), jobsService)

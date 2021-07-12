@@ -26,7 +26,7 @@ Feature: Install Kogito Jobs Service
 
   @persistence
   @infinispan
-  Scenario: Install Kogito Jobs Service with persistence
+  Scenario: Install Kogito Jobs Service with persistence using Infinispan
     Given Kogito Operator is deployed
     And Infinispan Operator is deployed
     And Infinispan instance "kogito-infinispan" is deployed with configuration:
@@ -37,6 +37,39 @@ Feature: Install Kogito Jobs Service
     When Install Kogito Jobs Service with 1 replicas with configuration:
       | config | database-type | Infinispan |
       | config | infra         | infinispan |
+    And Kogito Jobs Service has 1 pods running within 10 minutes
+    And HTTP POST request on service "jobs-service" is successful within 2 minutes with path "jobs" and body:
+      """json
+      {
+        "id": "1",
+        "priority": "1",
+        "expirationTime": "2100-01-29T18:19:00Z",
+        "callbackEndpoint": "http://localhost:8080/callback"
+      }
+      """
+    And HTTP GET request on service "jobs-service" with path "jobs/1" is successful within 1 minutes
+    And Scale Kogito Jobs Service to 0 pods within 2 minutes
+    And Scale Kogito Jobs Service to 1 pods within 2 minutes
+
+    Then HTTP GET request on service "jobs-service" with path "jobs/1" is successful within 1 minutes
+
+#####
+
+  @persistence
+  @postgresql
+  Scenario: Install Kogito Jobs Service with persistence using PostgreSQL
+    Given Kogito Operator is deployed
+    And PostgreSQL instance "postgresql" is deployed within 3 minutes with configuration:
+      | username | myuser |
+      | password | mypass |
+      | database | mydb   |
+
+    When Install Kogito Jobs Service with 1 replicas with configuration:
+      | config      | database-type                   | PostgreSQL                             |
+      | runtime-env | QUARKUS_DATASOURCE_JDBC_URL     | jdbc:postgresql://postgresql:5432/mydb |
+      | runtime-env | QUARKUS_DATASOURCE_REACTIVE_URL | postgresql://postgresql:5432/mydb      |
+      | runtime-env | QUARKUS_DATASOURCE_USERNAME     | myuser                                 |
+      | runtime-env | QUARKUS_DATASOURCE_PASSWORD     | mypass                                 |
     And Kogito Jobs Service has 1 pods running within 10 minutes
     And HTTP POST request on service "jobs-service" is successful within 2 minutes with path "jobs" and body:
       """json
