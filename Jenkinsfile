@@ -24,7 +24,7 @@ node('rhel8') {
 
     if (publishToMarketPlace.equals('true') || publishToOVSX.equals('true')) {
         timeout(time:1, unit:'DAYS') {
-            input message:'Approve deployment?', submitter: 'gcaponet,tfernand'
+            input message:'Approve deployment?', submitter: 'eignatow,gcaponet,tfernand'
         }
 
         def vsix_editors = findFiles(glob: '**editor*.vsix')
