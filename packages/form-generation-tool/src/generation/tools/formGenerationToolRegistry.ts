@@ -16,8 +16,7 @@
 
 import { PatternflyFormGenerationTool } from "./uniforms/patternfly/PatternflyFormGenerationTool";
 import { FormGenerationTool } from "../types";
-
-const patternflyFormGenerationTool = new PatternflyFormGenerationTool();
+import { Bootstrap4FormGenerationTool } from "./uniforms/bootstrap4/Bootstrap4FormGenerationTool";
 
 const toolsRegistry: Map<string, FormGenerationTool> = new Map<string, FormGenerationTool>();
 
@@ -25,7 +24,8 @@ export function registerFormGenerationTool(formGenerationTool: FormGenerationToo
   toolsRegistry.set(formGenerationTool.type, formGenerationTool);
 }
 
-registerFormGenerationTool(patternflyFormGenerationTool);
+registerFormGenerationTool(new PatternflyFormGenerationTool());
+registerFormGenerationTool(new Bootstrap4FormGenerationTool());
 
 export function lookupFormGenerationTool(type: string): FormGenerationTool {
   const tool = toolsRegistry.get(type);

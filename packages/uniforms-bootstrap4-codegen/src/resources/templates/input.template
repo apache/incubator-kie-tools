@@ -1,0 +1,8 @@
+<input type="<%=props.type%>"
+    id="<%=props.id%>"
+    name="<%=props.name%>"
+    class="form-control"
+    <%=props.autoComplete==='off' ? ' autoComplete="off"' : ''%>
+    <%=props.disabled ? "disabled" : ""%>
+    <%=props.placeholder ? `placeholder="${props.placeholder}"` : ''%>
+    value="<%=props.value%>"/>

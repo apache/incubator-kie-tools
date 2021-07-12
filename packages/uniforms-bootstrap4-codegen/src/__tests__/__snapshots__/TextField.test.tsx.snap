@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TextField> tests <TextField> - TextInput rendering - full 1`] = `
+<div>
+  {"ref":{"id":"id","binding":"name"},"html":"&lt;div class=\\"form-group\\"&gt;\\n    &lt;label for=\\"id\\"&gt;label&lt;/label&gt;\\n    &lt;input type=\\"text\\"\\n    id=\\"id\\"\\n    name=\\"name\\"\\n    class=\\"form-control\\"\\n     autoComplete=\\"off\\"\\n    disabled\\n    placeholder=\\"placeholder\\"\\n    value=\\"\\"/&gt;\\n&lt;/div&gt;"}
+</div>
+`;
+
+exports[`<TextField> tests <TextField> - TextInput rendering 1`] = `
+<div>
+  {"ref":{"id":"id","binding":"name"},"html":"&lt;div class=\\"form-group\\"&gt;\\n    &lt;label for=\\"id\\"&gt;label&lt;/label&gt;\\n    &lt;input type=\\"text\\"\\n    id=\\"id\\"\\n    name=\\"name\\"\\n    class=\\"form-control\\"\\n    \\n    \\n    \\n    value=\\"\\"/&gt;\\n&lt;/div&gt;"}
+</div>
+`;

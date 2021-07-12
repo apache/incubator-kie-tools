@@ -81,14 +81,14 @@ describe("formGenerationCommand tests", () => {
 
     const applyForVisaAsset: FormAsset = storeFormAssetsMock.mock.calls[0][0];
     expect(applyForVisaAsset.id).toEqual("ApplyForVisa");
-    expect(applyForVisaAsset.assetName).toEqual("Form__ApplyForVisa.tsx");
+    expect(applyForVisaAsset.assetName).toEqual("ApplyForVisa.tsx");
     expect(applyForVisaAsset.content).toContain("const Form__ApplyForVisa");
     expect(storeFormAssetsMock.mock.calls[0][1]).toEqual(sourcePath);
     expect(storeFormAssetsMock.mock.calls[0][2]).toBeTruthy();
 
     const confirmTravelAsset: FormAsset = storeFormAssetsMock.mock.calls[1][0];
     expect(confirmTravelAsset.id).toEqual("ConfirmTravel");
-    expect(confirmTravelAsset.assetName).toEqual("Form__ConfirmTravel.tsx");
+    expect(confirmTravelAsset.assetName).toEqual("ConfirmTravel.tsx");
     expect(confirmTravelAsset.content).toContain("const Form__ConfirmTravel");
     expect(storeFormAssetsMock.mock.calls[1][1]).toEqual(sourcePath);
     expect(storeFormAssetsMock.mock.calls[1][2]).toBeTruthy();
