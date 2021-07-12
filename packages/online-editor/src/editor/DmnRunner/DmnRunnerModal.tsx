@@ -38,6 +38,8 @@ import { useOnlineI18n } from "../../common/i18n";
 import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { SelectOs } from "../../common/SelectOs";
 import { getOperatingSystem, OperatingSystem } from "../../common/utils";
+import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
+import { DmnDevSandboxInstanceStatus } from "../DmnDevSandbox/DmnDevSandboxInstanceStatus";
 import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT } from "../KieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
@@ -57,6 +59,7 @@ export function DmnRunnerModal() {
   const [operatingSystem, setOperatingSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
   const [modalPage, setModalPage] = useState<ModalPage>(ModalPage.INITIAL);
   const kieToolingExtendedServices = useKieToolingExtendedServices();
+  const dmnDevSandbox = useDmnDevSandbox();
 
   const KIE_TOOLING_EXTENDED_SERVICES_MACOS_DMG = useMemo(
     () => `kie_tooling_extended_services_macos_${kieToolingExtendedServices.version}.dmg`,
@@ -72,6 +75,13 @@ export function DmnRunnerModal() {
     [kieToolingExtendedServices.version]
   );
   const KIE_TOOLING_EXTENDED_SERVICES_BINARIES = useMemo(() => "kie_tooling_extended_services", []);
+
+  const isDmnDevSandboxConnected = useMemo(() => {
+    return (
+      kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING &&
+      dmnDevSandbox.instanceStatus === DmnDevSandboxInstanceStatus.CONNECTED
+    );
+  }, [dmnDevSandbox.instanceStatus, kieToolingExtendedServices.status]);
 
   const downloadKieToolingExtendedServicesUrl = useMemo(() => {
     switch (operatingSystem) {
@@ -627,6 +637,11 @@ export function DmnRunnerModal() {
     }
   }, [kieToolingExtendedServices]);
 
+  const onSetupDevSandbox = useCallback(() => {
+    kieToolingExtendedServices.setModalOpen(false);
+    dmnDevSandbox.setConfigModalOpen(true);
+  }, [dmnDevSandbox, kieToolingExtendedServices]);
+
   const modalTitle = useMemo(() => {
     switch (modalPage) {
       case ModalPage.INITIAL:
@@ -743,13 +758,27 @@ export function DmnRunnerModal() {
               <Text component={TextVariants.h3} className={"kogito--editor__dmn-runner-modal-use-text-align"}>
                 {i18n.dmnRunner.modal.use.connected}
               </Text>
-              <Text component={TextVariants.p} className={"kogito--editor__dmn-runner-modal-use-text-align"}>
+              <Text component={TextVariants.p} className={"kogito--editor__dmn-runner-modal-use-text-align pf-u-mt-md"}>
                 {i18n.dmnRunner.modal.use.fillTheForm}
+              </Text>
+              <Text component={TextVariants.p} className={"kogito--editor__dmn-runner-modal-use-text-align"}>
+                {i18n.dmnRunner.modal.use.deployTheModel}
               </Text>
             </TextContent>
             <br />
             <Button
               variant="primary"
+              type="submit"
+              isDisabled={isDmnDevSandboxConnected}
+              onClick={onSetupDevSandbox}
+              className={"kogito--editor__dmn-runner-modal-use-margin"}
+            >
+              {isDmnDevSandboxConnected
+                ? i18n.dmnRunner.modal.use.dmnDevSandboxAlreadySetup
+                : i18n.dmnRunner.modal.use.setupDmnDevSandbox}
+            </Button>
+            <Button
+              variant={isDmnDevSandboxConnected ? "primary" : "plain"}
               type="submit"
               onClick={onClose}
               className={"kogito--editor__dmn-runner-modal-use-margin"}

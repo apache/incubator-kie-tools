@@ -449,7 +449,10 @@ export const en: OnlineI18n = {
         title: "All set! 🎉",
         connected: `You're connected to the ${en_common.names.kieToolingExtendedServices}.`,
         fillTheForm: "Fill the Form on the Inputs column and automatically see the results on the Outputs column.",
+        deployTheModel: `You can also deploy your model to the ${en_common.names.dmnDevSandbox} when you're done editing.`,
         backToEditor: "Back to Editor",
+        setupDmnDevSandbox: `Set up the ${en_common.names.dmnDevSandbox}`,
+        dmnDevSandboxAlreadySetup: `${en_common.names.dmnDevSandbox} already set up`,
       },
     },
     dropdown: {

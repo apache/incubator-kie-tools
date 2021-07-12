@@ -20,6 +20,7 @@ import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { GlobalContext } from "../../common/GlobalContext";
 import { useOnlineI18n } from "../../common/i18n";
+import { DmnRunnerModal } from "../DmnRunner/DmnRunnerModal";
 import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { DeployedModel } from "./DeployedModel";
@@ -209,6 +210,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
       <DmnDevSandboxWizardConfig />
       <DmnDevSandboxModalConfig />
       <DmnDevSandboxModalConfirmDeploy />
+      <DmnRunnerModal />
     </DmnDevSandboxContext.Provider>
   );
 }

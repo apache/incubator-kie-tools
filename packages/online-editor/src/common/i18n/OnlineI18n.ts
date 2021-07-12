@@ -398,7 +398,10 @@ interface OnlineDictionary extends ReferenceDictionary {
         title: string;
         connected: string;
         fillTheForm: string;
+        deployTheModel: string;
         backToEditor: string;
+        setupDmnDevSandbox: string;
+        dmnDevSandboxAlreadySetup: string;
       };
     };
     dropdown: {

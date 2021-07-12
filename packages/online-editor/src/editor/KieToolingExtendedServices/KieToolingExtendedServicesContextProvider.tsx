@@ -19,7 +19,6 @@ import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { GlobalContext } from "../../common/GlobalContext";
 import { getCookie, setCookie } from "../../common/utils";
-import { DmnRunnerModal } from "../DmnRunner/DmnRunnerModal";
 import { KieToolingExtendedServicesBridge } from "./KieToolingExtendedServicesBridge";
 import { KieToolingExtendedServicesContext } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
@@ -125,7 +124,6 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
       }}
     >
       {props.children}
-      <DmnRunnerModal />
     </KieToolingExtendedServicesContext.Provider>
   );
 }
