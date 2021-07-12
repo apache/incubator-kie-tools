@@ -22,14 +22,12 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import * as React from "react";
 import { useOnlineI18n } from "../../common/i18n";
 import { useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
+import { useDropdownItems } from "./KieToolingExtendedServicesDropdownItems";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 
-interface Props {
-  dropdownItems: (dropdownId: string) => any[];
-}
-
-export function KieToolingExtendedServicesDropdown(props: Props) {
+export function KieToolingExtendedServicesDropdown() {
   const { i18n } = useOnlineI18n();
+  const kieToolingExtendedServicesDropdownItems = useDropdownItems("lg");
   const kieToolingExtendedServices = useKieToolingExtendedServices();
 
   return (
@@ -86,7 +84,7 @@ export function KieToolingExtendedServicesDropdown(props: Props) {
       isPlain={true}
       className={"kogito--editor__toolbar dropdown"}
       isOpen={kieToolingExtendedServices.isDropdownOpen}
-      dropdownItems={props.dropdownItems("lg")}
+      dropdownItems={kieToolingExtendedServicesDropdownItems()}
       position={DropdownPosition.right}
     />
   );
