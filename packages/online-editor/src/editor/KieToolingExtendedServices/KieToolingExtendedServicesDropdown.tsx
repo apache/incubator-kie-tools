@@ -48,7 +48,7 @@ export function KieToolingExtendedServicesDropdown() {
               distance={20}
               trigger="mouseenter focus"
             >
-              <ExclamationTriangleIcon className="pf-u-mr-sm" id={"dmn-runner-outdated-icon"} />
+              <ExclamationTriangleIcon className="static-opacity pf-u-mr-sm" id={"dmn-runner-outdated-icon"} />
             </Tooltip>
           )}
           {!kieToolingExtendedServices.outdated && (
@@ -73,7 +73,7 @@ export function KieToolingExtendedServicesDropdown() {
                   distance={20}
                   trigger="mouseenter focus"
                 >
-                  <DisconnectedIcon className="pf-u-mr-sm" />
+                  <DisconnectedIcon className="static-opacity pf-u-mr-sm" />
                 </Tooltip>
               )}
             </>

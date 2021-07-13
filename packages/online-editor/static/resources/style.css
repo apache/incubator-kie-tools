@@ -355,6 +355,19 @@
   animation: flickerAnimation 2s infinite cubic-bezier(0.7, 0, 0.3, 1);
 }
 
+@keyframes staticAnimation {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.static-opacity {
+  animation: staticAnimation 10s infinite;
+}
+
 .kogito--editor__dmn-runner-modal-initial {
   width: 100%;
   display: flex;
