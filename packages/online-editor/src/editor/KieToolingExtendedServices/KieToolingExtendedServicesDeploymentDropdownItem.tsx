@@ -22,14 +22,14 @@ import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../common/i18n";
-import { DeployedModel, DeployedModelState } from "./DeployedModel";
+import { DeployedModel, DeployedModelState } from "../DmnDevSandbox/DeployedModel";
 
 interface Props {
   id: number;
   deployment: DeployedModel;
 }
 
-export function DeploymentDropdownItem(props: Props) {
+export function KieToolingExtendedServicesDeploymentDropdownItem(props: Props) {
   const { i18n } = useOnlineI18n();
 
   const onConfigure = useCallback(

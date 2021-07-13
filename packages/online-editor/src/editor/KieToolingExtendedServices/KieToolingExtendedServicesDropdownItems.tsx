@@ -21,11 +21,11 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../common/i18n";
-import { DeploymentDropdownItem } from "../DmnDevSandbox/DeploymentDropdownItem";
 import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
 import { DmnDevSandboxInstanceStatus } from "../DmnDevSandbox/DmnDevSandboxInstanceStatus";
 import { useDmnRunner } from "../DmnRunner/DmnRunnerContext";
 import { useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
+import { KieToolingExtendedServicesDeploymentDropdownItem } from "./KieToolingExtendedServicesDeploymentDropdownItem";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 
 export function useDropdownItems(dropdownId: string) {
@@ -158,7 +158,7 @@ export function useDropdownItems(dropdownId: string) {
         .sort((a, b) => b.creationTimestamp.getTime() - a.creationTimestamp.getTime())
         .forEach((deployment, i) => {
           items.push(
-            <DeploymentDropdownItem
+            <KieToolingExtendedServicesDeploymentDropdownItem
               id={i}
               key={`kie-tooling-extended-services-dropdown-${dropdownId}-dmn-dev-sandbox-deployment_item_${i}`}
               deployment={deployment}
