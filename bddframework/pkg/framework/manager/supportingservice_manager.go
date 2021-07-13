@@ -50,7 +50,7 @@ func NewKogitoSupportingServiceManager(context operator.Context, supportingServi
 }
 
 func (k kogitoSupportingServiceManager) EnsureSingletonService(namespace string, resourceType api.ServiceType) error {
-	k.Log.Info("Ensuring only single instance of supporting service exists")
+	k.Log.Info("Ensuring only single instance of supporting service exists", "resourceType", resourceType)
 	supportingServiceList, err := k.supportingServiceHandler.FetchKogitoSupportingServiceList(namespace)
 	if err != nil {
 		return err
