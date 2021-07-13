@@ -245,7 +245,7 @@ describe("Editors are loading properly", () => {
   it("Reuses Data-types across BPMN editor", async function () {
     this.timeout(40000);
     webview = await testHelper.openFileFromSidebar("ReuseDataTypeTest.bpmn");
-    await webview.switchToFrame();
+    await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
     const variableName = "fuelAccelerator";
