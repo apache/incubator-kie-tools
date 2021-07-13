@@ -1,0 +1,6 @@
+{
+  "reporterEnabled": "spec, xunit",
+  "xunitReporterOptions": {
+    "output": "./it-tests/results/junit-vscode-it-tests.xml"
+  }
+}
