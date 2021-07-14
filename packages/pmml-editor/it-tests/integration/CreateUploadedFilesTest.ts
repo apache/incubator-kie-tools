@@ -74,7 +74,7 @@ describe("Create Uploaded Files Test", () => {
     cy.buttonPMML().click();
 
     cy.fixture("emptyWithData.pmml").then(($fileContent) => {
-      const text = $fileContent.toString().replaceAll("\n", "");
+      const text = $fileContent.toString().replaceAll("\n", "").replaceAll("\r", "");
       cy.ouiaType("source-code").should("to.have.text", text);
     });
 
