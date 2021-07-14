@@ -1,0 +1,22 @@
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
+  <Header/>
+  <DataDictionary numberOfFields="1">
+    <DataField name="test" optype="ordinal" dataType="integer"/>
+  </DataDictionary>
+  <Scorecard modelName="EmptyModelWithData" functionName="regression">
+    <MiningSchema>
+      <MiningField name="test"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="output" dataType="integer"/>
+    </Output>
+    <Characteristics>
+      <Characteristic name="Char1" reasonCode="10" baselineScore="5">
+        <Attribute partialScore="5">
+          <SimplePredicate field="test" operator="greaterThan" value="3"/>
+        </Attribute>
+      </Characteristic>
+    </Characteristics>
+  </Scorecard>
+</PMML>
+

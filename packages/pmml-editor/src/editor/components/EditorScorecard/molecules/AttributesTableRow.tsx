@@ -83,6 +83,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
           onEdit();
         }
       }}
+      data-ouia-component-type="attribute-item"
     >
       <Split hasGutter={true} style={{ height: "100%" }}>
         <SplitItem>
