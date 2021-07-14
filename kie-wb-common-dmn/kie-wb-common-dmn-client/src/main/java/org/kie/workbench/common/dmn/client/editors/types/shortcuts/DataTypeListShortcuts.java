@@ -102,7 +102,7 @@ public class DataTypeListShortcuts {
     }
 
     void onCtrlB() {
-        consumeIfDataTypeIsNotReadOnly(DataTypeListItem::insertNestedField);
+        consumeIfDataTypeIsNotReadOnly(DataTypeListItem::addDataTypeRow);
     }
 
     void onCtrlU() {
