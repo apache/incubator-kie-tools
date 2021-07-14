@@ -71,13 +71,6 @@ describe("Create Uploaded Files Test", () => {
     cy.ouiaId("outputs-toolbar").click();
     cy.get("button[data-title='OutputsModalClose']").click();
 
-    cy.buttonPMML().click();
-
-    cy.fixture("emptyWithData.pmml").then(($fileContent) => {
-      const text = $fileContent.toString().replaceAll("\n", "").replaceAll("\r", "");
-      cy.ouiaType("source-code").should("to.have.text", text);
-    });
-
-    cy.ouiaId("pmml-modal-confirm").click();
+    cy.assertSourceCode("emptyWithData.pmml");
   });
 });

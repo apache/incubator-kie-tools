@@ -57,3 +57,13 @@ Cypress.Commands.add("ouiaId", (valueStr) => {
 Cypress.Commands.add("ouiaType", (valueStr) => {
   return cy.get(`[data-ouia-component-type='${valueStr}']`);
 });
+
+Cypress.Commands.add("assertSourceCode", (sourceCodeName) => {
+  cy.buttonPMML().click();
+
+  cy.fixture(sourceCodeName).then(($fileContent) => {
+    const text = $fileContent.toString().replaceAll("\n", "").replaceAll("\r", "");
+    cy.ouiaType("source-code").should("to.have.text", text);
+  });
+  return cy.ouiaId("pmml-modal-confirm").click();
+});

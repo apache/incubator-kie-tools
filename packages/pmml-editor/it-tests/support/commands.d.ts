@@ -73,5 +73,11 @@ declare namespace Cypress {
      * Return DOM Element which match the value of data-ouia-component-type attribute.
      */
     ouiaType(valueStr: string): Chainable;
+
+    /**
+     * Assert that the actual state of the PMML editor is similar as PMML file saved in the fixtures folder.
+     * Run this command in scope of the main page.
+     */
+    assertSourceCode(sourceCodeName: string): Chainable;
   }
 }
