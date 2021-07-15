@@ -42,9 +42,9 @@ import { getOperatingSystem, OperatingSystem } from "../../common/utils";
 import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
 import { DmnDevSandboxInstanceStatus } from "../DmnDevSandbox/DmnDevSandboxInstanceStatus";
 import { DEVELOPER_SANDBOX_URL } from "../DmnDevSandbox/DmnDevSandboxService";
-import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT } from "../KieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
-import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
+import { KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT } from "./KieToolingExtendedServicesContextProvider";
+import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 
 enum ModalPage {
   INITIAL,
@@ -55,8 +55,7 @@ enum ModalPage {
 const UBUNTU_APP_INDICATOR_LIB = "apt install libappindicator3-dev";
 const FEDORA_APP_INDICATOR_LIB = "dnf install libappindicator-gtk3";
 
-// TODO CAPONETTO: Rename and move this file after everything is working!!!
-export function DmnRunnerModal() {
+export function KieToolingExtendedServicesModal() {
   const { i18n } = useOnlineI18n();
   const [operatingSystem, setOperatingSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
   const [modalPage, setModalPage] = useState<ModalPage>(ModalPage.INITIAL);
