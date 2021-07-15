@@ -243,3 +243,168 @@ test('<TextField> - renders a input which correctly reacts on change (DatePicker
 
   expect(onChange).toHaveBeenLastCalledWith('x', date);
 });
+
+test('<TextField> - renders a initial value on time field (TimePicker)', () => {
+  const time = '10:00';
+  const element = (
+    <TextField required={true} name="x" label="y" type={'time'} />
+  );
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: String } }, { model: { x: time } })
+  );
+
+  expect(wrapper.find('TimePicker')).toHaveLength(1);
+  expect(wrapper.find('TimePicker').prop('value')).toBe(time);
+});
+
+test('<TextField> - renders a disabled date field (TimePicker)', () => {
+  const element = (
+    <TextField
+      required={true}
+      name="x"
+      label="y"
+      type={'time'}
+      disabled={true}
+    />
+  );
+  const wrapper = mount(element, createContext({ x: { type: String } }));
+
+  expect(wrapper.find('TimePicker')).toHaveLength(1);
+  expect(wrapper.find('input').prop('disabled')).toBe(true);
+});
+
+test('<TextField> - renders a input which correctly reacts on change (TimePicker)', () => {
+  const onChange = jest.fn();
+
+  const time = '10:10';
+  const element = (
+    <TextField required={true} name="x" label="y" type={'time'} />
+  );
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: String } }, { onChange })
+  );
+
+  act(() => {
+    wrapper.find('TimePicker').find('input').prop('onChange')!({
+      currentTarget: { value: time },
+    } as any);
+  });
+
+  expect(wrapper.find('label')).toHaveLength(1);
+  expect(wrapper.find('label').text()).toBe('y *');
+  expect(onChange).toHaveBeenLastCalledWith('x', '10:10:00');
+});
+
+test('<TextField> - renders a input which correctly reacts on change (TimePicker - empty)', () => {
+  const onChange = jest.fn();
+
+  const time = '';
+  const element = (
+    <TextField required={true} name="x" label="y" type={'time'} />
+  );
+  const wrapper = mount(
+    element,
+    createContext({ x: { type: String } }, { onChange })
+  );
+
+  expect(wrapper.find('label')).toHaveLength(1);
+  expect(wrapper.find('label').text()).toBe('y *');
+
+  act(() => {
+    wrapper.find('TimePicker').find('input').prop('onChange')!({
+      currentTarget: { value: time },
+    } as any);
+  });
+
+  expect(onChange).toHaveBeenLastCalledWith('x', time);
+});
+
+test('<TextField> - test max property (TimePicker - valid)', () => {
+  const time = '10:00';
+  const max = '12:00';
+  const element = (
+    <TextField name="x" label="y" max={max} type={'time'} value={time} />
+  );
+  const wrapper = mount(element, createContext({ x: { type: String } }));
+
+  expect(wrapper.text().includes('Should be before')).toBe(false);
+});
+
+test('<TextField> - test max property (TimePicker - invalid)', () => {
+  const time = '13:00';
+  const max = '12:00';
+  const element = (
+    <TextField name="x" label="y" max={max} type={'time'} value={time} />
+  );
+  const wrapper = mount(element, createContext({ x: { type: String } }));
+
+  expect(wrapper.text().includes('Should be before')).toBe(true);
+});
+
+test('<TextField> - test min property (TimePicker - valid)', () => {
+  const time = '13:00';
+  const min = '12:00';
+  const element = (
+    <TextField name="x" label="y" min={min} type={'time'} value={time} />
+  );
+  const wrapper = mount(element, createContext({ x: { type: String } }));
+
+  expect(wrapper.text().includes('Should be after')).toBe(false);
+});
+
+test('<TextField> - test min property (TimePicker - invalid)', () => {
+  const time = '10:00';
+  const min = '12:00';
+  const element = (
+    <TextField name="x" label="y" min={min} type={'time'} value={time} />
+  );
+  const wrapper = mount(element, createContext({ x: { type: String } }));
+
+  expect(wrapper.text().includes('Should be after')).toBe(true);
+});
+
+test('<TextField> - test max property (DatePicker - valid)', () => {
+  const date = '2000-01-01';
+  const max = '2000-01-02';
+  const element = (
+    <TextField name="x" label="y" max={max} type={'date'} value={date} />
+  );
+  const wrapper = mount(element, createContext({ x: { type: String } }));
+
+  expect(wrapper.text().includes('Should be before')).toBe(false);
+});
+
+test('<TextField> - test max property (DatePicker - invalid)', () => {
+  const date = '2000-01-02';
+  const max = '2000-01-01';
+  const element = (
+    <TextField name="x" label="y" max={max} type={'date'} value={date} />
+  );
+  const wrapper = mount(element, createContext({ x: { type: String } }));
+
+  expect(wrapper.text().includes('Should be before')).toBe(true);
+});
+
+test('<TextField> - test min property (DatePicker - valid)', () => {
+  const date = '2000-01-02';
+  const min = '2000-01-01';
+  const element = (
+    <TextField name="x" label="y" min={min} type={'date'} value={date} />
+  );
+  const wrapper = mount(element, createContext({ x: { type: String } }));
+
+  expect(wrapper.text().includes('Should be after')).toBe(false);
+});
+
+test('<TextField> - test min property (DatePicker - invalid)', () => {
+  const date = '2000-01-01';
+  const min = '2000-01-02';
+  const element = (
+    <TextField name="x" label="y" min={min} type={'date'} value={date} />
+  );
+  const wrapper = mount(element, createContext({ x: { type: String } }));
+
+  expect(wrapper.text().includes('Should be after')).toBe(true);
+});

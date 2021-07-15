@@ -7,8 +7,8 @@
     "start": "parcel serve  --no-cache index.html"
   },
   "dependencies": {
-    "@patternfly/react-core": "4.115.2",
-    "@patternfly/react-icons": "4.10.2",
+    "@patternfly/react-core": "4.135.0",
+    "@patternfly/react-icons": "4.11.0",
     "ajv": "6.10.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
@@ -19,7 +19,7 @@
     "uniforms-bridge-json-schema": "3.5.1",
     "uniforms-bridge-simple-schema": "3.5.1",
     "uniforms-bridge-simple-schema-2": "3.5.1",
-    "uniforms-patternfly": "4.6.1"
+    "uniforms-patternfly": "4.6.2"
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.5",

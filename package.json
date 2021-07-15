@@ -1,6 +1,6 @@
 {
   "name": "uniforms-patternfly",
-  "version": "4.6.1",
+  "version": "4.6.2",
   "description": "Patternfly forms for uniforms",
   "repository": "git@github.com:aerogear/uniforms-patternfly.git",
   "author": "Gianluca <gzuccare@redhat.com>",
@@ -25,8 +25,8 @@
     "@babel/preset-env": "7.11.0",
     "@babel/preset-react": "7.10.4",
     "@babel/preset-typescript": "7.10.4",
-    "@patternfly/react-core": "4.115.2",
-    "@patternfly/react-icons": "4.10.2",
+    "@patternfly/react-core": "4.135.0",
+    "@patternfly/react-icons": "4.11.0",
     "@testing-library/react": "10.4.9",
     "@types/classnames": "2.2.11",
     "@types/enzyme": "3.10.8",
@@ -66,8 +66,8 @@
     "uniforms-bridge-simple-schema-2": "3.5.1"
   },
   "peerDependencies": {
-    "@patternfly/react-core": "^4.115.2",
-    "@patternfly/react-icons": "^4.10.2"
+    "@patternfly/react-core": "^4.135.0",
+    "@patternfly/react-icons": "^4.11.0"
   },
   "engines": {
     "npm": ">=5.0.0"
