@@ -295,10 +295,29 @@ jobs:
           git commit -m "Deploy ${{ needs.prepare.outputs.version }} (Chrome Extension)"
           git push origin gh-pages
 
-      - name: "Publish to the Chrome Web Store"
+      - name: "Upload Chrome Extension to the Chrome Store"
+        id: update_extension
         run: |
-          echo "TODO:"
-          echo "Publishing to the Chrome Web Store"
+          access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.GOOGLE_DEVELOPER_CONSOLE_CLIENT_ID }}&client_secret=${{ secrets.GOOGLE_DEVELOPER_CONSOLE_CLIENT_SECRET }}&refresh_token=${{ secrets.GOOGLE_DEVELOPER_CONSOLE_REFRESH_TOKEN }}&grant_type=refresh_token" | jq -r '.access_token')
+          uploadResponse=$(curl -X PUT -sS "https://www.googleapis.com/upload/chromewebstore/v1.1/items/${{ secrets.CHROME_EXTENSION_ID }}" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -T ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ needs.prepare.outputs.version }}.zip)
+          echo "$uploadResponse"
+          echo ::set-output name=upload_status::$(echo "$uploadResponse" | jq -r '.uploadState')
+
+      - name: "Check Upload"
+        run: |
+          [ "${{ steps.update_extension.outputs.upload_status }}" == 'SUCCESS' ]
+
+      - name: "Publish Chrome Extension for users"
+        id: publish_extension
+        run: |
+          access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.GOOGLE_DEVELOPER_CONSOLE_CLIENT_ID }}&client_secret=${{ secrets.GOOGLE_DEVELOPER_CONSOLE_CLIENT_SECRET }}&refresh_token=${{ secrets.GOOGLE_DEVELOPER_CONSOLE_REFRESH_TOKEN }}&grant_type=refresh_token" | jq -r '.access_token')
+          publishResponse=$(curl -X POST -sS "https://www.googleapis.com/chromewebstore/v1.1/items/${{ secrets.CHROME_EXTENSION_ID }}/publish" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -H "Content-Length:0")
+          echo "$publishResponse"
+          echo ::set-output name=publish_status::$(echo "$publishResponse" | jq -r '.status | .[0]')
+
+      - name: "Check Publish"
+        run: |
+          [ "${{ steps.publish_extension.outputs.publish_status }}" == 'OK' ] || [ "${{ steps.publish_extension.outputs.publish_status }}" == 'PUBLISHED_WITH_FRICTION_WARNING' ]
 
   vscode_extensions_dev:
     if: ${{ github.event.inputs.vscode_extensions_dev == 'true' }}
@@ -434,9 +453,11 @@ jobs:
           lerna run build:prod --stream --no-private
 
       - name: "Publish packages to the NPM registry"
+        env:
+          NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
         run: |
-          echo "TODO:"
-          echo "Publishing packages to the NPM registry"
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          lerna exec 'npm publish --access public' --stream --no-private
 
   standalone_editors_cdn:
     if: ${{ always() && github.event.inputs.standalone_editors_cdn == 'true' && (needs.chrome_extension.result == 'success' || needs.chrome_extension.result == 'skipped') }}
