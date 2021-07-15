@@ -92,13 +92,8 @@ interface OnlineDictionary extends ReferenceDictionary {
       setupFirst: string;
     };
     dropdown: {
-      title: string;
       noDeployments: string;
       setupFor: (username: string) => string;
-      tooltip: {
-        disconnected: string;
-        connected: string;
-      };
       item: {
         upTooltip: string;
         downTooltip: string;
@@ -107,9 +102,7 @@ interface OnlineDictionary extends ReferenceDictionary {
       };
     };
     introduction: {
-      sandboxShortDescription: string;
-      header: string;
-      subHeader: string;
+      explanation: string;
       disclaimer: string;
       getStarted: string;
     };
@@ -306,7 +299,7 @@ interface OnlineDictionary extends ReferenceDictionary {
     modal: {
       initial: {
         runDmnModels: string;
-        kieToolingExtendedServicesExplanation: string;
+        explanation: string;
         notificationPanelExplanation: Array<string | Wrapped<"icon">>;
       };
       wizard: {
@@ -430,6 +423,11 @@ interface OnlineDictionary extends ReferenceDictionary {
         install: string;
         outdated: string;
         disconnected: string;
+      };
+    };
+    modal: {
+      initial: {
+        subHeader: string;
       };
     };
   };

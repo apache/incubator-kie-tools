@@ -88,20 +88,15 @@ export const en: OnlineI18n = {
       deployInstanceInfo: "Deploy instance information",
       disclaimer:
         "When you set up the required information, you are able to deploy decision models on your configured instance. All the information you provide is locally stored as browser cookies and they are never shared with anyone.",
-      learnMore: `Learn more about the ${en_common.names.shortDevSandbox}`,
+      learnMore: "Learn more",
       requiredField: "This field cannot be empty.",
       deploying: "Deploying ...",
       saving: "Saving ...",
       setupFirst: `Set up your ${en_common.names.dmnDevSandbox} to be able to deploy your models`,
     },
     dropdown: {
-      title: "Deploy",
       noDeployments: "Your deployments show up here",
       setupFor: (username: string) => `Setup for ${username}`,
-      tooltip: {
-        disconnected: "Your instance is disconnected",
-        connected: "Your instance is connected",
-      },
       item: {
         upTooltip: "This deployment is up and running. Click to see more details in your instance.",
         downTooltip: "This deployment is not running. Click to see more details in your instance.",
@@ -128,14 +123,10 @@ export const en: OnlineI18n = {
       deployStartedSuccess: "Your deployment has been successfully started and it will be available shortly.",
     },
     introduction: {
-      sandboxShortDescription:
-        "The sandbox provides you with a private OpenShift environment in a shared, multi-tenant OpenShift cluster that is pre-configured with a set of developer tools.",
-      header: `Deploy to ${en_common.names.dmn} ${en_common.names.shortDevSandbox}`,
-      subHeader: "Design a decision model and easily deploy it to your cloud instance.",
-      disclaimer: `The ${en_common.names.dmn} ${
-        en_common.names.shortDevSandbox
-      } is intended to be used during ${"development".bold()}, so users should not use the
-        deployed ${en_common.names.dmn} services in production or for any type of business-critical workloads.`,
+      explanation: `Deploy your decision models to a cloud instance on ${en_common.names.devSandbox} and share with others.`,
+      disclaimer: `${
+        en_common.names.dmnDevSandbox
+      } is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
       getStarted: "To get started, configure your instance information.",
     },
     configWizard: {
@@ -322,12 +313,13 @@ export const en: OnlineI18n = {
     },
     modal: {
       initial: {
-        runDmnModels: `Run your ${en_common.names.dmn} models with the ${en_common.names.kieToolingExtendedServices} and see live forms and results as you edit.`,
-        kieToolingExtendedServicesExplanation: `With its validation and execution capabilities, ${en_common.names.kieToolingExtendedServices} helps you create assertive DMN decisions. Input nodes become interactive fields on an auto-generated form, and the results are displayed as easy-to-read cards.`,
+        runDmnModels: "Run your models and see live forms and results as you edit.",
+        explanation:
+          "Input nodes become interactive fields on an auto-generated form, and the results are displayed as easy-to-read cards.",
         notificationPanelExplanation: [
           `The Notifications Panel `,
           wrapped("icon"),
-          `, at the right-bottom side of the Editor, displays live Execution messages to assist during the modeling stage of your decisions.`,
+          `, at the bottom-right corner of the Editor, displays live Execution messages to assist modeling your decisions.`,
         ],
       },
       wizard: {
@@ -481,6 +473,11 @@ export const en: OnlineI18n = {
         install: `Setup ${en_common.names.kieToolingExtendedServices} to use this feature.`,
         outdated: `${en_common.names.kieToolingExtendedServices} is outdated.`,
         disconnected: `${en_common.names.kieToolingExtendedServices} is disconnected.`,
+      },
+    },
+    modal: {
+      initial: {
+        subHeader: `Augment the ${en_common.names.dmn} editor`,
       },
     },
   },

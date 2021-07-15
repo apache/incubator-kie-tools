@@ -332,17 +332,17 @@
   padding-right: 12px;
 }
 
-.kogito--editor__dmn-runner-modal-footer {
+.kogito--editor__kie-tooling-extended-services-modal-footer {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-.kogito--editor__dmn-runner-modal-footer-alert {
+.kogito--editor__kie-tooling-extended-services-modal-footer-alert {
   width: 100%;
 }
 
-.kogito--editor__dmn-runner-modal-footer-alert-success {
+.kogito--editor__kie-tooling-extended-services-modal-footer-alert-success {
   display: flex;
   justify-content: space-between;
 }
@@ -376,7 +376,7 @@
   animation: staticAnimation 10s infinite;
 }
 
-.kogito--editor__dmn-runner-modal-initial {
+.kogito--editor__kie-tooling-extended-services-modal-initial {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -385,22 +385,33 @@
   margin-left: 20px;
 }
 
-.kogito--editor__dmn-runner-modal-initial-content {
+.kogito--editor__kie-tooling-extended-services-modal-initial-center {
+  margin: 0 auto;
+}
+
+.kogito--editor__kie-tooling-extended-services-modal-initial img {
+  border: 1px solid #eee;
+}
+
+.kogito--editor__kie-tooling-extended-services-modal-initial-content {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  flex-direction: row;
 }
 
-.kogito--editor__dmn-runner-modal-initial-title {
-  margin: 20px;
+.kogito--editor__kie-tooling-extended-services-modal-initial-title {
+  margin: 20px 20px 0px;
 }
 
-.kogito--editor__dmn-runner-modal-initial-margin {
+.kogito--editor__kie-tooling-extended-services-modal-initial-margin {
   margin: 10px;
 }
 
-.kogito--editor__dmn-runner-modal-use {
+.kogito--editor__kie-tooling-extended-services-modal-initial-text {
+  font-size: var(--pf-global--FontSize--sm);
+  margin-top: 16px;
+}
+
+.kogito--editor__kie-tooling-extended-services-modal-use {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -408,22 +419,22 @@
   flex-direction: column;
 }
 
-.kogito--editor__dmn-runner-modal-use-title {
+.kogito--editor__kie-tooling-extended-services-modal-use-title {
   margin: 20px;
 }
 
-.kogito--editor__dmn-runner-modal-use-main-content {
+.kogito--editor__kie-tooling-extended-services-modal-use-main-content {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
 
-.kogito--editor__dmn-runner-modal-use-text-align {
+.kogito--editor__kie-tooling-extended-services-modal-use-text-align {
   text-align: center;
 }
 
-.kogito--editor__dmn-runner-modal-use-margin {
+.kogito--editor__kie-tooling-extended-services-modal-use-margin {
   margin: 10px;
 }
 
