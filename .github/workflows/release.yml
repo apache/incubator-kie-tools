@@ -167,7 +167,7 @@ jobs:
           path: ${{ github.workspace }}/kogito-online
           fetch-depth: 0
           token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
-          repository: tiagobento/kogito-online
+          repository: kiegroup/kogito-online
           ref: gh-pages
 
       - name: "Setup kogito-tooling-bot"
@@ -222,9 +222,9 @@ jobs:
 
   chrome_extension:
     env:
-      CHROME_EXTENSION__routerTargetOrigin: "https://tiagobento.github.io"
+      CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
       CHROME_EXTENSION__routerRelativePath: "kogito-online/chrome-extension/${{ needs.prepare.outputs.version }}"
-      CHROME_EXTENSION__onlineEditorUrl: "https://tiagobento.github.io/kogito-online"
+      CHROME_EXTENSION__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
       CHROME_EXTENSION__manifestFile: "manifest.prod.json"
     if: ${{ always() && github.event.inputs.chrome_extension == 'true' && (needs.online_editor.result == 'success' || needs.online_editor.result == 'skipped') }}
     runs-on: ubuntu-latest
@@ -242,7 +242,7 @@ jobs:
           path: ${{ github.workspace }}/kogito-online
           fetch-depth: 0
           token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
-          repository: tiagobento/kogito-online
+          repository: kiegroup/kogito-online
           ref: gh-pages
 
       - name: "Setup kogito-tooling-bot"
@@ -455,7 +455,7 @@ jobs:
           path: ${{ github.workspace }}/kogito-online
           fetch-depth: 0
           token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
-          repository: tiagobento/kogito-online
+          repository: kiegroup/kogito-online
           ref: gh-pages
 
       - name: "Setup kogito-tooling-bot"
