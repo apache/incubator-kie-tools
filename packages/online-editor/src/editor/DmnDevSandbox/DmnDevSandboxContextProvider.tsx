@@ -68,6 +68,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
     [kieToolingExtendedServices.baseUrl]
   );
   const [currentConfig, setCurrentConfig] = useState(readConfigCookie());
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isConfigModalOpen, setConfigModalOpen] = useState(false);
   const [isConfigWizardOpen, setConfigWizardOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
@@ -77,6 +78,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
   const disconnect = useCallback(() => {
+    setDropdownOpen(false);
     setDeployments([]);
     setInstanceStatus(DmnDevSandboxInstanceStatus.DISCONNECTED);
   }, []);
@@ -173,11 +175,13 @@ export function DmnDevSandboxContextProvider(props: Props) {
         deployments,
         currentConfig,
         instanceStatus,
+        isDropdownOpen,
         isConfigModalOpen,
         isConfigWizardOpen,
         isConfirmDeployModalOpen,
         setDeployments,
         setInstanceStatus,
+        setDropdownOpen,
         setConfigModalOpen,
         setConfigWizardOpen,
         setConfirmDeployModalOpen,

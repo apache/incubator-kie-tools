@@ -19,6 +19,10 @@
   --pf-c-page__header-brand-link--c-brand--MaxHeight: 39px;
 }
 
+.pf-c-dropdown__group-title {
+  white-space: nowrap;
+}
+
 .kogito--editor-hub-download_link {
   text-decoration: none;
   color: var(--pf-global--Color--light-100);
@@ -187,6 +191,10 @@
 
 .kogito--editor__toolbar.dropdown:hover {
   border-bottom: solid var(--pf-global--palette--blue-300) 1px;
+}
+
+.kogito--editor__toolbar.dropdown > button:disabled {
+  color: rgb(128, 128, 128);
 }
 
 .kogito--editor__toolbar.dropdown:active,
@@ -500,6 +508,10 @@
   100% {
     opacity: 1;
   }
+}
+
+.kogito--editor__kie-tooling-extended-services-dropdown-icon-connected {
+  color: var(--pf-global--palette--green-300);
 }
 
 .kogito--editor__kie-tooling-extended-services-dropdown-tooltip {

@@ -24,10 +24,8 @@ export interface KieToolingExtendedServicesContextType {
   baseUrl: string;
   version: string;
   outdated: boolean;
-  isDropdownOpen: boolean;
   isModalOpen: boolean;
   setStatus: React.Dispatch<KieToolingExtendedServicesStatus>;
-  setDropdownOpen: React.Dispatch<boolean>;
   setModalOpen: React.Dispatch<boolean>;
   saveNewPort: React.Dispatch<string>;
   closeDmnTour: () => void;
@@ -35,7 +33,6 @@ export interface KieToolingExtendedServicesContextType {
 
 export const KieToolingExtendedServicesContext = React.createContext<KieToolingExtendedServicesContextType>({
   status: KieToolingExtendedServicesStatus.UNAVAILABLE,
-  isDropdownOpen: false,
   isModalOpen: false,
 } as any);
 

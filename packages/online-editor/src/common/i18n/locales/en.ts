@@ -97,6 +97,7 @@ export const en: OnlineI18n = {
     dropdown: {
       title: "Deploy",
       noDeployments: "Your deployments show up here",
+      setupFor: (username: string) => `Setup for ${username}`,
       tooltip: {
         disconnected: "Your instance is disconnected",
         connected: "Your instance is connected",
@@ -473,14 +474,13 @@ export const en: OnlineI18n = {
     },
   },
   kieToolingExtendedServices: {
-    connectedOnPort: (port: string) => `Connected on port ${port}`,
     dropdown: {
+      shortConnected: (port: string) => `Connected to port ${port}`,
       tooltip: {
-        installForDmnRunner: `Install the ${en_common.names.kieToolingExtendedServices} to be able to use the ${en_common.names.dmnRunner}`,
-        installForDmnDevSandbox: `Install the ${en_common.names.kieToolingExtendedServices} to be able to use the ${en_common.names.dmnDevSandbox}`,
-        outdated: `The ${en_common.names.kieToolingExtendedServices} is outdated`,
-        connected: `The ${en_common.names.kieToolingExtendedServices} is connected`,
-        disconnected: `The ${en_common.names.kieToolingExtendedServices} is disconnected`,
+        connected: (port: string) => `${en_common.names.kieToolingExtendedServices} is connected to port ${port}.`,
+        install: `Setup ${en_common.names.kieToolingExtendedServices} to use this feature.`,
+        outdated: `${en_common.names.kieToolingExtendedServices} is outdated.`,
+        disconnected: `${en_common.names.kieToolingExtendedServices} is disconnected.`,
       },
     },
   },

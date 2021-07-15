@@ -38,9 +38,9 @@ import { useCallback, useContext, useMemo, useState } from "react";
 import { useLocation } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
 import { useOnlineI18n } from "../common/i18n";
+import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/KieToolingExtendedServicesButtons";
 import { useKieToolingExtendedServices } from "./KieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesDropdown } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdown";
-import { useDropdownItems } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownItems";
+import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 
 interface Props {
@@ -67,7 +67,6 @@ export function EditorToolbar(props: Props) {
   const [isViewKebabOpen, setViewKebabOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
   const { i18n } = useOnlineI18n();
-  const kieToolingExtendedServicesDropdownItems = useDropdownItems("sm");
 
   const logoProps = useMemo(() => {
     return { onClick: props.onClose };
@@ -229,7 +228,7 @@ export function EditorToolbar(props: Props) {
                   sm: "hidden",
                 }}
               >
-                <KieToolingExtendedServicesDropdown />
+                <KieToolingExtendedServicesButtons />
               </PageHeaderToolsItem>
             </PageHeaderToolsGroup>
           )}
@@ -348,12 +347,7 @@ export function EditorToolbar(props: Props) {
                   <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
                     {...shareItems("sm")}
                   </DropdownGroup>,
-                  <DropdownGroup
-                    key={"kie-tooling-extended-services-group"}
-                    label={i18n.names.kieToolingExtendedServices}
-                  >
-                    {...kieToolingExtendedServicesDropdownItems()}
-                  </DropdownGroup>,
+                  <KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />,
                 ]}
                 position={DropdownPosition.right}
               />

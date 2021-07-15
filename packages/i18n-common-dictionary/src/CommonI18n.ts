@@ -21,9 +21,11 @@ export type CommonDictionary = {
   available: string;
   back: string;
   cancel: string;
+  change: string;
   close: string;
   configure: string;
   confirm: string;
+  connected: string;
   continue: string;
   copy: string;
   cut: string;

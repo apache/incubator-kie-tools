@@ -43,7 +43,6 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
       : KieToolingExtendedServicesStatus.UNAVAILABLE
   );
 
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [outdated, setOutdated] = useState(false);
   const [port, setPort] = useState(
@@ -75,7 +74,6 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
         bridge.check().catch(() => {
           setStatus(KieToolingExtendedServicesStatus.STOPPED);
           setModalOpen(true);
-          setDropdownOpen(false);
           window.clearInterval(detectCrashesOrStops);
         });
       }, KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME);
@@ -114,10 +112,8 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
         baseUrl,
         version,
         outdated,
-        isDropdownOpen,
         isModalOpen,
         setStatus,
-        setDropdownOpen,
         setModalOpen,
         saveNewPort,
         closeDmnTour: props.closeDmnTour,

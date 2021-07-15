@@ -94,6 +94,7 @@ interface OnlineDictionary extends ReferenceDictionary {
     dropdown: {
       title: string;
       noDeployments: string;
+      setupFor: (username: string) => string;
       tooltip: {
         disconnected: string;
         connected: string;
@@ -422,13 +423,12 @@ interface OnlineDictionary extends ReferenceDictionary {
     };
   };
   kieToolingExtendedServices: {
-    connectedOnPort: (port: string) => string;
     dropdown: {
+      shortConnected: (port: string) => string;
       tooltip: {
-        installForDmnRunner: string;
-        installForDmnDevSandbox: string;
+        connected: (port: string) => string;
+        install: string;
         outdated: string;
-        connected: string;
         disconnected: string;
       };
     };
