@@ -757,7 +757,7 @@ export function KieToolingExtendedServicesModal() {
             <div className="pf-u-w-75">
               <img
                 className="pf-u-h-100"
-                src={"./images/dmn-runner2.gif"}
+                src={"./images/dmn-dev-sandbox.gif"}
                 alt={"DMN Dev Sandbox usage"}
                 width={"100%"}
               />
