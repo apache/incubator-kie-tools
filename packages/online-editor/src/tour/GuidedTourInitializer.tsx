@@ -57,19 +57,7 @@ export function useDmnTour(isEditorReady: boolean, file: File) {
 function getOnlineEditorTutorial(i18n: OnlineI18n) {
   function dismissAndStartDmnRunner(props: any) {
     props.dismiss();
-
-    const dmnRunnerButton = (
-      document.getElementsByClassName("kogito--dmn-runner-button") as HTMLCollectionOf<HTMLButtonElement>
-    )?.[0];
-    if (!dmnRunnerButton?.disabled) {
-      dmnRunnerButton.click();
-    } else {
-      (
-        document.getElementsByClassName(
-          "kogito--kie-tooling-extended-services-button"
-        ) as HTMLCollectionOf<HTMLButtonElement>
-      )?.[0]?.click();
-    }
+    (document.getElementsByClassName("kogito--dmn-runner-button") as HTMLCollectionOf<HTMLButtonElement>)?.[0]?.click();
   }
 
   return new Tutorial("DMN Online Editor Tutorial", [

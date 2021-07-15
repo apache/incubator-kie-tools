@@ -30,6 +30,7 @@ export type CommonDictionary = {
   copy: string;
   cut: string;
   deploy: string;
+  disconnected: string;
   dismiss: string;
   done: string;
   download: string;
@@ -62,6 +63,7 @@ export type CommonDictionary = {
   quit: string;
   redo: string;
   reset: string;
+  run: string;
   save: string;
   setup: string;
   start: string;

@@ -83,6 +83,7 @@ interface OnlineDictionary extends ReferenceDictionary {
   };
   dmnDevSandbox: {
     common: {
+      deployYourModel: string;
       deployInstanceInfo: string;
       disclaimer: string;
       learnMore: string;

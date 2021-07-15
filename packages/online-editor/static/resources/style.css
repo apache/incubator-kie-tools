@@ -406,11 +406,6 @@
   margin: 10px;
 }
 
-.kogito--editor__kie-tooling-extended-services-modal-initial-text {
-  font-size: var(--pf-global--FontSize--sm);
-  margin-top: 16px;
-}
-
 .kogito--editor__kie-tooling-extended-services-modal-use {
   width: 100%;
   display: flex;

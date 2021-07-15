@@ -39,10 +39,8 @@ import { useOnlineI18n } from "../../common/i18n";
 import { I18nHtml, I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { SelectOs } from "../../common/SelectOs";
 import { getOperatingSystem, OperatingSystem } from "../../common/utils";
-import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
-import { DmnDevSandboxInstanceStatus } from "../DmnDevSandbox/DmnDevSandboxInstanceStatus";
 import { DEVELOPER_SANDBOX_URL } from "../DmnDevSandbox/DmnDevSandboxService";
-import { useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
+import { KieToolingExtendedServicesFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT } from "./KieToolingExtendedServicesContextProvider";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 
@@ -60,7 +58,6 @@ export function KieToolingExtendedServicesModal() {
   const [operatingSystem, setOperatingSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
   const [modalPage, setModalPage] = useState<ModalPage>(ModalPage.INITIAL);
   const kieToolingExtendedServices = useKieToolingExtendedServices();
-  const dmnDevSandbox = useDmnDevSandbox();
 
   const KIE_TOOLING_EXTENDED_SERVICES_MACOS_DMG = useMemo(
     () => `kie_tooling_extended_services_macos_${kieToolingExtendedServices.version}.dmg`,
@@ -76,13 +73,6 @@ export function KieToolingExtendedServicesModal() {
     [kieToolingExtendedServices.version]
   );
   const KIE_TOOLING_EXTENDED_SERVICES_BINARIES = useMemo(() => "kie_tooling_extended_services", []);
-
-  const isDmnDevSandboxConnected = useMemo(() => {
-    return (
-      kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING &&
-      dmnDevSandbox.instanceStatus === DmnDevSandboxInstanceStatus.CONNECTED
-    );
-  }, [dmnDevSandbox.instanceStatus, kieToolingExtendedServices.status]);
 
   const downloadKieToolingExtendedServicesUrl = useMemo(() => {
     switch (operatingSystem) {
@@ -629,6 +619,7 @@ export function KieToolingExtendedServicesModal() {
   }, [kieToolingExtendedServices.status, kieToolingExtendedServices.outdated]);
 
   const onClose = useCallback(() => {
+    setModalPage(ModalPage.INITIAL);
     kieToolingExtendedServices.setModalOpen(false);
     if (
       kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.STOPPED ||
@@ -637,11 +628,6 @@ export function KieToolingExtendedServicesModal() {
       kieToolingExtendedServices.setStatus(KieToolingExtendedServicesStatus.NOT_RUNNING);
     }
   }, [kieToolingExtendedServices]);
-
-  const onSetupDevSandbox = useCallback(() => {
-    kieToolingExtendedServices.setModalOpen(false);
-    dmnDevSandbox.setConfigModalOpen(true);
-  }, [dmnDevSandbox, kieToolingExtendedServices]);
 
   const modalTitle = useMemo(() => {
     switch (modalPage) {
@@ -675,7 +661,7 @@ export function KieToolingExtendedServicesModal() {
         <>
           {modalPage === ModalPage.INITIAL && (
             <Button
-              className="kogito--editor__kie-tooling-extended-services-modal-initial-center"
+              className="pf-u-mt-xl kogito--editor__kie-tooling-extended-services-modal-initial-center"
               onClick={() => setModalPage(ModalPage.WIZARD)}
             >
               {i18n.terms.setup}
@@ -701,7 +687,11 @@ export function KieToolingExtendedServicesModal() {
         <div className={"kogito--editor__kie-tooling-extended-services-modal-initial"}>
           <div className={"kogito--editor__kie-tooling-extended-services-modal-initial-title"}>
             <TextContent>
-              <Text component={TextVariants.h1}>{i18n.names.kieToolingExtendedServices}</Text>
+              <Text component={TextVariants.h1}>
+                {kieToolingExtendedServices.installTriggeredBy === KieToolingExtendedServicesFeature.DMN_DEV_SANDBOX
+                  ? i18n.names.dmnDevSandbox
+                  : i18n.names.dmnRunner}
+              </Text>
             </TextContent>
           </div>
           <div>
@@ -709,60 +699,58 @@ export function KieToolingExtendedServicesModal() {
               <Text component={TextVariants.p}>{i18n.kieToolingExtendedServices.modal.initial.subHeader}</Text>
             </TextContent>
           </div>
-          <div className="pf-u-display-flex pf-u-flex-direction-row">
-            <div className="pf-u-w-75 pf-u-p-sm">
-              <img className="pf-u-h-100" src={"./images/dmn-runner2.gif"} alt={"DMN Runner usage"} width={"100%"} />
-            </div>
-            <div className="pf-u-w-25 pf-u-ml-sm">
-              <TextContent>
-                <Text component={TextVariants.h2}>{i18n.names.dmnRunner}</Text>
-              </TextContent>
-              <TextContent className="kogito--editor__kie-tooling-extended-services-modal-initial-text">
-                <Text component={TextVariants.p}>{i18n.dmnRunner.modal.initial.runDmnModels}</Text>
-              </TextContent>
-              <TextContent className="kogito--editor__kie-tooling-extended-services-modal-initial-text">
-                <Text component={TextVariants.p}>{i18n.dmnRunner.modal.initial.explanation}</Text>
-              </TextContent>
-              <TextContent className="kogito--editor__kie-tooling-extended-services-modal-initial-text">
-                <Text component={TextVariants.p}>
-                  <I18nWrapped components={{ icon: <ExclamationCircleIcon /> }}>
-                    {i18n.dmnRunner.modal.initial.notificationPanelExplanation}
-                  </I18nWrapped>
-                </Text>
-              </TextContent>
-            </div>
-          </div>
-          <div className="pf-u-mt-xl pf-u-display-flex pf-u-flex-direction-row">
-            <div className="pf-u-w-25 pf-u-mr-sm">
-              <TextContent>
-                <Text component={TextVariants.h2}>{i18n.names.dmnDevSandbox}</Text>
-              </TextContent>
-              <TextContent className="kogito--editor__kie-tooling-extended-services-modal-initial-text">
-                <Text component={TextVariants.p}>{i18n.dmnDevSandbox.introduction.explanation}</Text>
-              </TextContent>
-              <TextContent className="kogito--editor__kie-tooling-extended-services-modal-initial-text">
-                <Text component={TextVariants.p}>
-                  <I18nHtml>{i18n.dmnDevSandbox.introduction.disclaimer}</I18nHtml>
-                </Text>
-              </TextContent>
-              <TextContent className="kogito--editor__kie-tooling-extended-services-modal-initial-text">
-                <Text component={TextVariants.p}>
-                  <Text component={TextVariants.a} href={DEVELOPER_SANDBOX_URL} target={"_blank"}>
-                    {i18n.dmnDevSandbox.common.learnMore}
-                    <ExternalLinkAltIcon className="pf-u-mx-sm" />
+          {kieToolingExtendedServices.installTriggeredBy === KieToolingExtendedServicesFeature.DMN_RUNNER && (
+            <div className="pf-u-display-flex pf-u-flex-direction-row">
+              <div className="pf-u-w-25 pf-u-ml-sm">
+                <TextContent>
+                  <Text component={TextVariants.p}>{i18n.dmnRunner.modal.initial.runDmnModels}</Text>
+                </TextContent>
+                <TextContent className="pf-u-mt-md">
+                  <Text component={TextVariants.p}>{i18n.dmnRunner.modal.initial.explanation}</Text>
+                </TextContent>
+                <TextContent className="pf-u-mt-md">
+                  <Text component={TextVariants.p}>
+                    <I18nWrapped components={{ icon: <ExclamationCircleIcon /> }}>
+                      {i18n.dmnRunner.modal.initial.notificationPanelExplanation}
+                    </I18nWrapped>
                   </Text>
-                </Text>
-              </TextContent>
+                </TextContent>
+              </div>
+              <div className="pf-u-w-75 pf-u-p-sm">
+                <img className="pf-u-h-100" src={"./images/dmn-runner2.gif"} alt={"DMN Runner usage"} width={"100%"} />
+              </div>
             </div>
-            <div className="pf-u-w-75">
-              <img
-                className="pf-u-h-100"
-                src={"./images/dmn-dev-sandbox.gif"}
-                alt={"DMN Dev Sandbox usage"}
-                width={"100%"}
-              />
+          )}
+          {kieToolingExtendedServices.installTriggeredBy === KieToolingExtendedServicesFeature.DMN_DEV_SANDBOX && (
+            <div className="pf-u-mt-xl pf-u-display-flex pf-u-flex-direction-row">
+              <div className="pf-u-w-25 pf-u-mr-sm">
+                <TextContent>
+                  <Text component={TextVariants.p}>{i18n.dmnDevSandbox.introduction.explanation}</Text>
+                </TextContent>
+                <TextContent className="pf-u-mt-md">
+                  <Text component={TextVariants.p}>
+                    <I18nHtml>{i18n.dmnDevSandbox.introduction.disclaimer}</I18nHtml>
+                  </Text>
+                </TextContent>
+                <TextContent className="pf-u-mt-md">
+                  <Text component={TextVariants.p}>
+                    <Text component={TextVariants.a} href={DEVELOPER_SANDBOX_URL} target={"_blank"}>
+                      {i18n.dmnDevSandbox.common.learnMore}
+                      <ExternalLinkAltIcon className="pf-u-mx-sm" />
+                    </Text>
+                  </Text>
+                </TextContent>
+              </div>
+              <div className="pf-u-w-75">
+                <img
+                  className="pf-u-h-100"
+                  src={"./images/dmn-dev-sandbox.gif"}
+                  alt={"DMN Dev Sandbox usage"}
+                  width={"100%"}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
       {modalPage === ModalPage.WIZARD && (
@@ -795,33 +783,10 @@ export function KieToolingExtendedServicesModal() {
               >
                 {i18n.dmnRunner.modal.use.connected}
               </Text>
-              <Text
-                component={TextVariants.p}
-                className={"kogito--editor__kie-tooling-extended-services-modal-use-text-align pf-u-mt-md"}
-              >
-                {i18n.dmnRunner.modal.use.fillTheForm}
-              </Text>
-              <Text
-                component={TextVariants.p}
-                className={"kogito--editor__kie-tooling-extended-services-modal-use-text-align"}
-              >
-                {i18n.dmnRunner.modal.use.deployTheModel}
-              </Text>
             </TextContent>
             <br />
             <Button
-              variant="primary"
-              type="submit"
-              isDisabled={isDmnDevSandboxConnected}
-              onClick={onSetupDevSandbox}
-              className={"kogito--editor__kie-tooling-extended-services-modal-use-margin"}
-            >
-              {isDmnDevSandboxConnected
-                ? i18n.dmnRunner.modal.use.dmnDevSandboxAlreadySetup
-                : i18n.dmnRunner.modal.use.setupDmnDevSandbox}
-            </Button>
-            <Button
-              variant={isDmnDevSandboxConnected ? "primary" : "plain"}
+              variant={"primary"}
               type="submit"
               onClick={onClose}
               className={"kogito--editor__kie-tooling-extended-services-modal-use-margin"}

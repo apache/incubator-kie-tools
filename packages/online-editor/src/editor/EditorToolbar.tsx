@@ -251,7 +251,7 @@ export function EditorToolbar(props: Props) {
                 className={"kogito--editor__toolbar button"}
                 ouiaId="save-and-download-button"
               >
-                {i18n.editorToolbar.saveAndDownload}
+                {i18n.terms.save}
               </Button>
             </PageHeaderToolsItem>
           </PageHeaderToolsGroup>

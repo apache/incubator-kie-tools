@@ -21,7 +21,10 @@ import { useOnlineI18n } from "../../common/i18n";
 import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
 import { DmnDevSandboxInstanceStatus } from "../DmnDevSandbox/DmnDevSandboxInstanceStatus";
 import { FeatureDependentOnKieToolingExtendedServices } from "../KieToolingExtendedServices/FeatureDependentOnKieToolingExtendedServices";
-import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
+import {
+  KieToolingExtendedServicesFeature,
+  useKieToolingExtendedServices,
+} from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { DmnDevSandboxDeploymentDropdownItem } from "./DmnDevSandboxDeploymentDropdownItem";
 
@@ -47,34 +50,36 @@ export function useDmnDevSandboxDropdownItems() {
 
   const onDevSandboxDeploy = useCallback(() => {
     kieToolingExtendedServices.closeDmnTour();
-    dmnDevSandbox.setConfirmDeployModalOpen(true);
-  }, [dmnDevSandbox, kieToolingExtendedServices]);
+    if (isKieToolingExtendedServicesRunning) {
+      dmnDevSandbox.setConfirmDeployModalOpen(true);
+      return;
+    }
+    kieToolingExtendedServices.setInstallTriggeredBy(KieToolingExtendedServicesFeature.DMN_DEV_SANDBOX);
+    kieToolingExtendedServices.setModalOpen(true);
+  }, [dmnDevSandbox, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
 
   return useCallback(() => {
     const items = [
       <>
-        {!isDmnDevSandboxConnected && (
-          <FeatureDependentOnKieToolingExtendedServices isLight={false} position="left">
-            <DropdownItem
-              key={`dropdown-dmn-dev-sandbox-setup`}
-              component={"button"}
-              onClick={onDevSandboxSetup}
-              isDisabled={!isKieToolingExtendedServicesRunning}
-              ouiaId={"setup-dmn-dev-sandbox-dropdown-button"}
-            >
-              {i18n.terms.setup}
-            </DropdownItem>
-          </FeatureDependentOnKieToolingExtendedServices>
+        {!isDmnDevSandboxConnected && isKieToolingExtendedServicesRunning && (
+          <DropdownItem
+            key={`dropdown-dmn-dev-sandbox-setup`}
+            component={"button"}
+            onClick={onDevSandboxSetup}
+            ouiaId={"setup-dmn-dev-sandbox-dropdown-button"}
+          >
+            {i18n.terms.setup}
+          </DropdownItem>
         )}
         <FeatureDependentOnKieToolingExtendedServices isLight={false} position="left">
           <DropdownItem
             key={`dropdown-dmn-dev-sandbox-deploy`}
             component={"button"}
             onClick={onDevSandboxDeploy}
-            isDisabled={!isKieToolingExtendedServicesRunning || !isDmnDevSandboxConnected}
+            isDisabled={isKieToolingExtendedServicesRunning && !isDmnDevSandboxConnected}
             ouiaId={"deploy-to-dmn-dev-sandbox-dropdown-button"}
           >
-            {i18n.terms.deploy}
+            {i18n.dmnDevSandbox.common.deployYourModel}
           </DropdownItem>
         </FeatureDependentOnKieToolingExtendedServices>
         {isDmnDevSandboxConnected && (

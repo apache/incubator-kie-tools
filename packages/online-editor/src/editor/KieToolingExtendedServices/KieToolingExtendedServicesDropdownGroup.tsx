@@ -22,7 +22,7 @@ import { useOnlineI18n } from "../../common/i18n";
 import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
 import { useDmnRunner } from "../DmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieToolingExtendedServices } from "./FeatureDependentOnKieToolingExtendedServices";
-import { useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
+import { KieToolingExtendedServicesFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 
 export function KieToolingExtendedServicesDropdownGroup() {
@@ -36,28 +36,27 @@ export function KieToolingExtendedServicesDropdownGroup() {
     [kieToolingExtendedServices.status]
   );
 
-  const onSetupKieToolingExtendedServices = useCallback(() => {
-    kieToolingExtendedServices.closeDmnTour();
-    kieToolingExtendedServices.setModalOpen(true);
-  }, [kieToolingExtendedServices]);
-
   const onToggleDmnRunner = useCallback(() => {
     kieToolingExtendedServices.closeDmnTour();
-    dmnRunner.setDrawerExpanded(!dmnRunner.isDrawerExpanded);
-  }, [dmnRunner, kieToolingExtendedServices]);
+    if (isKieToolingExtendedServicesRunning) {
+      dmnRunner.setDrawerExpanded(!dmnRunner.isDrawerExpanded);
+      return;
+    }
+    kieToolingExtendedServices.setInstallTriggeredBy(KieToolingExtendedServicesFeature.DMN_RUNNER);
+    kieToolingExtendedServices.setModalOpen(true);
+  }, [dmnRunner, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
 
   return (
     <DropdownGroup label={i18n.names.kieToolingExtendedServices}>
       <DropdownItem
         key={`kie-tooling-extended-services-dropdown-setup`}
         component={"button"}
-        onClick={onSetupKieToolingExtendedServices}
-        isDisabled={isKieToolingExtendedServicesRunning}
+        isDisabled={true}
         ouiaId="setup-dropdown-button"
       >
         {isKieToolingExtendedServicesRunning
           ? i18n.kieToolingExtendedServices.dropdown.shortConnected(kieToolingExtendedServices.port)
-          : i18n.terms.setup}
+          : i18n.terms.disconnected}
       </DropdownItem>
       <DropdownGroup key={"dmn-runner-group"} label={i18n.names.dmnRunner}>
         <FeatureDependentOnKieToolingExtendedServices isLight={false} position="left">
@@ -65,7 +64,6 @@ export function KieToolingExtendedServicesDropdownGroup() {
             key={`kie-tooling-extended-services-dropdown-dmn-runner-toggle`}
             component={"button"}
             onClick={onToggleDmnRunner}
-            isDisabled={!isKieToolingExtendedServicesRunning}
             ouiaId="toggle-dmn-runner-dropdown-button"
           >
             <Text>{dmnRunner.isDrawerExpanded ? i18n.terms.close : i18n.terms.open}</Text>

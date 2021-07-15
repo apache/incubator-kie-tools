@@ -85,6 +85,7 @@ export const en: OnlineI18n = {
   },
   dmnDevSandbox: {
     common: {
+      deployYourModel: "Deploy your model",
       deployInstanceInfo: "Deploy instance information",
       disclaimer:
         "When you set up the required information, you are able to deploy decision models on your configured instance. All the information you provide is locally stored as browser cookies and they are never shared with anyone.",
@@ -470,7 +471,7 @@ export const en: OnlineI18n = {
       shortConnected: (port: string) => `Connected to port ${port}`,
       tooltip: {
         connected: (port: string) => `${en_common.names.kieToolingExtendedServices} is connected to port ${port}.`,
-        install: `Setup ${en_common.names.kieToolingExtendedServices} to use this feature.`,
+        install: `Setup ${en_common.names.kieToolingExtendedServices} to use this feature. Click to install.`,
         outdated: `${en_common.names.kieToolingExtendedServices} is outdated.`,
         disconnected: `${en_common.names.kieToolingExtendedServices} is disconnected.`,
       },

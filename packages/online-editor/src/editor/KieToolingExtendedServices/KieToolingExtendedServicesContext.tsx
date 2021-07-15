@@ -18,6 +18,11 @@ import * as React from "react";
 import { useContext } from "react";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 
+export enum KieToolingExtendedServicesFeature {
+  DMN_RUNNER = "DMN_RUNNER",
+  DMN_DEV_SANDBOX = "DMN_DEV_SANDBOX",
+}
+
 export interface KieToolingExtendedServicesContextType {
   status: KieToolingExtendedServicesStatus;
   port: string;
@@ -25,8 +30,10 @@ export interface KieToolingExtendedServicesContextType {
   version: string;
   outdated: boolean;
   isModalOpen: boolean;
+  installTriggeredBy: KieToolingExtendedServicesFeature;
   setStatus: React.Dispatch<KieToolingExtendedServicesStatus>;
   setModalOpen: React.Dispatch<boolean>;
+  setInstallTriggeredBy: React.Dispatch<KieToolingExtendedServicesFeature>;
   saveNewPort: React.Dispatch<string>;
   closeDmnTour: () => void;
 }
