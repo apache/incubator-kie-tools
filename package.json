@@ -90,6 +90,7 @@
     "minimatch": "^3.0.4",
     "mocha": "^8.3.2",
     "mocha-jenkins-reporter": "^0.4.5",
+    "mocha-multi-reporters": "1.5.1",
     "npm-run-all": "^4.1.5",
     "null-loader": "^4.0.1",
     "path-browserify": "^1.0.1",
