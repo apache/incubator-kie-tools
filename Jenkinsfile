@@ -1,6 +1,6 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
-def changeAuthor = env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR
+def changeAuthor = env.ghprbAuthorRepoGitUrl ? util.getGroup(env.ghprbAuthorRepoGitUrl) : (env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR)
 def changeBranch = env.ghprbSourceBranch ?: CHANGE_BRANCH
 def changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
 
