@@ -15,7 +15,8 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { GlobalContext } from "../../common/GlobalContext";
 import {
   KieToolingExtendedServicesFeature,
   useKieToolingExtendedServices,
@@ -40,10 +41,12 @@ const THROTTLING_TIME = 200;
 
 export function DmnRunnerContextProvider(props: Props) {
   const { i18n } = useOnlineI18n();
+  const globalContext = useContext(GlobalContext);
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const notificationsPanel = useNotificationsPanel();
+  const [externalFormInputsLoaded, setExternalFormInputsLoaded] = useState(false);
   const [isDrawerExpanded, setDrawerExpanded] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState(globalContext.formInputs ?? {});
   const [formSchema, setFormSchema] = useState<DmnFormSchema>();
   const [formError, setFormError] = useState(false);
   const [status, setStatus] = useState(
@@ -56,16 +59,35 @@ export function DmnRunnerContextProvider(props: Props) {
     [kieToolingExtendedServices.baseUrl]
   );
 
-  const updateFormSchema = useCallback(() => {
-    return props.editor
-      ?.getContent()
-      .then((content) => service.formSchema(content ?? ""))
-      .then((newSchema) => setFormSchema(newSchema))
-      .catch((err) => {
-        console.error(err);
-        setFormError(true);
-      });
-  }, [props.editor, service]);
+  const updateFormSchema = useCallback(
+    (openDrawer: boolean) => {
+      return props.editor
+        ?.getContent()
+        .then((content) => service.formSchema(content ?? ""))
+        .then((newSchema) => {
+          setFormSchema(newSchema);
+          if (
+            openDrawer &&
+            (globalContext.formInputs ||
+              (kieToolingExtendedServices.isModalOpen &&
+                kieToolingExtendedServices.installTriggeredBy === KieToolingExtendedServicesFeature.DMN_RUNNER))
+          ) {
+            setDrawerExpanded(true);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          setFormError(true);
+        });
+    },
+    [
+      globalContext.formInputs,
+      kieToolingExtendedServices.installTriggeredBy,
+      kieToolingExtendedServices.isModalOpen,
+      props.editor,
+      service,
+    ]
+  );
 
   useEffect(() => {
     if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
@@ -75,17 +97,12 @@ export function DmnRunnerContextProvider(props: Props) {
     }
 
     setStatus(DmnRunnerStatus.AVAILABLE);
-    if (
-      kieToolingExtendedServices.isModalOpen &&
-      kieToolingExtendedServices.installTriggeredBy === KieToolingExtendedServicesFeature.DMN_RUNNER
-    ) {
-      setDrawerExpanded(true);
-    }
     // After the detection of the DMN Runner, set the schema for the first time
     if (props.isEditorReady) {
-      updateFormSchema();
+      updateFormSchema(true);
     }
   }, [
+    globalContext.formInputs,
     kieToolingExtendedServices.installTriggeredBy,
     kieToolingExtendedServices.isModalOpen,
     kieToolingExtendedServices.status,
@@ -121,7 +138,7 @@ export function DmnRunnerContextProvider(props: Props) {
       }
       timeout = window.setTimeout(() => {
         validate();
-        updateFormSchema();
+        updateFormSchema(false);
       }, THROTTLING_TIME);
     });
     validate();

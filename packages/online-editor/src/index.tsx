@@ -39,6 +39,13 @@ import { I18n } from "@kie-tooling-core/i18n/dist/core";
 import { OnlineI18n, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
 import "../static/resources/style.css";
 
+interface OpenFileArgs {
+  filePath: string;
+  readonly: boolean;
+  getFileContent: Promise<string>;
+  formInputs?: any;
+}
+
 const urlParams = new URLSearchParams(window.location.search);
 const githubService = new GithubService();
 const onlineI18n = new I18n<OnlineI18n>(onlineI18nDefaults, onlineI18nDictionaries, "en");
@@ -99,11 +106,18 @@ function waitForEventWithFileData() {
 function openFileByUrl() {
   const i18n = onlineI18n.getCurrent();
   const filePath = urlParams.get("file")!.split("?").shift()!;
+  const readonly = urlParams.has("readonly") ? urlParams.get("readonly") === "true" : false;
 
   if (githubService.isGist(filePath)) {
     githubService
       .fetchGistFile(filePath)
-      .then((content) => openFile(filePath, Promise.resolve(content)))
+      .then((content) =>
+        openFile({
+          filePath: filePath,
+          readonly: readonly,
+          getFileContent: Promise.resolve(content),
+        })
+      )
       .catch((error) => {
         showFetchError(i18n.alerts.gistError);
       });
@@ -111,7 +125,11 @@ function openFileByUrl() {
     githubService
       .fetchGithubFile(filePath)
       .then((response) => {
-        openFile(filePath, Promise.resolve(response));
+        openFile({
+          filePath: filePath,
+          readonly: readonly,
+          getFileContent: Promise.resolve(response),
+        });
       })
       .catch((error) => {
         showFetchError(error.toString());
@@ -120,7 +138,12 @@ function openFileByUrl() {
     fetch(filePath)
       .then((response) => {
         if (response.ok) {
-          openFile(filePath, response.text());
+          openFile({
+            filePath: filePath,
+            readonly: readonly,
+            getFileContent: response.text(),
+            formInputs: extractFormInputsFromUrlParams(),
+          });
         } else {
           showResponseError(response.status, response.statusText);
         }
@@ -131,20 +154,21 @@ function openFileByUrl() {
   }
 }
 
-function openFile(filePath: string, getFileContent: Promise<string>) {
+function openFile(args: OpenFileArgs) {
   const file = {
-    isReadOnly: false,
-    fileExtension: extractFileExtension(removeDirectories(filePath) ?? "")!,
-    fileName: removeFileExtension(removeDirectories(filePath) ?? ""),
-    getFileContents: () => getFileContent,
+    isReadOnly: args.readonly,
+    fileExtension: extractFileExtension(removeDirectories(args.filePath) ?? "")!,
+    fileName: removeFileExtension(removeDirectories(args.filePath) ?? ""),
+    getFileContents: () => args.getFileContent,
   };
   ReactDOM.render(
     <App
       file={file}
-      readonly={false}
+      readonly={args.readonly}
       external={false}
       githubService={githubService}
       editorEnvelopeLocator={editorEnvelopeLocator}
+      formInputs={args.formInputs}
     />,
     document.getElementById("app")!
   );
@@ -202,4 +226,14 @@ function showFetchError(description: string) {
 
 function goToHomePage() {
   window.location.href = window.location.href.split("?")[0].split("#")[0];
+}
+
+function extractFormInputsFromUrlParams(): any {
+  if (urlParams.has("formInputs")) {
+    try {
+      return JSON.parse(decodeURIComponent(urlParams.get("formInputs")!));
+    } catch (e) {
+      console.error("Cannot parse formInputs", e);
+    }
+  }
 }

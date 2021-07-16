@@ -54,6 +54,12 @@
   padding: var(--pf-global--spacer--xs);
 }
 
+.kogito--editor__toolbar-name-container.readonly h3 {
+  visibility: visible;
+  border: none;
+  font-weight: 100;
+}
+
 .kogito--editor__toolbar-name-container input {
   border: var(--pf-global--BorderWidth--md) solid var(--pf-c-page__header-nav--BackgroundColor);
   border-radius: var(--pf-global--BorderRadius--sm);

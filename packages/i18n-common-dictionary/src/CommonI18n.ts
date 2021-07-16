@@ -61,6 +61,7 @@ export type CommonDictionary = {
   paste: string;
   poweredBy: string;
   quit: string;
+  readonly: string;
   redo: string;
   reset: string;
   run: string;

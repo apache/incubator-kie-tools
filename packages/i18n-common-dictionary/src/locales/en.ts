@@ -63,6 +63,7 @@ export const en: CommonI18n = {
     paste: "Paste",
     poweredBy: "Powered by",
     quit: "Quit",
+    readonly: "Read-only",
     redo: "Redo",
     reset: "Reset",
     run: "Run",

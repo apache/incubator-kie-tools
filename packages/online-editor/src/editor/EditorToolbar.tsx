@@ -357,28 +357,53 @@ export function EditorToolbar(props: Props) {
       }
       topNav={
         <>
-          <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
-            <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
-              {fileName}
-            </Title>
-            <TextInput
-              value={fileName}
-              type={"text"}
-              aria-label={"Edit file name"}
-              className={"kogito--editor__toolbar-title"}
-              onChange={setFileName}
-              onKeyUp={onNameInputKeyUp}
-              onBlur={saveNewName}
-            />
-          </div>
-          {props.isEdited && (
-            <span
-              aria-label={"File was edited"}
-              className={"kogito--editor__toolbar-edited"}
-              data-testid="is-dirty-indicator"
-            >
-              {` - ${i18n.terms.edited}`}
-            </span>
+          {!context.readonly && (
+            <>
+              <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
+                <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
+                  {fileName}
+                </Title>
+                <TextInput
+                  value={fileName}
+                  type={"text"}
+                  aria-label={"Edit file name"}
+                  className={"kogito--editor__toolbar-title"}
+                  onChange={setFileName}
+                  onKeyUp={onNameInputKeyUp}
+                  onBlur={saveNewName}
+                />
+              </div>
+              {props.isEdited && (
+                <span
+                  aria-label={"File was edited"}
+                  className={"kogito--editor__toolbar-edited"}
+                  data-testid="is-dirty-indicator"
+                >
+                  {` - ${i18n.terms.edited}`}
+                </span>
+              )}
+            </>
+          )}
+          {context.readonly && (
+            <>
+              <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container readonly"}>
+                <Title
+                  className="kogito--editor__toolbar-title"
+                  aria-label={"File name"}
+                  headingLevel={"h3"}
+                  size={"2xl"}
+                >
+                  {fileName}
+                </Title>
+              </div>
+              <span
+                aria-label={"File is readonly"}
+                className={"kogito--editor__toolbar-edited"}
+                data-testid="is-readonly-indicator"
+              >
+                {` - ${i18n.terms.readonly}`}
+              </span>
+            </>
           )}
         </>
       }

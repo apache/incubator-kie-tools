@@ -58,8 +58,12 @@ export function DmnFormPage(props: Props) {
   }, [props.appData.swaggerUIUrl]);
 
   const onOpenOnlineEditor = useCallback(() => {
-    window.open(props.appData.modelUrl, "_blank");
-  }, [props.appData.modelUrl]);
+    const modelUrl = new URL(props.appData.modelUrl);
+    if (formInputs) {
+      modelUrl.searchParams.append("formInputs", encodeURIComponent(JSON.stringify(formInputs!)));
+    }
+    window.open(modelUrl.toString(), "_blank");
+  }, [formInputs, props.appData.modelUrl]);
 
   const onSubmit = useCallback(async () => {
     try {
@@ -172,6 +176,7 @@ export function DmnFormPage(props: Props) {
                       showInlineError={true}
                       notificationsPanel={false}
                       onSubmit={onSubmit}
+                      placeholder={true}
                       autosave={true}
                       autosaveDelay={AUTO_SAVE_DELAY}
                       submitField={() => <></>}

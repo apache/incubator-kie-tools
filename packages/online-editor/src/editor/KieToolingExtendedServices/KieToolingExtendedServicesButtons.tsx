@@ -144,6 +144,7 @@ export function KieToolingExtendedServicesButtons() {
           position={DropdownPosition.right}
           dropdownItems={dmnDevSandboxDropdownItems()}
           style={
+            isKieToolingExtendedServicesRunning &&
             dmnDevSandbox.instanceStatus === DmnDevSandboxInstanceStatus.CONNECTED
               ? { marginRight: "2px", borderBottom: "solid var(--pf-global--palette--blue-300) 2px", paddingBottom: 0 }
               : { marginRight: "2px" }
