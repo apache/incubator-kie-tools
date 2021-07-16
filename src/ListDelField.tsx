@@ -7,7 +7,7 @@ import {
   filterDOMProps,
   joinName,
   useField,
-} from 'uniforms/es5';
+} from 'uniforms';
 
 export type ListDelFieldProps = FieldProps<
   unknown,

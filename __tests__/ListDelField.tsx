@@ -1,6 +1,6 @@
 import React from 'react';
 import { merge } from 'lodash';
-import { ListDelField } from 'uniforms-patternfly';
+import { ListDelField } from '../src';
 import { Button } from '@patternfly/react-core';
 
 import createContext from './_createContext';

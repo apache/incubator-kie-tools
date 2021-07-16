@@ -1,7 +1,7 @@
 import React from 'react';
 import merge from 'lodash/merge';
 import { Button } from '@patternfly/react-core';
-import { ListAddField } from 'uniforms-patternfly';
+import { ListAddField } from '../src';
 
 import createContext from './_createContext';
 import mount from './_mount';

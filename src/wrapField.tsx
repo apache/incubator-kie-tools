@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup, FormGroupProps } from '@patternfly/react-core';
-import { filterDOMProps } from 'uniforms/es5';
+import { filterDOMProps } from 'uniforms';
 
 declare module 'uniforms' {
   interface FilterDOMProps {

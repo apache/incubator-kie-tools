@@ -1,28 +1,26 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "rootDir": "./src/",
-    "outDir": "./dist/",
     "composite": true,
     "declaration": true,
     "esModuleInterop": true,
     "importHelpers": true,
     "jsx": "react",
     "moduleResolution": "node",
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "paths": {
-      "uniforms": ["/node_modules/uniforms/es5"]
-    },
-    "strict": true
+    "noImplicitAny": false,
+    "strict": true,
+    "baseUrl": "src",
+    "outDir": "dist",
+    "rootDir": "src",
+    "target": "es6",
+    "skipLibCheck": true
   },
   "exclude": [
     "node_modules",
-    "dist",
     "example",
     "examples",
     "__tests__",
     "__mocks__",
     "__dep"
-  ]
+  ],
+  "include": ["src"] 
 }

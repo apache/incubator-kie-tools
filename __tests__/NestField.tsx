@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card } from '@patternfly/react-core';
-import { AutoField, NestField } from 'uniforms-patternfly';
+import { AutoField, NestField } from '../src';
 
 import createContext from './_createContext';
 import mount from './_mount';

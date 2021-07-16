@@ -1,5 +1,5 @@
 import React from 'react';
-import { BoolField } from 'uniforms-patternfly';
+import { BoolField } from '../src';
 
 import createContext from './_createContext';
 import mount from './_mount';

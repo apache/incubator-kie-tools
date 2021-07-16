@@ -10,7 +10,7 @@ import {
   SelectVariant,
   SelectOptionObject,
 } from '@patternfly/react-core';
-import { connectField, FieldProps, filterDOMProps } from 'uniforms/es5';
+import { connectField, FieldProps, filterDOMProps } from 'uniforms';
 
 import wrapField from './wrapField';
 

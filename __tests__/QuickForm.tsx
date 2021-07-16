@@ -1,5 +1,5 @@
 import React from 'react';
-import { QuickForm } from 'uniforms-patternfly';
+import { QuickForm } from '../src';
 
 import createSchema from './_createSchema';
 import mount from './_mount';

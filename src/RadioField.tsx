@@ -1,6 +1,6 @@
 import React from 'react';
 import { Radio as RadioField, RadioProps } from '@patternfly/react-core';
-import { connectField, filterDOMProps, HTMLFieldProps } from 'uniforms/es5';
+import { connectField, filterDOMProps, HTMLFieldProps } from 'uniforms';
 
 import wrapField from './wrapField';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { RadioField } from 'uniforms-patternfly';
+import { RadioField } from '../src';
 
 import createContext from './_createContext';
 import mount from './_mount';

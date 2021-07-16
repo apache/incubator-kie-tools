@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { connectField, FieldProps } from 'uniforms/es5';
+import { connectField, FieldProps } from 'uniforms';
 import {
   DatePicker,
   Flex,

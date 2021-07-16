@@ -1,5 +1,5 @@
 import React from 'react';
-import { connectField, filterDOMProps, HTMLFieldProps } from 'uniforms/es5';
+import { connectField, filterDOMProps, HTMLFieldProps } from 'uniforms';
 import { Card, CardBody } from '@patternfly/react-core';
 
 import AutoField from './AutoField';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { DateField } from 'uniforms-patternfly';
+import { DateField } from '../src';
 import createContext from './_createContext';
 import mount from './_mount';
 

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { connectField } from 'uniforms/es5';
+import { connectField } from 'uniforms';
 
 import AutoField from './AutoField';
 import ListDelField from './ListDelField';

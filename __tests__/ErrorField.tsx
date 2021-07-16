@@ -1,5 +1,5 @@
 import React from 'react';
-import { ErrorField } from 'uniforms-patternfly';
+import { ErrorField } from '../src';
 
 import createContext from './_createContext';
 import mount from './_mount';

@@ -1,5 +1,5 @@
 import invariant from 'invariant';
-import { createAutoField } from 'uniforms/es5';
+import { createAutoField } from 'uniforms';
 
 import BoolField from './BoolField';
 import DateField from './DateField';

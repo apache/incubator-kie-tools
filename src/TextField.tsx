@@ -5,7 +5,7 @@ import {
   TextInputProps,
   TimePicker,
 } from '@patternfly/react-core';
-import { connectField, filterDOMProps } from 'uniforms/es5';
+import { connectField, filterDOMProps } from 'uniforms';
 
 import wrapField from './wrapField';
 

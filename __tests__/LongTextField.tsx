@@ -1,5 +1,5 @@
 import React from 'react';
-import { LongTextField } from 'uniforms-patternfly';
+import { LongTextField } from '../src';
 
 import createContext from './_createContext';
 import mount from './_mount';

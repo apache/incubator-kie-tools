@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@patternfly/react-core';
-import { filterDOMProps, HTMLFieldProps, useForm } from 'uniforms/es5';
+import { filterDOMProps, HTMLFieldProps, useForm } from 'uniforms';
 
 export type SubmitFieldProps = HTMLFieldProps<
   number | string | undefined,

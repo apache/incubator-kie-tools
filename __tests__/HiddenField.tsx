@@ -1,5 +1,5 @@
 import React from 'react';
-import { HiddenField } from 'uniforms-patternfly';
+import { HiddenField } from '../src';
 
 import createContext from './_createContext';
 import mount from './_mount';

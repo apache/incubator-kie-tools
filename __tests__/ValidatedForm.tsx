@@ -1,5 +1,5 @@
 import React from 'react';
-import { ValidatedForm } from 'uniforms-patternfly';
+import { ValidatedForm } from '../src';
 
 import createSchema from './_createSchema';
 import mount from './_mount';

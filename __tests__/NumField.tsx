@@ -1,5 +1,5 @@
 import React from 'react';
-import { NumField } from 'uniforms-patternfly';
+import { NumField } from '../src';
 
 import createContext from './_createContext';
 import mount from './_mount';

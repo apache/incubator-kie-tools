@@ -1,5 +1,5 @@
 import React from 'react';
-import { AutoForm } from 'uniforms-patternfly';
+import { AutoForm } from '../src';
 
 import createSchema from './_createSchema';
 import mount from './_mount';

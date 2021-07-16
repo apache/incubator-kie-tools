@@ -5,7 +5,7 @@ import {
   Switch,
   SwitchProps,
 } from '@patternfly/react-core';
-import { connectField, FieldProps } from 'uniforms/es5';
+import { connectField, FieldProps } from 'uniforms';
 
 import wrapField from './wrapField';
 
