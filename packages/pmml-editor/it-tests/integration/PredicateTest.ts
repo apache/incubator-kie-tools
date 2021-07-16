@@ -42,7 +42,7 @@ describe("Predicate Test", () => {
         });
 
         cy.ouiaId("edit-attribute").within(() => {
-          cy.ouiaId("predicate").find("div:first").should("have.text", "1True").type("{ctrl}a{del}test>3");
+          cy.ouiaId("predicate").find("div:first").should("have.text", "1True").type("{selectall}{del}test>3");
           cy.ouiaId("attribute-partial-score").type("5");
         });
         cy.ouiaId("attribute-done").click();
@@ -113,7 +113,7 @@ describe("Predicate Test", () => {
       });
 
       cy.ouiaId("edit-attribute").within(() => {
-        cy.ouiaId("predicate").find("div:first").should("have.text", "1True").type("{ctrl}a{del}test<0");
+        cy.ouiaId("predicate").find("div:first").should("have.text", "1True").type("{selectall}{del}test<0");
         cy.ouiaId("attribute-partial-score").type("-5");
       });
       cy.ouiaId("attribute-done").click();
