@@ -18,4 +18,5 @@ export enum DmnDevSandboxInstanceStatus {
   UNAVAILABLE = "UNAVAILABLE",
   DISCONNECTED = "DISCONNECTED",
   CONNECTED = "CONNECTED",
+  EXPIRED = "EXPIRED",
 }

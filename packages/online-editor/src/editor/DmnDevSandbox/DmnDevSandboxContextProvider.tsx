@@ -77,7 +77,12 @@ export function DmnDevSandboxContextProvider(props: Props) {
 
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
-  const disconnect = useCallback(() => {
+  const disconnect = useCallback((closeModals: boolean) => {
+    if (closeModals) {
+      setConfigModalOpen(false);
+      setConfigWizardOpen(false);
+      setConfirmDeployModalOpen(false);
+    }
     setDropdownOpen(false);
     setDeployments([]);
     setInstanceStatus(DmnDevSandboxInstanceStatus.DISCONNECTED);
@@ -90,15 +95,22 @@ export function DmnDevSandboxContextProvider(props: Props) {
         if (isConfigOk) {
           setCurrentConfig(config);
           saveConfigCookie(config);
+          setInstanceStatus(DmnDevSandboxInstanceStatus.CONNECTED);
+          return true;
         }
-        setInstanceStatus(
-          isConfigOk ? DmnDevSandboxInstanceStatus.CONNECTED : DmnDevSandboxInstanceStatus.DISCONNECTED
-        );
+
+        if (instanceStatus === DmnDevSandboxInstanceStatus.EXPIRED) {
+          return false;
+        }
+
+        if (instanceStatus !== DmnDevSandboxInstanceStatus.CONNECTED) {
+          setInstanceStatus(DmnDevSandboxInstanceStatus.DISCONNECTED);
+        }
       }
 
       return isConfigOk;
     },
-    [service]
+    [instanceStatus, service]
   );
 
   const onDeploy = useCallback(
@@ -126,17 +138,18 @@ export function DmnDevSandboxContextProvider(props: Props) {
   );
 
   const onResetConfig = useCallback(() => {
-    disconnect();
-    resetConfigCookie();
     setCurrentConfig(EMPTY_CONFIG);
+    disconnect(false);
+    resetConfigCookie();
   }, [disconnect]);
 
   useEffect(() => {
-    if (
-      kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.UNAVAILABLE ||
-      !isConfigValid(currentConfig)
-    ) {
-      disconnect();
+    if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
+      disconnect(true);
+      return;
+    }
+
+    if (instanceStatus === DmnDevSandboxInstanceStatus.EXPIRED || !isConfigValid(currentConfig)) {
       return;
     }
 
@@ -145,29 +158,37 @@ export function DmnDevSandboxContextProvider(props: Props) {
         .isConnectionEstablished(currentConfig)
         .then((isConfigOk) => {
           if (!isConfigOk) {
-            disconnect();
+            setInstanceStatus(DmnDevSandboxInstanceStatus.EXPIRED);
+            setConfigModalOpen(!kieToolingExtendedServices.isModalOpen);
             return;
           }
           setInstanceStatus(DmnDevSandboxInstanceStatus.CONNECTED);
         })
-        .catch(() => disconnect());
+        .catch((error) => console.error(error));
+      return;
     }
 
     if (instanceStatus === DmnDevSandboxInstanceStatus.CONNECTED) {
       const loadDeploymentsTask = window.setInterval(() => {
         service
           .loadDeployments(currentConfig)
-          .then((deployments: DeployedModel[]) => {
-            setDeployments(deployments);
-          })
-          .catch(() => {
+          .then((deployments: DeployedModel[]) => setDeployments(deployments))
+          .catch((error) => {
+            setDeployments([]);
             window.clearInterval(loadDeploymentsTask);
-            disconnect();
+            console.error(error);
           });
       }, LOAD_DEPLOYMENTS_POLLING_TIME);
       return () => window.clearInterval(loadDeploymentsTask);
     }
-  }, [service, instanceStatus, currentConfig, deployments.length, disconnect, kieToolingExtendedServices.status]);
+  }, [
+    currentConfig,
+    disconnect,
+    instanceStatus,
+    kieToolingExtendedServices.isModalOpen,
+    kieToolingExtendedServices.status,
+    service,
+  ]);
 
   return (
     <DmnDevSandboxContext.Provider

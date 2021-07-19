@@ -113,6 +113,7 @@ interface OnlineDictionary extends ReferenceDictionary {
       tokenInfo: string;
       validationError: string;
       connectionError: string;
+      configExpiredWarning: string;
       useWizard: string;
     };
     confirmModal: {

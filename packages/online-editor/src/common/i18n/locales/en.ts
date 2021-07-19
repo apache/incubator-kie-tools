@@ -112,6 +112,7 @@ export const en: OnlineI18n = {
       tokenInfo: `The token associated with your instance.`,
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",
+      configExpiredWarning: "Token or account expired. Please update your configuration.",
       useWizard: "Configure through the guided wizard instead",
     },
     confirmModal: {

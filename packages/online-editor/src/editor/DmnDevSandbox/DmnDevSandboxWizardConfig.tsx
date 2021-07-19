@@ -30,6 +30,8 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useOnlineI18n } from "../../common/i18n";
+import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import {
   DmnDevSandboxConnectionConfig,
   isConfigValid,
@@ -52,6 +54,7 @@ enum FinishOperation {
 }
 
 export function DmnDevSandboxWizardConfig() {
+  const kieToolingExtendedServices = useKieToolingExtendedServices();
   const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
   const [config, setConfig] = useState(dmnDevSandboxContext.currentConfig);
@@ -81,8 +84,11 @@ export function DmnDevSandboxWizardConfig() {
   }, [config]);
 
   useEffect(() => {
+    if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
+      return;
+    }
     setConfig(dmnDevSandboxContext.currentConfig);
-  }, [dmnDevSandboxContext.currentConfig]);
+  }, [dmnDevSandboxContext.currentConfig, kieToolingExtendedServices.status]);
 
   const resetUI = useCallback((config: DmnDevSandboxConnectionConfig) => {
     setConfigValidated(false);
@@ -203,7 +209,7 @@ export function DmnDevSandboxWizardConfig() {
                     type="text"
                     id="username-field"
                     name="username-field"
-                    aria-describedby="username-field"
+                    aria-label="Username field"
                     value={config.username}
                     placeholder={i18n.dmnDevSandbox.configWizard.steps.first.usernamePlaceholder}
                     onChange={onUsernameInputChanged}
@@ -266,9 +272,11 @@ export function DmnDevSandboxWizardConfig() {
                     type="text"
                     id="host-field"
                     name="host-field"
+                    aria-label="Host field"
                     value={config.host}
                     placeholder={i18n.dmnDevSandbox.configWizard.steps.second.hostPlaceholder}
                     onChange={onHostInputChanged}
+                    tabIndex={1}
                   />
                   <InputGroupText>
                     <Button isSmall variant="plain" aria-label="Clear host button" onClick={onClearHost}>
@@ -290,9 +298,11 @@ export function DmnDevSandboxWizardConfig() {
                     type="text"
                     id="token-field"
                     name="token-field"
+                    aria-label="Token field"
                     value={config.token}
                     placeholder={i18n.dmnDevSandbox.configWizard.steps.second.tokenPlaceholder}
                     onChange={onTokenInputChanged}
+                    tabIndex={2}
                   />
                   <InputGroupText>
                     <Button isSmall variant="plain" aria-label="Clear host button" onClick={onClearToken}>

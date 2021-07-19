@@ -32,11 +32,13 @@ import { useCallback, useEffect, useState } from "react";
 import { useOnlineI18n } from "../../common/i18n";
 import { DmnDevSandboxConnectionConfig, EMPTY_CONFIG, isConfigValid } from "./DmnDevSandboxConnectionConfig";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
+import { DmnDevSandboxInstanceStatus } from "./DmnDevSandboxInstanceStatus";
 
 enum FormValiationOptions {
-  INITIAL,
-  INVALID,
-  CONNECTION_ERROR,
+  INITIAL = "INITIAL",
+  INVALID = "INVALID",
+  CONNECTION_ERROR = "CONNECTION_ERROR",
+  CONFIG_EXPIRED = "CONFIG_EXPIRED",
 }
 
 export function DmnDevSandboxModalConfig() {
@@ -48,13 +50,25 @@ export function DmnDevSandboxModalConfig() {
 
   useEffect(() => {
     setConfig(dmnDevSandboxContext.currentConfig);
-  }, [dmnDevSandboxContext.currentConfig]);
+    setConfigValidated(
+      dmnDevSandboxContext.instanceStatus === DmnDevSandboxInstanceStatus.EXPIRED
+        ? FormValiationOptions.CONFIG_EXPIRED
+        : FormValiationOptions.INITIAL
+    );
+  }, [dmnDevSandboxContext.currentConfig, dmnDevSandboxContext.instanceStatus]);
 
-  const resetUI = useCallback((config: DmnDevSandboxConnectionConfig) => {
-    setConfigValidated(FormValiationOptions.INITIAL);
-    setSaveLoading(false);
-    setConfig(config);
-  }, []);
+  const resetUI = useCallback(
+    (config: DmnDevSandboxConnectionConfig) => {
+      setConfigValidated(
+        dmnDevSandboxContext.instanceStatus === DmnDevSandboxInstanceStatus.EXPIRED && config !== EMPTY_CONFIG
+          ? FormValiationOptions.CONFIG_EXPIRED
+          : FormValiationOptions.INITIAL
+      );
+      setSaveLoading(false);
+      setConfig(config);
+    },
+    [dmnDevSandboxContext.instanceStatus]
+  );
 
   const onResetConfig = useCallback(() => {
     dmnDevSandboxContext.onResetConfig();
@@ -163,6 +177,16 @@ export function DmnDevSandboxModalConfig() {
               />
             </FormAlert>
           )}
+          {isConfigValidated === FormValiationOptions.CONFIG_EXPIRED && (
+            <FormAlert>
+              <Alert
+                variant="warning"
+                title={i18n.dmnDevSandbox.configModal.configExpiredWarning}
+                aria-live="polite"
+                isInline
+              />
+            </FormAlert>
+          )}
           <FormGroup
             label={i18n.terms.username}
             labelIcon={
@@ -183,14 +207,17 @@ export function DmnDevSandboxModalConfig() {
           >
             <InputGroup className="pf-u-mt-sm">
               <TextInput
+                autoFocus={true}
                 autoComplete={"off"}
                 isRequired
                 type="text"
                 id="username-field"
                 name="username-field"
+                aria-label="Username field"
                 aria-describedby="username-field-helper"
                 value={config.username}
                 onChange={onUsernameChanged}
+                tabIndex={1}
               />
               <InputGroupText>
                 <Button isSmall variant="plain" aria-label="Clear username button" onClick={onClearUsername}>
@@ -224,9 +251,11 @@ export function DmnDevSandboxModalConfig() {
                 type="text"
                 id="host-field"
                 name="host-field"
+                aria-label="Host field"
                 aria-describedby="host-field-helper"
                 value={config.host}
                 onChange={onHostChanged}
+                tabIndex={2}
               />
               <InputGroupText>
                 <Button isSmall variant="plain" aria-label="Clear host button" onClick={onClearHost}>
@@ -260,9 +289,11 @@ export function DmnDevSandboxModalConfig() {
                 type="text"
                 id="token-field"
                 name="token-field"
+                aria-label="Token field"
                 aria-describedby="token-field-helper"
                 value={config.token}
                 onChange={onTokenChanged}
+                tabIndex={3}
               />
               <InputGroupText>
                 <Button isSmall variant="plain" aria-label="Clear token button" onClick={onClearToken}>

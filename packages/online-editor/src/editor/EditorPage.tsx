@@ -275,7 +275,7 @@ export function EditorPage(props: Props) {
     })();
   });
 
-  const closeDmnTour = useDmnTour(isEditorReady && openAlert === AlertTypes.NONE, context.file);
+  const closeDmnTour = useDmnTour(!context.readonly && isEditorReady && openAlert === AlertTypes.NONE, context.file);
 
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
