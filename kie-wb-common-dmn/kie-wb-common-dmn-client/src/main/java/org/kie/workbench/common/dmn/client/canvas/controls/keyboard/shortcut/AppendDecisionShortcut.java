@@ -17,15 +17,14 @@
 package org.kie.workbench.common.dmn.client.canvas.controls.keyboard.shortcut;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.InputData;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.canvas.controls.actions.DMNCreateNodeAction;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.shortcut.AbstractAppendNodeShortcut;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.GeneralCreateNodeAction;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxDomainLookups;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -41,7 +40,7 @@ public class AppendDecisionShortcut extends AbstractAppendNodeShortcut {
     @Inject
     public AppendDecisionShortcut(final ToolboxDomainLookups toolboxDomainLookups,
                                   final DefinitionsCacheRegistry definitionsCacheRegistry,
-                                  final @Default GeneralCreateNodeAction generalCreateNodeAction) {
+                                  final @DMNEditor DMNCreateNodeAction generalCreateNodeAction) {
         super(toolboxDomainLookups, definitionsCacheRegistry, generalCreateNodeAction);
     }
 
