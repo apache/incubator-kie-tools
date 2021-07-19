@@ -377,7 +377,7 @@ public class Reflections extends ReflectionUtils {
       if (inputStream != null) try {
         inputStream.close();
       }
-      catch (IOException e) { /*fuck off*/ }
+      catch (IOException e) { /*ignore*/ }
     }
   }
 

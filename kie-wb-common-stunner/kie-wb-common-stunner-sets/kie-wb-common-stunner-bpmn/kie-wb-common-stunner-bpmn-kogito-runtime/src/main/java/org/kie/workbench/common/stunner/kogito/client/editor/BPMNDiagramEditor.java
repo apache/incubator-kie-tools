@@ -216,8 +216,7 @@ public class BPMNDiagramEditor {
     private void onDiagramOpenSuccess() {
         Metadata metadata = stunnerEditor.getCanvasHandler().getDiagram().getMetadata();
         String title = metadata.getTitle();
-        final String uri = metadata.getRoot().toURI();
-        Path path = PathFactory.newPath(title, uri + "/" + title + ".bpmn");
+        Path path = PathFactory.newPath(title, "/" + title + ".bpmn");
         metadata.setPath(path);
         commands.bind(stunnerEditor.getSession());
         docksOpen();

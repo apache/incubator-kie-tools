@@ -21,11 +21,11 @@ import javax.validation.Validator;
 
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.ioc.client.test.AbstractErraiIOCTest;
-import org.jboss.errai.validation.client.BlacklistedWithConstraint;
-import org.jboss.errai.validation.client.blacklisted.ClassWithConstraintInBlacklistedPackage;
+import org.jboss.errai.validation.client.DenylistedWithConstraint;
+import org.jboss.errai.validation.client.denylisted.ClassWithConstraintInDenylistedPackage;
 import org.junit.Test;
 
-public class ValidationBlacklistTest extends AbstractErraiIOCTest {
+public class ValidationDenylistTest extends AbstractErraiIOCTest {
 
   @Override
   public String getModuleName() {
@@ -33,24 +33,24 @@ public class ValidationBlacklistTest extends AbstractErraiIOCTest {
   }
 
   @Test
-  public void testBlacklistedBeanNotFound() throws Exception {
+  public void testDenylistedBeanNotFound() throws Exception {
     Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    BlacklistedWithConstraint bean = DataBinder.forModel(new BlacklistedWithConstraint()).getModel();
+    DenylistedWithConstraint bean = DataBinder.forModel(new DenylistedWithConstraint()).getModel();
     try {
       validator.validate(bean);
     }
     catch (IllegalArgumentException e) {
       return;
     }
-    fail("There should not be a validator for the blacklisted bean.");
+    fail("There should not be a validator for the denylisted bean.");
   }
 
   @Test
-  public void testBeanInBlacklistedPackageNotFound() throws Exception {
+  public void testBeanInDenylistedPackageNotFound() throws Exception {
     Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    ClassWithConstraintInBlacklistedPackage bean = DataBinder.forModel(new ClassWithConstraintInBlacklistedPackage())
+    ClassWithConstraintInDenylistedPackage bean = DataBinder.forModel(new ClassWithConstraintInDenylistedPackage())
             .getModel();
     try {
       validator.validate(bean);
@@ -58,7 +58,7 @@ public class ValidationBlacklistTest extends AbstractErraiIOCTest {
     catch (IllegalArgumentException e) {
       return;
     }
-    fail("There should not be a validator for beans in blacklisted packages.");
+    fail("There should not be a validator for beans in denylisted packages.");
   }
 
 }

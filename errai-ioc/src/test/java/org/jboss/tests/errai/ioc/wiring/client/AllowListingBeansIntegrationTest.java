@@ -19,57 +19,57 @@ package org.jboss.tests.errai.ioc.wiring.client;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.jboss.errai.ioc.client.test.AbstractErraiIOCTest;
-import org.jboss.tests.errai.ioc.wiring.client.res.NotWhitelistedBean;
-import org.jboss.tests.errai.ioc.wiring.client.res.WhitelistedAndBlacklistedBean;
-import org.jboss.tests.errai.ioc.wiring.client.res.WhitelistedBean;
-import org.jboss.tests.errai.ioc.wiring.client.res.sub.WhitelistedPackageBean;
+import org.jboss.tests.errai.ioc.wiring.client.res.AllowlistedAndDenylistedBean;
+import org.jboss.tests.errai.ioc.wiring.client.res.AllowlistedBean;
+import org.jboss.tests.errai.ioc.wiring.client.res.NotAllowlistedBean;
+import org.jboss.tests.errai.ioc.wiring.client.res.sub.AllowlistedPackageBean;
 
 /**
  * @author (htfv) Aliaksei Lahachou
  * @author Christian Sadilek <csadilek@redhat.com>
  */
-public class WhiteListingBeansIntegrationTest extends AbstractErraiIOCTest {
+public class AllowListingBeansIntegrationTest extends AbstractErraiIOCTest {
 
   @Override
   public String getModuleName() {
     return "org.jboss.tests.errai.ioc.wiring.IOCWiringTests";
   }
 
-  public void testNotWhitelistedPackage() throws Exception {
+  public void testNotAllowlistedPackage() throws Exception {
     try {
-      IOC.getBeanManager().lookupBean(NotWhitelistedBean.class).getInstance();
-      fail("Should not be able to resolve a not whitelisted bean!");
+      IOC.getBeanManager().lookupBean(NotAllowlistedBean.class).getInstance();
+      fail("Should not be able to resolve a not allowlisted bean!");
     }
     catch (final IOCResolutionException e) {
       // expected
     }
   }
 
-  public void testWhitelistedBean() throws Exception {
+  public void testAllowlistedBean() throws Exception {
     try {
-      IOC.getBeanManager().lookupBean(WhitelistedBean.class).getInstance();
+      IOC.getBeanManager().lookupBean(AllowlistedBean.class).getInstance();
     }
     catch (final IOCResolutionException e) {
-      fail("Should be able to resolve a whitelisted bean!");
+      fail("Should be able to resolve a allowlisted bean!");
     }
   }
 
-  public void testWhitelistedAndBlacklistedBean() throws Exception {
+  public void testAllowlistedAndDenylistedBean() throws Exception {
     try {
-      IOC.getBeanManager().lookupBean(WhitelistedAndBlacklistedBean.class).getInstance();
-      fail("Should not be able to resolve a whitelisted bean if it is blacklisted!");
+      IOC.getBeanManager().lookupBean(AllowlistedAndDenylistedBean.class).getInstance();
+      fail("Should not be able to resolve a allowlisted bean if it is denylisted!");
     }
     catch (final IOCResolutionException e) {
       // expected
     }
   }
   
-  public void testWhitelistedPackage() throws Exception {
+  public void testAllowlistedPackage() throws Exception {
     try {
-      IOC.getBeanManager().lookupBean(WhitelistedPackageBean.class).getInstance();
+      IOC.getBeanManager().lookupBean(AllowlistedPackageBean.class).getInstance();
     }
     catch (IOCResolutionException e) {
-      fail("Should be able to resolve a bean in a whitelisted package!");
+      fail("Should be able to resolve a bean in a allowlisted package!");
     }
   }
 }

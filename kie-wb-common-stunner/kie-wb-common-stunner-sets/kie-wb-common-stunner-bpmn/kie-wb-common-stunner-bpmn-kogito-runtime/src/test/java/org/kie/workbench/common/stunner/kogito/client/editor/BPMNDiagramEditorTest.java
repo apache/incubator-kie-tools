@@ -42,7 +42,6 @@ import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropert
 import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.promise.SyncPromises;
@@ -99,7 +98,6 @@ public class BPMNDiagramEditorTest {
         promises = new SyncPromises();
         metadata = spy(new MetadataImpl.MetadataImplBuilder("testSet")
                                .setTitle("testDiagram")
-                               .setRoot(mock(Path.class))
                                .build());
         diagram = new DiagramImpl("testDiagram",
                                   mock(Graph.class),

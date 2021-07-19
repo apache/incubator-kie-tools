@@ -30,7 +30,6 @@ public abstract class AbstractMetadata implements Metadata {
     private String shapeSetId;
     private String canvasRootUUID;
     private String thumbData;
-    private Path root;
     private Path path;
 
     public AbstractMetadata() {
@@ -105,16 +104,6 @@ public abstract class AbstractMetadata implements Metadata {
         this.path = path;
     }
 
-    @Override
-    public Path getRoot() {
-        return root;
-    }
-
-    @Override
-    public void setRoot(final Path path) {
-        this.root = path;
-    }
-
     public void setDefinitionSetId(final String defSetId) {
         this.definitionSetId = defSetId;
     }
@@ -126,7 +115,6 @@ public abstract class AbstractMetadata implements Metadata {
                                          Objects.hashCode(shapeSetId),
                                          Objects.hashCode(canvasRootUUID),
                                          Objects.hashCode(thumbData),
-                                         Objects.hashCode(root),
                                          Objects.hashCode(path),
                                          Objects.hashCode(title));
     }
@@ -140,7 +128,6 @@ public abstract class AbstractMetadata implements Metadata {
                     Objects.equals(shapeSetId, other.shapeSetId) &&
                     Objects.equals(canvasRootUUID, other.canvasRootUUID) &&
                     Objects.equals(thumbData, other.thumbData) &&
-                    Objects.equals(root, other.root) &&
                     Objects.equals(path, other.path) &&
                     Objects.equals(title, other.title);
         }

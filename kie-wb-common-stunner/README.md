@@ -111,7 +111,7 @@ If you have not run the step from **Before Working with the IDE** above, do so b
 8. Click *Apply* and/or *OK*.
 
 ***Configure Code Styling***
-1. Download the [KIE code-style](https://github.com/kiegroup/droolsjbpm-build-bootstrap/blob/master/ide-configuration/intellij-configuration/code-style/intellij-code-style_droolsjbpm-java-conventions.xml) XML configuration file.
+1. Download the [KIE code-style](https://github.com/kiegroup/droolsjbpm-build-bootstrap/blob/main/ide-configuration/intellij-configuration/code-style/intellij-code-style_droolsjbpm-java-conventions.xml) XML configuration file.
 2. Open **Preferences** from the **File** (linux/Win) menu or **IntelliJ IDEA** app menu (mac).
 3. In the search field, type '*code style*'.
 4. To the right of the *Scheme* field, locate and click the *Manage...* button.
@@ -141,7 +141,7 @@ If you were able to use the IDE GUI to import the code style successfully above,
 2. In the search field, type '*copyright*'.
 3. Select *Copyright Profiles*, located under *Copyright*.
 4. Click the plus (+) sign in the top-left corner, then enter "KIE Copyright" in the name field in the popup.
-5. Replace the contents of the *Copyright text* field with the contents of the [KIE licensing file](https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/master/ide-configuration/LICENSE-ASL-2.0-HEADER.txt).
+5. Replace the contents of the *Copyright text* field with the contents of the [KIE licensing file](https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/main/ide-configuration/LICENSE-ASL-2.0-HEADER.txt).
 6. Within the newly pasted text, replace "*${year}*" with "*$today.year*", then click *Apply*.
 7. In the left-hand navigation tree, select *Copyright*, the parent node of the currently screen item.
 8. Use the *Default project copyright* dropdown to select the newly created "*KIE Copyright*" value.

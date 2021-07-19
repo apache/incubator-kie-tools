@@ -32,7 +32,7 @@ jobs:
           git commit -m "Release ${{ github.event.inputs.release_version }}" -a
         
       - name: Push release branch
-        uses: ad-m/github-push-action@master
+        uses: ad-m/github-push-action@v0.6.0
         with:
           GITHUB_TOKEN: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
           branch: '${{ github.event.inputs.release_version }}-release'

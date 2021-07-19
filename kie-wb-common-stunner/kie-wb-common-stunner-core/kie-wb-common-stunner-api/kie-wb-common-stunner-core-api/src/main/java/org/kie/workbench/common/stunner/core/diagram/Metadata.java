@@ -48,9 +48,5 @@ public interface Metadata extends Serializable {
 
     void setPath(Path path);
 
-    Path getRoot();
-
-    void setRoot(Path path);
-
     Class<? extends Metadata> getMetadataType();
 }

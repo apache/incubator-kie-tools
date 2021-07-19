@@ -19,6 +19,6 @@ package org.jboss.errai.ioc.tests.wiring.client.res.sub;
 import javax.inject.Singleton;
 
 @Singleton
-public class BlacklistedPackageBean {
+public class DenylistedPackageBean {
 
 }

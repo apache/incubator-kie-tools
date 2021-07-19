@@ -68,11 +68,11 @@ public class RuleFlowGroupFormProviderTest {
     @SuppressWarnings("unchecked")
     public void testGetSelectorData() {
         RuleFlowGroup group1 = new RuleFlowGroup("g1");
-        group1.setPathUri("default://master@MySpace/Project1/src/main/resources/com/myspace/project1/RulesFile.rdrl");
+        group1.setPathUri("default://main@MySpace/Project1/src/main/resources/com/myspace/project1/RulesFile.rdrl");
         RuleFlowGroup group2 = new RuleFlowGroup("g2");
-        group2.setPathUri("default://master@MySpace/Project1/src/main/resources/com/myspace/RulesFile2.rdrl".replace('/', '\\'));
+        group2.setPathUri("default://main@MySpace/Project1/src/main/resources/com/myspace/RulesFile2.rdrl".replace('/', '\\'));
         RuleFlowGroup group3 = new RuleFlowGroup("g1");
-        group3.setPathUri("default://master@MySpace/Project2/src/main/resources/com/myspace/project1/RulesFile.rdrl");
+        group3.setPathUri("default://main@MySpace/Project2/src/main/resources/com/myspace/project1/RulesFile.rdrl");
         List<RuleFlowGroup> groups = Arrays.asList(group1, group2, group3);
         when(dataProvider.getRuleFlowGroupNames()).thenReturn(groups);
         FormRenderingContext context = mock(FormRenderingContext.class);
@@ -88,11 +88,11 @@ public class RuleFlowGroupFormProviderTest {
     @Test
     public void testGroupWithSameProject() {
         RuleFlowGroup group1 = new RuleFlowGroup("g1");
-        group1.setPathUri("default://master@MySpace/Project1/src/main/resources/com/myspace/project1/RulesFile.rdrl");
+        group1.setPathUri("default://main@MySpace/Project1/src/main/resources/com/myspace/project1/RulesFile.rdrl");
         RuleFlowGroup group2 = new RuleFlowGroup("g1");
-        group2.setPathUri("default://master@MySpace/Project1/src/main/resources/com/myspace/RulesFile2.rdrl".replace('/', '\\'));
+        group2.setPathUri("default://main@MySpace/Project1/src/main/resources/com/myspace/RulesFile2.rdrl".replace('/', '\\'));
         RuleFlowGroup group3 = new RuleFlowGroup("g1");
-        group3.setPathUri("default://master@MySpace/Project2/src/main/resources/com/myspace/project1/RulesFile.rdrl");
+        group3.setPathUri("default://main@MySpace/Project2/src/main/resources/com/myspace/project1/RulesFile.rdrl");
         List<RuleFlowGroup> groups = Arrays.asList(group1, group2, group3);
         when(dataProvider.getRuleFlowGroupNames()).thenReturn(groups);
         FormRenderingContext context = mock(FormRenderingContext.class);

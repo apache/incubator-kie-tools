@@ -32,10 +32,10 @@ public class PathFactoryTest {
     public void lockTest() {
 
         Path path = mock(Path.class);
-        when(path.toURI()).thenReturn("default://master@myteam/dora/src/main/resources/com/myteam/dora/sample.drl");
+        when(path.toURI()).thenReturn("default://main@myteam/dora/src/main/resources/com/myteam/dora/sample.drl");
 
 
-        assertEquals("default://locks@system/system/myteam/master/dora/src/main/resources/com/myteam/dora/sample.drl.ulock",
+        assertEquals("default://locks@system/system/myteam/main/dora/src/main/resources/com/myteam/dora/sample.drl.ulock",
                      PathFactory.newLock(path).toURI());
 
         Path lockPath = PathFactory.newLockPath(path);

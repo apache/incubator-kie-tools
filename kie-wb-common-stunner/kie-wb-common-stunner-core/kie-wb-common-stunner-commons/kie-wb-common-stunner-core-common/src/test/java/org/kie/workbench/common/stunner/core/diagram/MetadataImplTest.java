@@ -63,12 +63,6 @@ public class MetadataImplTest {
     private DefinitionSet definitionSet1;
 
     @Mock
-    private Path root1;
-
-    @Mock
-    private Path root2;
-
-    @Mock
     private Path path1;
 
     @Mock
@@ -88,7 +82,6 @@ public class MetadataImplTest {
     public void testMetadataBuilder1() {
         MetadataImpl metadata = new MetadataImpl.MetadataImplBuilder(DEF_SET1)
                 .setPath(path1)
-                .setRoot(root1)
                 .setTitle(TITLE1)
                 .setShapeSetId(SHAPE_SET1)
                 .build();
@@ -97,21 +90,18 @@ public class MetadataImplTest {
         assertEquals(TITLE1, metadata.getTitle());
         assertEquals(SHAPE_SET1, metadata.getShapeSetId());
         assertEquals(path1, metadata.getPath());
-        assertEquals(root1, metadata.getRoot());
     }
 
     @Test
     public void testMetadataBuilder2() {
         MetadataImpl metadata = new MetadataImpl.MetadataImplBuilder(DEF_SET1, definitionManager1)
                 .setPath(path1)
-                .setRoot(root1)
                 .setShapeSetId(SHAPE_SET1)
                 .build();
 
         assertEquals(DEF_SET1, metadata.getDefinitionSetId());
         assertEquals(TITLE1, metadata.getTitle());
         assertEquals(path1, metadata.getPath());
-        assertEquals(root1, metadata.getRoot());
     }
 
     @Test
@@ -119,74 +109,52 @@ public class MetadataImplTest {
         EqualsAndHashCodeTestUtils.TestCaseBuilder.newTestCase()
                 .addTrueCase(new MetadataImpl.MetadataImplBuilder(DEF_SET1)
                                      .setPath(path1)
-                                     .setRoot(root1)
                                      .setTitle(TITLE1)
                                      .setShapeSetId(SHAPE_SET1)
                                      .build(),
                              new MetadataImpl.MetadataImplBuilder(DEF_SET1)
                                      .setPath(path1)
-                                     .setRoot(root1)
                                      .setTitle(TITLE1)
                                      .setShapeSetId(SHAPE_SET1)
                                      .build())
                 .addFalseCase(new MetadataImpl.MetadataImplBuilder(DEF_SET1)
                                       .setPath(path1)
-                                      .setRoot(root1)
                                       .setTitle(TITLE1)
                                       .setShapeSetId(SHAPE_SET1)
                                       .build(),
                               new MetadataImpl.MetadataImplBuilder(DEF_SET2)
                                       .setPath(path1)
-                                      .setRoot(root1)
                                       .setTitle(TITLE1)
                                       .setShapeSetId(SHAPE_SET1)
                                       .build())
 
                 .addFalseCase(new MetadataImpl.MetadataImplBuilder(DEF_SET1)
                                       .setPath(path1)
-                                      .setRoot(root1)
                                       .setTitle(TITLE1)
                                       .setShapeSetId(SHAPE_SET1)
                                       .build(),
                               new MetadataImpl.MetadataImplBuilder(DEF_SET1)
                                       .setPath(path2)
-                                      .setRoot(root1)
                                       .setTitle(TITLE1)
                                       .setShapeSetId(SHAPE_SET1)
                                       .build())
                 .addFalseCase(new MetadataImpl.MetadataImplBuilder(DEF_SET1)
                                       .setPath(path1)
-                                      .setRoot(root1)
                                       .setTitle(TITLE1)
                                       .setShapeSetId(SHAPE_SET1)
                                       .build(),
                               new MetadataImpl.MetadataImplBuilder(DEF_SET1)
                                       .setPath(path1)
-                                      .setRoot(root2)
-                                      .setTitle(TITLE1)
-                                      .setShapeSetId(SHAPE_SET1)
-                                      .build())
-                .addFalseCase(new MetadataImpl.MetadataImplBuilder(DEF_SET1)
-                                      .setPath(path1)
-                                      .setRoot(root1)
-                                      .setTitle(TITLE1)
-                                      .setShapeSetId(SHAPE_SET1)
-                                      .build(),
-                              new MetadataImpl.MetadataImplBuilder(DEF_SET1)
-                                      .setPath(path1)
-                                      .setRoot(root1)
                                       .setTitle(TITLE2)
                                       .setShapeSetId(SHAPE_SET1)
                                       .build())
                 .addFalseCase(new MetadataImpl.MetadataImplBuilder(DEF_SET1)
                                       .setPath(path1)
-                                      .setRoot(root1)
                                       .setTitle(TITLE1)
                                       .setShapeSetId(SHAPE_SET1)
                                       .build(),
                               new MetadataImpl.MetadataImplBuilder(DEF_SET1)
                                       .setPath(path1)
-                                      .setRoot(root1)
                                       .setTitle(TITLE1)
                                       .setShapeSetId(SHAPE_SET2)
                                       .build())
