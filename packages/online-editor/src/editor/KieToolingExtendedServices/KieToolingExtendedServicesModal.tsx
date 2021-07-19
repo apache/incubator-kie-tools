@@ -815,7 +815,7 @@ function DmnRunnerWizardFooter(props: WizardImperativeControlProps) {
     if (status === KieToolingExtendedServicesStatus.STOPPED) {
       wizardContext.goToStepByName(props.steps[1].name);
     }
-  }, [status, props.setModalPage, wizardContext, props.steps]);
+  }, [status, props.setModalPage]);
 
   return (
     <WizardFooter>
