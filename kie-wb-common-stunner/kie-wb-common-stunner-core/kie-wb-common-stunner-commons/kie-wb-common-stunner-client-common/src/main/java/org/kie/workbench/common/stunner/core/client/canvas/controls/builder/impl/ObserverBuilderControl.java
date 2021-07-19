@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Elem
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequest;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequestImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.event.BuildCanvasShapeEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.InlineTextEditEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationMessages;
@@ -53,6 +54,8 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
 
     private final Event<CanvasSelectionEvent> canvasSelectionEvent;
 
+    private final Event<InlineTextEditEvent> inlineTextEditEventEvent;
+
     @Inject
     public ObserverBuilderControl(final ClientDefinitionManager clientDefinitionManager,
                                   final ClientFactoryService clientFactoryServices,
@@ -60,7 +63,8 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
                                   final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                   final ClientTranslationMessages translationMessages,
                                   final GraphBoundsIndexer graphBoundsIndexer,
-                                  final Event<CanvasSelectionEvent> canvasSelectionEvent) {
+                                  final Event<CanvasSelectionEvent> canvasSelectionEvent,
+                                  final Event<InlineTextEditEvent> inlineTextEditEventEvent) {
         super(clientDefinitionManager,
               clientFactoryServices,
               ruleManager,
@@ -68,6 +72,7 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
               translationMessages,
               graphBoundsIndexer);
         this.canvasSelectionEvent = canvasSelectionEvent;
+        this.inlineTextEditEventEvent = inlineTextEditEventEvent;
     }
 
     public void buildShapeAt(final Object definition,
@@ -83,6 +88,7 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
                                               public void onSuccess(final String uuid) {
                                                   canvasSelectionEvent.fire(new CanvasSelectionEvent(canvasHandler,
                                                                                                      uuid));
+                                                  inlineTextEditEventEvent.fire(new InlineTextEditEvent(uuid));
                                               }
 
                                               @Override

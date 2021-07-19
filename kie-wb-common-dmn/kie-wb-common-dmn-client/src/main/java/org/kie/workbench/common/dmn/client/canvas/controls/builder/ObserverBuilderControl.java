@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSessi
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.InlineTextEditEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationMessages;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
@@ -59,6 +60,7 @@ public class ObserverBuilderControl extends org.kie.workbench.common.stunner.cor
                                   final ClientTranslationMessages translationMessages,
                                   final GraphBoundsIndexer graphBoundsIndexer,
                                   final Event<CanvasSelectionEvent> canvasSelectionEvent,
+                                  final Event<InlineTextEditEvent> inlineTextEditEvent,
                                   final DMNDiagramsSession dmnDiagramsSession) {
         super(clientDefinitionManager,
               clientFactoryServices,
@@ -66,7 +68,8 @@ public class ObserverBuilderControl extends org.kie.workbench.common.stunner.cor
               canvasCommandFactory,
               translationMessages,
               graphBoundsIndexer,
-              canvasSelectionEvent);
+              canvasSelectionEvent,
+              inlineTextEditEvent);
         this.dmnDiagramsSession = dmnDiagramsSession;
     }
 
