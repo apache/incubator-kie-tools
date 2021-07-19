@@ -1,5 +1,7 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
+settingsXMLId = 'kogito-tooling-prod'
+
 pipeline {
     agent {
         label 'kie-rhel8 && kie-mem16g && !master'
@@ -8,6 +10,7 @@ pipeline {
         nodejs "nodejs-16.2.0"
     }
     parameters {
+        string(description: 'The deployment URL', name: 'DEPLOYMENT_REPO_URL')
         booleanParam(description: 'Skip Tests? True as default', name: 'SKIP_TESTS', defaultValue: true)
         string(description: 'The product version', name: 'PRODUCT_VERSION', defaultValue: "1.0.0")
         string(description: 'The UMB message version', name: 'UMB_VERSION', defaultValue: 'main')
@@ -42,9 +45,9 @@ pipeline {
         stage('prepare kogito-tooling dependencies') {
             steps {
                 script {
-                    env['EXTERNAL_RESOURCE_PATH__bpmnEditor'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/bpmn-editor-unpacked/target/bpmn"
-                    env['EXTERNAL_RESOURCE_PATH__dmnEditor'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/dmn-editor-unpacked/target/dmn"
-                    env['EXTERNAL_RESOURCE_PATH__scesimEditor'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/scesim-editor-unpacked/target/scesim"
+                    env['EXTERNAL_RESOURCE_PATH__bpmnEditor'] = "$WORKSPACE/kiegroup_kogito-editors-java/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime"
+                    env['EXTERNAL_RESOURCE_PATH__dmnEditor'] = "$WORKSPACE/kiegroup_kogito-editors-java/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime"
+                    env['EXTERNAL_RESOURCE_PATH__scesimEditor'] = "$WORKSPACE/kiegroup_kogito-editors-java/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime"
                     env['EXTERNAL_RESOURCE_PATH__quarkusRunner'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/kogito-tooling/quarkus-runner-unpacked/target/dependencies"
                 }
             }
@@ -64,6 +67,19 @@ pipeline {
                 }
             }
         }
+        stage('Upload Files to repository') {
+            steps {
+                script {
+                    echo "[INFO] Start uploading ${env.WORKSPACE}/deployDirectory"
+                    dir("${env.WORKSPACE}/deployDirectory") {
+                        withCredentials([usernameColonPassword(credentialsId: "${env.NIGHTLY_DEPLOYMENT_CREDENTIAL}", variable: 'deploymentCredentials')]) {
+                            sh "zip -r kogito-tooling ."
+                            sh "curl --upload-file kogito-tooling.zip -u $deploymentCredentials -v ${DEPLOYMENT_REPO_URL}"
+                        }
+                    }
+                }
+            }
+        }
         stage ("Send Kogito-tooling UMB Message to QE.") {
             steps {
                 script {
@@ -72,7 +88,8 @@ pipeline {
 {
     \"npmRegistry\": \"${NPM_REGISTRY_PUBLISH_URL}",
     \"versions\": {
-        \"kogito-tooling\": \"${env.CURRENT_KOGITO_TOOLING_VERSION}\"
+        \"kogito-tooling\": \"${env.CURRENT_KOGITO_TOOLING_VERSION}\",
+        \"kogito-editors-java\": \"${env.KOGITO_EDITORS_JAVA_VERSION}\"
     }
 }
                     """
@@ -117,8 +134,6 @@ pipeline {
     }
 }
 
-
-
 def getBuildConfigMap(def buildConfigPathFolder, def buildConfigAdditionalVariables){
   env.DATE_TIME_SUFFIX = env.DATE_TIME_SUFFIX ?: "${new Date().format('yyyyMMdd')}"
   env.PME_BUILD_VARIABLES = ''
@@ -128,18 +143,19 @@ def getBuildConfigMap(def buildConfigPathFolder, def buildConfigAdditionalVariab
 
 def buildProject(String project, Map<String, Object> buildConfig, String defaultGroup = "kiegroup") {
     println "[INFO] Building project ${project}"
+    if ("kiegroup/kogito-tooling" == project) {
+        env.CURRENT_KOGITO_TOOLING_VERSION = env.CURRENT_KOGITO_TOOLING_VERSION ?: sh(returnStdout: true, script: 'awk -F\'"\' \'/"version": ".+"/{ print $4; exit; }\' lerna.json')?.trim() + "-redhat-${env.DATE_TIME_SUFFIX}"
+        println "kogito-tooling prod version ${env.CURRENT_KOGITO_TOOLING_VERSION}"
+    }
     def projectGroupName = util.getProjectGroupName(project, defaultGroup)
     def group = projectGroupName[0]
     def name = projectGroupName[1]
     dir("${env.WORKSPACE}/${group}_${name}") {
-        if("kiegroup/kogito-tooling" == project) {
-            env.CURRENT_KOGITO_TOOLING_VERSION = env.CURRENT_KOGITO_TOOLING_VERSION ?: sh(returnStdout: true, script: 'awk -F\'"\' \'/"version": ".+"/{ print $4; exit; }\' lerna.json')?.trim() + "-redhat-${env.DATE_TIME_SUFFIX}"
-            println "kogito-tooling prod version ${env.CURRENT_KOGITO_TOOLING_VERSION}"
-        }
         if (fileExists("./pom.xml")) {
+            pmebuild.executePME(project, pmebuild.getProjectConfiguration(project, buildConfig), "${env.PME_CLI_PATH}", settingsXMLId, [:])
             def pom = readMavenPom file: 'pom.xml'
-            env["${name}-VERSION".replace("-", "_")] = pom.version ?: pom.parent.version
+            env["${name}-VERSION".replace("-", "_").toUpperCase()] = pom.version ?: pom.parent.version
         }
-        pmebuild.executeBuildScript("${group}/${name}", buildConfig, "kogito-tooling-prod")
+        pmebuild.executeBuildScript(project, buildConfig, settingsXMLId)
     }
 }
