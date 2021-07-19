@@ -89,7 +89,7 @@ pipeline {
     \"npmRegistry\": \"${NPM_REGISTRY_PUBLISH_URL}",
     \"versions\": {
         \"kogito-tooling\": \"${env.CURRENT_KOGITO_TOOLING_VERSION}\",
-        \"kogito-editors-java\": \"${env.kogito_editors_java_VERSION}\"
+        \"kogito-editors-java\": \"${env.KOGITO_EDITORS_JAVA_VERSION}\"
     }
 }
                     """
@@ -143,7 +143,7 @@ def getBuildConfigMap(def buildConfigPathFolder, def buildConfigAdditionalVariab
 
 def buildProject(String project, Map<String, Object> buildConfig, String defaultGroup = "kiegroup") {
     println "[INFO] Building project ${project}"
-    if("kiegroup/kogito-tooling" == project) {
+    if ("kiegroup/kogito-tooling" == project) {
         env.CURRENT_KOGITO_TOOLING_VERSION = env.CURRENT_KOGITO_TOOLING_VERSION ?: sh(returnStdout: true, script: 'awk -F\'"\' \'/"version": ".+"/{ print $4; exit; }\' lerna.json')?.trim() + "-redhat-${env.DATE_TIME_SUFFIX}"
         println "kogito-tooling prod version ${env.CURRENT_KOGITO_TOOLING_VERSION}"
     }
@@ -154,7 +154,7 @@ def buildProject(String project, Map<String, Object> buildConfig, String default
         if (fileExists("./pom.xml")) {
             pmebuild.executePME(project, pmebuild.getProjectConfiguration(project, buildConfig), "${env.PME_CLI_PATH}", settingsXMLId, [:])
             def pom = readMavenPom file: 'pom.xml'
-            env["${name}-VERSION".replace("-", "_")] = pom.version ?: pom.parent.version
+            env["${name}-VERSION".replace("-", "_").toUpperCase()] = pom.version ?: pom.parent.version
         }
         pmebuild.executeBuildScript(project, buildConfig, settingsXMLId)
     }
