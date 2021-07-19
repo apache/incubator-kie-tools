@@ -178,12 +178,7 @@
         </bpsim:Scenario>
       </bpsim:BPSimData>
     </bpmn2:extensionElements>
-<<<<<<< HEAD
-    <bpmn2:source>_or3HAMVMEDmOZJRqLbj1YQ</bpmn2:source>
-    <bpmn2:target>_or3HAMVMEDmOZJRqLbj1YQ</bpmn2:target>
-=======
     <bpmn2:source>_-rlXkbuREDmDt_62KKilBQ</bpmn2:source>
     <bpmn2:target>_-rlXkbuREDmDt_62KKilBQ</bpmn2:target>
->>>>>>> KOGITO-4827: Reuse Datatypes across process IT tests
   </bpmn2:relationship>
 </bpmn2:definitions>
