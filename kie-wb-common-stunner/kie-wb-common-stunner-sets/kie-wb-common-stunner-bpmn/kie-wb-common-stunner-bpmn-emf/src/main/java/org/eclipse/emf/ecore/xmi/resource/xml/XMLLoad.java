@@ -262,7 +262,7 @@ public class XMLLoad {
                 break;
             }
             case Node.COMMENT_NODE: {
-                throw new UnsupportedOperationException("No lexical handler support for this GWT based implementation.");
+                break;
             }
             case Node.PROCESSING_INSTRUCTION_NODE: {
                 ProcessingInstruction pi = (ProcessingInstruction) node;
