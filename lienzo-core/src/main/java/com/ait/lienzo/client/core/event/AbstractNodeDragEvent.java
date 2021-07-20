@@ -25,22 +25,13 @@ public abstract class AbstractNodeDragEvent<H> extends AbstractNodeEvent<H, Node
 
     private DragContext m_drag;
 
-//    public AbstractNodeDragEvent(final DragContext drag)
-//    {
-//        m_drag = drag;
-//    }
-
     public AbstractNodeDragEvent(final HTMLElement relativeElement) {
         super(relativeElement);
     }
 
     public void reviveMouseEvent(Node sourceNode, final DragContext drag) {
-        this.m_drag = m_drag;
+        this.m_drag = drag;
         setSource(sourceNode);
-
-//        m_x = MouseEventUtil.getRelativeX(event.clientX, getRelativeElement());
-//
-//        m_y = MouseEventUtil.getRelativeY(event.clientY, getRelativeElement());
     }
 
     @Override

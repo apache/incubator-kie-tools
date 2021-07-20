@@ -76,7 +76,6 @@ public class BrightnessImageDataFilter extends AbstractValueImageDataFilter<Brig
     }
 
     private final void filter_(Uint8ClampedArray dataArray, int length, double value) {
-//        int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
         int[] data = Js.uncheckedCast(dataArray);
         double v = (value * 255) + 0.5;
         for (int i = 0; i < length; i += 4) {

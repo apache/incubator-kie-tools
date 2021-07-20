@@ -47,14 +47,8 @@ public class WiresScalableContainerTest {
     @Mock
     private IPrimitive<?> whPrimitive;
 
-//    @Mock
-//    private Attributes whAttributes;
-
     @Mock
     private IPrimitive<?> nonScalablePrimitive;
-
-//    @Mock
-//    private Attributes nonScalableAttributes;
 
     @Mock
     private Group tranformableContainer;
@@ -74,11 +68,7 @@ public class WiresScalableContainerTest {
                                             anyDouble())).thenReturn(tranformableContainer);
         when(boundingBox.getWidth()).thenReturn(BB_WIDTH);
         when(boundingBox.getHeight()).thenReturn(BB_HEIGHT);
-//        when(nonScalablePrimitive.getAttributes()).thenReturn(nonScalableAttributes);
         when(whPrimitive.asNode()).thenReturn(mock(Node.class));
-//        when(whPrimitive.getAttributes()).thenReturn(whAttributes);
-//        when(whAttributes.getDouble(Attribute.WIDTH.getProperty())).thenReturn(WIDTH);
-//        when(whAttributes.getDouble(Attribute.HEIGHT.getProperty())).thenReturn(HEIGHT);
         this.tested = new WiresScalableContainer(tranformableContainer);
     }
 
@@ -94,16 +84,9 @@ public class WiresScalableContainerTest {
                        newWidth,
                        newHeight);
         assertEquals(tested, wsc);
-
-        // TODO: lienzo-to-native
-//        verify(whAttributes,
-//               times(1)).setX(eq(x));
-//        verify(whAttributes,
-//               times(1)).setY(eq(y));
-//        verify(whAttributes,
-//               times(1)).setWidth(eq(newWidth));
-//        verify(whAttributes,
-//               times(1)).setHeight(eq(newHeight));
+        verify(tranformableContainer, times(1)).setX(eq(x));
+        verify(tranformableContainer, times(1)).setY(eq(y));
+        verify(tranformableContainer, times(1)).setScale(eq(new Point2D(1.720682302771855, 144.97451720310767)));
     }
 
     @Test
@@ -177,15 +160,6 @@ public class WiresScalableContainerTest {
                      wsc0);
         assertEquals(tested,
                      wsc2);
-        // TODO: lienzo-to-native
-//        verify(whAttributes,
-//               times(1)).setX(eq(x));
-//        verify(whAttributes,
-//               times(1)).setY(eq(y));
-//        verify(whAttributes,
-//               times(1)).setWidth(eq(newSize));
-//        verify(whAttributes,
-//               times(1)).setHeight(eq(newSize));
         verify(tranformableContainer,
                times(1)).add(eq(nonScalablePrimitive));
         verify(tranformableContainer,
@@ -213,15 +187,9 @@ public class WiresScalableContainerTest {
                        newHeight);
         assertEquals(tested,
                      wsc);
-        // TODO: lienzo-to-native
-//        verify(whAttributes,
-//               times(1)).setX(eq(x));
-//        verify(whAttributes,
-//               times(1)).setY(eq(y));
-//        verify(whAttributes,
-//               never()).setWidth(anyDouble());
-//        verify(whAttributes,
-//               times(1)).setHeight(eq(newHeight));
+        verify(tranformableContainer, times(1)).setX(eq(x));
+        verify(tranformableContainer, times(1)).setY(eq(y));
+        verify(tranformableContainer, times(1)).setScale(eq(new Point2D(0.0, 144.97451720310767)));
     }
 
     @Test
@@ -237,14 +205,8 @@ public class WiresScalableContainerTest {
                        newHeight);
         assertEquals(tested,
                      wsc);
-        // TODO: lienzo-to-native
-//        verify(whAttributes,
-//               times(1)).setX(eq(x));
-//        verify(whAttributes,
-//               times(1)).setY(eq(y));
-//        verify(whAttributes,
-//               times(1)).setWidth(eq(newWidth));
-//        verify(whAttributes,
-//               never()).setHeight(anyDouble());
+        verify(tranformableContainer, times(1)).setX(eq(x));
+        verify(tranformableContainer, times(1)).setY(eq(y));
+        verify(tranformableContainer, times(1)).setScale(eq(new Point2D(27.851181236673774, 0.0)));
     }
 }

@@ -147,7 +147,6 @@ public class ImageDataFilterCommonOps {
 
     // MDP set correct parameters....
     public void filterTable(Uint8ClampedArray dataArray, FilterTableArray tableArray, int w, int h) {
-        //int[] t1 = Uint8ClampedArray.ConstructorLengthUnionType.of(data).asIntArray();
         int[] data = Js.uncheckedCast(dataArray);
         // It's dirty, but should be no difference in JS from int[] and Integer[]
         int[] table = Js.uncheckedCast(tableArray);
@@ -162,7 +161,7 @@ public class ImageDataFilterCommonOps {
 
     public void filterLuminosity(Uint8ClampedArray dataArray, int length) {
 
-        int[] data = Js.uncheckedCast(dataArray); //Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
+        int[] data = Js.uncheckedCast(dataArray);
         for (int j = 0; j < length; j += 4) {
             int v = Js.coerceToInt((((data[j] * 0.21) + (data[j + 1] * 0.72) + (data[j + 2] * 0.07)) + 0.5));
             data[j] = data[j + 1] = data[j + 2] = v;
@@ -170,7 +169,6 @@ public class ImageDataFilterCommonOps {
     }
 
     public int[] getPixel(Uint8ClampedArray dataArray, double x, double y, double w, double h) {
-        //int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
         int[] data = Js.uncheckedCast(dataArray);
         int[] ret;
         double p = (y * w + x) * 4;
@@ -193,8 +191,6 @@ public class ImageDataFilterCommonOps {
     }
 
     public void filterTransform(Uint8ClampedArray dataArray, Uint8ClampedArray buffArray, FilterTransformFunction transformer, int w, int h) {
-//        int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
-//        int[] buff = Uint8ClampedArray.ConstructorLengthUnionType.of(buffArray).asIntArray();
         int[] data = Js.uncheckedCast(dataArray);
         int[] buff = Js.uncheckedCast(buffArray);
 
@@ -233,7 +229,7 @@ public class ImageDataFilterCommonOps {
 
     public void filterConvolve(Uint8ClampedArray dataArray, Uint8ClampedArray buffArray,
                                FilterConvolveMatrix matrix, double w, double h) {
-        int[] data = Js.uncheckedCast(dataArray); //Uint8ClampedArray dataArray
+        int[] data = Js.uncheckedCast(dataArray);
         int[] buff = Js.uncheckedCast(buffArray);
 
         double rows, cols;
@@ -290,7 +286,6 @@ public class ImageDataFilterCommonOps {
     ;
 
     public boolean hasAlphaChannel(Uint8ClampedArray dataArray, int length) {
-        //int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
         int[] data = Js.uncheckedCast(dataArray);
         for (int j = 0; j < length; j += 4) {
             if (data[j + 3] < 255) {

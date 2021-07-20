@@ -82,7 +82,6 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
     }
 
     private final void filter_(Uint8ClampedArray dataArray, int width, int height, int radius, ImageDataFilterCommonOps fops) {
-        //int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
         int[] data = Js.uncheckedCast(dataArray);
 
         int[] mul_table = fops.mul_table;

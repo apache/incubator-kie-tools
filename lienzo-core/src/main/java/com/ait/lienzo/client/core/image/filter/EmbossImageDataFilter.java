@@ -59,7 +59,6 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
     }
 
     private final void filter_(Uint8ClampedArray dataArray, int length, int width, ImageDataFilterCommonOps fops) {
-//        int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
         int[] data = Js.uncheckedCast(dataArray);
         for (int i = 0; i < length; i++) {
             if (i < (length - width * 4)) {

@@ -59,9 +59,6 @@ public class EdgeDetectImageDataFilter extends AbstractImageDataFilter<EdgeDetec
     }
 
     private final void filter_(Uint8ClampedArray dataArray, Uint8ClampedArray buffArray, int w, int h) {
-//        int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
-//        int[] buff = Uint8ClampedArray.ConstructorLengthUnionType.of(buffArray).asIntArray();
-
         int[] data = Js.uncheckedCast(dataArray);
         int[] buff = Js.uncheckedCast(buffArray);
 

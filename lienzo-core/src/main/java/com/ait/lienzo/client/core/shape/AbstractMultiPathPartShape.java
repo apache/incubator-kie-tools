@@ -234,23 +234,6 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         }
     }
 
-//    public final Double getMinWidth() {
-//        double minWidth = getDouble(Attribute.MIN_WIDTH.getProperty());
-//        return minWidth == 0 ? null : minWidth;
-//    }
-//
-//    public final void setMinWidth(final Double minWidth)
-//    {
-//        if (null != minWidth)
-//        {
-//            put(Attribute.MIN_WIDTH.getProperty(), minWidth);
-//        }
-//        else
-//        {
-//            remove(Attribute.MIN_WIDTH.getProperty());
-//        }
-//    }
-
     public Double getMinWidth() {
         return this.minWidth;
     }

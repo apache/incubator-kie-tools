@@ -84,7 +84,6 @@ public class ColorDeltaAlphaImageDataFilter extends AbstractRGBImageDataFilter<C
     }
 
     private final void filter_(Uint8ClampedArray dataArray, int length, int r, int g, int b, double v) {
-//        int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
         int[] data = Js.uncheckedCast(dataArray);
         int rmin = Js.coerceToInt(Math.max(r - v, 0));
         int rmax = Js.coerceToInt(Math.min(r + v, 255));

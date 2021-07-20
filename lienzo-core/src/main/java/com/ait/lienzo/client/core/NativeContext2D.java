@@ -172,7 +172,6 @@ public class NativeContext2D extends CanvasRenderingContext2D {
 
     @JsOverlay
     public final void setFillGradient(LinearGradientJSO grad) {
-        //createLinearGradient()
         if (grad != null) {
             CanvasGradient that = this.createLinearGradient(grad.sx, grad.sy,
                                                             grad.ex, grad.ey);

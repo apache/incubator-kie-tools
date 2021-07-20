@@ -66,7 +66,6 @@ public class ColorLuminosityImageDataFilter extends AbstractRGBImageDataFilter<C
     }
 
     private final void filter_(Uint8ClampedArray dataArray, int length, int r, int g, int b) {
-//        int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
         int[] data = Js.uncheckedCast(dataArray);
         for (int i = 0; i < length; i += 4) {
             double v = (((data[i] * 0.21) + (data[i + 1] * 0.72) + (data[i + 2] * 0.07)) / 255.0);

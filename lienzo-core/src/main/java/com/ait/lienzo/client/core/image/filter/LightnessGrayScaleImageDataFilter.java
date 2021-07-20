@@ -57,7 +57,6 @@ public class LightnessGrayScaleImageDataFilter extends AbstractImageDataFilter<L
     }
 
     private final void filter_(Uint8ClampedArray dataArray, int length) {
-        //int[] data = Uint8ClampedArray.ConstructorLengthUnionType.of(dataArray).asIntArray();
         int[] data = Js.uncheckedCast(dataArray);
         for (int i = 0; i < length; i += 4) {
             int r = data[i];
