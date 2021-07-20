@@ -14,10 +14,6 @@ This repository contains all the tooling artifacts of the Kogito project.
 [![License](https://img.shields.io/github/license/kiegroup/kogito-tooling.svg)](https://github.com/kiegroup/kogito-tooling/blob/main/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/kogito_kie.svg?label=Follow&style=social)](https://twitter.com/kogito_kie?lang=en)
 
-## Documentation
-
-- _Work in progress 🔨_
-
 ## Contribute
 
 - _Work in progress 🔨_
@@ -29,11 +25,8 @@ To start building the KIE Tooling Core project, you're going to need:
 - Node `>= 16.2.0` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
 - Yarn `1.22.10` _(To install, run `npm install -g yarn@1.22.10`)_
 - Lerna `4.0.0` _(To install, run `npm install -g lerna@4.0.0`)_
-- Maven `3.8.1` _(To install, run `xxx`)_
-- Java `11` _(To install, run `xxx`)_
-- (optional) Go `1.16` _(To install, run `xxx`)_
-- (optional) Make `x.x.x` _(To install, run `xxx`)_
-- (optional) Docker `x.x.x` _(To install, run `xxx`)_
+- Maven `3.8.1`
+- Java `11`
 
 After installing the tools above, you'll need to download the dependencies and link the packages locally. Simply run:
 

@@ -47,7 +47,7 @@ Release workflow (post 0.13.0)
 - [Phase 1] NPM Packages (including Standalone Editors)
 -
 - [Phase 2] dmn-runner x3 (one for each OS) (GitHub release)
-- [Phase 2] dmn-dev-sandbox-deployment-base (Quay.io)
+- [Phase 2] dmn-dev-sandbox-deployment-base-image (Quay.io)
 - [Phase 2] vscode-extension-bpmn-editor (GitHub release -> Jenkins: VS Code Marketplace, OpenVSX)
 - [Phase 2] vscode-extension-dmn-editor (GitHub release -> Jenkins: VS Code Marketplace, OpenVSX)
 - [Phase 2] vscode-extension-pmml-editor (GitHub release -> Jenkins: VS Code Marketplace, OpenVSX)
