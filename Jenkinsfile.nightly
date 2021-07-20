@@ -156,6 +156,6 @@ def buildProject(String project, Map<String, Object> buildConfig, String default
             def pom = readMavenPom file: 'pom.xml'
             env["${name}-VERSION".replace("-", "_").toUpperCase()] = pom.version ?: pom.parent.version
         }
-        pmebuild.executeBuildScript(project, buildConfig, settingsXMLId)
+        pmebuild.executeBuildScript(project, buildConfig, settingsXMLId, "-DaltDeploymentRepository=local::default::file://${env.WORKSPACE}/deployDirectory")
     }
 }
