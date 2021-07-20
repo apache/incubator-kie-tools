@@ -21,6 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
@@ -56,5 +57,15 @@ public class DMNCanvasInlineTextEditorControl extends org.kie.workbench.common.s
         maxInnerTopBoxWidth = 190d;
         maxInnerTopBoxHeight = 120d;
         innerBoxOffsetY = 0d;
+    }
+
+    @Override
+    public boolean isFiltered(Object bean) {
+        return !((DRGElement) bean).isAllowOnlyVisualChange();
+    }
+
+    @Override
+    protected boolean isEditableForDoubleClick(Element element) {
+        return super.isEditable(element);
     }
 }

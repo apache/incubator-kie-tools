@@ -46,7 +46,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.promise.Promises;
 
 import static org.kie.workbench.common.stunner.bpmn.util.XmlUtils.createValidId;
@@ -186,12 +185,9 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
         return diagram;
     }
 
-    private static final String ROOT_PATH = "default://master@system/stunner/diagrams";
-
     private Metadata createMetadata() {
         return new MetadataImpl.MetadataImplBuilder(BPMNClientMarshalling.getDefinitionSetId(),
                                                     definitionManager)
-                .setRoot(PathFactory.newPath(".", ROOT_PATH))
                 .build();
     }
 

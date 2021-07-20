@@ -14,11 +14,11 @@ Implementation details
 This module contains the necessary services and marshalling dependencies to perform end to end client side marshalling for the BPMN2 domain.
 
 Considerations:
-* Most stuff has been created from the already existing code for the BPMN marshallers, which are properly working for backend side (see [kie-wb-common-stunner-bpmn-backend](https://github.com/kiegroup/kie-wb-common/tree/master/kie-wb-common-stunner/kie-wb-common-stunner-bpmn-backend)), but applying the necessary changes for making it available on client side
-* It means that this module **MUST BE MANUALLY synchronized** and up to date with any changes on the same code for server side (see [kie-wb-common-stunner-bpmn-backend](https://github.com/kiegroup/kie-wb-common/tree/master/kie-wb-common-stunner/kie-wb-common-stunner-bpmn-backend))
+* Most stuff has been created from the already existing code for the BPMN marshallers, which are properly working for backend side (see [kie-wb-common-stunner-bpmn-backend](https://github.com/kiegroup/kie-wb-common/tree/main/kie-wb-common-stunner/kie-wb-common-stunner-bpmn-backend)), but applying the necessary changes for making it available on client side
+* It means that this module **MUST BE MANUALLY synchronized** and up to date with any changes on the same code for server side (see [kie-wb-common-stunner-bpmn-backend](https://github.com/kiegroup/kie-wb-common/tree/main/kie-wb-common-stunner/kie-wb-common-stunner-bpmn-backend))
 
 
-Last synchronization from master has been done on top of the following commit (included):
+Last synchronization from main has been done on top of the following commit (included):
 
     From TiagoD
     Aug 20, 2019

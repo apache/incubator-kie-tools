@@ -44,7 +44,6 @@ public class MetadataImpl extends AbstractMetadata {
         private final DefinitionManager definitionManager;
         private String title;
         private String ssid;
-        private Path root;
         private Path path;
 
         public MetadataImplBuilder(final String defSetId) {
@@ -63,11 +62,6 @@ public class MetadataImpl extends AbstractMetadata {
             return this;
         }
 
-        public MetadataImplBuilder setRoot(final Path path) {
-            this.root = path;
-            return this;
-        }
-
         public MetadataImplBuilder setTitle(final String t) {
             this.title = t;
             return this;
@@ -80,7 +74,6 @@ public class MetadataImpl extends AbstractMetadata {
 
         public MetadataImpl build() {
             final MetadataImpl result = new MetadataImpl(defSetId);
-            result.setRoot(root);
             result.setPath(path);
             if (null != definitionManager) {
                 final Object defSet = definitionManager.definitionSets().getDefinitionSetById(defSetId);

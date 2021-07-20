@@ -38,7 +38,7 @@ To contribute, use GitHub Pull Requests, from your **own** fork.
 
 We decided to disallow `@author` tags in the Javadoc: they are hard to maintain, especially in a very active project, and we use the Git history to track authorship. GitHub also has [this nice page with your contributions](https://github.com/kiegroup/kogito-editors-java/graphs/contributors).
 
-It is strongly recommended that you import [our code style](https://github.com/kiegroup/droolsjbpm-build-bootstrap/tree/master/ide-configuration) if you use IntelliJ or Eclipse.
+It is strongly recommended that you import [our code style](https://github.com/kiegroup/droolsjbpm-build-bootstrap/tree/main/ide-configuration) if you use IntelliJ or Eclipse.
 
 ### Requirements for Dependencies
 

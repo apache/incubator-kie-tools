@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.InlineTextEditEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -49,9 +50,10 @@ public class DMNCreateNodeAction extends GeneralCreateNodeAction {
                                final ClientFactoryManager clientFactoryManager,
                                final CanvasLayoutUtils canvasLayoutUtils,
                                final Event<CanvasSelectionEvent> selectionEvent,
+                               final Event<InlineTextEditEvent> inlineTextEditEventEvent,
                                final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                final @Any ManagedInstance<DefaultCanvasCommandFactory> canvasCommandFactories) {
-        super(definitionUtils, clientFactoryManager, canvasLayoutUtils, selectionEvent, sessionCommandManager, canvasCommandFactories);
+        super(definitionUtils, clientFactoryManager, canvasLayoutUtils, selectionEvent, inlineTextEditEventEvent, sessionCommandManager, canvasCommandFactories);
     }
 
     @Override

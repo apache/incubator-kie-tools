@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright (C) 2015 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,20 @@
  * limitations under the License.
  */
 
-package org.jboss.tests.errai.ioc.wiring.client.res;
+package org.jboss.errai.validation.client;
 
-import javax.inject.Singleton;
+import javax.validation.constraints.NotNull;
 
-@Singleton
-public class NotWhitelistedBean {
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.jboss.errai.databinding.client.api.Bindable;
+import org.junit.Ignore;
+
+@Bindable
+@Portable
+@Ignore
+public class DenylistedWithConstraint {
+
+  @NotNull
+  private Object o = new Object();
+  
 }

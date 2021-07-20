@@ -54,7 +54,7 @@ import static java.util.stream.Collectors.toSet;
  */
 class GwtValidatorGenerator {
 
-  private static final String BLACKLIST_PROPERTY = "errai.validation.blacklist";
+  private static final String DENYLIST_PROPERTY = "errai.validation.denylist";
 
   private static final Set<MetaClass> GLOBAL_CONSTRAINTS = Stream.of(
           javax.validation.constraints.AssertFalse.class,
@@ -102,7 +102,7 @@ class GwtValidatorGenerator {
     final Set<Class<?>> groups = extractValidationGroups(constraintAnnotationsByBeans.values());
     
     final Set<Class<?>> filteredBeans = new HashSet<>();
-    final SimplePackageFilter filter = new SimplePackageFilter(PropertiesUtil.getPropertyValues(BLACKLIST_PROPERTY, " "));
+    final SimplePackageFilter filter = new SimplePackageFilter(PropertiesUtil.getPropertyValues(DENYLIST_PROPERTY, " "));
     for (final Class<?> bean : beans) {
       if (!filter.apply(bean.getName())) {
         filteredBeans.add(bean);

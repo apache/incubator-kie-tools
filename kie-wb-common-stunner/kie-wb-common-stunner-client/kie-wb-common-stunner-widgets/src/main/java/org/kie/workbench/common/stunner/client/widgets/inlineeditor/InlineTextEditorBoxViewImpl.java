@@ -22,6 +22,8 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
+import elemental2.dom.DomGlobal;
+import jsinterop.base.Js;
 import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
@@ -145,7 +147,14 @@ public class InlineTextEditorBoxViewImpl
         nameField.setAttribute("data-text", placeholder);
 
         setVisible();
-        scheduleDeferredCommand(() -> nameField.focus());
+        scheduleDeferredCommand(() -> {
+            nameField.focus();
+            selectText(nameField);
+        });
+    }
+
+    public void selectText(Div node) {
+        DomGlobal.window.getSelection().selectAllChildren(Js.cast(node));
     }
 
     String buildStyle(final double width, final double height) {

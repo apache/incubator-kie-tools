@@ -151,7 +151,7 @@ public class ColorPackageImpl extends EPackageImpl implements ColorPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static class WhiteList implements IsSerializable, EBasicWhiteList {
+	public static class AllowList implements IsSerializable, EBasicWhiteList {
 		/**
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->

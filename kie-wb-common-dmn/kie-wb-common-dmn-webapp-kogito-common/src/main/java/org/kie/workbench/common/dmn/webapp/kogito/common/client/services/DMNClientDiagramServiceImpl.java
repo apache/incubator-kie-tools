@@ -43,9 +43,6 @@ import org.uberfire.commons.UUID;
 @ApplicationScoped
 public class DMNClientDiagramServiceImpl extends AbstractKogitoClientDiagramService {
 
-    //This path is needed by DiagramsNavigatorImpl's use of AbstractClientDiagramService.lookup(..) to retrieve a list of diagrams
-    private static final String ROOT = "default://master@system/stunner/diagrams";
-
     private FactoryManager factoryManager;
 
     private DefinitionManager definitionManager;
@@ -115,8 +112,7 @@ public class DMNClientDiagramServiceImpl extends AbstractKogitoClientDiagramServ
         final String shapeSetId = BindableAdapterUtils.getShapeSetId(DMNShapeSet.class);
         return new MetadataImpl.MetadataImplBuilder(defSetId,
                                                     definitionManager)
-                .setRoot(PathFactory.newPath(".", ROOT))
-                .setPath(PathFactory.newPath(".", ROOT + "/" + fileName))
+                .setPath(PathFactory.newPath(".", "/" + fileName))
                 .setShapeSetId(shapeSetId)
                 .build();
     }

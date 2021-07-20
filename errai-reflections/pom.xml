@@ -19,10 +19,11 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
   <licenses>
     <license>
-      <name>DO WHAT THE F#*@ YOU WANT TO PUBLIC LICENSE</name>
-      <url>https://raw.github.com/errai/errai/master/errai-reflections/reflections/COPYING.txt</url>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>

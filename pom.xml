@@ -765,7 +765,7 @@
                         as transitive dependency as well. -->
                       <ignoreClass>org.joda.time.*</ignoreClass>
                       <!-- Classes bundled in errai-javax-enterprise which are GWT friendly.
-                           See https://github.com/errai/errai/blob/master/errai-javax-enterprise/README -->
+                           See https://github.com/kiegroup/kogito-editors-java/blob/main/errai-javax-enterprise/README -->
                       <ignoreClass>javax.interceptor.InvocationContext</ignoreClass>
                       <ignoreClass>javax.inject.Provider</ignoreClass>
                       <ignoreClass>javax.inject.Named</ignoreClass>

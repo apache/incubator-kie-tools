@@ -449,4 +449,10 @@ public class VariableDeclarationTest {
         comparable = new VariableDeclaration(CONSTRUCTOR_IDENTIFIER, CONSTRUCTOR_TYPE, "");
         assertEquals(comparable.toString(), CONSTRUCTOR_IDENTIFIER + ":" + CONSTRUCTOR_TYPE);
     }
+
+    @Test
+    public void testToStringNoException() {
+        VariableDeclaration comparable = VariableDeclaration.fromString("" + CONSTRUCTOR_TYPE);
+        assertEquals(comparable.toString(), CONSTRUCTOR_TYPE);
+    }
 }

@@ -2664,7 +2664,7 @@ public class Bpmn2PackageImpl extends EPackageImpl implements Bpmn2Package {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static class WhiteList implements IsSerializable, EBasicWhiteList {
+	public static class AllowList implements IsSerializable, EBasicWhiteList {
 		/**
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->

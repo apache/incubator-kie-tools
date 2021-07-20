@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CreateNodeAction;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.InlineTextEditEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
@@ -61,6 +62,7 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
     private final ClientFactoryManager clientFactoryManager;
     private final CanvasLayoutUtils canvasLayoutUtils;
     private final Event<CanvasSelectionEvent> selectionEvent;
+    private final Event<InlineTextEditEvent> inlineTextEditEventEvent;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final ManagedInstance<DefaultCanvasCommandFactory> canvasCommandFactories;
 
@@ -69,12 +71,14 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
                                    final ClientFactoryManager clientFactoryManager,
                                    final CanvasLayoutUtils canvasLayoutUtils,
                                    final Event<CanvasSelectionEvent> selectionEvent,
+                                   final Event<InlineTextEditEvent> inlineTextEditEventEvent,
                                    final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                    final @Any ManagedInstance<DefaultCanvasCommandFactory> canvasCommandFactories) {
         this.definitionUtils = definitionUtils;
         this.clientFactoryManager = clientFactoryManager;
         this.canvasLayoutUtils = canvasLayoutUtils;
         this.selectionEvent = selectionEvent;
+        this.inlineTextEditEventEvent = inlineTextEditEventEvent;
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactories = canvasCommandFactories;
     }
@@ -133,6 +137,8 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
             CanvasLayoutUtils.fireElementSelectedEvent(selectionEvent,
                                                        canvasHandler,
                                                        targetNode.getUUID());
+            this.inlineTextEditEventEvent.fire(new InlineTextEditEvent(targetNode.getUUID()));
+
         }
     }
 

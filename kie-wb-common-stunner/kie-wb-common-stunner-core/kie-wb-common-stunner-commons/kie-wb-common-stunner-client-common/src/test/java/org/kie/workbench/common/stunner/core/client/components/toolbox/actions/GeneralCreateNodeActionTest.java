@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.AddNodeComman
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.command.SetConnectionTargetNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.InlineTextEditEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils.Orientation;
@@ -79,6 +80,9 @@ public class GeneralCreateNodeActionTest {
     private EventSourceMock<CanvasSelectionEvent> selectionEvent;
 
     @Mock
+    private EventSourceMock<InlineTextEditEvent> inlineTextEditEvent;
+
+    @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     private ManagedInstanceStub<DefaultCanvasCommandFactory> canvasCommandFactories;
@@ -95,6 +99,7 @@ public class GeneralCreateNodeActionTest {
                                                        clientFactoryManager,
                                                        canvasLayoutUtils,
                                                        selectionEvent,
+                                                       inlineTextEditEvent,
                                                        sessionCommandManager,
                                                        canvasCommandFactories) {
 
@@ -181,6 +186,10 @@ public class GeneralCreateNodeActionTest {
         Assertions.assertThat(new Point2D(100d, 500d)).isEqualTo(updateElementPositionCommand.getLocation());
         final ArgumentCaptor<CanvasSelectionEvent> eventArgumentCaptor = ArgumentCaptor.forClass(CanvasSelectionEvent.class);
         verify(selectionEvent).fire(eventArgumentCaptor.capture());
+
+        final ArgumentCaptor<InlineTextEditEvent> inlineTextEditEventEventArgumentCapture = ArgumentCaptor.forClass(InlineTextEditEvent.class);
+        verify(inlineTextEditEvent).fire(inlineTextEditEventEventArgumentCapture.capture());
+
         final CanvasSelectionEvent eCaptured = eventArgumentCaptor.getValue();
         Assertions.assertThat(targetNodeUuid).isEqualTo(eCaptured.getIdentifiers().iterator().next());
         Assertions.assertThat(addConnectorCommand.getConnection()).isInstanceOf(MagnetConnection.class);

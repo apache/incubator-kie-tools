@@ -94,8 +94,6 @@ public abstract class AbstractDMNDiagramEditorTest {
 
     protected static final String CONTENT = "content";
 
-    protected static final String ROOT = "default://master@system/stunner/diagrams";
-
     @Mock
     protected AbstractCanvasHandler canvasHandler;
 
@@ -242,7 +240,7 @@ public abstract class AbstractDMNDiagramEditorTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        metadata = new MetadataImpl.MetadataImplBuilder(DMNDefinitionSet.class.getName()).setTitle("dmn").setRoot(root).build();
+        metadata = new MetadataImpl.MetadataImplBuilder(DMNDefinitionSet.class.getName()).setTitle("dmn").build();
         diagram = new DiagramImpl("dmn", metadata);
 
         when(searchBarComponent.getView()).thenReturn(searchBarComponentView);
@@ -260,7 +258,6 @@ public abstract class AbstractDMNDiagramEditorTest {
         when(stunnerEditor.getCanvasHandler()).thenReturn(canvasHandler);
         when(stunnerEditor.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
-        when(root.toURI()).thenReturn(ROOT);
 
         when(drdNameChanger.getElement()).thenReturn(drdNameChangerElement);
 

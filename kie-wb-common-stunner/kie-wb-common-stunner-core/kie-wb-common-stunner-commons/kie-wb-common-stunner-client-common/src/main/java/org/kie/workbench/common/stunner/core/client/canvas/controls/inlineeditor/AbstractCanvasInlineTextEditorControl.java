@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor;
 
+import javax.enterprise.event.Observes;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.touch.client.Point;
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.DomGlobal;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
@@ -31,6 +34,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanv
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasInlineTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl.KogitoKeyPress;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -45,9 +49,12 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.TextEnterHa
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ESC;
 
@@ -95,6 +102,7 @@ public abstract class AbstractCanvasInlineTextEditorControl
     protected double scrollBarOffset;
     protected double paletteOffsetX;
     protected double innerBoxOffsetY;
+    protected EditorSession session;
 
     protected abstract FloatingView<IsWidget> getFloatingView();
 
@@ -111,6 +119,7 @@ public abstract class AbstractCanvasInlineTextEditorControl
     public void bind(final EditorSession session) {
         session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{ESC}, "Edit | Hide", this::hide));
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
+        this.session = session;
     }
 
     @Override
@@ -160,13 +169,37 @@ public abstract class AbstractCanvasInlineTextEditorControl
         final TextDoubleClickHandler clickHandler = new TextDoubleClickHandler() {
             @Override
             public void handle(final TextDoubleClickEvent event) {
-                scheduleDeferredCommand(() -> AbstractCanvasInlineTextEditorControl.this.show(element));
+                if (isEditableForDoubleClick(element)) {
+                    scheduleDeferredCommand(() -> AbstractCanvasInlineTextEditorControl.this.show(element));
+                }
             }
         };
         hasEventHandlers.addHandler(ViewEventType.TEXT_DBL_CLICK,
                                     clickHandler);
         registerHandler(shape.getUUID(),
                         clickHandler);
+    }
+
+    void onEnableInlineEdit(@Observes InlineTextEditEvent event) {
+        final Element element = CanvasLayoutUtils.getElement(canvasHandler, event.getUuid());
+        if (element != null && isEditable(element)) {
+            AbstractCanvasInlineTextEditorControl.this.show(element);
+        }
+    }
+
+    protected boolean isEditableForDoubleClick(Element element) {
+        return true;
+    }
+
+    protected boolean isEditable(Element element) {
+        Node<View<?>, Edge> sourceNode = (Node<View<?>, Edge>) element;
+        final Object sourceDefinition = null != sourceNode ? sourceNode.getContent().getDefinition() : null;
+        final boolean isEditable = isFiltered(sourceDefinition);
+        return isEditable;
+    }
+
+    public boolean isFiltered(final Object bean) {
+        return true;
     }
 
     private void changeMouseCursorOnTextEnter(final Shape<?> shape, final HasEventHandlers hasEventHandlers) {
@@ -265,7 +298,15 @@ public abstract class AbstractCanvasInlineTextEditorControl
     }
 
     private boolean isPositionXValid(final double floatingViewPositionX) {
-        return !(canvasPosition.getX() + paletteOffsetX > floatingViewPositionX);
+        final boolean atLeft = (canvasPosition.getX() + paletteOffsetX <= floatingViewPositionX);
+        boolean isValid = atLeft;
+        if (DomGlobal.document != null) {
+            final elemental2.dom.Element editorPanel = DomGlobal.document.getElementById("canvasPanel");
+            final double canvasWidth = editorPanel.clientWidth;
+            isValid = isValid && (canvasPosition.getX() + paletteOffsetX + canvasWidth + scrollBarOffset >= floatingViewPositionX);
+        }
+
+        return isValid;
     }
 
     private boolean isPositionYValid(final double floatingViewPositionY) {

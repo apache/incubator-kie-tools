@@ -61,13 +61,10 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.promise.Promises;
 
 @Dependent
 public class DMNMarshallerService {
-
-    private static final String ROOT = "default://master@system/stunner/diagrams";
 
     private final DMNUnmarshaller dmnUnmarshaller;
 
@@ -232,18 +229,12 @@ public class DMNMarshallerService {
     private org.kie.workbench.common.stunner.core.diagram.Metadata buildMetadataInstance(final Path path) {
         final String defSetId = BindableAdapterUtils.getDefinitionSetId(DMNDefinitionSet.class);
         final String shapeSetId = BindableAdapterUtils.getShapeSetId(DMNShapeSet.class);
-        final Path root = getRoot();
 
         return new MetadataImpl.MetadataImplBuilder(defSetId,
                                                     definitionManager)
-                .setRoot(root)
                 .setPath(path)
                 .setShapeSetId(shapeSetId)
                 .build();
-    }
-
-    private Path getRoot() {
-        return PathFactory.newPath(".", ROOT);
     }
 
     private void updateClientShapeSetId(final Diagram diagram) {

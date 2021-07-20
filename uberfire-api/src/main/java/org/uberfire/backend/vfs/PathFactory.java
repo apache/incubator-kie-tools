@@ -73,9 +73,9 @@ public final class PathFactory {
      * Examples:
      * <p>
      * <pre>
-     * default://master@myteam/dora/src/main/resources/com/myteam/dora/sample.drl
+     * default://main@myteam/dora/src/main/resources/com/myteam/dora/sample.drl
      *           branch@space/project/path/to/file.extension                      =>
-     * default://locks@system/system/myteam/master/dora/src/main/resources/com/myteam/dora/sample.drl
+     * default://locks@system/system/myteam/main/dora/src/main/resources/com/myteam/dora/sample.drl
      *
      * </pre>
      *
@@ -99,8 +99,8 @@ public final class PathFactory {
      * Examples:
      * <p>
      * <pre>
-     * default://locks@system/system/myteam/master/dora/src/main/resources/com/myteam/dora/sample.drl.ulock
-     * default://master@myteam/dora/src/main/resources/com/myteam/dora/sample.drl
+     * default://locks@system/system/myteam/main/dora/src/main/resources/com/myteam/dora/sample.drl.ulock
+     * default://main@myteam/dora/src/main/resources/com/myteam/dora/sample.drl
      *           branch@space/project/path/to/file.extension                      =>
      * </pre>
      *
