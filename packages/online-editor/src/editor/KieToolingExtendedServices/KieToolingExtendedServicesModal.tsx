@@ -764,7 +764,13 @@ export function KieToolingExtendedServicesModal() {
           <Wizard
             steps={wizardSteps}
             height={400}
-            footer={<DmnRunnerWizardFooter onClose={onClose} steps={wizardSteps} setModalPage={setModalPage} />}
+            footer={
+              <KieToolingExtendedServicesWizardFooter
+                onClose={onClose}
+                steps={wizardSteps}
+                setModalPage={setModalPage}
+              />
+            }
           />
         </div>
       )}
@@ -806,7 +812,7 @@ interface WizardImperativeControlProps {
   setModalPage: React.Dispatch<ModalPage>;
 }
 
-function DmnRunnerWizardFooter(props: WizardImperativeControlProps) {
+function KieToolingExtendedServicesWizardFooter(props: WizardImperativeControlProps) {
   const wizardContext = useContext(WizardContext);
   const { status } = useKieToolingExtendedServices();
   const { i18n } = useOnlineI18n();
