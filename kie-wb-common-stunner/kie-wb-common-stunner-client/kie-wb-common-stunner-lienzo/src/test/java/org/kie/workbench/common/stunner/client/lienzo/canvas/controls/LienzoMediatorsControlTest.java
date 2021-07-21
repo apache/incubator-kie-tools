@@ -124,4 +124,14 @@ public class LienzoMediatorsControlTest {
         verify(mediators, times(1)).disable();
         verify(mediators, never()).enable();
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDestroy() {
+        ArgumentCaptor<Supplier> canvasSupplier = ArgumentCaptor.forClass(Supplier.class);
+        verify(mediators, times(1)).init(canvasSupplier.capture());
+        assertEquals(canvas, canvasSupplier.getValue().get());
+        tested.destroy();
+        verify(mediators, times(1)).destroy();
+    }
 }

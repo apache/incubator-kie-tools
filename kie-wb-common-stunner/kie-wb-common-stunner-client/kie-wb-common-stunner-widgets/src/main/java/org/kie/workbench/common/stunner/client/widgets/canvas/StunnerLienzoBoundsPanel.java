@@ -16,8 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.canvas;
 
-import java.util.OptionalInt;
-import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -29,9 +28,11 @@ import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.DomEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.EventListener;
+import jsinterop.base.Js;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseDownEvent;
@@ -40,7 +41,6 @@ import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyPressEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyUpEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegistrationImpl;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 @Dependent
@@ -48,14 +48,25 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 public class StunnerLienzoBoundsPanel
         implements LienzoPanel {
 
-    private final HandlerRegistrationImpl handlerRegistrationManager;
     private final Event<KeyPressEvent> keyPressEvent;
     private final Event<KeyDownEvent> keyDownEvent;
     private final Event<KeyUpEvent> keyUpEvent;
     private final Event<CanvasMouseDownEvent> mouseDownEvent;
     private final Event<CanvasMouseUpEvent> mouseUpEvent;
-    private BiFunction<OptionalInt, OptionalInt, LienzoBoundsPanel> panelBuilder;
+    private EventListener mouseDownEventListener;
+    private EventListener mouseUpEventListener;
+    private Supplier<LienzoBoundsPanel> panelBuilder;
     private LienzoBoundsPanel view;
+
+    private EventListener keyUpEventListener;
+    private EventListener keyDownEventListener;
+    private EventListener keyPressEventListener;
+
+    static final String ON_KEY_DOWN = "keydown";
+    static final String ON_KEY_UP = "keyup";
+    static final String ON_KEY_PRESS = "keypress";
+    static final String ON_MOUSE_DOWN = "mousedown";
+    static final String ON_MOUSE_UP = "mouseup";
 
     @Inject
     public StunnerLienzoBoundsPanel(final Event<KeyPressEvent> keyPressEvent,
@@ -63,59 +74,26 @@ public class StunnerLienzoBoundsPanel
                                     final Event<KeyUpEvent> keyUpEvent,
                                     final Event<CanvasMouseDownEvent> mouseDownEvent,
                                     final Event<CanvasMouseUpEvent> mouseUpEvent) {
-        this(keyPressEvent,
-             keyDownEvent,
-             keyUpEvent,
-             mouseDownEvent,
-             mouseUpEvent,
-             new HandlerRegistrationImpl());
-    }
-
-    StunnerLienzoBoundsPanel(final Event<KeyPressEvent> keyPressEvent,
-                             final Event<KeyDownEvent> keyDownEvent,
-                             final Event<KeyUpEvent> keyUpEvent,
-                             final Event<CanvasMouseDownEvent> mouseDownEvent,
-                             final Event<CanvasMouseUpEvent> mouseUpEvent,
-                             final HandlerRegistrationImpl registration) {
         this.keyPressEvent = keyPressEvent;
         this.keyDownEvent = keyDownEvent;
         this.keyUpEvent = keyUpEvent;
         this.mouseDownEvent = mouseDownEvent;
         this.mouseUpEvent = mouseUpEvent;
-        this.handlerRegistrationManager = registration;
     }
 
-    public StunnerLienzoBoundsPanel setPanelBuilder(final BiFunction<OptionalInt, OptionalInt, LienzoBoundsPanel> panelBuilder) {
+    public StunnerLienzoBoundsPanel setPanelBuilder(final Supplier<LienzoBoundsPanel> panelBuilder) {
         this.panelBuilder = panelBuilder;
         return this;
     }
 
     @Override
     public Widget asWidget() {
-        return view.asWidget();
+        return ElementWrapperWidget.getWidget(view.getElement());
     }
 
     @Override
     public LienzoPanel show(final LienzoLayer layer) {
-        return doShow(layer,
-                      OptionalInt.empty(),
-                      OptionalInt.empty());
-    }
-
-    @Override
-    public LienzoPanel show(final LienzoLayer layer,
-                            final int width,
-                            final int height) {
-        return doShow(layer,
-                      OptionalInt.of(width),
-                      OptionalInt.of(height));
-    }
-
-    private LienzoPanel doShow(final LienzoLayer layer,
-                               final OptionalInt width,
-                               final OptionalInt height) {
-        setView(panelBuilder.apply(width,
-                                   height));
+        setView(panelBuilder.get());
         view.add(layer.getLienzoLayer());
         initHandlers();
         if (view instanceof StunnerLienzoBoundsPanelView) {
@@ -128,22 +106,16 @@ public class StunnerLienzoBoundsPanel
         final NativeEvent blur = Document.get().createBlurEvent();
         for (int i = 0; i < RootPanel.get().getWidgetCount(); i++) {
             final Widget w = RootPanel.get().getWidget(i);
-            DomEvent.fireNativeEvent(blur,
-                                     w);
+            DomEvent.fireNativeEvent(blur, w);
         }
     }
 
-    public HandlerRegistration register(final HandlerRegistration handler) {
-        return handlerRegistrationManager.register(handler);
-    }
-
     private void initHandlers() {
-        register(
-                getLienzoPanel().addMouseDownHandler(mouseDownEvent -> onMouseDown())
-        );
-        register(
-                getLienzoPanel().addMouseUpHandler(mouseUpEvent -> onMouseUp())
-        );
+        mouseDownEventListener = e -> onMouseDown();
+        mouseUpEventListener = e -> onMouseUp();
+
+        getLienzoPanel().getElement().addEventListener(ON_MOUSE_DOWN, mouseDownEventListener);
+        getLienzoPanel().getElement().addEventListener(ON_MOUSE_UP, mouseUpEventListener);
     }
 
     private com.ait.lienzo.client.widget.panel.LienzoPanel getLienzoPanel() {
@@ -152,18 +124,19 @@ public class StunnerLienzoBoundsPanel
 
     @Override
     public LienzoPanel focus() {
-        view.setFocus(true);
+        // TODO: lienzo-to-native  check if it works
+        view.getElement().focus();
         return this;
     }
 
     @Override
     public int getWidthPx() {
-        return getLienzoPanel().getWidthPx();
+        return getLienzoPanel().getWidePx();
     }
 
     @Override
     public int getHeightPx() {
-        return getLienzoPanel().getHeightPx();
+        return getLienzoPanel().getHighPx();
     }
 
     @Override
@@ -172,20 +145,32 @@ public class StunnerLienzoBoundsPanel
     }
 
     @Override
-    public LienzoPanel setPixelSize(final int wide,
-                                    final int high) {
-        getLienzoPanel().setPixelSize(wide,
-                                      high);
-        return this;
-    }
-
-    @Override
     public void setBackgroundLayer(final Layer layer) {
         getLienzoPanel().setBackgroundLayer(layer);
     }
 
     public void destroy() {
-        handlerRegistrationManager.destroy();
+        if (null != mouseDownEventListener) {
+            getLienzoPanel().getElement().removeEventListener(ON_MOUSE_DOWN, mouseDownEventListener);
+            mouseDownEventListener = null;
+        }
+        if (null != mouseUpEventListener) {
+            getLienzoPanel().getElement().removeEventListener(ON_MOUSE_UP, mouseUpEventListener);
+            mouseUpEventListener = null;
+        }
+        if (null != keyUpEventListener) {
+            getLienzoPanel().getElement().removeEventListener(ON_KEY_UP, keyUpEventListener);
+            keyUpEventListener = null;
+        }
+        if (null != keyDownEventListener) {
+            getLienzoPanel().getElement().removeEventListener(ON_KEY_DOWN, keyDownEventListener);
+            keyDownEventListener = null;
+        }
+        if (null != keyPressEventListener) {
+            getLienzoPanel().getElement().removeEventListener(ON_KEY_PRESS, keyPressEventListener);
+            keyPressEventListener = null;
+        }
+
         view.destroy();
         panelBuilder = null;
         view = null;
@@ -211,35 +196,67 @@ public class StunnerLienzoBoundsPanel
         mouseUpEvent.fire(new CanvasMouseUpEvent());
     }
 
-    void onKeyPress(final int unicodeChar) {
-        final KeyboardEvent.Key key = getKey(unicodeChar);
+    void onKeyPress(final elemental2.dom.Event event) {
+        onKeyPress(Js.uncheckedCast(event));
+    }
+
+    void onKeyPress(final elemental2.dom.KeyboardEvent nativeKeyboardEvent) {
+        final KeyboardEvent.Key key = getKey(nativeKeyboardEvent.code);
         if (null != key) {
             keyPressEvent.fire(new KeyPressEvent(key));
         }
     }
 
-    void onKeyDown(final int unicodeChar) {
-        final KeyboardEvent.Key key = getKey(unicodeChar);
+    void onKeyDown(final elemental2.dom.Event event) {
+        onKeyDown(Js.uncheckedCast(event));
+    }
+
+    void onKeyDown(final elemental2.dom.KeyboardEvent nativeKeyboardEvent) {
+        final KeyboardEvent.Key key = getKey(nativeKeyboardEvent.code);
         if (null != key) {
             keyDownEvent.fire(new KeyDownEvent(key));
         }
     }
 
-    void onKeyUp(final int unicodeChar) {
-        final KeyboardEvent.Key key = getKey(unicodeChar);
+    void onKeyUp(final elemental2.dom.Event event) {
+        onKeyUp(Js.uncheckedCast(event));
+    }
+
+    void onKeyUp(final elemental2.dom.KeyboardEvent nativeKeyboardEvent) {
+        final KeyboardEvent.Key key = getKey(nativeKeyboardEvent.code);
         if (null != key) {
             keyUpEvent.fire(new KeyUpEvent(key));
         }
     }
 
-    private KeyboardEvent.Key getKey(final int unicodeChar) {
+    private KeyboardEvent.Key getKey(final String stringCode) {
         final KeyboardEvent.Key[] keys = KeyboardEvent.Key.values();
         for (final KeyboardEvent.Key key : keys) {
-            final int c = key.getUnicharCode();
-            if (c == unicodeChar) {
+            if (key.getStringCode().equals(stringCode)) {
                 return key;
             }
         }
         return null;
+    }
+
+    void addKeyDownHandler(final EventListener keyDownEventListener) {
+        if (null != keyDownEventListener) {
+            this.keyDownEventListener = keyDownEventListener;
+            getLienzoPanel().getElement().addEventListener(ON_KEY_DOWN, this.keyDownEventListener);
+        }
+    }
+
+    void addKeyPressHandler(final EventListener keyPressEventListener) {
+        if (null != keyPressEventListener) {
+            this.keyPressEventListener = keyPressEventListener;
+            getLienzoPanel().getElement().addEventListener(ON_KEY_PRESS, this.keyPressEventListener);
+        }
+    }
+
+    void addKeyUpHandler(final EventListener keyUpEventListener) {
+        if (null != keyUpEventListener) {
+            this.keyUpEventListener = keyUpEventListener;
+            getLienzoPanel().getElement().addEventListener(ON_KEY_UP, this.keyUpEventListener);
+        }
     }
 }

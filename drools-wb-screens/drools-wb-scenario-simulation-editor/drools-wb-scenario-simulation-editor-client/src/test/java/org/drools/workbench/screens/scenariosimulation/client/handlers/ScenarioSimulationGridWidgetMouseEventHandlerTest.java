@@ -22,8 +22,7 @@ import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.MouseEvent;
+import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,14 +52,6 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class ScenarioSimulationGridWidgetMouseEventHandlerTest extends AbstractScenarioSimulationGridHandlerTest {
 
-
-
-    @Mock
-    private MouseEvent nativeClickEvent;
-
-    @Mock
-    private DoubleClickEvent nativeDoubleClickEvent;
-
     @Mock
     private BaseGridRendererHelper rendererHelper;
 
@@ -74,7 +65,7 @@ public class ScenarioSimulationGridWidgetMouseEventHandlerTest extends AbstractS
     private BaseGridRendererHelper.RenderingBlockInformation renderingBlockInformation;
 
     @Mock
-    private GridCellEditAction gridCellEditActionMock;
+    private HTMLElement element;
 
     private NodeMouseClickEvent clickEvent;
 
@@ -90,8 +81,8 @@ public class ScenarioSimulationGridWidgetMouseEventHandlerTest extends AbstractS
     @SuppressWarnings("unchecked")
     public void setup() {
         super.setUp();
-        this.clickEvent = new NodeMouseClickEvent(nativeClickEvent);
-        this.doubleClickEvent = new NodeMouseDoubleClickEvent(nativeDoubleClickEvent);
+        this.clickEvent = new NodeMouseClickEvent(element);
+        this.doubleClickEvent = new NodeMouseDoubleClickEvent(element);
         when(scenarioGridMock.getRendererHelper()).thenReturn(rendererHelper);
         when(scenarioGridMock.getViewport()).thenReturn(viewportMock);
         when(scenarioGridMock.getComputedLocation()).thenReturn(computedLocation);

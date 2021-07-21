@@ -23,9 +23,9 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContainerUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -81,7 +81,7 @@ public abstract class BaseExpressionGridTest {
     protected TranslationService translationService;
 
     @Mock
-    protected BaseUIModelMapper mapper;
+    protected ExpressionContainerUIModelMapper mapper;
 
     @Mock
     protected Node gridParent;

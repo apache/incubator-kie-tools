@@ -89,17 +89,6 @@ public class DefaultDiagramViewer
     }
 
     @Override
-    public void open(final Diagram item,
-                     final int width,
-                     final int height,
-                     final DiagramViewerCallback<Diagram> callback) {
-        super.open(item,
-                   width,
-                   height,
-                   callback);
-    }
-
-    @Override
     protected void onOpen(final Diagram diagram) {
         final Annotation qualifier =
                 definitionUtils.getQualifier(diagram.getMetadata().getDefinitionSetId());

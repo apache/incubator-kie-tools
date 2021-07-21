@@ -80,7 +80,6 @@ public class LienzoShapeGlyphRendererTest {
         when(shapeFactory.newShape(eq(definition))).thenReturn(shape);
         when(boundingBoxProvider.apply(eq(view))).thenReturn(boundingBox);
         when(groupFunctionProvider.apply(eq(view))).thenReturn(group);
-        when(group.copy()).thenReturn(group);
         when(boundingBox.getX()).thenReturn(0d);
         when(boundingBox.getY()).thenReturn(0d);
         when(boundingBox.getWidth()).thenReturn(150d);

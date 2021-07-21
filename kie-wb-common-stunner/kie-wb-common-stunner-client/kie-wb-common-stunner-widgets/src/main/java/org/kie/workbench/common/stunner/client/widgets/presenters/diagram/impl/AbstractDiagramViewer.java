@@ -68,20 +68,6 @@ public abstract class AbstractDiagramViewer<D extends Diagram, H extends Abstrac
                   callback);
     }
 
-    @Override
-    public void open(final D diagram,
-                     final int width,
-                     final int height,
-                     final DiagramViewerCallback<D> callback) {
-        final StunnerDiagramEditorPreferences editorPreferences = getPreferences(diagram);
-        final boolean isHiDPIEnabled = null != editorPreferences && editorPreferences.isHiDPIEnabled();
-        final CanvasSettings settings = new CanvasSettings(width, height,
-                                                           isHiDPIEnabled);
-        this.open(diagram,
-                  settings,
-                  callback);
-    }
-
     protected void open(final D diagram,
                         final CanvasSettings settings,
                         final DiagramViewerCallback<D> callback) {

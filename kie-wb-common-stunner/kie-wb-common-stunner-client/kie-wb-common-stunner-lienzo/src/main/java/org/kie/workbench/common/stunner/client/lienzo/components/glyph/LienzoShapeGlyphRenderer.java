@@ -84,11 +84,9 @@ public class LienzoShapeGlyphRenderer implements LienzoGlyphRenderer<ShapeGlyph>
 
         if (view instanceof HasTitle) {
             final HasTitle hasTitle = (HasTitle) view;
-            hasTitle.setTitle(null);
+            hasTitle.setTitle("");
         }
 
-        // Create a copy of this view.
-        group = group.copy();
         // Scale, if necessary, to the given glyph size.
         final double[] scale = LienzoShapeUtils.getScaleFactor(bb.getWidth(),
                                                                bb.getHeight(),

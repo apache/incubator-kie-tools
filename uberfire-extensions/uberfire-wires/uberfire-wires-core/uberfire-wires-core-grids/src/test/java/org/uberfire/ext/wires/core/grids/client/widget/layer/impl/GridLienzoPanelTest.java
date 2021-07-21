@@ -17,20 +17,19 @@
 package org.uberfire.ext.wires.core.grids.client.widget.layer.impl;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.INativeContext2D;
+import com.ait.lienzo.client.core.NativeContext2D;
 import com.ait.lienzo.client.core.shape.Node;
-import com.ait.lienzo.client.widget.LienzoPanel;
+import com.ait.lienzo.client.widget.panel.impl.LienzoFixedPanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.CanvasElement;
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import elemental2.dom.HTMLCanvasElement;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,19 +76,7 @@ public class GridLienzoPanelTest {
     private GridLienzoScrollHandler gridLienzoScrollHandler;
 
     @Mock
-    private LienzoPanel lienzoPanel;
-
-    @Mock
     private DefaultGridLayer gridLayer;
-
-    @Mock
-    private DivElement gridLayerDivElement;
-
-    @Mock
-    private Style gridLayerDivElementStyle;
-
-    @Mock
-    private CanvasElement gridLayerCanvasElement;
 
     @Mock
     private Node gridLayerNode;
@@ -98,15 +85,17 @@ public class GridLienzoPanelTest {
     private Context2D context2D;
 
     @Mock
-    private INativeContext2D nativeContext2D;
+    private NativeContext2D nativeContext2D;
 
     private GridLienzoPanel gridLienzoPanel;
+
+    private LienzoFixedPanel lienzoPanel;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() {
-
-        gridLienzoPanel = spy(new GridLienzoPanel());
+        lienzoPanel = spy(LienzoFixedPanel.newPanel());
+        gridLienzoPanel = spy(new GridLienzoPanel(lienzoPanel));
 
         when(gridLienzoPanel.getRootPanel()).thenReturn(rootPanel);
         when(gridLienzoPanel.getScrollPanel()).thenReturn(scrollPanel);
@@ -115,9 +104,8 @@ public class GridLienzoPanelTest {
         when(gridLienzoPanel.getLienzoPanel()).thenReturn(lienzoPanel);
         when(gridLienzoPanel.getGridLienzoScrollHandler()).thenReturn(gridLienzoScrollHandler);
 
-        when(gridLayer.getElement()).thenReturn(gridLayerDivElement);
-        when(gridLayerDivElement.getStyle()).thenReturn(gridLayerDivElementStyle);
-        when(gridLayer.getCanvasElement()).thenReturn(gridLayerCanvasElement);
+        when(gridLayer.getElement()).thenReturn(new HTMLDivElement());
+        when(gridLayer.getCanvasElement()).thenReturn(new HTMLCanvasElement());
         when(gridLayer.getContext()).thenReturn(context2D);
         when(gridLayer.asNode()).thenReturn(gridLayerNode);
         when(context2D.getNativeContext()).thenReturn(nativeContext2D);
@@ -146,14 +134,6 @@ public class GridLienzoPanelTest {
         gridLienzoPanel.setupScrollPanel();
 
         verify(scrollPanel).add(internalScrollPanel);
-    }
-
-    @Test
-    public void testSetupDomElementContainer() {
-
-        gridLienzoPanel.setupDomElementContainer();
-
-        verify(domElementContainer).add(lienzoPanel);
     }
 
     @Test
@@ -233,10 +213,8 @@ public class GridLienzoPanelTest {
 
         verify(domElementContainer).setPixelSize(width - scrollWidth,
                                                  height - scrollHeight);
-        verify(lienzoPanel).setPixelSize(width - scrollWidth,
-                                         height - scrollHeight);
-        verify(scrollPanel).setPixelSize(width,
-                                         height);
+        verify(scrollPanel).setPixelSize(width, height);
+        verify(lienzoPanel).setPixelSize(width - scrollWidth, height - scrollHeight);
     }
 
     @Test
@@ -257,9 +235,7 @@ public class GridLienzoPanelTest {
         verify(domElementContainer,
                never()).setPixelSize(anyInt(),
                                      anyInt());
-        verify(lienzoPanel,
-               never()).setPixelSize(anyInt(),
-                                     anyInt());
+        verify(lienzoPanel, never()).setPixelSize(anyInt(), anyInt());
         verify(scrollPanel,
                never()).setPixelSize(anyInt(),
                                      anyInt());

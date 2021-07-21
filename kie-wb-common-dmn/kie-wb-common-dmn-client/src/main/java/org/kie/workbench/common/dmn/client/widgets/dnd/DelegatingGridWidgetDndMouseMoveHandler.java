@@ -44,7 +44,7 @@ public class DelegatingGridWidgetDndMouseMoveHandler extends GridWidgetDnDMouseM
             final HasRowDragRestrictions hasRowDragRestrictions = (HasRowDragRestrictions) view;
             if (!hasRowDragRestrictions.isRowDragPermitted(state)) {
                 state.reset();
-                layer.getViewport().getElement().getStyle().setCursor(state.getCursor());
+                layer.getViewport().getElement().style.cursor = state.getCursor().getCssName();
             }
         }
     }

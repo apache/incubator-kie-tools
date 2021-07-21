@@ -72,9 +72,9 @@ public class GridWidgetScrollIntoViewAnimation extends TimedAnimation {
                       transform.reset();
 
                       final Point2D frameLocation = startTranslation.add(delta.mul(pct));
-                      transform.scale(scaleX,
-                                      scaleY).translate(frameLocation.getX(),
-                                                        frameLocation.getY());
+                      transform.scaleWithXY(scaleX,
+                                            scaleY).translate(frameLocation.getX(),
+                                                              frameLocation.getY());
 
                       gridWidget.getLayer().batch();
                   }

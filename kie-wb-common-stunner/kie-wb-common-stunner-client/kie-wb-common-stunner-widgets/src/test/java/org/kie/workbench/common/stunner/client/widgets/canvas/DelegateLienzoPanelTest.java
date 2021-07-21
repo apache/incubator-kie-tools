@@ -59,21 +59,6 @@ public class DelegateLienzoPanelTest {
     }
 
     @Test
-    public void testShowSize() {
-        LienzoLayer layer = mock(LienzoLayer.class);
-        tested.show(layer,
-                    100,
-                    200);
-        verify(delegate, times(1)).show(eq(layer), eq(100), eq(200));
-    }
-
-    @Test
-    public void testSetPixelSize() {
-        tested.setPixelSize(100, 200);
-        verify(delegate, times(1)).setPixelSize(eq(100), eq(200));
-    }
-
-    @Test
     public void testSetBackgroundLayer() {
         Layer layer = mock(Layer.class);
         tested.setBackgroundLayer(layer);

@@ -459,9 +459,9 @@ public class ColumnRenderingStrategyMergedTest {
                                         2,
                                         0);
 
-        verify(boundingBoxPathClipperFactory).newClipper(0,
+        verify(boundingBoxPathClipperFactory).newClipper(1,
                                                          0,
-                                                         COLUMN_WIDTH,
+                                                         COLUMN_WIDTH - 1,
                                                          ROW_HEIGHT * 3);
         verify(pathClipper).setActive(true);
 
@@ -543,9 +543,9 @@ public class ColumnRenderingStrategyMergedTest {
                                         0,
                                         0);
 
-        verify(boundingBoxPathClipperFactory).newClipper(0,
+        verify(boundingBoxPathClipperFactory).newClipper(1,
                                                          0,
-                                                         COLUMN_WIDTH,
+                                                         COLUMN_WIDTH - 1,
                                                          ROW_HEIGHT * 3);
         verify(pathClipper).setActive(true);
 

@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.views;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.EventListener;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +29,7 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.any;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -46,30 +48,32 @@ public class LienzoCanvasNotificationTest {
     @Mock
     private LienzoBoundsPanel panelView;
 
+    @Mock
+    private HTMLDivElement htmlDivElement;
+
     private LienzoCanvasNotification tested;
 
     @Before
     public void setup() {
         when(panel.getView()).thenReturn(panelView);
         tested = new LienzoCanvasNotification(view);
+        when(panelView.getElement()).thenReturn(htmlDivElement);
     }
 
     @Test
     public void testInit() {
         tested.init(() -> panel);
-        verify(panelView, times(1)).addMouseOutHandler(any(MouseOutHandler.class));
+        verify(htmlDivElement, times(1)).addEventListener(any(), any(EventListener.class));
     }
 
     @Test
     public void testShow() {
         when(panel.getWidthPx()).thenReturn(1200);
         when(panel.getHeightPx()).thenReturn(600);
-        when(panelView.getAbsoluteLeft()).thenReturn(5);
-        when(panelView.getAbsoluteTop()).thenReturn(10);
         tested.init(() -> panel);
         tested.show("some text");
         verify(view, times(1)).setText(eq("some text"));
-        verify(view, times(1)).at(560d, 60d);
+        verify(view, times(1)).at(555d, 50d);
         verify(view, times(1)).show();
     }
 
@@ -82,11 +86,26 @@ public class LienzoCanvasNotificationTest {
 
     @Test
     public void testDestroy() {
-        HandlerRegistration r = mock(HandlerRegistration.class);
-        tested.outHandler = r;
+        Supplier<LienzoPanel> panelSupplier = mock(Supplier.class);
+        when(panelSupplier.get()).thenReturn(panel);
+        tested.panel = panelSupplier;
+        EventListener e = mock(EventListener.class);
+        tested.mouseLeaveEventListener = e;
         tested.destroy();
-        verify(r, times(1)).removeHandler();
-        assertNull(tested.outHandler);
+        verify(htmlDivElement, times(1)).removeEventListener(any(), eq(e));
+        assertNull(tested.mouseLeaveEventListener);
+        assertNull(tested.panel);
+    }
+
+    @Test
+    public void testDestroyEventListenerNull() {
+        Supplier<LienzoPanel> panelSupplier = mock(Supplier.class);
+        when(panelSupplier.get()).thenReturn(panel);
+        tested.panel = panelSupplier;
+        tested.mouseLeaveEventListener = null;
+        tested.destroy();
+        verify(htmlDivElement, times(0)).removeEventListener(any(), any());
+        assertNull(tested.mouseLeaveEventListener);
         assertNull(tested.panel);
     }
 }

@@ -31,7 +31,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresBoundsConstraintControl;
 import com.ait.lienzo.client.core.types.Shadow;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresLayoutContainerNoTextBoundingBox;
@@ -81,12 +81,13 @@ public class WiresShapeView<T>
 
     @Override
     public double getShapeX() {
-        return getContainer().getAttributes().getX();
+
+        return getX();
     }
 
     @Override
     public double getShapeY() {
-        return getContainer().getAttributes().getY();
+        return getY();
     }
 
     @Override
@@ -99,12 +100,12 @@ public class WiresShapeView<T>
 
     @Override
     public double getAlpha() {
-        return getContainer().getAttributes().getAlpha();
+        return getGroup().getAlpha();
     }
 
     @Override
     public T setAlpha(final double alpha) {
-        getContainer().getAttributes().setAlpha(alpha);
+        getGroup().setAlpha(alpha);
         return cast();
     }
 

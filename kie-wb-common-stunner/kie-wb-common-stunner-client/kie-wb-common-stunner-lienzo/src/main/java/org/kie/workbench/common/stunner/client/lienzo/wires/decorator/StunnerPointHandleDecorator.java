@@ -34,19 +34,19 @@ public class StunnerPointHandleDecorator extends PointHandleDecorator {
             case NONE:
             case VALID:
                 shape.setFillColor(MAIN_COLOR)
-                        .setFillAlpha(0.8)
-                        .setStrokeAlpha(1)
                         .setShadow(SHADOW_SELECTED)
                         .setStrokeWidth(2)
-                        .setStrokeColor(STROKE_COLOR);
+                        .setStrokeColor(STROKE_COLOR)
+                        .setFillAlpha(0.8)
+                        .setStrokeAlpha(1);
                 break;
             case INVALID:
                 shape.setFillColor(ColorName.WHITE)
-                        .setFillAlpha(1)
                         .setShadow(SHADOW_SELECTED)
-                        .setStrokeAlpha(1)
                         .setStrokeWidth(2)
-                        .setStrokeColor(MAIN_COLOR);
+                        .setStrokeColor(MAIN_COLOR)
+                        .setFillAlpha(1)
+                        .setStrokeAlpha(1);
                 break;
         }
         return shape;

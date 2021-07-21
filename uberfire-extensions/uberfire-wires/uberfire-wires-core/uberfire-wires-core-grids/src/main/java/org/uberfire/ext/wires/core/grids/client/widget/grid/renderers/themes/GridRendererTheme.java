@@ -130,7 +130,8 @@ public interface GridRendererTheme {
                 .setTextUnit(TextUnit.PT)
                 .setListening(false)
                 .setTextBaseLine(TextBaseLine.MIDDLE)
-                .setTextAlign(TextAlign.CENTER);
+                .setTextAlign(TextAlign.CENTER)
+                .setStrokeWidth(0);
     }
 
     /**

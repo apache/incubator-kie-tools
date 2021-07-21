@@ -29,6 +29,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.spy;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class StunnerBoundsProviderFactoryTest {
@@ -42,10 +44,12 @@ public class StunnerBoundsProviderFactoryTest {
     public void init() {
         layer = new Layer();
         wiresLayer = new WiresLayer(layer);
-        shape1 = new WiresShape(new MultiPath().circle(50))
-                .setLocation(new Point2D(100, 33));
-        shape2 = new WiresShape(new MultiPath().circle(230))
-                .setLocation(new Point2D(15, 120));
+        shape1 = spy(new WiresShape(new MultiPath().circle(50))
+                .setLocation(new Point2D(100, 33)));
+        shape2 = spy(new WiresShape(new MultiPath().circle(230))
+                .setLocation(new Point2D(15, 120)));
+        doNothing().when(shape1).shapeMoved();
+        doNothing().when(shape2).shapeMoved();
         wiresLayer.add(shape1);
         wiresLayer.add(shape2);
     }

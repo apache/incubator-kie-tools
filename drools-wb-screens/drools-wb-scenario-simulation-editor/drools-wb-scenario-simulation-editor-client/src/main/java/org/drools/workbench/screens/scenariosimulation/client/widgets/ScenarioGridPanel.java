@@ -48,6 +48,7 @@ public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHa
     protected ScenarioSimulationGridPanelClickHandler clickHandler;
     protected ScenarioSimulationGridPanelMouseMoveHandler mouseMoveHandler;
     protected Set<HandlerRegistration> handlerRegistrations = new HashSet<>();
+    protected Set<com.ait.lienzo.tools.client.event.HandlerRegistration> lienzoHandlerRegistrations = new HashSet<>();
 
     public void addHandlers(final ScenarioSimulationGridPanelClickHandler clickHandler,
                             final ScenarioSimulationGridPanelMouseMoveHandler mouseMoveHandler) {
@@ -58,10 +59,12 @@ public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHa
                                                                         ContextMenuEvent.getType()));
         handlerRegistrations.add(getDomElementContainer().addDomHandler(clickHandler,
                                                                         ClickEvent.getType()));
-        handlerRegistrations.add(getScenarioGridLayer().addNodeMouseOutHandler(this));
-        handlerRegistrations.add(getScenarioGridLayer().addNodeMouseMoveHandler(mouseMoveHandler));
-        handlerRegistrations.add(getScenarioGridLayer().addNodeMouseWheelHandler(this));
         handlerRegistrations.add(getScrollPanel().addDomHandler(this, ScrollEvent.getType()));
+
+        // Lienzo handlers
+        lienzoHandlerRegistrations.add(getScenarioGridLayer().addNodeMouseOutHandler(this));
+        lienzoHandlerRegistrations.add(getScenarioGridLayer().addNodeMouseMoveHandler(mouseMoveHandler));
+        lienzoHandlerRegistrations.add(getScenarioGridLayer().addNodeMouseWheelHandler(this));
     }
 
     public ScenarioGridLayer getScenarioGridLayer() {
@@ -106,6 +109,7 @@ public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHa
     @Override
     public void onResize() {
         super.onResize();
+        getScenarioGridLayer().batch();
         clickHandler.hideMenus();
         mouseMoveHandler.hidePopover();
     }
@@ -113,6 +117,8 @@ public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHa
     public void unregister() {
         handlerRegistrations.forEach(HandlerRegistration::removeHandler);
         handlerRegistrations.clear();
+        lienzoHandlerRegistrations.forEach(com.ait.lienzo.tools.client.event.HandlerRegistration::removeHandler);
+        lienzoHandlerRegistrations.clear();
     }
 
     public void synchronizeFactMappingsWidths() {

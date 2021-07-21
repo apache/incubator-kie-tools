@@ -38,7 +38,7 @@ import com.ait.lienzo.client.core.shape.wires.layout.size.SizeConstraints;
 import com.ait.lienzo.client.core.shape.wires.layout.size.SizeConstraints.Type;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.TextAlign;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
 import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -49,6 +49,9 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitEve
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 import org.kie.workbench.common.stunner.core.graph.util.Exceptions;
+
+import static org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager.getClientX;
+import static org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager.getClientY;
 
 /**
  * A helper class for handling the wires shapes' text primitive
@@ -135,8 +138,8 @@ public class WiresTextDecorator implements HasTitle<WiresTextDecorator> {
                 eventHandlerManager.get().skipClickHandler();
                 final TextClickEvent e = new TextClickEvent(event.getX(),
                                                             event.getY(),
-                                                            event.getMouseEvent().getClientX(),
-                                                            event.getMouseEvent().getClientY());
+                                                            getClientX(event),
+                                                            getClientY(event));
                 textClickEventViewHandler.handle(e);
                 eventHandlerManager.get().restoreClickHandler();
             }
@@ -151,8 +154,8 @@ public class WiresTextDecorator implements HasTitle<WiresTextDecorator> {
                 eventHandlerManager.get().skipClickHandler();
                 final TextDoubleClickEvent e = new TextDoubleClickEvent(event.getX(),
                                                                         event.getY(),
-                                                                        event.getMouseEvent().getClientX(),
-                                                                        event.getMouseEvent().getClientY());
+                                                                        getClientX(event),
+                                                                        getClientY(event));
                 textDblClickEventViewHandler.handle(e);
                 eventHandlerManager.get().restoreClickHandler();
             }
@@ -166,8 +169,8 @@ public class WiresTextDecorator implements HasTitle<WiresTextDecorator> {
             if (null != textOverHandlerViewHandler && hasText()) {
                 final TextEnterEvent textOverEvent = new TextEnterEvent(event.getX(),
                                                                         event.getY(),
-                                                                        event.getMouseEvent().getClientX(),
-                                                                        event.getMouseEvent().getClientY());
+                                                                        getClientX(event),
+                                                                        getClientY(event));
                 textOverHandlerViewHandler.handle(textOverEvent);
             }
         });
@@ -180,8 +183,8 @@ public class WiresTextDecorator implements HasTitle<WiresTextDecorator> {
             if (null != textOutEventViewHandler && hasText()) {
                 final TextExitEvent textOutEvent = new TextExitEvent(event.getX(),
                                                                      event.getY(),
-                                                                     event.getMouseEvent().getClientX(),
-                                                                     event.getMouseEvent().getClientY());
+                                                                     getClientX(event),
+                                                                     getClientY(event));
                 textOutEventViewHandler.handle(textOutEvent);
             }
         });
@@ -326,7 +329,7 @@ public class WiresTextDecorator implements HasTitle<WiresTextDecorator> {
 
     @Override
     public void setTextBoundaries(final double width, final double height) {
-        setTextBoundaries(new BoundingBox(0, 0, width, height));
+        setTextBoundaries(BoundingBox.fromDoubles(0, 0, width, height));
     }
 
     ITextWrapper getTextWrapper(final TextWrapperStrategy strategy) {

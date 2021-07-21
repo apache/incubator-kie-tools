@@ -18,13 +18,12 @@ package org.kie.workbench.common.dmn.client.shape.view.decisionservice;
 import java.util.Collections;
 import java.util.stream.StreamSupport;
 
-import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.event.NodeDragStartEvent;
-import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Node;
+import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
@@ -32,7 +31,8 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.event.shared.HandlerManager;
+import com.ait.lienzo.tools.client.event.HandlerManager;
+import elemental2.dom.HTMLElement;
 import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +48,8 @@ import org.mockito.Mock;
 import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.RESIZE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -61,11 +63,7 @@ public class DecisionServiceSVGShapeViewTest {
     @Mock
     private SVGPrimitiveShape svgPrimitive;
 
-    @Mock
-    private Shape shape;
-
-    @Mock
-    private Attributes attributes;
+    private Rectangle shape;
 
     @Mock
     private Node shapeNode;
@@ -87,15 +85,16 @@ public class DecisionServiceSVGShapeViewTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        when(svgPrimitive.get()).thenReturn(shape);
-        when(shape.getAttributes()).thenReturn(attributes);
+        shape = spy(new Rectangle(WIDTH, HEIGHT));
+        when(svgPrimitive.get()).thenReturn((Shape) shape);
         when(shape.asNode()).thenReturn(shapeNode);
-        when(attributes.getDouble(Attribute.WIDTH.getProperty())).thenReturn(WIDTH);
-        when(attributes.getDouble(Attribute.HEIGHT.getProperty())).thenReturn(HEIGHT);
 
-        this.nodeDragStartEvent = new NodeDragStartEvent(dragContext);
-        this.nodeDragMoveEvent = new NodeDragMoveEvent(dragContext);
-        this.nodeDragEndEvent = new NodeDragEndEvent(dragContext);
+        this.nodeDragStartEvent = spy(new NodeDragStartEvent(mock(HTMLElement.class)));
+        when(this.nodeDragStartEvent.getDragContext()).thenReturn(dragContext);
+        this.nodeDragMoveEvent = spy(new NodeDragMoveEvent(mock(HTMLElement.class)));
+        when(this.nodeDragMoveEvent.getDragContext()).thenReturn(dragContext);
+        this.nodeDragEndEvent = spy(new NodeDragEndEvent(mock(HTMLElement.class)));
+        when(this.nodeDragEndEvent.getDragContext()).thenReturn(dragContext);
 
         this.view = new DecisionServiceSVGShapeView("name",
                                                     svgPrimitive,
@@ -129,7 +128,9 @@ public class DecisionServiceSVGShapeViewTest {
 
     @Test
     public void testResize() {
-        view.getHandlerManager().fireEvent(new WiresResizeStepEvent(view, nodeDragMoveEvent, 0, 0, WIDTH, HEIGHT));
+        WiresResizeStepEvent wiresResizeStepEvent = new WiresResizeStepEvent(mock(HTMLElement.class));
+        wiresResizeStepEvent.override(view, nodeDragMoveEvent, 0, 0, WIDTH, HEIGHT);
+        view.getHandlerManager().fireEvent(wiresResizeStepEvent);
 
         assertThat(getMoveDividerControlHandle().getControl().getX()).isEqualTo(WIDTH / 2);
     }
@@ -148,16 +149,19 @@ public class DecisionServiceSVGShapeViewTest {
         assertThat(handlerManager.getHandlerCount(MoveDividerStepEvent.TYPE)).isEqualTo(1);
         assertThat(handlerManager.getHandlerCount(MoveDividerEndEvent.TYPE)).isEqualTo(1);
 
-        handlerManager.getHandler(MoveDividerStartEvent.TYPE, 0).onMoveDividerStart(new MoveDividerStartEvent(view,
-                                                                                                              nodeDragStartEvent));
+        MoveDividerStartEvent moveDividerStartEvent = new MoveDividerStartEvent(mock(HTMLElement.class));
+        moveDividerStartEvent.override(view, nodeDragStartEvent);
+        handlerManager.getHandler(MoveDividerStartEvent.TYPE, 0).onMoveDividerStart(moveDividerStartEvent);
         verify(dragHandler).start(any(DragEvent.class));
 
-        handlerManager.getHandler(MoveDividerStepEvent.TYPE, 0).onMoveDividerStep(new MoveDividerStepEvent(view,
-                                                                                                           nodeDragMoveEvent));
+        MoveDividerStepEvent moveDividerStepEvent = new MoveDividerStepEvent(mock(HTMLElement.class));
+        moveDividerStepEvent.override(view, nodeDragMoveEvent);
+        handlerManager.getHandler(MoveDividerStepEvent.TYPE, 0).onMoveDividerStep(moveDividerStepEvent);
         verify(dragHandler).handle(any(DragEvent.class));
 
-        handlerManager.getHandler(MoveDividerEndEvent.TYPE, 0).onMoveDividerEnd(new MoveDividerEndEvent(view,
-                                                                                                        nodeDragEndEvent));
+        MoveDividerEndEvent moveDividerEndEvent = new MoveDividerEndEvent(mock(HTMLElement.class));
+        moveDividerEndEvent.override(view, nodeDragEndEvent);
+        handlerManager.getHandler(MoveDividerEndEvent.TYPE, 0).onMoveDividerEnd(moveDividerEndEvent);
         verify(dragHandler).end(any(DragEvent.class));
     }
 
@@ -185,22 +189,6 @@ public class DecisionServiceSVGShapeViewTest {
         assertThat(controlHandles.size()).isGreaterThan(0);
         assertThat(controlHandles).areExactly(1, new Condition<>(ch -> ch instanceof MoveDividerControlHandle,
                                                                  "Is a MoveDividerControlHandle"));
-    }
-
-    @Test
-    public void testShapeControlResizeHandlerMoveDividerEvents() {
-        final MoveDividerControlHandle moveDividerControlHandle = getMoveDividerControlHandle();
-
-        view.addDividerDragHandler(dragHandler);
-
-        moveDividerControlHandle.getControl().fireEvent(nodeDragStartEvent);
-        verify(dragHandler).start(any(DragEvent.class));
-
-        moveDividerControlHandle.getControl().fireEvent(nodeDragMoveEvent);
-        verify(dragHandler).handle(any(DragEvent.class));
-
-        moveDividerControlHandle.getControl().fireEvent(nodeDragEndEvent);
-        verify(dragHandler).end(any(DragEvent.class));
     }
 
     @Test

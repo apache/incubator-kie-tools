@@ -38,7 +38,6 @@ import org.uberfire.stubs.ManagedInstanceStub;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -114,10 +113,7 @@ public class DiagramEditorExplorerScreenTest {
     public void testShow() {
         tested.show(session);
         verify(sessionPreview,
-               times(1)).open(eq(session),
-                              anyInt(),
-                              anyInt(),
-                              any(SessionViewer.SessionViewerCallback.class));
+               times(1)).open(eq(session), any(SessionViewer.SessionViewerCallback.class));
         verify(treeExplorer,
                times(1)).show(eq(canvasHandler));
         verify(treeExplorer,

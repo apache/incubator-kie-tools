@@ -27,8 +27,8 @@ import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.event.dom.client.MouseEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
+import elemental2.dom.MouseEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -121,9 +121,7 @@ public class ViewEventHandlerManagerTest {
         assertFalse(tested.supports(ViewEventType.DRAG));
         assertFalse(tested.supports(ViewEventType.MOUSE_EXIT));
         assertFalse(tested.supports(ViewEventType.MOUSE_MOVE));
-        assertFalse(tested.supports(ViewEventType.GESTURE));
         assertFalse(tested.supports(ViewEventType.RESIZE));
-        assertFalse(tested.supports(ViewEventType.TOUCH));
     }
 
     @Test
@@ -151,9 +149,10 @@ public class ViewEventHandlerManagerTest {
         when(clickEvent.isShiftKeyDown()).thenReturn(true);
         when(clickEvent.isAltKeyDown()).thenReturn(true);
         when(clickEvent.isMetaKeyDown()).thenReturn(true);
-        when(clickEvent.getMouseEvent()).thenReturn(mouseEvent);
-        when(mouseEvent.getClientX()).thenReturn(x);
-        when(mouseEvent.getClientY()).thenReturn(y);
+        when(clickEvent.getNativeEvent()).thenReturn(mouseEvent);
+        mouseEvent.clientX = x;
+        mouseEvent.clientY = y;
+
         nodeCLickHandler.onNodeMouseClick(clickEvent);
         final ArgumentCaptor<ViewEvent> eventArgumentCaptor =
                 ArgumentCaptor.forClass(ViewEvent.class);
@@ -178,7 +177,7 @@ public class ViewEventHandlerManagerTest {
         assertTrue(viewEvent.isAltKeyDown());
         assertTrue(viewEvent.isMetaKeyDown());
         assertTrue(viewEvent.isShiftKeyDown());
-        assertNotNull(tested.getRegistrationMap().get(ViewEventType.MOUSE_CLICK));
+        assertNotNull(tested.getRegistrationsByType().get(ViewEventType.MOUSE_CLICK));
     }
 
     @Test
@@ -206,9 +205,9 @@ public class ViewEventHandlerManagerTest {
         when(clickEvent.isShiftKeyDown()).thenReturn(true);
         when(clickEvent.isAltKeyDown()).thenReturn(true);
         when(clickEvent.isMetaKeyDown()).thenReturn(true);
-        when(clickEvent.getMouseEvent()).thenReturn(mouseEvent);
-        when(mouseEvent.getClientX()).thenReturn(x);
-        when(mouseEvent.getClientY()).thenReturn(y);
+        when(clickEvent.getNativeEvent()).thenReturn(mouseEvent);
+        mouseEvent.clientX = x;
+        mouseEvent.clientY = y;
         nodeCLickHandler.onNodeMouseDoubleClick(clickEvent);
         final ArgumentCaptor<ViewEvent> eventArgumentCaptor =
                 ArgumentCaptor.forClass(ViewEvent.class);
@@ -233,7 +232,7 @@ public class ViewEventHandlerManagerTest {
         assertTrue(viewEvent.isAltKeyDown());
         assertTrue(viewEvent.isMetaKeyDown());
         assertTrue(viewEvent.isShiftKeyDown());
-        assertNotNull(tested.getRegistrationMap().get(ViewEventType.MOUSE_DBL_CLICK));
+        assertNotNull(tested.getRegistrationsByType().get(ViewEventType.MOUSE_DBL_CLICK));
     }
 
     @Test
@@ -258,9 +257,9 @@ public class ViewEventHandlerManagerTest {
         when(clickEvent.isShiftKeyDown()).thenReturn(true);
         when(clickEvent.isAltKeyDown()).thenReturn(true);
         when(clickEvent.isMetaKeyDown()).thenReturn(true);
-        when(clickEvent.getMouseEvent()).thenReturn(mouseEvent);
-        when(mouseEvent.getClientX()).thenReturn(x);
-        when(mouseEvent.getClientY()).thenReturn(y);
+        when(clickEvent.getNativeEvent()).thenReturn(mouseEvent);
+        mouseEvent.clientX = x;
+        mouseEvent.clientY = y;
         nodeCLickHandler.onNodeMouseDoubleClick(clickEvent);
         final ArgumentCaptor<ViewEvent> eventArgumentCaptor =
                 ArgumentCaptor.forClass(ViewEvent.class);
@@ -282,7 +281,7 @@ public class ViewEventHandlerManagerTest {
         assertTrue(viewEvent.isAltKeyDown());
         assertTrue(viewEvent.isMetaKeyDown());
         assertTrue(viewEvent.isShiftKeyDown());
-        assertNotNull(tested.getRegistrationMap().get(ViewEventType.TEXT_DBL_CLICK));
+        assertNotNull(tested.getRegistrationsByType().get(ViewEventType.TEXT_DBL_CLICK));
     }
 
     @Test
@@ -307,9 +306,9 @@ public class ViewEventHandlerManagerTest {
         when(clickEvent.isShiftKeyDown()).thenReturn(true);
         when(clickEvent.isAltKeyDown()).thenReturn(true);
         when(clickEvent.isMetaKeyDown()).thenReturn(true);
-        when(clickEvent.getMouseEvent()).thenReturn(mouseEvent);
-        when(mouseEvent.getClientX()).thenReturn(x);
-        when(mouseEvent.getClientY()).thenReturn(y);
+        when(clickEvent.getNativeEvent()).thenReturn(mouseEvent);
+        mouseEvent.clientX = x;
+        mouseEvent.clientY = y;
         nodeCLickHandler.onNodeMouseEnter(clickEvent);
         final ArgumentCaptor<ViewEvent> eventArgumentCaptor =
                 ArgumentCaptor.forClass(ViewEvent.class);
@@ -331,7 +330,7 @@ public class ViewEventHandlerManagerTest {
         assertTrue(viewEvent.isAltKeyDown());
         assertTrue(viewEvent.isMetaKeyDown());
         assertTrue(viewEvent.isShiftKeyDown());
-        assertNotNull(tested.getRegistrationMap().get(ViewEventType.MOUSE_ENTER));
+        assertNotNull(tested.getRegistrationsByType().get(ViewEventType.MOUSE_ENTER));
     }
 
     @Test
@@ -356,9 +355,9 @@ public class ViewEventHandlerManagerTest {
         when(clickEvent.isShiftKeyDown()).thenReturn(true);
         when(clickEvent.isAltKeyDown()).thenReturn(true);
         when(clickEvent.isMetaKeyDown()).thenReturn(true);
-        when(clickEvent.getMouseEvent()).thenReturn(mouseEvent);
-        when(mouseEvent.getClientX()).thenReturn(x);
-        when(mouseEvent.getClientY()).thenReturn(y);
+        when(clickEvent.getNativeEvent()).thenReturn(mouseEvent);
+        mouseEvent.clientX = x;
+        mouseEvent.clientY = y;
         nodeCLickHandler.onNodeMouseExit(clickEvent);
         final ArgumentCaptor<ViewEvent> eventArgumentCaptor =
                 ArgumentCaptor.forClass(ViewEvent.class);
@@ -380,6 +379,6 @@ public class ViewEventHandlerManagerTest {
         assertTrue(viewEvent.isAltKeyDown());
         assertTrue(viewEvent.isMetaKeyDown());
         assertTrue(viewEvent.isShiftKeyDown());
-        assertNotNull(tested.getRegistrationMap().get(ViewEventType.MOUSE_EXIT));
+        assertNotNull(tested.getRegistrationsByType().get(ViewEventType.MOUSE_EXIT));
     }
 }

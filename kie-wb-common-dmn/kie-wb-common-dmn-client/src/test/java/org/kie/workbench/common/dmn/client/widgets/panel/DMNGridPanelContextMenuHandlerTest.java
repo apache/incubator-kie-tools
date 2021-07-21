@@ -31,6 +31,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
@@ -383,16 +384,16 @@ public class DMNGridPanelContextMenuHandlerTest {
     }
 
     private BaseGrid mockGridWidget() {
-        final BaseGrid gridWidget = spy(new BaseGrid(gridLayer,
-                                                     new BaseGridData(false),
-                                                     renderer,
-                                                     sessionManager,
-                                                     sessionCommandManager,
-                                                     canvasCommandFactory,
-                                                     refreshFormPropertiesEvent,
-                                                     domainObjectSelectionEvent,
-                                                     cellEditorControls,
-                                                     translationService) {
+        final BaseGrid gridWidget = spy(new BaseGrid<Expression>(gridLayer,
+                                                                 new BaseGridData(false),
+                                                                 renderer,
+                                                                 sessionManager,
+                                                                 sessionCommandManager,
+                                                                 canvasCommandFactory,
+                                                                 refreshFormPropertiesEvent,
+                                                                 domainObjectSelectionEvent,
+                                                                 cellEditorControls,
+                                                                 translationService) {
             @Override
             public Layer getLayer() {
                 return gridLayer;

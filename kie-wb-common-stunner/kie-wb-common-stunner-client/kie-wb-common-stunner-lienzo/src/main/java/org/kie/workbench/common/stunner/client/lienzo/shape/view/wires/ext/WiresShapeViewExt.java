@@ -29,7 +29,7 @@ import com.ait.lienzo.client.core.shape.wires.event.AbstractWiresResizeEvent;
 import com.ait.lienzo.client.core.shape.wires.layout.label.LabelContainerLayout;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.LinearGradient;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils;

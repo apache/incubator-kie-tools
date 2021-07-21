@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.views;
 
-import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,8 +79,7 @@ public class LienzoTextTooltipTest {
         verify(primitiveTooltip,
                times(1)).hide();
         verify(primitiveTooltip,
-               never()).show(any(IPrimitive.class),
-                             anyString(),
+               never()).show(anyString(),
                              any(com.ait.lienzo.client.core.types.Point2D.class),
                              anyDouble(),
                              anyDouble(),
@@ -94,8 +92,7 @@ public class LienzoTextTooltipTest {
         verify(primitiveTooltip,
                times(1)).remove();
         verify(primitiveTooltip,
-               never()).show(any(IPrimitive.class),
-                             anyString(),
+               never()).show(anyString(),
                              any(com.ait.lienzo.client.core.types.Point2D.class),
                              anyDouble(),
                              anyDouble(),

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
 import java.lang.annotation.Annotation;
+import java.util.function.Predicate;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -26,7 +27,6 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
-import com.ait.tooling.common.api.java.util.function.Predicate;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasDecoratorFactory;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
@@ -80,9 +80,6 @@ public class SessionPreviewImpl<S extends AbstractSession>
         extends AbstractSessionViewer<S>
         implements SessionDiagramPreview<S>,
                    CommandRequestLifecycle {
-
-    private static final int DEFAULT_WIDTH = 300;
-    private static final int DEFAULT_HEIGHT = 300;
 
     private final DefinitionUtils definitionUtils;
     private final GraphUtils graphUtils;
@@ -147,16 +144,6 @@ public class SessionPreviewImpl<S extends AbstractSession>
                     @Override
                     public <C extends Canvas> MediatorsControl<C> getMediatorsControl() {
                         return (MediatorsControl<C>) mediatorsControl;
-                    }
-
-                    @Override
-                    protected int getWidth() {
-                        return DEFAULT_WIDTH;
-                    }
-
-                    @Override
-                    protected int getHeight() {
-                        return DEFAULT_HEIGHT;
                     }
 
                     @Override
@@ -242,6 +229,9 @@ public class SessionPreviewImpl<S extends AbstractSession>
         selectionControl = InstanceUtils.lookup(selectionControls, qualifier);
         commandFactory = InstanceUtils.lookup(canvasCommandFactories, qualifier);
         commandManager = InstanceUtils.lookup(canvasCommandManagers, qualifier);
+
+        // Allow preview to scale as the diagram grows horizontally/vertically
+        mediatorsControl.init(canvas);
     }
 
     @SuppressWarnings("unchecked")
@@ -369,7 +359,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("all")
     public MediatorsControl<AbstractCanvas> getMediatorsControl() {
         return mediatorsControl;
     }

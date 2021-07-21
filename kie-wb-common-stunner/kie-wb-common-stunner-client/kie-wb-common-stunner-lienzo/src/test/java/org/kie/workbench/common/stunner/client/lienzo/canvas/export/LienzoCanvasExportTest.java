@@ -31,6 +31,7 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +57,8 @@ import static org.kie.workbench.common.stunner.core.client.canvas.export.CanvasE
 import static org.kie.workbench.common.stunner.core.client.canvas.export.CanvasExport.URLDataType.PNG;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -115,6 +118,9 @@ public class LienzoCanvasExportTest {
     @Mock
     private DefinitionSetAdapter<Object> definitionSetAdapter;
 
+    @Mock
+    private HTMLDivElement layerElement;
+
     @Before
     public void setup() {
         when(canvasHandler.getCanvas()).thenReturn(canvas);
@@ -122,6 +128,7 @@ public class LienzoCanvasExportTest {
         when(canvasView.getLayer()).thenReturn(lienzoLayer);
         when(lienzoLayer.getLienzoLayer()).thenReturn(layer);
         when(layer.getViewport()).thenReturn(viewport);
+        when(viewport.getElement()).thenReturn(layerElement);
         when(layer.uuid()).thenReturn("someLayer");
         when(layer.getScratchPad()).thenReturn(scratchPad);
         when(layer.getWidth()).thenReturn(100);
@@ -187,7 +194,8 @@ public class LienzoCanvasExportTest {
 
     @Test
     public void testWiresLayerBoundsProviderEmpty() {
-        layer = new Layer();
+        spy(new Layer());
+        when(layer.getViewport()).thenReturn(viewport);
         when(lienzoLayer.getLienzoLayer()).thenReturn(layer);
         WiresManager.get(layer);
         LienzoCanvasExport.WiresLayerBoundsProvider provider = new LienzoCanvasExport.WiresLayerBoundsProvider();
@@ -200,12 +208,17 @@ public class LienzoCanvasExportTest {
 
     @Test
     public void testWiresLayerBoundsProvider() {
-        layer = new Layer();
+        final WiresShape shape1 = spy(new WiresShape(new MultiPath().rect(0, 0, 50, 50)).setLocation(new Point2D(12, 44)));
+        final WiresShape shape2 = spy(new WiresShape(new MultiPath().rect(0, 0, 100, 150)).setLocation(new Point2D(1, 3)));
+        doNothing().when(shape1).shapeMoved();
+        doNothing().when(shape2).shapeMoved();
+        layer = spy(new Layer());
+        when(layer.getViewport()).thenReturn(viewport);
         when(lienzoLayer.getLienzoLayer()).thenReturn(layer);
         WiresManager wiresManager = WiresManager.get(layer);
         com.ait.lienzo.client.core.shape.wires.WiresLayer wiresLayer = wiresManager.getLayer();
-        wiresLayer.add(new WiresShape(new MultiPath().rect(0, 0, 50, 50)).setLocation(new Point2D(12, 44)));
-        wiresLayer.add(new WiresShape(new MultiPath().rect(0, 0, 100, 150)).setLocation(new Point2D(1, 3)));
+        wiresLayer.add(shape1);
+        wiresLayer.add(shape2);
         LienzoCanvasExport.WiresLayerBoundsProvider provider = new LienzoCanvasExport.WiresLayerBoundsProvider();
         int[] size0 = provider.compute(lienzoLayer, CanvasExportSettings.build());
         assertEquals(0, size0[0]);
@@ -226,7 +239,7 @@ public class LienzoCanvasExportTest {
 
     @Test
     public void testToContext2D() {
-        Transform transform = new Transform().translate(11, 33).scale(0.1, 0.3);
+        Transform transform = new Transform().translate(11, 33).scaleWithXY(0.1, 0.3);
         when(viewport.getTransform()).thenReturn(transform);
         IContext2D iContext2D = tested.toContext2D(canvasHandler, CanvasExportSettings.build());
         assertNotNull(iContext2D);

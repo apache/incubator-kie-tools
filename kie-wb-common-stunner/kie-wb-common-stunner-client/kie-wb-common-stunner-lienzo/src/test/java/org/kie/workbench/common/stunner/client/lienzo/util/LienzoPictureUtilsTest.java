@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwtmockito.WithClassesToStub;
+import elemental2.dom.HTMLImageElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +41,7 @@ public class LienzoPictureUtilsTest {
     private ImageProxy imageProxy;
 
     @Mock
-    private ImageElement imageElement;
+    private HTMLImageElement imageElement;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -58,7 +59,8 @@ public class LienzoPictureUtilsTest {
                                       LienzoPictureUtils::retryDestroy);
 
         verify(picture).removeFromParent();
-        verify(imageElement).removeFromParent();
+
+        verify(imageElement).remove();
     }
 
     @Test
@@ -72,6 +74,6 @@ public class LienzoPictureUtilsTest {
                                       });
 
         verify(picture).removeFromParent();
-        verify(imageElement).removeFromParent();
+        verify(imageElement).remove();
     }
 }

@@ -62,16 +62,16 @@ public class PolygonView extends AbstractHasRadiusView<PolygonView> {
                 }
                 result.Z();
             } else {
-                final Point2DArray list = new Point2DArray(ix,
-                                                           iy - radius);
+                final Point2DArray list = Point2DArray.fromArrayOfDouble(ix,
+                                                                         iy - radius);
                 for (int n = 1; n < sides; n++) {
                     final double theta = (n * 2 * Math.PI / sides);
-                    list.push(ix + (radius * Math.sin(theta)),
-                              iy + (-1 * radius * Math.cos(theta)));
+                    list.pushXY(ix + (radius * Math.sin(theta)),
+                                iy + (-1 * radius * Math.cos(theta)));
                 }
                 Geometry.drawArcJoinedLines(result.getPathPartList(),
-                                            list.push(ix,
-                                                      iy - radius),
+                                            list.pushXY(ix,
+                                                        iy - radius),
                                             cornerRadius);
             }
         }

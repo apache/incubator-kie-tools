@@ -25,29 +25,12 @@ import org.uberfire.mvp.Command;
 public abstract class AbstractDiagramPreview<D extends Diagram, H extends AbstractCanvasHandler>
         implements DiagramViewer<D, H> {
 
-    protected abstract int getWidth();
-
-    protected abstract int getHeight();
-
     public abstract AbstractDiagramViewer<D, H> getViewer();
 
     @Override
     public void open(final D item,
                      final DiagramViewerCallback<D> callback) {
         getViewerOrNothing(() -> getViewer().open(item,
-                                                  getWidth(),
-                                                  getHeight(),
-                                                  callback));
-    }
-
-    @Override
-    public void open(final D item,
-                     final int width,
-                     final int height,
-                     final DiagramViewerCallback<D> callback) {
-        getViewerOrNothing(() -> getViewer().open(item,
-                                                  width,
-                                                  height,
                                                   callback));
     }
 

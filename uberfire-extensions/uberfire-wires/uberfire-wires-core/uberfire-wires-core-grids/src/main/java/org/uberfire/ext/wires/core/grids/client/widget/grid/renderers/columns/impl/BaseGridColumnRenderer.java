@@ -163,10 +163,10 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
                                                                   rowHeight);
 
                     //Clip Header Group
-                    final BoundingBox bb = new BoundingBox(0,
-                                                           0,
-                                                           blockWidth,
-                                                           rowHeight);
+                    final BoundingBox bb = BoundingBox.fromDoubles(0,
+                                                                   0,
+                                                                   blockWidth,
+                                                                   rowHeight);
                     final IPathClipper clipper = getBoundingBoxPathClipper(bb);
                     headerGroup.setX(offsetX);
                     headerGroup.setY(headerRowsYOffset + headerRowIndex * rowHeight);
@@ -252,10 +252,11 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
 
     /**
      * Return the <code>Group</code> holding the <b>cell</b> data
+     *
      * @param cell
      * @param context
-     * @param text code the <code>Text</code> that will contain the data to show
-     * @param value the String to show
+     * @param text    code the <code>Text</code> that will contain the data to show
+     * @param value   the String to show
      * @return
      */
     protected Group internalRenderCell(final GridCell<T> cell,

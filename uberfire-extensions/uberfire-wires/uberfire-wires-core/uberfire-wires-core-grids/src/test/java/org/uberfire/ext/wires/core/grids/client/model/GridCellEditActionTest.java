@@ -19,28 +19,17 @@ package org.uberfire.ext.wires.core.grids.client.model;
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseWheelEvent;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.MouseEvent;
-import com.google.gwt.event.dom.client.MouseWheelEvent;
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(LienzoMockitoTestRunner.class)
 public class GridCellEditActionTest {
-
-    @Mock
-    private MouseEvent clickEvent;
-
-    @Mock
-    private DoubleClickEvent doubleClickEvent;
-
-    @Mock
-    private MouseWheelEvent mouseWheelEvent;
 
     private NodeMouseClickEvent nodeMouseClickEvent;
 
@@ -50,9 +39,9 @@ public class GridCellEditActionTest {
 
     @Before
     public void setup() {
-        this.nodeMouseClickEvent = new NodeMouseClickEvent(clickEvent);
-        this.nodeMouseDoubleClickEvent = new NodeMouseDoubleClickEvent(doubleClickEvent);
-        this.nodeMouseWheelEvent = new NodeMouseWheelEvent(mouseWheelEvent);
+        this.nodeMouseClickEvent = new NodeMouseClickEvent(mock(HTMLElement.class));
+        this.nodeMouseDoubleClickEvent = new NodeMouseDoubleClickEvent(mock(HTMLElement.class));
+        this.nodeMouseWheelEvent = new NodeMouseWheelEvent(mock(HTMLElement.class));
     }
 
     @Test

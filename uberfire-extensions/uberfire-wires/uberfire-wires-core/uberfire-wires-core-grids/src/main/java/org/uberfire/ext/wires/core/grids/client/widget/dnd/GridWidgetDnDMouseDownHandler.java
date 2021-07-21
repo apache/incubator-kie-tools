@@ -98,7 +98,7 @@ public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
     }
 
     private void setCursor(final Style.Cursor cursor) {
-        layer.getViewport().getElement().getStyle().setCursor(cursor);
+        layer.getViewport().getElement().style.cursor = cursor.getCssName();
         state.setCursor(cursor);
     }
 

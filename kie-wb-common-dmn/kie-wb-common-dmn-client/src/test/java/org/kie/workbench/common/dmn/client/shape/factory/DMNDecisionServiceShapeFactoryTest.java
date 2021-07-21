@@ -17,7 +17,6 @@ package org.kie.workbench.common.dmn.client.shape.factory;
 
 import java.util.Optional;
 
-import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -55,9 +54,6 @@ public class DMNDecisionServiceShapeFactoryTest {
     private Shape shape;
 
     @Mock
-    private Attributes shapeAttributes;
-
-    @Mock
     private Node shapeNode;
 
     private SVGShapeView shapeDefView;
@@ -68,7 +64,6 @@ public class DMNDecisionServiceShapeFactoryTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         when(svgPrimitiveShape.get()).thenReturn(shape);
-        when(shape.getAttributes()).thenReturn(shapeAttributes);
         when(shape.asNode()).thenReturn(shapeNode);
 
         this.shapeFactory = new DMNDecisionServiceShapeFactory(svgViewFactory);

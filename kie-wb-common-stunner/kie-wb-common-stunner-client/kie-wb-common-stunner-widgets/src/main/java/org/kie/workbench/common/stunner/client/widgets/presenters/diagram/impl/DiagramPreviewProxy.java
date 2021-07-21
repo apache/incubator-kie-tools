@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 /**
  * An abstract DiagramViewer type that opens the diagram in a viewer which is scaled
  * to fit the given size, usually for previewing goals.
+ *
  * @param <D> The diagram type.
  */
 public abstract class DiagramPreviewProxy<D extends Diagram>
@@ -46,6 +47,7 @@ public abstract class DiagramPreviewProxy<D extends Diagram>
                                final StunnerPreferencesRegistries preferencesRegistries) {
         this.viewer =
                 new DiagramViewerProxy<D>(view) {
+
                     @Override
                     public SelectionControl<AbstractCanvasHandler, Element> getSelectionControl() {
                         return DiagramPreviewProxy.this.getSelectionControl();
@@ -53,7 +55,7 @@ public abstract class DiagramPreviewProxy<D extends Diagram>
 
                     @Override
                     public <C extends Canvas> MediatorsControl<C> getMediatorsControl() {
-                        return (MediatorsControl<C>) DiagramPreviewProxy.this.getMediatorsControl();
+                        return DiagramPreviewProxy.this.getMediatorsControl();
                     }
 
                     @Override

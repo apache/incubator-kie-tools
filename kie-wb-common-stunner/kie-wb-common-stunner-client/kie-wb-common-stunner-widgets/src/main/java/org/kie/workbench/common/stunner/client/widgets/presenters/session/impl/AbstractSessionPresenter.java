@@ -137,35 +137,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
                             });
     }
 
-    public void open(final S session,
-                     final int width,
-                     final int height,
-                     final SessionPresenterCallback<D> callback) {
-        getDisplayer().open(session,
-                            width,
-                            height,
-                            new SessionViewer.SessionViewerCallback<D>() {
-                                @Override
-                                public void afterCanvasInitialized() {
-                                    callback.afterCanvasInitialized();
-                                    sessionManager.open(session);
-                                    callback.afterSessionOpened();
-                                }
-
-                                @Override
-                                public void onSuccess() {
-                                    onSessionOpened(session);
-                                    callback.onSuccess();
-                                }
-
-                                @Override
-                                public void onError(final ClientRuntimeError error) {
-                                    AbstractSessionPresenter.this.showError(error);
-                                    callback.onError(error);
-                                }
-                            });
-    }
-
     @Override
     public SessionPresenter<S, H, D> withToolbar(final boolean hasToolbar) {
         this.hasToolbar = hasToolbar;

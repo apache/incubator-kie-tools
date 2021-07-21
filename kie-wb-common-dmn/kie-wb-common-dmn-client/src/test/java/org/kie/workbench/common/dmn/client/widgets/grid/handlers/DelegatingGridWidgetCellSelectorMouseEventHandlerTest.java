@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid.handlers;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -66,7 +66,7 @@ public class DelegatingGridWidgetCellSelectorMouseEventHandlerTest {
     private Point2D relativeLocation;
 
     @Mock
-    private AbstractNodeMouseEvent event;
+    private AbstractNodeHumanInputEvent event;
 
     @Mock
     private Layer layer;
@@ -141,7 +141,7 @@ public class DelegatingGridWidgetCellSelectorMouseEventHandlerTest {
     @Test
     public void testOnNodeMouseEventWhenNestedOnBodyWithoutSelectionChange() {
         when(event.isShiftKeyDown()).thenReturn(false);
-        when(event.isControlKeyDown()).thenReturn(true);
+        when(event.isCtrlKeyDown()).thenReturn(true);
         when(parentCellSelectionManager.selectCell(anyInt(), anyInt(), anyBoolean(), anyBoolean())).thenReturn(false);
 
         setupGrid(() -> parent, () -> 1);
@@ -169,7 +169,7 @@ public class DelegatingGridWidgetCellSelectorMouseEventHandlerTest {
     @Test
     public void testOnNodeMouseEventWhenNestedOnBodyWithSelectionChange() {
         when(event.isShiftKeyDown()).thenReturn(false);
-        when(event.isControlKeyDown()).thenReturn(true);
+        when(event.isCtrlKeyDown()).thenReturn(true);
         when(parentGridWidget.isSelected()).thenReturn(false);
         when(parentCellSelectionManager.selectCell(anyInt(), anyInt(), anyBoolean(), anyBoolean())).thenReturn(true);
 

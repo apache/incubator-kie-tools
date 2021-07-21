@@ -111,6 +111,12 @@ public class SessionEditorImpl<S extends EditorSession>
     }
 
     @Override
+    protected void onAfterCanvasInitialized() {
+        super.onAfterCanvasInitialized();
+        canvasPanel.getView().onResize();
+    }
+
+    @Override
     public void destroy() {
         super.destroy();
         ((WidgetWrapperView) getView()).clear();

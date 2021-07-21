@@ -53,6 +53,8 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
 
     public static final int FONT_SIZE = 10;
 
+    public static final double DEFAULT_STROKE_WIDTH = 0;
+
     @Override
     public String getName() {
         return "DMN Editor";
@@ -103,6 +105,7 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
         } else if (column instanceof FunctionKindRowColumn) {
             background.setFillColor(KIEColours.HEADER_BACKGROUND_WHITE);
         }
+        background.setStrokeWidth(DEFAULT_STROKE_WIDTH);
         return background;
     }
 
@@ -129,13 +132,15 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
                 .setTextUnit(TextUnit.PT)
                 .setListening(false)
                 .setTextBaseLine(TextBaseLine.MIDDLE)
-                .setTextAlign(TextAlign.CENTER);
+                .setTextAlign(TextAlign.CENTER)
+                .setStrokeWidth(DEFAULT_STROKE_WIDTH);
     }
 
     @Override
     public Rectangle getBodyBackground(final GridColumn<?> column) {
         return new Rectangle(0, 0)
-                .setFillColor(KIEColours.CELL_CONTENT);
+                .setFillColor(KIEColours.CELL_CONTENT)
+                .setStrokeWidth(DEFAULT_STROKE_WIDTH);
     }
 
     @Override
@@ -155,7 +160,8 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
                 .setTextUnit(TextUnit.PT)
                 .setListening(false)
                 .setTextBaseLine(TextBaseLine.MIDDLE)
-                .setTextAlign(TextAlign.CENTER);
+                .setTextAlign(TextAlign.CENTER)
+                .setStrokeWidth(DEFAULT_STROKE_WIDTH);
     }
 
     @Override

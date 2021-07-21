@@ -37,6 +37,7 @@ VM Options:
 [OPTIONAL] Dev Mode Parameters:
 
         -style PRETTY
+        -generateJsInteropExports
         -logLevel [ERROR, WARN, INFO, TRACE, DEBUG, SPAM, or ALL]
 
 Start page: `index.html`

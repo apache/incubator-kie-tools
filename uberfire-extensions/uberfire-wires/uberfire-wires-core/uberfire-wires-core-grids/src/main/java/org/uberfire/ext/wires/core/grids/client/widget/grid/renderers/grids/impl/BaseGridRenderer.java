@@ -321,10 +321,10 @@ public class BaseGridRenderer implements GridRenderer {
         return (RenderHeaderGridLinesCommand) (rc) -> {
             if (!rc.isSelectionLayer()) {
                 final Line divider = theme.getGridHeaderBodyDivider();
-                divider.setPoints(new Point2DArray(new Point2D(0,
-                                                               getHeaderHeight() + 0.5),
-                                                   new Point2D(width,
-                                                               getHeaderHeight() + 0.5)));
+                divider.setPoints(Point2DArray.fromArrayOfPoint2D(new Point2D(0,
+                                                                              getHeaderHeight() + 0.5),
+                                                                  new Point2D(width,
+                                                                              getHeaderHeight() + 0.5)));
                 rc.getGroup().add(divider);
             }
         };

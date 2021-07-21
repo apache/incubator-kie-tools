@@ -17,8 +17,10 @@
 package org.kie.workbench.common.stunner.client.lienzo.components.toolbox.actions;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Text;
@@ -38,6 +40,9 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.T
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseMoveEvent;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
+
+import static org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager.getClientX;
+import static org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager.getClientY;
 
 public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolboxView>
         implements ActionsToolboxView<V> {
@@ -135,26 +140,26 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
     protected void onButtonClick(final ActionsToolbox<ActionsToolboxView<?>> toolbox,
                                  final ToolboxAction toolboxAction,
                                  final ButtonItem button,
-                                 final AbstractNodeMouseEvent event) {
+                                 final NodeMouseClickEvent event) {
         toolboxAction.onMouseClick(toolbox.getCanvasHandler(),
                                    toolbox.getElementUUID(),
                                    new MouseClickEvent(event.getX(),
                                                        event.getY(),
-                                                       event.getMouseEvent().getClientX(),
-                                                       event.getMouseEvent().getClientY()));
+                                                       getClientX(event),
+                                                       getClientY(event)));
     }
 
     @SuppressWarnings("unchecked")
     protected void onButtonMoveStart(final ActionsToolbox<ActionsToolboxView<?>> toolbox,
                                      final IsToolboxActionDraggable toolboxAction,
                                      final ButtonItem button,
-                                     final AbstractNodeMouseEvent event) {
+                                     final NodeMouseMoveEvent event) {
         toolboxAction.onMoveStart(toolbox.getCanvasHandler(),
                                   toolbox.getElementUUID(),
                                   new MouseMoveEvent(event.getX(),
                                                      event.getY(),
-                                                     event.getMouseEvent().getClientX(),
-                                                     event.getMouseEvent().getClientY()));
+                                                     getClientX(event),
+                                                     getClientY(event)));
     }
 
     ButtonItem addButton(final Glyph glyph,
@@ -175,7 +180,7 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
         toolboxView.add(buttonItem);
     }
 
-    protected com.ait.tooling.common.api.java.util.function.Consumer<Text> defaultTextConsumer() {
+    protected Consumer<Text> defaultTextConsumer() {
         return text -> text
                 .setFontSize(10)
                 .setFontFamily("Verdana");

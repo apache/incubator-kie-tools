@@ -200,8 +200,6 @@ public class DiagramEditorExplorerScreen extends AbstractActivity {
             }
             previewWidget = sessionPreviews.get();
             previewWidget.open((AbstractSession) session,
-                               PREVIEW_WIDTH,
-                               PREVIEW_HEIGHT,
                                new SessionViewer.SessionViewerCallback<Diagram>() {
                                    @Override
                                    public void afterCanvasInitialized() {
@@ -210,6 +208,7 @@ public class DiagramEditorExplorerScreen extends AbstractActivity {
 
                                    @Override
                                    public void onSuccess() {
+                                       previewWidget.scale(PREVIEW_WIDTH, PREVIEW_HEIGHT);
                                        view.setPreviewWidget(previewWidget.getView());
                                    }
 

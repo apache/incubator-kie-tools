@@ -18,7 +18,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
 import java.util.Optional;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -29,7 +29,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedM
 
 /**
  * A {@link NodeMouseEventHandler} to handle entering or exiting of a {@link GridWidget}
- * "pinned" state. If a {@link AbstractNodeMouseEvent} is found to have happened within the {@link GridWidget}
+ * "pinned" state. If a {@link AbstractNodeHumanInputEvent} is found to have happened within the {@link GridWidget}
  * Header the "pinned" mode is toggled. See {@link GridPinnedModeManager} for more information.
  */
 public class DefaultGridWidgetPinnedModeMouseEventHandler implements NodeMouseEventHandler {
@@ -50,7 +50,7 @@ public class DefaultGridWidgetPinnedModeMouseEventHandler implements NodeMouseEv
                                     final Optional<Integer> uiHeaderColumnIndex,
                                     final Optional<Integer> uiRowIndex,
                                     final Optional<Integer> uiColumnIndex,
-                                    final AbstractNodeMouseEvent event) {
+                                    final AbstractNodeHumanInputEvent event) {
         if (isDNDOperationInProgress(gridWidget)) {
             return false;
         }
@@ -68,8 +68,8 @@ public class DefaultGridWidgetPinnedModeMouseEventHandler implements NodeMouseEv
     }
 
     /**
-     * Checks if a {@link AbstractNodeMouseEvent} is found to have happened within the {@link GridWidget}
-     * Header. If the {@link AbstractNodeMouseEvent} was found to have happened in the {@link GridWidget} Header
+     * Checks if a {@link AbstractNodeHumanInputEvent} is found to have happened within the {@link GridWidget}
+     * Header. If the {@link AbstractNodeHumanInputEvent} was found to have happened in the {@link GridWidget} Header
      * the "pinned" mode is toggled. See {@link GridPinnedModeManager} for more information.
      */
     @Override
@@ -77,7 +77,7 @@ public class DefaultGridWidgetPinnedModeMouseEventHandler implements NodeMouseEv
                                     final Point2D relativeLocation,
                                     final int uiHeaderRowIndex,
                                     final int uiHeaderColumnIndex,
-                                    final AbstractNodeMouseEvent event) {
+                                    final AbstractNodeHumanInputEvent event) {
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
 
         final double cx = relativeLocation.getX();

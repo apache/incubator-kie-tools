@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
@@ -28,7 +29,6 @@ import com.ait.lienzo.client.core.shape.wires.util.WiresConnectorLabel;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Consumer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -73,7 +73,11 @@ public class WiresConnectorViewExtTest {
     public void setup() throws Exception {
         HEAD_DECORATOR = new MultiPathDecorator(new MultiPath().rect(0, 0, 10, 10));
         TAIL_DECORATOR = new MultiPathDecorator(new MultiPath().rect(0, 0, 10, 10));
-        POINTS = new Point2DArray(new Point2D(0, 10), new Point2D(10, 10), new Point2D(20, 20), new Point2D(30, 30), new Point2D(40, 40));
+        POINTS = Point2DArray.fromArrayOfPoint2D(new Point2D(0, 10),
+                                                 new Point2D(10, 10),
+                                                 new Point2D(20, 20),
+                                                 new Point2D(30, 30),
+                                                 new Point2D(40, 40));
         line = new PolyLine(POINTS);
         layer = spy(new Layer());
         doAnswer(invocation -> {

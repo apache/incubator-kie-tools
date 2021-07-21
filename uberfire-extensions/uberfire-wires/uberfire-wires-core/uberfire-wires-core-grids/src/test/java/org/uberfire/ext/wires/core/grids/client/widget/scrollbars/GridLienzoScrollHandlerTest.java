@@ -21,10 +21,8 @@ import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
-import com.ait.lienzo.client.widget.LienzoPanel;
+import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
@@ -33,6 +31,8 @@ import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.MouseEvent;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -405,8 +405,8 @@ public class GridLienzoScrollHandlerTest {
         doReturn(defaultGridLayer).when(gridLienzoScrollHandler).getDefaultGridLayer();
         doReturn(viewport).when(defaultGridLayer).getViewport();
 
-        restrictedMousePanMediator.handleEvent(mouseDownEventMock());
-        restrictedMousePanMediator.handleEvent(mouseMoveEventMock());
+        restrictedMousePanMediator.handleEvent(NodeMouseDownEvent.getType(), mock(MouseEvent.class), 0, 0);
+        restrictedMousePanMediator.handleEvent(NodeMouseMoveEvent.getType(), mock(MouseEvent.class), 0, 0);
 
         verify(gridLienzoScrollHandler).refreshScrollPosition();
     }
@@ -642,11 +642,7 @@ public class GridLienzoScrollHandlerTest {
     private Viewport viewportMock() {
 
         final Viewport viewport = mock(Viewport.class);
-        final DivElement divElement = mock(DivElement.class);
-        final Style style = mock(Style.class);
-
-        doReturn(style).when(divElement).getStyle();
-        doReturn(divElement).when(viewport).getElement();
+        doReturn(new HTMLDivElement()).when(viewport).getElement();
         doReturn(transformMock()).when(viewport).getTransform();
 
         return viewport;

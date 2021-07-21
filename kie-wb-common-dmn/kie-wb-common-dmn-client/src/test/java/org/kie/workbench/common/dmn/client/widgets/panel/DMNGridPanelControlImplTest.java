@@ -17,10 +17,9 @@
 package org.kie.workbench.common.dmn.client.widgets.panel;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.INativeContext2D;
+import com.ait.lienzo.client.core.NativeContext2D;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
 import org.junit.Before;
@@ -52,16 +51,13 @@ public class DMNGridPanelControlImplTest {
     private Style gridLayerDivElementStyle;
 
     @Mock
-    private CanvasElement gridLayerCanvasElement;
-
-    @Mock
     private Node gridLayerNode;
 
     @Mock
     private Context2D context2D;
 
     @Mock
-    private INativeContext2D nativeContext2D;
+    private NativeContext2D nativeContext2D;
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
@@ -80,9 +76,7 @@ public class DMNGridPanelControlImplTest {
         when(session.getCellEditorControls()).thenReturn(cellEditorControls);
         when(session.getMousePanMediator()).thenReturn(mousePanMediator);
 
-        when(gridLayer.getElement()).thenReturn(gridLayerDivElement);
         when(gridLayerDivElement.getStyle()).thenReturn(gridLayerDivElementStyle);
-        when(gridLayer.getCanvasElement()).thenReturn(gridLayerCanvasElement);
         when(gridLayer.getContext()).thenReturn(context2D);
         when(gridLayer.asNode()).thenReturn(gridLayerNode);
         when(context2D.getNativeContext()).thenReturn(nativeContext2D);

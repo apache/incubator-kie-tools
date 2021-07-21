@@ -87,6 +87,12 @@ public class LienzoMediatorsControl<C extends AbstractCanvas>
         return this;
     }
 
+    @Override
+    protected void doDestroy() {
+        super.doDestroy();
+        mediators.destroy();
+    }
+
     void onCanvasFocusedEvent(final @Observes CanvasFocusedEvent focusedEvent) {
         if (null != canvas && canvas.equals(focusedEvent.getCanvas())) {
             mediators.enable();

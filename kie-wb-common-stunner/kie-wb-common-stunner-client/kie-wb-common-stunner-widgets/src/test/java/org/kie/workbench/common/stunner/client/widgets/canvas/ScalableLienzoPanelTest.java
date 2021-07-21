@@ -16,8 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.canvas;
 
-import java.util.OptionalInt;
-import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.client.widget.panel.impl.ScalablePanel;
@@ -50,12 +49,12 @@ public class ScalableLienzoPanelTest {
     @SuppressWarnings("unchecked")
     public void testInit() {
         tested.init();
-        ArgumentCaptor<BiFunction> builderCaptor = ArgumentCaptor.forClass(BiFunction.class);
+        ArgumentCaptor<Supplier> builderCaptor = ArgumentCaptor.forClass(Supplier.class);
         verify(panel, times(1)).setPanelBuilder(builderCaptor.capture());
-        BiFunction<OptionalInt, OptionalInt, LienzoBoundsPanel> builder = builderCaptor.getValue();
-        LienzoBoundsPanel result = builder.apply(OptionalInt.of(300), OptionalInt.of(450));
+        Supplier<LienzoBoundsPanel> builder = builderCaptor.getValue();
+        LienzoBoundsPanel result = builder.get();
         assertTrue(result instanceof ScalablePanel);
-        assertEquals(300, result.getWidthPx());
-        assertEquals(450, result.getHeightPx());
+        assertEquals(0, result.getWidePx());
+        assertEquals(0, result.getHighPx());
     }
 }

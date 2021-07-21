@@ -46,6 +46,8 @@ public class BaseExpressionGridTheme implements ScenarioGridRendererTheme {
 
     public static final double STROKE_WIDTH = 1.0;
 
+    public static final double DEFAULT_STROKE_WIDTH = 0;
+
 
     @Override
     public String getName() {
@@ -86,7 +88,8 @@ public class BaseExpressionGridTheme implements ScenarioGridRendererTheme {
         }
 
         return new Rectangle(0, 0)
-                .setFillColor(colorToApply);
+                .setFillColor(colorToApply)
+                .setStrokeWidth(DEFAULT_STROKE_WIDTH);
     }
 
     @Override
@@ -112,13 +115,16 @@ public class BaseExpressionGridTheme implements ScenarioGridRendererTheme {
                 .setTextUnit(TextUnit.PT)
                 .setListening(false)
                 .setTextBaseLine(TextBaseLine.MIDDLE)
-                .setTextAlign(TextAlign.CENTER);
+                .setTextAlign(TextAlign.CENTER)
+                .setStrokeWidth(DEFAULT_STROKE_WIDTH);
     }
 
     @Override
     public Rectangle getBodyBackground(final GridColumn<?> column) {
         final Rectangle background = new Rectangle(0, 0);
-        background.setFillColor(ColorName.TRANSPARENT);
+        background
+                .setFillColor(ColorName.TRANSPARENT)
+                .setStrokeWidth(DEFAULT_STROKE_WIDTH);
         // to customize background on column-type base, set the fill color (e.g. background.setFillColor(LABEL_BACKGROUND_FILL_COLOUR); ) based on the column type
         return background;
     }
@@ -140,7 +146,8 @@ public class BaseExpressionGridTheme implements ScenarioGridRendererTheme {
                 .setTextUnit(TextUnit.PT)
                 .setListening(false)
                 .setTextBaseLine(TextBaseLine.MIDDLE)
-                .setTextAlign(TextAlign.CENTER);
+                .setTextAlign(TextAlign.CENTER)
+                .setStrokeWidth(DEFAULT_STROKE_WIDTH);
     }
 
     @Override
@@ -176,6 +183,7 @@ public class BaseExpressionGridTheme implements ScenarioGridRendererTheme {
                 .setTextUnit(TextUnit.PT)
                 .setListening(false)
                 .setTextBaseLine(TextBaseLine.MIDDLE)
-                .setTextAlign(TextAlign.CENTER);
+                .setTextAlign(TextAlign.CENTER)
+                .setStrokeWidth(DEFAULT_STROKE_WIDTH);
     }
 }

@@ -67,22 +67,19 @@ public class PrimitiveTooltip extends PrimitivePopup {
     public PrimitiveTooltip show(final String text,
                                  final Point2D location,
                                  final Direction direction) {
-        return this.show(null,
-                         text,
+        return this.show(text,
                          location,
                          0,
                          0,
                          direction);
     }
 
-    public PrimitiveTooltip show(final IPrimitive<?> _glyph,
-                                 final String text,
+    public PrimitiveTooltip show(final String text,
                                  final Point2D location,
                                  final double width,
                                  final double height,
                                  final Direction direction) {
         clearTimers();
-        final IPrimitive<?> glyph = null != _glyph ? (IPrimitive<?>) _glyph.copy() : null;
         final Text descText = new Text(text)
                 .setFontSize(TEXT_SIZE)
                 .setFontStyle("")
@@ -103,9 +100,6 @@ public class PrimitiveTooltip extends PrimitivePopup {
         ;
         final Group g = new Group();
         g.add(decorator);
-        if (null != glyph) {
-            g.add(glyph);
-        }
         g.add(descText);
         super.show(g,
                    w,
@@ -114,12 +108,6 @@ public class PrimitiveTooltip extends PrimitivePopup {
                    location.getY());
         double _x = (w / 2) + (isWest(direction) ? PADDING / 2 : 0);
         double _y = PADDING / 2 + (isNorth(direction) ? TRIANGLE_SIZE : 0);
-        if (null != glyph) {
-            glyph.setX(_x - (width / 2));
-            glyph.setY(_y);
-            _x += width;
-            _y += height;
-        }
         descText.setX(_x - (descTextBbW / 2));
         descText.setY(_y + descTextBbH);
         // Ensure text is on top.

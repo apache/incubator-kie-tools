@@ -31,7 +31,7 @@ import com.ait.lienzo.client.core.shape.wires.layout.label.LabelContainerLayout;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,7 +54,7 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresTextDecoratorTest {
 
-    public static final BoundingBox NEW_SIZE = new BoundingBox(0, 0, 10, 10);
+    public static final BoundingBox NEW_SIZE = BoundingBox.fromDoubles(0, 0, 10, 10);
 
     @Mock
     private Supplier<ViewEventHandlerManager> eventHandlerManager;
@@ -65,8 +65,8 @@ public class WiresTextDecoratorTest {
     @Mock
     private ITextWrapperWithBoundaries textWrapperWithBoundaries;
 
-    private final BoundingBox bb = new BoundingBox(new Point2D(0, 0),
-                                                   new Point2D(100, 100));
+    private final BoundingBox bb = BoundingBox.fromArrayOfPoint2D(new Point2D(0, 0),
+                                                                  new Point2D(100, 100));
 
     @Mock
     private WiresShapeViewExt shape;

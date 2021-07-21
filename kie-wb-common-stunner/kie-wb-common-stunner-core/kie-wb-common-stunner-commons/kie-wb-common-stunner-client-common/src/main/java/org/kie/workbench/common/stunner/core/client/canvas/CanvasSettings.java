@@ -16,27 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
-import java.util.Optional;
-
 public class CanvasSettings {
 
-    private final Optional<CanvasSize> canvasSize;
     private final boolean isHiDPIEnabled;
 
     public CanvasSettings(final boolean isHiDPIEnabled) {
-        this.canvasSize = Optional.empty();
         this.isHiDPIEnabled = isHiDPIEnabled;
-    }
-
-    public CanvasSettings(final int width,
-                          final int height,
-                          final boolean isHiDPIEnabled) {
-        this.canvasSize = Optional.of(new CanvasSize(width, height));
-        this.isHiDPIEnabled = isHiDPIEnabled;
-    }
-
-    public Optional<CanvasSize> getCanvasSize() {
-        return canvasSize;
     }
 
     public boolean isHiDPIEnabled() {

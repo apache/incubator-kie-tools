@@ -16,12 +16,13 @@
 
 package org.kie.workbench.common.stunner.client.widgets.profile;
 
+import java.util.function.Supplier;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.ait.tooling.common.api.java.util.function.Supplier;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.RequestSessionRefreshEvent;
 import org.kie.workbench.common.stunner.client.widgets.views.Selector;
 import org.kie.workbench.common.stunner.client.widgets.views.SelectorDelegate;

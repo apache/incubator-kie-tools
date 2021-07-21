@@ -18,7 +18,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
 import java.util.Optional;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -49,7 +49,7 @@ public class DefaultGridWidgetLinkedColumnMouseEventHandler implements NodeMouse
                                     final Optional<Integer> uiHeaderColumnIndex,
                                     final Optional<Integer> uiRowIndex,
                                     final Optional<Integer> uiColumnIndex,
-                                    final AbstractNodeMouseEvent event) {
+                                    final AbstractNodeHumanInputEvent event) {
         if (isDNDOperationInProgress(gridWidget)) {
             return false;
         }
@@ -67,8 +67,8 @@ public class DefaultGridWidgetLinkedColumnMouseEventHandler implements NodeMouse
     }
 
     /**
-     * Checks if the {@link AbstractNodeMouseEvent} happened on a "linked" {@link GridColumn}. If
-     * the {@link AbstractNodeMouseEvent} was found to have happened on a {@link GridWidget} "linked" column then
+     * Checks if the {@link AbstractNodeHumanInputEvent} happened on a "linked" {@link GridColumn}. If
+     * the {@link AbstractNodeHumanInputEvent} was found to have happened on a {@link GridWidget} "linked" column then
      * selection of the "linked" {@link GridColumn} is delegated to {@link GridSelectionManager#selectLinkedColumn(GridColumn)}.
      */
     @Override
@@ -76,7 +76,7 @@ public class DefaultGridWidgetLinkedColumnMouseEventHandler implements NodeMouse
                                     final Point2D relativeLocation,
                                     final int uiHeaderRowIndex,
                                     final int uiHeaderColumnIndex,
-                                    final AbstractNodeMouseEvent event) {
+                                    final AbstractNodeHumanInputEvent event) {
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
 
         final double cx = relativeLocation.getX();

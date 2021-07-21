@@ -17,12 +17,17 @@
   <dependencies>
 
     <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>errai-common</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.gwtbootstrap3</groupId>
       <artifactId>gwtbootstrap3</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>lienzo-core</artifactId>
     </dependency>
 
@@ -33,7 +38,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>lienzo-tests</artifactId>
       <scope>test</scope>
       <exclusions>

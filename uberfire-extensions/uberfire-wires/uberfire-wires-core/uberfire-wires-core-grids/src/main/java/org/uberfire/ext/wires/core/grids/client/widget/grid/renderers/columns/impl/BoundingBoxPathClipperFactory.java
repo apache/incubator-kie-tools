@@ -26,7 +26,7 @@ public class BoundingBoxPathClipperFactory {
                                    final double minY,
                                    final double maxX,
                                    final double maxY) {
-        final BoundingBox boundingBox = new BoundingBox(minX, minY, maxX, maxY);
+        final BoundingBox boundingBox = BoundingBox.fromDoubles(minX, minY, maxX, maxY);
         return new BoundingBoxPathClipper(boundingBox);
     }
 }

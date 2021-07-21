@@ -16,7 +16,8 @@
 package org.uberfire.ext.wires.core.grids.client.widget.layer.impl;
 
 import com.ait.lienzo.client.core.shape.Viewport;
-import com.ait.lienzo.client.widget.LienzoPanel;
+import com.ait.lienzo.client.widget.panel.LienzoPanel;
+import com.ait.lienzo.client.widget.panel.impl.LienzoFixedPanel;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
@@ -25,8 +26,10 @@ import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.scrollbars.GridLienzoScrollHandler;
@@ -40,7 +43,9 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
                                                            ProvidesResize,
                                                            GridLienzoScrollable {
 
-    protected final LienzoPanel lienzoPanel;
+    protected final LienzoFixedPanel lienzoPanel;
+
+    protected IsWidget lienzoPanelWidget;
 
     protected final AbsolutePanel domElementContainer = new AbsolutePanel();
 
@@ -55,68 +60,35 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
     private DefaultGridLayer defaultGridLayer;
 
     public GridLienzoPanel() {
-        this(new LienzoPanel() {
-            @Override
-            public void onResize() {
-                // Do nothing. Resize is handled by AttachHandler. LienzoPanel calls onResize() in
-                // it's onAttach() method which causes the Canvas to be redrawn. However when LienzoPanel
-                // is adopted by another Widget LienzoPanel's onAttach() is called before its children
-                // have been attached. Should redraw require children to be attached errors arise.
-            }
-        });
+        this(LienzoFixedPanel.newPanel());
     }
 
     public GridLienzoPanel(final int width,
                            final int height) {
-        this(new LienzoPanel(width,
-                             height) {
-            @Override
-            public void onResize() {
-                // Do nothing. Resize is handled by AttachHandler. LienzoPanel calls onResize() in
-                // it's onAttach() method which causes the Canvas to be redrawn. However when LienzoPanel
-                // is adopted by another Widget LienzoPanel's onAttach() is called before its children
-                // have been attached. Should redraw require children to be attached errors arise.
-            }
-        });
+        this(LienzoFixedPanel.newPanel(width, height));
 
         updatePanelSize(width,
                         height);
     }
 
     public GridLienzoPanel(final DefaultGridLayer defaultGridLayer) {
-        this(new LienzoPanel() {
-                 @Override
-                 public void onResize() {
-                     // Do nothing. Resize is handled by AttachHandler. LienzoPanel calls onResize() in
-                     // it's onAttach() method which causes the Canvas to be redrawn. However when LienzoPanel
-                     // is adopted by another Widget LienzoPanel's onAttach() is called before its children
-                     // have been attached. Should redraw require children to be attached errors arise.
-                 }
-             },
+        this(LienzoFixedPanel.newPanel(),
              defaultGridLayer);
     }
 
     public GridLienzoPanel(final int width,
                            final int height,
                            final DefaultGridLayer defaultGridLayer) {
-        this(new LienzoPanel(width,
-                             height) {
-                 @Override
-                 public void onResize() {
-                     // Do nothing. Resize is handled by AttachHandler. LienzoPanel calls onResize() in
-                     // it's onAttach() method which causes the Canvas to be redrawn. However when LienzoPanel
-                     // is adopted by another Widget LienzoPanel's onAttach() is called before its children
-                     // have been attached. Should redraw require children to be attached errors arise.
-                 }
-             },
+        this(LienzoFixedPanel.newPanel(width, height),
              defaultGridLayer);
 
         updatePanelSize(width,
                         height);
     }
 
-    protected GridLienzoPanel(final LienzoPanel lienzoPanel) {
+    protected GridLienzoPanel(final LienzoFixedPanel lienzoPanel) {
         this.lienzoPanel = lienzoPanel;
+        this.lienzoPanelWidget = ElementWrapperWidget.getWidget(lienzoPanel.getElement());
         this.gridLienzoScrollHandler = new GridLienzoScrollHandler(this);
 
         setupPanels();
@@ -124,9 +96,10 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
         setupDefaultHandlers();
     }
 
-    protected GridLienzoPanel(final LienzoPanel lienzoPanel,
+    protected GridLienzoPanel(final LienzoFixedPanel lienzoPanel,
                               final DefaultGridLayer defaultGridLayer) {
         this.lienzoPanel = lienzoPanel;
+        this.lienzoPanelWidget = ElementWrapperWidget.getWidget(lienzoPanel.getElement());
         this.gridLienzoScrollHandler = new GridLienzoScrollHandler(this);
 
         add(defaultGridLayer);
@@ -150,7 +123,7 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
     }
 
     protected void setupDomElementContainer() {
-        getDomElementContainer().add(getLienzoPanel());
+        getDomElementContainer().add(lienzoPanelWidget);
     }
 
     protected void setupRootPanel() {
@@ -231,8 +204,8 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
 
         getDomElementContainer().setPixelSize(visibleWidth,
                                               visibleHeight);
-        getLienzoPanel().setPixelSize(visibleWidth,
-                                      visibleHeight);
+        lienzoPanel.setPixelSize(visibleWidth,
+                                 visibleHeight);
 
         propagateNewPanelSize(visibleWidth, visibleHeight);
     }

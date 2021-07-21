@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.export;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.Bounds;
@@ -39,7 +38,7 @@ public class LienzoCanvasExport implements CanvasExport<AbstractCanvasHandler> {
 
     public static final String BG_COLOR = "#FFFFFF";
     public static final int PADDING = 25;
-    private final BoundsProvider boundsProvider;
+    BoundsProvider boundsProvider;
 
     public LienzoCanvasExport() {
         this(new WiresLayerBoundsProvider());
@@ -63,8 +62,7 @@ public class LienzoCanvasExport implements CanvasExport<AbstractCanvasHandler> {
         final Transform transform = viewport.getTransform();
         viewport.setTransform(new Transform());
         // Draw into the target context.
-        lienzoLayer.draw(new Context2D(new DelegateNativeContext2D(svgContext2D,
-                                                                   canvasHandler)));
+        lienzoLayer.draw(new DelegateContext2D(lienzoLayer.getCanvasElement(), svgContext2D, canvasHandler));
         // Set again the previous transform.
         viewport.setTransform(transform);
 

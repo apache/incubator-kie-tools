@@ -16,33 +16,48 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.views;
 
-import com.google.gwt.event.shared.HandlerRegistration;
+import elemental2.dom.EventListener;
+import elemental2.dom.HTMLDivElement;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.uberfire.mvp.Command;
 
 public class LienzoPanelFocusHandler {
 
-    HandlerRegistration overHandler;
-    HandlerRegistration outHandler;
+    EventListener mouseOverListener;
+    EventListener mouseLeaveListener;
+
+    HTMLDivElement panel;
+    static final String ON_MOUSE_OVER = "mouseover";
+    static final String ON_MOUSE_LEAVE = "mouseleave";
 
     public LienzoPanelFocusHandler listen(final LienzoPanel panel,
                                           final Command onFocus,
                                           final Command onLostFocus) {
         clear();
-        overHandler = panel.getView().addMouseOverHandler(mouseOverEvent -> onFocus.execute());
-        outHandler = panel.getView().addMouseOutHandler(mouseOutEvent -> onLostFocus.execute());
+
+        this.panel = panel.getView().getElement();
+        this.mouseOverListener = mouseOverEvent -> onFocus.execute();
+        this.mouseLeaveListener = mouseLeaveEvent -> onLostFocus.execute();
+        this.panel.addEventListener(ON_MOUSE_OVER, mouseOverListener);
+        this.panel.addEventListener(ON_MOUSE_LEAVE, mouseLeaveListener);
+
         return this;
     }
 
     public LienzoPanelFocusHandler clear() {
-        if (null != overHandler) {
-            overHandler.removeHandler();
-            overHandler = null;
+        if (null != panel) {
+            if (null != mouseOverListener) {
+                panel.removeEventListener(ON_MOUSE_OVER, mouseOverListener);
+            }
+            if (null != mouseLeaveListener) {
+                panel.removeEventListener(ON_MOUSE_LEAVE, mouseLeaveListener);
+            }
         }
-        if (null != outHandler) {
-            outHandler.removeHandler();
-            outHandler = null;
-        }
+
+        mouseOverListener = null;
+        mouseLeaveListener = null;
+        panel = null;
+
         return this;
     }
 }

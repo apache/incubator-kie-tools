@@ -76,19 +76,9 @@
     <!-- Lienzo. -->
 
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>lienzo-core</artifactId>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.ahome-it</groupId>
-      <artifactId>ahome-tooling-nativetools</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.ahome-it</groupId>
-      <artifactId>ahome-tooling-common</artifactId>
     </dependency>
 
     <!-- GWT and GWT Extensions -->
@@ -186,7 +176,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>lienzo-tests</artifactId>
       <exclusions>
         <exclusion>

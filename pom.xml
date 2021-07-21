@@ -116,6 +116,12 @@
     <!-- DROOLS-WB -->
     <module>drools-wb-bom</module>
     <module>drools-wb-screens</module>
+
+    <!-- LIENZO -->
+    <module>lienzo-core</module>
+    <module>lienzo-tests</module>
+    <module>lienzo-webapp</module>
+
   </modules>
 
   <pluginRepositories>
@@ -189,6 +195,8 @@
     <revapi.newUberFireVersion>${project.version}</revapi.newUberFireVersion>
     <version.com.googlecode.jsonsimple>1.1.1</version.com.googlecode.jsonsimple>
     <version.com.googlecode.jtype>0.1.1</version.com.googlecode.jtype>
+
+    <version.org.kie.kogito.lienzo>${project.version}</version.org.kie.kogito.lienzo>
 
     <!-- Properties from KIE-WB-COMMON parent POM -->
     <version.powermock.api.mockito2>2.0.9</version.powermock.api.mockito2>
@@ -307,6 +315,30 @@
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+      <!-- Lienzo artifacts for kogito stream -->
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>lienzo-core</artifactId>
+        <version>${version.org.kie.kogito.lienzo}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>lienzo-core</artifactId>
+        <version>${version.org.kie.kogito.lienzo}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>lienzo-tests</artifactId>
+        <version>${version.org.kie.kogito.lienzo}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>lienzo-tests</artifactId>
+        <version>${version.org.kie.kogito.lienzo}</version>
+        <classifier>sources</classifier>
       </dependency>
 
       <!-- log4j-to-slf4j -->

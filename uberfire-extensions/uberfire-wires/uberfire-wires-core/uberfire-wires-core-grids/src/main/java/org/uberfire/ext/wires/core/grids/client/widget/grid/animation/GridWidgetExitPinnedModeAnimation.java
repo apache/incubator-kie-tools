@@ -96,8 +96,8 @@ public class GridWidgetExitPinnedModeAnimation extends TimedAnimation {
                       final double frameScaleX = startScaleX + (endScaleX - startScaleX) * pct;
                       final double frameScaleY = startScaleY + (endScaleY - startScaleY) * pct;
                       transform.translate(frameLocation.getX(),
-                                          frameLocation.getY()).scale(frameScaleX,
-                                                                      frameScaleY);
+                                          frameLocation.getY()).scaleWithXY(frameScaleX,
+                                                                            frameScaleY);
 
                       showGridWidgets(pct);
                       showGridWidgetConnectors(pct);

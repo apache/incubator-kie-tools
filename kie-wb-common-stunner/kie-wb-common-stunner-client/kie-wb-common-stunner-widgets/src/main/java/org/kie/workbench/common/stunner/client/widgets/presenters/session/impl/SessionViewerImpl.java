@@ -81,6 +81,12 @@ public class SessionViewerImpl<S extends ViewerSession>
     }
 
     @Override
+    protected void onAfterCanvasInitialized() {
+        super.onAfterCanvasInitialized();
+        canvasPanel.getView().onResize();
+    }
+
+    @Override
     public void destroy() {
         super.destroy();
         diagramSupplier = null;

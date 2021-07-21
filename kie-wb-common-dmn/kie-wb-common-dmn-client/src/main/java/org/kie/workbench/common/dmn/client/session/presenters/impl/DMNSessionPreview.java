@@ -61,17 +61,6 @@ public class DMNSessionPreview implements SessionDiagramPreview<AbstractSession>
     }
 
     @Override
-    public void open(final AbstractSession item,
-                     final int width,
-                     final int height,
-                     final SessionViewerCallback<Diagram> callback) {
-        delegate.open(item,
-                      width,
-                      height,
-                      callback);
-    }
-
-    @Override
     public void scale(final int width,
                       final int height) {
         delegate.scale(width,

@@ -188,14 +188,15 @@ public class DefaultGridLayer extends Layer implements GridLayer,
             final Point2D ep = new Point2D(targetGridWidget.getX() + targetGridWidget.getWidth() / 2,
                                            targetGridWidget.getY() + targetGridWidget.getHeight() / 2);
 
-            line.setPoints(new Point2DArray(sp,
-                                            ep));
+            line.setPoints(Point2DArray.fromArrayOfPoint2D(sp,
+                                                           ep));
         }
     }
 
     /**
      * Add a child to this Layer. If the child is a GridWidget then also add
      * a Connector between the Grid Widget and any "linked" GridWidgets.
+     *
      * @param child Primitive to add to the Layer
      * @return The Layer
      */
@@ -284,7 +285,8 @@ public class DefaultGridLayer extends Layer implements GridLayer,
     /**
      * Add a child and other children to this Layer. If the child or any children is a GridWidget
      * then also add a Connector between the Grid Widget and any "linked" GridWidgets.
-     * @param child Primitive to add to the Layer
+     *
+     * @param child    Primitive to add to the Layer
      * @param children Additional primitive(s) to add to the Layer
      * @return The Layer
      */
@@ -301,6 +303,7 @@ public class DefaultGridLayer extends Layer implements GridLayer,
      * Remove a child from this Layer. if the child is a GridWidget also remove
      * any Connectors that have been added between the GridWidget being removed
      * and any of GridWidgets.
+     *
      * @param child Primitive to remove from the Layer
      * @return The Layer
      */

@@ -294,7 +294,7 @@
 
     <!-- Add for enforcer -->
     <dependency>
-      <groupId>org.kie</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>lienzo-core</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -429,6 +429,7 @@
           <printJavaCommandOnError>false</printJavaCommandOnError>
           <productionMode>true</productionMode>
           <hostedWebapp>src/main/webapp</hostedWebapp>
+          <generateJsInteropExports>true</generateJsInteropExports>
 
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>

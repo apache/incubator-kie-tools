@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.shape.view.decisionservice;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.ColorName;
@@ -46,7 +45,6 @@ public class DecisionServiceDividerLine extends Line {
 
     @Override
     protected boolean prepare(final Context2D context,
-                              final Attributes attr,
                               final double alpha) {
         context.beginPath();
         context.moveTo(0.0, 0.0);

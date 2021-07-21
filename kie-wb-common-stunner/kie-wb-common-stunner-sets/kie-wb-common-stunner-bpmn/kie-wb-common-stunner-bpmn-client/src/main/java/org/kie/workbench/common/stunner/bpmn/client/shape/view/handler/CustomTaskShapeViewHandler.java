@@ -19,11 +19,13 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.view.handler;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Picture;
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientUtils;
 import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
+import org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeViewHandler;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitive;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
@@ -73,8 +75,9 @@ public class CustomTaskShapeViewHandler
         }
         if (Objects.equals(bean.getDimensionsSet().getHeight().getValue(), 0d)
                 && Objects.equals(bean.getDimensionsSet().getWidth().getValue(), 0d)) {
-            bean.getDimensionsSet().getHeight().setValue(view.getPrimitive().get().getAttributes().getHeight());
-            bean.getDimensionsSet().getWidth().setValue(view.getPrimitive().get().getAttributes().getWidth());
+            IPrimitive p = view.getPrimitive().get();
+            bean.getDimensionsSet().getWidth().setValue(LienzoShapeUtils.getWidth(p));
+            bean.getDimensionsSet().getHeight().setValue(LienzoShapeUtils.getHeight(p));
         }
     }
 

@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.lienzo.tools.client.event.INodeXYEvent;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;

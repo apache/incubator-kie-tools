@@ -31,9 +31,7 @@ public class ShapeViewSupportedEvents {
             ViewEventType.TEXT_CLICK,
             ViewEventType.TEXT_DBL_CLICK,
             ViewEventType.DRAG,
-            ViewEventType.RESIZE,
-            ViewEventType.TOUCH,
-            ViewEventType.GESTURE
+            ViewEventType.RESIZE
     };
 
     public static final ViewEventType[] ALL_DESKTOP_EVENT_TYPES = new ViewEventType[]{
@@ -63,8 +61,7 @@ public class ShapeViewSupportedEvents {
 
     public static final ViewEventType[] CONNECTOR_EVENT_TYPES = new ViewEventType[]{
             ViewEventType.MOUSE_CLICK,
-            ViewEventType.MOUSE_DBL_CLICK,
-            ViewEventType.TOUCH
+            ViewEventType.MOUSE_DBL_CLICK
     };
 
     public static final ViewEventType[] DESKTOP_CONNECTOR_EVENT_TYPES = new ViewEventType[]{

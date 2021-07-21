@@ -82,8 +82,8 @@ public class Decorator extends Group {
         this.add(item);
         decorator.setX(item.getX() - (padding / 4));
         decorator.setY(item.getY() - (padding / 4));
-        decorator.addNodeMouseEnterHandler(nodeMouseEnterEvent -> show(nodeMouseEnterEvent.getMouseEvent().getClientX(),
-                                                                       nodeMouseEnterEvent.getMouseEvent().getClientY()));
+        decorator.addNodeMouseEnterHandler(nodeMouseEnterEvent -> show(nodeMouseEnterEvent.getX(),
+                                                                       nodeMouseEnterEvent.getY()));
         decorator.addNodeMouseExitHandler(nodeMouseExitEvent -> hide());
         decorator.addNodeMouseMoveHandler(nodeMouseMoveEvent -> timer.cancel());
         item.setDraggable(false);

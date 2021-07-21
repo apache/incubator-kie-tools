@@ -22,12 +22,15 @@ import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.widget.panel.impl.PreviewPanel;
-import com.ait.lienzo.client.widget.panel.scrollbars.ScrollablePanel;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 
 @Dependent
 @Typed(PreviewLienzoPanel.class)
 public class PreviewLienzoPanel
         extends DelegateLienzoPanel<StunnerLienzoBoundsPanel> {
+
+    private static final int DEFAULT_WIDTH = 420;
+    private static final int DEFAULT_HEIGHT = 210;
 
     private final StunnerLienzoBoundsPanel panel;
 
@@ -38,17 +41,14 @@ public class PreviewLienzoPanel
 
     @PostConstruct
     public void init() {
-        panel.setPanelBuilder((width, height) -> new PreviewPanel(width.orElse(300),
-                                                                  height.orElse(150)));
+        panel.setPanelBuilder(() -> new PreviewPanel(DEFAULT_WIDTH, DEFAULT_HEIGHT));
     }
 
     public PreviewLienzoPanel observe(final ScrollableLienzoPanel panel) {
-        getPreviewPanelView().observe((ScrollablePanel) panel.getDelegate().getView());
-        return this;
-    }
+        ((PreviewPanel) getDelegate().getView())
+                .observe((ScrollablePanel) panel.getDelegate().getView());
 
-    private PreviewPanel getPreviewPanelView() {
-        return (PreviewPanel) getDelegate().getView();
+        return this;
     }
 
     @Override

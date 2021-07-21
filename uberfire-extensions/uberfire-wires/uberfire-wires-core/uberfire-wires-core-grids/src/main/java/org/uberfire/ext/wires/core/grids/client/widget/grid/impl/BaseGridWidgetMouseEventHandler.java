@@ -18,14 +18,14 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 import java.util.List;
 import java.util.Optional;
 
-import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 
 /**
- * Base {@link AbstractNodeMouseEvent} handler that delegates handling of events to registered delegates.
+ * Base {@link AbstractNodeHumanInputEvent} handler that delegates handling of events to registered delegates.
  */
 public abstract class BaseGridWidgetMouseEventHandler {
 
@@ -38,7 +38,7 @@ public abstract class BaseGridWidgetMouseEventHandler {
         this.handlers = handlers;
     }
 
-    public void doEventDispatch(final AbstractNodeMouseEvent event) {
+    public void doEventDispatch(final AbstractNodeHumanInputEvent event) {
         if (!gridWidget.isVisible()) {
             return;
         }
