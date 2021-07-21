@@ -19,11 +19,11 @@ describe("Predicate Test", () => {
     cy.visit("/");
   });
 
-  it("Define Predicate", () => {
-    cy.fixture("emptyWithData.pmml").then((fileContent) => {
+  it("Create simple predicate - same pmml as in fixture: simple-predicate.pmml", () => {
+    cy.fixture("empty-characteristics-DD-defined.pmml").then((fileContent) => {
       cy.get("[data-ouia-component-id='upload-button']+input").should("not.be.visible").attachFile({
         fileContent: fileContent.toString(),
-        fileName: "emptyWithData.pmml",
+        fileName: "empty-characteristics-DD-defined.pmml",
         mimeType: "text/plain",
         encoding: "utf-8",
       });
@@ -63,15 +63,15 @@ describe("Predicate Test", () => {
             });
           });
       });
-    cy.assertSourceCode("simplePredicate.pmml");
+    cy.assertSourceCode("simple-predicate.pmml");
   });
 
   describe("Use predefined predicate", () => {
     beforeEach(() => {
-      cy.fixture("simplePredicate.pmml").then((fileContent) => {
+      cy.fixture("simple-predicate.pmml").then((fileContent) => {
         cy.get("[data-ouia-component-id='upload-button']+input").should("not.be.visible").attachFile({
           fileContent: fileContent.toString(),
-          fileName: "emptyWithData.pmml",
+          fileName: "simple-predicate.pmml",
           mimeType: "text/plain",
           encoding: "utf-8",
         });
@@ -199,7 +199,7 @@ describe("Predicate Test", () => {
         });
     });
 
-    it("Rewrite predicate to compound", () => {
+    it("Rewrite predicate to compound - same pmml as in fixture: compound-predicate.pmml", () => {
       cy.ouiaType("characteristic-item").contains("Char1").click();
 
       cy.ouiaId("edit-characteristic").within(() => {
@@ -228,7 +228,7 @@ describe("Predicate Test", () => {
             expect($label[0]).to.have.text("Partial score:\u00A0-5");
           });
         });
-      cy.assertSourceCode("compoundPredicate.pmml");
+      cy.assertSourceCode("compound-predicate.pmml");
     });
   });
 });

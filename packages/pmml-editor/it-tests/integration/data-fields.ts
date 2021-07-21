@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-describe("Create Uploaded Files Test", () => {
+describe("Data Fields Test", () => {
   beforeEach(() => {
     cy.visit("/");
     cy.newButtonPMML().click();
   });
 
-  it("emptyWithData.pmml", () => {
+  it("Create a data type (integer) - same pmml as in fixture: empty-characteristics-DD-defined.pmml", () => {
     cy.ouiaId("model-name").click();
     cy.ouiaId("set-model-name").type("{selectall}{del}EmptyModelWithData");
 
@@ -71,6 +71,6 @@ describe("Create Uploaded Files Test", () => {
     cy.ouiaId("outputs-toolbar").click();
     cy.get("button[data-title='OutputsModalClose']").click();
 
-    cy.assertSourceCode("emptyWithData.pmml");
+    cy.assertSourceCode("empty-characteristics-DD-defined.pmml");
   });
 });
