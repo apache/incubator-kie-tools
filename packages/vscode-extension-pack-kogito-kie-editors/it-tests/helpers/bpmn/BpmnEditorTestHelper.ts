@@ -15,9 +15,12 @@
  */
 
 import { By, WebElement, WebView } from "vscode-extension-tester";
-import { assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
-import { expandedDocksBarE, h3ComponentWithText } from "./CommonLocators";
+import { assertWebElementIsDisplayedEnabled } from "../CommonAsserts";
+import { expandedDocksBarE, h3ComponentWithText } from "../CommonLocators";
 import { assert } from "chai";
+import PropertiesPanelHelper from "../bpmn/PropertiesPanelHelper";
+import DiagramExplorerHelper from "../bpmn/DiagramExplorerHelper";
+import { sleep } from "../VSCodeTestHelper";
 
 export enum PaletteCategories {
   START_EVENTS = "Start Events",
@@ -37,42 +40,41 @@ export enum PaletteCategories {
  * via contructor.
  */
 export default class BpmnEditorTestHelper {
-  /**
-   * WebView in whitch the editor Iframe is located.
-   * Initialize in constructor.
-   */
-  private webview: WebView;
+  properties: WebElement;
+  diagramExplorer: WebElement;
+  palette: WebElement;
 
-  constructor(webview: WebView) {
-    this.webview = webview;
-  }
+  constructor(private readonly webview: WebView) {}
 
   /**
    * Finds BPMN diagram properties element. Clicking it opens/closes properties panel.
    *
    * @returns Promise<WebElement> promise that resolves to BPMN diagram properties element.
    */
-  public getDiagramProperties = async (): Promise<WebElement> => {
-    return await this.webview.findWebElement(By.className("docks-item-E-DiagramEditorPropertiesScreen"));
-  };
+  public async getDiagramProperties(): Promise<WebElement> {
+    this.properties = await this.webview.findWebElement(By.className("docks-item-E-DiagramEditorPropertiesScreen"));
+    return this.properties;
+  }
 
   /**
    * Finds BPMN diagram explorer element. Clicking it opens/closes explorer panel.
    *
    * @returns Promise<WebElement> promise that resolves to BPMN diagram explorer element.
    */
-  public getDiagramExplorer = async (): Promise<WebElement> => {
-    return await this.webview.findWebElement(By.className("docks-item-E-ProjectDiagramExplorerScreen"));
-  };
+  public async getDiagramExplorer(): Promise<WebElement> {
+    this.diagramExplorer = await this.webview.findWebElement(By.className("docks-item-E-ProjectDiagramExplorerScreen"));
+    return this.diagramExplorer;
+  }
 
   /**
    * Finds BPMN diagram palette element. Clicking it opens/closes the palette.
    *
    * @returns Promise<WebElement> promise that resolves to BPMN diagram palette element.
    */
-  public getPalette = async (): Promise<WebElement> => {
-    return await this.webview.findWebElement(By.className("kie-palette"));
-  };
+  public async getPalette(): Promise<WebElement> {
+    this.palette = await this.webview.findWebElement(By.className("kie-palette"));
+    return this.palette;
+  }
 
   /**
    * Opens diagram properties panel
@@ -83,15 +85,15 @@ export default class BpmnEditorTestHelper {
    *
    * @returns a promise resolving to WebElement of openned panel.
    */
-  public openDiagramProperties = async (): Promise<WebElement> => {
+  public async openDiagramProperties(): Promise<PropertiesPanelHelper> {
     const properties = await this.getDiagramProperties();
     await assertWebElementIsDisplayedEnabled(properties);
     await properties.click();
     const expandedPropertiesPanel = await this.webview.findWebElement(expandedDocksBarE());
     await assertWebElementIsDisplayedEnabled(await properties.findElement(By.xpath(h3ComponentWithText("Properties"))));
     await assertWebElementIsDisplayedEnabled(expandedPropertiesPanel);
-    return expandedPropertiesPanel;
-  };
+    return new PropertiesPanelHelper(expandedPropertiesPanel);
+  }
 
   /**
    * Opens diagram explorer panel.
@@ -102,7 +104,7 @@ export default class BpmnEditorTestHelper {
    *
    * @returns a promise resolving to WebElement of openned panel.
    */
-  public openDiagramExplorer = async (): Promise<WebElement> => {
+  public async openDiagramExplorer(): Promise<DiagramExplorerHelper> {
     const explorer = await this.getDiagramExplorer();
     await assertWebElementIsDisplayedEnabled(explorer);
     await explorer.click();
@@ -111,8 +113,8 @@ export default class BpmnEditorTestHelper {
       await explorer.findElement(By.xpath(h3ComponentWithText("Explore Diagram")))
     );
     await assertWebElementIsDisplayedEnabled(expandedExplorerPanel);
-    return expandedExplorerPanel;
-  };
+    return new DiagramExplorerHelper(expandedExplorerPanel);
+  }
 
   /**
    * Opens the palette of BPMN editor with category specified in argument.
@@ -122,7 +124,7 @@ export default class BpmnEditorTestHelper {
    * @param categoryToOpen use one of PaletteCategories values
    * @returns root WebElement of openned palette flyout, can be used to query offered nodes and click them
    */
-  public openDiagramPalette = async (categoryToOpen: PaletteCategories): Promise<WebElement> => {
+  public async openDiagramPalette(categoryToOpen: PaletteCategories): Promise<WebElement> {
     const palette = await this.getPalette();
     await assertWebElementIsDisplayedEnabled(palette);
     const paletteElements = await palette.findElements(By.xpath("//button[@data-field='categoryIcon' and @title]"));
@@ -138,11 +140,18 @@ export default class BpmnEditorTestHelper {
         "Unexpected palette category on index: [" + i + "]. Expected [" + categories[i] + "], but got [" + title + "]."
       );
       if (title == categoryToOpen) {
-        paletteElements[i].click();
-        return await palette.findElement(By.className("kie-palette-flyout"));
+        await paletteElements[i].click();
+        this.palette = await palette.findElement(By.className("kie-palette-flyout"));
+        return this.palette;
       }
     }
 
     throw Error("Palette category: [" + categoryToOpen + "] not found.");
-  };
+  }
+
+  public async scrollElementIntoView(element: WebElement): Promise<void> {
+    const driver = element.getDriver();
+    await sleep(500);
+    await driver.executeScript("arguments[0].scrollIntoView({ behavior: 'auto', block: 'end'});", element);
+  }
 }
