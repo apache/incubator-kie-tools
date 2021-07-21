@@ -72,7 +72,7 @@ Feature: rhpam-kogito-builder-rhel8 feature.
       | KOGITO_VERSION | 2.0.0-SNAPSHOT |
       | RUNTIME_TYPE   | springboot     |
     Then file /home/kogito/bin/project-1.0-SNAPSHOT.jar should exist
-    And s2i build log should contain Generating quarkus project structure using the kogito-springboot-dm-archetype archetype...
+    And s2i build log should contain Generating springboot project structure using the kogito-springboot-dm-archetype archetype...
     And check that page is served
       | property        | value                                                                                            |
       | port            | 8080                                                                                             |
