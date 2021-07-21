@@ -63,7 +63,7 @@ describe("Predicate Test", () => {
             });
           });
       });
-    cy.assertSourceCode("simple-predicate.pmml");
+    cy.buttonPMML().click().editorShouldContains("simple-predicate.pmml").ouiaId("pmml-modal-confirm").click();
   });
 
   describe("Use predefined predicate", () => {
@@ -228,7 +228,7 @@ describe("Predicate Test", () => {
             expect($label[0]).to.have.text("Partial score:\u00A0-5");
           });
         });
-      cy.assertSourceCode("compound-predicate.pmml");
+      cy.buttonPMML().click().editorShouldContains("compound-predicate.pmml").ouiaId("pmml-modal-confirm").click();
     });
   });
 });

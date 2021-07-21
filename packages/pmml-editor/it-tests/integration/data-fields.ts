@@ -71,6 +71,10 @@ describe("Data Fields Test", () => {
     cy.ouiaId("outputs-toolbar").click();
     cy.get("button[data-title='OutputsModalClose']").click();
 
-    cy.assertSourceCode("empty-characteristics-DD-defined.pmml");
+    cy.buttonPMML()
+      .click()
+      .editorShouldContains("empty-characteristics-DD-defined.pmml")
+      .ouiaId("pmml-modal-confirm")
+      .click();
   });
 });

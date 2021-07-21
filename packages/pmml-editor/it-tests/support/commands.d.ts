@@ -78,6 +78,6 @@ declare namespace Cypress {
      * Assert that the actual state of the PMML editor is similar as PMML file saved in the fixtures folder.
      * Run this command in scope of the main page.
      */
-    assertSourceCode(sourceCodeName: string): Chainable;
+    editorShouldContains(fileName: string): Chainable;
   }
 }
