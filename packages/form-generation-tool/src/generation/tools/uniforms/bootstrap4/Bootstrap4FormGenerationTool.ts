@@ -14,28 +14,56 @@
  * limitations under the License.
  */
 
-import { UniformsFormGenerationTool } from "../UniformsFormGenerationTool";
 import unescape from "lodash/unescape";
-import { FormAssetType, FormAsset, FormStyle } from "../../../types";
+import { FormAssetType, FormAsset, FormStyle, FormConfig, FormGenerationTool, FormSchema } from "../../../types";
 
 import { renderForm } from "@kogito-tooling/uniforms-bootstrap4-codegen/dist";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
+import { getUniformsSchema } from "../utils/UniformsSchemaUtils";
 
-export class Bootstrap4FormGenerationTool extends UniformsFormGenerationTool {
+export const BOOTSTRAP4_CSS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css";
+export const BOOTSTRAP4_JS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js";
+
+export const JQUERY_URL = "https://code.jquery.com/jquery-3.2.1.slim.min.js";
+export const POPPER_URL = "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js";
+
+export class Bootstrap4FormConfig implements FormConfig {
+  public readonly schema: string;
+
+  constructor(formSchema: any) {
+    this.schema = JSON.stringify(formSchema);
+  }
+
+  public resources = {
+    styles: {
+      "bootstrap.min.css": BOOTSTRAP4_CSS_URL,
+    },
+    scripts: {
+      "bootstrap.min.js": BOOTSTRAP4_JS_URL,
+      "jquery.js": JQUERY_URL,
+      "popper.js": POPPER_URL,
+    },
+  };
+}
+
+export class Bootstrap4FormGenerationTool implements FormGenerationTool {
   type: string = FormStyle.BOOTSTRAP;
 
-  protected doGenerate = (formName: string, schema: any): FormAsset => {
+  generate(inputSchema: FormSchema): FormAsset {
+    const uniformsSchema = getUniformsSchema(inputSchema.schema);
+
     const form = renderForm({
-      id: formName,
-      schema: new JSONSchemaBridge(schema, () => true),
+      id: inputSchema.name,
+      schema: new JSONSchemaBridge(uniformsSchema, () => true),
       disabled: false,
       placeholder: true,
     });
     return {
-      id: formName,
-      assetName: `${formName}.${FormAssetType.HTML}`,
+      id: inputSchema.name,
+      assetName: `${inputSchema.name}.${FormAssetType.HTML}`,
       type: FormAssetType.HTML,
       content: unescape(form),
+      config: new Bootstrap4FormConfig(inputSchema.schema),
     };
-  };
+  }
 }

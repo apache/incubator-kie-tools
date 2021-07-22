@@ -29,11 +29,22 @@ export enum FormAssetType {
   TSX = "tsx",
 }
 
+export interface FormResources {
+  styles: Record<string, string>;
+  scripts: Record<string, string>;
+}
+
+export interface FormConfig {
+  schema: string;
+  resources: FormResources;
+}
+
 export interface FormAsset {
   id: string;
   assetName: string;
   content: string;
   type: FormAssetType | string;
+  config: FormConfig;
 }
 
 export interface FormGenerationTool {

@@ -14,28 +14,43 @@
  * limitations under the License.
  */
 
-import { UniformsFormGenerationTool } from "../UniformsFormGenerationTool";
 import unescape from "lodash/unescape";
-import { FormAssetType, FormAsset, FormStyle } from "../../../types";
+import { FormAssetType, FormAsset, FormStyle, FormConfig, FormGenerationTool, FormSchema } from "../../../types";
 
 import { renderForm } from "@kogito-tooling/uniforms-patternfly-codegen/dist";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
+import { getUniformsSchema } from "../utils/UniformsSchemaUtils";
 
-export class PatternflyFormGenerationTool extends UniformsFormGenerationTool {
+export class PatternflyFormConfig implements FormConfig {
+  public readonly schema: string;
+
+  constructor(formSchema: any) {
+    this.schema = JSON.stringify(formSchema);
+  }
+
+  public resources = {
+    styles: {},
+    scripts: {},
+  };
+}
+
+export class PatternflyFormGenerationTool implements FormGenerationTool {
   type: string = FormStyle.PATTERNFLY;
 
-  protected doGenerate = (formName: string, schema: any): FormAsset => {
+  generate(inputSchema: FormSchema): FormAsset {
+    const uniformsSchema = getUniformsSchema(inputSchema.schema);
     const form = renderForm({
-      id: formName,
-      schema: new JSONSchemaBridge(schema, () => true),
+      id: inputSchema.name,
+      schema: new JSONSchemaBridge(uniformsSchema, () => true),
       disabled: false,
       placeholder: true,
     });
     return {
-      id: formName,
-      assetName: `${formName}.${FormAssetType.TSX}`,
+      id: inputSchema.name,
+      assetName: `${inputSchema.name}.${FormAssetType.TSX}`,
       type: FormAssetType.TSX,
       content: unescape(form),
+      config: new PatternflyFormConfig(inputSchema.schema),
     };
-  };
+  }
 }

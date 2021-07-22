@@ -16,7 +16,10 @@
 
 import { FormAsset } from "../../../../../generation/types";
 import { ApplyForVisaSchema } from "./mock";
-import { Bootstrap4FormGenerationTool } from "../../../../../generation/tools/uniforms/bootstrap4/Bootstrap4FormGenerationTool";
+import {
+  Bootstrap4FormConfig,
+  Bootstrap4FormGenerationTool,
+} from "../../../../../generation/tools/uniforms/bootstrap4/Bootstrap4FormGenerationTool";
 
 describe("Bootstrap4FormGenerationTool tests", () => {
   it("Generate", () => {
@@ -31,5 +34,7 @@ describe("Bootstrap4FormGenerationTool tests", () => {
     expect(formAsset.id).toStrictEqual("ApplyForVisa");
     expect(formAsset.assetName).toStrictEqual("ApplyForVisa.html");
     expect(formAsset.content).not.toBeUndefined();
+    expect(formAsset.config).not.toBeUndefined();
+    expect(formAsset.config).toMatchObject(new Bootstrap4FormConfig(ApplyForVisaSchema));
   });
 });
