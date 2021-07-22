@@ -23,8 +23,8 @@ getOperatorVersion() {
 
 getLatestOlmReleaseVersion() {
   local tempfolder=$(mktemp -d)
-  git clone https://github.com/operator-framework/community-operators/ "${tempfolder}" > /dev/null 2>&1
-  local version=$(cd ${tempfolder}/community-operators/kogito-operator && for i in $(ls -d */); do echo ${i%%/}; done | sort -V | tail -1)
+  git clone https://github.com/k8s-operatorhub/community-operators/ "${tempfolder}" > /dev/null 2>&1
+  local version=$(cd ${tempfolder}/operators/kogito-operator && for i in $(ls -d */); do echo ${i%%/}; done | sort -V | tail -1)
   echo ${version}
 }
 
