@@ -292,9 +292,7 @@ pipeline {
                     deployProperties["${getRepoName()}.pr.link"] = prLink
 
                     if (isCreateChangesPR()) {
-                        String bodyMsg = "PR has been created with update Maven artifacts.\nPlease review it here: ${prLink}"
-
-                        emailext body: bodyMsg, subject: "[${getBuildBranch()}][d] Kogito Images pipeline", to: env.KOGITO_CI_EMAIL_TO
+                        sendNotification("PR has been created with update Maven artifacts.\nPlease review it here: ${prLink}")
                     }
                 }
             }
@@ -316,10 +314,29 @@ pipeline {
                 def propertiesStr = deployProperties.collect { entry -> "${entry.key}=${entry.value}" }.join('\n')
                 writeFile( file : env.PROPERTIES_FILE_NAME , text : propertiesStr)
                 archiveArtifacts artifacts: env.PROPERTIES_FILE_NAME, allowEmptyArchive:true
-                clean()
             }
         }
+        unsuccessful {
+            sendUnsuccessfulNotification()
+        }
+        cleanup {
+            clean()
+        }
     }
+}
+
+void sendUnsuccessfulNotification() {
+    if (params.SEND_NOTIFICATION) {
+        sendNotification("**Deploy job** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}")
+    } else {
+        echo 'No notification sent per configuration'
+    }
+}
+
+void sendNotification(String body) {
+    emailext body: body,
+        subject: "[${getBuildBranch()}] Kogito Images",
+        to: env.KOGITO_CI_EMAIL_TO
 }
 
 void checkoutRepo() {

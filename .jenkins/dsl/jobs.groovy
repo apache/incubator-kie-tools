@@ -92,6 +92,8 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
             stringParam('KOGITO_ARTIFACTS_VERSION', '', 'Optional. If artifacts\' version is different from PROJECT_VERSION.')
 
             booleanParam('CREATE_PR', false, 'In case of not releasing, you can ask to create a PR with the changes')
+
+            booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
 
         environmentVariables {
@@ -156,6 +158,8 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
             stringParam('KOGITO_ARTIFACTS_VERSION', '', 'Optional. If artifacts\' version is different from PROJECT_VERSION.')
             stringParam('GIT_TAG', '', 'Git tag to set, if different from PROJECT_VERSION')
             stringParam('RELEASE_NOTES', '', 'Release notes to be added. If none provided, a default one will be given.')
+
+            booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
 
         environmentVariables {

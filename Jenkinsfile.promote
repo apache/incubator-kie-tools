@@ -17,7 +17,7 @@ pipeline {
 
     environment {
         // Static env is defined into .jenkins/dsl/jobs.groovy file
-        
+
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         OPENSHIFT_API = credentials('OPENSHIFT_API')
@@ -62,7 +62,7 @@ pipeline {
             steps {
                 script {
                     // Update maven information with new artifacts from Maven central in the PR
-                    dir("artifacts-update") {
+                    dir('artifacts-update') {
                         checkoutRepo()
                         githubscm.forkRepo(getBotAuthorCredsID())
 
@@ -81,10 +81,9 @@ pipeline {
                             githubscm.commitChanges('Setup Maven artifacts to released ones')
                             githubscm.pushObject('origin', getPRSourceBranch(), getBotAuthorCredsID())
                         } catch (err) {
-                            emailext body: "Seems like no change is to be committed.\nPlease review in ${env.BUILD_URL}console.\n" +
-                                    "And take your decision here: ${env.BUILD_URL}input",
-                                    subject: "[${getBuildBranch()}] Release Pipeline",
-                                    to: env.KOGITO_CI_EMAIL_TO
+                            String body = "Seems like no change is to be committed.\nPlease review in ${env.BUILD_URL}console.\n" +
+                                    "And take your decision here: ${env.BUILD_URL}input"
+                            sendNotification(body, 'Release Pipeline')
                             input message: 'Should the pipeline continue ?', ok: 'Yes'
                         }
                     }
@@ -192,10 +191,27 @@ pipeline {
         }
     }
     post {
-        always {
+        unsuccessful {
+            sendUnsuccessfulNotification()
+        }
+        cleanup {
             clean()
         }
     }
+}
+
+void sendUnsuccessfulNotification() {
+    if (params.SEND_NOTIFICATION) {
+        sendNotification("**Promote job** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}")
+    } else {
+        echo 'No notification sent per configuration'
+    }
+}
+
+void sendNotification(String body, String subjectProject = 'Kogito Images') {
+    emailext body: body,
+        subject: "[${getBuildBranch()}] ${subjectProject}",
+        to: env.KOGITO_CI_EMAIL_TO
 }
 
 void installGitHubReleaseCLI() {
@@ -285,12 +301,12 @@ void createRelease() {
     if (isReleaseExist()) {
         deleteRelease()
     }
-    
+
     if (githubscm.isTagExist('origin', getGitTag())) {
         githubscm.removeLocalTag(getGitTag())
         githubscm.removeRemoteTag('origin', getGitTag(), getGitAuthorCredsID())
     }
-    
+
     def releaseName = "Kogito Images Version ${getProjectVersion()}"
     def description = params.RELEASE_NOTES ?: "We are glad to announce that the Kogito ${getProjectVersion()} release is now available!"
     withCredentials([string(credentialsId: env.GITHUB_TOKEN_CREDS_ID, variable: 'GITHUB_TOKEN')]) {
