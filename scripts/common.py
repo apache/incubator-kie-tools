@@ -212,7 +212,7 @@ def update_examples_ref_in_behave_tests(examples_ref):
     """
     print("Set examples_ref {} in behave tests".format(examples_ref))
     # this pattern will look for any occurrences of using master or using x.x.x
-    pattern = re.compile(r'(using nightly-master)|(using nightly-\s*([\d.]+.x))|(using \s*([\d.]+))')
+    pattern = re.compile(r'(using nightly-master)|(using nightly-\s*([\d.]+.x))|(using \s*([\d.]+[.x]?))')
     replacement = 'using {}'.format(examples_ref)
     update_in_behave_tests(pattern, replacement)
 
