@@ -94,7 +94,7 @@ pipeline {
             steps {
                 script {
                     versionCmd = "python3 scripts/manage-kogito-version.py --bump-to ${getProjectVersion()} --confirm"
-                    if (getBuildBranch() != 'master') {
+                    if (getBuildBranch() != 'main') {
                         versionCmd += " --examples-ref ${!isRelease() ? 'nightly-' : ''}${getBuildBranch()}"
                     }
                     if (getKogitoArtifactsVersion()) {

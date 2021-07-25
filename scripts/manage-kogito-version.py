@@ -5,7 +5,7 @@
 #   python scripts/manage-kogito-version.py --bump-to 0.99.0
 #
 #   # to set a custom kogito-examples branch for the behave tests different than the defaults (sam than the version
-#   # or master for rc) use --branch-apps parameters, e.g.:
+#   # or main for rc) use --branch-apps parameters, e.g.:
 #   python scripts/manage-kogito-version.py --bump-to 0.99.0 --apps-branch 0.10.x
 #
 # Dependencies:
@@ -40,7 +40,7 @@ if __name__ == "__main__":
             if args.examples_ref is not None:
                 examples_ref = args.examples_ref
             if 'rc' in args.bump_to:
-                examples_ref = 'master'
+                examples_ref = 'main'
             
             artifacts_version = args.bump_to
             if args.artifacts_version:

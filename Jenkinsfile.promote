@@ -169,7 +169,7 @@ pipeline {
 
                         // Update version to next snapshot
                         versionCmd = "python3 scripts/manage-kogito-version.py --bump-to ${nextVersion} --artifacts-version ${getKogitoArtifactsNextVersion()} --confirm"
-                        if (getBuildBranch() != 'master') {
+                        if (getBuildBranch() != 'main') {
                             versionCmd += " --examples-ref ${getBuildBranch()}"
                         }
                         sh versionCmd

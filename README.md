@@ -9,7 +9,7 @@ Kogito
 [![GitHub Forks](https://img.shields.io/github/forks/kiegroup/kogito-images.svg)](https://github.com/kiegroup/kogito-images/network/members)
 [![Pull Requests](https://img.shields.io/github/issues-pr/kiegroup/kogito-images.svg?style=flat-square)](https://github.com/kiegroup/kogito-images/pulls)
 [![Contributors](https://img.shields.io/github/contributors/kiegroup/kogito-images.svg?style=flat-square)](https://github.com/kiegroup/kogito-images/graphs/contributors)
-[![License](https://img.shields.io/github/license/kiegroup/kogito-images.svg)](https://github.com/kiegroup/kogito-images/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/kiegroup/kogito-images.svg)](https://github.com/kiegroup/kogito-images/blob/main/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/kogito_kie.svg?label=Follow&style=social)](https://twitter.com/kogito_kie?lang=en)
 
 
@@ -155,7 +155,7 @@ repository: the *rules-quarkus-helloworld* example, with native compilation disa
 
 ```bash
 $ s2i build https://github.com/kiegroup/kogito-examples.git \
-    --ref master \
+    --ref main \
     -e RUNTIME_TYPE=quarkus \
     --context-dir rules-quarkus-helloworld \
     quay.io/kiegroup/kogito-builder:latest \
@@ -202,7 +202,7 @@ repository: the *process-springboot-example*.
 
 ```bash
 $ s2i build https://github.com/kiegroup/kogito-examples.git \
-    --ref master \
+    --ref main \
     --context-dir \
     -e RUNTIME_TYPE=springboot \
     process-springboot-example \
@@ -240,7 +240,7 @@ Let's start 2 builds with the incremental option enabled and compare the time sp
 ```bash
 # First incremental build
 $ time s2i build https://github.com/kiegroup/kogito-examples.git \
-    --ref master \
+    --ref main \
     -e RUNTIME_TYPE=quarkus
     --context-dir rules-quarkus-helloworld \
     quay.io/kiegroup/kogito-builder:latest \
@@ -258,7 +258,7 @@ And now, let's run it again.
 ```bash
 # Second incremental build
 $ time s2i build https://github.com/kiegroup/kogito-examples.git \
-    --ref master \
+    --ref main \
     -e RUNTIME_TYPE=quarkus
     --context-dir rules-quarkus-helloworld \
     quay.io/kiegroup/kogito-builder:latest \
@@ -286,7 +286,7 @@ To turn it possible we just need to set the **MAVEN_MIRROR_URL** environment var
 ```bash
 # Third incremental build, with Maven mirror option
 $ time s2i build https://github.com/kiegroup/kogito-examples.git \
-    --ref master \
+    --ref main \
     -e RUNTIME_TYPE=quarkus
     --context-dir rules-quarkus-helloworld \
     quay.io/kiegroup/kogito-builder:latest \
@@ -353,8 +353,8 @@ If you don't have an already existing project, the best way to create a new one 
 to generate project structure. 
 The available archetypes are:
 
-- [Kogito Quarkus Archetype](https://github.com/kiegroup/kogito-runtimes/tree/master/archetypes/kogito-quarkus-archetype)
-- [Kogito Spring Boot Archetype](https://github.com/kiegroup/kogito-runtimes/tree/master/archetypes/kogito-springboot-archetype)
+- [Kogito Quarkus Archetype](https://github.com/kiegroup/kogito-runtimes/tree/main/archetypes/kogito-quarkus-archetype)
+- [Kogito Spring Boot Archetype](https://github.com/kiegroup/kogito-runtimes/tree/main/archetypes/kogito-springboot-archetype)
 
 Note that, when building Quarkus based application that is **not** a *UberJAR* we also need to copy the **lib** directory 
 located inside the *target* directory.  
@@ -755,7 +755,7 @@ to your Kogito infrastructure on a Kubernetes cluster and provide its capabiliti
 
 ### Kogito JIT Runner Component Image
 
-The Kogito JIT Runner provides a tool that allows you to submit a DMN model and evaluate it on the fly with a simple HTTP request. You can find more details on JIT [here](https://github.com/kiegroup/kogito-apps/tree/master/jitexecutor).
+The Kogito JIT Runner provides a tool that allows you to submit a DMN model and evaluate it on the fly with a simple HTTP request. You can find more details on JIT [here](https://github.com/kiegroup/kogito-apps/tree/main/jitexecutor).
 
 Basic usage:
 
@@ -781,7 +781,7 @@ Once the images are built and imported into a registry (quay.io or any other reg
 
 As a first step, we need to make the Kogito Images available as Image Streams in OpenShift. If you have `cluster-admin` 
 rights you can deploy it into the **openshift** namespace, otherwise, deploy it into the namespace where you have permissions. 
-To install the image stream use this imagestream file: [kogito-imagestream.yaml](https://raw.githubusercontent.com/kiegroup/kogito-images/master/kogito-imagestream.yaml).
+To install the image stream use this imagestream file: [kogito-imagestream.yaml](https://raw.githubusercontent.com/kiegroup/kogito-images/main/kogito-imagestream.yaml).
 It points to the latest released version.
 
 Let's use the *rules-quarkus-helloworld* from [Kogito Examples](https://github.com/kiegroup/kogito-examples).
@@ -815,7 +815,7 @@ imagestream.image.openshift.io/kogito-management-console created
 
 # performing a new build
 $ oc new-build --name=rules-quarkus-helloworld-builder --image-stream=kogito-builder:latest \ 
-    https://github.com/kiegroup/kogito-examples.git#master --context-dir=rules-quarkus-helloworld \
+    https://github.com/kiegroup/kogito-examples.git#main --context-dir=rules-quarkus-helloworld \
     --strategy=source --env NATIVE=false 
 --> Found image 8c9d756 (5 days old) in image stream "rules-quarkus-helloworld/kogito-builder" under tag "latest" for "kogito-builder:latest"
 
@@ -826,7 +826,7 @@ $ oc new-build --name=rules-quarkus-helloworld-builder --image-stream=kogito-bui
     Tags: builder, kogito, quarkus
 
     * The source repository appears to match: jee
-    * A source build using source code from https://github.com/kiegroup/kogito-examples.git#master will be created
+    * A source build using source code from https://github.com/kiegroup/kogito-examples.git#main will be created
       * The resulting image will be pushed to image stream tag "rules-quarkus-helloworld-builder:latest"
       * Use 'start-build' to trigger a new build
 
@@ -1268,16 +1268,16 @@ should be added for any issue related to this repository.
 When submitting the Pull Request with the fix for the reported issue, and for a better readability, we use the following pattern:
 
 
-- Pull Requests targeting only master branch:  
+- Pull Requests targeting only main branch:  
 ```text
 [KOGITO-XXXX] - Description of the Issue
 ```
 
-- But if the Pull Request also needs to be part of a different branch/version and is cherry picked from master: 
+- But if the Pull Request also needs to be part of a different branch/version and is cherry picked from main: 
 ```text
 Master PR:
-[master][KOGITO-XXXX] - Description of the Issue
+[main][KOGITO-XXXX] - Description of the Issue
 
-0.9.x PR cherry picker from master:
+0.9.x PR cherry picker from main:
 [0.9.x][KOGITO-XXXX] - Description of the Issue
 ```
