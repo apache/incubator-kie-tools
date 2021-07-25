@@ -15,15 +15,16 @@
 package framework
 
 import (
-	"github.com/kiegroup/kogito-operator/api"
 	"regexp"
 	"strings"
+
+	"github.com/kiegroup/kogito-operator/api"
 )
 
 const (
 	// dockerTagRegx matches a docker image name, to test it check: https://regex101.com/r/lAJKau/2.
 	// this is a super relax regexp, since we accept pretty much anything see the test cases on image_test.go
-	// see: https://github.com/docker/distribution/blob/master/reference/regexp.go
+	// see: https://github.com/docker/distribution/blob/main/reference/regexp.go
 	dockerTagRegx = `(?P<domain>(?:[a-z0-9]?:{0,1}\.?-?_?)+\/)?(?P<ns>(?:[a-z0-9]|[._]|__|[-]*)+\/)?(?P<image>[^:]+)(?P<tag>:.+)?`
 )
 
