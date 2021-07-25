@@ -35,7 +35,7 @@ teardown() {
     [[ "${testConfigFile}" =~ "tests.build-image-version=latest" ]]
     [[ "${testConfigFile}" =~ "tests.services-image-version=latest" ]]
     [[ "${testConfigFile}" =~ "tests.runtime-application-image-version=latest" ]]
-    [[ "${testConfigFile}" =~ "tests.examples-ref=nightly-master" ]]
+    [[ "${testConfigFile}" =~ "tests.examples-ref=nightly-main" ]]
 }
 
 @test "check update_test_config on release branch" {

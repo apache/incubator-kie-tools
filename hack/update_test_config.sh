@@ -24,7 +24,7 @@ test_branch="${test_image_version}.x"
 git branch | grep \* | cut -d ' ' -f2 | grep ${current_major_minor}
 if [ $? -ne 0 ]; then
   echo "no release branch"
-  test_branch="master"
+  test_branch="main"
 fi
 
 # Check the version
@@ -32,7 +32,7 @@ getOperatorVersion | grep -v snapshot
 if [ $? -ne 0 ]; then
   echo "no release"
 
-  if [ "${test_branch}" = "master" ]; then
+  if [ "${test_branch}" = "main" ]; then
     test_image_version="latest"
   fi  
   test_branch="nightly-${test_branch}"
