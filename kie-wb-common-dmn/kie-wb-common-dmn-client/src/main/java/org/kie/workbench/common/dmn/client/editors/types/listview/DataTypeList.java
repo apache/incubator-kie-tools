@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -46,6 +47,13 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTyp
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDDataTypesHandler;
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.widgets.client.kogito.IsKogito;
 import org.uberfire.client.mvp.UberElemental;
 
@@ -74,6 +82,10 @@ public class DataTypeList {
 
     private final IsKogito isKogito;
 
+    private final SessionCommandManager<AbstractCanvasHandler> commandManager;
+
+    private final SessionManager sessionManager;
+
     private Consumer<DataTypeListItem> onDataTypeListItemUpdate = (e) -> { /* Nothing. */ };
 
     private List<DataTypeListItem> items = new ArrayList<>();
@@ -93,7 +105,9 @@ public class DataTypeList {
                         final DataTypeStackHash dataTypeStackHash,
                         final DNDDataTypesHandler dndDataTypesHandler,
                         final DataTypeListHighlightHelper highlightHelper,
-                        final IsKogito isKogito) {
+                        final IsKogito isKogito,
+                        final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                        final SessionManager sessionManager) {
         this.view = view;
         this.listItems = listItems;
         this.dataTypeManager = dataTypeManager;
@@ -105,6 +119,8 @@ public class DataTypeList {
         this.isKogito = isKogito;
         this.importedNamesOccurrencesCount = new HashMap<>();
         this.renamedImportedDataTypes = new HashMap<>();
+        this.commandManager = sessionCommandManager;
+        this.sessionManager = sessionManager;
     }
 
     @PostConstruct
@@ -214,14 +230,24 @@ public class DataTypeList {
     }
 
     void removeItem(final String uuid) {
-        getItems().removeIf(listItem -> Objects.equals(uuid, listItem.getDataType().getUUID()));
+        executeInCommandManager(() -> {
+            getItems().removeIf(listItem -> Objects.equals(uuid, listItem.getDataType().getUUID()));
+            return CanvasCommandResultBuilder.SUCCESS;
+        });
     }
 
     void refreshItemsByUpdatedDataTypes(final List<DataType> updateDataTypes) {
-        for (final DataType dataType : updateDataTypes) {
-            findItem(dataType).ifPresent(listItem -> {
-                listItem.refresh();
-                refreshSubItemsFromListItem(listItem, dataType.getSubDataTypes());
+
+        if (!updateDataTypes.isEmpty()) {
+            executeInCommandManager(() -> {
+                for (final DataType dataType : updateDataTypes) {
+                    findItem(dataType).ifPresent(listItem -> {
+                        listItem.refresh();
+                        refreshSubItemsFromListItem(listItem, dataType.getSubDataTypes());
+                    });
+                }
+
+                return CanvasCommandResultBuilder.SUCCESS;
             });
         }
         refreshDragAndDropList();
@@ -264,33 +290,58 @@ public class DataTypeList {
         addDataType(dataTypeManager.fromNew().get(), true);
     }
 
-    void addDataType(final DataType dataType, boolean enableEditMode) {
+    void addDataType(final DataType dataType, final boolean enableEditMode) {
+        executeInCommandManager(() -> {
 
-        resetSearchBar();
+            resetSearchBar();
 
-        final DataTypeListItem listItem = makeListItem(dataType);
+            final DataTypeListItem listItem = makeListItem(dataType);
 
-        dataType.create();
+            dataType.create();
 
-        showListItems();
-        listItem.refresh();
-        if (enableEditMode) {
-            listItem.enableEditMode();
-        }
-        refreshItemsCSSAndHTMLPosition();
+            showListItems();
+            listItem.refresh();
+            if (enableEditMode) {
+                listItem.enableEditMode();
+            }
+            refreshItemsCSSAndHTMLPosition();
+
+            return CanvasCommandResultBuilder.SUCCESS;
+        });
     }
 
     void insertBelow(final DataType dataType,
                      final DataType reference) {
-        final DataTypeListItem listItem = makeListItem(dataType);
-        view.insertBelow(listItem, reference);
-        refreshItemsByUpdatedDataTypes(singletonList(listItem.getDataType()));
+        executeInCommandManager(() -> {
+            final DataTypeListItem listItem = makeListItem(dataType);
+            view.insertBelow(listItem, reference);
+            refreshItemsByUpdatedDataTypes(singletonList(listItem.getDataType()));
+            return CanvasCommandResultBuilder.SUCCESS;
+        });
+    }
+
+    void executeInCommandManager(final Supplier<CommandResult> command) {
+        commandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                               new AbstractCanvasCommand() {
+                                   @Override
+                                   public CommandResult<CanvasViolation> execute(AbstractCanvasHandler context) {
+                                       return command.get();
+                                   }
+
+                                   @Override
+                                   public CommandResult<CanvasViolation> undo(AbstractCanvasHandler context) {
+                                       return CanvasCommandResultBuilder.SUCCESS;
+                                   }
+                               });
     }
 
     void insertAbove(final DataType dataType,
                      final DataType reference) {
-        view.insertAbove(makeListItem(dataType), reference);
-        refreshDragAndDropList();
+        executeInCommandManager(() -> {
+            view.insertAbove(makeListItem(dataType), reference);
+            refreshDragAndDropList();
+            return CanvasCommandResultBuilder.SUCCESS;
+        });
     }
 
     public void showNoDataTypesFound() {

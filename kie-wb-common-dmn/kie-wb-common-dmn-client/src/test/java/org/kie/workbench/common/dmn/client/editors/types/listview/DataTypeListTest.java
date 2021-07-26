@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.Element;
@@ -42,6 +43,12 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DN
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.widgets.client.kogito.IsKogito;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -104,6 +111,18 @@ public class DataTypeListTest {
     @Mock
     private IsKogito isKogito;
 
+    @Mock
+    private SessionCommandManager<AbstractCanvasHandler> commandManager;
+
+    @Mock
+    private SessionManager sessionManager;
+
+    @Mock
+    private ClientSession session;
+
+    @Mock
+    private AbstractCanvasHandler canvasHandler;
+
     private DataTypeStore dataTypeStore;
 
     private DataTypeStackHash dataTypeStackHash;
@@ -113,6 +132,9 @@ public class DataTypeListTest {
 
     @Captor
     private ArgumentCaptor<List<HTMLElement>> htmlElementsCaptor;
+
+    @Captor
+    private ArgumentCaptor<Supplier<CommandResult>> supplierCaptor;
 
     private DataTypeList dataTypeList;
 
@@ -128,7 +150,12 @@ public class DataTypeListTest {
                                             dataTypeStackHash,
                                             dndDataTypesHandler,
                                             highlightHelper,
-                                            isKogito));
+                                            isKogito,
+                                            commandManager,
+                                            sessionManager));
+
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(listItems.get()).thenReturn(treeGridItem);
     }
 
@@ -456,6 +483,12 @@ public class DataTypeListTest {
 
         dataTypeList.removeItem("012");
 
+        verify(dataTypeList).executeInCommandManager(supplierCaptor.capture());
+
+        final CommandResult commandResult = supplierCaptor.getValue().get();
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS, commandResult);
+
         final List expected = singletonList(dataTypeListItem1);
         final List<DataTypeListItem> actual = dataTypeList.getItems();
 
@@ -533,6 +566,12 @@ public class DataTypeListTest {
 
         dataTypeList.refreshItemsByUpdatedDataTypes(existingItems);
 
+        verify(dataTypeList).executeInCommandManager(supplierCaptor.capture());
+
+        final CommandResult commandResult = supplierCaptor.getValue().get();
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS, commandResult);
+
         verify(listItem).refresh();
         verify(dataTypeList).refreshSubItemsFromListItem(listItem, subDataTypes);
         verify(dndListComponent).consolidateYPosition();
@@ -551,6 +590,12 @@ public class DataTypeListTest {
         doReturn(listItem).when(dataTypeList).makeListItem(dataType);
 
         dataTypeList.addDataType();
+
+        verify(dataTypeList).executeInCommandManager(supplierCaptor.capture());
+
+        final CommandResult commandResult = supplierCaptor.getValue().get();
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS, commandResult);
 
         verify(searchBar).reset();
         verify(dataType).create();
@@ -571,6 +616,12 @@ public class DataTypeListTest {
 
         dataTypeList.addDataType(dataType, false);
 
+        verify(dataTypeList).executeInCommandManager(supplierCaptor.capture());
+
+        final CommandResult commandResult = supplierCaptor.getValue().get();
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS, commandResult);
+
         verify(searchBar).reset();
         verify(dataType).create();
         verify(view).showOrHideNoCustomItemsMessage();
@@ -588,6 +639,12 @@ public class DataTypeListTest {
         doReturn(listItem).when(dataTypeList).makeListItem(dataType);
 
         dataTypeList.addDataType(dataType, true);
+
+        verify(dataTypeList).executeInCommandManager(supplierCaptor.capture());
+
+        final CommandResult commandResult = supplierCaptor.getValue().get();
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS, commandResult);
 
         verify(searchBar).reset();
         verify(dataType).create();
@@ -609,6 +666,12 @@ public class DataTypeListTest {
 
         dataTypeList.insertBelow(dataType, reference);
 
+        verify(dataTypeList).executeInCommandManager(supplierCaptor.capture());
+
+        final CommandResult commandResult = supplierCaptor.getValue().get();
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS, commandResult);
+
         verify(view).insertBelow(listItem, reference);
         verify(dataTypeList).refreshItemsByUpdatedDataTypes(singletonList(dataType));
     }
@@ -623,6 +686,12 @@ public class DataTypeListTest {
         doReturn(listItem).when(dataTypeList).makeListItem(dataType);
 
         dataTypeList.insertAbove(dataType, reference);
+
+        verify(dataTypeList).executeInCommandManager(supplierCaptor.capture());
+
+        final CommandResult commandResult = supplierCaptor.getValue().get();
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS, commandResult);
 
         verify(view).insertAbove(listItem, reference);
         verify(dndListComponent).consolidateYPosition();
