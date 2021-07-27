@@ -743,8 +743,19 @@ public class AbstractScesimGridModelTest extends AbstractScenarioSimulationTest 
     public void isSameSelectedColumnProperty() {
         List<ExpressionElement> expressionList = Arrays.asList(new ExpressionElement("Fact"), new ExpressionElement("property"));
         when(factMappingMock.getExpressionElements()).thenReturn(expressionList);
-        assertTrue(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("Fact", "property")));
-        assertFalse(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("Fact", "property2")));
-        assertFalse(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("property2")));
+        when(factMappingMock.getFactMappingValueType()).thenReturn(FactMappingValueType.NOT_EXPRESSION);
+        assertTrue(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("Fact", "property"), FactMappingValueType.NOT_EXPRESSION));
+        assertFalse(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("Fact", "property2"), FactMappingValueType.NOT_EXPRESSION));
+        assertFalse(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("property2"), FactMappingValueType.NOT_EXPRESSION));
+        assertFalse(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("Fact", "property"), FactMappingValueType.EXPRESSION));
+        assertFalse(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("Fact", "property2"), FactMappingValueType.EXPRESSION));
+        assertFalse(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("property2"), FactMappingValueType.EXPRESSION));
+        when(factMappingMock.getFactMappingValueType()).thenReturn(FactMappingValueType.EXPRESSION);
+        assertFalse(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("Fact", "property"), FactMappingValueType.NOT_EXPRESSION));
+        assertFalse(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("Fact", "property2"), FactMappingValueType.NOT_EXPRESSION));
+        assertFalse(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("property2"), FactMappingValueType.NOT_EXPRESSION));
+        assertTrue(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("Fact", "property"), FactMappingValueType.EXPRESSION));
+        assertFalse(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("Fact", "property2"), FactMappingValueType.EXPRESSION));
+        assertFalse(abstractScesimGridModelSpy.isSameSelectedColumnProperty(1, Arrays.asList("property2"), FactMappingValueType.EXPRESSION));
     }
 }

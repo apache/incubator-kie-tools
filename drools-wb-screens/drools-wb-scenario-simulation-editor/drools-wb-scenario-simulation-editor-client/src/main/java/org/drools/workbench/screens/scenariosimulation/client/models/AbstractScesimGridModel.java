@@ -682,24 +682,26 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
     /**
      * Returns <code>true</code> if property mapped to the selected column is the same as the provided one
      * @param propertyNameElements
+     * @param factMappingValueType
      * @return
      */
-    public boolean isSameSelectedColumnProperty(List<String> propertyNameElements) {
-        return selectedColumn == null || isSameSelectedColumnProperty(getColumns().indexOf(selectedColumn), propertyNameElements);
+    public boolean isSameSelectedColumnProperty(List<String> propertyNameElements, FactMappingValueType factMappingValueType) {
+        return selectedColumn == null || isSameSelectedColumnProperty(getColumns().indexOf(selectedColumn), propertyNameElements, factMappingValueType);
     }
 
     /**
      * Returns <code>true</code> if property mapped to the column at given index is the same as the provided one
      * @param columnIndex
      * @param propertyNameElements
+     * @param factMappingValueType
      * @return
      */
-    public boolean isSameSelectedColumnProperty(int columnIndex, List<String> propertyNameElements) {
+    public boolean isSameSelectedColumnProperty(int columnIndex, List<String> propertyNameElements, FactMappingValueType factMappingValueType) {
         String propertyName = String.join(".", propertyNameElements);
         ScesimModelDescriptor simulationDescriptor = abstractScesimModel.getScesimModelDescriptor();
         final FactMapping factMappingByIndex = simulationDescriptor.getFactMappingByIndex(columnIndex);
         String expressionElement = factMappingByIndex.getExpressionElements().stream().map(ExpressionElement::getStep).collect(Collectors.joining("."));
-        return Objects.equals(expressionElement, propertyName);
+        return Objects.equals(expressionElement, propertyName) && Objects.equals(factMappingValueType, factMappingByIndex.getFactMappingValueType());
     }
 
     /**

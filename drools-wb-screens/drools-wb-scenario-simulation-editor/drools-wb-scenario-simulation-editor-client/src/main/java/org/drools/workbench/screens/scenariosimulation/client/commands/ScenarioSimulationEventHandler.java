@@ -31,6 +31,7 @@ import javax.enterprise.event.Event;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.drools.scenariosimulation.api.model.FactMappingValueType;
+import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.AbstractScenarioSimulationCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.AbstractScenarioSimulationUndoableCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.AppendColumnCommand;
@@ -406,18 +407,17 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         context.getStatus().setPropertyNameElements(event.getPropertyNameElements());
         context.getStatus().setValueClassName(event.getValueClassName());
         context.getStatus().setImportPrefix(event.getImportPrefix());
-        if (isSameFactProperty(event.getGridWidget(), event.getPropertyNameElements()) &&
+        if (isSameFactProperty(event.getGridWidget(), event.getPropertyNameElements(), event.getFactMappingValueType()) &&
                 isSameSelectedColumnType(event.getGridWidget(), event.getValueClassName())) {
             return;
         } else {
             if (isSelectedColumnEmpty(event.getGridWidget())) {
                 commonExecution(new SetPropertyHeaderCommand(event.getGridWidget(), event.getFactMappingValueType()), true);
             } else {
-                if (!isSameFactProperty(event.getGridWidget(), event.getPropertyNameElements()) &&
-                        !isSameSelectedColumnType(event.getGridWidget(), event.getValueClassName())) {
-                    showDeletePopup(event);
-                } else {
+                if (isSameSelectedColumnType(event.getGridWidget(), event.getValueClassName()) && !ScenarioSimulationSharedUtils.isCollection(event.getValueClassName())) {
                     showPreserveDeletePopup(event);
+                } else {
+                    showDeletePopup(event);
                 }
             }
         }
@@ -427,8 +427,8 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         return context.getAbstractScesimGridModelByGridWidget(gridWidget).isSelectedColumnEmpty();
     }
 
-    private boolean isSameFactProperty(GridWidget gridWidget, List<String> propertyNameElements) {
-        return context.getAbstractScesimGridModelByGridWidget(gridWidget).isSameSelectedColumnProperty(propertyNameElements);
+    private boolean isSameFactProperty(GridWidget gridWidget, List<String> propertyNameElements, FactMappingValueType factMappingValueType) {
+        return context.getAbstractScesimGridModelByGridWidget(gridWidget).isSameSelectedColumnProperty(propertyNameElements, factMappingValueType);
     }
 
     private boolean isSameSelectedColumnType(GridWidget gridWidget, String valueTypeName) {
