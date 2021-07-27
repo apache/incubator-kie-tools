@@ -41,6 +41,22 @@ To build it, you'll have two choices:
 
 Final artifacts will be on `packages/*/dist` directories.
 
+## Using custom Editor builds from `kogito-editors-java`
+While `kogito-editors-java` is not integrated in this monorepo, we have dedicated environment variables to configure where to copy the Editors from. If those environment variables are empty, the Editors are copied from the installed NPM package on `node_modules`.
+
+#### Examples:
+```bash
+export EXTERNAL_RESOURCE_PATH__bpmnEditor=/Users/tiago/redhat/kogito-editors-java/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime/
+```
+
+```bash
+export EXTERNAL_RESOURCE_PATH__dmnEditor=/Users/tiago/redhat/kogito-editors-java/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime/
+```
+
+```bash
+export EXTERNAL_RESOURCE_PATH__scesimEditor=/Users/tiago/redhat/kogito-editors-java/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime
+```
+
 ## Applications
 
 The Kogito Tooling project contains several applications. To develop each one of them individually, refer to the instructions below.
