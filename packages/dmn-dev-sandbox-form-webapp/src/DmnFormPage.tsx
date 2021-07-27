@@ -134,6 +134,7 @@ export function DmnFormPage(props: Props) {
 
   return (
     <Page
+      data-testid="dmn-form-page"
       header={
         <DmnFormToolbar
           filename={props.appData.filename}

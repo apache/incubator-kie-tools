@@ -22,7 +22,7 @@ import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
 import { DmnDevSandboxInstanceStatus } from "../DmnDevSandbox/DmnDevSandboxInstanceStatus";
 import { FeatureDependentOnKieToolingExtendedServices } from "../KieToolingExtendedServices/FeatureDependentOnKieToolingExtendedServices";
 import {
-  KieToolingExtendedServicesFeature,
+  DependentFeature,
   useKieToolingExtendedServices,
 } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
@@ -54,7 +54,7 @@ export function useDmnDevSandboxDropdownItems() {
       dmnDevSandbox.setConfirmDeployModalOpen(true);
       return;
     }
-    kieToolingExtendedServices.setInstallTriggeredBy(KieToolingExtendedServicesFeature.DMN_DEV_SANDBOX);
+    kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_DEV_SANDBOX);
     kieToolingExtendedServices.setModalOpen(true);
   }, [dmnDevSandbox, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
 

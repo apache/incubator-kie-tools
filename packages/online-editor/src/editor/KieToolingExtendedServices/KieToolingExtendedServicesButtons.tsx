@@ -27,7 +27,7 @@ import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDro
 import { DmnDevSandboxInstanceStatus } from "../DmnDevSandbox/DmnDevSandboxInstanceStatus";
 import { useDmnRunner } from "../DmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieToolingExtendedServices } from "./FeatureDependentOnKieToolingExtendedServices";
-import { KieToolingExtendedServicesFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
+import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 
 export function KieToolingExtendedServicesButtons() {
@@ -48,7 +48,7 @@ export function KieToolingExtendedServicesButtons() {
       dmnRunner.setDrawerExpanded(!dmnRunner.isDrawerExpanded);
       return;
     }
-    kieToolingExtendedServices.setInstallTriggeredBy(KieToolingExtendedServicesFeature.DMN_RUNNER);
+    kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     kieToolingExtendedServices.setModalOpen(true);
   }, [dmnRunner, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
 
@@ -59,7 +59,7 @@ export function KieToolingExtendedServicesButtons() {
         dmnDevSandbox.setDropdownOpen(isOpen);
         return;
       }
-      kieToolingExtendedServices.setInstallTriggeredBy(KieToolingExtendedServicesFeature.DMN_DEV_SANDBOX);
+      kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_DEV_SANDBOX);
       kieToolingExtendedServices.setModalOpen(true);
     },
     [dmnDevSandbox, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]
@@ -76,7 +76,11 @@ export function KieToolingExtendedServicesButtons() {
             flipBehavior={["left"]}
             distance={20}
           >
-            <ExclamationTriangleIcon className="static-opacity" id={"kie-tooling-extended-services-outdated-icon"} />
+            <ExclamationTriangleIcon
+              data-testid="outdated-icon"
+              className="static-opacity"
+              id={"kie-tooling-extended-services-outdated-icon"}
+            />
           </Tooltip>
         )}
         {!kieToolingExtendedServices.outdated && (
@@ -90,6 +94,7 @@ export function KieToolingExtendedServicesButtons() {
                 distance={20}
               >
                 <ConnectedIcon
+                  data-testid="connected-icon"
                   className="kogito--editor__kie-tooling-extended-services-dropdown-icon-connected blink-opacity"
                   id={"kie-tooling-extended-services-connected-icon"}
                 />
@@ -102,7 +107,11 @@ export function KieToolingExtendedServicesButtons() {
                 flipBehavior={["left"]}
                 distance={20}
               >
-                <DisconnectedIcon className="static-opacity" id={"kie-tooling-extended-services-disconnected-icon"} />
+                <DisconnectedIcon
+                  data-testid="disconnected-icon"
+                  className="static-opacity"
+                  id={"kie-tooling-extended-services-disconnected-icon"}
+                />
               </Tooltip>
             )}
           </>
@@ -116,7 +125,11 @@ export function KieToolingExtendedServicesButtons() {
     <>
       <Dropdown
         toggle={
-          <DropdownToggle toggleIndicator={null} className="kogito--kie-tooling-extended-services-button">
+          <DropdownToggle
+            toggleIndicator={null}
+            className="kogito--kie-tooling-extended-services-button"
+            data-testid="kie-tooling-extended-services-button"
+          >
             {dropdownToggleIcon}
           </DropdownToggle>
         }
@@ -134,7 +147,10 @@ export function KieToolingExtendedServicesButtons() {
         <Dropdown
           onSelect={() => dmnDevSandbox.setDropdownOpen(false)}
           toggle={
-            <DropdownToggle onToggle={(isOpen: boolean) => onToggleDmnDevSandbox(isOpen)}>
+            <DropdownToggle
+              onToggle={(isOpen: boolean) => onToggleDmnDevSandbox(isOpen)}
+              data-testid="dmn-dev-sandbox-button"
+            >
               {i18n.terms.deploy}
             </DropdownToggle>
           }
@@ -154,7 +170,12 @@ export function KieToolingExtendedServicesButtons() {
       <FeatureDependentOnKieToolingExtendedServices isLight={true} position="bottom">
         <Dropdown
           toggle={
-            <DropdownToggle toggleIndicator={null} onToggle={onToggleDmnRunner} className="kogito--dmn-runner-button">
+            <DropdownToggle
+              toggleIndicator={null}
+              onToggle={onToggleDmnRunner}
+              className="kogito--dmn-runner-button"
+              data-testid="dmn-runner-button"
+            >
               {i18n.terms.run}
             </DropdownToggle>
           }

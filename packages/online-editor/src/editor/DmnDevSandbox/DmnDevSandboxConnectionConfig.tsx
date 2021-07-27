@@ -41,7 +41,15 @@ export function isUsernameValid(username: string): boolean {
 }
 
 export function isHostValid(host: string): boolean {
-  return host !== undefined && host.trim().length > 0;
+  if (!host || host.trim().length === 0) {
+    return false;
+  }
+  try {
+    new URL(host);
+    return true;
+  } catch (_) {
+    return false;
+  }
 }
 
 export function isTokenValid(token: string): boolean {

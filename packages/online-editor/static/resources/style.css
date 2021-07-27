@@ -97,8 +97,6 @@
   justify-content: center;
   align-items: center;
   padding: 1em;
-  z-index: 1000;
-  pointer-events: none;
 }
 
 .kogito--alert {
@@ -543,6 +541,11 @@
 
 .kogito--editor__dmn-dev-sandbox-dropdown-item-status:focus {
   outline: none;
+}
+
+.kogito--editor__dmn-dev-sandbox-alert-container {
+  z-index: 1000;
+  pointer-events: none;
 }
 
 .success-icon {

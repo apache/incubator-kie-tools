@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useContext } from "react";
 import { DeployedModel } from "./DeployedModel";
-import { DmnDevSandboxConnectionConfig } from "./DmnDevSandboxConnectionConfig";
+import { DmnDevSandboxConnectionConfig, EMPTY_CONFIG } from "./DmnDevSandboxConnectionConfig";
 import { DmnDevSandboxInstanceStatus } from "./DmnDevSandboxInstanceStatus";
 
 export interface DmnDevSandboxContextType {
@@ -41,6 +41,7 @@ export interface DmnDevSandboxContextType {
 
 export const DmnDevSandboxContext = React.createContext<DmnDevSandboxContextType>({
   deployments: [],
+  currentConfig: EMPTY_CONFIG,
   instanceStatus: DmnDevSandboxInstanceStatus.UNAVAILABLE,
   isDropdownOpen: false,
   isConfigModalOpen: false,

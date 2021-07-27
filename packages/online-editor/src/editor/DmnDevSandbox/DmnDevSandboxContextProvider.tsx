@@ -77,47 +77,42 @@ export function DmnDevSandboxContextProvider(props: Props) {
 
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
-  const disconnect = useCallback((closeModals: boolean) => {
+  const onDisconnect = useCallback((closeModals: boolean) => {
+    setInstanceStatus(DmnDevSandboxInstanceStatus.DISCONNECTED);
+    setDropdownOpen(false);
+    setDeployments([]);
+
     if (closeModals) {
       setConfigModalOpen(false);
       setConfigWizardOpen(false);
       setConfirmDeployModalOpen(false);
     }
-    setDropdownOpen(false);
-    setDeployments([]);
-    setInstanceStatus(DmnDevSandboxInstanceStatus.DISCONNECTED);
   }, []);
 
   const onCheckConfig = useCallback(
     async (config: DmnDevSandboxConnectionConfig, persist: boolean) => {
       const isConfigOk = isConfigValid(config) && (await service.isConnectionEstablished(config));
-      if (persist) {
-        if (isConfigOk) {
-          setCurrentConfig(config);
-          saveConfigCookie(config);
-          setInstanceStatus(DmnDevSandboxInstanceStatus.CONNECTED);
-          return true;
-        }
 
-        if (instanceStatus === DmnDevSandboxInstanceStatus.EXPIRED) {
-          return false;
-        }
-
-        if (instanceStatus !== DmnDevSandboxInstanceStatus.CONNECTED) {
-          setInstanceStatus(DmnDevSandboxInstanceStatus.DISCONNECTED);
-        }
+      if (persist && isConfigOk) {
+        setCurrentConfig(config);
+        saveConfigCookie(config);
+        setInstanceStatus(DmnDevSandboxInstanceStatus.CONNECTED);
       }
 
       return isConfigOk;
     },
-    [instanceStatus, service]
+    [service]
   );
+
+  const onResetConfig = useCallback(() => {
+    setCurrentConfig(EMPTY_CONFIG);
+    onDisconnect(false);
+    resetConfigCookie();
+  }, [onDisconnect]);
 
   const onDeploy = useCallback(
     async (config: DmnDevSandboxConnectionConfig) => {
-      const isConfigOk = await onCheckConfig(config, false);
-
-      if (!isConfigOk) {
+      if (!(await onCheckConfig(config, false))) {
         setOpenAlert(AlertTypes.DEPLOY_STARTED_ERROR);
         return;
       }
@@ -130,64 +125,60 @@ export function DmnDevSandboxContextProvider(props: Props) {
       try {
         await service.deploy(filename, editorContent, config);
         setOpenAlert(AlertTypes.DEPLOY_STARTED_SUCCESS);
-      } catch (e) {
+      } catch (error: any) {
         setOpenAlert(AlertTypes.DEPLOY_STARTED_ERROR);
       }
     },
     [onCheckConfig, globalContext.file.fileName, globalContext.file.fileExtension, props.editor, service]
   );
 
-  const onResetConfig = useCallback(() => {
-    setCurrentConfig(EMPTY_CONFIG);
-    disconnect(false);
-    resetConfigCookie();
-  }, [disconnect]);
-
   useEffect(() => {
     if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
-      disconnect(true);
+      onDisconnect(true);
       return;
     }
 
-    if (instanceStatus === DmnDevSandboxInstanceStatus.EXPIRED || !isConfigValid(currentConfig)) {
+    if (!isConfigValid(currentConfig)) {
+      if (deployments.length > 0) {
+        setDeployments([]);
+      }
       return;
     }
 
     if (instanceStatus === DmnDevSandboxInstanceStatus.DISCONNECTED) {
       service
         .isConnectionEstablished(currentConfig)
-        .then((isConfigOk) => {
-          if (!isConfigOk) {
-            setInstanceStatus(DmnDevSandboxInstanceStatus.EXPIRED);
-            setConfigModalOpen(!kieToolingExtendedServices.isModalOpen);
-            return;
-          }
-          setInstanceStatus(DmnDevSandboxInstanceStatus.CONNECTED);
+        .then((isConfigOk: boolean) => {
+          setConfigModalOpen(!isConfigOk && !kieToolingExtendedServices.isModalOpen);
+          setInstanceStatus(isConfigOk ? DmnDevSandboxInstanceStatus.CONNECTED : DmnDevSandboxInstanceStatus.EXPIRED);
+          return isConfigOk ? service.loadDeployments(currentConfig) : [];
         })
-        .catch((error) => console.error(error));
+        .then((deployments: DeployedModel[]) => setDeployments(deployments))
+        .catch((error: any) => console.error(error));
       return;
     }
 
     if (instanceStatus === DmnDevSandboxInstanceStatus.CONNECTED) {
-      const loadDeploymentsTask = window.setInterval(() => {
+      const loadDeploymentsTask = setInterval(() => {
         service
           .loadDeployments(currentConfig)
           .then((deployments: DeployedModel[]) => setDeployments(deployments))
-          .catch((error) => {
+          .catch((error: any) => {
             setDeployments([]);
-            window.clearInterval(loadDeploymentsTask);
+            clearInterval(loadDeploymentsTask);
             console.error(error);
           });
       }, LOAD_DEPLOYMENTS_POLLING_TIME);
-      return () => window.clearInterval(loadDeploymentsTask);
+      return () => clearInterval(loadDeploymentsTask);
     }
   }, [
+    onDisconnect,
     currentConfig,
-    disconnect,
     instanceStatus,
     kieToolingExtendedServices.isModalOpen,
     kieToolingExtendedServices.status,
     service,
+    deployments.length,
   ]);
 
   return (
@@ -212,7 +203,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
       }}
     >
       {openAlert === AlertTypes.DEPLOY_STARTED_ERROR && (
-        <div className={"kogito--alert-container"}>
+        <div className={"kogito--alert-container kogito--editor__dmn-dev-sandbox-alert-container"}>
           <Alert
             className={"kogito--alert"}
             variant="danger"
@@ -222,7 +213,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
         </div>
       )}
       {openAlert === AlertTypes.DEPLOY_STARTED_SUCCESS && (
-        <div className={"kogito--alert-container"}>
+        <div className={"kogito--alert-container kogito--editor__dmn-dev-sandbox-alert-container"}>
           <Alert
             className={"kogito--alert"}
             variant="info"

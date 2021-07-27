@@ -51,7 +51,7 @@ export class DmnDevSandboxService {
       );
 
       return true;
-    } catch (e) {
+    } catch (error: any) {
       return false;
     }
   }
@@ -64,6 +64,11 @@ export class DmnDevSandboxService {
     };
 
     const deployments = await this.fetchResource<Deployments>(new ListDeployments(commonArgs));
+
+    if (deployments.items.length === 0) {
+      return [];
+    }
+
     const builds = await this.fetchResource<Builds>(new ListBuilds(commonArgs));
 
     return deployments.items
@@ -136,7 +141,7 @@ export class DmnDevSandboxService {
     );
   }
 
-  private async fetchResource<T = Resource>(target: ResourceFetch, rollbacks?: ResourceFetch[]): Promise<Readonly<T>> {
+  public async fetchResource<T = Resource>(target: ResourceFetch, rollbacks?: ResourceFetch[]): Promise<Readonly<T>> {
     const response = await fetch(this.proxyUrl, target.requestInit());
 
     if (!response.ok) {

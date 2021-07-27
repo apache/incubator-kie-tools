@@ -40,7 +40,7 @@ import { I18nHtml, I18nWrapped } from "@kie-tooling-core/i18n/dist/react-compone
 import { SelectOs } from "../../common/SelectOs";
 import { getOperatingSystem, OperatingSystem } from "../../common/utils";
 import { DEVELOPER_SANDBOX_URL } from "../DmnDevSandbox/DmnDevSandboxService";
-import { KieToolingExtendedServicesFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
+import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT } from "./KieToolingExtendedServicesContextProvider";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 
@@ -688,7 +688,7 @@ export function KieToolingExtendedServicesModal() {
           <div className={"kogito--editor__kie-tooling-extended-services-modal-initial-title"}>
             <TextContent>
               <Text component={TextVariants.h1}>
-                {kieToolingExtendedServices.installTriggeredBy === KieToolingExtendedServicesFeature.DMN_DEV_SANDBOX
+                {kieToolingExtendedServices.installTriggeredBy === DependentFeature.DMN_DEV_SANDBOX
                   ? i18n.names.dmnDevSandbox
                   : i18n.names.dmnRunner}
               </Text>
@@ -699,7 +699,7 @@ export function KieToolingExtendedServicesModal() {
               <Text component={TextVariants.p}>{i18n.kieToolingExtendedServices.modal.initial.subHeader}</Text>
             </TextContent>
           </div>
-          {kieToolingExtendedServices.installTriggeredBy === KieToolingExtendedServicesFeature.DMN_RUNNER && (
+          {kieToolingExtendedServices.installTriggeredBy === DependentFeature.DMN_RUNNER && (
             <div className="pf-u-display-flex pf-u-flex-direction-row">
               <div className="pf-u-w-25 pf-u-ml-sm">
                 <TextContent>
@@ -721,7 +721,7 @@ export function KieToolingExtendedServicesModal() {
               </div>
             </div>
           )}
-          {kieToolingExtendedServices.installTriggeredBy === KieToolingExtendedServicesFeature.DMN_DEV_SANDBOX && (
+          {kieToolingExtendedServices.installTriggeredBy === DependentFeature.DMN_DEV_SANDBOX && (
             <div className="pf-u-mt-xl pf-u-display-flex pf-u-flex-direction-row">
               <div className="pf-u-w-25 pf-u-mr-sm">
                 <TextContent>

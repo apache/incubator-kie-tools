@@ -19,8 +19,8 @@ import { act, render } from "@testing-library/react";
 import * as React from "react";
 import { DmnRunnerDrawer } from "../../../editor/DmnRunner/DmnRunnerDrawer";
 import {
-  usingDmnRunnerContext,
-  usingNotificationsPanelContext,
+  usingTestingDmnRunnerContext,
+  usingTestingNotificationsPanelContext,
   usingTestingGlobalContext,
   usingTestingKieToolingExtendedServicesContext,
   usingTestingOnlineI18nContext,
@@ -49,16 +49,15 @@ describe("DmnRunnerDrawer", () => {
       usingTestingOnlineI18nContext(
         usingTestingGlobalContext(
           usingTestingKieToolingExtendedServicesContext(
-            usingNotificationsPanelContext(
-              usingDmnRunnerContext(
+            usingTestingNotificationsPanelContext(
+              usingTestingDmnRunnerContext(
                 <Drawer isExpanded={true}>
                   <DrawerContent panelContent={<DmnRunnerDrawer editor={editor} />} />
                 </Drawer>,
                 editor
               )
-            ),
-            editor
-          )
+            )
+          ).wrapper
         ).wrapper
       ).wrapper
     );
@@ -95,16 +94,15 @@ describe("DmnRunnerDrawer", () => {
       usingTestingOnlineI18nContext(
         usingTestingGlobalContext(
           usingTestingKieToolingExtendedServicesContext(
-            usingNotificationsPanelContext(
-              usingDmnRunnerContext(
+            usingTestingNotificationsPanelContext(
+              usingTestingDmnRunnerContext(
                 <Drawer isExpanded={true}>
                   <DrawerContent panelContent={<DmnRunnerDrawer editor={editor} />} />
                 </Drawer>,
                 editor
               )
-            ),
-            editor
-          )
+            )
+          ).wrapper
         ).wrapper
       ).wrapper
     );
@@ -137,16 +135,15 @@ describe("DmnRunnerDrawer", () => {
       usingTestingOnlineI18nContext(
         usingTestingGlobalContext(
           usingTestingKieToolingExtendedServicesContext(
-            usingNotificationsPanelContext(
-              usingDmnRunnerContext(
+            usingTestingNotificationsPanelContext(
+              usingTestingDmnRunnerContext(
                 <Drawer isExpanded={true}>
                   <DrawerContent panelContent={<DmnRunnerDrawer editor={editor} />} />
                 </Drawer>,
                 editor
               )
-            ),
-            editor
-          )
+            )
+          ).wrapper
         ).wrapper
       ).wrapper
     );

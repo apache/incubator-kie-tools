@@ -77,7 +77,7 @@ export function DmnFormToolbar(props: Props) {
     );
   }, [i18n]);
 
-  const viewItems = useCallback(
+  const dropdownItems = useCallback(
     (dropdownId: string) => [
       <React.Fragment key={`dropdown-${dropdownId}-close`}>
         <DropdownItem
@@ -130,7 +130,9 @@ export function DmnFormToolbar(props: Props) {
                 sm: "hidden",
               }}
             >
-              <Text className="kogito--dmn-form__toolbar-filename">{filename}</Text>
+              <Text data-testid={"text-filename"} className="kogito--dmn-form__toolbar-filename">
+                {filename}
+              </Text>
             </PageHeaderToolsItem>
           </PageHeaderToolsGroup>
           <PageHeaderToolsGroup>
@@ -196,7 +198,7 @@ export function DmnFormToolbar(props: Props) {
                 }
                 isOpen={isLgKebabOpen}
                 isPlain={true}
-                dropdownItems={viewItems("lg")}
+                dropdownItems={dropdownItems("lg")}
                 position={DropdownPosition.right}
               />
             </PageHeaderToolsItem>
@@ -226,7 +228,7 @@ export function DmnFormToolbar(props: Props) {
                 }
                 isOpen={isSmKebabOpen}
                 isPlain={true}
-                dropdownItems={[...viewItems("sm")]}
+                dropdownItems={[...dropdownItems("sm")]}
                 position={DropdownPosition.right}
               />
             </PageHeaderToolsItem>

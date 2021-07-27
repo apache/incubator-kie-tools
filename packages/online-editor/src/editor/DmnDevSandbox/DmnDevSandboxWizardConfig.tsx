@@ -492,6 +492,7 @@ export function DmnDevSandboxWizardConfig() {
       variant={ModalVariant.large}
       aria-label={"Steps to configure the DmnDevSandbox instance"}
       onClose={onWizardClose}
+      data-testid="dmn-dev-sandbox-wizard-config"
     >
       <Wizard
         onClose={onWizardClose}

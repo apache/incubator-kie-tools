@@ -18,7 +18,7 @@ import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { GlobalContext } from "../../common/GlobalContext";
 import {
-  KieToolingExtendedServicesFeature,
+  DependentFeature,
   useKieToolingExtendedServices,
 } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
@@ -70,7 +70,7 @@ export function DmnRunnerContextProvider(props: Props) {
             openDrawer &&
             (globalContext.formInputs ||
               (kieToolingExtendedServices.isModalOpen &&
-                kieToolingExtendedServices.installTriggeredBy === KieToolingExtendedServicesFeature.DMN_RUNNER))
+                kieToolingExtendedServices.installTriggeredBy === DependentFeature.DMN_RUNNER))
           ) {
             setDrawerExpanded(true);
           }

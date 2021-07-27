@@ -24,11 +24,11 @@ import { useDmnFormI18n } from "./i18n";
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
 export function DmnFormErrorPage() {
-  const { i18n, locale } = useDmnFormI18n();
+  const { i18n } = useDmnFormI18n();
 
   return (
     <>
-      <EmptyState>
+      <EmptyState data-testid="dmn-form-error-page">
         <EmptyStateIcon icon={ExclamationTriangleIcon} />
         <TextContent>
           <Text component={"h2"}>{i18n.page.error.title}</Text>

@@ -20,10 +20,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { GlobalContext } from "../../common/GlobalContext";
 import { getCookie, setCookie } from "../../common/utils";
 import { KieToolingExtendedServicesBridge } from "./KieToolingExtendedServicesBridge";
-import {
-  KieToolingExtendedServicesContext,
-  KieToolingExtendedServicesFeature,
-} from "./KieToolingExtendedServicesContext";
+import { DependentFeature, KieToolingExtendedServicesContext } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 
 interface Props {
@@ -47,7 +44,7 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
   );
 
   const [isModalOpen, setModalOpen] = useState(false);
-  const [installTriggeredBy, setInstallTriggeredBy] = useState(KieToolingExtendedServicesFeature.DMN_RUNNER);
+  const [installTriggeredBy, setInstallTriggeredBy] = useState(DependentFeature.DMN_RUNNER);
   const [outdated, setOutdated] = useState(false);
   const [port, setPort] = useState(
     () => getCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT

@@ -151,7 +151,13 @@ export function DmnDevSandboxModalConfig() {
           {i18n.dmnDevSandbox.common.disclaimer}
         </Text>
         <div className="pf-u-my-md">
-          <Button key="use-wizard" className="pf-u-p-0" variant="link" onClick={onGoToWizard}>
+          <Button
+            key="use-wizard"
+            className="pf-u-p-0"
+            variant="link"
+            onClick={onGoToWizard}
+            data-testid="use-wizard-button"
+          >
             {i18n.dmnDevSandbox.configModal.useWizard}
             <ArrowRightIcon className="pf-u-ml-sm" />
           </Button>
@@ -164,6 +170,7 @@ export function DmnDevSandboxModalConfig() {
                 title={i18n.dmnDevSandbox.configModal.validationError}
                 aria-live="polite"
                 isInline
+                data-testid="alert-validation-error"
               />
             </FormAlert>
           )}
@@ -174,6 +181,7 @@ export function DmnDevSandboxModalConfig() {
                 title={i18n.dmnDevSandbox.configModal.connectionError}
                 aria-live="polite"
                 isInline
+                data-testid="alert-connection-error"
               />
             </FormAlert>
           )}
@@ -184,6 +192,7 @@ export function DmnDevSandboxModalConfig() {
                 title={i18n.dmnDevSandbox.configModal.configExpiredWarning}
                 aria-live="polite"
                 isInline
+                data-testid="alert-config-expired-warning"
               />
             </FormAlert>
           )}
@@ -218,6 +227,7 @@ export function DmnDevSandboxModalConfig() {
                 value={config.username}
                 onChange={onUsernameChanged}
                 tabIndex={1}
+                data-testid="username-text-field"
               />
               <InputGroupText>
                 <Button isSmall variant="plain" aria-label="Clear username button" onClick={onClearUsername}>
@@ -256,6 +266,7 @@ export function DmnDevSandboxModalConfig() {
                 value={config.host}
                 onChange={onHostChanged}
                 tabIndex={2}
+                data-testid="host-text-field"
               />
               <InputGroupText>
                 <Button isSmall variant="plain" aria-label="Clear host button" onClick={onClearHost}>
@@ -294,6 +305,7 @@ export function DmnDevSandboxModalConfig() {
                 value={config.token}
                 onChange={onTokenChanged}
                 tabIndex={3}
+                data-testid="token-text-field"
               />
               <InputGroupText>
                 <Button isSmall variant="plain" aria-label="Clear token button" onClick={onClearToken}>
@@ -307,12 +319,13 @@ export function DmnDevSandboxModalConfig() {
               key="save"
               variant="primary"
               onClick={onSave}
+              data-testid="save-config-button"
               isLoading={isSaveLoading}
               spinnerAriaValueText={isSaveLoading ? "Loading" : undefined}
             >
               {isSaveLoading ? i18n.dmnDevSandbox.common.saving : i18n.terms.save}
             </Button>
-            <Button key="reset" variant="danger" onClick={onResetConfig}>
+            <Button data-testid="reset-config-button" key="reset" variant="danger" onClick={onResetConfig}>
               {i18n.terms.reset}
             </Button>
             <Button key="cancel" variant="link" onClick={onClose}>

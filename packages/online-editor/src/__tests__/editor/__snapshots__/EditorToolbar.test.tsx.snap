@@ -5,7 +5,7 @@ exports[`EditorToolbar file actions Gist it button should be disable without tok
   aria-expanded="true"
   aria-haspopup="true"
   class="pf-c-dropdown__toggle pf-m-plain"
-  data-ouia-component-id="OUIA-Generated-DropdownToggle-3"
+  data-ouia-component-id="OUIA-Generated-DropdownToggle-4"
   data-ouia-component-type="PF4/DropdownToggle"
   data-ouia-safe="true"
   data-testid="share-menu"
@@ -89,6 +89,20 @@ exports[`EditorToolbar file actions Set GitHub token button should open a GitHub
     </b>
      permission.
   </p>
+</div>
+`;
+
+exports[`EditorToolbar is dirty indicator should show the Read-only indicator when readonly is true 1`] = `
+<div
+  class="kogito--editor__toolbar-name-container readonly"
+  data-testid="toolbar-title"
+>
+  <h3
+    aria-label="File name"
+    class="pf-c-title pf-m-2xl kogito--editor__toolbar-title"
+  >
+    new-file
+  </h3>
 </div>
 `;
 

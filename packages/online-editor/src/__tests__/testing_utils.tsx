@@ -24,9 +24,16 @@ import { Routes } from "../common/Routes";
 import { EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
 import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tooling-core/i18n/dist/react-components";
 import { OnlineI18n, OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "../common/i18n";
-import { DmnDevSandboxContextProvider } from "../editor/DmnDevSandbox/DmnDevSandboxContextProvider";
+import { EMPTY_CONFIG } from "../editor/DmnDevSandbox/DmnDevSandboxConnectionConfig";
+import { DmnDevSandboxContext, DmnDevSandboxContextType } from "../editor/DmnDevSandbox/DmnDevSandboxContext";
+import { DmnDevSandboxInstanceStatus } from "../editor/DmnDevSandbox/DmnDevSandboxInstanceStatus";
 import { DmnRunnerContextProvider } from "../editor/DmnRunner/DmnRunnerContextProvider";
-import { KieToolingExtendedServicesContextProvider } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
+import {
+  DependentFeature,
+  KieToolingExtendedServicesContext,
+  KieToolingExtendedServicesContextType,
+} from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { KieToolingExtendedServicesStatus } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { NotificationsPanelContextProvider } from "../editor/NotificationsPanel/NotificationsPanelContextProvider";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
@@ -51,6 +58,7 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
     senderTabId: undefined,
     githubService: new GithubService(),
     isChrome: true,
+    formInputs: {},
     ...ctx,
   };
   return {
@@ -90,11 +98,11 @@ export function usingTestingOnlineI18nContext(
   };
 }
 
-export function usingNotificationsPanelContext(children: React.ReactElement, ref?: React.RefObject<any>) {
+export function usingTestingNotificationsPanelContext(children: React.ReactElement, ref?: React.RefObject<any>) {
   return <NotificationsPanelContextProvider ref={ref}>{children}</NotificationsPanelContextProvider>;
 }
 
-export function usingDmnRunnerContext(children: React.ReactElement, editor: any, isEditorReady = true) {
+export function usingTestingDmnRunnerContext(children: React.ReactElement, editor: any, isEditorReady = true) {
   return (
     <DmnRunnerContextProvider editor={editor} isEditorReady={isEditorReady}>
       {children}
@@ -102,27 +110,65 @@ export function usingDmnRunnerContext(children: React.ReactElement, editor: any,
   );
 }
 
-export function usingTestingDmnDevSandboxContext(children: React.ReactElement, editor: any, isEditorReady = true) {
-  return (
-    <DmnDevSandboxContextProvider editor={editor} isEditorReady={isEditorReady}>
-      {children}
-    </DmnDevSandboxContextProvider>
-  );
+export function usingTestingDmnDevSandboxContext(
+  children: React.ReactElement,
+  ctx?: Partial<DmnDevSandboxContextType>
+) {
+  const usedCtx: DmnDevSandboxContextType = {
+    deployments: [],
+    currentConfig: EMPTY_CONFIG,
+    instanceStatus: DmnDevSandboxInstanceStatus.CONNECTED,
+    isDropdownOpen: false,
+    isConfigModalOpen: false,
+    isConfigWizardOpen: false,
+    isConfirmDeployModalOpen: false,
+    setDeployments: jest.fn(),
+    setInstanceStatus: jest.fn(),
+    setDropdownOpen: jest.fn(),
+    setConfigModalOpen: jest.fn(),
+    setConfigWizardOpen: jest.fn(),
+    setConfirmDeployModalOpen: jest.fn(),
+    onDeploy: jest.fn(),
+    onCheckConfig: jest.fn(),
+    onResetConfig: jest.fn(),
+    ...ctx,
+  };
+
+  return {
+    ctx: usedCtx,
+    wrapper: (
+      <DmnDevSandboxContext.Provider key={""} value={usedCtx}>
+        {children}
+      </DmnDevSandboxContext.Provider>
+    ),
+  };
 }
 
 export function usingTestingKieToolingExtendedServicesContext(
   children: React.ReactElement,
-  editor: any,
-  isEditorReady = true,
-  closeDmnTour = jest.fn()
+  ctx?: Partial<KieToolingExtendedServicesContextType>
 ) {
-  return (
-    <KieToolingExtendedServicesContextProvider
-      editor={editor}
-      isEditorReady={isEditorReady}
-      closeDmnTour={closeDmnTour}
-    >
-      {children}
-    </KieToolingExtendedServicesContextProvider>
-  );
+  const usedCtx: KieToolingExtendedServicesContextType = {
+    status: KieToolingExtendedServicesStatus.RUNNING,
+    port: "21345",
+    baseUrl: "http://localhost:21345",
+    version: "X.Y.Z",
+    outdated: false,
+    isModalOpen: false,
+    installTriggeredBy: DependentFeature.DMN_RUNNER,
+    setStatus: jest.fn(),
+    setModalOpen: jest.fn(),
+    setInstallTriggeredBy: jest.fn(),
+    saveNewPort: jest.fn(),
+    closeDmnTour: jest.fn(),
+    ...ctx,
+  };
+  return {
+    ctx: usedCtx,
+    wrapper: (
+      <KieToolingExtendedServicesContext.Provider key={""} value={usedCtx}>
+        {children}
+      </KieToolingExtendedServicesContext.Provider>
+    ),
+  };
 }

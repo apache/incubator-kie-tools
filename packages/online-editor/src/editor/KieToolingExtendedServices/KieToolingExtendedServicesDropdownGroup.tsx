@@ -22,7 +22,7 @@ import { useOnlineI18n } from "../../common/i18n";
 import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
 import { useDmnRunner } from "../DmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieToolingExtendedServices } from "./FeatureDependentOnKieToolingExtendedServices";
-import { KieToolingExtendedServicesFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
+import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 
 export function KieToolingExtendedServicesDropdownGroup() {
@@ -42,7 +42,7 @@ export function KieToolingExtendedServicesDropdownGroup() {
       dmnRunner.setDrawerExpanded(!dmnRunner.isDrawerExpanded);
       return;
     }
-    kieToolingExtendedServices.setInstallTriggeredBy(KieToolingExtendedServicesFeature.DMN_RUNNER);
+    kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     kieToolingExtendedServices.setModalOpen(true);
   }, [dmnRunner, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
 
