@@ -99,7 +99,8 @@ describe("formGenerationCommand tests", () => {
 
     const tool: FormGenerationTool = {
       type: "cool tool",
-      generate: (schema) => {
+
+      generate(schema: FormSchema): FormAsset {
         if (schema.name === "ApplyForVisa") {
           throw new Error(ERROR_MESSAGE);
         }
@@ -109,6 +110,10 @@ describe("formGenerationCommand tests", () => {
           content: schema.name,
           type: "txt",
           assetName: `${schema.name}.txt`,
+          config: {
+            schema: "",
+            resources: { styles: {}, scripts: {} },
+          },
         };
       },
     };
