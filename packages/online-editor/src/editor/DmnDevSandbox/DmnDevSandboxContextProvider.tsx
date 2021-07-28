@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";

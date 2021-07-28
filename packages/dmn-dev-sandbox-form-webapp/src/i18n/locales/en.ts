@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+import { wrapped } from "@kie-tooling-core/i18n/dist/core";
 import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
-import { wrapped } from "@kogito-tooling/i18n/dist/core";
 import { DmnFormI18n } from "..";
 
 export const en: DmnFormI18n = {

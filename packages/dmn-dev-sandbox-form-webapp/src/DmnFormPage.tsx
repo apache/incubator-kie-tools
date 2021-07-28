@@ -16,7 +16,7 @@
 
 import { ErrorBoundary } from "@kogito-tooling/form/dist/common";
 import { DecisionResult, DmnForm, DmnFormResult, extractDifferences } from "@kogito-tooling/form/dist/dmn";
-import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";

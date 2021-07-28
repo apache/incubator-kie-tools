@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Route, Switch } from "react-router";

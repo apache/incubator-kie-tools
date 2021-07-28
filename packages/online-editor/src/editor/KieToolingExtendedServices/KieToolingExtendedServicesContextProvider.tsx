@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { GlobalContext } from "../../common/GlobalContext";

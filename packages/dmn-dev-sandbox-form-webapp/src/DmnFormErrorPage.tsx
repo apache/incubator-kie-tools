@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";

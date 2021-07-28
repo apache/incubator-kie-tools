@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { I18nDefaults, I18nDictionaries } from "@kogito-tooling/i18n/dist/core";
-import { I18nContextType } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nDefaults, I18nDictionaries } from "@kie-tooling-core/i18n/dist/core";
+import { I18nContextType } from "@kie-tooling-core/i18n/dist/react-components";
 import * as React from "react";
 import { useContext } from "react";
 import { DmnFormI18n } from "./DmnFormI18n";

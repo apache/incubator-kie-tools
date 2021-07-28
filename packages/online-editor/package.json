@@ -11,7 +11,6 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/dmn-dev-sandbox-deployment-base": "0.10.0",
     "@kie-tooling-core/editor": "0.0.0",
     "@kie-tooling-core/monaco-editor": "0.0.0",
     "@kie-tooling-core/patternfly-base": "0.0.0",

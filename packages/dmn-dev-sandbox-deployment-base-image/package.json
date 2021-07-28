@@ -1,6 +1,7 @@
 {
   "name": "@kogito-tooling/dmn-dev-sandbox-deployment-base-image",
-  "version": "0.10.0",
+  "version": "0.0.0",
+  "private": true,
   "description": "",
   "license": "Apache-2.0",
   "repository": {
@@ -8,11 +9,18 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "scripts": {
-    "build:dev": "rimraf dist/ && mkdir dist/ && cd dist && mvn -N io.takari:maven:wrapper && cp ../../dmn-json-schema-generator/target/dmn-json-schema-generator.jar . && cp -R ../../dmn-dev-sandbox-form-webapp/dist dmn-dev-sandbox-form-webapp",
-    "build:prod": "yarn run build:dev"
+    "lint": "echo 'Linting'",
+    "cleanup": "rimraf dist-dev/ && mkdir dist-dev/",
+    "copy:assets": "cp ../dmn-json-schema-generator/target/dmn-json-schema-generator.jar ./dist-dev && cp -R ../dmn-dev-sandbox-form-webapp/dist ./dist-dev/dmn-dev-sandbox-form-webapp",
+    "install:mvnw": "cd dist-dev/ && mvn -N io.takari:maven:wrapper",
+    "build:dev": "yarn cleanup && yarn install:mvnw && yarn copy:assets",
+    "build:prod": "yarn lint && yarn run build:dev"
   },
   "dependencies": {
-    "@kogito-tooling/dmn-dev-sandbox-form-webapp": "0.10.0",
-    "@kogito-tooling/dmn-json-schema-generator": "0.10.0"
+    "@kogito-tooling/dmn-dev-sandbox-form-webapp": "0.0.0",
+    "@kogito-tooling/dmn-json-schema-generator": "0.0.0"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
   }
 }

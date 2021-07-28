@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DmnFormSchema, DmnResult } from "@kie-tooling-core/form/dist/dmn";
+import { DmnFormSchema, DmnResult } from "@kogito-tooling/form/dist/dmn";
 
 export interface DmnRunnerPayload {
   model: string;

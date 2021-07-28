@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { I18nHtml } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nHtml } from "@kie-tooling-core/i18n/dist/react-components";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";

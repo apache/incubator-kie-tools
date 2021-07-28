@@ -16,15 +16,69 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
+const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const { merge } = require("webpack-merge");
-const common = require("../../webpack.common.config");
+const common = require("../../config/webpack.common.config");
+const buildEnv = require("@kogito-tooling/build-env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 
-function getGtmResource(argv) {
-  const gtmId = argv["KOGITO_ONLINE_EDITOR_GTM_ID"] ?? process.env["KOGITO_ONLINE_EDITOR_GTM_ID"];
-  console.info("Google Tag Manager :: ID: " + gtmId);
+module.exports = async (env, argv) => {
+  // const buildInfo = getBuildInfo(); TODO CAPONETTO
+  const gtmResource = getGtmResource(argv);
+  return merge(common(env), {
+    entry: {
+      index: "./src/index.tsx",
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: "./static/index.html",
+        inject: false,
+        minify: false,
+      }),
+      new HtmlReplaceWebpackPlugin([
+        {
+          pattern: /(<!-- gtm):([\w-\/]+)(\s*-->)?/g,
+          replacement: (match, gtm, type) => {
+            if (gtmResource) {
+              return gtmResource[type] ?? `${match}`;
+            }
+            return `${match}`;
+          },
+        },
+      ]),
+      new CopyPlugin({
+        patterns: [
+          { from: "./static/resources", to: "./resources" },
+          { from: "./static/images", to: "./images" },
+          { from: "./static/index.html", to: "./index.html" },
+          { from: "./static/favicon.ico", to: "./favicon.ico" },
+        ],
+      }),
+    ],
+
+    module: {
+      rules: [...patternflyBase.webpackModuleRules],
+    },
+    devServer: {
+      historyApiFallback: false,
+      disableHostCheck: true,
+      watchContentBase: true,
+      contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
+      compress: true,
+      port: 9008, // TODO CAPONETTO
+    },
+  });
+};
+
+function getGtmResource() {
+  const gtmId = buildEnv.onlineEditor.gtmId;
+  console.info(`Google Tag Manager :: ID: ${gtmId}`);
+
+  if (!gtmId) {
+    return undefined;
+  }
+
   return {
     id: gtmId,
     header: `<!-- Google Tag Manager -->
@@ -49,50 +103,3 @@ function getGtmResource(argv) {
     <!-- End Google Tag Manager (noscript) -->`,
   };
 }
-
-module.exports = async (env, argv) => {
-  const gtmResource = getGtmResource(argv);
-  return merge(common(env, argv), {
-    entry: {
-      index: "./src/index.tsx",
-    },
-    plugins: [
-      new HtmlWebpackPlugin({
-        template: "./static/index.html",
-        inject: false,
-        minify: false,
-      }),
-      new HtmlReplaceWebpackPlugin([
-        {
-          pattern: /(<!-- gtm):([\w-\/]+)(\s*-->)?/g,
-          replacement: (match, gtm, type) => {
-            if (gtmResource.id) {
-              return gtmResource[type] ?? `${match}`;
-            }
-            return `${match}`;
-          },
-        },
-      ]),
-      new CopyPlugin({
-        patterns: [
-          { from: "./static/resources", to: "./resources" },
-          { from: "./static/images", to: "./images" },
-          { from: "./static/index.html", to: "./index.html" },
-          { from: "./static/favicon.ico", to: "./favicon.ico" },
-        ],
-      }),
-    ],
-
-    module: {
-      rules: [...pfWebpackOptions.patternflyRules],
-    },
-    devServer: {
-      historyApiFallback: false,
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
-      compress: true,
-      port: 9008,
-    },
-  });
-};
