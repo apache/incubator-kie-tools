@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as buildEnv from "@kogito-tooling/build-env";
 
 describe("Predicate Test", () => {
   beforeEach(() => {
-    cy.visit("/");
+    cy.visit(`http://localhost:${buildEnv.pmmlEditor.dev.port}/`);
   });
 
   it("Create simple predicate - same pmml as in fixture: simple-predicate.pmml", () => {
