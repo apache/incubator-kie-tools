@@ -39,8 +39,6 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunne
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.PropertyReaderFactory;
 
-import static org.kie.workbench.common.stunner.core.util.StringUtils.revertIllegalCharsAttribute;
-
 /**
  * Creates converters for Processes and SubProcesses
  * <p>
@@ -74,8 +72,8 @@ final class ProcessConverterDelegate {
 
         // Fixes id and name for Data Objects
         for (FlowElement element : flowElements) {
-            element.setId(revertIllegalCharsAttribute(element.getId()));
-            element.setName(revertIllegalCharsAttribute(element.getName()));
+            element.setId(element.getId());
+            element.setName(element.getName());
         }
 
         final Result<Map<String, BpmnNode>> flowElementsResult = convertFlowElements(flowElements);

@@ -41,8 +41,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Simu
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
-import static org.kie.workbench.common.stunner.core.util.StringUtils.revertIllegalCharsAttribute;
-
 public abstract class EventPropertyReader extends FlowElementPropertyReader {
 
     // These values are present in the SVG declaration for the event shape.
@@ -109,7 +107,7 @@ public abstract class EventPropertyReader extends FlowElementPropertyReader {
         List<EventDefinition> eventDefinitions = getEventDefinitions();
         if (eventDefinitions.size() == 1 && eventDefinitions.get(0) instanceof LinkEventDefinition) {
             String linkRef = ((LinkEventDefinition) eventDefinitions.get(0)).getName();
-            return linkRef != null ? revertIllegalCharsAttribute(linkRef) : "";
+            return linkRef != null ? linkRef : "";
         }
         return "";
     }

@@ -54,7 +54,6 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.Scripts.asCData;
-import static org.kie.workbench.common.stunner.core.util.StringUtils.replaceIllegalCharsAttribute;
 
 public abstract class EventPropertyWriter extends PropertyWriter {
 
@@ -97,7 +96,7 @@ public abstract class EventPropertyWriter extends PropertyWriter {
     public void addLink(LinkRef linkRef) {
         LinkEventDefinition linkEventDefinition =
                 bpmn2.createLinkEventDefinition();
-        linkEventDefinition.setName(replaceIllegalCharsAttribute(linkRef.getValue()));
+        linkEventDefinition.setName(linkRef.getValue());
 
         addEventDefinition(linkEventDefinition);
     }

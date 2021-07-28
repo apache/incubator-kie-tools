@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstu
 import bpsim.ElementParameters;
 import org.eclipse.bpmn2.FlowElement;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomElement;
-import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 public class PropertyWriter extends BasePropertyWriter {
 
@@ -39,9 +38,9 @@ public class PropertyWriter extends BasePropertyWriter {
             return;
         }
 
-        String escaped = StringUtils.replaceIllegalCharsAttribute(value.trim());
-        flowElement.setName(escaped);
-        CustomElement.name.of(flowElement).set(escaped);
+        String trimmed = value.trim();
+        flowElement.setName(trimmed);
+        CustomElement.name.of(flowElement).set(trimmed);
     }
 
     public ElementParameters getSimulationParameters() {

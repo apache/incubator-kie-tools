@@ -41,7 +41,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
-import static org.kie.workbench.common.stunner.core.util.StringUtils.revertIllegalCharsAttribute;
 
 @Portable
 @Bindable
@@ -88,7 +87,7 @@ public class DataObject extends BaseArtifacts {
 
         super(backgroundSet, fontSet, dimensionsSet);
         this.name = name;
-        this.name.setValue(revertIllegalCharsAttribute(this.name.getValue()));
+        this.name.setValue(this.name.getValue());
         this.type = type;
         this.general = general;
     }
