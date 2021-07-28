@@ -54,12 +54,14 @@ func Test_Reconcile_Infinispan(t *testing.T) {
 	}
 	deployedInfinispan := &ispn.Infinispan{
 		ObjectMeta: v1.ObjectMeta{Name: "kogito-infinispan", Namespace: t.Name()},
-		Status: ispn.InfinispanStatus{
-			Security: &ispn.InfinispanSecurity{
+		Spec: ispn.InfinispanSpec{
+			Security: ispn.InfinispanSecurity{
 				EndpointEncryption: &ispn.EndpointEncryption{
 					CertSecretName: tlsSecret.Name,
 				},
 			},
+		},
+		Status: ispn.InfinispanStatus{
 			Conditions: []ispn.InfinispanCondition{
 				{
 					Type:   ispn.ConditionWellFormed,
@@ -124,4 +126,5 @@ func Test_Reconcile_Infinispan(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, exists)
 
+	assert.Equal(t, 1, len(kogitoInfra.Status.Volumes))
 }

@@ -235,7 +235,7 @@ func (i *infinispanInfraReconciler) updateInfinispanRuntimePropsInStatus(infinis
 }
 
 func (i *infinispanInfraReconciler) updateInfinispanVolumesInStatus(infinispanInstance *infinispan.Infinispan) error {
-	if infinispanInstance.Status.Security == nil || infinispanInstance.Status.Security.EndpointEncryption == nil || len(infinispanInstance.Status.Security.EndpointEncryption.CertSecretName) == 0 {
+	if infinispanInstance.Spec.Security.EndpointEncryption == nil || len(infinispanInstance.Spec.Security.EndpointEncryption.CertSecretName) == 0 {
 		return nil
 	}
 	tlsSecret, err := i.ensureEncryptionTrustStoreSecret(infinispanInstance)
@@ -273,7 +273,7 @@ func (i *infinispanInfraReconciler) updateInfinispanVolumesInStatus(infinispanIn
 }
 
 func (i *infinispanInfraReconciler) ensureEncryptionTrustStoreSecret(infinispanInstance *infinispan.Infinispan) (*corev1.Secret, error) {
-	if infinispanInstance.Status.Security == nil || infinispanInstance.Status.Security.EndpointEncryption == nil || len(infinispanInstance.Status.Security.EndpointEncryption.CertSecretName) == 0 {
+	if infinispanInstance.Spec.Security.EndpointEncryption == nil || len(infinispanInstance.Spec.Security.EndpointEncryption.CertSecretName) == 0 {
 		return nil, nil
 	}
 	kogitoInfraEncryptionSecret := &corev1.Secret{
@@ -284,7 +284,7 @@ func (i *infinispanInfraReconciler) ensureEncryptionTrustStoreSecret(infinispanI
 	} else if !exists {
 		infinispanSecret := &corev1.Secret{
 			ObjectMeta: metav1.ObjectMeta{
-				Name:      infinispanInstance.Status.Security.EndpointEncryption.CertSecretName,
+				Name:      infinispanInstance.Spec.Security.EndpointEncryption.CertSecretName,
 				Namespace: infinispanInstance.Namespace}}
 		if ispnSecretExists, err := kubernetes.ResourceC(i.Client).Fetch(infinispanSecret); err != nil || !ispnSecretExists {
 			return nil, err
