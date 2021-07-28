@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
+import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
 import { Logger } from "../../../Logger";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";

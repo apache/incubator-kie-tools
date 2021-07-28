@@ -1,0 +1,71 @@
+name: "CI :: Monorepo (full)"
+
+on:
+  pull_request:
+    branches: "**"
+    paths-ignore:
+      - "packages/**"
+
+jobs:
+  monorepo-pr-ci-full:
+    if: github.event.pull_request.draft == false
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.2.0
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ${{ matrix.os }}
+
+      - name: "Build"
+        env:
+          WEBPACK__minimize: "false"
+          WEBPACK__tsLoaderTranspileOnly: "false"
+          KOGITO_TOOLING_BUILD_lint: "true"
+          KOGITO_TOOLING_BUILD_test: "true"
+          KOGITO_TOOLING_BUILD_testIT: "true"
+          DISPLAY: ":99.0"
+          START_SERVER_AND_TEST_INSECURE: "true"
+        run: |
+          lerna run build:prod --stream --concurrency 1
+
+      - name: "Check generated resources (you should commit those!)"
+        shell: bash
+        run: |
+          git diff
+          [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
+
+      - name: "Upload build artifacts"
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: artifacts-${{ matrix.os }}
+          if-no-files-found: warn
+          path: |
+            packages/*/dist
+            packages/hub/out/*.zip
+            packages/desktop/out/*.zip
+            !packages/hub/dist
+            !packages/desktop/dist
+
+      - name: "Upload IT Tests artifacts"
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: it-tests-artifacts-${{ matrix.os }}
+          if-no-files-found: warn
+          path: |
+            packages/*/dist-it-tests

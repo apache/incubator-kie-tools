@@ -15,7 +15,7 @@
  */
 
 import { en } from "./locales";
-import { I18nDefaults, I18nDictionaries } from "@kogito-tooling/i18n/dist/core";
+import { I18nDefaults, I18nDictionaries } from "@kie-tooling-core/i18n/dist/core";
 import { DesktopI18n } from "./DesktopI18n";
 
 export const desktopI18nDefaults: I18nDefaults<DesktopI18n> = { locale: "en", dictionary: en };

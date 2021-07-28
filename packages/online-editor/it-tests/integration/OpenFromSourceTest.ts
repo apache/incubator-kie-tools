@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+import * as buildEnv from "@kogito-tooling/build-env";
+
 describe("Open from source test", () => {
   const SAMPLES_URL: string =
     "https://raw.githubusercontent.com/kiegroup/kogito-tooling/main/packages/online-editor/it-tests/fixtures/";
 
   beforeEach(() => {
-    cy.visit("/");
+    cy.visit(`http://localhost:${buildEnv.onlineEditor.dev.port}/`);
   });
 
   it("should open BPMN file from GitHub url", () => {

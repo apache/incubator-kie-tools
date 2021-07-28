@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/pmml-editor-marshaller",
-  "version": "0.10.0",
+  "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -16,16 +16,26 @@
     "jsonata": "^1.8.3",
     "xml-js": "^1.6.11"
   },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
+  },
   "scripts": {
-    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",
-    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose --passWithNoTests'",
-    "test:clearCache": "jest --clearCache",
-    "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "yarn lint && yarn test && rimraf dist && webpack"
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "build:dev": "rimraf dist && tsc -p tsconfig.dev.json",
+    "build:prod": "yarn lint && rimraf dist && tsc -p tsconfig.prod.json && yarn test"
   },
   "babel": {
     "presets": [
-      "@babel/env"
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "@babel/react"
     ]
   }
 }

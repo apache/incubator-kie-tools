@@ -1,0 +1,267 @@
+name: "Release :: Draft"
+
+on:
+  push:
+    branches: ["**-prerelease"]
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_asset_url: ${{ steps.create_release_draft.outputs.upload_url }}
+      html_url: ${{ steps.create_release_draft.outputs.html_url }}
+      id: ${{ steps.create_release_draft.outputs.id }}
+      tag: ${{ steps.release_draft_tag.outputs.tag }}
+      commit_sha: ${{ steps.release_draft_tag.outputs.commit_sha }}
+      download_asset_url: ${{ steps.release_json_ext.outputs.download_url }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+
+      - name: "Parse `tag`"
+        id: release_draft_tag
+        shell: bash
+        # This bash script returns the `tag` name for the release.
+        # Will match "/refs/{tags,heads}/{tag}-prerelease"
+        run: |
+          echo ::set-output name=tag::$(node -p "'${{ github.ref }}'.match(/^.*\/(.+)-prerelease$/)[1]")
+          echo ::set-output name=commit_sha::$(git rev-parse HEAD)
+
+      - name: "Check `tag` against `lerna.json.version`"
+        shell: bash
+        run: |
+          [ "${{ steps.release_draft_tag.outputs.tag }}" == "$(node -p "require('./lerna.json').version")" ]
+
+      - name: "Create Release (draft)"
+        id: create_release_draft
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.release_draft_tag.outputs.tag }}
+          release_name: ${{ steps.release_draft_tag.outputs.tag }} (alpha)
+          commitish: ${{ github.ref }}
+          draft: true
+          prerelease: true
+
+      - name: "Generate download URL for Release assets"
+        id: release_json_ext
+        shell: python
+        run: |
+          print('::set-output name=download_url::' + '${{ steps.create_release_draft.outputs.html_url }}'.replace('/tag/', '/download/'));
+
+  build:
+    needs: [create_release]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: "Checkout kogito-tooling"
+        uses: actions/checkout@v2
+        with:
+          path: ${{ github.workspace }}/kogito-tooling
+          fetch-depth: 0
+
+      - name: "Checkout kogito-online-staging"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/checkout@v2
+        with:
+          path: ${{ github.workspace }}/kogito-online-staging
+          fetch-depth: 0
+          token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+          repository: kiegroup/kogito-online-staging
+
+      - name: "Setup kogito-tooling-bot"
+        if: matrix.os == 'ubuntu-latest'
+        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+        with:
+          path: kogito-online-staging
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.2.0
+
+      - name: "Setup environment"
+        uses: ./kogito-tooling/.github/actions/setup-env
+        with:
+          os: ${{ matrix.os }}
+          path: kogito-tooling
+
+      - name: "Build"
+        working-directory: ${{ github.workspace }}/kogito-tooling
+        env:
+          KOGITO_TOOLING_BUILD_testIT: "false"
+          KOGITO_TOOLING_BUILD_test: "false"
+          KOGITO_TOOLING_BUILD_lint: "false"
+          WEBPACK__minimize: "true"
+          WEBPACK__tsLoaderTranspileOnly: "false"
+          CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
+          CHROME_EXTENSION__routerRelativePath: "kogito-online-staging/${{ needs.create_release.outputs.tag }}-prerelease/chrome-extension"
+          CHROME_EXTENSION__onlineEditorUrl: "https://kiegroup.github.io/kogito-online-staging/${{ needs.create_release.outputs.tag }}-prerelease"
+          CHROME_EXTENSION__manifestFile: "manifest.prod.json"
+          ONLINE_EDITOR__downloadHubUrlLinux: "${{ needs.create_release.outputs.download_asset_url }}/STAGING__business_modeler_hub_preview_linux_${{ needs.create_release.outputs.tag }}.tar.gz"
+          ONLINE_EDITOR__downloadHubUrlMacOs: "${{ needs.create_release.outputs.download_asset_url }}/STAGING__business_modeler_hub_preview_macos_${{ needs.create_release.outputs.tag }}.zip"
+          ONLINE_EDITOR__downloadHubUrlWindows: "${{ needs.create_release.outputs.download_asset_url }}/STAGING__business_modeler_hub_preview_windows_${{ needs.create_release.outputs.tag }}.zip"
+          ONLINE_EDITOR__buildInfo: "${{ needs.create_release.outputs.tag }} (staging) @ ${{ needs.create_release.outputs.commit_sha }}"
+          ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ needs.create_release.outputs.tag }}/kie_tooling_extended_services_linux_${{ needs.create_release.outputs.tag }}.tar.gz"
+          ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ needs.create_release.outputs.tag }}/kie_tooling_extended_services_macos_${{ needs.create_release.outputs.tag }}.dmg"
+          ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ needs.create_release.outputs.tag }}/kie_tooling_extended_services_windows_${{ needs.create_release.outputs.tag }}.exe"
+          ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion: "${{ needs.create_release.outputs.tag }}"
+          ONLINE_EDITOR__gtmId: ""
+        run: |
+          yarn build:prod
+
+      - name: "STAGING: Deploy Online Editor to kogito-online-staging (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        working-directory: ${{ github.workspace }}/kogito-online-staging
+        env:
+          DEPLOYMENT_DIR: ${{ needs.create_release.outputs.tag }}-prerelease
+        run: |
+          echo "Reset deployment dir"
+          rm -rf $DEPLOYMENT_DIR
+
+          echo "Copy Online Editor resources to the deployment dir"
+          cp -r ${{ github.workspace }}/kogito-tooling/packages/online-editor/dist $DEPLOYMENT_DIR
+
+          echo "Create dir for deploying Chrome Extension resources"
+          mkdir $DEPLOYMENT_DIR/chrome-extension
+
+          echo "Copy Chrome Extension resources to the right place"
+          cp -r ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/{bpmn,dmn,scesim,fonts,*-envelope.*} $DEPLOYMENT_DIR/chrome-extension
+
+          echo "Remove gwt-editors from the Online Editor deployment"
+          rm -rf $DEPLOYMENT_DIR/gwt-editors
+
+          echo "Make the Online Editor use the resources deployed by the Chrome Extension (to save space)"
+          ln -s chrome-extension $DEPLOYMENT_DIR/gwt-editors
+
+          echo "Commit changes and push"
+          git add ${{ needs.create_release.outputs.tag }}-prerelease
+          git commit -m "Deploy ${{ needs.create_release.outputs.tag }}-prerelease (staging)"
+          git push origin main
+
+      - name: "Compress Online Editor (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        working-directory: ${{ github.workspace }}/kogito-tooling/packages/online-editor
+        run: |
+          zip -r dist.zip dist/*
+
+      - name: "STAGING: Upload Online Editor (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/online-editor/dist.zip
+          asset_name: STAGING__online_editor_${{ needs.create_release.outputs.tag }}.zip
+          asset_content_type: application/zip
+
+      - name: "STAGING: Upload VS Code Extension (dev) (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ needs.create_release.outputs.tag }}.vsix
+          asset_name: STAGING__vscode_extension_dev_${{ needs.create_release.outputs.tag }}.vsix
+          asset_content_type: application/zip
+
+      - name: "STAGING: Upload VS Code Extension Backend (dev) (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-backend/dist/vscode-extension-backend_${{ needs.create_release.outputs.tag }}.vsix
+          asset_name: STAGING__vscode_extension_backend_dev_${{ needs.create_release.outputs.tag }}.vsix
+          asset_content_type: application/zip
+
+      - name: "STAGING: Upload Chrome Extension (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ needs.create_release.outputs.tag }}.zip
+          asset_name: STAGING__chrome_extension_${{ needs.create_release.outputs.tag }}.zip
+          asset_content_type: application/zip
+
+      - name: "STAGING: Upload Desktop App for Linux (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
+          asset_name: STAGING__business_modeler_preview_linux_${{ needs.create_release.outputs.tag }}.tar.gz
+          asset_content_type: application/tar+gzip
+
+      - name: "STAGING: Upload Desktop App for macOS (macOS only)"
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/desktop/out/Business Modeler Preview-darwin-x64.zip
+          asset_name: STAGING__business_modeler_preview_macos_${{ needs.create_release.outputs.tag }}.zip
+          asset_content_type: application/zip
+
+      - name: "Compress Desktop App (Windows only)"
+        if: matrix.os == 'windows-latest'
+        run: "Compress-Archive -Path \"kogito-tooling\\packages\\desktop\\out\\Business Modeler Preview-win32-x64\" -DestinationPath \"kogito-tooling\\packages\\desktop\\out\\Business Modeler Preview-win32-x64.zip\""
+
+      - name: "STAGING: Upload Desktop App for Windows (Windows only)"
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: "${{ github.workspace }}/kogito-tooling/packages/desktop/out/Business Modeler Preview-win32-x64.zip"
+          asset_name: "STAGING__business_modeler_preview_windows_${{ needs.create_release.outputs.tag }}.zip"
+          asset_content_type: application/zip
+
+      - name: "STAGING: Upload Hub App for Linux (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
+          asset_name: STAGING__business_modeler_hub_preview_linux_${{ needs.create_release.outputs.tag }}.tar.gz
+          asset_content_type: application/tar+gzip
+
+      - name: "STAGING: Upload Hub App for macOS (macOS only)"
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/hub/out/Business Modeler Hub Preview-darwin-x64.zip
+          asset_name: STAGING__business_modeler_hub_preview_macos_${{ needs.create_release.outputs.tag }}.zip
+          asset_content_type: application/zip
+
+      - name: "Compress Hub App (Windows only)"
+        if: matrix.os == 'windows-latest'
+        run: "Compress-Archive -Path \"kogito-tooling\\packages\\hub\\out\\Business Modeler Hub Preview-win32-x64\" -DestinationPath \"kogito-tooling\\packages\\hub\\out\\Business Modeler Hub Preview-win32-x64.zip\""
+
+      - name: "STAGING: Upload Hub App for Windows (Windows only)"
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: "${{ github.workspace }}/kogito-tooling/packages/hub/out/Business Modeler Hub Preview-win32-x64.zip"
+          asset_name: "STAGING__business_modeler_hub_preview_windows_${{ needs.create_release.outputs.tag }}.zip"
+          asset_content_type: application/zip

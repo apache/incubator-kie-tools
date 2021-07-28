@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import * as monaco from "@kiegroup/monaco-editor";
+import * as monaco from "@kie-tooling-core/monaco-editor";
 import CompletionItemKind = monaco.languages.CompletionItemKind;
 import CompletionItemInsertTextRule = monaco.languages.CompletionItemInsertTextRule;
 

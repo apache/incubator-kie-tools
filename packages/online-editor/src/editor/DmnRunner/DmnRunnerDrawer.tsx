@@ -23,15 +23,15 @@ import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/di
 import { diff } from "deep-object-diff";
 import { useDmnRunner } from "./DmnRunnerContext";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
-import { Notification } from "@kogito-tooling/notifications/dist/api";
+import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
-import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { useOnlineI18n } from "../../common/i18n";
 import { DmnForm, DmnFormResult } from "@kogito-tooling/form/dist/dmn";
 import { usePrevious } from "../../common/Hooks";
 import { ErrorBoundary } from "../../common/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";

@@ -15,13 +15,13 @@
  */
 
 const CopyPlugin = require("copy-webpack-plugin");
-const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
+const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const os = require("os");
 const { merge } = require("webpack-merge");
-const common = require("../../webpack.common.config");
+const common = require("../../config/webpack.common.config");
 
-module.exports = (env, argv) => [
-  merge(common(env, argv), {
+module.exports = (env) => [
+  merge(common(env), {
     externals: {
       electron: "commonjs electron",
     },
@@ -49,7 +49,7 @@ module.exports = (env, argv) => [
       }),
     ],
   }),
-  merge(common(env, argv), {
+  merge(common(env), {
     externals: {
       electron: "commonjs electron",
     },
@@ -58,7 +58,7 @@ module.exports = (env, argv) => [
       "webview/index": "./src/webview/index.tsx",
     },
     module: {
-      rules: [...pfWebpackOptions.patternflyRules],
+      rules: [...patternflyBase.webpackModuleRules],
     },
     plugins: [new CopyPlugin({ patterns: [{ from: "static/index.html" }] })],
   }),

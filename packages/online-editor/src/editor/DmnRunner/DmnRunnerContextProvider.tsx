@@ -20,12 +20,12 @@ import { GlobalContext } from "../../common/GlobalContext";
 import { DmnRunnerContext } from "./DmnRunnerContext";
 import { DmnFormSchema, DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerModal } from "./DmnRunnerModal";
-import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { getCookie, setCookie } from "../../common/utils";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 import { useOnlineI18n } from "../../common/i18n";
-import { NotificationType } from "@kogito-tooling/notifications/dist/api";
+import { NotificationType } from "@kie-tooling-core/notifications/dist/api";
 
 const KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME = 1000;
 export const THROTTLING_TIME = 200;

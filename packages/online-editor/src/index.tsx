@@ -19,7 +19,7 @@ import "@patternfly/patternfly/patternfly-addons.scss";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { App } from "./App";
-import { newFile } from "@kogito-tooling/editor/dist/channel";
+import { newFile } from "@kie-tooling-core/editor/dist/channel";
 import {
   extractEditorFileExtensionFromUrl,
   extractFileExtension,
@@ -34,8 +34,8 @@ import {
   AlertVariant,
 } from "@patternfly/react-core/dist/js/components/Alert";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
 import { OnlineI18n, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
 import "../static/resources/style.css";
 

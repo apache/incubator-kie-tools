@@ -16,7 +16,7 @@
 
 import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
 import { DmnFormI18n } from "../DmnFormI18n";
-import { wrapped } from "@kogito-tooling/i18n/dist/core";
+import { wrapped } from "@kie-tooling-core/i18n/dist/core";
 
 export const en: DmnFormI18n = {
   ...en_common,

@@ -22,7 +22,7 @@ import { join } from "path";
 export default class Screenshots {
   constructor(private readonly driver: WebDriver, private readonly screenshotsDir: string) {
     if (!existsSync(screenshotsDir)) {
-      mkdirSync(screenshotsDir);
+      mkdirSync(screenshotsDir, { recursive: true });
     }
   }
 

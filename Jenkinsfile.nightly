@@ -48,14 +48,13 @@ pipeline {
                     env['EXTERNAL_RESOURCE_PATH__bpmnEditor'] = "$WORKSPACE/kiegroup_kogito-editors-java/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime"
                     env['EXTERNAL_RESOURCE_PATH__dmnEditor'] = "$WORKSPACE/kiegroup_kogito-editors-java/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime"
                     env['EXTERNAL_RESOURCE_PATH__scesimEditor'] = "$WORKSPACE/kiegroup_kogito-editors-java/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime"
-                    env['EXTERNAL_RESOURCE_PATH__quarkusRunner'] = "$WORKSPACE/kiegroup_kogito-tooling/.github/supporting-files/maven-artifacts/kogito-tooling/quarkus-runner-unpacked/target/dependencies"
                 }
             }
         }
         stage('Build Nightly projects') {
             steps {
                 script {
-                    def projectCollection = ["kiegroup/kogito-tooling-java", "kiegroup/kogito-editors-java", "kiegroup/kogito-tooling"]
+                    def projectCollection = ["kiegroup/kogito-editors-java", "kiegroup/kogito-tooling"]
                     println "Project Collection to build ${projectCollection}"
                     def buildConfigAdditionalVariables = [:]
                     def buildConfigPathFolder = "$WORKSPACE/build_config/kogito/nightly"

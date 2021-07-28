@@ -26,8 +26,8 @@ import { useOnlineI18n } from "../common/i18n";
 import { UpdateGistErrors } from "../common/GithubService";
 import { EmbedModal } from "./EmbedModal";
 import { useFileUrl } from "../common/Hooks";
-import { ChannelType } from "@kogito-tooling/editor/dist/api";
-import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { ChannelType } from "@kie-tooling-core/editor/dist/api";
+import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
 import { DmnRunnerContext } from "./DmnRunner/DmnRunnerContext";
@@ -41,7 +41,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 
-const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kiegroup/monaco-editor");
+const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tooling-core/monaco-editor");
 
 export enum AlertTypes {
   NONE,

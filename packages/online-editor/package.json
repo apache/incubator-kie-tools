@@ -1,6 +1,7 @@
 {
   "name": "@kogito-tooling/online-editor",
-  "version": "0.10.0",
+  "version": "0.0.0",
+  "private": true,
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -10,15 +11,14 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kiegroup/monaco-editor": "^2.3.0",
-    "@kogito-tooling/editor": "0.10.0",
-    "@kogito-tooling/external-assets-base": "0.10.0",
-    "@kogito-tooling/i18n": "0.10.0",
-    "@kogito-tooling/i18n-common-dictionary": "0.10.0",
-    "@kogito-tooling/form": "0.10.0",
-    "@kogito-tooling/kie-bc-editors": "0.10.0",
-    "@kogito-tooling/patternfly-base": "0.10.0",
-    "@kogito-tooling/pmml-editor": "0.10.0",
+    "@kie-tooling-core/editor": "0.0.0",
+    "@kie-tooling-core/monaco-editor": "0.0.0",
+    "@kie-tooling-core/patternfly-base": "0.0.0",
+    "@kogito-tooling/external-assets-base": "0.0.0",
+    "@kogito-tooling/form": "0.0.0",
+    "@kogito-tooling/i18n-common-dictionary": "0.0.0",
+    "@kogito-tooling/kie-bc-editors": "0.0.0",
+    "@kogito-tooling/pmml-editor": "0.0.0",
     "@octokit/rest": "^18.5.3",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
@@ -26,20 +26,30 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0"
   },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
+  },
   "scripts": {
-    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",
-    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose'",
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose\"",
     "test:clearCache": "jest --clearCache",
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "yarn lint && yarn test && rimraf dist && webpack",
+    "build:prod": "yarn lint && yarn test && rimraf dist && webpack && yarn test:it",
     "start": "webpack serve --host 0.0.0.0 --env dev",
     "cy:open": "yarn run cypress open --project it-tests",
     "cy:run": "yarn run cypress run -b chrome --project it-tests",
-    "test:it": "yarn run start-server-and-test start http://0.0.0.0:9001 cy:run"
+    "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start http-get://0.0.0.0:$(build-env onlineEditor.dev.port) cy:run\""
   },
   "babel": {
     "presets": [
-      "@babel/env",
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
       "@babel/react"
     ]
   }

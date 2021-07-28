@@ -15,11 +15,11 @@
  */
 
 import { createEditor } from "../../common/Editor";
-import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
-import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
-import { StateControl } from "@kogito-tooling/editor/dist/channel";
+import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
+import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tooling-core/editor/dist/api";
+import { StateControl } from "@kie-tooling-core/editor/dist/channel";
 
-jest.mock("@kogito-tooling/editor/dist/api", () => {
+jest.mock("@kie-tooling-core/editor/dist/api", () => {
   return {
     KogitoEditorEnvelopeApi: jest.fn().mockImplementation(),
   };

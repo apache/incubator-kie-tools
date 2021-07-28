@@ -1,0 +1,19 @@
+name: "Setup Kogito Tooling Bot on Git"
+description: "setup"
+
+inputs:
+  path:
+    description: "kogito-tooling path"
+    required: false
+    default: "."
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Setup kogito-tooling-bot"
+      shell: bash
+      run: |
+        echo "STEP: Setup kogito-tooling-bot"
+        cd ${{ inputs.path }}
+        git config --global user.email "kietooling@gmail.com"
+        git config --global user.name "Kogito Tooling Bot (kiegroup)"

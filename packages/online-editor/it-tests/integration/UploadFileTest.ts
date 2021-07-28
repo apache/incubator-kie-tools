@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+import * as buildEnv from "@kogito-tooling/build-env";
+
 describe("Upload file test", () => {
   beforeEach(() => {
-    cy.visit("/");
+    cy.visit(`http://localhost:${buildEnv.onlineEditor.dev.port}/`);
   });
 
   it("should upload BPMN file", () => {

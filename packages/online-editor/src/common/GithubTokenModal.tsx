@@ -27,7 +27,7 @@ import { CheckIcon } from "@patternfly/react-icons/dist/js/icons/check-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { GITHUB_OAUTH_TOKEN_SIZE, GITHUB_TOKENS_HOW_TO_URL, GITHUB_TOKENS_URL } from "./GithubService";
 import { useOnlineI18n } from "./i18n";
-import { I18nHtml } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nHtml } from "@kie-tooling-core/i18n/dist/react-components";
 
 interface Props {
   isOpen: boolean;

@@ -2,8 +2,8 @@
   "fixturesFolder": "./cypress/fixtures",
   "integrationFolder": "./cypress/integration",
   "pluginsFile": "./cypress/plugins/index.ts",
-  "screenshotsFolder": "./cypress/screenshots",
-  "videosFolder": "./cypress/videos",
+  "screenshotsFolder": "../dist-it-tests/screenshots",
+  "videosFolder": "../dist-it-tests/videos",
   "supportFile": "./cypress/support/index.ts",
   "reporter": "junit",
   "reporterOptions": {

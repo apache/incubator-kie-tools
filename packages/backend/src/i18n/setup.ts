@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { I18nDefaults, I18nDictionaries } from "@kogito-tooling/i18n/dist/core";
+import { I18nDefaults, I18nDictionaries } from "@kie-tooling-core/i18n/dist/core";
 import { BackendI18n } from "./BackendI18n";
 import { en } from "./locales";
 

@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
+import { NotificationsApi } from "@kie-tooling-core/notifications/dist/api";
 
 export interface NotificationsPanelContextType {
   isOpen: boolean;

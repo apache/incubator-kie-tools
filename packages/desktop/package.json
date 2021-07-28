@@ -1,6 +1,7 @@
 {
   "name": "@kogito-tooling/desktop",
-  "version": "0.10.0",
+  "version": "0.0.0",
+  "private": true,
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -10,22 +11,23 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kiegroup/monaco-editor": "^2.3.0",
-    "@kogito-tooling/editor": "0.10.0",
-    "@kogito-tooling/external-assets-base": "0.10.0",
-    "@kogito-tooling/i18n": "0.10.0",
-    "@kogito-tooling/i18n-common-dictionary": "0.10.0",
-    "@kogito-tooling/kie-bc-editors": "0.10.0",
-    "@kogito-tooling/patternfly-base": "0.10.0",
-    "electron": "^12.0.10",
+    "@kie-tooling-core/patternfly-base": "0.0.0",
+    "@kogito-tooling/build-env": "0.0.0",
+    "@kogito-tooling/external-assets-base": "0.0.0",
+    "@kogito-tooling/i18n-common-dictionary": "0.0.0",
+    "@kogito-tooling/kie-bc-editors": "0.0.0",
+    "electron": "^12.0.11",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
   },
   "scripts": {
     "start": "electron dist --disable-gpu",
     "rebuild": "electron-rebuild -f -w sqlite3",
-    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",
-    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose'",
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose\"",
     "test:clearCache": "jest --clearCache",
     "init": "yarn -f",
     "build:dev": "rimraf dist && webpack --env dev",
@@ -39,12 +41,21 @@
     "build:prod:darwin": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:darwin",
     "build:prod:win32": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:win32",
     "build:prod:all": "yarn run clean:prod && yarn run compile:prod && yarn run package:prod:linux && yarn run package:prod:darwin && yarn run package:prod:win32",
-    "build:prod": "run-script-os",
-    "test:it": "jest --config it-tests/jest.config.json --runInBand --forceExit --verbose"
+    "build:prod": "run-script-os && yarn test:it",
+    "test:it:linux:darwin": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"jest --config it-tests/jest.config.json --runInBand --forceExit --verbose\"",
+    "test:it:win32": "echo \"Not supported\"",
+    "test:it": "run-script-os"
   },
   "babel": {
     "presets": [
-      "@babel/env",
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
       "@babel/react"
     ]
   },

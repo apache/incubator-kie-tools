@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoEditorEnvelopeApi } from "@kogito-tooling/editor/dist/api";
+import { KogitoEditorEnvelopeApi } from "@kie-tooling-core/editor/dist/api";
 
 export interface DmnEditorEnvelopeApi extends KogitoEditorEnvelopeApi {
   myDmnEnvelopeMethod(): Promise<string>;

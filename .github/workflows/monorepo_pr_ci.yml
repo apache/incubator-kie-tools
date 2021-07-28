@@ -1,0 +1,80 @@
+name: "CI :: Monorepo"
+
+on:
+  pull_request:
+    branches: "**"
+    paths:
+      - "packages/**"
+
+jobs:
+  monorepo-pr-ci:
+    if: github.event.pull_request.draft == false
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.2.0
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ${{ matrix.os }}
+
+      - name: "Build dependencies"
+        shell: bash
+        run: |
+          export REF=${{ github.event.pull_request.base.sha }} &&
+          export SCOPE=$(diff <(echo "$(lerna ls --since $REF --include-dependencies --all | cut -d' ' -f1)") <(echo "$(lerna ls --since $REF  --all | cut -d' ' -f1)") --changed-group-format='%<%>' --unchanged-group-format='' | xargs -I{} echo -n ' --scope="{}"') &&
+          echo $REF $SCOPE &&
+          yarn run-script-if --silent --env SCOPE --eq "" \
+            --then "echo No dependencies to build." \
+            --else "lerna run --stream build:dev $SCOPE"
+
+      - name: "Build changed and dependents"
+        env:
+          WEBPACK__minimize: "false"
+          KOGITO_TOOLING_BUILD_lint: "true"
+          KOGITO_TOOLING_BUILD_test: "true"
+          KOGITO_TOOLING_BUILD_testIT: "true"
+          DISPLAY: ":99.0"
+          START_SERVER_AND_TEST_INSECURE: "true"
+        run: |
+          lerna run build:prod --stream --concurrency 1 --since ${{ github.event.pull_request.base.sha }}
+
+      - name: "Check generated resources (you should commit those!)"
+        shell: bash
+        run: |
+          git diff
+          [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
+
+      - name: "Upload build artifacts"
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: artifacts-${{ matrix.os }}
+          if-no-files-found: warn
+          path: |
+            packages/*/dist
+            packages/hub/out/*.zip
+            packages/desktop/out/*.zip
+            !packages/hub/dist
+            !packages/desktop/dist
+
+      - name: "Upload IT Tests artifacts"
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: it-tests-artifacts-${{ matrix.os }}
+          if-no-files-found: warn
+          path: |
+            packages/*/dist-it-tests

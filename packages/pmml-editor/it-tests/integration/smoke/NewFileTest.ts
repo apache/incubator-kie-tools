@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+import * as buildEnv from "@kogito-tooling/build-env";
+
 describe("New File basic user's interaction", () => {
   beforeEach(() => {
-    cy.visit("/");
+    cy.visit(`http://localhost:${buildEnv.pmmlEditor.dev.port}/`);
     cy.newButtonPMML().click();
   });
 

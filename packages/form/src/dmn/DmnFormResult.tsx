@@ -31,9 +31,9 @@ import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/di
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
+import { NotificationSeverity } from "@kie-tooling-core/notifications/dist/api";
 import { dmnFormI18n } from "./i18n";
-import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import "./styles.scss";
 import { ErrorBoundary } from "../common/ErrorBoundary";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";

@@ -16,7 +16,6 @@
 
 const nodePath = require("path");
 const nodeFs = require("fs");
-const glob = require("glob");
 
 /**
  * Two scenarios for nodeModulesDir:
@@ -28,9 +27,8 @@ const glob = require("glob");
 const nodeModulesDir = "../.." + (__dirname.includes("node_modules") ? "" : "/node_modules");
 
 module.exports = {
-  dmnEditorPath: (argv) => {
+  dmnEditorPath: () => {
     const path =
-      (argv && argv["EXTERNAL_RESOURCE_PATH__dmnEditor"]) ??
       process.env["EXTERNAL_RESOURCE_PATH__dmnEditor"] ??
       nodePath.resolve(__dirname, nodeModulesDir + "/@kogito-tooling/dmn-editor-unpacked/target/dmn");
 
@@ -43,9 +41,8 @@ module.exports = {
     return path;
   },
 
-  bpmnEditorPath: (argv) => {
+  bpmnEditorPath: () => {
     const path =
-      (argv && argv["EXTERNAL_RESOURCE_PATH__bpmnEditor"]) ??
       process.env["EXTERNAL_RESOURCE_PATH__bpmnEditor"] ??
       nodePath.resolve(__dirname, nodeModulesDir + "/@kogito-tooling/bpmn-editor-unpacked/target/bpmn");
 
@@ -58,9 +55,8 @@ module.exports = {
     return path;
   },
 
-  scesimEditorPath: (argv) => {
+  scesimEditorPath: () => {
     const path =
-      (argv && argv["EXTERNAL_RESOURCE_PATH__scesimEditor"]) ??
       process.env["EXTERNAL_RESOURCE_PATH__scesimEditor"] ??
       nodePath.resolve(__dirname, nodeModulesDir + "/@kogito-tooling/scesim-editor-unpacked/target/scesim");
 
@@ -71,30 +67,5 @@ module.exports = {
     console.info(`External asset :: SceSim Editor path: ${path}`);
 
     return path;
-  },
-
-  quarkusRunnerPath: (argv) => {
-    const path =
-      (argv && argv["EXTERNAL_RESOURCE_PATH__quarkusRunner"]) ??
-      process.env["EXTERNAL_RESOURCE_PATH__quarkusRunner"] ??
-      nodePath.resolve(
-        __dirname,
-        nodeModulesDir +
-          "/@kogito-tooling/quarkus-runner-unpacked/target/dependencies/kogito-extended-services-quarkus-*-runner.jar"
-      );
-
-    const matches = glob.sync(path);
-
-    console.info(`Found ${matches.length} match(es) for External asset :: Quarkus Runner.`);
-
-    if (matches.length <= 0) {
-      throw new Error(`External asset :: Quarkus Runner path found no matches: ${path}`);
-    } else if (matches.length > 1) {
-      throw new Error(`External asset :: Quarkus Runner path found multiple matches: ${matches.join(", ")}`);
-    }
-
-    console.info(`External asset :: Quarkus Runner path: ${matches[0]}`);
-
-    return matches[0];
   },
 };

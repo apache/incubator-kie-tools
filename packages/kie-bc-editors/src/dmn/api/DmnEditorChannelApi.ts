@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
+import { KogitoEditorChannelApi } from "@kie-tooling-core/editor/dist/api";
 
 export interface DmnEditorChannelApi extends KogitoEditorChannelApi {
   myDmnChannelMethod(): void;

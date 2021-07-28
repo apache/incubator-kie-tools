@@ -1,0 +1,21 @@
+{
+  "name": "@kogito-tooling/build-env",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "cli.js"
+  ],
+  "bin": "./cli.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "scripts": {
+    "print-build-env": "rimraf dist && build-env --print-cli-tools-check && build-env --print-env && build-env --print-config && build-env --build-graph",
+    "build:dev": "yarn print-build-env",
+    "build:prod": "yarn print-build-env"
+  }
+}

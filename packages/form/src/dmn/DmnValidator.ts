@@ -47,43 +47,35 @@ export class DmnValidator extends Validator {
 
   // Override to add period validation
   public createValidator(jsonSchema: any) {
-    try {
-      const validator = this.ajv.compile(jsonSchema);
+    const validator = this.ajv.compile(jsonSchema);
 
-      return (model: any) => {
-        // AJV doesn't handle dates objects. This transformation converts Dates to their UTC format.
-        validator(JSON.parse(JSON.stringify(model)));
+    return (model: any) => {
+      // AJV doesn't handle dates objects. This transformation converts Dates to their UTC format.
+      validator(JSON.parse(JSON.stringify(model)));
 
-        if (!validator.errors?.length) {
-          return null;
-        }
+      if (!validator.errors?.length) {
+        return null;
+      }
 
-        return {
-          details: validator.errors?.map((error: any) => {
-            if (error.keyword === "format") {
-              if ((error.params as any).format === "days and time duration") {
-                return { ...error, message: this.i18n.form.validation.daysAndTimeError };
-              }
-              if ((error.params as any).format === "years and months duration") {
-                return { ...error, message: this.i18n.form.validation.yearsAndMonthsError };
-              }
+      return {
+        details: validator.errors?.map((error: any) => {
+          if (error.keyword === "format") {
+            if ((error.params as any).format === "days and time duration") {
+              return { ...error, message: this.i18n.form.validation.daysAndTimeError };
             }
-            return error;
-          }),
-        };
+            if ((error.params as any).format === "years and months duration") {
+              return { ...error, message: this.i18n.form.validation.yearsAndMonthsError };
+            }
+          }
+          return error;
+        }),
       };
-    } catch (err) {
-      throw err;
-    }
+    };
   }
 
   public getBridge(formSchema: any): DmnFormJsonSchemaBridge {
     const formDraft4 = { ...formSchema, $schema: this.SCHEMA_DRAFT4 };
-    try {
-      const validator = this.createValidator(formDraft4);
-      return new DmnFormJsonSchemaBridge(formDraft4, validator);
-    } catch (err) {
-      throw err;
-    }
+    const validator = this.createValidator(formDraft4);
+    return new DmnFormJsonSchemaBridge(formDraft4, validator);
   }
 }

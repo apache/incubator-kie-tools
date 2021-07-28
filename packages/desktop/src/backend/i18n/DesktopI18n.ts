@@ -15,7 +15,7 @@
  */
 
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
-import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
+import { ReferenceDictionary } from "@kie-tooling-core/i18n/dist/core";
 
 interface DesktopDictionary extends ReferenceDictionary {
   fileOperations: {

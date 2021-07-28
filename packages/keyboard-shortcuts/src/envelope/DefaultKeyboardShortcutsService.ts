@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { OperatingSystem } from "@kogito-tooling/channel-common-api";
+import { OperatingSystem } from "@kie-tooling-core/operating-system";
 import { ChannelKeyboardEvent } from "../api";
 import { KeyboardShortcutRegisterOpts } from "./KeyboardShortcutRegisterOpts";
 

@@ -15,7 +15,7 @@
  */
 
 const { merge } = require("webpack-merge");
-const common = require("../../webpack.common.config");
+const common = require("../../config/webpack.common.config");
 const nodeExternals = require("webpack-node-externals");
 const CopyPlugin = require("copy-webpack-plugin");
 const path = require("path");

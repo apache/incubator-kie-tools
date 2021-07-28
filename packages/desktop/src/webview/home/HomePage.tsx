@@ -15,8 +15,10 @@
  */
 
 import * as React from "react";
-import { Brand, Nav, NavItem, NavList, Page, PageHeader, PageSidebar } from "@patternfly/react-core";
 import { useCallback, useMemo, useState } from "react";
+import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
+import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
+import { Page, PageHeader, PageSidebar } from "@patternfly/react-core/dist/js/components/Page";
 import { FilesPage } from "./FilesPage";
 import { LearnMorePage } from "./LearnMorePage";
 import { ElectronFile } from "../../common/ElectronFile";

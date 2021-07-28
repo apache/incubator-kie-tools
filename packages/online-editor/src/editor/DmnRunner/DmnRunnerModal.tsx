@@ -40,7 +40,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { SelectDirection } from "@patternfly/react-core/dist/js/components/Select";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { useOnlineI18n } from "../../common/i18n";
-import { I18nWrapped } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 
 enum ModalPage {
   INITIAL,

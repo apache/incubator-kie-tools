@@ -16,13 +16,13 @@
 
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
+const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const { merge } = require("webpack-merge");
-const common = require("../../webpack.common.config");
+const common = require("../../config/webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 
-module.exports = async (env, argv) => [
-  merge(common(env, argv), {
+module.exports = async (env) => [
+  merge(common(env), {
     output: {
       library: "AppFormer.VsCodePack",
       libraryTarget: "umd",
@@ -37,7 +37,7 @@ module.exports = async (env, argv) => [
     },
     plugins: [],
   }),
-  merge(common(env, argv), {
+  merge(common(env), {
     output: {
       library: "AppFormer.VsCodePackWebview",
       libraryTarget: "umd",
@@ -53,24 +53,24 @@ module.exports = async (env, argv) => [
       "webview/SceSimEditorEnvelopeApp": "./src/webview/SceSimEditorEnvelopeApp.ts",
     },
     module: {
-      rules: [...pfWebpackOptions.patternflyRules],
+      rules: [...patternflyBase.webpackModuleRules],
     },
     plugins: [
       new CopyWebpackPlugin({
         patterns: [
           { from: "./static", to: "static" },
           {
-            from: externalAssets.dmnEditorPath(argv),
+            from: externalAssets.dmnEditorPath(),
             to: "webview/editors/dmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
           {
-            from: externalAssets.bpmnEditorPath(argv),
+            from: externalAssets.bpmnEditorPath(),
             to: "webview/editors/bpmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
           {
-            from: externalAssets.scesimEditorPath(argv),
+            from: externalAssets.scesimEditorPath(),
             to: "webview/editors/scesim",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
@@ -78,7 +78,7 @@ module.exports = async (env, argv) => [
       }),
     ],
   }),
-  merge(common(env, argv), {
+  merge(common(env), {
     output: {
       library: "AppFormer.VsCodePackWebview",
       libraryTarget: "umd",
@@ -95,8 +95,8 @@ module.exports = async (env, argv) => [
       alias: {
         // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
         // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
-        // `@kiegroup/monaco-editor`. This way, everything works as expected.
-        "monaco-editor/esm/vs/editor/editor.api": path.resolve(__dirname, "../../node_modules/@kiegroup/monaco-editor"),
+        // `@kie-tooling-core/monaco-editor`. This way, everything works as expected.
+        "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tooling-core/monaco-editor"),
       },
     },
     module: {
@@ -105,7 +105,7 @@ module.exports = async (env, argv) => [
           test: /\.ttf$/,
           use: ["file-loader"],
         },
-        ...pfWebpackOptions.patternflyRules,
+        ...patternflyBase.webpackModuleRules,
       ],
     },
   }),

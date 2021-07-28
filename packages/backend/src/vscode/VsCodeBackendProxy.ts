@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { I18n } from "@kogito-tooling/i18n/dist/core/I18n";
+import { I18n } from "@kie-tooling-core/i18n/dist/core/I18n";
 import * as vscode from "vscode";
 import { BackendProxy, Capability, CapabilityResponse, CapabilityResponseStatus } from "../api";
 import { BackendExtensionApi } from "../channel-api";

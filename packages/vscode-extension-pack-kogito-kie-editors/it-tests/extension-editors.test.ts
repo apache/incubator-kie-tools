@@ -34,7 +34,7 @@ import DecisionNavigatorHelper from "./helpers/dmn/DecisionNavigatorHelper";
 import { PropertiesPanelSection } from "./helpers/bpmn/PropertiesPanelHelper";
 
 describe("Editors are loading properly", () => {
-  const RESOURCES: string = path.resolve("it-tests", "resources");
+  const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
   const DEMO_BPMN: string = "demo.bpmn";
   const DEMO_DMN: string = "demo.dmn";
   const DEMO_SCESIM: string = "demo.scesim";

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
-import { Notification, NotificationsApi, NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
+import { Notification, NotificationsApi, NotificationSeverity } from "@kie-tooling-core/notifications/dist/api";
 import {
   NotificationDrawer,
   NotificationDrawerBody,

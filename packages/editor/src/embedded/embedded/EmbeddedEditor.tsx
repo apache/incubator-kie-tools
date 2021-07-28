@@ -21,16 +21,16 @@ import {
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
 } from "../../api";
-import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts/dist/channel";
-import { useGuidedTourPositionProvider } from "@kogito-tooling/guided-tour/dist/channel";
-import * as CSS from "csstype";
+import { useSyncedKeyboardEvents } from "@kie-tooling-core/keyboard-shortcuts/dist/channel";
+import { useGuidedTourPositionProvider } from "@kie-tooling-core/guided-tour/dist/channel";
+import type * as CSS from "csstype";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useRef, useState } from "react";
 import { File, StateControl } from "../../channel";
 import { useEffectAfterFirstRender } from "../common";
 import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
-import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
-import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
+import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
+import { useConnectedEnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/hooks";
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 

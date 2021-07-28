@@ -24,13 +24,13 @@ import {
   KogitoEditorEnvelopeContextType,
 } from "../api";
 import { KogitoEditorEnvelope } from "./KogitoEditorEnvelope";
-import { ApiDefinition, EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
+import { ApiDefinition, EnvelopeBus } from "@kie-tooling-core/envelope-bus/dist/api";
 import { KogitoEditorEnvelopeApiImpl } from "./KogitoEditorEnvelopeApiImpl";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
-import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
-import { Envelope, EnvelopeApiFactory } from "@kogito-tooling/envelope";
+import { DefaultKeyboardShortcutsService } from "@kie-tooling-core/keyboard-shortcuts/dist/envelope";
+import { I18nService } from "@kie-tooling-core/i18n/dist/envelope";
+import { Envelope, EnvelopeApiFactory } from "@kie-tooling-core/envelope";
 import { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
-import { getOperatingSystem } from "@kogito-tooling/channel-common-api";
+import { getOperatingSystem } from "@kie-tooling-core/operating-system";
 
 /**
  * Starts the Editor envelope at a given container. Uses `bus` to send messages out of the Envelope and creates Editors based on the editorFactory provided.

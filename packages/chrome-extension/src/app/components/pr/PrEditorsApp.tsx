@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useGlobals } from "../common/GlobalContext";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
+import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
 import { Dependencies } from "../../Dependencies";
 import { getOriginalFilePath, IsolatedPrEditor, PrInfo } from "./IsolatedPrEditor";
 import { Logger } from "../../../Logger";

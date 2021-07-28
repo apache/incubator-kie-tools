@@ -2,11 +2,11 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "module": "esnext",
-    "esModuleInterop": true,
     "moduleResolution": "node",
     "declaration": false,
     "declarationMap": false,
     "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "target": "es6"
   },
   "include": ["src"]

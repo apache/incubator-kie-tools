@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { KogitoEdit } from "@kogito-tooling/workspace/dist/api";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
-import { VsCodeNotificationsApi } from "@kogito-tooling/notifications/dist/vscode";
+import { KogitoEdit } from "@kie-tooling-core/workspace/dist/api";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
+import { VsCodeNotificationsApi } from "@kie-tooling-core/notifications/dist/vscode";
 import * as vscode from "vscode";
 import {
   CancellationToken,

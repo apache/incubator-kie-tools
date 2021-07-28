@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
-import { EditorEnvelopeViewApi, KogitoEditorEnvelopeApiImpl } from "@kogito-tooling/editor/dist/envelope";
-import { EnvelopeApiFactoryArgs } from "@kogito-tooling/envelope";
+import { KogitoEditorEnvelopeContextType } from "@kie-tooling-core/editor/dist/api";
+import { EditorEnvelopeViewApi, KogitoEditorEnvelopeApiImpl } from "@kie-tooling-core/editor/dist/envelope";
+import { EnvelopeApiFactoryArgs } from "@kie-tooling-core/envelope";
 import { BpmnEditorChannelApi, BpmnEditorEnvelopeApi } from "../api";
 import { BpmnEditor } from "./BpmnEditor";
 import { BpmnEditorFactory } from "./BpmnEditorFactory";

@@ -22,7 +22,7 @@ import {
   ResourceListOptions,
   ResourcesList,
   SearchType,
-} from "@kogito-tooling/workspace/dist/api";
+} from "@kie-tooling-core/workspace/dist/api";
 
 import * as vscode from "vscode";
 import * as nodePath from "path";

@@ -1,8 +1,9 @@
 {
   "name": "vscode-extension-backend",
+  "version": "0.0.0",
+  "private": true,
   "displayName": "Backend services for BPMN, DMN and Test Scenario Editors",
   "description": "",
-  "version": "0.10.0",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.46.0"
@@ -66,8 +67,8 @@
     "package:prod": "cross-var \"vsce package --yarn -o ./dist/vscode-extension-backend_$npm_package_version.vsix\"",
     "compile": "webpack",
     "watch": "webpack",
-    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",
-    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose --passWithNoTests'",
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "test:it": "echo 'No tests to run.'",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod:linux:darwin": "rimraf dist && yarn lint && webpack && yarn run test && yarn run test:it && yarn run package:prod",
@@ -75,7 +76,10 @@
     "build:prod": "run-script-os"
   },
   "dependencies": {
-    "@kogito-tooling/backend": "0.10.0",
-    "@kogito-tooling/external-assets-base": "0.10.0"
+    "@kie-tooling-core/vscode-extension": "0.0.0",
+    "@kogito-tooling/backend-extended-services": "0.0.0"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
   }
 }

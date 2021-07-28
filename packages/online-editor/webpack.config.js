@@ -16,17 +16,120 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
+const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const { merge } = require("webpack-merge");
-const common = require("../../webpack.common.config");
+const common = require("../../config/webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 const { EnvironmentPlugin } = require("webpack");
+const buildEnv = require("@kogito-tooling/build-env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 
-function getGtmResource(argv) {
-  const gtmId = argv["KOGITO_ONLINE_EDITOR_GTM_ID"] ?? process.env["KOGITO_ONLINE_EDITOR_GTM_ID"];
-  console.info("Google Tag Manager :: ID: " + gtmId);
+module.exports = async (env, argv) => {
+  const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs();
+  const buildInfo = getBuildInfo();
+  const [
+    kieToolingExtendedServices_linuxDownloadUrl,
+    kieToolingExtendedServices_macOsDownloadUrl,
+    kieToolingExtendedServices_windowsDownloadUrl,
+    kieToolingExtendedServices_compatibleVersion,
+  ] = getKieToolingExtendedServicesArgs(argv);
+
+  const gtmResource = getGtmResource(argv);
+
+  return merge(common(env), {
+    entry: {
+      index: "./src/index.tsx",
+      "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
+      "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
+      "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: "./static/index.html",
+        inject: false,
+        minify: false,
+      }),
+      new HtmlReplaceWebpackPlugin([
+        {
+          pattern: /(<!-- gtm):([\w-\/]+)(\s*-->)?/g,
+          replacement: (match, gtm, type) => {
+            if (gtmResource) {
+              return gtmResource[type] ?? `${match}`;
+            }
+            return `${match}`;
+          },
+        },
+      ]),
+      new EnvironmentPlugin({
+        WEBPACK_REPLACE__hubLinuxUrl: downloadHub_linuxUrl,
+        WEBPACK_REPLACE__hubMacOsUrl: downloadHub_macOsUrl,
+        WEBPACK_REPLACE__hubWindowsUrl: downloadHub_windowsUrl,
+        WEBPACK_REPLACE__buildInfo: buildInfo,
+        WEBPACK_REPLACE__dmnRunnerLinuxDownloadUrl: kieToolingExtendedServices_linuxDownloadUrl,
+        WEBPACK_REPLACE__dmnRunnerMacOsDownloadUrl: kieToolingExtendedServices_macOsDownloadUrl,
+        WEBPACK_REPLACE__dmnRunnerWindowsDownloadUrl: kieToolingExtendedServices_windowsDownloadUrl,
+        WEBPACK_REPLACE__dmnRunnerCompatibleVersion: kieToolingExtendedServices_compatibleVersion,
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: "./static/resources", to: "./resources" },
+          { from: "./static/images", to: "./images" },
+          { from: "./static/samples", to: "./samples" },
+          { from: "./static/favicon.ico", to: "./favicon.ico" },
+          {
+            from: externalAssets.dmnEditorPath(),
+            to: "./gwt-editors/dmn",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+          {
+            from: externalAssets.bpmnEditorPath(),
+            to: "./gwt-editors/bpmn",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+          { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
+          { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
+          { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
+          {
+            from: path.join(
+              path.dirname(require.resolve("@kogito-tooling/pmml-editor/package.json")),
+              "/static/images"
+            ),
+            to: "./images",
+          },
+        ],
+      }),
+    ],
+    resolve: {
+      alias: {
+        // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
+        // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
+        // `@kie-tooling-core/monaco-editor`. This way, everything works as expected.
+        "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tooling-core/monaco-editor"),
+      },
+    },
+    module: {
+      rules: [...patternflyBase.webpackModuleRules],
+    },
+    devServer: {
+      historyApiFallback: false,
+      disableHostCheck: true,
+      watchContentBase: true,
+      contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
+      compress: true,
+      port: buildEnv.onlineEditor.dev.port,
+    },
+  });
+};
+
+function getGtmResource() {
+  const gtmId = buildEnv.onlineEditor.gtmId;
+  console.info(`Google Tag Manager :: ID: ${gtmId}`);
+
+  if (!gtmId) {
+    return undefined;
+  }
+
   return {
     id: gtmId,
     header: `<!-- Google Tag Manager -->
@@ -52,61 +155,29 @@ function getGtmResource(argv) {
   };
 }
 
-function getLatestGitTag() {
-  const tagName = require("child_process").execSync("git rev-list --tags --max-count=1").toString().trim();
+function getDownloadHubArgs() {
+  const linuxUrl = buildEnv.onlineEditor.downloadHubUrl.linux;
+  const macOsUrl = buildEnv.onlineEditor.downloadHubUrl.macOs;
+  const windowsUrl = buildEnv.onlineEditor.downloadHubUrl.windows;
 
-  return require("child_process")
-    .execSync("git describe --tags " + tagName)
-    .toString()
-    .trim();
-}
-
-function getDownloadHubArgs(argv) {
-  let linuxUrl = argv["DOWNLOAD_HUB_linuxUrl"] ?? process.env["DOWNLOAD_HUB_linuxUrl"];
-  let macOsUrl = argv["DOWNLOAD_HUB_macOsUrl"] ?? process.env["DOWNLOAD_HUB_macOsUrl"];
-  let windowsUrl = argv["DOWNLOAD_HUB_windowsUrl"] ?? process.env["DOWNLOAD_HUB_windowsUrl"];
-
-  linuxUrl =
-    linuxUrl ??
-    `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_linux_${getLatestGitTag()}.zip`;
-  macOsUrl =
-    macOsUrl ??
-    `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_macos_${getLatestGitTag()}.zip`;
-  windowsUrl =
-    windowsUrl ??
-    `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_windows_${getLatestGitTag()}.zip`;
-
-  console.info("Download Hub :: Linux URL: " + linuxUrl);
-  console.info("Download Hub :: macOS URL: " + macOsUrl);
-  console.info("Download Hub :: Windows URL: " + windowsUrl);
+  console.info(`Online Editor :: Download Hub URL (Linux): ${linuxUrl}`);
+  console.info(`Online Editor :: Download Hub URL (macOS): ${macOsUrl}`);
+  console.info(`Online Editor :: Download Hub URL (Windows): ${windowsUrl}`);
 
   return [linuxUrl, macOsUrl, windowsUrl];
 }
 
-function getDmnRunnerArgs(argv) {
-  let linuxDownloadUrl =
-    argv["KIE_TOOLING_EXTENDED_SERVICES__linuxDownloadUrl"] ||
-    process.env["KIE_TOOLING_EXTENDED_SERVICES__linuxDownloadUrl"];
-  let macOsDownloadUrl =
-    argv["KIE_TOOLING_EXTENDED_SERVICES__macOsDownloadUrl"] ||
-    process.env["KIE_TOOLING_EXTENDED_SERVICES__macOsDownloadUrl"];
-  let windowsDownloadUrl =
-    argv["KIE_TOOLING_EXTENDED_SERVICES__windowsDownloadUrl"] ||
-    process.env["KIE_TOOLING_EXTENDED_SERVICES__windowsDownloadUrl"];
-  let compatibleVersion =
-    argv["KIE_TOOLING_EXTENDED_SERVICES__compatibleVersion"] ||
-    process.env["KIE_TOOLING_EXTENDED_SERVICES__compatibleVersion"];
+function getBuildInfo() {
+  const buildInfo = buildEnv.onlineEditor.buildInfo;
+  console.info(`Online Editor :: Build info: ${buildInfo}`);
+  return buildInfo;
+}
 
-  compatibleVersion = compatibleVersion || `0.0.0`;
-  macOsDownloadUrl =
-    macOsDownloadUrl ||
-    `https://github.com/kiegroup/kogito-tooling-go/releases/download/${compatibleVersion}/kie_tooling_extended_services_macos_${compatibleVersion}.dmg`;
-  windowsDownloadUrl =
-    windowsDownloadUrl ||
-    `https://github.com/kiegroup/kogito-tooling-go/releases/download/${compatibleVersion}/kie_tooling_extended_services_windows_${compatibleVersion}.exe`;
-  linuxDownloadUrl =
-    linuxDownloadUrl ||
-    `https://github.com/kiegroup/kogito-tooling-go/releases/download/${compatibleVersion}/kie_tooling_extended_services_linux_${compatibleVersion}.tar.gz`;
+function getKieToolingExtendedServicesArgs() {
+  const linuxDownloadUrl = buildEnv.onlineEditor.kieToolingExtendedServices.downloadUrl.linux;
+  const macOsDownloadUrl = buildEnv.onlineEditor.kieToolingExtendedServices.downloadUrl.macOs;
+  const windowsDownloadUrl = buildEnv.onlineEditor.kieToolingExtendedServices.downloadUrl.windows;
+  const compatibleVersion = buildEnv.onlineEditor.kieToolingExtendedServices.compatibleVersion;
 
   console.info("KIE Tooling Extended Services :: Linux download URL: " + linuxDownloadUrl);
   console.info("KIE Tooling Extended Services :: macOS download URL: " + macOsDownloadUrl);
@@ -115,91 +186,3 @@ function getDmnRunnerArgs(argv) {
 
   return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
 }
-
-module.exports = async (env, argv) => {
-  const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs(argv);
-  const [
-    dmnRunner_linuxDownloadUrl,
-    dmnRunner_macOsDownloadUrl,
-    dmnRunner_windowsDownloadUrl,
-    dmnRunner_compatibleVersion,
-  ] = getDmnRunnerArgs(argv);
-  const gtmResource = getGtmResource(argv);
-
-  return merge(common(env, argv), {
-    entry: {
-      index: "./src/index.tsx",
-      "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
-      "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
-      "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
-    },
-    plugins: [
-      new HtmlWebpackPlugin({
-        template: "./static/index.html",
-        inject: false,
-        minify: false,
-      }),
-      new HtmlReplaceWebpackPlugin([
-        {
-          pattern: /(<!-- gtm):([\w-\/]+)(\s*-->)?/g,
-          replacement: (match, gtm, type) => {
-            if (gtmResource.id) {
-              return gtmResource[type] ?? `${match}`;
-            }
-            return `${match}`;
-          },
-        },
-      ]),
-      new EnvironmentPlugin({
-        WEBPACK_REPLACE__hubLinuxUrl: downloadHub_linuxUrl,
-        WEBPACK_REPLACE__hubMacOsUrl: downloadHub_macOsUrl,
-        WEBPACK_REPLACE__hubWindowsUrl: downloadHub_windowsUrl,
-        WEBPACK_REPLACE__dmnRunnerLinuxDownloadUrl: dmnRunner_linuxDownloadUrl,
-        WEBPACK_REPLACE__dmnRunnerMacOsDownloadUrl: dmnRunner_macOsDownloadUrl,
-        WEBPACK_REPLACE__dmnRunnerWindowsDownloadUrl: dmnRunner_windowsDownloadUrl,
-        WEBPACK_REPLACE__dmnRunnerCompatibleVersion: dmnRunner_compatibleVersion,
-      }),
-      new CopyPlugin({
-        patterns: [
-          { from: "./static/resources", to: "./resources" },
-          { from: "./static/images", to: "./images" },
-          { from: "./static/samples", to: "./samples" },
-          { from: "./static/favicon.ico", to: "./favicon.ico" },
-          {
-            from: externalAssets.dmnEditorPath(argv),
-            to: "./gwt-editors/dmn",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
-          },
-          {
-            from: externalAssets.bpmnEditorPath(argv),
-            to: "./gwt-editors/bpmn",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
-          },
-          { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
-          { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
-          { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
-          { from: "../../node_modules/@kogito-tooling/pmml-editor/dist/images", to: "./images" },
-        ],
-      }),
-    ],
-    resolve: {
-      alias: {
-        // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
-        // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
-        // `@kiegroup/monaco-editor`. This way, everything works as expected.
-        "monaco-editor/esm/vs/editor/editor.api": path.resolve(__dirname, "../../node_modules/@kiegroup/monaco-editor"),
-      },
-    },
-    module: {
-      rules: [...pfWebpackOptions.patternflyRules],
-    },
-    devServer: {
-      historyApiFallback: false,
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
-      compress: true,
-      port: 9001,
-    },
-  });
-};

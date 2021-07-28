@@ -18,7 +18,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as electron from "electron";
 import { App } from "./App";
-import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
 import { HubI18nContext, hubI18nDefaults, hubI18nDictionaries } from "../common/i18n";
 
 document.addEventListener("DOMContentLoaded", () => {

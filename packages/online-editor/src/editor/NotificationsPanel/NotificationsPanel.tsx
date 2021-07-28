@@ -24,7 +24,7 @@ import { AngleUpIcon } from "@patternfly/react-icons/dist/js/icons/angle-up-icon
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { useNotificationsPanel } from "./NotificationsPanelContext";
 import { NotificationPanelTabContent } from "./NotificationsPanelTabContent";
-import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
+import { NotificationsApi } from "@kie-tooling-core/notifications/dist/api";
 import { useOnlineI18n } from "../../common/i18n";
 
 interface Props {

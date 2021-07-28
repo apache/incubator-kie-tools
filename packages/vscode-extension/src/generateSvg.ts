@@ -18,9 +18,9 @@ import { KogitoEditorStore } from "./KogitoEditorStore";
 import * as __path from "path";
 import * as fs from "fs";
 import * as vscode from "vscode";
-import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
+import { WorkspaceApi } from "@kie-tooling-core/workspace/dist/api";
 import { VsCodeI18n } from "./i18n";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
 
 export async function generateSvg(
   editorStore: KogitoEditorStore,

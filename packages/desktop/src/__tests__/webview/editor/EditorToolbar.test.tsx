@@ -17,7 +17,7 @@
 import * as React from "react";
 import { render } from "@testing-library/react";
 import { EditorToolbar } from "../../../webview/editor/EditorToolbar";
-import { StateControl } from "@kogito-tooling/editor/dist/channel";
+import { StateControl } from "@kie-tooling-core/editor/dist/channel";
 import { usingTestingDesktopI18nContext, usingTestingGlobalContext } from "../../testing_utils";
 
 const onClose = jest.fn(() => null);

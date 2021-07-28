@@ -24,8 +24,8 @@ import { Dependencies } from "../../Dependencies";
 import { kogitoMenuContainer } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
-import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
+import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
+import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
 import { chromeExtensionI18nDictionaries, chromeExtensionI18nDefaults, ChromeExtensionI18nContext } from "../../i18n";
 
 export interface Globals {

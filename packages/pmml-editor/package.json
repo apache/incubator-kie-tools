@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/pmml-editor",
-  "version": "0.10.0",
+  "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/editor/index.js",
@@ -14,11 +14,10 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kiegroup/monaco-editor": "^2.3.0",
-    "@kogito-tooling/editor": "0.10.0",
-    "@kogito-tooling/notifications": "0.10.0",
-    "@kogito-tooling/patternfly-base": "0.10.0",
-    "@kogito-tooling/pmml-editor-marshaller": "0.10.0",
+    "@kie-tooling-core/editor": "0.0.0",
+    "@kie-tooling-core/monaco-editor": "0.0.0",
+    "@kie-tooling-core/patternfly-base": "0.0.0",
+    "@kogito-tooling/pmml-editor-marshaller": "0.0.0",
     "@types/lodash": "^4.14.168",
     "@types/react-redux": "^7.1.16",
     "@types/react-router-dom": "^5.1.7",
@@ -37,25 +36,35 @@
     "uuid": "^8.3.2"
   },
   "scripts": {
-    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",
-    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose'",
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "copy:css": "copyfiles -u 1 src/**/*.{sass,scss,css} dist/",
+    "copy:images": "cpr ./static/images ./dist/images",
+    "build:dev": "rimraf dist && yarn copy:css && yarn copy:images && tsc -p tsconfig.dev.json",
+    "build:prod": "yarn lint && rimraf dist && yarn copy:css && yarn copy:images && tsc -p tsconfig.prod.json && yarn test && yarn test:it",
     "test:clearCache": "jest --clearCache",
     "test:watch": "jest --watch",
-    "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "yarn lint && yarn test && rimraf dist && webpack",
-    "start": "webpack serve -c webpack.showcase.config.js --host 0.0.0.0 --env dev",
+    "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
     "deploy": "gh-pages -d dist",
     "cy:open": "yarn run cypress open --project it-tests",
     "cy:run": "yarn run cypress run -b chrome --project it-tests",
-    "test:it": "yarn run start-server-and-test start http://0.0.0.0:8080 cy:run"
+    "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start http-get://0.0.0.0:$(build-env pmmlEditor.dev.port) cy:run\""
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0",
+    "gh-pages": "^3.1.0"
   },
   "babel": {
     "presets": [
-      "@babel/env",
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
       "@babel/react"
     ]
-  },
-  "devDependencies": {
-    "gh-pages": "^3.1.0"
   }
 }

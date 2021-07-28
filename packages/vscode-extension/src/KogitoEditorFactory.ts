@@ -17,11 +17,11 @@
 import * as vscode from "vscode";
 import { Uri, Webview } from "vscode";
 import * as nodePath from "path";
-import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
-import { BackendProxy } from "@kogito-tooling/backend/dist/api";
-import { ResourceContentService } from "@kogito-tooling/workspace/dist/api";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
-import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
+import { NotificationsApi } from "@kie-tooling-core/notifications/dist/api";
+import { BackendProxy } from "@kie-tooling-core/backend/dist/api";
+import { ResourceContentService } from "@kie-tooling-core/workspace/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
+import { WorkspaceApi } from "@kie-tooling-core/workspace/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { KogitoEditor } from "./KogitoEditor";
@@ -29,7 +29,7 @@ import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
 import { VsCodeI18n } from "./i18n";
 
 export class KogitoEditorFactory {

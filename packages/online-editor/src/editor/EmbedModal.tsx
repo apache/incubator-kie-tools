@@ -23,7 +23,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { useOnlineI18n } from "../common/i18n";
 import { useFileUrl } from "../common/Hooks";
-import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { GlobalContext } from "../common/GlobalContext";
 
 type SupportedStandaloneEditorFileExtensions = "bpmn" | "bpmn2" | "dmn";

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { NotificationSeverity } from "@kogito-tooling/notifications/dist/api";
+import { NotificationSeverity } from "@kie-tooling-core/notifications/dist/api";
 
 export interface DmnRunnerPayload {
   model: string;

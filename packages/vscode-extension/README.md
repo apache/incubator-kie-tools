@@ -1,1 +1,1 @@
-## Kogito Tooling Visual Studio Code extension library
+## Visual Studio Code extension library

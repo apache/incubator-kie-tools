@@ -16,8 +16,8 @@
 
 const nodeExternals = require("webpack-node-externals");
 const { merge } = require("webpack-merge");
-const common = require("../../webpack.common.config");
-const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
+const common = require("../../config/webpack.common.config");
+const patternflyBase = require("@kie-tooling-core/patternfly-base");
 
 module.exports = (env, argv) => [
   merge(common(env, argv), {
@@ -28,7 +28,7 @@ module.exports = (env, argv) => [
     output: {
       libraryTarget: "commonjs2",
     },
-    module: { rules: [...pfWebpackOptions.patternflyRules] },
+    module: { rules: [...patternflyBase.webpackModuleRules] },
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   }),
 ];

@@ -168,9 +168,9 @@ export default class VSCodeTestHelper {
    */
   public closeAllNotifications = async (): Promise<void> => {
     const activeNotifications = await this.workbench.getNotifications();
-    activeNotifications.forEach(async (notification) => {
+    for (const notification of activeNotifications) {
       await notification.dismiss();
-    });
+    }
   };
 
   /**

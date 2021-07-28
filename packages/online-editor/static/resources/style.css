@@ -213,6 +213,13 @@
   padding: var(--pf-global--spacer--xs);
 }
 
+.kogito-tooling--build-info {
+  font-size: 0.8em;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+}
+
 .kogito--code {
   font-family: var(--pf-global--FontFamily--monospace);
   font-weight: var(--pf-global--FontWeight--normal);

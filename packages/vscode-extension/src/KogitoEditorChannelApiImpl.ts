@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import { BackendProxy } from "@kogito-tooling/backend/dist/api";
+import { BackendProxy } from "@kie-tooling-core/backend/dist/api";
 import {
   KogitoEdit,
   ResourceContentRequest,
   ResourceContentService,
   ResourceListRequest,
-} from "@kogito-tooling/workspace/dist/api";
-import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor/dist/api";
-import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
-import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
+} from "@kie-tooling-core/workspace/dist/api";
+import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tooling-core/editor/dist/api";
+import { Tutorial, UserInteraction } from "@kie-tooling-core/guided-tour/dist/api";
+import { WorkspaceApi } from "@kie-tooling-core/workspace/dist/api";
 import * as __path from "path";
 import * as vscode from "vscode";
 import { KogitoEditor } from "./KogitoEditor";
-import { Notification, NotificationsApi } from "@kogito-tooling/notifications/dist/api";
+import { Notification, NotificationsApi } from "@kie-tooling-core/notifications/dist/api";
 import { VsCodeI18n } from "./i18n";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   private readonly decoder = new TextDecoder("utf-8");

@@ -16,14 +16,14 @@
 
 module.exports = {
   reporters: ["default"],
-  moduleDirectories: ["node_modules", "src"],
+  moduleDirectories: ["node_modules"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
+  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
   transform: {
     "^.+\\.jsx?$": "babel-jest",
     "^.+\\.tsx?$": "ts-jest",
   },
   moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
+    "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMock.js",
   },
 };

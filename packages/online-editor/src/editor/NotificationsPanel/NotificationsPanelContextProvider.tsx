@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useState } from "react";
 import { NotificationsPanelContext, NotificationsPanelContextType } from "./NotificationsPanelContext";
-import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
+import { NotificationsApi } from "@kie-tooling-core/notifications/dist/api";
 
 interface Props {
   children: React.ReactNode;

@@ -1,0 +1,84 @@
+name: "Setup Kogito Tooling build environment"
+description: "setup"
+
+inputs:
+  os:
+    description: "Operating System"
+    required: true
+  path:
+    description: "kogito-tooling path"
+    required: false
+    default: "."
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Fetch Git tags"
+      shell: bash
+      run: |
+        echo "STEP: Fetch Git tags"
+        cd ${{ inputs.path }}
+        git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+    - name: "Setup Yarn and Lerna"
+      shell: bash
+      run: |
+        echo "STEP: Setup Yarn and Lerna"
+        cd ${{ inputs.path }}
+        npm install -g lerna@4.0.0 yarn@1.22.10
+        yarn config set network-timeout 1000000
+
+    - name: "Setup default Maven args"
+      shell: bash
+      run: |
+        echo "STEP: Setup default Maven args"
+        cd ${{ inputs.path }}
+        mkdir .mvn
+        echo '-ntp' > .mvn/maven.config
+
+    - name: "Bootstrap"
+      shell: bash
+      run: |
+        echo "STEP: Bootstrap"
+        cd ${{ inputs.path }}
+        yarn bootstrap
+
+    - name: "Check yarn.lock"
+      shell: bash
+      run: |
+        echo "STEP: Check yarn.lock"
+        cd ${{ inputs.path }}
+        git diff yarn.lock;
+        [ "0" == "$(git diff yarn.lock | wc -l | tr -d ' ')" ]
+
+    - name: "Check dependencies mismatches"
+      shell: bash
+      run: |
+        echo "STEP: Check dependencies mismatches"
+        cd ${{ inputs.path }}
+        npx --yes syncpack list-mismatches
+
+    - name: "Check format"
+      shell: bash
+      run: |
+        echo "STEP: Check format"
+        cd ${{ inputs.path }}
+        yarn format:check
+
+    - name: "Start Xvfb (Ubuntu only)"
+      shell: bash
+      run: |
+        echo "STEP: Start Xvfb (Ubuntu only)"
+        cd ${{ inputs.path }}
+        if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
+            /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+        fi
+
+    - name: "Increase inotify watches (Ubuntu only)"
+      shell: bash
+      run: |
+        echo "STEP: Increase inotify watches (Ubuntu only)"
+        cd ${{ inputs.path }}
+        if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
+          echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+        fi

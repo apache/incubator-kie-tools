@@ -15,12 +15,12 @@
  */
 
 const { merge } = require("webpack-merge");
-const common = require("../../webpack.common.config");
+const common = require("../../config/webpack.common.config");
 const nodeExternals = require("webpack-node-externals");
 const CopyPlugin = require("copy-webpack-plugin");
 
-module.exports = (env, args) => [
-  merge(common(env, args), {
+module.exports = (env) => [
+  merge(common(env), {
     entry: {
       index: "./src/index.ts",
     },

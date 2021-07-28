@@ -30,7 +30,7 @@ export default class Driver {
     // check the path exists
     if (!existsSync(chromeExtensionPath)) {
       throw new Error(
-        "Please set UNZIPPED_CHROME_EXTENSION_PATH variable to unziped Chrome extension directory. " +
+        "Please set UNZIPPED_CHROME_EXTENSION_PATH variable to unzipped Chrome extension directory. " +
           "For example: export UNZIPPED_CHROME_EXTENSION_PATH=/path/to/dist. " +
           "Directory " +
           chromeExtensionPath +
@@ -43,9 +43,9 @@ export default class Driver {
     chromeOptions.addArguments("--load-extension=" + chromeExtensionPath, "--allow-insecure-localhost");
 
     // init chrome driver log
-    const LOGS_DIR: string = resolve("logs");
+    const LOGS_DIR: string = resolve("dist-it-tests", "logs");
     if (!existsSync(LOGS_DIR)) {
-      mkdirSync(LOGS_DIR);
+      mkdirSync(LOGS_DIR, { recursive: true });
     }
     const chromeServiceBuilder: ServiceBuilder = new ServiceBuilder();
     chromeServiceBuilder.loggingTo(LOGS_DIR + "/chromedriver.log").enableVerboseLogging();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { File as UploadFile, newFile } from "@kogito-tooling/editor/dist/channel";
+import { File as UploadFile, newFile } from "@kie-tooling-core/editor/dist/channel";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Card, CardBody, CardHeader, CardFooter } from "@patternfly/react-core/dist/js/components/Card";
@@ -571,6 +571,7 @@ export function HomePage(props: Props) {
             </CardFooter>
           </Card>
         </Gallery>
+        <div className={"kogito-tooling--build-info"}>{process.env["WEBPACK_REPLACE__buildInfo"]}</div>
       </PageSection>
     </Page>
   );

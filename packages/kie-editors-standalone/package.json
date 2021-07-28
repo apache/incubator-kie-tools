@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/kie-editors-standalone",
-  "version": "0.10.0",
+  "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
   "files": [
@@ -12,32 +12,35 @@
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
-  "dependencies": {
-    "@kogito-tooling/editor": "0.10.0",
-    "@kogito-tooling/external-assets-base": "0.10.0",
-    "@kogito-tooling/i18n": "0.10.0",
-    "@kogito-tooling/kie-bc-editors": "0.10.0"
+  "devDependencies": {
+    "@kie-tooling-core/editor": "0.0.0",
+    "@kogito-tooling/external-assets-base": "0.0.0",
+    "@kogito-tooling/kie-bc-editors": "0.0.0",
+    "@kogito-tooling/build-env": "0.0.0"
   },
   "scripts": {
-    "lint": "run-script-if --env KOGITO_TOOLING_BUILD_lint -c 'yarn eslint ./src --ext .ts,.tsx'",
-    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose --passWithNoTests'",
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "build:preprocessor": "node dist/preprocessor/preprocessor.js",
     "build:dev": "rimraf dist && webpack --env dev --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --env dev --config webpack.package-resources.config.js",
-    "build:prod": "yarn lint && yarn test && rimraf dist && webpack --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --config webpack.package-resources.config.js",
+    "build:prod": "yarn lint && yarn test && rimraf dist && webpack --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --config webpack.package-resources.config.js && yarn test:it",
     "build:productization": "yarn run build:prod",
     "start": "webpack serve --host 0.0.0.0 --config webpack.package-resources.config.js",
-    "build:it": "rimraf it-tests/dist && webpack --config ./it-tests/webpack.config.js",
-    "start:it": "webpack serve --host 0.0.0.0 --config ./it-tests/webpack.config.js",
     "cy:run": "yarn cypress run -b chrome --project it-tests",
     "cy:open": "yarn cypress open --project it-tests",
-    "clean:it": "rimraf it-tests/results",
-    "report:it": "jrm it-tests/results/junit.xml it-tests/results/junit-*.xml",
-    "start-and-test:it": "start-server-and-test start:it http://localhost:9001 cy:run",
-    "test:it": "npm-run-all -s -c clean:it start-and-test:it report:it"
+    "start:it": "webpack serve --host 0.0.0.0 --config ./it-tests/webpack.config.js",
+    "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\""
   },
   "babel": {
     "presets": [
-      "@babel/env",
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
       "@babel/react"
     ]
   }

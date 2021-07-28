@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+import * as buildEnv from "@kogito-tooling/build-env";
+
 describe("Bpmn Workitem E2E Test.", () => {
   const NAME_INPUT_LOCATOR: string = "input[data-field='name']";
   const DATATYPE_SELECT_LOCATOR: string = "select[data-field='dataType']";
 
   before("Visit page", () => {
-    cy.visit("localhost:9001/bpmn-workitem");
+    cy.visit(`localhost:${buildEnv.standaloneEditors.dev.port}/bpmn-workitem`);
     cy.loadEditors(["bpmn-workitem"]);
   });
 
