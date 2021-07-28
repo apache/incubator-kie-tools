@@ -455,7 +455,9 @@ public class NodeConnectorTest {
         final double targetY = 8.0;
         final JSIPoint sourcePoint = createPoint(1, 2);
         final JSIPoint targetPoint = createPoint(targetX, targetY);
-        final List<JSIPoint> waypoints = Arrays.asList(sourcePoint, targetPoint);
+        final JSIPoint middlePoint1 = createPoint(2, 3);
+        final JSIPoint middlePoint2 = createPoint(4, 5);
+        final List<JSIPoint> waypoints = Arrays.asList(sourcePoint, middlePoint1, middlePoint2, targetPoint);
         final List nodeEntries = mock(List.class);
         final Point2D targetPoint2D = new Point2D(targetX, targetY);
 

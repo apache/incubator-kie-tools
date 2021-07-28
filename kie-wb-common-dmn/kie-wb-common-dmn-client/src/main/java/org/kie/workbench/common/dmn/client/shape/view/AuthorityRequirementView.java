@@ -15,60 +15,28 @@
  */
 package org.kie.workbench.common.dmn.client.shape.view;
 
-import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.MultiPathDecorator;
-import com.ait.lienzo.client.core.types.DashArray;
-import com.ait.lienzo.shared.core.types.ColorName;
+import org.kie.workbench.common.dmn.client.shape.view.connections.AuthorityRequirementConnection;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresConnectorViewExt;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 import org.kie.workbench.common.stunner.shapes.client.view.AbstractConnectorView;
 
-public class AuthorityRequirementView extends WiresConnectorViewExt<AbstractConnectorView> {
+import static org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents.DESKTOP_CONNECTOR_EVENT_TYPES;
 
-    private static final double SELECTION_OFFSET = 30;
-    private static final double DECORATOR_RADIUS = 3;
+public class AuthorityRequirementView extends WiresConnectorViewExt<AbstractConnectorView> {
 
     public AuthorityRequirementView(final double x1,
                                     final double y1,
                                     final double x2,
                                     final double y2) {
-        this(createLine(x1,
-                        y1,
-                        x2,
-                        y2));
+        this(new AuthorityRequirementConnection(x1,
+                                                y1,
+                                                x2,
+                                                y2));
     }
 
-    private AuthorityRequirementView(final Object[] line) {
-        super(ShapeViewSupportedEvents.DESKTOP_CONNECTOR_EVENT_TYPES,
-              (DirectionalLine) line[0],
-              (MultiPathDecorator) line[1],
-              (MultiPathDecorator) line[2]);
-    }
-
-    private static Object[] createLine(final double x1,
-                                       final double y1,
-                                       final double x2,
-                                       final double y2) {
-        final MultiPath head = new MultiPath();
-        final MultiPath tail = new MultiPath()
-                .M(DECORATOR_RADIUS,
-                   -DECORATOR_RADIUS)
-                .circle(DECORATOR_RADIUS)
-                .setFillColor(ColorName.BLACK)
-                .setFillAlpha(1);
-
-        final DirectionalLine line = new DirectionalLine(x1,
-                                                         y1,
-                                                         x2,
-                                                         y2);
-        line.setDashArray(new DashArray(4,
-                                        4));
-        line.setDraggable(true);
-        line.setSelectionStrokeOffset(SELECTION_OFFSET);
-        line.setHeadOffset(head.getBoundingBox().getHeight());
-        line.setTailOffset(tail.getBoundingBox().getHeight());
-        final MultiPathDecorator headDecorator = new MultiPathDecorator(head);
-        final MultiPathDecorator tailDecorator = new MultiPathDecorator(tail);
-        return new Object[]{line, headDecorator, tailDecorator};
+    private AuthorityRequirementView(final AuthorityRequirementConnection line) {
+        super(DESKTOP_CONNECTOR_EVENT_TYPES,
+              line.getLine(),
+              line.getHead(),
+              line.getTail());
     }
 }

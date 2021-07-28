@@ -557,7 +557,7 @@ public class NodeConnector {
             return Optional.of(entries.get(0).getNode());
         }
 
-        final JSIPoint jsiTarget = Js.uncheckedCast(jsidmnEdge.getWaypoint().get(1));
+        final JSIPoint jsiTarget = Js.uncheckedCast(jsidmnEdge.getWaypoint().get(jsidmnEdge.getWaypoint().size() - 1));
         final Point2D source = createPoint(jsiTarget);
 
         return getNodeFromPoint(source, entries);

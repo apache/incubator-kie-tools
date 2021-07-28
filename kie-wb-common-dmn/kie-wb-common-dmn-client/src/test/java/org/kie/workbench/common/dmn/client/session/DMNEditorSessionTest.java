@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Elem
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.AbstractCanvasShortcutsControlImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
@@ -107,6 +108,9 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
     @Mock
     private AbstractCanvasShortcutsControlImpl canvasShortcutsControl;
 
+    @Mock
+    private ControlPointControl controlPointControl;
+
     @Before
     @Override
     @SuppressWarnings("unchecked")
@@ -150,6 +154,7 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
         canvasHandlerControls.put(nodeBuilderControl, NodeBuilderControl.class);
         canvasHandlerControls.put(edgeBuilderControl, EdgeBuilderControl.class);
         canvasHandlerControls.put(canvasShortcutsControl, DMNCanvasShortcutsControl.class);
+        canvasHandlerControls.put(controlPointControl, ControlPointControl.class);
         return canvasHandlerControls;
     }
 
@@ -159,5 +164,6 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
         verify(managedSession).registerCanvasHandlerControl(eq(DMNCanvasInlineTextEditorControl.class));
         verify(managedSession).registerCanvasHandlerControl(eq(ElementBuilderControl.class), eq(Observer.class));
         verify(managedSession).registerCanvasHandlerControl(eq(DMNCanvasShortcutsControl.class));
+        verify(managedSession).registerCanvasHandlerControl(eq(ControlPointControl.class));
     }
 }

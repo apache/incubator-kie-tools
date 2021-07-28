@@ -49,6 +49,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Elem
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
@@ -106,6 +107,7 @@ public class DMNEditorSession extends DefaultEditorSession implements DMNSession
                            .registerCanvasHandlerControl(DMNCanvasShortcutsControl.class)
                            .registerCanvasControl(KeyboardControl.class)
                            .registerCanvasControl(ClipboardControl.class)
+                           .registerCanvasHandlerControl(ControlPointControl.class)
                            .registerCanvasControl(ExpressionGridCache.class)
                            .registerCanvasControl(DMNGridLayerControl.class)
                            //The order of the following registrations is important. Do not re-order!
