@@ -21,21 +21,15 @@ import com.ait.lienzo.client.widget.panel.BoundsProvider;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.event.dom.client.KeyCodes;
 import elemental2.dom.EventListener;
 import elemental2.dom.HTMLDivElement;
-import elemental2.dom.KeyboardEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseDownEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseUpEvent;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyPressEvent;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyUpEvent;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
@@ -54,15 +48,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class StunnerLienzoBoundsPanelTest {
-
-    @Mock
-    private EventSourceMock<KeyPressEvent> keyPressEvent;
-
-    @Mock
-    private EventSourceMock<KeyDownEvent> keyDownEvent;
-
-    @Mock
-    private EventSourceMock<KeyUpEvent> keyUpEvent;
 
     @Mock
     private EventSourceMock<CanvasMouseDownEvent> mouseDownEvent;
@@ -94,12 +79,8 @@ public class StunnerLienzoBoundsPanelTest {
     static final String ON_MOUSE_UP = "mouseup";
 
     @Before
-    @SuppressWarnings("unchecked")
     public void init() {
-        this.tested = new StunnerLienzoBoundsPanel(keyPressEvent,
-                                                   keyDownEvent,
-                                                   keyUpEvent,
-                                                   mouseDownEvent,
+        this.tested = new StunnerLienzoBoundsPanel(mouseDownEvent,
                                                    mouseUpEvent)
                 .setPanelBuilder(() -> view);
         when(view.getLienzoPanel()).thenReturn(lienzoPanel);
@@ -112,7 +93,6 @@ public class StunnerLienzoBoundsPanelTest {
     public void testShow() {
         tested.show(lienzoLayer);
         verify(view, times(1)).add(eq(layer));
-        verify(view, times(1)).setPresenter(eq(tested));
         verify(panelElement, times(1)).addEventListener(eq(ON_MOUSE_DOWN), any(EventListener.class));
         verify(panelElement, times(1)).addEventListener(eq(ON_MOUSE_UP), any(EventListener.class));
     }
@@ -166,46 +146,6 @@ public class StunnerLienzoBoundsPanelTest {
         verify(mouseUpEvent, times(1)).fire(any(CanvasMouseUpEvent.class));
     }
 
-
-    @Test
-    public void testOnKeyPress() {
-        KeyboardEvent event = mock(KeyboardEvent.class);
-        event.code = "ctrl";
-
-        tested.onKeyPress(event);
-
-        ArgumentCaptor<KeyPressEvent> eventArgumentCaptor = ArgumentCaptor.forClass(KeyPressEvent.class);
-        verify(keyPressEvent, times(1)).fire(eventArgumentCaptor.capture());
-        KeyPressEvent keyEvent = eventArgumentCaptor.getValue();
-        assertEquals(KeyCodes.KEY_CTRL, keyEvent.getKey().getUnicharCode());
-    }
-
-    @Test
-    public void testOnKeyDown() {
-        KeyboardEvent event = mock(KeyboardEvent.class);
-        event.code = "ctrl";
-
-        tested.onKeyDown(event);
-
-        ArgumentCaptor<KeyDownEvent> eventArgumentCaptor = ArgumentCaptor.forClass(KeyDownEvent.class);
-        verify(keyDownEvent, times(1)).fire(eventArgumentCaptor.capture());
-        KeyDownEvent keyEvent = eventArgumentCaptor.getValue();
-        assertEquals(KeyCodes.KEY_CTRL, keyEvent.getKey().getUnicharCode());
-    }
-
-    @Test
-    public void testOnKeyUp() {
-        KeyboardEvent event = mock(KeyboardEvent.class);
-        event.code = "ctrl";
-
-        tested.onKeyUp(event);
-
-        ArgumentCaptor<KeyUpEvent> eventArgumentCaptor = ArgumentCaptor.forClass(KeyUpEvent.class);
-        verify(keyUpEvent, times(1)).fire(eventArgumentCaptor.capture());
-        KeyUpEvent keyEvent = eventArgumentCaptor.getValue();
-        assertEquals(KeyCodes.KEY_CTRL, keyEvent.getKey().getUnicharCode());
-    }
-
     @Test
     public void testLocationConstraints() {
         Bounds bounds = tested.getLocationConstraints();
@@ -216,7 +156,7 @@ public class StunnerLienzoBoundsPanelTest {
         assertFalse(bounds.hasLowerRight());
     }
 
-    private static class TestBoundsLienzoPanelView extends LienzoBoundsPanel implements StunnerLienzoBoundsPanelView {
+    private static class TestBoundsLienzoPanelView extends LienzoBoundsPanel {
 
         public TestBoundsLienzoPanelView(LienzoPanel lienzoPanel, BoundsProvider boundsProvider) {
             super(lienzoPanel, boundsProvider);
@@ -229,11 +169,6 @@ public class StunnerLienzoBoundsPanelTest {
 
         @Override
         protected void doDestroy() {
-
-        }
-
-        @Override
-        public void setPresenter(StunnerLienzoBoundsPanel panel) {
 
         }
 

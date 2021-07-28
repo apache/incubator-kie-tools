@@ -18,14 +18,13 @@ package org.kie.workbench.common.stunner.core.client.components.proxies;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
 import org.kie.workbench.common.stunner.core.client.shape.NodeShape;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
@@ -49,6 +48,8 @@ public class NodeProxy implements ShapeProxy {
     private Edge<ViewConnector<?>, Node> edge;
     private Node<View<?>, Edge> sourceNode;
 
+    private SessionManager sessionManager;
+
     @Inject
     public NodeProxy(final ElementProxy proxy,
                      final ShapeProxyView<NodeShape> view) {
@@ -60,7 +61,8 @@ public class NodeProxy implements ShapeProxy {
     public void init() {
         proxy
                 .setView(view)
-                .setProxyBuilder(this::onCreateProxy);
+                .setProxyBuilder(this::onCreateProxy)
+                .handleCancelKey();
     }
 
     public NodeProxy setCanvasHandler(final AbstractCanvasHandler canvasHandler) {
@@ -100,10 +102,6 @@ public class NodeProxy implements ShapeProxy {
         targetNode = null;
         edge = null;
         sourceNode = null;
-    }
-
-    void onKeyDownEvent(final @Observes KeyDownEvent event) {
-        proxy.handleCancelKey(event.getKey());
     }
 
     private NodeShape onCreateProxy() {

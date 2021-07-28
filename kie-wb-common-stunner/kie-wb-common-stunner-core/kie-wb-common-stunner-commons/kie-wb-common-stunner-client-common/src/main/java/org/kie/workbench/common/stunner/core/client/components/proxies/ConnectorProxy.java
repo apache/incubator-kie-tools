@@ -18,12 +18,10 @@ package org.kie.workbench.common.stunner.core.client.components.proxies;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.AbstractMouseEvent;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -53,7 +51,8 @@ public class ConnectorProxy implements ShapeProxy {
     public void init() {
         proxy
                 .setView(view)
-                .setProxyBuilder(this::onCreateProxy);
+                .setProxyBuilder(this::onCreateProxy)
+                .handleCancelKey();
     }
 
     public ConnectorProxy setCanvasHandler(final AbstractCanvasHandler canvasHandler) {
@@ -97,10 +96,6 @@ public class ConnectorProxy implements ShapeProxy {
                                                   getMetadata().getShapeSetId()));
 
         return getConnector();
-    }
-
-    void onKeyDownEvent(final @Observes KeyDownEvent event) {
-        proxy.handleCancelKey(event.getKey());
     }
 
     private EdgeShape getConnector() {

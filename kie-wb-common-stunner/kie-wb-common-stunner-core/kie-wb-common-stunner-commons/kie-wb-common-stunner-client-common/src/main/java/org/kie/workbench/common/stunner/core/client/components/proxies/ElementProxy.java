@@ -26,14 +26,17 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.Timer;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
 import org.kie.workbench.common.stunner.core.client.shape.ElementShape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
@@ -51,6 +54,7 @@ public class ElementProxy implements ShapeProxy {
     private final Event<CanvasSelectionEvent> selectionEvent;
     private final ManagedInstance<DefaultCanvasCommandFactory> commandFactories;
     private final DefinitionUtils definitionUtils;
+    private SessionManager sessionManager;
 
     private AbstractCanvasHandler canvasHandler;
     private ShapeProxyView<ElementShape> view;
@@ -60,11 +64,13 @@ public class ElementProxy implements ShapeProxy {
     public ElementProxy(final SessionCommandManager<AbstractCanvasHandler> commandManager,
                         final Event<CanvasSelectionEvent> selectionEvent,
                         final @Any ManagedInstance<DefaultCanvasCommandFactory> commandFactories,
-                        final DefinitionUtils definitionUtils) {
+                        final DefinitionUtils definitionUtils,
+                        final SessionManager sessionManager) {
         this.commandManager = commandManager;
         this.selectionEvent = selectionEvent;
         this.commandFactories = commandFactories;
         this.definitionUtils = definitionUtils;
+        this.sessionManager = sessionManager;
     }
 
     @SuppressWarnings("unchecked")
@@ -109,10 +115,15 @@ public class ElementProxy implements ShapeProxy {
         return commandManager.execute(canvasHandler, command);
     }
 
-    void handleCancelKey(KeyboardEvent.Key key) {
-        if (KeyboardEvent.Key.ESC == key) {
-            destroy();
-        }
+    void handleCancelKey() {
+        ((EditorSession)(sessionManager.getCurrentSession()))
+                .getKeyboardControl()
+                .addKeyShortcutCallback(
+                        new KeyboardControl.KogitoKeyPress(
+                                new KeyboardEvent.Key[]{KeyboardEvent.Key.ESC},
+                                "Unselect",
+                                this::destroy
+                        ));
     }
 
     public Canvas getCanvas() {

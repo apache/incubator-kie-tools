@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
 public class KeyboardControlImplTest {
 
     @Mock
-    private KeyEventHandlerImpl keyEventHandler;
+    private KeyEventHandler keyEventHandler;
 
     @Mock
     private SessionManager clientSessionManager;
@@ -65,6 +65,7 @@ public class KeyboardControlImplTest {
         }).when(keyEventHandler).addKeyShortcutCallback(any(KeyboardControl.KeyShortcutCallback.class));
         final KeyboardControl.KeyShortcutCallback callback = mock(KeyboardControl.KeyShortcutCallback.class);
         tested.addKeyShortcutCallback(callback);
+        verify(keyEventHandler).addKeyShortcutCallback(any());
         assertEquals(callback,
                      sessionCallback[0].getDelegate());
         verify(callback,
@@ -73,12 +74,5 @@ public class KeyboardControlImplTest {
         sessionCallback[0].onKeyShortcut(KeyboardEvent.Key.ESC);
         verify(callback,
                times(1)).onKeyShortcut(eq(KeyboardEvent.Key.ESC));
-    }
-
-    @Test
-    public void testSetKeyEventHandlerEnabled() {
-        tested.setKeyEventHandlerEnabled(true);
-        verify(keyEventHandler,
-               times(1)).setEnabled(eq(true));
     }
 }

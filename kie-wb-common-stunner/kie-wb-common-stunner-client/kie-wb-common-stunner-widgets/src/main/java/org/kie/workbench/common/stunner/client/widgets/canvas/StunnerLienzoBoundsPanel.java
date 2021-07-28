@@ -31,16 +31,11 @@ import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import elemental2.dom.EventListener;
-import jsinterop.base.Js;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseDownEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseUpEvent;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyPressEvent;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyUpEvent;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 @Dependent
@@ -48,9 +43,6 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 public class StunnerLienzoBoundsPanel
         implements LienzoPanel {
 
-    private final Event<KeyPressEvent> keyPressEvent;
-    private final Event<KeyDownEvent> keyDownEvent;
-    private final Event<KeyUpEvent> keyUpEvent;
     private final Event<CanvasMouseDownEvent> mouseDownEvent;
     private final Event<CanvasMouseUpEvent> mouseUpEvent;
     private EventListener mouseDownEventListener;
@@ -69,14 +61,8 @@ public class StunnerLienzoBoundsPanel
     static final String ON_MOUSE_UP = "mouseup";
 
     @Inject
-    public StunnerLienzoBoundsPanel(final Event<KeyPressEvent> keyPressEvent,
-                                    final Event<KeyDownEvent> keyDownEvent,
-                                    final Event<KeyUpEvent> keyUpEvent,
-                                    final Event<CanvasMouseDownEvent> mouseDownEvent,
+    public StunnerLienzoBoundsPanel(final Event<CanvasMouseDownEvent> mouseDownEvent,
                                     final Event<CanvasMouseUpEvent> mouseUpEvent) {
-        this.keyPressEvent = keyPressEvent;
-        this.keyDownEvent = keyDownEvent;
-        this.keyUpEvent = keyUpEvent;
         this.mouseDownEvent = mouseDownEvent;
         this.mouseUpEvent = mouseUpEvent;
     }
@@ -96,9 +82,6 @@ public class StunnerLienzoBoundsPanel
         setView(panelBuilder.get());
         view.add(layer.getLienzoLayer());
         initHandlers();
-        if (view instanceof StunnerLienzoBoundsPanelView) {
-            ((StunnerLienzoBoundsPanelView) view).setPresenter(this);
-        }
         return this;
     }
 
@@ -194,49 +177,6 @@ public class StunnerLienzoBoundsPanel
     void onMouseUp() {
         broadcastBlurEvent();
         mouseUpEvent.fire(new CanvasMouseUpEvent());
-    }
-
-    void onKeyPress(final elemental2.dom.Event event) {
-        onKeyPress(Js.uncheckedCast(event));
-    }
-
-    void onKeyPress(final elemental2.dom.KeyboardEvent nativeKeyboardEvent) {
-        final KeyboardEvent.Key key = getKey(nativeKeyboardEvent.code);
-        if (null != key) {
-            keyPressEvent.fire(new KeyPressEvent(key));
-        }
-    }
-
-    void onKeyDown(final elemental2.dom.Event event) {
-        onKeyDown(Js.uncheckedCast(event));
-    }
-
-    void onKeyDown(final elemental2.dom.KeyboardEvent nativeKeyboardEvent) {
-        final KeyboardEvent.Key key = getKey(nativeKeyboardEvent.code);
-        if (null != key) {
-            keyDownEvent.fire(new KeyDownEvent(key));
-        }
-    }
-
-    void onKeyUp(final elemental2.dom.Event event) {
-        onKeyUp(Js.uncheckedCast(event));
-    }
-
-    void onKeyUp(final elemental2.dom.KeyboardEvent nativeKeyboardEvent) {
-        final KeyboardEvent.Key key = getKey(nativeKeyboardEvent.code);
-        if (null != key) {
-            keyUpEvent.fire(new KeyUpEvent(key));
-        }
-    }
-
-    private KeyboardEvent.Key getKey(final String stringCode) {
-        final KeyboardEvent.Key[] keys = KeyboardEvent.Key.values();
-        for (final KeyboardEvent.Key key : keys) {
-            if (key.getStringCode().equals(stringCode)) {
-                return key;
-            }
-        }
-        return null;
     }
 
     void addKeyDownHandler(final EventListener keyDownEventListener) {

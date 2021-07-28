@@ -36,7 +36,7 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.client.lienzo.components.views.LienzoCanvasNotification;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyEventHandlerImpl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyEventHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
@@ -50,7 +50,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -102,11 +101,12 @@ public class LienzoCanvasMediatorsTest {
 
     private LienzoCanvasMediators tested;
 
-    private KeyEventHandlerImpl keyEventHandler;
+    @Mock
+    private KeyEventHandler keyEventHandler;
 
     @Before
     public void setUp() {
-        keyEventHandler = spy(new KeyEventHandlerImpl());
+        when(keyEventHandler.setTimerDelay(150)).thenReturn(keyEventHandler);
         when(canvas.getView()).thenReturn(canvasView);
         when(canvasView.getPanel()).thenReturn(panel);
         when(canvasView.getLienzoPanel()).thenReturn(panel);
@@ -133,7 +133,6 @@ public class LienzoCanvasMediatorsTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testKeyBindings() {
         ArgumentCaptor<KeyboardControl.KeyShortcutCallback> callbackArgumentCaptor =
                 ArgumentCaptor.forClass(KeyboardControl.KeyShortcutCallback.class);

@@ -20,6 +20,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
@@ -29,7 +30,6 @@ import org.kie.workbench.common.stunner.core.client.shape.ElementShape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
@@ -73,6 +73,9 @@ public class ElementProxyTest {
     @Mock
     private ElementShape proxyShape;
 
+    @Mock
+    private SessionManager sessionManager;
+
     private ElementProxy tested;
     private ElementProxyViewMock<ElementShape> view;
 
@@ -83,7 +86,7 @@ public class ElementProxyTest {
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         view = spy(new ElementProxyViewMock<>());
-        tested = spy(new ElementProxy(commandManager, selectionEvent, commandFactories, definitionUtils)
+        tested = spy(new ElementProxy(commandManager, selectionEvent, commandFactories, definitionUtils, sessionManager)
                              .setCanvasHandler(canvasHandler)
                              .setView(view)
                              .setProxyBuilder(() -> proxyShape));
@@ -119,7 +122,6 @@ public class ElementProxyTest {
         verify(commandManager, times(1)).complete();
         verify(commandManager, never()).rollback();
         verify(commandManager, never()).start();
-        ArgumentCaptor<CanvasSelectionEvent> eventCaptor = ArgumentCaptor.forClass(CanvasSelectionEvent.class);
         verify(tested, times(1)).select(eq(SHAPE_UUID));
     }
 

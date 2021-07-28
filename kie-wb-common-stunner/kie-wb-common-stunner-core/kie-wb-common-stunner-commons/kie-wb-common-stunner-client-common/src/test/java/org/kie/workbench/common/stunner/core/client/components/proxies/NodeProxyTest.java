@@ -23,14 +23,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.NodeShape;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -65,6 +64,7 @@ import org.uberfire.stubs.ManagedInstanceStub;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -117,6 +117,9 @@ public class NodeProxyTest {
     @Mock
     private NodeShape targetShape;
 
+    @Mock
+    private SessionManager sessionManager;
+
     private NodeProxy tested;
     private ElementProxy proxy;
     private ElementProxyTest.ElementProxyViewMock<NodeShape> view;
@@ -138,10 +141,11 @@ public class NodeProxyTest {
         edge = new EdgeImpl<>(EDGE_ID);
         graph = new GraphImpl<>("graphUUID", new GraphNodeStoreImpl());
         graph.addNode(sourceNode);
-        proxy = spy(new ElementProxy(commandManager, selectionEvent, commandFactories, definitionUtils));
+        proxy = spy(new ElementProxy(commandManager, selectionEvent, commandFactories, definitionUtils, sessionManager));
         view = spy(new ElementProxyTest.ElementProxyViewMock<>());
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
+        doNothing().when(proxy).handleCancelKey();
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getShapeSetId()).thenReturn(SHAPE_SET_ID);
         when(canvas.getShape(eq(EDGE_ID))).thenReturn(connector);
@@ -231,17 +235,6 @@ public class NodeProxyTest {
     public void testDestroy() {
         tested.init();
         tested.destroy();
-        verify(proxy, times(1)).destroy();
-    }
-
-    @Test
-    public void testCancelKey() {
-        KeyDownEvent event = new KeyDownEvent(KeyboardEvent.Key.ESC);
-        tested.init();
-        tested.onKeyDownEvent(event);
-        tested.onKeyDownEvent(new KeyDownEvent(KeyboardEvent.Key.CONTROL));
-        tested.onKeyDownEvent(new KeyDownEvent(KeyboardEvent.Key.ALT));
-        tested.onKeyDownEvent(new KeyDownEvent(KeyboardEvent.Key.DELETE));
         verify(proxy, times(1)).destroy();
     }
 }
