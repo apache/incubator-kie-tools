@@ -16,28 +16,46 @@
 
 import { FormAsset } from "../types";
 import fs from "fs";
+import path from "path";
 
 export const FORM_STORAGE_FOLDER = "src/main/resources/forms";
+export const FORM_CONFIG_EXT = ".config";
 
-export function getFormAssetStoragePath(sourcePath: string, formAsset: FormAsset): string {
-  return `${sourcePath}/${FORM_STORAGE_FOLDER}/${formAsset.id}`;
+function getFormsFolder(sourcePath: string): string {
+  return `${sourcePath}/${FORM_STORAGE_FOLDER}`;
 }
 
-export function getFormAssetPath(sourcePath: string, formAsset: FormAsset): string {
-  return `${getFormAssetStoragePath(sourcePath, formAsset)}/${formAsset.assetName}`;
+export function getFormAssetPath(sourcePath: string, formAsset: string): string {
+  return `${getFormsFolder(sourcePath)}/${formAsset}`;
+}
+
+export function getFormConfigAssetPath(source: string, formAsset: FormAsset): string {
+  return getFormAssetPath(source, `${formAsset.id}${FORM_CONFIG_EXT}`);
 }
 
 export function storeFormAsset(formAsset: FormAsset, source: string, overwriteExisting: boolean) {
-  const storagePath = getFormAssetStoragePath(source, formAsset);
+  const storagePath = getFormsFolder(source);
 
-  if (fs.existsSync(storagePath)) {
+  if (!fs.existsSync(storagePath)) {
+    fs.mkdirSync(storagePath);
+  }
+
+  const existingFormAssets = fs.readdirSync(storagePath).filter((file) => {
+    const extension = path.extname(file);
+    return path.basename(file, extension) === formAsset.id;
+  });
+
+  if (existingFormAssets.length > 0) {
     if (!overwriteExisting) {
       throw new Error(`Form already exists.`);
     }
-    console.log(`Form "${formAsset.id}" already exists. Proceeding to overwrite it.`);
-    fs.rmSync(storagePath, { recursive: true });
-  }
-  fs.mkdirSync(storagePath, { recursive: true });
 
-  fs.writeFileSync(getFormAssetPath(source, formAsset), formAsset.content);
+    console.log(`Form "${formAsset.id}" already exists. Proceeding to overwrite it.`);
+
+    existingFormAssets.forEach((file) => {
+      fs.rmSync(getFormAssetPath(source, file));
+    });
+  }
+  fs.writeFileSync(getFormAssetPath(source, formAsset.assetName), formAsset.content);
+  fs.writeFileSync(getFormConfigAssetPath(source, formAsset), JSON.stringify(formAsset.config, null, 4));
 }

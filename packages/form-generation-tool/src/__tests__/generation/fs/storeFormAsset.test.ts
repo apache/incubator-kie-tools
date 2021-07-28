@@ -17,7 +17,8 @@
 import * as fs from "fs";
 import { FormAsset, FormAssetType } from "../../../generation/types";
 import { storeFormAsset } from "../../../generation/fs";
-import { getFormAssetPath, getFormAssetStoragePath } from "../../../generation/fs/storeFormAsset";
+import { getFormAssetPath, getFormConfigAssetPath } from "../../../generation/fs/storeFormAsset";
+import { PatternflyFormConfig } from "../../../generation/tools/uniforms/patternfly/PatternflyFormGenerationTool";
 
 jest.mock("fs");
 
@@ -27,7 +28,9 @@ describe("storeFormAssets tests", () => {
   const fsRmSyncMock = jest.fn();
   const fsMkDirSyncMock = jest.fn();
   const fsWriteFileSyncMock = jest.fn();
+  const fsReaddirSyncMock = jest.fn();
 
+  mockFs.readdirSync.mockImplementation(fsReaddirSyncMock);
   mockFs.rmSync.mockImplementation(fsRmSyncMock);
   mockFs.mkdirSync.mockImplementation(fsMkDirSyncMock);
   mockFs.writeFileSync.mockImplementation(fsWriteFileSyncMock);
@@ -38,6 +41,7 @@ describe("storeFormAssets tests", () => {
     assetName: "test.tsx",
     type: FormAssetType.TSX,
     content: "content",
+    config: new PatternflyFormConfig({}),
   };
 
   beforeEach(() => {
@@ -45,25 +49,42 @@ describe("storeFormAssets tests", () => {
   });
 
   it("Store existing asset without overwrite", () => {
-    mockFs.existsSync.mockImplementation(() => true);
+    mockFs.existsSync.mockReturnValue(true);
+    fsReaddirSyncMock.mockReturnValue(["test.tsx", "test.config"]);
+
     expect(() => storeFormAsset(formAsset, sourcePath, false)).toThrow(`Form already exists.`);
   });
 
   it("Store existing asset with overwrite", () => {
-    mockFs.existsSync.mockImplementation(() => true);
+    mockFs.existsSync.mockReturnValue(true);
+    fsReaddirSyncMock.mockReturnValue(["test.tsx", "test.config"]);
 
     expect(() => storeFormAsset(formAsset, sourcePath, true)).not.toThrow();
-    expect(fsRmSyncMock).toHaveBeenCalledWith(getFormAssetStoragePath(sourcePath, formAsset), { recursive: true });
-    expect(fsMkDirSyncMock).toHaveBeenCalledWith(getFormAssetStoragePath(sourcePath, formAsset), { recursive: true });
-    expect(fsWriteFileSyncMock).toHaveBeenCalledWith(getFormAssetPath(sourcePath, formAsset), formAsset.content);
+    expect(fsRmSyncMock).toHaveBeenCalledTimes(2);
+    expect(fsMkDirSyncMock).not.toHaveBeenCalled();
+    expect(fsWriteFileSyncMock).toHaveBeenCalledTimes(2);
+
+    expect(fsWriteFileSyncMock.mock.calls[0][0]).toStrictEqual(getFormAssetPath(sourcePath, formAsset.assetName));
+    expect(fsWriteFileSyncMock.mock.calls[0][1]).toStrictEqual(formAsset.content);
+
+    expect(fsWriteFileSyncMock.mock.calls[1][0]).toStrictEqual(getFormConfigAssetPath(sourcePath, formAsset));
+    expect(fsWriteFileSyncMock.mock.calls[1][1]).toStrictEqual(JSON.stringify(new PatternflyFormConfig({}), null, 4));
   });
 
   it("Store asset", () => {
     mockFs.existsSync.mockImplementation(() => false);
+    fsReaddirSyncMock.mockReturnValue([]);
 
     expect(() => storeFormAsset(formAsset, sourcePath, true)).not.toThrow();
+    expect(fsMkDirSyncMock).toHaveBeenCalled();
     expect(fsRmSyncMock).not.toHaveBeenCalled();
-    expect(fsMkDirSyncMock).toHaveBeenCalledWith(getFormAssetStoragePath(sourcePath, formAsset), { recursive: true });
-    expect(fsWriteFileSyncMock).toHaveBeenCalledWith(getFormAssetPath(sourcePath, formAsset), formAsset.content);
+
+    expect(fsWriteFileSyncMock).toHaveBeenCalledTimes(2);
+
+    expect(fsWriteFileSyncMock.mock.calls[0][0]).toStrictEqual(getFormAssetPath(sourcePath, formAsset.assetName));
+    expect(fsWriteFileSyncMock.mock.calls[0][1]).toStrictEqual(formAsset.content);
+
+    expect(fsWriteFileSyncMock.mock.calls[1][0]).toStrictEqual(getFormConfigAssetPath(sourcePath, formAsset));
+    expect(fsWriteFileSyncMock.mock.calls[1][1]).toStrictEqual(JSON.stringify(new PatternflyFormConfig({}), null, 4));
   });
 });

@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { PatternflyFormGenerationTool } from "../../../../../generation/tools/uniforms/patternfly/PatternflyFormGenerationTool";
+import {
+  PatternflyFormConfig,
+  PatternflyFormGenerationTool,
+} from "../../../../../generation/tools/uniforms/patternfly/PatternflyFormGenerationTool";
 import { FormAsset } from "../../../../../generation/types";
 import { ApplyForVisaSchema } from "./mock";
 
@@ -33,5 +36,7 @@ describe("PatternflyFormGenerationTool tests", () => {
     expect(formAsset.content).not.toBeUndefined();
     expect(formAsset.content).toContain("const Form__ApplyForVisa");
     expect(formAsset.content).toContain("export default Form__ApplyForVisa;");
+    expect(formAsset.config).not.toBeUndefined();
+    expect(formAsset.config).toMatchObject(new PatternflyFormConfig(ApplyForVisaSchema));
   });
 });
