@@ -99,7 +99,6 @@ describe("Bpmn Workitem E2E Test.", () => {
             .find("[id='mainContainer']")
             .should("be.visible")
             .children(".row")
-            .should("have.length", 11)
             .then(($items) => {
               propertyItems = $items;
             });
