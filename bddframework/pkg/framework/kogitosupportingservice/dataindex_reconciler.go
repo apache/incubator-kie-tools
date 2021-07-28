@@ -18,10 +18,9 @@ import (
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/core/connector"
 	"github.com/kiegroup/kogito-operator/core/kogitoservice"
-	appsv1 "k8s.io/api/apps/v1"
+	"github.com/kiegroup/kogito-operator/core/shared"
 	"k8s.io/apimachinery/pkg/types"
 	controller1 "sigs.k8s.io/controller-runtime/pkg/reconcile"
-	"time"
 )
 
 const (
@@ -48,7 +47,7 @@ func initDataIndexSupportingServiceResource(context supportingServiceContext) Re
 }
 
 // Reconcile reconcile Data Index
-func (d *dataIndexSupportingServiceResource) Reconcile() (reconcileAfter time.Duration, err error) {
+func (d *dataIndexSupportingServiceResource) Reconcile() (err error) {
 	d.Log.Info("Reconciling for KogitoDataIndex")
 
 	urlHandler := connector.NewURLHandler(d.Context, d.runtimeHandler, d.supportingServiceHandler)
@@ -59,10 +58,10 @@ func (d *dataIndexSupportingServiceResource) Reconcile() (reconcileAfter time.Du
 		return
 	}
 	definition := kogitoservice.ServiceDefinition{
-		DefaultImageName:   DefaultDataIndexImageName,
-		OnDeploymentCreate: d.dataIndexOnDeploymentCreate,
-		KafkaTopics:        dataIndexKafkaTopics,
-		Request:            controller1.Request{NamespacedName: types.NamespacedName{Name: d.instance.GetName(), Namespace: d.instance.GetNamespace()}},
+		DefaultImageName:     DefaultDataIndexImageName,
+		KafkaTopics:          dataIndexKafkaTopics,
+		Request:              controller1.Request{NamespacedName: types.NamespacedName{Name: d.instance.GetName(), Namespace: d.instance.GetNamespace()}},
+		OnConfigMapReconcile: d.OnConfigMapReconcile,
 	}
 	return kogitoservice.NewServiceDeployer(d.Context, definition, d.instance, d.infraHandler).Deploy()
 }
@@ -75,15 +74,7 @@ var dataIndexKafkaTopics = []string{
 	"kogito-variables-events",
 }
 
-func (d *dataIndexSupportingServiceResource) dataIndexOnDeploymentCreate(deployment *appsv1.Deployment) error {
-	if len(deployment.Spec.Template.Spec.Containers) > 0 {
-		protoBufHandler := connector.NewProtoBufHandler(d.Context, d.supportingServiceHandler)
-		if err := protoBufHandler.MountProtoBufConfigMapsOnDeployment(deployment); err != nil {
-			return err
-		}
-	} else {
-		d.Log.Warn("No container definition found for", "Service", d.instance.GetName())
-		d.Log.Warn("Skipping applying custom Data Index deployment configuration")
-	}
-	return nil
+func (d *dataIndexSupportingServiceResource) OnConfigMapReconcile() error {
+	protoBufConfigMapReconciler := shared.NewProtoBufConfigMapReconciler(d.Context, d.instance, d.runtimeHandler)
+	return protoBufConfigMapReconciler.Reconcile()
 }

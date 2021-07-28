@@ -16,6 +16,8 @@ package manager
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-operator/core/framework/util"
+	corev1 "k8s.io/api/core/v1"
 
 	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/kiegroup/kogito-operator/api"
@@ -34,6 +36,7 @@ type KogitoInfraManager interface {
 	RemoveKogitoInfraOwnership(key types.NamespacedName, owner resource.KubernetesResource) error
 	IsKogitoInfraReady(key types.NamespacedName) (bool, error)
 	GetKogitoInfraFailureConditionReason(key types.NamespacedName) (string, error)
+	FetchKogitoInfraProperties(runtimeType api.RuntimeType, namespace string, kogitoInfraReferences ...string) (map[string]string, []corev1.EnvVar, []api.KogitoInfraVolumeInterface, error)
 }
 
 // KogitoInfraHandler ...
@@ -129,4 +132,32 @@ func (k *kogitoInfraManager) GetKogitoInfraFailureConditionReason(key types.Name
 		return failureCondition.Reason, nil
 	}
 	return "", nil
+}
+
+func (k *kogitoInfraManager) FetchKogitoInfraProperties(runtimeType api.RuntimeType, namespace string, kogitoInfraReferences ...string) (map[string]string, []corev1.EnvVar, []api.KogitoInfraVolumeInterface, error) {
+	k.Log.Debug("Going to fetch kogito infra properties", "infra", kogitoInfraReferences)
+	consolidateAppProperties := map[string]string{}
+	var consolidateEnvProperties []corev1.EnvVar
+	var volumes []api.KogitoInfraVolumeInterface
+	for _, kogitoInfraName := range kogitoInfraReferences {
+		// load infra resource
+		kogitoInfraInstance, err := k.MustFetchKogitoInfraInstance(types.NamespacedName{Name: kogitoInfraName, Namespace: namespace})
+		if err != nil {
+			return nil, nil, nil, err
+		}
+
+		// fetch app properties from Kogito infra instance
+		runtimeProperties := kogitoInfraInstance.GetStatus().GetRuntimeProperties()[runtimeType]
+		if runtimeProperties != nil {
+			appProp := runtimeProperties.GetAppProps()
+			util.AppendToStringMap(appProp, consolidateAppProperties)
+
+			// fetch env properties from Kogito infra instance
+			envProp := runtimeProperties.GetEnv()
+			consolidateEnvProperties = append(consolidateEnvProperties, envProp...)
+		}
+		// fetch volume from Kogito infra instance
+		volumes = append(volumes, kogitoInfraInstance.GetStatus().GetVolumes()...)
+	}
+	return consolidateAppProperties, consolidateEnvProperties, volumes, nil
 }

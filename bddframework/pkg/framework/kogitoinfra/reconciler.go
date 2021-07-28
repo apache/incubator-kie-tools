@@ -102,7 +102,7 @@ func (k *reconcilerHandler) GetReconcileResultFor(err error, requeue bool) (reco
 	// caller is asking for a reconciliation
 	if err == nil {
 		k.Log.Info("Waiting for all resources to be created, scheduling reconciliation.", "reconciliation interval", reconciliationStandardInterval.String())
-	} else { // reconciliation duo to a problem in the env (CRDs missing), infra deployments not ready, operators not installed.. etc. See errors.go
+	} else { // reconciliation duo to a problem in the env (CRDs missing), infra deployments not ready, operators not installed.. etc. See reconciliation_error.go
 		k.Log.Info("Err", err.Error(), "Scheduling reconciliation", "reconciliation interval", reconciliationStandardInterval.String())
 	}
 	return reconcile.Result{RequeueAfter: reconciliationStandardInterval}, nil

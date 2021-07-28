@@ -26,6 +26,7 @@ import (
 // KogitoSupportingServiceManager ...
 type KogitoSupportingServiceManager interface {
 	EnsureSingletonService(namespace string, resourceType api.ServiceType) error
+	FetchKogitoSupportingServiceForServiceType(namespace string, resourceType api.ServiceType) (api.KogitoSupportingServiceInterface, error)
 	FetchKogitoSupportingServiceRoute(namespace string, serviceType api.ServiceType) (route string, err error)
 	FetchKogitoSupportingServiceDeployment(namespace string, serviceType api.ServiceType) (*v1.Deployment, error)
 }
@@ -71,7 +72,7 @@ func (k kogitoSupportingServiceManager) EnsureSingletonService(namespace string,
 
 // getKogitoSupportingServiceRoute gets the route from a kogito service that's unique in the given namespace
 func (k kogitoSupportingServiceManager) FetchKogitoSupportingServiceRoute(namespace string, serviceType api.ServiceType) (route string, err error) {
-	supportingService, err := k.getKogitoSupportingService(namespace, serviceType)
+	supportingService, err := k.FetchKogitoSupportingServiceForServiceType(namespace, serviceType)
 	if err != nil {
 		return
 	}
@@ -83,7 +84,7 @@ func (k kogitoSupportingServiceManager) FetchKogitoSupportingServiceRoute(namesp
 
 // getSupportingServiceDeployment gets deployment owned by supporting service within the given namespace
 func (k kogitoSupportingServiceManager) FetchKogitoSupportingServiceDeployment(namespace string, serviceType api.ServiceType) (*v1.Deployment, error) {
-	supportingService, err := k.getKogitoSupportingService(namespace, serviceType)
+	supportingService, err := k.FetchKogitoSupportingServiceForServiceType(namespace, serviceType)
 	if err != nil {
 		return nil, err
 	} else if supportingService == nil {
@@ -108,7 +109,8 @@ func (k kogitoSupportingServiceManager) FetchKogitoSupportingServiceDeployment(n
 	return nil, nil
 }
 
-func (k kogitoSupportingServiceManager) getKogitoSupportingService(namespace string, serviceType api.ServiceType) (api.KogitoSupportingServiceInterface, error) {
+func (k kogitoSupportingServiceManager) FetchKogitoSupportingServiceForServiceType(namespace string, serviceType api.ServiceType) (api.KogitoSupportingServiceInterface, error) {
+	k.Log.Debug("Fetching kogito Supporting Service", "serviceType", serviceType)
 	supportingServiceList, err := k.supportingServiceHandler.FetchKogitoSupportingServiceList(namespace)
 	if err != nil {
 		return nil, err
@@ -118,5 +120,6 @@ func (k kogitoSupportingServiceManager) getKogitoSupportingService(namespace str
 			return service, nil
 		}
 	}
+	k.Log.Debug("kogito Supporting Service not found", "serviceType", serviceType)
 	return nil, nil
 }

@@ -15,7 +15,7 @@
 package kogitoservice
 
 import (
-	"fmt"
+	"github.com/kiegroup/kogito-operator/core/manager"
 	"reflect"
 
 	"github.com/RHsyseng/operator-utils/pkg/resource"
@@ -23,40 +23,17 @@ import (
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
-	"github.com/kiegroup/kogito-operator/core/framework/util"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
-	"github.com/kiegroup/kogito-operator/core/manager"
 	imgv1 "github.com/openshift/api/image/v1"
 	routev1 "github.com/openshift/api/route/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/types"
 )
 
 // createRequiredResources creates the required resources given the KogitoService instance
 func (s *serviceDeployer) createRequiredResources(image string) (resources map[reflect.Type][]resource.KubernetesResource, err error) {
 	resources = make(map[reflect.Type][]resource.KubernetesResource)
-
-	appProps := map[string]string{}
-	appPropsConfigMapHandler := NewAppPropsConfigMapHandler(s.Context)
-	if len(s.instance.GetSpec().GetPropertiesConfigMap()) > 0 {
-		s.Log.Debug("custom app properties are provided in custom properties ConfigMap", "PropertiesConfigMap", s.instance.GetSpec().GetPropertiesConfigMap())
-		propertiesConfigMap := &corev1.ConfigMap{
-			ObjectMeta: metav1.ObjectMeta{
-				Namespace: s.instance.GetNamespace(),
-				Name:      s.instance.GetSpec().GetPropertiesConfigMap(),
-			},
-		}
-		if exists, err := kubernetes.ResourceC(s.Client).Fetch(propertiesConfigMap); err != nil {
-			return resources, err
-		} else if !exists {
-			return resources, fmt.Errorf("propertiesConfigMap %s not found", s.instance.GetSpec().GetPropertiesConfigMap())
-		} else {
-			util.AppendToStringMap(getAppPropsFromConfigMap(propertiesConfigMap), appProps)
-		}
-	}
 
 	// TODO: refactor this entire file
 
@@ -75,34 +52,24 @@ func (s *serviceDeployer) createRequiredResources(image string) (resources map[r
 
 	if len(s.instance.GetSpec().GetInfra()) > 0 {
 		s.Log.Debug("Infra references are provided")
-		var infraAppProps map[string]string
 		var infraEnvProp []corev1.EnvVar
-		infraAppProps, infraEnvProp, infraVolumes, err = s.fetchKogitoInfraProperties()
+		infraManager := manager.NewKogitoInfraManager(s.Context, s.infraHandler)
+		_, infraEnvProp, infraVolumes, err = infraManager.FetchKogitoInfraProperties(s.instance.GetSpec().GetRuntime(), s.instance.GetNamespace(), s.instance.GetSpec().GetInfra()...)
 		if err != nil {
 			return resources, err
 		}
-		util.AppendToStringMap(infraAppProps, appProps)
 		deployment.Spec.Template.Spec.Containers[0].Env = append(deployment.Spec.Template.Spec.Containers[0].Env, infraEnvProp...)
 	}
 
 	deployment.Spec.Template.Spec.Containers[0].Env = append(deployment.Spec.Template.Spec.Containers[0].Env, framework.CreateEnvVar(infrastructure.RuntimeTypeKey, string(s.instance.GetSpec().GetRuntime())))
 
-	if len(s.instance.GetSpec().GetConfig()) > 0 {
-		s.Log.Debug("custom app properties are provided in custom Config")
-		util.AppendToStringMap(s.instance.GetSpec().GetConfig(), appProps)
-	}
-
-	var contentHash string
-	contentHash, configMap, err := appPropsConfigMapHandler.GetAppPropConfigMapContentHash(s.instance, appProps)
-	if err != nil {
-		return resources, err
-	}
-
-	s.applyApplicationPropertiesAnnotations(contentHash, deployment)
-
 	s.mountKogitoInfraVolumes(infraVolumes, deployment)
 
 	if err = NewTrustStoreHandler(s.Context).MountTrustStore(deployment, s.instance); err != nil {
+		return resources, err
+	}
+
+	if err = s.mountConfigMapOnDeployment(deployment); err != nil {
 		return resources, err
 	}
 
@@ -113,9 +80,6 @@ func (s *serviceDeployer) createRequiredResources(image string) (resources map[r
 		resources[reflect.TypeOf(routev1.Route{})] = []resource.KubernetesResource{routeHandler.CreateRoute(service)}
 	}
 
-	if configMap != nil {
-		resources[reflect.TypeOf(corev1.ConfigMap{})] = []resource.KubernetesResource{configMap}
-	}
 	if err := s.onObjectsCreate(resources); err != nil {
 		return resources, err
 	}
@@ -167,21 +131,13 @@ func (s *serviceDeployer) setOwner(resources map[reflect.Type][]resource.Kuberne
 	return nil
 }
 
-func (s *serviceDeployer) applyApplicationPropertiesAnnotations(contentHash string, deployment *appsv1.Deployment) {
-	if deployment.Spec.Template.Annotations == nil {
-		deployment.Spec.Template.Annotations = map[string]string{AppPropContentHashKey: contentHash}
-	} else {
-		deployment.Spec.Template.Annotations[AppPropContentHashKey] = contentHash
-	}
-}
-
 // getDeployedResources gets the deployed resources in the cluster owned by the given instance
 func (s *serviceDeployer) getDeployedResources() (resources map[reflect.Type][]resource.KubernetesResource, err error) {
 	var objectTypes []runtime.Object
 	if s.Client.IsOpenshift() {
-		objectTypes = []runtime.Object{&appsv1.DeploymentList{}, &corev1.ServiceList{}, &corev1.ConfigMapList{}, &routev1.RouteList{}}
+		objectTypes = []runtime.Object{&appsv1.DeploymentList{}, &corev1.ServiceList{}, &routev1.RouteList{}}
 	} else {
-		objectTypes = []runtime.Object{&appsv1.DeploymentList{}, &corev1.ServiceList{}, &corev1.ConfigMapList{}}
+		objectTypes = []runtime.Object{&appsv1.DeploymentList{}, &corev1.ServiceList{}}
 	}
 
 	if len(s.definition.extraManagedObjectLists) > 0 {
@@ -234,41 +190,7 @@ func (s *serviceDeployer) getComparator() compare.MapComparator {
 	return compare.MapComparator{Comparator: resourceComparator}
 }
 
-func (s *serviceDeployer) fetchKogitoInfraProperties() (map[string]string, []corev1.EnvVar, []api.KogitoInfraVolumeInterface, error) {
-	kogitoInfraReferences := s.instance.GetSpec().GetInfra()
-	s.Log.Debug("Going to fetch kogito infra properties", "infra", kogitoInfraReferences)
-	consolidateAppProperties := map[string]string{}
-	var consolidateEnvProperties []corev1.EnvVar
-	var volumes []api.KogitoInfraVolumeInterface
-	for _, kogitoInfraName := range kogitoInfraReferences {
-		// load infra resource
-		infraManager := manager.NewKogitoInfraManager(s.Context, s.infraHandler)
-		kogitoInfraInstance, err := infraManager.MustFetchKogitoInfraInstance(types.NamespacedName{Name: kogitoInfraName, Namespace: s.instance.GetNamespace()})
-		if err != nil {
-			return nil, nil, nil, err
-		}
-
-		runtimeType := s.instance.GetSpec().GetRuntime()
-
-		// fetch app properties from Kogito infra instance
-		runtimeProperties := kogitoInfraInstance.GetStatus().GetRuntimeProperties()[runtimeType]
-		if runtimeProperties != nil {
-			appProp := runtimeProperties.GetAppProps()
-			util.AppendToStringMap(appProp, consolidateAppProperties)
-
-			// fetch env properties from Kogito infra instance
-			envProp := runtimeProperties.GetEnv()
-			consolidateEnvProperties = append(consolidateEnvProperties, envProp...)
-		}
-		// fetch volume from Kogito infra instance
-		volumes = append(volumes, kogitoInfraInstance.GetStatus().GetVolumes()...)
-	}
-	return consolidateAppProperties, consolidateEnvProperties, volumes, nil
-}
-
 func (s *serviceDeployer) mountKogitoInfraVolumes(kogitoInfraVolumes []api.KogitoInfraVolumeInterface, deployment *appsv1.Deployment) {
-	appPropsVolumeHandler := NewAppPropsVolumeHandler()
-	framework.AddVolumeToDeployment(deployment, appPropsVolumeHandler.CreateAppPropVolumeMount(), appPropsVolumeHandler.CreateAppPropVolume(s.instance))
 	for _, infraVolume := range kogitoInfraVolumes {
 		framework.AddVolumeToDeployment(deployment, infraVolume.GetMount(), infraVolume.GetNamedVolume().ToKubeVolume())
 	}
@@ -291,4 +213,18 @@ func (s *serviceDeployer) resolveImage() *api.Image {
 		image = framework.ConvertImageTagToImage(s.instance.GetSpec().GetImage())
 	}
 	return &image
+}
+
+func (s *serviceDeployer) mountConfigMapOnDeployment(deployment *appsv1.Deployment) error {
+	configMapHandler := infrastructure.NewConfigMapHandler(s.Context)
+	configMapList, err := configMapHandler.FetchConfigMapForOwner(s.instance)
+	if err != nil {
+		return err
+	}
+	for _, configMap := range configMapList {
+		if err := configMapHandler.MountConfigMapOnDeployment(deployment, configMap); err != nil {
+			return err
+		}
+	}
+	return nil
 }

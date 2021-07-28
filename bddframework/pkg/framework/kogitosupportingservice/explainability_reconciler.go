@@ -18,7 +18,6 @@ import (
 	"github.com/kiegroup/kogito-operator/core/kogitoservice"
 	"k8s.io/apimachinery/pkg/types"
 	controller "sigs.k8s.io/controller-runtime/pkg/reconcile"
-	"time"
 )
 
 const (
@@ -41,7 +40,7 @@ func initExplainabilitySupportingServiceResource(context supportingServiceContex
 }
 
 // Reconcile reconcile Explainability Service
-func (e *explainabilitySupportingServiceResource) Reconcile() (reconcileAfter time.Duration, err error) {
+func (e *explainabilitySupportingServiceResource) Reconcile() (err error) {
 	e.Log.Info("Reconciling KogitoExplainability")
 	definition := kogitoservice.ServiceDefinition{
 		DefaultImageName: DefaultExplainabilityImageName,

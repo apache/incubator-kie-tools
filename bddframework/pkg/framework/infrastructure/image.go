@@ -23,7 +23,6 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"os"
 	"strings"
-	"time"
 )
 
 const (
@@ -51,7 +50,7 @@ type ImageHandler interface {
 	ResolveImageNameTag() string
 	ResolveImageStreamTriggerAnnotation(containerName string) (key, value string)
 	CreateImageStreamIfNotExists() (*imgv1.ImageStream, error)
-	ReconcileImageStream(owner resource.KubernetesResource) (time.Duration, error)
+	ReconcileImageStream(owner resource.KubernetesResource) error
 }
 
 // imageHandler defines the base structure for images in either OpenShift or Kubernetes clusters
@@ -94,12 +93,12 @@ func (i *imageHandler) CreateImageStreamIfNotExists() (*imgv1.ImageStream, error
 	return nil, nil
 }
 
-func (i *imageHandler) ReconcileImageStream(owner resource.KubernetesResource) (reconcileInterval time.Duration, err error) {
+func (i *imageHandler) ReconcileImageStream(owner resource.KubernetesResource) error {
 	if i.Client.IsOpenshift() {
 		imageStreamReconciler := NewImageStreamReconciler(i.Context, types.NamespacedName{Name: i.imageStreamName, Namespace: i.namespace}, i.resolveTag(), i.addFromReference, i.resolveRegistryImage(), i.insecureImageRegistry, owner)
 		return imageStreamReconciler.Reconcile()
 	}
-	return
+	return nil
 }
 
 // resolveImage resolves images like "quay.io/kiegroup/kogito-jobs-service:latest" or "internal-registry/namespace/image:hash".

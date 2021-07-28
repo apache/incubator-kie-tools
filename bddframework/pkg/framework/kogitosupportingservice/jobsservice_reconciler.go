@@ -15,8 +15,6 @@
 package kogitosupportingservice
 
 import (
-	"time"
-
 	"github.com/kiegroup/kogito-operator/core/connector"
 	"github.com/kiegroup/kogito-operator/core/kogitoservice"
 	"k8s.io/apimachinery/pkg/types"
@@ -49,7 +47,7 @@ func initJobsServiceSupportingServiceResource(context supportingServiceContext) 
 }
 
 // Reconcile reconcile Jobs service
-func (j *jobsServiceSupportingServiceResource) Reconcile() (reconcileAfter time.Duration, err error) {
+func (j *jobsServiceSupportingServiceResource) Reconcile() (err error) {
 	j.Log.Info("Reconciling for KogitoJobsService")
 
 	// clean up variables if needed

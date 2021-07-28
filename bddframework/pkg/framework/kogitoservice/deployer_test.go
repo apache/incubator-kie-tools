@@ -15,10 +15,8 @@
 package kogitoservice
 
 import (
-	"testing"
-	"time"
-
 	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
@@ -28,6 +26,7 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+	"testing"
 )
 
 func newReconcileRequest(namespace string) reconcile.Request {
@@ -55,9 +54,8 @@ func Test_serviceDeployer_DataIndex_InfraNotReady(t *testing.T) {
 	}
 	infraHandler := internal.NewKogitoInfraHandler(context)
 	deployer := NewServiceDeployer(context, definition, dataIndex, infraHandler)
-	reconcileAfter, err := deployer.Deploy()
+	err := deployer.Deploy()
 	assert.Error(t, err)
-	assert.Equal(t, time.Duration(0), reconcileAfter)
 
 	test.AssertFetchMustExist(t, cli, dataIndex)
 	assert.NotNil(t, dataIndex.GetStatus())
@@ -77,9 +75,10 @@ func Test_serviceDeployer_DataIndex_InfraNotReady(t *testing.T) {
 	test.AssertCreate(t, cli, infraInfinispan)
 	test.AssertCreate(t, cli, infraKafka)
 
-	reconcileAfter, err = deployer.Deploy()
-	assert.NoError(t, err)
-	assert.Equal(t, reconcileAfter, reconciliationAfterOneMinute)
+	err = deployer.Deploy()
+	assert.Error(t, err)
+	errorHandler := infrastructure.NewReconciliationErrorHandler(context)
+	assert.True(t, errorHandler.IsReconciliationError(err))
 	test.AssertFetchMustExist(t, cli, dataIndex)
 	assert.NotNil(t, dataIndex.GetStatus())
 	assert.Len(t, *dataIndex.GetStatus().GetConditions(), 3)
@@ -106,9 +105,10 @@ func Test_serviceDeployer_DataIndex_InfraNotReconciled(t *testing.T) {
 	}
 	infraHandler := internal.NewKogitoInfraHandler(context)
 	deployer := NewServiceDeployer(context, definition, dataIndex, infraHandler)
-	reconcileAfter, err := deployer.Deploy()
+	err := deployer.Deploy()
 	assert.Error(t, err)
-	assert.Equal(t, time.Duration(0), reconcileAfter)
+	errorHandler := infrastructure.NewReconciliationErrorHandler(context)
+	assert.False(t, errorHandler.IsReconciliationError(err))
 
 	test.AssertFetchMustExist(t, cli, dataIndex)
 	assert.NotNil(t, dataIndex.GetStatus())
@@ -121,9 +121,9 @@ func Test_serviceDeployer_DataIndex_InfraNotReconciled(t *testing.T) {
 	test.AssertCreate(t, cli, infraInfinispan)
 	test.AssertCreate(t, cli, infraKafka)
 
-	reconcileAfter, err = deployer.Deploy()
-	assert.NoError(t, err)
-	assert.Equal(t, reconcileAfter, reconciliationAfterOneMinute)
+	err = deployer.Deploy()
+	assert.Error(t, err)
+	assert.True(t, errorHandler.IsReconciliationError(err))
 	test.AssertFetchMustExist(t, cli, dataIndex)
 	assert.NotNil(t, dataIndex.GetStatus())
 	assert.Len(t, *dataIndex.GetStatus().GetConditions(), 3)
@@ -152,9 +152,8 @@ func Test_serviceDeployer_DataIndex(t *testing.T) {
 	}
 	infraHandler := internal.NewKogitoInfraHandler(context)
 	deployer := NewServiceDeployer(context, definition, dataIndex, infraHandler)
-	reconcileAfter, err := deployer.Deploy()
+	err := deployer.Deploy()
 	assert.NoError(t, err)
-	assert.Equal(t, time.Duration(0), reconcileAfter)
 
 	topic := &v1beta2.KafkaTopic{
 		ObjectMeta: v1.ObjectMeta{

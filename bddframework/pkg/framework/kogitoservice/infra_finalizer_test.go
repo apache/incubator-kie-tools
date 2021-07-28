@@ -34,7 +34,7 @@ func TestAddFinalizer(t *testing.T) {
 		Scheme: meta.GetRegisteredSchema(),
 	}
 	infraHandler := internal.NewKogitoInfraHandler(context)
-	finalizerHandler := NewFinalizerHandler(context, infraHandler)
+	finalizerHandler := NewInfraFinalizerHandler(context, infraHandler)
 	err := finalizerHandler.AddFinalizer(dataIndex)
 	assert.NoError(t, err)
 	exists, err := kubernetes.ResourceC(cli).Fetch(dataIndex)
@@ -54,7 +54,7 @@ func TestHandleFinalization(t *testing.T) {
 		Scheme: meta.GetRegisteredSchema(),
 	}
 	infraHandler := internal.NewKogitoInfraHandler(context)
-	finalizerHandler := NewFinalizerHandler(context, infraHandler)
+	finalizerHandler := NewInfraFinalizerHandler(context, infraHandler)
 	err := finalizerHandler.HandleFinalization(dataIndex)
 	assert.NoError(t, err)
 	exists, err := kubernetes.ResourceC(cli).Fetch(dataIndex)

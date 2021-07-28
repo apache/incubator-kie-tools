@@ -17,6 +17,7 @@ package kogitoservice
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -116,7 +117,7 @@ func (d *grafanaDashboardManager) fetchGrafanaDashboardNamesForURL(serverURL str
 		return nil, nil
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, errorForServiceNotReachable(resp.StatusCode, dashboardsURL, "GET")
+		return nil, infrastructure.ErrorForServiceNotReachable(resp.StatusCode, dashboardsURL, "GET")
 	}
 	var dashboardNames []string
 	if err := json.NewDecoder(resp.Body).Decode(&dashboardNames); err != nil {

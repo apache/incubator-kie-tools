@@ -18,12 +18,11 @@ import (
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/core/manager"
 	"github.com/kiegroup/kogito-operator/core/operator"
-	"time"
 )
 
 // Reconciler Interface to represent type of kogito supporting service resources like JobsService & MgmtConcole
 type Reconciler interface {
-	Reconcile() (reconcileAfter time.Duration, resultErr error)
+	Reconcile() error
 }
 
 type supportingServiceContext struct {

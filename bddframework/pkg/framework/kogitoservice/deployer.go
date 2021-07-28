@@ -16,22 +16,20 @@ package kogitoservice
 
 import (
 	"fmt"
+	"github.com/RHsyseng/operator-utils/pkg/resource"
+	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
 	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/manager"
 	"github.com/kiegroup/kogito-operator/core/operator"
-	"github.com/kiegroup/kogito-operator/internal"
-	"k8s.io/apimachinery/pkg/types"
-	"reflect"
-	"time"
-
-	"github.com/RHsyseng/operator-utils/pkg/resource"
-	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/record"
+	"github.com/kiegroup/kogito-operator/internal"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
+	"reflect"
 	controller "sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
 
@@ -64,6 +62,8 @@ type ServiceDefinition struct {
 	CustomService bool
 	// extraManagedObjectLists is a holder for the OnObjectsCreate return function
 	extraManagedObjectLists []runtime.Object
+
+	OnConfigMapReconcile func() error
 }
 
 const (
@@ -73,7 +73,7 @@ const (
 // ServiceDeployer is the API to handle a Kogito Service deployment by Operator SDK controllers
 type ServiceDeployer interface {
 	// Deploy deploys the Kogito Service in the Kubernetes cluster according to a given ServiceDefinition
-	Deploy() (reconcileAfter time.Duration, err error)
+	Deploy() error
 }
 
 type serviceDeployer struct {
@@ -82,6 +82,7 @@ type serviceDeployer struct {
 	instance     api.KogitoService
 	recorder     record.EventRecorder
 	infraHandler manager.KogitoInfraHandler
+	errorHandler infrastructure.ReconciliationErrorHandler
 }
 
 // NewServiceDeployer creates a new ServiceDeployer to handle a custom Kogito Service instance to be handled by Operator SDK controller.
@@ -99,6 +100,7 @@ func NewServiceDeployer(context operator.Context, definition ServiceDefinition, 
 		instance:     serviceType,
 		recorder:     newRecorder(context.Scheme, definition.Request.Name),
 		infraHandler: infraHandler,
+		errorHandler: infrastructure.NewReconciliationErrorHandler(context),
 	}
 }
 
@@ -108,7 +110,7 @@ func newRecorder(scheme *runtime.Scheme, eventSourceName string) record.EventRec
 
 func (s *serviceDeployer) getNamespace() string { return s.definition.Request.Namespace }
 
-func (s *serviceDeployer) Deploy() (time.Duration, error) {
+func (s *serviceDeployer) Deploy() error {
 	if s.instance.GetSpec().GetReplicas() == nil {
 		s.instance.GetSpec().SetReplicas(defaultReplicas)
 	}
@@ -122,51 +124,46 @@ func (s *serviceDeployer) Deploy() (time.Duration, error) {
 	statusHandler := NewStatusHandler(s.Context)
 	defer statusHandler.HandleStatusUpdate(s.instance, &err)
 
-	// we need to take ownership of the custom configmap provided
-	if len(s.instance.GetSpec().GetPropertiesConfigMap()) > 0 {
-		reconcileAfter, err := s.takeCustomConfigMapOwnership()
-		if err != nil || reconcileAfter > 0 {
-			return reconcileAfter, err
-		}
-	}
-
 	// we need to take ownership of the provided KogitoInfra instances
 	if len(s.instance.GetSpec().GetInfra()) > 0 {
 		err = s.takeKogitoInfraOwnership()
 		if err != nil {
-			return s.getReconcileResultFor(err)
+			return err
 		}
 	}
 
 	if err = s.checkInfraDependencies(); err != nil {
-		return s.getReconcileResultFor(err)
+		return err
 	}
 
 	imageHandler := s.newImageHandler()
-	if reconcileInterval, err := imageHandler.ReconcileImageStream(s.instance); err != nil {
-		return s.getReconcileResultFor(err)
-	} else if reconcileInterval > 0 {
-		return reconcileInterval, nil
+	if err := imageHandler.ReconcileImageStream(s.instance); err != nil {
+		return err
 	}
 
 	imageName, err := imageHandler.ResolveImage()
 	// we only create the rest of the resources once we have a resolvable image
 	if err != nil {
-		return s.getReconcileResultFor(err)
+		return err
 	} else if len(imageName) == 0 {
-		return s.getReconcileResultFor(fmt.Errorf("image not found"))
+		return fmt.Errorf("image not found")
+	}
+
+	configMapReconciler := NewConfigMapReconciler(s.Context, s, s.infraHandler)
+	if err = configMapReconciler.Reconcile(); err != nil {
+		return err
 	}
 
 	// create our resources
 	requestedResources, err := s.createRequiredResources(imageName)
 	if err != nil {
-		return s.getReconcileResultFor(err)
+		return err
 	}
 
 	// get the deployed ones
 	deployedResources, err := s.getDeployedResources()
 	if err != nil {
-		return s.getReconcileResultFor(err)
+		return err
 	}
 
 	// compare required and deployed, in case of any differences, we should create updateStatus or delete the k8s resources
@@ -180,44 +177,34 @@ func (s *serviceDeployer) Deploy() (time.Duration, error) {
 		s.Log.Info("Will", "create", len(delta.Added), "update", len(delta.Updated), "delete", len(delta.Removed), "resourceType", resourceType)
 
 		if _, err = kubernetes.ResourceC(s.Client).CreateResources(delta.Added); err != nil {
-			return s.getReconcileResultFor(err)
+			return err
 		}
 		s.generateEventForDeltaResources("Created", resourceType, delta.Added)
 
 		if _, err = kubernetes.ResourceC(s.Client).UpdateResources(deployedResources[resourceType], delta.Updated); err != nil {
-			return s.getReconcileResultFor(err)
+			return err
 		}
 
 		if _, err = kubernetes.ResourceC(s.Client).DeleteResources(delta.Removed); err != nil {
-			return s.getReconcileResultFor(err)
+			return err
 		}
 		s.generateEventForDeltaResources("Removed", resourceType, delta.Removed)
 	}
 
 	err = s.configureMonitoring()
 	if err != nil {
-		return s.getReconcileResultFor(err)
+		return err
 	}
 
 	err = s.configureMessaging()
 
-	return s.getReconcileResultFor(err)
+	return err
 }
 
 func (s *serviceDeployer) generateEventForDeltaResources(eventReason string, resourceType reflect.Type, addedResources []resource.KubernetesResource) {
 	for _, newResource := range addedResources {
 		s.recorder.Eventf(s.Client, s.instance, v1.EventTypeNormal, eventReason, "%s %s: %s", eventReason, resourceType.Name(), newResource.GetName())
 	}
-}
-
-func (s *serviceDeployer) takeCustomConfigMapOwnership() (requeueAfter time.Duration, err error) {
-	configMapHandler := infrastructure.NewConfigMapHandler(s.Context, s.recorder)
-	if updated, err := configMapHandler.TakeConfigMapOwnership(types.NamespacedName{Name: s.instance.GetSpec().GetPropertiesConfigMap(), Namespace: s.getNamespace()}, s.instance); err != nil {
-		return 0, err
-	} else if !updated {
-		return 0, nil
-	}
-	return time.Second * 15, nil
 }
 
 func (s *serviceDeployer) takeKogitoInfraOwnership() error {
@@ -243,7 +230,7 @@ func (s *serviceDeployer) checkInfraDependencies() error {
 			if err != nil {
 				return err
 			}
-			return errorForInfraNotReady(s.instance, infraName, conditionReason)
+			return infrastructure.ErrorForInfraNotReady(s.instance.GetName(), infraName, conditionReason)
 		}
 	}
 	return nil
@@ -253,12 +240,12 @@ func (s *serviceDeployer) configureMessaging() error {
 	s.Log.Debug("Going to configuring messaging")
 	kafkaMessagingDeployer := NewKafkaMessagingDeployer(s.Context, s.definition, s.infraHandler)
 	if err := kafkaMessagingDeployer.CreateRequiredResources(s.instance); err != nil {
-		return errorForMessaging(err)
+		return infrastructure.ErrorForMessaging(err)
 	}
 
 	knativeMessagingDeployer := NewKnativeMessagingDeployer(s.Context, s.definition, s.infraHandler)
 	if err := knativeMessagingDeployer.CreateRequiredResources(s.instance); err != nil {
-		return errorForMessaging(err)
+		return infrastructure.ErrorForMessaging(err)
 	}
 	return nil
 }
@@ -268,23 +255,14 @@ func (s *serviceDeployer) configureMonitoring() error {
 	prometheusManager := NewPrometheusManager(s.Context)
 	if err := prometheusManager.ConfigurePrometheus(s.instance); err != nil {
 		s.Log.Error(err, "Could not deploy prometheus monitoring")
-		return errorForMonitoring(err)
+		return infrastructure.ErrorForMonitoring(err)
 	}
 
 	grafanaDashboardManager := NewGrafanaDashboardManager(s.Context)
 	if err := grafanaDashboardManager.ConfigureGrafanaDashboards(s.instance); err != nil {
 		s.Log.Error(err, "Could not deploy grafana dashboards")
-		return errorForDashboards(err)
+		return infrastructure.ErrorForDashboards(err)
 	}
 
 	return nil
-}
-
-func (s *serviceDeployer) getReconcileResultFor(err error) (time.Duration, error) {
-	// reconciliation always happens if we return an error
-	if reasonForError(err) == api.ServiceReconciliationFailure {
-		return 0, err
-	}
-	reconcileAfter := reconciliationIntervalForError(err)
-	return reconcileAfter, nil
 }

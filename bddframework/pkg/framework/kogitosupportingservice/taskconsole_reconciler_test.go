@@ -44,13 +44,11 @@ func TestReconcileKogitoSupportingServiceTaskConsole_Reconcile(t *testing.T) {
 		},
 	}
 	// first reconciliation
-	requeueAfter, err := r.Reconcile()
+	err := r.Reconcile()
 	assert.NoError(t, err)
-	assert.True(t, requeueAfter == 0)
 	// second time
-	requeueAfter, err = r.Reconcile()
+	err = r.Reconcile()
 	assert.NoError(t, err)
-	assert.True(t, requeueAfter == 0)
 
 	_, err = kubernetes.ResourceC(cli).Fetch(instance)
 	assert.NoError(t, err)
@@ -77,9 +75,8 @@ func TestReconcileKogitoSupportingServiceTaskConsole_CustomImage(t *testing.T) {
 		},
 	}
 
-	requeueAfter, err := r.Reconcile()
+	err := r.Reconcile()
 	assert.NoError(t, err)
-	assert.True(t, requeueAfter == 0)
 	// Check image name inside deployment
 	deployment := v12.Deployment{
 		ObjectMeta: v1.ObjectMeta{Name: instance.Name, Namespace: ns},

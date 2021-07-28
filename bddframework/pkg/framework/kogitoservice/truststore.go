@@ -18,6 +18,7 @@ import (
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
+	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
@@ -78,11 +79,11 @@ func (t *trustStoreHandler) fetchAndValidateTrustStoreSecret(service api.KogitoS
 	if exists, err := kubernetes.ResourceC(t.context.Client).Fetch(secret); err != nil {
 		return nil, err
 	} else if !exists {
-		return nil, errorForTrustStoreMount("Failed to find Secret named " + secret.Name + " in the namespace " + secret.Namespace)
+		return nil, infrastructure.ErrorForTrustStoreMount("Failed to find Secret named " + secret.Name + " in the namespace " + secret.Namespace)
 	}
 
 	if _, ok := secret.Data[trustStoreSecretFileKey]; !ok {
-		return nil, errorForTrustStoreMount("Failed to mount Truststore. Secret " + secret.Name + " doesn't have the file with key " + trustStoreSecretFileKey)
+		return nil, infrastructure.ErrorForTrustStoreMount("Failed to mount Truststore. Secret " + secret.Name + " doesn't have the file with key " + trustStoreSecretFileKey)
 	}
 
 	return secret, nil

@@ -15,8 +15,6 @@
 package kogitosupportingservice
 
 import (
-	"time"
-
 	"github.com/kiegroup/kogito-operator/core/connector"
 	"github.com/kiegroup/kogito-operator/core/kogitoservice"
 	"k8s.io/apimachinery/pkg/types"
@@ -43,7 +41,7 @@ func initTrustyAISupportingServiceResource(context supportingServiceContext) Rec
 }
 
 // Reconcile reconcile TrustyAI Service
-func (t *trustyAISupportingServiceResource) Reconcile() (reconcileAfter time.Duration, err error) {
+func (t *trustyAISupportingServiceResource) Reconcile() (err error) {
 	t.Log.Info("Reconciling for KogitoTrusty")
 	urlHandler := connector.NewURLHandler(t.Context, t.runtimeHandler, t.supportingServiceHandler)
 	if err = urlHandler.InjectTrustyURLIntoKogitoRuntimeServices(t.instance.GetNamespace()); err != nil {

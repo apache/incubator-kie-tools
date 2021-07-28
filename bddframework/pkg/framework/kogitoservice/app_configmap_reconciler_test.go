@@ -1,4 +1,4 @@
-// Copyright 2020 Red Hat, Inc. and/or its affiliates
+// Copyright 2021 Red Hat, Inc. and/or its affiliates
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package kogitosupportingservice
+package kogitoservice
 
 import (
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
@@ -21,37 +21,34 @@ import (
 	"github.com/kiegroup/kogito-operator/internal"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
+	corev1 "k8s.io/api/core/v1"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"testing"
 )
 
-func TestReconcileKogitoJobsService_Reconcile(t *testing.T) {
+func TestReconcile(t *testing.T) {
 	ns := t.Name()
-	jobsService := test.CreateFakeJobsService(ns)
-	cli := test.NewFakeClientBuilder().AddK8sObjects(jobsService).Build()
+	instance := test.CreateFakeKogitoRuntime(ns)
+	instance.Spec.Config = map[string]string{
+		"key1": "value1",
+	}
+
+	cli := test.NewFakeClientBuilder().Build()
 	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	r := &jobsServiceSupportingServiceResource{
-		supportingServiceContext: supportingServiceContext{
-			Context:                  context,
-			instance:                 jobsService,
-			supportingServiceHandler: internal.NewKogitoSupportingServiceHandler(context),
-			infraHandler:             internal.NewKogitoInfraHandler(context),
-			runtimeHandler:           internal.NewKogitoRuntimeHandler(context),
-		},
-	}
-	// first reconciliation
-
-	err := r.Reconcile()
-	assert.NoError(t, err)
-	// second time
-	err = r.Reconcile()
+	infraHandler := internal.NewKogitoInfraHandler(context)
+	appConfigMapReconciler := NewAppConfigMapReconciler(context, instance, infraHandler)
+	err := appConfigMapReconciler.Reconcile()
 	assert.NoError(t, err)
 
-	_, err = kubernetes.ResourceC(cli).Fetch(jobsService)
+	appConfigMapHandler := NewAppConfigMapHandler(context)
+	configMap := &corev1.ConfigMap{ObjectMeta: v1.ObjectMeta{Name: appConfigMapHandler.GetAppConfigMapName(instance), Namespace: instance.Namespace}}
+	exists, err := kubernetes.ResourceC(cli).Fetch(configMap)
 	assert.NoError(t, err)
-	assert.NotNil(t, jobsService.GetStatus())
-	assert.Len(t, *jobsService.GetStatus().GetConditions(), 2)
+	assert.True(t, exists)
+	assert.Equal(t, 1, len(configMap.Data))
+	assert.Equal(t, "value1", configMap.Data["key1"])
 }

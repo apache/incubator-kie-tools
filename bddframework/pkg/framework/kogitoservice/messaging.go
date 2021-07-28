@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/api/v1beta1"
+	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/manager"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"k8s.io/apimachinery/pkg/types"
@@ -136,7 +137,7 @@ func (m *messagingDeployer) fetchRequiredTopicsForURL(instance api.KogitoService
 		return nil, nil
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, errorForServiceNotReachable(resp.StatusCode, topicsURL, "GET")
+		return nil, infrastructure.ErrorForServiceNotReachable(resp.StatusCode, topicsURL, "GET")
 	}
 	var topics []messagingTopic
 	if err := json.NewDecoder(resp.Body).Decode(&topics); err != nil {

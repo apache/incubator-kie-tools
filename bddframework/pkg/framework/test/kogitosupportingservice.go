@@ -30,24 +30,6 @@ func CreateFakeJobsService(namespace string) *v1beta1.KogitoSupportingService {
 	return createFakeKogitoSupportingServiceInstance("jobs-service", namespace, api.JobsService)
 }
 
-// CreateFakeJobsServiceWithPropertiesConfigMap ...
-func CreateFakeJobsServiceWithPropertiesConfigMap(namespace string, propertiesConfigMapName string) *v1beta1.KogitoSupportingService {
-	replicas := int32(1)
-	return &v1beta1.KogitoSupportingService{
-		ObjectMeta: v1.ObjectMeta{
-			Name:      "jobs-service",
-			Namespace: namespace,
-		},
-		Spec: v1beta1.KogitoSupportingServiceSpec{
-			ServiceType: api.JobsService,
-			KogitoServiceSpec: v1beta1.KogitoServiceSpec{
-				Replicas:            &replicas,
-				PropertiesConfigMap: propertiesConfigMapName,
-			},
-		},
-	}
-}
-
 // CreateFakeMgmtConsole ...
 func CreateFakeMgmtConsole(namespace string) *v1beta1.KogitoSupportingService {
 	return createFakeKogitoSupportingServiceInstance("mgmt-console", namespace, api.MgmtConsole)

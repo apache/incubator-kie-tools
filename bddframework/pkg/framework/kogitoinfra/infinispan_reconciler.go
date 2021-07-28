@@ -17,14 +17,13 @@ package kogitoinfra
 import (
 	"context"
 	"fmt"
-	"sort"
-
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"software.sslmate.com/src/go-pkcs12"
+	"sort"
 
 	infinispan "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"

@@ -32,12 +32,14 @@ type StatusHandler interface {
 
 type statusHandler struct {
 	operator.Context
+	errorHandler infrastructure.ReconciliationErrorHandler
 }
 
 // NewStatusHandler ...
 func NewStatusHandler(context operator.Context) StatusHandler {
 	return &statusHandler{
-		context,
+		Context:      context,
+		errorHandler: infrastructure.NewReconciliationErrorHandler(context),
 	}
 }
 
@@ -55,7 +57,7 @@ func (s *statusHandler) ensureResourcesStatusChanges(instance api.KogitoService,
 		instance.GetStatus().SetConditions(&[]metav1.Condition{})
 	}
 	if errCondition != nil {
-		if err = s.setFailedConditions(instance, reasonForError(errCondition), errCondition); err != nil {
+		if err = s.setFailedConditions(instance, s.errorHandler.GetReasonForError(errCondition), errCondition); err != nil {
 			return err
 		}
 	} else {
@@ -79,12 +81,12 @@ func (s *statusHandler) ensureResourcesStatusChanges(instance api.KogitoService,
 	return nil
 }
 
-func (s *statusHandler) setFailedConditions(instance api.KogitoService, reason api.KogitoServiceConditionReason, errCondition error) error {
+func (s *statusHandler) setFailedConditions(instance api.KogitoService, reason infrastructure.ConditionReason, errCondition error) error {
 	s.setFailed(instance.GetStatus().GetConditions(), metav1.ConditionTrue, reason, errCondition.Error())
-	if isReconciliationError(errCondition) {
-		s.setProvisioning(instance.GetStatus().GetConditions(), metav1.ConditionTrue, api.ProvisioningInProgressReason)
+	if s.errorHandler.IsReconciliationError(errCondition) {
+		s.setProvisioning(instance.GetStatus().GetConditions(), metav1.ConditionTrue, infrastructure.ProvisioningInProgressReason)
 	} else {
-		s.setProvisioning(instance.GetStatus().GetConditions(), metav1.ConditionFalse, api.FailedProvisioningReason)
+		s.setProvisioning(instance.GetStatus().GetConditions(), metav1.ConditionFalse, infrastructure.FailedProvisioningReason)
 	}
 
 	availableReplicas, err := s.fetchReadyReplicas(instance)
@@ -108,13 +110,13 @@ func (s *statusHandler) handleConditionTransition(instance api.KogitoService) er
 	expectedReplicas := *instance.GetSpec().GetReplicas()
 	if expectedReplicas == availableReplicas {
 		s.setDeployed(instance.GetStatus().GetConditions(), metav1.ConditionTrue)
-		s.setProvisioning(instance.GetStatus().GetConditions(), metav1.ConditionFalse, api.FinishedProvisioningReason)
+		s.setProvisioning(instance.GetStatus().GetConditions(), metav1.ConditionFalse, infrastructure.FinishedProvisioningReason)
 	} else if availableReplicas > 0 && availableReplicas < expectedReplicas {
 		s.setDeployed(instance.GetStatus().GetConditions(), metav1.ConditionTrue)
-		s.setProvisioning(instance.GetStatus().GetConditions(), metav1.ConditionTrue, api.ProvisioningInProgressReason)
+		s.setProvisioning(instance.GetStatus().GetConditions(), metav1.ConditionTrue, infrastructure.ProvisioningInProgressReason)
 	} else if availableReplicas == 0 {
 		s.setDeployed(instance.GetStatus().GetConditions(), metav1.ConditionFalse)
-		s.setProvisioning(instance.GetStatus().GetConditions(), metav1.ConditionTrue, api.ProvisioningInProgressReason)
+		s.setProvisioning(instance.GetStatus().GetConditions(), metav1.ConditionTrue, infrastructure.ProvisioningInProgressReason)
 	}
 	return nil
 }
@@ -168,9 +170,9 @@ func (s *statusHandler) updateRouteStatus(instance api.KogitoService) error {
 
 // NewDeployedCondition ...
 func (s *statusHandler) newDeployedCondition(status metav1.ConditionStatus) metav1.Condition {
-	reason := api.SuccessfulDeployedReason
+	reason := infrastructure.SuccessfulDeployedReason
 	if status == metav1.ConditionFalse {
-		reason = api.FailedDeployedReason
+		reason = infrastructure.FailedDeployedReason
 	}
 	return metav1.Condition{
 		Type:   string(api.DeployedConditionType),
@@ -180,7 +182,7 @@ func (s *statusHandler) newDeployedCondition(status metav1.ConditionStatus) meta
 }
 
 // NewProvisioningCondition ...
-func (s *statusHandler) newProvisioningCondition(status metav1.ConditionStatus, reason api.KogitoServiceConditionReason) metav1.Condition {
+func (s *statusHandler) newProvisioningCondition(status metav1.ConditionStatus, reason infrastructure.ConditionReason) metav1.Condition {
 	return metav1.Condition{
 		Type:   string(api.ProvisioningConditionType),
 		Status: status,
@@ -189,7 +191,7 @@ func (s *statusHandler) newProvisioningCondition(status metav1.ConditionStatus, 
 }
 
 // NewFailedCondition ...
-func (s *statusHandler) newFailedCondition(status metav1.ConditionStatus, reason api.KogitoServiceConditionReason, message string) metav1.Condition {
+func (s *statusHandler) newFailedCondition(status metav1.ConditionStatus, reason infrastructure.ConditionReason, message string) metav1.Condition {
 	return metav1.Condition{
 		Type:    string(api.FailedConditionType),
 		Status:  status,
@@ -199,7 +201,7 @@ func (s *statusHandler) newFailedCondition(status metav1.ConditionStatus, reason
 }
 
 // SetProvisioning Sets the condition type to Provisioning and status True if not yet set.
-func (s *statusHandler) setProvisioning(conditions *[]metav1.Condition, status metav1.ConditionStatus, reason api.KogitoServiceConditionReason) {
+func (s *statusHandler) setProvisioning(conditions *[]metav1.Condition, status metav1.ConditionStatus, reason infrastructure.ConditionReason) {
 	provisionCondition := s.newProvisioningCondition(status, reason)
 	meta.SetStatusCondition(conditions, provisionCondition)
 }
@@ -211,7 +213,7 @@ func (s *statusHandler) setDeployed(conditions *[]metav1.Condition, status metav
 }
 
 // SetProvisioning Sets the condition type to Provisioning and status True if not yet set.
-func (s *statusHandler) setFailed(conditions *[]metav1.Condition, status metav1.ConditionStatus, reason api.KogitoServiceConditionReason, message string) {
+func (s *statusHandler) setFailed(conditions *[]metav1.Condition, status metav1.ConditionStatus, reason infrastructure.ConditionReason, message string) {
 	failedCondition := s.newFailedCondition(status, reason, message)
 	meta.SetStatusCondition(conditions, failedCondition)
 }
@@ -219,7 +221,7 @@ func (s *statusHandler) setFailed(conditions *[]metav1.Condition, status metav1.
 func (s *statusHandler) InvalidateFailedCondition(conditions *[]metav1.Condition) {
 	failedCondition := meta.FindStatusCondition(*conditions, string(api.FailedConditionType))
 	if failedCondition != nil {
-		s.setFailed(conditions, metav1.ConditionFalse, api.KogitoServiceConditionReason(failedCondition.Reason), failedCondition.Message)
+		s.setFailed(conditions, metav1.ConditionFalse, infrastructure.ConditionReason(failedCondition.Reason), failedCondition.Message)
 	}
 }
 

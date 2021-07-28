@@ -46,7 +46,6 @@ func TestReconcileKogitoSupportingTrusty_Reconcile(t *testing.T) {
 		},
 	}
 	// basic checks
-	requeueAfter, err := r.Reconcile()
+	err := r.Reconcile()
 	assert.NoError(t, err)
-	assert.True(t, requeueAfter == 0)
 }

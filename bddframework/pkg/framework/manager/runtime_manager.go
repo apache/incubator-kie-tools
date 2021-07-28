@@ -52,7 +52,7 @@ func (k *kogitoRuntimeManager) FetchKogitoRuntimeDeployments(namespace string) (
 	kogitoRuntimeServices, err := k.runtimeHandler.FetchAllKogitoRuntimeInstances(namespace)
 	if err != nil {
 		return nil, err
-	} else if kogitoRuntimeServices == nil {
+	} else if len(kogitoRuntimeServices.GetItems()) == 0 {
 		return kdcs, nil
 	}
 

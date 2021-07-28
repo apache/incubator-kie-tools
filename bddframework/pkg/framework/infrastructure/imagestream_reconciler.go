@@ -17,13 +17,11 @@ package infrastructure
 import (
 	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	imgv1 "github.com/openshift/api/image/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
-	"time"
 )
 
 type imageStreamReconciler struct {
@@ -38,7 +36,7 @@ type imageStreamReconciler struct {
 
 // ImageStreamReconciler ...
 type ImageStreamReconciler interface {
-	Reconcile() (time.Duration, error)
+	Reconcile() error
 }
 
 // NewImageStreamReconciler ...
@@ -54,7 +52,7 @@ func NewImageStreamReconciler(context operator.Context, key types.NamespacedName
 	}
 }
 
-func (i *imageStreamReconciler) Reconcile() (reconcileInterval time.Duration, err error) {
+func (i *imageStreamReconciler) Reconcile() (err error) {
 
 	// Create Required resource
 	requestedResources, err := i.createRequiredResources()
@@ -111,34 +109,12 @@ func (i *imageStreamReconciler) getDeployedResources() (map[reflect.Type][]resou
 	return resources, nil
 }
 
-func (i *imageStreamReconciler) processDelta(requestedResources map[reflect.Type][]resource.KubernetesResource, deployedResources map[reflect.Type][]resource.KubernetesResource) (reconcileInterval time.Duration, err error) {
+func (i *imageStreamReconciler) processDelta(requestedResources map[reflect.Type][]resource.KubernetesResource, deployedResources map[reflect.Type][]resource.KubernetesResource) (err error) {
 	comparator := i.getComparator()
-	deltas := comparator.Compare(deployedResources, requestedResources)
-	isDeltaProcessed := false
-	for resourceType, delta := range deltas {
-		if !delta.HasChanges() {
-			i.Log.Info("No delta found", "resourceType", resourceType)
-			continue
-		}
-		i.Log.Info("Will", "create", len(delta.Added), "update", len(delta.Updated), "delete", len(delta.Removed), "resourceType", resourceType)
-
-		if _, err = kubernetes.ResourceC(i.Client).CreateResources(delta.Added); err != nil {
-			return
-		}
-
-		if _, err = kubernetes.ResourceC(i.Client).UpdateResources(deployedResources[resourceType], delta.Updated); err != nil {
-			return
-		}
-
-		if _, err = kubernetes.ResourceC(i.Client).DeleteResources(delta.Removed); err != nil {
-			return
-		}
-
-		isDeltaProcessed = true
-	}
-
+	deltaProcessor := NewDeltaProcessor(i.Context)
+	isDeltaProcessed, err := deltaProcessor.ProcessDelta(comparator, requestedResources, deployedResources)
 	if isDeltaProcessed {
-		return time.Second * 10, nil
+		return ErrorForProcessingImageStreamDelta()
 	}
 	return
 }

@@ -18,72 +18,70 @@ import (
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework/util"
-	"github.com/kiegroup/kogito-operator/core/manager"
+	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"k8s.io/apimachinery/pkg/types"
 )
 
-const infraFinalizer = "delete.kogitoInfra.ownership.finalizer"
+const configMapFinalizer = "delete.configmap.ownership.finalizer"
 
-// InfraFinalizerHandler ...
-type InfraFinalizerHandler interface {
+// ConfigMapFinalizerHandler ...
+type ConfigMapFinalizerHandler interface {
 	AddFinalizer(instance api.KogitoService) error
 	HandleFinalization(instance api.KogitoService) error
 }
 
-type infraFinalizerHandler struct {
+type configMapFinalizerHandler struct {
 	operator.Context
-	infraHandler manager.KogitoInfraHandler
 }
 
-// NewInfraFinalizerHandler ...
-func NewInfraFinalizerHandler(context operator.Context, infraHandler manager.KogitoInfraHandler) InfraFinalizerHandler {
-	return &infraFinalizerHandler{
-		Context:      context,
-		infraHandler: infraHandler,
+// NewConfigMapFinalizerHandler ...
+func NewConfigMapFinalizerHandler(context operator.Context) InfraFinalizerHandler {
+	return &configMapFinalizerHandler{
+		Context: context,
 	}
 }
 
 // AddFinalizer add finalizer to provide KogitoService instance
-func (f *infraFinalizerHandler) AddFinalizer(instance api.KogitoService) error {
+func (f *configMapFinalizerHandler) AddFinalizer(instance api.KogitoService) error {
 	if instance.GetDeletionTimestamp().IsZero() {
-		if !util.Contains(infraFinalizer, instance.GetFinalizers()) {
-			f.Log.Debug("Adding Infra Finalizer for the KogitoService")
-			finalizers := append(instance.GetFinalizers(), infraFinalizer)
+		if !util.Contains(configMapFinalizer, instance.GetFinalizers()) {
+			f.Log.Debug("Adding Configmap Finalizer for the KogitoService")
+			finalizers := append(instance.GetFinalizers(), configMapFinalizer)
 			instance.SetFinalizers(finalizers)
 
 			// Update CR
 			if err := kubernetes.ResourceC(f.Client).Update(instance); err != nil {
-				f.Log.Error(err, "Failed to update infra finalizer in KogitoService")
+				f.Log.Error(err, "Failed to update configmap finalizer in KogitoService")
 				return err
 			}
-			f.Log.Debug("Successfully added infra finalizer into KogitoService instance", "instance", instance.GetName())
+			f.Log.Debug("Successfully added configmap finalizer into KogitoService instance", "instance", instance.GetName())
 		}
 	}
 	return nil
 }
 
 // HandleFinalization remove owner reference of provided Kogito service from KogitoInfra instances and remove finalizer from KogitoService
-func (f *infraFinalizerHandler) HandleFinalization(instance api.KogitoService) error {
-	// Remove KogitoSupportingService ownership from referred KogitoInfra instances
-	infraManager := manager.NewKogitoInfraManager(f.Context, f.infraHandler)
-	for _, kogitoInfra := range instance.GetSpec().GetInfra() {
-		if err := infraManager.RemoveKogitoInfraOwnership(types.NamespacedName{Name: kogitoInfra, Namespace: instance.GetNamespace()}, instance); err != nil {
+func (f *configMapFinalizerHandler) HandleFinalization(instance api.KogitoService) error {
+	// Remove KogitoService ownership from user provided configmap
+	propertiesConfigMap := instance.GetSpec().GetPropertiesConfigMap()
+	if len(propertiesConfigMap) > 0 {
+		configMapHandler := infrastructure.NewConfigMapHandler(f.Context)
+		if err := configMapHandler.RemoveConfigMapOwnership(types.NamespacedName{Name: propertiesConfigMap, Namespace: instance.GetNamespace()}, instance); err != nil {
 			return err
 		}
 	}
-
 	// Update finalizer to allow delete CR
-	f.Log.Debug("Removing infra finalizer from KogitoService")
+	f.Log.Debug("Removing configMap finalizer from KogitoService")
 	finalizers := instance.GetFinalizers()
-	removed := util.Remove(infraFinalizer, &finalizers)
+	removed := util.Remove(configMapFinalizer, &finalizers)
 	instance.SetFinalizers(finalizers)
 	if removed {
 		if err := kubernetes.ResourceC(f.Client).Update(instance); err != nil {
-			f.Log.Error(err, "Error occurs while removing infra finalizer from KogitoService")
+			f.Log.Error(err, "Error occurs while removing configMap finalizer from KogitoService")
 			return err
 		}
 	}
-	f.Log.Debug("Successfully removed infra finalizer from KogitoService")
+	f.Log.Debug("Successfully removed configMap finalizer from KogitoService")
 	return nil
 }

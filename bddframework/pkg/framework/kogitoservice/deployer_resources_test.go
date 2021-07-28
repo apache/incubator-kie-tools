@@ -22,7 +22,6 @@ import (
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
-	"github.com/kiegroup/kogito-operator/internal"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/kiegroup/kogito-operator/version"
 	routev1 "github.com/openshift/api/route/v1"
@@ -58,132 +57,10 @@ func Test_serviceDeployer_createRequiredResources_OnOCPNoImageStreamCreated(t *t
 	assert.NoError(t, err)
 	assert.NotEmpty(t, resources)
 	// we don't have the Image Stream, so other resources should not have been created other than ConfigMap
-	assert.True(t, len(resources) == 4)
+	assert.True(t, len(resources) == 3)
 	assert.Equal(t, resources[reflect.TypeOf(appsv1.Deployment{})][0].GetName(), "jobs-service")
 	assert.Equal(t, resources[reflect.TypeOf(corev1.Service{})][0].GetName(), "jobs-service")
 	assert.Equal(t, resources[reflect.TypeOf(routev1.Route{})][0].GetName(), "jobs-service")
-	assert.Equal(t, resources[reflect.TypeOf(corev1.ConfigMap{})][0].GetName(), "jobs-service"+appPropConfigMapSuffix)
-}
-
-func Test_serviceDeployer_createRequiredResources_NoImageStreamCreated_CreateWithPropertiesConfigMap(t *testing.T) {
-	propertiesConfigMapName := "jobs-service-cm"
-	instance := test.CreateFakeJobsServiceWithPropertiesConfigMap(t.Name(), propertiesConfigMapName)
-	propertiesConfigMap := &corev1.ConfigMap{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       "ConfigMap",
-			APIVersion: "v1",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      propertiesConfigMapName,
-			Namespace: instance.GetNamespace(),
-		},
-		Data: map[string]string{
-			ConfigMapApplicationPropertyKey: "\ntestKey=testValue",
-		},
-	}
-	cli := test.NewFakeClientBuilder().AddK8sObjects(propertiesConfigMap).Build()
-	deployer := newTestSupServiceDeployer(cli, instance, "kogito-jobs-service")
-	imageName := "quay.io/kiegroup/kogito-jobs-service"
-	resources, err := deployer.createRequiredResources(imageName)
-	assert.NoError(t, err)
-	assert.NotEmpty(t, resources)
-
-	configmaps, exist := resources[reflect.TypeOf(corev1.ConfigMap{})]
-	assert.True(t, exist)
-	assert.Equal(t, 1, len(configmaps))
-	configmaps[0].SetOwnerReferences(nil)
-	assert.Equal(t, propertiesConfigMap, configmaps[0])
-
-	assert.Equal(t, 1, len(resources[reflect.TypeOf(appsv1.Deployment{})]))
-	deployment, ok := resources[reflect.TypeOf(appsv1.Deployment{})][0].(*appsv1.Deployment)
-	assert.True(t, ok)
-	_, ok = deployment.Spec.Template.Annotations[AppPropContentHashKey]
-	assert.True(t, ok)
-}
-
-func Test_serviceDeployer_createRequiredResources_NoImageStreamCreated_CreateWithPropertiesConfigMapNotExist(t *testing.T) {
-	propertiesConfigMapName := "jobs-service-cm"
-	instance := test.CreateFakeJobsServiceWithPropertiesConfigMap(t.Name(), propertiesConfigMapName)
-	cli := test.NewFakeClientBuilder().Build()
-	deployer := newTestSupServiceDeployer(cli, instance, "kogito-jobs-service")
-	imageName := "quay.io/kiegroup/kogito-jobs-service"
-	resources, err := deployer.createRequiredResources(imageName)
-	assert.Errorf(t, err, "propertiesConfigMap %s not found", propertiesConfigMapName)
-	assert.Empty(t, resources)
-}
-
-func Test_serviceDeployer_createRequiredResources_CreateNewAppPropConfigMap(t *testing.T) {
-	kogitoKafka := test.CreateFakeKogitoKafka(t.Name())
-	kogitoInfinispan := test.CreateFakeKogitoInfinispan(t.Name())
-	kogitoKnative := test.CreateFakeKogitoKnative(t.Name())
-	instance := test.CreateFakeDataIndex(t.Name())
-	instance.GetSpec().AddInfra(kogitoKafka.GetName())
-	instance.GetSpec().AddInfra(kogitoInfinispan.GetName())
-	instance.GetSpec().AddInfra(kogitoKnative.GetName())
-	is, tag := test.CreateFakeImageStreams("kogito-data-index-infinispan", instance.GetNamespace(), infrastructure.GetKogitoImageVersion(version.Version))
-	cli := test.NewFakeClientBuilder().OnOpenShift().
-		AddK8sObjects(is, kogitoKafka, kogitoInfinispan, kogitoKnative).
-		AddImageObjects(tag).
-		Build()
-	deployer := newTestSupServiceDeployer(cli, instance, "kogito-data-index-infinispan")
-	deployer.infraHandler = internal.NewKogitoInfraHandler(deployer.Context)
-	imageName := "quay.io/kiegroup/kogito-jobs-service"
-	resources, err := deployer.createRequiredResources(imageName)
-	assert.NoError(t, err)
-	assert.NotEmpty(t, resources)
-
-	assert.Equal(t, 1, len(resources[reflect.TypeOf(corev1.ConfigMap{})]))
-	assert.Equal(t, "data-index"+appPropConfigMapSuffix, resources[reflect.TypeOf(corev1.ConfigMap{})][0].GetName())
-
-	assert.Equal(t, 1, len(resources[reflect.TypeOf(appsv1.Deployment{})]))
-	deployment, ok := resources[reflect.TypeOf(appsv1.Deployment{})][0].(*appsv1.Deployment)
-	assert.True(t, ok)
-	_, ok = deployment.Spec.Template.Annotations[AppPropContentHashKey]
-	assert.True(t, ok)
-	_, ok = resources[reflect.TypeOf(corev1.ConfigMap{})][0].(*corev1.ConfigMap).Data[ConfigMapApplicationPropertyKey]
-	assert.True(t, ok)
-
-	// we should have TLS volumes created
-	assert.Len(t, deployment.Spec.Template.Spec.Volumes, 2)                    // 1 for properties, 2 for tls
-	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].VolumeMounts, 2) // 1 for properties, 2 for tls
-	assert.Contains(t, deployment.Spec.Template.Spec.Volumes, kogitoInfinispan.GetStatus().GetVolumes()[0].GetNamedVolume().ToKubeVolume())
-	assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].VolumeMounts, kogitoInfinispan.GetStatus().GetVolumes()[0].GetMount())
-}
-
-func Test_serviceDeployer_createRequiredResources_CreateWithAppPropConfigMap(t *testing.T) {
-	instance := test.CreateFakeDataIndex(t.Name())
-	is, tag := test.CreateFakeImageStreams("kogito-data-index-infinispan", instance.GetNamespace(), infrastructure.GetKogitoImageVersion(version.Version))
-	cm := &corev1.ConfigMap{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       "ConfigMap",
-			APIVersion: "v1",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      instance.Name + appPropConfigMapSuffix,
-			Namespace: instance.GetNamespace(),
-		},
-		Data: map[string]string{
-			ConfigMapApplicationPropertyKey: defaultAppPropContent,
-		},
-	}
-	cli := test.NewFakeClientBuilder().AddK8sObjects(is, cm).AddImageObjects(tag).Build()
-	deployer := newTestSupServiceDeployer(cli, instance, "kogito-data-index-infinispan")
-	imageName := "quay.io/kiegroup/kogito-jobs-service"
-	resources, err := deployer.createRequiredResources(imageName)
-	assert.NoError(t, err)
-	assert.NotEmpty(t, resources)
-
-	configmaps, exist := resources[reflect.TypeOf(corev1.ConfigMap{})]
-	assert.True(t, exist)
-	assert.Equal(t, 1, len(configmaps))
-	configmaps[0].SetOwnerReferences(nil)
-	assert.Equal(t, cm, configmaps[0])
-
-	assert.Equal(t, 1, len(resources[reflect.TypeOf(appsv1.Deployment{})]))
-	deployment, ok := resources[reflect.TypeOf(appsv1.Deployment{})][0].(*appsv1.Deployment)
-	assert.True(t, ok)
-	_, ok = deployment.Spec.Template.Annotations[AppPropContentHashKey]
-	assert.True(t, ok)
 }
 
 func Test_serviceDeployer_createRequiredResources_MountTrustStore(t *testing.T) {
@@ -240,7 +117,14 @@ func Test_serviceDeployer_createRequiredResources_MountTrustStore_MissingCM(t *t
 	resources, err := deployer.createRequiredResources(imageName)
 	assert.Error(t, err)
 	assert.Empty(t, resources)
-	assert.Equal(t, api.TrustStoreMountFailureReason, reasonForError(err))
+	context := operator.Context{
+		Client:  cli,
+		Log:     test.TestLogger,
+		Scheme:  meta.GetRegisteredSchema(),
+		Version: version.Version,
+	}
+	errorHandler := infrastructure.NewReconciliationErrorHandler(context)
+	assert.Equal(t, infrastructure.TrustStoreMountFailureReason, errorHandler.GetReasonForError(err))
 }
 
 func assertDeployerNoErrorAndCreateResources(t *testing.T, deployer serviceDeployer, cli *client.Client, instance api.KogitoService) map[reflect.Type][]resource.KubernetesResource {

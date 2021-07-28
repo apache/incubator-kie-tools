@@ -20,7 +20,6 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/types"
 	controller "sigs.k8s.io/controller-runtime/pkg/reconcile"
-	"time"
 )
 
 const (
@@ -43,7 +42,7 @@ func initTaskConsoleSupportingServiceResource(context supportingServiceContext) 
 }
 
 // Reconcile reconcile Task Console
-func (t *taskConsoleSupportingServiceResource) Reconcile() (reconcileAfter time.Duration, err error) {
+func (t *taskConsoleSupportingServiceResource) Reconcile() (err error) {
 	t.Log.Info("Reconciling for KogitoTaskConsole")
 	definition := kogitoservice.ServiceDefinition{
 		DefaultImageName:   DefaultTaskConsoleImageName,

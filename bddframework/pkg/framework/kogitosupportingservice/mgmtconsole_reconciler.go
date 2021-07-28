@@ -20,7 +20,6 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/types"
 	controller "sigs.k8s.io/controller-runtime/pkg/reconcile"
-	"time"
 )
 
 const (
@@ -43,7 +42,7 @@ func initMgmtConsoleSupportingServiceResource(context supportingServiceContext) 
 }
 
 // Reconcile reconcile Management Console
-func (m *mgmtConsoleSupportingServiceResource) Reconcile() (reconcileAfter time.Duration, err error) {
+func (m *mgmtConsoleSupportingServiceResource) Reconcile() (err error) {
 	m.Log.Info("Reconciling for KogitoMgmtConsole")
 	definition := kogitoservice.ServiceDefinition{
 		DefaultImageName:   DefaultMgmtConsoleImageName,

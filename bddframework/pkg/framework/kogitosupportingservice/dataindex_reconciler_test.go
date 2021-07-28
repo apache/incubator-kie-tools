@@ -47,7 +47,6 @@ func TestKogitoSupportingServiceDataIndex_Reconcile(t *testing.T) {
 			runtimeHandler:           internal.NewKogitoRuntimeHandler(context),
 		},
 	}
-	requeueAfter, err := r.Reconcile()
+	err := r.Reconcile()
 	assert.NoError(t, err)
-	assert.True(t, requeueAfter == 0)
 }
