@@ -67,6 +67,7 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
           handleEdit(e);
         }
       }}
+      data-ouia-component-type="characteristic-item"
     >
       <Split hasGutter={true} style={{ height: "100%" }}>
         <SplitItem>

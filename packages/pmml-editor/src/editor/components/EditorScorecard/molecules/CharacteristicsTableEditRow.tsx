@@ -196,7 +196,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   );
 
   return (
-    <article ref={ref} className={"editable-item__inner"} tabIndex={0}>
+    <article ref={ref} className={"editable-item__inner"} tabIndex={0} data-ouia-component-id="edit-characteristic">
       <Stack hasGutter={true}>
         <StackItem>
           <Split hasGutter={true}>
@@ -237,6 +237,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                       });
                     }
                   }}
+                  data-ouia-component-id="characteristic-name-input"
                 />
               </FormGroup>
             </SplitItem>
@@ -282,6 +283,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   }}
                   validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
                   isDisabled={!areReasonCodesUsed || isReasonCodeProvidedByAttributes}
+                  data-ouia-component-id="characteristic-reason-code-input"
                 />
               </FormGroup>
             </SplitItem>
@@ -327,12 +329,13 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                     });
                   }}
                   isDisabled={scorecardBaselineScore !== undefined}
+                  data-ouia-component-id="characteristic-baseline-score-input"
                 />
               </FormGroup>
             </SplitItem>
 
             <SplitItem>
-              <Button id="add-attribute-button" variant="primary" onClick={onAddAttribute}>
+              <Button id="add-attribute-button" variant="primary" onClick={onAddAttribute} ouiaId="add-attribute">
                 Add Attribute
               </Button>
             </SplitItem>

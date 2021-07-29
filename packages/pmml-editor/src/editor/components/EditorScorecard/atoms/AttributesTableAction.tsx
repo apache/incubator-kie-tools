@@ -40,6 +40,7 @@ export const AttributesTableAction = (props: AttributesTableActionProps) => {
               onDelete(e);
             }
           }}
+          ouiaId="delete-attribute"
         >
           <TrashIcon />
         </Button>
