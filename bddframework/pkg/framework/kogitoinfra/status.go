@@ -81,8 +81,3 @@ func (s *statusHandler) newConfiguredCondition(status metav1.ConditionStatus, re
 		Message: message,
 	}
 }
-
-// setRuntimeProperties sets the instance status' runtime properties
-func setRuntimeProperties(instance api.KogitoInfraInterface, runtime api.RuntimeType, runtimeProps api.RuntimePropertiesInterface) {
-	instance.GetStatus().AddRuntimeProperties(runtime, runtimeProps)
-}

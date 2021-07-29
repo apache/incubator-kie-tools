@@ -147,7 +147,7 @@ func (k *kogitoInfraManager) FetchKogitoInfraProperties(runtimeType api.RuntimeT
 		}
 
 		// fetch app properties from Kogito infra instance
-		runtimeProperties := kogitoInfraInstance.GetStatus().GetRuntimeProperties()[runtimeType]
+		runtimeProperties := kogitoInfraInstance.GetStatus().GetRuntimeProperties(runtimeType)
 		if runtimeProperties != nil {
 			appProp := runtimeProperties.GetAppProps()
 			util.AppendToStringMap(appProp, consolidateAppProperties)

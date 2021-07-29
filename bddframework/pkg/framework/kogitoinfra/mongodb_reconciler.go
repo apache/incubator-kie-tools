@@ -17,7 +17,6 @@ package kogitoinfra
 import (
 	"fmt"
 	"github.com/kiegroup/kogito-operator/api"
-	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/client"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
@@ -129,31 +128,26 @@ func (i *mongoDBInfraReconciler) getMongoDBRuntimeAppProps(mongoDBInstance *mong
 	return appProps, nil
 }
 
-func (i *mongoDBInfraReconciler) getMongoDBRuntimeProps(mongoDBInstance *mongodb.MongoDB, runtime api.RuntimeType) (api.RuntimePropertiesInterface, error) {
-	runtimeProps := v1beta1.RuntimeProperties{}
+func (i *mongoDBInfraReconciler) addMongoDBRuntimeProps(mongoDBInstance *mongodb.MongoDB, runtime api.RuntimeType) error {
 	appProps, err := i.getMongoDBRuntimeAppProps(mongoDBInstance, runtime)
 	if err != nil {
-		return runtimeProps, err
+		return err
 	}
-	runtimeProps.AppProps = appProps
-
 	envVars, err := i.getMongoDBRuntimeSecretEnvVars(mongoDBInstance, runtime)
 	if err != nil {
-		return runtimeProps, err
+		return err
 	}
-	runtimeProps.Env = envVars
-
-	return runtimeProps, nil
+	i.instance.GetStatus().AddRuntimeProperties(runtime, appProps, envVars)
+	i.Log.Debug("Following MongoDB runtime properties are set in infra status:", "runtime", runtime, "appProps", appProps, "envVars", envVars)
+	return nil
 }
 
 func (i *mongoDBInfraReconciler) updateMongoDBRuntimePropsInStatus(mongoDBInstance *mongodb.MongoDB, runtime api.RuntimeType) error {
 	i.Log.Debug("going to Update MongoDB runtime properties in kogito infra instance status", "runtime", runtime)
-	runtimeProps, err := i.getMongoDBRuntimeProps(mongoDBInstance, runtime)
+	err := i.addMongoDBRuntimeProps(mongoDBInstance, runtime)
 	if err != nil {
 		return err
 	}
-	setRuntimeProperties(i.instance, runtime, runtimeProps)
-	i.Log.Debug("Following MongoDB runtime properties are set in infra status:", "runtime", runtime, "properties", runtimeProps)
 	return nil
 }
 

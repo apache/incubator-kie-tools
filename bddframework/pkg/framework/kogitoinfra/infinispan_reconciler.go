@@ -205,31 +205,26 @@ func (i *infinispanInfraReconciler) getInfinispanRuntimeAppProps(name string, na
 	return appProps, nil
 }
 
-func (i *infinispanInfraReconciler) getInfinispanRuntimeProps(infinispanInstance *infinispan.Infinispan, runtime api.RuntimeType) (api.RuntimePropertiesInterface, error) {
-	runtimeProps := v1beta1.RuntimeProperties{}
+func (i *infinispanInfraReconciler) addInfinispanRuntimeProps(infinispanInstance *infinispan.Infinispan, runtime api.RuntimeType) error {
 	appProps, err := i.getInfinispanRuntimeAppProps(infinispanInstance.Name, infinispanInstance.Namespace, runtime)
 	if err != nil {
-		return runtimeProps, err
+		return err
 	}
-	runtimeProps.AppProps = appProps
-
 	envVars, err := i.getInfinispanRuntimeSecretEnvVars(infinispanInstance, runtime)
 	if err != nil {
-		return runtimeProps, err
+		return err
 	}
-	runtimeProps.Env = envVars
-
-	return runtimeProps, nil
+	i.instance.GetStatus().AddRuntimeProperties(runtime, appProps, envVars)
+	i.Log.Debug("Following Infinispan runtime properties are set in infra status:", "runtime", runtime, "appProps", appProps, "envVars", envVars)
+	return nil
 }
 
 func (i *infinispanInfraReconciler) updateInfinispanRuntimePropsInStatus(infinispanInstance *infinispan.Infinispan, runtime api.RuntimeType) error {
 	i.Log.Debug("going to Update Infinispan runtime properties in kogito infra instance status", "runtime", runtime)
-	runtimeProps, err := i.getInfinispanRuntimeProps(infinispanInstance, runtime)
+	err := i.addInfinispanRuntimeProps(infinispanInstance, runtime)
 	if err != nil {
 		return err
 	}
-	setRuntimeProperties(i.instance, runtime, runtimeProps)
-	i.Log.Debug("Following Infinispan runtime properties are set in infra status:", "runtime", runtime, "properties", runtimeProps)
 	return nil
 }
 

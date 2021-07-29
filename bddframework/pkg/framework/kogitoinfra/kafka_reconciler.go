@@ -17,7 +17,6 @@ package kogitoinfra
 import (
 	"fmt"
 	"github.com/kiegroup/kogito-operator/api"
-	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
@@ -133,12 +132,10 @@ func (k *kafkaInfraReconciler) mustParseKafkaTransition(transitionTime string) (
 
 func (k *kafkaInfraReconciler) updateKafkaRuntimePropsInStatus(kafkaInstance *v1beta2.Kafka, runtime api.RuntimeType) error {
 	k.Log.Debug("going to Update Kafka runtime properties in kogito infra instance status", "runtime", runtime)
-	runtimeProps, err := k.getKafkaRuntimeProps(kafkaInstance, runtime)
+	err := k.addKafkaRuntimeProps(kafkaInstance, runtime)
 	if err != nil {
 		return errorForResourceNotReadyError(err)
 	}
-	setRuntimeProperties(k.instance, runtime, runtimeProps)
-	k.Log.Debug("Following Kafka runtime properties are set in infra status:", "runtime", runtime, "properties", runtimeProps)
 	return nil
 }
 
@@ -174,19 +171,17 @@ func (k *kafkaInfraReconciler) getKafkaRuntimeAppProps(kafkaInstance *v1beta2.Ka
 	return appProps, nil
 }
 
-func (k *kafkaInfraReconciler) getKafkaRuntimeProps(kafkaInstance *v1beta2.Kafka, runtime api.RuntimeType) (api.RuntimePropertiesInterface, error) {
-	runtimeProps := v1beta1.RuntimeProperties{}
+func (k *kafkaInfraReconciler) addKafkaRuntimeProps(kafkaInstance *v1beta2.Kafka, runtime api.RuntimeType) error {
 	appProps, err := k.getKafkaRuntimeAppProps(kafkaInstance, runtime)
 	if err != nil {
-		return runtimeProps, err
+		return err
 	}
-	runtimeProps.AppProps = appProps
 
 	envVars, err := k.getKafkaEnvVars(kafkaInstance)
 	if err != nil {
-		return runtimeProps, err
+		return err
 	}
-	runtimeProps.Env = envVars
-
-	return runtimeProps, nil
+	k.instance.GetStatus().AddRuntimeProperties(runtime, appProps, envVars)
+	k.Log.Debug("Following Kafka runtime properties are set in infra status:", "runtime", runtime, "appProps", appProps, "envVars", envVars)
+	return nil
 }
