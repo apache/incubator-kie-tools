@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-declare var __IS_WIRED__: boolean;
+declare let __IS_WIRED__: boolean;
 
 declare global {
   interface Window {

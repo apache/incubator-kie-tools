@@ -49,3 +49,9 @@ dependency-reduced-pom.xml
 /org.kie.workbench.widgets
 /org.kie.workbench.forms
 
+# Cypress tests recordings
+**/videos/**
+*.mp4
+
+# Local Netlify folder
+.netlify

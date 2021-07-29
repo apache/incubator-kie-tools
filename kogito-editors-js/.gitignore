@@ -2,7 +2,6 @@
 build
 coverage
 dist
-dist
 local
 node_modules
 target
@@ -28,3 +27,4 @@ target
 coverage
 out
 target
+stats.json

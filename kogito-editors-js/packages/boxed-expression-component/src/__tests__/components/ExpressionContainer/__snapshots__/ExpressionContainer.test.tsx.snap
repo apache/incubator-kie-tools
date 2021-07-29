@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExpressionContainer tests should render ExpressionContainer component 1`] = `
+<div>
+  <div
+    class="expression-container"
+  >
+    <div
+      class="expression-name-and-logic-type"
+    >
+      <span
+        class="expression-title"
+      >
+        Test
+      </span>
+      <span
+        class="expression-type"
+      >
+        (
+        &lt;Undefined&gt;
+        )
+      </span>
+    </div>
+    <div
+      class="expression-container-box"
+      data-ouia-component-id="expression-container"
+    >
+      <div
+        class="logic-type-selector logic-type-not-present"
+      >
+        Select expression
+      </div>
+    </div>
+  </div>
+</div>
+`;
