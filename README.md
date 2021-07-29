@@ -37,7 +37,7 @@ To build it, you'll have two choices:
 - `yarn build:dev` - This is fast, but not as strict. It skips tests, linters, and some type checks. Be prepared for the CI to fail on your PRs.
 - `yarn build:prod` - The default command to build production-ready packages. Use that to make sure your changes are correct.
 
-**NOTE:** The Kogito Tooling build is parameterized by several Environment Variables. For an extensive list of these variables, please see `packages/build-env/README.md` ([link](/packages/build-env/README.md)).
+**NOTE:** The Kogito Tooling build is parameterized by several Environment Variables. For an extensive list of these variables, please see `packages/build-env/README.md` ([link](/packages/build-env/index.js#L24)).
 
 Final artifacts will be on `packages/*/dist` directories.
 
