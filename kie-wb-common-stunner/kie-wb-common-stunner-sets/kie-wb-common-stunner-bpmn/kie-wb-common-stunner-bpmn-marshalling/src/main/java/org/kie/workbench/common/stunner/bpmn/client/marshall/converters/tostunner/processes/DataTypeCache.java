@@ -28,8 +28,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AbstractDataTypeCache;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseAdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseRootProcessAdvancedData;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -73,6 +73,6 @@ public class DataTypeCache extends AbstractDataTypeCache {
     }
 
     public void initCache(BpmnNode diagramRoot) {
-        this.initCache(diagramRoot, (Node<View<? extends BPMNDiagram<? extends BaseDiagramSet, ? extends BaseProcessData, ? extends BaseAdvancedData>>, Edge>) diagramRoot.value());
+        this.initCache(diagramRoot, (Node<View<? extends BPMNDiagram<? extends BaseDiagramSet, ? extends BaseProcessData, ? extends BaseRootProcessAdvancedData>>, Edge>) diagramRoot.value());
     }
 }

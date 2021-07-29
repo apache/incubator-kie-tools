@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.Sc
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -38,6 +39,7 @@ public class IntermediateSignalEventThrowingTest {
     private FontSet fontSet;
     private CircleDimensionSet dimensionSet;
     private DataIOSet dataIOSet;
+    private AdvancedData advancedData;
     private ScopedSignalEventExecutionSet scopedSignalEventExecutionSet;
 
     private IntermediateSignalEventThrowing tested;
@@ -56,6 +58,7 @@ public class IntermediateSignalEventThrowingTest {
                                                      fontSet,
                                                      dimensionSet,
                                                      dataIOSet,
+                                                     advancedData,
                                                      scopedSignalEventExecutionSet);
     }
 
@@ -79,6 +82,7 @@ public class IntermediateSignalEventThrowingTest {
                                                     fontSet,
                                                     dimensionSet,
                                                     dataIOSet,
+                                                    advancedData,
                                                     scopedSignalEventExecutionSet);
         assertEquals(compare.hashCode(), tested.hashCode());
     }
@@ -91,6 +95,7 @@ public class IntermediateSignalEventThrowingTest {
                                                                                        fontSet,
                                                                                        dimensionSet,
                                                                                        dataIOSet,
+                                                                                       advancedData,
                                                                                        null);
         ScopedSignalEventExecutionSet executionSet = new ScopedSignalEventExecutionSet();
         executionSet.setSignalRef(new SignalRef("SignalRef"));
@@ -100,6 +105,7 @@ public class IntermediateSignalEventThrowingTest {
                                                     fontSet,
                                                     dimensionSet,
                                                     dataIOSet,
+                                                    advancedData,
                                                     executionSet);
         IntermediateSignalEventThrowing compare4 =
                 new IntermediateSignalEventThrowing(general,
@@ -107,6 +113,7 @@ public class IntermediateSignalEventThrowingTest {
                                                     fontSet,
                                                     dimensionSet,
                                                     dataIOSet,
+                                                    advancedData,
                                                     scopedSignalEventExecutionSet);
 
         assertFalse(tested.equals(compare1));

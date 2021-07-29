@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.Int
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
@@ -62,6 +63,7 @@ public class StartTimerEvent extends BaseStartEvent {
              new FontSet(),
              new CircleDimensionSet(new Radius()),
              new SimulationAttributeSet(),
+             new AdvancedData(),
              new InterruptingTimerEventExecutionSet());
     }
 
@@ -70,12 +72,14 @@ public class StartTimerEvent extends BaseStartEvent {
                            final @MapsTo("fontSet") FontSet fontSet,
                            final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
                            final @MapsTo("simulationSet") SimulationAttributeSet simulationSet,
+                           final @MapsTo("advancedData") AdvancedData advancedData,
                            final @MapsTo("executionSet") InterruptingTimerEventExecutionSet executionSet) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet,
-              simulationSet);
+              simulationSet,
+              advancedData);
         this.executionSet = executionSet;
     }
 

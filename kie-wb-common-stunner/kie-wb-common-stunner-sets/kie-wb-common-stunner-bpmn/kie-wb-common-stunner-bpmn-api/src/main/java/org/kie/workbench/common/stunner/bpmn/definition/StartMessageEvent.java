@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.I
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
@@ -71,6 +72,7 @@ public class StartMessageEvent extends BaseStartEvent implements DataIOModel {
              new FontSet(),
              new CircleDimensionSet(new Radius()),
              new SimulationAttributeSet(),
+             new AdvancedData(),
              new DataIOSet(),
              new InterruptingMessageEventExecutionSet());
     }
@@ -80,6 +82,7 @@ public class StartMessageEvent extends BaseStartEvent implements DataIOModel {
                              final @MapsTo("fontSet") FontSet fontSet,
                              final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
                              final @MapsTo("simulationSet") SimulationAttributeSet simulationSet,
+                             final @MapsTo("advancedData") AdvancedData advancedData,
                              final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                              final @MapsTo("executionSet") InterruptingMessageEventExecutionSet executionSet) {
 
@@ -87,7 +90,8 @@ public class StartMessageEvent extends BaseStartEvent implements DataIOModel {
               backgroundSet,
               fontSet,
               dimensionsSet,
-              simulationSet);
+              simulationSet,
+              advancedData);
         this.dataIOSet = dataIOSet;
         this.executionSet = executionSet;
     }

@@ -40,7 +40,7 @@ public class BaseTaskTest {
     private class FakeBaseTask extends BaseTask {
 
         FakeBaseTask() {
-            super(null, null, null, null, null, null);
+            super(null, null, null, null, null, null, null);
         }
     }
 }

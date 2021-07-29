@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.custompr
 
 import static org.jboss.drools.DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
@@ -87,6 +88,13 @@ public class MetaDataAttributesElementTest {
     }
 
     @Test
+    public void testGetStringValueNotMetadata() {
+        BaseElement baseElement = bpmn2.createProcess();
+        CustomElement.metaDataAttributes.of(baseElement).set(CustomElement.async.name());
+        assertEquals("", CustomElement.metaDataAttributes.of(baseElement).get());
+    }
+
+    @Test
     public void testExtensionOf() {
         MetaDataAttributesElement metaDataAttributesElement = new MetaDataAttributesElement(NAME);
         MetaDataType metaDataType = metaDataAttributesElement.metaDataTypeDataOf(ATTRIBUTE);
@@ -108,5 +116,26 @@ public class MetaDataAttributesElementTest {
 
         assertTrue("att1ß<![CDATA[val1]]>".startsWith(metaDataType.getName()));
         assertTrue("att1ß<![CDATA[val1]]>".endsWith(metaDataType.getMetaValue()));
+    }
+
+    @Test
+    public void testIsMetaDataAttribute() {
+        MetaDataAttributesElement metaDataAttributesElement = new MetaDataAttributesElement(NAME);
+        assertFalse(metaDataAttributesElement.isMetaDataAttribute(""));
+        assertFalse(metaDataAttributesElement.isMetaDataAttribute(CustomElement.async.name()));
+        assertFalse(metaDataAttributesElement.isMetaDataAttribute(CustomElement.autoStart.name()));
+        assertFalse(metaDataAttributesElement.isMetaDataAttribute(CustomElement.autoConnectionSource.name()));
+        assertFalse(metaDataAttributesElement.isMetaDataAttribute(CustomElement.autoConnectionTarget.name()));
+        assertFalse(metaDataAttributesElement.isMetaDataAttribute(CustomElement.customTags.name()));
+        assertFalse(metaDataAttributesElement.isMetaDataAttribute(CustomElement.description.name()));
+        assertFalse(metaDataAttributesElement.isMetaDataAttribute(CustomElement.scope.name()));
+        assertFalse(metaDataAttributesElement.isMetaDataAttribute(CustomElement.name.name()));
+        assertFalse(metaDataAttributesElement.isMetaDataAttribute(CustomElement.caseIdPrefix.name()));
+        assertFalse(metaDataAttributesElement.isMetaDataAttribute(CustomElement.caseRole.name()));
+        assertFalse(metaDataAttributesElement.isMetaDataAttribute(CustomElement.slaDueDate.name()));
+        assertFalse(metaDataAttributesElement.isMetaDataAttribute(CustomElement.isCase.name()));
+        assertFalse(metaDataAttributesElement.isMetaDataAttribute(CustomElement.customActivationCondition.name()));
+        assertFalse(metaDataAttributesElement.isMetaDataAttribute(CustomElement.abortParent.name()));
+        assertTrue(metaDataAttributesElement.isMetaDataAttribute("randomMetadataAttribute"));
     }
 }

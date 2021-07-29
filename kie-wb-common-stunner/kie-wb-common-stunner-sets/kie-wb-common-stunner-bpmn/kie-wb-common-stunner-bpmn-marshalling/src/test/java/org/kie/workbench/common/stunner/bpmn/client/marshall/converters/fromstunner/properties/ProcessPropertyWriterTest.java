@@ -229,7 +229,7 @@ public class ProcessPropertyWriterTest {
     @Test
     public void testSetMetaData() {
         MetaDataAttributes metaDataAttributes = new MetaDataAttributes("att1ßval1Øatt2ßval2");
-        p.setMetadata(metaDataAttributes);
+        p.setMetaData(metaDataAttributes);
         String metaDataString = CustomElement.metaDataAttributes.of(p.getProcess()).get();
         assertThat(metaDataString).isEqualTo("att1ß<![CDATA[val1]]>Øatt2ß<![CDATA[val2]]>");
     }
@@ -238,7 +238,7 @@ public class ProcessPropertyWriterTest {
     public void testSetMetaDataNull() {
         MetaDataAttributes metaDataAttributes = mock(MetaDataAttributes.class);
         when(metaDataAttributes.getValue()).thenReturn(null);
-        p.setMetadata(metaDataAttributes);
+        p.setMetaData(metaDataAttributes);
         String metaDataString = CustomElement.metaDataAttributes.of(p.getProcess()).get();
         assertThat(metaDataString).isEqualTo("");
     }
@@ -247,7 +247,7 @@ public class ProcessPropertyWriterTest {
     public void testSetMetaDataEmpty() {
         MetaDataAttributes metaDataAttributes = mock(MetaDataAttributes.class);
         when(metaDataAttributes.getValue()).thenReturn("");
-        p.setMetadata(metaDataAttributes);
+        p.setMetaData(metaDataAttributes);
         String metaDataString = CustomElement.metaDataAttributes.of(p.getProcess()).get();
         assertThat(metaDataString).isEqualTo("");
     }

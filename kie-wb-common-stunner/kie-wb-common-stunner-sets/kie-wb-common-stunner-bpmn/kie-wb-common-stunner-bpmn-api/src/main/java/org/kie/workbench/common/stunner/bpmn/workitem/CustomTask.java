@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGen
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -106,7 +107,8 @@ public class CustomTask extends BaseCustomTask implements DataIOModel {
              new FontSet(),
              new RectangleDimensionsSet(),
              new SimulationSet(),
-             new TaskType(TaskTypes.SERVICE_TASK));
+             new TaskType(TaskTypes.SERVICE_TASK),
+             new AdvancedData());
     }
 
     public CustomTask(@MapsTo("name") String name,
@@ -120,13 +122,15 @@ public class CustomTask extends BaseCustomTask implements DataIOModel {
                       @MapsTo("fontSet") FontSet fontSet,
                       @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
                       @MapsTo("simulationSet") SimulationSet simulationSet,
-                      @MapsTo("taskType") TaskType taskType) {
+                      @MapsTo("taskType") TaskType taskType,
+                      @MapsTo("advancedData") AdvancedData advancedData) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet,
               simulationSet,
-              taskType);
+              taskType,
+              advancedData);
         this.name = name;
         this.description = description;
         this.category = category;

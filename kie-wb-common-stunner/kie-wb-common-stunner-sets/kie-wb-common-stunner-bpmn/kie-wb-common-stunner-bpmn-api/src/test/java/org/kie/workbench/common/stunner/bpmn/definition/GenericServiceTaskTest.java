@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.service.Generic
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -41,7 +42,8 @@ public class GenericServiceTaskTest {
                                                                        new FontSet(),
                                                                        new RectangleDimensionsSet(),
                                                                        new SimulationSet(),
-                                                                       new TaskType(TaskTypes.SERVICE_TASK));
+                                                                       new TaskType(TaskTypes.SERVICE_TASK),
+                                                                       new AdvancedData());
 
         assertEquals(new GenericServiceTaskExecutionSet(), genericServiceTask.getExecutionSet());
         GenericServiceTaskExecutionSet set = new GenericServiceTaskExecutionSet();

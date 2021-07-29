@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radi
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.CancellingMessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
@@ -64,6 +65,7 @@ public class IntermediateMessageEventCatching extends BaseCatchingIntermediateEv
              new FontSet(),
              new CircleDimensionSet(new Radius()),
              new DataIOSet(),
+             new AdvancedData(),
              new CancellingMessageEventExecutionSet());
     }
 
@@ -72,12 +74,14 @@ public class IntermediateMessageEventCatching extends BaseCatchingIntermediateEv
                                             final @MapsTo("fontSet") FontSet fontSet,
                                             final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
                                             final @MapsTo("dataIOSet") DataIOSet dataIOSet,
+                                            final @MapsTo("advancedData") AdvancedData advancedData,
                                             final @MapsTo("executionSet") CancellingMessageEventExecutionSet executionSet) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet,
-              dataIOSet);
+              dataIOSet,
+              advancedData);
         this.executionSet = executionSet;
     }
 

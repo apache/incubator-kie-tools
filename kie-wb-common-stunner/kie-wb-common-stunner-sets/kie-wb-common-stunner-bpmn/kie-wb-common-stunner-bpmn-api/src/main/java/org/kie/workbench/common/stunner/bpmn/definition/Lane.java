@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -32,6 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.background.Back
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
@@ -71,6 +73,13 @@ public class Lane implements BPMNViewDefinition {
     @Property
     protected RectangleDimensionsSet dimensionsSet;
 
+    @Property
+    @FormField(
+            afterElement = "dimensionSet"
+    )
+    @Valid
+    protected AdvancedData advancedData;
+
     @Labels
     private final Set<String> labels = new Sets.Builder<String>()
             .add("all")
@@ -84,17 +93,20 @@ public class Lane implements BPMNViewDefinition {
         this(new BPMNGeneralSet("Lane"),
              new BackgroundSet(),
              new FontSet(),
-             new RectangleDimensionsSet());
+             new RectangleDimensionsSet(),
+             new AdvancedData());
     }
 
     public Lane(final @MapsTo("general") BPMNGeneralSet general,
                 final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                 final @MapsTo("fontSet") FontSet fontSet,
-                final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
+                final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                final @MapsTo("advancedData") AdvancedData advancedData) {
         this.general = general;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
+        this.advancedData = advancedData;
     }
 
     public String getCategory() {
@@ -137,22 +149,32 @@ public class Lane implements BPMNViewDefinition {
         this.dimensionsSet = dimensionsSet;
     }
 
+    public AdvancedData getAdvancedData() {
+        return advancedData;
+    }
+
+    public void setAdvancedData(AdvancedData advancedData) {
+        this.advancedData = advancedData;
+    }
+
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(general.hashCode(),
                                          backgroundSet.hashCode(),
                                          fontSet.hashCode(),
-                                         dimensionsSet.hashCode());
+                                         dimensionsSet.hashCode(),
+                                         advancedData.hashCode());
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof Lane) {
             Lane other = (Lane) o;
-            return general.equals(other.general) &&
-                    backgroundSet.equals(other.backgroundSet) &&
-                    fontSet.equals(other.fontSet) &&
-                    dimensionsSet.equals(other.dimensionsSet);
+            return Objects.equals(general, other.general) &&
+                    Objects.equals(backgroundSet, other.backgroundSet) &&
+                    Objects.equals(fontSet, other.fontSet) &&
+                    Objects.equals(dimensionsSet, other.dimensionsSet) &&
+                    Objects.equals(advancedData, other.advancedData);
         }
         return false;
     }

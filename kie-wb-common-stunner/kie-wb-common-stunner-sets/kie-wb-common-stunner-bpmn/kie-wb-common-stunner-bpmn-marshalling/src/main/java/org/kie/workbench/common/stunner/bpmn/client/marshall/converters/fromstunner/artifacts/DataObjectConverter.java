@@ -48,6 +48,7 @@ public class DataObjectConverter {
             writer.setName(StringUtils.replaceIllegalCharsForDataObjects(definition.getName().getValue()));
             writer.setType(definition.getType().getValue().getType());
             writer.setAbsoluteBounds(node);
+            writer.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
             return writer;
         }
         return ConverterUtils.notSupported(def);

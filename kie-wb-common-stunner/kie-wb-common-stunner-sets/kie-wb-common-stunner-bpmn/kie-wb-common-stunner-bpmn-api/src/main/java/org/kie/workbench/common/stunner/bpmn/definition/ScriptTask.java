@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Simu
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
@@ -71,7 +72,8 @@ public class ScriptTask extends BaseTask {
              new FontSet(),
              new RectangleDimensionsSet(),
              new SimulationSet(),
-             new TaskType(TaskTypes.SCRIPT));
+             new TaskType(TaskTypes.SCRIPT),
+             new AdvancedData());
     }
 
     public ScriptTask(final @MapsTo("general") TaskGeneralSet general,
@@ -80,13 +82,15 @@ public class ScriptTask extends BaseTask {
                       final @MapsTo("fontSet") FontSet fontSet,
                       final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
                       final @MapsTo("simulationSet") SimulationSet simulationSet,
-                      final @MapsTo("taskType") TaskType taskType) {
+                      final @MapsTo("taskType") TaskType taskType,
+                      final @MapsTo("advancedData") AdvancedData advancedData) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet,
               simulationSet,
-              taskType);
+              taskType,
+              advancedData);
         this.executionSet = executionSet;
     }
 

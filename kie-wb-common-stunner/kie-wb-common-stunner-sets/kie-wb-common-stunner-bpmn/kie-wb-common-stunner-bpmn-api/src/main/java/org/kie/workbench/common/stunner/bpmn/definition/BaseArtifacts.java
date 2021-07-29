@@ -21,9 +21,11 @@ import java.util.Objects;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -43,12 +45,19 @@ public abstract class BaseArtifacts implements BPMNViewDefinition {
     @Property
     protected FontSet fontSet;
 
+    @Property
+    @FormField
+    @Valid
+    protected AdvancedData advancedData;
+
     public BaseArtifacts(final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                          final @MapsTo("fontSet") FontSet fontSet,
-                         final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
+                         final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                         final @MapsTo("advancedData")AdvancedData advancedData) {
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
+        this.advancedData = advancedData;
     }
 
     public String getCategory() {
@@ -79,11 +88,20 @@ public abstract class BaseArtifacts implements BPMNViewDefinition {
         this.dimensionsSet = dimensionsSet;
     }
 
+    public AdvancedData getAdvancedData() {
+        return advancedData;
+    }
+
+    public void setAdvancedData(AdvancedData advancedData) {
+        this.advancedData = advancedData;
+    }
+
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(Objects.hashCode(backgroundSet),
                                          Objects.hashCode(fontSet),
-                                         Objects.hashCode(dimensionsSet));
+                                         Objects.hashCode(dimensionsSet),
+                                         Objects.hashCode(advancedData));
     }
 
     @Override
@@ -92,7 +110,8 @@ public abstract class BaseArtifacts implements BPMNViewDefinition {
             BaseArtifacts other = (BaseArtifacts) o;
             return Objects.equals(backgroundSet, other.backgroundSet) &&
                     Objects.equals(fontSet, other.fontSet) &&
-                    Objects.equals(dimensionsSet, other.dimensionsSet);
+                    Objects.equals(dimensionsSet, other.dimensionsSet) &&
+                    Objects.equals(advancedData, other.advancedData) ;
         }
         return false;
     }

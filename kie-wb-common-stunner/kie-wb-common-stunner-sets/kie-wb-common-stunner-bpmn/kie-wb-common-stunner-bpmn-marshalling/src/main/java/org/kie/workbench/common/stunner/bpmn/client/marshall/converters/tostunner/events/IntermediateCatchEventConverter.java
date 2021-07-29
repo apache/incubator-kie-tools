@@ -71,6 +71,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGen
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -177,6 +178,7 @@ public class IntermediateCatchEventConverter extends AbstractConverter implement
         definition.setDimensionsSet(p.getCircleDimensionSet());
 
         definition.setDataIOSet(new DataIOSet(p.getAssignmentsInfo()));
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
 
         definition.setExecutionSet(
                 new CancellingErrorEventExecutionSet(
@@ -210,6 +212,7 @@ public class IntermediateCatchEventConverter extends AbstractConverter implement
         definition.setDimensionsSet(p.getCircleDimensionSet());
 
         definition.setDataIOSet(new DataIOSet(p.getAssignmentsInfo()));
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
 
         definition.setExecutionSet(new LinkEventExecutionSet(new LinkRef(p.getLinkRef())));
 
@@ -237,6 +240,7 @@ public class IntermediateCatchEventConverter extends AbstractConverter implement
         definition.setDimensionsSet(p.getCircleDimensionSet());
 
         definition.setDataIOSet(new DataIOSet(p.getAssignmentsInfo()));
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
 
         definition.setExecutionSet(
                 new CancellingSignalEventExecutionSet(
@@ -271,6 +275,7 @@ public class IntermediateCatchEventConverter extends AbstractConverter implement
         definition.setDimensionsSet(p.getCircleDimensionSet());
 
         definition.setDataIOSet(new DataIOSet(p.getAssignmentsInfo()));
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
 
         definition.setExecutionSet(
                 new CancellingTimerEventExecutionSet(
@@ -305,6 +310,7 @@ public class IntermediateCatchEventConverter extends AbstractConverter implement
         definition.setDimensionsSet(p.getCircleDimensionSet());
 
         definition.setDataIOSet(new DataIOSet(p.getAssignmentsInfo()));
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
 
         definition.setExecutionSet(
                 new CancellingMessageEventExecutionSet(
@@ -339,6 +345,7 @@ public class IntermediateCatchEventConverter extends AbstractConverter implement
         definition.setDimensionsSet(p.getCircleDimensionSet());
 
         definition.setDataIOSet(new DataIOSet(p.getAssignmentsInfo()));
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
 
         definition.setExecutionSet(
                 new CancellingConditionalEventExecutionSet(
@@ -374,6 +381,7 @@ public class IntermediateCatchEventConverter extends AbstractConverter implement
         definition.setDimensionsSet(p.getCircleDimensionSet());
 
         definition.setDataIOSet(new DataIOSet(p.getAssignmentsInfo()));
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
 
         definition.setExecutionSet(
                 new CancellingEscalationEventExecutionSet(
@@ -409,6 +417,7 @@ public class IntermediateCatchEventConverter extends AbstractConverter implement
         definition.setDimensionsSet(p.getCircleDimensionSet());
 
         definition.setDataIOSet(new DataIOSet(p.getAssignmentsInfo()));
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
 
         CancelActivity cancelActivity = new CancelActivity(false);
         SLADueDate slaDueDate = new SLADueDate(p.getSlaDueDate());

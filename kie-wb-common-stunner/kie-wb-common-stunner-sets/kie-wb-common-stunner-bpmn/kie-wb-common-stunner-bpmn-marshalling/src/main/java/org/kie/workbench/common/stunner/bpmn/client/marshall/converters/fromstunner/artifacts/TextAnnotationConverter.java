@@ -49,6 +49,7 @@ public class TextAnnotationConverter {
             BPMNGeneralSet general = definition.getGeneral();
             writer.setName(general.getName().getValue());
             writer.setDocumentation(general.getDocumentation().getValue());
+            writer.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
             writer.setAbsoluteBounds(node);
 
             return writer;

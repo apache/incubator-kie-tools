@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Rect
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
@@ -75,7 +76,8 @@ public class DataObject extends BaseArtifacts {
              new BPMNGeneralSet(),
              new BackgroundSet(),
              new FontSet(),
-             new RectangleDimensionsSet());
+             new RectangleDimensionsSet(),
+             new AdvancedData());
     }
 
     public DataObject(final @MapsTo("name") Name name,
@@ -83,9 +85,10 @@ public class DataObject extends BaseArtifacts {
                       final @MapsTo("general") BPMNGeneralSet general,
                       final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                       final @MapsTo("fontSet") FontSet fontSet,
-                      final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
+                      final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                      final @MapsTo("advancedData") AdvancedData advancedData) {
 
-        super(backgroundSet, fontSet, dimensionsSet);
+        super(backgroundSet, fontSet, dimensionsSet, advancedData);
         this.name = name;
         this.name.setValue(this.name.getValue());
         this.type = type;
@@ -122,24 +125,20 @@ public class DataObject extends BaseArtifacts {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(name.hashCode(),
+        return HashUtil.combineHashCodes(super.hashCode(),
+                                         name.hashCode(),
                                          type.hashCode(),
-                                         general.hashCode(),
-                                         backgroundSet.hashCode(),
-                                         fontSet.hashCode(),
-                                         dimensionsSet.hashCode());
+                                         general.hashCode());
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof DataObject) {
             DataObject other = (DataObject) o;
-            return name.equals(other.name) &&
+            return super.equals(other) &&
+                    name.equals(other.name) &&
                     type.equals(other.type) &&
-                    general.equals(other.general) &&
-                    backgroundSet.equals(other.backgroundSet) &&
-                    fontSet.equals(other.fontSet) &&
-                    dimensionsSet.equals(other.dimensionsSet);
+                    general.equals(other.general);
         }
         return false;
     }

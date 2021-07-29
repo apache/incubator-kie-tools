@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Simu
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.EmptyTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
@@ -65,7 +66,8 @@ public class NoneTask extends BaseTask {
              new FontSet(),
              new RectangleDimensionsSet(),
              new SimulationSet(),
-             new TaskType(TaskTypes.NONE));
+             new TaskType(TaskTypes.NONE),
+             new AdvancedData());
     }
 
     public NoneTask(final @MapsTo("general") TaskGeneralSet general,
@@ -74,13 +76,15 @@ public class NoneTask extends BaseTask {
                     final @MapsTo("fontSet") FontSet fontSet,
                     final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
                     final @MapsTo("simulationSet") SimulationSet simulationSet,
-                    final @MapsTo("taskType") TaskType taskType) {
+                    final @MapsTo("taskType") TaskType taskType,
+                    final @MapsTo("advancedData")AdvancedData advancedData) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet,
               simulationSet,
-              taskType);
+              taskType,
+              advancedData);
         this.executionSet = executionSet;
     }
 

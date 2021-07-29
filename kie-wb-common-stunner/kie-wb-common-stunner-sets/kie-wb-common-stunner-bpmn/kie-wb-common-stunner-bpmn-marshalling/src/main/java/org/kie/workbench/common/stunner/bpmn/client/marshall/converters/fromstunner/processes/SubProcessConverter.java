@@ -106,6 +106,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
         p.setSlaDueDate(executionSet.getSlaDueDate());
 
         p.setSimulationSet(definition.getSimulationSet());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         p.setAbsoluteBounds(n);
 
@@ -137,6 +138,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
         p.setSlaDueDate(executionSet.getSlaDueDate());
 
         p.setSimulationSet(definition.getSimulationSet());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         p.setAbsoluteBounds(n);
 
@@ -166,6 +168,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
         p.setSlaDueDate(executionSet.getSlaDueDate());
 
         p.setSimulationSet(definition.getSimulationSet());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         p.setAbsoluteBounds(n);
 
@@ -195,6 +198,8 @@ public class SubProcessConverter extends ProcessConverterDelegate {
         p.setProcessVariables(processData.getProcessVariables());
 
         p.setSimulationSet(definition.getSimulationSet());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
+
         p.setAbsoluteBounds(n);
         return p;
     }

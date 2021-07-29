@@ -50,7 +50,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVari
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.MetaDataAttributes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessVariables;
@@ -132,7 +131,7 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
         if (p instanceof SubProcessPropertyWriter) {
             addSubProcess((SubProcessPropertyWriter) p);
         } else if (p instanceof DataObjectPropertyWriter) {
-            process.getFlowElements().addAll(((DataObjectPropertyWriter)p).getDataObjects());
+            process.getFlowElements().addAll(((DataObjectPropertyWriter) p).getDataObjects());
         }
     }
 
@@ -204,12 +203,6 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
             properties.add(variable.getTypedIdentifier());
             this.itemDefinitions.add(variable.getTypeDeclaration());
         });
-    }
-
-    public void setMetadata(final MetaDataAttributes metaDataAttributes) {
-        if (null != metaDataAttributes.getValue() && !metaDataAttributes.getValue().isEmpty()) {
-            CustomElement.metaDataAttributes.of(process).set(metaDataAttributes.getValue());
-        }
     }
 
     public void setCaseFileVariables(CaseFileVariables caseFileVariables) {

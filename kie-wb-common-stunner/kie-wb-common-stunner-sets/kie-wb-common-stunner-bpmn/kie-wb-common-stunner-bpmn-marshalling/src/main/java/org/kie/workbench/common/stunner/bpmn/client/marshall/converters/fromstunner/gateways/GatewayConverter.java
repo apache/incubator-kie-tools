@@ -70,6 +70,7 @@ public class GatewayConverter {
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         GatewayExecutionSet executionSet = definition.getExecutionSet();
         p.setDefaultRoute(executionSet.getDefaultRoute().getValue());
@@ -90,6 +91,7 @@ public class GatewayConverter {
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         GatewayExecutionSet executionSet = definition.getExecutionSet();
         p.setDefaultRoute(executionSet.getDefaultRoute().getValue());
@@ -110,6 +112,7 @@ public class GatewayConverter {
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         p.setAbsoluteBounds(n);
 
@@ -126,6 +129,7 @@ public class GatewayConverter {
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         p.setAbsoluteBounds(n);
 

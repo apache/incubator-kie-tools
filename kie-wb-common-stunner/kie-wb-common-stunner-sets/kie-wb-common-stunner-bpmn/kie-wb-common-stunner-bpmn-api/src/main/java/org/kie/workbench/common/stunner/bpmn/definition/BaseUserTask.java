@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGen
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseUserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 
 public abstract class BaseUserTask<U extends BaseUserTaskExecutionSet> extends BaseTask implements DataIOModel {
 
@@ -33,8 +34,9 @@ public abstract class BaseUserTask<U extends BaseUserTaskExecutionSet> extends B
                         @MapsTo("fontSet") FontSet fontSet,
                         @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
                         @MapsTo("simulationSet") SimulationSet simulationSet,
-                        @MapsTo("taskType") TaskType taskType) {
-        super(general, backgroundSet, fontSet, dimensionsSet, simulationSet, taskType);
+                        @MapsTo("taskType") TaskType taskType,
+                        @MapsTo("advancedData") AdvancedData advancedData) {
+        super(general, backgroundSet, fontSet, dimensionsSet, simulationSet, taskType, advancedData);
     }
 
     @Override

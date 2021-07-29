@@ -92,6 +92,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskEx
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.RootProcessAdvancedData;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.BPMNDocumentation;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.element.Element;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.element.ElementTotal;
@@ -252,7 +253,7 @@ public class ClientBPMNDocumentationServiceTest {
 
     private ProcessData processData;
 
-    private AdvancedData advancedData;
+    private RootProcessAdvancedData advancedData;
 
     private ProcessVariables processVariables;
 
@@ -347,7 +348,7 @@ public class ClientBPMNDocumentationServiceTest {
         //AdvancedData
         globalVariables = new GlobalVariables(GLOBAL_VARIABLES);
         metaDataAttributes = new MetaDataAttributes(METADATA);
-        advancedData = new AdvancedData(globalVariables, metaDataAttributes);
+        advancedData = new RootProcessAdvancedData(globalVariables, metaDataAttributes);
 
         bpmnDiagram = new BPMNDiagramImpl(
                 diagramSet,
@@ -389,7 +390,8 @@ public class ClientBPMNDocumentationServiceTest {
                                 new FontSet(),
                                 new RectangleDimensionsSet(),
                                 new SimulationSet(),
-                                new TaskType(TaskTypes.USER));
+                                new TaskType(TaskTypes.USER),
+                                new AdvancedData());
 
         embeddedSubprocess = new EmbeddedSubprocess(new BPMNGeneralSet(new Name(SUB_PROCESS_NAME),
                                                                        new Documentation(SUB_PROCESS_DOCUMENTATION)),
@@ -403,7 +405,8 @@ public class ClientBPMNDocumentationServiceTest {
                                                                                                                                                                SCRIPT))),
                                                                                        new IsAsync(false),
                                                                                        new SLADueDate()),
-                                                    new ProcessData(SUB_PROCESS_VARIABLES));
+                                                    new ProcessData(SUB_PROCESS_VARIABLES),
+                                                    new AdvancedData());
 
         nodes = Arrays.asList(createNode(bpmnDiagram), createNode(userTask), createNode(embeddedSubprocess));
 

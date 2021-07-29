@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.HasProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -80,7 +81,8 @@ public class MultipleInstanceSubprocess extends BaseSubprocess implements HasPro
              new RectangleDimensionsSet(),
              new SimulationSet(),
              new MultipleInstanceSubprocessTaskExecutionSet(),
-             new ProcessData());
+             new ProcessData(),
+             new AdvancedData());
     }
 
     public MultipleInstanceSubprocess(final @MapsTo("general") BPMNGeneralSet general,
@@ -89,12 +91,14 @@ public class MultipleInstanceSubprocess extends BaseSubprocess implements HasPro
                                       final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
                                       final @MapsTo("simulationSet") SimulationSet simulationSet,
                                       final @MapsTo("executionSet") MultipleInstanceSubprocessTaskExecutionSet executionSet,
-                                      final @MapsTo("processData") ProcessData processData) {
+                                      final @MapsTo("processData") ProcessData processData,
+                                      final @MapsTo("advancedData")AdvancedData advancedData) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet,
-              simulationSet);
+              simulationSet,
+              advancedData);
         this.executionSet = executionSet;
         this.processData = processData;
     }

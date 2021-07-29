@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.In
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
@@ -68,6 +69,7 @@ public class StartSignalEvent extends BaseStartEvent {
              new FontSet(),
              new CircleDimensionSet(new Radius()),
              new SimulationAttributeSet(),
+             new AdvancedData(),
              new DataIOSet(),
              new InterruptingSignalEventExecutionSet());
     }
@@ -77,13 +79,15 @@ public class StartSignalEvent extends BaseStartEvent {
                             final @MapsTo("fontSet") FontSet fontSet,
                             final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
                             final @MapsTo("simulationSet") SimulationAttributeSet simulationSet,
+                            final @MapsTo("advancedData") AdvancedData advancedData,
                             final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                             final @MapsTo("executionSet") InterruptingSignalEventExecutionSet executionSet) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet,
-              simulationSet);
+              simulationSet,
+              advancedData);
         this.dataIOSet = dataIOSet;
         this.executionSet = executionSet;
     }

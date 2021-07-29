@@ -28,6 +28,8 @@ public interface PropertyReader {
 
     String getDocumentation();
 
+    String getMetaDataAttributes();
+
     String getDescription();
 
     FontSet getFontSet();

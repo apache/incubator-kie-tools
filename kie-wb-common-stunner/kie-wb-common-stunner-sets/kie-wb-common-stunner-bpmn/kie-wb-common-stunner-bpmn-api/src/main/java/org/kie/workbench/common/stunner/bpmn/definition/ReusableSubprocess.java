@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
@@ -76,7 +77,8 @@ public class ReusableSubprocess
              new BackgroundSet(),
              new FontSet(),
              new RectangleDimensionsSet(),
-             new SimulationSet());
+             new SimulationSet(),
+             new AdvancedData());
     }
 
     public ReusableSubprocess(final @MapsTo("general") BPMNGeneralSet general,
@@ -85,12 +87,14 @@ public class ReusableSubprocess
                               final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                               final @MapsTo("fontSet") FontSet fontSet,
                               final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
-                              final @MapsTo("simulationSet") SimulationSet simulationSet) {
+                              final @MapsTo("simulationSet") SimulationSet simulationSet,
+                              final @MapsTo("advancedData") AdvancedData advancedData) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet,
-              simulationSet);
+              simulationSet,
+              advancedData);
         this.executionSet = executionSet;
         this.dataIOSet = dataIOSet;
     }

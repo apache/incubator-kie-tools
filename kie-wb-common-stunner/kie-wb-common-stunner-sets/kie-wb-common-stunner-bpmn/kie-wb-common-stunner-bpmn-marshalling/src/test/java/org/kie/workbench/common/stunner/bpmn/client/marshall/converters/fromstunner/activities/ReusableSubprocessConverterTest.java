@@ -51,6 +51,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAct
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.WaitForCompletion;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -135,7 +136,8 @@ public class ReusableSubprocessConverterTest {
                                                                      new BackgroundSet(),
                                                                      new FontSet(),
                                                                      new RectangleDimensionsSet(),
-                                                                     SIMULATION_SET);
+                                                                     SIMULATION_SET,
+                                                                     new AdvancedData());
         final View<BaseReusableSubprocess> view = new ViewImpl<>(definition, BOUNDS);
         node = new NodeImpl<>(UUID);
         node.setContent(view);

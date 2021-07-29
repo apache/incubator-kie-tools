@@ -58,6 +58,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.Si
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -126,6 +127,7 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         definition.setDimensionsSet(p.getCircleDimensionSet());
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
 
         return BpmnNode.of(node, p);
     }
@@ -156,6 +158,7 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         definition.setDimensionsSet(p.getCircleDimensionSet());
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
 
         return BpmnNode.of(node, p);
     }
@@ -187,6 +190,7 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         definition.setDimensionsSet(p.getCircleDimensionSet());
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
 
         return BpmnNode.of(node, p);
     }
@@ -218,6 +222,7 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         definition.setDimensionsSet(p.getCircleDimensionSet());
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
 
         return BpmnNode.of(node, p);
     }
@@ -249,6 +254,7 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
         definition.setDimensionsSet(p.getCircleDimensionSet());
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
 
         return BpmnNode.of(node, p);
     }

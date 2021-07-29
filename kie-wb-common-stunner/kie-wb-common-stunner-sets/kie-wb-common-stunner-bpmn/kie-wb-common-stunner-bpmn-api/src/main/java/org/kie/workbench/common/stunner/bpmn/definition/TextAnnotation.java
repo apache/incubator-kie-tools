@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.background.Back
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
@@ -66,14 +67,16 @@ public class TextAnnotation extends BaseArtifacts {
         this(new BPMNGeneralSet("Text Annotation"),
              new BackgroundSet(),
              new FontSet(),
-             new RectangleDimensionsSet());
+             new RectangleDimensionsSet(),
+             new AdvancedData());
     }
 
     public TextAnnotation(final @MapsTo("general") BPMNGeneralSet general,
                           final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                           final @MapsTo("fontSet") FontSet fontSet,
-                          final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
-        super(backgroundSet, fontSet, dimensionsSet);
+                          final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                          final @MapsTo("advancedData")AdvancedData advancedData) {
+        super(backgroundSet, fontSet, dimensionsSet, advancedData);
         this.general = general;
     }
 
@@ -91,20 +94,16 @@ public class TextAnnotation extends BaseArtifacts {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(general.hashCode(),
-                                         backgroundSet.hashCode(),
-                                         fontSet.hashCode(),
-                                         dimensionsSet.hashCode());
+        return HashUtil.combineHashCodes(super.hashCode(),
+                                         general.hashCode());
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof TextAnnotation) {
             TextAnnotation other = (TextAnnotation) o;
-            return general.equals(other.general) &&
-                    backgroundSet.equals(other.backgroundSet) &&
-                    fontSet.equals(other.fontSet) &&
-                    dimensionsSet.equals(other.dimensionsSet);
+            return super.equals(other) &&
+                    general.equals(other.general);
         }
         return false;
     }

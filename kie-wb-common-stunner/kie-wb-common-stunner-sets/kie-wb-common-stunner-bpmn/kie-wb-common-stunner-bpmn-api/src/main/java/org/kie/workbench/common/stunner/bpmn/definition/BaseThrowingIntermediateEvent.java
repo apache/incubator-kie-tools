@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSe
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 
@@ -38,12 +39,14 @@ public abstract class BaseThrowingIntermediateEvent extends BaseIntermediateEven
                                          final BackgroundSet backgroundSet,
                                          final FontSet fontSet,
                                          final CircleDimensionSet dimensionsSet,
-                                         final DataIOSet dataIOSet) {
+                                         final DataIOSet dataIOSet,
+                                         final AdvancedData advancedData) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet,
-              dataIOSet);
+              dataIOSet,
+              advancedData);
     }
 
     @Override

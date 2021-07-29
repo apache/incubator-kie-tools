@@ -36,8 +36,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseAdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseRootProcessAdvancedData;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -46,7 +46,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
  * Convert the root Process with all its children to a BPMNDiagram
  */
 public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P, F>,
-        S extends BaseDiagramSet, P extends BaseProcessData, F extends BaseAdvancedData> {
+        S extends BaseDiagramSet, P extends BaseProcessData, F extends BaseRootProcessAdvancedData> {
 
     final ProcessConverterDelegate delegate;
 

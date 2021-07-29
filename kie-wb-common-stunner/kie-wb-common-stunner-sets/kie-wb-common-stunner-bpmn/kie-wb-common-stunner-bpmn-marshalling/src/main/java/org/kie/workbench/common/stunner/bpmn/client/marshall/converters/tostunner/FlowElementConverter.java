@@ -20,7 +20,6 @@ import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataObjectReference;
-import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Gateway;
@@ -67,7 +66,6 @@ public class FlowElementConverter extends AbstractConverter {
                                       element -> converterFactory.textAnnotationConverter().convert((TextAnnotation) element))
                 .<DataObjectReference>when(e -> e instanceof DataObjectReference,
                                            element -> converterFactory.dataObjectConverter().convert((DataObjectReference) element))
-                .ignore(e -> e instanceof DataStoreReference, DataStoreReference.class)
                 .ignore(e -> e instanceof DataObject, DataObject.class)
                 .defaultValue(Result.ignored("FlowElement not found", getNotFoundMessage(flowElement)))
                 .inputDecorator(BPMNElementDecorators.flowElementDecorator())

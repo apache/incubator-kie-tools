@@ -20,12 +20,12 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.background.Back
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseAdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseRootProcessAdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.HasProcessData;
 
-public interface BPMNDiagram<D extends BaseDiagramSet, P extends BaseProcessData, S extends BaseAdvancedData> extends BPMNViewDefinition,
-                                                                                                                      HasProcessData<P> {
+public interface BPMNDiagram<D extends BaseDiagramSet, P extends BaseProcessData, S extends BaseRootProcessAdvancedData> extends BPMNViewDefinition,
+                                                                                                                                 HasProcessData<P> {
 
     D getDiagramSet();
 

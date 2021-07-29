@@ -32,8 +32,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManageme
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.RootProcessAdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
@@ -53,7 +53,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
-public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData, AdvancedData> {
+public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData, RootProcessAdvancedData> {
 
     @Category
     public static final transient String category = BPMNCategories.CONTAINERS;
@@ -79,7 +79,7 @@ public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData, Adv
             afterElement = PROCESS_DATA
     )
     @Valid
-    protected AdvancedData advancedData;
+    protected RootProcessAdvancedData advancedData;
 
     @Property
     @FormField(
@@ -113,7 +113,7 @@ public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData, Adv
              new FontSet(),
              new RectangleDimensionsSet(WIDTH,
                                         HEIGHT),
-             new AdvancedData());
+             new RootProcessAdvancedData());
     }
 
     public BPMNDiagramImpl(final @MapsTo(DIAGRAM_SET) DiagramSet diagramSet,
@@ -122,7 +122,7 @@ public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData, Adv
                            final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                            final @MapsTo("fontSet") FontSet fontSet,
                            final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
-                           final @MapsTo(ADVANCED_DATA) AdvancedData advancedData) {
+                           final @MapsTo(ADVANCED_DATA) RootProcessAdvancedData advancedData) {
         this.diagramSet = diagramSet;
         this.processData = processData;
         this.caseManagementSet = caseManagementSet;
@@ -204,12 +204,12 @@ public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData, Adv
     }
 
     @Override
-    public AdvancedData getAdvancedData() {
+    public RootProcessAdvancedData getAdvancedData() {
         return advancedData;
     }
 
     @Override
-    public void setAdvancedData(AdvancedData advancedData) {
+    public void setAdvancedData(RootProcessAdvancedData advancedData) {
         this.advancedData = advancedData;
     }
 

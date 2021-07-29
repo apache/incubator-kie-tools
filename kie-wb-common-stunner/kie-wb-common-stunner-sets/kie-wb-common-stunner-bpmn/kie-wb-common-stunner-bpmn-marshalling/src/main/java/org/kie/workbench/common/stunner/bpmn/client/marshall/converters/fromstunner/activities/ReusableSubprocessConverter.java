@@ -77,6 +77,7 @@ public class ReusableSubprocessConverter {
 
         p.setCase(executionSet.getIsCase().getValue());
         p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         return p;
     }

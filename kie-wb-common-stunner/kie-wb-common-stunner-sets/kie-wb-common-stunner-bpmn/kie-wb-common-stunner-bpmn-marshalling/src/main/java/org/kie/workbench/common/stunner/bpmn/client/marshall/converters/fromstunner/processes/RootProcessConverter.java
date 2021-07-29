@@ -26,8 +26,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVari
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseAdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseRootProcessAdvancedData;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
@@ -80,9 +80,9 @@ public class RootProcessConverter {
         BaseProcessData processData = definition.getProcessData();
         p.setProcessVariables(processData.getProcessVariables());
 
-        BaseAdvancedData advancedData = definition.getAdvancedData();
+        BaseRootProcessAdvancedData advancedData = definition.getAdvancedData();
         p.setGlobalVariables(advancedData.getGlobalVariables());
-        p.setMetadata(advancedData.getMetaDataAttributes());
+        p.setMetaData(advancedData.getMetaDataAttributes());
 
         //Case Management
         final CaseIdPrefix caseIdPrefix = definition.getCaseManagementSet().getCaseIdPrefix();

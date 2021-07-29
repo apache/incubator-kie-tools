@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Heig
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSize;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -34,7 +35,8 @@ public class BaseArtifactsTest {
 
     private BaseArtifacts tested = new FakeBaseArtifacts(new BackgroundSet(),
                                                          new FontSet(),
-                                                         new RectangleDimensionsSet());
+                                                         new RectangleDimensionsSet(),
+                                                         new AdvancedData());
 
     @Test
     public void getCategory() {
@@ -106,8 +108,11 @@ public class BaseArtifactsTest {
 
     private static class FakeBaseArtifacts extends BaseArtifacts {
 
-        public FakeBaseArtifacts(BackgroundSet backgroundSet, FontSet fontSet, RectangleDimensionsSet dimensionsSet) {
-            super(backgroundSet, fontSet, dimensionsSet);
+        public FakeBaseArtifacts(BackgroundSet backgroundSet,
+                                 FontSet fontSet,
+                                 RectangleDimensionsSet dimensionsSet,
+                                 AdvancedData advancedData) {
+            super(backgroundSet, fontSet, dimensionsSet, advancedData);
         }
 
         @Override

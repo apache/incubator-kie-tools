@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseAdHocSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -94,11 +95,16 @@ public class SubProcessPropertyWriterTest extends AbstractBasePropertyWriterTest
     private class BaseAdHocSubprocessMock extends BaseAdHocSubprocess {
 
         BaseAdHocSubprocessMock() {
-            this(null, null, null, null, null);
+            this(null, null, null, null, null, null);
         }
 
-        private BaseAdHocSubprocessMock(BPMNGeneralSet general, BackgroundSet backgroundSet, FontSet fontSet, RectangleDimensionsSet dimensionsSet, SimulationSet simulationSet) {
-            super(general, backgroundSet, fontSet, dimensionsSet, simulationSet);
+        private BaseAdHocSubprocessMock(BPMNGeneralSet general,
+                                        BackgroundSet backgroundSet,
+                                        FontSet fontSet,
+                                        RectangleDimensionsSet dimensionsSet,
+                                        SimulationSet simulationSet,
+                                        AdvancedData advancedData) {
+            super(general, backgroundSet, fontSet, dimensionsSet, simulationSet, advancedData);
         }
 
         @Override

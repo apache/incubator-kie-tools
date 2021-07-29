@@ -51,6 +51,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.Si
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalScope;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bound;
@@ -83,6 +84,7 @@ public class IntermediateThrowEventConverterTest {
     private BPMNGeneralSet generalSet;
     private AssignmentsInfo assignmentsInfo;
     private DataIOSet dataIOSet;
+    private AdvancedData advancedData;
 
     private SignalRef signalRef;
     private SignalScope signalScope;
@@ -107,6 +109,7 @@ public class IntermediateThrowEventConverterTest {
 
         assignmentsInfo = new AssignmentsInfo(ASSIGNMENTS_INFO);
         dataIOSet = new DataIOSet(assignmentsInfo);
+        advancedData = new AdvancedData();
 
         signalRef = mock(SignalRef.class);
         signalScope = mock(SignalScope.class);
@@ -217,6 +220,7 @@ public class IntermediateThrowEventConverterTest {
                                                     mock(FontSet.class),
                                                     mock(CircleDimensionSet.class),
                                                     dataIOSet,
+                                                    advancedData,
                                                     executionSet);
         Node dockNode = mockNode();
         Node node = mockDockedNode(dockNode, eventThrowing);
@@ -234,6 +238,7 @@ public class IntermediateThrowEventConverterTest {
                                                   mock(FontSet.class),
                                                   mock(CircleDimensionSet.class),
                                                   dataIOSet,
+                                                  advancedData,
                                                   executionSet);
         Node dockNode = mockNode();
         Node node = mockDockedNode(dockNode, eventThrowing);
@@ -250,6 +255,7 @@ public class IntermediateThrowEventConverterTest {
                                                      mock(FontSet.class),
                                                      mock(CircleDimensionSet.class),
                                                      dataIOSet,
+                                                     advancedData,
                                                      executionSet);
         Node dockNode = mockNode();
         Node node = mockDockedNode(dockNode, eventThrowing);
@@ -266,6 +272,7 @@ public class IntermediateThrowEventConverterTest {
                                                         mock(FontSet.class),
                                                         mock(CircleDimensionSet.class),
                                                         dataIOSet,
+                                                        advancedData,
                                                         executionSet);
         Node dockNode = mockNode();
         Node node = mockDockedNode(dockNode, eventThrowing);
@@ -282,6 +289,7 @@ public class IntermediateThrowEventConverterTest {
                                                           mock(FontSet.class),
                                                           mock(CircleDimensionSet.class),
                                                           dataIOSet,
+                                                          advancedData,
                                                           executionSet);
         Node dockNode = mockNode();
         Node node = mockDockedNode(dockNode, eventThrowing);

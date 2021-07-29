@@ -50,8 +50,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseAdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseRootProcessAdvancedData;
 import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -170,9 +170,9 @@ public abstract class AbstractDataTypeCache {
         }
     }
 
-    public void initCache(Object diagramRoot, Node<View<? extends BPMNDiagram<? extends BaseDiagramSet, ? extends BaseProcessData, ? extends BaseAdvancedData>>, Edge> value) {
+    public void initCache(Object diagramRoot, Node<View<? extends BPMNDiagram<? extends BaseDiagramSet, ? extends BaseProcessData, ? extends BaseRootProcessAdvancedData>>, Edge> value) {
         allDataTypes.clear();
-        final BPMNDiagram<? extends BaseDiagramSet, ? extends BaseProcessData, ? extends BaseAdvancedData> definition = value.getContent().getDefinition();
+        final BPMNDiagram<? extends BaseDiagramSet, ? extends BaseProcessData, ? extends BaseRootProcessAdvancedData> definition = value.getContent().getDefinition();
         cacheImports(definition.getDiagramSet().getImports().getValue().getDefaultImports());
         cacheProcessVariables(definition.getProcessData().getProcessVariables().getValue());
         cacheGlobalVariables(definition.getAdvancedData().getGlobalVariables().getValue());

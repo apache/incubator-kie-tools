@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGen
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -99,7 +100,8 @@ public class CallActivityConverterTest {
                                                                      new BackgroundSet(),
                                                                      new FontSet(),
                                                                      new RectangleDimensionsSet(),
-                                                                     new SimulationSet());
+                                                                     new SimulationSet(),
+                                                                     new AdvancedData());
         final View<ReusableSubprocess> view = new ViewImpl<>(definition, Bounds.create());
         Node<View<ReusableSubprocess>, Edge> node = new NodeImpl<>(UUID);
         node.setContent(view);

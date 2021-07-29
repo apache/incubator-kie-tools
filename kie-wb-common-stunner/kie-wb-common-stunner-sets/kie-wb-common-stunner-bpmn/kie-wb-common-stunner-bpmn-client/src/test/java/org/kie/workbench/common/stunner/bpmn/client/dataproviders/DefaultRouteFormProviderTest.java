@@ -96,6 +96,7 @@ public class DefaultRouteFormProviderTest
                                           null,
                                           null,
                                           null,
+                                          null,
                                           null);
         when(definitionAdapter.getTitle(eq(userTask1))).thenReturn("User Task");
         outEdges.add(mockEdge("Edge1",
@@ -103,6 +104,7 @@ public class DefaultRouteFormProviderTest
 
         UserTask userTask2 = new UserTask(new TaskGeneralSet(new Name("UserTask2"),
                                                              null),
+                                          null,
                                           null,
                                           null,
                                           null,
@@ -120,6 +122,7 @@ public class DefaultRouteFormProviderTest
                                                 null,
                                                 null,
                                                 null,
+                                                null,
                                                 null);
         when(definitionAdapter.getTitle(eq(scriptTask3))).thenReturn("Script Task");
         outEdges.add(mockEdge("Edge3",
@@ -129,12 +132,14 @@ public class DefaultRouteFormProviderTest
                                                          null,
                                                          null,
                                                          null,
+                                                         null,
                                                          null);
         when(definitionAdapter.getTitle(eq(gateway4))).thenReturn("Exclusive Gateway");
         outEdges.add(mockEdge("Edge4",
                               gateway4));
 
         InclusiveGateway gateway5 = new InclusiveGateway(new BPMNGeneralSet(""),
+                                                         null,
                                                          null,
                                                          null,
                                                          null,

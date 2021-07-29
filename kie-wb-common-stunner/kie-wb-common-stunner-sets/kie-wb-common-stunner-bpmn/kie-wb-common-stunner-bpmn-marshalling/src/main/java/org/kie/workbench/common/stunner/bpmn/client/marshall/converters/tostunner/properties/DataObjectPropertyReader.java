@@ -26,10 +26,14 @@ public class DataObjectPropertyReader extends BasePropertyReader {
 
     private final DataObject element;
 
-    public DataObjectPropertyReader(DataObjectReference ref, BPMNDiagram diagram,
+    private final DataObjectReference dataObjectReference;
+
+    public DataObjectPropertyReader(DataObjectReference ref,
+                                    BPMNDiagram diagram,
                                     BPMNShape shape,
                                     double resolutionFactor) {
         super(ref.getDataObjectRef(), diagram, shape, resolutionFactor);
+        this.dataObjectReference = ref;
         this.element = ref.getDataObjectRef();
     }
 
@@ -39,6 +43,11 @@ public class DataObjectPropertyReader extends BasePropertyReader {
 
     public String getType() {
         return element.getItemSubjectRef().getStructureRef();
+    }
+
+    @Override
+    public String getMetaDataAttributes() {
+        return CustomElement.metaDataAttributes.of(dataObjectReference).get();
     }
 }
 

@@ -70,6 +70,11 @@ public class BasePropertyReader implements PropertyReader {
     }
 
     @Override
+    public String getMetaDataAttributes() {
+        return CustomElement.metaDataAttributes.of(element).get();
+    }
+
+    @Override
     public String getDescription() {
         return CustomElement.description.of(element).get();
     }

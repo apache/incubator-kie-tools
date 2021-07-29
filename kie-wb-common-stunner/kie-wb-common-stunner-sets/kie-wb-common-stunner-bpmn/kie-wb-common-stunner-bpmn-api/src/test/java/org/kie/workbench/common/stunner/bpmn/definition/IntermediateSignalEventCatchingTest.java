@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.Ca
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -38,6 +39,7 @@ public class IntermediateSignalEventCatchingTest {
     private FontSet fontSet;
     private CircleDimensionSet dimensionSet;
     private DataIOSet dataIOSet;
+    private AdvancedData advancedData;
     private CancellingSignalEventExecutionSet cancellingSignalEventExecutionSet;
 
     private IntermediateSignalEventCatching tested;
@@ -49,6 +51,7 @@ public class IntermediateSignalEventCatchingTest {
         fontSet = mock(FontSet.class);
         dimensionSet = mock(CircleDimensionSet.class);
         dataIOSet = mock(DataIOSet.class);
+        advancedData = mock(AdvancedData.class);
         cancellingSignalEventExecutionSet = mock(CancellingSignalEventExecutionSet.class);
 
         tested = new IntermediateSignalEventCatching(general,
@@ -56,6 +59,7 @@ public class IntermediateSignalEventCatchingTest {
                                                      fontSet,
                                                      dimensionSet,
                                                      dataIOSet,
+                                                     advancedData,
                                                      cancellingSignalEventExecutionSet);
     }
 
@@ -85,6 +89,7 @@ public class IntermediateSignalEventCatchingTest {
                                                     fontSet,
                                                     dimensionSet,
                                                     dataIOSet,
+                                                    advancedData,
                                                     cancellingSignalEventExecutionSet);
         assertEquals(compare.hashCode(), tested.hashCode());
     }
@@ -97,6 +102,7 @@ public class IntermediateSignalEventCatchingTest {
                                                                                        fontSet,
                                                                                        dimensionSet,
                                                                                        dataIOSet,
+                                                                                       advancedData,
                                                                                        null);
         CancellingSignalEventExecutionSet executionSet = new CancellingSignalEventExecutionSet();
         executionSet.setSlaDueDate(new SLADueDate("12/25/1983"));
@@ -106,6 +112,7 @@ public class IntermediateSignalEventCatchingTest {
                                                     fontSet,
                                                     dimensionSet,
                                                     dataIOSet,
+                                                    advancedData,
                                                     executionSet);
         IntermediateSignalEventCatching compare4 =
                 new IntermediateSignalEventCatching(general,
@@ -113,6 +120,7 @@ public class IntermediateSignalEventCatchingTest {
                                                     fontSet,
                                                     dimensionSet,
                                                     dataIOSet,
+                                                    advancedData,
                                                     cancellingSignalEventExecutionSet);
 
         assertFalse(tested.equals(compare1));

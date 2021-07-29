@@ -52,6 +52,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleIn
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
@@ -132,6 +133,8 @@ public abstract class BaseSubProcessConverter<A extends BaseAdHocSubprocess<P, S
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
+
         node.getContent().setBounds(p.getBounds());
 
         return BpmnNode.of(node, p);
@@ -157,6 +160,8 @@ public abstract class BaseSubProcessConverter<A extends BaseAdHocSubprocess<P, S
         definition.setDimensionsSet(p.getRectangleDimensionsSet());
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
+
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
 
         return BpmnNode.of(node, p);
     }
@@ -188,6 +193,8 @@ public abstract class BaseSubProcessConverter<A extends BaseAdHocSubprocess<P, S
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
+
         return BpmnNode.of(node, p);
     }
 
@@ -212,6 +219,8 @@ public abstract class BaseSubProcessConverter<A extends BaseAdHocSubprocess<P, S
         definition.setDimensionsSet(p.getRectangleDimensionsSet());
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
+
+        definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
 
         node.getContent().setBounds(p.getBounds());
 

@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSe
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -60,6 +61,13 @@ public abstract class BaseIntermediateEvent
     @Valid
     protected DataIOSet dataIOSet;
 
+    @Property
+    @FormField(
+            afterElement = "dataIOSet"
+    )
+    @Valid
+    protected AdvancedData advancedData;
+
     public BaseIntermediateEvent() {
         initLabels();
     }
@@ -68,12 +76,14 @@ public abstract class BaseIntermediateEvent
                                  final BackgroundSet backgroundSet,
                                  final FontSet fontSet,
                                  final CircleDimensionSet dimensionsSet,
-                                 final DataIOSet dataIOSet) {
+                                 final DataIOSet dataIOSet,
+                                 final AdvancedData advancedData) {
         this();
         this.general = general;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
+        this.advancedData = advancedData;
         this.dataIOSet = dataIOSet;
     }
 
@@ -119,6 +129,14 @@ public abstract class BaseIntermediateEvent
         this.dataIOSet = dataIOSet;
     }
 
+    public AdvancedData getAdvancedData() {
+        return advancedData;
+    }
+
+    public void setAdvancedData(AdvancedData advancedData) {
+        this.advancedData = advancedData;
+    }
+
     public Set<String> getLabels() {
         return labels;
     }
@@ -130,6 +148,7 @@ public abstract class BaseIntermediateEvent
                                          Objects.hashCode(backgroundSet),
                                          Objects.hashCode(fontSet),
                                          Objects.hashCode(dimensionsSet),
+                                         Objects.hashCode(advancedData),
                                          Objects.hashCode(dataIOSet),
                                          Objects.hashCode(labels));
     }
@@ -145,6 +164,7 @@ public abstract class BaseIntermediateEvent
                     Objects.equals(backgroundSet, other.backgroundSet) &&
                     Objects.equals(fontSet, other.fontSet) &&
                     Objects.equals(dimensionsSet, other.dimensionsSet) &&
+                    Objects.equals(advancedData, other.advancedData) &&
                     Objects.equals(dataIOSet, other.dataIOSet) &&
                     Objects.equals(labels, other.labels);
         }

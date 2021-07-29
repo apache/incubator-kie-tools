@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGen
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
@@ -83,6 +84,13 @@ public abstract class BaseTask implements BPMNViewDefinition {
     @Property
     protected RectangleDimensionsSet dimensionsSet;
 
+    @Property
+    @FormField(
+            afterElement = "dimensionsSet"
+    )
+    @Valid
+    protected AdvancedData advancedData;
+
     public static class TaskTypeMorphPropertyBinding implements MorphPropertyValueBinding<TaskType, TaskTypes> {
 
         private static final Map<TaskTypes, Class<?>> MORPH_TARGETS =
@@ -118,13 +126,15 @@ public abstract class BaseTask implements BPMNViewDefinition {
                     final @MapsTo("fontSet") FontSet fontSet,
                     final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
                     final @MapsTo("simulationSet") SimulationSet simulationSet,
-                    final @MapsTo("taskType") TaskType taskType) {
+                    final @MapsTo("taskType") TaskType taskType,
+                    final@MapsTo("advancedData") AdvancedData advancedData) {
         this.general = general;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
         this.simulationSet = simulationSet;
         this.taskType = taskType;
+        this.advancedData = advancedData;
     }
 
     public String getCategory() {
@@ -183,6 +193,14 @@ public abstract class BaseTask implements BPMNViewDefinition {
         this.dimensionsSet = dimensionsSet;
     }
 
+    public AdvancedData getAdvancedData() {
+        return advancedData;
+    }
+
+    public void setAdvancedData(AdvancedData advancedData) {
+        this.advancedData = advancedData;
+    }
+
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(Objects.hashCode(getClass()),
@@ -192,7 +210,8 @@ public abstract class BaseTask implements BPMNViewDefinition {
                                          Objects.hashCode(fontSet),
                                          Objects.hashCode(simulationSet),
                                          Objects.hashCode(dimensionsSet),
-                                         Objects.hashCode(labels));
+                                         Objects.hashCode(labels),
+                                         Objects.hashCode(advancedData));
     }
 
     @Override
@@ -205,7 +224,8 @@ public abstract class BaseTask implements BPMNViewDefinition {
                     Objects.equals(fontSet, other.fontSet) &&
                     Objects.equals(simulationSet, other.simulationSet) &&
                     Objects.equals(dimensionsSet, other.dimensionsSet) &&
-                    Objects.equals(labels, other.labels);
+                    Objects.equals(labels, other.labels) &&
+                    Objects.equals(advancedData, other.advancedData);
         }
         return false;
     }

@@ -91,8 +91,8 @@ public class StartEventConverter {
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
-
         p.setSimulationSet(definition.getSimulationSet());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         BaseStartEventExecutionSet executionSet = definition.getExecutionSet();
         event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
@@ -113,8 +113,8 @@ public class StartEventConverter {
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
-
         p.setSimulationSet(definition.getSimulationSet());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         BaseStartEventExecutionSet executionSet = definition.getExecutionSet();
         event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
@@ -136,8 +136,8 @@ public class StartEventConverter {
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
-
         p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         InterruptingSignalEventExecutionSet executionSet = definition.getExecutionSet();
         event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
@@ -159,8 +159,8 @@ public class StartEventConverter {
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
-
         p.setSimulationSet(definition.getSimulationSet());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         InterruptingTimerEventExecutionSet executionSet = definition.getExecutionSet();
         event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
@@ -182,8 +182,8 @@ public class StartEventConverter {
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
-
         p.setSimulationSet(definition.getSimulationSet());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         InterruptingConditionalEventExecutionSet executionSet = definition.getExecutionSet();
         event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
@@ -205,6 +205,7 @@ public class StartEventConverter {
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 
@@ -228,8 +229,8 @@ public class StartEventConverter {
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
-
         p.setSimulationSet(definition.getSimulationSet());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 
@@ -253,6 +254,7 @@ public class StartEventConverter {
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 

@@ -107,6 +107,7 @@ public class TaskConverter {
         p.setOnExitAction(executionSet.getOnExitAction());
         p.setSLADueDate(executionSet.getSlaDueDate().getValue());
         p.setAssignmentsInfo(executionSet.getAssignmentsinfo());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
         return p;
     }
 
@@ -137,6 +138,7 @@ public class TaskConverter {
         p.setSlaDueDate(executionSet.getSlaDueDate().getValue());
 
         p.setSimulationSet(definition.getSimulationSet());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         p.setAbsoluteBounds(n);
         return p;
@@ -181,6 +183,7 @@ public class TaskConverter {
         p.setOnExitAction(executionSet.getOnExitAction());
         p.setContent(executionSet.getContent().getValue());
         p.setSLADueDate(executionSet.getSlaDueDate().getValue());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         p.setAbsoluteBounds(n);
 
@@ -220,6 +223,7 @@ public class TaskConverter {
         p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 
         p.setSimulationSet(definition.getSimulationSet());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         p.setAbsoluteBounds(n);
         return p;
@@ -242,6 +246,7 @@ public class TaskConverter {
         p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
 
         p.setSimulationSet(definition.getSimulationSet());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         p.setAbsoluteBounds(n);
         return p;
@@ -256,6 +261,7 @@ public class TaskConverter {
         TaskGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
+        p.setMetaData(definition.getAdvancedData().getMetaDataAttributes());
 
         p.setAbsoluteBounds(n);
 

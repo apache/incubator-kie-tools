@@ -83,12 +83,12 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionNa
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DmnModelName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Namespace;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.HasProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariableSerializer;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.RootProcessAdvancedData;
 import org.kie.workbench.common.stunner.bpmn.documentation.BPMNDocumentationService;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.BPMNDocumentation;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.element.Element;
@@ -294,7 +294,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
         final List<Map.Entry> variables = Stream.concat(
                 getDiagramModel(graph)
                         .map(BPMNDiagram::getAdvancedData)
-                        .map(AdvancedData::getGlobalVariables)
+                        .map(RootProcessAdvancedData::getGlobalVariables)
                         .map(GlobalVariables::getValue),
                 StreamSupport.stream(graph.nodes().spliterator(), false)
                         .map(Node::getContent)
