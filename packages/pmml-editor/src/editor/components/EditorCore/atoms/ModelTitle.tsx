@@ -120,7 +120,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
             <SplitItem isFilled={true} className={"modelTitle--hide-overflow"}>
               <FormGroup fieldId="modelName">
                 {!isEditModeEnabled && (
-                  <div className={modelTitleClassNames} onClick={onEdit}>
+                  <div className={modelTitleClassNames} onClick={onEdit} data-ouia-component-id="model-name">
                     {modelName.trim() !== "" && <Text className="modelTitle__truncate">{modelName}</Text>}
                     {modelName.trim() === "" && (
                       <Text className="modelTitle__truncate modelTitle__truncate--disabled">{MODEL_NAME_NOT_SET}</Text>
@@ -139,6 +139,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
                     placeholder={MODEL_NAME_NOT_SET}
                     onChange={setTitle}
                     onBlur={onCommitAndClose}
+                    data-ouia-component-id="set-model-name"
                   />
                 )}
               </FormGroup>

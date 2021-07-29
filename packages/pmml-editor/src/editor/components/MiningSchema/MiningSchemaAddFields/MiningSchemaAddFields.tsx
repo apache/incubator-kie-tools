@@ -60,7 +60,7 @@ const MiningSchemaAddFields = ({ options, onAdd }: MiningSchemaAddFieldsProps) =
   }, [options]);
 
   return (
-    <section>
+    <section data-ouia-component-id="mining-toolbar">
       <Split hasGutter={true}>
         <SplitItem isFilled={true}>
           <Select
@@ -74,14 +74,20 @@ const MiningSchemaAddFields = ({ options, onAdd }: MiningSchemaAddFieldsProps) =
             aria-labelledby={"Select fields to add"}
             placeholderText="Select fields"
             isDisabled={options.length === 0}
+            ouiaId="select-mining-field"
           >
             {selectOptions.map((option, index) => (
-              <SelectOption isDisabled={option.disabled} key={index} value={option.value} />
+              <SelectOption
+                isDisabled={option.disabled}
+                key={index}
+                value={option.value}
+                data-ouia-component-type="select-option"
+              />
             ))}
           </Select>
         </SplitItem>
         <SplitItem>
-          <Button variant="primary" onClick={handleAdd} isDisabled={options.length === 0}>
+          <Button variant="primary" onClick={handleAdd} isDisabled={options.length === 0} ouiaId="add-mining-field">
             Add Field(s)
           </Button>
         </SplitItem>

@@ -172,7 +172,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
   };
 
   return (
-    <article tabIndex={0}>
+    <article tabIndex={0} data-ouia-component-id="edit-attribute">
       <Form>
         <Split hasGutter={true}>
           <SplitItem isFilled={true}>
@@ -182,7 +182,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
               fieldId="attribute-predicate-helper"
               validated={predicateValidation.length > 0 ? "warning" : "default"}
             >
-              <div ref={ref}>
+              <div ref={ref} data-ouia-component-id="predicate">
                 <PredicateEditor text={text} setText={setText} />
                 <>
                   {predicateValidation.length > 0 && (
@@ -245,6 +245,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     }}
                     validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
                     isDisabled={!areReasonCodesUsed || characteristic?.reasonCode !== undefined}
+                    data-ouia-component-id="attribute-reason-code"
                   />
                 </FormGroup>
               </StackItem>
@@ -287,6 +288,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                       });
                     }}
                     validated={partialScoreValidation.length > 0 ? "warning" : "default"}
+                    data-ouia-component-id="attribute-partial-score"
                   />
                 </FormGroup>
               </StackItem>

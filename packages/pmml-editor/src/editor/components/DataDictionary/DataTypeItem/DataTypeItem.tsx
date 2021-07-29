@@ -175,6 +175,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   return (
     <article
       className={`editable-item ${editingIndex === index ? "editable-item--editing" : ""} data-type-item-n${index}`}
+      data-ouia-component-type="dd-type-item"
     >
       {editingIndex === index && (
         <section
@@ -207,6 +208,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                           validated={validation}
                           style={{ width: 280 }}
                           isRequired={true}
+                          data-ouia-component-type="field-name"
                         >
                           <TextInput
                             type="text"
@@ -222,7 +224,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         </FormGroup>
                       </SplitItem>
                       <SplitItem>
-                        <FormGroup fieldId="type" label="Type" isRequired={true}>
+                        <FormGroup fieldId="type" label="Type" isRequired={true} data-ouia-component-type="field-type">
                           <Select
                             id="type"
                             variant={SelectVariant.single}
@@ -240,13 +242,19 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                                 key={optionIndex}
                                 value={option.value}
                                 className="ignore-onclickoutside data-type-item__type-select__option"
+                                data-ouia-component-type="select-option"
                               />
                             ))}
                           </Select>
                         </FormGroup>
                       </SplitItem>
                       <SplitItem>
-                        <FormGroup fieldId="optype" label="Op Type" isRequired={true}>
+                        <FormGroup
+                          fieldId="optype"
+                          label="Op Type"
+                          isRequired={true}
+                          data-ouia-component-type="field-optype"
+                        >
                           <Select
                             id="optype"
                             variant={SelectVariant.single}
@@ -264,6 +272,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                                 key={optionIndex}
                                 value={option.value}
                                 className="ignore-onclickoutside data-type-item__type-select__option"
+                                data-ouia-component-type="select-option"
                               />
                             ))}
                           </Select>
@@ -346,7 +355,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
               <ConstraintsLabel dataType={dataType} dataTypeIndex={index} />
             </SplitItem>
             <SplitItem>
-              <Button variant="plain" onClick={handleDelete}>
+              <Button variant="plain" data-oui-component-type="delete-field" onClick={handleDelete}>
                 <TrashIcon />
               </Button>
             </SplitItem>

@@ -29,7 +29,7 @@ export const AttributeToolbar = (props: AttributeToolbarProps) => {
   return (
     <Split>
       <SplitItem isFilled={true}>
-        <Title size="lg" headingLevel="h1">
+        <Title size="lg" headingLevel="h1" data-ouia-component-id="characteristic-navigation">
           <a
             onClick={(e) => {
               e.preventDefault();
@@ -50,6 +50,7 @@ export const AttributeToolbar = (props: AttributeToolbarProps) => {
           }}
           icon={<ArrowAltCircleLeftIcon />}
           iconPosition="left"
+          ouiaId="attribute-done"
         >
           Done
         </Button>

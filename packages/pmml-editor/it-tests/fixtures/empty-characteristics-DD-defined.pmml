@@ -1,0 +1,15 @@
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
+  <Header/>
+  <DataDictionary numberOfFields="1">
+    <DataField name="test" optype="ordinal" dataType="integer"/>
+  </DataDictionary>
+  <Scorecard modelName="EmptyModelWithData" functionName="regression">
+    <MiningSchema>
+      <MiningField name="test"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="output" dataType="integer"/>
+    </Output>
+    <Characteristics/>
+  </Scorecard>
+</PMML>

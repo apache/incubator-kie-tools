@@ -101,6 +101,7 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
           handleEdit(event);
         }
       }}
+      data-ouia-component-type="output-field"
     >
       <Split hasGutter={true} style={{ height: "100%" }}>
         <SplitItem>
@@ -114,7 +115,7 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
             </FlexItem>
           </Flex>
         </SplitItem>
-        <SplitItem>
+        <SplitItem data-ouia-component-type="output-field-name">
           <strong>{name}</strong>
         </SplitItem>
         <SplitItem isFilled={true}>
@@ -134,7 +135,10 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
           />
         </SplitItem>
         <SplitItem>
-          <OutputFieldRowAction onDeleteOutputField={onDeleteOutputField} />
+          <OutputFieldRowAction
+            onDeleteOutputField={onDeleteOutputField}
+            data-ouia-component-type="output-field-delete"
+          />
         </SplitItem>
       </Split>
     </section>
