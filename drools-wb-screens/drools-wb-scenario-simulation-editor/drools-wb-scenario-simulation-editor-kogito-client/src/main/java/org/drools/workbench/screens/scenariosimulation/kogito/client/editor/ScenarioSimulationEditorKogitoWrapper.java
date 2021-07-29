@@ -58,6 +58,7 @@ import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.Sce
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridWidget;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.KogitoScenarioSimulationBuilder;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.ScenarioSimulationKogitoDMNDataManager;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.model.KogitoDMNModel;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmo.KogitoAsyncPackageDataModelOracle;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.editor.strategies.KogitoDMNDataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.editor.strategies.KogitoDMODataManagementStrategy;
@@ -68,7 +69,6 @@ import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDefinitions;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
@@ -290,10 +290,10 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
                 getDMNContentErrorCallback(dmnFilePath));
     }
 
-    private Callback<JSITDefinitions> getUpdateDMNMetadataCallback() {
-        return jsitDefinitions -> {
-            getScenarioSimulationEditorPresenter().getModel().getSettings().setDmnName(jsitDefinitions.getName());
-            getScenarioSimulationEditorPresenter().getModel().getSettings().setDmnNamespace(jsitDefinitions.getNamespace());
+    private Callback<KogitoDMNModel> getUpdateDMNMetadataCallback() {
+        return kogitoDMNModel -> {
+            getScenarioSimulationEditorPresenter().getModel().getSettings().setDmnName(kogitoDMNModel.getName());
+            getScenarioSimulationEditorPresenter().getModel().getSettings().setDmnNamespace(kogitoDMNModel.getNamespace());
             getScenarioSimulationEditorPresenter().reloadSettingsDock();
         };
     }

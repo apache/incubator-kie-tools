@@ -23,11 +23,11 @@ import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNot
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.ScenarioSimulationKogitoDMNDataManager;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.model.KogitoDMNModel;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.services.ScenarioSimulationKogitoDMNMarshallerService;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 
 import org.jboss.errai.common.client.api.ErrorCallback;
-import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDefinitions;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.callbacks.Callback;
@@ -57,11 +57,11 @@ public class KogitoDMNDataManagementStrategy extends AbstractDMNDataManagementSt
                                            getDMNContentErrorCallback(dmnFilePath));
    }
 
-   private Callback<JSITDefinitions> getDMNContentCallback(final TestToolsView.Presenter testToolsPresenter,
-                                                           final ScenarioSimulationContext context,
-                                                           final GridWidget gridWidget) {
-       return jsitDefinitions -> {
-           final FactModelTuple factModelTuple = dmnDataManager.getFactModelTuple(jsitDefinitions);
+   private Callback<KogitoDMNModel> getDMNContentCallback(final TestToolsView.Presenter testToolsPresenter,
+                                                          final ScenarioSimulationContext context,
+                                                          final GridWidget gridWidget) {
+       return kogitoDMNModel -> {
+           final FactModelTuple factModelTuple = dmnDataManager.getFactModelTuple(kogitoDMNModel);
            getSuccessCallback(testToolsPresenter, context, gridWidget).callback(factModelTuple);
        };
    }

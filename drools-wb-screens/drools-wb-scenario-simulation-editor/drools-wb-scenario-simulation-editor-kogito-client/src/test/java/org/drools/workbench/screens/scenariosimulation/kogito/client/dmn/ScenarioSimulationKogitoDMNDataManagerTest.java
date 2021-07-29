@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.feel.BuiltInType;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.model.KogitoDMNModel;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.junit.Assert;
@@ -36,6 +37,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDRGElement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDecision;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDefinitions;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITImport;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITInformationItem;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITInputData;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITItemDefinition;
@@ -51,7 +53,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -61,9 +62,11 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class ScenarioSimulationKogitoDMNDataManagerTest {
 
-    public static final String NAMESPACE = "namespace";
-    public static final String TYPE_NAME = "name";
-    public static final String ID = "id";
+    private static final String NAMESPACE = "namespace";
+    private static final String IMPORTED_NAMESPACE = "namespace-imported";
+    private static final String TYPE_NAME = "name";
+    private static final String ID = "id";
+    private static final String IMPORT_PREFIX = "import";
 
     @Spy
     private ScenarioSimulationKogitoDMNDataManager scenarioSimulationKogitoDMNDataManagerSpy;
@@ -73,6 +76,8 @@ public class ScenarioSimulationKogitoDMNDataManagerTest {
     private JSITItemDefinition jsitItemDefinitionNestedMock;
     @Mock
     private JSITDefinitions jsiITDefinitionsMock;
+    @Mock
+    private JSITDefinitions jsiITDefinitionsMockImportedMock;
     @Mock
     private JSITDecision jsiITDecisionMock;
     @Mock
@@ -88,6 +93,7 @@ public class ScenarioSimulationKogitoDMNDataManagerTest {
     private Map<QName, String> attributesMapInput;
     private Map<QName, String> attributesMapDecision;
     private Map<String, JSITItemDefinition> allDefinitions;
+    private KogitoDMNModel kogitoDMNModel;
 
     @Before
     public void setup() {
@@ -97,11 +103,12 @@ public class ScenarioSimulationKogitoDMNDataManagerTest {
         attributesMapInput = new HashMap<>();
         attributesMapDecision = new HashMap<>();
         allDefinitions = new HashMap<>();
+        kogitoDMNModel = new KogitoDMNModel(jsiITDefinitionsMock, Collections.EMPTY_MAP);
 
-        doReturn(true).when(scenarioSimulationKogitoDMNDataManagerSpy).isJSITInputData(eq(jsiITInputDataMock));
-        doReturn(true).when(scenarioSimulationKogitoDMNDataManagerSpy).isJSITDecision(eq(jsiITDecisionMock));
-        doReturn(attributesMapInput).when(scenarioSimulationKogitoDMNDataManagerSpy).getOtherAttributesMap(eq(jsiITInformationItemInputMock));
-        doReturn(attributesMapDecision).when(scenarioSimulationKogitoDMNDataManagerSpy).getOtherAttributesMap(eq(jsiITInformationItemDecisionMock));
+        doReturn(true).when(scenarioSimulationKogitoDMNDataManagerSpy).isJSITInputData(jsiITInputDataMock);
+        doReturn(true).when(scenarioSimulationKogitoDMNDataManagerSpy).isJSITDecision(jsiITDecisionMock);
+        doReturn(attributesMapInput).when(scenarioSimulationKogitoDMNDataManagerSpy).getOtherAttributesMap(jsiITInformationItemInputMock);
+        doReturn(attributesMapDecision).when(scenarioSimulationKogitoDMNDataManagerSpy).getOtherAttributesMap(jsiITInformationItemDecisionMock);
         when(jsiITDefinitionsMock.getNamespace()).thenReturn(NAMESPACE);
         when(jsiITDefinitionsMock.getItemDefinition()).thenReturn(jstiItemDefinitions);
         when(jsiITDefinitionsMock.getDrgElement()).thenReturn(jsitdrgElements);
@@ -971,7 +978,7 @@ public class ScenarioSimulationKogitoDMNDataManagerTest {
 
     @Test
     public void getFactModelTupleEmptyElements() {
-        FactModelTuple factModelTuple = scenarioSimulationKogitoDMNDataManagerSpy.getFactModelTuple(jsiITDefinitionsMock);
+        FactModelTuple factModelTuple = scenarioSimulationKogitoDMNDataManagerSpy.getFactModelTuple(kogitoDMNModel);
         assertTrue(factModelTuple.getVisibleFacts().isEmpty());
         assertTrue(factModelTuple.getHiddenFacts().isEmpty());
     }
@@ -982,7 +989,7 @@ public class ScenarioSimulationKogitoDMNDataManagerTest {
         drgElements.add(jsiITInputDataMock);
         when(jsiITDefinitionsMock.getDrgElement()).thenReturn(drgElements);
         attributesMapInput.put(TYPEREF_QNAME, "number");
-        FactModelTuple factModelTuple = scenarioSimulationKogitoDMNDataManagerSpy.getFactModelTuple(jsiITDefinitionsMock);
+        FactModelTuple factModelTuple = scenarioSimulationKogitoDMNDataManagerSpy.getFactModelTuple(kogitoDMNModel);
         assertTrue(factModelTuple.getVisibleFacts().size() == 1);
         FactModelTree inputDataNameFact = factModelTuple.getVisibleFacts().get("inputDataName");
         assertNotNull(inputDataNameFact);
@@ -994,11 +1001,11 @@ public class ScenarioSimulationKogitoDMNDataManagerTest {
 
     @Test
     public void getFactModelTupleSimpleDecisionData() {
-        when(jsiITInformationItemDecisionMock.getName()).thenReturn("inputDecisionName");
+        when(jsiITDecisionMock.getName()).thenReturn("inputDecisionName");
         drgElements.add(jsiITDecisionMock);
         when(jsiITDefinitionsMock.getDrgElement()).thenReturn(drgElements);
         attributesMapDecision.put(TYPEREF_QNAME, "string");
-        FactModelTuple factModelTuple = scenarioSimulationKogitoDMNDataManagerSpy.getFactModelTuple(jsiITDefinitionsMock);
+        FactModelTuple factModelTuple = scenarioSimulationKogitoDMNDataManagerSpy.getFactModelTuple(kogitoDMNModel);
         assertTrue(factModelTuple.getVisibleFacts().size() == 1);
         FactModelTree decisionDataNameFact = factModelTuple.getVisibleFacts().get("inputDecisionName");
         assertNotNull(decisionDataNameFact);
@@ -1011,13 +1018,13 @@ public class ScenarioSimulationKogitoDMNDataManagerTest {
     @Test
     public void getFactModelTupleSimpleInputAndDecisionData() {
         when(jsiITInputDataMock.getName()).thenReturn("inputDataName");
-        when(jsiITInformationItemDecisionMock.getName()).thenReturn("inputDecisionName");
+        when(jsiITDecisionMock.getName()).thenReturn("inputDecisionName");
         drgElements.add(jsiITDecisionMock);
         drgElements.add(jsiITInputDataMock);
         when(jsiITDefinitionsMock.getDrgElement()).thenReturn(drgElements);
         attributesMapInput.put(TYPEREF_QNAME, "number");
         attributesMapDecision.put(TYPEREF_QNAME, "string");
-        FactModelTuple factModelTuple = scenarioSimulationKogitoDMNDataManagerSpy.getFactModelTuple(jsiITDefinitionsMock);
+        FactModelTuple factModelTuple = scenarioSimulationKogitoDMNDataManagerSpy.getFactModelTuple(kogitoDMNModel);
         assertTrue(factModelTuple.getVisibleFacts().size() == 2);
         FactModelTree inputDataNameFact = factModelTuple.getVisibleFacts().get("inputDataName");
         assertNotNull(inputDataNameFact);
@@ -1034,10 +1041,46 @@ public class ScenarioSimulationKogitoDMNDataManagerTest {
     }
 
     @Test
+    public void getFactModelTupleSimpleImportedInputAndDecisionData() {
+        Map<String, JSITDefinitions> imports = new HashMap<>();
+        imports.put(IMPORTED_NAMESPACE, jsiITDefinitionsMockImportedMock);
+        kogitoDMNModel = new KogitoDMNModel(jsiITDefinitionsMock, imports);
+        when(jsiITInputDataMock.getName()).thenReturn("inputDataName");
+        when(jsiITDecisionMock.getName()).thenReturn("inputDecisionName");
+        drgElements.add(jsiITDecisionMock);
+        drgElements.add(jsiITInputDataMock);
+        when(jsiITDefinitionsMockImportedMock.getDrgElement()).thenReturn(drgElements);
+        attributesMapInput.put(TYPEREF_QNAME, "number");
+        attributesMapDecision.put(TYPEREF_QNAME, "string");
+        JSITImport jsitImportMock = mock(JSITImport.class);
+        when(jsitImportMock.getNamespace()).thenReturn(IMPORTED_NAMESPACE);
+        when(jsitImportMock.getName()).thenReturn(IMPORT_PREFIX);
+        when(jsiITDefinitionsMock.getImport()).thenReturn(Arrays.asList(jsitImportMock));
+
+        FactModelTuple factModelTuple = scenarioSimulationKogitoDMNDataManagerSpy.getFactModelTuple(kogitoDMNModel);
+        assertTrue(factModelTuple.getVisibleFacts().size() == 2);
+        FactModelTree inputDataNameFact = factModelTuple.getVisibleFacts().get(IMPORT_PREFIX + ".inputDataName");
+        assertNotNull(inputDataNameFact);
+        assertTrue(inputDataNameFact.getSimpleProperties().size() == 1);
+        assertEquals("number", inputDataNameFact.getSimpleProperties().get(VALUE).getTypeName());
+        assertEquals("number", inputDataNameFact.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());
+        assertFalse(inputDataNameFact.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
+        assertEquals(IMPORT_PREFIX, inputDataNameFact.getImportPrefix());
+
+        FactModelTree decisionDataNameFact = factModelTuple.getVisibleFacts().get(IMPORT_PREFIX + ".inputDecisionName");
+        assertNotNull(decisionDataNameFact);
+        assertTrue(decisionDataNameFact.getSimpleProperties().size() == 1);
+        assertEquals("string", decisionDataNameFact.getSimpleProperties().get(VALUE).getTypeName());
+        assertEquals("string", decisionDataNameFact.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());
+        assertFalse(decisionDataNameFact.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
+        assertEquals(IMPORT_PREFIX, decisionDataNameFact.getImportPrefix());
+    }
+
+    @Test
     public void createTopLevelFactModelTreeSimpleNoCollection() {
         // Single property retrieve
         ClientDMNType simpleString = getSimpleNoCollection();
-        FactModelTree retrieved = scenarioSimulationKogitoDMNDataManagerSpy.createTopLevelFactModelTree("testPath", simpleString, new TreeMap<>(), FactModelTree.Type.INPUT);
+        FactModelTree retrieved = scenarioSimulationKogitoDMNDataManagerSpy.createTopLevelFactModelTree("testPath", IMPORT_PREFIX, simpleString, new TreeMap<>(), FactModelTree.Type.INPUT);
         Assert.assertNotNull(retrieved);
         assertEquals("testPath", retrieved.getFactName());
         assertEquals(1, retrieved.getSimpleProperties().size());
@@ -1046,6 +1089,7 @@ public class ScenarioSimulationKogitoDMNDataManagerTest {
         assertFalse(retrieved.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
         assertEquals(simpleString.getName(), retrieved.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());
         assertTrue(retrieved.getGenericTypesMap().isEmpty());
+        assertEquals(IMPORT_PREFIX, retrieved.getImportPrefix());
     }
 
     @Test
@@ -1053,26 +1097,28 @@ public class ScenarioSimulationKogitoDMNDataManagerTest {
         // Single property collection retrieve
         ClientDMNType simpleCollectionString = getSimpleCollection();
         TreeMap<String, FactModelTree> hiddenFactSimpleCollection = new TreeMap<>();
-        FactModelTree retrieved = scenarioSimulationKogitoDMNDataManagerSpy.createTopLevelFactModelTree("testPath", simpleCollectionString, hiddenFactSimpleCollection, FactModelTree.Type.INPUT);
+        FactModelTree retrieved = scenarioSimulationKogitoDMNDataManagerSpy.createTopLevelFactModelTree("testPath", IMPORT_PREFIX, simpleCollectionString, hiddenFactSimpleCollection, FactModelTree.Type.INPUT);
         Assert.assertNotNull(retrieved);
         assertEquals("testPath", retrieved.getFactName());
         assertEquals(1, retrieved.getSimpleProperties().size());
         assertTrue(retrieved.getSimpleProperties().containsKey(VALUE));
         assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE).getTypeName());
         assertFalse(retrieved.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
-        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());        assertTrue(retrieved.getExpandableProperties().isEmpty());
+        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());
+        assertTrue(retrieved.getExpandableProperties().isEmpty());
         assertEquals(1, retrieved.getGenericTypesMap().size());
         assertTrue(retrieved.getGenericTypesMap().containsKey(VALUE));
         Assert.assertNotNull(retrieved.getGenericTypesMap().get(VALUE));
         assertEquals(1, retrieved.getGenericTypesMap().get(VALUE).size());
         assertEquals(simpleCollectionString.getName(), retrieved.getGenericTypesMap().get(VALUE).get(0));
+        assertEquals(IMPORT_PREFIX, retrieved.getImportPrefix());
     }
 
     @Test
     public void createTopLevelFactModelTreeCompositeNoCollectionBaseType() {
         // Single property retrieve
         ClientDMNType composite = getSingleCompositeWithBaseTypeField();
-        FactModelTree retrieved = scenarioSimulationKogitoDMNDataManagerSpy.createTopLevelFactModelTree("testPath", composite, new TreeMap<>(), FactModelTree.Type.INPUT);
+        FactModelTree retrieved = scenarioSimulationKogitoDMNDataManagerSpy.createTopLevelFactModelTree("testPath", IMPORT_PREFIX, composite, new TreeMap<>(), FactModelTree.Type.INPUT);
         assertNotNull(retrieved);
         assertEquals("testPath", retrieved.getFactName());
         assertEquals(2, retrieved.getSimpleProperties().size());
@@ -1087,13 +1133,14 @@ public class ScenarioSimulationKogitoDMNDataManagerTest {
         assertEquals("string", retrieved.getSimpleProperties().get("gender").getPropertyTypeNameToVisualize());
         assertTrue(retrieved.getExpandableProperties().isEmpty());
         assertTrue(retrieved.getGenericTypesMap().isEmpty());
+        assertEquals(IMPORT_PREFIX, retrieved.getImportPrefix());
     }
 
     @Test
     public void createTopLevelFactModelTreeCompositeNoCollection() {
         // Single property retrieve
         ClientDMNType compositePerson = getSingleCompositeWithSimpleCollection();
-        FactModelTree retrieved = scenarioSimulationKogitoDMNDataManagerSpy.createTopLevelFactModelTree("testPath", compositePerson, new TreeMap<>(), FactModelTree.Type.INPUT);
+        FactModelTree retrieved = scenarioSimulationKogitoDMNDataManagerSpy.createTopLevelFactModelTree("testPath", IMPORT_PREFIX, compositePerson, new TreeMap<>(), FactModelTree.Type.INPUT);
         Assert.assertNotNull(retrieved);
         assertEquals("testPath", retrieved.getFactName());
         assertEquals(2, retrieved.getSimpleProperties().size());
@@ -1105,6 +1152,7 @@ public class ScenarioSimulationKogitoDMNDataManagerTest {
         assertEquals(TYPE_NAME, retrieved.getSimpleProperties().get("name").getTypeName());
         assertFalse(retrieved.getSimpleProperties().get("name").getBaseTypeName().isPresent());
         assertEquals(TYPE_NAME, retrieved.getSimpleProperties().get("name").getPropertyTypeNameToVisualize());
+        assertEquals(IMPORT_PREFIX, retrieved.getImportPrefix());
         //
         assertEquals(1, retrieved.getGenericTypesMap().size());
         assertTrue(retrieved.getGenericTypesMap().containsKey("friends"));
@@ -1122,19 +1170,21 @@ public class ScenarioSimulationKogitoDMNDataManagerTest {
         // Single property collection retrieve
         ClientDMNType compositePerson = getCompositeCollection();
         TreeMap<String, FactModelTree> hiddenFactSimpleCollection = new TreeMap<>();
-        FactModelTree retrieved = scenarioSimulationKogitoDMNDataManagerSpy.createTopLevelFactModelTree("testPath", compositePerson, hiddenFactSimpleCollection, FactModelTree.Type.INPUT);
+        FactModelTree retrieved = scenarioSimulationKogitoDMNDataManagerSpy.createTopLevelFactModelTree("testPath", IMPORT_PREFIX, compositePerson, hiddenFactSimpleCollection, FactModelTree.Type.INPUT);
         Assert.assertNotNull(retrieved);
         assertEquals("testPath", retrieved.getFactName());
         assertEquals(1, retrieved.getSimpleProperties().size());
         assertTrue(retrieved.getSimpleProperties().containsKey(VALUE));
         assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE).getTypeName());
         assertFalse(retrieved.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
-        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());        assertTrue(retrieved.getExpandableProperties().isEmpty());
+        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());
+        assertTrue(retrieved.getExpandableProperties().isEmpty());
         assertEquals(1, retrieved.getGenericTypesMap().size());
         assertTrue(retrieved.getGenericTypesMap().containsKey(VALUE));
         Assert.assertNotNull(retrieved.getGenericTypesMap().get(VALUE));
         assertEquals(1, retrieved.getGenericTypesMap().get(VALUE).size());
         assertEquals(compositePerson.getName(), retrieved.getGenericTypesMap().get(VALUE).get(0));
+        assertEquals(IMPORT_PREFIX, retrieved.getImportPrefix());
     }
 
     private ClientDMNType getSimpleNoCollection() {

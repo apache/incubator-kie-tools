@@ -30,6 +30,7 @@ import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Simulation;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.model.KogitoDMNModel;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.services.ScenarioSimulationKogitoDMNMarshallerService;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
@@ -48,9 +49,9 @@ import org.uberfire.client.callbacks.Callback;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -74,15 +75,18 @@ public class KogitoScenarioSimulationBuilderTest {
     @Mock
     private ScenarioSimulationKogitoDMNMarshallerService dmnMarshallerServiceMock;
     @Captor
-    private ArgumentCaptor<Callback<JSITDefinitions>> callbackArgumentCaptor;
+    private ArgumentCaptor<Callback<KogitoDMNModel>> callbackArgumentCaptor;
     @Captor
     private ArgumentCaptor<Path> pathArgumentCaptor;
     @Captor
     private ArgumentCaptor<ScenarioSimulationModel> scenarioSimulationModelArgumentCaptor;
 
+    private KogitoDMNModel kogitoDMNModel;
+
     @Before
     public void setup() {
-        when(kogitoDMNDataManagerMock.getFactModelTuple(eq(jsitDefinitionsMock))).thenReturn(factModelTupleMock);
+        kogitoDMNModel = new KogitoDMNModel(jsitDefinitionsMock, Collections.emptyMap());
+        when(kogitoDMNDataManagerMock.getFactModelTuple(kogitoDMNModel)).thenReturn(factModelTupleMock);
         when(jsitDefinitionsMock.getNamespace()).thenReturn("namespace");
         when(jsitDefinitionsMock.getName()).thenReturn("name");
     }
@@ -92,7 +96,7 @@ public class KogitoScenarioSimulationBuilderTest {
         kogitoScenarioSimulationBuilderSpy.populateScenarioSimulationModelRULE("session", callbackMock);
         verify(kogitoScenarioSimulationBuilderSpy, times(1)).createRULESimulation();
         verify(kogitoScenarioSimulationBuilderSpy, times(1)).createBackground();
-        verify(kogitoScenarioSimulationBuilderSpy, times(1)).createRULESettings(eq("session"));
+        verify(kogitoScenarioSimulationBuilderSpy, times(1)).createRULESettings("session");
         verify(callbackMock, times(1)).callback(scenarioSimulationModelArgumentCaptor.capture());
         assertNotNull(scenarioSimulationModelArgumentCaptor.getValue());
         assertNotNull(scenarioSimulationModelArgumentCaptor.getValue().getBackground());
@@ -107,10 +111,10 @@ public class KogitoScenarioSimulationBuilderTest {
         verify(dmnMarshallerServiceMock, times(1)).getDMNContent(pathArgumentCaptor.capture(), callbackArgumentCaptor.capture(), eq(errorCallbackMock));
         assertEquals("file.dmn", pathArgumentCaptor.getValue().getFileName());
         assertEquals("src/file.dmn", pathArgumentCaptor.getValue().toURI());
-        callbackArgumentCaptor.getValue().callback(jsitDefinitionsMock);
-        verify(kogitoDMNDataManagerMock, times(1)).getFactModelTuple(eq(jsitDefinitionsMock));
-        verify(kogitoScenarioSimulationBuilderSpy, times(1)).createDMNSimulation(eq(factModelTupleMock));
-        verify(kogitoScenarioSimulationBuilderSpy, times(1)).createDMNSettings(eq("name"), eq("namespace"), eq("src/file.dmn"));
+        callbackArgumentCaptor.getValue().callback(kogitoDMNModel);
+        verify(kogitoDMNDataManagerMock, times(1)).getFactModelTuple(kogitoDMNModel);
+        verify(kogitoScenarioSimulationBuilderSpy, times(1)).createDMNSimulation(factModelTupleMock);
+        verify(kogitoScenarioSimulationBuilderSpy, times(1)).createDMNSettings("name", "namespace", "src/file.dmn");
         verify(callbackMock, times(1)).callback(scenarioSimulationModelArgumentCaptor.capture());
         assertNotNull(scenarioSimulationModelArgumentCaptor.getValue());
         assertNotNull(scenarioSimulationModelArgumentCaptor.getValue().getBackground());
@@ -218,10 +222,10 @@ public class KogitoScenarioSimulationBuilderTest {
 
         verify(factMappingExtractorMock, times(1))
                 .getFactMapping(
-                        eq(factModelTree),
-                        eq(propertyName),
-                        eq(Arrays.asList("myFact", "recursiveProperty")),
-                        eq(propertyType));
+                        factModelTree,
+                        propertyName,
+                        Arrays.asList("myFact", "recursiveProperty"),
+                        propertyType);
 
         verify(factMappingExtractorMock, times(2))
                 .getFactMapping(
@@ -262,16 +266,16 @@ public class KogitoScenarioSimulationBuilderTest {
 
         verify(factMappingExtractorMock, times(1))
                 .getFactMapping(
-                        eq(nested1),
-                        eq(propertyName),
-                        eq(Arrays.asList("myFact", "nestedProperty")),
-                        eq(propertyType));
+                        nested1,
+                        propertyName,
+                        Arrays.asList("myFact", "nestedProperty"),
+                        propertyType);
         verify(factMappingExtractorMock, times(1))
                 .getFactMapping(
-                        eq(nested2),
-                        eq(propertyName2),
-                        eq(Arrays.asList("myFact", "nestedProperty2")),
-                        eq(propertyType2));
+                        nested2,
+                        propertyName2,
+                        Arrays.asList("myFact", "nestedProperty2"),
+                        propertyType2);
 
         verify(factMappingExtractorMock, times(2))
                 .getFactMapping(

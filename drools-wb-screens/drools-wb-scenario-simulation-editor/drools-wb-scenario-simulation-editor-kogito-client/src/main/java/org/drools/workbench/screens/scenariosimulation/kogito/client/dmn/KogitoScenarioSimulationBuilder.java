@@ -42,11 +42,11 @@ import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.model.KogitoDMNModel;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.services.ScenarioSimulationKogitoDMNMarshallerService;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.jboss.errai.common.client.api.ErrorCallback;
-import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDefinitions;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.callbacks.Callback;
@@ -128,14 +128,14 @@ public class KogitoScenarioSimulationBuilder {
                                            dmnContentErrorCallback);
     }
 
-    private Callback<JSITDefinitions> getDMNContentCallback(final ScenarioSimulationModel toPopulate,
-                                                            final Callback<ScenarioSimulationModel> populateEditorCommand,
-                                                            final Path dmnPath) {
-        return jsitDefinitions -> {
-            final FactModelTuple factModelTuple = dmnDataManager.getFactModelTuple(jsitDefinitions);
+    private Callback<KogitoDMNModel> getDMNContentCallback(final ScenarioSimulationModel toPopulate,
+                                                           final Callback<ScenarioSimulationModel> populateEditorCommand,
+                                                           final Path dmnPath) {
+        return kogitoDMNModel -> {
+            final FactModelTuple factModelTuple = dmnDataManager.getFactModelTuple(kogitoDMNModel);
             toPopulate.setSimulation(createDMNSimulation(factModelTuple));
-            toPopulate.setSettings(createDMNSettings(jsitDefinitions.getName(),
-                                                     jsitDefinitions.getNamespace(),
+            toPopulate.setSettings(createDMNSettings(kogitoDMNModel.getName(),
+                                                     kogitoDMNModel.getNamespace(),
                                                      dmnPath.toURI()));
             populateEditorCommand.callback(toPopulate);
         };
@@ -271,7 +271,7 @@ public class KogitoScenarioSimulationBuilder {
             int inputFirstOrder = FactModelTree.Type.INPUT.equals(aType) ? -1 : 1;
             return aType.equals(bType) ? 0 : inputFirstOrder;
         }).forEach(factModelTree -> {
-            FactIdentifier factIdentifier = FactIdentifier.create(factModelTree.getFactName(), factModelTree.getFactName());
+            FactIdentifier factIdentifier = FactIdentifier.create(factModelTree.getFactName(), factModelTree.getFactName(), factModelTree.getImportPrefix());
             FactMappingExtractor factMappingExtractor = new FactMappingExtractor(factIdentifier,
                                                                                  scenarioWithIndex.getIndex(),
                                                                                  id,
