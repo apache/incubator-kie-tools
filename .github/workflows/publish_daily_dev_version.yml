@@ -13,20 +13,12 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        node: [16.2.0]
-        yarn: [1.22.10]
-        lerna: [4.0.0]
 
     steps:
       - name: Clone kogito-tooling
         uses: actions/checkout@v2
         with:
           path: kogito-tooling
-
-      - name: Setup kogito-tooling
-        run: |
-          cd kogito-tooling
-          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
       # This bash script will set an output version for this step. It can be used with steps.version.outputs.version
       - name: Output version
@@ -39,35 +31,28 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 16.2.0
 
-      - name: Setup Yarn and Lerna
-        run: |
-          npm install -g lerna@${{ matrix.lerna }} yarn@${{ matrix.yarn }}
-          yarn config set network-timeout 1000000
-
-      - name: Start Xvfb (Ubuntu only)
-        if: matrix.os == 'ubuntu-latest'
-        run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-
-      - name: Download dependencies
-        run: |
-          cd kogito-tooling
-          yarn bootstrap
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ${{ matrix.os }}
+          path: kogito-tooling
 
       - name: Build kogito-tooling
         env:
-          WEBPACK_minimize: "true"
-          WEBPACK_TS_LOADER_transpileOnly: "false"
-          ROUTER_targetOrigin: "https://kiegroup.github.io"
-          ROUTER_relativePath: "kogito-online/dev/editors/"
-          DOWNLOAD_HUB_linuxUrl: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
-          DOWNLOAD_HUB_macOsUrl: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
-          DOWNLOAD_HUB_windowsUrl: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
-          KIE_TOOLING_EXTENDED_SERVICES__linuxDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/kie_tooling_extended_services_linux_${{ steps.release_json.outputs.tag }}.tar.gz"
-          KIE_TOOLING_EXTENDED_SERVICES__macOsDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/kie_tooling_extended_services_macos_${{ steps.release_json.outputs.tag }}.dmg"
-          KIE_TOOLING_EXTENDED_SERVICES__windowsDownloadUrl: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/kie_tooling_extended_services_windows_${{ steps.release_json.outputs.tag }}.exe"
-          KIE_TOOLING_EXTENDED_SERVICES__compatibleVersion: "${{ steps.release_json.outputs.tag }}"
+          WEBPACK__minimize: "true"
+          WEBPACK__tsLoaderTranspileOnly: "false"
+          CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
+          CHROME_EXTENSION__routerRelativePath: "kogito-online/dev/editors/"
+          ONLINE_EDITOR__downloadHubUrlLinux: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
+          ONLINE_EDITOR__downloadHubUrlMacOs: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
+          ONLINE_EDITOR__downloadHubUrlWindows: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
+          ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/kie_tooling_extended_services_linux_${{ steps.release_json.outputs.tag }}.tar.gz"
+          ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/kie_tooling_extended_services_macos_${{ steps.release_json.outputs.tag }}.dmg"
+          ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ steps.release_json.outputs.tag }}/kie_tooling_extended_services_windows_${{ steps.release_json.outputs.tag }}.exe"
+          ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion: "${{ steps.release_json.outputs.tag }}"
+          ONLINE_EDITOR__buildInfo: "${{ steps.version.outputs.version }} (daily-dev) @ ${{ github.sha }}"
           DISPLAY: ":99.0"
         run: |
           cd kogito-tooling
@@ -154,7 +139,6 @@ jobs:
           cp -r ../kogito-tooling/node_modules/@kogito-tooling/dmn-editor-unpacked/target/dmn dev/editors/
           cp -r ../kogito-tooling/node_modules/@kogito-tooling/bpmn-editor-unpacked/target/bpmn dev/editors/
           cp -r ../kogito-tooling/node_modules/@kogito-tooling/scesim-editor-unpacked/target/scesim dev/editors/
-          cp -r ../kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/envelope dev/editors/
           cp -r ../kogito-tooling/packages/online-editor/dist/* dev/
           rm -rf dev/gwt-editors
           ln -s editors dev/gwt-editors
