@@ -42,7 +42,7 @@ import "../static/resources/style.css";
 const urlParams = new URLSearchParams(window.location.search);
 const githubService = new GithubService();
 const onlineI18n = new I18n<OnlineI18n>(onlineI18nDefaults, onlineI18nDictionaries, "en");
-
+// meaningless comment to test CI
 const editorEnvelopeLocator: EditorEnvelopeLocator = {
   targetOrigin: window.location.origin,
   mapping: new Map([
