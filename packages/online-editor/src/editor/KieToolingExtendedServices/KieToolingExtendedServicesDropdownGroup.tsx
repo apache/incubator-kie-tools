@@ -49,6 +49,7 @@ export function KieToolingExtendedServicesDropdownGroup() {
   return (
     <DropdownGroup label={i18n.names.kieToolingExtendedServices}>
       <DropdownItem
+        id="kie-tooling-extended-services-kebab-setup"
         key={`kie-tooling-extended-services-dropdown-setup`}
         component={"button"}
         isDisabled={true}
@@ -61,7 +62,8 @@ export function KieToolingExtendedServicesDropdownGroup() {
       <DropdownGroup key={"dmn-runner-group"} label={i18n.names.dmnRunner}>
         <FeatureDependentOnKieToolingExtendedServices isLight={false} position="left">
           <DropdownItem
-            key={`kie-tooling-extended-services-dropdown-dmn-runner-toggle`}
+            id="dmn-runner-kebab-toggle"
+            key={"kie-tooling-extended-services-dropdown-dmn-runner-toggle"}
             component={"button"}
             onClick={onToggleDmnRunner}
             ouiaId="toggle-dmn-runner-dropdown-button"

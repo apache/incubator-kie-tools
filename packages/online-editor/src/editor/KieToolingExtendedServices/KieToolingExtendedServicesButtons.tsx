@@ -79,7 +79,7 @@ export function KieToolingExtendedServicesButtons() {
             <ExclamationTriangleIcon
               data-testid="outdated-icon"
               className="static-opacity"
-              id={"kie-tooling-extended-services-outdated-icon"}
+              id="kie-tooling-extended-services-outdated-icon"
             />
           </Tooltip>
         )}
@@ -96,7 +96,7 @@ export function KieToolingExtendedServicesButtons() {
                 <ConnectedIcon
                   data-testid="connected-icon"
                   className="kogito--editor__kie-tooling-extended-services-dropdown-icon-connected blink-opacity"
-                  id={"kie-tooling-extended-services-connected-icon"}
+                  id="kie-tooling-extended-services-connected-icon"
                 />
               </Tooltip>
             ) : (
@@ -110,7 +110,7 @@ export function KieToolingExtendedServicesButtons() {
                 <DisconnectedIcon
                   data-testid="disconnected-icon"
                   className="static-opacity"
-                  id={"kie-tooling-extended-services-disconnected-icon"}
+                  id="kie-tooling-extended-services-disconnected-icon"
                 />
               </Tooltip>
             )}
@@ -126,6 +126,7 @@ export function KieToolingExtendedServicesButtons() {
       <Dropdown
         toggle={
           <DropdownToggle
+            id="kie-tooling-extended-services-button"
             toggleIndicator={null}
             className="kogito--kie-tooling-extended-services-button"
             data-testid="kie-tooling-extended-services-button"
@@ -148,6 +149,7 @@ export function KieToolingExtendedServicesButtons() {
           onSelect={() => dmnDevSandbox.setDropdownOpen(false)}
           toggle={
             <DropdownToggle
+              id="dmn-dev-sandbox-dropdown-button"
               onToggle={(isOpen: boolean) => onToggleDmnDevSandbox(isOpen)}
               data-testid="dmn-dev-sandbox-button"
             >
@@ -171,6 +173,7 @@ export function KieToolingExtendedServicesButtons() {
         <Dropdown
           toggle={
             <DropdownToggle
+              id="dmn-runner-button"
               toggleIndicator={null}
               onToggle={onToggleDmnRunner}
               className="kogito--dmn-runner-button"

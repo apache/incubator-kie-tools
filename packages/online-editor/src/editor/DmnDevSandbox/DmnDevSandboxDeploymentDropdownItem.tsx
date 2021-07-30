@@ -58,6 +58,7 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
       return (
         <Tooltip key={`deployment-up-${props.id}`} position="left" content={i18n.dmnDevSandbox.dropdown.item.upTooltip}>
           <CheckCircleIcon
+            id="dmn-dev-sandbox-deployment-item-up-icon"
             className="kogito--editor__dmn-dev-sandbox-dropdown-item-status success-icon"
             onClick={onConfigure}
           />
@@ -76,6 +77,7 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
           content={i18n.dmnDevSandbox.dropdown.item.inProgressTooltip}
         >
           <SyncAltIcon
+            id="dmn-dev-sandbox-deployment-item-in-progress-icon"
             className="kogito--editor__dmn-dev-sandbox-dropdown-item-status in-progress-icon rotating"
             onClick={onConfigure}
           />
@@ -90,6 +92,7 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
         content={i18n.dmnDevSandbox.dropdown.item.downTooltip}
       >
         <ExclamationTriangleIcon
+          id="dmn-dev-sandbox-deployment-item-down-icon"
           className="kogito--editor__dmn-dev-sandbox-dropdown-item-status warning-icon"
           onClick={onConfigure}
         />
@@ -103,6 +106,7 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
 
   return (
     <DropdownItem
+      id="dmn-dev-sandbox-deployment-item-button"
       isDisabled={props.deployment.state !== DeployedModelState.UP}
       key={`dmn-dev-sandbox-dropdown-item-${props.id}`}
       onClick={onItemClicked}

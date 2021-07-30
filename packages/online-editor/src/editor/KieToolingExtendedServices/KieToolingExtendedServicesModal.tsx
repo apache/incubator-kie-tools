@@ -109,7 +109,7 @@ export function KieToolingExtendedServicesModal() {
                 <TextContent>
                   <Text component={TextVariants.p}>
                     <Text
-                      id={"kie-tooling-extended-services-modal-download-macos"}
+                      id="kie-tooling-extended-services-modal-download-macos"
                       component={TextVariants.a}
                       href={downloadKieToolingExtendedServicesUrl}
                     >
@@ -301,7 +301,7 @@ export function KieToolingExtendedServicesModal() {
                 <TextContent>
                   <Text component={TextVariants.p}>
                     <Text
-                      id={"kie-tooling-extended-services-modal-download-windows"}
+                      id="kie-tooling-extended-services-modal-download-windows"
                       component={TextVariants.a}
                       href={downloadKieToolingExtendedServicesUrl}
                     >
@@ -461,7 +461,7 @@ export function KieToolingExtendedServicesModal() {
                 <TextContent>
                   <Text component={TextVariants.p}>
                     <Text
-                      id={"kie-tooling-extended-services-modal-download-linux"}
+                      id="kie-tooling-extended-services-modal-download-linux"
                       component={TextVariants.a}
                       href={downloadKieToolingExtendedServicesUrl}
                     >

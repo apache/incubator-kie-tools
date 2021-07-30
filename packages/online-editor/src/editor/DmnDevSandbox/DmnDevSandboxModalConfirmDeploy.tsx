@@ -53,6 +53,7 @@ export function DmnDevSandboxModalConfirmDeploy() {
       onClose={onCancel}
       actions={[
         <Button
+          id="dmn-dev-sandbox-confirm-deploy-button"
           key="confirm"
           variant="primary"
           onClick={onConfirm}

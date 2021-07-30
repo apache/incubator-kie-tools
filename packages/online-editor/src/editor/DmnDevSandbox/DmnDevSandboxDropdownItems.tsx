@@ -63,6 +63,7 @@ export function useDmnDevSandboxDropdownItems() {
       <>
         {!isDmnDevSandboxConnected && isKieToolingExtendedServicesRunning && (
           <DropdownItem
+            id="dmn-dev-sandbox-setup-button"
             key={`dropdown-dmn-dev-sandbox-setup`}
             component={"button"}
             onClick={onDevSandboxSetup}
@@ -73,6 +74,7 @@ export function useDmnDevSandboxDropdownItems() {
         )}
         <FeatureDependentOnKieToolingExtendedServices isLight={false} position="left">
           <DropdownItem
+            id="dmn-dev-sandbox-deploy-your-model-button"
             key={`dropdown-dmn-dev-sandbox-deploy`}
             component={"button"}
             onClick={onDevSandboxDeploy}
@@ -94,6 +96,7 @@ export function useDmnDevSandboxDropdownItems() {
               {i18n.dmnDevSandbox.dropdown.setupFor(dmnDevSandbox.currentConfig.username)}
             </DropdownItem>
             <DropdownItem
+              id="dmn-dev-sandbox-change-config-button"
               key={"dropdown-dmn-dev-sandbox-setup"}
               component={"button"}
               onClick={onDevSandboxSetup}

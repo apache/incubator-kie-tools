@@ -81,6 +81,7 @@ export function DmnFormToolbar(props: Props) {
     (dropdownId: string) => [
       <React.Fragment key={`dropdown-${dropdownId}-close`}>
         <DropdownItem
+          id="dmn-dev-sandbox-form-toolbar-kebab-open-online-editor-button"
           key={`dropdown-${dropdownId}-save`}
           component={"button"}
           onClick={props.onOpenOnlineEditor}
@@ -95,6 +96,7 @@ export function DmnFormToolbar(props: Props) {
           </Text>
         </DropdownItem>
         <DropdownItem
+          id="dmn-dev-sandbox-form-toolbar-kebab-open-swagger-ui-button"
           key={`dropdown-${dropdownId}-swagger-ui`}
           component={"button"}
           onClick={props.onOpenSwaggerUI}
@@ -147,6 +149,7 @@ export function DmnFormToolbar(props: Props) {
               }}
             >
               <Button
+                id="dmn-dev-sandbox-form-toolbar-open-online-editor-button"
                 variant="tertiary"
                 data-testid="open-online-editor"
                 aria-label={"Open Online Editor"}
