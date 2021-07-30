@@ -92,7 +92,7 @@ function waitForEventWithFileData() {
     ReactDOM.render(
       <App
         file={file}
-        readonly={e.detail.readonly}
+        readonly={false}
         external={true}
         senderTabId={e.detail.senderTabId}
         githubService={githubService}

@@ -24,7 +24,6 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 
 module.exports = async (env, argv) => {
-  // const buildInfo = getBuildInfo(); TODO CAPONETTO
   const gtmResource = getGtmResource(argv);
   return merge(common(env), {
     entry: {
@@ -66,13 +65,13 @@ module.exports = async (env, argv) => {
       watchContentBase: true,
       contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
       compress: true,
-      port: 9008, // TODO CAPONETTO
+      port: buildEnv.dmnDevSandbox.form.dev.port,
     },
   });
 };
 
 function getGtmResource() {
-  const gtmId = buildEnv.onlineEditor.gtmId;
+  const gtmId = buildEnv.dmnDevSandbox.gtmId;
   console.info(`Google Tag Manager :: ID: ${gtmId}`);
 
   if (!gtmId) {

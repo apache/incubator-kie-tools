@@ -42,7 +42,7 @@ export interface CreateBuildArgs {
 }
 
 export class CreateBuild extends ResourceFetch {
-  private readonly BASE_IMAGE = `${process.env.WEBPACK_REPLACE__dmnDevSandbox_baseImageName}:${process.env.WEBPACK_REPLACE__dmnDevSandbox_baseImageTag}`;
+  private readonly BASE_IMAGE = `${process.env.WEBPACK_REPLACE__dmnDevSandbox_baseImageFullUrl}`;
   private readonly KOGITO_FOLDER = "/tmp/kogito";
   private readonly PROJECT_FOLDER = `${this.KOGITO_FOLDER}/project`;
   private readonly PROJECT_MAIN_RESOURCES = `${this.PROJECT_FOLDER}/src/main/resources`;

@@ -37,6 +37,11 @@ const ENV_VARS = {
     default: `${false}`,
     description: "",
   },
+  KOGITO_TOOLING_BUILD_docker: {
+    name: "KOGITO_TOOLING_BUILD_docker",
+    default: `${false}`,
+    description: "",
+  },
   CHROME_EXTENSION__routerTargetOrigin: {
     name: "CHROME_EXTENSION__routerTargetOrigin",
     default: "https://localhost:9000",
@@ -102,6 +107,36 @@ const ENV_VARS = {
     default: undefined,
     description: "",
   },
+  DMN_DEV_SANDBOX__baseImageRegistry: {
+    name: "DMN_DEV_SANDBOX__baseImageRegistry",
+    default: "quay.io",
+    description: "",
+  },
+  DMN_DEV_SANDBOX__baseImageAccount: {
+    name: "DMN_DEV_SANDBOX__baseImageAccount",
+    default: "kogito_tooling_bot",
+    description: "",
+  },
+  DMN_DEV_SANDBOX__baseImageName: {
+    name: "DMN_DEV_SANDBOX__baseImageName",
+    default: "dmn-dev-sandbox-deployment-base-image",
+    description: "",
+  },
+  DMN_DEV_SANDBOX__baseImageTag: {
+    name: "DMN_DEV_SANDBOX__baseImageTag",
+    default: "latest",
+    description: "",
+  },
+  DMN_DEV_SANDBOX__onlineEditorUrl: {
+    name: "DMN_DEV_SANDBOX__onlineEditorUrl",
+    default: "https://kiegroup.github.io/kogito-online",
+    description: "",
+  },
+  DMN_DEV_SANDBOX__gtmId: {
+    name: "DMN_DEV_SANDBOX__gtmId",
+    default: undefined,
+    description: "",
+  },
   WEBPACK__minimize: {
     name: "WEBPACK__minimize",
     description: "",
@@ -127,6 +162,7 @@ module.exports = {
       lint: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_lint)),
       test: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_test)),
       testIT: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_testIT)),
+      docker: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_docker)),
     },
     webpack: (webpackEnv) => {
       if (webpackEnv.dev) {
@@ -176,6 +212,22 @@ module.exports = {
         linux: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux),
         macOs: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs),
         windows: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows),
+      },
+    },
+  },
+
+  dmnDevSandbox: {
+    gtmId: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__gtmId),
+    onlineEditorUrl: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__onlineEditorUrl),
+    baseImage: {
+      registry: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__baseImageRegistry),
+      account: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__baseImageAccount),
+      name: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__baseImageName),
+      tag: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__baseImageTag),
+    },
+    form: {
+      dev: {
+        port: 9008,
       },
     },
   },
