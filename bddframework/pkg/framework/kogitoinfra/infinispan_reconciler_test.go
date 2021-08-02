@@ -15,6 +15,7 @@
 package kogitoinfra
 
 import (
+	"github.com/go-openapi/swag"
 	"io/ioutil"
 	"testing"
 
@@ -56,6 +57,7 @@ func Test_Reconcile_Infinispan(t *testing.T) {
 		ObjectMeta: v1.ObjectMeta{Name: "kogito-infinispan", Namespace: t.Name()},
 		Spec: ispn.InfinispanSpec{
 			Security: ispn.InfinispanSecurity{
+				EndpointAuthentication: swag.Bool(true),
 				EndpointEncryption: &ispn.EndpointEncryption{
 					CertSecretName: tlsSecret.Name,
 				},

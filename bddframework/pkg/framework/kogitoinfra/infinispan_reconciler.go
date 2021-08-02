@@ -229,7 +229,7 @@ func (i *infinispanInfraReconciler) updateInfinispanRuntimePropsInStatus(infinis
 }
 
 func (i *infinispanInfraReconciler) updateInfinispanVolumesInStatus(infinispanInstance *infinispan.Infinispan) error {
-	if infinispanInstance.Spec.Security.EndpointEncryption == nil || len(infinispanInstance.Spec.Security.EndpointEncryption.CertSecretName) == 0 {
+	if !*infinispanInstance.Spec.Security.EndpointAuthentication || infinispanInstance.Spec.Security.EndpointEncryption == nil || len(infinispanInstance.Spec.Security.EndpointEncryption.CertSecretName) == 0 {
 		return nil
 	}
 	tlsSecret, err := i.ensureEncryptionTrustStoreSecret(infinispanInstance)
@@ -267,7 +267,7 @@ func (i *infinispanInfraReconciler) updateInfinispanVolumesInStatus(infinispanIn
 }
 
 func (i *infinispanInfraReconciler) ensureEncryptionTrustStoreSecret(infinispanInstance *infinispan.Infinispan) (*corev1.Secret, error) {
-	if infinispanInstance.Spec.Security.EndpointEncryption == nil || len(infinispanInstance.Spec.Security.EndpointEncryption.CertSecretName) == 0 {
+	if !*infinispanInstance.Spec.Security.EndpointAuthentication || infinispanInstance.Spec.Security.EndpointEncryption == nil || len(infinispanInstance.Spec.Security.EndpointEncryption.CertSecretName) == 0 {
 		return nil, nil
 	}
 	kogitoInfraEncryptionSecret := &corev1.Secret{
