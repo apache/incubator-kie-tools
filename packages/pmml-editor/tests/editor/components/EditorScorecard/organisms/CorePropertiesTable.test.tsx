@@ -15,11 +15,15 @@
  */
 import { render } from "@testing-library/react";
 import * as React from "react";
-import { CorePropertiesTable } from "../../../../../src/editor/components/EditorScorecard/organisms";
+import { CoreProperties, CorePropertiesTable } from "../../../../../src/editor/components/EditorScorecard/organisms";
 import { Operation, OperationContext } from "../../../../../src/editor/components/EditorScorecard";
 
 const commit = jest.fn(() => {
   /*NOP*/
+});
+
+beforeEach(() => {
+  commit.mockReset();
 });
 
 describe("CorePropertiesTable", () => {
@@ -81,5 +85,87 @@ describe("CorePropertiesTable", () => {
     const container = render(component).getByTestId("core-properties-table");
     expect(container.children[0].className.toString()).toContain("editable-item");
     expect(container).toMatchSnapshot();
+  });
+
+  test("isScorable::clickable", () => {
+    const component = (
+      <OperationContext.Provider
+        value={{
+          activeOperation: Operation.UPDATE_CORE,
+          setActiveOperation: (operation) => {
+            /*NOP*/
+          },
+        }}
+      >
+        <CorePropertiesTable
+          modelIndex={0}
+          isScorable={true}
+          functionName={"regression"}
+          algorithmName={"algorithmName"}
+          baselineScore={1}
+          isBaselineScoreDisabled={false}
+          baselineMethod={"other"}
+          initialScore={2}
+          areReasonCodesUsed={true}
+          reasonCodeAlgorithm={"pointsBelow"}
+          commit={commit}
+        />
+      </OperationContext.Provider>
+    );
+
+    const { getByTestId, rerender } = render(component);
+    const container = getByTestId("core-properties-table");
+
+    container.click();
+    rerender(component);
+
+    const isScorable = getByTestId("core-properties-table-isScorable");
+    isScorable.click();
+
+    expect(commit).toBeCalledTimes(1);
+    const args: CoreProperties[] = commit.mock.calls[0];
+    expect(args.length).toEqual(1);
+    expect(args[0].isScorable).toBeFalsy();
+  });
+
+  test("useReasonCodes::clickable", () => {
+    const component = (
+      <OperationContext.Provider
+        value={{
+          activeOperation: Operation.UPDATE_CORE,
+          setActiveOperation: (operation) => {
+            /*NOP*/
+          },
+        }}
+      >
+        <CorePropertiesTable
+          modelIndex={0}
+          isScorable={true}
+          functionName={"regression"}
+          algorithmName={"algorithmName"}
+          baselineScore={1}
+          isBaselineScoreDisabled={false}
+          baselineMethod={"other"}
+          initialScore={2}
+          areReasonCodesUsed={true}
+          reasonCodeAlgorithm={"pointsBelow"}
+          commit={commit}
+        />
+      </OperationContext.Provider>
+    );
+
+    const { getByTestId, rerender } = render(component);
+    const container = getByTestId("core-properties-table");
+
+    container.click();
+    rerender(component);
+
+    const useReasonCodes = getByTestId("core-properties-table-useReasonCodes");
+    useReasonCodes.click();
+
+    expect(commit).toBeCalledTimes(1);
+    const args: CoreProperties[] = commit.mock.calls[0];
+    expect(args.length).toEqual(1);
+    expect(args[0].areReasonCodesUsed).toBeFalsy();
   });
 });

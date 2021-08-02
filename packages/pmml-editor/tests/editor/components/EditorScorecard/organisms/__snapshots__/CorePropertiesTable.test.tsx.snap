@@ -235,6 +235,7 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                       aria-label="Is scorable"
                       checked=""
                       class="pf-c-switch__input"
+                      data-testid="core-properties-table-isScorable"
                       id="core-isScorable"
                       type="checkbox"
                     />
@@ -435,6 +436,7 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                       aria-label="Use reason codes"
                       checked=""
                       class="pf-c-switch__input"
+                      data-testid="core-properties-table-useReasonCodes"
                       id="core-useReasonCodes"
                       type="checkbox"
                     />

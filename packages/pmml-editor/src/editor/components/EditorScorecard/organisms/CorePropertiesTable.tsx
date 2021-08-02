@@ -39,7 +39,7 @@ import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import set = Reflect.set;
 import get = Reflect.get;
 
-interface CoreProperties {
+export interface CoreProperties {
   modelIndex: number;
   isScorable: boolean | undefined;
   functionName: MiningFunction | undefined;
@@ -225,6 +225,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           id="core-isScorable"
                           isChecked={isScorable === true}
                           aria-label="Is scorable"
+                          data-testid="core-properties-table-isScorable"
                           onChange={(checked) => {
                             setScorable(checked);
                             onCommit({ isScorable: checked });
@@ -290,6 +291,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           id="core-useReasonCodes"
                           isChecked={areReasonCodesUsed}
                           aria-label="Use reason codes"
+                          data-testid="core-properties-table-useReasonCodes"
                           onChange={(checked) => {
                             setAreReasonCodesUsed(checked);
                             onCommit({ areReasonCodesUsed: checked });
