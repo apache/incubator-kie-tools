@@ -79,9 +79,7 @@ describe("FunctionExpression tests", () => {
 
     expect(mockedBroadcastDefinition).toHaveBeenLastCalledWith({
       dataType: DataType.Undefined,
-      expression: {
-        uid: "id1",
-      },
+      expression: expect.objectContaining({}),
       formalParameters: [],
       functionKind: "FEEL",
       logicType: "Function",
@@ -394,6 +392,7 @@ describe("FunctionExpression tests", () => {
   });
 
   function mockBroadcastDefinition(mockedBroadcastDefinition: jest.Mock) {
+    // noinspection JSVoidFunctionReturnValueUsed
     window.beeApi = _.extend(window.beeApi || {}, {
       broadcastFunctionExpressionDefinition: (definition: FunctionProps) => mockedBroadcastDefinition(definition),
     });

@@ -18,7 +18,14 @@ import "./RelationExpression.css";
 import * as React from "react";
 import { useCallback, useEffect, useRef } from "react";
 import "@patternfly/react-styles/css/utilities/Text/text.css";
-import { Column as RelationColumn, DataType, RelationProps, Row, TableOperation } from "../../api";
+import {
+  Column as RelationColumn,
+  DataType,
+  executeIfExpressionDefinitionChanged,
+  RelationProps,
+  Row,
+  TableOperation,
+} from "../../api";
 import { Table } from "../Table";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import * as _ from "lodash";
@@ -47,6 +54,8 @@ export const RelationExpression: React.FunctionComponent<RelationProps> = (relat
     },
   ];
 
+  const storedExpressionDefinition = useRef({} as RelationProps);
+
   const tableColumns = useRef<RelationColumn[]>(
     relationProps.columns === undefined
       ? [{ name: FIRST_COLUMN_NAME, dataType: DataType.Undefined }]
@@ -61,9 +70,18 @@ export const RelationExpression: React.FunctionComponent<RelationProps> = (relat
       columns: tableColumns.current,
       rows: tableRows.current,
     };
-    relationProps.isHeadless
-      ? relationProps.onUpdatingRecursiveExpression?.(expressionDefinition)
-      : window.beeApi?.broadcastRelationExpressionDefinition?.(expressionDefinition);
+
+    executeIfExpressionDefinitionChanged(
+      storedExpressionDefinition.current,
+      expressionDefinition,
+      () => {
+        relationProps.isHeadless
+          ? relationProps.onUpdatingRecursiveExpression?.(expressionDefinition)
+          : window.beeApi?.broadcastRelationExpressionDefinition?.(expressionDefinition);
+        storedExpressionDefinition.current = expressionDefinition;
+      },
+      ["columns", "rows"]
+    );
   }, [relationProps]);
 
   const convertColumnsForTheTable = useCallback(

@@ -25,6 +25,7 @@ import {
   DataType,
   DecisionTableProps,
   DecisionTableRule,
+  executeIfExpressionDefinitionChanged,
   GroupOperations,
   HitPolicy,
   LogicType,
@@ -63,6 +64,8 @@ export const DecisionTableExpression: React.FunctionComponent<DecisionTableProps
   rules = [{ inputEntries: [DASH_SYMBOL], outputEntries: [EMPTY_SYMBOL], annotationEntries: [EMPTY_SYMBOL] }],
 }) => {
   const { i18n } = useBoxedExpressionEditorI18n();
+
+  const storedExpressionDefinition = useRef({} as DecisionTableProps);
 
   const getColumnPrefix = useCallback((groupType?: string) => {
     switch (groupType) {
@@ -248,12 +251,20 @@ export const DecisionTableExpression: React.FunctionComponent<DecisionTableProps
       rules,
     };
 
-    if (isHeadless) {
-      onUpdatingRecursiveExpression?.(expressionDefinition);
-    } else {
-      setSupervisorHash(hashfy(expressionDefinition));
-      window.beeApi?.broadcastDecisionTableExpressionDefinition?.(expressionDefinition);
-    }
+    executeIfExpressionDefinitionChanged(
+      storedExpressionDefinition.current,
+      expressionDefinition,
+      () => {
+        if (isHeadless) {
+          onUpdatingRecursiveExpression?.(expressionDefinition);
+        } else {
+          setSupervisorHash(hashfy(expressionDefinition));
+          window.beeApi?.broadcastDecisionTableExpressionDefinition?.(expressionDefinition);
+        }
+        storedExpressionDefinition.current = expressionDefinition;
+      },
+      ["name", "dataType", "hitPolicy", "aggregation", "input", "output", "annotations", "rules"]
+    );
   }, [isHeadless, onUpdatingRecursiveExpression, selectedAggregation, selectedHitPolicy, setSupervisorHash, uid]);
 
   const synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType = useCallback(

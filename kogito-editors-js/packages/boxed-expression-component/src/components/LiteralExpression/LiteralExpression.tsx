@@ -17,7 +17,13 @@
 import "./LiteralExpression.css";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { DataType, ExpressionProps, LiteralExpressionProps, LogicType } from "../../api";
+import {
+  DataType,
+  executeIfExpressionDefinitionChanged,
+  ExpressionProps,
+  LiteralExpressionProps,
+  LogicType,
+} from "../../api";
 import { EditExpressionMenu, EXPRESSION_NAME } from "../EditExpressionMenu";
 import { Resizer } from "../Resizer";
 import { EditableCell } from "../Table";
@@ -34,6 +40,7 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
 }: LiteralExpressionProps) => {
   const HEADER_WIDTH = 250;
 
+  const storedExpressionDefinition = useRef({} as LiteralExpressionProps);
   const [expressionName, setExpressionName] = useState<string>(name);
   const [expressionDataType, setExpressionDataType] = useState<DataType>(dataType);
   const literalExpressionContent = useRef<string>(content);
@@ -50,9 +57,18 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
         ? { width: literalExpressionWidth.current }
         : {}),
     };
-    isHeadless
-      ? onUpdatingRecursiveExpression?.(expressionDefinition)
-      : window.beeApi?.broadcastLiteralExpressionDefinition?.(expressionDefinition);
+
+    executeIfExpressionDefinitionChanged(
+      storedExpressionDefinition.current,
+      expressionDefinition,
+      () => {
+        isHeadless
+          ? onUpdatingRecursiveExpression?.(expressionDefinition)
+          : window.beeApi?.broadcastLiteralExpressionDefinition?.(expressionDefinition);
+        storedExpressionDefinition.current = expressionDefinition;
+      },
+      ["name", "dataType", "content", "width"]
+    );
   }, [expressionDataType, expressionName, isHeadless, onUpdatingRecursiveExpression, uid]);
 
   const onExpressionUpdate = useCallback(

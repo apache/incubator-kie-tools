@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import * as ReactDOM from "react-dom";
 import "./index.css";
 // noinspection ES6PreferShortImport
@@ -24,14 +24,16 @@ import {
   ContextProps,
   DataType,
   DecisionTableProps,
-  ExpressionContainerProps,
   ExpressionProps,
   FunctionProps,
   InvocationProps,
   ListProps,
   LiteralExpressionProps,
+  LogicType,
   RelationProps,
 } from "./lib";
+import { Button, Modal } from "@patternfly/react-core";
+import { CopyIcon, PenIcon } from "@patternfly/react-icons";
 
 export const App: React.FunctionComponent = () => {
   //This definition comes directly from the decision node
@@ -68,30 +70,88 @@ export const App: React.FunctionComponent = () => {
     },
   ];
 
-  const [updatedExpression, setUpdatedExpression] = useState(selectedExpression);
+  const [expressionDefinition, setExpressionDefinition] = useState(selectedExpression);
 
-  const expressionDefinition: ExpressionContainerProps = { selectedExpression };
+  const [typedExpressionDefinition, setTypedExpressionDefinition] = useState(JSON.stringify(selectedExpression));
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   //Defining global function that will be available in the Window namespace and used by the BoxedExpressionEditor component
   window.beeApi = {
-    resetExpressionDefinition: (definition: ExpressionProps) => setUpdatedExpression(definition),
-    broadcastLiteralExpressionDefinition: (definition: LiteralExpressionProps) => setUpdatedExpression(definition),
-    broadcastRelationExpressionDefinition: (definition: RelationProps) => setUpdatedExpression(definition),
-    broadcastContextExpressionDefinition: (definition: ContextProps) => setUpdatedExpression(definition),
-    broadcastListExpressionDefinition: (definition: ListProps) => setUpdatedExpression(definition),
-    broadcastInvocationExpressionDefinition: (definition: InvocationProps) => setUpdatedExpression(definition),
-    broadcastFunctionExpressionDefinition: (definition: FunctionProps) => setUpdatedExpression(definition),
-    broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) => setUpdatedExpression(definition),
+    resetExpressionDefinition: (definition: ExpressionProps) => setExpressionDefinition(definition),
+    broadcastLiteralExpressionDefinition: (definition: LiteralExpressionProps) => setExpressionDefinition(definition),
+    broadcastRelationExpressionDefinition: (definition: RelationProps) => setExpressionDefinition(definition),
+    broadcastContextExpressionDefinition: (definition: ContextProps) => setExpressionDefinition(definition),
+    broadcastListExpressionDefinition: (definition: ListProps) => setExpressionDefinition(definition),
+    broadcastInvocationExpressionDefinition: (definition: InvocationProps) => setExpressionDefinition(definition),
+    broadcastFunctionExpressionDefinition: (definition: FunctionProps) => setExpressionDefinition(definition),
+    broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) => setExpressionDefinition(definition),
   };
+
+  const copyToClipboard = useCallback(
+    () => navigator.clipboard.writeText(JSON.stringify(expressionDefinition)),
+    [expressionDefinition]
+  );
+
+  const onTypedExpressionChange = useCallback((e) => {
+    setTypedExpressionDefinition(e.target.value);
+  }, []);
+
+  const handleModalToggle = useCallback(() => {
+    setIsModalOpen((isModalOpen) => {
+      const goingToOpenTheModal = !isModalOpen;
+      if (goingToOpenTheModal) {
+        setTypedExpressionDefinition(JSON.stringify(expressionDefinition));
+      }
+      return goingToOpenTheModal;
+    });
+  }, [expressionDefinition]);
+
+  const updateExpressionDefinition = useCallback(() => {
+    try {
+      const parsedTypedExpression = JSON.parse(typedExpressionDefinition);
+      setExpressionDefinition({ logicType: LogicType.Undefined });
+      setTimeout(() => {
+        setExpressionDefinition(parsedTypedExpression);
+      }, 0);
+      setIsModalOpen(false);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [typedExpressionDefinition]);
 
   return (
     <div className="showcase">
       <div className="boxed-expression">
         <BoxedExpressionEditor expressionDefinition={expressionDefinition} pmmlParams={pmmlParams} />
       </div>
+
       <div className="updated-json">
-        <pre>{JSON.stringify(updatedExpression, null, 2)}</pre>
+        <div className="buttons">
+          <Button variant="secondary" icon={<CopyIcon />} iconPosition="left" onClick={copyToClipboard} />
+          <Button variant="secondary" icon={<PenIcon />} iconPosition="left" onClick={handleModalToggle} />
+        </div>
+
+        <pre>{JSON.stringify(expressionDefinition, null, 2)}</pre>
       </div>
+
+      <Modal
+        title="Manually edit Expression Definition"
+        className="expression-definition-editor-modal"
+        isOpen={isModalOpen}
+        onClose={handleModalToggle}
+        description="This modal is supposed to provide a manual edit option for the expression definition. If «Confirm» action does nothing, probably there is an issue with JSON definition parsing: look at browser's console."
+        actions={[
+          <Button key="confirm" variant="primary" onClick={updateExpressionDefinition}>
+            Confirm
+          </Button>,
+          <Button key="cancel" variant="link" onClick={handleModalToggle}>
+            Cancel
+          </Button>,
+        ]}
+      >
+        <textarea className="typed-expression" value={typedExpressionDefinition} onChange={onTypedExpressionChange} />
+      </Modal>
     </div>
   );
 };

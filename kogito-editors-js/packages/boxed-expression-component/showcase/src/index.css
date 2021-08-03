@@ -33,8 +33,14 @@
   overflow-y: auto;
 }
 
-.showcase .updated-json .disclaimer {
-  font-style: italic;
-  color: #4d5258;
-  margin: 0;
+.showcase .updated-json .buttons button,
+.expression-definition-editor-modal button {
+  cursor: pointer;
+}
+
+.expression-definition-editor-modal .typed-expression {
+  height: 20em;
+  width: 100%;
+  overflow: auto;
+  resize: none;
 }

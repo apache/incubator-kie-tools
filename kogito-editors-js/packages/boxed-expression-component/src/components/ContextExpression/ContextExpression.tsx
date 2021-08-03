@@ -25,6 +25,7 @@ import {
   DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
   DEFAULT_ENTRY_INFO_MIN_WIDTH,
   EntryInfo,
+  executeIfExpressionDefinitionChanged,
   ExpressionProps,
   generateNextAvailableEntryName,
   getEntryKey,
@@ -61,6 +62,8 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = ({
   onUpdatingRecursiveExpression,
 }) => {
   const { i18n } = useBoxedExpressionEditorI18n();
+
+  const storedExpressionDefinition = useRef({} as ContextProps);
 
   const expressionColumnName = useRef(name);
   const expressionColumnDataType = useRef(dataType);
@@ -127,12 +130,20 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = ({
       entryExpressionWidth: expressionWidth,
     };
 
-    if (isHeadless) {
-      onUpdatingRecursiveExpression?.(_.omit(updatedDefinition, ["name", "dataType"]));
-    } else {
-      setSupervisorHash(hashfy(updatedDefinition));
-      window.beeApi?.broadcastContextExpressionDefinition?.(updatedDefinition);
-    }
+    executeIfExpressionDefinitionChanged(
+      storedExpressionDefinition.current,
+      updatedDefinition,
+      () => {
+        if (isHeadless) {
+          onUpdatingRecursiveExpression?.(_.omit(updatedDefinition, ["name", "dataType"]));
+        } else {
+          setSupervisorHash(hashfy(updatedDefinition));
+          window.beeApi?.broadcastContextExpressionDefinition?.(updatedDefinition);
+        }
+        storedExpressionDefinition.current = updatedDefinition;
+      },
+      ["name", "dataType", "contextEntries", "result", "entryInfoWidth", "entryExpressionWidth"]
+    );
   }, [
     expressionWidth,
     infoWidth,

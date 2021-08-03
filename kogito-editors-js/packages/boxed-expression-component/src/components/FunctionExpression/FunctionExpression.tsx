@@ -21,6 +21,7 @@ import {
   ContextProps,
   DataType,
   DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+  executeIfExpressionDefinitionChanged,
   ExpressionProps,
   FeelFunctionProps,
   FunctionKind,
@@ -55,6 +56,8 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (props
   const [width, setWidth] = useState(parametersWidth);
 
   const { i18n } = useBoxedExpressionEditorI18n();
+
+  const storedExpressionDefinition = useRef({} as FunctionProps);
 
   const { boxedExpressionEditorRef, setSupervisorHash, pmmlParams } = useContext(BoxedExpressionGlobalContext);
 
@@ -297,12 +300,31 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (props
       selectedFunctionKind
     );
 
-    if (props.isHeadless) {
-      props.onUpdatingRecursiveExpression?.(_.omit(updatedDefinition, ["name", "dataType"]));
-    } else {
-      setSupervisorHash(hashfy(rows));
-      window.beeApi?.broadcastFunctionExpressionDefinition?.(updatedDefinition);
-    }
+    executeIfExpressionDefinitionChanged(
+      storedExpressionDefinition.current,
+      updatedDefinition,
+      () => {
+        if (props.isHeadless) {
+          props.onUpdatingRecursiveExpression?.(_.omit(updatedDefinition, ["name", "dataType"]));
+        } else {
+          setSupervisorHash(hashfy(rows));
+          window.beeApi?.broadcastFunctionExpressionDefinition?.(updatedDefinition);
+        }
+        storedExpressionDefinition.current = updatedDefinition;
+      },
+      [
+        "name",
+        "dataType",
+        "functionKind",
+        "formalParameters",
+        "parametersWidth",
+        "class",
+        "method",
+        "document",
+        "model",
+        "expression",
+      ]
+    );
   }, [extendDefinitionBasedOnFunctionKind, setSupervisorHash, parameters, props, selectedFunctionKind, rows, width]);
 
   const getHeaderVisibility = useCallback(() => {

@@ -24,6 +24,7 @@ import {
   DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
   DEFAULT_ENTRY_INFO_MIN_WIDTH,
   EntryInfo,
+  executeIfExpressionDefinitionChanged,
   generateNextAvailableEntryName,
   getEntryKey,
   getHandlerConfiguration,
@@ -56,6 +57,8 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = ({
   uid,
 }: InvocationProps) => {
   const { i18n } = useBoxedExpressionEditorI18n();
+
+  const storedExpressionDefinition = useRef({} as InvocationProps);
 
   const [rows, setRows] = useState(
     bindingEntries || [
@@ -95,12 +98,20 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = ({
 
     const expression = _.omit(updatedDefinition, ["name", "dataType"]);
 
-    if (isHeadless) {
-      onUpdatingRecursiveExpression?.(expression);
-    } else {
-      setSupervisorHash(hashfy(expression));
-      window.beeApi?.broadcastInvocationExpressionDefinition?.(updatedDefinition);
-    }
+    executeIfExpressionDefinitionChanged(
+      storedExpressionDefinition.current,
+      updatedDefinition,
+      () => {
+        if (isHeadless) {
+          onUpdatingRecursiveExpression?.(expression);
+        } else {
+          setSupervisorHash(hashfy(expression));
+          window.beeApi?.broadcastInvocationExpressionDefinition?.(updatedDefinition);
+        }
+        storedExpressionDefinition.current = updatedDefinition;
+      },
+      ["name", "dataType", "bindingEntries", "invokedFunction", "entryInfoWidth", "entryExpressionWidth"]
+    );
   }, [
     expressionWidth,
     functionName,

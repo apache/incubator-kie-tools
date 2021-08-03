@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import _ from "lodash";
 import {
   ContextProps,
   DecisionTableProps,
@@ -43,3 +44,27 @@ declare global {
     };
   }
 }
+
+/**
+ * First, checks if each field, specified in propertiesToCheck, is equal for prevDef and updatedDef
+ * Second, if the condition specified above is true, executes functionToExecute
+ * @param prevDef previous definition
+ * @param updatedDef updated definition
+ * @param functionToExecute function to be executed if criteria is met
+ * @param propertiesToCheck properties to be checked in the input objects
+ */
+export const executeIfExpressionDefinitionChanged = (
+  prevDef: ExpressionProps,
+  updatedDef: ExpressionProps,
+  functionToExecute: () => void,
+  propertiesToCheck?: string[]
+) => {
+  const customizer = propertiesToCheck
+    ? (prev: Record<string, any>, next: Record<string, any>) =>
+        _.every(propertiesToCheck, (prop) => _.isEqual(prev[prop], next[prop]))
+    : undefined;
+
+  if (!_.isEqualWith(prevDef, updatedDef, customizer)) {
+    functionToExecute();
+  }
+};

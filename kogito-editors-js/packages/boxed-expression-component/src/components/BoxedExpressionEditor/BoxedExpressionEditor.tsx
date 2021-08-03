@@ -15,12 +15,12 @@
  */
 
 import * as React from "react";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "@patternfly/react-core/dist/styles/base-no-reset.css";
 import "@patternfly/react-styles/css/components/Drawer/drawer.css";
 import "./BoxedExpressionEditor.css";
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
-import { ExpressionContainer, ExpressionContainerProps } from "../ExpressionContainer";
+import { ExpressionContainer } from "../ExpressionContainer";
 import { hashfy, ResizerSupervisor } from "../Resizer";
 import {
   boxedExpressionEditorDictionaries,
@@ -29,21 +29,33 @@ import {
 } from "../../i18n";
 import { BoxedExpressionGlobalContext } from "../../context";
 import * as _ from "lodash";
-import { PMMLParams } from "../../api";
+import { ExpressionProps, PMMLParams } from "../../api";
 
 export interface BoxedExpressionEditorProps {
   /** All expression properties used to define it */
-  expressionDefinition: ExpressionContainerProps;
+  expressionDefinition: ExpressionProps;
   /** PMML parameters */
   pmmlParams?: PMMLParams;
 }
 
-const BoxedExpressionEditor: (props: BoxedExpressionEditorProps) => JSX.Element = (
+export const BoxedExpressionEditor: (props: BoxedExpressionEditorProps) => JSX.Element = (
   props: BoxedExpressionEditorProps
 ) => {
   const [currentlyOpenedHandlerCallback, setCurrentlyOpenedHandlerCallback] = useState(() => _.identity);
   const boxedExpressionEditorRef = useRef<HTMLDivElement>(null);
+  const [expressionDefinition, setExpressionDefinition] = useState(props.expressionDefinition);
   const [supervisorHash, setSupervisorHash] = useState(hashfy(props.expressionDefinition));
+
+  useEffect(() => {
+    setExpressionDefinition(props.expressionDefinition);
+    setSupervisorHash(hashfy(props.expressionDefinition));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.expressionDefinition]);
+
+  const onExpressionChange = useCallback(
+    (updatedExpression: ExpressionProps) => setExpressionDefinition(updatedExpression),
+    []
+  );
 
   return useMemo(
     () => (
@@ -65,15 +77,13 @@ const BoxedExpressionEditor: (props: BoxedExpressionEditorProps) => JSX.Element 
         >
           <ResizerSupervisor>
             <div className="boxed-expression-editor" ref={boxedExpressionEditorRef}>
-              <ExpressionContainer {...props.expressionDefinition} />
+              <ExpressionContainer selectedExpression={expressionDefinition} onExpressionChange={onExpressionChange} />
             </div>
           </ResizerSupervisor>
         </BoxedExpressionGlobalContext.Provider>
       </I18nDictionariesProvider>
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [props.expressionDefinition]
+    [expressionDefinition]
   );
 };
-
-export { BoxedExpressionEditor };

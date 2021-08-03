@@ -16,15 +16,14 @@
 
 import * as React from "react";
 import { render } from "@testing-library/react";
-import { BoxedExpressionEditor, ExpressionContainerProps } from "../../../components";
+import { BoxedExpressionEditor } from "../../../components";
 import { DataType, ExpressionProps } from "../../../api";
 
 describe("BoxedExpressionEditor tests", () => {
   test("should render BoxedExpressionEditor component", () => {
     const selectedExpression: ExpressionProps = { name: "Expression Name", dataType: DataType.Undefined };
-    const expressionDefinition: ExpressionContainerProps = { selectedExpression: selectedExpression };
 
-    const { container } = render(<BoxedExpressionEditor expressionDefinition={expressionDefinition} />);
+    const { container } = render(<BoxedExpressionEditor expressionDefinition={selectedExpression} />);
 
     expect(container).toMatchSnapshot();
   });

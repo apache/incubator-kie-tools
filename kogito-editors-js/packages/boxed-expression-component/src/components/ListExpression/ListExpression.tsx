@@ -16,10 +16,11 @@
 
 import "./ListExpression.css";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   ContextEntryRecord,
   DataType,
+  executeIfExpressionDefinitionChanged,
   ExpressionProps,
   ListProps,
   LiteralExpressionProps,
@@ -47,6 +48,8 @@ export const ListExpression: React.FunctionComponent<ListProps> = ({
   width = LIST_EXPRESSION_MIN_WIDTH,
 }: ListProps) => {
   const { i18n } = useBoxedExpressionEditorI18n();
+
+  const storedExpressionDefinition = useRef({} as ListProps);
 
   const handlerConfiguration: TableHandlerConfiguration = useMemo(
     () => [
@@ -110,12 +113,20 @@ export const ListExpression: React.FunctionComponent<ListProps> = ({
       items: _.map(listItems, (listItem: DataRecord) => listItem.entryExpression as ExpressionProps),
     };
 
-    if (isHeadless) {
-      onUpdatingRecursiveExpression?.(updatedDefinition);
-    } else {
-      setSupervisorHash(hashfy(updatedDefinition));
-      window.beeApi?.broadcastListExpressionDefinition?.(updatedDefinition);
-    }
+    executeIfExpressionDefinitionChanged(
+      storedExpressionDefinition.current,
+      updatedDefinition,
+      () => {
+        if (isHeadless) {
+          onUpdatingRecursiveExpression?.(updatedDefinition);
+        } else {
+          setSupervisorHash(hashfy(updatedDefinition));
+          window.beeApi?.broadcastListExpressionDefinition?.(updatedDefinition);
+        }
+        storedExpressionDefinition.current = updatedDefinition;
+      },
+      ["width", "items"]
+    );
   }, [listWidth, listItems, isHeadless, onUpdatingRecursiveExpression, uid, setSupervisorHash]);
 
   const resetRowCustomFunction = useCallback((row: DataRecord) => {

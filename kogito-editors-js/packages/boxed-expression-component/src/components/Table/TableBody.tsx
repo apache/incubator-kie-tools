@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { Tbody, Td, Tr } from "@patternfly/react-table";
-import { TableHeaderVisibility, Column as IColumn } from "../../api";
+import { Column as IColumn, TableHeaderVisibility } from "../../api";
 import { Cell, Column, Row, TableInstance } from "react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 
@@ -44,33 +44,46 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   getColumnKey,
   onColumnsUpdate,
 }) => {
+  const getWidth = useCallback((column: IColumn): number => {
+    if (typeof column?.width === "number") {
+      return column?.width;
+    }
+    return DEFAULT_MIN_WIDTH;
+  }, []);
+
+  const setWidth = useCallback(
+    (column: IColumn, width: number, cellIndex: number) => {
+      column?.setWidth?.(width);
+      tableInstance.allColumns[cellIndex].width = width;
+    },
+    [tableInstance.allColumns]
+  );
+
+  const onResize = useCallback(
+    (column: IColumn, width: number, cellIndex: number) => {
+      if (column.setWidth) {
+        setWidth(column, width, cellIndex);
+        onColumnsUpdate?.(tableInstance.columns);
+      }
+    },
+    [onColumnsUpdate, setWidth, tableInstance.columns]
+  );
+
+  const getElement = useCallback((cell) => {
+    return <>{cell.render("Cell")}</>;
+  }, []);
+
   const renderCell = useCallback(
     (cellIndex: number, cell: Cell, rowIndex: number) => {
       const cellType = cellIndex === 0 ? "counter-cell" : "data-cell";
       const column = tableInstance.allColumns[cellIndex] as unknown as IColumn;
 
-      const getWidth = (): number => {
-        if (typeof column?.width === "number") {
-          return column?.width;
-        }
-        return DEFAULT_MIN_WIDTH;
-      };
-      const setWidth = (width: number) => {
-        column?.setWidth?.(width);
-        tableInstance.allColumns[cellIndex].width = width;
-      };
-      const onResize = (width: number) => {
-        if (column.setWidth) {
-          setWidth(width);
-          onColumnsUpdate?.(tableInstance.columns);
-        }
-      };
       const cellTemplate =
         cellIndex === 0 ? (
           <>{rowIndex + 1}</>
         ) : (
-          <Resizer width={getWidth()} onHorizontalResizeStop={onResize}>
-            <>{cell.render("Cell")}</>
+          <Resizer width={getWidth(column)} onHorizontalResizeStop={(width) => onResize(column, width, cellIndex)}>
+            {getElement(cell)}
           </Resizer>
         );
 
@@ -85,7 +98,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
         </Td>
       );
     },
-    [getColumnKey, onColumnsUpdate, tableInstance]
+    [getColumnKey, getElement, getWidth, onResize, tableInstance]
   );
 
   const renderBodyRow = useCallback(
