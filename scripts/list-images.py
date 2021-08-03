@@ -10,8 +10,6 @@ import common
 
 sys.dont_write_bytecode = True
 
-PRODUCT_PREFIX = "rhpam"
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Kogito Version Manager - List Images by Community and Product version')
@@ -19,10 +17,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    for img in sorted(common.get_all_images()):
-        if args.prod:
-            if img.startswith(PRODUCT_PREFIX):
-                print(img)
-        else:
-            if not img.startswith(PRODUCT_PREFIX):
-                print(img)
+    images = []
+    if args.prod:
+        images = common.get_prod_images()
+    else:
+        images = common.get_community_images()
+
+    for img in sorted(images):
+        print(img)

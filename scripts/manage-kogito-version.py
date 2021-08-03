@@ -25,6 +25,7 @@ if __name__ == "__main__":
     parser.add_argument('--examples-ref', dest='examples_ref',
                         help='Update Behave tests to use the desired branch for kogito-examples')
     parser.add_argument('--confirm', default=False, action='store_true', help='To confirm automatically the setup')
+    parser.add_argument('--prod', default=False, action='store_true', help='Update product modules/images')
 
     args = parser.parse_args()
 
@@ -46,23 +47,31 @@ if __name__ == "__main__":
             if args.artifacts_version:
                 artifacts_version = args.artifacts_version
 
-            print("Images version will be updated to {0}".format(args.bump_to))
-            print("Artifacts version will be updated to {0}".format(artifacts_version))
-            print("Examples ref will be updated to {}".format(examples_ref))
+            if args.prod:
+                print("Product images version will be updated to {0}".format(args.bump_to))
+            else:
+                print("Images version will be updated to {0}".format(args.bump_to))
+                print("Artifacts version will be updated to {0}".format(artifacts_version))
+                print("Examples ref will be updated to {}".format(examples_ref))
 
             if not args.confirm:
                 input("Is the information correct? If so press any key to continue...")
 
             # modules
-            common.update_image_version(args.bump_to)
-            common.update_image_stream(args.bump_to)
-            common.update_modules_version(args.bump_to)
-            common.update_artifacts_version_env_in_image(artifacts_version)
+            if args.prod:
+                common.update_prod_image_version(args.bump_to)
+                common.update_image_stream(args.bump_to, args.prod)
+                common.update_modules_version(args.bump_to, args.prod)
+            else:
+                common.update_community_image_version(args.bump_to)
+                common.update_image_stream(args.bump_to)
+                common.update_modules_version(args.bump_to)
+                common.update_artifacts_version_env_in_image(artifacts_version)
 
-            # tests default values
-            common.update_examples_ref_in_behave_tests(examples_ref)
-            common.update_examples_ref_in_clone_repo(examples_ref)
-            common.update_artifacts_version_in_behave_tests(artifacts_version)
+                # tests default values
+                common.update_examples_ref_in_behave_tests(examples_ref)
+                common.update_examples_ref_in_clone_repo(examples_ref)
+                common.update_artifacts_version_in_behave_tests(artifacts_version)
         else:
             print("Provided version {0} does not match the expected regex - {1}".format(args.bump_to, pattern))
     else:

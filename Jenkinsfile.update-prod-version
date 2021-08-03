@@ -1,0 +1,108 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && !master'
+    }
+
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+    }
+
+    // parameters {
+    // For parameters, check into .jenkins/dsl/jobs.groovy file
+    // }
+
+    environment {
+        // Static env is defined into .jenkins/dsl/jobs.groovy file
+
+        BOT_BRANCH_HASH = "${util.generateHash(10)}"
+    }
+
+    stages {
+        stage('Initialization') {
+            steps {
+                script {
+                    assert getProdProjectVersion()
+                    assert getJiraNumber()
+
+                    currentBuild.displayName = getProdProjectVersion()
+
+                    deleteDir()
+                    checkout(githubscm.resolveRepository(getRepoName(), getGitAuthor(), getBuildBranch(), false))
+                }
+            }
+        }
+        stage('Prepare for PR') {
+            steps {
+                script {
+                    githubscm.forkRepo(getBotAuthorCredsID())
+                    githubscm.createBranch(getBotBranch())
+                }
+            }
+        }
+        stage('Update prod version') {
+            when {
+                expression { return getProdProjectVersion() != '' }
+            }
+            steps {
+                script {
+                    sh "python3 scripts/manage-kogito-version.py --bump-to ${getProdProjectVersion()} --confirm --prod"
+                }
+            }
+        }
+        stage('Create PR') {
+            steps {
+                script {
+                    String commitMsg = "[${getJiraNumber()}] Update product version to ${getProdProjectVersion()}"
+                    if (githubscm.isThereAnyChanges()) {
+                        githubscm.commitChanges(commitMsg)
+                    } else {
+                        error 'No update version can be done'
+                    }
+                    githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
+                    String prLink = githubscm.createPR(commitMsg, 'Please review and merge', getBuildBranch(), getBotAuthorCredsID())
+
+                    echo "Created PR ${prLink}"
+                }
+            }
+        }
+    }
+    post {
+        cleanup {
+            cleanWs()
+        }
+    }
+}
+
+String getRepoName() {
+    return "${REPO_NAME}"
+}
+
+String getBuildBranch() {
+    return "${BUILD_BRANCH_NAME}"
+}
+
+String getGitAuthor() {
+    return "${GIT_AUTHOR}"
+}
+
+String getBotBranch() {
+    return "${getProdProjectVersion() ?: getBuildBranch()}-${env.BOT_BRANCH_HASH}"
+}
+
+String getBotAuthor() {
+    return "${GIT_AUTHOR_BOT}"
+}
+
+String getBotAuthorCredsID() {
+    return "${BOT_CREDENTIALS_ID}"
+}
+
+String getProdProjectVersion() {
+    return "${PROD_PROJECT_VERSION}"
+}
+
+String getJiraNumber() {
+    return "${JIRA_NUMBER}"
+}

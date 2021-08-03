@@ -7,27 +7,15 @@ import re
 
 from ruamel.yaml import YAML
 
-# All kogito-image modules that have the kogito version.
-MODULES = {"kogito-data-index-common", "kogito-data-index-mongodb",
-           "kogito-data-index-infinispan", "kogito-data-index-postgresql",
-           "kogito-trusty-common", "kogito-trusty-infinispan",
-           "kogito-trusty-redis", "kogito-explainability",
-           "kogito-image-dependencies", "kogito-jobs-service-common",
-           "kogito-jobs-service-ephemeral", "kogito-jobs-service-infinispan",
-           "kogito-jobs-service-mongodb", "kogito-jobs-service-postgresql",
-           "kogito-trusty-ui", "kogito-jq",
-           "kogito-kubernetes-client", "kogito-launch-scripts",
-           "kogito-logging", "kogito-management-console",
-           "kogito-task-console", "kogito-persistence",
-           "kogito-runtime-native", "kogito-runtime-jvm",
-           "kogito-builder", "kogito-s2i-core",
-           "kogito-system-user", "kogito-jit-runner",
-           "kogito-custom-truststore"}
 MODULE_FILENAME = "module.yaml"
 MODULES_DIR = "modules"
 
+COMMUNITY_PREFIX = 'kogito-'
+PRODUCT_PREFIX = 'rhpam-'
+
 # imagestream file that contains all images, this file aldo needs to be updated.
 IMAGE_STREAM_FILENAME = "kogito-imagestream.yaml"
+PROD_IMAGE_STREAM_FILENAME = "rhpam-kogito-imagestream.yaml"
 # image.yaml file definition that needs to be updated
 IMAGE_FILENAME = "image.yaml"
 ARTIFACTS_VERSION_ENV_KEY = "KOGITO_VERSION"
@@ -50,14 +38,31 @@ def yaml_loader():
     return yaml
 
 
-def update_image_version(target_version):
+def update_community_image_version(target_version):
     """
     Update image.yaml version tag.
     :param target_version: version used to update the image.yaml file
     """
-    print("Updating Image main file version from file {0} to version {1}".format(IMAGE_FILENAME, target_version))
+    update_image_version_tag_in_yaml_file(target_version, IMAGE_FILENAME)
+
+def update_prod_image_version(target_version):
+    """
+    Update rhpam-*-overrides.yaml files version tag.
+    :param target_version: version used to update the files
+    """
+    for img in sorted(get_prod_images()):
+        file = "{}-overrides.yaml".format(img)
+        update_image_version_tag_in_yaml_file(target_version, file)
+
+def update_image_version_tag_in_yaml_file(target_version, yaml_file):
+    """
+    Update root version tag in yaml file.
+    :param target_version: version to set
+    :param yaml_file: yaml file to update
+    """
+    print("Updating Image main file version from file {0} to version {1}".format(yaml_file, target_version))
     try:
-        with open(IMAGE_FILENAME) as image:
+        with open(yaml_file) as image:
             data = yaml_loader().load(image)
             if 'version' in data:
                 data['version'] = target_version
@@ -65,21 +70,23 @@ def update_image_version(target_version):
                 print("Field version not found, returning...")
                 return
 
-        with open(IMAGE_FILENAME, 'w') as image:
+        with open(yaml_file, 'w') as image:
             yaml_loader().dump(data, image)
     except TypeError as err:
         print("Unexpected error:", err)
 
-
-def update_image_stream(target_version):
+def update_image_stream(target_version, prod=False):
     """
     Update the imagestream file, it will update the tag name, version and image tag.
     :param target_version: version used to update the imagestream file;
     """
-    print("Updating ImageStream images version from file {0} to version {1}".format(IMAGE_STREAM_FILENAME,
+    imageStreamFilename = IMAGE_STREAM_FILENAME
+    if prod:
+        imageStreamFilename = PROD_IMAGE_STREAM_FILENAME
+    print("Updating ImageStream images version from file {0} to version {1}".format(imageStreamFilename,
                                                                                     target_version))
     try:
-        with open(IMAGE_STREAM_FILENAME) as imagestream:
+        with open(imageStreamFilename) as imagestream:
             data = yaml_loader().load(imagestream)
             for item_index, item in enumerate(data['items'], start=0):
                 for tag_index, tag in enumerate(item['spec']['tags'], start=0):
@@ -90,14 +97,14 @@ def update_image_stream(target_version):
                     updated_image_name = image_dict[0] + ':' + target_version
                     data['items'][item_index]['spec']['tags'][tag_index]['from']['name'] = updated_image_name
 
-        with open(IMAGE_STREAM_FILENAME, 'w') as imagestream:
+        with open(imageStreamFilename, 'w') as imagestream:
             yaml_loader().dump(data, imagestream)
 
     except TypeError:
         raise
 
 
-def get_all_module_dirs():
+def get_all_module_dirs(prefix):
     """
     Retrieve the module directories
     """
@@ -107,26 +114,28 @@ def get_all_module_dirs():
     for r, d, f in os.walk(MODULES_DIR):
         for item in f:
             if MODULE_FILENAME == item:
-                modules.append(os.path.dirname(os.path.join(r, item)))
+                path = os.path.dirname(os.path.join(r, item))
+                if os.path.basename(path).startswith(prefix):
+                    modules.append(path)
 
     return modules
 
 
-def get_kogito_module_dirs():
+def get_community_module_dirs():
     """
     Retrieve the Kogito module directories
     """
-    modules = []
+    return get_all_module_dirs(COMMUNITY_PREFIX)
 
-    for moduleName in MODULES:
-        modules.append(os.path.join(MODULES_DIR, moduleName))
-
-    return modules
-
-
-def get_all_images():
+def get_prod_module_dirs():
     """
-    Retrieve the Kogito images' names
+    Retrieve the RHPAM module directories
+    """
+    return get_all_module_dirs(PRODUCT_PREFIX)
+
+def get_images(prefix):
+    """
+    Retrieve the Kogito images' files
     """
     images = []
 
@@ -134,17 +143,35 @@ def get_all_images():
     for r, d, f in os.walk("."):
         for item in f:
             if re.compile(r'.*-overrides.yaml').match(item):
-                images.append(item.replace("-overrides.yaml", ''))
+                if item.startswith(prefix):
+                    images.append(item.replace("-overrides.yaml", ''))
 
     return images
 
+def get_community_images():
+    """
+    Retrieve the Community images' names
+    """
+    return get_images(COMMUNITY_PREFIX)
 
-def update_modules_version(target_version):
+def get_prod_images():
+    """
+    Retrieve the Prod images' names
+    """
+    return get_images(PRODUCT_PREFIX)
+
+def update_modules_version(target_version, prod=False):
     """
     Update every Kogito module.yaml to the given version.
     :param target_version: version used to update all Kogito module.yaml files
     """
-    for module_dir in get_kogito_module_dirs():
+    modules = []
+    if prod:
+        modules = get_prod_module_dirs()
+    else:
+        get_community_module_dirs()
+    
+    for module_dir in modules:
         update_module_version(module_dir, target_version)
 
 
@@ -359,5 +386,9 @@ def update_in_file(file, pattern, replacement):
 
 
 if __name__ == "__main__":
-    for m in get_kogito_module_dirs():
+    print("Community modules:")
+    for m in get_community_module_dirs():
+        print("module {}".format(m))
+    print("\nProd modules:")
+    for m in get_prod_module_dirs():
         print("module {}".format(m))

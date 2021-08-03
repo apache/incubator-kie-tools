@@ -27,7 +27,7 @@ def find_next_tag(override_tags):
     Populate the IMAGES_NEXT_RC_TAGS with the next rc tag for each image.
     """
     global IMAGES_NEXT_RC_TAG
-    for image in common.get_all_images():
+    for image in common.get_community_images():
         tag = fetch_tag(image, override_tags)
         print("Next tag for image %s is %s" % (image, tag))
         IMAGES_NEXT_RC_TAG.append('{}:{}'.format(image, tag))
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     version = get_next_rc_version(find_current_rc_version(), args.override_tags)
-    common.update_image_version(version)
+    common.update_community_image_version(version)
     common.update_image_stream(version)
     common.update_modules_version(version)
     common.update_artifacts_version_env_in_modules(version)
