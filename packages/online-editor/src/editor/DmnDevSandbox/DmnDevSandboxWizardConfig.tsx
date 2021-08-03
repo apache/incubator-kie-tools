@@ -449,6 +449,7 @@ export function DmnDevSandboxWizardConfig() {
             return (
               <>
                 <Button
+                  id="dmn-dev-sandbox-config-deploy-now-button"
                   onClick={() => onFinish(FinishOperation.DEPLOY_NOW)}
                   isDisabled={!isConfigValidated}
                   isLoading={isDeployLoading}
@@ -459,6 +460,7 @@ export function DmnDevSandboxWizardConfig() {
                     : i18n.dmnDevSandbox.configWizard.footer.deployNow}
                 </Button>
                 <Button
+                  id="dmn-dev-sandbox-config-continue-editing-button"
                   onClick={() => onFinish(FinishOperation.CONTINUE_EDITING)}
                   isDisabled={!isConfigValidated}
                   variant="secondary"

@@ -152,6 +152,7 @@ export function DmnDevSandboxModalConfig() {
         </Text>
         <div className="pf-u-my-md">
           <Button
+            id="dmn-dev-sandbox-config-use-wizard-button"
             key="use-wizard"
             className="pf-u-p-0"
             variant="link"
@@ -316,6 +317,7 @@ export function DmnDevSandboxModalConfig() {
           </FormGroup>
           <ActionGroup>
             <Button
+              id="dmn-dev-sandbox-config-save-button"
               key="save"
               variant="primary"
               onClick={onSave}
@@ -325,7 +327,13 @@ export function DmnDevSandboxModalConfig() {
             >
               {isSaveLoading ? i18n.dmnDevSandbox.common.saving : i18n.terms.save}
             </Button>
-            <Button data-testid="reset-config-button" key="reset" variant="danger" onClick={onResetConfig}>
+            <Button
+              id="dmn-dev-sandbox-config-reset-button"
+              data-testid="reset-config-button"
+              key="reset"
+              variant="danger"
+              onClick={onResetConfig}
+            >
               {i18n.terms.reset}
             </Button>
             <Button key="cancel" variant="link" onClick={onClose}>
