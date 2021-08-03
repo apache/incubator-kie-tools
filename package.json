@@ -126,7 +126,7 @@
     "uniforms-bridge-simple-schema-2": "^3.5.1",
     "url-loader": "^4.1.1",
     "vsce": "^1.88.0",
-    "vscode-extension-tester": "4.1.0",
+    "vscode-extension-tester": "4.1.1",
     "vscode-test": "^1.5.2",
     "watch": "^1.0.2",
     "webpack": "^5.36.2",
