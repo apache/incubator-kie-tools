@@ -22,6 +22,7 @@ import org.jboss.errai.reflections.vfs.Vfs;
 
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Predicate;
@@ -39,9 +40,9 @@ public class ErraiPropertyScanner extends AbstractScanner {
   }
 
   public void scan(final Vfs.File file) {
-    try {
+    try (final InputStream fileInputStream = file.openInputStream()) {
       final Properties properties = new Properties();
-      properties.load(file.openInputStream());
+      properties.load(fileInputStream);
 
       final Multimap<String, String> store = getStore();
       for (final Map.Entry<Object, Object> entry : properties.entrySet()) {

@@ -54,9 +54,9 @@ public class ModuleAnnotationProcessor extends AbstractProcessor {
         final FileObject fo
                 = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "classlist.mf");
 
-        final Writer writer = fo.openWriter();
-        writer.write(builder.toString());
-        writer.close();
+        try (final Writer writer = fo.openWriter()) {
+          writer.write(builder.toString());
+        }
       }
       catch (final IOException e) {
         e.printStackTrace();

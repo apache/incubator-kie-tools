@@ -328,16 +328,17 @@ public class TranslationServiceGenerator extends AbstractAsyncGenerator {
 
       if (isJsonBundle(bundlePath)) {
         final JsonFactory jsonFactory = new JsonFactory();
-        final JsonParser jp = jsonFactory.createJsonParser(is);
-        JsonToken token = jp.nextToken();
-        while (token != null) {
-          token = jp.nextToken();
-          if (token == JsonToken.FIELD_NAME) {
-            final String name = jp.getCurrentName();
-            if (keys.contains(name)) {
-              duplicates.add(name);
+        try(final JsonParser jp = jsonFactory.createJsonParser(is)) {
+          JsonToken token = jp.nextToken();
+          while (token != null) {
+            token = jp.nextToken();
+            if (token == JsonToken.FIELD_NAME) {
+              final String name = jp.getCurrentName();
+              if (keys.contains(name)) {
+                duplicates.add(name);
+              }
+              keys.add(name);
             }
-            keys.add(name);
           }
         }
       }
