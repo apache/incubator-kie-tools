@@ -16,6 +16,21 @@
 
 package org.jboss.errai.common.metadata;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.google.common.io.Files;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JPackage;
@@ -24,40 +39,6 @@ import com.google.gwt.dev.javac.StandardGeneratorContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>
@@ -102,10 +83,6 @@ public class RebindUtils {
   }
 
   public static String getClasspathHash() {
-    if (_hasClasspathChanged != null) {
-      return _classpathHashCache;
-    }
-
     try {
       final MessageDigest md = MessageDigest.getInstance("SHA-1");
       final String classPath = System.getProperty("java.class.path");
@@ -166,79 +143,6 @@ public class RebindUtils {
     // noinspection ResultOfMethodCallIgnored
     fileCacheDir.mkdirs();
     return fileCacheDir;
-  }
-
-  private static volatile Boolean _hasClasspathChanged;
-
-  public static boolean hasClasspathChanged() {
-    if (NO_CACHE)
-      return true;
-    if (_hasClasspathChanged != null)
-      return _hasClasspathChanged;
-    final File hashFile = new File(getErraiCacheDir().getAbsolutePath() + "/classpath.sha");
-    final String hashValue = RebindUtils.getClasspathHash();
-
-    if (!hashFile.exists()) {
-      writeStringToFile(hashFile, hashValue);
-    }
-    else {
-      final String fileHashValue = readFileToString(hashFile);
-      if (!fileHashValue.equals(hashValue)) {
-        writeStringToFile(hashFile, hashValue);
-        return _hasClasspathChanged = true;
-      }
-    }
-
-    return _hasClasspathChanged = false;
-  }
-
-  private static Map<Class<? extends Annotation>, Boolean> _changeMapForAnnotationScope =
-      new HashMap<Class<? extends Annotation>, Boolean>();
-
-  public static boolean hasClasspathChangedForAnnotatedWith(final Set<Class<? extends Annotation>> annotations) {
-    if (Boolean.getBoolean("errai.devel.forcecache"))
-      return true;
-
-    boolean result = false;
-    for (final Class<? extends Annotation> a : annotations) {
-      /**
-       * We don't terminate prematurely, because we want to cache the hashes for the next run.
-       */
-      if (hasClasspathChangedForAnnotatedWith(a))
-        result = true;
-    }
-
-    return result;
-  }
-
-  public static boolean hasClasspathChangedForAnnotatedWith(final Class<? extends Annotation> annoClass) {
-    if (NO_CACHE)
-      return true;
-    Boolean changed = _changeMapForAnnotationScope.get(annoClass);
-    if (changed == null) {
-      final File hashFile = new File(getErraiCacheDir().getAbsolutePath() + "/"
-          + annoClass.getName().replaceAll("\\.", "_") + ".sha");
-
-      final MetaDataScanner singleton = ScannerSingleton.getOrCreateInstance();
-      final String hash = singleton.getHashForTypesAnnotatedWith(hashSeed, annoClass);
-
-      if (!hashFile.exists()) {
-        writeStringToFile(hashFile, hash);
-        changed = Boolean.TRUE;
-      }
-      else {
-        final String fileHashValue = readFileToString(hashFile);
-        if (fileHashValue.equals(hash)) {
-          _changeMapForAnnotationScope.put(annoClass, changed = Boolean.FALSE);
-        }
-        else {
-          writeStringToFile(hashFile, hash);
-          _changeMapForAnnotationScope.put(annoClass, changed = Boolean.TRUE);
-        }
-      }
-
-    }
-    return changed;
   }
 
   /**
@@ -305,64 +209,6 @@ public class RebindUtils {
     }
     else {
       visitor.visit(f);
-    }
-  }
-
-  private static final String[] moduleRootExclusions = { "target/", "out/", "build/", "src/", "war/", "exploded/" };
-
-  public static String guessWorkingDirectoryForModule(final GeneratorContext context) {
-    if (context == null) {
-      logger.warn("could not determine module location, using CWD (no context)");
-      return new File("").getAbsolutePath() + "/";
-    }
-    try {
-      final List<URL> configUrls = ErraiAppPropertiesFiles.getModulesUrls();
-      final Set<String> candidateRoots = new HashSet<String>();
-      final String workingDir = new File("").getAbsolutePath();
-
-      Pathcheck: for (final URL url : configUrls) {
-        String filePath = url.getFile();
-        if (filePath.startsWith(workingDir) && filePath.indexOf('!') == -1) {
-          final int start = workingDir.length() + 1;
-          int firstSubDir = -1;
-          for (int i = start; i < filePath.length(); i++) {
-            if (filePath.charAt(i) == File.separatorChar) {
-              firstSubDir = i;
-              break;
-            }
-          }
-
-          if (firstSubDir != -1) {
-            filePath = filePath.substring(start, firstSubDir) + "/";
-
-            for (final String excl : moduleRootExclusions) {
-              if (filePath.startsWith(excl))
-                continue Pathcheck;
-            }
-
-            candidateRoots.add(workingDir + "/" + filePath);
-          }
-        }
-      }
-
-      if (candidateRoots.isEmpty()) {
-        logger.warn("could not determine module location, using CWD");
-        return new File("").getAbsolutePath() + "/";
-      }
-      else if (candidateRoots.size() != 1) {
-        for (final String res : candidateRoots) {
-          logger.warn(" Multiple Possible Roots for Project -> " + res);
-        }
-
-        throw new RuntimeException("ambiguous module locations for GWT module (specify path property for module)");
-      }
-      else {
-        return candidateRoots.iterator().next();
-      }
-    }
-    catch (final Exception e) {
-      throw new RuntimeException("could not determine module package", e);
-
     }
   }
 
@@ -451,102 +297,6 @@ public class RebindUtils {
     return result;
   }
 
-  public static Set<String> getOuterTranslatablePackages(final GeneratorContext context) {
-    final Set<File> xmlRoots = getAllModuleXMLs(context);
-    final Set<String> pathRoots = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
-    final List<String> classPathRoots = new ArrayList<String>();
-    try {
-      final Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources("");
-
-      while (resources.hasMoreElements()) {
-        classPathRoots.add(resources.nextElement().getFile());
-      }
-    }
-    catch (final IOException e) {
-      e.printStackTrace();
-    }
-
-    final ExecutorService executorService = Executors.newCachedThreadPool();
-
-    for (final File xmlFile : xmlRoots) {
-      if (xmlFile.exists()) {
-        executorService.execute(new Runnable() {
-          @Override
-          public void run() {
-            InputStream inputStream = null;
-            try {
-
-              inputStream = new BufferedInputStream(new FileInputStream(xmlFile));
-              final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-              final Document document = builder.parse(inputStream);
-              final NodeList moduleNodes = document.getElementsByTagName("module");
-
-              if (moduleNodes.getLength() > 0) {
-                for (int i = 0; i < moduleNodes.getLength(); i++) {
-                  final Node item = moduleNodes.item(i);
-                  final String nodeName = item.getNodeName();
-                  if (nodeName.equals("super-source") || nodeName.equals("source")) {
-                    final String path = item.getAttributes().getNamedItem("path").getNodeValue();
-                    final String filePath = new File(xmlFile.getParentFile(), path).getAbsolutePath();
-
-                    for (final String cpRoot : classPathRoots) {
-                      if (filePath.startsWith(cpRoot)) {
-                        pathRoots.add(filePath.substring(cpRoot.length())
-                            .replace('/', '.').replace('\\', '.'));
-                      }
-                    }
-                  }
-                }
-              }
-
-              final File clientPath = new File(xmlFile.getParentFile().getAbsoluteFile(), "client").getAbsoluteFile();
-              if (clientPath.exists()) {
-                final String filePath = clientPath.getAbsolutePath();
-                for (final String cpRoot : classPathRoots) {
-                  if (filePath.startsWith(cpRoot)) {
-                    pathRoots.add(filePath.substring(cpRoot.length()).replace('/', '.').replace('\\', '.'));
-                  }
-                }
-              }
-            }
-            catch (final ParserConfigurationException e) {
-              e.printStackTrace();
-            }
-            catch (final SAXException e) {
-              e.printStackTrace();
-            }
-            catch (final IOException e) {
-              logger.error("error accessing module XML file", e);
-            }
-            finally {
-              if (inputStream != null) {
-                try {
-                  inputStream.close();
-                }
-                catch (final IOException e) {
-                  logger.warn("problem closing stream", e);
-                }
-              }
-            }
-          }
-        });
-      }
-      else {
-        logger.warn("the GWT module file '" + xmlFile.getAbsolutePath() + "' does not appear to exist.");
-      }
-    }
-
-    try {
-      executorService.shutdown();
-      executorService.awaitTermination(60, TimeUnit.MINUTES);
-    }
-    catch (final InterruptedException e) {
-      e.printStackTrace();
-    }
-
-    return pathRoots;
-  }
-
   public static String getModuleName(final GeneratorContext context) {
     try {
       return getModuleDef(context).getCanonicalName();
@@ -554,47 +304,6 @@ public class RebindUtils {
     catch (final Throwable t) {
       return null;
     }
-  }
-
-  /**
-   * Returns the list of translatable packages in the module that caused the generator to run (the
-   * module under compilation).
-   */
-  public static Set<String> findTranslatablePackagesInModule(final GeneratorContext context) {
-    final Set<String> packages = new HashSet<String>();
-    try {
-      final StandardGeneratorContext stdContext = (StandardGeneratorContext) context;
-      final Field field = StandardGeneratorContext.class.getDeclaredField("module");
-      field.setAccessible(true);
-      final Object o = field.get(stdContext);
-
-      final ModuleDef moduleDef = (ModuleDef) o;
-
-      if (moduleDef == null) {
-        return Collections.emptySet();
-      }
-
-      // moduleName looks like "com.foo.xyz.MyModule" and we just want the package part
-      // for tests .JUnit is appended to the module name by GWT
-      final String moduleName = moduleDef.getCanonicalName().replace(".JUnit", "");
-      final int endIndex = moduleName.lastIndexOf('.');
-      final String modulePackage = endIndex == -1 ? "" : moduleName.substring(0, endIndex);
-
-      for (final String packageName : findTranslatablePackages(context)) {
-        if (packageName != null && packageName.startsWith(modulePackage)) {
-          packages.add(packageName);
-        }
-      }
-    }
-    catch (final NoSuchFieldException e) {
-      logger.error("the version of GWT you are running does not appear to be compatible with this version of Errai", e);
-      throw new RuntimeException("could not access the module field in the GeneratorContext");
-    }
-    catch (final Exception e) {
-      throw new RuntimeException("could not determine module package", e);
-    }
-
-    return packages;
   }
 
   private static volatile GeneratorContext _lastTranslatableContext;
