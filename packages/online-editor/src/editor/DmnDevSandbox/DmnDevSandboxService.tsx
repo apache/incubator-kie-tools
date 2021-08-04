@@ -51,7 +51,7 @@ export class DmnDevSandboxService {
       );
 
       return true;
-    } catch (error: any) {
+    } catch (error) {
       return false;
     }
   }

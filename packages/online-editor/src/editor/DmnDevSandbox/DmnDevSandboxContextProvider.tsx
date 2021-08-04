@@ -125,7 +125,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
       try {
         await service.deploy(filename, editorContent, config);
         setOpenAlert(AlertTypes.DEPLOY_STARTED_SUCCESS);
-      } catch (error: any) {
+      } catch (error) {
         setOpenAlert(AlertTypes.DEPLOY_STARTED_ERROR);
       }
     },

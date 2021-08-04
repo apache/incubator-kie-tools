@@ -80,7 +80,7 @@ export function DmnFormPage(props: Props) {
         }
         return formOutputs;
       });
-    } catch (error: any) {
+    } catch (error) {
       setFormOutputs(undefined);
       setOpenAlert(AlertTypes.ERROR);
       console.error(error);
