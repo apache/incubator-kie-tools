@@ -53,6 +53,7 @@ import static java.util.Arrays.asList;
 import static org.apache.commons.io.FileUtils.copyFile;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DC;
+import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DI;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DMN;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DMNDI;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.KIE;
@@ -62,6 +63,7 @@ public class DMNDesignerBaseIT {
     protected static final Map<String, String> NAMESPACES = new Maps.Builder<String, String>()
             .put(DMN.getPrefix(), DMN.getUri())
             .put(DMNDI.getPrefix(), DMNDI.getUri())
+            .put(DI.getPrefix(), DI.getUri())
             .put(DC.getPrefix(), DC.getUri())
             .put(KIE.getPrefix(), KIE.getUri())
             .build();

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.showcase.client.selenium;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -175,6 +176,28 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
                                   "/dmn:decision[@id='_4FEA7589-823B-4880-BCFA-AF2F9B145785']" +
                                   "/dmn:literalExpression[@id='_35DB53A6-97E7-4D48-9E5A-59CE0015CEF8']" +
                                   "/dmn:text[text()='123']");
+    }
+
+    @Test
+    public void testBendPoints() throws Exception {
+        final String expected = loadResource("bend-points.xml");
+        setContent(expected);
+
+        final String actual = getContent();
+        assertThat(actual).isNotBlank();
+
+        final List<String> edges = Arrays.asList("dmnedge-drg-_5FF07784-BB77-4632-985F-2805302C03D3-AUTO-TARGET",
+                                                 "dmnedge-drg-_99B590D4-A82B-43D9-9DD7-A3A4D57D8CA5-AUTO-SOURCE-AUTO-TARGET",
+                                                 "dmnedge-drg-_2B636F4A-3A7F-4C38-9D42-B000D1E0CCF2-AUTO-SOURCE-AUTO-TARGET");
+
+        edges.forEach(edge ->
+                              XmlAssert.assertThat(actual)
+                                      .withNamespaceContext(NAMESPACES)
+                                      .hasXPath("/dmn:definitions/dmndi:DMNDI/dmndi:DMNDiagram" +
+                                                        "/dmndi:DMNEdge[@id='" + edge + "']" +
+                                                        "/di:waypoint")
+                                      .hasSize(3)
+        );
     }
 
     @Test
@@ -1862,8 +1885,8 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
         XmlAssert.assertThat(actual)
                 .withNamespaceContext(NAMESPACES)
                 .nodesByXPath("/dmn:definitions" +
-                                  "/dmn:decision[@id='_7BBC48CA-5D14-46C4-A5B5-0328CB9C7241']" +
-                                  "/dmn:list[@id='_AB660F0F-C753-4652-B8ED-B7EF82951F68']")
+                                      "/dmn:decision[@id='_7BBC48CA-5D14-46C4-A5B5-0328CB9C7241']" +
+                                      "/dmn:list[@id='_AB660F0F-C753-4652-B8ED-B7EF82951F68']")
                 .containsAnyNodeHavingXPath("//dmn:literalExpression[1]/dmn:text[text()='1']")
                 .containsAnyNodeHavingXPath("//dmn:literalExpression[2]/dmn:text[text()='2']")
                 .containsAnyNodeHavingXPath("//dmn:literalExpression[3]/dmn:text[contains(text(),'3')]");
