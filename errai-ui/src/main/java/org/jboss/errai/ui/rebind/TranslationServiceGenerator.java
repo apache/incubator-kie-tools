@@ -328,7 +328,7 @@ public class TranslationServiceGenerator extends AbstractAsyncGenerator {
 
       if (isJsonBundle(bundlePath)) {
         final JsonFactory jsonFactory = new JsonFactory();
-        try(final JsonParser jp = jsonFactory.createJsonParser(is)) {
+        try(final JsonParser jp = jsonFactory.createParser(is)) {
           JsonToken token = jp.nextToken();
           while (token != null) {
             token = jp.nextToken();
