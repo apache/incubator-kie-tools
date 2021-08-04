@@ -37,8 +37,6 @@ import com.google.gwt.core.ext.typeinfo.JPackage;
 import com.google.gwt.dev.cfg.ModuleDef;
 import com.google.gwt.dev.javac.StandardGeneratorContext;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>
@@ -48,7 +46,6 @@ public class RebindUtils {
   public static final String ERRAI_DEVEL_NOCACHE_PROPERTY = "errai.devel.nocache";
   public static boolean NO_CACHE = Boolean.getBoolean(ERRAI_DEVEL_NOCACHE_PROPERTY);
 
-  static Logger logger = LoggerFactory.getLogger(RebindUtils.class);
   private static String hashSeed = "errai21CR2";
 
   private static volatile String _tempDirectory;
