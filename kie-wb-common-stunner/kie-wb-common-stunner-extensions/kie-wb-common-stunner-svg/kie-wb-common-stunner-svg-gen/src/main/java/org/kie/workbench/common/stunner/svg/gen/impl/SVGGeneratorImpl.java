@@ -190,6 +190,8 @@ public class SVGGeneratorImpl implements SVGGenerator {
     private DocumentBuilder newBuilder() throws ParserConfigurationException {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory
                 .newInstance();
+        // to be compliant, completely disable DOCTYPE declaration:
+        documentFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         documentFactory.setNamespaceAware(true);
         return documentFactory.newDocumentBuilder();
     }

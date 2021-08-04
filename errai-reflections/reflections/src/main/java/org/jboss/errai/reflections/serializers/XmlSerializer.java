@@ -28,6 +28,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -70,6 +71,9 @@ public class XmlSerializer implements Serializer {
     Reflections reflections = new Reflections(new ConfigurationBuilder());
     DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
     try {
+      // to be compliant, completely disable DOCTYPE declaration:
+      dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+
       DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
       Document document = dBuilder.parse(inputStream);
       NodeList indexNodeList = document.getDocumentElement().getChildNodes();
@@ -130,6 +134,9 @@ public class XmlSerializer implements Serializer {
   private static void write(final Reflections reflections, Writer outputWriter) throws ParserConfigurationException, TransformerException {
       Document document = createDocument(reflections);
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      // to be compliant, prohibit the use of all protocols by external entities:
+      transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
       Transformer transformer = transformerFactory.newTransformer();
       transformer.setOutputProperty(OutputKeys.INDENT, "yes");
       DOMSource source = new DOMSource(document);
