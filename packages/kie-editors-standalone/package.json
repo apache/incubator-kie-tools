@@ -24,6 +24,7 @@
     "build:preprocessor": "node dist/preprocessor/preprocessor.js",
     "build:dev": "rimraf dist && webpack --env dev --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --env dev --config webpack.package-resources.config.js",
     "build:prod": "yarn lint && yarn test && rimraf dist && webpack --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --config webpack.package-resources.config.js && yarn test:it",
+    "publish:prod": "npm publish --access public",
     "build:productization": "yarn run build:prod",
     "start": "webpack serve --host 0.0.0.0 --config webpack.package-resources.config.js",
     "cy:run": "yarn cypress run -b chrome --project it-tests",
