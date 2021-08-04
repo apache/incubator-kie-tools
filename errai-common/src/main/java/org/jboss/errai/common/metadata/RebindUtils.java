@@ -70,8 +70,6 @@ public class RebindUtils {
     return _tempDirectory = file.getAbsolutePath();
   }
 
-  private static volatile String _classpathHashCache;
-
   private static final String[] hashableExtensions = { ".java", ".class", ".properties", ".xml" };
 
   private static boolean isValidFileType(final String fileName) {
@@ -120,7 +118,7 @@ public class RebindUtils {
         });
       }
 
-      return _classpathHashCache = hashToHexString(md.digest());
+      return hashToHexString(md.digest());
     }
     catch (final Exception e) {
       throw new RuntimeException("failed to generate hash for classpath fingerprint", e);
