@@ -39,7 +39,7 @@ env:
   KOGITO_TOOLING_BUILD_lint: "false"
   KOGITO_TOOLING_BUILD_test: "false"
   KOGITO_TOOLING_BUILD_testIT: "false"
-  KOGITO_TOOLING_BUILD_docker: "false"
+  KOGITO_TOOLING_BUILD_docker: "true"
 
 jobs:
   prepare:
@@ -210,21 +210,11 @@ jobs:
         run: |
           lerna run build:prod --scope=@kogito-tooling/online-editor --include-dependencies --stream
 
-      - name: "Build dmn-dev-sandbox-deployment-base-image"
-        id: build_dmn_dev_sandbox_image
-        working-directory: ${{ github.workspace }}/kogito-tooling/packages/dmn-dev-sandbox-deployment-base-image
-        uses: redhat-actions/buildah-build@v2
-        with:
-          image: ${{ env.DMN_DEV_SANDBOX__baseImageName }}
-          tags: latest ${{ env.DMN_DEV_SANDBOX__baseImageTag }}
-          dockerfiles: |
-            ./Dockerfile
-
       - name: "Push dmn-dev-sandbox-deployment-base-image to quay.io"
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ steps.build_dmn_dev_sandbox_image.outputs.image }}
-          tags: ${{ steps.build_dmn_dev_sandbox_image.outputs.tags }}
+          image: ${{ env.DMN_DEV_SANDBOX__baseImageName }}
+          tags: latest ${{ env.DMN_DEV_SANDBOX__baseImageTag }}
           registry: "${{ env.DMN_DEV_SANDBOX__baseImageRegistry }}/${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
           username: ${{ env.DMN_DEV_SANDBOX__baseImageAccount }}
           password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}

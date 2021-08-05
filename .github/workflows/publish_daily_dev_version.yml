@@ -14,6 +14,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     env:
+      KOGITO_TOOLING_BUILD_docker: "true"
       DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
       DMN_DEV_SANDBOX__baseImageAccount: "kogito_tooling_bot"
       DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
@@ -76,23 +77,12 @@ jobs:
           cd kogito-tooling
           yarn run build:prod
 
-      - name: "Build dmn-dev-sandbox-deployment-base-image (Ubuntu only)"
-        if: matrix.os == 'ubuntu-latest'
-        id: build_dmn_dev_sandbox_image
-        working-directory: ${{ github.workspace }}/kogito-tooling/packages/dmn-dev-sandbox-deployment-base-image
-        uses: redhat-actions/buildah-build@v2
-        with:
-          image: ${{ env.DMN_DEV_SANDBOX__baseImageName }}
-          tags: ${{ env.DMN_DEV_SANDBOX__baseImageTag }}
-          dockerfiles: |
-            ./Dockerfile
-
       - name: "Push dmn-dev-sandbox-deployment-base-image to quay.io (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ steps.build_dmn_dev_sandbox_image.outputs.image }}
-          tags: ${{ steps.build_dmn_dev_sandbox_image.outputs.tags }}
+          image: ${{ env.DMN_DEV_SANDBOX__baseImageName }}
+          tags: ${{ env.DMN_DEV_SANDBOX__baseImageTag }}
           registry: "${{ env.DMN_DEV_SANDBOX__baseImageRegistry }}/${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
           username: ${{ env.DMN_DEV_SANDBOX__baseImageAccount }}
           password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
