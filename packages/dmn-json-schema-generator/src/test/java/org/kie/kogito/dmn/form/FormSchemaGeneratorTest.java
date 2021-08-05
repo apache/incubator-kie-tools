@@ -19,10 +19,11 @@ package org.kie.kogito.dmn.form;
 import java.io.IOException;
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class FormSchemaGeneratorTest {
 
@@ -31,15 +32,19 @@ public class FormSchemaGeneratorTest {
     @Test
     public void testGenerate() throws IOException {
         final String dmnFile = Objects.requireNonNull(this.getClass().getResource("/test.dmn")).getFile();
+        final ObjectNode expectedFormSchema = parseJsonFromFile("/formSchema.json");
         final Form form = tested.execute(dmnFile, "formUrl", "modelUrl", "swaggerUIUrl");
-        final String schema = form.getSchema().toString();
 
-        assertTrue(schema.contains("InputSet"));
-        assertTrue(schema.contains("x-dmn-type"));
+        assertEquals(expectedFormSchema, form.getSchema());
         assertEquals("test.dmn", form.getFilename());
         assertEquals("xls2dmn", form.getModelName());
         assertEquals("formUrl", form.getFormUrl());
         assertEquals("modelUrl", form.getModelUrl());
         assertEquals("swaggerUIUrl", form.getSwaggerUIUrl());
+    }
+
+    private ObjectNode parseJsonFromFile(final String filePath) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readTree(Objects.requireNonNull(this.getClass().getResourceAsStream(filePath))).deepCopy();
     }
 }
