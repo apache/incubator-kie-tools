@@ -225,10 +225,11 @@ module.exports = {
       name: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__baseImageName),
       tag: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__baseImageTag),
     },
-    form: {
-      dev: {
-        port: 9008,
-      },
+  },
+
+  dmnFormWebApp: {
+    dev: {
+      port: 9008,
     },
   },
 
