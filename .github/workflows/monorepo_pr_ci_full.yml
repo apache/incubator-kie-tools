@@ -41,8 +41,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          key: ${{ runner.os }}-ci-full-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-ci-full-m2
 
       - name: "Setup kogito-tooling-bot"
         uses: ./.github/actions/setup-kogito-tooling-bot

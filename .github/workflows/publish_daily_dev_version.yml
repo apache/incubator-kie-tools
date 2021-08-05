@@ -48,8 +48,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          key: ${{ runner.os }}-daily-dev-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-daily-dev-m2
 
       - name: "Setup environment"
         uses: ./kogito-tooling/.github/actions/setup-env
