@@ -129,7 +129,7 @@ const ENV_VARS = {
   },
   DMN_DEV_SANDBOX__onlineEditorUrl: {
     name: "DMN_DEV_SANDBOX__onlineEditorUrl",
-    default: "https://kiegroup.github.io/kogito-online",
+    default: "http://0.0.0.0:9001",
     description: "",
   },
   DMN_DEV_SANDBOX__gtmId: {
