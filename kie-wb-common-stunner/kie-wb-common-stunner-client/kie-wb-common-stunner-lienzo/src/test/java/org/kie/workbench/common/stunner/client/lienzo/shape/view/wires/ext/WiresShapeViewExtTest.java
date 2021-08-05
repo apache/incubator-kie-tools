@@ -24,11 +24,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresShapeViewExtTest extends AbstractWiresShapeViewText {
@@ -158,5 +162,29 @@ public class WiresShapeViewExtTest extends AbstractWiresShapeViewText {
     @Test
     public void testGetFontAlignment() {
         assertEquals("MIDDLE", tested.getFontAlignment());
+    }
+
+    @Test
+    public void testShowControlPoints() {
+        WiresShapeViewExt tested = spy(createInstance());
+        HasControlPoints.ControlPointType type = HasControlPoints.ControlPointType.RESIZE;
+        when(tested.areControlsVisible()).thenReturn(true);
+
+        tested.updateControlPoints(type);
+
+        verify(tested).showControlPoints(type);
+        verify(tested, never()).hideControlPoints();
+    }
+
+    @Test
+    public void testHideControlPoints() {
+        WiresShapeViewExt tested = spy(createInstance());
+        HasControlPoints.ControlPointType type = HasControlPoints.ControlPointType.RESIZE;
+        when(tested.areControlsVisible()).thenReturn(false);
+
+        tested.updateControlPoints(type);
+
+        verify(tested, never()).showControlPoints(type);
+        verify(tested).hideControlPoints();
     }
 }

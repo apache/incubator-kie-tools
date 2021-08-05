@@ -42,6 +42,8 @@ import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.WiresShapeControlHandleList;
+import com.ait.lienzo.client.core.shape.wires.decorator.IShapeDecorator;
+import com.ait.lienzo.client.core.shape.wires.decorator.PointHandleDecorator;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
@@ -51,7 +53,6 @@ import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.client.core.util.JsInteropUtils;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
-import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
@@ -61,11 +62,10 @@ import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
 import elemental2.core.JsArray;
 import jsinterop.annotations.JsProperty;
 
+import static com.ait.lienzo.client.core.shape.wires.decorator.IShapeDecorator.ShapeState.VALID;
+
 public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPartShape<T>>
         extends Shape<T> {
-
-    public static final ColorName CONTROL_POINT_ACTIVE_FILL = ColorName.DARKRED;
-    public static final ColorName CONTROL_POINT_DRAG_FILL = ColorName.GREEN;
 
     private final NFastArrayList<PathPartList> m_points = new NFastArrayList<PathPartList>();
     private NFastArrayList<PathPartList> m_cornerPoints = new NFastArrayList<PathPartList>();
@@ -413,11 +413,11 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                 int entryIndex = 0;
 
                 for (Point2D point : points.asArray()) {
-                    final Circle prim = getControlPrimitive(5, point.getX(), point.getY(), m_shape, m_dmode);
+                    final Circle prim = getControlPrimitive(R0, point.getX(), point.getY(), m_shape, m_dmode);
 
                     PointControlHandle pointHandle = new PointControlHandle(prim, pathIndex, entryIndex++, m_shape, m_listOfPaths, path, chlist);
 
-                    animate(pointHandle, AnimationProperty.Properties.RADIUS(15), AnimationProperty.Properties.RADIUS(5));
+                    animate(pointHandle, AnimationProperty.Properties.RADIUS(R1), AnimationProperty.Properties.RADIUS(R0));
 
                     chlist.add(pointHandle);
                 }
@@ -480,7 +480,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
             chlist.add(bottomRight);
 
-            ResizeControlHandle bottomLeft = getResizeControlHandle(chlist, shape, listOfPaths, bl, 3, dragMode);
+            ResizeControlHandle bottomLeft = getResizeControlHandle(chlist, shape, listOfPaths, bl, BOTTOM_LEFT, dragMode);
 
             chlist.add(bottomLeft);
 
@@ -500,7 +500,12 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         }
 
         public static Circle getControlPrimitive(final double size, final double x, final double y, final Shape<?> shape, final DragMode dragMode) {
-            return new Circle(size).setX(x + shape.getX()).setY(y + shape.getY()).setFillColor(CONTROL_POINT_ACTIVE_FILL).setFillAlpha(0.8).setStrokeColor(ColorName.BLACK).setStrokeWidth(0.5).setDraggable(true).setDragMode(dragMode);
+            return PointHandleDecorator.decorateShape(new Circle(size)
+                                                              .setX(x + shape.getX())
+                                                              .setY(y + shape.getY())
+                                                              .setDraggable(true)
+                                                              .setDragMode(dragMode),
+                                                      VALID);
         }
     }
 
@@ -601,7 +606,8 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             copyDoubles();
 
             if ((m_handle.isActive()) && (m_chlist.isActive())) {
-                m_prim.setFillColor(CONTROL_POINT_DRAG_FILL);
+                // Set reversed colors
+                PointHandleDecorator.decorateShape(m_prim, IShapeDecorator.ShapeState.INVALID);
 
                 m_prim.getLayer().draw();
             }
@@ -650,8 +656,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                 for (PathPartList list : lists.asList()) {
                     list.resetBoundingBox();
                 }
-                m_shape.resetBoundingBox();
-                m_prim.setFillColor(CONTROL_POINT_ACTIVE_FILL);
+                PointHandleDecorator.decorateShape(m_prim, VALID);
 
                 m_prim.getLayer().draw();
             }
@@ -908,7 +913,8 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             copyRatios();
 
             if ((m_handle.isActive()) && (m_chlist.isActive())) {
-                m_prim.setFillColor(CONTROL_POINT_DRAG_FILL);
+                // Set reversed colors
+                PointHandleDecorator.decorateShape(m_prim, IShapeDecorator.ShapeState.INVALID);
 
                 m_prim.getLayer().draw();
             }
@@ -1080,7 +1086,6 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         @Override
         public void onNodeDragEnd(final NodeDragEndEvent event) {
             if ((m_handle.isActive()) && (m_chlist.isActive())) {
-                updateRatiosIfFlip(event);
 
                 // reset boxstart
                 resetBoundingBoxBackToStartXY();
@@ -1089,7 +1094,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                     list.resetBoundingBox();
                 }
                 m_shape.resetBoundingBox();
-                m_prim.setFillColor(CONTROL_POINT_ACTIVE_FILL);
+                PointHandleDecorator.decorateShape(m_prim, VALID);
 
                 m_prim.getLayer().draw();
             }

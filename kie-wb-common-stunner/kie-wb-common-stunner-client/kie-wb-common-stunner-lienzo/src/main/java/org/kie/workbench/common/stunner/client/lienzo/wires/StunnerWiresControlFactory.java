@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.decorator.PointHandleDecorator;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectionControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
@@ -35,7 +36,6 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresControlFactoryImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImpl;
-import org.kie.workbench.common.stunner.client.lienzo.wires.decorator.StunnerPointHandleDecorator;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasUnhighlightEvent;
 
 @ApplicationScoped
@@ -69,7 +69,7 @@ public class StunnerWiresControlFactory implements WiresControlFactory {
         final WiresConnectorControlImpl wiresConnectorControl =
                 (WiresConnectorControlImpl) delegate.newConnectorControl(connector, wiresManager);
         //injecting a custom Point handle decorator to be used on the connectors
-        wiresConnectorControl.setPointHandleDecorator(new StunnerPointHandleDecorator());
+        wiresConnectorControl.setPointHandleDecorator(new PointHandleDecorator());
         return wiresConnectorControl;
     }
 

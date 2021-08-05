@@ -70,7 +70,7 @@ public class ShapeStateAttributeHandler<V extends ShapeView>
         return this;
     }
 
-    private void saveState() {
+    void saveState() {
         this.stateHolder.store(view.get());
     }
 

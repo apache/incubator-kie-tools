@@ -44,17 +44,23 @@ public class PointHandleDecoratorTest {
     @Test
     public void decorateInvalidTest() {
         tested.decorate(shape, IShapeDecorator.ShapeState.INVALID);
-        verify(shape, times(1)).setFillColor(ColorName.GREEN);
-        verify(shape, times(1)).moveToTop();
+        verify(shape).setFillColor("#FFFFFF");
+        verify(shape).setStrokeColor("#0088CE");
+        verify(shape).setStrokeWidth(2);
+        verify(shape).setFillAlpha(1);
+        verify(shape).setStrokeAlpha(1);
+        verify(shape).moveToTop();
     }
 
     @Test
     public void decorateTest() {
         tested.decorate(shape, IShapeDecorator.ShapeState.VALID);
         tested.decorate(shape, IShapeDecorator.ShapeState.NONE);
-        verify(shape, times(2)).setFillColor(ColorName.DARKRED.getHexColor());
+        verify(shape, times(2)).setFillColor("#0088CE");
+        verify(shape, times(2)).setStrokeColor("#FFFFFF");
         verify(shape, times(2)).setFillAlpha(0.8);
-        verify(shape, times(2)).setStrokeAlpha(0);
+        verify(shape, times(2)).setStrokeAlpha(1);
+        verify(shape, times(2)).setStrokeWidth(2);
         verify(shape, times(2)).moveToTop();
     }
 }

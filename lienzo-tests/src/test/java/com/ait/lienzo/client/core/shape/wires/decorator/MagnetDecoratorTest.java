@@ -47,7 +47,7 @@ public class MagnetDecoratorTest {
         tested.decorate(shape, IShapeDecorator.ShapeState.NONE);
         tested.decorate(shape, IShapeDecorator.ShapeState.INVALID);
 
-        verify(shape, times(3)).setFillColor(ColorName.DARKRED.getHexColor());
+        verify(shape, times(3)).setFillColor("#0088CE");
         verify(shape, times(3)).setFillAlpha(0.8);
         verify(shape, times(3)).setStrokeAlpha(0);
         verify(shape, times(3)).moveToTop();

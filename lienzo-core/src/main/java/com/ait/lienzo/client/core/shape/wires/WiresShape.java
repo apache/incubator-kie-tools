@@ -141,9 +141,13 @@ public class WiresShape extends WiresContainer {
      * The WiresResizeEvent event is not fired as this method is supposed to be called by the developer.
      */
     public void refresh() {
-        destroyControls();
+        boolean isVisible = null != getControls() && getControls().isVisible();
 
-        _loadControls(IControlHandle.ControlHandleStandardType.RESIZE);
+        if (!isVisible) {
+            destroyControls();
+
+            _loadControls(IControlHandle.ControlHandleStandardType.RESIZE);
+        }
 
         if (null != getControls()) {
             getControls().refresh();

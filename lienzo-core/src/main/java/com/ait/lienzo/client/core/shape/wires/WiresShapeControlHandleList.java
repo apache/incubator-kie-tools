@@ -77,12 +77,6 @@ public class WiresShapeControlHandleList implements IControlHandleList {
         this.m_registrationManager = registrationManager;
         this.parent = null;
 
-        // TODO: lienzo-to-native
-        /*HTMLElement relativeDiv = parent.getLayer().getViewport().getElement();
-        wiresResizeStartEvent = new WiresResizeStartEvent(relativeDiv);
-        wiresResizeStepEvent = new WiresResizeStepEvent(relativeDiv);
-        wiresResizeEndEvent = new WiresResizeEndEvent(relativeDiv);*/
-
         updateParentLocation();
         initControlsListeners();
         setupEvents(parent);
@@ -193,6 +187,10 @@ public class WiresShapeControlHandleList implements IControlHandleList {
                 m_registrationManager.register(control.addNodeDragMoveHandler(event -> WiresShapeControlHandleList.this.resizeMove(event)));
 
                 m_registrationManager.register(control.addNodeDragEndHandler(event -> WiresShapeControlHandleList.this.resizeEnd(event)));
+
+                m_registrationManager.register(control.addNodeMouseClickHandler(event -> show()));
+
+                m_registrationManager.register(control.addNodeMouseDoubleClickHandler(event -> show()));
             }
         }
 

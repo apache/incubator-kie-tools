@@ -286,6 +286,7 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     public void refresh() {
         getTextViewDecorator().update();
         super.refresh();
+        updateControlPoints(ControlPointType.RESIZE);
     }
 
     @SuppressWarnings("unchecked")
@@ -319,6 +320,8 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     public T updateControlPoints(final ControlPointType type) {
         if (areControlsVisible()) {
             showControlPoints(type);
+        } else {
+            hideControlPoints();
         }
         return cast();
     }

@@ -421,6 +421,8 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl 
             return false;
         }
 
+        m_box = AlignAndDistribute.getBoundingBox(m_group);
+
         double left = m_startLeft + dxy.getX();
         double top = m_startTop + dxy.getY();
         double width = m_box.getWidth();

@@ -26,7 +26,6 @@ import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.event.NodeDragStartEvent;
-import com.ait.lienzo.client.core.shape.AbstractMultiPathPartShape;
 import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
@@ -35,6 +34,7 @@ import com.ait.lienzo.client.core.shape.wires.AbstractControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
+import com.ait.lienzo.client.core.shape.wires.decorator.PointHandleDecorator;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
@@ -291,7 +291,7 @@ public class DecisionServiceSVGShapeView extends SVGShapeViewImpl {
             delegateDragConstraintEnforcer.startDrag(dragContext);
 
             if ((moveDividerControlHandle.isActive()) && (resizeControlHandles.isActive())) {
-                controlShape.setFillColor(AbstractMultiPathPartShape.CONTROL_POINT_DRAG_FILL);
+                controlShape.setFillColor(PointHandleDecorator.STROKE_COLOR);
                 doSafeDraw();
             }
         }
@@ -304,7 +304,7 @@ public class DecisionServiceSVGShapeView extends SVGShapeViewImpl {
         @Override
         public void onNodeDragEnd(final NodeDragEndEvent event) {
             if ((moveDividerControlHandle.isActive()) && (resizeControlHandles.isActive())) {
-                controlShape.setFillColor(AbstractMultiPathPartShape.CONTROL_POINT_ACTIVE_FILL);
+                controlShape.setFillColor(PointHandleDecorator.MAIN_COLOR);
                 doSafeDraw();
             }
         }

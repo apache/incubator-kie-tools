@@ -25,21 +25,40 @@ import com.ait.lienzo.shared.core.types.ColorName;
  */
 public class PointHandleDecorator implements IShapeDecorator<Shape<?>> {
 
-    public static final String MAIN_COLOR = ColorName.DARKRED.getHexColor();
+    public static final String MAIN_COLOR = "#0088CE";
+    public static final String STROKE_COLOR = "#FFFFFF";
+    public static final double VALID_FILL_ALPHA = 0.8;
+    public static final int VALID_STROKE_WIDTH = 2;
+    public static final double VALID_STROKE_ALPHA = 1;
+    public static final double INVALID_FILL_ALPHA = 1;
+    public static final int INVALID_STROKE_WIDTH = 2;
+    public static final double INVALID_STROKE_ALPHA = 1;
+
 
     @Override
     public Shape decorate(Shape shape, ShapeState state) {
+        return decorateShape(shape, state);
+    }
+
+    public static <T extends Shape> T decorateShape(T shape, ShapeState state) {
         switch (state) {
             case NONE:
             case VALID:
                 shape.moveToTop()
                         .setFillColor(MAIN_COLOR)
-                        .setFillAlpha(0.8)
-                        .setStrokeAlpha(0);
+                        .setStrokeWidth(VALID_STROKE_WIDTH)
+                        .setStrokeColor(STROKE_COLOR)
+                        .setFillAlpha(VALID_FILL_ALPHA)
+                        .setStrokeAlpha(VALID_STROKE_ALPHA);
                 break;
             case INVALID:
+                // Reversed Main and Stroke colors
                 shape.moveToTop()
-                        .setFillColor(ColorName.GREEN);
+                        .setFillColor(STROKE_COLOR)
+                        .setStrokeColor(MAIN_COLOR)
+                        .setStrokeWidth(INVALID_STROKE_WIDTH)
+                        .setFillAlpha(INVALID_FILL_ALPHA)
+                        .setStrokeAlpha(INVALID_STROKE_ALPHA);
                 break;
         }
         return shape;

@@ -152,12 +152,6 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
         getRegisteredElements().forEach(uuid -> getControlPointsInstance(uuid).hideControlPoints());
     }
 
-    private void hideCPs(final HasControlPoints<?> hasControlPoints) {
-        if (hasControlPoints.areControlsVisible()) {
-            hasControlPoints.hideControlPoints();
-        }
-    }
-
     private HasControlPoints<?> getControlPointsInstance(final String uuid) {
         final Shape<?> shape = canvasHandler.getCanvas().getShape(uuid);
         return (HasControlPoints<?>) shape.getShapeView();

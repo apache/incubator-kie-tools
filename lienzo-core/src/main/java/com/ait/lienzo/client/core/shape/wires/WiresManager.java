@@ -228,6 +228,11 @@ public final class WiresManager {
         registrationManager.register(shape.addWiresMoveHandler(event -> alignAndDistrControl.refresh(true, true)));
 
         registrationManager.register(shape.addWiresResizeEndHandler(event -> alignAndDistrControl.dragEnd()));
+
+        registrationManager.register(shape.addWiresResizeStepHandler(event -> {
+            Point2D point = new Point2D(event.getX(), event.getY());
+            alignAndDistrControl.dragAdjust(point);
+        }));
     }
 
     public static void addWiresShapeHandler(final WiresShape shape,

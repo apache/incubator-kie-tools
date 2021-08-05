@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.shape.impl;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeViewExtStub;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -37,8 +39,12 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.clearInvocations;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -63,9 +69,6 @@ public class NodeShapeImplTest {
     private BiConsumer<String, ShapeView> titleHandler;
 
     @Mock
-    private ShapeStateHandler shapeStateHandler;
-
-    @Mock
     private Node<View<Object>, Edge> element;
 
     @Mock
@@ -77,14 +80,24 @@ public class NodeShapeImplTest {
     @Mock
     private Bounds bounds;
 
-    private ShapeViewExtStub view;
-    private NodeShapeImpl<Object, ShapeViewDef<Object, ShapeView>, ShapeView> tested;
-
     @Mock
     private MutationContext context;
 
+    @Mock
+    private Function<ShapeState, ShapeStateAttributeHandler.ShapeStateAttributes> stateAttributesProvider;
+
+    private ShapeViewExtStub view;
+    private NodeShapeImpl<Object, ShapeViewDef<Object, ShapeView>, ShapeView> tested;
+    private ShapeImpl<ShapeView> shape;
+    private ShapeStateAttributeHandler shapeStateHandler;
+
     @Before
     public void setup() throws Exception {
+        shapeStateHandler = spy(new ShapeStateAttributeHandler());
+        doNothing().when(shapeStateHandler).saveState();
+        ShapeStateAttributeHandler.ShapeStateAttributes attributes = new ShapeStateAttributeHandler.ShapeStateAttributes();
+        when(stateAttributesProvider.apply(any())).thenReturn(attributes);
+        shapeStateHandler.useAttributes(stateAttributesProvider);
         when(shapeStateHandler.shapeAttributesChanged()).thenReturn(shapeStateHandler);
         when(def.titleHandler()).thenReturn(Optional.of(titleHandler));
         when(def.fontHandler()).thenReturn(Optional.of(fontHandler));
@@ -100,9 +113,8 @@ public class NodeShapeImplTest {
 
         this.view = spy(new ShapeViewExtStub());
 
-        this.tested = new NodeShapeImpl<>(def,
-                                          new ShapeImpl<>(view,
-                                                          shapeStateHandler));
+        shape = new ShapeImpl<>(view, shapeStateHandler);
+        this.tested = new NodeShapeImpl<>(def, shape);
     }
 
     @Test
@@ -116,6 +128,7 @@ public class NodeShapeImplTest {
     @Test
     public void testApplyProperties() {
         when(shapeStateHandler.reset()).thenReturn(ShapeState.NONE);
+        clearInvocations(shapeStateHandler);
         tested.applyProperties(element,
                                MutationContext.STATIC);
         verify(shapeStateHandler,
@@ -135,6 +148,20 @@ public class NodeShapeImplTest {
         tested.applyState(ShapeState.INVALID);
         verify(shapeStateHandler,
                times(1)).applyState(eq(ShapeState.INVALID));
+    }
+
+    @Test
+    public void testApplyStateHideControls() {
+        tested.applyState(ShapeState.NONE);
+        HasControlPoints hasControlPoints = (HasControlPoints) shape.getShapeView();
+        verify(hasControlPoints).hideControlPoints();
+    }
+
+    @Test
+    public void testDoNotHideControls() {
+        tested.applyState(ShapeState.SELECTED);
+        HasControlPoints hasControlPoints = (HasControlPoints) shape.getShapeView();
+        verify(hasControlPoints, never()).hideControlPoints();
     }
 
     @Test

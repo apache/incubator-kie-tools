@@ -47,7 +47,7 @@ public class StunnerMagnetDecoratorTest {
         tested.decorate(shape, IShapeDecorator.ShapeState.INVALID);
         tested.decorate(shape, IShapeDecorator.ShapeState.NONE);
         verify(shape, times(3)).setFillColor("#0088CE");
-        verify(shape, times(3)).setFillAlpha(0.7);
+        verify(shape, times(3)).setFillAlpha(0.8);
         verify(shape, times(3)).setStrokeAlpha(1);
         verify(shape, times(3)).setStrokeWidth(0);
         verify(shape, times(3)).moveToTop();

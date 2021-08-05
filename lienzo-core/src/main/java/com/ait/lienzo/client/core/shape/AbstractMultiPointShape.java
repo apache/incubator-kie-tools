@@ -41,10 +41,11 @@ import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStanda
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
+import com.ait.lienzo.client.core.shape.wires.decorator.IShapeDecorator;
+import com.ait.lienzo.client.core.shape.wires.decorator.PointHandleDecorator;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
-import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
@@ -78,7 +79,6 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
 
     /**
      * Gets this triangles points.
-     *
      * @return {@link Point2DArray}
      */
     public Point2DArray getPoints() {
@@ -88,7 +88,6 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
     /**
      * Sets the end-points of this line.
      * The points should be a 2-element {@link Point2DArray}
-     *
      * @param points
      * @return this Line
      */
@@ -152,13 +151,13 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
 
     public static final class DefaultMultiPointShapeHandleFactory implements IControlHandleFactory {
 
-        public static final double R0 = 6;
+        public static final double R0 = 5;
 
         public static final double R1 = 10;
 
         public static final double SELECTION_OFFSET = R0 * 0.5;
 
-        private static final double ANIMATION_DURATION = 100;
+        private static final double ANIMATION_DURATION = 150;
 
         private final AbstractMultiPointShape<?> m_shape;
 
@@ -213,7 +212,12 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
             for (Point2D point : m_shape.getPoint2DArray().asArray()) {
                 final Point2D p = point;
 
-                final Circle prim = new Circle(R0).setX(m_shape.getX() + p.getX()).setY(m_shape.getY() + p.getY()).setFillColor(ColorName.DARKRED).setFillAlpha(0.8).setStrokeAlpha(0).setDraggable(true).setDragMode(m_dmode);
+                final Circle prim = PointHandleDecorator.decorateShape(new Circle(R0)
+                                                                               .setX(m_shape.getX() + p.getX())
+                                                                               .setY(m_shape.getY() + p.getY())
+                                                                               .setDraggable(true)
+                                                                               .setDragMode(m_dmode),
+                                                                       IShapeDecorator.ShapeState.VALID);
 
                 prim.setSelectionStrokeOffset(SELECTION_OFFSET);
                 prim.setSelectionBoundsOffset(SELECTION_OFFSET);
@@ -354,7 +358,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
             m_isDragging = true;
 
             if ((m_handle.isActive()) && (m_handleList.isActive())) {
-                m_prim.setFillColor(ColorName.GREEN);
+                PointHandleDecorator.decorateShape(m_prim, IShapeDecorator.ShapeState.INVALID);
 
                 m_prim.getLayer().batch();
             }
@@ -365,7 +369,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
             m_isDragging = false;
 
             if ((m_handle.isActive()) && (m_handleList.isActive())) {
-                m_prim.setFillColor(ColorName.DARKRED);
+                PointHandleDecorator.decorateShape(m_prim, IShapeDecorator.ShapeState.VALID);
 
                 m_prim.getLayer().batch();
             }
