@@ -42,3 +42,14 @@ export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({
 export function useDmnRunner() {
   return useContext(DmnRunnerContext);
 }
+
+export function extractFormInputsFromUrlParams(): any {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has("formInputs")) {
+    try {
+      return JSON.parse(decodeURIComponent(urlParams.get("formInputs")!));
+    } catch (e) {
+      console.error("Cannot parse formInputs", e);
+    }
+  }
+}

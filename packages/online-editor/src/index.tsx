@@ -43,7 +43,6 @@ interface OpenFileArgs {
   filePath: string;
   readonly: boolean;
   getFileContent: Promise<string>;
-  formInputs?: any;
 }
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -142,7 +141,6 @@ function openFileByUrl() {
             filePath: filePath,
             readonly: readonly,
             getFileContent: response.text(),
-            formInputs: extractFormInputsFromUrlParams(),
           });
         } else {
           showResponseError(response.status, response.statusText);
@@ -168,7 +166,6 @@ function openFile(args: OpenFileArgs) {
       external={false}
       githubService={githubService}
       editorEnvelopeLocator={editorEnvelopeLocator}
-      formInputs={args.formInputs}
     />,
     document.getElementById("app")!
   );
@@ -226,14 +223,4 @@ function showFetchError(description: string) {
 
 function goToHomePage() {
   window.location.href = window.location.href.split("?")[0].split("#")[0];
-}
-
-function extractFormInputsFromUrlParams(): any {
-  if (urlParams.has("formInputs")) {
-    try {
-      return JSON.parse(decodeURIComponent(urlParams.get("formInputs")!));
-    } catch (e) {
-      console.error("Cannot parse formInputs", e);
-    }
-  }
 }

@@ -16,14 +16,13 @@
 
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { GlobalContext } from "../../common/GlobalContext";
 import {
   DependentFeature,
   useKieToolingExtendedServices,
 } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
-import { DmnRunnerContext } from "./DmnRunnerContext";
+import { DmnRunnerContext, extractFormInputsFromUrlParams } from "./DmnRunnerContext";
 import { DmnRunnerService } from "./DmnRunnerService";
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
@@ -41,12 +40,11 @@ const THROTTLING_TIME = 200;
 
 export function DmnRunnerContextProvider(props: Props) {
   const { i18n } = useOnlineI18n();
-  const globalContext = useContext(GlobalContext);
+  const formInputsFromUrlParams = useMemo(() => extractFormInputsFromUrlParams() ?? {}, []);
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const notificationsPanel = useNotificationsPanel();
-  const [externalFormInputsLoaded, setExternalFormInputsLoaded] = useState(false);
   const [isDrawerExpanded, setDrawerExpanded] = useState(false);
-  const [formData, setFormData] = useState(globalContext.formInputs ?? {});
+  const [formData, setFormData] = useState(formInputsFromUrlParams);
   const [formSchema, setFormSchema] = useState<DmnFormSchema>();
   const [formError, setFormError] = useState(false);
   const [status, setStatus] = useState(
@@ -68,7 +66,7 @@ export function DmnRunnerContextProvider(props: Props) {
           setFormSchema(newSchema);
           if (
             openDrawer &&
-            (globalContext.formInputs ||
+            (formInputsFromUrlParams ||
               (kieToolingExtendedServices.isModalOpen &&
                 kieToolingExtendedServices.installTriggeredBy === DependentFeature.DMN_RUNNER))
           ) {
@@ -81,7 +79,7 @@ export function DmnRunnerContextProvider(props: Props) {
         });
     },
     [
-      globalContext.formInputs,
+      formInputsFromUrlParams,
       kieToolingExtendedServices.installTriggeredBy,
       kieToolingExtendedServices.isModalOpen,
       props.editor,
@@ -102,7 +100,6 @@ export function DmnRunnerContextProvider(props: Props) {
       updateFormSchema(true);
     }
   }, [
-    globalContext.formInputs,
     kieToolingExtendedServices.installTriggeredBy,
     kieToolingExtendedServices.isModalOpen,
     kieToolingExtendedServices.status,

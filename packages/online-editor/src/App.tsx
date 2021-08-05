@@ -37,7 +37,6 @@ interface Props {
   senderTabId?: string;
   githubService: GithubService;
   editorEnvelopeLocator: EditorEnvelopeLocator;
-  formInputs?: any;
 }
 
 export function App(props: Props) {
@@ -77,7 +76,6 @@ export function App(props: Props) {
           senderTabId: props.senderTabId,
           githubService: props.githubService,
           isChrome: !!window.chrome,
-          formInputs: props.formInputs,
         }}
       >
         <HashRouter>

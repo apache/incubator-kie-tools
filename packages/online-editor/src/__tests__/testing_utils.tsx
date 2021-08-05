@@ -58,7 +58,6 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
     senderTabId: undefined,
     githubService: new GithubService(),
     isChrome: true,
-    formInputs: {},
     ...ctx,
   };
   return {

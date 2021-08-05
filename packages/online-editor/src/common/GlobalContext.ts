@@ -29,7 +29,6 @@ export interface GlobalContextType {
   senderTabId?: string;
   githubService: GithubService;
   isChrome: boolean;
-  formInputs?: any;
 }
 
 export const GlobalContext = React.createContext<GlobalContextType>({} as any);
