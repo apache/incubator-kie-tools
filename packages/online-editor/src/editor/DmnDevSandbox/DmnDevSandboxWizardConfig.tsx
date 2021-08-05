@@ -90,7 +90,7 @@ export function DmnDevSandboxWizardConfig() {
     setConfig(dmnDevSandboxContext.currentConfig);
   }, [dmnDevSandboxContext.currentConfig, kieToolingExtendedServices.status]);
 
-  const resetUI = useCallback((config: DmnDevSandboxConnectionConfig) => {
+  const resetModalWithConfig = useCallback((config: DmnDevSandboxConnectionConfig) => {
     setConfigValidated(false);
     setDeployLoading(false);
     setContinueEditingLoading(false);
@@ -100,8 +100,8 @@ export function DmnDevSandboxWizardConfig() {
 
   const onWizardClose = useCallback(() => {
     dmnDevSandboxContext.setConfigWizardOpen(false);
-    resetUI(dmnDevSandboxContext.currentConfig);
-  }, [dmnDevSandboxContext, resetUI]);
+    resetModalWithConfig(dmnDevSandboxContext.currentConfig);
+  }, [dmnDevSandboxContext, resetModalWithConfig]);
 
   const onUsernameInputChanged = useCallback(
     (newValue: string) => {
@@ -159,9 +159,9 @@ export function DmnDevSandboxWizardConfig() {
       }
 
       dmnDevSandboxContext.setConfigWizardOpen(false);
-      resetUI(config);
+      resetModalWithConfig(config);
     },
-    [config, dmnDevSandboxContext, isContinueEditingLoading, isDeployLoading, resetUI]
+    [config, dmnDevSandboxContext, isContinueEditingLoading, isDeployLoading, resetModalWithConfig]
   );
 
   const wizardSteps = useMemo(

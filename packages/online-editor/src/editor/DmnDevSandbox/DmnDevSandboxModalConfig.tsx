@@ -57,7 +57,7 @@ export function DmnDevSandboxModalConfig() {
     );
   }, [dmnDevSandboxContext.currentConfig, dmnDevSandboxContext.instanceStatus]);
 
-  const resetUI = useCallback(
+  const resetModalWithConfig = useCallback(
     (config: DmnDevSandboxConnectionConfig) => {
       setConfigValidated(
         dmnDevSandboxContext.instanceStatus === DmnDevSandboxInstanceStatus.EXPIRED && config !== EMPTY_CONFIG
@@ -72,13 +72,13 @@ export function DmnDevSandboxModalConfig() {
 
   const onResetConfig = useCallback(() => {
     dmnDevSandboxContext.onResetConfig();
-    resetUI(EMPTY_CONFIG);
-  }, [dmnDevSandboxContext, resetUI]);
+    resetModalWithConfig(EMPTY_CONFIG);
+  }, [dmnDevSandboxContext, resetModalWithConfig]);
 
   const onClose = useCallback(() => {
     dmnDevSandboxContext.setConfigModalOpen(false);
-    resetUI(dmnDevSandboxContext.currentConfig);
-  }, [dmnDevSandboxContext, resetUI]);
+    resetModalWithConfig(dmnDevSandboxContext.currentConfig);
+  }, [dmnDevSandboxContext, resetModalWithConfig]);
 
   const onSave = useCallback(async () => {
     if (isSaveLoading) {
@@ -100,8 +100,8 @@ export function DmnDevSandboxModalConfig() {
     }
 
     dmnDevSandboxContext.setConfigModalOpen(false);
-    resetUI(config);
-  }, [config, dmnDevSandboxContext, isSaveLoading, resetUI]);
+    resetModalWithConfig(config);
+  }, [config, dmnDevSandboxContext, isSaveLoading, resetModalWithConfig]);
 
   const onClearHost = useCallback(() => setConfig({ ...config, host: "" }), [config]);
   const onClearUsername = useCallback(() => setConfig({ ...config, username: "" }), [config]);
