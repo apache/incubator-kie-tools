@@ -119,8 +119,8 @@ export function DmnDevSandboxContextProvider(props: Props) {
 
       const filename = `${globalContext.file.fileName}.${globalContext.file.fileExtension}`;
       const editorContent = ((await props.editor?.getContent()) ?? "")
-        .replace(/(\r\n|\n|\r)/gm, "")
-        .replace(/"/g, '\\"');
+        .replace(/(\r\n|\n|\r)/gm, "") // Remove line breaks
+        .replace(/"/g, '\\"'); // Escape quotes
 
       try {
         await service.deploy(filename, editorContent, config);
