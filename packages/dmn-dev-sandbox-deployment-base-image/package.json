@@ -12,10 +12,10 @@
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "cp ../dmn-json-schema-generator/target/dmn-json-schema-generator.jar ./dist-dev && cp -R ../dmn-dev-sandbox-form-webapp/dist ./dist-dev/dmn-dev-sandbox-form-webapp",
     "install:mvnw": "cd dist-dev/ && mvn -N io.takari:maven:wrapper",
-    "docker:build": "yarn run run-script-if --bool \"$(build-env global.build.docker)\" --then \"docker build -t $(build-env dmnDevSandbox.baseImage.registry)/$(build-env dmnDevSandbox.baseImage.account)/$(build-env dmnDevSandbox.baseImage.name):$(build-env dmnDevSandbox.baseImage.tag) .\"",
+    "podman:build": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env dmnDevSandbox.baseImage.buildTags) | xargs printf -- \"-t $(build-env dmnDevSandbox.baseImage.registry)/$(build-env dmnDevSandbox.baseImage.account)/$(build-env dmnDevSandbox.baseImage.name):%s\n\" | xargs echo) .\" --else \"echo Podman not found, skipping image build.\"",
     "build:dev": "yarn cleanup && yarn install:mvnw && yarn copy:assets",
     "build:prod:win32": "echo \"Not supported\"",
-    "build:prod:darwin:linux": "yarn run run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"yarn docker:build\" --else \"echo Docker not found, skipping image build.\"",
+    "build:prod:darwin:linux": "yarn run run-script-if --bool \"$(build-env global.build.docker)\" --then \"yarn podman:build\"",
     "build:prod": "yarn cleanup && yarn install:mvnw && yarn copy:assets && run-script-os"
   },
   "dependencies": {

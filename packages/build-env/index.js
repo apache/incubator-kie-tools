@@ -127,6 +127,11 @@ const ENV_VARS = {
     default: "latest",
     description: "",
   },
+  DMN_DEV_SANDBOX__baseImageBuildTags: {
+    name: "DMN_DEV_SANDBOX__baseImageBuildTags",
+    default: "latest",
+    description: "",
+  },
   DMN_DEV_SANDBOX__onlineEditorUrl: {
     name: "DMN_DEV_SANDBOX__onlineEditorUrl",
     default: "http://0.0.0.0:9001",
@@ -224,6 +229,7 @@ module.exports = {
       account: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__baseImageAccount),
       name: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__baseImageName),
       tag: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__baseImageTag),
+      buildTags: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__baseImageBuildTags),
     },
   },
 

@@ -19,6 +19,7 @@ jobs:
       DMN_DEV_SANDBOX__baseImageAccount: "kogito_tooling_bot"
       DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
       DMN_DEV_SANDBOX__baseImageTag: "daily-dev"
+      DMN_DEV_SANDBOX__baseImageBuildTags: "daily-dev"
       DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online/dev"
 
     steps:
@@ -81,11 +82,11 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ env.DMN_DEV_SANDBOX__baseImageName }}
-          tags: ${{ env.DMN_DEV_SANDBOX__baseImageTag }}
+          image: "${{ env.DMN_DEV_SANDBOX__baseImageName }}"
+          tags: "${{ env.DMN_DEV_SANDBOX__baseImageBuildTags }}"
           registry: "${{ env.DMN_DEV_SANDBOX__baseImageRegistry }}/${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
-          username: ${{ env.DMN_DEV_SANDBOX__baseImageAccount }}
-          password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
+          username: "${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
+          password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
 
       - name: Upload VS Code Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
