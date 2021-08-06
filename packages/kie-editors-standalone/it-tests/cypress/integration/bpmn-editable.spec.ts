@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import * as buildEnv from "@kogito-tooling/build-env";
-
 describe("Bpmn Editable.", () => {
   before("Visit page", () => {
-    cy.visit(`localhost:${buildEnv.standaloneEditors.dev.port}/bpmn-editable`);
+    cy.visit("/bpmn-editable");
     cy.loadEditors(["bpmn-editable"]);
   });
 

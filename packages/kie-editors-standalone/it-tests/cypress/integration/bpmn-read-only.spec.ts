@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import * as buildEnv from "@kogito-tooling/build-env";
-
 describe("Bpmn Read Only.", () => {
   before("Visit page", () => {
-    cy.visit(`localhost:${buildEnv.standaloneEditors.dev.port}/bpmn-read-only`);
+    cy.visit("/bpmn-read-only");
     cy.loadEditors(["bpmn-read-only"]);
   });
 
