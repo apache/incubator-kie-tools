@@ -27,6 +27,7 @@ import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -38,6 +39,7 @@ import org.mockito.Mock;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -148,6 +150,36 @@ public class WiresDragProxyTest {
         verify(proxy, times(1)).end();
         verify(proxyLayer, atLeastOnce()).removeFromParent();
         assertTrue(layer.isListening());
+    }
+
+    @Test
+    public void testAdjustedForZoom() {
+        double x = 1d;
+        double y = 1d;
+
+        //Test Zoom 100%
+        Transform transform = new Transform().translate(0, 0);
+        viewport.setTransform(transform);
+
+        Point2D adjustedForZoomPoint = tested.getAdjustedForZoomPoint(x, y);
+        assertEquals("X should be 1", 1d, adjustedForZoomPoint.getX(), 0d);
+        assertEquals("Y should be 1", 1d, adjustedForZoomPoint.getX(), 0d);
+
+        //Test Zoom 200%
+        transform = new Transform().scale(2.0);
+        viewport.setTransform(transform);
+
+        adjustedForZoomPoint = tested.getAdjustedForZoomPoint(x, y);
+        assertEquals("X should be 0.5", 0.5d, adjustedForZoomPoint.getX(), 0d);
+        assertEquals("Y should be 0.5", 0.5d, adjustedForZoomPoint.getX(), 0d);
+
+        //Test Zoom 50%
+        transform = new Transform().scale(0.5);
+        viewport.setTransform(transform);
+
+        adjustedForZoomPoint = tested.getAdjustedForZoomPoint(x, y);
+        assertEquals("X should be 2.0", 2.0d, adjustedForZoomPoint.getX(), 0d);
+        assertEquals("Y should be 2.0", 2.0d, adjustedForZoomPoint.getX(), 0d);
     }
 
     private void initAndVerifyHandlers() {
