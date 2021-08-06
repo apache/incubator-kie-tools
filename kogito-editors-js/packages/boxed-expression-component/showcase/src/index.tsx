@@ -128,8 +128,20 @@ export const App: React.FunctionComponent = () => {
 
       <div className="updated-json">
         <div className="buttons">
-          <Button variant="secondary" icon={<CopyIcon />} iconPosition="left" onClick={copyToClipboard} />
-          <Button variant="secondary" icon={<PenIcon />} iconPosition="left" onClick={handleModalToggle} />
+          <Button
+            variant="secondary"
+            icon={<CopyIcon />}
+            iconPosition="left"
+            onClick={copyToClipboard}
+            ouiaId="copy-expression-json"
+          />
+          <Button
+            variant="secondary"
+            icon={<PenIcon />}
+            iconPosition="left"
+            onClick={handleModalToggle}
+            ouiaId="edit-expression-json"
+          />
         </div>
 
         <pre>{JSON.stringify(expressionDefinition, null, 2)}</pre>
@@ -142,7 +154,7 @@ export const App: React.FunctionComponent = () => {
         onClose={handleModalToggle}
         description="This modal is supposed to provide a manual edit option for the expression definition. If «Confirm» action does nothing, probably there is an issue with JSON definition parsing: look at browser's console."
         actions={[
-          <Button key="confirm" variant="primary" onClick={updateExpressionDefinition}>
+          <Button key="confirm" variant="primary" onClick={updateExpressionDefinition} ouiaId="confirm-expression-json">
             Confirm
           </Button>,
           <Button key="cancel" variant="link" onClick={handleModalToggle}>
@@ -150,7 +162,12 @@ export const App: React.FunctionComponent = () => {
           </Button>,
         ]}
       >
-        <textarea className="typed-expression" value={typedExpressionDefinition} onChange={onTypedExpressionChange} />
+        <textarea
+          className="typed-expression"
+          value={typedExpressionDefinition}
+          onChange={onTypedExpressionChange}
+          data-ouia-component-id="typed-expression-json"
+        />
       </Modal>
     </div>
   );

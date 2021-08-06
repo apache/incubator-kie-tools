@@ -13,6 +13,6 @@ describe("Context Expression Tests", () => {
     cy.ouiaId("expression-popover-menu").contains("Context").click({ force: true });
 
     // Assert some content
-    cy.ouiaId("OUIA-Generated-Table-1").should("contain.text", "ContextEntry-1");
+    cy.ouiaId("expression-grid-table").should("contain.text", "ContextEntry-1");
   });
 });

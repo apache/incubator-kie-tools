@@ -286,7 +286,12 @@ export const Table: React.FunctionComponent<TableProps> = ({
 
   return (
     <div className={`table-component ${tableId}`}>
-      <TableComposable variant="compact" {...tableInstance.getTableProps()} ref={tableRef}>
+      <TableComposable
+        variant="compact"
+        {...tableInstance.getTableProps()}
+        ref={tableRef}
+        ouiaId="expression-grid-table"
+      >
         <TableHeader
           tableInstance={tableInstance}
           editColumnLabel={editColumnLabel}
