@@ -163,7 +163,8 @@ function build_kogito_app() {
 
             log_info "--> Quarkus version is '$quarkus_version'"
 
-            $MAVEN_HOME/bin/mvn ${MAVEN_ARGS_APPEND} -s "${KOGITO_HOME}"/.m2/settings.xml io.quarkus:quarkus-maven-plugin:$quarkus_version:add-extension -Dextensions="org.kie.kogito:kogito-quarkus-serverless-workflow"
+            # `-DquarkusRegistryClient=false` is added until https://github.com/quarkusio/registry.quarkus.io/issues/22 is solved because of maven mirror
+            $MAVEN_HOME/bin/mvn ${MAVEN_ARGS_APPEND} -s "${KOGITO_HOME}"/.m2/settings.xml io.quarkus:quarkus-maven-plugin:$quarkus_version:add-extension -Dextensions="org.kie.kogito:kogito-quarkus-serverless-workflow" -DquarkusRegistryClient=false
         fi
 
         $MAVEN_HOME/bin/mvn clean package ${MAVEN_ARGS_APPEND} ${KOGITO_OPTS} ${nativeBuild} -s "${KOGITO_HOME}"/.m2/settings.xml \
