@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresBoundsConstraintCont
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLineSpliceControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
@@ -71,6 +72,11 @@ public abstract class DelegateWiresShapeControl implements WiresShapeControl,
     @Override
     public WiresParentPickerControl getParentPickerControl() {
         return getDelegate().getParentPickerControl();
+    }
+
+    @Override
+    public WiresLineSpliceControl getLineSpliceControl() {
+        return getDelegate().getLineSpliceControl();
     }
 
     @Override

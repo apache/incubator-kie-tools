@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl
 import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLineSpliceControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImpl;
@@ -58,6 +59,9 @@ public class DelegateWiresShapeControlTest {
     private WiresContainmentControl containmentControl;
 
     @Mock
+    private WiresLineSpliceControl lineSpliceControl;
+
+    @Mock
     private WiresParentPickerControl parentPickerControl;
 
     private DelegateWiresShapeControl tested;
@@ -68,6 +72,7 @@ public class DelegateWiresShapeControlTest {
         when(delegate.getAlignAndDistributeControl()).thenReturn(alignAndDistributeControl);
         when(delegate.getParentPickerControl()).thenReturn(parentPickerControl);
         when(delegate.getContainmentControl()).thenReturn(containmentControl);
+        when(delegate.getLineSpliceControl()).thenReturn(lineSpliceControl);
         when(delegate.getDockingControl()).thenReturn(dockingControl);
         when(delegate.getAdjust()).thenReturn(ADJUST);
         tested = new DelegateWiresShapeControl() {
@@ -83,6 +88,7 @@ public class DelegateWiresShapeControlTest {
         assertEquals(alignAndDistributeControl, tested.getAlignAndDistributeControl());
         assertEquals(parentPickerControl, tested.getParentPickerControl());
         assertEquals(containmentControl, tested.getContainmentControl());
+        assertEquals(lineSpliceControl, tested.getLineSpliceControl());
         assertEquals(dockingControl, tested.getDockingControl());
         assertEquals(ADJUST, tested.getAdjust());
     }

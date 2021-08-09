@@ -21,6 +21,7 @@ public class BaseLienzoExamples {
     public void doLoad() {
         createTests(new BasicShapesExample("Shapes"),
                     new BasicWiresExample("Wires"),
+                    new LineSpliceExample("Line Splice"),
                     new ToolboxExample("Toolbox"),
                     new PerformanceTests("Performance tests"),
                     new StrokeAndFillingExample("Stroke and Filling"),

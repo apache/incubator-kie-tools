@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
@@ -23,6 +24,7 @@ import com.ait.lienzo.client.core.shape.PolyLine;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorControlImpl;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +37,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -64,7 +68,7 @@ public class WiresConnectorTest {
     public void setup() {
         when(headDecorator.getPath()).thenReturn(headPath);
         when(tailDecorator.getPath()).thenReturn(tailPath);
-        line = new PolyLine(CP0, CP1, CP2);
+        line = spy(new PolyLine(CP0, CP1, CP2));
         tested = new WiresConnector(line,
                                     headDecorator,
                                     tailDecorator);
@@ -141,5 +145,18 @@ public class WiresConnectorTest {
         assertEquals(0, tested.getControlPointIndex(CP0.getX(), CP0.getY()));
         assertEquals(1, tested.getControlPointIndex(CP1.getX(), CP1.getY()));
         assertEquals(2, tested.getControlPointIndex(CP2.getX(), CP2.getY()));
+    }
+
+    @Test
+    public void testGetIndexForSelectedSegment() {
+        ScratchPad scratch = mock(ScratchPad.class);
+        Context2D context = mock(Context2D.class);
+        when(line.getScratchPad()).thenReturn(scratch);
+        when(scratch.getContext()).thenReturn(context);
+
+        tested.getIndexForSelectedSegment(75, 50);
+
+        // Prevent controls from breaking when line splicing
+        verify(scratch, never()).clear();
     }
 }

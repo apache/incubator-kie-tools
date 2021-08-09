@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.LineSpliceAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
@@ -58,4 +59,6 @@ public abstract class EditorSession
     public abstract ContainmentAcceptorControl<AbstractCanvasHandler> getContainmentAcceptorControl();
 
     public abstract DockingAcceptorControl<AbstractCanvasHandler> getDockingAcceptorControl();
+
+    public abstract LineSpliceAcceptorControl<AbstractCanvasHandler> getLineSpliceAcceptorControl();
 }

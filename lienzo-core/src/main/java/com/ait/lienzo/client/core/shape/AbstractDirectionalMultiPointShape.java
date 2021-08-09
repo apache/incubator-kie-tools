@@ -99,7 +99,7 @@ public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirec
     public Shape<T> copyTo(Shape<T> other) {
         super.copyTo(other);
         ((IDirectionalMultiPointShape<T>) other).setHeadDirection(headDirection);
-        ((IDirectionalMultiPointShape<T>) other).setTailDirection(headDirection);
+        ((IDirectionalMultiPointShape<T>) other).setTailDirection(tailDirection);
         ((IDirectionalMultiPointShape<T>) other).setCorrectionOffset(correctionOffset);
 
         return other;

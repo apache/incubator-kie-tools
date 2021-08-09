@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasInline
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.LineSpliceAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.LocationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ResizeControl;
@@ -129,6 +130,7 @@ public class DefaultEditorSessionTest {
         verify(managedSession, times(1)).registerCanvasHandlerControl(eq(ContainmentAcceptorControl.class));
         verify(managedSession, times(1)).registerCanvasHandlerControl(eq(DockingAcceptorControl.class));
         verify(managedSession, times(1)).registerCanvasHandlerControl(eq(CanvasInlineTextEditorControl.class));
+        verify(managedSession, times(1)).registerCanvasHandlerControl(eq(LineSpliceAcceptorControl.class));
         verify(managedSession, times(1)).registerCanvasHandlerControl(eq(LocationControl.class));
         verify(managedSession, times(1)).registerCanvasHandlerControl(eq(ToolboxControl.class));
         verify(managedSession, times(1)).registerCanvasHandlerControl(eq(ElementBuilderControl.class),

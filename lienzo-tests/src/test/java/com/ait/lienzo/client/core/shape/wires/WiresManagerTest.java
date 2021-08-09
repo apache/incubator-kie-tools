@@ -121,8 +121,10 @@ public class WiresManagerTest {
     public void testRegisterShape() {
         final IContainmentAcceptor containmentAcceptor = mock(IContainmentAcceptor.class);
         final IDockingAcceptor dockingAcceptor = mock(IDockingAcceptor.class);
+        final ILineSpliceAcceptor lineSpliceAcceptor = mock(ILineSpliceAcceptor.class);
         tested.setContainmentAcceptor(containmentAcceptor);
         tested.setDockingAcceptor(dockingAcceptor);
+        tested.setLineSpliceAcceptor(lineSpliceAcceptor);
         final WiresManager spied = spy(tested);
         final HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
         doReturn(handlerRegistrationManager).when(spied).createHandlerRegistrationManager();
@@ -158,6 +160,9 @@ public class WiresManagerTest {
 
         final IDockingAcceptor dockingAcceptor = mock(IDockingAcceptor.class);
         tested.setDockingAcceptor(dockingAcceptor);
+
+        final ILineSpliceAcceptor lineSpliceAcceptor = mock(ILineSpliceAcceptor.class);
+        tested.setLineSpliceAcceptor(lineSpliceAcceptor);
 
         final WiresManager spied = spy(tested);
         final HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);

@@ -684,7 +684,6 @@ public class WiresConnector {
 
         IDirectionalMultiPointShape<?> line = connector.getLine();
         ScratchPad scratch = line.getScratchPad();
-        scratch.clear();
         PathPartList path = line.asShape().getPathPartList();
         int pointsIndex = 1;
         String color = MagnetManager.m_c_rotor.next();
@@ -819,7 +818,7 @@ public class WiresConnector {
         color = BackingColorMapUtils.findColorAtPoint(backing,
                                                       fixedMouseX,
                                                       fixedMouseY);
-        return null != color ? colorMap.get(color) : -1;
+        return null != color && colorMap.isDefined(color) ? colorMap.get(color) : -1;
     }
 
     @Override

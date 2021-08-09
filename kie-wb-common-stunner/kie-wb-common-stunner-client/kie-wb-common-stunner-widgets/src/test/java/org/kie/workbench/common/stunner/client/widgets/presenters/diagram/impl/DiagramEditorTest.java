@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.LineSpliceAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.LocationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
@@ -113,6 +114,11 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
     private ManagedInstance<DockingAcceptorControl<AbstractCanvasHandler>> dockingAcceptorControl;
 
     @Mock
+    LineSpliceAcceptorControl<AbstractCanvasHandler> lineSpliceAcceptorControlInstance;
+    private ManagedInstance<LineSpliceAcceptorControl<AbstractCanvasHandler>> lineSpliceAcceptorControl;
+
+
+    @Mock
     DiagramViewer.DiagramViewerCallback<Diagram> callback;
 
     private DefaultDiagramEditor tested;
@@ -132,6 +138,7 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
         connectionAcceptorControl = spy(new ManagedInstanceStub<>(connectionAcceptorControlInstance));
         containmentAcceptorControl = spy(new ManagedInstanceStub<>(containmentAcceptorControlInstance));
         dockingAcceptorControl = spy(new ManagedInstanceStub<>(dockingAcceptorControlInstance));
+        lineSpliceAcceptorControl = spy(new ManagedInstanceStub<>(lineSpliceAcceptorControlInstance));
         when(viewer.getHandler()).thenReturn(canvasHandler);
         doAnswer(invocationOnMock -> {
             when(viewer.getInstance()).thenReturn(diagram);
@@ -162,7 +169,8 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
                                          cpControl,
                                          connectionAcceptorControl,
                                          containmentAcceptorControl,
-                                         dockingAcceptorControl);
+                                         dockingAcceptorControl,
+                                         lineSpliceAcceptorControl);
     }
 
     @Test
@@ -193,6 +201,8 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
                times(1)).init(eq(canvasHandler));
         verify(dockingAcceptorControlInstance,
                times(1)).init(eq(canvasHandler));
+        verify(lineSpliceAcceptorControlInstance,
+               times(1)).init(eq(canvasHandler));
         ArgumentCaptor<CanvasElementListener> elementListenerArgumentCaptor = ArgumentCaptor.forClass(CanvasElementListener.class);
         verify(canvasHandler, times(1)).addRegistrationListener(elementListenerArgumentCaptor.capture());
         DefaultCanvasElementListener elementListener = (DefaultCanvasElementListener) elementListenerArgumentCaptor.getValue();
@@ -206,6 +216,7 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
         assertTrue(canvasHandlerControls1.next() instanceof ContainmentAcceptorControl);
         assertTrue(canvasHandlerControls1.next() instanceof ConnectionAcceptorControl);
         assertTrue(canvasHandlerControls1.next() instanceof DockingAcceptorControl);
+        assertTrue(canvasHandlerControls1.next() instanceof LineSpliceAcceptorControl);
         assertFalse(canvasHandlerControls1.hasNext());
     }
 
@@ -262,6 +273,8 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
         verify(containmentAcceptorControl,
                times(1)).destroyAll();
         verify(dockingAcceptorControl,
+               times(1)).destroyAll();
+        verify(lineSpliceAcceptorControl,
                times(1)).destroyAll();
     }
 

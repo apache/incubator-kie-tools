@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.LineSpliceAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
@@ -60,4 +61,9 @@ public interface DiagramEditor<D extends Diagram, H extends CanvasHandler>
      * for allowed elements.
      */
     DockingAcceptorControl<H> getDockingAcceptorControl();
+
+    /**
+     * Returns a line splice acceptor control instance. Allows the user to splice lines by adding nodes in between connectors.
+     */
+    LineSpliceAcceptorControl<H> getLineSpliceAcceptorControl();
 }

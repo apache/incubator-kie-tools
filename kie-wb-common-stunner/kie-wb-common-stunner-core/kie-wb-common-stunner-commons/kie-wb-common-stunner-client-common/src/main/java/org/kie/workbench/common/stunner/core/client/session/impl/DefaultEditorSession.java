@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasInline
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.LineSpliceAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.LocationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ResizeControl;
@@ -108,6 +109,7 @@ public class DefaultEditorSession
                      .registerCanvasHandlerControl(ConnectionAcceptorControl.class)
                      .registerCanvasHandlerControl(ContainmentAcceptorControl.class)
                      .registerCanvasHandlerControl(DockingAcceptorControl.class)
+                     .registerCanvasHandlerControl(LineSpliceAcceptorControl.class)
                      .registerCanvasHandlerControl(CanvasInlineTextEditorControl.class)
                      .registerCanvasHandlerControl(LocationControl.class)
                      .registerCanvasHandlerControl(ToolboxControl.class)
@@ -214,6 +216,11 @@ public class DefaultEditorSession
     @Override
     public DockingAcceptorControl<AbstractCanvasHandler> getDockingAcceptorControl() {
         return (DockingAcceptorControl<AbstractCanvasHandler>) session.getCanvasHandlerControl(DockingAcceptorControl.class);
+    }
+
+    @Override
+    public LineSpliceAcceptorControl<AbstractCanvasHandler> getLineSpliceAcceptorControl() {
+        return (LineSpliceAcceptorControl<AbstractCanvasHandler>) session.getCanvasHandlerControl(LineSpliceAcceptorControl.class);
     }
 
     @SuppressWarnings("unchecked")

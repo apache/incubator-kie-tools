@@ -53,4 +53,12 @@ public final class ColorKeyRotor {
         }
         return Color.rgbToBrowserHexColor(m_r_color, m_g_color, m_b_color);
     }
+
+    public void reset() {
+        m_r_color = 0;
+
+        m_g_color = 0;
+
+        m_b_color = 0;
+    }
 }

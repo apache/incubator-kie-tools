@@ -32,9 +32,12 @@ import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresBoundsConstraintControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLineSpliceControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresMoveControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -55,11 +58,13 @@ public class WiresShapeControlImpl
     private WiresDockingControl m_dockingAndControl;
     private WiresContainmentControl m_containmentControl;
     private AlignAndDistributeControl m_alignAndDistributeControl;
+    private WiresLineSpliceControl m_lineSpliceControl;
     private BoundingBox absoluteShapeBounds;
     private WiresShapeLocationBounds locationBounds;
     private Point2D m_adjust;
     private boolean c_accept;
     private boolean d_accept;
+    private boolean s_accept;
     private boolean accepted;
     private WiresConnector[] m_connectorsWithSpecialConnections;
     private Collection<WiresConnector> m_connectors;
@@ -69,17 +74,20 @@ public class WiresShapeControlImpl
                                                                () -> index.get());
         m_dockingAndControl = new WiresDockingControlImpl(() -> parentPickerControl);
         m_containmentControl = new WiresContainmentControlImpl(() -> parentPickerControl);
+        m_lineSpliceControl = new WiresLineSpliceControlImpl(() -> parentPickerControl);
         m_magnetsControl = new WiresMagnetsControlImpl(shape);
     }
 
     public WiresShapeControlImpl(WiresParentPickerControl parentPickerControl,
                                  WiresMagnetsControl m_magnetsControl,
                                  WiresDockingControl m_dockingAndControl,
-                                 WiresContainmentControl m_containmentControl) {
+                                 WiresContainmentControl m_containmentControl,
+                                 WiresLineSpliceControl m_lineSpliceControl) {
         this.parentPickerControl = parentPickerControl;
         this.m_magnetsControl = m_magnetsControl;
         this.m_dockingAndControl = m_dockingAndControl;
         this.m_containmentControl = m_containmentControl;
+        this.m_lineSpliceControl = m_lineSpliceControl;
     }
 
     @Override
@@ -89,6 +97,7 @@ public class WiresShapeControlImpl
         m_adjust = new Point2D(0, 0);
         d_accept = false;
         c_accept = false;
+        s_accept = false;
         accepted = false;
 
         // Delegate move start to the shape's parent control
@@ -105,6 +114,12 @@ public class WiresShapeControlImpl
         if (m_containmentControl != null) {
             m_containmentControl.onMoveStart(x,
                                              y);
+        }
+
+        // Delegate move start to the shape's line splice control
+        if (m_lineSpliceControl != null) {
+            m_lineSpliceControl.onMoveStart(x,
+                                            y);
         }
 
         // Delegate move start to the align and distribute control.
@@ -178,6 +193,11 @@ public class WiresShapeControlImpl
             dxy.setY(cadjust.getY());
         }
 
+        if (null != m_lineSpliceControl) {
+            m_lineSpliceControl.onMove(dx,
+                                       dy);
+        }
+
         final boolean isAlignDistroAdjust = null != m_alignAndDistributeControl &&
                 m_alignAndDistributeControl.dragAdjust(dxy);
 
@@ -209,9 +229,6 @@ public class WiresShapeControlImpl
         forEachConnectorControl(control -> control.onMove(dx,
                                                           dy));
 
-        WiresShapeControlUtils.checkForAndApplyLineSplice(getWiresManager(),
-                                                          getShape());
-
         return adjust;
     }
 
@@ -220,6 +237,7 @@ public class WiresShapeControlImpl
         Point2D location = null;
         d_accept = null != getDockingControl() && getDockingControl().accept();
         c_accept = !d_accept && null != getContainmentControl() && getContainmentControl().accept();
+        s_accept = null != getLineSpliceControl() && getLineSpliceControl().accept();
 
         if (c_accept) {
             location = getContainmentControl().getCandidateLocation();
@@ -247,10 +265,13 @@ public class WiresShapeControlImpl
         if (null != m_containmentControl) {
             m_containmentControl.onMoveComplete();
         }
+        if (null != m_lineSpliceControl) {
+            m_lineSpliceControl.onMoveComplete();
+        }
         if (m_alignAndDistributeControl != null) {
             m_alignAndDistributeControl.dragEnd();
         }
-        forEachConnectorControl(control -> control.onMoveComplete());
+        forEachConnectorControl(WiresMoveControl::onMoveComplete);
     }
 
     @Override
@@ -260,16 +281,21 @@ public class WiresShapeControlImpl
 
     @Override
     public void execute() {
-        final boolean accept = c_accept || d_accept;
+        final boolean accept = c_accept || d_accept || s_accept;
         if (!accept) {
             throw new IllegalStateException("Execute should not be called. No containment neither docking operations have been accepted.");
         }
 
-        final Point2D location = c_accept ?
-                getContainmentControl().getCandidateLocation() :
-                getDockingControl().getCandidateLocation();
+        Point2D location = null;
+        if (!s_accept) {
+            location = c_accept ?
+                    getContainmentControl().getCandidateLocation() :
+                    getDockingControl().getCandidateLocation();
+        }
 
-        if (d_accept) {
+        if (s_accept) {
+            getLineSpliceControl().execute();
+        } else if (d_accept) {
             getDockingControl().execute();
         } else {
             getContainmentControl().execute();
@@ -280,10 +306,7 @@ public class WiresShapeControlImpl
             shapeUpdated(true);
         }
 
-        forEachConnectorControl(control -> control.execute());
-
-        WiresShapeControlUtils.checkForAndApplyLineSplice(getWiresManager(),
-                                                          getShape());
+        forEachConnectorControl(WiresControl::execute);
 
         clear();
     }
@@ -298,7 +321,10 @@ public class WiresShapeControlImpl
         if (null != m_containmentControl) {
             m_containmentControl.clear();
         }
-        forEachConnectorControl(control -> control.clear());
+        if (null != m_lineSpliceControl) {
+            m_lineSpliceControl.clear();
+        }
+        forEachConnectorControl(WiresControl::clear);
         clearState();
     }
 
@@ -310,12 +336,15 @@ public class WiresShapeControlImpl
         if (null != getContainmentControl()) {
             getContainmentControl().reset();
         }
+        if (null != getLineSpliceControl()) {
+            getLineSpliceControl().reset();
+        }
         parentPickerControl.reset();
         if (null != m_alignAndDistributeControl) {
             m_alignAndDistributeControl.reset();
         }
         getShape().shapeMoved();
-        forEachConnectorControl(control -> control.reset());
+        forEachConnectorControl(WiresControl::reset);
         clearState();
     }
 
@@ -327,6 +356,9 @@ public class WiresShapeControlImpl
         }
         if (null != getContainmentControl()) {
             getContainmentControl().destroy();
+        }
+        if (null != getLineSpliceControl()) {
+            getLineSpliceControl().destroy();
         }
         parentPickerControl.destroy();
         if (null != m_alignAndDistributeControl) {
@@ -383,6 +415,11 @@ public class WiresShapeControlImpl
     @Override
     public WiresContainmentControl getContainmentControl() {
         return m_containmentControl;
+    }
+
+    @Override
+    public WiresLineSpliceControl getLineSpliceControl() {
+        return m_lineSpliceControl;
     }
 
     @Override

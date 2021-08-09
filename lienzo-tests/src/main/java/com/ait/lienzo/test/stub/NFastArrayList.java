@@ -63,6 +63,10 @@ public class NFastArrayList<M> implements Iterable<M> {
         return list.size();
     }
 
+    public int getLength() {
+        return size();
+    }
+
     public <M> M get(final int index) {
         return (M) list.get(index);
     }

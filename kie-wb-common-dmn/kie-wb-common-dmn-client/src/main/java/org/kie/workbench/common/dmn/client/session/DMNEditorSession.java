@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.LineSpliceAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.LocationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ResizeControl;
@@ -97,6 +98,7 @@ public class DMNEditorSession extends DefaultEditorSession implements DMNSession
                            .registerCanvasHandlerControl(ConnectionAcceptorControl.class)
                            .registerCanvasHandlerControl(ContainmentAcceptorControl.class)
                            .registerCanvasHandlerControl(DockingAcceptorControl.class)
+                           .registerCanvasHandlerControl(LineSpliceAcceptorControl.class)
                            .registerCanvasHandlerControl(DMNCanvasInlineTextEditorControl.class)
                            .registerCanvasHandlerControl(LocationControl.class)
                            .registerCanvasHandlerControl(ToolboxControl.class)

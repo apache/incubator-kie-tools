@@ -93,6 +93,7 @@ public class WiresContainmentControlImpl extends AbstractWiresControl<WiresConta
         if (isEnabled()) {
             addIntoParent(getShape(),
                           getParent(),
+                          getWiresLayer(),
                           getCandidateLocation());
         }
     }
@@ -108,6 +109,7 @@ public class WiresContainmentControlImpl extends AbstractWiresControl<WiresConta
                 getParentPickerControl().getInitialParent() != getShape().getParent()) {
             addIntoParent(getShape(),
                           getParentPickerControl().getInitialParent(),
+                          getWiresLayer(),
                           getParentPickerControl().getShapeInitialLocation());
             getShape().setDockedTo(null);
         }
@@ -118,14 +120,14 @@ public class WiresContainmentControlImpl extends AbstractWiresControl<WiresConta
         clear();
     }
 
-    private void addIntoParent(final WiresShape shape,
-                               final WiresContainer parent,
-                               final Point2D location) {
-        final WiresLayer m_layer = getWiresLayer();
-        if (parent == null || parent == m_layer) {
-            m_layer.getLayoutHandler().add(shape,
-                                           m_layer,
-                                           location);
+    static void addIntoParent(final WiresShape shape,
+                              final WiresContainer parent,
+                              final WiresLayer layer,
+                              final Point2D location) {
+        if (parent == null || parent == layer) {
+            layer.getLayoutHandler().add(shape,
+                                         layer,
+                                         location);
         } else {
             parent.getLayoutHandler().add(shape,
                                           parent,

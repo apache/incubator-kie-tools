@@ -28,11 +28,13 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLineSpliceControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.types.Point2D;
+import elemental2.dom.DomGlobal;
 
 import static com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlUtils.excludeFromIndex;
 
@@ -48,12 +50,7 @@ public class WiresShapeHighlightControl implements WiresShapeControl {
 
         final WiresControlFactory controlFactory = wiresManager.getControlFactory();
         return new WiresShapeHighlightControl(wiresManager,
-                                              new Supplier<WiresLayerIndex>() {
-                                                  @Override
-                                                  public WiresLayerIndex get() {
-                                                      return controlFactory.newIndex(wiresManager);
-                                                  }
-                                              },
+                                              () -> controlFactory.newIndex(wiresManager),
                                               controlFactory.newShapeHighlight(wiresManager),
                                               delegate);
     }
@@ -75,12 +72,7 @@ public class WiresShapeHighlightControl implements WiresShapeControl {
         final WiresLayerIndex index = indexBuilder.get();
         excludeFromIndex(index, getShape());
         index.build(wiresManager.getLayer());
-        getDelegate().useIndex(new Supplier<WiresLayerIndex>() {
-            @Override
-            public WiresLayerIndex get() {
-                return index;
-            }
-        });
+        getDelegate().useIndex(() -> index);
 
         getDelegate().onMoveStart(x, y);
 
@@ -134,7 +126,9 @@ public class WiresShapeHighlightControl implements WiresShapeControl {
         getDelegate().onMoveComplete();
 
         // Complete the control operation.
-        if (accept()) {
+        if (isSplicing()) {
+            getLineSpliceControl().execute();
+        } else if (accept()) {
             getDelegate().execute();
         } else {
             reset();
@@ -233,6 +227,11 @@ public class WiresShapeHighlightControl implements WiresShapeControl {
     }
 
     @Override
+    public WiresLineSpliceControl getLineSpliceControl() {
+        return getDelegate().getLineSpliceControl();
+    }
+
+    @Override
     public WiresParentPickerControl getParentPickerControl() {
         return getDelegate().getParentPickerControl();
     }
@@ -265,5 +264,11 @@ public class WiresShapeHighlightControl implements WiresShapeControl {
 
     private void clearIndex() {
         getDelegate().getParentPickerControl().getIndex().clear();
+    }
+
+    private boolean isSplicing() {
+        return null != getDelegate().getLineSpliceControl() &&
+                getDelegate().getLineSpliceControl().isAllow() &&
+                getDelegate().getLineSpliceControl().accept();
     }
 }

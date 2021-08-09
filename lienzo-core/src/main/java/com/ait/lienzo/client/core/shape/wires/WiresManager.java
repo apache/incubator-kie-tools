@@ -74,6 +74,8 @@ public final class WiresManager {
 
     private IDockingAcceptor m_dockingAcceptor = IDockingAcceptor.NONE;
 
+    private ILineSpliceAcceptor m_lineSpliceAcceptor = ILineSpliceAcceptor.ALL;
+
     private SelectionManager m_selectionManager;
 
     private WiresDragHandler m_handler;
@@ -346,6 +348,7 @@ public final class WiresManager {
         m_containmentAcceptor = null;
         m_controlPointsAcceptor = null;
         m_dockingAcceptor = null;
+        m_lineSpliceAcceptor = null;
     }
 
     public WiresLayer getLayer() {
@@ -400,6 +403,10 @@ public final class WiresManager {
         return m_dockingAcceptor;
     }
 
+    public ILineSpliceAcceptor getLineSpliceAcceptor() {
+        return m_lineSpliceAcceptor;
+    }
+
     public void setConnectionAcceptor(IConnectionAcceptor connectionAcceptor) {
         m_connectionAcceptor = connectionAcceptor;
     }
@@ -430,6 +437,13 @@ public final class WiresManager {
             throw new IllegalArgumentException("LocationAcceptor cannot be null");
         }
         this.m_locationAcceptor = m_locationAcceptor;
+    }
+
+    public void setLineSpliceAcceptor(ILineSpliceAcceptor lineSpliceAcceptor) {
+        if (lineSpliceAcceptor == null) {
+            throw new IllegalArgumentException("LineSpliceAcceptor cannot be null");
+        }
+        this.m_lineSpliceAcceptor = lineSpliceAcceptor;
     }
 
     public ILocationAcceptor getLocationAcceptor() {

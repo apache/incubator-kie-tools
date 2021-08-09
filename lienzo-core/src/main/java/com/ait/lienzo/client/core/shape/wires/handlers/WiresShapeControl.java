@@ -41,6 +41,8 @@ public interface WiresShapeControl extends WiresMoveControl,
 
     WiresParentPickerControl getParentPickerControl();
 
+    WiresLineSpliceControl getLineSpliceControl();
+
     boolean accept();
 
     boolean isAccepted();

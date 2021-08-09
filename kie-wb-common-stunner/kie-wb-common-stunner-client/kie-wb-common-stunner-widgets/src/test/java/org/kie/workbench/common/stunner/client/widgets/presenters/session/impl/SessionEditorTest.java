@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.LineSpliceAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
@@ -75,6 +76,8 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
     @Mock
+    LineSpliceAcceptorControl<AbstractCanvasHandler> lineSpliceAcceptorControl;
+    @Mock
     WidgetWrapperView view;
     @Mock
     StunnerPreferencesRegistries preferencesRegistries;
@@ -95,6 +98,7 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
         when(session.getConnectionAcceptorControl()).thenReturn(connectionAcceptorControl);
         when(session.getContainmentAcceptorControl()).thenReturn(containmentAcceptorControl);
         when(session.getDockingAcceptorControl()).thenReturn(dockingAcceptorControl);
+        when(session.getLineSpliceAcceptorControl()).thenReturn(lineSpliceAcceptorControl);
         when(metadata.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
         when(preferencesRegistries.get(DEFINITION_SET_ID, StunnerPreferences.class)).thenReturn(stunnerPreferences);
         this.tested = new SessionEditorImpl<>(view, canvasPanel, preferencesRegistries);
@@ -121,6 +125,8 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
                      tested.getDiagramEditor().getContainmentAcceptorControl());
         assertEquals(dockingAcceptorControl,
                      tested.getDiagramEditor().getDockingAcceptorControl());
+        assertEquals(lineSpliceAcceptorControl,
+                     tested.getDiagramEditor().getLineSpliceAcceptorControl());
         verify(canvasHandler,
                times(1)).draw(eq(diagram),
                               any(ParameterizedCommand.class));

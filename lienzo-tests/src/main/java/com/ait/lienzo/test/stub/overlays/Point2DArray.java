@@ -110,6 +110,15 @@ public class Point2DArray {
         return holder.get(index);
     }
 
+    public Point2DArray unshift(final Point2D p) {
+        holder.add(0, p);
+        return this;
+    }
+
+    public int getLength() {
+        return holder.size();
+    }
+
     public Point2DArray noAdjacentPoints() {
         final Point2DArray no = Point2DArray.make();
         final int sz = holder.size();
