@@ -80,7 +80,7 @@ public class HandlerManager {
         JsSet<Throwable> causes = null;
         try {
             firingDepth++;
-            for (int i = 0, length = handlers.length; i < length; i++) {
+            for (int i = 0; i < handlers.length; i++) {
                 try {
                     event.dispatch(handlers.getAt(i));
                 } catch (Throwable var11) {
