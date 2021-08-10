@@ -17,6 +17,24 @@
 <div class="kie-dmn-container">
     <div class="kie-dmn-return-to-link">
         <i class="fa fa-angle-double-left" aria-hidden="true"></i><a href="#" data-field="returnToLink"></a>
+
+        <!-- TODO (KOGITO-3661): Remove the "display: none" here. -->
+        <div data-field="beta-boxed-expression-toggle" style="display: none" class="kie-beta-boxed-expression-editor">
+            <span class="beta-dash"></span>
+            <span class="beta-badge" data-i18n-key="Beta"></span>
+            <span class="stable-badge" data-i18n-key="Stable"></span>
+            <span class="stable-description">
+                <span data-i18n-key="StableVersionDescription"></span>
+                <a href="#" data-field="try-it" data-i18n-key="ClickHere"></a>!
+            </span>
+            <span class="beta-description">
+                <span data-i18n-key="BetaVersionDescription1"></span>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdTGtMAEPC85vH28PCHJZh-ccnxaVoKGMZvf4BZYsC5dx_1iA/viewform?usp=sf_link" target="_blank" data-i18n-key="FeedbackHere"></a>
+                <span data-i18n-key="BetaVersionDescription2"></span>
+                <a href="#" data-field="switch-back" data-i18n-key="SwitchBack"></a>
+                <span data-i18n-key="BetaVersionDescription3"></span>
+            </span>
+        </div>
     </div>
     <div class="kie-dmn-expression-type">
         <span id="name" data-field="expressionName"></span>

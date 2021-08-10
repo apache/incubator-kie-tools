@@ -24,6 +24,8 @@ import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -68,6 +70,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     static final double VP_SCALE = 1.0;
 
+    static final String ENABLED_BETA_CSS_CLASS = "kie-beta-boxed-expression-editor--enabled";
+
     private ExpressionEditorView.Presenter presenter;
 
     @DataField("returnToLink")
@@ -81,6 +85,15 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @DataField("dmn-table")
     private DMNGridPanelContainer gridPanelContainer;
+
+    @DataField("try-it")
+    private HTMLAnchorElement tryIt;
+
+    @DataField("switch-back")
+    private HTMLAnchorElement switchBack;
+
+    @DataField("beta-boxed-expression-toggle")
+    private HTMLDivElement betaBoxedExpressionToggle;
 
     private TranslationService translationService;
     private ListSelectorView.Presenter listSelector;
@@ -113,7 +126,10 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final @DMNEditor DefaultCanvasCommandFactory canvasCommandFactory,
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                     final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
-                                    final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent) {
+                                    final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
+                                    final HTMLAnchorElement tryIt,
+                                    final HTMLAnchorElement switchBack,
+                                    final HTMLDivElement betaBoxedExpressionToggle) {
         this.returnToLink = returnToLink;
         this.expressionName = expressionName;
         this.expressionType = expressionType;
@@ -128,6 +144,10 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
         this.domainObjectSelectionEvent = domainObjectSelectionEvent;
+
+        this.tryIt = tryIt;
+        this.switchBack = switchBack;
+        this.betaBoxedExpressionToggle = betaBoxedExpressionToggle;
     }
 
     @Override
@@ -243,7 +263,37 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                         "<" + expressionTypeText + ">"));
     }
 
-    @SuppressWarnings("unused")
+    @EventHandler("try-it")
+    public void onTryIt(final ClickEvent event) {
+        renderNewBoxedExpression();
+        toggleBoxedExpression(true);
+        preventDefault(event);
+    }
+
+    @EventHandler("switch-back")
+    public void onSwitchBack(final ClickEvent event) {
+        renderOldBoxedExpression();
+        toggleBoxedExpression(false);
+        preventDefault(event);
+    }
+
+    void renderNewBoxedExpression() {
+        // TODO (KOGITO-3661): Render the new boxed expression here
+    }
+
+    void renderOldBoxedExpression() {
+        // TODO (KOGITO-3661): Render the old boxed expression here
+    }
+
+    void toggleBoxedExpression(final boolean enabled) {
+        betaBoxedExpressionToggle.classList.toggle(ENABLED_BETA_CSS_CLASS, enabled);
+    }
+
+    private void preventDefault(final ClickEvent event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     @EventHandler("returnToLink")
     void onClickReturnToLink(final ClickEvent event) {
         presenter.exit();

@@ -27,6 +27,9 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
+import elemental2.dom.DOMTokenList;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -79,6 +82,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorViewImpl.ENABLED_BETA_CSS_CLASS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -183,6 +187,15 @@ public class ExpressionEditorViewImplTest {
     @Mock
     private HasExpression hasExpression;
 
+    @Mock
+    private HTMLAnchorElement tryIt;
+
+    @Mock
+    private HTMLAnchorElement switchBack;
+
+    @Mock
+    private HTMLDivElement betaBoxedExpressionToggle;
+
     @Captor
     private ArgumentCaptor<Transform> transformArgumentCaptor;
 
@@ -235,7 +248,10 @@ public class ExpressionEditorViewImplTest {
                                                      canvasCommandFactory,
                                                      expressionEditorDefinitionsSupplier,
                                                      refreshFormPropertiesEvent,
-                                                     domainObjectSelectionEvent));
+                                                     domainObjectSelectionEvent,
+                                                     tryIt,
+                                                     switchBack,
+                                                     betaBoxedExpressionToggle));
         view.init(presenter);
         view.bind(session);
 
@@ -266,6 +282,8 @@ public class ExpressionEditorViewImplTest {
 
         doAnswer((i) -> i.getArguments()[1]).when(translationService).format(Mockito.<String>any(), anyObject());
         doAnswer((i) -> i.getArguments()[0]).when(translationService).getTranslation(Mockito.<String>any());
+
+        betaBoxedExpressionToggle.classList = mock(DOMTokenList.class);
     }
 
     @Test
@@ -445,5 +463,41 @@ public class ExpressionEditorViewImplTest {
         view.setFocus();
 
         verify(gridPanel).setFocus(true);
+    }
+
+    @Test
+    public void testOnTryIt() {
+        final ClickEvent event = mock(ClickEvent.class);
+
+        view.onTryIt(event);
+
+        verify(view).renderNewBoxedExpression();
+        verify(view).toggleBoxedExpression(true);
+        verify(event).preventDefault();
+        verify(event).stopPropagation();
+    }
+
+    @Test
+    public void testOnSwitchBack() {
+        final ClickEvent event = mock(ClickEvent.class);
+
+        view.onSwitchBack(event);
+
+        verify(view).renderOldBoxedExpression();
+        verify(view).toggleBoxedExpression(false);
+        verify(event).preventDefault();
+        verify(event).stopPropagation();
+    }
+
+    @Test
+    public void testToggleBoxedExpressionAndEnableIt() {
+        view.toggleBoxedExpression(true);
+        verify(betaBoxedExpressionToggle.classList).toggle(ENABLED_BETA_CSS_CLASS, true);
+    }
+
+    @Test
+    public void testToggleBoxedExpressionAndDisableIt() {
+        view.toggleBoxedExpression(false);
+        verify(betaBoxedExpressionToggle.classList).toggle(ENABLED_BETA_CSS_CLASS, false);
     }
 }
