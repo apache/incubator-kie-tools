@@ -236,6 +236,55 @@ Feature: Deploy Kogito Runtime
 #####
 
   @events
+  @kafka
+  Scenario Outline: Deploy <example-service> with events and native <native> using Kogito Runtime
+    Given Kogito Operator is deployed
+    And Kafka Operator is deployed
+    And Kafka instance "kogito-kafka" is deployed
+    And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
+    And Clone Kogito examples into local directory
+    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+      | profile | events   |
+      | native  | <native> |
+
+    When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
+      | config | infra | kafka      |
+    And Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
+    And Start "orders" process on service "<example-service>" within 3 minutes with body:
+      """json
+      {
+        "approver" : "john",
+        "order" : {
+          "orderNumber" : "12345",
+          "shipped" : false
+        }
+      }
+      """
+
+    # 2 messages in output => orders and orderItems
+    Then Kafka instance "kogito-kafka" should contain at least 2 messages on topic "kogito-processinstances-events" within 2 minutes
+
+    @springboot
+    @rhpam
+    Examples:
+      | runtime    | example-service            | native   |
+      | springboot | process-springboot-example | disabled |
+
+    @quarkus
+    @rhpam
+    Examples:
+      | runtime    | example-service         | native   |
+      | quarkus    | process-quarkus-example | disabled |
+
+    @quarkus
+    @native
+    Examples:
+      | runtime    | example-service         | native  |
+      | quarkus    | process-quarkus-example | enabled |
+
+#####
+
+  @events
   @infinispan
   @kafka
   Scenario Outline: Deploy <example-service> with events and native <native> using Kogito Runtime and Infinispan
