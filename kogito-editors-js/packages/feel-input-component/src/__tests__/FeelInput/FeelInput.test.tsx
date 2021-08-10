@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-const path = require("path");
-const { override, removeModuleScopePlugin, addWebpackResolve, addWebpackAlias } = require("customize-cra");
+import { render } from "@testing-library/react";
+import * as React from "react";
+import { FeelInput } from "../../";
 
-module.exports = override(
-  removeModuleScopePlugin(),
-  addWebpackResolve({
-    symlinks: false,
-  }),
-  addWebpackAlias({
-    "feel-input-component": path.resolve(__dirname, "../../../dist/feel-input-component"),
-  })
-);
+describe("FeelInput", () => {
+  describe("when it's not enabled", () => {
+    test("should render an empty component", () => {
+      const { container } = render(<FeelInput enabled={false} />);
+      expect(container).toMatchSnapshot();
+    });
+  });
+
+  describe("when it's enabled", () => {
+    test("should render the FEEL input component", () => {
+      const { container } = render(<FeelInput enabled={true} />);
+      expect(container).toMatchSnapshot();
+    });
+  });
+});

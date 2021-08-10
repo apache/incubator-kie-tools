@@ -66,9 +66,20 @@ const commonConfig = (name, devMode, options = {}) => {
           test: /\.css$/,
           use: [devMode ? "style-loader" : MiniCssExtractPlugin.loader, "css-loader"],
         },
+        {
+          test: /\.(woff(2)?|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
+          use: [
+            {
+              loader: "file-loader",
+              options: {
+                name: "[name].[ext]",
+                outputPath: "fonts",
+              },
+            },
+          ],
+        },
       ],
     },
-
     resolve: {
       extensions: [".tsx", ".ts", ".js", ".jsx"],
       modules: [path.resolve("../../node_modules"), path.resolve("../node_modules"), path.resolve("./src")],

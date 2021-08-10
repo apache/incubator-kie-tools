@@ -14,15 +14,6 @@
  * limitations under the License.
  */
 
-const path = require("path");
-const { override, removeModuleScopePlugin, addWebpackResolve, addWebpackAlias } = require("customize-cra");
+const { override, removeModuleScopePlugin, addWebpackResolve } = require("customize-cra");
 
-module.exports = override(
-  removeModuleScopePlugin(),
-  addWebpackResolve({
-    symlinks: false,
-  }),
-  addWebpackAlias({
-    "feel-input-component": path.resolve(__dirname, "../../../dist/feel-input-component"),
-  })
-);
+module.exports = override(removeModuleScopePlugin(), addWebpackResolve({ symlinks: false }));

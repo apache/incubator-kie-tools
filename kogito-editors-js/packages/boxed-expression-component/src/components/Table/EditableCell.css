@@ -16,6 +16,7 @@
 
 .expression-container .editable-cell {
   height: 100%;
+  min-height: 100%;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -27,33 +28,45 @@
 }
 
 .expression-container .editable-cell:active,
-.expression-container .editable-cell.editable-cell--selected {
+.expression-container .editable-cell.editable-cell--selected,
+.expression-container .editable-cell.editable-cell--edit-mode {
   border: 2px solid #438cb1;
 }
 
-.expression-container .editable-cell span,
-.expression-container .editable-cell textarea {
+.expression-container .editable-cell .editable-cell-value,
+.expression-container .editable-cell .feel-input {
   width: 100%;
 }
 
-.expression-container .editable-cell span {
+.expression-container .editable-cell .feel-input,
+.expression-container .editable-cell .feel-input > div {
+  height: 100%;
+  text-align: left;
+}
+
+.expression-container .editable-cell .editable-cell-value {
   padding: 0 5px;
+  font-size: 13px;
+  font-family: Menlo, Monaco, "Courier New", monospace;
   white-space: pre-line;
 }
 
-.expression-container .editable-cell textarea {
-  padding: 0 4px;
+.expression-container .editable-cell .editable-cell-textarea {
+  opacity: 0;
 }
 
-.expression-container .editable-cell.editable-cell--edit-mode span,
-.expression-container .editable-cell.editable-cell--read-mode textarea {
+.expression-container .editable-cell .editable-cell-textarea,
+.expression-container .editable-cell.editable-cell--edit-mode .editable-cell-value,
+.expression-container .editable-cell.editable-cell--read-mode .feel-input {
   position: absolute;
   top: -100%;
   left: -100%;
 }
 
-.expression-container .editable-cell span {
+.expression-container .editable-cell .editable-cell-value {
   display: inline-block;
   vertical-align: middle;
   line-height: normal;
+  max-height: 100%;
+  padding: 2px 0;
 }

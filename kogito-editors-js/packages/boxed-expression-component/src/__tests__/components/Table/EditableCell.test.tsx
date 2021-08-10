@@ -15,10 +15,10 @@
  */
 
 import { fireEvent, render } from "@testing-library/react";
-import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
-import * as React from "react";
-import { EDIT_MODE, EditableCell, READ_MODE } from "../../../components/Table";
 import * as _ from "lodash";
+import * as React from "react";
+import { EditableCell, EDIT_MODE, READ_MODE } from "../../../components/Table";
+import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
 
 describe("EditableCell", () => {
   const CELL_SELECTOR = ".editable-cell";
@@ -36,12 +36,12 @@ describe("EditableCell", () => {
       ).container;
     });
 
-    it("renders the initial value", () => {
+    test("renders the initial value", () => {
       expect(container.querySelector("textarea")).toBeTruthy();
       expect((container.querySelector("textarea") as HTMLTextAreaElement).value).toBe(initialValue);
     });
 
-    it("renders on read mode", () => {
+    test("renders on read mode", () => {
       expect(container.querySelector(CELL_SELECTOR)?.classList.contains(READ_MODE)).toBeTruthy();
     });
   });
@@ -57,7 +57,7 @@ describe("EditableCell", () => {
       fireEvent.doubleClick(container.querySelector(CELL_SELECTOR) as Element);
     });
 
-    it("renders on edit mode", () => {
+    test("renders on edit mode", () => {
       expect(container.querySelector(CELL_SELECTOR)?.classList.contains(EDIT_MODE)).toBeTruthy();
     });
   });
@@ -69,12 +69,11 @@ describe("EditableCell", () => {
           <EditableCell value={"value"} row={{ index: 0 }} column={{ id: "col1" }} onCellUpdate={_.identity} />
         ).wrapper
       ).container;
-
-      fireEvent.click(container.querySelector(CELL_SELECTOR) as Element);
-      fireEvent.keyPress(container.querySelector("textarea") as Element, { key: "Enter", keyCode: 13 });
     });
 
-    it("renders on edit mode", () => {
+    test("renders on edit mode", () => {
+      fireEvent.click(container.querySelector(CELL_SELECTOR) as Element);
+      fireEvent.change(container.querySelector("textarea") as HTMLTextAreaElement, { target: { value: "Z" } });
       expect(container.querySelector(CELL_SELECTOR)?.classList.contains(EDIT_MODE)).toBeTruthy();
     });
   });
@@ -90,18 +89,18 @@ describe("EditableCell", () => {
       fireEvent.click(container.querySelector(CELL_SELECTOR) as Element);
     });
 
-    it("focus on the text area", () => {
+    test("focus on the text area", () => {
       expect(document.querySelector("textarea")).toEqual(document.activeElement);
     });
 
-    it("enable the selected style", () => {
+    test("enable the selected style", () => {
       expect(container.querySelector(CELL_SELECTOR)?.classList.contains("editable-cell--selected")).toBeTruthy();
     });
   });
 
-  describe("when the user changes a value", () => {
+  describe("when the on blur events happens", () => {
     const value = "value";
-    const newValue = "changed";
+    const newValue = "new value";
     const rowIndex = 0;
     const columnId = "col1";
     const onCellUpdate = (rowIndex: number, columnId: string, value: string) => {
@@ -121,11 +120,13 @@ describe("EditableCell", () => {
         ).wrapper
       ).container;
 
-      fireEvent.change(container.querySelector("textarea") as HTMLTextAreaElement, { target: { value: newValue } });
-      fireEvent.blur(container.querySelector("textarea") as HTMLTextAreaElement);
+      fireEvent.change(container.querySelector("textarea") as HTMLTextAreaElement, {
+        target: { value: `${newValue}\t` },
+      });
+      // onblur is triggered by Monaco (mock), and the new value relies on Monaco implementation
     });
 
-    it("triggers the onCellUpdate function ", () => {
+    test("triggers the onCellUpdate function", () => {
       expect(mockedOnCellUpdate).toHaveBeenCalled();
       expect(mockedOnCellUpdate).toHaveBeenCalledWith(rowIndex, columnId, newValue);
     });

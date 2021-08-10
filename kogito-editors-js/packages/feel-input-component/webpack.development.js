@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-const path = require("path");
-const { override, removeModuleScopePlugin, addWebpackResolve, addWebpackAlias } = require("customize-cra");
+const { developmentConfig } = require("../../webpack.common.development");
 
-module.exports = override(
-  removeModuleScopePlugin(),
-  addWebpackResolve({
-    symlinks: false,
+module.exports = [
+  developmentConfig("feel-input-component", {
+    performance: {
+      maxEntrypointSize: 10_000_000,
+      maxAssetSize: 10_000_000,
+    },
   }),
-  addWebpackAlias({
-    "feel-input-component": path.resolve(__dirname, "../../../dist/feel-input-component"),
-  })
-);
+];

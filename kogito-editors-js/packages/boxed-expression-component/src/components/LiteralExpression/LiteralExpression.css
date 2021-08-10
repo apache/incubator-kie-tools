@@ -58,7 +58,6 @@
 }
 
 .literal-expression .literal-expression-body {
-  height: 4em;
   width: 100%;
   border: 1px solid var(--pf-global--palette--black-300);
 }
