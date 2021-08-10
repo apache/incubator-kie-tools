@@ -16,6 +16,7 @@ package infrastructure
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	"github.com/kiegroup/kogito-operator/core/operator"
@@ -130,21 +131,30 @@ func getKafkaTopic(name, namespace, kafkaBroker string) *v1beta2.KafkaTopic {
 // ResolveKafkaServerURI returns the uri of the kafka instance
 func (k *kafkaHandler) ResolveKafkaServerURI(kafka *v1beta2.Kafka) (string, error) {
 	k.Log.Debug("Resolving kafka URI", "kafka instance", kafka.Name)
+	kafkaURI := ResolveKafkaServerURI(kafka)
+	if len(kafkaURI) > 0 {
+		k.Log.Debug("Success fetch Kafka URI", "kafka instance", kafka.Name, "kafka URI", kafkaURI)
+		return kafkaURI, nil
+	}
+	k.Log.Debug("Not able resolve URI for given kafka instance")
+	return "", fmt.Errorf("not able resolve URI for given kafka instance %s", kafka.Name)
+}
+
+// ResolveKafkaServerURI returns the uri of the kafka instance
+func ResolveKafkaServerURI(kafka *v1beta2.Kafka) string {
 	if len(kafka.Status.Listeners) > 0 {
 		for _, listenerStatus := range kafka.Status.Listeners {
 			if listenerStatus.Type == "plain" && len(listenerStatus.Addresses) > 0 {
 				for _, listenerAddress := range listenerStatus.Addresses {
 					if len(listenerAddress.Host) > 0 && listenerAddress.Port > 0 {
 						kafkaURI := fmt.Sprintf("%s:%d", listenerAddress.Host, listenerAddress.Port)
-						k.Log.Debug("Success fetch Kafka URI", "kafka instance", kafka.Name, "kafka URI", kafkaURI)
-						return kafkaURI, nil
+						return kafkaURI
 					}
 				}
 			}
 		}
 	}
-	k.Log.Debug("Not able resolve URI for given kafka instance")
-	return "", fmt.Errorf("not able resolve URI for given kafka instance %s", kafka.Name)
+	return ""
 }
 
 // IsKafkaResource checks if provided KogitoInfra instance is for kafka resource
