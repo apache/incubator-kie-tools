@@ -53,6 +53,8 @@ var (
 	PreRegisterStepsHook func(ctx *godog.ScenarioContext, d *steps.Data)
 	// AfterScenarioHook appends hooks to be executed before default AfterScenario phase
 	AfterScenarioHook func(scenario *godog.Scenario, d *steps.Data) error
+
+	logKogitoCommunityObjects = true
 )
 
 func init() {
@@ -196,7 +198,12 @@ func initializeScenario(ctx *godog.ScenarioContext) {
 	}
 
 	data.RegisterAllSteps(ctx)
-	data.RegisterLogsKubernetesObjects(&v1beta1.KogitoRuntimeList{}, &v1beta1.KogitoBuildList{}, &v1beta1.KogitoSupportingService{}, &v1beta1.KogitoInfraList{}, &olmapiv1alpha1.ClusterServiceVersionList{})
+
+	// Log objects
+	if logKogitoCommunityObjects {
+		data.RegisterLogsKubernetesObjects(&v1beta1.KogitoRuntimeList{}, &v1beta1.KogitoBuildList{}, &v1beta1.KogitoSupportingService{}, &v1beta1.KogitoInfraList{})
+	}
+	data.RegisterLogsKubernetesObjects(&olmapiv1alpha1.ClusterServiceVersionList{})
 	if framework.IsOpenshift() {
 		data.RegisterLogsKubernetesObjects(&imgv1.ImageStreamList{})
 	}
@@ -346,4 +353,9 @@ func retrieveProfilingData() {
 		framework.GetMainLogger().Error(err, "Error while installing Kogito operator from YAML file")
 		return
 	}
+}
+
+// DisableLogsKogitoCommunityObjects allows to disable the log of community objects
+func DisableLogsKogitoCommunityObjects() {
+	logKogitoCommunityObjects = false
 }

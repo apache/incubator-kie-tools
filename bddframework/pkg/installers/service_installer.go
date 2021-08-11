@@ -263,6 +263,7 @@ var _ NamespacedServiceInstaller = &OlmNamespacedServiceInstaller{}
 type OlmNamespacedServiceInstaller struct {
 	SubscriptionName             string
 	Channel                      string
+	StartingCSV                  string
 	Catalog                      func() framework.OperatorCatalog
 	InstallationTimeoutInMinutes int
 	// Return all CRs of this service which exists in this namespace
@@ -278,7 +279,7 @@ func (installer *OlmNamespacedServiceInstaller) Install(namespace string) error 
 		installedNamespacedServices.Store(namespace, append(sis.([]NamespacedServiceInstaller), installer))
 	}
 
-	if err := framework.InstallOperator(namespace, installer.SubscriptionName, installer.Channel, installer.Catalog()); err != nil {
+	if err := framework.InstallOperator(namespace, installer.SubscriptionName, installer.Channel, installer.StartingCSV, installer.Catalog()); err != nil {
 		return err
 	}
 
@@ -318,6 +319,7 @@ var _ ClusterWideServiceInstaller = &OlmClusterWideServiceInstaller{}
 type OlmClusterWideServiceInstaller struct {
 	SubscriptionName             string
 	Channel                      string
+	StartingCSV                  string
 	Catalog                      func() framework.OperatorCatalog
 	InstallationTimeoutInMinutes int
 	// Return all CRs of this service which exists in this namespace
@@ -334,7 +336,7 @@ func (installer *OlmClusterWideServiceInstaller) Install(namespace string) error
 		return framework.WaitForClusterWideOperatorRunning(installer.SubscriptionName, installer.Catalog(), installer.InstallationTimeoutInMinutes)
 	}
 
-	if err := framework.InstallClusterWideOperator(installer.SubscriptionName, installer.Channel, installer.Catalog()); err != nil {
+	if err := framework.InstallClusterWideOperator(installer.SubscriptionName, installer.Channel, installer.StartingCSV, installer.Catalog()); err != nil {
 		return err
 	}
 

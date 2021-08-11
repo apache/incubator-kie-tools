@@ -48,8 +48,10 @@ const (
 	// kogitoCatalogSourceName name of the CatalogSource containing Kogito bundle for BDD tests
 	kogitoCatalogSourceName = "bdd-tests-kogito-catalog"
 
-	openShiftCatalogNamespace  = "openshift-marketplace"
-	kubernetesCatalogNamespace = "olm"
+	// OpenShiftCatalogNamespace is the namespace for clusterwide installations on Openshift
+	OpenShiftCatalogNamespace = "openshift-marketplace"
+	// KubernetesCatalogNamespace is the namespace for clusterwide installations on Kubernetes
+	KubernetesCatalogNamespace = "olm"
 
 	defaultOpenShiftClusterOperatorNamespace  = "openshift-operators"
 	defaultKubernetesClusterOperatorNamespace = "operators"
@@ -169,7 +171,7 @@ func RemoveKogitoOperatorDeployment(namespace string) error {
 }
 
 // InstallOperator installs an operator via subscrition
-func InstallOperator(namespace, subscriptionName, channel string, catalog OperatorCatalog) error {
+func InstallOperator(namespace, subscriptionName, channel, startingCSV string, catalog OperatorCatalog) error {
 	GetLogger(namespace).Info("Subscribing to operator", "subscriptionName", subscriptionName, "catalogSource", catalog.source, "channel", channel)
 	if _, err := CreateOperatorGroupIfNotExists(namespace, namespace); err != nil {
 		return err
@@ -179,7 +181,7 @@ func InstallOperator(namespace, subscriptionName, channel string, catalog Operat
 		return err
 	}
 
-	if _, err := CreateNamespacedSubscriptionIfNotExist(namespace, subscriptionName, subscriptionName, catalog, channel); err != nil {
+	if _, err := CreateNamespacedSubscriptionIfNotExist(namespace, subscriptionName, subscriptionName, catalog, channel, startingCSV); err != nil {
 		return err
 	}
 
@@ -187,10 +189,10 @@ func InstallOperator(namespace, subscriptionName, channel string, catalog Operat
 }
 
 // InstallClusterWideOperator installs an operator for all namespaces via subscrition
-func InstallClusterWideOperator(subscriptionName, channel string, catalog OperatorCatalog) error {
+func InstallClusterWideOperator(subscriptionName, channel, startingCSV string, catalog OperatorCatalog) error {
 	clusterOperatorNamespace := GetClusterOperatorNamespace()
 	GetLogger(clusterOperatorNamespace).Info("Subscribing to operator", "subscriptionName", subscriptionName, "catalogSource", catalog.source, "channel", channel, "namespace", clusterOperatorNamespace)
-	if _, err := CreateNamespacedSubscriptionIfNotExist(clusterOperatorNamespace, subscriptionName, subscriptionName, catalog, channel); err != nil {
+	if _, err := CreateNamespacedSubscriptionIfNotExist(clusterOperatorNamespace, subscriptionName, subscriptionName, catalog, channel, startingCSV); err != nil {
 		return err
 	}
 
@@ -304,7 +306,7 @@ func isOperatorGroupReady(namespace, operatorGroupName string) (bool, error) {
 }
 
 // CreateNamespacedSubscriptionIfNotExist create a namespaced subscription if not exists
-func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName string, operatorName string, catalog OperatorCatalog, channel string) (*olmapiv1alpha1.Subscription, error) {
+func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName string, operatorName string, catalog OperatorCatalog, channel, startingCSV string) (*olmapiv1alpha1.Subscription, error) {
 	subscription := &olmapiv1alpha1.Subscription{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      subscriptionName,
@@ -316,6 +318,7 @@ func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName s
 			CatalogSource:          catalog.source,
 			CatalogSourceNamespace: catalog.namespace,
 			Channel:                channel,
+			StartingCSV:            startingCSV,
 		},
 	}
 
@@ -494,27 +497,23 @@ func GetClusterOperatorNamespace() string {
 // GetCommunityCatalog returns OperatorCatalog with community operators
 func GetCommunityCatalog() OperatorCatalog {
 	if IsOpenshift() {
-		return OperatorCatalog{
-			source:    "community-operators",
-			namespace: openShiftCatalogNamespace,
-		}
+		return GetOperatorCatalog(OpenShiftCatalogNamespace, "community-operators")
 	}
-	return OperatorCatalog{
-		source:    "operatorhubio-catalog",
-		namespace: kubernetesCatalogNamespace,
-	}
+	return GetOperatorCatalog(KubernetesCatalogNamespace, "operatorhubio-catalog")
 }
 
 // GetCustomKogitoOperatorCatalog returns OperatorCatalog containing custom Kogito operator informations
 func GetCustomKogitoOperatorCatalog() OperatorCatalog {
 	if IsOpenshift() {
-		return OperatorCatalog{
-			source:    kogitoCatalogSourceName,
-			namespace: openShiftCatalogNamespace,
-		}
+		return GetOperatorCatalog(OpenShiftCatalogNamespace, kogitoCatalogSourceName)
 	}
+	return GetOperatorCatalog(KubernetesCatalogNamespace, kogitoCatalogSourceName)
+}
+
+// GetOperatorCatalog creates the operator catalog based given on source and namespace
+func GetOperatorCatalog(namespace, source string) OperatorCatalog {
 	return OperatorCatalog{
-		source:    kogitoCatalogSourceName,
-		namespace: kubernetesCatalogNamespace,
+		source:    source,
+		namespace: namespace,
 	}
 }
