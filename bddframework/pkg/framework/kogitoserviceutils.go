@@ -105,6 +105,9 @@ func NewKogitoServiceSpec(replicas int32, fullImage string, defaultImageName str
 			LivenessProbe: corev1.Probe{
 				FailureThreshold: 12,
 			},
+			StartupProbe: corev1.Probe{
+				FailureThreshold: 12,
+			},
 		},
 	}
 }

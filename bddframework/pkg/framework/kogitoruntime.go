@@ -71,6 +71,9 @@ func GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag string) *v1beta
 					LivenessProbe: corev1.Probe{
 						FailureThreshold: 12,
 					},
+					StartupProbe: corev1.Probe{
+						FailureThreshold: 12,
+					},
 				},
 			},
 		},
