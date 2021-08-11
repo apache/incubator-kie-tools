@@ -50,7 +50,6 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -166,10 +165,10 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
     @Override
     protected void assertInitQualifiers() {
         super.assertInitQualifiers();
-        verify(managedSession).registerCanvasHandlerControl(eq(DMNCanvasInlineTextEditorControl.class));
-        verify(managedSession).registerCanvasHandlerControl(eq(LineSpliceAcceptorControl.class));
-        verify(managedSession).registerCanvasHandlerControl(eq(ElementBuilderControl.class), eq(Observer.class));
-        verify(managedSession).registerCanvasHandlerControl(eq(DMNCanvasShortcutsControl.class));
-        verify(managedSession).registerCanvasHandlerControl(eq(ControlPointControl.class));
+        verify(managedSession).registerCanvasHandlerControl(DMNCanvasInlineTextEditorControl.class);
+        verify(managedSession).registerCanvasHandlerControl(LineSpliceAcceptorControl.class);
+        verify(managedSession).registerCanvasHandlerControl(ElementBuilderControl.class, Observer.class);
+        verify(managedSession).registerCanvasHandlerControl(DMNCanvasShortcutsControl.class);
+        verify(managedSession).registerCanvasHandlerControl(ControlPointControl.class);
     }
 }
