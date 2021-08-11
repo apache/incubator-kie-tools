@@ -31,8 +31,8 @@ import (
 )
 
 // InstallKogitoInfraComponent installs the desired component with the given installer type
-func InstallKogitoInfraComponent(namespace string, installerType InstallerType, infra *v1beta1.KogitoInfra) error {
-	GetLogger(namespace).Info("Installing kogito infra resource", "installType", installerType, "APIVersion", infra.Spec.Resource.APIVersion, "kind", infra.Spec.Resource.Kind)
+func InstallKogitoInfraComponent(namespace string, installerType InstallerType, infra api.KogitoInfraInterface) error {
+	GetLogger(namespace).Info("Installing kogito infra resource", "installType", installerType, "APIVersion", infra.GetSpec().GetResource().GetAPIVersion(), "kind", infra.GetSpec().GetResource().GetKind())
 	switch installerType {
 	case CLIInstallerType:
 		return cliInstallKogitoInfraComponent(namespace, infra)
@@ -43,15 +43,15 @@ func InstallKogitoInfraComponent(namespace string, installerType InstallerType, 
 	}
 }
 
-func crInstallKogitoInfraComponent(infra *v1beta1.KogitoInfra) error {
+func crInstallKogitoInfraComponent(infra api.KogitoInfraInterface) error {
 	if err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(infra); err != nil {
 		return fmt.Errorf("Error creating KogitoInfra: %v", err)
 	}
 	return nil
 }
 
-func cliInstallKogitoInfraComponent(namespace string, infraResource *v1beta1.KogitoInfra) error {
-	cmd := []string{"install", "infra", infraResource.Name}
+func cliInstallKogitoInfraComponent(namespace string, infraResource api.KogitoInfraInterface) error {
+	cmd := []string{"install", "infra", infraResource.GetName()}
 
 	cmd = append(cmd, mappers.GetInfraCLIFlags(infraResource)...)
 
@@ -101,10 +101,10 @@ func parseKogitoInfraResource(targetResourceType string) (*v1beta1.InfraResource
 }
 
 // WaitForKogitoInfraResource waits for the given KogitoInfra resource to be ready
-func WaitForKogitoInfraResource(namespace, name string, timeoutInMin int) error {
+func WaitForKogitoInfraResource(namespace, name string, timeoutInMin int, getKogitoInfra func(namespace, name string) (api.KogitoInfraInterface, error)) error {
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("KogitoInfra %s status to be Success", name), timeoutInMin,
 		func() (bool, error) {
-			infraResource, err := getKogitoInfraResource(namespace, name)
+			infraResource, err := getKogitoInfra(namespace, name)
 			if err != nil {
 				return false, err
 			}
@@ -123,8 +123,8 @@ func WaitForKogitoInfraResource(namespace, name string, timeoutInMin int) error 
 		})
 }
 
-// retrieves the KogitoInfra resource
-func getKogitoInfraResource(namespace, name string) (*v1beta1.KogitoInfra, error) {
+// GetKogitoInfraResource retrieves the KogitoInfra resource
+func GetKogitoInfraResource(namespace, name string) (api.KogitoInfraInterface, error) {
 	infraResource := &v1beta1.KogitoInfra{}
 	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: name, Namespace: namespace}, infraResource); err != nil && !errors.IsNotFound(err) {
 		return nil, fmt.Errorf("Error while trying to look for KogitoInfra %s: %v ", name, err)

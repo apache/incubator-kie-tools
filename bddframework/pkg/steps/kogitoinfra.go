@@ -51,5 +51,5 @@ func (data *Data) installKogitoInfraTargetingServiceWithinMinutesWithConfigurati
 		return err
 	}
 
-	return framework.WaitForKogitoInfraResource(data.Namespace, name, timeoutInMin)
+	return framework.WaitForKogitoInfraResource(data.Namespace, name, timeoutInMin, framework.GetKogitoInfraResource)
 }

@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-operator/api/v1beta1"
+	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 )
 
@@ -30,7 +30,7 @@ const (
 )
 
 // MapKogitoInfraTable maps Cucumber table to KogitoInfra information
-func MapKogitoInfraTable(table *godog.Table, kogitoInfra *v1beta1.KogitoInfra) error {
+func MapKogitoInfraTable(table *godog.Table, kogitoInfra api.KogitoInfraInterface) error {
 	for _, row := range table.Rows {
 		// Try to map configuration row to KogitoServiceHolder
 		_, err := mapKogitoInfraTableRow(row, kogitoInfra)
@@ -43,7 +43,7 @@ func MapKogitoInfraTable(table *godog.Table, kogitoInfra *v1beta1.KogitoInfra) e
 }
 
 // mapKogitoInfraTableRow maps Cucumber table row to KogitoInfra
-func mapKogitoInfraTableRow(row *TableRow, kogitoInfra *v1beta1.KogitoInfra) (mappingFound bool, err error) {
+func mapKogitoInfraTableRow(row *TableRow, kogitoInfra api.KogitoInfraInterface) (mappingFound bool, err error) {
 	if len(row.Cells) != 3 {
 		return false, fmt.Errorf("expected table to have exactly three columns")
 	}
@@ -52,7 +52,7 @@ func mapKogitoInfraTableRow(row *TableRow, kogitoInfra *v1beta1.KogitoInfra) (ma
 
 	switch firstColumn {
 	case kogitoInfraConfigKey:
-		framework.GetLogger(kogitoInfra.Namespace).Debug("Got config", "config", GetSecondColumn(row))
+		framework.GetLogger(kogitoInfra.GetNamespace()).Debug("Got config", "config", GetSecondColumn(row))
 		appendConfig(kogitoInfra, GetSecondColumn(row), GetThirdColumn(row))
 
 	default:
@@ -62,9 +62,8 @@ func mapKogitoInfraTableRow(row *TableRow, kogitoInfra *v1beta1.KogitoInfra) (ma
 	return true, nil
 }
 
-func appendConfig(kogitoInfra *v1beta1.KogitoInfra, key, value string) {
-	if len(kogitoInfra.Spec.InfraProperties) <= 0 {
-		kogitoInfra.Spec.InfraProperties = make(map[string]string)
-	}
-	kogitoInfra.Spec.InfraProperties[key] = value
+func appendConfig(kogitoInfra api.KogitoInfraInterface, key, value string) {
+	infraProps := make(map[string]string)
+	infraProps[key] = value
+	kogitoInfra.GetSpec().AddInfraProperties(infraProps)
 }

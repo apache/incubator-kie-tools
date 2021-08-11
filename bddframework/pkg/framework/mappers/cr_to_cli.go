@@ -119,28 +119,28 @@ func GetBuildCLIFlags(kogitoBuild api.KogitoBuildInterface) []string {
 }
 
 //GetInfraCLIFlags returns CLI flags based on KogitoInfra passed in parameter
-func GetInfraCLIFlags(infraResource *v1beta1.KogitoInfra) []string {
+func GetInfraCLIFlags(infraResource api.KogitoInfraInterface) []string {
 	var cmd []string
 
 	// Flags ordered alphabetically
 
-	if apiVersion := infraResource.Spec.Resource.APIVersion; len(apiVersion) > 0 {
+	if apiVersion := infraResource.GetSpec().GetResource().GetAPIVersion(); len(apiVersion) > 0 {
 		cmd = append(cmd, "--apiVersion", apiVersion)
 	}
 
-	if kind := infraResource.Spec.Resource.Kind; len(kind) > 0 {
+	if kind := infraResource.GetSpec().GetResource().GetKind(); len(kind) > 0 {
 		cmd = append(cmd, "--kind", kind)
 	}
 
-	if resourceName := infraResource.Spec.Resource.Name; len(resourceName) > 0 {
+	if resourceName := infraResource.GetSpec().GetResource().GetName(); len(resourceName) > 0 {
 		cmd = append(cmd, "--resource-name", resourceName)
 	}
 
-	if resourceNamespace := infraResource.Spec.Resource.Namespace; len(resourceNamespace) > 0 {
+	if resourceNamespace := infraResource.GetSpec().GetResource().GetNamespace(); len(resourceNamespace) > 0 {
 		cmd = append(cmd, "--resource-namespace", resourceNamespace)
 	}
 
-	for key, value := range infraResource.Spec.InfraProperties {
+	for key, value := range infraResource.GetSpec().GetInfraProperties() {
 		cmd = append(cmd, "--property", fmt.Sprintf("%s=%s", key, value))
 	}
 
