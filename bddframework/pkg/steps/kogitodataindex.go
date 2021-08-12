@@ -55,6 +55,9 @@ func (data *Data) installKogitoDataIndexServiceWithReplicasWithConfiguration(rep
 	if dataIndex.DatabaseType == infrastructure.MongoDBKind {
 		framework.GetMainLogger().Debug("Setting Data Index MongoDB image")
 		dataIndex.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetDataIndexImageTag(), kogitosupportingservice.DataIndexMongoDBImageName))
+	} else if dataIndex.DatabaseType == "PostgreSQL" {
+		framework.GetMainLogger().Debug("Setting Data Index PostgreSQL image")
+		dataIndex.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetDataIndexImageTag(), kogitosupportingservice.DataIndexPostgresqlImageName))
 	}
 
 	return framework.InstallKogitoDataIndexService(data.Namespace, framework.GetDefaultInstallerType(), dataIndex)

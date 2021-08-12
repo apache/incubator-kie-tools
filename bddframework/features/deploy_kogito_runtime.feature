@@ -195,6 +195,73 @@ Feature: Deploy Kogito Runtime
 
 #####
 
+  @persistence
+  @postgresql
+  Scenario Outline: Deploy <example-service> service with native <native> using PostgreSQL
+    Given Kogito Operator is deployed
+    Given PostgreSQL instance "postgresql" is deployed within 3 minutes with configuration:
+      | username | myuser |
+      | password | mypass |
+      | database | mydb   |
+    And Clone Kogito examples into local directory
+    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+      | native  | <native>    |
+      | profile | persistence |
+
+    When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
+      # Setup short name as it can create some problems with route name too long ...
+      | config      | name                                         | process-postgres                                |
+      # For Quarkus
+      | runtime-env | QUARKUS_DATASOURCE_USERNAME                  | myuser                                          |
+      | runtime-env | QUARKUS_DATASOURCE_PASSWORD                  | mypass                                          |
+      | runtime-env | QUARKUS_DATASOURCE_REACTIVE_URL              | postgresql://postgresql:5432/mydb               |
+      # For Spring Boot
+      | runtime-env | KOGITO_PERSISTENCE_POSTGRESQL_CONNECTION_URI | postgresql://myuser:mypass@postgresql:5432/mydb |
+    And Kogito Runtime "process-postgres" has 1 pods running within 10 minutes
+    And Start "deals" process on service "process-postgres" within 3 minutes with body:
+      """json
+      {
+        "name" : "my fancy deal",
+        "traveller" : {
+          "firstName" : "John",
+          "lastName" : "Doe",
+          "email" : "jon.doe@example.com",
+          "nationality" : "American",
+          "address" : {
+            "street" : "main street",
+            "city" : "Boston",
+            "zipCode" : "10005",
+            "country" : "US"
+          }
+        }
+      }
+      """
+
+    Then Service "process-postgres" contains 1 instances of process with name "dealreviews"
+
+    When Scale Kogito Runtime "process-postgres" to 0 pods within 2 minutes
+    And Scale Kogito Runtime "process-postgres" to 1 pods within 2 minutes
+
+    Then Service "process-postgres" contains 1 instances of process with name "dealreviews" within 2 minutes
+
+    @springboot
+    Examples:
+      | runtime    | example-service                           | native   |
+      | springboot | process-postgresql-persistence-springboot | disabled |
+
+    @quarkus
+    Examples:
+      | runtime    | example-service                        | native   |
+      | quarkus    | process-postgresql-persistence-quarkus | disabled |
+
+    @quarkus
+    @native
+    Examples:
+      | runtime    | example-service                        | native   |
+      | quarkus    | process-postgresql-persistence-quarkus | enabled  |
+
+#####
+
   @jobsservice
   Scenario Outline: Deploy <example-service> service with Jobs service and native <native>
     Given Kogito Operator is deployed
@@ -407,6 +474,80 @@ Feature: Deploy Kogito Runtime
     Examples:
       | runtime    | example-service                     | native  |
       | quarkus    | process-mongodb-persistence-quarkus | enabled |
+
+#####
+
+  @events
+  @postgresql
+  @kafka
+  Scenario Outline: Deploy <example-service> with events and native <native> using Kogito Runtime and PostgreSQL
+    Given Kogito Operator is deployed
+    And Kafka Operator is deployed
+    Given PostgreSQL instance "postgresql" is deployed within 3 minutes with configuration:
+      | username | myuser |
+      | password | mypass |
+      | database | mydb   |
+    And Kafka instance "kogito-kafka" is deployed
+    And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
+    And Install Kogito Data Index with 1 replicas with configuration:
+      | config      | database-type                             | PostgreSQL                             |
+      | config      | infra                                     | kafka                                  |
+      | runtime-env | QUARKUS_DATASOURCE_JDBC_URL               | jdbc:postgresql://postgresql:5432/mydb |
+      | runtime-env | QUARKUS_DATASOURCE_USERNAME               | myuser                                 |
+      | runtime-env | QUARKUS_DATASOURCE_PASSWORD               | mypass                                 |
+      | runtime-env | quarkus.hibernate-orm.database.generation | update                                 |
+    And Clone Kogito examples into local directory
+    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+      | profile | events,persistence |
+      | native  | <native>           |
+
+    When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
+      | config | infra | kafka            |
+      # Setup short name as it can create some problems with route name too long ...
+      | config      | name                                         | process-postgres                                |
+      # For Quarkus
+      | runtime-env | QUARKUS_DATASOURCE_USERNAME                  | myuser                                          |
+      | runtime-env | QUARKUS_DATASOURCE_PASSWORD                  | mypass                                          |
+      | runtime-env | QUARKUS_DATASOURCE_REACTIVE_URL              | postgresql://postgresql:5432/mydb               |
+      # For Spring Boot
+      | runtime-env | KOGITO_PERSISTENCE_POSTGRESQL_CONNECTION_URI | postgresql://myuser:mypass@postgresql:5432/mydb |
+    And Kogito Runtime "process-postgres" has 1 pods running within 10 minutes
+    And Start "deals" process on service "process-postgres" within 3 minutes with body:
+      """json
+      {
+        "name" : "my fancy deal",
+        "traveller" : {
+          "firstName" : "John",
+          "lastName" : "Doe",
+          "email" : "jon.doe@example.com",
+          "nationality" : "American",
+          "address" : {
+            "street" : "main street",
+            "city" : "Boston",
+            "zipCode" : "10005",
+            "country" : "US"
+          }
+        }
+      }
+      """
+
+    Then GraphQL request on Data Index service returns ProcessInstances processName "Deal Review" within 2 minutes
+
+    @springboot
+    Examples:
+      | runtime    | example-service                           | native   |
+      | springboot | process-postgresql-persistence-springboot | disabled |
+
+    @quarkus
+    Examples:
+      | runtime    | example-service                        | native   |
+      | quarkus    | process-postgresql-persistence-quarkus | disabled |
+
+    @quarkus
+    @native
+    Examples:
+      | runtime    | example-service                        | native  |
+      | quarkus    | process-postgresql-persistence-quarkus | enabled |
 
 #####
 

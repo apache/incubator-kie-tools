@@ -62,4 +62,31 @@ Feature: Kogito Data Index
     }
     """
 
+#####
+
+  @postgresql
+  Scenario: Install Kogito Data Index with PostgreSQL
+    Given PostgreSQL instance "postgresql" is deployed within 3 minutes with configuration:
+      | username | myuser |
+      | password | mypass |
+      | database | mydb   |
+
+    When Install Kogito Data Index with 1 replicas with configuration:
+      | config      | database-type                             | PostgreSQL                             |
+      | config      | infra                                     | kafka                                  |
+      | runtime-env | QUARKUS_DATASOURCE_JDBC_URL               | jdbc:postgresql://postgresql:5432/mydb |
+      | runtime-env | QUARKUS_DATASOURCE_USERNAME               | myuser                                 |
+      | runtime-env | QUARKUS_DATASOURCE_PASSWORD               | mypass                                 |
+      | runtime-env | QUARKUS_HIBERNATE_ORM_DATABASE_GENERATION | update                                 |
+
+    Then Kogito Data Index has 1 pods running within 10 minutes
+    And GraphQL request on service "data-index" is successful within 2 minutes with path "graphql" and query:
+    """
+    {
+      ProcessInstances{
+        id
+      }
+    }
+    """
+
 # External Kafka testing is covered in deploy_quarkus_service and deploy_springboot_service as it checks integration between Data index and KogitoRuntime
