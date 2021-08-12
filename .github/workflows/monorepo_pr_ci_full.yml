@@ -8,6 +8,10 @@ on:
     paths-ignore:
       - "packages/**"
 
+concurrency:
+  group: ${{ github.event.pull_request && format('monorepo-pr-ci-full-{0}', github.event.pull_request.number) || 'monorepo-pr-ci-full-push-main' }}
+  cancel-in-progress: true
+
 jobs:
   monorepo-pr-ci-full:
     if: github.event.pull_request.draft == false
