@@ -66,7 +66,7 @@ export function DmnRunnerContextProvider(props: Props) {
           setFormSchema(newSchema);
           if (
             openDrawer &&
-            (formInputsFromUrlParams ||
+            ((formInputsFromUrlParams && Object.keys(formInputsFromUrlParams).length > 0) ||
               (kieToolingExtendedServices.isModalOpen &&
                 kieToolingExtendedServices.installTriggeredBy === DependentFeature.DMN_RUNNER))
           ) {
