@@ -67,7 +67,7 @@ jobs:
           WEBPACK__tsLoaderTranspileOnly: "false"
           KOGITO_TOOLING_BUILD_lint: "true"
           KOGITO_TOOLING_BUILD_test: "true"
-          KOGITO_TOOLING_BUILD_testIT: "true"
+          KOGITO_TOOLING_BUILD_testIT: ${{ matrix.os == 'ubuntu-latest' }}
           KOGITO_TOOLING_BUILD_docker: "true"
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
