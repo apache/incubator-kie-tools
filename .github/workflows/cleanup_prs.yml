@@ -1,0 +1,49 @@
+name: "Cleanup Pull Requests"
+
+on:
+  pull_request:
+    types: [closed]
+    branches: "**"
+    paths:
+      - "packages/**"
+
+jobs:
+  cleanup_prs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "Check if online-editor was changed on the PR"
+        id: check_online_editor
+        shell: bash
+        run: |
+          IS_CHANGED=$([[ $(lerna ls --since ${{ github.event.pull_request.base.sha }} --scope @kogito-tooling/online-editor --all) =~ "@kogito-tooling/online-editor" ]] && echo "true" || echo "false")
+          echo ::set-output name=is_changed::$IS_CHANGED
+
+      - name: "Checkout kogito-online-staging"
+        if: steps.check_online_editor.outputs.is_changed == 'true'
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ github.event.pull_request.base.user.login }}/kogito-online-staging
+          path: ${{ github.workspace }}/kogito-online-staging
+          fetch-depth: 0
+          token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+
+      - name: "Setup kogito-tooling-bot for kogito-online-staging"
+        if: steps.check_online_editor.outputs.is_changed == 'true'
+        uses: ./.github/actions/setup-kogito-tooling-bot
+        with:
+          path: kogito-online-staging
+
+      - name: "Cleanup Staging"
+        if: steps.check_online_editor.outputs.is_changed == 'true'
+        working-directory: ${{ github.workspace }}/kogito-online-staging
+        shell: bash
+        run: |
+          cd pull_request
+          rm -rf ${{ github.event.pull_request.number }}
+          git add . && git commit -m "Online Editor - Pull Request #${{ github.event.pull_request.number }} - Cleanup" || echo "No changes."
+          git push origin main
