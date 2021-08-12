@@ -143,7 +143,7 @@ def getBuildConfigMap(def buildConfigPathFolder, def buildConfigAdditionalVariab
 def buildProject(String project, Map<String, Object> buildConfig, String defaultGroup = "kiegroup") {
     println "[INFO] Building project ${project}"
     if ("kiegroup/kogito-tooling" == project) {
-        env.CURRENT_KOGITO_TOOLING_VERSION = env.CURRENT_KOGITO_TOOLING_VERSION ?: sh(returnStdout: true, script: 'awk -F\'"\' \'/"version": ".+"/{ print $4; exit; }\' lerna.json')?.trim() + "-redhat-${env.DATE_TIME_SUFFIX}"
+        env.CURRENT_KOGITO_TOOLING_VERSION = env.CURRENT_KOGITO_TOOLING_VERSION ?: sh(returnStdout: true, script: 'awk -F\'"\' \'/"version": ".+"/{ print $4; exit; }\' lerna.json')?.trim() + ".redhat-${env.DATE_TIME_SUFFIX}"
         println "kogito-tooling prod version ${env.CURRENT_KOGITO_TOOLING_VERSION}"
     }
     def projectGroupName = util.getProjectGroupName(project, defaultGroup)
