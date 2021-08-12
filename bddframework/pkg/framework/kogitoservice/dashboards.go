@@ -17,11 +17,12 @@ package kogitoservice
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"io/ioutil"
 	"net/http"
 	"regexp"
 	"strings"
+
+	"github.com/kiegroup/kogito-operator/core/infrastructure"
 
 	grafanav1 "github.com/integr8ly/grafana-operator/v3/pkg/apis/integreatly/v1alpha1"
 	"github.com/kiegroup/kogito-operator/api"
@@ -60,7 +61,7 @@ func NewGrafanaDashboardManager(context operator.Context) GrafanaDashboardManage
 }
 
 var (
-	dashboardNameRegex = regexp.MustCompile("[^a-zA-Z0-9-_]+")
+	dashboardNameRegex = regexp.MustCompile("[^a-zA-Z0-9-]+")
 )
 
 func (d *grafanaDashboardManager) ConfigureGrafanaDashboards(kogitoService api.KogitoService) error {
