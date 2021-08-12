@@ -28,6 +28,8 @@ const (
 	DataIndexInfinispanImageName = "kogito-data-index-infinispan"
 	// DataIndexMongoDBImageName is the image name for the Data Index Service with MongoDB
 	DataIndexMongoDBImageName = "kogito-data-index-mongodb"
+	// DataIndexPostgresqlImageName is the image name for the Data Index Service with PostgreSQL
+	DataIndexPostgresqlImageName = "kogito-data-index-postgresql"
 	// DefaultDataIndexImageName is just the image name for the Data Index Service
 	DefaultDataIndexImageName = DataIndexInfinispanImageName
 	// DefaultDataIndexName is the default name for the Data Index instance service
