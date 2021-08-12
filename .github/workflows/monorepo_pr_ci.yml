@@ -33,21 +33,13 @@ jobs:
       - name: "Setup kogito-tooling-bot"
         uses: ./.github/actions/setup-kogito-tooling-bot
 
-      - name: "Get build information"
-        id: build_info
-        shell: bash
-        run: |
-          USER_SOURCE=${{ github.event.pull_request.head.user.login }}
-          USER_TARGET=${{ github.event.pull_request.base.user.login }}
-          echo ::set-output name=user_source::$USER_SOURCE
-          echo ::set-output name=user_target::$USER_TARGET
-
       - name: "Merge Changes"
         shell: bash
         run: |
-          git remote add ${{ steps.build_info.outputs.user_source }} https://github.com/${{ steps.build_info.outputs.user_source }}/kogito-tooling.git
-          git fetch ${{ steps.build_info.outputs.user_source }}
-          git merge --squash ${{ steps.build_info.outputs.user_source }}/${{ github.head_ref }}
+          user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
+          git remote add $user https://github.com/$user/kogito-tooling.git
+          git fetch $user
+          git merge --squash $user/${{ github.head_ref }}
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -80,41 +72,6 @@ jobs:
         run: |
           git diff
           [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
-
-      - name: "Check if online-editor is being changed on the PR (Ubuntu only)"
-        id: check_online_editor
-        if: matrix.os == 'ubuntu-latest'
-        shell: bash
-        run: |
-          IS_CHANGED=$([[ $(lerna ls --since ${{ github.event.pull_request.base.sha }} --scope @kogito-tooling/online-editor --all) =~ "@kogito-tooling/online-editor" ]] && echo "true" || echo "false")
-          echo ::set-output name=is_changed::$IS_CHANGED
-
-      - name: "Checkout kogito-online-staging (Ubuntu only)"
-        if: matrix.os == 'ubuntu-latest' && steps.check_online_editor.outputs.is_changed == 'true'
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ steps.build_info.outputs.user_target }}/kogito-online-staging
-          path: ${{ github.workspace }}/kogito-online-staging
-          fetch-depth: 0
-          token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
-
-      - name: "Setup kogito-tooling-bot for kogito-online-staging (Ubuntu only)"
-        if: matrix.os == 'ubuntu-latest' && steps.check_online_editor.outputs.is_changed == 'true'
-        uses: ./.github/actions/setup-kogito-tooling-bot
-        with:
-          path: kogito-online-staging
-
-      - name: "Publish the online-editor into Staging (Ubuntu only)"
-        if: matrix.os == 'ubuntu-latest' && steps.check_online_editor.outputs.is_changed == 'true'
-        working-directory: ${{ github.workspace }}/kogito-online-staging
-        shell: bash
-        run: |
-          cd pull_request
-          rm -rf ${{ github.event.pull_request.number }}
-          mkdir ${{ github.event.pull_request.number }}
-          cp -r ${{ github.workspace }}/packages/online-editor/dist/* ${{ github.event.pull_request.number }}/
-          git add . && git commit -m "Online Editor - Pull Request #${{ github.event.pull_request.number }} - Add" || echo "No changes."
-          git push origin main
 
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2
