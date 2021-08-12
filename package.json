@@ -17,7 +17,7 @@
     "update-version-to": "node ./scripts/update_version.js",
     "locktt": "locktt",
     "npm-tt": "npm-tt",
-    "publish:productization": "lerna exec --scope @kogito-tooling/kie-editors-standalone -- npm publish --access public",
+    "publish:productization": "lerna exec --scope @kogito-tooling/kie-editors-standalone --include-dependencies --no-private -- npm publish --access public",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky install",

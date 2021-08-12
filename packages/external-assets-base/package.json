@@ -1,6 +1,7 @@
 {
   "name": "@kogito-tooling/external-assets-base",
   "version": "0.0.0",
+  "private": true,
   "description": "",
   "license": "Apache-2.0",
   "main": "index.js",
