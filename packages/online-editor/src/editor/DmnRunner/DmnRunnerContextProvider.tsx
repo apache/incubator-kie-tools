@@ -16,118 +16,100 @@
 
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { GlobalContext } from "../../common/GlobalContext";
-import { DmnRunnerContext } from "./DmnRunnerContext";
-import { DmnFormSchema, DmnRunnerService } from "./DmnRunnerService";
-import { DmnRunnerModal } from "./DmnRunnerModal";
+import {
+  DependentFeature,
+  useKieToolingExtendedServices,
+} from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
+import { DmnRunnerContext, extractFormInputsFromUrlParams } from "./DmnRunnerContext";
+import { DmnRunnerService } from "./DmnRunnerService";
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
-import { getCookie, setCookie } from "../../common/utils";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 import { useOnlineI18n } from "../../common/i18n";
 import { NotificationType } from "@kie-tooling-core/notifications/dist/api";
-
-const KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME = 1000;
-export const THROTTLING_TIME = 200;
-const KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tooling-extended-services-port";
-export const KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT = "21345";
 
 interface Props {
   children: React.ReactNode;
   editor?: EmbeddedEditorRef;
   isEditorReady: boolean;
-  closeDmnTour: () => void;
 }
+
+const THROTTLING_TIME = 200;
 
 export function DmnRunnerContextProvider(props: Props) {
   const { i18n } = useOnlineI18n();
+  const formInputsFromUrlParams = useMemo(() => extractFormInputsFromUrlParams() ?? {}, []);
+  const kieToolingExtendedServices = useKieToolingExtendedServices();
   const notificationsPanel = useNotificationsPanel();
   const [isDrawerExpanded, setDrawerExpanded] = useState(false);
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [formData, setFormData] = useState({});
-  const [outdated, setOutdated] = useState(false);
-  const globalContext = useContext(GlobalContext);
-  const [status, setStatus] = useState(() =>
-    globalContext.file.fileExtension === "dmn" ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE
-  );
+  const [formData, setFormData] = useState(formInputsFromUrlParams);
   const [formSchema, setFormSchema] = useState<DmnFormSchema>();
-  const [port, setPort] = useState(
-    () => getCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT
-  );
-  const service = useMemo(() => new DmnRunnerService(port), [port]);
-  const version = useMemo(() => process.env.WEBPACK_REPLACE__dmnRunnerCompatibleVersion ?? "0.0.0", []);
   const [formError, setFormError] = useState(false);
+  const [status, setStatus] = useState(
+    kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.UNAVAILABLE
+      ? DmnRunnerStatus.UNAVAILABLE
+      : DmnRunnerStatus.AVAILABLE
+  );
+  const service = useMemo(
+    () => new DmnRunnerService(kieToolingExtendedServices.baseUrl),
+    [kieToolingExtendedServices.baseUrl]
+  );
 
-  const updateFormSchema = useCallback(() => {
-    return props.editor
-      ?.getContent()
-      .then((content) => service.formSchema(content ?? ""))
-      .then((newSchema) => setFormSchema(newSchema))
-      .catch((err) => {
-        console.error(err);
-        setFormError(true);
-      });
-  }, [props.editor, service]);
+  const updateFormSchema = useCallback(
+    (openDrawer: boolean) => {
+      return props.editor
+        ?.getContent()
+        .then((content) => service.formSchema(content ?? ""))
+        .then((newSchema) => {
+          setFormSchema(newSchema);
+          if (
+            openDrawer &&
+            ((formInputsFromUrlParams && Object.keys(formInputsFromUrlParams).length > 0) ||
+              (kieToolingExtendedServices.isModalOpen &&
+                kieToolingExtendedServices.installTriggeredBy === DependentFeature.DMN_RUNNER))
+          ) {
+            setDrawerExpanded(true);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          setFormError(true);
+        });
+    },
+    [
+      formInputsFromUrlParams,
+      kieToolingExtendedServices.installTriggeredBy,
+      kieToolingExtendedServices.isModalOpen,
+      props.editor,
+      service,
+    ]
+  );
 
-  // Pooling to detect either if DMN Runner is running or has stopped
   useEffect(() => {
-    if (status === DmnRunnerStatus.UNAVAILABLE) {
+    if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
+      setStatus(DmnRunnerStatus.UNAVAILABLE);
+      setDrawerExpanded(false);
       return;
     }
 
-    let detectCrashesOrStops: number | undefined;
-    if (status === DmnRunnerStatus.RUNNING) {
-      detectCrashesOrStops = window.setInterval(() => {
-        service.check().catch(() => {
-          setStatus(DmnRunnerStatus.STOPPED);
-          setModalOpen(true);
-          setDrawerExpanded(false);
-          window.clearInterval(detectCrashesOrStops);
-        });
-      }, KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME);
-
-      // After the detection of the DMN Runner, set the schema for the first time
-      if (props.isEditorReady) {
-        updateFormSchema();
-      }
-
-      return () => window.clearInterval(detectCrashesOrStops);
+    setStatus(DmnRunnerStatus.AVAILABLE);
+    // After the detection of the DMN Runner, set the schema for the first time
+    if (props.isEditorReady) {
+      updateFormSchema(true);
     }
-
-    const detectDmnRunner: number | undefined = window.setInterval(() => {
-      service
-        .check()
-        .then(() => {
-          // Check the running version of the DMN Runner, if outdated cancel polling and change status.
-          service.version().then((runnerVersion) => {
-            window.clearInterval(detectDmnRunner);
-            if (runnerVersion !== version) {
-              setOutdated(true);
-            } else {
-              setOutdated(false);
-              if (isModalOpen) {
-                setDrawerExpanded(true);
-              }
-              setStatus(DmnRunnerStatus.RUNNING);
-            }
-          });
-        })
-        .catch((err) => {
-          console.debug(err);
-        });
-    }, KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME);
-
-    return () => window.clearInterval(detectDmnRunner);
-  }, [props.editor, props.isEditorReady, isModalOpen, status, service]);
-
-  const saveNewPort = useCallback((newPort: string) => {
-    setPort(newPort);
-    setCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME, newPort);
-  }, []);
+  }, [
+    kieToolingExtendedServices.installTriggeredBy,
+    kieToolingExtendedServices.isModalOpen,
+    kieToolingExtendedServices.status,
+    props.isEditorReady,
+    updateFormSchema,
+  ]);
 
   // Subscribe to any change on the DMN Editor to validate the model and update the JSON Schema
   useEffect(() => {
-    if (!props.editor?.isReady || status !== DmnRunnerStatus.RUNNING) {
+    if (!props.editor?.isReady || status !== DmnRunnerStatus.AVAILABLE) {
       return;
     }
 
@@ -153,13 +135,13 @@ export function DmnRunnerContextProvider(props: Props) {
       }
       timeout = window.setTimeout(() => {
         validate();
-        updateFormSchema();
+        updateFormSchema(false);
       }, THROTTLING_TIME);
     });
     validate();
 
     return () => props.editor?.getStateControl().unsubscribe(subscription);
-  }, [props.editor, status, props.isEditorReady, updateFormSchema, i18n]);
+  }, [props.editor, status, props.isEditorReady, updateFormSchema, i18n, service, notificationsPanel]);
 
   return (
     <DmnRunnerContext.Provider
@@ -169,22 +151,14 @@ export function DmnRunnerContextProvider(props: Props) {
         formSchema,
         isDrawerExpanded,
         setDrawerExpanded,
-        isModalOpen,
-        setModalOpen,
         formData,
         setFormData,
-        port,
-        saveNewPort,
         service,
-        version,
         formError,
         setFormError,
-        outdated,
-        closeDmnTour: props.closeDmnTour,
       }}
     >
       {props.children}
-      <DmnRunnerModal />
     </DmnRunnerContext.Provider>
   );
 }

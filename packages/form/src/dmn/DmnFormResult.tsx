@@ -33,6 +33,7 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { NotificationSeverity } from "@kie-tooling-core/notifications/dist/api";
 import { dmnFormI18n } from "./i18n";
+import { diff } from "deep-object-diff";
 import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import "./styles.scss";
 import { ErrorBoundary } from "../common/ErrorBoundary";
@@ -89,6 +90,22 @@ export interface DmnFormResultWithNotificationsPanelProps {
   locale?: string;
   notificationsPanel: true;
   openExecutionTab: () => void;
+}
+
+export interface DmnResult {
+  details?: string;
+  stack?: string;
+  decisionResults?: DecisionResult[];
+  messages: DecisionResultMessage[];
+}
+
+export function extractDifferences(current: DecisionResult[], previous: DecisionResult[]): object[] {
+  return current
+    .map((decisionResult: DecisionResult, index: number) => diff(previous?.[index] ?? {}, decisionResult ?? {}))
+    .map((difference: any) => {
+      delete difference.messages;
+      return difference;
+    });
 }
 
 export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotificationsPanelProps) {

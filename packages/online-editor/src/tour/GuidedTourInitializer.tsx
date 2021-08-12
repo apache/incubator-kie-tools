@@ -46,7 +46,7 @@ export function useDmnTour(isEditorReady: boolean, file: File) {
       guidedTour.registerTutorial(tutorial);
       guidedTour.start(tutorial.label);
     }
-  }, [isEditorReady, file]);
+  }, [isEditorReady, file, i18n]);
 
   return useCallback(() => {
     const guidedTour = KogitoGuidedTour.getInstance();

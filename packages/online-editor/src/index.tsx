@@ -39,6 +39,12 @@ import { I18n } from "@kie-tooling-core/i18n/dist/core";
 import { OnlineI18n, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
 import "../static/resources/style.css";
 
+interface OpenFileArgs {
+  filePath: string;
+  readonly: boolean;
+  getFileContent: Promise<string>;
+}
+
 const urlParams = new URLSearchParams(window.location.search);
 const githubService = new GithubService();
 const onlineI18n = new I18n<OnlineI18n>(onlineI18nDefaults, onlineI18nDictionaries, "en");
@@ -85,7 +91,7 @@ function waitForEventWithFileData() {
     ReactDOM.render(
       <App
         file={file}
-        readonly={e.detail.readonly}
+        readonly={false}
         external={true}
         senderTabId={e.detail.senderTabId}
         githubService={githubService}
@@ -99,11 +105,18 @@ function waitForEventWithFileData() {
 function openFileByUrl() {
   const i18n = onlineI18n.getCurrent();
   const filePath = urlParams.get("file")!.split("?").shift()!;
+  const readonly = urlParams.has("readonly") ? urlParams.get("readonly") === "true" : false;
 
   if (githubService.isGist(filePath)) {
     githubService
       .fetchGistFile(filePath)
-      .then((content) => openFile(filePath, Promise.resolve(content)))
+      .then((content) =>
+        openFile({
+          filePath: filePath,
+          readonly: readonly,
+          getFileContent: Promise.resolve(content),
+        })
+      )
       .catch((error) => {
         showFetchError(i18n.alerts.gistError);
       });
@@ -111,7 +124,11 @@ function openFileByUrl() {
     githubService
       .fetchGithubFile(filePath)
       .then((response) => {
-        openFile(filePath, Promise.resolve(response));
+        openFile({
+          filePath: filePath,
+          readonly: readonly,
+          getFileContent: Promise.resolve(response),
+        });
       })
       .catch((error) => {
         showFetchError(error.toString());
@@ -120,7 +137,11 @@ function openFileByUrl() {
     fetch(filePath)
       .then((response) => {
         if (response.ok) {
-          openFile(filePath, response.text());
+          openFile({
+            filePath: filePath,
+            readonly: readonly,
+            getFileContent: response.text(),
+          });
         } else {
           showResponseError(response.status, response.statusText);
         }
@@ -131,17 +152,17 @@ function openFileByUrl() {
   }
 }
 
-function openFile(filePath: string, getFileContent: Promise<string>) {
+function openFile(args: OpenFileArgs) {
   const file = {
-    isReadOnly: false,
-    fileExtension: extractFileExtension(removeDirectories(filePath) ?? "")!,
-    fileName: removeFileExtension(removeDirectories(filePath) ?? ""),
-    getFileContents: () => getFileContent,
+    isReadOnly: args.readonly,
+    fileExtension: extractFileExtension(removeDirectories(args.filePath) ?? "")!,
+    fileName: removeFileExtension(removeDirectories(args.filePath) ?? ""),
+    getFileContents: () => args.getFileContent,
   };
   ReactDOM.render(
     <App
       file={file}
-      readonly={false}
+      readonly={args.readonly}
       external={false}
       githubService={githubService}
       editorEnvelopeLocator={editorEnvelopeLocator}

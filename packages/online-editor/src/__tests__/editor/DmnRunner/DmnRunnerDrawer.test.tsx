@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
+import { Drawer, DrawerContent } from "@patternfly/react-core/dist/js/components/Drawer";
+import { act, render } from "@testing-library/react";
 import * as React from "react";
-import { act, fireEvent, render } from "@testing-library/react";
+import { DmnRunnerDrawer } from "../../../editor/DmnRunner/DmnRunnerDrawer";
 import {
-  usingDmnRunnerContext,
-  usingNotificationsPanelContext,
+  usingTestingDmnRunnerContext,
+  usingTestingNotificationsPanelContext,
   usingTestingGlobalContext,
+  usingTestingKieToolingExtendedServicesContext,
   usingTestingOnlineI18nContext,
 } from "../../testing_utils";
-import { DmnRunnerDrawer } from "../../../editor/DmnRunner/DmnRunnerDrawer";
-import { Drawer, DrawerContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { DmnRunnerService } from "./__mocks__/DmnRunnerService";
 
 afterEach(() => {
@@ -43,20 +44,20 @@ const editor: any = {
 
 describe("DmnRunnerDrawer", () => {
   it("should render the dmn runner drawer - no form", async () => {
-    jest.spyOn(DmnRunnerService.prototype, "version").mockImplementation(() => new Promise((res) => res("0.0.0")));
-
     jest.useFakeTimers();
     const { getByText } = render(
       usingTestingOnlineI18nContext(
         usingTestingGlobalContext(
-          usingNotificationsPanelContext(
-            usingDmnRunnerContext(
-              <Drawer isExpanded={true}>
-                <DrawerContent panelContent={<DmnRunnerDrawer editor={editor} />} />
-              </Drawer>,
-              editor
+          usingTestingKieToolingExtendedServicesContext(
+            usingTestingNotificationsPanelContext(
+              usingTestingDmnRunnerContext(
+                <Drawer isExpanded={true}>
+                  <DrawerContent panelContent={<DmnRunnerDrawer editor={editor} />} />
+                </Drawer>,
+                editor
+              )
             )
-          )
+          ).wrapper
         ).wrapper
       ).wrapper
     );
@@ -85,7 +86,6 @@ describe("DmnRunnerDrawer", () => {
       $ref: "#/definitions/InputSet",
     };
 
-    jest.spyOn(DmnRunnerService.prototype, "version").mockImplementation(() => new Promise((res) => res("0.0.0")));
     jest
       .spyOn(DmnRunnerService.prototype, "formSchema")
       .mockImplementation(() => new Promise((res) => res(formSchema)));
@@ -93,14 +93,16 @@ describe("DmnRunnerDrawer", () => {
     const { findByText } = render(
       usingTestingOnlineI18nContext(
         usingTestingGlobalContext(
-          usingNotificationsPanelContext(
-            usingDmnRunnerContext(
-              <Drawer isExpanded={true}>
-                <DrawerContent panelContent={<DmnRunnerDrawer editor={editor} />} />
-              </Drawer>,
-              editor
+          usingTestingKieToolingExtendedServicesContext(
+            usingTestingNotificationsPanelContext(
+              usingTestingDmnRunnerContext(
+                <Drawer isExpanded={true}>
+                  <DrawerContent panelContent={<DmnRunnerDrawer editor={editor} />} />
+                </Drawer>,
+                editor
+              )
             )
-          )
+          ).wrapper
         ).wrapper
       ).wrapper
     );
@@ -126,21 +128,22 @@ describe("DmnRunnerDrawer", () => {
       ],
     };
 
-    jest.spyOn(DmnRunnerService.prototype, "version").mockImplementation(() => new Promise((res) => res("0.0.0")));
     jest.spyOn(DmnRunnerService.prototype, "result").mockImplementation(() => new Promise((res) => res(result)));
     jest.useFakeTimers();
 
     const { findByText } = render(
       usingTestingOnlineI18nContext(
         usingTestingGlobalContext(
-          usingNotificationsPanelContext(
-            usingDmnRunnerContext(
-              <Drawer isExpanded={true}>
-                <DrawerContent panelContent={<DmnRunnerDrawer editor={editor} />} />
-              </Drawer>,
-              editor
+          usingTestingKieToolingExtendedServicesContext(
+            usingTestingNotificationsPanelContext(
+              usingTestingDmnRunnerContext(
+                <Drawer isExpanded={true}>
+                  <DrawerContent panelContent={<DmnRunnerDrawer editor={editor} />} />
+                </Drawer>,
+                editor
+              )
             )
-          )
+          ).wrapper
         ).wrapper
       ).wrapper
     );

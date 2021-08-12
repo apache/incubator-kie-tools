@@ -40,6 +40,14 @@ enum FormStatus {
   EMPTY,
 }
 
+export interface DmnFormSchema {
+  definitions?: {
+    InputSet?: {
+      properties: object;
+    };
+  };
+}
+
 export interface DmnFormData {
   definitions: DmnFormDefinitions;
 }

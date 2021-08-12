@@ -81,6 +81,97 @@ interface OnlineDictionary extends ReferenceDictionary {
     share: string;
     embed: string;
   };
+  dmnDevSandbox: {
+    common: {
+      deployYourModel: string;
+      deployInstanceInfo: string;
+      disclaimer: string;
+      learnMore: string;
+      requiredField: string;
+      deploying: string;
+      saving: string;
+      setupFirst: string;
+    };
+    dropdown: {
+      noDeployments: string;
+      setupFor: (username: string) => string;
+      item: {
+        upTooltip: string;
+        downTooltip: string;
+        inProgressTooltip: string;
+        createdAt: (date: string) => string;
+      };
+    };
+    introduction: {
+      explanation: string;
+      disclaimer: string;
+      getStarted: string;
+    };
+    configModal: {
+      hostInfo: string;
+      usernameInfo: string;
+      tokenInfo: string;
+      validationError: string;
+      connectionError: string;
+      configExpiredWarning: string;
+      useWizard: string;
+    };
+    confirmModal: {
+      title: string;
+      body: string;
+    };
+    alerts: {
+      deployStartedError: string;
+      deployStartedSuccess: string;
+    };
+    configWizard: {
+      header: {
+        provider: string;
+      };
+      footer: {
+        deployNow: string;
+        continueEditing: string;
+      };
+      steps: {
+        first: {
+          name: string;
+          introduction: string;
+          goToGetStartedPage: string;
+          followSteps: string;
+          informUsername: string;
+          inputReason: string;
+          usernamePlaceholder: string;
+        };
+        second: {
+          name: string;
+          introduction: string;
+          accessLoginCommand: string;
+          accessDisplayToken: string;
+          copyInformation: string;
+          inputReason: string;
+          hostPlaceholder: string;
+          tokenPlaceholder: string;
+        };
+        final: {
+          name: string;
+          connectionError: string;
+          connectionSuccess: string;
+          introduction: string;
+          deployNowExplanation: string;
+          continueEditingExplanation: string;
+          configNote: string;
+          connectionErrorLong: string;
+          checkInfo: string;
+          possibleErrorReasons: {
+            introduction: string;
+            emptyField: string;
+            tokenExpired: string;
+            instanceExpired: string;
+          };
+        };
+      };
+    };
+  };
   embedModal: {
     title: string;
     description: string;
@@ -210,7 +301,7 @@ interface OnlineDictionary extends ReferenceDictionary {
     modal: {
       initial: {
         runDmnModels: string;
-        kieToolingExtendedServicesExplanation: string;
+        explanation: string;
         notificationPanelExplanation: Array<string | Wrapped<"icon">>;
       };
       wizard: {
@@ -303,7 +394,10 @@ interface OnlineDictionary extends ReferenceDictionary {
         title: string;
         connected: string;
         fillTheForm: string;
+        deployTheModel: string;
         backToEditor: string;
+        setupDmnDevSandbox: string;
+        dmnDevSandboxAlreadySetup: string;
       };
     };
     dropdown: {
@@ -314,11 +408,6 @@ interface OnlineDictionary extends ReferenceDictionary {
     };
     button: {
       available: string;
-      tooltip: {
-        outdated: string;
-        connected: string;
-        disconnected: string;
-      };
     };
   };
   notificationsPanel: {
@@ -326,6 +415,22 @@ interface OnlineDictionary extends ReferenceDictionary {
     tooltip: {
       retractAll: string;
       expandAll: string;
+    };
+  };
+  kieToolingExtendedServices: {
+    dropdown: {
+      shortConnected: (port: string) => string;
+      tooltip: {
+        connected: (port: string) => string;
+        install: string;
+        outdated: string;
+        disconnected: string;
+      };
+    };
+    modal: {
+      initial: {
+        subHeader: string;
+      };
     };
   };
 }

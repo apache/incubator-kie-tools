@@ -34,7 +34,13 @@ module.exports = async (env, argv) => {
     kieToolingExtendedServices_windowsDownloadUrl,
     kieToolingExtendedServices_compatibleVersion,
   ] = getKieToolingExtendedServicesArgs(argv);
-
+  const [
+    dmnDevSandbox_baseImageRegistry,
+    dmnDevSandbox_baseImageAccount,
+    dmnDevSandbox_baseImageName,
+    dmnDevSandbox_baseImageTag,
+    dmnDevSandbox_onlineEditorUrl,
+  ] = getDmnDevSandboxArgs(argv);
   const gtmResource = getGtmResource(argv);
 
   return merge(common(env), {
@@ -66,10 +72,12 @@ module.exports = async (env, argv) => {
         WEBPACK_REPLACE__hubMacOsUrl: downloadHub_macOsUrl,
         WEBPACK_REPLACE__hubWindowsUrl: downloadHub_windowsUrl,
         WEBPACK_REPLACE__buildInfo: buildInfo,
-        WEBPACK_REPLACE__dmnRunnerLinuxDownloadUrl: kieToolingExtendedServices_linuxDownloadUrl,
-        WEBPACK_REPLACE__dmnRunnerMacOsDownloadUrl: kieToolingExtendedServices_macOsDownloadUrl,
-        WEBPACK_REPLACE__dmnRunnerWindowsDownloadUrl: kieToolingExtendedServices_windowsDownloadUrl,
-        WEBPACK_REPLACE__dmnRunnerCompatibleVersion: kieToolingExtendedServices_compatibleVersion,
+        WEBPACK_REPLACE__kieToolingExtendedServicesLinuxDownloadUrl: kieToolingExtendedServices_linuxDownloadUrl,
+        WEBPACK_REPLACE__kieToolingExtendedServicesMacOsDownloadUrl: kieToolingExtendedServices_macOsDownloadUrl,
+        WEBPACK_REPLACE__kieToolingExtendedServicesWindowsDownloadUrl: kieToolingExtendedServices_windowsDownloadUrl,
+        WEBPACK_REPLACE__kieToolingExtendedServicesCompatibleVersion: kieToolingExtendedServices_compatibleVersion,
+        WEBPACK_REPLACE__dmnDevSandbox_baseImageFullUrl: `${dmnDevSandbox_baseImageRegistry}/${dmnDevSandbox_baseImageAccount}/${dmnDevSandbox_baseImageName}:${dmnDevSandbox_baseImageTag}`,
+        WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl: dmnDevSandbox_onlineEditorUrl,
       }),
       new CopyPlugin({
         patterns: [
@@ -185,4 +193,20 @@ function getKieToolingExtendedServicesArgs() {
   console.info("KIE Tooling Extended Services :: Compatible version: " + compatibleVersion);
 
   return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
+}
+
+function getDmnDevSandboxArgs(argv) {
+  const baseImageRegistry = buildEnv.dmnDevSandbox.baseImage.registry;
+  const baseImageAccount = buildEnv.dmnDevSandbox.baseImage.account;
+  const baseImageName = buildEnv.dmnDevSandbox.baseImage.name;
+  const baseImageTag = buildEnv.dmnDevSandbox.baseImage.tag;
+  const onlineEditorUrl = buildEnv.dmnDevSandbox.onlineEditorUrl;
+
+  console.info("DMN Dev Sandbox :: Base Image Registry: " + baseImageRegistry);
+  console.info("DMN Dev Sandbox :: Base Image Account: " + baseImageAccount);
+  console.info("DMN Dev Sandbox :: Base Image Name: " + baseImageName);
+  console.info("DMN Dev Sandbox :: Base Image Tag: " + baseImageTag);
+  console.info("DMN Dev Sandbox :: Online Editor Url: " + onlineEditorUrl);
+
+  return [baseImageRegistry, baseImageAccount, baseImageName, baseImageTag, onlineEditorUrl];
 }

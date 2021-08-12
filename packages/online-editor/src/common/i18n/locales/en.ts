@@ -83,6 +83,103 @@ export const en: OnlineI18n = {
     share: "Share",
     embed: "Embed",
   },
+  dmnDevSandbox: {
+    common: {
+      deployYourModel: "Deploy your model",
+      deployInstanceInfo: "Deploy instance information",
+      disclaimer:
+        "When you set up the required information, you are able to deploy decision models on your configured instance. All the information you provide is locally stored as browser cookies and they are never shared with anyone.",
+      learnMore: "Learn more",
+      requiredField: "This field cannot be empty.",
+      deploying: "Deploying ...",
+      saving: "Saving ...",
+      setupFirst: `Set up your ${en_common.names.dmnDevSandbox} to be able to deploy your models`,
+    },
+    dropdown: {
+      noDeployments: "Your deployments show up here",
+      setupFor: (username: string) => `Setup for ${username}`,
+      item: {
+        upTooltip: "This deployment is up and running. Click to see more details in your instance.",
+        downTooltip: "This deployment is not running. Click to see more details in your instance.",
+        inProgressTooltip:
+          "This deployment is in progress and it will be available shortly. Click to see more details in your instance.",
+        createdAt: (date: string) => `Created at ${date}`,
+      },
+    },
+    configModal: {
+      hostInfo: `The hostname associated with your instance.`,
+      usernameInfo: `The username of your ${en_common.names.redHat} account.`,
+      tokenInfo: `The token associated with your instance.`,
+      validationError: "You must fill out all required fields before you can proceed.",
+      connectionError: "Connection refused. Please check the information provided.",
+      configExpiredWarning: "Token or account expired. Please update your configuration.",
+      useWizard: "Configure through the guided wizard instead",
+    },
+    confirmModal: {
+      title: "Deploy",
+      body: "Are you sure you want to deploy this diagram on your instance? This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.",
+    },
+    alerts: {
+      deployStartedError:
+        "Something went wrong when creating your deployment. Please check your configuration and try again.",
+      deployStartedSuccess: "Your deployment has been successfully started and it will be available shortly.",
+    },
+    introduction: {
+      explanation: `Deploy your decision models to a cloud instance on ${en_common.names.devSandbox} and share with others.`,
+      disclaimer: `${
+        en_common.names.dmnDevSandbox
+      } is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
+      getStarted: "To get started, configure your instance information.",
+    },
+    configWizard: {
+      header: {
+        provider: "Provider",
+      },
+      footer: {
+        deployNow: "Deploy now",
+        continueEditing: "Continue editing",
+      },
+      steps: {
+        first: {
+          name: "Create your instance",
+          introduction: `In order to create your ${en_common.names.shortDevSandbox} instance:`,
+          goToGetStartedPage: "Go to the Get Started page",
+          followSteps: `Follow the steps to launch your instance. You will be asked to log in with your ${en_common.names.redHat} account.`,
+          informUsername: `Once your instance is up and running, inform the username of your ${en_common.names.redHat} account below.`,
+          inputReason: "This information is necessary for locating your namespaces.",
+          usernamePlaceholder: `The username of your ${en_common.names.redHat} account`,
+        },
+        second: {
+          name: "Set credentials",
+          introduction: `In your ${en_common.names.shortDevSandbox} instance:`,
+          accessLoginCommand: `Click on your username on the top right corner and then ${"'Copy login command'".bold()}.`,
+          accessDisplayToken: `If asked, log in with ${"'DevSandbox'".bold()}, and then access the ${"'Display Token'".bold()} link.`,
+          copyInformation: `In ${"'Log in with this token'".bold()} section, copy your ${"'--server'".bold()} and ${"'--token'".bold()} values, and paste them below.`,
+          inputReason: "This information is necessary for establishing a connection with your instance.",
+          hostPlaceholder: "Paste the --server value here",
+          tokenPlaceholder: "Paste the --token value here",
+        },
+        final: {
+          name: "Connect",
+          connectionSuccess: "Connection successfully established.",
+          connectionError: "Connection refused.",
+          introduction: "Now you are able to:",
+          deployNowExplanation: `${"Deplow now".bold()}: Your model will be deployed on your instance. This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.`,
+          continueEditingExplanation: `${"Continue editing".bold()}: Continue editing your model and deploy it later.`,
+          configNote: "Your configuration will be stored as browser cookies after the operations above.",
+          connectionErrorLong: `A connection with your ${en_common.names.shortDevSandbox} instance could not be established.`,
+          checkInfo: "Please check the information provided and try again.",
+          possibleErrorReasons: {
+            introduction: "Here are some possible reasons:",
+            emptyField: "One or more required information are not filled.",
+            instanceExpired:
+              "Instances expire in 30 days. After this period, you will need to recreate it, thus receiving a new host.",
+            tokenExpired: "Tokens expire on a daily basis.",
+          },
+        },
+      },
+    },
+  },
   embedModal: {
     title: "Embed",
     description:
@@ -218,12 +315,13 @@ export const en: OnlineI18n = {
     },
     modal: {
       initial: {
-        runDmnModels: `Run your ${en_common.names.dmn} models with the ${en_common.names.kieToolingExtendedServices} and see live forms and results as you edit.`,
-        kieToolingExtendedServicesExplanation: `With its validation and execution capabilities, ${en_common.names.kieToolingExtendedServices} helps you create assertive DMN decisions. Input nodes become interactive fields on an auto-generated form, and the results are displayed as easy-to-read cards.`,
+        runDmnModels: "Run your models and see live forms and results as you edit.",
+        explanation:
+          "Input nodes become interactive fields on an auto-generated form, and the results are displayed as easy-to-read cards.",
         notificationPanelExplanation: [
           `The Notifications Panel `,
           wrapped("icon"),
-          `, at the right-bottom side of the Editor, displays live Execution messages to assist during the modeling stage of your decisions.`,
+          `, at the bottom-right corner of the Editor, displays live Execution messages to assist modeling your decisions.`,
         ],
       },
       wizard: {
@@ -346,7 +444,10 @@ export const en: OnlineI18n = {
         title: "All set! 🎉",
         connected: `You're connected to the ${en_common.names.kieToolingExtendedServices}.`,
         fillTheForm: "Fill the Form on the Inputs column and automatically see the results on the Outputs column.",
+        deployTheModel: `You can also deploy your model to the ${en_common.names.dmnDevSandbox} when you're done editing.`,
         backToEditor: "Back to Editor",
+        setupDmnDevSandbox: `Set up the ${en_common.names.dmnDevSandbox}`,
+        dmnDevSandboxAlreadySetup: `${en_common.names.dmnDevSandbox} already set up`,
       },
     },
     dropdown: {
@@ -357,11 +458,6 @@ export const en: OnlineI18n = {
     },
     button: {
       available: `This is only available in ${en_common.names.chrome} at the moment`,
-      tooltip: {
-        outdated: `The ${en_common.names.kieToolingExtendedServices} is outdated`,
-        connected: `The ${en_common.names.kieToolingExtendedServices} is connected`,
-        disconnected: `The ${en_common.names.kieToolingExtendedServices} is disconnected`,
-      },
     },
   },
   notificationsPanel: {
@@ -369,6 +465,22 @@ export const en: OnlineI18n = {
     tooltip: {
       retractAll: "Retract All",
       expandAll: "Expand All",
+    },
+  },
+  kieToolingExtendedServices: {
+    dropdown: {
+      shortConnected: (port: string) => `Connected to port ${port}`,
+      tooltip: {
+        connected: (port: string) => `${en_common.names.kieToolingExtendedServices} is connected to port ${port}.`,
+        install: `Setup ${en_common.names.kieToolingExtendedServices} to use this feature. Click to install.`,
+        outdated: `${en_common.names.kieToolingExtendedServices} is outdated.`,
+        disconnected: `${en_common.names.kieToolingExtendedServices} is disconnected.`,
+      },
+    },
+    modal: {
+      initial: {
+        subHeader: `Augment the ${en_common.names.dmn} editor`,
+      },
     },
   },
 };

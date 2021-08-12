@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
+import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
 import * as React from "react";
 import { useContext } from "react";
+import { DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
-import { DmnFormSchema, DmnRunnerService } from "./DmnRunnerService";
 
 export interface DmnRunnerContextType {
   status: DmnRunnerStatus;
@@ -25,18 +26,11 @@ export interface DmnRunnerContextType {
   formSchema?: DmnFormSchema;
   isDrawerExpanded: boolean;
   setDrawerExpanded: React.Dispatch<boolean>;
-  isModalOpen: boolean;
-  setModalOpen: React.Dispatch<boolean>;
   formData: any;
   setFormData: React.Dispatch<any>;
-  port: string;
-  saveNewPort: (value: string) => void;
   service: DmnRunnerService;
-  version: string;
   formError: boolean;
-  outdated: boolean;
   setFormError: React.Dispatch<boolean>;
-  closeDmnTour: () => void;
 }
 
 export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({
@@ -47,4 +41,15 @@ export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({
 
 export function useDmnRunner() {
   return useContext(DmnRunnerContext);
+}
+
+export function extractFormInputsFromUrlParams(): any {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has("formInputs")) {
+    try {
+      return JSON.parse(decodeURIComponent(urlParams.get("formInputs")!));
+    } catch (e) {
+      console.error("Cannot parse formInputs", e);
+    }
+  }
 }

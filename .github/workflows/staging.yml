@@ -53,6 +53,13 @@ jobs:
   build:
     needs: [create_release]
     runs-on: ${{ matrix.os }}
+    env:
+      DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
+      DMN_DEV_SANDBOX__baseImageAccount: "kogito_tooling_bot"
+      DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
+      DMN_DEV_SANDBOX__baseImageTag: "${{ needs.create_release.outputs.tag }}-prerelease"
+      DMN_DEV_SANDBOX__baseImageBuildTags: "${{ needs.create_release.outputs.tag }}-prerelease"
+
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -83,6 +90,18 @@ jobs:
         with:
           node-version: 16.2.0
 
+      - name: "Setup JDK 11"
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-staging-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-staging-m2
+
       - name: "Setup environment"
         uses: ./kogito-tooling/.github/actions/setup-env
         with:
@@ -95,6 +114,7 @@ jobs:
           KOGITO_TOOLING_BUILD_testIT: "false"
           KOGITO_TOOLING_BUILD_test: "false"
           KOGITO_TOOLING_BUILD_lint: "false"
+          KOGITO_TOOLING_BUILD_docker: "true"
           WEBPACK__minimize: "true"
           WEBPACK__tsLoaderTranspileOnly: "false"
           CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
@@ -110,8 +130,20 @@ jobs:
           ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ needs.create_release.outputs.tag }}/kie_tooling_extended_services_windows_${{ needs.create_release.outputs.tag }}.exe"
           ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion: "${{ needs.create_release.outputs.tag }}"
           ONLINE_EDITOR__gtmId: ""
+          DMN_DEV_SANDBOX__gtmId: ""
+          DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online-staging/${{ needs.create_release.outputs.tag }}-prerelease"
         run: |
           yarn build:prod
+
+      - name: "STAGING: Push dmn-dev-sandbox-deployment-base-image to quay.io (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.DMN_DEV_SANDBOX__baseImageName }}"
+          tags: "${{ env.DMN_DEV_SANDBOX__baseImageBuildTags }}"
+          registry: "${{ env.DMN_DEV_SANDBOX__baseImageRegistry }}/${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
+          username: "${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
+          password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
 
       - name: "STAGING: Deploy Online Editor to kogito-online-staging (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
