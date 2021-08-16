@@ -155,6 +155,9 @@ Feature: Kogito integration with Keycloak
 
 #####
 
+  # Disabled due to https://issues.redhat.com/browse/KOGITO-5706 and Keycloak integration done in UI directly (no more server handling)
+  # Follow-up task: https://issues.redhat.com/browse/KOGITO-5709
+  @disabled
   @managementconsole
   Scenario: Install Kogito Management Console with Keycloak security
     Given Keycloak instance with realm "kogito-realm" and client "kogito-mgmt-service" is deployed
@@ -190,6 +193,9 @@ Feature: Kogito integration with Keycloak
 
 #####
 
+  # Disabled due to https://issues.redhat.com/browse/KOGITO-5706 and Keycloak integration done in UI directly (no more server handling)
+  # Follow-up task: https://issues.redhat.com/browse/KOGITO-5709
+  @disabled
   @taskconsole
   Scenario: Install Kogito Task Console with Keycloak security
     Given Keycloak instance with realm "kogito-realm" and client "kogito-task-service" is deployed
