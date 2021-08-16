@@ -24,8 +24,8 @@ digraph G {
   "@kie-tooling-core/keyboard-shortcuts" [ style = "rounded", color = "purple", fontcolor = "purple" ];
   "@kie-tooling-core/envelope-bus" [ style = "rounded", color = "purple", fontcolor = "purple" ];
   "@kogito-tooling/form-generation-tool" [ style = "rounded", color = "blue", fontcolor = "blue" ];
-  "@kogito-tooling/uniforms-patternfly-codegen" [ style = "rounded", color = "blue", fontcolor = "blue" ];
   "@kogito-tooling/uniforms-bootstrap4-codegen" [ style = "rounded", color = "blue", fontcolor = "blue" ];
+  "@kogito-tooling/uniforms-patternfly-codegen" [ style = "rounded", color = "blue", fontcolor = "blue" ];
   "@kie-tooling-core/i18n" [ style = "rounded", color = "purple", fontcolor = "purple" ];
   "@kogito-tooling/hub" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tooling-core/operating-system" [ style = "rounded", color = "purple", fontcolor = "purple" ];
@@ -63,8 +63,8 @@ digraph G {
   "@kogito-tooling/external-assets-base" -> "@kogito-tooling/build-env" [ style = "dashed" ];
   "@kogito-tooling/form" -> "@kie-tooling-core/notifications" [ style = "solid" ];
   "@kogito-tooling/form" -> "@kogito-tooling/i18n-common-dictionary" [ style = "solid" ];
-  "@kogito-tooling/form-generation-tool" -> "@kogito-tooling/uniforms-patternfly-codegen" [ style = "solid" ];
   "@kogito-tooling/form-generation-tool" -> "@kogito-tooling/uniforms-bootstrap4-codegen" [ style = "solid" ];
+  "@kogito-tooling/form-generation-tool" -> "@kogito-tooling/uniforms-patternfly-codegen" [ style = "solid" ];
   "@kie-tooling-core/guided-tour" -> "@kie-tooling-core/envelope-bus" [ style = "solid" ];
   "@kie-tooling-core/guided-tour" -> "@kie-tooling-core/i18n" [ style = "solid" ];
   "@kie-tooling-core/guided-tour" -> "@kie-tooling-core/patternfly-base" [ style = "solid" ];
@@ -73,8 +73,8 @@ digraph G {
   "@kogito-tooling/i18n-common-dictionary" -> "@kie-tooling-core/i18n" [ style = "solid" ];
   "@kie-tooling-core/keyboard-shortcuts" -> "@kie-tooling-core/envelope-bus" [ style = "solid" ];
   "@kie-tooling-core/keyboard-shortcuts" -> "@kie-tooling-core/operating-system" [ style = "solid" ];
-  "@kogito-tooling/kie-bc-editors" -> "@kogito-tooling/pmml-editor-marshaller" [ style = "solid" ];
   "@kogito-tooling/kie-bc-editors" -> "@kie-tooling-core/editor" [ style = "solid" ];
+  "@kogito-tooling/kie-bc-editors" -> "@kogito-tooling/pmml-editor-marshaller" [ style = "solid" ];
   "@kogito-tooling/kie-editors-standalone" -> "@kogito-tooling/kie-bc-editors" [ style = "solid" ];
   "@kogito-tooling/kie-editors-standalone" -> "@kogito-tooling/external-assets-base" [ style = "dashed" ];
   "@kie-tooling-core/monaco-editor" -> "@kogito-tooling/build-env" [ style = "dashed" ];

@@ -1651,20 +1651,20 @@
     eol "^0.9.1"
     glob "^7.1.6"
 
-"@kogito-tooling/bpmn-editor-unpacked@^8.2.0":
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-8.2.0.tgz#b97f2c84ff3ff91a8d0d54d02e5af1908f2e3aed"
-  integrity sha512-JkGTU+CUnXKxEJk8uFGOEmVFM5+zN0fobVsdcDn/mq1QbomXePUtMaUiYx8ABuc4tWwbTRRbC8ErqA8Tjk0otw==
+"@kogito-tooling/bpmn-editor-unpacked@^8.3.0":
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-8.3.0.tgz#ba91bc525a423005142926f4b7541bb4cf1824f4"
+  integrity sha512-AZvDPq/Fl7Ao8FQe+/4DsInb5tp+yRdtTp/soiKSt1Z1BvCuybxs0rXXmgBPKJae/XHN3rJ7oy7zEN3z02VUeA==
 
-"@kogito-tooling/dmn-editor-unpacked@^8.2.0":
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-8.2.0.tgz#7ea4601b902cf315ac3b2d8d367937ba7b275be6"
-  integrity sha512-FJeki0C6ik/qVuNHsMPZF/Z35w3of+zF9lMoAKODkyKc0h3ER7dDuF4APRVcveasHUJbI8lpGbsbs7EmkY0Hew==
+"@kogito-tooling/dmn-editor-unpacked@^8.3.0":
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-8.3.0.tgz#9aab08c0c3381a4a2ffb188cf82ae34fa7809fd5"
+  integrity sha512-AzXoCrAxg9DVVuqz8mSw7BX6A6w9r3WQ/A3Nha5F1WoB+4tQhKGuwBLn3Ckl54ZqYK/AOpJk9ENWGadKno7OTA==
 
-"@kogito-tooling/scesim-editor-unpacked@^8.2.0":
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.2.0.tgz#51f4f209be43b3bf03e3a121013a0ebcc9d4b554"
-  integrity sha512-Q86su1jrEQ3y7TslHWEKqG5kGD5dQQJkdJx/6XMHZ9rN+tl4nJFMeWQ9qCLvFwh0J+LPbCQE8frByY9QWWebtg==
+"@kogito-tooling/scesim-editor-unpacked@^8.3.0":
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.3.0.tgz#ea7d0d166b0c24fa56fba51c9d0ce9fbc3adc3a1"
+  integrity sha512-ACvTY6L3Hg2JMk0COMiimAth/Ionw7fgpJVD2tDI3tmXA1EmvfihiEL8Uci9ohv+tekrEmx+JG54Z0w8CPu9DA==
 
 "@lerna/add@4.0.0":
   version "4.0.0"

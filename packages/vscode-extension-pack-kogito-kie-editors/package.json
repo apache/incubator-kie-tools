@@ -1,6 +1,6 @@
 {
   "name": "vscode-extension-pack-kogito-kie-editors",
-  "version": "0.0.0",
+  "version": "0.12.0",
   "private": true,
   "displayName": "BPMN, DMN, Test Scenario and (PMML) Scorecard Editors",
   "description": "",
@@ -134,14 +134,14 @@
     "build:prod": "rimraf dist && yarn lint && webpack && yarn run test && yarn run package:prod && yarn test:it"
   },
   "dependencies": {
-    "@kie-tooling-core/patternfly-base": "0.0.0",
-    "@kie-tooling-core/vscode-extension": "0.0.0",
-    "@kogito-tooling/kie-bc-editors": "0.0.0",
-    "@kogito-tooling/pmml-editor": "0.0.0",
+    "@kie-tooling-core/patternfly-base": "0.12.0",
+    "@kie-tooling-core/vscode-extension": "0.12.0",
+    "@kogito-tooling/kie-bc-editors": "0.12.0",
+    "@kogito-tooling/pmml-editor": "0.12.0",
     "minimatch": "^3.0.4"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0",
-    "@kogito-tooling/external-assets-base": "0.0.0"
+    "@kogito-tooling/build-env": "0.12.0",
+    "@kogito-tooling/external-assets-base": "0.12.0"
   }
 }

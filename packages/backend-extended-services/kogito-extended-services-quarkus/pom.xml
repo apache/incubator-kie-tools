@@ -20,7 +20,7 @@
   <parent>
     <groupId>io.github.kiegroup.kogito.tooling</groupId>
     <artifactId>backend-extended-services</artifactId>
-    <version>0.0.0</version>
+    <version>0.12.0</version>
   </parent>
 
   <artifactId>kogito-extended-services-quarkus</artifactId>

@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/dmn-dev-sandbox-form-webapp",
-  "version": "0.0.0",
+  "version": "0.12.0",
   "private": true,
   "description": "",
   "license": "Apache-2.0",
@@ -11,16 +11,16 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kie-tooling-core/patternfly-base": "0.0.0",
-    "@kogito-tooling/form": "0.0.0",
-    "@kogito-tooling/i18n-common-dictionary": "0.0.0",
+    "@kie-tooling-core/patternfly-base": "0.12.0",
+    "@kogito-tooling/form": "0.12.0",
+    "@kogito-tooling/i18n-common-dictionary": "0.12.0",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
+    "@kogito-tooling/build-env": "0.12.0"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
