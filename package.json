@@ -17,7 +17,7 @@
     "update-version-to": "node ./scripts/update_version.js",
     "locktt": "locktt",
     "npm-tt": "npm-tt",
-    "publish:productization": "IS_PUBLIC=\"node -p \\\"require('./package.json').private !== true\\\"\" lerna exec --scope @kogito-tooling/kie-editors-standalone --include-dependencies -- yarn run --silent run-script-if --silent --bool '$(eval $IS_PUBLIC)' --then \\\"npm publish --access public\\\" --else \\\"echo 'Skipping private package $(pwd)'\\\"",
+    "publish:productization": "IS_PUBLIC=\"node -p \\\"require('./package.json').private !== true\\\"\" lerna exec --scope @kogito-tooling/kie-editors-standalone --include-dependencies -- yarn run --silent run-script-if --silent --bool '$(eval $IS_PUBLIC)' --then \\\"npm publish --access public --registry $REGISTRY\\\" --else \\\"echo 'Skipping private package $(pwd)'\\\"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky install",
