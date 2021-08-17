@@ -92,6 +92,9 @@ type TestConfig struct {
 	// Infinispan
 	infinispanInstallationSource string
 
+	// Hyperfoil
+	hyperfoilOutputDirectory string
+
 	// dev options
 	showScenarios bool
 	showSteps     bool
@@ -199,6 +202,9 @@ func BindFlags(set *flag.FlagSet) {
 
 	// Infinispan
 	set.StringVar(&env.infinispanInstallationSource, prefix+"infinispan-installation-source", installationSourceOlm, "Infinispan operator installation source")
+
+	// Hyperfoil
+	set.StringVar(&env.hyperfoilOutputDirectory, prefix+"hyperfoil-output-directory", "..", "Defines output directory to store Hyperfoil run statistics. Default is Kogito operator base folder.")
 
 	// dev options
 	set.BoolVar(&env.showScenarios, prefix+"show-scenarios", false, "Show all scenarios which will be executed.")
@@ -493,6 +499,13 @@ func IsInfinispanInstalledByOlm() bool {
 // IsInfinispanInstalledByYaml return true if Infinispan operator is installed using YAML files
 func IsInfinispanInstalledByYaml() bool {
 	return env.infinispanInstallationSource == installationSourceYaml
+}
+
+// Hyperfoil
+
+// GetHyperfoilOutputDirectory returns directory to store Hyperfoil run results
+func GetHyperfoilOutputDirectory() string {
+	return env.hyperfoilOutputDirectory
 }
 
 // dev options

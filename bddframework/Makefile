@@ -65,6 +65,8 @@ examples_ref=
 examples_ignore_ssl=
 # Infinispan
 infinispan_installation_source=
+# Hyperfoil
+hyperfoil_output_directory=
 # dev options
 show_scenarios=false
 show_steps=false

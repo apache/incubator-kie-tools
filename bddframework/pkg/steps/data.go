@@ -48,6 +48,7 @@ func (data *Data) RegisterAllSteps(ctx *godog.ScenarioContext) {
 	registerGrafanaSteps(ctx, data)
 	registerGraphQLSteps(ctx, data)
 	registerHTTPSteps(ctx, data)
+	registerHyperfoilSteps(ctx, data)
 	registerImageRegistrySteps(ctx, data)
 	registerInfinispanSteps(ctx, data)
 	registerKafkaSteps(ctx, data)

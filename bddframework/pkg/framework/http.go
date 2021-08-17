@@ -98,7 +98,7 @@ func ExecuteHTTPRequest(namespace string, requestInfo HTTPRequestInfo) (*http.Re
 	var resp *http.Response
 	var err error
 	for retry < config.GetHTTPRetryNumber() {
-		resp, err = ExecuteHTTPRequestC(&http.Client{Timeout: (time.Duration(10*config.GetLoadFactor()) * time.Second)}, namespace, requestInfo)
+		resp, err = ExecuteHTTPRequestC(createDefaultClient(), namespace, requestInfo)
 		if err == nil && checkHTTPResponseSuccessful(resp) {
 			return resp, err
 		} else if err != nil {
@@ -132,6 +132,8 @@ func ExecuteHTTPRequestC(client *http.Client, namespace string, requestInfo HTTP
 			request.Header.Add("Content-Type", "application/xml")
 		case "x-www-form-urlencoded":
 			request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+		case "yaml":
+			request.Header.Add("Content-Type", "text/vnd.yaml")
 		default:
 			return nil, fmt.Errorf("Unknown body format to set into request: %s", requestInfo.BodyFormat)
 		}
@@ -191,17 +193,17 @@ func ExecuteHTTPRequestWithUnmarshalledResponse(namespace string, requestInfo HT
 
 // IsHTTPRequestSuccessful makes and checks whether an http request is successful
 func IsHTTPRequestSuccessful(namespace string, requestInfo HTTPRequestInfo) (bool, error) {
-	return checkHTTPRequestConditionC(&http.Client{}, namespace, requestInfo, checkHTTPResponseSuccessful)
+	return checkHTTPRequestConditionC(createDefaultClient(), namespace, requestInfo, checkHTTPResponseSuccessful)
 }
 
 // IsHTTPRequestForbidden makes and checks whether an http request is unauthorized
 func IsHTTPRequestForbidden(namespace string, requestInfo HTTPRequestInfo) (bool, error) {
-	return checkHTTPRequestConditionC(&http.Client{}, namespace, requestInfo, checkHTTPResponseForbidden)
+	return checkHTTPRequestConditionC(createDefaultClient(), namespace, requestInfo, checkHTTPResponseForbidden)
 }
 
 // IsHTTPRequestFailed makes and checks whether an http request fails
 func IsHTTPRequestFailed(namespace string, requestInfo HTTPRequestInfo) (bool, error) {
-	return checkHTTPRequestConditionC(&http.Client{}, namespace, requestInfo, checkHTTPResponseFailed)
+	return checkHTTPRequestConditionC(createDefaultClient(), namespace, requestInfo, checkHTTPResponseFailed)
 }
 
 // checkHTTPRequestConditionC makes and checks whether an http request matches a condition using a given HTTP client
@@ -255,7 +257,7 @@ func ExecuteHTTPRequestsInThreads(namespace string, requestCount, threadCount in
 	startTime := time.Now()
 
 	for threadID := 0; threadID < threadCount; threadID++ {
-		client := createCustomClient()
+		client := createDefaultClient()
 		go runRequestRoutine(threadID, waitGroup, client, namespace, requestPerThread, requestInfo, results)
 	}
 
@@ -267,14 +269,15 @@ func ExecuteHTTPRequestsInThreads(namespace string, requestCount, threadCount in
 	return results, nil
 }
 
-func createCustomClient() *http.Client {
+func createDefaultClient() *http.Client {
 	defaultTransport, ok := http.DefaultTransport.(*http.Transport)
 	if !ok {
 		panic("DefaultTransport is not of type *http.Transport")
 	}
 	customTransport := defaultTransport.Clone()
-	client := &http.Client{Transport: customTransport}
-	return client
+	// Allow executing requests against HTTPS endpoints with insecure certificate
+	customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	return &http.Client{Transport: customTransport, Timeout: (time.Duration(10*config.GetLoadFactor()) * time.Second)}
 }
 
 func runRequestRoutine(threadID int, waitGroup *sync.WaitGroup, client *http.Client, namespace string, requestPerThread int, requestInfo HTTPRequestInfo, results []HTTPRequestResult) {
