@@ -1019,6 +1019,26 @@ setup() {
     [[ "${output}" != *"--tests.infinispan-installation-source"* ]]
 }
 
+# Hyperfoil
+
+@test "invoke run-tests with hyperfoil_output_directory" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --hyperfoil_output_directory /some/folder --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.hyperfoil-output-directory=/some/folder" ]]
+}
+
+@test "invoke run-tests with hyperfoil_output_directory missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --hyperfoil_output_directory --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.hyperfoil-output-directory"* ]]
+}
+
+@test "invoke run-tests with hyperfoil_output_directory empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --hyperfoil_output_directory "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.hyperfoil-output-directory"* ]]
+}
+
 # dev options
 
 @test "invoke run-tests with show_scenarios" {

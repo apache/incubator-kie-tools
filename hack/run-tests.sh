@@ -109,6 +109,9 @@ function usage(){
   # Infinispan
   printf "\n--infinispan_installation_source {TAG}\n\tDefines installation source for the Infinispan operator. Options are 'olm' and 'yaml'. Default is olm."
 
+  # Hyperfoil
+  printf "\n--hyperfoil_output_directory {PATH}\n\tDefines output directory to store Hyperfoil run statistics. Default is test folder."
+
   # dev options
   printf "\n--show_scenarios\n\tDisplay scenarios which will be executed."
   printf "\n--show_steps\n\tDisplay scenarios and their steps which will be executed."
@@ -432,6 +435,12 @@ case $1 in
   --infinispan_installation_source)
     shift
     if addParamKeyValueIfAccepted "--tests.infinispan-installation-source" ${1}; then shift; fi
+  ;;
+
+  # Hyperfoil
+  --hyperfoil_output_directory)
+    shift
+    if addParamKeyValueIfAccepted "--tests.hyperfoil-output-directory" ${1}; then shift; fi
   ;;
 
   # dev options
