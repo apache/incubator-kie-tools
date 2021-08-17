@@ -9,8 +9,8 @@
     "build:dev": "webpack --config webpack.development.js",
     "build:prod": "webpack --config webpack.production.js",
     "build:watch": "webpack --config webpack.development.js --watch",
-    "test": "jest --collect-coverage",
     "lint": "eslint --ext .ts,.tsx,.js ./src/",
+    "test": "jest --collect-coverage",
     "type-check": "tsc --noEmit",
     "quality-checks": "yarn run type-check && yarn run lint && yarn run test"
   },

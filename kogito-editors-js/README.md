@@ -45,6 +45,7 @@ Follow these guides to develop React components with GWT editors smoothly:
 
 - [How to create a Kogito editor component](./docs/new-component.md)
 - [How to Wire a Kogito editor components with a GWT](./docs/wire.md)
+- [How to check my code before push](./docs/hooks.md)
 
 ## Contributing
 

@@ -8,7 +8,8 @@
   "scripts": {
     "build:dev": "webpack --config webpack.development.js",
     "build:prod": "webpack --config webpack.production.js",
-    "build:watch": "webpack --config webpack.development.js --watch"
+    "build:watch": "webpack --config webpack.development.js --watch",
+    "lint": "eslint --ext .ts,.tsx,.js ./src/"
   },
   "peerDependencies": {
     "react": "^17.0.2",
