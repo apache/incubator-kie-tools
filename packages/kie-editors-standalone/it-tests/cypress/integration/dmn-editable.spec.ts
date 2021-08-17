@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import * as buildEnv from "@kogito-tooling/build-env";
-
 describe("Dmn Editable.", () => {
   before("Visit page", () => {
-    cy.visit(`localhost:${buildEnv.standaloneEditors.dev.port}/dmn-editable`);
+    cy.visit("/dmn-editable");
     cy.loadEditors(["dmn-editable"]);
   });
 
