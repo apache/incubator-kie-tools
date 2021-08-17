@@ -105,10 +105,10 @@ export class CreateBuild extends ResourceFetch {
         source:
           dockerfile: |
             FROM ${this.BASE_IMAGE}
-            ENV MAVEN_OPTS="-Xmx256m -Xms128m" JAVA_OPTS="-Xmx256m -Xms128m"
+            ENV MAVEN_OPTS="-Xmx352m -Xms128m" JAVA_OPTS="-Xmx352m -Xms128m"
             RUN echo $'${this.args.model.content}' > '${diagramPath}' \
                 && java -jar ${this.FORM_SCHEMA_GENERATOR_PATH} '${diagramPath}' '${this.DATA_PATH}' '${this.args.urls.index}' '${this.args.urls.onlineEditor}' '${this.args.urls.swaggerUI}' \
-                && ${this.MVNW_PATH} clean package -f ${this.POM_PATH} \
+                && ${this.MVNW_PATH} clean package -B -ntp -f ${this.POM_PATH} \
                 && cp ${this.QUARKUS_APP_FOLDER}/*.jar ${this.DEPLOYMENTS_FOLDER} \
                 && cp -R ${this.QUARKUS_APP_FOLDER}/lib/ ${this.DEPLOYMENTS_FOLDER} \
                 && cp -R ${this.QUARKUS_APP_FOLDER}/app/ ${this.DEPLOYMENTS_FOLDER} \
