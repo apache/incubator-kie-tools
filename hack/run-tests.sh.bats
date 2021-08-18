@@ -961,6 +961,24 @@ setup() {
     [[ "${output}" != *"--tests.disable-maven-native-build-container"* ]]
 }
 
+@test "invoke run-tests with native_builder_image" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --native_builder_image image --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.native-builder-image=image" ]]
+}
+
+@test "invoke run-tests with native_builder_image missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --native_builder_image --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.native-builder-image"* ]]
+}
+
+@test "invoke run-tests with native_builder_image empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --native_builder_image "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.native-builder-image"* ]]
+}
+
 # examples repository
 
 @test "invoke run-tests with examples_uri" {

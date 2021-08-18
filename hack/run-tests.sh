@@ -416,6 +416,10 @@ case $1 in
     addParam "--tests.disable-maven-native-build-container"
     shift
   ;;
+  --native_builder_image)
+    shift
+    if addParamKeyValueIfAccepted "--tests.native-builder-image" ${1}; then shift; fi
+  ;;
 
   # examples repository
   --examples_uri)
