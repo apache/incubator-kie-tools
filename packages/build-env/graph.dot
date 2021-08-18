@@ -14,6 +14,7 @@ digraph G {
   "@kogito-tooling/external-assets-base" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/desktop" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/i18n-common-dictionary" [ style = "rounded", color = "blue", fontcolor = "blue" ];
+  "@kie-tooling-core/monaco-editor" [ style = "rounded", color = "purple", fontcolor = "purple" ];
   "@kogito-tooling/dmn-dev-sandbox-deployment-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/dmn-dev-sandbox-form-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/dmn-json-schema-generator" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -31,7 +32,6 @@ digraph G {
   "@kie-tooling-core/operating-system" [ style = "rounded", color = "purple", fontcolor = "purple" ];
   "@kogito-tooling/pmml-editor-marshaller" [ style = "rounded", color = "blue", fontcolor = "blue" ];
   "@kogito-tooling/kie-editors-standalone" [ style = "rounded", color = "blue", fontcolor = "blue" ];
-  "@kie-tooling-core/monaco-editor" [ style = "rounded", color = "purple", fontcolor = "purple" ];
   "@kie-tooling-core/workspace" [ style = "rounded", color = "purple", fontcolor = "purple" ];
   "@kogito-tooling/online-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/pmml-editor" [ style = "rounded", color = "blue", fontcolor = "blue" ];
@@ -48,6 +48,7 @@ digraph G {
   "chrome-extension-pack-kogito-kie-editors" -> "@kogito-tooling/external-assets-base" [ style = "dashed" ];
   "@kogito-tooling/desktop" -> "@kogito-tooling/i18n-common-dictionary" [ style = "solid" ];
   "@kogito-tooling/desktop" -> "@kogito-tooling/kie-bc-editors" [ style = "solid" ];
+  "@kogito-tooling/desktop" -> "@kie-tooling-core/monaco-editor" [ style = "solid" ];
   "@kogito-tooling/desktop" -> "@kogito-tooling/external-assets-base" [ style = "dashed" ];
   "@kogito-tooling/dmn-dev-sandbox-deployment-base-image" -> "@kogito-tooling/dmn-dev-sandbox-form-webapp" [ style = "solid" ];
   "@kogito-tooling/dmn-dev-sandbox-deployment-base-image" -> "@kogito-tooling/dmn-json-schema-generator" [ style = "solid" ];
