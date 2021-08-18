@@ -158,6 +158,11 @@ const ENV_VARS = {
     name: "WEBPACK__mode",
     description: "",
   },
+  KOGITO_RUNTIME_version: {
+    name: "KOGITO_RUNTIME_version",
+    default: "1.10.0.Final",
+    description: "",
+  },
 };
 
 module.exports = {
@@ -250,6 +255,11 @@ module.exports = {
       port: 9005,
     },
   },
+
+  kogitoRuntime: {
+    version: getOrDefault(ENV_VARS.KOGITO_RUNTIME_version),
+  },
+
   vars: () => ({
     ENV_VARS,
     getOrDefault: getOrDefault,

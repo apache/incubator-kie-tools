@@ -14,7 +14,7 @@
 
 FROM registry.access.redhat.com/openjdk/openjdk-11-rhel7:1.1
 
-ARG KOGITO_RUNTIME_VERSION=1.7.0.Final
+ARG KOGITO_RUNTIME_VERSION
 
 RUN mkdir /tmp/kogito/
 
@@ -24,7 +24,7 @@ COPY dist-dev/mvnw mvnw
 COPY dist-dev/.mvn/ .mvn
 COPY dist-dev/dmn-json-schema-generator.jar dmn-json-schema-generator.jar
 
-RUN ./mvnw archetype:generate -B \
+RUN ./mvnw archetype:generate -B -ntp \
         -DarchetypeGroupId=org.kie.kogito \
         -DarchetypeArtifactId=kogito-quarkus-archetype \
         -DarchetypeVersion=${KOGITO_RUNTIME_VERSION} \
@@ -38,7 +38,7 @@ RUN ./mvnw archetype:generate -B \
 COPY --chown=185:root dist-dev/dmn-dev-sandbox-form-webapp/ project/src/main/resources/META-INF/resources/
 
 RUN echo -e '\nquarkus.http.cors=true' >> project/src/main/resources/application.properties \
-    && ./mvnw clean package -f project/pom.xml \
+    && ./mvnw clean package -B -ntp -f project/pom.xml \
     && cp project/target/quarkus-app/*.jar /deployments/ \
     && cp -R project/target/quarkus-app/lib/ /deployments/ \
     && cp -R project/target/quarkus-app/app/ /deployments/ \
