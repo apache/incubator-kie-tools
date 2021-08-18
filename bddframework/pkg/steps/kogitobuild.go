@@ -42,7 +42,6 @@ import (
 func registerKogitoBuildSteps(ctx *godog.ScenarioContext, data *Data) {
 	// Deploy steps
 	ctx.Step(`^Build (quarkus|springboot) example service "([^"]*)" with configuration:$`, data.buildExampleServiceWithConfiguration)
-	ctx.Step(`^Build binary (quarkus|springboot) service "([^"]*)" with configuration:$`, data.buildBinaryServiceWithConfiguration)
 	ctx.Step(`^Build binary (quarkus|springboot) local example service "([^"]*)" from target folder with configuration:$`, data.buildBinaryLocalExampleServiceFromTargetFolderWithConfiguration)
 }
 
@@ -64,17 +63,6 @@ func (data *Data) buildExampleServiceWithConfiguration(runtimeType, contextDir s
 		envs := buildHolder.KogitoBuild.GetSpec().GetEnv()
 		buildHolder.KogitoBuild.GetSpec().SetEnv(operatorframework.EnvOverride(envs, corev1.EnvVar{Name: "GIT_SSL_NO_VERIFY", Value: "true"}))
 	}
-
-	return framework.DeployKogitoBuild(data.Namespace, framework.GetDefaultInstallerType(), buildHolder)
-}
-
-func (data *Data) buildBinaryServiceWithConfiguration(runtimeType, serviceName string, table *godog.Table) error {
-	buildHolder, err := getKogitoBuildConfiguredStub(data.Namespace, runtimeType, serviceName, table)
-	if err != nil {
-		return err
-	}
-
-	buildHolder.KogitoBuild.GetSpec().SetType(api.BinaryBuildType)
 
 	return framework.DeployKogitoBuild(data.Namespace, framework.GetDefaultInstallerType(), buildHolder)
 }

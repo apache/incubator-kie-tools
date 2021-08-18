@@ -83,6 +83,7 @@ type TestConfig struct {
 	buildS2iImageTag                   string
 	buildRuntimeImageTag               string
 	disableMavenNativeBuildInContainer bool
+	nativeBuilderImage                 string
 
 	// examples repository
 	examplesRepositoryURI       string
@@ -194,6 +195,7 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.buildS2iImageTag, prefix+"build-s2i-image-tag", "", "Set the S2I build image full tag")
 	set.StringVar(&env.buildRuntimeImageTag, prefix+"build-runtime-image-tag", "", "Set the Runtime build image full tag")
 	set.BoolVar(&env.disableMavenNativeBuildInContainer, prefix+"disable-maven-native-build-container", false, "By default, Maven native builds are done in container (via container engine). Possibility to disable it.")
+	set.StringVar(&env.nativeBuilderImage, prefix+"native-builder-image", "", "Force the native builder image.")
 
 	// examples repository
 	set.StringVar(&env.examplesRepositoryURI, prefix+"examples-uri", defaultKogitoExamplesURI, "Set the URI for the kogito-examples repository")
@@ -470,6 +472,11 @@ func GetBuildRuntimeImageStreamTag() string {
 // IsDisableMavenNativeBuildInContainer return whether Maven native build in container should be disabled
 func IsDisableMavenNativeBuildInContainer() bool {
 	return env.disableMavenNativeBuildInContainer
+}
+
+// GetNativeBuilderImage return the native builder image for Maven native builds
+func GetNativeBuilderImage() string {
+	return env.nativeBuilderImage
 }
 
 // examples repository

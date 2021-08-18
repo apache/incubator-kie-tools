@@ -29,6 +29,7 @@ Feature: Deploy Kogito Build
 
     @quarkus
     @native
+    @nonnativelts
     Examples:
       | runtime    | example-service         | native  | minutes |
       | quarkus    | process-quarkus-example | enabled | 20      |
@@ -36,42 +37,6 @@ Feature: Deploy Kogito Build
 #####
 
   Scenario Outline: Build <runtime> binary build with native <native> using KogitoBuild
-    Given Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven with configuration:
-      | native | <native> |
-
-    When Build binary <runtime> service "<example-service>" with configuration:
-      | config | native | <native> |
-
-    Then BuildConfig "<example-service>" is created after 1 minutes
-    # Once https://issues.redhat.com/browse/KOGITO-2161 is implemented then we need to refactor this scenario to CLI implementation (getting rid of manual build trigger)
-    And Start build with name "<example-service>" from local example service path "<example-service>/target"
-    And Kogito Runtime "<example-service>" has 1 pods running within 5 minutes
-    And Service "<example-service>" with process name "orders" is available within 2 minutes
-
-    @rhpam
-    @springboot
-    Examples:
-      | runtime    | example-service            | native   |
-      | springboot | process-springboot-example | disabled |
-
-    @rhpam
-    @quarkus
-    Examples:
-      | runtime    | example-service         | native   |
-      | quarkus    | process-quarkus-example | disabled |
-
-    # Disabled due to https://github.com/kiegroup/kogito-operator/pull/485
-    @disabled
-    @quarkus
-    @native
-    Examples:
-      | runtime    | example-service         | native  |
-      | quarkus    | process-quarkus-example | enabled |
-
-#####
-
-  Scenario Outline: Build <runtime> binary build from local example service target folder with native <native> using KogitoBuild
     Given Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven with configuration:
       | native | <native> |
