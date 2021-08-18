@@ -15,12 +15,12 @@
  */
 
 import { BpmnEditorFactory } from "@kogito-tooling/kie-bc-editors/dist/bpmn/envelope";
-import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
+import * as EditorEnvelope from "@kie-tooling-core/editor/dist/envelope";
 
 declare const acquireVsCodeApi: any;
 
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
-  editorFactory: new BpmnEditorFactory({ shouldLoadResourcesDynamically: true })
+  editorFactory: new BpmnEditorFactory({ shouldLoadResourcesDynamically: true }),
 });

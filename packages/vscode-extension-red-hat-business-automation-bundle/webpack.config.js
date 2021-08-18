@@ -18,30 +18,29 @@ const path = require("path");
 
 const commonConfig = {
   mode: "development",
-  devtool: "inline-source-map",
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].js",
     library: "RedHatBusinessAutomationBundle",
     libraryTarget: "umd",
-    umdNamedDefine: true
+    umdNamedDefine: true,
   },
   externals: {
-    vscode: "commonjs vscode"
+    vscode: "commonjs vscode",
   },
   plugins: [],
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader"
-      }
-    ]
+        loader: "ts-loader",
+      },
+    ],
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
-  }
+    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")],
+  },
 };
 
 module.exports = [
@@ -49,8 +48,8 @@ module.exports = [
     ...commonConfig,
     target: "node",
     entry: {
-      "extension/extension": "./src/extension/extension.ts"
+      "extension/extension": "./src/extension/extension.ts",
     },
-    plugins: []
-  }
+    plugins: [],
+  },
 ];

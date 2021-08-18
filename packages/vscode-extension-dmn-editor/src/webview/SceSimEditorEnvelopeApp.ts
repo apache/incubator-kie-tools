@@ -15,12 +15,12 @@
  */
 
 import { SceSimEditorFactory } from "@kogito-tooling/kie-bc-editors/dist/scesim/envelope";
-import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
+import * as EditorEnvelope from "@kie-tooling-core/editor/dist/envelope";
 
 declare const acquireVsCodeApi: any;
 
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
-  editorFactory: new SceSimEditorFactory({ shouldLoadResourcesDynamically: true })
+  editorFactory: new SceSimEditorFactory({ shouldLoadResourcesDynamically: true }),
 });

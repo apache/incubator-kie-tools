@@ -27,8 +27,10 @@ jobs:
         with:
           node-version: 16.2.0
 
-      - name: Setup Yarn
-        run: npm install -g yarn@1.19.1
+      - name: Setup Yarn and Lerna
+        run: |
+          npm install -g lerna@4.0.0 yarn@1.22.10
+          yarn config set network-timeout 1000000
 
       - name: Start Xvfb
         run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &

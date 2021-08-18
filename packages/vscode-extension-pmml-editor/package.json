@@ -3,26 +3,26 @@
   "publisher": "redhat",
   "displayName": "PMML Editor",
   "description": "Edit PMML Scorecards",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tooling-store.git"
   },
   "scripts": {
-    "build-ext": "rm -rf dist && webpack --mode production --devtool none",
+    "build-ext": "rm -rf dist && webpack --mode production",
     "pack-ext": "vsce package --githubBranch main --yarn -o ./dist/vscode_extension_pmml_editor_$npm_package_version.vsix",
     "pack": "yarn build-ext && yarn pack-ext",
     "compile": "yarn build-ext",
     "watch": "yarn build-ext"
   },
   "dependencies": {
-    "@kogito-tooling/editor": "0.11.0",
-    "@kogito-tooling/i18n": "0.11.0",
-    "@kogito-tooling/patternfly-base": "0.11.0",
-    "@kogito-tooling/pmml-editor": "0.11.0",
-    "@kogito-tooling/vscode-extension": "0.11.0",
-    "@kogito-tooling/workspace": "0.11.0"
+    "@kie-tooling-core/editor": "0.12.0",
+    "@kie-tooling-core/i18n": "0.12.0",
+    "@kie-tooling-core/patternfly-base": "0.12.0",
+    "@kie-tooling-core/vscode-extension": "0.12.0",
+    "@kie-tooling-core/workspace": "0.12.0",
+    "@kogito-tooling/pmml-editor": "0.12.0"
   },
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",

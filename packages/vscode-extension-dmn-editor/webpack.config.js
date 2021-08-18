@@ -16,59 +16,68 @@
 
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
+const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 
 const commonConfig = {
   mode: "development",
-  devtool: "inline-source-map",
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].js",
     library: "DmnEditor",
     libraryTarget: "umd",
-    umdNamedDefine: true
+    umdNamedDefine: true,
   },
   externals: {
-    vscode: "commonjs vscode"
+    vscode: "commonjs vscode",
   },
   plugins: [],
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader"
+        loader: "ts-loader",
       },
-      ...pfWebpackOptions.patternflyRules
-    ]
+      ...patternflyBase.webpackModuleRules,
+    ],
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
-  }
+    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")],
+  },
 };
 
-module.exports = async argv => [
+module.exports = async (argv) => [
   {
     ...commonConfig,
     target: "node",
     entry: {
-      "extension/extension": "./src/extension/extension.ts"
+      "extension/extension": "./src/extension/extension.ts",
     },
-    plugins: []
+    plugins: [],
   },
   {
     ...commonConfig,
     target: "web",
     entry: {
       "webview/DmnEditorEnvelopeApp": "./src/webview/DmnEditorEnvelopeApp.ts",
-      "webview/SceSimEditorEnvelopeApp": "./src/webview/SceSimEditorEnvelopeApp.ts"
+      "webview/SceSimEditorEnvelopeApp": "./src/webview/SceSimEditorEnvelopeApp.ts",
     },
     plugins: [
-      new CopyWebpackPlugin([
-        { from: externalAssets.dmnEditorPath(argv), to: "webview/editors/dmn", ignore: ["WEB-INF/**/*"] },
-        { from: externalAssets.scesimEditorPath(argv), to: "webview/editors/scesim", ignore: ["WEB-INF/**/*"] }
-      ])
-    ]
-  }
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: externalAssets.dmnEditorPath(argv),
+            to: "webview/editors/dmn",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+          {
+            from: externalAssets.scesimEditorPath(argv),
+            to: "webview/editors/scesim",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+        ],
+      }),
+    ],
+  },
 ];

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { backendI18nDefaults, backendI18nDictionaries } from "@kogito-tooling/backend/dist/i18n";
-import { VsCodeBackendProxy } from "@kogito-tooling/backend/dist/vscode";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
-import * as KogitoVsCode from "@kogito-tooling/vscode-extension";
+import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tooling-core/backend/dist/i18n";
+import { VsCodeBackendProxy } from "@kie-tooling-core/backend/dist/vscode";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
+import * as KogitoVsCode from "@kie-tooling-core/vscode-extension";
 import * as vscode from "vscode";
 
 let backendProxy: VsCodeBackendProxy;
@@ -40,12 +40,12 @@ export function activate(context: vscode.ExtensionContext) {
           "pmml",
           {
             envelopePath: "dist/webview/PmmlEditorEnvelopeApp.js",
-            resourcesPathPrefix: "dist/webview/editors/pmml"
-          }
-        ]
-      ])
+            resourcesPathPrefix: "dist/webview/editors/pmml",
+          },
+        ],
+      ]),
     },
-    backendProxy: backendProxy
+    backendProxy: backendProxy,
   });
 
   console.info("Extension is successfully setup.");
