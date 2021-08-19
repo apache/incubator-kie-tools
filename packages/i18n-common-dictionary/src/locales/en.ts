@@ -75,5 +75,6 @@ export const en: CommonI18n = {
     uninstall: "Uninstall",
     username: "Username",
     validation: "Validation",
+    namespace: "Namespace (project)",
   },
 };

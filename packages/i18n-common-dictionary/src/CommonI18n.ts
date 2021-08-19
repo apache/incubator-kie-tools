@@ -73,6 +73,7 @@ export type CommonDictionary = {
   uninstall: string;
   username: string;
   validation: string;
+  namespace: string;
 };
 
 export interface CommonI18n extends ReferenceDictionary {

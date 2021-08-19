@@ -67,14 +67,14 @@ describe("DmnDevSandboxModalConfig", () => {
           usingTestingKieToolingExtendedServicesContext(
             usingTestingDmnDevSandboxContext(<DmnDevSandboxModalConfig />, {
               isConfigModalOpen: true,
-              currentConfig: { username: "username", host: "host", token: "token" },
+              currentConfig: { namespace: "namespace", host: "host", token: "token" },
             }).wrapper
           ).wrapper
         ).wrapper
       ).wrapper
     );
     fireEvent.click(getByTestId("reset-config-button"));
-    expect(getByTestId("username-text-field")).toHaveTextContent("");
+    expect(getByTestId("namespace-text-field")).toHaveTextContent("");
     expect(getByTestId("host-text-field")).toHaveTextContent("");
     expect(getByTestId("token-text-field")).toHaveTextContent("");
   });

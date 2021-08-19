@@ -31,7 +31,7 @@ describe("DmnDevSandboxService", () => {
   const fetchResourceFn = jest.spyOn(service, "fetchResource");
 
   const config = {
-    username: "test-username",
+    namespace: "test-username",
     host: "http://localhost:8080",
     token: "test-token",
   };

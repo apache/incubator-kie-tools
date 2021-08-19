@@ -37,13 +37,13 @@ import {
   isConfigValid,
   isHostValid,
   isTokenValid,
-  isUsernameValid,
+  isNamespaceValid,
 } from "./DmnDevSandboxConnectionConfig";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
 import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "./DmnDevSandboxService";
 
 enum WizardStepIds {
-  USERNAME = "USERNAME",
+  NAMESPACE = "NAMESPACE",
   CREDENTIALS = "CREDENTIALS",
   CONNECT = "CONNECT",
 }
@@ -64,12 +64,12 @@ export function DmnDevSandboxWizardConfig() {
   const [isConnectLoading, setConnectLoading] = useState(false);
 
   const onClearHost = useCallback(() => setConfig({ ...config, host: "" }), [config]);
-  const onClearUsername = useCallback(() => setConfig({ ...config, username: "" }), [config]);
+  const onClearNamespace = useCallback(() => setConfig({ ...config, namespace: "" }), [config]);
   const onClearToken = useCallback(() => setConfig({ ...config, token: "" }), [config]);
 
-  const isUsernameValidated = useMemo(() => {
-    return isUsernameValid(config.username);
-  }, [config.username]);
+  const isNamespaceValidated = useMemo(() => {
+    return isNamespaceValid(config.namespace);
+  }, [config.namespace]);
 
   const isHostValidated = useMemo(() => {
     return isHostValid(config.host);
@@ -103,9 +103,9 @@ export function DmnDevSandboxWizardConfig() {
     resetModalWithConfig(dmnDevSandboxContext.currentConfig);
   }, [dmnDevSandboxContext, resetModalWithConfig]);
 
-  const onUsernameInputChanged = useCallback(
+  const onNamespaceInputChanged = useCallback(
     (newValue: string) => {
-      setConfig({ ...config, username: newValue });
+      setConfig({ ...config, namespace: newValue });
     },
     [config]
   );
@@ -167,7 +167,7 @@ export function DmnDevSandboxWizardConfig() {
   const wizardSteps = useMemo(
     () => [
       {
-        id: WizardStepIds.USERNAME,
+        id: WizardStepIds.NAMESPACE,
         name: i18n.dmnDevSandbox.configWizard.steps.first.name,
         component: (
           <div>
@@ -190,15 +190,15 @@ export function DmnDevSandboxWizardConfig() {
               </ListItem>
               <ListItem>
                 <TextContent>
-                  <Text component={TextVariants.p}>{i18n.dmnDevSandbox.configWizard.steps.first.informUsername}</Text>
+                  <Text component={TextVariants.p}>{i18n.dmnDevSandbox.configWizard.steps.first.informNamespace}</Text>
                 </TextContent>
               </ListItem>
             </List>
             <Form isHorizontal={true} className="pf-u-mt-md">
               <FormGroup
-                fieldId={"dmn-dev-sandbox-config-username"}
-                label={i18n.terms.username}
-                validated={isUsernameValidated ? "success" : "error"}
+                fieldId={"dmn-dev-sandbox-config-namespace"}
+                label={i18n.terms.namespace}
+                validated={isNamespaceValidated ? "success" : "error"}
                 helperTextInvalid={i18n.dmnDevSandbox.common.requiredField}
               >
                 <InputGroup>
@@ -207,15 +207,15 @@ export function DmnDevSandboxWizardConfig() {
                     autoComplete={"off"}
                     isRequired
                     type="text"
-                    id="username-field"
-                    name="username-field"
-                    aria-label="Username field"
-                    value={config.username}
-                    placeholder={i18n.dmnDevSandbox.configWizard.steps.first.usernamePlaceholder}
-                    onChange={onUsernameInputChanged}
+                    id="namespace-field"
+                    name="namespace-field"
+                    aria-label="namespace field"
+                    value={config.namespace}
+                    placeholder={i18n.dmnDevSandbox.configWizard.steps.first.namespacePlaceholder}
+                    onChange={onNamespaceInputChanged}
                   />
                   <InputGroupText>
-                    <Button isSmall variant="plain" aria-label="Clear username button" onClick={onClearUsername}>
+                    <Button isSmall variant="plain" aria-label="Clear namespace button" onClick={onClearNamespace}>
                       <TimesIcon />
                     </Button>
                   </InputGroupText>
@@ -406,10 +406,10 @@ export function DmnDevSandboxWizardConfig() {
     ],
     [
       i18n,
-      isUsernameValidated,
+      isNamespaceValidated,
       config,
-      onUsernameInputChanged,
-      onClearUsername,
+      onNamespaceInputChanged,
+      onClearNamespace,
       isHostValidated,
       onHostInputChanged,
       onClearHost,

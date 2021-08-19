@@ -109,7 +109,7 @@ interface OnlineDictionary extends ReferenceDictionary {
     };
     configModal: {
       hostInfo: string;
-      usernameInfo: string;
+      namespaceInfo: string;
       tokenInfo: string;
       validationError: string;
       connectionError: string;
@@ -138,9 +138,9 @@ interface OnlineDictionary extends ReferenceDictionary {
           introduction: string;
           goToGetStartedPage: string;
           followSteps: string;
-          informUsername: string;
+          informNamespace: string;
           inputReason: string;
-          usernamePlaceholder: string;
+          namespacePlaceholder: string;
         };
         second: {
           name: string;

@@ -108,7 +108,7 @@ export const en: OnlineI18n = {
     },
     configModal: {
       hostInfo: `The hostname associated with your instance.`,
-      usernameInfo: `The username of your ${en_common.names.redHat} account.`,
+      namespaceInfo: `The namespace (project) you want to deploy the Decision Model.`,
       tokenInfo: `The token associated with your instance.`,
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",
@@ -145,9 +145,10 @@ export const en: OnlineI18n = {
           introduction: `In order to create your ${en_common.names.shortDevSandbox} instance:`,
           goToGetStartedPage: "Go to the Get Started page",
           followSteps: `Follow the steps to launch your instance. You will be asked to log in with your ${en_common.names.redHat} account.`,
-          informUsername: `Once your instance is up and running, inform the username of your ${en_common.names.redHat} account below.`,
-          inputReason: "This information is necessary for locating your namespaces.",
-          usernamePlaceholder: `The username of your ${en_common.names.redHat} account`,
+          informNamespace: `Once your instance is up and running, inform the namespace (project) in your cluster you want to have the Decision Model deployed to.`,
+          inputReason:
+            "This information is necessary for deploying youde Decision Model into the right project namespace.",
+          namespacePlaceholder: `The namespace (project) you want to deploy the Decision Model. If using ${en_common.names.redHat} dev sandbox your namespace should be 'username-dev' (eg. scott-dev). Note that when logged in your Openshift Console your username appears at the top right corner`,
         },
         second: {
           name: "Set credentials",
@@ -164,7 +165,7 @@ export const en: OnlineI18n = {
           connectionSuccess: "Connection successfully established.",
           connectionError: "Connection refused.",
           introduction: "Now you are able to:",
-          deployNowExplanation: `${"Deplow now".bold()}: Your model will be deployed on your instance. This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.`,
+          deployNowExplanation: `${"Deploy now".bold()}: Your model will be deployed on your instance. This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.`,
           continueEditingExplanation: `${"Continue editing".bold()}: Continue editing your model and deploy it later.`,
           configNote: "Your configuration will be stored as browser cookies after the operations above.",
           connectionErrorLong: `A connection with your ${en_common.names.shortDevSandbox} instance could not be established.`,
