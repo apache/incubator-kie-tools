@@ -28,28 +28,6 @@
   border: none;
 }
 
-.expression-container .pf-c-drawer .pf-c-drawer__splitter-handle::after {
-  border-left: none;
-  position: absolute;
-  left: -1px;
-  top: 50%;
-  border-color: var(--pf-global--palette--black-300);
-  transform: translateY(-50%);
-}
-
-.expression-container
-  .react-resizable
-  table
-  td:last-child
-  > .react-resizable
-  > .pf-c-drawer
-  .pf-c-drawer__splitter-handle::after,
-.expression-container
-  .react-resizable
-  table
-  th:last-child
-  > .react-resizable
-  > .pf-c-drawer
-  .pf-c-drawer__splitter-handle::after {
-  opacity: 0;
+.expression-container .pf-c-drawer__splitter-handle::after {
+  display: none;
 }
