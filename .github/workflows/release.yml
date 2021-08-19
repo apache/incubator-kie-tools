@@ -93,11 +93,6 @@ jobs:
         with:
           ref: ${{ needs.prepare.outputs.release_ref }}
 
-      - name: "Setup Node"
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.2.0
-
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
         with:
@@ -166,17 +161,7 @@ jobs:
           path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
 
-      - name: "Setup Node"
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.2.0
-
-      - name: "Setup JDK 11"
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-
-      - name: Cache Maven packages
+      - name: "Cache Maven packages"
         uses: actions/cache@v2
         with:
           path: ~/.m2
@@ -246,17 +231,7 @@ jobs:
         with:
           path: kogito-online
 
-      - name: "Setup Node"
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.2.0
-
-      - name: "Setup JDK 11"
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-
-      - name: Cache Maven packages
+      - name: "Cache Maven packages"
         uses: actions/cache@v2
         with:
           path: ~/.m2
@@ -334,11 +309,6 @@ jobs:
         with:
           path: kogito-online
 
-      - name: "Setup Node"
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.2.0
-
       - name: "Setup environment"
         uses: ./kogito-tooling/.github/actions/setup-env
         with:
@@ -413,11 +383,6 @@ jobs:
         with:
           ref: ${{ needs.prepare.outputs.release_ref }}
 
-      - name: "Setup Node"
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.2.0
-
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
         with:
@@ -459,11 +424,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ needs.prepare.outputs.release_ref }}
-
-      - name: "Setup Node"
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.2.0
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -522,11 +482,6 @@ jobs:
         with:
           ref: ${{ needs.prepare.outputs.release_ref }}
 
-      - name: "Setup Node"
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.2.0
-
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
         with:
@@ -568,11 +523,6 @@ jobs:
         uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
         with:
           path: kogito-online
-
-      - name: "Setup Node"
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.2.0
 
       - name: "Setup environment"
         uses: ./kogito-tooling/.github/actions/setup-env
