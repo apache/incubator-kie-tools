@@ -1,11 +1,17 @@
 #!/bin/bash -e
+
+IMAGE_NAME="quay.io/kiegroup/kogito-runtime-jvm"
+if [[ "${JBOSS_IMAGE_NAME}" =~ "rhpam-7" ]]; then
+    IMAGE_NAME="registry.redhat.io/rhpam-7/rhpam-kogito-runtime-jvm-rhel8"
+fi
+
 cat <<EOF
-This is the quay.io/kiegroup/kogito-runtime-jvm S2I image:
+This is the ${IMAGE_NAME} S2I runtime image:
 To use it, install S2I: https://github.com/openshift/source-to-image
 
 Sample invocation:
 
-s2i build <binary path/URL> -e RUNTIME_TYPE=<quarkus|springboot> quay.io/kiegroup/kogito-runtime-jvm <application image>
+s2i build <binary path/URL> -e RUNTIME_TYPE=<quarkus|springboot> ${IMAGE_NAME} <application image>
 
 Where the binary path/URL is the built artifact that you want to copy to your image.
 RUNTIME_TYPE is the runtime your application is based on. Default value is 'quarkus'.

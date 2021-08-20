@@ -1,6 +1,25 @@
 #!/usr/bin/env bash
+
+IMAGE_NAME="quay.io/kiegroup/kogito-builder"
+RUNTIME_JVM_IMAGE_NAME="quay.io/kiegroup/kogito-runtime-jvm"
+
+NATIVE_COMMANDS="For the native build, just set the NATIVE environment variable to "true" and use
+the quay.io/kiegroup/kogito-runtime-native image as runtime-image.
+In that way, a native build will be produced and copied to the runtime image.
+
+Example:
+
+$ s2i build -c /Development/project/ ${IMAGE_NAME} <application image> --env RUNTIME_TYPE=quarkus --runtime-image quay.io/kiegroup/kogito-runtime-native --env NATIVE=true"
+
+if [[ "${JBOSS_IMAGE_NAME}" =~ "rhpam-7" ]]; then
+    IMAGE_NAME="registry.redhat.io/rhpam-7/rhpam-kogito-builder-rhel8"
+    RUNTIME_JVM_IMAGE_NAME="registry.redhat.io/rhpam-7/rhpam-kogito-runtime-jvm-rhel8"
+    NATIVE_COMMANDS=""
+fi
+
+
 cat <<EOF
-This is the quay.io/kiegroup/kogito-builder S2I image:
+This is the ${IMAGE_NAME} S2I image:
 
 Build native image based on project source either complete maven project or just set of business assets
 such as processes (BPMN), rules (DRL), decisions (DMN).
@@ -12,25 +31,21 @@ This image is intended only to build application binaries copied to runtime imag
 
 S2I command syntax:
 
-s2i build -c <source code path/URL> quay.io/kiegroup/kogito-builder <application image> --runtime-image <image name>
+$ s2i build -c <source code path/URL> ${IMAGE_NAME} <application image> --runtime-image <image name>
 
 
 Sample invocation:
 
-$ s2i build -c /Development/project/ quay.io/kiegroup/kogito-builder <application image> --env RUNTIME_TYPE=quarkus --runtime-image quay.io/kiegroup/kogito-runtime-jvm
+$ s2i build -c /Development/project/ ${IMAGE_NAME} <application image> --env RUNTIME_TYPE=quarkus --runtime-image ${RUNTIME_JVM_IMAGE_NAME}
 
-By default, it generates a non-native build. Use the quay.io/kiegroup/kogito-runtime-jvm image as runtime-image,
+By default, it generates a non-native build. Use the ${RUNTIME_JVM_IMAGE_NAME} image as runtime-image,
 in that way, a *runner.jar will be produced and copied to the runtime image.
 
 Example:
 
-$ s2i build -c /Development/project/ quay.io/kiegroup/kogito-builder <application image> --env RUNTIME_TYPE=quarkus --runtime-image quay.io/kiegroup/kogito-runtime-jvm
+$ s2i build -c /Development/project/ ${IMAGE_NAME} <application image> --env RUNTIME_TYPE=quarkus --runtime-image ${RUNTIME_JVM_IMAGE_NAME}
 
-For the native build, just set the NATIVE environment variable to "true" and use the quay.io/kiegroup/kogito-runtime-native image as runtime-image. In that way, a native build will be produced and copied to the runtime image.
-
-Example:
-
-$ s2i build -c /Development/project/ quay.io/kiegroup/kogito-builder <application image> --env RUNTIME_TYPE=quarkus --runtime-image quay.io/kiegroup/kogito-runtime-native --env NATIVE=true
+echo -n ${NATIVE_COMMANDS}
 
 You can then run the resulting image via:
 docker run <application image>
