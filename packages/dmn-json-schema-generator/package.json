@@ -17,7 +17,9 @@
     "install:mvnw": "run-script-os",
     "install:mvnw:win32": "yarn powershell mvn -N io.takari:maven:wrapper `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
     "install:mvnw:darwin:linux": "mvn -N io.takari:maven:wrapper -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
-    "build:dev": "yarn install:mvnw && mvn clean install -B -ntp -DskipTests -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "build:dev:win32": "yarn install:mvnw && yarn powershell mvn clean install -B -ntp `-DskipTests `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "build:dev:darwin:linux": "yarn install:mvnw && mvn clean install -B -ntp -DskipTests -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "build:dev": "run-script-os",
     "build:prod:win32": "yarn install:mvnw && yarn powershell mvn clean install -B -ntp `-DskipTests=$(build-env global.build.test --not) `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
     "build:prod:darwin:linux": "yarn install:mvnw && mvn clean install -B -ntp -DskipTests=$(build-env global.build.test --not) -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
     "build:prod": "yarn lint && run-script-os"
