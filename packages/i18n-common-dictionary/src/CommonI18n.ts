@@ -48,6 +48,7 @@ export type CommonDictionary = {
   launch: string;
   loading: string;
   macosApplicationFolder: string;
+  namespace: string;
   new: string;
   next: string;
   note: string;
@@ -73,7 +74,6 @@ export type CommonDictionary = {
   uninstall: string;
   username: string;
   validation: string;
-  namespace: string;
 };
 
 export interface CommonI18n extends ReferenceDictionary {

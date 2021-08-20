@@ -35,8 +35,7 @@ export const DEVELOPER_SANDBOX_URL = "https://developers.redhat.com/developer-sa
 export const DEVELOPER_SANDBOX_GET_STARTED_URL = "https://developers.redhat.com/developer-sandbox/get-started";
 
 export class DmnDevSandboxService {
-  private readonly RESOURCE_NAME_PREFIX = "dmn-service";
-  private readonly NAMESPACE_SUFFIX = "-dev";
+  private readonly RESOURCE_NAME_PREFIX = "dmn-dev-sandbox";
 
   public constructor(private readonly createdBy: string, private readonly proxyUrl: string) {}
 
@@ -161,10 +160,6 @@ export class DmnDevSandboxService {
     const randomPart = Math.random().toString(36).substr(2, 9);
     const milliseconds = new Date().getMilliseconds();
     return `${randomPart}${milliseconds}`;
-  }
-
-  private composeNamespace(username: string): string {
-    return `${username}${this.NAMESPACE_SUFFIX}`;
   }
 
   private composeBaseUrl(host: string, namespace: string, resourceName: string): string {

@@ -50,6 +50,7 @@ export const en: CommonI18n = {
     launch: "Launch",
     loading: "Loading",
     macosApplicationFolder: "Application",
+    namespace: "Namespace (project)",
     new: "New",
     next: "Next",
     note: "Note",
@@ -75,6 +76,5 @@ export const en: CommonI18n = {
     uninstall: "Uninstall",
     username: "Username",
     validation: "Validation",
-    namespace: "Namespace (project)",
   },
 };
