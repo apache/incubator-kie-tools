@@ -66,7 +66,7 @@ public class BackgroundGridModel extends AbstractScesimGridModel<Background, Bac
                 String placeHolder = ((ScenarioGridColumn) columns.get(columnIndex)).getPlaceHolder();
                 setCell(rowIndex, columnIndex, () -> {
                     ScenarioGridCell newCell = new ScenarioGridCell(new ScenarioGridCellValue(stringValue, placeHolder));
-                    if (ScenarioSimulationSharedUtils.isCollection((factMappingByIndex.getClassName()))) {
+                    if (ScenarioSimulationSharedUtils.isCollectionOrMap((factMappingByIndex.getClassName()))) {
                         newCell.setListMap(ScenarioSimulationSharedUtils.isList((factMappingByIndex.getClassName())));
                     }
                     return newCell;

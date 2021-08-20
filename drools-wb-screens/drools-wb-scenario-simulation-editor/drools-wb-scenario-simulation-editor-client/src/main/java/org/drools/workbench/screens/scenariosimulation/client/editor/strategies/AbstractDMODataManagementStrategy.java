@@ -172,7 +172,7 @@ public abstract class AbstractDMODataManagementStrategy extends AbstractDataMana
             if (!modelField.getName().equals("this")) {
                 String className = defineClassNameField(modelField.getClassName(), superTypeMap);
                 simpleProperties.put(modelField.getName(), new FactModelTree.PropertyTypeName(className));
-                if (ScenarioSimulationSharedUtils.isCollection(className)) {
+                if (ScenarioSimulationSharedUtils.isCollectionOrMap(className)) {
                     populateGenericTypeMap(genericTypesMap, factName, modelField.getName(), ScenarioSimulationSharedUtils.isList(className));
                 }
             }

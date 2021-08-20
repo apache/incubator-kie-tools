@@ -124,7 +124,7 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
         if (RULE.equals(type) && !isSimpleJavaType(genericTypeName0)) {
             genericTypeName0 = getRuleComplexType(genericTypeName0);
         }
-        if (ScenarioSimulationSharedUtils.isList(propertyClass)) {
+        if (ScenarioSimulationSharedUtils.isCollection(propertyClass)) {
             manageList(collectionEditorView, key, genericTypeName0, type);
         } else {
             manageMap(collectionEditorView, key, genericTypeName0, genericTypes.get(1), type);

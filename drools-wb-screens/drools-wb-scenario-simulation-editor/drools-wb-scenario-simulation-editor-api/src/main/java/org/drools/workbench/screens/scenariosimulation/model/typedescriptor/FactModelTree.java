@@ -16,7 +16,6 @@
 package org.drools.workbench.screens.scenariosimulation.model.typedescriptor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +25,8 @@ import java.util.stream.Collectors;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
+import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.isCollectionOrMap;
+import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.isMap;
 
 /**
  * Class used to recursively represent a given fact with its ModelFields eventually expanded
@@ -85,9 +86,22 @@ public class FactModelTree {
     public static FactModelTree ofSimpleDMO(String factName, String fullPackage, String simplePropertyFullClass, String typeName) {
         Map<String, FactModelTree.PropertyTypeName> simpleProperties = new HashMap<>();
         simpleProperties.put(VALUE, new FactModelTree.PropertyTypeName(simplePropertyFullClass));
-        FactModelTree toReturn = new FactModelTree(factName, fullPackage, simpleProperties, Collections.emptyMap(), Type.UNDEFINED, typeName, null);
+        FactModelTree toReturn = new FactModelTree(factName, fullPackage, simpleProperties, retrieveSimpleGenericTypesMap(simplePropertyFullClass), Type.UNDEFINED, typeName, null);
         toReturn.setSimple(true);
         return toReturn;
+    }
+
+    private static Map<String, List<String>> retrieveSimpleGenericTypesMap(String simplePropertyFullClass) {
+        Map<String, List<String>> genericTypesMap = new HashMap<>();
+        if (isCollectionOrMap(simplePropertyFullClass)) {
+            List<String> generics = new ArrayList<>();
+            generics.add(Object.class.getCanonicalName());
+            if (isMap(simplePropertyFullClass)) {
+                generics.add(Object.class.getCanonicalName());
+            }
+            genericTypesMap.put(VALUE, generics);
+        }
+        return genericTypesMap;
     }
 
     /**

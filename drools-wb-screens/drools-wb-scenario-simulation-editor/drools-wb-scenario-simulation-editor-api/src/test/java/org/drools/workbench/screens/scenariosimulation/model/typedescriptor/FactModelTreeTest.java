@@ -16,6 +16,8 @@
 package org.drools.workbench.screens.scenariosimulation.model.typedescriptor;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import org.drools.scenariosimulation.api.utils.ConstantsHolder;
 import org.junit.Test;
@@ -31,6 +33,8 @@ public class FactModelTreeTest {
     private final static String PACKAGE = "com";
     private final static String FACT_TYPE = "FactType";
     private final static String SIMPLE_PROPERTY_TYPE = "numeric";
+    private final static String LIST_PROPERTY_TYPE = List.class.getCanonicalName();
+    private final static String MAP_PROPERTY_TYPE = Map.class.getCanonicalName();
     private final static String IMPORT_PREFIX = "imp";
 
     @Test
@@ -89,6 +93,43 @@ public class FactModelTreeTest {
         assertEquals(1, factModelTree.getSimpleProperties().size());
         assertEquals(SIMPLE_PROPERTY_TYPE, factModelTree.getSimpleProperties().get(ConstantsHolder.VALUE).getTypeName());
         assertEquals(0, factModelTree.getGenericTypesMap().size());
+        assertEquals(FactModelTree.Type.UNDEFINED, factModelTree.getType());
+        assertTrue(factModelTree.isSimple());
+        assertNull(factModelTree.getImportPrefix());
+    }
+
+    @Test
+    public void ofSimpleCollectionDMO() {
+        FactModelTree factModelTree = FactModelTree.ofSimpleDMO(FACT_NAME, PACKAGE, LIST_PROPERTY_TYPE, FACT_TYPE);
+        assertEquals(FACT_NAME, factModelTree.getFactName());
+        assertEquals(FACT_TYPE, factModelTree.getTypeName());
+        assertEquals(PACKAGE, factModelTree.getFullPackage());
+        assertEquals(PACKAGE + "." + FACT_TYPE, factModelTree.getFullTypeName());
+        assertEquals(FACT_NAME, factModelTree.getFactName());
+        assertEquals(1, factModelTree.getSimpleProperties().size());
+        assertEquals(LIST_PROPERTY_TYPE, factModelTree.getSimpleProperties().get(ConstantsHolder.VALUE).getTypeName());
+        assertEquals(1, factModelTree.getGenericTypesMap().size());
+        assertEquals(1, factModelTree.getGenericTypesMap().get(ConstantsHolder.VALUE).size());
+        assertEquals(Object.class.getCanonicalName(), factModelTree.getGenericTypesMap().get(ConstantsHolder.VALUE).get(0));
+        assertEquals(FactModelTree.Type.UNDEFINED, factModelTree.getType());
+        assertTrue(factModelTree.isSimple());
+        assertNull(factModelTree.getImportPrefix());
+    }
+
+    @Test
+    public void ofSimpleMapDMO() {
+        FactModelTree factModelTree = FactModelTree.ofSimpleDMO(FACT_NAME, PACKAGE, MAP_PROPERTY_TYPE, FACT_TYPE);
+        assertEquals(FACT_NAME, factModelTree.getFactName());
+        assertEquals(FACT_TYPE, factModelTree.getTypeName());
+        assertEquals(PACKAGE, factModelTree.getFullPackage());
+        assertEquals(PACKAGE + "." + FACT_TYPE, factModelTree.getFullTypeName());
+        assertEquals(FACT_NAME, factModelTree.getFactName());
+        assertEquals(1, factModelTree.getSimpleProperties().size());
+        assertEquals(MAP_PROPERTY_TYPE, factModelTree.getSimpleProperties().get(ConstantsHolder.VALUE).getTypeName());
+        assertEquals(1, factModelTree.getGenericTypesMap().size());
+        assertEquals(2, factModelTree.getGenericTypesMap().get(ConstantsHolder.VALUE).size());
+        assertEquals(Object.class.getCanonicalName(), factModelTree.getGenericTypesMap().get(ConstantsHolder.VALUE).get(0));
+        assertEquals(Object.class.getCanonicalName(), factModelTree.getGenericTypesMap().get(ConstantsHolder.VALUE).get(1));
         assertEquals(FactModelTree.Type.UNDEFINED, factModelTree.getType());
         assertTrue(factModelTree.isSimple());
         assertNull(factModelTree.getImportPrefix());

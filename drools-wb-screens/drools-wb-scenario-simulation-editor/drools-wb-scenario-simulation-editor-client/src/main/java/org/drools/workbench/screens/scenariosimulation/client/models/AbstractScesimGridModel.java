@@ -394,7 +394,7 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
         return setCell(rowIndex, columnIndex, () -> {
             ScenarioGridCell newCell = new ScenarioGridCell((ScenarioGridCellValue) value);
             FactMapping factMappingByIndex = abstractScesimModel.getScesimModelDescriptor().getFactMappingByIndex(columnIndex);
-            if (ScenarioSimulationSharedUtils.isCollection((factMappingByIndex.getClassName()))) {
+            if (ScenarioSimulationSharedUtils.isCollectionOrMap((factMappingByIndex.getClassName()))) {
                 newCell.setListMap(ScenarioSimulationSharedUtils.isList((factMappingByIndex.getClassName())));
             }
             return newCell;
@@ -975,7 +975,7 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
                                                                         factMappingByIndex.getClassName());
             setCell(rowIndex, columnIndex, () -> {
                 ScenarioGridCell newCell = new ScenarioGridCell(new ScenarioGridCellValue(null, placeHolder));
-                if (ScenarioSimulationSharedUtils.isCollection((factMappingByIndex.getClassName()))) {
+                if (ScenarioSimulationSharedUtils.isCollectionOrMap((factMappingByIndex.getClassName()))) {
                     newCell.setListMap(ScenarioSimulationSharedUtils.isList((factMappingByIndex.getClassName())));
                 }
                 return newCell;
@@ -1105,7 +1105,7 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
                                                                ScenarioSimulationModel.Type modelType,
                                                                FactMappingValueType valueType) {
         boolean isRuleScenario = Objects.equals(ScenarioSimulationModel.Type.RULE, modelType);
-        if (ScenarioSimulationSharedUtils.isCollection(className) && Objects.equals(FactMappingValueType.NOT_EXPRESSION, valueType)) {
+        if (ScenarioSimulationSharedUtils.isCollectionOrMap(className) && Objects.equals(FactMappingValueType.NOT_EXPRESSION, valueType)) {
             return collectionEditorSingletonDOMElementFactory;
         }
         if (Objects.equals(FactMappingValueType.EXPRESSION, valueType) && isRuleScenario) {
