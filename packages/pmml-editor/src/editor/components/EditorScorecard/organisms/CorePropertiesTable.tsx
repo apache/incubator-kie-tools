@@ -160,7 +160,11 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
           }}
           data-testid="core-properties-table"
         >
-          <PageSection variant={PageSectionVariants.light} className="editable-item">
+          <PageSection
+            variant={PageSectionVariants.light}
+            className="editable-item"
+            data-ouia-component-type="model-setup-overview"
+          >
             <Stack hasGutter={true}>
               <StackItem>
                 <Split hasGutter={true}>
@@ -199,7 +203,11 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
       )}
       {isEditModeEnabled && (
         <div ref={ref} data-testid="core-properties-table">
-          <PageSection variant={PageSectionVariants.light} className="editable-item--editing">
+          <PageSection
+            variant={PageSectionVariants.light}
+            className="editable-item--editing"
+            data-ouia-component-type="edit-model-setup"
+          >
             <Stack hasGutter={true}>
               <StackItem>
                 <Split hasGutter={true}>
@@ -230,6 +238,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                             setScorable(checked);
                             onCommit({ isScorable: checked });
                           }}
+                          ouiaId="is-scorable"
                         />
                       </FormGroup>
                     </LevelItem>
@@ -269,6 +278,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           onBlur={() => {
                             onCommit({ algorithmName: algorithmName });
                           }}
+                          data-ouia-component-id="algorithm"
                         />
                       </FormGroup>
                     </LevelItem>
@@ -282,6 +292,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                             onCommit({ initialScore: initialScore });
                           }}
                           type="number"
+                          data-ouia-component-id="initial-score"
                         />
                       </FormGroup>
                     </LevelItem>
@@ -296,6 +307,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                             setAreReasonCodesUsed(checked);
                             onCommit({ areReasonCodesUsed: checked });
                           }}
+                          ouiaId="use-reason-codes"
                         />
                       </FormGroup>
                     </LevelItem>
@@ -352,6 +364,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           type="number"
                           validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
                           isDisabled={props.isBaselineScoreDisabled}
+                          data-ouia-component-id="baseline-score"
                         />
                       </FormGroup>
                     </LevelItem>
@@ -384,7 +397,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
 
 const CorePropertyLabel = (name: string, value: any) => {
   return (
-    <Label color="cyan" className="core-properties__label">
+    <Label color="cyan" className="core-properties__label" data-ouia-component-type="model-property">
       <strong>{name}:</strong>
       &nbsp;
       <span>{value}</span>
