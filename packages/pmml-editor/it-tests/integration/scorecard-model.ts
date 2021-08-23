@@ -25,7 +25,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaId("model-name").click();
     cy.ouiaId("set-model-name").clear().type("Unique Scorecard Name");
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaId("model-name").should("be.visible").should("contain", "Unique Scorecard Name");
     cy.buttonPMML()
@@ -40,7 +40,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaId("model-name").click();
     cy.ouiaId("set-model-name").clear().type("Unique Scorecard Name");
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaId("model-name").click();
     cy.ouiaId("set-model-name").clear().type("Something{esc}");
@@ -61,7 +61,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaId("is-scorable").click();
     cy.ouiaId("is-scorable").find("input").should("not.to.be.checked");
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")
@@ -91,7 +91,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaId("is-scorable").click();
     cy.ouiaId("is-scorable").find("input").should("be.checked");
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")
@@ -121,7 +121,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaId("core-reasonCodeAlgorithm").find("button").should("be.disabled");
     cy.ouiaId("core-baselineMethod").find("button").should("be.disabled");
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")
@@ -149,7 +149,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaId("core-reasonCodeAlgorithm").find("button").should("be.enabled");
     cy.ouiaId("core-baselineMethod").find("button").should("be.enabled");
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")
@@ -185,7 +185,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaType("edit-model-setup").should("be.visible");
     cy.ouiaId("core-functionName").find("button").should("be.disabled").should("contain", "regression");
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")
@@ -211,7 +211,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaType("edit-model-setup").should("be.visible");
     cy.ouiaId("initial-score").type("-15.5");
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")
@@ -236,7 +236,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaType("edit-model-setup").should("be.visible");
     cy.ouiaId("initial-score").clear();
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")
@@ -262,7 +262,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaType("edit-model-setup").should("be.visible");
     cy.ouiaId("baseline-score").type("-15.5");
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")
@@ -285,7 +285,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaType("edit-model-setup").should("be.visible");
     cy.ouiaId("baseline-score").clear();
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")
@@ -311,7 +311,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaType("edit-model-setup").should("be.visible");
     cy.ouiaId("algorithm").type("Test something");
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")
@@ -336,7 +336,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaType("edit-model-setup").should("be.visible");
     cy.ouiaId("algorithm").clear();
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")
@@ -376,7 +376,7 @@ describe("Scorecard Model Test", () => {
     });
     cy.ouiaType("select-option").contains("pointsAbove").click();
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")
@@ -401,7 +401,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaId("core-reasonCodeAlgorithm").click();
     cy.ouiaType("select-option").contains("pointsBelow").click();
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")
@@ -442,7 +442,7 @@ describe("Scorecard Model Test", () => {
     });
     cy.ouiaType("select-option").contains("min").click();
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")
@@ -467,7 +467,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaId("core-baselineMethod").click();
     cy.ouiaType("select-option").contains("other").click();
 
-    cy.ouiaType("filler").click();
+    cy.ouiaType("filler").first().click();
 
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")

@@ -48,7 +48,7 @@ describe("Predicate Test", () => {
         });
         cy.ouiaId("attribute-done").click();
 
-        cy.ouiaType("filler").should("be.visible").click();
+        cy.ouiaType("filler").first().should("be.visible").click();
         cy.get("[data-ouia-component-type='characteristic-item']:contains('Char1')")
           .should("be.visible")
           .within(() => {
@@ -119,7 +119,7 @@ describe("Predicate Test", () => {
       });
       cy.ouiaId("attribute-done").click();
 
-      cy.ouiaType("filler").should("be.visible").click();
+      cy.ouiaType("filler").first().should("be.visible").click();
 
       cy.get("[data-ouia-component-type='characteristic-item']:contains('Char1')")
         .should("be.visible")
@@ -150,7 +150,7 @@ describe("Predicate Test", () => {
           });
       });
 
-      cy.ouiaType("filler").should("be.visible").click();
+      cy.ouiaType("filler").first().should("be.visible").click();
 
       cy.get("[data-ouia-component-type='characteristic-item']:contains('Char1')")
         .should("be.visible")
@@ -181,7 +181,7 @@ describe("Predicate Test", () => {
       );
       cy.ouiaId("attribute-done").click();
 
-      cy.ouiaType("filler").should("be.visible").click();
+      cy.ouiaType("filler").first().should("be.visible").click();
 
       cy.get("[data-ouia-component-type='characteristic-item']:contains('Char1')")
         .should("be.visible")
@@ -213,7 +213,7 @@ describe("Predicate Test", () => {
       });
       cy.ouiaId("attribute-done").click();
 
-      cy.ouiaType("filler").should("be.visible").click();
+      cy.ouiaType("filler").first().should("be.visible").click();
 
       cy.get("[data-ouia-component-type='characteristic-item']:contains('Char1')")
         .should("be.visible")
