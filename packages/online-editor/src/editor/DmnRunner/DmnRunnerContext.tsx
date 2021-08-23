@@ -17,6 +17,7 @@
 import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
 import * as React from "react";
 import { useContext } from "react";
+import { jsonParseWithDate } from "../../common/utils";
 import { DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 
@@ -47,7 +48,7 @@ export function extractFormInputsFromUrlParams(): any {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has("formInputs")) {
     try {
-      return JSON.parse(decodeURIComponent(urlParams.get("formInputs")!));
+      return jsonParseWithDate(decodeURIComponent(urlParams.get("formInputs")!));
     } catch (e) {
       console.error("Cannot parse formInputs", e);
     }

@@ -96,3 +96,10 @@ export function flatten(obj: object): object {
     return { ...acc, [`${key}`]: value };
   }, {});
 }
+
+export function jsonParseWithDate(json: string): any {
+  return JSON.parse(json, (_key: string, value: any) => {
+    const regexISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
+    return typeof value === "string" && regexISO.test(value) ? new Date(value) : value;
+  });
+}
