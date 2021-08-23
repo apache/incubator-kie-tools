@@ -11,13 +11,13 @@ items:
     metadata:
       name: rhpam-kogito-runtime-jvm-rhel8
       annotations:
-        openshift.io/display-name: Runtime image for Kogito based on Quarkus or SpringBoot JVM image
+        openshift.io/display-name: RHPAM Runtime image for Kogito based on Quarkus or SpringBoot JVM image
         openshift.io/provider-display-name: Kie Group.
     spec:
       tags:
         - name: '7.11.0'
           annotations:
-            description: Runtime image for Kogito based on Quarkus or SpringBoot JVM image
+            description: RHPAM Runtime image for Kogito based on Quarkus or SpringBoot JVM image
             iconClass: icon-jbpm
             tags: rhpam-kogito,runtime,kogito,quarkus,springboot,jvm
             supports: quarkus
@@ -30,15 +30,36 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: rhpam-kogito-builder-rhel8
+      name: rhpam-kogito-runtime-native-rhel8
       annotations:
-        openshift.io/display-name: Platform for building Kogito based on Quarkus or SpringBoot
+        openshift.io/display-name: RHPAM Runtime image for Kogito based on Quarkus native image
         openshift.io/provider-display-name: Kie Group.
     spec:
       tags:
         - name: '7.11.0'
           annotations:
-            description: Platform for building Kogito based on Quarkus or SpringBoot
+            description: RHPAM Runtime image for Kogito based on Quarkus native image
+            iconClass: icon-jbpm
+            tags: rhpam-kogito,runtime,kogito,quarkus,native
+            supports: quarkus
+            version: '7.11.0'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: registry.redhat.io/rhpam-7/rhpam-kogito-runtime-native-rhel8:7.11.0
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: rhpam-kogito-builder-rhel8
+      annotations:
+        openshift.io/display-name: RHPAM Platform for building Kogito based on Quarkus or SpringBoot
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '7.11.0'
+          annotations:
+            description: RHPAM Platform for building Kogito based on Quarkus or SpringBoot
             iconClass: icon-jbpm
             tags: rhpam-kogito,builder,kogito,quarkus,springboot
             supports: quarkus
