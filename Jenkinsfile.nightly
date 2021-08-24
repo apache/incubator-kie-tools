@@ -8,6 +8,7 @@ pipeline {
     }
     tools {
         nodejs "nodejs-16.2.0"
+        jdk "kie-jdk11"
     }
     parameters {
         string(description: 'The deployment URL', name: 'DEPLOYMENT_REPO_URL')
