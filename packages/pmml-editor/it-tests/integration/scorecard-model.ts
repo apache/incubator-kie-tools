@@ -15,6 +15,15 @@
  */
 import * as buildEnv from "@kogito-tooling/build-env";
 
+/**
+ * This test suite work with attributes in Scorecard element
+ * which are defined by PMML standard (see http://dmg.org/pmml/v4-1/Scorecard.html).
+ *
+ * Each attributes is set and unset.
+ * Test asserts that the value of the attribute is saved (PMML code or model information).
+ * Tests are focused on unset the value to be sure that all values are available and to prevent reggression:
+ *    - PR #565
+ */
 describe("Scorecard Model Test", () => {
   beforeEach(() => {
     cy.visit(`http://localhost:${buildEnv.pmmlEditor.dev.port}/`);
@@ -81,10 +90,6 @@ describe("Scorecard Model Test", () => {
         expect($label[0]).to.have.text("Baseline score:\u00A0Missing");
       });
 
-    /**
-     * FAI-544: Score Cards: Model Setup switches not working (#565)
-     */
-
     cy.ouiaType("model-setup-overview").should("be.visible").click();
     cy.ouiaType("edit-model-setup").should("be.visible");
     cy.ouiaId("is-scorable").find("input").should("not.to.be.checked");
@@ -136,10 +141,6 @@ describe("Scorecard Model Test", () => {
 
     cy.ouiaType("model-setup-overview").find("[data-ouia-component-type=invalid-label]").should("have.have.length", 0);
 
-    /**
-     * FAI-544: Score Cards: Model Setup switches not working (#565)
-     */
-
     cy.ouiaType("model-setup-overview").should("be.visible").click();
     cy.ouiaType("edit-model-setup").should("be.visible");
     cy.ouiaId("use-reason-codes").find("input").should("not.to.be.checked");
@@ -171,8 +172,9 @@ describe("Scorecard Model Test", () => {
   });
 
   it("Attribute 'Function' - contains 'regression' and is disabled", () => {
-    /**
-     * PMML marks attribute 'Function' as required. Editor should always show its value.
+    /*
+     * PMML definition marks the 'Function' attribute as required.
+     * This editor should always show its value.
      * Allowed value of this attribute for scorecards is 'regression'.
      * See http://dmg.org/pmml/v4-4/Scorecard.html
      */
@@ -272,8 +274,11 @@ describe("Scorecard Model Test", () => {
         expect($label[1]).to.have.text("Function:\u00A0regression");
         expect($label[2]).to.have.text("Use Reason Codes:\u00A0Yes");
         expect($label[3]).to.have.text("Reason Code Algorithm:\u00A0pointsBelow");
-        /**
-         * Baseline score has different label when is invalid.
+        /*
+         * The label contains different string when is invalid:
+         * - invalid label - "Baseline score:"
+         * - valid label - "Baseline Score:"
+         * TODO: reach an agreement about functionality.
          */
         expect($label[4]).to.have.text("Baseline Score:\u00A0-15.5");
         expect($label[5]).to.have.text("Baseline Method:\u00A0other");
@@ -344,8 +349,10 @@ describe("Scorecard Model Test", () => {
         expect($label).to.have.length(6);
         expect($label[0]).to.have.text("Is Scorable:\u00A0Yes");
         expect($label[1]).to.have.text("Function:\u00A0regression");
-        /**
-         * This attribute is not required. If the value is the empty string then the particular label should be removed.
+        /*
+         * This attribute is not required by PMML definition.
+         * If its value is the empty string then the particular label should be removed.
+         * TODO: reach an agreement about functionality.
          */
         expect($label[2]).to.have.text("Algorithm:\u00A0");
         expect($label[3]).to.have.text("Use Reason Codes:\u00A0Yes");
@@ -366,7 +373,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaType("edit-model-setup").should("be.visible");
     cy.ouiaId("core-reasonCodeAlgorithm").click();
     cy.ouiaType("select-option").should(($opt) => {
-      /**
+      /*
        * These values are defined by PMML
        * See http://dmg.org/pmml/v4-4/Scorecard.html
        */
@@ -427,7 +434,7 @@ describe("Scorecard Model Test", () => {
     cy.ouiaType("edit-model-setup").should("be.visible");
     cy.ouiaId("core-baselineMethod").click();
     cy.ouiaType("select-option").should(($opt) => {
-      /**
+      /*
        * These values are defined by PMML.
        * The selected value only describe type of scorecards.
        *
