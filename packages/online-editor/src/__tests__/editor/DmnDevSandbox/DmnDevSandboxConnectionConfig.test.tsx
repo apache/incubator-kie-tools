@@ -18,17 +18,17 @@ import {
   isConfigValid,
   isHostValid,
   isTokenValid,
-  isUsernameValid,
+  isNamespaceValid,
 } from "../../../editor/DmnDevSandbox/DmnDevSandboxConnectionConfig";
 
 describe("Validation functions", () => {
-  test("Username should be valid", () => {
-    expect(isUsernameValid("username")).toBe(true);
+  test("Namespace should be valid", () => {
+    expect(isNamespaceValid("namespace")).toBe(true);
   });
 
-  test("Username should not be valid", () => {
-    expect(isUsernameValid("")).toBe(false);
-    expect(isUsernameValid("     ")).toBe(false);
+  test("Namespace should not be valid", () => {
+    expect(isNamespaceValid("")).toBe(false);
+    expect(isNamespaceValid("     ")).toBe(false);
   });
 
   test("Host should be valid", () => {
@@ -53,13 +53,13 @@ describe("Validation functions", () => {
   });
 
   test("Config should be valid", () => {
-    expect(isConfigValid({ username: "username", host: "https://dmn-dev-sandbox.com", token: "token" })).toBe(true);
+    expect(isConfigValid({ namespace: "namespace", host: "https://dmn-dev-sandbox.com", token: "token" })).toBe(true);
   });
 
   test("Config should not be valid", () => {
-    expect(isConfigValid({ username: "", host: "", token: "" })).toBe(false);
-    expect(isConfigValid({ username: "username", host: "https://dmn-dev-sandbox.com", token: "" })).toBe(false);
-    expect(isConfigValid({ username: "", host: "https://dmn-dev-sandbox.com", token: "token" })).toBe(false);
-    expect(isConfigValid({ username: "username", host: "", token: "token" })).toBe(false);
+    expect(isConfigValid({ namespace: "", host: "", token: "" })).toBe(false);
+    expect(isConfigValid({ namespace: "namespace", host: "https://dmn-dev-sandbox.com", token: "" })).toBe(false);
+    expect(isConfigValid({ namespace: "", host: "https://dmn-dev-sandbox.com", token: "token" })).toBe(false);
+    expect(isConfigValid({ namespace: "namespace", host: "", token: "token" })).toBe(false);
   });
 });

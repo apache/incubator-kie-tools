@@ -93,7 +93,7 @@ export function useDmnDevSandboxDropdownItems() {
               isDisabled={true}
               ouiaId={"setup-as-dmn-dev-sandbox-dropdown-button"}
             >
-              {i18n.dmnDevSandbox.dropdown.setupFor(dmnDevSandbox.currentConfig.username)}
+              {i18n.dmnDevSandbox.dropdown.setupFor(dmnDevSandbox.currentConfig.namespace)}
             </DropdownItem>
             <DropdownItem
               id="dmn-dev-sandbox-change-config-button"
@@ -129,7 +129,7 @@ export function useDmnDevSandboxDropdownItems() {
 
     return items;
   }, [
-    dmnDevSandbox.currentConfig.username,
+    dmnDevSandbox.currentConfig.namespace,
     dmnDevSandbox.deployments,
     i18n,
     isDmnDevSandboxConnected,

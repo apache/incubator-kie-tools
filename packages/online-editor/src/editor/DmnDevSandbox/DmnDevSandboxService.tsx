@@ -36,7 +36,6 @@ export const DEVELOPER_SANDBOX_GET_STARTED_URL = "https://developers.redhat.com/
 
 export class DmnDevSandboxService {
   private readonly RESOURCE_NAME_PREFIX = "dmn-dev-sandbox";
-  private readonly NAMESPACE_SUFFIX = "-dev";
 
   public constructor(private readonly createdBy: string, private readonly proxyUrl: string) {}
 
@@ -45,7 +44,7 @@ export class DmnDevSandboxService {
       await this.fetchResource(
         new GetProject({
           host: config.host,
-          namespace: this.composeNamespace(config.username),
+          namespace: config.namespace,
           token: config.token,
         })
       );
@@ -59,7 +58,7 @@ export class DmnDevSandboxService {
   public async loadDeployments(config: DmnDevSandboxConnectionConfig): Promise<DeployedModel[]> {
     const commonArgs = {
       host: config.host,
-      namespace: this.composeNamespace(config.username),
+      namespace: config.namespace,
       token: config.token,
     };
 
@@ -97,7 +96,7 @@ export class DmnDevSandboxService {
   public async deploy(filename: string, diagramContent: string, config: DmnDevSandboxConnectionConfig): Promise<void> {
     const commonArgs = {
       host: config.host,
-      namespace: this.composeNamespace(config.username),
+      namespace: config.namespace,
       token: config.token,
       resourceName: `${this.RESOURCE_NAME_PREFIX}-${this.generateRandomId()}`,
     };
@@ -161,10 +160,6 @@ export class DmnDevSandboxService {
     const randomPart = Math.random().toString(36).substr(2, 9);
     const milliseconds = new Date().getMilliseconds();
     return `${randomPart}${milliseconds}`;
-  }
-
-  private composeNamespace(username: string): string {
-    return `${username}${this.NAMESPACE_SUFFIX}`;
   }
 
   private composeBaseUrl(host: string, namespace: string, resourceName: string): string {

@@ -48,6 +48,7 @@ export type CommonDictionary = {
   launch: string;
   loading: string;
   macosApplicationFolder: string;
+  namespace: string;
   new: string;
   next: string;
   note: string;

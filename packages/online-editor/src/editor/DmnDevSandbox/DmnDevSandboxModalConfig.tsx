@@ -104,7 +104,7 @@ export function DmnDevSandboxModalConfig() {
   }, [config, dmnDevSandboxContext, isSaveLoading, resetModalWithConfig]);
 
   const onClearHost = useCallback(() => setConfig({ ...config, host: "" }), [config]);
-  const onClearUsername = useCallback(() => setConfig({ ...config, username: "" }), [config]);
+  const onClearNamespace = useCallback(() => setConfig({ ...config, namespace: "" }), [config]);
   const onClearToken = useCallback(() => setConfig({ ...config, token: "" }), [config]);
 
   const onHostChanged = useCallback(
@@ -114,9 +114,9 @@ export function DmnDevSandboxModalConfig() {
     [config]
   );
 
-  const onUsernameChanged = useCallback(
+  const onNamespaceChanged = useCallback(
     (newValue: string) => {
-      setConfig({ ...config, username: newValue });
+      setConfig({ ...config, namespace: newValue });
     },
     [config]
   );
@@ -198,14 +198,14 @@ export function DmnDevSandboxModalConfig() {
             </FormAlert>
           )}
           <FormGroup
-            label={i18n.terms.username}
+            label={i18n.terms.namespace}
             labelIcon={
-              <Popover bodyContent={i18n.dmnDevSandbox.configModal.usernameInfo}>
+              <Popover bodyContent={i18n.dmnDevSandbox.configModal.namespaceInfo}>
                 <button
                   type="button"
-                  aria-label="More info for username field"
+                  aria-label="More info for namespace field"
                   onClick={(e) => e.preventDefault()}
-                  aria-describedby="username-field"
+                  aria-describedby="namespace-field"
                   className="pf-c-form__group-label-help"
                 >
                   <HelpIcon noVerticalAlign />
@@ -213,7 +213,7 @@ export function DmnDevSandboxModalConfig() {
               </Popover>
             }
             isRequired
-            fieldId="username-field"
+            fieldId="namespace-field"
           >
             <InputGroup className="pf-u-mt-sm">
               <TextInput
@@ -221,17 +221,17 @@ export function DmnDevSandboxModalConfig() {
                 autoComplete={"off"}
                 isRequired
                 type="text"
-                id="username-field"
-                name="username-field"
-                aria-label="Username field"
-                aria-describedby="username-field-helper"
-                value={config.username}
-                onChange={onUsernameChanged}
+                id="namespace-field"
+                name="namespace-field"
+                aria-label="Namespace field"
+                aria-describedby="namespace-field-helper"
+                value={config.namespace}
+                onChange={onNamespaceChanged}
                 tabIndex={1}
-                data-testid="username-text-field"
+                data-testid="namespace-text-field"
               />
               <InputGroupText>
-                <Button isSmall variant="plain" aria-label="Clear username button" onClick={onClearUsername}>
+                <Button isSmall variant="plain" aria-label="Clear namespace button" onClick={onClearNamespace}>
                   <TimesIcon />
                 </Button>
               </InputGroupText>

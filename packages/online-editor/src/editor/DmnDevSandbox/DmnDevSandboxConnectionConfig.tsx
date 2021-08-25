@@ -16,27 +16,27 @@
 
 import { getCookie, setCookie } from "../../common/utils";
 
-const USERNAME_COOKIE_NAME = "dmn-dev-sandbox--connection-username";
+const NAMESPACE_COOKIE_NAME = "dmn-dev-sandbox--connection-namespace";
 const HOST_COOKIE_NAME = "dmn-dev-sandbox--connection-host";
 const TOKEN_COOKIE_NAME = "dmn-dev-sandbox--connection-token";
 
 export interface DmnDevSandboxConnectionConfig {
-  username: string;
+  namespace: string;
   host: string;
   token: string;
 }
 
 export const EMPTY_CONFIG: DmnDevSandboxConnectionConfig = {
-  username: "",
+  namespace: "",
   host: "",
   token: "",
 };
 
 export function isConfigValid(config: DmnDevSandboxConnectionConfig): boolean {
-  return isUsernameValid(config.username) && isHostValid(config.host) && isTokenValid(config.token);
+  return isNamespaceValid(config.namespace) && isHostValid(config.host) && isTokenValid(config.token);
 }
 
-export function isUsernameValid(username: string): boolean {
+export function isNamespaceValid(username: string): boolean {
   return username !== undefined && username.trim().length > 0;
 }
 
@@ -58,7 +58,7 @@ export function isTokenValid(token: string): boolean {
 
 export function readConfigCookie(): DmnDevSandboxConnectionConfig {
   return {
-    username: getCookie(USERNAME_COOKIE_NAME) ?? "",
+    namespace: getCookie(NAMESPACE_COOKIE_NAME) ?? "",
     host: getCookie(HOST_COOKIE_NAME) ?? "",
     token: getCookie(TOKEN_COOKIE_NAME) ?? "",
   };
@@ -69,7 +69,7 @@ export function resetConfigCookie(): void {
 }
 
 export function saveConfigCookie(config: DmnDevSandboxConnectionConfig): void {
-  setCookie(USERNAME_COOKIE_NAME, config.username);
+  setCookie(NAMESPACE_COOKIE_NAME, config.namespace);
   setCookie(HOST_COOKIE_NAME, config.host);
   setCookie(TOKEN_COOKIE_NAME, config.token);
 }
