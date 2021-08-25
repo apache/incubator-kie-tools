@@ -3,6 +3,8 @@ import org.kie.jenkins.jobdsl.KogitoConstants
 import org.kie.jenkins.jobdsl.Utils
 import org.kie.jenkins.jobdsl.KogitoJobType
 
+JENKINSFILE_PATH = '.ci/jenkins'
+
 def getDefaultJobParams() {
     return KogitoJobTemplate.getDefaultJobParams(this, 'kogito-images')
 }
@@ -23,13 +25,6 @@ def nightlyBranchFolder = "${KogitoConstants.KOGITO_DSL_NIGHTLY_FOLDER}/${JOB_BR
 def releaseBranchFolder = "${KogitoConstants.KOGITO_DSL_RELEASE_FOLDER}/${JOB_BRANCH_FOLDER}"
 
 if (Utils.isMainBranch(this)) {
-    // Old PR checks.
-    // To be removed once supported release branches (<= 1.9.x) are no more maintained.
-    setupPrJob('1.5.x')
-    setupPrJob('1.8.x')
-    setupPrJob('1.9.x')
-    // End of old PR checks
-
     // For BDD runtimes PR job
     setupDeployJob(bddRuntimesPrFolder, KogitoJobType.PR)
 }
@@ -60,7 +55,7 @@ void setupPrJob(String branch = "${GIT_BRANCH}") {
 }
 
 void setupDeployJob(String jobFolder, KogitoJobType jobType) {
-    def jobParams = getJobParams('kogito-images-deploy', jobFolder, 'Jenkinsfile.deploy', 'Kogito Images Deploy')
+    def jobParams = getJobParams('kogito-images-deploy', jobFolder, "${JENKINSFILE_PATH}/Jenkinsfile.deploy", 'Kogito Images Deploy')
     if (jobType == KogitoJobType.PR) {
         jobParams.git.branch = '${GIT_BRANCH_NAME}'
         jobParams.git.author = '${GIT_AUTHOR}'
@@ -128,7 +123,7 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
 }
 
 void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
-    KogitoJobTemplate.createPipelineJob(this, getJobParams('kogito-images-promote', jobFolder, 'Jenkinsfile.promote', 'Kogito Images Promote')).with {
+    KogitoJobTemplate.createPipelineJob(this, getJobParams('kogito-images-promote', jobFolder, "${JENKINSFILE_PATH}/Jenkinsfile.promote", 'Kogito Images Promote')).with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
@@ -190,7 +185,7 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
 }
 
 void setupProdUpdateVersionJob(String jobFolder) {
-    KogitoJobTemplate.createPipelineJob(this, getJobParams('kogito-images-update-prod-version', jobFolder, 'Jenkinsfile.update-prod-version', 'Update prod version for Kogito Images')).with {
+    KogitoJobTemplate.createPipelineJob(this, getJobParams('kogito-images-update-prod-version', jobFolder, "${JENKINSFILE_PATH}/Jenkinsfile.update-prod-version", 'Update prod version for Kogito Images')).with {
         parameters {
             stringParam('JIRA_NUMBER', '', 'KIECLOUD-XXX or RHPAM-YYYY or else. This will be added to the commit and PR.')
             stringParam('PROD_PROJECT_VERSION', '', 'Which version to set ?')

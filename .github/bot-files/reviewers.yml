@@ -4,7 +4,7 @@
 review:
   - paths:
       - Jenkinsfile*
-      - .jenkins
+      - .ci
       - .github
     reviewers:
       - radtriste
