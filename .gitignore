@@ -1,3 +1,7 @@
+## ci
+!/.ci
+
+## node
 **/node_modules/
 **/dist/
 **/dist-dev/
