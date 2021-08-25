@@ -19,8 +19,10 @@
 # 3. Have ansible installed on your system
 # That's it all other tools will be downloaded and installed by the OLM script.
 
+script_dir_path=`dirname "${BASH_SOURCE[0]}"`
+
 set -e
-source ./hack/ci/operator-ensure-manifests.sh
+source ${script_dir_path}/../ci/operator-ensure-manifests.sh
 
 # SCRIPT_URL URL to the script used by OLM to test the operator
 SCRIPT_URL="https://raw.githubusercontent.com/redhat-openshift-ecosystem/operator-test-playbooks/master/upstream/test/test.sh"

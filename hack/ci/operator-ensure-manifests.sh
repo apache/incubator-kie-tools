@@ -16,7 +16,8 @@
 # Script responsible for ensuring and correcting manifests as needed.
 set -e
 
-source ./hack/env.sh
+script_dir_path=`dirname "${BASH_SOURCE[0]}"`
+source ${script_dir_path}/../env.sh
 
 tempfolder=$(mktemp -d)
 echo "Temporary folder is ${tempfolder}"

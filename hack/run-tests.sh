@@ -15,7 +15,7 @@
 
 # runs all BDD tests for the operator
 SCRIPT_NAME=`basename $0`
-SCRIPT_DIR=`dirname $0`
+SCRIPT_DIR=`dirname "${BASH_SOURCE[0]}"`
 
 function usage(){
   printf "Run BDD tests."
@@ -515,5 +515,10 @@ fi
 
 echo "-------- Delete stucked namespaces"
 ${SCRIPT_DIR}/clean-stuck-namespaces.sh
+
+if [ "${KEEP_NAMESPACE}" = "false" ]; then
+  echo "-------- Delete dependencies CRDs"
+  ${SCRIPT_DIR}/clean-crds.sh
+fi
 
 exit ${exit_code}

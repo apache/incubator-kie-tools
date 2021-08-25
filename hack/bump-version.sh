@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source ./hack/env.sh
+script_dir_path=`dirname "${BASH_SOURCE[0]}"`
+source ${script_dir_path}/env.sh
 
 old_version=$(getOperatorVersion)
 new_version=$1
@@ -34,6 +35,6 @@ sed -i "s/$old_version/$new_version/g" "$(getCsvFile)"
 make bundle
 
 # rewrite test default config, all other configuration into the file will be overridden
-./hack/update_test_config.sh
+${script_dir_path}/update_test_config.sh
 
 echo "Version bumped from $old_version to $new_version"

@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+script_dir_path=`dirname "${BASH_SOURCE[0]}"`
+source ${script_dir_path}/env.sh
 
 DIR=$(mktemp -d)
 LEAK_RESOURCES=( infinispan keycloakclients keycloakusers keycloakrealms kogitoruntimes kogitosupportingservices)
@@ -23,7 +25,7 @@ while read project
 do 
 	echo "Stuck project ${project}"
 
-    for resource in "${LEAK_RESOURCES[@]}"
+    for resource in $(getAllDependentCrds all)
     do
       oc get $resource -n "${project}" | grep -v "NAME" | awk -F " " '{print $1}' > ${DIR}/$resource-instances
       while read instance

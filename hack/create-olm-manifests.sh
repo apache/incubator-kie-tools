@@ -14,8 +14,8 @@
 # limitations under the License.
 
 
-
-source ./hack/env.sh
+script_dir_path=`dirname "${BASH_SOURCE[0]}"`
+source ${script_dir_path}/env.sh
 
 OLM_DIR="build/_output/olm/"
 VERSION=$(getOperatorVersion)

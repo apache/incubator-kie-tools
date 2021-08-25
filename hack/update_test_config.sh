@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source ./hack/env.sh
+script_dir_path=`dirname "${BASH_SOURCE[0]}"`
+source ${script_dir_path}/env.sh
 
 current_major_minor=$(echo "$(getOperatorVersion)" | awk -F. '{print $1"."$2}')
 
