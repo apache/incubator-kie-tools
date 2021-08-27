@@ -60,10 +60,14 @@ func (d *dataIndexSupportingServiceResource) Reconcile() (err error) {
 		return
 	}
 	definition := kogitoservice.ServiceDefinition{
-		DefaultImageName:     DefaultDataIndexImageName,
-		KafkaTopics:          dataIndexKafkaTopics,
-		Request:              controller1.Request{NamespacedName: types.NamespacedName{Name: d.instance.GetName(), Namespace: d.instance.GetNamespace()}},
-		OnConfigMapReconcile: d.OnConfigMapReconcile,
+		DefaultImageName: DefaultDataIndexImageName,
+		KafkaTopics:      dataIndexKafkaTopics,
+		Request:          controller1.Request{NamespacedName: types.NamespacedName{Name: d.instance.GetName(), Namespace: d.instance.GetNamespace()}},
+	}
+
+	protoBufConfigMapReconciler := shared.NewProtoBufConfigMapReconciler(d.Context, d.instance, &definition, d.runtimeHandler)
+	if err = protoBufConfigMapReconciler.Reconcile(); err != nil {
+		return err
 	}
 	return kogitoservice.NewServiceDeployer(d.Context, definition, d.instance, d.infraHandler).Deploy()
 }
@@ -74,9 +78,4 @@ var dataIndexKafkaTopics = []string{
 	"kogito-usertaskinstances-events",
 	"kogito-jobs-events",
 	"kogito-variables-events",
-}
-
-func (d *dataIndexSupportingServiceResource) OnConfigMapReconcile() error {
-	protoBufConfigMapReconciler := shared.NewProtoBufConfigMapReconciler(d.Context, d.instance, d.runtimeHandler)
-	return protoBufConfigMapReconciler.Reconcile()
 }

@@ -33,7 +33,7 @@ func TestUpdateBaseStatus(t *testing.T) {
 			Namespace: t.Name(),
 		},
 		Spec: v1beta1.KogitoInfraSpec{
-			Resource: v1beta1.InfraResource{
+			Resource: &v1beta1.InfraResource{
 				Kind:       "Kafka",
 				APIVersion: "kafka.strimzi.io/v1beta2",
 			},

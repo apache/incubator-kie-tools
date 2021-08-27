@@ -15,118 +15,72 @@
 package kogitoinfra
 
 import (
-	"github.com/go-openapi/swag"
-	"io/ioutil"
 	"testing"
 
-	ispn "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
-	"github.com/kiegroup/kogito-operator/api/v1beta1"
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
-	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
+func Test_InfinispanInfraReconciler_WrongInfinispanName(t *testing.T) {
+	ns := t.Name()
+	kogitoInfinispanInstance := test.CreateFakeKogitoInfinispan(ns)
+	cli := test.NewFakeClientBuilder().AddK8sObjects(kogitoInfinispanInstance).Build()
+	infraContext := infraContext{
+		Context: operator.Context{
+			Client: cli,
+			Log:    test.TestLogger,
+			Scheme: meta.GetRegisteredSchema(),
+		},
+		instance: kogitoInfinispanInstance,
+	}
+	infinispanInfraReconciler := initInfinispanInfraReconciler(infraContext)
+	err := infinispanInfraReconciler.Reconcile()
+	assert.Errorf(t, err, "%s resource(%s) not found in namespace %s", "Infinispan", kogitoInfinispanInstance.GetName(), kogitoInfinispanInstance.GetNamespace())
+}
+
+func Test_InfinispanInfraReconciler_InfinispanInstanceNotReady(t *testing.T) {
+	ns := t.Name()
+	kogitoInfinispanInstance := test.CreateFakeKogitoInfinispan(ns)
+	infinispanInstance := test.CreateFakeInfinispan(ns)
+	infinispanInstance.Status.Conditions[0].Status = v1.ConditionTrue
+	cli := test.NewFakeClientBuilder().AddK8sObjects(kogitoInfinispanInstance, infinispanInstance).Build()
+	infraContext := infraContext{
+		Context: operator.Context{
+			Client: cli,
+			Log:    test.TestLogger,
+			Scheme: meta.GetRegisteredSchema(),
+		},
+		instance: kogitoInfinispanInstance,
+	}
+	infinispanInfraReconciler := initInfinispanInfraReconciler(infraContext)
+	err := infinispanInfraReconciler.Reconcile()
+	assert.Errorf(t, err, "infinispan instance %s not ready", infinispanInstance)
+}
+
 func Test_Reconcile_Infinispan(t *testing.T) {
-	kogitoInfra := &v1beta1.KogitoInfra{
-		ObjectMeta: v1.ObjectMeta{Name: "kogito-infinispan", Namespace: t.Name()},
-		Spec: v1beta1.KogitoInfraSpec{
-			Resource: v1beta1.InfraResource{
-				APIVersion: infrastructure.InfinispanAPIVersion,
-				Kind:       infrastructure.InfinispanKind,
-				Name:       "kogito-infinispan",
-				Namespace:  t.Name(),
-			},
-		},
-	}
-	crtFile, err := ioutil.ReadFile("./testdata/tls.crt")
+	ns := t.Name()
+	kogitoInfinispanInstance := test.CreateFakeKogitoInfinispan(ns)
+	infinispanInstance := test.CreateFakeInfinispan(ns)
+	infinispanService := test.CreateFakeInfinispanService(ns)
+	infinispanCredential := test.CreateFakeInfinispanCredentialSecret(ns)
+	infinispanCertSecret, err := test.CreateFakeInfinispanCertSecret(ns)
 	assert.NoError(t, err)
-	tlsSecret := &corev1.Secret{
-		ObjectMeta: v1.ObjectMeta{
-			Name:      "secret-with-truststore",
-			Namespace: t.Name(),
+	cli := test.NewFakeClientBuilder().AddK8sObjects(kogitoInfinispanInstance, infinispanInstance, infinispanService, infinispanCredential, infinispanCertSecret).Build()
+	infraContext := infraContext{
+		Context: operator.Context{
+			Client: cli,
+			Log:    test.TestLogger,
+			Scheme: meta.GetRegisteredSchema(),
 		},
-		Data: map[string][]byte{truststoreSecretKey: crtFile},
+		instance: kogitoInfinispanInstance,
 	}
-	deployedInfinispan := &ispn.Infinispan{
-		ObjectMeta: v1.ObjectMeta{Name: "kogito-infinispan", Namespace: t.Name()},
-		Spec: ispn.InfinispanSpec{
-			Security: ispn.InfinispanSecurity{
-				EndpointAuthentication: swag.Bool(true),
-				EndpointEncryption: &ispn.EndpointEncryption{
-					CertSecretName: tlsSecret.Name,
-				},
-			},
-		},
-		Status: ispn.InfinispanStatus{
-			Conditions: []ispn.InfinispanCondition{
-				{
-					Type:   ispn.ConditionWellFormed,
-					Status: v1.ConditionTrue,
-				},
-				{
-					Type:   ispn.ConditionStopping,
-					Status: v1.ConditionFalse,
-				},
-				{
-					Type:   ispn.ConditionGracefulShutdown,
-					Status: v1.ConditionFalse,
-				},
-				{
-					Type:   ispn.ConditionPrelimChecksPassed,
-					Status: v1.ConditionTrue,
-				},
-				{
-					Type:   ispn.ConditionUpgrade,
-					Status: v1.ConditionFalse,
-				},
-			},
-		},
-	}
-
-	deployedCustomSecret := &corev1.Secret{
-		ObjectMeta: v1.ObjectMeta{Name: "kogito-infinispan-credential", Namespace: t.Name()},
-	}
-
-	infinispanService := &corev1.Service{
-		ObjectMeta: v1.ObjectMeta{Name: "kogito-infinispan", Namespace: t.Name()},
-		Spec: corev1.ServiceSpec{
-			Ports: []corev1.ServicePort{
-				{
-					TargetPort: intstr.FromInt(11222),
-				},
-			},
-		},
-	}
-
-	client := test.NewFakeClientBuilder().
-		AddK8sObjects(kogitoInfra, deployedInfinispan, deployedCustomSecret, infinispanService, tlsSecret).
-		Build()
-
-	context := operator.Context{
-		Client: client,
-		Log:    test.TestLogger,
-		Scheme: meta.GetRegisteredSchema(),
-	}
-	r := &infinispanInfraReconciler{
-		infraContext: infraContext{
-			Context:  context,
-			instance: kogitoInfra,
-		},
-	}
-
-	requeue, err := r.Reconcile()
+	infinispanInfraReconciler := initInfinispanInfraReconciler(infraContext)
+	err = infinispanInfraReconciler.Reconcile()
 	assert.NoError(t, err)
-	assert.False(t, requeue)
-
-	exists, err := kubernetes.ResourceC(client).Fetch(kogitoInfra)
-	assert.NoError(t, err)
-	assert.True(t, exists)
-
-	assert.Equal(t, 1, len(kogitoInfra.Status.Volumes))
+	assert.Equal(t, 2, len(kogitoInfinispanInstance.GetStatus().GetConfigMapEnvFromReferences()))
+	assert.Equal(t, 4, len(kogitoInfinispanInstance.GetStatus().GetSecretEnvFromReferences()))
+	assert.Equal(t, 1, len(kogitoInfinispanInstance.GetStatus().GetSecretVolumeReferences()))
 }

@@ -25,7 +25,7 @@ import (
 
 func TestReconcileKogitoSupportingServiceExplainability_Reconcile(t *testing.T) {
 	ns := t.Name()
-	kafka := test.CreateFakeKafka("my-kafka", t.Name())
+	kafka := test.CreateFakeKafka(t.Name())
 	kogitoKafka := test.CreateFakeKogitoKafka(ns)
 	kogitoKafka.GetSpec().GetResource().SetName(kafka.Name)
 	explainabilityService := test.CreateFakeExplainabilityService(ns)

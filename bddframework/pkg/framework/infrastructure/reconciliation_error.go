@@ -56,6 +56,8 @@ const (
 	DeploymentNotAvailable ConditionReason = "DeploymentNotAvailable"
 	// ProcessingImageStreamDelta ...
 	ProcessingImageStreamDelta ConditionReason = "ProcessingImageStreamDelta"
+	// ProcessingProtoBufConfigMapDelta ...
+	ProcessingProtoBufConfigMapDelta ConditionReason = "ProcessingProtoBufConfigMapDelta"
 )
 
 const (
@@ -65,6 +67,8 @@ const (
 	ReconciliationAfterThirty = time.Second * 30
 	// ReconciliationAfterTen ...
 	ReconciliationAfterTen = time.Second * 10
+	// ReconciliationAfterFive ...
+	ReconciliationAfterFive = time.Second * 5
 	// ReconciliationAfterOneMinute ...
 	ReconciliationAfterOneMinute = time.Minute
 )
@@ -156,6 +160,15 @@ func ErrorForProcessingImageStreamDelta() ReconciliationError {
 		reason:                 ProcessingImageStreamDelta,
 		reconciliationInterval: ReconciliationAfterTen,
 		innerError:             fmt.Errorf("Processing Image stream "),
+	}
+}
+
+// ErrorForProcessingProtoBufConfigMapDelta ...
+func ErrorForProcessingProtoBufConfigMapDelta() ReconciliationError {
+	return ReconciliationError{
+		reason:                 ProcessingProtoBufConfigMapDelta,
+		reconciliationInterval: ReconciliationAfterFive,
+		innerError:             fmt.Errorf("Processing Protobuf configmap "),
 	}
 }
 

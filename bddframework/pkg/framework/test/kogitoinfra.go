@@ -17,7 +17,7 @@ package test
 import (
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/api/v1beta1"
-	corev1 "k8s.io/api/core/v1"
+	v12 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -25,29 +25,17 @@ import (
 func CreateFakeKogitoKafka(namespace string) api.KogitoInfraInterface {
 	return &v1beta1.KogitoInfra{
 		ObjectMeta: v1.ObjectMeta{
-			Name:      "kogito-kafka",
+			Name:      "kogito-kafka-infra",
 			Namespace: namespace,
 		},
 		Spec: v1beta1.KogitoInfraSpec{
-			Resource: v1beta1.InfraResource{
+			Resource: &v1beta1.InfraResource{
 				Kind:       "Kafka",
 				APIVersion: "kafka.strimzi.io/v1beta2",
+				Name:       "kogito-kafka",
 			},
 		},
 		Status: v1beta1.KogitoInfraStatus{
-			RuntimeProperties: map[api.RuntimeType]v1beta1.RuntimeProperties{
-				api.QuarkusRuntimeType: {
-					AppProps: map[string]string{
-						"kafka.bootstrap.servers": "kogito-kafka-kafka-bootstrap.test.svc:9092",
-					},
-					Env: []corev1.EnvVar{
-						{
-							Name:  "ENABLE_EVENTS",
-							Value: "true",
-						},
-					},
-				},
-			},
 			Conditions: &[]v1.Condition{
 				{
 					Type:   string(api.KogitoInfraConfigured),
@@ -58,57 +46,35 @@ func CreateFakeKogitoKafka(namespace string) api.KogitoInfraInterface {
 	}
 }
 
+// CreateFakeKogitoKafkaConfig ...
+func CreateFakeKogitoKafkaConfig(namespace string) *v12.ConfigMap {
+	return &v12.ConfigMap{
+		ObjectMeta: v1.ObjectMeta{
+			Name:      "kogito-kafka-quarkus-config",
+			Namespace: namespace,
+		},
+		Data: map[string]string{
+			"ENABLE_EVENTS":           "true",
+			"kafka.bootstrap.servers": "kogito-kafka-kafka-bootstrap.kie.svc:9092",
+		},
+	}
+}
+
 // CreateFakeKogitoInfinispan create fake kogito infra instance for Infinispan
 func CreateFakeKogitoInfinispan(namespace string) api.KogitoInfraInterface {
 	return &v1beta1.KogitoInfra{
 		ObjectMeta: v1.ObjectMeta{
-			Name:      "kogito-Infinispan",
+			Name:      "kogito-Infinispan-infra",
 			Namespace: namespace,
 		},
 		Spec: v1beta1.KogitoInfraSpec{
-			Resource: v1beta1.InfraResource{
+			Resource: &v1beta1.InfraResource{
 				Kind:       "Infinispan",
 				APIVersion: "infinispan.org/v1",
+				Name:       "kogito-infinispan",
 			},
 		},
 		Status: v1beta1.KogitoInfraStatus{
-			RuntimeProperties: map[api.RuntimeType]v1beta1.RuntimeProperties{
-				api.QuarkusRuntimeType: {
-					AppProps: map[string]string{
-						"quarkus.infinispan-client.server-list": "infinispanInstance:11222",
-					},
-					Env: []corev1.EnvVar{
-						{
-							Name:  "ENABLE_PERSISTENCE",
-							Value: "true",
-						},
-					},
-				},
-			},
-			Volumes: []v1beta1.KogitoInfraVolume{
-				{
-					Mount: corev1.VolumeMount{
-						Name:      "tls-configuration",
-						ReadOnly:  true,
-						MountPath: "/home/kogito/certs",
-						SubPath:   "truststore.p12",
-					},
-					NamedVolume: v1beta1.ConfigVolume{
-						Name: "tls-configuration",
-						ConfigVolumeSource: v1beta1.ConfigVolumeSource{
-							Secret: &corev1.SecretVolumeSource{
-								SecretName: "infinispan-secret",
-								Items: []corev1.KeyToPath{
-									{
-										Key:  "tls.crt",
-										Path: "tls.crt",
-									},
-								},
-							},
-						},
-					},
-				},
-			},
 			Conditions: &[]v1.Condition{
 				{
 					Type:   string(api.KogitoInfraConfigured),
@@ -123,13 +89,42 @@ func CreateFakeKogitoInfinispan(namespace string) api.KogitoInfraInterface {
 func CreateFakeKogitoKnative(namespace string) api.KogitoInfraInterface {
 	return &v1beta1.KogitoInfra{
 		ObjectMeta: v1.ObjectMeta{
-			Name:      "kogito-knative",
+			Name:      "kogito-knative-infra",
 			Namespace: namespace,
 		},
 		Spec: v1beta1.KogitoInfraSpec{
-			Resource: v1beta1.InfraResource{
+			Resource: &v1beta1.InfraResource{
 				Kind:       "Broker",
 				APIVersion: "eventing.knative.dev/v1",
+			},
+		},
+		Status: v1beta1.KogitoInfraStatus{
+			Conditions: &[]v1.Condition{
+				{
+					Type:   string(api.KogitoInfraConfigured),
+					Status: v1.ConditionTrue,
+				},
+			},
+		},
+	}
+}
+
+// CreateFakeKogitoMongoDB create fake kogito infra instance for MongoDB
+func CreateFakeKogitoMongoDB(namespace string) api.KogitoInfraInterface {
+	return &v1beta1.KogitoInfra{
+		ObjectMeta: v1.ObjectMeta{
+			Name:      "kogito-mongodb-infra",
+			Namespace: namespace,
+		},
+		Spec: v1beta1.KogitoInfraSpec{
+			Resource: &v1beta1.InfraResource{
+				Kind:       "MongoDB",
+				APIVersion: "mongodb.com/v1",
+				Name:       "kogito-mongodb",
+			},
+			InfraProperties: map[string]string{
+				"username": "mongodbUser",
+				"database": "mongodb",
 			},
 		},
 		Status: v1beta1.KogitoInfraStatus{

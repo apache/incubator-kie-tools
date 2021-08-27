@@ -20,10 +20,10 @@ import (
 )
 
 // CreateFakeKafka creates a Kafka resource with default configuration
-func CreateFakeKafka(name, namespace string) *v1beta2.Kafka {
+func CreateFakeKafka(namespace string) *v1beta2.Kafka {
 	return &v1beta2.Kafka{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
+			Name:      "kogito-kafka",
 			Namespace: namespace,
 		},
 		Spec: v1beta2.KafkaSpec{
@@ -60,6 +60,19 @@ func CreateFakeKafka(name, namespace string) *v1beta2.Kafka {
 			Zookeeper: v1beta2.ZookeeperClusterSpec{
 				Replicas: 1,
 				Storage:  v1beta2.KafkaStorage{StorageType: v1beta2.KafkaEphemeralStorage},
+			},
+		},
+		Status: v1beta2.KafkaStatus{
+			Listeners: []v1beta2.ListenerStatus{
+				{
+					Type: "plain",
+					Addresses: []v1beta2.ListenerAddress{
+						{
+							Host: "kafka-host",
+							Port: int32(9092),
+						},
+					},
+				},
 			},
 		},
 	}

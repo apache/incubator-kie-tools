@@ -46,6 +46,7 @@ type ProtoBufConfigMapHandler interface {
 	GetProtoBufConfigMapName(runtimeInstance api.KogitoRuntimeInterface) string
 	CreateProtoBufConfigMap(runtimeInstance api.KogitoRuntimeInterface) (*corev1.ConfigMap, error)
 	FetchProtoBufConfigMap(runtimeInstance api.KogitoRuntimeInterface) (*corev1.ConfigMap, error)
+	CreateProtoBufConfigMapReference(runtimeInstance api.KogitoRuntimeInterface) api.VolumeReferenceInterface
 }
 
 type protobufConfigMapHandler struct {
@@ -93,15 +94,18 @@ func (p *protobufConfigMapHandler) CreateProtoBufConfigMap(runtimeInstance api.K
 				ConfigMapProtoBufEnabledLabelKey: "true",
 				framework.LabelAppKey:            runtimeInstance.GetName(),
 			},
-			Annotations: map[string]string{
-				infrastructure.FromFileKey:  "true",
-				infrastructure.MountPathKey: path.Join(DefaultProtobufMountPath, runtimeInstance.GetName()),
-				infrastructure.FileModeKey:  fmt.Sprint(framework.ModeForProtoBufConfigMapVolume),
-			},
 		},
 		Data: protoBufData,
 	}
 	return configMap, nil
+}
+
+func (p *protobufConfigMapHandler) CreateProtoBufConfigMapReference(runtimeInstance api.KogitoRuntimeInterface) api.VolumeReferenceInterface {
+	return &kogitoservice.VolumeReference{
+		Name:      p.GetProtoBufConfigMapName(runtimeInstance),
+		MountPath: path.Join(DefaultProtobufMountPath, runtimeInstance.GetName()),
+		FileMode:  &framework.ModeForProtoBufConfigMapVolume,
+	}
 }
 
 func (p *protobufConfigMapHandler) getProtobufData(runtimeInstance api.KogitoRuntimeInterface) (map[string]string, error) {

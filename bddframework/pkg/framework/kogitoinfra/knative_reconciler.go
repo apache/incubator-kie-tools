@@ -33,10 +33,10 @@ func initknativeInfraReconciler(context infraContext) Reconciler {
 }
 
 // Reconcile ...
-func (k *knativeInfraReconciler) Reconcile() (requeue bool, resultErr error) {
+func (k *knativeInfraReconciler) Reconcile() (resultErr error) {
 	knativeHandler := infrastructure.NewKnativeHandler(k.Context)
 	if !knativeHandler.IsKnativeEventingAvailable() {
-		return false, errorForResourceAPINotFound(k.instance.GetSpec().GetResource().GetAPIVersion())
+		return errorForResourceAPINotFound(k.instance.GetSpec().GetResource().GetAPIVersion())
 	}
 
 	if len(k.instance.GetSpec().GetResource().GetName()) > 0 {
@@ -48,13 +48,12 @@ func (k *knativeInfraReconciler) Reconcile() (requeue bool, resultErr error) {
 
 		broker, resultErr := knativeHandler.FetchBroker(types.NamespacedName{Name: k.instance.GetSpec().GetResource().GetName(), Namespace: ns})
 		if resultErr != nil {
-			return false, resultErr
+			return resultErr
 		} else if broker == nil {
-			return false, errorForResourceNotFound(infrastructure.KnativeEventingBrokerKind, k.instance.GetSpec().GetResource().GetName(), ns)
+			return errorForResourceNotFound(infrastructure.KnativeEventingBrokerKind, k.instance.GetSpec().GetResource().GetName(), ns)
 		}
 	} else {
-		return false,
-			fmt.Errorf("No Knative Eventing Broker resource defined in the KogitoInfra CR %s on namespace %s, impossible to continue ", k.instance.GetName(), k.instance.GetNamespace())
+		return fmt.Errorf("No Knative Eventing Broker resource defined in the KogitoInfra CR %s on namespace %s, impossible to continue ", k.instance.GetName(), k.instance.GetNamespace())
 	}
-	return false, nil
+	return nil
 }

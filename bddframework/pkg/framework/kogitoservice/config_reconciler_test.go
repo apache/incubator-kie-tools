@@ -15,40 +15,46 @@
 package kogitoservice
 
 import (
+	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
-	"github.com/kiegroup/kogito-operator/internal"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
-	corev1 "k8s.io/api/core/v1"
+	v12 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"testing"
 )
 
-func TestReconcile(t *testing.T) {
-	ns := t.Name()
-	instance := test.CreateFakeKogitoRuntime(ns)
-	instance.Spec.Config = map[string]string{
-		"key1": "value1",
+func TestInfraPropertiesReconciler_CustomConfig(t *testing.T) {
+	instance := &v1beta1.KogitoRuntime{
+		ObjectMeta: v1.ObjectMeta{Name: "process-springboot-example", Namespace: t.Name()},
+		Spec: v1beta1.KogitoRuntimeSpec{
+			Runtime: api.SpringBootRuntimeType,
+			KogitoServiceSpec: v1beta1.KogitoServiceSpec{
+				Config: map[string]string{
+					"key1": "value1",
+					"key2": "value2",
+				},
+			},
+		},
 	}
-
-	cli := test.NewFakeClientBuilder().Build()
+	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).Build()
+	serviceDefinition := ServiceDefinition{}
 	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	infraHandler := internal.NewKogitoInfraHandler(context)
-	appConfigMapReconciler := NewAppConfigMapReconciler(context, instance, infraHandler)
-	err := appConfigMapReconciler.Reconcile()
+	infraPropertiesReconciler := newConfigReconciler(context, instance, &serviceDefinition)
+	err := infraPropertiesReconciler.Reconcile()
 	assert.NoError(t, err)
 
-	appConfigMapHandler := NewAppConfigMapHandler(context)
-	configMap := &corev1.ConfigMap{ObjectMeta: v1.ObjectMeta{Name: appConfigMapHandler.GetAppConfigMapName(instance), Namespace: instance.Namespace}}
-	exists, err := kubernetes.ResourceC(cli).Fetch(configMap)
+	cm := &v12.ConfigMap{ObjectMeta: v1.ObjectMeta{Name: "process-springboot-example-properties", Namespace: t.Name()}}
+	exists, err := kubernetes.ResourceC(cli).Fetch(cm)
 	assert.NoError(t, err)
 	assert.True(t, exists)
-	assert.Equal(t, 1, len(configMap.Data))
-	assert.Equal(t, "value1", configMap.Data["key1"])
+	assert.Equal(t, instance.GetName(), cm.Labels[framework.LabelAppKey])
 }

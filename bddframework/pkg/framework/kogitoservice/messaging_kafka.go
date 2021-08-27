@@ -40,7 +40,13 @@ func (k *kafkaMessagingDeployer) CreateRequiredResources(service api.KogitoServi
 
 func (k *kafkaMessagingDeployer) createRequiredKafkaTopics(infra api.KogitoInfraInterface, service api.KogitoService) error {
 	k.Log.Debug("Going to apply kafka topic configurations required by the deployed service")
-	kafkaURI := infra.GetStatus().GetRuntimeProperties(api.QuarkusRuntimeType).GetAppProps()[infra2.QuarkusKafkaBootstrapAppProp]
+	kafkaConfigMapName := infra2.GetKafkaConfigMapName(api.QuarkusRuntimeType)
+	configMapHandler := infrastructure.NewConfigMapHandler(k.Context)
+	kafkaConfigMap, err := configMapHandler.FetchConfigMap(types.NamespacedName{Name: kafkaConfigMapName, Namespace: infra.GetNamespace()})
+	if err != nil || kafkaConfigMap == nil {
+		return err
+	}
+	kafkaURI := kafkaConfigMap.Data[infra2.QuarkusKafkaBootstrapAppProp]
 	if len(kafkaURI) == 0 {
 		k.Log.Debug("Ignoring Kafka Topics creation, Kafka URI is empty from the given KogitoInfra", "KogitoInfra", infra.GetName())
 		return nil
@@ -105,5 +111,8 @@ func (k *kafkaMessagingDeployer) getKafkaInstanceNamespaceName(instance api.Kogi
 
 // IsKafkaResource checks if provided KogitoInfra instance is for kafka resource
 func IsKafkaResource(instance api.KogitoInfraInterface) bool {
-	return infrastructure.IsKafkaResource(instance.GetSpec().GetResource().GetAPIVersion(), instance.GetSpec().GetResource().GetKind())
+	if !instance.GetSpec().IsResourceEmpty() {
+		return infrastructure.IsKafkaResource(instance.GetSpec().GetResource().GetAPIVersion(), instance.GetSpec().GetResource().GetKind())
+	}
+	return false
 }

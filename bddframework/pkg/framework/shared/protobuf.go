@@ -89,6 +89,7 @@ func (p *protoBufHandler) MountProtoBufConfigMapOnDataIndex(runtimeInstance api.
 		if err = kubernetes.ResourceC(p.Client).Create(protoBufConfigMap); err != nil {
 			return err
 		}
+		return infrastructure.ErrorForProcessingProtoBufConfigMapDelta()
 	}
 
 	// mount protobuf configmap on data-index deployment
@@ -97,7 +98,8 @@ func (p *protoBufHandler) MountProtoBufConfigMapOnDataIndex(runtimeInstance api.
 		return
 	}
 
-	if err = p.configMapHandler.MountConfigMapOnDeployment(dataIndexDeployment, protoBufConfigMap); err != nil {
+	volumeReference := p.protoBufConfigMapHandler.CreateProtoBufConfigMapReference(runtimeInstance)
+	if err = p.configMapHandler.MountAsVolume(dataIndexDeployment, volumeReference); err != nil {
 		return
 	}
 	updateProtoBufPropInToDeploymentEnv(dataIndexDeployment)

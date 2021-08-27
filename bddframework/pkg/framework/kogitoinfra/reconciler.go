@@ -28,7 +28,7 @@ const reconciliationStandardInterval = time.Second * 30
 
 // Reconciler Interface to represent type of supported kogito infra reconciliation algorithm for resources like Infinispan, kafka & keycloak
 type Reconciler interface {
-	Reconcile() (requeue bool, resultErr error)
+	Reconcile() error
 }
 
 type infraContext struct {
@@ -39,6 +39,9 @@ type infraContext struct {
 // ReconcilerHandler ...
 type ReconcilerHandler interface {
 	GetInfraReconciler(instance api.KogitoInfraInterface) (Reconciler, error)
+	GetConfigMapReferenceReconciler(instance api.KogitoInfraInterface) Reconciler
+	GetSecretReferenceReconciler(instance api.KogitoInfraInterface) Reconciler
+	GetInfraPropertiesReconciler(instance api.KogitoInfraInterface) Reconciler
 	GetReconcileResultFor(err error, requeue bool) (reconcile.Result, error)
 }
 
@@ -60,14 +63,44 @@ func (k *reconcilerHandler) GetInfraReconciler(instance api.KogitoInfraInterface
 		Context:  k.Context,
 		instance: instance,
 	}
-	if infraRes, ok := getSupportedInfraResources(context)[resourceClassForInstance(instance)]; ok {
+	if infraRes, ok := getSupportedInfraResources(context)[resourceClassForInstance(instance.GetSpec().GetResource())]; ok {
 		return infraRes, nil
 	}
 	return nil, errorForUnsupportedAPI(context)
 }
 
-func resourceClassForInstance(instance api.KogitoInfraInterface) string {
-	return getResourceClass(instance.GetSpec().GetResource().GetKind(), instance.GetSpec().GetResource().GetAPIVersion())
+// GetConfigMapReferenceReconciler identify and return request kogito infra reconciliation logic on bases of information provided in kogitoInfra value
+func (k *reconcilerHandler) GetConfigMapReferenceReconciler(instance api.KogitoInfraInterface) Reconciler {
+	k.Log.Debug("going to fetch related kogito infra resource")
+	context := infraContext{
+		Context:  k.Context,
+		instance: instance,
+	}
+	return initConfigMapReferenceReconciler(context)
+}
+
+// GetSecretReferenceReconciler identify and return request kogito infra reconciliation logic on bases of information provided in kogitoInfra value
+func (k *reconcilerHandler) GetSecretReferenceReconciler(instance api.KogitoInfraInterface) Reconciler {
+	k.Log.Debug("going to fetch related kogito infra resource")
+	context := infraContext{
+		Context:  k.Context,
+		instance: instance,
+	}
+	return initSecretReferenceReconciler(context)
+}
+
+// GetAppConfigMapReconciler identify and return request kogito infra reconciliation logic on bases of information provided in kogitoInfra value
+func (k *reconcilerHandler) GetInfraPropertiesReconciler(instance api.KogitoInfraInterface) Reconciler {
+	k.Log.Debug("going to fetch related kogito infra resource")
+	context := infraContext{
+		Context:  k.Context,
+		instance: instance,
+	}
+	return initInfraPropertiesReconciler(context)
+}
+
+func resourceClassForInstance(resource api.ResourceInterface) string {
+	return getResourceClass(resource.GetKind(), resource.GetAPIVersion())
 }
 
 func getResourceClass(kind, APIVersion string) string {
@@ -77,7 +110,7 @@ func getResourceClass(kind, APIVersion string) string {
 func getSupportedInfraResources(context infraContext) map[string]Reconciler {
 	return map[string]Reconciler{
 		getResourceClass(infrastructure.InfinispanKind, infrastructure.InfinispanAPIVersion):                 initInfinispanInfraReconciler(context),
-		getResourceClass(infrastructure.KafkaKind, infrastructure.KafkaAPIVersion):                           initkafkaInfraReconciler(context),
+		getResourceClass(infrastructure.KafkaKind, infrastructure.KafkaAPIVersion):                           initKafkaInfraReconciler(context),
 		getResourceClass(infrastructure.KeycloakKind, infrastructure.KeycloakAPIVersion):                     initkeycloakInfraReconciler(context),
 		getResourceClass(infrastructure.KnativeEventingBrokerKind, infrastructure.KnativeEventingAPIVersion): initknativeInfraReconciler(context),
 		getResourceClass(infrastructure.MongoDBKind, infrastructure.MongoDBAPIVersion):                       initMongoDBInfraReconciler(context),

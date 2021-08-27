@@ -27,7 +27,7 @@ type keycloakInfraReconciler struct {
 	infraContext
 }
 
-func initkeycloakInfraReconciler(context infraContext) *keycloakInfraReconciler {
+func initkeycloakInfraReconciler(context infraContext) Reconciler {
 	context.Log = context.Log.WithValues("resource", "keycloak")
 	return &keycloakInfraReconciler{
 		infraContext: context,
@@ -40,11 +40,11 @@ func AppendKeycloakWatchedObjects(b *builder.Builder) *builder.Builder {
 }
 
 // Reconcile reconcile Kogito infra object
-func (k *keycloakInfraReconciler) Reconcile() (requeue bool, resultErr error) {
+func (k *keycloakInfraReconciler) Reconcile() (resultErr error) {
 	var keycloakInstance *keycloakv1alpha1.Keycloak
 	keycloakHandler := infrastructure.NewKeycloakHandler(k.Context)
 	if !keycloakHandler.IsKeycloakAvailable() {
-		return false, errorForResourceAPINotFound(k.instance.GetSpec().GetResource().GetAPIVersion())
+		return errorForResourceAPINotFound(k.instance.GetSpec().GetResource().GetAPIVersion())
 	}
 
 	if len(k.instance.GetSpec().GetResource().GetName()) > 0 {
@@ -55,14 +55,14 @@ func (k *keycloakInfraReconciler) Reconcile() (requeue bool, resultErr error) {
 			k.Log.Debug("Namespace is not provided for custom resource, taking instance", "Namespace", namespace)
 		}
 		if keycloakInstance, resultErr = k.loadDeployedKeycloakInstance(k.instance.GetSpec().GetResource().GetName(), namespace); resultErr != nil {
-			return false, resultErr
+			return resultErr
 		} else if keycloakInstance == nil {
-			return false, errorForResourceNotFound("Keycloak", k.instance.GetSpec().GetResource().GetName(), namespace)
+			return errorForResourceNotFound("Keycloak", k.instance.GetSpec().GetResource().GetName(), namespace)
 		}
 	} else {
-		return false, errorForResourceConfigError(k.instance, "No Keycloak resource name given")
+		return errorForResourceConfigError(k.instance, "No Keycloak resource name given")
 	}
-	return false, nil
+	return nil
 }
 
 func (k *keycloakInfraReconciler) loadDeployedKeycloakInstance(name string, namespace string) (*keycloakv1alpha1.Keycloak, error) {

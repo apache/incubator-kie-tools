@@ -24,18 +24,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kiegroup/kogito-operator/core/framework"
-	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
-)
-
-const (
-	enableEventsEnvKey = "ENABLE_EVENTS"
-
-	// springKafkaBootstrapAppProp spring boot application property for setting kafka server
-	springKafkaBootstrapAppProp = "spring.kafka.bootstrap-servers"
-	// QuarkusKafkaBootstrapAppProp quarkus application property for setting kafka server
-	QuarkusKafkaBootstrapAppProp = "kafka.bootstrap.servers"
 )
 
 // AppendKafkaWatchedObjects ...
@@ -43,7 +32,7 @@ func AppendKafkaWatchedObjects(b *builder.Builder) *builder.Builder {
 	return b
 }
 
-func initkafkaInfraReconciler(context infraContext) *kafkaInfraReconciler {
+func initKafkaInfraReconciler(context infraContext) Reconciler {
 	context.Log = context.Log.WithValues("resource", "kafka")
 	return &kafkaInfraReconciler{
 		infraContext: context,
@@ -56,13 +45,13 @@ type kafkaInfraReconciler struct {
 }
 
 // Reconcile reconcile Kogito infra object
-func (k *kafkaInfraReconciler) Reconcile() (requeue bool, resultErr error) {
+func (k *kafkaInfraReconciler) Reconcile() (resultErr error) {
 	var kafkaInstance *v1beta2.Kafka
 
 	// Verify kafka
 	kafkaHandler := infrastructure.NewKafkaHandler(k.Context)
 	if !kafkaHandler.IsStrimziAvailable() {
-		return false, errorForResourceAPINotFound(k.instance.GetSpec().GetResource().GetAPIVersion())
+		return errorForResourceAPINotFound(k.instance.GetSpec().GetResource().GetAPIVersion())
 	}
 
 	if len(k.instance.GetSpec().GetResource().GetName()) > 0 {
@@ -73,26 +62,26 @@ func (k *kafkaInfraReconciler) Reconcile() (requeue bool, resultErr error) {
 			k.Log.Debug("Namespace is not provided for custom resource, taking", "Namespace", namespace)
 		}
 		if kafkaInstance, resultErr = kafkaHandler.FetchKafkaInstance(types.NamespacedName{Name: k.instance.GetSpec().GetResource().GetName(), Namespace: namespace}); resultErr != nil {
-			return false, resultErr
+			return resultErr
 		} else if kafkaInstance == nil {
-			return false,
-				errorForResourceNotFound("Kafka", k.instance.GetSpec().GetResource().GetName(), namespace)
+			return errorForResourceNotFound("Kafka", k.instance.GetSpec().GetResource().GetName(), namespace)
 		}
 	} else {
-		return false, errorForResourceConfigError(k.instance, "No Kafka resource name given")
+		return errorForResourceConfigError(k.instance, "No Kafka resource name given")
 	}
 
 	kafkaStatus := k.getLatestKafkaCondition(kafkaInstance)
 	if kafkaStatus == nil || kafkaStatus.Type != v1beta2.KafkaConditionTypeReady {
-		return false, errorForResourceNotReadyError(fmt.Errorf("kafka instance %s not ready yet. Waiting for Condition status Ready", kafkaInstance.Name))
+		return errorForResourceNotReadyError(fmt.Errorf("kafka instance %s not ready yet. Waiting for Condition status Ready", kafkaInstance.Name))
 	}
+
 	if resultErr = k.updateKafkaRuntimePropsInStatus(kafkaInstance, api.QuarkusRuntimeType); resultErr != nil {
-		return true, resultErr
+		return resultErr
 	}
 	if resultErr = k.updateKafkaRuntimePropsInStatus(kafkaInstance, api.SpringBootRuntimeType); resultErr != nil {
-		return true, resultErr
+		return resultErr
 	}
-	return false, nil
+	return nil
 }
 
 func (k *kafkaInfraReconciler) getLatestKafkaCondition(kafka *v1beta2.Kafka) *v1beta2.KafkaCondition {
@@ -132,56 +121,9 @@ func (k *kafkaInfraReconciler) mustParseKafkaTransition(transitionTime string) (
 
 func (k *kafkaInfraReconciler) updateKafkaRuntimePropsInStatus(kafkaInstance *v1beta2.Kafka, runtime api.RuntimeType) error {
 	k.Log.Debug("going to Update Kafka runtime properties in kogito infra instance status", "runtime", runtime)
-	err := k.addKafkaRuntimeProps(kafkaInstance, runtime)
-	if err != nil {
-		return errorForResourceNotReadyError(err)
-	}
-	return nil
-}
-
-func (k *kafkaInfraReconciler) getKafkaEnvVars(kafkaInstance *v1beta2.Kafka) ([]corev1.EnvVar, error) {
-	kafkaHandler := infrastructure.NewKafkaHandler(k.Context)
-	kafkaURI, err := kafkaHandler.ResolveKafkaServerURI(kafkaInstance)
-	if err != nil {
-		return nil, err
-	}
-	var envProps []corev1.EnvVar
-	if len(kafkaURI) > 0 {
-		envProps = append(envProps, framework.CreateEnvVar(enableEventsEnvKey, "true"))
-	} else {
-		envProps = append(envProps, framework.CreateEnvVar(enableEventsEnvKey, "false"))
-	}
-	return envProps, nil
-}
-
-func (k *kafkaInfraReconciler) getKafkaRuntimeAppProps(kafkaInstance *v1beta2.Kafka, runtime api.RuntimeType) (map[string]string, error) {
-	kafkaHandler := infrastructure.NewKafkaHandler(k.Context)
-	kafkaURI, err := kafkaHandler.ResolveKafkaServerURI(kafkaInstance)
-	if err != nil {
-		return nil, err
-	}
-	appProps := map[string]string{}
-	if len(kafkaURI) > 0 {
-		if runtime == api.QuarkusRuntimeType {
-			appProps[QuarkusKafkaBootstrapAppProp] = kafkaURI
-		} else if runtime == api.SpringBootRuntimeType {
-			appProps[springKafkaBootstrapAppProp] = kafkaURI
-		}
-	}
-	return appProps, nil
-}
-
-func (k *kafkaInfraReconciler) addKafkaRuntimeProps(kafkaInstance *v1beta2.Kafka, runtime api.RuntimeType) error {
-	appProps, err := k.getKafkaRuntimeAppProps(kafkaInstance, runtime)
-	if err != nil {
+	kafkaConfigReconciler := newKafkaConfigReconciler(k.infraContext, kafkaInstance, runtime)
+	if err := kafkaConfigReconciler.Reconcile(); err != nil {
 		return err
 	}
-
-	envVars, err := k.getKafkaEnvVars(kafkaInstance)
-	if err != nil {
-		return err
-	}
-	k.instance.GetStatus().AddRuntimeProperties(runtime, appProps, envVars)
-	k.Log.Debug("Following Kafka runtime properties are set in infra status:", "runtime", runtime, "appProps", appProps, "envVars", envVars)
 	return nil
 }

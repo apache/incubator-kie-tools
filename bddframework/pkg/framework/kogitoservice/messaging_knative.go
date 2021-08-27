@@ -169,5 +169,8 @@ func (k *knativeMessagingDeployer) triggerExists(e messagingEventMeta, service a
 
 // IsKnativeEventingResource checks if provided KogitoInfra instance is for Knative eventing resource
 func isKnativeEventingResource(instance api.KogitoInfraInterface) bool {
-	return infrastructure.IsKnativeEventingResource(instance.GetSpec().GetResource().GetAPIVersion(), instance.GetSpec().GetResource().GetKind())
+	if !instance.GetSpec().IsResourceEmpty() {
+		return infrastructure.IsKnativeEventingResource(instance.GetSpec().GetResource().GetAPIVersion(), instance.GetSpec().GetResource().GetKind())
+	}
+	return false
 }

@@ -17,8 +17,11 @@ package kogitoinfra
 import (
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/internal"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
+	"reflect"
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 )
@@ -52,11 +55,24 @@ func (s *statusHandler) UpdateBaseStatus(instance api.KogitoInfraInterface, err 
 		s.setResourceSuccess(instance.GetStatus().GetConditions())
 		s.Log.Info("Kogito Infra successfully reconciled")
 	}
-	s.Log.Info("Updating kogitoInfra value with new properties.")
-	if resultErr := kubernetes.ResourceC(s.Client).UpdateStatus(instance); resultErr != nil {
-		s.Log.Error(resultErr, "reconciliationError occurs while update kogitoInfra values")
+
+	if s.isStatusChanged(instance) {
+		s.Log.Info("Updating kogitoInfra value with new properties.")
+		if resultErr := kubernetes.ResourceC(s.Client).UpdateStatus(instance); resultErr != nil {
+			s.Log.Error(resultErr, "reconciliationError occurs while update kogitoInfra values")
+		}
+		s.Log.Info("Successfully Update Kogito Infra status")
 	}
-	s.Log.Info("Successfully Update Kogito Infra status")
+}
+
+func (s *statusHandler) isStatusChanged(instance api.KogitoInfraInterface) bool {
+	infraHandler := internal.NewKogitoInfraHandler(s.Context)
+	deployedInstance, resultErr := infraHandler.FetchKogitoInfraInstance(types.NamespacedName{Name: instance.GetName(), Namespace: instance.GetNamespace()})
+	if resultErr != nil {
+		s.Log.Error(resultErr, "Error occurs while checking status change state")
+	}
+
+	return !reflect.DeepEqual(instance.GetStatus(), deployedInstance.GetStatus())
 }
 
 // setResourceFailed sets the instance as failed

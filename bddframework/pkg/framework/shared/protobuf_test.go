@@ -15,12 +15,10 @@
 package shared
 
 import (
-	"fmt"
 	"github.com/google/uuid"
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/framework"
-	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/manager"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
@@ -31,7 +29,6 @@ import (
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"path"
 	"testing"
 )
 
@@ -73,15 +70,10 @@ func TestMountProtoBufConfigMapOnDataIndex(t *testing.T) {
 	cm1 := &v1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: t.Name(),
-			Name:      "my-domain-protobufs1",
+			Name:      "my-domain-protobufs1-protobuf-files",
 			Labels: map[string]string{
 				ConfigMapProtoBufEnabledLabelKey: "true",
 				framework.LabelAppKey:            "my-domain-protobufs1",
-			},
-			Annotations: map[string]string{
-				infrastructure.FromFileKey:  "true",
-				infrastructure.MountPathKey: path.Join(DefaultProtobufMountPath, runtimeService.GetName()),
-				infrastructure.FileModeKey:  fmt.Sprint(framework.ModeForProtoBufConfigMapVolume),
 			},
 		},
 		Data: map[string]string{fileName1: "This is a protobuf file"},
@@ -89,7 +81,7 @@ func TestMountProtoBufConfigMapOnDataIndex(t *testing.T) {
 	cm2 := &v1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: t.Name(),
-			Name:      "my-domain-protobufs2",
+			Name:      "my-domain-protobufs2-protobuf-files",
 			Labels: map[string]string{
 				ConfigMapProtoBufEnabledLabelKey: "true",
 				framework.LabelAppKey:            "my-domain-protobufs2",

@@ -20,6 +20,7 @@ import (
 	mongodb "github.com/mongodb/mongodb-kubernetes-operator/pkg/apis/mongodb/v1"
 	v1 "k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 )
 
 const (
@@ -55,6 +56,7 @@ var (
 type MongoDBHandler interface {
 	IsMongoDBAvailable() bool
 	IsMongoDBOperatorAvailable(namespace string) (bool, error)
+	FetchMongoDBInstance(key types.NamespacedName) (*mongodb.MongoDB, error)
 }
 
 type mongoDBHandler struct {
@@ -95,4 +97,20 @@ func (m *mongoDBHandler) IsMongoDBOperatorAvailable(namespace string) (bool, err
 	}
 	m.Log.Debug("Looks like MongoDB Operator is not available in the namespace", "namespace", namespace)
 	return false, nil
+}
+
+func (m *mongoDBHandler) FetchMongoDBInstance(key types.NamespacedName) (*mongodb.MongoDB, error) {
+	m.Log.Debug("fetching deployed kogito mongoDB instance")
+	mongoDBInstance := &mongodb.MongoDB{}
+	if exists, err := kubernetes.ResourceC(m.Client).FetchWithKey(key, mongoDBInstance); err != nil {
+		m.Log.Error(err, "Error occurs while fetching kogito mongoDB instance")
+		return nil, err
+	} else if !exists {
+		m.Log.Debug("Kogito mongoDB instance is not exists")
+		return nil, nil
+	} else {
+		m.Log.Debug("Kogito mongoDB instance found")
+		m.Log.Debug("Kogito mongoDB instance found", "instance", mongoDBInstance)
+		return mongoDBInstance, nil
+	}
 }
