@@ -42,6 +42,13 @@ export function KieToolingExtendedServicesButtons() {
     [kieToolingExtendedServices.status]
   );
 
+  const onToggleKieToolingExtendedServices = useCallback(() => {
+    if (!kieToolingExtendedServices.outdated) {
+      return;
+    }
+    kieToolingExtendedServices.setModalOpen(true);
+  }, [kieToolingExtendedServices]);
+
   const onToggleDmnRunner = useCallback(() => {
     kieToolingExtendedServices.closeDmnTour();
     if (isKieToolingExtendedServicesRunning) {
@@ -78,7 +85,7 @@ export function KieToolingExtendedServicesButtons() {
           >
             <ExclamationTriangleIcon
               data-testid="outdated-icon"
-              className="static-opacity"
+              className="kogito--editor__kie-tooling-extended-services-dropdown-icon-outdated static-opacity"
               id="kie-tooling-extended-services-outdated-icon"
             />
           </Tooltip>
@@ -128,6 +135,7 @@ export function KieToolingExtendedServicesButtons() {
           <DropdownToggle
             id="kie-tooling-extended-services-button"
             toggleIndicator={null}
+            onToggle={onToggleKieToolingExtendedServices}
             className="kogito--kie-tooling-extended-services-button"
             data-testid="kie-tooling-extended-services-button"
           >
