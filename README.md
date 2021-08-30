@@ -1,1 +1,0 @@
-# kie-tooling-store
