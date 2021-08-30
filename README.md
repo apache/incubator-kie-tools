@@ -15,7 +15,7 @@ Kogito
 
 # Kogito Container Images
 
-To be able to efficiently execute Kogito services on the Cloud there's a need to have Container Images so it can played
+To be able to efficiently execute Kogito services on the Cloud there's a need to have Container Images so it can be played
 smoothly on any Kubernetes cluster. There are a few sets images which are divided in three different groups which are 
 the components, the builder images and the runtime images.
 
@@ -113,7 +113,7 @@ Those are described bellow.
 
 ### Kogito Builder Images
 
-The Kogito Builder Images are responsible for building the project with Apache Maven and generate the binary that will 
+The Kogito Builder Images are responsible for building the project with Apache Maven and generating the binary that will 
 be used by the Kogito Runtime images to run the Kogito application.
 
 The current available Kogito Builder image is:
@@ -135,7 +135,7 @@ For more information about what is installed on this image, take a look [here](k
 
 #### Kogito Builder Image usage
 
-This image contains a helper option to better understand how to it:
+This image contains a helper option to better understand how to use it:
 
 ```bash
 $ docker run -it quay.io/kiegroup/kogito-builder:latest /home/kogito/kogito-app-launch.sh -h
@@ -280,7 +280,7 @@ This can significantly improve the build time.
 
 Another option is to use a Maven Mirror.  
 This can be used together with incremental builds to speed up the build even more.  
-To turn it possible we just need to set the **MAVEN_MIRROR_URL** environment variable when starting a new build, see the example below:
+To make it possible we just need to set the **MAVEN_MIRROR_URL** environment variable when starting a new build, see the example below:
 
 
 ```bash
@@ -301,10 +301,10 @@ sys	0m0.539s
 ```
 
 Here you can see that the build time has again been reduced. 
-If the maven mirror already have all the dependencies there, the build time can be even faster.  
+If the maven mirror already has all the dependencies there, the build time can be even faster.  
 Also, Maven generates lots of transfer logs for downloading/uploading of maven dependencies. By default, these logs are disabled. To view these logs we need to set env variable **MAVEN_DOWNLOAD_OUTPUT** to true. 
 
-If a custom Maven Repository is required, the S2i images also supports it.  
+If a custom Maven Repository is required, the S2i images also support it.  
 In case the **MAVEN_REPO_URL** environment variable is provided a new Repository and Plugin Repository will be added to the internal `settings.xml` file.  
 If no repo-id is provided using the **MAVEN_REPO_ID** environment variable, a generated one will be used.  
 There is also the possibility to provide more than one custom Repository. In this case, we need to provide the repo **prefix** using the **MAVEN_REPOS** environment variable.  
@@ -356,7 +356,7 @@ The available archetypes are:
 - [Kogito Quarkus Archetype](https://github.com/kiegroup/kogito-runtimes/tree/main/archetypes/kogito-quarkus-archetype)
 - [Kogito Spring Boot Archetype](https://github.com/kiegroup/kogito-runtimes/tree/main/archetypes/kogito-springboot-archetype)
 
-Note that, when building Quarkus based application that is **not** a *UberJAR* we also need to copy the **lib** directory 
+Note that, when building Quarkus based application that is **not** an *UberJAR* we also need to copy the **lib** directory 
 located inside the *target* directory.  
 Examples on how to use this feature can be found in the next topics.
 
@@ -382,7 +382,7 @@ The Image can run an application based on Quarkus or Springboot. Users can defin
 
 ##### Kogito Runtime JVM Image usage
 
-This image contains a helper option to better understand how to it:
+This image contains a helper option to better understand how to use it:
 
 ```bash
 docker run -it quay.io/kiegroup/kogito-runtime-jvm:latest /home/kogito/kogito-app-launch.sh -h
@@ -392,7 +392,7 @@ docker run -it quay.io/kiegroup/kogito-runtime-jvm:latest /home/kogito/kogito-ap
 ##### Kogito Runtime JVM Image examples
 
 In the next few lines let's take a look on how this image can be used to receive an already built UberJAR. 
-To configure Quarkus to generate a UberJAR please follow the instructions described [here](https://quarkus.io/guides/maven-tooling#configuration-reference)
+To configure Quarkus to generate an UberJAR please follow the instructions described [here](https://quarkus.io/guides/maven-tooling#configuration-reference)
 
 For this example let's use the [process-quarkus-example](https://github.com/kiegroup/kogito-examples/tree/stable/process-quarkus-example).
 Once you have checked out the example on your local machine follow the steps below:
@@ -413,7 +413,7 @@ $ docker run -p 8080:8080 -it process-quarkus-example
 # On another shell do a simple post request 
 curl -d '{"approver" : "john", "order" : {"orderNumber" : "12345", "shipped" : false}}' -H "Content-Type: application/json" -X POST http://localhost:8080/orders
 
-#repare the container logs the following message:
+# notice the container logs the following message:
 Order has been created Order[12345] with assigned approver JOHN
 ```
 
@@ -424,7 +424,7 @@ For non uberjar the process is the same, but you only need to remove the propert
 $ mvn clean package
 ```
 
-Note that this time there is a *lib* folder into the **target** directory. The s2i build will take care of copying it to the correct place. 
+Note that this time there is a *lib* folder in the **target** directory. The s2i build will take care of copying it to the correct place. 
 Just perform a build:
 
 ```bash
@@ -434,7 +434,7 @@ $ docker run -p 8080:8080 -it process-quarkus-example-non-uberjar
 # On another shell do a simple post request 
 $ curl -d '{"approver" : "john", "order" : {"orderNumber" : "12345", "shipped" : false}}' -H "Content-Type: application/json" -X POST http://localhost:8080/orders
 
-#repare the container logs the following message:
+# notice the container logs the following message:
 Order has been created Order[12345] with assigned approver JOHN
 ```
 **Runtime Image example with springboot**
@@ -466,7 +466,7 @@ $ docker run -it -p 8080:8080 spring-binary-example
 # on another terminal, interact with the kogito service
 $ curl -d '{"approver" : "john", "order" : {"orderNumber" : "12345", "shipped" : false}}' -H "Content-Type: application/json" -X POST http://localhost:8080/orders
 
-#repare the container logs the following message:
+# notice the container logs the following message:
 Order has been created Order[12345] with assigned approver JOHN
 ```
 
@@ -512,7 +512,7 @@ $ docker run -it -p 8080:8080 binary-test-example
 # on another terminal, interact with the kogito service
 $ curl -d '{"approver" : "john", "order" : {"orderNumber" : "12345", "shipped" : false}}' -H "Content-Type: application/json" -X POST http://localhost:8080/orders
 
-#repare the container logs the following message:
+# notice the container logs the following message:
 Order has been created Order[12345] with assigned approver JOHN
 ```
 
@@ -520,7 +520,7 @@ Order has been created Order[12345] with assigned approver JOHN
 
 The Kogito Component Images can be considered as lightweight images that will complement the Kogito core engine 
 by providing extra capabilities, like managing the processes on a web UI or providing persistence layer to the Kogito applications.
-Today we have 3 Kogito Component Images:
+Today we have 14 Kogito Component Images:
 
 * [quay.io/kiegroup/kogito-data-index-infinispan](https://quay.io/kiegroup/kogito-data-index-infinispan)
 * [quay.io/kiegroup/kogito-data-index-mongodb](https://quay.io/kiegroup/kogito-data-index-mongodb)
@@ -608,7 +608,7 @@ to your Kogito infrastructure on a Kubernetes cluster and provide its capabiliti
 
 The Trusty Service aims at collecting tracing information by one or more Kogito runtime services and provides analytical capabilities on top of the collected data. 
 The Trusty Service depends on a running Infinispan or Redis Server.
-The Persistence service can be switched by using its corresponding image
+The Trusty service can be switched by using its corresponding image
 
 - Infinispan: quay.io/kiegroup/kogito-trusty-infinispan
     [image.yaml](kogito-trusty-infinispan-overrides.yaml)
@@ -645,7 +645,7 @@ It does not execute the job itself, but it triggers a callback that could be an 
 on the job request, or any other callback that could be supported by the service. 
 For more information please visit this [link](https://github.com/kiegroup/kogito-runtimes/wiki/Job-Service).
 
-Today, the Jobs service contains two images:
+Today, the Jobs service contains four images:
 
 - [ephemeral](kogito-jobs-service-ephemeral-overrides.yaml)
 - [infinispan](kogito-jobs-service-infinispan-overrides.yaml)
@@ -667,7 +667,7 @@ docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-jobs-service-infi
 You should notice a few debug messages being printed in the system output.
 
 The ephemeral image does not have external dependencies like a backend persistence provider, it uses in-memory persistence
-while working with Jobs Services `infinispan`, `mongodb` and `postgresql` variants, it will need to have an Infinispan, MongoDB and PostgreSQL server,
+while working with Jobs Services `infinispan`, `mongodb` and `postgresql` variants, it will need to have an Infinispan, MongoDB or PostgreSQL server,
 respectively, previously running.
 
 
@@ -966,7 +966,7 @@ To deploy and test the new image, follow the same steps as described [here](#usi
 
 ## Contributing to Kogito Images repository
 
-Before proceed please make sure you have checked the [requirements](#kogito-images-requirements).
+Before proceeding please make sure you have checked the [requirements](#kogito-images-requirements).
 
 
 ### Building Images
@@ -1171,7 +1171,7 @@ But one Scenario can have one action defined by the keywords given or when, the 
  In this test, we can specify any valid environment variable or a set of them.
  - **When container is started with args**: Most useful when you want to pass some docker argument, i.e. memory limit for the container.
 
-The **Then** clause is used to do your validations, test something, looking for a keyword in the logs, etc. 
+The **Then** clause is used to do your validations, test something, look for a keyword in the logs, etc. 
 If you need to validate more than one thing you can add a new line with the **And** keyword, like this example:
 
 ```bash
@@ -1197,7 +1197,7 @@ CeKit allow us to use tags, it is very useful to segregate tests, if we want to 
 given image, we need to annotate the test specific or the entire feature with the image name, for example, 
 we have the common tests that needs to run against almost all images, instead to add the same tests for every 
 image feature, we create a common feature and annotate it with the images we want that
-specific test or feature to run, a example can be found on [this common test](tests/features/common.feature)
+specific test or feature to run, an example can be found on [this common test](tests/features/common.feature)
 For example, suppose you are working on a new feature and add tests to cover your changes. You don't want to run all existing tests, 
 this can be easily done by adding the **@wip** tag on the behave test that you are creating.
 
@@ -1205,7 +1205,7 @@ All images have already test feature files. If a new image is being created, a n
 and the very first line of this file would need to contain a tag with the image name.
 
 For example, if we are creating a new image called quay.io/kiegroup/kogito-moon-service, we would have a feature called
-**kogito-moon-service.feature** under the **tests/features** directory and this file will looks like with the following
+**kogito-moon-service.feature** under the **tests/features** directory and this file will look like with the following
 example:
 
 ```text
@@ -1252,7 +1252,7 @@ As an example, let's execute the tests from the [kogito-s2i-core](modules/kogito
 
 ##### Writing Bats tests
 
-The best way to start to interact with Bats tests is take a look on its [documentation](https://github.com/sstephenson/bats) 
+The best way to start to interact with Bats tests is to take a look on its [documentation](https://github.com/sstephenson/bats) 
 and after use the existing ones as example.
 
 [Here](modules/kogito-jobs-service-common/tests/bats) you can find a basic example about how our Bats tests
