@@ -22,6 +22,10 @@ on:
         description: "VS Code Extensions (dev)"
         default: "true"
         required: true
+      vscode_extensions_prod:
+        description: "VS Code Extensions (prod)"
+        default: "true"
+        required: true
       desktop:
         description: "Desktop"
         default: "true"
@@ -410,6 +414,80 @@ jobs:
           upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
           asset_path: ./packages/vscode-extension-backend/dist/vscode-extension-backend_${{ needs.prepare.outputs.version }}.vsix
           asset_name: vscode_extension_backend_dev_${{ needs.prepare.outputs.version }}.vsix
+          asset_content_type: application/zip
+
+  vscode_extensions_prod:
+    if: ${{ github.event.inputs.vscode_extensions_prod == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.prepare.outputs.release_ref }}
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ubuntu-latest
+
+      - name: "Build"
+        run: |
+          lerna run build:prod --include-dependencies --stream \
+            --scope=vscode-extension-bpmn-editor \
+            --scope=vscode-extension-dmn-editor \
+            --scope=vscode-extension-pmml-editor \
+            --scope=vscode-extension-kogito-bundle \
+            --scope=vscode-extension-red-hat-business-automation-bundle
+
+      - name: "Upload VS Code Extension - BPMN Editor (prod)"
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-bpmn-editor/dist/vscode_extension_bpmn_editor_${{ needs.prepare.outputs.version }}.vsix
+          asset_name: vscode_extension_bpmn_editor_${{ needs.prepare.outputs.version }}.vsix
+          asset_content_type: application/zip
+
+      - name: "Upload VS Code Extension - DMN Editor (prod)"
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-dmn-editor/dist/vscode_extension_dmn_editor_${{ needs.prepare.outputs.version }}.vsix
+          asset_name: vscode_extension_dmn_editor_${{ needs.prepare.outputs.version }}.vsix
+          asset_content_type: application/zip
+
+      - name: "Upload VS Code Extension - PMML Editor (prod)"
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-pmml-editor/dist/vscode_extension_pmml_editor_${{ needs.prepare.outputs.version }}.vsix
+          asset_name: vscode_extension_pmml_editor_${{ needs.prepare.outputs.version }}.vsix
+          asset_content_type: application/zip
+
+      - name: "Upload VS Code Extension - Kogito Bundle (prod)"
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${{ needs.prepare.outputs.version }}.vsix
+          asset_name: vscode_extension_kogito_bundle_${{ needs.prepare.outputs.version }}.vsix
+          asset_content_type: application/zip
+
+      - name: "Upload VS Code Extension - Red Hat Business Automation Bundle (prod)"
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-red-hat-business-automation-bundle/dist/vscode_extension_red_hat_business_automation_bundle_${{ needs.prepare.outputs.version }}.vsix
+          asset_name: vscode_extension_red_hat_business_automation_bundle_${{ needs.prepare.outputs.version }}.vsix
           asset_content_type: application/zip
 
   desktop:

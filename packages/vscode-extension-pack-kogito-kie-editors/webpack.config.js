@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const { merge } = require("webpack-merge");

@@ -14,42 +14,23 @@
  * limitations under the License.
  */
 
-const path = require("path");
+const { merge } = require("webpack-merge");
+const common = require("../../config/webpack.common.config");
 
-const commonConfig = {
-  mode: "development",
-  output: {
-    path: path.resolve(__dirname, "./dist"),
-    filename: "[name].js",
-    library: "RedHatBusinessAutomationBundle",
-    libraryTarget: "umd",
-    umdNamedDefine: true,
-  },
-  externals: {
-    vscode: "commonjs vscode",
-  },
-  plugins: [],
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: "ts-loader",
-      },
-    ],
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")],
-  },
-};
-
-module.exports = [
-  {
-    ...commonConfig,
+module.exports = async (env) => [
+  merge(common(env), {
+    output: {
+      library: "RedHatBusinessAutomationBundle",
+      libraryTarget: "umd",
+      umdNamedDefine: true,
+    },
+    externals: {
+      vscode: "commonjs vscode",
+    },
     target: "node",
     entry: {
       "extension/extension": "./src/extension/extension.ts",
     },
     plugins: [],
-  },
+  }),
 ];

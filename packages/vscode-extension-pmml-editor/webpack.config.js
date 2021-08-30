@@ -14,46 +14,30 @@
  * limitations under the License.
  */
 
-const path = require("path");
-
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const { merge } = require("webpack-merge");
+const common = require("../../config/webpack.common.config");
 
-const commonConfig = {
-  mode: "development",
-  output: {
-    path: path.resolve(__dirname, "./dist"),
-    filename: "[name].js",
-    library: "PmmlEditor",
-    libraryTarget: "umd",
-    umdNamedDefine: true,
-  },
-  externals: {
-    vscode: "commonjs vscode",
-  },
-  plugins: [],
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: "ts-loader",
-      },
-    ],
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")],
-  },
-};
+const commonConfig = (env) =>
+  merge(common(env), {
+    output: {
+      library: "PmmlEditor",
+      libraryTarget: "umd",
+      umdNamedDefine: true,
+    },
+    externals: {
+      vscode: "commonjs vscode",
+    },
+  });
 
-module.exports = async (argv) => [
-  merge(commonConfig, {
+module.exports = async (env) => [
+  merge(commonConfig(env), {
     target: "node",
     entry: {
       "extension/extension": "./src/extension/extension.ts",
     },
   }),
-  merge(commonConfig, {
+  merge(commonConfig(env), {
     target: "web",
     entry: {
       "webview/PmmlEditorEnvelopeApp": "./src/webview/PmmlEditorEnvelopeApp.ts",

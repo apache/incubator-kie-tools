@@ -3,23 +3,26 @@
   "publisher": "kie-group",
   "displayName": "Kogito Bundle",
   "description": "Edit BPMN, DMN and Test Scenario files",
-  "version": "0.12.0",
+  "version": "0.0.0",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tooling-store.git"
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "scripts": {
-    "build-ext": "rm -rf dist && webpack --mode production",
-    "pack-ext": "vsce package --githubBranch main --yarn -o ./dist/vscode_extension_kogito_bundle_$npm_package_version.vsix",
-    "pack": "yarn build-ext && yarn pack-ext",
-    "compile": "yarn build-ext",
-    "watch": "yarn build-ext"
+    "build:prod": "rimraf dist && webpack && yarn pack:prod",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "pack:prod": "vsce package --githubBranch main --yarn -o ./dist/vscode_extension_kogito_bundle_$npm_package_version.vsix",
+    "compile": "webpack",
+    "watch": "webpack"
   },
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": false
     }
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
   },
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",

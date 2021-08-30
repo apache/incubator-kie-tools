@@ -14,64 +14,51 @@
  * limitations under the License.
  */
 
-const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 
-const commonConfig = {
-  mode: "development",
-  output: {
-    path: path.resolve(__dirname, "./dist"),
-    filename: "[name].js",
-    library: "BpmnEditor",
-    libraryTarget: "umd",
-    umdNamedDefine: true,
-  },
-  externals: {
-    vscode: "commonjs vscode",
-  },
-  plugins: [],
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: "ts-loader",
-      },
-      ...patternflyBase.webpackModuleRules,
-    ],
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")],
-  },
-};
+const { merge } = require("webpack-merge");
+const common = require("../../config/webpack.common.config");
 
-module.exports = async (argv) => [
-  {
-    ...commonConfig,
+const commonConfig = (env) =>
+  merge(common(env), {
+    output: {
+      library: "DmnEditor",
+      libraryTarget: "umd",
+      umdNamedDefine: true,
+    },
+    externals: {
+      vscode: "commonjs vscode",
+    },
+  });
+
+module.exports = async (env) => [
+  merge(commonConfig(env), {
     target: "node",
     entry: {
       "extension/extension": "./src/extension/extension.ts",
     },
     plugins: [],
-  },
-  {
-    ...commonConfig,
+  }),
+  merge(commonConfig(env), {
     target: "web",
     entry: {
       "webview/BpmnEditorEnvelopeApp": "./src/webview/BpmnEditorEnvelopeApp.ts",
+    },
+    module: {
+      rules: [...patternflyBase.webpackModuleRules],
     },
     plugins: [
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: externalAssets.bpmnEditorPath(argv),
+            from: externalAssets.bpmnEditorPath(),
             to: "webview/editors/bpmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
         ],
       }),
     ],
-  },
+  }),
 ];
