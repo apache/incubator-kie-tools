@@ -28,7 +28,7 @@ import {
 import { CreateImageStream, DeleteImageStream } from "./resources/ImageStream";
 import { GetProject } from "./resources/Project";
 import { KOGITO_CREATED_BY, KOGITO_FILENAME, Resource, ResourceFetch } from "./resources/Resource";
-import { CreateRoute, DeleteRoute } from "./resources/Route";
+import { CreateRoute, DeleteRoute, ListRoutes, Route, Routes } from "./resources/Route";
 import { CreateService, DeleteService } from "./resources/Service";
 
 export const DEVELOPER_SANDBOX_URL = "https://developers.redhat.com/developer-sandbox";
@@ -69,22 +69,24 @@ export class DmnDevSandboxService {
     }
 
     const builds = await this.fetchResource<Builds>(new ListBuilds(commonArgs));
+    const routes = await this.fetchResource<Routes>(new ListRoutes(commonArgs));
 
     return deployments.items
       .filter(
         (deployment: Deployment) =>
           KOGITO_CREATED_BY in deployment.metadata.labels &&
-          deployment.metadata.labels[KOGITO_CREATED_BY] === this.createdBy
+          deployment.metadata.labels[KOGITO_CREATED_BY] === this.createdBy &&
+          routes.items.some((route: Route) => route.metadata.name === deployment.metadata.name)
       )
       .map((deployment: Deployment) => {
         const build = builds.items.find((build: Build) => build.metadata.name === deployment.metadata.name);
-        const baseUrl = this.composeBaseUrl(commonArgs.host, commonArgs.namespace, deployment.metadata.name);
+        const route = routes.items.find((route: Route) => route.metadata.name === deployment.metadata.name)!;
+        const baseUrl = this.composeBaseUrl(route);
         return {
           resourceName: deployment.metadata.name,
           filename: deployment.metadata.annotations[KOGITO_FILENAME],
           urls: {
             index: baseUrl,
-            console: this.composeConsoleUrl(config.host, commonArgs.namespace, deployment.metadata.uid),
             swaggerUI: this.composeSwaggerUIUrl(baseUrl),
           },
           creationTimestamp: new Date(deployment.metadata.creationTimestamp),
@@ -109,11 +111,10 @@ export class DmnDevSandboxService {
       new DeleteImageStream(commonArgs),
     ];
 
-    const baseUrl = this.composeBaseUrl(commonArgs.host, commonArgs.namespace, commonArgs.resourceName);
-
     await this.fetchResource(new CreateImageStream(commonArgs));
     await this.fetchResource(new CreateService(commonArgs), rollbacks.slice(4));
-    await this.fetchResource(new CreateRoute(commonArgs), rollbacks.slice(3));
+    const route = await this.fetchResource<Route>(new CreateRoute(commonArgs), rollbacks.slice(3));
+    const baseUrl = this.composeBaseUrl(route);
 
     const buildConfig = await this.fetchResource(new CreateBuildConfig(commonArgs), rollbacks.slice(2));
 
@@ -162,15 +163,8 @@ export class DmnDevSandboxService {
     return `${randomPart}${milliseconds}`;
   }
 
-  private composeBaseUrl(host: string, namespace: string, resourceName: string): string {
-    return `https://${resourceName}-${namespace}.apps.${new URL(host).hostname.replace("api.", "")}`;
-  }
-
-  private composeConsoleUrl(host: string, namespace: string, deploymentUid: string): string {
-    return `https://console-openshift-console.apps.${new URL(host).hostname.replace(
-      "api.",
-      ""
-    )}/topology/ns/${namespace}?view=graph&selectId=${deploymentUid}`;
+  private composeBaseUrl(route: Route): string {
+    return `https://${route.spec.host}`;
   }
 
   private composeSwaggerUIUrl(baseUrl: string): string {

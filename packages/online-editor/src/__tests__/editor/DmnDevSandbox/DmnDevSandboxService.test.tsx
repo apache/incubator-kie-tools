@@ -22,7 +22,7 @@ import { CreateDeployment, Deployment, ListDeployments } from "../../../editor/D
 import { CreateImageStream } from "../../../editor/DmnDevSandbox/resources/ImageStream";
 import { GetProject } from "../../../editor/DmnDevSandbox/resources/Project";
 import { ResourceFetch } from "../../../editor/DmnDevSandbox/resources/Resource";
-import { CreateRoute } from "../../../editor/DmnDevSandbox/resources/Route";
+import { CreateRoute, ListRoutes, Route } from "../../../editor/DmnDevSandbox/resources/Route";
 import { CreateService } from "../../../editor/DmnDevSandbox/resources/Service";
 
 describe("DmnDevSandboxService", () => {
@@ -66,6 +66,21 @@ describe("DmnDevSandboxService", () => {
     };
   }
 
+  function createRoute(id: string): Route {
+    return {
+      metadata: {
+        uid: `uid-${id}`,
+        name: `deployment-${id}`,
+        labels: {},
+        annotations: {},
+        creationTimestamp: new Date().toISOString(),
+      },
+      spec: {
+        host: "test-host",
+      },
+    };
+  }
+
   beforeEach(() => {
     jest.resetAllMocks();
   });
@@ -88,6 +103,10 @@ describe("DmnDevSandboxService", () => {
     when(fetchResourceFn)
       .calledWith(expect.any(CreateBuildConfig), expect.anything())
       .mockReturnValueOnce(Promise.resolve({ metadata: { uid: "uid" } }));
+
+    when(fetchResourceFn)
+      .calledWith(expect.any(CreateRoute), expect.anything())
+      .mockReturnValueOnce(Promise.resolve({ metadata: { uid: "uid" }, spec: { host: "host" } }));
 
     await service.deploy("myModel.dmn", "diagramContent", config);
 
@@ -131,6 +150,15 @@ describe("DmnDevSandboxService", () => {
       createBuild("6"),
     ];
 
+    const routes = [
+      createRoute("1"),
+      createRoute("2"),
+      createRoute("3"),
+      createRoute("4"),
+      createRoute("5"),
+      createRoute("6"),
+    ];
+
     when(fetchResourceFn)
       .calledWith(expect.any(ListDeployments))
       .mockReturnValueOnce(
@@ -144,6 +172,14 @@ describe("DmnDevSandboxService", () => {
       .mockReturnValueOnce(
         Promise.resolve({
           items: builds,
+        })
+      );
+
+    when(fetchResourceFn)
+      .calledWith(expect.any(ListRoutes))
+      .mockReturnValueOnce(
+        Promise.resolve({
+          items: routes,
         })
       );
 

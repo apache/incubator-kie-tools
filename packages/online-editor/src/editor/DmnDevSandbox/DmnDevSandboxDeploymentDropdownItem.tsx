@@ -32,14 +32,6 @@ interface Props {
 export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
   const { i18n } = useOnlineI18n();
 
-  const onConfigure = useCallback(
-    (e: React.MouseEvent) => {
-      window.open(props.deployment.urls.console, "_blank");
-      e.stopPropagation();
-    },
-    [props.deployment.urls.console]
-  );
-
   const filename = useMemo(() => {
     const maxSize = 25;
     const originalFilename = props.deployment.filename;
@@ -60,7 +52,6 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
           <CheckCircleIcon
             id="dmn-dev-sandbox-deployment-item-up-icon"
             className="kogito--editor__dmn-dev-sandbox-dropdown-item-status success-icon"
-            onClick={onConfigure}
           />
         </Tooltip>
       );
@@ -79,7 +70,6 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
           <SyncAltIcon
             id="dmn-dev-sandbox-deployment-item-in-progress-icon"
             className="kogito--editor__dmn-dev-sandbox-dropdown-item-status in-progress-icon rotating"
-            onClick={onConfigure}
           />
         </Tooltip>
       );
@@ -94,11 +84,10 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
         <ExclamationTriangleIcon
           id="dmn-dev-sandbox-deployment-item-down-icon"
           className="kogito--editor__dmn-dev-sandbox-dropdown-item-status warning-icon"
-          onClick={onConfigure}
         />
       </Tooltip>
     );
-  }, [i18n, onConfigure, props.deployment.state, props.id]);
+  }, [i18n, props.deployment.state, props.id]);
 
   const onItemClicked = useCallback(() => {
     window.open(props.deployment.urls.index, "_blank");

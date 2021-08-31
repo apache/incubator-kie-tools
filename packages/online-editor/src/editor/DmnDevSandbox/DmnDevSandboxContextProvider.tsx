@@ -53,7 +53,7 @@ enum AlertTypes {
 
 export function DmnDevSandboxContextProvider(props: Props) {
   const KOGITO_ONLINE_EDITOR = "online-editor";
-  const LOAD_DEPLOYMENTS_POLLING_TIME = 1000;
+  const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
 
   const { i18n } = useOnlineI18n();
   const globalContext = useContext(GlobalContext);

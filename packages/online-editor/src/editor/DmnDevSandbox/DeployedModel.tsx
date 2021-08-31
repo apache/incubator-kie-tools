@@ -26,7 +26,6 @@ export interface DeployedModel {
   filename: string;
   urls: {
     index: string;
-    console: string;
     swaggerUI: string;
   };
   creationTimestamp: Date;
