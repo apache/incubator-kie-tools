@@ -203,6 +203,39 @@ jobs:
           asset_name: STAGING__vscode_extension_backend_dev_${{ needs.create_release.outputs.tag }}.vsix
           asset_content_type: application/zip
 
+      - name: "STAGING: Upload VS Code Extension - BPMN Editor (prod) (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-bpmn-editor/dist/vscode_extension_bpmn_editor_${{ needs.create_release.outputs.tag }}.vsix
+          asset_name: STAGING__vscode_extension_bpmn_editor_${{ needs.create_release.outputs.tag }}.vsix
+          asset_content_type: application/zip
+
+      - name: "STAGING: Upload VS Code Extension - DMN Editor (prod) (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-dmn-editor/dist/vscode_extension_dmn_editor_${{ needs.create_release.outputs.tag }}.vsix
+          asset_name: STAGING__vscode_extension_dmn_editor_${{ needs.create_release.outputs.tag }}.vsix
+          asset_content_type: application/zip
+
+      - name: "STAGING: Upload VS Code Extension - PMML Editor (prod) (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-pmml-editor/dist/vscode_extension_pmml_editor_${{ needs.create_release.outputs.tag }}.vsix
+          asset_name: STAGING__vscode_extension_pmml_editor_${{ needs.create_release.outputs.tag }}.vsix
+          asset_content_type: application/zip
+
       - name: "STAGING: Upload Chrome Extension (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-release-asset@v1.0.2

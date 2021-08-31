@@ -1,0 +1,71 @@
+{
+  "name": "vscode-extension-pmml-editor",
+  "publisher": "redhat",
+  "displayName": "PMML Editor",
+  "description": "Edit PMML Scorecards",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "scripts": {
+    "build:prod": "rimraf dist && webpack && yarn pack:prod",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "pack:prod": "vsce package --githubBranch main --yarn -o ./dist/vscode_extension_pmml_editor_$npm_package_version.vsix",
+    "compile": "webpack",
+    "watch": "webpack"
+  },
+  "dependencies": {
+    "@kie-tooling-core/editor": "0.0.0",
+    "@kie-tooling-core/i18n": "0.0.0",
+    "@kie-tooling-core/patternfly-base": "0.0.0",
+    "@kie-tooling-core/vscode-extension": "0.0.0",
+    "@kie-tooling-core/workspace": "0.0.0",
+    "@kogito-tooling/pmml-editor": "0.0.0"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
+  },
+  "icon": "icon.png",
+  "main": "./dist/extension/extension.js",
+  "engines": {
+    "vscode": "^1.46.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCustomEditor:kieKogitoWebviewEditorsPmml"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "kieKogitoWebviewEditorsPmml",
+        "displayName": "PMML Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.{pmml}"
+          }
+        ]
+      }
+    ],
+    "languages": [
+      {
+        "id": "pmml",
+        "extensions": [
+          ".pmml"
+        ],
+        "aliases": [
+          "pmml",
+          "Predictive Model Markup Language"
+        ]
+      }
+    ]
+  }
+}

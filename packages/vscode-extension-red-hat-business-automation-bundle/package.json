@@ -1,0 +1,40 @@
+{
+  "name": "vscode-extension-red-hat-business-automation-bundle",
+  "publisher": "redhat",
+  "displayName": "Red Hat Business Automation Bundle",
+  "description": "Edit BPMN, DMN and Test Scenario files",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "scripts": {
+    "build:prod": "rimraf dist && webpack && yarn pack:prod",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "pack:prod": "vsce package --githubBranch main --yarn -o ./dist/vscode_extension_red_hat_business_automation_bundle_$npm_package_version.vsix",
+    "compile": "webpack",
+    "watch": "webpack"
+  },
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
+  },
+  "icon": "icon.png",
+  "main": "./dist/extension/extension.js",
+  "engines": {
+    "vscode": "^1.46.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "extensionDependencies": [
+    "redhat.vscode-extension-bpmn-editor",
+    "redhat.vscode-extension-dmn-editor"
+  ]
+}
