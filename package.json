@@ -6,7 +6,17 @@
   "author": "Gianluca <gzuccare@redhat.com>",
   "license": "Apache-2.0",
   "main": "dist/es5/index.js",
-  "module": "dist/es6/index.js",
+  "module": "dist/esm/index.js",
+  "files": [
+    "dist/es5/*.d.ts",
+    "dist/es5/*.js",
+    "dist/esm/*.d.ts",
+    "dist/esm/*.js",
+    "dist/es6/*.d.ts",
+    "dist/es6/*.js",
+    "src/*.ts",
+    "src/*.tsx"
+  ],
   "scripts": {
     "build": "tsc --build --incremental tsconfig.build.json",
     "buildProd": "tsc --build tsconfig.build.json",
@@ -18,6 +28,13 @@
     "release:validate": "./scripts/validateRelease.sh TAG=1.2.3",
     "release:publish": "./scripts/publishRelease.sh",
     "test": "jest --runInBand"
+  },
+  "dependencies": {
+    "classnames": "^2.0.0",
+    "invariant": "^2.0.0",
+    "lodash": "^4.0.0",
+    "tslib": "^2.2.0",
+    "uniforms": "^3.5.5"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "7.10.4",
@@ -36,7 +53,6 @@
     "@typescript-eslint/eslint-plugin": "2.34.0",
     "@typescript-eslint/parser": "2.34.0",
     "babel-eslint": "10.1.0",
-    "classnames": "2.2.6",
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.6",
     "eslint": "6.8.0",
@@ -49,9 +65,7 @@
     "eslint-plugin-prettier": "3.3.1",
     "eslint-plugin-react": "7.22.0",
     "eslint-plugin-vazco": "1.0.0",
-    "invariant": "2.2.4",
     "jest": "25.5.4",
-    "lodash": "4.17.20",
     "prettier": "2.2.1",
     "prop-types": "15.7.2",
     "react": "16.13.1",
@@ -60,12 +74,11 @@
     "simpl-schema": "1.10.2",
     "ts-jest": "25.5.1",
     "ts-node": "8.10.2",
-    "tslib": "2.2.0",
     "typescript": "3.8.3",
-    "uniforms": "3.5.1",
-    "uniforms-bridge-simple-schema-2": "3.5.1"
+    "uniforms-bridge-simple-schema-2": "^3.5.5"
   },
   "peerDependencies": {
+    "react": "^17.0.0 || ^16.8.0",
     "@patternfly/react-core": "^4.135.0",
     "@patternfly/react-icons": "^4.11.0"
   },
