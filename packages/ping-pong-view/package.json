@@ -1,6 +1,6 @@
 {
-  "name": "ping-pong-view",
-  "version": "0.8.5",
+  "name": "@kogito-tooling-examples/ping-pong-view",
+  "version": "0.0.0",
   "license": "Apache-2.0",
   "private": false,
   "files": [
@@ -11,12 +11,11 @@
     "url": "https://github.com/kiegroup/kogito-tooling-examples.git"
   },
   "scripts": {
-    "build:fast": "rm -rf dist && webpack",
-    "build": "yarn run build:fast",
-    "build:prod": "yarn run build --mode production --devtool none"
+    "build:dev": "rimraf dist && webpack",
+    "build:prod": "rimraf dist && webpack --mode production --devtool none"
   },
   "dependencies": {
-    "@kogito-tooling/envelope": "0.8.5",
-    "@kogito-tooling/envelope-bus": "0.8.5"
+    "@kie-tooling-core/envelope": "0.0.0",
+    "@kie-tooling-core/envelope-bus": "0.0.0"
   }
 }

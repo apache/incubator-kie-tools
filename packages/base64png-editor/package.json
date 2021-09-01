@@ -1,6 +1,6 @@
 {
-  "name": "base64png-editor",
-  "version": "0.8.5",
+  "name": "@kogito-tooling-examples/base64png-editor",
+  "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "Apache-2.0",
@@ -13,14 +13,13 @@
     "url": "https://github.com/kiegroup/kogito-tooling-examples.git"
   },
   "scripts": {
-    "build:fast": "rm -rf dist && webpack",
-    "build": "yarn run build:fast",
-    "build:prod": "yarn run build --mode production --devtool none"
+    "build:dev": "rimraf dist && webpack",
+    "build:prod": "rimraf dist && webpack --mode production --devtool none"
   },
   "dependencies": {
-    "@kogito-tooling/channel-common-api": "0.8.5",
-    "@kogito-tooling/editor": "0.8.5",
-    "@kogito-tooling/envelope-bus": "0.8.5",
-    "@kogito-tooling/patternfly-base": "0.8.5"
+    "@kie-tooling-core/channel-common-api": "0.0.0",
+    "@kie-tooling-core/editor": "0.0.0",
+    "@kie-tooling-core/envelope-bus": "0.0.0",
+    "@kie-tooling-core/patternfly-base": "0.0.0"
   }
 }

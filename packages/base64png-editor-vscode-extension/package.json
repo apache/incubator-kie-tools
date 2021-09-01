@@ -1,10 +1,10 @@
 {
   "publisher": "kogito-tooling-examples",
-  "name": "base64png-editor-vscode-extension",
+  "name": "@kogito-tooling-examples/base64png-editor-vscode-extension",
   "displayName": "Kogito Base64 PNG Editor",
   "description": "",
   "main": "./dist/extension.js",
-  "version": "0.8.5",
+  "version": "0.0.0",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.46.0"
@@ -99,9 +99,8 @@
   },
   "scripts": {
     "pack-extension": "vsce package --yarn -o ./dist/kogito_tooling_examples_base64_editor_vscode_extension_$npm_package_version.vsix",
-    "build:fast": "rm -rf dist && webpack",
-    "build": "yarn run build:fast",
-    "build:prod": "yarn run build:fast --mode production --devtool none && yarn run pack-extension"
+    "build:dev": "rimraf dist && webpack",
+    "build:prod": "rimraf dist && webpack --mode production --devtool none && yarn run pack-extension"
   },
   "devDependencies": {
     "@types/node": "^12.12.5",
@@ -110,9 +109,9 @@
     "vscode-test": "1.0.0"
   },
   "dependencies": {
-    "@kogito-tooling/editor": "0.8.5",
-    "@kogito-tooling/patternfly-base": "0.8.5",
-    "@kogito-tooling/vscode-extension": "0.8.5",
-    "base64png-editor": "0.8.5"
+    "@kie-tooling-core/editor": "0.0.0",
+    "@kie-tooling-core/patternfly-base": "0.0.0",
+    "@kie-tooling-core/vscode-extension": "0.0.0",
+    "@kogito-tooling-examples/base64png-editor": "0.0.0"
   }
 }

@@ -1,10 +1,10 @@
 {
-  "publisher": "kogito-tooling-examples",
+  "publisher": "@kogito-tooling-examples/kogito-tooling-examples",
   "name": "todo-list-view-vscode-extension",
   "displayName": "Todo List View :: Kogito Examples ",
   "description": "",
   "main": "./dist/extension.js",
-  "version": "0.8.5",
+  "version": "0.0.0",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.46.0"
@@ -21,11 +21,10 @@
   ],
   "scripts": {
     "pack-extension": "vsce package --yarn -o ./dist/kogito_tooling_examples_todo_list_view_$npm_package_version.vsix",
-    "compile": "yarn run build:fast",
-    "watch": "yarn run build:fast",
-    "build:fast": "rm -rf dist && webpack",
-    "build": "yarn run build:fast",
-    "build:prod": "yarn run build --mode production --devtool none && yarn run pack-extension"
+    "compile": "yarn run build:dev",
+    "watch": "yarn run build:dev",
+    "build:dev": "rimraf dist && webpack",
+    "build:prod": "rimraf dist && webpack --mode production --devtool none && yarn run pack-extension"
   },
   "contributes": {
     "menus": {
@@ -53,6 +52,7 @@
     ]
   },
   "dependencies": {
-    "todo-list-view": "0.8.5"
+    "@kogito-tooling-examples/todo-list-view": "0.0.0",
+    "@kie-tooling-core/vscode-extension": "0.0.0"
   }
 }
