@@ -1,0 +1,58 @@
+{
+  "publisher": "@kogito-tooling-examples/kogito-tooling-examples",
+  "name": "todo-list-view-vscode-extension",
+  "displayName": "Todo List View :: Kogito Examples ",
+  "description": "",
+  "main": "./dist/extension.js",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "engines": {
+    "vscode": "^1.46.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling-examples.git"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "scripts": {
+    "pack-extension": "vsce package --yarn -o ./dist/kogito_tooling_examples_todo_list_view_$npm_package_version.vsix",
+    "compile": "yarn run build:dev",
+    "watch": "yarn run build:dev",
+    "build:dev": "rimraf dist && webpack",
+    "build:prod": "rimraf dist && webpack --mode production --devtool none && yarn run pack-extension"
+  },
+  "contributes": {
+    "menus": {
+      "editor/context": [
+        {
+          "command": "kogito-tooling-examples.todo-list-view.add-item"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "kogito-tooling-examples.todo-list-view",
+        "title": "Open list",
+        "category": "TODO"
+      },
+      {
+        "command": "kogito-tooling-examples.todo-list-view.add-item",
+        "title": "TODO: Add item(s)"
+      },
+      {
+        "command": "kogito-tooling-examples.todo-list-view.mark-all-as-completed",
+        "title": "Mark all as completed",
+        "category": "TODO"
+      }
+    ]
+  },
+  "dependencies": {
+    "@kogito-tooling-examples/todo-list-view": "0.0.0",
+    "@kie-tooling-core/vscode-extension": "0.0.0"
+  }
+}

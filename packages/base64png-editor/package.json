@@ -1,0 +1,25 @@
+{
+  "name": "@kogito-tooling-examples/base64png-editor",
+  "version": "0.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "license": "Apache-2.0",
+  "private": false,
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling-examples.git"
+  },
+  "scripts": {
+    "build:dev": "rimraf dist && webpack",
+    "build:prod": "rimraf dist && webpack --mode production --devtool none"
+  },
+  "dependencies": {
+    "@kie-tooling-core/channel-common-api": "0.0.0",
+    "@kie-tooling-core/editor": "0.0.0",
+    "@kie-tooling-core/envelope-bus": "0.0.0",
+    "@kie-tooling-core/patternfly-base": "0.0.0"
+  }
+}

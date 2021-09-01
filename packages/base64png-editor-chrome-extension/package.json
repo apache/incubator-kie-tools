@@ -1,0 +1,29 @@
+{
+  "name": "@kogito-tooling-examples/base64png-editor-chrome-extension",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling-examples.git"
+  },
+  "scripts": {
+    "test": "echo 'No tests to run.'",
+    "build:dev": "rimraf dist && webpack",
+    "build:prod": "rimraf dist && webpack --mode production --devtool none",
+    "serve-envelope": "webpack-dev-server"
+  },
+  "babel": {
+    "presets": [
+      "@babel/env",
+      "@babel/react"
+    ]
+  },
+  "dependencies": {
+    "@kie-tooling-core/chrome-extension": "0.0.0",
+    "@kie-tooling-core/editor": "0.0.0",
+    "@kie-tooling-core/envelope-bus": "0.0.0",
+    "@kie-tooling-core/patternfly-base": "0.0.0",
+    "@kogito-tooling-examples/base64png-editor": "0.0.0"
+  }
+}

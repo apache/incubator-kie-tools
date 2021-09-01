@@ -1,0 +1,28 @@
+{
+  "name": "@kogito-tooling-examples/webapp",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "scripts": {
+    "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
+    "test": "echo no tests",
+    "build:dev": "rimraf dist && webpack",
+    "build": "yarn run lint && yarn test && yarn run build:dev",
+    "build:prod": "rimraf dist && webpack --mode production --devtool none",
+    "start": "webpack-dev-server -d --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@kogito-tooling/dmn-editor-unpacked": "7.51.0-Final",
+    "@kogito-tooling/envelope-bus": "0.0.0",
+    "@kogito-tooling/kie-bc-editors": "0.0.0",
+    "@kogito-tooling/kie-editors-standalone": "0.0.0",
+    "@kogito-tooling/patternfly-base": "0.0.0",
+    "@kogito-tooling-examples/base64png-editor": "0.0.0",
+    "@kogito-tooling-examples/ping-pong-view": "0.0.0",
+    "@kogito-tooling-examples/ping-pong-view-react": "0.0.0",
+    "@kogito-tooling-examples/todo-list-view": "0.0.0"
+  },
+  "devDependencies": {
+    "@types/react-router-dom": "^5.1.5",
+    "react-router-dom": "^5.2.0"
+  }
+}
