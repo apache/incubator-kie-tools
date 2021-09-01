@@ -13,6 +13,7 @@ Nodes:
 - `Blue`: Packages that are published to the NPM registry.
 - `Purple`: Core packages that are published to the NPM registry.
 - `Dotted black`: Packages that are deployed to other mediums.
+- `Dotted orange`: Examples packages.
 
 Edges:
 

@@ -42,6 +42,11 @@ const ENV_VARS = {
     default: `${false}`,
     description: "",
   },
+  KOGITO_TOOLING_BUILD_examples: {
+    name: "KOGITO_TOOLING_BUILD_examples",
+    default: `${false}`,
+    description: "",
+  },
   CHROME_EXTENSION__routerTargetOrigin: {
     name: "CHROME_EXTENSION__routerTargetOrigin",
     default: "https://localhost:9000",
@@ -173,6 +178,7 @@ module.exports = {
       test: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_test)),
       testIT: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_testIT)),
       docker: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_docker)),
+      examples: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_examples)),
     },
     webpack: (webpackEnv) => {
       if (webpackEnv.dev) {
@@ -258,6 +264,15 @@ module.exports = {
 
   kogitoRuntime: {
     version: getOrDefault(ENV_VARS.KOGITO_RUNTIME_version),
+  },
+
+  examples: {
+    chromeExtensionEnvelope: {
+      port: 9101,
+    },
+    webapp: {
+      port: 9100,
+    },
   },
 
   vars: () => ({
