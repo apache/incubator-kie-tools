@@ -16,8 +16,8 @@ package kogitoinfra
 
 import (
 	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/core/manager"
 	"github.com/kiegroup/kogito-operator/core/operator"
-	"github.com/kiegroup/kogito-operator/internal"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -33,12 +33,14 @@ type StatusHandler interface {
 
 type statusHandler struct {
 	operator.Context
+	infraHandler manager.KogitoInfraHandler
 }
 
 // NewStatusHandler ...
-func NewStatusHandler(context operator.Context) StatusHandler {
+func NewStatusHandler(context operator.Context, infraHandler manager.KogitoInfraHandler) StatusHandler {
 	return &statusHandler{
-		context,
+		Context:      context,
+		infraHandler: infraHandler,
 	}
 }
 
@@ -66,8 +68,7 @@ func (s *statusHandler) UpdateBaseStatus(instance api.KogitoInfraInterface, err 
 }
 
 func (s *statusHandler) isStatusChanged(instance api.KogitoInfraInterface) bool {
-	infraHandler := internal.NewKogitoInfraHandler(s.Context)
-	deployedInstance, resultErr := infraHandler.FetchKogitoInfraInstance(types.NamespacedName{Name: instance.GetName(), Namespace: instance.GetNamespace()})
+	deployedInstance, resultErr := s.infraHandler.FetchKogitoInfraInstance(types.NamespacedName{Name: instance.GetName(), Namespace: instance.GetNamespace()})
 	if resultErr != nil {
 		s.Log.Error(resultErr, "Error occurs while checking status change state")
 	}

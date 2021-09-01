@@ -20,6 +20,7 @@ import (
 	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
+	"github.com/kiegroup/kogito-operator/internal"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -46,7 +47,8 @@ func TestUpdateBaseStatus(t *testing.T) {
 		Client: cli,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	statusHandler := NewStatusHandler(context)
+	infraHandler := internal.NewKogitoInfraHandler(context)
+	statusHandler := NewStatusHandler(context, infraHandler)
 	err1 := errors.New("error1")
 	statusHandler.UpdateBaseStatus(instance, &err1)
 	test.AssertFetchMustExist(t, cli, instance)
