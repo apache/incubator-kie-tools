@@ -1,22 +1,12 @@
 {
   "name": "uniforms-patternfly",
-  "version": "4.7.1",
+  "version": "4.7.2",
   "description": "Patternfly forms for uniforms",
   "repository": "git@github.com:aerogear/uniforms-patternfly.git",
   "author": "Gianluca <gzuccare@redhat.com>",
   "license": "Apache-2.0",
   "main": "dist/es5/index.js",
   "module": "dist/esm/index.js",
-  "files": [
-    "dist/es5/*.d.ts",
-    "dist/es5/*.js",
-    "dist/esm/*.d.ts",
-    "dist/esm/*.js",
-    "dist/es6/*.d.ts",
-    "dist/es6/*.js",
-    "src/*.ts",
-    "src/*.tsx"
-  ],
   "scripts": {
     "build": "tsc --build --incremental tsconfig.build.json",
     "buildProd": "tsc --build tsconfig.build.json",
