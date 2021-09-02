@@ -15,6 +15,7 @@
  */
 
 const version = require("./package.json").version;
+const os = require("os");
 
 const str2bool = (str) => str === "true";
 
@@ -163,11 +164,17 @@ const ENV_VARS = {
     default: "1.10.0.Final",
     description: "",
   },
+  MAVEN_SETTINGS_XML: {
+    name: "MAVEN_SETTINGS_XML",
+    default: os.homedir() + "/.m2/settings.xml",
+    description: "Path to the settings.xml to use with Maven",
+  },
 };
 
 module.exports = {
   global: {
     version: version,
+    mavenSettings: getOrDefault(ENV_VARS.MAVEN_SETTINGS_XML),
     build: {
       lint: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_lint)),
       test: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_test)),
