@@ -66,6 +66,7 @@ public class ImportFactory {
 
         anImport.setLocationURI(location(record));
         anImport.setImportType(record.getImportType());
+        anImport.setUuid(record.getUUID());
 
         return anImport;
     }

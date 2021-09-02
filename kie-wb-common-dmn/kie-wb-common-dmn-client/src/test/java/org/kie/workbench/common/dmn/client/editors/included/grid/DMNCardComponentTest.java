@@ -21,7 +21,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.commands.RemoveDMNIncludedModelCommand;
+import org.kie.workbench.common.dmn.client.editors.included.commands.RemoveIncludedModelCommand;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -37,7 +40,11 @@ public class DMNCardComponentTest extends BaseCardComponentTest<DMNCardComponent
 
     @Override
     protected DMNCardComponent getCard(final DMNCardComponent.ContentView cardView) {
-        return new DMNCardComponent(cardView, refreshDecisionComponentsEvent);
+        return new DMNCardComponent(cardView, refreshDecisionComponentsEvent, sessionCommandManager,
+                                    sessionManager,
+                                    recordEngine,
+                                    client,
+                                    refreshDataTypesListEvent);
     }
 
     @Override
@@ -68,5 +75,10 @@ public class DMNCardComponentTest extends BaseCardComponentTest<DMNCardComponent
     @Override
     protected BaseIncludedModelActiveRecord prepareIncludedModelMock() {
         return mock(DMNIncludedModelActiveRecord.class);
+    }
+
+    @Override
+    protected void doCheckRemoveIncludedModelCommandType(final RemoveIncludedModelCommand command) {
+        assertTrue(command instanceof RemoveDMNIncludedModelCommand);
     }
 }

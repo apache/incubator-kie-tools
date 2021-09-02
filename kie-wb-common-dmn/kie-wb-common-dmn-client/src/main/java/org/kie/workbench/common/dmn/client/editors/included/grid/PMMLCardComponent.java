@@ -20,16 +20,34 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.editors.included.PMMLIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.commands.RemoveIncludedModelCommand;
+import org.kie.workbench.common.dmn.client.editors.included.commands.RemovePMMLIncludedModelCommand;
+import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
+import org.kie.workbench.common.dmn.client.editors.types.common.events.RefreshDataTypesListEvent;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 
 public class PMMLCardComponent extends BaseCardComponent<PMMLIncludedModelActiveRecord, PMMLCardComponent.ContentView> {
 
     @Inject
     public PMMLCardComponent(final @PMMLCard PMMLCardComponent.ContentView contentView,
-                             final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent) {
+                             final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent,
+                             final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                             final SessionManager sessionManager,
+                             final ImportRecordEngine recordEngine,
+                             final DMNIncludeModelsClient client,
+                             final Event<RefreshDataTypesListEvent> refreshDataTypesListEvent) {
         super(contentView,
-              refreshDecisionComponentsEvent);
+              refreshDecisionComponentsEvent,
+              sessionCommandManager,
+              sessionManager,
+              recordEngine,
+              client,
+              refreshDataTypesListEvent);
     }
 
     @PostConstruct
@@ -40,6 +58,16 @@ public class PMMLCardComponent extends BaseCardComponent<PMMLIncludedModelActive
     protected void refreshView() {
         contentView.setPath(getTruncatedSubTitle());
         contentView.setModelCount(getModelCount());
+    }
+
+    @Override
+    RemoveIncludedModelCommand getRemoveCommand() {
+        return new RemovePMMLIncludedModelCommand(getGrid(),
+                                                  getIncludedModel(),
+                                                  client,
+                                                  refreshDecisionComponentsEvent,
+                                                  recordEngine,
+                                                  refreshDataTypesListEvent);
     }
 
     private Integer getModelCount() {

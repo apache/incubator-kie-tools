@@ -63,6 +63,7 @@ public class ImportFactoryTest {
         final String expectedNamespace = "://namespace";
         final int expectedDrgElementsCount = 2;
         final int expectedItemDefinitionsCount = 3;
+        final String uuid = "uuid";
 
         record.setName(nameValue);
         record.setPath(path);
@@ -70,6 +71,7 @@ public class ImportFactoryTest {
         record.setImportType(DMNImportTypes.DMN.getDefaultNamespace());
         record.setDrgElementsCount(expectedDrgElementsCount);
         record.setDataTypesCount(expectedItemDefinitionsCount);
+        record.setUuid(uuid);
 
         final Import actualImport = factory.makeImport(record);
         assertTrue(actualImport instanceof ImportDMN);
@@ -82,6 +84,7 @@ public class ImportFactoryTest {
         assertEquals(expectedImportType, actualImport.getImportType());
         assertEquals(expectedDrgElementsCount, dmnImport.getDrgElementsCount());
         assertEquals(expectedItemDefinitionsCount, dmnImport.getItemDefinitionsCount());
+        assertEquals(uuid, dmnImport.getUuid());
     }
 
     @Test
@@ -94,12 +97,14 @@ public class ImportFactoryTest {
         final Name expectedName = new Name(expectedNameValue);
         final LocationURI expectedLocationURI = new LocationURI(path);
         final int expectedModelCount = 2;
+        final String uuid = "uuid";
 
         record.setPath(path);
         record.setName(expectedNameValue);
         record.setNamespace(expectedNameValue);
         record.setImportType(DMNImportTypes.PMML.getDefaultNamespace());
         record.setModelCount(expectedModelCount);
+        record.setUuid(uuid);
 
         final Import actualImport = factory.makeImport(record);
         assertTrue(actualImport instanceof ImportPMML);
@@ -111,6 +116,7 @@ public class ImportFactoryTest {
         assertEquals(expectedNameValue, actualImport.getNamespace());
         assertEquals(expectedImportType, actualImport.getImportType());
         assertEquals(expectedModelCount, pmmlImport.getModelCount());
+        assertEquals(uuid, pmmlImport.getUuid());
     }
 
     @Test

@@ -16,41 +16,27 @@
 
 package org.kie.workbench.common.dmn.client.editors.included.modal;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Consumer;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
-import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
-import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
-import org.kie.workbench.common.dmn.client.editors.expressions.util.NameUtils;
-import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
-import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
-import org.kie.workbench.common.dmn.client.editors.included.DefaultIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPagePresenter;
-import org.kie.workbench.common.dmn.client.editors.included.PMMLIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.commands.AddIncludedModelCommand;
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
 import org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdown;
 import org.kie.workbench.common.dmn.client.editors.types.common.events.RefreshDataTypesListEvent;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
 import org.uberfire.ext.editor.commons.client.file.popups.elemental2.Elemental2Modal;
 import org.uberfire.mvp.Command;
 
-import static org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes.determineImportType;
-import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.DRG_ELEMENT_COUNT_METADATA;
-import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.IMPORT_TYPE_METADATA;
-import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.ITEM_DEFINITION_COUNT_METADATA;
-import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.PATH_METADATA;
-import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.PMML_MODEL_COUNT_METADATA;
+import static org.kie.workbench.common.dmn.client.editors.expressions.util.NameUtils.normaliseName;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 @Dependent
@@ -68,6 +54,10 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
 
     private final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent;
 
+    private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+
+    private final SessionManager sessionManager;
+
     private IncludedModelsPagePresenter grid;
 
     @Inject
@@ -76,13 +66,17 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
                               final ImportRecordEngine recordEngine,
                               final DMNIncludeModelsClient client,
                               final Event<RefreshDataTypesListEvent> refreshDataTypesListEvent,
-                              final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent) {
+                              final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent,
+                              final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                              final SessionManager sessionManager) {
         super(view);
         this.dropdown = dropdown;
         this.recordEngine = recordEngine;
         this.client = client;
         this.refreshDataTypesListEvent = refreshDataTypesListEvent;
         this.refreshDecisionComponentsEvent = refreshDecisionComponentsEvent;
+        this.sessionCommandManager = sessionCommandManager;
+        this.sessionManager = sessionManager;
     }
 
     @PostConstruct
@@ -119,26 +113,23 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
         getDropdown()
                 .getValue()
                 .ifPresent(value -> {
-                    final BaseIncludedModelActiveRecord includedModel = createIncludedModel(value);
-                    refreshGrid();
-                    refreshDecisionComponents();
-                    refreshDataTypesList(includedModel);
+                    sessionCommandManager.execute(getCanvasHandler(), createAddIncludedModelCommand(value));
                     hide();
                 });
     }
 
-    void refreshDataTypesList(final BaseIncludedModelActiveRecord includedModel) {
-        client.loadItemDefinitionsByNamespace(includedModel.getName(),
-                                              includedModel.getNamespace(),
-                                              getItemDefinitionConsumer());
+    AbstractCanvasHandler getCanvasHandler() {
+        return (AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler();
     }
 
-    Consumer<List<ItemDefinition>> getItemDefinitionConsumer() {
-        return itemDefinitions -> refreshDataTypesListEvent.fire(new RefreshDataTypesListEvent(itemDefinitions));
-    }
-
-    private void refreshDecisionComponents() {
-        refreshDecisionComponentsEvent.fire(new RefreshDecisionComponents());
+    AddIncludedModelCommand createAddIncludedModelCommand(final KieAssetsDropdownItem value) {
+        return new AddIncludedModelCommand(value,
+                                           grid,
+                                           refreshDecisionComponentsEvent,
+                                           refreshDataTypesListEvent,
+                                           recordEngine,
+                                           client,
+                                           normaliseName(getView().getModelNameInput()));
     }
 
     @Override
@@ -147,46 +138,12 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
         getDropdown().clear();
     }
 
-    BaseIncludedModelActiveRecord createIncludedModel(final KieAssetsDropdownItem value) {
-        final Map<String, String> metaData = value.getMetaData();
-        final BaseIncludedModelActiveRecord includedModel = createIncludedModel(metaData);
-        includedModel.setName(NameUtils.normaliseName(getView().getModelNameInput()));
-        includedModel.setNamespace(value.getValue());
-        includedModel.setImportType(metaData.get(IMPORT_TYPE_METADATA));
-        includedModel.setPath(metaData.get(PATH_METADATA));
-        includedModel.create();
-        return includedModel;
-    }
-
-    BaseIncludedModelActiveRecord createIncludedModel(final Map<String, String> metaData) {
-        final String importType = metaData.get(IMPORT_TYPE_METADATA);
-        if (Objects.equals(DMNImportTypes.DMN, determineImportType(importType))) {
-            final DMNIncludedModelActiveRecord dmnIncludedModel = new DMNIncludedModelActiveRecord(recordEngine);
-            dmnIncludedModel.setDrgElementsCount(Integer.valueOf(metaData.get(DRG_ELEMENT_COUNT_METADATA)));
-            dmnIncludedModel.setDataTypesCount(Integer.valueOf(metaData.get(ITEM_DEFINITION_COUNT_METADATA)));
-            return dmnIncludedModel;
-        } else if (Objects.equals(DMNImportTypes.PMML, determineImportType(importType))) {
-            final PMMLIncludedModelActiveRecord pmmlIncludedModel = new PMMLIncludedModelActiveRecord(recordEngine);
-            pmmlIncludedModel.setModelCount(Integer.valueOf(metaData.get(PMML_MODEL_COUNT_METADATA)));
-            return pmmlIncludedModel;
-        }
-        return new DefaultIncludedModelActiveRecord(recordEngine);
-    }
-
     private DMNAssetsDropdown getDropdown() {
         return dropdown;
     }
 
     void superHide() {
         super.hide();
-    }
-
-    private Optional<IncludedModelsPagePresenter> getGrid() {
-        return Optional.ofNullable(grid);
-    }
-
-    private void refreshGrid() {
-        getGrid().ifPresent(IncludedModelsPagePresenter::refresh);
     }
 
     Command getOnValueChanged() {

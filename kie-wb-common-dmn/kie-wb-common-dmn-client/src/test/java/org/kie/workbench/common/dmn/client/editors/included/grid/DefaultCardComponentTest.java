@@ -20,7 +20,9 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.DefaultIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.commands.RemoveIncludedModelCommand;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -33,7 +35,13 @@ public class DefaultCardComponentTest extends BaseCardComponentTest<DefaultCardC
 
     @Override
     protected DefaultCardComponent getCard(final DefaultCardComponent.ContentView cardView) {
-        return new DefaultCardComponent(cardView, refreshDecisionComponentsEvent);
+        return new DefaultCardComponent(cardView,
+                                        refreshDecisionComponentsEvent,
+                                        sessionCommandManager,
+                                        sessionManager,
+                                        recordEngine,
+                                        client,
+                                        refreshDataTypesListEvent);
     }
 
     @Override
@@ -44,5 +52,10 @@ public class DefaultCardComponentTest extends BaseCardComponentTest<DefaultCardC
     @Override
     protected BaseIncludedModelActiveRecord prepareIncludedModelMock() {
         return mock(DefaultIncludedModelActiveRecord.class);
+    }
+
+    @Override
+    protected void doCheckRemoveIncludedModelCommandType(final RemoveIncludedModelCommand command) {
+        assertTrue(command instanceof RemoveIncludedModelCommand);
     }
 }

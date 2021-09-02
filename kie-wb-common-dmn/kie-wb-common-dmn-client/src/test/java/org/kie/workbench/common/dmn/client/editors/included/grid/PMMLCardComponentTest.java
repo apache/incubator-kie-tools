@@ -21,7 +21,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.PMMLIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.commands.RemoveIncludedModelCommand;
+import org.kie.workbench.common.dmn.client.editors.included.commands.RemovePMMLIncludedModelCommand;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -32,7 +35,13 @@ public class PMMLCardComponentTest extends BaseCardComponentTest<PMMLCardCompone
 
     @Override
     protected PMMLCardComponent getCard(final PMMLCardComponent.ContentView cardView) {
-        return new PMMLCardComponent(cardView, refreshDecisionComponentsEvent);
+        return new PMMLCardComponent(cardView,
+                                     refreshDecisionComponentsEvent,
+                                     sessionCommandManager,
+                                     sessionManager,
+                                     recordEngine,
+                                     client,
+                                     refreshDataTypesListEvent);
     }
 
     @Override
@@ -64,5 +73,10 @@ public class PMMLCardComponentTest extends BaseCardComponentTest<PMMLCardCompone
     @Override
     protected BaseIncludedModelActiveRecord prepareIncludedModelMock() {
         return mock(PMMLIncludedModelActiveRecord.class);
+    }
+
+    @Override
+    protected void doCheckRemoveIncludedModelCommandType(final RemoveIncludedModelCommand command) {
+        assertTrue(command instanceof RemovePMMLIncludedModelCommand);
     }
 }

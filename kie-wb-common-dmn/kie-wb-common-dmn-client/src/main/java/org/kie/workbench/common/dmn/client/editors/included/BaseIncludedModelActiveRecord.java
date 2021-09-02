@@ -19,6 +19,8 @@ package org.kie.workbench.common.dmn.client.editors.included;
 import org.kie.workbench.common.dmn.client.editors.common.persistence.ActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.common.persistence.RecordEngine;
 
+import static org.uberfire.commons.UUID.uuid;
+
 public abstract class BaseIncludedModelActiveRecord extends ActiveRecord<BaseIncludedModelActiveRecord> {
 
     private String uuid;
@@ -33,6 +35,7 @@ public abstract class BaseIncludedModelActiveRecord extends ActiveRecord<BaseInc
 
     public BaseIncludedModelActiveRecord(final RecordEngine<BaseIncludedModelActiveRecord> recordEngine) {
         super(recordEngine);
+        setUuid(uuid());
     }
 
     public String getNamespace() {

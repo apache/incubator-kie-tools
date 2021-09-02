@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActi
 import org.kie.workbench.common.dmn.client.editors.included.DefaultIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.PMMLIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 import static org.uberfire.commons.UUID.uuid;
 
@@ -77,7 +78,8 @@ public class IncludedModelsFactory {
             includedModel = new DefaultIncludedModelActiveRecord(getRecordEngine());
         }
 
-        includedModel.setUuid(uuidWrapper());
+        setUuid(anImport, includedModel);
+
         includedModel.setName(getName(anImport));
         includedModel.setNamespace(getNamespace(anImport));
         includedModel.setImportType(getImportType(anImport));
@@ -86,6 +88,14 @@ public class IncludedModelsFactory {
         getIncludedModelsIndex().index(includedModel, anImport);
 
         return includedModel;
+    }
+
+    void setUuid(final Import anImport, final BaseIncludedModelActiveRecord includedModel) {
+        if (StringUtils.isEmpty(anImport.getUuid())) {
+            includedModel.setUuid(uuidWrapper());
+        } else {
+            includedModel.setUuid(anImport.getUuid());
+        }
     }
 
     public IncludedModelsIndex getIncludedModelsIndex() {

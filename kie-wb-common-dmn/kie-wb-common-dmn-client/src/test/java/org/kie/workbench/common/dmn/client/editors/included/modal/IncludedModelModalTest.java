@@ -16,28 +16,25 @@
 
 package org.kie.workbench.common.dmn.client.editors.included.modal;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Maps;
-import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
-import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
-import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPagePresenter;
-import org.kie.workbench.common.dmn.client.editors.included.PMMLIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.commands.AddIncludedModelCommand;
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
 import org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdown;
 import org.kie.workbench.common.dmn.client.editors.types.common.events.RefreshDataTypesListEvent;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -45,17 +42,10 @@ import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.included.modal.IncludedModelModal.WIDTH;
-import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.DRG_ELEMENT_COUNT_METADATA;
-import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.IMPORT_TYPE_METADATA;
-import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.ITEM_DEFINITION_COUNT_METADATA;
-import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.PATH_METADATA;
-import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.PMML_MODEL_COUNT_METADATA;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -86,6 +76,12 @@ public class IncludedModelModalTest {
 
     @Mock
     private EventSourceMock<RefreshDataTypesListEvent> refreshDataTypesListEvent;
+
+    @Mock
+    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+
+    @Mock
+    private SessionManager sessionManager;
 
     @Captor
     private ArgumentCaptor<RefreshDataTypesListEvent> refreshDataTypesListArgumentCaptor;
@@ -146,113 +142,63 @@ public class IncludedModelModalTest {
     }
 
     @Test
-    public void testIncludeDMN() {
-        final String path = "path";
-        final String name = "name";
-        final String namespace = "namespace";
-        final int drgElementCount = 2;
-        final int itemDefinitionCount = 3;
+    public void testInclude() {
 
+        final AbstractCanvasHandler canvasHandler = mock(AbstractCanvasHandler.class);
+        final AddIncludedModelCommand command = mock(AddIncludedModelCommand.class);
         final KieAssetsDropdownItem dropdownItem = mock(KieAssetsDropdownItem.class);
 
-        when(view.getModelNameInput()).thenReturn(name);
         when(dropdown.getValue()).thenReturn(Optional.of(dropdownItem));
-        when(dropdownItem.getValue()).thenReturn(namespace);
-        when(dropdownItem.getMetaData()).thenReturn(new Maps.Builder<String, String>()
-                                                            .put(PATH_METADATA, path)
-                                                            .put(IMPORT_TYPE_METADATA, DMNImportTypes.DMN.getDefaultNamespace())
-                                                            .put(DRG_ELEMENT_COUNT_METADATA, Integer.toString(drgElementCount))
-                                                            .put(ITEM_DEFINITION_COUNT_METADATA, Integer.toString(itemDefinitionCount))
-                                                            .build());
+
+        doReturn(canvasHandler).when(modal).getCanvasHandler();
+        doReturn(command).when(modal).createAddIncludedModelCommand(dropdownItem);
+
         doNothing().when(modal).hide();
 
         modal.include();
 
-        verify(modal).createIncludedModel(dropdownItem);
-        verify(grid).refresh();
-        verify(modal).hide();
-        verify(refreshDecisionComponentsEvent).fire(any(RefreshDecisionComponents.class));
-        verify(modal).refreshDataTypesList(includedModelActiveRecordArgumentCaptor.capture());
-
-        final BaseIncludedModelActiveRecord baseActiveRecord = includedModelActiveRecordArgumentCaptor.getValue();
-        assertTrue(baseActiveRecord instanceof DMNIncludedModelActiveRecord);
-
-        final DMNIncludedModelActiveRecord dmnActiveRecord = (DMNIncludedModelActiveRecord) baseActiveRecord;
-        assertEquals(path, dmnActiveRecord.getPath());
-        assertEquals(name, dmnActiveRecord.getName());
-        assertEquals(namespace, dmnActiveRecord.getNamespace());
-        assertEquals(drgElementCount, (int) dmnActiveRecord.getDrgElementsCount());
-        assertEquals(itemDefinitionCount, (int) dmnActiveRecord.getDataTypesCount());
+        verify(sessionCommandManager).execute(canvasHandler, command);
     }
 
     @Test
-    public void testIncludePMML() {
-        final String path = "path";
-        final String name = "name";
-        final String namespace = "namespace";
-        final int modelCount = 2;
+    public void testGetCanvasHandler() {
 
-        final KieAssetsDropdownItem dropdownItem = mock(KieAssetsDropdownItem.class);
+        final ClientSession currentSession = mock(ClientSession.class);
+        final AbstractCanvasHandler canvasHandler = mock(AbstractCanvasHandler.class);
+
+        when(sessionManager.getCurrentSession()).thenReturn(currentSession);
+        when(currentSession.getCanvasHandler()).thenReturn(canvasHandler);
+
+        final AbstractCanvasHandler currentCanvasHandler = modal.getCanvasHandler();
+        assertEquals(canvasHandler, currentCanvasHandler);
+    }
+
+    @Test
+    public void testCreateIncludedModel() {
+        doTestCreateAddIncludedModelCommand("file", "file");
+    }
+
+    @Test
+    public void testCreateIncludedModelWithWhitespace() {
+        doTestCreateAddIncludedModelCommand("   file   ", "file");
+    }
+
+    private void doTestCreateAddIncludedModelCommand(final String name,
+                                                     final String expectedName) {
+
+        final KieAssetsDropdownItem value = mock(KieAssetsDropdownItem.class);
 
         when(view.getModelNameInput()).thenReturn(name);
-        when(dropdown.getValue()).thenReturn(Optional.of(dropdownItem));
-        when(dropdownItem.getValue()).thenReturn(namespace);
-        when(dropdownItem.getMetaData()).thenReturn(new Maps.Builder<String, String>()
-                                                            .put(PATH_METADATA, path)
-                                                            .put(IMPORT_TYPE_METADATA, DMNImportTypes.PMML.getDefaultNamespace())
-                                                            .put(PMML_MODEL_COUNT_METADATA, Integer.toString(modelCount))
-                                                            .build());
-        doNothing().when(modal).hide();
 
-        modal.include();
+        final AddIncludedModelCommand command = modal.createAddIncludedModelCommand(value);
 
-        verify(modal).createIncludedModel(dropdownItem);
-        verify(grid).refresh();
-        verify(modal).hide();
-        verify(refreshDecisionComponentsEvent).fire(any(RefreshDecisionComponents.class));
-        verify(modal).refreshDataTypesList(includedModelActiveRecordArgumentCaptor.capture());
-
-        final BaseIncludedModelActiveRecord baseActiveRecord = includedModelActiveRecordArgumentCaptor.getValue();
-        assertTrue(baseActiveRecord instanceof PMMLIncludedModelActiveRecord);
-
-        final PMMLIncludedModelActiveRecord pmmlActiveRecord = (PMMLIncludedModelActiveRecord) baseActiveRecord;
-        assertEquals(path, pmmlActiveRecord.getPath());
-        assertEquals(name, pmmlActiveRecord.getName());
-        assertEquals(namespace, pmmlActiveRecord.getNamespace());
-        assertEquals(modelCount, (int) pmmlActiveRecord.getModelCount());
-    }
-
-    @Test
-    public void testRefreshDataTypesList() {
-
-        final BaseIncludedModelActiveRecord includedModel = mock(BaseIncludedModelActiveRecord.class);
-        final Consumer<List<ItemDefinition>> listConsumer = list -> {/* Nothing. */};
-        final String modelName = "model1";
-        final String namespace = "://namespace1";
-
-        when(includedModel.getName()).thenReturn(modelName);
-        when(includedModel.getNamespace()).thenReturn(namespace);
-        doReturn(listConsumer).when(modal).getItemDefinitionConsumer();
-
-        modal.refreshDataTypesList(includedModel);
-
-        verify(client).loadItemDefinitionsByNamespace(modelName, namespace, listConsumer);
-    }
-
-    @Test
-    public void testGetItemDefinitionConsumer() {
-
-        final ItemDefinition itemDefinition1 = mock(ItemDefinition.class);
-        final ItemDefinition itemDefinition2 = mock(ItemDefinition.class);
-        final List<ItemDefinition> expectedNewItemDefinitions = asList(itemDefinition1, itemDefinition2);
-
-        modal.getItemDefinitionConsumer().accept(expectedNewItemDefinitions);
-
-        verify(refreshDataTypesListEvent).fire(refreshDataTypesListArgumentCaptor.capture());
-
-        final List<ItemDefinition> actualNewItemDefinitions = refreshDataTypesListArgumentCaptor.getValue().getNewItemDefinitions();
-
-        assertEquals(expectedNewItemDefinitions, actualNewItemDefinitions);
+        assertEquals(value, command.getValue());
+        assertEquals(grid, command.getPresenter().get());
+        assertEquals(refreshDecisionComponentsEvent, command.getRefreshDecisionComponentsEvent());
+        assertEquals(refreshDataTypesListEvent, command.getRefreshDataTypesListEvent());
+        assertEquals(recordEngine, command.getRecordEngine());
+        assertEquals(client, command.getClient());
+        assertEquals(expectedName, command.getModelName());
     }
 
     @Test
@@ -303,51 +249,16 @@ public class IncludedModelModalTest {
         assertTrue(modal.isValidValues());
     }
 
-    @Test
-    public void testCreateIncludedModel() {
-        doTestCreateIncludedModel("file", "file");
-    }
-
-    @Test
-    public void testCreateIncludedModelWithWhitespace() {
-        doTestCreateIncludedModel("   file   ", "file");
-    }
-
-    @SuppressWarnings("unchecked")
-    private void doTestCreateIncludedModel(final String name,
-                                           final String expectedName) {
-        final String value = "://namespace";
-        final String path = "/src/path/file";
-        final String anPackage = "path.file.com";
-        final Integer expectedDrgElementsCount = 2;
-        final Integer expectedDataTypesCount = 3;
-        final Map<String, String> metaData = new Maps.Builder<String, String>()
-                .put(PATH_METADATA, path)
-                .put(IMPORT_TYPE_METADATA, DMNImportTypes.DMN.getDefaultNamespace())
-                .put(DRG_ELEMENT_COUNT_METADATA, expectedDrgElementsCount.toString())
-                .put(ITEM_DEFINITION_COUNT_METADATA, expectedDataTypesCount.toString())
-                .build();
-
-        when(view.getModelNameInput()).thenReturn(name);
-
-        final BaseIncludedModelActiveRecord includedModel = modal.createIncludedModel(new KieAssetsDropdownItem(name, anPackage, value, metaData));
-        assertTrue(includedModel instanceof DMNIncludedModelActiveRecord);
-
-        final DMNIncludedModelActiveRecord dmnIncludedModel = (DMNIncludedModelActiveRecord) includedModel;
-
-        assertEquals(expectedName, dmnIncludedModel.getName());
-        assertEquals(value, dmnIncludedModel.getNamespace());
-        assertEquals(path, dmnIncludedModel.getPath());
-        assertEquals(expectedDrgElementsCount, dmnIncludedModel.getDrgElementsCount());
-        assertEquals(expectedDataTypesCount, dmnIncludedModel.getDataTypesCount());
-    }
+//
 
     class IncludedModelModalFake extends IncludedModelModal {
 
         IncludedModelModalFake(final View view,
                                final DMNAssetsDropdown dropdown,
                                final ImportRecordEngine recordEngine) {
-            super(view, dropdown, recordEngine, client, refreshDataTypesListEvent, refreshDecisionComponentsEvent);
+            super(view, dropdown, recordEngine, client, refreshDataTypesListEvent, refreshDecisionComponentsEvent,
+                  sessionCommandManager,
+                  sessionManager);
         }
 
         @Override

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.included.grid;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
@@ -25,9 +26,19 @@ import com.google.gwt.dom.client.Style.HasCssName;
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
-import org.kie.workbench.common.dmn.client.editors.expressions.util.NameUtils;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.commands.RemoveIncludedModelCommand;
+import org.kie.workbench.common.dmn.client.editors.included.commands.RenameIncludedModelCommand;
+import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
+import org.kie.workbench.common.dmn.client.editors.types.common.events.RefreshDataTypesListEvent;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.widgets.client.cards.CardComponent;
 import org.uberfire.client.mvp.UberElemental;
 
@@ -37,17 +48,31 @@ import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 public abstract class BaseCardComponent<R extends BaseIncludedModelActiveRecord, V extends BaseCardComponent.ContentView> implements CardComponent {
 
     protected final V contentView;
-
     protected final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent;
+    protected final Event<RefreshDataTypesListEvent> refreshDataTypesListEvent;
+    protected final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    protected final SessionManager sessionManager;
+    protected final ImportRecordEngine recordEngine;
+    protected final DMNIncludeModelsClient client;
 
     protected R includedModel;
 
     protected DMNCardsGridComponent grid;
 
     public BaseCardComponent(final V contentView,
-                             final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent) {
+                             final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent,
+                             final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                             final SessionManager sessionManager,
+                             final ImportRecordEngine recordEngine,
+                             final DMNIncludeModelsClient client,
+                             final Event<RefreshDataTypesListEvent> refreshDataTypesListEvent) {
         this.contentView = contentView;
         this.refreshDecisionComponentsEvent = refreshDecisionComponentsEvent;
+        this.sessionCommandManager = sessionCommandManager;
+        this.sessionManager = sessionManager;
+        this.recordEngine = recordEngine;
+        this.client = client;
+        this.refreshDataTypesListEvent = refreshDataTypesListEvent;
     }
 
     @PostConstruct
@@ -90,19 +115,13 @@ public abstract class BaseCardComponent<R extends BaseIncludedModelActiveRecord,
     public Function<String, Boolean> onTitleChanged() {
         return newName -> {
 
-            final String oldName = getIncludedModel().getName();
+            final CommandResult<CanvasViolation> result = sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                                                                        new RenameIncludedModelCommand(getIncludedModel(),
+                                                                                                                       getGrid(),
+                                                                                                                       refreshDecisionComponentsEvent,
+                                                                                                                       newName));
 
-            getIncludedModel().setName(NameUtils.normaliseName(newName));
-
-            if (getIncludedModel().isValid()) {
-                getIncludedModel().update();
-                getGrid().refresh();
-                refreshDecisionComponents();
-                return true;
-            } else {
-                getIncludedModel().setName(oldName);
-                return false;
-            }
+            return Objects.equals(CanvasCommandResultBuilder.SUCCESS, result);
         };
     }
 
@@ -129,10 +148,11 @@ public abstract class BaseCardComponent<R extends BaseIncludedModelActiveRecord,
     }
 
     public void remove() {
-        getIncludedModel().destroy();
-        getGrid().refresh();
-        refreshDecisionComponents();
+        sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                      getRemoveCommand());
     }
+
+    abstract RemoveIncludedModelCommand getRemoveCommand();
 
     void refreshDecisionComponents() {
         refreshDecisionComponentsEvent.fire(new RefreshDecisionComponents());

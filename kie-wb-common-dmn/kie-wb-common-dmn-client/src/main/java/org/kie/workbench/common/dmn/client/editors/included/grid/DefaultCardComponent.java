@@ -22,21 +22,48 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.editors.included.DefaultIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.commands.RemoveIncludedModelCommand;
+import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
+import org.kie.workbench.common.dmn.client.editors.types.common.events.RefreshDataTypesListEvent;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 
 @Dependent
 public class DefaultCardComponent extends BaseCardComponent<DefaultIncludedModelActiveRecord, BaseCardComponent.ContentView> {
 
     @Inject
     public DefaultCardComponent(final @Default BaseCardComponent.ContentView contentView,
-                                final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent) {
+                                final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent,
+                                final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                final SessionManager sessionManager,
+                                final ImportRecordEngine recordEngine,
+                                final DMNIncludeModelsClient client,
+                                final Event<RefreshDataTypesListEvent> refreshDataTypesListEvent) {
         super(contentView,
-              refreshDecisionComponentsEvent);
+              refreshDecisionComponentsEvent,
+              sessionCommandManager,
+              sessionManager,
+              recordEngine,
+              client,
+              refreshDataTypesListEvent);
     }
 
     @PostConstruct
     public void init() {
         contentView.init(this);
+    }
+
+    @Override
+    RemoveIncludedModelCommand getRemoveCommand() {
+        return new RemoveIncludedModelCommand<>(getGrid(),
+                                                getIncludedModel(),
+                                                client,
+                                                refreshDecisionComponentsEvent,
+                                                recordEngine,
+                                                refreshDataTypesListEvent);
     }
 }
