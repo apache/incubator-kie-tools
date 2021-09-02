@@ -97,20 +97,22 @@ async function main() {
     for (const pkgName in resMatrix) {
       const displayPkgName = pkgName;
 
+      const pkgProperties = (() => {
+        if (pkgName.startsWith("@kogito-tooling-examples") || pkgName.startsWith("kogito-tooling-examples-")) {
+          return { color: "orange", nodeStyle: "dashed, rounded" };
+        } else if (packageMap.get(pkgName)?.private) {
+          return { color: "black", nodeStyle: "dashed, rounded" };
+        } else if (pkgName.startsWith("@kie-tooling-core")) {
+          return { color: "purple", nodeStyle: "rounded" };
+        } else {
+          return { color: "blue", nodeStyle: "rounded" };
+        }
+      })();
+
       const node = g.addNode(displayPkgName);
-      if (packageMap.get(pkgName)?.private) {
-        node.set("color", "black");
-        node.set("fontcolor", "black");
-        node.set("style", "dashed, rounded");
-      } else if (displayPkgName.startsWith("@kie-tooling-core")) {
-        node.set("style", "rounded");
-        node.set("color", "purple");
-        node.set("fontcolor", "purple");
-      } else {
-        node.set("style", "rounded");
-        node.set("color", "blue");
-        node.set("fontcolor", "blue");
-      }
+      node.set("color", pkgProperties.color);
+      node.set("fontcolor", pkgProperties.color);
+      node.set("style", pkgProperties.nodeStyle);
 
       if (Object.keys(resMatrix[pkgName]).length === 0) {
         g.addEdge(displayPkgName, root, {});
@@ -118,13 +120,14 @@ async function main() {
 
       for (const depName in resMatrix[pkgName]) {
         const displayDepName = depName;
-
         if (resMatrix[pkgName][depName] === "dependency") {
           const edge = g.addEdge(displayPkgName, displayDepName, {});
           edge.set("style", "solid");
+          edge.set("color", pkgProperties.color);
         } else if (resMatrix[pkgName][depName] === "devDependency") {
           const edge = g.addEdge(displayPkgName, displayDepName, {});
           edge.set("style", "dashed");
+          edge.set("color", pkgProperties.color);
         } else if (resMatrix[pkgName][depName] === "transitive") {
           // ignore
         }

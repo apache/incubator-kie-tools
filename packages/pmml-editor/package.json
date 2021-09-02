@@ -38,7 +38,7 @@
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
     "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "copy:css": "copyfiles -u 1 src/**/*.{sass,scss,css} dist/",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "copy:images": "cpr ./static/images ./dist/images",
     "build:dev": "rimraf dist && yarn copy:css && yarn copy:images && tsc -p tsconfig.dev.json",
     "build:prod": "yarn lint && rimraf dist && yarn copy:css && yarn copy:images && tsc -p tsconfig.prod.json && yarn test && yarn test:it",

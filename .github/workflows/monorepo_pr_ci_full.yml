@@ -59,6 +59,7 @@ jobs:
           KOGITO_TOOLING_BUILD_test: "true"
           KOGITO_TOOLING_BUILD_testIT: ${{ matrix.os == 'ubuntu-latest' }}
           KOGITO_TOOLING_BUILD_docker: "true"
+          KOGITO_TOOLING_BUILD_examples: "true"
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
