@@ -5,6 +5,5 @@
     "outDir": "dist/es5",
     "rootDir": "src",
     "target": "es5",
-    "tsBuildInfoFile": "node_modules/.cache/uniforms-patternfly.es5.tsbuildinfo"
   }
 }
