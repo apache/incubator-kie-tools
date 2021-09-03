@@ -107,18 +107,12 @@
     "build:prod": "yarn run run-script-if --bool $(build-env global.build.examples) --then \"yarn run build\" \"yarn run pack\""
   },
   "devDependencies": {
-    "@types/node": "^12.12.5",
-    "@types/vscode": "^1.46.0",
-    "vsce": "1.59.0",
-    "vscode-test": "1.0.0"
+    "@kogito-tooling/build-env": "0.0.0"
   },
   "dependencies": {
     "@kie-tooling-core/editor": "0.0.0",
     "@kie-tooling-core/patternfly-base": "0.0.0",
     "@kie-tooling-core/vscode-extension": "0.0.0",
     "@kogito-tooling-examples/base64png-editor": "0.0.0"
-  },
-  "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
   }
 }

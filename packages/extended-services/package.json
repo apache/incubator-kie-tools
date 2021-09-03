@@ -1,0 +1,37 @@
+{
+  "name": "@kogito-tooling/extended-services",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "scripts": {
+    "copy-jitexecutor": "run-script-os",
+    "copy-jitexecutor:linux": "cp ../../node_modules/@kogito-tooling/jitexecutor-native/dist/linux/jitexecutor jitexecutor && chmod +x jitexecutor",
+    "copy-jitexecutor:darwin": "cp ../../node_modules/@kogito-tooling/jitexecutor-native/dist/darwin/jitexecutor jitexecutor && chmod +x jitexecutor",
+    "copy-jitexecutor:win32": "COPY /B /Y ..\\..\\node_modules\\@kogito-tooling\\jitexecutor-native\\dist\\win32\\jitexecutor.exe jitexecutor",
+    "build": "run-script-os",
+    "build:linux": "GOOS=linux GOARCH=amd64 go build -o dist/linux/kie_tooling_extended_services main.go",
+    "build:darwin": "GO111MODULE=on GOOS=darwin GOARCH=amd64 go build -o dist/darwin/kie_tooling_extended_services main.go",
+    "build:win32": "make",
+    "pack": "run-script-os",
+    "pack:linux": "cd ./dist/linux && tar -pcvzf kie_tooling_extended_services.tar.gz kie_tooling_extended_services",
+    "pack:darwin": "cd ./scripts/macos && ./build.sh",
+    "pack:win32": "echo 'Nothing to do'",
+    "build:dev": "rimraf dist jitexecutor && yarn copy-jitexecutor && yarn build",
+    "build:prod": "rimraf dist jitexecutor && yarn copy-jitexecutor && yarn build && yarn run pack",
+    "start": "ENV=dev go run main.go"
+  },
+  "dependencies": {
+    "@kogito-tooling/jitexecutor-native": "1.10.0-Final"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
+  }
+}

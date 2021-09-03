@@ -27,6 +27,7 @@ To start building the KIE Tooling Core project, you're going to need:
 - Lerna `4.0.0` _(To install, run `npm install -g lerna@4.0.0`)_
 - Maven `3.8.1`
 - Java `11`
+- Go `1.16`
 
 After installing the tools above, you'll need to download the dependencies and link the packages locally. Simply run:
 

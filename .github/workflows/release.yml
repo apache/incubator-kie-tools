@@ -212,7 +212,7 @@ jobs:
 
     if: ${{ always() && github.event.inputs.online_editor == 'true' && (needs.hub.result == 'success' || needs.hub.result == 'skipped') }}
     runs-on: ubuntu-latest
-    needs: [prepare, dmn_dev_sandbox_image, hub]
+    needs: [prepare, dmn_dev_sandbox_image, hub, extended_services]
     steps:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
@@ -628,3 +628,60 @@ jobs:
           git add .
           git commit -m "Deploy ${{ needs.prepare.outputs.version }} (Standalone Editors)"
           git push origin gh-pages
+
+  extended_services:
+    # This should've been its own input, but GitHub limits the amount of inputs to 10.
+    if: ${{ github.event.inputs.online_editor == 'true' }}
+    runs-on: ${{ matrix.os }}
+    needs: [prepare]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.prepare.outputs.release_ref }}
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ${{ matrix.os }}
+
+      - name: "Build"
+        shell: bash
+        run: |
+          lerna run build:prod --scope=@kogito-tooling/extended-services --include-dependencies --stream
+
+      - name: "Upload Extended Services for Linux (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: ./packages/extended-services/dist/linux/kie_tooling_extended_services.tar.gz
+          asset_name: kie_tooling_extended_services_linux_${{ needs.prepare.outputs.version }}.tar.gz
+          asset_content_type: application/tar+gzip
+
+      - name: "Upload Extended Services for macOS (macOS only)"
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: ./packages/extended-services/dist/darwin/Kogito.dmg
+          asset_name: kie_tooling_extended_services_macos_${{ needs.prepare.outputs.version }}.dmg
+          asset_content_type: application/octet-stream
+
+      - name: "Upload Extended Services for Windows (Windows only)"
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: "./packages/extended-services/dist/win32/kie_tooling_extended_services.exe"
+          asset_name: "kie_tooling_extended_services_windows_${{ needs.prepare.outputs.version }}.exe"
+          asset_content_type: application/octet-stream

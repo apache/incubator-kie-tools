@@ -1661,6 +1661,11 @@
   resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-8.3.0.tgz#9aab08c0c3381a4a2ffb188cf82ae34fa7809fd5"
   integrity sha512-AzXoCrAxg9DVVuqz8mSw7BX6A6w9r3WQ/A3Nha5F1WoB+4tQhKGuwBLn3Ckl54ZqYK/AOpJk9ENWGadKno7OTA==
 
+"@kogito-tooling/jitexecutor-native@1.10.0-Final":
+  version "1.10.0-Final"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/jitexecutor-native/-/jitexecutor-native-1.10.0-Final.tgz#af29845155fe4bf282e6a6a433d666fd1cc05197"
+  integrity sha512-MjWKrh2/Xi5wmmaPshyRpJ8PFDVrv6AlR5sUU1GcHpd6v8skYKAZtowhHMJxrQIND9/fUrrpjBSd2goiqj4xtA==
+
 "@kogito-tooling/scesim-editor-unpacked@^8.3.0":
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.3.0.tgz#ea7d0d166b0c24fa56fba51c9d0ce9fbc3adc3a1"
@@ -10343,6 +10348,13 @@ js-yaml@^3.13.1:
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
+
+js-yaml@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.1.0.tgz#c1fb65f8f5017901cdd2c951864ba18458a10602"
+  integrity sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==
+  dependencies:
+    argparse "^2.0.1"
 
 jsbn@~0.1.0:
   version "0.1.1"

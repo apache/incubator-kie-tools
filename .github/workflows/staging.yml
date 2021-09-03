@@ -115,9 +115,9 @@ jobs:
           ONLINE_EDITOR__downloadHubUrlMacOs: "${{ needs.create_release.outputs.download_asset_url }}/STAGING__business_modeler_hub_preview_macos_${{ needs.create_release.outputs.tag }}.zip"
           ONLINE_EDITOR__downloadHubUrlWindows: "${{ needs.create_release.outputs.download_asset_url }}/STAGING__business_modeler_hub_preview_windows_${{ needs.create_release.outputs.tag }}.zip"
           ONLINE_EDITOR__buildInfo: "${{ needs.create_release.outputs.tag }} (staging) @ ${{ needs.create_release.outputs.commit_sha }}"
-          ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ needs.create_release.outputs.tag }}/kie_tooling_extended_services_linux_${{ needs.create_release.outputs.tag }}.tar.gz"
-          ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ needs.create_release.outputs.tag }}/kie_tooling_extended_services_macos_${{ needs.create_release.outputs.tag }}.dmg"
-          ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kogito-tooling-go/releases/download/${{ needs.create_release.outputs.tag }}/kie_tooling_extended_services_windows_${{ needs.create_release.outputs.tag }}.exe"
+          ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: "${{ needs.create_release.outputs.download_asset_url }}/kie_tooling_extended_services_linux_${{ needs.create_release.outputs.tag }}.tar.gz"
+          ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: "${{ needs.create_release.outputs.download_asset_url }}/kie_tooling_extended_services_macos_${{ needs.create_release.outputs.tag }}.dmg"
+          ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: "${{ needs.create_release.outputs.download_asset_url }}/kie_tooling_extended_services_windows_${{ needs.create_release.outputs.tag }}.exe"
           ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion: "${{ needs.create_release.outputs.tag }}"
           ONLINE_EDITOR__gtmId: ""
           DMN_DEV_SANDBOX__gtmId: ""
@@ -320,3 +320,36 @@ jobs:
           asset_path: "${{ github.workspace }}/kogito-tooling/packages/hub/out/Business Modeler Hub Preview-win32-x64.zip"
           asset_name: "STAGING__business_modeler_hub_preview_windows_${{ needs.create_release.outputs.tag }}.zip"
           asset_content_type: application/zip
+
+      - name: "STAGING: Upload Extended Services for Linux (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/extended-services/dist/linux/kie_tooling_extended_services.tar.gz
+          asset_name: STAGING__kie_tooling_extended_services_linux_${{ needs.create_release.outputs.tag }}.tar.gz
+          asset_content_type: application/tar+gzip
+
+      - name: "STAGING: Upload Extended Services for macOS (macOS only)"
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/extended-services/dist/darwin/Kogito.dmg
+          asset_name: STAGING__kie_tooling_extended_services_macos_${{ needs.create_release.outputs.tag }}.dmg
+          asset_content_type: application/octet-stream
+
+      - name: "STAGING: Upload Extended Services for Windows (Windows only)"
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
+          asset_path: "${{ github.workspace }}/kogito-tooling/packages/extended-services/dist/win32/kie_tooling_extended_services.exe"
+          asset_name: "STAGING__kie_tooling_extended_services_windows_${{ needs.create_release.outputs.tag }}.exe"
+          asset_content_type: application/octet-stream

@@ -1,3 +1,0 @@
-[submodule "kogito-apps"]
-	path = packages/extended-services/kogito-apps
-	url = https://github.com/kiegroup/kogito-apps.git
