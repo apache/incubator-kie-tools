@@ -188,7 +188,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                     {baselineScoreValidation.length > 0 && (
                       <ValidationIndicatorLabel validations={baselineScoreValidation} cssClass="core-properties__label">
                         <>
-                          <strong>Baseline score:</strong>&nbsp;
+                          <strong>Baseline Score:</strong>&nbsp;
                           <em>Missing</em>
                         </>
                       </ValidationIndicatorLabel>

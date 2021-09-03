@@ -87,7 +87,7 @@ describe("Scorecard Model Test", () => {
       .find("[data-ouia-component-type=invalid-label]")
       .should(($label) => {
         expect($label).to.have.length(1);
-        expect($label[0]).to.have.text("Baseline score:\u00A0Missing");
+        expect($label[0]).to.have.text("Baseline Score:\u00A0Missing");
       });
 
     cy.ouiaType("model-setup-overview").should("be.visible").click();
@@ -113,7 +113,7 @@ describe("Scorecard Model Test", () => {
       .find("[data-ouia-component-type=invalid-label]")
       .should(($label) => {
         expect($label).to.have.length(1);
-        expect($label[0]).to.have.text("Baseline score:\u00A0Missing");
+        expect($label[0]).to.have.text("Baseline Score:\u00A0Missing");
       });
   });
   it("Attribute 'Use Reason Codes' - set and unset", () => {
@@ -167,7 +167,7 @@ describe("Scorecard Model Test", () => {
       .find("[data-ouia-component-type=invalid-label]")
       .should(($label) => {
         expect($label).to.have.length(1);
-        expect($label[0]).to.have.text("Baseline score:\u00A0Missing");
+        expect($label[0]).to.have.text("Baseline Score:\u00A0Missing");
       });
   });
 
@@ -204,7 +204,7 @@ describe("Scorecard Model Test", () => {
       .find("[data-ouia-component-type=invalid-label]")
       .should(($label) => {
         expect($label).to.have.length(1);
-        expect($label[0]).to.have.text("Baseline score:\u00A0Missing");
+        expect($label[0]).to.have.text("Baseline Score:\u00A0Missing");
       });
   });
 
@@ -231,7 +231,7 @@ describe("Scorecard Model Test", () => {
       .find("[data-ouia-component-type=invalid-label]")
       .should(($label) => {
         expect($label).to.have.length(1);
-        expect($label[0]).to.have.text("Baseline score:\u00A0Missing");
+        expect($label[0]).to.have.text("Baseline Score:\u00A0Missing");
       });
 
     cy.ouiaType("model-setup-overview").click();
@@ -255,7 +255,7 @@ describe("Scorecard Model Test", () => {
       .find("[data-ouia-component-type=invalid-label]")
       .should(($label) => {
         expect($label).to.have.length(1);
-        expect($label[0]).to.have.text("Baseline score:\u00A0Missing");
+        expect($label[0]).to.have.text("Baseline Score:\u00A0Missing");
       });
   });
 
@@ -274,12 +274,6 @@ describe("Scorecard Model Test", () => {
         expect($label[1]).to.have.text("Function:\u00A0regression");
         expect($label[2]).to.have.text("Use Reason Codes:\u00A0Yes");
         expect($label[3]).to.have.text("Reason Code Algorithm:\u00A0pointsBelow");
-        /*
-         * The label contains different string when is invalid:
-         * - invalid label - "Baseline score:"
-         * - valid label - "Baseline Score:"
-         * TODO: reach an agreement about functionality.
-         */
         expect($label[4]).to.have.text("Baseline Score:\u00A0-15.5");
         expect($label[5]).to.have.text("Baseline Method:\u00A0other");
       });
@@ -307,7 +301,7 @@ describe("Scorecard Model Test", () => {
       .find("[data-ouia-component-type=invalid-label]")
       .should(($label) => {
         expect($label).to.have.length(1);
-        expect($label[0]).to.have.text("Baseline score:\u00A0Missing");
+        expect($label[0]).to.have.text("Baseline Score:\u00A0Missing");
       });
   });
 
@@ -334,7 +328,7 @@ describe("Scorecard Model Test", () => {
       .find("[data-ouia-component-type=invalid-label]")
       .should(($label) => {
         expect($label).to.have.length(1);
-        expect($label[0]).to.have.text("Baseline score:\u00A0Missing");
+        expect($label[0]).to.have.text("Baseline Score:\u00A0Missing");
       });
 
     cy.ouiaType("model-setup-overview").click();
@@ -364,7 +358,7 @@ describe("Scorecard Model Test", () => {
       .find("[data-ouia-component-type=invalid-label]")
       .should(($label) => {
         expect($label).to.have.length(1);
-        expect($label[0]).to.have.text("Baseline score:\u00A0Missing");
+        expect($label[0]).to.have.text("Baseline Score:\u00A0Missing");
       });
   });
 
@@ -400,7 +394,7 @@ describe("Scorecard Model Test", () => {
       .find("[data-ouia-component-type=invalid-label]")
       .should(($label) => {
         expect($label).to.have.length(1);
-        expect($label[0]).to.have.text("Baseline score:\u00A0Missing");
+        expect($label[0]).to.have.text("Baseline Score:\u00A0Missing");
       });
 
     cy.ouiaType("model-setup-overview").click();
@@ -425,7 +419,7 @@ describe("Scorecard Model Test", () => {
       .find("[data-ouia-component-type=invalid-label]")
       .should(($label) => {
         expect($label).to.have.length(1);
-        expect($label[0]).to.have.text("Baseline score:\u00A0Missing");
+        expect($label[0]).to.have.text("Baseline Score:\u00A0Missing");
       });
   });
 
@@ -466,7 +460,7 @@ describe("Scorecard Model Test", () => {
       .find("[data-ouia-component-type=invalid-label]")
       .should(($label) => {
         expect($label).to.have.length(1);
-        expect($label[0]).to.have.text("Baseline score:\u00A0Missing");
+        expect($label[0]).to.have.text("Baseline Score:\u00A0Missing");
       });
 
     cy.ouiaType("model-setup-overview").click();
@@ -491,7 +485,7 @@ describe("Scorecard Model Test", () => {
       .find("[data-ouia-component-type=invalid-label]")
       .should(($label) => {
         expect($label).to.have.length(1);
-        expect($label[0]).to.have.text("Baseline score:\u00A0Missing");
+        expect($label[0]).to.have.text("Baseline Score:\u00A0Missing");
       });
   });
 });
