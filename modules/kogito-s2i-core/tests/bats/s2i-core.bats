@@ -363,7 +363,7 @@ teardown() {
     rm -rf target/*
 
     echo "result= ${lines[@]}"
-    [ "${lines[0]}" = "---> Generating $QUARKUS_RUNTIME_TYPE project structure using the kogito-quarkus-archetype archetype..." ]
+    [ "${lines[0]}" = "---> Generating quarkus project structure for project..." ]
 }
 
 @test "build_kogito_app only checks if it will generate the springboot project in case there's no pom.xml" {
@@ -373,7 +373,8 @@ teardown() {
     rm -rf target/*
 
     echo "result= ${lines[@]}"
-    [ "${lines[0]}" = "---> Generating $SPRINGBOOT_RUNTIME_TYPE project structure using the kogito-springboot-archetype archetype..." ]
+    [ "${lines[0]}" = "---> Generating springboot project structure for project..." ]
+    [ "${lines[1]}" = "----> Using Spring Boot to bootstrap the application." ]
 }
 
 @test "build_kogito_app only checks if it will a build will be triggered if a pom is found" {
@@ -394,7 +395,7 @@ teardown() {
     run build_kogito_app
     rm -rf target/*
     echo "result= ${lines[@]}"
-    [ "${lines[0]}" = "---> Generating quarkus project structure using the kogito-quarkus-archetype archetype..." ]
+    [ "${lines[0]}" = "---> Generating quarkus project structure for project..." ]
 }
 
 @test "build_kogito_app build a project from a YAML Serverless Workflow file" {
@@ -405,5 +406,6 @@ teardown() {
     rm -rf target/*
 
     echo "result= ${lines[@]}"
-    [ "${lines[0]}" = "---> Generating quarkus project structure using the kogito-quarkus-archetype archetype..." ]
+    [ "${lines[0]}" = "---> Generating quarkus project structure for project..." ]
 }
+
