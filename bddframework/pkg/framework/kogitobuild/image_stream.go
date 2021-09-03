@@ -16,12 +16,13 @@ package kogitobuild
 
 import (
 	"fmt"
+	"os"
+	"strings"
+
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	buildv1 "github.com/openshift/api/build/v1"
-	"os"
-	"strings"
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
@@ -318,7 +319,6 @@ func (k *imageStreamHandler) ResolveKogitoImageStreamTagName(build api.KogitoBui
 
 // resolveImageRegistry resolves the registry/namespace name to be used in the given build, e.g. quay.io/kiegroup
 func resolveKogitoImageRegistryNamespace(build api.KogitoBuildInterface, isBuilder bool) string {
-	namespace := infrastructure.GetDefaultImageNamespace()
 	registry := infrastructure.GetDefaultImageRegistry()
 	image := framework.ConvertImageTagToImage(build.GetSpec().GetRuntimeImage())
 	if isBuilder {
@@ -327,10 +327,7 @@ func resolveKogitoImageRegistryNamespace(build api.KogitoBuildInterface, isBuild
 	if len(image.Domain) > 0 {
 		registry = image.Domain
 	}
-	if len(image.Namespace) > 0 {
-		namespace = image.Namespace
-	}
-	return strings.Join([]string{registry, namespace}, "/")
+	return registry
 }
 
 func getOutputImageStreamNameTag(bc *buildv1.BuildConfig) (name, tag string) {

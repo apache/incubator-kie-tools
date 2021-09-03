@@ -15,9 +15,10 @@
 package framework
 
 import (
-	"github.com/kiegroup/kogito-operator/api"
 	"reflect"
 	"testing"
+
+	"github.com/kiegroup/kogito-operator/api"
 )
 
 func TestFromStringToImage(t *testing.T) {
@@ -30,16 +31,16 @@ func TestFromStringToImage(t *testing.T) {
 		want api.Image
 	}{
 		{"empty", args{""}, api.Image{}},
-		{"with registry name", args{"quay.io/openshift/myimage:1.0"}, api.Image{Name: "myimage", Tag: "1.0", Namespace: "openshift", Domain: "quay.io"}},
-		{"with registry name and port", args{"quay.io:5000/openshift/myimage:1.0"}, api.Image{Name: "myimage", Tag: "1.0", Namespace: "openshift", Domain: "quay.io:5000"}},
-		{"full name", args{"openshift/myimage:1.0"}, api.Image{Name: "myimage", Tag: "1.0", Namespace: "openshift"}},
-		{"namespace empty", args{"myimage:1.0"}, api.Image{Name: "myimage", Tag: "1.0", Namespace: "", Domain: ""}},
-		{"tag empty", args{"myimage"}, api.Image{Name: "myimage", Tag: "latest", Namespace: "", Domain: ""}},
-		{"tag empty with a trick", args{"myimage:"}, api.Image{Name: "myimage", Tag: "latest", Namespace: "", Domain: ""}},
-		{"just tag", args{":1.0"}, api.Image{Name: "", Tag: "1.0", Namespace: "", Domain: ""}},
-		{"localhost domain", args{"localhost:6000/namespace/image"}, api.Image{Name: "image", Tag: "latest", Namespace: "namespace", Domain: "localhost:6000"}},
-		{"IP only", args{"10.10.2.1/namespace/image"}, api.Image{Name: "image", Tag: "latest", Namespace: "namespace", Domain: "10.10.2.1"}},
-		{"IP and port", args{"10.10.2.1:5000/namespace/image"}, api.Image{Name: "image", Tag: "latest", Namespace: "namespace", Domain: "10.10.2.1:5000"}},
+		{"with registry name and namespace", args{"quay.io/openshift/myimage:1.0"}, api.Image{Name: "myimage", Tag: "1.0", Domain: "quay.io/openshift"}},
+		{"with registry name, namespace and port", args{"quay.io:5000/openshift/myimage:1.0"}, api.Image{Name: "myimage", Tag: "1.0", Domain: "quay.io:5000/openshift"}},
+		{"with registry name and image", args{"quay.io/myimage:1.0"}, api.Image{Name: "myimage", Tag: "1.0", Domain: "quay.io"}},
+		{"domain empty", args{"myimage:1.0"}, api.Image{Name: "myimage", Tag: "1.0", Domain: ""}},
+		{"tag empty", args{"myimage"}, api.Image{Name: "myimage", Tag: "latest", Domain: ""}},
+		{"tag empty with a trick", args{"myimage:"}, api.Image{Name: "myimage", Tag: "latest", Domain: ""}},
+		{"just tag", args{":1.0"}, api.Image{Name: "", Tag: "1.0", Domain: ""}},
+		{"localhost domain", args{"localhost:6000/namespace/image"}, api.Image{Name: "image", Tag: "latest", Domain: "localhost:6000/namespace"}},
+		{"IP only", args{"10.10.2.1/namespace/image"}, api.Image{Name: "image", Tag: "latest", Domain: "10.10.2.1/namespace"}},
+		{"IP and port", args{"10.10.2.1:5000/namespace/image"}, api.Image{Name: "image", Tag: "latest", Domain: "10.10.2.1:5000/namespace"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -60,12 +61,12 @@ func TestFromImageToString(t *testing.T) {
 		want string
 	}{
 		{"empty", args{api.Image{}}, ""},
-		{"with registry name", args{api.Image{Name: "myimage", Tag: "1.0", Namespace: "openshift", Domain: "quay.io"}}, "quay.io/openshift/myimage:1.0"},
-		{"with registry name and port", args{api.Image{Name: "myimage", Tag: "1.0", Namespace: "openshift", Domain: "quay.io:5000"}}, "quay.io:5000/openshift/myimage:1.0"},
-		{"full name", args{api.Image{Name: "myimage", Tag: "1.0", Namespace: "openshift"}}, "openshift/myimage:1.0"},
-		{"namespace empty", args{api.Image{Name: "myimage", Tag: "1.0", Namespace: "", Domain: ""}}, "myimage:1.0"},
-		{"tag empty", args{api.Image{Name: "myimage", Tag: "", Namespace: "", Domain: ""}}, "myimage"},
-		{"just tag", args{api.Image{Name: "", Tag: "1.0", Namespace: "", Domain: ""}}, ":1.0"},
+		{"with registry name", args{api.Image{Name: "myimage", Tag: "1.0", Domain: "quay.io/openshift"}}, "quay.io/openshift/myimage:1.0"},
+		{"with registry name and port", args{api.Image{Name: "myimage", Tag: "1.0", Domain: "quay.io:5000/openshift"}}, "quay.io:5000/openshift/myimage:1.0"},
+		{"full name", args{api.Image{Name: "myimage", Tag: "1.0", Domain: "openshift"}}, "openshift/myimage:1.0"},
+		{"namespace empty", args{api.Image{Name: "myimage", Tag: "1.0", Domain: ""}}, "myimage:1.0"},
+		{"tag empty", args{api.Image{Name: "myimage", Tag: "", Domain: ""}}, "myimage"},
+		{"just tag", args{api.Image{Name: "", Tag: "1.0", Domain: ""}}, ":1.0"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

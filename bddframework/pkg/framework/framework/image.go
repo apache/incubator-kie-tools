@@ -25,7 +25,7 @@ const (
 	// dockerTagRegx matches a docker image name, to test it check: https://regex101.com/r/lAJKau/2.
 	// this is a super relax regexp, since we accept pretty much anything see the test cases on image_test.go
 	// see: https://github.com/docker/distribution/blob/main/reference/regexp.go
-	dockerTagRegx = `(?P<domain>(?:[a-z0-9]?:{0,1}\.?-?_?)+\/)?(?P<ns>(?:[a-z0-9]|[._]|__|[-]*)+\/)?(?P<image>[^:]+)(?P<tag>:.+)?`
+	dockerTagRegx = `(?P<domain>(?:[a-z0-9]?:{0,1}\.?-?_?)+\/(?:(?:[a-z0-9]|[._]|__|[-]*)+\/)?)?(?P<image>[^:]+)(?P<tag>:.+)?`
 )
 
 var (
@@ -35,12 +35,11 @@ var (
 
 // ConvertImageTagToImage converts a plain string into an Image structure. For example, see https://regex101.com/r/1YX9rh/1.
 func ConvertImageTagToImage(imageName string) api.Image {
-	domain, ns, name, tag := SplitImageTag(imageName)
+	domain, name, tag := SplitImageTag(imageName)
 	image := api.Image{
-		Domain:    domain,
-		Namespace: ns,
-		Name:      name,
-		Tag:       tag,
+		Domain: domain,
+		Name:   name,
+		Tag:    tag,
 	}
 
 	return image
@@ -52,9 +51,6 @@ func ConvertImageToImageTag(image api.Image) string {
 	if len(image.Domain) > 0 {
 		imageTag += image.Domain + "/"
 	}
-	if len(image.Namespace) > 0 {
-		imageTag += image.Namespace + "/"
-	}
 	imageTag += image.Name
 	if len(image.Tag) > 0 {
 		imageTag += ":" + image.Tag
@@ -63,9 +59,8 @@ func ConvertImageToImageTag(image api.Image) string {
 }
 
 // splitImageTag
-func splitImageTag(imageTag string) (domain, namespace, name, tag string) {
+func splitImageTag(imageTag string) (domain, name, tag string) {
 	domain = ""
-	namespace = ""
 	name = ""
 	tag = ""
 	if len(imageTag) > 0 {
@@ -75,26 +70,21 @@ func splitImageTag(imageTag string) (domain, namespace, name, tag string) {
 		}
 
 		imageMatch := DockerTagRegxCompiled.FindStringSubmatch(imageTag)
-		// domain and namespace have basically the same group match, we only have them when both are informed
-		if len(imageMatch[1]) > 0 && len(imageMatch[2]) > 0 {
-			domain = strings.Split(imageMatch[1], "/")[0]
-			namespace = strings.Split(imageMatch[2], "/")[0]
-		} else if len(imageMatch[1]) > 0 {
-			// when we only have a match in the first case, we consider being namespace, domain should be the platform default
-			namespace = strings.Split(imageMatch[1], "/")[0]
+		if len(imageMatch[1]) > 0 {
+			domain = strings.TrimRight(imageMatch[1], "/")
 		}
-		name = imageMatch[3]
-		tag = strings.ReplaceAll(imageMatch[4], ":", "")
+		name = imageMatch[2]
+		tag = strings.ReplaceAll(imageMatch[3], ":", "")
 	}
 	return
 }
 
 // SplitImageTag breaks into parts a given tag name, adds "latest" to the tag name if it's empty. For example, see https://regex101.com/r/1YX9rh/1.
-func SplitImageTag(imageTag string) (domain, namespace, name, tag string) {
+func SplitImageTag(imageTag string) (domain, name, tag string) {
 	if len(imageTag) == 0 {
 		return
 	}
-	domain, namespace, name, tag = splitImageTag(imageTag)
+	domain, name, tag = splitImageTag(imageTag)
 	if len(tag) == 0 {
 		tag = "latest"
 	}
