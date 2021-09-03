@@ -1,0 +1,18 @@
+package kogito
+
+const NAME = "Kogito"
+const APPNAME = "KIE Tooling Extended Services"
+const SERVER_STATUS = "KIE Tooling Extended Services Status"
+const SERVER_STATUS_ON = SERVER_STATUS + ": ON"
+const SERVER_STATUS_OFF = SERVER_STATUS + ": OFF"
+const START = "Start"
+const STARTING = "Starting..."
+const STOP = "Stop"
+const STOPPING = "Stopping..."
+const RESTART = "Restart"
+const QUIT = "Quit"
+const VERSION = "Version"
+const NOT_STARTED = "Not Started"
+const BUSINESS_MODELER = "Open Business Modeler"
+const MODELER_LINK = "https://kiegroup.github.io/kogito-online/#/"
+const INFORMATION_PORTS = "Ports"
