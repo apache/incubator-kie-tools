@@ -16,7 +16,6 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/version"
 	"io"
 	"io/ioutil"
 	"math/rand"
@@ -25,6 +24,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/kiegroup/kogito-operator/version"
 
 	"github.com/kiegroup/kogito-operator/api"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
@@ -230,18 +231,13 @@ func DeleteFile(folder, fileName string) error {
 // GetBuildImage returns a build image with defaults set
 func GetBuildImage(imageName string) string {
 	image := api.Image{
-		Domain:    config.GetBuildImageRegistry(),
-		Namespace: config.GetBuildImageNamespace(),
-		Name:      imageName,
-		Tag:       config.GetBuildImageVersion(),
+		Domain: fmt.Sprintf("%s/%s", config.GetBuildImageRegistry(), config.GetBuildImageNamespace()),
+		Name:   imageName,
+		Tag:    config.GetBuildImageVersion(),
 	}
 
 	if len(image.Domain) == 0 {
 		image.Domain = infrastructure.GetDefaultImageRegistry()
-	}
-
-	if len(image.Namespace) == 0 {
-		image.Namespace = infrastructure.GetDefaultImageNamespace()
 	}
 
 	if len(image.Tag) == 0 {

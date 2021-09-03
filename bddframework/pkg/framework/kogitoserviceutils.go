@@ -120,18 +120,12 @@ func NewImageOrDefault(fullImage string, defaultImageName string) string {
 
 	image := api.Image{}
 	if isRuntimeImageInformationSet() {
-
-		image.Domain = config.GetServicesImageRegistry()
-		image.Namespace = config.GetServicesImageNamespace()
+		image.Domain = fmt.Sprintf("%s/%s", config.GetServicesImageRegistry(), config.GetServicesImageNamespace())
 		image.Name = defaultImageName
 		image.Tag = config.GetServicesImageVersion()
 
 		if len(image.Domain) == 0 {
 			image.Domain = infrastructure.GetDefaultImageRegistry()
-		}
-
-		if len(image.Namespace) == 0 {
-			image.Namespace = infrastructure.GetDefaultImageNamespace()
 		}
 
 		if len(image.Tag) == 0 {
