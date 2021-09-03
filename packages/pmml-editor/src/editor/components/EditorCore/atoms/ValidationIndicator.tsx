@@ -105,7 +105,13 @@ export const ValidationIndicatorLabel = (props: ValidationIndicatorLabelProps) =
     <>
       {maxLevel !== undefined && (
         <ValidationIndicatorTooltip validations={validations} customTooltipContent={customTooltipContent}>
-          <Label onClose={onClose} className={cssClass} color={labelColor} icon={labelIcon}>
+          <Label
+            onClose={onClose}
+            className={cssClass}
+            color={labelColor}
+            icon={labelIcon}
+            data-ouia-component-type="invalid-label"
+          >
             {children}
           </Label>
         </ValidationIndicatorTooltip>

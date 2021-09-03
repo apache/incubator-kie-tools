@@ -179,7 +179,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
           <div className={"editor__body__container"}>
             <div className={"editor__body__content"}>
-              <PageSection isFilled={false}>
+              <PageSection isFilled={false} data-ouia-component-id="model-setup">
                 <CorePropertiesTable
                   modelIndex={modelIndex}
                   isScorable={model.isScorable ?? true}

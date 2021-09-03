@@ -7,6 +7,7 @@ exports[`CorePropertiesTable render::Editing 1`] = `
 >
   <section
     class="pf-c-page__main-section pf-m-light editable-item"
+    data-ouia-component-type="model-setup-overview"
   >
     <div
       class="pf-l-stack pf-m-gutter"
@@ -31,6 +32,7 @@ exports[`CorePropertiesTable render::Editing 1`] = `
           >
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
@@ -47,6 +49,7 @@ exports[`CorePropertiesTable render::Editing 1`] = `
             </span>
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
@@ -63,6 +66,7 @@ exports[`CorePropertiesTable render::Editing 1`] = `
             </span>
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
@@ -79,6 +83,7 @@ exports[`CorePropertiesTable render::Editing 1`] = `
             </span>
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
@@ -95,6 +100,7 @@ exports[`CorePropertiesTable render::Editing 1`] = `
             </span>
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
@@ -111,6 +117,7 @@ exports[`CorePropertiesTable render::Editing 1`] = `
             </span>
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
@@ -127,6 +134,7 @@ exports[`CorePropertiesTable render::Editing 1`] = `
             </span>
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
@@ -143,6 +151,7 @@ exports[`CorePropertiesTable render::Editing 1`] = `
             </span>
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
@@ -171,6 +180,7 @@ exports[`CorePropertiesTable render::Editing 2`] = `
 >
   <section
     class="pf-c-page__main-section pf-m-light editable-item--editing"
+    data-ouia-component-type="edit-model-setup"
   >
     <div
       class="pf-l-stack pf-m-gutter"
@@ -226,7 +236,7 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                 >
                   <label
                     class="pf-c-switch"
-                    data-ouia-component-id="OUIA-Generated-Switch-1"
+                    data-ouia-component-id="is-scorable"
                     data-ouia-component-type="PF4/Switch"
                     data-ouia-safe="true"
                     for="core-isScorable"
@@ -290,7 +300,7 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                 >
                   <div
                     class="pf-c-select generic-selector ignore-onclickoutside"
-                    data-ouia-component-id="OUIA-Generated-Select-single-1"
+                    data-ouia-component-id="core-functionName"
                     data-ouia-component-type="PF4/Select"
                     data-ouia-safe="true"
                   >
@@ -361,6 +371,7 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                     aria-describedby="core-algorithmName"
                     aria-invalid="false"
                     class="pf-c-form-control"
+                    data-ouia-component-id="algorithm"
                     id="core-algorithmName"
                     name="core-algorithmName"
                     type="text"
@@ -395,6 +406,7 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                   <input
                     aria-invalid="false"
                     class="pf-c-form-control"
+                    data-ouia-component-id="initial-score"
                     id="core-initialScore"
                     type="number"
                     value="2"
@@ -427,7 +439,7 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                 >
                   <label
                     class="pf-c-switch"
-                    data-ouia-component-id="OUIA-Generated-Switch-2"
+                    data-ouia-component-id="use-reason-codes"
                     data-ouia-component-type="PF4/Switch"
                     data-ouia-safe="true"
                     for="core-useReasonCodes"
@@ -490,7 +502,7 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                 >
                   <div
                     class="pf-c-select generic-selector ignore-onclickoutside"
-                    data-ouia-component-id="OUIA-Generated-Select-single-2"
+                    data-ouia-component-id="core-reasonCodeAlgorithm"
                     data-ouia-component-type="PF4/Select"
                     data-ouia-safe="true"
                   >
@@ -576,6 +588,7 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                   <input
                     aria-invalid="false"
                     class="pf-c-form-control"
+                    data-ouia-component-id="baseline-score"
                     id="core-baselineScore"
                     type="number"
                     value="1"
@@ -608,7 +621,7 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                 >
                   <div
                     class="pf-c-select generic-selector ignore-onclickoutside"
-                    data-ouia-component-id="OUIA-Generated-Select-single-3"
+                    data-ouia-component-id="core-baselineMethod"
                     data-ouia-component-type="PF4/Select"
                     data-ouia-safe="true"
                   >
@@ -667,6 +680,7 @@ exports[`CorePropertiesTable render::Not editing 1`] = `
 >
   <section
     class="pf-c-page__main-section pf-m-light editable-item"
+    data-ouia-component-type="model-setup-overview"
   >
     <div
       class="pf-l-stack pf-m-gutter"
@@ -691,6 +705,7 @@ exports[`CorePropertiesTable render::Not editing 1`] = `
           >
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
@@ -707,6 +722,7 @@ exports[`CorePropertiesTable render::Not editing 1`] = `
             </span>
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
@@ -723,6 +739,7 @@ exports[`CorePropertiesTable render::Not editing 1`] = `
             </span>
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
@@ -739,6 +756,7 @@ exports[`CorePropertiesTable render::Not editing 1`] = `
             </span>
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
@@ -755,6 +773,7 @@ exports[`CorePropertiesTable render::Not editing 1`] = `
             </span>
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
@@ -771,6 +790,7 @@ exports[`CorePropertiesTable render::Not editing 1`] = `
             </span>
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
@@ -787,6 +807,7 @@ exports[`CorePropertiesTable render::Not editing 1`] = `
             </span>
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
@@ -803,6 +824,7 @@ exports[`CorePropertiesTable render::Not editing 1`] = `
             </span>
             <span
               class="pf-c-label pf-m-cyan core-properties__label"
+              data-ouia-component-type="model-property"
             >
               <span
                 class="pf-c-label__content"
