@@ -424,13 +424,32 @@ List getFailedImages() {
 
 void tagImages() {
     for (String imageName : getBuiltImages()) {
-        sh "${env.CONTAINER_ENGINE} tag quay.io/kiegroup/${imageName}:latest ${buildImageName(imageName)}"
+        String builtImageFullTag = "quay.io/kiegroup/${imageName}:latest"
+        tagImage(builtImageFullTag, buildImageName(imageName))
+        if (isDeployLatestTag()) {
+            tagImage(builtImageFullTag, buildImageName(imageName, 'latest'))
+        }
+        String reducedTag = getReducedTag()
+        if (reducedTag) {
+            tagImage(builtImageFullTag, buildImageName(imageName, reducedTag))
+        }
     }
+}
+
+void tagImage(String oldImageName, String newImageName) {
+    sh "${env.CONTAINER_ENGINE} tag ${oldImageName} ${newImageName}"
 }
 
 void pushImages() {
     for (String imageName : getBuiltImages()) {
         pushImage(buildImageName(imageName))
+        if (isDeployLatestTag()) {
+            pushImage(buildImageName(imageName, 'latest'))
+        }
+        String reducedTag = getReducedTag()
+        if (reducedTag) {
+            pushImage(buildImageName(imageName, reducedTag))
+        }
     }
 }
 
@@ -454,12 +473,23 @@ void makeQuayImagesPublic() {
     }
 }
 
-String buildImageName(String imageName) {
-    return "${getDeployImageRegistry()}/${getDeployImageNamespace()}/${getFinalImageName(imageName)}:${getDeployImageTag()}"
+String buildImageName(String imageName, String imageTag = '') {
+    return "${getDeployImageRegistry()}/${getDeployImageNamespace()}/${getFinalImageName(imageName)}:${imageTag ?: getDeployImageTag()}"
 }
 
 String getFinalImageName(String imageName) {
     return getDeployImageNameSuffix() ? "${imageName}-${getDeployImageNameSuffix()}" : imageName
+}
+
+String getReducedTag() {
+    try {
+        String version = getDeployImageTag()
+        String[] versionSplit = version.split("\\.")
+        return "${versionSplit[0]}.${versionSplit[1]}"
+    } catch (error) {
+        echo "${getDeployImageTag()} cannot be reduced to the format X.Y"
+    }
+    return ''
 }
 
 void loginOpenshift() {
@@ -521,6 +551,11 @@ String getDeployImageTag() {
 boolean isQuayRegistry() {
     return getDeployImageRegistry() == 'quay.io'
 }
+
+boolean isDeployLatestTag() {
+    return params.DEPLOY_WITH_LATEST_TAG
+}
+
 
 ////////////////////////////////////////////////////////////////////////
 // Workspaces
