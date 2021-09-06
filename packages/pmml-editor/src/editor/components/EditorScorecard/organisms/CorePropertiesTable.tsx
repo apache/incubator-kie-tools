@@ -273,10 +273,13 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           id="core-algorithmName"
                           name="core-algorithmName"
                           aria-describedby="core-algorithmName"
+                          data-testid="core-properties-table-algorithmName"
                           value={algorithmName ?? ""}
                           onChange={(e) => setAlgorithmName(e)}
                           onBlur={() => {
-                            onCommit({ algorithmName: algorithmName });
+                            onCommit({
+                              algorithmName: algorithmName === "" ? undefined : algorithmName,
+                            });
                           }}
                           data-ouia-component-id="algorithm"
                         />

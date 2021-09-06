@@ -372,6 +372,7 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                     aria-invalid="false"
                     class="pf-c-form-control"
                     data-ouia-component-id="algorithm"
+                    data-testid="core-properties-table-algorithmName"
                     id="core-algorithmName"
                     name="core-algorithmName"
                     type="text"

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { render } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import * as React from "react";
 import { CoreProperties, CorePropertiesTable } from "../../../../../src/editor/components/EditorScorecard/organisms";
 import { Operation, OperationContext } from "../../../../../src/editor/components/EditorScorecard";
@@ -167,5 +167,47 @@ describe("CorePropertiesTable", () => {
     const args: CoreProperties[] = commit.mock.calls[0];
     expect(args.length).toEqual(1);
     expect(args[0].areReasonCodesUsed).toBeFalsy();
+  });
+
+  test("algorithmName::empty value", () => {
+    const component = (
+      <OperationContext.Provider
+        value={{
+          activeOperation: Operation.UPDATE_CORE,
+          setActiveOperation: (operation) => {
+            /*NOP*/
+          },
+        }}
+      >
+        <CorePropertiesTable
+          modelIndex={0}
+          isScorable={true}
+          functionName={"regression"}
+          algorithmName={"algorithmName"}
+          baselineScore={1}
+          isBaselineScoreDisabled={false}
+          baselineMethod={"other"}
+          initialScore={2}
+          areReasonCodesUsed={true}
+          reasonCodeAlgorithm={"pointsBelow"}
+          commit={commit}
+        />
+      </OperationContext.Provider>
+    );
+
+    const { getByTestId, rerender } = render(component);
+    const container = getByTestId("core-properties-table");
+
+    container.click();
+    rerender(component);
+
+    const algorithmName = getByTestId("core-properties-table-algorithmName");
+    fireEvent.change(algorithmName, { target: { value: "" } });
+    fireEvent.blur(algorithmName);
+
+    expect(commit).toBeCalledTimes(1);
+    const args: CoreProperties[] = commit.mock.calls[0];
+    expect(args.length).toEqual(1);
+    expect(args[0].algorithmName).toBeUndefined();
   });
 });
