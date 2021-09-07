@@ -8,8 +8,8 @@ Feature: rhpam-kogito-runtime-jvm feature.
     And the image should contain label io.openshift.s2i.destination with value /tmp
     And the image should contain label io.openshift.expose-services with value 8080:http
     And the image should contain label io.k8s.description with value RHPAM Runtime image for Kogito based on Quarkus native image
-    And the image should contain label io.k8s.display-name with value RHPAM Kogito based on Quarkus native image
-    And the image should contain label io.openshift.tags with value builder,runtime,kogito,quarkus,native
+    And the image should contain label io.k8s.display-name with value Red Hat build of Kogito runtime based on Quarkus native image
+    And the image should contain label io.openshift.tags with value rhpam-kogito,runtime,kogito,quarkus,native
     And the image should contain label io.openshift.s2i.assemble-input-files with value /home/kogito/bin
     And the image should contain label com.redhat.component with value rhpam-7-kogito-runtime-native-rhel8-container
 
