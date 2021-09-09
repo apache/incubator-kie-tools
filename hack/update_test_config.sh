@@ -31,7 +31,7 @@ fi
 # Check the version
 getOperatorVersion | grep -v snapshot
 if [ $? -ne 0 ]; then
-  echo "no release"
+  echo "no release version"
 
   if [ "${test_branch}" = "main" ]; then
     test_image_version="latest"

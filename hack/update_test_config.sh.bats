@@ -38,13 +38,14 @@ teardown() {
     [[ "${testConfigFile}" =~ "tests.examples-ref=nightly-main" ]]
 }
 
-@test "check update_test_config on release branch" {
+@test "check update_test_config on release branch with snapshot version" {
     function git() { echo "* ${VERSION_MAJOR_MINOR}.x"; }
     export -f git
     export VERSION_MAJOR_MINOR=${VERSION_MAJOR_MINOR}
 
     dir="${BATS_TMPDIR}/${BATS_TEST_NAME}"
     cd ${dir}
+    sed -i "s|Version = .*|Version = \"${VERSION_MAJOR_MINOR}.0-snapshot\"|g" version/version.go
     run hack/update_test_config.sh
     [ "$status" -eq 0 ]
 
@@ -65,6 +66,7 @@ teardown() {
 
     dir="${BATS_TMPDIR}/${BATS_TEST_NAME}"
     cd ${dir}
+    sed -i "s|Version = .*|Version = \"${VERSION_MAJOR_MINOR}.0-Final\"|g" version/version.go
     hack/bump-version.sh "${VERSION_MAJOR_MINOR}.0"
     run hack/update_test_config.sh
     [ "$status" -eq 0 ]
