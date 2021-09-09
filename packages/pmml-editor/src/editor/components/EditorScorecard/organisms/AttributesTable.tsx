@@ -105,7 +105,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
   };
 
   return (
-    <section>
+    <section data-testid="attributes-table">
       {characteristic.Attribute.map((attribute, index) => {
         return (
           <article key={index} className={`editable-item attribute-item-n${index}`}>

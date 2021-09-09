@@ -40,6 +40,7 @@ export const AttributesTableAction = (props: AttributesTableActionProps) => {
       <FlexItem>
         <Button
           id={`attribute-n${index}__delete`}
+          data-testid={`attribute-n${index}__delete`}
           // We cannot use the regular "editable-item__delete" as Attributes are nested inside a Characteristic that
           // is an "editable-item" and hence the ":focus-within" selector leads to the delete icon always being visible.
           className="attribute-item__delete"

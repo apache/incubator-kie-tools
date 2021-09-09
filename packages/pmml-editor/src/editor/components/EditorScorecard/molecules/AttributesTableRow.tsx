@@ -81,6 +81,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
   return (
     <article
       id={`attribute-n${attributeIndex}`}
+      data-testid={`attribute-n${attributeIndex}`}
       className={"attribute-item"}
       onClick={() => onEdit()}
       onKeyDown={(e) => {
