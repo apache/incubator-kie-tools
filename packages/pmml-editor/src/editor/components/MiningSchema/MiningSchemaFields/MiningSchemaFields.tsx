@@ -111,6 +111,7 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
       {index === editing && (
         <li
           id={`mining-schema-field-n${index}`}
+          data-testid={`mining-schema-field-n${index}`}
           className={`editable-item ${editing === index ? "editable-item--editing" : ""}`}
           key={field.name.value}
           ref={ref}
@@ -143,6 +144,7 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
       {index !== editing && (
         <li
           id={`mining-schema-field-n${index}`}
+          data-testid={`mining-schema-field-n${index}`}
           className={`editable-item ${editing === index ? "editable-item--editing" : ""}`}
           key={field.name.value}
           onClick={(event) => handleEdit(event)}
@@ -188,6 +190,7 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
               <SplitItem>
                 <Button
                   id={`mining-schema-field-n${index}__delete`}
+                  data-testid={`mining-schema-field-n${index}__delete`}
                   className="editable-item__delete"
                   variant="plain"
                   onClick={(e) => handleDelete(e, "mouse")}

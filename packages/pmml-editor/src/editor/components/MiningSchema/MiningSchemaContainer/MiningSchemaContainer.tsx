@@ -122,7 +122,7 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
   }, [fields, editingField]);
 
   return (
-    <section className="mining-schema">
+    <section className="mining-schema" data-testid="mining-schema-container">
       <MiningSchemaContext.Provider value={editingField}>
         <SwitchTransition mode={"out-in"}>
           <CSSTransition
