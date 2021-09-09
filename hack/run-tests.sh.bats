@@ -913,40 +913,58 @@ setup() {
     [[ "${output}" != *"--tests.build-image-version"* ]]
 }
 
-@test "invoke run-tests with build_s2i_image_tag" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_s2i_image_tag tag --dry_run
+@test "invoke run-tests with build_builder_image_tag" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_builder_image_tag tag --dry_run
     [ "$status" -eq 0 ]
-    [[ "${output}" =~ "--tests.build-s2i-image-tag=tag" ]]
+    [[ "${output}" =~ "--tests.build-builder-image-tag=tag" ]]
 }
 
-@test "invoke run-tests with build_s2i_image_tag missing value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_s2i_image_tag --dry_run
+@test "invoke run-tests with build_builder_image_tag missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_builder_image_tag --dry_run
     [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.build-s2i-image-tag"* ]]
+    [[ "${output}" != *"--tests.build-builder-image-tag"* ]]
 }
 
-@test "invoke run-tests with build_s2i_image_tag empty value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_s2i_image_tag "" --dry_run
+@test "invoke run-tests with build_builder_image_tag empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_builder_image_tag "" --dry_run
     [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.build-s2i-image-tag"* ]]
+    [[ "${output}" != *"--tests.build-builder-image-tag"* ]]
 }
 
-@test "invoke run-tests with build_runtime_image_tag" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_runtime_image_tag tag --dry_run
+@test "invoke run-tests with build_runtime_jvm_image_tag" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_runtime_jvm_image_tag tag --dry_run
     [ "$status" -eq 0 ]
-    [[ "${output}" =~ "--tests.build-runtime-image-tag=tag" ]]
+    [[ "${output}" =~ "--tests.build-runtime-jvm-image-tag=tag" ]]
 }
 
-@test "invoke run-tests with build_runtime_image_tag missing value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_runtime_image_tag --dry_run
+@test "invoke run-tests with build_runtime_jvm_image_tag missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_runtime_jvm_image_tag --dry_run
     [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.build-runtime-image-tag"* ]]
+    [[ "${output}" != *"--tests.build-runtime-jvm-image-tag"* ]]
 }
 
-@test "invoke run-tests with build_runtime_image_tag empty value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_runtime_image_tag "" --dry_run
+@test "invoke run-tests with build_runtime_jvm_image_tag empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_runtime_jvm_image_tag "" --dry_run
     [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.build-runtime-image-tag"* ]]
+    [[ "${output}" != *"--tests.build-runtime-jvm-image-tag"* ]]
+}
+
+@test "invoke run-tests with build_runtime_native_image_tag" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_runtime_native_image_tag tag --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.build-runtime-native-image-tag=tag" ]]
+}
+
+@test "invoke run-tests with build_runtime_native_image_tag missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_runtime_native_image_tag --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.build-runtime-native-image-tag"* ]]
+}
+
+@test "invoke run-tests with build_runtime_native_image_tag empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_runtime_native_image_tag "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.build-runtime-native-image-tag"* ]]
 }
 
 @test "invoke run-tests with disable_maven_native_build_container" {

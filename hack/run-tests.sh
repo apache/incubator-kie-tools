@@ -97,8 +97,9 @@ function usage(){
   printf "\n--build_image_name_suffix {NAMESPACE}\n\tSet the build image name suffix to append to usual image names."
   printf "\n--build_image_version {VERSION}\n\tSet the build image version."
   printf "\n--build_image_tag {TAG}\n\tSet the build image full tag."
-  printf "\n--build_s2i_image_tag {TAG}\n\tSet the S2I build image full tag."
-  printf "\n--build_runtime_image_tag {NAME}\n\tSet the Runtime build image full tag."
+  printf "\n--build_builder_image_tag {TAG}\n\tSet the Builder image full tag."
+  printf "\n--build_runtime_jvm_image_tag {NAME}\n\tSet the Runtime JVM image full tag."
+  printf "\n--build_runtime_native_image_tag {NAME}\n\tSet the Runtime Native image full tag."
   printf "\n--disable_maven_native_build_container\n\tBy default, Maven native builds are done in container (via container engine). Possibility to disable it."
 
   # examples repository
@@ -404,13 +405,17 @@ case $1 in
     shift
     if addParamKeyValueIfAccepted "--tests.build-image-version" ${1}; then shift; fi
   ;;
-  --build_s2i_image_tag)
+  --build_builder_image_tag)
     shift
-    if addParamKeyValueIfAccepted "--tests.build-s2i-image-tag" ${1}; then shift; fi
+    if addParamKeyValueIfAccepted "--tests.build-builder-image-tag" ${1}; then shift; fi
   ;;
-  --build_runtime_image_tag)
+  --build_runtime_jvm_image_tag)
     shift
-    if addParamKeyValueIfAccepted "--tests.build-runtime-image-tag" ${1}; then shift; fi
+    if addParamKeyValueIfAccepted "--tests.build-runtime-jvm-image-tag" ${1}; then shift; fi
+  ;;
+  --build_runtime_native_image_tag)
+    shift
+    if addParamKeyValueIfAccepted "--tests.build-runtime-native-image-tag" ${1}; then shift; fi
   ;;
   --disable_maven_native_build_container)
     addParam "--tests.disable-maven-native-build-container"
