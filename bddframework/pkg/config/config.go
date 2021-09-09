@@ -80,8 +80,9 @@ type TestConfig struct {
 	buildImageNamespace                string
 	buildImageNameSuffix               string
 	buildImageVersion                  string
-	buildS2iImageTag                   string
-	buildRuntimeImageTag               string
+	buildBuilderImageTag               string
+	buildRuntimeJVMImageTag            string
+	buildRuntimeNativeImageTag         string
 	disableMavenNativeBuildInContainer bool
 	nativeBuilderImage                 string
 
@@ -192,8 +193,9 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.buildImageNamespace, prefix+"build-image-namespace", "", "Set the build image namespace")
 	set.StringVar(&env.buildImageNameSuffix, prefix+"build-image-name-suffix", "", "Set the build image name suffix")
 	set.StringVar(&env.buildImageVersion, prefix+"build-image-version", "", "Set the build image version")
-	set.StringVar(&env.buildS2iImageTag, prefix+"build-s2i-image-tag", "", "Set the S2I build image full tag")
-	set.StringVar(&env.buildRuntimeImageTag, prefix+"build-runtime-image-tag", "", "Set the Runtime build image full tag")
+	set.StringVar(&env.buildBuilderImageTag, prefix+"build-builder-image-tag", "", "Set the S2I build image full tag")
+	set.StringVar(&env.buildRuntimeJVMImageTag, prefix+"build-runtime-jvm-image-tag", "", "Set the Runtime build image full tag")
+	set.StringVar(&env.buildRuntimeNativeImageTag, prefix+"build-runtime-native-image-tag", "", "Set the Runtime build image full tag")
 	set.BoolVar(&env.disableMavenNativeBuildInContainer, prefix+"disable-maven-native-build-container", false, "By default, Maven native builds are done in container (via container engine). Possibility to disable it.")
 	set.StringVar(&env.nativeBuilderImage, prefix+"native-builder-image", "", "Force the native builder image.")
 
@@ -459,14 +461,19 @@ func GetBuildImageVersion() string {
 	return env.buildImageVersion
 }
 
-// GetBuildS2IImageStreamTag return the tag for the s2i build image
-func GetBuildS2IImageStreamTag() string {
-	return env.buildS2iImageTag
+// GetBuildBuilderImageStreamTag return the tag for the builder image
+func GetBuildBuilderImageStreamTag() string {
+	return env.buildBuilderImageTag
 }
 
-// GetBuildRuntimeImageStreamTag return the tag for the runtime build image
-func GetBuildRuntimeImageStreamTag() string {
-	return env.buildRuntimeImageTag
+// GetBuildRuntimeJVMImageStreamTag return the tag for the runtime JVM image
+func GetBuildRuntimeJVMImageStreamTag() string {
+	return env.buildRuntimeJVMImageTag
+}
+
+// GetBuildRuntimeNativeImageStreamTag return the tag for the runtime native image
+func GetBuildRuntimeNativeImageStreamTag() string {
+	return env.buildRuntimeNativeImageTag
 }
 
 // IsDisableMavenNativeBuildInContainer return whether Maven native build in container should be disabled

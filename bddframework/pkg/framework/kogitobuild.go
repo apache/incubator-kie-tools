@@ -115,8 +115,8 @@ func SetupKogitoBuildImageStreams(kogitoBuild *v1beta1.KogitoBuild) {
 }
 
 func getKogitoBuildS2IImage() string {
-	if len(config.GetBuildS2IImageStreamTag()) > 0 {
-		return config.GetBuildS2IImageStreamTag()
+	if len(config.GetBuildBuilderImageStreamTag()) > 0 {
+		return config.GetBuildBuilderImageStreamTag()
 	}
 
 	return getKogitoBuildImage(kogitobuild.GetDefaultBuilderImage())
@@ -124,12 +124,15 @@ func getKogitoBuildS2IImage() string {
 
 func getKogitoBuildRuntimeImage(kogitoBuild *v1beta1.KogitoBuild) string {
 	var imageName string
-	if len(config.GetBuildRuntimeImageStreamTag()) > 0 {
-		return config.GetBuildRuntimeImageStreamTag()
-	}
 	if kogitoBuild.Spec.Native {
+		if len(config.GetBuildRuntimeNativeImageStreamTag()) > 0 {
+			return config.GetBuildRuntimeNativeImageStreamTag()
+		}
 		imageName = kogitobuild.GetDefaultRuntimeNativeImage()
 	} else {
+		if len(config.GetBuildRuntimeJVMImageStreamTag()) > 0 {
+			return config.GetBuildRuntimeJVMImageStreamTag()
+		}
 		imageName = kogitobuild.GetDefaultRuntimeJVMImage()
 	}
 	return getKogitoBuildImage(imageName)

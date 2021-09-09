@@ -56,8 +56,9 @@ build_image_registry=
 build_image_namespace=
 build_image_name_suffix=
 build_image_version=
-build_s2i_image_tag=
-build_runtime_image_tag=
+build_builder_image_tag=
+build_runtime_jvm_image_tag=
+build_runtime_native_image_tag=
 disable_maven_native_build_container=false
 native_builder_image=
 # examples repository
@@ -132,8 +133,9 @@ run-tests:
 		--build_image_namespace ${build_image_namespace} \
 		--build_image_name_suffix ${build_image_name_suffix} \
 		--build_image_version ${build_image_version} \
-		--build_s2i_image_tag ${build_s2i_image_tag} \
-		--build_runtime_image_tag ${build_runtime_image_tag} \
+		--build_builder_image_tag ${build_builder_image_tag} \
+		--build_runtime_jvm_image_tag ${build_runtime_jvm_image_tag} \
+		--build_runtime_native_image_tag ${build_runtime_native_image_tag} \
 		--native_builder_image ${native_builder_image} \
 		--examples_uri ${examples_uri} \
 		--examples_ref ${examples_ref} \
