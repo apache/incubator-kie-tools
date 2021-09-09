@@ -95,6 +95,7 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
   return (
     <section
       id={`output-field-n${outputFieldIndex}`}
+      data-testid={`output-field-n${outputFieldIndex}`}
       className={"editable-item__inner"}
       onClick={(event) => handleEdit(event)}
       onKeyDown={(event) => {

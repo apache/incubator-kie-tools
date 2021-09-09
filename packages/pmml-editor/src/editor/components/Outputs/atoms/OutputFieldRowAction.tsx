@@ -40,6 +40,7 @@ export const OutputFieldRowAction = (props: OutputsTableActionProps) => {
       <FlexItem>
         <Button
           id={`output-field-n${index}__delete`}
+          data-testid={`output-field-n${index}__delete`}
           className="editable-item__delete"
           variant="plain"
           onClick={(e) => handleDelete(e, "mouse")}

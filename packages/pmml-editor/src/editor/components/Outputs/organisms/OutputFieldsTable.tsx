@@ -118,6 +118,7 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
 
   return (
     <Form
+      data-testid="output-fields-table"
       onSubmit={(e) => {
         e.stopPropagation();
         e.preventDefault();

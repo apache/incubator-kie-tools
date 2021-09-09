@@ -13,219 +13,254 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { fireEvent, getAllByTestId, render } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import * as React from "react";
-import { CoreProperties, CorePropertiesTable } from "../../../../../src/editor/components/EditorScorecard/organisms";
-import { Operation, OperationContext } from "../../../../../src/editor/components/EditorScorecard";
-import DataDictionaryContainer, {
-  DDDataField,
-} from "../../../../../src/editor/components/DataDictionary/DataDictionaryContainer/DataDictionaryContainer";
-import { ValidationContext, ValidationRegistry } from "../../../../../src/editor/validation";
+import { Operation, OperationContext } from "../../../../../../src/editor/components/EditorScorecard";
+import OutputFieldsTable from "../../../../../../src/editor/components/Outputs/organisms/OutputFieldsTable";
+import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataType } from "@kogito-tooling/pmml-editor-marshaller/src";
 
-const onAdd = jest.fn((name, type, optype) => {});
-const onEdit = jest.fn((index, originalName, field) => {});
-const onDelete = jest.fn((index) => {});
-const onReorder = jest.fn((oldIndex, newIndex) => {});
-const onBatchAdd = jest.fn((fields) => {});
-const onEditingPhaseChange = jest.fn((status) => {});
+const setSelectedOutputIndex = jest.fn((index) => {});
+const validateOutputFieldName = jest.fn((index, name) => true);
+const viewExtendedProperties = jest.fn(() => {});
+const onAddOutputField = jest.fn(() => {});
+const onDeleteOutputField = jest.fn((index) => {});
+const onCommitAndClose = jest.fn(() => {});
+const onCommit = jest.fn((partial) => {});
+const onCancel = jest.fn(() => {});
 
-let dataFields: DDDataField[];
+let outputs: OutputField[];
 
 beforeEach(() => {
-  onAdd.mockReset();
-  onEdit.mockReset();
-  onDelete.mockReset();
-  onReorder.mockReset();
-  onBatchAdd.mockReset();
-  onEditingPhaseChange.mockReset();
+  setSelectedOutputIndex.mockReset();
+  validateOutputFieldName.mockReset();
+  viewExtendedProperties.mockReset();
+  onAddOutputField.mockReset();
+  onDeleteOutputField.mockReset();
+  onCommitAndClose.mockReset();
+  onCommit.mockReset();
+  onCancel.mockReset();
 
-  dataFields = [
+  outputs = [
     {
-      name: "field1",
-      optype: "categorical",
-      type: "string",
+      name: "output1" as FieldName,
+      dataType: "string" as DataType,
     },
     {
-      name: "field2",
-      optype: "categorical",
-      type: "string",
+      name: "output2" as FieldName,
+      dataType: "string" as DataType,
     },
   ];
 });
 
-describe("DataDictionaryContainer", () => {
-  test("DataField:Render", () => {
+describe("OutputFieldsTable", () => {
+  test("OutputField:Render", () => {
     const { getByTestId } = render(
-      <ValidationContext.Provider
+      <OperationContext.Provider
         value={{
-          validationRegistry: new ValidationRegistry(),
+          activeOperation: Operation.UPDATE_OUTPUT,
+          setActiveOperation: (operation) => {},
         }}
       >
-        <DataDictionaryContainer
-          dataDictionary={dataFields}
-          onAdd={onAdd}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          onReorder={onReorder}
-          onBatchAdd={onBatchAdd}
-          onEditingPhaseChange={onEditingPhaseChange}
+        <OutputFieldsTable
+          modelIndex={0}
+          outputs={outputs}
+          selectedOutputIndex={undefined}
+          setSelectedOutputIndex={setSelectedOutputIndex}
+          validateOutputFieldName={validateOutputFieldName}
+          viewExtendedProperties={viewExtendedProperties}
+          onAddOutputField={onAddOutputField}
+          onDeleteOutputField={onDeleteOutputField}
+          onCommitAndClose={onCommitAndClose}
+          onCommit={onCommit}
+          onCancel={onCancel}
         />
-      </ValidationContext.Provider>
+      </OperationContext.Provider>
     );
-    const container = getByTestId("data-dictionary-container");
+    const container = getByTestId("output-fields-table");
     expect(container).toMatchSnapshot();
 
-    expect(getByTestId("data-type-item-n0")).not.toBeUndefined();
-    expect(getByTestId("data-type-item-n1")).not.toBeUndefined();
+    expect(getByTestId("output-field-n0")).not.toBeUndefined();
+    expect(getByTestId("output-field-n1")).not.toBeUndefined();
   });
 
-  test("DataField:DeleteWithIconClick", () => {
-    const onDeleteImpl = jest.fn((index) => {
-      dataFields = dataFields.slice(index, 1);
+  test("OutputField:DeleteWithIconClick", () => {
+    const onDeleteOutputFieldImpl = jest.fn((index) => {
+      outputs = outputs.slice(index, 1);
     });
 
     const { getByTestId, queryByTestId, rerender } = render(
-      <ValidationContext.Provider
+      <OperationContext.Provider
         value={{
-          validationRegistry: new ValidationRegistry(),
+          activeOperation: Operation.UPDATE_CORE,
+          setActiveOperation: (operation) => {},
         }}
       >
-        <DataDictionaryContainer
-          dataDictionary={dataFields}
-          onAdd={onAdd}
-          onEdit={onEdit}
-          onDelete={onDeleteImpl}
-          onReorder={onReorder}
-          onBatchAdd={onBatchAdd}
-          onEditingPhaseChange={onEditingPhaseChange}
+        <OutputFieldsTable
+          modelIndex={0}
+          outputs={outputs}
+          selectedOutputIndex={undefined}
+          setSelectedOutputIndex={setSelectedOutputIndex}
+          validateOutputFieldName={validateOutputFieldName}
+          viewExtendedProperties={viewExtendedProperties}
+          onAddOutputField={onAddOutputField}
+          onDeleteOutputField={onDeleteOutputFieldImpl}
+          onCommitAndClose={onCommitAndClose}
+          onCommit={onCommit}
+          onCancel={onCancel}
         />
-      </ValidationContext.Provider>
+      </OperationContext.Provider>
     );
 
-    //Get the first DataField and focus the row that will make the delete icon visible
-    const dataField0 = getByTestId("data-type-item-n0");
-    expect(dataField0).not.toBeUndefined();
-    fireEvent.focus(dataField0, {});
+    //Get the first OutputField and focus the row that will make the delete icon visible
+    const outputField0 = getByTestId("output-field-n0");
+    expect(outputField0).not.toBeUndefined();
+    fireEvent.focus(outputField0, {});
 
     rerender(
-      <ValidationContext.Provider
+      <OperationContext.Provider
         value={{
-          validationRegistry: new ValidationRegistry(),
+          activeOperation: Operation.UPDATE_CORE,
+          setActiveOperation: (operation) => {},
         }}
       >
-        <DataDictionaryContainer
-          dataDictionary={dataFields}
-          onAdd={onAdd}
-          onEdit={onEdit}
-          onDelete={onDeleteImpl}
-          onReorder={onReorder}
-          onBatchAdd={onBatchAdd}
-          onEditingPhaseChange={onEditingPhaseChange}
+        <OutputFieldsTable
+          modelIndex={0}
+          outputs={outputs}
+          selectedOutputIndex={undefined}
+          setSelectedOutputIndex={setSelectedOutputIndex}
+          validateOutputFieldName={validateOutputFieldName}
+          viewExtendedProperties={viewExtendedProperties}
+          onAddOutputField={onAddOutputField}
+          onDeleteOutputField={onDeleteOutputFieldImpl}
+          onCommitAndClose={onCommitAndClose}
+          onCommit={onCommit}
+          onCancel={onCancel}
         />
-      </ValidationContext.Provider>
+      </OperationContext.Provider>
     );
 
-    const dataField0deleteIcon = getByTestId("data-type-item-n0__delete");
-    expect(dataField0deleteIcon).not.toBeUndefined();
-    fireEvent.click(dataField0deleteIcon, {});
+    const outputField0deleteIcon = getByTestId("output-field-n0__delete");
+    expect(outputField0deleteIcon).not.toBeUndefined();
+    fireEvent.click(outputField0deleteIcon, {});
 
-    expect(onDeleteImpl).toBeCalledWith(0);
+    expect(onDeleteOutputFieldImpl).toBeCalledWith(0);
 
     rerender(
-      <ValidationContext.Provider
+      <OperationContext.Provider
         value={{
-          validationRegistry: new ValidationRegistry(),
+          activeOperation: Operation.UPDATE_CORE,
+          setActiveOperation: (operation) => {},
         }}
       >
-        <DataDictionaryContainer
-          dataDictionary={dataFields}
-          onAdd={onAdd}
-          onEdit={onEdit}
-          onDelete={onDeleteImpl}
-          onReorder={onReorder}
-          onBatchAdd={onBatchAdd}
-          onEditingPhaseChange={onEditingPhaseChange}
+        <OutputFieldsTable
+          modelIndex={0}
+          outputs={outputs}
+          selectedOutputIndex={undefined}
+          setSelectedOutputIndex={setSelectedOutputIndex}
+          validateOutputFieldName={validateOutputFieldName}
+          viewExtendedProperties={viewExtendedProperties}
+          onAddOutputField={onAddOutputField}
+          onDeleteOutputField={onDeleteOutputFieldImpl}
+          onCommitAndClose={onCommitAndClose}
+          onCommit={onCommit}
+          onCancel={onCancel}
         />
-      </ValidationContext.Provider>
+      </OperationContext.Provider>
     );
 
-    expect(getByTestId("data-type-item-n0")).not.toBeUndefined();
-    expect(queryByTestId("data-type-item-n1")).toBeNull();
+    expect(getByTestId("output-field-n0")).not.toBeUndefined();
+    expect(queryByTestId("output-field-n1")).toBeNull();
   });
 
-  test("DataField:DeleteWithIconKeyDown", () => {
-    const onDeleteImpl = jest.fn((index) => {
-      dataFields = dataFields.slice(index, 1);
+  test("OutputField:DeleteWithIconKeyDown", () => {
+    const onDeleteOutputFieldImpl = jest.fn((index) => {
+      outputs = outputs.slice(index, 1);
     });
 
     const { getByTestId, queryByTestId, rerender } = render(
-      <ValidationContext.Provider
+      <OperationContext.Provider
         value={{
-          validationRegistry: new ValidationRegistry(),
+          activeOperation: Operation.UPDATE_CORE,
+          setActiveOperation: (operation) => {},
         }}
       >
-        <DataDictionaryContainer
-          dataDictionary={dataFields}
-          onAdd={onAdd}
-          onEdit={onEdit}
-          onDelete={onDeleteImpl}
-          onReorder={onReorder}
-          onBatchAdd={onBatchAdd}
-          onEditingPhaseChange={onEditingPhaseChange}
+        <OutputFieldsTable
+          modelIndex={0}
+          outputs={outputs}
+          selectedOutputIndex={undefined}
+          setSelectedOutputIndex={setSelectedOutputIndex}
+          validateOutputFieldName={validateOutputFieldName}
+          viewExtendedProperties={viewExtendedProperties}
+          onAddOutputField={onAddOutputField}
+          onDeleteOutputField={onDeleteOutputFieldImpl}
+          onCommitAndClose={onCommitAndClose}
+          onCommit={onCommit}
+          onCancel={onCancel}
         />
-      </ValidationContext.Provider>
+      </OperationContext.Provider>
     );
 
-    //Get the first DataField and focus the row that will make the delete icon visible
-    const dataField0 = getByTestId("data-type-item-n0");
-    expect(dataField0).not.toBeUndefined();
-    fireEvent.focus(dataField0, {});
+    //Get the first OutputField and focus the row that will make the delete icon visible
+    const outputField0 = getByTestId("output-field-n0");
+    expect(outputField0).not.toBeUndefined();
+    fireEvent.focus(outputField0, {});
 
     rerender(
-      <ValidationContext.Provider
+      <OperationContext.Provider
         value={{
-          validationRegistry: new ValidationRegistry(),
+          activeOperation: Operation.UPDATE_CORE,
+          setActiveOperation: (operation) => {},
         }}
       >
-        <DataDictionaryContainer
-          dataDictionary={dataFields}
-          onAdd={onAdd}
-          onEdit={onEdit}
-          onDelete={onDeleteImpl}
-          onReorder={onReorder}
-          onBatchAdd={onBatchAdd}
-          onEditingPhaseChange={onEditingPhaseChange}
+        <OutputFieldsTable
+          modelIndex={0}
+          outputs={outputs}
+          selectedOutputIndex={undefined}
+          setSelectedOutputIndex={setSelectedOutputIndex}
+          validateOutputFieldName={validateOutputFieldName}
+          viewExtendedProperties={viewExtendedProperties}
+          onAddOutputField={onAddOutputField}
+          onDeleteOutputField={onDeleteOutputFieldImpl}
+          onCommitAndClose={onCommitAndClose}
+          onCommit={onCommit}
+          onCancel={onCancel}
         />
-      </ValidationContext.Provider>
+      </OperationContext.Provider>
     );
 
-    const dataField0deleteIcon = getByTestId("data-type-item-n0__delete");
-    expect(dataField0deleteIcon).not.toBeUndefined();
-    fireEvent.keyDown(dataField0deleteIcon, { key: "Enter" });
+    const outputField0deleteIcon = getByTestId("output-field-n0__delete");
+    expect(outputField0deleteIcon).not.toBeUndefined();
+    fireEvent.keyDown(outputField0deleteIcon, { key: "Enter" });
 
-    expect(onDeleteImpl).toBeCalledWith(0);
+    expect(onDeleteOutputFieldImpl).toBeCalledWith(0);
 
     rerender(
-      <ValidationContext.Provider
+      <OperationContext.Provider
         value={{
-          validationRegistry: new ValidationRegistry(),
+          activeOperation: Operation.UPDATE_CORE,
+          setActiveOperation: (operation) => {},
         }}
       >
-        <DataDictionaryContainer
-          dataDictionary={dataFields}
-          onAdd={onAdd}
-          onEdit={onEdit}
-          onDelete={onDeleteImpl}
-          onReorder={onReorder}
-          onBatchAdd={onBatchAdd}
-          onEditingPhaseChange={onEditingPhaseChange}
+        <OutputFieldsTable
+          modelIndex={0}
+          outputs={outputs}
+          selectedOutputIndex={undefined}
+          setSelectedOutputIndex={setSelectedOutputIndex}
+          validateOutputFieldName={validateOutputFieldName}
+          viewExtendedProperties={viewExtendedProperties}
+          onAddOutputField={onAddOutputField}
+          onDeleteOutputField={onDeleteOutputFieldImpl}
+          onCommitAndClose={onCommitAndClose}
+          onCommit={onCommit}
+          onCancel={onCancel}
         />
-      </ValidationContext.Provider>
+      </OperationContext.Provider>
     );
 
-    const dataField0Rendered = getByTestId("data-type-item-n0");
-    expect(dataField0Rendered).not.toBeUndefined();
-    expect(document.activeElement).toBe(dataField0Rendered);
-    expect(queryByTestId("data-type-item-n1")).toBeNull();
+    const outputField0Rendered = getByTestId("output-field-n0");
+    expect(outputField0Rendered).not.toBeUndefined();
+    expect(document.activeElement).toBe(outputField0Rendered);
+    expect(queryByTestId("output-field-n1")).toBeNull();
   });
 });

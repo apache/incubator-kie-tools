@@ -1,0 +1,186 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OutputFieldsTable OutputField:Render 1`] = `
+<form
+  class="pf-c-form"
+  data-testid="output-fields-table"
+  novalidate=""
+>
+  <section>
+    <article
+      class="editable-item output-item-n0 "
+    >
+      <section
+        class="editable-item__inner"
+        data-ouia-component-type="output-field"
+        data-testid="output-field-n0"
+        id="output-field-n0"
+        tabindex="0"
+      >
+        <div
+          class="pf-l-split pf-m-gutter"
+          style="height: 100%;"
+        >
+          <div
+            class="pf-l-split__item"
+          >
+            <div
+              class="pf-l-flex pf-m-align-items-center pf-m-justify-content-center"
+              style="height: 100%;"
+            >
+              <div
+                class=""
+              />
+            </div>
+          </div>
+          <div
+            class="pf-l-split__item"
+            data-ouia-component-type="output-field-name"
+          >
+            <strong>
+              output1
+            </strong>
+          </div>
+          <div
+            class="pf-l-split__item pf-m-fill"
+          >
+            <span
+              class="pf-c-label pf-m-blue output-item__type-label"
+            >
+              <span
+                class="pf-c-label__content"
+              >
+                string
+              </span>
+            </span>
+          </div>
+          <div
+            class="pf-l-split__item"
+          >
+            <div
+              class="pf-l-flex pf-m-align-items-center"
+              style="height: 100%;"
+            >
+              <div
+                class=""
+              >
+                <button
+                  aria-disabled="false"
+                  class="pf-c-button pf-m-plain editable-item__delete"
+                  data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
+                  data-testid="output-field-n0__delete"
+                  id="output-field-n0__delete"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 448 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </article>
+    <article
+      class="editable-item output-item-n1 "
+    >
+      <section
+        class="editable-item__inner"
+        data-ouia-component-type="output-field"
+        data-testid="output-field-n1"
+        id="output-field-n1"
+        tabindex="0"
+      >
+        <div
+          class="pf-l-split pf-m-gutter"
+          style="height: 100%;"
+        >
+          <div
+            class="pf-l-split__item"
+          >
+            <div
+              class="pf-l-flex pf-m-align-items-center pf-m-justify-content-center"
+              style="height: 100%;"
+            >
+              <div
+                class=""
+              />
+            </div>
+          </div>
+          <div
+            class="pf-l-split__item"
+            data-ouia-component-type="output-field-name"
+          >
+            <strong>
+              output2
+            </strong>
+          </div>
+          <div
+            class="pf-l-split__item pf-m-fill"
+          >
+            <span
+              class="pf-c-label pf-m-blue output-item__type-label"
+            >
+              <span
+                class="pf-c-label__content"
+              >
+                string
+              </span>
+            </span>
+          </div>
+          <div
+            class="pf-l-split__item"
+          >
+            <div
+              class="pf-l-flex pf-m-align-items-center"
+              style="height: 100%;"
+            >
+              <div
+                class=""
+              >
+                <button
+                  aria-disabled="false"
+                  class="pf-c-button pf-m-plain editable-item__delete"
+                  data-ouia-component-id="OUIA-Generated-Button-plain-2"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
+                  data-testid="output-field-n1__delete"
+                  id="output-field-n1__delete"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 448 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </article>
+  </section>
+</form>
+`;
