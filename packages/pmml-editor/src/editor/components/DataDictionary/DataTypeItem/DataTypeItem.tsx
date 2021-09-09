@@ -175,6 +175,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   return (
     <article
       id={`data-type-item-n${index}`}
+      data-testid={`data-type-item-n${index}`}
       className={`editable-item ${editingIndex === index ? "editable-item--editing" : ""} data-type-item-n${index}`}
       data-ouia-component-type="dd-type-item"
       tabIndex={0}
@@ -357,6 +358,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
             <SplitItem>
               <Button
                 id={`data-type-item-n${index}__delete`}
+                data-testid={`data-type-item-n${index}__delete`}
                 className="editable-item__delete"
                 variant="plain"
                 onClick={(e) => handleDelete(e, "mouse")}

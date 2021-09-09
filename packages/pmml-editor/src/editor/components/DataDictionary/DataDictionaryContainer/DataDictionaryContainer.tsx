@@ -187,7 +187,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
   }, [dataDictionary, dataTypeFocusIndex]);
 
   return (
-    <div className="data-dictionary">
+    <div className="data-dictionary" data-testid="data-dictionary-container">
       <SwitchTransition mode={"out-in"}>
         <CSSTransition
           timeout={{
