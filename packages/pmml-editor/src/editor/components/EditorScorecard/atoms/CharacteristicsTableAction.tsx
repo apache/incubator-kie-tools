@@ -40,6 +40,7 @@ export const CharacteristicsTableAction = (props: CharacteristicsTableActionProp
       <FlexItem>
         <Button
           id={`characteristic-n${index}__delete`}
+          data-testid={`characteristic-n${index}__delete`}
           className="editable-item__delete"
           variant="plain"
           onClick={(e) => handleDelete(e, "mouse")}

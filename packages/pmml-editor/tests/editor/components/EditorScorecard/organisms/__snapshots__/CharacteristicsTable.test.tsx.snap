@@ -1,0 +1,142 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CharacteristicsTable Characteristic:Render 1`] = `
+<form
+  class="pf-c-form characteristics-container__overview__form"
+  data-testid="characteristics-table"
+  novalidate=""
+>
+  <article
+    class="editable-item characteristic-item-nundefined "
+  >
+    <article
+      class="editable-item__inner"
+      data-ouia-component-type="characteristic-item"
+      data-testid="characteristic-n0"
+      id="characteristic-n0"
+      tabindex="0"
+    >
+      <div
+        class="pf-l-split pf-m-gutter"
+        style="height: 100%;"
+      >
+        <div
+          class="pf-l-split__item"
+        >
+          <strong>
+            characteristic1
+          </strong>
+        </div>
+        <div
+          class="pf-l-split__item pf-m-fill"
+        >
+          <ul />
+        </div>
+        <div
+          class="pf-l-split__item"
+        >
+          <div
+            class="pf-l-flex pf-m-align-items-center"
+            style="height: 100%;"
+          >
+            <div
+              class=""
+            >
+              <button
+                aria-disabled="false"
+                class="pf-c-button pf-m-plain editable-item__delete"
+                data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                data-testid="characteristic-n0__delete"
+                id="characteristic-n0__delete"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 448 512"
+                  width="1em"
+                >
+                  <path
+                    d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </article>
+  <article
+    class="editable-item characteristic-item-nundefined "
+  >
+    <article
+      class="editable-item__inner"
+      data-ouia-component-type="characteristic-item"
+      data-testid="characteristic-n1"
+      id="characteristic-n1"
+      tabindex="0"
+    >
+      <div
+        class="pf-l-split pf-m-gutter"
+        style="height: 100%;"
+      >
+        <div
+          class="pf-l-split__item"
+        >
+          <strong>
+            characteristic2
+          </strong>
+        </div>
+        <div
+          class="pf-l-split__item pf-m-fill"
+        >
+          <ul />
+        </div>
+        <div
+          class="pf-l-split__item"
+        >
+          <div
+            class="pf-l-flex pf-m-align-items-center"
+            style="height: 100%;"
+          >
+            <div
+              class=""
+            >
+              <button
+                aria-disabled="false"
+                class="pf-c-button pf-m-plain editable-item__delete"
+                data-ouia-component-id="OUIA-Generated-Button-plain-2"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                data-testid="characteristic-n1__delete"
+                id="characteristic-n1__delete"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 448 512"
+                  width="1em"
+                >
+                  <path
+                    d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </article>
+</form>
+`;

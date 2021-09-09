@@ -61,6 +61,7 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
   return (
     <article
       id={`characteristic-n${characteristicIndex}`}
+      data-testid={`characteristic-n${characteristicIndex}`}
       className={"editable-item__inner"}
       onClick={handleEdit}
       onKeyDown={(e) => {

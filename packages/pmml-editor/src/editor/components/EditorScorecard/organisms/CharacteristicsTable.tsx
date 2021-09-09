@@ -132,6 +132,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   return (
     <Form
+      data-testid="characteristics-table"
       onSubmit={(e) => {
         e.stopPropagation();
         e.preventDefault();
