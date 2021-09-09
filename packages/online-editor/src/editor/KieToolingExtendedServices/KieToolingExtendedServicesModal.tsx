@@ -651,6 +651,7 @@ export function KieToolingExtendedServicesModal() {
 
   return (
     <Modal
+      ouiaId="kie-tooling-extended-services-modal"
       isOpen={kieToolingExtendedServices.isModalOpen}
       onClose={onClose}
       variant={modalVariant}
