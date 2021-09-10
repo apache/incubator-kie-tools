@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls;
 
-import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.Point2DArray;
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -29,15 +29,15 @@ public interface LineSpliceAcceptorControl<H extends CanvasHandler>
                 RequiresCommandManager<H> {
 
     boolean allow(Node spliceNode,
-                  Point2D location,
+                  double[] location,
                   Node parentNode,
                   Edge<ViewConnector<?>, Node> connector);
 
     boolean accept(Node spliceNode,
-                   Point2D location,
+                   double[] location,
                    Node parentNode,
                    Edge<ViewConnector<?>, Node> edge,
                    int controlPoints,
-                   final Point2DArray firstHalfPoints,
-                   final Point2DArray secondHalfPoints);
+                   List<double[]> firstHalfPoints,
+                   List<double[]> secondHalfPoints);
 }

@@ -16,8 +16,7 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.Point2DArray;
+import java.util.List;
 
 public interface ILineSpliceAcceptor {
 
@@ -26,15 +25,15 @@ public interface ILineSpliceAcceptor {
     ILineSpliceAcceptor NONE = new DefaultLineSpliceAcceptor(false);
 
     boolean allowSplice(WiresShape shape,
-                        Point2D candidateLocation,
+                        double[] candidateLocation,
                         WiresConnector connector,
                         WiresContainer parent);
 
     boolean acceptSplice(WiresShape shape,
-                         Point2D candidateLocation,
+                         double[] candidateLocation,
                          WiresConnector connector,
-                         Point2DArray firstHalfPoints,
-                         Point2DArray secondHalfPoints,
+                         List<double[]> firstHalfPoints,
+                         List<double[]> secondHalfPoints,
                          WiresContainer parent);
 
     void ensureUnHighLight();
@@ -49,7 +48,7 @@ public interface ILineSpliceAcceptor {
 
         @Override
         public boolean allowSplice(WiresShape shape,
-                                   Point2D candidateLocation,
+                                   double[] candidateLocation,
                                    WiresConnector connector,
                                    WiresContainer parent) {
             return m_defaultValue;
@@ -57,14 +56,15 @@ public interface ILineSpliceAcceptor {
 
         @Override
         public boolean acceptSplice(WiresShape shape,
-                                    Point2D candidateLocation,
+                                    double[] candidateLocation,
                                     WiresConnector connector,
-                                    Point2DArray firstHalfPoints,
-                                    Point2DArray secondHalfPoints,
+                                    List<double[]> firstHalfPoints,
+                                    List<double[]> secondHalfPoints,
                                     WiresContainer parent) {
             return m_defaultValue;
         }
 
-        public void ensureUnHighLight() {}
+        public void ensureUnHighLight() {
+        }
     }
 }

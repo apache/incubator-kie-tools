@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -27,8 +28,6 @@ import com.ait.lienzo.client.core.shape.wires.ILineSpliceAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.Point2DArray;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -81,7 +80,7 @@ public class LineSpliceAcceptorControlImpl
 
     @Override
     public boolean allow(final Node spliceNode,
-                         final Point2D location,
+                         final double[] location,
                          final Node parentNode,
                          final Edge<ViewConnector<?>, Node> edge) {
         return evaluate(spliceNode,
@@ -96,12 +95,12 @@ public class LineSpliceAcceptorControlImpl
 
     @Override
     public boolean accept(final Node spliceNode,
-                          final Point2D location,
+                          final double[] location,
                           final Node parentNode,
                           final Edge<ViewConnector<?>, Node> edge,
                           final int controlPoints,
-                          final Point2DArray firstHalfPoints,
-                          final Point2DArray secondHalfPoints) {
+                          final List<double[]> firstHalfPoints,
+                          final List<double[]> secondHalfPoints) {
         canvasHighlight.unhighLight();
 
         return evaluate(spliceNode,
@@ -115,12 +114,12 @@ public class LineSpliceAcceptorControlImpl
     }
 
     public boolean evaluate(final Node spliceNode,
-                            final Point2D location,
+                            final double[] location,
                             final Node parentNode,
                             final Edge<ViewConnector<?>, Node> connector,
                             final int controlPoints,
-                            final Point2DArray firstHalfPoints,
-                            final Point2DArray secondHalfPoints,
+                            final List<double[]> firstHalfPoints,
+                            final List<double[]> secondHalfPoints,
                             final Function<Command<AbstractCanvasHandler, CanvasViolation>, CommandResult<CanvasViolation>> executor) {
         final CompositeCommand commands = new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>().build();
         final Node targetNode = connector.getTargetNode();
@@ -142,8 +141,8 @@ public class LineSpliceAcceptorControlImpl
                                                                         .graph
                                                                         .content
                                                                         .view
-                                                                        .Point2D(location.getX(),
-                                                                                 location.getY())));
+                                                                        .Point2D(location[0],
+                                                                                 location[1])));
 
         // Clone and add new control points
         commands.addCommand(canvasCommandFactory
@@ -164,11 +163,10 @@ public class LineSpliceAcceptorControlImpl
         if (null != firstHalfPoints) {
             // Discard start point
             for (int i = 1; i < firstHalfPoints.size(); i++) {
-                final Point2D point = firstHalfPoints.get(i);
                 commands.addCommand(canvasCommandFactory
                                             .addControlPoint(connector,
-                                                             ControlPoint.build(point.getX(),
-                                                                                point.getY()),
+                                                             ControlPoint.build(firstHalfPoints.get(i)[0],
+                                                                                firstHalfPoints.get(i)[1]),
                                                              (i - 1)));
             }
         }
@@ -193,7 +191,7 @@ public class LineSpliceAcceptorControlImpl
 
     private Consumer<Edge> getCloneCallback(final Node spliceNode,
                                             final CompositeCommand commands,
-                                            final Point2DArray controlPoints) {
+                                            final List<double[]> controlPoints) {
         return edge -> {
             // Connect the new connector to splice node
             commands.addCommand(canvasCommandFactory.setSourceNode(spliceNode,
@@ -204,10 +202,10 @@ public class LineSpliceAcceptorControlImpl
             if (null != controlPoints) {
                 // Discard end point
                 for (int i = 0; i < (controlPoints.size() - 1); i++) {
-                    final Point2D point = controlPoints.get(i);
                     commands.addCommand(canvasCommandFactory
                                                 .addControlPoint(edge,
-                                                                 ControlPoint.build(point.getX(), point.getY()),
+                                                                 ControlPoint.build(controlPoints.get(i)[0],
+                                                                                    controlPoints.get(i)[1]),
                                                                  i));
                 }
             }
@@ -217,7 +215,7 @@ public class LineSpliceAcceptorControlImpl
     private final ILineSpliceAcceptor SPLICE_ACCEPTOR = new ILineSpliceAcceptor() {
         @Override
         public boolean allowSplice(final WiresShape spliceShape,
-                                   final Point2D candidateLocation,
+                                   final double[] candidateLocation,
                                    final WiresConnector connector,
                                    final WiresContainer parent) {
             final Edge edge = WiresUtils.getEdge(getCanvasHandler(), connector);
@@ -237,10 +235,10 @@ public class LineSpliceAcceptorControlImpl
 
         @Override
         public boolean acceptSplice(final WiresShape spliceShape,
-                                    final Point2D candidateLocation,
+                                    final double[] candidateLocation,
                                     final WiresConnector connector,
-                                    final Point2DArray firstHalfPoints,
-                                    final Point2DArray secondHalfPoints,
+                                    final List<double[]> firstHalfPoints,
+                                    final List<double[]> secondHalfPoints,
                                     final WiresContainer parent) {
             final Edge edge = WiresUtils.getEdge(getCanvasHandler(), connector);
             final Node spliceNode = WiresUtils.getNode(getCanvasHandler(), spliceShape);

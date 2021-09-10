@@ -104,11 +104,6 @@
       <artifactId>appformer-client-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>lienzo-core</artifactId>
-    </dependency>
-
     <!-- Test scope. -->
 
     <dependency>

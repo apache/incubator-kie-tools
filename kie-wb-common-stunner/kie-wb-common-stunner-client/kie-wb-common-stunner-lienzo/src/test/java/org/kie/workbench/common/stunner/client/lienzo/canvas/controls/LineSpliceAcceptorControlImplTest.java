@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -26,8 +27,6 @@ import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
 import com.ait.lienzo.client.core.shape.wires.ILineSpliceAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
-import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -130,7 +129,7 @@ public class LineSpliceAcceptorControlImplTest {
     @Captor
     private ArgumentCaptor<CompositeCommand<AbstractCanvasHandler, CanvasViolation>> commandsCapture;
 
-    private Point2D location = new Point2D(20, 20);
+    private double[] location = new double[]{20, 20};
 
     private LineSpliceAcceptorControlImpl tested;
 
@@ -278,16 +277,16 @@ public class LineSpliceAcceptorControlImplTest {
         setExecuteTrue();
 
         tested.init(canvasHandler);
-        Point2DArray firstHalfPoints = new Point2DArray();
-        Point2DArray secondHalfPoints = new Point2DArray();
-        Point2D CP0 = new Point2D(10, 10);
-        Point2D CP1 = new Point2D(20, 10);
-        Point2D CP2 = new Point2D(30, 10);
-        Point2D CP3 = new Point2D(40, 10);
-        firstHalfPoints.push(CP0);
-        firstHalfPoints.push(CP1);
-        secondHalfPoints.push(CP2);
-        secondHalfPoints.push(CP3);
+        List<double[]> firstHalfPoints = new ArrayList<>();
+        List<double[]> secondHalfPoints = new ArrayList<>();
+        double[] CP0 = new double[]{10, 10};
+        double[] CP1 = new double[]{20, 10};
+        double[] CP2 = new double[]{30, 10};
+        double[] CP3 = new double[]{40, 10};
+        firstHalfPoints.add(CP0);
+        firstHalfPoints.add(CP1);
+        secondHalfPoints.add(CP2);
+        secondHalfPoints.add(CP3);
 
         assertTrue(tested.accept(spliceNode,
                                  location,
@@ -328,20 +327,20 @@ public class LineSpliceAcceptorControlImplTest {
         setExecuteTrue();
 
         tested.init(canvasHandler);
-        Point2DArray firstHalfPoints = new Point2DArray();
-        Point2DArray secondHalfPoints = new Point2DArray();
-        Point2D CP0 = new Point2D(10, 10);
-        Point2D CP1 = new Point2D(20, 10);
-        Point2D CP2 = new Point2D(30, 10);
-        Point2D CP3 = new Point2D(40, 10);
-        Point2D CP4 = new Point2D(50, 10);
-        Point2D CP5 = new Point2D(60, 10);
-        firstHalfPoints.push(CP0);
-        firstHalfPoints.push(CP1);
-        firstHalfPoints.push(CP2);
-        firstHalfPoints.push(CP3);
-        secondHalfPoints.push(CP4);
-        secondHalfPoints.push(CP5);
+        List<double[]> firstHalfPoints = new ArrayList<>();
+        List<double[]> secondHalfPoints = new ArrayList<>();
+        double[] CP0 = new double[]{10, 10};
+        double[] CP1 = new double[]{20, 10};
+        double[] CP2 = new double[]{30, 10};
+        double[] CP3 = new double[]{40, 10};
+        double[] CP4 = new double[]{50, 10};
+        double[] CP5 = new double[]{60, 10};
+        firstHalfPoints.add(CP0);
+        firstHalfPoints.add(CP1);
+        firstHalfPoints.add(CP2);
+        firstHalfPoints.add(CP3);
+        secondHalfPoints.add(CP4);
+        secondHalfPoints.add(CP5);
 
         assertTrue(tested.accept(spliceNode,
                                  location,
@@ -382,16 +381,16 @@ public class LineSpliceAcceptorControlImplTest {
         setExecuteFalse();
 
         tested.init(canvasHandler);
-        Point2DArray firstHalfPoints = new Point2DArray();
-        Point2DArray secondHalfPoints = new Point2DArray();
-        Point2D CP0 = new Point2D(10, 10);
-        Point2D CP1 = new Point2D(20, 10);
-        Point2D CP2 = new Point2D(30, 10);
-        Point2D CP3 = new Point2D(40, 10);
-        firstHalfPoints.push(CP0);
-        firstHalfPoints.push(CP1);
-        secondHalfPoints.push(CP2);
-        secondHalfPoints.push(CP3);
+        List<double[]> firstHalfPoints = new ArrayList<>();
+        List<double[]> secondHalfPoints = new ArrayList<>();
+        double[] CP0 = new double[]{10, 10};
+        double[] CP1 = new double[]{20, 10};
+        double[] CP2 = new double[]{30, 10};
+        double[] CP3 = new double[]{40, 10};
+        firstHalfPoints.add(CP0);
+        firstHalfPoints.add(CP1);
+        secondHalfPoints.add(CP2);
+        secondHalfPoints.add(CP3);
 
         assertFalse(tested.accept(spliceNode,
                                   location,

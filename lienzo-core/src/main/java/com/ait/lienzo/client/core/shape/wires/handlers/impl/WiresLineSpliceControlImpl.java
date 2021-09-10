@@ -16,12 +16,16 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.wires.ILineSpliceAcceptor;
+import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
+import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
@@ -38,12 +42,15 @@ import static com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresContainm
 
 public class WiresLineSpliceControlImpl extends AbstractWiresControl<WiresLineSpliceControlImpl> implements WiresLineSpliceControl {
 
+    static final int XY_OFFSET = 25;
+
     WiresManager m_wiresManager;
     ILineSpliceAcceptor m_lineSpliceAcceptor;
     WiresConnector m_candidateConnector;
     Point2DArray m_firstHalfPoints;
     Point2DArray m_secondHalfPoints;
     Point2DArray m_intersectPoints;
+    WiresContainer m_parent;
 
     public WiresLineSpliceControlImpl(final Supplier<WiresParentPickerControl> parentPickerControl) {
         super(parentPickerControl);
@@ -75,11 +82,12 @@ public class WiresLineSpliceControlImpl extends AbstractWiresControl<WiresLineSp
             splice(true);
 
             // Containment
-            if (null != getParent()) {
+            if (null != m_parent) {
                 addIntoParent(getShape(),
-                              getParent(),
+                              m_parent,
                               getWiresLayer(),
-                              calculateCandidateLocation(getParentPickerControl()));
+                              calculateCandidateLocation(getParentPickerControl(),
+                                                         m_parent));
             }
         }
     }
@@ -106,18 +114,21 @@ public class WiresLineSpliceControlImpl extends AbstractWiresControl<WiresLineSp
         }
 
         boolean allowAccept;
+        final Point2D candidateLocation = calculateCandidateLocation(getParentPickerControl(), m_parent);
 
         allowAccept = m_lineSpliceAcceptor.allowSplice(getShape(),
-                                                       calculateCandidateLocation(getParentPickerControl()),
+                                                       new double[]{candidateLocation.getX(),
+                                                               candidateLocation.getY()},
                                                        m_candidateConnector,
-                                                       getParent());
+                                                       m_parent);
         if (acceptApply && allowAccept) {
             allowAccept = m_lineSpliceAcceptor.acceptSplice(getShape(),
-                                                            calculateCandidateLocation(getParentPickerControl()),
+                                                            new double[]{candidateLocation.getX(),
+                                                                    candidateLocation.getY()},
                                                             m_candidateConnector,
-                                                            m_firstHalfPoints,
-                                                            m_secondHalfPoints,
-                                                            getParent());
+                                                            convertPoints(m_firstHalfPoints),
+                                                            convertPoints(m_secondHalfPoints),
+                                                            m_parent);
         }
 
         return allowAccept;
@@ -130,6 +141,7 @@ public class WiresLineSpliceControlImpl extends AbstractWiresControl<WiresLineSp
         m_firstHalfPoints = null;
         m_secondHalfPoints = null;
         m_intersectPoints = null;
+        m_parent = null;
     }
 
     @Override
@@ -195,6 +207,7 @@ public class WiresLineSpliceControlImpl extends AbstractWiresControl<WiresLineSp
                     }
 
                     m_candidateConnector = candidateConnector;
+                    m_parent = getParentWhileSplicing(getParentPickerControl());
 
                     return true;
                 }
@@ -377,5 +390,31 @@ public class WiresLineSpliceControlImpl extends AbstractWiresControl<WiresLineSp
         }
 
         return intersectPoints;
+    }
+
+    static WiresContainer getParentWhileSplicing(final WiresParentPickerControl parentPickerControl) {
+        final Point2D currentLocation = parentPickerControl.getCurrentLocation();
+        WiresContainer parent = parentPickerControl.getParent();
+
+        if (parent == parentPickerControl.getShape().getWiresManager().getLayer()) {
+            PickerPart parentPart = parentPickerControl
+                    .getIndex()
+                    .findShapeAt((int) currentLocation.getX() + XY_OFFSET,
+                                 (int) currentLocation.getY() - XY_OFFSET);
+
+            if (null != parentPart) {
+                parent = parentPart.getShape();
+            }
+        }
+
+        return parent;
+    }
+
+    static List<double[]> convertPoints(final Point2DArray point2DArray) {
+        List<double[]> points = new ArrayList<>();
+        for (Point2D point : point2DArray.getPoints()) {
+            points.add(new double[]{point.getX(), point.getY()});
+        }
+        return points;
     }
 }

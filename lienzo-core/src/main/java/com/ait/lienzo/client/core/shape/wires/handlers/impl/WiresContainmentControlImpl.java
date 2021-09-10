@@ -85,7 +85,8 @@ public class WiresContainmentControlImpl extends AbstractWiresControl<WiresConta
 
     @Override
     public Point2D getCandidateLocation() {
-        return calculateCandidateLocation(getParentPickerControl());
+        return calculateCandidateLocation(getParentPickerControl(),
+                                          getParentPickerControl().getParent());
     }
 
     @Override
@@ -136,9 +137,9 @@ public class WiresContainmentControlImpl extends AbstractWiresControl<WiresConta
         shape.setDockedTo(null);
     }
 
-    public static Point2D calculateCandidateLocation(final WiresParentPickerControl parentPickerControl) {
+    public static Point2D calculateCandidateLocation(final WiresParentPickerControl parentPickerControl,
+                                                     final WiresContainer parent) {
         final WiresLayer m_layer = parentPickerControl.getShape().getWiresManager().getLayer();
-        final WiresContainer parent = parentPickerControl.getParent();
         final Point2D current = parentPickerControl.getShapeLocation();
         if (parent == null || parent == m_layer) {
             return current;

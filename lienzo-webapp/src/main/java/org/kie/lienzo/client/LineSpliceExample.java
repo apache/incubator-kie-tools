@@ -16,6 +16,8 @@
 
 package org.kie.lienzo.client;
 
+import java.util.List;
+
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
@@ -30,7 +32,6 @@ import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHighlightImpl;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import elemental2.dom.HTMLDivElement;
 
@@ -75,7 +76,7 @@ public class LineSpliceExample extends BaseExample implements Example {
         wiresManager.setLineSpliceAcceptor(new ILineSpliceAcceptor() {
             @Override
             public boolean allowSplice(WiresShape shape,
-                                       Point2D candidateLocation,
+                                       double[] candidateLocation,
                                        WiresConnector connector,
                                        WiresContainer parent) {
                 highlight.highlight(shape, PickerPart.ShapePart.BODY);
@@ -84,10 +85,10 @@ public class LineSpliceExample extends BaseExample implements Example {
 
             @Override
             public boolean acceptSplice(WiresShape shape,
-                                        Point2D candidateLocation,
+                                        double[] candidateLocation,
                                         WiresConnector connector,
-                                        Point2DArray firstHalfPoints,
-                                        Point2DArray secondHalfPoints,
+                                        List<double[]> firstHalfPoints,
+                                        List<double[]> secondHalfPoints,
                                         WiresContainer parent) {
                 highlight.restore();
                 return true;

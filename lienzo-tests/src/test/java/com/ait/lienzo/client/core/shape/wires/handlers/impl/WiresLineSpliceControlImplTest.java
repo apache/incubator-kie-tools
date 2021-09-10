@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.List;
+
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
@@ -33,6 +35,7 @@ import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
+import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
@@ -41,7 +44,6 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
@@ -65,6 +67,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -300,7 +303,6 @@ public class WiresLineSpliceControlImplTest {
         when(parentPicker.getShape()).thenReturn(spliceShape);
         when(parentPicker.getCurrentLocation()).thenReturn(parent.getLocation());
         when(parentPicker.onMove(anyDouble(), anyDouble())).thenReturn(true);
-        when(parentPicker.getIndex()).thenReturn(index);
         when(parentPicker.getIndex()).thenReturn(index);
         when(parentPicker.getShapeLocation()).thenReturn(new Point2D(60, 0));
 
@@ -598,7 +600,16 @@ public class WiresLineSpliceControlImplTest {
     }
 
     @Test
-    public void testExecuteSpliceWithContainment() {
+    public void testExecuteSpliceWithContainmentWithoutDeviation() {
+        checkSpliceAndContainment(false);
+    }
+
+    @Test
+    public void testExecuteSpliceWithContainmentWithDeviation() {
+        checkSpliceAndContainment(true);
+    }
+
+    private void checkSpliceAndContainment(final boolean deviation) {
         setLineSpliceAcceptorAllowed();
         finishSetup();
         manager.setSpliceEnabled(true);
@@ -608,7 +619,16 @@ public class WiresLineSpliceControlImplTest {
         setSpliceShapeMagnets();
         setNewConnectorHandlers();
 
-        when(parentPicker.getParent()).thenReturn(parent);
+        if (deviation) {
+            final WiresLayer wiresLayer = manager.getLayer();
+            when(parentPicker.getParent()).thenReturn(wiresLayer);
+            PickerPart pickerPart = mock(PickerPart.class);
+            when(pickerPart.getShape()).thenReturn(parent);
+            when(index.findShapeAt(WiresLineSpliceControlImpl.XY_OFFSET,
+                                   -WiresLineSpliceControlImpl.XY_OFFSET)).thenReturn(pickerPart);
+        } else {
+            when(parentPicker.getParent()).thenReturn(parent);
+        }
 
         // Check containment before
         assertEquals(0, parent.getChildShapes().size(), 0);
@@ -645,6 +665,15 @@ public class WiresLineSpliceControlImplTest {
 
         // Check containment after
         assertEquals(1, parent.getChildShapes().size(), 0);
+        verify(parentPicker, times(1)).getParent();
+
+        if (deviation) {
+            verify(index, times(1)).findShapeAt(WiresLineSpliceControlImpl.XY_OFFSET,
+                                                -WiresLineSpliceControlImpl.XY_OFFSET);
+        } else {
+            verify(index, never()).findShapeAt(WiresLineSpliceControlImpl.XY_OFFSET,
+                                               -WiresLineSpliceControlImpl.XY_OFFSET);
+        }
     }
 
     private void setSpliceShapeMagnets() {
@@ -796,12 +825,20 @@ public class WiresLineSpliceControlImplTest {
     private void setLineSpliceAcceptorNotAccept() {
         lineSpliceAcceptor = spy(new ILineSpliceAcceptor() {
             @Override
-            public boolean allowSplice(WiresShape shape, Point2D candidateLocation, WiresConnector connector, WiresContainer parent) {
+            public boolean allowSplice(WiresShape shape,
+                                       double[] candidateLocation,
+                                       WiresConnector connector,
+                                       WiresContainer parent) {
                 return true;
             }
 
             @Override
-            public boolean acceptSplice(WiresShape shape, Point2D candidateLocation, WiresConnector connector, Point2DArray firstHalfPoints, Point2DArray secondHalfPoints, WiresContainer parent) {
+            public boolean acceptSplice(WiresShape shape,
+                                        double[] candidateLocation,
+                                        WiresConnector connector,
+                                        List<double[]> firstHalfPoints,
+                                        List<double[]> secondHalfPoints,
+                                        WiresContainer parent) {
                 return false;
             }
 
