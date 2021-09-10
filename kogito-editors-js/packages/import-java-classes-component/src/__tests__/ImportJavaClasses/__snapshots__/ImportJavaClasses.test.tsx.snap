@@ -21,6 +21,478 @@ exports[`ImportJavaClasses component tests Should close Modal after opening it a
 </body>
 `;
 
+exports[`ImportJavaClasses component tests Should move to second step 1`] = `
+<body
+  class="pf-c-backdrop__open"
+>
+  <div
+    aria-hidden="true"
+  >
+    <button
+      aria-disabled="false"
+      class="pf-c-button pf-m-secondary"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-18"
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe="true"
+      data-testid="modal-wizard-button"
+      type="button"
+    >
+      Import Java classes
+    </button>
+  </div>
+  <div>
+    <div
+      class="pf-c-backdrop"
+    >
+      <div
+        class="pf-l-bullseye"
+      >
+        <div
+          aria-describedby="pf-wizard-description-5"
+          aria-labelledby="pf-wizard-title-5"
+          aria-modal="true"
+          class="pf-c-modal-box pf-m-lg"
+          data-ouia-component-id="OUIA-Generated-Modal-large-6"
+          data-ouia-component-type="PF4/ModalContent"
+          data-ouia-safe="true"
+          id="pf-modal-part-5"
+          role="dialog"
+        >
+          
+          <div
+            class="pf-c-wizard"
+          >
+            <div
+              class="pf-c-wizard__header"
+            >
+              <button
+                aria-disabled="false"
+                aria-label="Close"
+                class="pf-c-button pf-m-plain pf-c-wizard__close"
+                data-ouia-component-id="OUIA-Generated-Button-plain-7"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 352 512"
+                  width="1em"
+                >
+                  <path
+                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                  />
+                </svg>
+              </button>
+              <h2
+                aria-label="Import Java classes"
+                class="pf-c-title pf-m-3xl pf-c-wizard__title"
+                id="pf-wizard-title-5"
+              >
+                Import Java classes
+              </h2>
+              <p
+                class="pf-c-wizard__description"
+                id="pf-wizard-description-5"
+              >
+                It converts your Java assets to DMN types. This is a one-time import action: if the Java class get updated, you will need to reimport it
+              </p>
+            </div>
+            <button
+              aria-expanded="false"
+              aria-label="Wizard Toggle"
+              class="pf-c-wizard__toggle"
+            >
+              <ol
+                class="pf-c-wizard__toggle-list"
+              >
+                <li
+                  class="pf-c-wizard__toggle-list-item"
+                >
+                  <span
+                    class="pf-c-wizard__toggle-num"
+                  >
+                    2
+                  </span>
+                   
+                  Select fields
+                </li>
+              </ol>
+              <span
+                class="pf-c-wizard__toggle-icon"
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 320 512"
+                  width="1em"
+                >
+                  <path
+                    d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                  />
+                </svg>
+              </span>
+            </button>
+            <div
+              class="pf-c-wizard__outer-wrap"
+            >
+              <div
+                class="pf-c-wizard__inner-wrap"
+              >
+                <nav
+                  aria-labelledby="pf-wizard-title-5"
+                  class="pf-c-wizard__nav"
+                >
+                  <ol
+                    class="pf-c-wizard__nav-list"
+                  >
+                    <li
+                      class="pf-c-wizard__nav-item"
+                    >
+                      <button
+                        aria-current="false"
+                        class="pf-c-wizard__nav-link"
+                      >
+                        Select Java classes
+                      </button>
+                    </li>
+                    <li
+                      class="pf-c-wizard__nav-item"
+                    >
+                      <button
+                        aria-current="page"
+                        class="pf-c-wizard__nav-link pf-m-current"
+                      >
+                        Select fields
+                      </button>
+                    </li>
+                    <li
+                      class="pf-c-wizard__nav-item"
+                    >
+                      <button
+                        aria-current="false"
+                        aria-disabled="true"
+                        class="pf-c-wizard__nav-link pf-m-disabled"
+                        disabled=""
+                      >
+                        Review
+                      </button>
+                    </li>
+                  </ol>
+                </nav>
+                <main
+                  aria-labelledby="pf-wizard-title-5"
+                  class="pf-c-wizard__main"
+                >
+                  <div
+                    class="pf-c-wizard__main-body"
+                  >
+                    <table
+                      aria-label="field-table"
+                      class="pf-c-table pf-m-grid-md"
+                      data-ouia-component-id="OUIA-Generated-Table-1"
+                      data-ouia-component-type="PF4/Table"
+                      data-ouia-safe="true"
+                      role="grid"
+                    >
+                      <tbody
+                        class="pf-m-expanded"
+                        role="rowgroup"
+                      >
+                        <tr
+                          class=""
+                          data-ouia-component-id="OUIA-Generated-TableRow-1"
+                          data-ouia-component-type="PF4/TableRow"
+                          data-ouia-safe="true"
+                        >
+                          <td
+                            class="pf-c-table__toggle"
+                          >
+                            <button
+                              aria-disabled="false"
+                              aria-expanded="true"
+                              aria-label="Details"
+                              aria-labelledby="simple-node0 expand-toggle0"
+                              class="pf-c-button pf-m-plain pf-m-expanded"
+                              data-ouia-component-id="OUIA-Generated-Button-plain-9"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe="true"
+                              id="expand-toggle0"
+                              type="button"
+                            >
+                              <div
+                                class="pf-c-table__toggle-icon"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style="vertical-align: -0.125em;"
+                                  viewBox="0 0 320 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0l96.4 96.4 96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9l-136 136c-9.2 9.4-24.4 9.4-33.8 0z"
+                                  />
+                                </svg>
+                              </div>
+                            </button>
+                          </td>
+                          <td
+                            class=""
+                          >
+                            <span>
+                              <strong>
+                                Author
+                              </strong>
+                            </span>
+                            <span>
+                               (com.Author)
+                            </span>
+                          </td>
+                        </tr>
+                        <tr
+                          class="pf-c-table__expandable-row pf-m-expanded"
+                          data-ouia-component-id="OUIA-Generated-TableRow-2"
+                          data-ouia-component-type="PF4/TableRow"
+                          data-ouia-safe="true"
+                        >
+                          <td
+                            class=""
+                          />
+                          <td
+                            class=""
+                          >
+                            <div
+                              class="pf-c-table__expandable-row-content"
+                            >
+                              <span>
+                                name
+                              </span>
+                              <span>
+                                 (string)
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr
+                          class="pf-c-table__expandable-row pf-m-expanded"
+                          data-ouia-component-id="OUIA-Generated-TableRow-3"
+                          data-ouia-component-type="PF4/TableRow"
+                          data-ouia-safe="true"
+                        >
+                          <td
+                            class=""
+                          />
+                          <td
+                            class=""
+                          >
+                            <div
+                              class="pf-c-table__expandable-row-content"
+                            >
+                              <span>
+                                isAlive
+                              </span>
+                              <span>
+                                 (boolean)
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tbody
+                        class="pf-m-expanded"
+                        role="rowgroup"
+                      >
+                        <tr
+                          class=""
+                          data-ouia-component-id="OUIA-Generated-TableRow-4"
+                          data-ouia-component-type="PF4/TableRow"
+                          data-ouia-safe="true"
+                        >
+                          <td
+                            class="pf-c-table__toggle"
+                          >
+                            <button
+                              aria-disabled="false"
+                              aria-expanded="true"
+                              aria-label="Details"
+                              aria-labelledby="simple-node1 expand-toggle1"
+                              class="pf-c-button pf-m-plain pf-m-expanded"
+                              data-ouia-component-id="OUIA-Generated-Button-plain-10"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe="true"
+                              id="expand-toggle1"
+                              type="button"
+                            >
+                              <div
+                                class="pf-c-table__toggle-icon"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style="vertical-align: -0.125em;"
+                                  viewBox="0 0 320 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0l96.4 96.4 96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9l-136 136c-9.2 9.4-24.4 9.4-33.8 0z"
+                                  />
+                                </svg>
+                              </div>
+                            </button>
+                          </td>
+                          <td
+                            class=""
+                          >
+                            <span>
+                              <strong>
+                                Book
+                              </strong>
+                            </span>
+                            <span>
+                               (com.Book)
+                            </span>
+                          </td>
+                        </tr>
+                        <tr
+                          class="pf-c-table__expandable-row pf-m-expanded"
+                          data-ouia-component-id="OUIA-Generated-TableRow-5"
+                          data-ouia-component-type="PF4/TableRow"
+                          data-ouia-safe="true"
+                        >
+                          <td
+                            class=""
+                          />
+                          <td
+                            class=""
+                          >
+                            <div
+                              class="pf-c-table__expandable-row-content"
+                            >
+                              <span>
+                                title
+                              </span>
+                              <span>
+                                 (string)
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr
+                          class="pf-c-table__expandable-row pf-m-expanded"
+                          data-ouia-component-id="OUIA-Generated-TableRow-6"
+                          data-ouia-component-type="PF4/TableRow"
+                          data-ouia-safe="true"
+                        >
+                          <td
+                            class=""
+                          />
+                          <td
+                            class=""
+                          >
+                            <div
+                              class="pf-c-table__expandable-row-content"
+                            >
+                              <span>
+                                year
+                              </span>
+                              <span>
+                                 (integer)
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tbody
+                        class=""
+                        role="rowgroup"
+                      >
+                        <tr
+                          class=""
+                          data-ouia-component-id="OUIA-Generated-TableRow-7"
+                          data-ouia-component-type="PF4/TableRow"
+                          data-ouia-safe="true"
+                        >
+                          <td
+                            class=""
+                          />
+                          <td
+                            class=""
+                          >
+                            <span>
+                              <strong>
+                                Test
+                              </strong>
+                            </span>
+                            <span>
+                               (com.Test)
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </main>
+              </div>
+              <footer
+                class="pf-c-wizard__footer"
+              >
+                <button
+                  aria-disabled="true"
+                  class="pf-c-button pf-m-primary pf-m-disabled"
+                  data-ouia-component-id="OUIA-Generated-Button-primary-5"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
+                  disabled=""
+                  type="submit"
+                >
+                  Next
+                </button>
+                <button
+                  aria-disabled="false"
+                  class="pf-c-button pf-m-secondary"
+                  data-ouia-component-id="OUIA-Generated-Button-secondary-19"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
+                  type="button"
+                >
+                  Back
+                </button>
+                <div
+                  class="pf-c-wizard__footer-cancel"
+                >
+                  <button
+                    aria-disabled="false"
+                    class="pf-c-button pf-m-link"
+                    data-ouia-component-id="OUIA-Generated-Button-link-5"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe="true"
+                    type="button"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </footer>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+`;
+
 exports[`ImportJavaClasses component tests Should search box with results works 1`] = `
 <body
   class="pf-c-backdrop__open"
@@ -170,7 +642,7 @@ exports[`ImportJavaClasses component tests Should search box with results works 
                         aria-current="false"
                         class="pf-c-wizard__nav-link"
                       >
-                        Cherry-pick fields
+                        Select fields
                       </button>
                     </li>
                     <li
@@ -194,11 +666,6 @@ exports[`ImportJavaClasses component tests Should search box with results works 
                   <div
                     class="pf-c-wizard__main-body"
                   >
-                    <h6
-                      class="pf-c-title pf-m-md"
-                    >
-                      Search:
-                    </h6>
                     <div
                       class="pf-c-search-input"
                     >
@@ -271,7 +738,7 @@ exports[`ImportJavaClasses component tests Should search box with results works 
                     </div>
                     <ul
                       aria-label="class-data-list"
-                      class="pf-c-data-list pf-m-compact pf-m-grid-md"
+                      class="pf-c-data-list pf-m-grid-md"
                     >
                       <li
                         aria-labelledby=""
@@ -536,7 +1003,7 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
                         class="pf-c-wizard__nav-link pf-m-disabled"
                         disabled=""
                       >
-                        Cherry-pick fields
+                        Select fields
                       </button>
                     </li>
                     <li
@@ -560,11 +1027,6 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
                   <div
                     class="pf-c-wizard__main-body"
                   >
-                    <h6
-                      class="pf-c-title pf-m-md"
-                    >
-                      Search:
-                    </h6>
                     <div
                       class="pf-c-search-input"
                     >

@@ -38,7 +38,7 @@ export const en: ImportJavaClassesWizardI18n = {
       },
     },
     secondStep: {
-      stepName: "Cherry-pick fields",
+      stepName: "Select fields",
     },
     thirdStep: {
       stepName: "Review",

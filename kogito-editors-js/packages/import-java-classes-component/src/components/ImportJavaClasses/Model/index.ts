@@ -14,14 +14,4 @@
  * limitations under the License.
  */
 
-export {};
-
-declare global {
-  interface Window {
-    renderImportJavaClasses: (selector: string, buttonDisabledStatus: boolean, buttonTooltipMessage?: string) => void;
-    envelopeMock: {
-      lspGetClassServiceMocked: (value: string) => string[];
-      lspGetClassFieldsServiceMocked: (className: string) => Map<string, string>;
-    };
-  }
-}
+export * from "./";

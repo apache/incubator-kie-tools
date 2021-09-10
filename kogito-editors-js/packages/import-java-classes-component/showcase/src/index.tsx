@@ -44,9 +44,30 @@ const Showcase: React.FunctionComponent = () => {
       return [];
     }
   };
+  const lspGetClassFieldsServiceMocked = (className: string) => {
+    /* Mocked data retrieved from LSP Service */
+    const bookClassFieldsList = new Map<string, string>();
+    bookClassFieldsList.set("author", "string");
+    bookClassFieldsList.set("title", "string");
+    bookClassFieldsList.set("year", "integer");
+    const boomClassFieldsList = new Map<string, string>();
+    boomClassFieldsList.set("time", "date");
+    boomClassFieldsList.set("big", "boolean");
+    boomClassFieldsList.set("color", "string");
+
+    /* Temporary mocks managing */
+    if (className === "org.kie.test.kogito.Book") {
+      return bookClassFieldsList;
+    } else if (className === "org.kie.test.kogito.Boom") {
+      return boomClassFieldsList;
+    } else {
+      return new Map<string, string>();
+    }
+  };
 
   window.envelopeMock = {
     lspGetClassServiceMocked: (value: string) => lspGetClassServiceMocked(value),
+    lspGetClassFieldsServiceMocked: (className: string) => lspGetClassFieldsServiceMocked(className),
   };
 
   return (

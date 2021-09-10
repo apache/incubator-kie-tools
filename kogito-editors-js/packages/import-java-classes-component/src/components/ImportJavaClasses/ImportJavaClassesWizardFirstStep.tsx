@@ -15,21 +15,21 @@
  */
 
 import * as React from "react";
-import { Title, SearchInput } from "@patternfly/react-core";
+import { SearchInput } from "@patternfly/react-core";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { useCallback, useState } from "react";
 import { EmptyStateWidget } from "../EmptyStateWidget";
 import { ImportJavaClassesWizardClassListTable } from "./ImportJavaClassesWizardClassListTable";
 
-export interface ImportJavaClassesWizardFirstStep {
-  /** Text to apply to the Modal button */
+export interface ImportJavaClassesWizardFirstStepProps {
+  /** List of the selected classes by user */
   selectedJavaClasses: string[];
-  /** Text to apply to the Modal button */
+  /** Function to be called when selecting a Java Class */
   onSelectedJavaClassesUpdated: (fullClassName: string, add: boolean) => void;
 }
 
-export const ImportJavaClassesWizardFirstStep: React.FunctionComponent<ImportJavaClassesWizardFirstStep> = ({
+export const ImportJavaClassesWizardFirstStep: React.FunctionComponent<ImportJavaClassesWizardFirstStepProps> = ({
   selectedJavaClasses,
   onSelectedJavaClassesUpdated,
 }) => {
@@ -61,9 +61,6 @@ export const ImportJavaClassesWizardFirstStep: React.FunctionComponent<ImportJav
 
   return (
     <>
-      <Title headingLevel="h6" size="md">
-        {i18n.modalWizard.firstStep.input.title}
-      </Title>
       <SearchInput
         placeholder={i18n.modalWizard.firstStep.input.placeholder}
         value={searchValue}

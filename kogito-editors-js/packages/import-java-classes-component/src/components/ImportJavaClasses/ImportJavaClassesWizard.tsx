@@ -18,6 +18,7 @@ import * as React from "react";
 import { ModalWizard } from "../ModalWizard";
 import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { ImportJavaClassesWizardFirstStep } from "./ImportJavaClassesWizardFirstStep";
+import { ImportJavaClassesWizardSecondStep } from "./ImportJavaClassesWizardSecondStep";
 import { useState } from "react";
 
 export interface ImportJavaClassesWizardProps {
@@ -60,7 +61,7 @@ export const ImportJavaClassesWizard: React.FunctionComponent<ImportJavaClassesW
     },
     {
       name: i18n.modalWizard.secondStep.stepName,
-      component: <p>You selected: {selectedJavaClasses.join(", ")}</p>,
+      component: <ImportJavaClassesWizardSecondStep selectedJavaClasses={selectedJavaClasses} />,
       enableNext: false,
       canJumpTo: selectedJavaClasses.length > 0,
     },

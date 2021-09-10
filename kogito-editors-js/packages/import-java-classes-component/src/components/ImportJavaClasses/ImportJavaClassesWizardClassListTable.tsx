@@ -35,7 +35,7 @@ export const ImportJavaClassesWizardClassListTable: React.FunctionComponent<Impo
   }: ImportJavaClassesWizardClassListTableProps) => {
     const classesSet = new Set(selectedJavaClasses);
     return (
-      <DataList aria-label={"class-data-list"} isCompact>
+      <DataList aria-label={"class-data-list"}>
         {selectedJavaClasses.map((value) => (
           <ImportJavaClassesWizardClassListTableItems
             key={value}
