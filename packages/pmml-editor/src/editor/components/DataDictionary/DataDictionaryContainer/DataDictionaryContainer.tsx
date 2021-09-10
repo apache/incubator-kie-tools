@@ -204,7 +204,11 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                   <FlexItem>
                     <Button
                       variant="primary"
-                      onClick={addDataType}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        event.preventDefault();
+                        addDataType();
+                      }}
                       icon={<PlusIcon />}
                       iconPosition="left"
                       isDisabled={editing !== undefined || sorting}

@@ -174,7 +174,11 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                     <FlexItem>
                       <Button
                         variant="primary"
-                        onClick={addOutputField}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          addOutputField();
+                        }}
                         isDisabled={activeOperation !== Operation.NONE}
                         icon={<PlusIcon />}
                         iconPosition="left"

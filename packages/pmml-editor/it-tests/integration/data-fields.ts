@@ -64,7 +64,6 @@ describe("Data Fields Test", () => {
     cy.ouiaId("outputs-overview")
       .should("be.visible")
       .within(() => {
-        cy.ouiaType("output-field").first().click();
         cy.ouiaType("select-output-field-type").click();
         cy.ouiaType("select-option").contains("integer").click();
         cy.ouiaType("set-output-field-name").type("{selectall}{del}output");
