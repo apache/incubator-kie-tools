@@ -58,6 +58,15 @@ Feature: kogito-builder image tests
       | request_method  | POST                                                                                             |
       | content_type    | application/json                                                                                 |
       | request_body    | {"Driver": {"Points": 2}, "Violation": {"Type": "speed","Actual Speed": 120,"Speed Limit": 100}} |
+    And check that page is served
+      | property        | value                           |
+      | port            | 8080                            |
+      | path            | /q/health/live                  |
+      | wait            | 80                              |
+      | request_method  | GET                             |
+      | content_type    | application/json                |
+      | request_body    | {"status": "UP", "checks": []}  |
+
 
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly with custom group id, archetype & version
     Given s2i build /tmp/kogito-examples from dmn-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
@@ -121,3 +130,11 @@ Feature: kogito-builder image tests
       | request_method  | POST                                                                                             |
       | content_type    | application/json                                                                                 |
       | request_body    | {"Driver": {"Points": 2}, "Violation": {"Type": "speed","Actual Speed": 120,"Speed Limit": 100}} |
+    And check that page is served
+      | property        | value            |
+      | port            | 8080             |
+      | path            | /actuator/health |
+      | wait            | 80               |
+      | request_method  | GET              |
+      | content_type    | application/json |
+      | request_body    | {"status":"UP"}  |

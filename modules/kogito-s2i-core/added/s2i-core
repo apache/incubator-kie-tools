@@ -113,7 +113,7 @@ function build_kogito_app() {
                     -DprojectGroupId=$PROJECT_GROUP_ID \
                     -DprojectArtifactId=$PROJECT_ARTIFACT_ID \
                     -DprojectVersion=$PROJECT_VERSION \
-                    -Dextensions="kogito"
+                    -Dextensions="kogito,quarkus-smallrye-health,quarkus-smallrye-openapi"
 
         elif [ "${RUNTIME_TYPE}" == "${SPRINGBOOT_RUNTIME_TYPE}" ]; then
             log_info "----> Using Spring Boot to bootstrap the application."

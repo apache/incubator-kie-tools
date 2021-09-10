@@ -136,3 +136,11 @@ Feature: kogito-builder image native build tests
       | request_method  | POST                                                                                             |
       | content_type    | application/json                                                                                 |
       | request_body    | {"Driver": {"Points": 2}, "Violation": {"Type": "speed","Actual Speed": 120,"Speed Limit": 100}} |
+    And check that page is served
+      | property        | value                           |
+      | port            | 8080                            |
+      | path            | /q/health/live                  |
+      | wait            | 80                              |
+      | request_method  | GET                             |
+      | content_type    | application/json                |
+      | request_body    | {"status": "UP", "checks": []}  |
