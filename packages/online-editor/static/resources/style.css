@@ -617,3 +617,7 @@
   -o-animation: rotating 2s linear infinite;
   animation: rotating 2s linear infinite;
 }
+
+section.kogito-tooling--settings-tab {
+  height: calc(100% - 40px);
+}

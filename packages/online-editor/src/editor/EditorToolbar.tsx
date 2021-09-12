@@ -38,6 +38,7 @@ import { useCallback, useContext, useMemo, useState } from "react";
 import { useLocation } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
 import { useOnlineI18n } from "../common/i18n";
+import { SettingsButton } from "../settings/SettingsButton";
 import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/KieToolingExtendedServicesButtons";
 import { useKieToolingExtendedServices } from "./KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
@@ -49,7 +50,6 @@ interface Props {
   onSave: () => void;
   onDownload: () => void;
   onPreview: () => void;
-  onSetGitHubToken: () => void;
   onGistIt: () => void;
   onEmbed: () => void;
   onClose: () => void;
@@ -197,26 +197,34 @@ export function EditorToolbar(props: Props) {
             </DropdownItem>
           )}
         </React.Fragment>
-        <DropdownItem
-          data-testid={"set-github-token"}
-          key={`dropdown-${dropdownId}-setup-github-token`}
-          component="button"
-          onClick={props.onSetGitHubToken}
-        >
-          {i18n.editorToolbar.setGitHubToken}
-        </DropdownItem>
       </DropdownGroup>,
     ],
     [i18n, context, props.onSave, props.onDownload, props.onCopyContentToClipboard, props.onGistIt]
   );
 
   return !props.isPageFullscreen ? (
-    <PageHeader
-      logo={<Brand src={`images/${fileExtension}_kogito_logo.svg`} alt={`${fileExtension} kogito logo`} />}
-      logoProps={logoProps}
-      headerTools={
-        <PageHeaderTools>
-          {kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.UNAVAILABLE && (
+    <>
+      <PageHeader
+        logo={<Brand src={`images/${fileExtension}_kogito_logo.svg`} alt={`${fileExtension} kogito logo`} />}
+        logoProps={logoProps}
+        headerTools={
+          <PageHeaderTools>
+            {kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.UNAVAILABLE && (
+              <PageHeaderToolsGroup>
+                <PageHeaderToolsItem
+                  visibility={{
+                    default: "hidden",
+                    "2xl": "visible",
+                    xl: "visible",
+                    lg: "hidden",
+                    md: "hidden",
+                    sm: "hidden",
+                  }}
+                >
+                  <KieToolingExtendedServicesButtons />
+                </PageHeaderToolsItem>
+              </PageHeaderToolsGroup>
+            )}
             <PageHeaderToolsGroup>
               <PageHeaderToolsItem
                 visibility={{
@@ -228,187 +236,176 @@ export function EditorToolbar(props: Props) {
                   sm: "hidden",
                 }}
               >
-                <KieToolingExtendedServicesButtons />
+                <Button
+                  data-testid="save-button"
+                  variant={"primary"}
+                  onClick={props.onDownload}
+                  aria-label={"Save and Download button"}
+                  className={"kogito--editor__toolbar button"}
+                  ouiaId="save-and-download-button"
+                >
+                  {i18n.terms.save}
+                </Button>
               </PageHeaderToolsItem>
             </PageHeaderToolsGroup>
-          )}
-          <PageHeaderToolsGroup>
-            <PageHeaderToolsItem
-              visibility={{
-                default: "hidden",
-                "2xl": "visible",
-                xl: "visible",
-                lg: "hidden",
-                md: "hidden",
-                sm: "hidden",
-              }}
-            >
-              <Button
-                data-testid="save-button"
-                variant={"primary"}
-                onClick={props.onDownload}
-                aria-label={"Save and Download button"}
-                className={"kogito--editor__toolbar button"}
-                ouiaId="save-and-download-button"
+            <PageHeaderToolsGroup>
+              <PageHeaderToolsItem
+                visibility={{
+                  default: "hidden",
+                  "2xl": "visible",
+                  xl: "visible",
+                  lg: "hidden",
+                  md: "hidden",
+                  sm: "hidden",
+                }}
               >
-                {i18n.terms.save}
-              </Button>
-            </PageHeaderToolsItem>
-          </PageHeaderToolsGroup>
-          <PageHeaderToolsGroup>
-            <PageHeaderToolsItem
-              visibility={{
-                default: "hidden",
-                "2xl": "visible",
-                xl: "visible",
-                lg: "hidden",
-                md: "hidden",
-                sm: "hidden",
-              }}
-            >
-              <Dropdown
-                onSelect={() => setShareMenuOpen(false)}
-                toggle={
-                  <DropdownToggle
-                    id={"share-id-lg"}
-                    data-testid={"share-menu"}
-                    onToggle={(isOpen) => setShareMenuOpen(isOpen)}
-                  >
-                    {i18n.editorToolbar.share}
-                  </DropdownToggle>
-                }
-                isPlain={true}
-                className={"kogito--editor__toolbar dropdown"}
-                isOpen={isShareMenuOpen}
-                dropdownItems={shareItems("lg")}
-                position={DropdownPosition.right}
-              />
-            </PageHeaderToolsItem>
-          </PageHeaderToolsGroup>
-          <PageHeaderToolsGroup>
-            <PageHeaderToolsItem
-              visibility={{
-                default: "hidden",
-                "2xl": "visible",
-                xl: "visible",
-                lg: "hidden",
-                md: "hidden",
-                sm: "hidden",
-              }}
-            >
-              <Dropdown
-                onSelect={() => setViewKebabOpen(false)}
-                toggle={
-                  <DropdownToggle
-                    data-testid={"view-kebab"}
-                    className={"kogito--editor__toolbar-icon-button"}
-                    id={"view-id-lg"}
-                    toggleIndicator={null}
-                    onToggle={(isOpen) => setViewKebabOpen(isOpen)}
-                    ouiaId="toolbar-button"
-                  >
-                    <EllipsisVIcon />
-                  </DropdownToggle>
-                }
-                isOpen={isViewKebabOpen}
-                isPlain={true}
-                dropdownItems={viewItems("lg")}
-                position={DropdownPosition.right}
-              />
-            </PageHeaderToolsItem>
-            <PageHeaderToolsItem
-              visibility={{
-                default: "visible",
-                "2xl": "hidden",
-                xl: "hidden",
-                lg: "visible",
-                md: "visible",
-                sm: "visible",
-              }}
-            >
-              <Dropdown
-                onSelect={() => setKebabOpen(false)}
-                toggle={
-                  <DropdownToggle
-                    data-testid={"kebab-sm"}
-                    className={"kogito--editor__toolbar-icon-button"}
-                    id={"kebab-id-sm"}
-                    toggleIndicator={null}
-                    onToggle={(isOpen) => setKebabOpen(isOpen)}
-                    ouiaId="small-toolbar-button"
-                  >
-                    <EllipsisVIcon />
-                  </DropdownToggle>
-                }
-                isOpen={isKebabOpen}
-                isPlain={true}
-                dropdownItems={[
-                  ...viewItems("sm"),
-                  <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
-                    {...shareItems("sm")}
-                  </DropdownGroup>,
-                  <KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />,
-                ]}
-                position={DropdownPosition.right}
-              />
-            </PageHeaderToolsItem>
-          </PageHeaderToolsGroup>
-        </PageHeaderTools>
-      }
-      topNav={
-        <>
-          {!context.readonly && (
-            <>
-              <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
-                <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
-                  {fileName}
-                </Title>
-                <TextInput
-                  value={fileName}
-                  type={"text"}
-                  aria-label={"Edit file name"}
-                  className={"kogito--editor__toolbar-title"}
-                  onChange={setFileName}
-                  onKeyUp={onNameInputKeyUp}
-                  onBlur={saveNewName}
+                <Dropdown
+                  onSelect={() => setShareMenuOpen(false)}
+                  toggle={
+                    <DropdownToggle
+                      id={"share-id-lg"}
+                      data-testid={"share-menu"}
+                      onToggle={(isOpen) => setShareMenuOpen(isOpen)}
+                    >
+                      {i18n.editorToolbar.share}
+                    </DropdownToggle>
+                  }
+                  isPlain={true}
+                  className={"kogito--editor__toolbar dropdown"}
+                  isOpen={isShareMenuOpen}
+                  dropdownItems={shareItems("lg")}
+                  position={DropdownPosition.right}
                 />
-              </div>
-              {props.isEdited && (
-                <span
-                  aria-label={"File was edited"}
-                  className={"kogito--editor__toolbar-edited"}
-                  data-testid="is-dirty-indicator"
-                >
-                  {` - ${i18n.terms.edited}`}
-                </span>
-              )}
-            </>
-          )}
-          {context.readonly && (
-            <>
-              <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container readonly"}>
-                <Title
-                  className="kogito--editor__toolbar-title"
-                  aria-label={"File name"}
-                  headingLevel={"h3"}
-                  size={"2xl"}
-                >
-                  {fileName}
-                </Title>
-              </div>
-              <span
-                aria-label={"File is readonly"}
-                className={"kogito--editor__toolbar-edited"}
-                data-testid="is-readonly-indicator"
+              </PageHeaderToolsItem>
+            </PageHeaderToolsGroup>
+            <PageHeaderToolsGroup>
+              <PageHeaderToolsItem
+                visibility={{
+                  default: "hidden",
+                  "2xl": "visible",
+                  xl: "visible",
+                  lg: "hidden",
+                  md: "hidden",
+                  sm: "hidden",
+                }}
               >
-                {` - ${i18n.terms.readonly}`}
-              </span>
-            </>
-          )}
-        </>
-      }
-      className={"kogito--editor__toolbar"}
-      aria-label={"Page header"}
-    />
+                <Dropdown
+                  onSelect={() => setViewKebabOpen(false)}
+                  toggle={
+                    <DropdownToggle
+                      data-testid={"view-kebab"}
+                      className={"kogito--editor__toolbar-icon-button"}
+                      id={"view-id-lg"}
+                      toggleIndicator={null}
+                      onToggle={(isOpen) => setViewKebabOpen(isOpen)}
+                      ouiaId="toolbar-button"
+                    >
+                      <EllipsisVIcon />
+                    </DropdownToggle>
+                  }
+                  isOpen={isViewKebabOpen}
+                  isPlain={true}
+                  dropdownItems={viewItems("lg")}
+                  position={DropdownPosition.right}
+                />
+              </PageHeaderToolsItem>
+              <PageHeaderToolsItem
+                visibility={{
+                  default: "visible",
+                  "2xl": "hidden",
+                  xl: "hidden",
+                  lg: "visible",
+                  md: "visible",
+                  sm: "visible",
+                }}
+              >
+                <Dropdown
+                  onSelect={() => setKebabOpen(false)}
+                  toggle={
+                    <DropdownToggle
+                      data-testid={"kebab-sm"}
+                      className={"kogito--editor__toolbar-icon-button"}
+                      id={"kebab-id-sm"}
+                      toggleIndicator={null}
+                      onToggle={(isOpen) => setKebabOpen(isOpen)}
+                      ouiaId="small-toolbar-button"
+                    >
+                      <EllipsisVIcon />
+                    </DropdownToggle>
+                  }
+                  isOpen={isKebabOpen}
+                  isPlain={true}
+                  dropdownItems={[
+                    ...viewItems("sm"),
+                    <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
+                      {...shareItems("sm")}
+                    </DropdownGroup>,
+                    <KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />,
+                  ]}
+                  position={DropdownPosition.right}
+                />
+              </PageHeaderToolsItem>
+              <PageHeaderToolsItem>
+                <SettingsButton />
+              </PageHeaderToolsItem>
+            </PageHeaderToolsGroup>
+          </PageHeaderTools>
+        }
+        topNav={
+          <>
+            {!context.readonly && (
+              <>
+                <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
+                  <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
+                    {fileName}
+                  </Title>
+                  <TextInput
+                    value={fileName}
+                    type={"text"}
+                    aria-label={"Edit file name"}
+                    className={"kogito--editor__toolbar-title"}
+                    onChange={setFileName}
+                    onKeyUp={onNameInputKeyUp}
+                    onBlur={saveNewName}
+                  />
+                </div>
+                {props.isEdited && (
+                  <span
+                    aria-label={"File was edited"}
+                    className={"kogito--editor__toolbar-edited"}
+                    data-testid="is-dirty-indicator"
+                  >
+                    {` - ${i18n.terms.edited}`}
+                  </span>
+                )}
+              </>
+            )}
+            {context.readonly && (
+              <>
+                <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container readonly"}>
+                  <Title
+                    className="kogito--editor__toolbar-title"
+                    aria-label={"File name"}
+                    headingLevel={"h3"}
+                    size={"2xl"}
+                  >
+                    {fileName}
+                  </Title>
+                </div>
+                <span
+                  aria-label={"File is readonly"}
+                  className={"kogito--editor__toolbar-edited"}
+                  data-testid="is-readonly-indicator"
+                >
+                  {` - ${i18n.terms.readonly}`}
+                </span>
+              </>
+            )}
+          </>
+        }
+        className={"kogito--editor__toolbar"}
+        aria-label={"Page header"}
+      />
+    </>
   ) : null;
 }

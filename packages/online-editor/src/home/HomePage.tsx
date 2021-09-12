@@ -17,7 +17,7 @@
 import { File as UploadFile, newFile } from "@kie-tooling-core/editor/dist/channel";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Card, CardBody, CardHeader, CardFooter } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardFooter, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
 import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { FileUpload } from "@patternfly/react-core/dist/js/components/FileUpload";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -27,8 +27,8 @@ import {
   PageHeader,
   PageHeaderTools,
   PageHeaderToolsGroup,
-  PageSection,
   PageHeaderToolsItem,
+  PageSection,
 } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -43,6 +43,7 @@ import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
 import { GlobalContext } from "../common/GlobalContext";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { useOnlineI18n } from "../common/i18n";
+import { SettingsButton } from "../settings/SettingsButton";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -407,6 +408,9 @@ export function HomePage(props: Props) {
             }
             dropdownItems={userDropdownItems}
           />
+        </PageHeaderToolsItem>
+        <PageHeaderToolsItem>
+          <SettingsButton />
         </PageHeaderToolsItem>
       </PageHeaderToolsGroup>
     </PageHeaderTools>

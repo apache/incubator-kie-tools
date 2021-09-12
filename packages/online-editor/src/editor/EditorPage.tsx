@@ -17,7 +17,6 @@
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router";
-import { GithubTokenModal } from "../common/GithubTokenModal";
 import { GlobalContext } from "../common/GlobalContext";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
@@ -59,7 +58,6 @@ export enum AlertTypes {
 
 export enum ModalType {
   NONE,
-  GITHUB_TOKEN,
   TEXT_EDITOR,
   EMBED,
   DMN_RUNNER_HELPER,
@@ -202,10 +200,6 @@ export function EditorPage(props: Props) {
   const fileExtension = useMemo(() => {
     return context.routes.editor.args(location.pathname).type;
   }, [location.pathname]);
-
-  const requestSetGitHubToken = useCallback(() => {
-    setOpenModalType(ModalType.GITHUB_TOKEN);
-  }, []);
 
   const requestEmbed = useCallback(() => {
     setOpenModalType(ModalType.EMBED);
@@ -402,7 +396,6 @@ export function EditorPage(props: Props) {
                       onCopyContentToClipboard={requestCopyContentToClipboard}
                       isPageFullscreen={fullscreen}
                       onPreview={requestPreview}
-                      onSetGitHubToken={requestSetGitHubToken}
                       onGistIt={requestGistIt}
                       onEmbed={requestEmbed}
                       isEdited={isDirty}
@@ -531,9 +524,6 @@ export function EditorPage(props: Props) {
                                 <p>{i18n.editorPage.alerts.unsaved.message}</p>
                               </Alert>
                             </div>
-                          )}
-                          {!fullscreen && (
-                            <GithubTokenModal isOpen={openModalType === ModalType.GITHUB_TOKEN} onClose={closeModal} />
                           )}
                           {!fullscreen && (
                             <EmbedModal

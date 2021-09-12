@@ -24,7 +24,6 @@ import {
   usingTestingOnlineI18nContext,
 } from "../testing_utils";
 import { GithubService } from "../../common/GithubService";
-import { EditorPage } from "../../editor/EditorPage";
 import { KieToolingExtendedServicesStatus } from "../../editor/KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 
 const onFileNameChanged = jest.fn((file: string) => null);
@@ -35,7 +34,6 @@ const requestCopyContentToClipboard = jest.fn(() => null);
 const fullscreen = false;
 const requestPreview = jest.fn(() => null);
 const requestGistIt = jest.fn(() => null);
-const requestSetGitHubToken = jest.fn(() => null);
 const requestEmbed = jest.fn(() => null);
 
 function mockFunctions() {
@@ -79,7 +77,6 @@ describe("EditorToolbar", () => {
               onCopyContentToClipboard={requestCopyContentToClipboard}
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
-              onSetGitHubToken={requestSetGitHubToken}
               onGistIt={requestGistIt}
               onEmbed={requestEmbed}
               isEdited={isEdited}
@@ -107,7 +104,6 @@ describe("EditorToolbar", () => {
               onCopyContentToClipboard={requestCopyContentToClipboard}
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
-              onSetGitHubToken={requestSetGitHubToken}
               onGistIt={requestGistIt}
               onEmbed={requestEmbed}
               isEdited={isEdited}
@@ -133,7 +129,6 @@ describe("EditorToolbar", () => {
               onCopyContentToClipboard={requestCopyContentToClipboard}
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
-              onSetGitHubToken={requestSetGitHubToken}
               onGistIt={requestGistIt}
               onEmbed={requestEmbed}
               isEdited={false}
@@ -164,7 +159,6 @@ describe("EditorToolbar", () => {
               onCopyContentToClipboard={requestCopyContentToClipboard}
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
-              onSetGitHubToken={requestSetGitHubToken}
               onGistIt={requestGistIt}
               onEmbed={requestEmbed}
               isEdited={false}
@@ -179,19 +173,6 @@ describe("EditorToolbar", () => {
       expect(getByTestId("gist-it-button")).toHaveAttribute("aria-disabled", "true");
       expect(getByTestId("share-menu")).toMatchSnapshot();
     });
-
-    test("Set GitHub token button should open a GitHubTokenModal", async () => {
-      const { getByTestId } = render(
-        usingTestingOnlineI18nContext(
-          usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
-        ).wrapper
-      );
-
-      fireEvent.click(getByTestId("share-menu"));
-      fireEvent.click(getByTestId("set-github-token"));
-      expect(getByTestId("github-token-modal")).toBeVisible();
-      expect(getByTestId("github-token-modal")).toMatchSnapshot();
-    });
   });
 
   describe("share dropdown items", () => {
@@ -205,7 +186,6 @@ describe("EditorToolbar", () => {
         onCopyContentToClipboard={requestCopyContentToClipboard}
         isPageFullscreen={fullscreen}
         onPreview={requestPreview}
-        onSetGitHubToken={requestSetGitHubToken}
         onGistIt={requestGistIt}
         onEmbed={requestEmbed}
         isEdited={false}
@@ -279,7 +259,6 @@ describe("EditorToolbar", () => {
         onCopyContentToClipboard={requestCopyContentToClipboard}
         isPageFullscreen={fullscreen}
         onPreview={requestPreview}
-        onSetGitHubToken={requestSetGitHubToken}
         onGistIt={requestGistIt}
         onEmbed={requestEmbed}
         isEdited={false}

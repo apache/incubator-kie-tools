@@ -75,7 +75,6 @@ interface OnlineDictionary extends ReferenceDictionary {
     sendChangesToGitHub: string;
     copySource: string;
     downloadSVG: string;
-    setGitHubToken: string;
     gistIt: string;
     gistItTooltip: string;
     share: string;
@@ -189,21 +188,6 @@ interface OnlineDictionary extends ReferenceDictionary {
     };
     embedCode: string;
     copiedToClipboard: string;
-  };
-  githubTokenModal: {
-    header: {
-      title: string;
-      subtitle: string;
-    };
-    footer: {
-      createNewToken: string;
-      placeHolder: string;
-    };
-    body: {
-      disclaimer: string;
-      learnMore: string;
-      note: string;
-    };
   };
   homePage: {
     uploadFile: {

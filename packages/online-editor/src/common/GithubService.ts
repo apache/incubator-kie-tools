@@ -62,15 +62,15 @@ export class GithubService {
   private currentGist: CurrentGist | undefined;
 
   constructor() {
-    this.init(false);
+    this.init({ resetToken: false });
   }
 
-  private init(resetToken: boolean): void {
+  private init(args: { resetToken: boolean }): void {
     this.octokit = new Octokit();
     this.authenticated = false;
     this.userLogin = "";
 
-    if (resetToken) {
+    if (args.resetToken) {
       setCookie(GITHUB_AUTH_TOKEN_COOKIE_NAME, EMPTY_TOKEN);
     }
   }
@@ -95,7 +95,7 @@ export class GithubService {
   }
 
   public reset(): void {
-    this.init(true);
+    this.init({ resetToken: true });
   }
 
   public async authenticate(token: string = EMPTY_TOKEN) {
@@ -103,7 +103,7 @@ export class GithubService {
 
     const userLogin = await this.getAuthenticateUser(token);
     if (!userLogin) {
-      this.init(true);
+      this.init({ resetToken: false });
       return false;
     }
 

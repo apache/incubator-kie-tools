@@ -29,6 +29,7 @@ import { NoMatchPage } from "./NoMatchPage";
 import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
 import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
 import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
+import { SettingsContextProvider } from "./settings/SettingsContext";
 
 interface Props {
   file: File;
@@ -78,21 +79,23 @@ export function App(props: Props) {
           isChrome: !!window.chrome,
         }}
       >
-        <HashRouter>
-          <Switch>
-            <Route path={routes.editor.url({ type: ":type" })}>
-              <EditorPage onFileNameChanged={onFileNameChanged} />
-            </Route>
-            <Route exact={true} path={routes.home.url({})}>
-              <HomePage onFileOpened={onFileOpened} />
-            </Route>
-            <Route exact={true} path={routes.downloadHub.url({})}>
-              <HomePage onFileOpened={onFileOpened} />
-              <DownloadHubModal />
-            </Route>
-            <Route component={NoMatchPage} />
-          </Switch>
-        </HashRouter>
+        <SettingsContextProvider>
+          <HashRouter>
+            <Switch>
+              <Route path={routes.editor.url({ type: ":type" })}>
+                <EditorPage onFileNameChanged={onFileNameChanged} />
+              </Route>
+              <Route exact={true} path={routes.home.url({})}>
+                <HomePage onFileOpened={onFileOpened} />
+              </Route>
+              <Route exact={true} path={routes.downloadHub.url({})}>
+                <HomePage onFileOpened={onFileOpened} />
+                <DownloadHubModal />
+              </Route>
+              <Route component={NoMatchPage} />
+            </Switch>
+          </HashRouter>
+        </SettingsContextProvider>
       </GlobalContext.Provider>
     </I18nDictionariesProvider>
   );

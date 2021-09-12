@@ -37,61 +37,6 @@ exports[`EditorToolbar file actions Gist it button should be disable without tok
 </button>
 `;
 
-exports[`EditorToolbar file actions Set GitHub token button should open a GitHubTokenModal 1`] = `
-<div
-  class="pf-c-modal-box__body"
-  data-testid="github-token-modal"
-  id="pf-modal-part-2"
->
-  <p>
-    <span
-      class="pf-u-mr-sm"
-    >
-      By authenticating with your OAuth Token we are able to create gists so you can share your diagrams with your colleagues. The token you provide is locally stored as browser cookies and it is never shared with anyone.
-    </span>
-    <a
-      href="https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line"
-      target="_blank"
-    >
-      Learn more about GitHub tokens
-      <svg
-        aria-hidden="true"
-        class="pf-u-mx-sm"
-        fill="currentColor"
-        height="1em"
-        role="img"
-        style="vertical-align: -0.125em;"
-        viewBox="0 0 512 512"
-        width="1em"
-      >
-        <path
-          d="M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z"
-        />
-      </svg>
-    </a>
-  </p>
-  <br />
-  <p>
-    <b>
-      <u>
-        NOTE
-        :
-      </u>
-       
-    </b>
-  </p>
-  <p
-    style="display: inline;"
-  >
-    You should provide a token with the 
-    <b>
-      'gist'
-    </b>
-     permission.
-  </p>
-</div>
-`;
-
 exports[`EditorToolbar is dirty indicator should show the Read-only indicator when readonly is true 1`] = `
 <div
   class="kogito--editor__toolbar-name-container readonly"
