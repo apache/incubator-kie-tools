@@ -201,7 +201,7 @@ func initializeScenario(ctx *godog.ScenarioContext) {
 
 	// Log objects
 	if logKogitoCommunityObjects {
-		data.RegisterLogsKubernetesObjects(&v1beta1.KogitoRuntimeList{}, &v1beta1.KogitoBuildList{}, &v1beta1.KogitoSupportingService{}, &v1beta1.KogitoInfraList{})
+		data.RegisterLogsKubernetesObjects(&v1beta1.KogitoRuntimeList{}, &v1beta1.KogitoBuildList{}, &v1beta1.KogitoSupportingServiceList{}, &v1beta1.KogitoInfraList{})
 	}
 	data.RegisterLogsKubernetesObjects(&olmapiv1alpha1.ClusterServiceVersionList{})
 	if framework.IsOpenshift() {
