@@ -46,6 +46,7 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
     if (interaction === "mouse") {
       //If the MiningField was deleted by clicking on the delete icon we need to blur
       //the element otherwise the CSS :focus-within persists on the deleted element.
+      //See https://issues.redhat.com/browse/FAI-570 for the root cause.
       if (document.activeElement instanceof HTMLElement) {
         document.activeElement?.blur();
       }
@@ -112,9 +113,6 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
     if (miningFieldFocusIndex !== undefined) {
       document.querySelector<HTMLElement>(`#mining-schema-field-n${miningFieldFocusIndex}`)?.focus();
     }
-    return () => {
-      setMiningFieldFocusIndex(undefined);
-    };
   }, [miningSchema, miningFieldFocusIndex]);
 
   const isDisabled = useMemo(() => {

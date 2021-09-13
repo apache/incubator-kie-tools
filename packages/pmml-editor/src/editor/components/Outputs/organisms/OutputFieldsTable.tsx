@@ -79,9 +79,6 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
     if (outputFieldFocusIndex !== undefined) {
       document.querySelector<HTMLElement>(`#output-field-n${outputFieldFocusIndex}`)?.focus();
     }
-    return () => {
-      setOutputFieldFocusIndex(undefined);
-    };
   }, [outputs, outputFieldFocusIndex]);
 
   const onEdit = (index: number | undefined) => {
@@ -94,6 +91,7 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
     if (interaction === "mouse") {
       //If the OutputField was deleted by clicking on the delete icon we need to blur
       //the element otherwise the CSS :focus-within persists on the deleted element.
+      //See https://issues.redhat.com/browse/FAI-570 for the root cause.
       if (document.activeElement instanceof HTMLElement) {
         document.activeElement?.blur();
       }

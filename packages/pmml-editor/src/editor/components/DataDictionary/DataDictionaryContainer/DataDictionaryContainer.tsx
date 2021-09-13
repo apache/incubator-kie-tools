@@ -87,6 +87,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
     if (interaction === "mouse") {
       //If the DataTypeItem was deleted by clicking on the delete icon we need to blur
       //the element otherwise the CSS :focus-within persists on the deleted element.
+      //See https://issues.redhat.com/browse/FAI-570 for the root cause.
       if (document.activeElement instanceof HTMLElement) {
         document.activeElement?.blur();
       }
@@ -181,9 +182,6 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
     if (dataTypeFocusIndex !== undefined) {
       document.querySelector<HTMLElement>(`#data-type-item-n${dataTypeFocusIndex}`)?.focus();
     }
-    return () => {
-      setDataTypeFocusIndex(undefined);
-    };
   }, [dataDictionary, dataTypeFocusIndex]);
 
   return (

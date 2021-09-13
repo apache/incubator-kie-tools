@@ -92,9 +92,6 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     if (characteristicFocusIndex !== undefined) {
       document.querySelector<HTMLElement>(`#characteristic-n${characteristicFocusIndex}`)?.focus();
     }
-    return () => {
-      setCharacteristicFocusIndex(undefined);
-    };
   }, [characteristics, characteristicFocusIndex]);
 
   const onEdit = (index: number | undefined) => {
@@ -107,6 +104,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     if (interaction === "mouse") {
       //If the Characteristic was deleted by clicking on the delete icon we need to blur
       //the element otherwise the CSS :focus-within persists on the deleted element.
+      //See https://issues.redhat.com/browse/FAI-570 for the root cause.
       if (document.activeElement instanceof HTMLElement) {
         document.activeElement?.blur();
       }

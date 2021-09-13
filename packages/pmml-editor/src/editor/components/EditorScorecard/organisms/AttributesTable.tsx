@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
+import { useEffect, useState } from "react";
 import {
   Attribute,
   Characteristic,
@@ -28,7 +29,6 @@ import "./AttributesTable.scss";
 import { Operation } from "../Operation";
 import { useSelector } from "react-redux";
 import { useOperation } from "../OperationContext";
-import { useEffect, useState } from "react";
 import { Interaction } from "../../../types";
 
 interface AttributesTableProps {
@@ -72,9 +72,6 @@ export const AttributesTable = (props: AttributesTableProps) => {
     if (attributeFocusIndex !== undefined) {
       document.querySelector<HTMLElement>(`#attribute-n${attributeFocusIndex}`)?.focus();
     }
-    return () => {
-      setAttributeFocusIndex(undefined);
-    };
   }, [characteristic.Attribute, attributeFocusIndex]);
 
   const onEdit = (index: number | undefined) => {
@@ -87,6 +84,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
     if (interaction === "mouse") {
       //If the Attribute was deleted by clicking on the delete icon we need to blur
       //the element otherwise the CSS :focus-within persists on the deleted element.
+      //See https://issues.redhat.com/browse/FAI-570 for the root cause.
       if (document.activeElement instanceof HTMLElement) {
         document.activeElement?.blur();
       }
