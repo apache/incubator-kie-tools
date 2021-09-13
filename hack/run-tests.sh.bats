@@ -1,12 +1,15 @@
 #!/usr/bin/env bats
 
 function go() { 
-    echo "$@" 
+    echo '' 
 }
 
-setup() {
-    export -f go
+function oc() { 
+    echo ''
 }
+
+export -f go
+export -f oc
 
 @test "invoke run-tests with dry_run" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
@@ -121,13 +124,14 @@ setup() {
 @test "invoke run-tests with debug" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --debug --dry_run
     [ "$status" -eq 0 ]
-    [[ "${lines[1]}" = "DEBUG=true"* ]]
+    [[ "${output}" =~ "DEBUG=true go test"* ]]
+
 }
 
 @test "invoke run-tests without debug" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
     [ "$status" -eq 0 ]
-    [[ "${lines[1]}" = "DEBUG=false"* ]]
+    [[ "${output}" =~ "DEBUG=false go test"* ]]
 }
 
 @test "invoke run-tests with smoke" {

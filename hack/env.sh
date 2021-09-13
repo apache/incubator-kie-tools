@@ -59,3 +59,31 @@ getAllDependentCrds() {
 getDependentCrds() {
   oc get crds | grep $1 | awk -F' ' '{print $1}'
 }
+
+# get_and_clean_cluster_resources namespace resourceName
+get_and_clean_resources() {
+  clean_resources $1 $2 "$(oc get $2 -n $1 | grep -v NAME | awk '{print $1}')"
+}
+
+# clean_cluster_resources namespace resourceName {list of resources}
+clean_resources() {
+  for resourceName in $3
+  do
+    echo "Delete $2 ${resourceName} in namespace $1"
+    oc delete $2 ${resourceName} -n $1
+  done
+}
+
+# get_and_clean_cluster_resources resourceName
+get_and_clean_cluster_resources() {
+  clean_cluster_resources $1 "$(oc get $1 | grep -v NAME | awk '{print $1}')"
+}
+
+# clean_cluster_resources resourceName {list of resources}
+clean_cluster_resources() {
+  for resourceName in $2
+  do
+    echo "Delete cluster $1 ${resourceName}"
+    oc delete $1 ${resourceName}
+  done
+}

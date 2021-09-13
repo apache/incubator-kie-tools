@@ -16,4 +16,12 @@
 script_dir_path=`dirname "${BASH_SOURCE[0]}"`
 source ${script_dir_path}/env.sh
 
-clean_cluster_resources 'crds' "$(getAllDependentCrds)"
+function clean_installed_operators() {
+  echo "--- Clean subscriptions in $1"
+  get_and_clean_resources $1 'subscription'
+  echo "--- Clean clusterserviceversions in $1"
+  get_and_clean_resources $1 'clusterserviceversion'
+}
+
+clean_installed_operators 'openshift-operators'
+clean_installed_operators 'operators'
