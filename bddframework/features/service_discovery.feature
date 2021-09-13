@@ -5,6 +5,7 @@ Feature: Discovery with onboarding
     Given Namespace is created
 
   @quarkus
+  @rhpam
   Scenario Outline: Deploy Quarkus onboarding example with native <native>
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
@@ -48,7 +49,6 @@ Feature: Discovery with onboarding
       }
       """
 
-    @rhpam
     Examples:
       | native   |
       | disabled |

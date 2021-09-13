@@ -29,6 +29,7 @@ import (
 
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
+	"github.com/kiegroup/kogito-operator/core/kogitobuild"
 	"github.com/kiegroup/kogito-operator/core/test"
 
 	"github.com/kiegroup/kogito-operator/core/framework"
@@ -228,16 +229,47 @@ func DeleteFile(folder, fileName string) error {
 	return os.Remove(folder + "/" + fileName)
 }
 
-// GetBuildImage returns a build image with defaults set
-func GetBuildImage(imageName string) string {
-	image := api.Image{
-		Domain: fmt.Sprintf("%s/%s", config.GetBuildImageRegistry(), config.GetBuildImageNamespace()),
-		Name:   imageName,
-		Tag:    config.GetBuildImageVersion(),
+// GetKogitoBuildS2IImage returns the S2I builder image tag
+func GetKogitoBuildS2IImage() string {
+	if len(config.GetBuildBuilderImageStreamTag()) > 0 {
+		return config.GetBuildBuilderImageStreamTag()
 	}
 
-	if len(image.Domain) == 0 {
-		image.Domain = infrastructure.GetDefaultImageRegistry()
+	return GetKogitoBuildImage(kogitobuild.GetDefaultBuilderImage())
+}
+
+// GetKogitoBuildRuntimeImage returns the Runtime image tag
+func GetKogitoBuildRuntimeImage(native bool) string {
+	var imageName string
+	if native {
+		if len(config.GetBuildRuntimeNativeImageStreamTag()) > 0 {
+			return config.GetBuildRuntimeNativeImageStreamTag()
+		}
+		imageName = kogitobuild.GetDefaultRuntimeNativeImage()
+	} else {
+		if len(config.GetBuildRuntimeJVMImageStreamTag()) > 0 {
+			return config.GetBuildRuntimeJVMImageStreamTag()
+		}
+		imageName = kogitobuild.GetDefaultRuntimeJVMImage()
+	}
+	return GetKogitoBuildImage(imageName)
+}
+
+// GetKogitoBuildImage returns a build image with defaults set
+func GetKogitoBuildImage(imageName string) string {
+	image := api.Image{
+		Name: imageName,
+		Tag:  config.GetBuildImageVersion(),
+	}
+
+	registry := infrastructure.GetDefaultImageRegistry()
+	if len(config.GetBuildImageRegistry()) > 0 {
+		registry = config.GetBuildImageRegistry()
+	}
+	if len(config.GetBuildImageNamespace()) > 0 {
+		image.Domain = fmt.Sprintf("%s/%s", registry, config.GetBuildImageNamespace())
+	} else {
+		image.Domain = registry
 	}
 
 	if len(image.Tag) == 0 {
@@ -246,9 +278,8 @@ func GetBuildImage(imageName string) string {
 
 	// Update image name with suffix if provided
 	if len(config.GetBuildImageNameSuffix()) > 0 {
-		image.Name = fmt.Sprintf("%s-%s", image.Name, config.GetBuildImageNameSuffix())
+		image.Name = fmt.Sprintf("%s-%s", imageName, config.GetBuildImageNameSuffix())
 	}
-
 	return framework.ConvertImageToImageTag(image)
 }
 

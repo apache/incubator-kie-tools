@@ -3,6 +3,7 @@ Feature: Deploy Kogito Runtime
   Background:
     Given Namespace is created
 
+  @rhpam
   Scenario Outline: Deploy <example-service> with native <native> using Kogito Runtime
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
@@ -14,14 +15,12 @@ Feature: Deploy Kogito Runtime
     Then Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
     And Service "<example-service>" with process name "orders" is available within 2 minutes
 
-    @rhpam
     @smoke
     @springboot
     Examples:
       | runtime    | example-service            | native   |
       | springboot | process-springboot-example | disabled |
 
-    @rhpam
     @smoke
     @quarkus
     Examples:
@@ -36,6 +35,7 @@ Feature: Deploy Kogito Runtime
 
 #####
 
+  @rhpam
   Scenario Outline: Deploy DMN <example-service> with native <native> using Kogito Runtime
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
@@ -57,13 +57,11 @@ Feature: Deploy Kogito Runtime
       }
       """
 
-    @rhpam
     @springboot
     Examples:
       | runtime    | example-service        | native   |
       | springboot | dmn-springboot-example | disabled |
 
-    @rhpam
     @quarkus
     Examples:
       | runtime    | example-service     | native   |
@@ -304,6 +302,7 @@ Feature: Deploy Kogito Runtime
 
   @events
   @kafka
+  @rhpam
   Scenario Outline: Deploy <example-service> with events and native <native> using Kogito Runtime
     Given Kogito Operator is deployed
     And Kafka Operator is deployed
@@ -332,13 +331,11 @@ Feature: Deploy Kogito Runtime
     Then Kafka instance "kogito-kafka" should contain at least 2 messages on topic "kogito-processinstances-events" within 2 minutes
 
     @springboot
-    @rhpam
     Examples:
       | runtime    | example-service            | native   |
       | springboot | process-springboot-example | disabled |
 
     @quarkus
-    @rhpam
     Examples:
       | runtime    | example-service         | native   |
       | quarkus    | process-quarkus-example | disabled |
@@ -590,6 +587,7 @@ Feature: Deploy Kogito Runtime
 #####
 
   @usertasks
+  @rhpam
   Scenario Outline: Deploy <example-service> service to complete user tasks with native <native>
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
@@ -618,13 +616,11 @@ Feature: Deploy Kogito Runtime
     Then Service "<example-service>" contains 0 instances of process with name "orders"
     And Service "<example-service>" contains 0 instances of process with name "orderItems"
 
-    @rhpam
     @springboot
     Examples:
       | runtime    | example-service            | native   |
       | springboot | process-springboot-example | disabled |
 
-    @rhpam
     @quarkus
     Examples:
       | runtime | example-service         | native   |

@@ -16,7 +16,6 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/core/kogitobuild"
 	"io/ioutil"
 	"path/filepath"
 	"strings"
@@ -40,7 +39,7 @@ type KogitoApplicationDockerfileProvider interface {
 
 type kogitoApplicationDockerfileProviderStruct struct {
 	projectLocation         string
-	imageName               string
+	native                  bool
 	jarSubDirectory         string
 	executableFileName      string
 	applicationBinarySuffix string
@@ -48,13 +47,13 @@ type kogitoApplicationDockerfileProviderStruct struct {
 }
 
 var quarkusNonNativeLegacyJarKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
-	imageName:               kogitobuild.GetDefaultRuntimeJVMImage(),
+	native:                  false,
 	applicationBinarySuffix: quarkusJVMLegacyApplicationBinarySuffix,
 	folderDependencies:      []string{"lib"},
 }
 
 var quarkusNonNativeFastJarKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
-	imageName:               kogitobuild.GetDefaultRuntimeJVMImage(),
+	native:                  false,
 	jarSubDirectory:         quarkusFastJarFolder,
 	executableFileName:      quarkusFastJarName,
 	applicationBinarySuffix: quarkusJVMFastApplicationBinarySuffix,
@@ -62,12 +61,12 @@ var quarkusNonNativeFastJarKogitoApplicationDockerfileProvider = kogitoApplicati
 }
 
 var quarkusNativeKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
-	imageName:               kogitobuild.GetDefaultRuntimeNativeImage(),
+	native:                  true,
 	applicationBinarySuffix: quarkusNativeApplicationBinarySuffix,
 }
 
 var springbootKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
-	imageName:               kogitobuild.GetDefaultRuntimeJVMImage(),
+	native:                  false,
 	applicationBinarySuffix: springBootApplicationBinarySuffix,
 }
 
@@ -90,7 +89,7 @@ func GetKogitoApplicationDockerfileProvider(projectLocation string) KogitoApplic
 
 func (dockerfileProvider *kogitoApplicationDockerfileProviderStruct) GetDockerfileContent() (string, error) {
 	// Declare base image to build from
-	dockerfileContent := fmt.Sprintf("FROM %s\n", GetBuildImage(dockerfileProvider.imageName))
+	dockerfileContent := fmt.Sprintf("FROM %s\n", GetKogitoBuildRuntimeImage(dockerfileProvider.native))
 
 	subDir := ""
 	if len(dockerfileProvider.jarSubDirectory) > 0 {
