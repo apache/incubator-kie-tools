@@ -19,4 +19,4 @@ source ${script_dir_path}/go-path.sh
 # get the openapi binary
 command -v openapi-gen >/dev/null || go build -o "${GOPATH}"/bin/openapi-gen k8s.io/kube-openapi/cmd/openapi-gen
 echo "Generating openapi files"
-openapi-gen --logtostderr=true -v 1 -o "" -i github.com/kiegroup/kogito-operator/api/v1beta1 -O zz_generated.openapi -p ./api/v1beta1 -h ./hack/boilerplate.go.txt -r "-"
+openapi-gen --logtostderr=true -v 1 -o "" -i github.com/kiegroup/kogito-operator/apis/app/v1beta1 -O zz_generated.openapi -p ./apis/app/v1beta1 -h ./hack/boilerplate.go.txt -r "-"

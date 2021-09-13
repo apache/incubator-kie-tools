@@ -47,11 +47,12 @@ set_up() {
 }
 
 gen_client() {
+  echo "----> Generating client code [versioned]"
   go run k8s.io/code-generator/cmd/client-gen \
     --go-header-file=../hack/boilerplate.go.txt \
-    --input=/"${kogito_api_version}" \
-    --input-base=github.com/kiegroup/kogito-operator/api \
-    --input-dirs=github.com/kiegroup/kogito-operator/api/${kogito_api_version} \
+    --input=/app/"${kogito_api_version}" \
+    --input-base=github.com/kiegroup/kogito-operator/apis \
+    --input-dirs=github.com/kiegroup/kogito-operator/apis/app/${kogito_api_version} \
     --clientset-name "versioned" \
     --output-base=. \
     --output-package=github.com/kiegroup/kogito-operator/client/clientset
@@ -60,21 +61,23 @@ gen_client() {
 }
 
 gen_listers() {
+  echo "----> Generating client code [listers]"
   go run k8s.io/code-generator/cmd/lister-gen \
     --go-header-file=../hack/boilerplate.go.txt \
-    --input-dirs=github.com/kiegroup/kogito-operator/api/${kogito_api_version} \
+    --input-dirs=github.com/kiegroup/kogito-operator/apis/app/${kogito_api_version} \
     --output-base=. \
     --output-package=github.com/kiegroup/kogito-operator/client/listers
   error_handler $? "Failed to generate listers"
 }
 
 gen_informers() {
+  echo "----> Generating client code [informers]"
   go run k8s.io/code-generator/cmd/informer-gen \
     --go-header-file=../hack/boilerplate.go.txt \
     --versioned-clientset-package=github.com/kiegroup/kogito-operator/client/clientset/versioned \
     --internal-clientset-package=github.com/kiegroup/kogito-operator/client/clientset/versioned \
     --listers-package=github.com/kiegroup/kogito-operator/client/listers \
-    --input-dirs=github.com/kiegroup/kogito-operator/api/${kogito_api_version} \
+    --input-dirs=github.com/kiegroup/kogito-operator/apis/app/${kogito_api_version} \
     --output-base=. \
     --output-package=github.com/kiegroup/kogito-operator/client/informers
   error_handler $? "Failed to generate informers"
@@ -82,15 +85,6 @@ gen_informers() {
 
 move_gen_code() {
   mv github.com/kiegroup/kogito-operator/client/* .
-  error_handler $? "Failed to move generated code to /client directory"
-  if [ ! -f "clientset/versioned/typed/${kogito_api_version}/kogito_client.go" ]; then
-    mv clientset/versioned/typed/${kogito_api_version}/_client.go clientset/versioned/typed/${kogito_api_version}/kogito_client.go
-    error_handler $? "Failed to rename _client.go to kogito_client.go"
-  fi
-  if [ ! -f "clientset/versioned/typed/${kogito_api_version}/fake/fake_kogito_client.go" ]; then
-    mv clientset/versioned/typed/${kogito_api_version}/fake/fake__client.go clientset/versioned/typed/${kogito_api_version}/fake/fake_kogito_client.go
-    error_handler $? "Failed to rename fake__client.go to fake_kogito_client.go"
-  fi
 }
 
 set_up

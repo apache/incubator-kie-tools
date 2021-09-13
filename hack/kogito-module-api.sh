@@ -24,14 +24,14 @@ print_usage() {
 }
 
 disable() {
-  sed -i '/github.com\/kiegroup\/kogito-operator\/api v/d' ./go.mod
-  mv ./api/go.mod api/go.mod.bkp 2>/dev/null
+  sed -i '/github.com\/kiegroup\/kogito-operator\/apis v/d' ./go.mod
+  mv ./apis/go.mod apis/go.mod.bkp 2>/dev/null
   true
 }
 
 enable() {
   disable
-  mv ./api/go.mod.bkp api/go.mod
+  mv ./apis/go.mod.bkp apis/go.mod
   go mod tidy
 }
 
