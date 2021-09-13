@@ -1,5 +1,5 @@
 name: "Setup Kogito Tooling build environment"
-description: "setup"
+description: ""
 
 inputs:
   os:
@@ -23,6 +23,11 @@ runs:
       with:
         java-version: 11
 
+    - name: "Set up GOLANG 1.16"
+      uses: actions/setup-go@v2
+      with:
+        go-version: "1.16"
+
     - name: "Fetch Git tags"
       shell: bash
       run: |
@@ -44,7 +49,7 @@ runs:
         echo "STEP: Setup default Maven args"
         cd ${{ inputs.path }}
         mkdir .mvn
-        echo '-ntp' > .mvn/maven.config
+        echo '-B -ntp' > .mvn/maven.config
 
     - name: "Bootstrap"
       shell: bash
@@ -91,4 +96,18 @@ runs:
         cd ${{ inputs.path }}
         if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
           echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+        fi
+
+    - name: "Setup GOLANG packages (Linux)"
+      shell: bash
+      run: |
+        echo "STEP: Setup GOLANG packages (Linux)"
+        cd ${{ inputs.path }}
+        if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
+          sudo apt update && \
+          sudo apt install -y \
+          build-essential \
+          libgtk-3-dev \
+          libappindicator3-dev \
+          gir1.2-appindicator3-0.1
         fi

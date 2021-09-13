@@ -1,0 +1,136 @@
+name: "Publish jitexecutor-native"
+
+on:
+  workflow_dispatch:
+    inputs:
+      kogito_runtime_version:
+        description: "Kogito Runtime version"
+        required: true
+      version:
+        description: "Version"
+        required: true
+
+jobs:
+  build_jitexecutor_native_binaries:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-2016]
+
+    steps:
+      - name: "Checkout kogito-apps"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          repository: kiegroup/kogito-apps
+          ref: ${{ github.event.inputs.kogito_runtime_version }}
+
+      - name: "Set up JDK 11"
+        if: matrix.os != 'windows-2016'
+        uses: actions/setup-java@v1
+        with:
+          java-version: "11"
+
+      - name: "Set long paths for Windows"
+        if: matrix.os == 'windows-2016'
+        run: git config --system core.longpaths true
+
+      - name: "Build macOS"
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install maven make && \
+          wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz && \
+          tar -xzf graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz && \
+          sudo mv graalvm-ce-java11-21.1.0 /Library/Java/JavaVirtualMachines
+          export PATH=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-21.1.0/Contents/Home/bin:$PATH && \
+          export GRAALVM_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-21.1.0/Contents/Home && \
+          gu install native-image && \
+          mvn clean package -B -ntp -DskipTests -f ./jitexecutor && mvn clean package -B -ntp -DskipTests -Pnative -am -f ./jitexecutor
+
+      - name: "Build Linux"
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt update && \
+          sudo apt install -y \
+          build-essential \
+          maven \
+          libgtk-3-dev \
+          libappindicator3-dev \
+          gir1.2-appindicator3-0.1 && \
+          mvn clean package -B -ntp -DskipTests -f ./jitexecutor && mvn clean package -B -ntp -DskipTests -Pnative -am -f ./jitexecutor
+
+      - name: "Configure Pagefile"
+        if: matrix.os == 'windows-2016'
+        uses: al-cheb/configure-pagefile-action@v1.2
+        with:
+          minimum-size: 16GB
+          maximum-size: 16GB
+          disk-root: "C:"
+
+      - name: "Setup MSCV"
+        if: matrix.os == 'windows-2016'
+        uses: ilammy/msvc-dev-cmd@v1.5.0
+
+      - name: "Setup MSBUILD"
+        if: matrix.os == 'windows-2016'
+        uses: microsoft/setup-msbuild@v1
+
+      - name: "Setup GraalVM"
+        if: matrix.os == 'windows-2016'
+        uses: ayltai/setup-graalvm@v1
+        with:
+          java-version: 11
+          graalvm-version: 20.3.0
+          native-image: true
+
+      - name: "Build Windows"
+        if: matrix.os == 'windows-2016'
+        shell: cmd
+        run: |
+          mvn clean package -B -ntp -DskipTests -f ./jitexecutor && mvn clean package -B -ntp -DskipTests -Pnative -am -f ./jitexecutor
+
+      - name: "Upload JIT Executor binary"
+        uses: actions/upload-artifact@v2
+        with:
+          name: jitexecutor_${{ runner.os }}
+          path: ./jitexecutor/jitexecutor-runner/target/jitexecutor-runner-${{ github.event.inputs.kogito_runtime_version }}-run*
+
+  pack_and_publish:
+    runs-on: ubuntu-latest
+    needs: [build_jitexecutor_native_binaries]
+    steps:
+      - name: "Checkout kogito-tooling"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "Download Windows binary"
+        uses: actions/download-artifact@v2
+        with:
+          name: jitexecutor_Windows
+          path: ./.github/supporting-files/publish_jitexecutor_native/dist/win32
+
+      - name: "Download macOS binary"
+        uses: actions/download-artifact@v2
+        with:
+          name: jitexecutor_macOS
+          path: ./.github/supporting-files/publish_jitexecutor_native/dist/darwin
+
+      - name: "Download Linux binary"
+        uses: actions/download-artifact@v2
+        with:
+          name: jitexecutor_Linux
+          path: ./.github/supporting-files/publish_jitexecutor_native/dist/linux
+
+      - name: "Pack and publish"
+        working-directory: ./.github/supporting-files/publish_jitexecutor_native
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          mv ./dist/linux/jitexecutor-runner-${{ github.event.inputs.kogito_runtime_version }}-runner ./dist/linux/jitexecutor
+          mv ./dist/darwin/jitexecutor-runner-${{ github.event.inputs.kogito_runtime_version }}-runner ./dist/darwin/jitexecutor
+          mv ./dist/win32/jitexecutor-runner-${{ github.event.inputs.kogito_runtime_version }}-runner.exe ./dist/win32/jitexecutor.exe
+          npm version ${{ github.event.inputs.version }}
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          npm publish --access public

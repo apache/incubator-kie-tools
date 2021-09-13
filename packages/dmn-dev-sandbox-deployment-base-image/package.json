@@ -14,7 +14,7 @@
     "install:mvnw": "cd dist-dev/ && mvn -N io.takari:maven:wrapper",
     "podman:build": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env dmnDevSandbox.baseImage.buildTags) | xargs printf -- \"-t $(build-env dmnDevSandbox.baseImage.registry)/$(build-env dmnDevSandbox.baseImage.account)/$(build-env dmnDevSandbox.baseImage.name):%s\n\" | xargs echo) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) .\" --else \"echo Podman not found, skipping image build.\"",
     "build:dev": "yarn cleanup && yarn install:mvnw && yarn copy:assets",
-    "build:prod:win32": "echo \"Not supported\"",
+    "build:prod:win32": "echo \"Build not supported on Windows\"",
     "build:prod:darwin:linux": "yarn run run-script-if --bool \"$(build-env global.build.docker)\" --then \"yarn podman:build\"",
     "build:prod": "yarn cleanup && yarn install:mvnw && yarn copy:assets && run-script-os"
   },

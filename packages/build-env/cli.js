@@ -34,6 +34,7 @@ async function main() {
       ...checkCliTool("npm", ["-v"]),
       ...checkCliTool("yarn", ["-v"]),
       ...checkCliTool("lerna", ["-v"]),
+      ...checkCliTool("go", ["version"]),
       ...checkCliTool("mvn", ["-v"]),
     };
     console.info(checks);

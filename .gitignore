@@ -63,3 +63,5 @@ package-lock.json
 **/.classpath
 **/.project
 **/.settings
+
+**/jitexecutor

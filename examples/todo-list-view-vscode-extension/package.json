@@ -54,8 +54,8 @@
     ]
   },
   "dependencies": {
-    "@kogito-tooling-examples/todo-list-view": "0.0.0",
-    "@kie-tooling-core/vscode-extension": "0.0.0"
+    "@kie-tooling-core/vscode-extension": "0.0.0",
+    "@kogito-tooling-examples/todo-list-view": "0.0.0"
   },
   "devDependencies": {
     "@kogito-tooling/build-env": "0.0.0"

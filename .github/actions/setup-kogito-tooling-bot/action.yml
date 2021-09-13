@@ -1,5 +1,5 @@
 name: "Setup Kogito Tooling Bot on Git"
-description: "setup"
+description: ""
 
 inputs:
   path:

@@ -1,0 +1,7 @@
+proxy:
+  ip: 127.0.0.1
+  port: 21345
+modeler:
+  link: https://kiegroup.github.io/kogito-online/#/
+app:
+  version: 0.0.0

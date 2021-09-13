@@ -89,17 +89,17 @@ const ENV_VARS = {
   },
   ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: {
     name: "ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux",
-    default: `https://github.com/kiegroup/kogito-tooling-go/releases/download/${version}/kie_tooling_extended_services_linux_${version}.dmg`,
+    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_tooling_extended_services_linux_${version}.tar.gz`,
     description: "",
   },
   ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: {
     name: "ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs",
-    default: `https://github.com/kiegroup/kogito-tooling-go/releases/download/${version}/kie_tooling_extended_services_macos_${version}.dmg`,
+    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_tooling_extended_services_macos_${version}.dmg`,
     description: "",
   },
   ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: {
     name: "ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows",
-    default: `https://github.com/kiegroup/kogito-tooling-go/releases/download/${version}/kie_tooling_extended_services_windows_${version}.dmg`,
+    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_tooling_extended_services_windows_${version}.exe`,
     description: "",
   },
   ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion: {
