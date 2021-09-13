@@ -16,14 +16,14 @@ package framework
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 
-	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/apis"
 	"k8s.io/apimachinery/pkg/api/meta"
 
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework/mappers"
 	"k8s.io/apimachinery/pkg/api/errors"

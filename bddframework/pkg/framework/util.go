@@ -27,7 +27,7 @@ import (
 
 	"github.com/kiegroup/kogito-operator/version"
 
-	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/test"
 

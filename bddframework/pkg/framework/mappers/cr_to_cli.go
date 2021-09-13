@@ -16,10 +16,10 @@ package mappers
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 	"strconv"
 
-	"github.com/kiegroup/kogito-operator/api"
-	"github.com/kiegroup/kogito-operator/api/v1beta1"
+	"github.com/kiegroup/kogito-operator/apis"
 	bddtypes "github.com/kiegroup/kogito-operator/test/pkg/types"
 )
 

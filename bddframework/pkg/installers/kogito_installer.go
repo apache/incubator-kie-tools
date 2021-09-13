@@ -17,9 +17,9 @@ package installers
 import (
 	"errors"
 	"fmt"
+	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 	"regexp"
 
-	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"

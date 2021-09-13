@@ -16,6 +16,7 @@ package executor
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 	"io"
 	"os"
 	"strings"
@@ -23,7 +24,6 @@ import (
 
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/colors"
-	"github.com/kiegroup/kogito-operator/api/v1beta1"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	"github.com/kiegroup/kogito-operator/test/pkg/gherkin"
