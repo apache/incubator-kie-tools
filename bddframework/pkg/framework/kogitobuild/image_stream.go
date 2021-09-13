@@ -19,7 +19,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	buildv1 "github.com/openshift/api/build/v1"

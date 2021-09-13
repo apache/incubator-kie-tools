@@ -18,7 +18,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/apis"
 )
 
 const (

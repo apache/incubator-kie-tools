@@ -15,7 +15,7 @@
 package kogitoservice
 
 import (
-	"github.com/kiegroup/kogito-operator/api"
+	"github.com/kiegroup/kogito-operator/apis"
 	"net/http"
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
