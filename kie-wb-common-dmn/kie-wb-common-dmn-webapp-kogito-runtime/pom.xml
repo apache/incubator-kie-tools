@@ -35,6 +35,9 @@
     <kogito.large.model.it.tests>**/large/model/*IT.java</kogito.large.model.it.tests>
     <kogito.backward.compatibility.it.tests>**/backward/compatibility/*IT.java</kogito.backward.compatibility.it.tests>
     <kogito.selenium.it.tests>**/selenium/*IT.java</kogito.selenium.it.tests>
+
+    <!-- this module is just and "integration" of components, to minimize CI times, we skip sonar here -->
+    <sonar.skip>true</sonar.skip>
   </properties>
 
   <dependencies>
@@ -820,6 +823,16 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+
+    <!-- We skip tests and jacoco coverage reports for this module as it contains just selenium tests -->
+    <!-- Selenium tests can not be used for coverage measurement we collect on sonarcloud -->
+    <profile>
+      <id>run-code-coverage</id>
+      <properties>
+        <skipITs>true</skipITs>
+        <code.coverage.disabled>true</code.coverage.disabled>
+      </properties>
     </profile>
   </profiles>
 

@@ -17,6 +17,7 @@
 package org.drools.workbench.scenariosimulation.kogito.marshaller;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.assertj.core.api.Assertions;
@@ -29,7 +30,10 @@ public class ScesimGwtJsonixTest {
 
     @Test
     public void testModelJsInteropClassesWereGenerated() throws Exception {
-        Assertions.assertThat(Files.list(Paths.get(MODEL_PATH)).count())
+        final Path path = Paths.get(MODEL_PATH);
+        Assertions.assertThat(Files.find(path,
+                                         1,
+                                         (filePath, fileAttribute) -> filePath.toString().endsWith(".class")).count())
                 .as("Number of generated classes should be equal to number of those in scesim.xsd + SCESIM.class")
                 .isEqualTo(23L);
     }

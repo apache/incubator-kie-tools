@@ -70,6 +70,10 @@
     </repository>
   </repositories>
 
+  <properties>
+    <sonar.skip>true</sonar.skip>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <!-- kie-wb-common internal modules -->

@@ -34,6 +34,9 @@
     <gwt.compiler.localWorkers>4</gwt.compiler.localWorkers>
     <gwt.helper.includes>DMNClient,Marshaller</gwt.helper.includes>
     <gwt.helper.rootDirectories>${project.parent.basedir}/</gwt.helper.rootDirectories>
+
+    <!-- this module is just and "playground" of components, to minimize CI times, we skip sonar here -->
+    <sonar.skip>true</sonar.skip>
   </properties>
 
   <dependencies>
