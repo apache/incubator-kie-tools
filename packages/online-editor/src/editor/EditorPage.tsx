@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { useLocation } from "react-router";
-import { GlobalContext } from "../common/GlobalContext";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useHistory, useLocation } from "react-router";
+import { useGlobals } from "../common/GlobalContext";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
@@ -41,6 +41,8 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxContextProvider";
+import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
+import { extractFileExtension, removeDirectories, removeFileExtension } from "../common/utils";
 
 const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tooling-core/monaco-editor");
 
@@ -63,12 +65,8 @@ export enum ModalType {
   DMN_RUNNER_HELPER,
 }
 
-interface Props {
-  onFileNameChanged: (fileName: string, fileExtension: string) => void;
-}
-
-export function EditorPage(props: Props) {
-  const context = useContext(GlobalContext);
+export function EditorPage() {
+  const globals = useGlobals();
   const location = useLocation();
   const { editor, editorRef } = useEditorRef();
   const downloadRef = useRef<HTMLAnchorElement>(null);
@@ -82,33 +80,102 @@ export function EditorPage(props: Props) {
   const isDirty = useDirtyState(editor);
   const { locale, i18n } = useOnlineI18n();
   const textEditorContainerRef = useRef<HTMLDivElement>(null);
+  const history = useHistory();
+  const queryParams = useQueryParams();
+
+  useEffect(() => {
+    if (globals.externalFile) {
+      globals.setFile(globals.externalFile);
+    }
+  }, [globals]);
+
+  useEffect(() => {
+    const filePath = queryParams.get(QueryParams.FILE)!;
+    const readonly = queryParams.has(QueryParams.READONLY)
+      ? queryParams.get(QueryParams.READONLY) === `${true}`
+      : false;
+
+    if (globals.githubService.isGist(filePath)) {
+      globals.githubService
+        .fetchGistFile(globals.githubOctokit, filePath)
+        .then((content) =>
+          globals.setFile(
+            getFileToOpen({
+              filePath: filePath,
+              readonly: readonly,
+              getFileContent: Promise.resolve(content),
+            })
+          )
+        )
+        .catch((error) => {
+          //FIXME: tiago
+          console.info("error");
+        });
+    } else if (globals.githubService.isGithub(filePath) || globals.githubService.isGithubRaw(filePath)) {
+      globals.githubService
+        .fetchGithubFile(globals.githubOctokit, filePath)
+        .then((response) => {
+          globals.setFile(
+            getFileToOpen({
+              filePath: filePath,
+              readonly: readonly,
+              getFileContent: Promise.resolve(response),
+            })
+          );
+        })
+        .catch((error) => {
+          //FIXME: tiago
+          console.info("error");
+        });
+    } else {
+      fetch(filePath)
+        .then((response) => {
+          if (response.ok) {
+            globals.setFile(
+              getFileToOpen({
+                filePath: filePath,
+                readonly: readonly,
+                getFileContent: response.text(),
+              })
+            );
+          } else {
+            //FIXME: tiago
+            console.info("error");
+          }
+        })
+        .catch((error) => {
+          //FIXME: tiago
+          console.info("error");
+        });
+    }
+  }, []);
 
   const close = useCallback(() => {
     if (!isDirty) {
-      window.location.href = window.location.href.split("?")[0].split("#")[0];
+      history.push(globals.routes.home.url({}));
     } else {
       setOpenAlert(AlertTypes.UNSAVED);
     }
-  }, [isDirty]);
+  }, [globals, history, isDirty]);
 
   const closeWithoutSaving = useCallback(() => {
     setOpenAlert(AlertTypes.NONE);
-    window.location.href = window.location.href.split("?")[0].split("#")[0];
-  }, []);
+    history.push(globals.routes.home.url({}));
+  }, [globals, history]);
 
   const requestSave = useCallback(() => {
     editor?.getContent().then((content) => {
       window.dispatchEvent(
         new CustomEvent("saveOnlineEditor", {
           detail: {
-            fileName: `${context.file.fileName}.${context.file.fileExtension}`,
+            fileName: `${globals.file.fileName}.${globals.file.fileExtension}`,
             fileContent: content,
-            senderTabId: context.senderTabId!,
+            senderTabId: globals.senderTabId!,
           },
         })
       );
     });
-  }, [context.file.fileName, editor]);
+  }, [globals.file.fileName, editor]);
 
   const requestDownload = useCallback(() => {
     editor?.getStateControl().setSavedCommand();
@@ -139,12 +206,12 @@ export function EditorPage(props: Props) {
       const content = await editor.getContent();
 
       // update gist
-      if (fileUrl && context.githubService.isGist(fileUrl)) {
-        const userLogin = context.githubService.extractUserLoginFromFileUrl(fileUrl);
-        if (userLogin === context.githubService.getLogin()) {
+      if (fileUrl && globals.githubService.isGist(fileUrl)) {
+        const userLogin = globals.githubService.extractUserLoginFromFileUrl(fileUrl);
+        if (userLogin === globals.githubUser) {
           try {
-            const filename = `${context.file.fileName}.${context.file.fileExtension}`;
-            const updateResponse = await context.githubService.updateGist({ filename, content });
+            const filename = `${globals.file.fileName}.${globals.file.fileExtension}`;
+            const updateResponse = await globals.githubService.updateGist(globals.githubOctokit, { filename, content });
 
             if (updateResponse === UpdateGistErrors.INVALID_CURRENT_GIST) {
               setOpenAlert(AlertTypes.INVALID_CURRENT_GIST);
@@ -157,7 +224,7 @@ export function EditorPage(props: Props) {
             }
 
             editor.getStateControl().setSavedCommand();
-            if (filename !== context.githubService.getCurrentGist()?.filename) {
+            if (filename !== globals.githubService.getCurrentGist()?.filename) {
               // FIXME: KOGITO-1202
               setUpdateGistFilenameUrl(
                 `${window.location.origin}${window.location.pathname}?file=${updateResponse}#/editor/${fileExtension}`
@@ -178,10 +245,10 @@ export function EditorPage(props: Props) {
 
       // create gist
       try {
-        const newGistUrl = await context.githubService.createGist({
-          filename: `${context.file.fileName}.${context.file.fileExtension}`,
+        const newGistUrl = await globals.githubService.createGist(globals.githubOctokit, {
+          filename: `${globals.file.fileName}.${globals.file.fileExtension}`,
           content: content,
-          description: `${context.file.fileName}.${context.file.fileExtension}`,
+          description: `${globals.file.fileName}.${globals.file.fileExtension}`,
           isPublic: true,
         });
 
@@ -195,11 +262,11 @@ export function EditorPage(props: Props) {
         return;
       }
     }
-  }, [fileUrl, context, editor]);
+  }, [globals.githubOctokit, fileUrl, globals, editor]);
 
   const fileExtension = useMemo(() => {
-    return context.routes.editor.args(location.pathname).type;
-  }, [location.pathname]);
+    return globals.routes.editor.args(location.pathname).type;
+  }, [globals.routes, location.pathname]);
 
   const requestEmbed = useCallback(() => {
     setOpenModalType(ModalType.EMBED);
@@ -239,13 +306,13 @@ export function EditorPage(props: Props) {
 
   useEffect(() => {
     if (downloadRef.current) {
-      downloadRef.current.download = `${context.file.fileName}.${context.file.fileExtension}`;
+      downloadRef.current.download = `${globals.file.fileName}.${globals.file.fileExtension}`;
     }
     if (downloadPreviewRef.current) {
-      const fileName = context.file.fileName;
+      const fileName = globals.file.fileName;
       downloadPreviewRef.current.download = `${fileName}-svg.svg`;
     }
-  }, [context.file.fileName]);
+  }, [globals.file.fileName]);
 
   useEffect(() => {
     document.addEventListener("fullscreenchange", toggleFullScreen);
@@ -261,15 +328,7 @@ export function EditorPage(props: Props) {
     };
   });
 
-  useEffect(() => {
-    (async function tryAuthenticate() {
-      if (!context.githubService.isAuthenticated()) {
-        await context.githubService.authenticate();
-      }
-    })();
-  });
-
-  const closeDmnTour = useDmnTour(!context.readonly && isEditorReady && openAlert === AlertTypes.NONE, context.file);
+  const closeDmnTour = useDmnTour(!globals.readonly && isEditorReady && openAlert === AlertTypes.NONE, globals.file);
 
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
@@ -289,10 +348,10 @@ export function EditorPage(props: Props) {
   const [textEditorContent, setTextEditorContext] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    context.file.getFileContents().then((content) => {
+    globals.file.getFileContents().then((content) => {
       setTextEditorContext(content);
     });
-  }, [context.file]);
+  }, [globals.file]);
 
   useEffect(() => {
     if (openModalType !== ModalType.TEXT_EDITOR) {
@@ -318,15 +377,15 @@ export function EditorPage(props: Props) {
       monacoInstance.dispose();
 
       editor
-        ?.setContent(context.file.fileName, contentAfterFix)
+        ?.setContent(globals.file.fileName, contentAfterFix)
         .then(() => {
           editor?.getStateControl().updateCommandStack({
             id: "fix-from-text-editor",
             undo: () => {
-              editor?.setContent(context.file.fileName, textEditorContent!);
+              editor?.setContent(globals.file.fileName, textEditorContent!);
             },
             redo: () => {
-              editor?.setContent(context.file.fileName, contentAfterFix).then(() => setOpenAlert(AlertTypes.NONE));
+              editor?.setContent(globals.file.fileName, contentAfterFix).then(() => setOpenAlert(AlertTypes.NONE));
             },
           });
         })
@@ -334,18 +393,18 @@ export function EditorPage(props: Props) {
           setTextEditorContext(contentAfterFix);
         });
     };
-  }, [openModalType, editor, context.file, textEditorContent]);
+  }, [openModalType, editor, globals.file, textEditorContent]);
 
   const notificationsPanelRef = useRef<NotificationsPanelContextType>(null);
 
   const notificationPanelTabNames = useCallback(
     (dmnRunnerStatus: DmnRunnerStatus) => {
-      if (context.file.fileExtension === "dmn" && context.isChrome && dmnRunnerStatus === DmnRunnerStatus.AVAILABLE) {
+      if (globals.file.fileExtension === "dmn" && globals.isChrome && dmnRunnerStatus === DmnRunnerStatus.AVAILABLE) {
         return [i18n.terms.validation, i18n.terms.execution];
       }
       return [i18n.terms.validation];
     },
-    [context.file.fileExtension, context.isChrome, i18n]
+    [globals.file.fileExtension, globals.isChrome, i18n]
   );
 
   useEffect(() => {
@@ -392,7 +451,6 @@ export function EditorPage(props: Props) {
                       onSave={requestSave}
                       onDownload={requestDownload}
                       onClose={close}
-                      onFileNameChanged={props.onFileNameChanged}
                       onCopyContentToClipboard={requestCopyContentToClipboard}
                       isPageFullscreen={fullscreen}
                       onPreview={requestPreview}
@@ -536,10 +594,10 @@ export function EditorPage(props: Props) {
                           {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
                           <EmbeddedEditor
                             ref={editorRef}
-                            file={context.file}
+                            file={globals.file}
                             kogitoEditor_ready={onReady}
                             kogitoEditor_setContentError={onSetContentError}
-                            editorEnvelopeLocator={context.editorEnvelopeLocator}
+                            editorEnvelopeLocator={globals.editorEnvelopeLocator}
                             channelType={ChannelType.ONLINE}
                             locale={locale}
                           />
@@ -547,7 +605,7 @@ export function EditorPage(props: Props) {
                             showClose={false}
                             width={"100%"}
                             height={"100%"}
-                            title={i18n.editorPage.textEditorModal.title(context.file.fileName.split("/").pop()!)}
+                            title={i18n.editorPage.textEditorModal.title(globals.file.fileName.split("/").pop()!)}
                             isOpen={openModalType === ModalType.TEXT_EDITOR}
                             actions={[
                               <Button key="confirm" variant="primary" onClick={refreshDiagramEditor}>
@@ -576,4 +634,13 @@ export function EditorPage(props: Props) {
       </NotificationsPanelContextProvider>
     </KieToolingExtendedServicesContextProvider>
   );
+}
+
+function getFileToOpen(args: { filePath: string; readonly: boolean; getFileContent: Promise<string> }) {
+  return {
+    isReadOnly: args.readonly,
+    fileExtension: extractFileExtension(removeDirectories(args.filePath) ?? "")!,
+    fileName: removeFileExtension(removeDirectories(args.filePath) ?? ""),
+    getFileContents: () => args.getFileContent,
+  };
 }

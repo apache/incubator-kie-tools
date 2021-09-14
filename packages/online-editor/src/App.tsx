@@ -14,52 +14,25 @@
  * limitations under the License.
  */
 
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { File, newFile } from "@kie-tooling-core/editor/dist/channel";
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
 import { Route, Switch } from "react-router";
-import { HashRouter } from "react-router-dom";
-import { GithubService } from "./common/GithubService";
-import { GlobalContext } from "./common/GlobalContext";
-import { Routes } from "./common/Routes";
+import { BrowserRouter } from "react-router-dom";
+import { GlobalContext, GlobalContextProvider } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { DownloadHubModal } from "./home/DownloadHubModal";
 import { HomePage } from "./home/HomePage";
 import { NoMatchPage } from "./NoMatchPage";
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
 import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
 import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 
 interface Props {
-  file: File;
-  readonly: boolean;
-  external: boolean;
+  externalFile?: File;
   senderTabId?: string;
-  githubService: GithubService;
-  editorEnvelopeLocator: EditorEnvelopeLocator;
 }
 
 export function App(props: Props) {
-  const [file, setFile] = useState(props.file);
-  const routes = useMemo(() => new Routes(), []);
-
-  const onFileOpened = useCallback((fileOpened) => {
-    setFile(fileOpened);
-  }, []);
-
-  const onFileNameChanged = useCallback(
-    (fileName: string, fileExtension: string) => {
-      setFile({
-        isReadOnly: false,
-        fileExtension,
-        fileName,
-        getFileContents: file.getFileContents,
-      });
-    },
-    [file]
-  );
-
   return (
     <I18nDictionariesProvider
       defaults={onlineI18nDefaults}
@@ -67,36 +40,29 @@ export function App(props: Props) {
       initialLocale={navigator.language}
       ctx={OnlineI18nContext}
     >
-      <GlobalContext.Provider
-        value={{
-          file,
-          routes,
-          editorEnvelopeLocator: props.editorEnvelopeLocator,
-          readonly: props.readonly,
-          external: props.external,
-          senderTabId: props.senderTabId,
-          githubService: props.githubService,
-          isChrome: !!window.chrome,
-        }}
-      >
-        <SettingsContextProvider>
-          <HashRouter>
-            <Switch>
-              <Route path={routes.editor.url({ type: ":type" })}>
-                <EditorPage onFileNameChanged={onFileNameChanged} />
-              </Route>
-              <Route exact={true} path={routes.home.url({})}>
-                <HomePage onFileOpened={onFileOpened} />
-              </Route>
-              <Route exact={true} path={routes.downloadHub.url({})}>
-                <HomePage onFileOpened={onFileOpened} />
-                <DownloadHubModal />
-              </Route>
-              <Route component={NoMatchPage} />
-            </Switch>
-          </HashRouter>
-        </SettingsContextProvider>
-      </GlobalContext.Provider>
+      <GlobalContextProvider externalFile={props.externalFile} senderTabId={props.senderTabId}>
+        <GlobalContext.Consumer>
+          {({ routes }) => (
+            <SettingsContextProvider>
+              <BrowserRouter>
+                <Switch>
+                  <Route path={routes.editor.url({ type: ":type" })}>
+                    <EditorPage />
+                  </Route>
+                  <Route exact={true} path={routes.home.url({})}>
+                    <HomePage />
+                  </Route>
+                  <Route exact={true} path={routes.downloadHub.url({})}>
+                    <HomePage />
+                    <DownloadHubModal />
+                  </Route>
+                  <Route component={NoMatchPage} />
+                </Switch>
+              </BrowserRouter>
+            </SettingsContextProvider>
+          )}
+        </GlobalContext.Consumer>
+      </GlobalContextProvider>
     </I18nDictionariesProvider>
   );
 }

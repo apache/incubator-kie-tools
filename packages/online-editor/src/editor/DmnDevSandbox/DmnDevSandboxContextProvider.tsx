@@ -17,8 +17,8 @@
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { GlobalContext } from "../../common/GlobalContext";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useGlobals } from "../../common/GlobalContext";
 import { useOnlineI18n } from "../../common/i18n";
 import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesModal } from "../KieToolingExtendedServices/KieToolingExtendedServicesModal";
@@ -56,7 +56,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
   const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
 
   const { i18n } = useOnlineI18n();
-  const globalContext = useContext(GlobalContext);
+  const globals = useGlobals();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const [instanceStatus, setInstanceStatus] = useState(
     kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.UNAVAILABLE
@@ -117,7 +117,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
         return;
       }
 
-      const filename = `${globalContext.file.fileName}.${globalContext.file.fileExtension}`;
+      const filename = `${globals.file.fileName}.${globals.file.fileExtension}`;
       const editorContent = ((await props.editor?.getContent()) ?? "")
         .replace(/(\r\n|\n|\r)/gm, "") // Remove line breaks
         .replace(/"/g, '\\"'); // Escape quotes
@@ -129,7 +129,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
         setOpenAlert(AlertTypes.DEPLOY_STARTED_ERROR);
       }
     },
-    [onCheckConfig, globalContext.file.fileName, globalContext.file.fileExtension, props.editor, service]
+    [onCheckConfig, globals.file.fileName, globals.file.fileExtension, props.editor, service]
   );
 
   useEffect(() => {

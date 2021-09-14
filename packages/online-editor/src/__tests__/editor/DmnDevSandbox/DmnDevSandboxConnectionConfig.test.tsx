@@ -17,8 +17,8 @@
 import {
   isConfigValid,
   isHostValid,
-  isTokenValid,
   isNamespaceValid,
+  isTokenValid,
 } from "../../../editor/DmnDevSandbox/DmnDevSandboxConnectionConfig";
 
 describe("Validation functions", () => {

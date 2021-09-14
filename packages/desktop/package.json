@@ -16,8 +16,8 @@
     "@kogito-tooling/i18n-common-dictionary": "0.0.0",
     "@kogito-tooling/kie-bc-editors": "0.0.0",
     "electron": "^12.0.11",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0"
+    "react-router": "^5.2.1",
+    "react-router-dom": "^5.2.1"
   },
   "devDependencies": {
     "@kogito-tooling/bpmn-editor-unpacked": "^8.4.0",

@@ -77,7 +77,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 function openOnlineEditor(request: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) {
   chrome.tabs.create(
-    { url: `${process.env.WEBPACK_REPLACE__onlineEditor_url}/?ext#/editor/` + extractFileExtension(request.filePath) },
+    {
+      url: `${process.env.WEBPACK_REPLACE__onlineEditor_url}/editor/${extractFileExtension(request.filePath)}?ext=true`,
+    },
     (tab) => {
       let newTabReady = () => {
         newTabReady = () => {

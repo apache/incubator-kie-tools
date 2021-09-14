@@ -34,18 +34,16 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import * as React from "react";
-import { useCallback, useContext, useMemo, useState } from "react";
-import { useLocation } from "react-router";
-import { GlobalContext } from "../common/GlobalContext";
+import { useCallback, useMemo, useState } from "react";
 import { useOnlineI18n } from "../common/i18n";
 import { SettingsButton } from "../settings/SettingsButton";
 import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/KieToolingExtendedServicesButtons";
 import { useKieToolingExtendedServices } from "./KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { AuthStatus, useGlobals } from "../common/GlobalContext";
 
 interface Props {
-  onFileNameChanged: (fileName: string, fileExtension: string) => void;
   onFullScreen: () => void;
   onSave: () => void;
   onDownload: () => void;
@@ -59,30 +57,25 @@ interface Props {
 }
 
 export function EditorToolbar(props: Props) {
-  const context = useContext(GlobalContext);
+  const globals = useGlobals();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
-  const location = useLocation();
-  const [fileName, setFileName] = useState(context.file.fileName);
+  const [fileName, setFileName] = useState(globals.file.fileName);
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
   const [isViewKebabOpen, setViewKebabOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
   const { i18n } = useOnlineI18n();
 
-  const logoProps = useMemo(() => {
-    return { onClick: props.onClose };
-  }, [props.onClose]);
-
   const fileExtension = useMemo(() => {
-    return context.file.fileExtension;
-  }, [location]);
+    return globals.file.fileExtension;
+  }, [globals]);
 
   const saveNewName = useCallback(() => {
-    props.onFileNameChanged(fileName, fileExtension);
-  }, [props.onFileNameChanged, fileName, fileExtension]);
+    globals.setFile((prevFile) => ({ ...prevFile, fileName, fileExtension }));
+  }, [globals, fileName, fileExtension]);
 
   const cancelNewName = useCallback(() => {
-    setFileName(context.file.fileName);
-  }, [context.file.fileName]);
+    setFileName(globals.file.fileName);
+  }, [globals.file.fileName]);
 
   const onNameInputKeyUp = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -100,7 +93,7 @@ export function EditorToolbar(props: Props) {
   const viewItems = useCallback(
     (dropdownId: string) => [
       <React.Fragment key={`dropdown-${dropdownId}-close`}>
-        {!context.external && (
+        {!globals.externalFile && (
           <DropdownItem
             component={"button"}
             onClick={props.onClose}
@@ -116,7 +109,7 @@ export function EditorToolbar(props: Props) {
         {i18n.editorToolbar.enterFullScreenView}
       </DropdownItem>,
     ],
-    [i18n, context, props]
+    [i18n, globals, props]
   );
 
   const includeDownloadSVGDropdownItem = useMemo(() => {
@@ -175,19 +168,19 @@ export function EditorToolbar(props: Props) {
             data-testid={"gist-it-tooltip"}
             key={`dropdown-${dropdownId}-export-gist`}
             content={<div>{i18n.editorToolbar.gistItTooltip}</div>}
-            trigger={!context.githubService.isAuthenticated() ? "mouseenter click" : ""}
+            trigger={globals.githubAuthStatus !== AuthStatus.SIGNED_IN ? "mouseenter click" : ""}
             position="left"
           >
             <DropdownItem
               data-testid={"gist-it-button"}
               component="button"
               onClick={props.onGistIt}
-              isDisabled={!context.githubService.isAuthenticated()}
+              isDisabled={globals.githubAuthStatus !== AuthStatus.SIGNED_IN}
             >
               {i18n.editorToolbar.gistIt}
             </DropdownItem>
           </Tooltip>
-          {context.external && !context.readonly && (
+          {globals.externalFile && !globals.readonly && (
             <DropdownItem
               key={`dropdown-${dropdownId}-send-changes-to-github`}
               component={"button"}
@@ -199,14 +192,19 @@ export function EditorToolbar(props: Props) {
         </React.Fragment>
       </DropdownGroup>,
     ],
-    [i18n, context, props.onSave, props.onDownload, props.onCopyContentToClipboard, props.onGistIt]
+    [i18n, globals, props.onSave, props.onDownload, props.onCopyContentToClipboard, props.onGistIt]
   );
 
   return !props.isPageFullscreen ? (
     <>
       <PageHeader
-        logo={<Brand src={`images/${fileExtension}_kogito_logo.svg`} alt={`${fileExtension} kogito logo`} />}
-        logoProps={logoProps}
+        logo={
+          <Brand
+            src={globals.routes.static.images.logo({ type: fileExtension }).url()}
+            alt={`${fileExtension} kogito logo`}
+          />
+        }
+        logoProps={{ onClick: props.onClose }}
         headerTools={
           <PageHeaderTools>
             {kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.UNAVAILABLE && (
@@ -353,7 +351,7 @@ export function EditorToolbar(props: Props) {
         }
         topNav={
           <>
-            {!context.readonly && (
+            {!globals.readonly && (
               <>
                 <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
                   <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
@@ -380,7 +378,7 @@ export function EditorToolbar(props: Props) {
                 )}
               </>
             )}
-            {context.readonly && (
+            {globals.readonly && (
               <>
                 <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container readonly"}>
                   <Title

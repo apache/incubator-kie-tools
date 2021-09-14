@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
@@ -24,7 +24,7 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { useOnlineI18n } from "../common/i18n";
 import { useFileUrl } from "../common/Hooks";
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
-import { GlobalContext } from "../common/GlobalContext";
+import { useGlobals } from "../common/GlobalContext";
 
 type SupportedStandaloneEditorFileExtensions = "bpmn" | "bpmn2" | "dmn";
 type StandaloneEditorLibraryName = "BpmnEditor" | "DmnEditor";
@@ -59,13 +59,13 @@ interface Props {
 }
 
 export function EmbedModal(props: Props) {
-  const context = useContext(GlobalContext);
+  const globals = useGlobals();
   const [embedCode, setEmbedCode] = useState("");
   const [contentSource, setContentSource] = useState(ContentSource.CURRENT_CONTENT);
   const { i18n } = useOnlineI18n();
   const fileUrl = useFileUrl();
 
-  const isGist = useMemo(() => context.githubService.isGist(fileUrl), [fileUrl, context]);
+  const isGist = useMemo(() => globals.githubService.isGist(fileUrl), [fileUrl, globals]);
 
   const isSupportedStandaloneEditorFileExtensions = useCallback(
     (toBeDetermined: string): toBeDetermined is SupportedStandaloneEditorFileExtensions => {

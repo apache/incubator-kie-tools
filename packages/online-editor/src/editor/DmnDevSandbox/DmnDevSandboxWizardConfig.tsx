@@ -36,8 +36,8 @@ import {
   DmnDevSandboxConnectionConfig,
   isConfigValid,
   isHostValid,
-  isTokenValid,
   isNamespaceValid,
+  isTokenValid,
 } from "./DmnDevSandboxConnectionConfig";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
 import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "./DmnDevSandboxService";

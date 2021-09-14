@@ -60,7 +60,7 @@ export function useDmnDevSandboxDropdownItems() {
 
   return useCallback(() => {
     const items = [
-      <>
+      <React.Fragment key={"dmndev-sandbox-dropdown-items"}>
         {!isDmnDevSandboxConnected && isKieToolingExtendedServicesRunning && (
           <DropdownItem
             id="dmn-dev-sandbox-setup-button"
@@ -107,7 +107,7 @@ export function useDmnDevSandboxDropdownItems() {
             </DropdownItem>
           </>
         )}
-      </>,
+      </React.Fragment>,
       <DropdownSeparator key={"dropdown-dmn-dev-sandbox-separator-deployments"} />,
     ];
 

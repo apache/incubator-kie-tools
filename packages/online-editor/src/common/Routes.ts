@@ -16,7 +16,6 @@
 
 export interface Route<T> {
   url(args: T): string;
-
   args(url: string): T;
 }
 
@@ -62,7 +61,43 @@ export class EditorRoute implements Route<EditorRouteArgs> {
   }
 }
 
+export interface LogoImageRouteArgs {
+  type: string;
+}
+export class LogoImageRoute implements Route<LogoImageRouteArgs> {
+  constructor(private readonly params: LogoImageRouteArgs) {}
+
+  public url() {
+    return `/images/${this.params.type}_kogito_logo.svg`;
+  }
+
+  public args(url: string) {
+    return this.params;
+  }
+}
+
+export interface SampleFileRouteArgs {
+  type: string;
+}
+export class SampleFileRoute implements Route<SampleFileRouteArgs> {
+  constructor(private readonly params: SampleFileRouteArgs) {}
+
+  public url() {
+    return `/samples/sample.${this.params.type}`;
+  }
+
+  public args(url: string) {
+    return this.params;
+  }
+}
+
 export class Routes {
+  public readonly static = {
+    sample: (args: SampleFileRouteArgs) => new SampleFileRoute(args),
+    images: {
+      logo: (args: LogoImageRouteArgs) => new LogoImageRoute(args),
+    },
+  };
   public readonly home = new HomeRoute();
   public readonly editor = new EditorRoute();
   public readonly downloadHub = new DownloadHubRoute();

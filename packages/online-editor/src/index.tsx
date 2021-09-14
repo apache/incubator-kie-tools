@@ -19,208 +19,30 @@ import "@patternfly/patternfly/patternfly-addons.scss";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { App } from "./App";
-import { newFile } from "@kie-tooling-core/editor/dist/channel";
-import {
-  extractEditorFileExtensionFromUrl,
-  extractFileExtension,
-  removeDirectories,
-  removeFileExtension,
-} from "./common/utils";
-import { GithubService } from "./common/GithubService";
-import {
-  Alert,
-  AlertActionCloseButton,
-  AlertActionLink,
-  AlertVariant,
-} from "@patternfly/react-core/dist/js/components/Alert";
-import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
-import { I18n } from "@kie-tooling-core/i18n/dist/core";
-import { OnlineI18n, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
+import { extractFileExtension, removeFileExtension } from "./common/utils";
 import "../static/resources/style.css";
+import { QueryParams } from "./queryParams/QueryParamsContext";
 
-interface OpenFileArgs {
-  filePath: string;
-  readonly: boolean;
-  getFileContent: Promise<string>;
-}
+function main() {
+  const queryParams = new URLSearchParams(window.location.search);
+  if (!queryParams.has(QueryParams.EXT)) {
+    ReactDOM.render(<App />, document.getElementById("app")!);
+    return;
+  }
 
-const urlParams = new URLSearchParams(window.location.search);
-const githubService = new GithubService();
-const onlineI18n = new I18n<OnlineI18n>(onlineI18nDefaults, onlineI18nDictionaries, "en");
-
-const editorEnvelopeLocator: EditorEnvelopeLocator = {
-  targetOrigin: window.location.origin,
-  mapping: new Map([
-    ["bpmn", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "bpmn-envelope.html" }],
-    ["bpmn2", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "bpmn-envelope.html" }],
-    ["dmn", { resourcesPathPrefix: "gwt-editors/dmn", envelopePath: "dmn-envelope.html" }],
-    ["pmml", { resourcesPathPrefix: "", envelopePath: "pmml-envelope.html" }],
-  ]),
-};
-
-if (urlParams.has("ext")) {
-  waitForEventWithFileData();
-} else if (urlParams.has("file")) {
-  openFileByUrl();
-} else {
-  openDefaultOnlineEditor();
-}
-
-function openDefaultOnlineEditor() {
-  ReactDOM.render(
-    <App
-      file={newFile(extractEditorFileExtensionFromUrl([...editorEnvelopeLocator.mapping.keys()]) ?? "dmn")}
-      readonly={false}
-      external={false}
-      githubService={githubService}
-      editorEnvelopeLocator={editorEnvelopeLocator}
-    />,
-    document.getElementById("app")!
-  );
-}
-
-function waitForEventWithFileData() {
   window.addEventListener("loadOnlineEditor", (e: CustomEvent) => {
-    const file = {
+    const externalFile = {
       isReadOnly: false,
       fileExtension: extractFileExtension(e.detail.fileName)!,
       fileName: removeFileExtension(e.detail.fileName),
       getFileContents: () => Promise.resolve(e.detail.fileContent),
     };
+
     ReactDOM.render(
-      <App
-        file={file}
-        readonly={false}
-        external={true}
-        senderTabId={e.detail.senderTabId}
-        githubService={githubService}
-        editorEnvelopeLocator={editorEnvelopeLocator}
-      />,
+      <App externalFile={externalFile} senderTabId={e.detail.senderTabId} />,
       document.getElementById("app")!
     );
   });
 }
 
-function openFileByUrl() {
-  const i18n = onlineI18n.getCurrent();
-  const filePath = urlParams.get("file")!.split("?").shift()!;
-  const readonly = urlParams.has("readonly") ? urlParams.get("readonly") === "true" : false;
-
-  if (githubService.isGist(filePath)) {
-    githubService
-      .fetchGistFile(filePath)
-      .then((content) =>
-        openFile({
-          filePath: filePath,
-          readonly: readonly,
-          getFileContent: Promise.resolve(content),
-        })
-      )
-      .catch((error) => {
-        showFetchError(i18n.alerts.gistError);
-      });
-  } else if (githubService.isGithub(filePath) || githubService.isGithubRaw(filePath)) {
-    githubService
-      .fetchGithubFile(filePath)
-      .then((response) => {
-        openFile({
-          filePath: filePath,
-          readonly: readonly,
-          getFileContent: Promise.resolve(response),
-        });
-      })
-      .catch((error) => {
-        showFetchError(error.toString());
-      });
-  } else {
-    fetch(filePath)
-      .then((response) => {
-        if (response.ok) {
-          openFile({
-            filePath: filePath,
-            readonly: readonly,
-            getFileContent: response.text(),
-          });
-        } else {
-          showResponseError(response.status, response.statusText);
-        }
-      })
-      .catch((error) => {
-        showFetchError(error.toString());
-      });
-  }
-}
-
-function openFile(args: OpenFileArgs) {
-  const file = {
-    isReadOnly: args.readonly,
-    fileExtension: extractFileExtension(removeDirectories(args.filePath) ?? "")!,
-    fileName: removeFileExtension(removeDirectories(args.filePath) ?? ""),
-    getFileContents: () => args.getFileContent,
-  };
-  ReactDOM.render(
-    <App
-      file={file}
-      readonly={args.readonly}
-      external={false}
-      githubService={githubService}
-      editorEnvelopeLocator={editorEnvelopeLocator}
-    />,
-    document.getElementById("app")!
-  );
-}
-
-function showResponseError(statusCode: number, description: string) {
-  const i18n = onlineI18n.getCurrent();
-  ReactDOM.render(
-    <div className={"kogito--alert-container"}>
-      <Alert
-        variant={AlertVariant.danger}
-        title={i18n.alerts.responseError.title}
-        actionLinks={<AlertActionLink onClick={goToHomePage}>{i18n.alerts.goToHomePage}</AlertActionLink>}
-        actionClose={<AlertActionCloseButton onClose={goToHomePage} />}
-      >
-        <br />
-        <b>{i18n.alerts.errorDetails}</b>
-        {statusCode}
-        {statusCode && description && " - "}
-        {description}
-      </Alert>
-    </div>,
-    document.getElementById("app")!
-  );
-}
-
-function showFetchError(description: string) {
-  const i18n = onlineI18n.getCurrent();
-  ReactDOM.render(
-    <div className={"kogito--alert-container"}>
-      <Alert
-        variant={AlertVariant.danger}
-        title={i18n.alerts.fetchError.title}
-        actionLinks={<AlertActionLink onClick={goToHomePage}>{i18n.alerts.goToHomePage}</AlertActionLink>}
-        actionClose={<AlertActionCloseButton onClose={goToHomePage} />}
-      >
-        <br />
-        <b>{i18n.alerts.errorDetails} </b>
-        {description}
-        <br />
-        <br />
-        <b>{i18n.alerts.fetchError.possibleCauses} </b>
-        <List>
-          <ListItem>{i18n.alerts.fetchError.missingGitHubToken}</ListItem>
-          <ListItem>
-            {i18n.alerts.fetchError.cors}
-            <pre>Access-Control-Allow-Origin: *</pre>
-          </ListItem>
-        </List>
-      </Alert>
-    </div>,
-    document.getElementById("app")!
-  );
-}
-
-function goToHomePage() {
-  window.location.href = window.location.href.split("?")[0].split("#")[0];
-}
+main();

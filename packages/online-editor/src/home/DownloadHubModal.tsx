@@ -15,11 +15,11 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Redirect } from "react-router";
-import { GlobalContext } from "../common/GlobalContext";
+import { useGlobals } from "../common/GlobalContext";
 import { getOperatingSystem, OperatingSystem } from "../common/utils";
 import { useOnlineI18n } from "../common/i18n";
 import { Select, SelectDirection, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
@@ -30,8 +30,8 @@ enum ModalState {
   CLOSE,
 }
 
-export function DownloadHubModal(props: {}) {
-  const context = useContext(GlobalContext);
+export function DownloadHubModal() {
+  const globals = useGlobals();
   const { i18n } = useOnlineI18n();
 
   const [modalState, setModalState] = useState(ModalState.SELECT_OS);
@@ -80,7 +80,7 @@ export function DownloadHubModal(props: {}) {
 
   return (
     <div>
-      {modalState === ModalState.CLOSE && <Redirect push={true} to={context.routes.home.url({})} />}
+      {modalState === ModalState.CLOSE && <Redirect push={true} to={globals.routes.home.url({})} />}
       {modalState === ModalState.SELECT_OS && (
         <Modal
           title={`${i18n.downloadHubModal.beforeDownload.title}:`}

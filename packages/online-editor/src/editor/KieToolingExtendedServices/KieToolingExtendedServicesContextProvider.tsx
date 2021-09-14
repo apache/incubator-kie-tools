@@ -16,8 +16,8 @@
 
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { GlobalContext } from "../../common/GlobalContext";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useGlobals } from "../../common/GlobalContext";
 import { getCookie, setCookie } from "../../common/utils";
 import { KieToolingExtendedServicesBridge } from "./KieToolingExtendedServicesBridge";
 import { DependentFeature, KieToolingExtendedServicesContext } from "./KieToolingExtendedServicesContext";
@@ -35,10 +35,10 @@ const KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tooling-extended-ser
 export const KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT = "21345";
 
 export function KieToolingExtendedServicesContextProvider(props: Props) {
-  const globalContext = useContext(GlobalContext);
+  const globals = useGlobals();
 
   const [status, setStatus] = useState(() =>
-    globalContext.file.fileExtension === "dmn"
+    globals.file.fileExtension === "dmn"
       ? KieToolingExtendedServicesStatus.AVAILABLE
       : KieToolingExtendedServicesStatus.UNAVAILABLE
   );

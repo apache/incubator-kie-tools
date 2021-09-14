@@ -20,9 +20,9 @@ import * as React from "react";
 import { DmnRunnerDrawer } from "../../../editor/DmnRunner/DmnRunnerDrawer";
 import {
   usingTestingDmnRunnerContext,
-  usingTestingNotificationsPanelContext,
   usingTestingGlobalContext,
   usingTestingKieToolingExtendedServicesContext,
+  usingTestingNotificationsPanelContext,
   usingTestingOnlineI18nContext,
 } from "../../testing_utils";
 import { DmnRunnerService } from "./__mocks__/DmnRunnerService";

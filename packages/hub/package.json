@@ -17,7 +17,7 @@
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
     "electron": "^12.0.11",
-    "react-router": "^5.2.0",
+    "react-router": "^5.2.1",
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {

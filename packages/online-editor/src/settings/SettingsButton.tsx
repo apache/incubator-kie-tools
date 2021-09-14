@@ -1,21 +1,18 @@
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { CogIcon } from "@patternfly/react-icons/dist/js/icons/cog-icon";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { SettingsModal } from "./SettingsModal";
+import { SettingsModalBody } from "./SettingsModalBody";
 import * as React from "react";
 import { useState } from "react";
+import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
 
 export function SettingsButton() {
-  const [isSettingsOpen, setSettingsOpen] = useState(false);
+  const params = useQueryParams();
+  const [isSettingsOpen, setSettingsOpen] = useState(!!params.get(QueryParams.SETTINGS));
+
   return (
     <>
-      <Button
-        variant="plain"
-        onClick={() => {
-          setSettingsOpen(true);
-        }}
-        aria-label="Settings"
-      >
+      <Button variant="plain" onClick={() => setSettingsOpen(true)} aria-label="Settings">
         <CogIcon />
       </Button>
       <Modal
@@ -25,7 +22,7 @@ export function SettingsButton() {
         variant={ModalVariant.large}
       >
         <div style={{ height: "calc(100vh * 0.5)" }} className={"kogito-tooling--setings-modal-content"}>
-          <SettingsModal />
+          <SettingsModalBody />
         </div>
       </Modal>
     </>
