@@ -4,7 +4,6 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
@@ -42,9 +41,16 @@ export function GitHubSettingsTab() {
 
   const [githubSignInOption, setGitHubSignInOption] = useState(GitHubSignInOption.OAUTH);
   const [potentialGitHubToken, setPotentialGitHubToken] = useState<string | undefined>(undefined);
-  const [isGitHubTokenInvalid, setIsGitHubTokenInvalid] = useState(false);
-  const [isGitHubTokenExpired, setGitHubTokenExpired] = useState(false);
+  const [isGitHubTokenValid, setIsGitHubTokenValid] = useState(true);
   const [allowPrivateRepositories, setAllowPrivateRepositories] = useState(true);
+
+  const githubTokenValidated = useMemo(() => {
+    return isGitHubTokenValid ? "default" : "error";
+  }, [isGitHubTokenValid]);
+
+  const githubTokenHelperText = useMemo(() => {
+    return isGitHubTokenValid ? undefined : "Invalid token.";
+  }, [isGitHubTokenValid]);
 
   useEffect(() => {
     const effect = async () => {
@@ -74,7 +80,10 @@ export function GitHubSettingsTab() {
     (e) => {
       const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
       setPotentialGitHubToken(token);
-      globals.githubAuthService.authenticate(token).then((e) => {});
+      globals.githubAuthService
+        .authenticate(token)
+        .then(() => setIsGitHubTokenValid(true))
+        .catch((e) => setIsGitHubTokenValid(false));
     },
     [globals.githubAuthService]
   );
@@ -83,10 +92,6 @@ export function GitHubSettingsTab() {
     globals.githubAuthService.reset();
     setPotentialGitHubToken(undefined);
   }, [globals.githubAuthService]);
-
-  const githubTokenValidated = useMemo(() => {
-    return globals.githubAuthStatus === AuthStatus.LOADING ? "default" : isGitHubTokenInvalid ? "error" : "default";
-  }, [globals.githubAuthStatus, isGitHubTokenInvalid]);
 
   const onSignInWithGitHub = useCallback(() => {
     const redirectUri = new URL(`${window.location.href}`);
@@ -148,6 +153,9 @@ export function GitHubSettingsTab() {
               </TextContent>
               <EmptyStateBody>
                 <TextContent>Syncing Workspaces with GitHub is enabled.</TextContent>
+                <TextContent>
+                  Current scopes are: <i>{globals.githubScopes?.join(", ")}</i>
+                </TextContent>
                 <br />
                 <Button variant={ButtonVariant.tertiary} onClick={onSignOutFromGitHub}>
                   Sign out
@@ -159,14 +167,6 @@ export function GitHubSettingsTab() {
       )}
       {globals.githubAuthStatus === AuthStatus.SIGNED_OUT && (
         <>
-          {isGitHubTokenExpired && (
-            <Alert
-              style={{ margin: "15px" }}
-              variant="danger"
-              isInline={false}
-              title="Your GitHub Personal Access Token is expired."
-            />
-          )}
           <PageSection>
             {githubSignInOption == GitHubSignInOption.OAUTH && (
               <Bullseye>
@@ -208,7 +208,13 @@ export function GitHubSettingsTab() {
               <>
                 <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
                   <Form>
-                    <FormGroup isRequired={true} label={"GitHub Personal Access Token"} fieldId={"github-pat"}>
+                    <FormGroup
+                      isRequired={true}
+                      helperTextInvalid={githubTokenHelperText}
+                      validated={githubTokenValidated}
+                      label={"Token"}
+                      fieldId={"github-pat"}
+                    >
                       <InputGroup>
                         <TextInput
                           id="token-input"
