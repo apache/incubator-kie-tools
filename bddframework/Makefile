@@ -32,7 +32,6 @@ operator_yaml_uri=
 cli_path=
 # runtime
 services_image_registry=
-services_image_namespace=
 services_image_name_suffix=
 services_image_version=
 data_index_image_tag=
@@ -43,7 +42,6 @@ task_console_image_tag=
 trusty_image_tag=
 trusty_ui_image_tag=
 runtime_application_image_registry=
-runtime_application_image_namespace=
 runtime_application_image_name_prefix=
 runtime_application_image_name_suffix=
 runtime_application_image_version=
@@ -53,7 +51,6 @@ custom_maven_repo_replace_default=false
 maven_mirror=
 maven_ignore_self_signed_certificate=false
 build_image_registry=
-build_image_namespace=
 build_image_name_suffix=
 build_image_version=
 build_builder_image_tag=
@@ -112,7 +109,6 @@ run-tests:
 		--operator_profiling_output_file_uri ${operator_profiling_output_file_uri} \
 		--cli_path ${cli_path} \
 		--services_image_registry ${services_image_registry} \
-		--services_image_namespace ${services_image_namespace} \
 		--services_image_name_suffix ${services_image_name_suffix} \
 		--services_image_version ${services_image_version} \
 		--data_index_image_tag ${data_index_image_tag} \
@@ -123,14 +119,12 @@ run-tests:
 		--trusty_image_tag ${trusty_image_tag} \
 		--trusty_ui_image_tag ${trusty_ui_image_tag} \
 		--runtime_application_image_registry ${runtime_application_image_registry} \
-		--runtime_application_image_namespace ${runtime_application_image_namespace} \
 		--runtime_application_image_name_prefix ${runtime_application_image_name_prefix} \
 		--runtime_application_image_name_suffix ${runtime_application_image_name_suffix} \
 		--runtime_application_image_version ${runtime_application_image_version} \
 		--custom_maven_repo $(custom_maven_repo) \
 		--maven_mirror $(maven_mirror) \
 		--build_image_registry ${build_image_registry} \
-		--build_image_namespace ${build_image_namespace} \
 		--build_image_name_suffix ${build_image_name_suffix} \
 		--build_image_version ${build_image_version} \
 		--build_builder_image_tag ${build_builder_image_tag} \

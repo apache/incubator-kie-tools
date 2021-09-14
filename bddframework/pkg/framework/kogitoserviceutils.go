@@ -16,9 +16,10 @@ package framework
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 
-	"github.com/kiegroup/kogito-operator/apis"
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/version"
 
@@ -120,7 +121,7 @@ func NewImageOrDefault(fullImage string, defaultImageName string) string {
 
 	image := api.Image{}
 	if isRuntimeImageInformationSet() {
-		image.Domain = fmt.Sprintf("%s/%s", config.GetServicesImageRegistry(), config.GetServicesImageNamespace())
+		image.Domain = config.GetServicesImageRegistry()
 		image.Name = defaultImageName
 		image.Tag = config.GetServicesImageVersion()
 
@@ -142,7 +143,6 @@ func NewImageOrDefault(fullImage string, defaultImageName string) string {
 
 func isRuntimeImageInformationSet() bool {
 	return len(config.GetServicesImageRegistry()) > 0 ||
-		len(config.GetServicesImageNamespace()) > 0 ||
 		len(config.GetServicesImageNameSuffix()) > 0 ||
 		len(config.GetServicesImageVersion()) > 0
 }

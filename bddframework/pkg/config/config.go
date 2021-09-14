@@ -55,7 +55,6 @@ type TestConfig struct {
 
 	// runtime
 	servicesImageRegistry             string
-	servicesImageNamespace            string
 	servicesImageNameSuffix           string
 	servicesImageVersion              string
 	dataIndexImageTag                 string
@@ -66,7 +65,6 @@ type TestConfig struct {
 	trustyImageTag                    string
 	trustyUIImageTag                  string
 	runtimeApplicationImageRegistry   string
-	runtimeApplicationImageNamespace  string
 	runtimeApplicationImageNamePrefix string
 	runtimeApplicationImageNameSuffix string
 	runtimeApplicationImageVersion    string
@@ -77,7 +75,6 @@ type TestConfig struct {
 	mavenMirrorURL                     string
 	mavenIgnoreSelfSignedCertificate   bool
 	buildImageRegistry                 string
-	buildImageNamespace                string
 	buildImageNameSuffix               string
 	buildImageVersion                  string
 	buildBuilderImageTag               string
@@ -168,7 +165,6 @@ func BindFlags(set *flag.FlagSet) {
 
 	// runtime
 	set.StringVar(&env.servicesImageRegistry, prefix+"services-image-registry", "", "Set the services (jobs-service, data-index, trusty, explainability) image registry")
-	set.StringVar(&env.servicesImageNamespace, prefix+"services-image-namespace", "", "Set the services (jobs-service, data-index, trusty, explainability) image namespace")
 	set.StringVar(&env.servicesImageNameSuffix, prefix+"services-image-name-suffix", "", "Set the services (jobs-service, data-index, trusty, explainability) image name suffix")
 	set.StringVar(&env.servicesImageVersion, prefix+"services-image-version", "", "Set the services (jobs-service, data-index, trusty, explainability) image version")
 	set.StringVar(&env.dataIndexImageTag, prefix+"data-index-image-tag", "", "Set the Kogito Data Index image tag ('services-image-version' is ignored)")
@@ -179,7 +175,6 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.trustyImageTag, prefix+"trusty-image-tag", "", "Set the Kogito Trusty image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.trustyUIImageTag, prefix+"trusty-ui-image-tag", "", "Set the Kogito Trusty UI image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.runtimeApplicationImageRegistry, prefix+"runtime-application-image-registry", "", "Set the runtime application (built Kogito application image) image registry")
-	set.StringVar(&env.runtimeApplicationImageNamespace, prefix+"runtime-application-image-namespace", "", "Set the runtime application (built Kogito application image) image namespace")
 	set.StringVar(&env.runtimeApplicationImageNamePrefix, prefix+"runtime-application-image-name-prefix", "", "Set the runtime application (built Kogito application image) image name prefix")
 	set.StringVar(&env.runtimeApplicationImageNameSuffix, prefix+"runtime-application-image-name-suffix", "", "Set the runtime application (built Kogito application image) image name suffix")
 	set.StringVar(&env.runtimeApplicationImageVersion, prefix+"runtime-application-image-version", "", "Set the runtime application (built Kogito application image) image version")
@@ -190,7 +185,6 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.mavenMirrorURL, prefix+"maven-mirror-url", "", "Maven mirror url to be used when building app in the tests")
 	set.BoolVar(&env.mavenIgnoreSelfSignedCertificate, prefix+"maven-ignore-self-signed-certificate", false, "Set to true if maven build need to ignore self-signed certificate. This could happen when using internal maven mirror url.")
 	set.StringVar(&env.buildImageRegistry, prefix+"build-image-registry", "", "Set the build image registry")
-	set.StringVar(&env.buildImageNamespace, prefix+"build-image-namespace", "", "Set the build image namespace")
 	set.StringVar(&env.buildImageNameSuffix, prefix+"build-image-name-suffix", "", "Set the build image name suffix")
 	set.StringVar(&env.buildImageVersion, prefix+"build-image-version", "", "Set the build image version")
 	set.StringVar(&env.buildBuilderImageTag, prefix+"build-builder-image-tag", "", "Set the S2I build image full tag")
@@ -344,11 +338,6 @@ func GetServicesImageRegistry() string {
 	return env.servicesImageRegistry
 }
 
-// GetServicesImageNamespace return the namespace for the services images
-func GetServicesImageNamespace() string {
-	return env.servicesImageNamespace
-}
-
 // GetServicesImageNameSuffix return the name suffix for the services images
 func GetServicesImageNameSuffix() string {
 	return env.servicesImageNameSuffix
@@ -399,11 +388,6 @@ func GetRuntimeApplicationImageRegistry() string {
 	return env.runtimeApplicationImageRegistry
 }
 
-// GetRuntimeApplicationImageNamespace return the namespace for runtime application images
-func GetRuntimeApplicationImageNamespace() string {
-	return env.runtimeApplicationImageNamespace
-}
-
 // GetRuntimeApplicationImageNamePrefix return the name prefix for runtime application images
 func GetRuntimeApplicationImageNamePrefix() string {
 	return env.runtimeApplicationImageNamePrefix
@@ -444,11 +428,6 @@ func IsMavenIgnoreSelfSignedCertificate() bool {
 // GetBuildImageRegistry return the registry for the build images
 func GetBuildImageRegistry() string {
 	return env.buildImageRegistry
-}
-
-// GetBuildImageNamespace return the namespace for the build images
-func GetBuildImageNamespace() string {
-	return env.buildImageNamespace
 }
 
 // GetBuildImageNameSuffix return the namespace for the build images

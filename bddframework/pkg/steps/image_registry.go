@@ -136,11 +136,6 @@ func getRuntimeApplicationImageTag(projectImageName string) (string, error) {
 		return "", errors.New("Runtime application image registry must be set to build the image")
 	}
 
-	runtimeApplicationImageNamespace := config.GetRuntimeApplicationImageNamespace()
-	if len(runtimeApplicationImageNamespace) == 0 {
-		return "", errors.New("Runtime application image namespace must be set to build the image")
-	}
-
 	runtimeApplicationImageName := getRuntimeApplicationImageName(projectImageName)
 
 	runtimeApplicationImageVersion := config.GetRuntimeApplicationImageVersion()
@@ -148,7 +143,7 @@ func getRuntimeApplicationImageTag(projectImageName string) (string, error) {
 		runtimeApplicationImageVersion = "latest"
 	}
 
-	buildImageTag := fmt.Sprintf("%s/%s/%s:%s", runtimeApplicationImageRegistry, runtimeApplicationImageNamespace, runtimeApplicationImageName, runtimeApplicationImageVersion)
+	buildImageTag := fmt.Sprintf("%s/%s:%s", runtimeApplicationImageRegistry, runtimeApplicationImageName, runtimeApplicationImageVersion)
 	return buildImageTag, nil
 }
 

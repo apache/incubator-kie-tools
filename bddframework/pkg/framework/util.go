@@ -27,7 +27,7 @@ import (
 
 	"github.com/kiegroup/kogito-operator/version"
 
-	"github.com/kiegroup/kogito-operator/apis"
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/kogitobuild"
 	"github.com/kiegroup/kogito-operator/core/test"
@@ -235,7 +235,7 @@ func GetKogitoBuildS2IImage() string {
 		return config.GetBuildBuilderImageStreamTag()
 	}
 
-	return GetKogitoBuildImage(kogitobuild.GetDefaultBuilderImage())
+	return GetKogitoBuildImage(kogitobuild.GetDefaultBuilderImage(), true)
 }
 
 // GetKogitoBuildRuntimeImage returns the Runtime image tag
@@ -252,27 +252,23 @@ func GetKogitoBuildRuntimeImage(native bool) string {
 		}
 		imageName = kogitobuild.GetDefaultRuntimeJVMImage()
 	}
-	return GetKogitoBuildImage(imageName)
+	return GetKogitoBuildImage(imageName, true)
 }
 
 // GetKogitoBuildImage returns a build image with defaults set
-func GetKogitoBuildImage(imageName string) string {
+func GetKogitoBuildImage(imageName string, useDefaultValues bool) string {
 	image := api.Image{
 		Name: imageName,
 		Tag:  config.GetBuildImageVersion(),
 	}
 
-	registry := infrastructure.GetDefaultImageRegistry()
 	if len(config.GetBuildImageRegistry()) > 0 {
-		registry = config.GetBuildImageRegistry()
-	}
-	if len(config.GetBuildImageNamespace()) > 0 {
-		image.Domain = fmt.Sprintf("%s/%s", registry, config.GetBuildImageNamespace())
-	} else {
-		image.Domain = registry
+		image.Domain = config.GetBuildImageRegistry()
+	} else if useDefaultValues {
+		image.Domain = infrastructure.GetDefaultImageRegistry()
 	}
 
-	if len(image.Tag) == 0 {
+	if len(image.Tag) == 0 && useDefaultValues {
 		image.Tag = infrastructure.GetKogitoImageVersion(version.Version)
 	}
 
