@@ -24,7 +24,7 @@ Map getMultijobPRConfig() {
             parallel: true,
             jobs : [
                     [
-                            id: 'Kogito Tooling Editors Java',
+                            id: 'kogito-tooling-editors-java',
                             primary: true
                     ]
             ],
