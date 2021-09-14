@@ -514,24 +514,6 @@ export -f oc
     [[ "${output}" != *"--tests.services-image-registry"* ]]
 }
 
-@test "invoke run-tests with services_image_namespace" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --services_image_namespace namespace --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" =~ "--tests.services-image-namespace=namespace" ]]
-}
-
-@test "invoke run-tests with services_image_namespace missing value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --services_image_namespace --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.services-image-namespace"* ]]
-}
-
-@test "invoke run-tests with services_image_namespace empty value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --services_image_namespace "" --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.services-image-namespace"* ]]
-}
-
 @test "invoke run-tests with services_image_name_suffix" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --services_image_name_suffix suffix --dry_run
     [ "$status" -eq 0 ]
@@ -711,24 +693,6 @@ export -f oc
     [[ "${output}" != *"--tests.runtime-application-image-registry"* ]]
 }
 
-@test "invoke run-tests with runtime_application_image_namespace" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --runtime_application_image_namespace namespace --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" =~ "--tests.runtime-application-image-namespace=namespace" ]]
-}
-
-@test "invoke run-tests with runtime_application_image_namespace missing value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --runtime_application_image_namespace --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.runtime-application-image-namespace"* ]]
-}
-
-@test "invoke run-tests with runtime_application_image_namespace empty value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --runtime_application_image_namespace "" --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.runtime-application-image-namespace"* ]]
-}
-
 @test "invoke run-tests with runtime_application_image_name_prefix" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --runtime_application_image_name_prefix prefix --dry_run
     [ "$status" -eq 0 ]
@@ -861,24 +825,6 @@ export -f oc
     run ${BATS_TEST_DIRNAME}/run-tests.sh --build_image_registry "" --dry_run
     [ "$status" -eq 0 ]
     [[ "${output}" != *"--tests.build-image-registry"* ]]
-}
-
-@test "invoke run-tests with build_image_namespace" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_image_namespace namespace --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" =~ "--tests.build-image-namespace=namespace" ]]
-}
-
-@test "invoke run-tests with build_image_namespace missing value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_image_namespace --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.build-image-namespace"* ]]
-}
-
-@test "invoke run-tests with build_image_namespace empty value" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --build_image_namespace "" --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.build-image-namespace"* ]]
 }
 
 @test "invoke run-tests with build_image_name_suffix" {

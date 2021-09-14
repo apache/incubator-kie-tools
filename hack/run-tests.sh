@@ -71,7 +71,6 @@ function usage(){
   # runtime
 
   printf "\n--services_image_registry {REGISTRY}\n\tSet the services image registry."
-  printf "\n--services_image_namespace {NAMESPACE}\n\tSet the services image namespace."
   printf "\n--services_image_name_suffix {NAMESPACE}\n\tSet the build image name suffix to append to usual image names."
   printf "\n--services_image_version {VERSION}\n\tSet the services image version."
   printf "\n--data_index_image_tag {IMAGE_TAG}\n\tSet the Kogito Data Index image tag ('services_image_version' is ignored)"
@@ -82,7 +81,6 @@ function usage(){
   printf "\n--trusty_image_tag {IMAGE_TAG}\n\tSet the Kogito Trusty image tag ('services_image_version' is ignored)"
   printf "\n--trusty_ui_image_tag {IMAGE_TAG}\n\tSet the Kogito Trusty UI image tag ('services_image_version' is ignored)"
   printf "\n--runtime_application_image_registry {REGISTRY}\n\tSet the registry for built runtime applications."
-  printf "\n--runtime_application_image_namespace {NAMESPACE}\n\tSet the namespace for built runtime applications."
   printf "\n--runtime_application_image_name_prefix {NAME_PREFIX}\n\tSet the image name suffix to prepend to usual image names for built runtime applications."
   printf "\n--runtime_application_image_name_suffix {NAME_SUFFIX}\n\tSet the image name suffix to append to usual image names for built runtime applications."
   printf "\n--runtime_application_image_version {VERSION}\n\tSet the version for built runtime applications."
@@ -93,7 +91,6 @@ function usage(){
   printf "\n--maven_mirror {URI}\n\tMaven mirror url to be used when building app in the tests."
   printf "\n--maven_ignore_self_signed_certificate\n\tSet to true if maven build need to ignore self-signed certificate. This could happen when using internal maven mirror url."
   printf "\n--build_image_registry {REGISTRY}\n\tSet the build image registry."
-  printf "\n--build_image_namespace {NAMESPACE}\n\tSet the build image namespace."
   printf "\n--build_image_name_suffix {NAMESPACE}\n\tSet the build image name suffix to append to usual image names."
   printf "\n--build_image_version {VERSION}\n\tSet the build image version."
   printf "\n--build_image_tag {TAG}\n\tSet the build image full tag."
@@ -321,10 +318,6 @@ case $1 in
     shift
     if addParamKeyValueIfAccepted "--tests.services-image-registry" ${1}; then shift; fi
   ;;
-  --services_image_namespace)
-    shift
-    if addParamKeyValueIfAccepted "--tests.services-image-namespace" ${1}; then shift; fi
-  ;;
   --services_image_name_suffix)
     shift
     if addParamKeyValueIfAccepted "--tests.services-image-name-suffix" ${1}; then shift; fi
@@ -365,10 +358,6 @@ case $1 in
     shift
     if addParamKeyValueIfAccepted "--tests.runtime-application-image-registry" ${1}; then shift; fi
   ;;
-  --runtime_application_image_namespace)
-    shift
-    if addParamKeyValueIfAccepted "--tests.runtime-application-image-namespace" ${1}; then shift; fi
-  ;;
   --runtime_application_image_name_prefix)
     shift
     if addParamKeyValueIfAccepted "--tests.runtime-application-image-name-prefix" ${1}; then shift; fi
@@ -402,10 +391,6 @@ case $1 in
   --build_image_registry)
     shift
     if addParamKeyValueIfAccepted "--tests.build-image-registry" ${1}; then shift; fi
-  ;;
-  --build_image_namespace)
-    shift
-    if addParamKeyValueIfAccepted "--tests.build-image-namespace" ${1}; then shift; fi
   ;;
   --build_image_name_suffix)
     shift
