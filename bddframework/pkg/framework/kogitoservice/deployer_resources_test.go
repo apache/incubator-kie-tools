@@ -15,8 +15,13 @@
 package kogitoservice
 
 import (
-	"github.com/kiegroup/kogito-operator/apis"
+	"reflect"
+	"testing"
+
+	"github.com/RHsyseng/operator-utils/pkg/resource"
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client"
+	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
@@ -26,10 +31,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"reflect"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
-	"testing"
 )
 
 func Test_serviceDeployer_createRequiredResources_OnOCPImageStreamCreated(t *testing.T) {
@@ -58,6 +63,186 @@ func Test_serviceDeployer_createRequiredResources_OnOCPNoImageStreamCreated(t *t
 	assert.Equal(t, resources[reflect.TypeOf(appsv1.Deployment{})][0].GetName(), "jobs-service")
 	assert.Equal(t, resources[reflect.TypeOf(corev1.Service{})][0].GetName(), "jobs-service")
 	assert.Equal(t, resources[reflect.TypeOf(routev1.Route{})][0].GetName(), "jobs-service")
+}
+
+func Test_serviceDeployer_createServiceComparator(t *testing.T) {
+	type args struct {
+		deployed  resource.KubernetesResource
+		requested resource.KubernetesResource
+	}
+	familyPolicy := corev1.IPFamilyPolicyRequireDualStack
+	port1 := make([]corev1.ServicePort, 1)
+	port1[0] = corev1.ServicePort{
+		Name:       "http",
+		Protocol:   "TCP",
+		Port:       80,
+		TargetPort: intstr.FromInt(int(8080)),
+	}
+
+	port2 := make([]corev1.ServicePort, 1)
+	port2[0] = corev1.ServicePort{
+		Name:       "http",
+		Protocol:   "TCP",
+		Port:       90,
+		TargetPort: intstr.FromInt(int(8080)),
+	}
+	tests := []struct {
+		name  string
+		args  args
+		want  reflect.Type
+		want1 bool
+	}{
+		{
+			"Equals",
+			args{
+				deployed: &corev1.Service{
+					ObjectMeta: metav1.ObjectMeta{
+						Labels: map[string]string{
+							"app":     "test",
+							"service": "test",
+						},
+					},
+				},
+				requested: &corev1.Service{
+					ObjectMeta: metav1.ObjectMeta{
+						Labels: map[string]string{
+							"app":     "test",
+							"service": "test",
+						},
+					},
+				},
+			},
+			reflect.TypeOf(corev1.Service{}),
+			true,
+		},
+		{
+			"NotEquals",
+			args{
+				deployed: &corev1.Service{
+					ObjectMeta: metav1.ObjectMeta{
+						Labels: map[string]string{
+							"app":     "test",
+							"service": "test",
+						},
+					},
+				},
+				requested: &corev1.Service{
+					ObjectMeta: metav1.ObjectMeta{
+						Labels: map[string]string{
+							"app":     "test",
+							"service": "test1",
+						},
+					},
+				},
+			},
+			reflect.TypeOf(corev1.Service{}),
+			false,
+		},
+		{
+			"DifferentClusterIPs",
+			args{
+				deployed: &corev1.Service{
+					Spec: corev1.ServiceSpec{
+						ClusterIPs: []string{"10.217.5.142"},
+					},
+				},
+				requested: &corev1.Service{},
+			},
+			reflect.TypeOf(corev1.Service{}),
+			true,
+		},
+		{
+			"DifferentClusterIP",
+			args{
+				deployed: &corev1.Service{
+					Spec: corev1.ServiceSpec{
+						ClusterIP: "10.217.5.142",
+					},
+				},
+				requested: &corev1.Service{},
+			},
+			reflect.TypeOf(corev1.Service{}),
+			true,
+		},
+		{
+			"DifferentIPFamilies",
+			args{
+				deployed: &corev1.Service{
+					Spec: corev1.ServiceSpec{
+						IPFamilies: []corev1.IPFamily{"IPv4"},
+					},
+				},
+				requested: &corev1.Service{},
+			},
+			reflect.TypeOf(corev1.Service{}),
+			true,
+		},
+		{
+			"DifferentIPFamilyPolicy",
+			args{
+				deployed: &corev1.Service{
+					Spec: corev1.ServiceSpec{
+						IPFamilyPolicy: &familyPolicy,
+					},
+				},
+				requested: &corev1.Service{},
+			},
+			reflect.TypeOf(corev1.Service{}),
+			true,
+		},
+		{
+			"NotEqualPorts",
+			args{
+				deployed: &corev1.Service{
+					Spec: corev1.ServiceSpec{
+						Ports: port1,
+					},
+				},
+				requested: &corev1.Service{
+					Spec: corev1.ServiceSpec{
+						Ports: port2,
+					},
+				},
+			},
+			reflect.TypeOf(corev1.Service{}),
+			false,
+		},
+		{
+			"NotEqualSelector",
+			args{
+				deployed: &corev1.Service{
+					Spec: corev1.ServiceSpec{
+						Selector: map[string]string{"app": "test"},
+					},
+				},
+				requested: &corev1.Service{
+					Spec: corev1.ServiceSpec{
+						Selector: map[string]string{"app": "test1"},
+					},
+				},
+			},
+			reflect.TypeOf(corev1.Service{}),
+			false,
+		},
+	}
+	jobsService := test.CreateFakeJobsService(t.Name())
+	cli := test.NewFakeClientBuilder().OnOpenShift().Build()
+	deployer := newTestSupServiceDeployer(cli, jobsService, "kogito-jobs-service")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, got1 :=
+				framework.NewComparatorBuilder().
+					WithType(tt.want).
+					WithCustomComparator(deployer.CreateServiceComparator()).
+					Build()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("createServiceComparator() got = %v, want %v", got, tt.want)
+			}
+			if !reflect.DeepEqual(got1(tt.args.deployed, tt.args.requested), tt.want1) {
+				t.Errorf("createServiceComparator() got1 = %v, want %v", got1(tt.args.deployed, tt.args.requested), tt.want1)
+			}
+		})
+	}
 }
 
 func newTestSupServiceDeployer(cli *client.Client, instance api.KogitoService, imageName string) serviceDeployer {

@@ -198,21 +198,6 @@ func CreateBuildConfigComparator() func(deployed resource.KubernetesResource, re
 	}
 }
 
-// CreateServiceComparator creates a new comparator for Service skipping ClusterIPs
-func CreateServiceComparator() func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
-	return func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
-		svcDeployed := deployed.(*v1.Service)
-		svcRequested := requested.(*v1.Service).DeepCopy()
-
-		if len(svcDeployed.Spec.ClusterIPs) > 0 && len(svcRequested.Spec.ClusterIPs) == 0 {
-			//Cluster IPs are assigned in the cluster, can be ignored for comparing
-			svcDeployed.Spec.ClusterIPs = svcRequested.Spec.ClusterIPs
-		}
-
-		return true
-	}
-}
-
 // CreateRouteComparator creates a new comparator for Route using Label
 func CreateRouteComparator() func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
 	return func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
