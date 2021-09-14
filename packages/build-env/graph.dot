@@ -113,6 +113,7 @@ digraph G {
   "@kogito-tooling/online-editor" -> "@kogito-tooling/form" [ style = "solid", color = "black" ];
   "@kogito-tooling/online-editor" -> "@kogito-tooling/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kogito-tooling/online-editor" -> "@kogito-tooling/pmml-editor" [ style = "solid", color = "black" ];
+  "@kogito-tooling/online-editor" -> "@kogito-tooling/extended-services" [ style = "dashed", color = "black" ];
   "@kogito-tooling/online-editor" -> "@kogito-tooling/external-assets-base" [ style = "dashed", color = "black" ];
   "@kie-tooling-core/operating-system" -> "@kogito-tooling/build-env" [ style = "dashed", color = "purple" ];
   "@kie-tooling-core/patternfly-base" -> "@kogito-tooling/build-env" [ style = "dashed", color = "purple" ];
