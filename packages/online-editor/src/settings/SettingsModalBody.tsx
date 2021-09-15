@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
 import { useHistory } from "react-router";
 import { GitHubSettingsTab } from "./GitHubSettingsTab";
+import { GeneralSettingsTab } from "./GeneralSettingsTab";
 
 export enum SettingsTabs {
   GENERAL = "general",
@@ -46,9 +47,7 @@ export function SettingsModalBody() {
         eventKey={SettingsTabs.GENERAL}
         title={<TabTitleText>General</TabTitleText>}
       >
-        <Page>
-          <PageSection>General</PageSection>
-        </Page>
+        <GeneralSettingsTab />
       </Tab>
       <Tab
         className="kogito-tooling--settings-tab"

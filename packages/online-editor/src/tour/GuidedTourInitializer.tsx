@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
@@ -28,30 +28,37 @@ import { KogitoGuidedTour } from "@kie-tooling-core/guided-tour/dist/channel";
 import { DemoMode, SubTutorialMode, Tutorial } from "@kie-tooling-core/guided-tour/dist/api";
 import { OnlineI18n, useOnlineI18n } from "../common/i18n";
 import { I18nHtml } from "@kie-tooling-core/i18n/dist/react-components";
+import { useSettings } from "../settings/SettingsContext";
 
 export function useDmnTour(isEditorReady: boolean, file: File) {
   const { i18n } = useOnlineI18n();
+  const settings = useSettings();
 
   useEffect(() => {
+    if (!settings.general.guidedTourEnabled.get || isEditorReady) {
+      return;
+    }
+
     const guidedTour = KogitoGuidedTour.getInstance();
-    guidedTour.setup();
-    return () => guidedTour.teardown();
-  }, []);
+    guidedTour.setup(() => settings.general.guidedTourEnabled.set(false));
+  }, [isEditorReady, settings]);
 
   useEffect(() => {
-    if (isEditorReady && file.fileExtension === "dmn") {
+    if (isEditorReady && file.fileExtension === "dmn" && settings.general.guidedTourEnabled.get) {
       const guidedTour = KogitoGuidedTour.getInstance();
       const tutorial = getOnlineEditorTutorial(i18n);
 
       guidedTour.registerTutorial(tutorial);
       guidedTour.start(tutorial.label);
     }
-  }, [isEditorReady, file, i18n]);
+  }, [isEditorReady, file, i18n, settings]);
 
-  return useCallback(() => {
+  const close = useCallback(() => {
     const guidedTour = KogitoGuidedTour.getInstance();
     guidedTour.teardown();
   }, []);
+
+  return close;
 }
 
 function getOnlineEditorTutorial(i18n: OnlineI18n) {

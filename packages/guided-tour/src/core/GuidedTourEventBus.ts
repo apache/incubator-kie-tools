@@ -15,14 +15,12 @@
  */
 
 import { Rect, UserInteraction } from "../api";
-import { GuidedTourCookie } from "../core";
 
 export type EventLabel = "GuidedTour.startTutorial" | "GuidedTour.userInteraction" | "GuidedTour.newPosition";
 
 export class GuidedTourEventBus {
   private isEnabled = false;
   private queuedEvents: CustomEvent[] = [];
-  private cookie = new GuidedTourCookie();
 
   public enableBus() {
     this.isEnabled = true;
@@ -63,6 +61,6 @@ export class GuidedTourEventBus {
   }
 
   private isBusEnabled() {
-    return this.isEnabled && !this.cookie.isDisabled();
+    return this.isEnabled;
   }
 }

@@ -95,6 +95,10 @@ export function EditorPage() {
       ? queryParams.get(QueryParams.READONLY) === `${true}`
       : false;
 
+    if (!filePath) {
+      return;
+    }
+
     if (globals.githubService.isGist(filePath)) {
       globals.githubService
         .fetchGistFile(globals.githubOctokit, filePath)
@@ -148,7 +152,7 @@ export function EditorPage() {
           console.info("error");
         });
     }
-  }, []);
+  }, [globals, queryParams]);
 
   const close = useCallback(() => {
     if (!isDirty) {

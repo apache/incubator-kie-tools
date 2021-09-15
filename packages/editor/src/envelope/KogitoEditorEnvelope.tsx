@@ -22,7 +22,6 @@ import {
   KogitoEditorEnvelopeContextType,
 } from "../api";
 import { DefaultKeyboardShortcutsService } from "@kie-tooling-core/keyboard-shortcuts/dist/envelope";
-import { KogitoGuidedTour } from "@kie-tooling-core/guided-tour/dist/envelope";
 import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
@@ -58,7 +57,6 @@ export class KogitoEditorEnvelope<
       operatingSystem: getOperatingSystem(),
       services: {
         keyboardShortcuts: keyboardShortcutsService,
-        guidedTour: { isEnabled: () => KogitoGuidedTour.getInstance().isEnabled() },
         i18n: i18nService,
       },
     }

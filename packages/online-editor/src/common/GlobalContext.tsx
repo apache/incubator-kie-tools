@@ -21,8 +21,9 @@ import { Octokit } from "@octokit/rest";
 import { Routes } from "./Routes";
 import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
 import { GithubService } from "./GithubService";
+import { getCookie, setCookie } from "./utils";
 
-const GITHUB_AUTH_TOKEN_COOKIE_NAME = "github-oauth-token-kie-editors";
+const GITHUB_AUTH_TOKEN_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__github-oauth-token";
 
 export enum AuthStatus {
   SIGNED_OUT,
@@ -147,23 +148,6 @@ export function GlobalContextProvider(props: { externalFile?: File; senderTabId?
 
 export function useGlobals() {
   return useContext(GlobalContext);
-}
-
-function getCookie(name: string) {
-  const value = "; " + document.cookie;
-  const parts = value.split("; " + name + "=");
-
-  if (parts.length === 2) {
-    return parts.pop()!.split(";").shift();
-  }
-}
-
-function setCookie(name: string, value: string) {
-  const date = new Date();
-
-  date.setTime(date.getTime() + 10 * 365 * 24 * 60 * 60); // expires in 10 years
-
-  document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
 }
 
 function delay(ms: number) {
