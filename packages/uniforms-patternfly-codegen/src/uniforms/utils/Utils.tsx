@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { FormElement, FormInput, InputReference } from "../../api";
+import { FormElement, FormInput, InputReference, InputsContainer } from "../../api";
 
 export const NS_SEPARATOR = "__";
 export const FIELD_SET_PREFFIX = `set`;
@@ -51,6 +51,7 @@ type DefaultInputProps = {
   defaultValue?: string;
   requiredCode?: string[];
   wrapper: WrapperProps;
+  disabled: boolean;
 };
 
 type WrapperProps = {
@@ -67,6 +68,7 @@ export const buildDefaultInputElement = ({
   ref,
   wrapper,
   requiredCode,
+  disabled,
 }: DefaultInputProps): FormInput => {
   const stateCode = getStateCodeFromRef(ref, dataType, defaultValue);
 
@@ -87,9 +89,68 @@ export const buildDefaultInputElement = ({
     requiredCode: requiredCode,
     jsxCode,
     stateCode,
+    isReadonly: disabled,
   };
 };
 
-export const renderField = (element: FormElement<any>) => {
+export const renderField = (element: FormElement) => {
   return <>{JSON.stringify(element).trim()}</>;
+};
+
+export const buildSetFormDataCallback = (inputs: FormElement[]): string => {
+  let result = "";
+  inputs.forEach((input) => {
+    if ((input as any)?.childRefs) {
+      const container = input as InputsContainer;
+      container.childRefs.forEach((ref) => {
+        result += buildSetStateValueExpression(ref);
+      });
+    } else {
+      result += buildSetStateValueExpression(input.ref);
+    }
+  });
+
+  return result;
+};
+
+const buildSetStateValueExpression = (ref: InputReference): string => {
+  return `\n${ref.stateSetter}(data?.${fieldNameToOptionalChain(ref.binding)})`;
+};
+
+const fieldNameToOptionalChain = (fieldName: string): string => {
+  if (!fieldName) {
+    return "";
+  }
+
+  return fieldName.split(".").join("?.");
+};
+
+export const buildGetFormDataCallback = (inputs: FormElement[]): string => {
+  let result = "";
+  inputs
+    .filter((input) => !input.isReadonly)
+    .forEach((input) => {
+      if ((input as any)?.childRefs) {
+        const container = input as InputsContainer;
+        result += `\nformData.${input.ref.binding} = {}`;
+        container.childRefs.forEach((ref) => {
+          result += buildWriteModelValueExpression(ref);
+        });
+      } else {
+        result += buildWriteModelValueExpression(input.ref);
+      }
+    });
+
+  return result;
+};
+
+export const buildGetFormDataCallbackDeps = (inputs: FormElement[]): string => {
+  return inputs
+    .filter((input) => !input.isReadonly)
+    .map((input) => input.ref.stateName)
+    .join(", ");
+};
+
+const buildWriteModelValueExpression = (ref: InputReference): string => {
+  return `\nformData.${ref.binding} = ${ref.stateName}`;
 };

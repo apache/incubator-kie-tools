@@ -1,0 +1,1 @@
+formData.<%=name%> = document.getElementById("<%=id%>").checked;

@@ -21,7 +21,7 @@ import { Bridge, context, Context, randomIds } from "uniforms/es5";
 import { FormElement } from "../api";
 
 export interface CodeGenContext {
-  rendered: FormElement<any>[];
+  rendered: FormElement[];
 }
 
 export const codeGenContext = createContext<CodeGenContext | null>(null);
@@ -30,7 +30,7 @@ export const useCodegenContext = (): CodeGenContext | null => {
   return useContext<CodeGenContext | null>(codeGenContext);
 };
 
-export const useAddFormElementToContext = (formElement: FormElement<any>): void => {
+export const useAddFormElementToContext = (formElement: FormElement): void => {
   const ctx = useCodegenContext();
   if (!ctx) {
     throw new Error(`'useAddFormElementToContext' should be called within a 'codegenContext'`);

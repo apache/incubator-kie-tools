@@ -17,7 +17,7 @@
 import React, { useContext } from "react";
 import { connectField, context, HTMLFieldProps } from "uniforms/es5";
 import { renderNestedInputFragmentWithContext } from "./rendering/RenderingUtils";
-import { renderField } from "./utils/Utils";
+import { getInputReference, renderField } from "./utils/Utils";
 import { InputReference, InputsContainer } from "../api";
 import { codeGenContext } from "./CodeGenContext";
 import { union } from "lodash";
@@ -82,7 +82,9 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
     requiredCode: requiredCode,
     stateCode,
     jsxCode,
-    ref: nestedRefs,
+    ref: getInputReference(name),
+    childRefs: nestedRefs,
+    isReadonly: disabled,
   };
 
   codegenCtx?.rendered.push(rendered);

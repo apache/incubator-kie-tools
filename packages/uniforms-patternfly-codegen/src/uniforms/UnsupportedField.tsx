@@ -51,6 +51,7 @@ const Unsupported: React.FC<UnsupportedFieldProps> = (props: UnsupportedFieldPro
       label: props.label,
       required: props.required,
     },
+    disabled: props.disabled,
   });
 
   useAddFormElementToContext(element);

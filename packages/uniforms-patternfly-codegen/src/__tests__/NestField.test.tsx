@@ -55,18 +55,18 @@ describe("<NestField> tests", () => {
       "Select",
       "SelectVariant",
     ]);
-    expect(inputContainer.ref).toHaveLength(3);
+    expect(inputContainer.childRefs).toHaveLength(3);
 
-    expect(inputContainer.ref[0].binding).toEqual("candidate.name");
-    expect(inputContainer.ref[0].stateName).toEqual("candidate__name");
-    expect(inputContainer.ref[0].stateSetter).toEqual("set__candidate__name");
+    expect(inputContainer.childRefs[0].binding).toEqual("candidate.name");
+    expect(inputContainer.childRefs[0].stateName).toEqual("candidate__name");
+    expect(inputContainer.childRefs[0].stateSetter).toEqual("set__candidate__name");
 
-    expect(inputContainer.ref[1].binding).toEqual("candidate.age");
-    expect(inputContainer.ref[1].stateName).toEqual("candidate__age");
-    expect(inputContainer.ref[1].stateSetter).toEqual("set__candidate__age");
+    expect(inputContainer.childRefs[1].binding).toEqual("candidate.age");
+    expect(inputContainer.childRefs[1].stateName).toEqual("candidate__age");
+    expect(inputContainer.childRefs[1].stateSetter).toEqual("set__candidate__age");
 
-    expect(inputContainer.ref[2].binding).toEqual("candidate.role");
-    expect(inputContainer.ref[2].stateName).toEqual("candidate__role");
-    expect(inputContainer.ref[2].stateSetter).toEqual("set__candidate__role");
+    expect(inputContainer.childRefs[2].binding).toEqual("candidate.role");
+    expect(inputContainer.childRefs[2].stateName).toEqual("candidate__role");
+    expect(inputContainer.childRefs[2].stateSetter).toEqual("set__candidate__role");
   });
 });

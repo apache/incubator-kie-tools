@@ -15,6 +15,8 @@
  */
 
 import number from "!!raw-loader!../../resources/templates/number.template";
+import setValueFromModel from "!!raw-loader!../../resources/templates/input.setModelData.template";
+import writeValueToModel from "!!raw-loader!../../resources/templates/number.writeModelData.template";
 import { template } from "underscore";
 import { AbstractFormGroupInputTemplate, FormElementTemplateProps } from "./types";
 
@@ -28,6 +30,6 @@ interface NumFieldProps extends FormElementTemplateProps<string> {
 
 export class NumFieldTemplate extends AbstractFormGroupInputTemplate<NumFieldProps> {
   constructor() {
-    super(template(number));
+    super(template(number), template(setValueFromModel), template(writeValueToModel));
   }
 }

@@ -46,7 +46,7 @@ describe("<SelectField> tests", () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(formElement.html).toContain(`<select class="form-control" id="${props.id}" name="${props.name}">`);
+    expect(formElement.html).toContain(`<select class="form-control" id="${props.name}" name="${props.name}">`);
     const options = formElement.html.match(new RegExp("<option", "g")) || [];
     expect(options).toHaveLength(4);
     props.allowedValues.forEach((value) => {
@@ -55,6 +55,13 @@ describe("<SelectField> tests", () => {
       );
     });
     expect(formElement.ref.binding).toBe(props.name);
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement?.setValueFromModelCode?.code).not.toBeUndefined();
+    expect(formElement?.setValueFromModelCode?.requiredCode).toHaveLength(1);
+    expect(formElement.writeValueToModelCode).not.toBeUndefined();
+    expect(formElement?.writeValueToModelCode?.code).not.toBeUndefined();
+    expect(formElement?.writeValueToModelCode?.requiredCode).toBeUndefined();
   });
 
   it("<SelectField> - disabled rendering", () => {
@@ -70,7 +77,9 @@ describe("<SelectField> tests", () => {
     const { container, formElement } = renderField(SelectField, props, schema);
 
     expect(container).toMatchSnapshot();
-    expect(formElement.html).toContain(`<select class="form-control" id="${props.id}" name="${props.name}" disabled>`);
+    expect(formElement.html).toContain(
+      `<select class="form-control" id="${props.name}" name="${props.name}" disabled>`
+    );
     const options = formElement.html.match(new RegExp("<option", "g")) || [];
     expect(options).toHaveLength(3);
     props.allowedValues.forEach((value) => {
@@ -79,6 +88,9 @@ describe("<SelectField> tests", () => {
       );
     });
     expect(formElement.ref.binding).toBe(props.name);
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement.writeValueToModelCode).toBeUndefined();
   });
 
   it("<SelectField> - rendering multiple", () => {
@@ -93,13 +105,22 @@ describe("<SelectField> tests", () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(formElement.html).toContain(`<select class="form-control" id="${props.id}" name="${props.name}" multiple>`);
+    expect(formElement.html).toContain(
+      `<select class="form-control" id="${props.name}" name="${props.name}" multiple>`
+    );
     const options = formElement.html.match(new RegExp("<option", "g")) || [];
     expect(options).toHaveLength(3);
     props.allowedValues.forEach((value) => {
       expect(formElement.html).toContain(`<option value="${value}">${value}</option>`);
     });
     expect(formElement.ref.binding).toBe(props.name);
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement?.setValueFromModelCode?.code).not.toBeUndefined();
+    expect(formElement?.setValueFromModelCode?.requiredCode).toHaveLength(1);
+    expect(formElement.writeValueToModelCode).not.toBeUndefined();
+    expect(formElement?.writeValueToModelCode?.code).not.toBeUndefined();
+    expect(formElement?.writeValueToModelCode?.requiredCode).toHaveLength(1);
   });
 
   it("<SelectField> - rendering multiple disabled", () => {
@@ -115,7 +136,7 @@ describe("<SelectField> tests", () => {
 
     expect(container).toMatchSnapshot();
     expect(formElement.html).toContain(
-      `<select class="form-control" id="${props.id}" name="${props.name}" disabled multiple>`
+      `<select class="form-control" id="${props.name}" name="${props.name}" disabled multiple>`
     );
     const options = formElement.html.match(new RegExp("<option", "g")) || [];
     expect(options).toHaveLength(3);
@@ -123,5 +144,8 @@ describe("<SelectField> tests", () => {
       expect(formElement.html).toContain(`<option value="${value}">${value}</option>`);
     });
     expect(formElement.ref.binding).toBe(props.name);
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement.writeValueToModelCode).toBeUndefined();
   });
 });

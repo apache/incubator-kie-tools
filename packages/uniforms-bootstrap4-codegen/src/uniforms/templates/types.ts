@@ -15,9 +15,10 @@
  */
 
 import formGroupTemplate from "!!raw-loader!../../resources/templates/formGroup.template";
-import { CodeGenElement, FormElement, FormInput } from "../../api";
+import { CodeFragment, CodeGenElement, FormElement, FormInput } from "../../api";
 import { CompiledTemplate, template } from "underscore";
 import { getInputReference } from "../utils/Utils";
+import { fieldNameToOptionalChain, flatFieldName } from "./utils";
 
 export interface CodeGenTemplate<Element extends CodeGenElement, Properties> {
   render: (props: Properties) => Element;
@@ -38,12 +39,16 @@ export interface FormElementTemplate<
   render: (props: Properties) => Element;
 }
 
-const FORM_GROUP_TEMPLATE: CompiledTemplate = template(formGroupTemplate);
+export const FORM_GROUP_TEMPLATE: CompiledTemplate = template(formGroupTemplate);
 
 export abstract class AbstractFormGroupInputTemplate<Properties extends FormElementTemplateProps<any>>
   implements FormElementTemplate<FormInput, Properties>
 {
-  protected constructor(readonly inputTemplate: CompiledTemplate, readonly requiredCode?: string[]) {}
+  protected constructor(
+    readonly inputTemplate: CompiledTemplate,
+    readonly setValueFromModelTemplate: CompiledTemplate,
+    readonly writeValueToModelTemplate: CompiledTemplate
+  ) {}
 
   render(props: Properties): FormInput {
     const data = {
@@ -54,7 +59,36 @@ export abstract class AbstractFormGroupInputTemplate<Properties extends FormElem
     return {
       ref: getInputReference(props),
       html: FORM_GROUP_TEMPLATE(data),
-      requiredCode: this.requiredCode,
+      disabled: props.disabled,
+      setValueFromModelCode: this.buildSetValueFromModelCode(props),
+      writeValueToModelCode: this.writeValueToModelCode(props),
+    };
+  }
+
+  protected buildSetValueFromModelCode(props: Properties): CodeFragment {
+    const properties = {
+      ...props,
+      path: fieldNameToOptionalChain(props.name),
+      flatFieldName: flatFieldName(props.name),
+    };
+
+    return {
+      code: this.setValueFromModelTemplate(properties),
+    };
+  }
+
+  protected writeValueToModelCode(props: Properties): CodeFragment | undefined {
+    if (props.disabled || !this.writeValueToModelTemplate) {
+      return undefined;
+    }
+
+    const properties = {
+      ...props,
+      flatFieldName: flatFieldName(props.name),
+    };
+
+    return {
+      code: this.writeValueToModelTemplate(properties),
     };
   }
 }

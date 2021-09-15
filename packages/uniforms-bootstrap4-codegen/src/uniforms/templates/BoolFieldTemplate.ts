@@ -15,10 +15,13 @@
  */
 
 import checkbox from "!!raw-loader!../../resources/templates/checkbox.template";
-import { FormElementTemplateProps, FormElementTemplate } from "./types";
-import { FormInput } from "../../api";
+import checkboxSetValueFromModel from "!!raw-loader!../../resources/templates/checkbox.setModelData.template";
+import checkboxWriteModelData from "!!raw-loader!../../resources/templates/checkbox.writeModelData.template";
+import { FormElementTemplate, FormElementTemplateProps } from "./types";
+import { CodeFragment, FormInput } from "../../api";
 import { CompiledTemplate, template } from "underscore";
 import { getInputReference } from "../utils/Utils";
+import { fieldNameToOptionalChain } from "./utils";
 
 interface BoolFieldProps extends FormElementTemplateProps<boolean> {
   checked: boolean;
@@ -26,10 +29,15 @@ interface BoolFieldProps extends FormElementTemplateProps<boolean> {
 
 export class BoolFieldTemplate implements FormElementTemplate<FormInput, BoolFieldProps> {
   private readonly checkboxTemplate: CompiledTemplate;
+  private readonly checkboxSetValueFromModelTemplate: CompiledTemplate;
+  private readonly checkboxWriteModelTemplate: CompiledTemplate;
 
   constructor() {
     this.checkboxTemplate = template(checkbox);
+    this.checkboxSetValueFromModelTemplate = template(checkboxSetValueFromModel);
+    this.checkboxWriteModelTemplate = template(checkboxWriteModelData);
   }
+
   render(props: BoolFieldProps): FormInput {
     const data = {
       props: props,
@@ -37,6 +45,32 @@ export class BoolFieldTemplate implements FormElementTemplate<FormInput, BoolFie
     return {
       ref: getInputReference(props),
       html: this.checkboxTemplate(data),
+      disabled: props.disabled,
+      setValueFromModelCode: this.buildSetValueFromModelCode(props),
+      writeValueToModelCode: this.buildWriteModelDataCode(props),
+    };
+  }
+
+  protected buildSetValueFromModelCode(props: BoolFieldProps): CodeFragment {
+    const properties = {
+      id: props.id,
+      path: fieldNameToOptionalChain(props.name),
+    };
+    return {
+      code: this.checkboxSetValueFromModelTemplate(properties),
+    };
+  }
+
+  protected buildWriteModelDataCode(props: BoolFieldProps): CodeFragment | undefined {
+    if (props.disabled) {
+      return undefined;
+    }
+    const properties = {
+      id: props.id,
+      name: props.name,
+    };
+    return {
+      code: this.checkboxWriteModelTemplate(properties),
     };
   }
 }

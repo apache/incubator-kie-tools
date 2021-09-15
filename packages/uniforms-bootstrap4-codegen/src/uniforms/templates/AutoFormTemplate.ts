@@ -17,9 +17,9 @@
 import form from "!!raw-loader!../../resources/templates/form.template";
 import * as prettier from "prettier";
 import trim from "lodash/trim";
-import { CodeGenTemplate, FormElementTemplate, FormElementTemplateProps } from "./types";
+import { CodeGenTemplate } from "./types";
 import { CompiledTemplate, template } from "underscore";
-import { CodeGenElement, FormElement, FormInput } from "../../api";
+import { CodeGenElement, FormElement } from "../../api";
 
 export interface AutoFormProps {
   elements: FormElement<any>[];
@@ -37,13 +37,17 @@ export class AutoFormTemplate implements CodeGenTemplate<CodeGenElement, AutoFor
       props: props,
     };
 
-    const rawTemplate = trim(this.formTemplate(data));
+    const rawTemplate = trim(
+      this.formTemplate(data)
+        .split("\n")
+        .filter((line) => line && line.trim().length > 0)
+        .join("\n")
+    );
 
     const formattedFormTemplate = prettier.format(rawTemplate, {
       parser: "html",
       printWidth: 140,
-      tabWidth: 2,
-      useTabs: false,
+      useTabs: true,
     });
 
     return {

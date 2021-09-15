@@ -93,6 +93,7 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
     requiredCode: [isArray ? MULTIPLE_SELECT_FUNCTIONS : SELECT_FUNCTIONS],
     jsxCode,
     stateCode,
+    isReadonly: props.disabled,
   };
 
   useAddFormElementToContext(element);

@@ -18,10 +18,18 @@ export interface CodeGenElement {
   html: string;
 }
 
+export interface CodeFragment {
+  code: string;
+  requiredCode?: string[];
+}
+
 export interface FormElement<REFERENCE_TYPE> extends CodeGenElement {
   ref: REFERENCE_TYPE;
 
-  requiredCode?: string[];
+  disabled?: boolean;
+
+  setValueFromModelCode?: CodeFragment;
+  writeValueToModelCode?: CodeFragment;
 }
 
 export interface FormInput extends FormElement<InputReference> {}

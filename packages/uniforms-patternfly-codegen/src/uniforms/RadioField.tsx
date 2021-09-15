@@ -64,6 +64,7 @@ const Radio = (props: RadioFieldProps) => {
       label: props.label,
       required: props.required,
     },
+    disabled: props.disabled,
   });
 
   useAddFormElementToContext(element);

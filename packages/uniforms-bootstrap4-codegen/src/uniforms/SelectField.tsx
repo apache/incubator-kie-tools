@@ -44,7 +44,7 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
     }) || [];
 
   const inputProps = {
-    id: props.id,
+    id: props.name,
     name: props.name,
     label: props.label,
     multiple: props.fieldType === Array,

@@ -1,0 +1,9 @@
+function setRadioButtonGroupValue(fieldName, value) {
+    if(!value) {
+        return;
+    }
+    const radioButtons = document.querySelectorAll(`[name="${fieldName}"]`);
+    radioButtons.forEach(radioButton => {
+        radioButton.checked = radioButton.value === value;
+    });
+}

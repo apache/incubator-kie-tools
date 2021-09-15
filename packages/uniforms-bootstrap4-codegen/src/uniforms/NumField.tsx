@@ -33,7 +33,7 @@ export type NumFieldProps = HTMLFieldProps<
 >;
 const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
   const properties = {
-    id: props.id,
+    id: props.name,
     name: props.name,
     label: props.label,
     type: props.type ?? "text",

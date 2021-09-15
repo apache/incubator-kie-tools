@@ -38,7 +38,7 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
   }
 
   const properties = {
-    id: props.id,
+    id: props.name,
     name: props.name,
     label: props.label,
     disabled: props.disabled ?? false,

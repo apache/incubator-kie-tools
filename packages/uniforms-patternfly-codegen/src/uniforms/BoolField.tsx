@@ -52,6 +52,7 @@ const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
     reactImports: ["useState"],
     jsxCode,
     stateCode,
+    isReadonly: props.disabled,
   };
 
   useAddFormElementToContext(element);

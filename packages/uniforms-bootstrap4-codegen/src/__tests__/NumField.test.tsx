@@ -38,8 +38,8 @@ describe("<NumField> tests", () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(formElement.html).toContain(`<label for="${props.id}">${props.label}</label>`);
-    expect(formElement.html).toContain(`id="${props.id}"`);
+    expect(formElement.html).toContain(`<label for="${props.name}">${props.label}</label>`);
+    expect(formElement.html).toContain(`id="${props.name}"`);
     expect(formElement.html).toContain('type="number"');
     expect(formElement.html).toContain(`name="${props.name}"`);
     expect(formElement.html).toContain(`min="${props.min}"`);
@@ -50,6 +50,9 @@ describe("<NumField> tests", () => {
     expect(formElement.html).not.toContain("placeholder");
 
     expect(formElement.ref.binding).toBe(props.name);
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement.writeValueToModelCode).not.toBeUndefined();
   });
 
   it("<NumField> - integer rendering - no min/max", () => {
@@ -66,8 +69,8 @@ describe("<NumField> tests", () => {
 
     const { formElement } = renderField(NumField, props, schema);
 
-    expect(formElement.html).toContain(`<label for="${props.id}">${props.label}</label>`);
-    expect(formElement.html).toContain(`id="${props.id}"`);
+    expect(formElement.html).toContain(`<label for="${props.name}">${props.label}</label>`);
+    expect(formElement.html).toContain(`id="${props.name}"`);
     expect(formElement.html).toContain('type="number"');
     expect(formElement.html).toContain(`name="${props.name}"`);
     expect(formElement.html).not.toContain("min=");
@@ -92,11 +95,14 @@ describe("<NumField> tests", () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(formElement.html).toContain(`<label for="${props.id}">${props.label}</label>`);
-    expect(formElement.html).toContain(`id="${props.id}"`);
+    expect(formElement.html).toContain(`<label for="${props.name}">${props.label}</label>`);
+    expect(formElement.html).toContain(`id="${props.name}"`);
     expect(formElement.html).toContain('type="number"');
     expect(formElement.html).toContain(`name="${props.name}"`);
     expect(formElement.html).toContain("disabled");
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement.writeValueToModelCode).toBeUndefined();
   });
 
   it("<NumField> - decimal rendering", () => {
@@ -117,8 +123,8 @@ describe("<NumField> tests", () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(formElement.html).toContain(`<label for="${props.id}">${props.label}</label>`);
-    expect(formElement.html).toContain(`id="${props.id}"`);
+    expect(formElement.html).toContain(`<label for="${props.name}">${props.label}</label>`);
+    expect(formElement.html).toContain(`id="${props.name}"`);
     expect(formElement.html).toContain('type="number"');
     expect(formElement.html).toContain(`name="${props.name}"`);
     expect(formElement.html).toContain(`min="${props.min}"`);

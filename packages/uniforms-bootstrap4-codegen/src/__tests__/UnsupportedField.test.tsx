@@ -42,5 +42,8 @@ describe("<UnsupportedField> tests", () => {
     expect(formElement.html).toContain(
       `Cannot find form control for property <code>${props.name}</code> with type <code>Array</code>.</p>`
     );
+
+    expect(formElement.setValueFromModelCode).toBeUndefined();
+    expect(formElement.writeValueToModelCode).toBeUndefined();
   });
 });

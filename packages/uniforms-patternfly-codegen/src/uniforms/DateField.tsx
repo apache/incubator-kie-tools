@@ -77,6 +77,7 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
       label: props.label,
       required: props.required,
     },
+    disabled: props.disabled,
   });
 
   useAddFormElementToContext(element);
