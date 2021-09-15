@@ -5,9 +5,10 @@ import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-cir
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
+import { AngleLeftIcon } from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
-import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { GITHUB_OAUTH_TOKEN_SIZE } from "../common/GithubService";
@@ -15,7 +16,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SettingsTabs } from "./SettingsModalBody";
 import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
-import { AuthStatus, useGlobals } from "../common/GlobalContext";
+import { AuthStatus } from "../common/GlobalContext";
 import { useHistory } from "react-router";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useSettings } from "./SettingsContext";
@@ -36,7 +37,6 @@ const githubOAuthEndpoint = `https://github.com/login/oauth/authorize`;
 const GITHUB_APP_CLIENT_ID = `2d5a6222146b382e5fd8`;
 
 export function GitHubSettingsTab() {
-  const globals = useGlobals();
   const settings = useSettings();
   const queryParams = useQueryParams();
   const history = useHistory();
@@ -76,7 +76,7 @@ export function GitHubSettingsTab() {
 
   const githubTokenToDisplay = useMemo(() => {
     return obfuscate(potentialGitHubToken ?? settings.github.token);
-  }, [globals, potentialGitHubToken]);
+  }, [settings.github, potentialGitHubToken]);
 
   const onPasteGitHubToken = useCallback(
     (e) => {
@@ -101,114 +101,119 @@ export function GitHubSettingsTab() {
 
     const state = new Date().getTime();
     const scope = allowPrivateRepositories ? `gist,repo` : `gist`;
-    window.location.href = `${githubOAuthEndpoint}?scope=${scope}&state=${state}&client_id=${GITHUB_APP_CLIENT_ID}&allow_signup=true&redirect_uri=${redirectUri}`;
+    const encodedRedirectUri = encodeURIComponent(decodeURIComponent(redirectUri.href));
+    window.location.href = `${githubOAuthEndpoint}?scope=${scope}&state=${state}&client_id=${GITHUB_APP_CLIENT_ID}&allow_signup=true&redirect_uri=${encodedRedirectUri}`;
   }, [allowPrivateRepositories]);
 
   return (
     <Page>
       {settings.github.authStatus === AuthStatus.TOKEN_EXPIRED && (
         <PageSection>
-          <Bullseye>
-            <EmptyState>
-              <EmptyStateIcon icon={ExclamationTriangleIcon} />
-              <TextContent>
-                <Text component={"h2"}>GitHub Token expired</Text>
-              </TextContent>
+          <EmptyState>
+            <EmptyStateIcon icon={ExclamationTriangleIcon} />
+            <TextContent>
+              <Text component={"h2"}>GitHub Token expired</Text>
+            </TextContent>
+            <br />
+            <EmptyStateBody>
+              <TextContent>Reset your token to sign in with GitHub again.</TextContent>
               <br />
-              <EmptyStateBody>
-                <TextContent>Reset your token to sign in with GitHub again.</TextContent>
-                <br />
-                <Button variant={ButtonVariant.tertiary} onClick={onSignOutFromGitHub}>
-                  Reset
-                </Button>
-              </EmptyStateBody>
-            </EmptyState>
-          </Bullseye>
+              <Button variant={ButtonVariant.tertiary} onClick={onSignOutFromGitHub}>
+                Reset
+              </Button>
+            </EmptyStateBody>
+          </EmptyState>
         </PageSection>
       )}
       {settings.github.authStatus === AuthStatus.LOADING && (
         <PageSection>
-          <Bullseye>
-            <EmptyState>
-              <EmptyStateIcon icon={GithubIcon} />
-              <TextContent>
-                <Text component={"h2"}>Signing in with GitHub</Text>
-              </TextContent>
-              <br />
-              <br />
-              <Spinner />
-            </EmptyState>
-          </Bullseye>
+          <EmptyState>
+            <EmptyStateIcon icon={GithubIcon} />
+            <TextContent>
+              <Text component={"h2"}>Signing in with GitHub</Text>
+            </TextContent>
+            <br />
+            <br />
+            <Spinner />
+          </EmptyState>
         </PageSection>
       )}
       {settings.github.authStatus === AuthStatus.SIGNED_IN && (
         <PageSection>
-          <Bullseye>
-            <EmptyState>
-              <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
+          <EmptyState>
+            <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
+            <TextContent>
+              <Text component={"h2"}>{"You're signed in with GitHub."}</Text>
+            </TextContent>
+            <EmptyStateBody>
+              <TextContent>Syncing Workspaces with GitHub is enabled.</TextContent>
+              <br />
               <TextContent>
-                <Text component={"h2"}>
-                  {"You're signed in with GitHub as "}
-                  <u>{settings.github.user}</u>
-                  {"."}
-                </Text>
+                <b>User: </b>
+                <i>{settings.github.user}</i>
               </TextContent>
-              <EmptyStateBody>
-                <TextContent>Syncing Workspaces with GitHub is enabled.</TextContent>
-                <TextContent>
-                  Current scopes are: <i>{settings.github.scopes?.join(", ")}</i>
-                </TextContent>
-                <br />
-                <Button variant={ButtonVariant.tertiary} onClick={onSignOutFromGitHub}>
-                  Sign out
-                </Button>
-              </EmptyStateBody>
-            </EmptyState>
-          </Bullseye>
+              <TextContent>
+                <b>Scope: </b>
+                <i>{settings.github.scopes?.join(", ")}</i>
+              </TextContent>
+              <br />
+              <Button variant={ButtonVariant.tertiary} onClick={onSignOutFromGitHub}>
+                Sign out
+              </Button>
+            </EmptyStateBody>
+          </EmptyState>
         </PageSection>
       )}
       {settings.github.authStatus === AuthStatus.SIGNED_OUT && (
         <>
           <PageSection>
             {githubSignInOption == GitHubSignInOption.OAUTH && (
-              <Bullseye>
-                <>
-                  <EmptyState>
-                    <EmptyStateIcon icon={GithubIcon} />
+              <>
+                <EmptyState>
+                  <EmptyStateIcon icon={GithubIcon} />
+                  <TextContent>
+                    <Text component={"h2"}>{"You're not connected to GitHub."}</Text>
+                  </TextContent>
+                  <EmptyStateBody>
+                    <TextContent>{"Signing in with GitHub enables syncing your Workspaces."}</TextContent>
                     <TextContent>
-                      <Text component={"h2"}>{"You're not connected to GitHub."}</Text>
+                      {"You can also sign in using a "}
+                      <a href={"#"} onClick={() => setGitHubSignInOption(GitHubSignInOption.PERSONAL_ACCESS_TOKEN)}>
+                        Personal Access Token
+                      </a>
+                      {"."}
                     </TextContent>
-                    <EmptyStateBody>
-                      <TextContent>{"Signing in with GitHub enables syncing your Workspaces."}</TextContent>
-                      <TextContent>
-                        {"You can also sign in using a "}
-                        <a href={"#"} onClick={() => setGitHubSignInOption(GitHubSignInOption.PERSONAL_ACCESS_TOKEN)}>
-                          Personal Access Token
-                        </a>
-                        {"."}
-                      </TextContent>
-                      <br />
-                      <br />
-                      <Bullseye>
-                        <Checkbox
-                          id="settings-github--allow-private-repositories"
-                          isChecked={allowPrivateRepositories}
-                          onChange={setAllowPrivateRepositories}
-                          label={"Allow private repositories"}
-                        />
-                      </Bullseye>
-                      <br />
-                      <Button variant={ButtonVariant.tertiary} onClick={onSignInWithGitHub}>
-                        Sign in with GitHub
-                      </Button>
-                    </EmptyStateBody>
-                  </EmptyState>
-                </>
-              </Bullseye>
+                    <br />
+                    <br />
+                    <Bullseye>
+                      <Checkbox
+                        id="settings-github--allow-private-repositories"
+                        isChecked={allowPrivateRepositories}
+                        onChange={setAllowPrivateRepositories}
+                        label={"Allow private repositories"}
+                      />
+                    </Bullseye>
+                    <br />
+                    <Button variant={ButtonVariant.primary} onClick={onSignInWithGitHub}>
+                      Sign in with GitHub
+                    </Button>
+                  </EmptyStateBody>
+                </EmptyState>
+              </>
             )}
             {githubSignInOption == GitHubSignInOption.PERSONAL_ACCESS_TOKEN && (
               <>
                 <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
+                  <Button
+                    variant="link"
+                    isInline={true}
+                    icon={<AngleLeftIcon />}
+                    onClick={() => setGitHubSignInOption(GitHubSignInOption.OAUTH)}
+                  >
+                    Back
+                  </Button>
+                  <br />
+                  <br />
                   <Form>
                     <FormGroup
                       isRequired={true}
@@ -231,11 +236,6 @@ export function GitHubSettingsTab() {
                         />
                       </InputGroup>
                     </FormGroup>
-                    <ActionGroup>
-                      <Button variant="link" onClick={() => setGitHubSignInOption(GitHubSignInOption.OAUTH)}>
-                        Cancel
-                      </Button>
-                    </ActionGroup>
                   </Form>
                 </PageSection>
               </>
@@ -247,7 +247,7 @@ export function GitHubSettingsTab() {
   );
 }
 
-function obfuscate(token?: string) {
+export function obfuscate(token?: string) {
   if (!token) {
     return undefined;
   }

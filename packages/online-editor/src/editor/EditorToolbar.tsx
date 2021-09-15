@@ -194,7 +194,19 @@ export function EditorToolbar(props: Props) {
         </React.Fragment>
       </DropdownGroup>,
     ],
-    [i18n, globals, props.onSave, props.onDownload, props.onCopyContentToClipboard, props.onGistIt]
+    [
+      props.onDownload,
+      props.onCopyContentToClipboard,
+      props.onPreview,
+      props.onEmbed,
+      props.onGistIt,
+      props.onSave,
+      includeDownloadSVGDropdownItem,
+      includeEmbedDropdownItem,
+      i18n,
+      settings,
+      globals,
+    ]
   );
 
   return !props.isPageFullscreen ? (

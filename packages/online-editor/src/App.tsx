@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { File, newFile } from "@kie-tooling-core/editor/dist/channel";
+import { File } from "@kie-tooling-core/editor/dist/channel";
 import * as React from "react";
 import { Route, Switch } from "react-router";
 import { BrowserRouter } from "react-router-dom";
@@ -26,6 +26,7 @@ import { NoMatchPage } from "./NoMatchPage";
 import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
 import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
 import { SettingsContextProvider } from "./settings/SettingsContext";
+import { KieToolingExtendedServicesContextProvider } from "./editor/KieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
 
 interface Props {
   externalFile?: File;
@@ -41,27 +42,29 @@ export function App(props: Props) {
       ctx={OnlineI18nContext}
     >
       <GlobalContextProvider externalFile={props.externalFile} senderTabId={props.senderTabId}>
-        <GlobalContext.Consumer>
-          {({ routes }) => (
-            <SettingsContextProvider>
-              <BrowserRouter>
-                <Switch>
-                  <Route path={routes.editor.url({ type: ":type" })}>
-                    <EditorPage />
-                  </Route>
-                  <Route exact={true} path={routes.home.url({})}>
-                    <HomePage />
-                  </Route>
-                  <Route exact={true} path={routes.downloadHub.url({})}>
-                    <HomePage />
-                    <DownloadHubModal />
-                  </Route>
-                  <Route component={NoMatchPage} />
-                </Switch>
-              </BrowserRouter>
-            </SettingsContextProvider>
-          )}
-        </GlobalContext.Consumer>
+        <KieToolingExtendedServicesContextProvider>
+          <SettingsContextProvider>
+            <GlobalContext.Consumer>
+              {({ routes }) => (
+                <BrowserRouter>
+                  <Switch>
+                    <Route path={routes.editor.url({ type: ":type" })}>
+                      <EditorPage />
+                    </Route>
+                    <Route exact={true} path={routes.home.url({})}>
+                      <HomePage />
+                    </Route>
+                    <Route exact={true} path={routes.downloadHub.url({})}>
+                      <HomePage />
+                      <DownloadHubModal />
+                    </Route>
+                    <Route component={NoMatchPage} />
+                  </Switch>
+                </BrowserRouter>
+              )}
+            </GlobalContext.Consumer>
+          </SettingsContextProvider>
+        </KieToolingExtendedServicesContextProvider>
       </GlobalContextProvider>
     </I18nDictionariesProvider>
   );

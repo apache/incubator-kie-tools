@@ -19,7 +19,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../common/i18n";
 import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
-import { DmnDevSandboxInstanceStatus } from "../DmnDevSandbox/DmnDevSandboxInstanceStatus";
+import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { FeatureDependentOnKieToolingExtendedServices } from "../KieToolingExtendedServices/FeatureDependentOnKieToolingExtendedServices";
 import {
   DependentFeature,
@@ -27,8 +27,11 @@ import {
 } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { DmnDevSandboxDeploymentDropdownItem } from "./DmnDevSandboxDeploymentDropdownItem";
+import { useSettings } from "../../settings/SettingsContext";
+import { SettingsTabs } from "../../settings/SettingsModalBody";
 
 export function useDmnDevSandboxDropdownItems() {
+  const settings = useSettings();
   const { i18n } = useOnlineI18n();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const dmnDevSandbox = useDmnDevSandbox();
@@ -39,17 +42,15 @@ export function useDmnDevSandboxDropdownItems() {
   );
 
   const isDmnDevSandboxConnected = useMemo(
-    () => dmnDevSandbox.instanceStatus === DmnDevSandboxInstanceStatus.CONNECTED,
-    [dmnDevSandbox.instanceStatus]
+    () => settings.openshift.status.get === OpenShiftInstanceStatus.CONNECTED,
+    [settings.openshift.status.get]
   );
 
   const onDevSandboxSetup = useCallback(() => {
-    kieToolingExtendedServices.closeDmnTour();
-    dmnDevSandbox.setConfigModalOpen(true);
-  }, [dmnDevSandbox, kieToolingExtendedServices]);
+    settings.open(SettingsTabs.OPENSHIFT);
+  }, [settings]);
 
   const onDevSandboxDeploy = useCallback(() => {
-    kieToolingExtendedServices.closeDmnTour();
     if (isKieToolingExtendedServicesRunning) {
       dmnDevSandbox.setConfirmDeployModalOpen(true);
       return;
@@ -93,7 +94,7 @@ export function useDmnDevSandboxDropdownItems() {
               isDisabled={true}
               ouiaId={"setup-as-dmn-dev-sandbox-dropdown-button"}
             >
-              {i18n.dmnDevSandbox.dropdown.setupFor(dmnDevSandbox.currentConfig.namespace)}
+              {i18n.dmnDevSandbox.dropdown.setupFor(settings.openshift.config.get.namespace)}
             </DropdownItem>
             <DropdownItem
               id="dmn-dev-sandbox-change-config-button"
@@ -129,7 +130,7 @@ export function useDmnDevSandboxDropdownItems() {
 
     return items;
   }, [
-    dmnDevSandbox.currentConfig.namespace,
+    settings.openshift.config.get.namespace,
     dmnDevSandbox.deployments,
     i18n,
     isDmnDevSandboxConnected,

@@ -15,7 +15,7 @@
  */
 
 import { when } from "jest-when";
-import { DmnDevSandboxService } from "../../../editor/DmnDevSandbox/DmnDevSandboxService";
+import { OpenShiftService } from "../../../editor/DmnDevSandbox/OpenShiftService";
 import { Build, CreateBuild, ListBuilds } from "../../../editor/DmnDevSandbox/resources/Build";
 import { CreateBuildConfig } from "../../../editor/DmnDevSandbox/resources/BuildConfig";
 import { CreateDeployment, Deployment, ListDeployments } from "../../../editor/DmnDevSandbox/resources/Deployment";
@@ -27,7 +27,7 @@ import { CreateService } from "../../../editor/DmnDevSandbox/resources/Service";
 
 describe("DmnDevSandboxService", () => {
   const createdBy = "online-editor";
-  const service = new DmnDevSandboxService(createdBy, "proxyUrl");
+  const service = new OpenShiftService(createdBy, "proxyUrl");
   const fetchResourceFn = jest.spyOn(service, "fetchResource");
 
   const config = {

@@ -15,142 +15,51 @@
  */
 
 import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { ConnectedIcon } from "@patternfly/react-icons/dist/js/icons/connected-icon";
-import { DisconnectedIcon } from "@patternfly/react-icons/dist/js/icons/disconnected-icon";
-import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useOnlineI18n } from "../../common/i18n";
 import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
 import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
-import { DmnDevSandboxInstanceStatus } from "../DmnDevSandbox/DmnDevSandboxInstanceStatus";
+import { OpenShiftInstanceStatus } from "../DmnDevSandbox/OpenShiftInstanceStatus";
 import { useDmnRunner } from "../DmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieToolingExtendedServices } from "./FeatureDependentOnKieToolingExtendedServices";
 import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
+import { useSettings } from "../../settings/SettingsContext";
+import { KieToolingExtendedServicesIcon } from "./KieToolingExtendedServicesIcon";
 
 export function KieToolingExtendedServicesButtons() {
   const { i18n } = useOnlineI18n();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const dmnDevSandbox = useDmnDevSandbox();
   const dmnRunner = useDmnRunner();
+  const settings = useSettings();
   const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems();
 
-  const isKieToolingExtendedServicesRunning = useMemo(
-    () => kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING,
-    [kieToolingExtendedServices.status]
-  );
-
-  const onToggleKieToolingExtendedServices = useCallback(() => {
-    if (!kieToolingExtendedServices.outdated) {
-      return;
-    }
-    kieToolingExtendedServices.setModalOpen(true);
-  }, [kieToolingExtendedServices]);
-
   const onToggleDmnRunner = useCallback(() => {
-    kieToolingExtendedServices.closeDmnTour();
-    if (isKieToolingExtendedServicesRunning) {
+    if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
       dmnRunner.setDrawerExpanded(!dmnRunner.isDrawerExpanded);
       return;
     }
     kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     kieToolingExtendedServices.setModalOpen(true);
-  }, [dmnRunner, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
+  }, [dmnRunner, kieToolingExtendedServices]);
 
   const onToggleDmnDevSandbox = useCallback(
     (isOpen: boolean) => {
-      kieToolingExtendedServices.closeDmnTour();
-      if (isKieToolingExtendedServicesRunning) {
+      if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
         dmnDevSandbox.setDropdownOpen(isOpen);
         return;
       }
       kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_DEV_SANDBOX);
       kieToolingExtendedServices.setModalOpen(true);
     },
-    [dmnDevSandbox, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]
-  );
-
-  const dropdownToggleIcon = useMemo(
-    () => (
-      <>
-        {kieToolingExtendedServices.outdated && (
-          <Tooltip
-            className="kogito--editor__kie-tooling-extended-services-dropdown-tooltip"
-            key={"outdated"}
-            content={i18n.kieToolingExtendedServices.dropdown.tooltip.outdated}
-            flipBehavior={["left"]}
-            distance={20}
-          >
-            <ExclamationTriangleIcon
-              data-testid="outdated-icon"
-              className="kogito--editor__kie-tooling-extended-services-dropdown-icon-outdated static-opacity"
-              id="kie-tooling-extended-services-outdated-icon"
-            />
-          </Tooltip>
-        )}
-        {!kieToolingExtendedServices.outdated && (
-          <>
-            {kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING ? (
-              <Tooltip
-                className="kogito--editor__kie-tooling-extended-services-dropdown-tooltip"
-                key={"connected"}
-                content={i18n.kieToolingExtendedServices.dropdown.tooltip.connected(kieToolingExtendedServices.port)}
-                flipBehavior={["left"]}
-                distance={20}
-              >
-                <ConnectedIcon
-                  data-testid="connected-icon"
-                  className="kogito--editor__kie-tooling-extended-services-dropdown-icon-connected blink-opacity"
-                  id="kie-tooling-extended-services-connected-icon"
-                />
-              </Tooltip>
-            ) : (
-              <Tooltip
-                className="kogito--editor__kie-tooling-extended-services-dropdown-tooltip"
-                key={"disconnected"}
-                content={i18n.kieToolingExtendedServices.dropdown.tooltip.disconnected}
-                flipBehavior={["left"]}
-                distance={20}
-              >
-                <DisconnectedIcon
-                  data-testid="disconnected-icon"
-                  className="static-opacity"
-                  id="kie-tooling-extended-services-disconnected-icon"
-                />
-              </Tooltip>
-            )}
-          </>
-        )}
-      </>
-    ),
-    [i18n, kieToolingExtendedServices.outdated, kieToolingExtendedServices.port, kieToolingExtendedServices.status]
+    [dmnDevSandbox, kieToolingExtendedServices]
   );
 
   return (
     <>
-      <Dropdown
-        toggle={
-          <DropdownToggle
-            id="kie-tooling-extended-services-button"
-            toggleIndicator={null}
-            onToggle={onToggleKieToolingExtendedServices}
-            className="kogito--kie-tooling-extended-services-button"
-            data-testid="kie-tooling-extended-services-button"
-          >
-            {dropdownToggleIcon}
-          </DropdownToggle>
-        }
-        isPlain={true}
-        className={"kogito--editor__toolbar dropdown"}
-        position={DropdownPosition.right}
-        style={
-          isKieToolingExtendedServicesRunning
-            ? { marginRight: "2px", borderBottom: "solid transparent 2px", paddingBottom: 0 }
-            : { marginRight: "2px", borderBottom: "solid var(--pf-global--palette--red-300) 2px", paddingBottom: 0 }
-        }
-      />
+      <KieToolingExtendedServicesIcon />
 
       <FeatureDependentOnKieToolingExtendedServices isLight={true} position="bottom">
         <Dropdown
@@ -170,8 +79,8 @@ export function KieToolingExtendedServicesButtons() {
           position={DropdownPosition.right}
           dropdownItems={dmnDevSandboxDropdownItems()}
           style={
-            isKieToolingExtendedServicesRunning &&
-            dmnDevSandbox.instanceStatus === DmnDevSandboxInstanceStatus.CONNECTED
+            kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING &&
+            settings.openshift.status.get === OpenShiftInstanceStatus.CONNECTED
               ? { marginRight: "2px", borderBottom: "solid var(--pf-global--palette--blue-300) 2px", paddingBottom: 0 }
               : { marginRight: "2px" }
           }

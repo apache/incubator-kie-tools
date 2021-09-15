@@ -5,22 +5,16 @@ import { SettingsModalBody } from "./SettingsModalBody";
 import * as React from "react";
 import { useState } from "react";
 import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
+import { useSettings } from "./SettingsContext";
 
 export function SettingsButton() {
-  const params = useQueryParams();
-  const [isSettingsOpen, setSettingsOpen] = useState(!!params.get(QueryParams.SETTINGS));
-
+  const settings = useSettings();
   return (
     <>
-      <Button variant="plain" onClick={() => setSettingsOpen(true)} aria-label="Settings">
+      <Button variant="plain" onClick={() => settings.open()} aria-label="Settings">
         <CogIcon />
       </Button>
-      <Modal
-        title="Settings"
-        isOpen={isSettingsOpen}
-        onClose={() => setSettingsOpen(false)}
-        variant={ModalVariant.large}
-      >
+      <Modal title="Settings" isOpen={settings.isOpen} onClose={settings.close} variant={ModalVariant.large}>
         <div style={{ height: "calc(100vh * 0.5)" }} className={"kogito-tooling--setings-modal-content"}>
           <SettingsModalBody />
         </div>

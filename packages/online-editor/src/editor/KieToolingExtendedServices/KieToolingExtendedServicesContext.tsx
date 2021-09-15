@@ -35,7 +35,6 @@ export interface KieToolingExtendedServicesContextType {
   setModalOpen: React.Dispatch<boolean>;
   setInstallTriggeredBy: React.Dispatch<DependentFeature>;
   saveNewPort: React.Dispatch<string>;
-  closeDmnTour: () => void;
 }
 
 export const KieToolingExtendedServicesContext = React.createContext<KieToolingExtendedServicesContextType>({

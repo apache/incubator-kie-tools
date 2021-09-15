@@ -16,8 +16,8 @@
 
 import { fireEvent, render } from "@testing-library/react";
 import * as React from "react";
-import { EMPTY_CONFIG } from "../../../editor/DmnDevSandbox/DmnDevSandboxConnectionConfig";
-import { DmnDevSandboxInstanceStatus } from "../../../editor/DmnDevSandbox/DmnDevSandboxInstanceStatus";
+import { EMPTY_CONFIG } from "../../../settings/OpenShiftSettingsConfig";
+import { OpenShiftInstanceStatus } from "../../../editor/DmnDevSandbox/OpenShiftInstanceStatus";
 import { DmnDevSandboxModalConfig } from "../../../editor/DmnDevSandbox/DmnDevSandboxModalConfig";
 import {
   usingTestingDmnDevSandboxContext,
@@ -51,7 +51,7 @@ describe("DmnDevSandboxModalConfig", () => {
           usingTestingKieToolingExtendedServicesContext(
             usingTestingDmnDevSandboxContext(<DmnDevSandboxModalConfig />, {
               isConfigModalOpen: true,
-              instanceStatus: DmnDevSandboxInstanceStatus.EXPIRED,
+              instanceStatus: OpenShiftInstanceStatus.EXPIRED,
             }).wrapper
           ).wrapper
         ).wrapper

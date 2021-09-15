@@ -25,9 +25,6 @@ import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesSt
 
 interface Props {
   children: React.ReactNode;
-  editor?: EmbeddedEditorRef;
-  isEditorReady: boolean;
-  closeDmnTour: () => void;
 }
 
 const KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME = 1000;
@@ -103,7 +100,7 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
     }, KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME);
 
     return () => window.clearInterval(detectKieToolingExtendedServices);
-  }, [props.editor, props.isEditorReady, status, bridge, version]);
+  }, [status, bridge, version]);
 
   return (
     <KieToolingExtendedServicesContext.Provider
@@ -119,7 +116,6 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
         setModalOpen,
         setInstallTriggeredBy,
         saveNewPort,
-        closeDmnTour: props.closeDmnTour,
       }}
     >
       {props.children}

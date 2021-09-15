@@ -1,14 +1,39 @@
 import * as React from "react";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "../common/utils";
 import { Octokit } from "@octokit/rest";
 import { GithubService } from "../common/GithubService";
 import { AuthStatus } from "../common/GlobalContext";
+import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
+import { SettingsTabs } from "./SettingsModalBody";
+import { OpenShiftSettingsConfig, readConfigCookie } from "./OpenShiftSettingsConfig";
+import { KieToolingExtendedServicesStatus } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { OpenShiftInstanceStatus } from "../editor/DmnDevSandbox/OpenShiftInstanceStatus";
+import { OpenShiftService } from "../editor/DmnDevSandbox/OpenShiftService";
+import { useKieToolingExtendedServices } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContext";
 
 const GITHUB_AUTH_TOKEN_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__github-oauth-token";
 const GUIDED_TOUR_ENABLED_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__is-guided-tour-enabled";
+export const OPENSHIFT_NAMESPACE_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__dmn-dev-sandbox--connection-namespace";
+export const OPENSHIFT_HOST_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__dmn-dev-sandbox--connection-host";
+export const OPENSHIFT_TOKEN_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__dmn-dev-sandbox--connection-token";
 
 export interface SettingsContextType {
+  open: (activeTab?: SettingsTabs) => void;
+  close: () => void;
+  isOpen: boolean;
+  activeTab: SettingsTabs;
+  openshift: {
+    service: OpenShiftService;
+    status: {
+      get: OpenShiftInstanceStatus;
+      set: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
+    };
+    config: {
+      get: OpenShiftSettingsConfig;
+      set: React.Dispatch<React.SetStateAction<OpenShiftSettingsConfig>>;
+    };
+  };
   github: {
     authService: { reset: () => void; authenticate: (token: string) => Promise<void> };
     authStatus: AuthStatus;
@@ -29,6 +54,22 @@ export interface SettingsContextType {
 export const SettingsContext = React.createContext<SettingsContextType>({} as any);
 
 export function SettingsContextProvider(props: any) {
+  //
+  const queryParams = useQueryParams();
+  const [isOpen, setOpen] = useState(!!queryParams.get(QueryParams.SETTINGS));
+  const [activeTab, setActiveTab] = useState(
+    (queryParams.get(QueryParams.SETTINGS) as SettingsTabs) ?? SettingsTabs.GENERAL
+  );
+
+  const open = useCallback((activeTab = SettingsTabs.GENERAL) => {
+    setOpen(true);
+    setActiveTab(activeTab);
+  }, []);
+
+  const close = useCallback(() => {
+    setOpen(false);
+  }, []);
+
   //github
   const [githubAuthStatus, setGitHubAuthStatus] = useState(AuthStatus.LOADING);
   const [githubOctokit, setGitHubOctokit] = useState<Octokit>(new Octokit());
@@ -90,11 +131,37 @@ export function SettingsContextProvider(props: any) {
     setCookie(GUIDED_TOUR_ENABLED_COOKIE_NAME, `${isGuidedTourEnabled}`);
   }, [isGuidedTourEnabled]);
 
-  //
+  //openshift
+  const kieToolingExtendedServices = useKieToolingExtendedServices();
+  const [openshiftConfig, setOpenShiftConfig] = useState(readConfigCookie());
+  const [openshiftStatus, setOpenshiftStatus] = useState(
+    kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.UNAVAILABLE
+      ? OpenShiftInstanceStatus.UNAVAILABLE
+      : OpenShiftInstanceStatus.DISCONNECTED
+  );
+  const openshiftService = useMemo(
+    () => new OpenShiftService(`${kieToolingExtendedServices.baseUrl}/devsandbox`),
+    [kieToolingExtendedServices.baseUrl]
+  );
 
   return (
     <SettingsContext.Provider
       value={{
+        open,
+        close,
+        isOpen,
+        activeTab,
+        openshift: {
+          service: openshiftService,
+          status: {
+            get: openshiftStatus,
+            set: setOpenshiftStatus,
+          },
+          config: {
+            get: openshiftConfig,
+            set: setOpenShiftConfig,
+          },
+        },
         github: {
           octokit: githubOctokit,
           authStatus: githubAuthStatus,

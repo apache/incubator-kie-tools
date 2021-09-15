@@ -97,7 +97,7 @@ export function EditorPage() {
       ? queryParams.get(QueryParams.READONLY) === `${true}`
       : false;
 
-    if (!filePath) {
+    if (!filePath || !isEditorReady) {
       return;
     }
 
@@ -154,7 +154,7 @@ export function EditorPage() {
           console.info("error");
         });
     }
-  }, [globals, queryParams]);
+  }, [isEditorReady]);
 
   const close = useCallback(() => {
     if (!isDirty) {
@@ -338,7 +338,7 @@ export function EditorPage() {
     };
   });
 
-  const closeDmnTour = useDmnTour(!globals.readonly && isEditorReady && openAlert === AlertTypes.NONE, globals.file);
+  useDmnTour(!globals.readonly && isEditorReady && openAlert === AlertTypes.NONE, globals.file);
 
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
@@ -444,11 +444,7 @@ export function EditorPage() {
   }, [editor, isEditorReady]);
 
   return (
-    <KieToolingExtendedServicesContextProvider
-      editor={editor}
-      isEditorReady={isEditorReady}
-      closeDmnTour={closeDmnTour}
-    >
+    <KieToolingExtendedServicesContextProvider>
       <NotificationsPanelContextProvider ref={notificationsPanelRef}>
         <DmnRunnerContextProvider editor={editor} isEditorReady={isEditorReady}>
           <DmnRunnerContext.Consumer>

@@ -24,20 +24,12 @@ import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/Kie
 import { KieToolingExtendedServicesModal } from "../KieToolingExtendedServices/KieToolingExtendedServicesModal";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { DeployedModel } from "./DeployedModel";
-import {
-  DmnDevSandboxConnectionConfig,
-  EMPTY_CONFIG,
-  isConfigValid,
-  readConfigCookie,
-  resetConfigCookie,
-  saveConfigCookie,
-} from "./DmnDevSandboxConnectionConfig";
 import { DmnDevSandboxContext } from "./DmnDevSandboxContext";
-import { DmnDevSandboxInstanceStatus } from "./DmnDevSandboxInstanceStatus";
-import { DmnDevSandboxModalConfig } from "./DmnDevSandboxModalConfig";
+import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandboxModalConfirmDeploy";
-import { DmnDevSandboxService } from "./DmnDevSandboxService";
-import { DmnDevSandboxWizardConfig } from "./DmnDevSandboxWizardConfig";
+import { OpenShiftService } from "./OpenShiftService";
+import { useSettings } from "../../settings/SettingsContext";
+import { isConfigValid, OpenShiftSettingsConfig } from "../../settings/OpenShiftSettingsConfig";
 
 interface Props {
   children: React.ReactNode;
@@ -52,67 +44,36 @@ enum AlertTypes {
 }
 
 export function DmnDevSandboxContextProvider(props: Props) {
-  const KOGITO_ONLINE_EDITOR = "online-editor";
   const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
 
+  const settings = useSettings();
   const { i18n } = useOnlineI18n();
   const globals = useGlobals();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
-  const [instanceStatus, setInstanceStatus] = useState(
-    kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.UNAVAILABLE
-      ? DmnDevSandboxInstanceStatus.UNAVAILABLE
-      : DmnDevSandboxInstanceStatus.DISCONNECTED
-  );
-  const service = useMemo(
-    () => new DmnDevSandboxService(KOGITO_ONLINE_EDITOR, `${kieToolingExtendedServices.baseUrl}/devsandbox`),
-    [kieToolingExtendedServices.baseUrl]
-  );
-  const [currentConfig, setCurrentConfig] = useState(readConfigCookie());
+
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isConfigModalOpen, setConfigModalOpen] = useState(false);
-  const [isConfigWizardOpen, setConfigWizardOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
   const [deployments, setDeployments] = useState([] as DeployedModel[]);
   const [openAlert, setOpenAlert] = useState(AlertTypes.NONE);
 
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
-  const onDisconnect = useCallback((closeModals: boolean) => {
-    setInstanceStatus(DmnDevSandboxInstanceStatus.DISCONNECTED);
-    setDropdownOpen(false);
-    setDeployments([]);
+  const onDisconnect = useCallback(
+    (closeModals: boolean) => {
+      settings.openshift.status.set(OpenShiftInstanceStatus.DISCONNECTED);
+      setDropdownOpen(false);
+      setDeployments([]);
 
-    if (closeModals) {
-      setConfigModalOpen(false);
-      setConfigWizardOpen(false);
-      setConfirmDeployModalOpen(false);
-    }
-  }, []);
-
-  const onCheckConfig = useCallback(
-    async (config: DmnDevSandboxConnectionConfig, persist: boolean) => {
-      const isConfigOk = isConfigValid(config) && (await service.isConnectionEstablished(config));
-
-      if (persist && isConfigOk) {
-        setCurrentConfig(config);
-        saveConfigCookie(config);
-        setInstanceStatus(DmnDevSandboxInstanceStatus.CONNECTED);
+      if (closeModals) {
+        setConfirmDeployModalOpen(false);
       }
-
-      return isConfigOk;
     },
-    [service]
+    [settings.openshift.status.set]
   );
 
-  const onResetConfig = useCallback(() => {
-    setCurrentConfig(EMPTY_CONFIG);
-    onDisconnect(false);
-    resetConfigCookie();
-  }, [onDisconnect]);
-
   const onDeploy = useCallback(
-    async (config: DmnDevSandboxConnectionConfig) => {
-      if (!(await onCheckConfig(config, false))) {
+    async (config: OpenShiftSettingsConfig) => {
+      if (!((await isConfigValid(config)) && (await settings.openshift.service.isConnectionEstablished(config)))) {
         setOpenAlert(AlertTypes.DEPLOY_STARTED_ERROR);
         return;
       }
@@ -123,13 +84,13 @@ export function DmnDevSandboxContextProvider(props: Props) {
         .replace(/"/g, '\\"'); // Escape quotes
 
       try {
-        await service.deploy(filename, editorContent, config);
+        await settings.openshift.service.deploy(filename, editorContent, config);
         setOpenAlert(AlertTypes.DEPLOY_STARTED_SUCCESS);
       } catch (error) {
         setOpenAlert(AlertTypes.DEPLOY_STARTED_ERROR);
       }
     },
-    [onCheckConfig, globals.file.fileName, globals.file.fileExtension, props.editor, service]
+    [globals.file.fileName, globals.file.fileExtension, props.editor, settings.openshift.service]
   );
 
   useEffect(() => {
@@ -138,30 +99,31 @@ export function DmnDevSandboxContextProvider(props: Props) {
       return;
     }
 
-    if (!isConfigValid(currentConfig)) {
+    if (!isConfigValid(settings.openshift.config.get)) {
       if (deployments.length > 0) {
         setDeployments([]);
       }
       return;
     }
 
-    if (instanceStatus === DmnDevSandboxInstanceStatus.DISCONNECTED) {
-      service
-        .isConnectionEstablished(currentConfig)
+    if (settings.openshift.status.get === OpenShiftInstanceStatus.DISCONNECTED) {
+      settings.openshift.service
+        .isConnectionEstablished(settings.openshift.config.get)
         .then((isConfigOk: boolean) => {
-          setConfigModalOpen(!isConfigOk && !kieToolingExtendedServices.isModalOpen);
-          setInstanceStatus(isConfigOk ? DmnDevSandboxInstanceStatus.CONNECTED : DmnDevSandboxInstanceStatus.EXPIRED);
-          return isConfigOk ? service.loadDeployments(currentConfig) : [];
+          settings.openshift.status.set(
+            isConfigOk ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.EXPIRED
+          );
+          return isConfigOk ? settings.openshift.service.loadDeployments(settings.openshift.config.get) : [];
         })
         .then((deployments: DeployedModel[]) => setDeployments(deployments))
         .catch((error: any) => console.error(error));
       return;
     }
 
-    if (instanceStatus === DmnDevSandboxInstanceStatus.CONNECTED) {
+    if (settings.openshift.status.get === OpenShiftInstanceStatus.CONNECTED) {
       const loadDeploymentsTask = setInterval(() => {
-        service
-          .loadDeployments(currentConfig)
+        settings.openshift.service
+          .loadDeployments(settings.openshift.config.get)
           .then((deployments: DeployedModel[]) => setDeployments(deployments))
           .catch((error: any) => {
             setDeployments([]);
@@ -173,11 +135,11 @@ export function DmnDevSandboxContextProvider(props: Props) {
     }
   }, [
     onDisconnect,
-    currentConfig,
-    instanceStatus,
+    settings.openshift.config.get,
+    settings.openshift.status.get,
     kieToolingExtendedServices.isModalOpen,
     kieToolingExtendedServices.status,
-    service,
+    settings.openshift.service,
     deployments.length,
   ]);
 
@@ -185,21 +147,12 @@ export function DmnDevSandboxContextProvider(props: Props) {
     <DmnDevSandboxContext.Provider
       value={{
         deployments,
-        currentConfig,
-        instanceStatus,
         isDropdownOpen,
-        isConfigModalOpen,
-        isConfigWizardOpen,
         isConfirmDeployModalOpen,
         setDeployments,
-        setInstanceStatus,
         setDropdownOpen,
-        setConfigModalOpen,
-        setConfigWizardOpen,
         setConfirmDeployModalOpen,
         onDeploy,
-        onCheckConfig,
-        onResetConfig,
       }}
     >
       {openAlert === AlertTypes.DEPLOY_STARTED_ERROR && (
@@ -223,8 +176,6 @@ export function DmnDevSandboxContextProvider(props: Props) {
         </div>
       )}
       {props.children}
-      <DmnDevSandboxWizardConfig />
-      <DmnDevSandboxModalConfig />
       <DmnDevSandboxModalConfirmDeploy />
       <KieToolingExtendedServicesModal />
     </DmnDevSandboxContext.Provider>

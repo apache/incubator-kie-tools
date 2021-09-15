@@ -15,7 +15,6 @@
  */
 
 import { DeployedModel, DeployedModelState } from "./DeployedModel";
-import { DmnDevSandboxConnectionConfig } from "./DmnDevSandboxConnectionConfig";
 import { Build, Builds, CreateBuild, DeleteBuild, ListBuilds } from "./resources/Build";
 import { CreateBuildConfig, DeleteBuildConfig } from "./resources/BuildConfig";
 import {
@@ -30,16 +29,18 @@ import { GetProject } from "./resources/Project";
 import { KOGITO_CREATED_BY, KOGITO_FILENAME, Resource, ResourceFetch } from "./resources/Resource";
 import { CreateRoute, DeleteRoute, ListRoutes, Route, Routes } from "./resources/Route";
 import { CreateService, DeleteService } from "./resources/Service";
+import { OpenShiftSettingsConfig } from "../../settings/OpenShiftSettingsConfig";
 
 export const DEVELOPER_SANDBOX_URL = "https://developers.redhat.com/developer-sandbox";
 export const DEVELOPER_SANDBOX_GET_STARTED_URL = "https://developers.redhat.com/developer-sandbox/get-started";
+export const DEFAULT_CREATED_BY = "online-editor";
 
-export class DmnDevSandboxService {
+export class OpenShiftService {
   private readonly RESOURCE_NAME_PREFIX = "dmn-dev-sandbox";
 
-  public constructor(private readonly createdBy: string, private readonly proxyUrl: string) {}
+  public constructor(private readonly proxyUrl: string) {}
 
-  public async isConnectionEstablished(config: DmnDevSandboxConnectionConfig): Promise<boolean> {
+  public async isConnectionEstablished(config: OpenShiftSettingsConfig): Promise<boolean> {
     try {
       await this.fetchResource(
         new GetProject({
@@ -55,7 +56,7 @@ export class DmnDevSandboxService {
     }
   }
 
-  public async loadDeployments(config: DmnDevSandboxConnectionConfig): Promise<DeployedModel[]> {
+  public async loadDeployments(config: OpenShiftSettingsConfig): Promise<DeployedModel[]> {
     const commonArgs = {
       host: config.host,
       namespace: config.namespace,
@@ -75,7 +76,7 @@ export class DmnDevSandboxService {
       .filter(
         (deployment: Deployment) =>
           KOGITO_CREATED_BY in deployment.metadata.labels &&
-          deployment.metadata.labels[KOGITO_CREATED_BY] === this.createdBy &&
+          deployment.metadata.labels[KOGITO_CREATED_BY] === DEFAULT_CREATED_BY &&
           routes.items.some((route: Route) => route.metadata.name === deployment.metadata.name)
       )
       .map((deployment: Deployment) => {
@@ -95,7 +96,7 @@ export class DmnDevSandboxService {
       });
   }
 
-  public async deploy(filename: string, diagramContent: string, config: DmnDevSandboxConnectionConfig): Promise<void> {
+  public async deploy(filename: string, diagramContent: string, config: OpenShiftSettingsConfig): Promise<void> {
     const commonArgs = {
       host: config.host,
       namespace: config.namespace,
@@ -136,7 +137,7 @@ export class DmnDevSandboxService {
     );
 
     await this.fetchResource(
-      new CreateDeployment({ ...commonArgs, filename: filename, createdBy: this.createdBy }),
+      new CreateDeployment({ ...commonArgs, filename: filename, createdBy: DEFAULT_CREATED_BY }),
       rollbacks
     );
   }

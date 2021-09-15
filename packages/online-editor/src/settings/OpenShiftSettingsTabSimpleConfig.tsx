@@ -18,21 +18,18 @@ import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
-import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
-import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { BaseSizes } from "@patternfly/react-core/dist/js/styles/sizes";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { useOnlineI18n } from "../../common/i18n";
-import { DmnDevSandboxConnectionConfig, EMPTY_CONFIG, isConfigValid } from "./DmnDevSandboxConnectionConfig";
-import { useDmnDevSandbox } from "./DmnDevSandboxContext";
-import { DmnDevSandboxInstanceStatus } from "./DmnDevSandboxInstanceStatus";
+import { useSettings } from "./SettingsContext";
+import { useOnlineI18n } from "../common/i18n";
+import { OpenShiftInstanceStatus } from "../editor/DmnDevSandbox/OpenShiftInstanceStatus";
+import { EMPTY_CONFIG, isConfigValid, OpenShiftSettingsConfig, saveConfigCookie } from "./OpenShiftSettingsConfig";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -41,47 +38,52 @@ enum FormValiationOptions {
   CONFIG_EXPIRED = "CONFIG_EXPIRED",
 }
 
-export function DmnDevSandboxModalConfig() {
-  const dmnDevSandboxContext = useDmnDevSandbox();
+export function OpenShiftSettingsTabSimpleConfig() {
   const { i18n } = useOnlineI18n();
-  const [config, setConfig] = useState(dmnDevSandboxContext.currentConfig);
+  const settings = useSettings();
+  const [config, setConfig] = useState(settings.openshift.config.get);
   const [isConfigValidated, setConfigValidated] = useState(FormValiationOptions.INITIAL);
-  const [isSaveLoading, setSaveLoading] = useState(false);
+  const [isConnecting, setConnecting] = useState(false);
 
   useEffect(() => {
-    setConfig(dmnDevSandboxContext.currentConfig);
+    setConfig(settings.openshift.config.get);
     setConfigValidated(
-      dmnDevSandboxContext.instanceStatus === DmnDevSandboxInstanceStatus.EXPIRED
+      settings.openshift.status.get === OpenShiftInstanceStatus.EXPIRED
         ? FormValiationOptions.CONFIG_EXPIRED
         : FormValiationOptions.INITIAL
     );
-  }, [dmnDevSandboxContext.currentConfig, dmnDevSandboxContext.instanceStatus]);
+  }, [settings.openshift.config.get, settings.openshift.status.get]);
 
-  const resetModalWithConfig = useCallback(
-    (config: DmnDevSandboxConnectionConfig) => {
+  const resetConfig = useCallback(
+    (config: OpenShiftSettingsConfig) => {
       setConfigValidated(
-        dmnDevSandboxContext.instanceStatus === DmnDevSandboxInstanceStatus.EXPIRED && config !== EMPTY_CONFIG
+        settings.openshift.status.get === OpenShiftInstanceStatus.EXPIRED && config !== EMPTY_CONFIG
           ? FormValiationOptions.CONFIG_EXPIRED
           : FormValiationOptions.INITIAL
       );
-      setSaveLoading(false);
+      setConnecting(false);
       setConfig(config);
     },
-    [dmnDevSandboxContext.instanceStatus]
+    [settings.openshift.status.get]
   );
 
-  const onResetConfig = useCallback(() => {
-    dmnDevSandboxContext.onResetConfig();
-    resetModalWithConfig(EMPTY_CONFIG);
-  }, [dmnDevSandboxContext, resetModalWithConfig]);
+  const onCheckConfig = useCallback(
+    async (config: OpenShiftSettingsConfig, persist: boolean) => {
+      const isConfigOk = isConfigValid(config) && (await settings.openshift.service.isConnectionEstablished(config));
 
-  const onClose = useCallback(() => {
-    dmnDevSandboxContext.setConfigModalOpen(false);
-    resetModalWithConfig(dmnDevSandboxContext.currentConfig);
-  }, [dmnDevSandboxContext, resetModalWithConfig]);
+      if (persist && isConfigOk) {
+        settings.openshift.config.set(config);
+        saveConfigCookie(config);
+        settings.openshift.status.set(OpenShiftInstanceStatus.CONNECTED);
+      }
 
-  const onSave = useCallback(async () => {
-    if (isSaveLoading) {
+      return isConfigOk;
+    },
+    [settings.openshift]
+  );
+
+  const onConnect = useCallback(async () => {
+    if (isConnecting) {
       return;
     }
 
@@ -90,18 +92,17 @@ export function DmnDevSandboxModalConfig() {
       return;
     }
 
-    setSaveLoading(true);
-    const isConfigOk = await dmnDevSandboxContext.onCheckConfig(config, true);
-    setSaveLoading(false);
+    setConnecting(true);
+    const isConfigOk = await onCheckConfig(config, true);
+    setConnecting(false);
 
     if (!isConfigOk) {
       setConfigValidated(FormValiationOptions.CONNECTION_ERROR);
       return;
     }
 
-    dmnDevSandboxContext.setConfigModalOpen(false);
-    resetModalWithConfig(config);
-  }, [config, dmnDevSandboxContext, isSaveLoading, resetModalWithConfig]);
+    resetConfig(config);
+  }, [config, isConnecting, resetConfig, onCheckConfig]);
 
   const onClearHost = useCallback(() => setConfig({ ...config, host: "" }), [config]);
   const onClearNamespace = useCallback(() => setConfig({ ...config, namespace: "" }), [config]);
@@ -128,43 +129,11 @@ export function DmnDevSandboxModalConfig() {
     [config]
   );
 
-  const onGoToWizard = useCallback(() => {
-    onClose();
-    dmnDevSandboxContext.setConfigWizardOpen(true);
-  }, [dmnDevSandboxContext, onClose]);
-
   return (
-    <Modal
-      data-testid={"config-dmn-dev-sandbox-modal"}
-      variant={ModalVariant.medium}
-      isOpen={dmnDevSandboxContext.isConfigModalOpen}
-      onClose={onClose}
-      aria-label={"Configure DmnDevSandbox modal"}
-      header={
-        <Title headingLevel="h1" size={BaseSizes["2xl"]}>
-          {i18n.dmnDevSandbox.common.deployInstanceInfo}
-        </Title>
-      }
-    >
-      <>
-        <Text component={TextVariants.p} className="pf-u-mb-md">
-          {i18n.dmnDevSandbox.common.disclaimer}
-        </Text>
-        <div className="pf-u-my-md">
-          <Button
-            id="dmn-dev-sandbox-config-use-wizard-button"
-            key="use-wizard"
-            className="pf-u-p-0"
-            variant="link"
-            onClick={onGoToWizard}
-            data-testid="use-wizard-button"
-          >
-            {i18n.dmnDevSandbox.configModal.useWizard}
-            <ArrowRightIcon className="pf-u-ml-sm" />
-          </Button>
-        </div>
-        <Form>
-          {isConfigValidated === FormValiationOptions.INVALID && (
+    <>
+      <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
+        {isConfigValidated === FormValiationOptions.INVALID && (
+          <>
             <FormAlert>
               <Alert
                 variant="danger"
@@ -174,8 +143,12 @@ export function DmnDevSandboxModalConfig() {
                 data-testid="alert-validation-error"
               />
             </FormAlert>
-          )}
-          {isConfigValidated === FormValiationOptions.CONNECTION_ERROR && (
+            <br />
+          </>
+        )}
+        {isConfigValidated === FormValiationOptions.CONNECTION_ERROR && (
+          <>
+            {" "}
             <FormAlert>
               <Alert
                 variant="danger"
@@ -185,8 +158,11 @@ export function DmnDevSandboxModalConfig() {
                 data-testid="alert-connection-error"
               />
             </FormAlert>
-          )}
-          {isConfigValidated === FormValiationOptions.CONFIG_EXPIRED && (
+            <br />
+          </>
+        )}
+        {isConfigValidated === FormValiationOptions.CONFIG_EXPIRED && (
+          <>
             <FormAlert>
               <Alert
                 variant="warning"
@@ -196,7 +172,28 @@ export function DmnDevSandboxModalConfig() {
                 data-testid="alert-config-expired-warning"
               />
             </FormAlert>
-          )}
+            <br />
+          </>
+        )}
+
+        <Button
+          id="dmn-dev-sandbox-config-use-wizard-button"
+          key="use-wizard"
+          className="pf-u-p-0"
+          variant="link"
+          onClick={() => {
+            /*FIXME: Tiago*/
+          }}
+          data-testid="use-wizard-button"
+        >
+          {i18n.dmnDevSandbox.configModal.useWizard}
+          <ArrowRightIcon className="pf-u-ml-sm" />
+        </Button>
+
+        <br />
+        <br />
+
+        <Form>
           <FormGroup
             label={i18n.terms.namespace}
             labelIcon={
@@ -227,6 +224,7 @@ export function DmnDevSandboxModalConfig() {
                 aria-describedby="namespace-field-helper"
                 value={config.namespace}
                 onChange={onNamespaceChanged}
+                isDisabled={isConnecting}
                 tabIndex={1}
                 data-testid="namespace-text-field"
               />
@@ -266,6 +264,7 @@ export function DmnDevSandboxModalConfig() {
                 aria-describedby="host-field-helper"
                 value={config.host}
                 onChange={onHostChanged}
+                isDisabled={isConnecting}
                 tabIndex={2}
                 data-testid="host-text-field"
               />
@@ -305,6 +304,7 @@ export function DmnDevSandboxModalConfig() {
                 aria-describedby="token-field-helper"
                 value={config.token}
                 onChange={onTokenChanged}
+                isDisabled={isConnecting}
                 tabIndex={3}
                 data-testid="token-text-field"
               />
@@ -320,28 +320,16 @@ export function DmnDevSandboxModalConfig() {
               id="dmn-dev-sandbox-config-save-button"
               key="save"
               variant="primary"
-              onClick={onSave}
+              onClick={onConnect}
               data-testid="save-config-button"
-              isLoading={isSaveLoading}
-              spinnerAriaValueText={isSaveLoading ? "Loading" : undefined}
+              isLoading={isConnecting}
+              spinnerAriaValueText={isConnecting ? "Loading" : undefined}
             >
-              {isSaveLoading ? i18n.dmnDevSandbox.common.saving : i18n.terms.save}
-            </Button>
-            <Button
-              id="dmn-dev-sandbox-config-reset-button"
-              data-testid="reset-config-button"
-              key="reset"
-              variant="danger"
-              onClick={onResetConfig}
-            >
-              {i18n.terms.reset}
-            </Button>
-            <Button key="cancel" variant="link" onClick={onClose}>
-              {i18n.terms.cancel}
+              {isConnecting ? "Connecting" : "Connect"}
             </Button>
           </ActionGroup>
         </Form>
-      </>
-    </Modal>
+      </PageSection>
+    </>
   );
 }

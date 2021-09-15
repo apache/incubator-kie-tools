@@ -46,6 +46,7 @@ import { useOnlineI18n } from "../common/i18n";
 import { SettingsButton } from "../settings/SettingsButton";
 import { QueryParams } from "../queryParams/QueryParamsContext";
 import { useSettings } from "../settings/SettingsContext";
+import { KieToolingExtendedServicesIcon } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesIcon";
 
 enum InputFileUrlState {
   INITIAL,
@@ -407,6 +408,7 @@ export function HomePage() {
           />
         </PageHeaderToolsItem>
         <PageHeaderToolsItem>
+          <KieToolingExtendedServicesIcon />
           <SettingsButton />
         </PageHeaderToolsItem>
       </PageHeaderToolsGroup>

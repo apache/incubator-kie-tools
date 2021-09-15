@@ -1,12 +1,12 @@
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
-import { useHistory } from "react-router";
+import { useEffect } from "react";
 import { GitHubSettingsTab } from "./GitHubSettingsTab";
 import { GeneralSettingsTab } from "./GeneralSettingsTab";
+import { useSettings } from "./SettingsContext";
+import { QueryParams } from "../queryParams/QueryParamsContext";
+import { useHistory } from "react-router";
+import { OpenShiftSettingsTab } from "./OpenShiftSettingsTab";
 
 export enum SettingsTabs {
   GENERAL = "general",
@@ -15,19 +15,18 @@ export enum SettingsTabs {
 }
 
 export function SettingsModalBody() {
-  const queryParams = useQueryParams();
+  const settings = useSettings();
   const history = useHistory();
-  const [activeTab, setActiveTab] = useState(queryParams.get(QueryParams.SETTINGS) ?? SettingsTabs.GENERAL);
 
   useEffect(() => {
     const url = new URL(window.location.href);
-    url.searchParams.set(QueryParams.SETTINGS, activeTab);
+    url.searchParams.set(QueryParams.SETTINGS, settings.activeTab);
     history.push({
       pathname: history.location.pathname,
       search: url.search,
       state: new Date(),
     });
-  }, [history, activeTab]);
+  }, [history, settings.activeTab]);
 
   useEffect(() => {
     return () => {
@@ -41,7 +40,12 @@ export function SettingsModalBody() {
   }, [history]);
 
   return (
-    <Tabs activeKey={activeTab} onSelect={(e, k) => setActiveTab(k as string)} isVertical={false} isBox={false}>
+    <Tabs
+      activeKey={settings.activeTab}
+      onSelect={(e, k) => settings.open(k as SettingsTabs)}
+      isVertical={false}
+      isBox={false}
+    >
       <Tab
         className="kogito-tooling--settings-tab"
         eventKey={SettingsTabs.GENERAL}
@@ -61,11 +65,7 @@ export function SettingsModalBody() {
         eventKey={SettingsTabs.OPENSHIFT}
         title={<TabTitleText>OpenShift</TabTitleText>}
       >
-        <Page>
-          <PageSection>
-            <TextContent>OpenShift</TextContent>
-          </PageSection>
-        </Page>
+        <OpenShiftSettingsTab />
       </Tab>
     </Tabs>
   );

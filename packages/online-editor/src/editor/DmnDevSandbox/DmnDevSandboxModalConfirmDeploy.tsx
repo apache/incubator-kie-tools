@@ -20,10 +20,12 @@ import * as React from "react";
 import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../../common/i18n";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
+import { useSettings } from "../../settings/SettingsContext";
 
 export function DmnDevSandboxModalConfirmDeploy() {
   const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
+  const settings = useSettings();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
 
   const onConfirm = useCallback(async () => {
@@ -32,7 +34,7 @@ export function DmnDevSandboxModalConfirmDeploy() {
     }
 
     setConfirmLoading(true);
-    await dmnDevSandboxContext.onDeploy(dmnDevSandboxContext.currentConfig);
+    await dmnDevSandboxContext.onDeploy(settings.openshift.config.get);
     setConfirmLoading(false);
 
     dmnDevSandboxContext.setConfirmDeployModalOpen(false);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export enum DmnDevSandboxInstanceStatus {
+export enum OpenShiftInstanceStatus {
   UNAVAILABLE = "UNAVAILABLE",
   DISCONNECTED = "DISCONNECTED",
   CONNECTED = "CONNECTED",
