@@ -340,18 +340,12 @@ describe("Scorecard Model Test", () => {
     cy.ouiaType("model-setup-overview")
       .find("[data-ouia-component-type=model-property]")
       .should(($label) => {
-        expect($label).to.have.length(6);
+        expect($label).to.have.length(5);
         expect($label[0]).to.have.text("Is Scorable:\u00A0Yes");
         expect($label[1]).to.have.text("Function:\u00A0regression");
-        /*
-         * This attribute is not required by PMML definition.
-         * If its value is the empty string then the particular label should be removed.
-         * TODO: reach an agreement about functionality.
-         */
-        expect($label[2]).to.have.text("Algorithm:\u00A0");
-        expect($label[3]).to.have.text("Use Reason Codes:\u00A0Yes");
-        expect($label[4]).to.have.text("Reason Code Algorithm:\u00A0pointsBelow");
-        expect($label[5]).to.have.text("Baseline Method:\u00A0other");
+        expect($label[2]).to.have.text("Use Reason Codes:\u00A0Yes");
+        expect($label[3]).to.have.text("Reason Code Algorithm:\u00A0pointsBelow");
+        expect($label[4]).to.have.text("Baseline Method:\u00A0other");
       });
 
     cy.ouiaType("model-setup-overview")
