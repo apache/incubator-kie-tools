@@ -1677,11 +1677,6 @@
   resolved "https://registry.yarnpkg.com/@kogito-tooling/jitexecutor-native/-/jitexecutor-native-1.10.0-Final.tgz#af29845155fe4bf282e6a6a433d666fd1cc05197"
   integrity sha512-MjWKrh2/Xi5wmmaPshyRpJ8PFDVrv6AlR5sUU1GcHpd6v8skYKAZtowhHMJxrQIND9/fUrrpjBSd2goiqj4xtA==
 
-"@kogito-tooling/scesim-editor-unpacked@^8.3.0":
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.3.0.tgz#ea7d0d166b0c24fa56fba51c9d0ce9fbc3adc3a1"
-  integrity sha512-ACvTY6L3Hg2JMk0COMiimAth/Ionw7fgpJVD2tDI3tmXA1EmvfihiEL8Uci9ohv+tekrEmx+JG54Z0w8CPu9DA==
-
 "@kogito-tooling/scesim-editor-unpacked@^8.4.0":
   version "8.4.0"
   resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.4.0.tgz#d54bcb87980f5b7a839e76b953956e0ec505f2bd"
