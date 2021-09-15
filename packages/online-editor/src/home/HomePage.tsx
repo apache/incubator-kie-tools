@@ -45,6 +45,7 @@ import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { useOnlineI18n } from "../common/i18n";
 import { SettingsButton } from "../settings/SettingsButton";
 import { QueryParams } from "../queryParams/QueryParamsContext";
+import { useSettings } from "../settings/SettingsContext";
 
 enum InputFileUrlState {
   INITIAL,
@@ -65,6 +66,7 @@ interface InputFileUrlStateType {
 
 export function HomePage() {
   const globals = useGlobals();
+  const settings = useSettings();
   const history = useHistory();
   const { i18n } = useOnlineI18n();
 
@@ -177,23 +179,23 @@ export function HomePage() {
       return;
     }
 
-    if (globals.githubService.isGist(inputFileUrl)) {
+    if (settings.github.service.isGist(inputFileUrl)) {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.VALIDATING,
         urlToOpen: undefined,
       });
 
-      const gistId = globals.githubService.isGistDefault(inputFileUrl)
-        ? globals.githubService.extractGistId(inputFileUrl)
-        : globals.githubService.extractGistIdFromRawUrl(inputFileUrl);
+      const gistId = settings.github.service.isGistDefault(inputFileUrl)
+        ? settings.github.service.extractGistId(inputFileUrl)
+        : settings.github.service.extractGistIdFromRawUrl(inputFileUrl);
 
-      const gistFileName = globals.githubService.isGistDefault(inputFileUrl)
-        ? globals.githubService.extractGistFilename(inputFileUrl)
-        : globals.githubService.extractGistFilenameFromRawUrl(inputFileUrl);
+      const gistFileName = settings.github.service.isGistDefault(inputFileUrl)
+        ? settings.github.service.extractGistFilename(inputFileUrl)
+        : settings.github.service.extractGistFilenameFromRawUrl(inputFileUrl);
 
       let rawUrl: string;
       try {
-        rawUrl = await globals.githubService.getGistRawUrlFromId(globals.githubOctokit, gistId, gistFileName);
+        rawUrl = await settings.github.service.getGistRawUrlFromId(settings.github.octokit, gistId, gistFileName);
       } catch (e) {
         setInputFileUrlState({
           urlValidation: InputFileUrlState.INVALID_GIST,
@@ -231,9 +233,9 @@ export function HomePage() {
       urlValidation: InputFileUrlState.VALIDATING,
       urlToOpen: undefined,
     });
-    if (globals.githubService.isGithub(inputFileUrl)) {
+    if (settings.github.service.isGithub(inputFileUrl)) {
       try {
-        const rawUrl = await globals.githubService.getGithubRawUrl(globals.githubOctokit, inputFileUrl);
+        const rawUrl = await settings.github.service.getGithubRawUrl(settings.github.octokit, inputFileUrl);
         setInputFileUrlState({
           urlValidation: InputFileUrlState.VALID,
           urlToOpen: rawUrl,
@@ -267,7 +269,7 @@ export function HomePage() {
         urlToOpen: undefined,
       });
     }
-  }, [globals.githubOctokit, globals.editorEnvelopeLocator.mapping, globals.githubService, inputFileUrl]);
+  }, [settings.github.octokit, globals.editorEnvelopeLocator.mapping, settings.github.service, inputFileUrl]);
 
   useEffect(() => {
     validateUrl();

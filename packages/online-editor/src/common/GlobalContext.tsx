@@ -16,14 +16,9 @@
 
 import { File, newFile } from "@kie-tooling-core/editor/dist/channel";
 import * as React from "react";
-import { useContext, useEffect, useMemo, useState } from "react";
-import { Octokit } from "@octokit/rest";
+import { useContext, useMemo, useState } from "react";
 import { Routes } from "./Routes";
 import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
-import { GithubService } from "./GithubService";
-import { getCookie, setCookie } from "./utils";
-
-const GITHUB_AUTH_TOKEN_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__github-oauth-token";
 
 export enum AuthStatus {
   SIGNED_OUT,
@@ -41,73 +36,13 @@ export interface GlobalContextType {
   readonly: boolean;
   senderTabId?: string;
   isChrome: boolean;
-
-  githubAuthStatus: AuthStatus;
-  githubOctokit: Octokit;
-  githubToken?: string;
-  githubUser?: string;
-  githubScopes?: string[];
-  githubService: GithubService;
-  githubAuthService: { reset: () => void; authenticate: (token: string) => Promise<void> };
 }
 
 export const GlobalContext = React.createContext<GlobalContextType>({} as any);
 
 export function GlobalContextProvider(props: { externalFile?: File; senderTabId?: string; children: React.ReactNode }) {
-  const [githubAuthStatus, setGitHubAuthStatus] = useState(AuthStatus.LOADING);
-  const [octokit, setOctokit] = useState<Octokit>(new Octokit());
-  const [githubToken, setGitHubToken] = useState<string | undefined>(undefined);
-  const [githubUser, setGitHubUser] = useState<string | undefined>(undefined);
-  const [githubScopes, setGitHubScopes] = useState<string[] | undefined>(undefined);
-
-  const githubAuthService = useMemo(() => {
-    return {
-      reset: () => {
-        setOctokit(new Octokit());
-        setGitHubAuthStatus(AuthStatus.SIGNED_OUT);
-        setGitHubToken(undefined);
-        setGitHubUser(undefined);
-        setGitHubScopes(undefined);
-        setCookie(GITHUB_AUTH_TOKEN_COOKIE_NAME, "");
-      },
-      authenticate: async (token: string) => {
-        try {
-          setGitHubAuthStatus(AuthStatus.LOADING);
-          const octokit = new Octokit({ auth: token });
-          const response = await octokit.users.getAuthenticated();
-          await delay(1000);
-          setOctokit(octokit);
-          setGitHubAuthStatus(AuthStatus.SIGNED_IN);
-          setGitHubToken(token);
-          setGitHubUser(response.data.login);
-          setGitHubScopes(response.headers["x-oauth-scopes"]?.split(", ") ?? []);
-          setCookie(GITHUB_AUTH_TOKEN_COOKIE_NAME, token);
-        } catch (e) {
-          await delay(1000);
-          setGitHubAuthStatus(AuthStatus.SIGNED_OUT);
-          throw e;
-        }
-      },
-    };
-  }, []);
-
-  useEffect(() => {
-    const tokenCookie = getCookie(GITHUB_AUTH_TOKEN_COOKIE_NAME);
-    if (!tokenCookie) {
-      setGitHubAuthStatus(AuthStatus.SIGNED_OUT);
-      return;
-    }
-
-    githubAuthService.authenticate(tokenCookie).catch(() => {
-      setGitHubAuthStatus(AuthStatus.TOKEN_EXPIRED);
-    });
-  }, [githubAuthService]);
-
-  //
-
   const [file, setFile] = useState(newFile("dmn"));
   const routes = useMemo(() => new Routes(), []);
-  const githubService = useMemo(() => new GithubService(), []);
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () => ({
       targetOrigin: window.location.origin,
@@ -131,14 +66,6 @@ export function GlobalContextProvider(props: { externalFile?: File; senderTabId?
         setFile,
         routes,
         isChrome: !!window.chrome,
-
-        githubOctokit: octokit,
-        githubAuthStatus,
-        githubToken,
-        githubUser,
-        githubScopes,
-        githubAuthService,
-        githubService,
       }}
     >
       {props.children}
@@ -148,12 +75,4 @@ export function GlobalContextProvider(props: { externalFile?: File; senderTabId?
 
 export function useGlobals() {
   return useContext(GlobalContext);
-}
-
-function delay(ms: number) {
-  return new Promise<void>((res) => {
-    setTimeout(() => {
-      res();
-    }, ms);
-  });
 }

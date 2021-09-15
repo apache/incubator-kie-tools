@@ -43,6 +43,7 @@ import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxContextProvider";
 import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
 import { extractFileExtension, removeDirectories, removeFileExtension } from "../common/utils";
+import { useSettings } from "../settings/SettingsContext";
 
 const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tooling-core/monaco-editor");
 
@@ -67,6 +68,7 @@ export enum ModalType {
 
 export function EditorPage() {
   const globals = useGlobals();
+  const settings = useSettings();
   const location = useLocation();
   const { editor, editorRef } = useEditorRef();
   const downloadRef = useRef<HTMLAnchorElement>(null);
@@ -99,9 +101,9 @@ export function EditorPage() {
       return;
     }
 
-    if (globals.githubService.isGist(filePath)) {
-      globals.githubService
-        .fetchGistFile(globals.githubOctokit, filePath)
+    if (settings.github.service.isGist(filePath)) {
+      settings.github.service
+        .fetchGistFile(settings.github.octokit, filePath)
         .then((content) =>
           globals.setFile(
             getFileToOpen({
@@ -115,9 +117,9 @@ export function EditorPage() {
           //FIXME: tiago
           console.info("error");
         });
-    } else if (globals.githubService.isGithub(filePath) || globals.githubService.isGithubRaw(filePath)) {
-      globals.githubService
-        .fetchGithubFile(globals.githubOctokit, filePath)
+    } else if (settings.github.service.isGithub(filePath) || settings.github.service.isGithubRaw(filePath)) {
+      settings.github.service
+        .fetchGithubFile(settings.github.octokit, filePath)
         .then((response) => {
           globals.setFile(
             getFileToOpen({
@@ -210,12 +212,15 @@ export function EditorPage() {
       const content = await editor.getContent();
 
       // update gist
-      if (fileUrl && globals.githubService.isGist(fileUrl)) {
-        const userLogin = globals.githubService.extractUserLoginFromFileUrl(fileUrl);
-        if (userLogin === globals.githubUser) {
+      if (fileUrl && settings.github.service.isGist(fileUrl)) {
+        const userLogin = settings.github.service.extractUserLoginFromFileUrl(fileUrl);
+        if (userLogin === settings.github.user) {
           try {
             const filename = `${globals.file.fileName}.${globals.file.fileExtension}`;
-            const updateResponse = await globals.githubService.updateGist(globals.githubOctokit, { filename, content });
+            const updateResponse = await settings.github.service.updateGist(settings.github.octokit, {
+              filename,
+              content,
+            });
 
             if (updateResponse === UpdateGistErrors.INVALID_CURRENT_GIST) {
               setOpenAlert(AlertTypes.INVALID_CURRENT_GIST);
@@ -228,7 +233,7 @@ export function EditorPage() {
             }
 
             editor.getStateControl().setSavedCommand();
-            if (filename !== globals.githubService.getCurrentGist()?.filename) {
+            if (filename !== settings.github.service.getCurrentGist()?.filename) {
               setUpdateGistFilenameUrl(
                 `${window.location.origin}${window.location.pathname}?${QueryParams.FILE}=${updateResponse}`
               );
@@ -248,7 +253,7 @@ export function EditorPage() {
 
       // create gist
       try {
-        const newGistUrl = await globals.githubService.createGist(globals.githubOctokit, {
+        const newGistUrl = await settings.github.service.createGist(settings.github.octokit, {
           filename: `${globals.file.fileName}.${globals.file.fileExtension}`,
           content: content,
           description: `${globals.file.fileName}.${globals.file.fileExtension}`,

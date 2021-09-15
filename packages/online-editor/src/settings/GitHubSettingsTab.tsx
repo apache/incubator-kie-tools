@@ -18,6 +18,7 @@ import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
 import { AuthStatus, useGlobals } from "../common/GlobalContext";
 import { useHistory } from "react-router";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
+import { useSettings } from "./SettingsContext";
 
 /* DUPLICATED FROM JAVA CLASS */
 export interface GitHubOAuthResponse {
@@ -36,6 +37,7 @@ const GITHUB_APP_CLIENT_ID = `2d5a6222146b382e5fd8`;
 
 export function GitHubSettingsTab() {
   const globals = useGlobals();
+  const settings = useSettings();
   const queryParams = useQueryParams();
   const history = useHistory();
 
@@ -66,32 +68,32 @@ export function GitHubSettingsTab() {
 
         const res = await fetch(`${basBackendEndpoint}?code=${code}&client_id=${GITHUB_APP_CLIENT_ID}&redirect_uri=`);
         const resJson: GitHubOAuthResponse = await res.json();
-        await globals.githubAuthService.authenticate(resJson.access_token);
+        await settings.github.authService.authenticate(resJson.access_token);
       }
     };
     effect();
-  }, [history, queryParams, globals.githubAuthService]);
+  }, [history, queryParams, settings.github.authService]);
 
   const githubTokenToDisplay = useMemo(() => {
-    return obfuscate(potentialGitHubToken ?? globals.githubToken);
+    return obfuscate(potentialGitHubToken ?? settings.github.token);
   }, [globals, potentialGitHubToken]);
 
   const onPasteGitHubToken = useCallback(
     (e) => {
       const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
       setPotentialGitHubToken(token);
-      globals.githubAuthService
+      settings.github.authService
         .authenticate(token)
         .then(() => setIsGitHubTokenValid(true))
         .catch((e) => setIsGitHubTokenValid(false));
     },
-    [globals.githubAuthService]
+    [settings.github.authService]
   );
 
   const onSignOutFromGitHub = useCallback(() => {
-    globals.githubAuthService.reset();
+    settings.github.authService.reset();
     setPotentialGitHubToken(undefined);
-  }, [globals.githubAuthService]);
+  }, [settings.github.authService]);
 
   const onSignInWithGitHub = useCallback(() => {
     const redirectUri = new URL(`${window.location.href}`);
@@ -104,7 +106,7 @@ export function GitHubSettingsTab() {
 
   return (
     <Page>
-      {globals.githubAuthStatus === AuthStatus.TOKEN_EXPIRED && (
+      {settings.github.authStatus === AuthStatus.TOKEN_EXPIRED && (
         <PageSection>
           <Bullseye>
             <EmptyState>
@@ -124,7 +126,7 @@ export function GitHubSettingsTab() {
           </Bullseye>
         </PageSection>
       )}
-      {globals.githubAuthStatus === AuthStatus.LOADING && (
+      {settings.github.authStatus === AuthStatus.LOADING && (
         <PageSection>
           <Bullseye>
             <EmptyState>
@@ -139,7 +141,7 @@ export function GitHubSettingsTab() {
           </Bullseye>
         </PageSection>
       )}
-      {globals.githubAuthStatus === AuthStatus.SIGNED_IN && (
+      {settings.github.authStatus === AuthStatus.SIGNED_IN && (
         <PageSection>
           <Bullseye>
             <EmptyState>
@@ -147,14 +149,14 @@ export function GitHubSettingsTab() {
               <TextContent>
                 <Text component={"h2"}>
                   {"You're signed in with GitHub as "}
-                  <u>{globals.githubUser}</u>
+                  <u>{settings.github.user}</u>
                   {"."}
                 </Text>
               </TextContent>
               <EmptyStateBody>
                 <TextContent>Syncing Workspaces with GitHub is enabled.</TextContent>
                 <TextContent>
-                  Current scopes are: <i>{globals.githubScopes?.join(", ")}</i>
+                  Current scopes are: <i>{settings.github.scopes?.join(", ")}</i>
                 </TextContent>
                 <br />
                 <Button variant={ButtonVariant.tertiary} onClick={onSignOutFromGitHub}>
@@ -165,7 +167,7 @@ export function GitHubSettingsTab() {
           </Bullseye>
         </PageSection>
       )}
-      {globals.githubAuthStatus === AuthStatus.SIGNED_OUT && (
+      {settings.github.authStatus === AuthStatus.SIGNED_OUT && (
         <>
           <PageSection>
             {githubSignInOption == GitHubSignInOption.OAUTH && (

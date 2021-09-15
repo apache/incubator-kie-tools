@@ -42,6 +42,7 @@ import { useKieToolingExtendedServices } from "./KieToolingExtendedServices/KieT
 import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { AuthStatus, useGlobals } from "../common/GlobalContext";
+import { useSettings } from "../settings/SettingsContext";
 
 interface Props {
   onFullScreen: () => void;
@@ -58,6 +59,7 @@ interface Props {
 
 export function EditorToolbar(props: Props) {
   const globals = useGlobals();
+  const settings = useSettings();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const [fileName, setFileName] = useState(globals.file.fileName);
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
@@ -168,14 +170,14 @@ export function EditorToolbar(props: Props) {
             data-testid={"gist-it-tooltip"}
             key={`dropdown-${dropdownId}-export-gist`}
             content={<div>{i18n.editorToolbar.gistItTooltip}</div>}
-            trigger={globals.githubAuthStatus !== AuthStatus.SIGNED_IN ? "mouseenter click" : ""}
+            trigger={settings.github.authStatus !== AuthStatus.SIGNED_IN ? "mouseenter click" : ""}
             position="left"
           >
             <DropdownItem
               data-testid={"gist-it-button"}
               component="button"
               onClick={props.onGistIt}
-              isDisabled={globals.githubAuthStatus !== AuthStatus.SIGNED_IN}
+              isDisabled={settings.github.authStatus !== AuthStatus.SIGNED_IN}
             >
               {i18n.editorToolbar.gistIt}
             </DropdownItem>

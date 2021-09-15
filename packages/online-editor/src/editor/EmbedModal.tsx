@@ -25,6 +25,7 @@ import { useOnlineI18n } from "../common/i18n";
 import { useFileUrl } from "../common/Hooks";
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { useGlobals } from "../common/GlobalContext";
+import { useSettings } from "../settings/SettingsContext";
 
 type SupportedStandaloneEditorFileExtensions = "bpmn" | "bpmn2" | "dmn";
 type StandaloneEditorLibraryName = "BpmnEditor" | "DmnEditor";
@@ -60,12 +61,13 @@ interface Props {
 
 export function EmbedModal(props: Props) {
   const globals = useGlobals();
+  const settings = useSettings();
   const [embedCode, setEmbedCode] = useState("");
   const [contentSource, setContentSource] = useState(ContentSource.CURRENT_CONTENT);
   const { i18n } = useOnlineI18n();
   const fileUrl = useFileUrl();
 
-  const isGist = useMemo(() => globals.githubService.isGist(fileUrl), [fileUrl, globals]);
+  const isGist = useMemo(() => settings.github.service.isGist(fileUrl), [fileUrl, globals]);
 
   const isSupportedStandaloneEditorFileExtensions = useCallback(
     (toBeDetermined: string): toBeDetermined is SupportedStandaloneEditorFileExtensions => {
