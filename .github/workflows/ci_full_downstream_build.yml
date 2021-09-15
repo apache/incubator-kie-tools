@@ -106,6 +106,7 @@ jobs:
 
       - name: "kogito-tooling :: Merge Changes"
         if: ${{ github.event.pull_request }}
+        working-directory: ${{ github.workspace }}/kogito-tooling
         run: |
           cd ${{ github.workspace }}/kogito-tooling
           git config --global user.email "kietooling@gmail.com"
@@ -123,6 +124,7 @@ jobs:
           path: ${{ github.workspace }}/kogito-tooling
 
       - name: "kogito-tooling :: Build"
+        working-directory: ${{ github.workspace }}/kogito-tooling
         env:
           WEBPACK__minimize: "false"
           WEBPACK__tsLoaderTranspileOnly: "false"
@@ -142,7 +144,7 @@ jobs:
           name: vscode-extension
           path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_*.vsix
 
-      - name: "Upload IT Tests artifacts"
+      - name: "kogito-tooling :: Upload IT Tests artifacts"
         uses: actions/upload-artifact@v2
         if: always() && !cancelled()
         with:
