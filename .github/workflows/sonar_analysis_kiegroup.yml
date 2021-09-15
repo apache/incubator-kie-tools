@@ -35,8 +35,8 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven to measure code coverage
-          run: mvn -B --fail-at-end clean install -Prun-code-coverage
-      - name: Build and analyze
+        run: mvn -B --fail-at-end clean install -Prun-code-coverage
+      - name: Analyze with sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
