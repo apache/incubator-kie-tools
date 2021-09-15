@@ -225,9 +225,8 @@ export function EditorPage() {
 
             editor.getStateControl().setSavedCommand();
             if (filename !== globals.githubService.getCurrentGist()?.filename) {
-              // FIXME: KOGITO-1202
               setUpdateGistFilenameUrl(
-                `${window.location.origin}${window.location.pathname}?file=${updateResponse}#/editor/${fileExtension}`
+                `${window.location.origin}${window.location.pathname}?${QueryParams.FILE}=${updateResponse}`
               );
               setOpenAlert(AlertTypes.SUCCESS_UPDATE_GIST_FILENAME);
               return;
@@ -253,8 +252,10 @@ export function EditorPage() {
         });
 
         setOpenAlert(AlertTypes.NONE);
-        // FIXME: KOGITO-1202
-        window.location.href = `?file=${newGistUrl}#/editor/${fileExtension}`;
+        history.push({
+          pathname: globals.routes.editor.url({ type: fileExtension }),
+          search: `?${QueryParams.FILE}=${newGistUrl}`,
+        });
         return;
       } catch (err) {
         console.error(err);
@@ -262,7 +263,7 @@ export function EditorPage() {
         return;
       }
     }
-  }, [globals.githubOctokit, fileUrl, globals, editor]);
+  }, [fileUrl, globals, editor]);
 
   const fileExtension = useMemo(() => {
     return globals.routes.editor.args(location.pathname).type;

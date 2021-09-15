@@ -106,6 +106,7 @@ export function GlobalContextProvider(props: { externalFile?: File; senderTabId?
 
   const [file, setFile] = useState(newFile("dmn"));
   const routes = useMemo(() => new Routes(), []);
+  const githubService = useMemo(() => new GithubService(), []);
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () => ({
       targetOrigin: window.location.origin,
@@ -136,7 +137,7 @@ export function GlobalContextProvider(props: { externalFile?: File; senderTabId?
         githubUser,
         githubScopes,
         githubAuthService,
-        githubService: new GithubService(),
+        githubService,
       }}
     >
       {props.children}

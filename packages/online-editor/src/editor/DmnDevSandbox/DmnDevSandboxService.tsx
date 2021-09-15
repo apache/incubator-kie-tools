@@ -174,7 +174,7 @@ export class DmnDevSandboxService {
   private composeOnlineEditorUrl(baseUrl: string, filename: string): string {
     return `${
       process.env.WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl
-    }/?readonly=true&file=${baseUrl}/${encodeURIComponent(filename)}#/editor/dmn`;
+    }/editor/dmn?readonly=true&file=${baseUrl}/${encodeURIComponent(filename)}`;
   }
 
   private extractDeploymentState(deployment: Deployment, build: Build | undefined): DeployedModelState {
