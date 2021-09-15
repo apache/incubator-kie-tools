@@ -104,19 +104,6 @@ jobs:
           repository: kiegroup/kogito-tooling
           fetch-depth: 0
 
-      - name: "kogito-tooling :: Setup Node"
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.2.0
-
-      - name: "kogito-tooling :: Setup Yarn"
-        run: |
-          npm install -g yarn@1.22.10
-          yarn config set network-timeout 1000000
-
-      - name: "kogito-tooling :: Start Xvfb"
-        run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-
       - name: "kogito-tooling :: Merge Changes"
         if: ${{ github.event.pull_request }}
         run: |
@@ -129,13 +116,25 @@ jobs:
             echo $MERGE_WARNING_MESSAGE
             git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
           fi
+          
+      - name: "kogito-tooling :: Setup Env"
+        uses: ./kogito-tooling/.github/actions/setup-env
+        with:
+          path: ${{ github.workspace }}/kogito-tooling
 
       - name: "kogito-tooling :: Build"
         env:
+          WEBPACK__minimize: "false"
+          WEBPACK__tsLoaderTranspileOnly: "false"
+          KOGITO_TOOLING_BUILD_lint: "true"
+          KOGITO_TOOLING_BUILD_test: "true"
+          KOGITO_TOOLING_BUILD_testIT: "true"
+          KOGITO_TOOLING_BUILD_docker: "true"
+          KOGITO_TOOLING_BUILD_examples: "true"
           DISPLAY: ":99.0"
+          START_SERVER_AND_TEST_INSECURE: "true"
         run: |
-          cd ${{ github.workspace }}/kogito-tooling
-          yarn bootstrap && yarn build:prod
+          lerna run build:prod --stream --concurrency 1
 
       - name: "kogito-tooling :: Upload VS Code Extension"
         uses: actions/upload-artifact@v2
@@ -143,124 +142,11 @@ jobs:
           name: vscode-extension
           path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_*.vsix
 
-      - name: "kogito-tooling :: Increase inotify watches"
-        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-
-      - name: "kogito-tooling :: Integration Tests :: Online Editor :: Run"
-        run: |
-          cd ${{ github.workspace }}/kogito-tooling
-          yarn lerna run test:it --scope '@kogito-tooling/online-editor' --stream
-
-      - name: "kogito-tooling :: Integration Tests :: Online Editor :: Archive Screenshots"
-        if: failure()
+      - name: "Upload IT Tests artifacts"
         uses: actions/upload-artifact@v2
+        if: always() && !cancelled()
         with:
-          name: online-editor-it-tests-screenshots
-          path: ${{ github.workspace }}/kogito-tooling/packages/online-editor/it-tests/screenshots
-
-      - name: "kogito-tooling :: Integration Tests :: Online Editor :: Archive Videos"
-        if: failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: online-editor-it-tests-videos
-          path: ${{ github.workspace }}/kogito-tooling/packages/online-editor/it-tests/videos
-
-      - name: "kogito-tooling :: Integration Tests :: PMML Editor :: Run"
-        run: |
-          cd ${{ github.workspace }}/kogito-tooling
-          yarn lerna run test:it --scope '@kogito-tooling/pmml-editor' --stream
-
-      - name: "kogito-tooling :: Integration Tests :: PMML Editor :: Archive Screenshots"
-        if: failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: pmml-editor-it-tests-screenshots
-          path: ${{ github.workspace }}/kogito-tooling/packages/pmml-editor/it-tests/screenshots
-
-      - name: "kogito-tooling :: Integration Tests :: PMML Editor :: Archive Videos"
-        if: failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: pmml-editor-it-tests-videos
-          path: ${{ github.workspace }}/kogito-tooling/packages/pmml-editor/it-tests/videos
-
-      - name: "kogito-tooling :: Integration Tests :: Desktop :: Run"
-        env:
-          DISPLAY: ":99.0"
-        run: |
-          cd ${{ github.workspace }}/kogito-tooling
-          yarn lerna run test:it --scope '@kogito-tooling/desktop' --stream
-
-      - name: "kogito-tooling :: Integration Tests :: VS Code Extension :: Run"
-        env:
-          DISPLAY: ":99.0"
-        run: |
-          cd ${{ github.workspace }}/kogito-tooling
-          yarn lerna run test:it --scope 'vscode-extension-pack-kogito-kie-editors'
-
-      - name: "kogito-tooling :: Integration Tests :: VS Code Extension :: Archive Results"
-        if: failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: junit-kie-editors-vscode.xml
-          path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/it-tests/results/junit.xml
-
-      - name: "kogito-tooling :: Integration Tests :: KIE Standalone Editors :: Build Testing App"
-        run: |
-          cd ${{ github.workspace }}/kogito-tooling
-          yarn lerna run build:it --scope '@kogito-tooling/kie-editors-standalone'
-
-      - name: "kogito-tooling :: Integration Tests :: KIE Standalone Editors :: Run"
-        run: |
-          cd ${{ github.workspace }}/kogito-tooling
-          yarn lerna run test:it --scope '@kogito-tooling/kie-editors-standalone'
-
-      - name: "kogito-tooling :: Integration Tests :: KIE Standalone Editors :: Archive Results"
-        if: failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: junit-kie-editors-standalone.xml
-          path: ${{ github.workspace }}/kogito-tooling/packages/kie-editors-standalone/it-tests/results/junit.xml
-
-      - name: "kogito-tooling :: Integration Tests :: KIE Standalone Editors :: Archive Screenshots"
-        if: failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: kie-editors-standalone-it-tests-screenshots
-          path: ${{ github.workspace }}/kogito-tooling/packages/kie-editors-standalone/it-tests/cypress/screenshots
-
-      - name: "kogito-tooling :: Integration Tests :: KIE Standalone Editors :: Archive Videos"
-        if: failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: kie-editors-standalone-it-tests-videos
-          path: ${{ github.workspace }}/kogito-tooling/packages/kie-editors-standalone/it-tests/cypress/videos
-
-      # Chrome extension must be the last one due to the need to run `build:fast`
-      - name: "kogito-tooling :: Integration Tests :: Chrome Extension :: Build"
-        run: |
-          cd ${{ github.workspace }}/kogito-tooling
-          yarn build:dev
-
-      - name: "kogito-tooling :: Integration Tests :: Chrome Extension :: Run"
-        env:
-          DISPLAY: ":99.0"
-        run: |
-          cd ${{ github.workspace }}/kogito-tooling/packages/online-editor && yarn run start &
-          cd ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run serve-envelope &
-          sleep 20
-          cd ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run test:it
-
-      - name: "kogito-tooling :: Integration Tests :: Chrome Extension :: Archive Screenshots"
-        if: failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: chrome-extension-it-tests-screenshots
-          path: ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/screenshots
-
-      - name: "kogito-tooling :: Integration Tests :: Chrome Extension :: Archive Logs"
-        if: failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: chrome-extension-it-tests-logs
-          path: ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/logs
+          name: it-tests-artifacts
+          if-no-files-found: warn
+          path: |
+            kogito-tooling/packages/*/dist-it-tests
