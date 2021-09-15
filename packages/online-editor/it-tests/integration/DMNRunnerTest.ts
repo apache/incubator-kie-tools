@@ -34,10 +34,10 @@ describe("DMN Runner Test", () => {
       expect($logo.attr("alt")).contain("dmn");
     });
 
-    // start the DMN Runner set up
-    cy.get("[data-ouia-component-id='dmn-guided-tour'] button").contains("Skip tour and start DMN Runner").click();
+    // start the DMN Runner
+    cy.get("[data-ouia-component-id='dmn-guided-tour-skip-runner-start-button']").click();
 
-    // fill in
+    // fill in DMN Runner inputs panel
     cy.get("[data-testid='dmn-form']").within(($form) => {
       cy.get("input[name='Credit Score.FICO']").type("300");
       cy.get("input[name='Applicant Data.Age']").type("25");
