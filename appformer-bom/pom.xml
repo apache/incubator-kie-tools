@@ -18,7 +18,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito</groupId>
   <artifactId>appformer-bom</artifactId>
-  <version>8.3.1-SNAPSHOT</version>
+  <version>8.4.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Appformer BOM</name>
