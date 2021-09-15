@@ -5,8 +5,22 @@ on:
     - cron: "0 1 * * *"
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'LICENSE'
+      - '**/.gitignore'
+      - '**.md'
+      - '**.adoc'
+      - '**.txt'
+      - '.ci/jenkins/**'
   pull_request_target:
     branches: "**"
+    paths-ignore:
+      - 'LICENSE'
+      - '**/.gitignore'
+      - '**.md'
+      - '**.adoc'
+      - '**.txt'
+      - '.ci/jenkins/**'
 
 env:
   EXTERNAL_RESOURCE_PATH__dmnEditor: "${{ github.workspace }}/kogito-editors-java/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime"

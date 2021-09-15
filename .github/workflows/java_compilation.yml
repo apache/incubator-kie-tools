@@ -3,6 +3,13 @@ name: "Pull Request :: Java Compilation"
 on:
   pull_request:
     branches: "**"
+    paths-ignore:
+      - 'LICENSE'
+      - '**/.gitignore'
+      - '**.md'
+      - '**.adoc'
+      - '**.txt'
+      - '.ci/jenkins/**'
 
 jobs:
   build:

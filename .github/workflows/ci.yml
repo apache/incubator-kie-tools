@@ -5,8 +5,22 @@ on:
     - cron: "0 1 * * *"
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'LICENSE'
+      - '**/.gitignore'
+      - '**.md'
+      - '**.adoc'
+      - '**.txt'
+      - '.ci/jenkins/**'
   pull_request:
     branches: "**"
+    paths-ignore:
+      - 'LICENSE'
+      - '**/.gitignore'
+      - '**.md'
+      - '**.adoc'
+      - '**.txt'
+      - '.ci/jenkins/**'
 
 env:
   MAVEN_OPTS: -Xmx6000m -Xms1000m
