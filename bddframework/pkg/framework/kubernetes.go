@@ -16,13 +16,14 @@ package framework
 
 import (
 	"fmt"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"strings"
 	"sync"
 	"time"
 
 	rbac "k8s.io/api/rbac/v1"
 
-	"github.com/kiegroup/kogito-operator/core/client"
+	kogitocli "github.com/kiegroup/kogito-operator/core/client"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	apps "k8s.io/api/apps/v1"
@@ -36,7 +37,7 @@ import (
 )
 
 var (
-	kubeClient *client.Client
+	kubeClient *kogitocli.Client
 	mux        = &sync.Mutex{}
 )
 
@@ -48,7 +49,7 @@ func InitKubeClient(scheme *runtime.Scheme) error {
 	mux.Lock()
 	defer mux.Unlock()
 	if kubeClient == nil {
-		newClient, err := client.NewClientBuilder(scheme).UseControllerDynamicMapper().WithDiscoveryClient().WithBuildClient().WithKubernetesExtensionClient().Build()
+		newClient, err := kogitocli.NewClientBuilder(scheme).UseControllerDynamicMapper().WithDiscoveryClient().WithBuildClient().WithKubernetesExtensionClient().Build()
 		if err != nil {
 			return fmt.Errorf("Error initializing kube client: %v", err)
 		}
@@ -222,7 +223,7 @@ func GetDeploymentWaiting(namespace, deploymentName string, timeoutInMin int) (d
 }
 
 // LoadResource loads the resource from provided URI and creates it in the cluster
-func LoadResource(namespace, uri string, resourceRef kubernetes.ResourceObject, beforeCreate func(object interface{})) error {
+func LoadResource(namespace, uri string, resourceRef client.Object, beforeCreate func(object interface{})) error {
 	GetLogger(namespace).Debug("loadResource", "uri", uri)
 
 	data, err := ReadFromURI(uri)
@@ -312,27 +313,27 @@ func IsCrdAvailable(crdName string) (bool, error) {
 }
 
 // CreateObject creates object
-func CreateObject(o kubernetes.ResourceObject) error {
+func CreateObject(o client.Object) error {
 	return kubernetes.ResourceC(kubeClient).Create(o)
 }
 
 // GetObjectsInNamespace returns list of objects in specific namespace based on type
-func GetObjectsInNamespace(namespace string, list runtime.Object) error {
+func GetObjectsInNamespace(namespace string, list client.ObjectList) error {
 	return kubernetes.ResourceC(kubeClient).ListWithNamespace(namespace, list)
 }
 
 // GetObjectWithKey returns object matching provided key
-func GetObjectWithKey(key types.NamespacedName, o kubernetes.ResourceObject) (exists bool, err error) {
+func GetObjectWithKey(key types.NamespacedName, o client.Object) (exists bool, err error) {
 	return kubernetes.ResourceC(kubeClient).FetchWithKey(key, o)
 }
 
 // UpdateObject updates object
-func UpdateObject(o kubernetes.ResourceObject) error {
+func UpdateObject(o client.Object) error {
 	return kubernetes.ResourceC(kubeClient).Update(o)
 }
 
 // DeleteObject deletes object
-func DeleteObject(o kubernetes.ResourceObject) error {
+func DeleteObject(o client.Object) error {
 	return kubernetes.ResourceC(kubeClient).Delete(o)
 }
 

@@ -17,9 +17,9 @@ package installers
 import (
 	"errors"
 	"fmt"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	ispn "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	ispn "github.com/kiegroup/kogito-operator/core/infrastructure/infinispan/v1"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	coreapps "k8s.io/api/apps/v1"
@@ -192,8 +192,8 @@ func getInfinispanClusterResourceName(namespace string) string {
 	return "infinispan-" + namespace
 }
 
-func getInfinispanCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, error) {
-	crs := []kubernetes.ResourceObject{}
+func getInfinispanCrsInNamespace(namespace string) ([]client.Object, error) {
+	var crs []client.Object
 
 	infinispans := &ispn.InfinispanList{}
 	if err := framework.GetObjectsInNamespace(namespace, infinispans); err != nil {

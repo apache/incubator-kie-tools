@@ -15,11 +15,9 @@
 package config
 
 import (
-	"path/filepath"
-
 	"github.com/kiegroup/kogito-operator/version"
-
 	flag "github.com/spf13/pflag"
+	"path/filepath"
 )
 
 // TestConfig contains the information about the tests environment

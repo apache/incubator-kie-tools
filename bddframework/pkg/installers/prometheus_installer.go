@@ -15,9 +15,9 @@
 package installers
 
 import (
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	monv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var (
@@ -39,8 +39,8 @@ func GetPrometheusInstaller() ServiceInstaller {
 	return &prometheusOlmNamespacedInstaller
 }
 
-func getPrometheusCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, error) {
-	crs := []kubernetes.ResourceObject{}
+func getPrometheusCrsInNamespace(namespace string) ([]client.Object, error) {
+	var crs []client.Object
 
 	prometheuses := &monv1.PrometheusList{}
 	if err := framework.GetObjectsInNamespace(namespace, prometheuses); err != nil {

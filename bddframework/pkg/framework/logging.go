@@ -22,6 +22,7 @@ import (
 	"io"
 	"os"
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"strings"
 	"sync"
 	"time"
@@ -30,10 +31,8 @@ import (
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework/util"
-	"k8s.io/api/events/v1beta1"
-	"k8s.io/apimachinery/pkg/runtime"
-
 	"io/ioutil"
+	"k8s.io/api/events/v1beta1"
 )
 
 const (
@@ -451,7 +450,7 @@ func getDefaultIfNull(value string) string {
 }
 
 // LogKubernetesObjects log Kubernetes objects for test analysis
-func LogKubernetesObjects(namespace string, runtimeObjects ...runtime.Object) error {
+func LogKubernetesObjects(namespace string, runtimeObjects ...client.ObjectList) error {
 	for _, runtimeObject := range runtimeObjects {
 		objectName := reflect.TypeOf(runtimeObject).Elem().Name()
 

@@ -15,10 +15,9 @@
 package installers
 
 import (
-	grafanav1 "github.com/integr8ly/grafana-operator/v3/pkg/apis/integreatly/v1alpha1"
-
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	grafanav1 "github.com/kiegroup/kogito-operator/core/infrastructure/grafana/v1alpha1"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var (
@@ -40,8 +39,8 @@ func GetGrafanaInstaller() ServiceInstaller {
 	return &grafanaOlmNamespacedInstaller
 }
 
-func getGrafanaCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, error) {
-	crs := []kubernetes.ResourceObject{}
+func getGrafanaCrsInNamespace(namespace string) ([]client.Object, error) {
+	var crs []client.Object
 
 	grafanas := &grafanav1.GrafanaList{}
 	if err := framework.GetObjectsInNamespace(namespace, grafanas); err != nil {

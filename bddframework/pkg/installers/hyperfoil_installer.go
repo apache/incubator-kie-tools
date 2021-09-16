@@ -15,10 +15,9 @@
 package installers
 
 import (
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	hyperfoil "github.com/kiegroup/kogito-operator/test/pkg/api/hyperfoil/v1alpha2"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
-
-	hyperfoilv1alpha2 "github.com/Hyperfoil/hyperfoil-operator/pkg/apis/hyperfoil/v1alpha2"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var (
@@ -41,10 +40,10 @@ func GetHyperfoilInstaller() ServiceInstaller {
 	return &hyperfoilOlmNamespacedInstaller
 }
 
-func getHyperfoilCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, error) {
-	crs := []kubernetes.ResourceObject{}
+func getHyperfoilCrsInNamespace(namespace string) ([]client.Object, error) {
+	var crs []client.Object
 
-	hyperfoils := &hyperfoilv1alpha2.HyperfoilList{}
+	hyperfoils := &hyperfoil.HyperfoilList{}
 	if err := framework.GetObjectsInNamespace(namespace, hyperfoils); err != nil {
 		return nil, err
 	}

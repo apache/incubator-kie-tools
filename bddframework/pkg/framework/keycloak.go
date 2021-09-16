@@ -23,7 +23,7 @@ import (
 	framework1 "github.com/kiegroup/kogito-operator/core/framework"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	keycloak "github.com/keycloak/keycloak-operator/pkg/apis/keycloak/v1alpha1"
+	keycloak "github.com/kiegroup/kogito-operator/core/infrastructure/keycloak/v1alpha1"
 )
 
 const (
@@ -75,7 +75,7 @@ func DeployKeycloakRealm(namespace, realmName string) error {
 // DeployKeycloakClient deploys a client configuration of Keycloak
 func DeployKeycloakClient(namespace, clientName string) error {
 	GetLogger(namespace).Info("Creating Keycloak client", "clientName", clientName)
-
+	trueValue := true
 	client := &keycloak.KeycloakClient{
 		ObjectMeta: createKeycloakMeta(namespace, clientName),
 		Spec: keycloak.KeycloakClientSpec{
@@ -93,7 +93,7 @@ func DeployKeycloakClient(namespace, clientName string) error {
 				PublicClient:              true,
 				RedirectUris:              []string{"*"},
 				Protocol:                  "openid-connect",
-				FullScopeAllowed:          true,
+				FullScopeAllowed:          &trueValue,
 			},
 		},
 	}

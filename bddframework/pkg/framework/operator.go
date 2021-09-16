@@ -26,7 +26,6 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 
@@ -230,7 +229,7 @@ func IsOperatorRunning(namespace, operatorPackageName string, catalog OperatorCa
 func OperatorExistsUsingSubscription(namespace, operatorPackageName, operatorSource string) (bool, error) {
 	GetLogger(namespace).Debug("Checking Operator", "Subscription", operatorPackageName, "Namespace", namespace)
 
-	subscription, err := framework.GetSubscription(kubeClient, namespace, operatorPackageName, operatorSource)
+	subscription, err := getSubscription(kubeClient, namespace, operatorPackageName, operatorSource)
 	if err != nil {
 		return false, err
 	} else if subscription == nil {
@@ -343,11 +342,11 @@ func GetClusterWideTestSubscriptions() (*olmapiv1alpha1.SubscriptionList, error)
 
 // GetSubscription returns subscription
 func GetSubscription(namespace, operatorPackageName string, catalog OperatorCatalog) (*olmapiv1alpha1.Subscription, error) {
-	subscription, err := framework.GetSubscription(kubeClient, namespace, operatorPackageName, catalog.source)
+	subscription, err := getSubscription(kubeClient, namespace, operatorPackageName, catalog.source)
 	if err != nil {
 		return nil, err
 	} else if subscription == nil {
-		return nil, fmt.Errorf("Subscription with name %s and operator source %s not found in namespace %s", operatorPackageName, catalog.source, namespace)
+		return nil, fmt.Errorf(" Subscription with name %s and operator source %s not found in namespace %s", operatorPackageName, catalog.source, namespace)
 	}
 
 	return subscription, nil
@@ -414,7 +413,7 @@ func isMongoDBOperatorRunning(namespace string) (bool, error) {
 	return exists, nil
 }
 
-// CreateKogitoOperatorCatalogSource create a Kogito operator catalog source
+// CreateKogitoOperatorCatalogSource create a Kogito operator catalog Source
 func CreateKogitoOperatorCatalogSource() (*olmapiv1alpha1.CatalogSource, error) {
 	catalogNamespace := GetCustomKogitoOperatorCatalog().namespace
 	GetLogger(catalogNamespace).Info("Installing custom Kogito operator CatalogSource", "name", kogitoCatalogSourceName, "namespace", catalogNamespace)
@@ -465,7 +464,7 @@ func isKogitoOperatorCatalogSourceReady() (bool, error) {
 	return true, nil
 }
 
-// DeleteKogitoOperatorCatalogSource delete a Kogito operator catalog source
+// DeleteKogitoOperatorCatalogSource delete a Kogito operator catalog Source
 func DeleteKogitoOperatorCatalogSource() error {
 	GetLogger(GetCustomKogitoOperatorCatalog().namespace).Info("Deleting custom Kogito operator CatalogSource", "name", kogitoCatalogSourceName, "namespace", GetCustomKogitoOperatorCatalog().namespace)
 
@@ -510,7 +509,7 @@ func GetCustomKogitoOperatorCatalog() OperatorCatalog {
 	return GetOperatorCatalog(KubernetesCatalogNamespace, kogitoCatalogSourceName)
 }
 
-// GetOperatorCatalog creates the operator catalog based given on source and namespace
+// GetOperatorCatalog creates the operator catalog based given on Source and namespace
 func GetOperatorCatalog(namespace, source string) OperatorCatalog {
 	return OperatorCatalog{
 		source:    source,

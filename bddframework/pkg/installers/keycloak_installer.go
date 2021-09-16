@@ -15,9 +15,9 @@
 package installers
 
 import (
-	keycloak "github.com/keycloak/keycloak-operator/pkg/apis/keycloak/v1alpha1"
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	keycloak "github.com/kiegroup/kogito-operator/core/infrastructure/keycloak/v1alpha1"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var (
@@ -36,8 +36,8 @@ func GetKeycloakInstaller() ServiceInstaller {
 	return &keycloakOlmNamespacedInstaller
 }
 
-func getKeycloakCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, error) {
-	crs := []kubernetes.ResourceObject{}
+func getKeycloakCrsInNamespace(namespace string) ([]client.Object, error) {
+	var crs []client.Object
 
 	keycloaks := &keycloak.KeycloakList{}
 	if err := framework.GetObjectsInNamespace(namespace, keycloaks); err != nil {

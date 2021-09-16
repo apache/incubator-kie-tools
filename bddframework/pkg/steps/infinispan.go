@@ -15,7 +15,7 @@
 package steps
 
 import (
-	infinispan "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
+	infinispan "github.com/kiegroup/kogito-operator/core/infrastructure/infinispan/v1"
 
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"

@@ -15,9 +15,9 @@
 package installers
 
 import (
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var (
@@ -40,8 +40,8 @@ func GetKafkaInstaller() ServiceInstaller {
 	return &kafkaOlmClusterWideInstaller
 }
 
-func getKafkaCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, error) {
-	crs := []kubernetes.ResourceObject{}
+func getKafkaCrsInNamespace(namespace string) ([]client.Object, error) {
+	var crs []client.Object
 
 	kafkas := &v1beta2.KafkaList{}
 	if err := framework.GetObjectsInNamespace(namespace, kafkas); err != nil {

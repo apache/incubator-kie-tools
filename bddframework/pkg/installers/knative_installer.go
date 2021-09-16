@@ -16,8 +16,8 @@ package installers
 
 import (
 	"fmt"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 )
@@ -108,8 +108,8 @@ func uninstallKnativeEventingUsingYaml() error {
 	return originalError
 }
 
-func getKnativeEventingCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, error) {
-	crs := []kubernetes.ResourceObject{}
+func getKnativeEventingCrsInNamespace(namespace string) ([]client.Object, error) {
+	var crs []client.Object
 
 	triggers := &eventingv1.TriggerList{}
 	if err := framework.GetObjectsInNamespace(namespace, triggers); err != nil {

@@ -16,10 +16,10 @@ package installers
 
 import (
 	"fmt"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	mongodbv1 "github.com/kiegroup/kogito-operator/core/infrastructure/mongodb/v1"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
-	mongodbv1 "github.com/mongodb/mongodb-kubernetes-operator/pkg/apis/mongodb/v1"
 	coreapps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	rbac "k8s.io/api/rbac/v1"
@@ -145,8 +145,8 @@ func uninstallMongoDbUsingYaml(namespace string) error {
 	return originalError
 }
 
-func getMongoDbCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, error) {
-	crs := []kubernetes.ResourceObject{}
+func getMongoDbCrsInNamespace(namespace string) ([]client.Object, error) {
+	var crs []client.Object
 
 	mongoDbs := &mongodbv1.MongoDBList{}
 	if err := framework.GetObjectsInNamespace(namespace, mongoDbs); err != nil {

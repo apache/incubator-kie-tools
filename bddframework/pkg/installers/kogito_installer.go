@@ -17,13 +17,13 @@ package installers
 import (
 	"errors"
 	"fmt"
-	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
+	"github.com/kiegroup/kogito-operator/version"
 	"regexp"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
-	"github.com/kiegroup/kogito-operator/version"
 )
 
 var (
@@ -131,8 +131,8 @@ func uninstallKogitoUsingYaml() error {
 	return nil
 }
 
-func getKogitoCrsInNamespace(namespace string) ([]kubernetes.ResourceObject, error) {
-	crs := []kubernetes.ResourceObject{}
+func getKogitoCrsInNamespace(namespace string) ([]client.Object, error) {
+	var crs []client.Object
 
 	kogitoRuntimes := &v1beta1.KogitoRuntimeList{}
 	if err := framework.GetObjectsInNamespace(namespace, kogitoRuntimes); err != nil {

@@ -18,7 +18,7 @@ import (
 	"errors"
 	"fmt"
 
-	hyperfoilv1alpha2 "github.com/Hyperfoil/hyperfoil-operator/pkg/apis/hyperfoil/v1alpha2"
+	hyperfoilv1alpha2 "github.com/kiegroup/kogito-operator/test/pkg/api/hyperfoil/v1alpha2"
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"

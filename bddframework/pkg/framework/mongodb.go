@@ -23,7 +23,7 @@ import (
 	"github.com/kiegroup/kogito-operator/meta"
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	mongodb "github.com/mongodb/mongodb-kubernetes-operator/pkg/apis/mongodb/v1"
+	mongodb "github.com/kiegroup/kogito-operator/core/infrastructure/mongodb/v1"
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
