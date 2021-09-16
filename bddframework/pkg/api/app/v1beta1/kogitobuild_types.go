@@ -472,8 +472,6 @@ func (b *Builds) SetCancelled(cancelled []string) {
 // +kubebuilder:object:root=true
 // +k8s:openapi-gen=true
 // +genclient
-// +groupName=app.kiegroup.org
-// +groupGoName=Kogito
 // +kubebuilder:resource:path=kogitobuilds,scope=Namespaced
 // +kubebuilder:subresource:status
 // +kubebuilder:printcolumn:name="Type",type="string",JSONPath=".spec.type",description="Type of this build instance"

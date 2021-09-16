@@ -55,10 +55,8 @@ type KogitoSupportingServiceStatus struct {
 }
 
 // +kubebuilder:object:root=true
-// +genclient
-// +groupName=app.kiegroup.org
-// +groupGoName=Kogito
 // +k8s:openapi-gen=true
+// +genclient
 // +kubebuilder:resource:path=kogitosupportingservices,scope=Namespaced
 // +kubebuilder:subresource:status
 // +kubebuilder:printcolumn:name="Replicas",type="integer",JSONPath=".spec.replicas",description="Number of replicas set for this service"

@@ -17,7 +17,7 @@ package api
 import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // KogitoBuildType describes the build types supported by the KogitoBuild CR
@@ -79,8 +79,7 @@ const (
 
 // KogitoBuildInterface ...
 type KogitoBuildInterface interface {
-	metav1.Object
-	runtime.Object
+	client.Object
 	// GetSpec gets the Kogito Service specification structure.
 	GetSpec() KogitoBuildSpecInterface
 	// GetStatus gets the Kogito Service Status structure.

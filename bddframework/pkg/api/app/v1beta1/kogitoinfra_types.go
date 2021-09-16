@@ -358,8 +358,6 @@ func (r *InfraResource) SetName(name string) {
 // +kubebuilder:object:root=true
 // +k8s:openapi-gen=true
 // +genclient
-// +groupName=app.kiegroup.org
-// +groupGoName=Kogito
 // +kubebuilder:resource:path=kogitoinfras,scope=Namespaced
 // +kubebuilder:subresource:status
 // +kubebuilder:printcolumn:name="Resource Name",type="string",JSONPath=".spec.resource.name",description="Third Party Infrastructure Resource"

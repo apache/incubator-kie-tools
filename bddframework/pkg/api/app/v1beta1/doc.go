@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package v1beta1 contains API Schema definitions for the app v1beta1 API group
-// +k8s:deepcopy-gen=package,register
+// +k8s:deepcopy-gen=package
 // +groupName=app.kiegroup.org
+
+// Package v1beta1 contains API Schema definitions for the app v1beta1 API group
 package v1beta1

@@ -19,6 +19,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // KogitoServiceConditionType is the type of condition
@@ -35,8 +36,7 @@ const (
 
 // KogitoService defines the interface for any Kogito service that the operator can handle, e.g. Data Index, Jobs Service, Runtimes, etc.
 type KogitoService interface {
-	metav1.Object
-	runtime.Object
+	client.Object
 	// GetSpec gets the Kogito Service specification structure.
 	GetSpec() KogitoServiceSpecInterface
 	// GetStatus gets the Kogito Service Status structure.
