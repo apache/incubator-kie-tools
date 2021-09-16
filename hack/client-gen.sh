@@ -18,7 +18,7 @@ set -o errtrace
 
 location=$(dirname "$0")
 # always consider to upgrade this version when upgrading Operator SDK or k8s/api
-generator_version=v0.21.1
+generator_version=v0.22.1
 # in the future this can be an array
 kogito_api_version=v1beta1
 
