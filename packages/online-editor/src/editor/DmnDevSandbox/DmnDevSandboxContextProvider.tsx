@@ -126,10 +126,8 @@ export function DmnDevSandboxContextProvider(props: Props) {
           .then((deployments) => setDeployments(deployments))
           .catch((error) => {
             setDeployments([]);
-            console.error(error);
-          })
-          .finally(() => {
             clearInterval(loadDeploymentsTask);
+            console.error(error);
           });
       }, LOAD_DEPLOYMENTS_POLLING_TIME);
       return () => clearInterval(loadDeploymentsTask);

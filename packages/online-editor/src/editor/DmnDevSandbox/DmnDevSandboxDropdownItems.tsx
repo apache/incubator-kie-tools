@@ -43,7 +43,7 @@ export function useDmnDevSandboxDropdownItems() {
 
   const isDmnDevSandboxConnected = useMemo(
     () => settings.openshift.status.get === OpenShiftInstanceStatus.CONNECTED,
-    [settings.openshift.status.get]
+    [settings.openshift.status]
   );
 
   const onDevSandboxSetup = useCallback(() => {
