@@ -48,13 +48,13 @@ export function App(props: Props) {
               <GlobalContext.Consumer>
                 {({ routes }) => (
                   <Switch>
-                    <Route path={routes.editor.url({ type: ":type" })}>
+                    <Route path={routes.editor({ type: ":type" })}>
                       <EditorPage />
                     </Route>
-                    <Route exact={true} path={routes.home.url({})}>
+                    <Route exact={true} path={routes.home()}>
                       <HomePage />
                     </Route>
-                    <Route exact={true} path={routes.downloadHub.url({})}>
+                    <Route exact={true} path={routes.downloadHub()}>
                       <HomePage />
                       <DownloadHubModal />
                     </Route>

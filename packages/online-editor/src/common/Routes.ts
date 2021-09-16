@@ -14,91 +14,14 @@
  * limitations under the License.
  */
 
-export interface Route<T> {
-  url(args: T): string;
-  args(url: string): T;
-}
-
-export class DownloadHubRoute implements Route<{}> {
-  public url(args: {}) {
-    return "/download";
-  }
-
-  public args(url: string) {
-    return {};
-  }
-}
-
-export class HomeRoute implements Route<{}> {
-  public url(args: {}) {
-    return "/";
-  }
-
-  public args(url: string) {
-    return {};
-  }
-}
-
-export interface EditorRouteArgs {
-  type: string;
-}
-
-export class EditorRoute implements Route<EditorRouteArgs> {
-  public url(args: EditorRouteArgs) {
-    return `/editor/${args.type}`;
-  }
-
-  public args(url: string) {
-    return { type: this.getFileExtension(url)! };
-  }
-
-  private getFileExtension(url: string) {
-    return url
-      .split("/")
-      .pop()
-      ?.match(/[\w\d]+/)
-      ?.pop();
-  }
-}
-
-export interface LogoImageRouteArgs {
-  type: string;
-}
-export class LogoImageRoute implements Route<LogoImageRouteArgs> {
-  constructor(private readonly params: LogoImageRouteArgs) {}
-
-  public url() {
-    return `/images/${this.params.type}_kogito_logo.svg`;
-  }
-
-  public args(url: string) {
-    return this.params;
-  }
-}
-
-export interface SampleFileRouteArgs {
-  type: string;
-}
-export class SampleFileRoute implements Route<SampleFileRouteArgs> {
-  constructor(private readonly params: SampleFileRouteArgs) {}
-
-  public url() {
-    return `/samples/sample.${this.params.type}`;
-  }
-
-  public args(url: string) {
-    return this.params;
-  }
-}
-
 export class Routes {
   public readonly static = {
-    sample: (args: SampleFileRouteArgs) => new SampleFileRoute(args),
+    sample: (args: { type: string }) => `/samples/sample.${args.type}`,
     images: {
-      logo: (args: LogoImageRouteArgs) => new LogoImageRoute(args),
+      logo: (args: { type: string }) => `/images/${args.type}_kogito_logo.svg`,
     },
   };
-  public readonly home = new HomeRoute();
-  public readonly editor = new EditorRoute();
-  public readonly downloadHub = new DownloadHubRoute();
+  public readonly home = () => "/";
+  public readonly editor = (args: { type: string }) => `/editor/${args.type}`;
+  public readonly downloadHub = () => "/download";
 }

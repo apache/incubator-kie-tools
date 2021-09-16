@@ -223,7 +223,7 @@ export function EditorToolbar(props: Props) {
       <PageHeader
         logo={
           <Brand
-            src={globals.routes.static.images.logo({ type: fileExtension }).url()}
+            src={globals.routes.static.images.logo({ type: fileExtension })}
             alt={`${fileExtension} kogito logo`}
           />
         }

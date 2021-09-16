@@ -111,7 +111,7 @@ export function HomePage() {
             reader.readAsText(file);
           }),
       });
-      history.push(globals.routes.editor.url({ type: fileExtension }));
+      history.push(globals.routes.editor({ type: fileExtension }));
     },
     [globals, history]
   );
@@ -121,7 +121,7 @@ export function HomePage() {
   const createEmptyFile = useCallback(
     (fileExtension: string) => {
       globals.setFile(newFile(fileExtension));
-      history.push(globals.routes.editor.url({ type: fileExtension }));
+      history.push(globals.routes.editor({ type: fileExtension }));
     },
     [globals, history]
   );
@@ -141,8 +141,8 @@ export function HomePage() {
   const trySample = useCallback(
     (fileExtension: string) => {
       history.push({
-        pathname: globals.routes.editor.url({ type: fileExtension }),
-        search: `?${QueryParams.FILE}=${globals.routes.static.sample({ type: fileExtension }).url()}`,
+        pathname: globals.routes.editor({ type: fileExtension }),
+        search: `?${QueryParams.FILE}=${globals.routes.static.sample({ type: fileExtension })}`,
       });
     },
     [globals, history]
@@ -304,7 +304,7 @@ export function HomePage() {
       const fileExtension = extractFileExtension(new URL(inputFileUrlState.urlToOpen).pathname);
 
       history.push({
-        pathname: globals.routes.editor.url({ type: fileExtension! }),
+        pathname: globals.routes.editor({ type: fileExtension! }),
         search: `?${QueryParams.FILE}=${inputFileUrlState.urlToOpen}`,
       });
     }
@@ -353,7 +353,7 @@ export function HomePage() {
 
   const linkDropdownItems = [
     <DropdownItem key="github-chrome-extension-dropdown-link">
-      <Link to={globals.routes.downloadHub.url({})}>{i18n.homePage.dropdown.getHub}</Link>
+      <Link to={globals.routes.downloadHub()}>{i18n.homePage.dropdown.getHub}</Link>
     </DropdownItem>,
   ];
 
@@ -373,7 +373,7 @@ export function HomePage() {
     <PageHeaderTools>
       <PageHeaderToolsGroup>
         <PageHeaderToolsItem className="pf-u-display-none pf-u-display-flex-on-lg">
-          <Link to={globals.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
+          <Link to={globals.routes.downloadHub()} className="kogito--editor-hub-download_link">
             {i18n.homePage.dropdown.getHub}
           </Link>
         </PageHeaderToolsItem>

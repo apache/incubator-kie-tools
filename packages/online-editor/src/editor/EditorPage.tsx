@@ -157,7 +157,7 @@ export function EditorPage() {
 
   const close = useCallback(() => {
     if (!isDirty) {
-      history.push(globals.routes.home.url({}));
+      history.push(globals.routes.home());
     } else {
       setOpenAlert(AlertTypes.UNSAVED);
     }
@@ -165,7 +165,7 @@ export function EditorPage() {
 
   const closeWithoutSaving = useCallback(() => {
     setOpenAlert(AlertTypes.NONE);
-    history.push(globals.routes.home.url({}));
+    history.push(globals.routes.home());
   }, [globals, history]);
 
   const requestSave = useCallback(() => {
@@ -259,7 +259,7 @@ export function EditorPage() {
 
         setOpenAlert(AlertTypes.SUCCESS_CREATE_GIST);
         history.push({
-          pathname: globals.routes.editor.url({ type: globals.file.fileExtension }),
+          pathname: globals.routes.editor({ type: globals.file.fileExtension }),
           search: `?${QueryParams.FILE}=${newGistUrl}`,
         });
         return;
