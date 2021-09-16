@@ -35,7 +35,9 @@ export function OpenShiftSettingsTab() {
               <Text component={"h2"}>{"You're connected to OpenShift."}</Text>
             </TextContent>
             <EmptyStateBody>
-              <TextContent>Deploying DMN decisions is enabled.</TextContent>
+              <TextContent>
+                Deploying DMN decisions is <b>enabled</b>.
+              </TextContent>
               <br />
               <TextContent>
                 <b>Token: </b>

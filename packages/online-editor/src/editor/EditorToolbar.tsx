@@ -43,6 +43,7 @@ import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedSer
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { AuthStatus, useGlobals } from "../common/GlobalContext";
 import { useSettings } from "../settings/SettingsContext";
+import { SettingsTabs } from "../settings/SettingsModalBody";
 
 interface Props {
   onFullScreen: () => void;
@@ -192,6 +193,14 @@ export function EditorToolbar(props: Props) {
             </DropdownItem>
           )}
         </React.Fragment>
+        <DropdownItem
+          data-testid={"set-github-token"}
+          key={`dropdown-${dropdownId}-setup-github-token`}
+          component="button"
+          onClick={() => settings.open(SettingsTabs.GITHUB)}
+        >
+          {i18n.editorToolbar.setGitHubToken}
+        </DropdownItem>
       </DropdownGroup>,
     ],
     [

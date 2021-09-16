@@ -407,10 +407,6 @@ export function HomePage() {
             dropdownItems={userDropdownItems}
           />
         </PageHeaderToolsItem>
-        <PageHeaderToolsItem>
-          <KieToolingExtendedServicesIcon />
-          <SettingsButton />
-        </PageHeaderToolsItem>
       </PageHeaderToolsGroup>
     </PageHeaderTools>
   );

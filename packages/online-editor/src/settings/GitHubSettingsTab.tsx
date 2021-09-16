@@ -11,7 +11,7 @@ import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { GITHUB_OAUTH_TOKEN_SIZE } from "./GithubService";
+import { GITHUB_OAUTH_TOKEN_SIZE, GITHUB_TOKENS_HOW_TO_URL, GITHUB_TOKENS_URL } from "./GithubService";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SettingsTabs } from "./SettingsModalBody";
@@ -20,6 +20,8 @@ import { AuthStatus } from "../common/GlobalContext";
 import { useHistory } from "react-router";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useSettings } from "./SettingsContext";
+import { useOnlineI18n } from "../common/i18n";
+import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 
 /* DUPLICATED FROM JAVA CLASS */
 export interface GitHubOAuthResponse {
@@ -32,6 +34,11 @@ export enum GitHubSignInOption {
   OAUTH,
 }
 
+enum GitHubTokenScope {
+  GIST = "gist",
+  REPO = "repo",
+}
+
 const basBackendEndpoint = `http://localhost:8080/github_oauth`;
 const githubOAuthEndpoint = `https://github.com/login/oauth/authorize`;
 const GITHUB_APP_CLIENT_ID = `2d5a6222146b382e5fd8`;
@@ -40,6 +47,7 @@ export function GitHubSettingsTab() {
   const settings = useSettings();
   const queryParams = useQueryParams();
   const history = useHistory();
+  const { i18n } = useOnlineI18n();
 
   const [githubSignInOption, setGitHubSignInOption] = useState(GitHubSignInOption.OAUTH);
   const [potentialGitHubToken, setPotentialGitHubToken] = useState<string | undefined>(undefined);
@@ -100,7 +108,9 @@ export function GitHubSettingsTab() {
     redirectUri.searchParams.set(QueryParams.SETTINGS, SettingsTabs.GITHUB);
 
     const state = new Date().getTime();
-    const scope = allowPrivateRepositories ? `gist,repo` : `gist`;
+    const scope = allowPrivateRepositories
+      ? `${GitHubTokenScope.GIST},${GitHubTokenScope.REPO}`
+      : GitHubTokenScope.GIST;
     const encodedRedirectUri = encodeURIComponent(decodeURIComponent(redirectUri.href));
     window.location.href = `${githubOAuthEndpoint}?scope=${scope}&state=${state}&client_id=${GITHUB_APP_CLIENT_ID}&allow_signup=true&redirect_uri=${encodedRedirectUri}`;
   }, [allowPrivateRepositories]);
@@ -146,15 +156,25 @@ export function GitHubSettingsTab() {
               <Text component={"h2"}>{"You're signed in with GitHub."}</Text>
             </TextContent>
             <EmptyStateBody>
-              <TextContent>Syncing Workspaces with GitHub is enabled.</TextContent>
+              <TextContent>
+                Gists are <b>{settings.github.scopes?.includes(GitHubTokenScope.GIST) ? "enabled" : "disabled"}.</b>
+              </TextContent>
+              <TextContent>
+                Private repositories are{" "}
+                <b>{settings.github.scopes?.includes(GitHubTokenScope.REPO) ? "enabled" : "disabled"}.</b>
+              </TextContent>
               <br />
+              <TextContent>
+                <b>Token: </b>
+                <i>{obfuscate(settings.github.token)}</i>
+              </TextContent>
               <TextContent>
                 <b>User: </b>
                 <i>{settings.github.user}</i>
               </TextContent>
               <TextContent>
                 <b>Scope: </b>
-                <i>{settings.github.scopes?.join(", ")}</i>
+                <i>{settings.github.scopes?.join(", ") || "(none)"}</i>
               </TextContent>
               <br />
               <Button variant={ButtonVariant.tertiary} onClick={onSignOutFromGitHub}>
@@ -213,6 +233,23 @@ export function GitHubSettingsTab() {
                     Back
                   </Button>
                   <br />
+                  <br />
+                  <>
+                    <p>
+                      <span className="pf-u-mr-sm">{i18n.githubTokenModal.body.disclaimer}</span>
+                      <a href={GITHUB_TOKENS_HOW_TO_URL} target={"_blank"}>
+                        {i18n.githubTokenModal.body.learnMore}
+                        <ExternalLinkAltIcon className="pf-u-mx-sm" />
+                      </a>
+                    </p>
+                  </>
+                  <br />
+                  <h3>
+                    <a href={GITHUB_TOKENS_URL} target={"_blank"}>
+                      {i18n.githubTokenModal.footer.createNewToken}
+                      <ExternalLinkAltIcon className="pf-u-mx-sm" />
+                    </a>
+                  </h3>
                   <br />
                   <Form>
                     <FormGroup

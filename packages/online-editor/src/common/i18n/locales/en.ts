@@ -77,6 +77,7 @@ export const en: OnlineI18n = {
     sendChangesToGitHub: `Send changes to ${en_common.names.github}`,
     copySource: "Copy Source",
     downloadSVG: `${en_common.terms.download} ${en_common.names.svg}`,
+    setGitHubToken: `Setup`,
     gistIt: "Gist it!",
     gistItTooltip: `Set up your ${en_common.names.github} token to be able to create and update gists!`,
     share: "Share",
@@ -198,6 +199,21 @@ export const en: OnlineI18n = {
     },
     embedCode: "Embed code",
     copiedToClipboard: "Copied to clipboard",
+  },
+  githubTokenModal: {
+    header: {
+      title: `${en_common.names.github} ${en_common.names.oauth} ${en_common.terms.token}`,
+      subtitle: `Set up your ${en_common.names.github} token so you can create and update gist.`,
+    },
+    footer: {
+      createNewToken: "Create a new token",
+      placeHolder: "Paste your token here",
+    },
+    body: {
+      disclaimer: `The token you provide is locally stored as a browser cookie and is never shared with anyone.`,
+      learnMore: `Learn more about ${en_common.names.github} tokens`,
+      note: `You should provide a token with the ${"'gist'".bold()} permission.`,
+    },
   },
   homePage: {
     uploadFile: {
