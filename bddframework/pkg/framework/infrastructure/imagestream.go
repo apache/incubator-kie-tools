@@ -16,7 +16,6 @@ package infrastructure
 
 import (
 	"fmt"
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/client/openshift"
 	"github.com/kiegroup/kogito-operator/core/framework"
@@ -24,9 +23,9 @@ import (
 	imgv1 "github.com/openshift/api/image/v1"
 	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -51,8 +50,8 @@ type ImageStreamHandler interface {
 	MustFetchImageStream(key types.NamespacedName) (*imgv1.ImageStream, error)
 	CreateImageStreamIfNotExists(key types.NamespacedName, tag string, addFromReference bool, imageName string, insecureImageRegistry bool) (*imgv1.ImageStream, error)
 	ResolveImage(key types.NamespacedName, tag string) (string, error)
-	RemoveSharedImageStreamOwnerShip(key types.NamespacedName, owner resource.KubernetesResource) error
-	FetchImageStreamForOwner(owner resource.KubernetesResource) ([]resource.KubernetesResource, error)
+	RemoveSharedImageStreamOwnerShip(key types.NamespacedName, owner client.Object) error
+	FetchImageStreamForOwner(owner client.Object) ([]client.Object, error)
 }
 
 type imageStreamHandler struct {
@@ -81,9 +80,9 @@ func (i *imageStreamHandler) FetchImageStream(key types.NamespacedName) (*imgv1.
 	}
 }
 
-func (i *imageStreamHandler) FetchImageStreamForOwner(owner resource.KubernetesResource) ([]resource.KubernetesResource, error) {
+func (i *imageStreamHandler) FetchImageStreamForOwner(owner client.Object) ([]client.Object, error) {
 	i.Log.Debug("fetching image stream for given owner.")
-	objectTypes := []runtime.Object{&imgv1.ImageStreamList{}}
+	objectTypes := []client.ObjectList{&imgv1.ImageStreamList{}}
 	resources, err := kubernetes.ResourceC(i.Client).ListAll(objectTypes, owner.GetNamespace(), owner)
 	if err != nil {
 		return nil, err
@@ -231,7 +230,7 @@ func (i *imageStreamHandler) fetchTag(key types.NamespacedName, tag string) (*im
 	return ist, nil
 }
 
-func (i *imageStreamHandler) RemoveSharedImageStreamOwnerShip(key types.NamespacedName, owner resource.KubernetesResource) (err error) {
+func (i *imageStreamHandler) RemoveSharedImageStreamOwnerShip(key types.NamespacedName, owner client.Object) (err error) {
 	i.Log.Info("Removing imageStream ownership", "imageStream", key.Name, "owner", owner.GetName())
 	is, err := i.FetchImageStream(key)
 	if err != nil || is == nil {

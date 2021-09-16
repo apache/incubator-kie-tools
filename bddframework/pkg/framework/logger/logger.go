@@ -15,8 +15,9 @@
 package logger
 
 import (
+	"context"
 	"github.com/go-logr/logr"
-	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 // Logger custom logger to define logs in kogito application with levels
@@ -34,9 +35,15 @@ func (l *Logger) Warn(message string, keysAndValues ...interface{}) {
 	l.Logger.WithName("WARNING").V(0).Info(message, keysAndValues...)
 }
 
+// FromContext returns a logger with predefined values from a context.Context.
+func FromContext(ctx context.Context) Logger {
+	logger := log.FromContext(ctx)
+	return Logger{Logger: logger}
+}
+
 // GetLogger returns a custom named logger
 func GetLogger(name string) Logger {
-	logger := ctrl.Log.WithName(name)
+	logger := log.Log.WithName(name)
 	return Logger{Logger: logger}
 }
 

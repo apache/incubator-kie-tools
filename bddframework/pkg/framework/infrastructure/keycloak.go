@@ -15,7 +15,7 @@
 package infrastructure
 
 import (
-	"github.com/keycloak/keycloak-operator/pkg/apis/keycloak/v1alpha1"
+	"github.com/kiegroup/kogito-operator/core/infrastructure/keycloak/v1alpha1"
 	"github.com/kiegroup/kogito-operator/core/operator"
 )
 

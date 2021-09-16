@@ -15,14 +15,14 @@
 package test
 
 import (
-	"github.com/RHsyseng/operator-utils/pkg/resource"
-	"github.com/kiegroup/kogito-operator/core/client"
+	kogitocli "github.com/kiegroup/kogito-operator/core/client"
 	"github.com/kiegroup/kogito-operator/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/discovery"
 	discfake "k8s.io/client-go/discovery/fake"
 	clienttesting "k8s.io/client-go/testing"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
 	imgfake "github.com/openshift/client-go/image/clientset/versioned/fake"
@@ -36,7 +36,7 @@ type FakeClientBuilder interface {
 	OnOpenShift() FakeClientBuilder
 	SupportPrometheus() FakeClientBuilder
 	SupportOLM() FakeClientBuilder
-	Build() *client.Client
+	Build() *kogitocli.Client
 }
 
 // NewFakeClientBuilder provides new object FakeClientBuilder to build a FakeClient.
@@ -89,15 +89,15 @@ func (f *fakeClientStruct) OnOpenShift() FakeClientBuilder {
 }
 
 // Build ...
-func (f *fakeClientStruct) Build() *client.Client {
+func (f *fakeClientStruct) Build() *kogitocli.Client {
 	// Create a fake client to mock API calls.
-	cli := fake.NewFakeClientWithScheme(meta.GetRegisteredSchema(), f.objects...)
+	cli := fake.NewClientBuilder().WithScheme(meta.GetRegisteredSchema()).WithRuntimeObjects(f.objects...).Build()
 	// OpenShift Image Client Fake with image tag defined and image built
 	imgCli := imgfake.NewSimpleClientset(f.imageObjs...).ImageV1()
 	// OpenShift Build Client Fake with build for s2i defined, since we'll trigger a build during the reconcile phase
 	buildCli := newBuildFake(f.buildObjs...)
 
-	return &client.Client{
+	return &kogitocli.Client{
 		ControlCli: cli,
 		BuildCli:   buildCli,
 		ImageCli:   imgCli,
@@ -107,13 +107,13 @@ func (f *fakeClientStruct) Build() *client.Client {
 
 // CreateFakeClient will create a fake client for mock test on Kubernetes env, use cases that depends on OpenShift should use CreateFakeClientOnOpenShift
 // Deprecated: use NewFakeClientBuilder().Build() instead.
-func CreateFakeClient(objects []runtime.Object, imageObjs []runtime.Object, buildObjs []runtime.Object) *client.Client {
+func CreateFakeClient(objects []runtime.Object, imageObjs []runtime.Object, buildObjs []runtime.Object) *kogitocli.Client {
 	return NewFakeClientBuilder().AddK8sObjects(objects...).AddImageObjects(imageObjs...).AddBuildObjects(buildObjs...).Build()
 }
 
 // CreateFakeClientOnOpenShift same as CreateFakeClientWithDisco setting openshift flag to true
 // Deprecated: use NewFakeClientBuilder().OnOpenShift().Build() instead.
-func CreateFakeClientOnOpenShift(objects []runtime.Object, imageObjs []runtime.Object, buildObjs []runtime.Object) *client.Client {
+func CreateFakeClientOnOpenShift(objects []runtime.Object, imageObjs []runtime.Object, buildObjs []runtime.Object) *kogitocli.Client {
 	return NewFakeClientBuilder().AddK8sObjects(objects...).AddImageObjects(imageObjs...).AddBuildObjects(buildObjs...).OnOpenShift().Build()
 }
 
@@ -150,7 +150,7 @@ func (f *fakeClientStruct) createFakeDiscoveryClient() discovery.DiscoveryInterf
 }
 
 // ToRuntimeObjects converts RHSysUtils array KubernetesResource into k8s runtime.Object array
-func ToRuntimeObjects(resources ...resource.KubernetesResource) []runtime.Object {
+func ToRuntimeObjects(resources ...client.Object) []runtime.Object {
 	var k8sObject []runtime.Object
 	for _, resource := range resources {
 		k8sObject = append(k8sObject, resource)

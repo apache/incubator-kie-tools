@@ -36,8 +36,8 @@ func Test_createRequiredDeployment_CheckQuarkusProbe(t *testing.T) {
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	deploymentHandler := NewDeploymentHandler(context)
-	deployment := deploymentHandler.CreateRequiredDeployment(dataIndex, defaultKogitoImageFullTag, serviceDef)
+	deploymentHandler := NewKogitoDeploymentHandler(context)
+	deployment := deploymentHandler.CreateDeployment(dataIndex, defaultKogitoImageFullTag, serviceDef)
 	assert.NotNil(t, deployment)
 	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].ReadinessProbe)
 	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].ReadinessProbe.HTTPGet)
@@ -56,8 +56,8 @@ func Test_createRequiredDeployment_CheckDefaultProbe(t *testing.T) {
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	deploymentHandler := NewDeploymentHandler(context)
-	deployment := deploymentHandler.CreateRequiredDeployment(dataIndex, defaultKogitoImageFullTag, serviceDef)
+	deploymentHandler := NewKogitoDeploymentHandler(context)
+	deployment := deploymentHandler.CreateDeployment(dataIndex, defaultKogitoImageFullTag, serviceDef)
 	assert.NotNil(t, deployment)
 	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].ReadinessProbe)
 	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].LivenessProbe)
@@ -76,8 +76,8 @@ func Test_createRequiredDeployment_CheckNilEnvs(t *testing.T) {
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	deploymentHandler := NewDeploymentHandler(context)
-	deployment := deploymentHandler.CreateRequiredDeployment(dataIndex, defaultKogitoImageFullTag, serviceDef)
+	deploymentHandler := NewKogitoDeploymentHandler(context)
+	deployment := deploymentHandler.CreateDeployment(dataIndex, defaultKogitoImageFullTag, serviceDef)
 	assert.NotNil(t, deployment)
 	assert.Nil(t, deployment.Spec.Template.Spec.Containers[0].Env)
 }

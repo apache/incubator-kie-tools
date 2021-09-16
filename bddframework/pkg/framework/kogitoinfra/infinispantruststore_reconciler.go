@@ -15,11 +15,11 @@
 package kogitoinfra
 
 import (
-	v1 "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
+	infinispan "github.com/kiegroup/kogito-operator/core/infrastructure/infinispan/v1"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	v12 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -37,11 +37,11 @@ const (
 
 type infinispanTrustStoreReconciler struct {
 	infraContext
-	infinispanInstance *v1.Infinispan
+	infinispanInstance *infinispan.Infinispan
 	secretHandler      infrastructure.SecretHandler
 }
 
-func newInfinispanTrustStoreReconciler(context infraContext, infinispanInstance *v1.Infinispan) Reconciler {
+func newInfinispanTrustStoreReconciler(context infraContext, infinispanInstance *infinispan.Infinispan) Reconciler {
 	return &infinispanTrustStoreReconciler{
 		infraContext:       context,
 		infinispanInstance: infinispanInstance,
@@ -63,7 +63,7 @@ func (i *infinispanTrustStoreReconciler) Reconcile() error {
 	return nil
 }
 
-func (i *infinispanTrustStoreReconciler) isInfinispanCertEncryptionEnabled(infinispanInstance *v1.Infinispan) bool {
+func (i *infinispanTrustStoreReconciler) isInfinispanCertEncryptionEnabled(infinispanInstance *infinispan.Infinispan) bool {
 	return *infinispanInstance.Spec.Security.EndpointAuthentication && infinispanInstance.Spec.Security.EndpointEncryption != nil && len(infinispanInstance.Spec.Security.EndpointEncryption.CertSecretName) > 0
 }
 

@@ -21,21 +21,20 @@ import (
 	"strings"
 
 	"github.com/kiegroup/kogito-operator/core/logger"
-	olmapiv1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1"
 	rbac "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 
 	appsv1 "github.com/openshift/client-go/apps/clientset/versioned/typed/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	apimeta "k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/kubernetes"
 	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
-	controllercli "sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	controllercliconfig "sigs.k8s.io/controller-runtime/pkg/client/config"
 
 	buildv1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
@@ -54,7 +53,7 @@ const (
 // Client wraps clients functions from controller-runtime, Kube and OpenShift cli for generic API calls to the cluster
 type Client struct {
 	// ControlCli is a reference for the controller-runtime client, normally built by a Manager inside the controller context.
-	ControlCli             controllercli.Client
+	ControlCli             client.Client
 	BuildCli               buildv1.BuildV1Interface
 	ImageCli               imagev1.ImageV1Interface
 	Discovery              discovery.DiscoveryInterface
@@ -90,11 +89,6 @@ func (c *Client) IsOpenshift() bool {
 	return c.HasServerGroup(OpenShiftGroupName)
 }
 
-// IsOLMAvaialable detects if the cluster has OLM installed or not
-func (c *Client) IsOLMAvaialable() bool {
-	return c.HasServerGroup(olmapiv1.SchemeGroupVersion.Group)
-}
-
 // HasServerGroup detects if the given api group is supported by the server
 func (c *Client) HasServerGroup(groupName string) bool {
 	if c.Discovery != nil {
@@ -114,15 +108,15 @@ func (c *Client) HasServerGroup(groupName string) bool {
 	return false
 }
 
-func newKubeClient(config *restclient.Config, scheme *runtime.Scheme, useDynamicRestMapper bool) (controllercli.Client, error) {
+func newKubeClient(config *restclient.Config, scheme *runtime.Scheme, useDynamicRestMapper bool) (client.Client, error) {
 	log.Debug("Creating a new core client for kube connection")
-	var options controllercli.Options
+	var options client.Options
 	if useDynamicRestMapper {
 		options = newControllerCliOptionsWithDynamicMapper(scheme)
 	} else {
 		options = newControllerCliOptions(scheme)
 	}
-	controlCli, err := controllercli.New(config, options)
+	controlCli, err := client.New(config, options)
 	if err != nil {
 		return nil, err
 	}
@@ -179,8 +173,8 @@ func (r *restScope) Name() apimeta.RESTScopeName {
 // newControllerCliOptions creates the mapper and schema options for the inner fallback cli. If set to defaults, the Controller Cli will try
 // to discover the mapper by itself by querying the API, which can take too much time. Here we're setting this mapper manually.
 // So it's need to keep adding them or find some kind of auto register in the kube api/apimachinery
-func newControllerCliOptions(scheme *runtime.Scheme) controllercli.Options {
-	options := controllercli.Options{}
+func newControllerCliOptions(scheme *runtime.Scheme) client.Options {
+	options := client.Options{}
 	gvks, err := getGVKsFromAddToScheme(scheme)
 	if err != nil {
 		log.Error(err, "Error while creating SchemeBuilder for Kubernetes client")
@@ -190,7 +184,7 @@ func newControllerCliOptions(scheme *runtime.Scheme) controllercli.Options {
 	for _, gvk := range gvks {
 		// namespaced resources
 		if (gvk.GroupVersion() == corev1.SchemeGroupVersion && gvk.Kind == "Namespace") ||
-			(gvk.GroupVersion() == apiextensionsv1beta1.SchemeGroupVersion && gvk.Kind == "CustomResourceDefinition") ||
+			(gvk.GroupVersion() == apiextensionsv1.SchemeGroupVersion && gvk.Kind == "CustomResourceDefinition") ||
 			(gvk.GroupVersion() == rbac.SchemeGroupVersion && gvk.Kind == "ClusterRole") ||
 			(gvk.GroupVersion() == rbac.SchemeGroupVersion && gvk.Kind == "ClusterRoleBinding") {
 			mapper.Add(gvk, &restScope{name: apimeta.RESTScopeNameRoot})
@@ -203,8 +197,8 @@ func newControllerCliOptions(scheme *runtime.Scheme) controllercli.Options {
 	return options
 }
 
-func newControllerCliOptionsWithDynamicMapper(scheme *runtime.Scheme) controllercli.Options {
-	return controllercli.Options{
+func newControllerCliOptionsWithDynamicMapper(scheme *runtime.Scheme) client.Options {
+	return client.Options{
 		Scheme: scheme,
 	}
 }

@@ -16,9 +16,9 @@ package framework
 
 import (
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"testing"
 
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	appsv1 "github.com/openshift/api/apps/v1"
 	buildv1 "github.com/openshift/api/build/v1"
 	routev1 "github.com/openshift/api/route/v1"
@@ -30,8 +30,8 @@ import (
 
 func Test_containAllLabels(t *testing.T) {
 	type args struct {
-		deployed  resource.KubernetesResource
-		requested resource.KubernetesResource
+		deployed  client.Object
+		requested client.Object
 	}
 	tests := []struct {
 		name string
@@ -94,8 +94,8 @@ func Test_containAllLabels(t *testing.T) {
 
 func Test_CreateBuildConfigComparator(t *testing.T) {
 	type args struct {
-		deployed  resource.KubernetesResource
-		requested resource.KubernetesResource
+		deployed  client.Object
+		requested client.Object
 	}
 	tests := []struct {
 		name  string
@@ -196,8 +196,8 @@ func Test_CreateBuildConfigComparator(t *testing.T) {
 
 func Test_CreateDeploymentConfigComparator(t *testing.T) {
 	type args struct {
-		deployed  resource.KubernetesResource
-		requested resource.KubernetesResource
+		deployed  client.Object
+		requested client.Object
 	}
 	tests := []struct {
 		name  string
@@ -383,8 +383,8 @@ func Test_CreateDeploymentConfigComparator(t *testing.T) {
 
 func Test_CreateDeploymentComparator(t *testing.T) {
 	type args struct {
-		deployed  resource.KubernetesResource
-		requested resource.KubernetesResource
+		deployed  client.Object
+		requested client.Object
 	}
 	tests := []struct {
 		name  string
@@ -730,8 +730,8 @@ func Test_CreateDeploymentComparator(t *testing.T) {
 
 func Test_CreateRouteComparator(t *testing.T) {
 	type args struct {
-		deployed  resource.KubernetesResource
-		requested resource.KubernetesResource
+		deployed  client.Object
+		requested client.Object
 	}
 	tests := []struct {
 		name  string

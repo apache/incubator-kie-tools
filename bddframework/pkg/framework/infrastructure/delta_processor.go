@@ -15,16 +15,16 @@
 package infrastructure
 
 import (
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // DeltaProcessor ...
 type DeltaProcessor interface {
-	ProcessDelta(comparator compare.MapComparator, requestedResources map[reflect.Type][]resource.KubernetesResource, deployedResources map[reflect.Type][]resource.KubernetesResource) (isDeltaProcessed bool, err error)
+	ProcessDelta(comparator compare.MapComparator, requestedResources map[reflect.Type][]client.Object, deployedResources map[reflect.Type][]client.Object) (isDeltaProcessed bool, err error)
 }
 
 type deltaProcessor struct {
@@ -38,7 +38,7 @@ func NewDeltaProcessor(context operator.Context) DeltaProcessor {
 	}
 }
 
-func (d *deltaProcessor) ProcessDelta(comparator compare.MapComparator, requestedResources map[reflect.Type][]resource.KubernetesResource, deployedResources map[reflect.Type][]resource.KubernetesResource) (isDeltaProcessed bool, err error) {
+func (d *deltaProcessor) ProcessDelta(comparator compare.MapComparator, requestedResources map[reflect.Type][]client.Object, deployedResources map[reflect.Type][]client.Object) (isDeltaProcessed bool, err error) {
 	deltas := comparator.Compare(deployedResources, requestedResources)
 	for resourceType, delta := range deltas {
 		if !delta.HasChanges() {

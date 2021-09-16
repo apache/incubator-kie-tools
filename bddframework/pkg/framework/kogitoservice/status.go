@@ -131,9 +131,11 @@ func (s *statusHandler) updateStatus(instance api.KogitoService) error {
 
 func (s *statusHandler) updateImageStatus(instance api.KogitoService) error {
 	deploymentHandler := infrastructure.NewDeploymentHandler(s.Context)
-	deployment, err := deploymentHandler.MustFetchDeployment(types.NamespacedName{Name: instance.GetName(), Namespace: instance.GetNamespace()})
+	deployment, err := deploymentHandler.FetchDeployment(types.NamespacedName{Name: instance.GetName(), Namespace: instance.GetNamespace()})
 	if err != nil {
 		return err
+	} else if deployment == nil {
+		return nil
 	}
 	if len(deployment.Spec.Template.Spec.Containers) > 0 {
 		image := deployment.Spec.Template.Spec.Containers[0].Image
@@ -144,9 +146,11 @@ func (s *statusHandler) updateImageStatus(instance api.KogitoService) error {
 
 func (s *statusHandler) updateDeploymentStatus(instance api.KogitoService) error {
 	deploymentHandler := infrastructure.NewDeploymentHandler(s.Context)
-	deployment, err := deploymentHandler.MustFetchDeployment(types.NamespacedName{Name: instance.GetName(), Namespace: instance.GetNamespace()})
+	deployment, err := deploymentHandler.FetchDeployment(types.NamespacedName{Name: instance.GetName(), Namespace: instance.GetNamespace()})
 	if err != nil {
 		return err
+	} else if deployment == nil {
+		return nil
 	}
 	instance.GetStatus().SetDeploymentConditions(deployment.Status.Conditions)
 	return nil

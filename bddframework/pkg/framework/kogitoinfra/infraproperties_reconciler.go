@@ -15,13 +15,13 @@
 package kogitoinfra
 
 import (
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -70,30 +70,30 @@ func (i *infraPropertiesReconciler) Reconcile() error {
 	return nil
 }
 
-func (i *infraPropertiesReconciler) createRequiredResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (i *infraPropertiesReconciler) createRequiredResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 
 	configMap := i.createInfraPropertiesConfigMap(i.instance.GetSpec().GetInfraProperties())
 	if err := framework.SetOwner(i.instance, i.Scheme, configMap); err != nil {
 		return nil, err
 	}
-	resources[reflect.TypeOf(v1.ConfigMap{})] = []resource.KubernetesResource{configMap}
+	resources[reflect.TypeOf(v1.ConfigMap{})] = []client.Object{configMap}
 	return resources, nil
 }
 
-func (i *infraPropertiesReconciler) getDeployedResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (i *infraPropertiesReconciler) getDeployedResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	configMap, err := i.configMapHandler.FetchConfigMap(types.NamespacedName{Name: i.getInfraPropertiesConfigMapName(), Namespace: i.instance.GetNamespace()})
 	if err != nil {
 		return nil, err
 	}
 	if configMap != nil {
-		resources[reflect.TypeOf(v1.ConfigMap{})] = []resource.KubernetesResource{configMap}
+		resources[reflect.TypeOf(v1.ConfigMap{})] = []client.Object{configMap}
 	}
 	return resources, nil
 }
 
-func (i *infraPropertiesReconciler) processDelta(requestedResources map[reflect.Type][]resource.KubernetesResource, deployedResources map[reflect.Type][]resource.KubernetesResource) (err error) {
+func (i *infraPropertiesReconciler) processDelta(requestedResources map[reflect.Type][]client.Object, deployedResources map[reflect.Type][]client.Object) (err error) {
 	comparator := i.configMapHandler.GetComparator()
 	_, err = i.deltaProcessor.ProcessDelta(comparator, requestedResources, deployedResources)
 	return

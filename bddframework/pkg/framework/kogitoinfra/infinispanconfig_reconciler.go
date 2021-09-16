@@ -16,15 +16,15 @@ package kogitoinfra
 
 import (
 	"fmt"
-	"github.com/RHsyseng/operator-utils/pkg/resource"
-	"github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
+	infinispan "github.com/kiegroup/kogito-operator/core/infrastructure/infinispan/v1"
 	v12 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -34,12 +34,12 @@ const (
 
 type infinispanConfigReconciler struct {
 	infraContext
-	infinispanInstance *v1.Infinispan
+	infinispanInstance *infinispan.Infinispan
 	runtime            api.RuntimeType
 	configMapHandler   infrastructure.ConfigMapHandler
 }
 
-func newInfinispanConfigReconciler(context infraContext, infinispanInstance *v1.Infinispan, runtime api.RuntimeType) Reconciler {
+func newInfinispanConfigReconciler(context infraContext, infinispanInstance *infinispan.Infinispan, runtime api.RuntimeType) Reconciler {
 	return &infinispanConfigReconciler{
 		infraContext:       context,
 		infinispanInstance: infinispanInstance,
@@ -71,8 +71,8 @@ func (i *infinispanConfigReconciler) Reconcile() (err error) {
 	return nil
 }
 
-func (i *infinispanConfigReconciler) createRequiredResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (i *infinispanConfigReconciler) createRequiredResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	appProps, err := i.getInfinispanAppProps()
 	if err != nil {
 		return nil, err
@@ -81,24 +81,24 @@ func (i *infinispanConfigReconciler) createRequiredResources() (map[reflect.Type
 	if err := framework.SetOwner(i.instance, i.Scheme, configMap); err != nil {
 		return resources, err
 	}
-	resources[reflect.TypeOf(v12.ConfigMap{})] = []resource.KubernetesResource{configMap}
+	resources[reflect.TypeOf(v12.ConfigMap{})] = []client.Object{configMap}
 	return resources, nil
 }
 
-func (i *infinispanConfigReconciler) getDeployedResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (i *infinispanConfigReconciler) getDeployedResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	// fetch owned image stream
 	deployedConfigMap, err := i.configMapHandler.FetchConfigMap(types.NamespacedName{Name: i.getInfinispanConfigMapName(), Namespace: i.instance.GetNamespace()})
 	if err != nil {
 		return nil, err
 	}
 	if deployedConfigMap != nil {
-		resources[reflect.TypeOf(v12.ConfigMap{})] = []resource.KubernetesResource{deployedConfigMap}
+		resources[reflect.TypeOf(v12.ConfigMap{})] = []client.Object{deployedConfigMap}
 	}
 	return resources, nil
 }
 
-func (i *infinispanConfigReconciler) processDelta(requestedResources map[reflect.Type][]resource.KubernetesResource, deployedResources map[reflect.Type][]resource.KubernetesResource) (err error) {
+func (i *infinispanConfigReconciler) processDelta(requestedResources map[reflect.Type][]client.Object, deployedResources map[reflect.Type][]client.Object) (err error) {
 	comparator := i.configMapHandler.GetComparator()
 	deltaProcessor := infrastructure.NewDeltaProcessor(i.Context)
 	_, err = deltaProcessor.ProcessDelta(comparator, requestedResources, deployedResources)

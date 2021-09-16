@@ -16,6 +16,7 @@ package kogitoservice
 
 import (
 	"github.com/kiegroup/kogito-operator/apis"
+	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"net/http"
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
@@ -52,8 +53,8 @@ func (m *prometheusManager) ConfigurePrometheus(kogitoService api.KogitoService)
 		return nil
 	}
 
-	deploymentHandler := NewDeploymentHandler(m.Context)
-	deploymentAvailable, err := deploymentHandler.IsDeploymentAvailable(kogitoService)
+	deploymentHandler := infrastructure.NewDeploymentHandler(m.Context)
+	deploymentAvailable, err := deploymentHandler.IsDeploymentAvailable(types.NamespacedName{Name: kogitoService.GetName(), Namespace: kogitoService.GetNamespace()})
 	if err != nil {
 		return err
 	}

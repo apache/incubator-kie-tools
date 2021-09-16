@@ -15,6 +15,7 @@
 // NOTE: Boilerplate only.  Ignore this file.
 
 // Package v1beta2 contains API Schema definitions for the kafka v1beta2 API group
+// +kubebuilder:skip
 // +k8s:deepcopy-gen=package,register
 // +groupName=kafka.strimzi.io
 package v1beta2

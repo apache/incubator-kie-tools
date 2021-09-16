@@ -15,9 +15,9 @@
 package kogitoinfra
 
 import (
-	keycloakv1alpha1 "github.com/keycloak/keycloak-operator/pkg/apis/keycloak/v1alpha1"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
+	keycloakv1alpha1 "github.com/kiegroup/kogito-operator/core/infrastructure/keycloak/v1alpha1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
 )

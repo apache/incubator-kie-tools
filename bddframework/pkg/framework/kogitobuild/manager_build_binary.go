@@ -15,19 +15,19 @@
 package kogitobuild
 
 import (
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	buildv1 "github.com/openshift/api/build/v1"
 	imgv1 "github.com/openshift/api/image/v1"
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 type binaryManager struct {
 	manager
 }
 
-func (m *binaryManager) GetRequestedResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (m *binaryManager) GetRequestedResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	decoratorHandler := NewDecoratorHandler(m.BuildContext)
 	buildConfigHandler := NewBuildConfigHandler(m.BuildContext)
 	buildConfig := buildConfigHandler.newBuildConfig(m.build, decoratorHandler.decoratorForRuntimeBuilder(), decoratorHandler.decoratorForBinaryRuntimeBuilder(), decoratorHandler.decoratorForCustomLabels())
@@ -42,7 +42,7 @@ func (m *binaryManager) GetRequestedResources() (map[reflect.Type][]resource.Kub
 	if err := framework.AddOwnerReference(m.build, m.Scheme, imageStream); err != nil {
 		return resources, nil
 	}
-	resources[reflect.TypeOf(buildv1.BuildConfig{})] = []resource.KubernetesResource{&buildConfig}
-	resources[reflect.TypeOf(imgv1.ImageStream{})] = []resource.KubernetesResource{imageStream}
+	resources[reflect.TypeOf(buildv1.BuildConfig{})] = []client.Object{&buildConfig}
+	resources[reflect.TypeOf(imgv1.ImageStream{})] = []client.Object{imageStream}
 	return resources, nil
 }

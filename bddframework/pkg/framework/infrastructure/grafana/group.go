@@ -12,19 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package framework
-
-import (
-	utilsres "github.com/RHsyseng/operator-utils/pkg/resource"
-	"reflect"
-)
-
-// GetResource walks on KubernetesResource map and returns the object for the given name and type
-func GetResource(resourceType reflect.Type, name string, resources map[reflect.Type][]utilsres.KubernetesResource) utilsres.KubernetesResource {
-	for _, res := range resources[resourceType] {
-		if res.GetName() == name {
-			return res
-		}
-	}
-	return nil
-}
+// Package grafana contains grafana API versions.
+//
+// This file ensures Go source parsers acknowledge the grafana package
+// and any child packages. It can be removed if any other Go source files are
+// added to this package.
+package grafana

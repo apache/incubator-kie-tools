@@ -15,20 +15,25 @@
 package infrastructure
 
 import (
+	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/client/openshift"
+	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	routev1 "github.com/openshift/api/route/v1"
-	corev1 "k8s.io/api/core/v1"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/intstr"
+	"reflect"
 )
 
 // RouteHandler ...
 type RouteHandler interface {
 	FetchRoute(key types.NamespacedName) (*routev1.Route, error)
 	GetHostFromRoute(routeKey types.NamespacedName) (string, error)
-	CreateRoute(service *corev1.Service) (route *routev1.Route)
+	CreateRoute(instance api.KogitoService) *routev1.Route
+	GetComparator() compare.MapComparator
 }
 
 type routeHandler struct {
@@ -62,25 +67,33 @@ func (r *routeHandler) GetHostFromRoute(routeKey types.NamespacedName) (string, 
 }
 
 // createRequiredRoute creates a new Route resource based on the given Service
-func (r *routeHandler) CreateRoute(service *corev1.Service) (route *routev1.Route) {
-	if service == nil || len(service.Spec.Ports) == 0 {
-		r.Log.Warn("Impossible to create a Route without a target service")
-		return route
-	}
-
-	route = &routev1.Route{
-		ObjectMeta: service.ObjectMeta,
+func (r *routeHandler) CreateRoute(instance api.KogitoService) *routev1.Route {
+	route := &routev1.Route{
+		ObjectMeta: v1.ObjectMeta{
+			Name:      instance.GetName(),
+			Namespace: instance.GetNamespace(),
+			Labels:    map[string]string{framework.LabelAppKey: instance.GetName()},
+		},
 		Spec: routev1.RouteSpec{
 			Port: &routev1.RoutePort{
-				TargetPort: intstr.FromString(service.Spec.Ports[0].Name),
+				TargetPort: intstr.FromString(framework.DefaultPortName),
 			},
 			To: routev1.RouteTargetReference{
 				Kind: openshift.KindService.Name,
-				Name: service.Name,
+				Name: instance.GetName(),
 			},
 		},
 	}
-
 	route.ResourceVersion = ""
 	return route
+}
+
+func (r *routeHandler) GetComparator() compare.MapComparator {
+	resourceComparator := compare.DefaultComparator()
+	resourceComparator.SetComparator(
+		framework.NewComparatorBuilder().
+			WithType(reflect.TypeOf(routev1.Route{})).
+			WithCustomComparator(framework.CreateRouteComparator()).
+			Build())
+	return compare.MapComparator{Comparator: resourceComparator}
 }

@@ -15,11 +15,8 @@
 package kogitoservice
 
 import (
-	"fmt"
-	"github.com/RHsyseng/operator-utils/pkg/resource"
-	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
 	"github.com/kiegroup/kogito-operator/apis"
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/manager"
 	"github.com/kiegroup/kogito-operator/core/operator"
@@ -28,7 +25,6 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"reflect"
 	controller "sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
 
@@ -43,15 +39,6 @@ type ServiceDefinition struct {
 	Request controller.Request
 	// OnDeploymentCreate applies custom deployment configuration in the required Deployment resource
 	OnDeploymentCreate func(deployment *appsv1.Deployment) error
-	// OnObjectsCreate applies custom object creation in the service deployment logic.
-	// E.g. if you need an additional Kubernetes resource, just create your own map that the API will append to its managed resources.
-	// The "objectLists" array is the List object reference of the types created.
-	// For example: if a ConfigMap is created, then ConfigMapList empty reference should be added to this list
-	OnObjectsCreate func(kogitoService api.KogitoService) (resources map[reflect.Type][]resource.KubernetesResource, objectLists []runtime.Object, err error)
-	// OnGetComparators is called during the deployment phase to compare the deployed resources against the created ones
-	// Use this hook to add your comparators to override a specific comparator or to add your own if you have created extra objects via OnObjectsCreate
-	// Use framework.NewComparatorBuilder() to build your own
-	OnGetComparators func(comparator compare.ResourceComparator)
 	// SingleReplica if set to true, avoids that the service has more than one pod replica
 	SingleReplica bool
 	// KafkaTopics is a collection of Kafka Topics to be created within the service
@@ -59,8 +46,6 @@ type ServiceDefinition struct {
 	// CustomService indicates that the service can be built within the cluster
 	// A custom service means that could be built by a third party, not being provided by the Kogito Team Services catalog (such as Data Index, Management Console and etc.).
 	CustomService bool
-	// extraManagedObjectLists is a holder for the OnObjectsCreate return function
-	extraManagedObjectLists []runtime.Object
 
 	ConfigMapEnvFromReferences []string
 	ConfigMapVolumeReferences  []api.VolumeReferenceInterface
@@ -152,49 +137,19 @@ func (s *serviceDeployer) Deploy() error {
 		return err
 	}
 
-	imageName, err := imageHandler.ResolveImage()
-	// we only create the rest of the resources once we have a resolvable image
-	if err != nil {
-		return err
-	} else if len(imageName) == 0 {
-		return fmt.Errorf("image not found")
-	}
-
-	// create our resources
-	requestedResources, err := s.createRequiredResources(imageName)
-	if err != nil {
+	deploymentReconciler := newDeploymentReconciler(s.Context, s.instance, s.definition, imageHandler)
+	if err = deploymentReconciler.Reconcile(); err != nil {
 		return err
 	}
 
-	// get the deployed ones
-	deployedResources, err := s.getDeployedResources()
-	if err != nil {
+	serviceReconciler := newServiceReconciler(s.Context, s.instance)
+	if err = serviceReconciler.Reconcile(); err != nil {
 		return err
 	}
 
-	// compare required and deployed, in case of any differences, we should create updateStatus or delete the k8s resources
-	comparator := s.getComparator()
-	deltas := comparator.Compare(deployedResources, requestedResources)
-	for resourceType, delta := range deltas {
-		if !delta.HasChanges() {
-			s.Log.Info("No delta found", "resourceType", resourceType)
-			continue
-		}
-		s.Log.Info("Will", "create", len(delta.Added), "update", len(delta.Updated), "delete", len(delta.Removed), "resourceType", resourceType)
-
-		if _, err = kubernetes.ResourceC(s.Client).CreateResources(delta.Added); err != nil {
-			return err
-		}
-		s.generateEventForDeltaResources("Created", resourceType, delta.Added)
-
-		if _, err = kubernetes.ResourceC(s.Client).UpdateResources(deployedResources[resourceType], delta.Updated); err != nil {
-			return err
-		}
-
-		if _, err = kubernetes.ResourceC(s.Client).DeleteResources(delta.Removed); err != nil {
-			return err
-		}
-		s.generateEventForDeltaResources("Removed", resourceType, delta.Removed)
+	routeReconciler := newRouteReconciler(s.Context, s.instance)
+	if err = routeReconciler.Reconcile(); err != nil {
+		return err
 	}
 
 	err = s.configureMonitoring()
@@ -205,12 +160,6 @@ func (s *serviceDeployer) Deploy() error {
 	err = s.configureMessaging()
 
 	return err
-}
-
-func (s *serviceDeployer) generateEventForDeltaResources(eventReason string, resourceType reflect.Type, addedResources []resource.KubernetesResource) {
-	for _, newResource := range addedResources {
-		s.recorder.Eventf(s.Client, s.instance, v1.EventTypeNormal, eventReason, "%s %s: %s", eventReason, resourceType.Name(), newResource.GetName())
-	}
 }
 
 func (s *serviceDeployer) configureMessaging() error {
@@ -242,4 +191,23 @@ func (s *serviceDeployer) configureMonitoring() error {
 	}
 
 	return nil
+}
+
+func (s *serviceDeployer) newImageHandler() infrastructure.ImageHandler {
+	addDockerImageReference := len(s.instance.GetSpec().GetImage()) != 0 || !s.definition.CustomService
+	image := s.resolveImage()
+	return infrastructure.NewImageHandler(s.Context, image, s.definition.DefaultImageName, image.Name, s.instance.GetNamespace(), addDockerImageReference, s.instance.GetSpec().IsInsecureImageRegistry())
+}
+
+func (s *serviceDeployer) resolveImage() *api.Image {
+	var image api.Image
+	if len(s.instance.GetSpec().GetImage()) == 0 {
+		image = api.Image{
+			Name: s.definition.DefaultImageName,
+			Tag:  s.definition.DefaultImageTag,
+		}
+	} else {
+		image = framework.ConvertImageTagToImage(s.instance.GetSpec().GetImage())
+	}
+	return &image
 }

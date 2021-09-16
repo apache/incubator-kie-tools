@@ -15,11 +15,11 @@
 package framework
 
 import (
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sort"
 
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
-	"github.com/kiegroup/kogito-operator/core/client"
+	kogitocli "github.com/kiegroup/kogito-operator/core/client"
 	appsv1 "github.com/openshift/api/apps/v1"
 	buildv1 "github.com/openshift/api/build/v1"
 	imgv1 "github.com/openshift/api/image/v1"
@@ -35,19 +35,19 @@ import (
 // Comparator is a simple struct to encapsulate the complex elements from Operator Utils
 type Comparator struct {
 	ResourceType reflect.Type
-	CompFunc     func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool
+	CompFunc     func(deployed client.Object, requested client.Object) bool
 }
 
 // ComparatorBuilder creates Comparators to be used during reconciliation phases
 type ComparatorBuilder interface {
 	// WithCustomComparator it's the custom comparator function that will get called by the Operator Utils
-	WithCustomComparator(customComparator func(deployed resource.KubernetesResource, requested resource.KubernetesResource) (equal bool)) ComparatorBuilder
+	WithCustomComparator(customComparator func(deployed client.Object, requested client.Object) (equal bool)) ComparatorBuilder
 	// WithType defines the comparator resource type
 	WithType(resourceType reflect.Type) ComparatorBuilder
 	// UseDefaultComparator defines if the comparator will delegate the comparision to inner comparators from Operator Utils
 	UseDefaultComparator() ComparatorBuilder
 	// Build creates the Comparator in the form of Operator Utils interface
-	Build() (reflect.Type, func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool)
+	Build() (reflect.Type, func(deployed client.Object, requested client.Object) bool)
 }
 
 // NewComparatorBuilder creates a new comparator builder for comparision usages
@@ -59,12 +59,12 @@ func NewComparatorBuilder() ComparatorBuilder {
 
 type comparatorBuilder struct {
 	comparator        *Comparator
-	customComparator  func(deployed resource.KubernetesResource, requested resource.KubernetesResource) (changed bool)
-	defaultComparator func(deployed resource.KubernetesResource, requested resource.KubernetesResource) (changed bool)
-	client            *client.Client
+	customComparator  func(deployed client.Object, requested client.Object) (changed bool)
+	defaultComparator func(deployed client.Object, requested client.Object) (changed bool)
+	client            *kogitocli.Client
 }
 
-func (c *comparatorBuilder) WithClient(cli *client.Client) ComparatorBuilder {
+func (c *comparatorBuilder) WithClient(cli *kogitocli.Client) ComparatorBuilder {
 	c.client = cli
 	return c
 }
@@ -74,7 +74,7 @@ func (c *comparatorBuilder) WithType(resourceType reflect.Type) ComparatorBuilde
 	return c
 }
 
-func (c *comparatorBuilder) WithCustomComparator(customComparator func(deployed resource.KubernetesResource, requested resource.KubernetesResource) (changed bool)) ComparatorBuilder {
+func (c *comparatorBuilder) WithCustomComparator(customComparator func(deployed client.Object, requested client.Object) (changed bool)) ComparatorBuilder {
 	c.customComparator = customComparator
 	return c
 }
@@ -88,8 +88,8 @@ func (c *comparatorBuilder) UseDefaultComparator() ComparatorBuilder {
 	return c
 }
 
-func (c *comparatorBuilder) Build() (reflect.Type, func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool) {
-	c.comparator.CompFunc = func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
+func (c *comparatorBuilder) Build() (reflect.Type, func(deployed client.Object, requested client.Object) bool) {
+	c.comparator.CompFunc = func(deployed client.Object, requested client.Object) bool {
 		equal := true
 		// calls the first comparator defined by the caller
 		if c.customComparator != nil {
@@ -104,7 +104,7 @@ func (c *comparatorBuilder) Build() (reflect.Type, func(deployed resource.Kubern
 	return c.comparator.ResourceType, c.comparator.CompFunc
 }
 
-func containAllLabels(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
+func containAllLabels(deployed client.Object, requested client.Object) bool {
 	deployedLabels := deployed.GetLabels()
 	requestedLabels := requested.GetLabels()
 
@@ -118,8 +118,8 @@ func containAllLabels(deployed resource.KubernetesResource, requested resource.K
 }
 
 // CreateDeploymentConfigComparator creates a new comparator for DeploymentConfig using Trigger and RollingParams
-func CreateDeploymentConfigComparator() func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
-	return func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
+func CreateDeploymentConfigComparator() func(deployed client.Object, requested client.Object) bool {
+	return func(deployed client.Object, requested client.Object) bool {
 		sortVolumes(&deployed.(*appsv1.DeploymentConfig).Spec.Template.Spec)
 		sortVolumes(&requested.(*appsv1.DeploymentConfig).Spec.Template.Spec)
 		ignoreInjectedVariables(
@@ -149,8 +149,8 @@ func CreateDeploymentConfigComparator() func(deployed resource.KubernetesResourc
 }
 
 // CreateDeploymentComparator creates a new comparator for Deployment sorting volumes
-func CreateDeploymentComparator() func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
-	return func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
+func CreateDeploymentComparator() func(deployed client.Object, requested client.Object) bool {
+	return func(deployed client.Object, requested client.Object) bool {
 		sortVolumes(&deployed.(*apps.Deployment).Spec.Template.Spec)
 		sortVolumes(&requested.(*apps.Deployment).Spec.Template.Spec)
 		ignoreInjectedVariables(
@@ -174,8 +174,8 @@ func sortVolumes(pod *v1.PodSpec) {
 }
 
 // CreateBuildConfigComparator creates a new comparator for BuildConfig using Label, Trigger and SourceStrategy
-func CreateBuildConfigComparator() func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
-	return func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
+func CreateBuildConfigComparator() func(deployed client.Object, requested client.Object) bool {
+	return func(deployed client.Object, requested client.Object) bool {
 		bcDeployed := deployed.(*buildv1.BuildConfig)
 		bcRequested := requested.(*buildv1.BuildConfig).DeepCopy()
 
@@ -199,8 +199,8 @@ func CreateBuildConfigComparator() func(deployed resource.KubernetesResource, re
 }
 
 // CreateRouteComparator creates a new comparator for Route using Label
-func CreateRouteComparator() func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
-	return func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
+func CreateRouteComparator() func(deployed client.Object, requested client.Object) bool {
+	return func(deployed client.Object, requested client.Object) bool {
 		rtDeployed := deployed.(*routev1.Route)
 		rtRequested := requested.(*routev1.Route).DeepCopy()
 
@@ -209,8 +209,8 @@ func CreateRouteComparator() func(deployed resource.KubernetesResource, requeste
 }
 
 // CreateConfigMapComparator creates a new comparator for ConfigMap using Label
-func CreateConfigMapComparator() func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
-	return func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
+func CreateConfigMapComparator() func(deployed client.Object, requested client.Object) bool {
+	return func(deployed client.Object, requested client.Object) bool {
 		cmDeployed := deployed.(*v1.ConfigMap)
 		cmRequested := requested.(*v1.ConfigMap).DeepCopy()
 
@@ -223,8 +223,8 @@ func CreateConfigMapComparator() func(deployed resource.KubernetesResource, requ
 }
 
 // CreateImageStreamComparator creates a new ImageStream comparator
-func CreateImageStreamComparator() func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
-	return func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
+func CreateImageStreamComparator() func(deployed client.Object, requested client.Object) bool {
+	return func(deployed client.Object, requested client.Object) bool {
 		img1 := deployed.(*imgv1.ImageStream)
 		img2 := requested.(*imgv1.ImageStream)
 
@@ -242,8 +242,8 @@ func CreateImageStreamComparator() func(deployed resource.KubernetesResource, re
 
 // CreateSharedImageStreamComparator creates a new Shared ImageStream comparator that verifies if the OwnerReferences are equal between them
 // Also incorporates the `CreateImageStreamComparator` logic
-func CreateSharedImageStreamComparator() func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
-	return func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
+func CreateSharedImageStreamComparator() func(deployed client.Object, requested client.Object) bool {
+	return func(deployed client.Object, requested client.Object) bool {
 		return CreateImageStreamComparator()(deployed, requested) &&
 			reflect.DeepEqual(deployed.GetOwnerReferences(), requested.GetOwnerReferences())
 	}
@@ -279,8 +279,8 @@ func sortContainersByName(pod *v1.PodTemplateSpec) {
 }
 
 // CreateServiceMonitorComparator creates a new comparator for ServiceMonitor using Label
-func CreateServiceMonitorComparator() func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
-	return func(deployed resource.KubernetesResource, requested resource.KubernetesResource) bool {
+func CreateServiceMonitorComparator() func(deployed client.Object, requested client.Object) bool {
+	return func(deployed client.Object, requested client.Object) bool {
 		smDeployed := deployed.(*monv1.ServiceMonitor)
 		smRequested := requested.(*monv1.ServiceMonitor).DeepCopy()
 

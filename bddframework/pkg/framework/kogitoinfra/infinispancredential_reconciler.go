@@ -16,15 +16,15 @@ package kogitoinfra
 
 import (
 	"fmt"
-	"github.com/RHsyseng/operator-utils/pkg/resource"
-	v1 "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
+	infinispan "github.com/kiegroup/kogito-operator/core/infrastructure/infinispan/v1"
 	v12 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -33,12 +33,12 @@ const (
 
 type infinispanCredentialReconciler struct {
 	infraContext
-	infinispanInstance *v1.Infinispan
+	infinispanInstance *infinispan.Infinispan
 	runtime            api.RuntimeType
 	secretHandler      infrastructure.SecretHandler
 }
 
-func newInfinispanCredentialReconciler(context infraContext, infinispanInstance *v1.Infinispan, runtime api.RuntimeType) Reconciler {
+func newInfinispanCredentialReconciler(context infraContext, infinispanInstance *infinispan.Infinispan, runtime api.RuntimeType) Reconciler {
 	return &infinispanCredentialReconciler{
 		infraContext:       context,
 		infinispanInstance: infinispanInstance,
@@ -74,8 +74,8 @@ func (i *infinispanCredentialReconciler) Reconcile() (err error) {
 	return nil
 }
 
-func (i *infinispanCredentialReconciler) createRequiredResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (i *infinispanCredentialReconciler) createRequiredResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	infinispanHandler := infrastructure.NewInfinispanHandler(i.Context)
 	credentials, err := infinispanHandler.GetInfinispanCredential(i.infinispanInstance)
 	if err != nil {
@@ -85,24 +85,24 @@ func (i *infinispanCredentialReconciler) createRequiredResources() (map[reflect.
 	if err := framework.SetOwner(i.instance, i.Scheme, secret); err != nil {
 		return resources, err
 	}
-	resources[reflect.TypeOf(v12.Secret{})] = []resource.KubernetesResource{secret}
+	resources[reflect.TypeOf(v12.Secret{})] = []client.Object{secret}
 	return resources, nil
 }
 
-func (i *infinispanCredentialReconciler) getDeployedResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (i *infinispanCredentialReconciler) getDeployedResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	// fetch owned image stream
 	deployedSecret, err := i.secretHandler.FetchSecret(types.NamespacedName{Name: i.getCredentialSecretName(), Namespace: i.instance.GetNamespace()})
 	if err != nil {
 		return nil, err
 	}
 	if deployedSecret != nil {
-		resources[reflect.TypeOf(v12.Secret{})] = []resource.KubernetesResource{deployedSecret}
+		resources[reflect.TypeOf(v12.Secret{})] = []client.Object{deployedSecret}
 	}
 	return resources, nil
 }
 
-func (i *infinispanCredentialReconciler) processDelta(requestedResources map[reflect.Type][]resource.KubernetesResource, deployedResources map[reflect.Type][]resource.KubernetesResource) (err error) {
+func (i *infinispanCredentialReconciler) processDelta(requestedResources map[reflect.Type][]client.Object, deployedResources map[reflect.Type][]client.Object) (err error) {
 	comparator := i.secretHandler.GetComparator()
 	deltaProcessor := infrastructure.NewDeltaProcessor(i.Context)
 	_, err = deltaProcessor.ProcessDelta(comparator, requestedResources, deployedResources)
@@ -130,6 +130,6 @@ func (i *infinispanCredentialReconciler) getCredentialSecretName() string {
 	return fmt.Sprintf(credentialSecretName, i.runtime)
 }
 
-func isInfinispanSecretEncryptionEnabled(infinispanInstance *v1.Infinispan) bool {
+func isInfinispanSecretEncryptionEnabled(infinispanInstance *infinispan.Infinispan) bool {
 	return *infinispanInstance.Spec.Security.EndpointAuthentication && len(infinispanInstance.Spec.Security.EndpointSecretName) > 0
 }

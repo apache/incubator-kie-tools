@@ -16,7 +16,8 @@ package kogitoinfra
 
 import (
 	"fmt"
-	infinispan "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
+	infinispan "github.com/kiegroup/kogito-operator/core/infrastructure/infinispan/v1"
+
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	corev1 "k8s.io/api/core/v1"

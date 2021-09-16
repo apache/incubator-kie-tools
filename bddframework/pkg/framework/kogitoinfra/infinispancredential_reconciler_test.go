@@ -15,7 +15,6 @@
 package kogitoinfra
 
 import (
-	"github.com/go-openapi/swag"
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/operator"
@@ -65,7 +64,8 @@ func TestInfinispanCredentialReconciler_EncryptionDisabled(t *testing.T) {
 	ns := t.Name()
 	kogitoInfinispanInstance := test.CreateFakeKogitoInfinispan(ns)
 	infinispanInstance := test.CreateFakeInfinispan(ns)
-	infinispanInstance.Spec.Security.EndpointAuthentication = swag.Bool(false)
+	falseValue := false
+	infinispanInstance.Spec.Security.EndpointAuthentication = &falseValue
 
 	cli := test.NewFakeClientBuilder().AddK8sObjects(infinispanInstance).Build()
 	infraContext := infraContext{

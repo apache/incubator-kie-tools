@@ -15,21 +15,21 @@
 package framework
 
 import (
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
 	apps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"testing"
 )
 
 func TestIsOwner(t *testing.T) {
 	uuid := test.GenerateUID()
 	type args struct {
-		resource resource.KubernetesResource
-		owner    resource.KubernetesResource
+		resource client.Object
+		owner    client.Object
 	}
 	tests := []struct {
 		name string

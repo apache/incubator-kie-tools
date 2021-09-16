@@ -24,9 +24,8 @@ import (
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
-	sourcesv1alpha1 "knative.dev/eventing/pkg/apis/sources/v1alpha1"
+	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 	duckv1 "knative.dev/pkg/apis/duck/v1"
-	alpha1 "knative.dev/pkg/apis/duck/v1alpha1"
 	"knative.dev/pkg/tracker"
 )
 
@@ -110,7 +109,7 @@ func (k *knativeMessagingDeployer) newTrigger(e messagingEventMeta, service api.
 
 // newSinkBinding creates a new SinkBinding object targeting the given KogitoInfra resource and binding the
 // deployment resource owned by the given KogitoService
-func (k *knativeMessagingDeployer) newSinkBinding(service api.KogitoService, infra api.KogitoInfraInterface) *sourcesv1alpha1.SinkBinding {
+func (k *knativeMessagingDeployer) newSinkBinding(service api.KogitoService, infra api.KogitoInfraInterface) *sourcesv1.SinkBinding {
 	ns := infra.GetSpec().GetResource().GetNamespace()
 	name := infra.GetSpec().GetResource().GetName()
 	if len(ns) == 0 {
@@ -119,7 +118,7 @@ func (k *knativeMessagingDeployer) newSinkBinding(service api.KogitoService, inf
 	if len(name) == 0 {
 		name = service.GetName()
 	}
-	return &sourcesv1alpha1.SinkBinding{
+	return &sourcesv1.SinkBinding{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("%s-publisher", service.GetName()),
 			Namespace: service.GetNamespace(),
@@ -127,7 +126,7 @@ func (k *knativeMessagingDeployer) newSinkBinding(service api.KogitoService, inf
 				framework.LabelAppKey: service.GetName(),
 			},
 		},
-		Spec: sourcesv1alpha1.SinkBindingSpec{
+		Spec: sourcesv1.SinkBindingSpec{
 			SourceSpec: duckv1.SourceSpec{
 				Sink: duckv1.Destination{
 					Ref: &duckv1.KReference{
@@ -138,7 +137,7 @@ func (k *knativeMessagingDeployer) newSinkBinding(service api.KogitoService, inf
 					},
 				},
 			},
-			BindingSpec: alpha1.BindingSpec{
+			BindingSpec: duckv1.BindingSpec{
 				Subject: tracker.Reference{
 					APIVersion: openshift.KindDeployment.GroupVersion.String(),
 					Kind:       openshift.KindDeployment.Name,

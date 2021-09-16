@@ -16,8 +16,8 @@ package infrastructure
 
 import (
 	"fmt"
-	ispn "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	ispn "github.com/kiegroup/kogito-operator/core/infrastructure/infinispan/v1"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"gopkg.in/yaml.v2"
 	corev1 "k8s.io/api/core/v1"
@@ -121,13 +121,13 @@ func (i *infinispanHandler) FetchInfinispanInstanceURI(key types.NamespacedName)
 
 // GetInfinispanCredential gets the credential of the Infinispan server deployed with the Kogito Operator
 func (i *infinispanHandler) GetInfinispanCredential(infinispanInstance *ispn.Infinispan) (*InfinispanCredential, error) {
-	secret := &corev1.Secret{ObjectMeta: metav1.ObjectMeta{Name: infinispanInstance.GetSecretName(), Namespace: infinispanInstance.Namespace}}
+	secret := &corev1.Secret{ObjectMeta: metav1.ObjectMeta{Name: infinispanInstance.Spec.Security.EndpointSecretName, Namespace: infinispanInstance.Namespace}}
 	if exists, err := kubernetes.ResourceC(i.Client).Fetch(secret); err != nil {
 		return nil, err
 	} else if exists {
 		return getDefaultInfinispanCredential(secret)
 	}
-	i.Log.Warn("Infinispan credential not found", "secret", infinispanInstance.GetSecretName())
+	i.Log.Warn("Infinispan credential not found", "secret", infinispanInstance.Spec.Security.EndpointSecretName)
 	return nil, nil
 }
 

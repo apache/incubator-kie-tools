@@ -16,7 +16,6 @@ package kogitoinfra
 
 import (
 	"fmt"
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
@@ -25,6 +24,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -77,8 +77,8 @@ func (k *kafkaConfigReconciler) Reconcile() (err error) {
 	return nil
 }
 
-func (k *kafkaConfigReconciler) createRequiredResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (k *kafkaConfigReconciler) createRequiredResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	appProps, err := k.getKafkaAppProps()
 	if err != nil {
 		return nil, err
@@ -87,24 +87,24 @@ func (k *kafkaConfigReconciler) createRequiredResources() (map[reflect.Type][]re
 	if err := framework.SetOwner(k.instance, k.Scheme, configMap); err != nil {
 		return resources, err
 	}
-	resources[reflect.TypeOf(v12.ConfigMap{})] = []resource.KubernetesResource{configMap}
+	resources[reflect.TypeOf(v12.ConfigMap{})] = []client.Object{configMap}
 	return resources, nil
 }
 
-func (k *kafkaConfigReconciler) getDeployedResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (k *kafkaConfigReconciler) getDeployedResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	// fetch owned image stream
 	deployedConfigMap, err := k.configMapHandler.FetchConfigMap(types.NamespacedName{Name: GetKafkaConfigMapName(k.runtime), Namespace: k.instance.GetNamespace()})
 	if err != nil {
 		return nil, err
 	}
 	if deployedConfigMap != nil {
-		resources[reflect.TypeOf(v12.ConfigMap{})] = []resource.KubernetesResource{deployedConfigMap}
+		resources[reflect.TypeOf(v12.ConfigMap{})] = []client.Object{deployedConfigMap}
 	}
 	return resources, nil
 }
 
-func (k *kafkaConfigReconciler) processDelta(requestedResources map[reflect.Type][]resource.KubernetesResource, deployedResources map[reflect.Type][]resource.KubernetesResource) (err error) {
+func (k *kafkaConfigReconciler) processDelta(requestedResources map[reflect.Type][]client.Object, deployedResources map[reflect.Type][]client.Object) (err error) {
 	comparator := k.configMapHandler.GetComparator()
 	deltaProcessor := infrastructure.NewDeltaProcessor(k.Context)
 	_, err = deltaProcessor.ProcessDelta(comparator, requestedResources, deployedResources)

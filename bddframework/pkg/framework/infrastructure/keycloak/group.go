@@ -1,4 +1,4 @@
-// Copyright 2020 Red Hat, Inc. and/or its affiliates
+// Copyright 2021 Red Hat, Inc. and/or its affiliates
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,11 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package restclient
-
-import "net/http"
-
-// HTTPClient interface
-type HTTPClient interface {
-	Do(req *http.Request) (*http.Response, error)
-}
+// Package keycloak contains keycloak API versions.
+//
+// This file ensures Go source parsers acknowledge the keycloak package
+// and any child packages. It can be removed if any other Go source files are
+// added to this package.
+package keycloak

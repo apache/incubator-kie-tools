@@ -25,6 +25,7 @@ import (
 	"io/ioutil"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 	"net/http"
 	"path"
 	"strings"
@@ -51,7 +52,7 @@ type ProtoBufConfigMapHandler interface {
 
 type protobufConfigMapHandler struct {
 	operator.Context
-	deploymentHandler    kogitoservice.DeploymentHandler
+	deploymentHandler    infrastructure.DeploymentHandler
 	kogitoServiceHandler kogitoservice.ServiceHandler
 	configMapHandler     infrastructure.ConfigMapHandler
 }
@@ -60,7 +61,7 @@ type protobufConfigMapHandler struct {
 func NewProtoBufConfigMapHandler(context operator.Context) ProtoBufConfigMapHandler {
 	return &protobufConfigMapHandler{
 		Context:              context,
-		deploymentHandler:    kogitoservice.NewDeploymentHandler(context),
+		deploymentHandler:    infrastructure.NewDeploymentHandler(context),
 		kogitoServiceHandler: kogitoservice.NewKogitoServiceHandler(context),
 		configMapHandler:     infrastructure.NewConfigMapHandler(context),
 	}
@@ -109,7 +110,7 @@ func (p *protobufConfigMapHandler) CreateProtoBufConfigMapReference(runtimeInsta
 }
 
 func (p *protobufConfigMapHandler) getProtobufData(runtimeInstance api.KogitoRuntimeInterface) (map[string]string, error) {
-	available, err := p.deploymentHandler.IsDeploymentAvailable(runtimeInstance)
+	available, err := p.deploymentHandler.IsDeploymentAvailable(types.NamespacedName{Name: runtimeInstance.GetName(), Namespace: runtimeInstance.GetNamespace()})
 	if err != nil {
 		p.Log.Error(err, "failed to check deployment status")
 		return nil, err

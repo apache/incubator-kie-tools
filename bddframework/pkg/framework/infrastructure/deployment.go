@@ -16,10 +16,13 @@ package infrastructure
 
 import (
 	"fmt"
+	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"reflect"
 )
 
 // DeploymentHandler ...
@@ -29,6 +32,7 @@ type DeploymentHandler interface {
 	MustFetchDeployment(key types.NamespacedName) (*appsv1.Deployment, error)
 	IsDeploymentAvailable(key types.NamespacedName) (bool, error)
 	FetchReadyReplicas(key types.NamespacedName) (int32, error)
+	GetComparator() compare.MapComparator
 }
 
 type deploymentHandler struct {
@@ -44,11 +48,15 @@ func NewDeploymentHandler(context operator.Context) DeploymentHandler {
 
 func (d *deploymentHandler) FetchDeployment(key types.NamespacedName) (*appsv1.Deployment, error) {
 	deployment := &appsv1.Deployment{}
-	_, err := kubernetes.ResourceC(d.Client).FetchWithKey(key, deployment)
-	if err != nil {
+	if exists, err := kubernetes.ResourceC(d.Client).FetchWithKey(key, deployment); err != nil {
 		return nil, err
+	} else if !exists {
+		d.Log.Debug("Deployment not found.")
+		return nil, nil
+	} else {
+		d.Log.Debug("Successfully fetch deployed Deployment")
+		return deployment, nil
 	}
-	return deployment, nil
 }
 
 func (d *deploymentHandler) FetchDeploymentList(namespace string) (*appsv1.DeploymentList, error) {
@@ -77,13 +85,28 @@ func (d *deploymentHandler) IsDeploymentAvailable(key types.NamespacedName) (boo
 	} else if deployment == nil {
 		return false, nil
 	}
-	return true, nil
+	return deployment.Status.AvailableReplicas > 0, nil
 }
 
 func (d *deploymentHandler) FetchReadyReplicas(key types.NamespacedName) (int32, error) {
-	deployment, err := d.MustFetchDeployment(key)
+	deployment, err := d.FetchDeployment(key)
 	if err != nil {
 		return 0, err
+	} else if deployment == nil {
+		return 0, nil
 	}
 	return deployment.Status.AvailableReplicas, nil
+}
+
+// GetComparator gets the comparator for the owned resources
+func (d *deploymentHandler) GetComparator() compare.MapComparator {
+	resourceComparator := compare.DefaultComparator()
+
+	resourceComparator.SetComparator(
+		framework.NewComparatorBuilder().
+			WithType(reflect.TypeOf(appsv1.Deployment{})).
+			UseDefaultComparator().
+			WithCustomComparator(framework.CreateDeploymentComparator()).
+			Build())
+	return compare.MapComparator{Comparator: resourceComparator}
 }

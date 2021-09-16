@@ -17,40 +17,36 @@ package kogitoservice
 import (
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/framework"
-	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/types"
 	"strconv"
 	"strings"
 )
 
 const (
-	portName                 = "http"
 	singleReplica            = int32(1)
 	startupProbeMinorVersion = 18
 )
 
-// DeploymentHandler ...
-type DeploymentHandler interface {
-	CreateRequiredDeployment(service api.KogitoService, resolvedImage string, definition ServiceDefinition) *appsv1.Deployment
-	IsDeploymentAvailable(kogitoService api.KogitoService) (bool, error)
+// KogitoDeploymentHandler ...
+type KogitoDeploymentHandler interface {
+	CreateDeployment(service api.KogitoService, resolvedImage string, definition ServiceDefinition) *appsv1.Deployment
 }
 
-type deploymentHandler struct {
+type kogitoDeploymentHandler struct {
 	operator.Context
 }
 
-// NewDeploymentHandler ...
-func NewDeploymentHandler(context operator.Context) DeploymentHandler {
-	return &deploymentHandler{
+// NewKogitoDeploymentHandler ...
+func NewKogitoDeploymentHandler(context operator.Context) KogitoDeploymentHandler {
+	return &kogitoDeploymentHandler{
 		context,
 	}
 }
 
-func (d *deploymentHandler) CreateRequiredDeployment(service api.KogitoService, resolvedImage string, definition ServiceDefinition) *appsv1.Deployment {
+func (d *kogitoDeploymentHandler) CreateDeployment(service api.KogitoService, resolvedImage string, definition ServiceDefinition) *appsv1.Deployment {
 	if definition.SingleReplica && *service.GetSpec().GetReplicas() > singleReplica {
 		service.GetSpec().SetReplicas(singleReplica)
 		d.Log.Warn("Service can't scale vertically, only one replica is allowed.", "service", service.GetName())
@@ -62,14 +58,6 @@ func (d *deploymentHandler) CreateRequiredDeployment(service api.KogitoService, 
 		labels = make(map[string]string)
 	}
 	labels[framework.LabelAppKey] = service.GetName()
-
-	// clone env var slice so that any changes in deployment env var should not reflect in kogitoInstance env var
-	// KOGITO-3947: we don't want an empty reference (0 len), since this is nil to k8s. Comparator will go crazy
-	var env []corev1.EnvVar
-	if len(service.GetSpec().GetEnvs()) > 0 {
-		env = make([]corev1.EnvVar, len(service.GetSpec().GetEnvs()))
-		copy(env, service.GetSpec().GetEnvs())
-	}
 
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{Name: service.GetName(), Namespace: service.GetNamespace(), Labels: labels},
@@ -84,12 +72,11 @@ func (d *deploymentHandler) CreateRequiredDeployment(service api.KogitoService, 
 							Name: service.GetName(),
 							Ports: []corev1.ContainerPort{
 								{
-									Name:          portName,
+									Name:          framework.DefaultPortName,
 									ContainerPort: int32(framework.DefaultExposedPort),
 									Protocol:      corev1.ProtocolTCP,
 								},
 							},
-							Env:             env,
 							Resources:       service.GetSpec().GetResources(),
 							LivenessProbe:   probes.liveness,
 							ReadinessProbe:  probes.readiness,
@@ -108,7 +95,7 @@ func (d *deploymentHandler) CreateRequiredDeployment(service api.KogitoService, 
 }
 
 // addStartupProbe adds a startup probe to deployment if the Kubernetes version is >= 1.18 when the feature is enabled by default
-func addStartupProbe(d *deploymentHandler, deployment *appsv1.Deployment, startupProbe *corev1.Probe) {
+func addStartupProbe(d *kogitoDeploymentHandler, deployment *appsv1.Deployment, startupProbe *corev1.Probe) {
 	versionInfo, err := d.Client.Discovery.ServerVersion()
 	if err != nil {
 		d.Log.Warn("Could not access Kubernetes server version. Startup probes will not be added.")
@@ -120,21 +107,4 @@ func addStartupProbe(d *deploymentHandler, deployment *appsv1.Deployment, startu
 	} else if minorVersionInt >= startupProbeMinorVersion {
 		deployment.Spec.Template.Spec.Containers[0].StartupProbe = startupProbe
 	}
-}
-
-// IsDeploymentAvailable verifies if the Deployment resource from the given KogitoService has replicas available
-func (d *deploymentHandler) IsDeploymentAvailable(kogitoService api.KogitoService) (bool, error) {
-	// service's deployment hasn't been deployed yet, no need to fetch
-	if len(kogitoService.GetStatus().GetDeploymentConditions()) == 0 {
-		return false, nil
-	}
-
-	coreDeployHandler := infrastructure.NewDeploymentHandler(d.Context)
-	deployment, err := coreDeployHandler.FetchDeployment(types.NamespacedName{Name: kogitoService.GetName(), Namespace: kogitoService.GetNamespace()})
-	if err != nil {
-		return false, err
-	} else if deployment == nil {
-		return false, nil
-	}
-	return deployment.Status.AvailableReplicas > 0, nil
 }

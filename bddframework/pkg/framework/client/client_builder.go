@@ -24,7 +24,7 @@ import (
 	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/kubernetes"
 	restclient "k8s.io/client-go/rest"
-	controllercli "sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // NewClientBuilder creates a builder to setup the client
@@ -39,7 +39,7 @@ type Builder interface {
 	// UseConfig sets the restconfig to use for the different CLIs
 	UseConfig(kubeconfig *restclient.Config) Builder
 	// UseControllerClient sets a specific controllerclient
-	UseControllerClient(controllerClient controllercli.Client) Builder
+	UseControllerClient(controllerClient client.Client) Builder
 	// UseControllerDynamicMapper will set a dynamic mapper to the constructed controller client. Cannot be used with `UseControllerClient`
 	UseControllerDynamicMapper() Builder
 	// WithDiscoveryClient tells the builder to create the discovery client
@@ -62,7 +62,7 @@ type Builder interface {
 type builderStruct struct {
 	config        *restclient.Config
 	scheme        *runtime.Scheme
-	controllerCli controllercli.Client
+	controllerCli client.Client
 
 	useControllerDynamicMapper bool
 
@@ -78,7 +78,7 @@ func (builder *builderStruct) UseConfig(kubeconfig *restclient.Config) Builder {
 	return builder
 }
 
-func (builder *builderStruct) UseControllerClient(controllerClient controllercli.Client) Builder {
+func (builder *builderStruct) UseControllerClient(controllerClient client.Client) Builder {
 	builder.controllerCli = controllerClient
 	return builder
 }

@@ -16,16 +16,16 @@ package kogitoinfra
 
 import (
 	"fmt"
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
-	mongodb "github.com/mongodb/mongodb-kubernetes-operator/pkg/apis/mongodb/v1"
+	mongodb "github.com/kiegroup/kogito-operator/core/infrastructure/mongodb/v1"
 	v12 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"net/url"
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -71,8 +71,8 @@ func (i *mongoDBConfigReconciler) Reconcile() (err error) {
 	return nil
 }
 
-func (i *mongoDBConfigReconciler) createRequiredResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (i *mongoDBConfigReconciler) createRequiredResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	appProps, err := i.getMongoDBAppProps()
 	if err != nil {
 		return nil, err
@@ -81,24 +81,24 @@ func (i *mongoDBConfigReconciler) createRequiredResources() (map[reflect.Type][]
 	if err := framework.SetOwner(i.infraContext.instance, i.infraContext.Scheme, configMap); err != nil {
 		return resources, err
 	}
-	resources[reflect.TypeOf(v12.ConfigMap{})] = []resource.KubernetesResource{configMap}
+	resources[reflect.TypeOf(v12.ConfigMap{})] = []client.Object{configMap}
 	return resources, nil
 }
 
-func (i *mongoDBConfigReconciler) getDeployedResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (i *mongoDBConfigReconciler) getDeployedResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	// fetch owned image stream
 	deployedConfigMap, err := i.configMapHandler.FetchConfigMap(types.NamespacedName{Name: i.getMongoDBConfigMapName(), Namespace: i.infraContext.instance.GetNamespace()})
 	if err != nil {
 		return nil, err
 	}
 	if deployedConfigMap != nil {
-		resources[reflect.TypeOf(v12.ConfigMap{})] = []resource.KubernetesResource{deployedConfigMap}
+		resources[reflect.TypeOf(v12.ConfigMap{})] = []client.Object{deployedConfigMap}
 	}
 	return resources, nil
 }
 
-func (i *mongoDBConfigReconciler) processDelta(requestedResources map[reflect.Type][]resource.KubernetesResource, deployedResources map[reflect.Type][]resource.KubernetesResource) (err error) {
+func (i *mongoDBConfigReconciler) processDelta(requestedResources map[reflect.Type][]client.Object, deployedResources map[reflect.Type][]client.Object) (err error) {
 	comparator := i.configMapHandler.GetComparator()
 	deltaProcessor := infrastructure.NewDeltaProcessor(i.infraContext.Context)
 	_, err = deltaProcessor.ProcessDelta(comparator, requestedResources, deployedResources)

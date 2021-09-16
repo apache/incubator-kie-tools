@@ -26,21 +26,21 @@ import (
 )
 
 func Test_CreateNamespaceThatDoesNotExist(t *testing.T) {
-	cli := fake.NewFakeClient()
+	cli := fake.NewClientBuilder().Build()
 	ns, err := NamespaceC(&client.Client{ControlCli: cli}).CreateIfNotExists("test")
 	assert.Nil(t, err)
 	assert.NotNil(t, ns)
 }
 
 func Test_FetchNamespaceThatDoesNotExist(t *testing.T) {
-	cli := fake.NewFakeClient()
+	cli := fake.NewClientBuilder().Build()
 	ns, err := NamespaceC(&client.Client{ControlCli: cli}).Fetch("test")
 	assert.Nil(t, err)
 	assert.Nil(t, ns)
 }
 
 func Test_FetchNamespaceThatDExists(t *testing.T) {
-	cli := fake.NewFakeClient(&corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: "test", CreationTimestamp: metav1.Now()}})
+	cli := fake.NewClientBuilder().WithRuntimeObjects(&corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: "test", CreationTimestamp: metav1.Now()}}).Build()
 	ns, err := NamespaceC(&client.Client{ControlCli: cli}).Fetch("test")
 	assert.Nil(t, err)
 	assert.NotNil(t, ns)

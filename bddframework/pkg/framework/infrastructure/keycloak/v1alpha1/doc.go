@@ -1,4 +1,4 @@
-// Copyright 2019 Red Hat, Inc. and/or its affiliates
+// Copyright 2021 Red Hat, Inc. and/or its affiliates
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package kubernetes
-
-import (
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
-)
-
-// ResourceObject is any object in a Kubernetes or OpenShift cluster
-type ResourceObject interface {
-	metav1.Object
-	runtime.Object
-}
+// Package v1alpha1 contains API Schema definitions for the keycloak v1alpha1 API group
+// +k8s:deepcopy-gen=package,register
+// +groupName=keycloak.org
+package v1alpha1

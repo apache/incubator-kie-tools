@@ -15,8 +15,7 @@
 package test
 
 import (
-	"github.com/go-openapi/swag"
-	v1 "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
+	infinispan "github.com/kiegroup/kogito-operator/core/infrastructure/infinispan/v1"
 	"io/ioutil"
 	v13 "k8s.io/api/core/v1"
 	v12 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -24,41 +23,42 @@ import (
 )
 
 // CreateFakeInfinispan ...
-func CreateFakeInfinispan(namespace string) *v1.Infinispan {
-	return &v1.Infinispan{
+func CreateFakeInfinispan(namespace string) *infinispan.Infinispan {
+	trueValue := true
+	return &infinispan.Infinispan{
 		ObjectMeta: v12.ObjectMeta{
 			Name:      "kogito-infinispan",
 			Namespace: namespace,
 		},
-		Spec: v1.InfinispanSpec{
-			Security: v1.InfinispanSecurity{
-				EndpointAuthentication: swag.Bool(true),
+		Spec: infinispan.InfinispanSpec{
+			Security: infinispan.InfinispanSecurity{
+				EndpointAuthentication: &trueValue,
 				EndpointSecretName:     "kogito-infinispan-generated-secret",
-				EndpointEncryption: &v1.EndpointEncryption{
+				EndpointEncryption: &infinispan.EndpointEncryption{
 					CertSecretName: "infinispan-cert-secret",
 				},
 			},
 		},
-		Status: v1.InfinispanStatus{
-			Conditions: []v1.InfinispanCondition{
+		Status: infinispan.InfinispanStatus{
+			Conditions: []infinispan.InfinispanCondition{
 				{
-					Type:   v1.ConditionGracefulShutdown,
+					Type:   infinispan.ConditionGracefulShutdown,
 					Status: v12.ConditionFalse,
 				},
 				{
-					Type:   v1.ConditionPrelimChecksPassed,
+					Type:   infinispan.ConditionPrelimChecksPassed,
 					Status: v12.ConditionTrue,
 				},
 				{
-					Type:   v1.ConditionUpgrade,
+					Type:   infinispan.ConditionUpgrade,
 					Status: v12.ConditionFalse,
 				},
 				{
-					Type:   v1.ConditionStopping,
+					Type:   infinispan.ConditionStopping,
 					Status: v12.ConditionFalse,
 				},
 				{
-					Type:   v1.ConditionWellFormed,
+					Type:   infinispan.ConditionWellFormed,
 					Status: v12.ConditionTrue,
 				},
 			},

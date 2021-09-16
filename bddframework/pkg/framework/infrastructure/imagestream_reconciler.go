@@ -15,13 +15,13 @@
 package infrastructure
 
 import (
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	imgv1 "github.com/openshift/api/image/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 type imageStreamReconciler struct {
@@ -31,7 +31,7 @@ type imageStreamReconciler struct {
 	addFromReference      bool
 	imageName             string
 	insecureImageRegistry bool
-	owner                 resource.KubernetesResource
+	owner                 client.Object
 }
 
 // ImageStreamReconciler ...
@@ -40,7 +40,7 @@ type ImageStreamReconciler interface {
 }
 
 // NewImageStreamReconciler ...
-func NewImageStreamReconciler(context operator.Context, key types.NamespacedName, tag string, addFromReference bool, imageName string, insecureImageRegistry bool, owner resource.KubernetesResource) ImageStreamReconciler {
+func NewImageStreamReconciler(context operator.Context, key types.NamespacedName, tag string, addFromReference bool, imageName string, insecureImageRegistry bool, owner client.Object) ImageStreamReconciler {
 	return &imageStreamReconciler{
 		Context:               context,
 		key:                   key,
@@ -70,15 +70,15 @@ func (i *imageStreamReconciler) Reconcile() (err error) {
 	return i.processDelta(requestedResources, deployedResources)
 }
 
-func (i *imageStreamReconciler) createRequiredResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (i *imageStreamReconciler) createRequiredResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	imageStreamHandler := NewImageStreamHandler(i.Context)
 	imageStream, err := imageStreamHandler.CreateImageStreamIfNotExists(i.key, i.tag, i.addFromReference, i.imageName, i.insecureImageRegistry)
 	if err != nil {
 		return nil, err
 	}
 	if imageStream != nil {
-		resources[reflect.TypeOf(imgv1.ImageStream{})] = []resource.KubernetesResource{imageStream}
+		resources[reflect.TypeOf(imgv1.ImageStream{})] = []client.Object{imageStream}
 	}
 	if err := i.setOwner(resources); err != nil {
 		return resources, err
@@ -86,8 +86,8 @@ func (i *imageStreamReconciler) createRequiredResources() (map[reflect.Type][]re
 	return resources, nil
 }
 
-func (i *imageStreamReconciler) getDeployedResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (i *imageStreamReconciler) getDeployedResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	imageStreamHandler := NewImageStreamHandler(i.Context)
 	// fetch owned image stream
 	ownedImageStream, err := imageStreamHandler.FetchImageStreamForOwner(i.owner)
@@ -109,7 +109,7 @@ func (i *imageStreamReconciler) getDeployedResources() (map[reflect.Type][]resou
 	return resources, nil
 }
 
-func (i *imageStreamReconciler) processDelta(requestedResources map[reflect.Type][]resource.KubernetesResource, deployedResources map[reflect.Type][]resource.KubernetesResource) (err error) {
+func (i *imageStreamReconciler) processDelta(requestedResources map[reflect.Type][]client.Object, deployedResources map[reflect.Type][]client.Object) (err error) {
 	comparator := i.getComparator()
 	deltaProcessor := NewDeltaProcessor(i.Context)
 	isDeltaProcessed, err := deltaProcessor.ProcessDelta(comparator, requestedResources, deployedResources)
@@ -120,7 +120,7 @@ func (i *imageStreamReconciler) processDelta(requestedResources map[reflect.Type
 }
 
 // setOwner sets this service instance as the owner of each resource.
-func (i *imageStreamReconciler) setOwner(resources map[reflect.Type][]resource.KubernetesResource) error {
+func (i *imageStreamReconciler) setOwner(resources map[reflect.Type][]client.Object) error {
 	for _, resourceArr := range resources {
 		for _, res := range resourceArr {
 			if err := framework.AddOwnerReference(i.owner, i.Scheme, res); err != nil {

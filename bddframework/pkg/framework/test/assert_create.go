@@ -15,14 +15,15 @@
 package test
 
 import (
-	"github.com/kiegroup/kogito-operator/core/client"
+	kogitocli "github.com/kiegroup/kogito-operator/core/client"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/stretchr/testify/assert"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"testing"
 )
 
 // AssertCreate creates the given resource and asserts that it isn't existed before
-func AssertCreate(t *testing.T, c *client.Client, resource kubernetes.ResourceObject) {
+func AssertCreate(t *testing.T, c *kogitocli.Client, resource client.Object) {
 	err := kubernetes.ResourceC(c).CreateIfNotExists(resource)
 	assert.NoError(t, err)
 }

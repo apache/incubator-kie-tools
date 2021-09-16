@@ -18,16 +18,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"k8s.io/apimachinery/pkg/types"
 	"net/http"
 	"regexp"
 	"strings"
 
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 
-	grafanav1 "github.com/integr8ly/grafana-operator/v3/pkg/apis/integreatly/v1alpha1"
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
+	grafanav1 "github.com/kiegroup/kogito-operator/core/infrastructure/grafana/v1alpha1"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -82,12 +83,12 @@ func (d *grafanaDashboardManager) ConfigureGrafanaDashboards(kogitoService api.K
 
 // isPrometheusAvailable checks if Prometheus CRD is available in the cluster
 func (d *grafanaDashboardManager) isGrafanaAvailable() bool {
-	return d.Client.HasServerGroup(grafanav1.SchemeGroupVersion.Group)
+	return d.Client.HasServerGroup(grafanav1.GroupVersion.Group)
 }
 
 func (d *grafanaDashboardManager) fetchGrafanaDashboards(instance api.KogitoService) ([]GrafanaDashboard, error) {
-	deploymentHandler := NewDeploymentHandler(d.Context)
-	available, err := deploymentHandler.IsDeploymentAvailable(instance)
+	deploymentHandler := infrastructure.NewDeploymentHandler(d.Context)
+	available, err := deploymentHandler.IsDeploymentAvailable(types.NamespacedName{Name: instance.GetName(), Namespace: instance.GetNamespace()})
 	if err != nil {
 		return nil, err
 	}
@@ -175,7 +176,7 @@ func (d *grafanaDashboardManager) deployGrafanaDashboards(dashboards []GrafanaDa
 				},
 			},
 			Spec: grafanav1.GrafanaDashboardSpec{
-				Json: dashboard.RawJSONDashboard,
+				JSON: dashboard.RawJSONDashboard,
 			},
 		}
 		if err := kubernetes.ResourceC(d.Client).CreateIfNotExistsForOwner(dashboardDefinition, kogitoService, d.Scheme); err != nil {

@@ -15,30 +15,31 @@
 package test
 
 import (
+	"context"
 	"github.com/stretchr/testify/assert"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"testing"
 )
 
 // AssertReconcile asserts if the reconcile.Reconciler call finished without errors
-func AssertReconcile(t *testing.T, r reconcile.Reconciler, instance metav1.Object) (result reconcile.Result) {
-	result, err := r.Reconcile(reconcile.Request{NamespacedName: types.NamespacedName{Name: instance.GetName(), Namespace: instance.GetNamespace()}})
+func AssertReconcile(t *testing.T, r reconcile.Reconciler, instance client.Object) (result reconcile.Result) {
+	result, err := r.Reconcile(context.TODO(), reconcile.Request{NamespacedName: types.NamespacedName{Name: instance.GetName(), Namespace: instance.GetNamespace()}})
 	assert.NoError(t, err)
 	assert.NotNil(t, result)
 	return
 }
 
 // AssertReconcileMustRequeue asserts the reconciliation result and that the result adds the object in the reconciliation queue again
-func AssertReconcileMustRequeue(t *testing.T, r reconcile.Reconciler, instance metav1.Object) (result reconcile.Result) {
+func AssertReconcileMustRequeue(t *testing.T, r reconcile.Reconciler, instance client.Object) (result reconcile.Result) {
 	result = AssertReconcile(t, r, instance)
 	assert.True(t, result.Requeue)
 	return
 }
 
 // AssertReconcileMustNotRequeue asserts the reconciliation result and that the result DOES NOT add the object in the reconciliation queue again
-func AssertReconcileMustNotRequeue(t *testing.T, r reconcile.Reconciler, instance metav1.Object) (result reconcile.Result) {
+func AssertReconcileMustNotRequeue(t *testing.T, r reconcile.Reconciler, instance client.Object) (result reconcile.Result) {
 	result = AssertReconcile(t, r, instance)
 	assert.False(t, result.Requeue)
 	return

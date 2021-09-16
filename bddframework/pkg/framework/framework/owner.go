@@ -15,15 +15,15 @@
 package framework
 
 import (
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
 // IsOwner checks if the given owner is in the `ownerReferences` of the given resource
-func IsOwner(resource resource.KubernetesResource, owner resource.KubernetesResource) bool {
+func IsOwner(resource client.Object, owner client.Object) bool {
 	for _, resOwner := range resource.GetOwnerReferences() {
 		if resOwner.UID == owner.GetUID() {
 			return true
@@ -33,7 +33,7 @@ func IsOwner(resource resource.KubernetesResource, owner resource.KubernetesReso
 }
 
 // SetOwner sets the given owner object into the given resources
-func SetOwner(owner resource.KubernetesResource, scheme *runtime.Scheme, resources ...resource.KubernetesResource) error {
+func SetOwner(owner client.Object, scheme *runtime.Scheme, resources ...client.Object) error {
 	for _, res := range resources {
 		if err := controllerutil.SetControllerReference(owner, res, scheme); err != nil {
 			return err
@@ -43,7 +43,7 @@ func SetOwner(owner resource.KubernetesResource, scheme *runtime.Scheme, resourc
 }
 
 // AddOwnerReference adds given owner as a OwnerReference in the given resources
-func AddOwnerReference(owner resource.KubernetesResource, scheme *runtime.Scheme, resources ...resource.KubernetesResource) error {
+func AddOwnerReference(owner client.Object, scheme *runtime.Scheme, resources ...client.Object) error {
 	gvk, err := apiutil.GVKForObject(owner, scheme)
 	if err != nil {
 		return err
@@ -67,7 +67,7 @@ func AddOwnerReference(owner resource.KubernetesResource, scheme *runtime.Scheme
 }
 
 // RemoveOwnerReference remove given owner from OwnerReference in the given resources
-func RemoveOwnerReference(owner resource.KubernetesResource, resources ...resource.KubernetesResource) {
+func RemoveOwnerReference(owner client.Object, resources ...client.Object) {
 	for _, res := range resources {
 		for i, ownerRef := range res.GetOwnerReferences() {
 			if ownerRef.UID == owner.GetUID() {
@@ -80,7 +80,7 @@ func RemoveOwnerReference(owner resource.KubernetesResource, resources ...resour
 }
 
 // RemoveSharedOwnerReference remove given owner from OwnerReference in the given resources only if resource is referred by multiple owners.
-func RemoveSharedOwnerReference(owner resource.KubernetesResource, resources ...resource.KubernetesResource) bool {
+func RemoveSharedOwnerReference(owner client.Object, resources ...client.Object) bool {
 	for _, res := range resources {
 		ownerRefs := res.GetOwnerReferences()
 		// remove owner reference only if resource is referred by multiple owners

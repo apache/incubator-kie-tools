@@ -16,7 +16,6 @@ package kogitobuild
 
 import (
 	"fmt"
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
@@ -24,9 +23,9 @@ import (
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	buildv1 "github.com/openshift/api/build/v1"
 	imgv1 "github.com/openshift/api/image/v1"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const errorPrefix = "error while creating build resources: "
@@ -80,8 +79,8 @@ type manager struct {
 }
 
 type buildManager interface {
-	GetRequestedResources() (map[reflect.Type][]resource.KubernetesResource, error)
-	GetDeployedResources() (map[reflect.Type][]resource.KubernetesResource, error)
+	GetRequestedResources() (map[reflect.Type][]client.Object, error)
+	GetDeployedResources() (map[reflect.Type][]client.Object, error)
 	GetComparator() compare.MapComparator
 }
 
@@ -143,8 +142,8 @@ func (d *deltaProcessor) getBuildManager() buildManager {
 	return &binaryManager{manager}
 }
 
-func (m *manager) GetDeployedResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	objectTypes := []runtime.Object{&buildv1.BuildConfigList{}, &imgv1.ImageStreamList{}}
+func (m *manager) GetDeployedResources() (map[reflect.Type][]client.Object, error) {
+	objectTypes := []client.ObjectList{&buildv1.BuildConfigList{}, &imgv1.ImageStreamList{}}
 	resources, err := kubernetes.ResourceC(m.Client).ListAll(objectTypes, m.build.GetNamespace(), m.build)
 	if err != nil {
 		return nil, err
@@ -174,7 +173,7 @@ func (m *manager) GetComparator() compare.MapComparator {
 }
 
 // onResourceChange triggers hooks when a resource is changed
-func (d *deltaProcessor) onResourceChange(instance api.KogitoBuildInterface, resourceType reflect.Type, resources []resource.KubernetesResource) error {
+func (d *deltaProcessor) onResourceChange(instance api.KogitoBuildInterface, resourceType reflect.Type, resources []client.Object) error {
 	// add other resources if need
 	switch resourceType {
 	case reflect.TypeOf(buildv1.BuildConfig{}):
@@ -184,7 +183,7 @@ func (d *deltaProcessor) onResourceChange(instance api.KogitoBuildInterface, res
 }
 
 // onBuildConfigChange triggers when a build config changes
-func (d *deltaProcessor) onBuildConfigChange(instance api.KogitoBuildInterface, buildConfigs []resource.KubernetesResource) error {
+func (d *deltaProcessor) onBuildConfigChange(instance api.KogitoBuildInterface, buildConfigs []client.Object) error {
 	// triggers only on source builds
 	if instance.GetSpec().GetType() == api.RemoteSourceBuildType ||
 		instance.GetSpec().GetType() == api.LocalSourceBuildType {
@@ -204,7 +203,7 @@ func (d *deltaProcessor) onBuildConfigChange(instance api.KogitoBuildInterface, 
 
 // AddSharedImageStreamToResources adds the shared ImageStream in the given resource map.
 // Normally used during reconciliation phase to bring a not yet owned ImageStream to the deployed list.
-func (m *manager) addSharedImageStreamToResources(resources map[reflect.Type][]resource.KubernetesResource, name, ns string) error {
+func (m *manager) addSharedImageStreamToResources(resources map[reflect.Type][]client.Object, name, ns string) error {
 	if m.Client.IsOpenshift() {
 		// is the image already there?
 		for _, is := range resources[reflect.TypeOf(imgv1.ImageStream{})] {

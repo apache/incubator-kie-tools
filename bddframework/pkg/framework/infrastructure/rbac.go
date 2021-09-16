@@ -20,6 +20,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	rbac "k8s.io/api/rbac/v1"
 	v12 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -71,7 +72,7 @@ func (r *rbacHandler) SetupRBAC(namespace string) (err error) {
 	return
 }
 
-func getServiceViewerServiceAccount(namespace string) kubernetes.ResourceObject {
+func getServiceViewerServiceAccount(namespace string) client.Object {
 	return &v1.ServiceAccount{
 		ObjectMeta: v12.ObjectMeta{
 			Name:      RuntimeServiceAccountName,
@@ -80,7 +81,7 @@ func getServiceViewerServiceAccount(namespace string) kubernetes.ResourceObject 
 	}
 }
 
-func getServiceViewerRole(namespace string) kubernetes.ResourceObject {
+func getServiceViewerRole(namespace string) client.Object {
 	return &rbac.Role{
 		ObjectMeta: v12.ObjectMeta{
 			Name:      roleName,
@@ -95,7 +96,7 @@ func getServiceViewerRole(namespace string) kubernetes.ResourceObject {
 		},
 	}
 }
-func getServiceViewerRoleBinding(namespace string) kubernetes.ResourceObject {
+func getServiceViewerRoleBinding(namespace string) client.Object {
 	return &rbac.RoleBinding{
 		ObjectMeta: v12.ObjectMeta{
 			Name:      roleBindingName,

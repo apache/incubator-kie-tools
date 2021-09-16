@@ -16,16 +16,16 @@ package kogitoinfra
 
 import (
 	"fmt"
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
-	mongodb "github.com/mongodb/mongodb-kubernetes-operator/pkg/apis/mongodb/v1"
+	mongodb "github.com/kiegroup/kogito-operator/core/infrastructure/mongodb/v1"
 	v12 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -70,8 +70,8 @@ func (i *mongoDBCredentialReconciler) Reconcile() (err error) {
 	return nil
 }
 
-func (i *mongoDBCredentialReconciler) createRequiredResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (i *mongoDBCredentialReconciler) createRequiredResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	credentials, err := i.retrieveMongoDBCredentialsFromInstance()
 	if err != nil {
 		return nil, err
@@ -80,24 +80,24 @@ func (i *mongoDBCredentialReconciler) createRequiredResources() (map[reflect.Typ
 	if err := framework.SetOwner(i.infraContext.instance, i.infraContext.Scheme, secret); err != nil {
 		return resources, err
 	}
-	resources[reflect.TypeOf(v12.Secret{})] = []resource.KubernetesResource{secret}
+	resources[reflect.TypeOf(v12.Secret{})] = []client.Object{secret}
 	return resources, nil
 }
 
-func (i *mongoDBCredentialReconciler) getDeployedResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (i *mongoDBCredentialReconciler) getDeployedResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	// fetch owned image stream
 	deployedSecret, err := i.secretHandler.FetchSecret(types.NamespacedName{Name: i.getCredentialSecretName(), Namespace: i.infraContext.instance.GetNamespace()})
 	if err != nil {
 		return nil, err
 	}
 	if deployedSecret != nil {
-		resources[reflect.TypeOf(v12.Secret{})] = []resource.KubernetesResource{deployedSecret}
+		resources[reflect.TypeOf(v12.Secret{})] = []client.Object{deployedSecret}
 	}
 	return resources, nil
 }
 
-func (i *mongoDBCredentialReconciler) processDelta(requestedResources map[reflect.Type][]resource.KubernetesResource, deployedResources map[reflect.Type][]resource.KubernetesResource) (err error) {
+func (i *mongoDBCredentialReconciler) processDelta(requestedResources map[reflect.Type][]client.Object, deployedResources map[reflect.Type][]client.Object) (err error) {
 	comparator := i.secretHandler.GetComparator()
 	deltaProcessor := infrastructure.NewDeltaProcessor(i.infraContext.Context)
 	_, err = deltaProcessor.ProcessDelta(comparator, requestedResources, deployedResources)

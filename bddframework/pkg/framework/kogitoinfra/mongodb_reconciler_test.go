@@ -15,10 +15,11 @@
 package kogitoinfra
 
 import (
+	mongodb "github.com/kiegroup/kogito-operator/core/infrastructure/mongodb/v1"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/meta"
-	v1 "github.com/mongodb/mongodb-kubernetes-operator/pkg/apis/mongodb/v1"
+
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -65,7 +66,7 @@ func TestMongoDBInfraReconciler_MongoDBInstanceNotReady(t *testing.T) {
 	ns := t.Name()
 	kogitoMongoDBInstance := test.CreateFakeKogitoMongoDB(ns)
 	mongoDBInstance := test.CreateFakeMongoDB(ns)
-	mongoDBInstance.Status.Phase = v1.Pending
+	mongoDBInstance.Status.Phase = mongodb.Pending
 	cli := test.NewFakeClientBuilder().AddK8sObjects(kogitoMongoDBInstance, mongoDBInstance).Build()
 	infraContext := infraContext{
 		Context: operator.Context{

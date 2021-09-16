@@ -16,7 +16,6 @@ package manager
 
 import (
 	"fmt"
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
@@ -24,13 +23,14 @@ import (
 	"k8s.io/apimachinery/pkg/api/meta"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // KogitoInfraManager ...
 type KogitoInfraManager interface {
 	MustFetchKogitoInfraInstance(key types.NamespacedName) (api.KogitoInfraInterface, error)
-	TakeKogitoInfraOwnership(key types.NamespacedName, owner resource.KubernetesResource) error
-	RemoveKogitoInfraOwnership(key types.NamespacedName, owner resource.KubernetesResource) error
+	TakeKogitoInfraOwnership(key types.NamespacedName, owner client.Object) error
+	RemoveKogitoInfraOwnership(key types.NamespacedName, owner client.Object) error
 	IsKogitoInfraReady(key types.NamespacedName) (bool, error)
 	GetKogitoInfraFailureConditionReason(key types.NamespacedName) (string, error)
 }
@@ -71,7 +71,7 @@ func (k *kogitoInfraManager) MustFetchKogitoInfraInstance(key types.NamespacedNa
 	}
 }
 
-func (k *kogitoInfraManager) TakeKogitoInfraOwnership(key types.NamespacedName, owner resource.KubernetesResource) (err error) {
+func (k *kogitoInfraManager) TakeKogitoInfraOwnership(key types.NamespacedName, owner client.Object) (err error) {
 	kogitoInfra, err := k.MustFetchKogitoInfraInstance(key)
 	if err != nil {
 		return
@@ -88,7 +88,7 @@ func (k *kogitoInfraManager) TakeKogitoInfraOwnership(key types.NamespacedName, 
 	return
 }
 
-func (k *kogitoInfraManager) RemoveKogitoInfraOwnership(key types.NamespacedName, owner resource.KubernetesResource) (err error) {
+func (k *kogitoInfraManager) RemoveKogitoInfraOwnership(key types.NamespacedName, owner client.Object) (err error) {
 	k.Log.Info("Removing kogito infra ownership", "infra name", key.Name, "owner", owner.GetName())
 	kogitoInfra, err := k.infraHandler.FetchKogitoInfraInstance(key)
 	if err != nil || kogitoInfra == nil {

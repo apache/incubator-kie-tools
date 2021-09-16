@@ -16,7 +16,6 @@ package kogitoinfra
 
 import (
 	"fmt"
-	"github.com/RHsyseng/operator-utils/pkg/resource"
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
@@ -24,6 +23,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"software.sslmate.com/src/go-pkcs12"
 )
 
@@ -69,30 +69,30 @@ func (i *infinispanTrustStoreSecretReconciler) Reconcile() (err error) {
 	return nil
 }
 
-func (i *infinispanTrustStoreSecretReconciler) createRequiredResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (i *infinispanTrustStoreSecretReconciler) createRequiredResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	appProps := i.getInfinispanTrustStoreSecretProps()
 	secret := i.createInfinispanTrustStoreSecret(appProps)
 	if err := framework.SetOwner(i.instance, i.Scheme, secret); err != nil {
 		return resources, err
 	}
-	resources[reflect.TypeOf(v12.Secret{})] = []resource.KubernetesResource{secret}
+	resources[reflect.TypeOf(v12.Secret{})] = []client.Object{secret}
 	return resources, nil
 }
 
-func (i *infinispanTrustStoreSecretReconciler) getDeployedResources() (map[reflect.Type][]resource.KubernetesResource, error) {
-	resources := make(map[reflect.Type][]resource.KubernetesResource)
+func (i *infinispanTrustStoreSecretReconciler) getDeployedResources() (map[reflect.Type][]client.Object, error) {
+	resources := make(map[reflect.Type][]client.Object)
 	deployedSecret, err := i.secretHandler.FetchSecret(types.NamespacedName{Name: i.getInfinispanTrustStoreSecretName(), Namespace: i.instance.GetNamespace()})
 	if err != nil {
 		return nil, err
 	}
 	if deployedSecret != nil {
-		resources[reflect.TypeOf(v12.Secret{})] = []resource.KubernetesResource{deployedSecret}
+		resources[reflect.TypeOf(v12.Secret{})] = []client.Object{deployedSecret}
 	}
 	return resources, nil
 }
 
-func (i *infinispanTrustStoreSecretReconciler) processDelta(requestedResources map[reflect.Type][]resource.KubernetesResource, deployedResources map[reflect.Type][]resource.KubernetesResource) (err error) {
+func (i *infinispanTrustStoreSecretReconciler) processDelta(requestedResources map[reflect.Type][]client.Object, deployedResources map[reflect.Type][]client.Object) (err error) {
 	comparator := i.secretHandler.GetComparator()
 	deltaProcessor := infrastructure.NewDeltaProcessor(i.Context)
 	_, err = deltaProcessor.ProcessDelta(comparator, requestedResources, deployedResources)

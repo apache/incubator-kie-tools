@@ -28,8 +28,8 @@ import (
 )
 
 const (
-	// DefaultExportedPort is the default protocol exposed by inner services specified in image metadata
-	DefaultExportedPort = "http"
+	// DefaultPortName is the default protocol exposed by inner services specified in image metadata
+	DefaultPortName = "http"
 	// DefaultExposedPort TODO: found an agnostic API to fetch the ImageRaw from the docker image and read this value from there.
 	DefaultExposedPort = 8080
 	// LabelKeyOrgKie is the label key for KIE metadata
@@ -146,7 +146,7 @@ func DiscoverPortsAndProbesFromImage(dc *appsv1.DeploymentConfig, dockerImage *d
 				portName := ports[1]
 				containerPorts = append(containerPorts, corev1.ContainerPort{Name: portName, ContainerPort: int32(portNumber), Protocol: corev1.ProtocolTCP})
 				// we have at least one service exported using default HTTP protocols, let's used as a probe!
-				if portName == DefaultExportedPort {
+				if portName == DefaultPortName {
 					nonSecureProbe = defaultProbe
 					nonSecureProbe.Handler.TCPSocket = &corev1.TCPSocketAction{Port: intstr.FromInt(portNumber)}
 				}

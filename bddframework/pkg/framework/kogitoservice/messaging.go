@@ -118,8 +118,8 @@ func (m *messagingDeployer) setCloudEventsStatus(instance api.KogitoService, top
 }
 
 func (m *messagingDeployer) fetchRequiredTopicsForURL(instance api.KogitoService, serverURL string) ([]messagingTopic, error) {
-	deploymentHandler := NewDeploymentHandler(m.Context)
-	available, err := deploymentHandler.IsDeploymentAvailable(instance)
+	deploymentHandler := infrastructure.NewDeploymentHandler(m.Context)
+	available, err := deploymentHandler.IsDeploymentAvailable(types.NamespacedName{Name: instance.GetName(), Namespace: instance.GetNamespace()})
 	if err != nil {
 		return nil, err
 	}
