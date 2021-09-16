@@ -1672,10 +1672,10 @@
   resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-8.4.0.tgz#0f2f10af06d22b5132564d64fcb5cc67285306f5"
   integrity sha512-G9NXmXXAm7qKEYdXvXKNjoQwtdFlzwblfZOQVLg6eagpeOoWhkmZbH2HrSsSR8wCtFdAYIaDwxmIPB9c/i3zqQ==
 
-"@kogito-tooling/jitexecutor-native@1.10.0-Final":
-  version "1.10.0-Final"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/jitexecutor-native/-/jitexecutor-native-1.10.0-Final.tgz#af29845155fe4bf282e6a6a433d666fd1cc05197"
-  integrity sha512-MjWKrh2/Xi5wmmaPshyRpJ8PFDVrv6AlR5sUU1GcHpd6v8skYKAZtowhHMJxrQIND9/fUrrpjBSd2goiqj4xtA==
+"@kogito-tooling/jitexecutor-native@1.11.0-Final":
+  version "1.11.0-Final"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/jitexecutor-native/-/jitexecutor-native-1.11.0-Final.tgz#1fb830551ab8270d92091660b9a3c261dbb221e2"
+  integrity sha512-odWp3u76a3lI6q8LzPH13de0262nFLiw00L8RXImPDOdB6JzoevXsEMovHIjzYJI5XhUBDsl3PwNw5tIYHxkqg==
 
 "@kogito-tooling/scesim-editor-unpacked@^8.4.0":
   version "8.4.0"
