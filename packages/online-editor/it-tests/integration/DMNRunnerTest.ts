@@ -66,7 +66,7 @@ describe("DMN Runner Test", () => {
       cy.get("article div:contains('Front End Ratio')").next().contains("Sufficient").should("be.visible");
       cy.get("article div:contains('Back End Ratio')").next().contains("Sufficient").should("be.visible");
       cy.get("article div:contains('Credit Score Rating')").next().contains("Fair").should("be.visible");
-      cy.get("article div:contains('Loan Pre-Qualification')").next().contains("Qualified").should("be.visible");
+      cy.get("article div:contains('Loan Pre-Qualification')").next().should("contain.text", "Qualified");
     });
   });
 });
