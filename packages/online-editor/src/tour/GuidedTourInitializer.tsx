@@ -74,7 +74,11 @@ function getOnlineEditorTutorial(i18n: OnlineI18n) {
           <Text>{i18n.guidedTour.init.dmnRunnerIntro}</Text>
 
           <Text>{"  "}</Text>
-          <Button onClick={() => dismissAndStartDmnRunner(props)} variant="link">
+          <Button
+            ouiaId="dmn-guided-tour-skip-runner-start-button"
+            onClick={() => dismissAndStartDmnRunner(props)}
+            variant="link"
+          >
             {i18n.guidedTour.init.skipTourAndUseDmnRunner}
           </Button>
           <br />
