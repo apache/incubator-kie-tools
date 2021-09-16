@@ -19,6 +19,7 @@ import * as React from "react";
 import { useContext, useMemo, useState } from "react";
 import { Routes } from "./Routes";
 import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
+import { useRouteMatch } from "react-router";
 
 export enum AuthStatus {
   SIGNED_OUT,
@@ -41,8 +42,9 @@ export interface GlobalContextType {
 export const GlobalContext = React.createContext<GlobalContextType>({} as any);
 
 export function GlobalContextProvider(props: { externalFile?: File; senderTabId?: string; children: React.ReactNode }) {
-  const [file, setFile] = useState(newFile("dmn"));
   const routes = useMemo(() => new Routes(), []);
+  const match = useRouteMatch<{ type: string }>(routes.editor.url({ type: ":type" }));
+  const [file, setFile] = useState(newFile(match?.params.type ?? "dmn"));
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () => ({
       targetOrigin: window.location.origin,

@@ -188,7 +188,11 @@ export class GithubService {
 
     return octokit.gists
       .create(gistContent)
-      .then((response) => this.removeCommitHashFromGistRawUrl((response.data as any).files[args.filename].raw_url))
+      .then((response) => {
+        const data = response.data as any;
+        this.currentGist = { filename: args.filename, id: data.id };
+        return this.removeCommitHashFromGistRawUrl(data.files[args.filename].raw_url);
+      })
       .catch((e) => Promise.reject("Not able to create gist on GitHub."));
   }
 

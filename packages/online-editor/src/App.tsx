@@ -35,18 +35,18 @@ interface Props {
 
 export function App(props: Props) {
   return (
-    <I18nDictionariesProvider
-      defaults={onlineI18nDefaults}
-      dictionaries={onlineI18nDictionaries}
-      initialLocale={navigator.language}
-      ctx={OnlineI18nContext}
-    >
-      <GlobalContextProvider externalFile={props.externalFile} senderTabId={props.senderTabId}>
-        <KieToolingExtendedServicesContextProvider>
-          <SettingsContextProvider>
-            <GlobalContext.Consumer>
-              {({ routes }) => (
-                <BrowserRouter>
+    <BrowserRouter>
+      <I18nDictionariesProvider
+        defaults={onlineI18nDefaults}
+        dictionaries={onlineI18nDictionaries}
+        initialLocale={navigator.language}
+        ctx={OnlineI18nContext}
+      >
+        <GlobalContextProvider externalFile={props.externalFile} senderTabId={props.senderTabId}>
+          <KieToolingExtendedServicesContextProvider>
+            <SettingsContextProvider>
+              <GlobalContext.Consumer>
+                {({ routes }) => (
                   <Switch>
                     <Route path={routes.editor.url({ type: ":type" })}>
                       <EditorPage />
@@ -60,12 +60,12 @@ export function App(props: Props) {
                     </Route>
                     <Route component={NoMatchPage} />
                   </Switch>
-                </BrowserRouter>
-              )}
-            </GlobalContext.Consumer>
-          </SettingsContextProvider>
-        </KieToolingExtendedServicesContextProvider>
-      </GlobalContextProvider>
-    </I18nDictionariesProvider>
+                )}
+              </GlobalContext.Consumer>
+            </SettingsContextProvider>
+          </KieToolingExtendedServicesContextProvider>
+        </GlobalContextProvider>
+      </I18nDictionariesProvider>
+    </BrowserRouter>
   );
 }
