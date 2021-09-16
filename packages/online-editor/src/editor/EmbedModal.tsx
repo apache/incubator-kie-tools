@@ -64,30 +64,27 @@ export function EmbedModal(props: Props) {
   const globals = useGlobals();
   const [embedCode, setEmbedCode] = useState("");
   const [contentSource, setContentSource] = useState(ContentSource.CURRENT_CONTENT);
+  const [editorContent, setEditorContent] = useState("");
   const { i18n } = useOnlineI18n();
+
+  useEffect(() => {
+    if (props.isOpen) {
+      props.editor?.getContent().then((c) => setEditorContent(c));
+    }
+  }, [props.editor, props.isOpen]);
 
   const isGist = useMemo(
     () => settings.github.service.isGist(queryParams.get(QueryParams.FILE) ?? ""),
     [queryParams, settings.github.service]
   );
 
-  const isSupportedStandaloneEditorFileExtensions = useCallback(
-    (toBeDetermined: string): toBeDetermined is SupportedStandaloneEditorFileExtensions => {
-      return toBeDetermined === "bpmn" || toBeDetermined === "bpmn2" || toBeDetermined === "dmn";
-    },
-    []
-  );
-
-  const getCurrentContentScript = useCallback(
-    async (libraryName: string) => {
-      const editorContent = ((await props.editor?.getContent()) ?? "").replace(/(\r\n|\n|\r)/gm, "");
-      return `
+  const getCurrentContentScript = useCallback((content: string, libraryName: string) => {
+    const editorContent = content.replace(/(\r\n|\n|\r)/gm, "");
+    return `
     <script>
       ${libraryName}.open({container: document.body, readOnly: true, initialContent: '${editorContent}', origin: "*" })
     </script>`;
-    },
-    [props.editor]
-  );
+  }, []);
 
   const getGithubGistScript = useCallback(
     (libraryName: string) => {
@@ -125,9 +122,13 @@ export function EmbedModal(props: Props) {
     </html>`;
   }, []);
 
-  const getStandaloneEditorIframeOuterHtml = useCallback(async () => {
-    if (!isSupportedStandaloneEditorFileExtensions(globals.file.fileExtension)) {
-      return "";
+  useEffect(() => {
+    if (
+      globals.file.fileExtension !== "bpmn" &&
+      globals.file.fileExtension !== "bpmn2" &&
+      globals.file.fileExtension !== "dmn"
+    ) {
+      return;
     }
 
     const iframe = document.createElement("iframe");
@@ -137,24 +138,19 @@ export function EmbedModal(props: Props) {
 
     const script =
       contentSource === ContentSource.CURRENT_CONTENT
-        ? await getCurrentContentScript(libraryName)
+        ? getCurrentContentScript(editorContent, libraryName)
         : getGithubGistScript(libraryName);
 
     iframe.srcdoc = getStandaloneEditorIframeSrcdoc(script, scriptUrl);
-    return iframe.outerHTML;
+    setEmbedCode(iframe.outerHTML);
   }, [
-    props.isOpen,
-    globals.file,
     contentSource,
-    getGithubGistScript,
+    editorContent,
     getCurrentContentScript,
+    getGithubGistScript,
     getStandaloneEditorIframeSrcdoc,
-    isSupportedStandaloneEditorFileExtensions,
+    globals.file.fileExtension,
   ]);
-
-  useEffect(() => {
-    getStandaloneEditorIframeOuterHtml().then((outerHtml) => setEmbedCode(outerHtml));
-  }, [getStandaloneEditorIframeOuterHtml]);
 
   return (
     <Modal

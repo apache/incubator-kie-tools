@@ -44,7 +44,7 @@ export const GlobalContext = React.createContext<GlobalContextType>({} as any);
 export function GlobalContextProvider(props: { externalFile?: File; senderTabId?: string; children: React.ReactNode }) {
   const routes = useMemo(() => new Routes(), []);
   const match = useRouteMatch<{ type: string }>(routes.editor({ type: ":type" }));
-  const [file, setFile] = useState(newFile(match?.params.type ?? "dmn"));
+  const [file, setFile] = useState(() => newFile(match?.params.type ?? "dmn"));
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () => ({
       targetOrigin: window.location.origin,

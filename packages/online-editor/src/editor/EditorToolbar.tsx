@@ -34,7 +34,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useOnlineI18n } from "../common/i18n";
 import { SettingsButton } from "../settings/SettingsButton";
 import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/KieToolingExtendedServicesButtons";
@@ -44,6 +44,7 @@ import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServices/K
 import { AuthStatus, useGlobals } from "../common/GlobalContext";
 import { useSettings } from "../settings/SettingsContext";
 import { SettingsTabs } from "../settings/SettingsModalBody";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 
 interface Props {
   onFullScreen: () => void;
@@ -77,6 +78,10 @@ export function EditorToolbar(props: Props) {
   }, [globals, fileName, fileExtension]);
 
   const cancelNewName = useCallback(() => {
+    setFileName(globals.file.fileName);
+  }, [globals.file.fileName]);
+
+  useEffect(() => {
     setFileName(globals.file.fileName);
   }, [globals.file.fileName]);
 
@@ -374,6 +379,8 @@ export function EditorToolbar(props: Props) {
         }
         topNav={
           <>
+            <Label variant="outline">{globals.file.kind}</Label>
+            &nbsp;
             {!globals.readonly && (
               <>
                 <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>

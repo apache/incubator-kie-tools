@@ -43,6 +43,7 @@ import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxConte
 import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
 import { extractFileExtension, removeDirectories, removeFileExtension } from "../common/utils";
 import { useSettings } from "../settings/SettingsContext";
+import { File, newFile } from "@kie-tooling-core/editor/dist/channel";
 
 const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tooling-core/monaco-editor");
 
@@ -85,20 +86,25 @@ export function EditorPage() {
   const queryParams = useQueryParams();
 
   useEffect(() => {
+    ``;
     if (globals.externalFile) {
-      globals.setFile(globals.externalFile);
+      globals.setFile({ ...globals.externalFile, kind: "external" });
+      return;
     }
-  }, [globals]);
 
-  useEffect(() => {
     const filePath = queryParams.get(QueryParams.FILE)!;
+    if (!filePath && globals.file.kind === "upload") {
+      return;
+    }
+
+    if (!filePath) {
+      globals.setFile(newFile(globals.file.fileExtension, "local"));
+      return;
+    }
+
     const readonly = queryParams.has(QueryParams.READONLY)
       ? queryParams.get(QueryParams.READONLY) === `${true}`
       : false;
-
-    if (!filePath || !isEditorReady) {
-      return;
-    }
 
     if (settings.github.service.isGist(filePath)) {
       settings.github.service
@@ -109,6 +115,7 @@ export function EditorPage() {
               filePath: filePath,
               readonly: readonly,
               getFileContent: Promise.resolve(content),
+              kind: "gist",
             })
           )
         )
@@ -116,7 +123,10 @@ export function EditorPage() {
           //FIXME: tiago
           console.info("error");
         });
-    } else if (settings.github.service.isGithub(filePath) || settings.github.service.isGithubRaw(filePath)) {
+      return;
+    }
+
+    if (settings.github.service.isGithub(filePath) || settings.github.service.isGithubRaw(filePath)) {
       settings.github.service
         .fetchGithubFile(settings.github.octokit, filePath)
         .then((response) => {
@@ -125,6 +135,7 @@ export function EditorPage() {
               filePath: filePath,
               readonly: readonly,
               getFileContent: Promise.resolve(response),
+              kind: "external",
             })
           );
         })
@@ -132,28 +143,30 @@ export function EditorPage() {
           //FIXME: tiago
           console.info("error");
         });
-    } else {
-      fetch(filePath)
-        .then((response) => {
-          if (response.ok) {
-            globals.setFile(
-              getFileToOpen({
-                filePath: filePath,
-                readonly: readonly,
-                getFileContent: response.text(),
-              })
-            );
-          } else {
-            //FIXME: tiago
-            console.info("error");
-          }
-        })
-        .catch((error) => {
+      return;
+    }
+
+    fetch(filePath)
+      .then((response) => {
+        if (response.ok) {
+          globals.setFile(
+            getFileToOpen({
+              filePath: filePath,
+              readonly: readonly,
+              getFileContent: response.text(),
+              kind: "external",
+            })
+          );
+        } else {
           //FIXME: tiago
           console.info("error");
-        });
-    }
-  }, [isEditorReady]);
+        }
+      })
+      .catch((error) => {
+        //FIXME: tiago
+        console.info("error");
+      });
+  }, []);
 
   const close = useCallback(() => {
     if (!isDirty) {
@@ -410,7 +423,7 @@ export function EditorPage() {
   );
 
   useEffect(() => {
-    if (!editor) {
+    if (!editor || !isEditorReady) {
       return;
     }
 
@@ -643,8 +656,14 @@ export function EditorPage() {
   );
 }
 
-function getFileToOpen(args: { filePath: string; readonly: boolean; getFileContent: Promise<string> }) {
+function getFileToOpen(args: {
+  kind: File["kind"];
+  filePath: string;
+  readonly: boolean;
+  getFileContent: Promise<string>;
+}) {
   return {
+    kind: args.kind,
     isReadOnly: args.readonly,
     fileExtension: extractFileExtension(removeDirectories(args.filePath) ?? "")!,
     fileName: removeFileExtension(removeDirectories(args.filePath) ?? ""),

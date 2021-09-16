@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useGlobals } from "../../common/GlobalContext";
@@ -34,18 +33,21 @@ export const KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT = "21345";
 export function KieToolingExtendedServicesContextProvider(props: Props) {
   const globals = useGlobals();
 
-  const [status, setStatus] = useState(() =>
-    globals.file.fileExtension === "dmn"
-      ? KieToolingExtendedServicesStatus.AVAILABLE
-      : KieToolingExtendedServicesStatus.UNAVAILABLE
-  );
-
+  const [status, setStatus] = useState(KieToolingExtendedServicesStatus.UNAVAILABLE);
   const [isModalOpen, setModalOpen] = useState(false);
   const [installTriggeredBy, setInstallTriggeredBy] = useState(DependentFeature.DMN_RUNNER);
   const [outdated, setOutdated] = useState(false);
   const [port, setPort] = useState(
     () => getCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT
   );
+
+  useEffect(() => {
+    setStatus(
+      globals.file.fileExtension === "dmn"
+        ? KieToolingExtendedServicesStatus.AVAILABLE
+        : KieToolingExtendedServicesStatus.UNAVAILABLE
+    );
+  }, [globals.file.fileExtension]);
 
   const baseUrl = useMemo(() => `http://localhost:${port}`, [port]);
   const bridge = useMemo(() => new KieToolingExtendedServicesBridge(port), [port]);

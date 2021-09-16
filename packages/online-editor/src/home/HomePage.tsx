@@ -101,6 +101,7 @@ export function HomePage() {
       }
 
       globals.setFile({
+        kind: "upload",
         isReadOnly: false,
         fileExtension,
         fileName: removeFileExtension(fileName),
@@ -120,7 +121,7 @@ export function HomePage() {
 
   const createEmptyFile = useCallback(
     (fileExtension: string) => {
-      globals.setFile(newFile(fileExtension));
+      globals.setFile(newFile(fileExtension, "local"));
       history.push(globals.routes.editor({ type: fileExtension }));
     },
     [globals, history]

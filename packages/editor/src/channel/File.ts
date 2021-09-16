@@ -22,6 +22,7 @@ export interface File {
   fileExtension: string;
   getFileContents: () => Promise<string | undefined>;
   isReadOnly: boolean;
+  kind?: "upload" | "gist" | "external" | "local";
 }
 
 /**
@@ -67,12 +68,14 @@ export const EMPTY_FILE_PMML = {
 /**
  * Helper method to create new, empty files, for different file extensions.
  * @param fileExtension The extension of the file.
+ * @param kind The kind of the file.
  */
-export function newFile(fileExtension: string): File {
+export function newFile(fileExtension: string, kind?: File["kind"]): File {
   return {
     fileName: "new-file",
     fileExtension: fileExtension,
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
+    kind,
   };
 }
