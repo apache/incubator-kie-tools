@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DeployedModel, DeployedModelState } from "./DeployedModel";
+import { OpenShiftDeployedModel, OpenShiftDeployedModelState } from "./OpenShiftDeployedModel";
 import { Build, Builds, CreateBuild, DeleteBuild, ListBuilds } from "./resources/Build";
 import { CreateBuildConfig, DeleteBuildConfig } from "./resources/BuildConfig";
 import {
@@ -29,7 +29,7 @@ import { GetProject } from "./resources/Project";
 import { KOGITO_CREATED_BY, KOGITO_FILENAME, Resource, ResourceFetch } from "./resources/Resource";
 import { CreateRoute, DeleteRoute, ListRoutes, Route, Routes } from "./resources/Route";
 import { CreateService, DeleteService } from "./resources/Service";
-import { OpenShiftSettingsConfig } from "../../settings/OpenShiftSettingsConfig";
+import { OpenShiftSettingsConfig } from "./OpenShiftSettingsConfig";
 
 export const DEVELOPER_SANDBOX_URL = "https://developers.redhat.com/developer-sandbox";
 export const DEVELOPER_SANDBOX_GET_STARTED_URL = "https://developers.redhat.com/developer-sandbox/get-started";
@@ -56,7 +56,7 @@ export class OpenShiftService {
     }
   }
 
-  public async loadDeployments(config: OpenShiftSettingsConfig): Promise<DeployedModel[]> {
+  public async loadDeployments(config: OpenShiftSettingsConfig): Promise<OpenShiftDeployedModel[]> {
     const commonArgs = {
       host: config.host,
       namespace: config.namespace,
@@ -178,25 +178,25 @@ export class OpenShiftService {
     }/editor/dmn?readonly=true&file=${baseUrl}/${encodeURIComponent(filename)}`;
   }
 
-  private extractDeploymentState(deployment: Deployment, build: Build | undefined): DeployedModelState {
+  private extractDeploymentState(deployment: Deployment, build: Build | undefined): OpenShiftDeployedModelState {
     if (!build) {
-      return DeployedModelState.DOWN;
+      return OpenShiftDeployedModelState.DOWN;
     }
 
     if (["New", "Pending"].includes(build.status.phase)) {
-      return DeployedModelState.PREPARING;
+      return OpenShiftDeployedModelState.PREPARING;
     }
 
     if (["Failed", "Error", "Cancelled"].includes(build.status.phase)) {
-      return DeployedModelState.DOWN;
+      return OpenShiftDeployedModelState.DOWN;
     }
 
     if (build.status.phase === "Running") {
-      return DeployedModelState.IN_PROGRESS;
+      return OpenShiftDeployedModelState.IN_PROGRESS;
     }
 
     if (!deployment.status.replicas || +deployment.status.replicas === 0) {
-      return DeployedModelState.DOWN;
+      return OpenShiftDeployedModelState.DOWN;
     }
 
     const progressingCondition = deployment.status.conditions?.find(
@@ -204,13 +204,13 @@ export class OpenShiftService {
     );
 
     if (!progressingCondition || progressingCondition.status !== "True") {
-      return DeployedModelState.DOWN;
+      return OpenShiftDeployedModelState.DOWN;
     }
 
     if (!deployment.status.readyReplicas || +deployment.status.readyReplicas === 0) {
-      return DeployedModelState.IN_PROGRESS;
+      return OpenShiftDeployedModelState.IN_PROGRESS;
     }
 
-    return DeployedModelState.UP;
+    return OpenShiftDeployedModelState.UP;
   }
 }

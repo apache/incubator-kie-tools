@@ -14,17 +14,7 @@
  * limitations under the License.
  */
 
-import { useEffect, useRef, useState } from "react";
-
-export function useFileUrl() {
-  const [fileUrl, setFileUrl] = useState("");
-
-  useEffect(() => {
-    setFileUrl(window.location.search.split("?file=")[1]);
-  }, [window.location]);
-
-  return fileUrl;
-}
+import { useEffect, useRef } from "react";
 
 export function usePrevious(value: any) {
   const ref = useRef();

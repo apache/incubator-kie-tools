@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-export enum DeployedModelState {
+export enum OpenShiftDeployedModelState {
   UP = "UP",
   DOWN = "DOWN",
   IN_PROGRESS = "IN_PROGRESS",
   PREPARING = "PREPARING",
 }
 
-export interface DeployedModel {
+export interface OpenShiftDeployedModel {
   resourceName: string;
   filename: string;
   urls: {
@@ -29,5 +29,5 @@ export interface DeployedModel {
     swaggerUI: string;
   };
   creationTimestamp: Date;
-  state: DeployedModelState;
+  state: OpenShiftDeployedModelState;
 }

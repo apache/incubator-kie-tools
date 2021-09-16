@@ -16,14 +16,14 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { DeployedModel } from "./DeployedModel";
+import { OpenShiftDeployedModel } from "../../settings/OpenShiftDeployedModel";
 import { OpenShiftSettingsConfig } from "../../settings/OpenShiftSettingsConfig";
 
 export interface DmnDevSandboxContextType {
-  deployments: DeployedModel[];
+  deployments: OpenShiftDeployedModel[];
   isDropdownOpen: boolean;
   isConfirmDeployModalOpen: boolean;
-  setDeployments: React.Dispatch<DeployedModel[]>;
+  setDeployments: React.Dispatch<OpenShiftDeployedModel[]>;
   setDropdownOpen: React.Dispatch<boolean>;
   setConfirmDeployModalOpen: React.Dispatch<boolean>;
   onDeploy: (config: OpenShiftSettingsConfig) => Promise<void>;

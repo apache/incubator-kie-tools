@@ -17,17 +17,16 @@
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useGlobals } from "../../common/GlobalContext";
 import { useOnlineI18n } from "../../common/i18n";
 import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesModal } from "../KieToolingExtendedServices/KieToolingExtendedServicesModal";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
-import { DeployedModel } from "./DeployedModel";
+import { OpenShiftDeployedModel } from "../../settings/OpenShiftDeployedModel";
 import { DmnDevSandboxContext } from "./DmnDevSandboxContext";
-import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
+import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus";
 import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandboxModalConfirmDeploy";
-import { OpenShiftService } from "./OpenShiftService";
 import { useSettings } from "../../settings/SettingsContext";
 import { isConfigValid, OpenShiftSettingsConfig } from "../../settings/OpenShiftSettingsConfig";
 
@@ -43,9 +42,9 @@ enum AlertTypes {
   DEPLOY_STARTED_SUCCESS,
 }
 
-export function DmnDevSandboxContextProvider(props: Props) {
-  const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
+const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
 
+export function DmnDevSandboxContextProvider(props: Props) {
   const settings = useSettings();
   const { i18n } = useOnlineI18n();
   const globals = useGlobals();
@@ -53,7 +52,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
-  const [deployments, setDeployments] = useState([] as DeployedModel[]);
+  const [deployments, setDeployments] = useState([] as OpenShiftDeployedModel[]);
   const [openAlert, setOpenAlert] = useState(AlertTypes.NONE);
 
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
@@ -68,7 +67,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
         setConfirmDeployModalOpen(false);
       }
     },
-    [settings.openshift.status.set]
+    [settings.openshift.status]
   );
 
   const onDeploy = useCallback(
@@ -115,8 +114,8 @@ export function DmnDevSandboxContextProvider(props: Props) {
           );
           return isConfigOk ? settings.openshift.service.loadDeployments(settings.openshift.config.get) : [];
         })
-        .then((deployments: DeployedModel[]) => setDeployments(deployments))
-        .catch((error: any) => console.error(error));
+        .then((deployments) => setDeployments(deployments))
+        .catch((error) => console.error(error));
       return;
     }
 
@@ -124,22 +123,24 @@ export function DmnDevSandboxContextProvider(props: Props) {
       const loadDeploymentsTask = setInterval(() => {
         settings.openshift.service
           .loadDeployments(settings.openshift.config.get)
-          .then((deployments: DeployedModel[]) => setDeployments(deployments))
-          .catch((error: any) => {
+          .then((deployments) => setDeployments(deployments))
+          .catch((error) => {
             setDeployments([]);
-            clearInterval(loadDeploymentsTask);
             console.error(error);
+          })
+          .finally(() => {
+            clearInterval(loadDeploymentsTask);
           });
       }, LOAD_DEPLOYMENTS_POLLING_TIME);
       return () => clearInterval(loadDeploymentsTask);
     }
   }, [
     onDisconnect,
-    settings.openshift.config.get,
-    settings.openshift.status.get,
+    settings.openshift.config,
+    settings.openshift.status,
+    settings.openshift.service,
     kieToolingExtendedServices.isModalOpen,
     kieToolingExtendedServices.status,
-    settings.openshift.service,
     deployments.length,
   ]);
 

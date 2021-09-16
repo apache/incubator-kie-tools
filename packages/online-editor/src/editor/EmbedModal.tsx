@@ -22,10 +22,10 @@ import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { useOnlineI18n } from "../common/i18n";
-import { useFileUrl } from "../common/Hooks";
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
-import { useGlobals } from "../common/GlobalContext";
 import { useSettings } from "../settings/SettingsContext";
+import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
+import { useGlobals } from "../common/GlobalContext";
 
 type SupportedStandaloneEditorFileExtensions = "bpmn" | "bpmn2" | "dmn";
 type StandaloneEditorLibraryName = "BpmnEditor" | "DmnEditor";
@@ -56,18 +56,20 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   editor?: EmbeddedEditorRef;
-  fileExtension: string;
 }
 
 export function EmbedModal(props: Props) {
-  const globals = useGlobals();
+  const queryParams = useQueryParams();
   const settings = useSettings();
+  const globals = useGlobals();
   const [embedCode, setEmbedCode] = useState("");
   const [contentSource, setContentSource] = useState(ContentSource.CURRENT_CONTENT);
   const { i18n } = useOnlineI18n();
-  const fileUrl = useFileUrl();
 
-  const isGist = useMemo(() => settings.github.service.isGist(fileUrl), [fileUrl, globals]);
+  const isGist = useMemo(
+    () => settings.github.service.isGist(queryParams.get(QueryParams.FILE) ?? ""),
+    [queryParams, settings.github.service]
+  );
 
   const isSupportedStandaloneEditorFileExtensions = useCallback(
     (toBeDetermined: string): toBeDetermined is SupportedStandaloneEditorFileExtensions => {
@@ -87,17 +89,14 @@ export function EmbedModal(props: Props) {
     [props.editor]
   );
 
-  const getGithubGistScript = useCallback(
-    (libraryName: string) => {
-      return `
+  const getGithubGistScript = useCallback((libraryName: string) => {
+    return `
     <script>
-      fetch("${fileUrl}")
+      fetch("${queryParams.get(QueryParams.FILE)}")
         .then(response => response.text())
         .then(content => ${libraryName}.open({container: document.body, readOnly: true, initialContent: content, origin: "*" }))
     </script>`;
-    },
-    [fileUrl]
-  );
+  }, []);
 
   const getStandaloneEditorIframeSrcdoc = useCallback((script: string, scriptUrl: string) => {
     return `<!DOCTYPE html>
@@ -124,14 +123,14 @@ export function EmbedModal(props: Props) {
   }, []);
 
   const getStandaloneEditorIframeOuterHtml = useCallback(async () => {
-    if (!isSupportedStandaloneEditorFileExtensions(props.fileExtension)) {
+    if (!isSupportedStandaloneEditorFileExtensions(globals.file.fileExtension)) {
       return "";
     }
 
     const iframe = document.createElement("iframe");
     iframe.width = "100%";
     iframe.height = "100%";
-    const { libraryName, scriptUrl } = editorStandaloneClassMapping.get(props.fileExtension)!;
+    const { libraryName, scriptUrl } = editorStandaloneClassMapping.get(globals.file.fileExtension)!;
 
     const script =
       contentSource === ContentSource.CURRENT_CONTENT
@@ -142,7 +141,7 @@ export function EmbedModal(props: Props) {
     return iframe.outerHTML;
   }, [
     props.isOpen,
-    props.fileExtension,
+    globals.file,
     contentSource,
     getGithubGistScript,
     getCurrentContentScript,

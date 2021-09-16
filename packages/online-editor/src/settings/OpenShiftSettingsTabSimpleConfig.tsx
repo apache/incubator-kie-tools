@@ -27,7 +27,7 @@ import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useSettings } from "./SettingsContext";
 import { useOnlineI18n } from "../common/i18n";
-import { OpenShiftInstanceStatus } from "../editor/DmnDevSandbox/OpenShiftInstanceStatus";
+import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { EMPTY_CONFIG, isConfigValid, OpenShiftSettingsConfig, saveConfigCookie } from "./OpenShiftSettingsConfig";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 

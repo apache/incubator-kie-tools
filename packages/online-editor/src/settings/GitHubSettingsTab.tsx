@@ -11,7 +11,7 @@ import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { GITHUB_OAUTH_TOKEN_SIZE } from "../common/GithubService";
+import { GITHUB_OAUTH_TOKEN_SIZE } from "./GithubService";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SettingsTabs } from "./SettingsModalBody";

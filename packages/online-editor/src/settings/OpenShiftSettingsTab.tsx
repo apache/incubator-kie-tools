@@ -2,7 +2,7 @@ import * as React from "react";
 import { useCallback } from "react";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useSettings } from "./SettingsContext";
-import { OpenShiftInstanceStatus } from "../editor/DmnDevSandbox/OpenShiftInstanceStatus";
+import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";

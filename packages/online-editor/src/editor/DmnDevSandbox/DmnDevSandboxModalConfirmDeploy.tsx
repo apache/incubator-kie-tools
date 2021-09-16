@@ -38,7 +38,7 @@ export function DmnDevSandboxModalConfirmDeploy() {
     setConfirmLoading(false);
 
     dmnDevSandboxContext.setConfirmDeployModalOpen(false);
-  }, [dmnDevSandboxContext, isConfirmLoading]);
+  }, [settings.openshift.config, dmnDevSandboxContext, isConfirmLoading]);
 
   const onCancel = useCallback(() => {
     dmnDevSandboxContext.setConfirmDeployModalOpen(false);

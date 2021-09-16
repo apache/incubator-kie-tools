@@ -18,8 +18,8 @@ import { DropdownItem, DropdownSeparator } from "@patternfly/react-core/dist/js/
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../common/i18n";
-import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
-import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
+import { useDmnDevSandbox } from "./DmnDevSandboxContext";
+import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus";
 import { FeatureDependentOnKieToolingExtendedServices } from "../KieToolingExtendedServices/FeatureDependentOnKieToolingExtendedServices";
 import {
   DependentFeature,

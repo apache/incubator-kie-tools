@@ -15,16 +15,15 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router";
 import { useGlobals } from "../common/GlobalContext";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
-import { UpdateGistErrors } from "../common/GithubService";
+import { UpdateGistErrors } from "../settings/GithubService";
 import { EmbedModal } from "./EmbedModal";
-import { useFileUrl } from "../common/Hooks";
 import { ChannelType } from "@kie-tooling-core/editor/dist/api";
 import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
@@ -69,7 +68,6 @@ export enum ModalType {
 export function EditorPage() {
   const globals = useGlobals();
   const settings = useSettings();
-  const location = useLocation();
   const { editor, editorRef } = useEditorRef();
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
@@ -181,7 +179,7 @@ export function EditorPage() {
         })
       );
     });
-  }, [globals.file.fileName, editor]);
+  }, [globals.file, globals.senderTabId, editor]);
 
   const requestDownload = useCallback(() => {
     editor?.getStateControl().setSavedCommand();
@@ -205,15 +203,13 @@ export function EditorPage() {
     });
   }, [editor]);
 
-  const fileUrl = useFileUrl();
-
   const requestGistIt = useCallback(async () => {
     if (editor) {
       const content = await editor.getContent();
 
       // update gist
-      if (fileUrl && settings.github.service.isGist(fileUrl)) {
-        const userLogin = settings.github.service.extractUserLoginFromFileUrl(fileUrl);
+      if (queryParams.has(QueryParams.FILE) && settings.github.service.isGist(queryParams.get(QueryParams.FILE)!)) {
+        const userLogin = settings.github.service.extractUserLoginFromFileUrl(queryParams.get(QueryParams.FILE)!);
         if (userLogin === settings.github.user) {
           try {
             const filename = `${globals.file.fileName}.${globals.file.fileExtension}`;
@@ -262,7 +258,7 @@ export function EditorPage() {
 
         setOpenAlert(AlertTypes.NONE);
         history.push({
-          pathname: globals.routes.editor.url({ type: fileExtension }),
+          pathname: globals.routes.editor.url({ type: globals.file.fileExtension }),
           search: `?${QueryParams.FILE}=${newGistUrl}`,
         });
         return;
@@ -272,11 +268,7 @@ export function EditorPage() {
         return;
       }
     }
-  }, [fileUrl, globals, editor]);
-
-  const fileExtension = useMemo(() => {
-    return globals.routes.editor.args(location.pathname).type;
-  }, [globals.routes, location.pathname]);
+  }, [history, globals, settings, queryParams, editor]);
 
   const requestEmbed = useCallback(() => {
     setOpenModalType(ModalType.EMBED);
@@ -309,8 +301,8 @@ export function EditorPage() {
   }, []);
 
   const toggleFullScreen = useCallback(() => {
-    setFullscreen(!fullscreen);
-  }, [fullscreen]);
+    setFullscreen((prev) => !prev);
+  }, []);
 
   const onReady = useCallback(() => setIsEditorReady(true), []);
 
@@ -319,10 +311,9 @@ export function EditorPage() {
       downloadRef.current.download = `${globals.file.fileName}.${globals.file.fileExtension}`;
     }
     if (downloadPreviewRef.current) {
-      const fileName = globals.file.fileName;
-      downloadPreviewRef.current.download = `${fileName}-svg.svg`;
+      downloadPreviewRef.current.download = `${globals.file.fileName}-svg.svg`;
     }
-  }, [globals.file.fileName]);
+  }, [globals.file]);
 
   useEffect(() => {
     document.addEventListener("fullscreenchange", toggleFullScreen);
@@ -353,7 +344,7 @@ export function EditorPage() {
   const refreshDiagramEditor = useCallback(() => {
     setOpenModalType(ModalType.NONE);
     setOpenAlert(AlertTypes.NONE);
-  }, [editor]);
+  }, []);
 
   const [textEditorContent, setTextEditorContext] = useState<string | undefined>(undefined);
 
@@ -594,7 +585,6 @@ export function EditorPage() {
                               isOpen={openModalType === ModalType.EMBED}
                               onClose={closeModal}
                               editor={editor}
-                              fileExtension={fileExtension}
                             />
                           )}
                           {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}

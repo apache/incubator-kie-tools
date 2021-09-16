@@ -20,7 +20,7 @@ import { useCallback } from "react";
 import { useOnlineI18n } from "../../common/i18n";
 import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
 import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
-import { OpenShiftInstanceStatus } from "../DmnDevSandbox/OpenShiftInstanceStatus";
+import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus";
 import { useDmnRunner } from "../DmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieToolingExtendedServices } from "./FeatureDependentOnKieToolingExtendedServices";
 import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";

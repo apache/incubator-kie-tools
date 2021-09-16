@@ -2,14 +2,14 @@ import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "../common/utils";
 import { Octokit } from "@octokit/rest";
-import { GithubService } from "../common/GithubService";
+import { GithubService } from "./GithubService";
 import { AuthStatus } from "../common/GlobalContext";
 import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
 import { SettingsTabs } from "./SettingsModalBody";
 import { OpenShiftSettingsConfig, readConfigCookie } from "./OpenShiftSettingsConfig";
 import { KieToolingExtendedServicesStatus } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesStatus";
-import { OpenShiftInstanceStatus } from "../editor/DmnDevSandbox/OpenShiftInstanceStatus";
-import { OpenShiftService } from "../editor/DmnDevSandbox/OpenShiftService";
+import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
+import { OpenShiftService } from "./OpenShiftService";
 import { useKieToolingExtendedServices } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContext";
 
 const GITHUB_AUTH_TOKEN_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__github-oauth-token";
