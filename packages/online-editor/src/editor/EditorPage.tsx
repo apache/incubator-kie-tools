@@ -50,6 +50,7 @@ export enum AlertTypes {
   NONE,
   COPY,
   SUCCESS_UPDATE_GIST,
+  SUCCESS_CREATE_GIST,
   SUCCESS_UPDATE_GIST_FILENAME,
   INVALID_CURRENT_GIST,
   INVALID_GIST_FILENAME,
@@ -256,7 +257,7 @@ export function EditorPage() {
           isPublic: true,
         });
 
-        setOpenAlert(AlertTypes.NONE);
+        setOpenAlert(AlertTypes.SUCCESS_CREATE_GIST);
         history.push({
           pathname: globals.routes.editor.url({ type: globals.file.fileExtension }),
           search: `?${QueryParams.FILE}=${newGistUrl}`,
@@ -502,6 +503,16 @@ export function EditorPage() {
                                 className={"kogito--alert"}
                                 variant="success"
                                 title={i18n.editorPage.alerts.updateGist}
+                                actionClose={<AlertActionCloseButton onClose={closeAlert} />}
+                              />
+                            </div>
+                          )}
+                          {!fullscreen && openAlert === AlertTypes.SUCCESS_CREATE_GIST && (
+                            <div className={"kogito--alert-container"}>
+                              <Alert
+                                className={"kogito--alert"}
+                                variant="success"
+                                title={i18n.editorPage.alerts.createGist}
                                 actionClose={<AlertActionCloseButton onClose={closeAlert} />}
                               />
                             </div>

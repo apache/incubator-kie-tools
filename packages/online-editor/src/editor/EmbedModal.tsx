@@ -89,14 +89,17 @@ export function EmbedModal(props: Props) {
     [props.editor]
   );
 
-  const getGithubGistScript = useCallback((libraryName: string) => {
-    return `
+  const getGithubGistScript = useCallback(
+    (libraryName: string) => {
+      return `
     <script>
       fetch("${queryParams.get(QueryParams.FILE)}")
         .then(response => response.text())
         .then(content => ${libraryName}.open({container: document.body, readOnly: true, initialContent: content, origin: "*" }))
     </script>`;
-  }, []);
+    },
+    [queryParams]
+  );
 
   const getStandaloneEditorIframeSrcdoc = useCallback((script: string, scriptUrl: string) => {
     return `<!DOCTYPE html>

@@ -55,6 +55,7 @@ export const en: OnlineI18n = {
       },
       copy: "Content copied to clipboard",
       updateGist: "Your gist was updated.",
+      createGist: "Your gist was created.",
       updateGistFilename: {
         title: "Your gist and its filename were updated!",
         message: `Your gists filename was updated, and it can take a few seconds until the new ${en_common.names.url} is available.`,

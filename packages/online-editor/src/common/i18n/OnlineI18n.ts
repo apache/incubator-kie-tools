@@ -53,6 +53,7 @@ interface OnlineDictionary extends ReferenceDictionary {
       };
       copy: string;
       updateGist: string;
+      createGist: string;
       updateGistFilename: {
         title: string;
         message: string;
