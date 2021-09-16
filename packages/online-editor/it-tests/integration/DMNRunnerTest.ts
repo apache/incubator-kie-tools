@@ -39,16 +39,34 @@ describe("DMN Runner Test", () => {
 
     // fill in DMN Runner inputs panel
     cy.get("[data-testid='dmn-form']").within(($form) => {
-      cy.get("input[name='Credit Score.FICO']").type("300");
-      cy.get("input[name='Applicant Data.Age']").type("25");
+      cy.get("input[name='Credit Score.FICO']").type("650");
+      cy.get("input[name='Applicant Data.Age']").type("30");
 
       cy.get("[x-dmn-type*='Marital_Status'] button").click();
       cy.get("ul[name='Applicant Data.Marital Status'] button").contains("M").click();
 
-      // cy.get("[x-dmn-type*='Employment_Status'] button").click();
-      // cy.get("ul[name='Applicant Data.Employment Status'] button").contains("Employed").click();
-
       cy.get("input[name='Applicant Data.Existing Customer']").check();
+
+      cy.get("input[name='Applicant Data.Monthly.Income']").type("3000");
+      cy.get("input[name='Applicant Data.Monthly.Repayments']").type("120");
+      cy.get("input[name='Applicant Data.Monthly.Expenses']").type("0");
+      cy.get("input[name='Applicant Data.Monthly.Tax']").type("0");
+      cy.get("input[name='Applicant Data.Monthly.Insurance']").type("0");
+
+      cy.get("[x-dmn-type*='Product_Type'] button").click();
+      cy.get("ul[name='Requested Product.Type'] button").contains("Standard Loan").click();
+
+      cy.get("input[name='Requested Product.Rate']").type("1.5");
+      cy.get("input[name='Requested Product.Term']").type("4");
+      cy.get("input[name='Requested Product.Amount']").type("10000");
+    });
+
+    // check DMN Runner outputs panel
+    cy.get("[data-testid='dmn-form-result']").within(($form) => {
+      cy.get("article div:contains('Front End Ratio')").next().contains("Sufficient").should("be.visible");
+      cy.get("article div:contains('Back End Ratio')").next().contains("Sufficient").should("be.visible");
+      cy.get("article div:contains('Credit Score Rating')").next().contains("Fair").should("be.visible");
+      cy.get("article div:contains('Loan Pre-Qualification')").next().contains("Qualified").should("be.visible");
     });
   });
 });
