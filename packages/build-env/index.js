@@ -284,6 +284,12 @@ module.exports = {
     },
   },
 
+  VSCodeWebMode: {
+    dev: {
+      port: 3000,
+    },
+  },
+
   vars: () => ({
     ENV_VARS,
     getOrDefault: getOrDefault,

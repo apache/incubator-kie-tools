@@ -1,0 +1,12 @@
+{
+  "fixturesFolder": "cypress/fixtures",
+  "integrationFolder": "cypress/integration",
+  "pluginsFile": "cypress/plugins/index.ts",
+  "screenshotsFolder": "../../dist-it-tests/screenshots",
+  "videosFolder": "../../dist-it-tests/videos",
+  "supportFile": "cypress/support/index.ts",
+  "chromeWebSecurity": false,
+  "video": true,
+  "downloadsFolder": "cypress/downloads",
+  "defaultCommandTimeout": 10000
+}
