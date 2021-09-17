@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Characteristic, DataField, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Form } from "@patternfly/react-core/dist/js/components/Form";
 import { CharacteristicsTableEditRow, CharacteristicsTableRow } from "../molecules";
 import { Operation } from "../Operation";
 import { useSelector } from "react-redux";
 import { useOperation } from "../OperationContext";
+import { Interaction } from "../../../types";
 
 export interface IndexedCharacteristic {
   index: number;
@@ -64,6 +65,8 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   const addCharacteristicRowRef = useRef<HTMLDivElement | null>(null);
 
+  const [characteristicFocusIndex, setCharacteristicFocusIndex] = useState<number | undefined>(undefined);
+
   const { activeOperation, setActiveOperation } = useOperation();
 
   const dataFields: DataField[] = useSelector<PMML, DataField[]>((state: PMML) => {
@@ -84,9 +87,34 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     }
   }, [characteristics, selectedCharacteristicIndex]);
 
+  //Set the focus on a Characteristic as required
+  useEffect(() => {
+    if (characteristicFocusIndex !== undefined) {
+      document.querySelector<HTMLElement>(`#characteristic-n${characteristicFocusIndex}`)?.focus();
+    }
+  }, [characteristics, characteristicFocusIndex]);
+
   const onEdit = (index: number | undefined) => {
     setSelectedCharacteristicIndex(index);
     setActiveOperation(Operation.UPDATE_CHARACTERISTIC);
+  };
+
+  const handleDelete = (index: number, interaction: Interaction) => {
+    onDelete(index);
+    if (interaction === "mouse") {
+      //If the Characteristic was deleted by clicking on the delete icon we need to blur
+      //the element otherwise the CSS :focus-within persists on the deleted element.
+      //See https://issues.redhat.com/browse/FAI-570 for the root cause.
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement?.blur();
+      }
+    } else if (interaction === "keyboard") {
+      //If the Characteristic was deleted by pressing enter on the delete icon when focused
+      //we need to set the focus to the next Characteristic. The index of the _next_ item
+      //is identical to the index of the deleted item.
+      setCharacteristicFocusIndex(index);
+    }
+    setSelectedCharacteristicIndex(undefined);
   };
 
   const onDelete = (index: number | undefined) => {
@@ -102,6 +130,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   return (
     <Form
+      data-testid="characteristics-table"
       onSubmit={(e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -114,7 +143,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
         return (
           <article
             key={ic.index}
-            className={`editable-item output-item-n${selectedCharacteristicIndex} ${
+            className={`editable-item characteristic-item-n${selectedCharacteristicIndex} ${
               isRowInEditMode ? "editable-item--editing" : ""
             }`}
           >
@@ -143,7 +172,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                 characteristic={ic}
                 dataFields={dataFields}
                 onEdit={() => onEdit(ic.index)}
-                onDelete={() => onDelete(ic.index)}
+                onDelete={(interaction) => handleDelete(ic.index, interaction)}
               />
             )}
           </article>

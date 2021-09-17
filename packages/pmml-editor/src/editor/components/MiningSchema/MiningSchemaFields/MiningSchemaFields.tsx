@@ -12,13 +12,14 @@ import "./MiningSchemaFields.scss";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { ValidationIndicator } from "../../EditorCore/atoms";
+import { Interaction } from "../../../types";
 
 interface MiningSchemaFieldsProps {
   modelIndex: number;
   dataDictionary?: DataDictionary;
   fields: MiningField[] | undefined;
   onAddProperties: (index: number) => void;
-  onDelete: (index: number, name: string) => void;
+  onDelete: (index: number, interaction: Interaction) => void;
   onPropertyDelete: (index: number, updatedField: MiningField) => void;
   onEdit: (index: number) => void;
   onCancel: () => void;
@@ -56,7 +57,7 @@ interface MiningSchemaFieldProps {
   dataDictionary?: DataDictionary;
   field: MiningField;
   onAddProperties: (index: number) => void;
-  onDelete: (index: number, name: string) => void;
+  onDelete: (index: number, interaction: Interaction) => void;
   onPropertyDelete: (index: number, field: MiningField) => void;
   onEdit: (index: number) => void;
   onCancel: () => void;
@@ -81,12 +82,6 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
     onAddProperties(index);
   };
 
-  const deleteField = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    onDelete(index, field.name as string);
-  };
-
   const deleteProperty = (updatedField: MiningField) => {
     onPropertyDelete(index, updatedField);
   };
@@ -97,6 +92,14 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
     onEdit(index);
   };
 
+  const handleDelete = (event: React.MouseEvent | React.KeyboardEvent, interaction: Interaction) => {
+    event.stopPropagation();
+    event.preventDefault();
+    if (onDelete) {
+      onDelete(index, interaction);
+    }
+  };
+
   const { validationRegistry } = useValidationRegistry();
   const validations = useMemo(
     () => validationRegistry.get(Builder().forModel(modelIndex).forMiningSchema().forMiningField(index).build()),
@@ -104,56 +107,106 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
   );
 
   return (
-    <li
-      className={`editable-item ${editing === index ? "editable-item--editing" : ""}`}
-      key={field.name.value}
-      onClick={(event) => handleEdit(event)}
-      ref={ref}
-      tabIndex={0}
-      onKeyDown={(event) => {
-        if (event.key === "Enter") {
-          handleEdit(event);
-        }
-        if (event.key === "Escape") {
-          onCancel();
-        }
-      }}
-    >
-      <section className={"editable-item__inner"}>
-        <Split hasGutter={true}>
-          {index !== editing && validations.length > 0 && (
-            <SplitItem>
-              <Flex
-                alignItems={{ default: "alignItemsCenter" }}
-                justifyContent={{ default: "justifyContentCenter" }}
-                style={{ height: "100%" }}
-              >
-                <FlexItem>
-                  <ValidationIndicator validations={validations} />
-                </FlexItem>
-              </Flex>
-            </SplitItem>
-          )}
-          <SplitItem>
-            <span className="mining-schema-list__item__name">{field.name}</span>
-          </SplitItem>
-          <SplitItem isFilled={true}>
-            <MiningSchemaFieldLabels
-              modelIndex={modelIndex}
-              index={index}
-              field={field}
-              onEdit={addProperties}
-              onDelete={deleteProperty}
-              editing={index === editing}
-            />
-          </SplitItem>
-          <SplitItem>
-            <Button variant="plain" onClick={deleteField}>
-              <TrashIcon />
-            </Button>
-          </SplitItem>
-        </Split>
-      </section>
-    </li>
+    <>
+      {index === editing && (
+        <li
+          id={`mining-schema-field-n${index}`}
+          data-testid={`mining-schema-field-n${index}`}
+          className={`editable-item ${editing === index ? "editable-item--editing" : ""}`}
+          key={field.name.value}
+          ref={ref}
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              onCancel();
+            }
+          }}
+        >
+          <section className={"editable-item__inner"}>
+            <Split hasGutter={true}>
+              <SplitItem>
+                <span className="mining-schema-list__item__name">{field.name}</span>
+              </SplitItem>
+              <SplitItem isFilled={true}>
+                <MiningSchemaFieldLabels
+                  modelIndex={modelIndex}
+                  index={index}
+                  field={field}
+                  onEdit={addProperties}
+                  onDelete={deleteProperty}
+                  editing={index === editing}
+                />
+              </SplitItem>
+            </Split>
+          </section>
+        </li>
+      )}
+      {index !== editing && (
+        <li
+          id={`mining-schema-field-n${index}`}
+          data-testid={`mining-schema-field-n${index}`}
+          className={`editable-item ${editing === index ? "editable-item--editing" : ""}`}
+          key={field.name.value}
+          onClick={(event) => handleEdit(event)}
+          ref={ref}
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              handleEdit(event);
+            }
+            if (event.key === "Escape") {
+              onCancel();
+            }
+          }}
+        >
+          <section className={"editable-item__inner"}>
+            <Split hasGutter={true}>
+              {validations.length > 0 && (
+                <SplitItem>
+                  <Flex
+                    alignItems={{ default: "alignItemsCenter" }}
+                    justifyContent={{ default: "justifyContentCenter" }}
+                    style={{ height: "100%" }}
+                  >
+                    <FlexItem>
+                      <ValidationIndicator validations={validations} />
+                    </FlexItem>
+                  </Flex>
+                </SplitItem>
+              )}
+              <SplitItem>
+                <span className="mining-schema-list__item__name">{field.name}</span>
+              </SplitItem>
+              <SplitItem isFilled={true}>
+                <MiningSchemaFieldLabels
+                  modelIndex={modelIndex}
+                  index={index}
+                  field={field}
+                  onEdit={addProperties}
+                  onDelete={deleteProperty}
+                  editing={index === editing}
+                />
+              </SplitItem>
+              <SplitItem>
+                <Button
+                  id={`mining-schema-field-n${index}__delete`}
+                  data-testid={`mining-schema-field-n${index}__delete`}
+                  className="editable-item__delete"
+                  variant="plain"
+                  onClick={(e) => handleDelete(e, "mouse")}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      handleDelete(event, "keyboard");
+                    }
+                  }}
+                >
+                  <TrashIcon />
+                </Button>
+              </SplitItem>
+            </Split>
+          </section>
+        </li>
+      )}
+    </>
   );
 };

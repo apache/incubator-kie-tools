@@ -145,6 +145,8 @@ describe("Predicate Test", () => {
       cy.ouiaId("edit-characteristic").within(() => {
         cy.ouiaType("attribute-item")
           .first()
+          //The "Attribute Item" needs the focus (or mouse hover) for the delete icon to be visible.
+          .focus()
           .within(() => {
             cy.ouiaId("delete-attribute").click();
           });

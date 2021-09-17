@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Form } from "@patternfly/react-core/dist/js/components/Form";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
@@ -23,6 +23,7 @@ import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
 import OutputFieldRow from "../molecules/OutputFieldRow";
 import OutputFieldEditRow from "../molecules/OutputFieldEditRow";
 import "./OutputFieldsTable.scss";
+import { Interaction } from "../../../types";
 
 interface OutputFieldsTableProps {
   modelIndex: number;
@@ -55,6 +56,8 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
 
   const addOutputRowRef = useRef<HTMLDivElement | null>(null);
 
+  const [outputFieldFocusIndex, setOutputFieldFocusIndex] = useState<number | undefined>(undefined);
+
   const { activeOperation, setActiveOperation } = useOperation();
 
   useEffect(() => {
@@ -71,9 +74,34 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
     }
   }, [outputs, selectedOutputIndex]);
 
+  //Set the focus on a OutputField as required
+  useEffect(() => {
+    if (outputFieldFocusIndex !== undefined) {
+      document.querySelector<HTMLElement>(`#output-field-n${outputFieldFocusIndex}`)?.focus();
+    }
+  }, [outputs, outputFieldFocusIndex]);
+
   const onEdit = (index: number | undefined) => {
     setSelectedOutputIndex(index);
     setActiveOperation(Operation.UPDATE_OUTPUT);
+  };
+
+  const handleDelete = (index: number, interaction: Interaction) => {
+    onDelete(index);
+    if (interaction === "mouse") {
+      //If the OutputField was deleted by clicking on the delete icon we need to blur
+      //the element otherwise the CSS :focus-within persists on the deleted element.
+      //See https://issues.redhat.com/browse/FAI-570 for the root cause.
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement?.blur();
+      }
+    } else if (interaction === "keyboard") {
+      //If the OutputField was deleted by pressing enter on the delete icon when focused
+      //we need to set the focus to the next OutputField. The index of the _next_ item
+      //is identical to the index of the deleted item.
+      setOutputFieldFocusIndex(index);
+    }
+    setSelectedOutputIndex(undefined);
   };
 
   const onDelete = (index: number | undefined) => {
@@ -88,6 +116,7 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
 
   return (
     <Form
+      data-testid="output-fields-table"
       onSubmit={(e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -121,7 +150,7 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
                   outputField={o}
                   outputFieldIndex={index}
                   onEditOutputField={() => onEdit(index)}
-                  onDeleteOutputField={() => onDelete(index)}
+                  onDeleteOutputField={(interaction) => handleDelete(index, interaction)}
                 />
               )}
             </article>

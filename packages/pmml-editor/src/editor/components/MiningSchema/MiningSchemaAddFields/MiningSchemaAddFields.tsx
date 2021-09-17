@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import {
@@ -13,9 +13,10 @@ import { MiningSchemaOption } from "../MiningSchemaContainer/MiningSchemaContain
 interface MiningSchemaAddFieldsProps {
   options: MiningSchemaOption[];
   onAdd: (fields: string[]) => void;
+  isDisabled: boolean;
 }
 
-const MiningSchemaAddFields = ({ options, onAdd }: MiningSchemaAddFieldsProps) => {
+const MiningSchemaAddFields = ({ options, onAdd, isDisabled }: MiningSchemaAddFieldsProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectOptions, setSelectOptions] = useState<Array<{ value: string; disabled: boolean }>>([]);
   const [selected, setSelected] = useState<string[]>([]);
@@ -73,7 +74,7 @@ const MiningSchemaAddFields = ({ options, onAdd }: MiningSchemaAddFieldsProps) =
             isOpen={isOpen}
             aria-labelledby={"Select fields to add"}
             placeholderText="Select fields"
-            isDisabled={options.length === 0}
+            isDisabled={isDisabled}
             ouiaId="select-mining-field"
           >
             {selectOptions.map((option, index) => (
@@ -87,12 +88,12 @@ const MiningSchemaAddFields = ({ options, onAdd }: MiningSchemaAddFieldsProps) =
           </Select>
         </SplitItem>
         <SplitItem>
-          <Button variant="primary" onClick={handleAdd} isDisabled={options.length === 0} ouiaId="add-mining-field">
+          <Button variant="primary" onClick={handleAdd} isDisabled={isDisabled} ouiaId="add-mining-field">
             Add Field(s)
           </Button>
         </SplitItem>
         <SplitItem>
-          <Button variant="secondary" onClick={addAllFields} isDisabled={options.length === 0}>
+          <Button variant="secondary" onClick={addAllFields} isDisabled={isDisabled}>
             Add All Fields
           </Button>
         </SplitItem>

@@ -17,30 +17,41 @@ import * as React from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { Interaction } from "../../../types";
 
 interface AttributesTableActionProps {
-  onDelete: () => void;
+  index: number;
+  onDelete: (interaction: Interaction) => void;
 }
 
 export const AttributesTableAction = (props: AttributesTableActionProps) => {
-  const onDelete = (e: React.MouseEvent | React.KeyboardEvent) => {
+  const { index, onDelete } = props;
+
+  const handleDelete = (e: React.MouseEvent | React.KeyboardEvent, interaction: Interaction) => {
     e.stopPropagation();
     e.preventDefault();
-    props.onDelete();
+    if (onDelete) {
+      onDelete(interaction);
+    }
   };
 
   return (
     <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
       <FlexItem>
         <Button
+          id={`attribute-n${index}__delete`}
+          data-testid={`attribute-n${index}__delete`}
+          // We cannot use the regular "editable-item__delete" as Attributes are nested inside a Characteristic that
+          // is an "editable-item" and hence the ":focus-within" selector leads to the delete icon always being visible.
+          className="attribute-item__delete"
+          ouiaId="delete-attribute"
           variant="plain"
-          onClick={onDelete}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              onDelete(e);
+          onClick={(e) => handleDelete(e, "mouse")}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              handleDelete(event, "keyboard");
             }
           }}
-          ouiaId="delete-attribute"
         >
           <TrashIcon />
         </Button>
