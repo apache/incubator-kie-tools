@@ -26,6 +26,7 @@ const commonConfig = (env) =>
       library: "DmnEditor",
       libraryTarget: "umd",
       umdNamedDefine: true,
+      globalObject: "this",
     },
     externals: {
       vscode: "commonjs vscode",
@@ -34,7 +35,7 @@ const commonConfig = (env) =>
 
 module.exports = async (env) => [
   merge(commonConfig(env), {
-    target: "node",
+    target: "web",
     entry: {
       "extension/extension": "./src/extension/extension.ts",
     },

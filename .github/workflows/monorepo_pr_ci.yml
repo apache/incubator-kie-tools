@@ -58,7 +58,7 @@ jobs:
           echo $REF $SCOPE &&
           yarn run-script-if --silent --env SCOPE --eq "" \
             --then "echo No dependencies to build." \
-            --else "lerna run --stream build:dev $SCOPE"
+            --else "lerna run --stream --concurrency 1 build:dev $SCOPE"
 
       - name: "Build changed and dependents"
         env:

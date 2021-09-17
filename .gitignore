@@ -14,7 +14,6 @@
 **/.idea/
 **/.DS_Store
 *.log
-**/.vscode/
 .classpath
 .project
 **/.settings/
@@ -47,9 +46,11 @@ package-lock.json
 
 ## vscode-*
 **/.vscode-test/
+**/.vscode-test-web/
 *.vsix
 *.dockerimage
 **/test-resources/
+**/vscode*-tmp
 
 **/mvnw
 **/mvnw.cmd

@@ -21,6 +21,7 @@
   ],
   "publisher": "kie-group",
   "main": "./dist/extension/extension.js",
+  "browser": "./dist/extension/extension.js",
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": false
@@ -131,7 +132,8 @@
     "test:it:insider": "rimraf ./test-resource && rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run -t insider --yarn -u -e ./test-resources -o it-tests/settings.json out/*.test.js",
     "test:it:clean": "rimraf ./dist-it-tests && rimraf ./test-resource && rimraf ./out && rimraf ./it-tests-tmp",
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "rimraf dist && yarn lint && webpack && yarn run test && yarn run package:prod && yarn test:it"
+    "build:prod": "rimraf dist && yarn lint && webpack && yarn run test && yarn run package:prod && yarn test:it",
+    "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
   },
   "dependencies": {
     "@kie-tooling-core/patternfly-base": "0.0.0",

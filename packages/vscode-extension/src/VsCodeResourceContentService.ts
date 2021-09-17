@@ -25,7 +25,7 @@ import {
 } from "@kie-tooling-core/workspace/dist/api";
 
 import * as vscode from "vscode";
-import * as nodePath from "path";
+import * as __path from "path";
 import { RelativePattern, WorkspaceFolder } from "vscode";
 
 /**
@@ -39,12 +39,12 @@ export class VsCodeResourceContentService implements ResourceContentService {
   }
 
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
-    const workspaceFolderPath = vscode.workspace!.workspaceFolders![0].uri.fsPath + nodePath.sep;
+    const workspaceFolderPath = vscode.workspace.workspaceFolders![0].uri.fsPath + __path.sep;
     const basePath =
       opts?.type === SearchType.ASSET_FOLDER ? workspaceFolderPath + this.currentAssetFolder : workspaceFolderPath;
     const relativePattern = new RelativePattern(basePath, pattern);
     const files = await vscode.workspace.findFiles(relativePattern);
-    const paths = files.map((f) => vscode.workspace.asRelativePath(f.path));
+    const paths = files.map((uri: vscode.Uri) => vscode.workspace.asRelativePath(uri));
     return new ResourcesList(pattern, paths);
   }
 
@@ -66,11 +66,11 @@ export class VsCodeResourceContentService implements ResourceContentService {
   }
 
   private resolvePath(uri: string) {
-    const folders: ReadonlyArray<WorkspaceFolder> = vscode.workspace!.workspaceFolders!;
+    const folders: ReadonlyArray<WorkspaceFolder> = vscode.workspace.workspaceFolders!;
     if (folders) {
       const rootPath = folders[0].uri.path;
-      if (!uri.startsWith(nodePath.sep)) {
-        uri = nodePath.sep + uri;
+      if (!uri.startsWith(__path.sep)) {
+        uri = __path.sep + uri;
       }
       return rootPath + uri;
     }

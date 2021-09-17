@@ -26,11 +26,12 @@ module.exports = async (env) => [
       library: "AppFormer.VsCodePack",
       libraryTarget: "umd",
       umdNamedDefine: true,
+      globalObject: "this",
     },
     externals: {
       vscode: "commonjs vscode",
     },
-    target: "node",
+    target: "web",
     entry: {
       "extension/extension": "./src/extension/extension.ts",
     },

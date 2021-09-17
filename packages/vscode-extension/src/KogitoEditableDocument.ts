@@ -27,7 +27,7 @@ import {
   Uri,
 } from "vscode";
 import { VsCodeI18n } from "./i18n";
-import * as nodePath from "path";
+import * as __path from "path";
 import { KogitoEditor } from "./KogitoEditor";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { VsCodeOutputLogger } from "./VsCodeOutputLogger";
@@ -61,7 +61,7 @@ export class KogitoEditableDocument implements CustomDocument {
   get relativePath() {
     // For some reason, `asRelativePath` always returns paths with the '/' separator,
     // so on Windows, we need to replace it to the correct one, which is '\'.
-    return vscode.workspace.asRelativePath(this.uri).replace(/\//g, nodePath.sep);
+    return vscode.workspace.asRelativePath(this.uri).replace(/\//g, __path.sep);
   }
 
   get fileExtension() {
