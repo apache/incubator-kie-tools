@@ -43,10 +43,8 @@ import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
 import { useGlobals } from "../common/GlobalContext";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { useOnlineI18n } from "../common/i18n";
-import { SettingsButton } from "../settings/SettingsButton";
-import { QueryParams } from "../queryParams/QueryParamsContext";
+import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
 import { useSettings } from "../settings/SettingsContext";
-import { KieToolingExtendedServicesIcon } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesIcon";
 
 enum InputFileUrlState {
   INITIAL,
@@ -66,6 +64,7 @@ interface InputFileUrlStateType {
 }
 
 export function HomePage() {
+  const queryParams = useQueryParams();
   const globals = useGlobals();
   const settings = useSettings();
   const history = useHistory();
@@ -100,8 +99,8 @@ export function HomePage() {
         return;
       }
 
-      globals.setFile({
-        kind: "upload",
+      globals.setUploadedFile({
+        kind: "local",
         isReadOnly: false,
         fileExtension,
         fileName: removeFileExtension(fileName),
@@ -112,7 +111,9 @@ export function HomePage() {
             reader.readAsText(file);
           }),
       });
-      history.push(globals.routes.editor({ type: fileExtension }));
+      history.push({
+        pathname: globals.routes.editor({ extension: fileExtension }),
+      });
     },
     [globals, history]
   );
@@ -122,7 +123,9 @@ export function HomePage() {
   const createEmptyFile = useCallback(
     (fileExtension: string) => {
       globals.setFile(newFile(fileExtension, "local"));
-      history.push(globals.routes.editor({ type: fileExtension }));
+      history.push({
+        pathname: globals.routes.editor({ extension: fileExtension }),
+      });
     },
     [globals, history]
   );
@@ -141,12 +144,13 @@ export function HomePage() {
 
   const trySample = useCallback(
     (fileExtension: string) => {
+      queryParams.set(QueryParams.FILE, globals.routes.static.sample({ type: fileExtension }));
       history.push({
-        pathname: globals.routes.editor({ type: fileExtension }),
-        search: `?${QueryParams.FILE}=${globals.routes.static.sample({ type: fileExtension })}`,
+        pathname: globals.routes.editor({ extension: fileExtension }),
+        search: decodeURIComponent(queryParams.toString()),
       });
     },
-    [globals, history]
+    [globals, history, queryParams]
   );
 
   const tryBpmnSample = useCallback(() => {
@@ -303,13 +307,13 @@ export function HomePage() {
   const openFileFromUrl = useCallback(() => {
     if (urlCanBeOpen && inputFileUrlState.urlToOpen) {
       const fileExtension = extractFileExtension(new URL(inputFileUrlState.urlToOpen).pathname);
-
+      queryParams.set(QueryParams.FILE, inputFileUrlState.urlToOpen);
       history.push({
-        pathname: globals.routes.editor({ type: fileExtension! }),
-        search: `?${QueryParams.FILE}=${inputFileUrlState.urlToOpen}`,
+        pathname: globals.routes.editor({ extension: fileExtension! }),
+        search: decodeURIComponent(queryParams.toString()),
       });
     }
-  }, [globals.routes, history, inputFileUrl, inputFileUrlState, urlCanBeOpen, inputFileUrlState]);
+  }, [queryParams, globals.routes, history, inputFileUrlState, urlCanBeOpen]);
 
   const helperMessageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState.urlValidation) {

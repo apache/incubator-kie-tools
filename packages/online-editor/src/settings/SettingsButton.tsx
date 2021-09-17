@@ -3,8 +3,6 @@ import { CogIcon } from "@patternfly/react-icons/dist/js/icons/cog-icon";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { SettingsModalBody } from "./SettingsModalBody";
 import * as React from "react";
-import { useState } from "react";
-import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
 import { useSettings } from "./SettingsContext";
 
 export function SettingsButton() {

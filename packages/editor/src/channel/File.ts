@@ -22,7 +22,7 @@ export interface File {
   fileExtension: string;
   getFileContents: () => Promise<string | undefined>;
   isReadOnly: boolean;
-  kind?: "upload" | "gist" | "external" | "local";
+  kind?: "gist" | "external" | "local";
 }
 
 /**

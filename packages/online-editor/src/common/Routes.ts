@@ -22,6 +22,6 @@ export class Routes {
     },
   };
   public readonly home = () => "/";
-  public readonly editor = (args: { type: string }) => `/editor/${args.type}`;
+  public readonly editor = (args: { extension: string }) => `/editor/${args.extension}`;
   public readonly downloadHub = () => "/download";
 }

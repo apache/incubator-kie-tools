@@ -20,6 +20,7 @@ import { useContext } from "react";
 import { jsonParseWithDate } from "../../common/utils";
 import { DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
+import { QueryParams } from "../../queryParams/QueryParamsContext";
 
 export interface DmnRunnerContextType {
   status: DmnRunnerStatus;
@@ -44,13 +45,16 @@ export function useDmnRunner() {
   return useContext(DmnRunnerContext);
 }
 
-export function extractFormInputsFromUrlParams(): any {
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has("formInputs")) {
-    try {
-      return jsonParseWithDate(decodeURIComponent(urlParams.get("formInputs")!));
-    } catch (e) {
-      console.error("Cannot parse formInputs", e);
-    }
+export function extractFormInputsFromUrlParams(searchString: string): object {
+  const urlParams = new URLSearchParams(searchString);
+  if (!urlParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
+    return {};
+  }
+
+  try {
+    return jsonParseWithDate(decodeURIComponent(urlParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!));
+  } catch (e) {
+    console.error("Cannot parse formInputs", e);
+    return {};
   }
 }

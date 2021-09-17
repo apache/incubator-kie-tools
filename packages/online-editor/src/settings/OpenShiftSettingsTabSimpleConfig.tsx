@@ -182,7 +182,7 @@ export function OpenShiftSettingsTabSimpleConfig() {
           className="pf-u-p-0"
           variant="link"
           onClick={() => {
-            /*FIXME: Tiago*/
+            /*FIXME: Tiago: add wizard option*/
           }}
           data-testid="use-wizard-button"
         >

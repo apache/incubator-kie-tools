@@ -11,6 +11,7 @@ import { KieToolingExtendedServicesStatus } from "../editor/KieToolingExtendedSe
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { OpenShiftService } from "./OpenShiftService";
 import { useKieToolingExtendedServices } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { useHistory, useLocation } from "react-router";
 
 const GITHUB_AUTH_TOKEN_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__github-oauth-token";
 const GUIDED_TOUR_ENABLED_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__is-guided-tour-enabled";
@@ -54,21 +55,35 @@ export interface SettingsContextType {
 export const SettingsContext = React.createContext<SettingsContextType>({} as any);
 
 export function SettingsContextProvider(props: any) {
-  //
   const queryParams = useQueryParams();
-  const [isOpen, setOpen] = useState(!!queryParams.get(QueryParams.SETTINGS));
-  const [activeTab, setActiveTab] = useState(
-    (queryParams.get(QueryParams.SETTINGS) as SettingsTabs) ?? SettingsTabs.GENERAL
+  const history = useHistory();
+  const location = useLocation();
+  const [isOpen, setOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState(SettingsTabs.GENERAL);
+
+  useEffect(() => {
+    setOpen(!!queryParams.get(QueryParams.SETTINGS));
+    setActiveTab((queryParams.get(QueryParams.SETTINGS) as SettingsTabs) ?? SettingsTabs.GENERAL);
+  }, [queryParams]);
+
+  const open = useCallback(
+    (activeTab = SettingsTabs.GENERAL) => {
+      queryParams.set(QueryParams.SETTINGS, activeTab);
+      history.push({
+        pathname: location.pathname,
+        search: decodeURIComponent(queryParams.toString()),
+      });
+    },
+    [history, location, queryParams]
   );
 
-  const open = useCallback((activeTab = SettingsTabs.GENERAL) => {
-    setOpen(true);
-    setActiveTab(activeTab);
-  }, []);
-
   const close = useCallback(() => {
-    setOpen(false);
-  }, []);
+    queryParams.delete(QueryParams.SETTINGS);
+    history.push({
+      pathname: location.pathname,
+      search: decodeURIComponent(queryParams.toString()),
+    });
+  }, [history, location, queryParams]);
 
   //github
   const [githubAuthStatus, setGitHubAuthStatus] = useState(AuthStatus.LOADING);

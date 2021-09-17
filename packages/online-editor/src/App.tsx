@@ -16,17 +16,17 @@
 
 import { File } from "@kie-tooling-core/editor/dist/channel";
 import * as React from "react";
-import { Route, Switch } from "react-router";
-import { BrowserRouter } from "react-router-dom";
-import { GlobalContext, GlobalContextProvider } from "./common/GlobalContext";
+import { Redirect, Route, Switch } from "react-router";
+import { HashRouter } from "react-router-dom";
+import { GlobalContext, GlobalContextProvider, SupportedFileExtensions } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
-import { DownloadHubModal } from "./home/DownloadHubModal";
-import { HomePage } from "./home/HomePage";
-import { NoMatchPage } from "./NoMatchPage";
 import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
 import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { KieToolingExtendedServicesContextProvider } from "./editor/KieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
+import { HomePage } from "./home/HomePage";
+import { DownloadHubModal } from "./home/DownloadHubModal";
+import { NoMatchPage } from "./NoMatchPage";
 
 interface Props {
   externalFile?: File;
@@ -35,7 +35,7 @@ interface Props {
 
 export function App(props: Props) {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <I18nDictionariesProvider
         defaults={onlineI18nDefaults}
         dictionaries={onlineI18nDictionaries}
@@ -46,10 +46,21 @@ export function App(props: Props) {
           <KieToolingExtendedServicesContextProvider>
             <SettingsContextProvider>
               <GlobalContext.Consumer>
-                {({ routes }) => (
+                {({ routes, editorEnvelopeLocator }) => (
                   <Switch>
-                    <Route path={routes.editor({ type: ":type" })}>
-                      <EditorPage />
+                    <Route path={routes.editor({ extension: ":extension" })}>
+                      {(match) => {
+                        const extension = match.match?.params.extension ?? "";
+                        return (
+                          <>
+                            {editorEnvelopeLocator.mapping.has(extension) ? (
+                              <EditorPage forExtension={extension as SupportedFileExtensions} />
+                            ) : (
+                              <Redirect to={routes.home()} />
+                            )}
+                          </>
+                        );
+                      }}
                     </Route>
                     <Route exact={true} path={routes.home()}>
                       <HomePage />
@@ -66,6 +77,6 @@ export function App(props: Props) {
           </KieToolingExtendedServicesContextProvider>
         </GlobalContextProvider>
       </I18nDictionariesProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }

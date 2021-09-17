@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { useGlobals } from "../common/GlobalContext";
+import { SupportedFileExtensions, useGlobals } from "../common/GlobalContext";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
@@ -52,7 +52,6 @@ export enum AlertTypes {
   COPY,
   SUCCESS_UPDATE_GIST,
   SUCCESS_CREATE_GIST,
-  SUCCESS_UPDATE_GIST_FILENAME,
   INVALID_CURRENT_GIST,
   INVALID_GIST_FILENAME,
   SET_CONTENT_ERROR,
@@ -67,7 +66,7 @@ export enum ModalType {
   DMN_RUNNER_HELPER,
 }
 
-export function EditorPage() {
+export function EditorPage(props: { forExtension?: SupportedFileExtensions }) {
   const globals = useGlobals();
   const settings = useSettings();
   const { editor, editorRef } = useEditorRef();
@@ -76,7 +75,6 @@ export function EditorPage() {
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [isEditorReady, setIsEditorReady] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
-  const [updateGistFilenameUrl, setUpdateGistFilenameUrl] = useState("");
   const [openAlert, setOpenAlert] = useState(AlertTypes.NONE);
   const [openModalType, setOpenModalType] = useState(ModalType.NONE);
   const isDirty = useDirtyState(editor);
@@ -84,41 +82,45 @@ export function EditorPage() {
   const textEditorContainerRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
   const queryParams = useQueryParams();
+  const fileExtension = props.forExtension!;
+
+  const queryParamFile = useMemo(() => queryParams.get(QueryParams.FILE), [queryParams]);
+  const queryParamReadonly = useMemo(
+    () => (queryParams.has(QueryParams.READONLY) ? queryParams.get(QueryParams.READONLY) === `${true}` : false),
+    [queryParams]
+  );
 
   useEffect(() => {
-    ``;
+    let canceled = false;
     if (globals.externalFile) {
       globals.setFile({ ...globals.externalFile, kind: "external" });
       return;
     }
 
-    const filePath = queryParams.get(QueryParams.FILE)!;
-    if (!filePath && globals.file.kind === "upload") {
+    if (!queryParamFile && globals.uploadedFile) {
+      globals.setFile(globals.uploadedFile);
       return;
     }
 
-    if (!filePath) {
-      globals.setFile(newFile(globals.file.fileExtension, "local"));
+    if (!queryParamFile) {
+      globals.setFile(newFile(fileExtension, "local"));
       return;
     }
 
-    const readonly = queryParams.has(QueryParams.READONLY)
-      ? queryParams.get(QueryParams.READONLY) === `${true}`
-      : false;
-
-    if (settings.github.service.isGist(filePath)) {
+    if (settings.github.service.isGist(queryParamFile)) {
       settings.github.service
-        .fetchGistFile(settings.github.octokit, filePath)
-        .then((content) =>
+        .fetchGistFile(settings.github.octokit, queryParamFile)
+        .then((content) => {
+          if (canceled) return;
           globals.setFile(
             getFileToOpen({
-              filePath: filePath,
-              readonly: readonly,
+              filePath: queryParamFile,
+              readonly: queryParamReadonly,
               getFileContent: Promise.resolve(content),
               kind: "gist",
             })
-          )
-        )
+          );
+        })
         .catch((error) => {
           //FIXME: tiago
           console.info("error");
@@ -126,14 +128,15 @@ export function EditorPage() {
       return;
     }
 
-    if (settings.github.service.isGithub(filePath) || settings.github.service.isGithubRaw(filePath)) {
+    if (settings.github.service.isGithub(queryParamFile) || settings.github.service.isGithubRaw(queryParamFile)) {
       settings.github.service
-        .fetchGithubFile(settings.github.octokit, filePath)
+        .fetchGithubFile(settings.github.octokit, queryParamFile)
         .then((response) => {
+          if (canceled) return;
           globals.setFile(
             getFileToOpen({
-              filePath: filePath,
-              readonly: readonly,
+              filePath: queryParamFile,
+              readonly: queryParamReadonly,
               getFileContent: Promise.resolve(response),
               kind: "external",
             })
@@ -146,13 +149,14 @@ export function EditorPage() {
       return;
     }
 
-    fetch(filePath)
+    fetch(queryParamFile)
       .then((response) => {
+        if (canceled) return;
         if (response.ok) {
           globals.setFile(
             getFileToOpen({
-              filePath: filePath,
-              readonly: readonly,
+              filePath: queryParamFile,
+              readonly: queryParamReadonly,
               getFileContent: response.text(),
               kind: "external",
             })
@@ -166,11 +170,17 @@ export function EditorPage() {
         //FIXME: tiago
         console.info("error");
       });
-  }, []);
+
+    return () => {
+      canceled = true;
+    };
+  }, [fileExtension, queryParamFile, queryParamReadonly, settings.github.octokit]);
 
   const close = useCallback(() => {
     if (!isDirty) {
-      history.push(globals.routes.home());
+      history.push({
+        pathname: globals.routes.home(),
+      });
     } else {
       setOpenAlert(AlertTypes.UNSAVED);
     }
@@ -178,7 +188,9 @@ export function EditorPage() {
 
   const closeWithoutSaving = useCallback(() => {
     setOpenAlert(AlertTypes.NONE);
-    history.push(globals.routes.home());
+    history.push({
+      pathname: globals.routes.home(),
+    });
   }, [globals, history]);
 
   const requestSave = useCallback(() => {
@@ -186,14 +198,14 @@ export function EditorPage() {
       window.dispatchEvent(
         new CustomEvent("saveOnlineEditor", {
           detail: {
-            fileName: `${globals.file.fileName}.${globals.file.fileExtension}`,
+            fileName: `${globals.file.fileName}.${fileExtension}`,
             fileContent: content,
             senderTabId: globals.senderTabId!,
           },
         })
       );
     });
-  }, [globals.file, globals.senderTabId, editor]);
+  }, [fileExtension, globals.file, globals.senderTabId, editor]);
 
   const requestDownload = useCallback(() => {
     editor?.getStateControl().setSavedCommand();
@@ -222,11 +234,11 @@ export function EditorPage() {
       const content = await editor.getContent();
 
       // update gist
-      if (queryParams.has(QueryParams.FILE) && settings.github.service.isGist(queryParams.get(QueryParams.FILE)!)) {
-        const userLogin = settings.github.service.extractUserLoginFromFileUrl(queryParams.get(QueryParams.FILE)!);
+      if (queryParamFile && settings.github.service.isGist(queryParamFile)) {
+        const userLogin = settings.github.service.extractUserLoginFromFileUrl(queryParamFile);
         if (userLogin === settings.github.user) {
           try {
-            const filename = `${globals.file.fileName}.${globals.file.fileExtension}`;
+            const filename = `${globals.file.fileName}.${fileExtension}`;
             const updateResponse = await settings.github.service.updateGist(settings.github.octokit, {
               filename,
               content,
@@ -244,10 +256,12 @@ export function EditorPage() {
 
             editor.getStateControl().setSavedCommand();
             if (filename !== settings.github.service.getCurrentGist()?.filename) {
-              setUpdateGistFilenameUrl(
-                `${window.location.origin}${window.location.pathname}?${QueryParams.FILE}=${updateResponse}`
-              );
-              setOpenAlert(AlertTypes.SUCCESS_UPDATE_GIST_FILENAME);
+              setOpenAlert(AlertTypes.SUCCESS_UPDATE_GIST);
+              queryParams.set(QueryParams.FILE, updateResponse);
+              history.push({
+                pathname: globals.routes.editor({ extension: fileExtension }),
+                search: decodeURIComponent(queryParams.toString()),
+              });
               return;
             }
 
@@ -264,16 +278,17 @@ export function EditorPage() {
       // create gist
       try {
         const newGistUrl = await settings.github.service.createGist(settings.github.octokit, {
-          filename: `${globals.file.fileName}.${globals.file.fileExtension}`,
+          filename: `${globals.file.fileName}.${fileExtension}`,
           content: content,
-          description: `${globals.file.fileName}.${globals.file.fileExtension}`,
+          description: `${globals.file.fileName}.${fileExtension}`,
           isPublic: true,
         });
 
         setOpenAlert(AlertTypes.SUCCESS_CREATE_GIST);
+        queryParams.set(QueryParams.FILE, newGistUrl);
         history.push({
-          pathname: globals.routes.editor({ type: globals.file.fileExtension }),
-          search: `?${QueryParams.FILE}=${newGistUrl}`,
+          pathname: globals.routes.editor({ extension: fileExtension }),
+          search: decodeURIComponent(queryParams.toString()),
         });
         return;
       } catch (err) {
@@ -282,7 +297,7 @@ export function EditorPage() {
         return;
       }
     }
-  }, [history, globals, settings, queryParams, editor]);
+  }, [history, globals, settings, queryParamFile, queryParams, fileExtension, editor]);
 
   const requestEmbed = useCallback(() => {
     setOpenModalType(ModalType.EMBED);
@@ -322,7 +337,7 @@ export function EditorPage() {
 
   useEffect(() => {
     if (downloadRef.current) {
-      downloadRef.current.download = `${globals.file.fileName}.${globals.file.fileExtension}`;
+      downloadRef.current.download = `${globals.file.fileName}.${fileExtension}`;
     }
     if (downloadPreviewRef.current) {
       downloadPreviewRef.current.download = `${globals.file.fileName}-svg.svg`;
@@ -343,7 +358,7 @@ export function EditorPage() {
     };
   });
 
-  useDmnTour(!globals.readonly && isEditorReady && openAlert === AlertTypes.NONE, globals.file);
+  useDmnTour(!globals.file.isReadOnly && isEditorReady && openAlert === AlertTypes.NONE, globals.file);
 
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
@@ -414,12 +429,12 @@ export function EditorPage() {
 
   const notificationPanelTabNames = useCallback(
     (dmnRunnerStatus: DmnRunnerStatus) => {
-      if (globals.file.fileExtension === "dmn" && globals.isChrome && dmnRunnerStatus === DmnRunnerStatus.AVAILABLE) {
+      if (fileExtension === "dmn" && globals.isChrome && dmnRunnerStatus === DmnRunnerStatus.AVAILABLE) {
         return [i18n.terms.validation, i18n.terms.execution];
       }
       return [i18n.terms.validation];
     },
-    [globals.file.fileExtension, globals.isChrome, i18n]
+    [fileExtension, globals.isChrome, i18n]
   );
 
   useEffect(() => {
@@ -528,20 +543,6 @@ export function EditorPage() {
                                 title={i18n.editorPage.alerts.createGist}
                                 actionClose={<AlertActionCloseButton onClose={closeAlert} />}
                               />
-                            </div>
-                          )}
-                          {!fullscreen && openAlert === AlertTypes.SUCCESS_UPDATE_GIST_FILENAME && (
-                            <div className={"kogito--alert-container"}>
-                              <Alert
-                                className={"kogito--alert"}
-                                variant="warning"
-                                title={i18n.editorPage.alerts.updateGistFilename.title}
-                                actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-                              >
-                                <p>{i18n.editorPage.alerts.updateGistFilename.message}</p>
-                                <p>{i18n.editorPage.alerts.updateGistFilename.yourNewUrl}:</p>
-                                <p>{updateGistFilenameUrl}</p>
-                              </Alert>
                             </div>
                           )}
                           {!fullscreen && openAlert === AlertTypes.INVALID_CURRENT_GIST && (

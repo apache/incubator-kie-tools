@@ -43,11 +43,11 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
 
   useEffect(() => {
     setStatus(
-      globals.file.fileExtension === "dmn"
+      globals.file?.fileExtension === "dmn"
         ? KieToolingExtendedServicesStatus.AVAILABLE
         : KieToolingExtendedServicesStatus.UNAVAILABLE
     );
-  }, [globals.file.fileExtension]);
+  }, [globals.file]);
 
   const baseUrl = useMemo(() => `http://localhost:${port}`, [port]);
   const bridge = useMemo(() => new KieToolingExtendedServicesBridge(port), [port]);

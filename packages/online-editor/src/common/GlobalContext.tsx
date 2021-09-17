@@ -18,7 +18,7 @@ import { File, newFile } from "@kie-tooling-core/editor/dist/channel";
 import * as React from "react";
 import { useContext, useMemo, useState } from "react";
 import { Routes } from "./Routes";
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
 import { useRouteMatch } from "react-router";
 
 export enum AuthStatus {
@@ -28,13 +28,16 @@ export enum AuthStatus {
   SIGNED_IN,
 }
 
+export type SupportedFileExtensions = "bpmn" | "bpmn2" | "dmn" | "pmml";
+
 export interface GlobalContextType {
   file: File;
-  externalFile?: File;
   setFile: React.Dispatch<React.SetStateAction<File>>;
+  uploadedFile?: File;
+  setUploadedFile: React.Dispatch<React.SetStateAction<File>>;
+  externalFile?: File;
   routes: Routes;
   editorEnvelopeLocator: EditorEnvelopeLocator;
-  readonly: boolean;
   senderTabId?: string;
   isChrome: boolean;
 }
@@ -43,12 +46,14 @@ export const GlobalContext = React.createContext<GlobalContextType>({} as any);
 
 export function GlobalContextProvider(props: { externalFile?: File; senderTabId?: string; children: React.ReactNode }) {
   const routes = useMemo(() => new Routes(), []);
-  const match = useRouteMatch<{ type: string }>(routes.editor({ type: ":type" }));
-  const [file, setFile] = useState(() => newFile(match?.params.type ?? "dmn"));
+  //FIXME: tiago: Move file to `EditorPage`.
+  const match = useRouteMatch<{ extension: string }>(routes.editor({ extension: ":extension" }));
+  const [file, setFile] = useState(() => newFile(match?.params.extension ?? "dmn"));
+  const [uploadedFile, setUploadedFile] = useState<File | undefined>(undefined);
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () => ({
       targetOrigin: window.location.origin,
-      mapping: new Map([
+      mapping: new Map<SupportedFileExtensions, EnvelopeMapping>([
         ["bpmn", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "/bpmn-envelope.html" }],
         ["bpmn2", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "/bpmn-envelope.html" }],
         ["dmn", { resourcesPathPrefix: "gwt-editors/dmn", envelopePath: "/dmn-envelope.html" }],
@@ -62,10 +67,11 @@ export function GlobalContextProvider(props: { externalFile?: File; senderTabId?
     <GlobalContext.Provider
       value={{
         ...props,
-        readonly: file.isReadOnly,
         editorEnvelopeLocator,
         file,
         setFile,
+        uploadedFile,
+        setUploadedFile,
         routes,
         isChrome: !!window.chrome,
       }}

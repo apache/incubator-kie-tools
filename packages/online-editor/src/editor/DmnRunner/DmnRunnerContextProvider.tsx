@@ -29,6 +29,7 @@ import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 import { useOnlineI18n } from "../../common/i18n";
 import { NotificationType } from "@kie-tooling-core/notifications/dist/api";
+import { useHistory } from "react-router";
 
 interface Props {
   children: React.ReactNode;
@@ -40,10 +41,14 @@ const THROTTLING_TIME = 200;
 
 export function DmnRunnerContextProvider(props: Props) {
   const { i18n } = useOnlineI18n();
-  const formInputsFromUrlParams = useMemo(() => extractFormInputsFromUrlParams() ?? {}, []);
+  const history = useHistory();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const notificationsPanel = useNotificationsPanel();
   const [isDrawerExpanded, setDrawerExpanded] = useState(false);
+  const formInputsFromUrlParams = useMemo(
+    () => extractFormInputsFromUrlParams(history.location.search) ?? {},
+    [history]
+  );
   const [formData, setFormData] = useState(formInputsFromUrlParams);
   const [formSchema, setFormSchema] = useState<DmnFormSchema>();
   const [formError, setFormError] = useState(false);
@@ -52,6 +57,7 @@ export function DmnRunnerContextProvider(props: Props) {
       ? DmnRunnerStatus.UNAVAILABLE
       : DmnRunnerStatus.AVAILABLE
   );
+
   const service = useMemo(
     () => new DmnRunnerService(kieToolingExtendedServices.baseUrl),
     [kieToolingExtendedServices.baseUrl]

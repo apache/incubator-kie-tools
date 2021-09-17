@@ -188,7 +188,7 @@ export function EditorToolbar(props: Props) {
               {i18n.editorToolbar.gistIt}
             </DropdownItem>
           </Tooltip>
-          {globals.externalFile && !globals.readonly && (
+          {globals.externalFile && !globals.file.isReadOnly && (
             <DropdownItem
               key={`dropdown-${dropdownId}-send-changes-to-github`}
               component={"button"}
@@ -381,7 +381,7 @@ export function EditorToolbar(props: Props) {
           <>
             <Label variant="outline">{globals.file.kind}</Label>
             &nbsp;
-            {!globals.readonly && (
+            {!globals.file.isReadOnly && (
               <>
                 <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
                   <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
@@ -408,7 +408,7 @@ export function EditorToolbar(props: Props) {
                 )}
               </>
             )}
-            {globals.readonly && (
+            {globals.file.isReadOnly && (
               <>
                 <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container readonly"}>
                   <Title
