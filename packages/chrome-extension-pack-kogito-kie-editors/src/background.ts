@@ -15,7 +15,7 @@
  */
 
 import HttpHeader = chrome.webRequest.HttpHeader;
-import { removeDirectories, extractFileExtension } from "./utils";
+import { extractFileExtension, removeDirectories } from "./utils";
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log("Kogito Tooling extension is running.");
@@ -77,9 +77,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 function openOnlineEditor(request: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) {
   chrome.tabs.create(
-    {
-      url: `${process.env.WEBPACK_REPLACE__onlineEditor_url}/editor/${extractFileExtension(request.filePath)}?ext=true`,
-    },
+    { url: `${process.env.WEBPACK_REPLACE__onlineEditor_url}/?ext#/editor/` + extractFileExtension(request.filePath) },
     (tab) => {
       let newTabReady = () => {
         newTabReady = () => {

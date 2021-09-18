@@ -41,8 +41,8 @@ import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/
 import { useKieToolingExtendedServices } from "./KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServices/KieToolingExtendedServicesStatus";
-import { AuthStatus, useGlobals } from "../common/GlobalContext";
-import { useSettings } from "../settings/SettingsContext";
+import { useGlobals } from "../common/GlobalContext";
+import { AuthStatus, useSettings } from "../settings/SettingsContext";
 import { SettingsTabs } from "../settings/SettingsModalBody";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 

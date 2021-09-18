@@ -3,7 +3,6 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "../common/utils";
 import { Octokit } from "@octokit/rest";
 import { GithubService } from "./GithubService";
-import { AuthStatus } from "../common/GlobalContext";
 import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
 import { SettingsTabs } from "./SettingsModalBody";
 import { OpenShiftSettingsConfig, readConfigCookie } from "./OpenShiftSettingsConfig";
@@ -18,6 +17,13 @@ const GUIDED_TOUR_ENABLED_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__is-guided-tour-e
 export const OPENSHIFT_NAMESPACE_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__dmn-dev-sandbox--connection-namespace";
 export const OPENSHIFT_HOST_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__dmn-dev-sandbox--connection-host";
 export const OPENSHIFT_TOKEN_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__dmn-dev-sandbox--connection-token";
+
+export enum AuthStatus {
+  SIGNED_OUT,
+  TOKEN_EXPIRED,
+  LOADING,
+  SIGNED_IN,
+}
 
 export interface SettingsContextType {
   open: (activeTab?: SettingsTabs) => void;

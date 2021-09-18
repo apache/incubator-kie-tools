@@ -21,13 +21,6 @@ import { Routes } from "./Routes";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
 import { useRouteMatch } from "react-router";
 
-export enum AuthStatus {
-  SIGNED_OUT,
-  TOKEN_EXPIRED,
-  LOADING,
-  SIGNED_IN,
-}
-
 export type SupportedFileExtensions = "bpmn" | "bpmn2" | "dmn" | "pmml";
 
 export interface GlobalContextType {

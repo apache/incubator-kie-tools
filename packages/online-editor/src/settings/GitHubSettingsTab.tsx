@@ -11,9 +11,8 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { GITHUB_OAUTH_TOKEN_SIZE, GITHUB_TOKENS_HOW_TO_URL, GITHUB_TOKENS_URL } from "./GithubService";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { AuthStatus } from "../common/GlobalContext";
+import { AuthStatus, useSettings } from "./SettingsContext";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import { useSettings } from "./SettingsContext";
 import { useOnlineI18n } from "../common/i18n";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 
