@@ -14,14 +14,113 @@
  * limitations under the License.
  */
 
-export class Routes {
-  public readonly static = {
-    sample: (args: { type: string }) => `/samples/sample.${args.type}`,
-    images: {
-      logo: (args: { type: string }) => `/images/${args.type}_kogito_logo.svg`,
+const IS_HASH_ROUTER = true;
+
+export enum QueryParams {
+  SETTINGS = "settings",
+  READONLY = "readonly",
+  EXT = "ext",
+  FILE = "file",
+  DMN_RUNNER_FORM_INPUTS = "formInputs",
+}
+
+export class Route<
+  T extends {
+    pathParams?: any;
+    queryParams?: any;
+  }
+> {
+  constructor(private readonly pathDelegate: (pathParams: { [k in T["pathParams"]]: string }) => string) {}
+
+  public url(args: {
+    base?: string;
+    pathParams: { [k in T["pathParams"]]: string };
+    queryParams?: Partial<{ [k in T["queryParams"]]: string }>;
+  }) {
+    const SEP = args.base?.endsWith("/") ? "" : "/";
+    const HASH = IS_HASH_ROUTER ? "#" : "";
+    const path = this.pathDelegate(args.pathParams);
+    const queryParams = args.queryParams ?? {};
+
+    if (!args.base && Object.keys(queryParams).length <= 0) {
+      return path;
+    }
+
+    if (!args.base) {
+      return `${path}?${this.queryString(queryParams)}`;
+    }
+
+    if (Object.keys(queryParams).length <= 0) {
+      return `${args.base}${SEP}${HASH}${path}`;
+    }
+
+    return `${args.base}${SEP}${HASH}${path}?${this.queryString(queryParams)}`;
+  }
+
+  public queryString(queryParams: Partial<{ [k in T["queryParams"]]: string }>) {
+    return decodeURIComponent(new URLSearchParams(queryParams as Record<string, string>).toString());
+  }
+
+  public queryArgs(queryString: QueryParamsImpl<string>): QueryParamsImpl<T["queryParams"]> {
+    return queryString;
+  }
+
+  public path(pathParams: { [k in T["pathParams"]]: string }) {
+    return this.pathDelegate(pathParams);
+  }
+}
+
+export interface QueryParamsImpl<Q extends string> {
+  has(name: Q): boolean;
+  get(name: Q): string | undefined;
+  with(name: Q, value: string): QueryParamsImpl<Q>;
+  without(name: Q): QueryParamsImpl<Q>;
+  toString(): string;
+}
+
+export function newQueryParamsImpl<Q extends string>(queryString: string): QueryParamsImpl<Q> {
+  return {
+    has: (name) => new URLSearchParams(queryString).has(name),
+    get: (name) => {
+      const val = new URLSearchParams(queryString).get(name);
+      return !val ? undefined : decodeURIComponent(val);
+    },
+    with: (name, value) => {
+      const urlSearchParams = new URLSearchParams(queryString);
+      urlSearchParams.set(name, value);
+      return newQueryParamsImpl(decodeURIComponent(urlSearchParams.toString()));
+    },
+    without: (name) => {
+      const urlSearchParams = new URLSearchParams(queryString);
+      urlSearchParams.delete(name);
+      return newQueryParamsImpl(decodeURIComponent(urlSearchParams.toString()));
+    },
+    toString: () => {
+      return decodeURIComponent(new URLSearchParams(queryString).toString());
     },
   };
-  public readonly home = () => "/";
-  public readonly editor = (args: { extension: string }) => `/editor/${args.extension}`;
-  public readonly downloadHub = () => "/download";
 }
+
+export const routes = {
+  download: new Route<{}>(() => `/download`),
+
+  home: new Route<{
+    queryParams: QueryParams.EXT;
+  }>(() => `/`),
+
+  editor: new Route<{
+    pathParams: "extension";
+    queryParams: QueryParams.READONLY | QueryParams.FILE | QueryParams.SETTINGS | QueryParams.DMN_RUNNER_FORM_INPUTS;
+  }>(({ extension }) => `/editor/${extension}`),
+
+  static: {
+    sample: new Route<{ pathParams: "type" }>(({ type }) => `samples/sample.${type}`),
+    images: {
+      editorLogo: new Route<{ pathParams: "type" }>(({ type }) => `images/${type}_kogito_logo.svg`),
+      homeLogo: new Route<{}>(() => `images/BusinessModeler_Logo_38x389.svg`),
+      kogitoLogoWhite: new Route<{}>(() => `images/kogito_logo_white.png`),
+      dmnRunnerGif: new Route<{}>(() => `images/dmn-runner2.gif`),
+      dmnDevSandboxGif: new Route<{}>(() => `images/dmn-dev-sandbox.gif`),
+    },
+  },
+};

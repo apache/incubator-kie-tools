@@ -40,10 +40,11 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxContextProvider";
-import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { extractFileExtension, removeDirectories, removeFileExtension } from "../common/utils";
 import { useSettings } from "../settings/SettingsContext";
 import { File, newFile } from "@kie-tooling-core/editor/dist/channel";
+import { QueryParams } from "../common/Routes";
 
 const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tooling-core/monaco-editor");
 
@@ -97,8 +98,8 @@ export function EditorPage(props: { forExtension?: SupportedFileExtensions }) {
       return;
     }
 
-    if (!queryParamFile && globals.uploadedFile) {
-      globals.setFile(globals.uploadedFile);
+    if (globals.uploadedFile) {
+      globals.setFile({ ...globals.uploadedFile, kind: "local" });
       return;
     }
 
@@ -179,7 +180,7 @@ export function EditorPage(props: { forExtension?: SupportedFileExtensions }) {
   const close = useCallback(() => {
     if (!isDirty) {
       history.push({
-        pathname: globals.routes.home(),
+        pathname: globals.routes.home.path({}),
       });
     } else {
       setOpenAlert(AlertTypes.UNSAVED);
@@ -189,7 +190,7 @@ export function EditorPage(props: { forExtension?: SupportedFileExtensions }) {
   const closeWithoutSaving = useCallback(() => {
     setOpenAlert(AlertTypes.NONE);
     history.push({
-      pathname: globals.routes.home(),
+      pathname: globals.routes.home.path({}),
     });
   }, [globals, history]);
 
@@ -239,17 +240,17 @@ export function EditorPage(props: { forExtension?: SupportedFileExtensions }) {
         if (userLogin === settings.github.user) {
           try {
             const filename = `${globals.file.fileName}.${fileExtension}`;
-            const updateResponse = await settings.github.service.updateGist(settings.github.octokit, {
+            const response = await settings.github.service.updateGist(settings.github.octokit, {
               filename,
               content,
             });
 
-            if (updateResponse === UpdateGistErrors.INVALID_CURRENT_GIST) {
+            if (response === UpdateGistErrors.INVALID_CURRENT_GIST) {
               setOpenAlert(AlertTypes.INVALID_CURRENT_GIST);
               return;
             }
 
-            if (updateResponse === UpdateGistErrors.INVALID_GIST_FILENAME) {
+            if (response === UpdateGistErrors.INVALID_GIST_FILENAME) {
               setOpenAlert(AlertTypes.INVALID_GIST_FILENAME);
               return;
             }
@@ -258,8 +259,8 @@ export function EditorPage(props: { forExtension?: SupportedFileExtensions }) {
             if (filename !== settings.github.service.getCurrentGist()?.filename) {
               setOpenAlert(AlertTypes.SUCCESS_UPDATE_GIST);
               history.push({
-                pathname: globals.routes.editor({ extension: fileExtension }),
-                search: queryParams.with(QueryParams.FILE, updateResponse).toString(),
+                pathname: globals.routes.editor.path({ extension: fileExtension }),
+                search: globals.routes.editor.queryArgs(queryParams).with(QueryParams.FILE, response).toString(),
               });
               return;
             }
@@ -286,8 +287,8 @@ export function EditorPage(props: { forExtension?: SupportedFileExtensions }) {
         setOpenAlert(AlertTypes.SUCCESS_CREATE_GIST);
 
         history.push({
-          pathname: globals.routes.editor({ extension: fileExtension }),
-          search: queryParams.with(QueryParams.FILE, newGistUrl).toString(),
+          pathname: globals.routes.editor.path({ extension: fileExtension }),
+          search: globals.routes.editor.queryArgs(queryParams).with(QueryParams.FILE, newGistUrl).toString(),
         });
         return;
       } catch (err) {

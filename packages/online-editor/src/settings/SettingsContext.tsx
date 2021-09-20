@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "../common/utils";
 import { Octokit } from "@octokit/rest";
 import { GithubService } from "./GithubService";
-import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
 import { OpenShiftSettingsConfig, readConfigCookie } from "./OpenShiftSettingsConfig";
 import { KieToolingExtendedServicesStatus } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesStatus";
@@ -12,6 +12,7 @@ import { OpenShiftService } from "./OpenShiftService";
 import { useKieToolingExtendedServices } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { useHistory, useLocation } from "react-router";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { QueryParams } from "../common/Routes";
 
 const GITHUB_AUTH_TOKEN_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__github-oauth-token";
 const GUIDED_TOUR_ENABLED_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__is-guided-tour-enabled";
@@ -76,19 +77,17 @@ export function SettingsContextProvider(props: any) {
   const open = useCallback(
     (activeTab = SettingsTabs.GENERAL) => {
       history.push({
-        pathname: location.pathname,
         search: queryParams.with(QueryParams.SETTINGS, activeTab).toString(),
       });
     },
-    [history, location, queryParams]
+    [history, queryParams]
   );
 
   const close = useCallback(() => {
     history.push({
-      pathname: location.pathname,
       search: queryParams.without(QueryParams.SETTINGS).toString(),
     });
-  }, [history, location, queryParams]);
+  }, [history, queryParams]);
 
   //github
   const [githubAuthStatus, setGitHubAuthStatus] = useState(AuthStatus.LOADING);

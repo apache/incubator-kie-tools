@@ -29,10 +29,11 @@ import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 import { useOnlineI18n } from "../../common/i18n";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
-import { QueryParams, useQueryParams } from "../../queryParams/QueryParamsContext";
+import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { jsonParseWithDate } from "../../common/utils";
 import { useHistory } from "react-router";
 import { useGlobals } from "../../common/GlobalContext";
+import { QueryParams } from "../../common/Routes";
 
 interface Props {
   children: React.ReactNode;
@@ -149,8 +150,8 @@ export function DmnRunnerContextProvider(props: Props) {
       console.error("Cannot parse formInputs", e);
     } finally {
       history.replace({
-        pathname: globals.routes.editor({ extension: "dmn" }),
-        search: queryParams.without(QueryParams.DMN_RUNNER_FORM_INPUTS).toString(),
+        pathname: globals.routes.editor.path({ extension: "dmn" }),
+        search: globals.routes.editor.queryArgs(queryParams).without(QueryParams.DMN_RUNNER_FORM_INPUTS).toString(),
       });
     }
   }, [formSchema, props.editor, history, globals.routes, queryParams]);

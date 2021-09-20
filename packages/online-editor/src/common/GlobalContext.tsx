@@ -17,7 +17,7 @@
 import { File, newFile } from "@kie-tooling-core/editor/dist/channel";
 import * as React from "react";
 import { useContext, useMemo, useState } from "react";
-import { Routes } from "./Routes";
+import { routes } from "./Routes";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
 import { useRouteMatch } from "react-router";
 
@@ -29,7 +29,7 @@ export interface GlobalContextType {
   uploadedFile?: File;
   setUploadedFile: React.Dispatch<React.SetStateAction<File>>;
   externalFile?: File;
-  routes: Routes;
+  routes: typeof routes;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   senderTabId?: string;
   isChrome: boolean;
@@ -38,9 +38,8 @@ export interface GlobalContextType {
 export const GlobalContext = React.createContext<GlobalContextType>({} as any);
 
 export function GlobalContextProvider(props: { externalFile?: File; senderTabId?: string; children: React.ReactNode }) {
-  const routes = useMemo(() => new Routes(), []);
   //FIXME: tiago: Move file to `EditorPage`.
-  const match = useRouteMatch<{ extension: string }>(routes.editor({ extension: ":extension" }));
+  const match = useRouteMatch<{ extension: string }>(routes.editor.path({ extension: ":extension" }));
   const [file, setFile] = useState(() => newFile(match?.params.extension ?? "dmn"));
   const [uploadedFile, setUploadedFile] = useState<File | undefined>(undefined);
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(

@@ -52,13 +52,13 @@ function RoutesSwitch() {
 
   return (
     <Switch>
-      <Route path={globals.routes.editor({ extension: `:extension(${supportedExtensions})` })}>
+      <Route path={globals.routes.editor.path({ extension: `:extension(${supportedExtensions})` })}>
         {({ match }) => <EditorPage forExtension={match?.params.extension as SupportedFileExtensions} />}
       </Route>
-      <Route exact={true} path={globals.routes.home()}>
+      <Route exact={true} path={globals.routes.home.path({})}>
         <HomePage />
       </Route>
-      <Route exact={true} path={globals.routes.downloadHub()}>
+      <Route exact={true} path={globals.routes.download.path({})}>
         <HomePage />
         <DownloadHubModal />
       </Route>

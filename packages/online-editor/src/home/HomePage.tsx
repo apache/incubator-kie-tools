@@ -43,8 +43,9 @@ import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
 import { useGlobals } from "../common/GlobalContext";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { useOnlineI18n } from "../common/i18n";
-import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useSettings } from "../settings/SettingsContext";
+import { QueryParams } from "../common/Routes";
 
 enum InputFileUrlState {
   INITIAL,
@@ -100,7 +101,6 @@ export function HomePage() {
       }
 
       globals.setUploadedFile({
-        kind: "local",
         isReadOnly: false,
         fileExtension,
         fileName: removeFileExtension(fileName),
@@ -112,7 +112,7 @@ export function HomePage() {
           }),
       });
       history.push({
-        pathname: globals.routes.editor({ extension: fileExtension }),
+        pathname: globals.routes.editor.path({ extension: fileExtension }),
       });
     },
     [globals, history]
@@ -124,7 +124,7 @@ export function HomePage() {
     (fileExtension: string) => {
       globals.setFile(newFile(fileExtension, "local"));
       history.push({
-        pathname: globals.routes.editor({ extension: fileExtension }),
+        pathname: globals.routes.editor.path({ extension: fileExtension }),
       });
     },
     [globals, history]
@@ -144,9 +144,10 @@ export function HomePage() {
 
   const trySample = useCallback(
     (fileExtension: string) => {
+      const filePath = globals.routes.static.sample.path({ type: fileExtension });
       history.push({
-        pathname: globals.routes.editor({ extension: fileExtension }),
-        search: queryParams.with(QueryParams.FILE, globals.routes.static.sample({ type: fileExtension })).toString(),
+        pathname: globals.routes.editor.path({ extension: fileExtension }),
+        search: globals.routes.editor.queryArgs(queryParams).with(QueryParams.FILE, filePath).toString(),
       });
     },
     [globals, history, queryParams]
@@ -304,11 +305,12 @@ export function HomePage() {
   }, [inputFileUrl]);
 
   const openFileFromUrl = useCallback(() => {
-    if (urlCanBeOpen && inputFileUrlState.urlToOpen) {
-      const fileExtension = extractFileExtension(new URL(inputFileUrlState.urlToOpen).pathname);
+    const filePath = inputFileUrlState.urlToOpen;
+    if (urlCanBeOpen && filePath) {
+      const fileExtension = extractFileExtension(new URL(filePath).pathname);
       history.push({
-        pathname: globals.routes.editor({ extension: fileExtension! }),
-        search: queryParams.with(QueryParams.FILE, inputFileUrlState.urlToOpen).toString(),
+        pathname: globals.routes.editor.path({ extension: fileExtension! }),
+        search: globals.routes.editor.queryArgs(queryParams).with(QueryParams.FILE, filePath).toString(),
       });
     }
   }, [queryParams, globals.routes, history, inputFileUrlState, urlCanBeOpen]);
@@ -356,7 +358,7 @@ export function HomePage() {
 
   const linkDropdownItems = [
     <DropdownItem key="github-chrome-extension-dropdown-link">
-      <Link to={globals.routes.downloadHub()}>{i18n.homePage.dropdown.getHub}</Link>
+      <Link to={globals.routes.download.path({})}>{i18n.homePage.dropdown.getHub}</Link>
     </DropdownItem>,
   ];
 
@@ -376,7 +378,7 @@ export function HomePage() {
     <PageHeaderTools>
       <PageHeaderToolsGroup>
         <PageHeaderToolsItem className="pf-u-display-none pf-u-display-flex-on-lg">
-          <Link to={globals.routes.downloadHub()} className="kogito--editor-hub-download_link">
+          <Link to={globals.routes.download.path({})} className="kogito--editor-hub-download_link">
             {i18n.homePage.dropdown.getHub}
           </Link>
         </PageHeaderToolsItem>
@@ -416,7 +418,7 @@ export function HomePage() {
 
   const Header = (
     <PageHeader
-      logo={<Brand src={"images/BusinessModeler_Logo_38x389.svg"} alt="Logo" />}
+      logo={<Brand src={globals.routes.static.images.homeLogo.path({})} alt="Logo" />}
       logoProps={logoProps}
       headerTools={headerToolbar}
     />
@@ -433,7 +435,7 @@ export function HomePage() {
           <Text component={TextVariants.small} className="pf-u-text-align-right">
             {`${i18n.terms.poweredBy} `}
             <Brand
-              src={"images/kogito_logo_white.png"}
+              src={globals.routes.static.images.kogitoLogoWhite.path({})}
               alt="Kogito Logo"
               style={{ height: "1em", verticalAlign: "text-bottom" }}
             />

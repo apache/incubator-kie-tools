@@ -80,7 +80,7 @@ export function DownloadHubModal() {
 
   return (
     <div>
-      {modalState === ModalState.CLOSE && <Redirect push={true} to={globals.routes.home()} />}
+      {modalState === ModalState.CLOSE && <Redirect push={true} to={globals.routes.home.path({})} />}
       {modalState === ModalState.SELECT_OS && (
         <Modal
           title={`${i18n.downloadHubModal.beforeDownload.title}:`}

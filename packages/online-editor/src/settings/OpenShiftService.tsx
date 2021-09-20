@@ -96,11 +96,16 @@ export class OpenShiftService {
       });
   }
 
-  public async deploy(filename: string, diagramContent: string, config: OpenShiftSettingsConfig): Promise<void> {
+  public async deploy(args: {
+    filename: string;
+    editorContent: string;
+    config: OpenShiftSettingsConfig;
+    onlineEditorUrl: (baseUrl: string) => string;
+  }): Promise<void> {
     const commonArgs = {
-      host: config.host,
-      namespace: config.namespace,
-      token: config.token,
+      host: args.config.host,
+      namespace: args.config.namespace,
+      token: args.config.token,
       resourceName: `${this.RESOURCE_NAME_PREFIX}-${this.generateRandomId()}`,
     };
 
@@ -124,20 +129,20 @@ export class OpenShiftService {
         ...commonArgs,
         buildConfigUid: buildConfig.metadata.uid,
         model: {
-          filename: filename,
-          content: diagramContent,
+          filename: args.filename,
+          content: args.editorContent,
         },
         urls: {
           index: baseUrl,
           swaggerUI: this.composeSwaggerUIUrl(baseUrl),
-          onlineEditor: this.composeOnlineEditorUrl(baseUrl, filename),
+          onlineEditor: args.onlineEditorUrl(baseUrl),
         },
       }),
       rollbacks.slice(1)
     );
 
     await this.fetchResource(
-      new CreateDeployment({ ...commonArgs, filename: filename, createdBy: DEFAULT_CREATED_BY }),
+      new CreateDeployment({ ...commonArgs, filename: args.filename, createdBy: DEFAULT_CREATED_BY }),
       rollbacks
     );
   }
@@ -170,12 +175,6 @@ export class OpenShiftService {
 
   private composeSwaggerUIUrl(baseUrl: string): string {
     return `${baseUrl}/q/swagger-ui`;
-  }
-
-  private composeOnlineEditorUrl(baseUrl: string, filename: string): string {
-    return `${
-      process.env.WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl
-    }/editor/dmn?readonly=true&file=${baseUrl}/${encodeURIComponent(filename)}`;
   }
 
   private extractDeploymentState(deployment: Deployment, build: Build | undefined): OpenShiftDeployedModelState {

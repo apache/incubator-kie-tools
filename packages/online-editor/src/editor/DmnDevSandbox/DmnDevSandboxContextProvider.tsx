@@ -83,13 +83,23 @@ export function DmnDevSandboxContextProvider(props: Props) {
         .replace(/"/g, '\\"'); // Escape quotes
 
       try {
-        await settings.openshift.service.deploy(filename, editorContent, config);
+        await settings.openshift.service.deploy({
+          filename,
+          editorContent,
+          config,
+          onlineEditorUrl: (baseUrl) =>
+            globals.routes.editor.url({
+              base: process.env.WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl,
+              pathParams: { extension: "dmn" },
+              queryParams: { file: `${baseUrl}/${filename}`, readonly: `${true}` },
+            }),
+        });
         setOpenAlert(AlertTypes.DEPLOY_STARTED_SUCCESS);
       } catch (error) {
         setOpenAlert(AlertTypes.DEPLOY_STARTED_ERROR);
       }
     },
-    [globals.file.fileName, globals.file.fileExtension, props.editor, settings.openshift.service]
+    [globals.file, globals.routes, props.editor, settings.openshift.service]
   );
 
   useEffect(() => {

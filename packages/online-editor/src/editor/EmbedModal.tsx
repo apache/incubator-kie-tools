@@ -24,8 +24,9 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { useOnlineI18n } from "../common/i18n";
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { useSettings } from "../settings/SettingsContext";
-import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useGlobals } from "../common/GlobalContext";
+import { QueryParams } from "../common/Routes";
 
 type SupportedStandaloneEditorFileExtensions = "bpmn" | "bpmn2" | "dmn";
 type StandaloneEditorLibraryName = "BpmnEditor" | "DmnEditor";

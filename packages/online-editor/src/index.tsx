@@ -21,7 +21,7 @@ import * as ReactDOM from "react-dom";
 import { App } from "./App";
 import { extractFileExtension, removeFileExtension } from "./common/utils";
 import "../static/resources/style.css";
-import { QueryParams } from "./queryParams/QueryParamsContext";
+import { QueryParams } from "./common/Routes";
 
 function main() {
   const queryParams = new URLSearchParams(window.location.search);
