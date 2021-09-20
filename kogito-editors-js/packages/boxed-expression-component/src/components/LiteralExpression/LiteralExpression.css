@@ -32,6 +32,9 @@
   background-color: var(--pf-global--BackgroundColor--100);
   font-style: normal;
 }
+.expression-container .cell--selected .literal-expression {
+  background-color: var(--selected-cell);
+}
 
 .literal-expression .literal-expression-header .expression-info {
   cursor: pointer;

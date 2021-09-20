@@ -48,7 +48,7 @@ module.exports = {
         dispose: () => {},
         getValue: () => value,
         setValue: (newValue) => {
-          if (newValue.includes("\t")) {
+          if (newValue.includes("</>")) {
             onDidBlurEditorText(newValue);
           }
         },

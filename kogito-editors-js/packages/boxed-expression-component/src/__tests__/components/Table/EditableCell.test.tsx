@@ -121,7 +121,7 @@ describe("EditableCell", () => {
       ).container;
 
       fireEvent.change(container.querySelector("textarea") as HTMLTextAreaElement, {
-        target: { value: `${newValue}\t` },
+        target: { value: `${newValue}</>` },
       });
       // onblur is triggered by Monaco (mock), and the new value relies on Monaco implementation
     });

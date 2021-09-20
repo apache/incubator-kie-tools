@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import "./Table.css";
+import { TableComposable } from "@patternfly/react-table";
+import * as _ from "lodash";
+import * as React from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   Column,
   ColumnInstance,
@@ -24,20 +27,20 @@ import {
   useResizeColumns,
   useTable,
 } from "react-table";
-import { TableComposable } from "@patternfly/react-table";
-import * as React from "react";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { EditableCell } from "./EditableCell";
+import { v4 as uuid } from "uuid";
 import { TableHeaderVisibility, TableOperation, TableProps } from "../../api";
-import * as _ from "lodash";
+import { BoxedExpressionGlobalContext } from "../../context";
+import { pasteOnTable, PASTE_OPERATION } from "./common";
+import { EditableCell } from "./EditableCell";
+import "./Table.css";
 import { TableBody } from "./TableBody";
 import { TableHandler } from "./TableHandler";
 import { TableHeader } from "./TableHeader";
-import { BoxedExpressionGlobalContext } from "../../context";
-
 export const NO_TABLE_CONTEXT_MENU_CLASS = "no-table-context-menu";
 const NUMBER_OF_ROWS_COLUMN = "#";
 const NUMBER_OF_ROWS_SUBCOLUMN = "0";
+
+export const DEFAULT_ON_ROW_ADDING = () => ({});
 
 export const getColumnsAtLastLevel: (columns: ColumnInstance[] | Column[], depth?: number) => ColumnInstance[] = (
   columns,
@@ -66,7 +69,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
   editColumnLabel,
   onColumnsUpdate,
   onRowsUpdate,
-  onRowAdding = () => ({}),
+  onRowAdding = DEFAULT_ON_ROW_ADDING,
   controllerCell = NUMBER_OF_ROWS_COLUMN,
   defaultCell,
   rows,
@@ -80,6 +83,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
   resetRowCustomFunction,
 }: TableProps) => {
   const tableRef = useRef<HTMLTableElement>(null);
+  const tableEventUUID = useMemo(() => `table-event-${uuid()}`, []);
 
   const globalContext = useContext(BoxedExpressionGlobalContext);
 
@@ -151,6 +155,33 @@ export const Table: React.FunctionComponent<TableProps> = ({
     // Watching for external changes of the rows
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows]);
+
+  useEffect(() => {
+    function listener(event: CustomEvent) {
+      if (event.detail.type !== PASTE_OPERATION || !tableRows.current || tableRows.current.length === 0) {
+        return;
+      }
+
+      const { pasteValue, x, y } = event.detail;
+      const rows = tableRows.current;
+      const rowFactory = onRowAdding;
+
+      const isLockedTable = _.some(tableRows.current[0], (col: { noClearAction: boolean }) => {
+        return col && col.noClearAction;
+      });
+
+      if (DEFAULT_ON_ROW_ADDING !== rowFactory && !isLockedTable) {
+        const pastedRows = pasteOnTable(pasteValue, rows, rowFactory, x, y);
+        tableRows.current = pastedRows;
+        onRowsUpdate?.(pastedRows);
+      }
+    }
+
+    document.addEventListener(tableEventUUID, listener);
+    return () => {
+      document.removeEventListener(tableEventUUID, listener);
+    };
+  }, [tableEventUUID, tableRows, onRowsUpdate, onColumnsUpdate, onRowAdding]);
 
   const onColumnsUpdateCallback = useCallback(
     (columns: Column[]) => {
@@ -285,7 +316,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
   );
 
   return (
-    <div className={`table-component ${tableId}`}>
+    <div className={`table-component ${tableId} ${tableEventUUID}`}>
       <TableComposable
         variant="compact"
         {...tableInstance.getTableProps()}

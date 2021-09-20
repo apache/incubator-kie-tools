@@ -20,7 +20,7 @@ import "monaco-editor/dev/vs/editor/editor.main.css";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CellProps } from "../../api";
-import { blurActiveElement, focusNextTextArea, focusTextArea } from "./common/FocusUtils";
+import { blurActiveElement, firstIterableValue, focusNextTextArea, focusTextArea, paste } from "./common";
 import "./EditableCell.css";
 
 const CELL_LINE_HEIGHT = 20;
@@ -140,10 +140,23 @@ export const EditableCell: React.FunctionComponent<EditableCellProps> = React.me
 
     const onTextAreaChange = useCallback(
       (event) => {
-        setValue(event.target.value);
+        const newValue: string = event.target.value || "";
+        const isPastedValue = newValue.includes("\t") || newValue.includes("\n");
+
+        if (textarea.current && isPastedValue) {
+          const pasteValue = newValue.slice(value.length);
+          const firstCellValue = firstIterableValue(pasteValue);
+
+          paste(pasteValue, textarea.current);
+          setValue(firstCellValue);
+          triggerReadMode();
+          return;
+        }
+
+        setValue(newValue);
         triggerEditMode();
       },
-      [setValue, triggerEditMode]
+      [setValue, value, triggerEditMode, triggerReadMode, textarea]
     );
 
     // Feel Handlers ===========================================================

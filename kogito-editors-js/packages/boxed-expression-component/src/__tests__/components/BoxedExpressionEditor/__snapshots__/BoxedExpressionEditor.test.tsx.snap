@@ -36,5 +36,13 @@ exports[`BoxedExpressionEditor tests should render BoxedExpressionEditor compone
       </div>
     </div>
   </div>
+  <div
+    class="kie-cell-selection-box"
+  >
+    <div
+      class="kie-selection-box"
+    />
+    <textarea />
+  </div>
 </div>
 `;

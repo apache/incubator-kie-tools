@@ -19,6 +19,7 @@ import * as _ from "lodash";
 import * as React from "react";
 import { act } from "react-dom/test-utils";
 import { Column, ColumnInstance, DataRecord } from "react-table";
+import { PASTE_OPERATION } from "../../../../showcase/src/lib/components/Table/common/CopyAndPasteUtils";
 import { DataType, TableHandlerConfiguration, TableOperation } from "../../../api";
 import { Table } from "../../../components/Table";
 import {
@@ -305,11 +306,50 @@ describe("Table tests", () => {
 
       const textarea = container.querySelector("table tbody tr td textarea") as HTMLTextAreaElement;
 
-      fireEvent.change(textarea, { target: { value: `${newRowValue}\t` } });
+      fireEvent.change(textarea, { target: { value: `${newRowValue}</>` } });
       // onblur is triggered by Monaco (mock), and the new value relies on Monaco implementation
 
       expect(mockedOnRowsUpdate).toHaveBeenCalled();
       expect(mockedOnRowsUpdate).toHaveBeenCalledWith([newRow]);
+    });
+  });
+
+  describe("when users paste a value", () => {
+    const orRowsUpdate = (rows: DataRecord[]) => {
+      _.identity(rows);
+    };
+    const mockedOnRowsUpdate = jest.fn(orRowsUpdate);
+    let container: HTMLElement;
+
+    beforeEach(() => {
+      const row: DataRecord = {};
+      const newRow: DataRecord = {};
+      const rowValue = "value";
+      const newRowValue = "new value";
+      row[columnName] = rowValue;
+      newRow[columnName] = newRowValue;
+
+      const value = "value";
+      row[columnName] = value;
+
+      container = render(
+        usingTestingBoxedExpressionI18nContext(
+          <Table
+            columns={[{ label: columnName, accessor: columnName, dataType: DataType.Boolean } as ColumnInstance]}
+            rows={[row]}
+            onColumnsUpdate={_.identity}
+            onRowAdding={() => ({})}
+            onRowsUpdate={mockedOnRowsUpdate}
+            handlerConfiguration={handlerConfiguration}
+          />
+        ).wrapper
+      ).container;
+
+      document.dispatchEvent(customEvent(container));
+    });
+
+    test("should trigger onRowsUpdate", async () => {
+      expect(mockedOnRowsUpdate).toHaveBeenCalled();
     });
   });
 
@@ -571,5 +611,23 @@ export async function openContextMenu(element: Element): Promise<void> {
     fireEvent.contextMenu(element);
     await flushPromises();
     jest.runAllTimers();
+  });
+}
+
+function customEvent(container: HTMLElement) {
+  const eventId: string =
+    _.first(
+      [].slice
+        .call(container.querySelector(".table-component")?.classList)
+        .filter((c: string) => c.match(/table-event-/g))
+    ) || "";
+
+  return new CustomEvent(eventId, {
+    detail: {
+      x: 0,
+      y: 0,
+      pasteValue: "A\tA\tA\n",
+      type: PASTE_OPERATION,
+    },
   });
 }

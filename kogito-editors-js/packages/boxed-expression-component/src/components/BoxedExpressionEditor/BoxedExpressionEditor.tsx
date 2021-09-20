@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
 import "@patternfly/react-core/dist/styles/base-no-reset.css";
 import "@patternfly/react-styles/css/components/Drawer/drawer.css";
-import "./BoxedExpressionEditor.css";
-import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
-import { ExpressionContainer } from "../ExpressionContainer";
-import { hashfy, ResizerSupervisor } from "../Resizer";
+import * as _ from "lodash";
+import * as React from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ExpressionProps, PMMLParams } from "../../api";
+import { BoxedExpressionGlobalContext } from "../../context";
 import {
   boxedExpressionEditorDictionaries,
   BoxedExpressionEditorI18nContext,
   boxedExpressionEditorI18nDefaults,
 } from "../../i18n";
-import { BoxedExpressionGlobalContext } from "../../context";
-import * as _ from "lodash";
-import { ExpressionProps, PMMLParams } from "../../api";
+import { ExpressionContainer } from "../ExpressionContainer";
+import { hashfy, ResizerSupervisor } from "../Resizer";
+import { CellSelectionBox } from "../SelectionBox";
+import "./BoxedExpressionEditor.css";
 
 export interface BoxedExpressionEditorProps {
   /** All expression properties used to define it */
@@ -80,6 +81,7 @@ export const BoxedExpressionEditor: (props: BoxedExpressionEditorProps) => JSX.E
               <ExpressionContainer selectedExpression={expressionDefinition} onExpressionChange={onExpressionChange} />
             </div>
           </ResizerSupervisor>
+          <CellSelectionBox />
         </BoxedExpressionGlobalContext.Provider>
       </I18nDictionariesProvider>
     ),

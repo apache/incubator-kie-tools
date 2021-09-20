@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-:root {
-  --small-font-size: 13px;
-  --selected-cell: rgba(190, 200, 205, 0.3);
-}
+export * from "./CopyAndPasteUtils";
+export * from "./FocusUtils";
+export * from "./TableUtils";

@@ -22,6 +22,7 @@
   line-height: var(--pf-global--LineHeight--md);
   text-align: left;
   user-select: none;
+  touch-action: none;
 }
 
 .boxed-expression-editor *,

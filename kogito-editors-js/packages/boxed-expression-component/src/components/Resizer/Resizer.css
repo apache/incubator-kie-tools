@@ -24,6 +24,10 @@
   position: relative;
 }
 
+.expression-container .react-resizable.cell--selected {
+  background-color: var(--selected-cell);
+}
+
 .expression-container .pf-c-drawer__splitter::after {
   border: none;
 }
