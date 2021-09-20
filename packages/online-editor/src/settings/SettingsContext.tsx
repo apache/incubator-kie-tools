@@ -75,20 +75,18 @@ export function SettingsContextProvider(props: any) {
 
   const open = useCallback(
     (activeTab = SettingsTabs.GENERAL) => {
-      queryParams.set(QueryParams.SETTINGS, activeTab);
       history.push({
         pathname: location.pathname,
-        search: decodeURIComponent(queryParams.toString()),
+        search: queryParams.with(QueryParams.SETTINGS, activeTab).toString(),
       });
     },
     [history, location, queryParams]
   );
 
   const close = useCallback(() => {
-    queryParams.delete(QueryParams.SETTINGS);
     history.push({
       pathname: location.pathname,
-      search: decodeURIComponent(queryParams.toString()),
+      search: queryParams.without(QueryParams.SETTINGS).toString(),
     });
   }, [history, location, queryParams]);
 

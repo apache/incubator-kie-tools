@@ -143,15 +143,14 @@ export function DmnRunnerContextProvider(props: Props) {
     }
 
     try {
-      setFormData(jsonParseWithDate(decodeURIComponent(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!)));
+      setFormData(jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!));
       setDrawerExpanded(true);
     } catch (e) {
       console.error("Cannot parse formInputs", e);
     } finally {
-      queryParams.delete(QueryParams.DMN_RUNNER_FORM_INPUTS);
       history.replace({
         pathname: globals.routes.editor({ extension: "dmn" }),
-        search: decodeURIComponent(queryParams.toString()),
+        search: queryParams.without(QueryParams.DMN_RUNNER_FORM_INPUTS).toString(),
       });
     }
   }, [formSchema, props.editor, history, globals.routes, queryParams]);

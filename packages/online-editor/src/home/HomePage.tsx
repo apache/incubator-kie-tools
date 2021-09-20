@@ -144,10 +144,9 @@ export function HomePage() {
 
   const trySample = useCallback(
     (fileExtension: string) => {
-      queryParams.set(QueryParams.FILE, globals.routes.static.sample({ type: fileExtension }));
       history.push({
         pathname: globals.routes.editor({ extension: fileExtension }),
-        search: decodeURIComponent(queryParams.toString()),
+        search: queryParams.with(QueryParams.FILE, globals.routes.static.sample({ type: fileExtension })).toString(),
       });
     },
     [globals, history, queryParams]
@@ -307,10 +306,9 @@ export function HomePage() {
   const openFileFromUrl = useCallback(() => {
     if (urlCanBeOpen && inputFileUrlState.urlToOpen) {
       const fileExtension = extractFileExtension(new URL(inputFileUrlState.urlToOpen).pathname);
-      queryParams.set(QueryParams.FILE, inputFileUrlState.urlToOpen);
       history.push({
         pathname: globals.routes.editor({ extension: fileExtension! }),
-        search: decodeURIComponent(queryParams.toString()),
+        search: queryParams.with(QueryParams.FILE, inputFileUrlState.urlToOpen).toString(),
       });
     }
   }, [queryParams, globals.routes, history, inputFileUrlState, urlCanBeOpen]);

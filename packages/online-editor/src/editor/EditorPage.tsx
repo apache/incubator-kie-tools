@@ -257,10 +257,9 @@ export function EditorPage(props: { forExtension?: SupportedFileExtensions }) {
             editor.getStateControl().setSavedCommand();
             if (filename !== settings.github.service.getCurrentGist()?.filename) {
               setOpenAlert(AlertTypes.SUCCESS_UPDATE_GIST);
-              queryParams.set(QueryParams.FILE, updateResponse);
               history.push({
                 pathname: globals.routes.editor({ extension: fileExtension }),
-                search: decodeURIComponent(queryParams.toString()),
+                search: queryParams.with(QueryParams.FILE, updateResponse).toString(),
               });
               return;
             }
@@ -285,10 +284,10 @@ export function EditorPage(props: { forExtension?: SupportedFileExtensions }) {
         });
 
         setOpenAlert(AlertTypes.SUCCESS_CREATE_GIST);
-        queryParams.set(QueryParams.FILE, newGistUrl);
+
         history.push({
           pathname: globals.routes.editor({ extension: fileExtension }),
-          search: decodeURIComponent(queryParams.toString()),
+          search: queryParams.with(QueryParams.FILE, newGistUrl).toString(),
         });
         return;
       } catch (err) {
