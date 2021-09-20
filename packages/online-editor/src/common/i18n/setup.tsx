@@ -20,10 +20,24 @@ import { I18nContextType } from "@kie-tooling-core/i18n/dist/react-components";
 import { OnlineI18n } from "./OnlineI18n";
 import { en } from "./locales";
 import { I18nDefaults, I18nDictionaries } from "@kie-tooling-core/i18n/dist/core";
+import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/src/react-components";
 
 export const onlineI18nDefaults: I18nDefaults<OnlineI18n> = { locale: "en", dictionary: en };
 export const onlineI18nDictionaries: I18nDictionaries<OnlineI18n> = new Map([["en", en]]);
 export const OnlineI18nContext = React.createContext<I18nContextType<OnlineI18n>>({} as any);
+
+export function OnlineI18nContextProvider(props: { children: any }) {
+  return (
+    <I18nDictionariesProvider
+      defaults={onlineI18nDefaults}
+      dictionaries={onlineI18nDictionaries}
+      initialLocale={navigator.language}
+      ctx={OnlineI18nContext}
+    >
+      {props.children}
+    </I18nDictionariesProvider>
+  );
+}
 
 export function useOnlineI18n() {
   return useContext(OnlineI18nContext);

@@ -16,67 +16,59 @@
 
 import { File } from "@kie-tooling-core/editor/dist/channel";
 import * as React from "react";
-import { Redirect, Route, Switch } from "react-router";
+import { useMemo } from "react";
+import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
-import { GlobalContext, GlobalContextProvider, SupportedFileExtensions } from "./common/GlobalContext";
+import { GlobalContextProvider, SupportedFileExtensions, useGlobals } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
-import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
-import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
-import { SettingsContextProvider } from "./settings/SettingsContext";
-import { KieToolingExtendedServicesContextProvider } from "./editor/KieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
+import { OnlineI18nContextProvider } from "./common/i18n";
 import { HomePage } from "./home/HomePage";
 import { DownloadHubModal } from "./home/DownloadHubModal";
 import { NoMatchPage } from "./NoMatchPage";
+import { KieToolingExtendedServicesContextProvider } from "./editor/KieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
+import { SettingsContextProvider } from "./settings/SettingsContext";
 
-interface Props {
-  externalFile?: File;
-  senderTabId?: string;
-}
-
-export function App(props: Props) {
+export function App(props: { externalFile?: File; senderTabId?: string }) {
   return (
     <HashRouter>
-      <I18nDictionariesProvider
-        defaults={onlineI18nDefaults}
-        dictionaries={onlineI18nDictionaries}
-        initialLocale={navigator.language}
-        ctx={OnlineI18nContext}
-      >
-        <GlobalContextProvider externalFile={props.externalFile} senderTabId={props.senderTabId}>
-          <KieToolingExtendedServicesContextProvider>
-            <SettingsContextProvider>
-              <GlobalContext.Consumer>
-                {({ routes, editorEnvelopeLocator }) => (
-                  <Switch>
-                    <Route path={routes.editor({ extension: ":extension" })}>
-                      {(match) => {
-                        const extension = match.match?.params.extension ?? "";
-                        return (
-                          <>
-                            {editorEnvelopeLocator.mapping.has(extension) ? (
-                              <EditorPage forExtension={extension as SupportedFileExtensions} />
-                            ) : (
-                              <Redirect to={routes.home()} />
-                            )}
-                          </>
-                        );
-                      }}
-                    </Route>
-                    <Route exact={true} path={routes.home()}>
-                      <HomePage />
-                    </Route>
-                    <Route exact={true} path={routes.downloadHub()}>
-                      <HomePage />
-                      <DownloadHubModal />
-                    </Route>
-                    <Route component={NoMatchPage} />
-                  </Switch>
-                )}
-              </GlobalContext.Consumer>
-            </SettingsContextProvider>
-          </KieToolingExtendedServicesContextProvider>
-        </GlobalContextProvider>
-      </I18nDictionariesProvider>
+      {nest(
+        [OnlineI18nContextProvider, {}],
+        [GlobalContextProvider, props],
+        [KieToolingExtendedServicesContextProvider, {}],
+        [SettingsContextProvider, {}],
+        [RoutesSwitch, {}]
+      )}
     </HashRouter>
   );
+}
+
+function RoutesSwitch() {
+  const globals = useGlobals();
+
+  const supportedExtensions = useMemo(
+    () => Array.from(globals.editorEnvelopeLocator.mapping.keys()).join("|"),
+    [globals.editorEnvelopeLocator]
+  );
+
+  return (
+    <Switch>
+      <Route path={globals.routes.editor({ extension: `:extension(${supportedExtensions})` })}>
+        {(match) => <EditorPage forExtension={match.match?.params.extension as SupportedFileExtensions} />}
+      </Route>
+      <Route exact={true} path={globals.routes.home()}>
+        <HomePage />
+      </Route>
+      <Route exact={true} path={globals.routes.downloadHub()}>
+        <HomePage />
+        <DownloadHubModal />
+      </Route>
+      <Route component={NoMatchPage} />
+    </Switch>
+  );
+}
+
+function nest(...components: Array<[(...args: any[]) => any, object]>) {
+  return components.reduceRight((acc, [Component, props]) => {
+    return <Component {...props}>{acc}</Component>;
+  }, <></>);
 }

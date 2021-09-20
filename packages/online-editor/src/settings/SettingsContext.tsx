@@ -4,13 +4,14 @@ import { getCookie, setCookie } from "../common/utils";
 import { Octokit } from "@octokit/rest";
 import { GithubService } from "./GithubService";
 import { QueryParams, useQueryParams } from "../queryParams/QueryParamsContext";
-import { SettingsTabs } from "./SettingsModalBody";
+import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
 import { OpenShiftSettingsConfig, readConfigCookie } from "./OpenShiftSettingsConfig";
 import { KieToolingExtendedServicesStatus } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { OpenShiftService } from "./OpenShiftService";
 import { useKieToolingExtendedServices } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { useHistory, useLocation } from "react-router";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 
 const GITHUB_AUTH_TOKEN_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__github-oauth-token";
 const GUIDED_TOUR_ENABLED_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__is-guided-tour-enabled";
@@ -166,42 +167,49 @@ export function SettingsContextProvider(props: any) {
   );
 
   return (
-    <SettingsContext.Provider
-      value={{
-        open,
-        close,
-        isOpen,
-        activeTab,
-        openshift: {
-          service: openshiftService,
-          status: {
-            get: openshiftStatus,
-            set: setOpenshiftStatus,
+    <>
+      <SettingsContext.Provider
+        value={{
+          open,
+          close,
+          isOpen,
+          activeTab,
+          openshift: {
+            service: openshiftService,
+            status: {
+              get: openshiftStatus,
+              set: setOpenshiftStatus,
+            },
+            config: {
+              get: openshiftConfig,
+              set: setOpenShiftConfig,
+            },
           },
-          config: {
-            get: openshiftConfig,
-            set: setOpenShiftConfig,
+          github: {
+            octokit: githubOctokit,
+            authStatus: githubAuthStatus,
+            token: githubToken,
+            user: githubUser,
+            scopes: githubScopes,
+            authService: githubAuthService,
+            service: githubService,
           },
-        },
-        github: {
-          octokit: githubOctokit,
-          authStatus: githubAuthStatus,
-          token: githubToken,
-          user: githubUser,
-          scopes: githubScopes,
-          authService: githubAuthService,
-          service: githubService,
-        },
-        general: {
-          guidedTourEnabled: {
-            get: isGuidedTourEnabled,
-            set: setGuidedTourEnabled,
+          general: {
+            guidedTourEnabled: {
+              get: isGuidedTourEnabled,
+              set: setGuidedTourEnabled,
+            },
           },
-        },
-      }}
-    >
-      {props.children}
-    </SettingsContext.Provider>
+        }}
+      >
+        {props.children}
+      </SettingsContext.Provider>
+      <Modal title="Settings" isOpen={isOpen} onClose={close} variant={ModalVariant.large}>
+        <div style={{ height: "calc(100vh * 0.5)" }} className={"kogito-tooling--setings-modal-content"}>
+          <SettingsModalBody />
+        </div>
+      </Modal>
+    </>
   );
 }
 
