@@ -22,14 +22,15 @@ import {
 } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
-import { DmnRunnerContext, extractFormInputsFromUrlParams } from "./DmnRunnerContext";
+import { DmnRunnerContext } from "./DmnRunnerContext";
 import { DmnRunnerService } from "./DmnRunnerService";
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 import { useOnlineI18n } from "../../common/i18n";
 import { NotificationType } from "@kie-tooling-core/notifications/dist/api";
-import { useHistory } from "react-router";
+import { QueryParams, useQueryParams } from "../../queryParams/QueryParamsContext";
+import { jsonParseWithDate } from "../../common/utils";
 
 interface Props {
   children: React.ReactNode;
@@ -41,15 +42,11 @@ const THROTTLING_TIME = 200;
 
 export function DmnRunnerContextProvider(props: Props) {
   const { i18n } = useOnlineI18n();
-  const history = useHistory();
+  const queryParams = useQueryParams();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const notificationsPanel = useNotificationsPanel();
   const [isDrawerExpanded, setDrawerExpanded] = useState(false);
-  const formInputsFromUrlParams = useMemo(
-    () => extractFormInputsFromUrlParams(history.location.search) ?? {},
-    [history]
-  );
-  const [formData, setFormData] = useState(formInputsFromUrlParams);
+  const [formData, setFormData] = useState({});
   const [formSchema, setFormSchema] = useState<DmnFormSchema>();
   const [formError, setFormError] = useState(false);
   const [status, setStatus] = useState(
@@ -63,20 +60,34 @@ export function DmnRunnerContextProvider(props: Props) {
     [kieToolingExtendedServices.baseUrl]
   );
 
+  useEffect(() => {
+    if (!queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
+      return;
+    }
+
+    try {
+      setFormData(jsonParseWithDate(decodeURIComponent(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!)));
+    } catch (e) {
+      console.error("Cannot parse formInputs", e);
+      return;
+    }
+  }, [queryParams]);
+
   const updateFormSchema = useCallback(
-    (openDrawer: boolean) => {
+    (args: { openDrawer: boolean }) => {
       return props.editor
         ?.getContent()
         .then((content) => service.formSchema(content ?? ""))
         .then((newSchema) => {
           setFormSchema(newSchema);
-          if (
-            openDrawer &&
-            ((formInputsFromUrlParams && Object.keys(formInputsFromUrlParams).length > 0) ||
+          const shouldOpenDrawer =
+            args.openDrawer &&
+            (queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS) ||
               (kieToolingExtendedServices.isModalOpen &&
-                kieToolingExtendedServices.installTriggeredBy === DependentFeature.DMN_RUNNER))
-          ) {
-            setDrawerExpanded(true);
+                kieToolingExtendedServices.installTriggeredBy === DependentFeature.DMN_RUNNER));
+
+          if (shouldOpenDrawer) {
+            setDrawerExpanded(shouldOpenDrawer);
           }
         })
         .catch((err) => {
@@ -85,7 +96,7 @@ export function DmnRunnerContextProvider(props: Props) {
         });
     },
     [
-      formInputsFromUrlParams,
+      queryParams,
       kieToolingExtendedServices.installTriggeredBy,
       kieToolingExtendedServices.isModalOpen,
       props.editor,
@@ -103,7 +114,7 @@ export function DmnRunnerContextProvider(props: Props) {
     setStatus(DmnRunnerStatus.AVAILABLE);
     // After the detection of the DMN Runner, set the schema for the first time
     if (props.isEditorReady) {
-      updateFormSchema(true);
+      updateFormSchema({ openDrawer: true });
     }
   }, [
     kieToolingExtendedServices.installTriggeredBy,
@@ -141,7 +152,7 @@ export function DmnRunnerContextProvider(props: Props) {
       }
       timeout = window.setTimeout(() => {
         validate();
-        updateFormSchema(false);
+        updateFormSchema({ openDrawer: false });
       }, THROTTLING_TIME);
     });
     validate();

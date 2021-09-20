@@ -167,49 +167,47 @@ export function SettingsContextProvider(props: any) {
   );
 
   return (
-    <>
-      <SettingsContext.Provider
-        value={{
-          open,
-          close,
-          isOpen,
-          activeTab,
-          openshift: {
-            service: openshiftService,
-            status: {
-              get: openshiftStatus,
-              set: setOpenshiftStatus,
-            },
-            config: {
-              get: openshiftConfig,
-              set: setOpenShiftConfig,
-            },
+    <SettingsContext.Provider
+      value={{
+        open,
+        close,
+        isOpen,
+        activeTab,
+        openshift: {
+          service: openshiftService,
+          status: {
+            get: openshiftStatus,
+            set: setOpenshiftStatus,
           },
-          github: {
-            octokit: githubOctokit,
-            authStatus: githubAuthStatus,
-            token: githubToken,
-            user: githubUser,
-            scopes: githubScopes,
-            authService: githubAuthService,
-            service: githubService,
+          config: {
+            get: openshiftConfig,
+            set: setOpenShiftConfig,
           },
-          general: {
-            guidedTourEnabled: {
-              get: isGuidedTourEnabled,
-              set: setGuidedTourEnabled,
-            },
+        },
+        github: {
+          octokit: githubOctokit,
+          authStatus: githubAuthStatus,
+          token: githubToken,
+          user: githubUser,
+          scopes: githubScopes,
+          authService: githubAuthService,
+          service: githubService,
+        },
+        general: {
+          guidedTourEnabled: {
+            get: isGuidedTourEnabled,
+            set: setGuidedTourEnabled,
           },
-        }}
-      >
-        {props.children}
-      </SettingsContext.Provider>
+        },
+      }}
+    >
+      {props.children}
       <Modal title="Settings" isOpen={isOpen} onClose={close} variant={ModalVariant.large}>
         <div style={{ height: "calc(100vh * 0.5)" }} className={"kogito-tooling--setings-modal-content"}>
           <SettingsModalBody />
         </div>
       </Modal>
-    </>
+    </SettingsContext.Provider>
   );
 }
 

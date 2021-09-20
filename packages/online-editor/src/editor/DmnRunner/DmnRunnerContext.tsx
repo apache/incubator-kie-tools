@@ -17,10 +17,8 @@
 import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
 import * as React from "react";
 import { useContext } from "react";
-import { jsonParseWithDate } from "../../common/utils";
 import { DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
-import { QueryParams } from "../../queryParams/QueryParamsContext";
 
 export interface DmnRunnerContextType {
   status: DmnRunnerStatus;
@@ -37,24 +35,9 @@ export interface DmnRunnerContextType {
 
 export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({
   status: DmnRunnerStatus.UNAVAILABLE,
-  isDrawerOpen: false,
-  isModalOpen: false,
+  isDrawerExpanded: false,
 } as any);
 
 export function useDmnRunner() {
   return useContext(DmnRunnerContext);
-}
-
-export function extractFormInputsFromUrlParams(searchString: string): object {
-  const urlParams = new URLSearchParams(searchString);
-  if (!urlParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
-    return {};
-  }
-
-  try {
-    return jsonParseWithDate(decodeURIComponent(urlParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!));
-  } catch (e) {
-    console.error("Cannot parse formInputs", e);
-    return {};
-  }
 }

@@ -1,11 +1,11 @@
-import { useHistory } from "react-router";
+import { useLocation } from "react-router";
 import { useMemo } from "react";
 
 export function useQueryParams() {
-  const history = useHistory();
+  const location = useLocation();
   return useMemo(() => {
-    return new URLSearchParams(history.location.search);
-  }, [history.location.search]);
+    return new URLSearchParams(location.search);
+  }, [location.search]);
 }
 
 export enum QueryParams {
