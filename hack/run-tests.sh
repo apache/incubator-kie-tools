@@ -513,6 +513,9 @@ echo "-------- Running BDD tests"
 echo "DEBUG=${DEBUG} go test ${TEST_MAIN_DIR} -v -timeout \"${TIMEOUT}m\" --godog.tags=\"${TAGS}\" ${PARAMS} ${FEATURE}"
 DEBUG=${DEBUG} go test ${TEST_MAIN_DIR} -v -timeout "${TIMEOUT}m" --godog.tags="${TAGS}" ${PARAMS} ${FEATURE}
 exit_code=$?
+
+echo "${exit_code}" > /tmp/bdd-exit-code.txt
+
 echo "Tests finished with code ${exit_code}"
 
 if [ "${KEEP_NAMESPACE}" = "false" ]; then
