@@ -1662,25 +1662,25 @@
     methods "^1.1.2"
     path-to-regexp "^6.1.0"
 
-"@kogito-tooling/bpmn-editor-unpacked@^8.3.0":
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-8.3.0.tgz#ba91bc525a423005142926f4b7541bb4cf1824f4"
-  integrity sha512-AZvDPq/Fl7Ao8FQe+/4DsInb5tp+yRdtTp/soiKSt1Z1BvCuybxs0rXXmgBPKJae/XHN3rJ7oy7zEN3z02VUeA==
+"@kogito-tooling/bpmn-editor-unpacked@^8.4.0":
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-8.4.0.tgz#8c995ac1af552b641ea5d9c26c0b0316a9bc45fa"
+  integrity sha512-8s35FnXFHV+aN/vTrR2/PyXm/092xdUBPC9d6L3pRgAkiISC1zIsZQ/30t5kCrLh970mj8/PzO+1yb6TEmkDoA==
 
-"@kogito-tooling/dmn-editor-unpacked@^8.3.0":
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-8.3.0.tgz#9aab08c0c3381a4a2ffb188cf82ae34fa7809fd5"
-  integrity sha512-AzXoCrAxg9DVVuqz8mSw7BX6A6w9r3WQ/A3Nha5F1WoB+4tQhKGuwBLn3Ckl54ZqYK/AOpJk9ENWGadKno7OTA==
+"@kogito-tooling/dmn-editor-unpacked@^8.4.0":
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-8.4.0.tgz#0f2f10af06d22b5132564d64fcb5cc67285306f5"
+  integrity sha512-G9NXmXXAm7qKEYdXvXKNjoQwtdFlzwblfZOQVLg6eagpeOoWhkmZbH2HrSsSR8wCtFdAYIaDwxmIPB9c/i3zqQ==
 
-"@kogito-tooling/jitexecutor-native@1.10.0-Final":
-  version "1.10.0-Final"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/jitexecutor-native/-/jitexecutor-native-1.10.0-Final.tgz#af29845155fe4bf282e6a6a433d666fd1cc05197"
-  integrity sha512-MjWKrh2/Xi5wmmaPshyRpJ8PFDVrv6AlR5sUU1GcHpd6v8skYKAZtowhHMJxrQIND9/fUrrpjBSd2goiqj4xtA==
+"@kogito-tooling/jitexecutor-native@1.11.1-Final":
+  version "1.11.1-Final"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/jitexecutor-native/-/jitexecutor-native-1.11.1-Final.tgz#a51fd1d7ee76fbe616388a5cbe356b008d603df6"
+  integrity sha512-KWsI/95HCr7w2tMleAFyv5E4INGE/U9/IBp1FkxWoxRAeWcrC92cJkH0mnv9Fa5jktbvwPKuXfqh3ZLsbSipgw==
 
-"@kogito-tooling/scesim-editor-unpacked@^8.3.0":
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.3.0.tgz#ea7d0d166b0c24fa56fba51c9d0ce9fbc3adc3a1"
-  integrity sha512-ACvTY6L3Hg2JMk0COMiimAth/Ionw7fgpJVD2tDI3tmXA1EmvfihiEL8Uci9ohv+tekrEmx+JG54Z0w8CPu9DA==
+"@kogito-tooling/scesim-editor-unpacked@^8.4.0":
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.4.0.tgz#d54bcb87980f5b7a839e76b953956e0ec505f2bd"
+  integrity sha512-2ysSOVgBeN4BqC1hs0OJcuEdU0TD0nRmAj91XP8szKaFttchFOc0jjSCSakFe6p+npdEcyc0H/VD0cPSb42A3g==
 
 "@lerna/add@4.0.0":
   version "4.0.0"
@@ -8960,7 +8960,7 @@ hosted-git-info@^2.1.4:
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.8.tgz#7539bd4bc1e0e0a895815a2e0262420b12858488"
   integrity sha512-f/wzC2QaWBs7t9IYqB4T3sR1xviIViXJRJTWBlx2Gf3g0Xi5vI7Yy4koXQ1c9OYDGHN9sBy1DQ2AB8fqZBWhUg==
 
-hosted-git-info@^4.0.1:
+hosted-git-info@^4.0.1, hosted-git-info@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-4.0.2.tgz#5e425507eede4fea846b7262f0838456c4209961"
   integrity sha512-c9OGXbZ3guC/xOlCg1Ci/VgWlwsqDv1yMQL1CWqXDL0hDjXuNcq0zuR4xqPSuasI3kqFDhqSyTjREz5gzq0fXg==
@@ -15030,6 +15030,14 @@ source-map-support@^0.4.15:
   dependencies:
     source-map "^0.5.6"
 
+source-map-support@^0.5.20:
+  version "0.5.20"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.20.tgz#12166089f8f5e5e8c56926b377633392dd2cb6c9"
+  integrity sha512-n1lZZ8Ve4ksRqizaBQgxXDgKwttHDhyfQjA6YZZn8+AroHbsIz+JjwxQDxbp+7y5OYCI8t1Yk7etjD9CRd2hIw==
+  dependencies:
+    buffer-from "^1.0.0"
+    source-map "^0.6.0"
+
 source-map-support@^0.5.6, source-map-support@~0.5.12:
   version "0.5.16"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.16.tgz#0ae069e7fe3ba7538c64c98515e35339eac5a042"
@@ -15194,12 +15202,20 @@ stack-utils@^1.0.1:
   dependencies:
     escape-string-regexp "^2.0.0"
 
-stack-utils@^2.0.2, stack-utils@^2.0.3:
+stack-utils@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/stack-utils/-/stack-utils-2.0.3.tgz#cd5f030126ff116b78ccb3c027fe302713b61277"
   integrity sha512-gL//fkxfWUsIlFL2Tl42Cl6+HFALEaB1FU76I/Fy+oZjRreP7OPMXFlGbxM7NQsI0ZpUfw76sHnv0WNYuTb7Iw==
   dependencies:
     escape-string-regexp "^2.0.0"
+
+stack-utils@^2.0.3:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/stack-utils/-/stack-utils-2.0.4.tgz#bf967ae2813d3d2d1e1f59a4408676495c8112ab"
+  integrity sha512-ERg+H//lSSYlZhBIUu+wJnqg30AbyBbpZlIhcshpn7BNzpoRODZgfyr9J+8ERf3ooC6af3u7Lcl01nleau7MrA==
+  dependencies:
+    escape-string-regexp "^2.0.0"
+    source-map-support "^0.5.20"
 
 start-server-and-test@^1.12.1:
   version "1.12.1"
@@ -16726,9 +16742,9 @@ vsce@^1.96.0:
     yazl "^2.2.2"
 
 vsce@^1.96.1:
-  version "1.96.1"
-  resolved "https://registry.yarnpkg.com/vsce/-/vsce-1.96.1.tgz#782eb094001f14ce9abecb5d3a1d8586a14bac4b"
-  integrity sha512-KnEVqjfc1dXrpZsbJ8J7B9VQ7GAAx8o5RqBNk42Srv1KF9+e2/aXchQHe9QZxeUs/FiliHoMGpGvnHTXwKIT2A==
+  version "1.99.0"
+  resolved "https://registry.yarnpkg.com/vsce/-/vsce-1.99.0.tgz#ae27e32cb16a4eaa38adf431003f75c7ef0fefdc"
+  integrity sha512-fyzOLcmcgBmA+CYg0NyYU3JMmcOBcf94ZzZZYi83mIoXBRU391mYByoJEPnkl8xZGa3/OW5lH438/JOThlYPNA==
   dependencies:
     azure-devops-node-api "^11.0.1"
     chalk "^2.4.2"
@@ -16736,6 +16752,7 @@ vsce@^1.96.1:
     commander "^6.1.0"
     denodeify "^1.2.1"
     glob "^7.0.6"
+    hosted-git-info "^4.0.2"
     leven "^3.1.0"
     lodash "^4.17.15"
     markdown-it "^10.0.0"
@@ -16748,6 +16765,7 @@ vsce@^1.96.1:
     tmp "^0.2.1"
     typed-rest-client "^1.8.4"
     url-join "^1.1.0"
+    xml2js "^0.4.23"
     yauzl "^2.3.1"
     yazl "^2.2.2"
 
@@ -17254,9 +17272,9 @@ ws@^7.3.1:
   integrity sha512-Qm8k8ojNQIMx7S+Zp8u/uHOx7Qazv3Yv4q68MiWWWOJhiwG5W3x7iqmRtJo8xxrciZUY4vRxUTJCKuRnF28ZZw==
 
 ws@^7.4.6:
-  version "7.5.3"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.3.tgz#160835b63c7d97bfab418fc1b8a9fced2ac01a74"
-  integrity sha512-kQ/dHIzuLrS6Je9+uv81ueZomEwH0qVYstcAQ4/Z93K8zeko9gtAbttJWzoC5ukqXY1PpoouV3+VSOqEAFt5wg==
+  version "7.5.5"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.5.tgz#8b4bc4af518cfabd0473ae4f99144287b33eb881"
+  integrity sha512-BAkMFcAzl8as1G/hArkxOxq3G7pjUqQ3gzYbLL0/5zNkph70e+lCoxBGnm6AW1+/aiNeV4fnKqZ8m4GZewmH2w==
 
 xml-js@^1.6.11:
   version "1.6.11"
@@ -17270,7 +17288,7 @@ xml-name-validator@^3.0.0:
   resolved "https://registry.yarnpkg.com/xml-name-validator/-/xml-name-validator-3.0.0.tgz#6ae73e06de4d8c6e47f9fb181f78d648ad457c6a"
   integrity sha512-A5CUptxDsvxKJEU3yO6DuWBSJz/qizqzJKOMIfUJHETbBw/sFaDxgd6fxm1ewUaM0jZ444Fc5vC5ROYurg/4Pw==
 
-xml2js@^0.4.17:
+xml2js@^0.4.17, xml2js@^0.4.23:
   version "0.4.23"
   resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.4.23.tgz#a0c69516752421eb2ac758ee4d4ccf58843eac66"
   integrity sha512-ySPiMjM0+pLDftHgXY4By0uswI3SPKLDw/i3UXbnO8M/p28zqexCUoPmQFrYD+/1BzhGJSs2i1ERWKJAtiLrug==

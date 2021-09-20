@@ -19,6 +19,7 @@ import {
   ActivityBar,
   By,
   InputBox,
+  ModalDialog,
   SideBarView,
   until,
   ViewControl,
@@ -151,6 +152,11 @@ export default class VSCodeTestHelper {
       await this.workbench.getEditorView().closeAllEditors();
     } catch (error) {
       // catch the error when there is nothing to close
+      // or the Save Dialog appears
+      const dialog = new ModalDialog();
+      if (dialog != null && (await dialog.isDisplayed())) {
+        await dialog.pushButton("Don't Save");
+      }
     }
   };
 

@@ -163,9 +163,14 @@ const ENV_VARS = {
     name: "WEBPACK__mode",
     description: "",
   },
+  QUARKUS_PLATFORM_version: {
+    name: "QUARKUS_PLATFORM_version",
+    default: "2.2.3.Final",
+    description: "",
+  },
   KOGITO_RUNTIME_version: {
     name: "KOGITO_RUNTIME_version",
-    default: "1.10.0.Final",
+    default: "1.11.1.Final",
     description: "",
   },
 };
@@ -264,6 +269,10 @@ module.exports = {
 
   kogitoRuntime: {
     version: getOrDefault(ENV_VARS.KOGITO_RUNTIME_version),
+  },
+
+  quarkusPlatform: {
+    version: getOrDefault(ENV_VARS.QUARKUS_PLATFORM_version),
   },
 
   examples: {
