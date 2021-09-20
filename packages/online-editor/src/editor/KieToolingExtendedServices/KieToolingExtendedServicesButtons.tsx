@@ -38,7 +38,7 @@ export function KieToolingExtendedServicesButtons() {
 
   const onToggleDmnRunner = useCallback(() => {
     if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
-      dmnRunner.setDrawerExpanded(!dmnRunner.isDrawerExpanded);
+      dmnRunner.setDrawerExpanded((prev) => !prev);
       return;
     }
     kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);

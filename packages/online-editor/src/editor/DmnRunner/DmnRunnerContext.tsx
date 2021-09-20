@@ -22,15 +22,15 @@ import { DmnRunnerStatus } from "./DmnRunnerStatus";
 
 export interface DmnRunnerContextType {
   status: DmnRunnerStatus;
-  setStatus: React.Dispatch<DmnRunnerStatus>;
+  setStatus: React.Dispatch<React.SetStateAction<DmnRunnerStatus>>;
   formSchema?: DmnFormSchema;
   isDrawerExpanded: boolean;
-  setDrawerExpanded: React.Dispatch<boolean>;
+  setDrawerExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   formData: any;
-  setFormData: React.Dispatch<any>;
+  setFormData: React.Dispatch<React.SetStateAction<object>>;
   service: DmnRunnerService;
   formError: boolean;
-  setFormError: React.Dispatch<boolean>;
+  setFormError: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({

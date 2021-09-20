@@ -38,7 +38,7 @@ export function KieToolingExtendedServicesDropdownGroup() {
 
   const onToggleDmnRunner = useCallback(() => {
     if (isKieToolingExtendedServicesRunning) {
-      dmnRunner.setDrawerExpanded(!dmnRunner.isDrawerExpanded);
+      dmnRunner.setDrawerExpanded((prev) => !prev);
       return;
     }
     kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);

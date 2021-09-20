@@ -466,7 +466,7 @@ export function EditorPage(props: { forExtension?: SupportedFileExtensions }) {
   return (
     <KieToolingExtendedServicesContextProvider>
       <NotificationsPanelContextProvider ref={notificationsPanelRef}>
-        <DmnRunnerContextProvider editor={editor} isEditorReady={isEditorReady}>
+        <DmnRunnerContextProvider editor={editor}>
           <DmnRunnerContext.Consumer>
             {(dmnRunner) => (
               <DmnDevSandboxContextProvider editor={editor} isEditorReady={isEditorReady}>
