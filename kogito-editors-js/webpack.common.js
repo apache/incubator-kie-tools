@@ -78,6 +78,18 @@ const commonConfig = (name, devMode, options = {}) => {
             },
           ],
         },
+        {
+          test: /\.(png|svg|jpe?g|gif)$/i,
+          use: [
+            {
+              loader: "file-loader",
+              options: {
+                name: "[name].[ext]",
+                outputPath: "images",
+              },
+            },
+          ],
+        },
       ],
     },
     resolve: {

@@ -51,7 +51,7 @@ describe("FunctionKindSelector tests", () => {
     );
 
     await activateSelector(container as HTMLElement, ".selected-function-kind");
-    await activateSelector(baseElement as HTMLElement, "[data-ouia-component-id='JAVA'] > button");
+    await activateSelector(baseElement as HTMLElement, "[data-ouia-component-id='Java'] > button");
 
     expect(mockedFunctionKindSelect).toHaveBeenCalled();
     expect(mockedFunctionKindSelect).toHaveBeenCalledWith(FunctionKind.Java);

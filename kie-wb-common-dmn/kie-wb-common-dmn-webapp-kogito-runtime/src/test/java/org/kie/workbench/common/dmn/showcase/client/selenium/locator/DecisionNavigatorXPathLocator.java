@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.dmn.showcase.client.selenium.locator;
 
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.DECISION_TABLE;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.FUNCTION;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.LIST;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.LITERAL_EXPRESSION;
+
 /**
  * Locators of nodes in DMN Decision navigator panel
  */
@@ -35,7 +40,7 @@ public class DecisionNavigatorXPathLocator implements XPathLocator {
      * @return xPath Locator of decision table in decision navigator panel
      */
     public static DecisionNavigatorXPathLocator decisionTable(final String nodeName) {
-        return new DecisionNavigatorXPathLocator(String.format(BASE, nodeName, "Decision Table"));
+        return new DecisionNavigatorXPathLocator(String.format(BASE, nodeName, DECISION_TABLE.getText()));
     }
 
     /**
@@ -44,7 +49,7 @@ public class DecisionNavigatorXPathLocator implements XPathLocator {
      * @return xPath Locator of literal expression in decision navigator panel
      */
     public static DecisionNavigatorXPathLocator literalExpression(final String nodeName) {
-        return new DecisionNavigatorXPathLocator(String.format(BASE, nodeName, "Literal expression"));
+        return new DecisionNavigatorXPathLocator(String.format(BASE, nodeName, LITERAL_EXPRESSION.getText()));
     }
 
     /**
@@ -53,7 +58,7 @@ public class DecisionNavigatorXPathLocator implements XPathLocator {
      * @return xPath Locator of function in decision navigator panel
      */
     public static DecisionNavigatorXPathLocator function(final String nodeName) {
-        return new DecisionNavigatorXPathLocator(String.format(BASE, nodeName, "Function"));
+        return new DecisionNavigatorXPathLocator(String.format(BASE, nodeName, FUNCTION.getText()));
     }
 
     /**
@@ -62,7 +67,7 @@ public class DecisionNavigatorXPathLocator implements XPathLocator {
      * @return xPath Locator of list in decision navigator panel
      */
     public static DecisionNavigatorXPathLocator list(final String nodeName) {
-        return new DecisionNavigatorXPathLocator(String.format(BASE, nodeName, "List"));
+        return new DecisionNavigatorXPathLocator(String.format(BASE, nodeName, LIST.getText()));
     }
 
     /**

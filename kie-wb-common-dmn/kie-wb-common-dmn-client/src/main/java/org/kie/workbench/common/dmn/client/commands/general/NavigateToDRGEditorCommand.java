@@ -93,6 +93,8 @@ public class NavigateToDRGEditorCommand extends BaseNavigateCommand implements V
                                                                        hasName));
                 addExpressionEditorToCanvasWidget();
 
+                editor.getView().activate();
+
                 return CanvasCommandResultBuilder.SUCCESS;
             }
         };

@@ -32,8 +32,6 @@ export interface ContextEntryRecord {
   entryInfo: EntryInfo;
   /** Entry expression */
   entryExpression: ExpressionProps;
-  /** Label used for the popover triggered when editing info section */
-  editInfoPopoverLabel?: string;
   /** True, for synchronizing name and dataType parameters, between entryInfo and entryExpression */
   nameAndDataTypeSynchronized?: boolean;
   /** Callback to be invoked on expression resetting */

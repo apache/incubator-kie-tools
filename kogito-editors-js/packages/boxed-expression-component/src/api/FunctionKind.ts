@@ -19,7 +19,7 @@ import { EntryInfo } from "./ContextEntry";
 
 export enum FunctionKind {
   Feel = "FEEL",
-  Java = "JAVA",
+  Java = "Java",
   Pmml = "PMML",
 }
 
@@ -34,9 +34,9 @@ export interface JavaFunctionProps {
   /** Java Function */
   functionKind: FunctionKind.Java;
   /** Java class */
-  class?: string;
+  className?: string;
   /** Method signature */
-  method?: string;
+  methodName?: string;
 }
 
 interface PMMLParam {

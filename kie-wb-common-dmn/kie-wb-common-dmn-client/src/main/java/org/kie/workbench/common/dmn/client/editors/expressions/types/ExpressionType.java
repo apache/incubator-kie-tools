@@ -18,15 +18,24 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types;
 
 public enum ExpressionType {
 
-    UNDEFINED,
-    LITERAL_EXPRESSION,
-    CONTEXT,
-    DECISION_TABLE,
-    RELATION,
-    FUNCTION,
-    FUNCTION_JAVA,
-    FUNCTION_PMML,
-    INVOCATION,
-    LIST
+    UNDEFINED("<Undefined>"),
+    LITERAL_EXPRESSION("Literal expression"),
+    CONTEXT("Context"),
+    DECISION_TABLE("Decision Table"),
+    RELATION("Relation"),
+    FUNCTION("Function"),
+    FUNCTION_JAVA("Function Java"),
+    FUNCTION_PMML("Function PMML"),
+    INVOCATION("Invocation"),
+    LIST("List");
 
+    private final String text;
+
+    ExpressionType(final String text) {
+        this.text = text;
+    }
+
+    public String getText() {
+        return text;
+    }
 }

@@ -16,6 +16,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
@@ -34,10 +35,39 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.HasVariable;
+import org.kie.workbench.common.dmn.api.definition.model.Context;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
+import org.kie.workbench.common.dmn.api.definition.model.Invocation;
+import org.kie.workbench.common.dmn.api.definition.model.List;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.Relation;
+import org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DecisionTableProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.EntryInfo;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.FunctionProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InvocationProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ListProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.LiteralProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ModelsFromDocument;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PMMLParam;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.BoxedExpressionService;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.ExpressionModelFiller;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.ExpressionPropsFiller;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
+import org.kie.workbench.common.dmn.client.js.DMNLoader;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BoundaryTransformMediator;
@@ -47,6 +77,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelect
 import org.kie.workbench.common.dmn.client.widgets.grid.keyboard.KeyboardOperationEditCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.keyboard.KeyboardOperationEscapeGridCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.keyboard.KeyboardOperationInvokeContextMenuForSelectedCell;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelContainer;
@@ -63,6 +94,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperati
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveUp;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
+
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.UNDEFINED;
 
 @Templated
 @Dependent
@@ -95,6 +128,15 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     @DataField("beta-boxed-expression-toggle")
     private HTMLDivElement betaBoxedExpressionToggle;
 
+    @DataField("dmn-new-expression-editor")
+    private HTMLDivElement newBoxedExpression;
+
+    @DataField("dmn-expression-type")
+    private HTMLDivElement dmnExpressionType;
+
+    @DataField("dmn-expression-editor")
+    private HTMLDivElement dmnExpressionEditor;
+
     private TranslationService translationService;
     private ListSelectorView.Presenter listSelector;
     private SessionManager sessionManager;
@@ -103,12 +145,18 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
     private Event<DomainObjectSelectionEvent> domainObjectSelectionEvent;
+    private Event<ExpressionEditorChanged> editorSelectedEvent;
+    private PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider;
 
     private DMNGridPanel gridPanel;
     private DMNGridLayer gridLayer;
     private CellEditorControlsView.Presenter cellEditorControls;
     private RestrictedMousePanMediator mousePanMediator;
     private ExpressionContainerGrid expressionContainerGrid;
+    private String nodeUUID;
+    private HasExpression hasExpression;
+    private Optional<HasName> hasName;
+    private boolean isOnlyVisualChangeAllowed;
 
     public ExpressionEditorViewImpl() {
         //CDI proxy
@@ -127,9 +175,14 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                     final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                     final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
+                                    final Event<ExpressionEditorChanged> editorSelectedEvent,
+                                    final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider,
                                     final HTMLAnchorElement tryIt,
                                     final HTMLAnchorElement switchBack,
-                                    final HTMLDivElement betaBoxedExpressionToggle) {
+                                    final HTMLDivElement betaBoxedExpressionToggle,
+                                    final HTMLDivElement newBoxedExpression,
+                                    final HTMLDivElement dmnExpressionType,
+                                    final HTMLDivElement dmnExpressionEditor) {
         this.returnToLink = returnToLink;
         this.expressionName = expressionName;
         this.expressionType = expressionType;
@@ -144,15 +197,21 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
         this.domainObjectSelectionEvent = domainObjectSelectionEvent;
+        this.editorSelectedEvent = editorSelectedEvent;
+        this.pmmlDocumentMetadataProvider = pmmlDocumentMetadataProvider;
 
         this.tryIt = tryIt;
         this.switchBack = switchBack;
         this.betaBoxedExpressionToggle = betaBoxedExpressionToggle;
+        this.newBoxedExpression = newBoxedExpression;
+        this.dmnExpressionType = dmnExpressionType;
+        this.dmnExpressionEditor = dmnExpressionEditor;
     }
 
     @Override
     public void init(final ExpressionEditorView.Presenter presenter) {
         this.presenter = presenter;
+        BoxedExpressionService.registerBroadcastForExpression(this);
     }
 
     @Override
@@ -228,6 +287,13 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     @Override
+    public void activate() {
+        DMNLoader.renderBoxedExpressionEditor(".kie-dmn-new-expression-editor",
+                                              ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef()),
+                                              buildPmmlParams());
+    }
+
+    @Override
     public void setReturnToLinkText(final String text) {
         returnToLink.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToLink, text));
     }
@@ -237,6 +303,10 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                               final HasExpression hasExpression,
                               final Optional<HasName> hasName,
                               final boolean isOnlyVisualChangeAllowed) {
+        this.nodeUUID = nodeUUID;
+        this.hasExpression = hasExpression;
+        this.hasName = hasName;
+        this.isOnlyVisualChangeAllowed = isOnlyVisualChangeAllowed;
         expressionContainerGrid.setExpression(nodeUUID,
                                               hasExpression,
                                               hasName,
@@ -265,6 +335,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @EventHandler("try-it")
     public void onTryIt(final ClickEvent event) {
+        activate();
         renderNewBoxedExpression();
         toggleBoxedExpression(true);
         preventDefault(event);
@@ -272,17 +343,88 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @EventHandler("switch-back")
     public void onSwitchBack(final ClickEvent event) {
+        getExpressionGridCacheSupplier()
+                .get()
+                .removeExpressionGrid(nodeUUID);
+        setExpression(nodeUUID, hasExpression, hasName, isOnlyVisualChangeAllowed);
         renderOldBoxedExpression();
         toggleBoxedExpression(false);
         preventDefault(event);
     }
 
+    public void resetExpressionDefinition(final ExpressionProps expressionProps) {
+        editorSelectedEvent.fire(new ExpressionEditorChanged(nodeUUID));
+        setExpressionNameAndDataType(expressionProps);
+        hasExpression.setExpression(null);
+    }
+
+    public void broadcastLiteralExpressionDefinition(final LiteralProps literalProps) {
+        editorSelectedEvent.fire(new ExpressionEditorChanged(nodeUUID));
+        setExpressionNameAndDataType(literalProps);
+        if (hasExpression.getExpression() == null) {
+            hasExpression.setExpression(new LiteralExpression());
+        }
+        ExpressionModelFiller.fillLiteralExpression((LiteralExpression) hasExpression.getExpression(), literalProps);
+    }
+
+    public void broadcastContextExpressionDefinition(final ContextProps contextProps) {
+        editorSelectedEvent.fire(new ExpressionEditorChanged(nodeUUID));
+        setExpressionNameAndDataType(contextProps);
+        if (hasExpression.getExpression() == null) {
+            hasExpression.setExpression(new Context());
+        }
+        ExpressionModelFiller.fillContextExpression((Context) hasExpression.getExpression(), contextProps);
+    }
+
+    public void broadcastRelationExpressionDefinition(final RelationProps relationProps) {
+        editorSelectedEvent.fire(new ExpressionEditorChanged(nodeUUID));
+        if (hasExpression.getExpression() == null) {
+            hasExpression.setExpression(new Relation());
+        }
+        ExpressionModelFiller.fillRelationExpression((Relation) hasExpression.getExpression(), relationProps);
+    }
+
+    public void broadcastListExpressionDefinition(final ListProps listProps) {
+        editorSelectedEvent.fire(new ExpressionEditorChanged(nodeUUID));
+        if (hasExpression.getExpression() == null) {
+            hasExpression.setExpression(new List());
+        }
+        ExpressionModelFiller.fillListExpression((List) hasExpression.getExpression(), listProps);
+    }
+
+    public void broadcastInvocationExpressionDefinition(final InvocationProps invocationProps) {
+        editorSelectedEvent.fire(new ExpressionEditorChanged(nodeUUID));
+        setExpressionNameAndDataType(invocationProps);
+        if (hasExpression.getExpression() == null) {
+            hasExpression.setExpression(new Invocation());
+        }
+        ExpressionModelFiller.fillInvocationExpression((Invocation) hasExpression.getExpression(), invocationProps);
+    }
+
+    public void broadcastFunctionExpressionDefinition(final FunctionProps functionProps) {
+        editorSelectedEvent.fire(new ExpressionEditorChanged(nodeUUID));
+        setExpressionNameAndDataType(functionProps);
+        if (hasExpression.getExpression() == null) {
+            hasExpression.setExpression(new FunctionDefinition());
+        }
+        ExpressionModelFiller.fillFunctionExpression((FunctionDefinition) hasExpression.getExpression(), functionProps);
+    }
+
+    public void broadcastDecisionTableExpressionDefinition(final DecisionTableProps decisionTableProps) {
+        editorSelectedEvent.fire(new ExpressionEditorChanged(nodeUUID));
+        setExpressionNameAndDataType(decisionTableProps);
+        if (hasExpression.getExpression() == null) {
+            hasExpression.setExpression(new DecisionTable());
+        }
+        ExpressionModelFiller.fillDecisionTableExpression((DecisionTable) hasExpression.getExpression(), decisionTableProps);
+    }
+
     void renderNewBoxedExpression() {
-        // TODO (KOGITO-3661): Render the new boxed expression here
+        toggleEditorsVisibility();
     }
 
     void renderOldBoxedExpression() {
-        // TODO (KOGITO-3661): Render the old boxed expression here
+        toggleEditorsVisibility();
     }
 
     void toggleBoxedExpression(final boolean enabled) {
@@ -292,6 +434,80 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private void preventDefault(final ClickEvent event) {
         event.preventDefault();
         event.stopPropagation();
+    }
+
+    private String getExpressionName() {
+        final HasName fallbackHasName = hasExpression instanceof HasName ? (HasName) hasExpression : HasName.NOP;
+        return hasName.orElse(fallbackHasName).getValue().getValue();
+    }
+
+    @SuppressWarnings("unchecked")
+    private String getTypeRef() {
+        QName qName = BuiltInType.UNDEFINED.asQName();
+        if (hasExpression instanceof HasVariable) {
+            qName = ((HasVariable<InformationItemPrimary>) hasExpression).getVariable().getTypeRef();
+        } else if (hasExpression.getExpression() != null && hasExpression.getExpression().asDMNModelInstrumentedBase().getParent() instanceof HasVariable) {
+            final HasVariable<InformationItemPrimary> parent = (HasVariable<InformationItemPrimary>) hasExpression.getExpression().asDMNModelInstrumentedBase().getParent();
+            qName = parent != null && parent.getVariable() != null ? parent.getVariable().getTypeRef() : BuiltInType.UNDEFINED.asQName();
+        }
+        return qName.getLocalPart();
+    }
+
+    private void setExpressionNameAndDataType(final ExpressionProps expressionProps) {
+        setExpressionName(expressionProps.name);
+        setTypeRef(expressionProps.dataType);
+    }
+
+    private void setExpressionName(final String name) {
+        final HasName fallbackHasName = hasExpression instanceof HasName ? (HasName) hasExpression : HasName.NOP;
+        hasName.orElse(fallbackHasName).setName(new Name(name));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setTypeRef(final String dataType) {
+        final QName typeRef = BuiltInTypeUtils
+                .findBuiltInTypeByName(dataType)
+                .orElse(BuiltInType.UNDEFINED)
+                .asQName();
+        if (hasExpression instanceof HasVariable) {
+            ((HasVariable<InformationItemPrimary>) hasExpression).getVariable().setTypeRef(typeRef);
+        } else if (hasExpression.getExpression() != null && hasExpression.getExpression().asDMNModelInstrumentedBase().getParent() instanceof HasVariable) {
+            ((HasVariable<InformationItemPrimary>) hasExpression.getExpression().asDMNModelInstrumentedBase().getParent()).getVariable().setTypeRef(typeRef);
+        }
+    }
+
+    private void toggleEditorsVisibility() {
+        dmnExpressionType.classList.toggle("hidden");
+        dmnExpressionEditor.classList.toggle("hidden");
+        newBoxedExpression.classList.toggle("hidden");
+    }
+
+    private PMMLParam[] buildPmmlParams() {
+        return pmmlDocumentMetadataProvider.getPMMLDocumentNames()
+                .stream()
+                .map(documentToPMMLParamMapper())
+                .toArray(PMMLParam[]::new);
+    }
+
+    private Function<String, PMMLParam> documentToPMMLParamMapper() {
+        return documentName -> {
+            final ModelsFromDocument[] modelsFromDocuments = pmmlDocumentMetadataProvider
+                    .getPMMLDocumentModels(documentName)
+                    .stream()
+                    .map(modelToEntryInfoMapper(documentName))
+                    .toArray(ModelsFromDocument[]::new);
+            return new PMMLParam(documentName, modelsFromDocuments);
+        };
+    }
+
+    private Function<String, ModelsFromDocument> modelToEntryInfoMapper(String documentName) {
+        return modelName -> {
+            final EntryInfo[] parametersFromModel = pmmlDocumentMetadataProvider.getPMMLDocumentModelParameterNames(documentName, modelName)
+                    .stream()
+                    .map(parameter -> new EntryInfo(parameter, UNDEFINED.getText()))
+                    .toArray(EntryInfo[]::new);
+            return new ModelsFromDocument(modelName, parametersFromModel);
+        };
     }
 
     @EventHandler("returnToLink")

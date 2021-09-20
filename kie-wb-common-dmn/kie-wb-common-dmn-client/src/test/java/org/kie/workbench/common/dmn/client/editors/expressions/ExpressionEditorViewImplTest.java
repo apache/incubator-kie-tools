@@ -44,6 +44,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
@@ -51,6 +52,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.keyboard.KeyboardOperationEscapeGridCell;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -83,6 +85,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorViewImpl.ENABLED_BETA_CSS_CLASS;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.LITERAL_EXPRESSION;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -103,8 +106,6 @@ public class ExpressionEditorViewImplTest {
     private static final String NODE_UUID = "uuid";
 
     private static final String UNDEFINED_EXPRESSION_DEFINITION_NAME = "Undefined";
-
-    private static final String LITERAL_EXPRESSION_DEFINITION_NAME = "Literal Expression";
 
     @Mock
     private Anchor returnToLink;
@@ -158,6 +159,12 @@ public class ExpressionEditorViewImplTest {
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Mock
+    private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
+
+    @Mock
+    private PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider;
+
+    @Mock
     private ExpressionEditorDefinition undefinedExpressionEditorDefinition;
 
     @Mock
@@ -195,6 +202,15 @@ public class ExpressionEditorViewImplTest {
 
     @Mock
     private HTMLDivElement betaBoxedExpressionToggle;
+
+    @Mock
+    private HTMLDivElement newBoxedExpression;
+
+    @Mock
+    private HTMLDivElement dmnExpressionType;
+
+    @Mock
+    private HTMLDivElement dmnExpressionEditor;
 
     @Captor
     private ArgumentCaptor<Transform> transformArgumentCaptor;
@@ -249,9 +265,14 @@ public class ExpressionEditorViewImplTest {
                                                      expressionEditorDefinitionsSupplier,
                                                      refreshFormPropertiesEvent,
                                                      domainObjectSelectionEvent,
+                                                     editorSelectedEvent,
+                                                     pmmlDocumentMetadataProvider,
                                                      tryIt,
                                                      switchBack,
-                                                     betaBoxedExpressionToggle));
+                                                     betaBoxedExpressionToggle,
+                                                     newBoxedExpression,
+                                                     dmnExpressionType,
+                                                     dmnExpressionEditor));
         view.init(presenter);
         view.bind(session);
 
@@ -271,7 +292,7 @@ public class ExpressionEditorViewImplTest {
                                                            anyInt())).thenReturn(Optional.of(undefinedExpressionEditor));
 
         when(literalExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(new LiteralExpression()));
-        when(literalExpressionEditorDefinition.getName()).thenReturn(LITERAL_EXPRESSION_DEFINITION_NAME);
+        when(literalExpressionEditorDefinition.getName()).thenReturn(LITERAL_EXPRESSION.getText());
         when(literalExpressionEditor.getModel()).thenReturn(new BaseGridData());
         when(literalExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
                                                          any(Optional.class),
@@ -284,6 +305,9 @@ public class ExpressionEditorViewImplTest {
         doAnswer((i) -> i.getArguments()[0]).when(translationService).getTranslation(Mockito.<String>any());
 
         betaBoxedExpressionToggle.classList = mock(DOMTokenList.class);
+        newBoxedExpression.classList = mock(DOMTokenList.class);
+        dmnExpressionType.classList = mock(DOMTokenList.class);
+        dmnExpressionEditor.classList = mock(DOMTokenList.class);
     }
 
     @Test
@@ -429,7 +453,7 @@ public class ExpressionEditorViewImplTest {
                            hasName,
                            false);
 
-        verify(expressionType).setTextContent(eq(LITERAL_EXPRESSION_DEFINITION_NAME));
+        verify(expressionType).setTextContent(eq(LITERAL_EXPRESSION.getText()));
     }
 
     @Test
@@ -468,6 +492,10 @@ public class ExpressionEditorViewImplTest {
     @Test
     public void testOnTryIt() {
         final ClickEvent event = mock(ClickEvent.class);
+        view.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(HasName.NOP),
+                           false);
 
         view.onTryIt(event);
 
@@ -480,6 +508,10 @@ public class ExpressionEditorViewImplTest {
     @Test
     public void testOnSwitchBack() {
         final ClickEvent event = mock(ClickEvent.class);
+        view.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(HasName.NOP),
+                           false);
 
         view.onSwitchBack(event);
 

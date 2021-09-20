@@ -327,8 +327,8 @@ describe("FunctionExpression tests", () => {
             logicType={LogicType.Function}
             functionKind={FunctionKind.Java}
             formalParameters={[]}
-            class={classValue}
-            method={methodValue}
+            className={classValue}
+            methodName={methodValue}
           />
         ).wrapper
       );

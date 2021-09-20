@@ -46,7 +46,6 @@ describe("ContextEntryExpressionCell tests", () => {
             {
               entryInfo: { name: entryName, dataType: entryDataType },
               entryExpression: emptyExpression,
-              editInfoPopoverLabel: "Edit entry",
             },
           ]}
           row={{ index: 0 }}
@@ -70,7 +69,6 @@ describe("ContextEntryExpressionCell tests", () => {
             {
               entryInfo: { name: value, dataType },
               entryExpression: emptyExpression,
-              editInfoPopoverLabel: "Edit entry",
             },
           ]}
           row={{ index: rowIndex }}
@@ -103,7 +101,6 @@ describe("ContextEntryExpressionCell tests", () => {
         onUpdatingNameAndDataType: undefined,
         onUpdatingRecursiveExpression: expect.any(Function),
       },
-      editInfoPopoverLabel: "Edit entry",
     });
   });
 });

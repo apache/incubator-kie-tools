@@ -728,7 +728,6 @@
                       <type>jar</type>
                       <overWrite>true</overWrite>
                       <outputDirectory>${project.build.directory}/kogito-editors-js</outputDirectory>
-                      <includes>**/*.js,**/*.css</includes>
                     </artifactItem>
                   </artifactItems>
                 </configuration>
@@ -764,11 +763,8 @@
                 </goals>
                 <configuration>
                   <target>
-                    <copy todir="${basedir}/src/main/webapp/kogito-editors-js" flatten="true">
-                      <fileset dir="${project.build.directory}/kogito-editors-js">
-                        <include name="**/*.js"/>
-                        <include name="**/*.css"/>
-                      </fileset>
+                    <copy todir="${basedir}/src/main/webapp/kogito-editors-js">
+                      <fileset dir="${project.build.directory}/kogito-editors-js/META-INF/resources/webjars/kogito-editors-js/kogito-editors-js" includes="**/*" />
                     </copy>
                   </target>
                 </configuration>

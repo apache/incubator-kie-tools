@@ -20,24 +20,24 @@ import * as React from "react";
 import { Resizer } from "../../../components/Resizer";
 
 describe("Resizer", () => {
-  describe("when users drag the dragabble element", () => {
+  describe("when users drag the draggable element", () => {
     it("resizes the element", async () => {
       const container = renderTable();
-      const dragabble = container.querySelector(".col-2-3 .react-resizable .pf-c-drawer")!;
+      const draggable = container.querySelector(".col-2-3 .react-resizable .pf-c-drawer")!;
       const resizable = container.querySelectorAll(".react-resizable")!;
       const getWidth = (e: Node) => (e as HTMLElement).style.width;
 
-      fireEvent.mouseDown(dragabble);
-      fireEvent.mouseMove(dragabble, { clientX: 150 });
-      fireEvent.mouseUp(dragabble);
+      fireEvent.mouseDown(draggable);
+      fireEvent.mouseMove(draggable, { clientX: 150 });
+      fireEvent.mouseUp(draggable);
 
       await waitFor(() => {
         expect(getWidth(resizable.item(0))).toBe("250px");
         expect(getWidth(resizable.item(1))).toBe("250px");
-        expect(getWidth(resizable.item(2))).toBe("350px");
+        expect(getWidth(resizable.item(2))).toBe("400px");
         expect(getWidth(resizable.item(3))).toBe("250px");
         expect(getWidth(resizable.item(4))).toBe("250px");
-        expect(getWidth(resizable.item(5))).toBe("350px");
+        expect(getWidth(resizable.item(5))).toBe("400px");
       });
     });
   });
@@ -50,26 +50,26 @@ function renderTable() {
         <thead>
           <tr>
             <th className="col-1-1">
-              <Resizer width={250}></Resizer>
+              <Resizer width={250} />
             </th>
             <th className="col-1-2">
-              <Resizer width={250}></Resizer>
+              <Resizer width={250} />
             </th>
             <th className="col-1-3">
-              <Resizer width={250}></Resizer>
+              <Resizer width={250} />
             </th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td className="col-2-1">
-              <Resizer width={250}></Resizer>
+              <Resizer width={250} />
             </td>
             <td className="col-2-2">
-              <Resizer width={250}></Resizer>
+              <Resizer width={250} />
             </td>
             <td className="col-2-3">
-              <Resizer width={250}></Resizer>
+              <Resizer width={250} />
             </td>
           </tr>
         </tbody>

@@ -58,7 +58,7 @@ describe("Cell", () => {
 
     it("set the width in the element considering the minimum value", () => {
       act(() => cell.setWidth(80));
-      expect(element.style.width).toEqual("150px");
+      expect(element.style.width).toEqual("100px");
       expect(document.dispatchEvent).toBeCalled();
     });
   });
@@ -129,11 +129,11 @@ function renderLiteralAtRegularColumn() {
         <table>
           <tbody>
             <tr>
-              <td></td>
+              <td />
               <td>
-                <Resizer width={250}></Resizer>
+                <Resizer width={250} />
               </td>
-              <td></td>
+              <td />
             </tr>
           </tbody>
         </table>
@@ -151,10 +151,10 @@ function renderLiteralAtLastColumn() {
         <table>
           <tbody>
             <tr>
-              <td></td>
-              <td></td>
+              <td />
+              <td />
               <td>
-                <Resizer width={250}></Resizer>
+                <Resizer width={250} />
               </td>
             </tr>
           </tbody>
@@ -167,7 +167,7 @@ function renderLiteralAtLastColumn() {
 }
 
 function createLiteral() {
-  container = render(<Resizer width={250}></Resizer>).container;
+  container = render(<Resizer width={250} />).container;
   element = container.querySelector(CELL_CSS_SELECTOR) as HTMLElement;
   cell = new Cell(element, [], 0);
 }

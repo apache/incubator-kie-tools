@@ -18,10 +18,15 @@ package org.kie.workbench.common.dmn.client.js;
 
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PMMLParam;
 
 @JsType(isNative = true)
 public class DMNLoader {
 
     @JsMethod(namespace = "__KIE__DMN_LOADER__")
     public static native void renderHelloWorld(final String selector);
+
+    @JsMethod(namespace = "__KIE__DMN_LOADER__")
+    public static native void renderBoxedExpressionEditor(final String selector, final ExpressionProps expressionProps, final PMMLParam[] pmmlParams);
 }

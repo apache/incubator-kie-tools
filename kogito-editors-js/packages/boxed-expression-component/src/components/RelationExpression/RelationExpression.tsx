@@ -71,17 +71,19 @@ export const RelationExpression: React.FunctionComponent<RelationProps> = (relat
       rows: tableRows.current,
     };
 
-    executeIfExpressionDefinitionChanged(
-      storedExpressionDefinition.current,
-      expressionDefinition,
-      () => {
-        relationProps.isHeadless
-          ? relationProps.onUpdatingRecursiveExpression?.(expressionDefinition)
-          : window.beeApi?.broadcastRelationExpressionDefinition?.(expressionDefinition);
-        storedExpressionDefinition.current = expressionDefinition;
-      },
-      ["columns", "rows"]
-    );
+    if (relationProps.isHeadless) {
+      relationProps.onUpdatingRecursiveExpression?.(expressionDefinition);
+    } else {
+      executeIfExpressionDefinitionChanged(
+        storedExpressionDefinition.current,
+        expressionDefinition,
+        () => {
+          window.beeApi?.broadcastRelationExpressionDefinition?.(expressionDefinition);
+          storedExpressionDefinition.current = expressionDefinition;
+        },
+        ["columns", "rows"]
+      );
+    }
   }, [relationProps]);
 
   const convertColumnsForTheTable = useCallback(

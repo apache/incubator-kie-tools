@@ -251,20 +251,20 @@ export const DecisionTableExpression: React.FunctionComponent<DecisionTableProps
       rules,
     };
 
-    executeIfExpressionDefinitionChanged(
-      storedExpressionDefinition.current,
-      expressionDefinition,
-      () => {
-        if (isHeadless) {
-          onUpdatingRecursiveExpression?.(expressionDefinition);
-        } else {
+    if (isHeadless) {
+      onUpdatingRecursiveExpression?.(expressionDefinition);
+    } else {
+      executeIfExpressionDefinitionChanged(
+        storedExpressionDefinition.current,
+        expressionDefinition,
+        () => {
           setSupervisorHash(hashfy(expressionDefinition));
           window.beeApi?.broadcastDecisionTableExpressionDefinition?.(expressionDefinition);
-        }
-        storedExpressionDefinition.current = expressionDefinition;
-      },
-      ["name", "dataType", "hitPolicy", "aggregation", "input", "output", "annotations", "rules"]
-    );
+          storedExpressionDefinition.current = expressionDefinition;
+        },
+        ["name", "dataType", "hitPolicy", "aggregation", "input", "output", "annotations", "rules"]
+      );
+    }
   }, [isHeadless, onUpdatingRecursiveExpression, selectedAggregation, selectedHitPolicy, setSupervisorHash, uid]);
 
   const synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType = useCallback(

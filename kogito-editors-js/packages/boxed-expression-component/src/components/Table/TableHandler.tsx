@@ -29,6 +29,7 @@ import { Popover } from "@patternfly/react-core";
 import { TableHandlerMenu } from "./TableHandlerMenu";
 import { BoxedExpressionGlobalContext } from "../../context";
 import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./Table";
+import { DEFAULT_MIN_WIDTH } from "../Resizer";
 
 export interface TableHandlerProps {
   /** Gets the prefix to be used for the next column name */
@@ -90,15 +91,20 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
     setSelectedRowIndex(lastSelectedRowIndex);
   }, [lastSelectedRowIndex]);
 
+  const withDefaultValues = <T extends unknown>(element: T) => ({
+    width: DEFAULT_MIN_WIDTH,
+    ...(element as any),
+  });
+
   const insertBefore = <T extends unknown>(elements: T[], index: number, element: T) => [
     ...elements.slice(0, index),
-    element,
+    withDefaultValues(element),
     ...elements.slice(index),
   ];
 
   const insertAfter = <T extends unknown>(elements: T[], index: number, element: T) => [
     ...elements.slice(0, index + 1),
-    element,
+    withDefaultValues(element),
     ...elements.slice(index + 1),
   ];
 
@@ -166,6 +172,7 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
         children!.push(generateNextAvailableColumn());
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [generateNextAvailableColumn, selectedColumn, tableColumns]
   );
 

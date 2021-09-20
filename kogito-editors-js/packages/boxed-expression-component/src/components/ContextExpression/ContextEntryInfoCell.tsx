@@ -24,12 +24,14 @@ import * as _ from "lodash";
 export interface ContextEntryInfoCellProps extends CellProps {
   data: ContextEntries;
   onRowUpdate: (rowIndex: number, updatedRow: DataRecord) => void;
+  editInfoPopoverLabel?: string;
 }
 
 export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellProps> = ({
   data,
   row: { index },
   onRowUpdate,
+  editInfoPopoverLabel,
 }) => {
   const contextEntry = data[index];
 
@@ -61,8 +63,12 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
         name={entryInfo.current.name}
         dataType={entryInfo.current.dataType}
         onContextEntryUpdate={onContextEntryUpdate}
-        editInfoPopoverLabel={contextEntry.editInfoPopoverLabel}
+        editInfoPopoverLabel={editInfoPopoverLabel}
       />
     </div>
   );
+};
+
+export const getContextEntryInfoCell = (editInfoPopoverLabel: string) => {
+  return (props: ContextEntryInfoCellProps) => ContextEntryInfoCell({ ...props, editInfoPopoverLabel });
 };

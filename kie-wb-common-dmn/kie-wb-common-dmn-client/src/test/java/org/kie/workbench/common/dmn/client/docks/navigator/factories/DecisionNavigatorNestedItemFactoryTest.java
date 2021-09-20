@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.client.common.BoxedExpressionHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
@@ -58,8 +59,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DecisionNavigatorNestedItemFactoryTest {
-
-    private static final String DECISION_TABLE_DEFINITION_NAME = "Decision Table";
 
     @Mock
     private SessionManager sessionManager;
@@ -106,7 +105,7 @@ public class DecisionNavigatorNestedItemFactoryTest {
 
         when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
         when(decisionTableEditorDefinition.getModelClass()).thenReturn(Optional.of(new DecisionTable()));
-        when(decisionTableEditorDefinition.getName()).thenReturn(DECISION_TABLE_DEFINITION_NAME);
+        when(decisionTableEditorDefinition.getName()).thenReturn(ExpressionType.DECISION_TABLE.getText());
     }
 
     @Test
@@ -238,7 +237,7 @@ public class DecisionNavigatorNestedItemFactoryTest {
 
         final String actualLabel = factory.getLabel(node);
 
-        assertEquals(DECISION_TABLE_DEFINITION_NAME, actualLabel);
+        assertEquals(ExpressionType.DECISION_TABLE.getText(), actualLabel);
     }
 
     @Test

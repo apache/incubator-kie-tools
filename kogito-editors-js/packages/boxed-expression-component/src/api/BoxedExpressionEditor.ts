@@ -29,19 +29,23 @@ import {
 export {};
 
 declare global {
-  //API that BoxedExpressionEditor (bee) is expecting to be defined in the Window namespace
+  // Set of Functions used by the BoxedExpressionEditor and the BoxedExpressionWrapper
+  interface BeeApi {
+    resetExpressionDefinition: (definition: ExpressionProps) => void;
+    broadcastLiteralExpressionDefinition: (definition: LiteralExpressionProps) => void;
+    broadcastRelationExpressionDefinition: (definition: RelationProps) => void;
+    broadcastContextExpressionDefinition: (definition: ContextProps) => void;
+    broadcastListExpressionDefinition: (definition: ListProps) => void;
+    broadcastInvocationExpressionDefinition: (definition: InvocationProps) => void;
+    broadcastFunctionExpressionDefinition: (definition: FunctionProps) => void;
+    broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) => void;
+  }
+
+  //API that BoxedExpressionEditor (bee) and its wrapper are expecting to be defined in the Window namespace
   interface Window {
     renderBoxedExpressionEditor: (selector: string, definition: ExpressionProps) => void;
-    beeApi: {
-      resetExpressionDefinition: (definition: ExpressionProps) => void;
-      broadcastLiteralExpressionDefinition: (definition: LiteralExpressionProps) => void;
-      broadcastRelationExpressionDefinition: (definition: RelationProps) => void;
-      broadcastContextExpressionDefinition: (definition: ContextProps) => void;
-      broadcastListExpressionDefinition: (definition: ListProps) => void;
-      broadcastInvocationExpressionDefinition: (definition: InvocationProps) => void;
-      broadcastFunctionExpressionDefinition: (definition: FunctionProps) => void;
-      broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) => void;
-    };
+    beeApi: BeeApi;
+    beeApiWrapper: BeeApi;
   }
 }
 

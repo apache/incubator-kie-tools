@@ -14,14 +14,5 @@
  * limitations under the License.
  */
 
-import { BoxedExpressionEditor } from "./components";
-import * as React from "react";
-import { ExpressionProps } from "./api";
-import * as ReactDOM from "react-dom";
-
 export * from "./components";
 export * from "./api";
-
-window.renderBoxedExpressionEditor = (selector: string, definition: ExpressionProps) => {
-  ReactDOM.render(<BoxedExpressionEditor expressionDefinition={definition} />, document.getElementById(selector));
-};

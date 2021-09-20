@@ -98,7 +98,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
     contextMenuVisibility,
     setContextMenuVisibility,
     targetElement,
-  } = useContextMenuHandler();
+  } = useContextMenuHandler(globalContext.boxedExpressionEditorRef?.current ?? document);
 
   const renderExpression = useMemo(() => {
     switch (expression.logicType) {

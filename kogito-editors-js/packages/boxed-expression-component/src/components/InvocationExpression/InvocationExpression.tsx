@@ -35,7 +35,7 @@ import {
 import { Table } from "../Table";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { ColumnInstance, DataRecord } from "react-table";
-import { ContextEntryExpressionCell, ContextEntryInfoCell } from "../ContextExpression";
+import { ContextEntryExpressionCell, getContextEntryInfoCell } from "../ContextExpression";
 import * as _ from "lodash";
 import { BoxedExpressionGlobalContext } from "../../context";
 import { hashfy } from "../Resizer";
@@ -71,7 +71,6 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = ({
           name: DEFAULT_PARAMETER_NAME,
           dataType: DEFAULT_PARAMETER_DATA_TYPE,
         },
-        editInfoPopoverLabel: i18n.editParameter,
         nameAndDataTypeSynchronized: true,
       } as DataRecord,
     ]
@@ -88,7 +87,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = ({
     const updatedDefinition: InvocationProps = {
       uid,
       logicType,
-      name: expressionColumn.accessor,
+      name: expressionColumn.label,
       dataType: expressionColumn.dataType,
       bindingEntries: rows as ContextEntries,
       invokedFunction: functionName,
@@ -98,20 +97,20 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = ({
 
     const expression = _.omit(updatedDefinition, ["name", "dataType"]);
 
-    executeIfExpressionDefinitionChanged(
-      storedExpressionDefinition.current,
-      updatedDefinition,
-      () => {
-        if (isHeadless) {
-          onUpdatingRecursiveExpression?.(expression);
-        } else {
+    if (isHeadless) {
+      onUpdatingRecursiveExpression?.(expression);
+    } else {
+      executeIfExpressionDefinitionChanged(
+        storedExpressionDefinition.current,
+        updatedDefinition,
+        () => {
           setSupervisorHash(hashfy(expression));
           window.beeApi?.broadcastInvocationExpressionDefinition?.(updatedDefinition);
-        }
-        storedExpressionDefinition.current = updatedDefinition;
-      },
-      ["name", "dataType", "bindingEntries", "invokedFunction", "entryInfoWidth", "entryExpressionWidth"]
-    );
+          storedExpressionDefinition.current = updatedDefinition;
+        },
+        ["name", "dataType", "bindingEntries", "invokedFunction", "entryInfoWidth", "entryExpressionWidth"]
+      );
+    }
   }, [
     expressionWidth,
     functionName,
@@ -198,10 +197,9 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = ({
         name: generatedName,
         dataType: DEFAULT_PARAMETER_DATA_TYPE,
       },
-      editInfoPopoverLabel: i18n.editParameter,
       nameAndDataTypeSynchronized: true,
     };
-  }, [i18n.editParameter, rows]);
+  }, [rows]);
 
   const getHeaderVisibility = useCallback(() => {
     return isHeadless ? TableHeaderVisibility.SecondToLastLevel : TableHeaderVisibility.Full;
@@ -219,7 +217,10 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = ({
           headerLevels={2}
           headerVisibility={getHeaderVisibility()}
           skipLastHeaderGroup
-          defaultCell={{ entryInfo: ContextEntryInfoCell, entryExpression: ContextEntryExpressionCell }}
+          defaultCell={{
+            entryInfo: getContextEntryInfoCell(i18n.editParameter),
+            entryExpression: ContextEntryExpressionCell,
+          }}
           columns={columns.current}
           rows={rows as DataRecord[]}
           onColumnsUpdate={onColumnsUpdate}

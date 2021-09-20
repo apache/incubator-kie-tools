@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { RefObject, useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
-export function useContextMenuHandler(): {
-  contextMenuRef: RefObject<HTMLDivElement>;
+export function useContextMenuHandler(domEventTarget: HTMLDivElement | Document = document): {
+  contextMenuRef: React.RefObject<HTMLDivElement>;
   contextMenuXPos: string;
   contextMenuYPos: string;
   contextMenuVisibility: boolean;
@@ -50,12 +50,12 @@ export function useContextMenuHandler(): {
 
   useEffect(() => {
     document.addEventListener("click", hideContextMenu);
-    document.addEventListener("contextmenu", hideContextMenu);
-    document.addEventListener("contextmenu", showContextMenu);
+    domEventTarget.addEventListener("contextmenu", hideContextMenu);
+    domEventTarget.addEventListener("contextmenu", showContextMenu);
     return () => {
       document.removeEventListener("click", hideContextMenu);
-      document.removeEventListener("contextmenu", hideContextMenu);
-      document.removeEventListener("contextmenu", showContextMenu);
+      domEventTarget.removeEventListener("contextmenu", hideContextMenu);
+      domEventTarget.removeEventListener("contextmenu", showContextMenu);
     };
   });
 

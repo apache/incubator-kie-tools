@@ -58,17 +58,19 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
         : {}),
     };
 
-    executeIfExpressionDefinitionChanged(
-      storedExpressionDefinition.current,
-      expressionDefinition,
-      () => {
-        isHeadless
-          ? onUpdatingRecursiveExpression?.(expressionDefinition)
-          : window.beeApi?.broadcastLiteralExpressionDefinition?.(expressionDefinition);
-        storedExpressionDefinition.current = expressionDefinition;
-      },
-      ["name", "dataType", "content", "width"]
-    );
+    if (isHeadless) {
+      onUpdatingRecursiveExpression?.(expressionDefinition);
+    } else {
+      executeIfExpressionDefinitionChanged(
+        storedExpressionDefinition.current,
+        expressionDefinition,
+        () => {
+          window.beeApi?.broadcastLiteralExpressionDefinition?.(expressionDefinition);
+          storedExpressionDefinition.current = expressionDefinition;
+        },
+        ["name", "dataType", "content", "width"]
+      );
+    }
   }, [expressionDataType, expressionName, isHeadless, onUpdatingRecursiveExpression, uid]);
 
   const onExpressionUpdate = useCallback(

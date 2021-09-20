@@ -81,6 +81,8 @@ public class NavigateToExpressionEditorCommand extends BaseNavigateCommand imple
                                                                 hasName));
                 addExpressionEditorToCanvasWidget();
 
+                editor.getView().activate();
+
                 return CanvasCommandResultBuilder.SUCCESS;
             }
 

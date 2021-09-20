@@ -29,6 +29,7 @@ import {
   updateElementViaPopover,
   usingTestingBoxedExpressionI18nContext,
 } from "../test-utils";
+import { DEFAULT_MIN_WIDTH } from "../../../components/Resizer";
 
 jest.useFakeTimers();
 
@@ -284,8 +285,7 @@ describe("Table tests", () => {
       row[columnName] = rowValue;
       newRow[columnName] = newRowValue;
 
-      const value = "value";
-      row[columnName] = value;
+      row[columnName] = "value";
       const orRowsUpdate = (rows: DataRecord[]) => {
         _.identity(rows);
       };
@@ -315,8 +315,18 @@ describe("Table tests", () => {
 
   describe("when interacting with context menu", () => {
     test("should trigger onColumnUpdate, when inserting a new column on the left", async () => {
-      const firstColumn = { label: "column-2", accessor: "column-2", dataType: DataType.Undefined } as ColumnInstance;
-      const secondColumn = { label: "column-3", accessor: "column-3", dataType: DataType.Undefined } as ColumnInstance;
+      const firstColumn = {
+        label: "column-2",
+        accessor: "column-2",
+        dataType: DataType.Undefined,
+        width: DEFAULT_MIN_WIDTH,
+      } as ColumnInstance;
+      const secondColumn = {
+        label: "column-3",
+        accessor: "column-3",
+        dataType: DataType.Undefined,
+        width: DEFAULT_MIN_WIDTH,
+      } as ColumnInstance;
       const onColumnUpdate = (columns: Column[]) => {
         _.identity(columns);
       };
@@ -345,8 +355,18 @@ describe("Table tests", () => {
     });
 
     test("should trigger onColumnUpdate, when inserting a new column on the right", async () => {
-      const firstColumn = { label: "column-2", accessor: "column-2", dataType: DataType.Undefined } as ColumnInstance;
-      const secondColumn = { label: "column-3", accessor: "column-3", dataType: DataType.Undefined } as ColumnInstance;
+      const firstColumn = {
+        label: "column-2",
+        accessor: "column-2",
+        dataType: DataType.Undefined,
+        width: DEFAULT_MIN_WIDTH,
+      } as ColumnInstance;
+      const secondColumn = {
+        label: "column-3",
+        accessor: "column-3",
+        dataType: DataType.Undefined,
+        width: DEFAULT_MIN_WIDTH,
+      } as ColumnInstance;
       const onColumnUpdate = (columns: Column[]) => {
         _.identity(columns);
       };
@@ -465,7 +485,7 @@ describe("Table tests", () => {
       await openContextMenu(container.querySelector(expressionCell(0, 1))!);
       await selectMenuEntryIfNotDisabled(baseElement, "Insert row above");
 
-      expect(mockedOnRowsUpdate).toHaveBeenCalledWith([{}, row]);
+      expect(mockedOnRowsUpdate).toHaveBeenCalledWith([{ width: DEFAULT_MIN_WIDTH }, row]);
     });
 
     test("should trigger onRowsUpdate, when inserting a new row below", async () => {
@@ -495,7 +515,7 @@ describe("Table tests", () => {
       await openContextMenu(container.querySelector(expressionCell(0, 1))!);
       await selectMenuEntryIfNotDisabled(baseElement, "Insert row below");
 
-      expect(mockedOnRowsUpdate).toHaveBeenCalledWith([row, {}]);
+      expect(mockedOnRowsUpdate).toHaveBeenCalledWith([row, { width: DEFAULT_MIN_WIDTH }]);
     });
 
     test("should trigger onRowsUpdate, when deleting a row", async () => {

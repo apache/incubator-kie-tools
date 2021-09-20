@@ -43,4 +43,13 @@ public enum BuiltinAggregator {
         return valueOf(value);
     }
 
+    public static BuiltinAggregator fromCode(final String code) {
+        for (BuiltinAggregator builtinAggregator : BuiltinAggregator.values()) {
+            if (builtinAggregator.code.equals(code)) {
+                return builtinAggregator;
+            }
+        }
+        throw new IllegalArgumentException(code);
+    }
+
 }

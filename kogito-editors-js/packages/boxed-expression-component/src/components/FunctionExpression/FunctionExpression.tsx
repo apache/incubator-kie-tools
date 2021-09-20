@@ -127,7 +127,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (props
           entryExpression: {
             noClearAction: true,
             logicType: LogicType.LiteralExpression,
-            content: javaProps.class,
+            content: javaProps.className,
           } as LiteralExpressionProps,
         },
         {
@@ -135,7 +135,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (props
           entryExpression: {
             noClearAction: true,
             logicType: LogicType.LiteralExpression,
-            content: javaProps.method,
+            content: javaProps.methodName,
           } as LiteralExpressionProps,
         },
       ];
@@ -261,7 +261,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (props
             (_.nth(contextProps.contextEntries, 0)?.entryExpression as LiteralExpressionProps)?.content || "";
           const methodName =
             (_.nth(contextProps.contextEntries, 1)?.entryExpression as LiteralExpressionProps)?.content || "";
-          return _.extend(definition, { class: className, method: methodName });
+          return _.extend(definition, { className, methodName });
         }
         case FunctionKind.Pmml: {
           const contextProps = _.first(rows)?.entryExpression as ContextProps;
@@ -300,31 +300,31 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (props
       selectedFunctionKind
     );
 
-    executeIfExpressionDefinitionChanged(
-      storedExpressionDefinition.current,
-      updatedDefinition,
-      () => {
-        if (props.isHeadless) {
-          props.onUpdatingRecursiveExpression?.(_.omit(updatedDefinition, ["name", "dataType"]));
-        } else {
+    if (props.isHeadless) {
+      props.onUpdatingRecursiveExpression?.(_.omit(updatedDefinition, ["name", "dataType"]));
+    } else {
+      executeIfExpressionDefinitionChanged(
+        storedExpressionDefinition.current,
+        updatedDefinition,
+        () => {
           setSupervisorHash(hashfy(rows));
           window.beeApi?.broadcastFunctionExpressionDefinition?.(updatedDefinition);
-        }
-        storedExpressionDefinition.current = updatedDefinition;
-      },
-      [
-        "name",
-        "dataType",
-        "functionKind",
-        "formalParameters",
-        "parametersWidth",
-        "class",
-        "method",
-        "document",
-        "model",
-        "expression",
-      ]
-    );
+          storedExpressionDefinition.current = updatedDefinition;
+        },
+        [
+          "name",
+          "dataType",
+          "functionKind",
+          "formalParameters",
+          "parametersWidth",
+          "className",
+          "methodName",
+          "document",
+          "model",
+          "expression",
+        ]
+      );
+    }
   }, [extendDefinitionBasedOnFunctionKind, setSupervisorHash, parameters, props, selectedFunctionKind, rows, width]);
 
   const getHeaderVisibility = useCallback(() => {
