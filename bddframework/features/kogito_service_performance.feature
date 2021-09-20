@@ -17,6 +17,7 @@ Feature: Kogito Service Performance
        | runtime-env | JAVA_OPTIONS | -Xmx10G  |
     And Kogito Runtime "process-quarkus-example" has 1 pods running within 10 minutes
     And Service "process-quarkus-example" with process name "orders" is available within 3 minutes
+    And Hyperfoil Node scraper is deployed
     And Hyperfoil Operator is deployed
     And Hyperfoil instance "hf-controller" is deployed within 5 minutes
     And Create benchmark on Hyperfoil instance "hf-controller" within 2 minutes with content:
@@ -102,6 +103,7 @@ Feature: Kogito Service Performance
        | runtime-env | JAVA_OPTIONS | -Xmx10G  |
     And Kogito Runtime "process-quarkus-example" has 1 pods running within 10 minutes
     And Service "process-quarkus-example" with process name "orders" is available within 3 minutes
+    And Hyperfoil Node scraper is deployed
     And Hyperfoil Operator is deployed
     And Hyperfoil instance "hf-controller" is deployed within 5 minutes
     And Create benchmark on Hyperfoil instance "hf-controller" within 2 minutes with content:
@@ -170,6 +172,7 @@ Feature: Kogito Service Performance
       | config      | infra        | external-infinispan |
     And Kogito Runtime "process-quarkus-example" has 1 pods running within 10 minutes
     And Service "process-quarkus-example" with process name "orders" is available within 3 minutes
+    And Hyperfoil Node scraper is deployed
     And Hyperfoil Operator is deployed
     And Hyperfoil instance "hf-controller" is deployed within 5 minutes
     And Create benchmark on Hyperfoil instance "hf-controller" within 2 minutes with content:
@@ -264,6 +267,7 @@ Feature: Kogito Service Performance
       | config      | infra        | external-infinispan |
     And Kogito Runtime "process-quarkus-example" has 1 pods running within 10 minutes
     And Service "process-quarkus-example" with process name "orders" is available within 3 minutes
+    And Hyperfoil Node scraper is deployed
     And Hyperfoil Operator is deployed
     And Hyperfoil instance "hf-controller" is deployed within 5 minutes
     And Create benchmark on Hyperfoil instance "hf-controller" within 2 minutes with content:
@@ -323,6 +327,7 @@ Feature: Kogito Service Performance
       | runtime-env | JAVA_OPTIONS | -Xmx10G |
     And Kogito Runtime "process-springboot-example" has 1 pods running within 10 minutes
     And Service "process-springboot-example" with process name "orders" is available within 3 minutes
+    And Hyperfoil Node scraper is deployed
     And Hyperfoil Operator is deployed
     And Hyperfoil instance "hf-controller" is deployed within 5 minutes
     And Create benchmark on Hyperfoil instance "hf-controller" within 2 minutes with content:
@@ -414,6 +419,7 @@ Feature: Kogito Service Performance
       | config      | infra        | external-infinispan |
     And Kogito Runtime "process-springboot-example" has 1 pods running within 10 minutes
     And Service "process-springboot-example" with process name "orders" is available within 3 minutes
+    And Hyperfoil Node scraper is deployed
     And Hyperfoil Operator is deployed
     And Hyperfoil instance "hf-controller" is deployed within 5 minutes
     And Create benchmark on Hyperfoil instance "hf-controller" within 2 minutes with content:

@@ -567,3 +567,42 @@ func GetClusterRoleBinding(name string) (*rbac.ClusterRoleBinding, error) {
 	}
 	return clusterRoleBinding, nil
 }
+
+// CreateServiceAccount creates ServiceAccount
+func CreateServiceAccount(namespace, name string) error {
+	GetLogger(namespace).Info("Create ServiceAccount", "name", name)
+
+	secret := &corev1.ServiceAccount{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+		},
+	}
+
+	return kubernetes.ResourceC(kubeClient).Create(secret)
+}
+
+// CreateConfigMap creates ConfigMap
+func CreateConfigMap(namespace, name string, data map[string]string, binaryData map[string][]byte) error {
+	GetLogger(namespace).Info("Create ConfigMap", "name", name)
+
+	configMap := &corev1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: namespace,
+			Name:      name,
+		},
+		Data:       data,
+		BinaryData: binaryData,
+	}
+
+	return kubernetes.ResourceC(kubeClient).Create(configMap)
+}
+
+// IsConfigMapExist returns true if ConfigMap exists
+func IsConfigMapExist(key types.NamespacedName) (bool, error) {
+	exists, err := GetObjectWithKey(key, &corev1.ConfigMap{})
+	if err != nil {
+		return false, fmt.Errorf("Error fetching ConfigMap %s in namespace %s: %v", key.Name, key.Namespace, err)
+	}
+	return exists, nil
+}
