@@ -57,6 +57,18 @@
         ]
       }
     ],
+    "configuration": {
+      "title": "BPMN",
+      "properties": {
+        "kogito.bpmn.runOnSave": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Execute a command on each save operation of the BPMN file."
+        }
+      }
+    },
     "commands": [
       {
         "command": "extension.kogito.getPreviewSvgBpmn",
@@ -65,6 +77,10 @@
           "light": "./static/svg-icon-light.png",
           "dark": "./static/svg-icon-dark.png"
         }
+      },
+      {
+        "command": "extension.kogito.silentlyGenerateSvgBpmn",
+        "title": "Generate SVG without any notification"
       }
     ],
     "menus": {

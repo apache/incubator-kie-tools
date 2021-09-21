@@ -23,14 +23,15 @@ import { I18n } from "@kie-tooling-core/i18n/dist/core";
 
 const encoder = new TextEncoder();
 
-export async function generateSvg(
-  editorStore: KogitoEditorStore,
-  workspaceApi: WorkspaceApi,
-  vsCodeI18n: I18n<VsCodeI18n>
-) {
-  const i18n = vsCodeI18n.getCurrent();
+export async function generateSvg(args: {
+  editorStore: KogitoEditorStore;
+  workspaceApi: WorkspaceApi;
+  vsCodeI18n: I18n<VsCodeI18n>;
+  displayNotification: boolean;
+}) {
+  const i18n = args.vsCodeI18n.getCurrent();
 
-  const editor = editorStore.activeEditor;
+  const editor = args.editorStore.activeEditor;
   if (!editor) {
     console.info(`Unable to create SVG because there's no Editor open.`);
     return;
@@ -47,11 +48,13 @@ export async function generateSvg(
   const svgUri = editor.document.uri.with({ path: __path.join(parsedPath.dir, svgFileName) });
   await vscode.workspace.fs.writeFile(svgUri, encoder.encode(previewSvg));
 
-  vscode.window.showInformationMessage(i18n.savedSvg(svgFileName), i18n.openSvg).then((selection) => {
-    if (selection !== i18n.openSvg) {
-      return;
-    }
+  if (args.displayNotification) {
+    vscode.window.showInformationMessage(i18n.savedSvg(svgFileName), i18n.openSvg).then((selection) => {
+      if (selection !== i18n.openSvg) {
+        return;
+      }
 
-    workspaceApi.kogitoWorkspace_openFile(svgUri.fsPath);
-  });
+      args.workspaceApi.kogitoWorkspace_openFile(svgUri.fsPath);
+    });
+  }
 }

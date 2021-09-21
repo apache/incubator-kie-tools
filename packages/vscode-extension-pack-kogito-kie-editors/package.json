@@ -28,6 +28,27 @@
     }
   },
   "contributes": {
+    "configuration": {
+      "title": "BPMN/DMN Test Configuration",
+      "properties": {
+        "kogito.bpmn.runOnSave": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": "extension.kogito.silentlyGenerateSvg",
+          "description": "Execute a command on each save operation of the BPMN file."
+        },
+        "kogito.dmn.runOnSave": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": "extension.kogito.silentlyGenerateSvg",
+          "description": "Execute a command on each save operation of the BPMN file"
+        }
+      }
+    },
     "customEditors": [
       {
         "viewType": "kieKogitoWebviewEditors",
@@ -51,6 +72,10 @@
       {
         "command": "extension.kogito.runTest",
         "title": "Run"
+      },
+      {
+        "command": "extension.kogito.silentlyGenerateSvg",
+        "title": "Generate SVG without any notification"
       }
     ],
     "menus": {

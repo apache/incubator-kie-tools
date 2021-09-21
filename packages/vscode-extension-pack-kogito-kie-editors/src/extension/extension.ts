@@ -47,7 +47,8 @@ export async function activate(context: vscode.ExtensionContext) {
     extensionName: "kie-group.vscode-extension-pack-kogito-kie-editors",
     context: context,
     viewType: "kieKogitoWebviewEditors",
-    getPreviewCommandId: "extension.kogito.getPreviewSvg",
+    generateSvgCommandId: "extension.kogito.getPreviewSvg",
+    silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvg",
     editorEnvelopeLocator: {
       targetOrigin: envelopeTargetOrigin,
       mapping: new Map([
