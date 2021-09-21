@@ -123,7 +123,7 @@ jobs:
           DMN_DEV_SANDBOX__gtmId: ""
           DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online-staging/${{ needs.create_release.outputs.tag }}-prerelease"
         run: |
-          yarn build:prod
+          lerna run build:prod --stream --concurrency 1
 
       - name: "STAGING: Push dmn-dev-sandbox-deployment-base-image to quay.io (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
