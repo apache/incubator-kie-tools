@@ -15,7 +15,7 @@
  */
 
 import date from "!!raw-loader!../../resources/templates/date.template";
-import setValueFromModel from "!!raw-loader!../../resources/templates/input.setModelData.template";
+import setValueFromModel from "!!raw-loader!../../resources/templates/date.setModelData.template";
 import writeValueToModel from "!!raw-loader!../../resources/templates/input.writeModelData.template";
 import { template } from "underscore";
 import { AbstractFormGroupInputTemplate, FormElementTemplateProps } from "./types";

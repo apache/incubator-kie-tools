@@ -111,8 +111,8 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 				&lt;label class=&quot;form-check-label&quot; for=&quot;interview.hire&quot;&gt;Hire&lt;/label&gt;
 			&lt;/div&gt;
 			&lt;div class=&quot;form-group&quot;&gt;
-				&lt;label for=&quot;interview.hidingDate&quot;&gt;Hiding date&lt;/label&gt;
-				&lt;input type=&quot;datetime-local&quot; id=&quot;interview.hidingDate&quot; name=&quot;interview.hidingDate&quot; class=&quot;form-control&quot; /&gt;
+				&lt;label for=&quot;interview.hiringDate&quot;&gt;Hiring date&lt;/label&gt;
+				&lt;input type=&quot;datetime-local&quot; id=&quot;interview.hiringDate&quot; name=&quot;interview.hiringDate&quot; class=&quot;form-control&quot; /&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/fieldset&gt;
@@ -179,7 +179,9 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			document.getElementById(&quot;interview.salary&quot;).value = data?.interview?.salary ?? &quot;&quot;;
 			setRadioButtonGroupValue(&quot;interview.rating&quot;, data?.interview?.rating);
 			document.getElementById(&quot;interview.hire&quot;).checked = data?.interview?.hire;
-			document.getElementById(&quot;interview.hidingDate&quot;).value = data?.interview?.hidingDate ?? &quot;&quot;;
+			document.getElementById(&quot;interview.hiringDate&quot;).value = data?.interview?.hiringDate
+				? new Date(data?.interview?.hiringDate).toISOString().slice(0, 16)
+				: &quot;&quot;;
 		}
 		/* Utility function to generate the expected form output as a json object */
 		function getFormData() {
@@ -231,7 +233,7 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			formData.interview.salary = Number(document.getElementById(&quot;interview.salary&quot;).value);
 			formData.interview.rating = getRadioButtonGroupValue(&quot;interview.rating&quot;);
 			formData.interview.hire = document.getElementById(&quot;interview.hire&quot;).checked;
-			formData.interview.hidingDate = document.getElementById(&quot;interview.hidingDate&quot;).value;
+			formData.interview.hiringDate = document.getElementById(&quot;interview.hiringDate&quot;).value;
 			return formData;
 		}
 		/* Utility function to validate the form on the &#39;beforeSubmit&#39; Lifecycle Hook */
@@ -246,13 +248,17 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
                     - ctx: info about the context where the form is being displayed. This will contain information such as the form JSON Schema, process/task, user...
         */
 		const formApi = window.Form.openForm({
-			onOpen: (data, context) =&gt; setFormData(data),
+			onOpen: (data, context) =&gt; {
+				setFormData(data);
+			},
 		});
 		/*
             Form Lifecycle Hook that will be executed before the form is submitted.
             Throwing an error will stop the form submit. Usually should be used to validate the form.
         */
-		formApi.beforeSubmit = () =&gt; validateForm();
+		formApi.beforeSubmit = () =&gt; {
+			validateForm();
+		};
 		/*
             Form Lifecycle Hook that will be executed after the form is submitted.
             It will receive a response object containing the \`type\` flag indicating if the submit has been successful and \`info\` with extra information about the submit result.

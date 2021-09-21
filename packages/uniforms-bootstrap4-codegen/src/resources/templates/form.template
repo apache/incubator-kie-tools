@@ -65,14 +65,18 @@
                     - ctx: info about the context where the form is being displayed. This will contain information such as the form JSON Schema, process/task, user...
         */
         const formApi = window.Form.openForm({
-            onOpen: (data, context) => setFormData(data)
+            onOpen: (data, context) => {
+                setFormData(data);
+            }
         });
 
         /*
             Form Lifecycle Hook that will be executed before the form is submitted.
             Throwing an error will stop the form submit. Usually should be used to validate the form.
         */
-        formApi.beforeSubmit = () => validateForm();
+        formApi.beforeSubmit = () => {
+            validateForm();
+        }
 
         /*
             Form Lifecycle Hook that will be executed after the form is submitted.

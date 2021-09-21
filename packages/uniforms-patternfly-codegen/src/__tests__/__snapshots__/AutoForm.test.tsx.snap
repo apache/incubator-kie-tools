@@ -23,12 +23,14 @@ import {
 } from &#39;@patternfly/react-core&#39;;
 const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 	const [formApi, setFormApi] = useState&lt;any&gt;();
-	const [personalData__name, set__personalData__name] = useState&lt;string&gt;();
-	const [personalData__email, set__personalData__email] = useState&lt;string&gt;();
-	const [address__street, set__address__street] = useState&lt;string&gt;();
-	const [address__num, set__address__num] = useState&lt;string&gt;();
-	const [address__cp, set__address__cp] = useState&lt;string&gt;();
-	const [address__city, set__address__city] = useState&lt;string&gt;();
+	const [personalData__name, set__personalData__name] = useState&lt;string&gt;(&#39;&#39;);
+	const [personalData__email, set__personalData__email] = useState&lt;string&gt;(&#39;&#39;);
+	const [personalData__child__name, set__personalData__child__name] =
+		useState&lt;string&gt;(&#39;&#39;);
+	const [address__street, set__address__street] = useState&lt;string&gt;(&#39;&#39;);
+	const [address__num, set__address__num] = useState&lt;number&gt;();
+	const [address__cp, set__address__cp] = useState&lt;string&gt;(&#39;&#39;);
+	const [address__city, set__address__city] = useState&lt;string&gt;(&#39;&#39;);
 	const [interview__position, set__interview__position] = useState&lt;string&gt;(&#39;&#39;);
 	const [interview__position__expanded, set__interview__position__expanded] =
 		useState&lt;boolean&gt;(false);
@@ -40,31 +42,33 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 		set__interview__otherPositions__expanded,
 	] = useState&lt;boolean&gt;(false);
 	const [interview__skills, set__interview__skills] = useState&lt;string[]&gt;([]);
-	const [interview__age, set__interview__age] = useState&lt;string&gt;();
-	const [interview__salary, set__interview__salary] = useState&lt;string&gt;();
-	const [interview__rating, set__interview__rating] = useState&lt;string&gt;();
-	const [interview__hire, set__interview__hire] = useState&lt;boolean&gt;();
-	const [interview__hidingDate, set__interview__hidingDate] = useState&lt;Date&gt;();
-	const [friends, set__friends] = useState&lt;any[]&gt;([]);
+	const [interview__age, set__interview__age] = useState&lt;number&gt;();
+	const [interview__salary, set__interview__salary] = useState&lt;number&gt;();
+	const [interview__rating, set__interview__rating] = useState&lt;string&gt;(&#39;&#39;);
+	const [interview__hire, set__interview__hire] = useState&lt;boolean&gt;(false);
+	const [interview__hiringDate, set__interview__hiringDate] =
+		useState&lt;string&gt;();
+	const [friends, set__friends] = useState&lt;any[]&gt;();
 	/* Utility function that fills the form with the data received from the kogito runtime */
 	const setFormData = (data) =&gt; {
 		if (!data) {
 			return;
 		}
-		set__personalData__name(data?.personalData?.name);
-		set__personalData__email(data?.personalData?.email);
-		set__address__street(data?.address?.street);
+		set__personalData__name(data?.personalData?.name ?? &#39;&#39;);
+		set__personalData__email(data?.personalData?.email ?? &#39;&#39;);
+		set__personalData__child__name(data?.personalData?.child?.name ?? &#39;&#39;);
+		set__address__street(data?.address?.street ?? &#39;&#39;);
 		set__address__num(data?.address?.num);
-		set__address__cp(data?.address?.cp);
-		set__address__city(data?.address?.city);
-		set__interview__position(data?.interview?.position);
-		set__interview__otherPositions(data?.interview?.otherPositions);
-		set__interview__skills(data?.interview?.skills);
+		set__address__cp(data?.address?.cp ?? &#39;&#39;);
+		set__address__city(data?.address?.city ?? &#39;&#39;);
+		set__interview__position(data?.interview?.position ?? &#39;&#39;);
+		set__interview__otherPositions(data?.interview?.otherPositions ?? []);
+		set__interview__skills(data?.interview?.skills ?? []);
 		set__interview__age(data?.interview?.age);
 		set__interview__salary(data?.interview?.salary);
-		set__interview__rating(data?.interview?.rating);
-		set__interview__hire(data?.interview?.hire);
-		set__interview__hidingDate(data?.interview?.hidingDate);
+		set__interview__rating(data?.interview?.rating ?? &#39;&#39;);
+		set__interview__hire(data?.interview?.hire ?? false);
+		set__interview__hiringDate(data?.interview?.hiringDate);
 		set__friends(data?.friends);
 	};
 	/* Utility function to generate the expected form output as a json object */
@@ -73,6 +77,8 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 		formData.personalData = {};
 		formData.personalData.name = personalData__name;
 		formData.personalData.email = personalData__email;
+		formData.personalData.child = {};
+		formData.personalData.child.name = personalData__child__name;
 		formData.address = {};
 		formData.address.street = address__street;
 		formData.address.num = address__num;
@@ -86,10 +92,27 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 		formData.interview.salary = interview__salary;
 		formData.interview.rating = interview__rating;
 		formData.interview.hire = interview__hire;
-		formData.interview.hidingDate = interview__hidingDate;
+		formData.interview.hiringDate = interview__hiringDate;
 		formData.friends = friends;
 		return formData;
-	}, [personalData, address, interview, friends]);
+	}, [
+		personalData__name,
+		personalData__email,
+		personalData__child__name,
+		address__street,
+		address__num,
+		address__cp,
+		address__city,
+		interview__position,
+		interview__otherPositions,
+		interview__skills,
+		interview__age,
+		interview__salary,
+		interview__rating,
+		interview__hire,
+		interview__hiringDate,
+		friends,
+	]);
 	/* Utility function to validate the form on the &#39;beforeSubmit&#39; Lifecycle Hook */
 	const validateForm = useCallback(() =&gt; {}, []);
 	/* Utility function to perform actions on the on the &#39;afterSubmit&#39; Lifecycle Hook */
@@ -97,14 +120,14 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 	useEffect(() =&gt; {
 		if (formApi) {
 			/*
-              Form Lifecycle Hook that will be executed before the form is submitted.
-              Throwing an error will stop the form submit. Usually should be used to validate the form.
-            */
+        Form Lifecycle Hook that will be executed before the form is submitted.
+        Throwing an error will stop the form submit. Usually should be used to validate the form.
+      */
 			formApi.beforeSubmit = () =&gt; validateForm();
 			/*
-              Form Lifecycle Hook that will be executed after the form is submitted.
-              It will receive a response object containing the \`type\` flag indicating if the submit has been successful and \`info\` with extra information about the submit result.
-            */
+        Form Lifecycle Hook that will be executed after the form is submitted.
+        It will receive a response object containing the \`type\` flag indicating if the submit has been successful and \`info\` with extra information about the submit result.
+      */
 			formApi.afterSubmit = (result) =&gt; afterSubmit(result);
 			/* Generates the expected form output object to be posted */
 			formApi.getFormData = () =&gt; getFormData();
@@ -112,14 +135,14 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 	}, [getFormData, validateForm, afterSubmit]);
 	useEffect(() =&gt; {
 		/*
-              Call to the Kogito console form engine. It will establish the connection with the console embeding the form
-              and return an instance of FormAPI that will allow hook custom code into the form lifecycle.
-              The \`window.Form.openForm\` call expects an object with the following entries:
-                  - onOpen: Callback that will be called after the connection with the console is established. The callback
-                  will receive the following arguments:
-                      - data: the data to be bound into the form
-                      - ctx: info about the context where the form is being displayed. This will contain information such as the form JSON Schema, process/task, user...
-          */
+      Call to the Kogito console form engine. It will establish the connection with the console embeding the form
+      and return an instance of FormAPI that will allow hook custom code into the form lifecycle.
+      The \`window.Form.openForm\` call expects an object with the following entries:
+        - onOpen: Callback that will be called after the connection with the console is established. The callback
+        will receive the following arguments:
+          - data: the data to be bound into the form
+          - ctx: info about the context where the form is being displayed. This will contain information such as the form JSON Schema, process/task, user...
+    */
 		const api = window.Form.openForm({
 			onOpen: (data, context) =&gt; {
 				setFormData(data);
@@ -180,16 +203,17 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 		}
 		setter(newValues);
 	};
-	const parseDate = (date?: Date): string =&gt; {
+	const parseDate = (date?: string): string =&gt; {
 		if (!date) {
 			return &#39;&#39;;
 		}
-		return date.toISOString().slice(0, -14);
+		const dateValue: Date = new Date(Date.parse(date));
+		return dateValue.toISOString().slice(0, -14);
 	};
 	const onDateChange = (
 		newValue: string,
-		setter: (date: Date) =&gt; void,
-		previousValue?: Date
+		setter: (newValue: string) =&gt; void,
+		previousValue?: string
 	) =&gt; {
 		if (newValue) {
 			const newDate = new Date(newValue);
@@ -198,20 +222,21 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 				newDate.setHours(parseInt(time &amp;&amp; time.split(&#39;:&#39;)[0]));
 				newDate.setMinutes(parseInt(time &amp;&amp; time.split(&#39;:&#39;)[1].split(&#39; &#39;)[0]));
 			}
-			setter(newDate);
+			setter(newDate.toISOString());
 		}
 	};
-	const parseTime = (date?: Date): string =&gt; {
+	const parseTime = (date?: string): string =&gt; {
 		if (!date) {
 			return &#39;&#39;;
 		}
+		const dateValue: Date = new Date(Date.parse(date));
 		let isAm = true;
-		let hours = date.getHours();
+		let hours = dateValue.getHours();
 		if (hours &gt; 12) {
 			hours %= 12;
 			isAm = false;
 		}
-		let minutes = date.getMinutes().toString();
+		let minutes = dateValue.getMinutes().toString();
 		if (minutes.length == 1) {
 			minutes = &#39;0&#39; + minutes;
 		}
@@ -219,13 +244,13 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 	};
 	const onTimeChange = (
 		time: string,
-		setter: (date: Date) =&gt; void,
-		previousValue?: Date,
+		setter: (newValue: string) =&gt; void,
+		previousValue?: string,
 		hours?: number,
 		minutes?: number
 	) =&gt; {
 		if (previousValue) {
-			const newDate = new Date(previousValue);
+			const newDate = new Date(Date.parse(previousValue));
 			if (hours &amp;&amp; minutes) {
 				newDate.setHours(hours);
 				newDate.setMinutes(minutes);
@@ -239,7 +264,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 					newDate.setMinutes(localeMinutes);
 				}
 			}
-			setter(newDate);
+			setter(newDate.toISOString());
 		}
 	};
 	return (
@@ -277,6 +302,27 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							onChange={set__personalData__email}
 						/&gt;
 					&lt;/FormGroup&gt;
+					&lt;Card&gt;
+						&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+							&lt;label&gt;
+								&lt;b&gt;Child&lt;/b&gt;
+							&lt;/label&gt;
+							&lt;FormGroup
+								fieldId={&#39;uniforms-0000-0006&#39;}
+								label={&#39;Name&#39;}
+								isRequired={true}&gt;
+								&lt;TextInput
+									name={&#39;personalData.child.name&#39;}
+									id={&#39;uniforms-0000-0006&#39;}
+									isDisabled={false}
+									placeholder={&#39;&#39;}
+									type={&#39;text&#39;}
+									value={personalData__child__name}
+									onChange={set__personalData__child__name}
+								/&gt;
+							&lt;/FormGroup&gt;
+						&lt;/CardBody&gt;
+					&lt;/Card&gt;
 				&lt;/CardBody&gt;
 			&lt;/Card&gt;
 			&lt;Card&gt;
@@ -285,12 +331,12 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 						&lt;b&gt;Address&lt;/b&gt;
 					&lt;/label&gt;
 					&lt;FormGroup
-						fieldId={&#39;uniforms-0000-0006&#39;}
+						fieldId={&#39;uniforms-0000-0009&#39;}
 						label={&#39;Street&#39;}
 						isRequired={true}&gt;
 						&lt;TextInput
 							name={&#39;address.street&#39;}
-							id={&#39;uniforms-0000-0006&#39;}
+							id={&#39;uniforms-0000-0009&#39;}
 							isDisabled={false}
 							placeholder={&#39;&#39;}
 							type={&#39;text&#39;}
@@ -299,27 +345,27 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
-						fieldId={&#39;uniforms-0000-0008&#39;}
+						fieldId={&#39;uniforms-0000-000b&#39;}
 						label={&#39;Num&#39;}
 						isRequired={true}&gt;
 						&lt;TextInput
 							type={&#39;number&#39;}
 							name={&#39;address.num&#39;}
 							isDisabled={false}
-							id={&#39;uniforms-0000-0008&#39;}
+							id={&#39;uniforms-0000-000b&#39;}
 							placeholder={&#39;&#39;}
 							step={1}
 							value={address__num}
-							onChange={set__address__num}
+							onChange={(newValue) =&gt; set__address__num(Number(newValue))}
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
-						fieldId={&#39;uniforms-0000-0009&#39;}
+						fieldId={&#39;uniforms-0000-000c&#39;}
 						label={&#39;Cp&#39;}
 						isRequired={true}&gt;
 						&lt;TextInput
 							name={&#39;address.cp&#39;}
-							id={&#39;uniforms-0000-0009&#39;}
+							id={&#39;uniforms-0000-000c&#39;}
 							isDisabled={false}
 							placeholder={&#39;&#39;}
 							type={&#39;text&#39;}
@@ -328,12 +374,12 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
-						fieldId={&#39;uniforms-0000-000a&#39;}
+						fieldId={&#39;uniforms-0000-000d&#39;}
 						label={&#39;City&#39;}
 						isRequired={true}&gt;
 						&lt;TextInput
 							name={&#39;address.city&#39;}
-							id={&#39;uniforms-0000-000a&#39;}
+							id={&#39;uniforms-0000-000d&#39;}
 							isDisabled={false}
 							placeholder={&#39;&#39;}
 							type={&#39;text&#39;}
@@ -349,11 +395,11 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 						&lt;b&gt;Interview&lt;/b&gt;
 					&lt;/label&gt;
 					&lt;FormGroup
-						fieldId={&#39;uniforms-0000-000e&#39;}
+						fieldId={&#39;uniforms-0000-000h&#39;}
 						label={&#39;Position&#39;}
 						isRequired={true}&gt;
 						&lt;Select
-							id={&#39;uniforms-0000-000e&#39;}
+							id={&#39;uniforms-0000-000h&#39;}
 							name={&#39;interview.position&#39;}
 							variant={SelectVariant.single}
 							isDisabled={false}
@@ -383,11 +429,11 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 						&lt;/Select&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
-						fieldId={&#39;uniforms-0000-000g&#39;}
+						fieldId={&#39;uniforms-0000-000j&#39;}
 						label={&#39;Other positions&#39;}
 						isRequired={true}&gt;
 						&lt;Select
-							id={&#39;uniforms-0000-000g&#39;}
+							id={&#39;uniforms-0000-000j&#39;}
 							name={&#39;interview.otherPositions&#39;}
 							variant={SelectVariant.typeaheadMulti}
 							isDisabled={false}
@@ -418,12 +464,12 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 						&lt;/Select&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
-						fieldId={&#39;uniforms-0000-000i&#39;}
+						fieldId={&#39;uniforms-0000-000l&#39;}
 						label={&#39;Skills&#39;}
 						isRequired={true}&gt;
 						&lt;Checkbox
-							key={&#39;uniforms-0000-000i-Java&#39;}
-							id={&#39;uniforms-0000-000i-Java&#39;}
+							key={&#39;uniforms-0000-000l-Java&#39;}
+							id={&#39;uniforms-0000-000l-Java&#39;}
 							name={&#39;interview.skills&#39;}
 							aria-label={&#39;interview.skills&#39;}
 							label={&#39;Java&#39;}
@@ -439,8 +485,8 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							value={&#39;Java&#39;}
 						/&gt;
 						&lt;Checkbox
-							key={&#39;uniforms-0000-000i-React&#39;}
-							id={&#39;uniforms-0000-000i-React&#39;}
+							key={&#39;uniforms-0000-000l-React&#39;}
+							id={&#39;uniforms-0000-000l-React&#39;}
 							name={&#39;interview.skills&#39;}
 							aria-label={&#39;interview.skills&#39;}
 							label={&#39;React&#39;}
@@ -456,8 +502,8 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							value={&#39;React&#39;}
 						/&gt;
 						&lt;Checkbox
-							key={&#39;uniforms-0000-000i-TypeScript&#39;}
-							id={&#39;uniforms-0000-000i-TypeScript&#39;}
+							key={&#39;uniforms-0000-000l-TypeScript&#39;}
+							id={&#39;uniforms-0000-000l-TypeScript&#39;}
 							name={&#39;interview.skills&#39;}
 							aria-label={&#39;interview.skills&#39;}
 							label={&#39;TypeScript&#39;}
@@ -473,8 +519,8 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							value={&#39;TypeScript&#39;}
 						/&gt;
 						&lt;Checkbox
-							key={&#39;uniforms-0000-000i-Quarkus&#39;}
-							id={&#39;uniforms-0000-000i-Quarkus&#39;}
+							key={&#39;uniforms-0000-000l-Quarkus&#39;}
+							id={&#39;uniforms-0000-000l-Quarkus&#39;}
 							name={&#39;interview.skills&#39;}
 							aria-label={&#39;interview.skills&#39;}
 							label={&#39;Quarkus&#39;}
@@ -491,46 +537,46 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
-						fieldId={&#39;uniforms-0000-000k&#39;}
+						fieldId={&#39;uniforms-0000-000n&#39;}
 						label={&#39;Age&#39;}
 						isRequired={true}&gt;
 						&lt;TextInput
 							type={&#39;number&#39;}
 							name={&#39;interview.age&#39;}
 							isDisabled={false}
-							id={&#39;uniforms-0000-000k&#39;}
+							id={&#39;uniforms-0000-000n&#39;}
 							placeholder={&#39;&#39;}
 							step={1}
 							max={99}
 							min={18}
 							value={interview__age}
-							onChange={set__interview__age}
+							onChange={(newValue) =&gt; set__interview__age(Number(newValue))}
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
-						fieldId={&#39;uniforms-0000-000m&#39;}
+						fieldId={&#39;uniforms-0000-000p&#39;}
 						label={&#39;Salary&#39;}
 						isRequired={true}&gt;
 						&lt;TextInput
 							type={&#39;number&#39;}
 							name={&#39;interview.salary&#39;}
 							isDisabled={false}
-							id={&#39;uniforms-0000-000m&#39;}
+							id={&#39;uniforms-0000-000p&#39;}
 							placeholder={&#39;&#39;}
 							step={0.01}
 							max={1000.5}
 							value={interview__salary}
-							onChange={set__interview__salary}
+							onChange={(newValue) =&gt; set__interview__salary(Number(newValue))}
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
-						fieldId={&#39;uniforms-0000-000o&#39;}
+						fieldId={&#39;uniforms-0000-000r&#39;}
 						label={&#39;Rating&#39;}
 						isRequired={true}&gt;
 						&lt;div&gt;
 							&lt;Radio
 								key={&#39;1&#39;}
-								id={&#39;uniforms-0000-000o-1&#39;}
+								id={&#39;uniforms-0000-000r-1&#39;}
 								name={&#39;interview.rating&#39;}
 								isChecked={&#39;1&#39; === interview__rating}
 								isDisabled={false}
@@ -540,7 +586,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							/&gt;
 							&lt;Radio
 								key={&#39;2&#39;}
-								id={&#39;uniforms-0000-000o-2&#39;}
+								id={&#39;uniforms-0000-000r-2&#39;}
 								name={&#39;interview.rating&#39;}
 								isChecked={&#39;2&#39; === interview__rating}
 								isDisabled={false}
@@ -550,7 +596,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							/&gt;
 							&lt;Radio
 								key={&#39;3&#39;}
-								id={&#39;uniforms-0000-000o-3&#39;}
+								id={&#39;uniforms-0000-000r-3&#39;}
 								name={&#39;interview.rating&#39;}
 								isChecked={&#39;3&#39; === interview__rating}
 								isDisabled={false}
@@ -560,7 +606,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							/&gt;
 							&lt;Radio
 								key={&#39;4&#39;}
-								id={&#39;uniforms-0000-000o-4&#39;}
+								id={&#39;uniforms-0000-000r-4&#39;}
 								name={&#39;interview.rating&#39;}
 								isChecked={&#39;4&#39; === interview__rating}
 								isDisabled={false}
@@ -570,7 +616,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							/&gt;
 							&lt;Radio
 								key={&#39;5&#39;}
-								id={&#39;uniforms-0000-000o-5&#39;}
+								id={&#39;uniforms-0000-000r-5&#39;}
 								name={&#39;interview.rating&#39;}
 								isChecked={&#39;5&#39; === interview__rating}
 								isDisabled={false}
@@ -580,51 +626,51 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							/&gt;
 						&lt;/div&gt;
 					&lt;/FormGroup&gt;
-					&lt;FormGroup fieldId=&#39;uniforms-0000-000q&#39;&gt;
+					&lt;FormGroup fieldId=&#39;uniforms-0000-000t&#39;&gt;
 						&lt;Checkbox
 							isChecked={interview__hire}
 							isDisabled={false}
-							id={&#39;uniforms-0000-000q&#39;}
+							id={&#39;uniforms-0000-000t&#39;}
 							name={&#39;interview.hire&#39;}
 							label={&#39;Hire&#39;}
 							onChange={set__interview__hire}
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
-						fieldId={&#39;uniforms-0000-000s&#39;}
-						label={&#39;Hiding date&#39;}
+						fieldId={&#39;uniforms-0000-000v&#39;}
+						label={&#39;Hiring date&#39;}
 						isRequired={true}&gt;
-						&lt;Flex direction={{ default: &#39;column&#39; }} id={&#39;uniforms-0000-000s&#39;}&gt;
+						&lt;Flex direction={{ default: &#39;column&#39; }} id={&#39;uniforms-0000-000v&#39;}&gt;
 							&lt;FlexItem&gt;
 								&lt;InputGroup style={{ background: &#39;transparent&#39; }}&gt;
 									&lt;DatePicker
-										id={&#39;date-picker-uniforms-0000-000s&#39;}
+										id={&#39;date-picker-uniforms-0000-000v&#39;}
 										isDisabled={false}
-										name={&#39;interview.hidingDate&#39;}
+										name={&#39;interview.hiringDate&#39;}
 										onChange={(newDate) =&gt;
 											onDateChange(
 												newDate,
-												set__interview__hidingDate,
-												interview__hidingDate
+												set__interview__hiringDate,
+												interview__hiringDate
 											)
 										}
-										value={parseDate(interview__hidingDate)}
+										value={parseDate(interview__hiringDate)}
 									/&gt;
 									&lt;TimePicker
-										id={&#39;time-picker-uniforms-0000-000s&#39;}
+										id={&#39;time-picker-uniforms-0000-000v&#39;}
 										isDisabled={false}
-										name={&#39;interview.hidingDate&#39;}
+										name={&#39;interview.hiringDate&#39;}
 										onChange={(time, hours?, minutes?) =&gt;
 											onTimeChange(
 												time,
-												set__interview__hidingDate,
-												interview__hidingDate,
+												set__interview__hiringDate,
+												interview__hiringDate,
 												hours,
 												minutes
 											)
 										}
 										style={{ width: &#39;120px&#39; }}
-										defaultTime={parseTime(interview__hidingDate)}
+										time={parseTime(interview__hiringDate)}
 									/&gt;
 								&lt;/InputGroup&gt;
 							&lt;/FlexItem&gt;
@@ -633,7 +679,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 				&lt;/CardBody&gt;
 			&lt;/Card&gt;
 			&lt;FormGroup
-				fieldId={&#39;uniforms-0000-000u&#39;}
+				fieldId={&#39;uniforms-0000-000x&#39;}
 				label={&#39;Friends&#39;}
 				isRequired={true}&gt;
 				&lt;Alert variant=&#39;warning&#39; title=&#39;Unsupported field type: Array&#39;&gt;

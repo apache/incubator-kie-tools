@@ -45,7 +45,13 @@ export class InputsContainer extends AbstractFormElement {
 
 export interface InputReference {
   binding: string;
+  dataType: DataType;
 
   stateName: string;
   stateSetter: string;
+}
+
+export interface DataType {
+  name: string;
+  defaultValue?: string;
 }

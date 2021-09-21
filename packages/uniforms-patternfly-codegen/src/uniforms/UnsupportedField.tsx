@@ -19,6 +19,7 @@ import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { connectField, HTMLFieldProps } from "uniforms/es5";
 import { useAddFormElementToContext } from "./CodeGenContext";
+import { ANY_ARRAY, OBJECT } from "./utils/dataTypes";
 
 export type UnsupportedFieldProps = HTMLFieldProps<
   any,
@@ -30,7 +31,8 @@ export type UnsupportedFieldProps = HTMLFieldProps<
 >;
 
 const Unsupported: React.FC<UnsupportedFieldProps> = (props: UnsupportedFieldProps) => {
-  const ref: InputReference = getInputReference(props.name);
+  const isArray: boolean = props.fieldType === Array;
+  const ref: InputReference = getInputReference(props.name, isArray ? ANY_ARRAY : OBJECT);
 
   const jsxCode = `<Alert variant='warning' title='Unsupported field type: ${props.fieldType.name}'> 
         Cannot find form control for property <code>${props.name}</code> with type <code>${props.fieldType.name}</code>:<br/> 
@@ -38,14 +40,10 @@ const Unsupported: React.FC<UnsupportedFieldProps> = (props: UnsupportedFieldPro
         own component into the form and use the already existing states <code>const [ ${ref.stateName}, ${ref.stateSetter} ]</code>.
     </Alert>`;
 
-  const [dataType, defaultValue] = props.fieldType === Array ? ["any[]", "[]"] : ["any", ""];
-
   const element: FormInput = buildDefaultInputElement({
     pfImports: ["Alert"],
     inputJsxCode: jsxCode,
     ref,
-    dataType,
-    defaultValue,
     wrapper: {
       id: props.id,
       label: props.label,
