@@ -42,8 +42,9 @@ import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxConte
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { extractFileExtension, removeDirectories, removeFileExtension } from "../common/utils";
 import { useSettings } from "../settings/SettingsContext";
-import { File, newFile } from "@kie-tooling-core/editor/dist/channel";
+import { File } from "@kie-tooling-core/editor/dist/channel";
 import { QueryParams } from "../common/Routes";
+import { EditorFetchFileErrorEmptyState, FetchFileError, FetchFileErrorReason } from "./EditorFetchFileErrorEmptyState";
 
 const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tooling-core/monaco-editor");
 
@@ -70,7 +71,6 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
   const globals = useGlobals();
   const settings = useSettings();
   const { editor, editorRef } = useEditorRef();
-  const [currentFile, setCurrentFile] = useState(() => newFile(props.forExtension, "local"));
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
@@ -82,6 +82,7 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
   const textEditorContainerRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
   const queryParams = useQueryParams();
+  const [fetchFileError, setFetchFileError] = useState<FetchFileError | undefined>(undefined);
 
   const queryParamFile = useMemo(() => queryParams.get(QueryParams.FILE), [queryParams]);
   const queryParamReadonly = useMemo(
@@ -89,8 +90,19 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
     [queryParams]
   );
 
+  const [currentFile, setCurrentFile] = useState<File>(() => ({
+    fileName: "new-file",
+    fileExtension: props.forExtension,
+    getFileContents: () => Promise.resolve(""),
+    isReadOnly: false,
+    kind: "local",
+  }));
+
   useEffect(() => {
     let canceled = false;
+
+    setFetchFileError(undefined);
+
     if (globals.externalFile) {
       setCurrentFile({ ...globals.externalFile, kind: "external" });
       return;
@@ -102,7 +114,12 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
     }
 
     if (!queryParamFile) {
-      setCurrentFile(newFile(props.forExtension, "local"));
+      return;
+    }
+
+    const filePathExtension = extractFileExtension(queryParamFile);
+    if (filePathExtension && filePathExtension !== props.forExtension) {
+      setFetchFileError({ reason: FetchFileErrorReason.DIFFERENT_EXTENSION, filePath: queryParamFile });
       return;
     }
 
@@ -110,7 +127,10 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
       settings.github.service
         .fetchGistFile(settings.github.octokit, queryParamFile)
         .then((content) => {
-          if (canceled) return;
+          if (canceled) {
+            return;
+          }
+
           setCurrentFile(
             getFileToOpen({
               filePath: queryParamFile,
@@ -120,10 +140,9 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
             })
           );
         })
-        .catch((error) => {
-          //FIXME: tiago
-          console.info("error");
-        });
+        .catch((error) =>
+          setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamFile })
+        );
       return;
     }
 
@@ -131,7 +150,10 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
       settings.github.service
         .fetchGithubFile(settings.github.octokit, queryParamFile)
         .then((response) => {
-          if (canceled) return;
+          if (canceled) {
+            return;
+          }
+
           setCurrentFile(
             getFileToOpen({
               filePath: queryParamFile,
@@ -142,32 +164,37 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
           );
         })
         .catch((error) => {
-          //FIXME: tiago
-          console.info("error");
+          setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamFile });
         });
       return;
     }
 
     fetch(queryParamFile)
       .then((response) => {
-        if (canceled) return;
-        if (response.ok) {
-          setCurrentFile(
-            getFileToOpen({
-              filePath: queryParamFile,
-              readonly: queryParamReadonly,
-              getFileContent: response.text(),
-              kind: "external",
-            })
-          );
-        } else {
-          //FIXME: tiago
-          console.info("error");
+        if (canceled) {
+          return;
         }
+
+        if (!response.ok) {
+          setFetchFileError({
+            details: `${response.status} - ${response.statusText}`,
+            reason: FetchFileErrorReason.CANT_FETCH,
+            filePath: queryParamFile,
+          });
+          return;
+        }
+
+        setCurrentFile(
+          getFileToOpen({
+            filePath: queryParamFile,
+            readonly: queryParamReadonly,
+            getFileContent: response.text(),
+            kind: "external",
+          })
+        );
       })
       .catch((error) => {
-        //FIXME: tiago
-        console.info("error");
+        setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamFile });
       });
 
     return () => {
@@ -177,13 +204,16 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
     props.forExtension,
     globals.externalFile,
     globals.uploadedFile,
+    queryParams,
     queryParamFile,
     queryParamReadonly,
     settings.github.octokit,
     settings.github.service,
+    globals.routes.editor,
+    history,
   ]);
 
-  const close = useCallback(() => {
+  const onClose = useCallback(() => {
     if (!isDirty) {
       history.push({
         pathname: globals.routes.home.path({}),
@@ -470,189 +500,204 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
   }, [editor, i18n]);
 
   return (
-    <NotificationsPanelContextProvider ref={notificationsPanelRef}>
-      <DmnRunnerContextProvider currentFile={currentFile} editor={editor}>
-        <DmnDevSandboxContextProvider currentFile={currentFile} editor={editor}>
-          <Page
-            header={
-              <EditorToolbar
-                currentFile={currentFile}
-                onRename={(newName) => setCurrentFile((prev) => ({ ...prev, fileName: newName }))}
-                onFullScreen={enterFullscreen}
-                onSave={requestSave}
-                onDownload={requestDownload}
-                onClose={close}
-                onCopyContentToClipboard={requestCopyContentToClipboard}
-                isPageFullscreen={fullscreen}
-                onPreview={requestPreview}
-                onGistIt={requestGistIt}
-                onEmbed={requestEmbed}
-                isEdited={isDirty}
-              />
-            }
-          >
-            <PageSection isFilled={true} padding={{ default: "noPadding" }} className={"kogito--editor__page-section"}>
-              <DmnRunnerContext.Consumer>
-                {(dmnRunner) => (
-                  <Drawer isInline={true} isExpanded={dmnRunner.isDrawerExpanded}>
-                    <DrawerContent
-                      className={
-                        !dmnRunner.isDrawerExpanded
-                          ? "kogito--editor__drawer-content-close"
-                          : "kogito--editor__drawer-content-open"
-                      }
-                      panelContent={<DmnRunnerDrawer editor={editor} />}
-                    >
-                      <DrawerContentBody className={"kogito--editor__drawer-content-body"}>
-                        {!fullscreen && openAlert === AlertTypes.SET_CONTENT_ERROR && (
-                          <div className={"kogito--alert-container"}>
-                            <Alert
-                              ouiaId="invalid-content-alert"
-                              variant="danger"
-                              title={i18n.editorPage.alerts.setContentError.title}
-                              actionLinks={
-                                <AlertActionLink data-testid="unsaved-alert-save-button" onClick={openFileAsText}>
-                                  {i18n.editorPage.alerts.setContentError.action}
-                                </AlertActionLink>
-                              }
-                            />
-                          </div>
-                        )}
-                        {!fullscreen && openAlert === AlertTypes.COPY && (
-                          <div className={"kogito--alert-container"}>
-                            <Alert
-                              className={"kogito--alert"}
-                              variant="success"
-                              title={i18n.editorPage.alerts.copy}
-                              actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-                            />
-                          </div>
-                        )}
-                        {!fullscreen && openAlert === AlertTypes.SUCCESS_UPDATE_GIST && (
-                          <div className={"kogito--alert-container"}>
-                            <Alert
-                              className={"kogito--alert"}
-                              variant="success"
-                              title={i18n.editorPage.alerts.updateGist}
-                              actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-                            />
-                          </div>
-                        )}
-                        {!fullscreen && openAlert === AlertTypes.SUCCESS_CREATE_GIST && (
-                          <div className={"kogito--alert-container"}>
-                            <Alert
-                              className={"kogito--alert"}
-                              variant="success"
-                              title={i18n.editorPage.alerts.createGist}
-                              actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-                            />
-                          </div>
-                        )}
-                        {!fullscreen && openAlert === AlertTypes.INVALID_CURRENT_GIST && (
-                          <div className={"kogito--alert-container"}>
-                            <Alert
-                              className={"kogito--alert"}
-                              variant="danger"
-                              title={i18n.editorPage.alerts.invalidCurrentGist}
-                              actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-                            />
-                          </div>
-                        )}
-                        {!fullscreen && openAlert === AlertTypes.INVALID_GIST_FILENAME && (
-                          <div className={"kogito--alert-container"}>
-                            <Alert
-                              className={"kogito--alert"}
-                              variant="danger"
-                              title={i18n.editorPage.alerts.invalidGistFilename}
-                              actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-                            />
-                          </div>
-                        )}
-                        {!fullscreen && openAlert === AlertTypes.ERROR && (
-                          <div className={"kogito--alert-container"}>
-                            <Alert
-                              className={"kogito--alert"}
-                              variant="danger"
-                              title={i18n.editorPage.alerts.error}
-                              actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-                            />
-                          </div>
-                        )}
-                        {!fullscreen && openAlert === AlertTypes.UNSAVED && (
-                          <div className={"kogito--alert-container-unsaved"} data-testid="unsaved-alert">
-                            <Alert
-                              className={"kogito--alert"}
-                              variant="warning"
-                              title={i18n.editorPage.alerts.unsaved.title}
-                              actionClose={
-                                <AlertActionCloseButton data-testid="unsaved-alert-close-button" onClose={closeAlert} />
-                              }
-                              actionLinks={
-                                <React.Fragment>
-                                  <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestDownload}>
-                                    {i18n.terms.save}
-                                  </AlertActionLink>
-                                  <AlertActionLink
-                                    data-testid="unsaved-alert-close-without-save-button"
-                                    onClick={closeWithoutSaving}
-                                  >
-                                    {i18n.editorPage.alerts.unsaved.closeWithoutSaving}
-                                  </AlertActionLink>
-                                </React.Fragment>
-                              }
-                            >
-                              <p>{i18n.editorPage.alerts.unsaved.message}</p>
-                            </Alert>
-                          </div>
-                        )}
-                        {!fullscreen && (
-                          <EmbedModal
-                            currentFile={currentFile}
-                            isOpen={openModalType === ModalType.EMBED}
-                            onClose={closeModal}
-                            editor={editor}
-                          />
-                        )}
-                        {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
-                        <EmbeddedEditor
-                          ref={editorRef}
-                          file={currentFile}
-                          kogitoEditor_setContentError={onSetContentError}
-                          editorEnvelopeLocator={globals.editorEnvelopeLocator}
-                          channelType={ChannelType.ONLINE}
-                          locale={locale}
-                        />
-                        <Modal
-                          showClose={false}
-                          width={"100%"}
-                          height={"100%"}
-                          title={i18n.editorPage.textEditorModal.title(currentFile.fileName.split("/").pop()!)}
-                          isOpen={openModalType === ModalType.TEXT_EDITOR}
-                          actions={[
-                            <Button key="confirm" variant="primary" onClick={refreshDiagramEditor}>
-                              {i18n.terms.done}
-                            </Button>,
-                          ]}
+    <>
+      {fetchFileError && <EditorFetchFileErrorEmptyState fetchFileError={fetchFileError} currentFile={currentFile} />}
+      {!fetchFileError && (
+        <NotificationsPanelContextProvider ref={notificationsPanelRef}>
+          <DmnRunnerContextProvider currentFile={currentFile} editor={editor}>
+            <DmnDevSandboxContextProvider currentFile={currentFile} editor={editor}>
+              <Page
+                header={
+                  <EditorToolbar
+                    currentFile={currentFile}
+                    onRename={(newName) => setCurrentFile((prev) => ({ ...prev, fileName: newName }))}
+                    onFullScreen={enterFullscreen}
+                    onSave={requestSave}
+                    onDownload={requestDownload}
+                    onClose={onClose}
+                    onCopyContentToClipboard={requestCopyContentToClipboard}
+                    isPageFullscreen={fullscreen}
+                    onPreview={requestPreview}
+                    onGistIt={requestGistIt}
+                    onEmbed={requestEmbed}
+                    isEdited={isDirty}
+                  />
+                }
+              >
+                <PageSection
+                  isFilled={true}
+                  padding={{ default: "noPadding" }}
+                  className={"kogito--editor__page-section"}
+                >
+                  <DmnRunnerContext.Consumer>
+                    {(dmnRunner) => (
+                      <Drawer isInline={true} isExpanded={dmnRunner.isDrawerExpanded}>
+                        <DrawerContent
+                          className={
+                            !dmnRunner.isDrawerExpanded
+                              ? "kogito--editor__drawer-content-onClose"
+                              : "kogito--editor__drawer-content-open"
+                          }
+                          panelContent={<DmnRunnerDrawer editor={editor} />}
                         >
-                          <div
-                            style={{ width: "100%", minHeight: "calc(100vh - 210px)" }}
-                            ref={textEditorContainerRef}
-                          />
-                        </Modal>
-                        <NotificationsPanel tabNames={notificationPanelTabNames(dmnRunner.status)} />
-                      </DrawerContentBody>
-                    </DrawerContent>
-                  </Drawer>
-                )}
-              </DmnRunnerContext.Consumer>
-            </PageSection>
-            <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
-            <a ref={downloadRef} />
-            <a ref={downloadPreviewRef} />
-          </Page>
-        </DmnDevSandboxContextProvider>
-      </DmnRunnerContextProvider>
-    </NotificationsPanelContextProvider>
+                          <DrawerContentBody className={"kogito--editor__drawer-content-body"}>
+                            {!fullscreen && openAlert === AlertTypes.SET_CONTENT_ERROR && (
+                              <div className={"kogito--alert-container"}>
+                                <Alert
+                                  ouiaId="invalid-content-alert"
+                                  variant="danger"
+                                  title={i18n.editorPage.alerts.setContentError.title}
+                                  actionLinks={
+                                    <AlertActionLink data-testid="unsaved-alert-save-button" onClick={openFileAsText}>
+                                      {i18n.editorPage.alerts.setContentError.action}
+                                    </AlertActionLink>
+                                  }
+                                />
+                              </div>
+                            )}
+                            {!fullscreen && openAlert === AlertTypes.COPY && (
+                              <div className={"kogito--alert-container"}>
+                                <Alert
+                                  className={"kogito--alert"}
+                                  variant="success"
+                                  title={i18n.editorPage.alerts.copy}
+                                  actionClose={<AlertActionCloseButton onClose={closeAlert} />}
+                                />
+                              </div>
+                            )}
+                            {!fullscreen && openAlert === AlertTypes.SUCCESS_UPDATE_GIST && (
+                              <div className={"kogito--alert-container"}>
+                                <Alert
+                                  className={"kogito--alert"}
+                                  variant="success"
+                                  title={i18n.editorPage.alerts.updateGist}
+                                  actionClose={<AlertActionCloseButton onClose={closeAlert} />}
+                                />
+                              </div>
+                            )}
+                            {!fullscreen && openAlert === AlertTypes.SUCCESS_CREATE_GIST && (
+                              <div className={"kogito--alert-container"}>
+                                <Alert
+                                  className={"kogito--alert"}
+                                  variant="success"
+                                  title={i18n.editorPage.alerts.createGist}
+                                  actionClose={<AlertActionCloseButton onClose={closeAlert} />}
+                                />
+                              </div>
+                            )}
+                            {!fullscreen && openAlert === AlertTypes.INVALID_CURRENT_GIST && (
+                              <div className={"kogito--alert-container"}>
+                                <Alert
+                                  className={"kogito--alert"}
+                                  variant="danger"
+                                  title={i18n.editorPage.alerts.invalidCurrentGist}
+                                  actionClose={<AlertActionCloseButton onClose={closeAlert} />}
+                                />
+                              </div>
+                            )}
+                            {!fullscreen && openAlert === AlertTypes.INVALID_GIST_FILENAME && (
+                              <div className={"kogito--alert-container"}>
+                                <Alert
+                                  className={"kogito--alert"}
+                                  variant="danger"
+                                  title={i18n.editorPage.alerts.invalidGistFilename}
+                                  actionClose={<AlertActionCloseButton onClose={closeAlert} />}
+                                />
+                              </div>
+                            )}
+                            {!fullscreen && openAlert === AlertTypes.ERROR && (
+                              <div className={"kogito--alert-container"}>
+                                <Alert
+                                  className={"kogito--alert"}
+                                  variant="danger"
+                                  title={i18n.editorPage.alerts.error}
+                                  actionClose={<AlertActionCloseButton onClose={closeAlert} />}
+                                />
+                              </div>
+                            )}
+                            {!fullscreen && openAlert === AlertTypes.UNSAVED && (
+                              <div className={"kogito--alert-container-unsaved"} data-testid="unsaved-alert">
+                                <Alert
+                                  className={"kogito--alert"}
+                                  variant="warning"
+                                  title={i18n.editorPage.alerts.unsaved.title}
+                                  actionClose={
+                                    <AlertActionCloseButton
+                                      data-testid="unsaved-alert-close-button"
+                                      onClose={closeAlert}
+                                    />
+                                  }
+                                  actionLinks={
+                                    <React.Fragment>
+                                      <AlertActionLink
+                                        data-testid="unsaved-alert-save-button"
+                                        onClick={requestDownload}
+                                      >
+                                        {i18n.terms.save}
+                                      </AlertActionLink>
+                                      <AlertActionLink
+                                        data-testid="unsaved-alert-close-without-save-button"
+                                        onClick={closeWithoutSaving}
+                                      >
+                                        {i18n.editorPage.alerts.unsaved.closeWithoutSaving}
+                                      </AlertActionLink>
+                                    </React.Fragment>
+                                  }
+                                >
+                                  <p>{i18n.editorPage.alerts.unsaved.message}</p>
+                                </Alert>
+                              </div>
+                            )}
+                            {!fullscreen && (
+                              <EmbedModal
+                                currentFile={currentFile}
+                                isOpen={openModalType === ModalType.EMBED}
+                                onClose={closeModal}
+                                editor={editor}
+                              />
+                            )}
+                            {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
+                            <EmbeddedEditor
+                              ref={editorRef}
+                              file={currentFile}
+                              kogitoEditor_setContentError={onSetContentError}
+                              editorEnvelopeLocator={globals.editorEnvelopeLocator}
+                              channelType={ChannelType.ONLINE}
+                              locale={locale}
+                            />
+                            <Modal
+                              showClose={false}
+                              width={"100%"}
+                              height={"100%"}
+                              title={i18n.editorPage.textEditorModal.title(currentFile.fileName.split("/").pop()!)}
+                              isOpen={openModalType === ModalType.TEXT_EDITOR}
+                              actions={[
+                                <Button key="confirm" variant="primary" onClick={refreshDiagramEditor}>
+                                  {i18n.terms.done}
+                                </Button>,
+                              ]}
+                            >
+                              <div
+                                style={{ width: "100%", minHeight: "calc(100vh - 210px)" }}
+                                ref={textEditorContainerRef}
+                              />
+                            </Modal>
+                            <NotificationsPanel tabNames={notificationPanelTabNames(dmnRunner.status)} />
+                          </DrawerContentBody>
+                        </DrawerContent>
+                      </Drawer>
+                    )}
+                  </DmnRunnerContext.Consumer>
+                </PageSection>
+                <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
+                <a ref={downloadRef} />
+                <a ref={downloadPreviewRef} />
+              </Page>
+            </DmnDevSandboxContextProvider>
+          </DmnRunnerContextProvider>
+        </NotificationsPanelContextProvider>
+      )}
+    </>
   );
 }
 

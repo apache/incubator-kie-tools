@@ -360,7 +360,7 @@ export function EditorToolbar(props: Props) {
                     </DropdownGroup>,
                     (props.currentFile.fileExtension === "dmn" && (
                       <KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />
-                    )) || <></>,
+                    )) || <React.Fragment key="kie-tooling-extended-services-group" />,
                   ]}
                   position={DropdownPosition.right}
                 />
