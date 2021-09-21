@@ -48,7 +48,7 @@ func DeployKeycloakInstance(namespace string) error {
 		return fmt.Errorf("Error while creating Keycloak: %v ", err)
 	}
 
-	return WaitForPodsWithLabel(namespace, framework1.LabelAppKey, keycloakKey, 2, 5)
+	return WaitForPodsWithLabel(namespace, framework1.LabelAppKey, keycloakKey, 2, 10)
 }
 
 // DeployKeycloakRealm deploys a realm configuration of Keycloak
