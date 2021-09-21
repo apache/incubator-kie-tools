@@ -35,9 +35,7 @@ import { DmnRunnerStatus } from "./DmnRunner/DmnRunnerStatus";
 import { NotificationsPanelContextProvider } from "./NotificationsPanel/NotificationsPanelContextProvider";
 import { NotificationsPanelContextType } from "./NotificationsPanel/NotificationsPanelContext";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxContextProvider";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { extractFileExtension, removeDirectories, removeFileExtension } from "../common/utils";
@@ -45,8 +43,7 @@ import { useSettings } from "../settings/SettingsContext";
 import { File } from "@kie-tooling-core/editor/dist/channel";
 import { QueryParams } from "../common/Routes";
 import { EditorFetchFileErrorEmptyState, FetchFileError, FetchFileErrorReason } from "./EditorFetchFileErrorEmptyState";
-
-const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tooling-core/monaco-editor");
+import { MonacoEditorModal } from "./Monaco/MonacoEditorModal";
 
 export enum AlertTypes {
   NONE,
@@ -64,7 +61,6 @@ export enum ModalType {
   NONE,
   TEXT_EDITOR,
   EMBED,
-  DMN_RUNNER_HELPER,
 }
 
 export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
@@ -79,7 +75,6 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
   const [openModalType, setOpenModalType] = useState(ModalType.NONE);
   const isDirty = useDirtyState(editor);
   const { locale, i18n } = useOnlineI18n();
-  const textEditorContainerRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
   const queryParams = useQueryParams();
   const [fetchFileError, setFetchFileError] = useState<FetchFileError | undefined>(undefined);
@@ -409,56 +404,6 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
     setOpenAlert(AlertTypes.NONE);
   }, []);
 
-  const [textEditorContent, setTextEditorContext] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    currentFile.getFileContents().then((content) => {
-      setTextEditorContext(content);
-    });
-  }, [currentFile]);
-
-  useEffect(() => {
-    if (openModalType !== ModalType.TEXT_EDITOR) {
-      return;
-    }
-
-    let monacoInstance: any;
-
-    importMonacoEditor().then((monaco) => {
-      monacoInstance = monaco.editor.create(textEditorContainerRef.current!, {
-        value: textEditorContent!,
-        language: "xml", //FIXME: Not all editors will be XML when converted to text
-        scrollBeyondLastLine: false,
-      });
-    });
-
-    return () => {
-      if (!monacoInstance) {
-        return;
-      }
-
-      const contentAfterFix = monacoInstance.getValue();
-      monacoInstance.dispose();
-
-      editor
-        ?.setContent(currentFile.fileName, contentAfterFix)
-        .then(() => {
-          editor?.getStateControl().updateCommandStack({
-            id: "fix-from-text-editor",
-            undo: () => {
-              editor?.setContent(currentFile.fileName, textEditorContent!);
-            },
-            redo: () => {
-              editor?.setContent(currentFile.fileName, contentAfterFix).then(() => setOpenAlert(AlertTypes.NONE));
-            },
-          });
-        })
-        .catch(() => {
-          setTextEditorContext(contentAfterFix);
-        });
-    };
-  }, [openModalType, editor, currentFile, textEditorContent]);
-
   const notificationsPanelRef = useRef<NotificationsPanelContextType>(null);
 
   const notificationPanelTabNames = useCallback(
@@ -648,14 +593,6 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
                                 </Alert>
                               </div>
                             )}
-                            {!fullscreen && (
-                              <EmbedModal
-                                currentFile={currentFile}
-                                isOpen={openModalType === ModalType.EMBED}
-                                onClose={closeModal}
-                                editor={editor}
-                              />
-                            )}
                             {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
                             <EmbeddedEditor
                               ref={editorRef}
@@ -665,23 +602,6 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
                               channelType={ChannelType.ONLINE}
                               locale={locale}
                             />
-                            <Modal
-                              showClose={false}
-                              width={"100%"}
-                              height={"100%"}
-                              title={i18n.editorPage.textEditorModal.title(currentFile.fileName.split("/").pop()!)}
-                              isOpen={openModalType === ModalType.TEXT_EDITOR}
-                              actions={[
-                                <Button key="confirm" variant="primary" onClick={refreshDiagramEditor}>
-                                  {i18n.terms.done}
-                                </Button>,
-                              ]}
-                            >
-                              <div
-                                style={{ width: "100%", minHeight: "calc(100vh - 210px)" }}
-                                ref={textEditorContainerRef}
-                              />
-                            </Modal>
                             <NotificationsPanel tabNames={notificationPanelTabNames(dmnRunner.status)} />
                           </DrawerContentBody>
                         </DrawerContent>
@@ -693,6 +613,21 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
                 <a ref={downloadRef} />
                 <a ref={downloadPreviewRef} />
               </Page>
+              {!fullscreen && (
+                <EmbedModal
+                  currentFile={currentFile}
+                  isOpen={openModalType === ModalType.EMBED}
+                  onClose={closeModal}
+                  editor={editor}
+                />
+              )}
+              <MonacoEditorModal
+                setOpenAlert={setOpenAlert}
+                editor={editor}
+                currentFile={currentFile}
+                refreshDiagramEditor={refreshDiagramEditor}
+                isOpen={openModalType === ModalType.TEXT_EDITOR}
+              />
             </DmnDevSandboxContextProvider>
           </DmnRunnerContextProvider>
         </NotificationsPanelContextProvider>
