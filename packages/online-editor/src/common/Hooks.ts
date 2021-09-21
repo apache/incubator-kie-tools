@@ -20,7 +20,9 @@ export function usePrevious(value: any) {
   const ref = useRef();
 
   useEffect(() => {
-    ref.current = value;
+    if (ref.current !== value) {
+      ref.current = value;
+    }
   }, [value]);
 
   return ref.current;

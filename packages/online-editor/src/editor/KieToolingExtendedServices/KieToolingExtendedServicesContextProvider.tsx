@@ -16,38 +16,27 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useGlobals } from "../../common/GlobalContext";
 import { getCookie, setCookie } from "../../common/utils";
 import { KieToolingExtendedServicesBridge } from "./KieToolingExtendedServicesBridge";
 import { DependentFeature, KieToolingExtendedServicesContext } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
+import { KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME } from "../../settings/SettingsContext";
+import { KieToolingExtendedServicesModal } from "./KieToolingExtendedServicesModal";
 
 interface Props {
   children: React.ReactNode;
 }
 
 const KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME = 1000;
-const KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tooling-extended-services-port";
+
 export const KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT = "21345";
 
 export function KieToolingExtendedServicesContextProvider(props: Props) {
-  const globals = useGlobals();
-
-  const [status, setStatus] = useState(KieToolingExtendedServicesStatus.UNAVAILABLE);
+  const [status, setStatus] = useState(KieToolingExtendedServicesStatus.AVAILABLE);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [installTriggeredBy, setInstallTriggeredBy] = useState(DependentFeature.DMN_RUNNER);
+  const [installTriggeredBy, setInstallTriggeredBy] = useState<DependentFeature | undefined>(undefined);
   const [outdated, setOutdated] = useState(false);
-  const [port, setPort] = useState(
-    () => getCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT
-  );
-
-  useEffect(() => {
-    setStatus(
-      globals.file?.fileExtension === "dmn"
-        ? KieToolingExtendedServicesStatus.AVAILABLE
-        : KieToolingExtendedServicesStatus.UNAVAILABLE
-    );
-  }, [globals.file]);
+  const [port, setPort] = useState(KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT);
 
   const baseUrl = useMemo(() => `http://localhost:${port}`, [port]);
   const bridge = useMemo(() => new KieToolingExtendedServicesBridge(port), [port]);
@@ -62,12 +51,17 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
   }, []);
 
   useEffect(() => {
-    if (status === KieToolingExtendedServicesStatus.UNAVAILABLE) {
-      return;
-    }
+    const portCookie =
+      getCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT;
+    new KieToolingExtendedServicesBridge(portCookie).check().then((checked) => {
+      if (checked) {
+        saveNewPort(portCookie);
+      }
+    });
+  }, [saveNewPort]);
 
+  useEffect(() => {
     // Pooling to detect either if KieToolingExtendedServices is running or has stopped
-
     let detectCrashesOrStops: number | undefined;
     if (status === KieToolingExtendedServicesStatus.RUNNING) {
       detectCrashesOrStops = window.setInterval(() => {
@@ -82,19 +76,17 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
     }
 
     const detectKieToolingExtendedServices: number | undefined = window.setInterval(() => {
+      // Check the running version of the KieToolingExtendedServices, cancel polling if up-to-date.
       bridge
-        .check()
-        .then(() => {
-          // Check the running version of the KieToolingExtendedServices, cancel polling if up-to-date.
-          bridge.version().then((kieToolingExtendedServicesVersion) => {
-            if (kieToolingExtendedServicesVersion !== version) {
-              setOutdated(true);
-            } else {
-              window.clearInterval(detectKieToolingExtendedServices);
-              setOutdated(false);
-              setStatus(KieToolingExtendedServicesStatus.RUNNING);
-            }
-          });
+        .version()
+        .then((receivedVersion) => {
+          if (receivedVersion !== version) {
+            setOutdated(true);
+          } else {
+            window.clearInterval(detectKieToolingExtendedServices);
+            setOutdated(false);
+            setStatus(KieToolingExtendedServicesStatus.RUNNING);
+          }
         })
         .catch((err) => {
           console.debug(err);
@@ -121,6 +113,7 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
       }}
     >
       {props.children}
+      <KieToolingExtendedServicesModal />
     </KieToolingExtendedServicesContext.Provider>
   );
 }

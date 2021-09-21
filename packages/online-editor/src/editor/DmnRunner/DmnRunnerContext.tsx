@@ -22,7 +22,6 @@ import { DmnRunnerStatus } from "./DmnRunnerStatus";
 
 export interface DmnRunnerContextType {
   status: DmnRunnerStatus;
-  setStatus: React.Dispatch<React.SetStateAction<DmnRunnerStatus>>;
   formSchema?: DmnFormSchema;
   isDrawerExpanded: boolean;
   setDrawerExpanded: React.Dispatch<React.SetStateAction<boolean>>;
@@ -33,10 +32,7 @@ export interface DmnRunnerContextType {
   setFormError: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({
-  status: DmnRunnerStatus.UNAVAILABLE,
-  isDrawerExpanded: false,
-} as any);
+export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({} as any);
 
 export function useDmnRunner() {
   return useContext(DmnRunnerContext);

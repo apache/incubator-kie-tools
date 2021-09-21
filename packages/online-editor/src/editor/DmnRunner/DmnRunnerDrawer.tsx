@@ -129,7 +129,7 @@ export function DmnRunnerDrawer(props: Props) {
       );
       notificationsPanel.getTabRef(i18n.terms.execution)?.kogitoNotifications_setNotifications("", notifications);
     },
-    [notificationsPanel.getTabRef, i18n]
+    [notificationsPanel, i18n]
   );
 
   const updateDmnRunnerResults = useCallback(
@@ -186,17 +186,17 @@ export function DmnRunnerDrawer(props: Props) {
         });
       }, 0);
     }
-  }, [dmnRunner.formError, dmnRunner.formData, updateDmnRunnerResults]);
+  }, [dmnRunner.formError, dmnRunner.formData, updateDmnRunnerResults, previousFormError]);
 
   const openValidationTab = useCallback(() => {
     notificationsPanel.setIsOpen(true);
     notificationsPanel.setActiveTab(i18n.terms.validation);
-  }, [i18n]);
+  }, [notificationsPanel, i18n]);
 
   const openExecutionTab = useCallback(() => {
     notificationsPanel.setIsOpen(true);
     notificationsPanel.setActiveTab(i18n.terms.execution);
-  }, [notificationsPanel]);
+  }, [notificationsPanel, i18n]);
 
   const drawerErrorMessage = useMemo(
     () => (
@@ -264,7 +264,11 @@ export function DmnRunnerDrawer(props: Props) {
                     <Text component={"h2"}>{i18n.terms.inputs}</Text>
                   </TextContent>
                   {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
-                    <DrawerCloseButton onClick={(e: any) => dmnRunner.setDrawerExpanded(false)} />
+                    <DrawerCloseButton
+                      onClick={(e: any) => {
+                        dmnRunner.setDrawerExpanded(false);
+                      }}
+                    />
                   )}
                 </PageSection>
                 <div className={"kogito--editor__dmn-runner-drawer-content-body"}>

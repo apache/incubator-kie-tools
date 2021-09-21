@@ -4,11 +4,13 @@ import { GitHubSettingsTab } from "./GitHubSettingsTab";
 import { GeneralSettingsTab } from "./GeneralSettingsTab";
 import { useSettings } from "./SettingsContext";
 import { OpenShiftSettingsTab } from "./OpenShiftSettingsTab";
+import { KieToolingExtendedServicesSettingsTab } from "./KieToolingExtendedServicesSettingsTab";
 
 export enum SettingsTabs {
   GENERAL = "general",
   GITHUB = "github",
   OPENSHIFT = "openshift",
+  KIE_TOOLING_EXTENDED_SERVICES = "kie-tooling-extended-services",
 }
 
 export function SettingsModalBody() {
@@ -41,6 +43,13 @@ export function SettingsModalBody() {
         title={<TabTitleText>OpenShift</TabTitleText>}
       >
         <OpenShiftSettingsTab />
+      </Tab>
+      <Tab
+        className="kogito-tooling--settings-tab"
+        eventKey={SettingsTabs.KIE_TOOLING_EXTENDED_SERVICES}
+        title={<TabTitleText>KIE Tooling Extended Services</TabTitleText>}
+      >
+        <KieToolingExtendedServicesSettingsTab />
       </Tab>
     </Tabs>
   );

@@ -77,7 +77,7 @@ export function KieToolingExtendedServicesButtons() {
           isPlain={true}
           className={"kogito--editor__toolbar dropdown"}
           position={DropdownPosition.right}
-          dropdownItems={dmnDevSandboxDropdownItems()}
+          dropdownItems={dmnDevSandboxDropdownItems}
           style={
             kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING &&
             settings.openshift.status.get === OpenShiftInstanceStatus.CONNECTED

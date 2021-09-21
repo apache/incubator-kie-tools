@@ -59,7 +59,7 @@ export function useDmnDevSandboxDropdownItems() {
     kieToolingExtendedServices.setModalOpen(true);
   }, [dmnDevSandbox, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
 
-  return useCallback(() => {
+  return useMemo(() => {
     const items = [
       <React.Fragment key={"dmndev-sandbox-dropdown-items"}>
         {!isDmnDevSandboxConnected && isKieToolingExtendedServicesRunning && (

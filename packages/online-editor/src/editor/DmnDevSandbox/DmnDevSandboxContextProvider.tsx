@@ -29,11 +29,12 @@ import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus"
 import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandboxModalConfirmDeploy";
 import { useSettings } from "../../settings/SettingsContext";
 import { isConfigValid, OpenShiftSettingsConfig } from "../../settings/OpenShiftSettingsConfig";
+import { File } from "@kie-tooling-core/editor/dist/channel";
 
 interface Props {
+  currentFile: File;
   children: React.ReactNode;
   editor?: EmbeddedEditorRef;
-  isEditorReady: boolean;
 }
 
 enum AlertTypes {
@@ -77,7 +78,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
         return;
       }
 
-      const filename = `${globals.file.fileName}.${globals.file.fileExtension}`;
+      const filename = `${props.currentFile.fileName}.${props.currentFile.fileExtension}`;
       const editorContent = ((await props.editor?.getContent()) ?? "")
         .replace(/(\r\n|\n|\r)/gm, "") // Remove line breaks
         .replace(/"/g, '\\"'); // Escape quotes
@@ -99,7 +100,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
         setOpenAlert(AlertTypes.DEPLOY_STARTED_ERROR);
       }
     },
-    [globals.file, globals.routes, props.editor, settings.openshift.service]
+    [props.currentFile, globals.routes, props.editor, settings.openshift.service]
   );
 
   useEffect(() => {
@@ -147,7 +148,6 @@ export function DmnDevSandboxContextProvider(props: Props) {
     settings.openshift.config,
     settings.openshift.status,
     settings.openshift.service,
-    kieToolingExtendedServices.isModalOpen,
     kieToolingExtendedServices.status,
     deployments.length,
   ]);
@@ -186,7 +186,6 @@ export function DmnDevSandboxContextProvider(props: Props) {
       )}
       {props.children}
       <DmnDevSandboxModalConfirmDeploy />
-      <KieToolingExtendedServicesModal />
     </DmnDevSandboxContext.Provider>
   );
 }

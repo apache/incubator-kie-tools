@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { newFile } from "@kie-tooling-core/editor/dist/channel";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Card, CardBody, CardFooter, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
@@ -71,6 +70,10 @@ export function HomePage() {
   const history = useHistory();
   const { i18n } = useOnlineI18n();
 
+  useEffect(() => {
+    globals.setUploadedFile(undefined);
+  }, []);
+
   const [uploadedFileName, setUploadedFileName] = useState("");
   const [isUploadRejected, setIsUploadRejected] = useState(false);
 
@@ -120,27 +123,23 @@ export function HomePage() {
 
   const onDropRejected = useCallback(() => setIsUploadRejected(true), []);
 
-  const createEmptyFile = useCallback(
-    (fileExtension: string) => {
-      globals.setFile(newFile(fileExtension, "local"));
-      history.push({
-        pathname: globals.routes.editor.path({ extension: fileExtension }),
-      });
-    },
-    [globals, history]
-  );
-
   const createEmptyBpmnFile = useCallback(() => {
-    createEmptyFile("bpmn");
-  }, [createEmptyFile]);
+    history.push({
+      pathname: globals.routes.editor.path({ extension: "bpmn" }),
+    });
+  }, [history, globals.routes]);
 
   const createEmptyDmnFile = useCallback(() => {
-    createEmptyFile("dmn");
-  }, [createEmptyFile]);
+    history.push({
+      pathname: globals.routes.editor.path({ extension: "dmn" }),
+    });
+  }, [history, globals.routes]);
 
   const createEmptyPmmlFile = useCallback(() => {
-    createEmptyFile("pmml");
-  }, [createEmptyFile]);
+    history.push({
+      pathname: globals.routes.editor.path({ extension: "pmml" }),
+    });
+  }, [history, globals.routes]);
 
   const trySample = useCallback(
     (fileExtension: string) => {
@@ -165,121 +164,124 @@ export function HomePage() {
     trySample("pmml");
   }, [trySample]);
 
-  const validateUrl = useCallback(async () => {
-    if (inputFileUrl.trim() === "") {
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.INITIAL,
-        urlToOpen: undefined,
-      });
-      return;
-    }
+  const validateUrl = useCallback(
+    async (fileUrl: string) => {
+      if (fileUrl.trim() === "") {
+        setInputFileUrlState({
+          urlValidation: InputFileUrlState.INITIAL,
+          urlToOpen: undefined,
+        });
+        return;
+      }
 
-    let url: URL;
-    try {
-      url = new URL(inputFileUrl);
-    } catch (e) {
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.INVALID_URL,
-        urlToOpen: undefined,
-      });
-      return;
-    }
+      let url: URL;
+      try {
+        url = new URL(fileUrl);
+      } catch (e) {
+        setInputFileUrlState({
+          urlValidation: InputFileUrlState.INVALID_URL,
+          urlToOpen: undefined,
+        });
+        return;
+      }
 
-    if (settings.github.service.isGist(inputFileUrl)) {
+      if (settings.github.service.isGist(fileUrl)) {
+        setInputFileUrlState({
+          urlValidation: InputFileUrlState.VALIDATING,
+          urlToOpen: undefined,
+        });
+
+        const gistId = settings.github.service.isGistDefault(fileUrl)
+          ? settings.github.service.extractGistId(fileUrl)
+          : settings.github.service.extractGistIdFromRawUrl(fileUrl);
+
+        const gistFileName = settings.github.service.isGistDefault(fileUrl)
+          ? settings.github.service.extractGistFilename(fileUrl)
+          : settings.github.service.extractGistFilenameFromRawUrl(fileUrl);
+
+        let rawUrl: string;
+        try {
+          rawUrl = await settings.github.service.getGistRawUrlFromId(settings.github.octokit, gistId, gistFileName);
+        } catch (e) {
+          setInputFileUrlState({
+            urlValidation: InputFileUrlState.INVALID_GIST,
+            urlToOpen: undefined,
+          });
+          return;
+        }
+
+        const gistExtension = extractFileExtension(new URL(rawUrl).pathname);
+        if (gistExtension && globals.editorEnvelopeLocator.mapping.has(gistExtension)) {
+          setInputFileUrlState({
+            urlValidation: InputFileUrlState.VALID,
+            urlToOpen: rawUrl,
+          });
+          return;
+        }
+
+        setInputFileUrlState({
+          urlValidation: InputFileUrlState.INVALID_GIST_EXTENSION,
+          urlToOpen: undefined,
+        });
+        return;
+      }
+
+      const fileExtension = extractFileExtension(url.pathname);
+      if (!fileExtension || !globals.editorEnvelopeLocator.mapping.has(fileExtension)) {
+        setInputFileUrlState({
+          urlValidation: InputFileUrlState.INVALID_EXTENSION,
+          urlToOpen: undefined,
+        });
+        return;
+      }
+
       setInputFileUrlState({
         urlValidation: InputFileUrlState.VALIDATING,
         urlToOpen: undefined,
       });
-
-      const gistId = settings.github.service.isGistDefault(inputFileUrl)
-        ? settings.github.service.extractGistId(inputFileUrl)
-        : settings.github.service.extractGistIdFromRawUrl(inputFileUrl);
-
-      const gistFileName = settings.github.service.isGistDefault(inputFileUrl)
-        ? settings.github.service.extractGistFilename(inputFileUrl)
-        : settings.github.service.extractGistFilenameFromRawUrl(inputFileUrl);
-
-      let rawUrl: string;
-      try {
-        rawUrl = await settings.github.service.getGistRawUrlFromId(settings.github.octokit, gistId, gistFileName);
-      } catch (e) {
-        setInputFileUrlState({
-          urlValidation: InputFileUrlState.INVALID_GIST,
-          urlToOpen: undefined,
-        });
-        return;
+      if (settings.github.service.isGithub(fileUrl)) {
+        try {
+          const rawUrl = await settings.github.service.getGithubRawUrl(settings.github.octokit, fileUrl);
+          setInputFileUrlState({
+            urlValidation: InputFileUrlState.VALID,
+            urlToOpen: rawUrl,
+          });
+          return;
+        } catch (err) {
+          setInputFileUrlState({
+            urlValidation: InputFileUrlState.NOT_FOUND_URL,
+            urlToOpen: undefined,
+          });
+          return;
+        }
       }
 
-      const gistExtension = extractFileExtension(new URL(rawUrl).pathname);
-      if (gistExtension && globals.editorEnvelopeLocator.mapping.has(gistExtension)) {
-        setInputFileUrlState({
-          urlValidation: InputFileUrlState.VALID,
-          urlToOpen: rawUrl,
-        });
-        return;
-      }
-
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.INVALID_GIST_EXTENSION,
-        urlToOpen: undefined,
-      });
-      return;
-    }
-
-    const fileExtension = extractFileExtension(url.pathname);
-    if (!fileExtension || !globals.editorEnvelopeLocator.mapping.has(fileExtension)) {
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.INVALID_EXTENSION,
-        urlToOpen: undefined,
-      });
-      return;
-    }
-
-    setInputFileUrlState({
-      urlValidation: InputFileUrlState.VALIDATING,
-      urlToOpen: undefined,
-    });
-    if (settings.github.service.isGithub(inputFileUrl)) {
       try {
-        const rawUrl = await settings.github.service.getGithubRawUrl(settings.github.octokit, inputFileUrl);
-        setInputFileUrlState({
-          urlValidation: InputFileUrlState.VALID,
-          urlToOpen: rawUrl,
-        });
-        return;
-      } catch (err) {
+        if ((await fetch(fileUrl)).ok) {
+          setInputFileUrlState({
+            urlValidation: InputFileUrlState.VALID,
+            urlToOpen: fileUrl,
+          });
+          return;
+        }
+
         setInputFileUrlState({
           urlValidation: InputFileUrlState.NOT_FOUND_URL,
           urlToOpen: undefined,
         });
-        return;
-      }
-    }
-
-    try {
-      if ((await fetch(inputFileUrl)).ok) {
+      } catch (e) {
         setInputFileUrlState({
-          urlValidation: InputFileUrlState.VALID,
-          urlToOpen: inputFileUrl,
+          urlValidation: InputFileUrlState.CORS_NOT_AVAILABLE,
+          urlToOpen: undefined,
         });
-        return;
       }
-
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.NOT_FOUND_URL,
-        urlToOpen: undefined,
-      });
-    } catch (e) {
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.CORS_NOT_AVAILABLE,
-        urlToOpen: undefined,
-      });
-    }
-  }, [settings.github.octokit, globals.editorEnvelopeLocator.mapping, settings.github.service, inputFileUrl]);
+    },
+    [settings.github.octokit, globals.editorEnvelopeLocator.mapping, settings.github.service]
+  );
 
   useEffect(() => {
-    validateUrl();
-  }, [validateUrl]);
+    validateUrl(inputFileUrl);
+  }, [validateUrl, inputFileUrl]);
 
   const inputFileFromUrlChanged = useCallback((fileUrl: string) => {
     setInputFileUrl(fileUrl);

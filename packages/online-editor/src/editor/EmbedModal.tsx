@@ -27,6 +27,7 @@ import { useSettings } from "../settings/SettingsContext";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useGlobals } from "../common/GlobalContext";
 import { QueryParams } from "../common/Routes";
+import { File } from "@kie-tooling-core/editor/dist/channel";
 
 type SupportedStandaloneEditorFileExtensions = "bpmn" | "bpmn2" | "dmn";
 type StandaloneEditorLibraryName = "BpmnEditor" | "DmnEditor";
@@ -54,6 +55,7 @@ enum ContentSource {
 }
 
 interface Props {
+  currentFile: File;
   isOpen: boolean;
   onClose: () => void;
   editor?: EmbeddedEditorRef;
@@ -125,9 +127,9 @@ export function EmbedModal(props: Props) {
 
   useEffect(() => {
     if (
-      globals.file.fileExtension !== "bpmn" &&
-      globals.file.fileExtension !== "bpmn2" &&
-      globals.file.fileExtension !== "dmn"
+      props.currentFile.fileExtension !== "bpmn" &&
+      props.currentFile.fileExtension !== "bpmn2" &&
+      props.currentFile.fileExtension !== "dmn"
     ) {
       return;
     }
@@ -135,7 +137,7 @@ export function EmbedModal(props: Props) {
     const iframe = document.createElement("iframe");
     iframe.width = "100%";
     iframe.height = "100%";
-    const { libraryName, scriptUrl } = editorStandaloneClassMapping.get(globals.file.fileExtension)!;
+    const { libraryName, scriptUrl } = editorStandaloneClassMapping.get(props.currentFile.fileExtension)!;
 
     const script =
       contentSource === ContentSource.CURRENT_CONTENT
@@ -150,7 +152,7 @@ export function EmbedModal(props: Props) {
     getCurrentContentScript,
     getGithubGistScript,
     getStandaloneEditorIframeSrcdoc,
-    globals.file.fileExtension,
+    props.currentFile.fileExtension,
   ]);
 
   return (

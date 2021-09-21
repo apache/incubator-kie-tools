@@ -6,7 +6,6 @@ import { GithubService } from "./GithubService";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
 import { OpenShiftSettingsConfig, readConfigCookie } from "./OpenShiftSettingsConfig";
-import { KieToolingExtendedServicesStatus } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { OpenShiftService } from "./OpenShiftService";
 import { useKieToolingExtendedServices } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContext";
@@ -14,8 +13,10 @@ import { useHistory, useLocation } from "react-router";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { QueryParams } from "../common/Routes";
 
-const GITHUB_AUTH_TOKEN_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__github-oauth-token";
-const GUIDED_TOUR_ENABLED_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__is-guided-tour-enabled";
+export const KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME =
+  "KOGITO-TOOLING-COOKIE__kie-tooling-extended-services--port";
+const GITHUB_AUTH_TOKEN_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__github-oauth--token";
+const GUIDED_TOUR_ENABLED_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__guided-tour--is-enabled";
 export const OPENSHIFT_NAMESPACE_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__dmn-dev-sandbox--connection-namespace";
 export const OPENSHIFT_HOST_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__dmn-dev-sandbox--connection-host";
 export const OPENSHIFT_TOKEN_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__dmn-dev-sandbox--connection-token";
@@ -43,6 +44,12 @@ export interface SettingsContextType {
       set: React.Dispatch<React.SetStateAction<OpenShiftSettingsConfig>>;
     };
   };
+  kieToolingExtendedServices: {
+    port: {
+      get: string;
+      set: React.Dispatch<React.SetStateAction<string>>;
+    };
+  };
   github: {
     authService: { reset: () => void; authenticate: (token: string) => Promise<void> };
     authStatus: AuthStatus;
@@ -65,7 +72,6 @@ export const SettingsContext = React.createContext<SettingsContextType>({} as an
 export function SettingsContextProvider(props: any) {
   const queryParams = useQueryParams();
   const history = useHistory();
-  const location = useLocation();
   const [isOpen, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(SettingsTabs.GENERAL);
 
@@ -153,11 +159,7 @@ export function SettingsContextProvider(props: any) {
   //openshift
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const [openshiftConfig, setOpenShiftConfig] = useState(readConfigCookie());
-  const [openshiftStatus, setOpenshiftStatus] = useState(
-    kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.UNAVAILABLE
-      ? OpenShiftInstanceStatus.UNAVAILABLE
-      : OpenShiftInstanceStatus.DISCONNECTED
-  );
+  const [openshiftStatus, setOpenshiftStatus] = useState(OpenShiftInstanceStatus.UNAVAILABLE);
   const openshiftService = useMemo(
     () => new OpenShiftService(`${kieToolingExtendedServices.baseUrl}/devsandbox`),
     [kieToolingExtendedServices.baseUrl]
@@ -189,6 +191,12 @@ export function SettingsContextProvider(props: any) {
           scopes: githubScopes,
           authService: githubAuthService,
           service: githubService,
+        },
+        kieToolingExtendedServices: {
+          port: {
+            get: kieToolingExtendedServices.port,
+            set: kieToolingExtendedServices.saveNewPort,
+          },
         },
         general: {
           guidedTourEnabled: {

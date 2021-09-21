@@ -53,7 +53,7 @@ function RoutesSwitch() {
   return (
     <Switch>
       <Route path={globals.routes.editor.path({ extension: `:extension(${supportedExtensions})` })}>
-        {({ match }) => <EditorPage forExtension={match?.params.extension as SupportedFileExtensions} />}
+        {({ match }) => <EditorPage forExtension={match!.params.extension as SupportedFileExtensions} />}
       </Route>
       <Route exact={true} path={globals.routes.home.path({})}>
         <HomePage />

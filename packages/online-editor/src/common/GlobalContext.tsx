@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-import { File, newFile } from "@kie-tooling-core/editor/dist/channel";
+import { File } from "@kie-tooling-core/editor/dist/channel";
 import * as React from "react";
 import { useContext, useMemo, useState } from "react";
 import { routes } from "./Routes";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
-import { useRouteMatch } from "react-router";
 
 export type SupportedFileExtensions = "bpmn" | "bpmn2" | "dmn" | "pmml";
 
 export interface GlobalContextType {
-  file: File;
-  setFile: React.Dispatch<React.SetStateAction<File>>;
   uploadedFile?: File;
-  setUploadedFile: React.Dispatch<React.SetStateAction<File>>;
+  setUploadedFile: React.Dispatch<React.SetStateAction<File | undefined>>;
   externalFile?: File;
   routes: typeof routes;
   editorEnvelopeLocator: EditorEnvelopeLocator;
@@ -38,9 +35,6 @@ export interface GlobalContextType {
 export const GlobalContext = React.createContext<GlobalContextType>({} as any);
 
 export function GlobalContextProvider(props: { externalFile?: File; senderTabId?: string; children: React.ReactNode }) {
-  //FIXME: tiago: Move file to `EditorPage`.
-  const match = useRouteMatch<{ extension: string }>(routes.editor.path({ extension: ":extension" }));
-  const [file, setFile] = useState(() => newFile(match?.params.extension ?? "dmn"));
   const [uploadedFile, setUploadedFile] = useState<File | undefined>(undefined);
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () => ({
@@ -60,8 +54,6 @@ export function GlobalContextProvider(props: { externalFile?: File; senderTabId?
       value={{
         ...props,
         editorEnvelopeLocator,
-        file,
-        setFile,
         uploadedFile,
         setUploadedFile,
         routes,

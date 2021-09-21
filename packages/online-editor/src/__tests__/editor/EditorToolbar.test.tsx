@@ -16,17 +16,15 @@
 
 import * as React from "react";
 import { fireEvent, render } from "@testing-library/react";
-import { EditorToolbar } from "../../editor/EditorToolbar";
+import { EditorToolbar, Props } from "../../editor/EditorToolbar";
 import { EMPTY_FILE_BPMN, EMPTY_FILE_DMN, EMPTY_FILE_PMML, StateControl } from "@kie-tooling-core/editor/dist/channel";
 import {
   usingTestingGlobalContext,
   usingTestingKieToolingExtendedServicesContext,
   usingTestingOnlineI18nContext,
 } from "../testing_utils";
-import { GithubService } from "../../common/GithubService";
 import { KieToolingExtendedServicesStatus } from "../../editor/KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 
-const onFileNameChanged = jest.fn((file: string) => null);
 const enterFullscreen = jest.fn(() => null);
 const requestSave = jest.fn(() => null);
 const close = jest.fn(() => null);
@@ -35,6 +33,7 @@ const fullscreen = false;
 const requestPreview = jest.fn(() => null);
 const requestGistIt = jest.fn(() => null);
 const requestEmbed = jest.fn(() => null);
+const onRename = jest.fn(() => null);
 
 function mockFunctions() {
   const original = jest.requireActual("../../common/Hooks");
@@ -69,11 +68,12 @@ describe("EditorToolbar", () => {
         usingTestingOnlineI18nContext(
           usingTestingGlobalContext(
             <EditorToolbar
+              currentFile={EMPTY_FILE_DMN}
+              onRename={onRename}
               onFullScreen={enterFullscreen}
               onSave={requestSave}
               onDownload={requestDownload}
               onClose={close}
-              onFileNameChanged={onFileNameChanged}
               onCopyContentToClipboard={requestCopyContentToClipboard}
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
@@ -96,11 +96,12 @@ describe("EditorToolbar", () => {
         usingTestingOnlineI18nContext(
           usingTestingGlobalContext(
             <EditorToolbar
+              currentFile={EMPTY_FILE_DMN}
               onFullScreen={enterFullscreen}
               onSave={requestSave}
               onDownload={requestDownload}
               onClose={close}
-              onFileNameChanged={onFileNameChanged}
+              onRename={onRename}
               onCopyContentToClipboard={requestCopyContentToClipboard}
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
@@ -121,19 +122,19 @@ describe("EditorToolbar", () => {
         usingTestingOnlineI18nContext(
           usingTestingGlobalContext(
             <EditorToolbar
+              currentFile={{ ...EMPTY_FILE_DMN, isReadOnly: true }}
               onFullScreen={enterFullscreen}
               onSave={requestSave}
               onDownload={requestDownload}
               onClose={close}
-              onFileNameChanged={onFileNameChanged}
+              onRename={onRename}
               onCopyContentToClipboard={requestCopyContentToClipboard}
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
               onGistIt={requestGistIt}
               onEmbed={requestEmbed}
               isEdited={false}
-            />,
-            { readonly: true }
+            />
           ).wrapper
         ).wrapper
       );
@@ -145,25 +146,23 @@ describe("EditorToolbar", () => {
 
   describe("file actions", () => {
     test("Gist it button should be disable without token", async () => {
-      const githubService = new GithubService();
-
       const { getByTestId } = render(
         usingTestingOnlineI18nContext(
           usingTestingGlobalContext(
             <EditorToolbar
+              currentFile={EMPTY_FILE_DMN}
               onFullScreen={enterFullscreen}
               onSave={requestSave}
               onDownload={requestDownload}
               onClose={close}
-              onFileNameChanged={onFileNameChanged}
+              onRename={onRename}
               onCopyContentToClipboard={requestCopyContentToClipboard}
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
               onGistIt={requestGistIt}
               onEmbed={requestEmbed}
               isEdited={false}
-            />,
-            { githubService }
+            />
           ).wrapper
         ).wrapper
       );
@@ -176,26 +175,29 @@ describe("EditorToolbar", () => {
   });
 
   describe("share dropdown items", () => {
-    const toolbar = (
+    const toolbar = (props?: Partial<Props>) => (
       <EditorToolbar
+        currentFile={EMPTY_FILE_DMN}
         onFullScreen={enterFullscreen}
         onSave={requestSave}
         onDownload={requestDownload}
         onClose={close}
-        onFileNameChanged={onFileNameChanged}
+        onRename={onRename}
         onCopyContentToClipboard={requestCopyContentToClipboard}
         isPageFullscreen={fullscreen}
         onPreview={requestPreview}
         onGistIt={requestGistIt}
         onEmbed={requestEmbed}
         isEdited={false}
+        {...(props ?? {})}
       />
     );
-    const context = usingTestingGlobalContext(toolbar);
 
     test("should include Download SVG when dmn", () => {
-      context.ctx.file = EMPTY_FILE_DMN;
-      const { getByTestId } = render(usingTestingOnlineI18nContext(context.wrapper).wrapper);
+      const { getByTestId } = render(
+        usingTestingOnlineI18nContext(usingTestingGlobalContext(toolbar({ currentFile: EMPTY_FILE_DMN })).wrapper)
+          .wrapper
+      );
 
       expect(getByTestId("share-menu")).toBeVisible();
       fireEvent.click(getByTestId("share-menu"));
@@ -203,8 +205,10 @@ describe("EditorToolbar", () => {
     });
 
     test("should include Download SVG when bpmn", () => {
-      context.ctx.file = EMPTY_FILE_BPMN;
-      const { getByTestId } = render(usingTestingOnlineI18nContext(context.wrapper).wrapper);
+      const { getByTestId } = render(
+        usingTestingOnlineI18nContext(usingTestingGlobalContext(toolbar({ currentFile: EMPTY_FILE_BPMN })).wrapper)
+          .wrapper
+      );
 
       expect(getByTestId("share-menu")).toBeVisible();
       fireEvent.click(getByTestId("share-menu"));
@@ -212,8 +216,10 @@ describe("EditorToolbar", () => {
     });
 
     test("should exclude Download SVG when pmml", () => {
-      context.ctx.file = EMPTY_FILE_PMML;
-      const { queryByTestId, getByTestId } = render(usingTestingOnlineI18nContext(context.wrapper).wrapper);
+      const { queryByTestId, getByTestId } = render(
+        usingTestingOnlineI18nContext(usingTestingGlobalContext(toolbar({ currentFile: EMPTY_FILE_PMML })).wrapper)
+          .wrapper
+      );
 
       expect(getByTestId("share-menu")).toBeVisible();
       fireEvent.click(getByTestId("share-menu"));
@@ -221,8 +227,10 @@ describe("EditorToolbar", () => {
     });
 
     test("should include Embed when dmn", () => {
-      context.ctx.file = EMPTY_FILE_DMN;
-      const { getByTestId } = render(usingTestingOnlineI18nContext(context.wrapper).wrapper);
+      const { getByTestId } = render(
+        usingTestingOnlineI18nContext(usingTestingGlobalContext(toolbar({ currentFile: EMPTY_FILE_DMN })).wrapper)
+          .wrapper
+      );
 
       expect(getByTestId("share-menu")).toBeVisible();
       fireEvent.click(getByTestId("share-menu"));
@@ -230,8 +238,10 @@ describe("EditorToolbar", () => {
     });
 
     test("should include Embed when bpmn", () => {
-      context.ctx.file = EMPTY_FILE_BPMN;
-      const { getByTestId } = render(usingTestingOnlineI18nContext(context.wrapper).wrapper);
+      const { getByTestId } = render(
+        usingTestingOnlineI18nContext(usingTestingGlobalContext(toolbar({ currentFile: EMPTY_FILE_BPMN })).wrapper)
+          .wrapper
+      );
 
       expect(getByTestId("share-menu")).toBeVisible();
       fireEvent.click(getByTestId("share-menu"));
@@ -239,8 +249,10 @@ describe("EditorToolbar", () => {
     });
 
     test("should exclude Embed when pmml", () => {
-      context.ctx.file = EMPTY_FILE_PMML;
-      const { queryByTestId, getByTestId } = render(usingTestingOnlineI18nContext(context.wrapper).wrapper);
+      const { queryByTestId, getByTestId } = render(
+        usingTestingOnlineI18nContext(usingTestingGlobalContext(toolbar({ currentFile: EMPTY_FILE_PMML })).wrapper)
+          .wrapper
+      );
 
       expect(getByTestId("share-menu")).toBeVisible();
       fireEvent.click(getByTestId("share-menu"));
@@ -249,26 +261,28 @@ describe("EditorToolbar", () => {
   });
 
   describe("KIE Tooling Extended Services", () => {
-    const toolbar = (
+    const toolbar = (props?: Partial<Props>) => (
       <EditorToolbar
+        currentFile={EMPTY_FILE_DMN}
         onFullScreen={enterFullscreen}
         onSave={requestSave}
         onDownload={() => null}
         onClose={close}
-        onFileNameChanged={onFileNameChanged}
+        onRename={onRename}
         onCopyContentToClipboard={requestCopyContentToClipboard}
         isPageFullscreen={fullscreen}
         onPreview={requestPreview}
         onGistIt={requestGistIt}
         onEmbed={requestEmbed}
         isEdited={false}
+        {...(props ?? {})}
       />
     );
 
     it("should include buttons when dmn", async () => {
       const { getByTestId } = render(
         usingTestingOnlineI18nContext(
-          usingTestingGlobalContext(usingTestingKieToolingExtendedServicesContext(toolbar).wrapper).wrapper
+          usingTestingGlobalContext(usingTestingKieToolingExtendedServicesContext(toolbar()).wrapper).wrapper
         ).wrapper
       );
 
@@ -277,13 +291,11 @@ describe("EditorToolbar", () => {
       expect(getByTestId("dmn-runner-button")).toBeVisible();
     });
 
-    it("should not include buttons when services UNAVAILABLE", async () => {
+    it("should not include buttons when not dmn", async () => {
       const { queryByTestId } = render(
         usingTestingOnlineI18nContext(
           usingTestingGlobalContext(
-            usingTestingKieToolingExtendedServicesContext(toolbar, {
-              status: KieToolingExtendedServicesStatus.UNAVAILABLE,
-            }).wrapper
+            usingTestingKieToolingExtendedServicesContext(toolbar({ currentFile: EMPTY_FILE_BPMN })).wrapper
           ).wrapper
         ).wrapper
       );
@@ -297,8 +309,9 @@ describe("EditorToolbar", () => {
       const { getByTestId } = render(
         usingTestingOnlineI18nContext(
           usingTestingGlobalContext(
-            usingTestingKieToolingExtendedServicesContext(toolbar, { status: KieToolingExtendedServicesStatus.RUNNING })
-              .wrapper
+            usingTestingKieToolingExtendedServicesContext(toolbar(), {
+              status: KieToolingExtendedServicesStatus.RUNNING,
+            }).wrapper
           ).wrapper
         ).wrapper
       );
@@ -310,8 +323,9 @@ describe("EditorToolbar", () => {
       const { getByTestId } = render(
         usingTestingOnlineI18nContext(
           usingTestingGlobalContext(
-            usingTestingKieToolingExtendedServicesContext(toolbar, { status: KieToolingExtendedServicesStatus.STOPPED })
-              .wrapper
+            usingTestingKieToolingExtendedServicesContext(toolbar(), {
+              status: KieToolingExtendedServicesStatus.STOPPED,
+            }).wrapper
           ).wrapper
         ).wrapper
       );
@@ -322,8 +336,9 @@ describe("EditorToolbar", () => {
     it("should be outdated", async () => {
       const { getByTestId } = render(
         usingTestingOnlineI18nContext(
-          usingTestingGlobalContext(usingTestingKieToolingExtendedServicesContext(toolbar, { outdated: true }).wrapper)
-            .wrapper
+          usingTestingGlobalContext(
+            usingTestingKieToolingExtendedServicesContext(toolbar(), { outdated: true }).wrapper
+          ).wrapper
         ).wrapper
       );
 

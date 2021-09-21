@@ -25,22 +25,19 @@ export enum DependentFeature {
 
 export interface KieToolingExtendedServicesContextType {
   status: KieToolingExtendedServicesStatus;
+  setStatus: React.Dispatch<KieToolingExtendedServicesStatus>;
   port: string;
+  saveNewPort: React.Dispatch<string>;
   baseUrl: string;
   version: string;
   outdated: boolean;
   isModalOpen: boolean;
-  installTriggeredBy: DependentFeature;
-  setStatus: React.Dispatch<KieToolingExtendedServicesStatus>;
   setModalOpen: React.Dispatch<boolean>;
-  setInstallTriggeredBy: React.Dispatch<DependentFeature>;
-  saveNewPort: React.Dispatch<string>;
+  installTriggeredBy?: DependentFeature;
+  setInstallTriggeredBy: React.Dispatch<React.SetStateAction<DependentFeature>>;
 }
 
-export const KieToolingExtendedServicesContext = React.createContext<KieToolingExtendedServicesContextType>({
-  status: KieToolingExtendedServicesStatus.UNAVAILABLE,
-  isModalOpen: false,
-} as any);
+export const KieToolingExtendedServicesContext = React.createContext<KieToolingExtendedServicesContextType>({} as any);
 
 export function useKieToolingExtendedServices() {
   return useContext(KieToolingExtendedServicesContext);

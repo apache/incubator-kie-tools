@@ -42,6 +42,18 @@ export function NotificationsPanel(props: Props) {
   );
 
   useEffect(() => {
+    setTabsNotifications((p) => {
+      const prev = new Map(p);
+      Array.from(prev.keys()).forEach((k) => {
+        if (!props.tabNames.includes(k)) {
+          prev.delete(k);
+        }
+      });
+      return prev;
+    });
+  }, [props.tabNames]);
+
+  useEffect(() => {
     notificationsPanel.setTabsMap([...tabsMap.entries()]);
   }, [tabsMap]);
 

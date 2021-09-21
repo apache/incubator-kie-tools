@@ -72,7 +72,7 @@ export function KieToolingExtendedServicesDropdownGroup() {
         </FeatureDependentOnKieToolingExtendedServices>
       </DropdownGroup>
       <DropdownGroup key={"dmn-dev-sandbox-group"} label={i18n.names.dmnDevSandbox}>
-        {dmnDevSandboxDropdownItems()}
+        {dmnDevSandboxDropdownItems}
       </DropdownGroup>
     </DropdownGroup>
   );

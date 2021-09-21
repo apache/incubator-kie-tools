@@ -38,15 +38,15 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useOnlineI18n } from "../common/i18n";
 import { SettingsButton } from "../settings/SettingsButton";
 import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/KieToolingExtendedServicesButtons";
-import { useKieToolingExtendedServices } from "./KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
-import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { useGlobals } from "../common/GlobalContext";
 import { AuthStatus, useSettings } from "../settings/SettingsContext";
 import { SettingsTabs } from "../settings/SettingsModalBody";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { File } from "@kie-tooling-core/editor/dist/channel";
 
-interface Props {
+export interface Props {
+  currentFile: File;
   onFullScreen: () => void;
   onSave: () => void;
   onDownload: () => void;
@@ -57,45 +57,37 @@ interface Props {
   onCopyContentToClipboard: () => void;
   isPageFullscreen: boolean;
   isEdited: boolean;
+  onRename: (newName: string) => void;
 }
 
 export function EditorToolbar(props: Props) {
   const globals = useGlobals();
   const settings = useSettings();
-  const kieToolingExtendedServices = useKieToolingExtendedServices();
-  const [fileName, setFileName] = useState(globals.file.fileName);
+  const [fileName, setFileName] = useState(props.currentFile.fileName);
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
   const [isViewKebabOpen, setViewKebabOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
   const { i18n } = useOnlineI18n();
 
-  const fileExtension = useMemo(() => {
-    return globals.file.fileExtension;
-  }, [globals]);
-
-  const saveNewName = useCallback(() => {
-    globals.setFile((prevFile) => ({ ...prevFile, fileName, fileExtension }));
-  }, [globals, fileName, fileExtension]);
-
   const cancelNewName = useCallback(() => {
-    setFileName(globals.file.fileName);
-  }, [globals.file.fileName]);
+    setFileName(props.currentFile.fileName);
+  }, [props.currentFile.fileName]);
 
   useEffect(() => {
-    setFileName(globals.file.fileName);
-  }, [globals.file.fileName]);
+    setFileName(props.currentFile.fileName);
+  }, [props.currentFile.fileName]);
 
   const onNameInputKeyUp = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.keyCode === 13 /* Enter */) {
-        saveNewName();
+        props.onRename(fileName);
         e.currentTarget.blur();
       } else if (e.keyCode === 27 /* ESC */) {
         cancelNewName();
         e.currentTarget.blur();
       }
     },
-    [saveNewName, cancelNewName]
+    [props, fileName, cancelNewName]
   );
 
   const viewItems = useCallback(
@@ -121,8 +113,8 @@ export function EditorToolbar(props: Props) {
   );
 
   const includeDownloadSVGDropdownItem = useMemo(() => {
-    return fileExtension.toLowerCase() !== "pmml";
-  }, [fileExtension]);
+    return props.currentFile.fileExtension.toLowerCase() !== "pmml";
+  }, [props.currentFile]);
 
   const includeEmbedDropdownItem = useMemo(() => {
     return includeDownloadSVGDropdownItem;
@@ -188,7 +180,7 @@ export function EditorToolbar(props: Props) {
               {i18n.editorToolbar.gistIt}
             </DropdownItem>
           </Tooltip>
-          {globals.externalFile && !globals.file.isReadOnly && (
+          {globals.externalFile && !props.currentFile.isReadOnly && (
             <DropdownItem
               key={`dropdown-${dropdownId}-send-changes-to-github`}
               component={"button"}
@@ -228,14 +220,14 @@ export function EditorToolbar(props: Props) {
       <PageHeader
         logo={
           <Brand
-            src={globals.routes.static.images.editorLogo.path({ type: fileExtension })}
-            alt={`${fileExtension} kogito logo`}
+            src={globals.routes.static.images.editorLogo.path({ type: props.currentFile.fileExtension })}
+            alt={`${props.currentFile.fileExtension} kogito logo`}
           />
         }
         logoProps={{ onClick: props.onClose }}
         headerTools={
           <PageHeaderTools>
-            {kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.UNAVAILABLE && (
+            {props.currentFile.fileExtension === "dmn" && (
               <PageHeaderToolsGroup>
                 <PageHeaderToolsItem
                   visibility={{
@@ -366,7 +358,9 @@ export function EditorToolbar(props: Props) {
                     <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
                       {...shareItems("sm")}
                     </DropdownGroup>,
-                    <KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />,
+                    (props.currentFile.fileExtension === "dmn" && (
+                      <KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />
+                    )) || <></>,
                   ]}
                   position={DropdownPosition.right}
                 />
@@ -379,9 +373,9 @@ export function EditorToolbar(props: Props) {
         }
         topNav={
           <>
-            <Label variant="outline">{globals.file.kind}</Label>
+            <Label variant="outline">{props.currentFile.kind}</Label>
             &nbsp;
-            {!globals.file.isReadOnly && (
+            {!props.currentFile.isReadOnly && (
               <>
                 <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
                   <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
@@ -394,7 +388,7 @@ export function EditorToolbar(props: Props) {
                     className={"kogito--editor__toolbar-title"}
                     onChange={setFileName}
                     onKeyUp={onNameInputKeyUp}
-                    onBlur={saveNewName}
+                    onBlur={() => props.onRename(fileName)}
                   />
                 </div>
                 {props.isEdited && (
@@ -408,7 +402,7 @@ export function EditorToolbar(props: Props) {
                 )}
               </>
             )}
-            {globals.file.isReadOnly && (
+            {props.currentFile.isReadOnly && (
               <>
                 <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container readonly"}>
                   <Title

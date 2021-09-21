@@ -15,19 +15,18 @@
  */
 
 import { when } from "jest-when";
-import { OpenShiftService } from "../../../editor/DmnDevSandbox/OpenShiftService";
-import { Build, CreateBuild, ListBuilds } from "../../../editor/DmnDevSandbox/resources/Build";
-import { CreateBuildConfig } from "../../../editor/DmnDevSandbox/resources/BuildConfig";
-import { CreateDeployment, Deployment, ListDeployments } from "../../../editor/DmnDevSandbox/resources/Deployment";
-import { CreateImageStream } from "../../../editor/DmnDevSandbox/resources/ImageStream";
-import { GetProject } from "../../../editor/DmnDevSandbox/resources/Project";
-import { ResourceFetch } from "../../../editor/DmnDevSandbox/resources/Resource";
-import { CreateRoute, ListRoutes, Route } from "../../../editor/DmnDevSandbox/resources/Route";
-import { CreateService } from "../../../editor/DmnDevSandbox/resources/Service";
+import { OpenShiftService } from "../../../settings/OpenShiftService";
+import { CreateDeployment, Deployment, ListDeployments } from "../../../settings/resources/Deployment";
+import { CreateRoute, ListRoutes, Route } from "../../../settings/resources/Route";
+import { Build, CreateBuild, ListBuilds } from "../../../settings/resources/Build";
+import { GetProject } from "../../../settings/resources/Project";
+import { CreateImageStream } from "../../../settings/resources/ImageStream";
+import { CreateService } from "../../../settings/resources/Service";
+import { CreateBuildConfig } from "../../../settings/resources/BuildConfig";
+import { ResourceFetch } from "../../../settings/resources/Resource";
 
 describe("DmnDevSandboxService", () => {
-  const createdBy = "online-editor";
-  const service = new OpenShiftService(createdBy, "proxyUrl");
+  const service = new OpenShiftService("proxyUrl");
   const fetchResourceFn = jest.spyOn(service, "fetchResource");
 
   const config = {
@@ -36,12 +35,12 @@ describe("DmnDevSandboxService", () => {
     token: "test-token",
   };
 
-  function createDeployment(id: string, createdByOnlineEditor: boolean): Deployment {
+  function createDeployment(id: string, createdBy?: string): Deployment {
     return {
       metadata: {
         uid: `uid-${id}`,
         name: `deployment-${id}`,
-        labels: { "kogito.kie.org/created-by": createdByOnlineEditor ? createdBy : "other" },
+        labels: { "kogito.kie.org/created-by": createdBy ?? "other" },
         annotations: { "kogito.kie.org/filename": `myModel-${id}.dmn` },
         creationTimestamp: new Date().toISOString(),
       },
@@ -108,7 +107,12 @@ describe("DmnDevSandboxService", () => {
       .calledWith(expect.any(CreateRoute), expect.anything())
       .mockReturnValueOnce(Promise.resolve({ metadata: { uid: "uid" }, spec: { host: "host" } }));
 
-    await service.deploy("myModel.dmn", "diagramContent", config);
+    await service.deploy({
+      filename: "myModel.dmn",
+      editorContent: "diagramContent",
+      config,
+      onlineEditorUrl: () => "",
+    });
 
     expect(fetchResourceFn).toHaveBeenCalledTimes(6);
     expect(fetchResourceFn).toHaveBeenCalledWith(expect.any(CreateImageStream));
@@ -133,12 +137,12 @@ describe("DmnDevSandboxService", () => {
 
   it("should filter deployments created by online-editor", async () => {
     const deployments = [
-      createDeployment("1", false),
-      createDeployment("2", true),
-      createDeployment("3", true),
-      createDeployment("4", true),
-      createDeployment("5", false),
-      createDeployment("6", false),
+      createDeployment("1"),
+      createDeployment("2", "online-editor"),
+      createDeployment("3", "online-editor"),
+      createDeployment("4", "online-editor"),
+      createDeployment("5"),
+      createDeployment("6"),
     ];
 
     const builds = [
