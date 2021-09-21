@@ -1,5 +1,5 @@
 import org.kie.jenkins.jobdsl.templates.KogitoJobTemplate
-import org.kie.jenkins.jobdsl.KogitoConstants
+import org.kie.jenkins.jobdsl.FolderUtils
 import org.kie.jenkins.jobdsl.Utils
 import org.kie.jenkins.jobdsl.KogitoJobType
 
@@ -20,28 +20,26 @@ def getJobParams(String jobName, String jobFolder, String jenkinsfileName, Strin
     return jobParams
 }
 
-def bddRuntimesPrFolder = "${KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER}/${KogitoConstants.KOGITO_DSL_RUNTIMES_BDD_FOLDER}"
-def nightlyBranchFolder = "${KogitoConstants.KOGITO_DSL_NIGHTLY_FOLDER}/${JOB_BRANCH_FOLDER}"
-def releaseBranchFolder = "${KogitoConstants.KOGITO_DSL_RELEASE_FOLDER}/${JOB_BRANCH_FOLDER}"
-
 if (Utils.isMainBranch(this)) {
     // For BDD runtimes PR job
-    setupDeployJob(bddRuntimesPrFolder, KogitoJobType.PR)
+    setupDeployJob(FolderUtils.getPullRequestRuntimesBDDFolder(this), KogitoJobType.PR)
 }
 
 setupPrJob()
 
 // Branch jobs
-setupDeployJob(nightlyBranchFolder, KogitoJobType.NIGHTLY)
-setupPromoteJob(nightlyBranchFolder, KogitoJobType.NIGHTLY)
+setupDeployJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
+setupPromoteJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
 
 // No release directly on main branch
 if (!Utils.isMainBranch(this)) {
-    setupDeployJob(releaseBranchFolder, KogitoJobType.RELEASE)
-    setupPromoteJob(releaseBranchFolder, KogitoJobType.RELEASE)
+    setupDeployJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
+    setupPromoteJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
 }
 
-setupProdUpdateVersionJob("${KogitoConstants.KOGITO_DSL_TOOLS_FOLDER}/${JOB_BRANCH_FOLDER}")
+if (Utils.isLTSBranch(this)) {
+    setupProdUpdateVersionJob()
+}
 
 /////////////////////////////////////////////////////////////////
 // Methods
@@ -49,7 +47,6 @@ setupProdUpdateVersionJob("${KogitoConstants.KOGITO_DSL_TOOLS_FOLDER}/${JOB_BRAN
 
 void setupPrJob(String branch = "${GIT_BRANCH}") {
     def jobParams = getDefaultJobParams()
-    jobParams.job.folder = "${KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER}/${branch}"
     jobParams.pr.run_only_for_branches = [ branch ]
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
@@ -185,8 +182,8 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
     }
 }
 
-void setupProdUpdateVersionJob(String jobFolder) {
-    KogitoJobTemplate.createPipelineJob(this, getJobParams('kogito-images-update-prod-version', jobFolder, "${JENKINSFILE_PATH}/Jenkinsfile.update-prod-version", 'Update prod version for Kogito Images')).with {
+void setupProdUpdateVersionJob() {
+    KogitoJobTemplate.createPipelineJob(this, getJobParams('kogito-images-update-prod-version', FolderUtils.getToolsFolder(this), "${JENKINSFILE_PATH}/Jenkinsfile.update-prod-version", 'Update prod version for Kogito Images')).with {
         parameters {
             stringParam('JIRA_NUMBER', '', 'KIECLOUD-XXX or RHPAM-YYYY or else. This will be added to the commit and PR.')
             stringParam('PROD_PROJECT_VERSION', '', 'Which version to set ?')
