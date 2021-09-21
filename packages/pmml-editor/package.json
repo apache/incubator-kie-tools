@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/pmml-editor",
-  "version": "0.0.0",
+  "version": "0.13.0",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/editor/index.js",
@@ -14,10 +14,10 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kie-tooling-core/editor": "0.0.0",
-    "@kie-tooling-core/monaco-editor": "0.0.0",
-    "@kie-tooling-core/patternfly-base": "0.0.0",
-    "@kogito-tooling/pmml-editor-marshaller": "0.0.0",
+    "@kie-tooling-core/editor": "0.13.0",
+    "@kie-tooling-core/monaco-editor": "0.13.0",
+    "@kie-tooling-core/patternfly-base": "0.13.0",
+    "@kogito-tooling/pmml-editor-marshaller": "0.13.0",
     "@types/lodash": "^4.14.168",
     "@types/react-redux": "^7.1.16",
     "@types/react-router-dom": "^5.1.7",
@@ -51,7 +51,7 @@
     "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start http-get://0.0.0.0:$(build-env pmmlEditor.dev.port) cy:run\""
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0",
+    "@kogito-tooling/build-env": "0.13.0",
     "gh-pages": "^3.1.0"
   },
   "babel": {

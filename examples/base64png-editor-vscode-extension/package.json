@@ -4,7 +4,7 @@
   "displayName": "Kogito Base64 PNG Editor",
   "description": "",
   "main": "./dist/extension.js",
-  "version": "0.0.0",
+  "version": "0.13.0",
   "license": "Apache-2.0",
   "private": true,
   "engines": {
@@ -107,12 +107,12 @@
     "build:prod": "yarn run run-script-if --bool $(build-env global.build.examples) --then \"yarn run build\" \"yarn run pack\""
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
+    "@kogito-tooling/build-env": "0.13.0"
   },
   "dependencies": {
-    "@kie-tooling-core/editor": "0.0.0",
-    "@kie-tooling-core/patternfly-base": "0.0.0",
-    "@kie-tooling-core/vscode-extension": "0.0.0",
-    "@kogito-tooling-examples/base64png-editor": "0.0.0"
+    "@kie-tooling-core/editor": "0.13.0",
+    "@kie-tooling-core/patternfly-base": "0.13.0",
+    "@kie-tooling-core/vscode-extension": "0.13.0",
+    "@kogito-tooling-examples/base64png-editor": "0.13.0"
   }
 }
