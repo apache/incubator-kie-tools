@@ -1,3 +1,9 @@
+# 0.13.0 (alpha)
+
+- [KOGITO-5678](https://issues.redhat.com/browse/KOGITO-5678) - Metadata atrribute 'elementname' not present for events, intermediate events & gateways by default
+- [KOGITO-5676](https://issues.redhat.com/browse/KOGITO-5676) - BPMN Editor - Containment not working when Node overlaps the Connector while splicing
+- [KOGITO-5725](https://issues.redhat.com/browse/KOGITO-5725) - Enable extensions for github.dev.
+
 # 0.12.0 (alpha)
 
 - [KOGITO-2313](https://issues.redhat.com/browse/KOGITO-4136) - BPMN Editor - Support for node/events metadata attributes

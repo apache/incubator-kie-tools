@@ -1,3 +1,10 @@
+# 0.13.0 (alpha)
+
+- [DROOLS-6477](https://issues.redhat.com/browse/DROOLS-6477) - Collections Data Objects can be filled with expressions only.
+- [KOGITO-3909](https://issues.redhat.com/browse/KOGITO-3909) - Standalone DMN editor missing isDirty indication on data type or included models change
+- [KOGITO-5149](https://issues.redhat.com/browse/KOGITO-5149) - Create the second step of the Wizard - Create the collapsible/expandable list of future Data Types
+- [KOGITO-5725](https://issues.redhat.com/browse/KOGITO-5725) - Enable extensions for github.dev.
+
 # 0.12.0 (alpha)
 
 - [KOGITO-1686](https://issues.redhat.com/browse/KOGITO-1686) - DMN target position is not stored

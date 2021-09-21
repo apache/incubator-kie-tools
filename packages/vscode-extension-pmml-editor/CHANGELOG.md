@@ -1,3 +1,9 @@
+# 0.13.0 (alpha)
+
+- [FAI-546](https://issues.redhat.com/browse/FAI-546) - ScoreCard Model Setup Test
+- [FAI-558](https://issues.redhat.com/browse/FAI-558) - Score Cards: Algorithm Name cannot be cleared
+- [FAI-529](https://issues.redhat.com/browse/FAI-529) - Score Cards: Data Dictionary: Remove duplication of delete icons
+
 # 0.12.0 (alpha)
 
 - [FAI-544](https://issues.redhat.com/browse/FAI-544) - Score Cards: Model Setup switches not working
