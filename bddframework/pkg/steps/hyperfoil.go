@@ -18,8 +18,8 @@ import (
 	"errors"
 	"fmt"
 
-	hyperfoilv1alpha2 "github.com/kiegroup/kogito-operator/test/pkg/api/hyperfoil/v1alpha2"
 	"github.com/cucumber/godog"
+	hyperfoilv1alpha2 "github.com/kiegroup/kogito-operator/test/pkg/api/hyperfoil/v1alpha2"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	"github.com/kiegroup/kogito-operator/test/pkg/installers"
@@ -156,6 +156,10 @@ func getHyperfoilDefaultResource(name, namespace string) *hyperfoilv1alpha2.Hype
 		framework.GetLogger(namespace).Error(err, "Cannot fetch ConfigMap", "name", name, "namespace", namespace)
 	} else if exists {
 		hyperfoil.Spec.PostHooks = append(hyperfoil.Spec.PostHooks, installers.NodeScraperStopConfigMapName)
+	}
+
+	if imageVersion := config.GetHyperfoilControllerImageVersion(); len(imageVersion) > 0 {
+		hyperfoil.Spec.Version = imageVersion
 	}
 
 	return hyperfoil

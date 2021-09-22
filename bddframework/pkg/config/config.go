@@ -91,7 +91,8 @@ type TestConfig struct {
 	infinispanInstallationSource string
 
 	// Hyperfoil
-	hyperfoilOutputDirectory string
+	hyperfoilOutputDirectory        string
+	hyperfoilControllerImageVersion string
 
 	// dev options
 	showScenarios bool
@@ -200,6 +201,7 @@ func BindFlags(set *flag.FlagSet) {
 
 	// Hyperfoil
 	set.StringVar(&env.hyperfoilOutputDirectory, prefix+"hyperfoil-output-directory", "..", "Defines output directory to store Hyperfoil run statistics. Default is Kogito operator base folder.")
+	set.StringVar(&env.hyperfoilControllerImageVersion, prefix+"hyperfoil-controller-image-version", "", "Set the Hyperfoil controller image version")
 
 	// dev options
 	set.BoolVar(&env.showScenarios, prefix+"show-scenarios", false, "Show all scenarios which will be executed.")
@@ -496,6 +498,11 @@ func IsInfinispanInstalledByYaml() bool {
 // GetHyperfoilOutputDirectory returns directory to store Hyperfoil run results
 func GetHyperfoilOutputDirectory() string {
 	return env.hyperfoilOutputDirectory
+}
+
+// GetHyperfoilControllerImageVersion returns the Hyperfoil controller image version
+func GetHyperfoilControllerImageVersion() string {
+	return env.hyperfoilControllerImageVersion
 }
 
 // dev options

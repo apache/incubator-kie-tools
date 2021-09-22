@@ -66,6 +66,7 @@ examples_ignore_ssl=
 infinispan_installation_source=
 # Hyperfoil
 hyperfoil_output_directory=
+hyperfoil_controller_image_version=
 # dev options
 show_scenarios=false
 show_steps=false
@@ -143,6 +144,8 @@ run-tests:
 		--operator_installation_source ${operator_installation_source} \
 		--operator_catalog_image ${operator_catalog_image} \
 		--infinispan_installation_source ${infinispan_installation_source} \
+		--hyperfoil_output_directory ${hyperfoil_output_directory} \
+		--hyperfoil_controller_image_version ${hyperfoil_controller_image_version} \
 		$${opts_str}
 
 .PHONY: build-examples-images
