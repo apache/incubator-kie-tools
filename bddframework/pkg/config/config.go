@@ -15,9 +15,10 @@
 package config
 
 import (
+	"path/filepath"
+
 	"github.com/kiegroup/kogito-operator/version"
 	flag "github.com/spf13/pflag"
-	"path/filepath"
 )
 
 // TestConfig contains the information about the tests environment
@@ -102,8 +103,6 @@ type TestConfig struct {
 }
 
 const (
-	defaultOperatorImageName = "quay.io/kiegroup/kogito-operator"
-
 	defaultOperatorYamlURI = "../kogito-operator.yaml"
 	defaultCliPath         = "../build/_output/bin/kogito"
 
@@ -146,7 +145,7 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.olmNamespace, prefix+"olm-namespace", "", "Set the namespace which is used for cluster scope operators. Default is 'openshift-operators'.")
 
 	// operator information
-	set.StringVar(&env.operatorImageName, prefix+"operator-image-name", defaultOperatorImageName, "Operator image name")
+	set.StringVar(&env.operatorImageName, prefix+"operator-image-name", "", "Operator image name")
 	set.StringVar(&env.operatorImageTag, prefix+"operator-image-tag", defaultOperatorImageTag, "Operator image tag")
 	set.BoolVar(&env.operatorNamespaced, prefix+"operator-namespaced", false, "Set to true to deploy Kogito operator into namespace used for scenario execution, false for cluster wide deployment. Default is false.")
 	set.StringVar(&env.operatorInstallationSource, prefix+"operator-installation-source", installationSourceYaml, "Operator installation source")
