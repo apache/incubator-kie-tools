@@ -199,7 +199,6 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
     props.forExtension,
     globals.externalFile,
     globals.uploadedFile,
-    queryParams,
     queryParamFile,
     queryParamReadonly,
     settings.github.octokit,
