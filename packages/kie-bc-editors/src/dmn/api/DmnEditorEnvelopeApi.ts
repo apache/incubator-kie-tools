@@ -15,7 +15,8 @@
  */
 
 import { KogitoEditorEnvelopeApi } from "@kie-tooling-core/editor/dist/api";
+import { JsLienzo, JsLienzoEnvelopeApi } from "../../jslienzo/JsLienzo";
 
-export interface DmnEditorEnvelopeApi extends KogitoEditorEnvelopeApi {
+export interface DmnEditorEnvelopeApi extends KogitoEditorEnvelopeApi, JsLienzoEnvelopeApi {
   myDmnEnvelopeMethod(): Promise<string>;
 }

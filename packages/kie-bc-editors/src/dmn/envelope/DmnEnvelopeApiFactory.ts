@@ -45,4 +45,44 @@ export class DmnEditorEnvelopeApiImpl
     const ret = editor?.myDmnMethod() ?? "dmn-specific--default";
     return Promise.resolve(ret);
   }
+
+  public async jsLienzo_getNodeIds() {
+    const editor = this.dmnArgs.view().getEditor();
+    return editor?.getNodeIds() ?? [];
+  }
+
+  public async jsLienzo_getBackgroundColor(UUID: string) {
+    const editor = this.dmnArgs.view().getEditor();
+    return editor?.getBackgroundColor(UUID) ?? "";
+  }
+
+  public async jsLienzo_setBackgroundColor(UUID: string, backgroundColor: string) {
+    const editor = this.dmnArgs.view().getEditor();
+    return editor?.setBackgroundColor(UUID, backgroundColor);
+  }
+
+  public async jsLienzo_getBorderColor(UUID: string) {
+    const editor = this.dmnArgs.view().getEditor();
+    return editor?.getBorderColor(UUID) ?? "";
+  }
+
+  public async jsLienzo_setBorderColor(UUID: string, borderColor: string) {
+    const editor = this.dmnArgs.view().getEditor();
+    return editor?.setBorderColor(UUID, borderColor);
+  }
+
+  public async jsLienzo_getLocation(UUID: string) {
+    const editor = this.dmnArgs.view().getEditor();
+    return editor?.getLocation(UUID) ?? [];
+  }
+
+  public async jsLienzo_getAbsoluteLocation(UUID: string) {
+    const editor = this.dmnArgs.view().getEditor();
+    return editor?.getAbsoluteLocation(UUID) ?? [];
+  }
+
+  public async jsLienzo_getDimensions(UUID: string) {
+    const editor = this.dmnArgs.view().getEditor();
+    return editor?.getDimensions(UUID) ?? [];
+  }
 }

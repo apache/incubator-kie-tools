@@ -15,13 +15,52 @@
  */
 
 import { GwtEditorWrapper } from "../../common";
+import { JsLienzo } from "../../jslienzo/JsLienzo";
 
-export interface DmnEditor extends GwtEditorWrapper {
+interface CustomWindow extends Window {
+  jsLienzo: JsLienzo;
+}
+
+declare let window: CustomWindow;
+
+export interface DmnEditor extends GwtEditorWrapper, JsLienzo {
   myDmnMethod(): string;
 }
 
 export class DmnEditorImpl extends GwtEditorWrapper implements DmnEditor {
   public myDmnMethod() {
     return "dmn-specific--configured";
+  }
+
+  public getNodeIds() {
+    return window.jsLienzo.getNodeIds();
+  }
+
+  public getBackgroundColor(UUID: string) {
+    return window.jsLienzo.getBackgroundColor(UUID);
+  }
+
+  public setBackgroundColor(UUID: string, backgroundColor: string) {
+    window.jsLienzo.setBackgroundColor(UUID, backgroundColor);
+  }
+
+  public getBorderColor(UUID: string) {
+    return window.jsLienzo.getBorderColor(UUID);
+  }
+
+  public setBorderColor(UUID: string, borderColor: string) {
+    window.jsLienzo.setBorderColor(UUID, borderColor);
+  }
+
+  public getLocation(UUID: string) {
+    return window.jsLienzo.getLocation(UUID);
+  }
+
+  public getAbsoluteLocation(UUID: string) {
+    return window.jsLienzo.getAbsoluteLocation(UUID);
+  }
+
+  public getDimensions(UUID: string) {
+    return window.jsLienzo.getDimensions(UUID);
   }
 }
