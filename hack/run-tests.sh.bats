@@ -1025,6 +1025,24 @@ export -f oc
     [[ "${output}" != *"--tests.hyperfoil-output-directory"* ]]
 }
 
+@test "invoke run-tests with hyperfoil_controller_image_version" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --hyperfoil_controller_image_version 0.1.0 --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.hyperfoil-controller-image-version=0.1.0" ]]
+}
+
+@test "invoke run-tests with hyperfoil_controller_image_version missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --hyperfoil_controller_image_version --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.hyperfoil-controller-image-version"* ]]
+}
+
+@test "invoke run-tests with hyperfoil_controller_image_version empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --hyperfoil_controller_image_version "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.hyperfoil-controller-image-version"* ]]
+}
+
 # dev options
 
 @test "invoke run-tests with show_scenarios" {

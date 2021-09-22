@@ -109,6 +109,7 @@ function usage(){
 
   # Hyperfoil
   printf "\n--hyperfoil_output_directory {PATH}\n\tDefines output directory to store Hyperfoil run statistics. Default is test folder."
+  printf "\n--hyperfoil_controller_image_version {VERSION}\n\ttSet the Hyperfoil controller image version."
 
   # dev options
   printf "\n--show_scenarios\n\tDisplay scenarios which will be executed."
@@ -445,6 +446,10 @@ case $1 in
   --hyperfoil_output_directory)
     shift
     if addParamKeyValueIfAccepted "--tests.hyperfoil-output-directory" ${1}; then shift; fi
+  ;;
+  --hyperfoil_controller_image_version)
+    shift
+    if addParamKeyValueIfAccepted "--tests.hyperfoil-controller-image-version" ${1}; then shift; fi
   ;;
 
   # dev options
