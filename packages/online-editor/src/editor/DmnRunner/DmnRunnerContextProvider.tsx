@@ -20,7 +20,7 @@ import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/Kie
 import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
 import { DmnRunnerContext } from "./DmnRunnerContext";
 import { DmnRunnerService } from "./DmnRunnerService";
-import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
+import { EmbeddedEditorRef, useStateControlSubscription } from "@kie-tooling-core/editor/dist/embedded";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 import { useOnlineI18n } from "../../common/i18n";
@@ -53,6 +53,7 @@ export function DmnRunnerContextProvider(props: Props) {
   const [formData, setFormData] = useState<object>({});
   const [formSchema, setFormSchema] = useState<DmnFormSchema | undefined>(undefined);
   const [formError, setFormError] = useState(false);
+
   const status = useMemo(() => {
     return isDrawerExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE;
   }, [isDrawerExpanded]);
@@ -63,6 +64,10 @@ export function DmnRunnerContextProvider(props: Props) {
   );
 
   const updateFormSchema = useCallback(() => {
+    if (props.currentFile.fileExtension !== "dmn") {
+      return;
+    }
+
     if (!props.editor?.isReady) {
       return;
     }
@@ -86,42 +91,38 @@ export function DmnRunnerContextProvider(props: Props) {
     updateFormSchema();
   }, [props.currentFile, updateFormSchema]);
 
-  // Subscribe to any change on the DMN Editor to validate the model and update the JSON Schema
+  const validate = useCallback(() => {
+    if (props.currentFile.fileExtension !== "dmn") {
+      return;
+    }
+
+    props.editor
+      ?.getContent()
+      .then((content) => service.validate(content ?? ""))
+      .then((validationResults) => {
+        const notifications: Notification[] = validationResults.map((validationResult: any) => ({
+          type: "PROBLEM",
+          path: "",
+          severity: validationResult.severity,
+          message: `${validationResult.messageType}: ${validationResult.message}`,
+        }));
+        notificationsPanel.getTabRef(i18n.terms.validation)?.kogitoNotifications_setNotifications("", notifications);
+      });
+  }, [props.editor, props.currentFile, notificationsPanel.getTabRef, service, i18n]);
+
+  useStateControlSubscription(props.editor, validate, { throttle: THROTTLING_TIME });
+  useStateControlSubscription(props.editor, updateFormSchema, { throttle: THROTTLING_TIME });
+
   useEffect(() => {
+    if (props.currentFile.fileExtension !== "dmn") {
+      return;
+    }
+
     if (!props.editor?.isReady || kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
       notificationsPanel.getTabRef(i18n.terms.validation)?.kogitoNotifications_setNotifications("", []);
       return;
     }
-
-    const validate = () => {
-      props.editor
-        ?.getContent()
-        .then((content) => service.validate(content ?? ""))
-        .then((validationResults) => {
-          const notifications: Notification[] = validationResults.map((validationResult: any) => ({
-            type: "PROBLEM",
-            path: "",
-            severity: validationResult.severity,
-            message: `${validationResult.messageType}: ${validationResult.message}`,
-          }));
-          notificationsPanel.getTabRef(i18n.terms.validation)?.kogitoNotifications_setNotifications("", notifications);
-        });
-    };
-
-    let timeout: number | undefined;
-    const subscription = props.editor.getStateControl().subscribe(() => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-      timeout = window.setTimeout(() => {
-        validate();
-        updateFormSchema();
-      }, THROTTLING_TIME);
-    });
-    validate();
-
-    return () => props.editor?.getStateControl().unsubscribe(subscription);
-  }, [props.editor, kieToolingExtendedServices.status, updateFormSchema, i18n, service, notificationsPanel.getTabRef]);
+  }, [props.currentFile, props.editor, i18n, kieToolingExtendedServices, notificationsPanel.getTabRef]);
 
   useEffect(() => {
     if (!props.editor?.isReady || !formSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {

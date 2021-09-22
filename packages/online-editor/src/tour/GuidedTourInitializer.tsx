@@ -30,28 +30,28 @@ import { OnlineI18n, useOnlineI18n } from "../common/i18n";
 import { I18nHtml } from "@kie-tooling-core/i18n/dist/react-components";
 import { useSettings } from "../settings/SettingsContext";
 
-export function useDmnTour(isEditorReady: boolean, file: File) {
+export function useDmnTour(shouldShow: boolean) {
   const { i18n } = useOnlineI18n();
   const settings = useSettings();
 
   useEffect(() => {
-    if (!settings.general.guidedTourEnabled.get || isEditorReady) {
+    if (!settings.general.guidedTourEnabled.get || shouldShow) {
       return;
     }
 
     const guidedTour = KogitoGuidedTour.getInstance();
     guidedTour.setup(() => settings.general.guidedTourEnabled.set(false));
-  }, [isEditorReady, settings]);
+  }, [shouldShow, settings]);
 
   useEffect(() => {
-    if (isEditorReady && file.fileExtension === "dmn" && settings.general.guidedTourEnabled.get) {
+    if (shouldShow && settings.general.guidedTourEnabled.get) {
       const guidedTour = KogitoGuidedTour.getInstance();
       const tutorial = getOnlineEditorTutorial(i18n);
 
       guidedTour.registerTutorial(tutorial);
       guidedTour.start(tutorial.label);
     }
-  }, [isEditorReady, file, i18n, settings]);
+  }, [shouldShow, i18n, settings]);
 }
 
 function getOnlineEditorTutorial(i18n: OnlineI18n) {

@@ -18,14 +18,16 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { SupportedFileExtensions, useGlobals } from "../common/GlobalContext";
-import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
-import { UpdateGistErrors } from "../settings/GithubService";
-import { EmbedModal } from "./EmbedModal";
 import { ChannelType } from "@kie-tooling-core/editor/dist/api";
-import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kie-tooling-core/editor/dist/embedded";
+import {
+  EmbeddedEditor,
+  EmbeddedEditorRef,
+  useDirtyState,
+  useStateControlSubscription,
+} from "@kie-tooling-core/editor/dist/embedded";
 import { DmnRunnerContext } from "./DmnRunner/DmnRunnerContext";
 import { DmnRunnerContextProvider } from "./DmnRunner/DmnRunnerContextProvider";
 import { NotificationsPanel } from "./NotificationsPanel/NotificationsPanel";
@@ -43,35 +45,30 @@ import { QueryParams } from "../common/Routes";
 import { EditorFetchFileErrorEmptyState, FetchFileError, FetchFileErrorReason } from "./EditorFetchFileErrorEmptyState";
 import { MonacoEditorModal } from "./Monaco/MonacoEditorModal";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
-import { Alerts, useAlert, useAlertsRef } from "./Alerts/Alerts";
-
-export enum ModalType {
-  NONE,
-  TEXT_EDITOR,
-  EMBED,
-}
+import { Alerts, AlertsController, useAlert } from "./Alerts/Alerts";
+import { useController } from "../common/Hooks";
 
 export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
   const globals = useGlobals();
   const settings = useSettings();
-  const { editor, editorRef } = useEditorRef();
-  const { alerts, alertsRef } = useAlertsRef();
-  const downloadRef = useRef<HTMLAnchorElement>(null);
-  const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
-  const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
-  const [fullscreen, setFullscreen] = useState(false);
-  const [openModalType, setOpenModalType] = useState(ModalType.NONE);
-  const isDirty = useDirtyState(editor);
-  const { locale, i18n } = useOnlineI18n();
   const history = useHistory();
   const queryParams = useQueryParams();
+  const { locale, i18n } = useOnlineI18n();
+  const [editor, editorRef] = useController<EmbeddedEditorRef>();
+  const [alerts, alertsRef] = useController<AlertsController>();
+  const notificationsPanelRef = useRef<NotificationsPanelContextType>(null);
+  const downloadRef = useRef<HTMLAnchorElement>(null);
+  const isDirty = useDirtyState(editor);
+  const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
   const [fetchFileError, setFetchFileError] = useState<FetchFileError | undefined>(undefined);
 
-  const queryParamFile = useMemo(() => queryParams.get(QueryParams.FILE), [queryParams]);
-  const queryParamReadonly = useMemo(
-    () => (queryParams.has(QueryParams.READONLY) ? queryParams.get(QueryParams.READONLY) === `${true}` : false),
-    [queryParams]
-  );
+  const queryParamFile = useMemo(() => {
+    return queryParams.get(QueryParams.FILE);
+  }, [queryParams]);
+
+  const queryParamReadonly = useMemo(() => {
+    return queryParams.has(QueryParams.READONLY) ? queryParams.get(QueryParams.READONLY) === `${true}` : false;
+  }, [queryParams]);
 
   const [currentFile, setCurrentFile] = useState<File>(() => ({
     fileName: "new-file",
@@ -80,6 +77,12 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
     isReadOnly: false,
     kind: "local",
   }));
+
+  useEffect(() => {
+    alerts?.closeAll();
+  }, [alerts]);
+
+  useDmnTour(!currentFile.isReadOnly && !editor?.isReady && currentFile.fileExtension === "dmn");
 
   useEffect(() => {
     let canceled = false;
@@ -101,10 +104,16 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
     }
 
     const filePathExtension = extractFileExtension(queryParamFile);
-    if (filePathExtension && filePathExtension !== props.forExtension) {
+    if (!filePathExtension) {
+      return;
+    }
+
+    if (filePathExtension !== props.forExtension) {
       setFetchFileError({ reason: FetchFileErrorReason.DIFFERENT_EXTENSION, filePath: queryParamFile });
       return;
     }
+
+    const extractedFileName = removeFileExtension(removeDirectories(queryParamFile) ?? "unknown");
 
     if (settings.github.service.isGist(queryParamFile)) {
       settings.github.service
@@ -114,14 +123,13 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
             return;
           }
 
-          setCurrentFile(
-            getFileToOpen({
-              filePath: queryParamFile,
-              readonly: queryParamReadonly,
-              getFileContent: Promise.resolve(content),
-              kind: "gist",
-            })
-          );
+          setCurrentFile({
+            kind: "gist",
+            isReadOnly: queryParamReadonly,
+            fileExtension: filePathExtension,
+            fileName: extractedFileName,
+            getFileContents: () => Promise.resolve(content),
+          });
         })
         .catch((error) =>
           setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamFile })
@@ -137,14 +145,13 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
             return;
           }
 
-          setCurrentFile(
-            getFileToOpen({
-              filePath: queryParamFile,
-              readonly: queryParamReadonly,
-              getFileContent: Promise.resolve(response),
-              kind: "external",
-            })
-          );
+          setCurrentFile({
+            kind: "external",
+            isReadOnly: queryParamReadonly,
+            fileExtension: filePathExtension,
+            fileName: extractedFileName,
+            getFileContents: () => Promise.resolve(response),
+          });
         })
         .catch((error) => {
           setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamFile });
@@ -167,14 +174,16 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
           return;
         }
 
-        setCurrentFile(
-          getFileToOpen({
-            filePath: queryParamFile,
-            readonly: queryParamReadonly,
-            getFileContent: response.text(),
-            kind: "external",
-          })
-        );
+        // do not inline this variable.
+        const content = response.text();
+
+        setCurrentFile({
+          kind: "external",
+          isReadOnly: queryParamReadonly,
+          fileExtension: filePathExtension,
+          fileName: extractedFileName,
+          getFileContents: () => content,
+        });
       })
       .catch((error) => {
         setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamFile });
@@ -204,10 +213,7 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
           variant="danger"
           title={i18n.editorPage.alerts.setContentError.title}
           actionLinks={
-            <AlertActionLink
-              data-testid="unsaved-alert-save-button"
-              onClick={() => setOpenModalType(ModalType.TEXT_EDITOR)}
-            >
+            <AlertActionLink data-testid="unsaved-alert-save-button" onClick={() => setTextEditorModalOpen(true)}>
               {i18n.editorPage.alerts.setContentError.action}
             </AlertActionLink>
           }
@@ -217,114 +223,36 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
     [i18n]
   );
 
-  const copySuccessfulAlert = useAlert(
-    alerts,
-    ({ close }) => (
-      <div className={"kogito--alert-container"}>
-        <Alert
-          className={"kogito--alert"}
-          variant="success"
-          title={i18n.editorPage.alerts.copy}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      </div>
-    ),
-    [i18n]
-  );
-  const successUpdateGistAlert = useAlert(
-    alerts,
-    ({ close }) => (
-      <div className={"kogito--alert-container"}>
-        <Alert
-          className={"kogito--alert"}
-          variant="success"
-          title={i18n.editorPage.alerts.updateGist}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      </div>
-    ),
-    [i18n]
-  );
-  const successCreateGistAlert = useAlert(
-    alerts,
-    ({ close }) => (
-      <div className={"kogito--alert-container"}>
-        <Alert
-          className={"kogito--alert"}
-          variant="success"
-          title={i18n.editorPage.alerts.createGist}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      </div>
-    ),
-    [i18n]
-  );
-  const invalidCurrentGistAlert = useAlert(
-    alerts,
-    ({ close }) => (
-      <div className={"kogito--alert-container"}>
-        <Alert
-          className={"kogito--alert"}
-          variant="danger"
-          title={i18n.editorPage.alerts.invalidCurrentGist}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      </div>
-    ),
-    [i18n]
-  );
-  const invalidGistFilenameAlert = useAlert(
-    alerts,
-    ({ close }) => (
-      <div className={"kogito--alert-container"}>
-        <Alert
-          className={"kogito--alert"}
-          variant="danger"
-          title={i18n.editorPage.alerts.invalidGistFilename}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      </div>
-    ),
-    [i18n]
-  );
-  const errorAlert = useAlert(
-    alerts,
-    ({ close }) => (
-      <div className={"kogito--alert-container"}>
-        <Alert
-          className={"kogito--alert"}
-          variant="danger"
-          title={i18n.editorPage.alerts.error}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      </div>
-    ),
-    [i18n]
-  );
-
   const closeWithoutSaving = useCallback(() => {
-    alerts?.closeAll();
-    history.push({
-      pathname: globals.routes.home.path({}),
-    });
-  }, [alerts, globals, history]);
+    history.push({ pathname: globals.routes.home.path({}) });
+  }, [globals, history]);
 
   const requestDownload = useCallback(() => {
     editor?.getStateControl().setSavedCommand();
-    alerts?.closeAll();
-    editor?.getContent().then((content) => {
-      if (downloadRef.current) {
-        const fileBlob = new Blob([content], { type: "text/plain" });
-        downloadRef.current.href = URL.createObjectURL(fileBlob);
-        downloadRef.current.click();
-      }
-    });
-  }, [alerts, editor]);
+    editor
+      ?.getContent()
+      .then((content) => {
+        if (downloadRef.current) {
+          const fileBlob = new Blob([content], { type: "text/plain" });
+          downloadRef.current.href = URL.createObjectURL(fileBlob);
+          downloadRef.current.click();
+        }
+      })
+      .then(() => {
+        history.push({ pathname: globals.routes.home.path({}) });
+      });
+  }, [history, globals, editor]);
+
+  useEffect(() => {
+    if (downloadRef.current) {
+      downloadRef.current.download = `${currentFile.fileName}.${currentFile.fileExtension}`;
+    }
+  }, [currentFile]);
 
   const unsavedAlert = useAlert(
     alerts,
     ({ close }) => (
-      <div className={"kogito--alert-container-unsaved"} data-testid="unsaved-alert">
+      <div className={"kogito--alert-container"} data-testid="unsaved-alert">
         <Alert
           className={"kogito--alert"}
           variant="warning"
@@ -349,186 +277,18 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
   );
 
   const onClose = useCallback(() => {
-    if (!isDirty) {
-      history.push({
-        pathname: globals.routes.home.path({}),
-      });
-    } else {
+    if (isDirty) {
       unsavedAlert.show();
+      return;
     }
+
+    history.push({ pathname: globals.routes.home.path({}) });
   }, [unsavedAlert, globals, history, isDirty]);
-
-  const requestSave = useCallback(() => {
-    editor?.getContent().then((content) => {
-      window.dispatchEvent(
-        new CustomEvent("saveOnlineEditor", {
-          detail: {
-            fileName: `${currentFile.fileName}.${currentFile.fileExtension}`,
-            fileContent: content,
-            senderTabId: globals.senderTabId!,
-          },
-        })
-      );
-    });
-  }, [currentFile, globals.senderTabId, editor]);
-
-  const requestPreview = useCallback(() => {
-    editor?.getPreview().then((previewSvg) => {
-      if (downloadPreviewRef.current && previewSvg) {
-        const fileBlob = new Blob([previewSvg], { type: "image/svg+xml" });
-        downloadPreviewRef.current.href = URL.createObjectURL(fileBlob);
-        downloadPreviewRef.current.click();
-      }
-    });
-  }, [editor]);
-
-  const requestGistIt = useCallback(async () => {
-    if (editor) {
-      const content = await editor.getContent();
-
-      // update gist
-      if (queryParamFile && settings.github.service.isGist(queryParamFile)) {
-        const userLogin = settings.github.service.extractUserLoginFromFileUrl(queryParamFile);
-        if (userLogin === settings.github.user) {
-          try {
-            const filename = `${currentFile.fileName}.${currentFile.fileExtension}`;
-            const response = await settings.github.service.updateGist(settings.github.octokit, {
-              filename,
-              content,
-            });
-
-            if (response === UpdateGistErrors.INVALID_CURRENT_GIST) {
-              invalidCurrentGistAlert.show();
-              return;
-            }
-
-            if (response === UpdateGistErrors.INVALID_GIST_FILENAME) {
-              invalidGistFilenameAlert.show();
-              return;
-            }
-
-            editor.getStateControl().setSavedCommand();
-            if (filename !== settings.github.service.getCurrentGist()?.filename) {
-              successUpdateGistAlert.show();
-              history.push({
-                pathname: globals.routes.editor.path({ extension: currentFile.fileExtension }),
-                search: globals.routes.editor.queryArgs(queryParams).with(QueryParams.FILE, response).toString(),
-              });
-              return;
-            }
-
-            successUpdateGistAlert.show();
-            return;
-          } catch (err) {
-            console.error(err);
-            errorAlert.show();
-            return;
-          }
-        }
-      }
-
-      // create gist
-      try {
-        const newGistUrl = await settings.github.service.createGist(settings.github.octokit, {
-          filename: `${currentFile.fileName}.${currentFile.fileExtension}`,
-          content: content,
-          description: `${currentFile.fileName}.${currentFile.fileExtension}`,
-          isPublic: true,
-        });
-
-        successCreateGistAlert.show();
-
-        history.push({
-          pathname: globals.routes.editor.path({ extension: currentFile.fileExtension }),
-          search: globals.routes.editor.queryArgs(queryParams).with(QueryParams.FILE, newGistUrl).toString(),
-        });
-        return;
-      } catch (err) {
-        console.error(err);
-        errorAlert.show();
-        return;
-      }
-    }
-  }, [
-    errorAlert,
-    invalidCurrentGistAlert,
-    invalidGistFilenameAlert,
-    successUpdateGistAlert,
-    successCreateGistAlert,
-    currentFile,
-    history,
-    globals,
-    settings,
-    queryParamFile,
-    queryParams,
-    editor,
-  ]);
-
-  const requestEmbed = useCallback(() => {
-    setOpenModalType(ModalType.EMBED);
-  }, []);
-
-  const closeModal = useCallback(() => {
-    setOpenModalType(ModalType.NONE);
-  }, []);
-
-  const requestCopyContentToClipboard = useCallback(() => {
-    editor?.getContent().then((content) => {
-      if (copyContentTextArea.current) {
-        copyContentTextArea.current.value = content;
-        copyContentTextArea.current.select();
-        if (document.execCommand("copy")) {
-          copySuccessfulAlert.show();
-        }
-      }
-    });
-  }, [copySuccessfulAlert, editor]);
-
-  const enterFullscreen = useCallback(() => {
-    document.documentElement.requestFullscreen?.();
-    (document.documentElement as any).webkitRequestFullscreen?.();
-  }, []);
-
-  const exitFullscreen = useCallback(() => {
-    document.exitFullscreen?.();
-    (document as any).webkitExitFullscreen?.();
-  }, []);
-
-  const toggleFullScreen = useCallback(() => {
-    setFullscreen((prev) => !prev);
-  }, []);
-
-  useEffect(() => {
-    if (downloadRef.current) {
-      downloadRef.current.download = `${currentFile.fileName}.${currentFile.fileExtension}`;
-    }
-    if (downloadPreviewRef.current) {
-      downloadPreviewRef.current.download = `${currentFile.fileName}-svg.svg`;
-    }
-  }, [currentFile]);
-
-  useEffect(() => {
-    document.addEventListener("fullscreenchange", toggleFullScreen);
-    document.addEventListener("mozfullscreenchange", toggleFullScreen);
-    document.addEventListener("webkitfullscreenchange", toggleFullScreen);
-    document.addEventListener("msfullscreenchange", toggleFullScreen);
-
-    return () => {
-      document.removeEventListener("fullscreenchange", toggleFullScreen);
-      document.removeEventListener("webkitfullscreenchange", toggleFullScreen);
-      document.removeEventListener("mozfullscreenchange", toggleFullScreen);
-      document.removeEventListener("msfullscreenchange", toggleFullScreen);
-    };
-  });
-
-  useDmnTour(!currentFile.isReadOnly && (editor?.isReady ?? false), currentFile);
 
   const refreshDiagramEditor = useCallback(() => {
     alerts?.closeAll();
-    setOpenModalType(ModalType.NONE);
+    setTextEditorModalOpen(false);
   }, [alerts]);
-
-  const notificationsPanelRef = useRef<NotificationsPanelContextType>(null);
 
   const notificationPanelTabNames = useCallback(
     (dmnRunnerStatus: DmnRunnerStatus) => {
@@ -540,33 +300,15 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
     [currentFile.fileExtension, globals.isChrome, i18n]
   );
 
-  useEffect(() => {
-    if (!editor?.isReady) {
-      return;
-    }
-
-    const validate = () => {
-      editor.validate().then((notifications) => {
-        if (!Array.isArray(notifications)) {
-          notifications = [];
-        }
-        notificationsPanelRef.current
-          ?.getTabRef(i18n.terms.validation)
-          ?.kogitoNotifications_setNotifications("", notifications);
-      });
-    };
-
-    let timeout: number | undefined;
-    const subscription = editor.getStateControl().subscribe(() => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-      timeout = window.setTimeout(validate, 200);
+  const validate = useCallback(() => {
+    editor?.validate().then((notifications) => {
+      notificationsPanelRef.current
+        ?.getTabRef(i18n.terms.validation)
+        ?.kogitoNotifications_setNotifications("", Array.isArray(notifications) ? notifications : []);
     });
-    validate();
-
-    return () => editor.getStateControl().unsubscribe(subscription);
   }, [editor, i18n]);
+
+  useStateControlSubscription(editor, validate, { throttle: 200 });
 
   return (
     <>
@@ -578,18 +320,11 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
               <Page
                 header={
                   <EditorToolbar
+                    editor={editor}
+                    alerts={alerts}
                     currentFile={currentFile}
                     onRename={(newName) => setCurrentFile((prev) => ({ ...prev, fileName: newName }))}
-                    onFullScreen={enterFullscreen}
-                    onSave={requestSave}
-                    onDownload={requestDownload}
                     onClose={onClose}
-                    onCopyContentToClipboard={requestCopyContentToClipboard}
-                    isPageFullscreen={fullscreen}
-                    onPreview={requestPreview}
-                    onGistIt={requestGistIt}
-                    onEmbed={requestEmbed}
-                    isEdited={isDirty}
                   />
                 }
               >
@@ -600,7 +335,6 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
                 >
                   <DmnRunnerDrawer editor={editor}>
                     <Alerts ref={alertsRef} />
-                    {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
                     <EmbeddedEditor
                       ref={editorRef}
                       file={currentFile}
@@ -614,24 +348,14 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
                     </DmnRunnerContext.Consumer>
                   </DmnRunnerDrawer>
                 </PageSection>
-                <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
                 <a ref={downloadRef} />
-                <a ref={downloadPreviewRef} />
               </Page>
-              {!fullscreen && (
-                <EmbedModal
-                  currentFile={currentFile}
-                  isOpen={openModalType === ModalType.EMBED}
-                  onClose={closeModal}
-                  editor={editor}
-                />
-              )}
               <MonacoEditorModal
                 alerts={alerts}
                 editor={editor}
                 currentFile={currentFile}
                 refreshDiagramEditor={refreshDiagramEditor}
-                isOpen={openModalType === ModalType.TEXT_EDITOR}
+                isOpen={isTextEditorModalOpen}
               />
             </DmnDevSandboxContextProvider>
           </DmnRunnerContextProvider>
@@ -639,19 +363,4 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
       )}
     </>
   );
-}
-
-function getFileToOpen(args: {
-  kind: File["kind"];
-  filePath: string;
-  readonly: boolean;
-  getFileContent: Promise<string>;
-}) {
-  return {
-    kind: args.kind,
-    isReadOnly: args.readonly,
-    fileExtension: extractFileExtension(removeDirectories(args.filePath) ?? "")!,
-    fileName: removeFileExtension(removeDirectories(args.filePath) ?? ""),
-    getFileContents: () => args.getFileContent,
-  };
 }

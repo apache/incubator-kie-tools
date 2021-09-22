@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function usePrevious(value: any) {
   const ref = useRef();
@@ -26,4 +26,14 @@ export function usePrevious(value: any) {
   }, [value]);
 
   return ref.current;
+}
+
+export function useController<T>(): [T | undefined, (controller: T) => void] {
+  const [controller, setController] = useState<T | undefined>(undefined);
+
+  const ref = useCallback((controller: T) => {
+    setController(controller);
+  }, []);
+
+  return [controller, ref];
 }

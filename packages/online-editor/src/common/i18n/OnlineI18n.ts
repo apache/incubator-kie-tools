@@ -41,7 +41,6 @@ interface OnlineDictionary extends ReferenceDictionary {
       link: string;
     };
   };
-  editorFullScreenToolbar: string;
   editorPage: {
     textEditorModal: {
       title: (fileName: string) => string;
@@ -66,7 +65,6 @@ interface OnlineDictionary extends ReferenceDictionary {
   };
   editorToolbar: {
     closeAndReturnHome: string;
-    enterFullScreenView: string;
     saveAndDownload: string;
     sendChangesToGitHub: string;
     copySource: string;

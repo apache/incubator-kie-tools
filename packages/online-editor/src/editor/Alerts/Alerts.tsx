@@ -55,23 +55,12 @@ export const Alerts = React.forwardRef<AlertsController>((props: {}, forwardedRe
   );
 });
 
-export function useAlertsRef() {
-  const [controller, setController] = useState<AlertsController | undefined>(undefined);
-
-  const alertsRef = useCallback((controller: AlertsController) => {
-    setController(controller);
-  }, []);
-
-  return { alerts: controller, alertsRef: alertsRef };
-}
-
 export function useAlert(alertsRef: AlertsController | undefined, delegate: AlertDelegate, deps: React.DependencyList) {
   const key = useMemo(() => {
     return `${Math.random()}`; //FIXME: tiago improve that.
   }, []);
 
   useEffect(() => {
-    console.info("setting alert " + key);
     alertsRef?.set(key, delegate);
   }, [alertsRef, deps, key /* `delegate` purposefully left out. See explanation below. */]);
 

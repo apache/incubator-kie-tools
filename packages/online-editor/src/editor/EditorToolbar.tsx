@@ -34,7 +34,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOnlineI18n } from "../common/i18n";
 import { SettingsButton } from "../settings/SettingsButton";
 import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/KieToolingExtendedServicesButtons";
@@ -44,30 +44,124 @@ import { AuthStatus, useSettings } from "../settings/SettingsContext";
 import { SettingsTabs } from "../settings/SettingsModalBody";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
+import { UpdateGistErrors } from "../settings/GithubService";
+import { QueryParams } from "../common/Routes";
+import { useHistory } from "react-router";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
+import { EmbedModal } from "./EmbedModal";
+import { AlertsController, useAlert } from "./Alerts/Alerts";
+import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 
 export interface Props {
+  alerts?: AlertsController;
+  editor?: EmbeddedEditorRef;
   currentFile: File;
-  onFullScreen: () => void;
-  onSave: () => void;
-  onDownload: () => void;
-  onPreview: () => void;
-  onGistIt: () => void;
-  onEmbed: () => void;
-  onClose: () => void;
-  onCopyContentToClipboard: () => void;
-  isPageFullscreen: boolean;
-  isEdited: boolean;
   onRename: (newName: string) => void;
+  onClose: () => void;
 }
 
 export function EditorToolbar(props: Props) {
   const globals = useGlobals();
   const settings = useSettings();
+  const history = useHistory();
+  const queryParams = useQueryParams();
   const [fileName, setFileName] = useState(props.currentFile.fileName);
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
   const [isViewKebabOpen, setViewKebabOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
+  const [isEmbedModalOpen, setEmbedModalOpen] = useState(false);
   const { i18n } = useOnlineI18n();
+  const isEdited = useDirtyState(props.editor);
+
+  const copySuccessfulAlert = useAlert(
+    props.alerts,
+    ({ close }) => (
+      <div className={"kogito--alert-container"}>
+        <Alert
+          className={"kogito--alert"}
+          variant="success"
+          title={i18n.editorPage.alerts.copy}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      </div>
+    ),
+    [i18n]
+  );
+  const successUpdateGistAlert = useAlert(
+    props.alerts,
+    ({ close }) => (
+      <div className={"kogito--alert-container"}>
+        <Alert
+          className={"kogito--alert"}
+          variant="success"
+          title={i18n.editorPage.alerts.updateGist}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      </div>
+    ),
+    [i18n]
+  );
+  const successCreateGistAlert = useAlert(
+    props.alerts,
+    ({ close }) => (
+      <div className={"kogito--alert-container"}>
+        <Alert
+          className={"kogito--alert"}
+          variant="success"
+          title={i18n.editorPage.alerts.createGist}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      </div>
+    ),
+    [i18n]
+  );
+  const invalidCurrentGistAlert = useAlert(
+    props.alerts,
+    ({ close }) => (
+      <div className={"kogito--alert-container"}>
+        <Alert
+          className={"kogito--alert"}
+          variant="danger"
+          title={i18n.editorPage.alerts.invalidCurrentGist}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      </div>
+    ),
+    [i18n]
+  );
+  const invalidGistFilenameAlert = useAlert(
+    props.alerts,
+    ({ close }) => (
+      <div className={"kogito--alert-container"}>
+        <Alert
+          className={"kogito--alert"}
+          variant="danger"
+          title={i18n.editorPage.alerts.invalidGistFilename}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      </div>
+    ),
+    [i18n]
+  );
+  const errorAlert = useAlert(
+    props.alerts,
+    ({ close }) => (
+      <div className={"kogito--alert-container"}>
+        <Alert
+          className={"kogito--alert"}
+          variant="danger"
+          title={i18n.editorPage.alerts.error}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      </div>
+    ),
+    [i18n]
+  );
+
+  const queryParamFile = useMemo(() => {
+    return queryParams.get(QueryParams.FILE);
+  }, [queryParams]);
 
   const cancelNewName = useCallback(() => {
     setFileName(props.currentFile.fileName);
@@ -105,9 +199,6 @@ export function EditorToolbar(props: Props) {
           </DropdownItem>
         )}
       </React.Fragment>,
-      <DropdownItem key={`dropdown-${dropdownId}-fullscreen`} component={"button"} onClick={props.onFullScreen}>
-        {i18n.editorToolbar.enterFullScreenView}
-      </DropdownItem>,
     ],
     [i18n, globals, props]
   );
@@ -120,22 +211,153 @@ export function EditorToolbar(props: Props) {
     return includeDownloadSVGDropdownItem;
   }, [includeDownloadSVGDropdownItem]);
 
+  const onSendChangesToGitHub = useCallback(() => {
+    props.editor?.getContent().then((content) => {
+      window.dispatchEvent(
+        new CustomEvent("saveOnlineEditor", {
+          detail: {
+            fileName: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
+            fileContent: content,
+            senderTabId: globals.senderTabId!,
+          },
+        })
+      );
+    });
+  }, [props.currentFile, globals.senderTabId, props.editor]);
+
+  const onDownload = useCallback(() => {
+    props.editor?.getStateControl().setSavedCommand();
+    props.alerts?.closeAll();
+    props.editor?.getContent().then((content) => {
+      if (downloadRef.current) {
+        const fileBlob = new Blob([content], { type: "text/plain" });
+        downloadRef.current.href = URL.createObjectURL(fileBlob);
+        downloadRef.current.click();
+      }
+    });
+  }, [props.editor, props.alerts]);
+
+  const onPreview = useCallback(() => {
+    props.editor?.getPreview().then((previewSvg) => {
+      if (downloadPreviewRef.current && previewSvg) {
+        const fileBlob = new Blob([previewSvg], { type: "image/svg+xml" });
+        downloadPreviewRef.current.href = URL.createObjectURL(fileBlob);
+        downloadPreviewRef.current.click();
+      }
+    });
+  }, [props.editor]);
+
+  const onGistIt = useCallback(async () => {
+    if (props.editor) {
+      const content = await props.editor.getContent();
+
+      // update gist
+      if (queryParamFile && settings.github.service.isGist(queryParamFile)) {
+        const userLogin = settings.github.service.extractUserLoginFromFileUrl(queryParamFile);
+        if (userLogin === settings.github.user) {
+          try {
+            const filename = `${props.currentFile.fileName}.${props.currentFile.fileExtension}`;
+            const response = await settings.github.service.updateGist(settings.github.octokit, {
+              filename,
+              content,
+            });
+
+            if (response === UpdateGistErrors.INVALID_CURRENT_GIST) {
+              invalidCurrentGistAlert.show();
+              return;
+            }
+
+            if (response === UpdateGistErrors.INVALID_GIST_FILENAME) {
+              invalidGistFilenameAlert.show();
+              return;
+            }
+
+            props.editor.getStateControl().setSavedCommand();
+            if (filename !== settings.github.service.getCurrentGist()?.filename) {
+              successUpdateGistAlert.show();
+              history.push({
+                pathname: globals.routes.editor.path({ extension: props.currentFile.fileExtension }),
+                search: globals.routes.editor.queryArgs(queryParams).with(QueryParams.FILE, response).toString(),
+              });
+              return;
+            }
+
+            successUpdateGistAlert.show();
+            return;
+          } catch (err) {
+            console.error(err);
+            errorAlert.show();
+            return;
+          }
+        }
+      }
+
+      // create gist
+      try {
+        const newGistUrl = await settings.github.service.createGist(settings.github.octokit, {
+          filename: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
+          content: content,
+          description: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
+          isPublic: true,
+        });
+
+        successCreateGistAlert.show();
+
+        history.push({
+          pathname: globals.routes.editor.path({ extension: props.currentFile.fileExtension }),
+          search: globals.routes.editor.queryArgs(queryParams).with(QueryParams.FILE, newGistUrl).toString(),
+        });
+        return;
+      } catch (err) {
+        console.error(err);
+        errorAlert.show();
+        return;
+      }
+    }
+  }, [
+    errorAlert,
+    successCreateGistAlert,
+    successUpdateGistAlert,
+    invalidCurrentGistAlert,
+    invalidGistFilenameAlert,
+    props.currentFile,
+    history,
+    globals,
+    settings,
+    queryParamFile,
+    queryParams,
+    i18n,
+    props.editor,
+  ]);
+
+  const onEmbed = useCallback(() => {
+    setEmbedModalOpen(true);
+  }, []);
+
+  const onCopyContentToClipboard = useCallback(() => {
+    props.editor?.getContent().then((content) => {
+      if (copyContentTextArea.current) {
+        copyContentTextArea.current.value = content;
+        copyContentTextArea.current.select();
+        if (document.execCommand("copy")) {
+          copySuccessfulAlert.show();
+        }
+      }
+    });
+  }, [props.editor, copySuccessfulAlert]);
+
   const shareItems = useCallback(
     (dropdownId: string) => [
       <DropdownItem
         key={`dropdown-${dropdownId}-save`}
         component={"button"}
-        onClick={props.onDownload}
+        onClick={onDownload}
         className={"pf-u-display-none-on-xl"}
         ouiaId="save-and-download-dropdown-button"
       >
         {i18n.editorToolbar.saveAndDownload}
       </DropdownItem>,
-      <DropdownItem
-        key={`dropdown-${dropdownId}-copy-source`}
-        component={"button"}
-        onClick={props.onCopyContentToClipboard}
-      >
+      <DropdownItem key={`dropdown-${dropdownId}-copy-source`} component={"button"} onClick={onCopyContentToClipboard}>
         {i18n.editorToolbar.copySource}
       </DropdownItem>,
       <React.Fragment key={`dropdown-${dropdownId}-fragment-download-svg`}>
@@ -144,7 +366,7 @@ export function EditorToolbar(props: Props) {
             key={`dropdown-${dropdownId}-download-svg`}
             data-testid="dropdown-download-svg"
             component="button"
-            onClick={props.onPreview}
+            onClick={onPreview}
           >
             {i18n.editorToolbar.downloadSVG}
           </DropdownItem>
@@ -156,7 +378,7 @@ export function EditorToolbar(props: Props) {
             key={`dropdown-${dropdownId}-embed`}
             data-testid="dropdown-embed"
             component="button"
-            onClick={props.onEmbed}
+            onClick={onEmbed}
           >
             {i18n.editorToolbar.embed}
           </DropdownItem>
@@ -174,7 +396,7 @@ export function EditorToolbar(props: Props) {
             <DropdownItem
               data-testid={"gist-it-button"}
               component="button"
-              onClick={props.onGistIt}
+              onClick={onGistIt}
               isDisabled={settings.github.authStatus !== AuthStatus.SIGNED_IN}
             >
               {i18n.editorToolbar.gistIt}
@@ -184,7 +406,7 @@ export function EditorToolbar(props: Props) {
             <DropdownItem
               key={`dropdown-${dropdownId}-send-changes-to-github`}
               component={"button"}
-              onClick={props.onSave}
+              onClick={onSendChangesToGitHub}
             >
               {i18n.editorToolbar.sendChangesToGitHub}
             </DropdownItem>
@@ -201,12 +423,13 @@ export function EditorToolbar(props: Props) {
       </DropdownGroup>,
     ],
     [
-      props.onDownload,
-      props.onCopyContentToClipboard,
-      props.onPreview,
-      props.onEmbed,
-      props.onGistIt,
-      props.onSave,
+      props.currentFile,
+      onDownload,
+      onCopyContentToClipboard,
+      onPreview,
+      onEmbed,
+      onGistIt,
+      onSendChangesToGitHub,
       includeDownloadSVGDropdownItem,
       includeEmbedDropdownItem,
       i18n,
@@ -215,7 +438,20 @@ export function EditorToolbar(props: Props) {
     ]
   );
 
-  return !props.isPageFullscreen ? (
+  const downloadRef = useRef<HTMLAnchorElement>(null);
+  const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
+  const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (downloadRef.current) {
+      downloadRef.current.download = `${props.currentFile.fileName}.${props.currentFile.fileExtension}`;
+    }
+    if (downloadPreviewRef.current) {
+      downloadPreviewRef.current.download = `${props.currentFile.fileName}-svg.svg`;
+    }
+  }, [props.currentFile]);
+
+  return (
     <>
       <PageHeader
         logo={
@@ -257,7 +493,7 @@ export function EditorToolbar(props: Props) {
                 <Button
                   data-testid="save-button"
                   variant={"primary"}
-                  onClick={props.onDownload}
+                  onClick={onDownload}
                   aria-label={"Save and Download button"}
                   className={"kogito--editor__toolbar button"}
                   ouiaId="save-and-download-button"
@@ -391,7 +627,7 @@ export function EditorToolbar(props: Props) {
                     onBlur={() => props.onRename(fileName)}
                   />
                 </div>
-                {props.isEdited && (
+                {isEdited && (
                   <span
                     aria-label={"File was edited"}
                     className={"kogito--editor__toolbar-edited"}
@@ -428,6 +664,15 @@ export function EditorToolbar(props: Props) {
         className={"kogito--editor__toolbar"}
         aria-label={"Page header"}
       />
+      <EmbedModal
+        currentFile={props.currentFile}
+        isOpen={isEmbedModalOpen}
+        onClose={() => setEmbedModalOpen(false)}
+        editor={props.editor}
+      />
+      <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
+      <a ref={downloadRef} />
+      <a ref={downloadPreviewRef} />
     </>
-  ) : null;
+  );
 }
