@@ -4,8 +4,8 @@ import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useOnlineI18n } from "../../common/i18n";
 import { File } from "@kie-tooling-core/editor/dist/channel";
-import { AlertTypes } from "../EditorPage";
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
+import { AlertsController } from "../Alerts/Alerts";
 
 const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tooling-core/monaco-editor");
 
@@ -14,7 +14,7 @@ export function MonacoEditorModal(props: {
   isOpen: boolean;
   currentFile: File;
   refreshDiagramEditor: () => void;
-  setOpenAlert: React.Dispatch<React.SetStateAction<AlertTypes>>;
+  alerts?: AlertsController;
 }) {
   const { i18n } = useOnlineI18n();
   const textEditorContainerRef = useRef<HTMLDivElement>(null);
@@ -54,7 +54,7 @@ export function MonacoEditorModal(props: {
             redo: () => {
               props.editor
                 ?.setContent(props.currentFile.fileName, contentAfterFix)
-                .then(() => props.setOpenAlert(AlertTypes.NONE));
+                .then(() => props.alerts?.closeAll());
             },
           });
         })
@@ -62,7 +62,7 @@ export function MonacoEditorModal(props: {
           setTextEditorContext(contentAfterFix);
         });
     };
-  }, [props.isOpen, props.editor, props.currentFile, textEditorContent]);
+  }, [props.alerts, props.isOpen, props.editor, props.currentFile, textEditorContent]);
 
   useEffect(() => {
     props.currentFile.getFileContents().then((content) => {

@@ -17,7 +17,7 @@
 import { Drawer, DrawerContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { act, render } from "@testing-library/react";
 import * as React from "react";
-import { DmnRunnerDrawer } from "../../../editor/DmnRunner/DmnRunnerDrawer";
+import { DmnRunnerDrawerPanelContent } from "../../../editor/DmnRunner/DmnRunnerDrawerPanelContent";
 import {
   usingTestingDmnRunnerContext,
   usingTestingGlobalContext,
@@ -52,7 +52,7 @@ describe("DmnRunnerDrawer", () => {
             usingTestingNotificationsPanelContext(
               usingTestingDmnRunnerContext(
                 <Drawer isExpanded={true}>
-                  <DrawerContent panelContent={<DmnRunnerDrawer editor={editor} />} />
+                  <DrawerContent panelContent={<DmnRunnerDrawerPanelContent editor={editor} />} />
                 </Drawer>,
                 editor
               )
@@ -97,7 +97,7 @@ describe("DmnRunnerDrawer", () => {
             usingTestingNotificationsPanelContext(
               usingTestingDmnRunnerContext(
                 <Drawer isExpanded={true}>
-                  <DrawerContent panelContent={<DmnRunnerDrawer editor={editor} />} />
+                  <DrawerContent panelContent={<DmnRunnerDrawerPanelContent editor={editor} />} />
                 </Drawer>,
                 editor
               )
@@ -138,7 +138,7 @@ describe("DmnRunnerDrawer", () => {
             usingTestingNotificationsPanelContext(
               usingTestingDmnRunnerContext(
                 <Drawer isExpanded={true}>
-                  <DrawerContent panelContent={<DmnRunnerDrawer editor={editor} />} />
+                  <DrawerContent panelContent={<DmnRunnerDrawerPanelContent editor={editor} />} />
                 </Drawer>,
                 editor
               )
