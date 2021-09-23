@@ -55,14 +55,18 @@ export const Alerts = React.forwardRef<AlertsController>((props: {}, forwardedRe
   );
 });
 
-export function useAlert(alertsRef: AlertsController | undefined, delegate: AlertDelegate, deps: React.DependencyList) {
+export function useAlert(
+  alertsController: AlertsController | undefined,
+  delegate: AlertDelegate,
+  deps: React.DependencyList
+) {
   const key = useMemo(() => {
     return `${Math.random()}`; //FIXME: tiago improve that.
   }, []);
 
   useEffect(() => {
-    alertsRef?.set(key, delegate);
-  }, [alertsRef, deps, key /* `delegate` purposefully left out. See explanation below. */]);
+    alertsController?.set(key, delegate);
+  }, [alertsController, deps, key /* `delegate` purposefully left out. See explanation below. */]);
 
   /** `delegate` will be different on every pass, as it's an arrow function.
    *  We only want to update the Alert when the `deps` array change, not everytime.
@@ -71,9 +75,9 @@ export function useAlert(alertsRef: AlertsController | undefined, delegate: Aler
 
   return useMemo(
     () => ({
-      close: () => alertsRef?.close(key),
-      show: () => alertsRef?.show(key),
+      close: () => alertsController?.close(key),
+      show: () => alertsController?.show(key),
     }),
-    [alertsRef, key]
+    [alertsController, key]
   );
 }
