@@ -21,7 +21,6 @@ import { useCallback, useEffect, useState } from "react";
 import { useGlobals } from "../../common/GlobalContext";
 import { useOnlineI18n } from "../../common/i18n";
 import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesModal } from "../KieToolingExtendedServices/KieToolingExtendedServicesModal";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { OpenShiftDeployedModel } from "../../settings/OpenShiftDeployedModel";
 import { DmnDevSandboxContext } from "./DmnDevSandboxContext";
@@ -30,17 +29,13 @@ import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandboxModalConfirmDepl
 import { useSettings } from "../../settings/SettingsContext";
 import { isConfigValid, OpenShiftSettingsConfig } from "../../settings/OpenShiftSettingsConfig";
 import { File } from "@kie-tooling-core/editor/dist/channel";
+import { AlertsController, useAlert } from "../Alerts/Alerts";
 
 interface Props {
   currentFile: File;
   children: React.ReactNode;
-  editor?: EmbeddedEditorRef;
-}
-
-enum AlertTypes {
-  NONE,
-  DEPLOY_STARTED_ERROR,
-  DEPLOY_STARTED_SUCCESS,
+  editor: EmbeddedEditorRef | undefined;
+  alerts: AlertsController | undefined;
 }
 
 const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
@@ -54,9 +49,40 @@ export function DmnDevSandboxContextProvider(props: Props) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
   const [deployments, setDeployments] = useState([] as OpenShiftDeployedModel[]);
-  const [openAlert, setOpenAlert] = useState(AlertTypes.NONE);
 
-  const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
+  const deployStartedErrorAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            className={"kogito--alert"}
+            variant="danger"
+            title={i18n.dmnDevSandbox.alerts.deployStartedError}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        </div>
+      ),
+      [i18n]
+    )
+  );
+
+  const deployStartedSuccessAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            className={"kogito--alert"}
+            variant="info"
+            title={i18n.dmnDevSandbox.alerts.deployStartedSuccess}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        </div>
+      ),
+      [i18n]
+    )
+  );
 
   const onDisconnect = useCallback(
     (closeModals: boolean) => {
@@ -74,7 +100,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
   const onDeploy = useCallback(
     async (config: OpenShiftSettingsConfig) => {
       if (!((await isConfigValid(config)) && (await settings.openshift.service.isConnectionEstablished(config)))) {
-        setOpenAlert(AlertTypes.DEPLOY_STARTED_ERROR);
+        deployStartedErrorAlert.show();
         return;
       }
 
@@ -95,12 +121,19 @@ export function DmnDevSandboxContextProvider(props: Props) {
               queryParams: { file: `${baseUrl}/${filename}`, readonly: `${true}` },
             }),
         });
-        setOpenAlert(AlertTypes.DEPLOY_STARTED_SUCCESS);
+        deployStartedSuccessAlert.show();
       } catch (error) {
-        setOpenAlert(AlertTypes.DEPLOY_STARTED_ERROR);
+        deployStartedErrorAlert.show();
       }
     },
-    [props.currentFile, globals.routes, props.editor, settings.openshift.service]
+    [
+      settings.openshift.service,
+      props.currentFile,
+      props.editor,
+      deployStartedSuccessAlert,
+      deployStartedErrorAlert,
+      globals.routes.editor,
+    ]
   );
 
   useEffect(() => {
@@ -164,26 +197,6 @@ export function DmnDevSandboxContextProvider(props: Props) {
         onDeploy,
       }}
     >
-      {openAlert === AlertTypes.DEPLOY_STARTED_ERROR && (
-        <div className={"kogito--alert-container kogito--editor__dmn-dev-sandbox-alert-container"}>
-          <Alert
-            className={"kogito--alert"}
-            variant="danger"
-            title={i18n.dmnDevSandbox.alerts.deployStartedError}
-            actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-          />
-        </div>
-      )}
-      {openAlert === AlertTypes.DEPLOY_STARTED_SUCCESS && (
-        <div className={"kogito--alert-container kogito--editor__dmn-dev-sandbox-alert-container"}>
-          <Alert
-            className={"kogito--alert"}
-            variant="info"
-            title={i18n.dmnDevSandbox.alerts.deployStartedSuccess}
-            actionClose={<AlertActionCloseButton onClose={closeAlert} />}
-          />
-        </div>
-      )}
       {props.children}
       <DmnDevSandboxModalConfirmDeploy />
     </DmnDevSandboxContext.Provider>

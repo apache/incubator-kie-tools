@@ -542,11 +542,6 @@
   outline: none;
 }
 
-.kogito--editor__dmn-dev-sandbox-alert-container {
-  z-index: 1000;
-  pointer-events: none;
-}
-
 .success-icon {
   color: var(--pf-global--success-color--100);
 }

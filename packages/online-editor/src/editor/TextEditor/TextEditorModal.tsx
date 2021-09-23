@@ -5,16 +5,14 @@ import { useEffect, useRef, useState } from "react";
 import { useOnlineI18n } from "../../common/i18n";
 import { File } from "@kie-tooling-core/editor/dist/channel";
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
-import { AlertsController } from "../Alerts/Alerts";
 
 const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tooling-core/monaco-editor");
 
-export function MonacoEditorModal(props: {
-  editor?: EmbeddedEditorRef;
+export function TextEditorModal(props: {
+  editor: EmbeddedEditorRef | undefined;
   isOpen: boolean;
   currentFile: File;
-  refreshDiagramEditor: () => void;
-  alerts?: AlertsController;
+  refreshEditor: () => void;
 }) {
   const { i18n } = useOnlineI18n();
   const textEditorContainerRef = useRef<HTMLDivElement>(null);
@@ -52,9 +50,7 @@ export function MonacoEditorModal(props: {
               props.editor?.setContent(props.currentFile.fileName, textEditorContent!);
             },
             redo: () => {
-              props.editor
-                ?.setContent(props.currentFile.fileName, contentAfterFix)
-                .then(() => props.alerts?.closeAll());
+              props.editor?.setContent(props.currentFile.fileName, contentAfterFix).then(props.refreshEditor);
             },
           });
         })
@@ -62,7 +58,7 @@ export function MonacoEditorModal(props: {
           setTextEditorContext(contentAfterFix);
         });
     };
-  }, [props.alerts, props.isOpen, props.editor, props.currentFile, textEditorContent]);
+  }, [props.refreshEditor, props.isOpen, props.editor, props.currentFile, textEditorContent]);
 
   useEffect(() => {
     props.currentFile.getFileContents().then((content) => {
@@ -78,7 +74,7 @@ export function MonacoEditorModal(props: {
       title={i18n.editorPage.textEditorModal.title(props.currentFile.fileName.split("/").pop()!)}
       isOpen={props.isOpen}
       actions={[
-        <Button key="confirm" variant="primary" onClick={props.refreshDiagramEditor}>
+        <Button key="confirm" variant="primary" onClick={props.refreshEditor}>
           {i18n.terms.done}
         </Button>,
       ]}

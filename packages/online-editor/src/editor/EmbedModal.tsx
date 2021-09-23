@@ -58,7 +58,7 @@ interface Props {
   currentFile: File;
   isOpen: boolean;
   onClose: () => void;
-  editor?: EmbeddedEditorRef;
+  editor: EmbeddedEditorRef | undefined;
 }
 
 export function EmbedModal(props: Props) {

@@ -41,10 +41,10 @@ import { useSettings } from "../settings/SettingsContext";
 import { File } from "@kie-tooling-core/editor/dist/channel";
 import { QueryParams } from "../common/Routes";
 import { EditorFetchFileErrorEmptyState, FetchFileError, FetchFileErrorReason } from "./EditorFetchFileErrorEmptyState";
-import { MonacoEditorModal } from "./Monaco/MonacoEditorModal";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
 import { Alerts, AlertsController, useAlert } from "./Alerts/Alerts";
 import { useController } from "../common/Hooks";
+import { TextEditorModal } from "./TextEditor/TextEditorModal";
 
 export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
   const globals = useGlobals();
@@ -208,11 +208,15 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
       return (
         <div className={"kogito--alert-container"}>
           <Alert
-            ouiaId="invalid-content-alert"
+            className={"kogito--alert"}
+            ouiaId="set-content-error-alert"
             variant="danger"
             title={i18n.editorPage.alerts.setContentError.title}
             actionLinks={
-              <AlertActionLink data-testid="unsaved-alert-save-button" onClick={() => setTextEditorModalOpen(true)}>
+              <AlertActionLink
+                data-testid="set-content-error-alert-button"
+                onClick={() => setTextEditorModalOpen(true)}
+              >
                 {i18n.editorPage.alerts.setContentError.action}
               </AlertActionLink>
             }
@@ -286,7 +290,7 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
     history.push({ pathname: globals.routes.home.path({}) });
   }, [unsavedAlert, globals, history, isDirty]);
 
-  const refreshDiagramEditor = useCallback(() => {
+  const refreshEditor = useCallback(() => {
     alerts?.closeAll();
     setTextEditorModalOpen(false);
   }, [alerts]);
@@ -308,7 +312,7 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
 
     editor?.validate().then((notifications) => {
       notificationsPanel
-        ?.getTabRef(i18n.terms.validation)
+        ?.getTab(i18n.terms.validation)
         ?.kogitoNotifications_setNotifications("", Array.isArray(notifications) ? notifications : []);
     });
   }, [currentFile, notificationsPanel, editor, i18n]);
@@ -320,7 +324,7 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
       {fetchFileError && <EditorFetchFileErrorEmptyState fetchFileError={fetchFileError} currentFile={currentFile} />}
       {!fetchFileError && (
         <DmnRunnerContextProvider currentFile={currentFile} editor={editor} notificationsPanel={notificationsPanel}>
-          <DmnDevSandboxContextProvider currentFile={currentFile} editor={editor}>
+          <DmnDevSandboxContextProvider currentFile={currentFile} editor={editor} alerts={alerts}>
             <Page
               header={
                 <EditorToolbar
@@ -359,16 +363,15 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
               </PageSection>
               <a ref={downloadRef} />
             </Page>
-            <MonacoEditorModal
-              alerts={alerts}
-              editor={editor}
-              currentFile={currentFile}
-              refreshDiagramEditor={refreshDiagramEditor}
-              isOpen={isTextEditorModalOpen}
-            />
           </DmnDevSandboxContextProvider>
         </DmnRunnerContextProvider>
       )}
+      <TextEditorModal
+        editor={editor}
+        currentFile={currentFile}
+        refreshEditor={refreshEditor}
+        isOpen={isTextEditorModalOpen}
+      />
     </>
   );
 }

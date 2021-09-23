@@ -6,8 +6,8 @@ import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { NotificationsPanelController } from "../NotificationsPanel/NotificationsPanel";
 
 export function DmnRunnerDrawer(props: {
-  editor?: EmbeddedEditorRef;
-  notificationsPanel?: NotificationsPanelController;
+  editor: EmbeddedEditorRef | undefined;
+  notificationsPanel: NotificationsPanelController | undefined;
   children: React.ReactNode;
 }) {
   const dmnRunner = useDmnRunner();

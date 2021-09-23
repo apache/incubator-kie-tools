@@ -47,8 +47,8 @@ enum ButtonPosition {
 }
 
 interface Props {
-  editor?: EmbeddedEditorRef;
-  notificationsPanel?: NotificationsPanelController;
+  editor: EmbeddedEditorRef | undefined;
+  notificationsPanel: NotificationsPanelController | undefined;
 }
 
 const DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION = 711;
@@ -127,9 +127,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           }));
         }
       );
-      props.notificationsPanel
-        ?.getTabRef(i18n.terms.execution)
-        ?.kogitoNotifications_setNotifications("", notifications);
+      props.notificationsPanel?.getTab(i18n.terms.execution)?.kogitoNotifications_setNotifications("", notifications);
     },
     [props.notificationsPanel, i18n]
   );

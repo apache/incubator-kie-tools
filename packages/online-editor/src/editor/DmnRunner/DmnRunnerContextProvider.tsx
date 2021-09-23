@@ -36,8 +36,8 @@ import { NotificationsPanelController } from "../NotificationsPanel/Notification
 
 interface Props {
   children: React.ReactNode;
-  editor?: EmbeddedEditorRef;
-  notificationsPanel?: NotificationsPanelController;
+  editor: EmbeddedEditorRef | undefined;
+  notificationsPanel: NotificationsPanelController | undefined;
   currentFile: File;
 }
 
@@ -107,7 +107,7 @@ export function DmnRunnerContextProvider(props: Props) {
           message: `${validationResult.messageType}: ${validationResult.message}`,
         }));
         props.notificationsPanel
-          ?.getTabRef(i18n.terms.validation)
+          ?.getTab(i18n.terms.validation)
           ?.kogitoNotifications_setNotifications("", notifications);
       });
   }, [props.editor, props.currentFile, props.notificationsPanel, service, i18n]);
@@ -121,7 +121,7 @@ export function DmnRunnerContextProvider(props: Props) {
     }
 
     if (!props.editor?.isReady || kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
-      props.notificationsPanel?.getTabRef(i18n.terms.validation)?.kogitoNotifications_setNotifications("", []);
+      props.notificationsPanel?.getTab(i18n.terms.validation)?.kogitoNotifications_setNotifications("", []);
       return;
     }
   }, [props.currentFile, props.editor, i18n, kieToolingExtendedServices, props.notificationsPanel]);

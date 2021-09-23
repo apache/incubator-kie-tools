@@ -54,8 +54,8 @@ import { AlertsController, useAlert } from "./Alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 
 export interface Props {
-  alerts?: AlertsController;
-  editor?: EmbeddedEditorRef;
+  alerts: AlertsController | undefined;
+  editor: EmbeddedEditorRef | undefined;
   currentFile: File;
   onRename: (newName: string) => void;
   onClose: () => void;

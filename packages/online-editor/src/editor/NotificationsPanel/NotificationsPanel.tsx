@@ -32,11 +32,10 @@ interface Props {
 
 export interface NotificationsPanelController {
   isOpen: boolean;
-  setIsOpen: React.Dispatch<boolean>;
-  getTabRef: (name: string) => NotificationsApi | null | undefined;
-  getTabNames: () => string[];
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  getTab: (name: string) => NotificationsApi | undefined;
   activeTab: string;
-  setActiveTab: React.Dispatch<string>;
+  setActiveTab: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const NotificationsPanel = React.forwardRef<NotificationsPanelController, Props>((props, forwardRef) => {
@@ -49,8 +48,7 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelController,
     () => ({
       isOpen,
       setIsOpen,
-      getTabRef: (name: string) => tabs.get(name)?.current,
-      getTabNames: () => [...tabs.keys()].map((tab) => tab),
+      getTab: (name: string) => tabs.get(name)?.current ?? undefined,
       activeTab,
       setActiveTab,
     }),
@@ -231,9 +229,9 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelController,
             </div>
           </div>
           <Tabs activeKey={activeTab} onSelect={onSelectTab}>
-            {[...tabsMap.entries()].map(([tabName, tabRef], index) => (
+            {[...tabsMap.entries()].map(([tabName, tabRef]) => (
               <Tab
-                key={`tab-${index}`}
+                key={tabName}
                 eventKey={tabName}
                 title={
                   <TabTitleText>
