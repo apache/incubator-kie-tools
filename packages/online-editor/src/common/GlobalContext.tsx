@@ -40,10 +40,10 @@ export function GlobalContextProvider(props: { externalFile?: File; senderTabId?
     () => ({
       targetOrigin: window.location.origin,
       mapping: new Map<SupportedFileExtensions, EnvelopeMapping>([
-        ["bpmn", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "/bpmn-envelope.html" }],
-        ["bpmn2", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "/bpmn-envelope.html" }],
-        ["dmn", { resourcesPathPrefix: "gwt-editors/dmn", envelopePath: "/dmn-envelope.html" }],
-        ["pmml", { resourcesPathPrefix: "", envelopePath: "/pmml-envelope.html" }],
+        ["bpmn", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "bpmn-envelope.html" }],
+        ["bpmn2", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "bpmn-envelope.html" }],
+        ["dmn", { resourcesPathPrefix: "gwt-editors/dmn", envelopePath: "dmn-envelope.html" }],
+        ["pmml", { resourcesPathPrefix: "", envelopePath: "pmml-envelope.html" }],
       ]),
     }),
     []

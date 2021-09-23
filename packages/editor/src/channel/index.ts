@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export { buildFile, EMPTY_FILE_BPMN, EMPTY_FILE_DMN, EMPTY_FILE_PMML, EMPTY_FILE_SCESIM, File, newFile } from "./File";
+export { EMPTY_FILE_BPMN, EMPTY_FILE_DMN, EMPTY_FILE_PMML, EMPTY_FILE_SCESIM, File, newFile } from "./File";
 export { StateControl } from "./StateControl";
