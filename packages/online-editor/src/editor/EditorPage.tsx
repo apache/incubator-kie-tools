@@ -206,21 +206,22 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
 
   const setContentErrorAlert = useAlert(
     alerts,
-    () => (
-      <div className={"kogito--alert-container"}>
-        <Alert
-          ouiaId="invalid-content-alert"
-          variant="danger"
-          title={i18n.editorPage.alerts.setContentError.title}
-          actionLinks={
-            <AlertActionLink data-testid="unsaved-alert-save-button" onClick={() => setTextEditorModalOpen(true)}>
-              {i18n.editorPage.alerts.setContentError.action}
-            </AlertActionLink>
-          }
-        />
-      </div>
-    ),
-    [i18n]
+    useCallback(() => {
+      return (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            ouiaId="invalid-content-alert"
+            variant="danger"
+            title={i18n.editorPage.alerts.setContentError.title}
+            actionLinks={
+              <AlertActionLink data-testid="unsaved-alert-save-button" onClick={() => setTextEditorModalOpen(true)}>
+                {i18n.editorPage.alerts.setContentError.action}
+              </AlertActionLink>
+            }
+          />
+        </div>
+      );
+    }, [i18n])
   );
 
   const closeWithoutSaving = useCallback(() => {
@@ -251,29 +252,31 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
 
   const unsavedAlert = useAlert(
     alerts,
-    ({ close }) => (
-      <div className={"kogito--alert-container"} data-testid="unsaved-alert">
-        <Alert
-          className={"kogito--alert"}
-          variant="warning"
-          title={i18n.editorPage.alerts.unsaved.title}
-          actionClose={<AlertActionCloseButton data-testid="unsaved-alert-close-button" onClose={close} />}
-          actionLinks={
-            <>
-              <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestDownload}>
-                {i18n.terms.save}
-              </AlertActionLink>
-              <AlertActionLink data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
-                {i18n.editorPage.alerts.unsaved.closeWithoutSaving}
-              </AlertActionLink>
-            </>
-          }
-        >
-          <p>{i18n.editorPage.alerts.unsaved.message}</p>
-        </Alert>
-      </div>
-    ),
-    [i18n, requestDownload, closeWithoutSaving]
+    useCallback(
+      ({ close }) => (
+        <div className={"kogito--alert-container"} data-testid="unsaved-alert">
+          <Alert
+            className={"kogito--alert"}
+            variant="warning"
+            title={i18n.editorPage.alerts.unsaved.title}
+            actionClose={<AlertActionCloseButton data-testid="unsaved-alert-close-button" onClose={close} />}
+            actionLinks={
+              <>
+                <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestDownload}>
+                  {i18n.terms.save}
+                </AlertActionLink>
+                <AlertActionLink data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
+                  {i18n.editorPage.alerts.unsaved.closeWithoutSaving}
+                </AlertActionLink>
+              </>
+            }
+          >
+            <p>{i18n.editorPage.alerts.unsaved.message}</p>
+          </Alert>
+        </div>
+      ),
+      [i18n, requestDownload, closeWithoutSaving]
+    )
   );
 
   const onClose = useCallback(() => {

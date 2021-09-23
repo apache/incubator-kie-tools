@@ -76,87 +76,103 @@ export function EditorToolbar(props: Props) {
 
   const copySuccessfulAlert = useAlert(
     props.alerts,
-    ({ close }) => (
-      <div className={"kogito--alert-container"}>
-        <Alert
-          className={"kogito--alert"}
-          variant="success"
-          title={i18n.editorPage.alerts.copy}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      </div>
-    ),
-    [i18n]
+    useCallback(
+      ({ close }) => (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            className={"kogito--alert"}
+            variant="success"
+            title={i18n.editorPage.alerts.copy}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        </div>
+      ),
+      [i18n]
+    )
   );
+
   const successUpdateGistAlert = useAlert(
     props.alerts,
-    ({ close }) => (
-      <div className={"kogito--alert-container"}>
-        <Alert
-          className={"kogito--alert"}
-          variant="success"
-          title={i18n.editorPage.alerts.updateGist}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      </div>
-    ),
-    [i18n]
+    useCallback(
+      ({ close }) => (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            className={"kogito--alert"}
+            variant="success"
+            title={i18n.editorPage.alerts.updateGist}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        </div>
+      ),
+      [i18n]
+    )
   );
   const successCreateGistAlert = useAlert(
     props.alerts,
-    ({ close }) => (
-      <div className={"kogito--alert-container"}>
-        <Alert
-          className={"kogito--alert"}
-          variant="success"
-          title={i18n.editorPage.alerts.createGist}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      </div>
-    ),
-    [i18n]
+    useCallback(
+      ({ close }) => (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            className={"kogito--alert"}
+            variant="success"
+            title={i18n.editorPage.alerts.createGist}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        </div>
+      ),
+      [i18n]
+    )
   );
+
   const invalidCurrentGistAlert = useAlert(
     props.alerts,
-    ({ close }) => (
-      <div className={"kogito--alert-container"}>
-        <Alert
-          className={"kogito--alert"}
-          variant="danger"
-          title={i18n.editorPage.alerts.invalidCurrentGist}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      </div>
-    ),
-    [i18n]
+    useCallback(
+      ({ close }) => (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            className={"kogito--alert"}
+            variant="danger"
+            title={i18n.editorPage.alerts.invalidCurrentGist}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        </div>
+      ),
+      [i18n]
+    )
   );
+
   const invalidGistFilenameAlert = useAlert(
     props.alerts,
-    ({ close }) => (
-      <div className={"kogito--alert-container"}>
-        <Alert
-          className={"kogito--alert"}
-          variant="danger"
-          title={i18n.editorPage.alerts.invalidGistFilename}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      </div>
-    ),
-    [i18n]
+    useCallback(
+      ({ close }) => (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            className={"kogito--alert"}
+            variant="danger"
+            title={i18n.editorPage.alerts.invalidGistFilename}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        </div>
+      ),
+      [i18n]
+    )
   );
+
   const errorAlert = useAlert(
     props.alerts,
-    ({ close }) => (
-      <div className={"kogito--alert-container"}>
-        <Alert
-          className={"kogito--alert"}
-          variant="danger"
-          title={i18n.editorPage.alerts.error}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      </div>
-    ),
-    [i18n]
+    useCallback(
+      ({ close }) => (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            className={"kogito--alert"}
+            variant="danger"
+            title={i18n.editorPage.alerts.error}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        </div>
+      ),
+      [i18n]
+    )
   );
 
   const queryParamFile = useMemo(() => {

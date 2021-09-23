@@ -55,23 +55,14 @@ export const Alerts = React.forwardRef<AlertsController>((props: {}, forwardedRe
   );
 });
 
-export function useAlert(
-  alertsController: AlertsController | undefined,
-  delegate: AlertDelegate,
-  deps: React.DependencyList
-) {
+export function useAlert(alertsController: AlertsController | undefined, delegate: AlertDelegate) {
   const key = useMemo(() => {
     return `${Math.random()}`; //FIXME: tiago improve that.
   }, []);
 
   useEffect(() => {
     alertsController?.set(key, delegate);
-  }, [alertsController, deps, key /* `delegate` purposefully left out. See explanation below. */]);
-
-  /** `delegate` will be different on every pass, as it's an arrow function.
-   *  We only want to update the Alert when the `deps` array change, not everytime.
-   *  In a way, this hook is a specialized version of a `useCallback`.
-   */
+  }, [alertsController, key, delegate]);
 
   return useMemo(
     () => ({
