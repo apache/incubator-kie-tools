@@ -15,16 +15,19 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { useOnlineI18n } from "../common/i18n";
-import { useFileUrl } from "../common/Hooks";
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
-import { GlobalContext } from "../common/GlobalContext";
+import { useSettings } from "../settings/SettingsContext";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
+import { useGlobals } from "../common/GlobalContext";
+import { QueryParams } from "../common/Routes";
+import { File } from "@kie-tooling-core/editor/dist/channel";
 
 type SupportedStandaloneEditorFileExtensions = "bpmn" | "bpmn2" | "dmn";
 type StandaloneEditorLibraryName = "BpmnEditor" | "DmnEditor";
@@ -52,49 +55,50 @@ enum ContentSource {
 }
 
 interface Props {
+  currentFile: File;
   isOpen: boolean;
   onClose: () => void;
-  editor?: EmbeddedEditorRef;
-  fileExtension: string;
+  editor: EmbeddedEditorRef | undefined;
 }
 
 export function EmbedModal(props: Props) {
-  const context = useContext(GlobalContext);
+  const queryParams = useQueryParams();
+  const settings = useSettings();
+  const globals = useGlobals();
   const [embedCode, setEmbedCode] = useState("");
   const [contentSource, setContentSource] = useState(ContentSource.CURRENT_CONTENT);
+  const [editorContent, setEditorContent] = useState("");
   const { i18n } = useOnlineI18n();
-  const fileUrl = useFileUrl();
 
-  const isGist = useMemo(() => context.githubService.isGist(fileUrl), [fileUrl, context]);
+  useEffect(() => {
+    if (props.isOpen) {
+      props.editor?.getContent().then((c) => setEditorContent(c));
+    }
+  }, [props.editor, props.isOpen]);
 
-  const isSupportedStandaloneEditorFileExtensions = useCallback(
-    (toBeDetermined: string): toBeDetermined is SupportedStandaloneEditorFileExtensions => {
-      return toBeDetermined === "bpmn" || toBeDetermined === "bpmn2" || toBeDetermined === "dmn";
-    },
-    []
+  const isGist = useMemo(
+    () => settings.github.service.isGist(queryParams.get(QueryParams.FILE) ?? ""),
+    [queryParams, settings.github.service]
   );
 
-  const getCurrentContentScript = useCallback(
-    async (libraryName: string) => {
-      const editorContent = ((await props.editor?.getContent()) ?? "").replace(/(\r\n|\n|\r)/gm, "");
-      return `
+  const getCurrentContentScript = useCallback((content: string, libraryName: string) => {
+    const editorContent = content.replace(/(\r\n|\n|\r)/gm, "");
+    return `
     <script>
       ${libraryName}.open({container: document.body, readOnly: true, initialContent: '${editorContent}', origin: "*" })
     </script>`;
-    },
-    [props.editor]
-  );
+  }, []);
 
   const getGithubGistScript = useCallback(
     (libraryName: string) => {
       return `
     <script>
-      fetch("${fileUrl}")
+      fetch("${queryParams.get(QueryParams.FILE)}")
         .then(response => response.text())
         .then(content => ${libraryName}.open({container: document.body, readOnly: true, initialContent: content, origin: "*" }))
     </script>`;
     },
-    [fileUrl]
+    [queryParams]
   );
 
   const getStandaloneEditorIframeSrcdoc = useCallback((script: string, scriptUrl: string) => {
@@ -121,36 +125,35 @@ export function EmbedModal(props: Props) {
     </html>`;
   }, []);
 
-  const getStandaloneEditorIframeOuterHtml = useCallback(async () => {
-    if (!isSupportedStandaloneEditorFileExtensions(props.fileExtension)) {
-      return "";
+  useEffect(() => {
+    if (
+      props.currentFile.fileExtension !== "bpmn" &&
+      props.currentFile.fileExtension !== "bpmn2" &&
+      props.currentFile.fileExtension !== "dmn"
+    ) {
+      return;
     }
 
     const iframe = document.createElement("iframe");
     iframe.width = "100%";
     iframe.height = "100%";
-    const { libraryName, scriptUrl } = editorStandaloneClassMapping.get(props.fileExtension)!;
+    const { libraryName, scriptUrl } = editorStandaloneClassMapping.get(props.currentFile.fileExtension)!;
 
     const script =
       contentSource === ContentSource.CURRENT_CONTENT
-        ? await getCurrentContentScript(libraryName)
+        ? getCurrentContentScript(editorContent, libraryName)
         : getGithubGistScript(libraryName);
 
     iframe.srcdoc = getStandaloneEditorIframeSrcdoc(script, scriptUrl);
-    return iframe.outerHTML;
+    setEmbedCode(iframe.outerHTML);
   }, [
-    props.isOpen,
-    props.fileExtension,
     contentSource,
-    getGithubGistScript,
+    editorContent,
     getCurrentContentScript,
+    getGithubGistScript,
     getStandaloneEditorIframeSrcdoc,
-    isSupportedStandaloneEditorFileExtensions,
+    props.currentFile.fileExtension,
   ]);
-
-  useEffect(() => {
-    getStandaloneEditorIframeOuterHtml().then((outerHtml) => setEmbedCode(outerHtml));
-  }, [getStandaloneEditorIframeOuterHtml]);
 
   return (
     <Modal

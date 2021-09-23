@@ -15,16 +15,9 @@
  */
 
 import { File, newFile } from "@kie-tooling-core/editor/dist/channel";
-import {
-  ContentType,
-  ResourceContent,
-  ResourceContentOptions,
-  ResourceListOptions,
-  ResourcesList,
-} from "@kie-tooling-core/workspace/dist/api";
+import { ContentType, ResourceContent, ResourcesList } from "@kie-tooling-core/workspace/dist/api";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { GithubService } from "../common/GithubService";
 import { FileHandler } from "./handler/FileHandler";
 import { GitRepositoryFileHandler } from "./handler/GitRepositoryFileHandler";
 import { LocalFileHandler } from "./handler/LocalFileHandler";
@@ -38,6 +31,11 @@ import { StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { SUPPORTED_FILES, SUPPORTED_FILES_EDITABLE_PATTERN } from "./SupportedFiles";
 import { WorkspaceContext } from "./WorkspaceContext";
+import { useSettings } from "../settings/SettingsContext";
+import { useHistory } from "react-router";
+import { useGlobals } from "../common/GlobalContext";
+import { QueryParams } from "../common/Routes";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
 
 const INDEXED_DB_NAME = "kogito-online";
 const GIT_CORS_PROXY = "https://cors.isomorphic-git.org"; // TODO CAPONETTO: Deploy our own proxy (https://github.com/isomorphic-git/cors-proxy)
@@ -48,13 +46,14 @@ const GIT_USER_EMAIL = "kietooling@gmail.com";
 
 interface Props {
   children: React.ReactNode;
-  file?: File;
-  githubService: GithubService;
 }
 
 export function WorkspaceContextProvider(props: Props) {
   const [file, setFile] = useState<File>();
   const [active, setActive] = useState<ActiveWorkspace>();
+  const settings = useSettings();
+  const history = useHistory();
+  const globals = useGlobals();
 
   const broadcastService = useMemo(() => {
     const service = new BroadcastService();
@@ -68,30 +67,32 @@ export function WorkspaceContextProvider(props: Props) {
     [storageService, broadcastService]
   );
   const gitService = useMemo(() => new GitService(GIT_CORS_PROXY, storageService), [storageService]);
-  const singleFileMode = useMemo(() => props.file, [props.file]);
 
   const authInfo = useMemo(
     () => ({
       name: GIT_USER_FULLNAME,
       email: GIT_USER_EMAIL,
       onAuth: () => ({
-        username: props.githubService.getLogin(),
-        password: props.githubService.resolveToken(),
+        username: settings.github.user!,
+        password: settings.github.token!,
       }),
     }),
-    [props.githubService]
+    [settings.github]
   );
 
-  const reloadWithPath = useCallback((file: File) => {
-    if (!file.path) {
-      throw new Error("File path is not defined");
-    }
-    // TODO CAPONETTO: Replace this code after merge with Tiago's branch
-    setTimeout(() => {
-      // Check: errors occur without this timeout
-      window.location.href = `?path=${file.path}#/editor/${file.fileExtension}`;
-    }, 500);
-  }, []);
+  const reloadWithPath = useCallback(
+    (file: File) => {
+      if (!file.path) {
+        throw new Error("File path is not defined");
+      }
+
+      history.push({
+        pathname: globals.routes.editor.path({ extension: file.fileExtension }),
+        search: globals.routes.editor.queryString({ path: file.path }),
+      });
+    },
+    [history, globals]
+  );
 
   const registerBroadcastHandlers = useCallback(() => {
     const updateFiles = async (targetFilePath: string) => {
@@ -146,14 +147,9 @@ export function WorkspaceContextProvider(props: Props) {
 
   const onFileChanged = useCallback(
     (file: File) => {
-      if (singleFileMode) {
-        setFile(file);
-        return;
-      }
-
       reloadWithPath(file);
     },
-    [singleFileMode, reloadWithPath]
+    [reloadWithPath]
   );
 
   const createWorkspace = useCallback(
@@ -197,7 +193,6 @@ export function WorkspaceContextProvider(props: Props) {
         origin: { url: repositoryUrl, branch: sourceBranch } as GitHubRepositoryOrigin,
       };
 
-      await props.githubService.authenticate();
       const fileHandler = new GitRepositoryFileHandler({
         authInfo: authInfo,
         repositoryUrl: repositoryUrl,
@@ -208,7 +203,7 @@ export function WorkspaceContextProvider(props: Props) {
       });
       await createWorkspace(descriptor, fileHandler);
     },
-    [workspaceService, props.githubService, authInfo, gitService, storageService, createWorkspace]
+    [workspaceService, authInfo, gitService, storageService, createWorkspace]
   );
 
   const openWorkspaceByFile = useCallback(
@@ -241,11 +236,6 @@ export function WorkspaceContextProvider(props: Props) {
         throw new Error("No active file");
       }
 
-      if (singleFileMode) {
-        setFile({ ...file, fileName: newFileName });
-        return;
-      }
-
       if (!active) {
         throw new Error("No active workspace");
       }
@@ -258,17 +248,16 @@ export function WorkspaceContextProvider(props: Props) {
       updatedFiles[fileIndex] = renamedFile;
       setActive({ ...active, files: updatedFiles });
 
-      window.history.pushState("", "", `?path=${renamedFile.path}#/editor/${renamedFile.fileExtension}`);
+      history.push({
+        pathname: globals.routes.editor.path({ extension: renamedFile.fileExtension }),
+        search: globals.routes.editor.queryString({ path: renamedFile.path }),
+      });
     },
-    [singleFileMode, storageService, file, active]
+    [storageService, file, active, history, globals]
   );
 
   const updateCurrentFile = useCallback(
     async (getFileContents: () => Promise<string | undefined>) => {
-      if (singleFileMode) {
-        return;
-      }
-
       if (!file) {
         throw new Error("No active file");
       }
@@ -276,7 +265,7 @@ export function WorkspaceContextProvider(props: Props) {
       const updatedFile = { ...file, getFileContents };
       await storageService.updateFile(updatedFile, true);
     },
-    [file, singleFileMode, storageService]
+    [file, storageService]
   );
 
   const addEmptyFile = useCallback(
@@ -308,7 +297,6 @@ export function WorkspaceContextProvider(props: Props) {
     }
 
     if (active.kind === WorkspaceKind.GITHUB_REPOSITORY) {
-      await props.githubService.authenticate();
       const origin = active.descriptor.origin as GitHubRepositoryOrigin;
       const fileHandler = new GitRepositoryFileHandler({
         authInfo: authInfo,
@@ -320,10 +308,10 @@ export function WorkspaceContextProvider(props: Props) {
       });
       await fileHandler.sync(active.descriptor);
     }
-  }, [active, authInfo, gitService, props.githubService, storageService, workspaceService]);
+  }, [active, authInfo, gitService, storageService, workspaceService]);
 
   const resourceContentGet = useCallback(
-    async (path: string, opts?: ResourceContentOptions) => {
+    async (path: string) => {
       if (!active) {
         return;
       }
@@ -341,7 +329,7 @@ export function WorkspaceContextProvider(props: Props) {
   );
 
   const resourceContentList = useCallback(
-    async (globPattern: string, opts?: ResourceListOptions) => {
+    async (globPattern: string) => {
       if (!active) {
         return new ResourcesList(globPattern, []);
       }
@@ -354,34 +342,31 @@ export function WorkspaceContextProvider(props: Props) {
   );
 
   useEffect(() => {
-    if (singleFileMode) {
-      return;
-    }
-
     registerBroadcastHandlers();
-  }, [registerBroadcastHandlers, singleFileMode]);
+  }, [registerBroadcastHandlers]);
+
+  const queryParams = useQueryParams();
+
+  const queryParamPath = useMemo(() => {
+    return queryParams.get(QueryParams.PATH);
+  }, [queryParams]);
 
   useEffect(() => {
     workspaceService.init().then(async () => {
-      if (singleFileMode) {
-        setFile(props.file);
+      if (!queryParamPath) {
         return;
       }
 
-      const urlParams = new URLSearchParams(window.location.search);
-      if (!urlParams.has("path")) {
-        return;
-      }
-
-      await openWorkspaceByPath(urlParams.get("path")!);
+      await openWorkspaceByPath(queryParamPath);
     });
-  }, []); //once
+  }, [openWorkspaceByPath, queryParamPath, workspaceService]);
 
   return (
     <WorkspaceContext.Provider
       value={{
         file,
         active,
+        setActive,
         resourceContentGet,
         resourceContentList,
         openWorkspaceByPath,

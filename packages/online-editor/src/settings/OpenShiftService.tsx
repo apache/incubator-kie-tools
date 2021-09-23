@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { DeployedModel, DeployedModelState } from "./DeployedModel";
-import { DmnDevSandboxConnectionConfig } from "./DmnDevSandboxConnectionConfig";
+import { OpenShiftDeployedModel, OpenShiftDeployedModelState } from "./OpenShiftDeployedModel";
 import { Build, Builds, CreateBuild, DeleteBuild, ListBuilds } from "./resources/Build";
 import { CreateBuildConfig, DeleteBuildConfig } from "./resources/BuildConfig";
 import {
@@ -30,16 +29,19 @@ import { GetProject } from "./resources/Project";
 import { KOGITO_CREATED_BY, KOGITO_FILENAME, Resource, ResourceFetch } from "./resources/Resource";
 import { CreateRoute, DeleteRoute, ListRoutes, Route, Routes } from "./resources/Route";
 import { CreateService, DeleteService } from "./resources/Service";
+import { isConfigValid, OpenShiftSettingsConfig, saveConfigCookie } from "./OpenShiftSettingsConfig";
+import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 
 export const DEVELOPER_SANDBOX_URL = "https://developers.redhat.com/developer-sandbox";
 export const DEVELOPER_SANDBOX_GET_STARTED_URL = "https://developers.redhat.com/developer-sandbox/get-started";
+export const DEFAULT_CREATED_BY = "online-editor";
 
-export class DmnDevSandboxService {
+export class OpenShiftService {
   private readonly RESOURCE_NAME_PREFIX = "dmn-dev-sandbox";
 
-  public constructor(private readonly createdBy: string, private readonly proxyUrl: string) {}
+  public constructor(private readonly proxyUrl: string) {}
 
-  public async isConnectionEstablished(config: DmnDevSandboxConnectionConfig): Promise<boolean> {
+  public async isConnectionEstablished(config: OpenShiftSettingsConfig): Promise<boolean> {
     try {
       await this.fetchResource(
         new GetProject({
@@ -55,7 +57,11 @@ export class DmnDevSandboxService {
     }
   }
 
-  public async loadDeployments(config: DmnDevSandboxConnectionConfig): Promise<DeployedModel[]> {
+  public async onCheckConfig(config: OpenShiftSettingsConfig) {
+    return isConfigValid(config) && (await this.isConnectionEstablished(config));
+  }
+
+  public async loadDeployments(config: OpenShiftSettingsConfig): Promise<OpenShiftDeployedModel[]> {
     const commonArgs = {
       host: config.host,
       namespace: config.namespace,
@@ -75,7 +81,7 @@ export class DmnDevSandboxService {
       .filter(
         (deployment: Deployment) =>
           KOGITO_CREATED_BY in deployment.metadata.labels &&
-          deployment.metadata.labels[KOGITO_CREATED_BY] === this.createdBy &&
+          deployment.metadata.labels[KOGITO_CREATED_BY] === DEFAULT_CREATED_BY &&
           routes.items.some((route: Route) => route.metadata.name === deployment.metadata.name)
       )
       .map((deployment: Deployment) => {
@@ -95,11 +101,16 @@ export class DmnDevSandboxService {
       });
   }
 
-  public async deploy(filename: string, diagramContent: string, config: DmnDevSandboxConnectionConfig): Promise<void> {
+  public async deploy(args: {
+    filename: string;
+    editorContent: string;
+    config: OpenShiftSettingsConfig;
+    onlineEditorUrl: (baseUrl: string) => string;
+  }): Promise<void> {
     const commonArgs = {
-      host: config.host,
-      namespace: config.namespace,
-      token: config.token,
+      host: args.config.host,
+      namespace: args.config.namespace,
+      token: args.config.token,
       resourceName: `${this.RESOURCE_NAME_PREFIX}-${this.generateRandomId()}`,
     };
 
@@ -123,20 +134,20 @@ export class DmnDevSandboxService {
         ...commonArgs,
         buildConfigUid: buildConfig.metadata.uid,
         model: {
-          filename: filename,
-          content: diagramContent,
+          filename: args.filename,
+          content: args.editorContent,
         },
         urls: {
           index: baseUrl,
           swaggerUI: this.composeSwaggerUIUrl(baseUrl),
-          onlineEditor: this.composeOnlineEditorUrl(baseUrl, filename),
+          onlineEditor: args.onlineEditorUrl(baseUrl),
         },
       }),
       rollbacks.slice(1)
     );
 
     await this.fetchResource(
-      new CreateDeployment({ ...commonArgs, filename: filename, createdBy: this.createdBy }),
+      new CreateDeployment({ ...commonArgs, filename: args.filename, createdBy: DEFAULT_CREATED_BY }),
       rollbacks
     );
   }
@@ -171,31 +182,25 @@ export class DmnDevSandboxService {
     return `${baseUrl}/q/swagger-ui`;
   }
 
-  private composeOnlineEditorUrl(baseUrl: string, filename: string): string {
-    return `${
-      process.env.WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl
-    }/?readonly=true&file=${baseUrl}/${encodeURIComponent(filename)}#/editor/dmn`;
-  }
-
-  private extractDeploymentState(deployment: Deployment, build: Build | undefined): DeployedModelState {
+  private extractDeploymentState(deployment: Deployment, build: Build | undefined): OpenShiftDeployedModelState {
     if (!build) {
-      return DeployedModelState.DOWN;
+      return OpenShiftDeployedModelState.DOWN;
     }
 
     if (["New", "Pending"].includes(build.status.phase)) {
-      return DeployedModelState.PREPARING;
+      return OpenShiftDeployedModelState.PREPARING;
     }
 
     if (["Failed", "Error", "Cancelled"].includes(build.status.phase)) {
-      return DeployedModelState.DOWN;
+      return OpenShiftDeployedModelState.DOWN;
     }
 
     if (build.status.phase === "Running") {
-      return DeployedModelState.IN_PROGRESS;
+      return OpenShiftDeployedModelState.IN_PROGRESS;
     }
 
     if (!deployment.status.replicas || +deployment.status.replicas === 0) {
-      return DeployedModelState.DOWN;
+      return OpenShiftDeployedModelState.DOWN;
     }
 
     const progressingCondition = deployment.status.conditions?.find(
@@ -203,13 +208,13 @@ export class DmnDevSandboxService {
     );
 
     if (!progressingCondition || progressingCondition.status !== "True") {
-      return DeployedModelState.DOWN;
+      return OpenShiftDeployedModelState.DOWN;
     }
 
     if (!deployment.status.readyReplicas || +deployment.status.readyReplicas === 0) {
-      return DeployedModelState.IN_PROGRESS;
+      return OpenShiftDeployedModelState.IN_PROGRESS;
     }
 
-    return DeployedModelState.UP;
+    return OpenShiftDeployedModelState.UP;
   }
 }

@@ -14,72 +14,63 @@
  * limitations under the License.
  */
 
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
 import { File } from "@kie-tooling-core/editor/dist/channel";
-import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
 import * as React from "react";
 import { useMemo } from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
-import { GithubService } from "./common/GithubService";
-import { GlobalContext } from "./common/GlobalContext";
-import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
-import { Routes } from "./common/Routes";
+import { GlobalContextProvider, SupportedFileExtensions, useGlobals } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
-import { DownloadHubModal } from "./home/DownloadHubModal";
+import { OnlineI18nContextProvider } from "./common/i18n";
 import { HomePage } from "./home/HomePage";
+import { DownloadHubModal } from "./home/DownloadHubModal";
 import { NoMatchPage } from "./NoMatchPage";
-import { WorkspaceContext } from "./workspace/WorkspaceContext";
+import { KieToolingExtendedServicesContextProvider } from "./editor/KieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
+import { SettingsContextProvider } from "./settings/SettingsContext";
 import { WorkspaceContextProvider } from "./workspace/WorkspaceContextProvider";
 
-interface Props {
-  file?: File;
-  readonly: boolean;
-  external: boolean;
-  senderTabId?: string;
-  githubService: GithubService;
-  editorEnvelopeLocator: EditorEnvelopeLocator;
+export function App(props: { externalFile?: File; senderTabId?: string }) {
+  return (
+    <HashRouter>
+      {nest(
+        [OnlineI18nContextProvider, {}],
+        [GlobalContextProvider, props],
+        [KieToolingExtendedServicesContextProvider, {}],
+        [SettingsContextProvider, {}],
+        [WorkspaceContextProvider, {}],
+        [RoutesSwitch, {}]
+      )}
+    </HashRouter>
+  );
 }
 
-export function App(props: Props) {
-  const routes = useMemo(() => new Routes(), []);
+function RoutesSwitch() {
+  const globals = useGlobals();
+
+  const supportedExtensions = useMemo(
+    () => Array.from(globals.editorEnvelopeLocator.mapping.keys()).join("|"),
+    [globals.editorEnvelopeLocator]
+  );
 
   return (
-    <I18nDictionariesProvider
-      defaults={onlineI18nDefaults}
-      dictionaries={onlineI18nDictionaries}
-      initialLocale={navigator.language}
-      ctx={OnlineI18nContext}
-    >
-      <GlobalContext.Provider
-        value={{
-          routes,
-          editorEnvelopeLocator: props.editorEnvelopeLocator,
-          readonly: props.readonly,
-          external: props.external,
-          senderTabId: props.senderTabId,
-          githubService: props.githubService,
-          isChrome: !!window.chrome,
-        }}
-      >
-        <WorkspaceContextProvider file={props.file} githubService={props.githubService}>
-          <HashRouter>
-            <Switch>
-              <Route path={routes.editor.url({ type: ":type" })}>
-                <EditorPage />
-              </Route>
-              <Route exact={true} path={routes.home.url({})}>
-                <HomePage />
-              </Route>
-              <Route exact={true} path={routes.downloadHub.url({})}>
-                <HomePage />
-                <DownloadHubModal />
-              </Route>
-              <Route component={NoMatchPage} />
-            </Switch>
-          </HashRouter>
-        </WorkspaceContextProvider>
-      </GlobalContext.Provider>
-    </I18nDictionariesProvider>
+    <Switch>
+      <Route path={globals.routes.editor.path({ extension: `:extension(${supportedExtensions})` })}>
+        {({ match }) => <EditorPage forExtension={match!.params.extension as SupportedFileExtensions} />}
+      </Route>
+      <Route exact={true} path={globals.routes.home.path({})}>
+        <HomePage />
+      </Route>
+      <Route exact={true} path={globals.routes.download.path({})}>
+        <HomePage />
+        <DownloadHubModal />
+      </Route>
+      <Route component={NoMatchPage} />
+    </Switch>
   );
+}
+
+function nest(...components: Array<[(...args: any[]) => any, object]>) {
+  return components.reduceRight((acc, [Component, props]) => {
+    return <Component {...props}>{acc}</Component>;
+  }, <></>);
 }

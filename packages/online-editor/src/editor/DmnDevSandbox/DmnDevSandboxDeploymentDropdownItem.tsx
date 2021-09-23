@@ -22,11 +22,11 @@ import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../common/i18n";
-import { DeployedModel, DeployedModelState } from "./DeployedModel";
+import { OpenShiftDeployedModel, OpenShiftDeployedModelState } from "../../settings/OpenShiftDeployedModel";
 
 interface Props {
   id: number;
-  deployment: DeployedModel;
+  deployment: OpenShiftDeployedModel;
 }
 
 export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
@@ -46,7 +46,7 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
   }, [props.deployment.filename]);
 
   const stateIcon = useMemo(() => {
-    if (props.deployment.state === DeployedModelState.UP) {
+    if (props.deployment.state === OpenShiftDeployedModelState.UP) {
       return (
         <Tooltip key={`deployment-up-${props.id}`} position="left" content={i18n.dmnDevSandbox.dropdown.item.upTooltip}>
           <CheckCircleIcon
@@ -58,8 +58,8 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
     }
 
     if (
-      props.deployment.state === DeployedModelState.IN_PROGRESS ||
-      props.deployment.state === DeployedModelState.PREPARING
+      props.deployment.state === OpenShiftDeployedModelState.IN_PROGRESS ||
+      props.deployment.state === OpenShiftDeployedModelState.PREPARING
     ) {
       return (
         <Tooltip
@@ -96,7 +96,7 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
   return (
     <DropdownItem
       id="dmn-dev-sandbox-deployment-item-button"
-      isDisabled={props.deployment.state !== DeployedModelState.UP}
+      isDisabled={props.deployment.state !== OpenShiftDeployedModelState.UP}
       key={`dmn-dev-sandbox-dropdown-item-${props.id}`}
       onClick={onItemClicked}
       description={i18n.dmnDevSandbox.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}

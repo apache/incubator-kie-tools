@@ -37,7 +37,7 @@ export function AnimatedTripleDotLabel({ label, interval = 1000 }: Props) {
     return () => {
       clearTimeout(timeout);
     };
-  }, [dots]);
+  }, [interval, dots]);
 
   return (
     <p>

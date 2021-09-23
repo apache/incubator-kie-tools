@@ -17,40 +17,23 @@
 import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
 import * as React from "react";
 import { useContext } from "react";
-import { jsonParseWithDate } from "../../common/utils";
 import { DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 
 export interface DmnRunnerContextType {
   status: DmnRunnerStatus;
-  setStatus: React.Dispatch<DmnRunnerStatus>;
   formSchema?: DmnFormSchema;
   isDrawerExpanded: boolean;
-  setDrawerExpanded: React.Dispatch<boolean>;
+  setDrawerExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   formData: any;
-  setFormData: React.Dispatch<any>;
+  setFormData: React.Dispatch<React.SetStateAction<object>>;
   service: DmnRunnerService;
   formError: boolean;
-  setFormError: React.Dispatch<boolean>;
+  setFormError: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({
-  status: DmnRunnerStatus.UNAVAILABLE,
-  isDrawerOpen: false,
-  isModalOpen: false,
-} as any);
+export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({} as any);
 
 export function useDmnRunner() {
   return useContext(DmnRunnerContext);
-}
-
-export function extractFormInputsFromUrlParams(): any {
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has("formInputs")) {
-    try {
-      return jsonParseWithDate(decodeURIComponent(urlParams.get("formInputs")!));
-    } catch (e) {
-      console.error("Cannot parse formInputs", e);
-    }
-  }
 }

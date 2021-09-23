@@ -16,36 +16,22 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { DeployedModel } from "./DeployedModel";
-import { DmnDevSandboxConnectionConfig, EMPTY_CONFIG } from "./DmnDevSandboxConnectionConfig";
-import { DmnDevSandboxInstanceStatus } from "./DmnDevSandboxInstanceStatus";
+import { OpenShiftDeployedModel } from "../../settings/OpenShiftDeployedModel";
+import { OpenShiftSettingsConfig } from "../../settings/OpenShiftSettingsConfig";
 
 export interface DmnDevSandboxContextType {
-  deployments: DeployedModel[];
-  currentConfig: DmnDevSandboxConnectionConfig;
-  instanceStatus: DmnDevSandboxInstanceStatus;
+  deployments: OpenShiftDeployedModel[];
   isDropdownOpen: boolean;
-  isConfigModalOpen: boolean;
-  isConfigWizardOpen: boolean;
   isConfirmDeployModalOpen: boolean;
-  setDeployments: React.Dispatch<DeployedModel[]>;
-  setInstanceStatus: React.Dispatch<DmnDevSandboxInstanceStatus>;
+  setDeployments: React.Dispatch<OpenShiftDeployedModel[]>;
   setDropdownOpen: React.Dispatch<boolean>;
-  setConfigModalOpen: React.Dispatch<boolean>;
-  setConfigWizardOpen: React.Dispatch<boolean>;
   setConfirmDeployModalOpen: React.Dispatch<boolean>;
-  onDeploy: (config: DmnDevSandboxConnectionConfig) => Promise<void>;
-  onCheckConfig: (config: DmnDevSandboxConnectionConfig, persist: boolean) => Promise<boolean>;
-  onResetConfig: () => void;
+  onDeploy: (config: OpenShiftSettingsConfig) => Promise<void>;
 }
 
 export const DmnDevSandboxContext = React.createContext<DmnDevSandboxContextType>({
   deployments: [],
-  currentConfig: EMPTY_CONFIG,
-  instanceStatus: DmnDevSandboxInstanceStatus.UNAVAILABLE,
   isDropdownOpen: false,
-  isConfigModalOpen: false,
-  isConfigWizardOpen: false,
   isConfirmDeployModalOpen: false,
 } as any);
 

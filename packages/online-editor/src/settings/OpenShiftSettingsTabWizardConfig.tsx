@@ -16,11 +16,10 @@
 
 import { I18nHtml } from "@kie-tooling-core/i18n/dist/react-components";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { List, ListComponent, ListItem, OrderType } from "@patternfly/react-core/dist/js/components/List";
-import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -29,18 +28,21 @@ import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/exter
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useOnlineI18n } from "../../common/i18n";
-import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { useKieToolingExtendedServices } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { useOnlineI18n } from "../common/i18n";
+import { useSettings } from "./SettingsContext";
 import {
-  DmnDevSandboxConnectionConfig,
   isConfigValid,
   isHostValid,
-  isTokenValid,
   isNamespaceValid,
-} from "./DmnDevSandboxConnectionConfig";
-import { useDmnDevSandbox } from "./DmnDevSandboxContext";
-import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "./DmnDevSandboxService";
+  isTokenValid,
+  OpenShiftSettingsConfig,
+  saveConfigCookie,
+} from "./OpenShiftSettingsConfig";
+import { KieToolingExtendedServicesStatus } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "./OpenShiftService";
+import { OpenShiftSettingsTabMode } from "./OpenShiftSettingsTab";
+import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 
 enum WizardStepIds {
   NAMESPACE = "NAMESPACE",
@@ -48,19 +50,15 @@ enum WizardStepIds {
   CONNECT = "CONNECT",
 }
 
-enum FinishOperation {
-  DEPLOY_NOW = "DEPLOY_NOW",
-  CONTINUE_EDITING = "CONTINUE_EDITING",
-}
-
-export function DmnDevSandboxWizardConfig() {
+export function OpenShiftSettingsTabWizardConfig(props: {
+  setMode: React.Dispatch<React.SetStateAction<OpenShiftSettingsTabMode>>;
+}) {
   const kieToolingExtendedServices = useKieToolingExtendedServices();
-  const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
-  const [config, setConfig] = useState(dmnDevSandboxContext.currentConfig);
+  const settings = useSettings();
+  const [config, setConfig] = useState(settings.openshift.config.get);
   const [isConfigValidated, setConfigValidated] = useState(false);
-  const [isDeployLoading, setDeployLoading] = useState(false);
-  const [isContinueEditingLoading, setContinueEditingLoading] = useState(false);
+  const [isSaveLoading, setSaveLoading] = useState(false);
   const [isConnectLoading, setConnectLoading] = useState(false);
 
   const onClearHost = useCallback(() => setConfig({ ...config, host: "" }), [config]);
@@ -87,82 +85,66 @@ export function DmnDevSandboxWizardConfig() {
     if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
       return;
     }
-    setConfig(dmnDevSandboxContext.currentConfig);
-  }, [dmnDevSandboxContext.currentConfig, kieToolingExtendedServices.status]);
+    setConfig(settings.openshift.config.get);
+  }, [settings.openshift.config.get, kieToolingExtendedServices.status]);
 
-  const resetModalWithConfig = useCallback((config: DmnDevSandboxConnectionConfig) => {
+  const onClose = useCallback(() => {
+    props.setMode(OpenShiftSettingsTabMode.SIMPLE);
+  }, []);
+
+  const resetConfig = useCallback((config: OpenShiftSettingsConfig) => {
     setConfigValidated(false);
-    setDeployLoading(false);
-    setContinueEditingLoading(false);
+    setSaveLoading(false);
     setConnectLoading(false);
     setConfig(config);
   }, []);
 
-  const onWizardClose = useCallback(() => {
-    dmnDevSandboxContext.setConfigWizardOpen(false);
-    resetModalWithConfig(dmnDevSandboxContext.currentConfig);
-  }, [dmnDevSandboxContext, resetModalWithConfig]);
+  const onNamespaceInputChanged = useCallback((newValue: string) => {
+    setConfig((c) => ({ ...c, namespace: newValue }));
+  }, []);
 
-  const onNamespaceInputChanged = useCallback(
-    (newValue: string) => {
-      setConfig({ ...config, namespace: newValue });
-    },
-    [config]
-  );
+  const onHostInputChanged = useCallback((newValue: string) => {
+    setConfig((c) => ({ ...c, host: newValue }));
+  }, []);
 
-  const onHostInputChanged = useCallback(
-    (newValue: string) => {
-      setConfig({ ...config, host: newValue });
-    },
-    [config]
-  );
-
-  const onTokenInputChanged = useCallback(
-    (newValue: string) => {
-      setConfig({ ...config, token: newValue });
-    },
-    [config]
-  );
+  const onTokenInputChanged = useCallback((newValue: string) => {
+    setConfig((c) => ({ ...c, token: newValue }));
+  }, []);
 
   const onStepChanged = useCallback(
-    async ({ id, name }, { prevId, prevName }) => {
+    async ({ id }) => {
       if (id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
-        setConfigValidated(await dmnDevSandboxContext.onCheckConfig(config, false));
+        setConfigValidated(await settings.openshift.service.onCheckConfig(config));
         setConnectLoading(false);
       }
     },
-    [config, dmnDevSandboxContext]
+    [config, settings.openshift.service]
   );
 
-  const onFinish = useCallback(
-    async (operation: FinishOperation) => {
-      if (isDeployLoading || isContinueEditingLoading) {
-        return;
-      }
+  const onFinish = useCallback(async () => {
+    if (isSaveLoading) {
+      return;
+    }
 
-      setDeployLoading(operation === FinishOperation.DEPLOY_NOW);
-      setContinueEditingLoading(operation === FinishOperation.CONTINUE_EDITING);
+    setSaveLoading(true);
 
-      const isConfigOk = await dmnDevSandboxContext.onCheckConfig(config, true);
-      setConfigValidated(isConfigOk);
+    const isConfigOk = await settings.openshift.service.onCheckConfig(config);
+    if (isConfigOk) {
+      settings.openshift.config.set(config);
+      saveConfigCookie(config);
+      settings.openshift.status.set(OpenShiftInstanceStatus.CONNECTED);
+    }
 
-      if (isConfigOk && operation === FinishOperation.DEPLOY_NOW) {
-        await dmnDevSandboxContext.onDeploy(config);
-      }
+    setConfigValidated(isConfigOk);
+    setSaveLoading(false);
 
-      setDeployLoading(false);
-      setContinueEditingLoading(false);
+    if (!isConfigOk) {
+      return;
+    }
 
-      if (!isConfigOk) {
-        return;
-      }
-
-      dmnDevSandboxContext.setConfigWizardOpen(false);
-      resetModalWithConfig(config);
-    },
-    [config, dmnDevSandboxContext, isContinueEditingLoading, isDeployLoading, resetModalWithConfig]
-  );
+    resetConfig(config);
+  }, [config, isSaveLoading, resetConfig, settings.openshift]);
 
   const wizardSteps = useMemo(
     () => [
@@ -338,22 +320,6 @@ export function DmnDevSandboxWizardConfig() {
                 <Text className="pf-u-mt-md" component={TextVariants.p}>
                   {i18n.dmnDevSandbox.configWizard.steps.final.introduction}
                 </Text>
-                <List className="pf-u-my-md">
-                  <ListItem>
-                    <TextContent>
-                      <Text component={TextVariants.p}>
-                        <I18nHtml>{i18n.dmnDevSandbox.configWizard.steps.final.deployNowExplanation}</I18nHtml>
-                      </Text>
-                    </TextContent>
-                  </ListItem>
-                  <ListItem>
-                    <TextContent>
-                      <Text component={TextVariants.p}>
-                        <I18nHtml>{i18n.dmnDevSandbox.configWizard.steps.final.continueEditingExplanation}</I18nHtml>
-                      </Text>
-                    </TextContent>
-                  </ListItem>
-                </List>
                 <Text className="pf-u-mt-md" component={TextVariants.p}>
                   {i18n.dmnDevSandbox.configWizard.steps.final.configNote}
                 </Text>
@@ -425,7 +391,7 @@ export function DmnDevSandboxWizardConfig() {
     () => (
       <WizardFooter>
         <WizardContextConsumer>
-          {({ activeStep, goToStepByName, goToStepById, onNext, onBack, onClose }) => {
+          {({ activeStep, goToStepByName, goToStepById, onNext, onBack }) => {
             if (activeStep.name !== i18n.dmnDevSandbox.configWizard.steps.final.name) {
               return (
                 <>
@@ -449,27 +415,14 @@ export function DmnDevSandboxWizardConfig() {
             return (
               <>
                 <Button
-                  id="dmn-dev-sandbox-config-deploy-now-button"
-                  onClick={() => onFinish(FinishOperation.DEPLOY_NOW)}
-                  isDisabled={!isConfigValidated}
-                  isLoading={isDeployLoading}
-                  spinnerAriaValueText={isDeployLoading ? "Loading" : undefined}
-                >
-                  {isDeployLoading
-                    ? i18n.dmnDevSandbox.common.deploying
-                    : i18n.dmnDevSandbox.configWizard.footer.deployNow}
-                </Button>
-                <Button
                   id="dmn-dev-sandbox-config-continue-editing-button"
-                  onClick={() => onFinish(FinishOperation.CONTINUE_EDITING)}
+                  onClick={() => onFinish()}
                   isDisabled={!isConfigValidated}
-                  variant="secondary"
-                  isLoading={isContinueEditingLoading}
-                  spinnerAriaValueText={isContinueEditingLoading ? "Loading" : undefined}
+                  variant={ButtonVariant.primary}
+                  isLoading={isSaveLoading}
+                  spinnerAriaValueText={isSaveLoading ? "Loading" : undefined}
                 >
-                  {isContinueEditingLoading
-                    ? i18n.dmnDevSandbox.common.saving
-                    : i18n.dmnDevSandbox.configWizard.footer.continueEditing}
+                  {isSaveLoading ? i18n.dmnDevSandbox.common.saving : i18n.terms.save}
                 </Button>
                 <Button variant="secondary" onClick={onBack}>
                   {i18n.terms.back}
@@ -483,27 +436,8 @@ export function DmnDevSandboxWizardConfig() {
         </WizardContextConsumer>
       </WizardFooter>
     ),
-    [i18n, isConfigValidated, isDeployLoading, isContinueEditingLoading, onFinish]
+    [i18n, isConfigValidated, isSaveLoading, onClose, onFinish]
   );
 
-  return (
-    <Modal
-      title={i18n.dmnDevSandbox.common.deployInstanceInfo}
-      description={i18n.dmnDevSandbox.common.disclaimer}
-      isOpen={dmnDevSandboxContext.isConfigWizardOpen}
-      variant={ModalVariant.large}
-      aria-label={"Steps to configure the DmnDevSandbox instance"}
-      onClose={onWizardClose}
-      data-testid="dmn-dev-sandbox-wizard-config"
-    >
-      <Wizard
-        onClose={onWizardClose}
-        steps={wizardSteps}
-        height={480}
-        footer={wizardFooter}
-        onNext={onStepChanged}
-        onGoToStep={onStepChanged}
-      />
-    </Modal>
-  );
+  return <Wizard steps={wizardSteps} footer={wizardFooter} onNext={onStepChanged} onGoToStep={onStepChanged} />;
 }

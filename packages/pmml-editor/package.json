@@ -29,7 +29,7 @@
     "react-cool-onclickoutside": "^1.6.1",
     "react-monaco-editor": "^0.43.0",
     "react-redux": "^7.2.4",
-    "react-router-dom": "^5.2.0",
+    "react-router-dom": "^5.2.1",
     "react-sortable-hoc": "^2.0.0",
     "react-transition-group": "^4.4.1",
     "redux": "^4.1.0",

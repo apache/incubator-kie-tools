@@ -41,7 +41,6 @@ interface OnlineDictionary extends ReferenceDictionary {
       link: string;
     };
   };
-  editorFullScreenToolbar: string;
   editorPage: {
     textEditorModal: {
       title: (fileName: string) => string;
@@ -53,11 +52,7 @@ interface OnlineDictionary extends ReferenceDictionary {
       };
       copy: string;
       updateGist: string;
-      updateGistFilename: {
-        title: string;
-        message: string;
-        yourNewUrl: string;
-      };
+      createGist: string;
       invalidCurrentGist: string;
       invalidGistFilename: string;
       error: string;
@@ -70,7 +65,6 @@ interface OnlineDictionary extends ReferenceDictionary {
   };
   editorToolbar: {
     closeAndReturnHome: string;
-    enterFullScreenView: string;
     saveAndDownload: string;
     sendChangesToGitHub: string;
     copySource: string;
@@ -128,10 +122,6 @@ interface OnlineDictionary extends ReferenceDictionary {
       header: {
         provider: string;
       };
-      footer: {
-        deployNow: string;
-        continueEditing: string;
-      };
       steps: {
         first: {
           name: string;
@@ -157,8 +147,6 @@ interface OnlineDictionary extends ReferenceDictionary {
           connectionError: string;
           connectionSuccess: string;
           introduction: string;
-          deployNowExplanation: string;
-          continueEditingExplanation: string;
           configNote: string;
           connectionErrorLong: string;
           checkInfo: string;

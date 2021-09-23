@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-import { getCookie, setCookie } from "../../common/utils";
+import { getCookie, setCookie } from "../common/utils";
+import {
+  OPENSHIFT_HOST_COOKIE_NAME,
+  OPENSHIFT_NAMESPACE_COOKIE_NAME,
+  OPENSHIFT_TOKEN_COOKIE_NAME,
+} from "./SettingsContext";
 
-const NAMESPACE_COOKIE_NAME = "dmn-dev-sandbox--connection-namespace";
-const HOST_COOKIE_NAME = "dmn-dev-sandbox--connection-host";
-const TOKEN_COOKIE_NAME = "dmn-dev-sandbox--connection-token";
-
-export interface DmnDevSandboxConnectionConfig {
+export interface OpenShiftSettingsConfig {
   namespace: string;
   host: string;
   token: string;
 }
 
-export const EMPTY_CONFIG: DmnDevSandboxConnectionConfig = {
+export const EMPTY_CONFIG: OpenShiftSettingsConfig = {
   namespace: "",
   host: "",
   token: "",
 };
 
-export function isConfigValid(config: DmnDevSandboxConnectionConfig): boolean {
+export function isConfigValid(config: OpenShiftSettingsConfig): boolean {
   return isNamespaceValid(config.namespace) && isHostValid(config.host) && isTokenValid(config.token);
 }
 
@@ -56,11 +57,11 @@ export function isTokenValid(token: string): boolean {
   return token !== undefined && token.trim().length > 0;
 }
 
-export function readConfigCookie(): DmnDevSandboxConnectionConfig {
+export function readConfigCookie(): OpenShiftSettingsConfig {
   return {
-    namespace: getCookie(NAMESPACE_COOKIE_NAME) ?? "",
-    host: getCookie(HOST_COOKIE_NAME) ?? "",
-    token: getCookie(TOKEN_COOKIE_NAME) ?? "",
+    namespace: getCookie(OPENSHIFT_NAMESPACE_COOKIE_NAME) ?? "",
+    host: getCookie(OPENSHIFT_HOST_COOKIE_NAME) ?? "",
+    token: getCookie(OPENSHIFT_TOKEN_COOKIE_NAME) ?? "",
   };
 }
 
@@ -68,8 +69,8 @@ export function resetConfigCookie(): void {
   saveConfigCookie(EMPTY_CONFIG);
 }
 
-export function saveConfigCookie(config: DmnDevSandboxConnectionConfig): void {
-  setCookie(NAMESPACE_COOKIE_NAME, config.namespace);
-  setCookie(HOST_COOKIE_NAME, config.host);
-  setCookie(TOKEN_COOKIE_NAME, config.token);
+export function saveConfigCookie(config: OpenShiftSettingsConfig): void {
+  setCookie(OPENSHIFT_NAMESPACE_COOKIE_NAME, config.namespace);
+  setCookie(OPENSHIFT_HOST_COOKIE_NAME, config.host);
+  setCookie(OPENSHIFT_TOKEN_COOKIE_NAME, config.token);
 }

@@ -44,8 +44,8 @@
     "@types/node": "^15.0.2",
     "@types/react": "^17.0.5",
     "@types/react-dom": "^17.0.5",
-    "@types/react-router": "^5.1.14",
-    "@types/react-router-dom": "^5.1.7",
+    "@types/react-router": "^5.1.16",
+    "@types/react-router-dom": "^5.1.9",
     "@types/selenium-webdriver": "^4.0.12",
     "@types/semver": "^7.3.6",
     "@types/simpl-schema": "1.10.2",
@@ -135,5 +135,8 @@
     "webpack-merge": "^5.7.3",
     "webpack-node-externals": "^3.0.0",
     "zip-webpack-plugin": "^4.0.1"
+  },
+  "resolutions": {
+    "@types/react": "^17.0.6"
   }
 }

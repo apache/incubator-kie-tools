@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-import { File as UploadFile, newFile } from "@kie-tooling-core/editor/dist/channel";
+import {
+  EMPTY_FILE_BPMN,
+  EMPTY_FILE_DMN,
+  EMPTY_FILE_PMML,
+  File as UploadFile,
+} from "@kie-tooling-core/editor/dist/channel";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Card, CardBody, CardHeader, CardFooter } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardFooter, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
 import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { FileUpload } from "@patternfly/react-core/dist/js/components/FileUpload";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -27,8 +32,8 @@ import {
   PageHeader,
   PageHeaderTools,
   PageHeaderToolsGroup,
-  PageSection,
   PageHeaderToolsItem,
+  PageSection,
 } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -36,14 +41,17 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
-import { GlobalContext } from "../common/GlobalContext";
+import { useGlobals } from "../common/GlobalContext";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { useOnlineI18n } from "../common/i18n";
-import { useWorkspace } from "../workspace/WorkspaceContext";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
+import { useSettings } from "../settings/SettingsContext";
+import { QueryParams } from "../common/Routes";
+import { useWorkspaces } from "../workspace/WorkspaceContext";
 
 enum InputFileUrlState {
   INITIAL,
@@ -63,10 +71,19 @@ interface InputFileUrlStateType {
 }
 
 export function HomePage() {
-  const context = useContext(GlobalContext);
-  const workspaceContext = useWorkspace();
+  const queryParams = useQueryParams();
+  const globals = useGlobals();
+  const settings = useSettings();
   const history = useHistory();
   const { i18n } = useOnlineI18n();
+  const [githubRepositoryUrl, setGithubRepositoryUrl] = useState("");
+  const [isOpenProjectLoading, setOpenProjectLoading] = useState(false);
+  const [filesToUpload, setFilesToUpload] = useState<UploadFile[]>([]);
+  const workspaces = useWorkspaces();
+
+  useEffect(() => {
+    globals.setUploadedFile(undefined);
+  }, []);
 
   const [uploadedFileName, setUploadedFileName] = useState("");
   const [isUploadRejected, setIsUploadRejected] = useState(false);
@@ -76,10 +93,6 @@ export function HomePage() {
     urlValidation: InputFileUrlState.INITIAL,
     urlToOpen: undefined,
   });
-
-  const [githubRepositoryUrl, setGithubRepositoryUrl] = useState("");
-  const [isOpenProjectLoading, setOpenProjectLoading] = useState(false);
-  const [filesToUpload, setFilesToUpload] = useState<UploadFile[]>([]);
 
   const onFileUpload = useCallback(
     (
@@ -97,63 +110,51 @@ export function HomePage() {
       setIsUploadRejected(false);
 
       const fileExtension = extractFileExtension(fileName);
-      if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
+      if (!fileExtension || !globals.editorEnvelopeLocator.mapping.has(fileExtension)) {
         return;
       }
 
-      workspaceContext.onFileChanged({
-        isReadOnly: false,
-        fileExtension,
-        fileName: removeFileExtension(fileName),
-        getFileContents: () =>
-          new Promise<string | undefined>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (event: any) => resolve(event.target.result as string);
-            reader.readAsText(file);
-          }),
-        path: `/${fileName}`,
-      });
-      history.replace(context.routes.editor.url({ type: fileExtension }));
+      workspaces.createWorkspaceFromLocal([
+        {
+          path: fileName,
+          isReadOnly: false,
+          fileExtension,
+          fileName: removeFileExtension(fileName),
+          getFileContents: () =>
+            new Promise<string | undefined>((resolve) => {
+              const reader = new FileReader();
+              reader.onload = (event: any) => resolve(event.target.result as string);
+              reader.readAsText(file);
+            }),
+        },
+      ]);
     },
-    [context.editorEnvelopeLocator.mapping, context.routes.editor, history, workspaceContext]
+    [globals, workspaces]
   );
 
   const onDropRejected = useCallback(() => setIsUploadRejected(true), []);
 
-  const createEmptyFile = useCallback(
-    (fileExtension: string) => {
-      workspaceContext.onFileChanged(newFile(fileExtension));
-      history.replace(context.routes.editor.url({ type: fileExtension }));
-    },
-    [context.routes.editor, history, workspaceContext]
-  );
-
   const createEmptyBpmnFile = useCallback(() => {
-    createEmptyFile("bpmn");
-  }, [createEmptyFile]);
+    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_BPMN, kind: "local" }]);
+  }, [workspaces]);
 
   const createEmptyDmnFile = useCallback(() => {
-    createEmptyFile("dmn");
-  }, [createEmptyFile]);
+    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_DMN, kind: "local" }]);
+  }, [workspaces]);
 
   const createEmptyPmmlFile = useCallback(() => {
-    createEmptyFile("pmml");
-  }, [createEmptyFile]);
+    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_PMML, kind: "local" }]);
+  }, [workspaces]);
 
   const trySample = useCallback(
     (fileExtension: string) => {
-      const fileName = "sample";
-      const filePath = `samples/${fileName}.${fileExtension}`;
-      workspaceContext.onFileChanged({
-        isReadOnly: false,
-        fileExtension: fileExtension,
-        fileName: fileName,
-        getFileContents: () => fetch(filePath).then((response) => response.text()),
-        path: `/${fileName}.${fileExtension}`,
+      const filePath = globals.routes.static.sample.path({ type: fileExtension });
+      history.push({
+        pathname: globals.routes.editor.path({ extension: fileExtension }),
+        search: globals.routes.editor.queryArgs(queryParams).with(QueryParams.FILE, filePath).toString(),
       });
-      history.replace(context.routes.editor.url({ type: fileExtension }));
     },
-    [context.routes.editor, history, workspaceContext]
+    [globals, history, queryParams]
   );
 
   const tryBpmnSample = useCallback(() => {
@@ -168,150 +169,127 @@ export function HomePage() {
     trySample("pmml");
   }, [trySample]);
 
-  const validateUrl = useCallback(async () => {
-    if (inputFileUrl.trim() === "") {
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.INITIAL,
-        urlToOpen: undefined,
-      });
-      return;
-    }
+  const validateUrl = useCallback(
+    async (fileUrl: string) => {
+      if (fileUrl.trim() === "") {
+        setInputFileUrlState({
+          urlValidation: InputFileUrlState.INITIAL,
+          urlToOpen: undefined,
+        });
+        return;
+      }
 
-    let url: URL;
-    try {
-      url = new URL(inputFileUrl);
-    } catch (e) {
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.INVALID_URL,
-        urlToOpen: undefined,
-      });
-      return;
-    }
+      let url: URL;
+      try {
+        url = new URL(fileUrl);
+      } catch (e) {
+        setInputFileUrlState({
+          urlValidation: InputFileUrlState.INVALID_URL,
+          urlToOpen: undefined,
+        });
+        return;
+      }
 
-    if (context.githubService.isGist(inputFileUrl)) {
+      if (settings.github.service.isGist(fileUrl)) {
+        setInputFileUrlState({
+          urlValidation: InputFileUrlState.VALIDATING,
+          urlToOpen: undefined,
+        });
+
+        const gistId = settings.github.service.isGistDefault(fileUrl)
+          ? settings.github.service.extractGistId(fileUrl)
+          : settings.github.service.extractGistIdFromRawUrl(fileUrl);
+
+        const gistFileName = settings.github.service.isGistDefault(fileUrl)
+          ? settings.github.service.extractGistFilename(fileUrl)
+          : settings.github.service.extractGistFilenameFromRawUrl(fileUrl);
+
+        let rawUrl: string;
+        try {
+          rawUrl = await settings.github.service.getGistRawUrlFromId(settings.github.octokit, gistId, gistFileName);
+        } catch (e) {
+          setInputFileUrlState({
+            urlValidation: InputFileUrlState.INVALID_GIST,
+            urlToOpen: undefined,
+          });
+          return;
+        }
+
+        const gistExtension = extractFileExtension(new URL(rawUrl).pathname);
+        if (gistExtension && globals.editorEnvelopeLocator.mapping.has(gistExtension)) {
+          setInputFileUrlState({
+            urlValidation: InputFileUrlState.VALID,
+            urlToOpen: rawUrl,
+          });
+          return;
+        }
+
+        setInputFileUrlState({
+          urlValidation: InputFileUrlState.INVALID_GIST_EXTENSION,
+          urlToOpen: undefined,
+        });
+        return;
+      }
+
+      const fileExtension = extractFileExtension(url.pathname);
+      if (!fileExtension || !globals.editorEnvelopeLocator.mapping.has(fileExtension)) {
+        setInputFileUrlState({
+          urlValidation: InputFileUrlState.INVALID_EXTENSION,
+          urlToOpen: undefined,
+        });
+        return;
+      }
+
       setInputFileUrlState({
         urlValidation: InputFileUrlState.VALIDATING,
         urlToOpen: undefined,
       });
-
-      const gistId = context.githubService.isGistDefault(inputFileUrl)
-        ? context.githubService.extractGistId(inputFileUrl)
-        : context.githubService.extractGistIdFromRawUrl(inputFileUrl);
-
-      const gistFileName = context.githubService.isGistDefault(inputFileUrl)
-        ? context.githubService.extractGistFilename(inputFileUrl)
-        : context.githubService.extractGistFilenameFromRawUrl(inputFileUrl);
-
-      let rawUrl: string;
-      try {
-        rawUrl = await context.githubService.getGistRawUrlFromId(gistId, gistFileName);
-      } catch (e) {
-        setInputFileUrlState({
-          urlValidation: InputFileUrlState.INVALID_GIST,
-          urlToOpen: undefined,
-        });
-        return;
+      if (settings.github.service.isGithub(fileUrl)) {
+        try {
+          const rawUrl = await settings.github.service.getGithubRawUrl(settings.github.octokit, fileUrl);
+          setInputFileUrlState({
+            urlValidation: InputFileUrlState.VALID,
+            urlToOpen: rawUrl,
+          });
+          return;
+        } catch (err) {
+          setInputFileUrlState({
+            urlValidation: InputFileUrlState.NOT_FOUND_URL,
+            urlToOpen: undefined,
+          });
+          return;
+        }
       }
 
-      const gistExtension = extractFileExtension(new URL(rawUrl).pathname);
-      if (gistExtension && context.editorEnvelopeLocator.mapping.has(gistExtension)) {
-        setInputFileUrlState({
-          urlValidation: InputFileUrlState.VALID,
-          urlToOpen: rawUrl,
-        });
-        return;
-      }
-
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.INVALID_GIST_EXTENSION,
-        urlToOpen: undefined,
-      });
-      return;
-    }
-
-    const fileExtension = extractFileExtension(url.pathname);
-    if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.INVALID_EXTENSION,
-        urlToOpen: undefined,
-      });
-      return;
-    }
-
-    setInputFileUrlState({
-      urlValidation: InputFileUrlState.VALIDATING,
-      urlToOpen: undefined,
-    });
-    if (context.githubService.isGithub(inputFileUrl)) {
       try {
-        const rawUrl = await context.githubService.getGithubRawUrl(inputFileUrl);
-        setInputFileUrlState({
-          urlValidation: InputFileUrlState.VALID,
-          urlToOpen: rawUrl,
-        });
-        return;
-      } catch (err) {
+        if ((await fetch(fileUrl)).ok) {
+          setInputFileUrlState({
+            urlValidation: InputFileUrlState.VALID,
+            urlToOpen: fileUrl,
+          });
+          return;
+        }
+
         setInputFileUrlState({
           urlValidation: InputFileUrlState.NOT_FOUND_URL,
           urlToOpen: undefined,
         });
-        return;
-      }
-    }
-
-    try {
-      if ((await fetch(inputFileUrl)).ok) {
+      } catch (e) {
         setInputFileUrlState({
-          urlValidation: InputFileUrlState.VALID,
-          urlToOpen: inputFileUrl,
+          urlValidation: InputFileUrlState.CORS_NOT_AVAILABLE,
+          urlToOpen: undefined,
         });
-        return;
       }
-
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.NOT_FOUND_URL,
-        urlToOpen: undefined,
-      });
-    } catch (e) {
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.CORS_NOT_AVAILABLE,
-        urlToOpen: undefined,
-      });
-    }
-  }, [context.editorEnvelopeLocator.mapping, context.githubService, inputFileUrl]);
+    },
+    [settings.github.octokit, globals.editorEnvelopeLocator.mapping, settings.github.service]
+  );
 
   useEffect(() => {
-    validateUrl();
-  }, [validateUrl]);
+    validateUrl(inputFileUrl);
+  }, [validateUrl, inputFileUrl]);
 
   const inputFileFromUrlChanged = useCallback((fileUrl: string) => {
     setInputFileUrl(fileUrl);
-  }, []);
-
-  const githubRepositoryUrlChanged = useCallback((repositoryUrl: string) => {
-    setGithubRepositoryUrl(repositoryUrl);
-  }, []);
-
-  const onFolderUpload = useCallback((e) => {
-    e.stopPropagation();
-    e.preventDefault();
-
-    const filesToUpload: UploadFile[] = Array.from(e.target.files).map((file: File) => {
-      return {
-        isReadOnly: false,
-        fileExtension: extractFileExtension(file.name),
-        fileName: removeFileExtension(file.name),
-        getFileContents: () =>
-          new Promise<string | undefined>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (event: any) => resolve(event.target.result as string);
-            reader.readAsText(file);
-          }),
-        path: (file as any).webkitRelativePath,
-      } as UploadFile;
-    });
-
-    setFilesToUpload(filesToUpload);
   }, []);
 
   const isUrlInputTextValid = useMemo(
@@ -334,28 +312,15 @@ export function HomePage() {
   }, [inputFileUrl]);
 
   const openFileFromUrl = useCallback(() => {
-    if (urlCanBeOpen && inputFileUrlState.urlToOpen) {
-      const fileExtension = extractFileExtension(new URL(inputFileUrlState.urlToOpen).pathname);
-      // FIXME: KOGITO-1202
-      window.location.href = `?file=${inputFileUrlState.urlToOpen}#/editor/${fileExtension}`;
+    const filePath = inputFileUrlState.urlToOpen;
+    if (urlCanBeOpen && filePath) {
+      const fileExtension = extractFileExtension(new URL(filePath).pathname);
+      history.push({
+        pathname: globals.routes.editor.path({ extension: fileExtension! }),
+        search: globals.routes.editor.queryArgs(queryParams).with(QueryParams.FILE, filePath).toString(),
+      });
     }
-  }, [inputFileUrl, inputFileUrlState, urlCanBeOpen, inputFileUrlState]);
-
-  const createWorkspace = useCallback(async () => {
-    if ((filesToUpload.length === 0 && githubRepositoryUrl.trim() === "") || isOpenProjectLoading) {
-      return;
-    }
-    setOpenProjectLoading(true);
-    if (githubRepositoryUrl.trim() !== "") {
-      // TODO CAPONETTO: URL might be invalid; fix UX stuff when it is better defined
-      await workspaceContext.createWorkspaceFromGitHubRepository(new URL(githubRepositoryUrl), "main");
-    } else if (filesToUpload.length > 0) {
-      await workspaceContext.createWorkspaceFromLocal(filesToUpload);
-    } else {
-      throw new Error("No project to open here");
-    }
-    setOpenProjectLoading(false);
-  }, [filesToUpload, githubRepositoryUrl, isOpenProjectLoading, workspaceContext]);
+  }, [queryParams, globals.routes, history, inputFileUrlState, urlCanBeOpen]);
 
   const helperMessageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState.urlValidation) {
@@ -394,22 +359,9 @@ export function HomePage() {
     [inputFileUrl]
   );
 
-  const githubRepositoryFormSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      await createWorkspace();
-    },
-    [createWorkspace]
-  );
-
-  const logoProps = {
-    href: window.location.href.split("?")[0].split("#")[0],
-  };
-
   const linkDropdownItems = [
     <DropdownItem key="github-chrome-extension-dropdown-link">
-      <Link to={context.routes.downloadHub.url({})}>{i18n.homePage.dropdown.getHub}</Link>
+      <Link to={globals.routes.download.path({})}>{i18n.homePage.dropdown.getHub}</Link>
     </DropdownItem>,
   ];
 
@@ -429,7 +381,7 @@ export function HomePage() {
     <PageHeaderTools>
       <PageHeaderToolsGroup>
         <PageHeaderToolsItem className="pf-u-display-none pf-u-display-flex-on-lg">
-          <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
+          <Link to={globals.routes.download.path({})} className="kogito--editor-hub-download_link">
             {i18n.homePage.dropdown.getHub}
           </Link>
         </PageHeaderToolsItem>
@@ -469,10 +421,62 @@ export function HomePage() {
 
   const Header = (
     <PageHeader
-      logo={<Brand src={"images/BusinessModeler_Logo_38x389.svg"} alt="Logo" />}
-      logoProps={logoProps}
+      logo={<Brand src={globals.routes.static.images.homeLogo.path({})} alt="Logo" />}
+      logoProps={{ href: globals.routes.home.path("/") }}
       headerTools={headerToolbar}
     />
+  );
+
+  //
+
+  const githubRepositoryUrlChanged = useCallback((repositoryUrl: string) => {
+    setGithubRepositoryUrl(repositoryUrl);
+  }, []);
+
+  const onFolderUpload = useCallback((e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const filesToUpload: UploadFile[] = Array.from(e.target.files).map((file: File) => {
+      return {
+        isReadOnly: false,
+        fileExtension: extractFileExtension(file.name),
+        fileName: removeFileExtension(file.name),
+        getFileContents: () =>
+          new Promise<string | undefined>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (event: any) => resolve(event.target.result as string);
+            reader.readAsText(file);
+          }),
+        path: (file as any).webkitRelativePath,
+      } as UploadFile;
+    });
+
+    setFilesToUpload(filesToUpload);
+  }, []);
+  const createWorkspace = useCallback(async () => {
+    if ((filesToUpload.length === 0 && githubRepositoryUrl.trim() === "") || isOpenProjectLoading) {
+      return;
+    }
+    setOpenProjectLoading(true);
+    if (githubRepositoryUrl.trim() !== "") {
+      // TODO CAPONETTO: URL might be invalid; fix UX stuff when it is better defined
+      await workspaces.createWorkspaceFromGitHubRepository(new URL(githubRepositoryUrl), "main");
+    } else if (filesToUpload.length > 0) {
+      await workspaces.createWorkspaceFromLocal(filesToUpload);
+    } else {
+      throw new Error("No project to open here");
+    }
+    setOpenProjectLoading(false);
+  }, [filesToUpload, githubRepositoryUrl, isOpenProjectLoading, workspaces]);
+
+  const githubRepositoryFormSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      await createWorkspace();
+    },
+    [createWorkspace]
   );
 
   return (
@@ -486,7 +490,7 @@ export function HomePage() {
           <Text component={TextVariants.small} className="pf-u-text-align-right">
             {`${i18n.terms.poweredBy} `}
             <Brand
-              src={"images/kogito_logo_white.png"}
+              src={globals.routes.static.images.kogitoLogoWhite.path({})}
               alt="Kogito Logo"
               style={{ height: "1em", verticalAlign: "text-bottom" }}
             />
@@ -570,7 +574,7 @@ export function HomePage() {
                     filename={uploadedFileName}
                     onChange={onFileUpload}
                     dropzoneProps={{
-                      accept: [...context.editorEnvelopeLocator.mapping.keys()].map((ext) => "." + ext).join(", "),
+                      accept: [...globals.editorEnvelopeLocator.mapping.keys()].map((ext) => "." + ext).join(", "),
                       onDropRejected,
                     }}
                     validated={isUploadRejected ? "error" : "default"}

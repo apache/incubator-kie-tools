@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  isConfigValid,
-  isHostValid,
-  isTokenValid,
-  isNamespaceValid,
-} from "../../../editor/DmnDevSandbox/DmnDevSandboxConnectionConfig";
+import { isConfigValid, isHostValid, isNamespaceValid, isTokenValid } from "../../../settings/OpenShiftSettingsConfig";
 
 describe("Validation functions", () => {
   test("Namespace should be valid", () => {

@@ -16,14 +16,13 @@
 
 import { Select, SelectDirection, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
-import { useCallback, useImperativeHandle, useMemo, useState } from "react";
-import { getOperatingSystem, OperatingSystem } from "./utils";
+import { useCallback, useMemo, useState } from "react";
+import { OperatingSystem } from "./utils";
 import { OnlineI18n } from "./i18n";
 
 interface Props {
   i18n?: OnlineI18n;
   direction: SelectDirection;
-  style?: React.CSSProperties;
   className?: string;
   selected: OperatingSystem;
   onSelect: React.Dispatch<OperatingSystem>;
@@ -58,7 +57,7 @@ export function SelectOs(props: Props) {
   );
 
   return (
-    <div className={props.className ?? ""} style={{ width: "140px", ...props.style }}>
+    <div className={props.className ?? ""} style={{ width: "140px" }}>
       <Select
         variant={SelectVariant.single}
         aria-label="Select operating system"

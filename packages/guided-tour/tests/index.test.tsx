@@ -20,39 +20,25 @@ import { Tutorial, UserInteraction } from "@kie-tooling-core/guided-tour/dist/ap
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { GuidedTour } from "@kie-tooling-core/guided-tour/dist/components";
-import { GuidedTourCookie, GuidedTourDomUtils, GuidedTourEventBus } from "@kie-tooling-core/guided-tour/dist/core";
+import { GuidedTourDomUtils, GuidedTourEventBus } from "@kie-tooling-core/guided-tour/dist/core";
 
 describe("KogitoGuidedTour", () => {
   beforeEach(() => jest.clearAllMocks());
 
   describe("setup", () => {
     it("renders the dialog when guided tour is enabled", () => {
-      mockInstance(GuidedTourCookie, { isDisabled: () => false });
       mockInstance(GuidedTourDomUtils, { getGuidedTourHTMLElement: () => document.createElement("div") });
 
       KogitoGuidedTour.getInstance().setup();
 
       expect(ReactDOM.render).toBeCalledWith(<GuidedTour />, expect.any(HTMLElement), expect.any(Function));
     });
-
-    it("does not render anything when it's not enabled", () => {
-      mockInstance(GuidedTourCookie, { isDisabled: () => true });
-
-      KogitoGuidedTour.getInstance().setup();
-
-      expect(ReactDOM.render).not.toBeCalled();
-    });
   });
 
   describe("teardown", () => {
     it("removes the dialog when guided tour is enabled", () => {
       const removeGuidedTourHTMLElement = jest.fn();
-      const markAsDisabled = jest.fn();
 
-      mockInstance(GuidedTourCookie, {
-        isDisabled: () => false,
-        markAsDisabled: markAsDisabled,
-      });
       mockInstance(GuidedTourDomUtils, {
         removeGuidedTourHTMLElement: removeGuidedTourHTMLElement,
       });
@@ -60,37 +46,6 @@ describe("KogitoGuidedTour", () => {
       KogitoGuidedTour.getInstance().teardown();
 
       expect(removeGuidedTourHTMLElement).toBeCalled();
-      expect(markAsDisabled).toBeCalled();
-    });
-
-    it("does not do anything when it's not enabled", () => {
-      const removeGuidedTourHTMLElement = jest.fn();
-      const markAsDisabled = jest.fn();
-
-      mockInstance(GuidedTourCookie, {
-        isDisabled: () => true,
-        markAsDisabled: markAsDisabled,
-      });
-      mockInstance(GuidedTourDomUtils, {
-        removeGuidedTourHTMLElement: removeGuidedTourHTMLElement,
-      });
-
-      KogitoGuidedTour.getInstance().teardown();
-
-      expect(removeGuidedTourHTMLElement).not.toBeCalled();
-      expect(markAsDisabled).not.toBeCalled();
-    });
-  });
-
-  describe("isEnabled", () => {
-    it("returns 'true' when 'GuidedTourCookie.isDisabled' retuns 'false'", () => {
-      mockInstance(GuidedTourCookie, { isDisabled: () => false });
-      expect(KogitoGuidedTour.getInstance().isEnabled()).toBeTruthy();
-    });
-
-    it("returns 'false' when 'GuidedTourCookie.isDisabled' retuns 'true'", () => {
-      mockInstance(GuidedTourCookie, { isDisabled: () => true });
-      expect(KogitoGuidedTour.getInstance().isEnabled()).toBeFalsy();
     });
   });
 

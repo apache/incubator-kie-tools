@@ -43,7 +43,6 @@ export const en: OnlineI18n = {
       link: "click here",
     },
   },
-  editorFullScreenToolbar: "Exit full screen",
   editorPage: {
     textEditorModal: {
       title: (fileName: string) => `Editing ${fileName}`,
@@ -55,11 +54,7 @@ export const en: OnlineI18n = {
       },
       copy: "Content copied to clipboard",
       updateGist: "Your gist was updated.",
-      updateGistFilename: {
-        title: "Your gist and its filename were updated!",
-        message: `Your gists filename was updated, and it can take a few seconds until the new ${en_common.names.url} is available.`,
-        yourNewUrl: `Your new ${en_common.names.url}`,
-      },
+      createGist: "Your gist was created.",
       invalidCurrentGist: `Your current gist ${en_common.names.url} is invalid. If you've updated its filename, it's necessary to update your ${en_common.names.url} as well.`,
       invalidGistFilename: "Invalid filename. This gist already has a file with this name.",
       error: `An error occurred trying to perform the last operation. Check if your ${en_common.names.github} token is still valid and try again later.`,
@@ -72,12 +67,11 @@ export const en: OnlineI18n = {
   },
   editorToolbar: {
     closeAndReturnHome: "Close and return Home",
-    enterFullScreenView: "Enter full screen view",
     saveAndDownload: "Save & Download",
     sendChangesToGitHub: `Send changes to ${en_common.names.github}`,
     copySource: "Copy Source",
     downloadSVG: `${en_common.terms.download} ${en_common.names.svg}`,
-    setGitHubToken: `Set up your ${en_common.names.github} token`,
+    setGitHubToken: `Setup`,
     gistIt: "Gist it!",
     gistItTooltip: `Set up your ${en_common.names.github} token to be able to create and update gists!`,
     share: "Share",
@@ -134,10 +128,6 @@ export const en: OnlineI18n = {
       header: {
         provider: "Provider",
       },
-      footer: {
-        deployNow: "Deploy now",
-        continueEditing: "Continue editing",
-      },
       steps: {
         first: {
           name: "Create your instance",
@@ -163,9 +153,7 @@ export const en: OnlineI18n = {
           name: "Connect",
           connectionSuccess: "Connection successfully established.",
           connectionError: "Connection refused.",
-          introduction: "Now you are able to:",
-          deployNowExplanation: `${"Deploy now".bold()}: Your model will be deployed on your instance. This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.`,
-          continueEditingExplanation: `${"Continue editing".bold()}: Continue editing your model and deploy it later.`,
+          introduction: "Now you are able to deploy DMN decisions to your OpenShift instance.",
           configNote: "Your configuration will be stored as browser cookies after the operations above.",
           connectionErrorLong: `A connection with your ${en_common.names.shortDevSandbox} instance could not be established.`,
           checkInfo: "Please check the information provided and try again.",
@@ -210,7 +198,7 @@ export const en: OnlineI18n = {
       placeHolder: "Paste your token here",
     },
     body: {
-      disclaimer: `By authenticating with your ${en_common.names.oauth} Token we are able to create gists so you can share your diagrams with your colleagues. The token you provide is locally stored as browser cookies and it is never shared with anyone.`,
+      disclaimer: `The token you provide is locally stored as a browser cookie and is never shared with anyone.`,
       learnMore: `Learn more about ${en_common.names.github} tokens`,
       note: `You should provide a token with the ${"'gist'".bold()} permission.`,
     },

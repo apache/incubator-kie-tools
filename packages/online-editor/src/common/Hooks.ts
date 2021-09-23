@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-import { useEffect, useRef, useState } from "react";
-
-export function useFileUrl() {
-  const [fileUrl, setFileUrl] = useState("");
-
-  useEffect(() => {
-    setFileUrl(window.location.search.split("?file=")[1]);
-  }, [window.location]);
-
-  return fileUrl;
-}
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function usePrevious(value: any) {
   const ref = useRef();
 
   useEffect(() => {
-    ref.current = value;
+    if (ref.current !== value) {
+      ref.current = value;
+    }
   }, [value]);
 
   return ref.current;
+}
+
+export function useController<T>(): [T | undefined, (controller: T) => void] {
+  const [controller, setController] = useState<T | undefined>(undefined);
+
+  const ref = useCallback((controller: T) => {
+    setController(controller);
+  }, []);
+
+  return [controller, ref];
 }

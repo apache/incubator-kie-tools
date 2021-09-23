@@ -14,41 +14,31 @@
  * limitations under the License.
  */
 
-import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "../../common/utils";
-import { useWorkspace } from "../../workspace/WorkspaceContext";
+import { useWorkspaces } from "../../workspace/WorkspaceContext";
 import { KieToolingExtendedServicesBridge } from "./KieToolingExtendedServicesBridge";
 import { DependentFeature, KieToolingExtendedServicesContext } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
+import { KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME } from "../../settings/SettingsContext";
+import { KieToolingExtendedServicesModal } from "./KieToolingExtendedServicesModal";
 
 interface Props {
   children: React.ReactNode;
-  editor?: EmbeddedEditorRef;
-  isEditorReady: boolean;
-  closeDmnTour: () => void;
 }
 
 const KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME = 1000;
-const KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tooling-extended-services-port";
+
 export const KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT = "21345";
 
 export function KieToolingExtendedServicesContextProvider(props: Props) {
-  const workspaceContext = useWorkspace();
-
-  const [status, setStatus] = useState(() =>
-    workspaceContext.file?.fileExtension === "dmn"
-      ? KieToolingExtendedServicesStatus.AVAILABLE
-      : KieToolingExtendedServicesStatus.UNAVAILABLE
-  );
-
+  const workspace = useWorkspaces();
+  const [status, setStatus] = useState(KieToolingExtendedServicesStatus.AVAILABLE);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [installTriggeredBy, setInstallTriggeredBy] = useState(DependentFeature.DMN_RUNNER);
+  const [installTriggeredBy, setInstallTriggeredBy] = useState<DependentFeature | undefined>(undefined);
   const [outdated, setOutdated] = useState(false);
-  const [port, setPort] = useState(
-    () => getCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT
-  );
+  const [port, setPort] = useState(KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT);
 
   const baseUrl = useMemo(() => `http://localhost:${port}`, [port]);
   const bridge = useMemo(() => new KieToolingExtendedServicesBridge(port), [port]);
@@ -63,17 +53,17 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
   }, []);
 
   useEffect(() => {
-    if (!workspaceContext.file || workspaceContext.file.fileExtension !== "dmn") {
-      setStatus(KieToolingExtendedServicesStatus.UNAVAILABLE);
-      return;
-    }
+    const portCookie =
+      getCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT;
+    new KieToolingExtendedServicesBridge(portCookie).check().then((checked) => {
+      if (checked) {
+        saveNewPort(portCookie);
+      }
+    });
+  }, [saveNewPort]);
 
-    if (status === KieToolingExtendedServicesStatus.UNAVAILABLE) {
-      setStatus(KieToolingExtendedServicesStatus.AVAILABLE);
-    }
-
+  useEffect(() => {
     // Pooling to detect either if KieToolingExtendedServices is running or has stopped
-
     let detectCrashesOrStops: number | undefined;
     if (status === KieToolingExtendedServicesStatus.RUNNING) {
       detectCrashesOrStops = window.setInterval(() => {
@@ -88,19 +78,17 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
     }
 
     const detectKieToolingExtendedServices: number | undefined = window.setInterval(() => {
+      // Check the running version of the KieToolingExtendedServices, cancel polling if up-to-date.
       bridge
-        .check()
-        .then(() => {
-          // Check the running version of the KieToolingExtendedServices, cancel polling if up-to-date.
-          bridge.version().then((kieToolingExtendedServicesVersion) => {
-            if (kieToolingExtendedServicesVersion !== version) {
-              setOutdated(true);
-            } else {
-              window.clearInterval(detectKieToolingExtendedServices);
-              setOutdated(false);
-              setStatus(KieToolingExtendedServicesStatus.RUNNING);
-            }
-          });
+        .version()
+        .then((receivedVersion) => {
+          if (receivedVersion !== version) {
+            setOutdated(true);
+          } else {
+            window.clearInterval(detectKieToolingExtendedServices);
+            setOutdated(false);
+            setStatus(KieToolingExtendedServicesStatus.RUNNING);
+          }
         })
         .catch((err) => {
           console.debug(err);
@@ -108,7 +96,7 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
     }, KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME);
 
     return () => window.clearInterval(detectKieToolingExtendedServices);
-  }, [props.editor, props.isEditorReady, status, bridge, version, workspaceContext.file]);
+  }, [status, bridge, version]);
 
   return (
     <KieToolingExtendedServicesContext.Provider
@@ -124,10 +112,10 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
         setModalOpen,
         setInstallTriggeredBy,
         saveNewPort,
-        closeDmnTour: props.closeDmnTour,
       }}
     >
       {props.children}
+      <KieToolingExtendedServicesModal />
     </KieToolingExtendedServicesContext.Provider>
   );
 }

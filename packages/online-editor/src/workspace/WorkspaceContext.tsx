@@ -21,12 +21,14 @@ import {
   ResourceListOptions,
   ResourcesList,
 } from "@kie-tooling-core/workspace/dist/api";
+import * as React from "react";
 import { createContext, useContext } from "react";
 import { ActiveWorkspace } from "./model/ActiveWorkspace";
 
 export interface WorkspaceContextType {
   file?: File;
   active?: ActiveWorkspace;
+  setActive: React.Dispatch<React.SetStateAction<ActiveWorkspace> | undefined>;
 
   resourceContentGet: (path: string, opts?: ResourceContentOptions) => Promise<ResourceContent | undefined>;
   resourceContentList: (globPattern: string, opts?: ResourceListOptions) => Promise<ResourcesList>;
@@ -54,6 +56,6 @@ export interface WorkspaceContextType {
 
 export const WorkspaceContext = createContext<WorkspaceContextType>({} as any);
 
-export function useWorkspace(): WorkspaceContextType {
+export function useWorkspaces(): WorkspaceContextType {
   return useContext(WorkspaceContext);
 }

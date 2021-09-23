@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { parse } from "path";
-
 /**
  * Definition of a File supported by the embedded-editor.
  */
@@ -25,6 +23,7 @@ export interface File {
   getFileContents: () => Promise<string | undefined>;
   isReadOnly: boolean;
   path?: string;
+  kind?: "gist" | "external" | "local";
 }
 
 /**
@@ -75,29 +74,15 @@ export const EMPTY_FILE_PMML = {
  * Helper method to create new, empty files, for different file extensions.
  * @param fileExtension The extension of the file.
  * @param contextPath Path associated with the context.
+ * @param kind The kind of the file.
  */
-export function newFile(fileExtension: string, contextPath: string = ""): File {
+export function newFile(fileExtension: string, contextPath: string = "", kind?: File["kind"]): File {
   return {
     fileName: "new-file",
     fileExtension: fileExtension,
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
     path: `${contextPath}/new-file.${fileExtension}`,
-  };
-}
-
-/**
- * Helper function to create a new file from a given file path and its get content function.
- * @param path The path of the file.
- * @param getFileContents The function to get the file contents.
- */
-export function buildFile(path: string, getFileContents: () => Promise<string | undefined>): File {
-  const parsedPath = parse(path);
-  return {
-    fileName: parsedPath.name,
-    fileExtension: parsedPath.ext.replace(".", ""),
-    getFileContents: getFileContents,
-    isReadOnly: false,
-    path: path,
+    kind,
   };
 }

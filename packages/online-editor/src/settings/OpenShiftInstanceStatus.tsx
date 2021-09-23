@@ -14,20 +14,9 @@
  * limitations under the License.
  */
 
-export enum DeployedModelState {
-  UP = "UP",
-  DOWN = "DOWN",
-  IN_PROGRESS = "IN_PROGRESS",
-  PREPARING = "PREPARING",
-}
-
-export interface DeployedModel {
-  resourceName: string;
-  filename: string;
-  urls: {
-    index: string;
-    swaggerUI: string;
-  };
-  creationTimestamp: Date;
-  state: DeployedModelState;
+export enum OpenShiftInstanceStatus {
+  UNAVAILABLE = "UNAVAILABLE",
+  DISCONNECTED = "DISCONNECTED",
+  CONNECTED = "CONNECTED",
+  EXPIRED = "EXPIRED",
 }

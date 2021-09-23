@@ -97,20 +97,11 @@
   justify-content: center;
   align-items: center;
   padding: 1em;
+  pointer-events: none;
 }
 
 .kogito--alert {
   pointer-events: visible;
-}
-
-.kogito--alert-container-unsaved {
-  position: fixed;
-  display: flex;
-  width: 100%;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 1em;
-  pointer-events: none;
 }
 
 .kogito--editor__toolbar {
@@ -556,11 +547,6 @@
   outline: none;
 }
 
-.kogito--editor__dmn-dev-sandbox-alert-container {
-  z-index: 1000;
-  pointer-events: none;
-}
-
 .success-icon {
   color: var(--pf-global--success-color--100);
 }
@@ -634,4 +620,8 @@
 
 .kogito--editor__workspace-files-dropdown-open:hover {
   color: var(--pf-global--primary-color--200);
+}
+
+section.kogito-tooling--settings-tab {
+  height: calc(100% - 40px);
 }

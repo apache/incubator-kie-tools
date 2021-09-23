@@ -14,9 +14,20 @@
  * limitations under the License.
  */
 
-export enum DmnDevSandboxInstanceStatus {
-  UNAVAILABLE = "UNAVAILABLE",
-  DISCONNECTED = "DISCONNECTED",
-  CONNECTED = "CONNECTED",
-  EXPIRED = "EXPIRED",
+export enum OpenShiftDeployedModelState {
+  UP = "UP",
+  DOWN = "DOWN",
+  IN_PROGRESS = "IN_PROGRESS",
+  PREPARING = "PREPARING",
+}
+
+export interface OpenShiftDeployedModel {
+  resourceName: string;
+  filename: string;
+  urls: {
+    index: string;
+    swaggerUI: string;
+  };
+  creationTimestamp: Date;
+  state: OpenShiftDeployedModelState;
 }

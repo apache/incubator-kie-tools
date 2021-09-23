@@ -33,10 +33,7 @@ function variant(severity: NotificationSeverity) {
   }
 }
 
-export const RefForwardingNotificationPanelTabContent: React.RefForwardingComponent<NotificationsApi, Props> = (
-  props,
-  forwardingRef
-) => {
+export const NotificationPanelTabContent = React.forwardRef<NotificationsApi, Props>((props, forwardedRef) => {
   const [tabNotifications, setTabNotifications] = useState<Notification[]>([]);
 
   const createNotification = useCallback(
@@ -60,7 +57,7 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
     });
   }, []);
 
-  useImperativeHandle(forwardingRef, () => ({
+  useImperativeHandle(forwardedRef, () => ({
     kogitoNotifications_createNotification: createNotification,
     kogitoNotifications_setNotifications: setNotifications,
     kogitoNotifications_removeNotifications: removeNotifications,
@@ -120,9 +117,7 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
       )}
     </>
   );
-};
-
-export const NotificationPanelTabContent = React.forwardRef(RefForwardingNotificationPanelTabContent);
+});
 
 interface NotificationDrawerGroupProps {
   path: string;

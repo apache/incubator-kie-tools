@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
@@ -23,35 +23,34 @@ import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { BookOpenIcon } from "@patternfly/react-icons/dist/js/icons/book-open-icon";
 import { TrophyIcon } from "@patternfly/react-icons/dist/js/icons/trophy-icon";
-import { File } from "@kie-tooling-core/editor/dist/channel";
 import { KogitoGuidedTour } from "@kie-tooling-core/guided-tour/dist/channel";
 import { DemoMode, SubTutorialMode, Tutorial } from "@kie-tooling-core/guided-tour/dist/api";
 import { OnlineI18n, useOnlineI18n } from "../common/i18n";
 import { I18nHtml } from "@kie-tooling-core/i18n/dist/react-components";
+import { useSettings } from "../settings/SettingsContext";
 
-export function useDmnTour(isEditorReady: boolean, file: File) {
+export function useDmnTour(shouldShow: boolean) {
   const { i18n } = useOnlineI18n();
+  const settings = useSettings();
 
   useEffect(() => {
+    if (!settings.general.guidedTourEnabled.get || shouldShow) {
+      return;
+    }
+
     const guidedTour = KogitoGuidedTour.getInstance();
-    guidedTour.setup();
-    return () => guidedTour.teardown();
-  }, []);
+    guidedTour.setup(() => settings.general.guidedTourEnabled.set(false));
+  }, [shouldShow, settings]);
 
   useEffect(() => {
-    if (isEditorReady && file.fileExtension === "dmn") {
+    if (shouldShow && settings.general.guidedTourEnabled.get) {
       const guidedTour = KogitoGuidedTour.getInstance();
       const tutorial = getOnlineEditorTutorial(i18n);
 
       guidedTour.registerTutorial(tutorial);
       guidedTour.start(tutorial.label);
     }
-  }, [isEditorReady, file, i18n]);
-
-  return useCallback(() => {
-    const guidedTour = KogitoGuidedTour.getInstance();
-    guidedTour.teardown();
-  }, []);
+  }, [shouldShow, i18n, settings]);
 }
 
 function getOnlineEditorTutorial(i18n: OnlineI18n) {

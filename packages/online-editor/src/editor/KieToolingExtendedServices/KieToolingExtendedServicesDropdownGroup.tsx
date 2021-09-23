@@ -37,9 +37,8 @@ export function KieToolingExtendedServicesDropdownGroup() {
   );
 
   const onToggleDmnRunner = useCallback(() => {
-    kieToolingExtendedServices.closeDmnTour();
     if (isKieToolingExtendedServicesRunning) {
-      dmnRunner.setDrawerExpanded(!dmnRunner.isDrawerExpanded);
+      dmnRunner.setDrawerExpanded((prev) => !prev);
       return;
     }
     kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
@@ -73,7 +72,7 @@ export function KieToolingExtendedServicesDropdownGroup() {
         </FeatureDependentOnKieToolingExtendedServices>
       </DropdownGroup>
       <DropdownGroup key={"dmn-dev-sandbox-group"} label={i18n.names.dmnDevSandbox}>
-        {dmnDevSandboxDropdownItems()}
+        {dmnDevSandboxDropdownItems}
       </DropdownGroup>
     </DropdownGroup>
   );

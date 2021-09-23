@@ -15,139 +15,158 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import {
-  DependentFeature,
-  useKieToolingExtendedServices,
-} from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
-import { DmnRunnerContext, extractFormInputsFromUrlParams } from "./DmnRunnerContext";
+import { DmnRunnerContext } from "./DmnRunnerContext";
 import { DmnRunnerService } from "./DmnRunnerService";
-import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
+import { EmbeddedEditorRef, useStateControlSubscription } from "@kie-tooling-core/editor/dist/embedded";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
-import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 import { useOnlineI18n } from "../../common/i18n";
-import { NotificationType } from "@kie-tooling-core/notifications/dist/api";
+import { Notification } from "@kie-tooling-core/notifications/dist/api";
+import { useQueryParams } from "../../queryParams/QueryParamsContext";
+import { useHistory } from "react-router";
+import { useGlobals } from "../../common/GlobalContext";
+import { QueryParams } from "../../common/Routes";
+import { File } from "@kie-tooling-core/editor/dist/channel";
+import { usePrevious } from "../../common/Hooks";
+import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { jsonParseWithDate } from "../../common/utils";
+import { NotificationsPanelController } from "../NotificationsPanel/NotificationsPanel";
 
 interface Props {
   children: React.ReactNode;
-  editor?: EmbeddedEditorRef;
-  isEditorReady: boolean;
+  editor: EmbeddedEditorRef | undefined;
+  notificationsPanel: NotificationsPanelController | undefined;
+  currentFile: File;
 }
 
 const THROTTLING_TIME = 200;
 
 export function DmnRunnerContextProvider(props: Props) {
   const { i18n } = useOnlineI18n();
-  const formInputsFromUrlParams = useMemo(() => extractFormInputsFromUrlParams() ?? {}, []);
+  const queryParams = useQueryParams();
+  const history = useHistory();
+  const globals = useGlobals();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
-  const notificationsPanel = useNotificationsPanel();
   const [isDrawerExpanded, setDrawerExpanded] = useState(false);
-  const [formData, setFormData] = useState(formInputsFromUrlParams);
-  const [formSchema, setFormSchema] = useState<DmnFormSchema>();
+  const [formData, setFormData] = useState<object>({});
+  const [formSchema, setFormSchema] = useState<DmnFormSchema | undefined>(undefined);
   const [formError, setFormError] = useState(false);
-  const [status, setStatus] = useState(
-    kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.UNAVAILABLE
-      ? DmnRunnerStatus.UNAVAILABLE
-      : DmnRunnerStatus.AVAILABLE
-  );
+
+  const status = useMemo(() => {
+    return isDrawerExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE;
+  }, [isDrawerExpanded]);
+
   const service = useMemo(
     () => new DmnRunnerService(kieToolingExtendedServices.baseUrl),
     [kieToolingExtendedServices.baseUrl]
   );
 
-  const updateFormSchema = useCallback(
-    (openDrawer: boolean) => {
-      return props.editor
-        ?.getContent()
-        .then((content) => service.formSchema(content ?? ""))
-        .then((newSchema) => {
-          setFormSchema(newSchema);
-          if (
-            openDrawer &&
-            ((formInputsFromUrlParams && Object.keys(formInputsFromUrlParams).length > 0) ||
-              (kieToolingExtendedServices.isModalOpen &&
-                kieToolingExtendedServices.installTriggeredBy === DependentFeature.DMN_RUNNER))
-          ) {
-            setDrawerExpanded(true);
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          setFormError(true);
-        });
-    },
-    [
-      formInputsFromUrlParams,
-      kieToolingExtendedServices.installTriggeredBy,
-      kieToolingExtendedServices.isModalOpen,
-      props.editor,
-      service,
-    ]
-  );
+  const updateFormSchema = useCallback(() => {
+    if (props.currentFile.fileExtension !== "dmn") {
+      return;
+    }
+
+    if (!props.editor?.isReady) {
+      return;
+    }
+
+    props.editor
+      ?.getContent()
+      .then((content) => service.formSchema(content))
+      .then((newSchema) => setFormSchema(newSchema))
+      .catch((err) => {
+        console.error(err);
+        setFormError(true);
+      });
+  }, [props.editor, service]);
 
   useEffect(() => {
-    if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
-      setStatus(DmnRunnerStatus.UNAVAILABLE);
+    if (props.currentFile.fileExtension !== "dmn") {
       setDrawerExpanded(false);
       return;
     }
 
-    setStatus(DmnRunnerStatus.AVAILABLE);
-    // After the detection of the DMN Runner, set the schema for the first time
-    if (props.isEditorReady) {
-      updateFormSchema(true);
-    }
-  }, [
-    kieToolingExtendedServices.installTriggeredBy,
-    kieToolingExtendedServices.isModalOpen,
-    kieToolingExtendedServices.status,
-    props.isEditorReady,
-    updateFormSchema,
-  ]);
+    updateFormSchema();
+  }, [props.currentFile, updateFormSchema]);
 
-  // Subscribe to any change on the DMN Editor to validate the model and update the JSON Schema
-  useEffect(() => {
-    if (!props.editor?.isReady || status !== DmnRunnerStatus.AVAILABLE) {
+  const validate = useCallback(() => {
+    if (props.currentFile.fileExtension !== "dmn") {
       return;
     }
 
-    const validate = () => {
-      props.editor
-        ?.getContent()
-        .then((content) => service.validate(content ?? ""))
-        .then((validationResults) => {
-          const notifications = validationResults.map((validationResult: any) => ({
-            type: "PROBLEM" as NotificationType,
-            path: "",
-            severity: validationResult.severity,
-            message: `${validationResult.messageType}: ${validationResult.message}`,
-          }));
-          notificationsPanel.getTabRef(i18n.terms.validation)?.kogitoNotifications_setNotifications("", notifications);
-        });
-    };
+    props.editor
+      ?.getContent()
+      .then((content) => service.validate(content ?? ""))
+      .then((validationResults) => {
+        const notifications: Notification[] = validationResults.map((validationResult: any) => ({
+          type: "PROBLEM",
+          path: "",
+          severity: validationResult.severity,
+          message: `${validationResult.messageType}: ${validationResult.message}`,
+        }));
+        props.notificationsPanel
+          ?.getTab(i18n.terms.validation)
+          ?.kogitoNotifications_setNotifications("", notifications);
+      });
+  }, [props.editor, props.currentFile, props.notificationsPanel, service, i18n]);
 
-    let timeout: number | undefined;
-    const subscription = props.editor.getStateControl().subscribe(() => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-      timeout = window.setTimeout(() => {
-        validate();
-        updateFormSchema(false);
-      }, THROTTLING_TIME);
-    });
-    validate();
+  useStateControlSubscription(props.editor, validate, { throttle: THROTTLING_TIME });
+  useStateControlSubscription(props.editor, updateFormSchema, { throttle: THROTTLING_TIME });
 
-    return () => props.editor?.getStateControl().unsubscribe(subscription);
-  }, [props.editor, status, props.isEditorReady, updateFormSchema, i18n, service, notificationsPanel]);
+  useEffect(() => {
+    if (props.currentFile.fileExtension !== "dmn") {
+      return;
+    }
+
+    if (!props.editor?.isReady || kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
+      props.notificationsPanel?.getTab(i18n.terms.validation)?.kogitoNotifications_setNotifications("", []);
+      return;
+    }
+  }, [props.currentFile, props.editor, i18n, kieToolingExtendedServices, props.notificationsPanel]);
+
+  useEffect(() => {
+    if (!props.editor?.isReady || !formSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
+      return;
+    }
+
+    try {
+      setFormData(jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!));
+      setDrawerExpanded(true);
+    } catch (e) {
+      console.error(`Cannot parse "${QueryParams.DMN_RUNNER_FORM_INPUTS}"`, e);
+    } finally {
+      history.replace({
+        pathname: globals.routes.editor.path({ extension: "dmn" }),
+        search: globals.routes.editor.queryArgs(queryParams).without(QueryParams.DMN_RUNNER_FORM_INPUTS).toString(),
+      });
+    }
+  }, [formSchema, props.editor, history, globals.routes, queryParams]);
+
+  const prevKieToolingExtendedServicesStatus = usePrevious(kieToolingExtendedServices.status);
+  useEffect(() => {
+    if (
+      prevKieToolingExtendedServicesStatus &&
+      prevKieToolingExtendedServicesStatus !== KieToolingExtendedServicesStatus.AVAILABLE &&
+      prevKieToolingExtendedServicesStatus !== KieToolingExtendedServicesStatus.RUNNING &&
+      kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING
+    ) {
+      setDrawerExpanded(true);
+    }
+
+    if (
+      kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.STOPPED ||
+      kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.NOT_RUNNING
+    ) {
+      setDrawerExpanded(false);
+    }
+  }, [prevKieToolingExtendedServicesStatus, kieToolingExtendedServices.status]);
 
   return (
     <DmnRunnerContext.Provider
       value={{
         status,
-        setStatus,
         formSchema,
         isDrawerExpanded,
         setDrawerExpanded,

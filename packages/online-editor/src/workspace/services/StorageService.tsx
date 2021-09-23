@@ -15,7 +15,7 @@
  */
 
 import LightningFS, { FSBackend, FSConstructorOptions } from "@isomorphic-git/lightning-fs";
-import { buildFile, File } from "@kie-tooling-core/editor/dist/channel";
+import { File } from "@kie-tooling-core/editor/dist/channel";
 import { Minimatch } from "minimatch";
 import { basename, dirname, join, parse, resolve } from "path";
 import {
@@ -286,4 +286,16 @@ export class StorageService {
     );
     return files.reduce((paths: string[], path: string) => paths.concat(path), []) as string[];
   }
+}
+
+function buildFile(path: string, getFileContents: () => Promise<string | undefined>): File {
+  const parsedPath = parse(path);
+  return {
+    fileName: parsedPath.name,
+    fileExtension: parsedPath.ext.replace(".", ""),
+    getFileContents: getFileContents,
+    isReadOnly: false,
+    path: path,
+    kind: "local",
+  };
 }

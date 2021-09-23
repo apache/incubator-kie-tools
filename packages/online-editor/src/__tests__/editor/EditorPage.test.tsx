@@ -19,8 +19,6 @@ import { fireEvent, render } from "@testing-library/react";
 import { EditorPage } from "../../editor/EditorPage";
 import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../testing_utils";
 
-const onFileNameChanged = jest.fn((file: string) => null);
-
 function mockFunctions() {
   const original = jest.requireActual("@kie-tooling-core/editor/dist/embedded");
   return {
@@ -38,9 +36,7 @@ describe("EditorPage", () => {
   describe("Unsaved Alert", () => {
     test("should not appear by default with isDirty equal to false", () => {
       const { queryByTestId } = render(
-        usingTestingOnlineI18nContext(
-          usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
-        ).wrapper
+        usingTestingOnlineI18nContext(usingTestingGlobalContext(<EditorPage forExtension={"bpmn"} />).wrapper).wrapper
       );
 
       expect(queryByTestId("unsaved-alert")).toBeNull();
@@ -48,9 +44,7 @@ describe("EditorPage", () => {
 
     test("should not appear by default with isDirty equal to true", () => {
       const { queryByTestId } = render(
-        usingTestingOnlineI18nContext(
-          usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
-        ).wrapper
+        usingTestingOnlineI18nContext(usingTestingGlobalContext(<EditorPage forExtension={"bpmn"} />).wrapper).wrapper
       );
 
       expect(queryByTestId("unsaved-alert")).toBeNull();
@@ -58,9 +52,7 @@ describe("EditorPage", () => {
 
     test("should appear when tries to close with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingOnlineI18nContext(
-          usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
-        ).wrapper
+        usingTestingOnlineI18nContext(usingTestingGlobalContext(<EditorPage forExtension={"bpmn"} />).wrapper).wrapper
       );
 
       fireEvent.click(getByTestId("view-kebab"));
@@ -71,9 +63,7 @@ describe("EditorPage", () => {
 
     test("should appear and then close after click on save with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingOnlineI18nContext(
-          usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
-        ).wrapper
+        usingTestingOnlineI18nContext(usingTestingGlobalContext(<EditorPage forExtension={"bpmn"} />).wrapper).wrapper
       );
 
       fireEvent.click(getByTestId("view-kebab"));
@@ -85,9 +75,7 @@ describe("EditorPage", () => {
 
     test("should appear and then close after click on close with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingOnlineI18nContext(
-          usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
-        ).wrapper
+        usingTestingOnlineI18nContext(usingTestingGlobalContext(<EditorPage forExtension={"bpmn"} />).wrapper).wrapper
       );
 
       fireEvent.click(getByTestId("view-kebab"));
@@ -99,9 +87,7 @@ describe("EditorPage", () => {
 
     test("should appear and then close after click on close without save with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingOnlineI18nContext(
-          usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
-        ).wrapper
+        usingTestingOnlineI18nContext(usingTestingGlobalContext(<EditorPage forExtension={"bpmn"} />).wrapper).wrapper
       );
 
       fireEvent.click(getByTestId("view-kebab"));

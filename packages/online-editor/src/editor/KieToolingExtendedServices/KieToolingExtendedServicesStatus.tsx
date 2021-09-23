@@ -15,10 +15,8 @@
  */
 
 export enum KieToolingExtendedServicesStatus {
-  UNAVAILABLE = "UNAVAILABLE",
   AVAILABLE = "AVAILABLE",
   RUNNING = "RUNNING",
   NOT_RUNNING = "NOT_RUNNING",
-  OUTDATED = "OUTDATED",
   STOPPED = "STOPPED",
 }

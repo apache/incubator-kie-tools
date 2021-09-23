@@ -16,7 +16,7 @@
     "@kogito-tooling/i18n-common-dictionary": "0.0.0",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
-    "react-router": "^5.2.0",
+    "react-router": "^5.2.1",
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {

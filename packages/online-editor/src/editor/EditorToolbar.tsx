@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import { File } from "@kie-tooling-core/editor/dist/channel";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import {
   Dropdown,
   DropdownGroup,
@@ -24,6 +22,7 @@ import {
   DropdownPosition,
   DropdownToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { EyeIcon } from "@patternfly/react-icons/dist/js/icons/eye-icon";
 import {
   PageHeader,
   PageHeaderTools,
@@ -34,79 +33,182 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
-import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
-import { EyeIcon } from "@patternfly/react-icons/dist/js/icons/eye-icon";
-import { dirname } from "path";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { GlobalContext } from "../common/GlobalContext";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOnlineI18n } from "../common/i18n";
-import { GitHubRepositoryOrigin, WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
-import { useWorkspace } from "../workspace/WorkspaceContext";
+import { SettingsButton } from "../settings/SettingsButton";
 import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/KieToolingExtendedServicesButtons";
-import { useKieToolingExtendedServices } from "./KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
-import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { useGlobals } from "../common/GlobalContext";
+import { AuthStatus, useSettings } from "../settings/SettingsContext";
+import { SettingsTabs } from "../settings/SettingsModalBody";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
+import { UpdateGistErrors } from "../settings/GithubService";
+import { QueryParams } from "../common/Routes";
+import { useHistory } from "react-router";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
+import { EmbedModal } from "./EmbedModal";
+import { AlertsController, useAlert } from "./Alerts/Alerts";
+import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
+import { useWorkspaces } from "../workspace/WorkspaceContext";
+import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
+import { dirname } from "path";
+import { GitHubRepositoryOrigin, WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 
-interface Props {
-  onFullScreen: () => void;
-  onSave: () => void;
-  onDownload: () => void;
-  onDownloadAll: () => void;
-  onPreview: () => void;
-  onSetGitHubToken: () => void;
-  onGistIt: () => void;
-  onEmbed: () => void;
+export interface Props {
+  alerts: AlertsController | undefined;
+  editor: EmbeddedEditorRef | undefined;
+  currentFile: File;
+  onRename: (newName: string) => void;
   onClose: () => void;
-  onCopyContentToClipboard: () => void;
-  isPageFullscreen: boolean;
-  isEdited: boolean;
 }
 
 export function EditorToolbar(props: Props) {
-  const context = useContext(GlobalContext);
-  const workspaceContext = useWorkspace();
-  const kieToolingExtendedServices = useKieToolingExtendedServices();
-  const [fileName, setFileName] = useState(workspaceContext.file!.fileName);
+  const globals = useGlobals();
+  const settings = useSettings();
+  const history = useHistory();
+  const queryParams = useQueryParams();
+  const [fileName, setFileName] = useState(props.currentFile.fileName);
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
-  const [isWorkspaceFilesMenuOpen, setWorkspaceFilesMenuOpen] = useState(false);
   const [isViewKebabOpen, setViewKebabOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
+  const [isEmbedModalOpen, setEmbedModalOpen] = useState(false);
   const { i18n } = useOnlineI18n();
+  const isEdited = useDirtyState(props.editor);
 
-  const logoProps = useMemo(() => {
-    return { onClick: props.onClose };
-  }, [props.onClose]);
+  const copySuccessfulAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            className={"kogito--alert"}
+            variant="success"
+            title={i18n.editorPage.alerts.copy}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        </div>
+      ),
+      [i18n]
+    )
+  );
 
-  const fileExtension = useMemo(() => {
-    return workspaceContext.file!.fileExtension;
-  }, [workspaceContext.file]);
+  const successUpdateGistAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            className={"kogito--alert"}
+            variant="success"
+            title={i18n.editorPage.alerts.updateGist}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        </div>
+      ),
+      [i18n]
+    )
+  );
+  const successCreateGistAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            className={"kogito--alert"}
+            variant="success"
+            title={i18n.editorPage.alerts.createGist}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        </div>
+      ),
+      [i18n]
+    )
+  );
 
-  const saveNewName = useCallback(() => {
-    workspaceContext.onFileNameChanged(fileName).catch(() => {});
-  }, [workspaceContext, fileName]);
+  const invalidCurrentGistAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            className={"kogito--alert"}
+            variant="danger"
+            title={i18n.editorPage.alerts.invalidCurrentGist}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        </div>
+      ),
+      [i18n]
+    )
+  );
+
+  const invalidGistFilenameAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            className={"kogito--alert"}
+            variant="danger"
+            title={i18n.editorPage.alerts.invalidGistFilename}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        </div>
+      ),
+      [i18n]
+    )
+  );
+
+  const errorAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            className={"kogito--alert"}
+            variant="danger"
+            title={i18n.editorPage.alerts.error}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        </div>
+      ),
+      [i18n]
+    )
+  );
+
+  const queryParamFile = useMemo(() => {
+    return queryParams.get(QueryParams.FILE);
+  }, [queryParams]);
 
   const cancelNewName = useCallback(() => {
-    setFileName(workspaceContext.file!.fileName);
-  }, [workspaceContext.file]);
+    setFileName(props.currentFile.fileName);
+  }, [props.currentFile.fileName]);
+
+  useEffect(() => {
+    setFileName(props.currentFile.fileName);
+  }, [props.currentFile.fileName]);
 
   const onNameInputKeyUp = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.keyCode === 13 /* Enter */) {
-        saveNewName();
+        props.onRename(fileName);
         e.currentTarget.blur();
       } else if (e.keyCode === 27 /* ESC */) {
         cancelNewName();
         e.currentTarget.blur();
       }
     },
-    [saveNewName, cancelNewName]
+    [props, fileName, cancelNewName]
   );
 
   const viewItems = useCallback(
     (dropdownId: string) => [
       <React.Fragment key={`dropdown-${dropdownId}-close`}>
-        {!context.external && (
+        {!globals.externalFile && (
           <DropdownItem
             component={"button"}
             onClick={props.onClose}
@@ -118,37 +220,155 @@ export function EditorToolbar(props: Props) {
           </DropdownItem>
         )}
       </React.Fragment>,
-      <DropdownItem key={`dropdown-${dropdownId}-fullscreen`} component={"button"} onClick={props.onFullScreen}>
-        {i18n.editorToolbar.enterFullScreenView}
-      </DropdownItem>,
     ],
-    [i18n, context, props]
+    [i18n, globals, props]
   );
 
   const includeDownloadSVGDropdownItem = useMemo(() => {
-    return fileExtension.toLowerCase() !== "pmml";
-  }, [fileExtension]);
+    return props.currentFile.fileExtension.toLowerCase() !== "pmml";
+  }, [props.currentFile]);
 
   const includeEmbedDropdownItem = useMemo(() => {
     return includeDownloadSVGDropdownItem;
   }, [includeDownloadSVGDropdownItem]);
 
+  const onSendChangesToGitHub = useCallback(() => {
+    props.editor?.getContent().then((content) => {
+      window.dispatchEvent(
+        new CustomEvent("saveOnlineEditor", {
+          detail: {
+            fileName: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
+            fileContent: content,
+            senderTabId: globals.senderTabId!,
+          },
+        })
+      );
+    });
+  }, [props.currentFile, globals.senderTabId, props.editor]);
+
+  const onDownload = useCallback(() => {
+    props.editor?.getStateControl().setSavedCommand();
+    props.alerts?.closeAll();
+    props.editor?.getContent().then((content) => {
+      if (downloadRef.current) {
+        const fileBlob = new Blob([content], { type: "text/plain" });
+        downloadRef.current.href = URL.createObjectURL(fileBlob);
+        downloadRef.current.click();
+      }
+    });
+  }, [props.editor, props.alerts]);
+
+  const onPreview = useCallback(() => {
+    props.editor?.getPreview().then((previewSvg) => {
+      if (downloadPreviewRef.current && previewSvg) {
+        const fileBlob = new Blob([previewSvg], { type: "image/svg+xml" });
+        downloadPreviewRef.current.href = URL.createObjectURL(fileBlob);
+        downloadPreviewRef.current.click();
+      }
+    });
+  }, [props.editor]);
+
+  const onGistIt = useCallback(async () => {
+    if (props.editor) {
+      const content = await props.editor.getContent();
+
+      // update gist
+      if (queryParamFile && settings.github.service.isGist(queryParamFile)) {
+        const userLogin = settings.github.service.extractUserLoginFromFileUrl(queryParamFile);
+        if (userLogin === settings.github.user) {
+          try {
+            const filename = `${props.currentFile.fileName}.${props.currentFile.fileExtension}`;
+            const response = await settings.github.service.updateGist(settings.github.octokit, {
+              filename,
+              content,
+            });
+
+            if (response === UpdateGistErrors.INVALID_CURRENT_GIST) {
+              invalidCurrentGistAlert.show();
+              return;
+            }
+
+            if (response === UpdateGistErrors.INVALID_GIST_FILENAME) {
+              invalidGistFilenameAlert.show();
+              return;
+            }
+
+            props.editor.getStateControl().setSavedCommand();
+            if (filename !== settings.github.service.getCurrentGist()?.filename) {
+              successUpdateGistAlert.show();
+              history.push({
+                pathname: globals.routes.editor.path({ extension: props.currentFile.fileExtension }),
+                search: globals.routes.editor.queryString({ file: response }).toString(),
+              });
+              return;
+            }
+
+            successUpdateGistAlert.show();
+            return;
+          } catch (err) {
+            console.error(err);
+            errorAlert.show();
+            return;
+          }
+        }
+      }
+
+      // create gist
+      try {
+        const newGistUrl = await settings.github.service.createGist(settings.github.octokit, {
+          filename: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
+          content: content,
+          description: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
+          isPublic: true,
+        });
+
+        successCreateGistAlert.show();
+
+        history.push({
+          pathname: globals.routes.editor.path({ extension: props.currentFile.fileExtension }),
+          search: globals.routes.editor.queryString({ file: newGistUrl }).toString(),
+        });
+        return;
+      } catch (err) {
+        console.error(err);
+        errorAlert.show();
+        return;
+      }
+    }
+  }, [
+    errorAlert,
+    successCreateGistAlert,
+    successUpdateGistAlert,
+    invalidCurrentGistAlert,
+    invalidGistFilenameAlert,
+    props.currentFile,
+    history,
+    globals,
+    settings,
+    queryParamFile,
+    queryParams,
+    props.editor,
+  ]);
+
+  const onEmbed = useCallback(() => {
+    setEmbedModalOpen(true);
+  }, []);
+
+  const onCopyContentToClipboard = useCallback(() => {
+    props.editor?.getContent().then((content) => {
+      if (copyContentTextArea.current) {
+        copyContentTextArea.current.value = content;
+        copyContentTextArea.current.select();
+        if (document.execCommand("copy")) {
+          copySuccessfulAlert.show();
+        }
+      }
+    });
+  }, [props.editor, copySuccessfulAlert]);
+
   const shareItems = useCallback(
     (dropdownId: string) => [
-      <DropdownItem
-        key={`dropdown-${dropdownId}-save`}
-        component={"button"}
-        onClick={props.onDownload}
-        className={"pf-u-display-none-on-xl"}
-        ouiaId="save-and-download-dropdown-button"
-      >
-        {i18n.editorToolbar.saveAndDownload}
-      </DropdownItem>,
-      <DropdownItem
-        key={`dropdown-${dropdownId}-copy-source`}
-        component={"button"}
-        onClick={props.onCopyContentToClipboard}
-      >
+      <DropdownItem key={`dropdown-${dropdownId}-copy-source`} component={"button"} onClick={onCopyContentToClipboard}>
         {i18n.editorToolbar.copySource}
       </DropdownItem>,
       <React.Fragment key={`dropdown-${dropdownId}-fragment-download-svg`}>
@@ -157,7 +377,7 @@ export function EditorToolbar(props: Props) {
             key={`dropdown-${dropdownId}-download-svg`}
             data-testid="dropdown-download-svg"
             component="button"
-            onClick={props.onPreview}
+            onClick={onPreview}
           >
             {i18n.editorToolbar.downloadSVG}
           </DropdownItem>
@@ -169,7 +389,7 @@ export function EditorToolbar(props: Props) {
             key={`dropdown-${dropdownId}-embed`}
             data-testid="dropdown-embed"
             component="button"
-            onClick={props.onEmbed}
+            onClick={onEmbed}
           >
             {i18n.editorToolbar.embed}
           </DropdownItem>
@@ -181,23 +401,23 @@ export function EditorToolbar(props: Props) {
             data-testid={"gist-it-tooltip"}
             key={`dropdown-${dropdownId}-export-gist`}
             content={<div>{i18n.editorToolbar.gistItTooltip}</div>}
-            trigger={!context.githubService.isAuthenticated() ? "mouseenter click" : ""}
+            trigger={settings.github.authStatus !== AuthStatus.SIGNED_IN ? "mouseenter click" : ""}
             position="left"
           >
             <DropdownItem
               data-testid={"gist-it-button"}
               component="button"
-              onClick={props.onGistIt}
-              isDisabled={!context.githubService.isAuthenticated()}
+              onClick={onGistIt}
+              isDisabled={settings.github.authStatus !== AuthStatus.SIGNED_IN}
             >
               {i18n.editorToolbar.gistIt}
             </DropdownItem>
           </Tooltip>
-          {context.external && !context.readonly && (
+          {globals.externalFile && !props.currentFile.isReadOnly && (
             <DropdownItem
               key={`dropdown-${dropdownId}-send-changes-to-github`}
               component={"button"}
-              onClick={props.onSave}
+              onClick={onSendChangesToGitHub}
             >
               {i18n.editorToolbar.sendChangesToGitHub}
             </DropdownItem>
@@ -207,17 +427,62 @@ export function EditorToolbar(props: Props) {
           data-testid={"set-github-token"}
           key={`dropdown-${dropdownId}-setup-github-token`}
           component="button"
-          onClick={props.onSetGitHubToken}
+          onClick={() => settings.open(SettingsTabs.GITHUB)}
         >
           {i18n.editorToolbar.setGitHubToken}
         </DropdownItem>
       </DropdownGroup>,
     ],
-    [i18n, context, props.onSave, props.onDownload, props.onCopyContentToClipboard, props.onGistIt]
+    [
+      props.currentFile,
+      onCopyContentToClipboard,
+      onPreview,
+      onEmbed,
+      onGistIt,
+      onSendChangesToGitHub,
+      includeDownloadSVGDropdownItem,
+      includeEmbedDropdownItem,
+      i18n,
+      settings,
+      globals,
+    ]
   );
 
+  const downloadRef = useRef<HTMLAnchorElement>(null);
+  const downloadAllRef = useRef<HTMLAnchorElement>(null);
+  const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
+  const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (downloadRef.current) {
+      downloadRef.current.download = `${props.currentFile.fileName}.${props.currentFile.fileExtension}`;
+    }
+    if (downloadAllRef.current && workspaces.active) {
+      downloadAllRef.current.download = `${workspaces.active.descriptor.name}.zip`;
+    }
+    if (downloadPreviewRef.current) {
+      downloadPreviewRef.current.download = `${props.currentFile.fileName}-svg.svg`;
+    }
+  }, [props.currentFile]);
+
+  //
+
+  const workspaces = useWorkspaces();
+  const [isWorkspaceFilesMenuOpen, setWorkspaceFilesMenuOpen] = useState(false);
+  const onDownloadAll = useCallback(async () => {
+    if (!props.editor) {
+      return;
+    }
+
+    const zipBlob = await workspaces.prepareZip();
+    if (downloadAllRef.current) {
+      downloadAllRef.current.href = URL.createObjectURL(zipBlob);
+      downloadAllRef.current.click();
+    }
+  }, [props.editor, workspaces]);
+
   const fileItems = useCallback(() => {
-    if (!workspaceContext.active || workspaceContext.active.files.length === 0) {
+    if (!workspaces.active || workspaces.active.files.length === 0) {
       return [
         <DropdownItem key="disabled link" isDisabled>
           <i>Loading files ...</i>
@@ -226,14 +491,12 @@ export function EditorToolbar(props: Props) {
     }
 
     return [
-      workspaceContext.active?.kind === WorkspaceKind.GITHUB_REPOSITORY ? (
+      workspaces.active?.kind === WorkspaceKind.GITHUB_REPOSITORY ? (
         <DropdownGroup key={"github-group"} label="GitHub">
           <DropdownItem
-            onClick={workspaceContext.syncWorkspace}
+            onClick={workspaces.syncWorkspace}
             key={"push-changes-item"}
-            description={`Push all changes to ${
-              (workspaceContext.active.descriptor.origin as GitHubRepositoryOrigin).url
-            }`}
+            description={`Push all changes to ${(workspaces.active.descriptor.origin as GitHubRepositoryOrigin).url}`}
           >
             Push
           </DropdownItem>
@@ -243,14 +506,14 @@ export function EditorToolbar(props: Props) {
       ),
       <DropdownGroup key={"download-group"} label="Download">
         <DropdownItem
-          onClick={props.onDownload}
+          onClick={onDownload}
           key={"donwload-file-item"}
-          description={`${workspaceContext.file!.fileName}.${workspaceContext.file!.fileExtension} will be downloaded`}
+          description={`${props.currentFile.fileName}.${props.currentFile.fileExtension} will be downloaded`}
         >
           Current file
         </DropdownItem>
         <DropdownItem
-          onClick={props.onDownloadAll}
+          onClick={onDownloadAll}
           key={"download-zip-item"}
           description={`A zip file including all files will be downloaded`}
         >
@@ -259,21 +522,21 @@ export function EditorToolbar(props: Props) {
       </DropdownGroup>,
       <DropdownGroup key={"new-file-group"} label="New file">
         <DropdownItem
-          onClick={async () => await workspaceContext.addEmptyFile("bpmn")}
+          onClick={async () => await workspaces.addEmptyFile("bpmn")}
           key={"new-bpmn-item"}
           description="BPMN files are used to generate business processes"
         >
           Workflow (.BPMN)
         </DropdownItem>
         <DropdownItem
-          onClick={async () => await workspaceContext.addEmptyFile("dmn")}
+          onClick={async () => await workspaces.addEmptyFile("dmn")}
           key={"new-dmn-item"}
           description="DMN files are used to generate decision models"
         >
           Decision model (.DMN)
         </DropdownItem>
         <DropdownItem
-          onClick={async () => await workspaceContext.addEmptyFile("pmml")}
+          onClick={async () => await workspaces.addEmptyFile("pmml")}
           key={"new-pmml-item"}
           description="PMML files are used to generate scorecards"
         >
@@ -281,15 +544,15 @@ export function EditorToolbar(props: Props) {
         </DropdownItem>
       </DropdownGroup>,
       <DropdownGroup key={"workspace-group"} label="Workspace">
-        {workspaceContext.active.files
+        {workspaces.active.files
           .sort((a: File, b: File) => a.path!.localeCompare(b.path!))
           .map((file: File, idx: number) => (
             <DropdownItem
-              onClick={() => workspaceContext.onFileChanged(file)}
+              onClick={() => workspaces.onFileChanged(file)}
               description={
                 "/ " +
                 dirname(file.path!)
-                  .replace(`/${workspaceContext.active!.descriptor.context}`, "")
+                  .replace(`/${workspaces.active!.descriptor.context}`, "")
                   .substring(1)
                   .replace(/\//g, " > ")
               }
@@ -298,254 +561,280 @@ export function EditorToolbar(props: Props) {
                 <ExternalLinkAltIcon
                   className="kogito--editor__workspace-files-dropdown-open"
                   onClick={(e) => {
-                    window.open(`?path=${file.path}#/editor/${file.fileExtension}`, "_blank");
+                    window.open(
+                      globals.routes.editor.url({
+                        pathParams: { extension: file.fileExtension },
+                        queryParams: { path: file.path },
+                      }),
+                      "_blank"
+                    );
                     e.stopPropagation();
                   }}
                 />
               }
             >
-              <span style={{ fontWeight: workspaceContext.file!.path === file.path ? "bold" : "normal" }}>
+              <span style={{ fontWeight: props.currentFile.path === file.path ? "bold" : "normal" }}>
                 {`${file.fileName}.${file.fileExtension}`}
               </span>
               <EyeIcon
                 style={{
                   height: "0.8em",
                   marginLeft: "10px",
-                  visibility: workspaceContext.file!.path === file.path ? "visible" : "hidden",
+                  visibility: props.currentFile.path === file.path ? "visible" : "hidden",
                 }}
               />
             </DropdownItem>
           ))}
       </DropdownGroup>,
     ];
-  }, [props, workspaceContext]);
+  }, [props, workspaces]);
 
   useEffect(() => {
-    setFileName(workspaceContext.file!.fileName);
-  }, [workspaceContext.file]);
+    setFileName(props.currentFile.fileName);
+  }, [props.currentFile]);
 
-  return !props.isPageFullscreen ? (
-    <PageHeader
-      logo={<Brand src={`images/${fileExtension}_kogito_logo.svg`} alt={`${fileExtension} kogito logo`} />}
-      logoProps={logoProps}
-      headerTools={
-        <PageHeaderTools>
-          {kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.UNAVAILABLE && (
-            <PageHeaderToolsGroup>
-              <PageHeaderToolsItem
-                visibility={{
-                  default: "hidden",
-                  "2xl": "visible",
-                  xl: "visible",
-                  lg: "hidden",
-                  md: "hidden",
-                  sm: "hidden",
-                }}
-              >
-                <KieToolingExtendedServicesButtons />
-              </PageHeaderToolsItem>
-            </PageHeaderToolsGroup>
-          )}
-          {!workspaceContext.active && (
-            <PageHeaderToolsGroup>
-              <PageHeaderToolsItem
-                visibility={{
-                  default: "hidden",
-                  "2xl": "visible",
-                  xl: "visible",
-                  lg: "hidden",
-                  md: "hidden",
-                  sm: "hidden",
-                }}
-              >
-                <Button
-                  data-testid="save-button"
-                  variant={"primary"}
-                  onClick={props.onDownload}
-                  aria-label={"Save button"}
-                  className={"kogito--editor__toolbar button"}
-                  ouiaId="save-version-button"
+  return (
+    <>
+      <PageHeader
+        logo={
+          <Brand
+            src={globals.routes.static.images.editorLogo.path({ type: props.currentFile.fileExtension })}
+            alt={`${props.currentFile.fileExtension} kogito logo`}
+          />
+        }
+        logoProps={{ onClick: props.onClose }}
+        headerTools={
+          <PageHeaderTools>
+            {props.currentFile.fileExtension === "dmn" && (
+              <PageHeaderToolsGroup>
+                <PageHeaderToolsItem
+                  visibility={{
+                    default: "hidden",
+                    "2xl": "visible",
+                    xl: "visible",
+                    lg: "hidden",
+                    md: "hidden",
+                    sm: "hidden",
+                  }}
                 >
-                  {i18n.terms.save}
-                </Button>
-              </PageHeaderToolsItem>
-            </PageHeaderToolsGroup>
-          )}
-          <PageHeaderToolsGroup>
-            <PageHeaderToolsItem
-              visibility={{
-                default: "hidden",
-                "2xl": "visible",
-                xl: "visible",
-                lg: "hidden",
-                md: "hidden",
-                sm: "hidden",
-              }}
-            >
-              <Dropdown
-                onSelect={() => setShareMenuOpen(false)}
-                toggle={
-                  <DropdownToggle
-                    id={"share-id-lg"}
-                    data-testid={"share-menu"}
-                    onToggle={(isOpen) => setShareMenuOpen(isOpen)}
-                  >
-                    {i18n.editorToolbar.share}
-                  </DropdownToggle>
-                }
-                isPlain={true}
-                className={"kogito--editor__toolbar dropdown"}
-                isOpen={isShareMenuOpen}
-                dropdownItems={shareItems("lg")}
-                position={DropdownPosition.right}
-              />
-              {workspaceContext.active && workspaceContext.active.files.length > 0 && (
+                  <KieToolingExtendedServicesButtons />
+                </PageHeaderToolsItem>
+              </PageHeaderToolsGroup>
+            )}
+            <PageHeaderToolsGroup>
+              <PageHeaderToolsItem
+                visibility={{
+                  default: "hidden",
+                  "2xl": "visible",
+                  xl: "visible",
+                  lg: "hidden",
+                  md: "hidden",
+                  sm: "hidden",
+                }}
+              >
                 <Dropdown
-                  onSelect={() => setWorkspaceFilesMenuOpen(false)}
+                  onSelect={() => setShareMenuOpen(false)}
                   toggle={
                     <DropdownToggle
-                      id={"files-id-lg"}
-                      data-testid={"files-menu"}
-                      onToggle={(isOpen) => setWorkspaceFilesMenuOpen(isOpen)}
+                      id={"share-id-lg"}
+                      data-testid={"share-menu"}
+                      onToggle={(isOpen) => setShareMenuOpen(isOpen)}
                     >
-                      {`${workspaceContext.active.files.length} File${
-                        workspaceContext.active.files.length > 1 ? "s" : ""
-                      }`}
+                      {i18n.editorToolbar.share}
                     </DropdownToggle>
                   }
                   isPlain={true}
-                  className={"kogito--editor__toolbar dropdown pf-u-ml-sm"}
-                  isOpen={isWorkspaceFilesMenuOpen}
-                  dropdownItems={fileItems()}
+                  className={"kogito--editor__toolbar dropdown"}
+                  isOpen={isShareMenuOpen}
+                  dropdownItems={shareItems("lg")}
                   position={DropdownPosition.right}
                 />
-              )}
-            </PageHeaderToolsItem>
-          </PageHeaderToolsGroup>
-          <PageHeaderToolsGroup>
-            <PageHeaderToolsItem
-              visibility={{
-                default: "hidden",
-                "2xl": "visible",
-                xl: "visible",
-                lg: "hidden",
-                md: "hidden",
-                sm: "hidden",
-              }}
-            >
-              <Dropdown
-                onSelect={() => setViewKebabOpen(false)}
-                toggle={
-                  <DropdownToggle
-                    data-testid={"view-kebab"}
-                    className={"kogito--editor__toolbar-icon-button"}
-                    id={"view-id-lg"}
-                    toggleIndicator={null}
-                    onToggle={(isOpen) => setViewKebabOpen(isOpen)}
-                    ouiaId="toolbar-button"
+                {workspaces.active && (
+                  <Dropdown
+                    onSelect={() => setWorkspaceFilesMenuOpen(false)}
+                    toggle={
+                      <DropdownToggle
+                        id={"files-id-lg"}
+                        data-testid={"files-menu"}
+                        onToggle={(isOpen) => setWorkspaceFilesMenuOpen(isOpen)}
+                      >
+                        {`${workspaces.active?.files.length} ${
+                          (workspaces.active?.files.length ?? 0) === 1 ? "File" : "Files"
+                        }`}
+                      </DropdownToggle>
+                    }
+                    isPlain={true}
+                    className={"kogito--editor__toolbar dropdown pf-u-ml-sm"}
+                    isOpen={isWorkspaceFilesMenuOpen}
+                    dropdownItems={fileItems()}
+                    position={DropdownPosition.right}
+                  />
+                )}
+              </PageHeaderToolsItem>
+            </PageHeaderToolsGroup>
+            {!workspaces.active && (
+              <PageHeaderToolsGroup>
+                <PageHeaderToolsItem>
+                  <Button
+                    variant={"primary"}
+                    className={"kogito--editor__toolbar button"}
+                    onClick={() =>
+                      workspaces.createWorkspaceFromLocal([
+                        {
+                          ...props.currentFile,
+                          path: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
+                          kind: "local",
+                        },
+                      ])
+                    }
                   >
-                    <EllipsisVIcon />
-                  </DropdownToggle>
-                }
-                isOpen={isViewKebabOpen}
-                isPlain={true}
-                dropdownItems={viewItems("lg")}
-                position={DropdownPosition.right}
-              />
-            </PageHeaderToolsItem>
-            <PageHeaderToolsItem
-              visibility={{
-                default: "visible",
-                "2xl": "hidden",
-                xl: "hidden",
-                lg: "visible",
-                md: "visible",
-                sm: "visible",
-              }}
-            >
-              <Dropdown
-                onSelect={() => setKebabOpen(false)}
-                toggle={
-                  <DropdownToggle
-                    data-testid={"kebab-sm"}
-                    className={"kogito--editor__toolbar-icon-button"}
-                    id={"kebab-id-sm"}
-                    toggleIndicator={null}
-                    onToggle={(isOpen) => setKebabOpen(isOpen)}
-                    ouiaId="small-toolbar-button"
-                  >
-                    <EllipsisVIcon />
-                  </DropdownToggle>
-                }
-                isOpen={isKebabOpen}
-                isPlain={true}
-                dropdownItems={[
-                  ...viewItems("sm"),
-                  <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
-                    {...shareItems("sm")}
-                  </DropdownGroup>,
-                  <KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />,
-                ]}
-                position={DropdownPosition.right}
-              />
-            </PageHeaderToolsItem>
-          </PageHeaderToolsGroup>
-        </PageHeaderTools>
-      }
-      topNav={
-        <>
-          {!context.readonly && (
-            <>
-              <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
-                <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
-                  {fileName}
-                </Title>
-                <TextInput
-                  value={fileName}
-                  type={"text"}
-                  aria-label={"Edit file name"}
-                  className={"kogito--editor__toolbar-title"}
-                  onChange={setFileName}
-                  onKeyUp={onNameInputKeyUp}
-                  onBlur={saveNewName}
-                />
-              </div>
-              {props.isEdited && !workspaceContext.active && (
-                <span
-                  aria-label={"File was edited"}
-                  className={"kogito--editor__toolbar-edited"}
-                  data-testid="is-dirty-indicator"
-                >
-                  {` - ${i18n.terms.edited}`}
-                </span>
-              )}
-            </>
-          )}
-          {context.readonly && (
-            <>
-              <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container readonly"}>
-                <Title
-                  className="kogito--editor__toolbar-title"
-                  aria-label={"File name"}
-                  headingLevel={"h3"}
-                  size={"2xl"}
-                >
-                  {fileName}
-                </Title>
-              </div>
-              <span
-                aria-label={"File is readonly"}
-                className={"kogito--editor__toolbar-edited"}
-                data-testid="is-readonly-indicator"
+                    Make Workspace
+                  </Button>
+                </PageHeaderToolsItem>
+              </PageHeaderToolsGroup>
+            )}
+            <PageHeaderToolsGroup>
+              <PageHeaderToolsItem>
+                <SettingsButton />
+              </PageHeaderToolsItem>
+              <PageHeaderToolsItem
+                visibility={{
+                  default: "hidden",
+                  "2xl": "visible",
+                  xl: "visible",
+                  lg: "hidden",
+                  md: "hidden",
+                  sm: "hidden",
+                }}
               >
-                {` - ${i18n.terms.readonly}`}
-              </span>
-            </>
-          )}
-        </>
-      }
-      className={"kogito--editor__toolbar"}
-      aria-label={"Page header"}
-    />
-  ) : null;
+                <Dropdown
+                  onSelect={() => setViewKebabOpen(false)}
+                  toggle={
+                    <DropdownToggle
+                      data-testid={"view-kebab"}
+                      className={"kogito--editor__toolbar-icon-button"}
+                      id={"view-id-lg"}
+                      toggleIndicator={null}
+                      onToggle={(isOpen) => setViewKebabOpen(isOpen)}
+                      ouiaId="toolbar-button"
+                    >
+                      <EllipsisVIcon />
+                    </DropdownToggle>
+                  }
+                  isOpen={isViewKebabOpen}
+                  isPlain={true}
+                  dropdownItems={viewItems("lg")}
+                  position={DropdownPosition.right}
+                />
+              </PageHeaderToolsItem>
+              <PageHeaderToolsItem
+                visibility={{
+                  default: "visible",
+                  "2xl": "hidden",
+                  xl: "hidden",
+                  lg: "visible",
+                  md: "visible",
+                  sm: "visible",
+                }}
+              >
+                <Dropdown
+                  onSelect={() => setKebabOpen(false)}
+                  toggle={
+                    <DropdownToggle
+                      data-testid={"kebab-sm"}
+                      className={"kogito--editor__toolbar-icon-button"}
+                      id={"kebab-id-sm"}
+                      toggleIndicator={null}
+                      onToggle={(isOpen) => setKebabOpen(isOpen)}
+                      ouiaId="small-toolbar-button"
+                    >
+                      <EllipsisVIcon />
+                    </DropdownToggle>
+                  }
+                  isOpen={isKebabOpen}
+                  isPlain={true}
+                  dropdownItems={[
+                    ...viewItems("sm"),
+                    <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
+                      {...shareItems("sm")}
+                    </DropdownGroup>,
+                    (props.currentFile.fileExtension === "dmn" && (
+                      <KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />
+                    )) || <React.Fragment key="kie-tooling-extended-services-group" />,
+                  ]}
+                  position={DropdownPosition.right}
+                />
+              </PageHeaderToolsItem>
+            </PageHeaderToolsGroup>
+          </PageHeaderTools>
+        }
+        topNav={
+          <>
+            <Label variant="outline">{props.currentFile.kind}</Label>
+            &nbsp;
+            {!props.currentFile.isReadOnly && (
+              <>
+                <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
+                  <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
+                    {fileName}
+                  </Title>
+                  <TextInput
+                    value={fileName}
+                    type={"text"}
+                    aria-label={"Edit file name"}
+                    className={"kogito--editor__toolbar-title"}
+                    onChange={setFileName}
+                    onKeyUp={onNameInputKeyUp}
+                    onBlur={() => props.onRename(fileName)}
+                  />
+                </div>
+                {isEdited && (
+                  <span
+                    aria-label={"File was edited"}
+                    className={"kogito--editor__toolbar-edited"}
+                    data-testid="is-dirty-indicator"
+                  >
+                    {` - ${i18n.terms.edited}`}
+                  </span>
+                )}
+              </>
+            )}
+            {props.currentFile.isReadOnly && (
+              <>
+                <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container readonly"}>
+                  <Title
+                    className="kogito--editor__toolbar-title"
+                    aria-label={"File name"}
+                    headingLevel={"h3"}
+                    size={"2xl"}
+                  >
+                    {fileName}
+                  </Title>
+                </div>
+                <span
+                  aria-label={"File is readonly"}
+                  className={"kogito--editor__toolbar-edited"}
+                  data-testid="is-readonly-indicator"
+                >
+                  {` - ${i18n.terms.readonly}`}
+                </span>
+              </>
+            )}
+          </>
+        }
+        className={"kogito--editor__toolbar"}
+        aria-label={"Page header"}
+      />
+      <EmbedModal
+        currentFile={props.currentFile}
+        isOpen={isEmbedModalOpen}
+        onClose={() => setEmbedModalOpen(false)}
+        editor={props.editor}
+      />
+      <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
+      <a ref={downloadRef} />
+      <a ref={downloadAllRef} />
+      <a ref={downloadPreviewRef} />
+    </>
+  );
 }

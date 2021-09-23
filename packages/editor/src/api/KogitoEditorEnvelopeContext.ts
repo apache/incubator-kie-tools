@@ -29,7 +29,6 @@ export interface KogitoEditorEnvelopeContextType<
   operatingSystem?: OperatingSystem;
   services: {
     keyboardShortcuts: DefaultKeyboardShortcutsService;
-    guidedTour: { isEnabled: () => boolean };
     i18n: I18nService;
   };
 }
