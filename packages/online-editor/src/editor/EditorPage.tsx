@@ -30,10 +30,8 @@ import {
 } from "@kie-tooling-core/editor/dist/embedded";
 import { DmnRunnerContext } from "./DmnRunner/DmnRunnerContext";
 import { DmnRunnerContextProvider } from "./DmnRunner/DmnRunnerContextProvider";
-import { NotificationsPanel } from "./NotificationsPanel/NotificationsPanel";
+import { NotificationsPanel, NotificationsPanelController } from "./NotificationsPanel/NotificationsPanel";
 import { DmnRunnerStatus } from "./DmnRunner/DmnRunnerStatus";
-import { NotificationsPanelContextProvider } from "./NotificationsPanel/NotificationsPanelContextProvider";
-import { NotificationsPanelContextType } from "./NotificationsPanel/NotificationsPanelContext";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxContextProvider";
@@ -56,7 +54,7 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
   const { locale, i18n } = useOnlineI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
   const [alerts, alertsRef] = useController<AlertsController>();
-  const notificationsPanelRef = useRef<NotificationsPanelContextType>(null);
+  const [notificationsPanel, notificationsPanelRef] = useController<NotificationsPanelController>();
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const isDirty = useDirtyState(editor);
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
@@ -304,12 +302,16 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
   );
 
   const validate = useCallback(() => {
+    if (currentFile.fileExtension === "dmn") {
+      return;
+    }
+
     editor?.validate().then((notifications) => {
-      notificationsPanelRef.current
+      notificationsPanel
         ?.getTabRef(i18n.terms.validation)
         ?.kogitoNotifications_setNotifications("", Array.isArray(notifications) ? notifications : []);
     });
-  }, [editor, i18n]);
+  }, [currentFile, notificationsPanel, editor, i18n]);
 
   useStateControlSubscription(editor, validate, { throttle: 200 });
 
@@ -317,52 +319,55 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
     <>
       {fetchFileError && <EditorFetchFileErrorEmptyState fetchFileError={fetchFileError} currentFile={currentFile} />}
       {!fetchFileError && (
-        <NotificationsPanelContextProvider ref={notificationsPanelRef}>
-          <DmnRunnerContextProvider currentFile={currentFile} editor={editor}>
-            <DmnDevSandboxContextProvider currentFile={currentFile} editor={editor}>
-              <Page
-                header={
-                  <EditorToolbar
-                    editor={editor}
-                    alerts={alerts}
-                    currentFile={currentFile}
-                    onRename={(newName) => setCurrentFile((prev) => ({ ...prev, fileName: newName }))}
-                    onClose={onClose}
-                  />
-                }
+        <DmnRunnerContextProvider currentFile={currentFile} editor={editor} notificationsPanel={notificationsPanel}>
+          <DmnDevSandboxContextProvider currentFile={currentFile} editor={editor}>
+            <Page
+              header={
+                <EditorToolbar
+                  editor={editor}
+                  alerts={alerts}
+                  currentFile={currentFile}
+                  onRename={(newName) => setCurrentFile((prev) => ({ ...prev, fileName: newName }))}
+                  onClose={onClose}
+                />
+              }
+            >
+              <PageSection
+                isFilled={true}
+                padding={{ default: "noPadding" }}
+                className={"kogito--editor__page-section"}
               >
-                <PageSection
-                  isFilled={true}
-                  padding={{ default: "noPadding" }}
-                  className={"kogito--editor__page-section"}
-                >
-                  <DmnRunnerDrawer editor={editor}>
-                    <Alerts ref={alertsRef} />
-                    <EmbeddedEditor
-                      ref={editorRef}
-                      file={currentFile}
-                      kogitoEditor_setContentError={setContentErrorAlert.show}
-                      editorEnvelopeLocator={globals.editorEnvelopeLocator}
-                      channelType={ChannelType.ONLINE}
-                      locale={locale}
-                    />
-                    <DmnRunnerContext.Consumer>
-                      {(dmnRunner) => <NotificationsPanel tabNames={notificationPanelTabNames(dmnRunner.status)} />}
-                    </DmnRunnerContext.Consumer>
-                  </DmnRunnerDrawer>
-                </PageSection>
-                <a ref={downloadRef} />
-              </Page>
-              <MonacoEditorModal
-                alerts={alerts}
-                editor={editor}
-                currentFile={currentFile}
-                refreshDiagramEditor={refreshDiagramEditor}
-                isOpen={isTextEditorModalOpen}
-              />
-            </DmnDevSandboxContextProvider>
-          </DmnRunnerContextProvider>
-        </NotificationsPanelContextProvider>
+                <DmnRunnerDrawer editor={editor} notificationsPanel={notificationsPanel}>
+                  <Alerts ref={alertsRef} />
+                  <EmbeddedEditor
+                    ref={editorRef}
+                    file={currentFile}
+                    kogitoEditor_setContentError={setContentErrorAlert.show}
+                    editorEnvelopeLocator={globals.editorEnvelopeLocator}
+                    channelType={ChannelType.ONLINE}
+                    locale={locale}
+                  />
+                  <DmnRunnerContext.Consumer>
+                    {(dmnRunner) => (
+                      <NotificationsPanel
+                        ref={notificationsPanelRef}
+                        tabNames={notificationPanelTabNames(dmnRunner.status)}
+                      />
+                    )}
+                  </DmnRunnerContext.Consumer>
+                </DmnRunnerDrawer>
+              </PageSection>
+              <a ref={downloadRef} />
+            </Page>
+            <MonacoEditorModal
+              alerts={alerts}
+              editor={editor}
+              currentFile={currentFile}
+              refreshDiagramEditor={refreshDiagramEditor}
+              isOpen={isTextEditorModalOpen}
+            />
+          </DmnDevSandboxContextProvider>
+        </DmnRunnerContextProvider>
       )}
     </>
   );

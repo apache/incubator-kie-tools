@@ -342,7 +342,6 @@ export function EditorToolbar(props: Props) {
     settings,
     queryParamFile,
     queryParams,
-    i18n,
     props.editor,
   ]);
 

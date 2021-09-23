@@ -20,7 +20,6 @@ import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Tex
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { useDmnRunner } from "./DmnRunnerContext";
-import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
@@ -38,6 +37,7 @@ import { ErrorBoundary } from "../../common/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
+import { NotificationsPanelController } from "../NotificationsPanel/NotificationsPanel";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -48,6 +48,7 @@ enum ButtonPosition {
 
 interface Props {
   editor?: EmbeddedEditorRef;
+  notificationsPanel?: NotificationsPanelController;
 }
 
 const DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION = 711;
@@ -61,7 +62,6 @@ interface DmnRunnerStylesConfig {
 }
 
 export function DmnRunnerDrawerPanelContent(props: Props) {
-  const notificationsPanel = useNotificationsPanel();
   const { i18n, locale } = useOnlineI18n();
   const formRef = useRef<HTMLFormElement>(null);
   const dmnRunner = useDmnRunner();
@@ -127,9 +127,11 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           }));
         }
       );
-      notificationsPanel.getTabRef(i18n.terms.execution)?.kogitoNotifications_setNotifications("", notifications);
+      props.notificationsPanel
+        ?.getTabRef(i18n.terms.execution)
+        ?.kogitoNotifications_setNotifications("", notifications);
     },
-    [notificationsPanel, i18n]
+    [props.notificationsPanel, i18n]
   );
 
   const updateDmnRunnerResults = useCallback(
@@ -189,14 +191,14 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   }, [dmnRunner.formError, dmnRunner.formData, updateDmnRunnerResults, previousFormError]);
 
   const openValidationTab = useCallback(() => {
-    notificationsPanel.setIsOpen(true);
-    notificationsPanel.setActiveTab(i18n.terms.validation);
-  }, [notificationsPanel, i18n]);
+    props.notificationsPanel?.setIsOpen(true);
+    props.notificationsPanel?.setActiveTab(i18n.terms.validation);
+  }, [props.notificationsPanel, i18n]);
 
   const openExecutionTab = useCallback(() => {
-    notificationsPanel.setIsOpen(true);
-    notificationsPanel.setActiveTab(i18n.terms.execution);
-  }, [notificationsPanel, i18n]);
+    props.notificationsPanel?.setIsOpen(true);
+    props.notificationsPanel?.setActiveTab(i18n.terms.execution);
+  }, [props.notificationsPanel, i18n]);
 
   const drawerErrorMessage = useMemo(
     () => (

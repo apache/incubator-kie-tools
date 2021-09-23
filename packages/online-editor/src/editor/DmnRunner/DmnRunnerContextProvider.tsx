@@ -22,7 +22,6 @@ import { DmnRunnerContext } from "./DmnRunnerContext";
 import { DmnRunnerService } from "./DmnRunnerService";
 import { EmbeddedEditorRef, useStateControlSubscription } from "@kie-tooling-core/editor/dist/embedded";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
-import { useNotificationsPanel } from "../NotificationsPanel/NotificationsPanelContext";
 import { useOnlineI18n } from "../../common/i18n";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
@@ -33,10 +32,12 @@ import { File } from "@kie-tooling-core/editor/dist/channel";
 import { usePrevious } from "../../common/Hooks";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { jsonParseWithDate } from "../../common/utils";
+import { NotificationsPanelController } from "../NotificationsPanel/NotificationsPanel";
 
 interface Props {
   children: React.ReactNode;
   editor?: EmbeddedEditorRef;
+  notificationsPanel?: NotificationsPanelController;
   currentFile: File;
 }
 
@@ -48,7 +49,6 @@ export function DmnRunnerContextProvider(props: Props) {
   const history = useHistory();
   const globals = useGlobals();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
-  const notificationsPanel = useNotificationsPanel();
   const [isDrawerExpanded, setDrawerExpanded] = useState(false);
   const [formData, setFormData] = useState<object>({});
   const [formSchema, setFormSchema] = useState<DmnFormSchema | undefined>(undefined);
@@ -106,9 +106,11 @@ export function DmnRunnerContextProvider(props: Props) {
           severity: validationResult.severity,
           message: `${validationResult.messageType}: ${validationResult.message}`,
         }));
-        notificationsPanel.getTabRef(i18n.terms.validation)?.kogitoNotifications_setNotifications("", notifications);
+        props.notificationsPanel
+          ?.getTabRef(i18n.terms.validation)
+          ?.kogitoNotifications_setNotifications("", notifications);
       });
-  }, [props.editor, props.currentFile, notificationsPanel.getTabRef, service, i18n]);
+  }, [props.editor, props.currentFile, props.notificationsPanel, service, i18n]);
 
   useStateControlSubscription(props.editor, validate, { throttle: THROTTLING_TIME });
   useStateControlSubscription(props.editor, updateFormSchema, { throttle: THROTTLING_TIME });
@@ -119,10 +121,10 @@ export function DmnRunnerContextProvider(props: Props) {
     }
 
     if (!props.editor?.isReady || kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
-      notificationsPanel.getTabRef(i18n.terms.validation)?.kogitoNotifications_setNotifications("", []);
+      props.notificationsPanel?.getTabRef(i18n.terms.validation)?.kogitoNotifications_setNotifications("", []);
       return;
     }
-  }, [props.currentFile, props.editor, i18n, kieToolingExtendedServices, notificationsPanel.getTabRef]);
+  }, [props.currentFile, props.editor, i18n, kieToolingExtendedServices, props.notificationsPanel]);
 
   useEffect(() => {
     if (!props.editor?.isReady || !formSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {

@@ -56,9 +56,8 @@ export const Alerts = React.forwardRef<AlertsController>((props: {}, forwardedRe
 });
 
 export function useAlert(alertsController: AlertsController | undefined, delegate: AlertDelegate) {
-  const key = useMemo(() => {
-    return `${Math.random()}`; //FIXME: tiago improve that.
-  }, []);
+  //FIXME: tiago improve that.
+  const key = useMemo(() => `${Math.random()}`, []);
 
   useEffect(() => {
     alertsController?.set(key, delegate);

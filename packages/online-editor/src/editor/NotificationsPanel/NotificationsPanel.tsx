@@ -15,14 +15,13 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Badge } from "@patternfly/react-core/dist/js/components/Badge";
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { AngleUpIcon } from "@patternfly/react-icons/dist/js/icons/angle-up-icon";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
-import { useNotificationsPanel } from "./NotificationsPanelContext";
 import { NotificationPanelTabContent } from "./NotificationsPanelTabContent";
 import { NotificationsApi } from "@kie-tooling-core/notifications/dist/api";
 import { useOnlineI18n } from "../../common/i18n";
@@ -31,9 +30,42 @@ interface Props {
   tabNames: string[];
 }
 
-export function NotificationsPanel(props: Props) {
-  const notificationsPanel = useNotificationsPanel();
-  const [tabsNotifications, setTabsNotifications] = useState<Map<string, number>>(new Map());
+export interface NotificationsPanelController {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<boolean>;
+  getTabRef: (name: string) => NotificationsApi | null | undefined;
+  getTabNames: () => string[];
+  activeTab: string;
+  setActiveTab: React.Dispatch<string>;
+}
+
+export const NotificationsPanel = React.forwardRef<NotificationsPanelController, Props>((props, forwardRef) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>("");
+  const tabs: Map<string, React.RefObject<NotificationsApi>> = useMemo(() => new Map(), []);
+
+  useImperativeHandle(
+    forwardRef,
+    () => ({
+      isOpen,
+      setIsOpen,
+      getTabRef: (name: string) => tabs.get(name)?.current,
+      getTabNames: () => [...tabs.keys()].map((tab) => tab),
+      activeTab,
+      setActiveTab,
+    }),
+    [isOpen, tabs, activeTab]
+  );
+
+  // create tabs
+  const setTabsMap = useCallback(
+    (tabsMap: Array<[string, React.RefObject<NotificationsApi>]>) => {
+      tabsMap.forEach(([tabName, tabRef]) => tabs.set(tabName, tabRef));
+    },
+    [tabs]
+  );
+
+  const [tabsNotificationsCount, setTabsNotificationsCount] = useState<Map<string, number>>(new Map());
   const { i18n } = useOnlineI18n();
 
   const tabsMap: Map<string, React.RefObject<NotificationsApi>> = useMemo(
@@ -42,34 +74,33 @@ export function NotificationsPanel(props: Props) {
   );
 
   useEffect(() => {
-    setTabsNotifications((p) => {
-      const prev = new Map(p);
-      Array.from(prev.keys()).forEach((k) => {
+    setTabsNotificationsCount((prev) => {
+      const newMap = new Map(prev);
+      Array.from(newMap.keys()).forEach((k) => {
         if (!props.tabNames.includes(k)) {
-          prev.delete(k);
+          newMap.delete(k);
         }
       });
-      return prev;
+      return newMap;
     });
   }, [props.tabNames]);
 
   useEffect(() => {
-    notificationsPanel.setTabsMap([...tabsMap.entries()]);
-  }, [tabsMap]);
+    setTabsMap([...tabsMap.entries()]);
+  }, [tabsMap, setTabsMap]);
 
-  const onNotificationsPanelButtonClick = useCallback(() => {
-    notificationsPanel.setIsOpen(!notificationsPanel.isOpen);
-  }, [notificationsPanel.isOpen, notificationsPanel.setIsOpen]);
+  const toggleNotificationsPanel = useCallback(() => {
+    setIsOpen((prev) => !prev);
+  }, []);
 
   const onNotificationsLengthChange = useCallback((name: string, newQtt: number) => {
-    setTabsNotifications((previousTabsNotifications) => {
-      const newTabsNotifications = new Map(previousTabsNotifications);
-      if (previousTabsNotifications.get(name) !== newQtt) {
-        const updatedResult = document.getElementById(`total-notifications`);
-        updatedResult?.classList.add("kogito--editor__notifications-panel-error-count-updated");
+    setTabsNotificationsCount((prev) => {
+      const newMap = new Map(prev);
+      if (prev.get(name) !== newQtt) {
+        totalNotificationsSpanRef.current?.classList.add("kogito--editor__notifications-panel-error-count-updated");
       }
-      newTabsNotifications.set(name, newQtt);
-      return newTabsNotifications;
+      newMap.set(name, newQtt);
+      return newMap;
     });
   }, []);
 
@@ -77,26 +108,26 @@ export function NotificationsPanel(props: Props) {
     e.preventDefault();
     e.stopPropagation();
 
-    const updatedResult = document.getElementById(`total-notifications`);
-    updatedResult?.classList.remove("kogito--editor__notifications-panel-error-count-updated");
+    totalNotificationsSpanRef.current?.classList.remove("kogito--editor__notifications-panel-error-count-updated");
   }, []);
 
   const onSelectTab = useCallback((event, tabName) => {
-    notificationsPanel.setActiveTab(tabName);
+    setActiveTab(tabName);
   }, []);
 
   useEffect(() => {
-    notificationsPanel.setActiveTab(props.tabNames[0]);
+    setActiveTab(props.tabNames[0]);
   }, []);
 
   const totalNotifications = useMemo(
-    () => [...tabsNotifications.values()].reduce((acc, value) => acc + value, 0),
-    [tabsNotifications]
+    () => [...tabsNotificationsCount.values()].reduce((acc, value) => acc + value, 0),
+    [tabsNotificationsCount]
   );
 
   const notificationsPanelDivRef = useRef<HTMLDivElement>(null);
   const [notificationsPanelIconPlace, setNotificationsPanelIconPlace] = useState<number>();
   const notificationsPanelIconRef = useRef<HTMLDivElement>(null);
+  const totalNotificationsSpanRef = useRef<HTMLSpanElement>(null);
 
   const onMouseMove = useCallback((e: MouseEvent) => {
     const iframe = document.getElementById("kogito-iframe");
@@ -111,21 +142,24 @@ export function NotificationsPanel(props: Props) {
     setNotificationsPanelIconPlace(newNotificationsPanelSize + 12);
   }, []);
 
-  const onMouseUp = useCallback((e: MouseEvent) => {
-    const iframe = document.getElementById("kogito-iframe");
-    if (iframe) {
-      iframe.style.pointerEvents = "";
-    }
+  const onMouseUp = useCallback(
+    (e: MouseEvent) => {
+      const iframe = document.getElementById("kogito-iframe");
+      if (iframe) {
+        iframe.style.pointerEvents = "";
+      }
 
-    notificationsPanelDivRef.current?.style?.setProperty("user-select", "");
-    document.removeEventListener("mousemove", onMouseMove);
-    document.removeEventListener("mouseup", onMouseUp);
-  }, []);
+      notificationsPanelDivRef.current?.style?.setProperty("user-select", "");
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+    },
+    [onMouseMove]
+  );
 
   const onMouseDown = useCallback(() => {
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", onMouseUp);
-  }, []);
+  }, [onMouseMove, onMouseUp]);
 
   const [expandAll, setExpandAll] = useState<boolean>();
   const onExpandAll = useCallback(() => {
@@ -137,23 +171,20 @@ export function NotificationsPanel(props: Props) {
   }, []);
 
   useEffect(() => {
-    if (notificationsPanel.isOpen) {
-      notificationsPanelIconRef.current?.style?.setProperty("bottom", `${notificationsPanelIconPlace ?? 360}px`);
-    } else {
-      notificationsPanelIconRef.current?.style?.setProperty("bottom", `5px`);
-    }
-  }, [notificationsPanel.isOpen, notificationsPanelIconPlace]);
+    notificationsPanelIconRef.current?.style?.setProperty(
+      "bottom",
+      isOpen ? `${notificationsPanelIconPlace ?? 360}px` : `5px`
+    );
+  }, [isOpen, notificationsPanelIconPlace]);
 
   return (
     <>
       <div
         ref={notificationsPanelIconRef}
         className={
-          notificationsPanel.isOpen
-            ? "kogito--editor__notifications-panel-button open"
-            : "kogito--editor__notifications-panel-button"
+          isOpen ? "kogito--editor__notifications-panel-button open" : "kogito--editor__notifications-panel-button"
         }
-        onClick={onNotificationsPanelButtonClick}
+        onClick={toggleNotificationsPanel}
       >
         {totalNotifications === 0 ? (
           <Tooltip
@@ -172,7 +203,7 @@ export function NotificationsPanel(props: Props) {
             distance={20}
           >
             <div className={"kogito--editor__notifications-panel-with-notifications-tooltip "}>
-              <span id={"total-notifications"} onAnimationEnd={onAnimationEnd}>
+              <span ref={totalNotificationsSpanRef} onAnimationEnd={onAnimationEnd}>
                 {totalNotifications}
               </span>
               <ExclamationCircleIcon
@@ -183,11 +214,7 @@ export function NotificationsPanel(props: Props) {
         )}
       </div>
       <div
-        className={
-          notificationsPanel.isOpen
-            ? "kogito--editor__notifications-panel-open"
-            : "kogito--editor__notifications-panel-close"
-        }
+        className={isOpen ? "kogito--editor__notifications-panel-open" : "kogito--editor__notifications-panel-close"}
       >
         <div onMouseDown={onMouseDown} className={"kogito--editor__notifications-panel-resizable-div"} />
         <div ref={notificationsPanelDivRef} className={"kogito--editor__notifications-panel-div"}>
@@ -203,14 +230,14 @@ export function NotificationsPanel(props: Props) {
               </Tooltip>
             </div>
           </div>
-          <Tabs activeKey={notificationsPanel.activeTab} onSelect={onSelectTab}>
+          <Tabs activeKey={activeTab} onSelect={onSelectTab}>
             {[...tabsMap.entries()].map(([tabName, tabRef], index) => (
               <Tab
                 key={`tab-${index}`}
                 eventKey={tabName}
                 title={
                   <TabTitleText>
-                    {tabName} <Badge isRead={true}>{tabsNotifications.get(tabName)}</Badge>
+                    {tabName} <Badge isRead={true}>{tabsNotificationsCount.get(tabName)}</Badge>
                   </TabTitleText>
                 }
               >
@@ -230,4 +257,4 @@ export function NotificationsPanel(props: Props) {
       </div>
     </>
   );
-}
+});

@@ -78,7 +78,6 @@ export function EditorFetchFileErrorEmptyState(props: { currentFile: File; fetch
         <br />
         <br />
         <br />
-        {/*<Bullseye>*/}
         {props.fetchFileError.reason === FetchFileErrorReason.DIFFERENT_EXTENSION && (
           <EmptyState>
             <EmptyStateIcon icon={InfoCircleIcon} />
@@ -147,7 +146,6 @@ export function EditorFetchFileErrorEmptyState(props: { currentFile: File; fetch
             </Button>
           </EmptyState>
         )}
-        {/*</Bullseye>*/}
       </PageSection>
     </Page>
   );
