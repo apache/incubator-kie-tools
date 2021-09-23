@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useSettings } from "./SettingsContext";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
@@ -10,9 +10,17 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { OpenShiftSettingsTabSimpleConfig } from "./OpenShiftSettingsTabSimpleConfig";
 import { obfuscate } from "./GitHubSettingsTab";
 import { saveConfigCookie } from "./OpenShiftSettingsConfig";
+import { OpenShiftSettingsTabWizardConfig } from "./OpenShiftSettingsTabWizardConfig";
+
+export enum OpenShiftSettingsTabMode {
+  SIMPLE,
+  WIZARD,
+}
 
 export function OpenShiftSettingsTab() {
   const settings = useSettings();
+
+  const [mode, setMode] = useState(OpenShiftSettingsTabMode.SIMPLE);
 
   const onDisconnect = useCallback(() => {
     settings.openshift.status.set(OpenShiftInstanceStatus.DISCONNECTED);
@@ -58,7 +66,12 @@ export function OpenShiftSettingsTab() {
             </EmptyStateBody>
           </EmptyState>
         )}
-        {settings.openshift.status.get === OpenShiftInstanceStatus.DISCONNECTED && <OpenShiftSettingsTabSimpleConfig />}
+        {settings.openshift.status.get === OpenShiftInstanceStatus.DISCONNECTED && (
+          <>
+            {mode === OpenShiftSettingsTabMode.SIMPLE && <OpenShiftSettingsTabSimpleConfig setMode={setMode} />}
+            {mode === OpenShiftSettingsTabMode.WIZARD && <OpenShiftSettingsTabWizardConfig setMode={setMode} />}
+          </>
+        )}
       </PageSection>
     </Page>
   );

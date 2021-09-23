@@ -29,7 +29,8 @@ import { GetProject } from "./resources/Project";
 import { KOGITO_CREATED_BY, KOGITO_FILENAME, Resource, ResourceFetch } from "./resources/Resource";
 import { CreateRoute, DeleteRoute, ListRoutes, Route, Routes } from "./resources/Route";
 import { CreateService, DeleteService } from "./resources/Service";
-import { OpenShiftSettingsConfig } from "./OpenShiftSettingsConfig";
+import { isConfigValid, OpenShiftSettingsConfig, saveConfigCookie } from "./OpenShiftSettingsConfig";
+import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 
 export const DEVELOPER_SANDBOX_URL = "https://developers.redhat.com/developer-sandbox";
 export const DEVELOPER_SANDBOX_GET_STARTED_URL = "https://developers.redhat.com/developer-sandbox/get-started";
@@ -54,6 +55,10 @@ export class OpenShiftService {
     } catch (error) {
       return false;
     }
+  }
+
+  public async onCheckConfig(config: OpenShiftSettingsConfig) {
+    return isConfigValid(config) && (await this.isConnectionEstablished(config));
   }
 
   public async loadDeployments(config: OpenShiftSettingsConfig): Promise<OpenShiftDeployedModel[]> {

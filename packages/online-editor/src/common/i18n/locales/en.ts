@@ -128,10 +128,6 @@ export const en: OnlineI18n = {
       header: {
         provider: "Provider",
       },
-      footer: {
-        deployNow: "Deploy now",
-        continueEditing: "Continue editing",
-      },
       steps: {
         first: {
           name: "Create your instance",
@@ -157,9 +153,7 @@ export const en: OnlineI18n = {
           name: "Connect",
           connectionSuccess: "Connection successfully established.",
           connectionError: "Connection refused.",
-          introduction: "Now you are able to:",
-          deployNowExplanation: `${"Deploy now".bold()}: Your model will be deployed on your instance. This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.`,
-          continueEditingExplanation: `${"Continue editing".bold()}: Continue editing your model and deploy it later.`,
+          introduction: "Now you are able to deploy DMN decisions to your OpenShift instance.",
           configNote: "Your configuration will be stored as browser cookies after the operations above.",
           connectionErrorLong: `A connection with your ${en_common.names.shortDevSandbox} instance could not be established.`,
           checkInfo: "Please check the information provided and try again.",

@@ -548,6 +548,9 @@ export function EditorToolbar(props: Props) {
               </PageHeaderToolsItem>
             </PageHeaderToolsGroup>
             <PageHeaderToolsGroup>
+              <PageHeaderToolsItem>
+                <SettingsButton />
+              </PageHeaderToolsItem>
               <PageHeaderToolsItem
                 visibility={{
                   default: "hidden",
@@ -615,9 +618,6 @@ export function EditorToolbar(props: Props) {
                   ]}
                   position={DropdownPosition.right}
                 />
-              </PageHeaderToolsItem>
-              <PageHeaderToolsItem>
-                <SettingsButton />
               </PageHeaderToolsItem>
             </PageHeaderToolsGroup>
           </PageHeaderTools>

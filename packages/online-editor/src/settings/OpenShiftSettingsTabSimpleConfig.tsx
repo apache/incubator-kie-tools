@@ -30,6 +30,7 @@ import { useOnlineI18n } from "../common/i18n";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { EMPTY_CONFIG, isConfigValid, OpenShiftSettingsConfig, saveConfigCookie } from "./OpenShiftSettingsConfig";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { OpenShiftSettingsTabMode } from "./OpenShiftSettingsTab";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -38,7 +39,9 @@ enum FormValiationOptions {
   CONFIG_EXPIRED = "CONFIG_EXPIRED",
 }
 
-export function OpenShiftSettingsTabSimpleConfig() {
+export function OpenShiftSettingsTabSimpleConfig(props: {
+  setMode: React.Dispatch<React.SetStateAction<OpenShiftSettingsTabMode>>;
+}) {
   const { i18n } = useOnlineI18n();
   const settings = useSettings();
   const [config, setConfig] = useState(settings.openshift.config.get);
@@ -67,21 +70,6 @@ export function OpenShiftSettingsTabSimpleConfig() {
     [settings.openshift.status.get]
   );
 
-  const onCheckConfig = useCallback(
-    async (config: OpenShiftSettingsConfig, persist: boolean) => {
-      const isConfigOk = isConfigValid(config) && (await settings.openshift.service.isConnectionEstablished(config));
-
-      if (persist && isConfigOk) {
-        settings.openshift.config.set(config);
-        saveConfigCookie(config);
-        settings.openshift.status.set(OpenShiftInstanceStatus.CONNECTED);
-      }
-
-      return isConfigOk;
-    },
-    [settings.openshift]
-  );
-
   const onConnect = useCallback(async () => {
     if (isConnecting) {
       return;
@@ -93,7 +81,14 @@ export function OpenShiftSettingsTabSimpleConfig() {
     }
 
     setConnecting(true);
-    const isConfigOk = await onCheckConfig(config, true);
+    const isConfigOk = await settings.openshift.service.onCheckConfig(config);
+
+    if (isConfigOk) {
+      saveConfigCookie(config);
+      settings.openshift.config.set(config);
+      settings.openshift.status.set(OpenShiftInstanceStatus.CONNECTED);
+    }
+
     setConnecting(false);
 
     if (!isConfigOk) {
@@ -102,7 +97,7 @@ export function OpenShiftSettingsTabSimpleConfig() {
     }
 
     resetConfig(config);
-  }, [config, isConnecting, resetConfig, onCheckConfig]);
+  }, [config, isConnecting, resetConfig, settings.openshift.service]);
 
   const onClearHost = useCallback(() => setConfig({ ...config, host: "" }), [config]);
   const onClearNamespace = useCallback(() => setConfig({ ...config, namespace: "" }), [config]);
@@ -181,9 +176,7 @@ export function OpenShiftSettingsTabSimpleConfig() {
           key="use-wizard"
           className="pf-u-p-0"
           variant="link"
-          onClick={() => {
-            /*FIXME: Tiago: add wizard option*/
-          }}
+          onClick={() => props.setMode(OpenShiftSettingsTabMode.WIZARD)}
           data-testid="use-wizard-button"
         >
           {i18n.dmnDevSandbox.configModal.useWizard}

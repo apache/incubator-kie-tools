@@ -122,10 +122,6 @@ interface OnlineDictionary extends ReferenceDictionary {
       header: {
         provider: string;
       };
-      footer: {
-        deployNow: string;
-        continueEditing: string;
-      };
       steps: {
         first: {
           name: string;
@@ -151,8 +147,6 @@ interface OnlineDictionary extends ReferenceDictionary {
           connectionError: string;
           connectionSuccess: string;
           introduction: string;
-          deployNowExplanation: string;
-          continueEditingExplanation: string;
           configNote: string;
           connectionErrorLong: string;
           checkInfo: string;
