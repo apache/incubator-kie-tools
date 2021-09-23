@@ -34,7 +34,3 @@ cp bundle.Dockerfile "${MANIFESTS}/Dockerfile"
 sed -i "s|bundle/manifests|manifests|g"  "${MANIFESTS}/Dockerfile"
 sed -i "s|bundle/metadata|metadata|g"    "${MANIFESTS}/Dockerfile"
 sed -i "s|bundle/tests|tests|g"          "${MANIFESTS}/Dockerfile"
-
-#removing metrics files, due to KOGITO-4547, once the issue or the upstream issue https://github.com/operator-framework/operator-lifecycle-manager/issues/2019 is resolved we can remove the lines below
-rm "${MANIFESTS}/manifests/kogito-operator-controller-manager-metrics-service_v1_service.yaml"
-rm "${MANIFESTS}/manifests/kogito-operator-metrics-reader_rbac.authorization.k8s.io_v1_clusterrole.yaml"
