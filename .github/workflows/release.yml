@@ -246,6 +246,7 @@ jobs:
         uses: ./kogito-tooling/.github/actions/setup-env
         with:
           path: kogito-tooling
+          os: ubuntu-latest
 
       - name: "Build"
         working-directory: ${{ github.workspace }}/kogito-tooling
