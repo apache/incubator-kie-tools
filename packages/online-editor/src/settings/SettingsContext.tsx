@@ -9,7 +9,7 @@ import { OpenShiftSettingsConfig, readConfigCookie } from "./OpenShiftSettingsCo
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { OpenShiftService } from "./OpenShiftService";
 import { useKieToolingExtendedServices } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { useHistory, useLocation } from "react-router";
+import { useHistory } from "react-router";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { QueryParams } from "../common/Routes";
 
