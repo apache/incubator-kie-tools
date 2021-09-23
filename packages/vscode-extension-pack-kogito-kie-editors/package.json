@@ -45,7 +45,7 @@
             "null"
           ],
           "default": "extension.kogito.silentlyGenerateSvg",
-          "description": "Execute a command on each save operation of the BPMN file"
+          "description": "Execute a command on each save operation of the DMN file"
         }
       }
     },
