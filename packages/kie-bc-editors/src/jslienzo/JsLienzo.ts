@@ -14,24 +14,78 @@
  * limitations under the License.
  */
 
+/**
+ * Javascript API for lienzo that allows interactions with nodes and connectors
+ * in Kogito editors.
+ */
 export interface JsLienzo {
+  /**
+   * Returns ID attributes of all nodes displayed in editors canvas.
+   */
   getNodeIds(): string[];
 
+  /**
+   * Returns a background color of a node with provided UUID.
+   * Returned string is a hex number of the color.
+   *
+   * @param UUID ID attribute of the queried node
+   */
   getBackgroundColor(UUID: string): string;
 
+  /**
+   * Sets a background color of a node with provided UUID.
+   *
+   * @param UUID ID attribute of the target node
+   * @param backgroundColor hex number of the desired color as string
+   */
   setBackgroundColor(UUID: string, backgroundColor: string): void;
 
+  /**
+   * Returns a border color of a node with provided UUID.
+   * Returned string is a hex number of the color.
+   *
+   * @param UUID ID attribute of the target node
+   */
   getBorderColor(UUID: string): string;
 
+  /**
+   * Sets a border color of a node with provided UUID.
+   *
+   * @param UUID ID attribute of the target node
+   * @param backgroundColor hex number of the desired color as string
+   */
   setBorderColor(UUID: string, backgroundColor: string): void;
 
+  /**
+   * Returns a canvas location of a node with provided UUID.
+   * Returns an array where first position is X-attribute
+   * and second position is Y-attribute in the context of canvas.
+   *
+   * @param UUID ID attribute of the target node
+   */
   getLocation(UUID: string): number[];
 
+  /**
+   * Returns a window location fo a node with provided UUID.
+   * Returns an array where first position is X-attribute
+   * and second position is Y-attribute in the context of window
+   *
+   * @param UUID ID attribute of target node
+   */
   getAbsoluteLocation(UUID: string): number[];
 
+  /**
+   * Returns dimensions of a node with provided UUID.
+   *
+   * @param UUID ID attribute of a target node
+   */
   getDimensions(UUID: string): number[];
 }
 
+/**
+ * Bridge for Envelope to connect Javascript API for lienzo with envelope.
+ * See {@see JsLienzo} for full documenation for the API.
+ */
 export interface JsLienzoEnvelopeApi {
   jsLienzo_getNodeIds(): Promise<string[]>;
 
