@@ -32,7 +32,8 @@ export function activate(context: vscode.ExtensionContext) {
     extensionName: "kie-group.vscode-extension-dmn-editor",
     context: context,
     viewType: "kieKogitoWebviewEditorsDmn",
-    getPreviewCommandId: "extension.kogito.getPreviewSvgDmn",
+    generateSvgCommandId: "extension.kogito.getPreviewSvgDmn",
+    silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgDmn",
     editorEnvelopeLocator: {
       targetOrigin: "vscode",
       mapping: new Map([

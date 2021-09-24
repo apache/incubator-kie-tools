@@ -32,7 +32,8 @@ export function activate(context: vscode.ExtensionContext) {
     extensionName: "kie-group.vscode-extension-pmml-editor",
     context: context,
     viewType: "kieKogitoWebviewEditorsPmml",
-    getPreviewCommandId: "",
+    generateSvgCommandId: "",
+    silentlyGenerateSvgCommandId: "",
     editorEnvelopeLocator: {
       targetOrigin: "vscode",
       mapping: new Map([

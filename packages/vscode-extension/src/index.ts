@@ -40,7 +40,8 @@ export async function startExtension(args: {
   extensionName: string;
   context: vscode.ExtensionContext;
   viewType: string;
-  getPreviewCommandId: string;
+  generateSvgCommandId: string;
+  silentlyGenerateSvgCommandId: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   backendProxy: VsCodeBackendProxy;
 }) {
@@ -79,6 +80,24 @@ export async function startExtension(args: {
   );
 
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(args.getPreviewCommandId, () => generateSvg(editorStore, workspaceApi, vsCodeI18n))
+    vscode.commands.registerCommand(args.generateSvgCommandId, () =>
+      generateSvg({
+        editorStore: editorStore,
+        workspaceApi: workspaceApi,
+        vsCodeI18n: vsCodeI18n,
+        displayNotification: true,
+      })
+    )
+  );
+
+  args.context.subscriptions.push(
+    vscode.commands.registerCommand(args.silentlyGenerateSvgCommandId, () =>
+      generateSvg({
+        editorStore: editorStore,
+        workspaceApi: workspaceApi,
+        vsCodeI18n: vsCodeI18n,
+        displayNotification: false,
+      })
+    )
   );
 }
