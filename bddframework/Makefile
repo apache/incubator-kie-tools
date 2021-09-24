@@ -17,6 +17,7 @@ domain_suffix=
 image_cache_mode=
 http_retry_nb=
 olm_namespace=
+disable_clean_cluster=
 # operator information
 operator_image=
 operator_tag=
@@ -95,6 +96,7 @@ run-tests:
 	&& if [ "${examples_ignore_ssl}" = "true" ]; then opts+=("--examples_ignore_ssl"); fi \
 	&& if [ "${operator_namespaced}" = "true" ]; then opts+=("--operator_namespaced"); fi \
 	&& if [ "${operator_profiling}" = "true" ]; then opts+=("--operator_profiling"); fi \
+	&& if [ "${disable_clean_cluster}" = "true" ]; then opts+=("--disable_clean_cluster"); fi \
 	&& opts_str=$$(IFS=' ' ; echo "$${opts[*]}") \
 	&& ../hack/run-tests.sh \
 		--test_main_dir ${test_main_dir} \
