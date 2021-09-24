@@ -422,7 +422,7 @@ export function HomePage() {
   const Header = (
     <PageHeader
       logo={<Brand src={globals.routes.static.images.homeLogo.path({})} alt="Logo" />}
-      logoProps={{ href: globals.routes.home.path("/") }}
+      logoProps={{ onClick: () => history.push({ pathname: globals.routes.home.path({}) }) }}
       headerTools={headerToolbar}
     />
   );
