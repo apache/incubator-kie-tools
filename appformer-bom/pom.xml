@@ -297,17 +297,6 @@
         </exclusions>
       </dependency>
 
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-core</artifactId>
-        <version>${version.org.keycloak}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-common</artifactId>
-        <version>${version.org.keycloak}</version>
-      </dependency>
-
       <!-- GWT and GWT Extensions -->
       <dependency>
         <groupId>com.google.gwt</groupId>
@@ -485,18 +474,6 @@
         <groupId>org.kie.kogito</groupId>
         <artifactId>lienzo-tests</artifactId>
         <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>${version.org.apache.httpcomponents.httpclient}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
