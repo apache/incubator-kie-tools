@@ -54,14 +54,11 @@ export function DmnDevSandboxContextProvider(props: Props) {
     props.alerts,
     useCallback(
       ({ close }) => (
-        <div className={"kogito--alert-container"}>
-          <Alert
-            className={"kogito--alert"}
-            variant="danger"
-            title={i18n.dmnDevSandbox.alerts.deployStartedError}
-            actionClose={<AlertActionCloseButton onClose={close} />}
-          />
-        </div>
+        <Alert
+          variant="danger"
+          title={i18n.dmnDevSandbox.alerts.deployStartedError}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
       ),
       [i18n]
     )
@@ -71,14 +68,12 @@ export function DmnDevSandboxContextProvider(props: Props) {
     props.alerts,
     useCallback(
       ({ close }) => (
-        <div className={"kogito--alert-container"}>
-          <Alert
-            className={"kogito--alert"}
-            variant="info"
-            title={i18n.dmnDevSandbox.alerts.deployStartedSuccess}
-            actionClose={<AlertActionCloseButton onClose={close} />}
-          />
-        </div>
+        <Alert
+          className={"kogito--alert"}
+          variant="info"
+          title={i18n.dmnDevSandbox.alerts.deployStartedSuccess}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
       ),
       [i18n]
     )

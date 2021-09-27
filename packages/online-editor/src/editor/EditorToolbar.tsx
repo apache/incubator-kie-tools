@@ -83,31 +83,30 @@ export function EditorToolbar(props: Props) {
     props.alerts,
     useCallback(
       ({ close }) => (
-        <div className={"kogito--alert-container"}>
-          <Alert
-            className={"kogito--alert"}
-            variant="success"
-            title={i18n.editorPage.alerts.copy}
-            actionClose={<AlertActionCloseButton onClose={close} />}
-          />
-        </div>
+        <Alert
+          variant="success"
+          title={i18n.editorPage.alerts.copy}
+          actionClose={
+            <>
+              <AlertActionCloseButton onClose={close} />
+            </>
+          }
+        />
       ),
       [i18n]
-    )
+    ),
+    useMemo(() => ({ durationInSeconds: 4 }), [])
   );
 
   const successUpdateGistAlert = useAlert(
     props.alerts,
     useCallback(
       ({ close }) => (
-        <div className={"kogito--alert-container"}>
-          <Alert
-            className={"kogito--alert"}
-            variant="success"
-            title={i18n.editorPage.alerts.updateGist}
-            actionClose={<AlertActionCloseButton onClose={close} />}
-          />
-        </div>
+        <Alert
+          variant="success"
+          title={i18n.editorPage.alerts.updateGist}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
       ),
       [i18n]
     )
@@ -116,14 +115,11 @@ export function EditorToolbar(props: Props) {
     props.alerts,
     useCallback(
       ({ close }) => (
-        <div className={"kogito--alert-container"}>
-          <Alert
-            className={"kogito--alert"}
-            variant="success"
-            title={i18n.editorPage.alerts.createGist}
-            actionClose={<AlertActionCloseButton onClose={close} />}
-          />
-        </div>
+        <Alert
+          variant="success"
+          title={i18n.editorPage.alerts.createGist}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
       ),
       [i18n]
     )
@@ -133,14 +129,11 @@ export function EditorToolbar(props: Props) {
     props.alerts,
     useCallback(
       ({ close }) => (
-        <div className={"kogito--alert-container"}>
-          <Alert
-            className={"kogito--alert"}
-            variant="danger"
-            title={i18n.editorPage.alerts.invalidCurrentGist}
-            actionClose={<AlertActionCloseButton onClose={close} />}
-          />
-        </div>
+        <Alert
+          variant="danger"
+          title={i18n.editorPage.alerts.invalidCurrentGist}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
       ),
       [i18n]
     )
@@ -150,14 +143,11 @@ export function EditorToolbar(props: Props) {
     props.alerts,
     useCallback(
       ({ close }) => (
-        <div className={"kogito--alert-container"}>
-          <Alert
-            className={"kogito--alert"}
-            variant="danger"
-            title={i18n.editorPage.alerts.invalidGistFilename}
-            actionClose={<AlertActionCloseButton onClose={close} />}
-          />
-        </div>
+        <Alert
+          variant="danger"
+          title={i18n.editorPage.alerts.invalidGistFilename}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
       ),
       [i18n]
     )
@@ -167,14 +157,11 @@ export function EditorToolbar(props: Props) {
     props.alerts,
     useCallback(
       ({ close }) => (
-        <div className={"kogito--alert-container"}>
-          <Alert
-            className={"kogito--alert"}
-            variant="danger"
-            title={i18n.editorPage.alerts.error}
-            actionClose={<AlertActionCloseButton onClose={close} />}
-          />
-        </div>
+        <Alert
+          variant="danger"
+          title={i18n.editorPage.alerts.error}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
       ),
       [i18n]
     )

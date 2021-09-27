@@ -100,7 +100,7 @@
   pointer-events: none;
 }
 
-.kogito--alert {
+.kogito--alert-container .pf-c-alert {
   pointer-events: visible;
 }
 
