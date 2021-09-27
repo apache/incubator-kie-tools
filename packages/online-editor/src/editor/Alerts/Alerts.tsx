@@ -74,7 +74,7 @@ export const Alerts = React.forwardRef<AlertsController>((props: {}, forwardedRe
 
   const startRefreshingAlertWithKey = useCallback(
     (k: string) => {
-      const interval = setInterval(() => {
+      return setInterval(() => {
         setAutoCloseAlertsControl((prev) => {
           const next = new Map(prev);
           const prevAlert = prev.get(k)!;
@@ -82,14 +82,12 @@ export const Alerts = React.forwardRef<AlertsController>((props: {}, forwardedRe
           if (prevAlert.secondsLeft > 1) {
             next.set(k, { ...prevAlert, secondsLeft: prevAlert.secondsLeft - 1 });
           } else {
-            clearInterval(interval);
             imperativeHandle.close(k);
           }
 
           return next;
         });
       }, AUTO_CLOSE_ALERTS_REFRESH_RATE_IN_MS);
-      return interval;
     },
     [imperativeHandle]
   );
