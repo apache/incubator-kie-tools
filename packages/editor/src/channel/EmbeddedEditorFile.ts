@@ -17,7 +17,7 @@
 /**
  * Definition of a File supported by the embedded-editor.
  */
-export interface File {
+export interface EmbeddedEditorFile {
   fileName: string;
   fileExtension: string;
   getFileContents: () => Promise<string | undefined>;
@@ -76,7 +76,11 @@ export const EMPTY_FILE_PMML = {
  * @param contextPath Path associated with the context.
  * @param kind The kind of the file.
  */
-export function newFile(fileExtension: string, contextPath: string = "", kind?: File["kind"]): File {
+export function newFile(
+  fileExtension: string,
+  contextPath: string = "",
+  kind?: EmbeddedEditorFile["kind"]
+): EmbeddedEditorFile {
   return {
     fileName: "new-file",
     fileExtension: fileExtension,

@@ -17,14 +17,14 @@
 import { EditorEnvelopeLocator, ChannelType } from "@kie-tooling-core/editor/dist/api";
 import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
 import * as React from "react";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { EmbeddedViewer } from "@kie-tooling-core/editor/dist/embedded";
 import { incomingMessage } from "./EmbeddedEditorTestUtils";
 import { render } from "@testing-library/react";
 import { EnvelopeBusMessagePurpose } from "@kie-tooling-core/envelope-bus/dist/api";
 
 describe("EmbeddedViewer::ONLINE", () => {
-  const file: File = {
+  const file: EmbeddedEditorFile = {
     fileName: "test",
     fileExtension: "dmn",
     getFileContents: () => Promise.resolve(""),

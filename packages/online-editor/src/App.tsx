@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import * as React from "react";
 import { useMemo } from "react";
 import { Redirect, Route, Switch } from "react-router";
@@ -34,7 +34,7 @@ import { useQueryParams } from "./queryParams/QueryParamsContext";
 import { QueryParams } from "./common/Routes";
 import { WorkspaceOverviewPage } from "./workspace/WorkspaceOverviewPage";
 
-export function App(props: { externalFile?: File; senderTabId?: string }) {
+export function App(props: { externalFile?: EmbeddedEditorFile; senderTabId?: string }) {
   return (
     <HashRouter>
       {nest(

@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  EMPTY_FILE_BPMN,
-  EMPTY_FILE_DMN,
-  EMPTY_FILE_PMML,
-  File as UploadFile,
-} from "@kie-tooling-core/editor/dist/channel";
+import { EMPTY_FILE_BPMN, EMPTY_FILE_DMN, EMPTY_FILE_PMML } from "@kie-tooling-core/editor/dist/channel";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Card, CardBody, CardFooter, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
@@ -46,12 +41,12 @@ import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
 import { useGlobals } from "../common/GlobalContext";
-import { extractFileExtension, removeFileExtension } from "../common/utils";
+import { extractFileExtension } from "../common/utils";
 import { useOnlineI18n } from "../common/i18n";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useSettings } from "../settings/SettingsContext";
 import { QueryParams } from "../common/Routes";
-import { useWorkspaces } from "../workspace/WorkspaceContext";
+import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspaceContext";
 
 enum InputFileUrlState {
   INITIAL,
@@ -78,7 +73,7 @@ export function HomePage() {
   const { i18n } = useOnlineI18n();
   const [githubRepositoryUrl, setGithubRepositoryUrl] = useState("");
   const [isOpenProjectLoading, setOpenProjectLoading] = useState(false);
-  const [filesToUpload, setFilesToUpload] = useState<UploadFile[]>([]);
+  const [filesToUpload, setFilesToUpload] = useState<WorkspaceFile[]>([]);
   const workspaces = useWorkspaces();
 
   useEffect(() => {
@@ -118,9 +113,6 @@ export function HomePage() {
         [
           {
             path: fileName,
-            isReadOnly: false,
-            fileExtension,
-            fileName: removeFileExtension(fileName),
             getFileContents: () =>
               new Promise<string | undefined>((resolve) => {
                 const reader = new FileReader();
@@ -138,15 +130,15 @@ export function HomePage() {
   const onDropRejected = useCallback(() => setIsUploadRejected(true), []);
 
   const createEmptyBpmnFile = useCallback(() => {
-    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_BPMN, kind: "local" }], false);
+    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_BPMN }], false);
   }, [workspaces]);
 
   const createEmptyDmnFile = useCallback(() => {
-    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_DMN, kind: "local" }], false);
+    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_DMN }], false);
   }, [workspaces]);
 
   const createEmptyPmmlFile = useCallback(() => {
-    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_PMML, kind: "local" }], false);
+    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_PMML }], false);
   }, [workspaces]);
 
   const trySample = useCallback(
@@ -440,23 +432,21 @@ export function HomePage() {
     e.stopPropagation();
     e.preventDefault();
 
-    const filesToUpload: UploadFile[] = Array.from(e.target.files).map((file: File) => {
-      return {
-        isReadOnly: false,
-        fileExtension: extractFileExtension(file.name),
-        fileName: removeFileExtension(file.name),
-        getFileContents: () =>
-          new Promise<string | undefined>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (event: any) => resolve(event.target.result as string);
-            reader.readAsText(file);
-          }),
-        path: (file as any).webkitRelativePath,
-      } as UploadFile;
-    });
-
-    setFilesToUpload(filesToUpload);
+    setFilesToUpload(
+      [...e.target.files].map((file: File) => {
+        return {
+          path: (file as any).webkitRelativePath,
+          getFileContents: () =>
+            new Promise<string | undefined>((resolve) => {
+              const reader = new FileReader();
+              reader.onload = (event: any) => resolve(event.target.result as string);
+              reader.readAsText(file);
+            }),
+        };
+      })
+    );
   }, []);
+
   const createWorkspace = useCallback(async () => {
     if ((filesToUpload.length === 0 && githubRepositoryUrl.trim() === "") || isOpenProjectLoading) {
       return;

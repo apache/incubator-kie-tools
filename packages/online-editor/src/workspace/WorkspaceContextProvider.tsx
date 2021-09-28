@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { File, newFile } from "@kie-tooling-core/editor/dist/channel";
 import { ContentType, ResourceContent, ResourcesList } from "@kie-tooling-core/workspace/dist/api";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -30,12 +29,12 @@ import { GitService } from "./services/GitService";
 import { StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { SUPPORTED_FILES, SUPPORTED_FILES_EDITABLE_PATTERN } from "./SupportedFiles";
-import { WorkspaceContext } from "./WorkspaceContext";
+import { WorkspaceContext, WorkspaceFile } from "./WorkspaceContext";
 import { useSettings } from "../settings/SettingsContext";
 import { useHistory } from "react-router";
 import { useGlobals } from "../common/GlobalContext";
 import { join } from "path";
-import { removeFileExtension } from "../common/utils";
+import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { WorkspaceOverview } from "./model/WorkspaceOverview";
 
 const INDEXED_DB_NAME = "kogito-online";
@@ -50,7 +49,7 @@ interface Props {
 }
 
 export function WorkspaceContextProvider(props: Props) {
-  const [file, setFile] = useState<File>();
+  const [file, setFile] = useState<WorkspaceFile>();
   const [active, setActive] = useState<ActiveWorkspace>();
   const settings = useSettings();
   const history = useHistory();
@@ -82,7 +81,7 @@ export function WorkspaceContextProvider(props: Props) {
   );
 
   const goToFile = useCallback(
-    async (descriptor: WorkspaceDescriptor, file: File, replaceArgs = { replace: false }) => {
+    async (descriptor: WorkspaceDescriptor, file: WorkspaceFile, replaceArgs = { replace: false }) => {
       if (!file.path) {
         throw new Error("File path is not defined");
       }
@@ -90,7 +89,7 @@ export function WorkspaceContextProvider(props: Props) {
         pathname: globals.routes.workspaceWithFilePath.path({
           workspaceId: descriptor.workspaceId,
           filePath: removeFileExtension(storageService.asRelativePath(`/${descriptor.workspaceId}`, file)),
-          extension: file.fileExtension,
+          extension: extractFileExtension(file.path)!,
         }),
       });
     },
@@ -98,7 +97,7 @@ export function WorkspaceContextProvider(props: Props) {
   );
 
   const replaceToFile = useCallback(
-    (descriptor: WorkspaceDescriptor, file: File) => {
+    (descriptor: WorkspaceDescriptor, file: WorkspaceFile) => {
       if (!file.path) {
         throw new Error("File path is not defined");
       }
@@ -106,7 +105,7 @@ export function WorkspaceContextProvider(props: Props) {
         pathname: globals.routes.workspaceWithFilePath.path({
           workspaceId: descriptor.workspaceId,
           filePath: removeFileExtension(storageService.asRelativePath(`/${descriptor.workspaceId}`, file)),
-          extension: file.fileExtension,
+          extension: extractFileExtension(file.path)!,
         }),
       });
     },
@@ -114,7 +113,7 @@ export function WorkspaceContextProvider(props: Props) {
   );
 
   const goToFileInNewWindow = useCallback(
-    async (file: File) => {
+    async (file: WorkspaceFile) => {
       const descriptor = await workspaceService.getByFile(file);
 
       if (!descriptor) {
@@ -126,7 +125,7 @@ export function WorkspaceContextProvider(props: Props) {
           pathParams: {
             workspaceId: descriptor.workspaceId,
             filePath: removeFileExtension(storageService.asRelativePath(`/${descriptor.workspaceId}`, file)),
-            extension: file.fileExtension,
+            extension: extractFileExtension(file.path)!,
           },
         }),
         "_blank"
@@ -187,7 +186,7 @@ export function WorkspaceContextProvider(props: Props) {
   }, [active, broadcastService, file, goToFile, storageService, workspaceService]);
 
   const onFileChanged = useCallback(
-    (file: File) => {
+    (file: WorkspaceFile) => {
       if (!active) {
         throw new Error("No active workspace");
       }
@@ -204,7 +203,7 @@ export function WorkspaceContextProvider(props: Props) {
       setActive({ descriptor: descriptor, files: files });
 
       if (files.length > 0) {
-        const firstFile = files.sort((a: File, b: File) => a.path!.localeCompare(b.path!))[0];
+        const firstFile = files.sort((a: WorkspaceFile, b: WorkspaceFile) => a.path!.localeCompare(b.path!))[0];
         if (replaceUrl) {
           replaceToFile(descriptor, firstFile);
         } else {
@@ -216,7 +215,7 @@ export function WorkspaceContextProvider(props: Props) {
   );
 
   const createWorkspaceFromLocal = useCallback(
-    async (files: File[], replaceUrl: boolean, preferredName?: string) => {
+    async (files: WorkspaceFile[], replaceUrl: boolean, preferredName?: string) => {
       const descriptor: WorkspaceDescriptor = {
         workspaceId: await workspaceService.newContext(),
         name: await workspaceService.newName(preferredName),
@@ -224,7 +223,9 @@ export function WorkspaceContextProvider(props: Props) {
         createdIn: new Date().toString(),
       };
 
-      const supportedFiles = files.filter((file: File) => SUPPORTED_FILES.includes(file.fileExtension));
+      const supportedFiles = files.filter((file: WorkspaceFile) =>
+        SUPPORTED_FILES.includes(extractFileExtension(file.path)!)
+      );
       const fileHandler = new LocalFileHandler({
         files: supportedFiles,
         workspaceService: workspaceService,
@@ -260,7 +261,7 @@ export function WorkspaceContextProvider(props: Props) {
   );
 
   const openWorkspaceByFile = useCallback(
-    async (file: File) => {
+    async (file: WorkspaceFile) => {
       const descriptor = await workspaceService.getByFile(file);
       const files = await workspaceService.listFiles(descriptor, SUPPORTED_FILES_EDITABLE_PATTERN);
 
@@ -319,7 +320,7 @@ export function WorkspaceContextProvider(props: Props) {
       const renamedFile = await storageService.renameFile(file, newFileName, true);
       setFile(renamedFile);
 
-      const fileIndex = active.files.findIndex((f: File) => f.path === file.path);
+      const fileIndex = active.files.findIndex((f: WorkspaceFile) => f.path === file.path);
       const updatedFiles = [...active.files];
       updatedFiles[fileIndex] = renamedFile;
       setActive({ ...active, files: updatedFiles });
@@ -347,7 +348,10 @@ export function WorkspaceContextProvider(props: Props) {
       }
 
       const contextPath = await workspaceService.resolveContextPath(active.descriptor);
-      const newEmptyFile = newFile(fileExtension, contextPath);
+      const newEmptyFile = {
+        path: `${contextPath}/new-file.${fileExtension}`,
+        getFileContents: () => Promise.resolve(""),
+      };
       await storageService.createFile(newEmptyFile, true);
 
       goToFile(active.descriptor, newEmptyFile);
@@ -407,7 +411,7 @@ export function WorkspaceContextProvider(props: Props) {
       }
 
       const files = await workspaceService.listFiles(active.descriptor, globPattern);
-      const matchingPaths = files.map((file: File) => file.path!);
+      const matchingPaths = files.map((file: WorkspaceFile) => file.path!);
       return new ResourcesList(globPattern, matchingPaths);
     },
     [active, workspaceService]
@@ -415,7 +419,7 @@ export function WorkspaceContextProvider(props: Props) {
 
   const listWorkspaceOverviews = useCallback(async () => {
     const descriptors = await workspaceService.list();
-    return descriptors.map((descriptor: WorkspaceDescriptor) => {
+    return descriptors.map((descriptor) => {
       return {
         workspaceId: descriptor.workspaceId,
         name: descriptor.name,

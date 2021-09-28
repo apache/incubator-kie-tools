@@ -15,7 +15,6 @@
  */
 
 import LightningFS, { FSBackend, FSConstructorOptions } from "@isomorphic-git/lightning-fs";
-import { File } from "@kie-tooling-core/editor/dist/channel";
 import { Minimatch } from "minimatch";
 import { basename, dirname, join, parse, resolve } from "path";
 import {
@@ -29,6 +28,8 @@ import {
   UpdateFileEvent,
 } from "../model/Event";
 import { BroadcastService } from "./BroadcastService";
+import { WorkspaceFile } from "../WorkspaceContext";
+import { extractFileExtension } from "../../common/utils";
 
 export class StorageService {
   private readonly FOLDER_SEPARATOR = "/";
@@ -51,7 +52,7 @@ export class StorageService {
     return this.FOLDER_SEPARATOR;
   }
 
-  public async createFile(file: File, broadcast: boolean): Promise<void> {
+  public async createFile(file: WorkspaceFile, broadcast: boolean): Promise<void> {
     if (!file.path) {
       throw new Error("File path is not defined");
     }
@@ -68,7 +69,7 @@ export class StorageService {
     }
   }
 
-  public async updateFile(file: File, broadcast: boolean): Promise<void> {
+  public async updateFile(file: WorkspaceFile, broadcast: boolean): Promise<void> {
     if (!file.path || !(await this.exists(file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
@@ -80,7 +81,7 @@ export class StorageService {
     }
   }
 
-  public async deleteFile(file: File, broadcast: boolean): Promise<void> {
+  public async deleteFile(file: WorkspaceFile, broadcast: boolean): Promise<void> {
     if (!file.path || !(await this.exists(file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
@@ -92,16 +93,16 @@ export class StorageService {
     }
   }
 
-  public async renameFile(file: File, newFileName: string, broadcast: boolean): Promise<File> {
+  public async renameFile(file: WorkspaceFile, newFileName: string, broadcast: boolean): Promise<WorkspaceFile> {
     if (!file.path || !(await this.exists(file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
 
-    if (file.fileName === newFileName) {
+    if (basename(file.path) === newFileName) {
       return file;
     }
 
-    const newPath = join(dirname(file.path), `${newFileName}.${file.fileExtension}`);
+    const newPath = join(dirname(file.path), `${newFileName}.${extractFileExtension(file.path)}`);
 
     if (await this.exists(newPath)) {
       throw new Error(`File ${newPath} already exists`);
@@ -120,7 +121,7 @@ export class StorageService {
     return newFile;
   }
 
-  public async moveFile(file: File, newFolderPath: string, broadcast: boolean): Promise<File> {
+  public async moveFile(file: WorkspaceFile, newFolderPath: string, broadcast: boolean): Promise<WorkspaceFile> {
     if (!file.path || !(await this.exists(file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
@@ -140,29 +141,29 @@ export class StorageService {
     return newFile;
   }
 
-  public async createFiles(files: File[], broadcast: boolean): Promise<void> {
+  public async createFiles(files: WorkspaceFile[], broadcast: boolean): Promise<void> {
     for (const file of files) {
       await this.createFile(file, false);
     }
 
     if (broadcast) {
-      const paths = files.map((file: File) => file.path!);
+      const paths = files.map((file: WorkspaceFile) => file.path!);
       this.broadcastService.send<AddFileBatchEvent>(ChannelKind.ADD_FILE_BATCH, { paths: paths });
     }
   }
 
-  public async deleteFiles(files: File[], broadcast: boolean): Promise<void> {
+  public async deleteFiles(files: WorkspaceFile[], broadcast: boolean): Promise<void> {
     for (const file of files) {
       await this.deleteFile(file, false);
     }
 
     if (broadcast) {
-      const paths = files.map((file: File) => file.path!);
+      const paths = files.map((file: WorkspaceFile) => file.path!);
       this.broadcastService.send<DeleteFileBatchEvent>(ChannelKind.DELETE_FILE_BATCH, { paths: paths });
     }
   }
 
-  public async moveFiles(files: File[], newFolderPath: string, broadcast: boolean): Promise<void> {
+  public async moveFiles(files: WorkspaceFile[], newFolderPath: string, broadcast: boolean): Promise<void> {
     const paths = [];
     const pathMap = new Map<string, string>();
     for (const file of files) {
@@ -176,7 +177,7 @@ export class StorageService {
     }
   }
 
-  public async getFile(path: string): Promise<File | undefined> {
+  public async getFile(path: string): Promise<WorkspaceFile | undefined> {
     if (!(await this.exists(path))) {
       return;
     }
@@ -184,7 +185,7 @@ export class StorageService {
     return buildFile(path, this.buildGetFileContentsCallback(path));
   }
 
-  public async getFiles(folderPath: string, globPattern?: string): Promise<File[]> {
+  public async getFiles(folderPath: string, globPattern?: string): Promise<WorkspaceFile[]> {
     const filePaths = await this.getFilePaths(folderPath);
 
     const files = filePaths.map((path: string) => {
@@ -196,7 +197,7 @@ export class StorageService {
     }
 
     const matcher = new Minimatch(globPattern, { dot: true });
-    return files.filter((file: File) => matcher.match(parse(file.path!).base));
+    return files.filter((file: WorkspaceFile) => matcher.match(parse(file.path!).base));
   }
 
   public async wipeStorage(): Promise<void> {
@@ -214,7 +215,7 @@ export class StorageService {
     });
   }
 
-  public asRelativePath(folder: string, file: File): string {
+  public asRelativePath(folder: string, file: WorkspaceFile): string {
     if (!file.path) {
       throw new Error("File path is not defined");
     }
@@ -263,7 +264,7 @@ export class StorageService {
     };
   }
 
-  private async writeFile(file: File): Promise<void> {
+  private async writeFile(file: WorkspaceFile): Promise<void> {
     if (!file.path) {
       throw new Error("File path is not defined");
     }
@@ -288,14 +289,9 @@ export class StorageService {
   }
 }
 
-function buildFile(path: string, getFileContents: () => Promise<string | undefined>): File {
-  const parsedPath = parse(path);
+function buildFile(path: string, getFileContents: () => Promise<string | undefined>): WorkspaceFile {
   return {
-    fileName: parsedPath.name,
-    fileExtension: parsedPath.ext.replace(".", ""),
     getFileContents: getFileContents,
-    isReadOnly: false,
     path: path,
-    kind: "local",
   };
 }

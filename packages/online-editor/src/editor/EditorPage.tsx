@@ -38,7 +38,7 @@ import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxConte
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { extractFileExtension, removeDirectories, removeFileExtension } from "../common/utils";
 import { useSettings } from "../settings/SettingsContext";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { QueryParams } from "../common/Routes";
 import { EditorFetchFileErrorEmptyState, FetchFileError, FetchFileErrorReason } from "./EditorFetchFileErrorEmptyState";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
@@ -47,6 +47,7 @@ import { useController } from "../common/Hooks";
 import { TextEditorModal } from "./TextEditor/TextEditorModal";
 import { useWorkspaces } from "../workspace/WorkspaceContext";
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tooling-core/workspace/dist/api";
+import { basename } from "path";
 
 export interface CommonProps {
   forExtension: SupportedFileExtensions;
@@ -87,10 +88,10 @@ export function EditorPage(props: Props) {
     return queryParams.has(QueryParams.READONLY) ? queryParams.get(QueryParams.READONLY) === `${true}` : false;
   }, [queryParams]);
 
-  const [currentFile, setCurrentFile] = useState<File>(() => ({
+  const [currentFile, setCurrentFile] = useState<EmbeddedEditorFile>(() => ({
     fileName: "new-file",
     fileExtension: props.forExtension,
-    getFileContents: () => Promise.resolve(""),
+    getFileContents: () => new Promise<string>(() => {}),
     isReadOnly: false,
     kind: "local",
   }));
@@ -103,21 +104,24 @@ export function EditorPage(props: Props) {
 
   // TODO CAPONETTO: Improve; find a better name
   const updateCurrentFile = useCallback(
-    async (file: File, createWorkspace: boolean) => {
-      if (createWorkspace) {
-        await workspaces.createWorkspaceFromLocal(
-          [
-            {
-              ...file,
-              path: `${file.fileName}.${file.fileExtension}`,
-              kind: "local",
-            },
-          ],
-          true
-        );
-      }
+    async (file: EmbeddedEditorFile, createWorkspace: boolean) => {
+      try {
+        if (createWorkspace) {
+          await workspaces.createWorkspaceFromLocal(
+            [
+              {
+                ...file,
+                path: `${file.fileName}.${file.fileExtension}`,
+              },
+            ],
+            true
+          );
+        }
 
-      setCurrentFile(file);
+        setCurrentFile(file);
+      } catch (e) {
+        setFetchFileError({ details: e, reason: FetchFileErrorReason.CANT_FETCH, filePath: file.path! });
+      }
     },
     [workspaces]
   );
@@ -239,12 +243,23 @@ export function EditorPage(props: Props) {
       }
 
       if (props.workspaceId) {
-        workspaces.openWorkspaceFile(props.workspaceId, props.filePath).then((file: File) => {
-          if (canceled) {
-            return;
-          }
-          setCurrentFile(file);
-        });
+        workspaces
+          .openWorkspaceFile(props.workspaceId, props.filePath)
+          .then((file) => {
+            if (canceled) {
+              return;
+            }
+            setCurrentFile({
+              ...file,
+              kind: "local",
+              isReadOnly: false,
+              fileExtension: extractFileExtension(file.path)!,
+              fileName: removeFileExtension(basename(file.path)),
+            });
+          })
+          .catch((e) => {
+            setFetchFileError({ details: e, reason: FetchFileErrorReason.CANT_FETCH, filePath: props.filePath! });
+          });
         return;
       }
     }

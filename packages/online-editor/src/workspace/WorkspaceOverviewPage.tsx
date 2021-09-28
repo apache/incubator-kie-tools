@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { WorkspaceFile } from "../workspace/WorkspaceContext";
 import { Link } from "react-router-dom";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { ActiveWorkspace } from "./model/ActiveWorkspace";
@@ -64,7 +64,7 @@ export function WorkspaceOverviewPage(props: Props) {
       return null;
     }
 
-    return workspace.files.map((file: File) => {
+    return workspace.files.map((file: WorkspaceFile) => {
       const filePath = file.path!.replace("/" + workspace.descriptor.workspaceId + "/", "");
       const extension = extractFileExtension(filePath)!;
       const isSupported = SUPPORTED_FILES_EDITABLE.includes(extension);
@@ -75,7 +75,7 @@ export function WorkspaceOverviewPage(props: Props) {
               to={globals.routes.workspaceWithFilePath.path({
                 workspaceId: workspace.descriptor.workspaceId,
                 filePath: removeFileExtension(filePath),
-                extension: file.fileExtension,
+                extension: extractFileExtension(file.path)!,
               })}
             >
               {file.path}

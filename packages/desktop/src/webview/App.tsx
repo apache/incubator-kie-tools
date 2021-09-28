@@ -30,7 +30,7 @@ import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
 import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 
 enum Pages {
   HOME,
@@ -41,7 +41,7 @@ const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 
 export function App() {
   const [page, setPage] = useState(Pages.HOME);
-  const [file, setFile] = useState<File>({
+  const [file, setFile] = useState<EmbeddedEditorFile>({
     fileName: "",
     fileExtension: "",
     getFileContents: () => Promise.resolve(""),

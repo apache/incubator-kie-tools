@@ -25,13 +25,13 @@ import {
   ResourceListRequest,
   ResourcesList,
 } from "@kie-tooling-core/workspace/dist/api";
-import { File } from "../../channel";
+import { EmbeddedEditorFile } from "../../channel";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   constructor(
     private readonly stateControl: StateControl,
-    private readonly file: File,
+    private readonly file: EmbeddedEditorFile,
     private readonly locale: string,
     private readonly overrides: Partial<KogitoEditorChannelApi>
   ) {}

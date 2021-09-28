@@ -28,11 +28,11 @@ import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus"
 import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandboxModalConfirmDeploy";
 import { useSettings } from "../../settings/SettingsContext";
 import { isConfigValid, OpenShiftSettingsConfig } from "../../settings/OpenShiftSettingsConfig";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { AlertsController, useAlert } from "../Alerts/Alerts";
 
 interface Props {
-  currentFile: File;
+  currentFile: EmbeddedEditorFile;
   children: React.ReactNode;
   editor: EmbeddedEditorRef | undefined;
   alerts: AlertsController | undefined;

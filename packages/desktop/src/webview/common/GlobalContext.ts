@@ -15,11 +15,11 @@
  */
 
 import * as React from "react";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
 
 export interface GlobalContextType {
-  file: File;
+  file: EmbeddedEditorFile;
   editorEnvelopeLocator: EditorEnvelopeLocator;
 }
 

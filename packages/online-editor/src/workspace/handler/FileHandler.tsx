@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { WorkspaceFile } from "../WorkspaceContext";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { StorageService } from "../services/StorageService";
 import { WorkspaceService } from "../services/WorkspaceService";
@@ -30,7 +30,7 @@ export abstract class FileHandler {
     protected readonly storageService: StorageService
   ) {}
 
-  public abstract store(descriptor: WorkspaceDescriptor): Promise<File[]>;
+  public abstract store(descriptor: WorkspaceDescriptor): Promise<WorkspaceFile[]>;
 
   public abstract sync(descriptor: WorkspaceDescriptor): Promise<void>;
 }

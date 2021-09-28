@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { WorkspaceFile } from "../WorkspaceContext";
 import JSZip from "jszip";
 import { FileHandler } from "../handler/FileHandler";
 import { AddWorkspaceEvent, ChannelKind, DeleteWorkspaceEvent } from "../model/Event";
@@ -22,12 +22,11 @@ import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { SUPPORTED_FILES_EDITABLE, SUPPORTED_FILES_PATTERN } from "../SupportedFiles";
 import { BroadcastService } from "./BroadcastService";
 import { StorageService } from "./StorageService";
+import { extractFileExtension } from "../../common/utils";
 
 export class WorkspaceService {
   private readonly WORKSPACE_CONTEXT_PREFIX = "w";
-  private readonly WORKSPACE_CONFIG: Pick<File, "fileName" | "fileExtension" | "path"> = {
-    fileName: "workspaces",
-    fileExtension: "json",
+  private readonly WORKSPACE_CONFIG: Pick<WorkspaceFile, "path"> = {
     path: "/workspaces.json",
   };
 
@@ -45,12 +44,12 @@ export class WorkspaceService {
     }
   }
 
-  public async listFiles(descriptor: WorkspaceDescriptor, globPattern?: string): Promise<File[]> {
+  public async listFiles(descriptor: WorkspaceDescriptor, globPattern?: string): Promise<WorkspaceFile[]> {
     const contextPath = await this.resolveContextPath(descriptor);
     return await this.storageService.getFiles(contextPath, globPattern);
   }
 
-  public async getByFile(file: File): Promise<WorkspaceDescriptor> {
+  public async getByFile(file: WorkspaceFile): Promise<WorkspaceDescriptor> {
     if (!file.path) {
       throw new Error("File path not found");
     }
@@ -96,7 +95,11 @@ export class WorkspaceService {
     return JSON.parse(fileContent) as WorkspaceDescriptor[];
   }
 
-  public async create(descriptor: WorkspaceDescriptor, fileHandler: FileHandler, broadcast: boolean): Promise<File[]> {
+  public async create(
+    descriptor: WorkspaceDescriptor,
+    fileHandler: FileHandler,
+    broadcast: boolean
+  ): Promise<WorkspaceFile[]> {
     const descriptors = await this.list();
     descriptors.push(descriptor);
 
@@ -105,7 +108,9 @@ export class WorkspaceService {
     await this.storageService.createFolderStructure(`/${descriptor.workspaceId}/`);
 
     const createdFiles = await fileHandler.store(descriptor);
-    const supportedFiles = createdFiles.filter((file: File) => SUPPORTED_FILES_EDITABLE.includes(file.fileExtension));
+    const supportedFiles = createdFiles.filter((file: WorkspaceFile) =>
+      SUPPORTED_FILES_EDITABLE.includes(extractFileExtension(file.path)!)
+    );
 
     if (broadcast) {
       this.broadcastService.send<AddWorkspaceEvent>(ChannelKind.ADD_WORKSPACE, { context: descriptor.workspaceId });
@@ -171,12 +176,9 @@ export class WorkspaceService {
     return contextPath;
   }
 
-  private async configAsFile(getFileContents: () => Promise<string | undefined>): Promise<File> {
+  private async configAsFile(getFileContents: () => Promise<string | undefined>): Promise<WorkspaceFile> {
     return {
-      fileName: this.WORKSPACE_CONFIG.fileName,
-      fileExtension: this.WORKSPACE_CONFIG.fileExtension,
       path: this.WORKSPACE_CONFIG.path,
-      isReadOnly: false,
       getFileContents: getFileContents,
     };
   }

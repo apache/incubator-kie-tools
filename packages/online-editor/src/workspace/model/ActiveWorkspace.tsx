@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { WorkspaceFile } from "../WorkspaceContext";
 import { WorkspaceDescriptor } from "./WorkspaceDescriptor";
-import { WorkspaceKind } from "./WorkspaceOrigin";
 
 export interface ActiveWorkspace {
   descriptor: WorkspaceDescriptor;
-  files: File[];
+  files: WorkspaceFile[];
 }

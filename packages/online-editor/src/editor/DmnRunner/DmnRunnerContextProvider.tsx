@@ -28,7 +28,7 @@ import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useHistory } from "react-router";
 import { useGlobals } from "../../common/GlobalContext";
 import { QueryParams } from "../../common/Routes";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { usePrevious } from "../../common/Hooks";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { jsonParseWithDate } from "../../common/utils";
@@ -38,7 +38,7 @@ interface Props {
   children: React.ReactNode;
   editor: EmbeddedEditorRef | undefined;
   notificationsPanel: NotificationsPanelController | undefined;
-  currentFile: File;
+  currentFile: EmbeddedEditorFile;
 }
 
 const THROTTLING_TIME = 200;

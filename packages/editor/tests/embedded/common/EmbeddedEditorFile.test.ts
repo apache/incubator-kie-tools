@@ -18,11 +18,11 @@ import {
   EMPTY_FILE_DMN,
   EMPTY_FILE_PMML,
   EMPTY_FILE_SCESIM,
-  File,
+  EmbeddedEditorFile,
   newFile,
 } from "@kie-tooling-core/editor/dist/channel";
 
-describe("File::Empty defaults", () => {
+describe("EmbeddedEditorFile::Empty defaults", () => {
   test("dmn", async () => {
     expect(EMPTY_FILE_DMN.fileName).toEqual("new-file");
     expect(EMPTY_FILE_DMN.fileExtension).toEqual("dmn");
@@ -56,9 +56,9 @@ describe("File::Empty defaults", () => {
   });
 });
 
-describe("File::newFile", () => {
+describe("EmbeddedEditorFile::newFile", () => {
   test("constructor", async () => {
-    const file: File = newFile("dmn");
+    const file: EmbeddedEditorFile = newFile("dmn");
     expect(file.fileName).toEqual("new-file");
     expect(file.fileExtension).toEqual("dmn");
     expect(file.isReadOnly).toBeFalsy();
@@ -67,9 +67,9 @@ describe("File::newFile", () => {
   });
 });
 
-describe("File", () => {
+describe("EmbeddedEditorFile", () => {
   test("With content", async () => {
-    const file: File = {
+    const file: EmbeddedEditorFile = {
       fileExtension: "dmn",
       fileName: "new-file",
       isReadOnly: true,

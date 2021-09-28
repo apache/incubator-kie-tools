@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import * as React from "react";
 import { useContext, useMemo, useState } from "react";
 import { routes } from "./Routes";
@@ -23,9 +23,9 @@ import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor
 export type SupportedFileExtensions = "bpmn" | "bpmn2" | "dmn" | "pmml";
 
 export interface GlobalContextType {
-  uploadedFile?: File;
-  setUploadedFile: React.Dispatch<React.SetStateAction<File | undefined>>;
-  externalFile?: File;
+  uploadedFile?: EmbeddedEditorFile;
+  setUploadedFile: React.Dispatch<React.SetStateAction<EmbeddedEditorFile | undefined>>;
+  externalFile?: EmbeddedEditorFile;
   routes: typeof routes;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   senderTabId?: string;
@@ -34,8 +34,12 @@ export interface GlobalContextType {
 
 export const GlobalContext = React.createContext<GlobalContextType>({} as any);
 
-export function GlobalContextProvider(props: { externalFile?: File; senderTabId?: string; children: React.ReactNode }) {
-  const [uploadedFile, setUploadedFile] = useState<File | undefined>(undefined);
+export function GlobalContextProvider(props: {
+  externalFile?: EmbeddedEditorFile;
+  senderTabId?: string;
+  children: React.ReactNode;
+}) {
+  const [uploadedFile, setUploadedFile] = useState<EmbeddedEditorFile | undefined>(undefined);
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () => ({
       targetOrigin: window.location.origin,

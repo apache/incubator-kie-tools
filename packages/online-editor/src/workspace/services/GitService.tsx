@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { WorkspaceFile } from "../WorkspaceContext";
 import git from "isomorphic-git";
 import http from "isomorphic-git/http/web";
 import { StorageService } from "./StorageService";
@@ -37,7 +37,7 @@ export interface CloneArgs extends CommonArgs {
 
 export interface CommitArgs extends CommonArgs {
   message: string;
-  files: File[];
+  files: WorkspaceFile[];
   targetBranch: string;
 }
 

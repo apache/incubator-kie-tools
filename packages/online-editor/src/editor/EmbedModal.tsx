@@ -27,7 +27,7 @@ import { useSettings } from "../settings/SettingsContext";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useGlobals } from "../common/GlobalContext";
 import { QueryParams } from "../common/Routes";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 
 type SupportedStandaloneEditorFileExtensions = "bpmn" | "bpmn2" | "dmn";
 type StandaloneEditorLibraryName = "BpmnEditor" | "DmnEditor";
@@ -55,7 +55,7 @@ enum ContentSource {
 }
 
 interface Props {
-  currentFile: File;
+  currentFile: EmbeddedEditorFile;
   isOpen: boolean;
   onClose: () => void;
   editor: EmbeddedEditorRef | undefined;

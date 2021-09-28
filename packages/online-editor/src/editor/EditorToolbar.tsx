@@ -42,7 +42,7 @@ import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedSer
 import { useGlobals } from "../common/GlobalContext";
 import { AuthStatus, useSettings } from "../settings/SettingsContext";
 import { SettingsTabs } from "../settings/SettingsModalBody";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
 import { UpdateGistErrors } from "../settings/GithubService";
 import { QueryParams } from "../common/Routes";
@@ -53,7 +53,7 @@ import { AlertsController, useAlert } from "./Alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { useWorkspaces } from "../workspace/WorkspaceContext";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
-import { dirname } from "path";
+import { basename, dirname } from "path";
 import { GitHubRepositoryOrigin, WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { CheckIcon } from "@patternfly/react-icons/dist/js/icons/check-icon";
@@ -63,7 +63,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 export interface Props {
   alerts: AlertsController | undefined;
   editor: EmbeddedEditorRef | undefined;
-  currentFile: File;
+  currentFile: EmbeddedEditorFile;
   onRename: (newName: string) => void;
   onClose: () => void;
 }
@@ -514,8 +514,8 @@ export function EditorToolbar(props: Props) {
       </DropdownGroup>,
       <DropdownGroup key={"workspace-group"} label="Workspace">
         {workspaces.active.files
-          .sort((a: File, b: File) => a.path!.localeCompare(b.path!))
-          .map((file: File, idx: number) => (
+          .sort((a, b) => a.path!.localeCompare(b.path!))
+          .map((file, idx: number) => (
             <DropdownItem
               onClick={() => workspaces.onFileChanged(file)}
               description={
@@ -537,7 +537,7 @@ export function EditorToolbar(props: Props) {
               }
             >
               <span style={{ fontWeight: props.currentFile.path === file.path ? "bold" : "normal" }}>
-                {`${file.fileName}.${file.fileExtension}`}
+                {`${basename(file.path)}`}
               </span>
               <EyeIcon
                 style={{
@@ -622,7 +622,7 @@ export function EditorToolbar(props: Props) {
                         onToggle={(isOpen) => setWorkspaceFilesMenuOpen(isOpen)}
                       >
                         {`${workspaces.active?.files.length} ${
-                          (workspaces.active?.files.length ?? 0) === 1 ? "File" : "Files"
+                          (workspaces.active?.files.length ?? 0) === 1 ? "EmbeddedEditorFile" : "Files"
                         }`}
                       </DropdownToggle>
                     }
@@ -645,9 +645,8 @@ export function EditorToolbar(props: Props) {
                       workspaces.createWorkspaceFromLocal(
                         [
                           {
-                            ...props.currentFile,
+                            getFileContents: props.editor!.getContent,
                             path: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
-                            kind: "local",
                           },
                         ],
                         false
@@ -709,7 +708,7 @@ export function EditorToolbar(props: Props) {
               <>
                 <FlexItem>
                   <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
-                    <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
+                    <Title aria-label={"EmbeddedEditorFile name"} headingLevel={"h3"} size={"2xl"}>
                       {fileName}
                     </Title>
                     <TextInput
@@ -728,7 +727,7 @@ export function EditorToolbar(props: Props) {
                     <Text
                       style={{ color: "gray", ...(isEdited || !workspaces.active ? { visibility: "hidden" } : {}) }}
                       component={"small"}
-                      aria-label={"File is saved"}
+                      aria-label={"EmbeddedEditorFile is saved"}
                       data-testid="is-saved-indicator"
                     >
                       {`Saved`} <CheckIcon size={"sm"} />
@@ -743,7 +742,7 @@ export function EditorToolbar(props: Props) {
                   <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container readonly"}>
                     <Title
                       className="kogito--editor__toolbar-title"
-                      aria-label={"File name"}
+                      aria-label={"EmbeddedEditorFile name"}
                       headingLevel={"h3"}
                       size={"2xl"}
                     >
@@ -756,7 +755,7 @@ export function EditorToolbar(props: Props) {
                     <Text
                       style={{ color: "gray" }}
                       component={"small"}
-                      aria-label={"File is readonly"}
+                      aria-label={"EmbeddedEditorFile is readonly"}
                       data-testid="is-readonly-indicator"
                     >
                       {i18n.terms.readonly}

@@ -13,7 +13,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useGlobals } from "../common/GlobalContext";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { useHistory } from "react-router";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { extractFileExtension } from "../common/utils";
@@ -30,7 +30,10 @@ export interface FetchFileError {
   reason: FetchFileErrorReason;
 }
 
-export function EditorFetchFileErrorEmptyState(props: { currentFile: File; fetchFileError: FetchFileError }) {
+export function EditorFetchFileErrorEmptyState(props: {
+  currentFile: EmbeddedEditorFile;
+  fetchFileError: FetchFileError;
+}) {
   const globals = useGlobals();
   const history = useHistory();
   const queryParams = useQueryParams();

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { WorkspaceFile } from "../WorkspaceContext";
 import { join } from "path";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { FileHandler, FileHandlerCommonArgs } from "./FileHandler";
 
 export interface LocalFileHandlerArgs extends FileHandlerCommonArgs {
-  files: File[];
+  files: WorkspaceFile[];
 }
 
 export class LocalFileHandler extends FileHandler {
@@ -28,9 +28,9 @@ export class LocalFileHandler extends FileHandler {
     super(args.workspaceService, args.storageService);
   }
 
-  public async store(descriptor: WorkspaceDescriptor): Promise<File[]> {
+  public async store(descriptor: WorkspaceDescriptor): Promise<WorkspaceFile[]> {
     const contextPath = await this.workspaceService.resolveContextPath(descriptor);
-    const updatedFiles = this.args.files.map((file: File) => {
+    const updatedFiles = this.args.files.map((file: WorkspaceFile) => {
       const updatedPath = join(contextPath, file.path!.substring(file.path!.indexOf("/") + 1));
       return { ...file, path: updatedPath };
     });

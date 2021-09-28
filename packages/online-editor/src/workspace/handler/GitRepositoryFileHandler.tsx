@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { WorkspaceFile } from "../WorkspaceContext";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { GitHubRepositoryOrigin } from "../model/WorkspaceOrigin";
 import { AuthInfo, GitService } from "../services/GitService";
@@ -35,7 +35,7 @@ export class GitRepositoryFileHandler extends FileHandler {
     super(args.workspaceService, args.storageService);
   }
 
-  public async store(descriptor: WorkspaceDescriptor): Promise<File[]> {
+  public async store(descriptor: WorkspaceDescriptor): Promise<WorkspaceFile[]> {
     const contextPath = await this.workspaceService.resolveContextPath(descriptor);
     await this.args.gitService.clone({
       contextPath: contextPath,

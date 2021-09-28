@@ -3,7 +3,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useOnlineI18n } from "../../common/i18n";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 
 const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tooling-core/monaco-editor");
@@ -11,7 +11,7 @@ const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ 
 export function TextEditorModal(props: {
   editor: EmbeddedEditorRef | undefined;
   isOpen: boolean;
-  currentFile: File;
+  currentFile: EmbeddedEditorFile;
   refreshEditor: () => void;
 }) {
   const { i18n } = useOnlineI18n();

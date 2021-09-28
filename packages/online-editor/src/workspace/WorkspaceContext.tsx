@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { File } from "@kie-tooling-core/editor/dist/channel";
 import {
   ResourceContent,
   ResourceContentOptions,
@@ -28,9 +27,14 @@ import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
 import { WorkspaceOverview } from "./model/WorkspaceOverview";
 import { WorkspaceService } from "./services/WorkspaceService";
 
+export interface WorkspaceFile {
+  path: string;
+  getFileContents(): Promise<string | undefined>;
+}
+
 // TODO CAPONETTO: review and refactor this context
 export interface WorkspaceContextType {
-  file?: File;
+  file?: WorkspaceFile;
   active?: ActiveWorkspace;
   setActive: React.Dispatch<React.SetStateAction<ActiveWorkspace> | undefined>;
 
@@ -39,17 +43,17 @@ export interface WorkspaceContextType {
   resourceContentGet: (path: string, opts?: ResourceContentOptions) => Promise<ResourceContent | undefined>;
   resourceContentList: (globPattern: string, opts?: ResourceListOptions) => Promise<ResourcesList>;
 
-  openWorkspaceByPath: (path: string) => Promise<File>;
-  openWorkspaceByFile: (file: File) => Promise<void>;
-  openWorkspaceFile: (workspaceId: string, relativeFilePath: string) => Promise<File>;
+  openWorkspaceByPath: (path: string) => Promise<WorkspaceFile>;
+  openWorkspaceByFile: (file: WorkspaceFile) => Promise<void>;
+  openWorkspaceFile: (workspaceId: string, relativeFilePath: string) => Promise<WorkspaceFile>;
   openWorkspaceById: (workspaceId: string) => Promise<void>;
-  onFileChanged: (file: File) => void;
-  onFileNameChanged: (newFileName: string) => Promise<File>;
-  goToFileInNewWindow: (file: File) => Promise<void>;
-  goToFile: (descriptor: WorkspaceDescriptor, file: File, replaceArgs: { replace: boolean }) => Promise<void>;
+  onFileChanged: (file: WorkspaceFile) => void;
+  onFileNameChanged: (newFileName: string) => Promise<WorkspaceFile>;
+  goToFileInNewWindow: (file: WorkspaceFile) => Promise<void>;
+  goToFile: (descriptor: WorkspaceDescriptor, file: WorkspaceFile, replaceArgs: { replace: boolean }) => Promise<void>;
 
   createWorkspaceFromLocal: (
-    files: File[],
+    files: WorkspaceFile[],
     replaceUrl: boolean,
     preferredName?: string
   ) => Promise<WorkspaceDescriptor>;
