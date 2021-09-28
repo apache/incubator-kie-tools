@@ -75,9 +75,9 @@ export class WorkspaceService {
     return descriptor;
   }
 
-  public async get(context: string): Promise<WorkspaceDescriptor | undefined> {
+  public async get(workspaceId: string): Promise<WorkspaceDescriptor | undefined> {
     const descriptors = await this.list();
-    return descriptors.find((descriptor: WorkspaceDescriptor) => descriptor.context === context);
+    return descriptors.find((descriptor: WorkspaceDescriptor) => descriptor.workspaceId === workspaceId);
   }
 
   public async list(): Promise<WorkspaceDescriptor[]> {
@@ -102,13 +102,13 @@ export class WorkspaceService {
 
     const file = await this.configAsFile(async () => JSON.stringify(descriptors));
     await this.storageService.updateFile(file, false);
-    await this.storageService.createFolderStructure(`/${descriptor.context}/`);
+    await this.storageService.createFolderStructure(`/${descriptor.workspaceId}/`);
 
     const createdFiles = await fileHandler.store(descriptor);
     const supportedFiles = createdFiles.filter((file: File) => SUPPORTED_FILES_EDITABLE.includes(file.fileExtension));
 
     if (broadcast) {
-      this.broadcastService.send<AddWorkspaceEvent>(ChannelKind.ADD_WORKSPACE, { context: descriptor.context });
+      this.broadcastService.send<AddWorkspaceEvent>(ChannelKind.ADD_WORKSPACE, { context: descriptor.workspaceId });
     }
 
     return supportedFiles;
@@ -116,9 +116,9 @@ export class WorkspaceService {
 
   public async delete(descriptor: WorkspaceDescriptor, broadcast: boolean): Promise<void> {
     const descriptors = await this.list();
-    const index = descriptors.findIndex((w) => w.context === descriptor.context);
+    const index = descriptors.findIndex((w) => w.workspaceId === descriptor.workspaceId);
     if (index === -1) {
-      throw new Error(`Workspace ${descriptor.context} not found`);
+      throw new Error(`Workspace ${descriptor.workspaceId} not found`);
     }
 
     const files = await this.listFiles(descriptor);
@@ -129,7 +129,9 @@ export class WorkspaceService {
     await this.storageService.updateFile(file, false);
 
     if (broadcast) {
-      this.broadcastService.send<DeleteWorkspaceEvent>(ChannelKind.DELETE_WORKSPACE, { context: descriptor.context });
+      this.broadcastService.send<DeleteWorkspaceEvent>(ChannelKind.DELETE_WORKSPACE, {
+        context: descriptor.workspaceId,
+      });
     }
   }
 
@@ -161,7 +163,7 @@ export class WorkspaceService {
   }
 
   public async resolveContextPath(descriptor: WorkspaceDescriptor): Promise<string> {
-    const contextPath = `${this.storageService.rootPath}${descriptor.context}`;
+    const contextPath = `${this.storageService.rootPath}${descriptor.workspaceId}`;
     if (!(await this.storageService.exists(contextPath))) {
       throw new Error(`Context ${context} does not exist`);
     }

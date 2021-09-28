@@ -15,7 +15,7 @@
  */
 
 export interface WorkspaceOverview {
-  context: string;
+  workspaceId: string;
   name: string;
   createdIn: Date;
   lastUpdatedIn: Date;

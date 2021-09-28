@@ -88,8 +88,8 @@ export function WorkspaceContextProvider(props: Props) {
       }
       (replaceArgs?.replace ? history.replace : history.push)({
         pathname: globals.routes.workspaceWithFilePath.path({
-          workspaceId: descriptor.context,
-          filePath: removeFileExtension(storageService.asRelativePath(`/${descriptor.context}`, file)),
+          workspaceId: descriptor.workspaceId,
+          filePath: removeFileExtension(storageService.asRelativePath(`/${descriptor.workspaceId}`, file)),
           extension: file.fileExtension,
         }),
       });
@@ -104,8 +104,8 @@ export function WorkspaceContextProvider(props: Props) {
       }
       history.replace({
         pathname: globals.routes.workspaceWithFilePath.path({
-          workspaceId: descriptor.context,
-          filePath: removeFileExtension(storageService.asRelativePath(`/${descriptor.context}`, file)),
+          workspaceId: descriptor.workspaceId,
+          filePath: removeFileExtension(storageService.asRelativePath(`/${descriptor.workspaceId}`, file)),
           extension: file.fileExtension,
         }),
       });
@@ -124,8 +124,8 @@ export function WorkspaceContextProvider(props: Props) {
       window.open(
         globals.routes.workspaceWithFilePath.url({
           pathParams: {
-            workspaceId: descriptor.context,
-            filePath: removeFileExtension(storageService.asRelativePath(`/${descriptor.context}`, file)),
+            workspaceId: descriptor.workspaceId,
+            filePath: removeFileExtension(storageService.asRelativePath(`/${descriptor.workspaceId}`, file)),
             extension: file.fileExtension,
           },
         }),
@@ -142,7 +142,7 @@ export function WorkspaceContextProvider(props: Props) {
       }
 
       const descriptor = await workspaceService.getByFilePath(targetFilePath);
-      if (descriptor.context !== active.descriptor.context) {
+      if (descriptor.workspaceId !== active.descriptor.workspaceId) {
         return;
       }
 
@@ -218,7 +218,7 @@ export function WorkspaceContextProvider(props: Props) {
   const createWorkspaceFromLocal = useCallback(
     async (files: File[], replaceUrl: boolean, preferredName?: string) => {
       const descriptor: WorkspaceDescriptor = {
-        context: await workspaceService.newContext(),
+        workspaceId: await workspaceService.newContext(),
         name: await workspaceService.newName(preferredName),
         origin: { kind: WorkspaceKind.LOCAL },
         createdIn: new Date().toString(),
@@ -239,7 +239,7 @@ export function WorkspaceContextProvider(props: Props) {
   const createWorkspaceFromGitHubRepository = useCallback(
     async (repositoryUrl: URL, sourceBranch: string, preferredName?: string) => {
       const descriptor: WorkspaceDescriptor = {
-        context: await workspaceService.newContext(),
+        workspaceId: await workspaceService.newContext(),
         name: await workspaceService.newName(preferredName),
         origin: { url: repositoryUrl, branch: sourceBranch, kind: WorkspaceKind.GITHUB_REPOSITORY },
         createdIn: new Date().toString(),
@@ -293,11 +293,11 @@ export function WorkspaceContextProvider(props: Props) {
   );
 
   const openWorkspaceFile = useCallback(
-    async (context: string, relativeFilePath: string) => {
-      const descriptor = await workspaceService.get(context);
+    async (workspaceId: string, relativeFilePath: string) => {
+      const descriptor = await workspaceService.get(workspaceId);
 
       if (!descriptor) {
-        throw new Error(`Workspace ${context} not found`);
+        throw new Error(`Workspace ${workspaceId} not found`);
       }
 
       const contextPath = await workspaceService.resolveContextPath(descriptor);
@@ -417,7 +417,7 @@ export function WorkspaceContextProvider(props: Props) {
     const descriptors = await workspaceService.list();
     return descriptors.map((descriptor: WorkspaceDescriptor) => {
       return {
-        context: descriptor.context,
+        workspaceId: descriptor.workspaceId,
         name: descriptor.name,
         createdIn: new Date(descriptor.createdIn),
         lastUpdatedIn: new Date(), // TODO CAPONETTO: implement

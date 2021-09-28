@@ -41,8 +41,8 @@ export interface WorkspaceContextType {
 
   openWorkspaceByPath: (path: string) => Promise<File>;
   openWorkspaceByFile: (file: File) => Promise<void>;
-  openWorkspaceFile: (context: string, relativeFilePath: string) => Promise<File>;
-  openWorkspaceById: (context: string) => Promise<void>;
+  openWorkspaceFile: (workspaceId: string, relativeFilePath: string) => Promise<File>;
+  openWorkspaceById: (workspaceId: string) => Promise<void>;
   onFileChanged: (file: File) => void;
   onFileNameChanged: (newFileName: string) => Promise<File>;
   goToFileInNewWindow: (file: File) => Promise<void>;

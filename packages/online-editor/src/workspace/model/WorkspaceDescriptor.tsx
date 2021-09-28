@@ -17,7 +17,7 @@
 import { WorkspaceOrigin } from "./WorkspaceOrigin";
 
 export interface WorkspaceDescriptor {
-  context: string;
+  workspaceId: string;
   name: string;
   origin: WorkspaceOrigin;
   createdIn: string;

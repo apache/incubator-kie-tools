@@ -521,7 +521,7 @@ export function EditorToolbar(props: Props) {
               description={
                 "/ " +
                 dirname(file.path!)
-                  .replace(`/${workspaces.active!.descriptor.context}`, "")
+                  .replace(`/${workspaces.active!.descriptor.workspaceId}`, "")
                   .substring(1)
                   .replace(/\//g, " > ")
               }

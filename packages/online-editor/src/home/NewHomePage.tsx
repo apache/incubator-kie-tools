@@ -111,7 +111,7 @@ export function NewHomePage() {
                               workspaces.createWorkspaceFromLocal([], false).then((descriptor: WorkspaceDescriptor) => {
                                 history.push({
                                   pathname: globals.routes.workspaceOverview.path({
-                                    workspaceId: descriptor.context,
+                                    workspaceId: descriptor.workspaceId,
                                   }),
                                 });
                               });
@@ -373,7 +373,7 @@ function WorkspaceCard(props: { workspace: WorkspaceOverview }) {
       onClick={() => {
         history.push({
           pathname: globals.routes.workspaceOverview.path({
-            workspaceId: props.workspace.context,
+            workspaceId: props.workspace.workspaceId,
           }),
         });
       }}

@@ -65,7 +65,7 @@ export function WorkspaceOverviewPage(props: Props) {
     }
 
     return workspace.files.map((file: File) => {
-      const filePath = file.path!.replace("/" + workspace.descriptor.context + "/", "");
+      const filePath = file.path!.replace("/" + workspace.descriptor.workspaceId + "/", "");
       const extension = extractFileExtension(filePath)!;
       const isSupported = SUPPORTED_FILES_EDITABLE.includes(extension);
       return (
@@ -73,7 +73,7 @@ export function WorkspaceOverviewPage(props: Props) {
           {isSupported ? (
             <Link
               to={globals.routes.workspaceWithFilePath.path({
-                workspaceId: workspace.descriptor.context,
+                workspaceId: workspace.descriptor.workspaceId,
                 filePath: removeFileExtension(filePath),
                 extension: file.fileExtension,
               })}
@@ -116,7 +116,7 @@ export function WorkspaceOverviewPage(props: Props) {
               <TextContent>
                 <TextList component={TextListVariants.dl}>
                   <TextListItem component={TextListItemVariants.dt}>ID</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>{workspace.descriptor.context}</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>{workspace.descriptor.workspaceId}</TextListItem>
 
                   <TextListItem component={TextListItemVariants.dt}>Type</TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>{workspace.descriptor.origin.kind}</TextListItem>
