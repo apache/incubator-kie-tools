@@ -1,13 +1,11 @@
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import * as React from "react";
 import { GitHubSettingsTab } from "./GitHubSettingsTab";
-import { GeneralSettingsTab } from "./GeneralSettingsTab";
 import { useSettings } from "./SettingsContext";
 import { OpenShiftSettingsTab } from "./OpenShiftSettingsTab";
 import { KieToolingExtendedServicesSettingsTab } from "./KieToolingExtendedServicesSettingsTab";
 
 export enum SettingsTabs {
-  GENERAL = "general",
   GITHUB = "github",
   OPENSHIFT = "openshift",
   KIE_TOOLING_EXTENDED_SERVICES = "kie-tooling-extended-services",
@@ -23,13 +21,6 @@ export function SettingsModalBody() {
       isVertical={false}
       isBox={false}
     >
-      <Tab
-        className="kogito-tooling--settings-tab"
-        eventKey={SettingsTabs.GENERAL}
-        title={<TabTitleText>General</TabTitleText>}
-      >
-        <GeneralSettingsTab />
-      </Tab>
       <Tab
         className="kogito-tooling--settings-tab"
         eventKey={SettingsTabs.GITHUB}
