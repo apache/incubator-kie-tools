@@ -208,12 +208,6 @@
   --pf-c-dropdown__toggle--FontSize: var(--pf-c-button--FontSize);
 }
 
-.kogito--editor__toolbar-edited {
-  color: var(--pf-global--Color--400);
-  font-size: var(--pf-global--FontSize--xl);
-  font-weight: var(--pf-global--FontSize--xl);
-}
-
 .kogito--editor__embed-modal-embed-code {
   display: flex;
   align-items: center;

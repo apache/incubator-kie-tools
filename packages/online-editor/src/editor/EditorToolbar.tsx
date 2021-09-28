@@ -42,7 +42,6 @@ import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedSer
 import { useGlobals } from "../common/GlobalContext";
 import { AuthStatus, useSettings } from "../settings/SettingsContext";
 import { SettingsTabs } from "../settings/SettingsModalBody";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { File } from "@kie-tooling-core/editor/dist/channel";
 import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
 import { UpdateGistErrors } from "../settings/GithubService";
@@ -57,6 +56,9 @@ import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/exter
 import { dirname } from "path";
 import { GitHubRepositoryOrigin, WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { CheckIcon } from "@patternfly/react-icons/dist/js/icons/check-icon";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -756,62 +758,73 @@ export function EditorToolbar(props: Props) {
           </PageHeaderTools>
         }
         topNav={
-          <>
-            <Label variant="outline">{props.currentFile.kind}</Label>
-            &nbsp;
+          <Flex>
             {!props.currentFile.isReadOnly && (
               <>
-                <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
-                  <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
-                    {fileName}
-                  </Title>
-                  <TextInput
-                    value={fileName}
-                    type={"text"}
-                    aria-label={"Edit file name"}
-                    className={"kogito--editor__toolbar-title"}
-                    onChange={setFileName}
-                    onKeyUp={onNameInputKeyUp}
-                    onBlur={() => props.onRename(fileName)}
-                  />
-                </div>
-                {isEdited && (
-                  <span
-                    aria-label={"File was edited"}
-                    className={"kogito--editor__toolbar-edited"}
-                    data-testid="is-dirty-indicator"
-                  >
-                    {` - ${i18n.terms.edited}`}
-                  </span>
-                )}
+                <FlexItem>
+                  <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
+                    <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
+                      {fileName}
+                    </Title>
+                    <TextInput
+                      value={fileName}
+                      type={"text"}
+                      aria-label={"Edit file name"}
+                      className={"kogito--editor__toolbar-title"}
+                      onChange={setFileName}
+                      onKeyUp={onNameInputKeyUp}
+                      onBlur={() => props.onRename(fileName)}
+                    />
+                  </div>
+                </FlexItem>
+                <FlexItem>
+                  <TextContent>
+                    <Text
+                      style={{ color: "gray", ...(isEdited || !workspaces.active ? { visibility: "hidden" } : {}) }}
+                      component={"small"}
+                      aria-label={"File is saved"}
+                      data-testid="is-saved-indicator"
+                    >
+                      {`Saved`} <CheckIcon size={"sm"} />
+                    </Text>
+                  </TextContent>
+                </FlexItem>
               </>
             )}
             {props.currentFile.isReadOnly && (
               <>
-                <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container readonly"}>
-                  <Title
-                    className="kogito--editor__toolbar-title"
-                    aria-label={"File name"}
-                    headingLevel={"h3"}
-                    size={"2xl"}
-                  >
-                    {fileName}
-                  </Title>
-                </div>
-                <span
-                  aria-label={"File is readonly"}
-                  className={"kogito--editor__toolbar-edited"}
-                  data-testid="is-readonly-indicator"
-                >
-                  {` - ${i18n.terms.readonly}`}
-                </span>
+                <FlexItem>
+                  <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container readonly"}>
+                    <Title
+                      className="kogito--editor__toolbar-title"
+                      aria-label={"File name"}
+                      headingLevel={"h3"}
+                      size={"2xl"}
+                    >
+                      {fileName}
+                    </Title>
+                  </div>
+                </FlexItem>
+                <FlexItem>
+                  <TextContent>
+                    <Text
+                      style={{ color: "gray" }}
+                      component={"small"}
+                      aria-label={"File is readonly"}
+                      data-testid="is-readonly-indicator"
+                    >
+                      {i18n.terms.readonly}
+                    </Text>
+                  </TextContent>
+                </FlexItem>
               </>
             )}
-          </>
+          </Flex>
         }
         className={"kogito--editor__toolbar"}
         aria-label={"Page header"}
       />
+
       <EmbedModal
         currentFile={props.currentFile}
         isOpen={isEmbedModalOpen}

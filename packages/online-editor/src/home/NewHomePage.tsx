@@ -68,7 +68,7 @@ export function NewHomePage() {
           <PageSection isFilled={true} style={{ height: "100%" }}>
             <Stack hasGutter={true}>
               <StackItem>
-                <PageSection variant={"light"} style={{ boxShadow: "0px 0px 6px 0px #b1b1b1" }}>
+                <PageSection variant={"light"} className={"pf-u-box-shadow-md"}>
                   <TextContent>
                     <Text component={TextVariants.h1}>Create Workspace</Text>
                     <Text component={TextVariants.p}>
@@ -136,7 +136,7 @@ export function NewHomePage() {
               </StackItem>
 
               <StackItem>
-                <PageSection variant={"light"} style={{ boxShadow: "0px 0px 6px 0px #b1b1b1" }}>
+                <PageSection variant={"light"} className={"pf-u-box-shadow-md"}>
                   <TextContent>
                     <Text component={TextVariants.h1}>Import Workspace</Text>
                   </TextContent>
