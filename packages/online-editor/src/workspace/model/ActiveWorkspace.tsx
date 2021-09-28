@@ -21,5 +21,4 @@ import { WorkspaceKind } from "./WorkspaceOrigin";
 export interface ActiveWorkspace {
   descriptor: WorkspaceDescriptor;
   files: File[];
-  kind: WorkspaceKind;
 }

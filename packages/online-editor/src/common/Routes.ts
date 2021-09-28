@@ -114,6 +114,8 @@ export const routes = {
     queryParams: QueryParams.EXT;
   }>(() => `/`),
 
+  /** @deprecated
+   * Use sketchWithEmptyFile instead */
   editor: new Route<{
     pathParams: PathParams.EXTENSION;
     queryParams: QueryParams.READONLY | QueryParams.URL | QueryParams.SETTINGS | QueryParams.DMN_RUNNER_FORM_INPUTS;

@@ -15,24 +15,49 @@
  */
 
 import * as React from "react";
-import { File } from "@kie-tooling-core/editor/dist/channel";
 import { useEffect, useMemo, useState } from "react";
+import { File } from "@kie-tooling-core/editor/dist/channel";
 import { Link } from "react-router-dom";
-import { extractFileExtension } from "../common/utils";
+import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { ActiveWorkspace } from "./model/ActiveWorkspace";
-import { resolveKind } from "./model/WorkspaceOrigin";
 import { SUPPORTED_FILES_EDITABLE, SUPPORTED_FILES_PATTERN } from "./SupportedFiles";
 import { useWorkspaces } from "./WorkspaceContext";
+import { OnlineEditorPage } from "../home/pageTemplate/OnlineEditorPage";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import {
+  Text,
+  TextContent,
+  TextList,
+  TextListItem,
+  TextListItemVariants,
+  TextListVariants,
+  TextVariants,
+} from "@patternfly/react-core/dist/js/components/Text";
+import { useGlobals } from "../common/GlobalContext";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateSecondaryActions,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 
 export interface Props {
   workspaceId: string;
 }
 
-// TODO CAPONETTO: Temporary; Improve this
 export function WorkspaceOverviewPage(props: Props) {
   const workspaces = useWorkspaces();
   const [workspace, setWorkspace] = useState<ActiveWorkspace | undefined>();
-  const [fetchWorkspaceError, setFetchWorkspaceError] = useState<string>();
+  const [error, setError] = useState<string>();
+  const globals = useGlobals();
+
+  useEffect(() => {
+    workspaces.openWorkspaceById(props.workspaceId);
+  }, [workspaces, props.workspaceId]);
 
   const files = useMemo(() => {
     if (!workspace) {
@@ -46,43 +71,117 @@ export function WorkspaceOverviewPage(props: Props) {
       return (
         <div key={file.path}>
           {isSupported ? (
-            <Link to={`/workspace/${workspace.descriptor.context}/file/${filePath}`}>{file.path}</Link>
+            <Link
+              to={globals.routes.workspaceWithFilePath.path({
+                workspaceId: workspace.descriptor.context,
+                filePath: removeFileExtension(filePath),
+                extension: file.fileExtension,
+              })}
+            >
+              {file.path}
+            </Link>
           ) : (
             <h2>{filePath}</h2>
           )}
         </div>
       );
     });
-  }, [workspace]);
+  }, [globals, workspace]);
 
   useEffect(() => {
-    setFetchWorkspaceError(undefined);
+    setError(undefined);
     workspaces.workspaceService.get(props.workspaceId).then(async (descriptor) => {
       if (!descriptor) {
-        setFetchWorkspaceError("Workspace not found");
+        setError("Workspace not found");
         return;
       }
 
       const files = await workspaces.workspaceService.listFiles(descriptor, SUPPORTED_FILES_PATTERN);
-
-      setWorkspace({
-        descriptor: descriptor,
-        files: files,
-        kind: resolveKind(descriptor.origin),
-      });
+      setWorkspace({ descriptor, files });
     });
   }, [props.workspaceId, workspaces.workspaceService]);
 
   return (
-    <>
-      {fetchWorkspaceError && <div>{fetchWorkspaceError}</div>}
-      {!fetchWorkspaceError && workspace && (
-        <div>
-          <h1>{workspace.descriptor.name}</h1>
-          {files && files.length > 0 && files}
-          {!files || (files.length === 0 && <div>Empty!</div>)}
-        </div>
-      )}
-    </>
+    <OnlineEditorPage>
+      <PageSection isFilled={true}>
+        <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
+          {error && <div>{error}</div>}
+          {!error && workspace && (
+            <>
+              <TextContent>
+                <Text component={TextVariants.h1}>{workspace.descriptor.name}</Text>
+              </TextContent>
+
+              <br />
+              <TextContent>
+                <TextList component={TextListVariants.dl}>
+                  <TextListItem component={TextListItemVariants.dt}>ID</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>{workspace.descriptor.context}</TextListItem>
+
+                  <TextListItem component={TextListItemVariants.dt}>Type</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>{workspace.descriptor.origin.kind}</TextListItem>
+
+                  <TextListItem component={TextListItemVariants.dt}>Created in</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>{workspace.descriptor.createdIn}</TextListItem>
+                </TextList>
+              </TextContent>
+
+              <br />
+              <br />
+              {!files ||
+                (files.length === 0 && (
+                  <EmptyState>
+                    <EmptyStateIcon icon={CubesIcon} />
+                    <Title headingLevel="h4" size="lg">
+                      {`You currently don't have any files.`}
+                    </Title>
+                    <EmptyStateBody>{`Create a new file`}</EmptyStateBody>
+                    <EmptyStateSecondaryActions>
+                      <Flex grow={{ default: "grow" }}>
+                        <FlexItem>
+                          <Button
+                            isLarge
+                            variant={ButtonVariant.secondary}
+                            onClick={() => workspaces.addEmptyFile("bpmn")}
+                          >
+                            BPMN
+                          </Button>
+                        </FlexItem>
+                        <FlexItem>
+                          <Button
+                            isLarge
+                            variant={ButtonVariant.secondary}
+                            onClick={() => workspaces.addEmptyFile("dmn")}
+                          >
+                            DMN
+                          </Button>
+                        </FlexItem>
+                        <FlexItem>
+                          <Button
+                            isLarge
+                            variant={ButtonVariant.secondary}
+                            onClick={() => workspaces.addEmptyFile("pmml")}
+                          >
+                            PMML
+                          </Button>
+                        </FlexItem>
+                      </Flex>
+                    </EmptyStateSecondaryActions>
+                  </EmptyState>
+                ))}
+
+              {files && files.length > 0 && (
+                <>
+                  <TextContent>
+                    <Text component={TextVariants.h3}>Files</Text>
+                  </TextContent>
+                  {files}
+                </>
+              )}
+            </>
+          )}
+        </PageSection>
+      </PageSection>
+    </OnlineEditorPage>
   );
 }

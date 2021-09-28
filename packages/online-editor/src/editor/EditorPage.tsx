@@ -410,7 +410,17 @@ export function EditorPage(props: Props) {
                   editor={editor}
                   alerts={alerts}
                   currentFile={currentFile}
-                  onRename={(newName) => workspaces.onFileNameChanged(newName).catch(() => {})}
+                  onRename={(newName) => {
+                    workspaces
+                      .onFileNameChanged(newName)
+                      .then((renamedFile) => {
+                        if (!workspaces.active || !workspaces.file) {
+                          return;
+                        }
+                        return workspaces.goToFile(workspaces.active.descriptor, renamedFile, { replace: true });
+                      })
+                      .catch(() => {});
+                  }}
                   onClose={onClose}
                 />
               }

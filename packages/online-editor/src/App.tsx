@@ -17,7 +17,7 @@
 import { File } from "@kie-tooling-core/editor/dist/channel";
 import * as React from "react";
 import { useMemo } from "react";
-import { Route, Switch } from "react-router";
+import { Redirect, Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
 import { GlobalContextProvider, SupportedFileExtensions, useGlobals } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
@@ -66,7 +66,7 @@ function RoutesSwitch() {
     <Switch>
       <Route path={globals.routes.editor.path({ extension: `:extension(${supportedExtensions})` })}>
         {({ match }) => (
-          <EditorPage forExtension={match!.params.extension as SupportedFileExtensions} forWorkspace={false} />
+          <Redirect to={globals.routes.sketchWithEmptyFile.path({ extension: match!.params.extension! })} />
         )}
       </Route>
       <Route
@@ -121,11 +121,11 @@ function RoutesSwitch() {
           />
         )}
       </Route>
-      <Route exact={true} path={"/home-new"}>
-        <NewHomePage />
+      <Route exact={true} path={"/home-old"}>
+        <HomePage />
       </Route>
       <Route exact={true} path={globals.routes.home.path({})}>
-        <HomePage />
+        <NewHomePage />
       </Route>
       <Route exact={true} path={globals.routes.download.path({})}>
         <HomePage />

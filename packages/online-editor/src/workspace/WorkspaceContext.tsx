@@ -42,10 +42,11 @@ export interface WorkspaceContextType {
   openWorkspaceByPath: (path: string) => Promise<File>;
   openWorkspaceByFile: (file: File) => Promise<void>;
   openWorkspaceFile: (context: string, relativeFilePath: string) => Promise<File>;
-
+  openWorkspaceById: (context: string) => Promise<void>;
   onFileChanged: (file: File) => void;
-  onFileNameChanged: (newFileName: string) => Promise<void>;
+  onFileNameChanged: (newFileName: string) => Promise<File>;
   goToFileInNewWindow: (file: File) => Promise<void>;
+  goToFile: (descriptor: WorkspaceDescriptor, file: File, replaceArgs: { replace: boolean }) => Promise<void>;
 
   createWorkspaceFromLocal: (
     files: File[],

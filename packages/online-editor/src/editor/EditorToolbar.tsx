@@ -75,7 +75,6 @@ export function EditorToolbar(props: Props) {
   const queryParams = useQueryParams();
   const [fileName, setFileName] = useState(props.currentFile.fileName);
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
-  const [isViewKebabOpen, setViewKebabOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
   const [isEmbedModalOpen, setEmbedModalOpen] = useState(false);
   const { i18n } = useOnlineI18n();
@@ -192,25 +191,6 @@ export function EditorToolbar(props: Props) {
       }
     },
     [props, fileName, cancelNewName]
-  );
-
-  const viewItems = useCallback(
-    (dropdownId: string) => [
-      <React.Fragment key={`dropdown-${dropdownId}-close`}>
-        {!globals.externalFile && (
-          <DropdownItem
-            component={"button"}
-            onClick={props.onClose}
-            aria-label={"Close"}
-            data-testid={"close-editor-button"}
-            ouiaId="close-editor-button"
-          >
-            {i18n.editorToolbar.closeAndReturnHome}
-          </DropdownItem>
-        )}
-      </React.Fragment>,
-    ],
-    [i18n, globals, props]
   );
 
   const includeDownloadSVGDropdownItem = useMemo(() => {
@@ -480,7 +460,7 @@ export function EditorToolbar(props: Props) {
     }
 
     return [
-      workspaces.active?.kind === WorkspaceKind.GITHUB_REPOSITORY ? (
+      workspaces.active?.descriptor.origin.kind === WorkspaceKind.GITHUB_REPOSITORY ? (
         <DropdownGroup key={"github-group"} label="GitHub">
           <DropdownItem
             onClick={workspaces.syncWorkspace}
@@ -685,36 +665,6 @@ export function EditorToolbar(props: Props) {
               </PageHeaderToolsItem>
               <PageHeaderToolsItem
                 visibility={{
-                  default: "hidden",
-                  "2xl": "visible",
-                  xl: "visible",
-                  lg: "hidden",
-                  md: "hidden",
-                  sm: "hidden",
-                }}
-              >
-                <Dropdown
-                  onSelect={() => setViewKebabOpen(false)}
-                  toggle={
-                    <DropdownToggle
-                      data-testid={"view-kebab"}
-                      className={"kogito--editor__toolbar-icon-button"}
-                      id={"view-id-lg"}
-                      toggleIndicator={null}
-                      onToggle={(isOpen) => setViewKebabOpen(isOpen)}
-                      ouiaId="toolbar-button"
-                    >
-                      <EllipsisVIcon />
-                    </DropdownToggle>
-                  }
-                  isOpen={isViewKebabOpen}
-                  isPlain={true}
-                  dropdownItems={viewItems("lg")}
-                  position={DropdownPosition.right}
-                />
-              </PageHeaderToolsItem>
-              <PageHeaderToolsItem
-                visibility={{
                   default: "visible",
                   "2xl": "hidden",
                   xl: "hidden",
@@ -740,7 +690,6 @@ export function EditorToolbar(props: Props) {
                   isOpen={isKebabOpen}
                   isPlain={true}
                   dropdownItems={[
-                    ...viewItems("sm"),
                     <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
                       {...shareItems("sm")}
                     </DropdownGroup>,

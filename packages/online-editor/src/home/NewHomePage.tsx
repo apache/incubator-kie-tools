@@ -1,9 +1,8 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
-import { Page, PageHeader, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { useEffect, useState } from "react";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { useGlobals } from "../common/GlobalContext";
 import { useOnlineI18n } from "../common/i18n";
 import { useHistory } from "react-router";
@@ -29,6 +28,7 @@ import { useWorkspaces } from "../workspace/WorkspaceContext";
 import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
 import { QueryParams } from "../common/Routes";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
+import { OnlineEditorPage } from "./pageTemplate/OnlineEditorPage";
 
 export function NewHomePage() {
   const globals = useGlobals();
@@ -43,31 +43,7 @@ export function NewHomePage() {
   }, [workspaces]);
 
   return (
-    <Page
-      className="kogito--editor-landing"
-      header={
-        <PageHeader
-          logo={<Brand src={globals.routes.static.images.homeLogo.path({})} alt="Logo" />}
-          logoProps={{ onClick: () => history.push({ pathname: globals.routes.home.path({}) }) }}
-        />
-      }
-    >
-      <PageSection variant="dark" className="kogito--editor-landing__title-section">
-        <TextContent>
-          <Title size="3xl" headingLevel="h1">
-            {i18n.homePage.header.title}
-          </Title>
-          <Text>{i18n.homePage.header.welcomeText}</Text>
-          <Text component={TextVariants.small} className="pf-u-text-align-right">
-            {`${i18n.terms.poweredBy} `}
-            <Brand
-              src={globals.routes.static.images.kogitoLogoWhite.path({})}
-              alt="Kogito Logo"
-              style={{ height: "1em", verticalAlign: "text-bottom" }}
-            />
-          </Text>
-        </TextContent>
-      </PageSection>
+    <OnlineEditorPage>
       <Gallery maxWidths={{ default: "100%", lg: "50%", md: "100%" }}>
         <GalleryItem>
           <PageSection isFilled={true} style={{ height: "100%" }}>
@@ -379,7 +355,7 @@ export function NewHomePage() {
         </GalleryItem>
       </Gallery>
       <div className={"kogito-tooling--build-info"}>{process.env["WEBPACK_REPLACE__buildInfo"]}</div>
-    </Page>
+    </OnlineEditorPage>
   );
 }
 

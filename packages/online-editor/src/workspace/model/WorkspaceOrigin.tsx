@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-// TODO CAPONETTO: Improve this whole part
-
 export enum WorkspaceKind {
   GITHUB_REPOSITORY = "GITHUB_REPOSITORY",
   LOCAL = "LOCAL",
@@ -23,18 +21,12 @@ export enum WorkspaceKind {
 
 export type WorkspaceOrigin = LocalOrigin | GitHubRepositoryOrigin;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface LocalOrigin {}
-
-export interface GitHubRepositoryOrigin {
-  url: URL;
-  branch: string;
+export interface LocalOrigin {
+  kind: WorkspaceKind.LOCAL;
 }
 
-export function resolveKind(origin: WorkspaceOrigin): WorkspaceKind {
-  if ((origin as GitHubRepositoryOrigin).url) {
-    return WorkspaceKind.GITHUB_REPOSITORY;
-  }
-
-  return WorkspaceKind.LOCAL;
+export interface GitHubRepositoryOrigin {
+  kind: WorkspaceKind.GITHUB_REPOSITORY;
+  url: URL;
+  branch: string;
 }

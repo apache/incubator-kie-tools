@@ -24,12 +24,12 @@ import { LocalFileHandler } from "./handler/LocalFileHandler";
 import { ActiveWorkspace } from "./model/ActiveWorkspace";
 import { AddFileEvent, ChannelKind, MoveFileEvent, UpdateFileEvent } from "./model/Event";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
-import { GitHubRepositoryOrigin, LocalOrigin, resolveKind, WorkspaceKind } from "./model/WorkspaceOrigin";
+import { GitHubRepositoryOrigin, WorkspaceKind } from "./model/WorkspaceOrigin";
 import { BroadcastService } from "./services/BroadcastService";
 import { GitService } from "./services/GitService";
 import { StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
-import { SUPPORTED_FILES, SUPPORTED_FILES_EDITABLE_PATTERN, SUPPORTED_FILES_PATTERN } from "./SupportedFiles";
+import { SUPPORTED_FILES, SUPPORTED_FILES_EDITABLE_PATTERN } from "./SupportedFiles";
 import { WorkspaceContext } from "./WorkspaceContext";
 import { useSettings } from "../settings/SettingsContext";
 import { useHistory } from "react-router";
@@ -82,11 +82,11 @@ export function WorkspaceContextProvider(props: Props) {
   );
 
   const goToFile = useCallback(
-    (descriptor: WorkspaceDescriptor, file: File) => {
+    async (descriptor: WorkspaceDescriptor, file: File, replaceArgs = { replace: false }) => {
       if (!file.path) {
         throw new Error("File path is not defined");
       }
-      history.push({
+      (replaceArgs?.replace ? history.replace : history.push)({
         pathname: globals.routes.workspaceWithFilePath.path({
           workspaceId: descriptor.context,
           filePath: removeFileExtension(storageService.asRelativePath(`/${descriptor.context}`, file)),
@@ -201,7 +201,7 @@ export function WorkspaceContextProvider(props: Props) {
     async (descriptor: WorkspaceDescriptor, fileHandler: FileHandler, replaceUrl: boolean) => {
       const files = await workspaceService.create(descriptor, fileHandler, true);
 
-      setActive({ descriptor: descriptor, files: files, kind: resolveKind(descriptor.origin) });
+      setActive({ descriptor: descriptor, files: files });
 
       if (files.length > 0) {
         const firstFile = files.sort((a: File, b: File) => a.path!.localeCompare(b.path!))[0];
@@ -220,7 +220,7 @@ export function WorkspaceContextProvider(props: Props) {
       const descriptor: WorkspaceDescriptor = {
         context: await workspaceService.newContext(),
         name: await workspaceService.newName(preferredName),
-        origin: {} as LocalOrigin,
+        origin: { kind: WorkspaceKind.LOCAL },
         createdIn: new Date().toString(),
       };
 
@@ -241,7 +241,7 @@ export function WorkspaceContextProvider(props: Props) {
       const descriptor: WorkspaceDescriptor = {
         context: await workspaceService.newContext(),
         name: await workspaceService.newName(preferredName),
-        origin: { url: repositoryUrl, branch: sourceBranch } as GitHubRepositoryOrigin,
+        origin: { url: repositoryUrl, branch: sourceBranch, kind: WorkspaceKind.GITHUB_REPOSITORY },
         createdIn: new Date().toString(),
       };
 
@@ -265,7 +265,15 @@ export function WorkspaceContextProvider(props: Props) {
       const files = await workspaceService.listFiles(descriptor, SUPPORTED_FILES_EDITABLE_PATTERN);
 
       setFile(file);
-      setActive({ descriptor: descriptor, files: files, kind: resolveKind(descriptor.origin) });
+      setActive({ descriptor: descriptor, files: files });
+    },
+    [workspaceService]
+  );
+
+  const openWorkspaceById = useCallback(
+    async (id: string) => {
+      const descriptor = (await workspaceService.get(id))!;
+      setActive({ descriptor, files: [] });
     },
     [workspaceService]
   );
@@ -315,10 +323,9 @@ export function WorkspaceContextProvider(props: Props) {
       const updatedFiles = [...active.files];
       updatedFiles[fileIndex] = renamedFile;
       setActive({ ...active, files: updatedFiles });
-
-      goToFile(active.descriptor, renamedFile);
+      return renamedFile;
     },
-    [file, active, storageService, goToFile]
+    [file, active, storageService]
   );
 
   const updateCurrentFile = useCallback(
@@ -361,7 +368,7 @@ export function WorkspaceContextProvider(props: Props) {
       throw new Error("No active workspace");
     }
 
-    if (active.kind === WorkspaceKind.GITHUB_REPOSITORY) {
+    if (active.descriptor.origin.kind === WorkspaceKind.GITHUB_REPOSITORY) {
       const origin = active.descriptor.origin as GitHubRepositoryOrigin;
       const fileHandler = new GitRepositoryFileHandler({
         authInfo: authInfo,
@@ -440,8 +447,10 @@ export function WorkspaceContextProvider(props: Props) {
         openWorkspaceByPath,
         openWorkspaceByFile,
         openWorkspaceFile,
+        openWorkspaceById,
         onFileChanged,
         onFileNameChanged,
+        goToFile,
         goToFileInNewWindow,
         createWorkspaceFromLocal,
         createWorkspaceFromGitHubRepository,
