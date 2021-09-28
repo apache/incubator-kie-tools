@@ -28,6 +28,7 @@ import { NoMatchPage } from "./NoMatchPage";
 import { KieToolingExtendedServicesContextProvider } from "./editor/KieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { WorkspaceContextProvider } from "./workspace/WorkspaceContextProvider";
+import { NewHomePage } from "./home/NewHomePage";
 
 export function App(props: { externalFile?: File; senderTabId?: string }) {
   return (
@@ -56,6 +57,9 @@ function RoutesSwitch() {
     <Switch>
       <Route path={globals.routes.editor.path({ extension: `:extension(${supportedExtensions})` })}>
         {({ match }) => <EditorPage forExtension={match!.params.extension as SupportedFileExtensions} />}
+      </Route>
+      <Route exact={true} path={"/home-new"}>
+        <NewHomePage />
       </Route>
       <Route exact={true} path={globals.routes.home.path({})}>
         <HomePage />
