@@ -114,20 +114,23 @@ export function HomePage() {
         return;
       }
 
-      workspaces.createWorkspaceFromLocal([
-        {
-          path: fileName,
-          isReadOnly: false,
-          fileExtension,
-          fileName: removeFileExtension(fileName),
-          getFileContents: () =>
-            new Promise<string | undefined>((resolve) => {
-              const reader = new FileReader();
-              reader.onload = (event: any) => resolve(event.target.result as string);
-              reader.readAsText(file);
-            }),
-        },
-      ]);
+      workspaces.createWorkspaceFromLocal(
+        [
+          {
+            path: fileName,
+            isReadOnly: false,
+            fileExtension,
+            fileName: removeFileExtension(fileName),
+            getFileContents: () =>
+              new Promise<string | undefined>((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (event: any) => resolve(event.target.result as string);
+                reader.readAsText(file);
+              }),
+          },
+        ],
+        false
+      );
     },
     [globals, workspaces]
   );
@@ -135,15 +138,15 @@ export function HomePage() {
   const onDropRejected = useCallback(() => setIsUploadRejected(true), []);
 
   const createEmptyBpmnFile = useCallback(() => {
-    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_BPMN, kind: "local" }]);
+    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_BPMN, kind: "local" }], false);
   }, [workspaces]);
 
   const createEmptyDmnFile = useCallback(() => {
-    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_DMN, kind: "local" }]);
+    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_DMN, kind: "local" }], false);
   }, [workspaces]);
 
   const createEmptyPmmlFile = useCallback(() => {
-    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_PMML, kind: "local" }]);
+    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_PMML, kind: "local" }], false);
   }, [workspaces]);
 
   const trySample = useCallback(
@@ -151,7 +154,7 @@ export function HomePage() {
       const filePath = globals.routes.static.sample.path({ type: fileExtension });
       history.push({
         pathname: globals.routes.editor.path({ extension: fileExtension }),
-        search: globals.routes.editor.queryArgs(queryParams).with(QueryParams.FILE, filePath).toString(),
+        search: globals.routes.editor.queryArgs(queryParams).with(QueryParams.URL, filePath).toString(),
       });
     },
     [globals, history, queryParams]
@@ -317,7 +320,7 @@ export function HomePage() {
       const fileExtension = extractFileExtension(new URL(filePath).pathname);
       history.push({
         pathname: globals.routes.editor.path({ extension: fileExtension! }),
-        search: globals.routes.editor.queryArgs(queryParams).with(QueryParams.FILE, filePath).toString(),
+        search: globals.routes.editor.queryArgs(queryParams).with(QueryParams.URL, filePath).toString(),
       });
     }
   }, [queryParams, globals.routes, history, inputFileUrlState, urlCanBeOpen]);
@@ -463,7 +466,7 @@ export function HomePage() {
       // TODO CAPONETTO: URL might be invalid; fix UX stuff when it is better defined
       await workspaces.createWorkspaceFromGitHubRepository(new URL(githubRepositoryUrl), "main");
     } else if (filesToUpload.length > 0) {
-      await workspaces.createWorkspaceFromLocal(filesToUpload);
+      await workspaces.createWorkspaceFromLocal(filesToUpload, false);
     } else {
       throw new Error("No project to open here");
     }

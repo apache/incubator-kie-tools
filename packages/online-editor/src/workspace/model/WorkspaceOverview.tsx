@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { WorkspaceOrigin } from "./WorkspaceOrigin";
-
-export interface WorkspaceDescriptor {
+export interface WorkspaceOverview {
   context: string;
   name: string;
-  origin: WorkspaceOrigin;
-  createdIn: string;
+  createdIn: Date;
+  lastUpdatedIn: Date;
+  filesCount: number;
+  modelsCount: number;
 }

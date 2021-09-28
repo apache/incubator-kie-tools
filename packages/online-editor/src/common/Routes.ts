@@ -20,9 +20,14 @@ export enum QueryParams {
   SETTINGS = "settings",
   READONLY = "readonly",
   EXT = "ext",
-  FILE = "file",
-  PATH = "path",
+  URL = "url",
   DMN_RUNNER_FORM_INPUTS = "formInputs",
+}
+
+export enum PathParams {
+  EXTENSION = "extension",
+  WORKSPACE_ID = "workspaceId",
+  FILE_PATH = "filePath",
 }
 
 export class Route<
@@ -110,14 +115,33 @@ export const routes = {
   }>(() => `/`),
 
   editor: new Route<{
-    pathParams: "extension";
-    queryParams:
-      | QueryParams.READONLY
-      | QueryParams.FILE
-      | QueryParams.PATH
-      | QueryParams.SETTINGS
-      | QueryParams.DMN_RUNNER_FORM_INPUTS;
+    pathParams: PathParams.EXTENSION;
+    queryParams: QueryParams.READONLY | QueryParams.URL | QueryParams.SETTINGS | QueryParams.DMN_RUNNER_FORM_INPUTS;
   }>(({ extension }) => `/editor/${extension}`),
+
+  sketchWithEmptyFile: new Route<{
+    pathParams: PathParams.EXTENSION;
+  }>(({ extension }) => `/sketch/${extension}`),
+
+  sketchWithUrl: new Route<{
+    queryParams: QueryParams.URL;
+  }>(() => `/sketch`),
+
+  newWorkspaceWithEmptyFile: new Route<{
+    pathParams: PathParams.EXTENSION;
+  }>(({ extension }) => `/workspace/new/${extension}`),
+
+  newWorkspaceWithUrl: new Route<{
+    queryParams: QueryParams.URL;
+  }>(() => `/workspace/new`),
+
+  workspaceOverview: new Route<{
+    pathParams: PathParams.WORKSPACE_ID;
+  }>(({ workspaceId }) => `/workspace/${workspaceId}/overview`),
+
+  workspaceWithFilePath: new Route<{
+    pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_PATH | PathParams.EXTENSION;
+  }>(({ workspaceId, filePath, extension }) => `/workspace/${workspaceId}/file/${filePath}.${extension}`),
 
   static: {
     sample: new Route<{ pathParams: "type" }>(({ type }) => `samples/sample.${type}`),

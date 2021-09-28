@@ -24,7 +24,7 @@ import { BroadcastService } from "./BroadcastService";
 import { StorageService } from "./StorageService";
 
 export class WorkspaceService {
-  private readonly WORKSPACE_CONTEXT_PREFIX = "workspace-";
+  private readonly WORKSPACE_CONTEXT_PREFIX = "w";
   private readonly WORKSPACE_CONFIG: Pick<File, "fileName" | "fileExtension" | "path"> = {
     fileName: "workspaces",
     fileExtension: "json",
@@ -75,15 +75,9 @@ export class WorkspaceService {
     return descriptor;
   }
 
-  public async get(context: string): Promise<WorkspaceDescriptor> {
+  public async get(context: string): Promise<WorkspaceDescriptor | undefined> {
     const descriptors = await this.list();
-    const descriptor = descriptors.find((descriptor: WorkspaceDescriptor) => descriptor.context === context);
-
-    if (!descriptor) {
-      throw new Error(`Workspace ${context} not found`);
-    }
-
-    return descriptor;
+    return descriptors.find((descriptor: WorkspaceDescriptor) => descriptor.context === context);
   }
 
   public async list(): Promise<WorkspaceDescriptor[]> {
@@ -102,7 +96,7 @@ export class WorkspaceService {
     return JSON.parse(fileContent) as WorkspaceDescriptor[];
   }
 
-  public async create(descriptor: WorkspaceDescriptor, fileProvider: FileHandler, broadcast: boolean): Promise<File[]> {
+  public async create(descriptor: WorkspaceDescriptor, fileHandler: FileHandler, broadcast: boolean): Promise<File[]> {
     const descriptors = await this.list();
     descriptors.push(descriptor);
 
@@ -110,7 +104,7 @@ export class WorkspaceService {
     await this.storageService.updateFile(file, false);
     await this.storageService.createFolderStructure(`/${descriptor.context}/`);
 
-    const createdFiles = await fileProvider.store(descriptor);
+    const createdFiles = await fileHandler.store(descriptor);
     const supportedFiles = createdFiles.filter((file: File) => SUPPORTED_FILES_EDITABLE.includes(file.fileExtension));
 
     if (broadcast) {

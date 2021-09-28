@@ -113,7 +113,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
             globals.routes.editor.url({
               base: process.env.WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl,
               pathParams: { extension: "dmn" },
-              queryParams: { file: `${baseUrl}/${filename}`, readonly: `${true}` },
+              queryParams: { url: `${baseUrl}/${filename}`, readonly: `${true}` },
             }),
         });
         deployStartedSuccessAlert.show();

@@ -24,27 +24,39 @@ import {
 import * as React from "react";
 import { createContext, useContext } from "react";
 import { ActiveWorkspace } from "./model/ActiveWorkspace";
+import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
+import { WorkspaceOverview } from "./model/WorkspaceOverview";
+import { WorkspaceService } from "./services/WorkspaceService";
 
+// TODO CAPONETTO: review and refactor this context
 export interface WorkspaceContextType {
   file?: File;
   active?: ActiveWorkspace;
   setActive: React.Dispatch<React.SetStateAction<ActiveWorkspace> | undefined>;
 
+  workspaceService: WorkspaceService;
+
   resourceContentGet: (path: string, opts?: ResourceContentOptions) => Promise<ResourceContent | undefined>;
   resourceContentList: (globPattern: string, opts?: ResourceListOptions) => Promise<ResourcesList>;
 
-  openWorkspaceByPath: (path: string) => Promise<void>;
+  openWorkspaceByPath: (path: string) => Promise<File>;
   openWorkspaceByFile: (file: File) => Promise<void>;
+  openWorkspaceFile: (context: string, relativeFilePath: string) => Promise<File>;
 
   onFileChanged: (file: File) => void;
   onFileNameChanged: (newFileName: string) => Promise<void>;
+  goToFileInNewWindow: (file: File) => Promise<void>;
 
-  createWorkspaceFromLocal: (files: File[], preferredName?: string) => Promise<void>;
+  createWorkspaceFromLocal: (
+    files: File[],
+    replaceUrl: boolean,
+    preferredName?: string
+  ) => Promise<WorkspaceDescriptor>;
   createWorkspaceFromGitHubRepository: (
     repositoryUrl: URL,
     sourceBranch: string,
     preferredName?: string
-  ) => Promise<void>;
+  ) => Promise<WorkspaceDescriptor>;
 
   addEmptyFile: (fileExtension: string) => Promise<void>;
   updateCurrentFile: (getFileContents: () => Promise<string | undefined>) => Promise<void>;
@@ -52,6 +64,8 @@ export interface WorkspaceContextType {
   prepareZip: () => Promise<Blob>;
 
   syncWorkspace: () => Promise<void>;
+
+  listWorkspaceOverviews: () => Promise<WorkspaceOverview[]>;
 }
 
 export const WorkspaceContext = createContext<WorkspaceContextType>({} as any);

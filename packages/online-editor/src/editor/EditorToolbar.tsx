@@ -169,8 +169,8 @@ export function EditorToolbar(props: Props) {
     )
   );
 
-  const queryParamFile = useMemo(() => {
-    return queryParams.get(QueryParams.FILE);
+  const queryParamUrl = useMemo(() => {
+    return queryParams.get(QueryParams.URL);
   }, [queryParams]);
 
   const cancelNewName = useCallback(() => {
@@ -262,8 +262,8 @@ export function EditorToolbar(props: Props) {
       const content = await props.editor.getContent();
 
       // update gist
-      if (queryParamFile && settings.github.service.isGist(queryParamFile)) {
-        const userLogin = settings.github.service.extractUserLoginFromFileUrl(queryParamFile);
+      if (queryParamUrl && settings.github.service.isGist(queryParamUrl)) {
+        const userLogin = settings.github.service.extractUserLoginFromFileUrl(queryParamUrl);
         if (userLogin === settings.github.user) {
           try {
             const filename = `${props.currentFile.fileName}.${props.currentFile.fileExtension}`;
@@ -287,7 +287,7 @@ export function EditorToolbar(props: Props) {
               successUpdateGistAlert.show();
               history.push({
                 pathname: globals.routes.editor.path({ extension: props.currentFile.fileExtension }),
-                search: globals.routes.editor.queryString({ file: response }).toString(),
+                search: globals.routes.editor.queryString({ url: response }).toString(),
               });
               return;
             }
@@ -315,7 +315,7 @@ export function EditorToolbar(props: Props) {
 
         history.push({
           pathname: globals.routes.editor.path({ extension: props.currentFile.fileExtension }),
-          search: globals.routes.editor.queryString({ file: newGistUrl }).toString(),
+          search: globals.routes.editor.queryString({ url: newGistUrl }).toString(),
         });
         return;
       } catch (err) {
@@ -334,7 +334,7 @@ export function EditorToolbar(props: Props) {
     history,
     globals,
     settings,
-    queryParamFile,
+    queryParamUrl,
     queryParams,
     props.editor,
   ]);
@@ -550,14 +550,8 @@ export function EditorToolbar(props: Props) {
                 <ExternalLinkAltIcon
                   className="kogito--editor__workspace-files-dropdown-open"
                   onClick={(e) => {
-                    window.open(
-                      globals.routes.editor.url({
-                        pathParams: { extension: file.fileExtension },
-                        queryParams: { path: file.path },
-                      }),
-                      "_blank"
-                    );
                     e.stopPropagation();
+                    workspaces.goToFileInNewWindow(file);
                   }}
                 />
               }
@@ -668,13 +662,16 @@ export function EditorToolbar(props: Props) {
                     variant={"primary"}
                     className={"kogito--editor__toolbar button"}
                     onClick={() =>
-                      workspaces.createWorkspaceFromLocal([
-                        {
-                          ...props.currentFile,
-                          path: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
-                          kind: "local",
-                        },
-                      ])
+                      workspaces.createWorkspaceFromLocal(
+                        [
+                          {
+                            ...props.currentFile,
+                            path: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
+                            kind: "local",
+                          },
+                        ],
+                        false
+                      )
                     }
                   >
                     Make Workspace

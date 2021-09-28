@@ -48,7 +48,23 @@ import { TextEditorModal } from "./TextEditor/TextEditorModal";
 import { useWorkspaces } from "../workspace/WorkspaceContext";
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tooling-core/workspace/dist/api";
 
-export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
+export interface CommonProps {
+  forExtension: SupportedFileExtensions;
+}
+
+export interface PropsWithSketch extends CommonProps {
+  forWorkspace: false;
+}
+
+export interface PropsWithWorkspace extends CommonProps {
+  forWorkspace: true;
+  workspaceId?: string;
+  filePath?: string;
+}
+
+export type Props = PropsWithSketch | PropsWithWorkspace;
+
+export function EditorPage(props: Props) {
   const globals = useGlobals();
   const settings = useSettings();
   const history = useHistory();
@@ -63,12 +79,8 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
   const [fetchFileError, setFetchFileError] = useState<FetchFileError | undefined>(undefined);
 
-  const queryParamFile = useMemo(() => {
-    return queryParams.get(QueryParams.FILE);
-  }, [queryParams]);
-
-  const queryParamPath = useMemo(() => {
-    return queryParams.get(QueryParams.PATH);
+  const queryParamUrl = useMemo(() => {
+    return queryParams.get(QueryParams.URL);
   }, [queryParams]);
 
   const queryParamReadonly = useMemo(() => {
@@ -89,85 +101,103 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
 
   useDmnTour(!currentFile.isReadOnly && !editor?.isReady && currentFile.fileExtension === "dmn");
 
+  // TODO CAPONETTO: Improve; find a better name
+  const updateCurrentFile = useCallback(
+    async (file: File, createWorkspace: boolean) => {
+      if (createWorkspace) {
+        await workspaces.createWorkspaceFromLocal(
+          [
+            {
+              ...file,
+              path: `${file.fileName}.${file.fileExtension}`,
+              kind: "local",
+            },
+          ],
+          true
+        );
+      }
+
+      setCurrentFile(file);
+    },
+    [workspaces]
+  );
+
   useEffect(() => {
     let canceled = false;
 
     setFetchFileError(undefined);
     alerts?.closeAll();
 
+    if (!props.forWorkspace) {
+      workspaces.setActive(undefined);
+    }
+
     if (globals.externalFile) {
       setCurrentFile({ ...globals.externalFile, kind: "external" });
       return;
     }
 
-    if (queryParamPath) {
-      const pathPathExtension = extractFileExtension(queryParamPath);
-      if (pathPathExtension !== props.forExtension) {
-        setFetchFileError({ reason: FetchFileErrorReason.DIFFERENT_EXTENSION, filePath: queryParamPath });
-        return;
-      }
-
-      if (workspaces.file) {
-        console.info("setting workpsace file: " + workspaces.file.path);
-        setCurrentFile(workspaces.file);
-        return;
-      }
-    }
-
-    if (queryParamFile) {
-      workspaces.setActive(undefined);
-      const filePathExtension = extractFileExtension(queryParamFile);
+    if (queryParamUrl) {
+      const filePathExtension = extractFileExtension(queryParamUrl);
       if (!filePathExtension) {
         return;
       }
       if (filePathExtension !== props.forExtension) {
-        setFetchFileError({ reason: FetchFileErrorReason.DIFFERENT_EXTENSION, filePath: queryParamFile });
+        setFetchFileError({ reason: FetchFileErrorReason.DIFFERENT_EXTENSION, filePath: queryParamUrl });
         return;
       }
-      const extractedFileName = removeFileExtension(removeDirectories(queryParamFile) ?? "unknown");
-      if (settings.github.service.isGist(queryParamFile)) {
+      const extractedFileName = removeFileExtension(removeDirectories(queryParamUrl) ?? "unknown");
+      if (settings.github.service.isGist(queryParamUrl)) {
         settings.github.service
-          .fetchGistFile(settings.github.octokit, queryParamFile)
+          .fetchGistFile(settings.github.octokit, queryParamUrl)
           .then((content) => {
             if (canceled) {
               return;
             }
 
-            setCurrentFile({
-              kind: "gist",
-              isReadOnly: queryParamReadonly,
-              fileExtension: filePathExtension,
-              fileName: extractedFileName,
-              getFileContents: () => Promise.resolve(content),
-            });
+            updateCurrentFile(
+              {
+                kind: "gist",
+                isReadOnly: queryParamReadonly,
+                fileExtension: filePathExtension,
+                fileName: extractedFileName,
+                getFileContents: () => Promise.resolve(content),
+              },
+              props.forWorkspace
+            );
+            return;
           })
           .catch((error) =>
-            setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamFile })
+            setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl })
           );
         return;
       }
-      if (settings.github.service.isGithub(queryParamFile) || settings.github.service.isGithubRaw(queryParamFile)) {
+      if (settings.github.service.isGithub(queryParamUrl) || settings.github.service.isGithubRaw(queryParamUrl)) {
         settings.github.service
-          .fetchGithubFile(settings.github.octokit, queryParamFile)
+          .fetchGithubFile(settings.github.octokit, queryParamUrl)
           .then((response) => {
             if (canceled) {
               return;
             }
 
-            setCurrentFile({
-              kind: "external",
-              isReadOnly: queryParamReadonly,
-              fileExtension: filePathExtension,
-              fileName: extractedFileName,
-              getFileContents: () => Promise.resolve(response),
-            });
+            updateCurrentFile(
+              {
+                kind: "external",
+                isReadOnly: queryParamReadonly,
+                fileExtension: filePathExtension,
+                fileName: extractedFileName,
+                getFileContents: () => Promise.resolve(response),
+              },
+              props.forWorkspace
+            );
+            return;
           })
           .catch((error) => {
-            setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamFile });
+            setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl });
           });
         return;
       }
-      fetch(queryParamFile)
+      fetch(queryParamUrl)
         .then((response) => {
           if (canceled) {
             return;
@@ -177,7 +207,7 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
             setFetchFileError({
               details: `${response.status} - ${response.statusText}`,
               reason: FetchFileErrorReason.CANT_FETCH,
-              filePath: queryParamFile,
+              filePath: queryParamUrl,
             });
             return;
           }
@@ -185,35 +215,50 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
           // do not inline this variable.
           const content = response.text();
 
-          setCurrentFile({
-            kind: "external",
-            isReadOnly: queryParamReadonly,
-            fileExtension: filePathExtension,
-            fileName: extractedFileName,
-            getFileContents: () => content,
-          });
+          updateCurrentFile(
+            {
+              kind: "external",
+              isReadOnly: queryParamReadonly,
+              fileExtension: filePathExtension,
+              fileName: extractedFileName,
+              getFileContents: () => content,
+            },
+            props.forWorkspace
+          );
+          return;
         })
         .catch((error) => {
-          setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamFile });
+          setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl });
         });
+    }
+
+    if (props.forWorkspace) {
+      if (!props.filePath) {
+        updateCurrentFile(currentFile, true);
+        return;
+      }
+
+      if (props.workspaceId) {
+        workspaces.openWorkspaceFile(props.workspaceId, props.filePath).then((file: File) => {
+          if (canceled) {
+            return;
+          }
+          setCurrentFile(file);
+        });
+        return;
+      }
     }
 
     return () => {
       canceled = true;
     };
   }, [
-    alerts,
-    workspaces.file,
-    props.forExtension,
     globals.externalFile,
-    globals.uploadedFile,
-    queryParamFile,
-    queryParamPath,
+    props,
+    queryParamUrl,
     queryParamReadonly,
     settings.github.octokit,
     settings.github.service,
-    globals.routes.editor,
-    history,
   ]);
 
   const setContentErrorAlert = useAlert(
@@ -240,11 +285,11 @@ export function EditorPage(props: { forExtension: SupportedFileExtensions }) {
 
   useEffect(() => {
     if (isDirty) {
-      console.info("Autosaving...");
       if (!editor?.isReady || !workspaces.active) {
         return;
       }
 
+      console.info("Autosaving...");
       editor.getStateControl().setSavedCommand();
       alerts?.closeAll();
 

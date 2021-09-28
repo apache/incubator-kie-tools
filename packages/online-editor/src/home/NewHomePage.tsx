@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Page, PageHeader, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
@@ -24,20 +24,23 @@ import { Gallery, GalleryItem } from "@patternfly/react-core/dist/js/layouts/Gal
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
-
-type WorkspaceMock = { name: string; createdIn: Date; lastUpdatedIn: Date; filesCount: number; modelsCount: number };
+import { WorkspaceOverview } from "../workspace/model/WorkspaceOverview";
+import { useWorkspaces } from "../workspace/WorkspaceContext";
+import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
+import { QueryParams } from "../common/Routes";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
 
 export function NewHomePage() {
   const globals = useGlobals();
   const { i18n } = useOnlineI18n();
   const history = useHistory();
+  const workspaces = useWorkspaces();
+  const queryParams = useQueryParams();
+  const [workspaceOverviews, setWorkspaceOverviews] = useState<WorkspaceOverview[]>([]);
 
-  // TODO
-  // get workspaces from `useWorkspaces` hook and delete this state.
-  const [workspaces, setWorkspaces] = useState<Array<WorkspaceMock>>([
-    { name: "Workspace 1", createdIn: new Date(), lastUpdatedIn: new Date(), filesCount: 12, modelsCount: 3 },
-    { name: "Workspace 2", createdIn: new Date(), lastUpdatedIn: new Date(), filesCount: 124, modelsCount: 45 },
-  ]);
+  useEffect(() => {
+    workspaces.listWorkspaceOverviews().then((workspaces: WorkspaceOverview[]) => setWorkspaceOverviews(workspaces));
+  }, [workspaces]);
 
   return (
     <Page
@@ -83,9 +86,11 @@ export function NewHomePage() {
                             isLarge
                             variant={ButtonVariant.secondary}
                             onClick={() => {
-                              // TODO
-                              // create workspace with empty BPMN file
-                              // navigate to #/workspaces/[name]/file/new-file.bpmn
+                              history.push({
+                                pathname: globals.routes.newWorkspaceWithEmptyFile.path({
+                                  extension: "bpmn",
+                                }),
+                              });
                             }}
                           >
                             BPMN
@@ -96,9 +101,11 @@ export function NewHomePage() {
                             isLarge
                             variant={ButtonVariant.secondary}
                             onClick={() => {
-                              // TODO
-                              // create workspace with empty DMN file
-                              // navigate to #/workspaces/[name]/file/new-file.dmn
+                              history.push({
+                                pathname: globals.routes.newWorkspaceWithEmptyFile.path({
+                                  extension: "dmn",
+                                }),
+                              });
                             }}
                           >
                             DMN
@@ -109,9 +116,11 @@ export function NewHomePage() {
                             isLarge
                             variant={ButtonVariant.secondary}
                             onClick={() => {
-                              // TODO
-                              // create workspace with empty PMML file
-                              // navigate to #/workspaces/[name]/file/new-file.pmml
+                              history.push({
+                                pathname: globals.routes.newWorkspaceWithEmptyFile.path({
+                                  extension: "pmml",
+                                }),
+                              });
                             }}
                           >
                             PMML
@@ -123,9 +132,13 @@ export function NewHomePage() {
                           <Button
                             variant="link"
                             onClick={() => {
-                              // TODO
-                              // create workspace without files
-                              // navigate to #/workspaces/[name]/overview
+                              workspaces.createWorkspaceFromLocal([], false).then((descriptor: WorkspaceDescriptor) => {
+                                history.push({
+                                  pathname: globals.routes.workspaceOverview.path({
+                                    workspaceId: descriptor.context,
+                                  }),
+                                });
+                              });
                             }}
                           >
                             Create empty Workspace
@@ -225,8 +238,13 @@ export function NewHomePage() {
                           isLarge
                           variant={ButtonVariant.tertiary}
                           onClick={() => {
-                            // TODO
-                            // navigate to #/sketch?file=sample/sample.bpmn
+                            history.push({
+                              pathname: globals.routes.sketchWithUrl.path({ extension: "bpmn" }),
+                              search: globals.routes.editor
+                                .queryArgs(queryParams)
+                                .with(QueryParams.URL, globals.routes.static.sample.path({ type: "bpmn" }))
+                                .toString(),
+                            });
                           }}
                         >
                           BPMN
@@ -237,8 +255,13 @@ export function NewHomePage() {
                           isLarge
                           variant={ButtonVariant.tertiary}
                           onClick={() => {
-                            // TODO
-                            // navigate to #/sketch?file=sample/sample.dmn
+                            history.push({
+                              pathname: globals.routes.sketchWithUrl.path({ extension: "dmn" }),
+                              search: globals.routes.editor
+                                .queryArgs(queryParams)
+                                .with(QueryParams.URL, globals.routes.static.sample.path({ type: "dmn" }))
+                                .toString(),
+                            });
                           }}
                         >
                           DMN
@@ -249,8 +272,13 @@ export function NewHomePage() {
                           isLarge
                           variant={ButtonVariant.tertiary}
                           onClick={() => {
-                            // TODO
-                            // navigate to #/sketch?file=sample/sample.pmml
+                            history.push({
+                              pathname: globals.routes.sketchWithUrl.path({ extension: "pmml" }),
+                              search: globals.routes.editor
+                                .queryArgs(queryParams)
+                                .with(QueryParams.URL, globals.routes.static.sample.path({ type: "pmml" }))
+                                .toString(),
+                            });
                           }}
                         >
                           PMML
@@ -273,8 +301,11 @@ export function NewHomePage() {
                           isLarge
                           variant={ButtonVariant.tertiary}
                           onClick={() => {
-                            // TODO
-                            // navigate to #/sketch/bpmn
+                            history.push({
+                              pathname: globals.routes.sketchWithEmptyFile.path({
+                                extension: "bpmn",
+                              }),
+                            });
                           }}
                         >
                           BPMN
@@ -285,8 +316,11 @@ export function NewHomePage() {
                           isLarge
                           variant={ButtonVariant.tertiary}
                           onClick={() => {
-                            // TODO
-                            // navigate to #/sketch/dmn
+                            history.push({
+                              pathname: globals.routes.sketchWithEmptyFile.path({
+                                extension: "dmn",
+                              }),
+                            });
                           }}
                         >
                           DMN
@@ -297,8 +331,11 @@ export function NewHomePage() {
                           isLarge
                           variant={ButtonVariant.tertiary}
                           onClick={() => {
-                            // TODO
-                            // navigate to #/sketch/pmml
+                            history.push({
+                              pathname: globals.routes.sketchWithEmptyFile.path({
+                                extension: "pmml",
+                              }),
+                            });
                           }}
                         >
                           PMML
@@ -318,16 +355,16 @@ export function NewHomePage() {
               <TextContent>
                 <Text component={TextVariants.h1}>Workspaces</Text>
                 <br />
-                {workspaces.length > 0 && (
+                {workspaceOverviews.length > 0 && (
                   <Stack hasGutter={true}>
-                    {workspaces.map((workspace) => (
+                    {workspaceOverviews.map((workspace: WorkspaceOverview) => (
                       <StackItem key={workspace.name}>
                         <WorkspaceCard workspace={workspace} />
                       </StackItem>
                     ))}
                   </Stack>
                 )}
-                {workspaces.length === 0 && (
+                {workspaceOverviews.length === 0 && (
                   <EmptyState>
                     <EmptyStateIcon icon={CubesIcon} />
                     <Title headingLevel="h4" size="lg">
@@ -346,7 +383,9 @@ export function NewHomePage() {
   );
 }
 
-function WorkspaceCard(props: { workspace: WorkspaceMock }) {
+function WorkspaceCard(props: { workspace: WorkspaceOverview }) {
+  const globals = useGlobals();
+  const history = useHistory();
   const [isHovered, setHovered] = useState(false);
   return (
     <Card
@@ -356,8 +395,11 @@ function WorkspaceCard(props: { workspace: WorkspaceMock }) {
       isCompact={true}
       style={{ cursor: "pointer" }}
       onClick={() => {
-        // TODO
-        // navigate to #/workspace/${workspace.name}/overview
+        history.push({
+          pathname: globals.routes.workspaceOverview.path({
+            workspaceId: props.workspace.context,
+          }),
+        });
       }}
     >
       <CardHeader>

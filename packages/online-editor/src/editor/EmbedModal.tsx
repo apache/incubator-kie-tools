@@ -77,7 +77,7 @@ export function EmbedModal(props: Props) {
   }, [props.editor, props.isOpen]);
 
   const isGist = useMemo(
-    () => settings.github.service.isGist(queryParams.get(QueryParams.FILE) ?? ""),
+    () => settings.github.service.isGist(queryParams.get(QueryParams.URL) ?? ""),
     [queryParams, settings.github.service]
   );
 
@@ -93,7 +93,7 @@ export function EmbedModal(props: Props) {
     (libraryName: string) => {
       return `
     <script>
-      fetch("${queryParams.get(QueryParams.FILE)}")
+      fetch("${queryParams.get(QueryParams.URL)}")
         .then(response => response.text())
         .then(content => ${libraryName}.open({container: document.body, readOnly: true, initialContent: content, origin: "*" }))
     </script>`;
