@@ -11,6 +11,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import {
   Card,
+  CardActions,
   CardBody,
   CardFooter,
   CardHeader,
@@ -22,6 +23,9 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Gallery, GalleryItem } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
+
+type WorkspaceMock = { name: string; createdIn: Date; lastUpdatedIn: Date; filesCount: number; modelsCount: number };
 
 export function NewHomePage() {
   const globals = useGlobals();
@@ -30,9 +34,7 @@ export function NewHomePage() {
 
   // TODO
   // get workspaces from `useWorkspaces` hook and delete this state.
-  const [workspaces, setWorkspaces] = useState<
-    Array<{ name: string; createdIn: Date; lastUpdatedIn: Date; filesCount: number; modelsCount: number }>
-  >([
+  const [workspaces, setWorkspaces] = useState<Array<WorkspaceMock>>([
     { name: "Workspace 1", createdIn: new Date(), lastUpdatedIn: new Date(), filesCount: 12, modelsCount: 3 },
     { name: "Workspace 2", createdIn: new Date(), lastUpdatedIn: new Date(), filesCount: 124, modelsCount: 45 },
   ]);
@@ -320,32 +322,7 @@ export function NewHomePage() {
                   <Stack hasGutter={true}>
                     {workspaces.map((workspace) => (
                       <StackItem key={workspace.name}>
-                        <Card
-                          isHoverable={true}
-                          isCompact={true}
-                          style={{ cursor: "pointer" }}
-                          onClick={() => {
-                            // TODO
-                            // navigate to #/workspace/${workspace.name}/overview
-                          }}
-                        >
-                          <CardHeader>
-                            <CardHeaderMain>
-                              <CardTitle>{workspace.name}</CardTitle>
-                            </CardHeaderMain>
-                          </CardHeader>
-
-                          <CardBody>
-                            <TextContent>
-                              <Text component={TextVariants.p}>
-                                {`Created at: ${workspace.createdIn.toLocaleString()}, Last updated at: ${workspace.lastUpdatedIn.toLocaleString()}`}
-                              </Text>
-                              <Text component={TextVariants.p}>
-                                {`${workspace.filesCount} files, ${workspace.modelsCount} models`}
-                              </Text>
-                            </TextContent>
-                          </CardBody>
-                        </Card>
+                        <WorkspaceCard workspace={workspace} />
                       </StackItem>
                     ))}
                   </Stack>
@@ -366,5 +343,46 @@ export function NewHomePage() {
       </Gallery>
       <div className={"kogito-tooling--build-info"}>{process.env["WEBPACK_REPLACE__buildInfo"]}</div>
     </Page>
+  );
+}
+
+function WorkspaceCard(props: { workspace: WorkspaceMock }) {
+  const [isHovered, setHovered] = useState(false);
+  return (
+    <Card
+      onMouseOver={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      isHoverable={true}
+      isCompact={true}
+      style={{ cursor: "pointer" }}
+      onClick={() => {
+        // TODO
+        // navigate to #/workspace/${workspace.name}/overview
+      }}
+    >
+      <CardHeader>
+        <CardHeaderMain>
+          <CardTitle>{props.workspace.name}</CardTitle>
+        </CardHeaderMain>
+        {isHovered && (
+          <CardActions>
+            <Button variant={ButtonVariant.link}>
+              Open <ArrowRightIcon />
+            </Button>
+          </CardActions>
+        )}
+      </CardHeader>
+
+      <CardBody>
+        <TextContent>
+          <Text component={TextVariants.p}>
+            {`Created at: ${props.workspace.createdIn.toLocaleString()}, Last updated at: ${props.workspace.lastUpdatedIn.toLocaleString()}`}
+          </Text>
+          <Text component={TextVariants.p}>
+            {`${props.workspace.filesCount} files, ${props.workspace.modelsCount} models`}
+          </Text>
+        </TextContent>
+      </CardBody>
+    </Card>
   );
 }
