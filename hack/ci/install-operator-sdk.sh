@@ -25,6 +25,7 @@ if [[ $(command -v operator-sdk) ]]; then
   echo "---> operator-sdk is already installed. Please make sure it is the required ${OPERATOR_SDK_VERSION} version before proceeding"
 else
   echo "---> operator-sdk not found, installing it in \$GOPATH/bin/"
+  mkdir -p "$GOPATH"/bin
   curl -L https://github.com/operator-framework/operator-sdk/releases/download/$OPERATOR_SDK_VERSION/operator-sdk_linux_amd64 -o "$GOPATH"/bin/operator-sdk
   chmod +x "$GOPATH"/bin/operator-sdk
 fi
