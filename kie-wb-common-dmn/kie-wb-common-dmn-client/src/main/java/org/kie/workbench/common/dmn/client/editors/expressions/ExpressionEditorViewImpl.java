@@ -84,7 +84,12 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelContainer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperation;
@@ -147,6 +152,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private Event<DomainObjectSelectionEvent> domainObjectSelectionEvent;
     private Event<ExpressionEditorChanged> editorSelectedEvent;
     private PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider;
+    private DefinitionUtils definitionUtils;
 
     private DMNGridPanel gridPanel;
     private DMNGridLayer gridLayer;
@@ -177,6 +183,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                                     final Event<ExpressionEditorChanged> editorSelectedEvent,
                                     final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider,
+                                    final DefinitionUtils definitionUtils,
                                     final HTMLAnchorElement tryIt,
                                     final HTMLAnchorElement switchBack,
                                     final HTMLDivElement betaBoxedExpressionToggle,
@@ -199,6 +206,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.domainObjectSelectionEvent = domainObjectSelectionEvent;
         this.editorSelectedEvent = editorSelectedEvent;
         this.pmmlDocumentMetadataProvider = pmmlDocumentMetadataProvider;
+        this.definitionUtils = definitionUtils;
 
         this.tryIt = tryIt;
         this.switchBack = switchBack;
@@ -356,6 +364,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         editorSelectedEvent.fire(new ExpressionEditorChanged(nodeUUID));
         setExpressionNameAndDataType(expressionProps);
         hasExpression.setExpression(null);
+        expressionContainerGrid.clearExpressionType();
     }
 
     public void broadcastLiteralExpressionDefinition(final LiteralProps literalProps) {
@@ -456,6 +465,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private void setExpressionNameAndDataType(final ExpressionProps expressionProps) {
         setExpressionName(expressionProps.name);
         setTypeRef(expressionProps.dataType);
+        updateCanvasNodeName();
     }
 
     private void setExpressionName(final String name) {
@@ -473,6 +483,22 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
             ((HasVariable<InformationItemPrimary>) hasExpression).getVariable().setTypeRef(typeRef);
         } else if (hasExpression.getExpression() != null && hasExpression.getExpression().asDMNModelInstrumentedBase().getParent() instanceof HasVariable) {
             ((HasVariable<InformationItemPrimary>) hasExpression.getExpression().asDMNModelInstrumentedBase().getParent()).getVariable().setTypeRef(typeRef);
+        }
+    }
+
+    @SuppressWarnings("rawtypes")
+    private void updateCanvasNodeName() {
+        final AbstractCanvasHandler canvasHandler = (AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler();
+        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = new CompositeCommand.Builder<>();
+        final Element element = canvasHandler.getGraphIndex().get(nodeUUID);
+        if (element.getContent() instanceof Definition) {
+            final Definition definition = (Definition) element.getContent();
+            final String nameId = definitionUtils.getNameIdentifier(definition.getDefinition());
+            commandBuilder.addCommand(canvasCommandFactory.updatePropertyValue(element,
+                                                                               nameId,
+                                                                               hasName.orElse(HasName.NOP).getValue()));
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          commandBuilder.build());
         }
     }
 

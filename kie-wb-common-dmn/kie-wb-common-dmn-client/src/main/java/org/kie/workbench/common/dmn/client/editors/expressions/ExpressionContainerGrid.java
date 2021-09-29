@@ -300,7 +300,7 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
         li.getCommand().execute();
     }
 
-    void clearExpressionType() {
+    public void clearExpressionType() {
         sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                       new ClearExpressionTypeCommand(parent,
                                                                      nodeUUID.get(),

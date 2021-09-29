@@ -103,8 +103,12 @@
               </outputDirectory>
               <resources>
                 <resource>
-                  <directory>./dist</directory>
+                  <directory>dist</directory>
                   <filtering>false</filtering>
+                  <includes>
+                    <include>dmn-loader.*</include>
+                    <include>fonts/**</include>
+                  </includes>
                 </resource>
               </resources>
             </configuration>

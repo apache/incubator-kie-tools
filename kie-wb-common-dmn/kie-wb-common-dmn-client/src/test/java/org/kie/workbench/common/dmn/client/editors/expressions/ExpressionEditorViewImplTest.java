@@ -61,6 +61,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -165,6 +166,9 @@ public class ExpressionEditorViewImplTest {
     private PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider;
 
     @Mock
+    private DefinitionUtils definitionUtils;
+
+    @Mock
     private ExpressionEditorDefinition undefinedExpressionEditorDefinition;
 
     @Mock
@@ -267,6 +271,7 @@ public class ExpressionEditorViewImplTest {
                                                      domainObjectSelectionEvent,
                                                      editorSelectedEvent,
                                                      pmmlDocumentMetadataProvider,
+                                                     definitionUtils,
                                                      tryIt,
                                                      switchBack,
                                                      betaBoxedExpressionToggle,

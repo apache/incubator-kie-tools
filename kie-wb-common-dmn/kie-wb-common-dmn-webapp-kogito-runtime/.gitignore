@@ -16,6 +16,9 @@
 /src/main/webapp/model/Jsonix-all.js
 /src/main/webapp/model/MainJs.js
 
+# Copied from kogito-editors-js
+/src/main/webapp/kogito-editors-js
+
 # Eclipse, Netbeans and IntelliJ files
 /.*
 /**/.*

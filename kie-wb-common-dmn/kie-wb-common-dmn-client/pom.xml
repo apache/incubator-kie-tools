@@ -160,6 +160,7 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-editors-js</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- DMN Editor -->

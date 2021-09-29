@@ -47,6 +47,9 @@ const commonConfig = (name, devMode, options = {}) => {
       new webpack.DefinePlugin({
         __IS_WIRED__: JSON.stringify(!!wire),
       }),
+      new webpack.optimize.LimitChunkCountPlugin({
+        maxChunks: 1,
+      }),
     ],
 
     module: {
