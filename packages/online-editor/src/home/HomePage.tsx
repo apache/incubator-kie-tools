@@ -473,8 +473,10 @@ export function HomePage() {
     }
     setOpenProjectLoading(true);
     if (githubRepositoryUrl.trim() !== "") {
-      // TODO CAPONETTO: URL might be invalid; fix UX stuff when it is better defined
-      await workspaces.createWorkspaceFromGitHubRepository(new URL(githubRepositoryUrl), "main");
+      history.push({
+        pathname: globals.routes.newWorkspaceWithUrl.path({}),
+        search: globals.routes.newWorkspaceWithUrl.queryString({ url: githubRepositoryUrl }),
+      });
     } else if (filesToUpload.length > 0) {
       await workspaces.createWorkspaceFromLocal(filesToUpload).then(({ descriptor }) => {
         history.push({
@@ -485,7 +487,7 @@ export function HomePage() {
       throw new Error("No project to open here");
     }
     setOpenProjectLoading(false);
-  }, [filesToUpload, githubRepositoryUrl, isOpenProjectLoading, workspaces]);
+  }, [filesToUpload, githubRepositoryUrl, isOpenProjectLoading, history, globals, workspaces]);
 
   const githubRepositoryFormSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {

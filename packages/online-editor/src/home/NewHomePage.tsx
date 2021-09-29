@@ -34,6 +34,7 @@ export function NewHomePage() {
   const workspaces = useWorkspaces();
   const queryParams = useQueryParams();
   const [workspaceOverviews, setWorkspaceOverviews] = useState<WorkspaceOverview[]>([]);
+  const [url, setUrl] = useState("");
 
   useEffect(() => {
     workspaces.listWorkspaceOverviews().then((workspaces: WorkspaceOverview[]) => setWorkspaceOverviews(workspaces));
@@ -143,9 +144,11 @@ export function NewHomePage() {
                           <TextInput
                             isRequired={true}
                             placeholder={"URL"}
-                            onChange={() => {
+                            value={url}
+                            onChange={(v) => {
                               // TODO
                               // validate URL. if validated, change button to "primary"
+                              setUrl(v);
                             }}
                           />
                         </CardBody>
@@ -155,7 +158,10 @@ export function NewHomePage() {
                             onClick={() => {
                               // TODO
                               // enable `Enter` key to submit.
-                              // navigate to #/workspace/new?url=[url]
+                              history.push({
+                                pathname: globals.routes.newWorkspaceWithUrl.path({}),
+                                search: globals.routes.newWorkspaceWithUrl.queryString({ url: url }),
+                              });
                             }}
                           >
                             Import
