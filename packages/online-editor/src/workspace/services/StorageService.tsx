@@ -29,7 +29,6 @@ import {
 } from "../model/Event";
 import { BroadcastService } from "./BroadcastService";
 import { WorkspaceFile } from "../WorkspaceContext";
-import { extractFileExtension } from "../../common/utils";
 
 export class StorageService {
   private readonly FOLDER_SEPARATOR = "/";
@@ -102,13 +101,16 @@ export class StorageService {
       return file;
     }
 
-    const newPath = join(dirname(file.path), `${newFileName}.${extractFileExtension(file.path)}`);
+    const newPath = join(dirname(file.path), `${newFileName}.${file.extension}`);
 
     if (await this.exists(newPath)) {
       throw new Error(`File ${newPath} already exists`);
     }
 
-    const newFile = buildFile(newPath, file.getFileContents);
+    const newFile = new WorkspaceFile({
+      getFileContents: file.getFileContents,
+      path: newPath,
+    });
     await this.fsp.rename(file.path, newFile.path!);
 
     if (broadcast) {
@@ -127,7 +129,10 @@ export class StorageService {
     }
 
     const newPath = join(newFolderPath, basename(file.path));
-    const newFile = buildFile(newPath, file.getFileContents);
+    const newFile = new WorkspaceFile({
+      getFileContents: file.getFileContents,
+      path: newPath,
+    });
     await this.createFile(newFile, false);
     await this.deleteFile(file, false);
 
@@ -182,14 +187,20 @@ export class StorageService {
       return;
     }
 
-    return buildFile(path, this.buildGetFileContentsCallback(path));
+    return new WorkspaceFile({
+      getFileContents: this.buildGetFileContentsCallback(path),
+      path,
+    });
   }
 
   public async getFiles(folderPath: string, globPattern?: string): Promise<WorkspaceFile[]> {
     const filePaths = await this.getFilePaths(folderPath);
 
     const files = filePaths.map((path: string) => {
-      return buildFile(path, this.buildGetFileContentsCallback(path));
+      return new WorkspaceFile({
+        getFileContents: this.buildGetFileContentsCallback(path),
+        path,
+      });
     });
 
     if (!globPattern) {
@@ -213,19 +224,6 @@ export class StorageService {
         reject("Could not delete database due to the operation being blocked");
       };
     });
-  }
-
-  public asRelativePath(folder: string, file: WorkspaceFile): string {
-    if (!file.path) {
-      throw new Error("File path is not defined");
-    }
-
-    if (!file.path.startsWith(folder)) {
-      throw new Error(`File ${file.path} is not in the folder ${folder}`);
-    }
-
-    const newPath = file.path.replace(folder, "");
-    return newPath.startsWith(this.FOLDER_SEPARATOR) ? newPath.substring(1) : newPath;
   }
 
   public async createFolderStructure(path: string): Promise<void> {
@@ -287,11 +285,4 @@ export class StorageService {
     );
     return files.reduce((paths: string[], path: string) => paths.concat(path), []) as string[];
   }
-}
-
-function buildFile(path: string, getFileContents: () => Promise<string | undefined>): WorkspaceFile {
-  return {
-    getFileContents: getFileContents,
-    path: path,
-  };
 }

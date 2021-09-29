@@ -47,20 +47,19 @@ import { useController } from "../common/Hooks";
 import { TextEditorModal } from "./TextEditor/TextEditorModal";
 import { useWorkspaces } from "../workspace/WorkspaceContext";
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tooling-core/workspace/dist/api";
-import { basename } from "path";
 
 export interface CommonProps {
   forExtension: SupportedFileExtensions;
 }
 
 export interface PropsWithSketch extends CommonProps {
-  forWorkspace: false;
+  workspaceEnabled: false;
 }
 
 export interface PropsWithWorkspace extends CommonProps {
-  forWorkspace: true;
-  workspaceId?: string;
-  filePath?: string;
+  workspaceEnabled: true;
+  workspaceId: string;
+  filePath: string;
 }
 
 export type Props = PropsWithSketch | PropsWithWorkspace;
@@ -102,166 +101,137 @@ export function EditorPage(props: Props) {
 
   useDmnTour(!currentFile.isReadOnly && !editor?.isReady && currentFile.fileExtension === "dmn");
 
-  // TODO CAPONETTO: Improve; find a better name
-  const updateCurrentFile = useCallback(
-    async (file: EmbeddedEditorFile, createWorkspace: boolean) => {
-      try {
-        if (createWorkspace) {
-          await workspaces.createWorkspaceFromLocal(
-            [
-              {
-                ...file,
-                path: `${file.fileName}.${file.fileExtension}`,
-              },
-            ],
-            true
-          );
-        }
-
-        setCurrentFile(file);
-      } catch (e) {
-        setFetchFileError({ details: e, reason: FetchFileErrorReason.CANT_FETCH, filePath: file.path! });
-      }
-    },
-    [workspaces]
-  );
-
   useEffect(() => {
     let canceled = false;
 
     setFetchFileError(undefined);
     alerts?.closeAll();
 
-    if (!props.forWorkspace) {
+    if (!props.workspaceEnabled) {
       workspaces.setActive(undefined);
-    }
 
-    if (globals.externalFile) {
-      setCurrentFile({ ...globals.externalFile, kind: "external" });
-      return;
-    }
-
-    if (queryParamUrl) {
-      const filePathExtension = extractFileExtension(queryParamUrl);
-      if (!filePathExtension) {
+      if (globals.externalFile) {
+        setCurrentFile({ ...globals.externalFile, kind: "external" });
         return;
       }
-      if (filePathExtension !== props.forExtension) {
-        setFetchFileError({ reason: FetchFileErrorReason.DIFFERENT_EXTENSION, filePath: queryParamUrl });
-        return;
-      }
-      const extractedFileName = removeFileExtension(removeDirectories(queryParamUrl) ?? "unknown");
-      if (settings.github.service.isGist(queryParamUrl)) {
-        settings.github.service
-          .fetchGistFile(settings.github.octokit, queryParamUrl)
-          .then((content) => {
-            if (canceled) {
-              return;
-            }
 
-            updateCurrentFile(
-              {
+      if (!queryParamUrl) {
+        setCurrentFile({
+          fileName: "new-file",
+          fileExtension: props.forExtension,
+          getFileContents: () => Promise.resolve(""),
+          isReadOnly: false,
+          kind: "local",
+        });
+      }
+
+      if (queryParamUrl) {
+        const filePathExtension = extractFileExtension(queryParamUrl);
+        if (!filePathExtension) {
+          return;
+        }
+        if (filePathExtension !== props.forExtension) {
+          setFetchFileError({ reason: FetchFileErrorReason.DIFFERENT_EXTENSION, filePath: queryParamUrl });
+          return;
+        }
+        const extractedFileName = removeFileExtension(removeDirectories(queryParamUrl) ?? "unknown");
+        if (settings.github.service.isGist(queryParamUrl)) {
+          settings.github.service
+            .fetchGistFile(settings.github.octokit, queryParamUrl)
+            .then((content) => {
+              if (canceled) {
+                return;
+              }
+
+              setCurrentFile({
                 kind: "gist",
                 isReadOnly: queryParamReadonly,
                 fileExtension: filePathExtension,
                 fileName: extractedFileName,
                 getFileContents: () => Promise.resolve(content),
-              },
-              props.forWorkspace
-            );
-            return;
-          })
-          .catch((error) =>
-            setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl })
-          );
-        return;
-      }
-      if (settings.github.service.isGithub(queryParamUrl) || settings.github.service.isGithubRaw(queryParamUrl)) {
-        settings.github.service
-          .fetchGithubFile(settings.github.octokit, queryParamUrl)
-          .then((response) => {
-            if (canceled) {
+              });
               return;
-            }
+            })
+            .catch((error) =>
+              setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl })
+            );
+          return;
+        }
+        if (settings.github.service.isGithub(queryParamUrl) || settings.github.service.isGithubRaw(queryParamUrl)) {
+          settings.github.service
+            .fetchGithubFile(settings.github.octokit, queryParamUrl)
+            .then((response) => {
+              if (canceled) {
+                return;
+              }
 
-            updateCurrentFile(
-              {
+              setCurrentFile({
                 kind: "external",
                 isReadOnly: queryParamReadonly,
                 fileExtension: filePathExtension,
                 fileName: extractedFileName,
                 getFileContents: () => Promise.resolve(response),
-              },
-              props.forWorkspace
-            );
-            return;
-          })
-          .catch((error) => {
-            setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl });
-          });
-        return;
-      }
-      fetch(queryParamUrl)
-        .then((response) => {
-          if (canceled) {
-            return;
-          }
-
-          if (!response.ok) {
-            setFetchFileError({
-              details: `${response.status} - ${response.statusText}`,
-              reason: FetchFileErrorReason.CANT_FETCH,
-              filePath: queryParamUrl,
+              });
+              return;
+            })
+            .catch((error) => {
+              setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl });
             });
-            return;
-          }
+          return;
+        }
+        fetch(queryParamUrl)
+          .then((response) => {
+            if (canceled) {
+              return;
+            }
 
-          // do not inline this variable.
-          const content = response.text();
+            if (!response.ok) {
+              setFetchFileError({
+                details: `${response.status} - ${response.statusText}`,
+                reason: FetchFileErrorReason.CANT_FETCH,
+                filePath: queryParamUrl,
+              });
+              return;
+            }
 
-          updateCurrentFile(
-            {
+            // do not inline this variable.
+            const content = response.text();
+
+            setCurrentFile({
               kind: "external",
               isReadOnly: queryParamReadonly,
               fileExtension: filePathExtension,
               fileName: extractedFileName,
               getFileContents: () => content,
-            },
-            props.forWorkspace
-          );
-          return;
-        })
-        .catch((error) => {
-          setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl });
-        });
+            });
+            return;
+          })
+          .catch((error) => {
+            setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl });
+          });
+      }
     }
 
-    if (props.forWorkspace) {
-      if (!props.filePath) {
-        updateCurrentFile(currentFile, true);
-        return;
-      }
-
-      if (props.workspaceId) {
-        workspaces
-          .openWorkspaceFile(props.workspaceId, props.filePath)
-          .then((file) => {
-            if (canceled) {
-              return;
-            }
-            setCurrentFile({
-              ...file,
-              kind: "local",
-              isReadOnly: false,
-              fileExtension: extractFileExtension(file.path)!,
-              fileName: removeFileExtension(basename(file.path)),
-            });
-          })
-          .catch((e) => {
-            setFetchFileError({ details: e, reason: FetchFileErrorReason.CANT_FETCH, filePath: props.filePath! });
+    if (props.workspaceEnabled) {
+      workspaces
+        .openWorkspaceFile(props.workspaceId, props.filePath)
+        .then((file) => {
+          if (canceled) {
+            return;
+          }
+          setCurrentFile({
+            path: file.path,
+            getFileContents: file.getFileContents,
+            kind: "local",
+            isReadOnly: false,
+            fileExtension: file.extension,
+            fileName: file.nameWithoutExtension,
           });
-        return;
-      }
+        })
+        .catch((e) => {
+          setFetchFileError({ details: e, reason: FetchFileErrorReason.CANT_FETCH, filePath: props.filePath! });
+        });
+      return;
     }
 
     return () => {
@@ -299,12 +269,31 @@ export function EditorPage(props: Props) {
   }, [globals, history]);
 
   useEffect(() => {
+    if (!workspaces.file) {
+      return;
+    }
+
+    setCurrentFile((prev) => {
+      if (workspaces.file?.path !== prev.path) {
+        return prev;
+      }
+      return {
+        path: workspaces.file!.path,
+        getFileContents: workspaces.file!.getFileContents,
+        kind: "local",
+        isReadOnly: false,
+        fileExtension: workspaces.file!.extension,
+        fileName: workspaces.file!.nameWithoutExtension,
+      };
+    });
+  }, [workspaces.file]);
+
+  useEffect(() => {
     if (isDirty) {
       if (!editor?.isReady || !workspaces.active) {
         return;
       }
 
-      console.info("Autosaving...");
       editor.getStateControl().setSavedCommand();
       alerts?.closeAll();
 
@@ -432,7 +421,13 @@ export function EditorPage(props: Props) {
                         if (!workspaces.active || !workspaces.file) {
                           return;
                         }
-                        return workspaces.goToFile(workspaces.active.descriptor, renamedFile, { replace: true });
+                        history.replace({
+                          pathname: globals.routes.workspaceWithFilePath.path({
+                            workspaceId: renamedFile.workspaceId,
+                            filePath: renamedFile.pathRelativeToWorkspaceRootWithoutExtension,
+                            extension: renamedFile.extension,
+                          }),
+                        });
                       })
                       .catch(() => {});
                   }}

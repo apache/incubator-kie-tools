@@ -26,10 +26,52 @@ import { ActiveWorkspace } from "./model/ActiveWorkspace";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
 import { WorkspaceOverview } from "./model/WorkspaceOverview";
 import { WorkspaceService } from "./services/WorkspaceService";
+import { basename, extname } from "path";
+import { removeFileExtension } from "../common/utils";
 
-export interface WorkspaceFile {
+export class WorkspaceFile {
+  constructor(private readonly args: { path: string; getFileContents: () => Promise<string | undefined> }) {}
+
+  get path() {
+    return this.args.path;
+  }
+
+  get getFileContents() {
+    return this.args.getFileContents;
+  }
+
+  get pathRelativeToWorkspaceRoot() {
+    return this.args.path.replace(`/${this.workspaceId}/`, "");
+  }
+
+  get pathRelativeToWorkspaceRootWithoutExtension() {
+    return removeFileExtension(this.pathRelativeToWorkspaceRoot);
+  }
+
+  get extension() {
+    return extname(this.args.path).replace(".", "");
+  }
+
+  get nameWithoutExtension() {
+    return basename(this.args.path, `.${this.extension}`);
+  }
+
+  get nameWithExtension() {
+    return basename(this.args.path);
+  }
+
+  get workspaceId() {
+    return this.args.path
+      .split("/")
+      .reverse()
+      .filter((a) => a)
+      .pop()!;
+  }
+}
+
+export interface LocalFile {
   path: string;
-  getFileContents(): Promise<string | undefined>;
+  getFileContents: () => Promise<string>;
 }
 
 // TODO CAPONETTO: review and refactor this context
@@ -47,23 +89,19 @@ export interface WorkspaceContextType {
   openWorkspaceByFile: (file: WorkspaceFile) => Promise<void>;
   openWorkspaceFile: (workspaceId: string, relativeFilePath: string) => Promise<WorkspaceFile>;
   openWorkspaceById: (workspaceId: string) => Promise<void>;
-  onFileChanged: (file: WorkspaceFile) => void;
   onFileNameChanged: (newFileName: string) => Promise<WorkspaceFile>;
-  goToFileInNewWindow: (file: WorkspaceFile) => Promise<void>;
-  goToFile: (descriptor: WorkspaceDescriptor, file: WorkspaceFile, replaceArgs: { replace: boolean }) => Promise<void>;
 
   createWorkspaceFromLocal: (
-    files: WorkspaceFile[],
-    replaceUrl: boolean,
+    files: LocalFile[],
     preferredName?: string
-  ) => Promise<WorkspaceDescriptor>;
+  ) => Promise<{ descriptor: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
   createWorkspaceFromGitHubRepository: (
     repositoryUrl: URL,
     sourceBranch: string,
     preferredName?: string
   ) => Promise<WorkspaceDescriptor>;
 
-  addEmptyFile: (fileExtension: string) => Promise<void>;
+  addEmptyFile: (fileExtension: string) => Promise<WorkspaceFile>;
   updateCurrentFile: (getFileContents: () => Promise<string | undefined>) => Promise<void>;
 
   prepareZip: () => Promise<Blob>;

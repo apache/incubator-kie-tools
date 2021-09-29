@@ -22,7 +22,6 @@ import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { SUPPORTED_FILES_EDITABLE, SUPPORTED_FILES_PATTERN } from "../SupportedFiles";
 import { BroadcastService } from "./BroadcastService";
 import { StorageService } from "./StorageService";
-import { extractFileExtension } from "../../common/utils";
 
 export class WorkspaceService {
   private readonly WORKSPACE_CONTEXT_PREFIX = "w";
@@ -109,7 +108,7 @@ export class WorkspaceService {
 
     const createdFiles = await fileHandler.store(descriptor);
     const supportedFiles = createdFiles.filter((file: WorkspaceFile) =>
-      SUPPORTED_FILES_EDITABLE.includes(extractFileExtension(file.path)!)
+      SUPPORTED_FILES_EDITABLE.includes(file.extension)
     );
 
     if (broadcast) {
@@ -161,7 +160,7 @@ export class WorkspaceService {
     const files = await this.storageService.getFiles(contextPath, SUPPORTED_FILES_PATTERN);
 
     for (const file of files) {
-      zip.file(this.storageService.asRelativePath(contextPath, file), (await file.getFileContents()) ?? "");
+      zip.file(file.pathRelativeToWorkspaceRoot, (await file.getFileContents()) ?? "");
     }
 
     return await zip.generateAsync({ type: "blob" });
@@ -177,9 +176,9 @@ export class WorkspaceService {
   }
 
   private async configAsFile(getFileContents: () => Promise<string | undefined>): Promise<WorkspaceFile> {
-    return {
+    return new WorkspaceFile({
       path: this.WORKSPACE_CONFIG.path,
-      getFileContents: getFileContents,
-    };
+      getFileContents,
+    });
   }
 }

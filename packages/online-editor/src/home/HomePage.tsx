@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { EMPTY_FILE_BPMN, EMPTY_FILE_DMN, EMPTY_FILE_PMML } from "@kie-tooling-core/editor/dist/channel";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Card, CardBody, CardFooter, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
@@ -46,7 +45,7 @@ import { useOnlineI18n } from "../common/i18n";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useSettings } from "../settings/SettingsContext";
 import { QueryParams } from "../common/Routes";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspaceContext";
+import { LocalFile, useWorkspaces } from "../workspace/WorkspaceContext";
 
 enum InputFileUrlState {
   INITIAL,
@@ -73,7 +72,7 @@ export function HomePage() {
   const { i18n } = useOnlineI18n();
   const [githubRepositoryUrl, setGithubRepositoryUrl] = useState("");
   const [isOpenProjectLoading, setOpenProjectLoading] = useState(false);
-  const [filesToUpload, setFilesToUpload] = useState<WorkspaceFile[]>([]);
+  const [filesToUpload, setFilesToUpload] = useState<LocalFile[]>([]);
   const workspaces = useWorkspaces();
 
   useEffect(() => {
@@ -109,20 +108,23 @@ export function HomePage() {
         return;
       }
 
-      workspaces.createWorkspaceFromLocal(
-        [
+      workspaces
+        .createWorkspaceFromLocal([
           {
             path: fileName,
             getFileContents: () =>
-              new Promise<string | undefined>((resolve) => {
+              new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.onload = (event: any) => resolve(event.target.result as string);
                 reader.readAsText(file);
               }),
           },
-        ],
-        false
-      );
+        ])
+        .then(({ descriptor }) => {
+          history.push({
+            pathname: globals.routes.workspaceOverview.path({ workspaceId: descriptor.workspaceId }),
+          });
+        });
     },
     [globals, workspaces]
   );
@@ -130,15 +132,33 @@ export function HomePage() {
   const onDropRejected = useCallback(() => setIsUploadRejected(true), []);
 
   const createEmptyBpmnFile = useCallback(() => {
-    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_BPMN }], false);
+    workspaces
+      .createWorkspaceFromLocal([{ path: "new-file.bpmn", getFileContents: () => Promise.resolve("") }])
+      .then(({ descriptor }) => {
+        history.push({
+          pathname: globals.routes.workspaceOverview.path({ workspaceId: descriptor.workspaceId }),
+        });
+      });
   }, [workspaces]);
 
   const createEmptyDmnFile = useCallback(() => {
-    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_DMN }], false);
+    workspaces
+      .createWorkspaceFromLocal([{ path: "new-file.dmn", getFileContents: () => Promise.resolve("") }])
+      .then(({ descriptor }) => {
+        history.push({
+          pathname: globals.routes.workspaceOverview.path({ workspaceId: descriptor.workspaceId }),
+        });
+      });
   }, [workspaces]);
 
   const createEmptyPmmlFile = useCallback(() => {
-    workspaces.createWorkspaceFromLocal([{ ...EMPTY_FILE_PMML }], false);
+    workspaces
+      .createWorkspaceFromLocal([{ path: "new-file.pmml", getFileContents: () => Promise.resolve("") }])
+      .then(({ descriptor }) => {
+        history.push({
+          pathname: globals.routes.workspaceOverview.path({ workspaceId: descriptor.workspaceId }),
+        });
+      });
   }, [workspaces]);
 
   const trySample = useCallback(
@@ -437,7 +457,7 @@ export function HomePage() {
         return {
           path: (file as any).webkitRelativePath,
           getFileContents: () =>
-            new Promise<string | undefined>((resolve) => {
+            new Promise((resolve) => {
               const reader = new FileReader();
               reader.onload = (event: any) => resolve(event.target.result as string);
               reader.readAsText(file);
@@ -456,7 +476,11 @@ export function HomePage() {
       // TODO CAPONETTO: URL might be invalid; fix UX stuff when it is better defined
       await workspaces.createWorkspaceFromGitHubRepository(new URL(githubRepositoryUrl), "main");
     } else if (filesToUpload.length > 0) {
-      await workspaces.createWorkspaceFromLocal(filesToUpload, false);
+      await workspaces.createWorkspaceFromLocal(filesToUpload).then(({ descriptor }) => {
+        history.push({
+          pathname: globals.routes.workspaceOverview.path({ workspaceId: descriptor.workspaceId }),
+        });
+      });
     } else {
       throw new Error("No project to open here");
     }

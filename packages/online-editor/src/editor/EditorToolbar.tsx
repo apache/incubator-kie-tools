@@ -491,21 +491,51 @@ export function EditorToolbar(props: Props) {
       </DropdownGroup>,
       <DropdownGroup key={"new-file-group"} label="New file">
         <DropdownItem
-          onClick={async () => await workspaces.addEmptyFile("bpmn")}
+          onClick={async () =>
+            await workspaces.addEmptyFile("bpmn").then((file) => {
+              history.push({
+                pathname: globals.routes.workspaceWithFilePath.path({
+                  workspaceId: file.workspaceId,
+                  filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                  extension: file.extension,
+                }),
+              });
+            })
+          }
           key={"new-bpmn-item"}
           description="BPMN files are used to generate business processes"
         >
           Workflow (.BPMN)
         </DropdownItem>
         <DropdownItem
-          onClick={async () => await workspaces.addEmptyFile("dmn")}
+          onClick={async () =>
+            await workspaces.addEmptyFile("dmn").then((file) => {
+              history.push({
+                pathname: globals.routes.workspaceWithFilePath.path({
+                  workspaceId: file.workspaceId,
+                  filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                  extension: file.extension,
+                }),
+              });
+            })
+          }
           key={"new-dmn-item"}
           description="DMN files are used to generate decision models"
         >
           Decision model (.DMN)
         </DropdownItem>
         <DropdownItem
-          onClick={async () => await workspaces.addEmptyFile("pmml")}
+          onClick={async () =>
+            await workspaces.addEmptyFile("pmml").then((file) => {
+              history.push({
+                pathname: globals.routes.workspaceWithFilePath.path({
+                  workspaceId: file.workspaceId,
+                  filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                  extension: file.extension,
+                }),
+              });
+            })
+          }
           key={"new-pmml-item"}
           description="PMML files are used to generate scorecards"
         >
@@ -517,7 +547,15 @@ export function EditorToolbar(props: Props) {
           .sort((a, b) => a.path!.localeCompare(b.path!))
           .map((file, idx: number) => (
             <DropdownItem
-              onClick={() => workspaces.onFileChanged(file)}
+              onClick={() => {
+                history.push({
+                  pathname: globals.routes.workspaceWithFilePath.path({
+                    workspaceId: file.workspaceId,
+                    filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                    extension: file.extension,
+                  }),
+                });
+              }}
               description={
                 "/ " +
                 dirname(file.path!)
@@ -531,7 +569,16 @@ export function EditorToolbar(props: Props) {
                   className="kogito--editor__workspace-files-dropdown-open"
                   onClick={(e) => {
                     e.stopPropagation();
-                    workspaces.goToFileInNewWindow(file);
+                    window.open(
+                      globals.routes.workspaceWithFilePath.url({
+                        pathParams: {
+                          workspaceId: file.workspaceId,
+                          filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                          extension: file.extension,
+                        },
+                      }),
+                      "_blank"
+                    );
                   }}
                 />
               }
@@ -622,7 +669,7 @@ export function EditorToolbar(props: Props) {
                         onToggle={(isOpen) => setWorkspaceFilesMenuOpen(isOpen)}
                       >
                         {`${workspaces.active?.files.length} ${
-                          (workspaces.active?.files.length ?? 0) === 1 ? "EmbeddedEditorFile" : "Files"
+                          (workspaces.active?.files.length ?? 0) === 1 ? "File" : "Files"
                         }`}
                       </DropdownToggle>
                     }
@@ -641,17 +688,23 @@ export function EditorToolbar(props: Props) {
                   <Button
                     variant={"primary"}
                     className={"kogito--editor__toolbar button"}
-                    onClick={() =>
-                      workspaces.createWorkspaceFromLocal(
-                        [
-                          {
-                            getFileContents: props.editor!.getContent,
-                            path: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
-                          },
-                        ],
-                        false
-                      )
-                    }
+                    onClick={() => {
+                      props.editor
+                        ?.getContent()
+                        .then((content) =>
+                          workspaces.createWorkspaceFromLocal([
+                            {
+                              getFileContents: () => Promise.resolve(content),
+                              path: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
+                            },
+                          ])
+                        )
+                        .then(({ descriptor }) => {
+                          history.replace({
+                            pathname: globals.routes.workspaceOverview.path({ workspaceId: descriptor.workspaceId }),
+                          });
+                        });
+                    }}
                   >
                     Make Workspace
                   </Button>

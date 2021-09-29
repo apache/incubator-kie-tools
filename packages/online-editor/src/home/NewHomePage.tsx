@@ -4,7 +4,6 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { useGlobals } from "../common/GlobalContext";
-import { useOnlineI18n } from "../common/i18n";
 import { useHistory } from "react-router";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -25,14 +24,12 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { WorkspaceOverview } from "../workspace/model/WorkspaceOverview";
 import { useWorkspaces } from "../workspace/WorkspaceContext";
-import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
 import { QueryParams } from "../common/Routes";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { OnlineEditorPage } from "./pageTemplate/OnlineEditorPage";
 
 export function NewHomePage() {
   const globals = useGlobals();
-  const { i18n } = useOnlineI18n();
   const history = useHistory();
   const workspaces = useWorkspaces();
   const queryParams = useQueryParams();
@@ -108,7 +105,7 @@ export function NewHomePage() {
                           <Button
                             variant="link"
                             onClick={() => {
-                              workspaces.createWorkspaceFromLocal([], false).then((descriptor: WorkspaceDescriptor) => {
+                              workspaces.createWorkspaceFromLocal([]).then(({ descriptor }) => {
                                 history.push({
                                   pathname: globals.routes.workspaceOverview.path({
                                     workspaceId: descriptor.workspaceId,

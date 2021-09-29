@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { WorkspaceFile } from "../WorkspaceContext";
+import { LocalFile, WorkspaceFile } from "../WorkspaceContext";
 import { join } from "path";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { FileHandler, FileHandlerCommonArgs } from "./FileHandler";
 
 export interface LocalFileHandlerArgs extends FileHandlerCommonArgs {
-  files: WorkspaceFile[];
+  files: LocalFile[];
 }
 
 export class LocalFileHandler extends FileHandler {
@@ -30,9 +30,9 @@ export class LocalFileHandler extends FileHandler {
 
   public async store(descriptor: WorkspaceDescriptor): Promise<WorkspaceFile[]> {
     const contextPath = await this.workspaceService.resolveContextPath(descriptor);
-    const updatedFiles = this.args.files.map((file: WorkspaceFile) => {
+    const updatedFiles = this.args.files.map((file: LocalFile) => {
       const updatedPath = join(contextPath, file.path!.substring(file.path!.indexOf("/") + 1));
-      return { ...file, path: updatedPath };
+      return new WorkspaceFile({ getFileContents: file.getFileContents, path: updatedPath });
     });
 
     await this.storageService.createFiles(updatedFiles, false);
