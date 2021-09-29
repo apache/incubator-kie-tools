@@ -1,14 +1,14 @@
-/appformer-bom/ @karreiro @tiagobento
+/appformer-bom/ @yesamer @tiagobento
 
 /appformer-client-api/ @tiagobento
 
-/appformer-js-monaco/ @karreiro @tiagobento
+/appformer-js-monaco/ @tiagobento
 
-/appformer-kogito-bridge/ @karreiro @tiagobento
+/appformer-kogito-bridge/ @tiagobento
 
-/bump_version.sh/ @karreiro
+/bump_version.sh/ @yesamer
 
-/docs/ @karreiro
+/docs/ @yesamer @jomarko
 
 /drools-wb-bom/ @yesamer
 
@@ -40,9 +40,9 @@
 
 /errai-validation/ @tiagobento
 
-/kie-wb-common-bom/ @karreiro @romartin
+/kie-wb-common-bom/ @yesamer @romartin
 
-/kie-wb-common-dmn/ @karreiro
+/kie-wb-common-dmn/ @yesamer
 
 /kie-wb-common-forms/ @romartin
 
@@ -50,9 +50,9 @@
 
 /kie-wb-common-stunner/ @romartin
 
-/kie-wb-common-widgets/ @karreiro @romartin
+/kie-wb-common-widgets/ @yesamer @romartin
 
-/kogito-editors-js/ @karreiro 
+/kogito-editors-js/ @vpellegrino @yesamer
 
 /lienzo-core/ @romartin
 
@@ -68,10 +68,10 @@
 
 /uberfire-workbench/ @tiagobento
 
-CONTRIBUTING.md @karreiro @tiagobento
+CONTRIBUTING.md @yesamer @tiagobento @jomarko
 
-LICENSE @karreiro @tiagobento
+LICENSE @yesamer @tiagobento @jomarko
 
-pom.xml @karreiro @tiagobento @romartin
+pom.xml @yesamer @tiagobento @romartin
 
-README.md @karreiro @tiagobento
+README.md @yesamer @tiagobento @jomarko
