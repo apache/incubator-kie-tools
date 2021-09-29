@@ -126,7 +126,7 @@ export const routes = {
   }>(({ extension }) => `/sketch/${extension}`),
 
   sketchWithUrl: new Route<{
-    queryParams: QueryParams.URL;
+    queryParams: QueryParams.URL | QueryParams.READONLY | QueryParams.DMN_RUNNER_FORM_INPUTS;
   }>(() => `/sketch`),
 
   newWorkspaceWithEmptyFile: new Route<{
