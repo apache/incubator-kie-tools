@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { WorkspaceFile } from "../WorkspaceContext";
+import { WorkspaceFile } from "../WorkspacesContext";
 import { WorkspaceDescriptor } from "./WorkspaceDescriptor";
 
 export interface ActiveWorkspace {

@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { useWorkspaces, WorkspaceFile } from "../WorkspaceContext";
+import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
 import { Link } from "react-router-dom";
 import { ActiveWorkspace } from "../model/ActiveWorkspace";
 import { SUPPORTED_FILES_EDITABLE, SUPPORTED_FILES_PATTERN } from "../SupportedFiles";

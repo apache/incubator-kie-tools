@@ -28,7 +28,7 @@ import {
   UpdateFileEvent,
 } from "../model/Event";
 import { BroadcastService } from "./BroadcastService";
-import { WorkspaceFile } from "../WorkspaceContext";
+import { WorkspaceFile } from "../WorkspacesContext";
 
 export class StorageService {
   private readonly FOLDER_SEPARATOR = "/";

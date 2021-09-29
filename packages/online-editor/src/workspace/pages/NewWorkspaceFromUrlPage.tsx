@@ -1,4 +1,4 @@
-import { useWorkspaces } from "../WorkspaceContext";
+import { useWorkspaces } from "../WorkspacesContext";
 import { useGlobals } from "../../common/GlobalContext";
 import { useHistory } from "react-router";
 import * as React from "react";

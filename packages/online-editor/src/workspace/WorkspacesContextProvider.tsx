@@ -29,7 +29,7 @@ import { GitService } from "./services/GitService";
 import { StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { SUPPORTED_FILES, SUPPORTED_FILES_EDITABLE_PATTERN } from "./SupportedFiles";
-import { LocalFile, WorkspaceContext, WorkspaceFile } from "./WorkspaceContext";
+import { LocalFile, WorkspacesContext, WorkspaceFile } from "./WorkspacesContext";
 import { useSettings } from "../settings/SettingsContext";
 import { useHistory } from "react-router";
 import { useGlobals } from "../common/GlobalContext";
@@ -48,7 +48,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export function WorkspaceContextProvider(props: Props) {
+export function WorkspacesContextProvider(props: Props) {
   const [file, setFile] = useState<WorkspaceFile>();
   const [active, setActive] = useState<ActiveWorkspace>();
   const settings = useSettings();
@@ -375,7 +375,7 @@ export function WorkspaceContextProvider(props: Props) {
   }, [openWorkspaceByPath, workspaceService]);
 
   return (
-    <WorkspaceContext.Provider
+    <WorkspacesContext.Provider
       value={{
         file,
         active,
@@ -398,6 +398,6 @@ export function WorkspaceContextProvider(props: Props) {
       }}
     >
       {props.children}
-    </WorkspaceContext.Provider>
+    </WorkspacesContext.Provider>
   );
 }

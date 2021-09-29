@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { WorkspaceFile } from "../WorkspaceContext";
+import { WorkspaceFile } from "../WorkspacesContext";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { GitHubRepositoryOrigin } from "../model/WorkspaceOrigin";
 import { AuthInfo, GitService } from "../services/GitService";

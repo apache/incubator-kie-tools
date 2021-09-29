@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { WorkspaceFile } from "../WorkspaceContext";
+import { WorkspaceFile } from "../WorkspacesContext";
 import JSZip from "jszip";
 import { FileHandler } from "../handler/FileHandler";
 import { AddWorkspaceEvent, ChannelKind, DeleteWorkspaceEvent } from "../model/Event";

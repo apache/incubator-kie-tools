@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { WorkspaceFile } from "../WorkspaceContext";
+import { WorkspaceFile } from "../WorkspacesContext";
 import git from "isomorphic-git";
 import http from "isomorphic-git/http/web";
 import { StorageService } from "./StorageService";

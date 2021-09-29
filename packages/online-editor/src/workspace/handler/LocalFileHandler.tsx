@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { LocalFile, WorkspaceFile } from "../WorkspaceContext";
+import { LocalFile, WorkspaceFile } from "../WorkspacesContext";
 import { join } from "path";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { FileHandler, FileHandlerCommonArgs } from "./FileHandler";

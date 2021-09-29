@@ -51,12 +51,18 @@ import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { EmbedModal } from "./EmbedModal";
 import { AlertsController, useAlert } from "./Alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
-import { useWorkspaces } from "../workspace/WorkspaceContext";
+import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { basename, dirname } from "path";
 import { GitHubRepositoryOrigin, WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { CheckIcon } from "@patternfly/react-icons/dist/js/icons/check-icon";
+import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
+import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
+import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
+import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
+import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import { ColumnsIcon } from "@patternfly/react-icons/dist/js/icons/columns-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
@@ -337,33 +343,65 @@ export function EditorToolbar(props: Props) {
 
   const shareItems = useCallback(
     (dropdownId: string) => [
-      <DropdownItem key={`dropdown-${dropdownId}-copy-source`} component={"button"} onClick={onCopyContentToClipboard}>
-        {i18n.editorToolbar.copySource}
-      </DropdownItem>,
-      <React.Fragment key={`dropdown-${dropdownId}-fragment-download-svg`}>
-        {includeDownloadSVGDropdownItem && (
-          <DropdownItem
-            key={`dropdown-${dropdownId}-download-svg`}
-            data-testid="dropdown-download-svg"
-            component="button"
-            onClick={onPreview}
-          >
-            {i18n.editorToolbar.downloadSVG}
-          </DropdownItem>
-        )}
-      </React.Fragment>,
-      <React.Fragment key={`dropdown-${dropdownId}-fragment-embed`}>
-        {includeEmbedDropdownItem && (
-          <DropdownItem
-            key={`dropdown-${dropdownId}-embed`}
-            data-testid="dropdown-embed"
-            component="button"
-            onClick={onEmbed}
-          >
-            {i18n.editorToolbar.embed}
-          </DropdownItem>
-        )}
-      </React.Fragment>,
+      <DropdownGroup key={"download-group"} label="Download">
+        <DropdownItem
+          onClick={onDownload}
+          key={"donwload-file-item"}
+          description={`${props.currentFile.fileName}.${props.currentFile.fileExtension} will be downloaded`}
+          icon={<DownloadIcon />}
+        >
+          Current file
+        </DropdownItem>
+        <React.Fragment key={`dropdown-${dropdownId}-fragment-download-svg`}>
+          {includeDownloadSVGDropdownItem && (
+            <DropdownItem
+              key={`dropdown-${dropdownId}-download-svg`}
+              data-testid="dropdown-download-svg"
+              component="button"
+              onClick={onPreview}
+              description={`Image of ${props.currentFile.fileName}.${props.currentFile.fileExtension} will be downloaded in SVG format`}
+              icon={<ImageIcon />}
+            >
+              {"Current file's SVG"}
+            </DropdownItem>
+          )}
+        </React.Fragment>
+        <React.Fragment key={`dropdown-${dropdownId}-fragment-download-svg`}>
+          {workspaces.active && (
+            <DropdownItem
+              onClick={onDownloadAll}
+              key={"download-zip-item"}
+              description={`A zip file including all files will be downloaded`}
+              icon={<FolderIcon />}
+            >
+              All files
+            </DropdownItem>
+          )}
+        </React.Fragment>
+      </DropdownGroup>,
+      <DropdownGroup key={"other-group"} label="Other">
+        <DropdownItem
+          key={`dropdown-${dropdownId}-copy-source`}
+          component={"button"}
+          onClick={onCopyContentToClipboard}
+          icon={<CopyIcon />}
+        >
+          {i18n.editorToolbar.copySource}
+        </DropdownItem>
+        <React.Fragment key={`dropdown-${dropdownId}-fragment-embed`}>
+          {includeEmbedDropdownItem && (
+            <DropdownItem
+              key={`dropdown-${dropdownId}-embed`}
+              data-testid="dropdown-embed"
+              component="button"
+              onClick={onEmbed}
+              icon={<ColumnsIcon />}
+            >
+              {i18n.editorToolbar.embed}
+            </DropdownItem>
+          )}
+        </React.Fragment>
+      </DropdownGroup>,
       <DropdownGroup key={"github-group"} label={i18n.names.github}>
         <React.Fragment key={`dropdown-${dropdownId}-fragment-export-gist`}>
           <Tooltip
@@ -438,6 +476,7 @@ export function EditorToolbar(props: Props) {
 
   const workspaces = useWorkspaces();
   const [isWorkspaceFilesMenuOpen, setWorkspaceFilesMenuOpen] = useState(false);
+  const [isWorkspaceAddFileMenuOpen, setWorkspaceAddFileMenuOpen] = useState(false);
   const onDownloadAll = useCallback(async () => {
     if (!props.editor) {
       return;
@@ -450,45 +489,8 @@ export function EditorToolbar(props: Props) {
     }
   }, [props.editor, workspaces]);
 
-  const fileItems = useCallback(() => {
-    if (!workspaces.active || workspaces.active.files.length === 0) {
-      return [
-        <DropdownItem key="disabled link" isDisabled>
-          <i>Loading files ...</i>
-        </DropdownItem>,
-      ];
-    }
-
+  const addFileDropdownItems = useMemo(() => {
     return [
-      workspaces.active?.descriptor.origin.kind === WorkspaceKind.GITHUB_REPOSITORY ? (
-        <DropdownGroup key={"github-group"} label="GitHub">
-          <DropdownItem
-            onClick={workspaces.syncWorkspace}
-            key={"push-changes-item"}
-            description={`Push all changes to ${(workspaces.active.descriptor.origin as GitHubRepositoryOrigin).url}`}
-          >
-            Push
-          </DropdownItem>
-        </DropdownGroup>
-      ) : (
-        []
-      ),
-      <DropdownGroup key={"download-group"} label="Download">
-        <DropdownItem
-          onClick={onDownload}
-          key={"donwload-file-item"}
-          description={`${props.currentFile.fileName}.${props.currentFile.fileExtension} will be downloaded`}
-        >
-          Current file
-        </DropdownItem>
-        <DropdownItem
-          onClick={onDownloadAll}
-          key={"download-zip-item"}
-          description={`A zip file including all files will be downloaded`}
-        >
-          All files
-        </DropdownItem>
-      </DropdownGroup>,
       <DropdownGroup key={"new-file-group"} label="New file">
         <DropdownItem
           onClick={async () =>
@@ -542,7 +544,33 @@ export function EditorToolbar(props: Props) {
           Scorecard model (.PMML)
         </DropdownItem>
       </DropdownGroup>,
-      <DropdownGroup key={"workspace-group"} label="Workspace">
+    ];
+  }, [workspaces, history, globals]);
+
+  const filesDropdownItems = useMemo(() => {
+    if (!workspaces.active || workspaces.active.files.length === 0) {
+      return [
+        <DropdownItem key="disabled link" isDisabled>
+          <i>Loading files ...</i>
+        </DropdownItem>,
+      ];
+    }
+
+    return [
+      workspaces.active?.descriptor.origin.kind === WorkspaceKind.GITHUB_REPOSITORY ? (
+        <DropdownGroup key={"github-group"} label="GitHub">
+          <DropdownItem
+            onClick={workspaces.syncWorkspace}
+            key={"push-changes-item"}
+            description={`Push all changes to ${(workspaces.active.descriptor.origin as GitHubRepositoryOrigin).url}`}
+          >
+            Push
+          </DropdownItem>
+        </DropdownGroup>
+      ) : (
+        []
+      ),
+      <DropdownGroup key={"workspace-group"} label="Files">
         {workspaces.active.files
           .sort((a, b) => a.path!.localeCompare(b.path!))
           .map((file, idx: number) => (
@@ -597,7 +625,7 @@ export function EditorToolbar(props: Props) {
           ))}
       </DropdownGroup>,
     ];
-  }, [props, workspaces]);
+  }, [globals, history, workspaces, props.currentFile.path]);
 
   useEffect(() => {
     setFileName(props.currentFile.fileName);
@@ -653,6 +681,7 @@ export function EditorToolbar(props: Props) {
                       {i18n.editorToolbar.share}
                     </DropdownToggle>
                   }
+                  // isFullHeight={true}
                   isPlain={true}
                   className={"kogito--editor__toolbar dropdown"}
                   isOpen={isShareMenuOpen}
@@ -660,25 +689,43 @@ export function EditorToolbar(props: Props) {
                   position={DropdownPosition.right}
                 />
                 {workspaces.active && (
-                  <Dropdown
-                    onSelect={() => setWorkspaceFilesMenuOpen(false)}
-                    toggle={
-                      <DropdownToggle
-                        id={"files-id-lg"}
-                        data-testid={"files-menu"}
-                        onToggle={(isOpen) => setWorkspaceFilesMenuOpen(isOpen)}
-                      >
-                        {`${workspaces.active?.files.length} ${
-                          (workspaces.active?.files.length ?? 0) === 1 ? "File" : "Files"
-                        }`}
-                      </DropdownToggle>
-                    }
-                    isPlain={true}
-                    className={"kogito--editor__toolbar dropdown pf-u-ml-sm"}
-                    isOpen={isWorkspaceFilesMenuOpen}
-                    dropdownItems={fileItems()}
-                    position={DropdownPosition.right}
-                  />
+                  <>
+                    <Dropdown
+                      onSelect={() => setWorkspaceFilesMenuOpen(false)}
+                      toggle={
+                        <DropdownToggle
+                          id={"files-id-lg"}
+                          data-testid={"files-menu"}
+                          onToggle={(isOpen) => setWorkspaceFilesMenuOpen(isOpen)}
+                        >
+                          {`${workspaces.active?.files.length} ${
+                            (workspaces.active?.files.length ?? 0) === 1 ? "File" : "Files"
+                          }`}
+                        </DropdownToggle>
+                      }
+                      isPlain={true}
+                      className={"kogito--editor__toolbar dropdown pf-u-ml-sm"}
+                      isOpen={isWorkspaceFilesMenuOpen}
+                      dropdownItems={filesDropdownItems}
+                      position={DropdownPosition.right}
+                    />
+                    <Dropdown
+                      onSelect={() => setWorkspaceAddFileMenuOpen(false)}
+                      toggle={
+                        <DropdownToggle
+                          toggleIndicator={null}
+                          onToggle={(isOpen) => setWorkspaceAddFileMenuOpen(isOpen)}
+                        >
+                          <PlusIcon />
+                        </DropdownToggle>
+                      }
+                      isPlain={true}
+                      className={"kogito--editor__toolbar dropdown pf-u-ml-sm"}
+                      isOpen={isWorkspaceAddFileMenuOpen}
+                      dropdownItems={addFileDropdownItems}
+                      position={DropdownPosition.right}
+                    />
+                  </>
                 )}
               </PageHeaderToolsItem>
             </PageHeaderToolsGroup>

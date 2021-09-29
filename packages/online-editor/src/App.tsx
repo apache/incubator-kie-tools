@@ -27,7 +27,7 @@ import { DownloadHubModal } from "./home/DownloadHubModal";
 import { NoMatchPage } from "./NoMatchPage";
 import { KieToolingExtendedServicesContextProvider } from "./editor/KieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
-import { WorkspaceContextProvider } from "./workspace/WorkspaceContextProvider";
+import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
 import { NewHomePage } from "./home/NewHomePage";
 import { extractFileExtension } from "./common/utils";
 import { useQueryParams } from "./queryParams/QueryParamsContext";
@@ -44,7 +44,7 @@ export function App(props: { externalFile?: EmbeddedEditorFile; senderTabId?: st
         [GlobalContextProvider, props],
         [KieToolingExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
-        [WorkspaceContextProvider, {}],
+        [WorkspacesContextProvider, {}],
         [RoutesSwitch, {}]
       )}
     </HashRouter>

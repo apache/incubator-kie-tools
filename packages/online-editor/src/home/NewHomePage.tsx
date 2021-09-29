@@ -23,7 +23,7 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { WorkspaceOverview } from "../workspace/model/WorkspaceOverview";
-import { useWorkspaces } from "../workspace/WorkspaceContext";
+import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { QueryParams } from "../common/Routes";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { OnlineEditorPage } from "./pageTemplate/OnlineEditorPage";

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { WorkspaceFile } from "../WorkspaceContext";
+import { WorkspaceFile } from "../WorkspacesContext";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { StorageService } from "../services/StorageService";
 import { WorkspaceService } from "../services/WorkspaceService";

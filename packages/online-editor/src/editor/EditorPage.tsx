@@ -45,7 +45,7 @@ import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
 import { Alerts, AlertsController, useAlert } from "./Alerts/Alerts";
 import { useController } from "../common/Hooks";
 import { TextEditorModal } from "./TextEditor/TextEditorModal";
-import { useWorkspaces } from "../workspace/WorkspaceContext";
+import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tooling-core/workspace/dist/api";
 
 export interface CommonProps {

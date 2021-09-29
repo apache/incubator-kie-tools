@@ -75,7 +75,7 @@ export interface LocalFile {
 }
 
 // TODO CAPONETTO: review and refactor this context
-export interface WorkspaceContextType {
+export interface WorkspacesContextType {
   file?: WorkspaceFile;
   active?: ActiveWorkspace;
   setActive: React.Dispatch<React.SetStateAction<ActiveWorkspace> | undefined>;
@@ -111,8 +111,8 @@ export interface WorkspaceContextType {
   listWorkspaceOverviews: () => Promise<WorkspaceOverview[]>;
 }
 
-export const WorkspaceContext = createContext<WorkspaceContextType>({} as any);
+export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);
 
-export function useWorkspaces(): WorkspaceContextType {
-  return useContext(WorkspaceContext);
+export function useWorkspaces(): WorkspacesContextType {
+  return useContext(WorkspacesContext);
 }

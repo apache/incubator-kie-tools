@@ -45,7 +45,7 @@ import { useOnlineI18n } from "../common/i18n";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useSettings } from "../settings/SettingsContext";
 import { QueryParams } from "../common/Routes";
-import { LocalFile, useWorkspaces } from "../workspace/WorkspaceContext";
+import { LocalFile, useWorkspaces } from "../workspace/WorkspacesContext";
 
 enum InputFileUrlState {
   INITIAL,
