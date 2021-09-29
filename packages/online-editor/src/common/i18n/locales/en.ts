@@ -137,7 +137,7 @@ export const en: OnlineI18n = {
           informNamespace: `Once your instance is up and running, inform the namespace (project) in your cluster you want to have the Decision Model deployed to.`,
           inputReason:
             "This information is necessary for deploying your Decision Model into the right project namespace.",
-          namespacePlaceholder: `The namespace (project) you want to deploy the Decision Model. If using ${en_common.names.redHat} dev sandbox your namespace should be 'username-dev' (eg. scott-dev). Note that when logged in your Openshift Console your username appears at the top right corner`,
+          namespacePlaceholder: `The namespace (project) you want to deploy the Decision Model.`,
         },
         second: {
           name: "Set credentials",
