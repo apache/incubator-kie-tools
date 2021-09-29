@@ -108,9 +108,9 @@ func getNamespaceName() string {
 }
 
 func generateNamespaceName() string {
-	ns := framework.GenerateNamespaceName("cucumber")
+	ns := framework.GenerateNamespaceName("bdd")
 	for isNamespaceAlreadyCreated(ns) {
-		ns = framework.GenerateNamespaceName("cucumber")
+		ns = framework.GenerateNamespaceName("bdd")
 	}
 	namespacesCreated.Store(ns, true)
 	return ns
