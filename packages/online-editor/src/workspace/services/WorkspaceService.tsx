@@ -46,10 +46,6 @@ export class WorkspaceService {
   }
 
   public async getByFile(file: WorkspaceFile): Promise<WorkspaceDescriptor> {
-    if (!file.path) {
-      throw new Error("File path not found");
-    }
-
     return this.getByFilePath(file.path);
   }
 

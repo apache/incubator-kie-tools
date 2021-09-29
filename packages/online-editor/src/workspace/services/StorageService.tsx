@@ -39,10 +39,6 @@ export class StorageService {
   }
 
   public async createFile(file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    if (!file.path) {
-      throw new Error("File path is not defined");
-    }
-
     if (await this.exists(file.path)) {
       throw new Error(`File ${file.path} already exists`);
     }
@@ -59,7 +55,7 @@ export class StorageService {
   }
 
   public async updateFile(file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    if (!file.path || !(await this.exists(file.path))) {
+    if (!(await this.exists(file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
 
@@ -74,7 +70,7 @@ export class StorageService {
   }
 
   public async deleteFile(file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    if (!file.path || !(await this.exists(file.path))) {
+    if (!(await this.exists(file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
 
@@ -93,7 +89,7 @@ export class StorageService {
     newFileName: string,
     broadcastArgs: { broadcast: boolean }
   ): Promise<WorkspaceFile> {
-    if (!file.path || !(await this.exists(file.path))) {
+    if (!(await this.exists(file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
 
@@ -136,7 +132,7 @@ export class StorageService {
     newFolderPath: string,
     broadcastArgs: { broadcast: boolean }
   ): Promise<WorkspaceFile> {
-    if (!file.path || !(await this.exists(file.path))) {
+    if (!(await this.exists(file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
 
@@ -302,10 +298,6 @@ export class StorageService {
   }
 
   private async writeFile(file: WorkspaceFile): Promise<void> {
-    if (!file.path) {
-      throw new Error("File path is not defined");
-    }
-
     const content = (await file.getFileContents()) ?? "";
     await this.fsp.writeFile(file.path, this.encoder.encode(content));
   }

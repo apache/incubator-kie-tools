@@ -572,7 +572,7 @@ export function EditorToolbar(props: Props) {
     return [
       <DropdownGroup key={"workspace-group"} label="Files">
         {props.workspace.files
-          .sort((a, b) => a.path!.localeCompare(b.path!))
+          .sort((a, b) => a.path.localeCompare(b.path))
           .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension))
           .map((file, idx: number) => (
             <DropdownItem

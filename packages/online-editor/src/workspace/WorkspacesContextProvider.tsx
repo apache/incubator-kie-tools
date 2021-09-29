@@ -66,7 +66,7 @@ export function WorkspacesContextProvider(props: Props) {
     async (descriptor: WorkspaceDescriptor, fileHandler: FileHandler) => {
       const files = await workspaceService.create(descriptor, fileHandler, true);
       if (files.length > 0) {
-        return files.sort((a: WorkspaceFile, b: WorkspaceFile) => a.path!.localeCompare(b.path!))[0];
+        return files.sort((a: WorkspaceFile, b: WorkspaceFile) => a.path.localeCompare(b.path))[0];
       } else {
         return undefined;
       }
@@ -196,7 +196,7 @@ export function WorkspacesContextProvider(props: Props) {
     async (workspaceId: string, globPattern: string) => {
       const descriptor = (await workspaceService.get(workspaceId))!;
       const files = await workspaceService.listFiles(descriptor, globPattern);
-      const matchingPaths = files.map((file: WorkspaceFile) => file.path!);
+      const matchingPaths = files.map((file: WorkspaceFile) => file.path);
       return new ResourcesList(globPattern, matchingPaths);
     },
     [workspaceService]
