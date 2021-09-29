@@ -22,7 +22,6 @@ import {
 } from "@kie-tooling-core/workspace/dist/api";
 import * as React from "react";
 import { createContext, useContext } from "react";
-import { ActiveWorkspace } from "./model/ActiveWorkspace";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
 import { WorkspaceOverview } from "./model/WorkspaceOverview";
 import { WorkspaceService } from "./services/WorkspaceService";
@@ -76,21 +75,10 @@ export interface LocalFile {
 
 // TODO CAPONETTO: review and refactor this context
 export interface WorkspacesContextType {
-  file?: WorkspaceFile;
-  active?: ActiveWorkspace;
-  setActive: React.Dispatch<React.SetStateAction<ActiveWorkspace> | undefined>;
-
   workspaceService: WorkspaceService;
+  listWorkspaceOverviews: () => Promise<WorkspaceOverview[]>;
 
-  resourceContentGet: (path: string, opts?: ResourceContentOptions) => Promise<ResourceContent | undefined>;
-  resourceContentList: (globPattern: string, opts?: ResourceListOptions) => Promise<ResourcesList>;
-
-  openWorkspaceByPath: (path: string) => Promise<WorkspaceFile>;
-  openWorkspaceByFile: (file: WorkspaceFile) => Promise<void>;
-  openWorkspaceFile: (workspaceId: string, relativeFilePath: string) => Promise<WorkspaceFile>;
-  openWorkspaceById: (workspaceId: string) => Promise<void>;
-  onFileNameChanged: (newFileName: string) => Promise<WorkspaceFile>;
-
+  // create
   createWorkspaceFromLocal: (
     files: LocalFile[],
     preferredName?: string
@@ -101,14 +89,15 @@ export interface WorkspacesContextType {
     preferredName?: string
   ) => Promise<WorkspaceDescriptor>;
 
-  addEmptyFile: (fileExtension: string) => Promise<WorkspaceFile>;
-  updateCurrentFile: (getFileContents: () => Promise<string | undefined>) => Promise<void>;
+  // edit workspace
+  addEmptyFile: (workspaceId: string, fileExtension: string) => Promise<WorkspaceFile>;
+  prepareZip: (workspaceId: string) => Promise<Blob>;
+  resourceContentList: (workspaceId: string, globPattern: string, opts?: ResourceListOptions) => Promise<ResourcesList>;
 
-  prepareZip: () => Promise<Blob>;
-
-  syncWorkspace: () => Promise<void>;
-
-  listWorkspaceOverviews: () => Promise<WorkspaceOverview[]>;
+  // edit files
+  renameFile: (file: WorkspaceFile, newFileName: string) => Promise<WorkspaceFile>;
+  updateFile: (file: WorkspaceFile, getNewContents: () => Promise<string | undefined>) => Promise<void>;
+  resourceContentGet: (path: string, opts?: ResourceContentOptions) => Promise<ResourceContent | undefined>;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);

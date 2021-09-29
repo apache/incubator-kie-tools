@@ -30,8 +30,8 @@ export class WorkspaceService {
   };
 
   public constructor(
-    private readonly storageService: StorageService,
-    private readonly broadcastService: BroadcastService
+    public readonly storageService: StorageService, //TODO: make this private again
+    public readonly broadcastService: BroadcastService //TODO: make this private again
   ) {}
 
   public async init(): Promise<void> {

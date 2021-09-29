@@ -15,11 +15,9 @@
  */
 
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
+import { WorkspaceFile } from "../WorkspacesContext";
 import { Link } from "react-router-dom";
-import { ActiveWorkspace } from "../model/ActiveWorkspace";
-import { SUPPORTED_FILES_EDITABLE, SUPPORTED_FILES_PATTERN } from "../SupportedFiles";
+import { SUPPORTED_FILES_EDITABLE } from "../SupportedFiles";
 import { OnlineEditorPage } from "../../home/pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import {
@@ -43,41 +41,23 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useHistory } from "react-router";
+import { useWorkspace } from "../hooks/WorkspaceHooks";
 
 export interface Props {
   workspaceId: string;
 }
 
 export function WorkspaceOverviewPage(props: Props) {
-  const workspaces = useWorkspaces();
   const history = useHistory();
-  const [workspace, setWorkspace] = useState<ActiveWorkspace | undefined>();
-  const [error, setError] = useState<string>();
   const globals = useGlobals();
-
-  useEffect(() => {
-    workspaces.openWorkspaceById(props.workspaceId);
-  }, [workspaces, props.workspaceId]);
-
-  useEffect(() => {
-    setError(undefined);
-    workspaces.workspaceService.get(props.workspaceId).then(async (descriptor) => {
-      if (!descriptor) {
-        setError("Workspace not found");
-        return;
-      }
-
-      const files = await workspaces.workspaceService.listFiles(descriptor, SUPPORTED_FILES_PATTERN);
-      setWorkspace({ descriptor, files });
-    });
-  }, [props.workspaceId, workspaces.workspaceService]);
+  const { workspace, addEmptyWorkspaceFile } = useWorkspace(props.workspaceId);
 
   return (
     <OnlineEditorPage>
       <PageSection isFilled={true}>
         <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
-          {error && <div>{error}</div>}
-          {!error && workspace && (
+          {!workspace && <div>{`Couldn't find workspace with id '${props.workspaceId}'`}</div>}
+          {workspace && (
             <>
               <TextContent>
                 <Text component={TextVariants.h1}>{workspace.descriptor.name}</Text>
@@ -113,7 +93,7 @@ export function WorkspaceOverviewPage(props: Props) {
                           isLarge
                           variant={ButtonVariant.secondary}
                           onClick={() =>
-                            workspaces.addEmptyFile("bpmn").then((file) => {
+                            addEmptyWorkspaceFile("bpmn").then((file) => {
                               history.push({
                                 pathname: globals.routes.workspaceWithFilePath.path({
                                   workspaceId: file.workspaceId,
@@ -132,7 +112,7 @@ export function WorkspaceOverviewPage(props: Props) {
                           isLarge
                           variant={ButtonVariant.secondary}
                           onClick={() =>
-                            workspaces.addEmptyFile("dmn").then((file) => {
+                            addEmptyWorkspaceFile("dmn").then((file) => {
                               history.push({
                                 pathname: globals.routes.workspaceWithFilePath.path({
                                   workspaceId: file.workspaceId,
@@ -151,7 +131,7 @@ export function WorkspaceOverviewPage(props: Props) {
                           isLarge
                           variant={ButtonVariant.secondary}
                           onClick={() =>
-                            workspaces.addEmptyFile("pmml").then((file) => {
+                            addEmptyWorkspaceFile("pmml").then((file) => {
                               history.push({
                                 pathname: globals.routes.workspaceWithFilePath.path({
                                   workspaceId: file.workspaceId,

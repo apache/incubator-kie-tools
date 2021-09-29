@@ -46,7 +46,9 @@ import { Alerts, AlertsController, useAlert } from "./Alerts/Alerts";
 import { useController } from "../common/Hooks";
 import { TextEditorModal } from "./TextEditor/TextEditorModal";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
-import { ResourceContentRequest, ResourceListRequest } from "@kie-tooling-core/workspace/dist/api";
+import { ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kie-tooling-core/workspace/dist/api";
+import { useWorkspace } from "../workspace/hooks/WorkspaceHooks";
+import { useWorkspaceFile } from "../workspace/hooks/WorkspaceFileHooks";
 
 export interface CommonProps {
   forExtension: SupportedFileExtensions;
@@ -79,6 +81,11 @@ export function EditorPage(props: Props) {
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
   const [fetchFileError, setFetchFileError] = useState<FetchFileError | undefined>(undefined);
 
+  const { workspace, renameWorkspaceFile, addEmptyWorkspaceFile } = useWorkspace(
+    props.workspaceEnabled ? props.workspaceId : undefined
+  );
+  const workspaceFile = useWorkspaceFile(workspace, props.workspaceEnabled ? props.filePath : undefined);
+
   const queryParamUrl = useMemo(() => {
     return queryParams.get(QueryParams.URL);
   }, [queryParams]);
@@ -107,137 +114,116 @@ export function EditorPage(props: Props) {
     setFetchFileError(undefined);
     alerts?.closeAll();
 
-    if (!props.workspaceEnabled) {
-      workspaces.setActive(undefined);
+    if (props.workspaceEnabled) {
+      return;
+    }
 
-      if (globals.externalFile) {
-        setCurrentFile({ ...globals.externalFile, kind: "external" });
+    if (globals.externalFile) {
+      setCurrentFile({ ...globals.externalFile, kind: "external" });
+      return;
+    }
+
+    if (!queryParamUrl) {
+      setCurrentFile({
+        fileName: "new-file",
+        fileExtension: props.forExtension,
+        getFileContents: () => Promise.resolve(""),
+        isReadOnly: false,
+        kind: "local",
+      });
+    }
+
+    if (queryParamUrl) {
+      const filePathExtension = extractFileExtension(queryParamUrl);
+      if (!filePathExtension) {
         return;
       }
-
-      if (!queryParamUrl) {
-        setCurrentFile({
-          fileName: "new-file",
-          fileExtension: props.forExtension,
-          getFileContents: () => Promise.resolve(""),
-          isReadOnly: false,
-          kind: "local",
-        });
+      if (filePathExtension !== props.forExtension) {
+        setFetchFileError({ reason: FetchFileErrorReason.DIFFERENT_EXTENSION, filePath: queryParamUrl });
+        return;
       }
-
-      if (queryParamUrl) {
-        const filePathExtension = extractFileExtension(queryParamUrl);
-        if (!filePathExtension) {
-          return;
-        }
-        if (filePathExtension !== props.forExtension) {
-          setFetchFileError({ reason: FetchFileErrorReason.DIFFERENT_EXTENSION, filePath: queryParamUrl });
-          return;
-        }
-        const extractedFileName = removeFileExtension(removeDirectories(queryParamUrl) ?? "unknown");
-        if (settings.github.service.isGist(queryParamUrl)) {
-          settings.github.service
-            .fetchGistFile(settings.github.octokit, queryParamUrl)
-            .then((content) => {
-              if (canceled) {
-                return;
-              }
-
-              setCurrentFile({
-                kind: "gist",
-                isReadOnly: queryParamReadonly,
-                fileExtension: filePathExtension,
-                fileName: extractedFileName,
-                getFileContents: () => Promise.resolve(content),
-              });
-              return;
-            })
-            .catch((error) =>
-              setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl })
-            );
-          return;
-        }
-        if (settings.github.service.isGithub(queryParamUrl) || settings.github.service.isGithubRaw(queryParamUrl)) {
-          settings.github.service
-            .fetchGithubFile(settings.github.octokit, queryParamUrl)
-            .then((response) => {
-              if (canceled) {
-                return;
-              }
-
-              setCurrentFile({
-                kind: "external",
-                isReadOnly: queryParamReadonly,
-                fileExtension: filePathExtension,
-                fileName: extractedFileName,
-                getFileContents: () => Promise.resolve(response),
-              });
-              return;
-            })
-            .catch((error) => {
-              setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl });
-            });
-          return;
-        }
-        fetch(queryParamUrl)
-          .then((response) => {
+      const extractedFileName = removeFileExtension(removeDirectories(queryParamUrl) ?? "unknown");
+      if (settings.github.service.isGist(queryParamUrl)) {
+        settings.github.service
+          .fetchGistFile(settings.github.octokit, queryParamUrl)
+          .then((content) => {
             if (canceled) {
               return;
             }
 
-            if (!response.ok) {
-              setFetchFileError({
-                details: `${response.status} - ${response.statusText}`,
-                reason: FetchFileErrorReason.CANT_FETCH,
-                filePath: queryParamUrl,
-              });
+            setCurrentFile({
+              kind: "gist",
+              isReadOnly: queryParamReadonly,
+              fileExtension: filePathExtension,
+              fileName: extractedFileName,
+              getFileContents: () => Promise.resolve(content),
+            });
+            return;
+          })
+          .catch((error) =>
+            setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl })
+          );
+        return;
+      }
+      if (settings.github.service.isGithub(queryParamUrl) || settings.github.service.isGithubRaw(queryParamUrl)) {
+        settings.github.service
+          .fetchGithubFile(settings.github.octokit, queryParamUrl)
+          .then((response) => {
+            if (canceled) {
               return;
             }
-
-            // do not inline this variable.
-            const content = response.text();
 
             setCurrentFile({
               kind: "external",
               isReadOnly: queryParamReadonly,
               fileExtension: filePathExtension,
               fileName: extractedFileName,
-              getFileContents: () => content,
+              getFileContents: () => Promise.resolve(response),
             });
             return;
           })
           .catch((error) => {
             setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl });
           });
+        return;
       }
-    }
-
-    if (props.workspaceEnabled) {
-      workspaces
-        .openWorkspaceFile(props.workspaceId, props.filePath)
-        .then((file) => {
+      fetch(queryParamUrl)
+        .then((response) => {
           if (canceled) {
             return;
           }
+
+          if (!response.ok) {
+            setFetchFileError({
+              details: `${response.status} - ${response.statusText}`,
+              reason: FetchFileErrorReason.CANT_FETCH,
+              filePath: queryParamUrl,
+            });
+            return;
+          }
+
+          // do not inline this variable.
+          const content = response.text();
+
           setCurrentFile({
-            path: file.path,
-            getFileContents: file.getFileContents,
-            kind: "local",
-            isReadOnly: false,
-            fileExtension: file.extension,
-            fileName: file.nameWithoutExtension,
+            kind: "external",
+            isReadOnly: queryParamReadonly,
+            fileExtension: filePathExtension,
+            fileName: extractedFileName,
+            getFileContents: () => content,
           });
+          return;
         })
-        .catch((e) => {
-          setFetchFileError({ details: e, reason: FetchFileErrorReason.CANT_FETCH, filePath: props.filePath! });
+        .catch((error) => {
+          setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl });
         });
-      return;
     }
 
     return () => {
       canceled = true;
     };
   }, [
+    alerts,
     globals.externalFile,
     props,
     queryParamUrl,
@@ -269,37 +255,34 @@ export function EditorPage(props: Props) {
   }, [globals, history]);
 
   useEffect(() => {
-    if (!workspaces.file) {
+    if (!workspaceFile) {
       return;
     }
 
-    setCurrentFile((prev) => {
-      if (workspaces.file?.path !== prev.path) {
-        return prev;
-      }
+    setCurrentFile(() => {
       return {
-        path: workspaces.file!.path,
-        getFileContents: workspaces.file!.getFileContents,
+        path: workspaceFile.path,
+        getFileContents: workspaceFile.getFileContents,
         kind: "local",
         isReadOnly: false,
-        fileExtension: workspaces.file!.extension,
-        fileName: workspaces.file!.nameWithoutExtension,
+        fileExtension: workspaceFile.extension,
+        fileName: workspaceFile.nameWithoutExtension,
       };
     });
-  }, [workspaces.file]);
+  }, [workspaceFile]);
 
   useEffect(() => {
     if (isDirty) {
-      if (!editor?.isReady || !workspaces.active) {
+      if (!editor?.isReady || !workspaceFile) {
         return;
       }
 
       editor.getStateControl().setSavedCommand();
       alerts?.closeAll();
 
-      workspaces.updateCurrentFile(() => editor.getContent());
+      workspaces.updateFile(workspaceFile, () => editor.getContent());
     }
-  }, [editor, alerts, isDirty, workspaces]);
+  }, [editor, alerts, isDirty, workspaces, workspaceFile]);
 
   const onResourceContentRequest = useCallback(
     async (request: ResourceContentRequest) => {
@@ -310,9 +293,12 @@ export function EditorPage(props: Props) {
 
   const onResourceListRequest = useCallback(
     async (request: ResourceListRequest) => {
-      return workspaces.resourceContentList(request.pattern, request.opts);
+      if (!workspace) {
+        return new ResourcesList(request.pattern, []);
+      }
+      return workspaces.resourceContentList(workspace.descriptor.workspaceId, request.pattern, request.opts);
     },
-    [workspaces]
+    [workspaces, workspace]
   );
 
   const requestDownload = useCallback(() => {
@@ -411,25 +397,24 @@ export function EditorPage(props: Props) {
             <Page
               header={
                 <EditorToolbar
+                  addEmptyWorkspaceFile={addEmptyWorkspaceFile}
+                  workspace={workspace}
                   editor={editor}
                   alerts={alerts}
                   currentFile={currentFile}
                   onRename={(newName) => {
-                    workspaces
-                      .onFileNameChanged(newName)
-                      .then((renamedFile) => {
-                        if (!workspaces.active || !workspaces.file) {
-                          return;
-                        }
-                        history.replace({
-                          pathname: globals.routes.workspaceWithFilePath.path({
-                            workspaceId: renamedFile.workspaceId,
-                            filePath: renamedFile.pathRelativeToWorkspaceRootWithoutExtension,
-                            extension: renamedFile.extension,
-                          }),
-                        });
-                      })
-                      .catch(() => {});
+                    if (!workspaceFile) {
+                      return;
+                    }
+                    renameWorkspaceFile(workspaceFile, newName).then((renamedFile) => {
+                      history.replace({
+                        pathname: globals.routes.workspaceWithFilePath.path({
+                          workspaceId: renamedFile.workspaceId,
+                          filePath: renamedFile.pathRelativeToWorkspaceRootWithoutExtension,
+                          extension: renamedFile.extension,
+                        }),
+                      });
+                    });
                   }}
                   onClose={onClose}
                 />

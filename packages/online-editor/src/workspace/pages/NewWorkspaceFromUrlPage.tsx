@@ -14,7 +14,7 @@ export function NewWorkspaceFromUrlPage(props: { url: string | undefined }) {
 
   useEffect(() => {
     if (!props.url) {
-      console.info("No URL provided!");
+      console.error("No URL provided!");
       return;
     }
 

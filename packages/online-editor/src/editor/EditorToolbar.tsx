@@ -51,10 +51,9 @@ import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { EmbedModal } from "./EmbedModal";
 import { AlertsController, useAlert } from "./Alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
-import { useWorkspaces } from "../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { basename, dirname } from "path";
-import { GitHubRepositoryOrigin, WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { CheckIcon } from "@patternfly/react-icons/dist/js/icons/check-icon";
 import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
@@ -65,12 +64,16 @@ import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { ColumnsIcon } from "@patternfly/react-icons/dist/js/icons/columns-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
+import { SUPPORTED_FILES_EDITABLE } from "../workspace/SupportedFiles";
 
 export interface Props {
   alerts: AlertsController | undefined;
   editor: EmbeddedEditorRef | undefined;
+  workspace: ActiveWorkspace | undefined;
   currentFile: EmbeddedEditorFile;
   onRename: (newName: string) => void;
+  addEmptyWorkspaceFile: (extension: string) => Promise<WorkspaceFile>;
   onClose: () => void;
 }
 
@@ -366,8 +369,8 @@ export function EditorToolbar(props: Props) {
             </DropdownItem>
           )}
         </React.Fragment>
-        <React.Fragment key={`dropdown-${dropdownId}-fragment-download-svg`}>
-          {workspaces.active && (
+        <React.Fragment key={`dropdown-${dropdownId}-fragment-download-all`}>
+          {props.workspace && (
             <DropdownItem
               onClick={onDownloadAll}
               key={"download-zip-item"}
@@ -441,6 +444,7 @@ export function EditorToolbar(props: Props) {
       </DropdownGroup>,
     ],
     [
+      props.workspace,
       props.currentFile,
       onCopyContentToClipboard,
       onPreview,
@@ -464,13 +468,13 @@ export function EditorToolbar(props: Props) {
     if (downloadRef.current) {
       downloadRef.current.download = `${props.currentFile.fileName}.${props.currentFile.fileExtension}`;
     }
-    if (downloadAllRef.current && workspaces.active) {
-      downloadAllRef.current.download = `${workspaces.active.descriptor.name}.zip`;
+    if (downloadAllRef.current && props.workspace) {
+      downloadAllRef.current.download = `${props.workspace.descriptor.name}.zip`;
     }
     if (downloadPreviewRef.current) {
       downloadPreviewRef.current.download = `${props.currentFile.fileName}-svg.svg`;
     }
-  }, [props.currentFile]);
+  }, [props.currentFile, props.workspace]);
 
   //
 
@@ -478,23 +482,26 @@ export function EditorToolbar(props: Props) {
   const [isWorkspaceFilesMenuOpen, setWorkspaceFilesMenuOpen] = useState(false);
   const [isWorkspaceAddFileMenuOpen, setWorkspaceAddFileMenuOpen] = useState(false);
   const onDownloadAll = useCallback(async () => {
-    if (!props.editor) {
+    if (!props.editor || !props.workspace) {
       return;
     }
 
-    const zipBlob = await workspaces.prepareZip();
+    const zipBlob = await workspaces.prepareZip(props.workspace.descriptor.workspaceId);
     if (downloadAllRef.current) {
       downloadAllRef.current.href = URL.createObjectURL(zipBlob);
       downloadAllRef.current.click();
     }
-  }, [props.editor, workspaces]);
+  }, [props.editor, props.workspace, workspaces]);
 
   const addFileDropdownItems = useMemo(() => {
     return [
       <DropdownGroup key={"new-file-group"} label="New file">
         <DropdownItem
-          onClick={async () =>
-            await workspaces.addEmptyFile("bpmn").then((file) => {
+          onClick={async () => {
+            if (!props.workspace) {
+              return;
+            }
+            props.addEmptyWorkspaceFile("bpmn").then((file) => {
               history.push({
                 pathname: globals.routes.workspaceWithFilePath.path({
                   workspaceId: file.workspaceId,
@@ -502,16 +509,19 @@ export function EditorToolbar(props: Props) {
                   extension: file.extension,
                 }),
               });
-            })
-          }
+            });
+          }}
           key={"new-bpmn-item"}
           description="BPMN files are used to generate business processes"
         >
           Workflow (.BPMN)
         </DropdownItem>
         <DropdownItem
-          onClick={async () =>
-            await workspaces.addEmptyFile("dmn").then((file) => {
+          onClick={async () => {
+            if (!props.workspace) {
+              return;
+            }
+            props.addEmptyWorkspaceFile("dmn").then((file) => {
               history.push({
                 pathname: globals.routes.workspaceWithFilePath.path({
                   workspaceId: file.workspaceId,
@@ -519,16 +529,19 @@ export function EditorToolbar(props: Props) {
                   extension: file.extension,
                 }),
               });
-            })
-          }
+            });
+          }}
           key={"new-dmn-item"}
           description="DMN files are used to generate decision models"
         >
           Decision model (.DMN)
         </DropdownItem>
         <DropdownItem
-          onClick={async () =>
-            await workspaces.addEmptyFile("pmml").then((file) => {
+          onClick={async () => {
+            if (!props.workspace) {
+              return;
+            }
+            props.addEmptyWorkspaceFile("pmml").then((file) => {
               history.push({
                 pathname: globals.routes.workspaceWithFilePath.path({
                   workspaceId: file.workspaceId,
@@ -536,8 +549,8 @@ export function EditorToolbar(props: Props) {
                   extension: file.extension,
                 }),
               });
-            })
-          }
+            });
+          }}
           key={"new-pmml-item"}
           description="PMML files are used to generate scorecards"
         >
@@ -545,10 +558,10 @@ export function EditorToolbar(props: Props) {
         </DropdownItem>
       </DropdownGroup>,
     ];
-  }, [workspaces, history, globals]);
+  }, [props.workspace, workspaces, history, globals]);
 
   const filesDropdownItems = useMemo(() => {
-    if (!workspaces.active || workspaces.active.files.length === 0) {
+    if (!props.workspace || props.workspace.files.length === 0) {
       return [
         <DropdownItem key="disabled link" isDisabled>
           <i>Loading files ...</i>
@@ -557,22 +570,10 @@ export function EditorToolbar(props: Props) {
     }
 
     return [
-      workspaces.active?.descriptor.origin.kind === WorkspaceKind.GITHUB_REPOSITORY ? (
-        <DropdownGroup key={"github-group"} label="GitHub">
-          <DropdownItem
-            onClick={workspaces.syncWorkspace}
-            key={"push-changes-item"}
-            description={`Push all changes to ${(workspaces.active.descriptor.origin as GitHubRepositoryOrigin).url}`}
-          >
-            Push
-          </DropdownItem>
-        </DropdownGroup>
-      ) : (
-        []
-      ),
       <DropdownGroup key={"workspace-group"} label="Files">
-        {workspaces.active.files
+        {props.workspace.files
           .sort((a, b) => a.path!.localeCompare(b.path!))
+          .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension))
           .map((file, idx: number) => (
             <DropdownItem
               onClick={() => {
@@ -587,7 +588,7 @@ export function EditorToolbar(props: Props) {
               description={
                 "/ " +
                 dirname(file.path!)
-                  .replace(`/${workspaces.active!.descriptor.workspaceId}`, "")
+                  .replace(`/${props.workspace!.descriptor.workspaceId}`, "")
                   .substring(1)
                   .replace(/\//g, " > ")
               }
@@ -625,7 +626,7 @@ export function EditorToolbar(props: Props) {
           ))}
       </DropdownGroup>,
     ];
-  }, [globals, history, workspaces, props.currentFile.path]);
+  }, [globals, history, props.currentFile.path, props.workspace]);
 
   useEffect(() => {
     setFileName(props.currentFile.fileName);
@@ -688,7 +689,7 @@ export function EditorToolbar(props: Props) {
                   dropdownItems={shareItems("lg")}
                   position={DropdownPosition.right}
                 />
-                {workspaces.active && (
+                {props.workspace && (
                   <>
                     <Dropdown
                       onSelect={() => setWorkspaceFilesMenuOpen(false)}
@@ -698,8 +699,8 @@ export function EditorToolbar(props: Props) {
                           data-testid={"files-menu"}
                           onToggle={(isOpen) => setWorkspaceFilesMenuOpen(isOpen)}
                         >
-                          {`${workspaces.active?.files.length} ${
-                            (workspaces.active?.files.length ?? 0) === 1 ? "File" : "Files"
+                          {`${props.workspace?.files.length} ${
+                            (props.workspace?.files.length ?? 0) === 1 ? "File" : "Files"
                           }`}
                         </DropdownToggle>
                       }
@@ -729,7 +730,7 @@ export function EditorToolbar(props: Props) {
                 )}
               </PageHeaderToolsItem>
             </PageHeaderToolsGroup>
-            {!workspaces.active && (
+            {!props.workspace && (
               <PageHeaderToolsGroup>
                 <PageHeaderToolsItem>
                   <Button
@@ -818,14 +819,18 @@ export function EditorToolbar(props: Props) {
                       className={"kogito--editor__toolbar-title"}
                       onChange={setFileName}
                       onKeyUp={onNameInputKeyUp}
-                      onBlur={() => props.onRename(fileName)}
+                      onBlur={() => {
+                        //FIXME: Duplicated when pressing Enter.
+                        //FIXME: Esc is not cancelling.
+                        props.onRename(fileName);
+                      }}
                     />
                   </div>
                 </FlexItem>
                 <FlexItem>
                   <TextContent>
                     <Text
-                      style={{ color: "gray", ...(isEdited || !workspaces.active ? { visibility: "hidden" } : {}) }}
+                      style={{ color: "gray", ...(isEdited || !props.workspace ? { visibility: "hidden" } : {}) }}
                       component={"small"}
                       aria-label={"EmbeddedEditorFile is saved"}
                       data-testid="is-saved-indicator"
