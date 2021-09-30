@@ -797,33 +797,36 @@ export function EditorToolbar(props: Props) {
                 </>
               )}
               {!props.workspace && (
-                <Button
-                  variant={"primary"}
-                  className={"kogito--editor__toolbar button"}
-                  onClick={() => {
-                    props.editor
-                      ?.getContent()
-                      .then((content) =>
-                        workspaces.createWorkspaceFromLocal([
-                          {
-                            getFileContents: () => Promise.resolve(content),
-                            path: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
-                          },
-                        ])
-                      )
-                      .then(({ suggestedFirstFile }) => {
-                        history.replace({
-                          pathname: globals.routes.workspaceWithFilePath.path({
-                            workspaceId: suggestedFirstFile!.workspaceId,
-                            filePath: suggestedFirstFile!.pathRelativeToWorkspaceRootWithoutExtension,
-                            extension: suggestedFirstFile!.extension,
-                          }),
+                <>
+                  &nbsp;&nbsp;&nbsp;
+                  <Button
+                    variant={"primary"}
+                    className={"kogito--editor__toolbar button"}
+                    onClick={() => {
+                      props.editor
+                        ?.getContent()
+                        .then((content) =>
+                          workspaces.createWorkspaceFromLocal([
+                            {
+                              getFileContents: () => Promise.resolve(content),
+                              path: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
+                            },
+                          ])
+                        )
+                        .then(({ suggestedFirstFile }) => {
+                          history.replace({
+                            pathname: globals.routes.workspaceWithFilePath.path({
+                              workspaceId: suggestedFirstFile!.workspaceId,
+                              filePath: suggestedFirstFile!.pathRelativeToWorkspaceRootWithoutExtension,
+                              extension: suggestedFirstFile!.extension,
+                            }),
+                          });
                         });
-                      });
-                  }}
-                >
-                  Make Workspace
-                </Button>
+                    }}
+                  >
+                    Make Workspace
+                  </Button>
+                </>
               )}
             </PageHeaderToolsItem>
             &nbsp;&nbsp;&nbsp;
