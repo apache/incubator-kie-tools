@@ -81,10 +81,12 @@ export function EditorPage(props: Props) {
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
   const [fetchFileError, setFetchFileError] = useState<FetchFileError | undefined>(undefined);
 
-  const { workspace, renameWorkspaceFile, addEmptyWorkspaceFile } = useWorkspace(
-    props.workspaceEnabled ? props.workspaceId : undefined
+  const { workspace, addEmptyWorkspaceFile } = useWorkspace(props.workspaceEnabled ? props.workspaceId : undefined);
+
+  const workspaceFile = useWorkspaceFile(
+    workspace?.descriptor.workspaceId,
+    props.workspaceEnabled ? props.filePath : undefined
   );
-  const workspaceFile = useWorkspaceFile(workspace, props.workspaceEnabled ? props.filePath : undefined);
 
   const queryParamUrl = useMemo(() => {
     return queryParams.get(QueryParams.URL);
@@ -254,23 +256,53 @@ export function EditorPage(props: Props) {
     history.push({ pathname: globals.routes.home.path({}) });
   }, [globals, history]);
 
+  // keep the page in sync with the name of `workspaceFile`, even if changes
   useEffect(() => {
     if (!workspaceFile) {
       return;
     }
 
-    setCurrentFile(() => {
-      return {
-        path: workspaceFile.path,
-        getFileContents: workspaceFile.getFileContents,
-        kind: "local",
-        isReadOnly: false,
-        fileExtension: workspaceFile.extension,
-        fileName: workspaceFile.nameWithoutExtension,
-      };
+    history.replace({
+      pathname: globals.routes.workspaceWithFilePath.path({
+        workspaceId: workspaceFile.workspaceId,
+        filePath: workspaceFile.pathRelativeToWorkspaceRootWithoutExtension,
+        extension: workspaceFile.extension,
+      }),
     });
+  }, [history, globals, workspaceFile]);
+
+  const lastContent = useRef<string>();
+
+  // update EmbeddedEditorFile, but only if content if different than what was saved
+  useEffect(() => {
+    if (!workspaceFile) {
+      return;
+    }
+
+    let canceled = false;
+    workspaceFile.getFileContents().then((content) => {
+      if (canceled || content === lastContent.current) {
+        return;
+      }
+
+      setCurrentFile(() => {
+        return {
+          path: workspaceFile.path,
+          getFileContents: workspaceFile.getFileContents,
+          kind: "local",
+          isReadOnly: false,
+          fileExtension: workspaceFile.extension,
+          fileName: workspaceFile.nameWithoutExtension,
+        };
+      });
+    });
+
+    return () => {
+      canceled = true;
+    };
   }, [workspaceFile]);
 
+  // auto-save
   useEffect(() => {
     if (isDirty) {
       if (!editor?.isReady || !workspaceFile) {
@@ -280,7 +312,10 @@ export function EditorPage(props: Props) {
       editor.getStateControl().setSavedCommand();
       alerts?.closeAll();
 
-      workspaces.updateFile(workspaceFile, () => editor.getContent());
+      editor.getContent().then((content) => {
+        lastContent.current = content;
+        workspaces.updateFile(workspaceFile, () => Promise.resolve(content));
+      });
     }
   }, [editor, alerts, isDirty, workspaces, workspaceFile]);
 
@@ -403,18 +438,9 @@ export function EditorPage(props: Props) {
                   alerts={alerts}
                   currentFile={currentFile}
                   onRename={(newName) => {
-                    if (!workspaceFile) {
-                      return;
+                    if (workspaceFile) {
+                      return workspaces.renameFile(workspaceFile, newName);
                     }
-                    renameWorkspaceFile(workspaceFile, newName).then((renamedFile) => {
-                      history.replace({
-                        pathname: globals.routes.workspaceWithFilePath.path({
-                          workspaceId: renamedFile.workspaceId,
-                          filePath: renamedFile.pathRelativeToWorkspaceRootWithoutExtension,
-                          extension: renamedFile.extension,
-                        }),
-                      });
-                    });
                   }}
                   onClose={onClose}
                 />

@@ -17,18 +17,9 @@
 import LightningFS, { FSBackend, FSConstructorOptions } from "@isomorphic-git/lightning-fs";
 import { Minimatch } from "minimatch";
 import { basename, dirname, join, parse, resolve } from "path";
-import {
-  AddFileBatchEvent,
-  AddFileEvent,
-  ChannelKind,
-  DeleteFileBatchEvent,
-  DeleteFileEvent,
-  MoveFileBatchEvent,
-  MoveFileEvent,
-  UpdateFileEvent,
-} from "../model/Event";
-import { BroadcastService } from "./BroadcastService";
 import { WorkspaceFile } from "../WorkspacesContext";
+import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
+import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 
 export class StorageService {
   private readonly FOLDER_SEPARATOR = "/";
@@ -38,11 +29,7 @@ export class StorageService {
   public readonly fs;
   private readonly fsp;
 
-  public constructor(
-    private readonly dbName: string,
-    private readonly broadcastService: BroadcastService,
-    fsBackend?: FSBackend
-  ) {
+  public constructor(private readonly dbName: string, fsBackend?: FSBackend) {
     this.fs = new LightningFS(this.dbName, { backend: fsBackend } as FSConstructorOptions);
     this.fsp = this.fs.promises;
   }
@@ -51,7 +38,7 @@ export class StorageService {
     return this.FOLDER_SEPARATOR;
   }
 
-  public async createFile(file: WorkspaceFile, broadcast: boolean): Promise<void> {
+  public async createFile(file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
     if (!file.path) {
       throw new Error("File path is not defined");
     }
@@ -63,36 +50,49 @@ export class StorageService {
     await this.createFolderStructure(file.path);
     await this.writeFile(file);
 
-    if (broadcast) {
-      this.broadcastService.send<AddFileEvent>(ChannelKind.ADD_FILE, { path: file.path });
+    if (broadcastArgs.broadcast) {
+      const broadcastChannel1 = new BroadcastChannel(file.path);
+      const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
+      broadcastChannel1.postMessage({ type: "ADD", path: file.path } as WorkspaceFileEvents);
+      broadcastChannel2.postMessage({ type: "ADD_FILE", path: file.path } as WorkspaceEvents);
     }
   }
 
-  public async updateFile(file: WorkspaceFile, broadcast: boolean): Promise<void> {
+  public async updateFile(file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
     if (!file.path || !(await this.exists(file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
 
     await this.writeFile(file);
 
-    if (broadcast) {
-      this.broadcastService.send<UpdateFileEvent>(ChannelKind.UPDATE_FILE, { path: file.path });
+    if (broadcastArgs.broadcast) {
+      const broadcastChannel1 = new BroadcastChannel(file.path);
+      const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
+      broadcastChannel1.postMessage({ type: "UPDATE", path: file.path } as WorkspaceFileEvents);
+      broadcastChannel2.postMessage({ type: "UPDATE_FILE", path: file.path } as WorkspaceEvents);
     }
   }
 
-  public async deleteFile(file: WorkspaceFile, broadcast: boolean): Promise<void> {
+  public async deleteFile(file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
     if (!file.path || !(await this.exists(file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
 
     await this.fsp.unlink(file.path);
 
-    if (broadcast) {
-      this.broadcastService.send<DeleteFileEvent>(ChannelKind.DELETE_FILE, { path: file.path });
+    if (broadcastArgs.broadcast) {
+      const broadcastChannel1 = new BroadcastChannel(file.path);
+      const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
+      broadcastChannel1.postMessage({ type: "DELETE", path: file.path } as WorkspaceFileEvents);
+      broadcastChannel2.postMessage({ type: "DELETE_FILE", path: file.path } as WorkspaceEvents);
     }
   }
 
-  public async renameFile(file: WorkspaceFile, newFileName: string, broadcast: boolean): Promise<WorkspaceFile> {
+  public async renameFile(
+    file: WorkspaceFile,
+    newFileName: string,
+    broadcastArgs: { broadcast: boolean }
+  ): Promise<WorkspaceFile> {
     if (!file.path || !(await this.exists(file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
@@ -111,19 +111,31 @@ export class StorageService {
       getFileContents: file.getFileContents,
       path: newPath,
     });
-    await this.fsp.rename(file.path, newFile.path!);
+    await this.fsp.rename(file.path, newFile.path);
 
-    if (broadcast) {
-      this.broadcastService.send<MoveFileEvent>(ChannelKind.MOVE_FILE, {
-        path: file.path,
-        newPath: newFile.path!,
-      });
+    if (broadcastArgs.broadcast) {
+      const broadcastChannel1 = new BroadcastChannel(file.path);
+      const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
+      broadcastChannel1.postMessage({
+        type: "RENAME",
+        oldPath: file.path,
+        newPath: newFile.path,
+      } as WorkspaceFileEvents);
+      broadcastChannel2.postMessage({
+        type: "RENAME_FILE",
+        oldPath: file.path,
+        newPath: newFile.path,
+      } as WorkspaceEvents);
     }
 
     return newFile;
   }
 
-  public async moveFile(file: WorkspaceFile, newFolderPath: string, broadcast: boolean): Promise<WorkspaceFile> {
+  public async moveFile(
+    file: WorkspaceFile,
+    newFolderPath: string,
+    broadcastArgs: { broadcast: boolean }
+  ): Promise<WorkspaceFile> {
     if (!file.path || !(await this.exists(file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
@@ -133,52 +145,79 @@ export class StorageService {
       getFileContents: file.getFileContents,
       path: newPath,
     });
-    await this.createFile(newFile, false);
-    await this.deleteFile(file, false);
+    await this.createFile(newFile, { broadcast: false });
+    await this.deleteFile(file, { broadcast: false });
 
-    if (broadcast) {
-      this.broadcastService.send<MoveFileEvent>(ChannelKind.MOVE_FILE, {
-        path: file.path,
-        newPath: newFile.path!,
-      });
+    if (broadcastArgs.broadcast) {
+      const broadcastChannel1 = new BroadcastChannel(file.path);
+      const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
+      broadcastChannel1.postMessage({ type: "MOVE", oldPath: file.path, newPath: newFile.path } as WorkspaceFileEvents);
+      broadcastChannel2.postMessage({
+        type: "MOVE_FILE",
+        oldPath: file.path,
+        newPath: newFile.path,
+      } as WorkspaceEvents);
     }
 
     return newFile;
   }
 
-  public async createFiles(files: WorkspaceFile[], broadcast: boolean): Promise<void> {
+  public async createFiles(files: WorkspaceFile[], broadcastArgs: { broadcast: boolean }): Promise<void> {
     for (const file of files) {
-      await this.createFile(file, false);
+      await this.createFile(file, { broadcast: false });
     }
 
-    if (broadcast) {
-      const paths = files.map((file: WorkspaceFile) => file.path!);
-      this.broadcastService.send<AddFileBatchEvent>(ChannelKind.ADD_FILE_BATCH, { paths: paths });
+    if (broadcastArgs.broadcast) {
+      if (files[0]) {
+        const paths = files.map((file) => file.path);
+        const broadcastChannel = new BroadcastChannel(files[0].workspaceId);
+        broadcastChannel.postMessage({
+          type: "ADD_BATCH",
+          workspaceId: files[0].workspaceId,
+          paths,
+        } as WorkspaceEvents);
+      }
     }
   }
 
-  public async deleteFiles(files: WorkspaceFile[], broadcast: boolean): Promise<void> {
+  public async deleteFiles(files: WorkspaceFile[], broadcastArgs: { broadcast: boolean }): Promise<void> {
     for (const file of files) {
-      await this.deleteFile(file, false);
+      await this.deleteFile(file, { broadcast: false });
     }
 
-    if (broadcast) {
-      const paths = files.map((file: WorkspaceFile) => file.path!);
-      this.broadcastService.send<DeleteFileBatchEvent>(ChannelKind.DELETE_FILE_BATCH, { paths: paths });
+    if (broadcastArgs.broadcast) {
+      if (files[0]) {
+        const paths = files.map((file) => file.path);
+        const broadcastChannel = new BroadcastChannel(files[0].workspaceId);
+        broadcastChannel.postMessage({
+          type: "DELETE_BATCH",
+          workspaceId: files[0].workspaceId,
+          paths,
+        } as WorkspaceEvents);
+      }
     }
   }
 
-  public async moveFiles(files: WorkspaceFile[], newFolderPath: string, broadcast: boolean): Promise<void> {
-    const paths = [];
-    const pathMap = new Map<string, string>();
-    for (const file of files) {
-      const f = await this.moveFile(file, newFolderPath, false);
-      paths.push(f.path!);
-      pathMap.set(file.path!, f.path!);
+  public async moveFiles(
+    files: WorkspaceFile[],
+    newFolderPath: string,
+    broadcastArgs: { broadcast: boolean }
+  ): Promise<void> {
+    const paths = new Map<string, string>();
+    for (const fileToMove of files) {
+      const movedFile = await this.moveFile(fileToMove, newFolderPath, { broadcast: false });
+      paths.set(fileToMove.path, movedFile.path);
     }
 
-    if (broadcast) {
-      this.broadcastService.send<MoveFileBatchEvent>(ChannelKind.MOVE_FILE_BATCH, { paths: paths, pathMap: pathMap });
+    if (broadcastArgs.broadcast) {
+      if (files[0]) {
+        const broadcastChannel = new BroadcastChannel(files[0].workspaceId);
+        broadcastChannel.postMessage({
+          type: "MOVE_BATCH",
+          workspaceId: files[0].workspaceId,
+          paths,
+        } as WorkspaceEvents);
+      }
     }
   }
 
@@ -208,7 +247,7 @@ export class StorageService {
     }
 
     const matcher = new Minimatch(globPattern, { dot: true });
-    return files.filter((file: WorkspaceFile) => matcher.match(parse(file.path!).base));
+    return files.filter((file: WorkspaceFile) => matcher.match(parse(file.path).base));
   }
 
   public async wipeStorage(): Promise<void> {
@@ -273,7 +312,7 @@ export class StorageService {
 
   private async getFilePaths(folder: string): Promise<string[]> {
     if (!(await this.exists(folder))) {
-      throw new Error(`Filder ${folder} does not exist`);
+      throw new Error(`Folder ${folder} does not exist`);
     }
 
     const subFolders = await this.fsp.readdir(folder);

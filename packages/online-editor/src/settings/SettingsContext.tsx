@@ -165,47 +165,67 @@ export function SettingsContextProvider(props: any) {
     [kieToolingExtendedServices.baseUrl]
   );
 
+  const value = useMemo(() => {
+    return {
+      open,
+      close,
+      isOpen,
+      activeTab,
+      openshift: {
+        service: openshiftService,
+        status: {
+          get: openshiftStatus,
+          set: setOpenshiftStatus,
+        },
+        config: {
+          get: openshiftConfig,
+          set: setOpenShiftConfig,
+        },
+      },
+      github: {
+        octokit: githubOctokit,
+        authStatus: githubAuthStatus,
+        token: githubToken,
+        user: githubUser,
+        scopes: githubScopes,
+        authService: githubAuthService,
+        service: githubService,
+      },
+      kieToolingExtendedServices: {
+        port: {
+          get: kieToolingExtendedServices.port,
+          set: kieToolingExtendedServices.saveNewPort,
+        },
+      },
+      general: {
+        guidedTourEnabled: {
+          get: isGuidedTourEnabled,
+          set: setGuidedTourEnabled,
+        },
+      },
+    };
+  }, [
+    activeTab,
+    close,
+    githubAuthService,
+    githubAuthStatus,
+    githubOctokit,
+    githubScopes,
+    githubService,
+    githubToken,
+    githubUser,
+    isGuidedTourEnabled,
+    isOpen,
+    kieToolingExtendedServices.port,
+    kieToolingExtendedServices.saveNewPort,
+    open,
+    openshiftConfig,
+    openshiftService,
+    openshiftStatus,
+  ]);
+
   return (
-    <SettingsContext.Provider
-      value={{
-        open,
-        close,
-        isOpen,
-        activeTab,
-        openshift: {
-          service: openshiftService,
-          status: {
-            get: openshiftStatus,
-            set: setOpenshiftStatus,
-          },
-          config: {
-            get: openshiftConfig,
-            set: setOpenShiftConfig,
-          },
-        },
-        github: {
-          octokit: githubOctokit,
-          authStatus: githubAuthStatus,
-          token: githubToken,
-          user: githubUser,
-          scopes: githubScopes,
-          authService: githubAuthService,
-          service: githubService,
-        },
-        kieToolingExtendedServices: {
-          port: {
-            get: kieToolingExtendedServices.port,
-            set: kieToolingExtendedServices.saveNewPort,
-          },
-        },
-        general: {
-          guidedTourEnabled: {
-            get: isGuidedTourEnabled,
-            set: setGuidedTourEnabled,
-          },
-        },
-      }}
-    >
+    <SettingsContext.Provider value={value}>
       {props.children}
       <Modal title="Settings" isOpen={isOpen} onClose={close} variant={ModalVariant.large}>
         <div style={{ height: "calc(100vh * 0.5)" }} className={"kogito-tooling--setings-modal-content"}>

@@ -20,10 +20,8 @@ import { useCallback, useEffect, useMemo } from "react";
 import { FileHandler } from "./handler/FileHandler";
 import { GitRepositoryFileHandler } from "./handler/GitRepositoryFileHandler";
 import { LocalFileHandler } from "./handler/LocalFileHandler";
-import { ChannelKind } from "./model/Event";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
 import { WorkspaceKind } from "./model/WorkspaceOrigin";
-import { BroadcastService } from "./services/BroadcastService";
 import { GitService } from "./services/GitService";
 import { StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
@@ -48,17 +46,8 @@ interface Props {
 export function WorkspacesContextProvider(props: Props) {
   const settings = useSettings();
 
-  const broadcastService = useMemo(() => {
-    const service = new BroadcastService();
-    service.register(Object.values(ChannelKind));
-    return service;
-  }, []);
-
-  const storageService = useMemo(() => new StorageService(INDEXED_DB_NAME, broadcastService), [broadcastService]);
-  const workspaceService = useMemo(
-    () => new WorkspaceService(storageService, broadcastService),
-    [storageService, broadcastService]
-  );
+  const storageService = useMemo(() => new StorageService(INDEXED_DB_NAME), []);
+  const workspaceService = useMemo(() => new WorkspaceService(storageService), [storageService]);
   const gitService = useMemo(() => new GitService(GIT_CORS_PROXY, storageService), [storageService]);
 
   const authInfo = useMemo(
@@ -131,7 +120,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const renameFile = useCallback(
     async (file: WorkspaceFile, newFileName: string) => {
-      return await storageService.renameFile(file, newFileName, true);
+      return await storageService.renameFile(file, newFileName, { broadcast: true });
     },
     [storageService]
   );
@@ -143,7 +132,7 @@ export function WorkspacesContextProvider(props: Props) {
       }
 
       const updatedFile = new WorkspaceFile({ path: file.path, getFileContents: getNewContents });
-      await storageService.updateFile(updatedFile, true);
+      await storageService.updateFile(updatedFile, { broadcast: true });
     },
     [storageService]
   );
@@ -156,7 +145,7 @@ export function WorkspacesContextProvider(props: Props) {
         path: `${contextPath}/new-file.${fileExtension}`,
         getFileContents: () => Promise.resolve(""),
       });
-      await storageService.createFile(newEmptyFile, true);
+      await storageService.createFile(newEmptyFile, { broadcast: true });
       return newEmptyFile;
     },
     [workspaceService, storageService]
@@ -231,22 +220,31 @@ export function WorkspacesContextProvider(props: Props) {
     workspaceService.init();
   }, [workspaceService]);
 
-  return (
-    <WorkspacesContext.Provider
-      value={{
-        workspaceService,
-        resourceContentGet,
-        resourceContentList,
-        renameFile,
-        createWorkspaceFromLocal,
-        createWorkspaceFromGitHubRepository,
-        addEmptyFile,
-        updateFile,
-        prepareZip,
-        listWorkspaceOverviews,
-      }}
-    >
-      {props.children}
-    </WorkspacesContext.Provider>
-  );
+  const value = useMemo(() => {
+    return {
+      workspaceService,
+      resourceContentGet,
+      resourceContentList,
+      renameFile,
+      createWorkspaceFromLocal,
+      createWorkspaceFromGitHubRepository,
+      addEmptyFile,
+      updateFile,
+      prepareZip,
+      listWorkspaceOverviews,
+    };
+  }, [
+    addEmptyFile,
+    createWorkspaceFromGitHubRepository,
+    createWorkspaceFromLocal,
+    listWorkspaceOverviews,
+    prepareZip,
+    renameFile,
+    resourceContentGet,
+    resourceContentList,
+    updateFile,
+    workspaceService,
+  ]);
+
+  return <WorkspacesContext.Provider value={value}>{props.children}</WorkspacesContext.Provider>;
 }

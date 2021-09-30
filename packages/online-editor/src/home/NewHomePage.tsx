@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
@@ -27,18 +27,15 @@ import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { QueryParams } from "../common/Routes";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { OnlineEditorPage } from "./pageTemplate/OnlineEditorPage";
+import { useWorkspaceOverviews } from "../workspace/hooks/WorkspacesHooks";
 
 export function NewHomePage() {
   const globals = useGlobals();
   const history = useHistory();
   const workspaces = useWorkspaces();
   const queryParams = useQueryParams();
-  const [workspaceOverviews, setWorkspaceOverviews] = useState<WorkspaceOverview[]>([]);
+  const workspaceOverviews = useWorkspaceOverviews();
   const [url, setUrl] = useState("");
-
-  useEffect(() => {
-    workspaces.listWorkspaceOverviews().then((workspaces: WorkspaceOverview[]) => setWorkspaceOverviews(workspaces));
-  }, [workspaces]);
 
   return (
     <OnlineEditorPage>

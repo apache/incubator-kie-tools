@@ -17,29 +17,26 @@
 import { WorkspaceFile } from "../WorkspacesContext";
 import JSZip from "jszip";
 import { FileHandler } from "../handler/FileHandler";
-import { AddWorkspaceEvent, ChannelKind, DeleteWorkspaceEvent } from "../model/Event";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { SUPPORTED_FILES_EDITABLE, SUPPORTED_FILES_PATTERN } from "../SupportedFiles";
-import { BroadcastService } from "./BroadcastService";
 import { StorageService } from "./StorageService";
+import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
+import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
 
 export class WorkspaceService {
   private readonly WORKSPACE_CONTEXT_PREFIX = "w";
-  private readonly WORKSPACE_CONFIG: Pick<WorkspaceFile, "path"> = {
-    path: "/workspaces.json",
-  };
+  private readonly WORKSPACE_CONFIG_PATH = "/workspaces.json";
 
   public constructor(
-    public readonly storageService: StorageService, //TODO: make this private again
-    public readonly broadcastService: BroadcastService //TODO: make this private again
+    public readonly storageService: StorageService //TODO: make this private again
   ) {}
 
   public async init(): Promise<void> {
-    const configFile = await this.storageService.getFile(this.WORKSPACE_CONFIG.path!);
+    const configFile = await this.storageService.getFile(this.WORKSPACE_CONFIG_PATH);
 
     if (!configFile) {
-      const file = await this.configAsFile(async () => JSON.stringify([]));
-      await this.storageService.createFile(file, false);
+      const freshConfigFile = await this.configAsFile(async () => JSON.stringify([]));
+      await this.storageService.createFile(freshConfigFile, { broadcast: false });
     }
   }
 
@@ -79,7 +76,7 @@ export class WorkspaceService {
   }
 
   public async list(): Promise<WorkspaceDescriptor[]> {
-    const configFile = await this.storageService.getFile(this.WORKSPACE_CONFIG.path!);
+    const configFile = await this.storageService.getFile(this.WORKSPACE_CONFIG_PATH);
 
     if (!configFile) {
       throw new Error("Workspaces config file not found");
@@ -102,8 +99,8 @@ export class WorkspaceService {
     const descriptors = await this.list();
     descriptors.push(descriptor);
 
-    const file = await this.configAsFile(async () => JSON.stringify(descriptors));
-    await this.storageService.updateFile(file, false);
+    const configFile = await this.configAsFile(async () => JSON.stringify(descriptors));
+    await this.storageService.updateFile(configFile, { broadcast: false });
     await this.storageService.createFolderStructure(`/${descriptor.workspaceId}/`);
 
     const createdFiles = await fileHandler.store(descriptor);
@@ -112,7 +109,10 @@ export class WorkspaceService {
     );
 
     if (broadcast) {
-      this.broadcastService.send<AddWorkspaceEvent>(ChannelKind.ADD_WORKSPACE, { context: descriptor.workspaceId });
+      const broadcastChannel1 = new BroadcastChannel(this.storageService.rootPath);
+      const broadcastChannel2 = new BroadcastChannel(descriptor.workspaceId);
+      broadcastChannel1.postMessage({ type: "ADD_WORKSPACE", workspaceId: descriptor.workspaceId } as WorkspacesEvents);
+      broadcastChannel2.postMessage({ type: "ADD", workspaceId: descriptor.workspaceId } as WorkspaceEvents);
     }
 
     return supportedFiles;
@@ -126,16 +126,20 @@ export class WorkspaceService {
     }
 
     const files = await this.listFiles(descriptor);
-    await this.storageService.deleteFiles(files, false);
+    await this.storageService.deleteFiles(files, { broadcast: false });
 
     descriptors.splice(index, 1);
-    const file = await this.configAsFile(async () => JSON.stringify(descriptors));
-    await this.storageService.updateFile(file, false);
+    const configFile = await this.configAsFile(async () => JSON.stringify(descriptors));
+    await this.storageService.updateFile(configFile, { broadcast: false });
 
     if (broadcast) {
-      this.broadcastService.send<DeleteWorkspaceEvent>(ChannelKind.DELETE_WORKSPACE, {
-        context: descriptor.workspaceId,
-      });
+      const broadcastChannel1 = new BroadcastChannel(this.storageService.rootPath);
+      const broadcastChannel2 = new BroadcastChannel(descriptor.workspaceId);
+      broadcastChannel1.postMessage({
+        type: "DELETE_WORKSPACE",
+        workspaceId: descriptor.workspaceId,
+      } as WorkspacesEvents);
+      broadcastChannel2.postMessage({ type: "DELETE", workspaceId: descriptor.workspaceId } as WorkspaceEvents);
     }
   }
 
@@ -175,9 +179,9 @@ export class WorkspaceService {
     return contextPath;
   }
 
-  private async configAsFile(getFileContents: () => Promise<string | undefined>): Promise<WorkspaceFile> {
+  private async configAsFile(getFileContents: () => Promise<string | undefined>) {
     return new WorkspaceFile({
-      path: this.WORKSPACE_CONFIG.path,
+      path: this.WORKSPACE_CONFIG_PATH,
       getFileContents,
     });
   }

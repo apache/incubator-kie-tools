@@ -35,7 +35,7 @@ export class LocalFileHandler extends FileHandler {
       return new WorkspaceFile({ getFileContents: file.getFileContents, path: updatedPath });
     });
 
-    await this.storageService.createFiles(updatedFiles, false);
+    await this.storageService.createFiles(updatedFiles, { broadcast: false });
     return updatedFiles;
   }
 
