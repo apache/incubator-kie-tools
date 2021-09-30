@@ -20,6 +20,7 @@ import { basename, dirname, join, parse, resolve } from "path";
 import { WorkspaceFile } from "../WorkspacesContext";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
 import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
+import { emptyTemplates } from "../FileTemplates";
 
 export class StorageService {
   private readonly FOLDER_SEPARATOR = "/";
@@ -298,7 +299,11 @@ export class StorageService {
   }
 
   private async writeFile(file: WorkspaceFile): Promise<void> {
-    const content = (await file.getFileContents()) ?? "";
+    const emptyTemplate =
+      file.extension in emptyTemplates
+        ? emptyTemplates[file.extension as keyof typeof emptyTemplates]
+        : emptyTemplates.default;
+    const content = (await file.getFileContents()) || emptyTemplate;
     await this.fsp.writeFile(file.path, this.encoder.encode(content));
   }
 
