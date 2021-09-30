@@ -58,6 +58,8 @@ const (
 	ProcessingImageStreamDelta ConditionReason = "ProcessingImageStreamDelta"
 	// ProcessingProtoBufConfigMapDelta ...
 	ProcessingProtoBufConfigMapDelta ConditionReason = "ProcessingProtoBufConfigMapDelta"
+	// ImageNotFound ...
+	ImageNotFound ConditionReason = "ImageNotFound"
 )
 
 const (
@@ -169,6 +171,15 @@ func ErrorForProcessingProtoBufConfigMapDelta() ReconciliationError {
 		reason:                 ProcessingProtoBufConfigMapDelta,
 		reconciliationInterval: ReconciliationAfterFive,
 		innerError:             fmt.Errorf("Processing Protobuf configmap "),
+	}
+}
+
+// ErrorForImageNotFound ...
+func ErrorForImageNotFound() ReconciliationError {
+	return ReconciliationError{
+		reason:                 ImageNotFound,
+		reconciliationInterval: ReconciliationAfterTen,
+		innerError:             fmt.Errorf("Image not found "),
 	}
 }
 

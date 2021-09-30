@@ -133,7 +133,7 @@ func (s *serviceDeployer) Deploy() error {
 	}
 
 	imageHandler := s.newImageHandler()
-	if err := imageHandler.ReconcileImageStream(s.instance); err != nil {
+	if err = imageHandler.ReconcileImageStream(s.instance); err != nil {
 		return err
 	}
 
