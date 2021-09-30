@@ -250,15 +250,9 @@ export class StorageService {
   public async wipeStorage(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       const request = indexedDB.deleteDatabase(this.dbName);
-      request.onsuccess = function () {
-        resolve();
-      };
-      request.onerror = function () {
-        reject("Could not delete database");
-      };
-      request.onblocked = function () {
-        reject("Could not delete database due to the operation being blocked");
-      };
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject("Could not delete database");
+      request.onblocked = () => reject("Could not delete database due to the operation being blocked");
     });
   }
 

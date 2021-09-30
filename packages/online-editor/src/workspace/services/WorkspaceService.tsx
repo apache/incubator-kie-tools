@@ -40,6 +40,13 @@ export class WorkspaceService {
     }
   }
 
+  public async deleteAll() {
+    await this.storageService.wipeStorage();
+    await this.init();
+    const broadcastChannel = new BroadcastChannel(this.storageService.rootPath);
+    broadcastChannel.postMessage({ type: "DELETE_ALL" } as WorkspacesEvents);
+  }
+
   public async listFiles(descriptor: WorkspaceDescriptor, globPattern?: string): Promise<WorkspaceFile[]> {
     const contextPath = await this.resolveContextPath(descriptor);
     return await this.storageService.getFiles(contextPath, globPattern);

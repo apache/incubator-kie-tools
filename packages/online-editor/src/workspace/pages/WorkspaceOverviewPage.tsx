@@ -15,20 +15,13 @@
  */
 
 import * as React from "react";
+import { useState } from "react";
 import { WorkspaceFile } from "../WorkspacesContext";
 import { Link } from "react-router-dom";
 import { SUPPORTED_FILES_EDITABLE } from "../SupportedFiles";
 import { OnlineEditorPage } from "../../home/pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import {
-  Text,
-  TextContent,
-  TextList,
-  TextListItem,
-  TextListItemVariants,
-  TextListVariants,
-  TextVariants,
-} from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { useGlobals } from "../../common/GlobalContext";
 import {
   EmptyState,
@@ -37,25 +30,56 @@ import {
   EmptyStateSecondaryActions,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { AngleLeftIcon } from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useHistory } from "react-router";
 import { useWorkspace } from "../hooks/WorkspaceHooks";
+import { Gallery, GalleryItem } from "@patternfly/react-core/dist/js/layouts/Gallery";
+import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { NewFileDropdownItems } from "../../editor/NewFileDropdownItems";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import {
+  DataList,
+  DataListCell,
+  DataListItem,
+  DataListItemCells,
+  DataListItemRow,
+} from "@patternfly/react-core/dist/js/components/DataList";
+
+import {
+  DescriptionList,
+  DescriptionListDescription,
+  DescriptionListGroup,
+  DescriptionListTerm,
+} from "@patternfly/react-core/dist/js/components/DescriptionList";
 
 export interface Props {
   workspaceId: string;
 }
 
+const labelColors = new Map<string, string>([
+  ["bpmn", "green"],
+  ["dmn", "blue"],
+  ["pmml", "purple"],
+]);
+
 export function WorkspaceOverviewPage(props: Props) {
   const history = useHistory();
   const globals = useGlobals();
   const { workspace, addEmptyWorkspaceFile } = useWorkspace(props.workspaceId);
+  const [isNewFileDropdownOpen, setNewFileDropdownOpen] = useState(false);
 
   return (
     <OnlineEditorPage>
       <PageSection isFilled={true}>
         <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
+          <Button variant="link" isInline={true} icon={<AngleLeftIcon />} onClick={() => history.goBack()}>
+            Back
+          </Button>
+          <br />
+          <br />
           {!workspace && <div>{`Couldn't find workspace with id '${props.workspaceId}'`}</div>}
           {workspace && (
             <>
@@ -64,116 +88,175 @@ export function WorkspaceOverviewPage(props: Props) {
               </TextContent>
 
               <br />
-              <TextContent>
-                <TextList component={TextListVariants.dl}>
-                  <TextListItem component={TextListItemVariants.dt}>ID</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>{workspace.descriptor.workspaceId}</TextListItem>
-
-                  <TextListItem component={TextListItemVariants.dt}>Type</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>{workspace.descriptor.origin.kind}</TextListItem>
-
-                  <TextListItem component={TextListItemVariants.dt}>Created in</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>{workspace.descriptor.createdIn}</TextListItem>
-                </TextList>
-              </TextContent>
-
               <br />
-              <br />
-              {workspace.files?.length <= 0 && (
-                <EmptyState>
-                  <EmptyStateIcon icon={CubesIcon} />
-                  <Title headingLevel="h4" size="lg">
-                    {`You currently don't have any files.`}
-                  </Title>
-                  <EmptyStateBody>{`Create a new file`}</EmptyStateBody>
-                  <EmptyStateSecondaryActions>
-                    <Flex grow={{ default: "grow" }}>
-                      <FlexItem>
-                        <Button
-                          isLarge
-                          variant={ButtonVariant.secondary}
-                          onClick={() =>
-                            addEmptyWorkspaceFile("bpmn").then((file) => {
-                              history.push({
-                                pathname: globals.routes.workspaceWithFilePath.path({
-                                  workspaceId: file.workspaceId,
-                                  filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
-                                  extension: file.extension,
-                                }),
-                              });
-                            })
-                          }
-                        >
-                          BPMN
-                        </Button>
-                      </FlexItem>
-                      <FlexItem>
-                        <Button
-                          isLarge
-                          variant={ButtonVariant.secondary}
-                          onClick={() =>
-                            addEmptyWorkspaceFile("dmn").then((file) => {
-                              history.push({
-                                pathname: globals.routes.workspaceWithFilePath.path({
-                                  workspaceId: file.workspaceId,
-                                  filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
-                                  extension: file.extension,
-                                }),
-                              });
-                            })
-                          }
-                        >
-                          DMN
-                        </Button>
-                      </FlexItem>
-                      <FlexItem>
-                        <Button
-                          isLarge
-                          variant={ButtonVariant.secondary}
-                          onClick={() =>
-                            addEmptyWorkspaceFile("pmml").then((file) => {
-                              history.push({
-                                pathname: globals.routes.workspaceWithFilePath.path({
-                                  workspaceId: file.workspaceId,
-                                  filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
-                                  extension: file.extension,
-                                }),
-                              });
-                            })
-                          }
-                        >
-                          PMML
-                        </Button>
-                      </FlexItem>
-                    </Flex>
-                  </EmptyStateSecondaryActions>
-                </EmptyState>
-              )}
-
-              {workspace.files?.length > 0 && (
-                <>
+              <Gallery maxWidths={{ default: "100%", lg: "50%", md: "100%" }}>
+                <GalleryItem>
                   <TextContent>
-                    <Text component={TextVariants.h3}>Files</Text>
+                    <Text component={TextVariants.h2}>Info</Text>
                   </TextContent>
-                  {workspace.files.map((file: WorkspaceFile) => (
-                    <div key={file.path}>
-                      {SUPPORTED_FILES_EDITABLE.includes(file.extension) ? (
-                        <Link
-                          to={globals.routes.workspaceWithFilePath.path({
-                            workspaceId: workspace.descriptor.workspaceId,
-                            filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
-                            extension: file.extension,
-                          })}
-                        >
-                          {file.pathRelativeToWorkspaceRoot}
-                        </Link>
-                      ) : (
-                        <h2>{file.pathRelativeToWorkspaceRoot}</h2>
-                      )}
-                    </div>
-                  ))}
-                </>
-              )}
+                  <br />
+                  <DescriptionList>
+                    <DescriptionListGroup>
+                      <DescriptionListTerm>Id</DescriptionListTerm>
+                      <DescriptionListDescription>{workspace.descriptor.workspaceId}</DescriptionListDescription>
+                    </DescriptionListGroup>
+                    <DescriptionListGroup>
+                      <DescriptionListTerm>Type</DescriptionListTerm>
+                      <DescriptionListDescription>{workspace.descriptor.origin.kind}</DescriptionListDescription>
+                    </DescriptionListGroup>
+                    <DescriptionListGroup>
+                      <DescriptionListTerm>Created in</DescriptionListTerm>
+                      <DescriptionListDescription>{workspace.descriptor.createdIn}</DescriptionListDescription>
+                    </DescriptionListGroup>
+                  </DescriptionList>
+                </GalleryItem>
+                <GalleryItem>
+                  {workspace.files?.length <= 0 && (
+                    <EmptyState>
+                      <EmptyStateIcon icon={CubesIcon} />
+                      <Title headingLevel="h4" size="lg">
+                        {`You currently don't have any files.`}
+                      </Title>
+                      <EmptyStateBody>{`Create a new file`}</EmptyStateBody>
+                      <EmptyStateSecondaryActions>
+                        <Flex grow={{ default: "grow" }}>
+                          <FlexItem>
+                            <Button
+                              isLarge
+                              variant={ButtonVariant.secondary}
+                              onClick={() =>
+                                addEmptyWorkspaceFile("bpmn").then((file) => {
+                                  history.push({
+                                    pathname: globals.routes.workspaceWithFilePath.path({
+                                      workspaceId: file.workspaceId,
+                                      filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                                      extension: file.extension,
+                                    }),
+                                  });
+                                })
+                              }
+                            >
+                              BPMN
+                            </Button>
+                          </FlexItem>
+                          <FlexItem>
+                            <Button
+                              isLarge
+                              variant={ButtonVariant.secondary}
+                              onClick={() =>
+                                addEmptyWorkspaceFile("dmn").then((file) => {
+                                  history.push({
+                                    pathname: globals.routes.workspaceWithFilePath.path({
+                                      workspaceId: file.workspaceId,
+                                      filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                                      extension: file.extension,
+                                    }),
+                                  });
+                                })
+                              }
+                            >
+                              DMN
+                            </Button>
+                          </FlexItem>
+                          <FlexItem>
+                            <Button
+                              isLarge
+                              variant={ButtonVariant.secondary}
+                              onClick={() =>
+                                addEmptyWorkspaceFile("pmml").then((file) => {
+                                  history.push({
+                                    pathname: globals.routes.workspaceWithFilePath.path({
+                                      workspaceId: file.workspaceId,
+                                      filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                                      extension: file.extension,
+                                    }),
+                                  });
+                                })
+                              }
+                            >
+                              PMML
+                            </Button>
+                          </FlexItem>
+                        </Flex>
+                      </EmptyStateSecondaryActions>
+                    </EmptyState>
+                  )}
+
+                  {workspace.files?.length > 0 && (
+                    <>
+                      <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                        <FlexItem>
+                          <TextContent>
+                            <Text component={TextVariants.h2}>Files</Text>
+                          </TextContent>
+                        </FlexItem>
+                        <FlexItem>
+                          <Dropdown
+                            onSelect={() => setNewFileDropdownOpen(false)}
+                            toggle={
+                              <DropdownToggle
+                                toggleIndicator={null}
+                                onToggle={(isOpen) => setNewFileDropdownOpen(isOpen)}
+                              >
+                                New file
+                              </DropdownToggle>
+                            }
+                            isPlain={true}
+                            isOpen={isNewFileDropdownOpen}
+                            dropdownItems={[
+                              <NewFileDropdownItems
+                                key={"new-file-dropdown-items"}
+                                workspace={workspace}
+                                addEmptyWorkspaceFile={addEmptyWorkspaceFile}
+                              />,
+                            ]}
+                            position={DropdownPosition.right}
+                          />
+                        </FlexItem>
+                      </Flex>
+
+                      <br />
+
+                      <DataList aria-label="draggable data list example" isCompact>
+                        {workspace.files.map((file: WorkspaceFile) => (
+                          <React.Fragment key={file.path}>
+                            <DataListItem aria-labelledby="simple-item1" id="data1" key="1">
+                              <DataListItemRow>
+                                <DataListItemCells
+                                  dataListCells={[
+                                    <DataListCell key={"label"} isIcon={true} style={{ minWidth: "60px" }}>
+                                      <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
+                                        <Label color={(labelColors.get(file.extension) as any) ?? "grey"}>
+                                          {file.extension}
+                                        </Label>
+                                      </Flex>
+                                    </DataListCell>,
+                                    <DataListCell key="link" isFilled={false}>
+                                      {SUPPORTED_FILES_EDITABLE.includes(file.extension) ? (
+                                        <Link
+                                          to={globals.routes.workspaceWithFilePath.path({
+                                            workspaceId: workspace.descriptor.workspaceId,
+                                            filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                                            extension: file.extension,
+                                          })}
+                                        >
+                                          {file.pathRelativeToWorkspaceRoot}
+                                        </Link>
+                                      ) : (
+                                        <Text component={TextVariants.p}>{file.pathRelativeToWorkspaceRoot}</Text>
+                                      )}
+                                    </DataListCell>,
+                                  ]}
+                                />
+                              </DataListItemRow>
+                            </DataListItem>
+                          </React.Fragment>
+                        ))}
+                      </DataList>
+                    </>
+                  )}
+                </GalleryItem>
+              </Gallery>
             </>
           )}
         </PageSection>

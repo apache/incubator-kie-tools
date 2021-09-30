@@ -133,9 +133,7 @@ export function NewHomePage() {
                         <CardTitle>From URL</CardTitle>
                         <CardBody>
                           <TextContent>
-                            <Text component={TextVariants.p}>
-                              GitHub (github.com) and Gist (gist.github.com) URLs are supported.
-                            </Text>
+                            <Text component={TextVariants.p}>Gist (gist.github.com) URLs are supported.</Text>
                           </TextContent>
                           <br />
                           <TextInput
@@ -329,8 +327,20 @@ export function NewHomePage() {
           <PageSection isFilled={true} style={{ height: "100%" }}>
             <PageSection variant={"light"}>
               <TextContent>
-                <Text component={TextVariants.h1}>Workspaces</Text>
-                <br />
+                <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                  <FlexItem>
+                    <Text component={TextVariants.h1}>Workspaces</Text>
+                  </FlexItem>
+                  <br />
+                  <br />
+                  {workspaceOverviews.length > 0 && (
+                    <FlexItem>
+                      <Button variant={ButtonVariant.link} onClick={() => workspaces.workspaceService.deleteAll()}>
+                        Delete all
+                      </Button>
+                    </FlexItem>
+                  )}
+                </Flex>
                 {workspaceOverviews.length > 0 && (
                   <Stack hasGutter={true}>
                     {workspaceOverviews.map((workspace: WorkspaceOverview) => (
@@ -394,7 +404,10 @@ function WorkspaceCard(props: { workspace: WorkspaceOverview }) {
       <CardBody>
         <TextContent>
           <Text component={TextVariants.p}>
-            {`Created at: ${props.workspace.createdIn.toLocaleString()}, Last updated at: ${props.workspace.lastUpdatedIn.toLocaleString()}`}
+            <b>{`Created in: `}</b>
+            {props.workspace.createdIn.toLocaleString()}
+            <b>{`, Last updated at: `}</b>
+            {props.workspace.lastUpdatedIn.toLocaleString()}
           </Text>
           <Text component={TextVariants.p}>
             {`${props.workspace.filesCount} files, ${props.workspace.modelsCount} models`}

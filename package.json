@@ -108,7 +108,7 @@
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
     "sass": "^1.32.12",
-    "sass-loader": "^11.0.1",
+    "sass-loader": "^12.1.0",
     "sax": "^1.2.4",
     "selenium-webdriver": "^4.0.0-beta.3",
     "semver": "^7.3.5",

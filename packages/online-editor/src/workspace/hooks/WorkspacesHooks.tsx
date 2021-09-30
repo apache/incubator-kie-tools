@@ -25,5 +25,6 @@ export function useWorkspaceOverviews() {
 }
 
 export type WorkspacesEvents =
+  | { type: "DELETE_ALL" }
   | { type: "ADD_WORKSPACE"; workspaceId: string }
   | { type: "DELETE_WORKSPACE"; workspaceId: string };
