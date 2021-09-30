@@ -1,0 +1,26 @@
+/target
+/local
+target/
+# Eclipse, Netbeans and IntelliJ files
+/.*
+/**/.*
+!.gitignore
+/nbproject
+*.ipr
+*.iws
+*.iml
+
+# Repository wide ignore mac DS_Store files
+.DS_Store
+
+# Created by Zanata
+/org.uberfire
+/org.dashbuilder
+
+# Live editing asciidoc leaves .html files behind in the source dir
+uberfire-docs/src/main/asciidoc/*.html
+**/dependency-reduced-pom.xml
+
+**/node_modules
+**/package-lock.json
+**/dist

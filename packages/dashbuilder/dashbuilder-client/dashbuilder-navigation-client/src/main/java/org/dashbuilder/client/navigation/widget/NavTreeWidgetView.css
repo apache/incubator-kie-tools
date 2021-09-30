@@ -1,0 +1,21 @@
+.uf-navtree-widget-icon {
+  font-size: larger;
+  margin-right: 5px;
+}
+
+.uf-navtree-widget-non-clickable {
+  font-size: larger;
+  color: black;
+}
+
+.uf-navtree-widget-non-clicked {
+  font-size: larger;
+  color: black;
+  cursor: pointer;
+}
+
+.uf-navtree-widget-clicked {
+  font-size: larger;
+  color: black;
+  text-decoration: underline;
+}

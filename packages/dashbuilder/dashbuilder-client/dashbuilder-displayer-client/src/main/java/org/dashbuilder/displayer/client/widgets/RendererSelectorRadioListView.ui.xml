@@ -1,0 +1,16 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+
+  <ui:with field="i18n" type="org.dashbuilder.displayer.client.resources.i18n.CommonConstants"/>
+
+  <ui:style>
+    .mainPanelStyle {
+      margin: 10px;
+    }
+  </ui:style>
+
+  <g:HorizontalPanel ui:field="radioButtonsPanel" addStyleNames="{style.mainPanelStyle}" title="{i18n.renderer_selector_title}" spacing="10" />
+
+</ui:UiBinder>

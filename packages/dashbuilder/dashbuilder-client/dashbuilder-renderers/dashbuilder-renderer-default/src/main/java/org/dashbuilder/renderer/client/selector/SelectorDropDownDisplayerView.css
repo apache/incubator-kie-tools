@@ -1,0 +1,30 @@
+.selector-ddown-container {
+  margin: 5px;
+}
+
+.selector-ddown-button {
+  text-align: left;
+  overflow: hidden;
+}
+
+.selector-ddown-text {
+  float: left;
+  overflow: hidden;
+}
+
+.selector-ddown-reset-anchor {
+  margin-right: 10px;
+  cursor: pointer;
+  float: right;
+}
+
+.selector-ddown-caret {
+  float: right;
+  margin-top: 5px;
+  margin-left: 10px;
+}
+
+.selector-ddown-menu {
+  max-height: 252px;
+  overflow-y: auto;
+}

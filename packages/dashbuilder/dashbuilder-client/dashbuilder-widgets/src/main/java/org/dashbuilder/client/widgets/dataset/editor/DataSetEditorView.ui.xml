@@ -1,0 +1,117 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+             xmlns:bhtml="urn:import:org.gwtbootstrap3.client.ui.html"
+             xmlns:editors="urn:import:org.dashbuilder.client.widgets.dataset.editor"
+             xmlns:editors.attrs="urn:import:org.dashbuilder.client.widgets.dataset.editor.attributes">
+  
+  <ui:with field="i18n" type="org.dashbuilder.client.widgets.resources.i18n.DataSetEditorConstants"/>
+  
+  <ui:style>
+    .mainPanel {
+      width: 100%;
+      margin: 20px;
+    }
+    .tabPane {
+      margin-top: 25px;
+    }
+    .editorPanel {
+      width: 100%;
+    }
+    .filterAndColumnsPanel {
+      float: left;
+      margin-right: 20px;
+    }
+    .filterAndColumnsPanelToggleButton {
+      position: absolute;
+      left: 25px;
+      color: black;
+      filter: alpha(opacity=5);
+      opacity: 0.5;
+    }
+    .tablePreviewPanel {
+      margin-left: 40px;
+      height: 100%;
+      max-height: 450px;
+      overflow: auto;
+    }
+    .previewErrorAlert {
+      margin-top: 20px;
+    }
+  </ui:style>
+  
+  <g:FlowPanel addStyleNames="{style.mainPanel}">
+
+    <b:NavTabs>
+      <b:TabListItem ui:field="basicAttributesTabItem" text="{i18n.tab_configguration}" title="{i18n.tab_configguration}" active="true" />
+      <b:TabListItem ui:field="previewTabItem" text="{i18n.tab_preview}" title="{i18n.tab_preview}"/>
+      <b:TabListItem ui:field="advancedAttributesTabItem" text="{i18n.tab_advancedConfiguration}" title="{i18n.tab_advancedConfiguration}"/>
+    </b:NavTabs>
+
+    <b:TabContent>
+
+      <!-- Configuration tab. -->
+      <b:TabPane ui:field="basicAttributesTabPane" active="true" addStyleNames="{style.tabPane}">
+        
+        <g:FlowPanel addStyleNames="{style.editorPanel}">
+          <editors.attrs:DataSetDefBasicAttributesEditor.View ui:field="basicAttributesEditorView"/>
+        </g:FlowPanel>
+        
+        <g:FlowPanel addStyleNames="{style.editorPanel}">
+          <g:IsWidget ui:field="providerAttributesEditorView"/>
+        </g:FlowPanel>
+        
+      </b:TabPane>
+
+      <!-- Preview tab. -->
+      <b:TabPane ui:field="previewTabPane">
+
+        <!-- Using a disclosure panel so this panel can be collapsed to allow full witdh table preview. -->
+        <g:DisclosurePanel ui:field="filterAndColumnsPanel" open="true" addStyleNames="{style.filterAndColumnsPanel}">
+          
+          <g:customHeader>
+            <b:Button icon="STEP_BACKWARD" type="LINK" size="LARGE" ui:field="filterAndColumnsPanelToggleButton" 
+                      title="{i18n.hideColumnsAndFilter}" addStyleNames="{style.filterAndColumnsPanelToggleButton} "/>
+          </g:customHeader>
+
+          <g:FlowPanel addStyleNames="{style.editorPanel} {style.filterAndColumnsPanel}">
+            <editors:DataSetDefColumnsFilterEditor.View ui:field="columnsAndFilterEditorView"/>
+          </g:FlowPanel>
+          
+        </g:DisclosurePanel>
+
+        <g:FlowPanel ui:field="previewTablePanel" addStyleNames="{style.tablePreviewPanel}">
+          <editors:DataSetDefPreviewTable.View ui:field="previewTableView"/>
+        </g:FlowPanel>
+
+        <b:Alert ui:field="previewErrorNotification" type="DANGER" dismissable="false" visible="false"
+                 addStyleNames="{style.previewErrorAlert}">
+          <b:Icon type="EXCLAMATION_TRIANGLE" marginRight="10"/>
+          <bhtml:Text ui:field="notificationLabel"/>
+        </b:Alert>
+        
+      </b:TabPane>
+
+      <!-- Preview tab. -->
+      <b:TabPane ui:field="advancedAttributesTabPane" addStyleNames="{style.tabPane}">
+
+        <g:FlowPanel addStyleNames="{style.editorPanel}">
+          <editors.attrs:DataSetDefCacheAttributesEditorView ui:field="clientCacheAttributesEditorView"/>
+        </g:FlowPanel>
+        
+        <g:FlowPanel addStyleNames="{style.editorPanel}">
+          <editors.attrs:DataSetDefCacheAttributesEditorView ui:field="backendCacheAttributesEditorView"/>
+        </g:FlowPanel>
+
+        <g:FlowPanel addStyleNames="{style.editorPanel}">
+          <editors.attrs:DataSetDefRefreshAttributesEditor.View ui:field="refreshEditorView"/>
+        </g:FlowPanel>
+
+      </b:TabPane>
+      
+    </b:TabContent>
+    
+  </g:FlowPanel>
+  
+</ui:UiBinder>

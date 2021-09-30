@@ -1,0 +1,29 @@
+{
+  "uuid": "e26a81a1-5636-493c-96e0-51bc32322b17",
+  "name": "uploaded_life_expectancy",
+  "provider": "CSV",
+  "isPublic": true,
+  "cacheEnabled": false,
+  "cacheMaxRows": 1000,
+  "pushEnabled": false,
+  "pushMaxSize": 1024,
+  "refreshAlways": false,
+  "filePath": "C:\\fakepath\\life_expectancy.csv",
+  "separatorChar": ",",
+  "quoteChar": "\"",
+  "escapeChar": "\\",
+  "datePattern": "MM-dd-yyyy HH:mm:ss",
+  "numberPattern": "#,###.##",
+  "allColumns": false,
+  "columns": [
+    {
+      "id": "Country",
+      "type": "label"
+    },
+    {
+      "id": "Life Expectancy",
+      "type": "number",
+      "pattern": "#,###.##"
+    }
+  ]
+}

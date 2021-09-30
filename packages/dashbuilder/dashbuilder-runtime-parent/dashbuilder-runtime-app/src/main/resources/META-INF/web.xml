@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  version="2.5">
+  <!-- Custom Component assets server -->
+  <servlet>
+    <servlet-name>DashbuilderExternalComponentsServlet</servlet-name>
+    <servlet-class>org.dashbuilder.external.ExternalComponentServlet</servlet-class>
+    <!--  Enable this parameter to cache components and have a better performance
+    <init-param>
+      <param-name>cache-control</param-name>
+      <param-value>max-age=2592000</param-value>
+    </init-param>
+    -->
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DashbuilderExternalComponentsServlet</servlet-name>
+    <url-pattern>/dashbuilder/component/*</url-pattern>
+  </servlet-mapping>
+</web-app>

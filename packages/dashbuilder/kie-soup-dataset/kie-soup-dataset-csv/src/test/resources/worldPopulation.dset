@@ -1,0 +1,13 @@
+{
+    "uuid": "worldPopulation",
+    "provider": "CSV",
+    "pushEnabled": true,
+    "pushMaxSize": 1024,
+    "isPublic": true,
+    "filePath": "worldPopulation.csv",
+    "separatorChar": "\,",
+    "quoteChar": "\"",
+    "escapeChar": "\\",
+    "datePattern": "MM-dd-yyyy",
+    "numberPattern": "#,###.##"
+}

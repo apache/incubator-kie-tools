@@ -1,0 +1,18 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+
+  <ui:with field="i18n" type="org.dashbuilder.displayer.client.resources.i18n.CommonConstants"/>
+
+  <ui:style>
+    .mainPanelStyle {
+      margin: 10px;
+    }
+  </ui:style>
+
+  <b:TabPanel ui:field="tabPanel" addStyleNames="{style.mainPanelStyle}" title="{i18n.renderer_selector_title}" tabPosition="TOP">
+    <b:TabContent ui:field="tabContent"/>
+    <b:NavTabs ui:field="navTabs"/>
+  </b:TabPanel>
+</ui:UiBinder>

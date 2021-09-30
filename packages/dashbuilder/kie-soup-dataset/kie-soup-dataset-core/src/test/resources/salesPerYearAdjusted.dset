@@ -1,0 +1,11 @@
+{
+    "uuid": "salesPerYearAdjusted",
+    "provider": "BEAN",
+    "pushEnabled": true,
+    "pushMaxSize": 1024,
+    "isPublic": true,
+    "generatorClass": "org.dashbuilder.dataprovider.SalesPerYearDataSetGenerator",
+    "generatorParams": [
+        {"param": "multiplier", "value": "0.9"}
+    ]
+}
