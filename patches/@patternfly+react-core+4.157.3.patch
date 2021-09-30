@@ -1,0 +1,13 @@
+diff --git a/node_modules/@patternfly/react-core/dist/js/components/Modal/Modal.d.ts b/node_modules/@patternfly/react-core/dist/js/components/Modal/Modal.d.ts
+index fdd937d..65e3472 100644
+--- a/node_modules/@patternfly/react-core/dist/js/components/Modal/Modal.d.ts
++++ b/node_modules/@patternfly/react-core/dist/js/components/Modal/Modal.d.ts
+@@ -21,7 +21,7 @@ export interface ModalProps extends React.HTMLProps<HTMLDivElement>, OUIAProps {
+     /** Optional title label text for screen readers */
+     titleLabel?: string;
+     /** Id to use for Modal Box label */
+-    'aria-labelledby'?: string | null;
++    'aria-labelledby'?: string;
+     /** Accessible descriptor of modal */
+     'aria-label'?: string;
+     /** Id to use for Modal Box descriptor */
