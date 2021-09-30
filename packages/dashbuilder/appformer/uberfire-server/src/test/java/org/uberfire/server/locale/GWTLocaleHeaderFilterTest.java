@@ -36,7 +36,7 @@ public class GWTLocaleHeaderFilterTest {
 
     @Test
     public void testLocaleDefault() throws IOException, ServletException {
-        final GWTLocaleHeaderFilter localeHeaderFilter = getFilter();
+        final var localeHeaderFilter = getFilter();
 
         final Writer sw = new StringWriter();
 
@@ -59,13 +59,13 @@ public class GWTLocaleHeaderFilterTest {
 
     @Test
     public void testLocaleWithLanguageParameter() throws IOException, ServletException {
-        final GWTLocaleHeaderFilter localeHeaderFilter = getFilter();
+        final var localeHeaderFilter = getFilter();
 
-        final Writer sw = new StringWriter();
+        final var sw = new StringWriter();
 
-        final HttpServletRequest req = mock(HttpServletRequest.class);
-        final HttpServletResponse resp = mock(HttpServletResponse.class);
-        final FilterChain chain = mock(FilterChain.class);
+        final var req = mock(HttpServletRequest.class);
+        final var resp = mock(HttpServletResponse.class);
+        final var chain = mock(FilterChain.class);
 
         when(req.getParameter("locale")).thenReturn("ja");
 
@@ -82,13 +82,13 @@ public class GWTLocaleHeaderFilterTest {
 
     @Test
     public void testLocaleWithLanguageAndCountryParameter() throws IOException, ServletException {
-        final GWTLocaleHeaderFilter localeHeaderFilter = getFilter();
+        final var localeHeaderFilter = getFilter();
 
-        final Writer sw = new StringWriter();
+        final var sw = new StringWriter();
 
-        final HttpServletRequest req = mock(HttpServletRequest.class);
-        final HttpServletResponse resp = mock(HttpServletResponse.class);
-        final FilterChain chain = mock(FilterChain.class);
+        final var req = mock(HttpServletRequest.class);
+        final var resp = mock(HttpServletResponse.class);
+        final var chain = mock(FilterChain.class);
 
         when(req.getParameter("locale")).thenReturn("ja_JP");
 
@@ -105,13 +105,13 @@ public class GWTLocaleHeaderFilterTest {
 
     @Test
     public void testNonExistentLocaleParameter() throws IOException, ServletException {
-        final GWTLocaleHeaderFilter localeHeaderFilter = getFilter();
+        final var localeHeaderFilter = getFilter();
 
-        final Writer sw = new StringWriter();
+        final var sw = new StringWriter();
 
-        final HttpServletRequest req = mock(HttpServletRequest.class);
-        final HttpServletResponse resp = mock(HttpServletResponse.class);
-        final FilterChain chain = mock(FilterChain.class);
+        final var req = mock(HttpServletRequest.class);
+        final var resp = mock(HttpServletResponse.class);
+        final var chain = mock(FilterChain.class);
 
         when(req.getParameter("locale")).thenReturn("xxx_xxx");
         when(req.getLocale()).thenReturn(Locale.US);
@@ -130,7 +130,7 @@ public class GWTLocaleHeaderFilterTest {
     private GWTLocaleHeaderFilter getFilter() {
         return new GWTLocaleHeaderFilter() {
             protected CharResponseWrapper getWrapper(final HttpServletResponse response) {
-                final CharResponseWrapper wrapper = new CharResponseWrapper(response);
+                final var wrapper = new CharResponseWrapper(response);
                 final String text = new Scanner(getClass().getResourceAsStream("/sample.html"),
                                                 "UTF-8").useDelimiter("\\A").next();
                 try {

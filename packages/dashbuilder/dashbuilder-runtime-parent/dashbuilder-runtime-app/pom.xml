@@ -14,7 +14,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dashbuilder</groupId>
   <artifactId>dashbuilder-runtime-app</artifactId>
-  <version>8.0.0-SNAPSHOT</version>
+  <version>0.0.0</version>
   <name>Dashbuilder Runtime - App</name>
   <description>Dashbuilder Runtime App for running standalone dashboards</description>
   <properties>
