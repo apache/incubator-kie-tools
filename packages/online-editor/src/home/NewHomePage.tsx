@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
@@ -21,9 +21,10 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Gallery, GalleryItem } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { WorkspaceOverview } from "../workspace/model/WorkspaceOverview";
-import { useWorkspaces } from "../workspace/WorkspacesContext";
+import { LocalFile, useWorkspaces } from "../workspace/WorkspacesContext";
 import { QueryParams } from "../common/Routes";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { OnlineEditorPage } from "./pageTemplate/OnlineEditorPage";
@@ -36,6 +37,26 @@ export function NewHomePage() {
   const queryParams = useQueryParams();
   const workspaceOverviews = useWorkspaceOverviews();
   const [url, setUrl] = useState("");
+  const [filesToUpload, setFilesToUpload] = useState<LocalFile[]>([]);
+
+  const onFolderUpload = useCallback((e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    setFilesToUpload(
+      [...e.target.files].map((file: File) => {
+        return {
+          path: (file as any).webkitRelativePath,
+          getFileContents: () =>
+            new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onload = (event: any) => resolve(event.target.result as string);
+              reader.readAsText(file);
+            }),
+        };
+      })
+    );
+  }, []);
 
   return (
     <OnlineEditorPage>
@@ -173,22 +194,27 @@ export function NewHomePage() {
                           </TextContent>
                           <br />
                           <input
-                            onChange={() => {
-                              // TODO
-                              // validate URL. if validated, change button to "primary"
-                            }}
                             type="file"
                             /* @ts-expect-error directory and webkitdirectory are not available but works*/
                             webkitdirectory=""
+                            onChange={onFolderUpload}
                           />
                         </CardBody>
                         <CardFooter>
                           <Button
                             variant={ButtonVariant.secondary}
                             onClick={() => {
-                              // TODO
-                              // create workspace with uploaded files
-                              // navigate to #/workspace/[name]/overview
+                              if (filesToUpload.length === 0) {
+                                return;
+                              }
+
+                              workspaces.createWorkspaceFromLocal(filesToUpload).then(({ descriptor }) => {
+                                history.push({
+                                  pathname: globals.routes.workspaceOverview.path({
+                                    workspaceId: descriptor.workspaceId,
+                                  }),
+                                });
+                              });
                             }}
                           >
                             Import
@@ -335,7 +361,11 @@ export function NewHomePage() {
                   <br />
                   {workspaceOverviews.length > 0 && (
                     <FlexItem>
-                      <Button variant={ButtonVariant.link} onClick={() => workspaces.workspaceService.deleteAll()}>
+                      <Button
+                        variant={ButtonVariant.link}
+                        onClick={() => workspaces.workspaceService.deleteAll()}
+                        icon={<TrashIcon />}
+                      >
                         Delete all
                       </Button>
                     </FlexItem>

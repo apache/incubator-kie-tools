@@ -37,8 +37,6 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { useHistory } from "react-router";
 import { useWorkspace } from "../hooks/WorkspaceHooks";
 import { Gallery, GalleryItem } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { NewFileDropdownItems } from "../../editor/NewFileDropdownItems";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import {
   DataList,
@@ -54,6 +52,9 @@ import {
   DescriptionListGroup,
   DescriptionListTerm,
 } from "@patternfly/react-core/dist/js/components/DescriptionList";
+import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { NewFileDropdownItems } from "../../editor/NewFileDropdownItems";
+import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 
 export interface Props {
   workspaceId: string;
@@ -83,16 +84,10 @@ export function WorkspaceOverviewPage(props: Props) {
           {!workspace && <div>{`Couldn't find workspace with id '${props.workspaceId}'`}</div>}
           {workspace && (
             <>
-              <TextContent>
-                <Text component={TextVariants.h1}>{workspace.descriptor.name}</Text>
-              </TextContent>
-
-              <br />
-              <br />
               <Gallery maxWidths={{ default: "100%", lg: "50%", md: "100%" }}>
                 <GalleryItem>
                   <TextContent>
-                    <Text component={TextVariants.h2}>Info</Text>
+                    <Text component={TextVariants.h1}>{workspace.descriptor.name}</Text>
                   </TextContent>
                   <br />
                   <DescriptionList>
@@ -111,6 +106,48 @@ export function WorkspaceOverviewPage(props: Props) {
                   </DescriptionList>
                 </GalleryItem>
                 <GalleryItem>
+                  <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                    <FlexItem>
+                      <TextContent>
+                        <Text component={TextVariants.h2}>Files</Text>
+                      </TextContent>
+                    </FlexItem>
+                    <FlexItem>
+                      {workspace.files?.length > 0 && (
+                        <Dropdown
+                          onSelect={() => setNewFileDropdownOpen(false)}
+                          toggle={
+                            <DropdownToggle
+                              toggleIndicator={null}
+                              onToggle={(isOpen) => setNewFileDropdownOpen(isOpen)}
+                            >
+                              <Button
+                                variant="link"
+                                isInline={true}
+                                icon={<PlusIcon />}
+                                onClick={() => {
+                                  /**/
+                                }}
+                              >
+                                New file
+                              </Button>
+                            </DropdownToggle>
+                          }
+                          isPlain={true}
+                          isOpen={isNewFileDropdownOpen}
+                          dropdownItems={[
+                            <NewFileDropdownItems
+                              key={"new-file-dropdown-items"}
+                              workspace={workspace}
+                              addEmptyWorkspaceFile={addEmptyWorkspaceFile}
+                            />,
+                          ]}
+                          position={DropdownPosition.right}
+                        />
+                      )}
+                    </FlexItem>
+                  </Flex>
+                  <br />
                   {workspace.files?.length <= 0 && (
                     <EmptyState>
                       <EmptyStateIcon icon={CubesIcon} />
@@ -184,39 +221,6 @@ export function WorkspaceOverviewPage(props: Props) {
 
                   {workspace.files?.length > 0 && (
                     <>
-                      <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-                        <FlexItem>
-                          <TextContent>
-                            <Text component={TextVariants.h2}>Files</Text>
-                          </TextContent>
-                        </FlexItem>
-                        <FlexItem>
-                          <Dropdown
-                            onSelect={() => setNewFileDropdownOpen(false)}
-                            toggle={
-                              <DropdownToggle
-                                toggleIndicator={null}
-                                onToggle={(isOpen) => setNewFileDropdownOpen(isOpen)}
-                              >
-                                New file
-                              </DropdownToggle>
-                            }
-                            isPlain={true}
-                            isOpen={isNewFileDropdownOpen}
-                            dropdownItems={[
-                              <NewFileDropdownItems
-                                key={"new-file-dropdown-items"}
-                                workspace={workspace}
-                                addEmptyWorkspaceFile={addEmptyWorkspaceFile}
-                              />,
-                            ]}
-                            position={DropdownPosition.right}
-                          />
-                        </FlexItem>
-                      </Flex>
-
-                      <br />
-
                       <DataList aria-label="draggable data list example" isCompact>
                         {workspace.files.map((file: WorkspaceFile) => (
                           <React.Fragment key={file.path}>
