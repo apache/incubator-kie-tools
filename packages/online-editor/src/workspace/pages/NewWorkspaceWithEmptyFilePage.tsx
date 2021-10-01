@@ -13,7 +13,7 @@ export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
     workspaces
       .createWorkspaceFromLocal([
         {
-          path: "new-file." + props.extension,
+          path: "Untitled." + props.extension,
           getFileContents: () => Promise.resolve(""),
         },
       ])

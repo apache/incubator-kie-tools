@@ -37,7 +37,6 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { useHistory } from "react-router";
 import { useWorkspace } from "../hooks/WorkspaceHooks";
 import { Gallery, GalleryItem } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import {
   DataList,
   DataListCell,
@@ -55,16 +54,11 @@ import {
 import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { NewFileDropdownItems } from "../../editor/NewFileDropdownItems";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import { FileLabel } from "./FileLabel";
 
 export interface Props {
   workspaceId: string;
 }
-
-const labelColors = new Map<string, string>([
-  ["bpmn", "green"],
-  ["dmn", "blue"],
-  ["pmml", "purple"],
-]);
 
 export function WorkspaceOverviewPage(props: Props) {
   const history = useHistory();
@@ -230,9 +224,7 @@ export function WorkspaceOverviewPage(props: Props) {
                                   dataListCells={[
                                     <DataListCell key={"label"} isIcon={true} style={{ minWidth: "60px" }}>
                                       <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
-                                        <Label color={(labelColors.get(file.extension) as any) ?? "grey"}>
-                                          {file.extension}
-                                        </Label>
+                                        <FileLabel extension={file.extension} />
                                       </Flex>
                                     </DataListCell>,
                                     <DataListCell key="link" isFilled={false}>

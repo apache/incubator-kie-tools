@@ -97,7 +97,7 @@ export function EditorPage(props: Props) {
   }, [queryParams]);
 
   const [currentFile, setCurrentFile] = useState<EmbeddedEditorFile>(() => ({
-    fileName: "new-file",
+    fileName: "Untitled",
     fileExtension: props.forExtension,
     getFileContents: () => new Promise<string>(() => {}),
     isReadOnly: false,
@@ -127,7 +127,7 @@ export function EditorPage(props: Props) {
 
     if (!queryParamUrl) {
       setCurrentFile({
-        fileName: "new-file",
+        fileName: "Untitled",
         fileExtension: props.forExtension,
         getFileContents: () => Promise.resolve(""),
         isReadOnly: false,

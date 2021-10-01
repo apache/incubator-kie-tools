@@ -23,7 +23,6 @@ import {
   DropdownToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { EyeIcon } from "@patternfly/react-icons/dist/js/icons/eye-icon";
-import { BarsIcon } from "@patternfly/react-icons/dist/js/icons/bars-icon";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -49,13 +48,8 @@ import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/co
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { basename, dirname } from "path";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import {
-  Masthead,
-  MastheadBrand,
-  MastheadMain,
-  MastheadToggle,
-} from "@patternfly/react-core/dist/js/components/Masthead";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { CheckIcon } from "@patternfly/react-icons/dist/js/icons/check-icon";
 import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
@@ -596,41 +590,41 @@ export function EditorToolbar(props: Props) {
 
   return (
     <>
-      <Masthead aria-label={"Page header"} style={{ height: "76px" }}>
-        <MastheadToggle>
-          <Dropdown
-            onSelect={() => setNavOpen(false)}
-            toggle={
-              <Button
-                variant={ButtonVariant.plain}
-                aria-label="Global navigation"
-                onClick={() => setNavOpen((prev) => !prev)}
-              >
-                <BarsIcon />
-              </Button>
-            }
-            isOpen={isNavOpen}
-            isPlain
-            dropdownItems={[
-              <NewFileDropdownItems
-                key={"new-file-dropdown-items"}
-                workspace={props.workspace}
-                addEmptyWorkspaceFile={(extension) => {
-                  return props.addEmptyWorkspaceFile(extension).then((file) => {
-                    history.push({
-                      pathname: globals.routes.workspaceWithFilePath.path({
-                        workspaceId: file.workspaceId,
-                        filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
-                        extension: file.extension,
-                      }),
-                    });
-                    return file;
-                  });
-                }}
-              />,
-            ]}
-          />
-        </MastheadToggle>
+      <Masthead aria-label={"Page header"}>
+        {/*<MastheadToggle>*/}
+        {/*  <Dropdown*/}
+        {/*    onSelect={() => setNavOpen(false)}*/}
+        {/*    toggle={*/}
+        {/*      <Button*/}
+        {/*        variant={ButtonVariant.plain}*/}
+        {/*        aria-label="Global navigation"*/}
+        {/*        onClick={() => setNavOpen((prev) => !prev)}*/}
+        {/*      >*/}
+        {/*        <BarsIcon />*/}
+        {/*      </Button>*/}
+        {/*    }*/}
+        {/*    isOpen={isNavOpen}*/}
+        {/*    isPlain*/}
+        {/*    dropdownItems={[*/}
+        {/*      <NewFileDropdownItems*/}
+        {/*        key={"new-file-dropdown-items"}*/}
+        {/*        workspace={props.workspace}*/}
+        {/*        addEmptyWorkspaceFile={(extension) => {*/}
+        {/*          return props.addEmptyWorkspaceFile(extension).then((file) => {*/}
+        {/*            history.push({*/}
+        {/*              pathname: globals.routes.workspaceWithFilePath.path({*/}
+        {/*                workspaceId: file.workspaceId,*/}
+        {/*                filePath: file.pathRelativeToWorkspaceRootWithoutExtension,*/}
+        {/*                extension: file.extension,*/}
+        {/*              }),*/}
+        {/*            });*/}
+        {/*            return file;*/}
+        {/*          });*/}
+        {/*        }}*/}
+        {/*      />,*/}
+        {/*    ]}*/}
+        {/*  />*/}
+        {/*</MastheadToggle>*/}
         <MastheadMain>
           <MastheadBrand>
             <Brand
@@ -646,7 +640,7 @@ export function EditorToolbar(props: Props) {
             <PageHeaderToolsItem visibility={{ default: "visible" }}>
               <Flex>
                 <FlexItem>
-                  {props.workspace && (
+                  {props.workspace && props.workspace.files.length > 1 && (
                     <>
                       <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
                         <Title aria-label={"EmbeddedEditorFile name"} headingLevel={"h3"} size={"2xl"}>

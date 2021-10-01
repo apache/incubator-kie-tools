@@ -133,7 +133,7 @@ export function HomePage() {
 
   const createEmptyBpmnFile = useCallback(() => {
     workspaces
-      .createWorkspaceFromLocal([{ path: "new-file.bpmn", getFileContents: () => Promise.resolve("") }])
+      .createWorkspaceFromLocal([{ path: "Untitled.bpmn", getFileContents: () => Promise.resolve("") }])
       .then(({ descriptor }) => {
         history.push({
           pathname: globals.routes.workspaceOverview.path({ workspaceId: descriptor.workspaceId }),
@@ -143,7 +143,7 @@ export function HomePage() {
 
   const createEmptyDmnFile = useCallback(() => {
     workspaces
-      .createWorkspaceFromLocal([{ path: "new-file.dmn", getFileContents: () => Promise.resolve("") }])
+      .createWorkspaceFromLocal([{ path: "Untitled.dmn", getFileContents: () => Promise.resolve("") }])
       .then(({ descriptor }) => {
         history.push({
           pathname: globals.routes.workspaceOverview.path({ workspaceId: descriptor.workspaceId }),
@@ -153,7 +153,7 @@ export function HomePage() {
 
   const createEmptyPmmlFile = useCallback(() => {
     workspaces
-      .createWorkspaceFromLocal([{ path: "new-file.pmml", getFileContents: () => Promise.resolve("") }])
+      .createWorkspaceFromLocal([{ path: "Untitled.pmml", getFileContents: () => Promise.resolve("") }])
       .then(({ descriptor }) => {
         history.push({
           pathname: globals.routes.workspaceOverview.path({ workspaceId: descriptor.workspaceId }),

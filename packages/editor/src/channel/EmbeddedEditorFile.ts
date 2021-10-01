@@ -30,44 +30,44 @@ export interface EmbeddedEditorFile {
  * Default implementation of an empty DMN file; used when creating _new_ DMN files.
  */
 export const EMPTY_FILE_DMN = {
-  fileName: "new-file",
+  fileName: "Untitled",
   fileExtension: "dmn",
   getFileContents: () => Promise.resolve(""),
   isReadOnly: false,
-  path: "/new-file.dmn",
+  path: "/Untitled.dmn",
 };
 
 /**
  * Default implementation of an empty BPMN file; used when creating _new_ BPMN files.
  */
 export const EMPTY_FILE_BPMN = {
-  fileName: "new-file",
+  fileName: "Untitled",
   fileExtension: "bpmn",
   getFileContents: () => Promise.resolve(""),
   isReadOnly: false,
-  path: "/new-file.bpmn",
+  path: "/Untitled.bpmn",
 };
 
 /**
  * Default implementation of an empty SCESIM file; used when creating _new_ SCESIM files.
  */
 export const EMPTY_FILE_SCESIM = {
-  fileName: "new-file",
+  fileName: "Untitled",
   fileExtension: "scesim",
   getFileContents: () => Promise.resolve(""),
   isReadOnly: false,
-  path: "/new-file.scesim",
+  path: "/Untitled.scesim",
 };
 
 /**
  * Default implementation of an empty PMML file; used when creating _new_ PMML files.
  */
 export const EMPTY_FILE_PMML = {
-  fileName: "new-file",
+  fileName: "Untitled",
   fileExtension: "pmml",
   getFileContents: () => Promise.resolve(""),
   isReadOnly: false,
-  path: "/new-file.pmml",
+  path: "/Untitled.pmml",
 };
 
 /**
@@ -82,11 +82,11 @@ export function newFile(
   kind?: EmbeddedEditorFile["kind"]
 ): EmbeddedEditorFile {
   return {
-    fileName: "new-file",
+    fileName: "Untitled",
     fileExtension: fileExtension,
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
-    path: `${contextPath}/new-file.${fileExtension}`,
+    path: `${contextPath}/Untitled.${fileExtension}`,
     kind,
   };
 }

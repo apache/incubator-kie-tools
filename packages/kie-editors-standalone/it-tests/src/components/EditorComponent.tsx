@@ -36,7 +36,7 @@ export type InternalProps = Props & {
 export const EditorComponent = (props: InternalProps) => {
   const [isDirty, setDirty] = useState(false);
   const editorRef = useRef<StandaloneEditorApi>(null);
-  const [modelName, setModelName] = useState(props.defaultModelName ?? "new-file");
+  const [modelName, setModelName] = useState(props.defaultModelName ?? "Untitled");
   const [files, setFiles] = useState<UploadedFile[]>([]);
 
   const editorContainerDivRef = useRef<HTMLDivElement>(null);

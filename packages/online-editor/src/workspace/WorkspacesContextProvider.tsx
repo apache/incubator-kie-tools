@@ -142,7 +142,7 @@ export function WorkspacesContextProvider(props: Props) {
       const descriptor = (await workspaceService.get(workspaceId))!;
       const contextPath = await workspaceService.resolveContextPath(descriptor);
       const newEmptyFile = new WorkspaceFile({
-        path: `${contextPath}/new-file.${fileExtension}`,
+        path: `${contextPath}/Untitled.${fileExtension}`,
         getFileContents: () => Promise.resolve(""),
       });
       await storageService.createFile(newEmptyFile, { broadcast: true });
