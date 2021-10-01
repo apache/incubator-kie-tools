@@ -68,8 +68,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
 import { SUPPORTED_FILES_EDITABLE } from "../workspace/SupportedFiles";
 import { NewFileDropdownItems } from "./NewFileDropdownItems";
-import { PageHeaderToolsItem } from "@patternfly/react-core/dist/js/components/Page";
-import { PageHeaderToolsItemProps } from "@patternfly/react-core/src/components/Page/PageHeaderToolsItem";
+import { PageHeaderToolsItem, PageHeaderToolsItemProps } from "@patternfly/react-core/dist/js/components/Page";
 
 export interface Props {
   alerts: AlertsController | undefined;
