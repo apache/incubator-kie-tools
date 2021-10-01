@@ -19,7 +19,7 @@ Feature: Kogito-jobs-service-ephemeral feature.
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/jobs-service-common-runner.jar
+    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/jobs-service-common-runner.jar
     And container log should contain started in
     And container log should not contain Application failed to start
 

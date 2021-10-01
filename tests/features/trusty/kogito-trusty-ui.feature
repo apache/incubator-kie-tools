@@ -19,7 +19,7 @@ Feature: kogito-trusty-ui feature
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain + exec java -XshowSettings:properties -Dkogito.trusty.http.url=http://localhost:8180 -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/trusty-ui-runner.jar
+    Then container log should contain -Dkogito.trusty.http.url=http://localhost:8180 -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/trusty-ui-runner.jar
     And container log should contain Trusty url not set, default will be used: http://localhost:8180
     And container log should contain started in
     And container log should not contain Application failed to start
@@ -28,8 +28,8 @@ Feature: kogito-trusty-ui feature
     When container is started with env
       | variable                  | value            |
       | SCRIPT_DEBUG              | true             |
-      | KOGITO_TRUSTY_ENDPOINT | http://test:9090 |
-    Then container log should contain + exec java -XshowSettings:properties -Dkogito.trusty.http.url=http://test:9090 -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/trusty-ui-runner.jar
+      | KOGITO_TRUSTY_ENDPOINT    | http://test:9090 |
+    Then container log should contain -Dkogito.trusty.http.url=http://test:9090 -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/trusty-ui-runner.jar
     And container log should not contain Trusty url not set, default will be used: http://localhost:8180
     And container log should contain started in
     And container log should not contain Application failed to start

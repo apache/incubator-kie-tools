@@ -1,4 +1,7 @@
-@quay.io/kiegroup/kogito-jobs-service-infinispan @quay.io/kiegroup/kogito-jobs-service-mongodb @quay.io/kiegroup/kogito-jobs-service-ephemeral @quay.io/kiegroup/kogito-jobs-service-postgresql
+@quay.io/kiegroup/kogito-jobs-service-infinispan
+@quay.io/kiegroup/kogito-jobs-service-mongodb
+@quay.io/kiegroup/kogito-jobs-service-ephemeral
+@quay.io/kiegroup/kogito-jobs-service-postgresql
 Feature: Kogito-jobs-service common feature.
 
   Scenario: verify if the events is correctly enabled
@@ -7,4 +10,4 @@ Feature: Kogito-jobs-service common feature.
       | SCRIPT_DEBUG            | true                                      |
       | ENABLE_EVENTS           | true                                      |
       | KOGITO_JOBS_PROPS       | -Dkafka.bootstrap.servers=localhost:11111 |
-    Then container log should contain + exec java -XshowSettings:properties -Dkafka.bootstrap.servers=localhost:11111 -Dquarkus.profile=events-support -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar
+    Then container log should contain -Dkafka.bootstrap.servers=localhost:11111 -Dquarkus.profile=events-support -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar

@@ -33,6 +33,7 @@ modules:
   - name: org.kie.kogito.logging
   - name: org.kie.kogito.openjdk
     version: "11-headless"
+  - name: org.kie.kogito.dynamic.resources
   - name: org.kie.kogito.launch.scripts
   - name: org.kie.kogito.trusty.ui
   - name: org.kie.kogito.security.custom.truststores

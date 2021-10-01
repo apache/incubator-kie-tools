@@ -20,8 +20,10 @@ CONFIGURE_SCRIPTS=(
 source "${KOGITO_HOME}"/launch/configure.sh
 #############################################
 
+DYNAMIC_RESOURCES_OPTS="$(${JBOSS_CONTAINER_JAVA_JVM_MODULE}/java-default-options) $(${JBOSS_CONTAINER_JAVA_JVM_MODULE}/debug-options)"
+
 # shellcheck disable=SC2086
-exec java ${SHOW_JVM_SETTINGS} ${JAVA_OPTIONS} ${KOGITO_TASK_CONSOLE_PROPS} ${CUSTOM_TRUSTSTORE_ARGS} \
+exec java ${SHOW_JVM_SETTINGS} ${DYNAMIC_RESOURCES_OPTS} ${JAVA_OPTIONS} ${KOGITO_TASK_CONSOLE_PROPS} ${CUSTOM_TRUSTSTORE_ARGS} \
         -Dquarkus.http.host=0.0.0.0 \
         -Dquarkus.http.port=8080 \
         -jar "${KOGITO_HOME}"/bin/task-console-runner.jar

@@ -4,7 +4,7 @@ Feature: Kogito-trusty common feature.
     When container is started with env
       | variable               | value   |
       | SCRIPT_DEBUG           | true    |
-    Then container log should contain + exec java -XshowSettings:properties -Dtrusty.explainability.enabled=true -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080
+    Then container log should contain -Dtrusty.explainability.enabled=true -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080
 
   Scenario: Verify if a custom certificate is correctly handled
     When container is started with command /home/kogito/kogito-app-launch.sh

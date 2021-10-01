@@ -22,7 +22,7 @@ Feature: Kogito-data-index postgresql feature.
       | QUARKUS_DATASOURCE_JDBC_URL  | jdbc:postgresql://10.1.1.10:5432/quarkus |
       | QUARKUS_DATASOURCE_USERNAME  | kogito                                   |
       | QUARKUS_DATASOURCE_PASSWORD  | s3cr3t                                   |
-    Then container log should contain + exec java -XshowSettings:properties -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/data-index-service-postgresql-runner.jar
+    Then container log should contain -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/data-index-service-postgresql-runner.jar
      And container log should contain org.postgresql.util.PSQLException: The connection attempt failed
      And container log should not contain Application failed to start
 

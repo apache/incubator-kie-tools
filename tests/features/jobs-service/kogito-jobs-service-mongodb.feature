@@ -21,5 +21,5 @@ Feature: Kogito-jobs-service-mongodb feature.
       | SCRIPT_DEBUG                      | true                                           |
       | QUARKUS_MONGODB_CONNECTION_STRING | mongodb://user:password@localhost:27017/admin  |
       | QUARKUS_MONGODB_DATABASE          | kogito                                         |
-    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/jobs-service-mongodb-runner.jar
+    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/jobs-service-mongodb-runner.jar
     And container log should not contain Application failed to start

@@ -19,7 +19,7 @@ Feature: kogito-management-console feature
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain + exec java -XshowSettings:properties -Dkogito.dataindex.http.url=http://localhost:8180 -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/management-console-runner.jar
+    Then container log should contain -Dkogito.dataindex.http.url=http://localhost:8180 -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/management-console-runner.jar
     And container log should contain Data index url not set, default will be used: http://localhost:8180
     And container log should contain started in
     And container log should not contain Application failed to start
@@ -29,7 +29,7 @@ Feature: kogito-management-console feature
       | variable                  | value            |
       | SCRIPT_DEBUG              | true             |
       | KOGITO_DATAINDEX_HTTP_URL | http://test:9090 |
-    Then container log should contain + exec java -XshowSettings:properties -Dkogito.dataindex.http.url=http://test:9090 -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/management-console-runner.jar
+    Then container log should contain -Dkogito.dataindex.http.url=http://test:9090 -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/management-console-runner.jar
     And container log should not contain Data index url not set, default will be used: http://localhost:8180
     And container log should contain started in
     And container log should not contain Application failed to start

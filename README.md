@@ -26,6 +26,7 @@ Table of Contents
 - [Kogito Container Images](#kogito-container-images)
 - [Table of Contents](#table-of-contents)
   - [Kogito Images Requirements](#kogito-images-requirements)
+  - [Kogito Images JVM Memory Management](#kogito-images-jvm-memory-management)
   - [Kogito Runtime and Builder Images](#kogito-runtime-and-builder-images)
     - [Kogito Builder Images](#kogito-builder-images)
       - [Kogito Builder Image usage](#kogito-builder-image-usage)
@@ -103,7 +104,27 @@ To interact with Kogito images, you would need to install the needed dependencie
         * Useful to test Kogito apps on native mode before create a Container image with it.
     * [OpenShift Cli](https://docs.openshift.com/container-platform/4.3/cli_reference/openshift_cli/getting-started-cli.html)
         
-        
+
+## Kogito Images JVM Memory Management
+
+All the Kogito Container Images contains a base module that will calculate the JVM max (Xmx) and min (Xms) values based
+on the container memory limits. To auto tune it, you can use the following environment variables to instruct the scripts
+what value the min and max should have:
+
+- JAVA_MAX_MEM_RATIO: Is used when no `-Xmx` option is given in **JAVA_OPTIONS**. This is used to calculate a default 
+  maximal heap memory based on a containers restriction. If used in a container without any memory constraints for the
+  container then this option has no effect. If there is a memory constraint then `-Xmx` is set to a ratio of the 
+  container available memory as set here. The default is `50` which means 50% of the available memory is used as an 
+  upper boundary. You can skip this mechanism by setting this value to `0` in which case no `-Xmx` option is added. 
+
+- JAVA_INITIAL_MEM_RATIO: Is used when no `-Xms` option is given in **JAVA_OPTIONS**. This is used to calculate a 
+  default initial heap memory based on the maximum heap memory. If used in a container without any memory constraints 
+  for the container then this option has no effect. If there is a memory constraint then `-Xms` is set to a ratio 
+  of the `-Xmx` memory as set here. The default is `25` which means 25% of the `-Xmx` is used as the initial heap size. 
+  You can skip this mechanism by setting this value to `0` in which case no `-Xms` option is added.
+
+For a complete list ov environment variables that can be used to configure the JVM, please check the [dynamic resources](modules/kogito-dynamic-resources/module.yaml) module      
+  
 ## Kogito Runtime and Builder Images
 
 Today, the Kogito images are divided basically in 2 vectors, when we talk about images that would be used to assemble 

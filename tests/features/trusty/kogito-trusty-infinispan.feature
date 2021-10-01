@@ -20,7 +20,7 @@ Feature: Kogito-trusty infinispan feature.
       | variable      | value |
       | SCRIPT_DEBUG  | true  |
       | EXPLAINABILITY_ENABLED     | false  |
-    Then container log should contain + exec java -XshowSettings:properties -Dtrusty.explainability.enabled=false -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/trusty-service-infinispan-runner.jar
+    Then container log should contain -Dtrusty.explainability.enabled=false -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/trusty-service-infinispan-runner.jar
 
   Scenario: verify if auth is correctly set
     When container is started with env
@@ -31,7 +31,7 @@ Feature: Kogito-trusty infinispan feature.
       | QUARKUS_INFINISPAN_CLIENT_USE_AUTH        | true              |
       | QUARKUS_INFINISPAN_CLIENT_AUTH_USERNAME   | IamNotExist       |
       | QUARKUS_INFINISPAN_CLIENT_AUTH_PASSWORD   | hard2guess        |
-      | QUARKUS_INFINISPAN_CLIENT_AUTH_REALM       | SecretRealm       |
+      | QUARKUS_INFINISPAN_CLIENT_AUTH_REALM      | SecretRealm       |
       | QUARKUS_INFINISPAN_CLIENT_SASL_MECHANISM  | COOLGSSAPI        |
     Then container log should contain QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=172.18.0.1:11222
     Then container log should contain QUARKUS_INFINISPAN_CLIENT_USE_AUTH=true

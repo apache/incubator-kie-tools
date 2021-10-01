@@ -6,4 +6,4 @@ Feature: Kogito-data-index common feature.
     When container is started with env
       | variable               | value   |
       | SCRIPT_DEBUG           | true    |
-    Then container log should contain + exec java -XshowSettings:properties -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080
+    Then container log should contain -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080

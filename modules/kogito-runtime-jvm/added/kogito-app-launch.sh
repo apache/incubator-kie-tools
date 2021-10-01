@@ -25,16 +25,19 @@ runtime_type=$(get_runtime_type)
 
 #############################################
 
+DYNAMIC_RESOURCES_OPTS="$(${JBOSS_CONTAINER_JAVA_JVM_MODULE}/java-default-options) $(${JBOSS_CONTAINER_JAVA_JVM_MODULE}/debug-options)"
+
 # shellcheck disable=SC2086
 case ${runtime_type} in 
     "quarkus") 
-        exec java ${JAVA_OPTIONS} ${KOGITO_QUARKUS_JVM_PROPS} ${CUSTOM_TRUSTSTORE_ARGS} \
+        exec java ${DYNAMIC_RESOURCES_OPTS} ${JAVA_OPTIONS} ${KOGITO_QUARKUS_JVM_PROPS} ${CUSTOM_TRUSTSTORE_ARGS} \
             -Dquarkus.http.host=0.0.0.0 \
             -Dquarkus.http.port=8080 \
             -jar "${KOGITO_HOME}"/bin/*.jar
     ;;
     "springboot") 
-        exec java ${JAVA_OPTIONS} ${KOGITO_SPRINGBOOT_PROPS} ${CUSTOM_TRUSTSTORE_ARGS} -Dserver.address=0.0.0.0 -Dserver.port=8080 -jar "${KOGITO_HOME}"/bin/*.jar
+        exec java ${DYNAMIC_RESOURCES_OPTS} ${JAVA_OPTIONS} ${KOGITO_SPRINGBOOT_PROPS} ${CUSTOM_TRUSTSTORE_ARGS} \
+            -Dserver.address=0.0.0.0 -Dserver.port=8080 -jar "${KOGITO_HOME}"/bin/*.jar
     ;;
     *)
         log_error "${runtime_type} is not supported."

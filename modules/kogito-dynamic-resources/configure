@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+SCRIPT_DIR=$(dirname "$0")
+
+mkdir -p "${JBOSS_CONTAINER_JAVA_JVM_MODULE}"
+
+cp -prv "${SCRIPT_DIR}"/added/* "${JBOSS_CONTAINER_JAVA_JVM_MODULE}"/
+chown -R kogito:root "${JBOSS_CONTAINER_JAVA_JVM_MODULE}"
+chmod -R ug+x-w "${JBOSS_CONTAINER_JAVA_JVM_MODULE}"/
+
