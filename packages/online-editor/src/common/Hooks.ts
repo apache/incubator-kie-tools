@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { EffectCallback, useCallback, useEffect, useRef, useState } from "react";
 
 export function usePrevious(value: any) {
   const ref = useRef();
@@ -36,4 +36,49 @@ export function useController<T>(): [T | undefined, (controller: T) => void] {
   }, []);
 
   return [controller, ref];
+}
+
+export type ArrowFunction<A, B> = (a: A) => B;
+
+export class Holder<T> {
+  constructor(private value: T) {}
+  public readonly get = () => this.value;
+  public readonly set = (newValue: T) => (this.value = newValue);
+}
+
+export class IfNotCanceledHolder extends Holder<IfNotCanceledHolderType> {
+  public run = <T, R, O>(then: ArrowFunction<T, R>, or?: ArrowFunction<T, O>) => this.get()(then, or);
+}
+
+export type IfNotCanceledHolderType = <T, R, O = undefined>(
+  then: ArrowFunction<T, R>,
+  or?: ArrowFunction<T, O>
+) => ArrowFunction<T, R | O>;
+
+export type SafeEffectParams = {
+  canceled: Holder<boolean>;
+  ifNotCanceled: IfNotCanceledHolder;
+};
+
+export function useCancelableEffect(effect: (args: SafeEffectParams) => ReturnType<EffectCallback>) {
+  useEffect(() => {
+    const canceled = new Holder(false);
+
+    const safely = new IfNotCanceledHolder((then, or) => (arg) => {
+      if (!canceled.get()) {
+        return then(arg);
+      } else {
+        return or?.(arg) ?? (undefined as any);
+      }
+    });
+
+    const effectCleanup = effect({ canceled, ifNotCanceled: safely });
+
+    return () => {
+      canceled.set(true);
+      if (effectCleanup) {
+        effectCleanup();
+      }
+    };
+  }, [effect]);
 }

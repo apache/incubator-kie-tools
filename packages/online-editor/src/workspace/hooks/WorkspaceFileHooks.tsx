@@ -1,80 +1,76 @@
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
+import { useCancelableEffect } from "../../common/Hooks";
 
 export function useWorkspaceFile(workspaceId: string | undefined, pathRelativeToWorkspaceRoot: string | undefined) {
   const workspaces = useWorkspaces();
   const [file, setFile] = useState<WorkspaceFile>();
 
-  useEffect(() => {
-    if (!pathRelativeToWorkspaceRoot || !workspaceId) {
-      return;
-    }
-
-    let canceled = false;
-    workspaces.workspaceService.storageService
-      .getFile(`/${workspaceId}/${pathRelativeToWorkspaceRoot}`)
-      .then((workspaceFile) => {
-        if (canceled) {
+  useCancelableEffect(
+    useCallback(
+      ({ ifNotCanceled }) => {
+        if (!pathRelativeToWorkspaceRoot || !workspaceId) {
           return;
         }
 
-        if (!workspaceFile) {
-          console.error(`File '${pathRelativeToWorkspaceRoot}' not found on workspace '${workspaceId}'`); //TODO indicate error in some way?
+        workspaces.workspaceService.storageService.getFile(`/${workspaceId}/${pathRelativeToWorkspaceRoot}`).then(
+          ifNotCanceled.run((workspaceFile) => {
+            if (!workspaceFile) {
+              console.error(`File '${pathRelativeToWorkspaceRoot}' not found on workspace '${workspaceId}'`); //TODO indicate error in some way?
+              return;
+            }
+
+            setFile(workspaceFile);
+          })
+        );
+      },
+      [pathRelativeToWorkspaceRoot, workspaceId, workspaces.workspaceService]
+    )
+  );
+
+  useCancelableEffect(
+    useCallback(
+      ({ ifNotCanceled }) => {
+        if (!file) {
           return;
         }
 
-        setFile(workspaceFile);
-      });
+        const broadcastChannel = new BroadcastChannel(file.path);
+        broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileEvents>) => {
+          console.info(`WORKSPACE_FILE: ${JSON.stringify(data)}`);
+          if (data.type === "UPDATE") {
+            workspaces.workspaceService.storageService.getFile(data.path).then(
+              ifNotCanceled.run((workspaceFile) => {
+                if (!workspaceFile) {
+                  console.error(`File '${data.path}' not found`); //TODO indicate error in some way?
+                  return;
+                }
 
-    return () => {
-      canceled = true;
-    };
-  }, [pathRelativeToWorkspaceRoot, workspaceId, workspaces.workspaceService]);
-
-  useEffect(() => {
-    if (!file) {
-      return;
-    }
-
-    let canceled = false;
-    const broadcastChannel = new BroadcastChannel(file.path);
-    broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileEvents>) => {
-      console.info(`WORKSPACE_FILE: ${JSON.stringify(data)}`);
-      if (data.type === "UPDATE") {
-        workspaces.workspaceService.storageService.getFile(data.path).then((workspaceFile) => {
-          if (canceled) {
-            return;
+                setFile(workspaceFile);
+              })
+            );
           }
+          if (data.type === "MOVE" || data.type == "RENAME") {
+            workspaces.workspaceService.storageService.getFile(data.newPath).then(
+              ifNotCanceled.run((workspaceFile) => {
+                if (!workspaceFile) {
+                  console.error(`File '${data.newPath}' not found`); //TODO indicate error in some way?
+                  return;
+                }
 
-          if (!workspaceFile) {
-            console.error(`File '${data.path}' not found`); //TODO indicate error in some way?
-            return;
+                setFile(workspaceFile);
+              })
+            );
           }
+        };
 
-          setFile(workspaceFile);
-        });
-      }
-      if (data.type === "MOVE" || data.type == "RENAME") {
-        workspaces.workspaceService.storageService.getFile(data.newPath).then((workspaceFile) => {
-          if (canceled) {
-            return;
-          }
-
-          if (!workspaceFile) {
-            console.error(`File '${data.newPath}' not found`); //TODO indicate error in some way?
-            return;
-          }
-
-          setFile(workspaceFile);
-        });
-      }
-    };
-
-    return () => {
-      canceled = true;
-      broadcastChannel.close();
-    };
-  }, [file, workspaces.workspaceService]);
+        return () => {
+          broadcastChannel.close();
+        };
+      },
+      [file, workspaces.workspaceService]
+    )
+  );
 
   return file;
 }

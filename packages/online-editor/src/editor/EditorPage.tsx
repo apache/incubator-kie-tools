@@ -43,7 +43,7 @@ import { QueryParams } from "../common/Routes";
 import { EditorFetchFileErrorEmptyState, FetchFileError, FetchFileErrorReason } from "./EditorFetchFileErrorEmptyState";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
 import { Alerts, AlertsController, useAlert } from "./Alerts/Alerts";
-import { useController } from "../common/Hooks";
+import { useCancelableEffect, useController } from "../common/Hooks";
 import { TextEditorModal } from "./TextEditor/TextEditorModal";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kie-tooling-core/workspace/dist/api";
@@ -273,34 +273,35 @@ export function EditorPage(props: Props) {
 
   const lastContent = useRef<string>();
 
-  // update EmbeddedEditorFile, but only if content if different than what was saved
-  useEffect(() => {
-    if (!workspaceFile) {
-      return;
-    }
+  // update EmbeddedEditorFile, but only if content is different than what was saved
+  useCancelableEffect(
+    useCallback(
+      ({ ifNotCanceled }) => {
+        if (!workspaceFile) {
+          return;
+        }
 
-    let canceled = false;
-    workspaceFile.getFileContents().then((content) => {
-      if (canceled || content === lastContent.current) {
-        return;
-      }
-
-      setCurrentFile(() => {
-        return {
-          path: workspaceFile.path,
-          getFileContents: workspaceFile.getFileContents,
-          kind: "local",
-          isReadOnly: false,
-          fileExtension: workspaceFile.extension,
-          fileName: workspaceFile.nameWithoutExtension,
-        };
-      });
-    });
-
-    return () => {
-      canceled = true;
-    };
-  }, [workspaceFile]);
+        workspaceFile.getFileContents().then(
+          ifNotCanceled.run((content) => {
+            if (content === lastContent.current) {
+              return;
+            }
+            setCurrentFile(() => {
+              return {
+                path: workspaceFile.path,
+                getFileContents: workspaceFile.getFileContents,
+                kind: "local",
+                isReadOnly: false,
+                fileExtension: workspaceFile.extension,
+                fileName: workspaceFile.nameWithoutExtension,
+              };
+            });
+          })
+        );
+      },
+      [workspaceFile]
+    )
+  );
 
   // auto-save
   useEffect(() => {
