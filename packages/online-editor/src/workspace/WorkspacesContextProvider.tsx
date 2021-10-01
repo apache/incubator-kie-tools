@@ -64,9 +64,9 @@ export function WorkspacesContextProvider(props: Props) {
 
   const createWorkspace = useCallback(
     async (descriptor: WorkspaceDescriptor, fileHandler: FileHandler) => {
-      const files = await workspaceService.create(descriptor, fileHandler, true);
+      const files = await workspaceService.create(descriptor, fileHandler, { broadcast: true });
       if (files.length > 0) {
-        return files.sort((a: WorkspaceFile, b: WorkspaceFile) => a.path.localeCompare(b.path))[0];
+        return files.sort((a, b) => a.path.localeCompare(b.path))[0];
       } else {
         return undefined;
       }

@@ -57,6 +57,7 @@ export function useWorkspace(workspaceId: string | undefined) {
 
 export type WorkspaceEvents =
   | { type: "ADD"; workspaceId: string }
+  | { type: "RENAME"; workspaceId: string }
   | { type: "DELETE"; workspaceId: string }
   | { type: "ADD_FILE"; path: string }
   | { type: "MOVE_FILE"; newPath: string; oldPath: string }

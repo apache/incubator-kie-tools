@@ -97,7 +97,7 @@ export class WorkspaceService {
   public async create(
     descriptor: WorkspaceDescriptor,
     fileHandler: FileHandler,
-    broadcast: boolean
+    broadcastArgs: { broadcast: boolean }
   ): Promise<WorkspaceFile[]> {
     const descriptors = await this.list();
     descriptors.push(descriptor);
@@ -111,7 +111,7 @@ export class WorkspaceService {
       SUPPORTED_FILES_EDITABLE.includes(file.extension)
     );
 
-    if (broadcast) {
+    if (broadcastArgs.broadcast) {
       const broadcastChannel1 = new BroadcastChannel(this.storageService.rootPath);
       const broadcastChannel2 = new BroadcastChannel(descriptor.workspaceId);
       broadcastChannel1.postMessage({ type: "ADD_WORKSPACE", workspaceId: descriptor.workspaceId } as WorkspacesEvents);
@@ -121,7 +121,7 @@ export class WorkspaceService {
     return supportedFiles;
   }
 
-  public async delete(descriptor: WorkspaceDescriptor, broadcast: boolean): Promise<void> {
+  public async delete(descriptor: WorkspaceDescriptor, broadcastArgs: { broadcast: boolean }): Promise<void> {
     const descriptors = await this.list();
     const index = descriptors.findIndex((w) => w.workspaceId === descriptor.workspaceId);
     if (index === -1) {
@@ -135,7 +135,7 @@ export class WorkspaceService {
     const configFile = await this.configAsFile(async () => JSON.stringify(descriptors));
     await this.storageService.updateFile(configFile, { broadcast: false });
 
-    if (broadcast) {
+    if (broadcastArgs.broadcast) {
       const broadcastChannel1 = new BroadcastChannel(this.storageService.rootPath);
       const broadcastChannel2 = new BroadcastChannel(descriptor.workspaceId);
       broadcastChannel1.postMessage({
@@ -143,6 +143,32 @@ export class WorkspaceService {
         workspaceId: descriptor.workspaceId,
       } as WorkspacesEvents);
       broadcastChannel2.postMessage({ type: "DELETE", workspaceId: descriptor.workspaceId } as WorkspaceEvents);
+    }
+  }
+
+  public async rename(
+    descriptor: WorkspaceDescriptor,
+    newName: string,
+    broadcastArgs: { broadcast: boolean }
+  ): Promise<void> {
+    const descriptors = await this.list();
+    const index = descriptors.findIndex((w) => w.workspaceId === descriptor.workspaceId);
+    if (index === -1) {
+      throw new Error(`Workspace ${descriptor.workspaceId} not found`);
+    }
+
+    descriptors[index].name = newName;
+    const configFile = await this.configAsFile(async () => JSON.stringify(descriptors));
+    await this.storageService.updateFile(configFile, { broadcast: false });
+
+    if (broadcastArgs.broadcast) {
+      const broadcastChannel1 = new BroadcastChannel(this.storageService.rootPath);
+      const broadcastChannel2 = new BroadcastChannel(descriptor.workspaceId);
+      broadcastChannel1.postMessage({
+        type: "RENAME_WORKSPACE",
+        workspaceId: descriptor.workspaceId,
+      } as WorkspacesEvents);
+      broadcastChannel2.postMessage({ type: "RENAME", workspaceId: descriptor.workspaceId } as WorkspaceEvents);
     }
   }
 

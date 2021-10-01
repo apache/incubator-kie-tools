@@ -104,12 +104,19 @@ export function EditorToolbar(props: Props) {
   const history = useHistory();
   const queryParams = useQueryParams();
   const [fileName, setFileName] = useState(props.currentFile.fileName);
+  const [workspaceName, setWorkspaceName] = useState(props.workspace?.descriptor.name);
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
   const [isEmbedModalOpen, setEmbedModalOpen] = useState(false);
   const [isNavOpen, setNavOpen] = useState(false);
   const { i18n } = useOnlineI18n();
   const isEdited = useDirtyState(props.editor);
+
+  useEffect(() => {
+    if (props.workspace) {
+      setWorkspaceName(props.workspace.descriptor.name);
+    }
+  }, [props.workspace]);
 
   const copySuccessfulAlert = useAlert(
     props.alerts,
@@ -445,7 +452,7 @@ export function EditorToolbar(props: Props) {
               {i18n.editorToolbar.gistIt}
             </DropdownItem>
           </Tooltip>
-          {globals.externalFile && !props.currentFile.isReadOnly && (
+          {globals.externalFile && (
             <DropdownItem
               key={`dropdown-${dropdownId}-send-changes-to-github`}
               component={"button"}
@@ -638,76 +645,70 @@ export function EditorToolbar(props: Props) {
           <FlexItem>
             <PageHeaderToolsItem visibility={{ default: "visible" }}>
               <Flex>
-                {!props.currentFile.isReadOnly && (
-                  <>
-                    <FlexItem>
-                      <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
+                <FlexItem>
+                  {props.workspace && (
+                    <>
+                      <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
                         <Title aria-label={"EmbeddedEditorFile name"} headingLevel={"h3"} size={"2xl"}>
-                          {fileName}
+                          {workspaceName}
                         </Title>
                         <TextInput
-                          value={fileName}
+                          value={workspaceName}
                           type={"text"}
-                          aria-label={"Edit file name"}
+                          aria-label={"Edit workspace name"}
                           className={"kogito--editor__toolbar-title"}
-                          onChange={setFileName}
-                          onKeyUp={onNameInputKeyUp}
+                          onChange={setWorkspaceName}
                           onBlur={() => {
-                            //FIXME: Duplicated when pressing Enter.
-                            //FIXME: Esc is not cancelling.
-                            props.onRename(fileName);
+                            if (props.workspace && workspaceName) {
+                              workspaces.workspaceService.rename(props.workspace.descriptor, workspaceName, {
+                                broadcast: true,
+                              });
+                            }
                           }}
                         />
                       </div>
-                    </FlexItem>
-                    <FlexItem>
-                      <TextContent>
-                        <Text
-                          style={{ color: "gray", ...(!isEdited && !props.workspace ? { visibility: "hidden" } : {}) }}
-                          component={"small"}
-                          aria-label={"EmbeddedEditorFile is saved"}
-                          data-testid="is-saved-indicator"
-                        >
-                          {isEdited ? (
-                            <>{`Edited`}</>
-                          ) : (
-                            <>
-                              {`Saved`} <CheckIcon size={"sm"} />
-                            </>
-                          )}
-                        </Text>
-                      </TextContent>
-                    </FlexItem>
-                  </>
-                )}
-                {props.currentFile.isReadOnly && (
-                  <>
-                    <FlexItem>
-                      <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container readonly"}>
-                        <Title
-                          className="kogito--editor__toolbar-title"
-                          aria-label={"EmbeddedEditorFile name"}
-                          headingLevel={"h3"}
-                          size={"2xl"}
-                        >
-                          {fileName}
-                        </Title>
-                      </div>
-                    </FlexItem>
-                    <FlexItem>
-                      <TextContent>
-                        <Text
-                          style={{ color: "gray" }}
-                          component={"small"}
-                          aria-label={"EmbeddedEditorFile is readonly"}
-                          data-testid="is-readonly-indicator"
-                        >
-                          {i18n.terms.readonly}
-                        </Text>
-                      </TextContent>
-                    </FlexItem>
-                  </>
-                )}
+                      <Title headingLevel={"h3"} size={"2xl"} style={{ display: "inline", margin: "10px" }}>
+                        {`/`}
+                      </Title>
+                    </>
+                  )}
+                  <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
+                    <Title aria-label={"EmbeddedEditorFile name"} headingLevel={"h3"} size={"2xl"}>
+                      {fileName}
+                    </Title>
+                    <TextInput
+                      value={fileName}
+                      type={"text"}
+                      aria-label={"Edit file name"}
+                      className={"kogito--editor__toolbar-title"}
+                      onChange={setFileName}
+                      onKeyUp={onNameInputKeyUp}
+                      onBlur={() => {
+                        //FIXME: Duplicated when pressing Enter.
+                        //FIXME: Esc is not cancelling.
+                        props.onRename(fileName);
+                      }}
+                    />
+                  </div>
+                </FlexItem>
+                <FlexItem>
+                  <TextContent>
+                    <Text
+                      style={{ color: "gray", ...(!isEdited && !props.workspace ? { visibility: "hidden" } : {}) }}
+                      component={"small"}
+                      aria-label={"EmbeddedEditorFile is saved"}
+                      data-testid="is-saved-indicator"
+                    >
+                      {isEdited ? (
+                        <>{`Edited`}</>
+                      ) : (
+                        <>
+                          {`Saved`} <CheckIcon size={"sm"} />
+                        </>
+                      )}
+                    </Text>
+                  </TextContent>
+                </FlexItem>
               </Flex>
             </PageHeaderToolsItem>
           </FlexItem>
