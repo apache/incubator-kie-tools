@@ -21,9 +21,9 @@ import java.util.function.Consumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
-import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,10 +50,10 @@ import static org.mockito.Mockito.when;
 public class NameAndUrlPopoverViewImplTest {
 
     @Mock
-    private Div popoverElement;
+    private HTMLDivElement popoverElement;
 
     @Mock
-    private Div popoverContentElement;
+    private HTMLDivElement popoverContentElement;
 
     @Mock
     private JQueryProducer.JQuery<Popover> jQueryPopover;

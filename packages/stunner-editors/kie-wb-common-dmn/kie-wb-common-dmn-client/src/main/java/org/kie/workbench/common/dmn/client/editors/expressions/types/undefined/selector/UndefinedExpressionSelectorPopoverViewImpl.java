@@ -21,8 +21,8 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -51,8 +51,8 @@ public class UndefinedExpressionSelectorPopoverViewImpl extends AbstractPopoverV
     @Inject
     public UndefinedExpressionSelectorPopoverViewImpl(final UnorderedList definitionsContainer,
                                                       final ManagedInstance<ListSelectorTextItemView> listSelectorTextItemViews,
-                                                      final Div popoverElement,
-                                                      final Div popoverContentElement,
+                                                      final HTMLDivElement popoverElement,
+                                                      final HTMLDivElement popoverContentElement,
                                                       final JQueryProducer.JQuery<Popover> jQueryPopover) {
         super(popoverElement,
               popoverContentElement,

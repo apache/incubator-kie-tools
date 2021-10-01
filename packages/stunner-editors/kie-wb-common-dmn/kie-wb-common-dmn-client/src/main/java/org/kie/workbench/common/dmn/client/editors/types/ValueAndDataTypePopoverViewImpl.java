@@ -27,15 +27,16 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.EventListener;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.KeyboardEvent;
 import org.gwtbootstrap3.client.ui.DropDown;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
-import org.jboss.errai.common.client.dom.Button;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Element;
-import org.jboss.errai.common.client.dom.EventListener;
 import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -166,8 +167,8 @@ public class ValueAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl imp
     @Inject
     public ValueAndDataTypePopoverViewImpl(final Input valueEditor,
                                            final DataTypePickerWidget typeRefEditor,
-                                           final Div popoverElement,
-                                           final Div popoverContentElement,
+                                           final HTMLDivElement popoverElement,
+                                           final HTMLDivElement popoverContentElement,
                                            final Span valueLabel,
                                            final Span dataTypeLabel,
                                            final JQueryProducer.JQuery<Popover> jQueryPopover,
@@ -212,15 +213,13 @@ public class ValueAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl imp
     protected void setKeyDownListeners() {
         super.setKeyDownListeners();
 
-        final Element manageButton = getManageButton();
+        final HTMLElement manageButton = getManageButton();
         manageButton.addEventListener(BrowserEvents.KEYDOWN,
-                                      getManageButtonKeyDownEventListener(),
-                                      false);
+                                      getManageButtonKeyDownEventListener());
 
-        final Element typeSelectorButton = getTypeSelectorButton();
+        final HTMLElement typeSelectorButton = getTypeSelectorButton();
         typeSelectorButton.addEventListener(BrowserEvents.KEYDOWN,
-                                            getTypeSelectorKeyDownEventListener(),
-                                            false);
+                                            getTypeSelectorKeyDownEventListener());
     }
 
     @Override
@@ -237,12 +236,12 @@ public class ValueAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl imp
         return (e) -> manageButtonKeyDownEventListener(e);
     }
 
-    Button getTypeSelectorButton() {
-        return (Button) getElement().querySelector(TYPE_SELECTOR_BUTTON_SELECTOR);
+    HTMLButtonElement getTypeSelectorButton() {
+        return (HTMLButtonElement) new Elemental2DomUtil().asHTMLElement((HTMLElement) getElement().querySelector(TYPE_SELECTOR_BUTTON_SELECTOR));
     }
 
-    Button getManageButton() {
-        return (Button) getElement().querySelector(MANAGE_BUTTON_SELECTOR);
+    HTMLButtonElement getManageButton() {
+        return (HTMLButtonElement) new Elemental2DomUtil().asHTMLElement((HTMLElement) getElement().querySelector(MANAGE_BUTTON_SELECTOR));
     }
 
     void typeSelectorKeyDownEventListener(final Object event) {
@@ -258,7 +257,7 @@ public class ValueAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl imp
                 onClosedByKeyboard();
             } else if (isTabKeyPressed(keyEvent)) {
                 if (keyEvent.shiftKey) {
-                    final Button manageButton = getManageButton();
+                    final HTMLButtonElement manageButton = getManageButton();
                     manageButton.focus();
                 } else {
                     valueEditor.focus();
@@ -372,7 +371,7 @@ public class ValueAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl imp
             hide(false);
             onClosedByKeyboard();
         } else if (event.isShiftKeyDown() && isTab(event)) {
-            final Button typeSelectorButton = getTypeSelectorButton();
+            final HTMLButtonElement typeSelectorButton = getTypeSelectorButton();
             typeSelectorButton.focus();
             event.preventDefault();
         }

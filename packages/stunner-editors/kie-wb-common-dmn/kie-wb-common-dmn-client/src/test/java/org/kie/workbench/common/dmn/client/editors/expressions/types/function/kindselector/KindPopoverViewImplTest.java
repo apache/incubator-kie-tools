@@ -17,7 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function.kindselector;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.common.client.dom.Div;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -49,10 +49,10 @@ public class KindPopoverViewImplTest {
     private ManagedInstance<ListSelectorTextItemView> listSelectorTextItemViews;
 
     @Mock
-    private Div popoverElement;
+    private HTMLDivElement popoverElement;
 
     @Mock
-    private Div popoverContentElement;
+    private HTMLDivElement popoverContentElement;
 
     @Mock
     private JQueryProducer.JQuery<Popover> jQueryPopover;

@@ -21,9 +21,9 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import com.google.gwt.dom.client.BrowserEvents;
+import elemental2.dom.EventListener;
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.KeyboardEvent;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.EventListener;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.kie.workbench.common.dmn.client.editors.types.CanBeClosedByKeyboard;
 import org.uberfire.client.views.pfly.widgets.JQueryProducer;
@@ -41,10 +41,10 @@ public abstract class AbstractPopoverViewImpl implements PopoverView {
     static final String PLACEMENT = "auto top";
 
     @DataField("popover")
-    protected Div popoverElement;
+    protected HTMLDivElement popoverElement;
 
     @DataField("popover-content")
-    protected Div popoverContentElement;
+    protected HTMLDivElement popoverContentElement;
 
     protected JQueryProducer.JQuery<Popover> jQueryPopover;
 
@@ -60,8 +60,8 @@ public abstract class AbstractPopoverViewImpl implements PopoverView {
         //CDI proxy
     }
 
-    public AbstractPopoverViewImpl(final Div popoverElement,
-                                   final Div popoverContentElement,
+    public AbstractPopoverViewImpl(final HTMLDivElement popoverElement,
+                                   final HTMLDivElement popoverContentElement,
                                    final JQueryProducer.JQuery<Popover> jQueryPopover) {
         this.popoverElement = popoverElement;
         this.popoverContentElement = popoverContentElement;
@@ -109,7 +109,7 @@ public abstract class AbstractPopoverViewImpl implements PopoverView {
     }
 
     protected void onShownFocus() {
-        popoverContentElement.getStyle().setProperty("outline", "none");
+        popoverContentElement.style.setProperty("outline", "none");
         popoverContentElement.focus();
     }
 

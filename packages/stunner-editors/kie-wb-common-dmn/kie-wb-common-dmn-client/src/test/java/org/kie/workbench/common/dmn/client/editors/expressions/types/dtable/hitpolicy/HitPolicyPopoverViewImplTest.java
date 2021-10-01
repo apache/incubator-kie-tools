@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.common.client.dom.Div;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -63,10 +63,10 @@ public class HitPolicyPopoverViewImplTest {
     private HTMLElement element;
 
     @Mock
-    private Div popoverElement;
+    private HTMLDivElement popoverElement;
 
     @Mock
-    private Div popoverContentElement;
+    private HTMLDivElement popoverContentElement;
 
     @Mock
     private Span hitPolicyLabel;

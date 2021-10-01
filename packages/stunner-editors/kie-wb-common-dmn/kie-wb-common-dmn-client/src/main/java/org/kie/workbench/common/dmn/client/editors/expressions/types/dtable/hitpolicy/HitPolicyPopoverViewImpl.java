@@ -22,7 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
-import org.jboss.errai.common.client.dom.Div;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -64,8 +64,8 @@ public class HitPolicyPopoverViewImpl extends AbstractPopoverViewImpl implements
     public HitPolicyPopoverViewImpl(final Select lstHitPolicies,
                                     final Select lstBuiltinAggregator,
                                     final BuiltinAggregatorUtils builtinAggregatorUtils,
-                                    final Div popoverElement,
-                                    final Div popoverContentElement,
+                                    final HTMLDivElement popoverElement,
+                                    final HTMLDivElement popoverContentElement,
                                     final Span hitPolicyLabel,
                                     final Span builtinAggregatorLabel,
                                     final JQueryProducer.JQuery<Popover> jQueryPopover,

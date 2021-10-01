@@ -26,13 +26,14 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.Event;
+import elemental2.dom.EventListener;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.KeyboardEvent;
-import org.jboss.errai.common.client.dom.Button;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.EventListener;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,10 +82,10 @@ public class ValueAndDataTypePopoverViewImplTest {
     private DataTypePickerWidget dataTypeEditor;
 
     @Mock
-    private Div popoverElement;
+    private HTMLDivElement popoverElement;
 
     @Mock
-    private Div popoverContentElement;
+    private HTMLDivElement popoverContentElement;
 
     @Mock
     private Span valueLabel;
@@ -120,10 +121,10 @@ public class ValueAndDataTypePopoverViewImplTest {
     private TranslationService translationService;
 
     @Mock
-    private Button manageButton;
+    private HTMLButtonElement manageButton;
 
     @Mock
-    private Button typeSelectorButton;
+    private HTMLButtonElement typeSelectorButton;
 
     @Mock
     private EventListener keyDownCallback;
@@ -170,8 +171,8 @@ public class ValueAndDataTypePopoverViewImplTest {
             }
         });
 
-        when(element.querySelector(MANAGE_BUTTON_SELECTOR)).thenReturn(manageButton);
-        when(element.querySelector(TYPE_SELECTOR_BUTTON_SELECTOR)).thenReturn(typeSelectorButton);
+        when(element.querySelector(MANAGE_BUTTON_SELECTOR)).thenReturn(new Elemental2DomUtil().asHTMLElement(manageButton));
+        when(element.querySelector(TYPE_SELECTOR_BUTTON_SELECTOR)).thenReturn(new Elemental2DomUtil().asHTMLElement(typeSelectorButton));
         when(presenter.getValueLabel()).thenReturn(VALUE_LABEL);
 
         view.init(presenter);

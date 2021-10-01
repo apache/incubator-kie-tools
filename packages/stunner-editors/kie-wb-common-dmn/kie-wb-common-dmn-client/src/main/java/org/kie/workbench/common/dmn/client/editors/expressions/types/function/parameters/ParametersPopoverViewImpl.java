@@ -24,6 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Event;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -59,8 +60,8 @@ public class ParametersPopoverViewImpl extends AbstractPopoverViewImpl implement
     public ParametersPopoverViewImpl(final Div parametersContainer,
                                      final Div addParameter,
                                      final ManagedInstance<ParameterView> parameterViews,
-                                     final Div popoverElement,
-                                     final Div popoverContentElement,
+                                     final HTMLDivElement popoverElement,
+                                     final HTMLDivElement popoverContentElement,
                                      final JQueryProducer.JQuery<Popover> jQueryPopover) {
         super(popoverElement,
               popoverContentElement,

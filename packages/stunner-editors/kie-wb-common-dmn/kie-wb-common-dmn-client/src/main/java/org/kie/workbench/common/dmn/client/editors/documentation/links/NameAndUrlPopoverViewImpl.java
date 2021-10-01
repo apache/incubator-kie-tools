@@ -28,9 +28,9 @@ import javax.inject.Named;
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
-import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -85,8 +85,8 @@ public class NameAndUrlPopoverViewImpl extends AbstractPopoverViewImpl implement
     }
 
     @Inject
-    public NameAndUrlPopoverViewImpl(final Div popoverElement,
-                                     final Div popoverContentElement,
+    public NameAndUrlPopoverViewImpl(final HTMLDivElement popoverElement,
+                                     final HTMLDivElement popoverContentElement,
                                      final JQueryProducer.JQuery<Popover> jQueryPopover,
                                      final TranslationService translationService,
                                      final HTMLButtonElement cancelButton,

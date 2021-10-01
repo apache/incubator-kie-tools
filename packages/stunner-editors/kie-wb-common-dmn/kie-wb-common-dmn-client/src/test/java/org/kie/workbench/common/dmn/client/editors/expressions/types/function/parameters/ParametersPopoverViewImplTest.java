@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import com.google.gwt.user.client.Event;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -83,10 +84,10 @@ public class ParametersPopoverViewImplTest {
     private HTMLElement element;
 
     @Mock
-    private Div popoverElement;
+    private HTMLDivElement popoverElement;
 
     @Mock
-    private Div popoverContentElement;
+    private HTMLDivElement popoverContentElement;
 
     @Mock
     private JQueryProducer.JQuery<Popover> jQueryProducer;
