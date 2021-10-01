@@ -147,11 +147,11 @@ describe("ImportJavaClasses component tests", () => {
 
   function lspGetClassFieldServiceMock(mockedBroadcastDefinition: jest.Mock) {
     window.envelopeMock = _.extend(window.envelopeMock || {}, {
-      lspGetClassFieldsServiceMocked: (className: string) => mockedBroadcastDefinition(className),
+      lspGetClassFieldsServiceMocked: (className: string) => Promise.resolve(mockedBroadcastDefinition(className)),
     });
   }
 
-  const lspGetClassFieldsServiceMocked = (className: string) => {
+  const lspGetClassFieldsServiceMocked = async (className: string) => {
     const bookClassFieldsMap = new Map<string, string>();
     bookClassFieldsMap.set("title", "string");
     bookClassFieldsMap.set("year", "integer");
