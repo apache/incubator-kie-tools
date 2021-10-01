@@ -207,7 +207,7 @@ public class RegularPolygon extends Shape<RegularPolygon> {
     }
 
     public RegularPolygon setCornerRadius(final double radius) {
-        this.cornerRadius = cornerRadius;
+        this.cornerRadius = radius;
 
         return refresh();
     }

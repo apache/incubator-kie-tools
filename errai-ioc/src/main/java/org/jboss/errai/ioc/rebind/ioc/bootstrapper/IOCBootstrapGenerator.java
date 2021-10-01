@@ -322,7 +322,7 @@ public class IOCBootstrapGenerator {
   }
 
   @SuppressWarnings("rawtypes")
-  private static void maybeValidateDecorators(final MetaDataScanner scanner) {
+  private static synchronized void maybeValidateDecorators(final MetaDataScanner scanner) {
     if (decoratorMap == null || EnvUtil.isJUnitTest()) {
       decoratorMap = new HashMap<Class<? extends IOCDecoratorExtension>, Class<? extends Annotation>>();
       final Set<Class<?>> decorators = scanner.getTypesAnnotatedWith(CodeDecorator.class);

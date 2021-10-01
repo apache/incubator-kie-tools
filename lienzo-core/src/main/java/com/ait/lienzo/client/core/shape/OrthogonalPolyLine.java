@@ -677,7 +677,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
     }
 
     public OrthogonalPolyLine setCornerRadius(final double radius) {
-        this.cornerRadius = cornerRadius;
+        this.cornerRadius = radius;
 
         return refresh();
     }

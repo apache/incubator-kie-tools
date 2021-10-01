@@ -123,7 +123,7 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
     }
 
     public T setImageSerializationMode(final ImageSerializationMode serializationMode) {
-        this.imageSerializationMode = imageSerializationMode;
+        this.imageSerializationMode = serializationMode;
 
         return upcast();
     }

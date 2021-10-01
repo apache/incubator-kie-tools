@@ -184,7 +184,7 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid> {
     }
 
     public IsoscelesTrapezoid setCornerRadius(final double radius) {
-        this.cornerRadius = cornerRadius;
+        this.cornerRadius = radius;
 
         return refresh();
     }

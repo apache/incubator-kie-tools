@@ -841,7 +841,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     public T setLineJoin(final LineJoin linejoin) {
-        this.lineJoin = lineJoin;
+        this.lineJoin = linejoin;
 
         return cast();
     }

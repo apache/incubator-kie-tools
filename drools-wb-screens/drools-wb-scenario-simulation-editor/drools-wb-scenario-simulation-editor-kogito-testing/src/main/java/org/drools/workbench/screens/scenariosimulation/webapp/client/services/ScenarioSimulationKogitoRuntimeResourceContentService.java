@@ -32,12 +32,11 @@ public class ScenarioSimulationKogitoRuntimeResourceContentService implements Sc
                                final RemoteCallback<String> remoteCallback,
                                final ErrorCallback<Object> errorCallback) {
         String result = vfsServiceFake.readAllString(path);
-        if(result == null && result.isEmpty()) {
+        if (result == null || result.isEmpty()) {
             String error = "Unable to open file: " + path;
             errorCallback.error(error, new Exception(error));
         } else {
             remoteCallback.callback(result);
         }
     }
-
 }

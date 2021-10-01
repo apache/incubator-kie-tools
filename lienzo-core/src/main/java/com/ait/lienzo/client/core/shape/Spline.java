@@ -277,7 +277,7 @@ public class Spline extends AbstractMultiPointShape<Spline> {
     }
 
     public Spline setAngleFactor(final double factor) {
-        this.angleFactor = angleFactor;
+        this.angleFactor = factor;
 
         return refresh();
     }

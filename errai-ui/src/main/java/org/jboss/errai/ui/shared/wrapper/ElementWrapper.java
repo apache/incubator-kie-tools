@@ -16,6 +16,8 @@
 
 package org.jboss.errai.ui.shared.wrapper;
 
+import javax.annotation.Nullable;
+
 import org.w3c.dom.*;
 
 /**
@@ -65,11 +67,13 @@ public class ElementWrapper extends NodeWrapper implements Element {
   }
 
   @Override
+  @Nullable
   public NodeList getElementsByTagName(String name) {
     return null;
   }
 
   @Override
+  @Nullable
   public String getAttributeNS(String namespaceURI, String localName) throws DOMException {
     return null;
   }
@@ -93,6 +97,7 @@ public class ElementWrapper extends NodeWrapper implements Element {
   }
 
   @Override
+  @Nullable
   public NodeList getElementsByTagNameNS(String namespaceURI, String localName) throws DOMException {
     return null;
   }
