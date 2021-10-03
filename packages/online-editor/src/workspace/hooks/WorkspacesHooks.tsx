@@ -1,27 +1,55 @@
 import { useWorkspaces } from "../WorkspacesContext";
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
 import { WorkspaceOverview } from "../model/WorkspaceOverview";
+import { usePromiseState } from "./PromiseState";
+import { Holder, useCancelableEffect } from "../../common/Hooks";
 
-export function useWorkspaceOverviews() {
+export function useWorkspaceOverviewsPromise() {
   const workspaces = useWorkspaces();
-  const [workspaceOverviews, setWorkspaceOverviews] = useState<WorkspaceOverview[]>([]);
-  useEffect(() => {
-    workspaces.listWorkspaceOverviews().then(setWorkspaceOverviews);
-  }, []);
+  const [workspaceOverviewsPromise, setWorkspaceOverviewsPromise] = usePromiseState<WorkspaceOverview[]>();
 
-  useEffect(() => {
-    const broadcastChannel = new BroadcastChannel(workspaces.workspaceService.storageService.rootPath);
-    broadcastChannel.onmessage = ({ data }) => {
-      console.info(`WORKSPACES: ${JSON.stringify(data)}`);
-      workspaces.listWorkspaceOverviews().then(setWorkspaceOverviews);
-    };
+  const refresh = useCallback((canceled: Holder<boolean>) => {
+    workspaces
+      .listWorkspaceOverviews()
+      .then((workspaceOverviews) => {
+        if (!canceled.get()) {
+          setWorkspaceOverviewsPromise({ data: workspaceOverviews });
+        }
+      })
+      .catch((error) => {
+        if (!canceled.get()) {
+          setWorkspaceOverviewsPromise({ error });
+        }
+      });
+  }, []); //TODO: fix this dependency array
 
-    return () => {
-      broadcastChannel.close();
-    };
-  }, []);
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        refresh(canceled);
+      },
+      [refresh]
+    )
+  );
 
-  return workspaceOverviews;
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        const broadcastChannel = new BroadcastChannel(workspaces.workspaceService.storageService.rootPath);
+        broadcastChannel.onmessage = ({ data }) => {
+          console.info(`WORKSPACES: ${JSON.stringify(data)}`);
+          refresh(canceled);
+        };
+
+        return () => {
+          broadcastChannel.close();
+        };
+      },
+      [workspaces.workspaceService, refresh]
+    )
+  );
+
+  return workspaceOverviewsPromise;
 }
 
 export type WorkspacesEvents =

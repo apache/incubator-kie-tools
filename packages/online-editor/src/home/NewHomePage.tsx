@@ -32,19 +32,21 @@ import { LocalFile, useWorkspaces } from "../workspace/WorkspacesContext";
 import { QueryParams } from "../common/Routes";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { OnlineEditorPage } from "./pageTemplate/OnlineEditorPage";
-import { useWorkspaceOverviews } from "../workspace/hooks/WorkspacesHooks";
-import { useWorkspace } from "../workspace/hooks/WorkspaceHooks";
+import { useWorkspaceOverviewsPromise } from "../workspace/hooks/WorkspacesHooks";
+import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { SUPPORTED_FILES_EDITABLE } from "../workspace/SupportedFiles";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { FileLabel } from "../workspace/pages/FileLabel";
+import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
+import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 
 export function NewHomePage() {
   const globals = useGlobals();
   const history = useHistory();
   const workspaces = useWorkspaces();
   const queryParams = useQueryParams();
-  const workspaceOverviews = useWorkspaceOverviews();
+  const workspaceOverviewsPromise = useWorkspaceOverviewsPromise();
   const [url, setUrl] = useState("");
   const [filesToUpload, setFilesToUpload] = useState<LocalFile[]>([]);
 
@@ -302,77 +304,85 @@ export function NewHomePage() {
         <GalleryItem>
           <PageSection isFilled={true} style={{ height: "100%" }}>
             <PageSection variant={"light"}>
-              <TextContent>
-                {workspaceOverviews.length > 0 && (
-                  <Stack hasGutter={true}>
-                    {workspaceOverviews.map((workspace: WorkspaceOverview) => (
-                      <StackItem key={workspace.name}>
-                        <WorkspaceCard workspaceOverview={workspace} />
-                      </StackItem>
-                    ))}
-                  </Stack>
+              <PromiseStateWrapper
+                promise={workspaceOverviewsPromise}
+                rejected={() => <></>}
+                resolved={(workspaceOverviews) => (
+                  <>
+                    <TextContent>
+                      {workspaceOverviews.length > 0 && (
+                        <Stack hasGutter={true}>
+                          {workspaceOverviews.map((workspace: WorkspaceOverview) => (
+                            <StackItem key={workspace.name}>
+                              <WorkspaceCard workspaceOverview={workspace} />
+                            </StackItem>
+                          ))}
+                        </Stack>
+                      )}
+                      {workspaceOverviews.length === 0 && (
+                        <EmptyState>
+                          <EmptyStateIcon icon={CubesIcon} />
+                          <Title headingLevel="h4" size="lg">
+                            {`Nothing here.`}
+                          </Title>
+                          <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
+                          <EmptyStateSecondaryActions>
+                            <TextContent>
+                              <Flex grow={{ default: "grow" }}>
+                                <FlexItem>
+                                  <Button
+                                    isLarge
+                                    variant={ButtonVariant.secondary}
+                                    onClick={() => {
+                                      history.push({
+                                        pathname: globals.routes.newWorkspaceWithEmptyFile.path({
+                                          extension: "bpmn",
+                                        }),
+                                      });
+                                    }}
+                                  >
+                                    BPMN
+                                  </Button>
+                                </FlexItem>
+                                <FlexItem>
+                                  <Button
+                                    isLarge
+                                    variant={ButtonVariant.secondary}
+                                    onClick={() => {
+                                      history.push({
+                                        pathname: globals.routes.newWorkspaceWithEmptyFile.path({
+                                          extension: "dmn",
+                                        }),
+                                      });
+                                    }}
+                                  >
+                                    DMN
+                                  </Button>
+                                </FlexItem>
+                                <FlexItem>
+                                  <Button
+                                    isLarge
+                                    variant={ButtonVariant.secondary}
+                                    onClick={() => {
+                                      history.push({
+                                        pathname: globals.routes.newWorkspaceWithEmptyFile.path({
+                                          extension: "pmml",
+                                        }),
+                                      });
+                                    }}
+                                  >
+                                    PMML
+                                  </Button>
+                                </FlexItem>
+                              </Flex>
+                            </TextContent>
+                          </EmptyStateSecondaryActions>
+                        </EmptyState>
+                      )}
+                    </TextContent>
+                  </>
                 )}
-                {workspaceOverviews.length === 0 && (
-                  <EmptyState>
-                    <EmptyStateIcon icon={CubesIcon} />
-                    <Title headingLevel="h4" size="lg">
-                      {`Nothing here.`}
-                    </Title>
-                    <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
-                    <EmptyStateSecondaryActions>
-                      <TextContent>
-                        <Flex grow={{ default: "grow" }}>
-                          <FlexItem>
-                            <Button
-                              isLarge
-                              variant={ButtonVariant.secondary}
-                              onClick={() => {
-                                history.push({
-                                  pathname: globals.routes.newWorkspaceWithEmptyFile.path({
-                                    extension: "bpmn",
-                                  }),
-                                });
-                              }}
-                            >
-                              BPMN
-                            </Button>
-                          </FlexItem>
-                          <FlexItem>
-                            <Button
-                              isLarge
-                              variant={ButtonVariant.secondary}
-                              onClick={() => {
-                                history.push({
-                                  pathname: globals.routes.newWorkspaceWithEmptyFile.path({
-                                    extension: "dmn",
-                                  }),
-                                });
-                              }}
-                            >
-                              DMN
-                            </Button>
-                          </FlexItem>
-                          <FlexItem>
-                            <Button
-                              isLarge
-                              variant={ButtonVariant.secondary}
-                              onClick={() => {
-                                history.push({
-                                  pathname: globals.routes.newWorkspaceWithEmptyFile.path({
-                                    extension: "pmml",
-                                  }),
-                                });
-                              }}
-                            >
-                              PMML
-                            </Button>
-                          </FlexItem>
-                        </Flex>
-                      </TextContent>
-                    </EmptyStateSecondaryActions>
-                  </EmptyState>
-                )}
-              </TextContent>
+              />
             </PageSection>
           </PageSection>
         </GalleryItem>
@@ -382,18 +392,26 @@ export function NewHomePage() {
   );
 }
 
+function WorkspaceLoadingCard() {
+  return (
+    <Card>
+      <CardBody>
+        <Skeleton fontSize={"sm"} width={"40%"} />
+        <br />
+        <Skeleton fontSize={"sm"} width={"70%"} />
+      </CardBody>
+    </Card>
+  );
+}
+
 function WorkspaceCard(props: { workspaceOverview: WorkspaceOverview }) {
   const globals = useGlobals();
   const history = useHistory();
   const workspaces = useWorkspaces();
   const [isHovered, setHovered] = useState(false);
-  const { workspace } = useWorkspace(props.workspaceOverview.workspaceId);
+  const { workspacePromise } = useWorkspacePromise(props.workspaceOverview.workspaceId);
 
   const deleteWorkspaceIcon = useMemo(() => {
-    if (!workspace) {
-      return <></>;
-    }
-
     return (
       isHovered && (
         <CardActions>
@@ -401,8 +419,8 @@ function WorkspaceCard(props: { workspaceOverview: WorkspaceOverview }) {
             variant={ButtonVariant.plain}
             onClick={(e) => {
               e.stopPropagation();
-              if (workspace) {
-                workspaces.workspaceService.delete(workspace.descriptor, { broadcast: true });
+              if (workspacePromise.data) {
+                workspaces.workspaceService.delete(workspacePromise.data.descriptor, { broadcast: true });
               }
             }}
           >
@@ -411,111 +429,118 @@ function WorkspaceCard(props: { workspaceOverview: WorkspaceOverview }) {
         </CardActions>
       )
     );
-  }, [isHovered, workspace, workspaces.workspaceService]);
+  }, [isHovered, workspacePromise, workspaces.workspaceService]);
 
   const editableFiles = useMemo(
-    () => workspace?.files.filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension)) ?? [],
-    [workspace]
+    () => workspacePromise.data?.files.filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension)) ?? [],
+    [workspacePromise]
   );
 
   return (
-    <>
-      {editableFiles.length === 1 && (
-        <Card
-          onMouseOver={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          isHoverable={true}
-          isCompact={true}
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            history.push({
-              pathname: globals.routes.workspaceWithFilePath.path({
-                workspaceId: editableFiles[0].workspaceId,
-                filePath: editableFiles[0].pathRelativeToWorkspaceRootWithoutExtension,
-                extension: editableFiles[0].extension,
-              }),
-            });
-          }}
-        >
-          <CardHeader>
-            <CardHeaderMain>
-              <CardTitle>
-                <TextContent>
-                  <Text component={TextVariants.h3}>
-                    <TaskIcon />
-                    &nbsp;&nbsp;
-                    {editableFiles[0].nameWithoutExtension}
-                    &nbsp;&nbsp;
-                    <FileLabel extension={editableFiles[0].extension} />
-                  </Text>
-                </TextContent>
-              </CardTitle>
-            </CardHeaderMain>
-            {deleteWorkspaceIcon}
-          </CardHeader>
-
-          <CardBody>
-            <TextContent>
-              <Text component={TextVariants.p}>
-                <b>{`Created: `}</b>
-                {`-`}
-                <b>{`, Last updated: `}</b>
-                {`-`}
-              </Text>
-            </TextContent>
-          </CardBody>
-        </Card>
-      )}
-      {(editableFiles.length > 1 || editableFiles.length < 1) && (
-        <Card
-          onMouseOver={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          isHoverable={true}
-          isCompact={true}
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            history.push({
-              pathname: globals.routes.workspaceOverview.path({
-                workspaceId: props.workspaceOverview.workspaceId,
-              }),
-            });
-          }}
-        >
-          <CardHeader>
-            <CardHeaderMain>
-              <Flex>
-                <FlexItem>
+    <PromiseStateWrapper
+      promise={workspacePromise}
+      pending={<WorkspaceLoadingCard />}
+      rejected={() => <>ERROR</>}
+      resolved={(workspace) => (
+        <>
+          {editableFiles.length === 1 && (
+            <Card
+              onMouseOver={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+              isHoverable={true}
+              isCompact={true}
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                history.push({
+                  pathname: globals.routes.workspaceWithFilePath.path({
+                    workspaceId: editableFiles[0].workspaceId,
+                    filePath: editableFiles[0].pathRelativeToWorkspaceRootWithoutExtension,
+                    extension: editableFiles[0].extension,
+                  }),
+                });
+              }}
+            >
+              <CardHeader>
+                <CardHeaderMain>
                   <CardTitle>
                     <TextContent>
                       <Text component={TextVariants.h3}>
-                        <FolderIcon />
+                        <TaskIcon />
                         &nbsp;&nbsp;
-                        {props.workspaceOverview.name}
+                        {editableFiles[0].nameWithoutExtension}
+                        &nbsp;&nbsp;
+                        <FileLabel extension={editableFiles[0].extension} />
                       </Text>
                     </TextContent>
                   </CardTitle>
-                </FlexItem>
-                <FlexItem>
+                </CardHeaderMain>
+                {deleteWorkspaceIcon}
+              </CardHeader>
+
+              <CardBody>
+                <TextContent>
                   <Text component={TextVariants.p}>
-                    {`${workspace?.files.length} files, ${editableFiles?.length} models`}
+                    <b>{`Created: `}</b>
+                    {`-`}
+                    <b>{`, Last updated: `}</b>
+                    {`-`}
                   </Text>
-                </FlexItem>
-              </Flex>
-            </CardHeaderMain>
-            {deleteWorkspaceIcon}
-          </CardHeader>
-          <CardBody>
-            <TextContent>
-              <Text component={TextVariants.p}>
-                <b>{`Created: `}</b>
-                {props.workspaceOverview.createdIn.toLocaleString()}
-                <b>{`, Last updated: `}</b>
-                {props.workspaceOverview.lastUpdatedIn.toLocaleString()}
-              </Text>
-            </TextContent>
-          </CardBody>
-        </Card>
+                </TextContent>
+              </CardBody>
+            </Card>
+          )}
+          {(editableFiles.length > 1 || editableFiles.length < 1) && (
+            <Card
+              onMouseOver={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+              isHoverable={true}
+              isCompact={true}
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                history.push({
+                  pathname: globals.routes.workspaceOverview.path({
+                    workspaceId: props.workspaceOverview.workspaceId,
+                  }),
+                });
+              }}
+            >
+              <CardHeader>
+                <CardHeaderMain>
+                  <Flex>
+                    <FlexItem>
+                      <CardTitle>
+                        <TextContent>
+                          <Text component={TextVariants.h3}>
+                            <FolderIcon />
+                            &nbsp;&nbsp;
+                            {props.workspaceOverview.name}
+                          </Text>
+                        </TextContent>
+                      </CardTitle>
+                    </FlexItem>
+                    <FlexItem>
+                      <Text component={TextVariants.p}>
+                        {`${workspace.files.length} files, ${editableFiles?.length} models`}
+                      </Text>
+                    </FlexItem>
+                  </Flex>
+                </CardHeaderMain>
+                {deleteWorkspaceIcon}
+              </CardHeader>
+              <CardBody>
+                <TextContent>
+                  <Text component={TextVariants.p}>
+                    <b>{`Created: `}</b>
+                    {props.workspaceOverview.createdIn.toLocaleString()}
+                    <b>{`, Last updated: `}</b>
+                    {props.workspaceOverview.lastUpdatedIn.toLocaleString()}
+                  </Text>
+                </TextContent>
+              </CardBody>
+            </Card>
+          )}
+        </>
       )}
-    </>
+    />
   );
 }

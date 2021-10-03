@@ -1,66 +1,61 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
-import { useCancelableEffect } from "../../common/Hooks";
+import { Holder, useCancelableEffect } from "../../common/Hooks";
+import { usePromiseState } from "./PromiseState";
 
-export function useWorkspaceFile(workspaceId: string | undefined, pathRelativeToWorkspaceRoot: string | undefined) {
+export function useWorkspaceFilePromise(
+  workspaceId: string | undefined,
+  pathRelativeToWorkspaceRoot: string | undefined
+) {
   const workspaces = useWorkspaces();
-  const [file, setFile] = useState<WorkspaceFile>();
+  const [workspaceFilePromise, setWorkspaceFilePromise] = usePromiseState<WorkspaceFile>();
+
+  const refresh = useCallback(
+    (path: string, canceled: Holder<boolean>) => {
+      workspaces.workspaceService.storageService.getFile(path).then((workspaceFile) => {
+        if (canceled.get()) {
+          return;
+        }
+
+        if (!workspaceFile) {
+          setWorkspaceFilePromise({ error: `File '${path}' not found` });
+          return;
+        }
+
+        setWorkspaceFilePromise({ data: workspaceFile });
+      });
+    },
+    [workspaces.workspaceService, setWorkspaceFilePromise]
+  );
 
   useCancelableEffect(
     useCallback(
-      ({ ifNotCanceled }) => {
+      ({ canceled }) => {
         if (!pathRelativeToWorkspaceRoot || !workspaceId) {
           return;
         }
 
-        workspaces.workspaceService.storageService.getFile(`/${workspaceId}/${pathRelativeToWorkspaceRoot}`).then(
-          ifNotCanceled.run((workspaceFile) => {
-            if (!workspaceFile) {
-              console.error(`File '${pathRelativeToWorkspaceRoot}' not found on workspace '${workspaceId}'`); //TODO indicate error in some way?
-              return;
-            }
-
-            setFile(workspaceFile);
-          })
-        );
+        refresh(`/${workspaceId}/${pathRelativeToWorkspaceRoot}`, canceled);
       },
-      [pathRelativeToWorkspaceRoot, workspaceId, workspaces.workspaceService]
+      [pathRelativeToWorkspaceRoot, workspaceId, refresh]
     )
   );
 
   useCancelableEffect(
     useCallback(
-      ({ ifNotCanceled }) => {
-        if (!file) {
+      ({ canceled }) => {
+        if (!workspaceFilePromise.data) {
           return;
         }
 
-        const broadcastChannel = new BroadcastChannel(file.path);
+        const broadcastChannel = new BroadcastChannel(workspaceFilePromise.data.path);
         broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileEvents>) => {
           console.info(`WORKSPACE_FILE: ${JSON.stringify(data)}`);
           if (data.type === "UPDATE") {
-            workspaces.workspaceService.storageService.getFile(data.path).then(
-              ifNotCanceled.run((workspaceFile) => {
-                if (!workspaceFile) {
-                  console.error(`File '${data.path}' not found`); //TODO indicate error in some way?
-                  return;
-                }
-
-                setFile(workspaceFile);
-              })
-            );
+            refresh(data.path, canceled);
           }
           if (data.type === "MOVE" || data.type == "RENAME") {
-            workspaces.workspaceService.storageService.getFile(data.newPath).then(
-              ifNotCanceled.run((workspaceFile) => {
-                if (!workspaceFile) {
-                  console.error(`File '${data.newPath}' not found`); //TODO indicate error in some way?
-                  return;
-                }
-
-                setFile(workspaceFile);
-              })
-            );
+            refresh(data.newPath, canceled);
           }
         };
 
@@ -68,11 +63,11 @@ export function useWorkspaceFile(workspaceId: string | undefined, pathRelativeTo
           broadcastChannel.close();
         };
       },
-      [file, workspaces.workspaceService]
+      [workspaceFilePromise, refresh]
     )
   );
 
-  return file;
+  return workspaceFilePromise;
 }
 
 export type WorkspaceFileEvents =

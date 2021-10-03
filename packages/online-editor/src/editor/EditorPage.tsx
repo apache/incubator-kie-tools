@@ -42,8 +42,8 @@ import { useCancelableEffect, useController } from "../common/Hooks";
 import { TextEditorModal } from "./TextEditor/TextEditorModal";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kie-tooling-core/workspace/dist/api";
-import { useWorkspace } from "../workspace/hooks/WorkspaceHooks";
-import { useWorkspaceFile } from "../workspace/hooks/WorkspaceFileHooks";
+import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
+import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 
 export interface Props {
   forExtension: SupportedFileExtensions;
@@ -63,9 +63,9 @@ export function EditorPage(props: Props) {
   const isDirty = useDirtyState(editor);
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
 
-  const { workspace, addEmptyWorkspaceFile } = useWorkspace(props.workspaceId);
+  const { workspacePromise, addEmptyWorkspaceFile } = useWorkspacePromise(props.workspaceId);
 
-  const workspaceFile = useWorkspaceFile(workspace?.descriptor.workspaceId, props.filePath);
+  const workspaceFile = useWorkspaceFilePromise(workspacePromise.data?.descriptor.workspaceId, props.filePath);
 
   const [currentFile, setCurrentFile] = useState<EmbeddedEditorFile>(() => ({
     fileName: "Untitled",
@@ -105,15 +105,15 @@ export function EditorPage(props: Props) {
 
   // keep the page in sync with the name of `workspaceFile`, even if changes
   useEffect(() => {
-    if (!workspaceFile) {
+    if (!workspaceFile.data) {
       return;
     }
 
     history.replace({
       pathname: globals.routes.workspaceWithFilePath.path({
-        workspaceId: workspaceFile.workspaceId,
-        filePath: workspaceFile.pathRelativeToWorkspaceRootWithoutExtension,
-        extension: workspaceFile.extension,
+        workspaceId: workspaceFile.data.workspaceId,
+        filePath: workspaceFile.data.pathRelativeToWorkspaceRootWithoutExtension,
+        extension: workspaceFile.data.extension,
       }),
     });
   }, [history, globals, workspaceFile]);
@@ -123,28 +123,31 @@ export function EditorPage(props: Props) {
   // update EmbeddedEditorFile, but only if content is different than what was saved
   useCancelableEffect(
     useCallback(
-      ({ ifNotCanceled }) => {
-        if (!workspaceFile) {
+      ({ canceled }) => {
+        if (!workspaceFile.data) {
           return;
         }
 
-        workspaceFile.getFileContents().then(
-          ifNotCanceled.run((content) => {
-            if (content === lastContent.current) {
-              return;
-            }
-            setCurrentFile(() => {
-              return {
-                path: workspaceFile.path,
-                getFileContents: workspaceFile.getFileContents,
-                kind: "local",
-                isReadOnly: false,
-                fileExtension: workspaceFile.extension,
-                fileName: workspaceFile.nameWithoutExtension,
-              };
-            });
-          })
-        );
+        workspaceFile.data.getFileContents().then((content) => {
+          if (canceled.get()) {
+            return;
+          }
+
+          if (content === lastContent.current) {
+            return;
+          }
+
+          setCurrentFile(() => {
+            return {
+              path: workspaceFile.data.path,
+              getFileContents: workspaceFile.data.getFileContents,
+              kind: "local",
+              isReadOnly: false,
+              fileExtension: workspaceFile.data.extension,
+              fileName: workspaceFile.data.nameWithoutExtension,
+            };
+          });
+        });
       },
       [workspaceFile]
     )
@@ -153,7 +156,7 @@ export function EditorPage(props: Props) {
   // auto-save
   useEffect(() => {
     if (isDirty) {
-      if (!editor?.isReady || !workspaceFile) {
+      if (!editor?.isReady || !workspaceFile.data) {
         return;
       }
 
@@ -162,7 +165,7 @@ export function EditorPage(props: Props) {
 
       editor.getContent().then((content) => {
         lastContent.current = content;
-        workspaces.updateFile(workspaceFile, () => Promise.resolve(content));
+        workspaces.updateFile(workspaceFile.data, () => Promise.resolve(content));
       });
     }
   }, [editor, alerts, isDirty, workspaces, workspaceFile]);
@@ -176,12 +179,16 @@ export function EditorPage(props: Props) {
 
   const onResourceListRequest = useCallback(
     async (request: ResourceListRequest) => {
-      if (!workspace) {
+      if (!workspacePromise.data) {
         return new ResourcesList(request.pattern, []);
       }
-      return workspaces.resourceContentList(workspace.descriptor.workspaceId, request.pattern, request.opts);
+      return workspaces.resourceContentList(
+        workspacePromise.data.descriptor.workspaceId,
+        request.pattern,
+        request.opts
+      );
     },
-    [workspaces, workspace]
+    [workspaces, workspacePromise]
   );
 
   const requestDownload = useCallback(() => {
@@ -276,7 +283,7 @@ export function EditorPage(props: Props) {
       <DmnRunnerContextProvider currentFile={currentFile} editor={editor} notificationsPanel={notificationsPanel}>
         <DmnDevSandboxContextProvider
           currentFile={currentFile}
-          workspaceFile={workspaceFile}
+          workspaceFile={workspaceFile.data}
           editor={editor}
           alerts={alerts}
         >
@@ -284,13 +291,13 @@ export function EditorPage(props: Props) {
             header={
               <EditorToolbar
                 addEmptyWorkspaceFile={addEmptyWorkspaceFile}
-                workspace={workspace}
+                workspace={workspacePromise.data}
                 editor={editor}
                 alerts={alerts}
                 currentFile={currentFile}
                 onRename={(newName) => {
-                  if (workspaceFile) {
-                    return workspaces.renameFile(workspaceFile, newName);
+                  if (workspaceFile.data) {
+                    return workspaces.renameFile(workspaceFile.data, newName);
                   }
                 }}
                 onClose={onClose}
@@ -324,7 +331,6 @@ export function EditorPage(props: Props) {
           </Page>
         </DmnDevSandboxContextProvider>
       </DmnRunnerContextProvider>
-
       <TextEditorModal
         editor={editor}
         currentFile={currentFile}

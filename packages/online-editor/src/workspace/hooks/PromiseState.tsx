@@ -1,0 +1,116 @@
+import * as React from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useCancelableEffect } from "../../common/Hooks";
+
+export type Pending<T> = { status: PromiseStateStatus.PENDING; data?: undefined; error?: undefined };
+export type Resolved<T> = { status: PromiseStateStatus.RESOLVED; data: T; error?: undefined };
+export type Rejected<T> = { status: PromiseStateStatus.REJECTED; data?: undefined; error: string[] };
+export type PromiseState<T> = Resolved<T> | Pending<T> | Rejected<T>;
+export type Unwrapped<T> = { [K in keyof T]: T[K] extends PromiseState<infer U> ? U : never };
+export type NewStateArgs<T> = { data: T; error?: undefined } | { data?: undefined; error: string };
+
+export enum PromiseStateStatus {
+  PENDING,
+  RESOLVED,
+  REJECTED,
+}
+
+export function useDelay(ms: number) {
+  const [resolved, setResolved] = usePromiseState<boolean>();
+
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        setTimeout(() => {
+          if (canceled.get()) {
+            return;
+          }
+          setResolved({ data: true });
+        }, ms);
+      },
+      [setResolved, ms]
+    )
+  );
+
+  return resolved;
+}
+
+export function useDelayedPromiseState<T>(ms: number): [PromiseState<T>, (newState: NewStateArgs<T>) => void] {
+  const delay = useDelay(ms);
+  const [state, setState] = usePromiseState<T>();
+
+  const combined = useCombinedPromiseState({ state, delay });
+
+  const ret: PromiseState<T> = useMemo(() => {
+    switch (combined.status) {
+      case PromiseStateStatus.PENDING:
+        return { status: PromiseStateStatus.PENDING };
+      case PromiseStateStatus.REJECTED:
+        return { status: PromiseStateStatus.REJECTED, error: combined.error };
+      case PromiseStateStatus.RESOLVED:
+        return { status: PromiseStateStatus.RESOLVED, data: combined.data.state };
+    }
+  }, [combined]);
+
+  return [ret, setState];
+}
+
+export function usePromiseState<T>(): [PromiseState<T>, (newState: NewStateArgs<T>) => void] {
+  const [state, setState] = useState<PromiseState<T>>({ status: PromiseStateStatus.PENDING });
+
+  const set = useCallback((newState: NewStateArgs<T>) => {
+    if (newState.error) {
+      setState({ status: PromiseStateStatus.REJECTED, error: [newState.error] });
+    } else if (newState.data) {
+      setState({ status: PromiseStateStatus.RESOLVED, data: newState.data });
+    } else {
+      throw new Error("Invalid state");
+    }
+  }, []);
+
+  return [state, set];
+}
+
+export function useCombinedPromiseState<T = { [key: string]: PromiseState<any> }>(args: T): PromiseState<Unwrapped<T>> {
+  return useMemo(() => {
+    const statuses = new Map<PromiseStateStatus, number>();
+    const data: Unwrapped<T> = {} as any;
+    let error: string[] = [];
+
+    Object.entries(args).forEach(([key, state]) => {
+      statuses.set(state.status, (statuses.get(state.status) ?? 0) + 1);
+      data[key as keyof T] = state.data;
+      error = [...error, ...(state.error ?? [])];
+    });
+
+    if (statuses.get(PromiseStateStatus.PENDING) ?? 0 > 0) {
+      return { status: PromiseStateStatus.PENDING };
+    }
+
+    if (statuses.get(PromiseStateStatus.REJECTED) ?? 0 > 0) {
+      return { status: PromiseStateStatus.REJECTED, error };
+    }
+
+    return { status: PromiseStateStatus.RESOLVED, data };
+  }, [args]);
+}
+
+export function PromiseStateWrapper<T>(props: {
+  promise: PromiseState<T>;
+  pending?: React.ReactNode;
+  resolved?: (data: Resolved<T>["data"]) => React.ReactNode;
+  rejected?: (error: Rejected<T>["error"]) => React.ReactNode;
+}) {
+  const component = useMemo(() => {
+    switch (props.promise.status) {
+      case PromiseStateStatus.PENDING:
+        return props.pending ?? <></>;
+      case PromiseStateStatus.REJECTED:
+        return props.rejected?.(props.promise.error) ?? <></>;
+      case PromiseStateStatus.RESOLVED:
+        return props.resolved?.(props.promise.data) ?? <></>;
+    }
+  }, [props]);
+
+  return <>{component}</>;
+}

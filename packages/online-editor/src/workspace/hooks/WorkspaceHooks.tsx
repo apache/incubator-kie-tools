@@ -1,58 +1,82 @@
 import { useWorkspaces } from "../WorkspacesContext";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { ActiveWorkspace } from "../model/ActiveWorkspace";
+import { useDelayedPromiseState, usePromiseState } from "./PromiseState";
+import { Holder, useCancelableEffect } from "../../common/Hooks";
 
-export function useWorkspace(workspaceId: string | undefined) {
+export function useWorkspacePromise(workspaceId: string | undefined) {
   const workspaces = useWorkspaces();
-  const [workspace, setWorkspace] = useState<ActiveWorkspace>();
+  const [workspacePromise, setWorkspacePromise] = useDelayedPromiseState<ActiveWorkspace>(1000);
 
-  const refreshFiles = useCallback(async () => {
-    if (!workspaceId) {
-      return;
-    }
+  const refresh = useCallback(
+    async (canceled: Holder<boolean>) => {
+      if (!workspaceId) {
+        return;
+      }
 
-    const descriptor = await workspaces.workspaceService.get(workspaceId);
-    if (!descriptor) {
-      //TODO: what to do?
-      return;
-    }
-    const files = await workspaces.workspaceService.listFiles(descriptor);
-    setWorkspace({ descriptor: descriptor, files });
-  }, [workspaceId, workspaces.workspaceService]);
+      const descriptor = await workspaces.workspaceService.get(workspaceId);
+      if (canceled.get()) {
+        return;
+      }
+
+      if (!descriptor) {
+        setWorkspacePromise({ error: `Can't find Workspace with id ${workspaceId}` });
+        return;
+      }
+
+      const files = await workspaces.workspaceService.listFiles(descriptor);
+      if (canceled.get()) {
+        return;
+      }
+
+      setWorkspacePromise({ data: { descriptor: descriptor, files } });
+    },
+    [setWorkspacePromise, workspaceId, workspaces.workspaceService]
+  );
 
   const addEmptyWorkspaceFile = useCallback(
     async (fileExtension: string) => {
-      if (!workspace) {
+      if (!workspacePromise.data) {
         throw new Error("Can't add file while there's no workspace.");
       }
-      return await workspaces.addEmptyFile(workspace.descriptor.workspaceId, fileExtension);
+      return await workspaces.addEmptyFile(workspacePromise.data.descriptor.workspaceId, fileExtension);
     },
-    [workspace]
+    [workspacePromise] //TODO: Fix dependency array
   );
 
-  useEffect(() => {
-    refreshFiles();
-  }, [refreshFiles]);
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        refresh(canceled);
+      },
+      [refresh]
+    )
+  );
 
-  useEffect(() => {
-    if (!workspaceId) {
-      return;
-    }
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (!workspaceId) {
+          return;
+        }
 
-    const broadcastChannel = new BroadcastChannel(workspaceId);
-    broadcastChannel.onmessage = ({ data }) => {
-      console.info(`WORKSPACE: ${JSON.stringify(data)}`);
-      return refreshFiles();
-    };
+        const broadcastChannel = new BroadcastChannel(workspaceId);
+        broadcastChannel.onmessage = ({ data }) => {
+          console.info(`WORKSPACE: ${JSON.stringify(data)}`);
+          return refresh(canceled);
+        };
 
-    return () => {
-      broadcastChannel.close();
-    };
-  }, [workspaceId, refreshFiles]);
+        return () => {
+          broadcastChannel.close();
+        };
+      },
+      [workspaceId, refresh]
+    )
+  );
 
   return useMemo(() => {
-    return { workspace, addEmptyWorkspaceFile };
-  }, [workspace, addEmptyWorkspaceFile]);
+    return { workspacePromise, addEmptyWorkspaceFile };
+  }, [workspacePromise, addEmptyWorkspaceFile]);
 }
 
 export type WorkspaceEvents =

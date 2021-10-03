@@ -102,7 +102,6 @@ export function EditorToolbar(props: Props) {
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
   const [isEmbedModalOpen, setEmbedModalOpen] = useState(false);
-  const [isNavOpen, setNavOpen] = useState(false);
   const { i18n } = useOnlineI18n();
   const isEdited = useDirtyState(props.editor);
 
@@ -592,38 +591,16 @@ export function EditorToolbar(props: Props) {
     <>
       <Masthead aria-label={"Page header"}>
         {/*<MastheadToggle>*/}
-        {/*  <Dropdown*/}
-        {/*    onSelect={() => setNavOpen(false)}*/}
-        {/*    toggle={*/}
-        {/*      <Button*/}
-        {/*        variant={ButtonVariant.plain}*/}
-        {/*        aria-label="Global navigation"*/}
-        {/*        onClick={() => setNavOpen((prev) => !prev)}*/}
-        {/*      >*/}
-        {/*        <BarsIcon />*/}
-        {/*      </Button>*/}
+        {/*  <Button*/}
+        {/*    variant={ButtonVariant.plain}*/}
+        {/*    onClick={() =>*/}
+        {/*      history.push({*/}
+        {/*        pathname: globals.routes.home.path({}),*/}
+        {/*      })*/}
         {/*    }*/}
-        {/*    isOpen={isNavOpen}*/}
-        {/*    isPlain*/}
-        {/*    dropdownItems={[*/}
-        {/*      <NewFileDropdownItems*/}
-        {/*        key={"new-file-dropdown-items"}*/}
-        {/*        workspace={props.workspace}*/}
-        {/*        addEmptyWorkspaceFile={(extension) => {*/}
-        {/*          return props.addEmptyWorkspaceFile(extension).then((file) => {*/}
-        {/*            history.push({*/}
-        {/*              pathname: globals.routes.workspaceWithFilePath.path({*/}
-        {/*                workspaceId: file.workspaceId,*/}
-        {/*                filePath: file.pathRelativeToWorkspaceRootWithoutExtension,*/}
-        {/*                extension: file.extension,*/}
-        {/*              }),*/}
-        {/*            });*/}
-        {/*            return file;*/}
-        {/*          });*/}
-        {/*        }}*/}
-        {/*      />,*/}
-        {/*    ]}*/}
-        {/*  />*/}
+        {/*  >*/}
+        {/*    <HomeIcon />*/}
+        {/*  </Button>*/}
         {/*</MastheadToggle>*/}
         <MastheadMain>
           <MastheadBrand>
