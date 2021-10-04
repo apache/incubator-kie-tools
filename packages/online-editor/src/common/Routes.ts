@@ -139,7 +139,7 @@ export const routes = {
   }>(({ workspaceId, filePath, extension }) => `/${workspaceId}/file/${filePath}.${extension}`),
 
   static: {
-    sample: new Route<{ pathParams: "type" }>(({ type }) => `samples/sample.${type}`),
+    sample: new Route<{ pathParams: "type" }>(({ type }) => `samples/Sample.${type}`),
     images: {
       editorLogo: new Route<{ pathParams: "type" }>(({ type }) => `images/${type}_kogito_logo.svg`),
       homeLogo: new Route<{}>(() => `images/BusinessModeler_Logo_38x389.svg`),
