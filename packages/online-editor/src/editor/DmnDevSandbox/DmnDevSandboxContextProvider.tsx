@@ -140,7 +140,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
           relatedFiles: relatedFiles,
           config: config,
           onlineEditorUrl: (baseUrl) =>
-            globals.routes.newWorkspaceWithUrl.url({
+            globals.routes.importModel.url({
               base: process.env.WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl,
               pathParams: { extension: "dmn" },
               queryParams: {
@@ -161,7 +161,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
       workspaces.workspaceService,
       deployStartedSuccessAlert,
       deployStartedErrorAlert,
-      globals.routes.newWorkspaceWithUrl,
+      globals.routes.importModel,
     ]
   );
 

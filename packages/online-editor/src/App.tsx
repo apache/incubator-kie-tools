@@ -57,14 +57,12 @@ function RoutesSwitch() {
   return (
     <Switch>
       <Route path={globals.routes.editor.path({ extension: `:extension(${supportedExtensions})` })}>
-        {({ match }) => (
-          <Redirect to={globals.routes.newWorkspaceWithEmptyFile.path({ extension: match!.params.extension! })} />
-        )}
+        {({ match }) => <Redirect to={globals.routes.newModel.path({ extension: match!.params.extension! })} />}
       </Route>
-      <Route path={globals.routes.newWorkspaceWithEmptyFile.path({ extension: `:extension(${supportedExtensions})` })}>
+      <Route path={globals.routes.newModel.path({ extension: `:extension(${supportedExtensions})` })}>
         {({ match }) => <NewWorkspaceWithEmptyFilePage extension={match!.params.extension!} />}
       </Route>
-      <Route path={globals.routes.newWorkspaceWithUrl.path({})}>
+      <Route path={globals.routes.importModel.path({})}>
         <NewWorkspaceFromUrlPage />
       </Route>
       <Route path={globals.routes.workspaceOverview.path({ workspaceId: ":workspaceId" })}>

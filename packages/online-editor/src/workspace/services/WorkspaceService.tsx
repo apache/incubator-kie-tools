@@ -22,9 +22,9 @@ import { SUPPORTED_FILES_EDITABLE, SUPPORTED_FILES_PATTERN } from "../SupportedF
 import { StorageService } from "./StorageService";
 import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
+import { v4 as uuid } from "uuid";
 
 export class WorkspaceService {
-  private readonly WORKSPACE_CONTEXT_PREFIX = "w";
   private readonly WORKSPACE_CONFIG_PATH = "/workspaces.json";
 
   public constructor(
@@ -172,9 +172,8 @@ export class WorkspaceService {
     }
   }
 
-  public async newContext(): Promise<string> {
-    const descriptors = await this.list();
-    return `${this.WORKSPACE_CONTEXT_PREFIX}${descriptors.length + 1}`;
+  public newContext(): string {
+    return uuid();
   }
 
   public async newName(preferredName?: string): Promise<string> {

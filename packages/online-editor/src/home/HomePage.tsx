@@ -90,7 +90,7 @@ export function HomePage() {
                             variant={ButtonVariant.secondary}
                             onClick={() => {
                               history.push({
-                                pathname: globals.routes.newWorkspaceWithEmptyFile.path({
+                                pathname: globals.routes.newModel.path({
                                   extension: "bpmn",
                                 }),
                               });
@@ -105,7 +105,7 @@ export function HomePage() {
                             variant={ButtonVariant.secondary}
                             onClick={() => {
                               history.push({
-                                pathname: globals.routes.newWorkspaceWithEmptyFile.path({
+                                pathname: globals.routes.newModel.path({
                                   extension: "dmn",
                                 }),
                               });
@@ -120,7 +120,7 @@ export function HomePage() {
                             variant={ButtonVariant.secondary}
                             onClick={() => {
                               history.push({
-                                pathname: globals.routes.newWorkspaceWithEmptyFile.path({
+                                pathname: globals.routes.newModel.path({
                                   extension: "pmml",
                                 }),
                               });
@@ -186,8 +186,8 @@ export function HomePage() {
                               // TODO
                               // enable `Enter` key to submit.
                               history.push({
-                                pathname: globals.routes.newWorkspaceWithUrl.path({}),
-                                search: globals.routes.newWorkspaceWithUrl.queryString({ url: url }),
+                                pathname: globals.routes.importModel.path({}),
+                                search: globals.routes.importModel.queryString({ url: url }),
                               });
                             }}
                           >
@@ -248,8 +248,8 @@ export function HomePage() {
                           variant={ButtonVariant.tertiary}
                           onClick={() => {
                             history.push({
-                              pathname: globals.routes.newWorkspaceWithUrl.path({ extension: "bpmn" }),
-                              search: globals.routes.newWorkspaceWithUrl
+                              pathname: globals.routes.importModel.path({ extension: "bpmn" }),
+                              search: globals.routes.importModel
                                 .queryArgs(queryParams)
                                 .with(QueryParams.URL, globals.routes.static.sample.path({ type: "bpmn" }))
                                 .toString(),
@@ -265,8 +265,8 @@ export function HomePage() {
                           variant={ButtonVariant.tertiary}
                           onClick={() => {
                             history.push({
-                              pathname: globals.routes.newWorkspaceWithUrl.path({ extension: "dmn" }),
-                              search: globals.routes.newWorkspaceWithUrl
+                              pathname: globals.routes.importModel.path({ extension: "dmn" }),
+                              search: globals.routes.importModel
                                 .queryArgs(queryParams)
                                 .with(QueryParams.URL, globals.routes.static.sample.path({ type: "dmn" }))
                                 .toString(),
@@ -282,8 +282,8 @@ export function HomePage() {
                           variant={ButtonVariant.tertiary}
                           onClick={() => {
                             history.push({
-                              pathname: globals.routes.newWorkspaceWithUrl.path({ extension: "pmml" }),
-                              search: globals.routes.newWorkspaceWithUrl
+                              pathname: globals.routes.importModel.path({ extension: "pmml" }),
+                              search: globals.routes.importModel
                                 .queryArgs(queryParams)
                                 .with(QueryParams.URL, globals.routes.static.sample.path({ type: "pmml" }))
                                 .toString(),
@@ -335,7 +335,7 @@ export function HomePage() {
                                     variant={ButtonVariant.secondary}
                                     onClick={() => {
                                       history.push({
-                                        pathname: globals.routes.newWorkspaceWithEmptyFile.path({
+                                        pathname: globals.routes.newModel.path({
                                           extension: "bpmn",
                                         }),
                                       });
@@ -350,7 +350,7 @@ export function HomePage() {
                                     variant={ButtonVariant.secondary}
                                     onClick={() => {
                                       history.push({
-                                        pathname: globals.routes.newWorkspaceWithEmptyFile.path({
+                                        pathname: globals.routes.newModel.path({
                                           extension: "dmn",
                                         }),
                                       });
@@ -365,7 +365,7 @@ export function HomePage() {
                                     variant={ButtonVariant.secondary}
                                     onClick={() => {
                                       history.push({
-                                        pathname: globals.routes.newWorkspaceWithEmptyFile.path({
+                                        pathname: globals.routes.newModel.path({
                                           extension: "pmml",
                                         }),
                                       });

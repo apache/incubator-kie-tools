@@ -1,8 +1,8 @@
-import { useWorkspaces } from "../WorkspacesContext";
+import { LocalFile, useWorkspaces } from "../WorkspacesContext";
 import { useGlobals } from "../../common/GlobalContext";
 import { useHistory } from "react-router";
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -41,26 +41,37 @@ export function NewWorkspaceFromUrlPage() {
     return queryParamUrl === globals.routes.static.sample.path({ type: fileExtension });
   }, [globals.editorEnvelopeLocator.mapping, globals.routes.static.sample, queryParamUrl]);
 
+  const createWorkspaceForFile = useCallback(
+    (file: LocalFile) => {
+      workspaces.createWorkspaceFromLocal([file]).then(({ descriptor, suggestedFirstFile }) => {
+        if (suggestedFirstFile) {
+          history.replace({
+            pathname: globals.routes.workspaceWithFilePath.path({
+              workspaceId: descriptor.workspaceId,
+              filePath: suggestedFirstFile.pathRelativeToWorkspaceRootWithoutExtension,
+              extension: suggestedFirstFile.extension,
+            }),
+          });
+          return;
+        }
+
+        history.replace({
+          pathname: globals.routes.workspaceOverview.path({ workspaceId: descriptor.workspaceId }),
+        });
+      });
+    },
+    [globals.routes.workspaceOverview, globals.routes.workspaceWithFilePath, history, workspaces]
+  );
+
   useEffect(() => {
     let canceled = false;
     setFetchFileError(undefined);
 
     if (globals.externalFile) {
-      workspaces
-        .createWorkspaceFromLocal([
-          {
-            path: `${globals.externalFile.fileName}.${globals.externalFile.fileExtension}`,
-            getFileContents: async () => (await globals.externalFile!.getFileContents()) ?? "",
-          },
-        ])
-        .then(({ descriptor }) => {
-          if (canceled) {
-            return;
-          }
-          history.replace({
-            pathname: globals.routes.workspaceOverview.path({ workspaceId: descriptor.workspaceId }),
-          });
-        });
+      createWorkspaceForFile({
+        path: `${globals.externalFile.fileName}.${globals.externalFile.fileExtension}`,
+        getFileContents: async () => (await globals.externalFile!.getFileContents()) ?? "",
+      });
       return;
     }
 
@@ -92,22 +103,11 @@ export function NewWorkspaceFromUrlPage() {
             if (canceled) {
               return;
             }
-            workspaces
-              .createWorkspaceFromLocal([
-                {
-                  path: `${extractedFileName}.${filePathExtension}`,
-                  getFileContents: () => Promise.resolve(content),
-                },
-              ])
-              .then(({ descriptor }) => {
-                if (canceled) {
-                  return;
-                }
-                history.replace({
-                  pathname: globals.routes.workspaceOverview.path({ workspaceId: descriptor.workspaceId }),
-                });
-              });
-            return;
+
+            return createWorkspaceForFile({
+              path: `${extractedFileName}.${filePathExtension}`,
+              getFileContents: () => Promise.resolve(content),
+            });
           })
           .catch((error) =>
             setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl })
@@ -123,22 +123,10 @@ export function NewWorkspaceFromUrlPage() {
               return;
             }
 
-            workspaces
-              .createWorkspaceFromLocal([
-                {
-                  path: `${extractedFileName}.${filePathExtension}`,
-                  getFileContents: () => Promise.resolve(response),
-                },
-              ])
-              .then(({ descriptor }) => {
-                if (canceled) {
-                  return;
-                }
-                history.replace({
-                  pathname: globals.routes.workspaceOverview.path({ workspaceId: descriptor.workspaceId }),
-                });
-              });
-            return;
+            return createWorkspaceForFile({
+              path: `${extractedFileName}.${filePathExtension}`,
+              getFileContents: () => Promise.resolve(response),
+            });
           })
           .catch((error) => {
             setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl });
@@ -164,22 +152,10 @@ export function NewWorkspaceFromUrlPage() {
           // do not inline this variable.
           const content = response.text();
 
-          workspaces
-            .createWorkspaceFromLocal([
-              {
-                path: `${extractedFileName}.${filePathExtension}`,
-                getFileContents: () => content,
-              },
-            ])
-            .then(({ descriptor }) => {
-              if (canceled) {
-                return;
-              }
-              history.replace({
-                pathname: globals.routes.workspaceOverview.path({ workspaceId: descriptor.workspaceId }),
-              });
-            });
-          return;
+          return createWorkspaceForFile({
+            path: `${extractedFileName}.${filePathExtension}`,
+            getFileContents: () => content,
+          });
         })
         .catch((error) => {
           setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl });
@@ -192,12 +168,14 @@ export function NewWorkspaceFromUrlPage() {
   }, [
     globals.externalFile,
     globals.routes.workspaceOverview,
+    globals.routes.workspaceWithFilePath,
     history,
     queryParamUrl,
     settings.github.octokit,
     settings.github.service,
     workspaces,
     isSample,
+    createWorkspaceForFile,
   ]);
 
   return (

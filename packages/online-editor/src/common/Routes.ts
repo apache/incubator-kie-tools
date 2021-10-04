@@ -22,6 +22,7 @@ export enum QueryParams {
   EXT = "ext",
   URL = "url",
   DMN_RUNNER_FORM_INPUTS = "formInputs",
+  EXPAND = "expand",
 }
 
 export enum PathParams {
@@ -111,31 +112,31 @@ export const routes = {
   download: new Route<{}>(() => `/download`),
 
   home: new Route<{
-    queryParams: QueryParams.EXT;
+    queryParams: QueryParams.EXT | QueryParams.EXPAND;
   }>(() => `/`),
 
   /** @deprecated
-   * Use newWorkspaceWithEmptyFile instead */
+   * Use importModel instead */
   editor: new Route<{
     pathParams: PathParams.EXTENSION;
     queryParams: QueryParams.READONLY | QueryParams.URL | QueryParams.SETTINGS | QueryParams.DMN_RUNNER_FORM_INPUTS;
   }>(({ extension }) => `/editor/${extension}`),
 
-  newWorkspaceWithEmptyFile: new Route<{
+  newModel: new Route<{
     pathParams: PathParams.EXTENSION;
-  }>(({ extension }) => `/workspace/new/${extension}`),
+  }>(({ extension }) => `/new/${extension}`),
 
-  newWorkspaceWithUrl: new Route<{
+  importModel: new Route<{
     queryParams: QueryParams.URL | QueryParams.READONLY | QueryParams.DMN_RUNNER_FORM_INPUTS;
-  }>(() => `/workspace/new`),
+  }>(() => `/import`),
 
   workspaceOverview: new Route<{
     pathParams: PathParams.WORKSPACE_ID;
-  }>(({ workspaceId }) => `/workspace/${workspaceId}/overview`),
+  }>(({ workspaceId }) => `/${workspaceId}/overview`),
 
   workspaceWithFilePath: new Route<{
     pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_PATH | PathParams.EXTENSION;
-  }>(({ workspaceId, filePath, extension }) => `/workspace/${workspaceId}/file/${filePath}.${extension}`),
+  }>(({ workspaceId, filePath, extension }) => `/${workspaceId}/file/${filePath}.${extension}`),
 
   static: {
     sample: new Route<{ pathParams: "type" }>(({ type }) => `samples/sample.${type}`),
